@@ -1,4 +1,4 @@
-import { CheckCircle, Shield, Infinity, Plus, SidebarOpen } from "lucide-react";
+import { Icon } from "@/components/ui/icon-library";
 import { Button } from "@/components/ui/button";
 import { PillarCard } from "@/components/PillarCard";
 import { ProgressBar } from "@/components/ProgressBar";
@@ -35,7 +35,7 @@ export function DashboardContent() {
               className="bg-primary hover:bg-primary-hover text-primary-foreground shadow-md"
               size="lg"
             >
-              <Plus className="w-5 h-5 mr-2" />
+              <Icon name="add" className="w-5 h-5 mr-2" />
               Secure a New Information
             </Button>
           </div>
@@ -49,7 +49,7 @@ export function DashboardContent() {
           <PillarCard
             title="TODAY - Your Organized Life"
             subtitle="Track your progress and stay organized with your important information."
-            icon={CheckCircle}
+            icon="success"
             isActive={true}
             actionButton={{
               text: "View My Vault",
@@ -80,7 +80,7 @@ export function DashboardContent() {
           <PillarCard
             title="TOMORROW - Your Family's Protection"
             subtitle="You're building strong foundations. When you're ready, I'll gently unlock this next chapter to help protect your family during unexpected moments."
-            icon={Shield}
+            icon="protection"
             isLocked={true}
           />
 
@@ -88,7 +88,7 @@ export function DashboardContent() {
           <PillarCard
             title="FOREVER - Your Enduring Legacy"
             subtitle="This chapter awaits when the time feels right. Together, we'll preserve your wishes and stories for generations to come."
-            icon={Infinity}
+            icon="infinity"
             isLocked={true}
           />
         </div>
@@ -104,7 +104,7 @@ export function DashboardContent() {
               className="h-20 flex-col gap-2 hover:bg-primary/5 hover:border-primary/20"
               onClick={handleNewInformation}
             >
-              <Plus className="w-5 h-5" />
+              <Icon name="add" className="w-5 h-5" />
               <span className="text-sm">Add Information</span>
             </Button>
             
@@ -113,28 +113,26 @@ export function DashboardContent() {
               className="h-20 flex-col gap-2 hover:bg-primary/5 hover:border-primary/20"
               onClick={handleViewVault}
             >
-              <CheckCircle className="w-5 h-5" />
+              <Icon name="documents" className="w-5 h-5" />
               <span className="text-sm">Review Progress</span>
             </Button>
             
             <Button
               variant="outline"
-              className="h-20 flex-col gap-2 cursor-not-allowed"
+              className="h-20 flex-col gap-2 cursor-not-allowed opacity-60"
               disabled
-              style={{ color: 'hsl(var(--muted-text) / 0.7)', borderColor: 'hsl(var(--muted-text) / 0.5)' }}
             >
-              <Shield className="w-5 h-5" style={{ color: 'hsl(var(--muted-text) / 0.7)' }} />
-              <span className="text-sm">Set Emergency Contacts</span>
+              <Icon name="guardians" className="w-5 h-5 text-muted-foreground" />
+              <span className="text-sm text-muted-foreground">Set Emergency Contacts</span>
             </Button>
             
             <Button
               variant="outline"
-              className="h-20 flex-col gap-2 cursor-not-allowed"
+              className="h-20 flex-col gap-2 cursor-not-allowed opacity-60"
               disabled
-              style={{ color: 'hsl(var(--muted-text) / 0.7)', borderColor: 'hsl(var(--muted-text) / 0.5)' }}
             >
-              <Infinity className="w-5 h-5" style={{ color: 'hsl(var(--muted-text) / 0.7)' }} />
-              <span className="text-sm">Create Legacy Content</span>
+              <Icon name="wishes" className="w-5 h-5 text-muted-foreground" />
+              <span className="text-sm text-muted-foreground">Create Legacy Content</span>
             </Button>
           </div>
         </section>

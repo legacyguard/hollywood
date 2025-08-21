@@ -1,5 +1,9 @@
 # Welcome to your Lovable project
 
+## Language Requirement
+
+**IMPORTANT**: All code changes and the entire codebase must be in English language (except i18n key values).
+
 ## Project info
 
 **URL**: https://lovable.dev/projects/d53db0fd-7693-4963-9f68-f70f4a28aeb7

@@ -1,4 +1,4 @@
-import { LayoutDashboard, Vault, Users, Gift, Settings } from "lucide-react";
+import { Icon, IconMap } from "@/components/ui/icon-library";
 import { LegacyGuardLogo } from "./LegacyGuardLogo";
 import { NavLink } from "react-router-dom";
 import {
@@ -13,10 +13,14 @@ import {
 } from "@/components/ui/sidebar";
 
 const navigationItems = [
-  { title: "Dashboard", url: "/", icon: LayoutDashboard },
-  { title: "My Vault", url: "/vault", icon: Vault },
-  { title: "Guardians", url: "/guardians", icon: Users },
-  { title: "Legacy", url: "/legacy", icon: Gift },
+  { title: "Dashboard", url: "/", icon: "dashboard" },
+  { title: "My Vault", url: "/vault", icon: "vault" },
+  { title: "Documents", url: "/documents", icon: "documents" },
+  { title: "Guardians", url: "/guardians", icon: "guardians" },
+  { title: "Legacy", url: "/legacy", icon: "legacy" },
+  { title: "Timeline", url: "/timeline", icon: "timeline" },
+  { title: "Wishes", url: "/wishes", icon: "wishes" },
+  { title: "Protection", url: "/protection", icon: "protection" },
 ];
 
 export function AppSidebar() {
@@ -56,7 +60,7 @@ export function AppSidebar() {
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton asChild className="p-0">
                       <NavLink to={item.url} end className={getNavClasses}>
-                        <item.icon className="w-5 h-5 flex-shrink-0" />
+                        <Icon name={item.icon as keyof typeof IconMap} className="w-5 h-5 flex-shrink-0" />
                         {!collapsed && <span className="text-sm font-medium">{item.title}</span>}
                       </NavLink>
                     </SidebarMenuButton>
@@ -81,7 +85,7 @@ export function AppSidebar() {
             )}
             {!collapsed && (
               <button className="p-1.5 rounded-md hover:bg-sidebar-accent/50 text-sidebar-muted hover:text-sidebar-text transition-colors">
-                <Settings className="w-4 h-4" />
+                <Icon name="settings" className="w-4 h-4" />
               </button>
             )}
           </div>

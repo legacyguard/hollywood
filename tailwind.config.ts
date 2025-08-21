@@ -88,6 +88,17 @@ export default {
 				progress: {
 					bg: 'hsl(var(--progress-bg))',
 					fill: 'hsl(var(--progress-fill))'
+				},
+				logo: {
+					primary: 'hsl(var(--logo-primary))',
+					secondary: 'hsl(var(--logo-secondary))'
+				},
+				chart: {
+					grid: 'hsl(var(--chart-grid))',
+					white: 'hsl(var(--chart-white))'
+				},
+				text: {
+					muted: 'hsl(var(--text-muted))'
 				}
 			},
 			boxShadow: {

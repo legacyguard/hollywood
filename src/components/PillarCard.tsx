@@ -1,11 +1,11 @@
-import { LucideIcon } from "lucide-react";
+import { Icon, IconName } from "@/components/ui/icon-library";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 interface PillarCardProps {
   title: string;
   subtitle?: string;
-  icon: LucideIcon;
+  icon: IconName;
   isActive?: boolean;
   isLocked?: boolean;
   children?: React.ReactNode;
@@ -18,7 +18,7 @@ interface PillarCardProps {
 export function PillarCard({
   title,
   subtitle,
-  icon: Icon,
+  icon,
   isActive = false,
   isLocked = false,
   children,
@@ -56,7 +56,7 @@ export function PillarCard({
               : "bg-primary/10 text-primary"
           )}
         >
-          <Icon className="w-8 h-8" />
+          <Icon name={icon} className="w-8 h-8" />
         </div>
 
         {/* Title Section */}

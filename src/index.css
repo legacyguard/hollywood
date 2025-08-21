@@ -4,6 +4,7 @@
 
 /* LegacyGuard Design System - Apple-inspired, calming & trustworthy
 All colors MUST be HSL.
+IMPORTANT: All code changes and codebase must be in English language (except i18n key values).
 */
 
 @layer base {
@@ -60,6 +61,13 @@ All colors MUST be HSL.
     --destructive-foreground: 0 0% 100%;
     --popover: 0 0% 100%;
     --popover-foreground: 30 25% 15%;
+
+    /* Additional Colors for Hardcoded Replacements */
+    --logo-primary: 217 91% 60%; /* #646cff - React logo primary */
+    --logo-secondary: 187 95% 53%; /* #61dafb - React logo secondary */
+    --text-muted: 0 0% 53%; /* #888 - Muted text color */
+    --chart-grid: 0 0% 80%; /* #ccc - Chart grid lines */
+    --chart-white: 0 0% 100%; /* #fff - Chart white elements */
 
     --radius: 12px;
 
