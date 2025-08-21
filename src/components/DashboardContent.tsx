@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { PillarCard } from "@/components/PillarCard";
 import { ProgressBar } from "@/components/ProgressBar";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { FadeIn } from "@/components/motion/FadeIn";
 
 export function DashboardContent() {
   const handleNewInformation = () => {
@@ -22,22 +23,28 @@ export function DashboardContent() {
             <div className="flex items-center gap-4">
               <SidebarTrigger className="lg:hidden" />
               <div>
-                <h1 className="text-3xl lg:text-4xl font-bold font-heading text-card-foreground mb-3">
-                  Welcome, Jana. I'm here to help you.
-                </h1>
-                <p className="text-lg leading-relaxed max-w-2xl" style={{ color: 'hsl(var(--muted-text))' }}>
-                  Welcome back, Jana. It's wonderful to see you taking these important steps for your family.
-                </p>
+                <FadeIn duration={0.5} delay={0.2}>
+                  <h1 className="text-3xl lg:text-4xl font-bold font-heading text-card-foreground mb-3">
+                    Welcome, Jana. I'm here to help you.
+                  </h1>
+                </FadeIn>
+                <FadeIn duration={0.5} delay={0.4}>
+                  <p className="text-lg leading-relaxed max-w-2xl" style={{ color: 'hsl(var(--muted-text))' }}>
+                    Welcome back, Jana. It's wonderful to see you taking these important steps for your family.
+                  </p>
+                </FadeIn>
               </div>
             </div>
-            <Button 
-              onClick={handleNewInformation}
-              className="bg-primary hover:bg-primary-hover text-primary-foreground shadow-md"
-              size="lg"
-            >
-              <Icon name="add" className="w-5 h-5 mr-2" />
-              Secure a New Information
-            </Button>
+            <FadeIn duration={0.5} delay={0.6}>
+              <Button 
+                onClick={handleNewInformation}
+                className="bg-primary hover:bg-primary-hover text-primary-foreground shadow-md"
+                size="lg"
+              >
+                <Icon name="add" className="w-5 h-5 mr-2" />
+                Secure a New Information
+              </Button>
+            </FadeIn>
           </div>
         </div>
       </header>
@@ -46,94 +53,110 @@ export function DashboardContent() {
       <main className="max-w-7xl mx-auto px-6 lg:px-8 py-12">
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Pillar 1: TODAY - Your Organized Life (Active) */}
-          <PillarCard
-            title="TODAY - Your Organized Life"
-            subtitle="Track your progress and stay organized with your important information."
-            icon="success"
-            isActive={true}
-            actionButton={{
-              text: "View My Vault",
-              onClick: handleViewVault,
-            }}
-          >
-            <div className="space-y-6">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="text-center p-4 bg-primary/5 rounded-lg">
-                  <div className="text-2xl font-bold text-primary font-heading">12</div>
-                  <div className="text-sm text-muted-foreground">Informations Secured</div>
+          <FadeIn duration={0.5} delay={0.8}>
+            <PillarCard
+              title="TODAY - Your Organized Life"
+              subtitle="Track your progress and stay organized with your important information."
+              icon="success"
+              isActive={true}
+              actionButton={{
+                text: "View My Vault",
+                onClick: handleViewVault,
+              }}
+            >
+              <div className="space-y-6">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="text-center p-4 bg-primary/5 rounded-lg">
+                    <div className="text-2xl font-bold text-primary font-heading">12</div>
+                    <div className="text-sm text-muted-foreground">Informations Secured</div>
+                  </div>
+                  <div className="text-center p-4 bg-status-warning/10 rounded-lg">
+                    <div className="text-2xl font-bold text-status-warning font-heading">2</div>
+                    <div className="text-sm text-muted-foreground">Upcoming Deadlines</div>
+                  </div>
                 </div>
-                <div className="text-center p-4 bg-status-warning/10 rounded-lg">
-                  <div className="text-2xl font-bold text-status-warning font-heading">2</div>
-                  <div className="text-sm text-muted-foreground">Upcoming Deadlines</div>
-                </div>
+                
+                <ProgressBar 
+                  value={45} 
+                  label="Profile Completion" 
+                  showPercentage={true}
+                />
               </div>
-              
-              <ProgressBar 
-                value={45} 
-                label="Profile Completion" 
-                showPercentage={true}
-              />
-            </div>
-          </PillarCard>
+            </PillarCard>
+          </FadeIn>
 
           {/* Pillar 2: TOMORROW - Your Family's Protection (Locked) */}
-          <PillarCard
-            title="TOMORROW - Your Family's Protection"
-            subtitle="You're building strong foundations. When you're ready, I'll gently unlock this next chapter to help protect your family during unexpected moments."
-            icon="protection"
-            isLocked={true}
-          />
+          <FadeIn duration={0.5} delay={1.0}>
+            <PillarCard
+              title="TOMORROW - Your Family's Protection"
+              subtitle="You're building strong foundations. When you're ready, I'll gently unlock this next chapter to help protect your family during unexpected moments."
+              icon="protection"
+              isLocked={true}
+            />
+          </FadeIn>
 
           {/* Pillar 3: FOREVER - Your Enduring Legacy (Locked) */}
-          <PillarCard
-            title="FOREVER - Your Enduring Legacy"
-            subtitle="This chapter awaits when the time feels right. Together, we'll preserve your wishes and stories for generations to come."
-            icon="infinity"
-            isLocked={true}
-          />
+          <FadeIn duration={0.5} delay={1.2}>
+            <PillarCard
+              title="FOREVER - Your Enduring Legacy"
+              subtitle="This chapter awaits when the time feels right. Together, we'll preserve your wishes and stories for generations to come."
+              icon="infinity"
+              isLocked={true}
+            />
+          </FadeIn>
         </div>
 
         {/* Quick Actions Section */}
         <section className="mt-16">
-          <h2 className="text-2xl font-bold font-heading text-card-foreground mb-6">
-            Quick Actions
-          </h2>
+          <FadeIn duration={0.5} delay={1.4}>
+            <h2 className="text-2xl font-bold font-heading text-card-foreground mb-6">
+              Quick Actions
+            </h2>
+          </FadeIn>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Button
-              variant="outline"
-              className="h-20 flex-col gap-2 hover:bg-primary/5 hover:border-primary/20"
-              onClick={handleNewInformation}
-            >
-              <Icon name="add" className="w-5 h-5" />
-              <span className="text-sm">Add Information</span>
-            </Button>
+            <FadeIn duration={0.5} delay={1.5}>
+              <Button
+                variant="outline"
+                className="h-20 flex-col gap-2 hover:bg-primary/5 hover:border-primary/20"
+                onClick={handleNewInformation}
+              >
+                <Icon name="add" className="w-5 h-5" />
+                <span className="text-sm">Add Information</span>
+              </Button>
+            </FadeIn>
             
-            <Button
-              variant="outline"
-              className="h-20 flex-col gap-2 hover:bg-primary/5 hover:border-primary/20"
-              onClick={handleViewVault}
-            >
-              <Icon name="documents" className="w-5 h-5" />
-              <span className="text-sm">Review Progress</span>
-            </Button>
+            <FadeIn duration={0.5} delay={1.6}>
+              <Button
+                variant="outline"
+                className="h-20 flex-col gap-2 hover:bg-primary/5 hover:border-primary/20"
+                onClick={handleViewVault}
+              >
+                <Icon name="documents" className="w-5 h-5" />
+                <span className="text-sm">Review Progress</span>
+              </Button>
+            </FadeIn>
             
-            <Button
-              variant="outline"
-              className="h-20 flex-col gap-2 cursor-not-allowed opacity-60"
-              disabled
-            >
-              <Icon name="guardians" className="w-5 h-5 text-muted-foreground" />
-              <span className="text-sm text-muted-foreground">Set Emergency Contacts</span>
-            </Button>
+            <FadeIn duration={0.5} delay={1.7}>
+              <Button
+                variant="outline"
+                className="h-20 flex-col gap-2 cursor-not-allowed opacity-60"
+                disabled
+              >
+                <Icon name="guardians" className="w-5 h-5 text-muted-foreground" />
+                <span className="text-sm text-muted-foreground">Set Emergency Contacts</span>
+              </Button>
+            </FadeIn>
             
-            <Button
-              variant="outline"
-              className="h-20 flex-col gap-2 cursor-not-allowed opacity-60"
-              disabled
-            >
-              <Icon name="wishes" className="w-5 h-5 text-muted-foreground" />
-              <span className="text-sm text-muted-foreground">Create Legacy Content</span>
-            </Button>
+            <FadeIn duration={0.5} delay={1.8}>
+              <Button
+                variant="outline"
+                className="h-20 flex-col gap-2 cursor-not-allowed opacity-60"
+                disabled
+              >
+                <Icon name="wishes" className="w-5 h-5 text-muted-foreground" />
+                <span className="text-sm text-muted-foreground">Create Legacy Content</span>
+              </Button>
+            </FadeIn>
           </div>
         </section>
       </main>
