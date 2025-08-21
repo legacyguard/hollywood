@@ -18,12 +18,18 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				'heading': 'var(--font-heading)',
+				'body': 'var(--font-body)',
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
+				'content-background': 'hsl(var(--content-background))',
+				
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
 					foreground: 'hsl(var(--primary-foreground))'
@@ -41,8 +47,11 @@ export default {
 					foreground: 'hsl(var(--muted-foreground))'
 				},
 				accent: {
-					DEFAULT: 'hsl(var(--accent))',
-					foreground: 'hsl(var(--accent-foreground))'
+					primary: 'hsl(var(--accent-primary))',
+					'primary-foreground': 'hsl(var(--accent-primary-foreground))',
+					hover: 'hsl(var(--accent-hover))',
+					DEFAULT: 'hsl(var(--accent-primary))',
+					foreground: 'hsl(var(--accent-primary-foreground))'
 				},
 				popover: {
 					DEFAULT: 'hsl(var(--popover))',
@@ -50,18 +59,39 @@ export default {
 				},
 				card: {
 					DEFAULT: 'hsl(var(--card))',
-					foreground: 'hsl(var(--card-foreground))'
+					foreground: 'hsl(var(--card-foreground))',
+					border: 'hsl(var(--card-border))',
+					shadow: 'hsl(var(--card-shadow))'
 				},
 				sidebar: {
-					DEFAULT: 'hsl(var(--sidebar-background))',
-					foreground: 'hsl(var(--sidebar-foreground))',
 					primary: 'hsl(var(--sidebar-primary))',
-					'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
 					accent: 'hsl(var(--sidebar-accent))',
-					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
-					border: 'hsl(var(--sidebar-border))',
-					ring: 'hsl(var(--sidebar-ring))'
+					text: 'hsl(var(--sidebar-text))',
+					muted: 'hsl(var(--sidebar-muted))',
+					DEFAULT: 'hsl(var(--sidebar-primary))',
+					foreground: 'hsl(var(--sidebar-text))',
+					'primary-foreground': 'hsl(var(--sidebar-text))',
+					'accent-foreground': 'hsl(var(--sidebar-text))',
+					border: 'hsl(var(--border))',
+					ring: 'hsl(var(--ring))'
+				},
+				status: {
+					success: 'hsl(var(--success))',
+					'success-foreground': 'hsl(var(--success-foreground))',
+					warning: 'hsl(var(--warning))',
+					'warning-foreground': 'hsl(var(--warning-foreground))',
+					locked: 'hsl(var(--locked))',
+					'locked-foreground': 'hsl(var(--locked-foreground))',
+				},
+				progress: {
+					bg: 'hsl(var(--progress-bg))',
+					fill: 'hsl(var(--progress-fill))'
 				}
+			},
+			boxShadow: {
+				'sm': 'var(--shadow-sm)',
+				'md': 'var(--shadow-md)',
+				'lg': 'var(--shadow-lg)',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
