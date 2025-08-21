@@ -4,6 +4,23 @@
 
 **IMPORTANT**: All code changes and the entire codebase must be in English language (except i18n key values).
 
+## 🔒 Security & Environment Variables
+
+**CRITICAL**: This project contains sensitive configuration that must NEVER be committed to Git.
+
+### **Environment Setup:**
+1. Copy the template: `cp env.template .env.local`
+2. Edit `.env.local` with your actual values
+3. Never commit `.env.local` to Git
+
+### **Security Features:**
+- ✅ `.gitignore` blocks all environment files
+- ✅ Pre-commit hook prevents accidental commits
+- ✅ Comprehensive security documentation
+- ✅ Environment template system
+
+**For detailed security information, see [SECURITY.md](./SECURITY.md)**
+
 ## Project info
 
 **URL**: https://lovable.dev/projects/d53db0fd-7693-4963-9f68-f70f4a28aeb7
