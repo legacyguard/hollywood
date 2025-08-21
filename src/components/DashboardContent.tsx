@@ -119,21 +119,21 @@ export function DashboardContent() {
             
             <Button
               variant="outline"
-              className="h-20 flex-col gap-2 opacity-60 cursor-not-allowed"
+              className="h-20 flex-col gap-2 cursor-not-allowed"
               disabled
-              style={{ color: 'hsl(var(--muted-text))', borderColor: 'hsl(var(--muted-text) / 0.3)' }}
+              style={{ color: 'hsl(var(--muted-text) / 0.7)', borderColor: 'hsl(var(--muted-text) / 0.5)' }}
             >
-              <Shield className="w-5 h-5" style={{ color: 'hsl(var(--muted-text))' }} />
+              <Shield className="w-5 h-5" style={{ color: 'hsl(var(--muted-text) / 0.7)' }} />
               <span className="text-sm">Set Emergency Contacts</span>
             </Button>
             
             <Button
               variant="outline"
-              className="h-20 flex-col gap-2 opacity-60 cursor-not-allowed"
+              className="h-20 flex-col gap-2 cursor-not-allowed"
               disabled
-              style={{ color: 'hsl(var(--muted-text))', borderColor: 'hsl(var(--muted-text) / 0.3)' }}
+              style={{ color: 'hsl(var(--muted-text) / 0.7)', borderColor: 'hsl(var(--muted-text) / 0.5)' }}
             >
-              <Infinity className="w-5 h-5" style={{ color: 'hsl(var(--muted-text))' }} />
+              <Infinity className="w-5 h-5" style={{ color: 'hsl(var(--muted-text) / 0.7)' }} />
               <span className="text-sm">Create Legacy Content</span>
             </Button>
           </div>
