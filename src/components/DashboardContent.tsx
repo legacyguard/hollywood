@@ -32,7 +32,7 @@ export function DashboardContent() {
             </div>
             <Button 
               onClick={handleNewInformation}
-              className="bg-accent-primary hover:bg-accent-hover text-accent-primary-foreground shadow-md"
+              className="bg-primary hover:bg-primary-hover text-primary-foreground shadow-md"
               size="lg"
             >
               <Plus className="w-5 h-5 mr-2" />
@@ -58,8 +58,8 @@ export function DashboardContent() {
           >
             <div className="space-y-6">
               <div className="grid grid-cols-2 gap-4">
-                <div className="text-center p-4 bg-accent-primary/5 rounded-lg">
-                  <div className="text-2xl font-bold text-accent-primary font-heading">12</div>
+                <div className="text-center p-4 bg-primary/5 rounded-lg">
+                  <div className="text-2xl font-bold text-primary font-heading">12</div>
                   <div className="text-sm text-muted-foreground">Informations Secured</div>
                 </div>
                 <div className="text-center p-4 bg-status-warning/10 rounded-lg">
@@ -101,7 +101,7 @@ export function DashboardContent() {
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
             <Button
               variant="outline"
-              className="h-20 flex-col gap-2 hover:bg-accent-primary/5 hover:border-accent-primary/20"
+              className="h-20 flex-col gap-2 hover:bg-primary/5 hover:border-primary/20"
               onClick={handleNewInformation}
             >
               <Plus className="w-5 h-5" />
@@ -110,7 +110,7 @@ export function DashboardContent() {
             
             <Button
               variant="outline"
-              className="h-20 flex-col gap-2 hover:bg-accent-primary/5 hover:border-accent-primary/20"
+              className="h-20 flex-col gap-2 hover:bg-primary/5 hover:border-primary/20"
               onClick={handleViewVault}
             >
               <CheckCircle className="w-5 h-5" />

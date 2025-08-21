@@ -14,15 +14,22 @@ All colors MUST be HSL.
     --content-background: 0 0% 100%; /* Pure white for cards */
 
     /* Earthy Sidebar */
-    --sidebar-primary: 30 25% 28%; /* #6B4F3B - dark earthy brown */
-    --sidebar-accent: 30 15% 35%; /* Lighter earthy for hover */
+    --sidebar-primary: 95 20% 18%; /* #2D4A2F - deep forest green */
+    --sidebar-accent: 95 25% 25%; /* Lighter forest green for hover */
     --sidebar-text: 42 33% 95%; /* Light warm text */
-    --sidebar-muted: 30 15% 55%; /* Muted sidebar text */
+    --sidebar-muted: 95 15% 55%; /* Muted green text */
 
-    /* Accent Colors */
-    --accent-primary: 30 35% 42%; /* #8A5E3B - earthy accent */
+    /* Primary Brand - Earthy Greens */
+    --primary: 95 35% 42%; /* #4A7C59 - main brand green */
+    --primary-foreground: 42 33% 98%;
+    --primary-hover: 95 35% 38%; /* Darker green for hover */
+
+    /* Accent Colors - Complementary Earth Tones */
+    --accent-primary: 95 35% 42%; /* Match primary green */
     --accent-primary-foreground: 42 33% 98%;
-    --accent-hover: 30 35% 38%; /* Darker accent for hover */
+    --accent-hover: 95 35% 38%; /* Darker green for hover */
+    --accent-secondary: 30 35% 42%; /* #8A5E3B - earthy brown accent */
+    --accent-secondary-foreground: 42 33% 98%;
 
     /* Status Colors */
     --success: 142 51% 45%; /* Calming green */
@@ -41,13 +48,11 @@ All colors MUST be HSL.
     /* Interactive Elements */
     --border: 30 15% 90%;
     --input: 30 15% 95%;
-    --ring: 30 35% 42%;
+    --ring: 95 35% 42%;
     --muted: 30 15% 96%;
     --muted-foreground: 30 15% 55%;
 
     /* Semantic Tokens */
-    --primary: 30 35% 42%;
-    --primary-foreground: 42 33% 98%;
     --secondary: 30 15% 96%;
     --secondary-foreground: 30 25% 15%;
     --destructive: 0 65% 55%;
@@ -59,7 +64,7 @@ All colors MUST be HSL.
 
     /* Progress & Status */
     --progress-bg: 30 15% 92%;
-    --progress-fill: 30 35% 42%;
+    --progress-fill: 95 35% 42%;
 
     /* Shadows */
     --shadow-sm: 0 1px 3px hsl(30 25% 15% / 0.1);

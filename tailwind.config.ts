@@ -50,6 +50,8 @@ export default {
 					primary: 'hsl(var(--accent-primary))',
 					'primary-foreground': 'hsl(var(--accent-primary-foreground))',
 					hover: 'hsl(var(--accent-hover))',
+					secondary: 'hsl(var(--accent-secondary))',
+					'secondary-foreground': 'hsl(var(--accent-secondary-foreground))',
 					DEFAULT: 'hsl(var(--accent-primary))',
 					foreground: 'hsl(var(--accent-primary-foreground))'
 				},

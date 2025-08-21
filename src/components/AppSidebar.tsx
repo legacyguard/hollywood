@@ -35,8 +35,8 @@ export function AppSidebar() {
         {/* Logo Section */}
         <div className="p-6 border-b border-sidebar-accent/20">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-accent-primary flex items-center justify-center">
-              <div className="w-5 h-5 bg-accent-primary-foreground rounded-sm"></div>
+            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+              <div className="w-5 h-5 bg-primary-foreground rounded-sm"></div>
             </div>
             {!collapsed && (
               <div className="flex flex-col">
@@ -71,7 +71,7 @@ export function AppSidebar() {
         {/* User Profile Section */}
         <div className="p-4 mt-auto border-t border-sidebar-accent/20">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-accent-primary flex items-center justify-center text-xs font-medium text-accent-primary-foreground">
+            <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-xs font-medium text-primary-foreground">
               JN
             </div>
             {!collapsed && (

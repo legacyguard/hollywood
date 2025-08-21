@@ -28,13 +28,13 @@ export function PillarCard({
     <div
       className={cn(
         "pillar-card rounded-2xl p-8 transition-all duration-300 hover:shadow-xl relative overflow-hidden",
-        isActive && "ring-2 ring-accent-primary/20",
+        isActive && "ring-2 ring-primary/20",
         isLocked && "opacity-60"
       )}
     >
       {/* Background Gradient for Active Card */}
       {isActive && (
-        <div className="absolute inset-0 bg-gradient-to-br from-accent-primary/5 to-transparent rounded-2xl" />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent rounded-2xl" />
       )}
       
       {/* Lock Badge */}
@@ -50,10 +50,10 @@ export function PillarCard({
           className={cn(
             "w-16 h-16 rounded-2xl flex items-center justify-center mb-6",
             isActive 
-              ? "bg-accent-primary text-accent-primary-foreground"
+              ? "bg-primary text-primary-foreground"
               : isLocked
               ? "bg-status-locked text-status-locked-foreground"
-              : "bg-accent-primary/10 text-accent-primary"
+              : "bg-primary/10 text-primary"
           )}
         >
           <Icon className="w-8 h-8" />
@@ -84,7 +84,7 @@ export function PillarCard({
             variant="outline"
             size="sm"
             onClick={actionButton.onClick}
-            className="border-accent-primary/20 text-accent-primary hover:bg-accent-primary hover:text-accent-primary-foreground"
+            className="border-primary/20 text-primary hover:bg-primary hover:text-primary-foreground"
           >
             {actionButton.text}
           </Button>
