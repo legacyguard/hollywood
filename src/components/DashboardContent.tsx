@@ -23,7 +23,7 @@ export function DashboardContent() {
               <SidebarTrigger className="lg:hidden" />
               <div>
                 <h1 className="text-3xl lg:text-4xl font-bold font-heading text-card-foreground mb-3">
-                  Your Peace of Mind Dashboard
+                  Welcome, Jana. I'm here to help you.
                 </h1>
                 <p className="text-lg leading-relaxed max-w-2xl" style={{ color: 'hsl(var(--muted-text))' }}>
                   Welcome back, Jana. It's wonderful to see you taking these important steps for your family.
@@ -79,7 +79,7 @@ export function DashboardContent() {
           {/* Pillar 2: TOMORROW - Your Family's Protection (Locked) */}
           <PillarCard
             title="TOMORROW - Your Family's Protection"
-            subtitle="Once you've built a solid foundation, we'll unlock this next chapter to protect your family in emergencies."
+            subtitle="You're building strong foundations. When you're ready, I'll gently unlock this next chapter to help protect your family during unexpected moments."
             icon={Shield}
             isLocked={true}
           />
@@ -87,7 +87,7 @@ export function DashboardContent() {
           {/* Pillar 3: FOREVER - Your Enduring Legacy (Locked) */}
           <PillarCard
             title="FOREVER - Your Enduring Legacy"
-            subtitle="This is the final step of your journey, where you can preserve your wishes and stories for generations to come."
+            subtitle="This chapter awaits when the time feels right. Together, we'll preserve your wishes and stories for generations to come."
             icon={Infinity}
             isLocked={true}
           />
