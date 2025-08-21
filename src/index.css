@@ -36,8 +36,9 @@ All colors MUST be HSL.
     --success-foreground: 0 0% 100%;
     --warning: 45 93% 58%; /* Warm amber */
     --warning-foreground: 30 25% 15%;
-    --locked: 35 25% 60%; /* Warm taupe for locked state */
-    --locked-foreground: 42 33% 98%; /* Light foreground */
+    --locked: 33 38% 47%; /* #ab7c44 - warm bronze for locked state */
+    --locked-foreground: 33 38% 47%; /* Same warm bronze for text */
+    --muted-text: 33 38% 47%; /* #ab7c44 - warm bronze for secondary text */
 
     /* Card System */
     --card: 0 0% 100%;

@@ -25,7 +25,7 @@ export function DashboardContent() {
                 <h1 className="text-3xl lg:text-4xl font-bold font-heading text-card-foreground mb-3">
                   Your Peace of Mind Dashboard
                 </h1>
-                <p className="text-lg text-muted-foreground leading-relaxed max-w-2xl">
+                <p className="text-lg leading-relaxed max-w-2xl" style={{ color: 'hsl(var(--muted-text))' }}>
                   Welcome back, Jana. It's wonderful to see you taking these important steps for your family.
                 </p>
               </div>
@@ -121,8 +121,9 @@ export function DashboardContent() {
               variant="outline"
               className="h-20 flex-col gap-2 opacity-60 cursor-not-allowed"
               disabled
+              style={{ color: 'hsl(var(--muted-text))', borderColor: 'hsl(var(--muted-text) / 0.3)' }}
             >
-              <Shield className="w-5 h-5" />
+              <Shield className="w-5 h-5" style={{ color: 'hsl(var(--muted-text))' }} />
               <span className="text-sm">Set Emergency Contacts</span>
             </Button>
             
@@ -130,8 +131,9 @@ export function DashboardContent() {
               variant="outline"
               className="h-20 flex-col gap-2 opacity-60 cursor-not-allowed"
               disabled
+              style={{ color: 'hsl(var(--muted-text))', borderColor: 'hsl(var(--muted-text) / 0.3)' }}
             >
-              <Infinity className="w-5 h-5" />
+              <Infinity className="w-5 h-5" style={{ color: 'hsl(var(--muted-text))' }} />
               <span className="text-sm">Create Legacy Content</span>
             </Button>
           </div>
