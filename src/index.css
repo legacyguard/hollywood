@@ -13,11 +13,11 @@ All colors MUST be HSL.
     --foreground: 30 25% 15%; /* Deep earthy text */
     --content-background: 0 0% 100%; /* Pure white for cards */
 
-    /* Earthy Sidebar - Warm Sage */
-    --sidebar-primary: 90 25% 35%; /* #5A6B4F - warm sage green */
-    --sidebar-accent: 90 30% 42%; /* Lighter sage for hover */
+    /* Earthy Sidebar - Dark Brown */
+    --sidebar-primary: 31 63% 14%; /* #3a240d - dark earthy brown */
+    --sidebar-accent: 31 60% 18%; /* Lighter brown for hover */
     --sidebar-text: 42 33% 98%; /* Crisp white text */
-    --sidebar-muted: 90 15% 75%; /* Lighter sage muted text */
+    --sidebar-muted: 31 40% 60%; /* Lighter brown muted text */
 
     /* Primary Brand - Earthy Greens */
     --primary: 95 35% 42%; /* #4A7C59 - main brand green */
@@ -36,9 +36,9 @@ All colors MUST be HSL.
     --success-foreground: 0 0% 100%;
     --warning: 45 93% 58%; /* Warm amber */
     --warning-foreground: 30 25% 15%;
-    --locked: 33 38% 47%; /* #ab7c44 - warm bronze for locked state */
+    --locked: 31 63% 14%; /* #3a240d - dark earthy brown for locked state */
     --locked-foreground: 42 33% 98%; /* Light warm background color for visibility */
-    --muted-text: 33 38% 47%; /* #ab7c44 - warm bronze for secondary text */
+    --muted-text: 31 63% 14%; /* #3a240d - dark earthy brown for secondary text */
 
     /* Card System */
     --card: 0 0% 100%;
