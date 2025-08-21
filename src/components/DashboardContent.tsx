@@ -5,8 +5,11 @@ import { ProgressBar } from "@/components/ProgressBar";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { FadeIn } from "@/components/motion/FadeIn";
 import { Link } from "react-router-dom";
+import { useUser } from "@clerk/clerk-react";
 
 export function DashboardContent() {
+  const { user } = useUser();
+  
   const handleNewInformation = () => {
     console.log("Add new information clicked");
   };
@@ -26,7 +29,7 @@ export function DashboardContent() {
               <div>
                 <FadeIn duration={0.5} delay={0.2}>
                   <h1 className="text-3xl lg:text-4xl font-bold font-heading text-card-foreground mb-3">
-                    Welcome, Jana. I'm here to help you.
+                    Welcome{user?.firstName ? `, ${user.firstName}` : ''}. I'm here to help you.
                   </h1>
                 </FadeIn>
                 <FadeIn duration={0.5} delay={0.4}>

@@ -1,6 +1,7 @@
 import { Icon, IconMap } from "@/components/ui/icon-library";
 import { LegacyGuardLogo } from "./LegacyGuardLogo";
 import { NavLink } from "react-router-dom";
+import { UserButton, useUser } from "@clerk/clerk-react";
 import {
   Sidebar,
   SidebarContent,
@@ -26,6 +27,7 @@ const navigationItems = [
 export function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
+  const { user } = useUser();
 
   const getNavClasses = ({ isActive }: { isActive: boolean }) =>
     `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 ${
@@ -74,19 +76,24 @@ export function AppSidebar() {
         {/* User Profile Section */}
         <div className="p-4 mt-auto border-t border-sidebar-accent/20">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-xs font-medium text-primary-foreground">
-              JN
-            </div>
-            {!collapsed && (
+            <UserButton 
+              afterSignOutUrl="/sign-in"
+              appearance={{
+                elements: {
+                  avatarBox: "w-8 h-8",
+                  userButtonTrigger: "focus:shadow-none",
+                }
+              }}
+            />
+            {!collapsed && user && (
               <div className="flex-1">
-                <p className="text-sm font-medium text-sidebar-text">Jana Nováková</p>
-                <p className="text-xs text-sidebar-muted">Personal Account</p>
+                <p className="text-sm font-medium text-sidebar-text">
+                  {user.firstName || user.username || 'User'}
+                </p>
+                <p className="text-xs text-sidebar-muted">
+                  {user.primaryEmailAddress?.emailAddress}
+                </p>
               </div>
-            )}
-            {!collapsed && (
-              <button className="p-1.5 rounded-md hover:bg-sidebar-accent/50 text-sidebar-muted hover:text-sidebar-text transition-colors">
-                <Icon name="settings" className="w-4 h-4" />
-              </button>
             )}
           </div>
         </div>
