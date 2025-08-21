@@ -9,7 +9,7 @@ import {
   Heart,
   Shield,
   CheckCircle,
-  Infinity,
+  Infinity as InfinityIcon,
   Plus,
   SidebarOpen,
   ArrowRight,
@@ -56,7 +56,7 @@ export {
   Heart,
   Shield,
   CheckCircle,
-  Infinity,
+  InfinityIcon,
   Plus,
   SidebarOpen,
   ArrowRight,
@@ -136,7 +136,7 @@ export const IconMap = {
   more: MoreHorizontal,
   
   // Legacy Specific
-  infinity: Infinity,
+  infinity: InfinityIcon,
   star: Star,
   home: Home,
   eye: Eye,

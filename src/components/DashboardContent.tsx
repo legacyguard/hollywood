@@ -4,6 +4,7 @@ import { PillarCard } from "@/components/PillarCard";
 import { ProgressBar } from "@/components/ProgressBar";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { FadeIn } from "@/components/motion/FadeIn";
+import { Link } from "react-router-dom";
 
 export function DashboardContent() {
   const handleNewInformation = () => {
@@ -62,6 +63,7 @@ export function DashboardContent() {
               actionButton={{
                 text: "View My Vault",
                 onClick: handleViewVault,
+                href: "/vault",
               }}
             >
               <div className="space-y-6">

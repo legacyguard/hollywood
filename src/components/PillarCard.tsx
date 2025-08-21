@@ -11,7 +11,8 @@ interface PillarCardProps {
   children?: React.ReactNode;
   actionButton?: {
     text: string;
-    onClick: () => void;
+    onClick?: () => void;
+    href?: string;
   };
 }
 
@@ -80,14 +81,23 @@ export function PillarCard({
 
         {/* Action Button */}
         {actionButton && !isLocked && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={actionButton.onClick}
-            className="border-primary/20 text-primary hover:bg-primary hover:text-primary-foreground"
-          >
-            {actionButton.text}
-          </Button>
+          actionButton.href ? (
+            <a
+              href={actionButton.href}
+              className="inline-flex items-center justify-center rounded-md border border-primary/20 px-3 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+            >
+              {actionButton.text}
+            </a>
+          ) : (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={actionButton.onClick}
+              className="border-primary/20 text-primary hover:bg-primary hover:text-primary-foreground"
+            >
+              {actionButton.text}
+            </Button>
+          )
         )}
       </div>
     </div>
