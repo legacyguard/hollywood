@@ -1,4 +1,5 @@
 import { LayoutDashboard, Vault, Users, Gift, Settings } from "lucide-react";
+import { LegacyGuardLogo } from "./LegacyGuardLogo";
 import { NavLink } from "react-router-dom";
 import {
   Sidebar,
@@ -35,9 +36,7 @@ export function AppSidebar() {
         {/* Logo Section */}
         <div className="p-6 border-b border-sidebar-accent/20">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-              <div className="w-5 h-5 bg-primary-foreground rounded-sm"></div>
-            </div>
+            <LegacyGuardLogo />
             {!collapsed && (
               <div className="flex flex-col">
                 <span className="text-sidebar-text font-semibold text-lg font-heading">
