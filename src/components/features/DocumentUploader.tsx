@@ -92,7 +92,29 @@ export const DocumentUploader = () => {
       
       setUploadProgress(90);
       
-      // Store metadata in localStorage for now (will be moved to database in Step 10)
+      // Save metadata to database
+      const { error: dbError } = await supabase
+        .from('documents')
+        .insert({
+          user_id: userId,
+          file_name: file.name,
+          file_path: filePath,
+          file_type: file.type,
+          file_size: file.size,
+          document_type: 'General',
+          encrypted_at: new Date().toISOString()
+        });
+
+      if (dbError) {
+        console.error('Database error:', dbError);
+        // Try to delete the uploaded file if database insert fails
+        await supabase.storage
+          .from('user_documents')
+          .remove([filePath]);
+        throw new Error('Failed to save document metadata');
+      }
+      
+      // Also store in localStorage as backup (optional)
       const documentsKey = `documents_${userId}`;
       const existingDocs = JSON.parse(localStorage.getItem(documentsKey) || '[]');
       existingDocs.push({
@@ -107,6 +129,9 @@ export const DocumentUploader = () => {
       setUploadProgress(100);
       
       toast.success('Document encrypted and uploaded successfully!');
+      
+      // Emit event to refresh document list
+      window.dispatchEvent(new CustomEvent('documentUploaded', { detail: { userId } }));
       
       // Reset form
       setFile(null);
