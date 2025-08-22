@@ -1,7 +1,7 @@
 -- Create documents table for storing document metadata
 CREATE TABLE IF NOT EXISTS public.documents (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  user_id TEXT NOT NULL,
+  user_id UUID DEFAULT auth.uid() NOT NULL,
   file_name TEXT NOT NULL,
   file_path TEXT NOT NULL,
   file_type TEXT,
@@ -10,33 +10,32 @@ CREATE TABLE IF NOT EXISTS public.documents (
   encrypted_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   expires_at TIMESTAMP WITH TIME ZONE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  -- PRIDANIE: Prepojenie na auth.users pre referenčnú integritu
+  CONSTRAINT documents_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
 );
 
 -- Add RLS (Row Level Security)
 ALTER TABLE public.documents ENABLE ROW LEVEL SECURITY;
 
--- Create policy to allow users to see only their own documents
+-- ZMENA: Politiky teraz porovnávajú UUID s UUID, nie text s textom
 CREATE POLICY "Users can view own documents" ON public.documents
-  FOR SELECT USING (auth.uid()::text = user_id);
+  FOR SELECT USING (auth.uid() = user_id);
 
--- Create policy to allow users to insert their own documents
 CREATE POLICY "Users can insert own documents" ON public.documents
-  FOR INSERT WITH CHECK (auth.uid()::text = user_id);
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
 
--- Create policy to allow users to update their own documents
 CREATE POLICY "Users can update own documents" ON public.documents
-  FOR UPDATE USING (auth.uid()::text = user_id);
+  FOR UPDATE USING (auth.uid() = user_id);
 
--- Create policy to allow users to delete their own documents
 CREATE POLICY "Users can delete own documents" ON public.documents
-  FOR DELETE USING (auth.uid()::text = user_id);
+  FOR DELETE USING (auth.uid() = user_id);
 
--- Create index for faster queries
+-- Indexy zostávajú rovnaké
 CREATE INDEX idx_documents_user_id ON public.documents(user_id);
 CREATE INDEX idx_documents_created_at ON public.documents(created_at DESC);
 
--- Add trigger to update updated_at timestamp
+-- Trigger zostáva rovnaký
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
 BEGIN

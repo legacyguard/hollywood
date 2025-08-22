@@ -34,10 +34,11 @@ export const DocumentList = () => {
       setIsLoading(true);
       setError(null);
       
+      // Supabase automaticky použije auth.uid() pre filtrovanie
+      // na základe aktuálne prihláseného používateľa
       const { data, error } = await supabase
         .from('documents')
         .select('*')
-        .eq('user_id', userId)
         .order('created_at', { ascending: false });
 
       if (error) {

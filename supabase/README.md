@@ -19,9 +19,13 @@ Run the SQL migration in `/supabase/migrations/001_create_documents_table.sql` i
 
 This creates:
 - `documents` table for storing document metadata
+- `user_id` field automatically populated via `auth.uid()` 
+- Foreign key relationship to `auth.users` table
 - Row Level Security (RLS) policies for user data isolation
 - Indexes for performance
 - Auto-update trigger for `updated_at` field
+
+**Important**: The `user_id` is automatically set from the authenticated user's session. No need to pass it from the frontend.
 
 ### 2. Create Storage Bucket
 In Supabase Dashboard:
