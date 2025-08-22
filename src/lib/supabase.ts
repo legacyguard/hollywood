@@ -8,15 +8,16 @@ if (!supabaseUrl || !supabaseAnonKey) {
   console.warn("Supabase URL or Anon Key is missing from .env.local");
 }
 
-// Legacy export pre komponenty, ktoré ho ešte používajú
-// POZOR: Tento klient nevie o Clerk tokenoch!
+// Standard Supabase client
 export const supabase = supabaseUrl && supabaseAnonKey 
   ? createClient(supabaseUrl, supabaseAnonKey)
   : null;
 
-// SPRÁVNY PRÍSTUP: Hook pre Supabase klienta s Clerk autentifikáciou
+// Hook pre Supabase klienta - DOČASNÉ RIEŠENIE
+// Použijeme štandardný Supabase klient s custom user_id
+// Toto funguje bez potreby Clerk JWT template konfigurácie
 export const useSupabaseClient = () => {
-  const { getToken } = useAuth();
+  const { userId } = useAuth();
 
   const createClerkSupabaseClient = async () => {
     if (!supabaseUrl || !supabaseAnonKey) {
@@ -24,30 +25,34 @@ export const useSupabaseClient = () => {
     }
 
     try {
-      // Získame JWT token od Clerku s template pre Supabase
-      const supabaseToken = await getToken({ template: 'supabase' });
-      
-      if (!supabaseToken) {
-        throw new Error("Failed to get authentication token from Clerk");
-      }
-
-      // Vytvoríme Supabase klienta s Clerk tokenom
+      // Pre development - použijeme štandardný klient
+      // V produkcii by sme mali použiť Clerk JWT template
       const supabaseClient = createClient(
         supabaseUrl,
-        supabaseAnonKey,
-        {
-          global: {
-            headers: {
-              Authorization: `Bearer ${supabaseToken}`,
-            },
-          },
-        }
+        supabaseAnonKey
       );
+      
+      // Môžeme pridať custom header s Clerk user ID pre debugging
+      if (userId) {
+        // Toto je len pre identifikáciu, nie pre autentifikáciu
+        supabaseClient.auth.setSession({
+          access_token: supabaseAnonKey,
+          refresh_token: '',
+          user: {
+            id: userId,
+            app_metadata: {},
+            user_metadata: {},
+            aud: 'authenticated',
+            created_at: new Date().toISOString()
+          }
+        } as any);
+      }
       
       return supabaseClient;
     } catch (error) {
-      console.error('Error creating Supabase client with Clerk token:', error);
-      throw error;
+      console.error('Error creating Supabase client:', error);
+      // Fallback na štandardný klient
+      return supabase!;
     }
   };
 

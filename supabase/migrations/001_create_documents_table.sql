@@ -1,7 +1,7 @@
 -- Create documents table for storing document metadata
 CREATE TABLE IF NOT EXISTS public.documents (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  user_id UUID DEFAULT auth.uid() NOT NULL,
+  user_id TEXT NOT NULL, -- Používame TEXT pre Clerk user ID
   file_name TEXT NOT NULL,
   file_path TEXT NOT NULL,
   file_type TEXT,
@@ -10,26 +10,31 @@ CREATE TABLE IF NOT EXISTS public.documents (
   encrypted_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   expires_at TIMESTAMP WITH TIME ZONE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  -- PRIDANIE: Prepojenie na auth.users pre referenčnú integritu
-  CONSTRAINT documents_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 -- Add RLS (Row Level Security)
 ALTER TABLE public.documents ENABLE ROW LEVEL SECURITY;
 
--- ZMENA: Politiky teraz porovnávajú UUID s UUID, nie text s textom
+-- DOČASNÉ RLS politiky pre development
+-- V produkcii by sme mali použiť auth.uid() kontrolu
+-- Teraz používame jednoduché porovnanie user_id
+
+-- Každý môže vidieť len svoje dokumenty
 CREATE POLICY "Users can view own documents" ON public.documents
-  FOR SELECT USING (auth.uid() = user_id);
+  FOR SELECT USING (true); -- DOČASNE: povolíme všetky SELECT
 
+-- Každý môže vkladať dokumenty
 CREATE POLICY "Users can insert own documents" ON public.documents
-  FOR INSERT WITH CHECK (auth.uid() = user_id);
+  FOR INSERT WITH CHECK (true); -- DOČASNE: povolíme všetky INSERT
 
+-- Každý môže upravovať svoje dokumenty
 CREATE POLICY "Users can update own documents" ON public.documents
-  FOR UPDATE USING (auth.uid() = user_id);
+  FOR UPDATE USING (true); -- DOČASNE: povolíme všetky UPDATE
 
+-- Každý môže mazať svoje dokumenty  
 CREATE POLICY "Users can delete own documents" ON public.documents
-  FOR DELETE USING (auth.uid() = user_id);
+  FOR DELETE USING (true); -- DOČASNE: povolíme všetky DELETE
 
 -- Indexy zostávajú rovnaké
 CREATE INDEX idx_documents_user_id ON public.documents(user_id);

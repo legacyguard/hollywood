@@ -94,13 +94,11 @@ export const DocumentUploader = () => {
       setUploadProgress(90);
       
       // Save metadata to database
-      // user_id sa doplní automaticky cez DEFAULT auth.uid() v databáze
-      // Supabase teraz má správny Clerk token v Authorization hlavičke
+      // Pre development posielame user_id explicitne
       const { error: dbError } = await supabase
         .from('documents')
         .insert({
-          // user_id už neposielame - databáza si ho doplní sama na základe
-          // session tokenu, ktorý je priložený k požiadavke
+          user_id: userId, // Explicitne posielame Clerk user ID
           file_name: file.name,
           file_path: filePath,
           file_type: file.type,
