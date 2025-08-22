@@ -3,6 +3,8 @@ import { FadeIn } from "@/components/motion/FadeIn";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon-library";
+import { DocumentUploader } from "@/components/features/DocumentUploader";
+import { DocumentList } from "@/components/features/DocumentList";
 
 export default function VaultPage() {
   return (
@@ -24,37 +26,13 @@ export default function VaultPage() {
         </header>
 
         <main className="max-w-7xl mx-auto px-6 lg:px-8 py-12">
-          <FadeIn duration={0.5} delay={0.6}>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {/* Document cards placeholder */}
-              <Card className="p-6 hover:shadow-lg transition-shadow">
-                <Icon name="documents" className="w-8 h-8 text-primary mb-4" />
-                <h3 className="font-semibold mb-2">Insurance Policies</h3>
-                <p className="text-sm text-muted-foreground">3 documents</p>
-              </Card>
-              
-              <Card className="p-6 hover:shadow-lg transition-shadow">
-                <Icon name="financial" className="w-8 h-8 text-primary mb-4" />
-                <h3 className="font-semibold mb-2">Financial Records</h3>
-                <p className="text-sm text-muted-foreground">5 documents</p>
-              </Card>
-              
-              <Card className="p-6 hover:shadow-lg transition-shadow">
-                <Icon name="protection" className="w-8 h-8 text-primary mb-4" />
-                <h3 className="font-semibold mb-2">Legal Documents</h3>
-                <p className="text-sm text-muted-foreground">2 documents</p>
-              </Card>
-            </div>
-          </FadeIn>
-
-          <FadeIn duration={0.5} delay={0.8}>
-            <div className="mt-12 text-center">
-              <Button size="lg" className="bg-primary hover:bg-primary-hover">
-                <Icon name="add" className="w-5 h-5 mr-2" />
-                Add New Document
-              </Button>
-            </div>
-          </FadeIn>
+          <div className="space-y-8">
+            {/* Upload Section */}
+            <DocumentUploader />
+            
+            {/* Documents List */}
+            <DocumentList />
+          </div>
         </main>
       </div>
     </DashboardLayout>
