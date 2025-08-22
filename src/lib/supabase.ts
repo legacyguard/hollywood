@@ -45,7 +45,7 @@ export const useSupabaseClient = () => {
             aud: 'authenticated',
             created_at: new Date().toISOString()
           }
-        } as any);
+        } as { access_token: string; refresh_token: string; user: { id: string; app_metadata: Record<string, unknown>; user_metadata: Record<string, unknown>; aud: string; created_at: string } });
       }
       
       return supabaseClient;
