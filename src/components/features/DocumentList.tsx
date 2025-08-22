@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '@clerk/clerk-react';
-import { supabase } from '@/lib/supabase';
+import { useSupabaseClient } from '@/lib/supabase';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon-library';
@@ -25,14 +25,18 @@ export const DocumentList = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { userId } = useAuth();
+  const createSupabaseClient = useSupabaseClient();
 
   // Fetch documents from database
   const fetchDocuments = async () => {
-    if (!userId || !supabase) return;
+    if (!userId) return;
 
     try {
       setIsLoading(true);
       setError(null);
+      
+      // Vytvoríme Supabase klienta s Clerk tokenom
+      const supabase = await createSupabaseClient();
       
       // Supabase automaticky použije auth.uid() pre filtrovanie
       // na základe aktuálne prihláseného používateľa

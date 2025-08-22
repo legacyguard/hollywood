@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useAuth, useUser } from '@clerk/clerk-react';
-import { supabase } from '@/lib/supabase';
+import { useSupabaseClient } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
@@ -21,6 +21,7 @@ export const DocumentUploader = () => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const { userId } = useAuth();
   const { user } = useUser();
+  const createSupabaseClient = useSupabaseClient();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -37,11 +38,8 @@ export const DocumentUploader = () => {
   };
 
   const handleUpload = async () => {
-    if (!file || !userId || !supabase) {
-      if (!supabase) {
-        toast.error('Storage service not configured. Please check settings.');
-        return;
-      }
+    if (!file || !userId) {
+      toast.error('Please select a file to upload.');
       return;
     }
 
@@ -49,6 +47,9 @@ export const DocumentUploader = () => {
     setUploadProgress(0);
 
     try {
+      // Vytvoríme Supabase klienta s Clerk tokenom
+      const supabase = await createSupabaseClient();
+      
       // Get user's encryption keys
       const keys = getUserEncryptionKeys(userId);
       
@@ -74,7 +75,7 @@ export const DocumentUploader = () => {
       
       setUploadProgress(70);
       
-      // Upload to Supabase Storage
+      // Upload to Supabase Storage s autentifikovaným klientom
       const { data, error } = await supabase.storage
         .from('user_documents')
         .upload(filePath, encryptedBlob, {
@@ -94,6 +95,7 @@ export const DocumentUploader = () => {
       
       // Save metadata to database
       // user_id sa doplní automaticky cez DEFAULT auth.uid() v databáze
+      // Supabase teraz má správny Clerk token v Authorization hlavičke
       const { error: dbError } = await supabase
         .from('documents')
         .insert({
