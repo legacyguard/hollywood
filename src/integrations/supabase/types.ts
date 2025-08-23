@@ -115,6 +115,48 @@ export interface Database {
           }
         ]
       }
+      documents: {
+        Row: {
+          id: string
+          user_id: string
+          file_name: string
+          file_path: string
+          file_type: string | null
+          file_size: number | null
+          document_type: string
+          expires_at: string | null
+          encrypted_at: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          file_name: string
+          file_path: string
+          file_type?: string | null
+          file_size?: number | null
+          document_type?: string
+          expires_at?: string | null
+          encrypted_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          file_name?: string
+          file_path?: string
+          file_type?: string | null
+          file_size?: number | null
+          document_type?: string
+          expires_at?: string | null
+          encrypted_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -139,6 +181,10 @@ export type ProfileUpdate = Database['public']['Tables']['profiles']['Update']
 export type LegacyItem = Database['public']['Tables']['legacy_items']['Row']
 export type LegacyItemInsert = Database['public']['Tables']['legacy_items']['Insert']
 export type LegacyItemUpdate = Database['public']['Tables']['legacy_items']['Update']
+
+export type Document = Database['public']['Tables']['documents']['Row']
+export type DocumentInsert = Database['public']['Tables']['documents']['Insert']
+export type DocumentUpdate = Database['public']['Tables']['documents']['Update']
 
 // Category and status types for better type safety
 export type LegacyItemCategory = LegacyItem['category']
