@@ -59,7 +59,7 @@ export const encryptFile = async (
   file: File, 
   publicKey: string, 
   secretKey: string
-): Promise<{ encryptedData: Uint8Array; nonce: Uint8Array; metadata: any }> => {
+): Promise<{ encryptedData: Uint8Array; nonce: Uint8Array; metadata: Record<string, string | number> }> => {
   // Read file as ArrayBuffer
   const arrayBuffer = await file.arrayBuffer();
   const fileData = new Uint8Array(arrayBuffer);

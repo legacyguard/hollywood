@@ -1,8 +1,13 @@
 {
   "permissions": {
     "allow": [
-      "Bash(claude doctor)"
+      "Bash(claude doctor)",
+      "Bash(npm run lint)",
+      "Bash(npx tsc:*)",
+      "Bash(npm install)",
+      "Bash(npm run build:*)"
     ],
-    "deny": []
+    "deny": [],
+    "ask": []
   }
 }

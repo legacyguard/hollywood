@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { useSupabaseClient } from '@/lib/supabase';
 import { Card } from '@/components/ui/card';
@@ -20,6 +20,22 @@ interface Document {
   expires_at?: string;
 }
 
+interface LocalStorageDocument {
+  id?: string | number;
+  fileName?: string;
+  file_name?: string;
+  fileType?: string;
+  file_type?: string;
+  fileSize?: number;
+  file_size?: number;
+  filePath?: string;
+  file_path?: string;
+  encryptedAt?: string;
+  encrypted_at?: string;
+  uploadedAt?: string;
+  created_at?: string;
+}
+
 export const DocumentList = () => {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -30,7 +46,7 @@ export const DocumentList = () => {
   const createSupabaseClient = useSupabaseClient();
 
   // Fetch documents from database
-  const fetchDocuments = async () => {
+  const fetchDocuments = useCallback(async () => {
     if (!userId) return;
 
     try {
@@ -52,9 +68,9 @@ export const DocumentList = () => {
       }
 
       setDocuments(data || []);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error fetching documents:', err);
-      setError(err.message);
+      setError(err instanceof Error ? err.message : 'Unknown error occurred');
       
       // Fallback to localStorage if database fails
       const documentsKey = `documents_${userId}`;
@@ -63,7 +79,7 @@ export const DocumentList = () => {
         try {
           const parsedDocs = JSON.parse(storedDocs);
           // Transform localStorage format to match database format
-          const transformedDocs = parsedDocs.map((doc: any) => ({
+          const transformedDocs = parsedDocs.map((doc: LocalStorageDocument) => ({
             id: doc.id?.toString() || '',
             file_name: doc.fileName || doc.file_name,
             file_type: doc.fileType || doc.file_type,
@@ -81,7 +97,7 @@ export const DocumentList = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [userId, createSupabaseClient]);
 
   // Download document function
   const handleDownload = async (doc: Document) => {
@@ -172,7 +188,7 @@ export const DocumentList = () => {
 
   useEffect(() => {
     fetchDocuments();
-  }, [userId]);
+  }, [userId, fetchDocuments]);
 
   // Refresh documents when a new upload is completed
   useEffect(() => {
@@ -195,7 +211,7 @@ export const DocumentList = () => {
       window.removeEventListener('storage', handleStorageChange);
       window.removeEventListener('documentUploaded', handleDocumentUploaded as EventListener);
     };
-  }, [userId]);
+  }, [userId, fetchDocuments]);
 
   const formatFileSize = (bytes: number) => {
     if (bytes < 1024) return `${bytes} B`;
@@ -270,7 +286,7 @@ export const DocumentList = () => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-primary/10 rounded-lg">
-                    <Icon name={getFileIcon(doc.file_type) as any} className="w-5 h-5 text-primary" />
+                    <Icon name={getFileIcon(doc.file_type) as 'documents' | 'eye'} className="w-5 h-5 text-primary" />
                   </div>
                   <div>
                     <p className="font-medium">{doc.file_name}</p>

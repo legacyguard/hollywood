@@ -140,9 +140,9 @@ export const DocumentUploader = () => {
       const fileInput = document.getElementById('file-input') as HTMLInputElement;
       if (fileInput) fileInput.value = '';
       
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error uploading file:', error);
-      toast.error(error.message || 'Failed to upload document. Please try again.');
+      toast.error(error instanceof Error ? error.message : 'Failed to upload document. Please try again.');
     } finally {
       setIsUploading(false);
       setUploadProgress(0);
