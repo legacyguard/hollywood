@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
 import { AppSidebar } from "@/components/AppSidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import SofiaChatV2 from "@/components/sofia/SofiaChatV2";
@@ -10,6 +11,17 @@ interface DashboardLayoutProps {
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   const [isSofiaOpen, setIsSofiaOpen] = useState(false);
+  const location = useLocation();
+
+  const getCurrentPage = () => {
+    const pathname = location.pathname;
+    if (pathname === '/') return 'dashboard';
+    if (pathname.startsWith('/vault')) return 'vault';
+    if (pathname.startsWith('/guardians')) return 'guardians';
+    if (pathname.startsWith('/legacy')) return 'legacy';
+    if (pathname.startsWith('/onboarding')) return 'onboarding';
+    return 'dashboard';
+  };
 
   const toggleSofia = () => {
     setIsSofiaOpen(!isSofiaOpen);
@@ -41,6 +53,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           isOpen={isSofiaOpen}
           onClose={() => setIsSofiaOpen(false)}
           variant="floating"
+          currentPage={getCurrentPage()}
         />
       </div>
     </SidebarProvider>

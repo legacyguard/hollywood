@@ -261,7 +261,7 @@ export function getStoredConversation(userId: string): SofiaMessage[] {
     if (!stored) return [];
     
     const parsed = JSON.parse(stored);
-    return parsed.map((msg: any) => ({
+    return parsed.map((msg: { timestamp: string }) => ({
       ...msg,
       timestamp: new Date(msg.timestamp)
     }));

@@ -13,7 +13,7 @@ export interface ActionButton {
   icon?: string;
   category: ActionCategory;
   cost: ActionCost;
-  payload?: any;
+  payload?: unknown;
   requiresConfirmation?: boolean;
   description?: string;
 }
@@ -32,7 +32,7 @@ export interface SofiaCommand {
   id: string;
   command: string;
   category: ActionCategory;
-  parameters?: Record<string, any>;
+  parameters?: Record<string, unknown>;
   context: SofiaContext;
   timestamp: Date;
 }
@@ -63,7 +63,7 @@ export interface SofiaMessage extends BaseSofiaMessage {
 // Command processing result
 export interface CommandResult {
   type: 'response' | 'navigation' | 'ui_action' | 'error' | 'text_response';
-  payload: any;
+  payload: unknown;
   cost: ActionCost;
   requiresFollowup?: boolean;
   followupActions?: ActionButton[];

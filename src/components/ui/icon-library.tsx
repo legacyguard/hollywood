@@ -47,6 +47,9 @@ import {
   Send,
   Loader2,
   Sparkles,
+  DollarSign,
+  CreditCard,
+  PieChart,
 } from "lucide-react";
 
 // Export all icons for direct use
@@ -99,6 +102,9 @@ export {
   Send,
   Loader2,
   Sparkles,
+  DollarSign,
+  CreditCard,
+  PieChart,
 };
 
 // Icon mapping for semantic usage
@@ -162,6 +168,12 @@ export const IconMap = {
   sparkles: Sparkles,
   shield: Shield,
   x: X,
+  
+  // Financial
+  financial: DollarSign,
+  money: DollarSign,
+  card: CreditCard,
+  chart: PieChart,
 } as const;
 
 // Type for icon names

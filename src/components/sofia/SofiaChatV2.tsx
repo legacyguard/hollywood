@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -16,18 +16,126 @@ import { sofiaRouter } from '@/lib/sofia-router';
 import { SofiaMessage, ActionButton, SofiaCommand, CommandResult, getContextualActions } from '@/lib/sofia-types';
 import SofiaActionButtons from './SofiaActionButtons';
 
+// Smart contextual suggestions based on current page
+const getContextualSuggestions = (currentPage: string): ActionButton[] => {
+  const suggestions: Record<string, ActionButton[]> = {
+    dashboard: [
+      {
+        id: 'suggest_next_step',
+        text: 'Suggest my next step',
+        icon: 'arrowRight',
+        category: 'ui_action',
+        cost: 'free',
+        payload: { action: 'show_progress' }
+      },
+      {
+        id: 'faq_security',
+        text: 'How secure is my data?',
+        icon: 'shield',
+        category: 'ai_query',
+        cost: 'low_cost'
+      },
+      {
+        id: 'getting_started',
+        text: 'How do I get started?',
+        icon: 'help',
+        category: 'ai_query',
+        cost: 'low_cost'
+      }
+    ],
+    vault: [
+      {
+        id: 'trigger_upload',
+        text: 'Help me add documents',
+        icon: 'upload',
+        category: 'ui_action',
+        cost: 'free',
+        payload: { action: 'open_uploader' }
+      },
+      {
+        id: 'faq_documents',
+        text: 'What documents should I upload?',
+        icon: 'help',
+        category: 'ai_query',
+        cost: 'low_cost'
+      },
+      {
+        id: 'upload_help',
+        text: 'How do I organize my files?',
+        icon: 'info',
+        category: 'ai_query',
+        cost: 'low_cost'
+      }
+    ],
+    guardians: [
+      {
+        id: 'add_guardian_help',
+        text: 'How do I add a guardian?',
+        icon: 'help',
+        category: 'ai_query',
+        cost: 'low_cost'
+      },
+      {
+        id: 'faq_guardians',
+        text: 'What are guardians?',
+        icon: 'info',
+        category: 'ai_query',
+        cost: 'low_cost'
+      },
+      {
+        id: 'navigate_vault',
+        text: 'Show me my documents',
+        icon: 'vault',
+        category: 'navigation',
+        cost: 'free',
+        payload: { route: '/vault' }
+      }
+    ],
+    legacy: [
+      {
+        id: 'generate_legacy_letter',
+        text: 'Help me write a personal message',
+        icon: 'heart',
+        category: 'premium_feature',
+        cost: 'premium',
+        requiresConfirmation: true,
+        description: 'Create a heartfelt message for your loved ones'
+      },
+      {
+        id: 'faq_documents',
+        text: 'What legal documents do I need?',
+        icon: 'help',
+        category: 'ai_query',
+        cost: 'low_cost'
+      },
+      {
+        id: 'navigate_vault',
+        text: 'Review my documents',
+        icon: 'vault',
+        category: 'navigation',
+        cost: 'free',
+        payload: { route: '/vault' }
+      }
+    ]
+  };
+
+  return suggestions[currentPage] || suggestions.dashboard;
+};
+
 interface SofiaChatV2Props {
   isOpen?: boolean;
   onClose?: () => void;
   className?: string;
   variant?: 'floating' | 'embedded' | 'fullscreen';
+  currentPage?: string;
 }
 
 const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
   isOpen = false,
   onClose,
   className = '',
-  variant = 'floating'
+  variant = 'floating',
+  currentPage = 'dashboard'
 }) => {
   const { userId } = useAuth();
   const navigate = useNavigate();
@@ -44,12 +152,15 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
     setTyping,
   } = useSofiaStore();
 
-  // Auto-scroll to bottom when new messages arrive
+  // Auto-scroll to bottom when new messages arrive with smooth scrolling
   useEffect(() => {
     if (scrollAreaRef.current) {
       const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
       if (scrollContainer) {
-        scrollContainer.scrollTop = scrollContainer.scrollHeight;
+        scrollContainer.scrollTo({
+          top: scrollContainer.scrollHeight,
+          behavior: 'smooth'
+        });
       }
     }
   }, [messages, isTyping]);
@@ -59,9 +170,9 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
     if (messages.length === 0 && context && isOpen) {
       initializeGuidedDialog();
     }
-  }, [isOpen, messages.length, context]);
+  }, [isOpen, messages.length, context, initializeGuidedDialog]);
 
-  const initializeGuidedDialog = async () => {
+  const initializeGuidedDialog = useCallback(async () => {
     if (!context || !userId) return;
 
     setIsProcessing(true);
@@ -87,7 +198,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
           role: 'assistant',
           content: result.payload.message || getDefaultWelcome(),
           timestamp: new Date(),
-          actions: result.payload.actions || getContextualActions(context),
+          actions: result.payload.actions || getContextualSuggestions(currentPage),
           responseType: 'welcome',
           metadata: {
             cost: result.cost,
@@ -114,7 +225,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
       setTyping(false);
       setIsProcessing(false);
     }
-  };
+  }, [context, userId, addMessage, currentPage, getDefaultWelcome, setTyping]);
 
   const handleActionClick = async (action: ActionButton) => {
     if (!context || !userId) return;
@@ -331,24 +442,24 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
 
   const showConfirmation = async (action: ActionButton): Promise<boolean> => {
     return new Promise((resolve) => {
-      const confirmMessage = `${action.text}\n\n${action.description}\n\nPokračovať?`;
+      const confirmMessage = `${action.text}\n\n${action.description}\n\nContinue?`;
       const confirmed = window.confirm(confirmMessage);
       resolve(confirmed);
     });
   };
 
   const getDefaultWelcome = (): string => {
-    if (!context) return 'Dobrý deň! Som Sofia a som tu, aby som vám pomohla.';
+    if (!context) return 'Hello! I am Sofia and I am here to help you.';
     
-    const name = context.userName || 'tam';
-    return `Dobrý deň, ${name}! Som Sofia a som tu, aby som vám pomohla chrániť vašu rodinu. Ako vám môžem dnes pomôcť?`;
+    const name = context.userName || 'there';
+    return `Hello, ${name}! I am Sofia and I am here to help you protect your family. How can I help you today?`;
   };
 
   const getRouteName = (route: string): string => {
     const routeNames: Record<string, string> = {
-      '/vault': 'váš trezor',
-      '/guardians': 'správu strážcov',
-      '/legacy': 'vytváranie závetu',
+      '/vault': 'your vault',
+      '/guardians': 'guardian management',
+      '/legacy': 'will creation',
       '/': 'dashboard'
     };
     return routeNames[route] || route;
@@ -368,32 +479,43 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
         </div>
       )}
       
-      <div className={`max-w-[85%] ${message.role === 'user' ? 'order-first' : ''}`}>
+      <div className={`max-w-[85%] ${message.role === 'user' ? 'self-end' : 'self-start'}`}>
         <div
-          className={`p-4 rounded-lg ${
+          className={`p-4 rounded-lg shadow-sm border ${
             message.role === 'user'
-              ? 'bg-primary text-primary-foreground ml-auto'
-              : 'bg-muted text-muted-foreground'
+              ? 'bg-primary text-primary-foreground border-primary/20 rounded-br-sm'
+              : 'bg-background text-foreground border-border rounded-bl-sm'
           }`}
         >
           {message.role === 'assistant' ? (
-            <div className="prose prose-sm dark:prose-invert max-w-none [&>*:last-child]:mb-0">
-              <ReactMarkdown>
+            <div className="prose prose-sm dark:prose-invert max-w-none [&>*:last-child]:mb-0 [&>*:first-child]:mt-0">
+              <ReactMarkdown
+                components={{
+                  p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+                  ul: ({ children }) => <ul className="mb-2 last:mb-0 pl-4">{children}</ul>,
+                  ol: ({ children }) => <ol className="mb-2 last:mb-0 pl-4">{children}</ol>,
+                  li: ({ children }) => <li className="mb-1 last:mb-0">{children}</li>,
+                  strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+                  em: ({ children }) => <em className="italic">{children}</em>,
+                }}
+              >
                 {message.content}
               </ReactMarkdown>
             </div>
           ) : (
-            <p className="text-sm">{message.content}</p>
+            <p className="text-sm leading-relaxed">{message.content}</p>
           )}
         </div>
         
         {/* Action Buttons for assistant messages */}
         {message.role === 'assistant' && message.actions && (
-          <SofiaActionButtons
-            actions={message.actions}
-            onActionClick={handleActionClick}
-            isDisabled={isProcessing}
-          />
+          <div className="mt-3">
+            <SofiaActionButtons
+              actions={message.actions}
+              onActionClick={handleActionClick}
+              isDisabled={isProcessing}
+            />
+          </div>
         )}
         
         <div className={`text-xs text-muted-foreground mt-2 flex items-center gap-2 ${
@@ -413,8 +535,8 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
       </div>
       
       {message.role === 'user' && (
-        <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center flex-shrink-0">
-          <Icon name="user" className="w-4 h-4 text-secondary-foreground" />
+        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+          <Icon name="user" className="w-4 h-4 text-primary" />
         </div>
       )}
     </motion.div>

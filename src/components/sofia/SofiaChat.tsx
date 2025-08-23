@@ -49,11 +49,21 @@ const SofiaChat: React.FC<SofiaChatProps> = ({
   // Initialize with welcome message if no messages exist
   useEffect(() => {
     if (messages.length === 0 && context && isOpen) {
-      const welcomeMessage = createSofiaMessage(
-        'assistant',
-        sofiaAI.getContextualHelp('dashboard', context)
-      );
-      addMessage(welcomeMessage);
+      const initializeWelcome = async () => {
+        try {
+          const helpText = await sofiaAI.getContextualHelp('dashboard', context);
+          const welcomeMessage = createSofiaMessage('assistant', helpText);
+          addMessage(welcomeMessage);
+        } catch (error) {
+          console.error('Failed to get contextual help:', error);
+          const fallbackMessage = createSofiaMessage(
+            'assistant', 
+            'Hello! I am Sofia, your digital assistant. How can I help you today?'
+          );
+          addMessage(fallbackMessage);
+        }
+      };
+      initializeWelcome();
     }
   }, [isOpen, messages.length, context, addMessage]);
 
