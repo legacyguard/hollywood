@@ -6,6 +6,8 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { FadeIn } from "@/components/motion/FadeIn";
 import { Link } from "react-router-dom";
 import { useUser } from "@clerk/clerk-react";
+import { DashboardStats } from "@/components/features/DashboardStats";
+import { LegacyChecklist } from "@/components/features/LegacyChecklist";
 
 export function DashboardContent() {
   const { user } = useUser();
@@ -55,6 +57,22 @@ export function DashboardContent() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-6 lg:px-8 py-12">
+        {/* Dashboard Stats */}
+        <FadeIn duration={0.5} delay={0.6}>
+          <DashboardStats className="mb-12" />
+        </FadeIn>
+
+        {/* Progress Checklist */}
+        <FadeIn duration={0.5} delay={0.7}>
+          <LegacyChecklist 
+            className="mb-12 mx-auto" 
+            onItemClick={(item) => {
+              console.log('Clicked item:', item.key);
+              // Handle navigation based on item.pillar or item.key
+            }}
+          />
+        </FadeIn>
+
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Pillar 1: TODAY - Your Organized Life (Active) */}
           <FadeIn duration={0.5} delay={0.8}>
