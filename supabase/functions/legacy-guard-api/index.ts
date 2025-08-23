@@ -55,7 +55,7 @@ serve(async (req) => {
     }
 
     switch (action) {
-      case 'create_legacy_item':
+      case 'create_legacy_item': {
         if (!data || typeof data !== 'object') {
           return new Response(
             JSON.stringify({ error: 'Item data is required' }),
@@ -90,8 +90,9 @@ serve(async (req) => {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
           }
         )
+      }
 
-      case 'get_legacy_items':
+      case 'get_legacy_items': {
         if (!data?.user_id) {
           return new Response(
             JSON.stringify({ error: 'user_id is required' }),
@@ -126,8 +127,9 @@ serve(async (req) => {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
           }
         )
+      }
 
-      case 'update_legacy_item':
+      case 'update_legacy_item': {
         if (!data?.id) {
           return new Response(
             JSON.stringify({ error: 'Item ID is required' }),
@@ -166,8 +168,9 @@ serve(async (req) => {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
           }
         )
+      }
 
-      case 'delete_legacy_item':
+      case 'delete_legacy_item': {
         if (!data?.id) {
           return new Response(
             JSON.stringify({ error: 'Item ID is required' }),
@@ -201,8 +204,9 @@ serve(async (req) => {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
           }
         )
+      }
 
-      case 'get_user_progress':
+      case 'get_user_progress': {
         if (!data?.user_id) {
           return new Response(
             JSON.stringify({ error: 'user_id is required' }),
@@ -246,8 +250,9 @@ serve(async (req) => {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
           }
         )
+      }
 
-      default:
+      default: {
         return new Response(
           JSON.stringify({ error: 'Invalid action' }),
           { 
@@ -255,6 +260,7 @@ serve(async (req) => {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
           }
         )
+      }
     }
 
   } catch (error) {
