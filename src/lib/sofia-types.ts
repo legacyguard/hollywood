@@ -62,7 +62,7 @@ export interface SofiaMessage extends BaseSofiaMessage {
 
 // Command processing result
 export interface CommandResult {
-  type: 'response' | 'navigation' | 'ui_action' | 'error';
+  type: 'response' | 'navigation' | 'ui_action' | 'error' | 'text_response';
   payload: any;
   cost: ActionCost;
   requiresFollowup?: boolean;

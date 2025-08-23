@@ -145,7 +145,7 @@ export class SofiaRouter {
       default:
         return {
           type: 'error',
-          payload: { message: 'Neznáma UI akcia.' },
+          payload: { message: 'Unknown UI action.' },
           cost: 'free'
         };
     }
@@ -155,7 +155,7 @@ export class SofiaRouter {
    * Handle knowledge base queries (LOW COST)
    */
   private handleKnowledgeBaseQuery(command: string, context: SofiaContext): CommandResult {
-    const answer = sofiaKnowledgeBase.getAnswer(command, context);
+    const answer = sofiaKnowledgeBase.getById(command);
     
     if (!answer) {
       return {
@@ -185,7 +185,7 @@ export class SofiaRouter {
     const suggestions = this.generateNextSteps(context);
     const primarySuggestion = suggestions[0];
     
-    const message = `Na základe vášho pokroku (${context.completionPercentage}%) odporúčam: ${primarySuggestion.description}`;
+    const message = `Based on your progress (${context.completionPercentage}%) I recommend: ${primarySuggestion.description}`;
     
     const actions: ActionButton[] = suggestions.map(suggestion => ({
       id: suggestion.actionId,
@@ -208,46 +208,55 @@ export class SofiaRouter {
    */
   private async handlePremiumFeature(command: string, context: SofiaContext): Promise<CommandResult> {
     const prompts: Record<string, string> = {
-      'generate_legacy_letter': `Pomôžte mi napísať osobný odkaz pre moju rodinu. Mojim najbližším chcem zanechať slová lásky a povzbudenia.`,
-      'generate_financial_summary': `Vytvorte mi súhrn mojich financií a majetku, ktorý pomôže mojej rodine v núdzi. Zahrnite praktické kroky a dôležité kontakty.`,
+      'generate_legacy_letter': `Help me write a personal message for my family. I want to leave words of love and encouragement for my loved ones.`,
+      'generate_financial_summary': `Create a summary of my finances and assets that will help my family in need. Include practical steps and important contacts.`,
     };
     
     const prompt = prompts[command];
     if (!prompt) {
       return {
         type: 'error',
-        payload: { message: 'Neznáma prémiová funkcia.' },
+        payload: { message: 'Unknown premium feature.' },
         cost: 'premium'
       };
     }
     
-    // Call AI API for premium generation
-    const apiRequest = createSofiaAPIRequest(prompt, context, 'premium_generation');
-    const apiResponse = await sofiaAPI.processPremiumGeneration(apiRequest);
-    
-    if (apiResponse.success && apiResponse.response) {
+    try {
+      // Call AI API for premium generation
+      const apiRequest = createSofiaAPIRequest(prompt, context, 'premium_generation');
+      const apiResponse = await sofiaAPI.processPremiumGeneration(apiRequest);
+      
+      if (apiResponse.success && apiResponse.response) {
+        return {
+          type: 'response',
+          payload: {
+            message: apiResponse.response,
+            actions: getContextualActions(context)
+          },
+          cost: 'premium'
+        };
+      } else {
+        return {
+          type: 'response',
+          payload: {
+            message: apiResponse.error || 'Unfortunately, premium features are currently unavailable. Please try again later.',
+            actions: [{
+              id: 'retry_premium',
+              text: '🔄 Try again',
+              icon: 'sparkles',
+              category: 'premium_feature',
+              cost: 'premium',
+              payload: { command }
+            }]
+          },
+          cost: 'premium'
+        };
+      }
+    } catch (error) {
+      console.error('[Sofia Router] Premium feature error:', error);
       return {
-        type: 'response',
-        payload: {
-          message: apiResponse.response,
-          actions: getContextualActions(context)
-        },
-        cost: 'premium'
-      };
-    } else {
-      return {
-        type: 'response',
-        payload: {
-          message: apiResponse.error || 'Bohužiaľ, prémiové funkcie nie sú momentálne dostupné. Skúste to neskôr.',
-          actions: [{
-            id: 'retry_premium',
-            text: '🔄 Skúsiť znova',
-            icon: 'sparkles',
-            category: 'premium_feature',
-            cost: 'premium',
-            payload: { command }
-          }]
-        },
+        type: 'text_response',
+        payload: 'I apologize, there was an error processing your premium request. Please check your connection and try again.',
         cost: 'premium'
       };
     }
@@ -264,24 +273,24 @@ export class SofiaRouter {
       return this.handleUIActionCommand('trigger_upload', context);
     }
     
-    if (lowerInput.includes('trezor') || lowerInput.includes('vault')) {
+    if (lowerInput.includes('vault') || lowerInput.includes('documents') || lowerInput.includes('storage')) {
       return this.handleNavigationCommand('navigate_vault', context);
     }
     
-    if (lowerInput.includes('guardian') || lowerInput.includes('protector')) {
+    if (lowerInput.includes('guardian') || lowerInput.includes('protector') || lowerInput.includes('trusted')) {
       return this.handleNavigationCommand('navigate_guardians', context);
     }
     
-    if (lowerInput.includes('závet') || lowerInput.includes('legacy')) {
+    if (lowerInput.includes('legacy') || lowerInput.includes('will') || lowerInput.includes('testament')) {
       return this.handleNavigationCommand('navigate_legacy', context);
     }
     
-    if (lowerInput.includes('pomoc') || lowerInput.includes('help') || lowerInput.includes('čo')) {
+    if (lowerInput.includes('help') || lowerInput.includes('what') || lowerInput.includes('how')) {
       return this.handleNextStepSuggestion(context);
     }
     
     // Security/FAQ keywords (LOW COST)
-    if (lowerInput.includes('bezpečnosť') || lowerInput.includes('šifrovanie') || lowerInput.includes('security')) {
+    if (lowerInput.includes('security') || lowerInput.includes('encryption') || lowerInput.includes('safe')) {
       return this.handleKnowledgeBaseQuery('faq_security', context);
     }
     
@@ -307,6 +316,11 @@ export class SofiaRouter {
         }
       } catch (error) {
         console.warn('[Sofia Router] AI interpretation failed:', error);
+        return {
+          type: 'text_response',
+          payload: "I apologize, I'm having trouble understanding your question right now. Please try again or use one of the suggested options.",
+          cost: 'free'
+        };
       }
     }
     
@@ -330,7 +344,7 @@ export class SofiaRouter {
     if (context.documentCount < 3) {
       steps.push({
         title: '📄 Add basic documents',
-        description: 'Nahrajte občiansky preukaz, pas a kartičku poistenca',
+        description: 'Upload your ID, passport, and insurance card',
         actionId: 'trigger_upload',
         icon: 'upload',
         category: 'ui_action' as const,
@@ -341,7 +355,7 @@ export class SofiaRouter {
     if (context.documentCount >= 3 && context.guardianCount === 0) {
       steps.push({
         title: '👥 Add first guardian',
-        description: 'Určte dôveryhodnú osobu, ktorá vám pomôže v núdzi',
+        description: 'Identify a trusted person who will help your family in emergencies',
         actionId: 'navigate_guardians',
         icon: 'guardians',
         category: 'navigation' as const,
@@ -351,8 +365,8 @@ export class SofiaRouter {
     
     if (context.completionPercentage > 50) {
       steps.push({
-        title: '📜 Vytvoriť závet',
-        description: 'Zabezpečte svoju rodinu vytvorením základného závetu',
+        title: '📜 Create will',
+        description: 'Secure your family by creating a basic will',
         actionId: 'navigate_legacy', 
         icon: 'legacy',
         category: 'navigation' as const,
@@ -363,8 +377,8 @@ export class SofiaRouter {
     // Always have a fallback suggestion
     if (steps.length === 0) {
       steps.push({
-        title: '🔍 Preskúmať možnosti',
-        description: 'Prezrieme si, čo môžete ešte vylepšiť',
+        title: '🔍 Explore options',
+        description: 'Let\'s see what else you can improve',
         actionId: 'show_progress',
         icon: 'info',
         category: 'ui_action' as const,
@@ -384,21 +398,21 @@ export class SofiaRouter {
     const name = userName || 'tam';
     
     if (completionPercentage < 20) {
-      return `${greeting}, ${name}! Vitajte v LegacyGuard. Som Sofia a som tu, aby som vám pomohla chrániť vašu rodinu. Poďme začať!`;
+      return `${greeting}, ${name}! Welcome to LegacyGuard. I am Sofia and I am here to help you protect your family. Let's get started!`;
     }
     
     if (completionPercentage < 60) {
       return `${greeting}, ${name}! I see you've already secured ${documentCount} documents. Great work! How can I help you today?`;
     }
     
-    return `${greeting}, ${name}! Máte už ${completionPercentage}% hotovo - to je fantastické! Vaša rodina je čím ďalej, tým viac chránená.`;
+    return `${greeting}, ${name}! You already have ${completionPercentage}% complete - that's fantastic! Your family is increasingly protected.`;
   }
 
   private getTimeBasedGreeting(): string {
     const hour = new Date().getHours();
-    if (hour < 12) return 'Dobré ráno';
-    if (hour < 18) return 'Dobrý deň'; 
-    return 'Dobrý večer';
+    if (hour < 12) return 'Good morning';
+    if (hour < 18) return 'Good afternoon'; 
+    return 'Good evening';
   }
 }
 

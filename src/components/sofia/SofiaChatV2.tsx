@@ -13,7 +13,7 @@ import { toast } from 'sonner';
 
 // New guided dialog imports
 import { sofiaRouter } from '@/lib/sofia-router';
-import { SofiaMessage, ActionButton, SofiaCommand, getContextualActions } from '@/lib/sofia-types';
+import { SofiaMessage, ActionButton, SofiaCommand, CommandResult, getContextualActions } from '@/lib/sofia-types';
 import SofiaActionButtons from './SofiaActionButtons';
 
 interface SofiaChatV2Props {
@@ -40,6 +40,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
     isTyping,
     context,
     addMessage,
+    updateMessages,
     setTyping,
   } = useSofiaStore();
 
@@ -126,6 +127,11 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
       timestamp: new Date(),
       metadata: { cost: 'free', source: 'predefined' }
     };
+    
+    // **FIX: Remove actions from the previous message to prevent multiple clicks**
+    updateMessages(prevMessages => prevMessages.map(msg => ({ ...msg, actions: undefined })));
+    
+    // Add the user message
     addMessage(userMessage);
 
     // Show confirmation for premium actions
@@ -175,7 +181,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
     }
   };
 
-  const handleCommandResult = async (result: any, action: ActionButton) => {
+  const handleCommandResult = async (result: CommandResult, action: ActionButton) => {
     switch (result.type) {
       case 'navigation':
         // Navigate to route
@@ -187,7 +193,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
           const navMessage: SofiaMessage = {
             id: crypto.randomUUID(),
             role: 'assistant',
-            content: `Presmerúvam vás na ${getRouteName(result.payload.route)}...`,
+            content: `Redirecting you to ${getRouteName(result.payload.route)}...`,
             timestamp: new Date(),
             responseType: 'confirmation',
             metadata: { cost: result.cost, source: 'predefined' }
@@ -220,12 +226,28 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
       case 'error':
         handleError(result.payload.message);
         break;
+        
+      case 'text_response':
+        // Handle simple text responses with actions
+        setTimeout(() => {
+          const responseMessage: SofiaMessage = {
+            id: crypto.randomUUID(),
+            role: 'assistant',
+            content: result.payload,
+            timestamp: new Date(),
+            actions: context ? getContextualActions(context) : [],
+            responseType: 'information',
+            metadata: { cost: result.cost || 'low_cost', source: 'ai_generated' }
+          };
+          addMessage(responseMessage);
+        }, 800);
+        break;
     }
   };
 
-  const handleUIAction = (payload: any) => {
+  const handleUIAction = (payload: { action: string; message?: string; data?: unknown }) => {
     switch (payload.action) {
-      case 'open_uploader':
+      case 'open_uploader': {
         // Trigger document uploader
         const event = new CustomEvent('sofia:open_uploader', { detail: payload });
         window.dispatchEvent(event);
@@ -233,19 +255,21 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
         const uploaderMessage: SofiaMessage = {
           id: crypto.randomUUID(),
           role: 'assistant',
-          content: payload.message || 'Otváram nahrávač dokumentov...',
+          content: payload.message || 'Opening document uploader...',
           timestamp: new Date(),
           responseType: 'confirmation',
           metadata: { cost: 'free', source: 'predefined' }
         };
         addMessage(uploaderMessage);
         break;
+      }
 
-      case 'show_progress_modal':
+      case 'show_progress_modal': {
         // Show progress modal
         const progressEvent = new CustomEvent('sofia:show_progress', { detail: payload.data });
         window.dispatchEvent(progressEvent);
         break;
+      }
 
       default:
         console.warn('[Sofia] Unknown UI action:', payload.action);
@@ -430,7 +454,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
           </div>
           <div>
             <h3 className="font-semibold">Sofia</h3>
-            <p className="text-sm text-muted-foreground">Váš digitálny sprievodca</p>
+            <p className="text-sm text-muted-foreground">Your digital guide</p>
           </div>
         </div>
         
@@ -462,7 +486,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
           <Input
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            placeholder="Alebo napíšte vlastnú otázku..."
+            placeholder="Or type your own question..."
             disabled={isProcessing}
             className="flex-1 text-sm"
           />
@@ -481,7 +505,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
         </form>
         
         <p className="text-xs text-muted-foreground mt-2 text-center">
-          Tip: Použite tlačidlá hore pre najrýchlejšie odpovede 🚀
+          Tip: Use the buttons above for the fastest responses 🚀
         </p>
       </div>
     </div>

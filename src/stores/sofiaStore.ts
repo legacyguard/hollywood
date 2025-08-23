@@ -13,6 +13,8 @@ interface SofiaStore {
   
   // Actions
   addMessage: (message: SofiaMessage) => void;
+  setMessages: (messages: SofiaMessage[]) => void;
+  updateMessages: (updateFn: (messages: SofiaMessage[]) => SofiaMessage[]) => void;
   setTyping: (typing: boolean) => void;
   toggleVisibility: () => void;
   showSofia: () => void;
@@ -39,6 +41,16 @@ export const useSofiaStore = create<SofiaStore>()(
       addMessage: (message: SofiaMessage) => {
         set((state) => ({
           messages: [...state.messages, message]
+        }));
+      },
+
+      setMessages: (messages: SofiaMessage[]) => {
+        set({ messages });
+      },
+
+      updateMessages: (updateFn: (messages: SofiaMessage[]) => SofiaMessage[]) => {
+        set((state) => ({
+          messages: updateFn(state.messages)
         }));
       },
 

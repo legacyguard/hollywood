@@ -273,7 +273,15 @@ serve(async (req) => {
 
         try {
           const openai = new OpenAI({ apiKey: openaiApiKey })
-          const systemPrompt = `You are Sofia, a concise AI assistant for LegacyGuard. Give brief, helpful answers in English. User context: ${data.context.userName || 'user'} has ${data.context.documentCount} documents, ${data.context.guardianCount} guardians, ${data.context.completionPercentage}% complete.`
+          
+          // Get relevant context from knowledge base
+          const knowledgeContext = getKnowledgeBaseContext(data.prompt)
+          
+          const systemPrompt = `You are Sofia, a warm AI assistant for LegacyGuard. Answer the user's question based ONLY on the following context. Do not add information that is not in the context. If the context doesn't contain relevant information, say so politely and suggest they try one of the suggested options.
+
+CONTEXT: "${knowledgeContext}"
+
+USER CONTEXT: ${data.context.userName || 'user'} has ${data.context.documentCount} documents, ${data.context.guardianCount} guardians, ${data.context.completionPercentage}% complete.`
           
           const completion = await openai.chat.completions.create({
             model: 'gpt-3.5-turbo',
@@ -281,7 +289,7 @@ serve(async (req) => {
               { role: 'system', content: systemPrompt },
               { role: 'user', content: data.prompt }
             ],
-            max_tokens: 150,
+            max_tokens: 200,
             temperature: 0.3
           })
 
@@ -410,6 +418,79 @@ serve(async (req) => {
     )
   }
 })
+
+// Knowledge Base for Sofia AI Assistant
+const SOFIA_KNOWLEDGE_BASE: Record<string, string> = {
+  'faq_security': `🔒 Your data is maximally secure:
+• End-to-End encryption: All documents are encrypted directly in your browser before upload
+• Zero-Knowledge: We cannot see the content of your files  
+• Personal key: Only you have access to the decryption key
+• European servers: Data is stored in compliance with GDPR
+Your documents are safer than in a bank!`,
+
+  'technical_security': `🛡️ Technical security of LegacyGuard:
+Encryption: AES-256 in GCM mode for files, TweetNaCl for keys and metadata, unique nonce for each file
+Infrastructure: Supabase with Row Level Security, Clerk authentication, EU servers (GDPR compliant)
+Key Management: Client-side key generation, PBKDF2 key derivation, secure key storage in IndexedDB`,
+
+  'faq_guardians': `👥 Guardians are your Circle of Trust:
+• Trusted people who can help your family in emergencies
+• Secure access to your important documents when needed
+• Peace of mind knowing your family is protected
+• Flexible permissions - you control what each guardian can see`,
+
+  'faq_documents': `📄 Essential documents for family protection:
+Identity & Legal: Passport, driver's license, birth certificate, marriage certificate, will, power of attorney
+Financial: Bank account info, insurance policies, investment accounts, mortgage documents
+Medical: Medical records, prescriptions, health insurance cards, emergency contacts
+Digital: Password manager export, digital asset information, social media accounts`,
+
+  'faq_pricing': `💰 LegacyGuard Pricing:
+Free Plan: Up to 10 documents, 2 guardians, basic security
+Family Plan - $9.99/month: Unlimited documents, unlimited guardians, premium AI features, advanced legacy tools
+Business Plan - $29.99/month: Everything in Family, multi-user management, advanced permissions, audit logs`,
+
+  'security': 'Your data is protected with end-to-end encryption, zero-knowledge architecture, and European GDPR-compliant servers.',
+  'guardians': 'Guardians are trusted people who can help your family access important documents in emergencies.',
+  'documents': 'Upload essential documents like ID, passport, insurance, bank info, and medical records to protect your family.',
+  'pricing': 'LegacyGuard offers free and paid plans. Free includes 10 documents and 2 guardians. Family plan is $9.99/month.',
+  'help': 'I can help you upload documents, add guardians, create your will, or answer questions about security and features.',
+  'upload': 'Go to your Vault and click "Add Document" to upload files. All documents are automatically encrypted.',
+  'vault': 'Your Vault is where all important documents are stored, safely encrypted and accessible only to you and your guardians.',
+  'emergency': 'In emergencies, your guardians can access shared documents, get emergency contacts, and follow your instructions to help your family.',
+  'legacy': 'Create your digital legacy by writing messages, recording videos, and setting up your will to guide your family.',
+  'will': 'LegacyGuard helps you create a basic will through a simple 7-step process focused on protecting your loved ones.'
+}
+
+function getKnowledgeBaseContext(prompt: string): string {
+  const lowerPrompt = prompt.toLowerCase()
+  
+  // Direct FAQ matches
+  for (const [key, content] of Object.entries(SOFIA_KNOWLEDGE_BASE)) {
+    if (lowerPrompt.includes(key.replace('faq_', '').replace('_', ' '))) {
+      return content
+    }
+  }
+  
+  // Keyword matching
+  const keywords = [
+    'security', 'encryption', 'safe', 'protect', 'gdpr',
+    'guardians', 'trust', 'family', 'emergency', 'access',
+    'documents', 'upload', 'vault', 'files', 'storage',
+    'pricing', 'cost', 'plan', 'free', 'premium',
+    'help', 'how', 'what', 'guide', 'start',
+    'legacy', 'will', 'testament', 'inheritance'
+  ]
+  
+  for (const keyword of keywords) {
+    if (lowerPrompt.includes(keyword) && SOFIA_KNOWLEDGE_BASE[keyword]) {
+      return SOFIA_KNOWLEDGE_BASE[keyword]
+    }
+  }
+  
+  // Fallback - provide general help
+  return SOFIA_KNOWLEDGE_BASE['help'] || 'I can help you with document management, guardian setup, security questions, and legacy planning for LegacyGuard.'
+}
 
 // Helper functions moved from client-side
 function generateSystemPrompt(context: SofiaContext): string {
