@@ -157,7 +157,6 @@ supabase db push --dry-run
 ## 📊 Supabase Studio
 
 ### Access Local Studio
-### Access Local Studio
 - **URL**: http://localhost:54323
 - **Access**: The local Studio opens automatically without authentication when running locally
 
