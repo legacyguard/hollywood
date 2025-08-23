@@ -15,8 +15,10 @@ interface DocumentWithUser {
   file_name: string;
   expires_at: string;
   document_type: string;
+  user_id: string;
   user_email: string;
   user_name?: string;
+  last_notification_sent_at?: string | null;
 }
 
 function calculateDaysUntilExpiration(expiresAt: string): number {
@@ -130,27 +132,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const today = new Date();
     today.setHours(0, 0, 0, 0); // Start of day
     
-    // Calculate target dates for notifications (30, 7, and 1 day before expiration)
     const thirtyDaysFromNow = new Date(today);
     thirtyDaysFromNow.setDate(today.getDate() + 30);
-    
-    const sevenDaysFromNow = new Date(today);
-    sevenDaysFromNow.setDate(today.getDate() + 7);
-    
-    const oneDayFromNow = new Date(today);
-    oneDayFromNow.setDate(today.getDate() + 1);
 
-    // Find documents that expire exactly on these dates
-    const targetDates = [
-      thirtyDaysFromNow.toISOString().split('T')[0],
-      sevenDaysFromNow.toISOString().split('T')[0],
-      oneDayFromNow.toISOString().split('T')[0]
-    ];
+    console.log('Checking for documents expiring between:', today.toISOString(), 'and', thirtyDaysFromNow.toISOString());
 
-    console.log('Checking for documents expiring on:', targetDates);
-
-    // Query documents with expiration dates matching our targets
-    // Note: We need to join with user profiles to get email addresses
+    // Query documents that expire in the next 30 days and haven't been notified recently
+    // Use range query instead of exact date matching
     const { data: documents, error } = await supabase
       .from('documents')
       .select(`
@@ -158,11 +146,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         file_name,
         expires_at,
         document_type,
-        user_id
+        user_id,
+        last_notification_sent_at
       `)
       .not('expires_at', 'is', null)
-      .gte('expires_at', today.toISOString())
-      .lte('expires_at', thirtyDaysFromNow.toISOString());
+      .gte('expires_at', today.toISOString()) // Greater than or equal to today
+      .lte('expires_at', thirtyDaysFromNow.toISOString()) // Less than or equal to 30 days from now
+      .or(`last_notification_sent_at.is.null,last_notification_sent_at.lt.${new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString()}`) // No notification sent OR last notification was more than 20 days ago
 
     if (error) {
       console.error('Error querying documents:', error);
@@ -170,39 +160,82 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     if (!documents || documents.length === 0) {
-      console.log('No expiring documents found');
-      return res.status(200).json({ message: 'No expiring documents found' });
+      console.log('No documents needing notifications found');
+      return res.status(200).json({ message: 'No documents needing notifications found' });
     }
+
+    console.log(`Found ${documents.length} documents that may need notifications`);
 
     // Get user information for email sending
     const userIds = [...new Set(documents.map(doc => doc.user_id))];
     
-    const { data: users, error: usersError } = await supabase
+    let users: { id: string; email: string; full_name?: string }[] = [];
+    
+    // Try to get user emails from profiles table
+    const { data: profilesData, error: usersError } = await supabase
       .from('profiles')
       .select('id, email, full_name')
       .in('id', userIds);
 
     if (usersError) {
-      console.error('Error querying users:', usersError);
-      // Try to get user emails from Clerk/auth if profiles table doesn't exist
+      console.warn('Error querying profiles table:', usersError);
+      console.log('Attempting to get user emails from auth.users table');
+      
+      // Fallback to auth.users table if profiles doesn't exist or fails
+      const { data: authUsersData, error: authError } = await supabase.auth.admin.listUsers();
+      
+      if (!authError && authUsersData?.users) {
+        users = authUsersData.users
+          .filter(user => userIds.includes(user.id))
+          .map(user => ({
+            id: user.id,
+            email: user.email || '',
+            full_name: user.user_metadata?.full_name || user.user_metadata?.name
+          }))
+          .filter(user => user.email); // Only include users with valid emails
+      } else {
+        console.error('Failed to get user emails from both profiles and auth tables');
+      }
+    } else {
+      users = profilesData || [];
     }
 
     let emailsSent = 0;
+    let documentsProcessed = 0;
     const errors: string[] = [];
+    const updatedDocuments: string[] = [];
 
     for (const doc of documents) {
       try {
+        documentsProcessed++;
         const daysUntil = calculateDaysUntilExpiration(doc.expires_at);
         
-        // Only send notifications for 30, 7, and 1 day thresholds
-        if (![30, 7, 1].includes(daysUntil)) {
+        console.log(`Processing document ${doc.file_name}: ${daysUntil} days until expiration`);
+        
+        // Only send notifications for specific thresholds: 30, 7, and 1 day
+        // Allow some flexibility (±1 day) to account for timing variations
+        const shouldNotify = (
+          (daysUntil >= 29 && daysUntil <= 31) || // ~30 days
+          (daysUntil >= 6 && daysUntil <= 8) ||   // ~7 days  
+          (daysUntil >= 0 && daysUntil <= 2)      // ~1 day
+        );
+        
+        if (!shouldNotify) {
+          console.log(`Skipping notification for ${doc.file_name} - not at threshold (${daysUntil} days)`);
           continue;
         }
 
-        // Find user email
-        const user = users?.find(u => u.id === doc.user_id);
-        if (!user?.email) {
-          console.warn(`No email found for user ${doc.user_id}`);
+        // Find user email - improved error handling
+        const user = users.find(u => u.id === doc.user_id);
+        if (!user) {
+          console.warn(`No user found for user_id: ${doc.user_id}`);
+          errors.push(`No user record found for document: ${doc.file_name}`);
+          continue;
+        }
+
+        if (!user.email) {
+          console.warn(`User ${doc.user_id} has no email address`);
+          errors.push(`No email address for user with document: ${doc.file_name}`);
           continue;
         }
 
@@ -212,8 +245,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           user_name: user.full_name || undefined
         };
 
-        const { subject, html } = getEmailTemplate(documentWithUser, daysUntil);
+        // Determine the appropriate urgency level for email
+        let emailDaysUntil: number;
+        if (daysUntil >= 29 && daysUntil <= 31) emailDaysUntil = 30;
+        else if (daysUntil >= 6 && daysUntil <= 8) emailDaysUntil = 7;
+        else emailDaysUntil = 1;
 
+        const { subject, html } = getEmailTemplate(documentWithUser, emailDaysUntil);
+
+        // Send the email
         await resend.emails.send({
           from: 'Sofia from LegacyGuard <sofia@legacyguard.app>',
           to: user.email,
@@ -221,20 +261,42 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           html
         });
 
+        // Update the last_notification_sent_at timestamp
+        const { error: updateError } = await supabase
+          .from('documents')
+          .update({ last_notification_sent_at: new Date().toISOString() })
+          .eq('id', doc.id);
+
+        if (updateError) {
+          console.warn(`Failed to update notification timestamp for document ${doc.id}:`, updateError);
+          // Continue anyway - email was sent successfully
+        } else {
+          updatedDocuments.push(doc.id);
+        }
+
         emailsSent++;
-        console.log(`Notification sent for document ${doc.file_name} to ${user.email} (${daysUntil} days until expiration)`);
+        console.log(`✅ Notification sent for document "${doc.file_name}" to ${user.email} (${daysUntil} days until expiration)`);
 
       } catch (emailError) {
-        console.error(`Failed to send email for document ${doc.id}:`, emailError);
-        errors.push(`Failed to notify about ${doc.file_name}: ${emailError}`);
+        console.error(`❌ Failed to send email for document ${doc.id}:`, emailError);
+        errors.push(`Failed to notify about ${doc.file_name}: ${emailError instanceof Error ? emailError.message : 'Unknown error'}`);
       }
     }
 
     const response = {
       message: `Notification check completed. Sent ${emailsSent} notifications.`,
-      documentsChecked: documents.length,
+      documentsInRange: documents.length,
+      documentsProcessed,
       emailsSent,
-      errors: errors.length > 0 ? errors : undefined
+      documentsUpdated: updatedDocuments.length,
+      errors: errors.length > 0 ? errors : undefined,
+      summary: {
+        totalCandidates: documents.length,
+        processedCount: documentsProcessed,
+        emailsSentCount: emailsSent,
+        timestampsUpdated: updatedDocuments.length,
+        errorsCount: errors.length
+      }
     };
 
     console.log('Notification job completed:', response);

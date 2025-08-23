@@ -52,11 +52,16 @@ User receives empathetic reminder
 
 ### 2. Notification Triggers
 
-The system sends notifications at three key thresholds:
+The system sends notifications at three key thresholds with intelligent date range matching:
 
-- **30 days before expiration** - Early gentle reminder
-- **7 days before expiration** - More urgent reminder  
-- **1 day before expiration** - Final urgent alert
+- **30 days before expiration** (±1 day tolerance: 29-31 days) - Early gentle reminder
+- **7 days before expiration** (±1 day tolerance: 6-8 days) - More urgent reminder  
+- **1 day before expiration** (±1 day tolerance: 0-2 days) - Final urgent alert
+
+**Key Improvements:**
+- **Smart Range Queries**: Uses `.gte()` and `.lte()` instead of exact date matching
+- **Duplicate Prevention**: Tracks `last_notification_sent_at` with 20-day cooldown
+- **Flexible Matching**: ±1 day tolerance accounts for timing variations
 
 ### 3. Email Templates
 
@@ -131,7 +136,7 @@ curl -X POST https://your-app.vercel.app/api/test-notification \
 
 The notification system expects the following database structure:
 
-### Documents Table
+### Documents Table (Updated)
 
 ```sql
 CREATE TABLE documents (
@@ -140,9 +145,14 @@ CREATE TABLE documents (
   file_name TEXT NOT NULL,
   document_type TEXT,
   expires_at DATE,
+  last_notification_sent_at TIMESTAMP WITH TIME ZONE DEFAULT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+-- Indexes for efficient querying
+CREATE INDEX idx_documents_notification_date ON documents(last_notification_sent_at);
+CREATE INDEX idx_documents_expires_at ON documents(expires_at) WHERE expires_at IS NOT NULL;
 ```
 
 ### Profiles Table (for user emails)

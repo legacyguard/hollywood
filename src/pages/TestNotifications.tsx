@@ -261,14 +261,23 @@ export function TestNotifications() {
 
           <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
             <p className="text-sm text-blue-800">
-              <strong>Note:</strong> To fully test the notification system, ensure the following environment variables are set in your Vercel deployment:
+              <strong>New Features:</strong> The notification system has been improved with:
             </p>
             <ul className="text-sm text-blue-700 mt-2 space-y-1">
-              <li>• SUPABASE_SERVICE_ROLE_KEY</li>
-              <li>• RESEND_API_KEY</li>
-              <li>• VERCEL_CRON_SECRET</li>
-              <li>• VITE_APP_URL</li>
+              <li>• Smart date range queries (not just exact dates)</li>
+              <li>• Prevents duplicate notifications (20-day cooldown)</li>
+              <li>• Better error handling for missing user emails</li>
+              <li>• Flexible threshold matching (±1 day tolerance)</li>
             </ul>
+          </div>
+
+          <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+            <p className="text-sm text-green-800">
+              <strong>Database Migration Required:</strong> Run the migration to add notification tracking:
+            </p>
+            <code className="text-sm text-green-700 block mt-2 bg-green-100 p-2 rounded">
+              supabase migration up
+            </code>
           </div>
         </Card>
       </div>
