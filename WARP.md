@@ -117,4 +117,3 @@ Language policy (critical)
 - All code, comments, and UI strings must be written in English.
 - Even if tasks or prompts are provided in Slovak or Czech, implement UI copy and identifiers in English. If localization is needed, add/extend i18n resources but keep defaults in English.
 - If any Slovak/Czech text is discovered outside i18n resources, replace it with English.
-

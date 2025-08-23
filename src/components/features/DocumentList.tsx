@@ -24,6 +24,8 @@ export const DocumentList = () => {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const { userId } = useAuth();
   const createSupabaseClient = useSupabaseClient();
 
@@ -78,6 +80,93 @@ export const DocumentList = () => {
       }
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  // Download document function
+  const handleDownload = async (doc: Document) => {
+    if (!userId) return;
+
+    try {
+      setDownloadingId(doc.id);
+      const supabase = await createSupabaseClient();
+      
+      // Download encrypted file from storage
+      const { data, error } = await supabase.storage
+        .from('user_documents')
+        .download(doc.file_path);
+
+      if (error) {
+        throw error;
+      }
+
+      // Create download link
+      const url = URL.createObjectURL(data);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = doc.file_name;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      toast.success('Document downloaded successfully!');
+    } catch (err: any) {
+      console.error('Error downloading document:', err);
+      toast.error('Failed to download document. Please try again.');
+    } finally {
+      setDownloadingId(null);
+    }
+  };
+
+  // Delete document function
+  const handleDelete = async (doc: Document) => {
+    if (!userId) return;
+
+    // Confirm deletion
+    if (!confirm(`Are you sure you want to delete "${doc.file_name}"? This action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      setDeletingId(doc.id);
+      const supabase = await createSupabaseClient();
+      
+      // Delete file from storage
+      const { error: storageError } = await supabase.storage
+        .from('user_documents')
+        .remove([doc.file_path]);
+
+      if (storageError) {
+        console.error('Storage delete error:', storageError);
+        // Continue with database deletion even if storage fails
+      }
+
+      // Delete metadata from database
+      const { error: dbError } = await supabase
+        .from('documents')
+        .delete()
+        .eq('id', doc.id);
+
+      if (dbError) {
+        throw dbError;
+      }
+
+      // Remove from local state
+      setDocuments(prev => prev.filter(d => d.id !== doc.id));
+      
+      // Remove from localStorage backup
+      const documentsKey = `documents_${userId}`;
+      const existingDocs = JSON.parse(localStorage.getItem(documentsKey) || '[]');
+      const updatedDocs = existingDocs.filter((d: any) => d.id !== doc.id);
+      localStorage.setItem(documentsKey, JSON.stringify(updatedDocs));
+
+      toast.success('Document deleted successfully!');
+    } catch (err: any) {
+      console.error('Error deleting document:', err);
+      toast.error('Failed to delete document. Please try again.');
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -203,19 +292,29 @@ export const DocumentList = () => {
                     variant="ghost"
                     size="sm"
                     className="text-muted-foreground hover:text-primary"
-                    disabled
-                    title="Download feature coming soon"
+                    onClick={() => handleDownload(doc)}
+                    disabled={downloadingId === doc.id}
+                    title="Download document"
                   >
-                    <Icon name="download" className="w-4 h-4" />
+                    {downloadingId === doc.id ? (
+                      <Icon name="download" className="w-4 h-4 animate-pulse" />
+                    ) : (
+                      <Icon name="download" className="w-4 h-4" />
+                    )}
                   </Button>
                   <Button
                     variant="ghost"
                     size="sm"
                     className="text-muted-foreground hover:text-status-error"
-                    disabled
-                    title="Delete feature coming soon"
+                    onClick={() => handleDelete(doc)}
+                    disabled={deletingId === doc.id}
+                    title="Delete document"
                   >
-                    <Icon name="delete" className="w-4 h-4" />
+                    {deletingId === doc.id ? (
+                      <Icon name="delete" className="w-4 h-4 animate-pulse" />
+                    ) : (
+                      <Icon name="delete" className="w-4 h-4" />
+                    )}
                   </Button>
                 </div>
               </div>
