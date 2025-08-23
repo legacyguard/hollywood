@@ -913,63 +913,85 @@ Funkcie PWA:
 
 ---
 
-**Vrstvený prístup UI**
- - Predstavte si náš "hollywoodsky scenár" ako stavbu domu.
+## **Vrstvený prístup UI**
 
-- Vrstva 1: Hrubá stavba (v0.dev / Lovable.dev): Tieto AI nástroje nám postavia základy a steny. Vygenerujú nám štruktúru a layout každej obrazovky (napr. Onboarding s tromi krokmi, Dashboard s tromi kartami). Dajú nám funkčný React/Next.js kód s komponentmi, ktoré sú správne nastylované pomocou Tailwind CSS podľa vášho dizajnového manuálu. Toto nám ušetrí 80% času na základnom frontende.
+Predstavte si náš "hollywoodsky scenár" ako stavbu domu.
 
-- Vrstva 2: Interiérový dizajn a nábytok (Vaše UI Kity & Manuálna práca): Teraz zoberieme ten vygenerovaný kód a začneme ho "zariaďovať". Vymeníme generické ikony za prémiové z Lucide, doladíme presné odtiene farieb a tiene podľa vášho manuálu, použijeme vaše zakúpené komponenty z Hero UI pre špecifické prvky.
+**Vrstva 1: Hrubá stavba (v0.dev / Lovable.dev)**  
+Tieto AI nástroje nám postavia základy a steny. Vygenerujú nám štruktúru a layout každej obrazovky (napr. Onboarding s tromi krokmi, Dashboard s tromi kartami). Dajú nám funkčný React/Next.js kód s komponentmi, ktoré sú správne nastylované pomocou Tailwind CSS podľa vášho dizajnového manuálu. Toto nám ušetrí 80% času na základnom frontende.
 
-- Vrstva 3: Mágia a emócie (Animačné knižnice & Vlastný kód): Toto je vrstva, kde pridávame "hollywoodsky" efekt. Na túto časť potrebujeme špecializované nástroje, ktoré sa integrujú do existujúceho kódu.
+**Vrstva 2: Interiérový dizajn a nábytok (Vaše UI Kity & Manuálna práca)**  
+Teraz zoberieme ten vygenerovaný kód a začneme ho "zariaďovať". Vymeníme generické ikony za prémiové z Lucide, doladíme presné odtiene farieb a tiene podľa vášho manuálu, použijeme vaše zakúpené komponenty z Hero UI pre špecifické prvky.
 
-- Technická Realizácia a Potrebné Nástroje (Vrstva 3)
+**Vrstva 3: Mágia a emócie (Animačné knižnice & Vlastný kód)**  
+Toto je vrstva, kde pridávame "hollywoodsky" efekt. Na túto časť potrebujeme špecializované nástroje, ktoré sa integrujú do existujúceho kódu.
+
+## **Technická Realizácia a Potrebné Nástroje (Vrstva 3)**
+
 Tu je presný zoznam, čo by sme potrebovali doplniť k vášmu stacku, a ako by sme to použili na konkrétnych scénach z nášho scenára:
-1. Animačná Knižnica: Framer Motion
+
+**1. Animačná Knižnica: Framer Motion**  
 Toto je najdôležitejší nástroj, ktorý budeme potrebovať. Je to knižnica pre React, ktorá robí komplexné animácie neuveriteľne jednoduchými. Je to "zlatý štandard" pre animácie v Next.js a Vercel (ktorý je tvorcom Framer Motion) ju priamo podporuje.
 
-- Ako ju použijeme:
-- 1.1. Scéna "Prísľub pokoja":
-Animácia svetlušky: Svetluška by bola SVG obrázok. Pomocou Framer Motion by sme animovali jej path (dráhu letu) a opacity (blikanie).
-Jemné objavenie textu: Text by sa nezobrazil naraz, ale použili by sme animate={{ opacity: 1, y: 0 }} na každom slove, aby sa jemne objavili a posunuli na svoje miesto.
-Scéna "Odomknutie ďalšej komnaty":
-Pootvorenie dverí: Komponent "dverí" by mal v Framer Motion definované dva stavy (variants): closed a open. Pri splnení podmienky (používateľ má 5 dokumentov) by sme len zmenili stav a Framer Motion by sa postaral o plynulú animáciu pootočenia (rotateY).
-- 1.2. Scéna "Katarzia" (Dokončenie na 90%+):
-Žiariaca škatuľka: Použili by sme animáciu box-shadow a scale, aby škatuľka pulzovala a žiarila.
+**Ako ju použijeme:**
 
-2. Knižnica pre Komplexné Vizuály: Three.js alebo React Three Fiber
+**1.1. Scéna "Prísľub pokoja":**  
+- **Animácia svetlušky:** Svetluška by bola SVG obrázok. Pomocou Framer Motion by sme animovali jej path (dráhu letu) a opacity (blikanie).
+- **Jemné objavenie textu:** Text by sa nezobrazil naraz, ale použili by sme `animate={{ opacity: 1, y: 0 }}` na každom slove, aby sa jemne objavili a posunuli na svoje miesto.
+
+**Scéna "Odomknutie ďalšej komnaty":**  
+- **Pootvorenie dverí:** Komponent "dverí" by mal v Framer Motion definované dva stavy (variants): `closed` a `open`. Pri splnení podmienky (používateľ má 5 dokumentov) by sme len zmenili stav a Framer Motion by sa postaral o plynulú animáciu pootočenia (`rotateY`).
+
+**1.2. Scéna "Katarzia" (Dokončenie na 90%+):**  
+- **Žiariaca škatuľka:** Použili by sme animáciu `box-shadow` a `scale`, aby škatuľka pulzovala a žiarila.
+
+**2. Knižnica pre Komplexné Vizuály: Three.js alebo React Three Fiber**  
 - Pre naozaj pokročilé 3D vizuály, ako je interaktívna škatuľka alebo kľúč, by sme siahli po knižnici pre 3D grafiku v prehliadači. React Three Fiber je ideálna, pretože umožňuje písať 3D scény ako bežné React komponenty.
-- Ako ju použijeme:
-- 2.1. Scéna "Škatuľka istoty" a "Kľúč dôvery":
-	Interaktívna škatuľka a kľúč: Namiesto statického obrázku by sme mali jednoduchý 3D model. Keď používateľ píše text, slová by sa mohli animovane "vlievať" do škatuľky. Keď napíše meno, textúra kľúča by sa v reálnom čase aktualizovala a zobrazila by gravírovanie. Toto vytvára extrémne silný pocit personalizácie a "mágie".
 
-3. Knižnica pre Konfety a Oslavy: react-confetti
+**Ako ju použijeme:**
+
+**2.1. Scéna "Škatuľka istoty" a "Kľúč dôvery":**  
+- **Interaktívna škatuľka a kľúč:** Namiesto statického obrázku by sme mali jednoduchý 3D model. Keď používateľ píše text, slová by sa mohli animovane "vlievať" do škatuľky. Keď napíše meno, textúra kľúča by sa v reálnom čase aktualizovala a zobrazila by gravírovanie. Toto vytvára extrémne silný pocit personalizácie a "mágie".
+
+**3. Knižnica pre Konfety a Oslavy: react-confetti**  
 Pre momenty osláv a prekvapení je táto jednoduchá knižnica perfektná.
-- Ako ju použijeme:
-- 3.1. Scéna "Prvý kameň do mozaiky" alebo "Odomknutie komnaty":
-	Okrem notifikácie by sme mohli na pozadí spustiť veľmi jemný a decentný efekt padajúcich svetelných častíc (nie krikľavé konfety), ktoré by po pár sekundách zmizli. Farby by boli presne z vášho dizajnového manuálu.
-	
-4. Stavový Manažment (State Management): Zustand alebo Jotai
-- Aby sme vedeli, kedy má používateľ nárok na "odomknutie komnaty" alebo kedy má vidieť "výročný rituál", potrebujeme si niekde držať stav jeho cesty. Supabase je naša databáza, ale na strane klienta (v prehliadači) potrebujeme jednoduchý nástroj na prácu s týmto stavom.
-- Ako ho použijeme:
-- Vytvorili by sme si "store" (úložisko stavu), kde by sme mali premenné ako documentsUploadedCount, hasCompletedOnboarding, lastLoginDate.
-- Naše komponenty by na tieto premenné reagovali. Napríklad komponent "dverí" by bol napojený na documentsUploadedCount a automaticky by spustil animáciu, keď hodnota presiahne 
 
-5.Zhrnutie a Pracovný Postup
+**Ako ju použijeme:**
+
+**3.1. Scéna "Prvý kameň do mozaiky" alebo "Odomknutie komnaty":**  
+- Okrem notifikácie by sme mohli na pozadí spustiť veľmi jemný a decentný efekt padajúcich svetelných častíc (nie krikľavé konfety), ktoré by po pár sekundách zmizli. Farby by boli presne z vášho dizajnového manuálu.
+
+**4. Stavový Manažment (State Management): Zustand alebo Jotai**  
+- Aby sme vedeli, kedy má používateľ nárok na "odomknutie komnaty" alebo kedy má vidieť "výročný rituál", potrebujeme si niekde držať stav jeho cesty. Supabase je naša databáza, ale na strane klienta (v prehliadači) potrebujeme jednoduchý nástroj na prácu s týmto stavom.
+
+**Ako ho použijeme:**  
+- Vytvorili by sme si "store" (úložisko stavu), kde by sme mali premenné ako `documentsUploadedCount`, `hasCompletedOnboarding`, `lastLoginDate`.
+- Naše komponenty by na tieto premenné reagovali. Napríklad komponent "dverí" by bol napojený na `documentsUploadedCount` a automaticky by spustil animáciu, keď hodnota presiahne určitý limit.
+
+**5. Zhrnutie a Pracovný Postup**
+
 - Váš stack sa teda nerozpadá, len ho dopĺňame o špecializované nástroje:
-- Pôvodný Stack (Výborný základ):
-- Frontend Generovanie: v0.dev / Lovable.dev
-- UI Knižnice: Hero UI / Tailadmin / Shadcn UI
-- Backend & DB: Supabase
-- Deployment: Vercel
-- Doplnený Stack (Pre "Hollywoodsky" efekt):
-- Animácie: Framer Motion
-- Pokročilé 3D: React Three Fiber (voliteľné pre MVP, ale extrémne efektné)
-- Oslavy: react-confetti
-- Stavový Manažment: Zustand
-- Ako by sme postupovali:
-- Vygenerujeme základ: Pomocou v0.dev si vygenerujeme statickú, neanimovanú verziu obrazovky.
-- Nainštalujeme knižnicu: Do projektu pridáme Framer Motion (npm install framer-motion).
-- Obalíme komponenty: Vygenerované komponenty obalíme do <motion.div> z Framer Motion.
-- Pridáme animácie: Na tieto motion komponenty pridáme jednoduché props ako initial, animate, transition a variants na definovanie animácií.
-- Prepojíme so stavom: Animácie spustíme na základe zmeny stavu, ktorý manažujeme pomocou Zustand.
-- Takže áno, dá sa to spraviť. Len si treba uvedomiť, že AI generátory nám dajú plátno a farby, ale ten finálny, majstrovský ťah štetcom, ktorý vdýchne dielu život, musíme urobiť my s pomocou špecializovaných animačných knižníc.
+
+**Pôvodný Stack (Výborný základ):**
+- **Frontend Generovanie:** v0.dev / Lovable.dev
+- **UI Knižnice:** Hero UI / Tailadmin / Shadcn UI
+- **Backend & DB:** Supabase
+- **Deployment:** Vercel
+
+**Doplnený Stack (Pre "Hollywoodsky" efekt):**
+- **Animácie:** Framer Motion
+- **Pokročilé 3D:** React Three Fiber (voliteľné pre MVP, ale extrémne efektné)
+- **Oslavy:** react-confetti
+- **Stavový Manažment:** Zustand
+
+**Ako by sme postupovali:**
+1. **Vygenerujeme základ:** Pomocou v0.dev si vygenerujeme statickú, neanimovanú verziu obrazovky.
+2. **Nainštalujeme knižnicu:** Do projektu pridáme Framer Motion (`npm install framer-motion`).
+3. **Obalíme komponenty:** Vygenerované komponenty obalíme do `<motion.div>` z Framer Motion.
+4. **Pridáme animácie:** Na tieto motion komponenty pridáme jednoduché props ako `initial`, `animate`, `transition` a `variants` na definovanie animácií.
+5. **Prepojíme so stavom:** Animácie spustíme na základe zmeny stavu, ktorý manažujeme pomocou Zustand.
+
+**Technické poznámky:**
+- AI generátory poskytujú dobrý základ pre UI komponenty
+- Finálne animácie a interaktívne efekty vyžadujú špecializované knižnice
+- Kombinácia generovaného kódu a manuálnych úprav vytvára najlepší výsledok

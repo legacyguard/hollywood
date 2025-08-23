@@ -217,10 +217,10 @@ PREMIUM MODE:
   /**
    * Get API status
    */
-  getStatus(): { available: boolean; hasApiKey: boolean } {
+  getStatus(): { available: boolean; hasSupabaseConfig: boolean } {
     return {
       available: this.initialized,
-      hasApiKey: !!import.meta.env.VITE_OPENAI_API_KEY
+      hasSupabaseConfig: !!(this.supabaseUrl && this.supabaseKey)
     };
   }
 }

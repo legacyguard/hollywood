@@ -23,7 +23,13 @@ This file provides guidance to WARP (warp.dev) when working with code in this re
 - Lint
   - npm run lint
 - Tests
-  - No test runner is configured in this repository as of now.
+  - Test runner: Vitest with React Testing Library
+  - npm run test - Run tests in watch mode
+  - npm run test -- --run - Run tests once
+  - npm run test:ui - Run tests with UI interface
+  - npm run test:coverage - Run tests with coverage report
+  - Test setup file: src/test/setup.ts (includes DOM mocks)
+  - Configuration: vitest.config.ts
 
 ## High-level Architecture
 

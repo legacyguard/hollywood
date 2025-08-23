@@ -33,7 +33,7 @@ This document outlines the security improvements made to protect OpenAI API keys
 
 ## Security Benefits
 
-### ✅ Before (Insecure)
+### ❌ Before (Insecure)
 ```typescript
 // Client-side code exposed API key
 const openai = new OpenAI({
@@ -48,10 +48,13 @@ const openai = new OpenAI({
 const openaiApiKey = Deno.env.get('OPENAI_API_KEY') // Server env only
 const openai = new OpenAI({ apiKey: openaiApiKey })
 
-// Client-side makes secure API calls
-const response = await fetch('/functions/v1/sofia-ai', {
+// Client-side makes secure API calls via Supabase
+const response = await fetch(`${SUPABASE_URL}/functions/v1/sofia-ai-guided`, {
   method: 'POST',
-  headers: { 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` },
+  headers: { 
+    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+    'Content-Type': 'application/json'
+  },
   body: JSON.stringify({ action: 'generate_response', data: {...} })
 })
 ```
@@ -90,8 +93,8 @@ const response = await sofiaAI.generateResponse("Hello Sofia", context)
 
 ### 1. Supabase Edge Function Deployment
 ```bash
-cd supabase/functions/sofia-ai
-supabase functions deploy sofia-ai
+# Deploy the secure Sofia AI function
+supabase functions deploy sofia-ai-guided
 ```
 
 ### 2. Environment Variables
@@ -153,14 +156,15 @@ supabase functions deploy sofia-ai
 ## Security Checklist
 
 - [x] OpenAI API key removed from client bundle
-- [x] All AI interactions moved to server-side
-- [x] CORS properly configured
-- [x] Authentication via Supabase
-- [x] Environment variables secured
-- [x] Fallback responses implemented
-- [x] Error handling in place
-- [x] Bundle size optimized
-- [x] Dynamic import support added
+- [x] All AI interactions moved to server-side Edge Functions
+- [x] CORS properly configured for cross-origin requests
+- [x] Authentication via Supabase Bearer tokens
+- [x] Environment variables secured (server-only for sensitive keys)
+- [x] Fallback responses implemented for offline scenarios
+- [x] Error handling with graceful degradation
+- [x] Bundle size optimized (~200KB reduction)
+- [x] Dynamic import support for code splitting
+- [x] Legacy API key references removed from client code
 
 ## Conclusion
 
