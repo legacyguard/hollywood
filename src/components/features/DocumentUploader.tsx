@@ -47,7 +47,7 @@ export const DocumentUploader = () => {
     setUploadProgress(0);
 
     try {
-      // Vytvoríme Supabase klienta s Clerk tokenom
+      // Create Supabase client with Clerk token
       const supabase = await createSupabaseClient();
       
       // Get user's encryption keys

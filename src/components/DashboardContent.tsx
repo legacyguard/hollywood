@@ -36,7 +36,7 @@ export function DashboardContent() {
                 </FadeIn>
                 <FadeIn duration={0.5} delay={0.4}>
                   <p className="text-lg leading-relaxed max-w-2xl" style={{ color: 'hsl(var(--muted-text))' }}>
-                    Welcome back, Jana. It's wonderful to see you taking these important steps for your family.
+                    It's wonderful to see you taking these important steps for your family.
                   </p>
                 </FadeIn>
               </div>

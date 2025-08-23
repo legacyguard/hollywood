@@ -186,13 +186,13 @@ PREMIUM MODE:
   private getMockResponse(request: SofiaAPIRequest): SofiaAPIResponse {
     const mockResponses = {
       simple_query: [
-        'To je zaujímavá otázka. Na základe vašich informácií by som odporučila najprv dokončiť nahrávanie základných dokumentov.',
-        'Rozumiem vašej situácii. Vzhľadom na váš pokrok by ste mohli zvážiť pridanie ďalšieho strážcu.',
-        'Vaša otázka je dôležitá. Pri vašom aktuálnom nastavení by som navrhla sústrediť sa na zabezpečenie dokumentov.'
+        "That's an interesting question. Based on your information, I would recommend first completing the upload of your basic documents.",
+        "I understand your situation. Given your progress, you might consider adding another guardian.",
+        "Your question is important. With your current setup, I would suggest focusing on securing your documents."
       ],
       premium_generation: [
-        'Bohužiaľ, prémiové funkcie vyžadujú pripojenie k AI službám. Skúste to prosím neskôr.',
-        'Pre generovanie osobných odkazov potrebujeme nakonfigurovať AI služby. Zatiaľ môžete písať vlastné odkazy.'
+        "Unfortunately, premium features require connection to AI services. Please try again later.",
+        "To generate personal messages, we need to configure AI services. For now, you can write your own messages."
       ]
     };
 

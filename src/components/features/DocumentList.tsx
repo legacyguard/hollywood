@@ -53,14 +53,14 @@ export const DocumentList = () => {
       setIsLoading(true);
       setError(null);
       
-      // Vytvoríme Supabase klienta s Clerk tokenom
+      // Create Supabase client with Clerk token
       const supabase = await createSupabaseClient();
       
-      // Filtrujeme dokumenty podľa user_id
+      // Filter documents by user_id
       const { data, error } = await supabase
         .from('documents')
         .select('*')
-        .eq('user_id', userId) // Explicitne filtrujeme podľa Clerk user ID
+        .eq('user_id', userId) // Explicitly filter by Clerk user ID
         .order('created_at', { ascending: false });
 
       if (error) {
