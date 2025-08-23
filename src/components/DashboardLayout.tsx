@@ -1,11 +1,20 @@
+import { useState } from "react";
 import { AppSidebar } from "@/components/AppSidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import SofiaChat from "@/components/sofia/SofiaChat";
+import SofiaFloatingButton from "@/components/sofia/SofiaFloatingButton";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
 }
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
+  const [isSofiaOpen, setIsSofiaOpen] = useState(false);
+
+  const toggleSofia = () => {
+    setIsSofiaOpen(!isSofiaOpen);
+  };
+
   return (
     <SidebarProvider defaultOpen={true}>
       <div className="min-h-screen flex w-full bg-background">
@@ -22,6 +31,17 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             {children}
           </main>
         </div>
+
+        {/* Sofia AI Assistant */}
+        <SofiaFloatingButton 
+          onToggleChat={toggleSofia}
+          isChatOpen={isSofiaOpen}
+        />
+        <SofiaChat 
+          isOpen={isSofiaOpen}
+          onClose={() => setIsSofiaOpen(false)}
+          variant="floating"
+        />
       </div>
     </SidebarProvider>
   );

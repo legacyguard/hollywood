@@ -42,6 +42,11 @@ import {
   GripVertical,
   PanelLeft,
   Search as SearchIcon,
+  Bot,
+  User,
+  Send,
+  Loader2,
+  Sparkles,
 } from "lucide-react";
 
 // Export all icons for direct use
@@ -89,6 +94,11 @@ export {
   GripVertical,
   PanelLeft,
   SearchIcon,
+  Bot,
+  User,
+  Send,
+  Loader2,
+  Sparkles,
 };
 
 // Icon mapping for semantic usage
@@ -143,6 +153,13 @@ export const IconMap = {
   eyeOff: EyeOff,
   grip: GripVertical,
   panelLeft: PanelLeft,
+  
+  // Sofia AI specific
+  bot: Bot,
+  user: User,
+  send: Send,
+  'loader-2': Loader2,
+  sparkles: Sparkles,
 } as const;
 
 // Type for icon names

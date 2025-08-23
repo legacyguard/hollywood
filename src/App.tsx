@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { routerFutureConfig } from "./lib/router";
 import { ClerkProvider } from "./providers/ClerkProvider";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
+import SofiaContextProvider from "./components/sofia/SofiaContextProvider";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Onboarding from "./pages/onboarding/Onboarding";
@@ -24,6 +25,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter future={routerFutureConfig}>
+          <SofiaContextProvider>
           <Routes>
             {/* Public routes */}
             <Route path="/sign-in/*" element={<SignInPage />} />
@@ -59,6 +61,7 @@ const App = () => (
             {/* 404 route */}
             <Route path="*" element={<NotFound />} />
           </Routes>
+          </SofiaContextProvider>
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>
