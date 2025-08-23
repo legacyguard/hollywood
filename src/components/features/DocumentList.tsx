@@ -127,7 +127,7 @@ export const DocumentList = () => {
       URL.revokeObjectURL(url);
 
       toast.success('Document downloaded successfully!');
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error downloading document:', err);
       toast.error('Failed to download document. Please try again.');
     } finally {
@@ -174,12 +174,12 @@ export const DocumentList = () => {
       // Remove from localStorage backup
       const documentsKey = `documents_${userId}`;
       const existingDocs = JSON.parse(localStorage.getItem(documentsKey) || '[]');
-     const updatedDocs = existingDocs.filter((d: any) => String(d.id) !== String(doc.id));
+     const updatedDocs = existingDocs.filter((d: { id: string | number }) => String(d.id) !== String(doc.id));
       localStorage.setItem(documentsKey, JSON.stringify(updatedDocs));
       localStorage.setItem(documentsKey, JSON.stringify(updatedDocs));
 
       toast.success('Document deleted successfully!');
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error deleting document:', err);
       toast.error('Failed to delete document. Please try again.');
     } finally {

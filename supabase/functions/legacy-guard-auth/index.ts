@@ -67,7 +67,7 @@ serve(async (req) => {
     }
 
     switch (action) {
-      case 'get_user_profile':
+      case 'get_user_profile': {
         // Get user profile from profiles table
         const { data: profile, error: profileError } = await supabaseClient
           .from('profiles')
@@ -92,9 +92,9 @@ serve(async (req) => {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
           }
         )
-        break
+      }
 
-      case 'update_user_profile':
+      case 'update_user_profile': {
         // Validate update data
         if (!data || typeof data !== 'object') {
           return new Response(
@@ -134,7 +134,7 @@ serve(async (req) => {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
           }
         )
-        break
+      }
 
       default:
         return new Response(

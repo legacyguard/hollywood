@@ -226,5 +226,5 @@ export interface LegacyItemMetadata {
   total_recipes?: number
   completed_recipes?: number
   format?: string
-  [key: string]: any
+  [key: string]: unknown
 }

@@ -448,12 +448,12 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
     });
   };
 
-  const getDefaultWelcome = (): string => {
+  const getDefaultWelcome = useCallback((): string => {
     if (!context) return 'Hello! I am Sofia and I am here to help you.';
     
     const name = context.userName || 'there';
     return `Hello, ${name}! I am Sofia and I am here to help you protect your family. How can I help you today?`;
-  };
+  }, [context]);
 
   const getRouteName = (route: string): string => {
     const routeNames: Record<string, string> = {
