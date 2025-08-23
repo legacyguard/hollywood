@@ -14,16 +14,58 @@ serve(async (req) => {
 
   try {
     // Create a Supabase client
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-    )
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')
+    
+    if (!supabaseUrl || !supabaseAnonKey) {
+      return new Response(
+        JSON.stringify({ error: 'Missing required environment variables' }),
+        { 
+          status: 500, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      )
+    }
+
+    const supabaseClient = createClient(supabaseUrl, supabaseAnonKey)
 
     // Get the request body
-    const { action, table, data, filters } = await req.json()
+    const body = await req.json()
+    
+    if (!body || typeof body !== 'object') {
+      return new Response(
+        JSON.stringify({ error: 'Invalid request body' }),
+        { 
+          status: 400, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      )
+    }
+
+    const { action, data } = body
+    
+    if (!action) {
+      return new Response(
+        JSON.stringify({ error: 'Action is required' }),
+        { 
+          status: 400, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      )
+    }
 
     switch (action) {
       case 'get_legacy_items':
+        if (!data?.user_id) {
+          return new Response(
+            JSON.stringify({ error: 'user_id is required' }),
+            {
+              status: 400,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            }
+          )
+        }
+
         // Get legacy items for a user
         const { data: items, error: itemsError } = await supabaseClient
           .from('legacy_items')
@@ -50,6 +92,16 @@ serve(async (req) => {
         )
 
       case 'create_legacy_item':
+        if (!data || typeof data !== 'object') {
+          return new Response(
+            JSON.stringify({ error: 'Item data is required' }),
+            { 
+              status: 400, 
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+            }
+          )
+        }
+
         // Create a new legacy item
         const { data: newItem, error: createError } = await supabaseClient
           .from('legacy_items')
@@ -76,11 +128,24 @@ serve(async (req) => {
         )
 
       case 'update_legacy_item':
+        if (!data?.id) {
+          return new Response(
+            JSON.stringify({ error: 'Item ID is required' }),
+            { 
+              status: 400, 
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+            }
+          )
+        }
+        
+        // Extract ID and remove it from update data to prevent overwriting
+        const { id, ...updateData } = data
+        
         // Update an existing legacy item
         const { data: updatedItem, error: updateError } = await supabaseClient
           .from('legacy_items')
-          .update(data)
-          .eq('id', data.id)
+          .update(updateData)
+          .eq('id', id)
           .select()
           .single()
 
@@ -103,6 +168,16 @@ serve(async (req) => {
         )
 
       case 'delete_legacy_item':
+        if (!data?.id) {
+          return new Response(
+            JSON.stringify({ error: 'Item ID is required' }),
+            { 
+              status: 400, 
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+            }
+          )
+        }
+        
         // Delete a legacy item
         const { error: deleteError } = await supabaseClient
           .from('legacy_items')
@@ -128,6 +203,16 @@ serve(async (req) => {
         )
 
       case 'get_user_progress':
+        if (!data?.user_id) {
+          return new Response(
+            JSON.stringify({ error: 'user_id is required' }),
+            { 
+              status: 400, 
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+            }
+          )
+        }
+        
         // Get user progress statistics
         const { data: progress, error: progressError } = await supabaseClient
           .from('legacy_items')

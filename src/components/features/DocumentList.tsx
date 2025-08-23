@@ -174,8 +174,8 @@ export const DocumentList = () => {
       // Remove from localStorage backup
       const documentsKey = `documents_${userId}`;
       const existingDocs = JSON.parse(localStorage.getItem(documentsKey) || '[]');
-      // Ensure consistent id comparison by converting to strings
-      const updatedDocs = existingDocs.filter((d: any) => String(d.id) !== String(doc.id));
+     const updatedDocs = existingDocs.filter((d: any) => String(d.id) !== String(doc.id));
+      localStorage.setItem(documentsKey, JSON.stringify(updatedDocs));
       localStorage.setItem(documentsKey, JSON.stringify(updatedDocs));
 
       toast.success('Document deleted successfully!');

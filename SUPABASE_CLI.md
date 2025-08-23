@@ -157,11 +157,11 @@ supabase db push --dry-run
 ## 📊 Supabase Studio
 
 ### Access Local Studio
+### Access Local Studio
 - **URL**: http://localhost:54323
-- **Default Credentials**: 
-  - Email: `supabase_admin@example.com`
-  - Password: `this_password_is_insecure_and_should_be_updated`
+- **Access**: The local Studio opens automatically without authentication when running locally
 
+> ℹ️ **Note**: Local Studio doesn't require authentication for development convenience.
 ### Access Remote Studio
 - **URL**: https://supabase.com/dashboard/project/lonkpeipxwhhiukqboo
 - **Login**: Use your Supabase account
