@@ -11,12 +11,14 @@ if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
   throw new Error('Missing Supabase environment variables. Please check your .env.local file.');
 }
 
-// Create Supabase client
+// Create Supabase client with SSR-safe configuration
 export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_ANON_KEY, {
   auth: {
-    storage: localStorage,
-    persistSession: true,
-    autoRefreshToken: true,
+    // SSR-safe: only use localStorage in browser environment
+    storage: typeof window !== 'undefined' ? window.localStorage : undefined,
+    // Enable only in the browser to avoid SSR touching storage/timers
+    persistSession: typeof window !== 'undefined',
+    autoRefreshToken: typeof window !== 'undefined',
   },
   // Enable real-time subscriptions
   realtime: {
@@ -28,3 +30,60 @@ export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_ANON_KEY, 
 
 // Export for convenience
 export default supabase;
+
+// Clerk integration hook - moved from lib/supabase.ts
+export const useSupabaseClient = () => {
+  // Dynamic import to avoid SSR issues with Clerk
+  const getClerkAuth = async () => {
+    if (typeof window === 'undefined') {
+      return { userId: null };
+    }
+    
+    try {
+      const { useAuth } = await import('@clerk/clerk-react');
+      return useAuth();
+    } catch (error) {
+      console.warn('Clerk not available:', error);
+      return { userId: null };
+    }
+  };
+
+  const createClerkSupabaseClient = async () => {
+    if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+      throw new Error("Supabase configuration is missing. Please check your environment variables.");
+    }
+
+    try {
+      // Use the main supabase client
+      const supabaseClient = supabase;
+      
+      // Get Clerk user ID if available
+      const { userId } = await getClerkAuth();
+      
+      // For development - we can add custom header with Clerk user ID for debugging
+      if (userId && typeof window !== 'undefined') {
+        // This is just for identification, not for authentication
+        // In production, you should use Clerk JWT template
+        supabaseClient.auth.setSession({
+          access_token: SUPABASE_ANON_KEY,
+          refresh_token: '',
+          user: {
+            id: userId,
+            app_metadata: {},
+            user_metadata: {},
+            aud: 'authenticated',
+            created_at: new Date().toISOString()
+          }
+        } as any);
+      }
+      
+      return supabaseClient;
+    } catch (error) {
+      console.error('Error creating Supabase client:', error);
+      // Fallback to standard client
+      return supabase;
+    }
+  };
+
+  return createClerkSupabaseClient;
+};

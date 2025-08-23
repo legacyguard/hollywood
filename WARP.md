@@ -75,8 +75,9 @@ High-level architecture
     - hooks/use-toast.ts implements a lightweight in-memory toast store compatible with shadcn/ui Toast
 
 - Supabase integration
-  - src/integrations/supabase/client.ts creates a typed Supabase client using src/integrations/supabase/types.ts
-  - The client is ready for use via: import { supabase } from "@/integrations/supabase/client"
+  - src/integrations/supabase/client.ts creates a typed Supabase client with SSR-safe configuration and Clerk integration
+  - The client is ready for use via: import { supabase, useSupabaseClient } from "@/integrations/supabase/client"
+  - Includes useSupabaseClient hook for Clerk authentication integration
 
 Development notes
 - Import alias "@" is preferred for intra-project imports (e.g., "@/components/...", "@/lib/utils")

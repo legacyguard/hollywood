@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useAuth, useUser } from '@clerk/clerk-react';
-import { useSupabaseClient } from '@/lib/supabase';
+import { useSupabaseClient } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
