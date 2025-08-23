@@ -8,12 +8,14 @@
 
 **CRITICAL**: This project contains sensitive configuration that must NEVER be committed to Git.
 
-### **Environment Setup:**
+### Environment Setup
+
 1. Copy the template: `cp env.template .env.local`
 2. Edit `.env.local` with your actual values
 3. Never commit `.env.local` to Git
 
-### **Security Features:**
+### Security Features
+
 - ✅ `.gitignore` blocks all environment files
 - ✅ Pre-commit hook prevents accidental commits
 - ✅ Comprehensive security documentation
@@ -21,13 +23,13 @@
 
 **For detailed security information, see [SECURITY.md](./SECURITY.md)**
 
-## Project info
+## Project Info
 
 **LegacyGuard** is a comprehensive family preparedness platform that helps users organize their digital life, protect their loved ones, and create a lasting legacy.
 
 ## Development Setup
 
-**Use your preferred IDE**
+### Use Your Preferred IDE
 
 Clone this repository and start developing locally using your favorite IDE.
 
@@ -49,13 +51,13 @@ npm i
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+### Edit a File Directly in GitHub
 
 - Navigate to the desired file(s).
 - Click the "Edit" button (pencil icon) at the top right of the file view.
 - Make your changes and commit the changes.
 
-**Use GitHub Codespaces**
+### Use GitHub Codespaces
 
 - Navigate to the main page of your repository.
 - Click on the "Code" button (green button) near the top right.
@@ -63,7 +65,7 @@ npm run dev
 - Click on "New codespace" to launch a new Codespace environment.
 - Edit files directly within the Codespace and commit and push your changes once you're done.
 
-## What technologies are used for this project?
+## What Technologies Are Used for This Project?
 
 This project is built with:
 
@@ -90,6 +92,7 @@ npm run preview
 ### Deploy to Your Platform
 
 This project can be deployed to any static hosting platform that supports SPA (Single Page Applications):
+
 - Vercel
 - Netlify
 - AWS S3 + CloudFront

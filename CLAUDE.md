@@ -39,10 +39,9 @@ This is a React application built with Vite, TypeScript, and modern web technolo
 
 #### Security Architecture
 - **Client-side encryption**: Files are encrypted using TweetNaCl before upload to Supabase
-- **User isolation**: Each user's encryption keys stored in localStorage with user ID prefix
+- **Key handling**: Never store raw keys in localStorage. Generate non-extractable keys via WebCrypto (SubtleCrypto), wrap them with a passphrase-derived key (PBKDF2/Argon2id), and persist only the wrapped bundle in IndexedDB. Keep active keys in memory; re-unlock on app launch.
 - **Supabase RLS**: Row Level Security ensures users only access their own data
 - **Secure file storage**: Encrypted files stored in Supabase Storage with user-based folder structure
-
 #### Component Organization
 - `src/components/ui/` - shadcn/ui components with custom styling
 - `src/components/features/` - Feature-specific components (DocumentUploader, DocumentList)
@@ -58,11 +57,13 @@ This is a React application built with Vite, TypeScript, and modern web technolo
 - See `supabase/README.md` and `supabase/QUICK_FIX.md` for setup details
 
 **Encryption Implementation:**
+**Encryption Implementation:**
 - Each user gets unique encryption keys stored locally
-- Files encrypted client-side before upload using public/private key pairs
-- Metadata includes nonce, ephemeral keys, and file information
-
-## Environment Configuration
+- File encryption: Generate a random symmetric key per file (e.g., nacl.secretbox/XSalsa20-Poly1305).
+- Key wrapping: Wrap the symmetric key with the user's public key (nacl.box). For sharing, wrap for each recipient.
+- Metadata: Include nonce and the ephemeral public key only (never private keys), plus algorithm identifiers and wrapped-key blobs.
+- Nonce must be unique per encryption event and 24 bytes for secretbox.
+- Include versioned header to allow future algorithm migrations.
 
 Copy `env.template` to `.env.local` and configure:
 - `VITE_CLERK_PUBLISHABLE_KEY` - Clerk authentication
@@ -81,12 +82,10 @@ Copy `env.template` to `.env.local` and configure:
 - File naming: PascalCase for components, camelCase for utilities
 
 ## Database Migrations
-
 Located in `supabase/migrations/`:
 - `001_create_documents_table.sql` - Main documents table with RLS
-- `002_disable_rls_for_dev.sql` - Development RLS configuration
+- `002_disable_rls_for_dev.sql` - LOCAL DEV ONLY. Not checked into production/staging. Prefer a dev-only seed/script outside migrations. If retained, guard with environment gating and ensure CI blocks it in non-dev branches.
 - `003_storage_policies.sql` - Storage bucket security policies
-
 ## UI System & Layout Architecture
 
 ### Layout Components
@@ -163,4 +162,4 @@ Located in `supabase/migrations/`:
 - Document uploads automatically refresh the document list via TanStack Query
 - Import alias "@" preferred for intra-project imports
 - No test runner currently configured
-- Vite dev server runs on IPv6 all interfaces (host "::"), port 8080
+- Vite dev server defaults to localhost (no external exposure). To share on LAN, run `npm run dev -- --host` explicitly and only on trusted networks.
