@@ -67,43 +67,32 @@ serve(async (req) => {
         // Get user profile from profiles table
         const { data: profile, error: profileError } = await supabaseClient
           .from('profiles')
-      case 'update_user_profile':
-        // Validate update data
-        if (!data || typeof data !== 'object') {
+          .select('*')
+          .eq('id', user.id)
+          .single()
+
+        if (profileError) {
           return new Response(
-            JSON.stringify({ error: 'Invalid update data' }),
+            JSON.stringify({ error: 'Profile not found' }),
             { 
-              status: 400, 
+              status: 404, 
               headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
             }
           )
         }
-        
-         // Update user profile
-         const { data: updateData, error: updateError } = await supabaseClient
-           .from('profiles')
-           .update(data)
-           .eq('id', user.id)
-           .select()
-           .single()
 
-         if (updateError) {
-           return new Response(
-             JSON.stringify({ error: 'Failed to update profile' }),
-             { 
-               status: 500, 
-               headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-             }
-           )
-         }
+        return new Response(
+          JSON.stringify({ profile }),
+          { 
+            status: 200, 
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+          }
+        )
 
-         return new Response(
-           JSON.stringify({ profile: updateData }),
-           { 
-             status: 200, 
-             headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-           }
-         )
+      case 'update_user_profile':
+        // Validate update data
+        if (!data || typeof data !== 'object') {
+          return new Response(
             JSON.stringify({ error: 'Invalid update data' }),
             { 
               status: 400, 
