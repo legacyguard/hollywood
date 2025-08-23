@@ -100,6 +100,8 @@ ALTER TABLE public.documents ENABLE ROW LEVEL SECURITY;
 -- Najprv odstránime existujúce politiky ak existujú
 DROP POLICY IF EXISTS "Users can view their own documents" ON public.documents;
 DROP POLICY IF EXISTS "Users can insert their own documents" ON public.documents;
+DROP POLICY IF EXISTS "Users can update their own documents" ON public.documents;
+DROP POLICY IF EXISTS "Users can delete their own documents" ON public.documents;
 -- Vytvorenie app schema pre helper funkcie (ak neexistuje)
 CREATE SCHEMA IF NOT EXISTS app;
 

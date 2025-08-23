@@ -15,7 +15,8 @@ DROP POLICY IF EXISTS "Users can delete their own documents" ON public.documents
 
 -- Vytvorenie app schema pre helper funkcie
 CREATE SCHEMA IF NOT EXISTS app;
-
+GRANT USAGE ON SCHEMA app TO authenticated, service_role;
+GRANT EXECUTE ON FUNCTION app.current_external_id() TO authenticated, service_role;
 -- Helper funkcia na čítanie Clerk subject z JWT
 CREATE OR REPLACE FUNCTION app.current_external_id()
 RETURNS TEXT
