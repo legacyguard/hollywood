@@ -73,7 +73,8 @@ USING (
 -- CREATE POLICY "Allow all operations for development"
 -- ON storage.objects FOR ALL
 -- USING (bucket_id = 'user_documents')
--- WITH CHECK (bucket_id = 'user_documents');
+-- Ensure pgcrypto is available for gen_random_uuid()
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 
 -- =========== KROK 2: Nastavenie Databázovej Tabuľky `documents` ===========

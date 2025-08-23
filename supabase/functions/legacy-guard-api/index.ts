@@ -77,21 +77,77 @@ serve(async (req) => {
           return new Response(
             JSON.stringify({ error: 'Failed to fetch legacy items' }),
             { 
-              status: 500, 
-              headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-            }
-          )
-        }
-
+     case 'update_legacy_item':
+         // Ensure we have an ID to update
+         if (!data?.id) {
+           return new Response(
+             JSON.stringify({ error: 'Item ID is required' }),
+             {
+               status: 400,
+               headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+             }
+           )
+         }
+         
+         // Extract ID and remove it from update data to prevent overwriting
+         const { id, ...updateData } = data
+         
+         // Update an existing legacy item
+         const { data: updatedItem, error: updateError } = await supabaseClient
+           .from('legacy_items')
+           .update(updateData)
+           .eq('id', id)
+           .select()
+           .single()
         return new Response(
           JSON.stringify({ items }),
           { 
             status: 200, 
             headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-          }
-        )
+      case 'delete_legacy_item':
+        // Ensure an ID was provided for deletion
+        if (!data?.id) {
+          return new Response(
+            JSON.stringify({ error: 'Item ID is required' }),
+            { 
+              status: 400, 
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+            }
+          )
+        }
 
-      case 'create_legacy_item':
+        // Delete a legacy item
+        const { error: deleteError } = await supabaseClient
+          .from('legacy_items')
+          .delete()
+          .eq('id', data.id)
+        
+        if (deleteError) {
+          return new Response(
+            JSON.stringify({ error: deleteError.message }),
+            {
+              status: 500,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            }
+     case 'get_user_progress':
+         if (!data?.user_id) {
+           return new Response(
+             JSON.stringify({ error: 'user_id is required' }),
+             { 
+               status: 400, 
+               headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+             }
+           )
+         }
+         
+         // Get user progress statistics
+         const { data: progress, error: progressError } = await supabaseClient
+           .from('legacy_items')
+           .select('status, created_at')
+           .eq('user_id', data.user_id)
+          JSON.stringify({ success: true }),
+          { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        )
         if (!data || typeof data !== 'object') {
           return new Response(
             JSON.stringify({ error: 'Item data is required' }),

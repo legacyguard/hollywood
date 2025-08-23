@@ -38,7 +38,7 @@ CREATE POLICY "Users can delete own legacy items" ON public.legacy_items
 
 -- Create function to prevent user_id changes
 CREATE OR REPLACE FUNCTION public.prevent_user_id_change()
-RETURNS trigger LANGUAGE plpgsql AS $
+RETURNS trigger LANGUAGE plpgsql AS $fn$
 DECLARE
     jwt  jsonb;
     role text;
@@ -53,7 +53,7 @@ BEGIN
         RAISE EXCEPTION 'user_id is immutable and cannot be changed';
     END IF;
     RETURN NEW;
-END $;
+END $fn$;
 -- Create trigger to enforce user_id immutability
 DROP TRIGGER IF EXISTS trg_legacy_items_user_id_immutable ON public.legacy_items;
 CREATE TRIGGER trg_legacy_items_user_id_immutable
