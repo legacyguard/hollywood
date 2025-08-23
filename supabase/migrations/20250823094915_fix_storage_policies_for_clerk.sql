@@ -1,38 +1,82 @@
 -- =================================================================
--- MIGRÁCIA: Oprava Storage Policies pre Clerk Autentifikáciu
--- Verzia: 1.1
+-- MIGRÁCIA: Produkčne pripravené Storage Policies pre Clerk Autentifikáciu
+-- Verzia: 2.0 - Production Ready
 -- =================================================================
 
--- Táto migrácia rieši problém s RLS policies pre storage
--- Pre development povolíme všetky operácie na user_documents bucket
+-- Táto migrácia implementuje bezpečné development policies a produkčné Clerk RLS policies
+-- Používame Clerk's native Supabase integration namiesto deprecated JWT template
 
 -- Najprv odstránime existujúce komplikované politiky
 DROP POLICY IF EXISTS "Allow user to read their own files" ON storage.objects;
 DROP POLICY IF EXISTS "Allow user to upload to their own folder" ON storage.objects;
 DROP POLICY IF EXISTS "Allow user to update their own files" ON storage.objects;
 DROP POLICY IF EXISTS "Allow user to delete their own files" ON storage.objects;
+DROP POLICY IF EXISTS "dev: allow authenticated users scoped to their folder" ON storage.objects;
 
--- Vytvoríme jednoduchú politiku pre development (iba ak app.env = 'development')
-DO $
-BEGIN
-  -- očakávame: ALTER DATABASE postgres SET app.env = 'development'; v dev prostredí
-  IF current_setting('app.env', true) = 'development' THEN
-    -- odstrániť predchádzajúcu politiku, ak re-migration
-    DROP POLICY IF EXISTS "dev: allow authenticated users scoped to their folder" ON storage.objects;
-    CREATE POLICY "dev: allow authenticated users scoped to their folder"
-      ON storage.objects FOR ALL
-      TO authenticated
-      USING (
-        bucket_id = 'user_documents'
-        AND name LIKE auth.uid()::text || '/%'
-      )
-      WITH CHECK (
-        bucket_id = 'user_documents'
-        AND name LIKE auth.uid()::text || '/%'
-      );
-  END IF;
-END
-$;
+-- Bezpečnejšie development policies (restricted to authenticated users and user-owned folders)
+-- Toto je stále development-friendly, ale bezpečnejšie ako blanket access
+CREATE POLICY "dev: allow authenticated users scoped to their folder"
+ON storage.objects FOR ALL
+TO authenticated
+USING (
+  bucket_id = 'user_documents'
+  AND (name LIKE auth.uid()::text || '/%')
+)
+WITH CHECK (
+  bucket_id = 'user_documents'
+  AND (name LIKE auth.uid()::text || '/%')
+);
 
--- Pre produkciu by sme mali implementovať Clerk JWT template a proper RLS policies
--- Toto je dočasné riešenie pre development
+-- Produkčné Clerk RLS policies pre storage.objects
+-- Používame Clerk's native Supabase integration ktorý automaticky mapuje JWT sub na auth.uid()
+
+-- Policy pre čítanie súborov - používatelia vidia len súbory vo svojom priečinku
+CREATE POLICY "users_can_read_own_objects"
+ON storage.objects
+FOR SELECT
+TO authenticated
+USING (
+  bucket_id = 'user_documents'
+  AND (storage.foldername(name))[1] = auth.uid()::text
+);
+
+-- Policy pre vkladanie súborov - používatelia vkladajú len do svojho priečinka
+CREATE POLICY "users_can_insert_own_objects"
+ON storage.objects
+FOR INSERT
+TO authenticated
+WITH CHECK (
+  bucket_id = 'user_documents'
+  AND (storage.foldername(name))[1] = auth.uid()::text
+);
+
+-- Policy pre aktualizáciu súborov - používatelia aktualizujú len súbory vo svojom priečinku
+CREATE POLICY "users_can_update_own_objects"
+ON storage.objects
+FOR UPDATE
+TO authenticated
+USING (
+  bucket_id = 'user_documents'
+  AND (storage.foldername(name))[1] = auth.uid()::text
+)
+WITH CHECK (
+  bucket_id = 'user_documents'
+  AND (storage.foldername(name))[1] = auth.uid()::text
+);
+
+-- Policy pre mazanie súborov - používatelia mazajú len súbory vo svojom priečinku
+CREATE POLICY "users_can_delete_own_objects"
+ON storage.objects
+FOR DELETE
+TO authenticated
+USING (
+  bucket_id = 'user_documents'
+  AND (storage.foldername(name))[1] = auth.uid()::text
+);
+
+-- Komentáre pre lepšiu orientáciu
+COMMENT ON POLICY "dev: allow authenticated users scoped to their folder" ON storage.objects IS 'Development policy - allows authenticated users access only to their own folder. NOT FOR PRODUCTION!';
+COMMENT ON POLICY "users_can_read_own_objects" ON storage.objects IS 'Production policy - users can read only files in their own folder using Clerk native integration.';
+COMMENT ON POLICY "users_can_insert_own_objects" ON storage.objects IS 'Production policy - users can insert files only into their own folder using Clerk native integration.';
+COMMENT ON POLICY "users_can_update_own_objects" ON storage.objects IS 'Production policy - users can update only files in their own folder using Clerk native integration.';
+COMMENT ON POLICY "users_can_delete_own_objects" ON storage.objects IS 'Production policy - users can delete only files in their own folder using Clerk native integration.';
