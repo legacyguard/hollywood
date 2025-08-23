@@ -23,13 +23,13 @@ const SofiaFloatingButton: React.FC<SofiaFloatingButtonProps> = ({
   useEffect(() => {
     if (!context) return;
 
-    const checkForSuggestions = () => {
+    const checkForSuggestions = async () => {
       const now = Date.now();
       
       // Don't suggest too frequently (minimum 5 minutes between suggestions)
       if (now - lastSuggestionTime < 5 * 60 * 1000) return;
 
-      const suggestion = sofiaAI.generateProactiveSuggestion(context);
+      const suggestion = await sofiaAI.generateProactiveSuggestion(context);
       
       if (suggestion && !isChatOpen) {
         setHasNewSuggestion(true);
@@ -47,12 +47,15 @@ const SofiaFloatingButton: React.FC<SofiaFloatingButtonProps> = ({
     };
 
     // Initial check
-    setTimeout(checkForSuggestions, 5000); // Wait 5 seconds after component mount
+    const timeout = setTimeout(checkForSuggestions, 5000); // Wait 5 seconds after component mount
     
     // Then check periodically
     const interval = setInterval(checkForSuggestions, 30 * 1000); // Every 30 seconds
     
-    return () => clearInterval(interval);
+    return () => {
+      clearTimeout(timeout);
+      clearInterval(interval);
+    };
   }, [context, isChatOpen, lastSuggestionTime, onToggleChat]);
 
   // Clear new suggestion indicator when chat is opened
@@ -100,7 +103,7 @@ const SofiaFloatingButton: React.FC<SofiaFloatingButtonProps> = ({
                 exit={{ rotate: 90, opacity: 0 }}
                 transition={{ duration: 0.2 }}
               >
-                <Icon name="x" className="w-6 h-6" />
+                <Icon name="close" className="w-6 h-6" />
               </motion.div>
             ) : (
               <motion.div

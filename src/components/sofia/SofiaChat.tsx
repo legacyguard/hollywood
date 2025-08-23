@@ -119,9 +119,28 @@ const SofiaChat: React.FC<SofiaChatProps> = ({
           }`}
         >
           {message.role === 'assistant' ? (
-            <ReactMarkdown className="prose prose-sm dark:prose-invert max-w-none">
-              {message.content}
-            </ReactMarkdown>
+            <div className="prose prose-sm dark:prose-invert max-w-none">
+              <ReactMarkdown
+                allowedElements={[
+                  'p',
+                  'strong',
+                  'em',
+                  'ul',
+                  'ol',
+                  'li',
+                  'code',
+                  'pre',
+                  'blockquote',
+                  'h3',
+                  'h4',
+                  'h5',
+                  'h6'
+                ]}
+                skipHtml
+              >
+                {message.content}
+              </ReactMarkdown>
+            </div>
           ) : (
             <p className="text-sm">{message.content}</p>
           )}

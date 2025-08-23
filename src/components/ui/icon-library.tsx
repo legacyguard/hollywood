@@ -160,6 +160,8 @@ export const IconMap = {
   send: Send,
   'loader-2': Loader2,
   sparkles: Sparkles,
+  shield: Shield,
+  x: X,
 } as const;
 
 // Type for icon names

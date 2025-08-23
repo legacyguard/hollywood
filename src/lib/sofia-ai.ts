@@ -1,7 +1,6 @@
-import OpenAI from 'openai';
-
 // Sofia AI Assistant - The heart of LegacyGuard
 // Provides intelligent, contextual guidance for users
+// Now uses secure server-side API to protect OpenAI API keys
 
 export interface SofiaMessage {
   id: string;
@@ -32,67 +31,19 @@ export interface SofiaContext {
 }
 
 class SofiaAI {
-  private openai: OpenAI | null = null;
+  private supabaseUrl: string;
   private initialized = false;
 
   constructor() {
-    this.initializeOpenAI();
-  }
-
-  private initializeOpenAI() {
-    const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+    this.supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
+    this.initialized = !!this.supabaseUrl;
     
-    if (!apiKey) {
-      console.warn('OpenAI API key not found. Sofia will use mock responses.');
-      return;
-    }
-
-    try {
-      this.openai = new OpenAI({
-        apiKey,
-        dangerouslyAllowBrowser: true // Note: In production, use a backend proxy
-      });
-      this.initialized = true;
-    } catch (error) {
-      console.error('Failed to initialize OpenAI:', error);
+    if (!this.initialized) {
+      console.warn('Supabase URL not found. Sofia will use mock responses.');
     }
   }
 
-  private generateSystemPrompt(context: SofiaContext): string {
-    return `You are Sofia, a warm, intelligent AI assistant for LegacyGuard - a secure family protection platform. You help users organize their digital lives, protect their families, and create meaningful legacies.
 
-PERSONALITY:
-- Warm, empathetic, and supportive
-- Professional but friendly tone
-- Focus on care, protection, and love (not fear or death)
-- Use the user's name when available: ${context.userName || 'there'}
-- Be encouraging about progress and gentle with guidance
-
-CURRENT USER CONTEXT:
-- User ID: ${context.userId}
-- Name: ${context.userName || 'Not provided'}
-- Documents uploaded: ${context.documentCount}
-- Guardians added: ${context.guardianCount}
-- Overall completion: ${context.completionPercentage}%
-- Family status: ${context.familyStatus}
-- Language preference: ${context.language}
-- Recent activity: ${context.recentActivity.join(', ') || 'No recent activity'}
-
-KEY GUIDANCE PRINCIPLES:
-1. Always focus on the positive impact of their actions
-2. Provide specific, actionable next steps
-3. Acknowledge their progress and care for family
-4. Suggest relevant documents based on what they have
-5. Gently guide toward completing important tasks
-
-RESPONSE STYLE:
-- Keep responses conversational and not too long
-- Use encouraging language: "Great progress!" "This will really help your family"
-- Provide 1-2 specific suggestions when appropriate
-- End with a question or call to action when relevant
-
-Remember: You're helping someone protect what they love most - their family.`;
-  }
 
   private getMockResponse(message: string, context: SofiaContext): string {
     const responses = {
@@ -136,50 +87,80 @@ Remember: You're helping someone protect what they love most - their family.`;
     context: SofiaContext, 
     conversationHistory: SofiaMessage[] = []
   ): Promise<string> {
-    // If OpenAI is not available, use mock responses
-    if (!this.initialized || !this.openai) {
+    // If Supabase is not available, use mock responses
+    if (!this.initialized || !this.supabaseUrl) {
       return this.getMockResponse(message, context);
     }
 
     try {
-      const systemPrompt = this.generateSystemPrompt(context);
+      console.log('Calling Sofia AI API:', `${this.supabaseUrl}/functions/v1/sofia-ai`);
       
-      // Build conversation history for context
-      const messages: OpenAI.ChatCompletionMessageParam[] = [
-        { role: 'system', content: systemPrompt }
-      ];
-
-      // Add recent conversation history (last 10 messages)
-      const recentHistory = conversationHistory.slice(-10);
-      for (const msg of recentHistory) {
-        messages.push({
-          role: msg.role,
-          content: msg.content
-        });
-      }
-
-      // Add current message
-      messages.push({ role: 'user', content: message });
-
-      const completion = await this.openai.chat.completions.create({
-        model: 'gpt-4o-mini',
-        messages,
-        max_tokens: 300,
-        temperature: 0.7,
-        presence_penalty: 0.1,
-        frequency_penalty: 0.1
+      // Call the secure server-side Sofia AI API
+      const response = await fetch(`${this.supabaseUrl}/functions/v1/sofia-ai-guided`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
+        },
+        body: JSON.stringify({
+          action: 'generate_response',
+          data: {
+            message,
+            context,
+            conversationHistory
+          }
+        })
       });
 
-      return completion.choices[0]?.message?.content || 'I apologize, but I\'m having trouble responding right now. Please try again.';
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Sofia AI API error:', response.status, errorText);
+        throw new Error(`Server error: ${response.status} - ${errorText}`);
+      }
+
+      const result = await response.json();
+      return result.response || 'I apologize, but I\'m having trouble responding right now. Please try again.';
       
     } catch (error) {
       console.error('Error generating Sofia response:', error);
+      console.log('Falling back to mock response');
       return this.getMockResponse(message, context);
     }
   }
 
   // Generate proactive suggestions based on user context
-  generateProactiveSuggestion(context: SofiaContext): string | null {
+  async generateProactiveSuggestion(context: SofiaContext): Promise<string | null> {
+    if (!this.initialized || !this.supabaseUrl) {
+      return this.getMockProactiveSuggestion(context);
+    }
+
+    try {
+      const response = await fetch(`${this.supabaseUrl}/functions/v1/sofia-ai-guided`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
+        },
+        body: JSON.stringify({
+          action: 'generate_suggestion',
+          data: { context }
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
+
+      const result = await response.json();
+      return result.suggestion;
+      
+    } catch (error) {
+      console.error('Error generating proactive suggestion:', error);
+      return this.getMockProactiveSuggestion(context);
+    }
+  }
+
+  private getMockProactiveSuggestion(context: SofiaContext): string | null {
     const { documentCount, guardianCount, completionPercentage, familyStatus } = context;
     
     // Early stage suggestions
@@ -205,7 +186,38 @@ Remember: You're helping someone protect what they love most - their family.`;
   }
 
   // Get contextual help based on current page/action
-  getContextualHelp(page: string, context: SofiaContext): string {
+  async getContextualHelp(page: string, context: SofiaContext): Promise<string> {
+    if (!this.initialized || !this.supabaseUrl) {
+      return this.getMockContextualHelp(page, context);
+    }
+
+    try {
+      const response = await fetch(`${this.supabaseUrl}/functions/v1/sofia-ai-guided`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
+        },
+        body: JSON.stringify({
+          action: 'get_contextual_help',
+          data: { page, context }
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
+
+      const result = await response.json();
+      return result.help;
+      
+    } catch (error) {
+      console.error('Error getting contextual help:', error);
+      return this.getMockContextualHelp(page, context);
+    }
+  }
+
+  private getMockContextualHelp(page: string, context: SofiaContext): string {
     switch (page) {
       case 'onboarding':
         return `Welcome to LegacyGuard, ${context.userName || 'there'}! I'm Sofia, and I'll be your guide. This journey is about creating peace of mind for you and protection for your family. Take your time - I'm here to help every step of the way.`;

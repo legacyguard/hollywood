@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useAuth, useUser } from '@clerk/clerk-react';
 import { useSofiaStore } from '@/stores/sofiaStore';
-import { SofiaContext } from '@/lib/sofia-ai';
+import { SofiaContext } from '@/lib/sofia-types';
 import { useLocation } from 'react-router-dom';
 
 interface SofiaContextProviderProps {
@@ -25,14 +25,32 @@ const SofiaContextProvider: React.FC<SofiaContextProviderProps> = ({ children })
     if (!userId || !user) return;
 
     // Get stored user progress data
+    // Get stored user progress data
     const documentsKey = `documents_${userId}`;
     const guardiansKey = `guardians_${userId}`;
-    
-    const storedDocs = localStorage.getItem(documentsKey);
-    const storedGuardians = localStorage.getItem(guardiansKey);
-    
-    const documentCount = storedDocs ? JSON.parse(storedDocs).length : 0;
-    const guardianCount = storedGuardians ? JSON.parse(storedGuardians).length : 0;
+
+    let documentCount = 0;
+    let guardianCount = 0;
+
+    try {
+      const storedDocs = localStorage.getItem(documentsKey);
+      if (storedDocs) {
+        const parsed = JSON.parse(storedDocs);
+        documentCount = Array.isArray(parsed) ? parsed.length : 0;
+      }
+    } catch (error) {
+      console.error('Failed to parse documents from localStorage:', error);
+    }
+
+    try {
+      const storedGuardians = localStorage.getItem(guardiansKey);
+      if (storedGuardians) {
+        const parsed = JSON.parse(storedGuardians);
+        guardianCount = Array.isArray(parsed) ? parsed.length : 0;
+      }
+    } catch (error) {
+      console.error('Failed to parse guardians from localStorage:', error);
+    }
 
     // Calculate completion percentage based on key milestones
     let completionPercentage = 0;
@@ -56,13 +74,18 @@ const SofiaContextProvider: React.FC<SofiaContextProviderProps> = ({ children })
     }
 
     // Determine family status from user metadata or onboarding data
-    const onboardingData = localStorage.getItem(`onboarding_${userId}`);
-    let familyStatus: SofiaContext['familyStatus'] = 'single';
-    
-    if (onboardingData) {
-      const parsed = JSON.parse(onboardingData);
-      familyStatus = parsed.familyStatus || 'single';
-    }
+// Determine family status from user metadata or onboarding data
+let familyStatus: SofiaContext['familyStatus'] = 'single';
+
+try {
+  const onboardingData = localStorage.getItem(`onboarding_${userId}`);
+  if (onboardingData) {
+    const parsed = JSON.parse(onboardingData);
+    familyStatus = parsed.familyStatus || 'single';
+  }
+} catch (error) {
+  console.error('Failed to parse onboarding data from localStorage:', error);
+}
 
     // Create comprehensive context
     const context: SofiaContext = {

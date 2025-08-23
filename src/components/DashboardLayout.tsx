@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { AppSidebar } from "@/components/AppSidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import SofiaChat from "@/components/sofia/SofiaChat";
+import SofiaChatV2 from "@/components/sofia/SofiaChatV2";
 import SofiaFloatingButton from "@/components/sofia/SofiaFloatingButton";
 
 interface DashboardLayoutProps {
@@ -37,7 +37,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           onToggleChat={toggleSofia}
           isChatOpen={isSofiaOpen}
         />
-        <SofiaChat 
+        <SofiaChatV2 
           isOpen={isSofiaOpen}
           onClose={() => setIsSofiaOpen(false)}
           variant="floating"

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { SofiaMessage, SofiaContext } from '@/lib/sofia-ai';
+import { SofiaMessage, SofiaContext } from '@/lib/sofia-types';
 
 interface SofiaStore {
   // Chat state
@@ -60,9 +60,9 @@ export const useSofiaStore = create<SofiaStore>()(
 
       updateContext: (newContext: Partial<SofiaContext>) => {
         set((state) => ({
-          context: state.context 
+          context: state.context
             ? { ...state.context, ...newContext }
-            : null
+            : newContext as SofiaContext
         }));
       },
 
