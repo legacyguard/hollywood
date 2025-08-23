@@ -3,7 +3,7 @@ import { useEffect } from "react";
 
 const FileDropZone = () => {
   useEffect(() => {
-    let myDropzone = new Dropzone("#demo-upload", { url: "/file/post" });
+    const myDropzone = new Dropzone("#demo-upload", { url: "/file/post" });
 
     return () => {
       (myDropzone as any).destroy();

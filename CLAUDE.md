@@ -166,6 +166,8 @@ Located in `supabase/migrations/`:
 - Even if tasks/prompts are in Slovak/Czech, implement in English
 - If localization needed, extend i18n resources but keep English defaults
 - Replace any Slovak/Czech text outside i18n with English
+- **Exception**: i18n translation keys and values for internationalization can be in Slovak/Czech
+- All other code, variable names, function names, and comments must remain in English
 
 ## Development Notes
 
