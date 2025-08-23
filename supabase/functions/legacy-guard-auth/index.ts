@@ -38,7 +38,29 @@ serve(async (req) => {
     }
 
     // Get the request body
-    const { action, data } = await req.json()
+    const body = await req.json()
+    
+    if (!body || typeof body !== 'object') {
+      return new Response(
+        JSON.stringify({ error: 'Invalid request body' }),
+        { 
+          status: 400, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      )
+    }
+
+    const { action, data } = body
+    
+    if (!action) {
+      return new Response(
+        JSON.stringify({ error: 'Action is required' }),
+        { 
+          status: 400, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      )
+    }
 
     switch (action) {
       case 'get_user_profile':
@@ -68,10 +90,24 @@ serve(async (req) => {
         )
 
       case 'update_user_profile':
+        // Validate update data
+        if (!data || typeof data !== 'object') {
+          return new Response(
+            JSON.stringify({ error: 'Invalid update data' }),
+            { 
+              status: 400, 
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+            }
+          )
+        }
+        
+        // Prevent updating sensitive fields
+        const { id, created_at, updated_at, ...safeUpdateData } = data
+        
         // Update user profile
         const { data: updateData, error: updateError } = await supabaseClient
           .from('profiles')
-          .update(data)
+          .update(safeUpdateData)
           .eq('id', user.id)
           .select()
           .single()

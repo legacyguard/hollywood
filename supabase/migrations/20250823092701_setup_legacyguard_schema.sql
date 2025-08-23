@@ -12,14 +12,17 @@ ON CONFLICT (id) DO NOTHING;
 
 -- Funkcia pre extrakciu user ID z file path (pre Clerk autentifikáciu)
 CREATE OR REPLACE FUNCTION public.extract_user_id_from_path(file_path TEXT)
-RETURNS TEXT AS $$
+RETURNS TEXT
+LANGUAGE plpgsql
+IMMUTABLE
+STRICT
+AS $
 BEGIN
   -- File path format: "user_123abc/file.pdf"
   -- Extract first part before first slash
   RETURN split_part(file_path, '/', 1);
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-
+$;
 -- Politiky pre Storage sa musia nastaviť zvlášť, keďže nie sú súčasťou štandardných migrácií DB.
 -- Tieto politiky zabezpečia, že používatelia môžu manipulovať len so svojimi súbormi.
 
@@ -92,19 +95,19 @@ ALTER TABLE public.documents ENABLE ROW LEVEL SECURITY;
 -- Najprv odstránime existujúce politiky ak existujú
 DROP POLICY IF EXISTS "Users can view their own documents" ON public.documents;
 DROP POLICY IF EXISTS "Users can insert their own documents" ON public.documents;
-DROP POLICY IF EXISTS "Users can update their own documents" ON public.documents;
-DROP POLICY IF EXISTS "Users can delete their own documents" ON public.documents;
-
 -- Politiky pre tabuľku `documents` - pre Clerk autentifikáciu
 CREATE POLICY "Users can view their own documents" ON public.documents
-  FOR SELECT USING (user_id = current_setting('request.jwt.claims', true)::json->>'sub');
+  FOR SELECT USING (user_id = auth.uid());
 
 CREATE POLICY "Users can insert their own documents" ON public.documents
-  FOR INSERT WITH CHECK (user_id = current_setting('request.jwt.claims', true)::json->>'sub');
+  FOR INSERT WITH CHECK (user_id = auth.uid());
 
 CREATE POLICY "Users can update their own documents" ON public.documents
-  FOR UPDATE USING (user_id = current_setting('request.jwt.claims', true)::json->>'sub');
+  FOR UPDATE USING (user_id = auth.uid())
+  WITH CHECK (user_id = auth.uid());
 
+CREATE POLICY "Users can delete their own documents" ON public.documents
+  FOR DELETE USING (user_id = auth.uid());
 CREATE POLICY "Users can delete their own documents" ON public.documents
   FOR DELETE USING (user_id = current_setting('request.jwt.claims', true)::json->>'sub');
 
