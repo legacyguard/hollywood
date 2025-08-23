@@ -26,11 +26,31 @@ CREATE POLICY "Users can view own legacy items" ON public.legacy_items
 CREATE POLICY "Users can insert own legacy items" ON public.legacy_items
     FOR INSERT WITH CHECK (auth.uid() = user_id);
 
+-- Updated policy with WITH CHECK to prevent ownership transfer
+DROP POLICY IF EXISTS "Users can update own legacy items" ON public.legacy_items;
 CREATE POLICY "Users can update own legacy items" ON public.legacy_items
-    FOR UPDATE USING (auth.uid() = user_id);
+    FOR UPDATE
+    USING (auth.uid() = user_id)
+    WITH CHECK (auth.uid() = user_id);
 
 CREATE POLICY "Users can delete own legacy items" ON public.legacy_items
     FOR DELETE USING (auth.uid() = user_id);
+
+-- Create function to prevent user_id changes
+CREATE OR REPLACE FUNCTION public.prevent_user_id_change()
+RETURNS trigger LANGUAGE plpgsql AS $$
+BEGIN
+    IF NEW.user_id IS DISTINCT FROM OLD.user_id THEN
+        RAISE EXCEPTION 'user_id is immutable and cannot be changed';
+    END IF;
+    RETURN NEW;
+END $$;
+
+-- Create trigger to enforce user_id immutability
+DROP TRIGGER IF EXISTS trg_legacy_items_user_id_immutable ON public.legacy_items;
+CREATE TRIGGER trg_legacy_items_user_id_immutable
+    BEFORE UPDATE OF user_id ON public.legacy_items
+    FOR EACH ROW EXECUTE FUNCTION public.prevent_user_id_change();
 
 -- Create indexes for better performance
 CREATE INDEX idx_legacy_items_user_id ON public.legacy_items(user_id);

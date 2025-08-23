@@ -54,6 +54,10 @@ ON storage.objects FOR UPDATE
 USING (
   bucket_id = 'user_documents' 
   AND public.extract_user_id_from_path(name) = current_setting('request.jwt.claims', true)::json->>'sub'
+)
+WITH CHECK (
+  bucket_id = 'user_documents' 
+  AND public.extract_user_id_from_path(name) = current_setting('request.jwt.claims', true)::json->>'sub'
 );
 
 -- Politika pre Mazanie (DELETE) - pre Clerk autentifikáciu
@@ -97,17 +101,16 @@ DROP POLICY IF EXISTS "Users can view their own documents" ON public.documents;
 DROP POLICY IF EXISTS "Users can insert their own documents" ON public.documents;
 -- Politiky pre tabuľku `documents` - pre Clerk autentifikáciu
 CREATE POLICY "Users can view their own documents" ON public.documents
-  FOR SELECT USING (user_id = auth.uid());
+  FOR SELECT USING (user_id = current_setting('request.jwt.claims', true)::json->>'sub');
 
 CREATE POLICY "Users can insert their own documents" ON public.documents
-  FOR INSERT WITH CHECK (user_id = auth.uid());
+  FOR INSERT WITH CHECK (user_id = current_setting('request.jwt.claims', true)::json->>'sub');
 
 CREATE POLICY "Users can update their own documents" ON public.documents
-  FOR UPDATE USING (user_id = auth.uid())
-  WITH CHECK (user_id = auth.uid());
+  FOR UPDATE 
+  USING (user_id = current_setting('request.jwt.claims', true)::json->>'sub')
+  WITH CHECK (user_id = current_setting('request.jwt.claims', true)::json->>'sub');
 
-CREATE POLICY "Users can delete their own documents" ON public.documents
-  FOR DELETE USING (user_id = auth.uid());
 CREATE POLICY "Users can delete their own documents" ON public.documents
   FOR DELETE USING (user_id = current_setting('request.jwt.claims', true)::json->>'sub');
 
