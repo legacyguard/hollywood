@@ -24,7 +24,7 @@ export function ClerkProvider({ children }: { children: React.ReactNode }) {
         // Layout configuration
         layout: {
           helpPageUrl: 'https://help.legacyguard.com',
-          logoImageUrl: '/logo.svg',
+          logoImageUrl: '/shield-icon.svg',
           logoPlacement: 'inside',
           privacyPageUrl: 'https://legacyguard.com/privacy',
           showOptionalFields: false,

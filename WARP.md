@@ -5,6 +5,7 @@ This file provides guidance to WARP (warp.dev) when working with code in this re
 Repository overview
 - Stack: Vite + React + TypeScript, Tailwind CSS, shadcn/ui primitives, React Router, TanStack Query, Supabase client
 - Path alias: "@" -> ./src (configured in vite.config.ts and tsconfig)
+- Application: LegacyGuard - Family Preparedness Platform
 
 Common commands
 - Install dependencies
@@ -25,7 +26,7 @@ Common commands
 High-level architecture
 - Tooling and config
   - Vite (vite.config.ts)
-    - Plugins: @vitejs/plugin-react-swc; development-only: lovable-tagger
+    - Plugins: @vitejs/plugin-react-swc
     - Resolve alias: "@" -> ./src
     - Dev server: host "::", port 8080
   - TypeScript
@@ -86,7 +87,7 @@ Development notes
 
 Important README context
 - Local development: ensure Node.js and npm are installed; use npm install and npm run dev
-- The project was scaffolded via Lovable; publishing can be initiated from Lovable’s UI (Share -> Publish)
+- The project is a standalone React/Vite application that can be deployed to any static hosting service
 
 Product onboarding narrative (Guardian of Memories)
 - Theme: The user becomes a "Guardian of Memories" guided by a friendly "Firefly". Tone is calming, dignified, celebratory of care and love (not fear or loss). All UI copy must reflect this.

@@ -1,4 +1,4 @@
-# Welcome to your Lovable project
+# LegacyGuard - Family Preparedness Platform
 
 ## Language Requirement
 
@@ -23,21 +23,13 @@
 
 ## Project info
 
-**URL**: https://lovable.dev/projects/d53db0fd-7693-4963-9f68-f70f4a28aeb7
+**LegacyGuard** is a comprehensive family preparedness platform that helps users organize their digital life, protect their loved ones, and create a lasting legacy.
 
-## How can I edit this code?
-
-There are several ways of editing your application.
-
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/d53db0fd-7693-4963-9f68-f70f4a28aeb7) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
+## Development Setup
 
 **Use your preferred IDE**
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+Clone this repository and start developing locally using your favorite IDE.
 
 The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
@@ -81,14 +73,29 @@ This project is built with:
 - shadcn-ui
 - Tailwind CSS
 
-## How can I deploy this project?
+## Deployment
 
-Simply open [Lovable](https://lovable.dev/projects/d53db0fd-7693-4963-9f68-f70f4a28aeb7) and click on Share -> Publish.
+### Build for Production
 
-## Can I connect a custom domain to my Lovable project?
+```sh
+npm run build
+```
 
-Yes, you can!
+### Preview Production Build
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+```sh
+npm run preview
+```
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+### Deploy to Your Platform
+
+This project can be deployed to any static hosting platform that supports SPA (Single Page Applications):
+- Vercel
+- Netlify
+- AWS S3 + CloudFront
+- Google Cloud Platform
+- Azure Static Web Apps
+
+## Custom Domain
+
+To connect a custom domain, configure it with your hosting provider's DNS settings.
