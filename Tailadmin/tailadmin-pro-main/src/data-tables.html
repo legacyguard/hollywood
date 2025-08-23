@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Data Tables | TailAdmin - Tailwind CSS Admin Dashboard Template
+    </title>
+  </head>
+
+  <body
+    x-data="{ page: 'dataTables', 'loaded': true, 'darkMode': true, 'stickyMenu': false, 'sidebarToggle': false, 'scrollTop': false }"
+    x-init="
+          darkMode = JSON.parse(localStorage.getItem('darkMode'));
+          $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))"
+    :class="{'dark text-bodydark bg-boxdark-2': darkMode === true}"
+  >
+    <!-- ===== Preloader Start ===== -->
+    <include src="./partials/preloader.html"></include>
+    <!-- ===== Preloader End ===== -->
+
+    <!-- ===== Page Wrapper Start ===== -->
+    <div class="flex h-screen overflow-hidden">
+      <!-- ===== Sidebar Start ===== -->
+      <include src="./partials/sidebar.html"></include>
+      <!-- ===== Sidebar End ===== -->
+
+      <!-- ===== Content Area Start ===== -->
+      <div
+        class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden"
+      >
+        <!-- ===== Header Start ===== -->
+        <include src="./partials/header.html" />
+        <!-- ===== Header End ===== -->
+
+        <!-- ===== Main Content Start ===== -->
+        <main>
+          <div class="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
+            <!-- Breadcrumb Start -->
+            <div
+              class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
+            >
+              <h2 class="text-title-md2 font-bold text-black dark:text-white">
+                Data Tables
+              </h2>
+
+              <nav>
+                <ol class="flex items-center gap-2">
+                  <li>
+                    <a class="font-medium" href="index.html">Dashboard /</a>
+                  </li>
+                  <li class="font-medium text-primary">Data Tables</li>
+                </ol>
+              </nav>
+            </div>
+            <!-- Breadcrumb End -->
+
+            <div class="flex flex-col gap-5 md:gap-7 2xl:gap-10">
+              <!-- ====== Data Table One Start -->
+              <div
+                class="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark"
+              >
+                <div
+                  class="data-table-common data-table-one max-w-full overflow-x-auto"
+                >
+                  <table class="table w-full table-auto" id="dataTableOne">
+                    <thead>
+                      <tr>
+                        <th>
+                          <div class="flex items-center gap-1.5">
+                            <p>Name/ID</p>
+                            <div class="inline-flex flex-col space-y-[2px]">
+                              <span class="inline-block">
+                                <svg
+                                  class="fill-current"
+                                  width="10"
+                                  height="5"
+                                  viewBox="0 0 10 5"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path d="M5 0L0 5H10L5 0Z" fill="" />
+                                </svg>
+                              </span>
+                              <span class="inline-block">
+                                <svg
+                                  class="fill-current"
+                                  width="10"
+                                  height="5"
+                                  viewBox="0 0 10 5"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M5 5L10 0L-4.37114e-07 8.74228e-07L5 5Z"
+                                    fill=""
+                                  />
+                                </svg>
+                              </span>
+                            </div>
+                          </div>
+                        </th>
+                        <th>
+                          <div class="flex items-center gap-1.5">
+                            <p>Position</p>
+                            <div class="inline-flex flex-col space-y-[2px]">
+                              <span class="inline-block">
+                                <svg
+                                  class="fill-current"
+                                  width="10"
+                                  height="5"
+                                  viewBox="0 0 10 5"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path d="M5 0L0 5H10L5 0Z" fill="" />
+                                </svg>
+                              </span>
+                              <span class="inline-block">
+                                <svg
+                                  class="fill-current"
+                                  width="10"
+                                  height="5"
+                                  viewBox="0 0 10 5"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M5 5L10 0L-4.37114e-07 8.74228e-07L5 5Z"
+                                    fill=""
+                                  />
+                                </svg>
+                              </span>
+                            </div>
+                          </div>
+                        </th>
+                        <th data-type="date" data-format="YYYY/DD/MM">
+                          <div class="flex items-center gap-1.5">
+                            <p>BDay</p>
+                            <div class="inline-flex flex-col space-y-[2px]">
+                              <span class="inline-block">
+                                <svg
+                                  class="fill-current"
+                                  width="10"
+                                  height="5"
+                                  viewBox="0 0 10 5"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path d="M5 0L0 5H10L5 0Z" fill="" />
+                                </svg>
+                              </span>
+                              <span class="inline-block">
+                                <svg
+                                  class="fill-current"
+                                  width="10"
+                                  height="5"
+                                  viewBox="0 0 10 5"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M5 5L10 0L-4.37114e-07 8.74228e-07L5 5Z"
+                                    fill=""
+                                  />
+                                </svg>
+                              </span>
+                            </div>
+                          </div>
+                        </th>
+                        <th>
+                          <div class="flex items-center gap-1.5">
+                            <p>Email/Phone</p>
+                            <div class="inline-flex flex-col space-y-[2px]">
+                              <span class="inline-block">
+                                <svg
+                                  class="fill-current"
+                                  width="10"
+                                  height="5"
+                                  viewBox="0 0 10 5"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path d="M5 0L0 5H10L5 0Z" fill="" />
+                                </svg>
+                              </span>
+                              <span class="inline-block">
+                                <svg
+                                  class="fill-current"
+                                  width="10"
+                                  height="5"
+                                  viewBox="0 0 10 5"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M5 5L10 0L-4.37114e-07 8.74228e-07L5 5Z"
+                                    fill=""
+                                  />
+                                </svg>
+                              </span>
+                            </div>
+                          </div>
+                        </th>
+                        <th>
+                          <div class="flex items-center gap-1.5">
+                            <p>Address</p>
+                            <div class="inline-flex flex-col space-y-[2px]">
+                              <span class="inline-block">
+                                <svg
+                                  class="fill-current"
+                                  width="10"
+                                  height="5"
+                                  viewBox="0 0 10 5"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path d="M5 0L0 5H10L5 0Z" fill="" />
+                                </svg>
+                              </span>
+                              <span class="inline-block">
+                                <svg
+                                  class="fill-current"
+                                  width="10"
+                                  height="5"
+                                  viewBox="0 0 10 5"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M5 5L10 0L-4.37114e-07 8.74228e-07L5 5Z"
+                                    fill=""
+                                  />
+                                </svg>
+                              </span>
+                            </div>
+                          </div>
+                        </th>
+                        <th>
+                          <div class="flex items-center gap-1.5">
+                            <p>Status</p>
+                            <div class="inline-flex flex-col space-y-[2px]">
+                              <span class="inline-block">
+                                <svg
+                                  class="fill-current"
+                                  width="10"
+                                  height="5"
+                                  viewBox="0 0 10 5"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path d="M5 0L0 5H10L5 0Z" fill="" />
+                                </svg>
+                              </span>
+                              <span class="inline-block">
+                                <svg
+                                  class="fill-current"
+                                  width="10"
+                                  height="5"
+                                  viewBox="0 0 10 5"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M5 5L10 0L-4.37114e-07 8.74228e-07L5 5Z"
+                                    fill=""
+                                  />
+                                </svg>
+                              </span>
+                            </div>
+                          </div>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Andrio Maksim</td>
+                        <td>Designer</td>
+                        <td>25 Nov, 1989</td>
+                        <td>maksim45@gmail.com</td>
+                        <td>Block A, Demo Park</td>
+                        <td>Full-time</td>
+                      </tr>
+                      <tr>
+                        <td>Brielle Kuphal</td>
+                        <td>Developer</td>
+                        <td>25 Nov, 1977</td>
+                        <td>Brielle45@gmail.com</td>
+                        <td>Block A, Demo Park</td>
+                        <td>Full-time</td>
+                      </tr>
+                      <tr>
+                        <td>Barney Murray</td>
+                        <td>Designer</td>
+                        <td>25 Nov, 1966</td>
+                        <td>Barney@gmail.com</td>
+                        <td>Block A, Demo Park</td>
+                        <td>Part-time</td>
+                      </tr>
+                      <tr>
+                        <td>Ressie Ruecker</td>
+                        <td>Designer</td>
+                        <td>25 Nov, 1955</td>
+                        <td>Ressie@gmail.com</td>
+                        <td>Block A, Demo Park</td>
+                        <td>Full-time</td>
+                      </tr>
+                      <tr>
+                        <td>Teresa Mertz</td>
+                        <td>Designer</td>
+                        <td>25 Nov, 1979</td>
+                        <td>Teresa@gmail.com</td>
+                        <td>Block A, Demo Park</td>
+                        <td>Part-time</td>
+                      </tr>
+                      <tr>
+                        <td>Chelsey Hackett</td>
+                        <td>Designer</td>
+                        <td>25 Nov, 1969</td>
+                        <td>Chelsey@gmail.com</td>
+                        <td>Block A, Demo Park</td>
+                        <td>Full-time</td>
+                      </tr>
+                      <tr>
+                        <td>Tatyana Metz</td>
+                        <td>Designer</td>
+                        <td>25 Nov, 1989</td>
+                        <td>Tatyana@gmail.com</td>
+                        <td>Block A, Demo Park</td>
+                        <td>Part-time</td>
+                      </tr>
+                      <tr>
+                        <td>Oleta Harvey</td>
+                        <td>Designer</td>
+                        <td>25 Nov, 1979</td>
+                        <td>Oleta@gmail.com</td>
+                        <td>Block A, Demo Park</td>
+                        <td>Full-time</td>
+                      </tr>
+                      <tr>
+                        <td>Bette Haag</td>
+                        <td>Designer</td>
+                        <td>25 Nov, 1979</td>
+                        <td>Bette@gmail.com</td>
+                        <td>Block A, Demo Park</td>
+                        <td>Part-time</td>
+                      </tr>
+                      <tr>
+                        <td>Meda Ebert</td>
+                        <td>Designer</td>
+                        <td>25 Nov, 1945</td>
+                        <td>Meda@gmail.com</td>
+                        <td>Block A, Demo Park</td>
+                        <td>Full-time</td>
+                      </tr>
+                      <tr>
+                        <td>Elissa Stroman</td>
+                        <td>Designer</td>
+                        <td>25 Nov, 1945</td>
+                        <td>Elissa@gmail.com</td>
+                        <td>Block A, Demo Park</td>
+                        <td>Part-time</td>
+                      </tr>
+                      <tr>
+                        <td>Sid Swaniawski</td>
+                        <td>Designer</td>
+                        <td>25 Nov, 1945</td>
+                        <td>Sid@gmail.com</td>
+                        <td>Block A, Demo Park</td>
+                        <td>Full-time</td>
+                      </tr>
+                      <tr>
+                        <td>Madonna Hahn</td>
+                        <td>Developer</td>
+                        <td>25 Nov, 1945</td>
+                        <td>Madonna@gmail.com</td>
+                        <td>Block A, Demo Park</td>
+                        <td>Part-time</td>
+                      </tr>
+                      <tr>
+                        <td>Waylon Kihn</td>
+                        <td>Developer</td>
+                        <td>25 Nov, 1975</td>
+                        <td>Waylon@gmail.com</td>
+                        <td>Block A, Demo Park</td>
+                        <td>Full-time</td>
+                      </tr>
+                      <tr>
+                        <td>Jaunita Lindgren</td>
+                        <td>Developer</td>
+                        <td>25 Nov, 1945</td>
+                        <td>Jaunita@gmail.com</td>
+                        <td>Block A, Demo Park</td>
+                        <td>Part-time</td>
+                      </tr>
+                      <tr>
+                        <td>Lenora MacGyver</td>
+                        <td>Developer</td>
+                        <td>25 Nov, 1998</td>
+                        <td>Lenora@gmail.com</td>
+                        <td>Block A, Demo Park</td>
+                        <td>Full-time</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <!-- ====== Data Table One End -->
+
+              <!-- ====== Data Table Two Start -->
+              <div
+                class="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark"
+              >
+                <div
+                  class="data-table-common data-table-two max-w-full overflow-x-auto"
+                >
+                  <table class="table w-full table-auto" id="dataTableTwo">
+                    <thead>
+                      <tr>
+                        <th>
+                          <div
+                            class="flex items-center justify-between gap-1.5"
+                          >
+                            <p>Name</p>
+                            <div class="inline-flex flex-col space-y-[2px]">
+                              <span class="inline-block">
+                                <svg
+                                  class="fill-current"
+                                  width="10"
+                                  height="5"
+                                  viewBox="0 0 10 5"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path d="M5 0L0 5H10L5 0Z" fill="" />
+                                </svg>
+                              </span>
+                              <span class="inline-block">
+                                <svg
+                                  class="fill-current"
+                                  width="10"
+                                  height="5"
+                                  viewBox="0 0 10 5"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M5 5L10 0L-4.37114e-07 8.74228e-07L5 5Z"
+                                    fill=""
+                                  />
+                                </svg>
+                              </span>
+                            </div>
+                          </div>
+                        </th>
+                        <th>
+                          <div
+                            class="flex items-center justify-between gap-1.5"
+                          >
+                            <p>Position</p>
+                            <div class="inline-flex flex-col space-y-[2px]">
+                              <span class="inline-block">
+                                <svg
+                                  class="fill-current"
+                                  width="10"
+                                  height="5"
+                                  viewBox="0 0 10 5"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path d="M5 0L0 5H10L5 0Z" fill="" />
+                                </svg>
+                              </span>
+                              <span class="inline-block">
+                                <svg
+                                  class="fill-current"
+                                  width="10"
+                                  height="5"
+                                  viewBox="0 0 10 5"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M5 5L10 0L-4.37114e-07 8.74228e-07L5 5Z"
+                                    fill=""
+                                  />
+                                </svg>
+                              </span>
+                            </div>
+                          </div>
+                        </th>
+                        <th>
+                          <div
+                            class="flex items-center justify-between gap-1.5"
+                          >
+                            <p>Office</p>
+                            <div class="inline-flex flex-col space-y-[2px]">
+                              <span class="inline-block">
+                                <svg
+                                  class="fill-current"
+                                  width="10"
+                                  height="5"
+                                  viewBox="0 0 10 5"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path d="M5 0L0 5H10L5 0Z" fill="" />
+                                </svg>
+                              </span>
+                              <span class="inline-block">
+                                <svg
+                                  class="fill-current"
+                                  width="10"
+                                  height="5"
+                                  viewBox="0 0 10 5"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M5 5L10 0L-4.37114e-07 8.74228e-07L5 5Z"
+                                    fill=""
+                                  />
+                                </svg>
+                              </span>
+                            </div>
+                          </div>
+                        </th>
+                        <th>
+                          <div
+                            class="flex items-center justify-between gap-1.5"
+                          >
+                            <p>Age</p>
+                            <div class="inline-flex flex-col space-y-[2px]">
+                              <span class="inline-block">
+                                <svg
+                                  class="fill-current"
+                                  width="10"
+                                  height="5"
+                                  viewBox="0 0 10 5"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path d="M5 0L0 5H10L5 0Z" fill="" />
+                                </svg>
+                              </span>
+                              <span class="inline-block">
+                                <svg
+                                  class="fill-current"
+                                  width="10"
+                                  height="5"
+                                  viewBox="0 0 10 5"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M5 5L10 0L-4.37114e-07 8.74228e-07L5 5Z"
+                                    fill=""
+                                  />
+                                </svg>
+                              </span>
+                            </div>
+                          </div>
+                        </th>
+                        <th data-type="date" data-format="YYYY/DD/MM">
+                          <div
+                            class="flex items-center justify-between gap-1.5"
+                          >
+                            <p>Start Date</p>
+                            <div class="inline-flex flex-col space-y-[2px]">
+                              <span class="inline-block">
+                                <svg
+                                  class="fill-current"
+                                  width="10"
+                                  height="5"
+                                  viewBox="0 0 10 5"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path d="M5 0L0 5H10L5 0Z" fill="" />
+                                </svg>
+                              </span>
+                              <span class="inline-block">
+                                <svg
+                                  class="fill-current"
+                                  width="10"
+                                  height="5"
+                                  viewBox="0 0 10 5"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M5 5L10 0L-4.37114e-07 8.74228e-07L5 5Z"
+                                    fill=""
+                                  />
+                                </svg>
+                              </span>
+                            </div>
+                          </div>
+                        </th>
+                        <th>
+                          <div
+                            class="flex items-center justify-between gap-1.5"
+                          >
+                            <p>Salary</p>
+                            <div class="inline-flex flex-col space-y-[2px]">
+                              <span class="inline-block">
+                                <svg
+                                  class="fill-current"
+                                  width="10"
+                                  height="5"
+                                  viewBox="0 0 10 5"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path d="M5 0L0 5H10L5 0Z" fill="" />
+                                </svg>
+                              </span>
+                              <span class="inline-block">
+                                <svg
+                                  class="fill-current"
+                                  width="10"
+                                  height="5"
+                                  viewBox="0 0 10 5"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M5 5L10 0L-4.37114e-07 8.74228e-07L5 5Z"
+                                    fill=""
+                                  />
+                                </svg>
+                              </span>
+                            </div>
+                          </div>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Cedric Kelly</td>
+                        <td>Senior Javascript Developer</td>
+                        <td>Edinburgh</td>
+                        <td>22</td>
+                        <td>2012/03/29</td>
+                        <td>$433,060</td>
+                      </tr>
+                      <tr>
+                        <td>Brielle Kuphal</td>
+                        <td>Senior Javascript Developer</td>
+                        <td>Edinburgh</td>
+                        <td>25</td>
+                        <td>2012/03/29</td>
+                        <td>$433,060</td>
+                      </tr>
+                      <tr>
+                        <td>Barney Murray</td>
+                        <td>Senior Backend Developer</td>
+                        <td>amsterdam</td>
+                        <td>29</td>
+                        <td>2010/05/01</td>
+                        <td>$424,785</td>
+                      </tr>
+                      <tr>
+                        <td>Ressie Ruecker</td>
+                        <td>Senior Frontend Developer</td>
+                        <td>Jakarta</td>
+                        <td>27</td>
+                        <td>2013/07/01</td>
+                        <td>$785,210</td>
+                      </tr>
+                      <tr>
+                        <td>Teresa Mertz</td>
+                        <td>Senior Designer</td>
+                        <td>New Caledonia</td>
+                        <td>25</td>
+                        <td>2014/05/30</td>
+                        <td>$532,126</td>
+                      </tr>
+                      <tr>
+                        <td>Chelsey Hackett</td>
+                        <td>Product Manager</td>
+                        <td>NewYork</td>
+                        <td>26</td>
+                        <td>2011/09/30</td>
+                        <td>$421,541</td>
+                      </tr>
+                      <tr>
+                        <td>Tatyana Metz</td>
+                        <td>Senior Product Manager</td>
+                        <td>NewYork</td>
+                        <td>28</td>
+                        <td>2009/09/30</td>
+                        <td>$852,541</td>
+                      </tr>
+                      <tr>
+                        <td>Oleta Harvey</td>
+                        <td>Junior Product Manager</td>
+                        <td>California</td>
+                        <td>25</td>
+                        <td>2015/10/30</td>
+                        <td>$654,444</td>
+                      </tr>
+                      <tr>
+                        <td>Bette Haag</td>
+                        <td>Junior Product Manager</td>
+                        <td>California</td>
+                        <td>29</td>
+                        <td>2017/12/31</td>
+                        <td>$541,111</td>
+                      </tr>
+                      <tr>
+                        <td>Meda Ebert</td>
+                        <td>Junior Web Developer</td>
+                        <td>Amsterdam</td>
+                        <td>27</td>
+                        <td>2015/10/31</td>
+                        <td>$651,456</td>
+                      </tr>
+                      <tr>
+                        <td>Elissa Stroman</td>
+                        <td>Junior React Developer</td>
+                        <td>Kuala Lumpur</td>
+                        <td>29</td>
+                        <td>2008/05/31</td>
+                        <td>$566,123</td>
+                      </tr>
+                      <tr>
+                        <td>Sid Swaniawski</td>
+                        <td>Junior React Developer</td>
+                        <td>Las Vegas</td>
+                        <td>29</td>
+                        <td>2009/09/01</td>
+                        <td>$852,456</td>
+                      </tr>
+                      <tr>
+                        <td>Madonna Hahn</td>
+                        <td>Senior Vue Developer</td>
+                        <td>New York</td>
+                        <td>27</td>
+                        <td>2006/10/01</td>
+                        <td>$456,147</td>
+                      </tr>
+                      <tr>
+                        <td>Waylon Kihn</td>
+                        <td>Senior HTML Developer</td>
+                        <td>Amsterdam</td>
+                        <td>23</td>
+                        <td>2017/11/01</td>
+                        <td>$321,254</td>
+                      </tr>
+                      <tr>
+                        <td>Jaunita Lindgren</td>
+                        <td>Senior Backend Developer</td>
+                        <td>Jakarta</td>
+                        <td>25</td>
+                        <td>2018/12/01</td>
+                        <td>$321,254</td>
+                      </tr>
+                      <tr>
+                        <td>Lenora MacGyver</td>
+                        <td>Junior HTML Developer</td>
+                        <td>Carolina</td>
+                        <td>27</td>
+                        <td>2015/09/31</td>
+                        <td>$852,254</td>
+                      </tr>
+                      <tr>
+                        <td>Edyth McCullough</td>
+                        <td>Senior Javascript Developer</td>
+                        <td>Edinburgh</td>
+                        <td>25</td>
+                        <td>2012/03/29</td>
+                        <td>$433,060</td>
+                      </tr>
+                      <tr>
+                        <td>Ibrahim Stroman</td>
+                        <td>Senior Backend Developer</td>
+                        <td>amsterdam</td>
+                        <td>29</td>
+                        <td>2010/05/01</td>
+                        <td>$424,785</td>
+                      </tr>
+                      <tr>
+                        <td>Katelynn Reichert</td>
+                        <td>Senior Frontend Developer</td>
+                        <td>Jakarta</td>
+                        <td>27</td>
+                        <td>2013/07/01</td>
+                        <td>$785,210</td>
+                      </tr>
+                      <tr>
+                        <td>Logan Kiehn</td>
+                        <td>Senior Designer</td>
+                        <td>New Caledonia</td>
+                        <td>25</td>
+                        <td>2014/05/30</td>
+                        <td>$532,126</td>
+                      </tr>
+                      <tr>
+                        <td>Chelsey Hackett</td>
+                        <td>Product Manager</td>
+                        <td>NewYork</td>
+                        <td>26</td>
+                        <td>2011/09/30</td>
+                        <td>$421,541</td>
+                      </tr>
+                      <tr>
+                        <td>Tatyana Metz</td>
+                        <td>Senior Product Manager</td>
+                        <td>NewYork</td>
+                        <td>28</td>
+                        <td>2009/09/30</td>
+                        <td>$852,541</td>
+                      </tr>
+                      <tr>
+                        <td>Oleta Harvey</td>
+                        <td>Junior Product Manager</td>
+                        <td>California</td>
+                        <td>25</td>
+                        <td>2015/10/30</td>
+                        <td>$654,444</td>
+                      </tr>
+                      <tr>
+                        <td>Rogers Stanton</td>
+                        <td>Junior Product Manager</td>
+                        <td>California</td>
+                        <td>29</td>
+                        <td>2017/12/31</td>
+                        <td>$541,111</td>
+                      </tr>
+                      <tr>
+                        <td>Alanis Torp</td>
+                        <td>Junior Web Developer</td>
+                        <td>Amsterdam</td>
+                        <td>27</td>
+                        <td>2015/10/31</td>
+                        <td>$651,456</td>
+                      </tr>
+                      <tr>
+                        <td>Jarvis Bauch</td>
+                        <td>Junior React Developer</td>
+                        <td>Kuala Lumpur</td>
+                        <td>29</td>
+                        <td>2008/05/31</td>
+                        <td>$566,123</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <!-- ====== Data Table Two End -->
+            </div>
+          </div>
+        </main>
+        <!-- ===== Main Content End ===== -->
+      </div>
+      <!-- ===== Content Area End ===== -->
+    </div>
+    <!-- ===== Page Wrapper End ===== -->
+  </body>
+</html>

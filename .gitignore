@@ -115,6 +115,9 @@ temp/
 # Supabase
 .supabase/
 
+# Large design files
+Tailadmin/TailAdmin v2.1.fig
+
 # Database
 *.db
 *.sqlite
