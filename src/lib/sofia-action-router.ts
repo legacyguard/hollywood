@@ -222,6 +222,55 @@ export const executeSofiaAction = async (
       break;
     }
 
+    case 'celebrate_milestone': {
+      // Celebrate milestone achievement
+      const { milestoneName, milestoneDescription } = action.payload as {
+        milestoneName: string;
+        milestoneDescription: string;
+      };
+      
+      if (onSofiaMessage) {
+        onSofiaMessage(
+          action.text,
+          `🎉 Úžasné! Práve ste odomkli míľnik "${milestoneName}"! ${milestoneDescription} Toto je skutočne krásny moment na vašej Ceste Pokoja.`
+        );
+      }
+      
+      toast.success(`🌟 Nový míľnik odomknutý: ${milestoneName}`);
+      break;
+    }
+
+    case 'start_challenge': {
+      // Start a 5-minute challenge
+      const { challengeTitle, navigationTarget } = action.payload as {
+        challengeTitle: string;
+        navigationTarget: string;
+      };
+      
+      navigate(navigationTarget);
+      
+      if (onSofiaMessage) {
+        onSofiaMessage(
+          action.text,
+          `Spustili sme výzvu "${challengeTitle}"! Budem vás viesť krok za krokom. Nepohľadiac na to, ako sa cítite, pamätajte - každý malý krok je pokrokom k väčšej istote pre vašu rodinu.`
+        );
+      }
+      
+      toast.success(`🚀 Výzva spustená: ${challengeTitle}`);
+      break;
+    }
+
+    case 'show_serenity_guidance': {
+      // Provide guidance about Path of Serenity
+      if (onSofiaMessage) {
+        onSofiaMessage(
+          action.text,
+          'Cesta Pokoja nie je o percentách alebo číslach - je o tom, akú istotu a pokoj vytvárate pre svoju rodinu. Každý míľnik, ktorý odomknete, je dôkazom vašej lásky a starostlivosti. Nie je dôležité, ako rýchlo pokračujete, ale že pokračujete.'
+        );
+      }
+      break;
+    }
+
     default:
       console.warn('Unknown Sofia action:', action.actionId);
       toast.error('Action not recognized');

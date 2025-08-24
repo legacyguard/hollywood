@@ -404,7 +404,20 @@ export const faqResponses: Record<string, string> = {
   
   'faq_expiring_documents': `Expiring documents need attention! I suggest: 1) Set reminders 60-90 days before expiration, 2) Gather required renewal documents early, 3) Update your records here once renewed. Your guardians will also be able to help manage these important dates.`,
   
-  'faq_how_to_scan': `Our AI-powered scanner makes it easy! Simply click "AI Scan Mode" in the Vault, upload your document, and our system will automatically extract key information and categorize it for you. This saves time and ensures nothing important is missed.`
+  'faq_how_to_scan': `Our AI-powered scanner makes it easy! Simply click "AI Scan Mode" in the Vault, upload your document, and our system will automatically extract key information and categorize it for you. This saves time and ensures nothing important is missed.`,
+
+  // Path of Serenity specific responses
+  'path_of_serenity_welcome': `Vítajte na Ceste Pokoja! Toto je skutočne krásny spôsob, ako zabezpečiť istotu pre svoju rodinu. Každý krok, ktorý urobíte, je prejavom lásky a starostlivosti o svojich blízkych.`,
+  
+  'milestone_foundation_stone': `Gratulujeme k vášmu prvému míľniku! Základný Kameň Istoty ste práve položili. Je to dôležitý moment - prvý dokument v digitálnom trezore znamená, že vaša rodina už má kde hľadať dôležité informácie.`,
+  
+  'milestone_circle_of_trust': `Kruh Dôvery je vytvorený! Toto je jeden z najdôležitejších krokov na ceste k pokoju. Vaša rodina má teraz niekoho, na koho sa môže spoľahnúť v ťažkých chvíľach.`,
+  
+  'milestone_digital_vault': `Váš Digitálny Trezor je aktívny! S piatimi dokumentmi máte už skutočne solídny základ. Vaša rodina má prístup k dôležitým informáciám presne vtedy, keď ich potrebuje.`,
+  
+  'challenge_first_document': `Začnite jednoducho - odfotografujte občiansky preukaz, pas, alebo vodičský preukaz. Nebojte sa, poviem vám presne, ako na to. Je to naozaj len na 5 minút!`,
+  
+  'challenge_add_guardian': `Vyberte si niekoho, komu dôverujete - partnera, dospelé dieťa, súrodenca alebo dobrého priateľa. Nemusí mať hneď prístup k dokumentom, bude len vedieť, že existuje miesto, kde hľadať pomoc.`
 };
 
 // Document interface for dynamic learning (simplified)

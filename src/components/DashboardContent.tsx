@@ -1,13 +1,12 @@
 import { Icon } from "@/components/ui/icon-library";
 import { Button } from "@/components/ui/button";
 import { PillarCard } from "@/components/PillarCard";
-import { ProgressBar } from "@/components/ProgressBar";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { FadeIn } from "@/components/motion/FadeIn";
 import { Link, useNavigate } from "react-router-dom";
 import { useUser } from "@clerk/clerk-react";
 import { DashboardStats } from "@/components/features/DashboardStats";
-import { LegacyChecklist } from "@/components/features/LegacyChecklist";
+import { PathOfSerenity } from "@/components/dashboard/PathOfSerenity";
 
 export function DashboardContent() {
   const { user } = useUser();
@@ -63,15 +62,9 @@ export function DashboardContent() {
           <DashboardStats className="mb-12" />
         </FadeIn>
 
-        {/* Progress Checklist */}
+        {/* Path of Serenity - Revolutionary Progress Tracking */}
         <FadeIn duration={0.5} delay={0.7}>
-          <LegacyChecklist 
-            className="mb-12 mx-auto" 
-            onItemClick={(item) => {
-              console.log('Clicked item:', item.key);
-              // Handle navigation based on item.pillar or item.key
-            }}
-          />
+          <PathOfSerenity className="mb-12" />
         </FadeIn>
 
         <div className="grid lg:grid-cols-3 gap-8">
