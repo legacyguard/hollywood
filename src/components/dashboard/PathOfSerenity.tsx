@@ -14,7 +14,7 @@ import {
   generateSerenityMessage,
   MilestoneCalculationResult
 } from '@/lib/path-of-serenity';
-import { MilestoneCelebration } from './MilestoneCelebration';
+import { showMilestoneRecognition } from './MilestoneCelebration';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
@@ -36,8 +36,6 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({ className = '' }
   const [serenityMessage, setSerenityMessage] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
   const [selectedMilestone, setSelectedMilestone] = useState<SerenityMilestone | null>(null);
-  const [celebrationMilestone, setCelebrationMilestone] = useState<SerenityMilestone | null>(null);
-  const [isCelebrationOpen, setIsCelebrationOpen] = useState(false);
   const [userStats, setUserStats] = useState<UserStats>({
     documentsCount: 0,
     guardiansCount: 0,
@@ -91,16 +89,17 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({ className = '' }
         const result = calculateUnlockedMilestones(stats, milestones);
         setMilestones(result.milestones);
 
-        // Show celebration for newly unlocked milestones
+        // Show elegant recognition for newly unlocked milestones
         if (result.newlyUnlocked.length > 0) {
-          // Show celebration for the first newly unlocked milestone
-          const milestoneTocelebrate = result.newlyUnlocked[0];
-          setCelebrationMilestone(milestoneTocelebrate);
-          setIsCelebrationOpen(true);
+          // Show recognition for the first newly unlocked milestone
+          const milestoneToRecognize = result.newlyUnlocked[0];
+          showMilestoneRecognition(milestoneToRecognize);
           
-          // Toast for additional milestones
+          // Additional quiet notifications for multiple milestones
           if (result.newlyUnlocked.length > 1) {
-            toast.success(`🌟 You unlocked ${result.newlyUnlocked.length} new milestones!`);
+            setTimeout(() => {
+              toast.success(`🌟 You unlocked ${result.newlyUnlocked.length} milestones on your Path of Peace!`);
+            }, 1000);
           }
         }
 
@@ -131,11 +130,6 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({ className = '' }
 
   const handleMilestoneClick = (milestone: SerenityMilestone) => {
     setSelectedMilestone(milestone);
-  };
-
-  const handleCelebrationClose = () => {
-    setIsCelebrationOpen(false);
-    setCelebrationMilestone(null);
   };
 
   if (isLoading) {
@@ -393,13 +387,6 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({ className = '' }
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Milestone Celebration Modal */}
-      <MilestoneCelebration
-        milestone={celebrationMilestone}
-        isOpen={isCelebrationOpen}
-        onClose={handleCelebrationClose}
-      />
     </div>
   );
 };

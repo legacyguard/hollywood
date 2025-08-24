@@ -110,4 +110,21 @@ IMPORTANT: All code changes and codebase must be in English language (except i18
     border: 1px solid hsl(var(--card-border));
     box-shadow: var(--shadow-lg);
   }
+
+  /* Milestone Recognition Toast Styling */
+  .milestone-recognition-toast {
+    border-radius: 12px;
+    animation: slideInFromTop 0.5s ease-out;
+  }
+
+  @keyframes slideInFromTop {
+    from {
+      transform: translateY(-100px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
 }
