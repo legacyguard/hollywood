@@ -8,6 +8,7 @@ import {
   Calendar,
   Heart,
   Shield,
+  ShieldCheck,
   CheckCircle,
   Infinity as InfinityIcon,
   Plus,
@@ -25,6 +26,7 @@ import {
   Download,
   Upload,
   Edit,
+  Edit3 as Pencil,
   Trash2,
   Copy,
   Share,
@@ -46,10 +48,15 @@ import {
   User,
   Send,
   Loader2,
+  Loader,
   Sparkles,
   DollarSign,
   CreditCard,
   PieChart,
+  Mail,
+  Phone,
+  Video,
+  Clock,
 } from "lucide-react";
 
 // Export all icons for direct use
@@ -63,6 +70,7 @@ export {
   Calendar,
   Heart,
   Shield,
+  ShieldCheck,
   CheckCircle,
   InfinityIcon,
   Plus,
@@ -80,6 +88,7 @@ export {
   Download,
   Upload,
   Edit,
+  Pencil,
   Trash2,
   Copy,
   Share,
@@ -101,10 +110,15 @@ export {
   User,
   Send,
   Loader2,
+  Loader,
   Sparkles,
   DollarSign,
   CreditCard,
   PieChart,
+  Mail,
+  Phone,
+  Video,
+  Clock,
 };
 
 // Icon mapping for semantic usage
@@ -123,7 +137,9 @@ export const IconMap = {
   // Actions
   add: Plus,
   edit: Edit,
+  pencil: Pencil,
   delete: Trash2,
+  trash: Trash2,
   copy: Copy,
   share: Share,
   download: Download,
@@ -138,6 +154,7 @@ export const IconMap = {
   help: HelpCircle,
   locked: Lock,
   unlocked: Unlock,
+  'shield-check': ShieldCheck,
   
   // UI Elements
   close: X,
@@ -163,11 +180,19 @@ export const IconMap = {
   // Sofia AI specific
   bot: Bot,
   user: User,
+  users: Users,
   send: Send,
+  loader: Loader,
   'loader-2': Loader2,
   sparkles: Sparkles,
   shield: Shield,
   x: X,
+  
+  // Communication & Media
+  mail: Mail,
+  phone: Phone,
+  video: Video,
+  clock: Clock,
   
   // Financial
   financial: DollarSign,
