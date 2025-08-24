@@ -1,81 +1,81 @@
 # LegacyGuard - TO-DO List
 
-## 📋 Chýbajúce kľúčové funkcie
+## 📋 Kľúčové funkcie — aktuálny stav
 
-### Kompletný zoznam chýbajúcich funkcií
+### Prehľad implementácie
 
-1. Sofia AI Assistant - kompletne chýba
-2. OCR a document analysis - nie je implementované
-3. Guardian system - len placeholder stránka
-4. Emergency activation - nie je implementované
-5. Will generator - len placeholder stránka
-6. Video messages/Time capsules - nie je implementované
-7. Notification system - nie je implementované
-8. Multi-language support - nie je implementované
-9. Advanced animations - len základy
-10. Document categorization - nie je implementované
-11. Progress tracking - len základy
-12. Legal consultation integration - nie je implementované
+- [X] Sofia AI Assistant — implementované (chat, riadené akcie, server-side funkcie)
+- [X] OCR & analýza dokumentov — implementované (Google Vision + pipeline)
+- [X] Guardian system — implementované (správa opatrovníkov); emergency protokoly čakajú
+- [ ] Emergency activation — nie je implementované
+- [ ] Will generator — nie je implementované
+- [ ] Video messages / Time capsules — nie je implementované
+- [X] Notification system — implementované (základ: email + cron)
+- [ ] Multi-language support — nie je implementované
+- [ ] Pokročilé animácie — len základy (pokročilé UX čaká)
+- [X] Kategorizácia dokumentov — implementované
+- [X] Sledovanie progresu — implementované (Path of Serenity)
+- [ ] Právne konzultácie — nie je implementované
 
-## 🚀 FÁZA 1: Core Infrastructure
+## 🚀 FÁZA 1: Core Infrastructure [X]
 
 ### Priority: Kritické základy
 
-1. Sofia AI Assistant (OpenAI/Claude integration)
-2. OCR integration (Google Cloud Vision API)
-3. Enhanced document categorization
-4. Notification system foundation
-5. Progress tracking system
+- [X] Sofia AI Assistant (OpenAI/Claude integration)
+- [X] OCR integration (Google Cloud Vision API)
+- [X] Enhanced document categorization
+- [X] Notification system foundation
+- [X] Progress tracking system
 
 ## 📄 FÁZA 2: Document Intelligence
 
 ### Priority: Inteligentná správa dokumentov
 
-1. Automatic document analysis
-2. Expiry monitoring
-3. Smart suggestions system
-4. Document search and filtering
-5. Backup/restore functionality
+- [X] Automatic document analysis
+- [X] Expiry monitoring
+- [X] Smart suggestions system
+- [X] Document search and filtering
+- [ ] Backup/restore functionality
 
 ## 🛡️ FÁZA 3: Guardian Network
 
 ### Priority: Ochrana rodiny
 
-1. Guardian management system
-2. Emergency detection logic
-3. Access control and permissions
-4. Survivor's manual generator
-5. Emergency contact system
+- [X] Guardian management system
+- [ ] Emergency detection logic
+- [ ] Access control and permissions
+- [ ] Survivor's manual generator
+- [ ] Emergency contact system
 
 ## ⚖️ FÁZA 4: Will Generator & Legal
 
 ### Priority: Právne dokumenty
 
-1. 7-step will creation process
-2. Legal templates integration
-3. Video message recording
-4. Document validation
-5. Legal consultation booking
+- [ ] 7-step will creation process
+- [ ] Legal templates integration
+- [ ] Video message recording
+- [ ] Document validation
+- [ ] Legal consultation booking
 
 ## 🎬 FÁZA 5: Advanced UX & Animations
 
 ### Priority: Hollywood experience
 
-1. Advanced Framer Motion animations
-2. 3D components (React Three Fiber)
-3. Firefly animations
-4. Progress celebrations
-5. Smooth transitions everywhere
+- [ ] Advanced Framer Motion animations
+- [ ] 3D components (React Three Fiber)
+- [ ] Firefly animations
+- [ ] Progress celebrations
+- [ ] Smooth transitions everywhere
 
 ## 🚀 FÁZA 6: Production Ready
 
 ### Priority: Nasadenie
 
-1. Multi-language support
-2. Performance optimization
-3. Security audit
-4. Testing & QA
-5. Deployment automation
+- [ ] Multi-language support
+- [ ] Performance optimization
+- [ ] Security audit
+- [ ] Testing & QA
+- [ ] Deployment automation
 
 ---
 

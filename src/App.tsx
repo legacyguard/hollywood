@@ -20,6 +20,7 @@ import TestNotifications from "./pages/TestNotifications";
 import SignInPage from "./pages/auth/SignIn";
 import SignUpPage from "./pages/auth/SignUp";
 import TestOCRPage from "./pages/test-ocr/TestOCRPage";
+import IntelligentOrganizer from "./pages/IntelligentOrganizer";
 
 const queryClient = new QueryClient();
 
@@ -74,6 +75,11 @@ const App = () => (
             <Route path="/test-ocr" element={
               <ProtectedRoute>
                 <TestOCRPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/intelligent-organizer" element={
+              <ProtectedRoute>
+                <IntelligentOrganizer />
               </ProtectedRoute>
             } />
             

@@ -1,0 +1,413 @@
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import OpenAI from 'https://esm.sh/openai@4.28.0'
+import { ImageAnnotatorClient } from 'https://esm.sh/@google-cloud/vision@4.0.0'
+
+function getCorsHeaders(origin: string) {
+  const allowedOrigins = [
+    'http://localhost:8081',
+    'http://localhost:8082', 
+    'http://localhost:3000',
+    'http://127.0.0.1:8081',
+    'http://127.0.0.1:8082',
+    'http://127.0.0.1:3000'
+  ];
+  
+  const isAllowedOrigin = allowedOrigins.includes(origin);
+  
+  return {
+    'Access-Control-Allow-Origin': isAllowedOrigin ? origin : 'http://localhost:8082',
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Credentials': 'true'
+  };
+}
+
+interface DocumentAnalysisResult {
+  // OCR Results
+  extractedText: string;
+  confidence: number;
+
+  // AI-Powered Analysis
+  suggestedCategory: {
+    category: string;
+    confidence: number;
+    icon: string;
+    reasoning: string;
+  };
+  
+  suggestedTitle: {
+    title: string;
+    confidence: number;
+    reasoning: string;
+  };
+  
+  expirationDate: {
+    date: string | null;
+    confidence: number;
+    originalText?: string;
+    reasoning: string;
+  };
+  
+  keyData: Array<{
+    label: string;
+    value: string;
+    confidence: number;
+    type: 'amount' | 'account' | 'reference' | 'contact' | 'other';
+  }>;
+  
+  suggestedTags: string[];
+  
+  // Processing metadata
+  processingId: string;
+  processingTime: number;
+}
+
+interface DocumentAnalysisRequest {
+  fileData: string; // base64 encoded
+  fileName: string;
+  fileType: string;
+}
+
+serve(async (req) => {
+  const origin = req.headers.get('origin') || 'http://localhost:8082';
+  const corsHeaders = getCorsHeaders(origin);
+  
+  if (req.method === 'OPTIONS') {
+    return new Response('ok', { headers: corsHeaders })
+  }
+
+  if (req.method !== 'POST') {
+    return new Response(
+      JSON.stringify({ error: 'Method not allowed' }),
+      { 
+        status: 405, 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+      }
+    )
+  }
+
+  try {
+    const startTime = Date.now();
+    const processingId = `doc_analysis_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+
+    // Get environment variables
+    const supabaseUrl = Deno.env.get('SUPABASE_URL');
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY');
+    const openaiApiKey = Deno.env.get('SOFIA_OPENAI_API_KEY');
+    const googleCloudApiKey = Deno.env.get('GOOGLE_CLOUD_API_KEY');
+    
+    if (!supabaseUrl || !supabaseAnonKey) {
+      return new Response(
+        JSON.stringify({ error: 'Missing Supabase configuration' }),
+        { 
+          status: 500, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      )
+    }
+
+    // Parse request body
+    const body: DocumentAnalysisRequest = await req.json();
+    
+    if (!body.fileData || !body.fileName) {
+      return new Response(
+        JSON.stringify({ error: 'Missing required fields: fileData, fileName' }),
+        { 
+          status: 400, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      )
+    }
+
+    // STEP 1: Perform OCR using Google Cloud Vision
+    console.log('Starting OCR processing...');
+    let extractedText = '';
+    let ocrConfidence = 0;
+    
+    if (googleCloudApiKey) {
+      try {
+        const visionRequest = {
+          requests: [{
+            image: {
+              content: body.fileData
+            },
+            features: [
+              { type: 'TEXT_DETECTION', maxResults: 1 },
+              { type: 'DOCUMENT_TEXT_DETECTION', maxResults: 1 }
+            ],
+            imageContext: {
+              languageHints: ['en', 'sk', 'cs'] // Support multiple languages
+            }
+          }]
+        };
+
+        const visionResponse = await fetch(
+          `https://vision.googleapis.com/v1/images:annotate?key=${googleCloudApiKey}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(visionRequest)
+          }
+        );
+
+        if (visionResponse.ok) {
+          const visionData = await visionResponse.json();
+          const response = visionData.responses[0];
+          
+          if (response.fullTextAnnotation) {
+            extractedText = response.fullTextAnnotation.text;
+            ocrConfidence = 0.9; // High confidence for successful OCR
+          } else if (response.textAnnotations && response.textAnnotations.length > 0) {
+            extractedText = response.textAnnotations[0].description;
+            ocrConfidence = 0.8;
+          }
+        }
+      } catch (error) {
+        console.error('OCR error:', error);
+        // Continue with empty text - AI will handle it
+      }
+    }
+
+    // STEP 2: AI-Powered Intelligent Analysis
+    console.log('Starting AI analysis...');
+    let analysisResult: DocumentAnalysisResult;
+    
+    if (openaiApiKey && extractedText.trim()) {
+      try {
+        const openai = new OpenAI({ apiKey: openaiApiKey });
+        
+        const analysisPrompt = `You are an expert document organizer for a family protection app. Analyze this document text and provide structured analysis.
+
+DOCUMENT TEXT:
+"${extractedText}"
+
+FILENAME: ${body.fileName}
+
+Please analyze and return ONLY a valid JSON response with this exact structure:
+{
+  "suggestedCategory": {
+    "category": "one of: personal, housing, finances, work, health, legal, vehicles, insurance, other",
+    "confidence": 0.0-1.0,
+    "icon": "appropriate icon name",
+    "reasoning": "brief explanation"
+  },
+  "suggestedTitle": {
+    "title": "short, descriptive title (max 50 chars)",
+    "confidence": 0.0-1.0,
+    "reasoning": "brief explanation"
+  },
+  "expirationDate": {
+    "date": "YYYY-MM-DD or null if none found",
+    "confidence": 0.0-1.0,
+    "originalText": "original text where date was found or null",
+    "reasoning": "brief explanation"
+  },
+  "keyData": [
+    {
+      "label": "descriptive label",
+      "value": "extracted value",
+      "confidence": 0.0-1.0,
+      "type": "amount|account|reference|contact|other"
+    }
+  ],
+  "suggestedTags": ["tag1", "tag2", "tag3"]
+}
+
+RULES:
+- Be conservative with confidence scores
+- Extract only clearly identifiable information
+- For expiration dates, look for "expires", "valid until", "due date", etc.
+- Key data should include important numbers, amounts, reference numbers
+- Tags should be relevant and useful
+- Keep titles concise but descriptive`;
+
+        const completion = await openai.chat.completions.create({
+          model: 'gpt-3.5-turbo',
+          messages: [
+            { 
+              role: 'system', 
+              content: 'You are a document analysis expert. Always respond with valid JSON only.' 
+            },
+            { role: 'user', content: analysisPrompt }
+          ],
+          max_tokens: 800,
+          temperature: 0.1 // Low temperature for consistent results
+        });
+
+        const aiResponse = completion.choices[0]?.message?.content || '';
+        
+        try {
+          const parsedAnalysis = JSON.parse(aiResponse);
+          
+          analysisResult = {
+            extractedText,
+            confidence: ocrConfidence,
+            processingId,
+            processingTime: Date.now() - startTime,
+            ...parsedAnalysis
+          };
+          
+        } catch (parseError) {
+          console.error('AI response parsing error:', parseError);
+          // Fallback to rule-based analysis
+          analysisResult = performRuleBasedAnalysis(extractedText, body.fileName, processingId, ocrConfidence, Date.now() - startTime);
+        }
+        
+      } catch (aiError) {
+        console.error('AI analysis error:', aiError);
+        // Fallback to rule-based analysis
+        analysisResult = performRuleBasedAnalysis(extractedText, body.fileName, processingId, ocrConfidence, Date.now() - startTime);
+      }
+    } else {
+      // No AI available or no text - use rule-based analysis
+      analysisResult = performRuleBasedAnalysis(extractedText, body.fileName, processingId, ocrConfidence, Date.now() - startTime);
+    }
+
+    console.log('Analysis completed successfully');
+
+    return new Response(
+      JSON.stringify({
+        success: true,
+        result: analysisResult
+      }),
+      { 
+        status: 200, 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+      }
+    );
+
+  } catch (error) {
+    console.error('Document analysis error:', error);
+    
+    return new Response(
+      JSON.stringify({ 
+        success: false,
+        error: 'Document analysis failed',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      }),
+      { 
+        status: 500, 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+      }
+    );
+  }
+});
+
+// Fallback rule-based analysis when AI is not available
+function performRuleBasedAnalysis(
+  text: string,
+  fileName: string,
+  processingId: string,
+  confidence: number,
+  processingTime: number
+): DocumentAnalysisResult {
+  const textLower = text.toLowerCase();
+  const fileNameLower = fileName.toLowerCase();
+  
+  // Category detection based on keywords
+  let category = 'other';
+  let categoryIcon = 'file';
+  let categoryReasoning = 'Default categorization';
+  
+  const categoryPatterns = [
+    { category: 'insurance', keywords: ['insurance', 'policy', 'premium', 'coverage'], icon: 'shield' },
+    { category: 'finances', keywords: ['bank', 'account', 'statement', 'invoice', 'bill', 'payment'], icon: 'dollar-sign' },
+    { category: 'personal', keywords: ['passport', 'license', 'certificate', 'identity'], icon: 'user' },
+    { category: 'health', keywords: ['medical', 'doctor', 'hospital', 'health', 'prescription'], icon: 'heart' },
+    { category: 'housing', keywords: ['mortgage', 'rent', 'lease', 'property', 'utility'], icon: 'home' },
+    { category: 'legal', keywords: ['legal', 'contract', 'agreement', 'will', 'testament'], icon: 'scale' },
+    { category: 'work', keywords: ['employment', 'salary', 'contract', 'work', 'company'], icon: 'briefcase' }
+  ];
+  
+  for (const pattern of categoryPatterns) {
+    if (pattern.keywords.some(keyword => textLower.includes(keyword) || fileNameLower.includes(keyword))) {
+      category = pattern.category;
+      categoryIcon = pattern.icon;
+      categoryReasoning = `Found keywords: ${pattern.keywords.filter(k => textLower.includes(k) || fileNameLower.includes(k)).join(', ')}`;
+      break;
+    }
+  }
+  
+  // Simple title generation
+  let title = fileName.replace(/\.(pdf|jpg|jpeg|png|gif)$/i, '');
+  if (title.length > 50) {
+    title = title.substring(0, 47) + '...';
+  }
+  
+  // Simple date extraction
+  let expirationDate = null;
+  let dateConfidence = 0;
+  let originalDateText = null;
+  const datePatterns = [
+    /(?:expires?|valid until|due date|expiry)[\s:]*(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})/i,
+    /(?:expires?|valid until|due date|expiry)[\s:]*([A-Za-z]+ \d{1,2},? \d{4})/i
+  ];
+  
+  for (const pattern of datePatterns) {
+    const match = text.match(pattern);
+    if (match) {
+      expirationDate = match[1];
+      originalDateText = match[0];
+      dateConfidence = 0.7;
+      break;
+    }
+  }
+  
+  // Extract key data
+  const keyData = [];
+  
+  // Amount extraction
+  const amountMatch = text.match(/\$[\d,]+\.?\d*/);
+  if (amountMatch) {
+    keyData.push({
+      label: 'Amount',
+      value: amountMatch[0],
+      confidence: 0.8,
+      type: 'amount' as const
+    });
+  }
+  
+  // Account number extraction
+  const accountMatch = text.match(/(?:account|acct)[\s#:]*([0-9-]{8,20})/i);
+  if (accountMatch) {
+    keyData.push({
+      label: 'Account Number',
+      value: accountMatch[1],
+      confidence: 0.7,
+      type: 'account' as const
+    });
+  }
+  
+  // Simple tag generation
+  const suggestedTags = [];
+  if (textLower.includes('important')) suggestedTags.push('important');
+  if (expirationDate) suggestedTags.push('expires');
+  if (textLower.includes('urgent')) suggestedTags.push('urgent');
+  
+  return {
+    extractedText: text,
+    confidence,
+    processingId,
+    processingTime,
+    suggestedCategory: {
+      category,
+      confidence: 0.6, // Lower confidence for rule-based
+      icon: categoryIcon,
+      reasoning: categoryReasoning
+    },
+    suggestedTitle: {
+      title,
+      confidence: 0.5,
+      reasoning: 'Based on filename'
+    },
+    expirationDate: {
+      date: expirationDate,
+      confidence: dateConfidence,
+      originalText: originalDateText,
+      reasoning: expirationDate ? 'Found expiration pattern' : 'No expiration date found'
+    },
+    keyData,
+    suggestedTags
+  };
+}
