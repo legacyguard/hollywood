@@ -79,6 +79,23 @@ interface DocumentAnalysisResult {
     reasoning: string;
   } | null;
   
+  // Document Versioning (Phase 3)
+  potentialVersions: Array<{
+    documentId: string;
+    fileName: string;
+    versionNumber: number;
+    versionDate: string;
+    similarityScore: number;
+    matchReasons: string[];
+  }>;
+  
+  versioningSuggestion: {
+    action: 'replace' | 'new_version' | 'separate';
+    confidence: number;
+    reasoning: string;
+    suggestedArchiveReason?: string;
+  } | null;
+  
   // Processing metadata
   processingId: string;
   processingTime: number;
@@ -328,6 +345,48 @@ RULES:
         
         analysisResult.suggestedNewBundle = suggestedNewBundle;
         
+        // STEP 4: Document Versioning Detection (Phase 3)
+        if (analysisResult.potentialBundles.length > 0) {
+          console.log('Checking for potential document versions...');
+          
+          // Check each potential bundle for existing versions
+          for (const bundle of analysisResult.potentialBundles) {
+            try {
+              const potentialVersions = await findPotentialDocumentVersions(
+                supabase,
+                body.userId,
+                bundle.bundleId,
+                body.fileName,
+                analysisResult.extractedText
+              );
+              
+              if (potentialVersions.length > 0) {
+                analysisResult.potentialVersions = potentialVersions.map(version => ({
+                  documentId: version.document_id,
+                  fileName: version.file_name,
+                  versionNumber: version.version_number,
+                  versionDate: version.version_date,
+                  similarityScore: version.similarity_score,
+                  matchReasons: version.match_reasons || []
+                }));
+                
+                // Generate versioning suggestion
+                const bestMatch = potentialVersions[0];
+                if (bestMatch && bestMatch.similarity_score > 0.7) {
+                  analysisResult.versioningSuggestion = generateVersioningSuggestion(
+                    body.fileName,
+                    analysisResult.extractedText,
+                    bestMatch
+                  );
+                }
+                break; // Found versions in this bundle, no need to check others
+              }
+            } catch (versionError) {
+              console.error('Version detection error for bundle:', bundle.bundleId, versionError);
+            }
+          }
+        }
+        
       } catch (bundleError) {
         console.error('Bundle intelligence error:', bundleError);
         // Don't fail the entire analysis if bundle detection fails
@@ -483,7 +542,10 @@ function performRuleBasedAnalysis(
     suggestedTags,
     // Bundle intelligence - will be populated by main function
     potentialBundles: [],
-    suggestedNewBundle: null
+    suggestedNewBundle: null,
+    // Document versioning - will be populated by main function
+    potentialVersions: [],
+    versioningSuggestion: null
   };
 }
 
@@ -664,4 +726,124 @@ function generateBundleSuggestion(
   
   // Default: no specific bundle suggestion
   return null;
+}
+
+// Phase 3: Document Versioning Functions
+async function findPotentialDocumentVersions(
+  supabase: any,
+  userId: string,
+  bundleId: string,
+  fileName: string,
+  extractedText: string
+) {
+  try {
+    // Call the database function to find potential document versions
+    const { data, error } = await supabase.rpc('find_potential_document_versions', {
+      doc_user_id: userId,
+      doc_bundle_id: bundleId,
+      doc_filename: fileName,
+      doc_ai_extracted_text: extractedText,
+      similarity_threshold: 0.6
+    });
+
+    if (error) {
+      console.error('Error finding potential versions:', error);
+      return [];
+    }
+
+    return data || [];
+  } catch (error) {
+    console.error('Error in findPotentialDocumentVersions:', error);
+    return [];
+  }
+}
+
+function generateVersioningSuggestion(
+  newFileName: string,
+  newFileText: string,
+  existingVersion: any
+): { action: 'replace' | 'new_version' | 'separate'; confidence: number; reasoning: string; suggestedArchiveReason?: string } {
+  
+  const newFileNameLower = newFileName.toLowerCase();
+  const existingFileNameLower = existingVersion.file_name.toLowerCase();
+  
+  // Check for year patterns that might indicate versioning
+  const newYearMatch = newFileName.match(/20\d{2}/);
+  const existingYearMatch = existingVersion.file_name.match(/20\d{2}/);
+  
+  // Check for explicit version indicators
+  const newVersionIndicators = newFileNameLower.match(/(v\d+|version\s*\d+|ver\s*\d+|\d+\.\d+)/);
+  const existingVersionIndicators = existingFileNameLower.match(/(v\d+|version\s*\d+|ver\s*\d+|\d+\.\d+)/);
+  
+  // High similarity score suggests same document type
+  if (existingVersion.similarity_score > 0.8) {
+    
+    // Year-based versioning (most common case)
+    if (newYearMatch && existingYearMatch) {
+      const newYear = parseInt(newYearMatch[0]);
+      const existingYear = parseInt(existingYearMatch[0]);
+      
+      if (newYear > existingYear) {
+        return {
+          action: 'replace',
+          confidence: 0.9,
+          reasoning: `Detected newer version: ${newYear} vs ${existingYear}. This appears to be an updated version of the same document.`,
+          suggestedArchiveReason: `Replaced by ${newYear} version`
+        };
+      } else if (newYear < existingYear) {
+        return {
+          action: 'separate',
+          confidence: 0.8,
+          reasoning: `Document appears older (${newYear}) than existing version (${existingYear}). Consider keeping as separate historical record.`
+        };
+      }
+    }
+    
+    // Version number based
+    if (newVersionIndicators || existingVersionIndicators) {
+      return {
+        action: 'new_version',
+        confidence: 0.8,
+        reasoning: 'Version indicators detected. This appears to be a new version of an existing document.',
+        suggestedArchiveReason: 'Replaced by newer version'
+      };
+    }
+    
+    // Same document type, different dates
+    const daysSinceExisting = Math.floor(
+      (Date.now() - new Date(existingVersion.version_date).getTime()) / (1000 * 60 * 60 * 24)
+    );
+    
+    if (daysSinceExisting > 30) {
+      // Likely a renewal or update (insurance, contracts, etc.)
+      return {
+        action: 'replace',
+        confidence: 0.85,
+        reasoning: 'Document appears to be an updated version of an existing document (uploaded more than 30 days apart).',
+        suggestedArchiveReason: 'Replaced by updated version'
+      };
+    } else {
+      return {
+        action: 'separate',
+        confidence: 0.6,
+        reasoning: 'Similar document uploaded recently. May be a duplicate or separate instance.',
+      };
+    }
+  }
+  
+  // Medium similarity - possible related document
+  if (existingVersion.similarity_score > 0.6) {
+    return {
+      action: 'separate',
+      confidence: 0.5,
+      reasoning: 'Document shows some similarity to existing document but may be different enough to keep separate.'
+    };
+  }
+  
+  // Default: treat as separate
+  return {
+    action: 'separate',
+    confidence: 0.3,
+    reasoning: 'Document appears to be sufficiently different from existing documents.'
+  };
 }
