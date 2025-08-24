@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { usePageTitle } from "@/hooks/usePageTitle";
 import Scene1Promise from "./Scene1Promise";
 import Scene2Box from "./Scene2Box";
 import Scene3Key from "./Scene3Key";
@@ -9,6 +10,7 @@ interface OnboardingProps {
 }
 
 export default function Onboarding({ onComplete }: OnboardingProps) {
+  usePageTitle('Welcome Journey');
   const [step, setStep] = useState(1);
   const [boxItems, setBoxItems] = useState("");
   const [trustedName, setTrustedName] = useState("");

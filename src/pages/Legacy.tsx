@@ -7,9 +7,11 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Icon } from "@/components/ui/icon-library";
+import { usePageTitle } from "@/hooks/usePageTitle";
 import { toast } from 'sonner';
 
 export default function LegacyPage() {
+  usePageTitle('Legacy Planning');
   const { user } = useAuth();
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);

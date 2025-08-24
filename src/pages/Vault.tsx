@@ -6,9 +6,11 @@ import { Icon } from "@/components/ui/icon-library";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import EnhancedDocumentUploader from "@/components/features/EnhancedDocumentUploader";
 import { DocumentList } from "@/components/features/DocumentList";
+import { usePageTitle } from "@/hooks/usePageTitle";
 import { useState } from "react";
 
 export default function VaultPage() {
+  usePageTitle('Vault');
   const [showOcrInfo, setShowOcrInfo] = useState(true);
 
   return (
