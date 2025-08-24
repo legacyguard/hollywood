@@ -58,6 +58,27 @@ interface DocumentAnalysisResult {
   
   suggestedTags: string[];
   
+  // Bundle Intelligence (Phase 2)
+  potentialBundles: Array<{
+    bundleId: string;
+    bundleName: string;
+    bundleCategory: string;
+    primaryEntity: string;
+    documentCount: number;
+    matchScore: number;
+    matchReasons: string[];
+  }>;
+  
+  suggestedNewBundle: {
+    name: string;
+    category: string;
+    primaryEntity: string | null;
+    entityType: string | null;
+    keywords: string[];
+    confidence: number;
+    reasoning: string;
+  } | null;
+  
   // Processing metadata
   processingId: string;
   processingTime: number;
@@ -67,6 +88,7 @@ interface DocumentAnalysisRequest {
   fileData: string; // base64 encoded
   fileName: string;
   fileType: string;
+  userId?: string; // Optional - for bundle detection in Phase 2
 }
 
 serve(async (req) => {
@@ -93,11 +115,11 @@ serve(async (req) => {
 
     // Get environment variables
     const supabaseUrl = Deno.env.get('SUPABASE_URL');
-    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY');
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
     const openaiApiKey = Deno.env.get('SOFIA_OPENAI_API_KEY');
     const googleCloudApiKey = Deno.env.get('GOOGLE_CLOUD_API_KEY');
     
-    if (!supabaseUrl || !supabaseAnonKey) {
+    if (!supabaseUrl || !supabaseServiceKey) {
       return new Response(
         JSON.stringify({ error: 'Missing Supabase configuration' }),
         { 
@@ -172,6 +194,11 @@ serve(async (req) => {
     // STEP 2: AI-Powered Intelligent Analysis
     console.log('Starting AI analysis...');
     let analysisResult: DocumentAnalysisResult;
+    
+    // Create Supabase client for bundle detection (Phase 2)
+    const supabase = supabaseUrl && supabaseServiceKey 
+      ? createClient(supabaseUrl, supabaseServiceKey)
+      : null;
     
     if (openaiApiKey && extractedText.trim()) {
       try {
@@ -262,6 +289,51 @@ RULES:
     } else {
       // No AI available or no text - use rule-based analysis
       analysisResult = performRuleBasedAnalysis(extractedText, body.fileName, processingId, ocrConfidence, Date.now() - startTime);
+    }
+
+    // STEP 3: Bundle Intelligence Detection (Phase 2)
+    if (supabase && body.userId) {
+      console.log('Starting bundle intelligence analysis...');
+      
+      try {
+        // Find potential existing bundles
+        const potentialBundles = await findPotentialBundles(
+          supabase,
+          body.userId,
+          analysisResult.suggestedCategory.category,
+          analysisResult.suggestedTags,
+          analysisResult.extractedText
+        );
+        
+        // Generate suggestion for new bundle if no good matches found
+        const suggestedNewBundle = potentialBundles.length === 0 
+          ? generateBundleSuggestion(
+              analysisResult.suggestedCategory.category,
+              analysisResult.extractedText,
+              analysisResult.keyData,
+              analysisResult.suggestedTags
+            )
+          : null;
+        
+        // Update analysis result with bundle intelligence
+        analysisResult.potentialBundles = potentialBundles.map(bundle => ({
+          bundleId: bundle.bundle_id,
+          bundleName: bundle.bundle_name,
+          bundleCategory: bundle.bundle_category,
+          primaryEntity: bundle.primary_entity || '',
+          documentCount: bundle.document_count || 0,
+          matchScore: bundle.match_score || 0,
+          matchReasons: bundle.match_reasons || []
+        }));
+        
+        analysisResult.suggestedNewBundle = suggestedNewBundle;
+        
+      } catch (bundleError) {
+        console.error('Bundle intelligence error:', bundleError);
+        // Don't fail the entire analysis if bundle detection fails
+        analysisResult.potentialBundles = [];
+        analysisResult.suggestedNewBundle = null;
+      }
     }
 
     console.log('Analysis completed successfully');
@@ -408,6 +480,188 @@ function performRuleBasedAnalysis(
       reasoning: expirationDate ? 'Found expiration pattern' : 'No expiration date found'
     },
     keyData,
-    suggestedTags
+    suggestedTags,
+    // Bundle intelligence - will be populated by main function
+    potentialBundles: [],
+    suggestedNewBundle: null
   };
+}
+
+// Phase 2: Bundle Intelligence Functions
+async function findPotentialBundles(
+  supabase: any,
+  userId: string,
+  category: string,
+  tags: string[],
+  extractedText: string
+) {
+  try {
+    // Call the database function to find potential bundles
+    const { data, error } = await supabase.rpc('find_potential_bundles', {
+      doc_user_id: userId,
+      doc_category: category,
+      doc_keywords: tags,
+      doc_ai_extracted_text: extractedText,
+      limit_results: 5
+    });
+
+    if (error) {
+      console.error('Error finding potential bundles:', error);
+      return [];
+    }
+
+    return data || [];
+  } catch (error) {
+    console.error('Error in findPotentialBundles:', error);
+    return [];
+  }
+}
+
+function generateBundleSuggestion(
+  category: string,
+  extractedText: string,
+  keyData: Array<any>,
+  tags: string[]
+): { name: string; category: string; primaryEntity: string | null; entityType: string | null; keywords: string[]; confidence: number; reasoning: string } | null {
+  
+  const textLower = extractedText.toLowerCase();
+  
+  // Vehicle documents
+  if (category === 'vehicles') {
+    // Try to extract vehicle information
+    const vehiclePatterns = [
+      /(?:škoda|skoda)\s+([a-z]+)/i,
+      /(?:volkswagen|vw)\s+([a-z]+)/i,
+      /(?:audi)\s+([a-z0-9]+)/i,
+      /(?:bmw)\s+([a-z0-9]+)/i,
+      /(?:mercedes|mb)\s+([a-z0-9\s]+)/i,
+      /(?:toyota)\s+([a-z]+)/i,
+      /(?:ford)\s+([a-z]+)/i
+    ];
+    
+    for (const pattern of vehiclePatterns) {
+      const match = extractedText.match(pattern);
+      if (match) {
+        const vehicleInfo = match[0];
+        return {
+          name: `Vehicle: ${vehicleInfo}`,
+          category: 'vehicles',
+          primaryEntity: vehicleInfo,
+          entityType: 'vehicle',
+          keywords: [vehicleInfo.toLowerCase(), ...tags],
+          confidence: 0.8,
+          reasoning: `Detected vehicle information: ${vehicleInfo}`
+        };
+      }
+    }
+    
+    // Generic vehicle bundle
+    return {
+      name: `Vehicle Documents`,
+      category: 'vehicles',
+      primaryEntity: null,
+      entityType: 'vehicle',
+      keywords: tags,
+      confidence: 0.6,
+      reasoning: 'Vehicle category detected but no specific vehicle identified'
+    };
+  }
+  
+  // Housing/Property documents
+  if (category === 'housing') {
+    // Try to extract address
+    const addressPatterns = [
+      /(\d+\s+[A-Za-z\s]+(?:street|st|avenue|ave|road|rd|boulevard|blvd))/i,
+      /([A-Za-z\s]+\s+\d+)/i // Slovak format: "Hlavná 123"
+    ];
+    
+    for (const pattern of addressPatterns) {
+      const match = extractedText.match(pattern);
+      if (match) {
+        const address = match[1].trim();
+        return {
+          name: `Property: ${address}`,
+          category: 'housing',
+          primaryEntity: address,
+          entityType: 'property',
+          keywords: [address.toLowerCase(), ...tags],
+          confidence: 0.8,
+          reasoning: `Detected property address: ${address}`
+        };
+      }
+    }
+    
+    return {
+      name: `Housing Documents`,
+      category: 'housing',
+      primaryEntity: null,
+      entityType: 'property',
+      keywords: tags,
+      confidence: 0.6,
+      reasoning: 'Housing category detected but no specific property identified'
+    };
+  }
+  
+  // Financial documents
+  if (category === 'finances') {
+    // Try to extract bank/institution name
+    const institutionPatterns = [
+      /(?:banka|bank)\s+([a-z\s]+)/i,
+      /(tatra\s*banka|slovenska\s*sporitelna|vub|csob|unicredit)/i,
+      /(account|účet)\s*(?:number|číslo)?\s*:?\s*([0-9\s/-]+)/i
+    ];
+    
+    for (const pattern of institutionPatterns) {
+      const match = extractedText.match(pattern);
+      if (match) {
+        const institution = match[1] || match[0];
+        return {
+          name: `Financial: ${institution}`,
+          category: 'finances',
+          primaryEntity: institution,
+          entityType: 'institution',
+          keywords: [institution.toLowerCase(), ...tags],
+          confidence: 0.7,
+          reasoning: `Detected financial institution: ${institution}`
+        };
+      }
+    }
+    
+    return {
+      name: `Financial Documents`,
+      category: 'finances',
+      primaryEntity: null,
+      entityType: 'institution',
+      keywords: tags,
+      confidence: 0.5,
+      reasoning: 'Financial category detected but no specific institution identified'
+    };
+  }
+  
+  // Insurance documents
+  if (category === 'insurance') {
+    const insurancePatterns = [
+      /(allianz|generali|kooperativa|union|uniqa)/i,
+      /policy\s*(?:number|číslo)?\s*:?\s*([A-Z0-9\s-]+)/i
+    ];
+    
+    for (const pattern of insurancePatterns) {
+      const match = extractedText.match(pattern);
+      if (match) {
+        const insurer = match[1] || match[0];
+        return {
+          name: `Insurance: ${insurer}`,
+          category: 'insurance',
+          primaryEntity: insurer,
+          entityType: 'institution',
+          keywords: [insurer.toLowerCase(), ...tags],
+          confidence: 0.7,
+          reasoning: `Detected insurance company: ${insurer}`
+        };
+      }
+    }
+  }
+  
+  // Default: no specific bundle suggestion
+  return null;
 }

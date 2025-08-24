@@ -23,7 +23,8 @@
       "Bash(chmod:*)",
       "Bash(./scripts/enable-apis.sh:*)",
       "Bash(git reset:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(curl:*)"
     ],
     "deny": [],
     "ask": []
