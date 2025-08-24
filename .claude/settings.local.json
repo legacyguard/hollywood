@@ -19,7 +19,10 @@
       "mcp__ide__getDiagnostics",
       "Bash(node:*)",
       "Bash(npx eslint:*)",
-      "Bash(unzip:*)"
+      "Bash(unzip:*)",
+      "Bash(chmod:*)",
+      "Bash(./scripts/enable-apis.sh:*)",
+      "Bash(git reset:*)"
     ],
     "deny": [],
     "ask": []

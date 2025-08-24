@@ -59,6 +59,9 @@ import {
   Clock,
   Grid,
   List,
+  TrendingUp,
+  TrendingDown,
+  Key,
 } from "lucide-react";
 
 // Export all icons for direct use
@@ -123,6 +126,9 @@ export {
   Clock,
   Grid,
   List,
+  TrendingUp,
+  TrendingDown,
+  Key,
 };
 
 // Icon mapping for semantic usage
@@ -207,6 +213,18 @@ export const IconMap = {
   money: DollarSign,
   card: CreditCard,
   chart: PieChart,
+  
+  // Trends & Analytics
+  trendingUp: TrendingUp,
+  trendingDown: TrendingDown,
+  
+  // Security & Access
+  key: Key,
+  
+  // Aliases for common usage
+  checkCircle: CheckCircle,
+  heart: Heart,
+  calendar: Calendar,
 } as const;
 
 // Type for icon names

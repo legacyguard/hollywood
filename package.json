@@ -11,7 +11,8 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "test:coverage": "vitest --coverage"
+    "test:coverage": "vitest --coverage",
+    "test:ocr": "node scripts/test-ocr.cjs"
   },
   "dependencies": {
     "@clerk/clerk-react": "^5.43.1",
@@ -88,6 +89,7 @@
     "@vitejs/plugin-react-swc": "^3.11.0",
     "@vitest/ui": "^3.2.4",
     "autoprefixer": "^10.4.21",
+    "dotenv": "^17.2.1",
     "eslint": "^9.32.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",

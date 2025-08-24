@@ -16,6 +16,7 @@ import LegacyPage from "./pages/Legacy";
 import TestNotifications from "./pages/TestNotifications";
 import SignInPage from "./pages/auth/SignIn";
 import SignUpPage from "./pages/auth/SignUp";
+import TestOCRPage from "./pages/test-ocr/TestOCRPage";
 
 const queryClient = new QueryClient();
 
@@ -61,6 +62,11 @@ const App = () => (
             <Route path="/test-notifications" element={
               <ProtectedRoute>
                 <TestNotifications />
+              </ProtectedRoute>
+            } />
+            <Route path="/test-ocr" element={
+              <ProtectedRoute>
+                <TestOCRPage />
               </ProtectedRoute>
             } />
             

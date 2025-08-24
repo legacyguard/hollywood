@@ -35,12 +35,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
+    // Validate required environment variables
+    if (!process.env.GOOGLE_CLOUD_PROJECT_ID || 
+        !process.env.GOOGLE_CLOUD_CLIENT_EMAIL || 
+        !process.env.GOOGLE_CLOUD_PRIVATE_KEY) {
+      return res.status(500).json({
+        success: false,
+        error: 'Google Cloud credentials not properly configured',
+        processingId: 'config_error'
+      });
+    }
+
     // Initialize Google Cloud Vision client
     const client = new ImageAnnotatorClient({
       projectId: process.env.GOOGLE_CLOUD_PROJECT_ID,
       credentials: {
         client_email: process.env.GOOGLE_CLOUD_CLIENT_EMAIL,
-        private_key: process.env.GOOGLE_CLOUD_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+        private_key: process.env.GOOGLE_CLOUD_PRIVATE_KEY.replace(/\\n/g, '\n'),
+        client_id: process.env.GOOGLE_CLOUD_CLIENT_ID,
+        private_key_id: process.env.GOOGLE_CLOUD_PRIVATE_KEY_ID,
       },
     });
 

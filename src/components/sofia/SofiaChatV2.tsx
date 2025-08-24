@@ -152,26 +152,15 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
     setTyping,
   } = useSofiaStore();
 
-  // Auto-scroll to bottom when new messages arrive with smooth scrolling
-  useEffect(() => {
-    if (scrollAreaRef.current) {
-      const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
-      if (scrollContainer) {
-        scrollContainer.scrollTo({
-          top: scrollContainer.scrollHeight,
-          behavior: 'smooth'
-        });
-      }
-    }
-  }, [messages, isTyping]);
+  // Move getDefaultWelcome to prevent dependency issues
+  const getDefaultWelcome = useCallback((): string => {
+    if (!context) return 'Hello! I am Sofia and I am here to help you.';
+    
+    const name = context.userName || 'there';
+    return `Hello, ${name}! I am Sofia and I am here to help you protect your family. How can I help you today?`;
+  }, [context]);
 
-  // Initialize with guided welcome message if no messages exist
-  useEffect(() => {
-    if (messages.length === 0 && context && isOpen) {
-      initializeGuidedDialog();
-    }
-  }, [isOpen, messages.length, context, initializeGuidedDialog]);
-
+  // Define initializeGuidedDialog early to prevent hoisting issues
   const initializeGuidedDialog = useCallback(async () => {
     if (!context || !userId) return;
 
@@ -225,7 +214,27 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
       setTyping(false);
       setIsProcessing(false);
     }
-  }, [context, userId, addMessage, currentPage, getDefaultWelcome, setTyping]);
+  }, [context, userId, addMessage, currentPage, getDefaultWelcome, setTyping, setIsProcessing]);
+
+  // Auto-scroll to bottom when new messages arrive with smooth scrolling
+  useEffect(() => {
+    if (scrollAreaRef.current) {
+      const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
+      if (scrollContainer) {
+        scrollContainer.scrollTo({
+          top: scrollContainer.scrollHeight,
+          behavior: 'smooth'
+        });
+      }
+    }
+  }, [messages, isTyping]);
+
+  // Initialize with guided welcome message if no messages exist
+  useEffect(() => {
+    if (messages.length === 0 && context && isOpen) {
+      initializeGuidedDialog();
+    }
+  }, [isOpen, messages.length, context, initializeGuidedDialog]);
 
   const handleActionClick = async (action: ActionButton) => {
     if (!context || !userId) return;
@@ -447,13 +456,6 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
       resolve(confirmed);
     });
   };
-
-  const getDefaultWelcome = useCallback((): string => {
-    if (!context) return 'Hello! I am Sofia and I am here to help you.';
-    
-    const name = context.userName || 'there';
-    return `Hello, ${name}! I am Sofia and I am here to help you protect your family. How can I help you today?`;
-  }, [context]);
 
   const getRouteName = (route: string): string => {
     const routeNames: Record<string, string> = {
