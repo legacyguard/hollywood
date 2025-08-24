@@ -180,17 +180,17 @@
 
 ## 📅 Timeline
 
-### Phase 1 (Current Sprint)
+### Phase 1
 - [ ] Complete basic authentication
 - [ ] Implement document upload
 - [ ] Add basic OCR functionality
 
-### Phase 2 (Next Sprint)
+### Phase 2
 - [ ] Guardian system implementation
 - [ ] Document management features
 - [ ] Basic AI assistant
 
-### Phase 3 (Future)
+### Phase 3
 - [ ] Advanced features
 - [ ] Performance optimization
 - [ ] Security hardening
