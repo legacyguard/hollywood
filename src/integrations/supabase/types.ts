@@ -126,6 +126,7 @@ export interface Database {
           document_type: string
           expires_at: string | null
           encrypted_at: string | null
+          last_notification_sent_at: string | null
           created_at: string
           updated_at: string
         }
@@ -139,6 +140,7 @@ export interface Database {
           document_type?: string
           expires_at?: string | null
           encrypted_at?: string | null
+          last_notification_sent_at?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -152,10 +154,58 @@ export interface Database {
           document_type?: string
           expires_at?: string | null
           encrypted_at?: string | null
+          last_notification_sent_at?: string | null
           created_at?: string
           updated_at?: string
         }
         Relationships: []
+      }
+      guardians: {
+        Row: {
+          id: string
+          user_id: string
+          name: string
+          email: string
+          phone: string | null
+          relationship: string | null
+          notes: string | null
+          is_active: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          name: string
+          email: string
+          phone?: string | null
+          relationship?: string | null
+          notes?: string | null
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          name?: string
+          email?: string
+          phone?: string | null
+          relationship?: string | null
+          notes?: string | null
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "guardians_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
       }
     }
     Views: {
@@ -185,6 +235,10 @@ export type LegacyItemUpdate = Database['public']['Tables']['legacy_items']['Upd
 export type Document = Database['public']['Tables']['documents']['Row']
 export type DocumentInsert = Database['public']['Tables']['documents']['Insert']
 export type DocumentUpdate = Database['public']['Tables']['documents']['Update']
+
+export type Guardian = Database['public']['Tables']['guardians']['Row']
+export type GuardianInsert = Database['public']['Tables']['guardians']['Insert']
+export type GuardianUpdate = Database['public']['Tables']['guardians']['Update']
 
 // Category and status types for better type safety
 export type LegacyItemCategory = LegacyItem['category']
