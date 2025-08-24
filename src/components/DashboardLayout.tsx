@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { AppSidebar } from "@/components/AppSidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
+import { QuickSearch } from "@/components/QuickSearch";
 import SofiaChatV2 from "@/components/sofia/SofiaChatV2";
 import SofiaFloatingButton from "@/components/sofia/SofiaFloatingButton";
 
@@ -11,7 +13,11 @@ interface DashboardLayoutProps {
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   const [isSofiaOpen, setIsSofiaOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const location = useLocation();
+  
+  // Enable keyboard shortcuts with search callback
+  useKeyboardShortcuts(() => setIsSearchOpen(true));
 
   const getCurrentPage = () => {
     const pathname = location.pathname;
@@ -28,7 +34,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   };
 
   return (
-    <SidebarProvider defaultOpen={true}>
+    <SidebarProvider defaultOpen={false}>
       <div className="min-h-screen flex w-full bg-background">
         <AppSidebar />
         <div className="flex-1 flex flex-col min-w-0">
@@ -54,6 +60,12 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           onClose={() => setIsSofiaOpen(false)}
           variant="floating"
           currentPage={getCurrentPage()}
+        />
+        
+        {/* Quick Search Modal */}
+        <QuickSearch 
+          isOpen={isSearchOpen} 
+          onClose={() => setIsSearchOpen(false)} 
         />
       </div>
     </SidebarProvider>

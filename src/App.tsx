@@ -7,6 +7,7 @@ import { routerFutureConfig } from "./lib/router";
 import { ClerkProvider } from "./providers/ClerkProvider";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import { OnboardingWrapper } from "./components/onboarding/OnboardingWrapper";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 import SofiaContextProvider from "./components/sofia/SofiaContextProvider";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -22,13 +23,14 @@ import TestOCRPage from "./pages/test-ocr/TestOCRPage";
 const queryClient = new QueryClient();
 
 const App = () => (
-  <ClerkProvider>
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter future={routerFutureConfig}>
-          <SofiaContextProvider>
+  <ErrorBoundary>
+    <ClerkProvider>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter future={routerFutureConfig}>
+            <SofiaContextProvider>
           <Routes>
             {/* Public routes */}
             <Route path="/sign-in/*" element={<SignInPage />} />
@@ -81,6 +83,7 @@ const App = () => (
       </TooltipProvider>
     </QueryClientProvider>
   </ClerkProvider>
+  </ErrorBoundary>
 );
 
 export default App;

@@ -4,20 +4,21 @@ import { PillarCard } from "@/components/PillarCard";
 import { ProgressBar } from "@/components/ProgressBar";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { FadeIn } from "@/components/motion/FadeIn";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useUser } from "@clerk/clerk-react";
 import { DashboardStats } from "@/components/features/DashboardStats";
 import { LegacyChecklist } from "@/components/features/LegacyChecklist";
 
 export function DashboardContent() {
   const { user } = useUser();
+  const navigate = useNavigate();
   
   const handleNewInformation = () => {
-    console.log("Add new information clicked");
+    navigate('/vault');
   };
 
   const handleViewVault = () => {
-    console.log("View vault clicked");
+    navigate('/vault');
   };
 
   return (
