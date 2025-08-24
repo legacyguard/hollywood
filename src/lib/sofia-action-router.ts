@@ -31,7 +31,7 @@ export const executeSofiaAction = async (
       }
       break;
 
-    case 'filter_category':
+    case 'filter_category': {
       // Filter documents by category
       navigate('/vault');
       
@@ -59,8 +59,9 @@ export const executeSofiaAction = async (
       
       toast.success(`Showing ${categoryDisplayName} documents`);
       break;
+    }
 
-    case 'filter_document_type':
+    case 'filter_document_type': {
       // Filter documents by specific type
       navigate('/vault');
       
@@ -85,8 +86,9 @@ export const executeSofiaAction = async (
       
       toast.success(`Showing ${typeDisplayName} documents`);
       break;
+    }
 
-    case 'filter_expiring':
+    case 'filter_expiring': {
       // Show documents expiring soon
       navigate('/vault');
       
@@ -106,10 +108,11 @@ export const executeSofiaAction = async (
       
       toast.success(`Showing documents expiring in ${days} days`);
       break;
+    }
 
-    case 'navigate_and_suggest':
+    case 'navigate_and_suggest': {
       // Navigate and provide contextual suggestion
-      const { url, suggestion, category } = action.payload;
+      const { url, suggestion, category: suggestedCategory } = action.payload;
       navigate(url);
       
       if (onSofiaMessage) {
@@ -127,8 +130,9 @@ export const executeSofiaAction = async (
       
       toast.success(`Ready to help with: ${suggestion}`);
       break;
+    }
 
-    case 'show_faq':
+    case 'show_faq': {
       // Display FAQ response
       const faqKey = action.payload;
       const response = faqResponses[faqKey];
@@ -139,6 +143,7 @@ export const executeSofiaAction = async (
         toast.error('Information not available at the moment');
       }
       break;
+    }
 
     default:
       console.warn('Unknown Sofia action:', action.actionId);

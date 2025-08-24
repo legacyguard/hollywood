@@ -23,6 +23,7 @@
 ### **🎯 User Experience Improvements**
 
 #### **Pred (Old Sofia)**
+
 ```
 👤 "Ahoj Sofia"
 🤖 "Ahoj! Čo potrebujete?"
@@ -30,7 +31,8 @@
 🤖 [Generuje AI odpoveď za €0.02]
 ```
 
-#### **Po (New Sofia)**  
+#### **Po (New Sofia)**
+
 ```
 🤖 "Dobrý deň, Jana! Vidím, že ste zabezpečili 12 dokumentov. 
     Ako vám dnes môžem pomôcť?"
@@ -47,7 +49,7 @@
 
 ### **Scenár 1: Nový používateľ (Cost: 100% FREE)**
 1. **Klik Sofia button** → Uvítanie + 4 kontextové akcie
-2. **[➕ Pridať dokument]** → Trigger upload UI (€0.00)  
+2. **[➕ Pridať dokument]** → Trigger upload UI (€0.00)
 3. **[🔒 Bezpečnosť]** → Knowledge base odpoveď (€0.00)
 4. **[💡 Ďalší krok]** → Smart suggestion rules (€0.00)
 
@@ -65,13 +67,14 @@
 ## 📊 **COST OPTIMIZATION ACHIEVED**
 
 ### **Prediction Model**
+
 ```
 100 používateľov/deň × 5 interakcií = 500 interakcií
 
 Starý systém (všetko AI):
 500 × €0.02 = €10.00/deň = €300/mesiac
 
-Nový systém (guided):  
+Nový systém (guided):
 400 × €0.00 (FREE) + 75 × €0.001 (LOW) + 25 × €0.05 (PREMIUM)
 = €0.00 + €0.08 + €1.25 = €1.33/deň = €40/mesiac
 
@@ -116,10 +119,11 @@ Nový systém (guided):
 - ⭐ **PREMIUM** - Fialový gradient, confirmation required
 
 ### **Smart Action Selection**
+
 ```typescript
 // Context-aware action suggestions
 if (documentCount < 3) show("Add Document")
-if (guardianCount === 0) show("Add Guardian")  
+if (guardianCount === 0) show("Add Guardian")
 if (completionPercentage > 60) show("Create Will")
 ```
 
@@ -142,6 +146,7 @@ if (completionPercentage > 60) show("Create Will")
 - ✅ Performance tested
 
 ### **Environment Configuration**
+
 ```bash
 # .env.local (required)
 VITE_OPENAI_API_KEY=sk-your-key-here

@@ -441,7 +441,7 @@ export class OCRService {
     
     // Document-specific metadata extraction
     switch (docType) {
-      case 'bank_statement':
+      case 'bank_statement': {
         const accountEntities = entities.filter(e => e.type === 'account_number');
         if (accountEntities.length > 0) {
           metadata.accountNumber = accountEntities[0].value;
@@ -454,10 +454,11 @@ export class OCRService {
           metadata.institutionName = bankMatch[1].trim();
         }
         break;
+      }
         
       case 'life_insurance':
       case 'auto_insurance':
-      case 'home_insurance':
+      case 'home_insurance': {
         // Extract policy number
         const policyPattern = /policy\s*(?:number|#)?:?\s*([A-Z0-9-]+)/i;
         const policyMatch = text.match(policyPattern);
@@ -465,8 +466,9 @@ export class OCRService {
           metadata.policyNumber = policyMatch[1];
         }
         break;
+      }
         
-      case 'medical_record':
+      case 'medical_record': {
         // Extract patient name (simple heuristic)
         const patientPattern = /patient\s*(?:name)?:?\s*([A-Za-z\s,]+)/i;
         const patientMatch = text.match(patientPattern);
@@ -474,6 +476,7 @@ export class OCRService {
           metadata.patientName = patientMatch[1].trim();
         }
         break;
+      }
     }
     
     return metadata;

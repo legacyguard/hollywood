@@ -2,7 +2,7 @@
 export interface SofiaAction {
   text: string;
   actionId: string;
-  payload: any;
+  payload: string | Record<string, unknown>;
   icon?: string;
 }
 

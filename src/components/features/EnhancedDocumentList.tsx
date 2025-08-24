@@ -28,7 +28,7 @@ export default function EnhancedDocumentList({
 
   // Filter and sort documents
   const filteredAndSortedDocuments = useMemo(() => {
-    let filtered = documents.filter(doc => {
+    const filtered = documents.filter(doc => {
       const matchesSearch = !searchQuery || 
         doc.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         doc.file_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -43,20 +43,23 @@ export default function EnhancedDocumentList({
     // Sort documents
     filtered.sort((a, b) => {
       switch (sortBy) {
-        case 'importance':
+        case 'importance': {
           const aImportance = calculateImportanceScore(a);
           const bImportance = calculateImportanceScore(b);
           return bImportance - aImportance;
+        }
         
-        case 'name':
+        case 'name': {
           const aName = a.title || a.file_name;
           const bName = b.title || b.file_name;
           return aName.localeCompare(bName);
+        }
         
-        case 'confidence':
+        case 'confidence': {
           const aConfidence = a.ocr_confidence || 0;
           const bConfidence = b.ocr_confidence || 0;
           return bConfidence - aConfidence;
+        }
         
         case 'date':
         default:

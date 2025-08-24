@@ -4,13 +4,13 @@ import { Button } from '@/components/ui/button';
 import { Upload, FileText, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { OCRService } from '@/services/ocrService';
-import { DocumentType } from '@/types/ocr';
+import { DocumentType, ProcessedDocument } from '@/types/ocr';
 
 const TestOCRPage: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string>('');
   const [processing, setProcessing] = useState(false);
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<ProcessedDocument | null>(null);
   const [error, setError] = useState<string>('');
 
   const ocrService = new OCRService();
@@ -60,7 +60,15 @@ const TestOCRPage: React.FC = () => {
       });
 
       // Process with OCR
-      const ocrResult = await ocrService.processDocument(base64, file.type);
+      const config = {
+        enableEntityExtraction: true,
+        enableDocumentClassification: true,
+        enableMetadataExtraction: true,
+        confidenceThreshold: 0.7,
+        languageHints: ['en'],
+        processingMode: 'accurate' as const
+      };
+      const ocrResult = await ocrService.processDocument(base64, file.name, config);
       setResult(ocrResult);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to process document');
@@ -72,26 +80,54 @@ const TestOCRPage: React.FC = () => {
 
   const getDocumentTypeLabel = (type: DocumentType): string => {
     const labels: Record<DocumentType, string> = {
-      [DocumentType.PASSPORT]: 'Passport',
-      [DocumentType.ID_CARD]: 'ID Card',
-      [DocumentType.DRIVERS_LICENSE]: 'Driver\'s License',
-      [DocumentType.BIRTH_CERTIFICATE]: 'Birth Certificate',
-      [DocumentType.MARRIAGE_CERTIFICATE]: 'Marriage Certificate',
-      [DocumentType.INSURANCE_POLICY]: 'Insurance Policy',
-      [DocumentType.BANK_STATEMENT]: 'Bank Statement',
-      [DocumentType.TAX_DOCUMENT]: 'Tax Document',
-      [DocumentType.MEDICAL_RECORD]: 'Medical Record',
-      [DocumentType.PROPERTY_DEED]: 'Property Deed',
-      [DocumentType.WILL]: 'Will',
-      [DocumentType.CONTRACT]: 'Contract',
-      [DocumentType.INVOICE]: 'Invoice',
-      [DocumentType.RECEIPT]: 'Receipt',
-      [DocumentType.CERTIFICATE]: 'Certificate',
-      [DocumentType.LETTER]: 'Letter',
-      [DocumentType.REPORT]: 'Report',
-      [DocumentType.OTHER]: 'Other',
+      'passport': 'Passport',
+      'drivers_license': 'Driver\'s License',
+      'birth_certificate': 'Birth Certificate',
+      'marriage_certificate': 'Marriage Certificate',
+      'life_insurance': 'Life Insurance Policy',
+      'bank_statement': 'Bank Statement',
+      'tax_document': 'Tax Document',
+      'medical_record': 'Medical Record',
+      'property_deed': 'Property Deed',
+      'will': 'Will',
+      'contract': 'Contract',
+      'receipt': 'Receipt',
+      'other': 'Other',
+      'trust': 'Trust',
+      'power_of_attorney': 'Power of Attorney',
+      'living_will': 'Living Will',
+      'divorce_decree': 'Divorce Decree',
+      'adoption_papers': 'Adoption Papers',
+      'investment_account': 'Investment Account',
+      'retirement_account': 'Retirement Account',
+      'tax_return': 'Tax Return',
+      'loan_document': 'Loan Document',
+      'mortgage': 'Mortgage',
+      'credit_card_statement': 'Credit Card Statement',
+      'financial_statement': 'Financial Statement',
+      'prescription': 'Prescription',
+      'medical_directive': 'Medical Directive',
+      'health_insurance_card': 'Health Insurance Card',
+      'vaccination_record': 'Vaccination Record',
+      'health_insurance': 'Health Insurance',
+      'auto_insurance': 'Auto Insurance',
+      'home_insurance': 'Home Insurance',
+      'disability_insurance': 'Disability Insurance',
+      'social_security_card': 'Social Security Card',
+      'military_records': 'Military Records',
+      'property_tax': 'Property Tax',
+      'home_appraisal': 'Home Appraisal',
+      'utility_bill': 'Utility Bill',
+      'business_license': 'Business License',
+      'business_contract': 'Business Contract',
+      'business_tax': 'Business Tax',
+      'government_benefit': 'Government Benefit',
+      'voter_registration': 'Voter Registration',
+      'warranty': 'Warranty',
+      'manual': 'Manual',
+      'correspondence': 'Correspondence'
     };
-    return labels[type] || type;
+    return labels[type] || type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
   };
 
   return (
@@ -193,7 +229,7 @@ const TestOCRPage: React.FC = () => {
                   </h3>
                   <div className="flex items-center gap-2">
                     <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
-                      {getDocumentTypeLabel(result.classification.documentType)}
+                      {getDocumentTypeLabel(result.classification.type)}
                     </span>
                     <span className="text-xs text-gray-500">
                       {(result.classification.confidence * 100).toFixed(1)}% confidence
@@ -208,47 +244,67 @@ const TestOCRPage: React.FC = () => {
                   </h3>
                   <div className="p-3 bg-gray-50 rounded-lg max-h-64 overflow-y-auto">
                     <pre className="text-sm whitespace-pre-wrap">
-                      {result.text || 'No text detected'}
+                      {result.ocrResult.text || 'No text detected'}
                     </pre>
                   </div>
                 </div>
 
                 {/* Extracted Entities */}
-                {result.entities && Object.keys(result.entities).length > 0 && (
+                {result.ocrResult.metadata.extractedEntities && result.ocrResult.metadata.extractedEntities.length > 0 && (
                   <div>
                     <h3 className="font-semibold text-sm text-gray-600 mb-1">
                       Extracted Information
                     </h3>
                     <div className="space-y-2">
-                      {result.entities.names?.length > 0 && (
+                      {result.ocrResult.metadata.extractedEntities
+                        .filter(entity => entity.type === 'name')
+                        .length > 0 && (
                         <div className="flex">
                           <span className="text-sm font-medium w-24">Names:</span>
                           <span className="text-sm">
-                            {result.entities.names.join(', ')}
+                            {result.ocrResult.metadata.extractedEntities
+                              .filter(entity => entity.type === 'name')
+                              .map(entity => entity.value)
+                              .join(', ')}
                           </span>
                         </div>
                       )}
-                      {result.entities.dates?.length > 0 && (
+                      {result.ocrResult.metadata.extractedEntities
+                        .filter(entity => entity.type === 'date')
+                        .length > 0 && (
                         <div className="flex">
                           <span className="text-sm font-medium w-24">Dates:</span>
                           <span className="text-sm">
-                            {result.entities.dates.join(', ')}
+                            {result.ocrResult.metadata.extractedEntities
+                              .filter(entity => entity.type === 'date')
+                              .map(entity => entity.value)
+                              .join(', ')}
                           </span>
                         </div>
                       )}
-                      {result.entities.amounts?.length > 0 && (
+                      {result.ocrResult.metadata.extractedEntities
+                        .filter(entity => entity.type === 'amount')
+                        .length > 0 && (
                         <div className="flex">
                           <span className="text-sm font-medium w-24">Amounts:</span>
                           <span className="text-sm">
-                            {result.entities.amounts.join(', ')}
+                            {result.ocrResult.metadata.extractedEntities
+                              .filter(entity => entity.type === 'amount')
+                              .map(entity => entity.value)
+                              .join(', ')}
                           </span>
                         </div>
                       )}
-                      {result.entities.addresses?.length > 0 && (
+                      {result.ocrResult.metadata.extractedEntities
+                        .filter(entity => entity.type === 'address')
+                        .length > 0 && (
                         <div className="flex">
                           <span className="text-sm font-medium w-24">Addresses:</span>
                           <span className="text-sm">
-                            {result.entities.addresses.join(', ')}
+                            {result.ocrResult.metadata.extractedEntities
+                              .filter(entity => entity.type === 'address')
+                              .map(entity => entity.value)
+                              .join(', ')}
                           </span>
                         </div>
                       )}
@@ -262,9 +318,10 @@ const TestOCRPage: React.FC = () => {
                     Processing Details
                   </h3>
                   <div className="text-xs space-y-1 text-gray-500">
-                    <div>Processed at: {new Date(result.timestamp).toLocaleString()}</div>
-                    <div>Language: {result.language || 'Unknown'}</div>
-                    <div>Words detected: {result.text?.split(' ').length || 0}</div>
+                    <div>Processed at: {new Date(result.createdAt).toLocaleString()}</div>
+                    <div>Language: {result.ocrResult.detectedLanguage || 'Unknown'}</div>
+                    <div>Words detected: {result.ocrResult.text?.split(' ').length || 0}</div>
+                    <div>Processing time: {result.ocrResult.metadata.processingTime}ms</div>
                   </div>
                 </div>
               </div>

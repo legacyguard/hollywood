@@ -22,7 +22,8 @@
       "Bash(unzip:*)",
       "Bash(chmod:*)",
       "Bash(./scripts/enable-apis.sh:*)",
-      "Bash(git reset:*)"
+      "Bash(git reset:*)",
+      "Bash(grep:*)"
     ],
     "deny": [],
     "ask": []
