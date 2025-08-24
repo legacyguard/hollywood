@@ -78,5 +78,5 @@ export const useKeyboardShortcuts = (onOpenSearch?: () => void) => {
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [navigate]);
+  }, [navigate, onOpenSearch]);
 };

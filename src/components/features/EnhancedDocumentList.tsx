@@ -170,7 +170,7 @@ export default function EnhancedDocumentList({
               </SelectContent>
             </Select>
 
-            <Select value={sortBy} onValueChange={(value) => setSortBy(value as any)}>
+            <Select value={sortBy} onValueChange={(value) => setSortBy(value as 'date' | 'name' | 'importance' | 'confidence')}>
               <SelectTrigger className="w-40">
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
@@ -273,6 +273,28 @@ export default function EnhancedDocumentList({
 }
 
 // Document Card Component (Grid View)
+interface DocumentCardProps {
+  document: {
+    id: string;
+    title?: string;
+    file_name: string;
+    file_size?: number;
+    created_at: string;
+    expires_at?: string;
+    category?: string;
+    tags?: string[];
+    file_url?: string;
+    ocr_confidence?: number;
+  };
+  onSelect: (doc: DocumentCardProps['document']) => void;
+  onDelete: (id: string) => void;
+  getDocumentIcon: (doc: DocumentCardProps['document']) => string;
+  getStatusBadge: (doc: DocumentCardProps['document']) => React.ReactNode;
+  formatFileSize: (size?: number) => string;
+  isExpiringSoon: (doc: DocumentCardProps['document']) => boolean;
+  isExpired: (doc: DocumentCardProps['document']) => boolean;
+}
+
 function DocumentCard({ 
   document, 
   onSelect, 
@@ -282,7 +304,7 @@ function DocumentCard({
   formatFileSize,
   isExpiringSoon,
   isExpired 
-}: any) {
+}: DocumentCardProps) {
   return (
     <Card className="p-6 hover:shadow-lg transition-all duration-200 cursor-pointer group">
       <div onClick={onSelect} className="space-y-4">
@@ -405,7 +427,7 @@ function DocumentCard({
   );
 }
 
-// Document List Item Component (List View)
+// Document List Item Component (List View)  
 function DocumentListItem({ 
   document, 
   onSelect, 
@@ -415,7 +437,7 @@ function DocumentListItem({
   formatFileSize,
   isExpiringSoon,
   isExpired 
-}: any) {
+}: DocumentCardProps) {
   return (
     <Card className="p-4 hover:shadow-md transition-all duration-200 cursor-pointer group">
       <div onClick={onSelect} className="flex items-center gap-4">

@@ -216,7 +216,8 @@ export class OCRService {
     
     // Handle API errors
     if ('error' in visionResponse) {
-      throw new Error(`Vision API error: ${(visionResponse as any).error.message}`);
+      const errorResponse = visionResponse as { error: { message: string } };
+      throw new Error(`Vision API error: ${errorResponse.error.message}`);
     }
 
     // Extract text and metadata
@@ -529,10 +530,14 @@ export class OCRService {
     };
   }
 
-  private extractTextFromParagraph(paragraph: any): string {
+  private extractTextFromParagraph(paragraph: {
+    words?: Array<{
+      symbols?: Array<{ text: string }>;
+    }>;
+  }): string {
     let text = '';
-    paragraph.words?.forEach((word: any) => {
-      word.symbols?.forEach((symbol: any) => {
+    paragraph.words?.forEach((word) => {
+      word.symbols?.forEach((symbol) => {
         text += symbol.text;
       });
       text += ' ';

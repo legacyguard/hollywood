@@ -16,7 +16,7 @@ import { useSupabaseClient } from '@/integrations/supabase/client';
 import { ProcessedDocument, DocumentCategory, DocumentType } from '@/types/ocr';
 
 interface EnhancedDocumentUploaderProps {
-  onUploadComplete?: (document: any) => void;
+  onUploadComplete?: (document: ProcessedDocument) => void;
   className?: string;
 }
 
@@ -123,7 +123,7 @@ export default function EnhancedDocumentUploader({
     }
   }, [userId, processedDocument, manualFormData, createSupabaseClient, onUploadComplete, mode]);
 
-  const handleFormChange = (field: keyof typeof manualFormData, value: any) => {
+  const handleFormChange = (field: keyof typeof manualFormData, value: string) => {
     setManualFormData(prev => ({ ...prev, [field]: value }));
   };
 

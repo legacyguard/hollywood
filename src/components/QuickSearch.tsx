@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@clerk/clerk-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -39,8 +39,8 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({ isOpen, onClose, onSof
   const createSupabaseClient = useSupabaseClient();
   const navigate = useNavigate();
 
-  // Quick actions
-  const quickActions: SearchResult[] = [
+  // Quick actions memoized to prevent unnecessary re-renders
+  const quickActions: SearchResult[] = useMemo(() => [
     {
       id: 'upload-document',
       type: 'action',
@@ -87,7 +87,7 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({ isOpen, onClose, onSof
         onClose();
       }
     }
-  ];
+  ], [navigate, onClose]);
 
   const searchDocuments = useCallback(async (searchQuery: string) => {
     if (!userId || !searchQuery.trim()) return [];
