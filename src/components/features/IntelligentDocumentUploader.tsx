@@ -66,6 +66,23 @@ interface DocumentAnalysisResult {
     reasoning: string;
   } | null;
   
+  // Document Versioning (Phase 3)
+  potentialVersions: Array<{
+    documentId: string;
+    fileName: string;
+    versionNumber: number;
+    versionDate: string;
+    similarityScore: number;
+    matchReasons: string[];
+  }>;
+  
+  versioningSuggestion: {
+    action: 'replace' | 'new_version' | 'separate';
+    confidence: number;
+    reasoning: string;
+    suggestedArchiveReason?: string;
+  } | null;
+  
   processingId: string;
   processingTime: number;
 }
@@ -173,15 +190,28 @@ export const IntelligentDocumentUploader = () => {
       setPhase('select');
       setUploadProgress(0);
     }
-  }, [file]);
+  }, [file, userId]);
 
   const handleConfirmAndSave = async (confirmedData: DocumentAnalysisResult & {
     bundleSelection?: {
       action: 'link' | 'new' | 'none';
       bundleId: string | null;
       newBundleName: string | null;
-      suggestedNewBundle: any;
-    }
+      suggestedNewBundle: {
+        name: string;
+        category: string;
+        primaryEntity: string | null;
+        entityType: string | null;
+        keywords: string[];
+        confidence: number;
+        reasoning: string;
+      } | null;
+    };
+    versionSelection?: {
+      action: 'replace' | 'new_version' | 'separate' | 'none';
+      versionId: string | null;
+      archiveReason: string;
+    };
   }) => {
     if (!file || !userId) return;
 
@@ -318,12 +348,64 @@ export const IntelligentDocumentUploader = () => {
         }
       }
       
+      // Phase 3: Handle Document Versioning
+      if (confirmedData.versionSelection && documentData) {
+        try {
+          const versionSelection = confirmedData.versionSelection;
+          
+          if (versionSelection.action === 'replace' && versionSelection.versionId) {
+            // Archive old document and create version chain
+            const { error: archiveError } = await supabase.rpc('archive_document_and_create_version', {
+              old_document_id: versionSelection.versionId,
+              new_document_id: documentData.id,
+              archive_reason: versionSelection.archiveReason || 'Replaced by newer version'
+            });
+            
+            if (archiveError) {
+              console.error('Document archiving error:', archiveError);
+              // Don't fail the entire operation if versioning fails
+              toast.warning('Document saved but failed to archive old version');
+            } else {
+              toast.success('Old document version archived and replaced successfully!');
+            }
+            
+          } else if (versionSelection.action === 'new_version' && versionSelection.versionId) {
+            // Create new version without archiving the old one
+            const { error: versionError } = await supabase.rpc('create_document_version', {
+              original_document_id: versionSelection.versionId,
+              new_document_id: documentData.id
+            });
+            
+            if (versionError) {
+              console.error('Version creation error:', versionError);
+              // Don't fail the entire operation if versioning fails
+              toast.warning('Document saved but failed to create version link');
+            } else {
+              toast.success('New document version created successfully!');
+            }
+          }
+          
+        } catch (versionError) {
+          console.error('Version handling error:', versionError);
+          // Don't fail the entire operation if version handling fails
+          toast.warning('Document saved but version operation failed');
+        }
+      }
+      
       setUploadProgress(100);
       
-      // Only show generic success if no bundle-specific message was shown
-      if (!confirmedData.bundleSelection || confirmedData.bundleSelection.action === 'none') {
+      // Show appropriate success message based on operations performed
+      const bundleActionTaken = confirmedData.bundleSelection && confirmedData.bundleSelection.action !== 'none';
+      const versionActionTaken = confirmedData.versionSelection && confirmedData.versionSelection.action !== 'none';
+      
+      if (!bundleActionTaken && !versionActionTaken) {
         toast.success('Document saved successfully with AI analysis!');
+      } else if (!bundleActionTaken && versionActionTaken) {
+        // Version message already shown above
+      } else if (bundleActionTaken && !versionActionTaken) {
+        // Bundle message already shown above
       }
+      // If both actions taken, individual messages already shown
       
       // Emit event to refresh document list
       window.dispatchEvent(new CustomEvent('documentUploaded', { detail: { userId } }));

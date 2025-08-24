@@ -58,6 +58,23 @@ interface DocumentAnalysisResult {
     reasoning: string;
   } | null;
   
+  // Document Versioning (Phase 3)
+  potentialVersions: Array<{
+    documentId: string;
+    fileName: string;
+    versionNumber: number;
+    versionDate: string;
+    similarityScore: number;
+    matchReasons: string[];
+  }>;
+  
+  versioningSuggestion: {
+    action: 'replace' | 'new_version' | 'separate';
+    confidence: number;
+    reasoning: string;
+    suggestedArchiveReason?: string;
+  } | null;
+  
   processingId: string;
   processingTime: number;
 }
@@ -70,8 +87,21 @@ interface DocumentConfirmationProps {
       action: 'link' | 'new' | 'none';
       bundleId: string | null;
       newBundleName: string | null;
-      suggestedNewBundle: any;
-    }
+      suggestedNewBundle: {
+        name: string;
+        category: string;
+        primaryEntity: string | null;
+        entityType: string | null;
+        keywords: string[];
+        confidence: number;
+        reasoning: string;
+      } | null;
+    };
+    versionSelection?: {
+      action: 'replace' | 'new_version' | 'separate' | 'none';
+      versionId: string | null;
+      archiveReason: string;
+    };
   }) => void;
   onCancel: () => void;
   isProcessing?: boolean;
@@ -88,6 +118,15 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
   const [selectedBundleAction, setSelectedBundleAction] = useState<'link' | 'new' | 'none'>('none');
   const [selectedBundleId, setSelectedBundleId] = useState<string | null>(null);
   const [newBundleName, setNewBundleName] = useState(analysisResult.suggestedNewBundle?.name || '');
+  
+  // Phase 3: Document versioning state
+  const [selectedVersionAction, setSelectedVersionAction] = useState<'replace' | 'new_version' | 'separate' | 'none'>(
+    analysisResult.versioningSuggestion?.action || 'none'
+  );
+  const [selectedVersionId, setSelectedVersionId] = useState<string | null>(null);
+  const [customArchiveReason, setCustomArchiveReason] = useState(
+    analysisResult.versioningSuggestion?.suggestedArchiveReason || ''
+  );
   
   const handleCategoryChange = (newCategory: string) => {
     setEditableData(prev => ({
@@ -299,6 +338,125 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
               </div>
             )}
 
+            {/* Document Versioning Section (Phase 3) */}
+            {(editableData.potentialVersions.length > 0 || editableData.versioningSuggestion) && (
+              <div className="space-y-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
+                <div className="flex items-center gap-2">
+                  <Icon name="clock" className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
+                  <h4 className="font-medium text-yellow-800 dark:text-yellow-200">Document Version Detection</h4>
+                </div>
+                
+                {editableData.versioningSuggestion && (
+                  <div className="p-3 bg-yellow-100 dark:bg-yellow-900/40 rounded-md">
+                    <p className="text-sm text-yellow-800 dark:text-yellow-200 font-medium mb-2">
+                      {editableData.versioningSuggestion.action === 'replace' && 
+                        "This appears to be a newer version of an existing document."}
+                      {editableData.versioningSuggestion.action === 'new_version' && 
+                        "This looks like a new version of an existing document."}
+                      {editableData.versioningSuggestion.action === 'separate' && 
+                        "This may be related to an existing document but appears different enough to keep separate."}
+                    </p>
+                    <p className="text-xs text-yellow-700 dark:text-yellow-300">
+                      {editableData.versioningSuggestion.reasoning}
+                    </p>
+                  </div>
+                )}
+
+                {/* Existing Document Versions */}
+                {editableData.potentialVersions.length > 0 && (
+                  <div className="space-y-3">
+                    <p className="text-sm text-muted-foreground">
+                      Found similar documents that might be older versions:
+                    </p>
+                    
+                    {editableData.potentialVersions.map((version) => (
+                      <div key={version.documentId} className="p-3 border rounded-lg bg-background">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="font-medium text-sm">{version.fileName}</span>
+                          <div className="flex items-center gap-2">
+                            <Badge variant="outline" className="text-xs">
+                              v{version.versionNumber}
+                            </Badge>
+                            <Badge variant="secondary" className="text-xs">
+                              {(version.similarityScore * 100).toFixed(0)}% similar
+                            </Badge>
+                          </div>
+                        </div>
+                        <p className="text-xs text-muted-foreground mb-2">
+                          Uploaded: {new Date(version.versionDate).toLocaleDateString()}
+                        </p>
+                        {version.matchReasons.length > 0 && (
+                          <p className="text-xs text-muted-foreground">
+                            {version.matchReasons.join(', ')}
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Versioning Action Selection */}
+                <div className="space-y-3">
+                  <p className="text-sm font-medium">How would you like to handle this?</p>
+                  
+                  {editableData.versioningSuggestion?.action === 'replace' && (
+                    <label className="flex items-start gap-3 p-3 border rounded-lg hover:bg-muted/50 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="versionAction"
+                        value="replace"
+                        checked={selectedVersionAction === 'replace'}
+                        onChange={() => {
+                          setSelectedVersionAction('replace');
+                          setSelectedVersionId(editableData.potentialVersions[0]?.documentId || null);
+                        }}
+                        className="mt-0.5"
+                      />
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <Icon name="refresh-cw" className="w-4 h-4 text-yellow-600" />
+                          <span className="font-medium">Replace older version</span>
+                          <Badge variant="outline" className="text-xs">Recommended</Badge>
+                        </div>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          Archive the older document and keep this as the current version
+                        </p>
+                        {selectedVersionAction === 'replace' && (
+                          <div className="mt-2">
+                            <input
+                              type="text"
+                              value={customArchiveReason}
+                              onChange={(e) => setCustomArchiveReason(e.target.value)}
+                              className="w-full p-2 border rounded-md bg-background text-sm"
+                              placeholder="Archive reason (optional)"
+                            />
+                          </div>
+                        )}
+                      </div>
+                    </label>
+                  )}
+
+                  <label className="flex items-start gap-3 p-3 border rounded-lg hover:bg-muted/50 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="versionAction"
+                      value="separate"
+                      checked={selectedVersionAction === 'separate'}
+                      onChange={() => {
+                        setSelectedVersionAction('separate');
+                        setSelectedVersionId(null);
+                      }}
+                      className="mt-0.5"
+                    />
+                    <div className="flex items-center gap-2">
+                      <Icon name="file-plus" className="w-4 h-4 text-blue-600" />
+                      <span className="font-medium">Keep as separate document</span>
+                    </div>
+                  </label>
+                </div>
+              </div>
+            )}
+
             {/* Bundle Intelligence Section (Phase 2) */}
             {(editableData.potentialBundles.length > 0 || editableData.suggestedNewBundle) && (
               <div className="space-y-4 p-4 bg-primary/5 rounded-lg border">
@@ -442,6 +600,11 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
                   bundleId: selectedBundleId,
                   newBundleName: selectedBundleAction === 'new' ? newBundleName : null,
                   suggestedNewBundle: editableData.suggestedNewBundle
+                },
+                versionSelection: {
+                  action: selectedVersionAction,
+                  versionId: selectedVersionId,
+                  archiveReason: customArchiveReason || editableData.versioningSuggestion?.suggestedArchiveReason || 'Replaced by newer version'
                 }
               })}
               disabled={isProcessing}
