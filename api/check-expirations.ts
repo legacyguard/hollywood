@@ -139,6 +139,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     // Query documents that expire in the next 30 days and haven't been notified recently
     // Use range query instead of exact date matching
+    // IMPORTANT: Exclude archived documents from notifications
     const { data: documents, error } = await supabase
       .from('documents')
       .select(`
@@ -150,6 +151,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         last_notification_sent_at
       `)
       .not('expires_at', 'is', null)
+      .eq('is_archived', false) // Only include non-archived documents
       .gte('expires_at', today.toISOString()) // Greater than or equal to today
       .lte('expires_at', thirtyDaysFromNow.toISOString()) // Less than or equal to 30 days from now
       .or(`last_notification_sent_at.is.null,last_notification_sent_at.lt.${new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString()}`) // No notification sent OR last notification was more than 20 days ago

@@ -271,6 +271,61 @@ export const executeSofiaAction = async (
       break;
     }
 
+    case 'filter_bundle': {
+      // Filter documents by bundle
+      navigate('/vault');
+      
+      const { bundleName, primaryEntity } = action.payload as {
+        bundleName: string;
+        primaryEntity?: string;
+      };
+      
+      // Apply bundle filter
+      if (setDocumentFilter) {
+        setDocumentFilter({ 
+          bundleName: bundleName,
+          searchQuery: primaryEntity // Search by entity too
+        });
+      }
+      
+      if (onSofiaMessage) {
+        onSofiaMessage(
+          action.text,
+          `Perfect! I've found your "${bundleName}" bundle. ${primaryEntity ? `This contains all documents related to ${primaryEntity}.` : ''} Bundle organization helps keep related documents together automatically. What would you like to do with these documents?`
+        );
+      }
+      
+      toast.success(`Showing bundle: ${bundleName}`);
+      break;
+    }
+
+    case 'show_bundle_info': {
+      // Display information about bundles
+      if (onSofiaMessage) {
+        onSofiaMessage(
+          action.text,
+          `📦 Document bundles are smart collections that automatically group related documents. For example:\n\n• Vehicle bundles contain insurance, registration, service records\n• Property bundles include deeds, insurance, utility bills\n• Financial bundles group bank statements, contracts, cards\n\nAI creates these automatically when you upload documents, making organization effortless!`
+        );
+      }
+      break;
+    }
+
+    case 'list_user_bundles': {
+      // This would require actual database query in real implementation
+      // For now, provide general guidance
+      navigate('/vault');
+      
+      if (onSofiaMessage) {
+        onSofiaMessage(
+          action.text,
+          `I've taken you to your vault where you can see all your document bundles. Each bundle represents a real-world entity like a vehicle, property, or financial account. You can click on any bundle to see all related documents grouped together.`
+        );
+      }
+      
+      toast.success('Showing your document bundles');
+      break;
+    }
+
     default:
       console.warn('Unknown Sofia action:', action.actionId);
       toast.error('Action not recognized');

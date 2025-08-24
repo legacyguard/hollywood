@@ -69,16 +69,33 @@
     "category": "emergency"
   },
 
+  "faq_bundles": {
+    "question": "What are document bundles?",
+    "content": "📦 **Document bundles organize your files smartly:**\n\n• **Smart grouping** - AI automatically groups related documents\n• **Real-world entities** - Like \"Vehicle: Škoda Octavia\" or \"Property: 123 Main St\"\n• **Easy management** - Find all documents for a specific car, house, or person\n• **Automatic suggestions** - New documents are linked to relevant bundles\n\n**Example bundles:**\n• Vehicle: Honda Civic (insurance, registration, service records)\n• Property: Family Home (deed, insurance, utility bills)\n• Financial: Bank XYZ (statements, contracts, cards)\n\nBundles keep your life organized automatically! 🗂️",
+    "tags": ["bundles", "organization", "ai", "grouping"],
+    "category": "bundles"
+  },
+
+  "bundle_management": {
+    "question": "How do I manage document bundles?",
+    "content": "🗂️ **Managing your document bundles:**\n\n**Automatic Creation:**\n• AI detects related documents during upload\n• Suggests bundle names like \"Vehicle: Your Car Model\"\n• You can accept, modify, or skip the suggestion\n\n**Manual Management:**\n• View all bundles in your Vault\n• Add documents to existing bundles\n• Create new bundles for specific topics\n• Rename bundles as needed\n\n**Smart Features:**\n• Version tracking within bundles\n• Entity recognition (cars, houses, people)\n• Cross-bundle search and filtering\n\nYour documents stay organized effortlessly! ✨",
+    "tags": ["bundles", "management", "organization", "howto"],
+    "category": "bundles"
+  },
+
   "simple_keywords": {
     "security": "Your data is protected with end-to-end encryption, zero-knowledge architecture, and European GDPR-compliant servers.",
     "guardians": "Guardians are trusted people who can help your family access important documents in emergencies.",
     "documents": "Upload essential documents like ID, passport, insurance, bank info, and medical records to protect your family.",
+    "bundles": "Document bundles automatically group related files by topic like vehicles, properties, or financial accounts using AI.",
     "pricing": "LegacyGuard offers free and paid plans. Free includes 10 documents and 2 guardians. Family plan is $9.99/month.",
-    "help": "I can help you upload documents, add guardians, create your will, or answer questions about security and features.",
+    "help": "I can help you upload documents, add guardians, create your will, manage bundles, or answer questions about security and features.",
     "upload": "Go to your Vault and click 'Add Document' to upload files. All documents are automatically encrypted.",
     "vault": "Your Vault is where all important documents are stored, safely encrypted and accessible only to you and your guardians.",
     "emergency": "In emergencies, your guardians can access shared documents, get emergency contacts, and follow your instructions to help your family.",
     "legacy": "Create your digital legacy by writing messages, recording videos, and setting up your will to guide your family.",
-    "will": "LegacyGuard helps you create a basic will through a simple 7-step process focused on protecting your loved ones."
+    "will": "LegacyGuard helps you create a basic will through a simple 7-step process focused on protecting your loved ones.",
+    "organization": "AI automatically organizes your documents into smart bundles by vehicle, property, financial accounts, and other entities.",
+    "search": "Find documents quickly by searching bundle names, document types, or content across your entire vault."
   }
 }

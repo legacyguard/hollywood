@@ -6,6 +6,8 @@ export interface DocumentFilter {
   isExpiring?: boolean;
   expiringDays?: number;
   searchQuery?: string;
+  bundleName?: string;
+  bundleId?: string;
 }
 
 interface DocumentFilterContextType {

@@ -12,6 +12,63 @@ export interface DictionaryEntry {
 }
 
 export const searchDictionary: Record<string, DictionaryEntry> = {
+  // Bundle related terms
+  'bundles': {
+    category: 'bundles',
+    actions: [
+      {
+        text: 'Show all my document bundles',
+        actionId: 'list_user_bundles',
+        payload: {},
+        icon: 'folder'
+      },
+      {
+        text: 'What are document bundles?',
+        actionId: 'show_bundle_info',
+        payload: {},
+        icon: 'help-circle'
+      }
+    ]
+  },
+  'balíčky': {
+    category: 'bundles',
+    actions: [
+      {
+        text: 'Ukáž mi všetky balíčky dokumentov',
+        actionId: 'list_user_bundles',
+        payload: {},
+        icon: 'folder'
+      },
+      {
+        text: 'Čo sú balíčky dokumentov?',
+        actionId: 'show_bundle_info',
+        payload: {},
+        icon: 'help-circle'
+      }
+    ]
+  },
+  'škoda octavia': {
+    category: 'bundles',
+    actions: [
+      {
+        text: 'Show Škoda Octavia documents',
+        actionId: 'filter_bundle',
+        payload: { bundleName: 'Vehicle: Škoda Octavia', primaryEntity: 'Škoda Octavia' },
+        icon: 'car'
+      }
+    ]
+  },
+  'octavia': {
+    category: 'bundles',
+    actions: [
+      {
+        text: 'Show Octavia vehicle documents',
+        actionId: 'filter_bundle',
+        payload: { bundleName: 'Vehicle: Octavia', primaryEntity: 'Octavia' },
+        icon: 'car'
+      }
+    ]
+  },
   // Insurance related terms
   'insurance': {
     category: 'insurance',
