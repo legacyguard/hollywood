@@ -3,6 +3,7 @@
 ## ✅ **ČO BOLO IMPLEMENTOVANÉ**
 
 ### **🧠 Strategická Architektúra**
+
 - **"Vedený Dialóg"** namiesto otvorený chat → **80% nákladová úspora**
 - **3-vrstvový cost model**: FREE (80%) → LOW COST (15%) → PREMIUM (5%)
 - **Action-first UX** → používateľ vidí možnosti namiesto prázdne pole
@@ -24,7 +25,7 @@
 
 #### **Pred (Old Sofia)**
 
-```
+```text
 👤 "Ahoj Sofia"
 🤖 "Ahoj! Čo potrebujete?"
 👤 "Neviem, čo mám robiť..."
@@ -33,7 +34,7 @@
 
 #### **Po (New Sofia)**
 
-```
+```text
 🤖 "Dobrý deň, Jana! Vidím, že ste zabezpečili 12 dokumentov. 
     Ako vám dnes môžem pomôcť?"
 
@@ -48,6 +49,7 @@
 ## 🎮 **DEMO SCENÁRE**
 
 ### **Scenár 1: Nový používateľ (Cost: 100% FREE)**
+
 1. **Klik Sofia button** → Uvítanie + 4 kontextové akcie
 2. **[➕ Pridať dokument]** → Trigger upload UI (€0.00)
 3. **[🔒 Bezpečnosť]** → Knowledge base odpoveď (€0.00)
@@ -56,6 +58,7 @@
 **Result**: Kompletná session bez AI nákladov!
 
 ### **Scenár 2: Pokročilý používateľ (Cost: Mixed)**
+
 1. **[👥 Spravovať strážcov]** → Navigation (€0.00)
 2. **Text input: "Kedy exspiruje môj pas?"** → AI interpretation (€0.001)
 3. **[💌 Napísať osobný odkaz]** → Premium AI (€0.05)
@@ -68,7 +71,7 @@
 
 ### **Prediction Model**
 
-```
+```text
 100 používateľov/deň × 5 interakcií = 500 interakcií
 
 Starý systém (všetko AI):
@@ -82,6 +85,7 @@ Nový systém (guided):
 ```
 
 ### **ROI Breakdown**
+
 - **Development time**: 3 týždne
 - **Cost savings**: €260/mesiac  
 - **Break-even**: 1 mesiac
@@ -92,18 +96,21 @@ Nový systém (guided):
 ## 🔧 **TECHNICAL ACHIEVEMENTS**
 
 ### **Performance Optimizations**
+
 - **FREE akcie**: <100ms response time
 - **Knowledge base**: <200ms (local lookup)  
 - **AI calls**: Only when necessary
 - **Memory usage**: Optimized with 50-message history limit
 
 ### **Scalability Features**
+
 - **Modular architecture**: Easy to add new actions
 - **Cost tracking**: Built-in monitoring
 - **A/B testing ready**: Different action sets
 - **Multi-language support**: Architecture prepared
 
 ### **Developer Experience**
+
 - **Type-safe**: Complete TypeScript coverage
 - **Testable**: Separated concerns, mockable AI
 - **Debuggable**: Comprehensive logging
@@ -114,6 +121,7 @@ Nový systém (guided):
 ## 🎨 **UX/UI Innovations**
 
 ### **Visual Cost Indicators**
+
 - 🆓 **FREE** - Zelený badge, instant feedback
 - ⚡ **FAST** - Modrý badge, knowledge base  
 - ⭐ **PREMIUM** - Fialový gradient, confirmation required
@@ -128,6 +136,7 @@ if (completionPercentage > 60) show("Create Will")
 ```
 
 ### **Progressive Disclosure**
+
 - **New users**: Simple actions (upload, learn)
 - **Advanced users**: Complex actions (legacy, premium)
 - **Expert mode**: All features unlocked
@@ -137,6 +146,7 @@ if (completionPercentage > 60) show("Create Will")
 ## 🚀 **DEPLOYMENT READY**
 
 ### **Production Checklist**
+
 - ✅ TypeScript compilation passes
 - ✅ Build optimization complete  
 - ✅ Error handling comprehensive
@@ -162,18 +172,21 @@ VITE_SOFIA_CACHE_TTL=3600
 ## 🎯 **IMMEDIATE NEXT STEPS**
 
 ### **Phase 1: Testing & Refinement (1 týždeň)**
+
 1. **User testing** → Gather feedback on action preferences
 2. **A/B testing** → Compare old vs new Sofia
 3. **Performance monitoring** → Real-world cost tracking
 4. **Bug fixes** → Address any issues found
 
 ### **Phase 2: Advanced Features (2-3 týždne)**
+
 1. **Proactive suggestions** → Background analysis
 2. **Voice interface** → Speech-to-text integration
 3. **Multi-language** → Slovak/Czech/English
 4. **Analytics dashboard** → Usage insights
 
 ### **Phase 3: AI Enhancements (1 mesiac)**
+
 1. **Custom knowledge base** → User-specific FAQ
 2. **Learning system** → Improve suggestions over time
 3. **Advanced AI features** → Document analysis, smart categorization
@@ -184,19 +197,25 @@ VITE_SOFIA_CACHE_TTL=3600
 ## 💡 **KEY INNOVATIONS**
 
 ### **1. Cost-First Design**
+
 Každá funkcia je navrhnutá s ohľadom na náklady:
+
 - Router najprv skúša FREE riešenia
 - AI sa používa len keď je nevyhnutné
 - Transparent cost indicators pre používateľa
 
 ### **2. Action-First UX**  
+
 Namiesto "čo chcete?" → "tu sú vaše možnosti":
+
 - Eliminuje decision paralysis
 - Zvyšuje task completion rate
 - Redukuje support tickets
 
 ### **3. Context-Aware Intelligence**
+
 Sofia vie kde ste a čo potrebujete:
+
 - Progress-based suggestions
 - Page-specific help
 - Family status considerations
@@ -206,18 +225,21 @@ Sofia vie kde ste a čo potrebujete:
 ## 🏆 **SUCCESS METRICS**
 
 ### **Immediate (Week 1)**
+
 - [ ] 80%+ action button usage rate
 - [ ] <30% free-text input usage  
 - [ ] 95%+ FREE interaction rate
 - [ ] Zero critical bugs
 
 ### **Short-term (Month 1)**
+
 - [ ] 50%+ reduction in AI costs
 - [ ] 25%+ increase in task completion
 - [ ] 90%+ user satisfaction score
 - [ ] Feature parity with old system
 
 ### **Long-term (Quarter 1)**
+
 - [ ] Self-sustaining cost structure
 - [ ] Market-leading AI assistant UX
 - [ ] Platform for future AI features

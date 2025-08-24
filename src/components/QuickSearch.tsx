@@ -6,7 +6,12 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon-library';
 import { useSupabaseClient } from '@/integrations/supabase/client';
-import { findSofiaActions, type SofiaAction } from '@/lib/sofia-search-dictionary';
+import { 
+  findSofiaActions, 
+  generateDynamicSuggestions,
+  hasDocumentBasedSuggestions,
+  type SofiaAction 
+} from '@/lib/sofia-search-dictionary';
 import { toast } from 'sonner';
 
 interface QuickSearchProps {
@@ -173,11 +178,32 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({ isOpen, onClose, onSof
         searchGuardians(searchQuery)
       ]);
 
-      // Find Sofia intelligent suggestions
-      const intelligentSuggestions = findSofiaActions(searchQuery);
+      // Find Sofia intelligent suggestions (static dictionary)
+      const staticSuggestions = findSofiaActions(searchQuery);
+
+      // Generate dynamic suggestions based on user's document library
+      const userDocuments = documents.map(doc => ({
+        id: doc.id,
+        file_name: doc.title || '',
+        title: doc.title,
+        category: doc.subtitle?.replace('Document • ', ''),
+        document_type: doc.subtitle?.replace('Document • ', ''),
+        tags: [],
+        created_at: new Date().toISOString()
+      }));
+
+      const dynamicSuggestions = generateDynamicSuggestions(searchQuery, userDocuments);
+
+      // Combine static and dynamic suggestions, prioritizing dynamic ones
+      const allSuggestions = [
+        ...dynamicSuggestions,
+        ...staticSuggestions.filter(staticSuggestion => 
+          !dynamicSuggestions.some(dynamic => dynamic.actionId === staticSuggestion.actionId)
+        )
+      ].slice(0, 6); // Limit total suggestions
 
       setResults([...filteredActions, ...documents, ...guardians]);
-      setSofiaActions(intelligentSuggestions);
+      setSofiaActions(allSuggestions);
     } catch (error) {
       console.error('Search error:', error);
       toast.error('Search failed. Please try again.');
@@ -251,7 +277,7 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({ isOpen, onClose, onSof
                   className="w-full justify-start h-auto p-4 mx-4"
                   onClick={result.action}
                 >
-                  <Icon name={result.icon as any} className="w-5 h-5 mr-3 flex-shrink-0" />
+                  <Icon name={result.icon as never} className="w-5 h-5 mr-3 flex-shrink-0" />
                   <div className="text-left">
                     <div className="font-medium">{result.title}</div>
                     {result.subtitle && (
@@ -278,30 +304,77 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({ isOpen, onClose, onSof
                 <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
                   <Icon name="sparkles" className="w-3 h-3 text-primary" />
                 </div>
-                <span className="text-sm font-medium text-primary">Ask Sofia Assistant:</span>
+                <span className="text-sm font-medium text-primary">
+                  {hasDocumentBasedSuggestions(query, documents.map(d => ({
+                    id: d.id,
+                    file_name: d.title || '',
+                    title: d.title,
+                    category: d.subtitle?.replace('Document • ', ''),
+                    document_type: d.subtitle?.replace('Document • ', ''),
+                    tags: [],
+                    created_at: new Date().toISOString()
+                  }))) ? 'Sofia learned from your documents:' : 'Ask Sofia Assistant:'}
+                </span>
               </div>
               
               <div className="space-y-2">
-                {sofiaActions.map((action, index) => (
-                  <Button
-                    key={`sofia-${index}`}
-                    variant="outline"
-                    className="w-full justify-start h-auto p-3 border-primary/20 hover:bg-primary/10 hover:border-primary/30"
-                    onClick={() => {
-                      if (onSofiaAction) {
-                        onSofiaAction(action);
-                        onClose();
-                      }
-                    }}
-                  >
-                    <Icon name={action.icon || 'message-circle'} className="w-4 h-4 mr-3 flex-shrink-0 text-primary" />
-                    <span className="text-primary font-medium">{action.text}</span>
-                  </Button>
-                ))}
+                {sofiaActions.map((action, index) => {
+                  const isDynamic = ['filter_learned_category', 'open_specific_document', 'create_smart_filter'].includes(action.actionId);
+                  
+                  return (
+                    <Button
+                      key={`sofia-${index}`}
+                      variant="outline"
+                      className={`w-full justify-start h-auto p-3 ${
+                        isDynamic 
+                          ? 'border-green-200 hover:bg-green-50 hover:border-green-300 bg-green-50/50' 
+                          : 'border-primary/20 hover:bg-primary/10 hover:border-primary/30'
+                      }`}
+                      onClick={() => {
+                        if (onSofiaAction) {
+                          onSofiaAction(action);
+                          onClose();
+                        }
+                      }}
+                    >
+                      <div className="flex items-center">
+                        {isDynamic && (
+                          <div className="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse" />
+                        )}
+                        <Icon 
+                          name={action.icon || 'message-circle'} 
+                          className={`w-4 h-4 mr-3 flex-shrink-0 ${
+                            isDynamic ? 'text-green-600' : 'text-primary'
+                          }`} 
+                        />
+                        <span className={`font-medium ${
+                          isDynamic ? 'text-green-700' : 'text-primary'
+                        }`}>
+                          {action.text}
+                        </span>
+                      </div>
+                    </Button>
+                  );
+                })}
               </div>
               
               <p className="text-xs text-muted-foreground mt-3 text-center">
-                Sofia will help you find exactly what you need
+                {hasDocumentBasedSuggestions(query, documents.map(d => ({
+                  id: d.id,
+                  file_name: d.title || '',
+                  title: d.title,
+                  category: d.subtitle?.replace('Document • ', ''),
+                  document_type: d.subtitle?.replace('Document • ', ''),
+                  tags: [],
+                  created_at: new Date().toISOString()
+                }))) ? (
+                  <>
+                    <Icon name="zap" className="w-3 h-3 inline mr-1" />
+                    Sofia remembers your document patterns
+                  </>
+                ) : (
+                  'Sofia will help you find exactly what you need'
+                )}
               </p>
             </div>
           </div>

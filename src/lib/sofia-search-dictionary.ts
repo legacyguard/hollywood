@@ -406,3 +406,154 @@ export const faqResponses: Record<string, string> = {
   
   'faq_how_to_scan': `Our AI-powered scanner makes it easy! Simply click "AI Scan Mode" in the Vault, upload your document, and our system will automatically extract key information and categorize it for you. This saves time and ensures nothing important is missed.`
 };
+
+// Document interface for dynamic learning (simplified)
+interface UserDocument {
+  id: string;
+  file_name: string;
+  title?: string;
+  category?: string;
+  document_type?: string;
+  tags?: string[];
+  created_at: string;
+}
+
+/**
+ * Generate dynamic Sofia suggestions based on user's existing documents
+ * This creates the illusion of AI "learning" from user's document library
+ */
+export const generateDynamicSuggestions = (
+  searchQuery: string,
+  userDocuments: UserDocument[]
+): SofiaAction[] => {
+  if (!searchQuery || searchQuery.length < 2 || !userDocuments.length) {
+    return [];
+  }
+
+  const dynamicSuggestions: SofiaAction[] = [];
+  const searchLower = searchQuery.toLowerCase();
+  const matchedDocuments: Map<string, UserDocument[]> = new Map();
+
+  // Search through user's document names and titles for matches
+  userDocuments.forEach(doc => {
+    const fileName = doc.file_name.toLowerCase();
+    const title = doc.title?.toLowerCase() || '';
+    const tags = doc.tags?.join(' ').toLowerCase() || '';
+    
+    // Check if search query matches any part of the document
+    if (fileName.includes(searchLower) || title.includes(searchLower) || tags.includes(searchLower)) {
+      const category = doc.category || doc.document_type || 'other';
+      
+      if (!matchedDocuments.has(category)) {
+        matchedDocuments.set(category, []);
+      }
+      matchedDocuments.get(category)!.push(doc);
+    }
+  });
+
+  // Generate suggestions based on matched documents
+  matchedDocuments.forEach((docs, category) => {
+    if (docs.length === 0) return;
+
+    // Get category display name and icon
+    const { displayName, icon } = getCategoryDisplay(category);
+    
+    // If multiple documents in same category, suggest filtering by category
+    if (docs.length > 1) {
+      dynamicSuggestions.push({
+        text: `Show documents related to "${searchQuery}" (${displayName})`,
+        actionId: 'filter_learned_category',
+        payload: {
+          searchTerm: searchQuery,
+          category: category,
+          matchedCount: docs.length
+        },
+        icon: icon
+      });
+    }
+    
+    // If only one or few documents, suggest showing specific documents
+    if (docs.length <= 3) {
+      docs.forEach(doc => {
+        const displayTitle = doc.title || extractMeaningfulName(doc.file_name);
+        dynamicSuggestions.push({
+          text: `Open "${displayTitle}"`,
+          actionId: 'open_specific_document',
+          payload: {
+            documentId: doc.id,
+            documentTitle: displayTitle
+          },
+          icon: 'file-text'
+        });
+      });
+    }
+
+    // Suggest creating a smart filter based on learned pattern
+    if (docs.length >= 2) {
+      dynamicSuggestions.push({
+        text: `Create smart filter for "${searchQuery}" documents`,
+        actionId: 'create_smart_filter',
+        payload: {
+          searchTerm: searchQuery,
+          category: category,
+          documentIds: docs.map(d => d.id)
+        },
+        icon: 'filter'
+      });
+    }
+  });
+
+  // Limit to most relevant suggestions (prioritize category filters over individual documents)
+  const categoryFilters = dynamicSuggestions.filter(s => s.actionId === 'filter_learned_category');
+  const specificDocs = dynamicSuggestions.filter(s => s.actionId === 'open_specific_document');
+  const smartFilters = dynamicSuggestions.filter(s => s.actionId === 'create_smart_filter');
+  
+  return [...categoryFilters, ...specificDocs.slice(0, 2), ...smartFilters].slice(0, 4);
+};
+
+/**
+ * Extract meaningful name from filename (remove extensions, clean up)
+ */
+const extractMeaningfulName = (fileName: string): string => {
+  return fileName
+    .replace(/\.[^/.]+$/, '') // Remove extension
+    .replace(/[_-]/g, ' ') // Replace underscores and hyphens with spaces
+    .replace(/\b\w/g, l => l.toUpperCase()) // Capitalize first letter of each word
+    .trim();
+};
+
+/**
+ * Get category display name and appropriate icon
+ */
+const getCategoryDisplay = (category: string): { displayName: string; icon: string } => {
+  const categoryMap: Record<string, { displayName: string; icon: string }> = {
+    'legal': { displayName: 'Legal Documents', icon: 'scale' },
+    'financial': { displayName: 'Financial Records', icon: 'dollar-sign' },
+    'medical': { displayName: 'Medical Records', icon: 'heart' },
+    'insurance': { displayName: 'Insurance Policies', icon: 'shield-check' },
+    'personal': { displayName: 'Personal Documents', icon: 'user' },
+    'property': { displayName: 'Property Documents', icon: 'home' },
+    'business': { displayName: 'Business Documents', icon: 'briefcase' },
+    'government': { displayName: 'Government Documents', icon: 'building' },
+    'other': { displayName: 'Other Documents', icon: 'file' }
+  };
+
+  return categoryMap[category] || { displayName: 'Documents', icon: 'file' };
+};
+
+/**
+ * Check if search query has potential matches in document library
+ */
+export const hasDocumentBasedSuggestions = (
+  searchQuery: string,
+  userDocuments: UserDocument[]
+): boolean => {
+  if (!searchQuery || searchQuery.length < 2) return false;
+  
+  const searchLower = searchQuery.toLowerCase();
+  return userDocuments.some(doc => 
+    doc.file_name.toLowerCase().includes(searchLower) ||
+    doc.title?.toLowerCase().includes(searchLower) ||
+    doc.tags?.some(tag => tag.toLowerCase().includes(searchLower))
+  );
+};

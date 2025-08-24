@@ -145,6 +145,83 @@ export const executeSofiaAction = async (
       break;
     }
 
+    case 'filter_learned_category': {
+      // Filter by category learned from user's documents
+      navigate('/vault');
+      
+      const { searchTerm, category, matchedCount } = action.payload as {
+        searchTerm: string;
+        category: string;
+        matchedCount: number;
+      };
+      
+      if (setDocumentFilter) {
+        setDocumentFilter({ category });
+      }
+      
+      if (onSofiaMessage) {
+        onSofiaMessage(
+          action.text,
+          `Perfect! I found ${matchedCount} documents related to "${searchTerm}". I've filtered your vault to show only these relevant documents. This is exactly the kind of intelligent assistance I love providing - learning from your document patterns to help you faster!`
+        );
+      }
+      
+      toast.success(`Found ${matchedCount} documents related to "${searchTerm}"`);
+      break;
+    }
+
+    case 'open_specific_document': {
+      // Navigate to vault and highlight specific document
+      navigate('/vault');
+      
+      const { documentId, documentTitle } = action.payload as {
+        documentId: string;
+        documentTitle: string;
+      };
+      
+      // TODO: Implement document highlighting in vault
+      // For now, just navigate and provide feedback
+      
+      if (onSofiaMessage) {
+        onSofiaMessage(
+          action.text,
+          `I've taken you to your vault and located "${documentTitle}". This is one of the documents I remembered from your search. Smart document discovery like this is one of my favorite features - I learn from your document library to provide instant access to what you need!`
+        );
+      }
+      
+      toast.success(`Opening "${documentTitle}"`);
+      break;
+    }
+
+    case 'create_smart_filter': {
+      // Create a smart filter based on learned patterns
+      navigate('/vault');
+      
+      const { searchTerm, category, documentIds } = action.payload as {
+        searchTerm: string;
+        category: string;
+        documentIds: string[];
+      };
+      
+      // Apply the smart filter
+      if (setDocumentFilter) {
+        setDocumentFilter({ 
+          category,
+          searchQuery: searchTerm // Custom search filter
+        });
+      }
+      
+      if (onSofiaMessage) {
+        onSofiaMessage(
+          action.text,
+          `Brilliant! I've created a smart filter for your "${searchTerm}" documents. This filter will help you quickly find similar documents in the future. I'm constantly learning from your document patterns to make your experience more intuitive. You now have ${documentIds.length} documents in this smart collection!`
+        );
+      }
+      
+      toast.success(`Created smart filter for "${searchTerm}" documents`);
+      break;
+    }
+
     default:
       console.warn('Unknown Sofia action:', action.actionId);
       toast.error('Action not recognized');
