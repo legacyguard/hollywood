@@ -49,6 +49,39 @@ const mockAnalysisResult = {
     }
   ],
   suggestedTags: ["utility", "monthly", "housing", "expires"],
+  
+  // Bundle Intelligence (Phase 2) - Mock data
+  potentialBundles: [
+    {
+      bundleId: "bundle_001",
+      bundleName: "Property: 123 Main St",
+      bundleCategory: "housing",
+      primaryEntity: "123 Main St, Springfield, IL",
+      documentCount: 3,
+      matchScore: 85,
+      matchReasons: ["Same address found", "Housing category match"]
+    },
+    {
+      bundleId: "bundle_002", 
+      bundleName: "Utility Bills",
+      bundleCategory: "housing",
+      primaryEntity: "Electric & Gas",
+      documentCount: 12,
+      matchScore: 75,
+      matchReasons: ["Utility category match", "Monthly recurring pattern"]
+    }
+  ],
+  
+  suggestedNewBundle: {
+    name: "Property: 123 Main St - Utilities",
+    category: "housing",
+    primaryEntity: "123 Main St, Springfield, IL",
+    entityType: "property",
+    keywords: ["electric", "utility", "123 main st", "springfield"],
+    confidence: 0.8,
+    reasoning: "Detected property utility bill with specific address"
+  },
+  
   processingId: "test_processing_12345",
   processingTime: 1250
 };
@@ -68,7 +101,7 @@ export const IntelligentDocumentTester: React.FC = () => {
     setShowConfirmation(true);
   };
 
-  const handleConfirm = (confirmedData: typeof mockAnalysisResult) => {
+  const handleConfirm = (confirmedData: typeof mockAnalysisResult & { bundleSelection?: any }) => {
     setIsProcessing(true);
     console.log('Confirmed data:', confirmedData);
     

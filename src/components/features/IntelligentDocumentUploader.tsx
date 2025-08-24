@@ -44,6 +44,28 @@ interface DocumentAnalysisResult {
     type: 'amount' | 'account' | 'reference' | 'contact' | 'other';
   }>;
   suggestedTags: string[];
+  
+  // Bundle Intelligence (Phase 2)
+  potentialBundles: Array<{
+    bundleId: string;
+    bundleName: string;
+    bundleCategory: string;
+    primaryEntity: string;
+    documentCount: number;
+    matchScore: number;
+    matchReasons: string[];
+  }>;
+  
+  suggestedNewBundle: {
+    name: string;
+    category: string;
+    primaryEntity: string | null;
+    entityType: string | null;
+    keywords: string[];
+    confidence: number;
+    reasoning: string;
+  } | null;
+  
   processingId: string;
   processingTime: number;
 }
@@ -121,7 +143,8 @@ export const IntelligentDocumentUploader = () => {
         body: JSON.stringify({
           fileData: base64Data,
           fileName: file.name,
-          fileType: file.type
+          fileType: file.type,
+          userId: userId // Include userId for bundle detection
         })
       });
 
@@ -152,7 +175,14 @@ export const IntelligentDocumentUploader = () => {
     }
   }, [file]);
 
-  const handleConfirmAndSave = async (confirmedData: DocumentAnalysisResult) => {
+  const handleConfirmAndSave = async (confirmedData: DocumentAnalysisResult & {
+    bundleSelection?: {
+      action: 'link' | 'new' | 'none';
+      bundleId: string | null;
+      newBundleName: string | null;
+      suggestedNewBundle: any;
+    }
+  }) => {
     if (!file || !userId) return;
 
     setPhase('saving');
@@ -204,7 +234,7 @@ export const IntelligentDocumentUploader = () => {
       setUploadProgress(90);
       
       // Save document metadata with AI analysis results
-      const { error: dbError } = await supabase
+      const { data: documentData, error: dbError } = await supabase
         .from('documents')
         .insert({
           user_id: userId,
@@ -224,7 +254,9 @@ export const IntelligentDocumentUploader = () => {
           encrypted_at: new Date().toISOString(),
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
-        });
+        })
+        .select()
+        .single();
 
       if (dbError) {
         console.error('Database error:', dbError);
@@ -234,10 +266,64 @@ export const IntelligentDocumentUploader = () => {
           .remove([filePath]);
         throw new Error('Failed to save document metadata');
       }
+
+      // Phase 2: Handle Bundle Linking
+      if (confirmedData.bundleSelection && documentData) {
+        try {
+          const bundleSelection = confirmedData.bundleSelection;
+          
+          if (bundleSelection.action === 'link' && bundleSelection.bundleId) {
+            // Link to existing bundle
+            const { error: linkError } = await supabase.rpc('link_document_to_bundle', {
+              p_document_id: documentData.id,
+              p_bundle_id: bundleSelection.bundleId,
+              p_user_id: userId
+            });
+            
+            if (linkError) {
+              console.error('Bundle linking error:', linkError);
+              // Don't fail the entire operation if bundle linking fails
+              toast.warning('Document saved but failed to link to bundle');
+            } else {
+              toast.success(`Document linked to bundle successfully!`);
+            }
+            
+          } else if (bundleSelection.action === 'new' && bundleSelection.newBundleName) {
+            // Create new bundle and link document
+            const newBundle = bundleSelection.suggestedNewBundle;
+            const { error: createError } = await supabase.rpc('create_bundle_and_link_document', {
+              p_user_id: userId,
+              p_bundle_name: bundleSelection.newBundleName,
+              p_bundle_category: newBundle?.category || confirmedData.suggestedCategory.category,
+              p_document_id: documentData.id,
+              p_description: newBundle?.reasoning || null,
+              p_primary_entity: newBundle?.primaryEntity || null,
+              p_entity_type: newBundle?.entityType || null,
+              p_keywords: newBundle?.keywords || confirmedData.suggestedTags
+            });
+            
+            if (createError) {
+              console.error('Bundle creation error:', createError);
+              // Don't fail the entire operation if bundle creation fails
+              toast.warning('Document saved but failed to create bundle');
+            } else {
+              toast.success(`New bundle "${bundleSelection.newBundleName}" created and document linked!`);
+            }
+          }
+          
+        } catch (bundleError) {
+          console.error('Bundle handling error:', bundleError);
+          // Don't fail the entire operation if bundle handling fails
+          toast.warning('Document saved but bundle operation failed');
+        }
+      }
       
       setUploadProgress(100);
       
-      toast.success('Document saved successfully with AI analysis!');
+      // Only show generic success if no bundle-specific message was shown
+      if (!confirmedData.bundleSelection || confirmedData.bundleSelection.action === 'none') {
+        toast.success('Document saved successfully with AI analysis!');
+      }
       
       // Emit event to refresh document list
       window.dispatchEvent(new CustomEvent('documentUploaded', { detail: { userId } }));

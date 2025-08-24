@@ -36,6 +36,28 @@ interface DocumentAnalysisResult {
     type: 'amount' | 'account' | 'reference' | 'contact' | 'other';
   }>;
   suggestedTags: string[];
+  
+  // Bundle Intelligence (Phase 2)
+  potentialBundles: Array<{
+    bundleId: string;
+    bundleName: string;
+    bundleCategory: string;
+    primaryEntity: string;
+    documentCount: number;
+    matchScore: number;
+    matchReasons: string[];
+  }>;
+  
+  suggestedNewBundle: {
+    name: string;
+    category: string;
+    primaryEntity: string | null;
+    entityType: string | null;
+    keywords: string[];
+    confidence: number;
+    reasoning: string;
+  } | null;
+  
   processingId: string;
   processingTime: number;
 }
@@ -43,7 +65,14 @@ interface DocumentAnalysisResult {
 interface DocumentConfirmationProps {
   file: File;
   analysisResult: DocumentAnalysisResult;
-  onConfirm: (confirmedData: DocumentAnalysisResult) => void;
+  onConfirm: (confirmedData: DocumentAnalysisResult & {
+    bundleSelection?: {
+      action: 'link' | 'new' | 'none';
+      bundleId: string | null;
+      newBundleName: string | null;
+      suggestedNewBundle: any;
+    }
+  }) => void;
   onCancel: () => void;
   isProcessing?: boolean;
 }
@@ -56,6 +85,9 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
   isProcessing = false
 }) => {
   const [editableData, setEditableData] = useState(analysisResult);
+  const [selectedBundleAction, setSelectedBundleAction] = useState<'link' | 'new' | 'none'>('none');
+  const [selectedBundleId, setSelectedBundleId] = useState<string | null>(null);
+  const [newBundleName, setNewBundleName] = useState(analysisResult.suggestedNewBundle?.name || '');
   
   const handleCategoryChange = (newCategory: string) => {
     setEditableData(prev => ({
@@ -266,6 +298,130 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
                 </div>
               </div>
             )}
+
+            {/* Bundle Intelligence Section (Phase 2) */}
+            {(editableData.potentialBundles.length > 0 || editableData.suggestedNewBundle) && (
+              <div className="space-y-4 p-4 bg-primary/5 rounded-lg border">
+                <div className="flex items-center gap-2">
+                  <Icon name="link" className="w-5 h-5 text-primary" />
+                  <h4 className="font-medium text-primary">Intelligent Document Linking</h4>
+                </div>
+                
+                {/* Existing Bundle Options */}
+                {editableData.potentialBundles.length > 0 && (
+                  <div className="space-y-3">
+                    <p className="text-sm text-muted-foreground">
+                      I found existing document bundles that might be related to this document:
+                    </p>
+                    
+                    {editableData.potentialBundles.map((bundle) => (
+                      <div key={bundle.bundleId} className="space-y-2">
+                        <label className="flex items-start gap-3 p-3 border rounded-lg hover:bg-muted/50 cursor-pointer">
+                          <input
+                            type="radio"
+                            name="bundleAction"
+                            value={bundle.bundleId}
+                            checked={selectedBundleAction === 'link' && selectedBundleId === bundle.bundleId}
+                            onChange={() => {
+                              setSelectedBundleAction('link');
+                              setSelectedBundleId(bundle.bundleId);
+                            }}
+                            className="mt-0.5"
+                          />
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              <span className="font-medium">{bundle.bundleName}</span>
+                              <Badge variant="outline" className="text-xs">
+                                {bundle.documentCount} documents
+                              </Badge>
+                              <Badge variant="secondary" className="text-xs">
+                                {bundle.matchScore}% match
+                              </Badge>
+                            </div>
+                            {bundle.primaryEntity && (
+                              <p className="text-sm text-muted-foreground">{bundle.primaryEntity}</p>
+                            )}
+                            {bundle.matchReasons.length > 0 && (
+                              <p className="text-xs text-muted-foreground mt-1">
+                                Match reasons: {bundle.matchReasons.join(', ')}
+                              </p>
+                            )}
+                          </div>
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* New Bundle Option */}
+                {editableData.suggestedNewBundle && (
+                  <div className="space-y-3">
+                    {editableData.potentialBundles.length > 0 && (
+                      <div className="border-t pt-3">
+                        <p className="text-sm text-muted-foreground mb-3">
+                          Or create a new bundle:
+                        </p>
+                      </div>
+                    )}
+                    
+                    <label className="flex items-start gap-3 p-3 border rounded-lg hover:bg-muted/50 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="bundleAction"
+                        value="new"
+                        checked={selectedBundleAction === 'new'}
+                        onChange={() => {
+                          setSelectedBundleAction('new');
+                          setSelectedBundleId(null);
+                        }}
+                        className="mt-0.5"
+                      />
+                      <div className="flex-1 space-y-2">
+                        <div className="flex items-center gap-2">
+                          <Icon name="plus" className="w-4 h-4 text-primary" />
+                          <span className="font-medium">Create new bundle</span>
+                          <Badge variant="outline" className="text-xs">
+                            {(editableData.suggestedNewBundle.confidence * 100).toFixed(0)}% confidence
+                          </Badge>
+                        </div>
+                        
+                        {selectedBundleAction === 'new' && (
+                          <input
+                            type="text"
+                            value={newBundleName}
+                            onChange={(e) => setNewBundleName(e.target.value)}
+                            className="w-full p-2 border rounded-md bg-background text-sm"
+                            placeholder="Bundle name"
+                          />
+                        )}
+                        
+                        <p className="text-xs text-muted-foreground">
+                          {editableData.suggestedNewBundle.reasoning}
+                        </p>
+                      </div>
+                    </label>
+                  </div>
+                )}
+
+                {/* No Linking Option */}
+                <label className="flex items-center gap-3 p-3 border rounded-lg hover:bg-muted/50 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="bundleAction"
+                    value="none"
+                    checked={selectedBundleAction === 'none'}
+                    onChange={() => {
+                      setSelectedBundleAction('none');
+                      setSelectedBundleId(null);
+                    }}
+                  />
+                  <div className="flex items-center gap-2">
+                    <Icon name="x" className="w-4 h-4 text-muted-foreground" />
+                    <span>Don't link to any bundle</span>
+                  </div>
+                </label>
+              </div>
+            )}
           </div>
 
           {/* Action Buttons */}
@@ -279,7 +435,15 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
               Cancel
             </Button>
             <Button
-              onClick={() => onConfirm(editableData)}
+              onClick={() => onConfirm({
+                ...editableData,
+                bundleSelection: {
+                  action: selectedBundleAction,
+                  bundleId: selectedBundleId,
+                  newBundleName: selectedBundleAction === 'new' ? newBundleName : null,
+                  suggestedNewBundle: editableData.suggestedNewBundle
+                }
+              })}
               disabled={isProcessing}
               className="flex-1 gap-2"
             >
