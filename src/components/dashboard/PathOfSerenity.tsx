@@ -11,8 +11,10 @@ import {
   SERENITY_MILESTONES,
   calculateUnlockedMilestones,
   getNextChallenge,
-  generateSerenityMessage
+  generateSerenityMessage,
+  MilestoneCalculationResult
 } from '@/lib/path-of-serenity';
+import { MilestoneCelebration } from './MilestoneCelebration';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
@@ -34,6 +36,8 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({ className = '' }
   const [serenityMessage, setSerenityMessage] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
   const [selectedMilestone, setSelectedMilestone] = useState<SerenityMilestone | null>(null);
+  const [celebrationMilestone, setCelebrationMilestone] = useState<SerenityMilestone | null>(null);
+  const [isCelebrationOpen, setIsCelebrationOpen] = useState(false);
   const [userStats, setUserStats] = useState<UserStats>({
     documentsCount: 0,
     guardiansCount: 0,
@@ -69,7 +73,7 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({ className = '' }
 
         const documentsCount = documents?.length || 0;
         const guardiansCount = guardians?.length || 0;
-        const categoriesWithDocuments = [...new Set(documents?.map(d => d.category).filter(Boolean))] || [];
+        const categoriesWithDocuments = [...new Set(documents?.map(d => d.category).filter(Boolean) || [])];
         const hasExpiryTracking = documents?.some(d => d.expires_at) || false;
         const legacyItemsCount = 0; // Will be implemented with legacy features
 
@@ -83,16 +87,29 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({ className = '' }
 
         setUserStats(stats);
 
-        // Calculate unlocked milestones
-        const unlockedMilestones = calculateUnlockedMilestones(stats);
-        setMilestones(unlockedMilestones);
+        // Calculate unlocked milestones with celebration detection
+        const result = calculateUnlockedMilestones(stats, milestones);
+        setMilestones(result.milestones);
+
+        // Show celebration for newly unlocked milestones
+        if (result.newlyUnlocked.length > 0) {
+          // Show celebration for the first newly unlocked milestone
+          const milestoneTocelebrate = result.newlyUnlocked[0];
+          setCelebrationMilestone(milestoneTocelebrate);
+          setIsCelebrationOpen(true);
+          
+          // Toast for additional milestones
+          if (result.newlyUnlocked.length > 1) {
+            toast.success(`🌟 You unlocked ${result.newlyUnlocked.length} new milestones!`);
+          }
+        }
 
         // Get next challenge
-        const challenge = getNextChallenge(unlockedMilestones, stats);
+        const challenge = getNextChallenge(result.milestones, stats);
         setNextChallenge(challenge);
 
         // Generate serenity message
-        const message = generateSerenityMessage(unlockedMilestones);
+        const message = generateSerenityMessage(result.milestones);
         setSerenityMessage(message);
 
       } catch (error) {
@@ -103,7 +120,7 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({ className = '' }
     };
 
     loadUserStats();
-  }, [userId, createSupabaseClient]);
+  }, [userId, createSupabaseClient, milestones]);
 
   const handleChallengeClick = () => {
     if (nextChallenge) {
@@ -114,6 +131,11 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({ className = '' }
 
   const handleMilestoneClick = (milestone: SerenityMilestone) => {
     setSelectedMilestone(milestone);
+  };
+
+  const handleCelebrationClose = () => {
+    setIsCelebrationOpen(false);
+    setCelebrationMilestone(null);
   };
 
   if (isLoading) {
@@ -248,7 +270,7 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({ className = '' }
                     : 'bg-slate-100 text-slate-600 border border-slate-200'
                   }
                 `}>
-                  {milestone.name.replace(/^[🗿🤝🏛️⏰🗺️💫👑]\s/, '')}
+                  {milestone.name.replace(/^[\u{1F5FF}\u{1F91D}\u{1F3DB}\u{23F0}\u{1F5FA}\u{1F4AB}\u{1F451}]\s/u, '')}
                 </div>
               </motion.div>
             ))}
@@ -371,6 +393,13 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({ className = '' }
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Milestone Celebration Modal */}
+      <MilestoneCelebration
+        milestone={celebrationMilestone}
+        isOpen={isCelebrationOpen}
+        onClose={handleCelebrationClose}
+      />
     </div>
   );
 };

@@ -229,16 +229,27 @@ export const FIVE_MINUTE_CHALLENGES: FiveMinuteChallenge[] = [
 ];
 
 /**
+ * Interface for milestone calculation result
+ */
+export interface MilestoneCalculationResult {
+  milestones: SerenityMilestone[];
+  newlyUnlocked: SerenityMilestone[];
+}
+
+/**
  * Calculate which milestones should be unlocked based on user's current state
  */
-export function calculateUnlockedMilestones(userStats: {
-  documentsCount: number;
-  guardiansCount: number;
-  categoriesWithDocuments: string[];
-  hasExpiryTracking: boolean;
-  legacyItemsCount: number;
-}): SerenityMilestone[] {
-  return SERENITY_MILESTONES.map(milestone => {
+export function calculateUnlockedMilestones(
+  userStats: {
+    documentsCount: number;
+    guardiansCount: number;
+    categoriesWithDocuments: string[];
+    hasExpiryTracking: boolean;
+    legacyItemsCount: number;
+  },
+  previousMilestones?: SerenityMilestone[]
+): MilestoneCalculationResult {
+  const currentMilestones = SERENITY_MILESTONES.map(milestone => {
     let isUnlocked = false;
     
     switch (milestone.unlockCondition.type) {
@@ -250,12 +261,13 @@ export function calculateUnlockedMilestones(userStats: {
         isUnlocked = userStats.guardiansCount >= (milestone.unlockCondition.value as number);
         break;
         
-      case 'categories_filled':
+      case 'categories_filled': {
         const requiredCategories = milestone.unlockCondition.value as string[];
         isUnlocked = requiredCategories.every(cat => 
           userStats.categoriesWithDocuments.includes(cat)
         );
         break;
+      }
         
       case 'expiry_tracking':
         isUnlocked = userStats.hasExpiryTracking;
@@ -272,6 +284,22 @@ export function calculateUnlockedMilestones(userStats: {
       unlockedAt: isUnlocked ? new Date().toISOString() : undefined
     };
   });
+
+  // Find newly unlocked milestones
+  const newlyUnlocked: SerenityMilestone[] = [];
+  if (previousMilestones) {
+    currentMilestones.forEach(current => {
+      const previous = previousMilestones.find(p => p.id === current.id);
+      if (current.isUnlocked && (!previous || !previous.isUnlocked)) {
+        newlyUnlocked.push(current);
+      }
+    });
+  }
+
+  return {
+    milestones: currentMilestones,
+    newlyUnlocked
+  };
 }
 
 /**

@@ -63,7 +63,7 @@ export default function Scene4Prepare({ onBack, onComplete }: Scene4PrepareProps
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4, duration: 0.8 }}
             >
-              Thank you. I understand what matters to you. I am preparing your personal space where you can safely keep these treasures.
+              Thank you. I understand what matters to you. I am preparing your Path of Peace where your first milestone awaits - the Foundation Stone of Security.
             </motion.p>
             
             {/* Enhanced firefly light trail animation */}
@@ -162,6 +162,38 @@ export default function Scene4Prepare({ onBack, onComplete }: Scene4PrepareProps
                       />
                     ))}
 
+                    {/* First milestone hint appears along the path */}
+                    <motion.div
+                      className="absolute"
+                      style={{ left: '15%', top: '75%' }}
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 4, duration: 1 }}
+                    >
+                      <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-500 rounded-full border-2 border-blue-300 flex items-center justify-center shadow-lg">
+                        <div className="text-white text-xs">🗿</div>
+                      </div>
+                      <div className="absolute top-full mt-1 left-1/2 transform -translate-x-1/2 text-xs text-blue-300 whitespace-nowrap font-medium">
+                        Foundation Stone
+                      </div>
+                    </motion.div>
+
+                    {/* Second milestone hint */}
+                    <motion.div
+                      className="absolute"
+                      style={{ left: '35%', top: '50%' }}
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 5, duration: 1 }}
+                    >
+                      <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-green-500 rounded-full border-2 border-green-300 flex items-center justify-center shadow-lg">
+                        <div className="text-white text-xs">🤝</div>
+                      </div>
+                      <div className="absolute top-full mt-1 left-1/2 transform -translate-x-1/2 text-xs text-green-300 whitespace-nowrap font-medium">
+                        Circle of Trust
+                      </div>
+                    </motion.div>
+
                     {/* Completion message appears gradually */}
                     <motion.div
                       className="absolute inset-0 flex items-center justify-center"
@@ -183,7 +215,7 @@ export default function Scene4Prepare({ onBack, onComplete }: Scene4PrepareProps
                           ✨
                         </motion.div>
                         <p className="text-white/90 text-sm font-medium">
-                          Your legacy sanctuary is ready
+                          Your Path of Peace is ready
                         </p>
                       </div>
                     </motion.div>

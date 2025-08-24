@@ -3,6 +3,7 @@ import { useAuth, useUser } from '@clerk/clerk-react';
 import { useSofiaStore } from '@/stores/sofiaStore';
 import { SofiaContext } from '@/lib/sofia-types';
 import { useLocation } from 'react-router-dom';
+import { calculateUnlockedMilestones } from '@/lib/path-of-serenity';
 
 interface SofiaContextProviderProps {
   children: React.ReactNode;
@@ -87,6 +88,24 @@ try {
   console.error('Failed to parse onboarding data from localStorage:', error);
 }
 
+    // Calculate milestone progress for Path of Serenity
+    const userStats = {
+      documentsCount: documentCount,
+      guardiansCount: guardianCount,
+      categoriesWithDocuments: [], // This would need to come from actual document data
+      hasExpiryTracking: false, // This would need to come from actual document data
+      legacyItemsCount: 0 // This would need to come from legacy features
+    };
+
+    const milestoneResult = calculateUnlockedMilestones(userStats);
+    const milestoneProgress = {
+      unlockedCount: milestoneResult.milestones.filter(m => m.isUnlocked).length,
+      totalMilestones: milestoneResult.milestones.length,
+      nextMilestone: milestoneResult.milestones.find(m => !m.isUnlocked)?.name,
+      hasExpiryTracking: userStats.hasExpiryTracking,
+      categoriesWithDocuments: userStats.categoriesWithDocuments
+    };
+
     // Create comprehensive context
     const context: SofiaContext = {
       userId,
@@ -97,6 +116,7 @@ try {
       recentActivity,
       familyStatus,
       language: 'en', // TODO: Get from user preferences or browser
+      milestoneProgress
     };
 
     setContext(context);

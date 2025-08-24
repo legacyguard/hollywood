@@ -28,6 +28,14 @@ export interface SofiaContext {
   recentActivity: string[];
   familyStatus: 'single' | 'partner' | 'family' | 'parent_care' | 'business';
   language: string;
+  // Path of Serenity milestone data
+  milestoneProgress?: {
+    unlockedCount: number;
+    totalMilestones: number;
+    nextMilestone?: string;
+    hasExpiryTracking?: boolean;
+    categoriesWithDocuments?: string[];
+  };
 }
 
 class SofiaAI {
@@ -218,20 +226,40 @@ class SofiaAI {
   }
 
   private getMockContextualHelp(page: string, context: SofiaContext): string {
+    const milestones = context.milestoneProgress;
+    
     switch (page) {
       case 'onboarding':
         return `Welcome to LegacyGuard, ${context.userName || 'there'}! I'm Sofia, and I'll be your guide. This journey is about creating peace of mind for you and protection for your family. Take your time - I'm here to help every step of the way.`;
         
       case 'vault':
+        if (milestones && context.documentCount === 0) {
+          return `Hello ${context.userName || 'there'}! I see you're ready to begin your Path of Peace. Your first milestone awaits - the Foundation Stone of Security. Upload your first important document and take that meaningful first step toward protecting your family.`;
+        } else if (milestones && milestones.unlockedCount > 0) {
+          return `Hello ${context.userName || 'there'}! Your Path of Peace looks wonderful - you've unlocked ${milestones.unlockedCount} milestone${milestones.unlockedCount > 1 ? 's' : ''} already! ${context.documentCount > 0 ? `You've secured ${context.documentCount} documents, which shows real dedication to your family's security.` : ''} What would you like to work on next?`;
+        }
         return `Your Vault is where all your important documents live, safely encrypted. ${context.documentCount > 0 ? `You've already secured ${context.documentCount} documents - excellent work!` : 'Ready to add your first document?'} I can help you decide what to upload next.`;
         
       case 'guardians':
+        if (milestones && context.guardianCount === 0 && context.documentCount > 0) {
+          return `Hello ${context.userName || 'there'}! You've made excellent progress on your Path of Peace. Now it's time to create your Circle of Trust - the people who can help your family when you can't. This is one of the most meaningful steps you can take.`;
+        } else if (milestones && milestones.unlockedCount > 0) {
+          return `Hello ${context.userName || 'there'}! Your Path of Peace shows ${milestones.unlockedCount} unlocked milestones - you're doing amazingly well! ${context.guardianCount > 0 ? `Your Circle of Trust with ${context.guardianCount} guardian${context.guardianCount > 1 ? 's' : ''} brings such peace of mind.` : 'Adding guardians is the next beautiful step in protecting your family.'} What would you like to focus on today?`;
+        }
         return `Your Circle of Trust is about the people who matter most. ${context.guardianCount > 0 ? `You've trusted ${context.guardianCount} guardian${context.guardianCount > 1 ? 's' : ''} - that shows real care for your family.` : 'Guardians are the people who can help your family when you can\'t.'} Each person you add strengthens your family's protection.`;
         
       case 'legacy':
+        if (milestones && milestones.unlockedCount >= 5) {
+          return `Hello ${context.userName || 'there'}! With ${milestones.unlockedCount} milestones on your Path of Peace, you've built something truly meaningful. The Legacy section is where your love becomes eternal - creating messages and wishes that will guide your family long into the future.`;
+        }
         return 'Your Legacy section is where love becomes action - creating wills, recording messages, and sharing your wishes. This isn\'t about endings; it\'s about making sure your care continues.';
         
       default:
+        if (milestones && milestones.unlockedCount === 0) {
+          return `Hello ${context.userName || 'there'}! I'm here to help you begin your Path of Peace. Every journey starts with a single step, and yours will be the Foundation Stone of Security. Ready when you are - I'll guide you every step of the way.`;
+        } else if (milestones && milestones.unlockedCount > 0) {
+          return `Hello ${context.userName || 'there'}! Your Path of Peace is beautiful - ${milestones.unlockedCount} milestone${milestones.unlockedCount > 1 ? 's' : ''} unlocked! Each step you've taken brings deeper security and peace of mind to your family. What would you like to focus on today?`;
+        }
         return `I'm here to help you protect what matters most. With ${context.completionPercentage}% of your family protection complete, you're already making a real difference. What would you like to work on today?`;
     }
   }
