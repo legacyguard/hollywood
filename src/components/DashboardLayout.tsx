@@ -1,9 +1,13 @@
 import { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "@clerk/clerk-react";
 import { AppSidebar } from "@/components/AppSidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { QuickSearch } from "@/components/QuickSearch";
+import { executeSofiaAction, generateContextualMessage } from "@/lib/sofia-action-router";
+import { SofiaAction } from "@/lib/sofia-search-dictionary";
+import { useDocumentFilter } from "@/contexts/DocumentFilterContext";
 import SofiaChatV2 from "@/components/sofia/SofiaChatV2";
 import SofiaFloatingButton from "@/components/sofia/SofiaFloatingButton";
 
@@ -14,7 +18,11 @@ interface DashboardLayoutProps {
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   const [isSofiaOpen, setIsSofiaOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [sofiaPendingAction, setSofiaPendingAction] = useState<{ userMessage: string; sofiaResponse: string } | null>(null);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { userId } = useAuth();
+  const { setFilter: setDocumentFilter } = useDocumentFilter();
   
   // Enable keyboard shortcuts with search callback
   useKeyboardShortcuts(() => setIsSearchOpen(true));
@@ -31,6 +39,39 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
   const toggleSofia = () => {
     setIsSofiaOpen(!isSofiaOpen);
+  };
+
+  const handleSofiaAction = async (action: SofiaAction, searchQuery?: string) => {
+    try {
+      // Generate contextual messages
+      const userMessage = action.text;
+      let sofiaResponse = '';
+
+      // Execute the action and get the response
+      await executeSofiaAction(action, {
+        navigate,
+        userId,
+        setDocumentFilter,
+        onSofiaMessage: (user, sofia) => {
+          sofiaResponse = sofia;
+        }
+      });
+
+      // Set pending action for Sofia to display
+      if (sofiaResponse) {
+        setSofiaPendingAction({
+          userMessage,
+          sofiaResponse
+        });
+      }
+
+    } catch (error) {
+      console.error('Error executing Sofia action:', error);
+      setSofiaPendingAction({
+        userMessage: action.text,
+        sofiaResponse: "I apologize, but I encountered an issue processing your request. Please try again."
+      });
+    }
   };
 
   return (
@@ -57,15 +98,26 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         />
         <SofiaChatV2 
           isOpen={isSofiaOpen}
-          onClose={() => setIsSofiaOpen(false)}
+          onClose={() => {
+            setIsSofiaOpen(false);
+            // Clear pending action when Sofia is closed
+            setSofiaPendingAction(null);
+          }}
           variant="floating"
           currentPage={getCurrentPage()}
+          pendingAction={sofiaPendingAction}
         />
         
         {/* Quick Search Modal */}
         <QuickSearch 
           isOpen={isSearchOpen} 
-          onClose={() => setIsSearchOpen(false)} 
+          onClose={() => setIsSearchOpen(false)}
+          onSofiaAction={async (action) => {
+            // Sofia action triggered from search
+            setIsSearchOpen(false);
+            await handleSofiaAction(action);
+            setIsSofiaOpen(true);
+          }}
         />
       </div>
     </SidebarProvider>

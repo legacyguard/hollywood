@@ -6,11 +6,13 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon-library';
 import { useSupabaseClient } from '@/integrations/supabase/client';
+import { findSofiaActions, type SofiaAction } from '@/lib/sofia-search-dictionary';
 import { toast } from 'sonner';
 
 interface QuickSearchProps {
   isOpen: boolean;
   onClose: () => void;
+  onSofiaAction?: (action: SofiaAction) => void;
 }
 
 interface SearchResult {
@@ -22,9 +24,10 @@ interface SearchResult {
   action: () => void;
 }
 
-export const QuickSearch: React.FC<QuickSearchProps> = ({ isOpen, onClose }) => {
+export const QuickSearch: React.FC<QuickSearchProps> = ({ isOpen, onClose, onSofiaAction }) => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
+  const [sofiaActions, setSofiaActions] = useState<SofiaAction[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const { userId } = useAuth();
@@ -151,6 +154,7 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({ isOpen, onClose }) => 
   const performSearch = useCallback(async (searchQuery: string) => {
     if (!searchQuery.trim()) {
       setResults(quickActions);
+      setSofiaActions([]);
       return;
     }
 
@@ -169,7 +173,11 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({ isOpen, onClose }) => 
         searchGuardians(searchQuery)
       ]);
 
+      // Find Sofia intelligent suggestions
+      const intelligentSuggestions = findSofiaActions(searchQuery);
+
       setResults([...filteredActions, ...documents, ...guardians]);
+      setSofiaActions(intelligentSuggestions);
     } catch (error) {
       console.error('Search error:', error);
       toast.error('Search failed. Please try again.');
@@ -261,6 +269,43 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({ isOpen, onClose }) => 
             </div>
           ) : null}
         </div>
+
+        {/* Sofia Intelligent Suggestions */}
+        {sofiaActions.length > 0 && (
+          <div className="border-t bg-primary/5">
+            <div className="px-6 py-4">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Icon name="sparkles" className="w-3 h-3 text-primary" />
+                </div>
+                <span className="text-sm font-medium text-primary">Ask Sofia Assistant:</span>
+              </div>
+              
+              <div className="space-y-2">
+                {sofiaActions.map((action, index) => (
+                  <Button
+                    key={`sofia-${index}`}
+                    variant="outline"
+                    className="w-full justify-start h-auto p-3 border-primary/20 hover:bg-primary/10 hover:border-primary/30"
+                    onClick={() => {
+                      if (onSofiaAction) {
+                        onSofiaAction(action);
+                        onClose();
+                      }
+                    }}
+                  >
+                    <Icon name={action.icon || 'message-circle'} className="w-4 h-4 mr-3 flex-shrink-0 text-primary" />
+                    <span className="text-primary font-medium">{action.text}</span>
+                  </Button>
+                ))}
+              </div>
+              
+              <p className="text-xs text-muted-foreground mt-3 text-center">
+                Sofia will help you find exactly what you need
+              </p>
+            </div>
+          </div>
+        )}
 
         <div className="px-6 py-3 border-t bg-muted/30 text-xs text-muted-foreground">
           <div className="flex items-center justify-between">

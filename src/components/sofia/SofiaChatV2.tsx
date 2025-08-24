@@ -128,6 +128,7 @@ interface SofiaChatV2Props {
   className?: string;
   variant?: 'floating' | 'embedded' | 'fullscreen';
   currentPage?: string;
+  pendingAction?: { userMessage: string; sofiaResponse: string } | null;
 }
 
 const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
@@ -135,7 +136,8 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
   onClose,
   className = '',
   variant = 'floating',
-  currentPage = 'dashboard'
+  currentPage = 'dashboard',
+  pendingAction = null
 }) => {
   const { userId } = useAuth();
   const navigate = useNavigate();
@@ -215,6 +217,36 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
       setIsProcessing(false);
     }
   }, [context, userId, addMessage, currentPage, getDefaultWelcome, setTyping, setIsProcessing]);
+
+  // Handle pending actions from search
+  useEffect(() => {
+    if (pendingAction && isOpen) {
+      // Add both messages immediately when Sofia opens with a pending action
+      const userMessage: SofiaMessage = {
+        id: crypto.randomUUID(),
+        role: 'user',
+        content: pendingAction.userMessage,
+        timestamp: new Date(),
+        metadata: { cost: 'free', source: 'search_action' }
+      };
+
+      const sofiaMessage: SofiaMessage = {
+        id: crypto.randomUUID(),
+        role: 'assistant', 
+        content: pendingAction.sofiaResponse,
+        timestamp: new Date(),
+        responseType: 'smart_suggestion',
+        metadata: { cost: 'free', source: 'search_integration' }
+      };
+
+      addMessage(userMessage);
+      
+      // Add Sofia response after a short delay for natural feel
+      setTimeout(() => {
+        addMessage(sofiaMessage);
+      }, 500);
+    }
+  }, [pendingAction, isOpen, addMessage]);
 
   // Auto-scroll to bottom when new messages arrive with smooth scrolling
   useEffect(() => {

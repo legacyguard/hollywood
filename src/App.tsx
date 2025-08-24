@@ -8,6 +8,7 @@ import { ClerkProvider } from "./providers/ClerkProvider";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import { OnboardingWrapper } from "./components/onboarding/OnboardingWrapper";
 import { ErrorBoundary } from "./components/ErrorBoundary";
+import { DocumentFilterProvider } from "./contexts/DocumentFilterContext";
 import SofiaContextProvider from "./components/sofia/SofiaContextProvider";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -30,7 +31,8 @@ const App = () => (
           <Toaster />
           <Sonner />
           <BrowserRouter future={routerFutureConfig}>
-            <SofiaContextProvider>
+            <DocumentFilterProvider>
+              <SofiaContextProvider>
           <Routes>
             {/* Public routes */}
             <Route path="/sign-in/*" element={<SignInPage />} />
@@ -79,6 +81,7 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Routes>
           </SofiaContextProvider>
+            </DocumentFilterProvider>
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>
