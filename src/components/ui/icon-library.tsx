@@ -62,6 +62,13 @@ import {
   TrendingUp,
   TrendingDown,
   Key,
+  Car,
+  Folder,
+  UserPlus,
+  Upload as FileUpload,
+  RefreshCw,
+  FilePlus,
+  CreditCard as Card,
 } from "lucide-react";
 
 // Export all icons for direct use
@@ -129,6 +136,13 @@ export {
   TrendingUp,
   TrendingDown,
   Key,
+  Car,
+  Folder,
+  UserPlus,
+  FileUpload,
+  RefreshCw,
+  FilePlus,
+  Card,
 };
 
 // Icon mapping for semantic usage
@@ -220,6 +234,16 @@ export const IconMap = {
   
   // Security & Access
   key: Key,
+  
+  // New dashboard icons
+  car: Car,
+  folder: Folder,
+  'user-plus': UserPlus,
+  'file-upload': FileUpload,
+  'refresh-cw': RefreshCw,
+  'file-plus': FilePlus,
+  'credit-card': Card,
+  'alert-circle': AlertCircle,
   
   // Aliases for common usage
   checkCircle: CheckCircle,

@@ -1,12 +1,12 @@
 import { Icon } from "@/components/ui/icon-library";
 import { Button } from "@/components/ui/button";
-import { PillarCard } from "@/components/PillarCard";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { FadeIn } from "@/components/motion/FadeIn";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useUser } from "@clerk/clerk-react";
-import { DashboardStats } from "@/components/features/DashboardStats";
 import { PathOfSerenity } from "@/components/dashboard/PathOfSerenity";
+import { AttentionSection } from "@/components/dashboard/AttentionSection";
+import { LegacyOverviewSection } from "@/components/dashboard/LegacyOverviewSection";
 
 export function DashboardContent() {
   const { user } = useUser();
@@ -22,7 +22,7 @@ export function DashboardContent() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
+      {/* Header - Centrum Vášho Pokoja */}
       <header className="bg-card border-b border-card-border">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 py-8">
           <div className="flex items-start justify-between">
@@ -31,12 +31,12 @@ export function DashboardContent() {
               <div>
                 <FadeIn duration={0.5} delay={0.2}>
                   <h1 className="text-3xl lg:text-4xl font-bold font-heading text-card-foreground mb-3">
-                    Welcome{user?.firstName ? `, ${user.firstName}` : ''}. I'm here to help you.
+                    Centrum Vášho Pokoja{user?.firstName ? `, ${user.firstName}` : ''}
                   </h1>
                 </FadeIn>
                 <FadeIn duration={0.5} delay={0.4}>
-                  <p className="text-lg leading-relaxed max-w-2xl" style={{ color: 'hsl(var(--muted-text))' }}>
-                    It's wonderful to see you taking these important steps for your family.
+                  <p className="text-lg leading-relaxed max-w-2xl text-muted-foreground">
+                    Vaše bezpečné miesto, kde sa stretáva starostlivosť o rodinu s pokojom mysle
                   </p>
                 </FadeIn>
               </div>
@@ -48,7 +48,7 @@ export function DashboardContent() {
                 size="lg"
               >
                 <Icon name="add" className="w-5 h-5 mr-2" />
-                Secure a New Information
+                Zabezpečiť nové informácie
               </Button>
             </FadeIn>
           </div>
@@ -56,126 +56,15 @@ export function DashboardContent() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-6 lg:px-8 py-12">
-        {/* Dashboard Stats */}
-        <FadeIn duration={0.5} delay={0.6}>
-          <DashboardStats className="mb-12" />
-        </FadeIn>
+      <main className="max-w-7xl mx-auto px-6 lg:px-8 py-12 space-y-16">
+        {/* 1. Sekcia: Vaša Cesta Pokoja (Kompaktná verzia) */}
+        <PathOfSerenity className="max-w-4xl mx-auto" />
 
-        {/* Path of Serenity - Revolutionary Progress Tracking */}
-        <FadeIn duration={0.5} delay={0.7}>
-          <PathOfSerenity className="mb-12" />
-        </FadeIn>
+        {/* 2. Sekcia: Vyžaduje si Vašu Pozornosť (Dynamická akčná zóna) */}
+        <AttentionSection />
 
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Pillar 1: TODAY - Your Organized Life (Active) */}
-          <FadeIn duration={0.5} delay={0.8}>
-            <PillarCard
-              title="TODAY - Your Organized Life"
-              subtitle="Track your progress and stay organized with your important information."
-              icon="success"
-              isActive={true}
-              actionButton={{
-                text: "View My Vault",
-                onClick: handleViewVault,
-                href: "/vault",
-              }}
-            >
-              <div className="space-y-6">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="text-center p-4 bg-primary/5 rounded-lg">
-                    <div className="text-2xl font-bold text-primary font-heading">12</div>
-                    <div className="text-sm text-muted-foreground">Informations Secured</div>
-                  </div>
-                  <div className="text-center p-4 bg-status-warning/10 rounded-lg">
-                    <div className="text-2xl font-bold text-status-warning font-heading">2</div>
-                    <div className="text-sm text-muted-foreground">Upcoming Deadlines</div>
-                  </div>
-                </div>
-                
-                <ProgressBar 
-                  value={45} 
-                  label="Profile Completion" 
-                  showPercentage={true}
-                />
-              </div>
-            </PillarCard>
-          </FadeIn>
-
-          {/* Pillar 2: TOMORROW - Your Family's Protection (Locked) */}
-          <FadeIn duration={0.5} delay={1.0}>
-            <PillarCard
-              title="TOMORROW - Your Family's Protection"
-              subtitle="You're building strong foundations. When you're ready, I'll gently unlock this next chapter to help protect your family during unexpected moments."
-              icon="protection"
-              isLocked={true}
-            />
-          </FadeIn>
-
-          {/* Pillar 3: FOREVER - Your Enduring Legacy (Locked) */}
-          <FadeIn duration={0.5} delay={1.2}>
-            <PillarCard
-              title="FOREVER - Your Enduring Legacy"
-              subtitle="This chapter awaits when the time feels right. Together, we'll preserve your wishes and stories for generations to come."
-              icon="infinity"
-              isLocked={true}
-            />
-          </FadeIn>
-        </div>
-
-        {/* Quick Actions Section */}
-        <section className="mt-16">
-          <FadeIn duration={0.5} delay={1.4}>
-            <h2 className="text-2xl font-bold font-heading text-card-foreground mb-6">
-              Quick Actions
-            </h2>
-          </FadeIn>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <FadeIn duration={0.5} delay={1.5}>
-              <Button
-                variant="outline"
-                className="h-20 flex-col gap-2 hover:bg-primary/5 hover:border-primary/20"
-                onClick={handleNewInformation}
-              >
-                <Icon name="add" className="w-5 h-5" />
-                <span className="text-sm">Add Information</span>
-              </Button>
-            </FadeIn>
-            
-            <FadeIn duration={0.5} delay={1.6}>
-              <Button
-                variant="outline"
-                className="h-20 flex-col gap-2 hover:bg-primary/5 hover:border-primary/20"
-                onClick={handleViewVault}
-              >
-                <Icon name="documents" className="w-5 h-5" />
-                <span className="text-sm">Review Progress</span>
-              </Button>
-            </FadeIn>
-            
-            <FadeIn duration={0.5} delay={1.7}>
-              <Button
-                variant="outline"
-                className="h-20 flex-col gap-2 cursor-not-allowed opacity-60"
-                disabled
-              >
-                <Icon name="guardians" className="w-5 h-5 text-muted-foreground" />
-                <span className="text-sm text-muted-foreground">Set Emergency Contacts</span>
-              </Button>
-            </FadeIn>
-            
-            <FadeIn duration={0.5} delay={1.8}>
-              <Button
-                variant="outline"
-                className="h-20 flex-col gap-2 cursor-not-allowed opacity-60"
-                disabled
-              >
-                <Icon name="wishes" className="w-5 h-5 text-muted-foreground" />
-                <span className="text-sm text-muted-foreground">Create Legacy Content</span>
-              </Button>
-            </FadeIn>
-          </div>
-        </section>
+        {/* 3. Sekcia: Prehľad Vášho Odkazu (Bundle karty) */}
+        <LegacyOverviewSection />
       </main>
     </div>
   );
