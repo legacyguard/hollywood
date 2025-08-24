@@ -134,8 +134,11 @@ export default function GuardiansPage() {
                   </h1>
                 </FadeIn>
                 <FadeIn duration={0.5} delay={0.4}>
-                  <p className="text-lg leading-relaxed max-w-2xl" style={{ color: 'hsl(var(--muted-text))' }}>
+                  <p className="text-lg leading-relaxed max-w-2xl mb-4" style={{ color: 'hsl(var(--muted-text))' }}>
                     Your Circle of Trust. These trusted people can help your family access important information when needed.
+                  </p>
+                  <p className="text-sm text-muted-foreground/80 max-w-2xl italic">
+                    💙 Just like the key you engraved during onboarding, these guardians represent the people you trust most completely - those who understand your heart and will honor your wishes.
                   </p>
                 </FadeIn>
               </div>
@@ -268,10 +271,17 @@ export default function GuardiansPage() {
                 </div>
                 
                 <h3 className="text-2xl font-bold mb-4 text-card-foreground">You don't have any guardians yet</h3>
-                <p className="text-muted-foreground mb-8 max-w-lg mx-auto text-lg leading-relaxed">
+                <p className="text-muted-foreground mb-6 max-w-lg mx-auto text-lg leading-relaxed">
                   A guardian is a trusted person who can help your loved ones when they need it most. 
                   Let's add your first guardian to start building your Circle of Trust.
                 </p>
+                <div className="bg-primary/10 rounded-lg p-4 mb-8 max-w-2xl mx-auto border border-primary/20">
+                  <p className="text-sm text-primary/80 italic leading-relaxed">
+                    🤗 Think of someone who knows your values and would act with the same care you would. 
+                    This could be a family member, close friend, or trusted advisor who has always been there for you. 
+                    Your guardians become your family's guides when you cannot be there yourself.
+                  </p>
+                </div>
                 
                 {/* Benefits list */}
                 <div className="flex flex-col sm:flex-row gap-6 mb-10 max-w-2xl mx-auto">
@@ -374,10 +384,15 @@ export default function GuardiansPage() {
                 <div className="flex items-start gap-4">
                   <Icon name="info" className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
                   <div>
-                    <h4 className="font-semibold text-primary mb-2">How Guardians Work</h4>
+                    <h4 className="font-semibold text-primary mb-2">The Trust Behind Your Guardians</h4>
                     <p className="text-muted-foreground mb-4">
-                      Your guardians are trusted people who can help your family access important information in emergencies. 
-                      Currently, this serves as your contact list for trusted individuals.
+                      Your guardians represent the deepest level of trust - people who would protect your family's interests 
+                      just as you would. They're not just emergency contacts; they're the extension of your care and wisdom 
+                      when your loved ones need guidance most.
+                    </p>
+                    <p className="text-sm text-muted-foreground/80 italic mb-3">
+                      ✨ Every guardian you add strengthens your family's safety net, giving you peace of mind that someone 
+                      who truly understands your values will be there to help.
                     </p>
                     <p className="text-sm text-muted-foreground">
                       <strong>Coming soon:</strong> Advanced permissions, document sharing, and emergency access features.

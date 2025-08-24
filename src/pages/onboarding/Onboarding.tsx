@@ -17,7 +17,7 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
   const goNext = () => setStep((s) => Math.min(4, s + 1));
 
   if (step === 1) {
-    return <Scene1Promise onNext={goNext} />;
+    return <Scene1Promise onNext={goNext} onSkip={onComplete} />;
   }
   if (step === 2) {
     return (
@@ -28,6 +28,7 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
           setBoxItems(items);
           goNext();
         }}
+        onSkip={onComplete}
       />
     );
   }
@@ -40,6 +41,7 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
           setTrustedName(name);
           goNext();
         }}
+        onSkip={onComplete}
       />
     );
   }

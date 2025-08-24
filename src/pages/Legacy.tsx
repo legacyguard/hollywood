@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useAuth } from '@clerk/clerk-react';
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { FadeIn } from "@/components/motion/FadeIn";
 import { Button } from "@/components/ui/button";
@@ -9,8 +10,12 @@ import { Icon } from "@/components/ui/icon-library";
 import { toast } from 'sonner';
 
 export default function LegacyPage() {
+  const { user } = useAuth();
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Get user's first name from Clerk
+  const firstName = user?.firstName || user?.fullName?.split(' ')[0] || 'Friend';
 
   const handleNotifySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,7 +54,7 @@ export default function LegacyPage() {
             
             <FadeIn duration={0.8} delay={0.6}>
               <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
-                The most personal part of your digital legacy. Create your will, record final wishes, 
+                {firstName}, this is the most personal part of your digital legacy. Create your will, record final wishes, 
                 and leave heartfelt messages for those you love most.
               </p>
             </FadeIn>
@@ -162,7 +167,7 @@ export default function LegacyPage() {
                 <Icon name="heart" className="w-12 h-12 text-primary mx-auto mb-6" />
                 <h3 className="text-2xl font-bold mb-6">Why Legacy Planning Matters</h3>
                 <p className="text-lg text-muted-foreground leading-relaxed mb-8">
-                  Legacy planning isn't just about legal documents—it's about peace of mind for you and clarity for your loved ones. 
+                  {firstName}, legacy planning isn't just about legal documents—it's about peace of mind for you and clarity for your loved ones. 
                   It's ensuring your voice continues to guide and comfort those you care about, even when you can't be there in person.
                 </p>
                 <div className="grid md:grid-cols-3 gap-8 text-left">

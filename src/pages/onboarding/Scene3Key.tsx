@@ -9,9 +9,10 @@ interface Scene3KeyProps {
   initialTrustedName?: string;
   onBack: () => void;
   onNext: (trustedName: string) => void;
+  onSkip?: () => void;
 }
 
-export default function Scene3Key({ initialTrustedName = "", onBack, onNext }: Scene3KeyProps) {
+export default function Scene3Key({ initialTrustedName = "", onBack, onNext, onSkip }: Scene3KeyProps) {
   const [name, setName] = useState(initialTrustedName);
   const [isEngraving, setIsEngraving] = useState(false);
 
@@ -26,7 +27,21 @@ export default function Scene3Key({ initialTrustedName = "", onBack, onNext }: S
   }, [name]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-primary/5">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-primary/5 relative">
+      {/* Skip button in top right corner */}
+      {onSkip && (
+        <motion.button
+          onClick={onSkip}
+          className="absolute top-6 right-6 text-sm text-muted-foreground hover:text-foreground transition-colors z-10 bg-background/80 backdrop-blur px-3 py-1 rounded-full border border-border/50 hover:border-border"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1, duration: 0.5 }}
+          whileHover={{ scale: 1.05 }}
+        >
+          Skip introduction
+        </motion.button>
+      )}
+      
       <FadeIn duration={0.8}>
         <Card className="w-full max-w-3xl border-primary/20 shadow-xl">
           <CardHeader>

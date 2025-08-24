@@ -183,23 +183,40 @@ export default function EnhancedDocumentUploader({
               {/* Basic Information */}
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="title">Document Title *</Label>
+                  <Label htmlFor="title" className="flex items-center gap-2">
+                    Document Title *
+                    {processedDocument && manualFormData.title && (
+                      <div className="flex items-center gap-1 text-xs text-green-600">
+                        <span className="text-yellow-500">✨</span>
+                        AI filled
+                      </div>
+                    )}
+                  </Label>
                   <Input
                     id="title"
                     value={manualFormData.title}
                     onChange={(e) => handleFormChange('title', e.target.value)}
                     placeholder="Enter document title"
                     required
+                    className={processedDocument && manualFormData.title ? 'bg-green-50/50 border-green-200 focus:border-green-400' : ''}
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="category">Category</Label>
+                  <Label htmlFor="category" className="flex items-center gap-2">
+                    Category
+                    {processedDocument && manualFormData.category && (
+                      <div className="flex items-center gap-1 text-xs text-green-600">
+                        <span className="text-yellow-500">✨</span>
+                        AI filled
+                      </div>
+                    )}
+                  </Label>
                   <Select
                     value={manualFormData.category}
                     onValueChange={(value) => handleFormChange('category', value)}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className={processedDocument && manualFormData.category ? 'bg-green-50/50 border-green-200 focus:border-green-400' : ''}>
                       <SelectValue placeholder="Select category" />
                     </SelectTrigger>
                     <SelectContent>
@@ -217,12 +234,20 @@ export default function EnhancedDocumentUploader({
                 </div>
 
                 <div>
-                  <Label htmlFor="document-type">Document Type</Label>
+                  <Label htmlFor="document-type" className="flex items-center gap-2">
+                    Document Type
+                    {processedDocument && manualFormData.documentType && (
+                      <div className="flex items-center gap-1 text-xs text-green-600">
+                        <span className="text-yellow-500">✨</span>
+                        AI filled
+                      </div>
+                    )}
+                  </Label>
                   <Select
                     value={manualFormData.documentType}
                     onValueChange={(value) => handleFormChange('documentType', value)}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className={processedDocument && manualFormData.documentType ? 'bg-green-50/50 border-green-200 focus:border-green-400' : ''}>
                       <SelectValue placeholder="Select document type" />
                     </SelectTrigger>
                     <SelectContent className="max-h-64">
@@ -254,12 +279,21 @@ export default function EnhancedDocumentUploader({
                 </div>
 
                 <div>
-                  <Label htmlFor="expires-at">Expiration Date (Optional)</Label>
+                  <Label htmlFor="expires-at" className="flex items-center gap-2">
+                    Expiration Date (Optional)
+                    {processedDocument && manualFormData.expiresAt && (
+                      <div className="flex items-center gap-1 text-xs text-green-600">
+                        <span className="text-yellow-500">✨</span>
+                        AI filled
+                      </div>
+                    )}
+                  </Label>
                   <Input
                     id="expires-at"
                     type="date"
                     value={manualFormData.expiresAt}
                     onChange={(e) => handleFormChange('expiresAt', e.target.value)}
+                    className={processedDocument && manualFormData.expiresAt ? 'bg-green-50/50 border-green-200 focus:border-green-400' : ''}
                   />
                 </div>
               </div>
@@ -267,23 +301,41 @@ export default function EnhancedDocumentUploader({
               {/* Additional Information */}
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="description">Description</Label>
+                  <Label htmlFor="description" className="flex items-center gap-2">
+                    Description
+                    {processedDocument && manualFormData.description && (
+                      <div className="flex items-center gap-1 text-xs text-green-600">
+                        <span className="text-yellow-500">✨</span>
+                        AI filled
+                      </div>
+                    )}
+                  </Label>
                   <Textarea
                     id="description"
                     value={manualFormData.description}
                     onChange={(e) => handleFormChange('description', e.target.value)}
                     placeholder="Describe the document..."
                     rows={4}
+                    className={processedDocument && manualFormData.description ? 'bg-green-50/50 border-green-200 focus:border-green-400' : ''}
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="tags">Tags (comma-separated)</Label>
+                  <Label htmlFor="tags" className="flex items-center gap-2">
+                    Tags (comma-separated)
+                    {processedDocument && manualFormData.tags && (
+                      <div className="flex items-center gap-1 text-xs text-green-600">
+                        <span className="text-yellow-500">✨</span>
+                        AI filled
+                      </div>
+                    )}
+                  </Label>
                   <Input
                     id="tags"
                     value={manualFormData.tags}
                     onChange={(e) => handleFormChange('tags', e.target.value)}
                     placeholder="important, legal, expires soon"
+                    className={processedDocument && manualFormData.tags ? 'bg-green-50/50 border-green-200 focus:border-green-400' : ''}
                   />
                 </div>
 

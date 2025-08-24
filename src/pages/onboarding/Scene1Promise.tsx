@@ -6,16 +6,31 @@ import { FadeIn } from "@/components/motion/FadeIn";
 
 interface Scene1PromiseProps {
   onNext: () => void;
+  onSkip?: () => void;
 }
 
-export default function Scene1Promise({ onNext }: Scene1PromiseProps) {
+export default function Scene1Promise({ onNext, onSkip }: Scene1PromiseProps) {
   const subtitle = useMemo(
     () => "Every life is a story. Let's ensure yours will be a source of strength and calm for your loved ones.",
     []
   );
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-primary/5">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-primary/5 relative">
+      {/* Skip button in top right corner */}
+      {onSkip && (
+        <motion.button
+          onClick={onSkip}
+          className="absolute top-6 right-6 text-sm text-muted-foreground hover:text-foreground transition-colors z-10 bg-background/80 backdrop-blur px-3 py-1 rounded-full border border-border/50 hover:border-border"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 2, duration: 0.5 }}
+          whileHover={{ scale: 1.05 }}
+        >
+          Skip introduction
+        </motion.button>
+      )}
+      
       <FadeIn duration={0.8}>
         <Card className="w-full max-w-2xl text-center border-primary/20 shadow-xl">
           <CardHeader>

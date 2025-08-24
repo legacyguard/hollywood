@@ -10,6 +10,7 @@ import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Icon } from '@/components/ui/icon-library';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { FadeIn } from '@/components/motion/FadeIn';
 import { toast } from 'sonner';
 import { 
@@ -40,6 +41,8 @@ export default function DocumentScanner({
   const [processingProgress, setProcessingProgress] = useState(0);
   const [processedDocument, setProcessedDocument] = useState<ProcessedDocument | null>(null);
   const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
+  const [processingStage, setProcessingStage] = useState<'upload' | 'analyzing' | 'completed'>('upload');
+  const [showResults, setShowResults] = useState(false);
   
   // Processing configuration
   const [config, setConfig] = useState<OCRProcessingConfig>({
@@ -69,6 +72,7 @@ export default function DocumentScanner({
     if (!file) return;
 
     setSelectedFile(file);
+    setProcessingStage('upload');
     
     // Create preview URL for images
     if (file.type.startsWith('image/')) {
@@ -80,6 +84,10 @@ export default function DocumentScanner({
 
     // Reset previous results
     setProcessedDocument(null);
+    setShowResults(false);
+    
+    // Show upload confirmation immediately
+    toast.success('Document uploaded successfully! Ready for analysis.');
   }
 
   const handleManualFileSelect = () => {
@@ -101,7 +109,11 @@ export default function DocumentScanner({
 
     setIsProcessing(true);
     setProcessingProgress(0);
+    setProcessingStage('analyzing');
     onScanStart?.();
+
+    // Show immediate analysis message
+    toast.success('Thank you. Your document is safely uploaded. Now analyzing it to save you time with data entry. This may take a few seconds.');
 
     try {
       // Convert file to base64
@@ -136,13 +148,19 @@ export default function DocumentScanner({
 
       setProcessingProgress(100);
       setProcessedDocument(result.processedDocument);
+      setProcessingStage('completed');
+      setShowResults(true);
       onDocumentProcessed?.(result.processedDocument);
       
-      toast.success('Document processed successfully!');
+      // Show results modal instead of toast
+      setTimeout(() => {
+        setShowResults(true);
+      }, 500);
       
     } catch (error) {
       console.error('Document processing failed:', error);
-      toast.error(`Processing failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      setProcessingStage('upload');
+      toast.error(`Analysis failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setIsProcessing(false);
       setProcessingProgress(0);
@@ -395,6 +413,94 @@ export default function DocumentScanner({
           <DocumentResults document={processedDocument} />
         </FadeIn>
       )}
+
+      {/* AI Results Modal */}
+      <Dialog open={showResults} onOpenChange={setShowResults}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-xl">
+              <div className="w-6 h-6 rounded-full bg-yellow-100 flex items-center justify-center">
+                <span className="text-yellow-600 text-sm">✨</span>
+              </div>
+              I found this information. Is it correct?
+            </DialogTitle>
+          </DialogHeader>
+          
+          {processedDocument && (
+            <div className="space-y-6">
+              {/* Document Classification */}
+              <div className="p-4 bg-green-50/50 border border-green-200 rounded-lg">
+                <h3 className="font-semibold mb-2 text-green-800 flex items-center gap-2">
+                  <span className="text-yellow-500">✨</span>
+                  AI Detected Document Type
+                </h3>
+                <div className="flex items-center gap-3">
+                  <Badge variant="secondary" className="bg-green-100 text-green-800">
+                    {processedDocument.classification.type.replace('_', ' ')}
+                  </Badge>
+                  <span className="text-sm text-green-600">
+                    {Math.round(processedDocument.classification.confidence * 100)}% confidence
+                  </span>
+                </div>
+              </div>
+
+              {/* Extracted Entities */}
+              {processedDocument.ocrResult.metadata.extractedEntities.length > 0 && (
+                <div className="p-4 bg-green-50/50 border border-green-200 rounded-lg">
+                  <h3 className="font-semibold mb-3 text-green-800 flex items-center gap-2">
+                    <span className="text-yellow-500">✨</span>
+                    AI Found Key Information
+                  </h3>
+                  <div className="grid gap-3">
+                    {processedDocument.ocrResult.metadata.extractedEntities.map((entity, index) => (
+                      <div key={index} className="flex items-center justify-between p-3 bg-white border border-green-100 rounded">
+                        <div>
+                          <Badge variant="outline" className="mb-1 text-green-700 border-green-300">
+                            {entity.type.replace('_', ' ')}
+                          </Badge>
+                          <p className="text-sm font-medium">{entity.value}</p>
+                        </div>
+                        <div className="text-right text-sm text-green-600">
+                          {Math.round(entity.confidence * 100)}% sure
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Extracted Text Preview */}
+              <div className="p-4 bg-green-50/50 border border-green-200 rounded-lg">
+                <h3 className="font-semibold mb-2 text-green-800 flex items-center gap-2">
+                  <span className="text-yellow-500">✨</span>
+                  AI Extracted Text (Preview)
+                </h3>
+                <div className="bg-white p-3 rounded border border-green-100 max-h-32 overflow-y-auto">
+                  <p className="text-sm text-gray-700 leading-relaxed">
+                    {processedDocument.ocrResult.text.substring(0, 300)}
+                    {processedDocument.ocrResult.text.length > 300 && '...'}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex gap-3 justify-end pt-4 border-t">
+                <Button variant="outline" onClick={() => setShowResults(false)}>
+                  Review Later
+                </Button>
+                <Button 
+                  onClick={() => {
+                    setShowResults(false);
+                    toast.success('Great! The information looks good. You can now save the document.');
+                  }}
+                  className="bg-green-600 hover:bg-green-700 text-white"
+                >
+                  Looks Good! Continue
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
