@@ -43,6 +43,8 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({ className = '' }
     hasExpiryTracking: false,
     legacyItemsCount: 0
   });
+  // Track previous milestones to prevent duplicate celebrations
+  const [previousMilestones, setPreviousMilestones] = useState<SerenityMilestone[]>(SERENITY_MILESTONES);
 
   const { userId } = useAuth();
   const createSupabaseClient = useSupabaseClient();
@@ -86,8 +88,9 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({ className = '' }
         setUserStats(stats);
 
         // Calculate unlocked milestones with celebration detection
-        const result = calculateUnlockedMilestones(stats, milestones);
+        const result = calculateUnlockedMilestones(stats, previousMilestones);
         setMilestones(result.milestones);
+        setPreviousMilestones(result.milestones);
 
         // Show elegant recognition for newly unlocked milestones
         if (result.newlyUnlocked.length > 0) {
@@ -119,7 +122,8 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({ className = '' }
     };
 
     loadUserStats();
-  }, [userId, createSupabaseClient, milestones]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId, createSupabaseClient]);
 
   const handleChallengeClick = () => {
     if (nextChallenge) {

@@ -3,26 +3,17 @@ import { toast } from 'sonner';
 import { Icon } from '@/components/ui/icon-library';
 import { SerenityMilestone } from '@/lib/path-of-serenity';
 
+// Legacy component interface for backward compatibility  
+// Now implemented using toast system - no longer renders UI
 interface MilestoneCelebrationProps {
   milestone: SerenityMilestone | null;
   isOpen: boolean;
   onClose: () => void;
 }
 
-export const MilestoneCelebration: React.FC<MilestoneCelebrationProps> = ({
-  milestone,
-  isOpen,
-  onClose
-}) => {
-  // Show elegant banner toast instead of intrusive modal
-  React.useEffect(() => {
-    if (milestone && isOpen) {
-      showMilestoneRecognition(milestone);
-      onClose();
-    }
-  }, [milestone, isOpen, onClose]);
-
-  return null; // No UI rendered - using toast system
+export const MilestoneCelebration: React.FC<MilestoneCelebrationProps> = () => {
+  // This component is deprecated - use showMilestoneRecognition directly
+  return null;
 };
 
 export function showMilestoneRecognition(milestone: SerenityMilestone) {
