@@ -31,12 +31,12 @@ export function DashboardContent() {
               <div>
                 <FadeIn duration={0.5} delay={0.2}>
                   <h1 className="text-3xl lg:text-4xl font-bold font-heading text-card-foreground mb-3">
-                    Centrum Vášho Pokoja{user?.firstName ? `, ${user.firstName}` : ''}
+                    Riadiace Centrum Vášho Odkazu{user?.firstName ? `, ${user.firstName}` : ''}
                   </h1>
                 </FadeIn>
                 <FadeIn duration={0.5} delay={0.4}>
                   <p className="text-lg leading-relaxed max-w-2xl text-muted-foreground">
-                    Vaše bezpečné miesto, kde sa stretáva starostlivosť o rodinu s pokojom mysle
+                    Miesto, kde máte plnú kontrolu nad zabezpečením svojej rodiny
                   </p>
                 </FadeIn>
               </div>

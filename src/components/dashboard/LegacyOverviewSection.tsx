@@ -120,11 +120,11 @@ export const LegacyOverviewSection: React.FC<LegacyOverviewSectionProps> = ({ cl
           <div className="flex items-center gap-3 mb-2">
             <Icon name="folder" className="w-6 h-6 text-primary" />
             <h2 className="text-2xl font-bold font-heading text-card-foreground">
-              Prehľad Vášho Odkazu
+              Portfólio Odkazu
             </h2>
           </div>
           <p className="text-muted-foreground">
-            Vaše zabezpečené oblasti zorganizované do zmysluplných celkov
+            Strategický prehľad vašich kľúčových oblastí a majetku
           </p>
         </div>
 
@@ -154,13 +154,19 @@ export const LegacyOverviewSection: React.FC<LegacyOverviewSectionProps> = ({ cl
                   {bundle.primaryEntity}
                 </p>
                 
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">
-                    {bundle.documentCount} dokumentov
-                  </span>
-                  <span className="text-xs text-muted-foreground">
-                    {new Date(bundle.lastUpdated).toLocaleDateString('sk-SK')}
-                  </span>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">
+                      {bundle.documentCount} dokumentov
+                    </span>
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    Naposledy aktualizované: {new Date(bundle.lastUpdated).toLocaleDateString('sk-SK', { 
+                      day: 'numeric', 
+                      month: 'short',
+                      year: 'numeric'
+                    })}
+                  </div>
                 </div>
               </Card>
             </FadeIn>
