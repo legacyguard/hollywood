@@ -1,209 +1,109 @@
 # LegacyGuard - TO-DO List
 
-## 🚀 High Priority Features
+Chýbajúce kľúčové funkcie:
 
-### Authentication & User Management
-- [ ] Complete Clerk authentication integration
-- [ ] Implement user profile management
-- [ ] Add role-based access control (Guardian, Beneficiary, Admin)
-- [ ] Set up user onboarding flow
-- [ ] Add email verification and password reset
+  📋 Kompletný zoznam chýbajúcich funkcií:
 
-### Document Management
-- [ ] Implement document upload and storage
-- [ ] Add document categorization and tagging
-- [ ] Create document search and filtering
-- [ ] Set up document versioning
-- [ ] Add document sharing and permissions
-- [ ] Implement document expiration tracking
+  1. Sofia AI Assistant - kompletne chýba
+  2. OCR a document analysis - nie je implementované
+  3. Guardian system - len placeholder stránka
+  4. Emergency activation - nie je implementované
+  5. Will generator - len placeholder stránka
+  6. Video messages/Time capsules - nie je implementované
+  7. Notification system - nie je implementované
+  8. Multi-language support - nie je implementované
+  9. Advanced animations - len základy
+  10. Document categorization - nie je implementované
+  11. Progress tracking - len základy
+  12. Legal consultation integration - nie je implementované
 
-### OCR & AI Features
-- [ ] Complete Google Cloud Vision OCR integration
-- [ ] Implement Sofia AI assistant functionality
-- [ ] Add document text extraction and analysis
-- [ ] Create smart document categorization
-- [ ] Add AI-powered document insights
 
-### Guardian System
-- [ ] Build guardian assignment workflow
-- [ ] Create guardian-beneficiary relationships
-- [ ] Implement guardian approval system
-- [ ] Add guardian communication tools
-- [ ] Set up guardian performance tracking
+FÁZA 1: Core Infrastructure
 
-## 🔧 Technical Improvements
+  // Priority: Kritické základy
+  1. Sofia AI Assistant (OpenAI/Claude integration)
+  2. OCR integration (Google Cloud Vision API)
+  3. Enhanced document categorization
+  4. Notification system foundation
+  5. Progress tracking system
 
-### Frontend
-- [ ] Optimize React component performance
-- [ ] Add comprehensive error handling
-- [ ] Implement proper loading states
-- [ ] Add responsive design for mobile
-- [ ] Set up proper TypeScript types
-- [ ] Add accessibility features (ARIA labels, keyboard navigation)
+  FÁZA 2: Document Intelligence
 
-### Backend & Database
-- [ ] Complete Supabase RLS policies
-- [ ] Optimize database queries
-- [ ] Add database indexing
-- [ ] Implement proper error logging
-- [ ] Set up database backups
-- [ ] Add data validation and sanitization
+  // Priority: Inteligentná správa dokumentov
+  1. Automatic document analysis
+  2. Expiry monitoring
+  3. Smart suggestions system
+  4. Document search and filtering
+  5. Backup/restore functionality
 
-### Testing & Quality
-- [ ] Write unit tests for core components
-- [ ] Add integration tests
-- [ ] Set up E2E testing
-- [ ] Implement test coverage reporting
-- [ ] Add performance testing
-- [ ] Set up automated testing pipeline
+  FÁZA 3: Guardian Network
 
-## 📱 User Experience
+  // Priority: Ochrana rodiny
+  1. Guardian management system
+  2. Emergency detection logic
+  3. Access control and permissions
+  4. Survivor's manual generator
+  5. Emergency contact system
 
-### UI/UX Improvements
-- [ ] Design system implementation
-- [ ] Add dark/light theme toggle
-- [ ] Implement smooth animations
-- [ ] Add progress indicators
-- [ ] Create user onboarding tutorials
-- [ ] Add help and documentation
+  FÁZA 4: Will Generator & Legal
 
-### Mobile Experience
-- [ ] Optimize for mobile devices
-- [ ] Add touch gestures
-- [ ] Implement mobile-specific features
-- [ ] Test on various screen sizes
+  // Priority: Právne dokumenty
+  1. 7-step will creation process
+  2. Legal templates integration
+  3. Video message recording
+  4. Document validation
+  5. Legal consultation booking
 
-## 🔒 Security & Compliance
+  FÁZA 5: Advanced UX & Animations
 
-### Security
-- [ ] Implement end-to-end encryption
-- [ ] Add two-factor authentication
-- [ ] Set up audit logging
-- [ ] Add security headers
-- [ ] Implement rate limiting
-- [ ] Add input validation and sanitization
+  // Priority: Hollywood experience
+  1. Advanced Framer Motion animations
+  2. 3D components (React Three Fiber)
+  3. Firefly animations
+  4. Progress celebrations
+  5. Smooth transitions everywhere
 
-### Compliance
-- [ ] GDPR compliance implementation
-- [ ] Data retention policies
-- [ ] Privacy policy updates
-- [ ] Terms of service
-- [ ] Cookie consent management
+  FÁZA 6: Production Ready
 
-## 🚀 Performance & Scalability
+  // Priority: Nasadenie
+  1. Multi-language support
+  2. Performance optimization
+  3. Security audit
+  4. Testing & QA
+  5. Deployment automation
 
-### Performance
-- [ ] Implement lazy loading
-- [ ] Add image optimization
-- [ ] Set up CDN for assets
-- [ ] Optimize bundle size
-- [ ] Add caching strategies
+  ---
+  💡 Immediate Next Steps (What to start with):
 
-### Scalability
-- [ ] Set up horizontal scaling
-- [ ] Implement load balancing
-- [ ] Add database sharding
-- [ ] Set up monitoring and alerting
+  1. Sofia AI Assistant Setup
 
-## 📊 Analytics & Monitoring
+  npm install openai @anthropic-ai/sdk
+  # Create src/lib/sofia-ai.ts
+  # Implement basic chat interface
 
-### Analytics
-- [ ] Set up user analytics
-- [ ] Add performance monitoring
-- [ ] Implement error tracking
-- [ ] Add user behavior analysis
-- [ ] Create dashboard for insights
+  2. OCR Integration
 
-### Monitoring
-- [ ] Set up uptime monitoring
-- [ ] Add performance monitoring
-- [ ] Implement alerting system
-- [ ] Add log aggregation
+  npm install @google-cloud/vision
+  # Setup Google Cloud credentials
+  # Create document analysis pipeline
 
-## 🌐 Internationalization
+  3. Enhanced Animations
 
-### i18n
-- [ ] Complete Slovak language support
-- [ ] Add English language support
-- [ ] Implement RTL language support
-- [ ] Add language detection
-- [ ] Set up translation management
+  # Already have framer-motion installed
+  # Need to add react-three-fiber for 3D
+  npm install @react-three/fiber @react-three/drei three
 
-## 📚 Documentation
+  4. State Management
 
-### Technical Documentation
-- [ ] API documentation
-- [ ] Component documentation
-- [ ] Setup and deployment guides
-- [ ] Troubleshooting guides
-- [ ] Architecture documentation
+  npm install zustand
+  # Create global state stores
+  # Implement progress tracking
 
-### User Documentation
-- [ ] User manual
-- [ ] Feature guides
-- [ ] FAQ section
-- [ ] Video tutorials
-- [ ] Help center
+  ---
+  🔧 Technical Implementation Priorities:
 
-## 🚀 Deployment & DevOps
-
-### Deployment
-- [ ] Set up CI/CD pipeline
-- [ ] Add automated testing
-- [ ] Implement blue-green deployment
-- [ ] Add rollback capabilities
-- [ ] Set up staging environment
-
-### Infrastructure
-- [ ] Set up monitoring
-- [ ] Add logging
-- [ ] Implement backup strategies
-- [ ] Set up disaster recovery
-- [ ] Add performance optimization
-
-## 💡 Future Enhancements
-
-### Advanced Features
-- [ ] Blockchain integration for document verification
-- [ ] AI-powered legal document analysis
-- [ ] Integration with legal services
-- [ ] Mobile app development
-- [ ] API for third-party integrations
-- [ ] Advanced reporting and analytics
-
-### Business Features
-- [ ] Subscription management
-- [ ] Payment processing
-- [ ] Multi-tenant support
-- [ ] White-label solutions
-- [ ] Enterprise features
-
-## 📅 Timeline
-
-### Phase 1
-- [ ] Complete basic authentication
-- [ ] Implement document upload
-- [ ] Add basic OCR functionality
-
-### Phase 2
-- [ ] Guardian system implementation
-- [ ] Document management features
-- [ ] Basic AI assistant
-
-### Phase 3
-- [ ] Advanced features
-- [ ] Performance optimization
-- [ ] Security hardening
-
-## 📝 Notes
-
-- Priority levels: 🚀 High, 🔧 Medium, 💡 Low
-- Update this list regularly as tasks are completed
-- Add new tasks as they are identified
-- Review and reprioritize weekly
-
----
-
-*Last updated: $(date)*
-*Project: LegacyGuard*
-*Status: In Development*
+  1. Start with Sofia AI - toto je srdce aplikácie
+  2. OCR pre document analysis - Google Cloud Vision API
+  3. Zustand pre state management - progress tracking
+  4. Enhanced animations - firefly effects, celebrations
+  5. Guardian system - emergency protocols
