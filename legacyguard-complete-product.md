@@ -1,4 +1,5 @@
 # LegacyGuard - Produktový Manuál
+
 ## Digitálny Strážca Rodiny - Kompletný Sprievodca Funkciami
 
 ---
@@ -7,7 +8,7 @@
 
 ### **1.1 Základná Premisa - Tri Životné Sféry**
 
-```
+```text
 ┌─────────────────────────────────┐
 │      🏠 PRÍTOMNOSŤ              │
 │   "Organizovaný život dnes"     │
@@ -28,11 +29,12 @@
 │   Hodnota: zachovaný príbeh     │
 │   Motivácia: večný dopad        │
 └─────────────────────────────────┘
-```
+```text
 
 ### **1.2 Emocionálna Architektúra**
 
 **Od strachu k láske:**
+
 - ❌ "Čo ak zomriem?" → ✅ "Ako ochrániť rodinu?"
 - ❌ "Musím napísať závet" → ✅ "Chcem zanechať odkaz lásky"
 - ❌ "Je to depresívne" → ✅ "Je to akt najväčšej starostlivosti"
@@ -44,17 +46,19 @@
 ### **2.1 Prvé Stretnutie (0-5 minút)**
 
 #### **Automatická Lokalizácia**
-```
+
+```text
 1. Užívateľ navštívi legacyguard.eu
 2. Systém detekuje:
    - IP lokáciu → Slovensko
    - Jazyk browsera → SK
 3. Automatické presmerovanie → legacyguard.sk
 4. Interface v slovenčine
-```
+```text
 
 #### **Vstupná Obrazovka - Privítanie Svetlušky**
-```
+
+```text
 [Jemná animácia svetlušky v pokojnej nočnej krajine]
 
 Sofia: "Každý život je príbeh hodný zachovania.
@@ -62,12 +66,13 @@ Sofia: "Každý život je príbeh hodný zachovania.
 
                  [Začať svoju cestu]
                  [Prepnúť jazyk: SK | CZ | EN | DE | UK]
-```
+```text
 
 #### **Konverzačný Onboarding (3 minúty)**
 
 **Krok 1: Osobné Privítanie**
-```
+
+```text
 Sofia: "Volám sa Sofia, budem vašou sprievodkyňou. 
         Ako vás môžem oslovovat?"
 
@@ -75,10 +80,11 @@ Sofia: "Volám sa Sofia, budem vašou sprievodkyňou.
 
 Sofia: "Teší ma, [Meno]. Som tu, aby som vám pomohla 
         ochrániť to, na čom najviac záleží."
-```
+```text
 
 **Krok 2: Životná Situácia**
-```
+
+```text
 Sofia: "Povedzte mi niečo o vašej rodine. 
         Koho chcete najviac chrániť?"
 
@@ -88,10 +94,11 @@ Sofia: "Povedzte mi niečo o vašej rodine.
 👨‍👩‍👧 Mám rodinu s deťmi → Priorita: opatrovníctvo a zabezpečenie
 👴 Starám sa o rodičov → Priorita: zdravotná starostlivosť
 🏢 Vediem firmu → Priorita: business continuity
-```
+```text
 
 **Krok 3: Magický Moment - Škatuľka Istoty**
-```
+
+```text
 Sofia: "Predstavte si, že máte čarovnú škatuľku, 
         kam môžete uložiť všetko dôležité. 
         Čo by ste tam dali ako prvé?"
@@ -104,10 +111,11 @@ Užívateľ píše: "Kľúče od domu, prístup k účtu, list pre dcéru..."
 
 Sofia: "Krásne. Práve ste definovali, čo je pre vás najdôležitejšie. 
         Teraz to spolu ochránime."
-```
+```text
 
 **Krok 4: Prvá Hodnota - Quick Win**
-```
+
+```text
 Sofia: "Začnime niečím jednoduchým. 
         Máte pri sebe občiansky preukaz?"
 
@@ -124,13 +132,13 @@ Sofia: "Výborne! Rozpoznala som vaše základné údaje:
         a šifrované. Váš digitálny trezor je otvorený!"
 
 [Dashboard sa začína napĺňať - prvý kameň mozaiky]
-```
+```text
 
 ### **2.2 Dashboard - Tri Sféry Života**
 
 Po onboardingu vidí užívateľ personalizovaný dashboard:
 
-```
+```text
 ┌─────────────────────────────────────┐
 │         ŽIVOTNÁ KNIŽNICA            │
 │         Váš organizovaný život       │
@@ -161,16 +169,13 @@ Po onboardingu vidí užívateľ personalizovaný dashboard:
 ┌─────────────────────────────────────┐
 │         VEČNÝ ODKAZ                 │
 │         Vaše dedičstvo              │
-├─────────────────────────────────────┤
-│ 📜 Závet: Nevytvorený               │
-│ 💌 Odkazy: 0                        │
 │                                     │
 │ Sofia odporúča:                     │
 │ "Začnite základným závetom"         │
 │                                     │
 │ [Začať závet]                       │
 └─────────────────────────────────────┘
-```
+```text
 
 ---
 
@@ -181,7 +186,8 @@ Po onboardingu vidí užívateľ personalizovaný dashboard:
 #### **AI-Powered Document Management**
 
 **Pridanie Dokumentu:**
-```
+
+```text
 1. Klik na [+ Pridať dokument]
 2. Výber metódy:
    - 📸 Vyfoťte (mobilná kamera)
@@ -199,15 +205,16 @@ Po onboardingu vidí užívateľ personalizovaný dashboard:
    - Ročné poistné: €450
    
 4. Kategorizácia:
-   Sofia: "Zaradím to do kategórie 'Poistenie - Nehnuteľnosť'"
+   Sofia: "Zaradím to do kategórie 'Poistenie - Nehnutełnosť'"
    
 5. Nastavenie Pripomienok:
    Sofia: "Nastavím pripomienku 30 dní pred expriáciou?"
    [Áno] [Nie] [Upraviť]
-```
+```text
 
 **Kategórie Dokumentov:**
-```
+
+```text
 📋 Kto som (Osobné doklady)
 ├── Občiansky preukaz
 ├── Pas
@@ -256,12 +263,13 @@ Po onboardingu vidí užívateľ personalizovaný dashboard:
 ├── Rodné listy detí
 ├── Rozvod dokumenty
 └── Opatrovnícke dokumenty
-```
+```text
 
 #### **Inteligentné Funkcie:**
 
 **Expiračný Monitoring:**
-```
+
+```text
 90 dní pred: 
 Sofia: "Váš pas expiruje o 3 mesiace. 
         Odporúčam začať proces obnovenia."
@@ -274,10 +282,11 @@ Sofia: "Pripomínam expiráciu pasu.
 7 dní pred:
 Sofia: "URGENTNÉ: Pas expiruje o týždeň!"
         [Akcia potrebná]
-```
+```text
 
 **Smart Suggestions:**
-```
+
+```text
 Po pridaní hypotéky:
 Sofia: "Všimla som si, že máte hypotéku. 
         Máte aj životné poistenie na jej krytie?"
@@ -287,14 +296,15 @@ Sofia: "K autu odporúčam pridať:
         - Poistnú zmluvu
         - Servisnú knižku
         - Kontakt na asistenčnú službu"
-```
+```text
 
 ### **3.2 KRUH DÔVERY (Sféra Ochrany)**
 
 #### **Guardian Network - Systém Strážcov**
 
 **Pridanie Strážcu:**
-```
+
+```text
 1. [+ Pridať strážcu]
 
 2. Vybrať osobu:
@@ -338,12 +348,13 @@ Sofia: "K autu odporúčam pridať:
 5. Odoslať Pozvánku:
    Sofia generuje personalizovanú správu:
    "Mária vás určila ako svojho Strážcu v prípade núdze..."
-```
+```text
 
 #### **Emergency Activation System**
 
 **Automatická Detekcia:**
-```
+
+```text
 Triggery:
 - 48h neaktivity + neodpovedanie na notifikácie
 - GPS detekcia nemocnice + dlhý pobyt
@@ -356,10 +367,11 @@ Proces Aktivácie:
 3. 24h na potvrdenie/odmietnutie
 4. Ak potvrdené → postupná aktivácia
 5. Ak odmietnuté → reset
-```
+```text
 
 **Postupná Eskalácia:**
-```
+
+```text
 Deň 0-1: Základný prístup
 ├── Zdravotné info
 ├── Núdzové kontakty
@@ -374,7 +386,7 @@ Deň 4+: Plný prístup
 ├── Všetky dokumenty
 ├── Heslá a prístupy
 └── Osobné odkazy
-```
+```text
 
 ### **3.3 AI-GENERATED SURVIVOR'S MANUAL**
 
@@ -382,7 +394,7 @@ Deň 4+: Plný prístup
 
 Sofia automaticky generuje príručku pre rodinu:
 
-```
+```text
 RODINNÝ MANUÁL - Automaticky Generovaný
 Posledná aktualizácia: [Dnes]
 Kompletnosť: 73%
@@ -418,13 +430,13 @@ Kompletnosť: 73%
 Sofia: "Váš manuál je 73% kompletný. 
         Pridajte kontakt na poisťovacieho agenta
         pre 80% kompletnosť."
-```
+```text
 
 ### **3.4 VEČNÝ ODKAZ - Will Generator**
 
 #### **7-Krokový Proces Tvorby Závetu**
 
-```
+```text
 Sofia: "Závet nie je o smrti, je to list lásky vašej rodine.
         Poďme ho napísať spolu."
 
@@ -436,10 +448,11 @@ CESTA TVORBY ZÁVETU:
 [────────] 70% - Pomocník
 [────────] 84% - Osobné odkazy
 [────────] 100% - Dokončenie
-```
+```text
 
 **Krok 1: Právny Rámec (14%)**
-```
+
+```text
 Sofia: "Kde máte trvalý pobyt? 
         Potrebujem to pre správny právny rámec."
         
@@ -450,10 +463,11 @@ Mesto: Bratislava
 Sofia: "Výborne, váš závet bude podľa slovenského práva.
         Nezabudnite, že manželka a deti majú 
         zákonný nárok na dedičstvo."
-```
+```text
 
 **Krok 2: Vaša Rodina (28%)**
-```
+
+```text
 Sofia: "Teraz mi povedzte o ľuďoch, ktorých milujete."
 
 Namiesto "Určte dedičov":
@@ -467,10 +481,11 @@ Namiesto "Určte dedičov":
 
 Sofia: "Krásna rodina! Teraz premyslíme, 
         ako im môžete pomôcť."
-```
+```text
 
 **Krok 3: Váš Majetok (42%)**
-```
+
+```text
 Sofia: "Čo všetko máte, čo by mohlo pomôcť vašej rodine?"
 
 Automaticky načítané z dokumentov:
@@ -485,10 +500,11 @@ Pridať ďalšie:
 
 Sofia: "Každá vec má svoju hodnotu - 
         finančnú alebo emocionálnu."
-```
+```text
 
 **Krok 4: Vaše Želania (56%)**
-```
+
+```text
 Sofia: "Ako by ste chceli, aby sa o vašu rodinu postarali?"
 
 Namiesto právnických formulácií:
@@ -502,10 +518,11 @@ Namiesto právnických formulácií:
 "Chcete niekomu zanechať špecifický dar?"
 → Hodinky po dedovi - synovi Petrovi
 → Prsteň po babičke - dcére Anne
-```
+```text
 
 **Krok 5: Pomocník (70%)**
-```
+
+```text
 Sofia: "Kto by mal dohliadnuť, aby sa všetko 
         vykonalo podľa vašich želaní?"
 
@@ -514,10 +531,11 @@ Sofia: "Kto by mal dohliadnuť, aby sa všetko
 
 Sofia: "Dobrá voľba. Tomáš bude vykonávateľom závetu.
         Mal by o tom vedieť - chcete mu poslať správu?"
-```
+```text
 
 **Krok 6: Osobné Odkazy (84%)**
-```
+
+```text
 Sofia: "Toto je najdôležitejšia časť - 
         vaše slová pre rodinu."
 
@@ -532,10 +550,11 @@ Pre každú osobu môžete vytvoriť osobný odkaz:
 - Pre všetkých: "Moja rodina..."
 
 Sofia: "Tieto odkazy sú najcennejší dar."
-```
+```text
 
 **Krok 7: Kontrola a Dokončenie (100%)**
-```
+
+```text
 Sofia: "Váš závet je pripravený. 
         Skontrolujme všetko ešte raz."
 
@@ -552,7 +571,7 @@ Sofia: "Váš závet je pripravený.
 ⚖️ Právna konzultácia (€49)
 📮 Poslať notárovi
 💾 Uložiť draft
-```
+```text
 
 ### **3.5 SOFIA AI - Multijazyčný Osobný Asistent**
 
@@ -564,21 +583,23 @@ Sofia disponuje:
 - Právna expertíza pre európske krajiny
 - Emocionálna inteligencia
 - Kontextové učenie
-```
+```text
 
 **Príklady Interakcií:**
 
 **Proaktívna Pomoc:**
-```
+
+```text
 Sofia: "Všimla som si, že máte hypotéku na 20 rokov.
         Máte životné poistenie, ktoré by ju pokrylo?
         Je to dôležité pre ochranu rodiny."
         
 [Áno, mám] [Nie, nemám] [Zistiť viac]
-```
+```text
 
 **Právne Poradenstvo:**
-```
+
+```text
 Užívateľ: "Môžem vydediť syna?"
 
 Sofia: "Na Slovensku majú deti ako neopomenuteľní 
@@ -588,10 +609,11 @@ Sofia: "Na Slovensku majú deti ako neopomenuteľní
         Chcete sa spojiť s právnikom pre detaily?"
         
 [Áno, konzultácia €49] [Nie, ďakujem]
-```
+```text
 
 **Emergency Podpora:**
-```
+
+```text
 Pri 48h neaktivite:
 
 Sofia → Partner: "Váš manžel nebol aktívny 2 dni.
@@ -605,13 +627,13 @@ Sofia: "Aktivujem núdzový prístup.
         - Lieky a alergie  
         - Poistenia
         - Kontakty na lekárov"
-```
+```text
 
 ### **3.6 VIDEO MESSAGES - Časové Kapsuly**
 
 #### **Vytvorenie Video Odkazu**
 
-```
+```text
 1. [+ Vytvoriť video odkaz]
 
 2. Nastavenie:
@@ -635,7 +657,7 @@ Sofia: "Aktivujem núdzový prístup.
 5. Uloženie:
    Sofia: "Video odkaz je bezpečne uložený
            a bude doručený presne podľa vašich želaní."
-```
+```text
 
 ---
 
@@ -643,7 +665,7 @@ Sofia: "Aktivujem núdzový prístup.
 
 ### **4.1 Integrácia s Právnou Kanceláriou**
 
-```
+```text
 Keď Sofia narazí na komplexný právny problém:
 
 Sofia: "Táto otázka vyžaduje odbornú právnu radu.
@@ -657,11 +679,11 @@ Možnosti:
 🏢 Osobné stretnutie - €99
 
 [Rezervovať termín] [Nie, ďakujem]
-```
+```text
 
 ### **4.2 Typy Právnych Služieb**
 
-```
+```text
 ZÁKLADNÉ (zahrnuté v aplikácii):
 ✓ Šablóny závetov overené právnikmi
 ✓ Základné právne informácie
@@ -679,7 +701,7 @@ ZASTUPOVANIE (individuálna cena):
 - Sporné dedičstvo
 - Notárske overenia
 - Súdne spory
-```
+```text
 
 ---
 
@@ -687,7 +709,7 @@ ZASTUPOVANIE (individuálna cena):
 
 ### **5.1 Automatická Jazyková Adaptácia**
 
-```
+```text
 Systém automaticky:
 1. Detekuje krajinu (IP) → presmeruje na národnú doménu
 2. Detekuje jazyk browsera → nastaví interface jazyk
@@ -700,11 +722,11 @@ Príklad pre legacyguard.ch (Švajčiarsko):
 - Taliančina (8% populácie)
 - Angličtina (medzinárodní)
 - Ukrajinčina (diaspóra)
-```
+```text
 
 ### **5.2 Notifikačný Systém**
 
-```
+```text
 TYPY NOTIFIKÁCIÍ:
 
 📅 Časované
@@ -726,11 +748,11 @@ TYPY NOTIFIKÁCIÍ:
 - Mesačný súhrn
 - Kompletnosť profilu
 - Aktivita strážcov
-```
+```text
 
 ### **5.3 Progress Tracking - Strom Rodiny**
 
-```
+```text
 Vizuálna motivácia:
 
 🌱 Semienok (0-20%)
@@ -756,7 +778,7 @@ Vizuálna motivácia:
 - Všetko kompletné
 - Rodina chránená
 - Dedičstvo zabezpečené
-```
+```text
 
 ---
 
@@ -764,7 +786,7 @@ Vizuálna motivácia:
 
 ### **6.1 Hospitalizácia**
 
-```
+```text
 TRIGGER: 48h neaktivity + GPS nemocnica
 
 AKTIVÁCIA:
@@ -788,11 +810,11 @@ Sofia naviguje rodinu:
  1. Zdravotná karta - vytlačiť
  2. Zoznam liekov - ukázať lekárovi
  3. Poistenie - číslo zmluvy pre nemocnicu"
-```
+```text
 
 ### **6.2 Postupná Strata Kapacity**
 
-```
+```text
 DETEKCIA:
 - Nepravidelné prihlásenia
 - Zabudnuté heslá
@@ -812,11 +834,11 @@ Zachovanie dôstojnosti:
 - Užívateľ ostáva informovaný
 - Môže stále vidieť svoj profil
 - Rodina preberie len správu
-```
+```text
 
 ### **6.3 Náhle Úmrtie**
 
-```
+```text
 VERIFIKÁCIA (vyžaduje 3 z 4):
 □ Oficiálny úmrtný list
 □ Potvrdenie 2+ strážcov
@@ -839,7 +861,7 @@ Sofia pre rodinu:
  4. Dokumenty pre úrady - TU
  
  Každý krok vás prevediem."
-```
+```text
 
 ---
 
@@ -847,7 +869,7 @@ Sofia pre rodinu:
 
 ### **7.1 Mobilné Špecifické Funkcie**
 
-```
+```text
 WIDGET NA HOME SCREEN:
 ┌─────────────────────┐
 │ LegacyGuard         │
@@ -863,11 +885,11 @@ QUICK ACTIONS:
 - Face ID/Touch ID unlock
 - Voice commands pre Sofiu
 - Offline mode pre critical docs
-```
+```text
 
 ### **7.2 Progressive Web App**
 
-```
+```text
 Funkcie PWA:
 ✓ Inštalácia na home screen
 ✓ Offline prístup k dokumentom
@@ -875,31 +897,35 @@ Funkcie PWA:
 ✓ Fotenie dokumentov
 ✓ Biometrické odomykanie
 ✓ Automatická synchronizácia
-```
+```text
 
 ---
 
 ## **8. ZÁVER - Používateľská Hodnota**
 
 ### **Okamžitá Hodnota (Deň 1)**
+
 - Organizované dokumenty
 - Digitálny trezor
 - AI asistent Sofia
 - Prvé pripomienky
 
 ### **Krátkodobá Hodnota (Mesiac 1)**
+
 - Kompletný prehľad majetku
 - Nastavení strážcovia
 - Emergency plán
 - Základný závet
 
 ### **Dlhodobá Hodnota (Rok+)**
+
 - Kompletná ochrana rodiny
 - Právne platné dokumenty
 - Osobné odkazy zachované
 - Pokoj v duši
 
 ### **Generačná Hodnota**
+
 - Digitálne dedičstvo
 - Rodinná história
 - Zachované spomienky
@@ -907,7 +933,7 @@ Funkcie PWA:
 
 ---
 
-**Sofia: "Ďakujem, že ste mi dovolili sprevádzať vás na tejto ceste. 
+**Sofia: "Ďakujem, že ste mi dovolili sprevádzať vás na tejto ceste.
          Vaša rodina je teraz bezpečnejšia a vy môžete žiť pokojnejšie,
          vediac, že všetko dôležité je chránené a pripravené."**
 
@@ -936,21 +962,26 @@ Toto je najdôležitejší nástroj, ktorý budeme potrebovať. Je to knižnica 
 **Ako ju použijeme:**
 
 **1.1. Scéna "Prísľub pokoja":**  
+
 - **Animácia svetlušky:** Svetluška by bola SVG obrázok. Pomocou Framer Motion by sme animovali jej path (dráhu letu) a opacity (blikanie).
 - **Jemné objavenie textu:** Text by sa nezobrazil naraz, ale použili by sme `animate={{ opacity: 1, y: 0 }}` na každom slove, aby sa jemne objavili a posunuli na svoje miesto.
 
 **Scéna "Odomknutie ďalšej komnaty":**  
+
 - **Pootvorenie dverí:** Komponent "dverí" by mal v Framer Motion definované dva stavy (variants): `closed` a `open`. Pri splnení podmienky (používateľ má 5 dokumentov) by sme len zmenili stav a Framer Motion by sa postaral o plynulú animáciu pootočenia (`rotateY`).
 
 **1.2. Scéna "Katarzia" (Dokončenie na 90%+):**  
+
 - **Žiariaca škatuľka:** Použili by sme animáciu `box-shadow` a `scale`, aby škatuľka pulzovala a žiarila.
 
 **2. Knižnica pre Komplexné Vizuály: Three.js alebo React Three Fiber**  
+
 - Pre naozaj pokročilé 3D vizuály, ako je interaktívna škatuľka alebo kľúč, by sme siahli po knižnici pre 3D grafiku v prehliadači. React Three Fiber je ideálna, pretože umožňuje písať 3D scény ako bežné React komponenty.
 
 **Ako ju použijeme:**
 
 **2.1. Scéna "Škatuľka istoty" a "Kľúč dôvery":**  
+
 - **Interaktívna škatuľka a kľúč:** Namiesto statického obrázku by sme mali jednoduchý 3D model. Keď používateľ píše text, slová by sa mohli animovane "vlievať" do škatuľky. Keď napíše meno, textúra kľúča by sa v reálnom čase aktualizovala a zobrazila by gravírovanie. Toto vytvára extrémne silný pocit personalizácie a "mágie".
 
 **3. Knižnica pre Konfety a Oslavy: react-confetti**  
@@ -959,12 +990,15 @@ Pre momenty osláv a prekvapení je táto jednoduchá knižnica perfektná.
 **Ako ju použijeme:**
 
 **3.1. Scéna "Prvý kameň do mozaiky" alebo "Odomknutie komnaty":**  
+
 - Okrem notifikácie by sme mohli na pozadí spustiť veľmi jemný a decentný efekt padajúcich svetelných častíc (nie krikľavé konfety), ktoré by po pár sekundách zmizli. Farby by boli presne z vášho dizajnového manuálu.
 
 **4. Stavový Manažment (State Management): Zustand alebo Jotai**  
+
 - Aby sme vedeli, kedy má používateľ nárok na "odomknutie komnaty" alebo kedy má vidieť "výročný rituál", potrebujeme si niekde držať stav jeho cesty. Supabase je naša databáza, ale na strane klienta (v prehliadači) potrebujeme jednoduchý nástroj na prácu s týmto stavom.
 
 **Ako ho použijeme:**  
+
 - Vytvorili by sme si "store" (úložisko stavu), kde by sme mali premenné ako `documentsUploadedCount`, `hasCompletedOnboarding`, `lastLoginDate`.
 - Naše komponenty by na tieto premenné reagovali. Napríklad komponent "dverí" by bol napojený na `documentsUploadedCount` a automaticky by spustil animáciu, keď hodnota presiahne určitý limit.
 
@@ -973,18 +1007,21 @@ Pre momenty osláv a prekvapení je táto jednoduchá knižnica perfektná.
 - Váš stack sa teda nerozpadá, len ho dopĺňame o špecializované nástroje:
 
 **Pôvodný Stack (Výborný základ):**
+
 - **Frontend Generovanie:** v0.dev / Lovable.dev
 - **UI Knižnice:** Hero UI / Tailadmin / Shadcn UI
 - **Backend & DB:** Supabase
 - **Deployment:** Vercel
 
 **Doplnený Stack (Pre "Hollywoodsky" efekt):**
+
 - **Animácie:** Framer Motion
 - **Pokročilé 3D:** React Three Fiber (voliteľné pre MVP, ale extrémne efektné)
 - **Oslavy:** react-confetti
 - **Stavový Manažment:** Zustand
 
 **Ako by sme postupovali:**
+
 1. **Vygenerujeme základ:** Pomocou v0.dev si vygenerujeme statickú, neanimovanú verziu obrazovky.
 2. **Nainštalujeme knižnicu:** Do projektu pridáme Framer Motion (`npm install framer-motion`).
 3. **Obalíme komponenty:** Vygenerované komponenty obalíme do `<motion.div>` z Framer Motion.
@@ -992,6 +1029,7 @@ Pre momenty osláv a prekvapení je táto jednoduchá knižnica perfektná.
 5. **Prepojíme so stavom:** Animácie spustíme na základe zmeny stavu, ktorý manažujeme pomocou Zustand.
 
 **Technické poznámky:**
+
 - AI generátory poskytujú dobrý základ pre UI komponenty
 - Finálne animácie a interaktívne efekty vyžadujú špecializované knižnice
 - Kombinácia generovaného kódu a manuálnych úprav vytvára najlepší výsledok

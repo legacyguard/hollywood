@@ -15,7 +15,7 @@ This guide explains how to set up and configure the comprehensive OCR functional
 ```bash
 gcloud services enable vision.googleapis.com
 gcloud services enable documentai.googleapis.com
-```
+```text
 
 ### 2. Create Service Account
 
@@ -44,7 +44,7 @@ GOOGLE_CLOUD_PRIVATE_KEY_ID=your-key-id
 # Optional: For client-side processing (less secure)
 NEXT_PUBLIC_GOOGLE_CLOUD_API_KEY=your-api-key
 NEXT_PUBLIC_GOOGLE_CLOUD_PROJECT_ID=your-project-id
-```
+```text
 
 **⚠️ Security Notes:**
 - Never commit the `.env.local` file
@@ -141,7 +141,7 @@ function MyComponent() {
     />
   );
 }
-```
+```text
 
 ### Enhanced Document Uploader
 ```jsx
@@ -159,7 +159,7 @@ function VaultPage() {
     />
   );
 }
-```
+```text
 
 ### Document List with Search
 ```jsx
@@ -175,7 +175,7 @@ function DocumentsPage() {
     />
   );
 }
-```
+```text
 
 ## 🗄️ Database Schema
 
@@ -196,7 +196,7 @@ extracted_entities JSONB        -- Extracted entities (names, dates, etc.)
 classification_confidence DECIMAL(3,2) -- Classification confidence
 extracted_metadata JSONB        -- Document-specific metadata
 processing_status TEXT          -- Processing status
-```
+```text
 
 ## 🔍 API Endpoints
 
@@ -216,7 +216,7 @@ Processes documents with Google Cloud Vision AI.
     "processingMode": "accurate"
   }
 }
-```
+```text
 
 **Response:**
 ```json
@@ -250,7 +250,7 @@ Processes documents with Google Cloud Vision AI.
     }
   }
 }
-```
+```text
 
 ## 🔐 Security Considerations
 
