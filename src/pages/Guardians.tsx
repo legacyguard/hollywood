@@ -105,7 +105,7 @@ export default function GuardiansPage() {
       });
       
       setIsDialogOpen(false);
-      toast.success('Guardian added successfully!');
+      toast.success(`Guardian ${formData.name} was successfully added!`);
       
     } catch (error) {
       console.error('Error adding guardian:', error);
@@ -254,19 +254,59 @@ export default function GuardiansPage() {
             </div>
           ) : guardians.length === 0 ? (
             <FadeIn duration={0.5} delay={0.8}>
-              <Card className="p-12 text-center">
-                <Icon name="users" className="w-16 h-16 text-muted-foreground mx-auto mb-6" />
-                <h3 className="text-xl font-semibold mb-4">No Guardians Yet</h3>
-                <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-                  Start building your Circle of Trust by adding your first guardian. These are the people who can help your family in emergencies.
+              <Card className="p-16 text-center bg-gradient-to-br from-primary/5 via-background to-primary/10 border-primary/20">
+                <div className="relative mb-8">
+                  {/* Decorative background circle */}
+                  <div className="w-24 h-24 bg-primary/10 rounded-full mx-auto mb-4 flex items-center justify-center relative">
+                    <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center">
+                      <Icon name="users" className="w-8 h-8 text-primary" />
+                    </div>
+                    {/* Small decorative dots */}
+                    <div className="absolute -top-2 -right-2 w-4 h-4 bg-primary/30 rounded-full"></div>
+                    <div className="absolute -bottom-2 -left-2 w-3 h-3 bg-primary/20 rounded-full"></div>
+                  </div>
+                </div>
+                
+                <h3 className="text-2xl font-bold mb-4 text-card-foreground">You don't have any guardians yet</h3>
+                <p className="text-muted-foreground mb-8 max-w-lg mx-auto text-lg leading-relaxed">
+                  A guardian is a trusted person who can help your loved ones when they need it most. 
+                  Let's add your first guardian to start building your Circle of Trust.
                 </p>
+                
+                {/* Benefits list */}
+                <div className="flex flex-col sm:flex-row gap-6 mb-10 max-w-2xl mx-auto">
+                  <div className="flex items-center gap-3 text-sm">
+                    <div className="w-8 h-8 bg-green-500/10 rounded-full flex items-center justify-center flex-shrink-0">
+                      <Icon name="shield-check" className="w-4 h-4 text-green-600" />
+                    </div>
+                    <span className="text-muted-foreground">Trusted emergency contacts</span>
+                  </div>
+                  <div className="flex items-center gap-3 text-sm">
+                    <div className="w-8 h-8 bg-blue-500/10 rounded-full flex items-center justify-center flex-shrink-0">
+                      <Icon name="heart" className="w-4 h-4 text-blue-600" />
+                    </div>
+                    <span className="text-muted-foreground">Peace of mind for family</span>
+                  </div>
+                  <div className="flex items-center gap-3 text-sm">
+                    <div className="w-8 h-8 bg-purple-500/10 rounded-full flex items-center justify-center flex-shrink-0">
+                      <Icon name="clock" className="w-4 h-4 text-purple-600" />
+                    </div>
+                    <span className="text-muted-foreground">Always available help</span>
+                  </div>
+                </div>
+                
                 <Button 
                   onClick={() => setIsDialogOpen(true)}
-                  className="bg-primary hover:bg-primary-hover text-primary-foreground"
+                  size="lg"
+                  className="bg-primary hover:bg-primary-hover text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-200"
                 >
-                  <Icon name="add" className="w-4 h-4 mr-2" />
+                  <Icon name="add" className="w-5 h-5 mr-2" />
                   Add Your First Guardian
                 </Button>
+                
+                <p className="text-xs text-muted-foreground mt-6 max-w-md mx-auto">
+                  Don't worry, you can always add more guardians later and edit their information anytime.
+                </p>
               </Card>
             </FadeIn>
           ) : (
