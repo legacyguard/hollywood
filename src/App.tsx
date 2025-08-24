@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { routerFutureConfig } from "./lib/router";
 import { ClerkProvider } from "./providers/ClerkProvider";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
+import { OnboardingWrapper } from "./components/onboarding/OnboardingWrapper";
 import SofiaContextProvider from "./components/sofia/SofiaContextProvider";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -36,7 +37,9 @@ const App = () => (
             {/* Protected routes */}
             <Route path="/" element={
               <ProtectedRoute>
-                <Index />
+                <OnboardingWrapper>
+                  <Index />
+                </OnboardingWrapper>
               </ProtectedRoute>
             } />
             <Route path="/onboarding" element={

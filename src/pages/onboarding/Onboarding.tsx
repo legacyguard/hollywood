@@ -4,7 +4,11 @@ import Scene2Box from "./Scene2Box";
 import Scene3Key from "./Scene3Key";
 import Scene4Prepare from "./Scene4Prepare";
 
-export default function Onboarding() {
+interface OnboardingProps {
+  onComplete?: () => void;
+}
+
+export default function Onboarding({ onComplete }: OnboardingProps) {
   const [step, setStep] = useState(1);
   const [boxItems, setBoxItems] = useState("");
   const [trustedName, setTrustedName] = useState("");
@@ -39,6 +43,6 @@ export default function Onboarding() {
       />
     );
   }
-  return <Scene4Prepare onBack={goBack} />;
+  return <Scene4Prepare onBack={goBack} onComplete={onComplete} />;
 }
 

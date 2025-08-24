@@ -1,41 +1,255 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { FadeIn } from "@/components/motion/FadeIn";
 
 interface Scene4PrepareProps {
   onBack: () => void;
+  onComplete?: () => void;
 }
 
-export default function Scene4Prepare({ onBack }: Scene4PrepareProps) {
-  const navigate = useNavigate();
+export default function Scene4Prepare({ onBack, onComplete }: Scene4PrepareProps) {
+  const [progress, setProgress] = useState(0);
+  const [showFirefly, setShowFirefly] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      // After the subtle loading animation, redirect to the dashboard
-      navigate("/");
-    }, 1600);
-    return () => clearTimeout(timer);
-  }, [navigate]);
+    // Progress animation
+    const progressTimer = setInterval(() => {
+      setProgress(prev => {
+        if (prev >= 100) {
+          clearInterval(progressTimer);
+          return 100;
+        }
+        return prev + 2;
+      });
+    }, 32); // ~60fps
+
+    // Complete onboarding after animation
+    const completeTimer = setTimeout(() => {
+      setShowFirefly(false);
+      setTimeout(() => {
+        if (onComplete) {
+          onComplete();
+        }
+      }, 500);
+    }, 3000);
+
+    return () => {
+      clearInterval(progressTimer);
+      clearTimeout(completeTimer);
+    };
+  }, [onComplete]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <Card className="w-full max-w-2xl text-center">
-        <CardHeader>
-          <CardTitle className="text-2xl font-heading">Preparing Your Path</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground mb-6">
-            Thank you. I understand what matters to you. I am preparing your personal space where you can safely keep these treasures.
-          </p>
-          {/* Placeholder for firefly drawing a light trail (logo-like) */}
-          <div className="h-32 rounded-lg bg-gradient-to-br from-primary/10 to-background border border-card-border mb-6 animate-pulse" />
-          <div className="flex gap-3 justify-between">
-            <Button variant="outline" onClick={onBack}>Back</Button>
-            <Button disabled>Redirecting…</Button>
-          </div>
-        </CardContent>
-      </Card>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      <FadeIn duration={0.8}>
+        <Card className="w-full max-w-2xl text-center border-primary/20 shadow-xl bg-background/95 backdrop-blur">
+          <CardHeader>
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.8 }}
+            >
+              <CardTitle className="text-2xl font-heading bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+                Preparing Your Path
+              </CardTitle>
+            </motion.div>
+          </CardHeader>
+          <CardContent>
+            <motion.p 
+              className="text-muted-foreground mb-8 text-lg leading-relaxed"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4, duration: 0.8 }}
+            >
+              Thank you. I understand what matters to you. I am preparing your personal space where you can safely keep these treasures.
+            </motion.p>
+            
+            {/* Enhanced firefly light trail animation */}
+            <motion.div 
+              className="relative h-40 rounded-lg bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 border border-primary/30 mb-8 overflow-hidden"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.6, duration: 0.8 }}
+            >
+              {/* Stars background */}
+              {[...Array(30)].map((_, i) => (
+                <motion.div
+                  key={i}
+                  className="absolute w-0.5 h-0.5 bg-white/60 rounded-full"
+                  style={{
+                    left: `${Math.random() * 100}%`,
+                    top: `${Math.random() * 100}%`,
+                  }}
+                  animate={{
+                    opacity: [0.3, 1, 0.3],
+                  }}
+                  transition={{
+                    duration: 2 + Math.random() * 3,
+                    repeat: Infinity,
+                    delay: Math.random() * 2,
+                  }}
+                />
+              ))}
+
+              <AnimatePresence>
+                {showFirefly && (
+                  <>
+                    {/* Main firefly */}
+                    <motion.div
+                      className="absolute w-3 h-3 bg-yellow-300 rounded-full shadow-lg"
+                      style={{
+                        boxShadow: "0 0 15px #fde047, 0 0 30px #facc15, 0 0 45px #eab308",
+                      }}
+                      initial={{ x: 50, y: 120 }}
+                      animate={{
+                        x: [50, 150, 280, 320, 280, 150, 100, 50],
+                        y: [120, 60, 40, 80, 140, 100, 80, 120],
+                      }}
+                      transition={{
+                        duration: 8,
+                        ease: "easeInOut",
+                        times: [0, 0.15, 0.3, 0.45, 0.6, 0.75, 0.9, 1],
+                      }}
+                    />
+
+                    {/* Light trail path */}
+                    <svg className="absolute inset-0 w-full h-full">
+                      <motion.path
+                        d="M 50 120 Q 150 60, 280 40 Q 320 80, 280 140 Q 150 100, 100 80 Q 50 120, 50 120"
+                        stroke="url(#firefly-gradient)"
+                        strokeWidth="2"
+                        fill="none"
+                        strokeLinecap="round"
+                        initial={{ pathLength: 0, opacity: 0 }}
+                        animate={{ pathLength: 1, opacity: 0.8 }}
+                        transition={{
+                          pathLength: { duration: 8, ease: "easeInOut" },
+                          opacity: { duration: 1, delay: 0.5 }
+                        }}
+                      />
+                      <defs>
+                        <linearGradient id="firefly-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                          <stop offset="0%" stopColor="#fde047" stopOpacity="0.2" />
+                          <stop offset="50%" stopColor="#facc15" stopOpacity="0.6" />
+                          <stop offset="100%" stopColor="#eab308" stopOpacity="0.3" />
+                        </linearGradient>
+                      </defs>
+                    </svg>
+
+                    {/* Sparkle effects along the trail */}
+                    {[...Array(12)].map((_, i) => (
+                      <motion.div
+                        key={i}
+                        className="absolute w-1 h-1 bg-yellow-200 rounded-full"
+                        initial={{ 
+                          x: 50 + (i * 30), 
+                          y: 120 - (i * 8) + Math.sin(i) * 20,
+                          opacity: 0,
+                          scale: 0
+                        }}
+                        animate={{ 
+                          opacity: [0, 1, 0],
+                          scale: [0, 1, 0],
+                        }}
+                        transition={{
+                          duration: 1,
+                          delay: i * 0.3 + 1,
+                          repeat: Infinity,
+                          repeatDelay: 3,
+                        }}
+                      />
+                    ))}
+
+                    {/* Completion message appears gradually */}
+                    <motion.div
+                      className="absolute inset-0 flex items-center justify-center"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 6, duration: 2 }}
+                    >
+                      <div className="text-center">
+                        <motion.div
+                          className="text-yellow-300 text-2xl mb-2"
+                          animate={{ 
+                            scale: [1, 1.1, 1],
+                          }}
+                          transition={{ 
+                            duration: 2, 
+                            repeat: Infinity,
+                          }}
+                        >
+                          ✨
+                        </motion.div>
+                        <p className="text-white/90 text-sm font-medium">
+                          Your legacy sanctuary is ready
+                        </p>
+                      </div>
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
+            </motion.div>
+
+            {/* Progress indicator */}
+            <motion.div 
+              className="mb-6"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1, duration: 0.8 }}
+            >
+              <div className="flex items-center justify-center gap-3 mb-3">
+                <div className="text-sm text-muted-foreground">Setting up your vault</div>
+                <div className="text-sm text-primary font-medium">{Math.round(progress)}%</div>
+              </div>
+              <div className="w-full bg-muted rounded-full h-2">
+                <motion.div 
+                  className="bg-gradient-to-r from-primary to-primary/70 h-2 rounded-full"
+                  style={{ width: `${progress}%` }}
+                  transition={{ duration: 0.1 }}
+                />
+              </div>
+            </motion.div>
+            
+            <motion.div 
+              className="flex gap-3 justify-between"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.2, duration: 0.6 }}
+            >
+              <Button 
+                variant="outline" 
+                onClick={onBack}
+                className="border-primary/20 hover:border-primary/40"
+                disabled={progress > 50}
+              >
+                ← Back
+              </Button>
+              <Button 
+                disabled 
+                className="bg-primary/50 text-primary-foreground"
+              >
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                  className="w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2"
+                />
+                Preparing your sanctuary...
+              </Button>
+            </motion.div>
+
+            <motion.p 
+              className="text-xs text-muted-foreground/70 mt-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.5, duration: 0.8 }}
+            >
+              Welcome to LegacyGuard • Your story is precious
+            </motion.p>
+          </CardContent>
+        </Card>
+      </FadeIn>
     </div>
   );
 }
