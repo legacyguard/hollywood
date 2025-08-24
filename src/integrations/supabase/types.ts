@@ -127,6 +127,18 @@ export interface Database {
           expires_at: string | null
           encrypted_at: string | null
           last_notification_sent_at: string | null
+          // New OCR and AI fields
+          category: string | null
+          title: string | null
+          description: string | null
+          tags: string[] | null
+          is_important: boolean
+          ocr_text: string | null
+          ocr_confidence: number | null
+          extracted_entities: Json | null
+          classification_confidence: number | null
+          extracted_metadata: Json | null
+          processing_status: 'pending' | 'processing' | 'completed' | 'failed' | 'manual'
           created_at: string
           updated_at: string
         }
@@ -141,6 +153,18 @@ export interface Database {
           expires_at?: string | null
           encrypted_at?: string | null
           last_notification_sent_at?: string | null
+          // New OCR and AI fields
+          category?: string | null
+          title?: string | null
+          description?: string | null
+          tags?: string[] | null
+          is_important?: boolean
+          ocr_text?: string | null
+          ocr_confidence?: number | null
+          extracted_entities?: Json | null
+          classification_confidence?: number | null
+          extracted_metadata?: Json | null
+          processing_status?: 'pending' | 'processing' | 'completed' | 'failed' | 'manual'
           created_at?: string
           updated_at?: string
         }
@@ -155,6 +179,18 @@ export interface Database {
           expires_at?: string | null
           encrypted_at?: string | null
           last_notification_sent_at?: string | null
+          // New OCR and AI fields
+          category?: string | null
+          title?: string | null
+          description?: string | null
+          tags?: string[] | null
+          is_important?: boolean
+          ocr_text?: string | null
+          ocr_confidence?: number | null
+          extracted_entities?: Json | null
+          classification_confidence?: number | null
+          extracted_metadata?: Json | null
+          processing_status?: 'pending' | 'processing' | 'completed' | 'failed' | 'manual'
           created_at?: string
           updated_at?: string
         }

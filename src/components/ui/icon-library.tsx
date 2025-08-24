@@ -57,6 +57,8 @@ import {
   Phone,
   Video,
   Clock,
+  Grid,
+  List,
 } from "lucide-react";
 
 // Export all icons for direct use
@@ -119,6 +121,8 @@ export {
   Phone,
   Video,
   Clock,
+  Grid,
+  List,
 };
 
 // Icon mapping for semantic usage
@@ -193,6 +197,10 @@ export const IconMap = {
   phone: Phone,
   video: Video,
   clock: Clock,
+  
+  // Layout
+  grid: Grid,
+  list: List,
   
   // Financial
   financial: DollarSign,
