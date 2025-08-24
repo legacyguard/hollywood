@@ -77,9 +77,9 @@ export default function LegacyPage() {
           {/* Feature Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
             <FadeIn duration={0.6} delay={1.2}>
-              <Card className="p-8 text-center hover:shadow-lg transition-shadow duration-200">
-                <div className="w-16 h-16 mx-auto mb-6 bg-blue-500/10 rounded-full flex items-center justify-center">
-                  <Icon name="documents" className="w-8 h-8 text-blue-600" />
+              <Card className="p-8 text-center hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer group">
+                <div className="w-16 h-16 mx-auto mb-6 bg-blue-500/10 rounded-full flex items-center justify-center group-hover:bg-blue-500/20 transition-colors duration-300">
+                  <Icon name="documents" className="w-8 h-8 text-blue-600 group-hover:scale-110 transition-transform duration-300" />
                 </div>
                 <h3 className="text-xl font-semibold mb-4">Digital Will Creator</h3>
                 <p className="text-muted-foreground leading-relaxed">
@@ -90,9 +90,9 @@ export default function LegacyPage() {
             </FadeIn>
 
             <FadeIn duration={0.6} delay={1.4}>
-              <Card className="p-8 text-center hover:shadow-lg transition-shadow duration-200">
-                <div className="w-16 h-16 mx-auto mb-6 bg-purple-500/10 rounded-full flex items-center justify-center">
-                  <Icon name="video" className="w-8 h-8 text-purple-600" />
+              <Card className="p-8 text-center hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer group">
+                <div className="w-16 h-16 mx-auto mb-6 bg-purple-500/10 rounded-full flex items-center justify-center group-hover:bg-purple-500/20 transition-colors duration-300">
+                  <Icon name="video" className="w-8 h-8 text-purple-600 group-hover:scale-110 transition-transform duration-300" />
                 </div>
                 <h3 className="text-xl font-semibold mb-4">Time Capsule Messages</h3>
                 <p className="text-muted-foreground leading-relaxed">
@@ -103,9 +103,9 @@ export default function LegacyPage() {
             </FadeIn>
 
             <FadeIn duration={0.6} delay={1.6}>
-              <Card className="p-8 text-center hover:shadow-lg transition-shadow duration-200">
-                <div className="w-16 h-16 mx-auto mb-6 bg-green-500/10 rounded-full flex items-center justify-center">
-                  <Icon name="protection" className="w-8 h-8 text-green-600" />
+              <Card className="p-8 text-center hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer group">
+                <div className="w-16 h-16 mx-auto mb-6 bg-green-500/10 rounded-full flex items-center justify-center group-hover:bg-green-500/20 transition-colors duration-300">
+                  <Icon name="protection" className="w-8 h-8 text-green-600 group-hover:scale-110 transition-transform duration-300" />
                 </div>
                 <h3 className="text-xl font-semibold mb-4">Healthcare Directives</h3>
                 <p className="text-muted-foreground leading-relaxed">
@@ -116,9 +116,9 @@ export default function LegacyPage() {
             </FadeIn>
 
             <FadeIn duration={0.6} delay={1.8}>
-              <Card className="p-8 text-center hover:shadow-lg transition-shadow duration-200">
-                <div className="w-16 h-16 mx-auto mb-6 bg-amber-500/10 rounded-full flex items-center justify-center">
-                  <Icon name="financial" className="w-8 h-8 text-amber-600" />
+              <Card className="p-8 text-center hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer group">
+                <div className="w-16 h-16 mx-auto mb-6 bg-amber-500/10 rounded-full flex items-center justify-center group-hover:bg-amber-500/20 transition-colors duration-300">
+                  <Icon name="financial" className="w-8 h-8 text-amber-600 group-hover:scale-110 transition-transform duration-300" />
                 </div>
                 <h3 className="text-xl font-semibold mb-4">Asset Distribution</h3>
                 <p className="text-muted-foreground leading-relaxed">
@@ -129,9 +129,9 @@ export default function LegacyPage() {
             </FadeIn>
 
             <FadeIn duration={0.6} delay={2.0}>
-              <Card className="p-8 text-center hover:shadow-lg transition-shadow duration-200">
-                <div className="w-16 h-16 mx-auto mb-6 bg-rose-500/10 rounded-full flex items-center justify-center">
-                  <Icon name="wishes" className="w-8 h-8 text-rose-600" />
+              <Card className="p-8 text-center hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer group">
+                <div className="w-16 h-16 mx-auto mb-6 bg-rose-500/10 rounded-full flex items-center justify-center group-hover:bg-rose-500/20 transition-colors duration-300">
+                  <Icon name="wishes" className="w-8 h-8 text-rose-600 group-hover:scale-110 transition-transform duration-300" />
                 </div>
                 <h3 className="text-xl font-semibold mb-4">Final Wishes</h3>
                 <p className="text-muted-foreground leading-relaxed">
@@ -142,9 +142,9 @@ export default function LegacyPage() {
             </FadeIn>
 
             <FadeIn duration={0.6} delay={2.2}>
-              <Card className="p-8 text-center hover:shadow-lg transition-shadow duration-200">
-                <div className="w-16 h-16 mx-auto mb-6 bg-indigo-500/10 rounded-full flex items-center justify-center">
-                  <Icon name="users" className="w-8 h-8 text-indigo-600" />
+              <Card className="p-8 text-center hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer group">
+                <div className="w-16 h-16 mx-auto mb-6 bg-indigo-500/10 rounded-full flex items-center justify-center group-hover:bg-indigo-500/20 transition-colors duration-300">
+                  <Icon name="users" className="w-8 h-8 text-indigo-600 group-hover:scale-110 transition-transform duration-300" />
                 </div>
                 <h3 className="text-xl font-semibold mb-4">Guardian Integration</h3>
                 <p className="text-muted-foreground leading-relaxed">
