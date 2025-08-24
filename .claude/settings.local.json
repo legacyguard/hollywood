@@ -24,7 +24,8 @@
       "Bash(./scripts/enable-apis.sh:*)",
       "Bash(git reset:*)",
       "Bash(grep:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(git fetch:*)"
     ],
     "deny": [],
     "ask": []
