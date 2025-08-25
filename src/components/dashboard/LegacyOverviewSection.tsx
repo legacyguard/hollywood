@@ -46,42 +46,42 @@ export const LegacyOverviewSection: React.FC<LegacyOverviewSectionProps> = ({ cl
   const bundleCards: BundleCard[] = [
     {
       id: '1',
-      name: 'Vozidlo: Škoda Octavia',
+      name: 'Vehicle: Honda Civic',
       category: 'vehicle',
-      primaryEntity: 'Škoda Octavia 2019',
+      primaryEntity: 'Honda Civic 2019',
       documentCount: 4,
       lastUpdated: '2025-01-20',
       isRecent: true
     },
     {
       id: '2',
-      name: 'Nehnuteľnosť: Byt na Hlavnej',
+      name: 'Property: Family Home',
       category: 'property', 
-      primaryEntity: 'Hlavná 123, Bratislava',
+      primaryEntity: '123 Main Street',
       documentCount: 3,
       lastUpdated: '2025-01-18'
     },
     {
       id: '3',
-      name: 'Financie: Účty a Investície',
+      name: 'Finances: Accounts & Investments',
       category: 'financial',
-      primaryEntity: 'VÚB Banka, Tatra Banka',
+      primaryEntity: 'Chase Bank, Wells Fargo',
       documentCount: 6,
       lastUpdated: '2025-01-15'
     },
     {
       id: '4',
-      name: 'Zdravie: Lekárske záznamy',
+      name: 'Health: Medical Records',
       category: 'health',
-      primaryEntity: 'Dr. Novák, Poliklinika',
+      primaryEntity: 'Dr. Johnson, City Clinic',
       documentCount: 2,
       lastUpdated: '2025-01-10'
     },
     {
       id: '5',
-      name: 'Právne: Zmluvy a Dokumenty',
+      name: 'Legal: Contracts & Documents',
       category: 'legal',
-      primaryEntity: 'Hypotéka, Poistenie',
+      primaryEntity: 'Mortgage, Insurance',
       documentCount: 5,
       lastUpdated: '2025-01-12'
     }
@@ -120,11 +120,11 @@ export const LegacyOverviewSection: React.FC<LegacyOverviewSectionProps> = ({ cl
           <div className="flex items-center gap-3 mb-2">
             <Icon name="folder" className="w-6 h-6 text-primary" />
             <h2 className="text-2xl font-bold font-heading text-card-foreground">
-              Oblasti Vášho Štítu
+              Your Shield Areas
             </h2>
           </div>
           <p className="text-muted-foreground">
-            Kľúčové oblasti života, ktoré vaša ochrana pokrýva
+            Key life areas covered by your protection
           </p>
         </div>
 
@@ -141,7 +141,7 @@ export const LegacyOverviewSection: React.FC<LegacyOverviewSectionProps> = ({ cl
                   </div>
                   {bundle.isRecent && (
                     <Badge variant="secondary" className="text-xs">
-                      Nové
+                      New
                     </Badge>
                   )}
                 </div>
@@ -157,11 +157,11 @@ export const LegacyOverviewSection: React.FC<LegacyOverviewSectionProps> = ({ cl
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">
-                      {bundle.documentCount} dokumentov
+                      {bundle.documentCount} documents
                     </span>
                   </div>
                   <div className="text-xs text-muted-foreground">
-                    Naposledy aktualizované: {new Date(bundle.lastUpdated).toLocaleDateString('sk-SK', { 
+                    Last updated: {new Date(bundle.lastUpdated).toLocaleDateString('en-US', { 
                       day: 'numeric', 
                       month: 'short',
                       year: 'numeric'
@@ -180,7 +180,7 @@ export const LegacyOverviewSection: React.FC<LegacyOverviewSectionProps> = ({ cl
               onClick={() => navigate('/vault')}
               className="text-primary hover:text-primary-hover text-sm font-medium underline decoration-dotted underline-offset-4"
             >
-              Zobraziť všetky balíčky dokumentov →
+              View all document bundles →
             </button>
           </FadeIn>
         </div>

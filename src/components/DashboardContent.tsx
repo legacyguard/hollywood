@@ -22,7 +22,7 @@ export function DashboardContent() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header - Centrum Vášho Pokoja */}
+      {/* Header - Family Shield Dashboard */}
       <header className="bg-card border-b border-card-border">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 py-8">
           <div className="flex items-start justify-between">
@@ -31,12 +31,12 @@ export function DashboardContent() {
               <div>
                 <FadeIn duration={0.5} delay={0.2}>
                   <h1 className="text-3xl lg:text-4xl font-bold font-heading text-card-foreground mb-3">
-                    Rodinný Štít{user?.firstName ? `, ${user.firstName}` : ''}
+                    Family Shield{user?.firstName ? `, ${user.firstName}` : ''}
                   </h1>
                 </FadeIn>
                 <FadeIn duration={0.5} delay={0.4}>
                   <p className="text-lg leading-relaxed max-w-2xl text-muted-foreground">
-                    Prehľad všetkého, čo chráni vašu rodinu
+                    Overview of everything protecting your family
                   </p>
                 </FadeIn>
               </div>
@@ -48,7 +48,7 @@ export function DashboardContent() {
                 size="lg"
               >
                 <Icon name="add" className="w-5 h-5 mr-2" />
-                Zabezpečiť nové informácie
+                Secure New Information
               </Button>
             </FadeIn>
           </div>
@@ -57,13 +57,13 @@ export function DashboardContent() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-6 lg:px-8 py-12 space-y-16">
-        {/* 1. Sekcia: Vaša Cesta Pokoja (Kompaktná verzia) */}
+        {/* 1. Section: Path of Serenity (Compact version) */}
         <PathOfSerenity className="max-w-4xl mx-auto" />
 
-        {/* 2. Sekcia: Vyžaduje si Vašu Pozornosť (Dynamická akčná zóna) */}
+        {/* 2. Section: Current Challenges (Dynamic action zone) */}
         <AttentionSection />
 
-        {/* 3. Sekcia: Prehľad Vášho Odkazu (Bundle karty) */}
+        {/* 3. Section: Shield Areas Overview (Bundle cards) */}
         <LegacyOverviewSection />
       </main>
     </div>

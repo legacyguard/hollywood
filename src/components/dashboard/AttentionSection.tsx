@@ -25,30 +25,30 @@ export const AttentionSection: React.FC<AttentionSectionProps> = ({ className })
     {
       id: '1',
       type: 'expiration',
-      title: 'Váš pas exspiruje o 28 dní',
-      description: 'Odporúčam skontrolovať možnosti obnovenia',
+      title: 'Your passport expires in 28 days',
+      description: 'Consider checking renewal options',
       icon: 'calendar',
-      actionText: 'Zobraziť detail',
+      actionText: 'View Details',
       onAction: () => console.log('Show passport details'),
       urgency: 'medium'
     },
     {
       id: '2', 
       type: 'guardian',
-      title: 'Pozvali ste Janu Novákovú ako strážcu',
-      description: 'Zatiaľ sa nepripojila k vašemu kruhu dôvery',
+      title: 'You invited Jane Smith as a guardian',
+      description: 'She hasn\'t joined your circle of trust yet',
       icon: 'user-plus',
-      actionText: 'Poslať pripomienku',
+      actionText: 'Send Reminder',
       onAction: () => console.log('Send reminder to guardian'),
       urgency: 'low'
     },
     {
       id: '3',
       type: 'sofia_suggestion',
-      title: 'Sofia navrhuje prepojiť 2 nové dokumenty',
-      description: 'Do balíčka "Hypotéka VÚB" môžeme pridať súvisiace dokumenty',
+      title: 'Sofia suggests linking 2 new documents',
+      description: 'To the "Home Mortgage" bundle we can add related documents',
       icon: 'sparkles',
-      actionText: 'Zobraziť návrh',
+      actionText: 'View Suggestion',
       onAction: () => console.log('Show Sofia suggestion'),
       urgency: 'low'
     }
@@ -90,11 +90,11 @@ export const AttentionSection: React.FC<AttentionSectionProps> = ({ className })
           <div className="flex items-center gap-3 mb-2">
             <Icon name="alert-circle" className="w-6 h-6 text-primary" />
             <h2 className="text-2xl font-bold font-heading text-card-foreground">
-              Aktuálne Výzvy
+              Current Challenges
             </h2>
           </div>
           <p className="text-muted-foreground">
-            Situácie vyžadujúce vašu ochrannú pozornosť
+            Situations requiring your protective attention
           </p>
         </div>
 
