@@ -136,3 +136,5 @@ secrets.yml
 *.bak
 *.backup
 *.old
+claude-code-history-viewer/
+.claude/
