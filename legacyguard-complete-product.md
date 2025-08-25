@@ -43,6 +43,28 @@
 
 ## **2. POUŽÍVATEĽSKÁ CESTA - KOMPLETNÝ SCENÁR**
 
+### **2.0 Onboarding: "Cesta Strážcu Spomienok"**
+
+Prvý kontakt s aplikáciou je pohlcujúci, príbehový zážitok, ktorý nastavuje empatický tón.
+
+**Scéna 1: Prísľub Pokoja**
+- Vizuálne privítanie so "Svetluškou Sofiou"
+- Jemné animácie a svetelné efekty
+- Emocionálne privítanie: "Každý život je príbeh hodný zachovania"
+
+**Scéna 2: Škatuľka Istoty**
+- Interaktívna vizualizácia 3D škatuľky
+- Používateľ definuje, čo je pre neho dôležité
+- Slová sa animovane vkladajú ako svetielkujúce objekty
+
+**Scéna 3: Kľúč Dôvery**
+- Personalizácia kľúča s menom dôveryhodnej osoby
+- 3D model kľúča s gravírovaním mena v reálnom čase
+
+**Scéna 4: Príprava Cesty**
+- Vykreslenie "Cesty Pokoja" s prvými naznačenými míľnikmi
+- Funkcionalita: Detekcia nového používateľa cez Clerk metadáta, ukladanie stavu dokončenia, možnosť preskočenia
+
 ### **2.1 Prvé Stretnutie (0-5 minút)**
 
 #### **Automatická Lokalizácia**
@@ -134,7 +156,47 @@ Sofia: "Výborne! Rozpoznala som vaše základné údaje:
 [Dashboard sa začína napĺňať - prvý kameň mozaiky]
 ```text
 
-### **2.2 Dashboard - Tri Sféry Života**
+### **2.2 Dashboard: "Rodinný Štít"**
+
+Centrálna obrazovka navrhnutá pre pocit kontroly a prehľadu bez zahltenia.
+
+**Hlavný Názov: "Rodinný Štít"** - evokuje ochranu a silu.
+
+**Sekcia 1: "Cesta Pokoja"**
+- Hlavný vizuálny prvok s odomknutými míľnikmi
+- Vizuálna motivácia s rastúcim stromom rodiny
+- Míľniky reprezentujú konkrétne istoty zabezpečené pre rodinu
+
+**Sekcia 2: "Aktuálne Výzvy"**
+- Dynamická zóna, ktorá sa zobrazí len ak je potrebná akcia
+- Expirácie dokumentov, pozvánky, návrhy od Sofie
+- Proaktívne notifikácie a odporúčania
+
+**Sekcia 3: "Oblasti Vášho Štítu"**
+- Prehľad kľúčových "Balíčkov" majetku (napr. "Vozidlo: Škoda Octavia")
+- Dátum poslednej aktualizácie
+- Stav kompletnosti pre každú oblasť
+
+### **2.3 Centrálna Sekcia: "Moja Rodina"**
+
+Nahrádza pôvodnú stránku "Guardians" a stáva sa centrom pre správu osôb.
+
+**Hlavný prvok: Interaktívny Rodokmeň (Family Tree)**
+- Používateľ vizuálne vidí svoju rodinu a vzťahy
+- Priamo z rodokmeňa môže klikať na osoby a prideľovať im roly
+- Systém vizuálne detekuje konflikty alebo medzery (napr. dieťa bez určeného opatrovníka)
+
+**Komplexné Správanie Rôl:**
+- **Heir designation** - Určenie dedičov
+- **Guardian assignment** - Priradenie opatrovníkov
+- **Executor appointment** - Menovanie vykonávateľa závetu
+- **Legacy messages** - Osobné odkazy a správy
+- **Emergency contacts** - Núdzové kontakty
+
+**Real-time Family Insights Dashboard:**
+- Zobrazenie completion rates pre každú rodinnú rolu
+- Smart recommendations založené na rodinných vzťahoch
+- Identifikácia chýbajúcich rolí a konfliktov
 
 Po onboardingu vidí užívateľ personalizovaný dashboard:
 
@@ -348,6 +410,94 @@ Sofia: "K autu odporúčam pridať:
 5. Odoslať Pozvánku:
    Sofia generuje personalizovanú správu:
    "Mária vás určila ako svojho Strážcu v prípade núdze..."
+```
+
+#### **Emergency Activation System**
+
+**Automatická Detekcia:**
+
+```text
+Triggery:
+- 48h neaktivity + neodpovedanie na notifikácie
+- GPS detekcia nemocnice + dlhý pobyt
+- Manuálna aktivácia strážcom
+- Požiadavka 2+ strážcov
+
+Proces Aktivácie:
+1. Detekcia triggeru
+2. Sofia notifikuje primárneho strážcu
+3. 24h na potvrdenie/odmietnutie
+4. Ak potvrdené → postupná aktivácia
+5. Ak odmietnuté → reset
+```
+
+**Postupná Eskalácia:**
+
+```text
+Deň 0-1: Základný prístup
+├── Zdravotné info
+├── Núdzové kontakty
+└── Aktuálne lieky
+
+Deň 2-3: Rozšírený prístup
+├── Poistenia
+├── Právne dokumenty
+└── Finančné prehľady
+
+Deň 4+: Plný prístup
+├── Všetky dokumenty
+├── Heslá a prístupy
+└── Osobné odkazy
+```
+
+#### **Guardian Network - Systém Strážcov**
+
+**Pridanie Strážcu:**
+
+```text
+1. [+ Pridať strážcu]
+
+2. Vybrať osobu:
+   - Z kontaktov telefónu
+   - Zadať manuálne
+   - Importovať z Google/Apple kontaktov
+
+3. Definovať Rolu:
+   
+   👫 Partner/ka - Hlavný strážca
+   ├── Prístup: Po 48h neaktivity
+   ├── Dokumenty: Všetky
+   └── Právomoci: Plné
+   
+   👨‍👩‍👧 Rodinný správca
+   ├── Prístup: Po 72h neaktivity
+   ├── Dokumenty: Rodinné a majetkové
+   └── Právomoci: Čítanie + základná správa
+   
+   💰 Finančný dôverník
+   ├── Prístup: Pri emergencii
+   ├── Dokumenty: Len finančné
+   └── Právomoci: Špecifické akcie
+   
+   🏥 Zdravotný zástupca
+   ├── Prístup: Okamžitý pri hospitalizácii
+   ├── Dokumenty: Zdravotné záznamy
+   └── Právomoci: Medicínske rozhodnutia
+   
+   💻 Digitálny správca
+   ├── Prístup: Po potvrdení udalosti
+   ├── Dokumenty: Online účty a heslá
+   └── Právomoci: Správa digitálnej identity
+
+4. Nastaviť Podmienky:
+   - Časové oneskorenie (0-30 dní)
+   - Vyžadované overenie (1-3 strážcovia)
+   - Notifikácie o prístupe
+   - Časové obmedzenie prístupu
+
+5. Odoslať Pozvánku:
+   Sofia generuje personalizovanú správu:
+   "Mária vás určila ako svojho Strážcu v prípade núdze..."
 ```text
 
 #### **Emergency Activation System**
@@ -433,6 +583,46 @@ Sofia: "Váš manuál je 73% kompletný.
 ```text
 
 ### **3.4 VEČNÝ ODKAZ - Will Generator**
+
+#### **Prémiový Tvorca Závetu ("Sprievodca Poslednou Vôľou")**
+
+**Multi-krajinná Architektúra:**
+- Systém je od začiatku pripravený na škálovateľnosť
+- Na základe domény alebo výberu používateľa načíta správne právne šablóny a pravidlá
+- Aktuálne podporované: Slovensko (SK) a Česká republika (CZ)
+- Príprava na ďalšie európske krajiny
+
+**Návrh na Jedno Kliknutie:**
+- Sofia dokáže prejsť existujúce dáta (Strážcovia, Balíčky) a pripraviť inteligentný prvý návrh závetu
+- Používateľ následne len skontroluje a upraví
+- AI-powered analýza existujúcich informácií
+
+**Interaktívny Wizard so Živým Náhľadom:**
+- Používateľ v reálnom čase vidí, ako jeho rozhodnutia formujú finálny dokument
+- Okamžité zmeny v náhľade závetu
+- Vizuálne zobrazenie rozdelenia majetku
+
+**Real-Time Právna Validácia:**
+- Systém priebežne kontroluje základné právne náležitosti
+- Kontrola súčtu podielov (musí byť 100%)
+- Identifikácia neopomenuteľných dedičov
+- Okamžitá spätná väzba pri chybách
+
+**"Kontrola od Sofie":**
+- Pred finálnym generovaním systém zhrnie všetky kľúčové body
+- Upozorní na potenciálne chyby alebo neúplné informácie
+- Odporúčania pre zlepšenie
+
+**Pečať Dôvery:**
+- Vygenerované PDF obsahuje vizuálnu pečať potvrdzujúcu súlad šablóny s platným právnym poriadkom
+- Po odbornej kontrole sa pečať vylepší
+- 4-tier Trust Seal systém: Basic → Verified → Professional → Premium
+
+**Inteligentné Prepojenie s Majetkom:**
+- Možnosť priamo vyberať majetok z už existujúcich "Balíčkov"
+- Automatické načítanie informácií o nehnuteľnostiach, vozidlách, účtoch
+
+#### **7-Krokový Proces Tvorby Závetu**
 
 #### **7-Krokový Proces Tvorby Závetu**
 
@@ -631,6 +821,26 @@ Sofia: "Aktivujem núdzový prístup.
 
 ### **3.6 VIDEO MESSAGES - Časové Kapsuly**
 
+#### **Časová Schránka (Time Capsule)**
+
+**Emocionálny Odkaz:**
+- Umožňuje nahrávať osobné video alebo audio odkazy pre blízkych
+- Vytvorenie osobného spojenia s rodinou
+- Zachovanie hlasu a osobnosti pre budúce generácie
+
+**Plánované Doručenie:**
+- Správy môžu byť doručené na konkrétny dátum (napr. 18. narodeniny dieťaťa)
+- Doručenie po smrti používateľa
+- Možnosť nastavenia viacerých triggerov
+
+**Technické riešenie:**
+- Využíva MediaRecorder API pre nahrávanie
+- Supabase Storage pre bezpečné uloženie
+- Vercel Cron Job pre plánované odosielanie notifikácií
+- Integrácia s Resend pre email notifikácie
+
+#### **Vytvorenie Video Odkazu**
+
 #### **Vytvorenie Video Odkazu**
 
 ```text
@@ -663,7 +873,36 @@ Sofia: "Aktivujem núdzový prístup.
 
 ## **4. PRÁVNE KONZULTÁCIE - Partnerská Služba**
 
-### **4.1 Integrácia s Právnou Kanceláriou**
+### **4.1 Sieť Profesionálov (Professional Network)**
+
+**Integrácia s Právnikmi:**
+- Priama možnosť vyžiadať si platenú odbornú kontrolu vygenerovaného závetu
+- Partnerská advokátska kancelária (napr. brnoadvokati.cz)
+- Profesionálne overenie právnej správnosti
+
+**Prepojenie s Notármi:**
+- V budúcnosti možnosť nájsť a objednať sa k notárovi v okolí
+- Integrácia s notárskymi službami
+- Overenie a úschova dokumentov
+
+### **4.2 Professional Review + Trust Seal Integration**
+
+**4-tier Trust Seal System:**
+- **Basic** → **Verified** → **Professional** → **Premium**
+- Automatické upgrady po profesionálnych review
+- Postupné zlepšovanie credibility statements
+
+**Professional Verification Display:**
+- Zobrazenie detailov právnika/notára
+- Compliance scores a certifikáty
+- Bezproblémová integrácia s existujúcim Professional Review Network
+
+**Automatické Upgrady:**
+- Po odbornej kontrole sa pečať automaticky vylepší
+- Zobrazenie úrovne dôveryhodnosti dokumentu
+- Transparentnosť procesu overenia
+
+### **4.3 Integrácia s Právnou Kanceláriou**
 
 ```text
 Keď Sofia narazí na komplexný právny problém:
@@ -707,7 +946,76 @@ ZASTUPOVANIE (individuálna cena):
 
 ## **5. PODPORNÉ FUNKCIE**
 
-### **5.1 Automatická Jazyková Adaptácia**
+### **5.1 Sofia AI & Automatizácia**
+
+#### **Kontextová Asistencia:**
+- Sofia rozumie, na akej stránke sa používateľ nachádza a aký je jeho postup na "Ceste Pokoja"
+- Inteligentné odporúčania založené na aktuálnom kontexte
+- Personalizovaná pomoc pre každý krok
+
+#### **Prepojenie s Vyhľadávaním:**
+- Ak Quick Search (Cmd+K) nenájde výsledky, ponúkne inteligentné akcie cez Sofiu
+- Filtrovanie, navigácia, FAQ bez použitia OpenAI
+- Kontextové návrhy riešení
+
+#### **Proaktívne Notifikácie:**
+- Systém automaticky sleduje dátumy exspirácie
+- Empatické pripomienky v správnom čase
+- Inteligentné odporúčania pre zlepšenie
+
+#### **Schopnosti a Funkcie:**
+```typescript
+Sofia disponuje:
+- 33+ jazykov (automatická detekcia)
+- Právna expertíza pre európske krajiny
+- Emocionálna inteligencia
+- Kontextové učenie
+```
+
+**Príklady Interakcií:**
+
+**Proaktívna Pomoc:**
+```text
+Sofia: "Všimla som si, že máte hypotéku na 20 rokov.
+        Máte životné poistenie, ktoré by ju pokrylo?
+        Je to dôležité pre ochranu rodiny."
+        
+[Áno, mám] [Nie, nemám] [Zistiť viac]
+```
+
+**Právne Poradenstvo:**
+```text
+Užívateľ: "Môžem vydediť syna?"
+
+Sofia: "Na Slovensku majú deti ako neopomenuteľní 
+        dedičia právo na povinnú časť dedičstva.
+        Vydedenie je možné len zo zákonných dôvodov.
+        
+        Chcete sa spojiť s právnikom pre detaily?"
+        
+[Áno, konzultácia €49] [Nie, ďakujem]
+```
+
+**Emergency Podpora:**
+```text
+Pri 48h neaktivite:
+
+Sofia → Partner: "Váš manžel nebol aktívny 2 dni.
+                  Je všetko v poriadku?"
+                  
+Partner: "Je v nemocnici"
+
+Sofia: "Aktivujem núdzový prístup. 
+        Tu je všetko, čo potrebujete:
+        - Zdravotné záznamy
+        - Lieky a alergie  
+        - Poistenia
+        - Kontakty na lekárov"
+```
+
+### **5.2 Automatická Jazyková Adaptácia**
+
+### **5.3 Automatická Jazyková Adaptácia**
 
 ```text
 Systém automaticky:
@@ -724,7 +1032,7 @@ Príklad pre legacyguard.ch (Švajčiarsko):
 - Ukrajinčina (diaspóra)
 ```text
 
-### **5.2 Notifikačný Systém**
+### **5.4 Notifikačný Systém**
 
 ```text
 TYPY NOTIFIKÁCIÍ:
@@ -750,7 +1058,7 @@ TYPY NOTIFIKÁCIÍ:
 - Aktivita strážcov
 ```text
 
-### **5.3 Progress Tracking - Strom Rodiny**
+### **5.5 Progress Tracking - Strom Rodiny**
 
 ```text
 Vizuálna motivácia:
@@ -784,7 +1092,156 @@ Vizuálna motivácia:
 
 ## **6. EMERGENCY SCENÁRE - Konkrétne Situácie**
 
-### **6.1 Hospitalizácia**
+### **6.1 Inteligentný Organizátor Dokumentov ("My Vault")**
+
+#### **AI-Powered Analýza:**
+Po nahratí dokumentu systém automaticky:
+- Rozpozná text (OCR)
+- Navrhne kategóriu (Bývanie, Financie, atď.)
+- Extrahuje kľúčové metadáta (dátumy, sumy, čísla zmlúv)
+- Používateľ všetko potvrdí na jednej obrazovke
+
+#### **Inteligentné Balíčky (Bundles):**
+- Systém automaticky rozpoznáva entity (autá, nehnuteľnosti)
+- Navrhuje zoskupenie súvisiacich dokumentov do logických "balíčkov"
+- Vytvára prehľadné skupiny pre lepšiu správu
+
+#### **Správa Verzií:**
+- Automaticky detekuje nové verzie dokumentov (napr. ročné poistné zmluvy)
+- Ponúka archiváciu starých verzií
+- Udržiava poriadok a prehľadnosť
+
+#### **Kategórie Dokumentov:**
+
+```text
+📋 Kto som (Osobné doklady)
+├── Občiansky preukaz
+├── Pas
+├── Rodný list
+├── Vodičský preukaz
+└── Kartička poistenca
+
+🏠 Čo mám (Majetok)
+├── Nehnuteľnosti
+│   ├── List vlastníctva
+│   ├── Kúpna zmluva
+│   └── Hypotekárna zmluva
+├── Vozidlá
+│   ├── Technický preukaz
+│   └── Poistenie auta
+└── Cennosti
+    ├── Šperky
+    └── Zbierky
+
+💰 Moje financie
+├── Bankové účty
+├── Investície
+├── Úvery
+└── Sporenie
+
+🛡️ Čo ma chráni
+├── Životné poistenie
+├── Úrazové poistenie
+├── Poistenie majetku
+└── Cestovné poistenie
+
+🏥 Moje zdravie
+├── Zdravotné záznamy
+├── Lieky
+├── Alergie
+└── Kontakty na lekárov
+
+💼 Moja práca
+├── Pracovná zmluva
+├── Výplatné pásky
+├── Dôchodkové sporenie
+└── Firemné benefity
+
+👨‍👩‍👧 Moje vzťahy
+├── Sobášny list
+├── Rodné listy detí
+├── Rozvod dokumenty
+└── Opatrovnícke dokumenty
+```
+
+#### **Inteligentné Funkcie:**
+
+**Expiračný Monitoring:**
+```text
+90 dní pred: 
+Sofia: "Váš pas expiruje o 3 mesiace. 
+        Odporúčam začať proces obnovenia."
+        
+30 dní pred:
+Sofia: "Pripomínam expiráciu pasu. 
+        Chcete, aby som vám pomohla s obnovením?"
+        [Návod] [Pripomenúť neskôr]
+        
+7 dní pred:
+Sofia: "URGENTNÉ: Pas expiruje o týždeň!"
+        [Akcia potrebná]
+```
+
+**Smart Suggestions:**
+```text
+Po pridaní hypotéky:
+Sofia: "Všimla som si, že máte hypotéku. 
+        Máte aj životné poistenie na jej krytie?"
+        
+Po pridaní auta:
+Sofia: "K autu odporúčam pridať:
+        - Poistnú zmluvu
+        - Servisnú knižku
+        - Kontakt na asistenčnú službu"
+```
+
+### **6.2 AI-GENERATED SURVIVOR'S MANUAL**
+
+#### **Automatický Rodinný Manuál**
+
+Sofia automaticky generuje príručku pre rodinu:
+
+```text
+RODINNÝ MANUÁL - Automaticky Generovaný
+Posledná aktualizácia: [Dnes]
+Kompletnosť: 73%
+
+📋 OBSAH:
+
+1. DÔLEŽITÉ KONTAKTY
+   ✓ Lekár: MUDr. Novák - 0903 123 456
+   ✓ Právnik: JUDr. Kováč - 0905 987 654
+   ⚠️ Chýba: Poisťovací agent
+   
+2. FINANČNÉ ÚČTY
+   ✓ Tatra banka - účet č. SK12 1100 0000 0012 3456
+   ✓ VÚB - sporenie č. SK34 0200 0000 0034 5678
+   ⚠️ Chýba: Investičný účet
+   
+3. PRAVIDELNÉ PLATBY
+   ✓ Hypotéka: €450/mesiac (Tatra banka)
+   ✓ Poistenie domu: €30/mesiac (Allianz)
+   ✓ Energie: €120/mesiac (ZSE)
+   
+4. MAJETOK A JEHO SPRÁVA
+   ✓ Byt: Bratislava, Ružinov
+   ✓ Auto: Škoda Octavia, ŠPZ: BA-123AB
+   
+5. HESLÁ A PRÍSTUPY
+   🔒 Šifrované - prístupné len strážcom
+   
+6. OSOBNÉ INŠTRUKCIE
+   ✓ "Pri hypotéke kontaktovať banku do 30 dní"
+   ✓ "Auto predať cez autobazár XY"
+   
+Sofia: "Váš manuál je 73% kompletný. 
+        Pridajte kontakt na poisťovacieho agenta
+        pre 80% kompletnosť."
+```
+
+### **6.3 Hospitalizácia**
+
+### **6.4 Hospitalizácia**
 
 ```text
 TRIGGER: 48h neaktivity + GPS nemocnica
@@ -812,7 +1269,7 @@ Sofia naviguje rodinu:
  3. Poistenie - číslo zmluvy pre nemocnicu"
 ```text
 
-### **6.2 Postupná Strata Kapacity**
+### **6.5 Postupná Strata Kapacity**
 
 ```text
 DETEKCIA:
@@ -836,7 +1293,7 @@ Zachovanie dôstojnosti:
 - Rodina preberie len správu
 ```text
 
-### **6.3 Náhle Úmrtie**
+### **6.6 Náhle Úmrtie**
 
 ```text
 VERIFIKÁCIA (vyžaduje 3 z 4):
@@ -865,7 +1322,21 @@ Sofia pre rodinu:
 
 ---
 
-## **7. MOBILNÁ SKÚSENOSŤ**
+## **7. TECHNICKÁ DOKUMENTÁCIA A BEZPEČNOSŤ**
+
+### **7.1 Bezpečnosť**
+Detailný popis implementovaných bezpečnostných opatrení je v `SECURITY_IMPROVEMENTS.md`.
+
+### **7.2 Zálohovanie a Obnova**
+Postupy pre zálohovanie a obnovu dát sú zdokumentované v `BACKUP_RESTORE_GUIDE.md`.
+
+### **7.3 Architektúra**
+- **Multi-doménový prístup na Verceli** - škálovateľná štruktúra obsahu
+- **Robustné RLS politiky v Supabase** - zabezpečenie dát na úrovni databázy
+- **Atomické operácie cez RPC funkcie** - konzistentnosť dát
+- **Clerk autentifikácia** - bezpečné správa používateľov
+
+## **8. MOBILNÁ SKÚSENOSŤ**
 
 ### **7.1 Mobilné Špecifické Funkcie**
 
@@ -901,7 +1372,7 @@ Funkcie PWA:
 
 ---
 
-## **8. ZÁVER - Používateľská Hodnota**
+## **9. ZÁVER - Používateľská Hodnota**
 
 ### **Okamžitá Hodnota (Deň 1)**
 
@@ -939,7 +1410,7 @@ Funkcie PWA:
 
 ---
 
-## **Vrstvený prístup UI**
+## **10. Vrstvený prístup UI**
 
 Predstavte si náš "hollywoodsky scenár" ako stavbu domu.
 

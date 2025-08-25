@@ -152,7 +152,12 @@ export class ProfessionalTrustIntegration {
     licenseNumber?: string;
   } | null> {
     // Mock implementation - in real app, would fetch from professional network
-    const mockProfessionals: Record<string, any> = {
+    const mockProfessionals: Record<string, {
+      name: string;
+      title: string;
+      firmName: string;
+      licenseNumber: string;
+    }> = {
       'brno-law-001': {
         name: 'JUDr. Pavel Novák',
         title: 'Partner Attorney',

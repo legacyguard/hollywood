@@ -11,8 +11,8 @@ import { ErrorBoundary } from "./components/ErrorBoundary";
 import { DocumentFilterProvider } from "./contexts/DocumentFilterContext";
 import { LocalizationProvider } from "./contexts/LocalizationContext";
 import SofiaContextProvider from "./components/sofia/SofiaContextProvider";
-import { EncryptionProvider } from "@/hooks/encryption/useEncryption";
-import { PasswordPrompt } from "@/components/encryption/PasswordPrompt";
+// import { EncryptionProvider } from "@/hooks/encryption/useEncryption";
+// import { PasswordPrompt } from "@/components/encryption/PasswordPrompt";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Onboarding from "./pages/onboarding/Onboarding";
@@ -37,11 +37,11 @@ const App = () => (
           <Toaster />
           <Sonner />
           <LocalizationProvider>
-            <EncryptionProvider>
+            {/* <EncryptionProvider> */}
               <BrowserRouter future={routerFutureConfig}>
                 <DocumentFilterProvider>
                   <SofiaContextProvider>
-                    <PasswordPrompt />
+                    {/* <PasswordPrompt /> */}
                     <Routes>
             {/* Public routes */}
             <Route path="/sign-in/*" element={<SignInPage />} />
@@ -107,7 +107,7 @@ const App = () => (
                   </SofiaContextProvider>
                 </DocumentFilterProvider>
               </BrowserRouter>
-            </EncryptionProvider>
+            {/* </EncryptionProvider> */}
           </LocalizationProvider>
         </TooltipProvider>
       </QueryClientProvider>

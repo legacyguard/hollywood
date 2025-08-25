@@ -12,7 +12,7 @@ import { Badge } from '@/components/ui/badge';
 import { FadeIn } from '@/components/motion/FadeIn';
 import { Progress } from '@/components/ui/progress';
 import { toast } from 'sonner';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { createClient } from '@supabase/supabase-js';
 import { formatDistanceToNow } from 'date-fns';
 
 interface SecurityScore {
@@ -47,7 +47,10 @@ interface ActiveSession {
 
 export function SecurityDashboard() {
   const { userId } = useAuth();
-  const supabase = createClientComponentClient();
+  const supabase = createClient(
+    import.meta.env.VITE_SUPABASE_URL!,
+    import.meta.env.VITE_SUPABASE_ANON_KEY!
+  );
   const [securityScore, setSecurityScore] = useState<SecurityScore>({
     overall: 0,
     factors: {

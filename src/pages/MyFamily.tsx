@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -51,7 +51,7 @@ export const MyFamilyPage: React.FC<MyFamilyPageProps> = ({
   const [familyMembers, setFamilyMembers] = useState<FamilyMember[]>([]);
 
   // Mock family data - in real app, this would come from user's family tree
-  const mockFamilyMembers: FamilyMember[] = [
+  const mockFamilyMembers: FamilyMember[] = useMemo(() => [
     {
       id: '1',
       name: 'Jane Doe',
@@ -97,7 +97,7 @@ export const MyFamilyPage: React.FC<MyFamilyPageProps> = ({
       roles: {},
       status: 'missing_info' // No roles assigned
     }
-  ];
+  ], []);
 
   const handlePersonClick = useCallback((person: FamilyMember) => {
     setSelectedPerson(person);
@@ -140,7 +140,7 @@ export const MyFamilyPage: React.FC<MyFamilyPageProps> = ({
       
       onWillDataUpdate(updatedWillData);
     }
-  }, [willData, onWillDataUpdate]);
+  }, [willData, onWillDataUpdate, mockFamilyMembers]);
 
   const getFamilyInsights = useCallback(() => {
     const insights = {
@@ -158,7 +158,7 @@ export const MyFamilyPage: React.FC<MyFamilyPageProps> = ({
     );
     
     return { ...insights, completionRate };
-  }, []);
+  }, [mockFamilyMembers]);
 
   const insights = getFamilyInsights();
 
