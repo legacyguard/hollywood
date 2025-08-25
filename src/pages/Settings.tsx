@@ -16,43 +16,14 @@ import { Label } from "@/components/ui/label";
 import { useAuth } from "@clerk/clerk-react";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-
-interface UserPreferences {
-  notifications: {
-    email: boolean;
-    push: boolean;
-    reminders: boolean;
-  };
-  privacy: {
-    shareAnalytics: boolean;
-    autoBackup: boolean;
-  };
-  display: {
-    compactMode: boolean;
-    showTips: boolean;
-  };
-}
-
-const defaultPreferences: UserPreferences = {
-  notifications: {
-    email: true,
-    push: true,
-    reminders: true,
-  },
-  privacy: {
-    shareAnalytics: false,
-    autoBackup: false,
-  },
-  display: {
-    compactMode: false,
-    showTips: true,
-  },
-};
+import { UserPreferences, defaultUserPreferences } from "@/types/user-preferences";
+import { CommunicationStyle, textManager } from "@/lib/text-manager";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 export default function SettingsPage() {
   usePageTitle('Settings');
   const { user, userId } = useAuth();
-  const [preferences, setPreferences] = useState<UserPreferences>(defaultPreferences);
+  const [preferences, setPreferences] = useState<UserPreferences>(defaultUserPreferences);
   const [isSaving, setIsSaving] = useState(false);
 
   // Load preferences from localStorage
@@ -69,13 +40,18 @@ export default function SettingsPage() {
     }
   }, [userId]);
 
-  // Save preferences to localStorage
+  // Save preferences to localStorage and update Sofia's text manager
   const savePreferences = async () => {
     if (!userId) return;
 
     setIsSaving(true);
     try {
       localStorage.setItem(`preferences_${userId}`, JSON.stringify(preferences));
+
+      // Update Sofia's text manager with the new communication style
+      if (preferences.communication.style !== 'default') {
+        textManager.setUserStyle(userId, preferences.communication.style);
+      }
 
       // TODO: Also save to Supabase or Clerk metadata for cloud sync
 
@@ -88,12 +64,23 @@ export default function SettingsPage() {
     }
   };
 
-  const updatePreference = (category: keyof UserPreferences, key: string, value: boolean) => {
+  const updatePreference = (category: keyof UserPreferences, key: string, value: boolean | string) => {
     setPreferences(prev => ({
       ...prev,
       [category]: {
         ...prev[category],
         [key]: value,
+      },
+    }));
+  };
+
+  const updateCommunicationStyle = (style: CommunicationStyle) => {
+    setPreferences(prev => ({
+      ...prev,
+      communication: {
+        ...prev.communication,
+        style: style,
+        lastDetectionUpdate: style === 'default' ? null : new Date().toISOString(),
       },
     }));
   };
@@ -257,8 +244,84 @@ export default function SettingsPage() {
             </Card>
           </FadeIn>
 
-          {/* Display Preferences */}
+          {/* Sofia Communication Preferences */}
           <FadeIn duration={0.5} delay={0.5}>
+            <Card className="p-6 bg-card border-card-border">
+              <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                <Icon name="bot" className="w-5 h-5 text-primary" />
+                Sofia Communication Style
+              </h2>
+              <div className="space-y-4">
+                <div>
+                  <Label>Communication Style</Label>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Choose how Sofia communicates with you. She can adapt her personality to match your preferences.
+                  </p>
+                  <RadioGroup
+                    value={preferences.communication.style}
+                    onValueChange={(value) => updateCommunicationStyle(value as CommunicationStyle)}
+                    className="space-y-3"
+                  >
+                    <div className="flex items-center space-x-3 p-3 border border-card-border rounded-lg">
+                      <RadioGroupItem value="default" id="style-default" />
+                      <div className="flex-1">
+                        <Label htmlFor="style-default" className="font-medium">
+                          Automatic Detection
+                        </Label>
+                        <p className="text-sm text-muted-foreground">
+                          Let Sofia learn your communication style from your interactions
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-3 p-3 border border-card-border rounded-lg">
+                      <RadioGroupItem value="empathetic" id="style-empathetic" />
+                      <div className="flex-1">
+                        <Label htmlFor="style-empathetic" className="font-medium">
+                          Empathetic & Caring
+                        </Label>
+                        <p className="text-sm text-muted-foreground">
+                          Sofia focuses on emotions, relationships, and the meaningful aspects of your legacy
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-3 p-3 border border-card-border rounded-lg">
+                      <RadioGroupItem value="pragmatic" id="style-pragmatic" />
+                      <div className="flex-1">
+                        <Label htmlFor="style-pragmatic" className="font-medium">
+                          Direct & Practical
+                        </Label>
+                        <p className="text-sm text-muted-foreground">
+                          Sofia communicates efficiently with facts, steps, and clear instructions
+                        </p>
+                      </div>
+                    </div>
+                  </RadioGroup>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <Label htmlFor="auto-detection">Auto-Detection</Label>
+                    <p className="text-sm text-muted-foreground">
+                      Allow Sofia to automatically learn your communication preferences over time
+                    </p>
+                  </div>
+                  <Switch
+                    id="auto-detection"
+                    checked={preferences.communication.autoDetection}
+                    onCheckedChange={(checked) => updatePreference('communication', 'autoDetection', checked)}
+                  />
+                </div>
+                {preferences.communication.lastDetectionUpdate && (
+                  <div className="text-xs text-muted-foreground bg-muted p-2 rounded">
+                    <Icon name="info" className="w-3 h-3 inline mr-1" />
+                    Last style update: {new Date(preferences.communication.lastDetectionUpdate).toLocaleDateString()}
+                  </div>
+                )}
+              </div>
+            </Card>
+          </FadeIn>
+
+          {/* Display Preferences */}
+          <FadeIn duration={0.5} delay={0.6}>
             <Card className="p-6 bg-card border-card-border">
               <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
                 <Icon name="display" className="w-5 h-5 text-primary" />
@@ -296,7 +359,7 @@ export default function SettingsPage() {
           </FadeIn>
 
           {/* Security Dashboard */}
-          <FadeIn duration={0.5} delay={0.6}>
+          <FadeIn duration={0.5} delay={0.7}>
             <div className="space-y-6">
               <h2 className="text-2xl font-bold flex items-center gap-3">
                 <Icon name="shield-check" className="w-7 h-7 text-primary" />
@@ -307,7 +370,7 @@ export default function SettingsPage() {
           </FadeIn>
 
           {/* Backup & Restore Section */}
-          <FadeIn duration={0.5} delay={0.7}>
+          <FadeIn duration={0.5} delay={0.8}>
             <BackupRestore />
           </FadeIn>
         </main>

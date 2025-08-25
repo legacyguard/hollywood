@@ -2,6 +2,9 @@ import React from 'react';
 import { toast } from 'sonner';
 import { Icon } from '@/components/ui/icon-library';
 import type { SerenityMilestone } from '@/lib/path-of-serenity';
+import { getAdaptiveMilestoneText } from '@/lib/path-of-serenity';
+import { useAuth } from '@clerk/clerk-react';
+import { UserPreferences, defaultUserPreferences } from '@/types/user-preferences';
 
 // Legacy component interface for backward compatibility
 // Now implemented using toast system - no longer renders UI
@@ -16,7 +19,35 @@ export const MilestoneCelebration: React.FC<MilestoneCelebrationProps> = () => {
   return null;
 };
 
-export function showMilestoneRecognition(milestone: SerenityMilestone) {
+export function showMilestoneRecognition(milestone: SerenityMilestone, userId?: string) {
+  // Load user preferences for communication style
+  let userPreferences = defaultUserPreferences;
+  if (userId) {
+    const savedPrefs = localStorage.getItem(`preferences_${userId}`);
+    if (savedPrefs) {
+      try {
+        userPreferences = JSON.parse(savedPrefs);
+      } catch (error) {
+        console.error('Error loading user preferences for milestone:', error);
+      }
+    }
+  }
+
+  // Get adaptive text for the milestone
+  const adaptiveCompletedDescription = getAdaptiveMilestoneText(
+    milestone, 
+    'completedDescription', 
+    userId, 
+    userPreferences.communication.style
+  );
+
+  const adaptiveName = getAdaptiveMilestoneText(
+    milestone, 
+    'name', 
+    userId, 
+    userPreferences.communication.style
+  );
+
   toast.custom(
     (t) => (
       <div className="w-full max-w-4xl bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/90 dark:to-emerald-950/90 border border-green-200/50 dark:border-green-800/50 shadow-lg backdrop-blur-sm">
@@ -33,10 +64,10 @@ export function showMilestoneRecognition(milestone: SerenityMilestone) {
             <div className="flex items-start justify-between">
               <div>
                 <p className="font-medium text-green-900 dark:text-green-100">
-                  New Milestone of Peace Unlocked: <span className="font-semibold">{milestone.name.replace(/^[\u{1F5FF}\u{1F91D}\u{1F3DB}\u{23F0}\u{1F5FA}\u{1F4AB}\u{1F451}]\s/u, '')}</span>
+                  New Milestone of Peace Unlocked: <span className="font-semibold">{adaptiveName.replace(/^[\u{1F5FF}\u{1F91D}\u{1F3DB}\u{23F0}\u{1F5FA}\u{1F4AB}\u{1F451}]\s/u, '')}</span>
                 </p>
                 <p className="text-sm text-green-700 dark:text-green-300 mt-1 leading-relaxed">
-                  {milestone.completedDescription}
+                  {adaptiveCompletedDescription}
                 </p>
                 {milestone.rewards && (
                   <p className="text-xs text-green-600 dark:text-green-400 mt-2 italic">

@@ -10,15 +10,32 @@ import { Icon } from '@/components/ui/icon-library';
 import { FadeIn } from '@/components/motion/FadeIn';
 import { useEncryption } from '@/hooks/useEncryption';
 import { toast } from 'sonner';
+import { textManager } from '@/lib/text-manager';
+import { UserPreferences, defaultUserPreferences } from '@/types/user-preferences';
 
 export const DocumentUploader = () => {
   const [file, setFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [userPreferences, setUserPreferences] = useState<UserPreferences>(defaultUserPreferences);
   const { userId } = useAuth();
   const { user } = useUser();
   const createSupabaseClient = useSupabaseWithClerk();
   const { isUnlocked, encryptFile, showPasswordPrompt } = useEncryption();
+
+  // Load user preferences
+  React.useEffect(() => {
+    if (userId) {
+      const savedPrefs = localStorage.getItem(`preferences_${userId}`);
+      if (savedPrefs) {
+        try {
+          setUserPreferences(JSON.parse(savedPrefs));
+        } catch (error) {
+          console.error('Error loading user preferences:', error);
+        }
+      }
+    }
+  }, [userId]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -127,7 +144,13 @@ export const DocumentUploader = () => {
 
       setUploadProgress(100);
 
-      toast.success('Document encrypted and uploaded successfully!');
+      // Use adaptive success message
+      const adaptiveSuccessMessage = textManager.getText(
+        'document_upload_success', 
+        userPreferences.communication.style, 
+        userId
+      );
+      toast.success(adaptiveSuccessMessage);
 
       // Emit event to refresh document list
       window.dispatchEvent(new CustomEvent('documentUploaded', { detail: { userId } }));
@@ -139,7 +162,14 @@ export const DocumentUploader = () => {
 
     } catch (error: unknown) {
       console.error('Error uploading file:', error);
-      toast.error(error instanceof Error ? error.message : 'Failed to upload document. Please try again.');
+      
+      // Use adaptive error message
+      const adaptiveErrorMessage = textManager.getText(
+        'upload_error',
+        userPreferences.communication.style, 
+        userId
+      );
+      toast.error(error instanceof Error ? error.message : adaptiveErrorMessage);
     } finally {
       setIsUploading(false);
       setUploadProgress(0);

@@ -1,6 +1,9 @@
 // Path of Serenity - Milestone System
 // Tracks user's journey toward family security and peace of mind
 
+import { textManager } from './text-manager';
+import type { CommunicationStyle } from './text-manager';
+
 export interface SerenityMilestone {
   id: string;
   name: string;
@@ -24,6 +27,14 @@ export interface SerenityMilestone {
   isUnlocked: boolean;
   unlockedAt?: string;
   icon: string;
+  // Text manager keys for adaptive messaging
+  textKeys?: {
+    name?: string;
+    description?: string;
+    completedDescription?: string;
+    rewardTitle?: string;
+    rewardDescription?: string;
+  };
 }
 
 export interface FiveMinuteChallenge {
@@ -42,9 +53,9 @@ export interface FiveMinuteChallenge {
 export const SERENITY_MILESTONES: SerenityMilestone[] = [
   {
     id: 'foundation_stone',
-    name: '🗿 Základný Kameň Istoty',
-    description: 'Prvý krok na ceste k pokoju - nahrajte svoj prvý dôležitý dokument',
-    completedDescription: 'Výborne! Položili ste základný kameň. Vaši blízki teraz vedia, kde hľadať prvú dôležitú informáciu.',
+    name: 'Foundation Stone',
+    description: 'Upload your first important document to begin your journey toward family security',
+    completedDescription: 'Excellent! You have laid the foundation stone. Your loved ones now know where to find the first important information.',
     category: 'foundation',
     unlockCondition: {
       type: 'documents_uploaded',
@@ -52,19 +63,22 @@ export const SERENITY_MILESTONES: SerenityMilestone[] = [
     },
     visualPosition: { x: 15, y: 85 }, // Start of the path
     rewards: {
-      title: 'Prvý krok k istote',
-      description: 'Zabezpečili ste prvú dôležitú informáciu pre svoju rodinu',
-      sofiaMessage: 'Gratulujeme k prvému kroku! Práve ste začali budovať digitálny trezor istoty pre svoju rodinu. Každý ďalší dokument pridá novú vrstvu ochrany a pokoja.'
+      title: 'First Step to Certainty',
+      description: 'You have secured the first important information for your family',
+      sofiaMessage: 'Congratulations on your first step! You have just begun building a digital vault of certainty for your family. Each additional document adds a new layer of protection and peace.'
     },
     isUnlocked: false,
-    icon: 'foundation'
+    icon: 'foundation',
+    textKeys: {
+      completedDescription: 'milestone_first_document_uploaded'
+    }
   },
 
   {
     id: 'circle_of_trust',
-    name: '🤝 Kruh Dôvery',
-    description: 'Určite prvú dôveryhodnú osobu, ktorá bude vedieť o vašom digitálnom trezore',
-    completedDescription: 'Vytvorili ste Kruh Dôvery. Vaša rodina bude mať v ťažkých chvíľach na koho sa obrátiť.',
+    name: 'Circle of Trust',
+    description: 'Designate your first trusted guardian who will know about your digital legacy',
+    completedDescription: 'You have created a Circle of Trust. Your family will have someone to turn to in difficult times.',
     category: 'protection',
     unlockCondition: {
       type: 'guardians_added',
@@ -72,19 +86,22 @@ export const SERENITY_MILESTONES: SerenityMilestone[] = [
     },
     visualPosition: { x: 35, y: 70 },
     rewards: {
-      title: 'Sieť bezpečnosti',
-      description: 'Vaša rodina má teraz niekoho, na koho sa môže spoľahnúť',
-      sofiaMessage: 'Krásne! Vytvorenie Kruhu Dôvery je jeden z najdôležitejších krokov. V ťažkých chvíľach bude mať vaša rodina jasno, na koho sa obrátiť o pomoc.'
+      title: 'Safety Network',
+      description: 'Your family now has someone they can rely on',
+      sofiaMessage: 'Beautiful! Creating a Circle of Trust is one of the most important steps. In difficult times, your family will know exactly who to turn to for help.'
     },
     isUnlocked: false,
-    icon: 'users'
+    icon: 'users',
+    textKeys: {
+      completedDescription: 'milestone_guardian_assigned'
+    }
   },
 
   {
     id: 'digital_vault',
-    name: '🏛️ Digitálny Trezor',
-    description: 'Zabezpečte päť rôznych typov dokumentov pre kompletnú ochranu',
-    completedDescription: 'Váš Digitálny Trezor je teraz aktívny. Kľúčové dokumenty sú bezpečne uložené a chránené.',
+    name: 'Digital Sanctuary',
+    description: 'Secure five different types of documents for comprehensive protection',
+    completedDescription: 'Your Digital Sanctuary is now active. Key documents are safely stored and protected.',
     category: 'foundation',
     unlockCondition: {
       type: 'documents_uploaded',
@@ -92,9 +109,9 @@ export const SERENITY_MILESTONES: SerenityMilestone[] = [
     },
     visualPosition: { x: 55, y: 60 },
     rewards: {
-      title: 'Pevné základy',
-      description: 'Máte už solidnú zbierku chránených dokumentov',
-      sofiaMessage: 'Váš Digitálny Trezor je teraz skutočne funkčný! Päť dokumentov vytvára solídny základ bezpečnosti. Vaša rodina má k dispozícii dôležité informácie, keď ich potrebuje.'
+      title: 'Solid Foundation',
+      description: 'You now have a robust collection of protected documents',
+      sofiaMessage: 'Your Digital Sanctuary is now truly functional! Five documents create a solid foundation of security. Your family has access to important information when they need it.'
     },
     isUnlocked: false,
     icon: 'vault'
@@ -102,9 +119,9 @@ export const SERENITY_MILESTONES: SerenityMilestone[] = [
 
   {
     id: 'time_guardian',
-    name: '⏰ Strážca Termínov',
-    description: 'Nahrajte prvý dokument s dátumom exspirácie - nikdy nezabudnite na dôležitý termín',
-    completedDescription: 'Aktivovali ste Strážcu Termínov. Odteraz za vás postrážim všetky dôležité dátumy.',
+    name: 'Eternal Vigilance',
+    description: 'Upload your first document with an expiration date - never forget an important deadline',
+    completedDescription: 'You have activated Eternal Vigilance. I will now watch over all your important dates.',
     category: 'protection',
     unlockCondition: {
       type: 'expiry_tracking',
@@ -112,9 +129,9 @@ export const SERENITY_MILESTONES: SerenityMilestone[] = [
     },
     visualPosition: { x: 45, y: 40 },
     rewards: {
-      title: 'Nikdy nezabudnite',
-      description: 'Automatické sledovanie expirácií dokumentov',
-      sofiaMessage: 'Strážca Termínov je aktívny! Teraz budem sledovať dátumy exspirácie a včas vás upozorním. Vaša rodina sa nemusí obávať zastaraných dokumentov.'
+      title: 'Never Forget',
+      description: 'Automatic tracking of document expirations',
+      sofiaMessage: 'Eternal Vigilance is active! I will now monitor expiration dates and notify you in time. Your family no longer needs to worry about outdated documents.'
     },
     isUnlocked: false,
     icon: 'clock'
@@ -122,9 +139,9 @@ export const SERENITY_MILESTONES: SerenityMilestone[] = [
 
   {
     id: 'treasure_map',
-    name: '🗺️ Mapa k Pokladu',
-    description: 'Vytvorte dokumenty v aspoň troch rôznych kategóriách pre kompletnú organizáciu',
-    completedDescription: 'Vytvorili ste prehľadnú mapu k vášmu majetku. Vaši blízki sa v nej ľahko zorientujú.',
+    name: 'Organized Legacy',
+    description: 'Create documents in at least three different categories for comprehensive organization',
+    completedDescription: 'You have created a clear map to your assets. Your loved ones will easily navigate through it.',
     category: 'growth',
     unlockCondition: {
       type: 'categories_filled',
@@ -133,9 +150,9 @@ export const SERENITY_MILESTONES: SerenityMilestone[] = [
     },
     visualPosition: { x: 75, y: 50 },
     rewards: {
-      title: 'Organizovaný majetok',
-      description: 'Systematické usporiadanie všetkých dôležitých dokumentov',
-      sofiaMessage: 'Fantastické! Vaša Mapa k Pokladu je kompletná. Dokumenty sú systematicky usporiadané a vaša rodina sa v nich bude vedieť ľahko zorientovať.'
+      title: 'Systematic Order',
+      description: 'Methodical arrangement of all important documents',
+      sofiaMessage: 'Fantastic! Your Organized Legacy is complete. Documents are systematically arranged and your family will be able to navigate through them easily.'
     },
     isUnlocked: false,
     icon: 'map'
@@ -143,9 +160,9 @@ export const SERENITY_MILESTONES: SerenityMilestone[] = [
 
   {
     id: 'legacy_foundation',
-    name: '💫 Legacy for the Future',
+    name: 'Personal Legacy',
     description: 'This special milestone awaits the creation of your first personal legacy',
-    completedDescription: 'You have unlocked a key Milestone of Peace: Legacy for the Future. Your voice will be heard even when you are no longer here.',
+    completedDescription: 'You have unlocked a key Milestone of Peace: Personal Legacy. Your voice will be heard even when you are no longer here.',
     category: 'legacy',
     unlockCondition: {
       type: 'legacy_created',
@@ -153,20 +170,23 @@ export const SERENITY_MILESTONES: SerenityMilestone[] = [
     },
     visualPosition: { x: 85, y: 25 },
     rewards: {
-      title: 'Eternal Legacy',
+      title: 'Timeless Gift',
       description: 'Your values and wisdom for future generations',
       sofiaMessage: 'You have just begun creating something immensely valuable - your legacy for future generations. This is perhaps the most beautiful gift you can give to your family.'
     },
     isUnlocked: false,
-    icon: 'heart'
+    icon: 'heart',
+    textKeys: {
+      completedDescription: 'milestone_time_capsule_unlocked'
+    }
   },
 
   // Future milestones (locked, creating infinite growth potential)
   {
     id: 'master_guardian',
-    name: '👑 Majster Pokoja',
-    description: 'Tento míľnik sa odomkne, keď budete mať všetky základné oblasti pokryté',
-    completedDescription: 'Dosiahli ste majstrovstvo v zabezpečovaní pokoja pre svoju rodinu.',
+    name: 'Guardian Mastery',
+    description: 'This milestone unlocks when you have all fundamental areas covered',
+    completedDescription: 'You have achieved mastery in securing peace for your family.',
     category: 'mastery',
     unlockCondition: {
       type: 'documents_uploaded',
@@ -182,49 +202,49 @@ export const SERENITY_MILESTONES: SerenityMilestone[] = [
 export const FIVE_MINUTE_CHALLENGES: FiveMinuteChallenge[] = [
   {
     id: 'first_document_challenge',
-    title: 'Položte Základný Kameň Istoty',
-    description: 'Nahrajte jeden dôležitý dokument, napríklad váš občiansky preukaz. Je to prvý a najdôležitejší krok.',
+    title: 'Lay Your Foundation Stone',
+    description: 'Upload one important document, like your ID card. This is the first and most important step.',
     estimatedTime: 5,
     actionType: 'upload_document',
     navigationTarget: '/vault',
-    sofiaGuidance: 'Začnite s dokumentom, ktorý máte po ruke - občiansky preukaz, pas, alebo vodičský preukaz. Jednoducho ho odfotografujte telefonom a nahrajte.',
-    completionMessage: 'Gratulujeme! Práve ste položili prvý kameň svojej cesty k pokoju.',
+    sofiaGuidance: 'Start with a document you have at hand - ID card, passport, or driver\'s license. Simply photograph it with your phone and upload.',
+    completionMessage: 'Congratulations! You have just laid the first stone of your journey to peace.',
   },
 
   {
     id: 'first_guardian_challenge',
-    title: 'Vytvorte Kruh Dôvery',
-    description: 'Určite aspoň jednu osobu, ktorej dôverujete. Nemusí mať prístup k ničomu, bude len vedieť, že existuje miesto, kde hľadať pomoc.',
+    title: 'Create Your Circle of Trust',
+    description: 'Designate at least one person you trust. They don\'t need access to anything, they just need to know there\'s a place to look for help.',
     estimatedTime: 3,
     actionType: 'add_guardian',
     navigationTarget: '/guardians',
     prerequisites: ['foundation_stone'],
-    sofiaGuidance: 'Vyberte si niekoho blízkeho - partnera, dospelé dieťa, súrodenca alebo dobrého priateľa. Stačí zadať ich meno a email.',
-    completionMessage: 'Výborne! Vaša rodina má teraz na koho sa obrátiť.',
+    sofiaGuidance: 'Choose someone close - your partner, adult child, sibling, or good friend. Just enter their name and email.',
+    completionMessage: 'Excellent! Your family now has someone to turn to.',
   },
 
   {
     id: 'organize_categories_challenge',
-    title: 'Usporiadajte svoj Digitálny Svet',
-    description: 'Nahrajte dokumenty do rôznych kategórií - Financie, Zdravotníctvo, Bývanie. Vytvoríte si prehľadnú mapu.',
+    title: 'Organize Your Digital World',
+    description: 'Upload documents into different categories - Finance, Healthcare, Housing. You\'ll create a clear map.',
     estimatedTime: 7,
     actionType: 'organize_category',
     navigationTarget: '/vault',
     prerequisites: ['digital_vault'],
-    sofiaGuidance: 'Pomôžem vám vybrať tie najdôležitejšie dokumenty z každej kategórie. Začneme s tými, ktoré máte už doma.',
-    completionMessage: 'Fantastické! Vaša digitálna mapa je teraz prehľadná a organizovaná.',
+    sofiaGuidance: 'I\'ll help you choose the most important documents from each category. Let\'s start with those you already have at home.',
+    completionMessage: 'Fantastic! Your digital map is now clear and organized.',
   },
 
   {
     id: 'expiry_protection_challenge',
-    title: 'Aktivujte Strážcu Termínov',
-    description: 'Nahrajte dokument s dátumom platnosti - pas, vodičák alebo poistku. Sofia začne sledovať dôležité termíny.',
+    title: 'Activate Eternal Vigilance',
+    description: 'Upload a document with an expiration date - passport, driver\'s license, or insurance. Sofia will start tracking important dates.',
     estimatedTime: 4,
     actionType: 'set_reminders',
     navigationTarget: '/vault',
     prerequisites: ['foundation_stone'],
-    sofiaGuidance: 'Vyberte dokument, ktorého platnosť chcete sledovať. Zadajte dátum exspirácie a ja sa postarám o včasné pripomienky.',
-    completionMessage: 'Strážca Termínov je aktívny! Nikdy nezabudnete na dôležitý dátum.',
+    sofiaGuidance: 'Choose a document whose validity you want to track. Enter the expiration date and I\'ll take care of timely reminders.',
+    completionMessage: 'Eternal Vigilance is active! You\'ll never forget an important date.',
   }
 ];
 
@@ -234,6 +254,25 @@ export const FIVE_MINUTE_CHALLENGES: FiveMinuteChallenge[] = [
 export interface MilestoneCalculationResult {
   milestones: SerenityMilestone[];
   newlyUnlocked: SerenityMilestone[];
+}
+
+/**
+ * Get adaptive milestone text based on user's communication style
+ */
+export function getAdaptiveMilestoneText(
+  milestone: SerenityMilestone, 
+  field: 'name' | 'description' | 'completedDescription',
+  userId?: string,
+  style?: CommunicationStyle
+): string {
+  // Check if milestone has text keys for adaptive messaging
+  const textKey = milestone.textKeys?.[field];
+  if (textKey && userId) {
+    return textManager.getText(textKey, style || 'default', userId);
+  }
+  
+  // Fallback to default milestone text
+  return milestone[field];
 }
 
 /**

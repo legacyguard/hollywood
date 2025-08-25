@@ -10,6 +10,8 @@ import type { SofiaMessage } from '@/lib/sofia-ai';
 import { sofiaAI, createSofiaMessage } from '@/lib/sofia-ai';
 import { useAuth } from '@clerk/clerk-react';
 import ReactMarkdown from 'react-markdown';
+import { textManager, analyzeUserInput } from '@/lib/text-manager';
+import { UserPreferences, defaultUserPreferences } from '@/types/user-preferences';
 
 interface SofiaChatProps {
   isOpen?: boolean;
@@ -27,6 +29,7 @@ const SofiaChat: React.FC<SofiaChatProps> = ({
   const { userId } = useAuth();
   const [inputValue, setInputValue] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [userPreferences, setUserPreferences] = useState<UserPreferences>(defaultUserPreferences);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
   const {
@@ -36,6 +39,20 @@ const SofiaChat: React.FC<SofiaChatProps> = ({
     addMessage,
     setTyping,
   } = useSofiaStore();
+
+  // Load user preferences for communication style
+  useEffect(() => {
+    if (userId) {
+      const savedPrefs = localStorage.getItem(`preferences_${userId}`);
+      if (savedPrefs) {
+        try {
+          setUserPreferences(JSON.parse(savedPrefs));
+        } catch (error) {
+          console.error('Error loading user preferences:', error);
+        }
+      }
+    }
+  }, [userId]);
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -49,7 +66,7 @@ const SofiaChat: React.FC<SofiaChatProps> = ({
 
   // Initialize with welcome message if no messages exist
   useEffect(() => {
-    if (messages.length === 0 && context && isOpen) {
+    if (messages.length === 0 && context && isOpen && userId) {
       const initializeWelcome = async () => {
         try {
           const helpText = await sofiaAI.getContextualHelp('dashboard', context);
@@ -57,16 +74,19 @@ const SofiaChat: React.FC<SofiaChatProps> = ({
           addMessage(welcomeMessage);
         } catch (error) {
           console.error('Failed to get contextual help:', error);
-          const fallbackMessage = createSofiaMessage(
-            'assistant',
-            'Hello! I am Sofia, your digital assistant. How can I help you today?'
-          );
+          
+          // Use adaptive welcome message based on user's communication preference
+          const isReturningUser = context.documentCount > 0 || context.guardianCount > 0;
+          const welcomeKey = isReturningUser ? 'sofia_greeting_returning_user' : 'sofia_welcome';
+          const adaptiveWelcome = textManager.getText(welcomeKey, userPreferences.communication.style, userId);
+          
+          const fallbackMessage = createSofiaMessage('assistant', adaptiveWelcome);
           addMessage(fallbackMessage);
         }
       };
       initializeWelcome();
     }
-  }, [isOpen, messages.length, context, addMessage]);
+  }, [isOpen, messages.length, context, addMessage, userId, userPreferences.communication.style]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -75,6 +95,12 @@ const SofiaChat: React.FC<SofiaChatProps> = ({
 
     const userMessage = createSofiaMessage('user', inputValue.trim());
     addMessage(userMessage);
+    
+    // Analyze user input for communication style detection (if auto-detection is enabled)
+    if (userPreferences.communication.autoDetection && userId) {
+      analyzeUserInput(inputValue.trim(), userId);
+    }
+    
     setInputValue('');
     setIsSubmitting(true);
     setTyping(true);
@@ -97,10 +123,10 @@ const SofiaChat: React.FC<SofiaChatProps> = ({
 
     } catch (error) {
       console.error('Error getting Sofia response:', error);
-      const errorMessage = createSofiaMessage(
-        'assistant',
-        "I apologize, but I'm having trouble responding right now. Please try again in a moment."
-      );
+      
+      // Use adaptive error message
+      const adaptiveError = textManager.getText('system_maintenance', userPreferences.communication.style, userId);
+      const errorMessage = createSofiaMessage('assistant', adaptiveError);
       addMessage(errorMessage);
       setTyping(false);
       setIsSubmitting(false);
@@ -205,7 +231,14 @@ const SofiaChat: React.FC<SofiaChatProps> = ({
           </div>
           <div>
             <h3 className="font-semibold">Sofia</h3>
-            <p className="text-sm text-muted-foreground">Your Family Guardian</p>
+            <p className="text-sm text-muted-foreground">
+              {userPreferences.communication.style === 'empathetic' 
+                ? 'Your Caring Guide' 
+                : userPreferences.communication.style === 'pragmatic'
+                ? 'Your Digital Assistant'
+                : 'Your Family Guardian'
+              }
+            </p>
           </div>
         </div>
 
