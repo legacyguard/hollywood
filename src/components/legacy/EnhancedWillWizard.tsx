@@ -2,15 +2,17 @@ import React, { useState } from 'react';
 import { CountrySelector } from './CountrySelector';
 import { WillTypeSelector, WillType } from './WillTypeSelector';
 import { WillWizard, WillData } from './WillWizard';
+import { IntelligentWillDraftGenerator } from './IntelligentWillDraftGenerator';
 import { showMilestoneRecognition } from '@/components/dashboard/MilestoneCelebration';
 import { SERENITY_MILESTONES } from '@/lib/path-of-serenity';
+import { FocusModeProvider } from '@/contexts/FocusModeContext';
 
 interface EnhancedWillWizardProps {
   onClose: () => void;
   onComplete: (willData: WillData & { willType: WillType }) => void;
 }
 
-type WizardStep = 'country' | 'will_type' | 'wizard';
+type WizardStep = 'country' | 'will_type' | 'draft_choice' | 'wizard';
 
 export const EnhancedWillWizard: React.FC<EnhancedWillWizardProps> = ({
   onClose,
@@ -18,6 +20,7 @@ export const EnhancedWillWizard: React.FC<EnhancedWillWizardProps> = ({
 }) => {
   const [currentStep, setCurrentStep] = useState<WizardStep>('country');
   const [selectedWillType, setSelectedWillType] = useState<WillType | null>(null);
+  const [draftData, setDraftData] = useState<WillData | null>(null);
 
   const handleCountryConfirmed = () => {
     setCurrentStep('will_type');
@@ -25,6 +28,16 @@ export const EnhancedWillWizard: React.FC<EnhancedWillWizardProps> = ({
 
   const handleWillTypeSelected = (type: WillType) => {
     setSelectedWillType(type);
+    setCurrentStep('draft_choice');
+  };
+
+  const handleDraftAccepted = (intelligentDraftData: WillData) => {
+    setDraftData(intelligentDraftData);
+    setCurrentStep('wizard');
+  };
+
+  const handleStartFromScratch = () => {
+    setDraftData(null);
     setCurrentStep('wizard');
   };
 
@@ -34,6 +47,10 @@ export const EnhancedWillWizard: React.FC<EnhancedWillWizardProps> = ({
 
   const handleBackToWillType = () => {
     setCurrentStep('will_type');
+  };
+
+  const handleBackToDraftChoice = () => {
+    setCurrentStep('draft_choice');
   };
 
   const handleWillComplete = (willData: WillData) => {
@@ -58,33 +75,49 @@ export const EnhancedWillWizard: React.FC<EnhancedWillWizardProps> = ({
     onComplete(enhancedWillData);
   };
 
-  switch (currentStep) {
-    case 'country':
-      return (
-        <CountrySelector 
-          onCountryConfirmed={handleCountryConfirmed}
-        />
-      );
+  return (
+    <FocusModeProvider>
+      {(() => {
+        switch (currentStep) {
+          case 'country':
+            return (
+              <CountrySelector 
+                onCountryConfirmed={handleCountryConfirmed}
+              />
+            );
 
-    case 'will_type':
-      return (
-        <WillTypeSelector
-          onWillTypeSelected={handleWillTypeSelected}
-          onBack={handleBackToCountry}
-        />
-      );
+          case 'will_type':
+            return (
+              <WillTypeSelector
+                onWillTypeSelected={handleWillTypeSelected}
+                onBack={handleBackToCountry}
+              />
+            );
 
-    case 'wizard':
-      return (
-        <WillWizard
-          onClose={onClose}
-          onComplete={handleWillComplete}
-          onBack={handleBackToWillType}
-          willType={selectedWillType!}
-        />
-      );
+          case 'draft_choice':
+            return (
+              <IntelligentWillDraftGenerator
+                onDraftAccepted={handleDraftAccepted}
+                onStartFromScratch={handleStartFromScratch}
+                willType={selectedWillType!}
+              />
+            );
 
-    default:
-      return null;
-  }
+          case 'wizard':
+            return (
+              <WillWizard
+                onClose={onClose}
+                onComplete={handleWillComplete}
+                onBack={handleBackToDraftChoice}
+                willType={selectedWillType!}
+                initialData={draftData}
+              />
+            );
+
+          default:
+            return null;
+        }
+      })()}
+    </FocusModeProvider>
+  );
 };

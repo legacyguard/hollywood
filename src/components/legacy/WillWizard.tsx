@@ -14,6 +14,10 @@ import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { LiveWillPreview } from './LiveWillPreview';
 import { SofiaCorrectnessCheck } from './SofiaCorrectnessCheck';
+import { FocusModeWrapper } from './FocusModeWrapper';
+import { FocusModeToggle } from './FocusModeToggle';
+import { VaultAssetSelector } from './VaultAssetSelector';
+import { useFocusMode } from '@/contexts/FocusModeContext';
 
 // Types based on our database schema
 export interface WillData {
@@ -116,6 +120,7 @@ interface WillWizardProps {
   onComplete: (willData: WillData) => void;
   onBack?: () => void;
   willType: WillType;
+  initialData?: WillData | null;
 }
 
 const STEPS = [
@@ -153,10 +158,15 @@ const RELATIONSHIPS = [
   { value: 'other', label: 'Other' }
 ];
 
-export const WillWizard: React.FC<WillWizardProps> = ({ onClose, onComplete, onBack, willType }) => {
+export const WillWizard: React.FC<WillWizardProps> = ({ onClose, onComplete, onBack, willType, initialData }) => {
   const { user } = useAuth();
+  const { isFocusMode } = useFocusMode();
   const [currentStep, setCurrentStep] = useState(0);
-  const [willData, setWillData] = useState<WillData>({
+  const [showVaultSelector, setShowVaultSelector] = useState(false);
+  const [vaultSelectorType, setVaultSelectorType] = useState<'realEstate' | 'vehicles' | 'bankAccounts' | 'personalProperty' | 'all'>('all');
+  
+  // Initialize with draft data if provided, otherwise use empty data
+  const [willData, setWillData] = useState<WillData>(initialData || {
     testator_data: {
       fullName: user?.fullName || '',
     },
@@ -204,6 +214,27 @@ export const WillWizard: React.FC<WillWizardProps> = ({ onClose, onComplete, onB
       setCurrentStep(stepIndex);
     }
   }, []);
+
+  const handleOpenVaultSelector = (assetType: 'realEstate' | 'vehicles' | 'bankAccounts' | 'personalProperty' | 'all') => {
+    setVaultSelectorType(assetType);
+    setShowVaultSelector(true);
+  };
+
+  const handleVaultAssetsSelected = (selectedAssets: string[]) => {
+    // Add selected assets to the appropriate category
+    const currentAssets = willData.assets[vaultSelectorType] || [];
+    const newAssets = selectedAssets.map(asset => ({
+      description: asset,
+      value: 0 // User can edit this later
+    }));
+    
+    updateWillData('assets', {
+      [vaultSelectorType]: [...currentAssets, ...newAssets]
+    });
+    
+    setShowVaultSelector(false);
+    toast.success(`Added ${selectedAssets.length} asset${selectedAssets.length > 1 ? 's' : ''} from your vault`);
+  };
 
   const addBeneficiary = useCallback(() => {
     const newBeneficiary = {
@@ -385,6 +416,375 @@ export const WillWizard: React.FC<WillWizardProps> = ({ onClose, onComplete, onB
                 ))}
               </div>
             )}
+          </div>
+        );
+
+      case 'assets':
+        return (
+          <div className="space-y-6">
+            <div className="text-center p-6">
+              <Icon name="building-office" className="w-12 h-12 text-primary mx-auto mb-4" />
+              <h3 className="text-lg font-semibold mb-2">Document Your Assets</h3>
+              <p className="text-muted-foreground mb-4">
+                Add your assets manually or import them from your LegacyGuard vault for convenience.
+              </p>
+              <Button 
+                onClick={() => handleOpenVaultSelector('all')} 
+                variant="outline"
+                className="bg-primary/5 hover:bg-primary/10 border-primary/20 text-primary"
+              >
+                <Icon name="vault" className="w-4 h-4 mr-2" />
+                Import from My Vault
+              </Button>
+            </div>
+
+            {/* Real Estate */}
+            <Card className="p-4">
+              <div className="flex items-center justify-between mb-4">
+                <h4 className="font-semibold flex items-center gap-2">
+                  <Icon name="home" className="w-4 h-4" />
+                  Real Estate
+                </h4>
+                <div className="flex items-center gap-2">
+                  <Button 
+                    onClick={() => handleOpenVaultSelector('realEstate')} 
+                    variant="ghost" 
+                    size="sm"
+                    className="text-primary hover:text-primary-hover"
+                  >
+                    <Icon name="vault" className="w-3 h-3 mr-1" />
+                    From Vault
+                  </Button>
+                  <Button onClick={() => {
+                    const newAsset = { description: '', address: '', value: 0 };
+                    updateWillData('assets', {
+                      realEstate: [...(willData.assets.realEstate || []), newAsset]
+                    });
+                  }} variant="outline" size="sm">
+                    <Icon name="add" className="w-3 h-3 mr-1" />
+                    Add Property
+                  </Button>
+                </div>
+              </div>
+              {willData.assets.realEstate?.length ? (
+                <div className="space-y-3">
+                  {willData.assets.realEstate.map((property, index) => (
+                    <div key={index} className="grid grid-cols-1 md:grid-cols-3 gap-3 p-3 bg-muted/50 rounded">
+                      <Input
+                        placeholder="Property description"
+                        value={property.description}
+                        onChange={(e) => {
+                          const updated = [...willData.assets.realEstate!];
+                          updated[index] = { ...updated[index], description: e.target.value };
+                          updateWillData('assets', { realEstate: updated });
+                        }}
+                      />
+                      <Input
+                        placeholder="Address"
+                        value={property.address}
+                        onChange={(e) => {
+                          const updated = [...willData.assets.realEstate!];
+                          updated[index] = { ...updated[index], address: e.target.value };
+                          updateWillData('assets', { realEstate: updated });
+                        }}
+                      />
+                      <div className="flex gap-2">
+                        <Input
+                          type="number"
+                          placeholder="Estimated value"
+                          value={property.value || ''}
+                          onChange={(e) => {
+                            const updated = [...willData.assets.realEstate!];
+                            updated[index] = { ...updated[index], value: parseFloat(e.target.value) || 0 };
+                            updateWillData('assets', { realEstate: updated });
+                          }}
+                        />
+                        <Button
+                          onClick={() => {
+                            const updated = willData.assets.realEstate!.filter((_, i) => i !== index);
+                            updateWillData('assets', { realEstate: updated });
+                          }}
+                          variant="ghost"
+                          size="sm"
+                          className="text-red-600 hover:text-red-700"
+                        >
+                          <Icon name="trash" className="w-3 h-3" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-muted-foreground text-center py-4">
+                  No real estate properties added yet
+                </p>
+              )}
+            </Card>
+
+            {/* Vehicles */}
+            <Card className="p-4">
+              <div className="flex items-center justify-between mb-4">
+                <h4 className="font-semibold flex items-center gap-2">
+                  <Icon name="car" className="w-4 h-4" />
+                  Vehicles
+                </h4>
+                <div className="flex items-center gap-2">
+                  <Button 
+                    onClick={() => handleOpenVaultSelector('vehicles')} 
+                    variant="ghost" 
+                    size="sm"
+                    className="text-primary hover:text-primary-hover"
+                  >
+                    <Icon name="vault" className="w-3 h-3 mr-1" />
+                    From Vault
+                  </Button>
+                  <Button onClick={() => {
+                    const newVehicle = { make: '', model: '', year: new Date().getFullYear(), vin: '' };
+                    updateWillData('assets', {
+                      vehicles: [...(willData.assets.vehicles || []), newVehicle]
+                    });
+                  }} variant="outline" size="sm">
+                    <Icon name="add" className="w-3 h-3 mr-1" />
+                    Add Vehicle
+                  </Button>
+                </div>
+              </div>
+              {willData.assets.vehicles?.length ? (
+                <div className="space-y-3">
+                  {willData.assets.vehicles.map((vehicle, index) => (
+                    <div key={index} className="grid grid-cols-1 md:grid-cols-4 gap-3 p-3 bg-muted/50 rounded">
+                      <Input
+                        placeholder="Make"
+                        value={vehicle.make}
+                        onChange={(e) => {
+                          const updated = [...willData.assets.vehicles!];
+                          updated[index] = { ...updated[index], make: e.target.value };
+                          updateWillData('assets', { vehicles: updated });
+                        }}
+                      />
+                      <Input
+                        placeholder="Model"
+                        value={vehicle.model}
+                        onChange={(e) => {
+                          const updated = [...willData.assets.vehicles!];
+                          updated[index] = { ...updated[index], model: e.target.value };
+                          updateWillData('assets', { vehicles: updated });
+                        }}
+                      />
+                      <Input
+                        type="number"
+                        placeholder="Year"
+                        value={vehicle.year}
+                        onChange={(e) => {
+                          const updated = [...willData.assets.vehicles!];
+                          updated[index] = { ...updated[index], year: parseInt(e.target.value) || new Date().getFullYear() };
+                          updateWillData('assets', { vehicles: updated });
+                        }}
+                      />
+                      <div className="flex gap-2">
+                        <Input
+                          placeholder="VIN (optional)"
+                          value={vehicle.vin || ''}
+                          onChange={(e) => {
+                            const updated = [...willData.assets.vehicles!];
+                            updated[index] = { ...updated[index], vin: e.target.value };
+                            updateWillData('assets', { vehicles: updated });
+                          }}
+                        />
+                        <Button
+                          onClick={() => {
+                            const updated = willData.assets.vehicles!.filter((_, i) => i !== index);
+                            updateWillData('assets', { vehicles: updated });
+                          }}
+                          variant="ghost"
+                          size="sm"
+                          className="text-red-600 hover:text-red-700"
+                        >
+                          <Icon name="trash" className="w-3 h-3" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-muted-foreground text-center py-4">
+                  No vehicles added yet
+                </p>
+              )}
+            </Card>
+
+            {/* Bank Accounts */}
+            <Card className="p-4">
+              <div className="flex items-center justify-between mb-4">
+                <h4 className="font-semibold flex items-center gap-2">
+                  <Icon name="credit-card" className="w-4 h-4" />
+                  Bank Accounts & Investments
+                </h4>
+                <div className="flex items-center gap-2">
+                  <Button 
+                    onClick={() => handleOpenVaultSelector('bankAccounts')} 
+                    variant="ghost" 
+                    size="sm"
+                    className="text-primary hover:text-primary-hover"
+                  >
+                    <Icon name="vault" className="w-3 h-3 mr-1" />
+                    From Vault
+                  </Button>
+                  <Button onClick={() => {
+                    const newAccount = { bank: '', accountNumber: '', type: 'checking' as const };
+                    updateWillData('assets', {
+                      bankAccounts: [...(willData.assets.bankAccounts || []), newAccount]
+                    });
+                  }} variant="outline" size="sm">
+                    <Icon name="add" className="w-3 h-3 mr-1" />
+                    Add Account
+                  </Button>
+                </div>
+              </div>
+              {willData.assets.bankAccounts?.length ? (
+                <div className="space-y-3">
+                  {willData.assets.bankAccounts.map((account, index) => (
+                    <div key={index} className="grid grid-cols-1 md:grid-cols-3 gap-3 p-3 bg-muted/50 rounded">
+                      <Input
+                        placeholder="Bank name"
+                        value={account.bank}
+                        onChange={(e) => {
+                          const updated = [...willData.assets.bankAccounts!];
+                          updated[index] = { ...updated[index], bank: e.target.value };
+                          updateWillData('assets', { bankAccounts: updated });
+                        }}
+                      />
+                      <Select 
+                        value={account.type}
+                        onValueChange={(value) => {
+                          const updated = [...willData.assets.bankAccounts!];
+                          updated[index] = { ...updated[index], type: value as 'checking' | 'savings' | 'investment' };
+                          updateWillData('assets', { bankAccounts: updated });
+                        }}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="checking">Checking</SelectItem>
+                          <SelectItem value="savings">Savings</SelectItem>
+                          <SelectItem value="investment">Investment</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <div className="flex gap-2">
+                        <Input
+                          placeholder="Last 4 digits"
+                          value={account.accountNumber}
+                          onChange={(e) => {
+                            const updated = [...willData.assets.bankAccounts!];
+                            updated[index] = { ...updated[index], accountNumber: e.target.value };
+                            updateWillData('assets', { bankAccounts: updated });
+                          }}
+                        />
+                        <Button
+                          onClick={() => {
+                            const updated = willData.assets.bankAccounts!.filter((_, i) => i !== index);
+                            updateWillData('assets', { bankAccounts: updated });
+                          }}
+                          variant="ghost"
+                          size="sm"
+                          className="text-red-600 hover:text-red-700"
+                        >
+                          <Icon name="trash" className="w-3 h-3" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-muted-foreground text-center py-4">
+                  No bank accounts added yet
+                </p>
+              )}
+            </Card>
+
+            {/* Personal Property */}
+            <Card className="p-4">
+              <div className="flex items-center justify-between mb-4">
+                <h4 className="font-semibold flex items-center gap-2">
+                  <Icon name="star" className="w-4 h-4" />
+                  Personal Property
+                </h4>
+                <div className="flex items-center gap-2">
+                  <Button 
+                    onClick={() => handleOpenVaultSelector('personalProperty')} 
+                    variant="ghost" 
+                    size="sm"
+                    className="text-primary hover:text-primary-hover"
+                  >
+                    <Icon name="vault" className="w-3 h-3 mr-1" />
+                    From Vault
+                  </Button>
+                  <Button onClick={() => {
+                    const newItem = { description: '', value: 0, recipient: '' };
+                    updateWillData('assets', {
+                      personalProperty: [...(willData.assets.personalProperty || []), newItem]
+                    });
+                  }} variant="outline" size="sm">
+                    <Icon name="add" className="w-3 h-3 mr-1" />
+                    Add Item
+                  </Button>
+                </div>
+              </div>
+              {willData.assets.personalProperty?.length ? (
+                <div className="space-y-3">
+                  {willData.assets.personalProperty.map((item, index) => (
+                    <div key={index} className="grid grid-cols-1 md:grid-cols-3 gap-3 p-3 bg-muted/50 rounded">
+                      <Input
+                        placeholder="Item description"
+                        value={item.description}
+                        onChange={(e) => {
+                          const updated = [...willData.assets.personalProperty!];
+                          updated[index] = { ...updated[index], description: e.target.value };
+                          updateWillData('assets', { personalProperty: updated });
+                        }}
+                      />
+                      <Input
+                        type="number"
+                        placeholder="Estimated value"
+                        value={item.value || ''}
+                        onChange={(e) => {
+                          const updated = [...willData.assets.personalProperty!];
+                          updated[index] = { ...updated[index], value: parseFloat(e.target.value) || 0 };
+                          updateWillData('assets', { personalProperty: updated });
+                        }}
+                      />
+                      <div className="flex gap-2">
+                        <Input
+                          placeholder="Designated recipient"
+                          value={item.recipient || ''}
+                          onChange={(e) => {
+                            const updated = [...willData.assets.personalProperty!];
+                            updated[index] = { ...updated[index], recipient: e.target.value };
+                            updateWillData('assets', { personalProperty: updated });
+                          }}
+                        />
+                        <Button
+                          onClick={() => {
+                            const updated = willData.assets.personalProperty!.filter((_, i) => i !== index);
+                            updateWillData('assets', { personalProperty: updated });
+                          }}
+                          variant="ghost"
+                          size="sm"
+                          className="text-red-600 hover:text-red-700"
+                        >
+                          <Icon name="trash" className="w-3 h-3" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-muted-foreground text-center py-4">
+                  No personal property items added yet
+                </p>
+              )}
+            </Card>
           </div>
         );
 
@@ -597,51 +997,76 @@ export const WillWizard: React.FC<WillWizardProps> = ({ onClose, onComplete, onB
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      {/* Header */}
-      <header className="bg-card border-b border-card-border sticky top-0 z-50">
-        <div className="max-w-4xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Button 
-                onClick={onClose} 
-                variant="ghost" 
-                size="sm"
-                className="flex items-center gap-2"
-              >
-                <Icon name="arrow-left" className="w-4 h-4" />
-                Back to Legacy Planning
-              </Button>
+    <FocusModeWrapper
+      currentStepTitle={STEPS[currentStep].title}
+      currentStepIndex={currentStep}
+      totalSteps={STEPS.length}
+      onExitWizard={onClose}
+    >
+      <div className="min-h-screen bg-background flex flex-col">
+        {/* Header - Hidden in Focus Mode */}
+        {!isFocusMode && (
+          <header className="bg-card border-b border-card-border sticky top-0 z-50">
+            <div className="max-w-4xl mx-auto px-6 py-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <Button 
+                    onClick={onClose} 
+                    variant="ghost" 
+                    size="sm"
+                    className="flex items-center gap-2"
+                  >
+                    <Icon name="arrow-left" className="w-4 h-4" />
+                    Back to Legacy Planning
+                  </Button>
+                </div>
+                <div className="text-center">
+                  <h1 className="text-xl font-semibold">Will Creator</h1>
+                  <p className="text-sm text-muted-foreground">
+                    Step {currentStep + 1} of {STEPS.length}: {STEPS[currentStep].title}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <FocusModeToggle />
+                </div>
+              </div>
             </div>
-            <div className="text-center">
-              <h1 className="text-xl font-semibold">Will Creator</h1>
-              <p className="text-sm text-muted-foreground">
-                Step {currentStep + 1} of {STEPS.length}: {STEPS[currentStep].title}
-              </p>
-            </div>
-            <div className="w-24">
-              {/* Spacer for centering */}
-            </div>
-          </div>
-        </div>
-      </header>
+          </header>
+        )}
 
-      {/* Progress Bar */}
-      <div className="bg-card border-b border-card-border">
-        <div className="max-w-4xl mx-auto px-6 py-4">
-          <Progress value={progress} className="h-2" />
-          <div className="flex justify-between mt-2 text-xs text-muted-foreground">
-            {STEPS.map((step, index) => (
-              <span 
-                key={step.id}
-                className={index <= currentStep ? 'text-primary font-medium' : ''}
-              >
-                {step.title}
+        {/* Progress Bar - Hidden in Focus Mode */}
+        {!isFocusMode && (
+          <div className="bg-card border-b border-card-border">
+            <div className="max-w-4xl mx-auto px-6 py-4">
+              <Progress value={progress} className="h-2" />
+              <div className="flex justify-between mt-2 text-xs text-muted-foreground">
+                {STEPS.map((step, index) => (
+                  <span 
+                    key={step.id}
+                    className={index <= currentStep ? 'text-primary font-medium' : ''}
+                  >
+                    {step.title}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+      {/* Draft Data Indicator */}
+      {initialData && !isFocusMode && (
+        <div className="bg-primary/5 border-b border-primary/20">
+          <div className="max-w-4xl mx-auto px-6 py-3">
+            <div className="flex items-center gap-3 text-sm">
+              <Icon name="sparkles" className="w-4 h-4 text-primary" />
+              <span className="text-primary font-medium">Sofia's Intelligent Draft Active</span>
+              <span className="text-muted-foreground">
+                I've pre-filled your will based on your existing data. Review and modify as needed.
               </span>
-            ))}
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Content - Conditional Layout */}
       <main className="flex-1 flex overflow-hidden">
@@ -688,34 +1113,46 @@ export const WillWizard: React.FC<WillWizardProps> = ({ onClose, onComplete, onB
         )}
       </main>
 
-      {/* Navigation */}
-      <footer className="bg-card border-t border-card-border">
-        <div className="px-6 py-4">
-          <div className="flex justify-between items-center">
-            <Button 
-              onClick={handleBack}
-              variant="outline"
-              disabled={currentStep === 0 && !onBack}
-            >
-              <Icon name="arrow-left" className="w-4 h-4 mr-2" />
-              {currentStep === 0 ? 'Change Will Type' : 'Back'}
-            </Button>
-            
-            <div className="flex items-center gap-4">
-              <div className="text-sm text-muted-foreground">
-                Step {currentStep + 1} of {STEPS.length}
-              </div>
+        {/* Navigation */}
+        <footer className="bg-card border-t border-card-border">
+          <div className="px-6 py-4">
+            <div className="flex justify-between items-center">
               <Button 
-                onClick={handleNext}
-                className="bg-primary hover:bg-primary-hover text-primary-foreground"
+                onClick={handleBack}
+                variant="outline"
+                disabled={currentStep === 0 && !onBack}
               >
-                {currentStep === STEPS.length - 1 ? 'Create Will' : 'Continue'}
-                {currentStep !== STEPS.length - 1 && <Icon name="arrow-right" className="w-4 h-4 ml-2" />}
+                <Icon name="arrow-left" className="w-4 h-4 mr-2" />
+                {currentStep === 0 ? 'Change Will Type' : 'Back'}
               </Button>
+              
+              <div className="flex items-center gap-4">
+                {!isFocusMode && (
+                  <div className="text-sm text-muted-foreground">
+                    Step {currentStep + 1} of {STEPS.length}
+                  </div>
+                )}
+                <Button 
+                  onClick={handleNext}
+                  className="bg-primary hover:bg-primary-hover text-primary-foreground"
+                >
+                  {currentStep === STEPS.length - 1 ? 'Create Will' : 'Continue'}
+                  {currentStep !== STEPS.length - 1 && <Icon name="arrow-right" className="w-4 h-4 ml-2" />}
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-      </footer>
-    </div>
+        </footer>
+      </div>
+
+      {/* Vault Asset Selector Modal */}
+      {showVaultSelector && (
+        <VaultAssetSelector
+          onAssetsSelected={handleVaultAssetsSelected}
+          onClose={() => setShowVaultSelector(false)}
+          assetType={vaultSelectorType}
+        />
+      )}
+    </FocusModeWrapper>
   );
 };

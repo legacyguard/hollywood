@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useAuth } from '@clerk/clerk-react';
-import { useSupabaseClient } from '@/integrations/supabase/client';
+import { useSupabaseWithClerk } from '@/integrations/supabase/client';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon-library';
@@ -43,7 +43,7 @@ export const DocumentList = () => {
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const { userId } = useAuth();
-  const createSupabaseClient = useSupabaseClient();
+  const createSupabaseClient = useSupabaseWithClerk();
 
   // Fetch documents from database
   const fetchDocuments = useCallback(async () => {

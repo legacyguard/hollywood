@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback } from 'react';
 import { useAuth, useUser } from '@clerk/clerk-react';
-import { useSupabaseClient } from '@/integrations/supabase/client';
+import { useSupabaseWithClerk } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
@@ -97,7 +97,7 @@ export const IntelligentDocumentUploader = () => {
   
   const { userId } = useAuth();
   const { user } = useUser();
-  const createSupabaseClient = useSupabaseClient();
+  const createSupabaseClient = useSupabaseWithClerk();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {

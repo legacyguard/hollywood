@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { KPICard, type KPICardProps } from '@/components/ui/kpi-card';
-import { useSupabaseClient } from '@/integrations/supabase/client';
+import { useSupabaseWithClerk } from '@/integrations/supabase/client';
 import { useSofiaStore } from '@/stores/sofiaStore';
 
 interface DashboardStatsProps {
@@ -17,7 +17,7 @@ interface StatsData {
 
 export function DashboardStats({ className }: DashboardStatsProps) {
   const { userId } = useAuth();
-  const createSupabaseClient = useSupabaseClient();
+  const createSupabaseClient = useSupabaseWithClerk();
   const { context } = useSofiaStore();
   const [stats, setStats] = useState<StatsData>({
     documentsCount: 0,

@@ -4,7 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon-library';
 import { useAuth } from '@clerk/clerk-react';
-import { useSupabaseClient } from '@/integrations/supabase/client';
+import { useSupabaseWithClerk } from '@/integrations/supabase/client';
 import { 
   SerenityMilestone, 
   FiveMinuteChallenge,
@@ -47,8 +47,8 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({ className = '' }
   const [previousMilestones, setPreviousMilestones] = useState<SerenityMilestone[]>(SERENITY_MILESTONES);
 
   const { userId } = useAuth();
-  const createSupabaseClient = useSupabaseClient();
   const navigate = useNavigate();
+  const createSupabaseClient = useSupabaseWithClerk();
 
   // Load user statistics
   useEffect(() => {
@@ -56,7 +56,7 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({ className = '' }
       if (!userId) return;
 
       try {
-        const supabase = createSupabaseClient();
+        const supabase = await createSupabaseClient();
         
         // Count documents
         const { data: documents } = await supabase

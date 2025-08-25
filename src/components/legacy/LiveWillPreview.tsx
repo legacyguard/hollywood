@@ -5,6 +5,7 @@ import { Icon } from '@/components/ui/icon-library';
 import { WillData } from './WillWizard';
 import { WillType } from './WillTypeSelector';
 import { useLocalization } from '@/contexts/LocalizationContext';
+import { SealOfTrust } from './SealOfTrust';
 
 interface LiveWillPreviewProps {
   willData: WillData;
@@ -404,18 +405,9 @@ export const LiveWillPreview: React.FC<LiveWillPreviewProps> = ({
           )}
         </div>
 
-        {/* Legal Disclaimer */}
-        <div className="mt-6 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg text-xs">
-          <p className="italic">
-            This will was generated using LegacyGuard's intelligent will creation system. 
-            While this template complies with {jurisdiction} legal requirements, we recommend 
-            having it reviewed by a qualified attorney to ensure it meets your specific needs and circumstances.
-          </p>
-          <p className="italic mt-2">
-            <strong>Legal Disclaimer:</strong> This document is generated based on current law. 
-            Laws may change, and individual circumstances may require specific legal advice. 
-            Consult with a qualified attorney for personalized legal guidance.
-          </p>
+        {/* Seal of Trust - Legal Authority Indicator */}
+        <div className="mt-8">
+          <SealOfTrust variant="pdf" className="border-t-2 pt-6" />
         </div>
       </div>
     );
@@ -428,6 +420,7 @@ export const LiveWillPreview: React.FC<LiveWillPreviewProps> = ({
         <div className="flex items-center gap-3">
           <Icon name="document-text" className="w-5 h-5 text-primary" />
           <h3 className="font-semibold">Live Preview</h3>
+          <SealOfTrust variant="compact" />
         </div>
         <Badge variant="outline" className="text-xs">
           Updates in real-time

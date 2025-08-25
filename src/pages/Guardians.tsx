@@ -12,13 +12,13 @@ import { Icon } from '@/components/ui/icon-library';
 import { FadeIn } from '@/components/motion/FadeIn';
 import { usePageTitle } from '@/hooks/usePageTitle';
 import { toast } from 'sonner';
-import { useSupabaseClient } from '@/integrations/supabase/client';
+import { useSupabaseWithClerk } from '@/integrations/supabase/client';
 import { Guardian, CreateGuardianRequest, GUARDIAN_RELATIONSHIPS } from '@/types/guardian';
 
 export default function GuardiansPage() {
   usePageTitle('My Guardians');
   const { userId } = useAuth();
-  const createSupabaseClient = useSupabaseClient();
+  const createSupabaseClient = useSupabaseWithClerk();
   
   const [guardians, setGuardians] = useState<Guardian[]>([]);
   const [isLoading, setIsLoading] = useState(true);

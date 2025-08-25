@@ -15,12 +15,6 @@
     }
   ]
 ,
-  "crons": [
-    {
-      "path": "/api/check-expirations",
-      "schedule": "0 9 * * *"
-    }
-  ],
   "functions": {
     "api/check-expirations.ts": {
       "maxDuration": 30
