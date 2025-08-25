@@ -6,16 +6,16 @@ import { Icon } from '@/components/ui/icon-library';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
-import { TimeCapsule } from '@/types/timeCapsule';
+import type { TimeCapsule } from '@/types/timeCapsule';
 import { format } from 'date-fns';
 
 interface TimeCapsuleListProps {
   timeCapsules: TimeCapsule[];
   onDelete: (id: string) => void;
-  onRefresh: () => void;
+  onRefresh?: () => void;
 }
 
-export function TimeCapsuleList({ timeCapsules, onDelete, onRefresh }: TimeCapsuleListProps) {
+export function TimeCapsuleList({ timeCapsules, onDelete }: TimeCapsuleListProps) {
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
   const getInitials = (name: string): string => {
@@ -75,7 +75,7 @@ export function TimeCapsuleList({ timeCapsules, onDelete, onRefresh }: TimeCapsu
 
   // Group capsules by status
   const groupedCapsules = timeCapsules.reduce((groups, capsule) => {
-    const key = capsule.is_delivered ? 'delivered' : 
+    const key = capsule.is_delivered ? 'delivered' :
                 capsule.status === 'FAILED' ? 'failed' : 'pending';
     if (!groups[key]) groups[key] = [];
     groups[key].push(capsule);
@@ -164,7 +164,7 @@ export function TimeCapsuleList({ timeCapsules, onDelete, onRefresh }: TimeCapsu
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Time Capsule</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete this Time Capsule? This action cannot be undone, 
+              Are you sure you want to delete this Time Capsule? This action cannot be undone,
               and your recorded message will be permanently lost.
             </AlertDialogDescription>
           </AlertDialogHeader>
@@ -232,7 +232,7 @@ function TimeCapsuleCard({
               )}
             </div>
           </div>
-          
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="sm">
@@ -258,7 +258,7 @@ function TimeCapsuleCard({
                   <DropdownMenuSeparator />
                 </>
               )}
-              <DropdownMenuItem 
+              <DropdownMenuItem
                 onClick={onDelete}
                 className="text-red-600 focus:text-red-600"
               >
@@ -269,14 +269,14 @@ function TimeCapsuleCard({
           </DropdownMenu>
         </div>
       </CardHeader>
-      
+
       <CardContent className="pt-0 space-y-3">
         {/* Delivery Information */}
         <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
           <div className="flex items-center space-x-2">
-            <Icon 
-              name={capsule.delivery_condition === 'ON_DATE' ? 'calendar' : 'shield'} 
-              className="w-4 h-4 text-muted-foreground" 
+            <Icon
+              name={capsule.delivery_condition === 'ON_DATE' ? 'calendar' : 'shield'}
+              className="w-4 h-4 text-muted-foreground"
             />
             <span className="text-sm">
               {capsule.delivery_condition === 'ON_DATE' && capsule.delivery_date
@@ -285,12 +285,12 @@ function TimeCapsuleCard({
               }
             </span>
           </div>
-          
+
           <Badge className={getStatusColor(capsule.status)}>
-            <Icon name={getStatusIcon(capsule.status) as any} className="w-3 h-3 mr-1" />
-            {capsule.status === 'PENDING' ? 'Pending' : 
+            <Icon name={getStatusIcon(capsule.status)} className="w-3 h-3 mr-1" />
+            {capsule.status === 'PENDING' ? 'Pending' :
              capsule.status === 'DELIVERED' ? 'Delivered' :
-             capsule.status === 'FAILED' ? 'Failed' : 
+             capsule.status === 'FAILED' ? 'Failed' :
              capsule.status}
           </Badge>
         </div>
@@ -299,9 +299,9 @@ function TimeCapsuleCard({
         <div className="flex items-center justify-between text-sm">
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-1">
-              <Icon 
-                name={capsule.file_type === 'video' ? 'video' : 'mic'} 
-                className="w-3 h-3 text-muted-foreground" 
+              <Icon
+                name={capsule.file_type === 'video' ? 'video' : 'mic'}
+                className="w-3 h-3 text-muted-foreground"
               />
               <span className="capitalize">{capsule.file_type}</span>
             </div>
@@ -318,7 +318,7 @@ function TimeCapsuleCard({
               </div>
             )}
           </div>
-          
+
           <span className="text-muted-foreground">
             Created {format(new Date(capsule.created_at), "MMM d, yyyy")}
           </span>

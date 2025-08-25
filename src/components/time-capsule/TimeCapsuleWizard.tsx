@@ -7,8 +7,8 @@ import { Progress } from '@/components/ui/progress';
 import { FadeIn } from '@/components/motion/FadeIn';
 import { toast } from 'sonner';
 import { useSupabaseWithClerk } from '@/integrations/supabase/client';
-import { TimeCapsule, TimeCapsuleFormData, RecipientOption, DeliveryCondition } from '@/types/timeCapsule';
-import { Guardian } from '@/types/guardian';
+import type { TimeCapsule, TimeCapsuleFormData, DeliveryCondition } from '@/types/timeCapsule';
+import type { Guardian } from '@/types/guardian';
 import { RecipientStep } from './wizard-steps/RecipientStep';
 import { DeliveryStep } from './wizard-steps/DeliveryStep';
 import { RecordingStep } from './wizard-steps/RecordingStep';
@@ -53,7 +53,7 @@ export function TimeCapsuleWizard({ isOpen, onClose, guardians, onCapsuleCreated
   const createSupabaseClient = useSupabaseWithClerk();
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   const [formData, setFormData] = useState<TimeCapsuleFormData>({
     recipient: null,
     deliveryCondition: 'ON_DATE' as DeliveryCondition,
@@ -121,7 +121,7 @@ export function TimeCapsuleWizard({ isOpen, onClose, guardians, onCapsuleCreated
     if (!userId || !formData.recipient || !formData.recording) return;
 
     setIsSubmitting(true);
-    
+
     try {
       const supabase = await createSupabaseClient();
 
@@ -129,7 +129,7 @@ export function TimeCapsuleWizard({ isOpen, onClose, guardians, onCapsuleCreated
       const timestamp = Date.now();
       const fileExtension = formData.recording.fileType === 'video' ? 'webm' : 'ogg';
       const filename = `${userId}/${timestamp}.${fileExtension}`;
-      
+
       // Upload the recording to Supabase Storage
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('time-capsules')
@@ -152,7 +152,7 @@ export function TimeCapsuleWizard({ isOpen, onClose, guardians, onCapsuleCreated
             contentType: 'image/jpeg',
             cacheControl: '3600'
           });
-        
+
         if (!thumbnailError) {
           thumbnailPath = thumbnailFilename;
         }
@@ -214,7 +214,7 @@ export function TimeCapsuleWizard({ isOpen, onClose, guardians, onCapsuleCreated
         {/* Progress Header */}
         <div className="space-y-4">
           <Progress value={progressPercentage} className="w-full" />
-          
+
           <div className="flex justify-between items-center">
             {WIZARD_STEPS.map((step, index) => (
               <div key={step.id} className="flex items-center">
@@ -305,7 +305,7 @@ export function TimeCapsuleWizard({ isOpen, onClose, guardians, onCapsuleCreated
             <Button variant="ghost" onClick={handleClose}>
               Cancel
             </Button>
-            
+
             {currentStep < WIZARD_STEPS.length ? (
               <Button
                 onClick={nextStep}

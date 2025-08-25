@@ -126,7 +126,7 @@ const App = () => (
 
             {/* Emergency access (public route with token verification) */}
             <Route path="/emergency-access/:token" element={<FamilyShieldAccessPage />} />
-            
+
             {/* Time Capsule public viewing (public route with token verification) */}
             <Route path="/time-capsule-view/:token" element={<TimeCapsuleViewPage />} />
 

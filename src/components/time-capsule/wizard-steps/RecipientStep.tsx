@@ -6,8 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Icon } from '@/components/ui/icon-library';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Guardian } from '@/types/guardian';
-import { RecipientOption } from '@/types/timeCapsule';
+import type { Guardian } from '@/types/guardian';
+import type { RecipientOption } from '@/types/timeCapsule';
 
 interface RecipientStepProps {
   guardians: Guardian[];
@@ -53,7 +53,7 @@ export function RecipientStep({ guardians, selectedRecipient, onRecipientChange 
       email: customRecipient.email.trim(),
       isGuardian: false
     };
-    
+
     onRecipientChange(recipient);
     setShowCustomForm(false);
     setCustomRecipient({ name: '', email: '' });
@@ -80,7 +80,7 @@ export function RecipientStep({ guardians, selectedRecipient, onRecipientChange 
     <div className="space-y-6">
       <div className="text-center">
         <p className="text-muted-foreground">
-          Choose who will receive this Time Capsule. You can select from your existing guardians 
+          Choose who will receive this Time Capsule. You can select from your existing guardians
           or add someone new.
         </p>
       </div>
@@ -185,7 +185,7 @@ export function RecipientStep({ guardians, selectedRecipient, onRecipientChange 
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground mb-4">
-              Want to send a Time Capsule to someone who isn't in your Guardian Network? 
+              Want to send a Time Capsule to someone who isn't in your Guardian Network?
               Add their details below.
             </p>
             <Button
@@ -220,7 +220,7 @@ export function RecipientStep({ guardians, selectedRecipient, onRecipientChange 
                 className="mt-1"
               />
             </div>
-            
+
             <div>
               <Label htmlFor="recipientEmail">Email Address *</Label>
               <Input
@@ -260,7 +260,7 @@ export function RecipientStep({ guardians, selectedRecipient, onRecipientChange 
       {!selectedRecipient && (
         <div className="text-center text-sm text-muted-foreground bg-blue-50 p-4 rounded-lg">
           <Icon name="info" className="w-4 h-4 inline mr-2" />
-          Your Time Capsule recipient will receive an email notification when it's time for delivery. 
+          Your Time Capsule recipient will receive an email notification when it's time for delivery.
           Make sure their email address is current and accessible.
         </div>
       )}

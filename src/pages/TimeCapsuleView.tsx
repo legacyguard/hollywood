@@ -3,27 +3,26 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon-library';
-import { Badge } from '@/components/ui/badge';
 import { FadeIn } from '@/components/motion/FadeIn';
 import { toast } from 'sonner';
 import { useSupabaseWithClerk } from '@/integrations/supabase/client';
-import { TimeCapsuleAccess } from '@/types/timeCapsule';
+import type { TimeCapsuleAccess } from '@/types/timeCapsule';
 import { format } from 'date-fns';
 
 export default function TimeCapsuleViewPage() {
   const { token } = useParams<{ token: string }>();
   const navigate = useNavigate();
   const createSupabaseClient = useSupabaseWithClerk();
-  
+
   const [accessData, setAccessData] = useState<TimeCapsuleAccess | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [volume, setVolume] = useState(1);
+  const [_volume, setVolume] = useState(1);
   const [showControls, setShowControls] = useState(true);
-  
+
   const videoRef = useRef<HTMLVideoElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
   const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -38,7 +37,7 @@ export default function TimeCapsuleViewPage() {
 
       try {
         const supabase = await createSupabaseClient();
-        
+
         // Get capsule by access token (public access)
         const { data: capsule, error } = await supabase
           .from('time_capsules')
@@ -110,14 +109,14 @@ export default function TimeCapsuleViewPage() {
     }
   };
 
-  const handleSeek = (time: number) => {
+  const _handleSeek = (time: number) => {
     const media = videoRef.current || audioRef.current;
     if (media) {
       media.currentTime = time;
     }
   };
 
-  const handleVolumeChange = (newVolume: number) => {
+  const _handleVolumeChange = (newVolume: number) => {
     setVolume(newVolume);
     const media = videoRef.current || audioRef.current;
     if (media) {
@@ -223,7 +222,7 @@ export default function TimeCapsuleViewPage() {
               <div className="flex items-center gap-1">
                 <Icon name="clock" className="w-4 h-4" />
                 <span>
-                  {capsule.duration_seconds 
+                  {capsule.duration_seconds
                     ? formatTime(capsule.duration_seconds)
                     : 'Unknown duration'
                   }
@@ -235,7 +234,7 @@ export default function TimeCapsuleViewPage() {
           {/* Media Player */}
           <Card className="overflow-hidden shadow-2xl">
             <CardContent className="p-0">
-              <div 
+              <div
                 className="relative bg-black"
                 onMouseMove={handleMouseMove}
                 onMouseLeave={() => setShowControls(true)}
@@ -252,7 +251,7 @@ export default function TimeCapsuleViewPage() {
                       onTimeUpdate={handleTimeUpdate}
                       onLoadedMetadata={handleTimeUpdate}
                     />
-                    
+
                     {/* Video Controls Overlay */}
                     <div className={`absolute inset-0 bg-gradient-to-t from-black/50 to-transparent transition-opacity duration-300 ${
                       showControls || !isPlaying ? 'opacity-100' : 'opacity-0'
@@ -268,7 +267,7 @@ export default function TimeCapsuleViewPage() {
                           </Button>
                         )}
                       </div>
-                      
+
                       {/* Bottom controls */}
                       <div className="absolute bottom-0 left-0 right-0 p-4">
                         <div className="flex items-center gap-3 text-white">
@@ -280,7 +279,7 @@ export default function TimeCapsuleViewPage() {
                           >
                             <Icon name={isPlaying ? 'pause' : 'play'} className="w-4 h-4" />
                           </Button>
-                          
+
                           <div className="flex-1">
                             <div className="w-full bg-white/20 rounded-full h-1">
                               <div
@@ -293,7 +292,7 @@ export default function TimeCapsuleViewPage() {
                               <span>{formatTime(duration)}</span>
                             </div>
                           </div>
-                          
+
                           <Button
                             variant="ghost"
                             size="sm"
@@ -316,7 +315,7 @@ export default function TimeCapsuleViewPage() {
                       <p className="text-white/80 mb-6">
                         {capsule.message_preview || 'A personal audio message just for you'}
                       </p>
-                      
+
                       <audio
                         ref={audioRef}
                         src={accessData.signed_url}
@@ -326,7 +325,7 @@ export default function TimeCapsuleViewPage() {
                         onLoadedMetadata={handleTimeUpdate}
                         className="hidden"
                       />
-                      
+
                       {/* Audio Controls */}
                       <div className="space-y-4">
                         <Button
@@ -336,7 +335,7 @@ export default function TimeCapsuleViewPage() {
                         >
                           <Icon name={isPlaying ? 'pause' : 'play'} className="w-6 h-6" />
                         </Button>
-                        
+
                         <div className="max-w-md mx-auto">
                           <div className="w-full bg-white/20 rounded-full h-2">
                             <div

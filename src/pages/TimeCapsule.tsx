@@ -1,16 +1,15 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { DashboardLayout } from '@/components/DashboardLayout';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Icon } from '@/components/ui/icon-library';
 import { FadeIn } from '@/components/motion/FadeIn';
 import { usePageTitle } from '@/hooks/usePageTitle';
 import { toast } from 'sonner';
 import { useSupabaseWithClerk } from '@/integrations/supabase/client';
-import { TimeCapsule, TimeCapsuleStats, CreateTimeCapsuleRequest } from '@/types/timeCapsule';
-import { Guardian } from '@/types/guardian';
+import type { TimeCapsule, TimeCapsuleStats } from '@/types/timeCapsule';
+import type { Guardian } from '@/types/guardian';
 import { TimeCapsuleWizard } from '@/components/time-capsule/TimeCapsuleWizard';
 import { TimeCapsuleList } from '@/components/time-capsule/TimeCapsuleList';
 
@@ -18,7 +17,7 @@ export default function TimeCapsulePage() {
   usePageTitle('Time Capsule');
   const { userId } = useAuth();
   const createSupabaseClient = useSupabaseWithClerk();
-  
+
   const [timeCapsules, setTimeCapsules] = useState<TimeCapsule[]>([]);
   const [guardians, setGuardians] = useState<Guardian[]>([]);
   const [stats, setStats] = useState<TimeCapsuleStats>({
@@ -38,7 +37,7 @@ export default function TimeCapsulePage() {
 
     try {
       const supabase = await createSupabaseClient();
-      
+
       // Fetch time capsules
       const { data: capsulesData, error: capsulesError } = await supabase
         .from('time_capsules')
@@ -103,7 +102,7 @@ export default function TimeCapsulePage() {
   const handleDeleteCapsule = async (capsuleId: string) => {
     try {
       const supabase = await createSupabaseClient();
-      
+
       const { error } = await supabase
         .from('time_capsules')
         .delete()
@@ -152,7 +151,7 @@ export default function TimeCapsulePage() {
                     </h1>
                   </div>
                   <p className="text-lg leading-relaxed max-w-3xl" style={{ color: 'hsl(var(--muted-text))' }}>
-                    Create personal video or audio messages that will be delivered to your loved ones at just the right moment. 
+                    Create personal video or audio messages that will be delivered to your loved ones at just the right moment.
                     Whether it's a birthday surprise or a final farewell, your words will reach them when they need them most.
                   </p>
                 </div>
@@ -244,12 +243,12 @@ export default function TimeCapsulePage() {
                 </div>
                 <h3 className="text-2xl font-bold mb-4">Your Time Capsule Awaits</h3>
                 <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-                  Create your first Time Capsule - a personal video or audio message that will be delivered to someone special 
-                  at exactly the right moment. Whether it's a future birthday surprise or a heartfelt goodbye, 
+                  Create your first Time Capsule - a personal video or audio message that will be delivered to someone special
+                  at exactly the right moment. Whether it's a future birthday surprise or a heartfelt goodbye,
                   your words will be there when they're needed most.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Button 
+                  <Button
                     onClick={() => setShowWizard(true)}
                     size="lg"
                     className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
@@ -266,7 +265,7 @@ export default function TimeCapsulePage() {
             </FadeIn>
           ) : (
             <FadeIn duration={0.5} delay={0.6}>
-              <TimeCapsuleList 
+              <TimeCapsuleList
                 timeCapsules={timeCapsules}
                 onDelete={handleDeleteCapsule}
                 onRefresh={fetchData}

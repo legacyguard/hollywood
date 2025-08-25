@@ -7,7 +7,13 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Icon } from '@/components/ui/icon-library';
 import { Progress } from '@/components/ui/progress';
 import { toast } from 'sonner';
-import { TimeCapsuleRecordingData, CapsuleFileType, DEFAULT_RECORDING_CONSTRAINTS, MAX_RECORDING_DURATION, MAX_FILE_SIZE } from '@/types/timeCapsule';
+import {
+  type TimeCapsuleRecordingData,
+  type CapsuleFileType,
+  DEFAULT_RECORDING_CONSTRAINTS,
+  MAX_RECORDING_DURATION,
+  MAX_FILE_SIZE
+} from '@/types/timeCapsule';
 
 interface RecordingStepProps {
   messageTitle: string;
@@ -32,7 +38,7 @@ export function RecordingStep({
   const [recordingType, setRecordingType] = useState<CapsuleFileType>('video');
   const [duration, setDuration] = useState(0);
   const [isPermissionGranted, setIsPermissionGranted] = useState(false);
-  
+
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const chunksRef = useRef<Blob[]>([]);
@@ -40,7 +46,7 @@ export function RecordingStep({
   const audioRef = useRef<HTMLAudioElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  
+
   // Request permissions
   const requestPermissions = useCallback(async () => {
     try {
@@ -100,7 +106,7 @@ export function RecordingStep({
 
       chunksRef.current = [];
       const options = {
-        mimeType: recordingType === 'video' 
+        mimeType: recordingType === 'video'
           ? 'video/webm;codecs=vp8,opus'
           : 'audio/ogg;codecs=opus'
       };
@@ -164,12 +170,12 @@ export function RecordingStep({
     if (mediaRecorderRef.current && recordingState === 'recording') {
       mediaRecorderRef.current.stop();
     }
-    
+
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
-    
+
     setRecordingState('completed');
   }, [recordingState]);
 
@@ -178,7 +184,7 @@ export function RecordingStep({
     if (mediaRecorderRef.current && recordingState === 'recording') {
       mediaRecorderRef.current.pause();
       setRecordingState('paused');
-      
+
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
         intervalRef.current = null;
@@ -186,7 +192,7 @@ export function RecordingStep({
     } else if (mediaRecorderRef.current && recordingState === 'paused') {
       mediaRecorderRef.current.resume();
       setRecordingState('recording');
-      
+
       // Resume timer
       intervalRef.current = setInterval(() => {
         setDuration(prev => {
@@ -205,7 +211,7 @@ export function RecordingStep({
     onRecordingChange(undefined);
     setRecordingState('idle');
     setDuration(0);
-    
+
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
@@ -230,10 +236,10 @@ export function RecordingStep({
       toast.error('Please stop the current recording before switching types.');
       return;
     }
-    
+
     setRecordingType(type);
     setIsPermissionGranted(false);
-    
+
     if (streamRef.current) {
       streamRef.current.getTracks().forEach(track => track.stop());
       streamRef.current = null;
@@ -260,7 +266,7 @@ export function RecordingStep({
             className="mt-1"
           />
         </div>
-        
+
         <div>
           <Label htmlFor="messagePreview">Message Preview (Optional)</Label>
           <Textarea
@@ -346,7 +352,7 @@ export function RecordingStep({
                   className="w-full max-w-md mx-auto rounded-lg"
                 />
               )}
-              
+
               <div className="text-center space-y-4">
                 <div className="flex items-center justify-center space-x-4">
                   {recordingState === 'recording' && (
@@ -356,12 +362,12 @@ export function RecordingStep({
                     {formatTime(duration)} / {formatTime(MAX_RECORDING_DURATION)}
                   </span>
                 </div>
-                
-                <Progress 
-                  value={(duration / MAX_RECORDING_DURATION) * 100} 
+
+                <Progress
+                  value={(duration / MAX_RECORDING_DURATION) * 100}
                   className="w-full max-w-sm mx-auto"
                 />
-                
+
                 <div className="flex justify-center space-x-2">
                   <Button
                     onClick={pauseRecording}
@@ -385,11 +391,11 @@ export function RecordingStep({
               <div>
                 <h3 className="font-medium text-green-900">Recording Complete!</h3>
                 <p className="text-sm text-muted-foreground">
-                  Duration: {formatTime(Math.round(recording.duration))} • 
+                  Duration: {formatTime(Math.round(recording.duration))} •
                   Size: {(recording.blob.size / (1024 * 1024)).toFixed(1)}MB
                 </p>
               </div>
-              
+
               <div className="flex justify-center space-x-2">
                 <Button variant="outline" onClick={deleteRecording}>
                   <Icon name="trash-2" className="w-4 h-4 mr-2" />
@@ -407,7 +413,7 @@ export function RecordingStep({
 
       {/* Hidden canvas for thumbnail generation */}
       <canvas ref={canvasRef} style={{ display: 'none' }} />
-      
+
       {/* Hidden audio element for audio playback */}
       <audio ref={audioRef} style={{ display: 'none' }} />
     </div>

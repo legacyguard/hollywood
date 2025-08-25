@@ -1,4 +1,5 @@
-import { Icon, IconMap } from "@/components/ui/icon-library";
+import type { IconMap } from "@/components/ui/icon-library";
+import { Icon } from "@/components/ui/icon-library";
 import { LegacyGuardLogo } from "./LegacyGuardLogo";
 import { NavLink } from "react-router-dom";
 import { UserButton, useUser } from "@clerk/clerk-react";
@@ -79,7 +80,7 @@ export function AppSidebar() {
         {/* User Profile Section */}
         <div className="p-4 mt-auto border-t border-sidebar-accent/20">
           <div className="flex items-center gap-3">
-            <UserButton 
+            <UserButton
               afterSignOutUrl="/sign-in"
               appearance={{
                 elements: {

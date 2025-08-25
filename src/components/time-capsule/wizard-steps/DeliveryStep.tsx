@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Icon } from '@/components/ui/icon-library';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { DeliveryCondition } from '@/types/timeCapsule';
+import type { DeliveryCondition } from '@/types/timeCapsule';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 
@@ -36,7 +36,7 @@ export function DeliveryStep({
     <div className="space-y-6">
       <div className="text-center">
         <p className="text-muted-foreground">
-          Choose when this Time Capsule should be delivered to your recipient. You can schedule it 
+          Choose when this Time Capsule should be delivered to your recipient. You can schedule it
           for a specific date or have it delivered as part of your Family Shield activation.
         </p>
       </div>
@@ -44,14 +44,14 @@ export function DeliveryStep({
       {/* Delivery Options */}
       <div className="space-y-4">
         <Label className="text-base font-medium">When should this message be delivered?</Label>
-        
+
         <div className="grid gap-4">
           {/* On Specific Date */}
-          <Card 
+          <Card
             className={cn(
               "cursor-pointer transition-all duration-200 hover:shadow-md",
-              deliveryCondition === 'ON_DATE' 
-                ? "border-primary bg-primary/5 shadow-sm" 
+              deliveryCondition === 'ON_DATE'
+                ? "border-primary bg-primary/5 shadow-sm"
                 : "hover:border-primary/50"
             )}
             onClick={() => onDeliveryConditionChange('ON_DATE')}
@@ -82,11 +82,11 @@ export function DeliveryStep({
           </Card>
 
           {/* After Passing */}
-          <Card 
+          <Card
             className={cn(
               "cursor-pointer transition-all duration-200 hover:shadow-md",
-              deliveryCondition === 'ON_DEATH' 
-                ? "border-primary bg-primary/5 shadow-sm" 
+              deliveryCondition === 'ON_DEATH'
+                ? "border-primary bg-primary/5 shadow-sm"
                 : "hover:border-primary/50"
             )}
             onClick={() => onDeliveryConditionChange('ON_DEATH')}
@@ -125,10 +125,10 @@ export function DeliveryStep({
             <div className="space-y-4">
               <Label className="text-base font-medium">Choose Delivery Date</Label>
               <p className="text-sm text-muted-foreground">
-                Select the exact date when you want this Time Capsule to be delivered. 
+                Select the exact date when you want this Time Capsule to be delivered.
                 The message will be sent via email on that day.
               </p>
-              
+
               <div className="flex items-center space-x-4">
                 <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
                   <PopoverTrigger asChild>
@@ -153,7 +153,7 @@ export function DeliveryStep({
                     />
                   </PopoverContent>
                 </Popover>
-                
+
                 {deliveryDate && (
                   <Button
                     variant="ghost"
@@ -190,10 +190,10 @@ export function DeliveryStep({
             <div className="space-y-4">
               <Label className="text-base font-medium">Family Shield Integration</Label>
               <p className="text-sm text-muted-foreground">
-                This Time Capsule is connected to your Family Shield system. It will be automatically 
+                This Time Capsule is connected to your Family Shield system. It will be automatically
                 delivered when your Family Shield detects your passing and activates the emergency protocols.
               </p>
-              
+
               <div className="space-y-3">
                 <div className="flex items-start space-x-3 p-3 bg-purple-50 rounded-lg">
                   <Icon name="shield" className="w-5 h-5 text-purple-600 mt-0.5 flex-shrink-0" />
@@ -204,7 +204,7 @@ export function DeliveryStep({
                     </p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-start space-x-3 p-3 bg-blue-50 rounded-lg">
                   <Icon name="users" className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
                   <div>
@@ -214,7 +214,7 @@ export function DeliveryStep({
                     </p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-start space-x-3 p-3 bg-green-50 rounded-lg">
                   <Icon name="heart" className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
                   <div>
@@ -233,7 +233,7 @@ export function DeliveryStep({
       {/* Help Information */}
       <div className="text-center text-sm text-muted-foreground bg-gray-50 p-4 rounded-lg">
         <Icon name="info" className="w-4 h-4 inline mr-2" />
-        {deliveryCondition === 'ON_DATE' 
+        {deliveryCondition === 'ON_DATE'
           ? "Date-based Time Capsules are delivered via email at 9:00 AM in the recipient's timezone."
           : "Family Shield Time Capsules are part of your legacy protection system and will be delivered with the highest care and dignity."
         }

@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Icon } from '@/components/ui/icon-library';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { TimeCapsuleFormData } from '@/types/timeCapsule';
+import type { TimeCapsuleFormData } from '@/types/timeCapsule';
 import { format } from 'date-fns';
 
 interface ReviewStepProps {
@@ -37,7 +37,7 @@ export function ReviewStep({ formData, onEdit }: ReviewStepProps) {
       <div className="text-center">
         <h3 className="text-lg font-semibold mb-2">Review Your Time Capsule</h3>
         <p className="text-muted-foreground">
-          Please review all details carefully. Once sealed, your Time Capsule cannot be modified, 
+          Please review all details carefully. Once sealed, your Time Capsule cannot be modified,
           but it can be deleted if needed before delivery.
         </p>
       </div>
@@ -108,15 +108,15 @@ export function ReviewStep({ formData, onEdit }: ReviewStepProps) {
                   ? 'bg-blue-100 text-blue-600'
                   : 'bg-purple-100 text-purple-600'
               }`}>
-                <Icon 
-                  name={formData.deliveryCondition === 'ON_DATE' ? 'calendar' : 'shield'} 
-                  className="w-4 h-4" 
+                <Icon
+                  name={formData.deliveryCondition === 'ON_DATE' ? 'calendar' : 'shield'}
+                  className="w-4 h-4"
                 />
               </div>
               <div>
                 <p className="font-medium">
-                  {formData.deliveryCondition === 'ON_DATE' 
-                    ? 'Scheduled Delivery' 
+                  {formData.deliveryCondition === 'ON_DATE'
+                    ? 'Scheduled Delivery'
                     : 'Family Shield Activation'
                   }
                 </p>
@@ -171,9 +171,9 @@ export function ReviewStep({ formData, onEdit }: ReviewStepProps) {
                     ? 'bg-red-100 text-red-600'
                     : 'bg-green-100 text-green-600'
                 }`}>
-                  <Icon 
-                    name={formData.recording.fileType === 'video' ? 'video' : 'mic'} 
-                    className="w-5 h-5" 
+                  <Icon
+                    name={formData.recording.fileType === 'video' ? 'video' : 'mic'}
+                    className="w-5 h-5"
                   />
                 </div>
                 <div className="flex-1">
@@ -181,7 +181,7 @@ export function ReviewStep({ formData, onEdit }: ReviewStepProps) {
                     {formData.recording.fileType} Message
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    Duration: {formatDuration(formData.recording.duration)} • 
+                    Duration: {formatDuration(formData.recording.duration)} •
                     Size: {formatFileSize(formData.recording.blob.size)}
                   </p>
                 </div>
@@ -211,11 +211,11 @@ export function ReviewStep({ formData, onEdit }: ReviewStepProps) {
             <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto">
               <Icon name="heart" className="w-8 h-8 text-white" />
             </div>
-            
+
             <div>
               <h3 className="text-lg font-semibold text-purple-900">Ready to Seal Your Time Capsule</h3>
               <p className="text-sm text-purple-700 mt-2">
-                Once sealed, this Time Capsule will be safely stored and delivered exactly as you've specified. 
+                Once sealed, this Time Capsule will be safely stored and delivered exactly as you've specified.
                 Your message will be a precious gift that brings comfort and joy when it's needed most.
               </p>
             </div>
@@ -241,7 +241,7 @@ export function ReviewStep({ formData, onEdit }: ReviewStepProps) {
       {/* Important Notice */}
       <div className="text-center text-xs text-muted-foreground bg-yellow-50 p-3 rounded-lg border border-yellow-200">
         <Icon name="alert-triangle" className="w-4 h-4 inline mr-2 text-yellow-600" />
-        <strong>Important:</strong> Once sealed, your Time Capsule cannot be edited. You can delete it before delivery if needed, 
+        <strong>Important:</strong> Once sealed, your Time Capsule cannot be edited. You can delete it before delivery if needed,
         but we recommend keeping it as your heartfelt message may become even more precious over time.
       </div>
     </div>
