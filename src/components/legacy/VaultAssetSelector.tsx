@@ -90,7 +90,12 @@ export const VaultAssetSelector: React.FC<VaultAssetSelectorProps> = ({
       }
 
       // Transform documents into assets
-      const transformedAssets: VaultAsset[] = documents?.map((doc: any) => ({
+      const transformedAssets: VaultAsset[] = documents?.map((doc: Document & { 
+        bundle_documents?: Array<{ 
+          bundle_id: string;
+          bundles: { bundle_name: string; bundle_category: string } 
+        }> 
+      }) => ({
         id: doc.id,
         title: doc.title || doc.file_name || 'Untitled Document',
         description: doc.description,

@@ -113,7 +113,7 @@ export const IntelligentWillDraftGenerator: React.FC<IntelligentWillDraftGenerat
   const analyzeUserDataForWill = (
     guardians: GuardianData[], 
     bundles: DocumentBundle[], 
-    user: any
+    user: { fullName?: string } | null
   ): DraftAnalysis => {
     const analysis: DraftAnalysis = {
       foundGuardians: guardians,
