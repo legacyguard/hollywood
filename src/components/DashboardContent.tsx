@@ -9,12 +9,53 @@ import { AttentionSection } from "@/components/dashboard/AttentionSection";
 import { LegacyOverviewSection } from "@/components/dashboard/LegacyOverviewSection";
 import { useEncryptionReady } from "@/hooks/encryption/useEncryption";
 import { EncryptionSetup } from "@/components/encryption/EncryptionSetup";
+import { MetricsGrid } from "@/components/enhanced/MetricCard";
+import { ActivityFeed, useMockActivities } from "@/components/enhanced/ActivityFeed";
+import { RadialProgress } from "@/components/enhanced/RadialProgress";
+import { useState } from 'react';
 
 export function DashboardContent() {
   const { user } = useUser();
   const navigate = useNavigate();
   const { needsSetup, isLoading } = useEncryptionReady();
-  
+  const mockActivities = useMockActivities();
+
+  // Mock metrics data - in production, this would come from your API
+  const [metrics] = useState([
+    {
+      title: 'Documents Protected',
+      value: '24',
+      change: 12,
+      trend: 'up' as const,
+      icon: 'file-text',
+      color: 'primary' as const,
+      onClick: () => navigate('/vault')
+    },
+    {
+      title: 'Family Members',
+      value: '8',
+      change: 2,
+      trend: 'up' as const,
+      icon: 'users',
+      color: 'success' as const,
+      onClick: () => navigate('/family')
+    },
+    {
+      title: 'Guardians',
+      value: '3',
+      changeLabel: 'Active',
+      icon: 'shield',
+      color: 'warning' as const,
+      onClick: () => navigate('/guardians')
+    },
+    {
+      title: 'Days Protected',
+      value: '147',
+      icon: 'calendar',
+      color: 'info' as const
+    }
+  ]);
+
   // Show encryption setup if needed
   if (!isLoading && needsSetup) {
     return (
@@ -23,12 +64,8 @@ export function DashboardContent() {
       </div>
     );
   }
-  
-  const handleNewInformation = () => {
-    navigate('/vault');
-  };
 
-  const handleViewVault = () => {
+  const handleNewInformation = () => {
     navigate('/vault');
   };
 
@@ -54,7 +91,7 @@ export function DashboardContent() {
               </div>
             </div>
             <FadeIn duration={0.5} delay={0.6}>
-              <Button 
+              <Button
                 onClick={handleNewInformation}
                 className="bg-primary hover:bg-primary-hover text-primary-foreground shadow-md"
                 size="lg"
@@ -69,14 +106,48 @@ export function DashboardContent() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-6 lg:px-8 py-12 space-y-16">
-        {/* 1. Section: Path of Serenity (Compact version) */}
-        <PathOfSerenity className="max-w-4xl mx-auto" />
+        {/* Analytics Metrics */}
+        <section>
+          <FadeIn duration={0.5} delay={0.8}>
+            <h2 className="text-xl font-semibold mb-6 text-card-foreground">Your Legacy at a Glance</h2>
+            <MetricsGrid metrics={metrics} columns={4} />
+          </FadeIn>
+        </section>
 
-        {/* 2. Section: Current Challenges (Dynamic action zone) */}
-        <AttentionSection />
+        {/* Main Dashboard Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left Column - Path & Overview */}
+          <div className="lg:col-span-2 space-y-8">
+            {/* 1. Section: Path of Serenity with Radial Progress */}
+            <div>
+              <PathOfSerenity className="w-full" />
+            <div className="mt-6 flex justify-center">
+              <RadialProgress
+                value={75}
+                label="Overall Progress"
+                size="lg"
+                  color="primary"
+                />
+              </div>
+            </div>
 
-        {/* 3. Section: Shield Areas Overview (Bundle cards) */}
-        <LegacyOverviewSection />
+            {/* 2. Section: Current Challenges (Dynamic action zone) */}
+            <AttentionSection />
+
+            {/* 3. Section: Shield Areas Overview (Bundle cards) */}
+            <LegacyOverviewSection />
+          </div>
+
+          {/* Right Column - Activity Feed */}
+          <div className="lg:col-span-1">
+            <ActivityFeed
+              activities={mockActivities}
+              title="Recent Activity"
+              maxHeight="600px"
+              onViewAll={() => console.warn('View all activities')}
+            />
+          </div>
+        </div>
       </main>
     </div>
   );

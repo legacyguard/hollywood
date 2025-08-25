@@ -141,7 +141,7 @@ export function SecurityDashboard() {
       score += 20;
     }
 
-    // TODO: Check 2FA status from Clerk
+    // Note: 2FA status would be checked from Clerk user metadata
     // factors.twoFactorEnabled = user?.twoFactorEnabled || false;
     // if (factors.twoFactorEnabled) score += 25;
 

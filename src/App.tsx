@@ -13,8 +13,9 @@ import { LocalizationProvider } from "./contexts/LocalizationContext";
 import SofiaContextProvider from "./components/sofia/SofiaContextProvider";
 // import { EncryptionProvider } from "@/hooks/encryption/useEncryption";
 // import { PasswordPrompt } from "@/components/encryption/PasswordPrompt";
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
+import Index from '@/pages/Index';
+import NotFound from '@/pages/NotFound';
+import ComponentShowcase from '@/pages/ComponentShowcase';
 import Onboarding from "./pages/onboarding/Onboarding";
 import VaultPage from "./pages/Vault";
 import GuardiansPage from "./pages/Guardians";
@@ -45,11 +46,13 @@ const App = () => (
                 <DocumentFilterProvider>
                   <SofiaContextProvider>
                     {/* <PasswordPrompt /> */}
-                    <Routes>
-            {/* Public routes */}
-            <Route path="/sign-in/*" element={<SignInPage />} />
-            <Route path="/sign-up/*" element={<SignUpPage />} />
-            
+      <Routes>
+        {/* Public routes */}
+        <Route path="/auth/sign-in" element={<SignInPage />} />
+        <Route path="/auth/sign-up" element={<SignUpPage />} />
+
+        {/* Component Showcase (for development) */}
+        <Route path="/showcase" element={<ComponentShowcase />} />
             {/* Protected routes */}
             <Route path="/" element={
               <ProtectedRoute>
@@ -113,10 +116,10 @@ const App = () => (
                 <SurvivorManualPage />
               </ProtectedRoute>
             } />
-            
+
             {/* Emergency access (public route with token verification) */}
             <Route path="/emergency-access/:token" element={<EmergencyAccessPage />} />
-            
+
             {/* 404 route */}
             <Route path="*" element={<NotFound />} />
                     </Routes>

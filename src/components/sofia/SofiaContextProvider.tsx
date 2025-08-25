@@ -4,6 +4,7 @@ import { useSofiaStore } from '@/stores/sofiaStore';
 import { SofiaContext } from '@/lib/sofia-types';
 import { useLocation } from 'react-router-dom';
 import { calculateUnlockedMilestones } from '@/lib/path-of-serenity';
+import { useLocalization } from '@/contexts/LocalizationContext';
 
 interface SofiaContextProviderProps {
   children: React.ReactNode;
@@ -20,6 +21,8 @@ const SofiaContextProvider: React.FC<SofiaContextProviderProps> = ({ children })
   const { user } = useUser();
   const location = useLocation();
   const { setContext, updateContext } = useSofiaStore();
+
+  const { languageCode } = useLocalization();
 
   // Initialize Sofia context when user data is available
   useEffect(() => {
@@ -115,13 +118,13 @@ try {
       completionPercentage: Math.min(completionPercentage, 100),
       recentActivity,
       familyStatus,
-      language: 'en', // TODO: Get from user preferences or browser
+      language: languageCode,
       milestoneProgress
     };
 
     setContext(context);
 
-  }, [userId, user, setContext]);
+  }, [userId, user, languageCode, setContext]);
 
   // Update context when location changes (for contextual help)
   useEffect(() => {

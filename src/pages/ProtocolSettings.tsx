@@ -14,7 +14,7 @@ import { useSupabaseWithClerk } from '@/integrations/supabase/client';
 import { ProtocolSettings, CreateProtocolSettingsRequest, Guardian } from '@/types/guardian';
 
 export default function ProtocolSettingsPage() {
-  usePageTitle('Family Shield Protocol Settings');
+  usePageTitle('Family Shield Settings');
   const { userId } = useAuth();
   const createSupabaseClient = useSupabaseWithClerk();
   
@@ -128,7 +128,7 @@ export default function ProtocolSettingsPage() {
       if (result.error) throw result.error;
 
       setSettings(result.data);
-      toast.success('Family Shield Protocol settings saved successfully!');
+      toast.success('Family Shield settings saved successfully!');
       
     } catch (error) {
       console.error('Error saving settings:', error);
@@ -151,7 +151,7 @@ export default function ProtocolSettingsPage() {
       <DashboardLayout>
         <div className="min-h-screen bg-background flex items-center justify-center">
           <Icon name="loader" className="w-8 h-8 animate-spin text-primary" />
-          <span className="ml-3 text-muted-foreground">Loading protocol settings...</span>
+          <span className="ml-3 text-muted-foreground">Loading Family Shield settings...</span>
         </div>
       </DashboardLayout>
     );
@@ -169,13 +169,13 @@ export default function ProtocolSettingsPage() {
                   <Icon name="shield-check" className="w-6 h-6 text-primary" />
                 </div>
                 <h1 className="text-3xl lg:text-4xl font-bold font-heading text-card-foreground">
-                  Family Shield Protocol Settings
+                  Family Shield Settings
                 </h1>
               </div>
             </FadeIn>
             <FadeIn duration={0.5} delay={0.4}>
               <p className="text-lg leading-relaxed max-w-3xl" style={{ color: 'hsl(var(--muted-text))' }}>
-                Configure how your Family Shield Protocol detects emergencies and activates to help your loved ones.
+                Configure your comprehensive family protection system to activate precisely when needed, ensuring your trusted circle receives clear guidance.
               </p>
             </FadeIn>
           </div>
@@ -189,9 +189,9 @@ export default function ProtocolSettingsPage() {
               <Card className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-xl font-semibold mb-2">Protocol Status</h3>
+                    <h3 className="text-xl font-semibold mb-2">Family Shield Status</h3>
                     <p className="text-muted-foreground">
-                      Enable or disable the Family Shield Protocol system
+                      Enable or disable your Family Shield protection system
                     </p>
                   </div>
                   <div className="flex items-center gap-3">
@@ -209,10 +209,10 @@ export default function ProtocolSettingsPage() {
                   <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
                     <div className="flex items-center gap-2 text-green-800">
                       <Icon name="shield-check" className="w-5 h-5" />
-                      <span className="font-medium">Protocol is Active</span>
+                      <span className="font-medium">Family Shield is Active</span>
                     </div>
                     <p className="text-sm text-green-700 mt-1">
-                      Your Family Shield Protocol is monitoring your activity and ready to assist your family when needed.
+                      Your Family Shield monitors your wellbeing discreetly and stands ready to protect your loved ones with precision.
                     </p>
                   </div>
                 )}
@@ -265,12 +265,12 @@ export default function ProtocolSettingsPage() {
               <Card className="p-6">
                 <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
                   <Icon name="users" className="w-5 h-5 text-primary" />
-                  Guardian Emergency Activation
+                  Trusted Circle Activation
                 </h3>
                 
                 <div className="space-y-4">
                   <div>
-                    <Label htmlFor="required_guardians">How many guardians needed to manually activate the protocol?</Label>
+                    <Label htmlFor="required_guardians">How many guardians needed to manually activate your Family Shield?</Label>
                     <div className="flex items-center gap-4 mt-2">
                       <Input
                         id="required_guardians"
@@ -297,7 +297,7 @@ export default function ProtocolSettingsPage() {
                         <span className="font-medium">No Emergency Guardians</span>
                       </div>
                       <p className="text-sm text-amber-700 mt-1">
-                        You need to designate at least one guardian with "Can Trigger Emergency Protocol" permission.
+                        You need to designate at least one guardian with "Can Trigger Family Shield" permission.
                       </p>
                     </div>
                   )}
@@ -336,7 +336,7 @@ export default function ProtocolSettingsPage() {
                   <h3 className="text-xl font-semibold mb-4">Current Status</h3>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                     <div>
-                      <Label className="text-muted-foreground">Protocol Status</Label>
+                      <Label className="text-muted-foreground">Shield Status</Label>
                       <p className={`font-medium ${settings.is_protocol_enabled ? 'text-green-600' : 'text-gray-600'}`}>
                         {settings.is_protocol_enabled ? 'Active' : 'Inactive'}
                       </p>
@@ -344,11 +344,11 @@ export default function ProtocolSettingsPage() {
                     <div>
                       <Label className="text-muted-foreground">Last Activity Check</Label>
                       <p className="font-medium">
-                        {new Date(settings.last_activity_check).toLocaleDateString()}
+                        {settings.last_activity_check ? new Date(settings.last_activity_check).toLocaleDateString() : 'Never'}
                       </p>
                     </div>
                     <div>
-                      <Label className="text-muted-foreground">Protocol State</Label>
+                      <Label className="text-muted-foreground">Shield State</Label>
                       <p className="font-medium capitalize">
                         {settings.protocol_status.replace('_', ' ')}
                       </p>
@@ -375,7 +375,7 @@ export default function ProtocolSettingsPage() {
                   ) : (
                     <>
                       <Icon name="save" className="w-4 h-4 mr-2" />
-                      Save Protocol Settings
+                      Save Family Shield Settings
                     </>
                   )}
                 </Button>

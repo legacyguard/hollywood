@@ -33,7 +33,7 @@
 
 ### **1.2 Emocionálna Architektúra**
 
-##### **Od strachu k láske:**
+#### **Od strachu k láske:**
 
 - ❌ "Čo ak zomriem?" → ✅ "Ako ochrániť rodinu?"
 - ❌ "Musím napísať závet" → ✅ "Chcem zanechať odkaz lásky"
@@ -847,55 +847,7 @@ ZASTUPOVANIE (individuálna cena):
 #### **Schopnosti a Funkcie:**
 ```typescript
 Sofia disponuje:
-- 33+ jazykov (automatická detekcia)
-- Právna expertíza pre európske krajiny
-- Emocionálna inteligencia
-- Kontextové učenie
-```
 
-**Príklady Interakcií:**
-
-**Proaktívna Pomoc:**
-
-```text
-Sofia: "Všimla som si, že máte hypotéku na 20 rokov.
-        Máte životné poistenie, ktoré by ju pokrylo?
-        Je to dôležité pre ochranu rodiny."
-        
-[Áno, mám] [Nie, nemám] [Zistiť viac]
-```
-
-**Právne Poradenstvo:**
-
-```text
-Užívateľ: "Môžem vydediť syna?"
-
-Sofia: "Na Slovensku majú deti ako neopomenuteľní 
-        dedičia právo na povinnú časť dedičstva.
-        Vydedenie je možné len zo zákonných dôvodov.
-        
-        Chcete sa spojiť s právnikom pre detaily?"
-        
-[Áno, konzultácia €49] [Nie, ďakujem]
-```
-
-**Emergency Podpora:**
-
-```text
-Pri 48h neaktivite:
-
-Sofia → Partner: "Váš manžel nebol aktívny 2 dni.
-                  Je všetko v poriadku?"
-                  
-Partner: "Je v nemocnici"
-
-Sofia: "Aktivujem núdzový prístup. 
-        Tu je všetko, čo potrebujete:
-        - Zdravotné záznamy
-        - Lieky a alergie  
-        - Poistenia
-        - Kontakty na lekárov"
-```
 
 ### **5.2 Automatická Jazyková Adaptácia**
 
@@ -1373,7 +1325,7 @@ Pre momenty osláv a prekvapení je táto jednoduchá knižnica perfektná.
 - **Oslavy:** react-confetti
 - **Stavový Manažment:** Zustand
 
-**Ako by sme postupovali:**
+##### **Ako by sme postupovali:**
 
 1. **Vygenerujeme základ:** Pomocou v0.dev si vygenerujeme statickú, neanimovanú verziu obrazovky.
 2. **Nainštalujeme knižnicu:** Do projektu pridáme Framer Motion (`npm install framer-motion`).
@@ -1381,7 +1333,7 @@ Pre momenty osláv a prekvapení je táto jednoduchá knižnica perfektná.
 4. **Pridáme animácie:** Na tieto motion komponenty pridáme jednoduché props ako `initial`, `animate`, `transition` a `variants` na definovanie animácií.
 5. **Prepojíme so stavom:** Animácie spustíme na základe zmeny stavu, ktorý manažujeme pomocou Zustand.
 
-**Technické poznámky:**
+##### **Technické poznámky:**
 
 - AI generátory poskytujú dobrý základ pre UI komponenty
 - Finálne animácie a interaktívne efekty vyžadujú špecializované knižnice

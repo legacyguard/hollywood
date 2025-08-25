@@ -9,11 +9,7 @@ import { Card } from '@/components/ui/card';
 import { Icon } from '@/components/ui/icon-library';
 import { FadeIn } from '@/components/motion/FadeIn';
 import { DocumentConfirmation } from './DocumentConfirmation';
-import { 
-  getUserEncryptionKeys, 
-  encryptFile, 
-  createEncryptedBlob 
-} from '@/lib/encryption';
+import { encryptionService } from '@/lib/encryption-v2';
 import { toast } from 'sonner';
 
 // Document analysis result interface matching our Supabase Edge Function
@@ -222,22 +218,21 @@ export const IntelligentDocumentUploader = () => {
       // Create Supabase client with Clerk token
       const supabase = await createSupabaseClient();
       
-      // Get user's encryption keys
-      const keys = getUserEncryptionKeys(userId);
-      
       setUploadProgress(20);
       
-      // Encrypt the file
-      const { encryptedData, nonce, metadata } = await encryptFile(
-        file,
-        keys.publicKey,
-        keys.secretKey
-      );
+      // Encrypt the file using secure service
+      const encryptionResult = await encryptionService.encryptFile(file);
+      
+      if (!encryptionResult) {
+        throw new Error('Failed to encrypt file. Please check your encryption setup.');
+      }
+      
+      const { encryptedData, nonce, metadata } = encryptionResult;
       
       setUploadProgress(50);
       
       // Create encrypted blob
-      const encryptedBlob = createEncryptedBlob(encryptedData, nonce);
+      const encryptedBlob = new Blob([nonce, encryptedData], { type: 'application/octet-stream' });
       
       // Generate unique file name
       const timestamp = Date.now();

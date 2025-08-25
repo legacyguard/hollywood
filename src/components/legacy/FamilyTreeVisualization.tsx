@@ -322,7 +322,8 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
                     y1={node.position.y + 25}
                     x2={child.position.x + 60} // Center of child node  
                     y2={child.position.y + 25}
-                    stroke="#94a3b8"
+                    stroke="currentColor"
+                    className="text-slate-400"
                     strokeWidth="2"
                     strokeDasharray="5,5"
                   />

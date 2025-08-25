@@ -5,8 +5,7 @@
  */
 
 import { toast } from 'sonner';
-// TODO: Refactor to use proper Clerk-based Supabase client
-// import { useSupabaseWithClerk } from '@/integrations/supabase/client';
+import { createClient } from '@supabase/supabase-js';
 import * as nacl from 'tweetnacl';
 import { encodeBase64, decodeBase64 } from 'tweetnacl-util';
 
@@ -57,11 +56,15 @@ export interface EncryptedBackupData {
 }
 
 export class BackupService {
-  // TODO: Properly integrate with Clerk-based Supabase client
-  // private createSupabaseClient = useSupabaseWithClerk;
   private currentVersion = '1.0.0';
   private encryptionVersion = '1.0.0';
   private readonly PBKDF2_ITERATIONS = 100000;
+  
+  // Create Supabase client (note: this should be created with proper auth context when used)
+  private supabase = createClient(
+    import.meta.env.VITE_SUPABASE_URL!,
+    import.meta.env.VITE_SUPABASE_ANON_KEY!
+  );
 
   /**
    * Derive encryption key from password

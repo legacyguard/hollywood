@@ -77,7 +77,7 @@ const ENTRY_TYPES: { value: ManualEntryType; label: string; description: string;
 ];
 
 export default function SurvivorManualPage() {
-  usePageTitle('Survivor\'s Manual');
+  usePageTitle('Family Guidance Manual');
   const { userId } = useAuth();
   const createSupabaseClient = useSupabaseWithClerk();
   
@@ -98,48 +98,8 @@ export default function SurvivorManualPage() {
     related_document_ids: []
   });
 
-  // Fetch data
-  const fetchData = useCallback(async () => {
-    if (!userId) return;
-
-    try {
-      const supabase = await createSupabaseClient();
-      
-      // Fetch manual entries
-      const { data: entriesData, error: entriesError } = await supabase
-        .from('survivor_manual_entries')
-        .select('*')
-        .eq('user_id', userId)
-        .order('priority', { ascending: true });
-
-      if (entriesError) throw entriesError;
-
-      // Fetch guardians for auto-suggestions
-      const { data: guardiansData, error: guardiansError } = await supabase
-        .from('guardians')
-        .select('*')
-        .eq('user_id', userId)
-        .eq('is_active', true);
-
-      if (guardiansError) throw guardiansError;
-
-      setEntries(entriesData || []);
-      setGuardians(guardiansData || []);
-
-      // Auto-generate entries if none exist
-      if (!entriesData || entriesData.length === 0) {
-        await generateInitialEntries(supabase, guardiansData || []);
-      }
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      toast.error('Failed to load survivor manual');
-    } finally {
-      setIsLoading(false);
-    }
-  }, [userId, createSupabaseClient, generateInitialEntries]);
-
   // Generate initial entries based on user's guardians and documents
-  const generateInitialEntries = async (supabase: unknown, userGuardians: Guardian[]) => {
+  const generateInitialEntries = useCallback(async (supabase: unknown, userGuardians: Guardian[]) => {
     const initialEntries: Omit<SurvivorManualEntry, 'id' | 'created_at' | 'updated_at'>[] = [];
 
     // Important Contacts - auto-filled with guardians
@@ -197,7 +157,49 @@ export default function SurvivorManualPage() {
     } catch (error) {
       console.error('Error generating initial entries:', error);
     }
-  };
+  }, [userId]);
+
+  // Fetch data
+  const fetchData = useCallback(async () => {
+    if (!userId) return;
+
+    try {
+      const supabase = await createSupabaseClient();
+      
+      // Fetch manual entries
+      const { data: entriesData, error: entriesError } = await supabase
+        .from('survivor_manual_entries')
+        .select('*')
+        .eq('user_id', userId)
+        .order('priority', { ascending: true });
+
+      if (entriesError) throw entriesError;
+
+      // Fetch guardians for auto-suggestions
+      const { data: guardiansData, error: guardiansError } = await supabase
+        .from('guardians')
+        .select('*')
+        .eq('user_id', userId)
+        .eq('is_active', true);
+
+      if (guardiansError) throw guardiansError;
+
+      setEntries(entriesData || []);
+      setGuardians(guardiansData || []);
+
+      // Auto-generate entries if none exist
+      if (!entriesData || entriesData.length === 0) {
+        await generateInitialEntries(supabase, guardiansData || []);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      toast.error('Failed to load survivor manual');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [userId, createSupabaseClient, generateInitialEntries]);
+
+
 
   useEffect(() => {
     fetchData();
@@ -367,7 +369,7 @@ export default function SurvivorManualPage() {
                       <Icon name="book-open" className="w-6 h-6 text-primary" />
                     </div>
                     <h1 className="text-3xl lg:text-4xl font-bold font-heading text-card-foreground">
-                      Survivor's Manual
+                      Family Guidance Manual
                     </h1>
                   </div>
                 </FadeIn>
@@ -505,7 +507,7 @@ export default function SurvivorManualPage() {
                 <div className="w-16 h-16 bg-primary/10 rounded-full mx-auto mb-6 flex items-center justify-center">
                   <Icon name="book-open" className="w-8 h-8 text-primary" />
                 </div>
-                <h3 className="text-2xl font-bold mb-4">Creating Your Survivor's Manual</h3>
+                <h3 className="text-2xl font-bold mb-4">Creating Your Family Guidance Manual</h3>
                 <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
                   Sofia is preparing your personalized manual based on your guardians and documents. 
                   This will give your family clear, step-by-step guidance when they need it most.

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { Card } from '@/components/ui/card';
@@ -11,29 +11,71 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { Icon } from '@/components/ui/icon-library';
 import { FadeIn } from '@/components/motion/FadeIn';
+import { ProfileGrid, ProfileData } from '@/components/enhanced/ProfileCard';
+import { MetricsGrid } from '@/components/enhanced/MetricCard';
 import { usePageTitle } from '@/hooks/usePageTitle';
 import { toast } from 'sonner';
-import { useSupabaseWithClerk } from '@/integrations/supabase/client';
-import { Guardian, CreateGuardianRequest, GUARDIAN_RELATIONSHIPS } from '@/types/guardian';
 
-export default function GuardiansPage() {
+// Guardian interface (simplified for localStorage)
+interface Guardian {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  relationship?: string;
+  notes?: string;
+  can_trigger_emergency: boolean;
+  can_access_health_docs: boolean;
+  can_access_financial_docs: boolean;
+  is_child_guardian: boolean;
+  is_will_executor: boolean;
+  emergency_contact_priority: number;
+  is_active: boolean;
+  created_at: string;
+}
+
+interface GuardianFormData {
+  name: string;
+  email: string;
+  phone: string;
+  relationship: string;
+  notes: string;
+  can_trigger_emergency: boolean;
+  can_access_health_docs: boolean;
+  can_access_financial_docs: boolean;
+  is_child_guardian: boolean;
+  is_will_executor: boolean;
+  emergency_contact_priority: number;
+}
+
+const GUARDIAN_RELATIONSHIPS = [
+  'Spouse',
+  'Parent',
+  'Sibling',
+  'Child',
+  'Friend',
+  'Attorney',
+  'Financial Advisor',
+  'Other'
+];
+
+export default function GuardiansEnhanced() {
   usePageTitle('My Guardians');
   const { userId } = useAuth();
-  const createSupabaseClient = useSupabaseWithClerk();
   
   const [guardians, setGuardians] = useState<Guardian[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [editingGuardian, setEditingGuardian] = useState<Guardian | null>(null);
   
   // Form state
-  const [formData, setFormData] = useState<CreateGuardianRequest>({
+  const [formData, setFormData] = useState<GuardianFormData>({
     name: '',
     email: '',
     phone: '',
     relationship: '',
     notes: '',
-    // Family Shield Protocol permissions - default to false
     can_trigger_emergency: false,
     can_access_health_docs: false,
     can_access_financial_docs: false,
@@ -42,39 +84,84 @@ export default function GuardiansPage() {
     emergency_contact_priority: 1
   });
 
-  // Fetch guardians
-  const fetchGuardians = useCallback(async () => {
-    if (!userId) return;
-
+  // Load guardians from localStorage
+  useEffect(() => {
+    setIsLoading(true);
     try {
-      const supabase = await createSupabaseClient();
-      
-      const { data, error } = await supabase
-        .from('guardians')
-        .select('*')
-        .eq('user_id', userId)
-        .eq('is_active', true)
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-
-      setGuardians(data || []);
+      const storedGuardians = localStorage.getItem('guardians_data');
+      if (storedGuardians) {
+        setGuardians(JSON.parse(storedGuardians));
+      } else {
+        // Initialize with sample data
+        const sampleGuardians: Guardian[] = [
+          {
+            id: '1',
+            name: 'Jane Doe',
+            email: 'jane.doe@example.com',
+            phone: '+1 234 567 8900',
+            relationship: 'Spouse',
+            notes: 'Primary emergency contact with full access to all documents',
+            can_trigger_emergency: true,
+            can_access_health_docs: true,
+            can_access_financial_docs: true,
+            is_child_guardian: false,
+            is_will_executor: true,
+            emergency_contact_priority: 1,
+            is_active: true,
+            created_at: new Date(Date.now() - 86400000 * 90).toISOString()
+          },
+          {
+            id: '2',
+            name: 'John Smith',
+            email: 'john.smith@example.com',
+            phone: '+1 234 567 8901',
+            relationship: 'Brother',
+            notes: 'Designated guardian for children',
+            can_trigger_emergency: true,
+            can_access_health_docs: true,
+            can_access_financial_docs: false,
+            is_child_guardian: true,
+            is_will_executor: false,
+            emergency_contact_priority: 2,
+            is_active: true,
+            created_at: new Date(Date.now() - 86400000 * 60).toISOString()
+          },
+          {
+            id: '3',
+            name: 'Mary Johnson',
+            email: 'mary.j@example.com',
+            relationship: 'Attorney',
+            can_trigger_emergency: false,
+            can_access_health_docs: false,
+            can_access_financial_docs: true,
+            is_child_guardian: false,
+            is_will_executor: true,
+            emergency_contact_priority: 3,
+            is_active: true,
+            created_at: new Date(Date.now() - 86400000 * 30).toISOString()
+          }
+        ];
+        setGuardians(sampleGuardians);
+        localStorage.setItem('guardians_data', JSON.stringify(sampleGuardians));
+      }
     } catch (error) {
-      console.error('Error fetching guardians:', error);
+      console.error('Error loading guardians:', error);
       toast.error('Failed to load guardians');
     } finally {
       setIsLoading(false);
     }
-  }, [userId, createSupabaseClient]);
+  }, []);
 
+  // Save guardians to localStorage whenever they change
   useEffect(() => {
-    fetchGuardians();
-  }, [userId, fetchGuardians]);
+    if (guardians.length > 0 || localStorage.getItem('guardians_data')) {
+      localStorage.setItem('guardians_data', JSON.stringify(guardians));
+    }
+  }, [guardians]);
 
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!userId) return;
 
     // Validation
     if (!formData.name.trim() || !formData.email.trim()) {
@@ -85,32 +172,25 @@ export default function GuardiansPage() {
     setIsSubmitting(true);
 
     try {
-      const supabase = await createSupabaseClient();
-      
-      const { data, error } = await supabase
-        .from('guardians')
-        .insert({
-          user_id: userId,
-          name: formData.name.trim(),
-          email: formData.email.trim(),
-          phone: formData.phone?.trim() || null,
-          relationship: formData.relationship || null,
-          notes: formData.notes?.trim() || null,
-          // Family Shield Protocol permissions
-          can_trigger_emergency: formData.can_trigger_emergency || false,
-          can_access_health_docs: formData.can_access_health_docs || false,
-          can_access_financial_docs: formData.can_access_financial_docs || false,
-          is_child_guardian: formData.is_child_guardian || false,
-          is_will_executor: formData.is_will_executor || false,
-          emergency_contact_priority: formData.emergency_contact_priority || 1
-        })
-        .select()
-        .single();
-
-      if (error) throw error;
-
-      // Add to local state
-      setGuardians(prev => [data, ...prev]);
+      if (editingGuardian) {
+        // Update existing guardian
+        const updated = {
+          ...editingGuardian,
+          ...formData
+        };
+        setGuardians(prev => prev.map(g => g.id === editingGuardian.id ? updated : g));
+        toast.success(`${formData.name} has been updated!`);
+      } else {
+        // Create new guardian
+        const newGuardian: Guardian = {
+          id: Date.now().toString(),
+          ...formData,
+          is_active: true,
+          created_at: new Date().toISOString()
+        };
+        setGuardians(prev => [...prev, newGuardian]);
+        toast.success(`${formData.name} was successfully added as a guardian!`);
+      }
       
       // Reset form
       setFormData({
@@ -119,7 +199,6 @@ export default function GuardiansPage() {
         phone: '',
         relationship: '',
         notes: '',
-        // Family Shield Protocol permissions - reset to defaults
         can_trigger_emergency: false,
         can_access_health_docs: false,
         can_access_financial_docs: false,
@@ -129,18 +208,126 @@ export default function GuardiansPage() {
       });
       
       setIsDialogOpen(false);
-      toast.success(`Guardian ${formData.name} was successfully added!`);
+      setEditingGuardian(null);
       
     } catch (error) {
-      console.error('Error adding guardian:', error);
-      toast.error('Failed to add guardian. Please try again.');
+      console.error('Error saving guardian:', error);
+      toast.error('Failed to save guardian. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  // Convert Guardian to ProfileData
+  const convertToProfileData = (guardian: Guardian): ProfileData => {
+    const roles = [];
+    if (guardian.is_will_executor) roles.push('Executor');
+    if (guardian.is_child_guardian) roles.push('Child Guardian');
+    if (guardian.can_trigger_emergency) roles.push('Emergency Contact');
+    
+    const completionPercentage = [
+      guardian.name,
+      guardian.email,
+      guardian.phone,
+      guardian.relationship,
+      roles.length > 0
+    ].filter(Boolean).length * 20;
+
+    return {
+      id: guardian.id,
+      name: guardian.name,
+      email: guardian.email,
+      phone: guardian.phone,
+      relationship: guardian.relationship,
+      roles,
+      status: guardian.is_active ? 'active' : 'inactive',
+      completionPercentage,
+      metadata: {
+        'Access': guardian.can_access_financial_docs && guardian.can_access_health_docs ? 'Full Access' : 
+                 guardian.can_access_health_docs ? 'Health Only' :
+                 guardian.can_access_financial_docs ? 'Financial Only' : 'Limited',
+        'Priority': `Level ${guardian.emergency_contact_priority}`,
+        'Added': new Date(guardian.created_at).toLocaleDateString()
+      }
+    };
+  };
+
+  // Handle edit
+  const handleEdit = (profile: ProfileData) => {
+    const guardian = guardians.find(g => g.id === profile.id);
+    if (guardian) {
+      setEditingGuardian(guardian);
+      setFormData({
+        name: guardian.name,
+        email: guardian.email,
+        phone: guardian.phone || '',
+        relationship: guardian.relationship || '',
+        notes: guardian.notes || '',
+        can_trigger_emergency: guardian.can_trigger_emergency,
+        can_access_health_docs: guardian.can_access_health_docs,
+        can_access_financial_docs: guardian.can_access_financial_docs,
+        is_child_guardian: guardian.is_child_guardian,
+        is_will_executor: guardian.is_will_executor,
+        emergency_contact_priority: guardian.emergency_contact_priority
+      });
+      setIsDialogOpen(true);
+    }
+  };
+
+  // Handle delete
+  const handleDelete = async (profile: ProfileData) => {
+    if (!confirm(`Are you sure you want to remove ${profile.name} as a guardian?`)) return;
+    
+    setGuardians(prev => prev.filter(g => g.id !== profile.id));
+    toast.success(`${profile.name} has been removed as a guardian`);
+  };
+
+  // Handle view details
+  const handleViewDetails = (profile: ProfileData) => {
+    const guardian = guardians.find(g => g.id === profile.id);
+    if (guardian && guardian.notes) {
+      toast.info(guardian.notes, { 
+        description: `Notes for ${guardian.name}`,
+        duration: 5000 
+      });
+    }
+  };
+
+  // Calculate metrics
+  const metrics = useMemo(() => [
+    {
+      title: 'Total Guardians',
+      value: guardians.length.toString(),
+      icon: 'shield',
+      color: 'primary' as const,
+      trend: guardians.length > 0 ? 'up' as const : 'neutral' as const,
+      onClick: () => {}
+    },
+    {
+      title: 'Executors',
+      value: guardians.filter(g => g.is_will_executor).length.toString(),
+      icon: 'user-check',
+      color: 'success' as const,
+      changeLabel: 'Appointed'
+    },
+    {
+      title: 'Child Guardians',
+      value: guardians.filter(g => g.is_child_guardian).length.toString(),
+      icon: 'users',
+      color: 'info' as const,
+      changeLabel: 'Designated'
+    },
+    {
+      title: 'Emergency Contacts',
+      value: guardians.filter(g => g.can_trigger_emergency).length.toString(),
+      icon: 'alert-circle',
+      color: 'warning' as const,
+      changeLabel: 'Ready'
+    }
+  ], [guardians]);
+
   // Handle form input changes
-  const handleInputChange = (field: keyof CreateGuardianRequest, value: string | boolean | number) => {
+  const handleInputChange = (field: keyof GuardianFormData, value: string | boolean | number) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
@@ -174,9 +361,9 @@ export default function GuardiansPage() {
                       Add Guardian
                     </Button>
                   </DialogTrigger>
-                  <DialogContent className="sm:max-w-[600px]">
+                  <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
                     <DialogHeader>
-                      <DialogTitle>Add New Guardian</DialogTitle>
+                      <DialogTitle>{editingGuardian ? 'Edit Guardian' : 'Add New Guardian'}</DialogTitle>
                     </DialogHeader>
                     <form onSubmit={handleSubmit} className="space-y-6">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -211,7 +398,7 @@ export default function GuardiansPage() {
                             type="tel"
                             value={formData.phone}
                             onChange={(e) => handleInputChange('phone', e.target.value)}
-                            placeholder="+1 (555) 123-4567"
+                            placeholder="+1 234 567 8900"
                           />
                         </div>
                         <div className="space-y-2">
@@ -222,8 +409,8 @@ export default function GuardiansPage() {
                             </SelectTrigger>
                             <SelectContent>
                               {GUARDIAN_RELATIONSHIPS.map((rel) => (
-                                <SelectItem key={rel.value} value={rel.value}>
-                                  {rel.label}
+                                <SelectItem key={rel} value={rel}>
+                                  {rel}
                                 </SelectItem>
                               ))}
                             </SelectContent>
@@ -232,145 +419,95 @@ export default function GuardiansPage() {
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="notes">Notes (Optional)</Label>
+                        <Label htmlFor="notes">Notes</Label>
                         <Textarea
                           id="notes"
                           value={formData.notes}
                           onChange={(e) => handleInputChange('notes', e.target.value)}
-                          placeholder="Any additional information about this guardian..."
+                          placeholder="Any special instructions or notes..."
                           rows={3}
                         />
                       </div>
 
-                      {/* Family Shield Protocol Permissions */}
-                      <div className="space-y-4 p-4 border border-primary/20 rounded-lg bg-primary/5">
-                        <div className="flex items-center gap-2 mb-4">
-                          <Icon name="shield-check" className="w-5 h-5 text-primary" />
-                          <h3 className="text-lg font-semibold text-primary">Family Shield Protocol Permissions</h3>
+                      <div className="space-y-4">
+                        <h4 className="font-medium">Family Shield Protocol Permissions</h4>
+                        
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <Label htmlFor="emergency" className="text-sm">Can trigger emergency protocol</Label>
+                            <Switch
+                              id="emergency"
+                              checked={formData.can_trigger_emergency}
+                              onCheckedChange={(checked) => handleInputChange('can_trigger_emergency', checked)}
+                            />
+                          </div>
+                          
+                          <div className="flex items-center justify-between">
+                            <Label htmlFor="health" className="text-sm">Can access health documents</Label>
+                            <Switch
+                              id="health"
+                              checked={formData.can_access_health_docs}
+                              onCheckedChange={(checked) => handleInputChange('can_access_health_docs', checked)}
+                            />
+                          </div>
+                          
+                          <div className="flex items-center justify-between">
+                            <Label htmlFor="financial" className="text-sm">Can access financial documents</Label>
+                            <Switch
+                              id="financial"
+                              checked={formData.can_access_financial_docs}
+                              onCheckedChange={(checked) => handleInputChange('can_access_financial_docs', checked)}
+                            />
+                          </div>
+                          
+                          <div className="flex items-center justify-between">
+                            <Label htmlFor="child" className="text-sm">Is designated child guardian</Label>
+                            <Switch
+                              id="child"
+                              checked={formData.is_child_guardian}
+                              onCheckedChange={(checked) => handleInputChange('is_child_guardian', checked)}
+                            />
+                          </div>
+                          
+                          <div className="flex items-center justify-between">
+                            <Label htmlFor="executor" className="text-sm">Is will executor</Label>
+                            <Switch
+                              id="executor"
+                              checked={formData.is_will_executor}
+                              onCheckedChange={(checked) => handleInputChange('is_will_executor', checked)}
+                            />
+                          </div>
                         </div>
-                        <p className="text-sm text-muted-foreground mb-4">
-                          Configure what this Guardian can access and do in emergency situations.
-                        </p>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <div className="flex items-center justify-between space-x-2">
-                            <div className="space-y-0.5">
-                              <Label htmlFor="can_trigger_emergency" className="text-sm font-medium">
-                                Can Trigger Emergency Protocol
-                              </Label>
-                              <p className="text-xs text-muted-foreground">
-                                This person can activate the Family Shield Protocol
-                              </p>
-                            </div>
-                            <Switch
-                              id="can_trigger_emergency"
-                              checked={formData.can_trigger_emergency || false}
-                              onCheckedChange={(value) => handleInputChange('can_trigger_emergency', value)}
-                            />
-                          </div>
-
-                          <div className="flex items-center justify-between space-x-2">
-                            <div className="space-y-0.5">
-                              <Label htmlFor="can_access_health_docs" className="text-sm font-medium">
-                                Health Information Access
-                              </Label>
-                              <p className="text-xs text-muted-foreground">
-                                Access to medical records and health documents
-                              </p>
-                            </div>
-                            <Switch
-                              id="can_access_health_docs"
-                              checked={formData.can_access_health_docs || false}
-                              onCheckedChange={(value) => handleInputChange('can_access_health_docs', value)}
-                            />
-                          </div>
-
-                          <div className="flex items-center justify-between space-x-2">
-                            <div className="space-y-0.5">
-                              <Label htmlFor="can_access_financial_docs" className="text-sm font-medium">
-                                Financial Information Access
-                              </Label>
-                              <p className="text-xs text-muted-foreground">
-                                Access to bank accounts and financial documents
-                              </p>
-                            </div>
-                            <Switch
-                              id="can_access_financial_docs"
-                              checked={formData.can_access_financial_docs || false}
-                              onCheckedChange={(value) => handleInputChange('can_access_financial_docs', value)}
-                            />
-                          </div>
-
-                          <div className="flex items-center justify-between space-x-2">
-                            <div className="space-y-0.5">
-                              <Label htmlFor="is_child_guardian" className="text-sm font-medium">
-                                Child Guardian
-                              </Label>
-                              <p className="text-xs text-muted-foreground">
-                                Can care for and make decisions for children
-                              </p>
-                            </div>
-                            <Switch
-                              id="is_child_guardian"
-                              checked={formData.is_child_guardian || false}
-                              onCheckedChange={(value) => handleInputChange('is_child_guardian', value)}
-                            />
-                          </div>
-
-                          <div className="flex items-center justify-between space-x-2">
-                            <div className="space-y-0.5">
-                              <Label htmlFor="is_will_executor" className="text-sm font-medium">
-                                Will Executor
-                              </Label>
-                              <p className="text-xs text-muted-foreground">
-                                Responsible for executing the last will
-                              </p>
-                            </div>
-                            <Switch
-                              id="is_will_executor"
-                              checked={formData.is_will_executor || false}
-                              onCheckedChange={(value) => handleInputChange('is_will_executor', value)}
-                            />
-                          </div>
-
-                          <div className="space-y-2">
-                            <Label htmlFor="emergency_contact_priority">Emergency Contact Priority</Label>
-                            <Input
-                              id="emergency_contact_priority"
-                              type="number"
-                              min="1"
-                              max="10"
-                              value={formData.emergency_contact_priority}
-                              onChange={(e) => handleInputChange('emergency_contact_priority', parseInt(e.target.value) || 1)}
-                              placeholder="1 = highest priority"
-                            />
-                            <p className="text-xs text-muted-foreground">
-                              1 = highest priority, higher numbers = lower priority
-                            </p>
-                          </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="priority">Emergency Contact Priority</Label>
+                          <Select 
+                            value={formData.emergency_contact_priority.toString()} 
+                            onValueChange={(value) => handleInputChange('emergency_contact_priority', parseInt(value))}
+                          >
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {[1, 2, 3, 4, 5].map((priority) => (
+                                <SelectItem key={priority} value={priority.toString()}>
+                                  Priority {priority}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
                         </div>
                       </div>
 
-                      <div className="flex justify-end gap-3 pt-4">
-                        <Button 
-                          type="button" 
-                          variant="outline" 
-                          onClick={() => setIsDialogOpen(false)}
-                        >
+                      <div className="flex justify-end space-x-2">
+                        <Button type="button" variant="outline" onClick={() => {
+                          setIsDialogOpen(false);
+                          setEditingGuardian(null);
+                        }}>
                           Cancel
                         </Button>
                         <Button type="submit" disabled={isSubmitting}>
-                          {isSubmitting ? (
-                            <>
-                              <Icon name="loader" className="w-4 h-4 mr-2 animate-spin" />
-                              Adding...
-                            </>
-                          ) : (
-                            <>
-                              <Icon name="add" className="w-4 h-4 mr-2" />
-                              Add Guardian
-                            </>
-                          )}
+                          {isSubmitting ? 'Saving...' : editingGuardian ? 'Update Guardian' : 'Add Guardian'}
                         </Button>
                       </div>
                     </form>
@@ -381,216 +518,76 @@ export default function GuardiansPage() {
           </div>
         </header>
 
-        {/* Main Content */}
         <main className="max-w-7xl mx-auto px-6 lg:px-8 py-12">
-          {isLoading ? (
-            <div className="flex items-center justify-center py-12">
-              <Icon name="loader" className="w-8 h-8 animate-spin text-primary" />
-              <span className="ml-3 text-muted-foreground">Loading guardians...</span>
-            </div>
-          ) : guardians.length === 0 ? (
+          <div className="space-y-8">
+            {/* Metrics Overview */}
             <FadeIn duration={0.5} delay={0.8}>
-              <Card className="p-16 text-center bg-gradient-to-br from-primary/5 via-background to-primary/10 border-primary/20">
-                <div className="relative mb-8">
-                  {/* Decorative background circle */}
-                  <div className="w-24 h-24 bg-primary/10 rounded-full mx-auto mb-4 flex items-center justify-center relative">
-                    <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center">
-                      <Icon name="users" className="w-8 h-8 text-primary" />
-                    </div>
-                    {/* Small decorative dots */}
-                    <div className="absolute -top-2 -right-2 w-4 h-4 bg-primary/30 rounded-full"></div>
-                    <div className="absolute -bottom-2 -left-2 w-3 h-3 bg-primary/20 rounded-full"></div>
-                  </div>
-                </div>
-                
-                <h3 className="text-2xl font-bold mb-4 text-card-foreground">You don't have any guardians yet</h3>
-                <p className="text-muted-foreground mb-6 max-w-lg mx-auto text-lg leading-relaxed">
-                  A guardian is a trusted person who can help your loved ones when they need it most. 
-                  Let's add your first guardian to start building your Circle of Trust.
-                </p>
-                <div className="bg-primary/10 rounded-lg p-4 mb-8 max-w-2xl mx-auto border border-primary/20">
-                  <p className="text-sm text-primary/80 italic leading-relaxed">
-                    🤗 Think of someone who knows your values and would act with the same care you would. 
-                    This could be a family member, close friend, or trusted advisor who has always been there for you. 
-                    Your guardians become your family's guides when you cannot be there yourself.
-                  </p>
-                </div>
-                
-                {/* Benefits list */}
-                <div className="flex flex-col sm:flex-row gap-6 mb-10 max-w-2xl mx-auto">
-                  <div className="flex items-center gap-3 text-sm">
-                    <div className="w-8 h-8 bg-green-500/10 rounded-full flex items-center justify-center flex-shrink-0">
-                      <Icon name="shield-check" className="w-4 h-4 text-green-600" />
-                    </div>
-                    <span className="text-muted-foreground">Trusted emergency contacts</span>
-                  </div>
-                  <div className="flex items-center gap-3 text-sm">
-                    <div className="w-8 h-8 bg-blue-500/10 rounded-full flex items-center justify-center flex-shrink-0">
-                      <Icon name="heart" className="w-4 h-4 text-blue-600" />
-                    </div>
-                    <span className="text-muted-foreground">Peace of mind for family</span>
-                  </div>
-                  <div className="flex items-center gap-3 text-sm">
-                    <div className="w-8 h-8 bg-purple-500/10 rounded-full flex items-center justify-center flex-shrink-0">
-                      <Icon name="clock" className="w-4 h-4 text-purple-600" />
-                    </div>
-                    <span className="text-muted-foreground">Always available help</span>
-                  </div>
-                </div>
-                
-                <Button 
-                  onClick={() => setIsDialogOpen(true)}
-                  size="lg"
-                  className="bg-primary hover:bg-primary-hover text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-200"
-                >
-                  <Icon name="add" className="w-5 h-5 mr-2" />
-                  Add Your First Guardian
-                </Button>
-                
-                <p className="text-xs text-muted-foreground mt-6 max-w-md mx-auto">
-                  Don't worry, you can always add more guardians later and edit their information anytime.
-                </p>
-              </Card>
+              <MetricsGrid metrics={metrics} columns={4} />
             </FadeIn>
-          ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {guardians.map((guardian, index) => (
-                <FadeIn key={guardian.id} duration={0.5} delay={0.8 + index * 0.1}>
-                  <Card className="p-6 hover:shadow-md transition-shadow duration-200">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center relative">
-                          <Icon name="user" className="w-6 h-6 text-primary" />
-                          {guardian.can_trigger_emergency && (
-                            <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
-                              <Icon name="shield-check" className="w-2.5 h-2.5 text-white" />
-                            </div>
-                          )}
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <h3 className="font-semibold text-lg">{guardian.name}</h3>
-                            {guardian.emergency_contact_priority && guardian.emergency_contact_priority <= 3 && (
-                              <span className="px-2 py-0.5 bg-primary/20 text-primary text-xs rounded-full font-medium">
-                                Priority {guardian.emergency_contact_priority}
-                              </span>
-                            )}
-                          </div>
-                          {guardian.relationship && (
-                            <span className="text-sm text-muted-foreground capitalize">
-                              {guardian.relationship.replace('_', ' ')}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                      <div className="flex gap-2">
-                        <Button size="sm" variant="outline" disabled>
-                          <Icon name="pencil" className="w-4 h-4" />
-                        </Button>
-                        <Button size="sm" variant="outline" disabled>
-                          <Icon name="trash" className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </div>
 
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-3 text-sm">
-                        <Icon name="mail" className="w-4 h-4 text-muted-foreground" />
-                        <span className="text-muted-foreground">{guardian.email}</span>
-                      </div>
-                      {guardian.phone && (
-                        <div className="flex items-center gap-3 text-sm">
-                          <Icon name="phone" className="w-4 h-4 text-muted-foreground" />
-                          <span className="text-muted-foreground">{guardian.phone}</span>
-                        </div>
-                      )}
-                      {guardian.notes && (
-                        <div className="pt-3 border-t border-border">
-                          <p className="text-sm text-muted-foreground">{guardian.notes}</p>
-                        </div>
-                      )}
+            {/* Guardians Grid */}
+            <FadeIn duration={0.5} delay={1}>
+              {isLoading ? (
+                <div className="flex items-center justify-center py-12">
+                  <div className="text-center">
+                    <Icon name="loader" className="w-8 h-8 animate-spin mx-auto mb-4 text-primary" />
+                    <p className="text-muted-foreground">Loading guardians...</p>
+                  </div>
+                </div>
+              ) : guardians.length === 0 ? (
+                <Card className="p-12">
+                  <div className="text-center">
+                    <Icon name="shield" className="w-16 h-16 mx-auto mb-4 text-muted-foreground/50" />
+                    <h3 className="text-xl font-semibold mb-2">No Guardians Yet</h3>
+                    <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                      Add your first guardian to ensure your family has access to important information when needed.
+                    </p>
+                    <Button size="lg" onClick={() => setIsDialogOpen(true)}>
+                      <Icon name="add" className="w-5 h-5 mr-2" />
+                      Add Your First Guardian
+                    </Button>
+                  </div>
+                </Card>
+              ) : (
+                <div>
+                  <h2 className="text-xl font-semibold mb-6 text-card-foreground">Your Trusted Circle</h2>
+                  <ProfileGrid
+                    profiles={guardians.map(convertToProfileData)}
+                    columns={3}
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                    onViewDetails={handleViewDetails}
+                    onMessage={(profile) => {
+                      toast.info(`Messaging feature coming soon for ${profile.name}`);
+                    }}
+                  />
+                </div>
+              )}
+            </FadeIn>
 
-                      {/* Family Shield Protocol Permissions */}
-                      <div className="pt-3 border-t border-border">
-                        <h4 className="text-sm font-medium text-primary mb-2 flex items-center gap-1">
-                          <Icon name="shield-check" className="w-4 h-4" />
-                          Shield Permissions
-                        </h4>
-                        <div className="flex flex-wrap gap-1">
-                          {guardian.can_trigger_emergency && (
-                            <span className="px-2 py-1 bg-red-100 text-red-700 text-xs rounded-full">
-                              Emergency Trigger
-                            </span>
-                          )}
-                          {guardian.can_access_health_docs && (
-                            <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">
-                              Health Access
-                            </span>
-                          )}
-                          {guardian.can_access_financial_docs && (
-                            <span className="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full">
-                              Financial Access
-                            </span>
-                          )}
-                          {guardian.is_child_guardian && (
-                            <span className="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded-full">
-                              Child Guardian
-                            </span>
-                          )}
-                          {guardian.is_will_executor && (
-                            <span className="px-2 py-1 bg-amber-100 text-amber-700 text-xs rounded-full">
-                              Will Executor
-                            </span>
-                          )}
-                          {!guardian.can_trigger_emergency && 
-                           !guardian.can_access_health_docs && 
-                           !guardian.can_access_financial_docs && 
-                           !guardian.is_child_guardian && 
-                           !guardian.is_will_executor && (
-                            <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
-                              Basic Contact Only
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="mt-4 pt-4 border-t border-border">
-                      <p className="text-xs text-muted-foreground">
-                        Added {new Date(guardian.created_at).toLocaleDateString()}
+            {/* Information Section */}
+            {guardians.length > 0 && (
+              <FadeIn duration={0.5} delay={1.2}>
+                <Card className="p-8 bg-primary/5 border-primary/20">
+                  <div className="flex items-start gap-4">
+                    <Icon name="info" className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
+                    <div>
+                      <h4 className="font-semibold text-primary mb-2">The Trust Behind Your Guardians</h4>
+                      <p className="text-muted-foreground mb-4">
+                        Your guardians represent the deepest level of trust - people who would protect your family's interests 
+                        just as you would. They're not just emergency contacts; they're the extension of your care and wisdom 
+                        when your loved ones need guidance most.
+                      </p>
+                      <p className="text-sm text-muted-foreground/80 italic">
+                        ✨ Every guardian you add strengthens your family's safety net, giving you peace of mind that someone 
+                        who truly understands your values will be there to help.
                       </p>
                     </div>
-                  </Card>
-                </FadeIn>
-              ))}
-            </div>
-          )}
-
-          {/* Information Section */}
-          {guardians.length > 0 && (
-            <FadeIn duration={0.5} delay={1.2}>
-              <Card className="mt-12 p-8 bg-primary/5 border-primary/20">
-                <div className="flex items-start gap-4">
-                  <Icon name="info" className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
-                  <div>
-                    <h4 className="font-semibold text-primary mb-2">The Trust Behind Your Guardians</h4>
-                    <p className="text-muted-foreground mb-4">
-                      Your guardians represent the deepest level of trust - people who would protect your family's interests 
-                      just as you would. They're not just emergency contacts; they're the extension of your care and wisdom 
-                      when your loved ones need guidance most.
-                    </p>
-                    <p className="text-sm text-muted-foreground/80 italic mb-3">
-                      ✨ Every guardian you add strengthens your family's safety net, giving you peace of mind that someone 
-                      who truly understands your values will be there to help.
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      <strong>Coming soon:</strong> Advanced permissions, document sharing, and emergency access features.
-                    </p>
                   </div>
-                </div>
-              </Card>
-            </FadeIn>
-          )}
+                </Card>
+              </FadeIn>
+            )}
+          </div>
         </main>
       </div>
     </DashboardLayout>

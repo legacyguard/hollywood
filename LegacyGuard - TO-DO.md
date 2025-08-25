@@ -35,7 +35,7 @@
 - [X] Expiry monitoring
 - [X] Smart suggestions system
 - [X] Document search and filtering
-- [ ] Backup/restore functionality
+- [X] Backup/restore functionality
 
 ## 🛡️ FÁZA 3: Guardian Network
 

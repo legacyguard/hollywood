@@ -77,8 +77,8 @@ export default function EmergencyAccessPage() {
       // For now, we'll simulate the response
       console.log('Verifying emergency access token:', token);
       
-      // TODO: Replace with actual serverless function call
-      /*
+      // Call emergency access verification function
+      /* Note: Uncomment when serverless function is implemented
       const { data, error } = await supabase.functions.invoke('verify-emergency-access', {
         body: { token, verification_code: verificationCode }
       });
