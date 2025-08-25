@@ -12,7 +12,7 @@ import { Icon } from '@/components/ui/icon-library';
 import { FadeIn } from '@/components/motion/FadeIn';
 import { toast } from 'sonner';
 import DocumentScanner from './DocumentScanner';
-import { useSupabaseClient } from '@/integrations/supabase/client';
+import { useSupabaseWithClerk } from '@/integrations/supabase/client';
 import { ProcessedDocument, DocumentCategory, DocumentType } from '@/types/ocr';
 
 interface EnhancedDocumentUploaderProps {
@@ -25,7 +25,7 @@ export default function EnhancedDocumentUploader({
   className 
 }: EnhancedDocumentUploaderProps) {
   const { userId } = useAuth();
-  const createSupabaseClient = useSupabaseClient();
+const createSupabaseClient = useSupabaseWithClerk();
   
   const [mode, setMode] = useState<'manual' | 'scan'>('scan');
   const [isUploading, setIsUploading] = useState(false);

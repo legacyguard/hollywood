@@ -1,6 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
+import { User } from '@supabase/supabase-js';
 
 // Initialize clients with secret keys from server environment
 const supabase = createClient(
@@ -188,13 +189,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       
       if (!authError && authUsersData?.users) {
         users = authUsersData.users
-          .filter(user => userIds.includes(user.id))
-          .map(user => ({
+          .filter((user: any) => userIds.includes(user.id))
+          .map((user: any) => ({
             id: user.id,
             email: user.email || '',
             full_name: user.user_metadata?.full_name || user.user_metadata?.name
           }))
-          .filter(user => user.email); // Only include users with valid emails
+          .filter((user) => user.email); // Only include users with valid emails
       } else {
         console.error('Failed to get user emails from both profiles and auth tables');
       }

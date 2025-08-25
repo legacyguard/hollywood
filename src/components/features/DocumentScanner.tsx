@@ -21,6 +21,7 @@ import {
   DocumentType,
   DOCUMENT_PATTERNS 
 } from '@/types/ocr';
+import { useAuth } from '@clerk/clerk-react';
 
 interface DocumentScannerProps {
   onDocumentProcessed?: (processedDoc: ProcessedDocument) => void;
@@ -35,6 +36,7 @@ export default function DocumentScanner({
   onScanComplete,
   className 
 }: DocumentScannerProps) {
+  const { getToken } = useAuth();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -129,11 +131,13 @@ export default function DocumentScanner({
 
       setProcessingProgress(40);
 
-      // Send to API
+// Send to API
+      const authToken = await getToken().catch(() => null);
       const response = await fetch('/api/process-document', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
         },
         body: JSON.stringify(requestData)
       });

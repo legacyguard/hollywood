@@ -4,19 +4,12 @@ import OpenAI from 'https://esm.sh/openai@4.28.0'
 import { ImageAnnotatorClient } from 'https://esm.sh/@google-cloud/vision@4.0.0'
 
 function getCorsHeaders(origin: string) {
-  const allowedOrigins = [
-    'http://localhost:8081',
-    'http://localhost:8082', 
-    'http://localhost:3000',
-    'http://127.0.0.1:8081',
-    'http://127.0.0.1:8082',
-    'http://127.0.0.1:3000'
-  ];
-  
-  const isAllowedOrigin = allowedOrigins.includes(origin);
-  
+  const raw = Deno.env.get('ALLOWED_ORIGINS') || '';
+  const list = raw.split(',').map(s => s.trim()).filter(Boolean);
+  const isAllowedOrigin = origin && list.includes(origin);
+  const fallback = list[0] || 'http://localhost:8082';
   return {
-    'Access-Control-Allow-Origin': isAllowedOrigin ? origin : 'http://localhost:8082',
+    'Access-Control-Allow-Origin': isAllowedOrigin ? origin : fallback,
     'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
     'Access-Control-Allow-Credentials': 'true'
@@ -130,13 +123,13 @@ serve(async (req) => {
     const startTime = Date.now();
     const processingId = `doc_analysis_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
-    // Get environment variables
+// Get environment variables
     const supabaseUrl = Deno.env.get('SUPABASE_URL');
-    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY');
     const openaiApiKey = Deno.env.get('SOFIA_OPENAI_API_KEY');
     const googleCloudApiKey = Deno.env.get('GOOGLE_CLOUD_API_KEY');
     
-    if (!supabaseUrl || !supabaseServiceKey) {
+    if (!supabaseUrl || !supabaseAnonKey) {
       return new Response(
         JSON.stringify({ error: 'Missing Supabase configuration' }),
         { 
@@ -212,9 +205,10 @@ serve(async (req) => {
     console.log('Starting AI analysis...');
     let analysisResult: DocumentAnalysisResult;
     
-    // Create Supabase client for bundle detection (Phase 2)
-    const supabase = supabaseUrl && supabaseServiceKey 
-      ? createClient(supabaseUrl, supabaseServiceKey)
+// Create Supabase client for bundle detection (Phase 2) bound to user Authorization
+    const authHeader = req.headers.get('Authorization') ?? '';
+    const supabase = supabaseUrl && supabaseAnonKey 
+      ? createClient(supabaseUrl, supabaseAnonKey, { global: { headers: { Authorization: authHeader } } })
       : null;
     
     if (openaiApiKey && extractedText.trim()) {

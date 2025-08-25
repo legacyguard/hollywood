@@ -1,17 +1,24 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': 'http://localhost:8081',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'Access-Control-Allow-Credentials': 'true'
+function getCorsHeaders(origin: string) {
+  const raw = Deno.env.get('ALLOWED_ORIGINS') || '';
+  const list = raw.split(',').map(s => s.trim()).filter(Boolean);
+  const isAllowedOrigin = origin && list.includes(origin);
+  const fallback = list[0] || 'http://localhost:8081';
+  return {
+    'Access-Control-Allow-Origin': isAllowedOrigin ? origin : fallback,
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Credentials': 'true'
+  };
 }
 
 serve(async (req) => {
-  // Handle CORS preflight requests
+// Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
+    const origin = req.headers.get('origin') || '';
+    return new Response('ok', { headers: getCorsHeaders(origin) })
   }
 
   try {
@@ -32,11 +39,12 @@ serve(async (req) => {
     const { data: { user }, error: userError } = await supabaseClient.auth.getUser()
 
     if (userError || !user) {
+      const origin = req.headers.get('origin') || '';
       return new Response(
         JSON.stringify({ error: 'Unauthorized' }),
         { 
           status: 401, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+          headers: { ...getCorsHeaders(origin), 'Content-Type': 'application/json' } 
         }
       )
     }
@@ -45,11 +53,12 @@ serve(async (req) => {
     const body = await req.json()
     
     if (!body || typeof body !== 'object') {
+      const origin = req.headers.get('origin') || '';
       return new Response(
         JSON.stringify({ error: 'Invalid request body' }),
         { 
           status: 400, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+          headers: { ...getCorsHeaders(origin), 'Content-Type': 'application/json' } 
         }
       )
     }
@@ -57,11 +66,12 @@ serve(async (req) => {
     const { action, data } = body
     
     if (!action) {
+      const origin = req.headers.get('origin') || '';
       return new Response(
         JSON.stringify({ error: 'Action is required' }),
         { 
           status: 400, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+          headers: { ...getCorsHeaders(origin), 'Content-Type': 'application/json' } 
         }
       )
     }
@@ -76,20 +86,22 @@ serve(async (req) => {
           .single()
 
         if (profileError) {
+          const origin = req.headers.get('origin') || '';
           return new Response(
             JSON.stringify({ error: 'Profile not found' }),
             { 
               status: 404, 
-              headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+              headers: { ...getCorsHeaders(origin), 'Content-Type': 'application/json' } 
             }
           )
         }
 
+        const origin = req.headers.get('origin') || '';
         return new Response(
           JSON.stringify({ profile }),
           { 
             status: 200, 
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+            headers: { ...getCorsHeaders(origin), 'Content-Type': 'application/json' } 
           }
         )
       }
@@ -97,11 +109,12 @@ serve(async (req) => {
       case 'update_user_profile': {
         // Validate update data
         if (!data || typeof data !== 'object') {
-          return new Response(
+        const origin = req.headers.get('origin') || '';
+        return new Response(
             JSON.stringify({ error: 'Invalid update data' }),
             { 
               status: 400, 
-              headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+              headers: { ...getCorsHeaders(origin), 'Content-Type': 'application/json' } 
             }
           )
         }
@@ -118,40 +131,44 @@ serve(async (req) => {
           .single()
 
         if (updateError) {
-          return new Response(
+        const origin = req.headers.get('origin') || '';
+        return new Response(
             JSON.stringify({ error: 'Failed to update profile' }),
             { 
               status: 500, 
-              headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+              headers: { ...getCorsHeaders(origin), 'Content-Type': 'application/json' } 
             }
           )
         }
 
+        const origin = req.headers.get('origin') || '';
         return new Response(
           JSON.stringify({ profile: updateData }),
           { 
             status: 200, 
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+            headers: { ...getCorsHeaders(origin), 'Content-Type': 'application/json' } 
           }
         )
       }
 
       default:
+        const origin = req.headers.get('origin') || '';
         return new Response(
           JSON.stringify({ error: 'Invalid action' }),
           { 
             status: 400, 
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+            headers: { ...getCorsHeaders(origin), 'Content-Type': 'application/json' } 
           }
         )
     }
 
   } catch (error) {
+  const origin = req.headers.get('origin') || '';
     return new Response(
       JSON.stringify({ error: 'Internal server error' }),
       { 
         status: 500, 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        headers: { ...getCorsHeaders(origin), 'Content-Type': 'application/json' } 
       }
     )
   }

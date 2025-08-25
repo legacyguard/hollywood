@@ -1,32 +1,49 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { createClerkClient } from '@clerk/backend';
 
-// CORS headers
-const corsHeaders = {
-  'Access-Control-Allow-Origin': process.env.NODE_ENV === 'production' 
-    ? 'https://your-domain.com' 
-    : 'http://localhost:8082',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Access-Control-Allow-Credentials': 'true'
-};
+function getAllowedOrigin(origin?: string | null): string {
+  const raw = process.env.ALLOWED_ORIGINS || '';
+  const list = raw.split(',').map(s => s.trim()).filter(Boolean);
+  if (origin && list.includes(origin)) return origin;
+  return list[0] || 'http://localhost:8082';
+}
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  // Handle CORS preflight requests
+// Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
-    return res.status(200).setHeader('Access-Control-Allow-Origin', corsHeaders['Access-Control-Allow-Origin']).json({ message: 'OK' });
+    const origin = (req.headers.origin as string) || undefined;
+    return res
+      .status(200)
+      .setHeader('Access-Control-Allow-Origin', getAllowedOrigin(origin))
+      .json({ message: 'OK' });
   }
 
-  if (req.method !== 'POST') {
-    return res.status(405).setHeader('Access-Control-Allow-Origin', corsHeaders['Access-Control-Allow-Origin']).json({ 
+if (req.method !== 'POST') {
+    const origin = (req.headers.origin as string) || undefined;
+    return res.status(405).setHeader('Access-Control-Allow-Origin', getAllowedOrigin(origin)).json({ 
       error: 'Method not allowed',
       success: false 
     });
   }
 
   try {
+// Auth: require valid Clerk token
+    const authHeader = (req.headers.authorization as string) || '';
+    const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : '';
+    const clerk = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY! });
+    const origin = (req.headers.origin as string) || undefined;
+    try {
+      if (!token) throw new Error('Missing token');
+      await clerk.verifyToken(token);
+    } catch {
+      res.setHeader('Access-Control-Allow-Origin', getAllowedOrigin(origin));
+      res.setHeader('Access-Control-Allow-Credentials', 'true');
+      return res.status(401).json({ success: false, error: 'Unauthorized' });
+    }
+
     // Validate required environment variables
     if (!process.env.VITE_SUPABASE_URL) {
-      return res.status(500).setHeader('Access-Control-Allow-Origin', corsHeaders['Access-Control-Allow-Origin']).json({
+      return res.status(500).setHeader('Access-Control-Allow-Origin', getAllowedOrigin(origin)).json({
         success: false,
         error: 'Supabase configuration not found'
       });
@@ -34,14 +51,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const { fileData, fileName, fileType } = req.body;
 
-    if (!fileData || !fileName) {
-      return res.status(400).setHeader('Access-Control-Allow-Origin', corsHeaders['Access-Control-Allow-Origin']).json({
-        success: false,
-        error: 'Missing required fields: fileData and fileName'
-      });
+if (!fileData || !fileName) {
+      return res
+        .status(400)
+        .setHeader('Access-Control-Allow-Origin', getAllowedOrigin(origin))
+        .json({
+          success: false,
+          error: 'Missing required fields: fileData and fileName'
+        });
     }
 
-    // Forward the request to Supabase Edge Function
+// Forward the request to Supabase Edge Function, preserving user Authorization header
     const supabaseUrl = process.env.VITE_SUPABASE_URL;
     const edgeFunctionUrl = `${supabaseUrl}/functions/v1/intelligent-document-analyzer`;
     
@@ -49,7 +69,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`, // Use service role for server-to-server
+        ...(authHeader ? { Authorization: authHeader } : {}),
       },
       body: JSON.stringify({
         fileData,
@@ -61,7 +81,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const result = await response.json();
     
     // Set CORS headers and forward the response
-    res.setHeader('Access-Control-Allow-Origin', corsHeaders['Access-Control-Allow-Origin']);
+const origin = (req.headers.origin as string) || undefined;
+    res.setHeader('Access-Control-Allow-Origin', getAllowedOrigin(origin));
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     
     if (!response.ok) {
@@ -73,7 +94,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   } catch (error) {
     console.error('API proxy error:', error);
     
-    res.setHeader('Access-Control-Allow-Origin', corsHeaders['Access-Control-Allow-Origin']);
+    const origin = (req.headers.origin as string) || undefined;
+    res.setHeader('Access-Control-Allow-Origin', getAllowedOrigin(origin));
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     
     return res.status(500).json({

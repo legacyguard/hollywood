@@ -1,5 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { ImageAnnotatorClient } from '@google-cloud/vision';
+import { createClerkClient } from '@clerk/backend';
 import { 
   ProcessedDocument,
   OCRProcessingConfig,
@@ -11,23 +12,28 @@ import {
   DocumentType
 } from '../src/types/ocr';
 
-// CORS headers
-const corsHeaders = {
-  'Access-Control-Allow-Origin': process.env.NODE_ENV === 'production' 
-    ? 'https://your-domain.com' 
-    : 'http://localhost:8080',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Access-Control-Allow-Credentials': 'true'
-};
+function getAllowedOrigin(origin?: string | null): string {
+  const raw = process.env.ALLOWED_ORIGINS || '';
+  const list = raw.split(',').map(s => s.trim()).filter(Boolean);
+  if (origin && list.includes(origin)) return origin;
+  return list[0] || 'http://localhost:8080';
+}
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  // Handle CORS preflight requests
+// Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
+    const origin = (req.headers.origin as string) || undefined;
+    res.setHeader('Access-Control-Allow-Origin', getAllowedOrigin(origin));
+    res.setHeader('Access-Control-Allow-Headers', 'authorization, x-client-info, apikey, content-type');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
     return res.status(200).json({ message: 'OK' });
   }
 
   if (req.method !== 'POST') {
+    const origin = (req.headers.origin as string) || undefined;
+    res.setHeader('Access-Control-Allow-Origin', getAllowedOrigin(origin));
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
     return res.status(405).json({ 
       error: 'Method not allowed',
       success: false 
@@ -35,6 +41,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
+// Auth: require valid Clerk token
+    const authHeader = (req.headers.authorization as string) || '';
+    const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : '';
+    const clerk = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY! });
+    try {
+      if (!token) throw new Error('Missing token');
+      await clerk.verifyToken(token);
+    } catch {
+      const origin = (req.headers.origin as string) || undefined;
+      res.setHeader('Access-Control-Allow-Origin', getAllowedOrigin(origin));
+      res.setHeader('Access-Control-Allow-Credentials', 'true');
+      return res.status(401).json({ success: false, error: 'Unauthorized' });
+    }
+
     // Validate required environment variables
     if (!process.env.GOOGLE_CLOUD_PROJECT_ID || 
         !process.env.GOOGLE_CLOUD_CLIENT_EMAIL || 
@@ -57,11 +77,22 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       },
     });
 
-    const { fileData, fileName, config } = req.body as {
+const { fileData, fileName, config } = req.body as {
       fileData: string;
       fileName: string;
       config: OCRProcessingConfig;
     };
+
+    // Enforce size limit ~10MB on base64 payload
+    if (fileData) {
+      const approxBytes = Math.floor((fileData.length * 3) / 4); // base64 estimate
+      if (approxBytes > 10 * 1024 * 1024) {
+        const origin = (req.headers.origin as string) || undefined;
+        res.setHeader('Access-Control-Allow-Origin', getAllowedOrigin(origin));
+        res.setHeader('Access-Control-Allow-Credentials', 'true');
+        return res.status(413).json({ success: false, error: 'Payload too large' });
+      }
+    }
 
     if (!fileData || !fileName) {
       return res.status(400).json({
@@ -145,7 +176,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         processingId
       };
 
-      res.setHeader('Access-Control-Allow-Origin', corsHeaders['Access-Control-Allow-Origin']);
+const origin = (req.headers.origin as string) || undefined;
+      res.setHeader('Access-Control-Allow-Origin', getAllowedOrigin(origin));
       res.setHeader('Access-Control-Allow-Credentials', 'true');
       
       return res.status(200).json(response);
@@ -159,7 +191,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         processingId
       };
 
-      res.setHeader('Access-Control-Allow-Origin', corsHeaders['Access-Control-Allow-Origin']);
+      const origin = (req.headers.origin as string) || undefined;
+      res.setHeader('Access-Control-Allow-Origin', getAllowedOrigin(origin));
       res.setHeader('Access-Control-Allow-Credentials', 'true');
       
       return res.status(500).json(errorResponse);
@@ -174,7 +207,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       processingId: `error_${Date.now()}`
     };
 
-    res.setHeader('Access-Control-Allow-Origin', corsHeaders['Access-Control-Allow-Origin']);
+    const origin = (req.headers.origin as string) || undefined;
+    res.setHeader('Access-Control-Allow-Origin', getAllowedOrigin(origin));
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     
     return res.status(500).json(errorResponse);

@@ -135,15 +135,26 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       html
     });
 
-    console.log('Test email sent successfully:', result);
-
-    return res.status(200).json({
-      message: 'Test notification sent successfully',
-      email,
-      documentName: documentName || 'Test Document.pdf',
-      daysUntil: daysUntil || 7,
-      emailId: result.id
-    });
+    // Handle both old and new Resend API response formats
+    const emailId = (result as any).data?.id || (result as any).id;
+    
+    if (emailId) {
+      console.log('Test email sent successfully:', emailId);
+      return res.status(200).json({
+        message: 'Test notification sent successfully',
+        email,
+        documentName: documentName || 'Test Document.pdf',
+        daysUntil: daysUntil || 7,
+        emailId: emailId
+      });
+    } else {
+      const errorMessage = (result as any).error?.message || 'Failed to get email ID';
+      console.error('Failed to send test email:', errorMessage);
+      return res.status(500).json({
+        message: 'Failed to send test notification',
+        error: errorMessage
+      });
+    }
 
   } catch (error) {
     console.error('Error sending test notification:', error);
