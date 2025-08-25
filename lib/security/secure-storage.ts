@@ -82,7 +82,7 @@ export class SecureStorage {
     this.sessionKey = nanoid(32);
     this.memoryStore = new Map();
     this.expiryTimers = new Map();
-    
+
     // Clear memory on page unload
     if (typeof window !== 'undefined') {
       window.addEventListener('beforeunload', () => this.clearAll());
@@ -102,7 +102,7 @@ export class SecureStorage {
   public setMemory(key: string, value: any, expiryMs?: number): void {
     // Clear existing timer if any
     this.clearExpiry(key);
-    
+
     this.memoryStore.set(key, {
       value,
       timestamp: Date.now()
@@ -138,7 +138,7 @@ export class SecureStorage {
       });
 
       const { encrypted, salt, iv } = await encryptData(data, this.sessionKey);
-      
+
       const storageData = {
         e: Array.from(new Uint8Array(encrypted)),
         s: Array.from(salt),
@@ -196,10 +196,10 @@ export class SecureStorage {
       });
 
       const { encrypted, salt, iv } = await encryptData(data, this.sessionKey);
-      
+
       const tx = db.transaction(['secure_store'], 'readwrite');
       const store = tx.objectStore('secure_store');
-      
+
       await store.put({
         key,
         encrypted: Array.from(new Uint8Array(encrypted)),
@@ -224,7 +224,7 @@ export class SecureStorage {
       const db = await this.openIndexedDB();
       const tx = db.transaction(['secure_store'], 'readonly');
       const store = tx.objectStore('secure_store');
-      
+
       const data = await store.get(key);
       if (!data) return null;
 
@@ -254,7 +254,7 @@ export class SecureStorage {
   public remove(key: string): void {
     this.memoryStore.delete(key);
     this.clearExpiry(key);
-    
+
     if (typeof window !== 'undefined') {
       sessionStorage.removeItem(`sec_${key}`);
       this.removeFromIndexedDB(key);
@@ -267,11 +267,11 @@ export class SecureStorage {
   public clearAll(): void {
     // Clear memory
     this.memoryStore.clear();
-    
+
     // Clear all expiry timers
     this.expiryTimers.forEach(timer => clearTimeout(timer));
     this.expiryTimers.clear();
-    
+
     // Clear session storage
     if (typeof window !== 'undefined') {
       const keys = Object.keys(sessionStorage);
@@ -280,7 +280,7 @@ export class SecureStorage {
           sessionStorage.removeItem(key);
         }
       });
-      
+
       // Clear IndexedDB
       this.clearIndexedDB();
     }
@@ -313,7 +313,7 @@ export class SecureStorage {
   }
 
   // Private helper methods
-  
+
   private clearExpiry(key: string): void {
     const timer = this.expiryTimers.get(key);
     if (timer) {
@@ -325,10 +325,10 @@ export class SecureStorage {
   private async openIndexedDB(): Promise<IDBDatabase> {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open('SecureStorage', 1);
-      
+
       request.onerror = () => reject(request.error);
       request.onsuccess = () => resolve(request.result);
-      
+
       request.onupgradeneeded = (event) => {
         const db = (event.target as IDBOpenDBRequest).result;
         if (!db.objectStoreNames.contains('secure_store')) {

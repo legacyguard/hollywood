@@ -4,7 +4,7 @@ import User18 from '../images/user/user-18.png';
 import User19 from '../images/user/user-19.png';
 import User20 from '../images/user/user-20.png';
 import User21 from '../images/user/user-21.png';
-import { Lead } from '../types/Lead';
+import type { Lead } from '../types/Lead';
 import DropdownDefault from './Dropdowns/DropdownDefault';
 
 const leadsData: Lead[] = [

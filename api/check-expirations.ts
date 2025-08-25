@@ -32,10 +32,10 @@ function calculateDaysUntilExpiration(expiresAt: string): number {
 
 function getEmailTemplate(document: DocumentWithUser, daysUntil: number): { subject: string; html: string } {
   const userName = document.user_name || 'Dear Guardian of Memories';
-  
+
   let urgencyMessage = '';
   let emoji = '🔔';
-  
+
   if (daysUntil <= 1) {
     urgencyMessage = 'expires tomorrow';
     emoji = '🚨';
@@ -85,8 +85,8 @@ function getEmailTemplate(document: DocumentWithUser, daysUntil: number): { subj
               
               <p style="margin: 24px 0;">
                 I noticed that the expiration date for this important document is approaching. 
-                ${daysUntil <= 7 
-                  ? 'This is quite urgent, so you might want to take action soon.' 
+                ${daysUntil <= 7
+                  ? 'This is quite urgent, so you might want to take action soon.'
                   : 'No rush, just a friendly reminder so you don\'t forget.'
                 }
               </p>
@@ -133,7 +133,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     const today = new Date();
     today.setHours(0, 0, 0, 0); // Start of day
-    
+
     const thirtyDaysFromNow = new Date(today);
     thirtyDaysFromNow.setDate(today.getDate() + 30);
 
@@ -172,9 +172,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     // Get user information for email sending
     const userIds = [...new Set(documents.map(doc => doc.user_id))];
-    
+
     let users: { id: string; email: string; full_name?: string }[] = [];
-    
+
     // Try to get user emails from profiles table
     const { data: profilesData, error: usersError } = await supabase
       .from('profiles')
@@ -184,10 +184,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (usersError) {
       console.warn('Error querying profiles table:', usersError);
       console.log('Attempting to get user emails from auth.users table');
-      
+
       // Fallback to auth.users table if profiles doesn't exist or fails
       const { data: authUsersData, error: authError } = await supabase.auth.admin.listUsers();
-      
+
       if (!authError && authUsersData?.users) {
         users = authUsersData.users
           .filter((user: any) => userIds.includes(user.id))
@@ -213,17 +213,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       try {
         documentsProcessed++;
         const daysUntil = calculateDaysUntilExpiration(doc.expires_at);
-        
+
         console.log(`Processing document ${doc.file_name}: ${daysUntil} days until expiration`);
-        
+
         // Only send notifications for specific thresholds: 30, 7, and 1 day
         // Allow some flexibility (±1 day) to account for timing variations
         const shouldNotify = (
           (daysUntil >= 29 && daysUntil <= 31) || // ~30 days
-          (daysUntil >= 6 && daysUntil <= 8) ||   // ~7 days  
+          (daysUntil >= 6 && daysUntil <= 8) ||   // ~7 days
           (daysUntil >= 0 && daysUntil <= 2)      // ~1 day
         );
-        
+
         if (!shouldNotify) {
           console.log(`Skipping notification for ${doc.file_name} - not at threshold (${daysUntil} days)`);
           continue;
@@ -304,12 +304,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     };
 
     console.log('Notification job completed:', response);
-    
+
     return res.status(200).json(response);
 
   } catch (error) {
     console.error('Error in notification job:', error);
-    return res.status(500).json({ 
+    return res.status(500).json({
       message: 'Failed to check document expirations',
       error: error instanceof Error ? error.message : 'Unknown error'
     });

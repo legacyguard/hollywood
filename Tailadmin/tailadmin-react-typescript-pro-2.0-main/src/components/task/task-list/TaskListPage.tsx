@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Task } from "./types/Task";
+import type { Task } from "./types/Task";
 import TaskHeader from "../TaskHeader";
 import TaskLane from "./TaskLane";
 

@@ -42,7 +42,7 @@ export interface UserProfile {
   specialConsiderations: string[]; // disabilities, pets, charities, etc.
 }
 
-export type TemplateCategory = 
+export type TemplateCategory =
   | 'young_professional'
   | 'new_parent'
   | 'established_family'
@@ -578,44 +578,44 @@ export class WillTemplateLibrary {
   getTemplatesForSituation(profile: Partial<UserProfile>): WillTemplate[] {
     return WILL_TEMPLATES.filter(template => {
       let matchScore = 0;
-      
+
       // Marital status match
       if (profile.maritalStatus && template.targetProfile.maritalStatus === profile.maritalStatus) {
         matchScore += 3;
       } else if (template.targetProfile.maritalStatus === 'unknown') {
         matchScore += 1;
       }
-      
+
       // Children match
       if (profile.hasChildren === template.targetProfile.hasChildren) {
         matchScore += 2;
       }
-      
+
       // Minor children match
       if (profile.hasMinorChildren === template.targetProfile.hasMinorChildren) {
         matchScore += 2;
       }
-      
+
       // Age range match
       if (profile.ageRange === template.targetProfile.ageRange) {
         matchScore += 2;
       }
-      
+
       // Net worth match
       if (profile.estimatedNetWorth === template.targetProfile.estimatedNetWorth) {
         matchScore += 1;
       }
-      
+
       // Business interests match
       if (profile.hasBusinessInterests === template.targetProfile.hasBusinessInterests) {
         matchScore += 2;
       }
-      
+
       // Complex family situation match
       if (profile.complexFamilySituation === template.targetProfile.complexFamilySituation) {
         matchScore += 2;
       }
-      
+
       // Require at least 50% match
       return matchScore >= 6;
     }).sort((a, b) => {
@@ -652,7 +652,7 @@ export class WillTemplateLibrary {
    */
   searchTemplates(query: string): WillTemplate[] {
     const queryLower = query.toLowerCase();
-    return WILL_TEMPLATES.filter(template => 
+    return WILL_TEMPLATES.filter(template =>
       template.name.toLowerCase().includes(queryLower) ||
       template.description.toLowerCase().includes(queryLower) ||
       template.tags.some(tag => tag.toLowerCase().includes(queryLower))
@@ -674,8 +674,8 @@ export class WillTemplateLibrary {
         ...template.templateData.testator_data,
         ...currentData?.testator_data
       },
-      beneficiaries: currentData?.beneficiaries?.length 
-        ? currentData.beneficiaries 
+      beneficiaries: currentData?.beneficiaries?.length
+        ? currentData.beneficiaries
         : template.templateData.beneficiaries || [],
       assets: {
         ...template.templateData.assets,
@@ -707,28 +707,28 @@ export class WillTemplateLibrary {
    */
   compareWillVersions(oldWill: WillData, newWill: WillData): ComparisonReport {
     const changes: ChangeSet[] = [];
-    
+
     // Compare testator data
     this.compareSection('testator_data', oldWill.testator_data, newWill.testator_data, changes);
-    
+
     // Compare beneficiaries
     this.compareBeneficiaries(oldWill.beneficiaries, newWill.beneficiaries, changes);
-    
+
     // Compare assets
     this.compareSection('assets', oldWill.assets, newWill.assets, changes);
-    
+
     // Compare executor data
     this.compareSection('executor_data', oldWill.executor_data, newWill.executor_data, changes);
-    
+
     // Compare guardianship data
     this.compareSection('guardianship_data', oldWill.guardianship_data, newWill.guardianship_data, changes);
-    
+
     // Compare special instructions
     this.compareSection('special_instructions', oldWill.special_instructions, newWill.special_instructions, changes);
-    
+
     // Analyze impact
     const impactAnalysis = this.analyzeImpact(changes, oldWill, newWill);
-    
+
     return {
       id: `comparison_${Date.now()}`,
       comparedAt: new Date(),
@@ -746,7 +746,7 @@ export class WillTemplateLibrary {
    */
   suggestTemplateModifications(template: WillTemplate, userData: WillData): Modification[] {
     const modifications: Modification[] = [];
-    
+
     // Check if user has more complex needs than template
     if (userData.beneficiaries.length > template.preview.beneficiaryCount) {
       modifications.push({
@@ -759,7 +759,7 @@ export class WillTemplateLibrary {
         estimatedImplementationTime: 10
       });
     }
-    
+
     // Check for business interests
     if (userData.assets.businessInterests && !template.targetProfile.hasBusinessInterests) {
       modifications.push({
@@ -772,7 +772,7 @@ export class WillTemplateLibrary {
         estimatedImplementationTime: 20
       });
     }
-    
+
     // Check for guardianship needs
     if (userData.guardianship_data.minorChildren?.length && !template.templateData.guardianship_data?.primaryGuardian) {
       modifications.push({
@@ -785,7 +785,7 @@ export class WillTemplateLibrary {
         estimatedImplementationTime: 15
       });
     }
-    
+
     return modifications.sort((a, b) => {
       const priorityOrder = { high: 3, medium: 2, low: 1 };
       return priorityOrder[b.priority] - priorityOrder[a.priority];
@@ -797,11 +797,11 @@ export class WillTemplateLibrary {
    */
   getAvailableCategories(): Array<{category: TemplateCategory; count: number; description: string}> {
     const categoryCounts = new Map<TemplateCategory, number>();
-    
+
     WILL_TEMPLATES.forEach(template => {
       categoryCounts.set(template.category, (categoryCounts.get(template.category) || 0) + 1);
     });
-    
+
     const categoryDescriptions: Record<TemplateCategory, string> = {
       'young_professional': 'For young adults starting their careers',
       'new_parent': 'For new parents focusing on child protection',
@@ -815,7 +815,7 @@ export class WillTemplateLibrary {
       'international': 'For those with international assets or concerns',
       'special_needs': 'For families with special needs considerations'
     };
-    
+
     return Array.from(categoryCounts.entries()).map(([category, count]) => ({
       category,
       count,
@@ -826,7 +826,7 @@ export class WillTemplateLibrary {
   // Helper methods
   private compareSection(sectionName: keyof WillData, oldSection: any, newSection: any, changes: ChangeSet[]) {
     if (!oldSection && !newSection) return;
-    
+
     if (!oldSection && newSection) {
       changes.push({
         section: sectionName,
@@ -838,7 +838,7 @@ export class WillTemplateLibrary {
       });
       return;
     }
-    
+
     if (oldSection && !newSection) {
       changes.push({
         section: sectionName,
@@ -850,14 +850,14 @@ export class WillTemplateLibrary {
       });
       return;
     }
-    
+
     // Compare individual fields
     const allKeys = new Set([...Object.keys(oldSection || {}), ...Object.keys(newSection || {})]);
-    
+
     allKeys.forEach(key => {
       const oldValue = oldSection?.[key];
       const newValue = newSection?.[key];
-      
+
       if (JSON.stringify(oldValue) !== JSON.stringify(newValue)) {
         changes.push({
           section: sectionName,
@@ -875,7 +875,7 @@ export class WillTemplateLibrary {
   private compareBeneficiaries(oldBeneficiaries: WillData['beneficiaries'], newBeneficiaries: WillData['beneficiaries'], changes: ChangeSet[]) {
     const oldNames = new Set(oldBeneficiaries.map(b => b.name));
     const newNames = new Set(newBeneficiaries.map(b => b.name));
-    
+
     // Check for added beneficiaries
     newBeneficiaries.forEach(beneficiary => {
       if (!oldNames.has(beneficiary.name)) {
@@ -889,7 +889,7 @@ export class WillTemplateLibrary {
         });
       }
     });
-    
+
     // Check for removed beneficiaries
     oldBeneficiaries.forEach(beneficiary => {
       if (!newNames.has(beneficiary.name)) {
@@ -903,7 +903,7 @@ export class WillTemplateLibrary {
         });
       }
     });
-    
+
     // Check for modified beneficiaries
     oldBeneficiaries.forEach(oldBen => {
       const newBen = newBeneficiaries.find(b => b.name === oldBen.name);
@@ -926,38 +926,38 @@ export class WillTemplateLibrary {
     if (section === 'beneficiaries' || (section === 'executor_data' && field === 'primaryExecutor')) {
       return 'critical';
     }
-    
+
     // High impact fields
     if (section === 'testator_data' && ['fullName', 'address'].includes(field)) {
       return 'high';
     }
-    
+
     if (section === 'guardianship_data' && field === 'primaryGuardian') {
       return 'high';
     }
-    
+
     // Medium impact fields
     if (section === 'assets' || section === 'special_instructions') {
       return 'medium';
     }
-    
+
     return 'low';
   }
 
   private analyzeImpact(changes: ChangeSet[], oldWill: WillData, newWill: WillData): ImpactAnalysis {
     const criticalChanges = changes.filter(c => c.impact === 'critical').length;
     const highChanges = changes.filter(c => c.impact === 'high').length;
-    
+
     let overallImpact: ImpactAnalysis['overallImpact'] = 'minimal';
     if (criticalChanges > 0) overallImpact = 'major';
     else if (highChanges > 2) overallImpact = 'significant';
     else if (highChanges > 0) overallImpact = 'moderate';
-    
+
     const affectedBeneficiaries = changes
       .filter(c => c.section === 'beneficiaries')
       .map(c => c.newValue?.name || c.oldValue?.name)
       .filter(Boolean);
-    
+
     const changedInheritanceAmounts = oldWill.beneficiaries
       .map(oldBen => {
         const newBen = newWill.beneficiaries.find(b => b.name === oldBen.name);
@@ -972,7 +972,7 @@ export class WillTemplateLibrary {
         return null;
       })
       .filter(Boolean) as ImpactAnalysis['changedInheritanceAmounts'];
-    
+
     return {
       overallImpact,
       affectedBeneficiaries: [...new Set(affectedBeneficiaries)],
@@ -984,29 +984,29 @@ export class WillTemplateLibrary {
 
   private generateRecommendations(changes: ChangeSet[], impact: ImpactAnalysis): string[] {
     const recommendations: string[] = [];
-    
+
     if (impact.overallImpact === 'major') {
       recommendations.push('Consider professional legal review due to major changes');
     }
-    
+
     if (impact.changedInheritanceAmounts.length > 0) {
       recommendations.push('Notify affected beneficiaries of inheritance changes');
     }
-    
+
     if (changes.some(c => c.section === 'executor_data')) {
       recommendations.push('Confirm executor is still willing and able to serve');
     }
-    
+
     if (changes.some(c => c.section === 'guardianship_data')) {
       recommendations.push('Confirm guardians consent to appointment');
     }
-    
+
     return recommendations;
   }
 
   private requiresLegalReview(changes: ChangeSet[]): boolean {
-    return changes.some(c => 
-      c.impact === 'critical' || 
+    return changes.some(c =>
+      c.impact === 'critical' ||
       (c.section === 'beneficiaries' && c.changeType === 'removed') ||
       (c.section === 'executor_data' && c.field === 'primaryExecutor')
     );
@@ -1030,48 +1030,48 @@ export class WillTemplateLibrary {
   private calculateCompletionPercentage(willData: WillData): number {
     let completed = 0;
     let total = 0;
-    
+
     // Check required fields
     const requiredFields = [
       willData.testator_data?.fullName,
       willData.testator_data?.address,
       willData.beneficiaries?.length > 0
     ];
-    
+
     requiredFields.forEach(field => {
       total++;
       if (field) completed++;
     });
-    
+
     return Math.round((completed / total) * 100);
   }
 
   private identifyNewLegalRequirements(changes: ChangeSet[]): string[] {
     const requirements: string[] = [];
-    
+
     if (changes.some(c => c.section === 'guardianship_data')) {
       requirements.push('Guardian consent documentation required');
     }
-    
+
     if (changes.some(c => c.section === 'beneficiaries' && c.changeType === 'added')) {
       requirements.push('Consider forced heir implications');
     }
-    
+
     return requirements;
   }
 
   private identifyPotentialConflicts(changes: ChangeSet[]): string[] {
     const conflicts: string[] = [];
-    
+
     const beneficiaryChanges = changes.filter(c => c.section === 'beneficiaries');
     if (beneficiaryChanges.length > 0) {
       conflicts.push('Family members may question inheritance changes');
     }
-    
+
     if (changes.some(c => c.section === 'executor_data')) {
       conflicts.push('Previous executor may need formal notification');
     }
-    
+
     return conflicts;
   }
 }

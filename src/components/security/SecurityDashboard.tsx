@@ -77,13 +77,13 @@ export function SecurityDashboard() {
     try {
       // Calculate security score
       await calculateSecurityScore();
-      
+
       // Load audit logs
       await loadAuditLogs();
-      
+
       // Load active sessions
       await loadActiveSessions();
-      
+
       // Check if key rotation needed
       await checkKeyRotation();
     } catch (error) {
@@ -255,9 +255,9 @@ export function SecurityDashboard() {
               </Badge>
             </div>
           </div>
-          
+
           <Progress value={securityScore.overall} className="mb-6" />
-          
+
           <div className="grid md:grid-cols-2 gap-4">
             <div className="flex items-center justify-between p-3 bg-muted/20 rounded-lg">
               <div className="flex items-center gap-3">
@@ -268,7 +268,7 @@ export function SecurityDashboard() {
                 {securityScore.factors.passwordStrength}/4
               </Badge>
             </div>
-            
+
             <div className="flex items-center justify-between p-3 bg-muted/20 rounded-lg">
               <div className="flex items-center gap-3">
                 <Icon name="shield-check" className="w-5 h-5 text-muted-foreground" />
@@ -278,7 +278,7 @@ export function SecurityDashboard() {
                 {securityScore.factors.twoFactorEnabled ? 'Enabled' : 'Disabled'}
               </Badge>
             </div>
-            
+
             <div className="flex items-center justify-between p-3 bg-muted/20 rounded-lg">
               <div className="flex items-center gap-3">
                 <Icon name="lock" className="w-5 h-5 text-muted-foreground" />
@@ -288,7 +288,7 @@ export function SecurityDashboard() {
                 {securityScore.factors.encryptionEnabled ? 'Active' : 'Inactive'}
               </Badge>
             </div>
-            
+
             <div className="flex items-center justify-between p-3 bg-muted/20 rounded-lg">
               <div className="flex items-center gap-3">
                 <Icon name="database" className="w-5 h-5 text-muted-foreground" />
@@ -298,7 +298,7 @@ export function SecurityDashboard() {
                 {securityScore.factors.backupRecent ? 'Up to date' : 'Outdated'}
               </Badge>
             </div>
-            
+
             <div className="flex items-center justify-between p-3 bg-muted/20 rounded-lg">
               <div className="flex items-center gap-3">
                 <Icon name="refresh" className="w-5 h-5 text-muted-foreground" />
@@ -308,7 +308,7 @@ export function SecurityDashboard() {
                 {securityScore.factors.recoverySetup ? 'Configured' : 'Not Set'}
               </Badge>
             </div>
-            
+
             <div className="flex items-center justify-between p-3 bg-muted/20 rounded-lg">
               <div className="flex items-center gap-3">
                 <Icon name="rotate" className="w-5 h-5 text-muted-foreground" />
@@ -362,9 +362,9 @@ export function SecurityDashboard() {
                 <div key={log.id} className="flex items-center justify-between p-3 hover:bg-muted/20 rounded-lg transition-colors">
                   <div className="flex items-center gap-3">
                     <div className={`p-2 rounded-full ${log.success ? 'bg-green-100 dark:bg-green-900/30' : 'bg-red-100 dark:bg-red-900/30'}`}>
-                      <Icon 
-                        name={getOperationIcon(log.operation)} 
-                        className={`w-4 h-4 ${log.success ? 'text-green-600' : 'text-red-600'}`} 
+                      <Icon
+                        name={getOperationIcon(log.operation)}
+                        className={`w-4 h-4 ${log.success ? 'text-green-600' : 'text-red-600'}`}
                       />
                     </div>
                     <div>
@@ -417,7 +417,7 @@ export function SecurityDashboard() {
                   </div>
                 </div>
               )}
-              
+
               {!securityScore.factors.twoFactorEnabled && (
                 <div className="flex items-start gap-3">
                   <Icon name="shield-check" className="w-5 h-5 text-yellow-600 mt-0.5" />
@@ -432,7 +432,7 @@ export function SecurityDashboard() {
                   </div>
                 </div>
               )}
-              
+
               {!securityScore.factors.backupRecent && (
                 <div className="flex items-start gap-3">
                   <Icon name="database" className="w-5 h-5 text-yellow-600 mt-0.5" />

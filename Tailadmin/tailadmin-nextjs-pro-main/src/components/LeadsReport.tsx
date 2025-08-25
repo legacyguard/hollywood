@@ -1,6 +1,6 @@
 import Image from "next/image";
 import DropdownDefault from "./Dropdowns/DropdownDefault";
-import { Lead } from "@/types/Lead";
+import type { Lead } from "@/types/Lead";
 
 const leadsData: Lead[] = [
   {

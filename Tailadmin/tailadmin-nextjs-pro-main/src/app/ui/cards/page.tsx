@@ -4,7 +4,7 @@ import CardsItemOne from "@/components/cards/CardsItemOne";
 import CardsItemTwo from "@/components/cards/CardsItemTwo";
 import CardsItemThree from "@/components/cards/CardsItemThree";
 
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 
 export const metadata: Metadata = {

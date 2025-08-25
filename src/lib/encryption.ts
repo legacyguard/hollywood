@@ -1,9 +1,9 @@
 import nacl from 'tweetnacl';
-import { 
-  decodeUTF8, 
-  encodeUTF8, 
-  encodeBase64, 
-  decodeBase64 
+import {
+  decodeUTF8,
+  encodeUTF8,
+  encodeBase64,
+  decodeBase64
 } from 'tweetnacl-util';
 
 // For MVP, we'll use a derived key from user's Clerk ID
@@ -19,18 +19,18 @@ export const generateEncryptionKeys = () => {
 // Get or create encryption keys for the current user
 export const getUserEncryptionKeys = (userId: string) => {
   const storageKey = `encryption_keys_${userId}`;
-  
+
   // Check if keys exist in localStorage
   const storedKeys = localStorage.getItem(storageKey);
-  
+
   if (storedKeys) {
     return JSON.parse(storedKeys);
   }
-  
+
   // Generate new keys if they don't exist
   const newKeys = generateEncryptionKeys();
   localStorage.setItem(storageKey, JSON.stringify(newKeys));
-  
+
   return newKeys;
 };
 
@@ -56,20 +56,20 @@ export const arrayBufferToBase64 = (buffer: ArrayBuffer): string => {
 
 // Encrypt file content
 export const encryptFile = async (
-  file: File, 
-  publicKey: string, 
+  file: File,
+  publicKey: string,
   secretKey: string
 ): Promise<{ encryptedData: Uint8Array; nonce: Uint8Array; metadata: Record<string, string | number> }> => {
   // Read file as ArrayBuffer
   const arrayBuffer = await file.arrayBuffer();
   const fileData = new Uint8Array(arrayBuffer);
-  
+
   // Generate nonce
   const nonce = nacl.randomBytes(nacl.box.nonceLength);
-  
+
   // Create ephemeral key pair for this encryption
   const ephemeralKeyPair = nacl.box.keyPair();
-  
+
   // Encrypt the file data
   const encryptedData = nacl.box(
     fileData,
@@ -77,7 +77,7 @@ export const encryptFile = async (
     decodeBase64(publicKey),
     decodeBase64(secretKey)
   );
-  
+
   // Store metadata for decryption
   const metadata = {
     fileName: file.name,
@@ -87,7 +87,7 @@ export const encryptFile = async (
     nonce: encodeBase64(nonce),
     ephemeralPublicKey: encodeBase64(ephemeralKeyPair.publicKey)
   };
-  
+
   return {
     encryptedData,
     nonce,
@@ -109,7 +109,7 @@ export const decryptFile = (
       decodeBase64(publicKey),
       decodeBase64(secretKey)
     );
-    
+
     return decrypted;
   } catch (error) {
     console.error('Decryption failed:', error);
@@ -126,6 +126,6 @@ export const createEncryptedBlob = (
   const combined = new Uint8Array(nonce.length + encryptedData.length);
   combined.set(nonce);
   combined.set(encryptedData, nonce.length);
-  
+
   return new Blob([combined], { type: 'application/octet-stream' });
 };

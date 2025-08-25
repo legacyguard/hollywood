@@ -41,7 +41,7 @@ export const EmotionalGuidanceSystem: React.FC<EmotionalGuidanceSystemProps> = (
   // Extract family members from will data
   const familyMembers = React.useMemo(() => {
     const members: Array<{ name: string; relationship: string }> = [];
-    
+
     // Add beneficiaries
     willData.beneficiaries.forEach(beneficiary => {
       members.push({
@@ -51,7 +51,7 @@ export const EmotionalGuidanceSystem: React.FC<EmotionalGuidanceSystemProps> = (
     });
 
     // Add executor if different from beneficiaries
-    if (willData.executor_data.primaryExecutor && 
+    if (willData.executor_data.primaryExecutor &&
         !members.some(m => m.name === willData.executor_data.primaryExecutor!.name)) {
       members.push({
         name: willData.executor_data.primaryExecutor.name,
@@ -112,7 +112,7 @@ export const EmotionalGuidanceSystem: React.FC<EmotionalGuidanceSystemProps> = (
     type: LegacyMessage['type'] = 'text'
   ) => {
     const relationship = familyMembers.find(m => m.name === recipientName)?.relationship || 'family';
-    
+
     const message: LegacyMessage = {
       id: `msg_${Date.now()}_${recipientName.replace(/\s+/g, '_')}`,
       type,
@@ -133,7 +133,7 @@ export const EmotionalGuidanceSystem: React.FC<EmotionalGuidanceSystemProps> = (
     };
 
     setLegacyMessages(prev => [...prev, message]);
-    
+
     if (onMessagesCreated) {
       onMessagesCreated([message]);
     }
@@ -152,7 +152,7 @@ export const EmotionalGuidanceSystem: React.FC<EmotionalGuidanceSystemProps> = (
     releaseDate.setFullYear(releaseDate.getFullYear() + 5); // 5 years from now
 
     const timeCapsule = legacyMessageBuilder.buildDigitalTimeCapsule(legacyMessages, releaseDate);
-    
+
     if (onTimeCapsuleCreated) {
       onTimeCapsuleCreated(timeCapsule);
     }
@@ -254,7 +254,7 @@ export const EmotionalGuidanceSystem: React.FC<EmotionalGuidanceSystemProps> = (
                 <Card className="p-6 bg-green-50 border-green-200">
                   <h4 className="font-semibold text-green-900 mb-2">Reflection Complete! 🎉</h4>
                   <p className="text-green-800 mb-4">
-                    Your thoughtful responses have been captured. You can now create personalized messages 
+                    Your thoughtful responses have been captured. You can now create personalized messages
                     based on your reflections.
                   </p>
                   <Button onClick={() => setActiveTab('messages')}>
@@ -352,10 +352,10 @@ export const EmotionalGuidanceSystem: React.FC<EmotionalGuidanceSystemProps> = (
               <div className="flex-1">
                 <h4 className="font-semibold mb-2">Digital Time Capsule</h4>
                 <p className="text-muted-foreground mb-4">
-                  Bundle your legacy messages into a time capsule that will be delivered to your family 
+                  Bundle your legacy messages into a time capsule that will be delivered to your family
                   at a specific date or after certain milestones.
                 </p>
-                
+
                 {legacyMessages.length > 0 ? (
                   <div className="space-y-4">
                     <div className="text-sm">
@@ -463,7 +463,7 @@ const ReflectionPrompt: React.FC<ReflectionPromptProps> = ({
             </div>
           )}
         </div>
-        
+
         <div className="flex-1 space-y-4">
           <div>
             <h5 className="font-semibold mb-2">{prompt.question}</h5>
@@ -495,7 +495,7 @@ const ReflectionPrompt: React.FC<ReflectionPromptProps> = ({
                 className="resize-none"
               />
               <div className="flex justify-end">
-                <Button 
+                <Button
                   onClick={handleSubmit}
                   disabled={!currentResponse.trim()}
                   size="sm"
@@ -535,11 +535,11 @@ const LegacyMessageCard: React.FC<LegacyMessageCardProps> = ({ message }) => {
           {message.occasion.replace('_', ' ')}
         </Badge>
       </div>
-      
+
       <p className="text-sm text-muted-foreground line-clamp-3 mb-3">
         {message.content}
       </p>
-      
+
       <div className="flex items-center justify-between text-xs text-muted-foreground">
         <div className="flex items-center gap-2">
           <Badge variant="secondary" className="text-xs">

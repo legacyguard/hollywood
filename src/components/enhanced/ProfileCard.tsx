@@ -151,7 +151,7 @@ export function ProfileCard({
                 )}
               </div>
             </div>
-            
+
             {showActions && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -183,7 +183,7 @@ export function ProfileCard({
                   {onDelete && (
                     <>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem 
+                      <DropdownMenuItem
                         onClick={() => onDelete(profile)}
                         className="text-red-600"
                       >
@@ -197,7 +197,7 @@ export function ProfileCard({
             )}
           </div>
         </CardHeader>
-        
+
         <CardContent className="space-y-4">
           {/* Roles */}
           {profile.roles && profile.roles.length > 0 && (
@@ -209,7 +209,7 @@ export function ProfileCard({
               ))}
             </div>
           )}
-          
+
           {/* Contact Information */}
           <div className="space-y-2">
             {profile.email && (
@@ -237,7 +237,7 @@ export function ProfileCard({
               </div>
             )}
           </div>
-          
+
           {/* Completion Progress */}
           {profile.completionPercentage !== undefined && (
             <div className="pt-2">
@@ -253,7 +253,7 @@ export function ProfileCard({
               </div>
             </div>
           )}
-          
+
           {/* Additional Metadata */}
           {variant === 'detailed' && profile.metadata && (
             <div className="pt-2 border-t">

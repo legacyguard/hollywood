@@ -394,7 +394,7 @@ ZÁVET - Tento dokument obsahuje základný závet
 
 Závet`
   },
-  
+
   'cs': {
     'holographic': `Závěť
 
@@ -904,32 +904,32 @@ export class MultiLangGenerator {
    * Generates a legally compliant will document in the specified language
    */
   async generateWill(
-    willData: WillData, 
-    language: SupportedLanguage, 
+    willData: WillData,
+    language: SupportedLanguage,
     jurisdiction: string,
     variant: WillVariant = 'holographic'
   ): Promise<LegalDocument> {
-    
+
     // Prepare data with translated terms
     const processedData = this.processWillDataWithTranslations(willData, language);
-    
+
     // Get appropriate template
     const template = WILL_TEMPLATES[language][variant];
     if (!template) {
       throw new Error(`Template not found for language ${language} and variant ${variant}`);
     }
-    
+
     // Process template with data (simple template engine)
     const content = this.processTemplate(template, processedData);
-    
+
     // Generate legal notices
     const legalNotices = this.generateLegalNotices(language, variant, jurisdiction);
-    
+
     // Generate signing instructions
     const signingInstructions = this.generateSigningInstructions(language, variant);
-    
+
     // Generate witness instructions if needed
-    const witnessInstructions = variant === 'alographic' 
+    const witnessInstructions = variant === 'alographic'
       ? this.generateWitnessInstructions(language, jurisdiction)
       : undefined;
 
@@ -953,16 +953,16 @@ export class MultiLangGenerator {
    * Translates legal terms between languages
    */
   translateLegalTerm(
-    term: string, 
-    fromLang: SupportedLanguage, 
-    toLang: SupportedLanguage, 
+    term: string,
+    fromLang: SupportedLanguage,
+    toLang: SupportedLanguage,
     context: 'legal' | 'relationship' = 'legal'
   ): TranslatedTerm {
     const categoryKey = context === 'relationship' ? 'relationships' : 'general';
-    
+
     const originalTerm = LEGAL_TERMINOLOGY[fromLang]?.[categoryKey]?.[term.toLowerCase()] || term;
     const translatedTerm = LEGAL_TERMINOLOGY[toLang]?.[categoryKey]?.[term.toLowerCase()] || term;
-    
+
     return {
       original: originalTerm,
       translated: translatedTerm,
@@ -978,7 +978,7 @@ export class MultiLangGenerator {
    */
   private processWillDataWithTranslations(willData: WillData, language: SupportedLanguage) {
     const processedData = { ...willData };
-    
+
     // Add translated relationship terms to beneficiaries
     if (processedData.beneficiaries) {
       processedData.beneficiaries = processedData.beneficiaries.map(beneficiary => ({
@@ -986,19 +986,19 @@ export class MultiLangGenerator {
         relationshipText: this.translateTerm(beneficiary.relationship, language, 'relationships')
       }));
     }
-    
+
     // Add translated relationship terms to executor
     if (processedData.executor_data?.primaryExecutor) {
       processedData.executor_data.primaryExecutor = {
         ...processedData.executor_data.primaryExecutor,
         relationshipText: this.translateTerm(
-          processedData.executor_data.primaryExecutor.relationship || '', 
-          language, 
+          processedData.executor_data.primaryExecutor.relationship || '',
+          language,
           'relationships'
         )
       };
     }
-    
+
     // Process guardianship data
     if (processedData.guardianship_data?.primaryGuardian) {
       processedData.guardianship_data.primaryGuardian = {
@@ -1010,7 +1010,7 @@ export class MultiLangGenerator {
         )
       };
     }
-    
+
     return processedData;
   }
 
@@ -1019,24 +1019,24 @@ export class MultiLangGenerator {
    */
   private processTemplate(template: string, data: any): string {
     let processed = template;
-    
+
     // Handle simple variable substitution {{variable}}
     processed = processed.replace(/\{\{(\w+(?:\.\w+)*)\}\}/g, (match, path) => {
       const value = this.getNestedValue(data, path);
       return value !== undefined ? String(value) : match;
     });
-    
+
     // Handle conditional blocks {{#if condition}}...{{/if}}
     processed = processed.replace(/\{\{#if\s+(\w+(?:\.\w+)*)\}\}([\s\S]*?)\{\{\/if\}\}/g, (match, path, content) => {
       const value = this.getNestedValue(data, path);
       return value ? content : '';
     });
-    
+
     // Handle each blocks {{#each array}}...{{/each}} (simplified)
     processed = processed.replace(/\{\{#each\s+(\w+)\}\}([\s\S]*?)\{\{\/each\}\}/g, (match, arrayPath, itemTemplate) => {
       const array = this.getNestedValue(data, arrayPath);
       if (!Array.isArray(array)) return '';
-      
+
       return array.map((item, index) => {
         let itemContent = itemTemplate;
         // Replace {{this.property}} with item values
@@ -1048,7 +1048,7 @@ export class MultiLangGenerator {
         return itemContent;
       }).join('\n');
     });
-    
+
     return processed;
   }
 
@@ -1063,8 +1063,8 @@ export class MultiLangGenerator {
    * Translate a single term
    */
   private translateTerm(
-    term: string, 
-    language: SupportedLanguage, 
+    term: string,
+    language: SupportedLanguage,
     category: 'general' | 'relationships',
     jurisdiction?: string
   ): string {
@@ -1076,8 +1076,8 @@ export class MultiLangGenerator {
    * Generate legal notices based on language and jurisdiction
    */
   private generateLegalNotices(
-    language: SupportedLanguage, 
-    variant: WillVariant, 
+    language: SupportedLanguage,
+    variant: WillVariant,
     jurisdiction: string
   ): string[] {
     const notices: Record<SupportedLanguage, Record<WillVariant, string[]>> = {

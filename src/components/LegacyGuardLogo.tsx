@@ -15,7 +15,7 @@ export function LegacyGuardLogo({ className = "w-8 h-8" }: LegacyGuardLogoProps)
           stroke="hsl(95 35% 35%)"
           strokeWidth="0.5"
         />
-        
+
         {/* Leaf design inside shield */}
         <g transform="translate(16, 16)">
           {/* Main leaf */}

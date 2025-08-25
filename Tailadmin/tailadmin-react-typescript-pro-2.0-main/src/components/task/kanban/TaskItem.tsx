@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
-import { Task, DropResult } from "./types/types";
+import type { Task, DropResult } from "./types/types";
 
 interface TaskItemProps {
   task: Task;

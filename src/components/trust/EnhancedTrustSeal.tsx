@@ -1,10 +1,10 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { 
-  Shield, 
-  CheckCircle, 
-  Star, 
+import {
+  Shield,
+  CheckCircle,
+  Star,
   Calendar,
   MapPin,
   Users,
@@ -46,11 +46,11 @@ export const EnhancedTrustSeal: React.FC<EnhancedTrustSealProps> = ({
   validationScore = 0,
   className = ''
 }) => {
-  
+
   const getSealColor = () => {
     switch (level) {
       case 'premium': return 'from-purple-600 to-indigo-600';
-      case 'professional': return 'from-blue-600 to-cyan-600'; 
+      case 'professional': return 'from-blue-600 to-cyan-600';
       case 'verified': return 'from-green-600 to-emerald-600';
       case 'basic': return 'from-gray-600 to-slate-600';
       default: return 'from-gray-600 to-slate-600';
@@ -69,7 +69,7 @@ export const EnhancedTrustSeal: React.FC<EnhancedTrustSealProps> = ({
 
   const getSealDescription = () => {
     switch (level) {
-      case 'premium': 
+      case 'premium':
         return `This will has been comprehensively reviewed by multiple legal professionals and certified for ${jurisdiction} jurisdiction with enhanced verification protocols.`;
       case 'professional':
         return `This will has been professionally reviewed and verified by a qualified legal professional for compliance with ${jurisdiction} law.`;
@@ -137,7 +137,7 @@ export const EnhancedTrustSeal: React.FC<EnhancedTrustSealProps> = ({
     return (
       <div className="mt-4 space-y-3">
         <div className="text-white text-sm font-medium">Multi-Professional Verification:</div>
-        
+
         <div className="grid grid-cols-1 gap-2 text-white text-xs">
           {attorneyReviews.length > 0 && (
             <div className="flex justify-between items-center bg-white bg-opacity-10 px-3 py-2 rounded">
@@ -150,7 +150,7 @@ export const EnhancedTrustSeal: React.FC<EnhancedTrustSealProps> = ({
               </Badge>
             </div>
           )}
-          
+
           {notaryReviews.length > 0 && (
             <div className="flex justify-between items-center bg-white bg-opacity-10 px-3 py-2 rounded">
               <span className="flex items-center">
@@ -162,7 +162,7 @@ export const EnhancedTrustSeal: React.FC<EnhancedTrustSealProps> = ({
               </Badge>
             </div>
           )}
-          
+
           {comprehensiveReviews.length > 0 && (
             <div className="flex justify-between items-center bg-white bg-opacity-10 px-3 py-2 rounded">
               <span className="flex items-center">
@@ -197,7 +197,7 @@ export const EnhancedTrustSeal: React.FC<EnhancedTrustSealProps> = ({
               {level === 'verified' && <CheckCircle className="h-12 w-12" />}
               {level === 'basic' && <Shield className="h-12 w-12" />}
             </div>
-            
+
             {/* Verification badges */}
             {professionalReviews.length > 0 && (
               <div className="absolute -top-1 -right-1">
@@ -231,7 +231,7 @@ export const EnhancedTrustSeal: React.FC<EnhancedTrustSealProps> = ({
 
         {/* Professional Verification */}
         {renderProfessionalVerification()}
-        
+
         {/* Multiple Professional Reviews */}
         {renderMultipleProfessionalReviews()}
 
@@ -243,7 +243,7 @@ export const EnhancedTrustSeal: React.FC<EnhancedTrustSealProps> = ({
               <span className="font-bold">{validationScore}%</span>
             </div>
             <div className="mt-2 bg-white bg-opacity-20 rounded-full h-2">
-              <div 
+              <div
                 className="bg-white rounded-full h-2 transition-all duration-500"
                 style={{ width: `${validationScore}%` }}
               />
@@ -254,7 +254,7 @@ export const EnhancedTrustSeal: React.FC<EnhancedTrustSealProps> = ({
         {/* Certificate Link */}
         {latestReview?.certificateUrl && (
           <div className="mt-4 text-center">
-            <a 
+            <a
               href={latestReview.certificateUrl}
               target="_blank"
               rel="noopener noreferrer"
@@ -266,7 +266,7 @@ export const EnhancedTrustSeal: React.FC<EnhancedTrustSealProps> = ({
           </div>
         )}
       </div>
-      
+
       {/* Seal Number/ID */}
       <div className="bg-white p-3 text-center">
         <div className="text-xs text-gray-600">

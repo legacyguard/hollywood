@@ -94,7 +94,7 @@ export const searchDictionary: Record<string, DictionaryEntry> = {
     ]
   },
   'poistka': {
-    category: 'insurance', 
+    category: 'insurance',
     actions: [
       {
         text: 'Ukáž mi všetky poistné zmluvy',
@@ -165,7 +165,7 @@ export const searchDictionary: Record<string, DictionaryEntry> = {
     ]
   },
 
-  // Personal documents  
+  // Personal documents
   'passport': {
     category: 'personal',
     actions: [
@@ -438,9 +438,9 @@ export const findSofiaActions = (searchQuery: string): SofiaAction[] => {
   });
 
   // Remove duplicates based on actionId and payload
-  const uniqueActions = matchedActions.filter((action, index, self) => 
-    index === self.findIndex(a => 
-      a.actionId === action.actionId && 
+  const uniqueActions = matchedActions.filter((action, index, self) =>
+    index === self.findIndex(a =>
+      a.actionId === action.actionId &&
       JSON.stringify(a.payload) === JSON.stringify(action.payload)
     )
   );
@@ -452,28 +452,28 @@ export const findSofiaActions = (searchQuery: string): SofiaAction[] => {
 // FAQ responses that don't require OpenAI
 export const faqResponses: Record<string, string> = {
   'faq_insurance_importance': `Insurance policies are crucial for protecting your family's financial future. They provide security in case of unexpected events and help ensure your loved ones are taken care of. I recommend storing all your insurance documents here for easy access by your guardians.`,
-  
+
   'faq_will_importance': `A will is one of the most important documents you can create. It ensures your wishes are carried out and helps prevent family conflicts. The Legacy Planning section will guide you through creating essential legal documents when it becomes available.`,
-  
+
   'faq_what_is_guardian': `A guardian in LegacyGuard is someone you trust completely - a person who would protect your family's interests just as you would. They're the extension of your care and wisdom when your loved ones need guidance most. Think of someone who knows your values and would act with the same care you would.`,
-  
+
   'faq_passport_renewal': `Passport renewal typically requires: 1) Current passport, 2) New passport photos, 3) Completed application form, 4) Renewal fee. Processing usually takes 4-6 weeks. I recommend storing your passport details and renewal dates here so you get reminded before expiration.`,
-  
+
   'faq_expiring_documents': `Expiring documents need attention! I suggest: 1) Set reminders 60-90 days before expiration, 2) Gather required renewal documents early, 3) Update your records here once renewed. Your guardians will also be able to help manage these important dates.`,
-  
+
   'faq_how_to_scan': `Our AI-powered scanner makes it easy! Simply click "AI Scan Mode" in the Vault, upload your document, and our system will automatically extract key information and categorize it for you. This saves time and ensures nothing important is missed.`,
 
   // Path of Serenity specific responses
   'path_of_serenity_welcome': `Vítajte na Ceste Pokoja! Toto je skutočne krásny spôsob, ako zabezpečiť istotu pre svoju rodinu. Každý krok, ktorý urobíte, je prejavom lásky a starostlivosti o svojich blízkych.`,
-  
+
   'milestone_foundation_stone': `Gratulujeme k vášmu prvému míľniku! Základný Kameň Istoty ste práve položili. Je to dôležitý moment - prvý dokument v digitálnom trezore znamená, že vaša rodina už má kde hľadať dôležité informácie.`,
-  
+
   'milestone_circle_of_trust': `Kruh Dôvery je vytvorený! Toto je jeden z najdôležitejších krokov na ceste k pokoju. Vaša rodina má teraz niekoho, na koho sa môže spoľahnúť v ťažkých chvíľach.`,
-  
+
   'milestone_digital_vault': `Váš Digitálny Trezor je aktívny! S piatimi dokumentmi máte už skutočne solídny základ. Vaša rodina má prístup k dôležitým informáciám presne vtedy, keď ich potrebuje.`,
-  
+
   'challenge_first_document': `Začnite jednoducho - odfotografujte občiansky preukaz, pas, alebo vodičský preukaz. Nebojte sa, poviem vám presne, ako na to. Je to naozaj len na 5 minút!`,
-  
+
   'challenge_add_guardian': `Vyberte si niekoho, komu dôverujete - partnera, dospelé dieťa, súrodenca alebo dobrého priateľa. Nemusí mať hneď prístup k dokumentom, bude len vedieť, že existuje miesto, kde hľadať pomoc.`
 };
 
@@ -509,11 +509,11 @@ export const generateDynamicSuggestions = (
     const fileName = doc.file_name.toLowerCase();
     const title = doc.title?.toLowerCase() || '';
     const tags = doc.tags?.join(' ').toLowerCase() || '';
-    
+
     // Check if search query matches any part of the document
     if (fileName.includes(searchLower) || title.includes(searchLower) || tags.includes(searchLower)) {
       const category = doc.category || doc.document_type || 'other';
-      
+
       if (!matchedDocuments.has(category)) {
         matchedDocuments.set(category, []);
       }
@@ -527,7 +527,7 @@ export const generateDynamicSuggestions = (
 
     // Get category display name and icon
     const { displayName, icon } = getCategoryDisplay(category);
-    
+
     // If multiple documents in same category, suggest filtering by category
     if (docs.length > 1) {
       dynamicSuggestions.push({
@@ -541,7 +541,7 @@ export const generateDynamicSuggestions = (
         icon: icon
       });
     }
-    
+
     // If only one or few documents, suggest showing specific documents
     if (docs.length <= 3) {
       docs.forEach(doc => {
@@ -577,7 +577,7 @@ export const generateDynamicSuggestions = (
   const categoryFilters = dynamicSuggestions.filter(s => s.actionId === 'filter_learned_category');
   const specificDocs = dynamicSuggestions.filter(s => s.actionId === 'open_specific_document');
   const smartFilters = dynamicSuggestions.filter(s => s.actionId === 'create_smart_filter');
-  
+
   return [...categoryFilters, ...specificDocs.slice(0, 2), ...smartFilters].slice(0, 4);
 };
 
@@ -619,9 +619,9 @@ export const hasDocumentBasedSuggestions = (
   userDocuments: UserDocument[]
 ): boolean => {
   if (!searchQuery || searchQuery.length < 2) return false;
-  
+
   const searchLower = searchQuery.toLowerCase();
-  return userDocuments.some(doc => 
+  return userDocuments.some(doc =>
     doc.file_name.toLowerCase().includes(searchLower) ||
     doc.title?.toLowerCase().includes(searchLower) ||
     doc.tags?.some(tag => tag.toLowerCase().includes(searchLower))

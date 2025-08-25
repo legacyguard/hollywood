@@ -1,4 +1,4 @@
-import { WillData } from '@/types/will';
+import type { WillData } from '@/types/will';
 
 export type ReviewPriority = 'standard' | 'urgent' | 'express';
 export type ReviewStatus = 'pending' | 'assigned' | 'in_review' | 'completed' | 'requires_revision';
@@ -127,7 +127,7 @@ export class ProfessionalReviewNetwork {
    * Request attorney review for will document
    */
   async requestAttorneyReview(
-    willData: WillData, 
+    willData: WillData,
     jurisdiction: string,
     options: {
       priority?: ReviewPriority;
@@ -155,7 +155,7 @@ export class ProfessionalReviewNetwork {
 
     // Auto-match with suitable attorneys
     const suitableAttorneys = await this.findSuitableAttorneys(jurisdiction, willData);
-    
+
     if (suitableAttorneys.length > 0) {
       reviewRequest.professionalId = suitableAttorneys[0].id;
       reviewRequest.status = 'assigned';
@@ -210,7 +210,7 @@ export class ProfessionalReviewNetwork {
     } = {}
   ): Promise<NotaryMatch[]> {
     const notaries = await this.findNotaries(location, preferences);
-    
+
     // Include special integration with brnoadvokati.cz for Czech/Slovak users
     if (location.toLowerCase().includes('brno') || location.toLowerCase().includes('czech') || location.toLowerCase().includes('slovakia')) {
       const brnoLawyers = await this.getBrnoAdvokatiIntegration();
@@ -231,7 +231,7 @@ export class ProfessionalReviewNetwork {
   async submitForReview(reviewRequest: ReviewRequest): Promise<ReviewFeedback> {
     // Simulate professional review process
     const feedback = await this.processReview(reviewRequest);
-    
+
     // Update request status
     reviewRequest.status = feedback.requiresRevision ? 'requires_revision' : 'completed';
     reviewRequest.updatedAt = new Date();
@@ -253,7 +253,7 @@ export class ProfessionalReviewNetwork {
     } = {}
   ): Promise<ProfessionalProfile[]> {
     const allProfessionals = await this.getAllProfessionals();
-    
+
     return allProfessionals.filter(professional => {
       if (professional.type !== type) return false;
       if (filters.jurisdiction && !professional.jurisdiction.includes(filters.jurisdiction)) return false;
@@ -267,11 +267,11 @@ export class ProfessionalReviewNetwork {
 
   // Private helper methods
   private async findSuitableAttorneys(jurisdiction: string, willData: WillData): Promise<ProfessionalProfile[]> {
-    const attorneys = await this.searchProfessionals('attorney', { 
+    const attorneys = await this.searchProfessionals('attorney', {
       jurisdiction,
       specialization: 'estate_law'
     });
-    
+
     // Sort by rating and availability
     return attorneys
       .sort((a, b) => {
@@ -434,13 +434,13 @@ export class ProfessionalReviewNetwork {
   private generateAvailableSlots(professional: ProfessionalProfile) {
     const slots = [];
     const today = new Date();
-    
+
     for (let i = 1; i <= 14; i++) {
       const date = new Date(today);
       date.setDate(today.getDate() + i);
-      
+
       if (date.getDay() === 0 || date.getDay() === 6) continue; // Skip weekends
-      
+
       slots.push({
         date,
         time: '09:00',
@@ -448,7 +448,7 @@ export class ProfessionalReviewNetwork {
         type: 'in_person' as const,
         location: professional.location.address
       });
-      
+
       slots.push({
         date,
         time: '14:00',
@@ -456,7 +456,7 @@ export class ProfessionalReviewNetwork {
         type: 'video_call' as const
       });
     }
-    
+
     return slots.slice(0, 8); // Return next 8 available slots
   }
 
@@ -477,7 +477,7 @@ export class ProfessionalReviewNetwork {
   private async processReview(reviewRequest: ReviewRequest): Promise<ReviewFeedback> {
     // Simulate comprehensive will review
     const issues = this.identifyPotentialIssues(reviewRequest.willData, reviewRequest.jurisdiction);
-    
+
     return {
       overall: {
         legalCompliance: issues.length === 0 ? 95 : Math.max(60, 95 - issues.length * 10),
@@ -486,10 +486,10 @@ export class ProfessionalReviewNetwork {
         recommendations: 85
       },
       specificIssues: issues,
-      summary: issues.length === 0 
+      summary: issues.length === 0
         ? 'Your will appears to be legally sound and well-structured. Minor improvements suggested for clarity.'
         : `${issues.length} issues identified that should be addressed to ensure legal compliance and clarity.`,
-      nextSteps: issues.length === 0 
+      nextSteps: issues.length === 0
         ? ['Consider adding more specific asset descriptions', 'Review beneficiary contact information']
         : ['Address critical legal compliance issues', 'Revise unclear provisions', 'Consider additional legal consultation'],
       requiresRevision: issues.some(issue => issue.severity === 'high' || issue.severity === 'critical')

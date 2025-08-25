@@ -8,19 +8,19 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { 
-  X, 
-  Crown, 
-  Shield, 
-  Heart, 
-  FileText, 
+import {
+  X,
+  Crown,
+  Shield,
+  Heart,
+  FileText,
   Phone,
   Mail,
   AlertCircle,
   CheckCircle,
   Save
 } from 'lucide-react';
-import { WillData } from '@/types/will';
+import type { WillData } from '@/types/will';
 
 interface FamilyMember {
   id: string;
@@ -89,7 +89,7 @@ export const PersonRoleAssignment: React.FC<PersonRoleAssignmentProps> = ({
       ...roles,
       heirPercentage: roles.isHeir ? heirPercentage : undefined
     };
-    
+
     onRoleUpdate(person.id, updatedRoles);
     onClose();
   };
@@ -106,7 +106,7 @@ export const PersonRoleAssignment: React.FC<PersonRoleAssignmentProps> = ({
 
   const getRecommendedRoles = () => {
     const recommendations = [];
-    
+
     // Inheritance recommendations
     if (person.relationship === 'spouse' && !roles.isHeir) {
       recommendations.push({
@@ -115,10 +115,10 @@ export const PersonRoleAssignment: React.FC<PersonRoleAssignmentProps> = ({
         suggested: true
       });
     }
-    
+
     if (person.relationship === 'child' && !roles.isHeir) {
       recommendations.push({
-        role: 'heir', 
+        role: 'heir',
         reason: 'Children are often primary beneficiaries',
         suggested: true
       });
@@ -135,10 +135,10 @@ export const PersonRoleAssignment: React.FC<PersonRoleAssignmentProps> = ({
 
     // Guardian recommendations
     if (person.relationship === 'sibling' && !roles.isGuardian) {
-      const hasMinorChildren = willData?.beneficiaries?.some(b => 
+      const hasMinorChildren = willData?.beneficiaries?.some(b =>
         b.relationship === 'child' && new Date().getFullYear() - new Date(b.dateOfBirth || '').getFullYear() < 18
       );
-      
+
       if (hasMinorChildren) {
         recommendations.push({
           role: 'guardian',
@@ -165,14 +165,14 @@ export const PersonRoleAssignment: React.FC<PersonRoleAssignmentProps> = ({
             <X className="h-4 w-4" />
           </Button>
         </CardHeader>
-        
+
         <CardContent className="space-y-6">
           {/* Current Status */}
           <div className="flex items-center space-x-2">
             <span className="text-sm font-medium">Current Status:</span>
             <Badge variant={
               person.status === 'complete' ? 'default' :
-              person.status === 'partial' ? 'secondary' : 
+              person.status === 'partial' ? 'secondary' :
               'destructive'
             }>
               {person.status === 'complete' && <CheckCircle className="h-3 w-3 mr-1" />}
@@ -218,7 +218,7 @@ export const PersonRoleAssignment: React.FC<PersonRoleAssignmentProps> = ({
                     />
                     <Label htmlFor="heir-toggle">Include as heir in will</Label>
                   </div>
-                  
+
                   {roles.isHeir && (
                     <div className="space-y-3 pl-6 border-l-2 border-green-200">
                       <div>
@@ -239,7 +239,7 @@ export const PersonRoleAssignment: React.FC<PersonRoleAssignmentProps> = ({
                           </span>
                         </div>
                       </div>
-                      
+
                       <div className="text-xs text-gray-600">
                         This person will inherit {heirPercentage}% of your estate
                       </div>
@@ -265,11 +265,11 @@ export const PersonRoleAssignment: React.FC<PersonRoleAssignmentProps> = ({
                     />
                     <Label htmlFor="executor-toggle">Appoint as will executor</Label>
                   </div>
-                  
+
                   {roles.isExecutor && (
                     <div className="pl-6 border-l-2 border-purple-200">
                       <p className="text-sm text-gray-600">
-                        This person will be responsible for managing your estate and ensuring 
+                        This person will be responsible for managing your estate and ensuring
                         your will is carried out according to your wishes.
                       </p>
                     </div>
@@ -294,7 +294,7 @@ export const PersonRoleAssignment: React.FC<PersonRoleAssignmentProps> = ({
                     />
                     <Label htmlFor="guardian-toggle">Appoint as guardian for minor children</Label>
                   </div>
-                  
+
                   {roles.isGuardian && (
                     <div className="space-y-3 pl-6 border-l-2 border-blue-200">
                       <div>
@@ -335,7 +335,7 @@ export const PersonRoleAssignment: React.FC<PersonRoleAssignmentProps> = ({
                     />
                     <Label htmlFor="legacy-toggle">Create legacy messages</Label>
                   </div>
-                  
+
                   {roles.hasLegacyMessages && (
                     <div className="space-y-3 pl-6 border-l-2 border-red-200">
                       <p className="text-sm text-gray-600">
@@ -367,7 +367,7 @@ export const PersonRoleAssignment: React.FC<PersonRoleAssignmentProps> = ({
                     />
                     <Label htmlFor="emergency-toggle">Designate as emergency contact</Label>
                   </div>
-                  
+
                   {roles.isEmergencyContact && (
                     <div className="space-y-3 pl-6 border-l-2 border-orange-200">
                       <div className="grid grid-cols-1 gap-3">

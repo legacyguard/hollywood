@@ -1,4 +1,4 @@
-import { Task } from "./types/types";
+import type { Task } from "./types/types";
 import TaskItem from "./TaskItem";
 import { HorizontaLDots } from "../../../icons";
 import { Dropdown } from "../../ui/dropdown/Dropdown";

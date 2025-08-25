@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
-import { ApexOptions } from "apexcharts";
+import type { ApexOptions } from "apexcharts";
 import { useState } from "react";
 import { MoreDotIcon } from "@/icons";
 import { Dropdown } from "../ui/dropdown/Dropdown";

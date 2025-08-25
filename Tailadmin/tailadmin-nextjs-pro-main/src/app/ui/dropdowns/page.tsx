@@ -1,6 +1,6 @@
 import React from "react";
 import Dropdowns from "@/components/Dropdowns";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 
 export const metadata: Metadata = {

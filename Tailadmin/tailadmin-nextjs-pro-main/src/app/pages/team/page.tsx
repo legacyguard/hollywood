@@ -4,7 +4,7 @@ import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import TeamOne from "@/components/Teams/TeamOne";
 import TeamTwo from "@/components/Teams/TeamTwo";
 
-import { Metadata } from "next";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Next.js Teams | TailAdmin - Next.js Dashboard Template",

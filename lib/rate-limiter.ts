@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest} from 'next/server';
+import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 
 // In-memory store for rate limiting (consider Redis for production)
@@ -43,10 +44,10 @@ export function rateLimit(config: RateLimitConfig = {}) {
   return async (req: NextRequest): Promise<NextResponse | null> => {
     const key = finalConfig.keyGenerator(req);
     const now = Date.now();
-    
+
     // Get or create rate limit entry
     let entry = rateLimitStore.get(key);
-    
+
     if (!entry || entry.resetTime < now) {
       // Create new entry or reset expired one
       entry = {
@@ -55,17 +56,17 @@ export function rateLimit(config: RateLimitConfig = {}) {
       };
       rateLimitStore.set(key, entry);
     }
-    
+
     // Check if limit exceeded
     if (entry.count >= finalConfig.maxRequests) {
       const retryAfter = Math.ceil((entry.resetTime - now) / 1000);
-      
+
       return NextResponse.json(
-        { 
+        {
           error: finalConfig.message,
           retryAfter,
         },
-        { 
+        {
           status: 429,
           headers: {
             'Retry-After': retryAfter.toString(),
@@ -76,10 +77,10 @@ export function rateLimit(config: RateLimitConfig = {}) {
         }
       );
     }
-    
+
     // Increment counter
     entry.count++;
-    
+
     // Return null to continue processing
     return null;
   };
@@ -93,28 +94,28 @@ export const rateLimitPresets = {
     maxRequests: 5,
     message: 'Too many authentication attempts. Please try again later.',
   },
-  
+
   // Moderate limit for document uploads
   upload: {
     windowMs: 60 * 1000, // 1 minute
     maxRequests: 3,
     message: 'Upload limit exceeded. Please wait before uploading more documents.',
   },
-  
+
   // Relaxed limit for general API calls
   api: {
     windowMs: 60 * 1000, // 1 minute
     maxRequests: 30,
     message: 'API rate limit exceeded. Please slow down your requests.',
   },
-  
+
   // Very strict limit for AI/expensive operations
   ai: {
     windowMs: 5 * 60 * 1000, // 5 minutes
     maxRequests: 10,
     message: 'AI processing limit reached. Please wait before making more requests.',
   },
-  
+
   // Strict limit for email/SMS notifications
   notification: {
     windowMs: 60 * 60 * 1000, // 1 hour
@@ -131,10 +132,10 @@ export async function withRateLimit(
 ): Promise<NextResponse> {
   const limiter = rateLimit(config);
   const limitResponse = await limiter(req);
-  
+
   if (limitResponse) {
     return limitResponse;
   }
-  
+
   return handler(req);
 }

@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Task } from "./types/types";
+import type { Task } from "./types/types";
 import TaskItem from "./TaskItem";
 import { Dropdown } from "@/components/ui/dropdown/Dropdown";
 import { HorizontaLDots } from "@/icons";

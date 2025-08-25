@@ -48,7 +48,7 @@ export function PasswordPrompt() {
       return;
     }
 
-    const success = needsMigration 
+    const success = needsMigration
       ? await migrateKeys(password)
       : await unlockKeys(password);
 
@@ -79,7 +79,7 @@ export function PasswordPrompt() {
             </DialogTitle>
           </div>
           <DialogDescription>
-            {needsMigration 
+            {needsMigration
               ? 'Your encryption keys need to be migrated to our new secure system. Enter your password to continue.'
               : 'Enter your encryption password to access your protected documents.'}
           </DialogDescription>
@@ -125,7 +125,7 @@ export function PasswordPrompt() {
             <Alert>
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>
-                <strong>Important:</strong> This is a one-time migration to improve security. 
+                <strong>Important:</strong> This is a one-time migration to improve security.
                 Your data will remain encrypted and secure throughout the process.
               </AlertDescription>
             </Alert>

@@ -41,7 +41,7 @@ export default function Scene3Key({ initialTrustedName = "", onBack, onNext, onS
           Skip introduction
         </motion.button>
       )}
-      
+
       <FadeIn duration={0.8}>
         <Card className="w-full max-w-3xl border-primary/20 shadow-xl">
           <CardHeader>
@@ -68,7 +68,7 @@ export default function Scene3Key({ initialTrustedName = "", onBack, onNext, onS
                 🔐 Choose someone who knows your heart and will honor your wishes.
               </p>
             </motion.div>
-            
+
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -83,7 +83,7 @@ export default function Scene3Key({ initialTrustedName = "", onBack, onNext, onS
             </motion.div>
 
             {/* Enhanced key engraving visualization */}
-            <motion.div 
+            <motion.div
               className="relative h-44 mb-6 rounded-lg border-2 border-primary/30 bg-gradient-to-br from-amber-50/20 to-amber-100/10 dark:from-amber-900/10 dark:to-amber-800/5 overflow-hidden"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -91,12 +91,12 @@ export default function Scene3Key({ initialTrustedName = "", onBack, onNext, onS
             >
               {/* Key background glow */}
               <div className="absolute inset-0 bg-gradient-radial from-yellow-200/20 via-transparent to-transparent" />
-              
+
               {/* Ornate key illustration */}
               <div className="absolute inset-0 flex items-center justify-center">
                 <motion.div
                   className="relative"
-                  animate={{ 
+                  animate={{
                     rotateY: isEngraving ? [0, 10, -10, 0] : 0,
                   }}
                   transition={{ duration: 0.8 }}
@@ -108,13 +108,13 @@ export default function Scene3Key({ initialTrustedName = "", onBack, onNext, onS
                       <div className="absolute right-1 top-1 w-1 h-2 bg-yellow-600 rounded"></div>
                       <div className="absolute right-1 bottom-1 w-1 h-1 bg-yellow-600 rounded"></div>
                     </div>
-                    
+
                     {/* Key head */}
                     <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 w-8 h-8 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-full shadow-lg border-2 border-yellow-400">
                       {/* Inner circle */}
                       <div className="absolute inset-2 bg-gradient-to-br from-yellow-300 to-yellow-400 rounded-full"></div>
                     </div>
-                    
+
                     {/* Engraving area */}
                     <div className="absolute inset-0 flex items-center justify-center">
                       <AnimatePresence mode="wait">
@@ -147,7 +147,7 @@ export default function Scene3Key({ initialTrustedName = "", onBack, onNext, onS
                       </AnimatePresence>
                     </div>
                   </div>
-                  
+
                   {/* Key sparkle effects */}
                   <AnimatePresence>
                     {name.trim() && (
@@ -161,11 +161,11 @@ export default function Scene3Key({ initialTrustedName = "", onBack, onNext, onS
                               top: `${20 + Math.random() * 60}%`,
                             }}
                             initial={{ opacity: 0, scale: 0 }}
-                            animate={{ 
+                            animate={{
                               opacity: [0, 1, 0],
                               scale: [0, 1, 0],
                             }}
-                            transition={{ 
+                            transition={{
                               duration: 1.5,
                               repeat: Infinity,
                               delay: Math.random() * 2,
@@ -177,7 +177,7 @@ export default function Scene3Key({ initialTrustedName = "", onBack, onNext, onS
                   </AnimatePresence>
                 </motion.div>
               </div>
-              
+
               {/* Engraving effect overlay */}
               <AnimatePresence>
                 {isEngraving && (
@@ -192,29 +192,29 @@ export default function Scene3Key({ initialTrustedName = "", onBack, onNext, onS
               </AnimatePresence>
             </motion.div>
 
-            <motion.div 
+            <motion.div
               className="flex gap-3 justify-between"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1, duration: 0.6 }}
             >
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={onBack}
                 className="border-primary/20 hover:border-primary/40"
               >
                 ← Back
               </Button>
               <div className="flex gap-3">
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   onClick={() => setName("")}
                   className="border-muted hover:border-muted-foreground/40"
                 >
                   Clear
                 </Button>
-                <Button 
-                  onClick={() => onNext(name)} 
+                <Button
+                  onClick={() => onNext(name)}
                   disabled={!name.trim()}
                   className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300"
                 >
@@ -224,7 +224,7 @@ export default function Scene3Key({ initialTrustedName = "", onBack, onNext, onS
             </motion.div>
 
             {/* Validation message */}
-            <motion.div 
+            <motion.div
               className="mt-4 text-center"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}

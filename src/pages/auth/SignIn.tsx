@@ -6,7 +6,7 @@ export default function SignInPage() {
     <div className="min-h-screen flex items-center justify-center bg-background">
       <FadeIn duration={0.5} delay={0.2}>
         <div className="w-full max-w-md">
-          <SignIn 
+          <SignIn
             path="/sign-in"
             routing="path"
             signUpUrl="/sign-up"

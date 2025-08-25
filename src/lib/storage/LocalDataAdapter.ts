@@ -63,7 +63,7 @@ class LocalDataAdapter {
 
       request.onupgradeneeded = (event) => {
         const db = (event.target as IDBOpenDBRequest).result;
-        
+
         // Main data store
         if (!db.objectStoreNames.contains(this.STORE_NAME)) {
           const store = db.createObjectStore(this.STORE_NAME, { keyPath: 'id' });
@@ -87,7 +87,7 @@ class LocalDataAdapter {
   public async setSyncMode(mode: SyncMode): Promise<void> {
     this.syncMode = mode;
     await this.logAuditEvent('system', 'set_sync_mode', { mode });
-    
+
     // Start or stop sync based on mode
     if (mode !== 'local-only') {
       this.startPeriodicSync();

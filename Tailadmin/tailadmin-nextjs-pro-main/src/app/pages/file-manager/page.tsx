@@ -1,6 +1,6 @@
 import React from "react";
 import FileManager from "@/components/FileManager";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 
 export const metadata: Metadata = {

@@ -3,7 +3,7 @@ import React, { useState, useCallback } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import Column from "./Column";
-import { Task } from "./types/types";
+import type { Task } from "./types/types";
 
 const initialTasks: Task[] = [
   {

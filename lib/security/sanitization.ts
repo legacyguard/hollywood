@@ -19,7 +19,7 @@ const DEFAULT_SANITIZE_OPTIONS = {
  */
 export function sanitizeHtml(dirty: string, options = {}): string {
   if (typeof dirty !== 'string') return '';
-  
+
   const config = { ...DEFAULT_SANITIZE_OPTIONS, ...options };
   return DOMPurify.sanitize(dirty, config);
 }
@@ -29,10 +29,10 @@ export function sanitizeHtml(dirty: string, options = {}): string {
  */
 export function sanitizeText(input: string): string {
   if (typeof input !== 'string') return '';
-  
+
   // Remove all HTML tags and decode HTML entities
   const stripped = DOMPurify.sanitize(input, { ALLOWED_TAGS: [] });
-  
+
   // Additional cleanup for common injection patterns
   return stripped
     .replace(/[<>]/g, '') // Remove any remaining angle brackets
@@ -46,7 +46,7 @@ export function sanitizeText(input: string): string {
  */
 export function sanitizeFilename(filename: string): string {
   if (typeof filename !== 'string') return '';
-  
+
   // Remove path traversal patterns and dangerous characters
   return filename
     .replace(/\.\./g, '') // Remove ..
@@ -61,10 +61,10 @@ export function sanitizeFilename(filename: string): string {
  */
 export function sanitizeEmail(email: string): string | null {
   if (typeof email !== 'string') return null;
-  
+
   const cleaned = email.toLowerCase().trim();
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  
+
   return emailRegex.test(cleaned) ? cleaned : null;
 }
 
@@ -73,7 +73,7 @@ export function sanitizeEmail(email: string): string | null {
  */
 export function sanitizePhone(phone: string): string {
   if (typeof phone !== 'string') return '';
-  
+
   // Keep only digits, spaces, and common phone characters
   return phone.replace(/[^0-9+\-() ]/g, '').substring(0, 20);
 }
@@ -83,19 +83,19 @@ export function sanitizePhone(phone: string): string {
  */
 export function sanitizeUrl(url: string): string | null {
   if (typeof url !== 'string') return null;
-  
+
   const cleaned = url.trim();
-  
+
   // Check for dangerous protocols
   const dangerousProtocols = ['javascript:', 'data:', 'vbscript:', 'file:'];
   const lowerUrl = cleaned.toLowerCase();
-  
+
   for (const protocol of dangerousProtocols) {
     if (lowerUrl.startsWith(protocol)) {
       return null;
     }
   }
-  
+
   // Ensure it's a valid URL
   try {
     const urlObj = new URL(cleaned);
@@ -118,7 +118,7 @@ export function sanitizeUrl(url: string): string | null {
  */
 export function sanitizeJson(jsonString: string): object | null {
   if (typeof jsonString !== 'string') return null;
-  
+
   try {
     const parsed = JSON.parse(jsonString);
     // Re-stringify to remove any non-JSON content
@@ -133,7 +133,7 @@ export function sanitizeJson(jsonString: string): object | null {
  */
 export function sanitizeSqlInput(input: string): string {
   if (typeof input !== 'string') return '';
-  
+
   // Escape SQL special characters
   return input
     .replace(/['";\\]/g, '') // Remove quotes and backslashes
@@ -153,12 +153,12 @@ export function sanitizeNumber(input: any, options: {
   allowFloat?: boolean;
 } = {}): number | null {
   const num = options.allowFloat ? parseFloat(input) : parseInt(input, 10);
-  
+
   if (isNaN(num)) return null;
-  
+
   if (options.min !== undefined && num < options.min) return null;
   if (options.max !== undefined && num > options.max) return null;
-  
+
   return num;
 }
 
@@ -167,21 +167,21 @@ export function sanitizeNumber(input: any, options: {
  */
 export function sanitizeObject(obj: any, maxDepth: number = 10): any {
   if (maxDepth <= 0) return null;
-  
+
   if (obj === null || obj === undefined) return obj;
-  
+
   if (typeof obj === 'string') {
     return sanitizeText(obj);
   }
-  
+
   if (typeof obj === 'number' || typeof obj === 'boolean') {
     return obj;
   }
-  
+
   if (Array.isArray(obj)) {
     return obj.map(item => sanitizeObject(item, maxDepth - 1));
   }
-  
+
   if (typeof obj === 'object') {
     const sanitized: any = {};
     for (const [key, value] of Object.entries(obj)) {
@@ -193,7 +193,7 @@ export function sanitizeObject(obj: any, maxDepth: number = 10): any {
     }
     return sanitized;
   }
-  
+
   return null;
 }
 
@@ -214,49 +214,49 @@ export function validateFile(file: File, options: {
   allowedTypes?: string[];
   allowedExtensions?: string[];
 } = {}): { valid: boolean; error?: string } {
-  const { 
+  const {
     maxSize = 10 * 1024 * 1024, // 10MB default
     allowedTypes = [],
     allowedExtensions = []
   } = options;
-  
+
   // Check file size
   if (file.size > maxSize) {
-    return { 
-      valid: false, 
-      error: `File size exceeds maximum of ${maxSize / (1024 * 1024)}MB` 
+    return {
+      valid: false,
+      error: `File size exceeds maximum of ${maxSize / (1024 * 1024)}MB`
     };
   }
-  
+
   // Check MIME type
   if (allowedTypes.length > 0 && !allowedTypes.includes(file.type)) {
-    return { 
-      valid: false, 
-      error: `File type ${file.type} is not allowed` 
+    return {
+      valid: false,
+      error: `File type ${file.type} is not allowed`
     };
   }
-  
+
   // Check file extension
   if (allowedExtensions.length > 0) {
     const extension = file.name.split('.').pop()?.toLowerCase();
     if (!extension || !allowedExtensions.includes(extension)) {
-      return { 
-        valid: false, 
-        error: `File extension .${extension} is not allowed` 
+      return {
+        valid: false,
+        error: `File extension .${extension} is not allowed`
       };
     }
   }
-  
+
   // Additional security check for disguised executables
   const dangerousExtensions = ['exe', 'dll', 'scr', 'bat', 'cmd', 'com', 'pif', 'app'];
   const fileExt = file.name.split('.').pop()?.toLowerCase();
   if (fileExt && dangerousExtensions.includes(fileExt)) {
-    return { 
-      valid: false, 
-      error: 'Executable files are not allowed' 
+    return {
+      valid: false,
+      error: 'Executable files are not allowed'
     };
   }
-  
+
   return { valid: true };
 }
 
@@ -272,10 +272,10 @@ export function generateRateLimitKey(userId: string, operation: string): string 
  */
 export function maskSensitiveData(data: string, keepChars: number = 4): string {
   if (typeof data !== 'string' || data.length <= keepChars) return '***';
-  
+
   const visiblePart = data.substring(0, keepChars);
   const maskedPart = '*'.repeat(Math.min(data.length - keepChars, 20));
-  
+
   return `${visiblePart}${maskedPart}`;
 }
 

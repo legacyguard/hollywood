@@ -20,9 +20,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
 if (req.method !== 'POST') {
     const origin = (req.headers.origin as string) || undefined;
-    return res.status(405).setHeader('Access-Control-Allow-Origin', getAllowedOrigin(origin)).json({ 
+    return res.status(405).setHeader('Access-Control-Allow-Origin', getAllowedOrigin(origin)).json({
       error: 'Method not allowed',
-      success: false 
+      success: false
     });
   }
 
@@ -64,7 +64,7 @@ if (!fileData || !fileName) {
 // Forward the request to Supabase Edge Function, preserving user Authorization header
     const supabaseUrl = process.env.VITE_SUPABASE_URL;
     const edgeFunctionUrl = `${supabaseUrl}/functions/v1/intelligent-document-analyzer`;
-    
+
     const response = await fetch(edgeFunctionUrl, {
       method: 'POST',
       headers: {
@@ -79,12 +79,12 @@ if (!fileData || !fileName) {
     });
 
     const result = await response.json();
-    
+
     // Set CORS headers and forward the response
 const origin = (req.headers.origin as string) || undefined;
     res.setHeader('Access-Control-Allow-Origin', getAllowedOrigin(origin));
     res.setHeader('Access-Control-Allow-Credentials', 'true');
-    
+
     if (!response.ok) {
       return res.status(response.status).json(result);
     }
@@ -93,11 +93,11 @@ const origin = (req.headers.origin as string) || undefined;
 
   } catch (error) {
     console.error('API proxy error:', error);
-    
+
     const origin = (req.headers.origin as string) || undefined;
     res.setHeader('Access-Control-Allow-Origin', getAllowedOrigin(origin));
     res.setHeader('Access-Control-Allow-Credentials', 'true');
-    
+
     return res.status(500).json({
       success: false,
       error: `Proxy error: ${error instanceof Error ? error.message : 'Unknown error'}`

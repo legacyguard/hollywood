@@ -191,7 +191,7 @@ export function EncryptionSetup() {
           <div className="space-y-6">
             <div className="space-y-4">
               <h3 className="font-semibold text-lg">Before We Begin</h3>
-              
+
               <div className="space-y-3">
                 <div className="flex gap-3">
                   <Lock className="h-5 w-5 text-blue-500 mt-0.5 flex-shrink-0" />
@@ -251,7 +251,7 @@ export function EncryptionSetup() {
           <div className="space-y-6">
             <div className="space-y-4">
               <h3 className="font-semibold text-lg">Create Your Encryption Password</h3>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="password">Encryption Password</Label>
                 <div className="relative">
@@ -285,14 +285,14 @@ export function EncryptionSetup() {
                     <span className="text-sm font-medium">Password Strength</span>
                     <span className={cn(
                       'text-sm font-medium',
-                      passwordStrength.score >= 3 ? 'text-green-600' : 
+                      passwordStrength.score >= 3 ? 'text-green-600' :
                       passwordStrength.score >= 2 ? 'text-yellow-600' : 'text-red-600'
                     )}>
                       {getStrengthLabel(passwordStrength.score)}
                     </span>
                   </div>
                   <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                    <div 
+                    <div
                       className={cn('h-full transition-all duration-300', getStrengthColor(passwordStrength.score))}
                       style={{ width: `${(passwordStrength.score + 1) * 20}%` }}
                     />
@@ -323,7 +323,7 @@ export function EncryptionSetup() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-4">
               <h3 className="font-semibold text-lg">Confirm Your Password</h3>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="confirmPassword">Confirm Encryption Password</Label>
                 <div className="relative">
@@ -389,8 +389,8 @@ export function EncryptionSetup() {
               Next
             </Button>
           ) : (
-            <Button 
-              onClick={handleSubmit} 
+            <Button
+              onClick={handleSubmit}
               disabled={isLoading || password !== confirmPassword || !password}
             >
               {isLoading ? 'Setting up...' : 'Complete Setup'}

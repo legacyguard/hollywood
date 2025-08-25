@@ -66,8 +66,8 @@ function getTestEmailTemplate(email: string, documentName = 'Test Document.pdf',
               
               <p style="margin: 24px 0;">
                 This is what a real notification would look like when one of your important documents is approaching its expiration date.
-                ${daysUntil <= 7 
-                  ? 'In a real scenario, this would be quite urgent.' 
+                ${daysUntil <= 7
+                  ? 'In a real scenario, this would be quite urgent.'
                   : 'In a real scenario, this would be a gentle early reminder.'
                 }
               </p>
@@ -124,8 +124,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     console.log(`Sending test notification to: ${email}`);
 
     const { subject, html } = getTestEmailTemplate(
-      email, 
-      documentName || 'Test Document.pdf', 
+      email,
+      documentName || 'Test Document.pdf',
       daysUntil || 7
     );
 
@@ -138,7 +138,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     // Handle both old and new Resend API response formats
     const emailId = (result as any).data?.id || (result as any).id;
-    
+
     if (emailId) {
       console.log('Test email sent successfully:', emailId);
       return res.status(200).json({
@@ -159,7 +159,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   } catch (error) {
     console.error('Error sending test notification:', error);
-    
+
     return res.status(500).json({
       message: 'Failed to send test notification',
       error: error instanceof Error ? error.message : 'Unknown error'

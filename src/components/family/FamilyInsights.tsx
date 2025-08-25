@@ -3,11 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { 
-  TrendingUp, 
-  AlertTriangle, 
-  CheckCircle2, 
-  Users, 
+import {
+  TrendingUp,
+  AlertTriangle,
+  CheckCircle2,
+  Users,
   Shield,
   Crown,
   Heart,
@@ -30,7 +30,7 @@ interface FamilyInsightsProps {
 }
 
 export const FamilyInsights: React.FC<FamilyInsightsProps> = ({ insights }) => {
-  
+
   const getCompletionColor = (rate: number) => {
     if (rate >= 90) return 'text-green-600';
     if (rate >= 70) return 'text-yellow-600';
@@ -115,7 +115,7 @@ export const FamilyInsights: React.FC<FamilyInsightsProps> = ({ insights }) => {
           </div>
           <Progress value={insights.completionRate} className="h-2" />
           <p className="text-xs text-gray-600 mt-1">
-            {insights.completionRate >= 90 
+            {insights.completionRate >= 90
               ? 'Excellent! Your estate plan is nearly complete.'
               : insights.completionRate >= 70
               ? 'Good progress. A few more steps to complete your plan.'
@@ -127,7 +127,7 @@ export const FamilyInsights: React.FC<FamilyInsightsProps> = ({ insights }) => {
         {/* Role Assignment Breakdown */}
         <div className="space-y-3">
           <h4 className="font-medium text-sm">Role Assignment Status</h4>
-          
+
           <div className="grid grid-cols-2 gap-3 text-sm">
             <div className="flex justify-between">
               <span className="flex items-center">
@@ -138,7 +138,7 @@ export const FamilyInsights: React.FC<FamilyInsightsProps> = ({ insights }) => {
                 {insights.heirsAssigned}/{insights.totalMembers}
               </Badge>
             </div>
-            
+
             <div className="flex justify-between">
               <span className="flex items-center">
                 <Crown className="h-3 w-3 mr-1" />
@@ -148,7 +148,7 @@ export const FamilyInsights: React.FC<FamilyInsightsProps> = ({ insights }) => {
                 {insights.executorAssigned ? 'Assigned' : 'Missing'}
               </Badge>
             </div>
-            
+
             <div className="flex justify-between">
               <span className="flex items-center">
                 <Shield className="h-3 w-3 mr-1" />
@@ -158,7 +158,7 @@ export const FamilyInsights: React.FC<FamilyInsightsProps> = ({ insights }) => {
                 {insights.guardiansAssigned}
               </Badge>
             </div>
-            
+
             <div className="flex justify-between">
               <span className="flex items-center">
                 <Heart className="h-3 w-3 mr-1" />
@@ -175,10 +175,10 @@ export const FamilyInsights: React.FC<FamilyInsightsProps> = ({ insights }) => {
         {recommendations.length > 0 && (
           <div className="space-y-3">
             <h4 className="font-medium text-sm">Action Items</h4>
-            
+
             {recommendations.map((rec, index) => (
-              <Alert 
-                key={index} 
+              <Alert
+                key={index}
                 variant={rec.type === 'critical' ? 'destructive' : rec.type === 'warning' ? 'default' : 'default'}
                 className="py-2"
               >

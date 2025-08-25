@@ -62,7 +62,7 @@ export interface TimeCapsule {
   lastModified: Date;
 }
 
-export type MessageOccasion = 
+export type MessageOccasion =
   | 'birthday'
   | 'wedding'
   | 'graduation'
@@ -281,7 +281,7 @@ export class LegacyMessageBuilder {
         const templates = MESSAGE_TEMPLATES[occasion] || [];
         if (templates.length > 0) {
           const template = templates[0]; // Use first template for now
-          
+
           const message: LegacyMessage = {
             id: `msg_${Date.now()}_${person.name.replace(/\s+/g, '_')}`,
             type: 'text',
@@ -314,23 +314,23 @@ export class LegacyMessageBuilder {
    */
   generateMemoryPrompts(family: Array<{ name: string; relationship: string }>): MemoryPrompt[] {
     const prompts: MemoryPrompt[] = [];
-    
+
     const hasChildren = family.some(f => ['child', 'son', 'daughter'].includes(f.relationship.toLowerCase()));
     const hasSpouse = family.some(f => ['spouse', 'husband', 'wife', 'partner'].includes(f.relationship.toLowerCase()));
-    
+
     // Add child-specific prompts
     if (hasChildren) {
       prompts.push(...MEMORY_PROMPTS.children.map(p => ({ ...p, relationship: 'child' })));
     }
-    
+
     // Add spouse-specific prompts
     if (hasSpouse) {
       prompts.push(...MEMORY_PROMPTS.spouse.map(p => ({ ...p, relationship: 'spouse' })));
     }
-    
+
     // Add general family prompts
     prompts.push(...MEMORY_PROMPTS.family.map(p => ({ ...p, relationship: 'family' })));
-    
+
     // Randomize order and limit to reasonable number
     return this.shuffleArray(prompts).slice(0, 8);
   }
@@ -368,7 +368,7 @@ export class LegacyMessageBuilder {
    */
   createGuidanceSession(sessionType: EmotionalGuidanceSession['sessionType'], family: Array<{ name: string; relationship: string }>): EmotionalGuidanceSession {
     const prompts = this.generateMemoryPrompts(family);
-    
+
     return {
       id: `session_${Date.now()}`,
       sessionType,
@@ -428,7 +428,7 @@ export class LegacyMessageBuilder {
     // Sort by confidence and remove duplicates
     return suggestions
       .sort((a, b) => b.confidence - a.confidence)
-      .filter((suggestion, index, arr) => 
+      .filter((suggestion, index, arr) =>
         index === arr.findIndex(s => s.recipient === suggestion.recipient && s.occasion === suggestion.occasion)
       )
       .slice(0, 5);
@@ -439,7 +439,7 @@ export class LegacyMessageBuilder {
    */
   createMemoryPrompts(relationships: string[]): MemoryPrompt[] {
     const prompts: MemoryPrompt[] = [];
-    
+
     relationships.forEach(relationship => {
       if (relationship === 'child') {
         prompts.push({
@@ -463,7 +463,7 @@ export class LegacyMessageBuilder {
         });
       }
     });
-    
+
     return prompts;
   }
 
@@ -472,7 +472,7 @@ export class LegacyMessageBuilder {
    */
   createLegacyMessages(recipients: string[], occasions: MessageOccasion[]): LegacyMessage[] {
     const messages: LegacyMessage[] = [];
-    
+
     recipients.forEach(recipient => {
       occasions.forEach(occasion => {
         messages.push({
@@ -495,7 +495,7 @@ export class LegacyMessageBuilder {
         });
       });
     });
-    
+
     return messages;
   }
 
@@ -645,7 +645,7 @@ export class LegacyMessageBuilder {
     if (templates && templates.length > 0) {
       return this.populateTemplate(templates[0].template, recipient, 'family member');
     }
-    
+
     return `Based on your reflection about "${response.substring(0, 50)}...", here's a personalized message for ${recipient}.`;
   }
 }

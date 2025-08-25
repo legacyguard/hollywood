@@ -1,6 +1,6 @@
 import React from "react";
 import Carousel from "@/components/Carousels";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 
 export const metadata: Metadata = {

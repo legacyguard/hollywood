@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { localDataAdapter, SyncMode } from '@/lib/storage/LocalDataAdapter';
+import type { SyncMode } from '@/lib/storage/LocalDataAdapter';
+import { localDataAdapter } from '@/lib/storage/LocalDataAdapter';
 import { cloudSyncAdapter } from '@/lib/storage/CloudSyncAdapter';
 import { useTranslation } from 'next-i18next';
 
@@ -77,7 +78,7 @@ export function SyncModeToggle() {
   const toggleCategorySync = async (categoryName: string) => {
     try {
       setIsLoading(true);
-      
+
       const category = categories.find(c => c.name === categoryName);
       if (!category) return;
 
@@ -90,7 +91,7 @@ export function SyncModeToggle() {
       }
 
       // Toggle category sync
-      const updatedCategories = categories.map(cat => 
+      const updatedCategories = categories.map(cat =>
         cat.name === categoryName
           ? { ...cat, syncEnabled: !cat.syncEnabled }
           : cat
@@ -102,7 +103,7 @@ export function SyncModeToggle() {
       if (!category.syncEnabled) {
         await cloudSyncAdapter.forceSyncCategory(categoryName);
       }
-      
+
     } catch (error) {
       console.error('Failed to toggle category sync:', error);
     } finally {

@@ -14,7 +14,7 @@ import { LANGUAGE_CONFIG } from './languages';
 export const getCurrentJurisdiction = () => {
   const hostname = window.location.hostname;
   const domain = hostname.split('.').slice(-2).join('.');
-  
+
   // Map domain to jurisdiction code
   const jurisdictionMap: Record<string, string> = {
     'legacyguard.de': 'DE',
@@ -107,14 +107,14 @@ export type Namespace = keyof typeof NAMESPACES;
 const i18nConfig = {
   // Fallback language
   fallbackLng: 'en',
-  
+
   // Debug mode for development
   debug: process.env.NODE_ENV === 'development',
-  
+
   // Namespaces
   ns: Object.values(NAMESPACES),
   defaultNS: NAMESPACES.common,
-  
+
   // Interpolation settings
   interpolation: {
     escapeValue: false, // React already escapes values
@@ -123,7 +123,7 @@ const i18nConfig = {
       if (format === 'date' && value instanceof Date) {
         return new Intl.DateTimeFormat(lng).format(value);
       }
-      
+
       // Currency formatting based on jurisdiction
       if (format === 'currency' && typeof value === 'number') {
         const jurisdiction = getCurrentJurisdiction();
@@ -133,7 +133,7 @@ const i18nConfig = {
           currency,
         }).format(value);
       }
-      
+
       // Legal date formatting (jurisdiction-specific)
       if (format === 'legalDate' && value instanceof Date) {
         const jurisdiction = getCurrentJurisdiction();
@@ -144,54 +144,54 @@ const i18nConfig = {
           day: 'numeric',
         }).format(value);
       }
-      
+
       return value;
     },
   },
-  
+
   // Detection settings
   detection: {
     // Order of detection methods
     order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag'],
-    
+
     // Keys to look for
     lookupQuerystring: 'lng',
     lookupCookie: 'i18next',
     lookupLocalStorage: 'i18nextLng',
-    
+
     // Cache user language
     caches: ['localStorage', 'cookie'],
-    
+
     // Check if language is whitelisted for current jurisdiction
     checkWhitelist: true,
   },
-  
+
   // Backend settings for lazy loading
   backend: {
     // Path to translation files
     loadPath: '/locales/{{lng}}/{{ns}}.json',
-    
+
     // Add jurisdiction-specific overrides
     addPath: '/locales/{{lng}}/{{ns}}.missing.json',
-    
+
     // Allow cross-domain loading for different jurisdictions
     crossDomain: true,
-    
+
     // Custom loader for jurisdiction-specific translations
     request: async (options: any, url: string, payload: any, callback: any) => {
       try {
         const jurisdiction = getCurrentJurisdiction();
-        
+
         // Try to load jurisdiction-specific translation first
         const jurisdictionUrl = url.replace('/locales/', `/locales/${jurisdiction}/`);
-        
+
         const response = await fetch(jurisdictionUrl);
         if (response.ok) {
           const data = await response.json();
           callback(null, { status: 200, data });
           return;
         }
-        
+
         // Fallback to general translation
         const generalResponse = await fetch(url);
         if (generalResponse.ok) {
@@ -205,7 +205,7 @@ const i18nConfig = {
       }
     },
   },
-  
+
   // React specific settings
   react: {
     useSuspense: true, // Use React Suspense for loading
@@ -215,7 +215,7 @@ const i18nConfig = {
     transSupportBasicHtmlNodes: true, // Allow basic HTML in translations
     transKeepBasicHtmlNodesFor: ['br', 'strong', 'i', 'b', 'u', 'em'],
   },
-  
+
   // Custom options
   saveMissing: process.env.NODE_ENV === 'development',
   missingKeyHandler: (lng: string[], ns: string, key: string) => {
@@ -223,7 +223,7 @@ const i18nConfig = {
       console.warn(`Missing translation: [${lng.join(', ')}] ${ns}:${key}`);
     }
   },
-  
+
   // Jurisdiction-specific settings
   contextSeparator: '_',
   pluralSeparator: '_',
@@ -252,7 +252,7 @@ export const loadLegalTranslations = async (jurisdiction: string, language: stri
     NAMESPACES.taxTerms,
     NAMESPACES.notaryTerms,
   ];
-  
+
   for (const ns of namespaces) {
     try {
       const response = await fetch(`/locales/${jurisdiction}/${language}/${ns}.json`);
@@ -273,12 +273,12 @@ export const getJurisdictionTranslation = (
 ) => {
   const jurisdiction = getCurrentJurisdiction();
   const jurisdictionKey = `${key}_${jurisdiction}`;
-  
+
   // Try jurisdiction-specific translation first
   if (i18n.exists(jurisdictionKey)) {
     return i18n.t(jurisdictionKey, options);
   }
-  
+
   // Fallback to general translation
   return i18n.t(key, options);
 };

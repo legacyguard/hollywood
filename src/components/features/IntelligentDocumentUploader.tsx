@@ -40,7 +40,7 @@ interface DocumentAnalysisResult {
     type: 'amount' | 'account' | 'reference' | 'contact' | 'other';
   }>;
   suggestedTags: string[];
-  
+
   // Bundle Intelligence (Phase 2)
   potentialBundles: Array<{
     bundleId: string;
@@ -51,7 +51,7 @@ interface DocumentAnalysisResult {
     matchScore: number;
     matchReasons: string[];
   }>;
-  
+
   suggestedNewBundle: {
     name: string;
     category: string;
@@ -61,7 +61,7 @@ interface DocumentAnalysisResult {
     confidence: number;
     reasoning: string;
   } | null;
-  
+
   // Document Versioning (Phase 3)
   potentialVersions: Array<{
     documentId: string;
@@ -71,14 +71,14 @@ interface DocumentAnalysisResult {
     similarityScore: number;
     matchReasons: string[];
   }>;
-  
+
   versioningSuggestion: {
     action: 'replace' | 'new_version' | 'separate';
     confidence: number;
     reasoning: string;
     suggestedArchiveReason?: string;
   } | null;
-  
+
   processingId: string;
   processingTime: number;
 }
@@ -90,7 +90,7 @@ export const IntelligentDocumentUploader = () => {
   const [phase, setPhase] = useState<UploadPhase>('select');
   const [analysisResult, setAnalysisResult] = useState<DocumentAnalysisResult | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
-  
+
   const { userId } = useAuth();
   const { user } = useUser();
   const createSupabaseClient = useSupabaseWithClerk();
@@ -98,30 +98,30 @@ export const IntelligentDocumentUploader = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
-      
+
       // Validate file size (max 10MB)
       if (selectedFile.size > 10 * 1024 * 1024) {
         toast.error('File size must be less than 10MB');
         return;
       }
-      
+
       // Validate file type
       const allowedTypes = [
         'application/pdf',
         'image/jpeg',
-        'image/jpg', 
+        'image/jpg',
         'image/png',
         'image/gif',
         'text/plain',
         'application/msword',
         'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
       ];
-      
+
       if (!allowedTypes.includes(selectedFile.type)) {
         toast.error('Please select a supported file type (PDF, images, or documents)');
         return;
       }
-      
+
       setFile(selectedFile);
     }
   };
@@ -131,7 +131,7 @@ export const IntelligentDocumentUploader = () => {
 
     setPhase('analyzing');
     setUploadProgress(0);
-    
+
     try {
       // Convert file to base64
       const base64Data = await new Promise<string>((resolve, reject) => {
@@ -169,7 +169,7 @@ export const IntelligentDocumentUploader = () => {
       }
 
       const result = await response.json();
-      
+
       if (!result.success) {
         throw new Error(result.error || 'Analysis failed');
       }
@@ -177,7 +177,7 @@ export const IntelligentDocumentUploader = () => {
       setAnalysisResult(result.result);
       setPhase('confirm');
       setUploadProgress(100);
-      
+
       toast.success('Document analyzed successfully!');
 
     } catch (error) {
@@ -217,30 +217,30 @@ export const IntelligentDocumentUploader = () => {
     try {
       // Create Supabase client with Clerk token
       const supabase = await createSupabaseClient();
-      
+
       setUploadProgress(20);
-      
+
       // Encrypt the file using secure service
       const encryptionResult = await encryptionService.encryptFile(file);
-      
+
       if (!encryptionResult) {
         throw new Error('Failed to encrypt file. Please check your encryption setup.');
       }
-      
+
       const { encryptedData, nonce, metadata } = encryptionResult;
-      
+
       setUploadProgress(50);
-      
+
       // Create encrypted blob
       const encryptedBlob = new Blob([nonce, encryptedData], { type: 'application/octet-stream' });
-      
+
       // Generate unique file name
       const timestamp = Date.now();
       const encryptedFileName = `${timestamp}_${file.name}.encrypted`;
       const filePath = `${userId}/${encryptedFileName}`;
-      
+
       setUploadProgress(70);
-      
+
       // Upload to Supabase Storage
       const { data, error } = await supabase.storage
         .from('user_documents')
@@ -255,9 +255,9 @@ export const IntelligentDocumentUploader = () => {
         }
         throw error;
       }
-      
+
       setUploadProgress(90);
-      
+
       // Save document metadata with AI analysis results
       const { data: documentData, error: dbError } = await supabase
         .from('documents')
@@ -296,7 +296,7 @@ export const IntelligentDocumentUploader = () => {
       if (confirmedData.bundleSelection && documentData) {
         try {
           const bundleSelection = confirmedData.bundleSelection;
-          
+
           if (bundleSelection.action === 'link' && bundleSelection.bundleId) {
             // Link to existing bundle
             const { error: linkError } = await supabase.rpc('link_document_to_bundle', {
@@ -304,7 +304,7 @@ export const IntelligentDocumentUploader = () => {
               p_bundle_id: bundleSelection.bundleId,
               p_user_id: userId
             });
-            
+
             if (linkError) {
               console.error('Bundle linking error:', linkError);
               // Don't fail the entire operation if bundle linking fails
@@ -312,7 +312,7 @@ export const IntelligentDocumentUploader = () => {
             } else {
               toast.success(`Document linked to bundle successfully!`);
             }
-            
+
           } else if (bundleSelection.action === 'new' && bundleSelection.newBundleName) {
             // Create new bundle and link document
             const newBundle = bundleSelection.suggestedNewBundle;
@@ -326,7 +326,7 @@ export const IntelligentDocumentUploader = () => {
               p_entity_type: newBundle?.entityType || null,
               p_keywords: newBundle?.keywords || confirmedData.suggestedTags
             });
-            
+
             if (createError) {
               console.error('Bundle creation error:', createError);
               // Don't fail the entire operation if bundle creation fails
@@ -335,19 +335,19 @@ export const IntelligentDocumentUploader = () => {
               toast.success(`New bundle "${bundleSelection.newBundleName}" created and document linked!`);
             }
           }
-          
+
         } catch (bundleError) {
           console.error('Bundle handling error:', bundleError);
           // Don't fail the entire operation if bundle handling fails
           toast.warning('Document saved but bundle operation failed');
         }
       }
-      
+
       // Phase 3: Handle Document Versioning
       if (confirmedData.versionSelection && documentData) {
         try {
           const versionSelection = confirmedData.versionSelection;
-          
+
           if (versionSelection.action === 'replace' && versionSelection.versionId) {
             // Archive old document and create version chain
             const { error: archiveError } = await supabase.rpc('archive_document_and_create_version', {
@@ -355,7 +355,7 @@ export const IntelligentDocumentUploader = () => {
               new_document_id: documentData.id,
               archive_reason: versionSelection.archiveReason || 'Replaced by newer version'
             });
-            
+
             if (archiveError) {
               console.error('Document archiving error:', archiveError);
               // Don't fail the entire operation if versioning fails
@@ -363,14 +363,14 @@ export const IntelligentDocumentUploader = () => {
             } else {
               toast.success('Old document version archived and replaced successfully!');
             }
-            
+
           } else if (versionSelection.action === 'new_version' && versionSelection.versionId) {
             // Create new version without archiving the old one
             const { error: versionError } = await supabase.rpc('create_document_version', {
               original_document_id: versionSelection.versionId,
               new_document_id: documentData.id
             });
-            
+
             if (versionError) {
               console.error('Version creation error:', versionError);
               // Don't fail the entire operation if versioning fails
@@ -379,20 +379,20 @@ export const IntelligentDocumentUploader = () => {
               toast.success('New document version created successfully!');
             }
           }
-          
+
         } catch (versionError) {
           console.error('Version handling error:', versionError);
           // Don't fail the entire operation if version handling fails
           toast.warning('Document saved but version operation failed');
         }
       }
-      
+
       setUploadProgress(100);
-      
+
       // Show appropriate success message based on operations performed
       const bundleActionTaken = confirmedData.bundleSelection && confirmedData.bundleSelection.action !== 'none';
       const versionActionTaken = confirmedData.versionSelection && confirmedData.versionSelection.action !== 'none';
-      
+
       if (!bundleActionTaken && !versionActionTaken) {
         toast.success('Document saved successfully with AI analysis!');
       } else if (!bundleActionTaken && versionActionTaken) {
@@ -401,19 +401,19 @@ export const IntelligentDocumentUploader = () => {
         // Bundle message already shown above
       }
       // If both actions taken, individual messages already shown
-      
+
       // Emit event to refresh document list
       window.dispatchEvent(new CustomEvent('documentUploaded', { detail: { userId } }));
-      
+
       // Reset form
       setFile(null);
       setAnalysisResult(null);
       setPhase('select');
       setUploadProgress(0);
-      
+
       const fileInput = document.getElementById('intelligent-file-input') as HTMLInputElement;
       if (fileInput) fileInput.value = '';
-      
+
     } catch (error: unknown) {
       console.error('Error saving document:', error);
       toast.error(error instanceof Error ? error.message : 'Failed to save document. Please try again.');
@@ -426,7 +426,7 @@ export const IntelligentDocumentUploader = () => {
     setAnalysisResult(null);
     setPhase('select');
     setUploadProgress(0);
-    
+
     const fileInput = document.getElementById('intelligent-file-input') as HTMLInputElement;
     if (fileInput) fileInput.value = '';
   };
@@ -459,19 +459,19 @@ export const IntelligentDocumentUploader = () => {
             </p>
           </div>
         </div>
-        
+
         <div className="space-y-4">
           <div className="flex gap-2">
-            <Input 
+            <Input
               id="intelligent-file-input"
-              type="file" 
+              type="file"
               onChange={handleFileChange}
               className="flex-1"
               accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.txt"
               disabled={phase !== 'select'}
             />
-            <Button 
-              onClick={analyzeDocument} 
+            <Button
+              onClick={analyzeDocument}
               disabled={!file || phase !== 'select'}
               className="min-w-[140px]"
             >
@@ -488,7 +488,7 @@ export const IntelligentDocumentUploader = () => {
               )}
             </Button>
           </div>
-          
+
           {phase === 'analyzing' && (
             <div className="space-y-3">
               <div className="flex justify-between text-sm">
@@ -498,7 +498,7 @@ export const IntelligentDocumentUploader = () => {
                 <span className="text-primary">{uploadProgress}%</span>
               </div>
               <div className="w-full bg-gray-700 rounded-full h-2">
-                <div 
+                <div
                   className="bg-primary h-2 rounded-full transition-all duration-300"
                   style={{ width: `${uploadProgress}%` }}
                 />
@@ -509,7 +509,7 @@ export const IntelligentDocumentUploader = () => {
               </div>
             </div>
           )}
-          
+
           {file && phase === 'select' && (
             <div className="flex items-center gap-2 p-3 bg-primary/5 rounded-lg">
               <Icon name="documents" className="w-4 h-4 text-primary" />
@@ -520,7 +520,7 @@ export const IntelligentDocumentUploader = () => {
             </div>
           )}
         </div>
-        
+
         <div className="mt-4 p-3 bg-primary/5 rounded-lg">
           <div className="flex gap-2">
             <Icon name="sparkles" className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />

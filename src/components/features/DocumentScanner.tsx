@@ -13,13 +13,14 @@ import { Icon } from '@/components/ui/icon-library';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { FadeIn } from '@/components/motion/FadeIn';
 import { toast } from 'sonner';
-import { 
-  ProcessedDocument, 
-  OCRProcessingConfig, 
-  OCRProcessingResponse,
+import type {
+  ProcessedDocument,
+  OCRProcessingConfig,
+  OCRProcessingResponse} from '@/types/ocr';
+import {
   DocumentCategory,
   DocumentType,
-  DOCUMENT_PATTERNS 
+  DOCUMENT_PATTERNS
 } from '@/types/ocr';
 import { useAuth } from '@clerk/clerk-react';
 
@@ -30,11 +31,11 @@ interface DocumentScannerProps {
   className?: string;
 }
 
-export default function DocumentScanner({ 
+export default function DocumentScanner({
   onDocumentProcessed,
   onScanStart,
   onScanComplete,
-  className 
+  className
 }: DocumentScannerProps) {
   const { getToken } = useAuth();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -45,7 +46,7 @@ export default function DocumentScanner({
   const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
   const [processingStage, setProcessingStage] = useState<'upload' | 'analyzing' | 'completed'>('upload');
   const [showResults, setShowResults] = useState(false);
-  
+
   // Processing configuration
   const [config, setConfig] = useState<OCRProcessingConfig>({
     enableEntityExtraction: true,
@@ -75,7 +76,7 @@ export default function DocumentScanner({
 
     setSelectedFile(file);
     setProcessingStage('upload');
-    
+
     // Create preview URL for images
     if (file.type.startsWith('image/')) {
       const url = URL.createObjectURL(file);
@@ -87,7 +88,7 @@ export default function DocumentScanner({
     // Reset previous results
     setProcessedDocument(null);
     setShowResults(false);
-    
+
     // Show upload confirmation immediately
     toast.success('Document uploaded successfully! Ready for analysis.');
   }
@@ -155,12 +156,12 @@ export default function DocumentScanner({
       setProcessingStage('completed');
       setShowResults(true);
       onDocumentProcessed?.(result.processedDocument);
-      
+
       // Show results modal instead of toast
       setTimeout(() => {
         setShowResults(true);
       }, 500);
-      
+
     } catch (error) {
       console.error('Document processing failed:', error);
       setProcessingStage('upload');
@@ -260,7 +261,7 @@ export default function DocumentScanner({
 
                 {/* Processing Controls */}
                 <div className="flex gap-3 justify-center">
-                  <Button 
+                  <Button
                     onClick={processDocument}
                     disabled={isProcessing}
                     size="lg"
@@ -278,9 +279,9 @@ export default function DocumentScanner({
                       </>
                     )}
                   </Button>
-                  
-                  <Button 
-                    variant="outline" 
+
+                  <Button
+                    variant="outline"
                     onClick={() => setShowAdvancedOptions(!showAdvancedOptions)}
                   >
                     <Icon name="settings" className="w-4 h-4 mr-2" />
@@ -429,7 +430,7 @@ export default function DocumentScanner({
               I found this information. Is it correct?
             </DialogTitle>
           </DialogHeader>
-          
+
           {processedDocument && (
             <div className="space-y-6">
               {/* Document Classification */}
@@ -491,7 +492,7 @@ export default function DocumentScanner({
                 <Button variant="outline" onClick={() => setShowResults(false)}>
                   Review Later
                 </Button>
-                <Button 
+                <Button
                   onClick={() => {
                     setShowResults(false);
                     toast.success('Great! The information looks good. You can now save the document.');
@@ -517,7 +518,7 @@ function DocumentResults({ document }: { document: ProcessedDocument }) {
     <Card className="p-6">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-xl font-semibold">Processing Results</h3>
-        <Badge 
+        <Badge
           variant={document.processingStatus === 'completed' ? 'default' : 'secondary'}
         >
           {document.processingStatus}

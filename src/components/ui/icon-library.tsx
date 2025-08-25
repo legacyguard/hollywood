@@ -157,7 +157,7 @@ export const IconMap = {
   wishes: Heart,
   protection: Shield,
   settings: Settings,
-  
+
   // Actions
   add: Plus,
   edit: Edit,
@@ -170,7 +170,7 @@ export const IconMap = {
   upload: Upload,
   search: SearchIcon,
   filter: Filter,
-  
+
   // Status
   success: CheckCircle,
   warning: AlertCircle,
@@ -179,7 +179,7 @@ export const IconMap = {
   locked: Lock,
   unlocked: Unlock,
   'shield-check': ShieldCheck,
-  
+
   // UI Elements
   close: X,
   check: Check,
@@ -191,7 +191,7 @@ export const IconMap = {
   chevronLeft: ChevronLeft,
   chevronRight: ChevronRight,
   more: MoreHorizontal,
-  
+
   // Legacy Specific
   infinity: InfinityIcon,
   star: Star,
@@ -200,7 +200,7 @@ export const IconMap = {
   eyeOff: EyeOff,
   grip: GripVertical,
   panelLeft: PanelLeft,
-  
+
   // Sofia AI specific
   bot: Bot,
   user: User,
@@ -211,30 +211,30 @@ export const IconMap = {
   sparkles: Sparkles,
   shield: Shield,
   x: X,
-  
+
   // Communication & Media
   mail: Mail,
   phone: Phone,
   video: Video,
   clock: Clock,
-  
+
   // Layout
   grid: Grid,
   list: List,
-  
+
   // Financial
   financial: DollarSign,
   money: DollarSign,
   card: CreditCard,
   chart: PieChart,
-  
+
   // Trends & Analytics
   trendingUp: TrendingUp,
   trendingDown: TrendingDown,
-  
+
   // Security & Access
   key: Key,
-  
+
   // New dashboard icons
   car: Car,
   folder: Folder,
@@ -244,7 +244,7 @@ export const IconMap = {
   'file-plus': FilePlus,
   'credit-card': Card,
   'alert-circle': AlertCircle,
-  
+
   // Aliases for common usage
   checkCircle: CheckCircle,
   heart: Heart,
@@ -267,7 +267,7 @@ export function Icon({ name, size = 24, className }: IconProps) {
     console.warn(`Icon "${name}" not found in IconMap`);
     return null;
   }
-  
+
   return <IconComponent size={size} className={className} />;
 }
 

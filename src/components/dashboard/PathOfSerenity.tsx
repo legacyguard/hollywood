@@ -5,9 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon-library';
 import { useAuth } from '@clerk/clerk-react';
 import { useSupabaseWithClerk } from '@/integrations/supabase/client';
-import { 
-  SerenityMilestone, 
-  FiveMinuteChallenge,
+import type {
+  SerenityMilestone,
+  FiveMinuteChallenge} from '@/lib/path-of-serenity';
+import {
   SERENITY_MILESTONES,
   calculateUnlockedMilestones,
   getNextChallenge,
@@ -57,7 +58,7 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({ className = '' }
 
       try {
         const supabase = await createSupabaseClient();
-        
+
         // Count documents
         const { data: documents } = await supabase
           .from('documents')
@@ -97,7 +98,7 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({ className = '' }
           // Show recognition for the first newly unlocked milestone
           const milestoneToRecognize = result.newlyUnlocked[0];
           showMilestoneRecognition(milestoneToRecognize);
-          
+
           // Additional quiet notifications for multiple milestones
           if (result.newlyUnlocked.length > 1) {
             setTimeout(() => {
@@ -226,16 +227,16 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({ className = '' }
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
                 initial={{ opacity: 0, scale: 0 }}
-                animate={{ 
-                  opacity: 1, 
+                animate={{
+                  opacity: 1,
                   scale: 1,
                   transition: { delay: index * 0.2, type: "spring", stiffness: 200 }
                 }}
               >
                 <div className={`
                   relative w-16 h-16 rounded-full border-4 flex items-center justify-center shadow-lg transition-all duration-300
-                  ${milestone.isUnlocked 
-                    ? 'bg-gradient-to-br from-green-400 to-emerald-500 border-green-300 shadow-green-200' 
+                  ${milestone.isUnlocked
+                    ? 'bg-gradient-to-br from-green-400 to-emerald-500 border-green-300 shadow-green-200'
                     : 'bg-gradient-to-br from-slate-200 to-slate-300 border-slate-300 shadow-slate-200'
                   }
                 `}>
@@ -263,8 +264,8 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({ className = '' }
                 {/* Milestone Label */}
                 <div className={`
                   absolute top-full mt-2 left-1/2 transform -translate-x-1/2 px-2 py-1 rounded text-xs font-medium text-center whitespace-nowrap
-                  ${milestone.isUnlocked 
-                    ? 'bg-green-100 text-green-800 border border-green-200' 
+                  ${milestone.isUnlocked
+                    ? 'bg-green-100 text-green-800 border border-green-200'
                     : 'bg-slate-100 text-slate-600 border border-slate-200'
                   }
                 `}>
@@ -299,7 +300,7 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({ className = '' }
                   {nextChallenge.description}
                 </p>
                 <div className="flex items-center gap-3">
-                  <Button 
+                  <Button
                     onClick={handleChallengeClick}
                     className="bg-amber-500 hover:bg-amber-600 text-white font-medium px-6 py-2 rounded-lg shadow-md"
                   >
@@ -337,14 +338,14 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({ className = '' }
               <div className="text-center space-y-4">
                 <div className={`
                   w-20 h-20 mx-auto rounded-full border-4 flex items-center justify-center
-                  ${selectedMilestone.isUnlocked 
-                    ? 'bg-gradient-to-br from-green-400 to-emerald-500 border-green-300' 
+                  ${selectedMilestone.isUnlocked
+                    ? 'bg-gradient-to-br from-green-400 to-emerald-500 border-green-300'
                     : 'bg-gradient-to-br from-slate-200 to-slate-300 border-slate-300'
                   }
                 `}>
-                  <Icon 
-                    name={selectedMilestone.isUnlocked ? selectedMilestone.icon as never : 'lock'} 
-                    className={`w-8 h-8 ${selectedMilestone.isUnlocked ? 'text-white' : 'text-slate-500'}`} 
+                  <Icon
+                    name={selectedMilestone.isUnlocked ? selectedMilestone.icon as never : 'lock'}
+                    className={`w-8 h-8 ${selectedMilestone.isUnlocked ? 'text-white' : 'text-slate-500'}`}
                   />
                 </div>
 
@@ -353,8 +354,8 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({ className = '' }
                     {selectedMilestone.name}
                   </h3>
                   <div className={`inline-block px-3 py-1 rounded-full text-xs font-medium mt-2 ${
-                    selectedMilestone.isUnlocked 
-                      ? 'bg-green-100 text-green-800' 
+                    selectedMilestone.isUnlocked
+                      ? 'bg-green-100 text-green-800'
                       : 'bg-slate-100 text-slate-600'
                   }`}>
                     {selectedMilestone.isUnlocked ? 'Odomknuté' : 'Čaká na odomknutie'}
@@ -362,8 +363,8 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({ className = '' }
                 </div>
 
                 <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-                  {selectedMilestone.isUnlocked 
-                    ? selectedMilestone.completedDescription 
+                  {selectedMilestone.isUnlocked
+                    ? selectedMilestone.completedDescription
                     : selectedMilestone.description
                   }
                 </p>

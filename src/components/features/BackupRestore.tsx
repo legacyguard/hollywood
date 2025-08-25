@@ -74,7 +74,7 @@ export function BackupRestore() {
     setIsExporting(true);
     try {
       await backupService.exportData(userId, encryptBackup ? exportPassword : undefined);
-      
+
       // Save last backup date
       const now = new Date().toISOString();
       localStorage.setItem(`lastBackup_${userId}`, now);
@@ -104,7 +104,7 @@ export function BackupRestore() {
     }
 
     setSelectedFile(file);
-    
+
     // Check if file is encrypted by reading first part
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -157,11 +157,11 @@ export function BackupRestore() {
     try {
       await backupService.clearAllData(userId);
       setShowClearDialog(false);
-      
+
       // Clear last backup date
       localStorage.removeItem(`lastBackup_${userId}`);
       setLastBackupDate(null);
-      
+
       // Reload page after clearing
       setTimeout(() => {
         window.location.reload();
@@ -204,8 +204,8 @@ export function BackupRestore() {
               <div className="flex-1">
                 <h3 className="font-semibold mb-2">Export Your Data</h3>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Download a complete backup of all your data including documents, 
-                  settings, and preferences. You can optionally encrypt your backup 
+                  Download a complete backup of all your data including documents,
+                  settings, and preferences. You can optionally encrypt your backup
                   with a password for enhanced security.
                 </p>
                 {backupSize && (
@@ -213,12 +213,12 @@ export function BackupRestore() {
                     Estimated backup size: <span className="font-medium">{backupSize}</span>
                   </p>
                 )}
-                
+
                 {/* Encryption Options */}
                 <div className="space-y-4 mb-4 p-4 bg-muted/10 rounded-lg border border-muted/20">
                   <div className="flex items-center space-x-2">
-                    <Checkbox 
-                      id="encrypt-backup" 
+                    <Checkbox
+                      id="encrypt-backup"
                       checked={encryptBackup}
                       onCheckedChange={(checked) => setEncryptBackup(checked as boolean)}
                     />
@@ -226,7 +226,7 @@ export function BackupRestore() {
                       Encrypt backup with password
                     </Label>
                   </div>
-                  
+
                   {encryptBackup && (
                     <div className="space-y-2">
                       <Label htmlFor="export-password" className="text-sm">
@@ -246,9 +246,9 @@ export function BackupRestore() {
                           onClick={() => setShowExportPassword(!showExportPassword)}
                           className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                         >
-                          <Icon 
-                            name={showExportPassword ? "eye-off" : "eye"} 
-                            className="w-4 h-4" 
+                          <Icon
+                            name={showExportPassword ? "eye-off" : "eye"}
+                            className="w-4 h-4"
                           />
                         </button>
                       </div>
@@ -258,7 +258,7 @@ export function BackupRestore() {
                     </div>
                   )}
                 </div>
-                
+
                 <Button
                   onClick={handleExport}
                   disabled={isExporting || isImporting}
@@ -289,8 +289,8 @@ export function BackupRestore() {
               <div className="flex-1">
                 <h3 className="font-semibold mb-2">Restore From Backup</h3>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Restore your data from a previously exported backup file. 
-                  This will merge the backup data with your existing data, 
+                  Restore your data from a previously exported backup file.
+                  This will merge the backup data with your existing data,
                   avoiding duplicates where possible.
                 </p>
                 {/* Password input for encrypted backups */}
@@ -339,7 +339,7 @@ export function BackupRestore() {
                     </div>
                   </div>
                 )}
-                
+
                 <div className="flex items-center gap-3">
                   <input
                     ref={fileInputRef}
@@ -414,7 +414,7 @@ export function BackupRestore() {
                 <div className="flex-1">
                   <h4 className="font-medium mb-2">Clear All Data</h4>
                   <p className="text-sm text-muted-foreground mb-4">
-                    Permanently delete all your local data. This action cannot be undone. 
+                    Permanently delete all your local data. This action cannot be undone.
                     Make sure you have a backup before proceeding.
                   </p>
                   <Button

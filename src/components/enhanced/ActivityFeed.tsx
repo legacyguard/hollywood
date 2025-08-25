@@ -45,7 +45,7 @@ export function ActivityFeed({
 }: ActivityFeedProps) {
   const getActivityIcon = (item: ActivityItem) => {
     if (item.icon) return item.icon;
-    
+
     const iconMap = {
       document: 'file-text',
       family: 'users',
@@ -54,13 +54,13 @@ export function ActivityFeed({
       security: 'lock',
       system: 'settings'
     };
-    
+
     return iconMap[item.type] || 'activity';
   };
 
   const getActivityColor = (item: ActivityItem) => {
     if (item.color) return item.color;
-    
+
     const colorMap = {
       document: 'info',
       family: 'success',
@@ -69,7 +69,7 @@ export function ActivityFeed({
       security: 'danger',
       system: 'info'
     } as const;
-    
+
     return colorMap[item.type] || 'primary';
   };
 
@@ -87,8 +87,8 @@ export function ActivityFeed({
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
           <CardTitle className="text-lg font-semibold">{title}</CardTitle>
           {showViewAll && onViewAll && (
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               size="sm"
               onClick={onViewAll}
               className="text-primary hover:text-primary-hover"
@@ -120,9 +120,9 @@ export function ActivityFeed({
             <ScrollArea className="px-6" style={{ maxHeight }}>
               <div className="space-y-4 pb-4">
                 {activities.map((activity, index) => (
-                  <ActivityItem 
-                    key={activity.id} 
-                    item={activity} 
+                  <ActivityItem
+                    key={activity.id}
+                    item={activity}
                     icon={getActivityIcon(activity)}
                     color={getActivityColor(activity)}
                     colorClasses={colorClasses}
@@ -156,7 +156,7 @@ function ActivityItem({ item, icon, color, colorClasses, isLast }: ActivityItemP
       {!isLast && (
         <div className="absolute left-5 top-10 bottom-0 w-px bg-border" />
       )}
-      
+
       {/* Icon */}
       <div className={cn(
         "w-10 h-10 rounded-full flex items-center justify-center border",
@@ -164,7 +164,7 @@ function ActivityItem({ item, icon, color, colorClasses, isLast }: ActivityItemP
       )}>
         <Icon name={icon} className="w-5 h-5" />
       </div>
-      
+
       {/* Content */}
       <div className="flex-1 min-w-0">
         <div className="flex items-start justify-between">
@@ -175,7 +175,7 @@ function ActivityItem({ item, icon, color, colorClasses, isLast }: ActivityItemP
             <p className="text-sm text-muted-foreground mt-0.5">
               {item.description}
             </p>
-            
+
             {/* Metadata badges */}
             {item.metadata && Object.keys(item.metadata).length > 0 && (
               <div className="flex flex-wrap gap-1 mt-2">
@@ -188,7 +188,7 @@ function ActivityItem({ item, icon, color, colorClasses, isLast }: ActivityItemP
             )}
           </div>
         </div>
-        
+
         {/* Timestamp and user */}
         <div className="flex items-center mt-2 text-xs text-muted-foreground">
           <Icon name="clock" className="w-3 h-3 mr-1" />

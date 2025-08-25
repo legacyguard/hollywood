@@ -47,7 +47,7 @@ export default function FamilyShieldAccessPage() {
   const { token } = useParams<{ token: string }>();
   const navigate = useNavigate();
   const createSupabaseClient = useSupabaseWithClerk();
-  
+
   const [accessData, setAccessData] = useState<FamilyShieldAccessData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isVerifying, setIsVerifying] = useState(false);
@@ -70,20 +70,20 @@ export default function FamilyShieldAccessPage() {
     try {
       setIsLoading(true);
       const supabase = await createSupabaseClient();
-      
+
       // In a real implementation, this would call a secure serverless function
       // that validates the token and returns the appropriate data based on guardian permissions
-      
+
       // For now, we'll simulate the response
       console.log('Verifying emergency access token:', token);
-      
+
       // Call emergency access verification function
       /* Note: Uncomment when serverless function is implemented
       const { data, error } = await supabase.functions.invoke('verify-emergency-access', {
         body: { token, verification_code: verificationCode }
       });
       */
-      
+
       // Simulated response for demo
       const mockData: FamilyShieldAccessData = {
         user_name: "John Smith",
@@ -110,7 +110,7 @@ export default function FamilyShieldAccessPage() {
             created_at: new Date().toISOString()
           },
           {
-            id: "2", 
+            id: "2",
             title: "Bank Account Information",
             type: "pdf",
             category: "financial",
@@ -129,7 +129,7 @@ export default function FamilyShieldAccessPage() {
             name: "Michael Chen",
             relationship: "Financial Advisor",
             email: "mchen@finance.com",
-            phone: "+1 (555) 987-6543", 
+            phone: "+1 (555) 987-6543",
             can_help_with: ["Financial matters", "Investment accounts"]
           }
         ]
@@ -137,10 +137,10 @@ export default function FamilyShieldAccessPage() {
 
       // Simulate token validation delay
       await new Promise(resolve => setTimeout(resolve, 1500));
-      
+
       setAccessData(mockData);
       toast.success(`Welcome, ${mockData.guardian_name}. Family Shield access granted.`);
-      
+
     } catch (err: unknown) {
       console.error('Error verifying token:', err);
       setError('Failed to verify access token. Please try again or contact support.');
@@ -152,23 +152,23 @@ export default function FamilyShieldAccessPage() {
   const handleVerificationSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsVerifying(true);
-    
+
     // Simulate verification process
     await new Promise(resolve => setTimeout(resolve, 1000));
-    
+
     if (verificationCode.length >= 4) {
       setNeedsVerification(false);
       await verifyToken();
     } else {
       toast.error('Please enter a valid verification code');
     }
-    
+
     setIsVerifying(false);
   };
 
   const downloadSurvivorManual = () => {
     if (!accessData?.survivor_manual.html_content) return;
-    
+
     const blob = new Blob([accessData.survivor_manual.html_content], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -178,7 +178,7 @@ export default function FamilyShieldAccessPage() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    
+
     toast.success('Survivor manual downloaded successfully');
   };
 
@@ -228,7 +228,7 @@ export default function FamilyShieldAccessPage() {
                 Please enter the verification code sent to your registered email.
               </p>
             </div>
-            
+
             <div className="space-y-4">
               <div>
                 <Label htmlFor="verification_code">Verification Code</Label>
@@ -242,7 +242,7 @@ export default function FamilyShieldAccessPage() {
                   className="text-center text-lg tracking-wider"
                 />
               </div>
-              
+
               <Button type="submit" disabled={isVerifying} className="w-full">
                 {isVerifying ? (
                   <>
@@ -314,8 +314,8 @@ export default function FamilyShieldAccessPage() {
             <Alert>
               <Icon name="info" className="h-4 w-4" />
               <AlertDescription>
-                This emergency access was activated on {new Date(accessData.activation_date).toLocaleDateString()} 
-                and will expire on {new Date(accessData.expires_at).toLocaleDateString()}. 
+                This emergency access was activated on {new Date(accessData.activation_date).toLocaleDateString()}
+                and will expire on {new Date(accessData.expires_at).toLocaleDateString()}.
                 All access is logged for security purposes.
               </AlertDescription>
             </Alert>
@@ -370,7 +370,7 @@ export default function FamilyShieldAccessPage() {
                 </Badge>
               </div>
               <p className="text-muted-foreground mb-4">
-                This comprehensive manual contains step-by-step instructions created by {accessData.user_name} 
+                This comprehensive manual contains step-by-step instructions created by {accessData.user_name}
                 to guide the family through various situations. Generated on {new Date(accessData.survivor_manual.generated_at).toLocaleDateString()}.
               </p>
               <div className="flex gap-3">
@@ -479,7 +479,7 @@ export default function FamilyShieldAccessPage() {
                 <div>
                   <h4 className="font-semibold text-blue-800 mb-2">You're Not Alone</h4>
                   <p className="text-blue-700 mb-3">
-                    This information was carefully prepared by {accessData.user_name} to support you during this difficult time. 
+                    This information was carefully prepared by {accessData.user_name} to support you during this difficult time.
                     Remember to take things one step at a time and don't hesitate to reach out for help.
                   </p>
                   <p className="text-sm text-blue-600">

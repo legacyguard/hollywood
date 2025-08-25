@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useAuth, useUser } from '@clerk/clerk-react';
 import { useSofiaStore } from '@/stores/sofiaStore';
-import { SofiaContext } from '@/lib/sofia-types';
+import type { SofiaContext } from '@/lib/sofia-types';
 import { useLocation } from 'react-router-dom';
 import { calculateUnlockedMilestones } from '@/lib/path-of-serenity';
 import { useLocalization } from '@/contexts/LocalizationContext';
@@ -12,7 +12,7 @@ interface SofiaContextProviderProps {
 
 /**
  * Sofia Context Provider
- * 
+ *
  * This component automatically tracks user context and updates Sofia's
  * understanding of the user's situation, progress, and needs.
  */
@@ -58,16 +58,16 @@ const SofiaContextProvider: React.FC<SofiaContextProviderProps> = ({ children })
 
     // Calculate completion percentage based on key milestones
     let completionPercentage = 0;
-    
+
     // Documents: 0-40%
     completionPercentage += Math.min(documentCount * 8, 40); // Max 40% for 5+ docs
-    
+
     // Guardians: 0-30%
     completionPercentage += Math.min(guardianCount * 15, 30); // Max 30% for 2+ guardians
-    
+
     // Other milestones (will, video messages, etc.) - to be implemented
     // This leaves 30% for future features
-    
+
     // Get recent activity
     const recentActivity: string[] = [];
     if (documentCount > 0) {
@@ -131,7 +131,7 @@ try {
     if (!userId) return;
 
     const currentPage = location.pathname.split('/')[1] || 'dashboard';
-    updateContext({ 
+    updateContext({
       // We could add currentPage to context if needed for more specific help
     });
 
@@ -141,22 +141,22 @@ try {
   useEffect(() => {
     const handleDocumentUploaded = () => {
       if (!userId) return;
-      
+
       // Refetch document count
       const documentsKey = `documents_${userId}`;
       const storedDocs = localStorage.getItem(documentsKey);
       const documentCount = storedDocs ? JSON.parse(storedDocs).length : 0;
-      
+
       // Recalculate completion percentage
       const guardiansKey = `guardians_${userId}`;
       const storedGuardians = localStorage.getItem(guardiansKey);
       const guardianCount = storedGuardians ? JSON.parse(storedGuardians).length : 0;
-      
+
       let completionPercentage = 0;
       completionPercentage += Math.min(documentCount * 8, 40);
       completionPercentage += Math.min(guardianCount * 15, 30);
-      
-      updateContext({ 
+
+      updateContext({
         documentCount,
         completionPercentage: Math.min(completionPercentage, 100),
         recentActivity: [
@@ -168,21 +168,21 @@ try {
 
     const handleGuardianAdded = () => {
       if (!userId) return;
-      
+
       // Similar logic for guardian updates
       const guardiansKey = `guardians_${userId}`;
       const storedGuardians = localStorage.getItem(guardiansKey);
       const guardianCount = storedGuardians ? JSON.parse(storedGuardians).length : 0;
-      
+
       const documentsKey = `documents_${userId}`;
       const storedDocs = localStorage.getItem(documentsKey);
       const documentCount = storedDocs ? JSON.parse(storedDocs).length : 0;
-      
+
       let completionPercentage = 0;
       completionPercentage += Math.min(documentCount * 8, 40);
       completionPercentage += Math.min(guardianCount * 15, 30);
-      
-      updateContext({ 
+
+      updateContext({
         guardianCount,
         completionPercentage: Math.min(completionPercentage, 100),
         recentActivity: [
@@ -195,7 +195,7 @@ try {
     // Listen for custom events
     window.addEventListener('documentUploaded', handleDocumentUploaded);
     window.addEventListener('guardianAdded', handleGuardianAdded);
-    
+
     return () => {
       window.removeEventListener('documentUploaded', handleDocumentUploaded);
       window.removeEventListener('guardianAdded', handleGuardianAdded);

@@ -1,7 +1,7 @@
 // Sofia API Handler - Secure OpenAI Communication via Supabase Edge Function
 // This uses the secure server-side Edge Function to protect API keys
 
-import { SofiaContext, SofiaMessage } from './sofia-types';
+import type { SofiaContext, SofiaMessage } from './sofia-types';
 
 interface SofiaAPIRequest {
   prompt: string;
@@ -26,9 +26,9 @@ class SofiaAPI {
   constructor() {
     this.supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
     this.supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
-    
+
     this.initialized = !!(this.supabaseUrl && this.supabaseKey);
-    
+
     if (this.initialized) {
       console.log('[Sofia API] Initialized with Supabase Edge Function');
     } else {
@@ -67,7 +67,7 @@ class SofiaAPI {
       }
 
       const result = await response.json();
-      
+
       return {
         success: true,
         response: result.response,
@@ -116,7 +116,7 @@ class SofiaAPI {
       }
 
       const result = await response.json();
-      
+
       return {
         success: true,
         response: result.response,

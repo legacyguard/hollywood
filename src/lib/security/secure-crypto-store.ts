@@ -35,7 +35,7 @@ class SecureCryptoStore {
 
       request.onupgradeneeded = (event) => {
         const db = (event.target as IDBOpenDBRequest).result;
-        
+
         // Create object store for crypto keys
         if (!db.objectStoreNames.contains(this.storeName)) {
           const keyStore = db.createObjectStore(this.storeName, { keyPath: 'id' });
@@ -50,8 +50,8 @@ class SecureCryptoStore {
    * Save a CryptoKey with metadata
    */
   async saveKey(
-    keyId: string, 
-    key: CryptoKey, 
+    keyId: string,
+    key: CryptoKey,
     userId: string,
     expiresAt?: Date
   ): Promise<void> {
@@ -141,9 +141,9 @@ class SecureCryptoStore {
       request.onsuccess = () => {
         const results = request.result;
         const keys: CryptoKey[] = [];
-        
+
         const expiredKeys: string[] = [];
-        
+
         for (const result of results) {
           if (result.key) {
             // Check if key has expired
@@ -155,12 +155,12 @@ class SecureCryptoStore {
             }
           }
         }
-        
+
         // Remove expired keys asynchronously
         if (expiredKeys.length > 0) {
           Promise.all(expiredKeys.map(id => this.removeKey(id))).catch(console.error);
         }
-        
+
         resolve(keys);
       };
 

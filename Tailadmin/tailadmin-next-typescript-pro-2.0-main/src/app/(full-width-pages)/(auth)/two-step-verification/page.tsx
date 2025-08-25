@@ -1,5 +1,5 @@
 import OtpForm from "@/components/auth/OtpForm";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title:

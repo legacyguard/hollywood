@@ -1,6 +1,6 @@
 import ChartTab from "../common/ChartTab";
 import Chart from "react-apexcharts";
-import { ApexOptions } from "apexcharts";
+import type { ApexOptions } from "apexcharts";
 
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";

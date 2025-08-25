@@ -1,5 +1,7 @@
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { localDataAdapter, StorageItem, SyncMode } from './LocalDataAdapter';
+import type { SupabaseClient } from '@supabase/supabase-js';
+import { createClient } from '@supabase/supabase-js';
+import type { StorageItem} from './LocalDataAdapter';
+import { localDataAdapter, SyncMode } from './LocalDataAdapter';
 import { SecureEncryptionService } from '../encryption-v2';
 import { secureStorage } from '../security/secure-storage';
 
@@ -37,10 +39,10 @@ class CloudSyncAdapter {
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     );
-    
+
     this.encryption = SecureEncryptionService.getInstance();
     this.syncQueue = new Map();
-    
+
     // Start processing queue periodically
     if (typeof window !== 'undefined') {
       setInterval(() => this.processQueue(), 60000); // Every minute
@@ -141,13 +143,13 @@ class CloudSyncAdapter {
 
         } catch (error) {
           console.error('Sync error for item:', queueItem.id, error);
-          
+
           queueItem.retryCount++;
           if (queueItem.retryCount >= this.RETRY_LIMIT) {
             this.syncQueue.delete(queueItem.id);
             stats.failedItems++;
             stats.categories[queueItem.category].failed++;
-            
+
             await this.logSyncEvent('error', {
               item: queueItem.id,
               operation: queueItem.operation,
@@ -242,7 +244,7 @@ class CloudSyncAdapter {
 
     // Get last sync timestamp
     const lastSync = await this.getLastSyncTimestamp();
-    
+
     // Fetch changes since last sync
     const { data, error } = await this.supabase
       .from('encrypted_items')
@@ -300,7 +302,7 @@ class CloudSyncAdapter {
     failed: number;
   }> {
     const items = await localDataAdapter.query({ category });
-    
+
     return items.reduce((acc, item) => {
       acc.total++;
       if (item.metadata.syncStatus === 'synced') acc.synced++;
@@ -315,7 +317,7 @@ class CloudSyncAdapter {
    */
   public async forceSyncCategory(category: string): Promise<void> {
     const items = await localDataAdapter.query({ category });
-    
+
     for (const item of items) {
       if (item.metadata.syncStatus !== 'synced') {
         await this.queueForSync(item, 'update');

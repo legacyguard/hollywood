@@ -1,7 +1,7 @@
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import KanbanBoard from "@/components/task/kanban/KanbanBoard";
 import TaskHeader from "@/components/task/TaskHeader";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import React from "react";
 
 export const metadata: Metadata = {

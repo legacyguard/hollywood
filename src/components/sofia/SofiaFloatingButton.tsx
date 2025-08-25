@@ -25,16 +25,16 @@ const SofiaFloatingButton: React.FC<SofiaFloatingButtonProps> = ({
 
     const checkForSuggestions = async () => {
       const now = Date.now();
-      
+
       // Don't suggest too frequently (minimum 5 minutes between suggestions)
       if (now - lastSuggestionTime < 5 * 60 * 1000) return;
 
       const suggestion = await sofiaAI.generateProactiveSuggestion(context);
-      
+
       if (suggestion && !isChatOpen) {
         setHasNewSuggestion(true);
         setLastSuggestionTime(now);
-        
+
         // Show subtle toast notification
         toast.info('Sofia has a suggestion for you', {
           duration: 3000,
@@ -48,10 +48,10 @@ const SofiaFloatingButton: React.FC<SofiaFloatingButtonProps> = ({
 
     // Initial check
     const timeout = setTimeout(checkForSuggestions, 5000); // Wait 5 seconds after component mount
-    
+
     // Then check periodically
     const interval = setInterval(checkForSuggestions, 30 * 1000); // Every 30 seconds
-    
+
     return () => {
       clearTimeout(timeout);
       clearInterval(interval);
@@ -65,8 +65,8 @@ const SofiaFloatingButton: React.FC<SofiaFloatingButtonProps> = ({
     }
   }, [isChatOpen, hasNewSuggestion]);
 
-  const unreadCount = messages.filter(msg => 
-    msg.role === 'assistant' && 
+  const unreadCount = messages.filter(msg =>
+    msg.role === 'assistant' &&
     msg.timestamp.getTime() > (lastSuggestionTime || 0)
   ).length;
 
@@ -87,8 +87,8 @@ const SofiaFloatingButton: React.FC<SofiaFloatingButtonProps> = ({
           onClick={onToggleChat}
           className={`
             h-14 w-14 rounded-full shadow-lg transition-all duration-300
-            ${isChatOpen 
-              ? 'bg-muted hover:bg-muted-hover' 
+            ${isChatOpen
+              ? 'bg-muted hover:bg-muted-hover'
               : 'bg-gradient-to-br from-primary to-primary-hover hover:from-primary-hover hover:to-primary'
             }
           `}
@@ -115,7 +115,7 @@ const SofiaFloatingButton: React.FC<SofiaFloatingButtonProps> = ({
                 className="relative"
               >
                 <Icon name="bot" className="w-6 h-6" />
-                
+
                 {/* Notification indicator */}
                 <AnimatePresence>
                   {hasNewSuggestion && (
@@ -158,7 +158,7 @@ const SofiaFloatingButton: React.FC<SofiaFloatingButtonProps> = ({
                 </p>
               </div>
             </div>
-            
+
             {/* Arrow pointing to button */}
             <div className="absolute -bottom-2 right-6 w-4 h-4 bg-card border-r border-b border-border rotate-45" />
           </motion.div>

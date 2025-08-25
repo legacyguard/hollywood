@@ -42,7 +42,7 @@ export default function Scene2Box({ initialItems = "", onBack, onNext, onSkip }:
           Skip introduction
         </motion.button>
       )}
-      
+
       <FadeIn duration={0.8}>
         <Card className="w-full max-w-3xl border-primary/20 shadow-xl">
           <CardHeader>
@@ -69,7 +69,7 @@ export default function Scene2Box({ initialItems = "", onBack, onNext, onSkip }:
                 ✨ This is about love, not logistics. Write from your heart.
               </p>
             </motion.div>
-            
+
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -85,7 +85,7 @@ export default function Scene2Box({ initialItems = "", onBack, onNext, onSkip }:
             </motion.div>
 
             {/* Enhanced animated box visualization */}
-            <motion.div 
+            <motion.div
               className="relative h-40 mb-6 rounded-lg border-2 border-primary/30 bg-gradient-to-br from-primary/5 to-background overflow-hidden"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -93,27 +93,27 @@ export default function Scene2Box({ initialItems = "", onBack, onNext, onSkip }:
             >
               {/* Box interior */}
               <div className="absolute inset-0 bg-gradient-to-br from-amber-50/20 to-amber-100/10 dark:from-amber-900/10 dark:to-amber-800/5" />
-              
+
               {/* Box lid shadow */}
               <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-b from-primary/20 to-transparent" />
-              
+
               {/* Floating words animation */}
               <div className="absolute inset-4 flex flex-wrap items-center justify-center gap-2">
                 {words.map((word, index) => (
                   <motion.div
                     key={`${word}-${index}`}
                     className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium border border-primary/20"
-                    initial={{ 
-                      opacity: 0, 
+                    initial={{
+                      opacity: 0,
                       scale: 0.8,
                       y: 20,
                     }}
-                    animate={{ 
-                      opacity: 1, 
+                    animate={{
+                      opacity: 1,
                       scale: 1,
                       y: [0, -5, 0],
                     }}
-                    transition={{ 
+                    transition={{
                       delay: 0.1 * index + 1,
                       duration: 0.6,
                       y: {
@@ -128,14 +128,14 @@ export default function Scene2Box({ initialItems = "", onBack, onNext, onSkip }:
                   </motion.div>
                 ))}
               </div>
-              
+
               {/* Gentle glow effect */}
               <div className="absolute inset-0 bg-gradient-radial from-primary/5 via-transparent to-transparent pointer-events-none" />
-              
+
               {/* Empty state message */}
               {words.length === 0 && (
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <motion.p 
+                  <motion.p
                     className="text-muted-foreground/60 text-sm italic"
                     animate={{ opacity: [0.4, 0.8, 0.4] }}
                     transition={{ duration: 2, repeat: Infinity }}
@@ -146,29 +146,29 @@ export default function Scene2Box({ initialItems = "", onBack, onNext, onSkip }:
               )}
             </motion.div>
 
-            <motion.div 
+            <motion.div
               className="flex gap-3 justify-between"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1, duration: 0.6 }}
             >
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={onBack}
                 className="border-primary/20 hover:border-primary/40"
               >
                 ← Back
               </Button>
               <div className="flex gap-3">
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   onClick={() => setItems("")}
                   className="border-muted hover:border-muted-foreground/40"
                 >
                   Clear
                 </Button>
-                <Button 
-                  onClick={() => onNext(items)} 
+                <Button
+                  onClick={() => onNext(items)}
                   disabled={!items.trim()}
                   className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300"
                 >
@@ -178,7 +178,7 @@ export default function Scene2Box({ initialItems = "", onBack, onNext, onSkip }:
             </motion.div>
 
             {/* Character count and encouragement */}
-            <motion.div 
+            <motion.div
               className="mt-4 text-center"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}

@@ -40,9 +40,9 @@ export const WillTemplateLibrary: React.FC<WillTemplateLibraryProps> = ({
 
   // Get all templates filtered by search and category
   const filteredTemplates = useMemo(() => {
-    let templates = searchQuery 
+    let templates = searchQuery
       ? willTemplateLibrary.searchTemplates(searchQuery)
-      : willTemplateLibrary.getAvailableCategories().flatMap(cat => 
+      : willTemplateLibrary.getAvailableCategories().flatMap(cat =>
           willTemplateLibrary.getTemplatesByCategory(cat.category)
         );
 
@@ -321,9 +321,9 @@ const TemplateCard: React.FC<TemplateCardProps> = ({
     <Card className={`p-4 hover:shadow-md transition-shadow ${isRecommended ? 'border-primary/50 bg-primary/5' : ''}`}>
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-start gap-3">
-          <Icon 
-            name={template.category === 'young_professional' ? 'briefcase' : 'document'} 
-            className="w-5 h-5 text-primary flex-shrink-0 mt-1" 
+          <Icon
+            name={template.category === 'young_professional' ? 'briefcase' : 'document'}
+            className="w-5 h-5 text-primary flex-shrink-0 mt-1"
           />
           <div className="flex-1 min-w-0">
             <h4 className="font-semibold mb-1">{template.name}</h4>
@@ -365,7 +365,7 @@ const TemplateCard: React.FC<TemplateCardProps> = ({
               ))}
             </div>
           </div>
-          
+
           <div className="text-xs text-muted-foreground">
             <span>{template.preview.beneficiaryCount} beneficiaries</span>
             <span className="mx-2">•</span>

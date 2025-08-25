@@ -52,10 +52,10 @@ export const DocumentList = () => {
     try {
       setIsLoading(true);
       setError(null);
-      
+
       // Create Supabase client with Clerk token
       const supabase = await createSupabaseClient();
-      
+
       // Filter documents by user_id
       const { data, error } = await supabase
         .from('documents')
@@ -71,7 +71,7 @@ export const DocumentList = () => {
     } catch (err: unknown) {
       console.error('Error fetching documents:', err);
       setError(err instanceof Error ? err.message : 'Unknown error occurred');
-      
+
       // Fallback to localStorage if database fails
       const documentsKey = `documents_${userId}`;
       const storedDocs = localStorage.getItem(documentsKey);
@@ -106,7 +106,7 @@ export const DocumentList = () => {
     try {
       setDownloadingId(doc.id);
       const supabase = await createSupabaseClient();
-      
+
       // Download encrypted file from storage
       const { data, error } = await supabase.storage
         .from('user_documents')
@@ -147,7 +147,7 @@ export const DocumentList = () => {
     try {
       setDeletingId(doc.id);
       const supabase = await createSupabaseClient();
-      
+
       // Delete file from storage
       const { error: storageError } = await supabase.storage
         .from('user_documents')
@@ -170,7 +170,7 @@ export const DocumentList = () => {
 
       // Remove from local state
       setDocuments(prev => prev.filter(d => d.id !== doc.id));
-      
+
       // Remove from localStorage backup
       const documentsKey = `documents_${userId}`;
       const existingDocs = JSON.parse(localStorage.getItem(documentsKey) || '[]');
@@ -207,7 +207,7 @@ export const DocumentList = () => {
 
     window.addEventListener('storage', handleStorageChange);
     window.addEventListener('documentUploaded', handleDocumentUploaded as EventListener);
-    
+
     return () => {
       window.removeEventListener('storage', handleStorageChange);
       window.removeEventListener('documentUploaded', handleDocumentUploaded as EventListener);
@@ -303,7 +303,7 @@ export const DocumentList = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center gap-2">
                   <Button
                     variant="ghost"

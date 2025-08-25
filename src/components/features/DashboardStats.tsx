@@ -33,14 +33,14 @@ export function DashboardStats({ className }: DashboardStatsProps) {
 
     try {
       const supabase = await createSupabaseClient();
-      
+
       // Fetch documents count
       const { count: docsCount } = await supabase
         .from('documents')
         .select('*', { count: 'exact', head: true })
         .eq('user_id', userId);
 
-      // Fetch guardians count  
+      // Fetch guardians count
       const { count: guardiansCount } = await supabase
         .from('guardians')
         .select('*', { count: 'exact', head: true })
@@ -50,7 +50,7 @@ export function DashboardStats({ className }: DashboardStatsProps) {
       // Fetch expiring documents (next 30 days)
       const thirtyDaysFromNow = new Date();
       thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
-      
+
       const { count: expiringCount } = await supabase
         .from('documents')
         .select('*', { count: 'exact', head: true })
@@ -61,7 +61,7 @@ export function DashboardStats({ className }: DashboardStatsProps) {
       // Fetch recent uploads (last 30 days)
       const thirtyDaysAgo = new Date();
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-      
+
       const { count: recentCount } = await supabase
         .from('documents')
         .select('*', { count: 'exact', head: true })
@@ -87,8 +87,8 @@ export function DashboardStats({ className }: DashboardStatsProps) {
 
   const getStatsData = (): KPICardProps[] => {
     const completionPercentage = Math.min(100, Math.round(
-      ((stats.documentsCount > 0 ? 30 : 0) + 
-       (stats.guardiansCount > 0 ? 40 : 0) + 
+      ((stats.documentsCount > 0 ? 30 : 0) +
+       (stats.guardiansCount > 0 ? 40 : 0) +
        (stats.documentsCount >= 3 ? 30 : 0)) * 100 / 100
     ));
 
@@ -141,7 +141,7 @@ export function DashboardStats({ className }: DashboardStatsProps) {
             Track your journey as Guardian of Memories
           </p>
         </div>
-        
+
         <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {[1,2,3,4].map((i) => (
             <div key={i} className="bg-card rounded-lg p-6 border animate-pulse">
@@ -165,7 +165,7 @@ export function DashboardStats({ className }: DashboardStatsProps) {
           Track your journey as Guardian of Memories
         </p>
       </div>
-      
+
       <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {statsCards.map((stat, index) => (
           <KPICard

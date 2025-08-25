@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Upload, FileText, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { OCRService } from '@/services/ocrService';
-import { DocumentType, ProcessedDocument } from '@/types/ocr';
+import type { DocumentType, ProcessedDocument } from '@/types/ocr';
 
 const TestOCRPage: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -22,11 +22,11 @@ const TestOCRPage: React.FC = () => {
         setError('Please select an image file');
         return;
       }
-      
+
       setFile(selectedFile);
       setError('');
       setResult(null);
-      
+
       // Create preview
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -44,7 +44,7 @@ const TestOCRPage: React.FC = () => {
 
     setProcessing(true);
     setError('');
-    
+
     try {
       // Convert file to base64
       const base64 = await new Promise<string>((resolve, reject) => {
@@ -133,7 +133,7 @@ const TestOCRPage: React.FC = () => {
   return (
     <div className="container mx-auto p-6 max-w-6xl">
       <h1 className="text-3xl font-bold mb-6">OCR Test Page</h1>
-      
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Upload Section */}
         <Card>

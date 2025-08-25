@@ -1,15 +1,17 @@
 import { useState, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { WillData } from '@/types/will';
-import { 
-  professionalNetwork, 
-  ProfessionalProfile, 
-  ReviewRequest, 
-  ConsultationOffer, 
-  NotaryMatch, 
+import type { WillData } from '@/types/will';
+import type {
+  ReviewRequest,
+  ConsultationOffer,
+  NotaryMatch,
   ReviewFeedback,
   ProfessionalType,
-  ReviewPriority 
+  ReviewPriority
+} from '@/lib/professional-review-network';
+import {
+  professionalNetwork,
+  ProfessionalProfile
 } from '@/lib/professional-review-network';
 
 interface AttorneyReviewOptions {
@@ -28,7 +30,7 @@ interface NotarySearchOptions {
 
 export const useProfessionalNetwork = () => {
   const queryClient = useQueryClient();
-  
+
   // Request attorney review
   const attorneyReviewMutation = useMutation({
     mutationFn: ({ willData, jurisdiction, options }: {
@@ -90,10 +92,10 @@ export const useProfessionalNetwork = () => {
   // Hook for attorney review workflow
   const useAttorneyReview = () => {
     const [currentRequest, setCurrentRequest] = useState<ReviewRequest | null>(null);
-    
+
     const requestReview = useCallback(async (
-      willData: WillData, 
-      jurisdiction: string, 
+      willData: WillData,
+      jurisdiction: string,
       options?: AttorneyReviewOptions
     ) => {
       try {
@@ -187,7 +189,7 @@ export const useProfessionalNetwork = () => {
   const useProfessionalReviewWorkflow = (willData: WillData, jurisdiction: string) => {
     const [activeService, setActiveService] = useState<'attorney' | 'planner' | 'notary' | null>(null);
     const [reviewHistory, setReviewHistory] = useState<ReviewFeedback[]>([]);
-    
+
     const attorneyReview = useAttorneyReview();
     const estatePlanning = useEstatePlanningConsultation();
     const notaryServices = useNotaryServices();
@@ -195,7 +197,7 @@ export const useProfessionalNetwork = () => {
     const startAttorneyReview = useCallback(async (options?: AttorneyReviewOptions) => {
       setActiveService('attorney');
       const request = await attorneyReview.requestReview(willData, jurisdiction, options);
-      
+
       // Auto-submit for review if assigned
       if (request.status === 'assigned') {
         setTimeout(async () => {
@@ -203,7 +205,7 @@ export const useProfessionalNetwork = () => {
           setReviewHistory(prev => [...prev, feedback]);
         }, 3000); // Simulate review time
       }
-      
+
       return request;
     }, [willData, jurisdiction, attorneyReview]);
 
@@ -213,19 +215,19 @@ export const useProfessionalNetwork = () => {
     }, [willData, estatePlanning]);
 
     const startNotarySearch = useCallback(async (
-      location: string, 
+      location: string,
       preferences?: NotarySearchOptions
     ) => {
       setActiveService('notary');
       return await notaryServices.findNotaries(location, willData, preferences);
     }, [willData, notaryServices]);
 
-    const isAnyServiceLoading = attorneyReview.isLoading || 
-                              estatePlanning.isLoading || 
+    const isAnyServiceLoading = attorneyReview.isLoading ||
+                              estatePlanning.isLoading ||
                               notaryServices.isLoading;
 
-    const hasAnyError = attorneyReview.error || 
-                        estatePlanning.error || 
+    const hasAnyError = attorneyReview.error ||
+                        estatePlanning.error ||
                         notaryServices.error;
 
     return {
@@ -248,7 +250,7 @@ export const useProfessionalNetwork = () => {
     useEstatePlanningConsultation,
     useNotaryServices,
     useProfessionalReviewWorkflow,
-    
+
     // Direct mutations for advanced use cases
     attorneyReviewMutation,
     consultationOffersMutation,

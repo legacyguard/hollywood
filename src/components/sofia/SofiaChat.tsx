@@ -6,7 +6,8 @@ import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Icon } from '@/components/ui/icon-library';
 import { useSofiaStore } from '@/stores/sofiaStore';
-import { sofiaAI, createSofiaMessage, SofiaMessage } from '@/lib/sofia-ai';
+import type { SofiaMessage } from '@/lib/sofia-ai';
+import { sofiaAI, createSofiaMessage } from '@/lib/sofia-ai';
 import { useAuth } from '@clerk/clerk-react';
 import ReactMarkdown from 'react-markdown';
 
@@ -27,7 +28,7 @@ const SofiaChat: React.FC<SofiaChatProps> = ({
   const [inputValue, setInputValue] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
-  
+
   const {
     messages,
     isTyping,
@@ -57,7 +58,7 @@ const SofiaChat: React.FC<SofiaChatProps> = ({
         } catch (error) {
           console.error('Failed to get contextual help:', error);
           const fallbackMessage = createSofiaMessage(
-            'assistant', 
+            'assistant',
             'Hello! I am Sofia, your digital assistant. How can I help you today?'
           );
           addMessage(fallbackMessage);
@@ -69,7 +70,7 @@ const SofiaChat: React.FC<SofiaChatProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!inputValue.trim() || !context || !userId || isSubmitting) return;
 
     const userMessage = createSofiaMessage('user', inputValue.trim());
@@ -97,7 +98,7 @@ const SofiaChat: React.FC<SofiaChatProps> = ({
     } catch (error) {
       console.error('Error getting Sofia response:', error);
       const errorMessage = createSofiaMessage(
-        'assistant', 
+        'assistant',
         "I apologize, but I'm having trouble responding right now. Please try again in a moment."
       );
       addMessage(errorMessage);
@@ -119,7 +120,7 @@ const SofiaChat: React.FC<SofiaChatProps> = ({
           <Icon name="bot" className="w-4 h-4 text-primary" />
         </div>
       )}
-      
+
       <div className={`max-w-[80%] ${message.role === 'user' ? 'order-first' : ''}`}>
         <div
           className={`p-3 rounded-lg ${
@@ -161,7 +162,7 @@ const SofiaChat: React.FC<SofiaChatProps> = ({
           {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         </div>
       </div>
-      
+
       {message.role === 'user' && (
         <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center flex-shrink-0">
           <Icon name="user" className="w-4 h-4 text-secondary-foreground" />
@@ -207,7 +208,7 @@ const SofiaChat: React.FC<SofiaChatProps> = ({
             <p className="text-sm text-muted-foreground">Your Family Guardian</p>
           </div>
         </div>
-        
+
         {onClose && (
           <Button
             variant="ghost"

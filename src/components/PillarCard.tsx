@@ -1,4 +1,5 @@
-import { Icon, IconName } from "@/components/ui/icon-library";
+import type { IconName } from "@/components/ui/icon-library";
+import { Icon } from "@/components/ui/icon-library";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -37,7 +38,7 @@ export function PillarCard({
       {isActive && (
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent rounded-2xl" />
       )}
-      
+
       {/* Lock Badge */}
       {isLocked && (
         <div className="absolute top-4 right-4 px-3 py-1 bg-status-locked text-status-locked-foreground text-xs font-medium rounded-full">
@@ -50,7 +51,7 @@ export function PillarCard({
         <div
           className={cn(
             "w-16 h-16 rounded-2xl flex items-center justify-center mb-6",
-            isActive 
+            isActive
               ? "bg-primary text-primary-foreground"
               : isLocked
               ? "bg-status-locked text-status-locked-foreground"

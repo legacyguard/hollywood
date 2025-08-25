@@ -1,6 +1,7 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
-import { VariantProps, cva } from "class-variance-authority"
+import type { VariantProps} from "class-variance-authority";
+import { cva } from "class-variance-authority"
 import { PanelLeft } from "lucide-react"
 
 import { useIsMobile } from "@/hooks/use-mobile"
@@ -17,7 +18,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { useSidebar, SidebarContext, SIDEBAR_COOKIE_NAME, SIDEBAR_COOKIE_MAX_AGE, SIDEBAR_WIDTH, SIDEBAR_WIDTH_MOBILE, SIDEBAR_WIDTH_ICON, SIDEBAR_KEYBOARD_SHORTCUT } from "./sidebar-hooks"
-
 
 
 const SidebarProvider = React.forwardRef<

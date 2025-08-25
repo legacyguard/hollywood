@@ -5,8 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon-library';
 import { Badge } from '@/components/ui/badge';
 import { useSupabaseWithClerk } from '@/integrations/supabase/client';
-import { WillData } from './WillWizard';
-import { WillType } from './WillTypeSelector';
+import type { WillData } from './WillWizard';
+import type { WillType } from './WillTypeSelector';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface GuardianData {
@@ -85,7 +85,7 @@ export const IntelligentWillDraftGenerator: React.FC<IntelligentWillDraftGenerat
     setIsAnalyzing(true);
     try {
       const supabase = await createSupabaseClient();
-      
+
       // 1. Fetch Guardians
       const { data: guardians } = await supabase
         .from('guardians')
@@ -100,7 +100,7 @@ export const IntelligentWillDraftGenerator: React.FC<IntelligentWillDraftGenerat
 
       // 3. Analyze and Generate Suggestions
       const analysis = analyzeUserDataForWill(guardians || [], bundles || [], user);
-      
+
       setAnalysis(analysis);
       setShowAnalysis(true);
     } catch (error) {
@@ -111,8 +111,8 @@ export const IntelligentWillDraftGenerator: React.FC<IntelligentWillDraftGenerat
   };
 
   const analyzeUserDataForWill = (
-    guardians: GuardianData[], 
-    bundles: DocumentBundle[], 
+    guardians: GuardianData[],
+    bundles: DocumentBundle[],
     user: { fullName?: string } | null
   ): DraftAnalysis => {
     const analysis: DraftAnalysis = {
@@ -125,18 +125,18 @@ export const IntelligentWillDraftGenerator: React.FC<IntelligentWillDraftGenerat
     };
 
     // 1. Suggest Beneficiaries Based on Guardians
-    const spouses = guardians.filter(g => 
+    const spouses = guardians.filter(g =>
       ['spouse', 'husband', 'wife', 'partner', 'manžel', 'manželka', 'partner', 'partnerka'].some(term =>
         g.relationship.toLowerCase().includes(term)
       )
     );
-    
+
     const children = guardians.filter(g =>
       ['child', 'son', 'daughter', 'dieťa', 'syn', 'dcéra'].some(term =>
         g.relationship.toLowerCase().includes(term)
       )
     );
-    
+
     const parents = guardians.filter(g =>
       ['parent', 'mother', 'father', 'rodič', 'mama', 'otec', 'matka'].some(term =>
         g.relationship.toLowerCase().includes(term)
@@ -161,7 +161,7 @@ export const IntelligentWillDraftGenerator: React.FC<IntelligentWillDraftGenerat
     if (children.length > 0) {
       const remainingForChildren = spouses.length > 0 ? 50 : 85;
       const percentagePerChild = Math.floor(remainingForChildren / children.length);
-      
+
       children.forEach(child => {
         analysis.suggestedBeneficiaries.push({
           name: child.name,
@@ -225,17 +225,17 @@ export const IntelligentWillDraftGenerator: React.FC<IntelligentWillDraftGenerat
     });
 
     // 3. Suggest Executor
-    const nonBeneficiaryGuardians = guardians.filter(g => 
+    const nonBeneficiaryGuardians = guardians.filter(g =>
       !analysis.suggestedBeneficiaries.some(b => b.name === g.name)
     );
-    
+
     if (nonBeneficiaryGuardians.length > 0) {
-      const executor = nonBeneficiaryGuardians.find(g => 
+      const executor = nonBeneficiaryGuardians.find(g =>
         ['sibling', 'brother', 'sister', 'súrodenec', 'brat', 'sestra'].some(term =>
           g.relationship.toLowerCase().includes(term)
         )
       ) || nonBeneficiaryGuardians[0];
-      
+
       analysis.suggestedExecutor = {
         name: executor.name,
         relationship: executor.relationship,
@@ -251,17 +251,17 @@ export const IntelligentWillDraftGenerator: React.FC<IntelligentWillDraftGenerat
 
     // 4. Suggest Guardians for Minor Children
     if (children.length > 0) {
-      const potentialChildGuardians = guardians.filter(g => 
+      const potentialChildGuardians = guardians.filter(g =>
         ['sibling', 'brother', 'sister', 'súrodenec', 'brat', 'sestra', 'parent', 'mother', 'father'].some(term =>
           g.relationship.toLowerCase().includes(term)
         )
       );
-      
+
       if (potentialChildGuardians.length > 0) {
         analysis.suggestedGuardians = potentialChildGuardians.slice(0, 2).map((g, index) => ({
           name: g.name,
           relationship: g.relationship,
-          reasoning: index === 0 
+          reasoning: index === 0
             ? 'Close family member who shares your values and can provide stable home.'
             : 'Backup guardian in case primary guardian cannot serve.'
         }));
@@ -356,8 +356,8 @@ export const IntelligentWillDraftGenerator: React.FC<IntelligentWillDraftGenerat
             </div>
             <h2 className="text-2xl font-semibold">Sofia's Intelligent Will Assistant</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Would you like me to prepare an intelligent first draft of your will based on the information 
-              you've already entrusted to me? This will save you considerable time, and you can review 
+              Would you like me to prepare an intelligent first draft of your will based on the information
+              you've already entrusted to me? This will save you considerable time, and you can review
               and modify everything afterwards.
             </p>
           </div>
@@ -379,7 +379,7 @@ export const IntelligentWillDraftGenerator: React.FC<IntelligentWillDraftGenerat
           </Card>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
+            <Button
               onClick={generateIntelligentDraft}
               disabled={isAnalyzing}
               size="lg"
@@ -397,8 +397,8 @@ export const IntelligentWillDraftGenerator: React.FC<IntelligentWillDraftGenerat
                 </>
               )}
             </Button>
-            
-            <Button 
+
+            <Button
               onClick={onStartFromScratch}
               variant="outline"
               size="lg"
@@ -424,16 +424,16 @@ export const IntelligentWillDraftGenerator: React.FC<IntelligentWillDraftGenerat
               <div className="flex items-center justify-center gap-2">
                 <Icon name="check-circle" className="w-6 h-6 text-green-600" />
                 <h2 className="text-xl font-semibold">Draft Analysis Complete</h2>
-                <Badge 
+                <Badge
                   className={`${
-                    analysis.confidence === 'high' 
-                      ? 'bg-green-100 text-green-800' 
+                    analysis.confidence === 'high'
+                      ? 'bg-green-100 text-green-800'
                       : analysis.confidence === 'medium'
                       ? 'bg-yellow-100 text-yellow-800'
                       : 'bg-orange-100 text-orange-800'
                   }`}
                 >
-                  {analysis.confidence === 'high' ? 'High Confidence' : 
+                  {analysis.confidence === 'high' ? 'High Confidence' :
                    analysis.confidence === 'medium' ? 'Medium Confidence' : 'Low Confidence'}
                 </Badge>
               </div>
@@ -550,7 +550,7 @@ export const IntelligentWillDraftGenerator: React.FC<IntelligentWillDraftGenerat
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-6">
-              <Button 
+              <Button
                 onClick={handleAcceptDraft}
                 size="lg"
                 className="bg-primary hover:bg-primary-hover text-primary-foreground px-8"
@@ -558,8 +558,8 @@ export const IntelligentWillDraftGenerator: React.FC<IntelligentWillDraftGenerat
                 <Icon name="check" className="w-5 h-5 mr-2" />
                 Use This Draft as Starting Point
               </Button>
-              
-              <Button 
+
+              <Button
                 onClick={onStartFromScratch}
                 variant="outline"
                 size="lg"

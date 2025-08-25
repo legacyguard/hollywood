@@ -56,7 +56,7 @@ export const LegacyOverviewSection: React.FC<LegacyOverviewSectionProps> = ({ cl
     {
       id: '2',
       name: 'Property: Family Home',
-      category: 'property', 
+      category: 'property',
       primaryEntity: '123 Main Street',
       documentCount: 3,
       lastUpdated: '2025-01-18'
@@ -102,12 +102,12 @@ export const LegacyOverviewSection: React.FC<LegacyOverviewSectionProps> = ({ cl
       // Recent items first
       if (a.isRecent && !b.isRecent) return -1;
       if (!a.isRecent && b.isRecent) return 1;
-      
+
       // Then by document count (more important)
       if (a.documentCount !== b.documentCount) {
         return b.documentCount - a.documentCount;
       }
-      
+
       // Finally by last updated
       return new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime();
     })
@@ -131,7 +131,7 @@ export const LegacyOverviewSection: React.FC<LegacyOverviewSectionProps> = ({ cl
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {sortedBundles.map((bundle, index) => (
             <FadeIn key={bundle.id} duration={0.4} delay={0.1 * index}>
-              <Card 
+              <Card
                 className="p-4 hover:shadow-md transition-shadow cursor-pointer group"
                 onClick={() => handleBundleClick(bundle)}
               >
@@ -145,15 +145,15 @@ export const LegacyOverviewSection: React.FC<LegacyOverviewSectionProps> = ({ cl
                     </Badge>
                   )}
                 </div>
-                
+
                 <h3 className="font-semibold text-card-foreground mb-1 group-hover:text-primary transition-colors">
                   {bundle.name}
                 </h3>
-                
+
                 <p className="text-sm text-muted-foreground mb-3 line-clamp-1">
                   {bundle.primaryEntity}
                 </p>
-                
+
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">
@@ -161,8 +161,8 @@ export const LegacyOverviewSection: React.FC<LegacyOverviewSectionProps> = ({ cl
                     </span>
                   </div>
                   <div className="text-xs text-muted-foreground">
-                    Last updated: {new Date(bundle.lastUpdated).toLocaleDateString('en-US', { 
-                      day: 'numeric', 
+                    Last updated: {new Date(bundle.lastUpdated).toLocaleDateString('en-US', {
+                      day: 'numeric',
                       month: 'short',
                       year: 'numeric'
                     })}

@@ -17,11 +17,11 @@ export const SealOfTrust: React.FC<SealOfTrustProps> = ({
   className = ''
 }) => {
   const { jurisdiction } = useLocalization();
-  
+
   // Generate document hash if not provided
   const finalDocumentId = documentId || generateDocumentHash();
   const finalCreatedAt = createdAt || new Date().toISOString().split('T')[0];
-  
+
   // Jurisdiction-specific legal compliance text
   const getComplianceText = () => {
     switch (jurisdiction) {
@@ -69,8 +69,8 @@ export const SealOfTrust: React.FC<SealOfTrustProps> = ({
               </div>
             </div>
             <div className="mt-2 p-2 bg-blue-50 rounded text-blue-800 text-xs">
-              <strong>Verification:</strong> This document was generated using LegacyGuard's 
-              intelligent legal template system. While legally compliant, we recommend 
+              <strong>Verification:</strong> This document was generated using LegacyGuard's
+              intelligent legal template system. While legally compliant, we recommend
               having it reviewed by a qualified attorney for your specific circumstances.
             </div>
           </div>
@@ -87,7 +87,7 @@ export const SealOfTrust: React.FC<SealOfTrustProps> = ({
         <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
           <Icon name="shield-check" className="w-5 h-5 text-primary" />
         </div>
-        
+
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2">
             <h4 className="font-semibold text-blue-900 dark:text-blue-200">
@@ -97,12 +97,12 @@ export const SealOfTrust: React.FC<SealOfTrustProps> = ({
               Certified
             </Badge>
           </div>
-          
+
           <p className="text-sm text-blue-800 dark:text-blue-300 mb-3">
-            {getComplianceText()} {finalCreatedAt}. This template has been 
+            {getComplianceText()} {finalCreatedAt}. This template has been
             reviewed by legal experts and follows current legislation requirements.
           </p>
-          
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-blue-700 dark:text-blue-400">
             <div className="flex items-center gap-2">
               <Icon name="calendar" className="w-3 h-3" />
@@ -121,12 +121,12 @@ export const SealOfTrust: React.FC<SealOfTrustProps> = ({
               <span><strong>Template Version:</strong> 2.0</span>
             </div>
           </div>
-          
+
           <div className="mt-3 pt-3 border-t border-blue-200 dark:border-blue-800">
             <div className="flex items-center gap-2 text-xs text-blue-600 dark:text-blue-400">
               <Icon name="info" className="w-3 h-3" />
               <span>
-                <strong>Legal Notice:</strong> While this template complies with current law, 
+                <strong>Legal Notice:</strong> While this template complies with current law,
                 we recommend consulting a qualified attorney for personalized legal advice.
               </span>
             </div>

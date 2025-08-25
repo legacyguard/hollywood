@@ -6,7 +6,7 @@ import { Icon } from '@/components/ui/icon-library';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { supabase } from '@/integrations/supabase/client';
-import { Document } from '@/integrations/supabase/types';
+import type { Document } from '@/integrations/supabase/types';
 
 interface VaultAsset {
   id: string;
@@ -59,7 +59,7 @@ export const VaultAssetSelector: React.FC<VaultAssetSelectorProps> = ({
   const fetchVaultAssets = async () => {
     try {
       setLoading(true);
-      
+
       // Fetch documents and bundles from the vault
       const { data: documents, error } = await supabase
         .from('documents')
@@ -90,11 +90,11 @@ export const VaultAssetSelector: React.FC<VaultAssetSelectorProps> = ({
       }
 
       // Transform documents into assets
-      const transformedAssets: VaultAsset[] = documents?.map((doc: Document & { 
-        bundle_documents?: Array<{ 
+      const transformedAssets: VaultAsset[] = documents?.map((doc: Document & {
+        bundle_documents?: Array<{
           bundle_id: string;
-          bundles: { bundle_name: string; bundle_category: string } 
-        }> 
+          bundles: { bundle_name: string; bundle_category: string }
+        }>
       }) => ({
         id: doc.id,
         title: doc.title || doc.file_name || 'Untitled Document',
@@ -128,8 +128,8 @@ export const VaultAssetSelector: React.FC<VaultAssetSelectorProps> = ({
   };
 
   const handleAssetToggle = (assetId: string) => {
-    setSelectedIds(prev => 
-      prev.includes(assetId) 
+    setSelectedIds(prev =>
+      prev.includes(assetId)
         ? prev.filter(id => id !== assetId)
         : [...prev, assetId]
     );
@@ -148,7 +148,7 @@ export const VaultAssetSelector: React.FC<VaultAssetSelectorProps> = ({
         }
         return description;
       });
-    
+
     onAssetsSelected(selectedAssetDescriptions);
   };
 
@@ -160,7 +160,7 @@ export const VaultAssetSelector: React.FC<VaultAssetSelectorProps> = ({
   const getAssetIcon = (asset: VaultAsset) => {
     const type = asset.documentType.toLowerCase();
     const category = asset.category.toLowerCase();
-    
+
     if (type.includes('property') || type.includes('deed') || category.includes('real estate')) {
       return 'home';
     }
@@ -235,11 +235,11 @@ export const VaultAssetSelector: React.FC<VaultAssetSelectorProps> = ({
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {filteredAssets.map((asset) => (
-                <Card 
-                  key={asset.id} 
+                <Card
+                  key={asset.id}
                   className={`p-4 cursor-pointer transition-all hover:shadow-md ${
-                    selectedIds.includes(asset.id) 
-                      ? 'border-primary bg-primary/5 ring-2 ring-primary/20' 
+                    selectedIds.includes(asset.id)
+                      ? 'border-primary bg-primary/5 ring-2 ring-primary/20'
                       : 'hover:border-primary/50'
                   }`}
                   onClick={() => handleAssetToggle(asset.id)}
@@ -250,7 +250,7 @@ export const VaultAssetSelector: React.FC<VaultAssetSelectorProps> = ({
                     }`}>
                       <Icon name={getAssetIcon(asset)} className="w-5 h-5" />
                     </div>
-                    
+
                     <div className="flex-1 min-w-0">
                       <h4 className="font-medium truncate">{asset.title}</h4>
                       {asset.description && (
@@ -258,7 +258,7 @@ export const VaultAssetSelector: React.FC<VaultAssetSelectorProps> = ({
                           {asset.description}
                         </p>
                       )}
-                      
+
                       <div className="flex items-center gap-2 mt-2">
                         <Badge variant="secondary" className="text-xs">
                           {asset.documentType}
@@ -270,7 +270,7 @@ export const VaultAssetSelector: React.FC<VaultAssetSelectorProps> = ({
                         )}
                       </div>
                     </div>
-                    
+
                     {selectedIds.includes(asset.id) && (
                       <div className="text-primary">
                         <Icon name="check-circle" className="w-5 h-5" />
@@ -293,8 +293,8 @@ export const VaultAssetSelector: React.FC<VaultAssetSelectorProps> = ({
               <Button onClick={onClose} variant="outline">
                 Cancel
               </Button>
-              <Button 
-                onClick={handleConfirmSelection} 
+              <Button
+                onClick={handleConfirmSelection}
                 disabled={selectedIds.length === 0}
                 className="bg-primary hover:bg-primary-hover text-primary-foreground"
               >

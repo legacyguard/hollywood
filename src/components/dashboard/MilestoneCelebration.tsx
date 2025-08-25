@@ -1,9 +1,9 @@
 import React from 'react';
 import { toast } from 'sonner';
 import { Icon } from '@/components/ui/icon-library';
-import { SerenityMilestone } from '@/lib/path-of-serenity';
+import type { SerenityMilestone } from '@/lib/path-of-serenity';
 
-// Legacy component interface for backward compatibility  
+// Legacy component interface for backward compatibility
 // Now implemented using toast system - no longer renders UI
 interface MilestoneCelebrationProps {
   milestone: SerenityMilestone | null;
@@ -27,7 +27,7 @@ export function showMilestoneRecognition(milestone: SerenityMilestone) {
               <Icon name={milestone.icon as never} className="w-6 h-6 text-white" />
             </div>
           </div>
-          
+
           {/* Content */}
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between">
@@ -44,7 +44,7 @@ export function showMilestoneRecognition(milestone: SerenityMilestone) {
                   </p>
                 )}
               </div>
-              
+
               {/* Close button */}
               <button
                 onClick={() => toast.dismiss(t)}

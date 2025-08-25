@@ -30,7 +30,7 @@ export default function Scene1Promise({ onNext, onSkip }: Scene1PromiseProps) {
           Skip introduction
         </motion.button>
       )}
-      
+
       <FadeIn duration={0.8}>
         <Card className="w-full max-w-2xl text-center border-primary/20 shadow-xl">
           <CardHeader>
@@ -45,7 +45,7 @@ export default function Scene1Promise({ onNext, onSkip }: Scene1PromiseProps) {
             </motion.div>
           </CardHeader>
           <CardContent>
-            <motion.p 
+            <motion.p
               className="text-muted-foreground mb-8 text-lg leading-relaxed"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -53,9 +53,9 @@ export default function Scene1Promise({ onNext, onSkip }: Scene1PromiseProps) {
             >
               {subtitle}
             </motion.p>
-            
+
             {/* Enhanced firefly animation scene */}
-            <motion.div 
+            <motion.div
               className="relative h-48 rounded-lg bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 border border-primary/30 mb-8 overflow-hidden"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -63,7 +63,7 @@ export default function Scene1Promise({ onNext, onSkip }: Scene1PromiseProps) {
             >
               {/* Night sky background */}
               <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-800 to-slate-700" />
-              
+
               {/* Stars */}
               {[...Array(20)].map((_, i) => (
                 <motion.div
@@ -83,7 +83,7 @@ export default function Scene1Promise({ onNext, onSkip }: Scene1PromiseProps) {
                   }}
                 />
               ))}
-              
+
               {/* Firefly */}
               <motion.div
                 className="absolute w-2 h-2 bg-yellow-300 rounded-full shadow-lg"
@@ -101,7 +101,7 @@ export default function Scene1Promise({ onNext, onSkip }: Scene1PromiseProps) {
                   ease: "easeInOut",
                 }}
               />
-              
+
               {/* Firefly trail */}
               <motion.div
                 className="absolute w-1 h-1 bg-yellow-200/50 rounded-full"
@@ -117,10 +117,10 @@ export default function Scene1Promise({ onNext, onSkip }: Scene1PromiseProps) {
                   delay: 0.2,
                 }}
               />
-              
+
               {/* Gentle text overlay */}
               <div className="absolute inset-0 flex items-center justify-center">
-                <motion.p 
+                <motion.p
                   className="text-white/70 text-sm font-medium tracking-wider"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -130,15 +130,15 @@ export default function Scene1Promise({ onNext, onSkip }: Scene1PromiseProps) {
                 </motion.p>
               </div>
             </motion.div>
-            
+
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.2, duration: 0.8 }}
             >
-              <Button 
-                size="lg" 
-                className="bg-primary hover:bg-primary/90 text-primary-foreground font-medium px-8 py-3 text-lg shadow-lg hover:shadow-xl transition-all duration-300" 
+              <Button
+                size="lg"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground font-medium px-8 py-3 text-lg shadow-lg hover:shadow-xl transition-all duration-300"
                 onClick={onNext}
               >
                 ✨ Start writing my story

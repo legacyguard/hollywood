@@ -1,6 +1,6 @@
 import Inbox from "@/components/Inbox";
 
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import React from "react";
 

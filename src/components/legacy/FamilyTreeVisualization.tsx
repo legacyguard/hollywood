@@ -102,7 +102,7 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
     const rect = event.currentTarget.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-    
+
     // Update node position (in a real implementation, you'd update the family tree state)
     console.log(`Moving ${nodeData.name} to position (${x}, ${y})`);
   }, []);
@@ -112,7 +112,7 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
     if (!node) return;
 
     // Check if person is already a beneficiary
-    const existingBeneficiaryIndex = willData.beneficiaries.findIndex(b => 
+    const existingBeneficiaryIndex = willData.beneficiaries.findIndex(b =>
       b.name.toLowerCase() === node.name.toLowerCase()
     );
 
@@ -150,7 +150,7 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
     // In a real implementation, you'd add this to your guardians/family data
     // For now, we'll just show a success message
     toast.success(`Added ${newRelative.name} as ${newRelative.relationship}`);
-    
+
     setNewRelative({
       name: '',
       relationship: '',
@@ -291,7 +291,7 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
           </p>
         </div>
 
-        <div 
+        <div
           className="relative w-full h-96 bg-gradient-to-b from-slate-50 to-slate-100 rounded-lg border-2 border-dashed border-gray-300 overflow-hidden"
           onDrop={handleDrop}
           onDragOver={(e) => e.preventDefault()}
@@ -310,17 +310,17 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
 
           {/* Connection lines would be rendered here */}
           <svg className="absolute inset-0 pointer-events-none w-full h-full">
-            {familyTree.map((node) => 
+            {familyTree.map((node) =>
               node.children.map((childId) => {
                 const child = familyTree.find(n => n.id === childId);
                 if (!child) return null;
-                
+
                 return (
                   <line
                     key={`${node.id}-${childId}`}
                     x1={node.position.x + 60} // Center of parent node
                     y1={node.position.y + 25}
-                    x2={child.position.x + 60} // Center of child node  
+                    x2={child.position.x + 60} // Center of child node
                     y2={child.position.y + 25}
                     stroke="currentColor"
                     className="text-slate-400"
@@ -361,7 +361,7 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
               </div>
             </div>
           ))}
-          
+
           {inheritanceFlow.distributions.length === 0 && (
             <div className="text-center text-muted-foreground py-8">
               <Icon name="users" className="w-12 h-12 mx-auto mb-4 opacity-50" />
@@ -442,7 +442,7 @@ const FamilyTreeNode: React.FC<FamilyTreeNodeProps> = ({
           <Icon name={getRelationshipIcon(node.relationship)} className="w-4 h-4" />
           <span className="font-medium text-sm truncate">{node.name}</span>
         </div>
-        
+
         <div className="text-xs opacity-75 mb-2">
           {node.relationship}
           {node.dateOfBirth && (
@@ -501,7 +501,7 @@ const FamilyTreeNode: React.FC<FamilyTreeNodeProps> = ({
               <Button variant="outline" onClick={() => setShowInheritanceDialog(false)}>
                 Cancel
               </Button>
-              <Button 
+              <Button
                 onClick={() => {
                   onAssignInheritance(inheritancePercentage);
                   setShowInheritanceDialog(false);
@@ -544,7 +544,7 @@ function buildFamilyTree(willData: WillData, guardians: any[]): FamilyNode[] {
   allPeople.forEach((person, index) => {
     const generation = getGenerationFromRelationship(person.relationship);
     const basePosition = getPositionForGeneration(generation, index);
-    
+
     nodes.push({
       id: `person_${nodeId++}`,
       name: person.name,
@@ -597,7 +597,7 @@ function visualizeInheritanceFlow(familyTree: FamilyNode[], willData: WillData):
 
 function detectRelationshipConflicts(familyTree: FamilyNode[], willData: WillData): ConflictType[] {
   const conflicts: ConflictType[] = [];
-  
+
   // Check for percentage overflow
   const totalPercentage = willData.beneficiaries.reduce((sum, b) => sum + b.percentage, 0);
   if (totalPercentage > 100) {
@@ -605,13 +605,13 @@ function detectRelationshipConflicts(familyTree: FamilyNode[], willData: WillDat
   }
 
   // Check for missing forced heirs (simplified)
-  const hasChildren = familyTree.some(node => 
+  const hasChildren = familyTree.some(node =>
     ['child', 'son', 'daughter'].includes(node.relationship.toLowerCase())
   );
-  const childrenInWill = willData.beneficiaries.some(b => 
+  const childrenInWill = willData.beneficiaries.some(b =>
     ['child', 'son', 'daughter'].includes(b.relationship.toLowerCase())
   );
-  
+
   if (hasChildren && !childrenInWill) {
     conflicts.push('forced_heirs');
   }
@@ -621,12 +621,12 @@ function detectRelationshipConflicts(familyTree: FamilyNode[], willData: WillDat
 
 function suggestMissingRelatives(familyTree: FamilyNode[]): RelativeSuggestion[] {
   const suggestions: RelativeSuggestion[] = [];
-  
+
   // Check for missing spouse
-  const hasSpouse = familyTree.some(node => 
+  const hasSpouse = familyTree.some(node =>
     ['spouse', 'husband', 'wife', 'partner'].includes(node.relationship.toLowerCase())
   );
-  
+
   if (!hasSpouse) {
     suggestions.push({
       relationship: 'spouse',
@@ -636,10 +636,10 @@ function suggestMissingRelatives(familyTree: FamilyNode[]): RelativeSuggestion[]
   }
 
   // Check for missing children
-  const hasChildren = familyTree.some(node => 
+  const hasChildren = familyTree.some(node =>
     ['child', 'son', 'daughter'].includes(node.relationship.toLowerCase())
   );
-  
+
   if (!hasChildren) {
     suggestions.push({
       relationship: 'child',

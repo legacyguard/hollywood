@@ -10,10 +10,10 @@
     "strict": true,
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "types": [],
-    "moduleDetection": "force"
+    "esModuleInterop": true
   },
-  "include": ["**/*.ts"],
-  "exclude": ["node_modules", "dist"]
+  "importMap": "./import_map.json",
+  "tasks": {
+    "dev": "deno run --allow-net --allow-env --watch index.ts"
+  }
 }

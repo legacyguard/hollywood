@@ -4,12 +4,12 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { 
-  Users, 
-  Shield, 
-  Heart, 
-  FileText, 
-  UserPlus, 
+import {
+  Users,
+  Shield,
+  Heart,
+  FileText,
+  UserPlus,
   Settings,
   AlertCircle,
   CheckCircle,
@@ -18,7 +18,7 @@ import {
 // import { FamilyTreeVisualization } from '@/components/family/FamilyTreeVisualization';
 import { PersonRoleAssignment } from '@/components/family/PersonRoleAssignment';
 import { FamilyInsights } from '@/components/family/FamilyInsights';
-import { WillData } from '@/types/will';
+import type { WillData } from '@/types/will';
 
 interface FamilyMember {
   id: string;
@@ -67,7 +67,7 @@ export const MyFamilyPage: React.FC<MyFamilyPageProps> = ({
       status: 'complete'
     },
     {
-      id: '2', 
+      id: '2',
       name: 'John Doe Jr.',
       relationship: 'child',
       dateOfBirth: '2010-07-20',
@@ -105,16 +105,16 @@ export const MyFamilyPage: React.FC<MyFamilyPageProps> = ({
   }, []);
 
   const handleRoleUpdate = useCallback((personId: string, newRoles: FamilyMember['roles']) => {
-    setFamilyMembers(prev => prev.map(member => 
-      member.id === personId 
+    setFamilyMembers(prev => prev.map(member =>
+      member.id === personId
         ? { ...member, roles: { ...member.roles, ...newRoles } }
         : member
     ));
-    
+
     // Update will data accordingly
     if (onWillDataUpdate && willData) {
       const updatedWillData = { ...willData };
-      
+
       // Update beneficiaries if heir role changed
       if (newRoles.isHeir !== undefined) {
         const person = familyMembers.find(m => m.id === personId);
@@ -137,7 +137,7 @@ export const MyFamilyPage: React.FC<MyFamilyPageProps> = ({
           updatedWillData.beneficiaries = updatedWillData.beneficiaries?.filter(b => b.id !== personId) || [];
         }
       }
-      
+
       onWillDataUpdate(updatedWillData);
     }
   }, [willData, onWillDataUpdate, mockFamilyMembers]);
@@ -152,18 +152,18 @@ export const MyFamilyPage: React.FC<MyFamilyPageProps> = ({
       missingRoles: mockFamilyMembers.filter(m => m.status === 'missing_info').length,
       partiallyConfigured: mockFamilyMembers.filter(m => m.status === 'partial').length
     };
-    
+
     const completionRate = Math.round(
       ((insights.totalMembers - insights.missingRoles - insights.partiallyConfigured) / insights.totalMembers) * 100
     );
-    
+
     return { ...insights, completionRate };
   }, [mockFamilyMembers]);
 
   const insights = getFamilyInsights();
 
   const renderFamilyMemberCard = (member: FamilyMember) => (
-    <Card 
+    <Card
       key={member.id}
       className={`cursor-pointer transition-all hover:shadow-lg ${
         member.status === 'complete' ? 'border-green-200 bg-green-50' :
@@ -187,7 +187,7 @@ export const MyFamilyPage: React.FC<MyFamilyPageProps> = ({
             {member.status === 'missing_info' && <AlertCircle className="h-5 w-5 text-red-600" />}
           </div>
         </div>
-        
+
         <div className="space-y-2">
           <div className="flex flex-wrap gap-1">
             {member.roles.isHeir && (
@@ -214,7 +214,7 @@ export const MyFamilyPage: React.FC<MyFamilyPageProps> = ({
               </Badge>
             )}
           </div>
-          
+
           {member.status !== 'complete' && (
             <div className="text-xs text-gray-600">
               {member.status === 'partial' && 'Roles incomplete'}
@@ -253,7 +253,7 @@ export const MyFamilyPage: React.FC<MyFamilyPageProps> = ({
             <div className="text-sm text-gray-600">Family Members</div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardContent className="p-4 text-center">
             <FileText className="h-8 w-8 text-green-600 mx-auto mb-2" />
@@ -261,7 +261,7 @@ export const MyFamilyPage: React.FC<MyFamilyPageProps> = ({
             <div className="text-sm text-gray-600">Heirs Assigned</div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardContent className="p-4 text-center">
             <Shield className="h-8 w-8 text-purple-600 mx-auto mb-2" />
@@ -269,7 +269,7 @@ export const MyFamilyPage: React.FC<MyFamilyPageProps> = ({
             <div className="text-sm text-gray-600">Guardians Assigned</div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardContent className="p-4 text-center">
             <CheckCircle className="h-8 w-8 text-emerald-600 mx-auto mb-2" />
@@ -284,7 +284,7 @@ export const MyFamilyPage: React.FC<MyFamilyPageProps> = ({
         <Alert className="mb-6">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
-            {insights.missingRoles} family member{insights.missingRoles > 1 ? 's have' : ' has'} no assigned roles. 
+            {insights.missingRoles} family member{insights.missingRoles > 1 ? 's have' : ' has'} no assigned roles.
             Click on them in the family tree to assign inheritance, guardian, or executor roles.
           </AlertDescription>
         </Alert>
@@ -304,7 +304,7 @@ export const MyFamilyPage: React.FC<MyFamilyPageProps> = ({
               <p className="text-sm text-gray-600 mb-4">
                 Click on any family member to assign roles: heirs, guardians, executors, or legacy messages
               </p>
-              
+
               {/* Enhanced Family Tree with role assignment capabilities */}
               {/* <FamilyTreeVisualization
                 willData={willData}

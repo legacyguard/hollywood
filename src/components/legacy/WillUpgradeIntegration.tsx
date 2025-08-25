@@ -7,7 +7,7 @@ import { Separator } from '@/components/ui/separator';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
 import { CheckCircle, Star, Users, Globe, Shield, Heart, Eye } from 'lucide-react';
-import { WillData } from '@/types/will';
+import type { WillData } from '@/types/will';
 import { ValidationIndicator } from './ValidationIndicator';
 import { FamilyTreeVisualization } from './FamilyTreeVisualization';
 import { WillTemplateLibrary } from './WillTemplateLibrary';
@@ -16,7 +16,7 @@ import { ProfessionalReviewNetwork } from './ProfessionalReviewNetwork';
 import { useWillValidation } from '@/hooks/useWillValidation';
 import { useMultiLangGenerator } from '@/hooks/useMultiLangGenerator';
 import { useProfessionalReviewWorkflow } from '@/hooks/useProfessionalNetwork';
-import { WillType } from './WillTypeSelector';
+import type { WillType } from './WillTypeSelector';
 
 interface WillUpgradeIntegrationProps {
   willData: WillData;
@@ -118,7 +118,7 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
   // Calculate upgrade progress
   useEffect(() => {
     const totalFeatures = upgradeFeatures.length;
-    const completedCount = upgradeFeatures.filter(feature => 
+    const completedCount = upgradeFeatures.filter(feature =>
       feature.status === 'completed' || completedUpgrades.has(feature.id)
     ).length;
     setUpgradeProgress((completedCount / totalFeatures) * 100);
@@ -127,7 +127,7 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
   const handleUpgradeComplete = useCallback((upgradeId: string, updatedData?: WillData) => {
     setCompletedUpgrades(prev => new Set([...prev, upgradeId]));
     setActiveUpgrade(null);
-    
+
     if (updatedData) {
       onWillDataUpdate(updatedData);
     }
@@ -147,7 +147,7 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
         <p className="text-gray-600 mb-6">
           Enhance your will with professional-grade features for complete peace of mind
         </p>
-        
+
         <div className="mb-8">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium">Upgrade Progress</span>
@@ -160,10 +160,10 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {upgradeFeatures.map(feature => {
           const IconComponent = feature.icon;
-          
+
           return (
-            <Card 
-              key={feature.id} 
+            <Card
+              key={feature.id}
               className={`cursor-pointer transition-all hover:shadow-lg ${
                 feature.status === 'completed' ? 'border-green-200 bg-green-50' :
                 feature.status === 'needs-attention' ? 'border-yellow-200 bg-yellow-50' :
@@ -178,20 +178,20 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
                     feature.status === 'needs-attention' ? 'text-yellow-600' :
                     'text-blue-600'
                   }`} />
-                  
+
                   {feature.status === 'completed' && (
                     <CheckCircle className="h-5 w-5 text-green-600" />
                   )}
                 </div>
-                
+
                 <CardTitle className="text-lg">{feature.title}</CardTitle>
               </CardHeader>
-              
+
               <CardContent>
                 <CardDescription className="text-sm mb-4">
                   {feature.description}
                 </CardDescription>
-                
+
                 <div className="flex items-center justify-between">
                   <Badge variant={
                     feature.status === 'completed' ? 'default' :
@@ -202,9 +202,9 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
                      feature.status === 'needs-attention' ? 'Needs Attention' :
                      'Available'}
                   </Badge>
-                  
-                  <Button 
-                    variant="ghost" 
+
+                  <Button
+                    variant="ghost"
                     size="sm"
                     className="text-blue-600 hover:text-blue-700"
                   >
@@ -218,9 +218,9 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
       </div>
 
       <div className="text-center pt-6">
-        <Button 
-          onClick={() => setIsUpgradeMode(true)} 
-          size="lg" 
+        <Button
+          onClick={() => setIsUpgradeMode(true)}
+          size="lg"
           className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
         >
           Start Comprehensive Upgrade
@@ -245,7 +245,7 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
                 Back to Overview
               </Button>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
               <Card className="p-4 text-center">
                 <div className="text-2xl font-bold text-green-600">
@@ -271,7 +271,7 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
               {getValidationMessages('error').map((validation, index) => (
                 <ValidationIndicator key={`error-${index}`} validation={validation} showDetails />
               ))}
-              
+
               {getValidationMessages('warning').map((validation, index) => (
                 <ValidationIndicator key={`warning-${index}`} validation={validation} showDetails />
               ))}
@@ -312,10 +312,10 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
                   <div className="text-2xl mb-2">{lang.flag}</div>
                   <div className="font-medium">{lang.name}</div>
                   <div className="text-sm text-gray-600">{lang.jurisdiction}</div>
-                  
-                  <Button 
-                    className="mt-3 w-full" 
-                    variant="outline" 
+
+                  <Button
+                    className="mt-3 w-full"
+                    variant="outline"
                     size="sm"
                     onClick={() => generateDocument(willData, lang.code as any, jurisdiction, willType)}
                     disabled={isGenerating}
@@ -421,7 +421,7 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
         <p className="text-gray-600 mb-6">
           We'll guide you through all upgrade features systematically
         </p>
-        
+
         <div className="mb-8">
           <Progress value={upgradeProgress} className="h-4" />
           <div className="text-sm text-gray-600 mt-2">
@@ -450,19 +450,19 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
       </Tabs>
 
       <div className="flex justify-between items-center pt-6 border-t">
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           onClick={() => setIsUpgradeMode(false)}
         >
           Exit Upgrade Mode
         </Button>
-        
+
         <div className="text-sm text-gray-600">
           Complete all upgrades for the ultimate will experience
         </div>
-        
+
         {upgradeProgress === 100 && (
-          <Button 
+          <Button
             className="bg-gradient-to-r from-green-600 to-emerald-600"
             onClick={() => onUpgradeComplete?.(willData)}
           >
@@ -475,8 +475,8 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
 
   return (
     <div className="max-w-6xl mx-auto p-6">
-      {isUpgradeMode ? renderUpgradeWorkflow() : 
-       activeUpgrade ? renderActiveUpgrade() : 
+      {isUpgradeMode ? renderUpgradeWorkflow() :
+       activeUpgrade ? renderActiveUpgrade() :
        renderUpgradeOverview()}
     </div>
   );

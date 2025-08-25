@@ -53,7 +53,7 @@ export const JURISDICTION_CONFIG: Record<string, JurisdictionConfig> = {
     emergencyProtocols: true,
     pricing: { monthly: 19, currency: 'EUR' },
   },
-  
+
   CZ: {
     code: 'CZ',
     name: 'Czech Republic',
@@ -72,7 +72,7 @@ export const JURISDICTION_CONFIG: Record<string, JurisdictionConfig> = {
     emergencyProtocols: true,
     pricing: { monthly: 19, currency: 'EUR' },
   },
-  
+
   SK: {
     code: 'SK',
     name: 'Slovakia',
@@ -91,7 +91,7 @@ export const JURISDICTION_CONFIG: Record<string, JurisdictionConfig> = {
     emergencyProtocols: true,
     pricing: { monthly: 19, currency: 'EUR' },
   },
-  
+
   FR: {
     code: 'FR',
     name: 'France',
@@ -114,7 +114,7 @@ export const JURISDICTION_CONFIG: Record<string, JurisdictionConfig> = {
       forcedHeirship: true,
     },
   },
-  
+
   ES: {
     code: 'ES',
     name: 'Spain',
@@ -137,7 +137,7 @@ export const JURISDICTION_CONFIG: Record<string, JurisdictionConfig> = {
       regionalVariations: true,
     },
   },
-  
+
   IT: {
     code: 'IT',
     name: 'Italy',
@@ -157,7 +157,7 @@ export const JURISDICTION_CONFIG: Record<string, JurisdictionConfig> = {
     emergencyProtocols: true,
     pricing: { monthly: 19, currency: 'EUR' },
   },
-  
+
   NL: {
     code: 'NL',
     name: 'Netherlands',
@@ -177,7 +177,7 @@ export const JURISDICTION_CONFIG: Record<string, JurisdictionConfig> = {
     emergencyProtocols: true,
     pricing: { monthly: 19, currency: 'EUR' },
   },
-  
+
   BE: {
     code: 'BE',
     name: 'Belgium',
@@ -201,7 +201,7 @@ export const JURISDICTION_CONFIG: Record<string, JurisdictionConfig> = {
       multipleOfficialLanguages: true,
     },
   },
-  
+
   CH: {
     code: 'CH',
     name: 'Switzerland',
@@ -225,7 +225,7 @@ export const JURISDICTION_CONFIG: Record<string, JurisdictionConfig> = {
       multipleOfficialLanguages: true,
     },
   },
-  
+
   AT: {
     code: 'AT',
     name: 'Austria',
@@ -244,7 +244,7 @@ export const JURISDICTION_CONFIG: Record<string, JurisdictionConfig> = {
     emergencyProtocols: true,
     pricing: { monthly: 19, currency: 'EUR' },
   },
-  
+
   UK: {
     code: 'UK',
     name: 'United Kingdom',
@@ -267,7 +267,7 @@ export const JURISDICTION_CONFIG: Record<string, JurisdictionConfig> = {
       regionalVariations: true, // England, Scotland, Northern Ireland
     },
   },
-  
+
   PL: {
     code: 'PL',
     name: 'Poland',
@@ -287,7 +287,7 @@ export const JURISDICTION_CONFIG: Record<string, JurisdictionConfig> = {
     emergencyProtocols: true,
     pricing: { monthly: 19, currency: 'EUR' },
   },
-  
+
   DK: {
     code: 'DK',
     name: 'Denmark',
@@ -310,7 +310,7 @@ export const JURISDICTION_CONFIG: Record<string, JurisdictionConfig> = {
       digitalNotary: true,
     },
   },
-  
+
   SE: {
     code: 'SE',
     name: 'Sweden',
@@ -329,7 +329,7 @@ export const JURISDICTION_CONFIG: Record<string, JurisdictionConfig> = {
     emergencyProtocols: true,
     pricing: { monthly: 19, currency: 'EUR' },
   },
-  
+
   FI: {
     code: 'FI',
     name: 'Finland',
@@ -351,7 +351,7 @@ export const JURISDICTION_CONFIG: Record<string, JurisdictionConfig> = {
       multipleOfficialLanguages: true, // Finnish and Swedish
     },
   },
-  
+
   PT: {
     code: 'PT',
     name: 'Portugal',
@@ -371,7 +371,7 @@ export const JURISDICTION_CONFIG: Record<string, JurisdictionConfig> = {
     emergencyProtocols: true,
     pricing: { monthly: 19, currency: 'EUR' },
   },
-  
+
   GR: {
     code: 'GR',
     name: 'Greece',
@@ -391,7 +391,7 @@ export const JURISDICTION_CONFIG: Record<string, JurisdictionConfig> = {
     emergencyProtocols: true,
     pricing: { monthly: 19, currency: 'EUR' },
   },
-  
+
   HU: {
     code: 'HU',
     name: 'Hungary',
@@ -411,7 +411,7 @@ export const JURISDICTION_CONFIG: Record<string, JurisdictionConfig> = {
     emergencyProtocols: true,
     pricing: { monthly: 19, currency: 'EUR' },
   },
-  
+
   SI: {
     code: 'SI',
     name: 'Slovenia',
@@ -431,7 +431,7 @@ export const JURISDICTION_CONFIG: Record<string, JurisdictionConfig> = {
     emergencyProtocols: true,
     pricing: { monthly: 19, currency: 'EUR' },
   },
-  
+
   EE: {
     code: 'EE',
     name: 'Estonia',
@@ -450,7 +450,7 @@ export const JURISDICTION_CONFIG: Record<string, JurisdictionConfig> = {
     emergencyProtocols: true,
     pricing: { monthly: 19, currency: 'EUR' },
   },
-  
+
   LV: {
     code: 'LV',
     name: 'Latvia',
@@ -469,7 +469,7 @@ export const JURISDICTION_CONFIG: Record<string, JurisdictionConfig> = {
     emergencyProtocols: true,
     pricing: { monthly: 19, currency: 'EUR' },
   },
-  
+
   LT: {
     code: 'LT',
     name: 'Lithuania',
@@ -488,7 +488,7 @@ export const JURISDICTION_CONFIG: Record<string, JurisdictionConfig> = {
     emergencyProtocols: true,
     pricing: { monthly: 19, currency: 'EUR' },
   },
-  
+
   LU: {
     code: 'LU',
     name: 'Luxembourg',
@@ -510,7 +510,7 @@ export const JURISDICTION_CONFIG: Record<string, JurisdictionConfig> = {
       multipleOfficialLanguages: true,
     },
   },
-  
+
   LI: {
     code: 'LI',
     name: 'Liechtenstein',
@@ -529,7 +529,7 @@ export const JURISDICTION_CONFIG: Record<string, JurisdictionConfig> = {
     emergencyProtocols: true,
     pricing: { monthly: 19, currency: 'EUR' },
   },
-  
+
   MT: {
     code: 'MT',
     name: 'Malta',
@@ -551,7 +551,7 @@ export const JURISDICTION_CONFIG: Record<string, JurisdictionConfig> = {
       multipleOfficialLanguages: true,
     },
   },
-  
+
   CY: {
     code: 'CY',
     name: 'Cyprus',
@@ -570,7 +570,7 @@ export const JURISDICTION_CONFIG: Record<string, JurisdictionConfig> = {
     emergencyProtocols: true,
     pricing: { monthly: 19, currency: 'EUR' },
   },
-  
+
   IE: {
     code: 'IE',
     name: 'Ireland',
@@ -590,7 +590,7 @@ export const JURISDICTION_CONFIG: Record<string, JurisdictionConfig> = {
     emergencyProtocols: true,
     pricing: { monthly: 19, currency: 'EUR' },
   },
-  
+
   NO: {
     code: 'NO',
     name: 'Norway',
@@ -612,7 +612,7 @@ export const JURISDICTION_CONFIG: Record<string, JurisdictionConfig> = {
       digitalNotary: true,
     },
   },
-  
+
   IS: {
     code: 'IS',
     name: 'Iceland',
@@ -631,7 +631,7 @@ export const JURISDICTION_CONFIG: Record<string, JurisdictionConfig> = {
     emergencyProtocols: true,
     pricing: { monthly: 19, currency: 'EUR' },
   },
-  
+
   // TIER 2 MARKETS - Eastern Europe & Balkans
   RO: {
     code: 'RO',
@@ -652,7 +652,7 @@ export const JURISDICTION_CONFIG: Record<string, JurisdictionConfig> = {
     emergencyProtocols: true,
     pricing: { monthly: 14, currency: 'EUR' },
   },
-  
+
   BG: {
     code: 'BG',
     name: 'Bulgaria',
@@ -672,7 +672,7 @@ export const JURISDICTION_CONFIG: Record<string, JurisdictionConfig> = {
     emergencyProtocols: true,
     pricing: { monthly: 14, currency: 'EUR' },
   },
-  
+
   HR: {
     code: 'HR',
     name: 'Croatia',
@@ -692,7 +692,7 @@ export const JURISDICTION_CONFIG: Record<string, JurisdictionConfig> = {
     emergencyProtocols: true,
     pricing: { monthly: 14, currency: 'EUR' },
   },
-  
+
   RS: {
     code: 'RS',
     name: 'Serbia',
@@ -712,7 +712,7 @@ export const JURISDICTION_CONFIG: Record<string, JurisdictionConfig> = {
     emergencyProtocols: true,
     pricing: { monthly: 14, currency: 'EUR' },
   },
-  
+
   AL: {
     code: 'AL',
     name: 'Albania',
@@ -731,7 +731,7 @@ export const JURISDICTION_CONFIG: Record<string, JurisdictionConfig> = {
     emergencyProtocols: true,
     pricing: { monthly: 14, currency: 'EUR' },
   },
-  
+
   MK: {
     code: 'MK',
     name: 'North Macedonia',
@@ -753,7 +753,7 @@ export const JURISDICTION_CONFIG: Record<string, JurisdictionConfig> = {
       multipleOfficialLanguages: true, // Macedonian and Albanian
     },
   },
-  
+
   ME: {
     code: 'ME',
     name: 'Montenegro',
@@ -772,7 +772,7 @@ export const JURISDICTION_CONFIG: Record<string, JurisdictionConfig> = {
     emergencyProtocols: true,
     pricing: { monthly: 14, currency: 'EUR' },
   },
-  
+
   MD: {
     code: 'MD',
     name: 'Moldova',
@@ -791,7 +791,7 @@ export const JURISDICTION_CONFIG: Record<string, JurisdictionConfig> = {
     emergencyProtocols: true,
     pricing: { monthly: 14, currency: 'EUR' },
   },
-  
+
   UA: {
     code: 'UA',
     name: 'Ukraine',
@@ -810,7 +810,7 @@ export const JURISDICTION_CONFIG: Record<string, JurisdictionConfig> = {
     emergencyProtocols: true,
     pricing: { monthly: 14, currency: 'EUR' },
   },
-  
+
   BA: {
     code: 'BA',
     name: 'Bosnia and Herzegovina',
@@ -846,7 +846,7 @@ export const getJurisdictionsByTier = (tier: 1 | 2): JurisdictionConfig[] => {
 };
 
 export const getJurisdictionsByLanguage = (language: string): JurisdictionConfig[] => {
-  return Object.values(JURISDICTION_CONFIG).filter(j => 
+  return Object.values(JURISDICTION_CONFIG).filter(j =>
     j.supportedLanguages.includes(language)
   );
 };

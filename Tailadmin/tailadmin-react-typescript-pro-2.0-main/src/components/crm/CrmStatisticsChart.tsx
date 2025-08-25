@@ -1,5 +1,5 @@
 import ChartTab from "../common/ChartTab";
-import { ApexOptions } from "apexcharts";
+import type { ApexOptions } from "apexcharts";
 import Chart from "react-apexcharts";
 
 export default function CrmStatisticsChart() {

@@ -29,19 +29,19 @@ export const useWillValidation = ({
   // Real-time validation function
   const validateDocument = useMemo(() => {
     if (!enableRealTime) return () => {};
-    
+
     return () => {
       setIsValidating(true);
-      
+
       // Use setTimeout to debounce rapid changes
       const timeoutId = setTimeout(() => {
         try {
           const report = legalValidator.validateWillDocument(willData, willType);
           setComplianceReport(report);
-          
+
           // Update field-specific validations
           const newFieldValidations = new Map<string, ValidationResult>();
-          
+
           // Add field-specific validations
           report.validationResults.forEach(result => {
             if (result.field) {
@@ -190,11 +190,11 @@ export const useWillValidation = ({
     complianceReport,
     fieldValidations,
     isValidating,
-    
+
     // Summary and status
     validationSummary,
     isWillValid,
-    
+
     // Utility functions
     triggerValidation,
     getFieldValidation,
@@ -203,7 +203,7 @@ export const useWillValidation = ({
     hasFieldWarning,
     getValidationMessages,
     getJurisdictionGuidance,
-    
+
     // Raw validation results for custom processing
     allValidations: complianceReport ? [
       ...complianceReport.validationResults,

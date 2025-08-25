@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useAuth } from '@clerk/clerk-react';
-import { WillType } from './WillTypeSelector';
+import type { WillType } from './WillTypeSelector';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -66,19 +66,19 @@ const RELATIONSHIPS = [
   { value: 'other', label: 'Other' }
 ];
 
-export const EnhancedWillWizardWithValidation: React.FC<EnhancedWillWizardWithValidationProps> = ({ 
-  onClose, 
-  onComplete, 
-  onBack, 
-  willType, 
-  initialData 
+export const EnhancedWillWizardWithValidation: React.FC<EnhancedWillWizardWithValidationProps> = ({
+  onClose,
+  onComplete,
+  onBack,
+  willType,
+  initialData
 }) => {
   const { user } = useAuth();
   const { isFocusMode } = useFocusMode();
   const [currentStep, setCurrentStep] = useState(0);
   const [showVaultSelector, setShowVaultSelector] = useState(false);
   const [vaultSelectorType, setVaultSelectorType] = useState<'realEstate' | 'vehicles' | 'bankAccounts' | 'personalProperty' | 'all'>('all');
-  
+
   // Initialize with draft data if provided, otherwise use empty data
   const [willData, setWillData] = useState<WillData>(initialData || {
     testator_data: {
@@ -142,8 +142,8 @@ export const EnhancedWillWizardWithValidation: React.FC<EnhancedWillWizardWithVa
   const handleNext = useCallback(() => {
     // Check for critical errors in current step
     const currentStepHasErrors = Array.from(fieldValidations.entries())
-      .some(([field, validation]) => 
-        validation.level === 'error' && 
+      .some(([field, validation]) =>
+        validation.level === 'error' &&
         field.includes(currentStepId)
       );
 
@@ -192,7 +192,7 @@ export const EnhancedWillWizardWithValidation: React.FC<EnhancedWillWizardWithVa
   const updateBeneficiary = useCallback((id: string, field: string, value: string | number | string[]) => {
     setWillData(prev => ({
       ...prev,
-      beneficiaries: prev.beneficiaries.map(b => 
+      beneficiaries: prev.beneficiaries.map(b =>
         b.id === id ? { ...b, [field]: value } : b
       )
     }));
@@ -223,7 +223,7 @@ export const EnhancedWillWizardWithValidation: React.FC<EnhancedWillWizardWithVa
                   />
                 </div>
               </FieldValidation>
-              
+
               <FieldValidation fieldName="testator_data.dateOfBirth" validation={getFieldValidation('testator_data.dateOfBirth')}>
                 <div>
                   <Label htmlFor="dateOfBirth">Date of Birth</Label>
@@ -237,7 +237,7 @@ export const EnhancedWillWizardWithValidation: React.FC<EnhancedWillWizardWithVa
                 </div>
               </FieldValidation>
             </div>
-            
+
             <FieldValidation fieldName="testator_data.address" validation={getFieldValidation('testator_data.address')}>
               <div>
                 <Label htmlFor="address">Address</Label>
@@ -251,7 +251,7 @@ export const EnhancedWillWizardWithValidation: React.FC<EnhancedWillWizardWithVa
                 />
               </div>
             </FieldValidation>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="citizenship">Citizenship</Label>
@@ -262,11 +262,11 @@ export const EnhancedWillWizardWithValidation: React.FC<EnhancedWillWizardWithVa
                   placeholder="e.g., Slovak, Czech, American"
                 />
               </div>
-              
+
               <div>
                 <Label htmlFor="jurisdiction">Legal Jurisdiction</Label>
-                <Select 
-                  value={willData.legal_data?.jurisdiction || 'Slovakia'} 
+                <Select
+                  value={willData.legal_data?.jurisdiction || 'Slovakia'}
                   onValueChange={(value) => updateWillData('legal_data', { jurisdiction: value })}
                 >
                   <SelectTrigger>
@@ -282,11 +282,11 @@ export const EnhancedWillWizardWithValidation: React.FC<EnhancedWillWizardWithVa
                 </Select>
               </div>
             </div>
-            
+
             <div>
               <Label htmlFor="maritalStatus">Marital Status</Label>
-              <Select 
-                value={willData.testator_data.maritalStatus} 
+              <Select
+                value={willData.testator_data.maritalStatus}
                 onValueChange={(value) => updateWillData('testator_data', { maritalStatus: value })}
               >
                 <SelectTrigger>
@@ -318,7 +318,7 @@ export const EnhancedWillWizardWithValidation: React.FC<EnhancedWillWizardWithVa
                 Add Beneficiary
               </Button>
             </div>
-            
+
             {/* Beneficiary percentage warning */}
             {complianceReport?.forcedHeirsIssues.length > 0 && (
               <div className="space-y-2">
@@ -327,7 +327,7 @@ export const EnhancedWillWizardWithValidation: React.FC<EnhancedWillWizardWithVa
                 ))}
               </div>
             )}
-            
+
             {willData.beneficiaries.length === 0 ? (
               <Card className="p-8 text-center">
                 <Icon name="users" className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
@@ -345,9 +345,9 @@ export const EnhancedWillWizardWithValidation: React.FC<EnhancedWillWizardWithVa
                           <ValidationIndicator validation={getFieldValidation(`beneficiaries[${index}]`)!} />
                         )}
                       </div>
-                      <Button 
+                      <Button
                         onClick={() => removeBeneficiary(beneficiary.id)}
-                        variant="ghost" 
+                        variant="ghost"
                         size="sm"
                         className="text-red-600 hover:text-red-700"
                       >
@@ -365,8 +365,8 @@ export const EnhancedWillWizardWithValidation: React.FC<EnhancedWillWizardWithVa
                       </div>
                       <div>
                         <Label>Relationship</Label>
-                        <Select 
-                          value={beneficiary.relationship} 
+                        <Select
+                          value={beneficiary.relationship}
                           onValueChange={(value) => updateBeneficiary(beneficiary.id, 'relationship', value)}
                         >
                           <SelectTrigger>
@@ -405,7 +405,7 @@ export const EnhancedWillWizardWithValidation: React.FC<EnhancedWillWizardWithVa
                 ))}
               </div>
             )}
-            
+
             {/* Show jurisdiction-specific guidance */}
             <Card className="p-4 bg-blue-50 border-blue-200">
               <div className="flex items-start gap-3">
@@ -440,11 +440,11 @@ export const EnhancedWillWizardWithValidation: React.FC<EnhancedWillWizardWithVa
               {getValidationMessages('error').map((validation, index) => (
                 <ValidationIndicator key={`error-${index}`} validation={validation} showDetails />
               ))}
-              
+
               {getValidationMessages('warning').map((validation, index) => (
                 <ValidationIndicator key={`warning-${index}`} validation={validation} showDetails />
               ))}
-              
+
               {getValidationMessages('success').map((validation, index) => (
                 <ValidationIndicator key={`success-${index}`} validation={validation} showDetails />
               ))}
@@ -499,9 +499,9 @@ export const EnhancedWillWizardWithValidation: React.FC<EnhancedWillWizardWithVa
             <div className="max-w-4xl mx-auto px-6 py-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <Button 
-                    onClick={onClose} 
-                    variant="ghost" 
+                  <Button
+                    onClick={onClose}
+                    variant="ghost"
                     size="sm"
                     className="flex items-center gap-2"
                   >
@@ -548,7 +548,7 @@ export const EnhancedWillWizardWithValidation: React.FC<EnhancedWillWizardWithVa
               <Progress value={progress} className="h-2" />
               <div className="flex justify-between mt-2 text-xs text-muted-foreground">
                 {STEPS.map((step, index) => (
-                  <span 
+                  <span
                     key={step.id}
                     className={index <= currentStep ? 'text-primary font-medium' : ''}
                   >
@@ -585,7 +585,7 @@ export const EnhancedWillWizardWithValidation: React.FC<EnhancedWillWizardWithVa
                   <h2 className="text-2xl font-semibold mb-2">{STEPS[currentStep].title}</h2>
                   <p className="text-muted-foreground">{STEPS[currentStep].description}</p>
                 </div>
-                
+
                 {renderStepContent()}
               </FadeIn>
             </div>
@@ -593,7 +593,7 @@ export const EnhancedWillWizardWithValidation: React.FC<EnhancedWillWizardWithVa
 
           {/* Right Panel - Live Preview */}
           <div className="w-3/5 flex flex-col">
-            <LiveWillPreview 
+            <LiveWillPreview
               willData={willData}
               willType={willType}
               currentStep={currentStepId}
@@ -606,7 +606,7 @@ export const EnhancedWillWizardWithValidation: React.FC<EnhancedWillWizardWithVa
         <footer className="bg-card border-t border-card-border">
           <div className="px-6 py-4">
             <div className="flex justify-between items-center">
-              <Button 
+              <Button
                 onClick={handleBack}
                 variant="outline"
                 disabled={currentStep === 0 && !onBack}
@@ -614,14 +614,14 @@ export const EnhancedWillWizardWithValidation: React.FC<EnhancedWillWizardWithVa
                 <Icon name="arrow-left" className="w-4 h-4 mr-2" />
                 {currentStep === 0 ? 'Change Will Type' : 'Back'}
               </Button>
-              
+
               <div className="flex items-center gap-4">
                 {!isFocusMode && (
                   <div className="text-sm text-muted-foreground">
                     Step {currentStep + 1} of {STEPS.length}
                   </div>
                 )}
-                <Button 
+                <Button
                   onClick={handleNext}
                   className="bg-primary hover:bg-primary-hover text-primary-foreground"
                   disabled={validationSummary.errors > 0 && currentStep === STEPS.length - 1}

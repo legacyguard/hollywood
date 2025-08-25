@@ -2,7 +2,7 @@ import React from "react";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import PricingTableOne from "@/components/PricingTables/PricingTableOne";
 import PricingTableTwo from "@/components/PricingTables/PricingTableTwo";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 
 export const metadata: Metadata = {

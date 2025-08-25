@@ -7,7 +7,7 @@ const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
 
-import { ApexOptions } from "apexcharts";
+import type { ApexOptions } from "apexcharts";
 
 export default function DailySaleChart() {
   const options: ApexOptions = {

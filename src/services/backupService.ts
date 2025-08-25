@@ -59,7 +59,7 @@ export class BackupService {
   private currentVersion = '1.0.0';
   private encryptionVersion = '1.0.0';
   private readonly PBKDF2_ITERATIONS = 100000;
-  
+
   // Create Supabase client (note: this should be created with proper auth context when used)
   private supabase = createClient(
     import.meta.env.VITE_SUPABASE_URL!,
@@ -72,7 +72,7 @@ export class BackupService {
   private async deriveKey(password: string, salt: Uint8Array): Promise<Uint8Array> {
     const encoder = new TextEncoder();
     const passwordData = encoder.encode(password);
-    
+
     const keyMaterial = await crypto.subtle.importKey(
       'raw',
       passwordData,
@@ -105,11 +105,11 @@ export class BackupService {
     const salt = nacl.randomBytes(16);
     const nonce = nacl.randomBytes(nacl.secretbox.nonceLength);
     const key = await this.deriveKey(password, salt);
-    
+
     const dataString = JSON.stringify(data);
     const dataBytes = new TextEncoder().encode(dataString);
     const encrypted = nacl.secretbox(dataBytes, nonce, key);
-    
+
     return {
       version: this.currentVersion,
       encrypted: true,
@@ -143,13 +143,13 @@ export class BackupService {
       const nonce = decodeBase64(encryptedData.nonce);
       const encrypted = decodeBase64(encryptedData.data);
       const key = await this.deriveKey(password, salt);
-      
+
       const decrypted = nacl.secretbox.open(encrypted, nonce, key);
-      
+
       if (!decrypted) {
         return null;
       }
-      
+
       const dataString = new TextDecoder().decode(decrypted);
       return JSON.parse(dataString);
     } catch (error) {
@@ -210,7 +210,7 @@ export class BackupService {
 
       const fileContent = await this.readFile(file);
       let backupData: BackupData;
-      
+
       // Check if file is encrypted
       const parsedContent = JSON.parse(fileContent);
       if (parsedContent.encrypted) {
@@ -218,7 +218,7 @@ export class BackupService {
           toast.error('This backup is encrypted. Please provide the password.');
           throw new Error('Password required for encrypted backup');
         }
-        
+
         const decrypted = await this.decryptBackupData(parsedContent as EncryptedBackupData, password);
         if (!decrypted) {
           toast.error('Invalid password or corrupted backup file');
@@ -248,7 +248,7 @@ export class BackupService {
       await this.importSupabaseData(backupData.supabase, userId);
 
       toast.success('Data restored successfully! Please refresh the page.');
-      
+
       // Refresh the page after a short delay
       setTimeout(() => {
         window.location.reload();
@@ -531,10 +531,10 @@ export class BackupService {
     const json = JSON.stringify(data, null, 2);
     const blob = new Blob([json], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
-    
+
     const date = new Date().toISOString().split('T')[0];
     const filename = `legacyguard-backup-${date}.json`;
-    
+
     const link = document.createElement('a');
     link.href = url;
     link.download = filename;
@@ -550,7 +550,7 @@ export class BackupService {
   async estimateBackupSize(userId: string): Promise<string> {
     const localData = await this.exportLocalStorageData(userId);
     const size = new Blob([JSON.stringify(localData)]).size;
-    
+
     if (size < 1024) return `${size} B`;
     if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KB`;
     return `${(size / (1024 * 1024)).toFixed(1)} MB`;

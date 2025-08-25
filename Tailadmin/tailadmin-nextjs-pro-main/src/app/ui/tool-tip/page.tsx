@@ -2,7 +2,7 @@ import React from "react";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import TooltipsOne from "@/components/ToolTips/TooltipsOne";
 import TooltipsTwo from "@/components/ToolTips/TooltipsTwo";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 
 export const metadata: Metadata = {

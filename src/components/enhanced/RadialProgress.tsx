@@ -26,7 +26,7 @@ export function RadialProgress({
 }: RadialProgressProps) {
   // Ensure value is between 0 and 100
   const normalizedValue = Math.min(100, Math.max(0, value));
-  
+
   // Size configurations
   const sizeConfig = {
     sm: { width: 60, height: 60, fontSize: 'text-xs', stroke: strokeWidth || 4 },
@@ -68,7 +68,7 @@ export function RadialProgress({
               fill="none"
               className="opacity-20"
             />
-            
+
             {/* Progress circle */}
             <circle
               cx={config.width / 2}
@@ -88,7 +88,7 @@ export function RadialProgress({
               }}
             />
           </svg>
-          
+
           {/* Center content */}
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             {showValue && (
@@ -167,7 +167,7 @@ export function LinearProgress({
             )}
           </div>
         )}
-        
+
         <div className={cn(
           "w-full bg-muted rounded-full overflow-hidden",
           heightClasses[height]
@@ -208,8 +208,8 @@ export function ProgressGroup({
 }: ProgressGroupProps) {
   return (
     <div className={cn(
-      type === 'radial' 
-        ? "flex flex-wrap gap-4" 
+      type === 'radial'
+        ? "flex flex-wrap gap-4"
         : "space-y-4",
       className
     )}>

@@ -40,7 +40,7 @@ export class KeyManagementService {
   async deriveKeyFromPassword(password: string, salt: Uint8Array): Promise<Uint8Array> {
     const encoder = new TextEncoder();
     const passwordData = encoder.encode(password);
-    
+
     const keyMaterial = await crypto.subtle.importKey(
       'raw',
       passwordData,
@@ -73,10 +73,10 @@ export class KeyManagementService {
   ): Promise<{ encryptedKey: string; nonce: string }> {
     const derivedKey = await this.deriveKeyFromPassword(password, salt);
     const nonce = nacl.randomBytes(nacl.secretbox.nonceLength);
-    
+
     const privateKeyBytes = decodeBase64(privateKey);
     const encrypted = nacl.secretbox(privateKeyBytes, nonce, derivedKey);
-    
+
     return {
       encryptedKey: encodeBase64(encrypted),
       nonce: encodeBase64(nonce),
@@ -97,13 +97,13 @@ export class KeyManagementService {
       const derivedKey = await this.deriveKeyFromPassword(password, saltBytes);
       const nonceBytes = decodeBase64(nonce);
       const encryptedBytes = decodeBase64(encryptedKey);
-      
+
       const decrypted = nacl.secretbox.open(encryptedBytes, nonceBytes, derivedKey);
-      
+
       if (!decrypted) {
         return null;
       }
-      
+
       return encodeBase64(decrypted);
     } catch (error) {
       console.error('Decryption failed:', error);
@@ -255,7 +255,7 @@ export class KeyManagementService {
     try {
       const { error } = await this.supabase
         .from('user_encryption_keys')
-        .update({ 
+        .update({
           is_compromised: true,
           is_active: false,
           compromised_at: new Date().toISOString()
@@ -291,25 +291,25 @@ export class KeyManagementService {
     // In production, use a library like zxcvbn
     const score = this.calculatePasswordScore(password);
     const feedback = this.getPasswordFeedback(password, score);
-    
+
     return { score, feedback };
   }
 
   private calculatePasswordScore(password: string): number {
     let score = 0;
-    
+
     if (password.length >= 8) score++;
     if (password.length >= 12) score++;
     if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score++;
     if (/\d/.test(password)) score++;
     if (/[^a-zA-Z0-9]/.test(password)) score++;
-    
+
     return Math.min(score, 4);
   }
 
   private getPasswordFeedback(password: string, score: number): PasswordStrength['feedback'] {
     const suggestions: string[] = [];
-    
+
     if (password.length < 8) {
       suggestions.push('Use at least 8 characters');
     }
@@ -322,11 +322,11 @@ export class KeyManagementService {
     if (!/[^a-zA-Z0-9]/.test(password)) {
       suggestions.push('Include at least one special character');
     }
-    
-    const warning = score < this.MIN_PASSWORD_SCORE 
+
+    const warning = score < this.MIN_PASSWORD_SCORE
       ? 'Password is too weak. Please choose a stronger password.'
       : undefined;
-    
+
     return { warning, suggestions };
   }
 
@@ -367,7 +367,7 @@ export class KeyManagementService {
       // Check if key is older than 90 days
       const keyAge = Date.now() - new Date(data.created_at).getTime();
       const ninetyDays = 90 * 24 * 60 * 60 * 1000;
-      
+
       return keyAge > ninetyDays;
     } catch (error) {
       console.error('Failed to check key rotation:', error);
@@ -401,7 +401,7 @@ export class KeyManagementService {
 
       if (data) {
         const newAttempts = (data.failed_attempts || 0) + 1;
-        
+
         // Lock account after 5 failed attempts
         if (newAttempts >= 5) {
           await this.supabase

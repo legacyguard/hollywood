@@ -1,16 +1,16 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { SofiaMessage, SofiaContext } from '@/lib/sofia-types';
+import type { SofiaMessage, SofiaContext } from '@/lib/sofia-types';
 
 interface SofiaStore {
   // Chat state
   messages: SofiaMessage[];
   isTyping: boolean;
   isVisible: boolean;
-  
+
   // User context for Sofia
   context: SofiaContext | null;
-  
+
   // Actions
   addMessage: (message: SofiaMessage) => void;
   setMessages: (messages: SofiaMessage[]) => void;
@@ -22,7 +22,7 @@ interface SofiaStore {
   updateContext: (context: Partial<SofiaContext>) => void;
   setContext: (context: SofiaContext) => void;
   clearMessages: () => void;
-  
+
   // Helper getters
   getLastUserMessage: () => SofiaMessage | undefined;
   getMessageCount: () => number;
@@ -113,6 +113,6 @@ export const useSofiaStore = create<SofiaStore>()(
 export function useUserContext() {
   const context = useSofiaStore(state => state.context);
   const updateContext = useSofiaStore(state => state.updateContext);
-  
+
   return { context, updateContext };
 }

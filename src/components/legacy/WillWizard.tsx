@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useAuth } from '@clerk/clerk-react';
-import { WillType } from './WillTypeSelector';
+import type { WillType } from './WillTypeSelector';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -164,7 +164,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({ onClose, onComplete, onB
   const [currentStep, setCurrentStep] = useState(0);
   const [showVaultSelector, setShowVaultSelector] = useState(false);
   const [vaultSelectorType, setVaultSelectorType] = useState<'realEstate' | 'vehicles' | 'bankAccounts' | 'personalProperty' | 'all'>('all');
-  
+
   // Initialize with draft data if provided, otherwise use empty data
   const [willData, setWillData] = useState<WillData>(initialData || {
     testator_data: {
@@ -227,11 +227,11 @@ export const WillWizard: React.FC<WillWizardProps> = ({ onClose, onComplete, onB
       description: asset,
       value: 0 // User can edit this later
     }));
-    
+
     updateWillData('assets', {
       [vaultSelectorType]: [...currentAssets, ...newAssets]
     });
-    
+
     setShowVaultSelector(false);
     toast.success(`Added ${selectedAssets.length} asset${selectedAssets.length > 1 ? 's' : ''} from your vault`);
   };
@@ -254,7 +254,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({ onClose, onComplete, onB
   const updateBeneficiary = useCallback((id: string, field: string, value: string | number | string[]) => {
     setWillData(prev => ({
       ...prev,
-      beneficiaries: prev.beneficiaries.map(b => 
+      beneficiaries: prev.beneficiaries.map(b =>
         b.id === id ? { ...b, [field]: value } : b
       )
     }));
@@ -314,8 +314,8 @@ export const WillWizard: React.FC<WillWizardProps> = ({ onClose, onComplete, onB
               </div>
               <div>
                 <Label htmlFor="maritalStatus">Marital Status</Label>
-                <Select 
-                  value={willData.testator_data.maritalStatus} 
+                <Select
+                  value={willData.testator_data.maritalStatus}
                   onValueChange={(value) => updateWillData('testator_data', { maritalStatus: value })}
                 >
                   <SelectTrigger>
@@ -343,7 +343,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({ onClose, onComplete, onB
                 Add Beneficiary
               </Button>
             </div>
-            
+
             {willData.beneficiaries.length === 0 ? (
               <Card className="p-8 text-center">
                 <Icon name="users" className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
@@ -356,9 +356,9 @@ export const WillWizard: React.FC<WillWizardProps> = ({ onClose, onComplete, onB
                   <Card key={beneficiary.id} className="p-4">
                     <div className="flex items-center justify-between mb-4">
                       <Badge variant="secondary">Beneficiary {index + 1}</Badge>
-                      <Button 
+                      <Button
                         onClick={() => removeBeneficiary(beneficiary.id)}
-                        variant="ghost" 
+                        variant="ghost"
                         size="sm"
                         className="text-red-600 hover:text-red-700"
                       >
@@ -376,8 +376,8 @@ export const WillWizard: React.FC<WillWizardProps> = ({ onClose, onComplete, onB
                       </div>
                       <div>
                         <Label>Relationship</Label>
-                        <Select 
-                          value={beneficiary.relationship} 
+                        <Select
+                          value={beneficiary.relationship}
                           onValueChange={(value) => updateBeneficiary(beneficiary.id, 'relationship', value)}
                         >
                           <SelectTrigger>
@@ -428,8 +428,8 @@ export const WillWizard: React.FC<WillWizardProps> = ({ onClose, onComplete, onB
               <p className="text-muted-foreground mb-4">
                 Add your assets manually or import them from your LegacyGuard vault for convenience.
               </p>
-              <Button 
-                onClick={() => handleOpenVaultSelector('all')} 
+              <Button
+                onClick={() => handleOpenVaultSelector('all')}
                 variant="outline"
                 className="bg-primary/5 hover:bg-primary/10 border-primary/20 text-primary"
               >
@@ -446,9 +446,9 @@ export const WillWizard: React.FC<WillWizardProps> = ({ onClose, onComplete, onB
                   Real Estate
                 </h4>
                 <div className="flex items-center gap-2">
-                  <Button 
-                    onClick={() => handleOpenVaultSelector('realEstate')} 
-                    variant="ghost" 
+                  <Button
+                    onClick={() => handleOpenVaultSelector('realEstate')}
+                    variant="ghost"
                     size="sm"
                     className="text-primary hover:text-primary-hover"
                   >
@@ -529,9 +529,9 @@ export const WillWizard: React.FC<WillWizardProps> = ({ onClose, onComplete, onB
                   Vehicles
                 </h4>
                 <div className="flex items-center gap-2">
-                  <Button 
-                    onClick={() => handleOpenVaultSelector('vehicles')} 
-                    variant="ghost" 
+                  <Button
+                    onClick={() => handleOpenVaultSelector('vehicles')}
+                    variant="ghost"
                     size="sm"
                     className="text-primary hover:text-primary-hover"
                   >
@@ -621,9 +621,9 @@ export const WillWizard: React.FC<WillWizardProps> = ({ onClose, onComplete, onB
                   Bank Accounts & Investments
                 </h4>
                 <div className="flex items-center gap-2">
-                  <Button 
-                    onClick={() => handleOpenVaultSelector('bankAccounts')} 
-                    variant="ghost" 
+                  <Button
+                    onClick={() => handleOpenVaultSelector('bankAccounts')}
+                    variant="ghost"
                     size="sm"
                     className="text-primary hover:text-primary-hover"
                   >
@@ -654,7 +654,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({ onClose, onComplete, onB
                           updateWillData('assets', { bankAccounts: updated });
                         }}
                       />
-                      <Select 
+                      <Select
                         value={account.type}
                         onValueChange={(value) => {
                           const updated = [...willData.assets.bankAccounts!];
@@ -711,9 +711,9 @@ export const WillWizard: React.FC<WillWizardProps> = ({ onClose, onComplete, onB
                   Personal Property
                 </h4>
                 <div className="flex items-center gap-2">
-                  <Button 
-                    onClick={() => handleOpenVaultSelector('personalProperty')} 
-                    variant="ghost" 
+                  <Button
+                    onClick={() => handleOpenVaultSelector('personalProperty')}
+                    variant="ghost"
                     size="sm"
                     className="text-primary hover:text-primary-hover"
                   >
@@ -799,7 +799,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({ onClose, onComplete, onB
                   <Input
                     id="primaryExecutorName"
                     value={willData.executor_data.primaryExecutor?.name || ''}
-                    onChange={(e) => updateWillData('executor_data', { 
+                    onChange={(e) => updateWillData('executor_data', {
                       primaryExecutor: { ...willData.executor_data.primaryExecutor, name: e.target.value }
                     })}
                     placeholder="Executor's full name"
@@ -810,7 +810,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({ onClose, onComplete, onB
                   <Input
                     id="primaryExecutorRelationship"
                     value={willData.executor_data.primaryExecutor?.relationship || ''}
-                    onChange={(e) => updateWillData('executor_data', { 
+                    onChange={(e) => updateWillData('executor_data', {
                       primaryExecutor: { ...willData.executor_data.primaryExecutor, relationship: e.target.value }
                     })}
                     placeholder="e.g., spouse, friend, attorney"
@@ -822,14 +822,14 @@ export const WillWizard: React.FC<WillWizardProps> = ({ onClose, onComplete, onB
                 <Input
                   id="primaryExecutorPhone"
                   value={willData.executor_data.primaryExecutor?.phone || ''}
-                  onChange={(e) => updateWillData('executor_data', { 
+                  onChange={(e) => updateWillData('executor_data', {
                     primaryExecutor: { ...willData.executor_data.primaryExecutor, phone: e.target.value }
                   })}
                   placeholder="Phone number"
                 />
               </div>
             </div>
-            
+
             <div>
               <h3 className="text-lg font-semibold mb-4">Backup Executor (Optional)</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -838,7 +838,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({ onClose, onComplete, onB
                   <Input
                     id="backupExecutorName"
                     value={willData.executor_data.backupExecutor?.name || ''}
-                    onChange={(e) => updateWillData('executor_data', { 
+                    onChange={(e) => updateWillData('executor_data', {
                       backupExecutor: { ...willData.executor_data.backupExecutor, name: e.target.value }
                     })}
                     placeholder="Backup executor's name"
@@ -849,7 +849,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({ onClose, onComplete, onB
                   <Input
                     id="backupExecutorRelationship"
                     value={willData.executor_data.backupExecutor?.relationship || ''}
-                    onChange={(e) => updateWillData('executor_data', { 
+                    onChange={(e) => updateWillData('executor_data', {
                       backupExecutor: { ...willData.executor_data.backupExecutor, relationship: e.target.value }
                     })}
                     placeholder="e.g., sibling, friend"
@@ -864,7 +864,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({ onClose, onComplete, onB
                 <div>
                   <h4 className="font-semibold text-amber-900 dark:text-amber-200">Executor Responsibilities</h4>
                   <p className="text-sm text-amber-700 dark:text-amber-300 mt-1">
-                    Your executor will handle settling your estate, paying debts, distributing assets, 
+                    Your executor will handle settling your estate, paying debts, distributing assets,
                     and ensuring your wishes are carried out. Choose someone you trust who is organized and responsible.
                   </p>
                 </div>
@@ -886,7 +886,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({ onClose, onComplete, onB
                 rows={4}
               />
             </div>
-            
+
             <div className="flex items-center space-x-3">
               <input
                 type="checkbox"
@@ -897,7 +897,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({ onClose, onComplete, onB
               />
               <Label htmlFor="organDonation">I wish to be an organ donor</Label>
             </div>
-            
+
             <div>
               <Label htmlFor="petCare">Pet Care Instructions (If applicable)</Label>
               <Textarea
@@ -908,7 +908,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({ onClose, onComplete, onB
                 rows={3}
               />
             </div>
-            
+
             <div>
               <Label htmlFor="digitalAssets">Digital Assets and Accounts</Label>
               <Textarea
@@ -942,7 +942,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({ onClose, onComplete, onB
                 Please review all information before creating your will document
               </p>
             </div>
-            
+
             {/* Summary cards for each section */}
             <div className="grid gap-4">
               <Card className="p-4">
@@ -954,7 +954,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({ onClose, onComplete, onB
                   {willData.testator_data.fullName} • {willData.legal_data.jurisdiction}
                 </p>
               </Card>
-              
+
               <Card className="p-4">
                 <h4 className="font-semibold mb-2 flex items-center gap-2">
                   <Icon name="users" className="w-4 h-4" />
@@ -964,7 +964,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({ onClose, onComplete, onB
                   {willData.beneficiaries.length} beneficiaries defined
                 </p>
               </Card>
-              
+
               <Card className="p-4">
                 <h4 className="font-semibold mb-2 flex items-center gap-2">
                   <Icon name="shield-check" className="w-4 h-4" />
@@ -975,14 +975,14 @@ export const WillWizard: React.FC<WillWizardProps> = ({ onClose, onComplete, onB
                 </p>
               </Card>
             </div>
-            
+
             <Card className="p-4 bg-green-50 dark:bg-green-900/20">
               <div className="flex gap-3">
                 <Icon name="shield-check" className="w-5 h-5 text-green-600 flex-shrink-0 mt-1" />
                 <div>
                   <h4 className="font-semibold text-green-900 dark:text-green-200">Ready to Create</h4>
                   <p className="text-sm text-green-700 dark:text-green-300 mt-1">
-                    Your will document will be generated based on the information provided. 
+                    Your will document will be generated based on the information provided.
                     You can always edit and update it later.
                   </p>
                 </div>
@@ -1010,9 +1010,9 @@ export const WillWizard: React.FC<WillWizardProps> = ({ onClose, onComplete, onB
             <div className="max-w-4xl mx-auto px-6 py-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <Button 
-                    onClick={onClose} 
-                    variant="ghost" 
+                  <Button
+                    onClick={onClose}
+                    variant="ghost"
                     size="sm"
                     className="flex items-center gap-2"
                   >
@@ -1041,7 +1041,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({ onClose, onComplete, onB
               <Progress value={progress} className="h-2" />
               <div className="flex justify-between mt-2 text-xs text-muted-foreground">
                 {STEPS.map((step, index) => (
-                  <span 
+                  <span
                     key={step.id}
                     className={index <= currentStep ? 'text-primary font-medium' : ''}
                   >
@@ -1079,7 +1079,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({ onClose, onComplete, onB
                   <h2 className="text-2xl font-semibold mb-2">{STEPS[currentStep].title}</h2>
                   <p className="text-muted-foreground">{STEPS[currentStep].description}</p>
                 </div>
-                
+
                 {renderStepContent()}
               </FadeIn>
             </div>
@@ -1095,7 +1095,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({ onClose, onComplete, onB
                     <h2 className="text-2xl font-semibold mb-2">{STEPS[currentStep].title}</h2>
                     <p className="text-muted-foreground">{STEPS[currentStep].description}</p>
                   </div>
-                  
+
                   {renderStepContent()}
                 </FadeIn>
               </div>
@@ -1103,7 +1103,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({ onClose, onComplete, onB
 
             {/* Right Panel - Live Preview (60% width) */}
             <div className="w-3/5 flex flex-col">
-              <LiveWillPreview 
+              <LiveWillPreview
                 willData={willData}
                 willType={willType}
                 currentStep={currentStepId}
@@ -1117,7 +1117,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({ onClose, onComplete, onB
         <footer className="bg-card border-t border-card-border">
           <div className="px-6 py-4">
             <div className="flex justify-between items-center">
-              <Button 
+              <Button
                 onClick={handleBack}
                 variant="outline"
                 disabled={currentStep === 0 && !onBack}
@@ -1125,14 +1125,14 @@ export const WillWizard: React.FC<WillWizardProps> = ({ onClose, onComplete, onB
                 <Icon name="arrow-left" className="w-4 h-4 mr-2" />
                 {currentStep === 0 ? 'Change Will Type' : 'Back'}
               </Button>
-              
+
               <div className="flex items-center gap-4">
                 {!isFocusMode && (
                   <div className="text-sm text-muted-foreground">
                     Step {currentStep + 1} of {STEPS.length}
                   </div>
                 )}
-                <Button 
+                <Button
                   onClick={handleNext}
                   className="bg-primary hover:bg-primary-hover text-primary-foreground"
                 >

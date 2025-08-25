@@ -6,11 +6,11 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon-library';
 import { useSupabaseWithClerk } from '@/integrations/supabase/client';
-import { 
-  findSofiaActions, 
+import {
+  findSofiaActions,
   generateDynamicSuggestions,
   hasDocumentBasedSuggestions,
-  type SofiaAction 
+  type SofiaAction
 } from '@/lib/sofia-search-dictionary';
 import { toast } from 'sonner';
 
@@ -94,7 +94,7 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({ isOpen, onClose, onSof
 
     try {
       const supabase = await createSupabaseClient();
-      
+
       const { data, error } = await supabase
         .from('documents')
         .select('id, title, file_name, document_type, category')
@@ -127,7 +127,7 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({ isOpen, onClose, onSof
 
     try {
       const supabase = await createSupabaseClient();
-      
+
       const { data, error } = await supabase
         .from('guardians')
         .select('id, name, email, relationship')
@@ -164,7 +164,7 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({ isOpen, onClose, onSof
     }
 
     setIsSearching(true);
-    
+
     try {
       // Filter quick actions
       const filteredActions = quickActions.filter(action =>
@@ -197,7 +197,7 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({ isOpen, onClose, onSof
       // Combine static and dynamic suggestions, prioritizing dynamic ones
       const allSuggestions = [
         ...dynamicSuggestions,
-        ...staticSuggestions.filter(staticSuggestion => 
+        ...staticSuggestions.filter(staticSuggestion =>
           !dynamicSuggestions.some(dynamic => dynamic.actionId === staticSuggestion.actionId)
         )
       ].slice(0, 6); // Limit total suggestions
@@ -316,18 +316,18 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({ isOpen, onClose, onSof
                   }))) ? 'Sofia learned from your documents:' : 'Ask Sofia Assistant:'}
                 </span>
               </div>
-              
+
               <div className="space-y-2">
                 {sofiaActions.map((action, index) => {
                   const isDynamic = ['filter_learned_category', 'open_specific_document', 'create_smart_filter'].includes(action.actionId);
-                  
+
                   return (
                     <Button
                       key={`sofia-${index}`}
                       variant="outline"
                       className={`w-full justify-start h-auto p-3 ${
-                        isDynamic 
-                          ? 'border-green-200 hover:bg-green-50 hover:border-green-300 bg-green-50/50' 
+                        isDynamic
+                          ? 'border-green-200 hover:bg-green-50 hover:border-green-300 bg-green-50/50'
                           : 'border-primary/20 hover:bg-primary/10 hover:border-primary/30'
                       }`}
                       onClick={() => {
@@ -341,11 +341,11 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({ isOpen, onClose, onSof
                         {isDynamic && (
                           <div className="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse" />
                         )}
-                        <Icon 
-                          name={action.icon || 'message-circle'} 
+                        <Icon
+                          name={action.icon || 'message-circle'}
                           className={`w-4 h-4 mr-3 flex-shrink-0 ${
                             isDynamic ? 'text-green-600' : 'text-primary'
-                          }`} 
+                          }`}
                         />
                         <span className={`font-medium ${
                           isDynamic ? 'text-green-700' : 'text-primary'
@@ -357,7 +357,7 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({ isOpen, onClose, onSof
                   );
                 })}
               </div>
-              
+
               <p className="text-xs text-muted-foreground mt-3 text-center">
                 {hasDocumentBasedSuggestions(query, documents.map(d => ({
                   id: d.id,

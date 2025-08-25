@@ -12,27 +12,27 @@ export enum AuditEventType {
   LOGOUT = 'LOGOUT',
   SESSION_EXPIRED = 'SESSION_EXPIRED',
   PASSWORD_RESET = 'PASSWORD_RESET',
-  
+
   // Document events
   DOCUMENT_UPLOAD = 'DOCUMENT_UPLOAD',
   DOCUMENT_DOWNLOAD = 'DOCUMENT_DOWNLOAD',
   DOCUMENT_DELETE = 'DOCUMENT_DELETE',
   DOCUMENT_SHARE = 'DOCUMENT_SHARE',
   DOCUMENT_ACCESS_DENIED = 'DOCUMENT_ACCESS_DENIED',
-  
+
   // Guardian events
   GUARDIAN_ADDED = 'GUARDIAN_ADDED',
   GUARDIAN_REMOVED = 'GUARDIAN_REMOVED',
   GUARDIAN_MODIFIED = 'GUARDIAN_MODIFIED',
   GUARDIAN_ACCESS = 'GUARDIAN_ACCESS',
-  
+
   // Security events
   SUSPICIOUS_ACTIVITY = 'SUSPICIOUS_ACTIVITY',
   RATE_LIMIT_EXCEEDED = 'RATE_LIMIT_EXCEEDED',
   INVALID_ACCESS_ATTEMPT = 'INVALID_ACCESS_ATTEMPT',
   DATA_EXPORT = 'DATA_EXPORT',
   PERMISSION_CHANGE = 'PERMISSION_CHANGE',
-  
+
   // System events
   BACKUP_CREATED = 'BACKUP_CREATED',
   BACKUP_RESTORED = 'BACKUP_RESTORED',
@@ -88,10 +88,10 @@ class AuditLogger {
    */
   public initialize(supabaseUrl?: string, supabaseKey?: string): void {
     if (this.isInitialized) return;
-    
+
     const url = supabaseUrl || process.env.NEXT_PUBLIC_SUPABASE_URL;
     const key = supabaseKey || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    
+
     if (url && key) {
       this.supabase = createClient(url, key);
       this.isInitialized = true;
@@ -279,7 +279,7 @@ class AuditLogger {
       query = query.order('timestamp', { ascending: false });
 
       const { data, error } = await query;
-      
+
       if (error) {
         console.error('Failed to query audit logs:', error);
         return [];
@@ -332,7 +332,7 @@ class AuditLogger {
 
   private async flush(): Promise<void> {
     if (this.queue.length === 0) return;
-    
+
     const events = [...this.queue];
     this.queue = [];
 
@@ -341,7 +341,7 @@ class AuditLogger {
         const { error } = await this.supabase
           .from('audit_logs')
           .insert(events);
-        
+
         if (error) {
           console.error('Failed to flush audit logs:', error);
           // Re-add to queue on failure
@@ -360,12 +360,12 @@ class AuditLogger {
 
   private storeLocally(events: AuditEvent[]): void {
     if (typeof window === 'undefined') return;
-    
+
     try {
       const existing = localStorage.getItem('audit_logs_queue');
       const queue = existing ? JSON.parse(existing) : [];
       queue.push(...events);
-      
+
       // Keep only last 1000 events
       const trimmed = queue.slice(-1000);
       localStorage.setItem('audit_logs_queue', JSON.stringify(trimmed));

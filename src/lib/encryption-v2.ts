@@ -1,6 +1,6 @@
 /**
  * Encryption Service v2 - Secure implementation using Web Crypto API
- * 
+ *
  * Security improvements:
  * - Non-extractable CryptoKey objects stored in IndexedDB
  * - AES-GCM encryption for file content
@@ -57,11 +57,11 @@ class EncryptionServiceV2 {
    */
   async getUserEncryptionKey(userId: string): Promise<CryptoKey> {
     const storageKey = `encryption_key_${userId}`;
-    
+
     // Check cache first
     if (this.keyCache.has(userId)) {
       const cached = this.keyCache.get(userId)!;
-      
+
       // Check if key has expired
       if (cached.expiresAt && cached.expiresAt < new Date()) {
         // Key expired, remove from cache and generate new one
@@ -83,7 +83,7 @@ class EncryptionServiceV2 {
           createdAt: new Date(metadata.createdAt),
           expiresAt: metadata.expiresAt ? new Date(metadata.expiresAt) : undefined
         };
-        
+
         this.keyCache.set(userId, keyInfo);
         return existingKey;
       }
@@ -123,10 +123,10 @@ class EncryptionServiceV2 {
   async encryptFile(file: File, userId: string): Promise<EncryptedFileData> {
     const key = await this.getUserEncryptionKey(userId);
     const fileData = await this.fileToArrayBuffer(file);
-    
+
     // Generate random IV (Initialization Vector)
     const iv = crypto.getRandomValues(new Uint8Array(12));
-    
+
     // Encrypt the file data
     const encryptedData = await crypto.subtle.encrypt(
       {
@@ -140,7 +140,7 @@ class EncryptionServiceV2 {
     // Get key metadata for version tracking
     const storageKey = `encryption_key_${userId}`;
     const metadata = await secureCryptoStore.getKeyMetadata(storageKey);
-    
+
     const fileMetadata = {
       fileName: file.name,
       fileType: file.type,
@@ -173,7 +173,7 @@ async decryptFile(
     }
 
     const key = await this.getUserEncryptionKey(userId);
-    
+
     const decryptedData = await crypto.subtle.decrypt(
       {
         name: this.ALGORITHM,
@@ -198,7 +198,7 @@ async decryptFile(
     const combined = new Uint8Array(iv.length + encryptedData.byteLength);
     combined.set(iv);
     combined.set(new Uint8Array(encryptedData), iv.length);
-    
+
     return new Blob([combined], { type: 'application/octet-stream' });
   }
 
@@ -212,11 +212,11 @@ async decryptFile(
         try {
           const arrayBuffer = reader.result as ArrayBuffer;
           const uint8Array = new Uint8Array(arrayBuffer);
-          
+
           // First 12 bytes are the IV
           const iv = uint8Array.slice(0, 12);
           const encryptedData = uint8Array.slice(12);
-          
+
           resolve({ iv, encryptedData: encryptedData.buffer });
         } catch (error) {
           reject(error);
@@ -233,11 +233,11 @@ async decryptFile(
    */
   async rotateUserKey(userId: string): Promise<void> {
     const storageKey = `encryption_key_${userId}`;
-    
+
     // Remove old key from cache and storage
     this.keyCache.delete(userId);
     await secureCryptoStore.removeKey(storageKey);
-    
+
     // Generate new key (this will happen automatically on next use)
     await this.getUserEncryptionKey(userId);
   }
@@ -270,9 +270,9 @@ async decryptFile(
   } | null> {
     const storageKey = `encryption_key_${userId}`;
     const metadata = await secureCryptoStore.getKeyMetadata(storageKey);
-    
+
     if (!metadata) return null;
-    
+
     return {
       version: metadata.id,
       createdAt: new Date(metadata.createdAt),
@@ -286,7 +286,7 @@ async decryptFile(
    */
   async cleanupExpiredKeys(): Promise<void> {
     await secureCryptoStore.clearExpiredKeys();
-    
+
     // Also clean up expired keys from cache
     const now = new Date();
     for (const [userId, keyInfo] of this.keyCache.entries()) {
@@ -309,7 +309,7 @@ async decryptFile(
       iv: this.uint8ArrayToBase64(iv),
       metadata
     };
-    
+
     return JSON.stringify(exportData);
   }
 
@@ -323,7 +323,7 @@ async decryptFile(
   } | null> {
     try {
       const exportData = JSON.parse(exportString);
-      
+
       return {
         encryptedData: this.base64ToArrayBuffer(exportData.encryptedData),
         iv: this.base64ToUint8Array(exportData.iv),

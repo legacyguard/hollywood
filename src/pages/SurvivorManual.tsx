@@ -15,7 +15,7 @@ import { FadeIn } from '@/components/motion/FadeIn';
 import { usePageTitle } from '@/hooks/usePageTitle';
 import { toast } from 'sonner';
 import { useSupabaseWithClerk } from '@/integrations/supabase/client';
-import { FamilyGuidanceEntry, CreateGuidanceEntryRequest, ManualEntryType, Guardian } from '@/types/guardian';
+import type { FamilyGuidanceEntry, CreateGuidanceEntryRequest, ManualEntryType, Guardian } from '@/types/guardian';
 
 const ENTRY_TYPES: { value: ManualEntryType; label: string; description: string; icon: string; color: string }[] = [
   {
@@ -80,14 +80,14 @@ export default function SurvivorManualPage() {
   usePageTitle('Family Guidance Manual');
   const { userId } = useAuth();
   const createSupabaseClient = useSupabaseWithClerk();
-  
+
   const [entries, setEntries] = useState<FamilyGuidanceEntry[]>([]);
   const [guardians, setGuardians] = useState<Guardian[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [editingEntry, setEditingEntry] = useState<FamilyGuidanceEntry | null>(null);
-  
+
   // Form state
   const [formData, setFormData] = useState<CreateGuidanceEntryRequest>({
     entry_type: 'important_contacts',
@@ -167,7 +167,6 @@ export default function SurvivorManualPage() {
   }, [userId, createSupabaseClient, generateInitialEntries]);
 
 
-
   useEffect(() => {
     fetchData();
   }, [fetchData]);
@@ -187,7 +186,7 @@ export default function SurvivorManualPage() {
 
     try {
       const supabase = await createSupabaseClient();
-      
+
       if (editingEntry) {
         // Update existing entry
         const { data, error } = await supabase
@@ -205,7 +204,7 @@ export default function SurvivorManualPage() {
 
         if (error) throw error;
 
-        setEntries(prev => prev.map(entry => 
+        setEntries(prev => prev.map(entry =>
           entry.id === editingEntry.id ? data : entry
         ));
         toast.success('Manual entry updated successfully!');
@@ -230,7 +229,7 @@ export default function SurvivorManualPage() {
         setEntries(prev => [...prev, data].sort((a, b) => a.priority - b.priority));
         toast.success('Manual entry added successfully!');
       }
-      
+
       resetForm();
     } catch (error) {
       console.error('Error saving entry:', error);
@@ -272,7 +271,7 @@ export default function SurvivorManualPage() {
   const toggleCompletion = async (entry: FamilyGuidanceEntry) => {
     try {
       const supabase = await createSupabaseClient();
-      
+
       const { data, error } = await supabase
         .from('family_guidance_entries')
         .update({ is_completed: !entry.is_completed })
@@ -296,7 +295,7 @@ export default function SurvivorManualPage() {
   };
 
   // Get completion percentage
-  const completionPercentage = entries.length > 0 ? 
+  const completionPercentage = entries.length > 0 ?
     Math.round((entries.filter(e => e.is_completed).length / entries.length) * 100) : 0;
 
   // Group entries by type
@@ -308,7 +307,7 @@ export default function SurvivorManualPage() {
     return acc;
   }, {} as Record<ManualEntryType, FamilyGuidanceEntry[]>);
 
-  const getTypeConfig = (type: ManualEntryType) => 
+  const getTypeConfig = (type: ManualEntryType) =>
     ENTRY_TYPES.find(t => t.value === type) || ENTRY_TYPES[0];
 
   if (isLoading) {
@@ -342,7 +341,7 @@ export default function SurvivorManualPage() {
                 </FadeIn>
                 <FadeIn duration={0.5} delay={0.4}>
                   <p className="text-lg leading-relaxed max-w-3xl mb-4" style={{ color: 'hsl(var(--muted-text))' }}>
-                    A step-by-step guide for your loved ones. Sofia is helping you create a comprehensive manual 
+                    A step-by-step guide for your loved ones. Sofia is helping you create a comprehensive manual
                     that will give your family clear directions when they need them most.
                   </p>
                   <div className="flex items-center gap-4">
@@ -362,8 +361,8 @@ export default function SurvivorManualPage() {
               <FadeIn duration={0.5} delay={0.6}>
                 <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                   <DialogTrigger asChild>
-                    <Button 
-                      className="bg-primary hover:bg-primary-hover text-primary-foreground shadow-md" 
+                    <Button
+                      className="bg-primary hover:bg-primary-hover text-primary-foreground shadow-md"
                       size="lg"
                       onClick={() => setEditingEntry(null)}
                     >
@@ -381,8 +380,8 @@ export default function SurvivorManualPage() {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="entry_type">Category</Label>
-                          <Select 
-                            value={formData.entry_type} 
+                          <Select
+                            value={formData.entry_type}
                             onValueChange={(value) => handleInputChange('entry_type', value as ManualEntryType)}
                           >
                             <SelectTrigger>
@@ -437,9 +436,9 @@ export default function SurvivorManualPage() {
                       </div>
 
                       <div className="flex justify-end gap-3 pt-4">
-                        <Button 
-                          type="button" 
-                          variant="outline" 
+                        <Button
+                          type="button"
+                          variant="outline"
                           onClick={resetForm}
                         >
                           Cancel
@@ -476,7 +475,7 @@ export default function SurvivorManualPage() {
                 </div>
                 <h3 className="text-2xl font-bold mb-4">Creating Your Family Guidance Manual</h3>
                 <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-                  Sofia is preparing your personalized manual based on your guardians and documents. 
+                  Sofia is preparing your personalized manual based on your guardians and documents.
                   This will give your family clear, step-by-step guidance when they need it most.
                 </p>
                 <Button onClick={() => setIsDialogOpen(true)}>
@@ -495,13 +494,13 @@ export default function SurvivorManualPage() {
                     <span className="text-2xl font-bold text-primary">{completionPercentage}%</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-3 mb-4">
-                    <div 
+                    <div
                       className="bg-primary h-3 rounded-full transition-all duration-300"
                       style={{ width: `${completionPercentage}%` }}
                     />
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    {completionPercentage === 100 
+                    {completionPercentage === 100
                       ? 'Congratulations! Your survival manual is complete. Your family will have clear guidance when they need it.'
                       : `Complete ${entries.filter(e => !e.is_completed).length} more entries to finish your manual.`
                     }
@@ -555,8 +554,8 @@ export default function SurvivorManualPage() {
                                 </div>
                               </div>
                               <div className="flex gap-2">
-                                <Button 
-                                  size="sm" 
+                                <Button
+                                  size="sm"
                                   variant="outline"
                                   onClick={() => handleEdit(entry)}
                                 >

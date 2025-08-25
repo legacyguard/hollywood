@@ -1,4 +1,5 @@
-import React, { FC, ReactNode, FormEvent } from "react";
+import type { FC, ReactNode, FormEvent } from "react";
+import React from "react";
 
 interface FormProps {
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;

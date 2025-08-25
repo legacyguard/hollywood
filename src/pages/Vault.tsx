@@ -35,7 +35,7 @@ export default function VaultPage() {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
-  
+
   // Confirmation dialog state
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
   const [documentToDelete, setDocumentToDelete] = useState<Document | null>(null);
@@ -216,10 +216,10 @@ export default function VaultPage() {
       cell: ({ row }) => {
         const date = row.getValue('expiresAt') as Date | undefined;
         if (!date) return <span className="text-muted-foreground">-</span>;
-        
+
         const daysUntilExpiry = Math.floor((date.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
         const isExpiringSoon = daysUntilExpiry <= 90;
-        
+
         return (
           <div className="flex items-center space-x-1">
             {isExpiringSoon && <Clock className="h-3 w-3 text-yellow-600" />}
@@ -240,16 +240,16 @@ export default function VaultPage() {
       cell: ({ row }) => {
         const status = row.getValue('ocrStatus') as string | undefined;
         if (!status || status === 'none') return <span className="text-muted-foreground">-</span>;
-        
+
         const statusConfig = {
           complete: { color: 'bg-green-100 text-green-800', icon: CheckCircle, label: 'Complete' },
           processing: { color: 'bg-yellow-100 text-yellow-800', icon: Clock, label: 'Processing' },
           failed: { color: 'bg-red-100 text-red-800', icon: null, label: 'Failed' }
         };
-        
+
         const config = statusConfig[status as keyof typeof statusConfig];
         const StatusIcon = config?.icon;
-        
+
         return (
           <span className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium ${config?.color || ''}`}>
             {StatusIcon && <StatusIcon className="h-3 w-3 mr-1" />}
@@ -311,10 +311,10 @@ export default function VaultPage() {
   // Handle delete confirmation
   const handleDeleteConfirm = () => {
     if (!documentToDelete) return;
-    
+
     setDocuments(prev => prev.filter(d => d.id !== documentToDelete.id));
     toast.success(`Deleted ${documentToDelete.name}`);
-    
+
     // Close dialog and reset state
     setIsConfirmDialogOpen(false);
     setDocumentToDelete(null);
@@ -338,7 +338,7 @@ export default function VaultPage() {
         doc.isEncrypted ? 'Yes' : 'No'
       ])
     ].map(row => row.join(',')).join('\n');
-    
+
     const blob = new Blob([csv], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -383,13 +383,13 @@ export default function VaultPage() {
                     <div>
                       <strong className="text-blue-900">✨ AI-Powered Document Analysis Now Available!</strong>
                       <p className="text-blue-700 mt-1">
-                        Upload any document and our AI will automatically extract text, classify document types, 
+                        Upload any document and our AI will automatically extract text, classify document types,
                         identify important information like dates and amounts, and make your documents searchable.
                       </p>
                     </div>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
+                    <Button
+                      variant="ghost"
+                      size="sm"
                       onClick={() => setShowOcrInfo(false)}
                       className="text-blue-600 hover:text-blue-800 ml-4"
                     >
@@ -403,7 +403,7 @@ export default function VaultPage() {
             {/* Enhanced Upload Section with OCR */}
             <div>
               <EnhancedDocumentUploader />
-              <Button 
+              <Button
                 onClick={() => setRefreshTrigger(prev => prev + 1)}
                 variant="outline"
                 size="sm"
@@ -413,7 +413,7 @@ export default function VaultPage() {
                 Refresh Documents
               </Button>
             </div>
-            
+
             {/* Enhanced Documents Table */}
             <FadeIn duration={0.5} delay={1}>
               <DataTable
@@ -430,7 +430,7 @@ export default function VaultPage() {
           </div>
         </main>
       </div>
-      
+
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={isConfirmDialogOpen} onOpenChange={setIsConfirmDialogOpen}>
         <AlertDialogContent>

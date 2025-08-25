@@ -23,13 +23,13 @@ export const DocumentUploader = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
-      
+
       // Validate file size (max 10MB for MVP)
       if (selectedFile.size > 10 * 1024 * 1024) {
         toast.error('File size must be less than 10MB');
         return;
       }
-      
+
       setFile(selectedFile);
     }
   };
@@ -53,31 +53,31 @@ export const DocumentUploader = () => {
     try {
       // Create Supabase client with Clerk token
       const supabase = await createSupabaseClient();
-      
+
       // Update progress
       setUploadProgress(20);
-      
+
       // Encrypt the file using new encryption service
       const encryptionResult = await encryptFile(file);
-      
+
       if (!encryptionResult) {
         throw new Error('Failed to encrypt file');
       }
-      
+
       const { encryptedData, nonce, metadata } = encryptionResult;
-      
+
       setUploadProgress(50);
-      
+
       // Create encrypted blob from Uint8Array
       const encryptedBlob = new Blob([encryptedData], { type: 'application/octet-stream' });
-      
+
       // Generate unique file name
       const timestamp = Date.now();
       const encryptedFileName = `${timestamp}_${file.name}.encrypted`;
       const filePath = `${userId}/${encryptedFileName}`;
-      
+
       setUploadProgress(70);
-      
+
       // Upload to Supabase Storage s autentifikovaným klientom
       const { data, error } = await supabase.storage
         .from('user_documents')
@@ -93,14 +93,14 @@ export const DocumentUploader = () => {
         }
         throw error;
       }
-      
+
       setUploadProgress(90);
-      
+
       // Save metadata to database
       // Pre development posielame user_id explicitne
       // Store nonce with document for decryption
       const nonceBase64 = btoa(String.fromCharCode(...nonce));
-      
+
       const { error: dbError } = await supabase
         .from('documents')
         .insert({
@@ -122,21 +122,21 @@ export const DocumentUploader = () => {
           .remove([filePath]);
         throw new Error('Failed to save document metadata');
       }
-      
+
       // No longer storing in localStorage - all handled server-side
-      
+
       setUploadProgress(100);
-      
+
       toast.success('Document encrypted and uploaded successfully!');
-      
+
       // Emit event to refresh document list
       window.dispatchEvent(new CustomEvent('documentUploaded', { detail: { userId } }));
-      
+
       // Reset form
       setFile(null);
       const fileInput = document.getElementById('file-input') as HTMLInputElement;
       if (fileInput) fileInput.value = '';
-      
+
     } catch (error: unknown) {
       console.error('Error uploading file:', error);
       toast.error(error instanceof Error ? error.message : 'Failed to upload document. Please try again.');
@@ -160,19 +160,19 @@ export const DocumentUploader = () => {
             </p>
           </div>
         </div>
-        
+
         <div className="space-y-4">
           <div className="flex gap-2">
-            <Input 
+            <Input
               id="file-input"
-              type="file" 
+              type="file"
               onChange={handleFileChange}
               className="flex-1"
               accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.txt"
               disabled={isUploading}
             />
-            <Button 
-              onClick={handleUpload} 
+            <Button
+              onClick={handleUpload}
               disabled={!file || isUploading}
               className="min-w-[120px]"
             >
@@ -189,7 +189,7 @@ export const DocumentUploader = () => {
               )}
             </Button>
           </div>
-          
+
           {isUploading && (
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
@@ -197,14 +197,14 @@ export const DocumentUploader = () => {
                 <span className="text-primary">{uploadProgress}%</span>
               </div>
               <div className="w-full bg-gray-700 rounded-full h-2">
-                <div 
+                <div
                   className="bg-primary h-2 rounded-full transition-all duration-300"
                   style={{ width: `${uploadProgress}%` }}
                 />
               </div>
             </div>
           )}
-          
+
           {file && !isUploading && (
             <div className="flex items-center gap-2 p-3 bg-primary/5 rounded-lg">
               <Icon name="documents" className="w-4 h-4 text-primary" />
@@ -215,7 +215,7 @@ export const DocumentUploader = () => {
             </div>
           )}
         </div>
-        
+
         <div className="mt-4 p-3 bg-status-warning/10 rounded-lg">
           <div className="flex gap-2">
             <Icon name="info" className="w-4 h-4 text-status-warning flex-shrink-0 mt-0.5" />

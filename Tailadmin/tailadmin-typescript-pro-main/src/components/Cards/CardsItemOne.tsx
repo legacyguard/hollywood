@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { CardItemProps } from '../../types/cards';
+import type { CardItemProps } from '../../types/cards';
 
 const CardsItemOne: React.FC<CardItemProps> = ({
   imageSrc,

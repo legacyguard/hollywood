@@ -13,24 +13,24 @@ import { FadeIn } from '@/components/motion/FadeIn';
 import { toast } from 'sonner';
 import DocumentScanner from './DocumentScanner';
 import { useSupabaseWithClerk } from '@/integrations/supabase/client';
-import { ProcessedDocument, DocumentCategory, DocumentType } from '@/types/ocr';
+import type { ProcessedDocument, DocumentCategory, DocumentType } from '@/types/ocr';
 
 interface EnhancedDocumentUploaderProps {
   onUploadComplete?: (document: ProcessedDocument) => void;
   className?: string;
 }
 
-export default function EnhancedDocumentUploader({ 
+export default function EnhancedDocumentUploader({
   onUploadComplete,
-  className 
+  className
 }: EnhancedDocumentUploaderProps) {
   const { userId } = useAuth();
 const createSupabaseClient = useSupabaseWithClerk();
-  
+
   const [mode, setMode] = useState<'manual' | 'scan'>('scan');
   const [isUploading, setIsUploading] = useState(false);
   const [processedDocument, setProcessedDocument] = useState<ProcessedDocument | null>(null);
-  
+
   // Manual form data
   const [manualFormData, setManualFormData] = useState({
     title: '',
@@ -44,7 +44,7 @@ const createSupabaseClient = useSupabaseWithClerk();
 
   const handleDocumentProcessed = useCallback((doc: ProcessedDocument) => {
     setProcessedDocument(doc);
-    
+
     // Auto-populate form with OCR results
     setManualFormData(prev => ({
       ...prev,
@@ -81,7 +81,7 @@ const createSupabaseClient = useSupabaseWithClerk();
         tags: manualFormData.tags ? manualFormData.tags.split(',').map(t => t.trim()) : [],
         expires_at: manualFormData.expiresAt || null,
         is_important: manualFormData.isImportant,
-        
+
         // OCR-specific fields
         ocr_text: processedDocument?.ocrResult.text || null,
         ocr_confidence: processedDocument?.ocrResult.confidence || null,
@@ -102,7 +102,7 @@ const createSupabaseClient = useSupabaseWithClerk();
 
       toast.success('Document saved successfully!');
       onUploadComplete?.(data);
-      
+
       // Reset form
       setProcessedDocument(null);
       setManualFormData({
@@ -132,7 +132,7 @@ const createSupabaseClient = useSupabaseWithClerk();
       {/* Mode Toggle */}
       <Card className="p-4">
         <div className="flex items-center justify-center gap-4">
-          <Button 
+          <Button
             variant={mode === 'scan' ? 'default' : 'outline'}
             onClick={() => setMode('scan')}
             className="flex items-center gap-2"
@@ -140,7 +140,7 @@ const createSupabaseClient = useSupabaseWithClerk();
             <Icon name="sparkles" className="w-4 h-4" />
             AI Scan Mode
           </Button>
-          <Button 
+          <Button
             variant={mode === 'manual' ? 'default' : 'outline'}
             onClick={() => setMode('manual')}
             className="flex items-center gap-2"
@@ -150,8 +150,8 @@ const createSupabaseClient = useSupabaseWithClerk();
           </Button>
         </div>
         <p className="text-center text-sm text-muted-foreground mt-2">
-          {mode === 'scan' 
-            ? 'Upload and automatically analyze documents with AI' 
+          {mode === 'scan'
+            ? 'Upload and automatically analyze documents with AI'
             : 'Manually enter document information'
           }
         </p>
@@ -159,7 +159,7 @@ const createSupabaseClient = useSupabaseWithClerk();
 
       {/* Document Scanner (AI Mode) */}
       {mode === 'scan' && (
-        <DocumentScanner 
+        <DocumentScanner
           onDocumentProcessed={handleDocumentProcessed}
           className="w-full"
         />
@@ -256,22 +256,22 @@ const createSupabaseClient = useSupabaseWithClerk();
                       <SelectItem value="trust">Trust</SelectItem>
                       <SelectItem value="power_of_attorney">Power of Attorney</SelectItem>
                       <SelectItem value="living_will">Living Will</SelectItem>
-                      
+
                       {/* Financial */}
                       <SelectItem value="bank_statement">Bank Statement</SelectItem>
                       <SelectItem value="tax_return">Tax Return</SelectItem>
                       <SelectItem value="investment_account">Investment Account</SelectItem>
-                      
+
                       {/* Insurance */}
                       <SelectItem value="life_insurance">Life Insurance</SelectItem>
                       <SelectItem value="health_insurance">Health Insurance</SelectItem>
                       <SelectItem value="auto_insurance">Auto Insurance</SelectItem>
-                      
+
                       {/* Personal */}
                       <SelectItem value="birth_certificate">Birth Certificate</SelectItem>
                       <SelectItem value="passport">Passport</SelectItem>
                       <SelectItem value="drivers_license">Driver's License</SelectItem>
-                      
+
                       {/* Other */}
                       <SelectItem value="other">Other</SelectItem>
                     </SelectContent>
@@ -365,7 +365,7 @@ const createSupabaseClient = useSupabaseWithClerk();
                   <div>
                     <span className="font-medium">Detected Type:</span>
                     <p className="text-muted-foreground">
-                      {processedDocument.classification.type.replace('_', ' ')} 
+                      {processedDocument.classification.type.replace('_', ' ')}
                       ({Math.round(processedDocument.classification.confidence * 100)}% confidence)
                     </p>
                   </div>

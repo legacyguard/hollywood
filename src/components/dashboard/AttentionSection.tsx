@@ -33,7 +33,7 @@ export const AttentionSection: React.FC<AttentionSectionProps> = ({ className })
       urgency: 'medium'
     },
     {
-      id: '2', 
+      id: '2',
       type: 'guardian',
       title: 'You invited Jane Smith as a guardian',
       description: 'She hasn\'t joined your circle of trust yet',

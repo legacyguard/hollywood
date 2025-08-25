@@ -76,9 +76,9 @@ export default function SettingsPage() {
     setIsSaving(true);
     try {
       localStorage.setItem(`preferences_${userId}`, JSON.stringify(preferences));
-      
+
       // TODO: Also save to Supabase or Clerk metadata for cloud sync
-      
+
       toast.success('Settings saved successfully');
     } catch (error) {
       console.error('Error saving preferences:', error);
@@ -115,7 +115,7 @@ export default function SettingsPage() {
                     Manage your account preferences and application settings
                   </p>
                 </div>
-                <Button 
+                <Button
                   onClick={savePreferences}
                   disabled={isSaving}
                   className="bg-primary hover:bg-primary-hover"

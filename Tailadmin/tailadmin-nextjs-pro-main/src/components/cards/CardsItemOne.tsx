@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { CardItemProps } from "@/types/cards";
+import type { CardItemProps } from "@/types/cards";
 import Image from "next/image";
 
 const CardsItemOne: React.FC<CardItemProps> = ({

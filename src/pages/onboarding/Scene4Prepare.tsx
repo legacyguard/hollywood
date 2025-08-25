@@ -57,7 +57,7 @@ export default function Scene4Prepare({ onBack, onComplete }: Scene4PrepareProps
             </motion.div>
           </CardHeader>
           <CardContent>
-            <motion.p 
+            <motion.p
               className="text-muted-foreground mb-8 text-lg leading-relaxed"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -65,9 +65,9 @@ export default function Scene4Prepare({ onBack, onComplete }: Scene4PrepareProps
             >
               Thank you. I understand what matters to you. I am preparing your Path of Peace where your first milestone awaits - the Foundation Stone of Security.
             </motion.p>
-            
+
             {/* Enhanced firefly light trail animation */}
-            <motion.div 
+            <motion.div
               className="relative h-40 rounded-lg bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 border border-primary/30 mb-8 overflow-hidden"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -143,13 +143,13 @@ export default function Scene4Prepare({ onBack, onComplete }: Scene4PrepareProps
                       <motion.div
                         key={i}
                         className="absolute w-1 h-1 bg-yellow-200 rounded-full"
-                        initial={{ 
-                          x: 50 + (i * 30), 
+                        initial={{
+                          x: 50 + (i * 30),
                           y: 120 - (i * 8) + Math.sin(i) * 20,
                           opacity: 0,
                           scale: 0
                         }}
-                        animate={{ 
+                        animate={{
                           opacity: [0, 1, 0],
                           scale: [0, 1, 0],
                         }}
@@ -204,11 +204,11 @@ export default function Scene4Prepare({ onBack, onComplete }: Scene4PrepareProps
                       <div className="text-center">
                         <motion.div
                           className="text-yellow-300 text-2xl mb-2"
-                          animate={{ 
+                          animate={{
                             scale: [1, 1.1, 1],
                           }}
-                          transition={{ 
-                            duration: 2, 
+                          transition={{
+                            duration: 2,
                             repeat: Infinity,
                           }}
                         >
@@ -225,7 +225,7 @@ export default function Scene4Prepare({ onBack, onComplete }: Scene4PrepareProps
             </motion.div>
 
             {/* Progress indicator */}
-            <motion.div 
+            <motion.div
               className="mb-6"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -236,30 +236,30 @@ export default function Scene4Prepare({ onBack, onComplete }: Scene4PrepareProps
                 <div className="text-sm text-primary font-medium">{Math.round(progress)}%</div>
               </div>
               <div className="w-full bg-muted rounded-full h-2">
-                <motion.div 
+                <motion.div
                   className="bg-gradient-to-r from-primary to-primary/70 h-2 rounded-full"
                   style={{ width: `${progress}%` }}
                   transition={{ duration: 0.1 }}
                 />
               </div>
             </motion.div>
-            
-            <motion.div 
+
+            <motion.div
               className="flex gap-3 justify-between"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.2, duration: 0.6 }}
             >
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={onBack}
                 className="border-primary/20 hover:border-primary/40"
                 disabled={progress > 50}
               >
                 ← Back
               </Button>
-              <Button 
-                disabled 
+              <Button
+                disabled
                 className="bg-primary/50 text-primary-foreground"
               >
                 <motion.div
@@ -271,7 +271,7 @@ export default function Scene4Prepare({ onBack, onComplete }: Scene4PrepareProps
               </Button>
             </motion.div>
 
-            <motion.p 
+            <motion.p
               className="text-xs text-muted-foreground/70 mt-4"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}

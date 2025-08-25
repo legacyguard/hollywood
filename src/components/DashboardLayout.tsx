@@ -23,7 +23,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const navigate = useNavigate();
   const { userId } = useAuth();
   const { setFilter: setDocumentFilter } = useDocumentFilter();
-  
+
   // Enable keyboard shortcuts with search callback
   useKeyboardShortcuts(() => setIsSearchOpen(true));
 
@@ -84,7 +84,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             <SidebarTrigger className="mr-4" />
             <h1 className="font-semibold text-card-foreground">LegacyGuard</h1>
           </header>
-          
+
           {/* Main Content */}
           <main className="flex-1 bg-background">
             {children}
@@ -92,11 +92,11 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         </div>
 
         {/* Sofia AI Assistant */}
-        <SofiaFloatingButton 
+        <SofiaFloatingButton
           onToggleChat={toggleSofia}
           isChatOpen={isSofiaOpen}
         />
-        <SofiaChatV2 
+        <SofiaChatV2
           isOpen={isSofiaOpen}
           onClose={() => {
             setIsSofiaOpen(false);
@@ -107,10 +107,10 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           currentPage={getCurrentPage()}
           pendingAction={sofiaPendingAction}
         />
-        
+
         {/* Quick Search Modal */}
-        <QuickSearch 
-          isOpen={isSearchOpen} 
+        <QuickSearch
+          isOpen={isSearchOpen}
           onClose={() => setIsSearchOpen(false)}
           onSofiaAction={async (action) => {
             // Sofia action triggered from search

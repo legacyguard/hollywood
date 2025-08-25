@@ -14,18 +14,19 @@ import { FadeIn } from '@/components/motion/FadeIn';
 import { usePageTitle } from '@/hooks/usePageTitle';
 import { toast } from 'sonner';
 import { useSupabaseWithClerk } from '@/integrations/supabase/client';
-import { Guardian, CreateGuardianRequest, GUARDIAN_RELATIONSHIPS } from '@/types/guardian';
+import type { Guardian, CreateGuardianRequest} from '@/types/guardian';
+import { GUARDIAN_RELATIONSHIPS } from '@/types/guardian';
 
 export default function GuardiansPage() {
   usePageTitle('My Guardians');
   const { userId } = useAuth();
   const createSupabaseClient = useSupabaseWithClerk();
-  
+
   const [guardians, setGuardians] = useState<Guardian[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   // Form state
   const [formData, setFormData] = useState<CreateGuardianRequest>({
     name: '',
@@ -48,7 +49,7 @@ export default function GuardiansPage() {
 
     try {
       const supabase = await createSupabaseClient();
-      
+
       const { data, error } = await supabase
         .from('guardians')
         .select('*')
@@ -86,7 +87,7 @@ export default function GuardiansPage() {
 
     try {
       const supabase = await createSupabaseClient();
-      
+
       const { data, error } = await supabase
         .from('guardians')
         .insert({
@@ -111,7 +112,7 @@ export default function GuardiansPage() {
 
       // Add to local state
       setGuardians(prev => [data, ...prev]);
-      
+
       // Reset form
       setFormData({
         name: '',
@@ -127,10 +128,10 @@ export default function GuardiansPage() {
         is_will_executor: false,
         emergency_contact_priority: 1
       });
-      
+
       setIsDialogOpen(false);
       toast.success(`Guardian ${formData.name} was successfully added!`);
-      
+
     } catch (error) {
       console.error('Error adding guardian:', error);
       toast.error('Failed to add guardian. Please try again.');
@@ -355,9 +356,9 @@ export default function GuardiansPage() {
                       </div>
 
                       <div className="flex justify-end gap-3 pt-4">
-                        <Button 
-                          type="button" 
-                          variant="outline" 
+                        <Button
+                          type="button"
+                          variant="outline"
                           onClick={() => setIsDialogOpen(false)}
                         >
                           Cancel
@@ -405,20 +406,20 @@ export default function GuardiansPage() {
                     <div className="absolute -bottom-2 -left-2 w-3 h-3 bg-primary/20 rounded-full"></div>
                   </div>
                 </div>
-                
+
                 <h3 className="text-2xl font-bold mb-4 text-card-foreground">You don't have any guardians yet</h3>
                 <p className="text-muted-foreground mb-6 max-w-lg mx-auto text-lg leading-relaxed">
-                  A guardian is a trusted person who can help your loved ones when they need it most. 
+                  A guardian is a trusted person who can help your loved ones when they need it most.
                   Let's add your first guardian to start building your Circle of Trust.
                 </p>
                 <div className="bg-primary/10 rounded-lg p-4 mb-8 max-w-2xl mx-auto border border-primary/20">
                   <p className="text-sm text-primary/80 italic leading-relaxed">
-                    🤗 Think of someone who knows your values and would act with the same care you would. 
-                    This could be a family member, close friend, or trusted advisor who has always been there for you. 
+                    🤗 Think of someone who knows your values and would act with the same care you would.
+                    This could be a family member, close friend, or trusted advisor who has always been there for you.
                     Your guardians become your family's guides when you cannot be there yourself.
                   </p>
                 </div>
-                
+
                 {/* Benefits list */}
                 <div className="flex flex-col sm:flex-row gap-6 mb-10 max-w-2xl mx-auto">
                   <div className="flex items-center gap-3 text-sm">
@@ -440,8 +441,8 @@ export default function GuardiansPage() {
                     <span className="text-muted-foreground">Always available help</span>
                   </div>
                 </div>
-                
-                <Button 
+
+                <Button
                   onClick={() => setIsDialogOpen(true)}
                   size="lg"
                   className="bg-primary hover:bg-primary-hover text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-200"
@@ -449,7 +450,7 @@ export default function GuardiansPage() {
                   <Icon name="add" className="w-5 h-5 mr-2" />
                   Add Your First Guardian
                 </Button>
-                
+
                 <p className="text-xs text-muted-foreground mt-6 max-w-md mx-auto">
                   Don't worry, you can always add more guardians later and edit their information anytime.
                 </p>
@@ -545,10 +546,10 @@ export default function GuardiansPage() {
                               Will Executor
                             </span>
                           )}
-                          {!guardian.can_trigger_emergency && 
-                           !guardian.can_access_health_docs && 
-                           !guardian.can_access_financial_docs && 
-                           !guardian.is_child_guardian && 
+                          {!guardian.can_trigger_emergency &&
+                           !guardian.can_access_health_docs &&
+                           !guardian.can_access_financial_docs &&
+                           !guardian.is_child_guardian &&
                            !guardian.is_will_executor && (
                             <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
                               Basic Contact Only
@@ -578,12 +579,12 @@ export default function GuardiansPage() {
                   <div>
                     <h4 className="font-semibold text-primary mb-2">The Trust Behind Your Guardians</h4>
                     <p className="text-muted-foreground mb-4">
-                      Your guardians represent the deepest level of trust - people who would protect your family's interests 
-                      just as you would. They're not just emergency contacts; they're the extension of your care and wisdom 
+                      Your guardians represent the deepest level of trust - people who would protect your family's interests
+                      just as you would. They're not just emergency contacts; they're the extension of your care and wisdom
                       when your loved ones need guidance most.
                     </p>
                     <p className="text-sm text-muted-foreground/80 italic mb-3">
-                      ✨ Every guardian you add strengthens your family's safety net, giving you peace of mind that someone 
+                      ✨ Every guardian you add strengthens your family's safety net, giving you peace of mind that someone
                       who truly understands your values will be there to help.
                     </p>
                     <p className="text-sm text-muted-foreground">

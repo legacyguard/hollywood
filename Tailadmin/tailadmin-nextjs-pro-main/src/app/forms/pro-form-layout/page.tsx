@@ -1,6 +1,6 @@
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import SelectOptionOne from "@/components/SelectOption/SelectOptionOne";
 import SelectGroupThree from "@/components/SelectGroup/SelectGroupThree";

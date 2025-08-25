@@ -3,10 +3,10 @@
  * Provides strong typing for translations and jurisdictions
  */
 
-import { NAMESPACES } from './config';
-import { JurisdictionConfig } from './jurisdictions';
+import type { NAMESPACES } from './config';
+import type { JurisdictionConfig } from './jurisdictions';
 import { LanguageConfig } from './languages';
-import { LegalTermCategory } from './legal-terminology';
+import type { LegalTermCategory } from './legal-terminology';
 
 // Namespace types
 export type TranslationNamespace = typeof NAMESPACES[keyof typeof NAMESPACES];
@@ -123,7 +123,7 @@ export interface TranslationKeys {
       seconds: string;
     };
   };
-  
+
   // Auth namespace
   auth: {
     signIn: {
@@ -164,7 +164,7 @@ export interface TranslationKeys {
       networkError: string;
     };
   };
-  
+
   // Dashboard namespace
   dashboard: {
     title: string;
@@ -197,7 +197,7 @@ export interface TranslationKeys {
       updateAvailable: string;
     };
   };
-  
+
   // Legal namespace with jurisdiction-specific terms
   legal: {
     terms: {
@@ -218,7 +218,7 @@ export interface TranslationKeys {
       certification: string;
     };
   };
-  
+
   // Will namespace
   will: {
     create: {
@@ -266,7 +266,7 @@ export interface TranslationKeys {
       notaryRequirement: string;
     };
   };
-  
+
   // Other namespaces...
   documents: Record<string, any>;
   guardians: Record<string, any>;
@@ -328,7 +328,7 @@ export interface JurisdictionTranslationOverride {
 }
 
 // Export helper types
-export type ExtractNamespaceKeys<T extends TranslationNamespace> = 
+export type ExtractNamespaceKeys<T extends TranslationNamespace> =
   T extends keyof TranslationKeys ? TranslationKeys[T] : never;
 
 export type DeepPartial<T> = {

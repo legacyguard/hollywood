@@ -1,11 +1,12 @@
 import React, { useMemo } from "react";
+import type {
+  Column} from "react-table";
 import {
   useTable,
   useSortBy,
   useGlobalFilter,
   useFilters,
-  usePagination,
-  Column,
+  usePagination
 } from "react-table";
 
 interface Employee {

@@ -3,7 +3,7 @@ import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import PaginationOne from "@/components/Paginations/PaginationOne";
 import PaginationTwo from "@/components/Paginations/PaginationTwo";
 import PaginationThree from "@/components/Paginations/PaginationThree";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 
 export const metadata: Metadata = {

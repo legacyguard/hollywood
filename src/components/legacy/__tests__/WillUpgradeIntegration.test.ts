@@ -1,22 +1,23 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { 
+import {
   LegalValidator,
   ValidationLevel,
   ValidationResult,
   ComplianceReport
 } from '@/lib/will-legal-validator';
-import { 
+import type {
+  SupportedLanguage} from '@/lib/multi-language-generator';
+import {
   MultiLangGenerator,
-  SupportedLanguage,
   LegalDocument
 } from '@/lib/multi-language-generator';
 import { WillTemplateLibrary } from '@/lib/will-template-library';
 import { LegacyMessageBuilder } from '@/lib/legacy-message-builder';
-import { 
+import {
   professionalNetwork,
   ProfessionalReviewNetwork
 } from '@/lib/professional-review-network';
-import { WillData } from '@/types/will';
+import type { WillData } from '@/types/will';
 
 // Mock will data for testing
 const mockWillData: WillData = {
@@ -411,15 +412,15 @@ describe('Will Upgrade Integration Tests', () => {
   describe('Performance Tests', () => {
     it('should complete validation within acceptable time limits', async () => {
       const startTime = Date.now();
-      
+
       const result = validator.validateBeneficiaryShares(
         mockWillData.beneficiaries,
         'Slovakia'
       );
-      
+
       const endTime = Date.now();
       const executionTime = endTime - startTime;
-      
+
       expect(executionTime).toBeLessThan(1000); // Should complete within 1 second
       expect(result.isValid).toBeDefined();
     });
@@ -427,16 +428,16 @@ describe('Will Upgrade Integration Tests', () => {
     it('should generate documents efficiently for all languages', async () => {
       const languages: SupportedLanguage[] = ['en', 'sk', 'cs', 'de'];
       const startTime = Date.now();
-      
+
       const documents = await Promise.all(
-        languages.map(lang => 
+        languages.map(lang =>
           multiLangGenerator.generateWill(mockWillData, lang, 'Slovakia', 'basic')
         )
       );
-      
+
       const endTime = Date.now();
       const executionTime = endTime - startTime;
-      
+
       expect(executionTime).toBeLessThan(5000); // Should complete within 5 seconds
       expect(documents).toHaveLength(4);
       documents.forEach(doc => {

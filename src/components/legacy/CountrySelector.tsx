@@ -3,7 +3,8 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Icon } from '@/components/ui/icon-library';
 import { FadeIn } from '@/components/motion/FadeIn';
-import { useLocalization, CountryCode } from '@/contexts/LocalizationContext';
+import type { CountryCode } from '@/contexts/LocalizationContext';
+import { useLocalization } from '@/contexts/LocalizationContext';
 
 interface CountrySelectorProps {
   onCountryConfirmed: () => void;
@@ -18,7 +19,7 @@ const SUPPORTED_COUNTRIES = [
     description: 'Slovak Republic legal framework'
   },
   {
-    code: 'cz' as CountryCode, 
+    code: 'cz' as CountryCode,
     name: 'Czech Republic',
     flag: '🇨🇿',
     domain: 'legacyguard.cz',
@@ -75,7 +76,7 @@ export const CountrySelector: React.FC<CountrySelectorProps> = ({ onCountryConfi
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto">
               {SUPPORTED_COUNTRIES.map((country, index) => (
                 <FadeIn key={country.code} duration={0.4} delay={0.1 * index}>
-                  <Card 
+                  <Card
                     className={`p-6 cursor-pointer transition-all hover:shadow-lg hover:scale-105 ${
                       country.code === countryCode ? 'border-primary bg-primary/5' : ''
                     }`}
@@ -98,7 +99,7 @@ export const CountrySelector: React.FC<CountrySelectorProps> = ({ onCountryConfi
             </div>
 
             <div className="text-center mt-8">
-              <Button 
+              <Button
                 onClick={() => setShowCountryList(false)}
                 variant="outline"
               >
@@ -136,7 +137,7 @@ export const CountrySelector: React.FC<CountrySelectorProps> = ({ onCountryConfi
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button 
+              <Button
                 onClick={handleConfirmCountry}
                 className="bg-primary hover:bg-primary-hover text-primary-foreground px-8"
                 size="lg"
@@ -144,8 +145,8 @@ export const CountrySelector: React.FC<CountrySelectorProps> = ({ onCountryConfi
                 <Icon name="check" className="w-5 h-5 mr-2" />
                 Yes, that's correct
               </Button>
-              
-              <Button 
+
+              <Button
                 onClick={() => setShowCountryList(true)}
                 variant="outline"
                 size="lg"
@@ -162,7 +163,7 @@ export const CountrySelector: React.FC<CountrySelectorProps> = ({ onCountryConfi
                 <div>
                   <h4 className="font-semibold text-sm mb-1">Why country matters</h4>
                   <p className="text-sm text-muted-foreground">
-                    Different countries have varying legal requirements for wills. Selecting the correct 
+                    Different countries have varying legal requirements for wills. Selecting the correct
                     jurisdiction ensures your will is legally valid and enforceable.
                   </p>
                 </div>

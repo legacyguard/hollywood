@@ -11,18 +11,18 @@ import { FadeIn } from '@/components/motion/FadeIn';
 import { usePageTitle } from '@/hooks/usePageTitle';
 import { toast } from 'sonner';
 import { useSupabaseWithClerk } from '@/integrations/supabase/client';
-import { FamilyShieldSettings, CreateFamilyShieldSettingsRequest, Guardian } from '@/types/guardian';
+import type { FamilyShieldSettings, CreateFamilyShieldSettingsRequest, Guardian } from '@/types/guardian';
 
 export default function ProtocolSettingsPage() {
   usePageTitle('Family Shield Settings');
   const { userId } = useAuth();
   const createSupabaseClient = useSupabaseWithClerk();
-  
+
   const [settings, setSettings] = useState<FamilyShieldSettings | null>(null);
   const [guardians, setGuardians] = useState<Guardian[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  
+
   // Form state
   const [formData, setFormData] = useState<CreateFamilyShieldSettingsRequest>({
     inactivity_period_months: 6,
@@ -36,7 +36,7 @@ export default function ProtocolSettingsPage() {
 
     try {
       const supabase = await createSupabaseClient();
-      
+
       // Fetch Family Shield settings
       const { data: settingsData, error: settingsError } = await supabase
         .from('family_shield_settings')
@@ -99,7 +99,7 @@ export default function ProtocolSettingsPage() {
 
     try {
       const supabase = await createSupabaseClient();
-      
+
       const settingsPayload = {
         user_id: userId,
         inactivity_period_months: formData.inactivity_period_months,
@@ -129,7 +129,7 @@ export default function ProtocolSettingsPage() {
 
       setSettings(result.data);
       toast.success('Family Shield settings saved successfully!');
-      
+
     } catch (error) {
       console.error('Error saving settings:', error);
       toast.error('Failed to save settings. Please try again.');
@@ -204,7 +204,7 @@ export default function ProtocolSettingsPage() {
                     </span>
                   </div>
                 </div>
-                
+
                 {formData.is_shield_enabled && (
                   <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
                     <div className="flex items-center gap-2 text-green-800">
@@ -226,7 +226,7 @@ export default function ProtocolSettingsPage() {
                   <Icon name="clock" className="w-5 h-5 text-primary" />
                   Inactivity Detection
                 </h3>
-                
+
                 <div className="space-y-4">
                   <div>
                     <Label htmlFor="inactivity_period">How long should we wait before checking on you?</Label>
@@ -270,7 +270,7 @@ min="1"
                   <Icon name="users" className="w-5 h-5 text-primary" />
                   Trusted Circle Activation
                 </h3>
-                
+
                 <div className="space-y-4">
                   <div>
                     <Label htmlFor="required_guardians">How many guardians needed to manually activate your Family Shield?</Label>
@@ -364,8 +364,8 @@ min="1"
             {/* Save Button */}
             <FadeIn duration={0.5} delay={1.4}>
               <div className="flex justify-end">
-                <Button 
-                  onClick={handleSave} 
+                <Button
+                  onClick={handleSave}
                   disabled={isSaving}
                   size="lg"
                   className="bg-primary hover:bg-primary-hover"

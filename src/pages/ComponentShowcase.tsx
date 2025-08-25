@@ -3,12 +3,13 @@ import { MetricCard, MetricsGrid } from '@/components/enhanced/MetricCard';
 import { ActivityFeed, useMockActivities } from '@/components/enhanced/ActivityFeed';
 import { DataTable, createSelectColumn, createSortableHeader, createActionsColumn } from '@/components/enhanced/DataTable';
 import { RadialProgress, LinearProgress, ProgressGroup } from '@/components/enhanced/RadialProgress';
-import { ProfileCard, ProfileGrid, ProfileData } from '@/components/enhanced/ProfileCard';
+import type { ProfileData } from '@/components/enhanced/ProfileCard';
+import { ProfileCard, ProfileGrid } from '@/components/enhanced/ProfileCard';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { FadeIn } from '@/components/motion/FadeIn';
 import { toast } from 'sonner';
-import { ColumnDef } from '@tanstack/react-table';
+import type { ColumnDef } from '@tanstack/react-table';
 
 // Mock data for DataTable
 interface DocumentData {
@@ -174,7 +175,7 @@ export default function ComponentShowcase() {
                     <h3 className="text-sm font-medium mb-4">Grid Layout (4 columns)</h3>
                     <MetricsGrid metrics={metrics} columns={4} />
                   </div>
-                  
+
                   <div>
                     <h3 className="text-sm font-medium mb-4">Individual Cards</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -206,7 +207,7 @@ export default function ComponentShowcase() {
                   <CardTitle>Activity Feed</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <ActivityFeed 
+                  <ActivityFeed
                     activities={activities}
                     title="Recent Activity"
                     maxHeight="500px"
@@ -266,7 +267,7 @@ export default function ComponentShowcase() {
                 <CardContent className="space-y-8">
                   <div>
                     <h3 className="text-sm font-medium mb-4">Default Grid</h3>
-                    <ProfileGrid 
+                    <ProfileGrid
                       profiles={mockProfiles}
                       columns={3}
                       onEdit={(profile) => toast.info(`Edit ${profile.name}`)}
@@ -277,7 +278,7 @@ export default function ComponentShowcase() {
 
                   <div>
                     <h3 className="text-sm font-medium mb-4">Compact Variant</h3>
-                    <ProfileGrid 
+                    <ProfileGrid
                       profiles={mockProfiles}
                       variant="compact"
                       columns={2}
@@ -286,7 +287,7 @@ export default function ComponentShowcase() {
 
                   <div>
                     <h3 className="text-sm font-medium mb-4">Detailed Variant</h3>
-                    <ProfileCard 
+                    <ProfileCard
                       profile={{
                         ...mockProfiles[0],
                         metadata: {

@@ -5,7 +5,7 @@ import BadgeTwo from "@/components/Badges/BadgeTwo";
 import BadgeThree from "@/components/Badges/BadgeThree";
 import BadgeFour from "@/components/Badges/BadgeFour";
 
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 
 export const metadata: Metadata = {

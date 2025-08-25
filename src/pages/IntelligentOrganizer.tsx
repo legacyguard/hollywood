@@ -17,11 +17,11 @@ const IntelligentOrganizer = () => {
         <div className="text-center space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">Intelligent Document Organizer</h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Experience the future of document management. Our AI-powered system analyzes your documents, 
+            Experience the future of document management. Our AI-powered system analyzes your documents,
             suggests categories, and extracts key information automatically.
           </p>
         </div>
-        
+
         {/* Mode Switcher */}
         <div className="flex justify-center">
           <Card className="p-2 bg-card border-card-border">
@@ -49,7 +49,7 @@ const IntelligentOrganizer = () => {
         </div>
 
         {mode === 'test' ? <IntelligentDocumentTester /> : <IntelligentDocumentUploader />}
-        
+
         {/* Status Information */}
         <div className="max-w-4xl mx-auto">
           <Card className="p-4 bg-card border-card-border">

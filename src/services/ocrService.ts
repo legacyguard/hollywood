@@ -1,16 +1,18 @@
-import { 
-  OCRResult, 
-  DocumentClassification, 
+import type {
+  OCRResult,
+  DocumentClassification,
   ProcessedDocument,
   DocumentMetadata,
   OCRProcessingConfig,
-  DOCUMENT_PATTERNS,
   DocumentType,
-  DocumentCategory,
   ExtractedEntity,
-  EntityType,
   TextBlock,
   BoundingBox
+} from '@/types/ocr';
+import {
+  DOCUMENT_PATTERNS,
+  DocumentCategory,
+  EntityType
 } from '@/types/ocr';
 
 // Google Cloud Vision AI client configuration
@@ -80,17 +82,17 @@ export class OCRService {
     config: OCRProcessingConfig
   ): Promise<ProcessedDocument> {
     const processingId = this.generateProcessingId();
-    
+
     try {
       // Step 1: Perform OCR using Google Cloud Vision
       const ocrResult = await this.performOCR(fileData, config);
-      
+
       // Step 2: Extract entities from OCR text
       let extractedEntities: ExtractedEntity[] = [];
       if (config.enableEntityExtraction) {
         extractedEntities = this.extractEntities(ocrResult.text);
       }
-      
+
       // Step 3: Classify document type
       let classification: DocumentClassification = {
         category: 'other',
@@ -99,17 +101,17 @@ export class OCRService {
         reasons: ['No classification performed'],
         suggestedTags: []
       };
-      
+
       if (config.enableDocumentClassification) {
         classification = this.classifyDocument(ocrResult.text, extractedEntities);
       }
-      
+
       // Step 4: Extract structured metadata
       let extractedMetadata: DocumentMetadata = {};
       if (config.enableMetadataExtraction) {
         extractedMetadata = this.extractMetadata(ocrResult.text, classification.type, extractedEntities);
       }
-      
+
       // Step 5: Create processed document
       const processedDocument: ProcessedDocument = {
         id: processingId,
@@ -127,12 +129,12 @@ export class OCRService {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       };
-      
+
       return processedDocument;
-      
+
     } catch (error) {
       console.error('OCR processing failed:', error);
-      
+
       return {
         id: processingId,
         originalFileName: fileName,
@@ -169,7 +171,7 @@ export class OCRService {
    */
   private async performOCR(fileData: string, config: OCRProcessingConfig): Promise<OCRResult> {
     const startTime = Date.now();
-    
+
     const request = {
       requests: [
         {
@@ -213,7 +215,7 @@ export class OCRService {
     }
 
     const visionResponse = data.responses[0];
-    
+
     // Handle API errors
     if ('error' in visionResponse) {
       const errorResponse = visionResponse as { error: { message: string } };
@@ -223,22 +225,22 @@ export class OCRService {
     // Extract text and metadata
     const fullText = visionResponse.fullTextAnnotation?.text || '';
     const detectedLanguage = visionResponse.textAnnotations?.[0]?.locale || 'en';
-    
+
     // Extract bounding boxes and text blocks
     const boundingBoxes: BoundingBox[] = [];
     const textBlocks: TextBlock[] = [];
-    
+
     if (visionResponse.fullTextAnnotation?.pages) {
       const page = visionResponse.fullTextAnnotation.pages[0];
-      
+
       page.blocks?.forEach(block => {
         const bbox = this.convertVertexToBoundingBox(block.boundingBox.vertices);
         boundingBoxes.push(bbox);
-        
+
         block.paragraphs?.forEach(paragraph => {
           const paragraphBbox = this.convertVertexToBoundingBox(paragraph.boundingBox.vertices);
           const paragraphText = this.extractTextFromParagraph(paragraph);
-          
+
           textBlocks.push({
             text: paragraphText,
             confidence: paragraph.confidence,
@@ -271,7 +273,7 @@ export class OCRService {
    */
   private extractEntities(text: string): ExtractedEntity[] {
     const entities: ExtractedEntity[] = [];
-    
+
     // Email pattern
     const emailPattern = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g;
     const emails = text.match(emailPattern) || [];
@@ -282,7 +284,7 @@ export class OCRService {
         confidence: 0.9
       });
     });
-    
+
     // Phone pattern
     const phonePattern = /(?:\+1\s?)?(?:\(\d{3}\)|\d{3})[\s.-]?\d{3}[\s.-]?\d{4}/g;
     const phones = text.match(phonePattern) || [];
@@ -293,14 +295,14 @@ export class OCRService {
         confidence: 0.85
       });
     });
-    
+
     // Date patterns
     const datePatterns = [
       /\b\d{1,2}\/\d{1,2}\/\d{2,4}\b/g, // MM/DD/YYYY
       /\b\d{1,2}-\d{1,2}-\d{2,4}\b/g,   // MM-DD-YYYY
       /\b[A-Za-z]+ \d{1,2},? \d{4}\b/g  // Month DD, YYYY
     ];
-    
+
     datePatterns.forEach(pattern => {
       const dates = text.match(pattern) || [];
       dates.forEach(date => {
@@ -311,7 +313,7 @@ export class OCRService {
         });
       });
     });
-    
+
     // SSN pattern
     const ssnPattern = /\b\d{3}-\d{2}-\d{4}\b/g;
     const ssns = text.match(ssnPattern) || [];
@@ -322,7 +324,7 @@ export class OCRService {
         confidence: 0.9
       });
     });
-    
+
     // Amount pattern
     const amountPattern = /\$[\d,]+\.?\d*/g;
     const amounts = text.match(amountPattern) || [];
@@ -333,7 +335,7 @@ export class OCRService {
         confidence: 0.7
       });
     });
-    
+
     // Account number pattern (generic)
     const accountPattern = /(?:account|acct)[\s#:]*([0-9-]{8,20})/gi;
     const accountMatches = [...text.matchAll(accountPattern)];
@@ -344,7 +346,7 @@ export class OCRService {
         confidence: 0.75
       });
     });
-    
+
     return entities;
   }
 
@@ -354,11 +356,11 @@ export class OCRService {
   private classifyDocument(text: string, entities: ExtractedEntity[]): DocumentClassification {
     const textLower = text.toLowerCase();
     const scores: Record<DocumentType, number> = {} as Record<DocumentType, number>;
-    
+
     // Score each document type based on keywords and patterns
     Object.entries(DOCUMENT_PATTERNS).forEach(([type, pattern]) => {
       let score = 0;
-      
+
       // Keyword matching
       pattern.keywords.forEach(keyword => {
         const keywordRegex = new RegExp(`\\b${keyword.replace(/\s+/g, '\\s+')}\\b`, 'i');
@@ -366,14 +368,14 @@ export class OCRService {
           score += 10;
         }
       });
-      
+
       // Pattern matching
       pattern.patterns.forEach(regex => {
         if (regex.test(text)) {
           score += 15;
         }
       });
-      
+
       // Required entities bonus
       if (pattern.requiredEntities) {
         const foundEntities = pattern.requiredEntities.filter(entityType =>
@@ -381,15 +383,15 @@ export class OCRService {
         );
         score += foundEntities.length * 5;
       }
-      
+
       scores[type as DocumentType] = score;
     });
-    
+
     // Find best match
     const sortedScores = Object.entries(scores)
       .sort(([, a], [, b]) => b - a)
       .filter(([, score]) => score > 0);
-    
+
     if (sortedScores.length === 0) {
       return {
         category: 'other',
@@ -399,17 +401,17 @@ export class OCRService {
         suggestedTags: this.generateSuggestedTags(text)
       };
     }
-    
+
     const [bestType, bestScore] = sortedScores[0];
     const confidence = Math.min(bestScore / 50, 1); // Normalize to 0-1
-    
+
     const pattern = DOCUMENT_PATTERNS[bestType as DocumentType];
     const reasons = [
       `Matched ${pattern.keywords.length} keywords`,
       `Matched ${pattern.patterns.length} patterns`,
       `Found ${entities.length} relevant entities`
     ].filter(reason => !reason.includes('0'));
-    
+
     return {
       category: pattern.category,
       type: bestType as DocumentType,
@@ -423,23 +425,23 @@ export class OCRService {
    * Extract structured metadata based on document type
    */
   private extractMetadata(
-    text: string, 
-    docType: DocumentType, 
+    text: string,
+    docType: DocumentType,
     entities: ExtractedEntity[]
   ): DocumentMetadata {
     const metadata: DocumentMetadata = {};
-    
+
     // Extract common metadata
     const dateEntities = entities.filter(e => e.type === 'date');
     if (dateEntities.length > 0) {
       metadata.date = dateEntities[0].value;
     }
-    
+
     const amountEntities = entities.filter(e => e.type === 'amount');
     if (amountEntities.length > 0) {
       metadata.amount = amountEntities[0].value;
     }
-    
+
     // Document-specific metadata extraction
     switch (docType) {
       case 'bank_statement': {
@@ -447,7 +449,7 @@ export class OCRService {
         if (accountEntities.length > 0) {
           metadata.accountNumber = accountEntities[0].value;
         }
-        
+
         // Try to extract institution name
         const bankPattern = /(?:bank|credit union|financial)\s+(?:of\s+)?([A-Za-z\s]+)/i;
         const bankMatch = text.match(bankPattern);
@@ -456,7 +458,7 @@ export class OCRService {
         }
         break;
       }
-        
+
       case 'life_insurance':
       case 'auto_insurance':
       case 'home_insurance': {
@@ -468,7 +470,7 @@ export class OCRService {
         }
         break;
       }
-        
+
       case 'medical_record': {
         // Extract patient name (simple heuristic)
         const patientPattern = /patient\s*(?:name)?:?\s*([A-Za-z\s,]+)/i;
@@ -479,7 +481,7 @@ export class OCRService {
         break;
       }
     }
-    
+
     return metadata;
   }
 
@@ -489,7 +491,7 @@ export class OCRService {
   private generateSuggestedTags(text: string): string[] {
     const tags: string[] = [];
     const textLower = text.toLowerCase();
-    
+
     // Common tag patterns
     const tagPatterns = {
       'important': /important|urgent|critical|priority/i,
@@ -501,13 +503,13 @@ export class OCRService {
       'tax': /tax|irs|revenue|deduction/i,
       'personal': /personal|private|confidential/i
     };
-    
+
     Object.entries(tagPatterns).forEach(([tag, pattern]) => {
       if (pattern.test(text)) {
         tags.push(tag);
       }
     });
-    
+
     return tags.slice(0, 5); // Limit to 5 tags
   }
 
@@ -521,7 +523,7 @@ export class OCRService {
   private convertVertexToBoundingBox(vertices: Array<{ x: number; y: number }>): BoundingBox {
     const xs = vertices.map(v => v.x);
     const ys = vertices.map(v => v.y);
-    
+
     return {
       x: Math.min(...xs),
       y: Math.min(...ys),

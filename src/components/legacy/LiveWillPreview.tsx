@@ -2,8 +2,8 @@ import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Icon } from '@/components/ui/icon-library';
-import { WillData } from './WillWizard';
-import { WillType } from './WillTypeSelector';
+import type { WillData } from './WillWizard';
+import type { WillType } from './WillTypeSelector';
 import { useLocalization } from '@/contexts/LocalizationContext';
 import { SealOfTrust } from './SealOfTrust';
 
@@ -29,8 +29,8 @@ export const LiveWillPreview: React.FC<LiveWillPreviewProps> = ({
   // Helper function to format currency
   const formatCurrency = (amount?: number) => {
     if (!amount) return '[Amount to be specified]';
-    return new Intl.NumberFormat('en-US', { 
-      style: 'currency', 
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
       currency: currency || 'EUR',
       minimumFractionDigits: 0
     }).format(amount);
@@ -53,12 +53,12 @@ export const LiveWillPreview: React.FC<LiveWillPreviewProps> = ({
         {/* Declaration */}
         <div className="mb-6">
           <p className="mb-4">
-            <strong>I, {willData.testator_data.fullName || '[Your Full Name]'}</strong>, 
-            born on {formatDate(willData.testator_data.dateOfBirth)} in [Place of Birth], 
+            <strong>I, {willData.testator_data.fullName || '[Your Full Name]'}</strong>,
+            born on {formatDate(willData.testator_data.dateOfBirth)} in [Place of Birth],
             {willData.testator_data.citizenship && `citizen of ${willData.testator_data.citizenship}, `}
-            currently residing at {willData.testator_data.address || '[Your Address]'}, 
-            being of sound mind and under no constraint or undue influence, do hereby make, 
-            publish, and declare this to be my Last Will and Testament, hereby revoking any 
+            currently residing at {willData.testator_data.address || '[Your Address]'},
+            being of sound mind and under no constraint or undue influence, do hereby make,
+            publish, and declare this to be my Last Will and Testament, hereby revoking any
             and all former Wills and Codicils by me at any time heretofore made.
           </p>
         </div>
@@ -69,24 +69,24 @@ export const LiveWillPreview: React.FC<LiveWillPreviewProps> = ({
             ARTICLE I - DECLARATION AND REVOCATION
           </h2>
           <p className="mb-3">
-            I declare that I am of sound mind. I make this Will voluntarily and am not acting 
+            I declare that I am of sound mind. I make this Will voluntarily and am not acting
             under duress, fraud, or undue influence of any person whomsoever.
           </p>
           <p className="mb-3">I hereby revoke all prior Wills and Codicils made by me.</p>
-          
+
           {willType === 'holographic' && (
             <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg mt-3">
               <p className="text-blue-800 dark:text-blue-300 text-sm">
-                <strong>This is a holographic will</strong> written entirely in my own hand 
+                <strong>This is a holographic will</strong> written entirely in my own hand
                 and signed by me, as permitted under the laws of {jurisdiction}.
               </p>
             </div>
           )}
-          
+
           {willType === 'witnessed' && (
             <div className="bg-green-50 dark:bg-green-900/20 p-3 rounded-lg mt-3">
               <p className="text-green-800 dark:text-green-300 text-sm">
-                <strong>This will is made in the presence of witnesses</strong> as permitted 
+                <strong>This will is made in the presence of witnesses</strong> as permitted
                 under the laws of {jurisdiction}.
               </p>
             </div>
@@ -101,7 +101,7 @@ export const LiveWillPreview: React.FC<LiveWillPreviewProps> = ({
           <p className="mb-2">
             I am {willData.testator_data.maritalStatus || '[marital status]'}.
           </p>
-          
+
           {/* Children section - highlight when on beneficiaries step */}
           <div className={`${currentStep === 'beneficiaries' ? 'bg-yellow-50 dark:bg-yellow-900/20 p-3 rounded-lg border-l-4 border-yellow-400' : ''}`}>
             {willData.beneficiaries.filter(b => b.relationship === 'child').length > 0 ? (
@@ -126,10 +126,10 @@ export const LiveWillPreview: React.FC<LiveWillPreviewProps> = ({
           <h2 className="text-lg font-semibold mb-3 border-b border-gray-200 pb-1">
             ARTICLE III - ASSETS AND PROPERTY
           </h2>
-          
+
           <div className={`${currentStep === 'assets' ? 'bg-yellow-50 dark:bg-yellow-900/20 p-3 rounded-lg border-l-4 border-yellow-400' : ''}`}>
             <p className="mb-3">I own the following assets and property:</p>
-            
+
             {/* Real Estate */}
             {willData.assets.realEstate && willData.assets.realEstate.length > 0 ? (
               <div className="mb-4">
@@ -156,7 +156,7 @@ export const LiveWillPreview: React.FC<LiveWillPreviewProps> = ({
                 <ul className="list-disc list-inside ml-4">
                   {willData.assets.bankAccounts.map((account, idx) => (
                     <li key={idx}>
-                      {account.type} account at {account.bank}, 
+                      {account.type} account at {account.bank},
                       account ending in {account.accountNumber}
                     </li>
                   ))}
@@ -214,13 +214,13 @@ export const LiveWillPreview: React.FC<LiveWillPreviewProps> = ({
           <h2 className="text-lg font-semibold mb-3 border-b border-gray-200 pb-1">
             ARTICLE IV - BEQUESTS AND DISTRIBUTIONS
           </h2>
-          
+
           {/* Forced Heirs Notice for Slovak/Czech law */}
           {(jurisdiction === 'Slovakia' || jurisdiction === 'Czech Republic') && (
             <div className="bg-amber-50 dark:bg-amber-900/20 p-4 rounded-lg mb-4 border border-amber-200">
               <h3 className="font-medium mb-2">NOTICE REGARDING FORCED HEIRS:</h3>
               <p className="text-sm text-amber-800 dark:text-amber-300">
-                Under {jurisdiction} law, certain family members are entitled to forced inheritance shares. 
+                Under {jurisdiction} law, certain family members are entitled to forced inheritance shares.
                 The distributions below respect these mandatory provisions.
               </p>
             </div>
@@ -228,7 +228,7 @@ export const LiveWillPreview: React.FC<LiveWillPreviewProps> = ({
 
           <div className={`${currentStep === 'beneficiaries' ? 'bg-yellow-50 dark:bg-yellow-900/20 p-3 rounded-lg border-l-4 border-yellow-400' : ''}`}>
             <p className="mb-4">I give, devise, and bequeath my property as follows:</p>
-            
+
             {willData.beneficiaries.length > 0 ? (
               willData.beneficiaries.map((beneficiary, idx) => (
                 <div key={beneficiary.id} className="mb-4 p-3 border border-gray-200 rounded">
@@ -257,8 +257,8 @@ export const LiveWillPreview: React.FC<LiveWillPreviewProps> = ({
             <div className="mt-4 p-3 bg-gray-50 dark:bg-gray-800 rounded">
               <p className="font-medium">RESIDUARY CLAUSE:</p>
               <p className="text-sm mt-1">
-                All the rest, residue, and remainder of my estate, both real and personal, 
-                of every kind and nature and wheresoever situate, I give, devise, and bequeath 
+                All the rest, residue, and remainder of my estate, both real and personal,
+                of every kind and nature and wheresoever situate, I give, devise, and bequeath
                 to my beneficiaries as specified above, or to their survivors per stirpes.
               </p>
             </div>
@@ -270,28 +270,28 @@ export const LiveWillPreview: React.FC<LiveWillPreviewProps> = ({
           <h2 className="text-lg font-semibold mb-3 border-b border-gray-200 pb-1">
             ARTICLE V - EXECUTOR
           </h2>
-          
+
           <div className={`${currentStep === 'executor' ? 'bg-yellow-50 dark:bg-yellow-900/20 p-3 rounded-lg border-l-4 border-yellow-400' : ''}`}>
             {willData.executor_data.primaryExecutor ? (
               <div>
                 <p className="mb-2">
-                  I hereby nominate and appoint <strong>{willData.executor_data.primaryExecutor.name}</strong> 
+                  I hereby nominate and appoint <strong>{willData.executor_data.primaryExecutor.name}</strong>
                   as the Executor of this my Last Will and Testament.
                 </p>
                 {willData.executor_data.backupExecutor && (
                   <p className="mb-2">
-                    If {willData.executor_data.primaryExecutor.name} is unable or unwilling to serve, 
+                    If {willData.executor_data.primaryExecutor.name} is unable or unwilling to serve,
                     I nominate <strong>{willData.executor_data.backupExecutor.name}</strong> as alternate Executor.
                   </p>
                 )}
                 <p className="mb-2">
-                  I direct that my Executor shall not be required to give bond for the faithful 
+                  I direct that my Executor shall not be required to give bond for the faithful
                   performance of duties as Executor.
                 </p>
               </div>
             ) : (
               <p className="text-gray-600 dark:text-gray-400 italic">
-                {currentStep === 'executor' 
+                {currentStep === 'executor'
                   ? '[Executor information will appear here as you fill it in]'
                   : 'I do not appoint an Executor. The administration of my estate shall proceed according to law.'
                 }
@@ -305,7 +305,7 @@ export const LiveWillPreview: React.FC<LiveWillPreviewProps> = ({
           <h2 className="text-lg font-semibold mb-3 border-b border-gray-200 pb-1">
             ARTICLE VI - SPECIAL WISHES AND INSTRUCTIONS
           </h2>
-          
+
           <div className={`${currentStep === 'wishes' ? 'bg-yellow-50 dark:bg-yellow-900/20 p-3 rounded-lg border-l-4 border-yellow-400' : ''}`}>
             {willData.special_instructions.funeralWishes && (
               <div className="mb-3">
@@ -318,7 +318,7 @@ export const LiveWillPreview: React.FC<LiveWillPreviewProps> = ({
               <div className="mb-3">
                 <p className="font-medium">Organ Donation:</p>
                 <p className="text-sm">
-                  {willData.special_instructions.organDonation 
+                  {willData.special_instructions.organDonation
                     ? 'I wish to donate my organs for transplantation and medical research.'
                     : 'I do not wish to donate my organs.'
                   }
@@ -346,8 +346,8 @@ export const LiveWillPreview: React.FC<LiveWillPreviewProps> = ({
               </div>
             )}
 
-            {currentStep === 'wishes' && 
-             !willData.special_instructions.funeralWishes && 
+            {currentStep === 'wishes' &&
+             !willData.special_instructions.funeralWishes &&
              !willData.special_instructions.digitalAssets &&
              (!willData.special_instructions.personalMessages || willData.special_instructions.personalMessages.length === 0) && (
               <p className="text-gray-600 dark:text-gray-400 italic">
@@ -360,7 +360,7 @@ export const LiveWillPreview: React.FC<LiveWillPreviewProps> = ({
         {/* Execution Section */}
         <div className="mt-8 border-t-2 border-gray-300 pt-6">
           <h2 className="text-lg font-semibold mb-4">EXECUTION</h2>
-          
+
           {willType === 'holographic' ? (
             <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
               <p className="font-medium mb-2">HOLOGRAPHIC WILL EXECUTION:</p>
@@ -377,7 +377,7 @@ export const LiveWillPreview: React.FC<LiveWillPreviewProps> = ({
             <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
               <p className="font-medium mb-2">WITNESSED WILL EXECUTION:</p>
               <p className="text-sm mb-4">
-                I have signed this Will in the presence of the witnesses whose signatures appear below, 
+                I have signed this Will in the presence of the witnesses whose signatures appear below,
                 and they have signed this Will in my presence and in the presence of each other.
               </p>
               <div className="border-t border-gray-300 pt-4 space-y-4">

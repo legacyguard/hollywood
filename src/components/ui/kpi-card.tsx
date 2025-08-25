@@ -62,9 +62,9 @@ export function KPICard({
           {value}
         </dd>
       </div>
-      
+
       {showTrend && change && (
-        <Badge 
+        <Badge
           variant="secondary"
           className={cn(
             'absolute right-4 text-xs font-medium',
@@ -75,9 +75,9 @@ export function KPICard({
             }
           )}
         >
-          <Icon 
-            name={getTrendIcon(trendType)} 
-            className="w-3 h-3 mr-1" 
+          <Icon
+            name={getTrendIcon(trendType)}
+            className="w-3 h-3 mr-1"
           />
           {change}
         </Badge>

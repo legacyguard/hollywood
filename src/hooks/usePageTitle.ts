@@ -8,7 +8,7 @@ export const usePageTitle = (title: string) => {
   useEffect(() => {
     const previousTitle = document.title;
     document.title = `${title} | LegacyGuard`;
-    
+
     // Cleanup function to restore previous title if component unmounts
     return () => {
       document.title = previousTitle;

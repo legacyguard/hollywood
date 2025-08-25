@@ -86,7 +86,7 @@ class SecureEncryptionService {
       }
 
       const { privateKey, publicKey } = await retrieveResponse.json();
-      
+
       // Cache keys in secure memory storage
       await this.cacheKeys({ privateKey, publicKey });
 
@@ -172,20 +172,20 @@ class SecureEncryptionService {
 
       const fileBuffer = await file.arrayBuffer();
       const fileData = new Uint8Array(fileBuffer);
-      
+
       // Generate nonce
       const nonce = nacl.randomBytes(nacl.box.nonceLength);
-      
+
       // Use recipient's public key if provided, otherwise use user's own
-      const pubKey = recipientPublicKey 
+      const pubKey = recipientPublicKey
         ? decodeBase64(recipientPublicKey)
         : decodeBase64(keys.publicKey);
-      
+
       const privKey = decodeBase64(keys.privateKey);
-      
+
       // Encrypt the file
       const encrypted = nacl.box(fileData, nonce, pubKey, privKey);
-      
+
       if (!encrypted) {
         throw new Error('Encryption failed');
       }
@@ -225,15 +225,15 @@ class SecureEncryptionService {
       }
 
       // Use sender's public key if provided, otherwise use user's own
-      const pubKey = senderPublicKey 
+      const pubKey = senderPublicKey
         ? decodeBase64(senderPublicKey)
         : decodeBase64(keys.publicKey);
-      
+
       const privKey = decodeBase64(keys.privateKey);
-      
+
       // Decrypt the file
       const decrypted = nacl.box.open(encryptedData, nonce, pubKey, privKey);
-      
+
       if (!decrypted) {
         throw new Error('Decryption failed - invalid key or corrupted data');
       }
@@ -258,12 +258,12 @@ class SecureEncryptionService {
 
       const encoder = new TextEncoder();
       const data = encoder.encode(text);
-      
+
       const nonce = nacl.randomBytes(nacl.secretbox.nonceLength);
       const keyBytes = decodeBase64(keys.privateKey).slice(0, 32); // Use first 32 bytes for secretbox
-      
+
       const encrypted = nacl.secretbox(data, nonce, keyBytes);
-      
+
       if (!encrypted) {
         throw new Error('Text encryption failed');
       }
@@ -296,9 +296,9 @@ class SecureEncryptionService {
       const encrypted = decodeBase64(encryptedData.encrypted);
       const nonce = decodeBase64(encryptedData.nonce);
       const keyBytes = decodeBase64(keys.privateKey).slice(0, 32);
-      
+
       const decrypted = nacl.secretbox.open(encrypted, nonce, keyBytes);
-      
+
       if (!decrypted) {
         throw new Error('Text decryption failed');
       }
@@ -344,7 +344,7 @@ class SecureEncryptionService {
       }
 
       const { privateKey, publicKey } = await response.json();
-      
+
       // Cache keys
       await this.cacheKeys({ privateKey, publicKey });
 
@@ -452,10 +452,10 @@ class SecureEncryptionService {
 
       // Parse old keys
       const oldKeys = JSON.parse(oldKeysString);
-      
+
       // Initialize new server-side keys
       const result = await this.initializeKeys(password);
-      
+
       if (result.success) {
         // Remove old keys from localStorage
         localStorage.removeItem(`encryptionKeys_${userId}`);

@@ -1,7 +1,7 @@
 // Enhanced Sofia AI Types for Guided Dialog System
 // Extends the existing sofia-ai.ts with action-based interaction types
 
-import { SofiaContext as BaseSofiaContext, SofiaMessage as BaseSofiaMessage } from './sofia-ai';
+import type { SofiaContext as BaseSofiaContext, SofiaMessage as BaseSofiaMessage } from './sofia-ai';
 
 export type ActionCategory = 'navigation' | 'ui_action' | 'ai_query' | 'premium_feature';
 
@@ -80,9 +80,9 @@ export const COMMON_ACTIONS = {
     cost: 'free' as ActionCost,
     payload: { route: '/vault' }
   },
-  
+
   GO_TO_GUARDIANS: {
-    id: 'navigate_guardians', 
+    id: 'navigate_guardians',
     text: '👥 Manage guardians',
     icon: 'guardians',
     category: 'navigation' as ActionCategory,
@@ -93,7 +93,7 @@ export const COMMON_ACTIONS = {
   GO_TO_LEGACY: {
     id: 'navigate_legacy',
     text: '🎁 Create will',
-    icon: 'legacy', 
+    icon: 'legacy',
     category: 'navigation' as ActionCategory,
     cost: 'free' as ActionCost,
     payload: { route: '/legacy' }
@@ -102,7 +102,7 @@ export const COMMON_ACTIONS = {
   // UI actions (free)
   ADD_DOCUMENT: {
     id: 'trigger_upload',
-    text: '➕ Add document', 
+    text: '➕ Add document',
     icon: 'upload',
     category: 'ui_action' as ActionCategory,
     cost: 'free' as ActionCost,
@@ -113,7 +113,7 @@ export const COMMON_ACTIONS = {
     id: 'show_progress',
     text: '📊 View my progress',
     icon: 'info',
-    category: 'ui_action' as ActionCategory, 
+    category: 'ui_action' as ActionCategory,
     cost: 'free' as ActionCost,
     payload: { action: 'show_progress_modal' }
   },
@@ -151,7 +151,7 @@ export const COMMON_ACTIONS = {
     id: 'generate_financial_summary',
     text: '💰 Financial overview for family',
     icon: 'documents',
-    category: 'premium_feature' as ActionCategory, 
+    category: 'premium_feature' as ActionCategory,
     cost: 'premium' as ActionCost,
     requiresConfirmation: true,
     description: 'AI creates a summary of your finances for emergencies'
@@ -161,26 +161,26 @@ export const COMMON_ACTIONS = {
 // Context-based action suggestions
 export function getContextualActions(context: SofiaContext): ActionButton[] {
   const actions: ActionButton[] = [];
-  
+
   // Always show navigation options
   actions.push(COMMON_ACTIONS.GO_TO_VAULT);
-  
+
   // Show based on progress
   if (context.documentCount < 5) {
     actions.push(COMMON_ACTIONS.ADD_DOCUMENT);
   }
-  
+
   if (context.guardianCount === 0 && context.familyStatus !== 'single') {
     actions.push(COMMON_ACTIONS.GO_TO_GUARDIANS);
   }
-  
+
   if (context.completionPercentage > 60) {
     actions.push(COMMON_ACTIONS.GO_TO_LEGACY);
   }
-  
+
   // Always show help and next step
   actions.push(COMMON_ACTIONS.NEXT_STEP);
   actions.push(COMMON_ACTIONS.SECURITY_INFO);
-  
+
   return actions.slice(0, 4); // Limit to 4 actions max
 }

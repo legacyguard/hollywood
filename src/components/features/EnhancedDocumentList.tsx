@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Icon } from '@/components/ui/icon-library';
 import { FadeIn } from '@/components/motion/FadeIn';
-import { Document } from '@/integrations/supabase/types';
+import type { Document } from '@/integrations/supabase/types';
 
 interface EnhancedDocumentListProps {
   documents: Document[];
@@ -29,14 +29,14 @@ export default function EnhancedDocumentList({
   // Filter and sort documents
   const filteredAndSortedDocuments = useMemo(() => {
     const filtered = documents.filter(doc => {
-      const matchesSearch = !searchQuery || 
+      const matchesSearch = !searchQuery ||
         doc.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         doc.file_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         doc.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         doc.ocr_text?.toLowerCase().includes(searchQuery.toLowerCase());
-      
+
       const matchesCategory = categoryFilter === 'all' || doc.category === categoryFilter;
-      
+
       return matchesSearch && matchesCategory;
     });
 
@@ -48,19 +48,19 @@ export default function EnhancedDocumentList({
           const bImportance = calculateImportanceScore(b);
           return bImportance - aImportance;
         }
-        
+
         case 'name': {
           const aName = a.title || a.file_name;
           const bName = b.title || b.file_name;
           return aName.localeCompare(bName);
         }
-        
+
         case 'confidence': {
           const aConfidence = a.ocr_confidence || 0;
           const bConfidence = b.ocr_confidence || 0;
           return bConfidence - aConfidence;
         }
-        
+
         case 'date':
         default:
           return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
@@ -73,7 +73,7 @@ export default function EnhancedDocumentList({
   // Calculate importance score for sorting
   const calculateImportanceScore = (doc: Document): number => {
     let score = 0;
-    
+
     if (doc.is_important) score += 50;
     if (doc.expires_at) {
       const daysUntilExpiry = Math.floor(
@@ -83,11 +83,11 @@ export default function EnhancedDocumentList({
       else if (daysUntilExpiry <= 30) score += 30;
       else if (daysUntilExpiry <= 90) score += 20;
     }
-    
+
     if (doc.classification_confidence) {
       score += doc.classification_confidence * 20;
     }
-    
+
     return score;
   };
 
@@ -150,7 +150,7 @@ export default function EnhancedDocumentList({
               />
             </div>
           </div>
-          
+
           <div className="flex gap-2">
             <Select value={categoryFilter} onValueChange={setCategoryFilter}>
               <SelectTrigger className="w-40">
@@ -227,7 +227,7 @@ export default function EnhancedDocumentList({
           <Icon name="search" className="w-16 h-16 text-muted-foreground mx-auto mb-6" />
           <h3 className="text-xl font-semibold mb-4">No Documents Found</h3>
           <p className="text-muted-foreground mb-6">
-            {searchQuery 
+            {searchQuery
               ? `No documents match "${searchQuery}"`
               : 'No documents available. Upload your first document to get started.'
             }
@@ -235,8 +235,8 @@ export default function EnhancedDocumentList({
         </Card>
       ) : (
         <div className={
-          viewMode === 'grid' 
-            ? 'grid md:grid-cols-2 lg:grid-cols-3 gap-6' 
+          viewMode === 'grid'
+            ? 'grid md:grid-cols-2 lg:grid-cols-3 gap-6'
             : 'space-y-4'
         }>
           {filteredAndSortedDocuments.map((document, index) => (
@@ -295,15 +295,15 @@ interface DocumentCardProps {
   isExpired: (doc: DocumentCardProps['document']) => boolean;
 }
 
-function DocumentCard({ 
-  document, 
-  onSelect, 
-  onDelete, 
-  getDocumentIcon, 
-  getStatusBadge, 
+function DocumentCard({
+  document,
+  onSelect,
+  onDelete,
+  getDocumentIcon,
+  getStatusBadge,
   formatFileSize,
   isExpiringSoon,
-  isExpired 
+  isExpired
 }: DocumentCardProps) {
   return (
     <Card className="p-6 hover:shadow-lg transition-all duration-200 cursor-pointer group">
@@ -337,7 +337,7 @@ function DocumentCard({
               )}
             </div>
           </div>
-          
+
           <div className="flex items-center gap-2">
             {document.is_important && (
               <Badge variant="destructive" className="text-xs">Important</Badge>
@@ -414,9 +414,9 @@ function DocumentCard({
         <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); onSelect(); }}>
           <Icon name="eye" className="w-4 h-4" />
         </Button>
-        <Button 
-          size="sm" 
-          variant="outline" 
+        <Button
+          size="sm"
+          variant="outline"
           onClick={(e) => { e.stopPropagation(); onDelete(); }}
           className="hover:bg-destructive/10 hover:text-destructive"
         >
@@ -427,16 +427,16 @@ function DocumentCard({
   );
 }
 
-// Document List Item Component (List View)  
-function DocumentListItem({ 
-  document, 
-  onSelect, 
-  onDelete, 
-  getDocumentIcon, 
-  getStatusBadge, 
+// Document List Item Component (List View)
+function DocumentListItem({
+  document,
+  onSelect,
+  onDelete,
+  getDocumentIcon,
+  getStatusBadge,
   formatFileSize,
   isExpiringSoon,
-  isExpired 
+  isExpired
 }: DocumentCardProps) {
   return (
     <Card className="p-4 hover:shadow-md transition-all duration-200 cursor-pointer group">
@@ -475,7 +475,7 @@ function DocumentListItem({
             )}
             {getStatusBadge(document)}
           </div>
-          
+
           <div className="flex items-center gap-4 text-sm text-muted-foreground">
             <span className="capitalize">{document.category || 'Other'}</span>
             <span>{new Date(document.created_at).toLocaleDateString()}</span>
@@ -484,7 +484,7 @@ function DocumentListItem({
               <span>{Math.round(document.ocr_confidence * 100)}% AI confidence</span>
             )}
           </div>
-          
+
           {document.description && (
             <p className="text-sm text-muted-foreground mt-1 line-clamp-1">
               {document.description}
@@ -496,9 +496,9 @@ function DocumentListItem({
           <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); onSelect(); }}>
             <Icon name="eye" className="w-4 h-4" />
           </Button>
-          <Button 
-            size="sm" 
-            variant="outline" 
+          <Button
+            size="sm"
+            variant="outline"
             onClick={(e) => { e.stopPropagation(); onDelete(); }}
             className="hover:bg-destructive/10 hover:text-destructive"
           >

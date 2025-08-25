@@ -1,9 +1,10 @@
 import * as React from 'react';
-import {
+import type {
   ColumnDef,
   ColumnFiltersState,
   SortingState,
-  VisibilityState,
+  VisibilityState} from '@tanstack/react-table';
+import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -124,7 +125,7 @@ export function DataTable<TData, TValue>({
                 className="pl-9"
               />
             </div>
-            
+
             {selectedRowsCount > 0 && (
               <Badge variant="secondary" className="ml-2">
                 {selectedRowsCount} selected
@@ -144,7 +145,7 @@ export function DataTable<TData, TValue>({
                 Export
               </Button>
             )}
-            
+
             {showViewOptions && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>

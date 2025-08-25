@@ -1,4 +1,5 @@
-import { ActionButton, SofiaContext, COMMON_ACTIONS } from './sofia-types';
+import type { ActionButton, SofiaContext} from './sofia-types';
+import { COMMON_ACTIONS } from './sofia-types';
 
 // Sofia Knowledge Base - Fast, cost-effective answers to common questions
 // Uses pre-written responses instead of AI for 80% of queries
@@ -285,29 +286,29 @@ Take it one step at a time - I'm here to help! 😊`,
   search(query: string, context: SofiaContext): KnowledgeEntry[] {
     const lowerQuery = query.toLowerCase();
     const words = lowerQuery.split(' ').filter(word => word.length > 2);
-    
+
     return this.knowledge
       .filter(entry => {
         // Check if context conditions are met
         if (entry.contextConditions && !entry.contextConditions(context)) {
           return false;
         }
-        
+
         // Search in question, content, and tags
         const searchText = `${entry.question} ${entry.content} ${entry.tags.join(' ')}`.toLowerCase();
-        
+
         return words.some(word => searchText.includes(word)) ||
                entry.tags.some(tag => lowerQuery.includes(tag));
       })
       .sort((a, b) => {
         // Prioritize entries with more matching words
-        const aMatches = words.filter(word => 
+        const aMatches = words.filter(word =>
           `${a.question} ${a.content}`.toLowerCase().includes(word)
         ).length;
-        const bMatches = words.filter(word => 
+        const bMatches = words.filter(word =>
           `${b.question} ${b.content}`.toLowerCase().includes(word)
         ).length;
-        
+
         return bMatches - aMatches;
       })
       .slice(0, 3); // Return top 3 matches
@@ -325,25 +326,25 @@ Take it one step at a time - I'm here to help! 😊`,
    */
   getContextualSuggestions(context: SofiaContext): KnowledgeEntry[] {
     const suggestions: KnowledgeEntry[] = [];
-    
+
     // New user suggestions
     if (context.documentCount === 0 && context.guardianCount === 0) {
       const gettingStarted = this.getById('getting_started');
       if (gettingStarted) suggestions.push(gettingStarted);
     }
-    
+
     // No guardians yet
     if (context.guardianCount === 0 && context.familyStatus !== 'single') {
       const guardianHelp = this.getById('add_guardian_help');
       if (guardianHelp) suggestions.push(guardianHelp);
     }
-    
+
     // Low document count
     if (context.documentCount < 5) {
       const documentHelp = this.getById('faq_documents');
       if (documentHelp) suggestions.push(documentHelp);
     }
-    
+
     return suggestions.slice(0, 2);
   }
 }

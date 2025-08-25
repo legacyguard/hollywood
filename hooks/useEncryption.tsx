@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect, useCallback, createContext, useContext, ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import { useState, useEffect, useCallback, createContext, useContext } from 'react';
 import { useAuth } from '@clerk/nextjs';
 import { encryptionService } from '@/lib/encryption-v2';
 import { toast } from 'sonner';
@@ -110,7 +111,7 @@ export function EncryptionProvider({ children }: EncryptionProviderProps) {
     setIsLoading(true);
     try {
       const result = await encryptionService.initializeKeys(password);
-      
+
       if (result.success) {
         setIsInitialized(true);
         setIsUnlocked(true);
@@ -138,7 +139,7 @@ export function EncryptionProvider({ children }: EncryptionProviderProps) {
     setIsLoading(true);
     try {
       const result = await encryptionService.unlockKeys(password);
-      
+
       if (result.success) {
         setIsUnlocked(true);
         toast.success('Encryption unlocked successfully');
@@ -177,7 +178,7 @@ export function EncryptionProvider({ children }: EncryptionProviderProps) {
     setIsLoading(true);
     try {
       const result = await encryptionService.migrateFromLocalStorage(password);
-      
+
       if (result.success) {
         setIsInitialized(true);
         setIsUnlocked(true);
@@ -206,7 +207,7 @@ export function EncryptionProvider({ children }: EncryptionProviderProps) {
     setIsLoading(true);
     try {
       const result = await encryptionService.rotateKeys(currentPassword, newPassword);
-      
+
       if (result.success) {
         toast.success('Encryption keys rotated successfully');
         return true;

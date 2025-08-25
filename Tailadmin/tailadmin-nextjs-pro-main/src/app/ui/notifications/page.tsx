@@ -3,7 +3,7 @@ import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import NotificationsOne from "@/components/Notifications/NotificationsOne";
 import NotificationsTwo from "@/components/Notifications/NotificationsTwo";
 import NotificationsThree from "@/components/Notifications/NotificationsThree";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import NotificationsFour from "@/components/Notifications/NotificationsFour";
 

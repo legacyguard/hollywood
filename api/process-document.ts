@@ -1,15 +1,17 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { ImageAnnotatorClient } from '@google-cloud/vision';
 import { createClerkClient } from '@clerk/backend';
-import { 
+import type {
   ProcessedDocument,
   OCRProcessingConfig,
   OCRProcessingResponse,
   DocumentClassification,
   DocumentMetadata,
   ExtractedEntity,
-  DOCUMENT_PATTERNS,
   DocumentType
+} from '../src/types/ocr';
+import {
+  DOCUMENT_PATTERNS
 } from '../src/types/ocr';
 
 function getAllowedOrigin(origin?: string | null): string {
@@ -34,9 +36,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const origin = (req.headers.origin as string) || undefined;
     res.setHeader('Access-Control-Allow-Origin', getAllowedOrigin(origin));
     res.setHeader('Access-Control-Allow-Credentials', 'true');
-    return res.status(405).json({ 
+    return res.status(405).json({
       error: 'Method not allowed',
-      success: false 
+      success: false
     });
   }
 
@@ -56,8 +58,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     // Validate required environment variables
-    if (!process.env.GOOGLE_CLOUD_PROJECT_ID || 
-        !process.env.GOOGLE_CLOUD_CLIENT_EMAIL || 
+    if (!process.env.GOOGLE_CLOUD_PROJECT_ID ||
+        !process.env.GOOGLE_CLOUD_CLIENT_EMAIL ||
         !process.env.GOOGLE_CLOUD_PRIVATE_KEY) {
       return res.status(500).json({
         success: false,
@@ -179,12 +181,12 @@ const { fileData, fileName, config } = req.body as {
 const origin = (req.headers.origin as string) || undefined;
       res.setHeader('Access-Control-Allow-Origin', getAllowedOrigin(origin));
       res.setHeader('Access-Control-Allow-Credentials', 'true');
-      
+
       return res.status(200).json(response);
 
     } catch (visionError) {
       console.error('Google Vision API error:', visionError);
-      
+
       const errorResponse: OCRProcessingResponse = {
         success: false,
         error: `OCR processing failed: ${visionError instanceof Error ? visionError.message : 'Unknown error'}`,
@@ -194,13 +196,13 @@ const origin = (req.headers.origin as string) || undefined;
       const origin = (req.headers.origin as string) || undefined;
       res.setHeader('Access-Control-Allow-Origin', getAllowedOrigin(origin));
       res.setHeader('Access-Control-Allow-Credentials', 'true');
-      
+
       return res.status(500).json(errorResponse);
     }
 
   } catch (error) {
     console.error('API handler error:', error);
-    
+
     const errorResponse: OCRProcessingResponse = {
       success: false,
       error: `Server error: ${error instanceof Error ? error.message : 'Unknown error'}`,
@@ -210,7 +212,7 @@ const origin = (req.headers.origin as string) || undefined;
     const origin = (req.headers.origin as string) || undefined;
     res.setHeader('Access-Control-Allow-Origin', getAllowedOrigin(origin));
     res.setHeader('Access-Control-Allow-Credentials', 'true');
-    
+
     return res.status(500).json(errorResponse);
   }
 }
@@ -218,7 +220,7 @@ const origin = (req.headers.origin as string) || undefined;
 // Helper functions
 function extractEntities(text: string): ExtractedEntity[] {
   const entities: ExtractedEntity[] = [];
-  
+
   // Email pattern
   const emailPattern = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g;
   const emails = text.match(emailPattern) || [];
@@ -229,7 +231,7 @@ function extractEntities(text: string): ExtractedEntity[] {
       confidence: 0.9
     });
   });
-  
+
   // Phone pattern
   const phonePattern = /(?:\+1\s?)?(?:\(\d{3}\)|\d{3})[\s.-]?\d{3}[\s.-]?\d{4}/g;
   const phones = text.match(phonePattern) || [];
@@ -240,14 +242,14 @@ function extractEntities(text: string): ExtractedEntity[] {
       confidence: 0.85
     });
   });
-  
+
   // Date patterns
   const datePatterns = [
     /\b\d{1,2}\/\d{1,2}\/\d{2,4}\b/g,
     /\b\d{1,2}-\d{1,2}-\d{2,4}\b/g,
     /\b[A-Za-z]+ \d{1,2},? \d{4}\b/g
   ];
-  
+
   datePatterns.forEach(pattern => {
     const dates = text.match(pattern) || [];
     dates.forEach(date => {
@@ -258,7 +260,7 @@ function extractEntities(text: string): ExtractedEntity[] {
       });
     });
   });
-  
+
   // SSN pattern
   const ssnPattern = /\b\d{3}-\d{2}-\d{4}\b/g;
   const ssns = text.match(ssnPattern) || [];
@@ -269,7 +271,7 @@ function extractEntities(text: string): ExtractedEntity[] {
       confidence: 0.9
     });
   });
-  
+
   // Amount pattern
   const amountPattern = /\$[\d,]+\.?\d*/g;
   const amounts = text.match(amountPattern) || [];
@@ -280,18 +282,18 @@ function extractEntities(text: string): ExtractedEntity[] {
       confidence: 0.7
     });
   });
-  
+
   return entities;
 }
 
 function classifyDocument(text: string, entities: ExtractedEntity[]): DocumentClassification {
   const textLower = text.toLowerCase();
   const scores: Record<string, number> = {};
-  
+
   // Score each document type
   Object.entries(DOCUMENT_PATTERNS).forEach(([type, pattern]) => {
     let score = 0;
-    
+
     // Keyword matching
     pattern.keywords.forEach(keyword => {
       const keywordRegex = new RegExp(`\\b${keyword.replace(/\s+/g, '\\s+')}\\b`, 'i');
@@ -299,14 +301,14 @@ function classifyDocument(text: string, entities: ExtractedEntity[]): DocumentCl
         score += 10;
       }
     });
-    
+
     // Pattern matching
     pattern.patterns.forEach(regex => {
       if (regex.test(text)) {
         score += 15;
       }
     });
-    
+
     // Required entities bonus
     if (pattern.requiredEntities) {
       const foundEntities = pattern.requiredEntities.filter(entityType =>
@@ -314,15 +316,15 @@ function classifyDocument(text: string, entities: ExtractedEntity[]): DocumentCl
       );
       score += foundEntities.length * 5;
     }
-    
+
     scores[type] = score;
   });
-  
+
   // Find best match
   const sortedScores = Object.entries(scores)
     .sort(([, a], [, b]) => b - a)
     .filter(([, score]) => score > 0);
-  
+
   if (sortedScores.length === 0) {
     return {
       category: 'other',
@@ -332,17 +334,17 @@ function classifyDocument(text: string, entities: ExtractedEntity[]): DocumentCl
       suggestedTags: generateSuggestedTags(text)
     };
   }
-  
+
   const [bestType, bestScore] = sortedScores[0];
   const confidence = Math.min(bestScore / 50, 1);
-  
+
   const pattern = DOCUMENT_PATTERNS[bestType as DocumentType];
   const reasons = [
     `Matched ${pattern.keywords.length} keywords`,
     `Matched ${pattern.patterns.length} patterns`,
     `Found ${entities.length} relevant entities`
   ].filter(reason => !reason.includes('0'));
-  
+
   return {
     category: pattern.category,
     type: bestType as DocumentType,
@@ -358,18 +360,18 @@ function extractMetadata(
   entities: ExtractedEntity[]
 ): DocumentMetadata {
   const metadata: DocumentMetadata = {};
-  
+
   // Extract common metadata
   const dateEntities = entities.filter(e => e.type === 'date');
   if (dateEntities.length > 0) {
     metadata.date = dateEntities[0].value;
   }
-  
+
   const amountEntities = entities.filter(e => e.type === 'amount');
   if (amountEntities.length > 0) {
     metadata.amount = amountEntities[0].value;
   }
-  
+
   // Document-specific metadata extraction
   switch (docType) {
     case 'bank_statement':
@@ -380,7 +382,7 @@ function extractMetadata(
         metadata.accountNumber = accountMatch[0];
       }
       break;
-      
+
     case 'life_insurance':
     case 'auto_insurance':
     case 'home_insurance':
@@ -392,14 +394,14 @@ function extractMetadata(
       }
       break;
   }
-  
+
   return metadata;
 }
 
 function generateSuggestedTags(text: string): string[] {
   const tags: string[] = [];
   const textLower = text.toLowerCase();
-  
+
   const tagPatterns = {
     'important': /important|urgent|critical|priority/i,
     'expires': /expir|due|deadline|valid until/i,
@@ -410,13 +412,13 @@ function generateSuggestedTags(text: string): string[] {
     'tax': /tax|irs|revenue|deduction/i,
     'personal': /personal|private|confidential/i
   };
-  
+
   Object.entries(tagPatterns).forEach(([tag, pattern]) => {
     if (pattern.test(text)) {
       tags.push(tag);
     }
   });
-  
+
   return tags.slice(0, 5);
 }
 
@@ -430,10 +432,10 @@ function extractBoundingBoxes(detections: any[]) {
   return detections.slice(1).map(detection => {
     const vertices = detection.boundingPoly?.vertices || [];
     if (vertices.length === 0) return { x: 0, y: 0, width: 0, height: 0 };
-    
+
     const xs = vertices.map((v: any) => v.x || 0);
     const ys = vertices.map((v: any) => v.y || 0);
-    
+
     return {
       x: Math.min(...xs),
       y: Math.min(...ys),
@@ -445,7 +447,7 @@ function extractBoundingBoxes(detections: any[]) {
 
 function extractTextBlocks(fullTextAnnotation: any) {
   const textBlocks: any[] = [];
-  
+
   if (fullTextAnnotation?.pages) {
     fullTextAnnotation.pages.forEach((page: any) => {
       page.blocks?.forEach((block: any) => {
@@ -457,7 +459,7 @@ function extractTextBlocks(fullTextAnnotation: any) {
             });
             text += ' ';
           });
-          
+
           if (text.trim()) {
             textBlocks.push({
               text: text.trim(),
@@ -470,16 +472,16 @@ function extractTextBlocks(fullTextAnnotation: any) {
       });
     });
   }
-  
+
   return textBlocks;
 }
 
 function extractBoundingBoxFromVertices(vertices: any[]) {
   if (vertices.length === 0) return { x: 0, y: 0, width: 0, height: 0 };
-  
+
   const xs = vertices.map(v => v.x || 0);
   const ys = vertices.map(v => v.y || 0);
-  
+
   return {
     x: Math.min(...xs),
     y: Math.min(...ys),

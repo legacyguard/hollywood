@@ -39,7 +39,7 @@ export interface ExtractedEntity {
   boundingBox?: BoundingBox;
 }
 
-export type EntityType = 
+export type EntityType =
   | 'name'
   | 'date'
   | 'address'
@@ -53,7 +53,7 @@ export type EntityType =
   | 'signature';
 
 // Document Categories based on LegacyGuard context
-export type DocumentCategory = 
+export type DocumentCategory =
   | 'legal'
   | 'financial'
   | 'medical'
@@ -64,7 +64,7 @@ export type DocumentCategory =
   | 'government'
   | 'other';
 
-export type DocumentType = 
+export type DocumentType =
   // Legal Documents
   | 'will'
   | 'trust'
@@ -74,7 +74,7 @@ export type DocumentType =
   | 'divorce_decree'
   | 'adoption_papers'
   | 'contract'
-  
+
   // Financial Documents
   | 'bank_statement'
   | 'investment_account'
@@ -84,44 +84,44 @@ export type DocumentType =
   | 'mortgage'
   | 'credit_card_statement'
   | 'financial_statement'
-  
+
   // Medical Documents
   | 'medical_record'
   | 'prescription'
   | 'medical_directive'
   | 'health_insurance_card'
   | 'vaccination_record'
-  
+
   // Insurance Documents
   | 'life_insurance'
   | 'health_insurance'
   | 'auto_insurance'
   | 'home_insurance'
   | 'disability_insurance'
-  
+
   // Personal Documents
   | 'birth_certificate'
   | 'passport'
   | 'drivers_license'
   | 'social_security_card'
   | 'military_records'
-  
+
   // Property Documents
   | 'property_deed'
   | 'property_tax'
   | 'home_appraisal'
   | 'utility_bill'
-  
+
   // Business Documents
   | 'business_license'
   | 'business_contract'
   | 'business_tax'
-  
+
   // Government Documents
   | 'tax_document'
   | 'government_benefit'
   | 'voter_registration'
-  
+
   // Other
   | 'receipt'
   | 'warranty'
@@ -156,41 +156,41 @@ export interface DocumentMetadata {
   issuer?: string;
   recipient?: string;
   amount?: string;
-  
+
   // Legal specific
   legalEntity?: string;
   jurisdiction?: string;
   witnessRequired?: boolean;
-  
+
   // Financial specific
   accountNumber?: string;
   institutionName?: string;
   balance?: string;
   transactionDate?: string;
-  
+
   // Medical specific
   patientName?: string;
   doctorName?: string;
   diagnosis?: string;
   medicationList?: string[];
-  
+
   // Insurance specific
   policyNumber?: string;
   coverageAmount?: string;
   deductible?: string;
   expirationDate?: string;
-  
+
   // Personal identity
   fullName?: string;
   dateOfBirth?: string;
   address?: string;
   idNumber?: string;
-  
+
   // Property specific
   propertyAddress?: string;
   ownerName?: string;
   assessedValue?: string;
-  
+
   // Custom fields
   customFields?: Record<string, string>;
 }
@@ -243,7 +243,7 @@ export const DOCUMENT_PATTERNS: Record<DocumentType, {
     patterns: [/power\s+of\s+attorney/i, /attorney.in.fact/i],
     category: 'legal'
   },
-  
+
   // Financial Documents
   bank_statement: {
     keywords: ['bank statement', 'account summary', 'balance', 'transaction', 'deposit', 'withdrawal'],
@@ -256,7 +256,7 @@ export const DOCUMENT_PATTERNS: Record<DocumentType, {
     patterns: [/form\s+1040/i, /tax\s+year/i, /adjusted\s+gross\s+income/i],
     category: 'financial'
   },
-  
+
   // Medical Documents
   medical_record: {
     keywords: ['patient', 'diagnosis', 'treatment', 'medical history', 'physician'],
@@ -264,7 +264,7 @@ export const DOCUMENT_PATTERNS: Record<DocumentType, {
     category: 'medical',
     requiredEntities: ['name', 'date']
   },
-  
+
   // Insurance Documents
   life_insurance: {
     keywords: ['life insurance', 'policy', 'beneficiary', 'death benefit', 'premium'],
@@ -272,7 +272,7 @@ export const DOCUMENT_PATTERNS: Record<DocumentType, {
     category: 'insurance',
     requiredEntities: ['policy_number', 'amount']
   },
-  
+
   // Personal Documents
   birth_certificate: {
     keywords: ['birth certificate', 'date of birth', 'place of birth', 'parents'],
@@ -280,7 +280,7 @@ export const DOCUMENT_PATTERNS: Record<DocumentType, {
     category: 'personal',
     requiredEntities: ['name', 'date']
   },
-  
+
   // Property Documents
   property_deed: {
     keywords: ['deed', 'property', 'grantor', 'grantee', 'real estate'],
@@ -288,14 +288,14 @@ export const DOCUMENT_PATTERNS: Record<DocumentType, {
     category: 'property',
     requiredEntities: ['name', 'address']
   },
-  
+
   // Default for other types
   other: {
     keywords: [],
     patterns: [],
     category: 'other'
   },
-  
+
   // Add minimal patterns for remaining types
   living_will: { keywords: ['living will'], patterns: [], category: 'legal' },
   marriage_certificate: { keywords: ['marriage certificate'], patterns: [], category: 'personal' },

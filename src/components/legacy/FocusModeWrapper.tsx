@@ -36,7 +36,7 @@ export const FocusModeWrapper: React.FC<FocusModeWrapperProps> = ({
               <Icon name="document-text" className="w-5 h-5 text-primary" />
               <span className="font-semibold text-lg">Will Creation</span>
             </div>
-            
+
             {currentStepTitle && (
               <div className="hidden sm:flex items-center gap-3">
                 <div className="w-px h-6 bg-border" />
@@ -61,7 +61,7 @@ export const FocusModeWrapper: React.FC<FocusModeWrapperProps> = ({
               <Icon name="minimize-2" className="w-4 h-4 mr-2" />
               Exit Focus Mode
             </Button>
-            
+
             {onExitWizard && (
               <>
                 <div className="w-px h-6 bg-border mx-2" />

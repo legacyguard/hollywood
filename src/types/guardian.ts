@@ -37,7 +37,7 @@ export interface UpdateGuardianRequest extends Partial<CreateGuardianRequest> {
   is_active?: boolean;
 }
 
-export type GuardianRelationship = 
+export type GuardianRelationship =
   | 'spouse'
   | 'partner'
   | 'child'
@@ -100,7 +100,7 @@ export interface FamilyShieldActivationLog {
   expired_at?: string | null;
 }
 
-export type ManualEntryType = 
+export type ManualEntryType =
   | 'important_contacts'
   | 'financial_access'
   | 'property_management'

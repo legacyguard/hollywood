@@ -20,7 +20,7 @@ global.fetch = vi.fn();
 describe('Encryption Service', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    
+
     // Reset mock implementations
     mockEncryptionService.initializeKeys.mockResolvedValue({ success: true });
     mockEncryptionService.unlockKeys.mockResolvedValue({ success: true });
@@ -43,7 +43,7 @@ describe('Encryption Service', () => {
       });
 
       const result = await mockEncryptionService.initializeKeys('testPassword123');
-      
+
       expect(result.success).toBe(true);
       expect(fetch).toHaveBeenCalledWith('/api/keys/generate', {
         method: 'POST',
@@ -57,14 +57,14 @@ describe('Encryption Service', () => {
         privateKey: 'mockPrivateKey',
         publicKey: 'mockPublicKey',
       };
-      
+
       (fetch as any).mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockKeys),
       });
 
       const result = await mockEncryptionService.unlockKeys('testPassword123');
-      
+
       expect(result.success).toBe(true);
       expect(fetch).toHaveBeenCalledWith('/api/keys/retrieve', {
         method: 'POST',
@@ -80,14 +80,14 @@ describe('Encryption Service', () => {
       });
 
       const result = await mockEncryptionService.unlockKeys('wrongPassword');
-      
+
       expect(result.success).toBe(false);
       expect(result.error).toContain('Invalid password');
     });
 
     it('should lock keys and clear from memory', async () => {
       await mockEncryptionService.lockKeys();
-      
+
       const isUnlocked = await mockEncryptionService.areKeysUnlocked();
       expect(isUnlocked).toBe(false);
     });
@@ -102,10 +102,10 @@ describe('Encryption Service', () => {
         nonce: new Uint8Array([4, 5, 6]),
         metadata: { algorithm: 'nacl.secretbox' }
       });
-      
+
       const mockFile = new File(['test content'], 'test.txt', { type: 'text/plain' });
       const result = await mockEncryptionService.encryptFile(mockFile);
-      
+
       expect(result).toBeDefined();
       expect(result?.encryptedData).toBeInstanceOf(Uint8Array);
       expect(result?.nonce).toBeInstanceOf(Uint8Array);
@@ -116,10 +116,10 @@ describe('Encryption Service', () => {
       // Mock locked state
       mockEncryptionService.areKeysUnlocked.mockResolvedValue(false);
       mockEncryptionService.encryptFile.mockResolvedValue(null);
-      
+
       const mockFile = new File(['test content'], 'test.txt', { type: 'text/plain' });
       const result = await mockEncryptionService.encryptFile(mockFile);
-      
+
       expect(result).toBeNull();
     });
   });
@@ -135,15 +135,15 @@ describe('Encryption Service', () => {
       };
       mockEncryptionService.encryptText.mockResolvedValue(mockEncrypted);
       mockEncryptionService.decryptText.mockResolvedValue('Sensitive information');
-      
+
       const testText = 'Sensitive information';
       const encrypted = await mockEncryptionService.encryptText(testText);
-      
+
       expect(encrypted).toBeDefined();
       expect(encrypted?.encrypted).toBeDefined();
       expect(encrypted?.nonce).toBeDefined();
       expect(encrypted?.metadata?.algorithm).toBe('nacl.secretbox');
-      
+
       // Test decryption
       const decrypted = await mockEncryptionService.decryptText(encrypted!);
       expect(decrypted).toBe(testText);
@@ -159,7 +159,7 @@ describe('Encryption Service', () => {
       });
 
       const result = await mockEncryptionService.rotateKeys('oldPassword', 'newPassword');
-      
+
       expect(result.success).toBe(true);
       expect(fetch).toHaveBeenCalledWith('/api/keys/rotate', {
         method: 'POST',
@@ -176,7 +176,7 @@ describe('Encryption Service', () => {
       });
 
       const needsRotation = await mockEncryptionService.checkRotationNeeded();
-      
+
       expect(needsRotation).toBe(true);
     });
 
@@ -198,7 +198,7 @@ describe('Encryption Service', () => {
       });
 
       const result = await mockEncryptionService.migrateFromLocalStorage('password');
-      
+
       expect(result.success).toBe(true);
     });
   });
@@ -211,7 +211,7 @@ describe('Encryption Service', () => {
       });
 
       const result = await mockEncryptionService.initializeKeys('password');
-      
+
       expect(result.success).toBe(false);
       expect(result.error).toContain('Failed to initialize encryption keys');
     });
@@ -223,7 +223,7 @@ describe('Encryption Service', () => {
       });
 
       const result = await mockEncryptionService.initializeKeys('password');
-      
+
       expect(result.success).toBe(false);
       expect(result.error).toContain('Internal server error');
     });

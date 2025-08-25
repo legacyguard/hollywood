@@ -10,21 +10,24 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { AlertCircle, Calendar, Clock, MapPin, Star, Users, CheckCircle, XCircle, RefreshCw } from 'lucide-react';
-import { WillData } from '@/types/will';
-import { 
-  ProfessionalProfile, 
-  ReviewRequest, 
-  ConsultationOffer, 
-  NotaryMatch, 
+import type { WillData } from '@/types/will';
+import type {
+  ProfessionalProfile,
+  ReviewRequest,
+  ConsultationOffer,
+  NotaryMatch,
   ReviewFeedback,
+  ReviewPriority} from '@/lib/professional-review-network';
+import {
   professionalNetwork,
-  ReviewPriority,
   ProfessionalType
 } from '@/lib/professional-review-network';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
-import { EnhancedTrustSeal, TrustSealLevel, ProfessionalReview } from '@/components/trust/EnhancedTrustSeal';
-import { professionalTrustIntegration, TrustSealUpgrade } from '@/lib/professional-trust-integration';
+import type { TrustSealLevel, ProfessionalReview } from '@/components/trust/EnhancedTrustSeal';
+import { EnhancedTrustSeal } from '@/components/trust/EnhancedTrustSeal';
+import type { TrustSealUpgrade } from '@/lib/professional-trust-integration';
+import { professionalTrustIntegration } from '@/lib/professional-trust-integration';
 import { toast } from 'sonner';
 
 interface ProfessionalReviewNetworkProps {
@@ -66,7 +69,7 @@ export const ProfessionalReviewNetwork: React.FC<ProfessionalReviewNetworkProps>
 
   // Estate Planner Tab
   const [plannerLocation, setPlannerLocation] = useState('');
-  
+
   // Notary Tab
   const [notaryForm, setNotaryForm] = useState({
     location: '',
@@ -81,23 +84,23 @@ export const ProfessionalReviewNetwork: React.FC<ProfessionalReviewNetworkProps>
       const request = await professionalNetwork.requestAttorneyReview(willData, jurisdiction, {
         priority: attorneyForm.priority,
         specificConcerns: attorneyForm.specificConcerns.split(',').map(s => s.trim()).filter(Boolean),
-        budget: { 
-          min: attorneyForm.budgetMin, 
-          max: attorneyForm.budgetMax, 
-          currency: 'EUR' 
+        budget: {
+          min: attorneyForm.budgetMin,
+          max: attorneyForm.budgetMax,
+          currency: 'EUR'
         },
         timeline: attorneyForm.timeline,
         preferredLanguage: attorneyForm.language
       });
-      
+
       setReviewRequest(request);
-      
+
       // If assigned, simulate review process
       if (request.status === 'assigned') {
         setTimeout(async () => {
           const feedback = await professionalNetwork.submitForReview(request);
           setReviewFeedback(feedback);
-          
+
           // Process Trust Seal upgrade after review
           try {
             const upgrade = await professionalTrustIntegration.processReviewUpgrade(
@@ -106,7 +109,7 @@ export const ProfessionalReviewNetwork: React.FC<ProfessionalReviewNetworkProps>
               currentTrustLevel,
               professionalReviews
             );
-            
+
             if (upgrade) {
               const notification = professionalTrustIntegration.createUpgradeNotification(upgrade);
               toast.success(notification.title, {
@@ -118,7 +121,7 @@ export const ProfessionalReviewNetwork: React.FC<ProfessionalReviewNetworkProps>
           } catch (error) {
             console.error('Failed to process trust seal upgrade:', error);
           }
-          
+
           onReviewComplete?.(feedback);
         }, 3000);
       }
@@ -165,7 +168,7 @@ export const ProfessionalReviewNetwork: React.FC<ProfessionalReviewNetworkProps>
             <AvatarImage src={professional.profileImage} />
             <AvatarFallback>{professional.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
           </Avatar>
-          
+
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between">
               <div>
@@ -180,14 +183,14 @@ export const ProfessionalReviewNetwork: React.FC<ProfessionalReviewNetworkProps>
                 </div>
                 <Badge variant={
                   professional.availability === 'immediate' ? 'default' :
-                  professional.availability === 'within_24h' ? 'secondary' : 
+                  professional.availability === 'within_24h' ? 'secondary' :
                   'outline'
                 }>
                   {professional.availability.replace('_', ' ')}
                 </Badge>
               </div>
             </div>
-            
+
             <div className="mt-3 space-y-2">
               <div className="flex items-center space-x-4 text-sm text-gray-600">
                 <div className="flex items-center">
@@ -199,7 +202,7 @@ export const ProfessionalReviewNetwork: React.FC<ProfessionalReviewNetworkProps>
                   {professional.languages.join(', ')}
                 </div>
               </div>
-              
+
               <div className="flex flex-wrap gap-1">
                 {professional.specializations.slice(0, 3).map(spec => (
                   <Badge key={spec} variant="outline" className="text-xs">
@@ -207,9 +210,9 @@ export const ProfessionalReviewNetwork: React.FC<ProfessionalReviewNetworkProps>
                   </Badge>
                 ))}
               </div>
-              
+
               <p className="text-sm text-gray-700 line-clamp-2">{professional.bio}</p>
-              
+
               <div className="flex items-center justify-between pt-2">
                 <span className="text-lg font-semibold">€{professional.hourlyRate}/hour</span>
                 {onSelect && (
@@ -252,19 +255,19 @@ export const ProfessionalReviewNetwork: React.FC<ProfessionalReviewNetworkProps>
                 {reviewRequest.status.replace('_', ' ')}
               </Badge>
             </div>
-            
+
             {reviewRequest.estimatedCompletion && (
               <div className="flex justify-between items-center">
                 <span className="font-medium">Estimated Completion:</span>
                 <span>{reviewRequest.estimatedCompletion.toLocaleDateString()}</span>
               </div>
             )}
-            
+
             <div className="flex justify-between items-center">
               <span className="font-medium">Priority:</span>
               <Badge variant="outline">{reviewRequest.priority}</Badge>
             </div>
-            
+
             {reviewRequest.status === 'in_review' || reviewRequest.status === 'assigned' ? (
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
@@ -382,7 +385,7 @@ export const ProfessionalReviewNetwork: React.FC<ProfessionalReviewNetworkProps>
             validationScore={validationScore}
             className="h-fit"
           />
-          
+
           {professionalReviews.length === 0 && (
             <Alert className="mt-4">
               <AlertCircle className="h-4 w-4" />
@@ -395,7 +398,7 @@ export const ProfessionalReviewNetwork: React.FC<ProfessionalReviewNetworkProps>
             </Alert>
           )}
         </div>
-        
+
         <div className="lg:col-span-2 space-y-6">
           {renderReviewStatus()}
           {renderReviewFeedback()}
@@ -419,7 +422,7 @@ export const ProfessionalReviewNetwork: React.FC<ProfessionalReviewNetworkProps>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="priority">Review Priority</Label>
-                  <Select value={attorneyForm.priority} onValueChange={(value) => 
+                  <Select value={attorneyForm.priority} onValueChange={(value) =>
                     setAttorneyForm(prev => ({ ...prev, priority: value as ReviewPriority }))
                   }>
                     <SelectTrigger>
@@ -435,7 +438,7 @@ export const ProfessionalReviewNetwork: React.FC<ProfessionalReviewNetworkProps>
 
                 <div>
                   <Label htmlFor="language">Preferred Language</Label>
-                  <Select value={attorneyForm.language} onValueChange={(value) => 
+                  <Select value={attorneyForm.language} onValueChange={(value) =>
                     setAttorneyForm(prev => ({ ...prev, language: value }))
                   }>
                     <SelectTrigger>
@@ -472,7 +475,7 @@ export const ProfessionalReviewNetwork: React.FC<ProfessionalReviewNetworkProps>
 
                 <div>
                   <Label htmlFor="timeline">Timeline</Label>
-                  <Select value={attorneyForm.timeline} onValueChange={(value) => 
+                  <Select value={attorneyForm.timeline} onValueChange={(value) =>
                     setAttorneyForm(prev => ({ ...prev, timeline: value }))
                   }>
                     <SelectTrigger>
@@ -496,8 +499,8 @@ export const ProfessionalReviewNetwork: React.FC<ProfessionalReviewNetworkProps>
                 />
               </div>
 
-              <Button 
-                onClick={handleRequestAttorneyReview} 
+              <Button
+                onClick={handleRequestAttorneyReview}
                 disabled={isLoading}
                 className="w-full"
               >
@@ -516,8 +519,8 @@ export const ProfessionalReviewNetwork: React.FC<ProfessionalReviewNetworkProps>
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <Button 
-                onClick={handleGetConsultationOffers} 
+              <Button
+                onClick={handleGetConsultationOffers}
                 disabled={isLoading}
                 className="w-full"
               >
@@ -617,7 +620,7 @@ export const ProfessionalReviewNetwork: React.FC<ProfessionalReviewNetworkProps>
 
                 <div>
                   <Label htmlFor="service-type">Service Type</Label>
-                  <Select value={notaryForm.serviceType} onValueChange={(value) => 
+                  <Select value={notaryForm.serviceType} onValueChange={(value) =>
                     setNotaryForm(prev => ({ ...prev, serviceType: value }))
                   }>
                     <SelectTrigger>
@@ -635,7 +638,7 @@ export const ProfessionalReviewNetwork: React.FC<ProfessionalReviewNetworkProps>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="notary-language">Language</Label>
-                  <Select value={notaryForm.language} onValueChange={(value) => 
+                  <Select value={notaryForm.language} onValueChange={(value) =>
                     setNotaryForm(prev => ({ ...prev, language: value }))
                   }>
                     <SelectTrigger>
@@ -652,7 +655,7 @@ export const ProfessionalReviewNetwork: React.FC<ProfessionalReviewNetworkProps>
 
                 <div>
                   <Label htmlFor="timeframe">Timeframe</Label>
-                  <Select value={notaryForm.timeframe} onValueChange={(value) => 
+                  <Select value={notaryForm.timeframe} onValueChange={(value) =>
                     setNotaryForm(prev => ({ ...prev, timeframe: value }))
                   }>
                     <SelectTrigger>
@@ -667,8 +670,8 @@ export const ProfessionalReviewNetwork: React.FC<ProfessionalReviewNetworkProps>
                 </div>
               </div>
 
-              <Button 
-                onClick={handleFindNotaries} 
+              <Button
+                onClick={handleFindNotaries}
                 disabled={isLoading || !notaryForm.location}
                 className="w-full"
               >
@@ -681,10 +684,10 @@ export const ProfessionalReviewNetwork: React.FC<ProfessionalReviewNetworkProps>
             <Card key={match.professional.id}>
               <CardContent className="p-0">
                 {renderProfessionalCard(match.professional)}
-                
+
                 <div className="px-6 pb-6 space-y-4">
                   <Separator />
-                  
+
                   <div>
                     <h4 className="font-semibold mb-3">Available Services</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -699,7 +702,7 @@ export const ProfessionalReviewNetwork: React.FC<ProfessionalReviewNetworkProps>
                       ))}
                     </div>
                   </div>
-                  
+
                   <div>
                     <h4 className="font-semibold mb-3">Available Appointments</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">

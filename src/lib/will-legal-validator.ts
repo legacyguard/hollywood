@@ -52,7 +52,7 @@ const JURISDICTION_RULES = {
   'Czech-Republic': {
     forcedHeirsMinimum: {
       minorChildren: 0.5, // 50% minimum for minor children
-      adultChildren: 0.25, // 25% minimum for adult children  
+      adultChildren: 0.25, // 25% minimum for adult children
       spouse: 0.5, // 50% minimum for spouse
       parents: 0.25 // 25% minimum for parents (if no children/spouse)
     },
@@ -98,7 +98,7 @@ export class LegalValidator {
    */
   validateBeneficiaryShares(beneficiaries: WillData['beneficiaries'], jurisdiction: string): ValidationResult {
     const totalShares = beneficiaries.reduce((sum, b) => sum + b.percentage, 0);
-    
+
     if (totalShares !== 100) {
       return {
         isValid: false,
@@ -106,7 +106,7 @@ export class LegalValidator {
         message: `Beneficiary shares must total exactly 100%. Current total: ${totalShares}%`,
         messageKey: 'shares_total_invalid',
         field: 'beneficiaries',
-        autoSuggestion: totalShares < 100 
+        autoSuggestion: totalShares < 100
           ? `Add ${100 - totalShares}% to existing beneficiaries`
           : `Reduce shares by ${totalShares - 100}%`
       };
@@ -126,15 +126,15 @@ export class LegalValidator {
   checkForcedHeirsCompliance(willData: WillData, jurisdiction: string): ComplianceReport {
     const results: ValidationResult[] = [];
     const forcedHeirsIssues: ValidationResult[] = [];
-    
+
     // Identify potential forced heirs from beneficiaries and guardian data
-    const children = willData.beneficiaries.filter(b => 
+    const children = willData.beneficiaries.filter(b =>
       ['child', 'son', 'daughter'].includes(b.relationship.toLowerCase())
     );
-    const spouse = willData.beneficiaries.find(b => 
+    const spouse = willData.beneficiaries.find(b =>
       ['spouse', 'husband', 'wife', 'partner'].includes(b.relationship.toLowerCase())
     );
-    const parents = willData.beneficiaries.filter(b => 
+    const parents = willData.beneficiaries.filter(b =>
       ['parent', 'mother', 'father'].includes(b.relationship.toLowerCase())
     );
 
@@ -142,7 +142,7 @@ export class LegalValidator {
     if (children.length > 0) {
       const childrenTotalShare = children.reduce((sum, child) => sum + child.percentage, 0);
       const requiredMinimum = this.rules.forcedHeirsMinimum.minorChildren * 100; // Assuming minor for safety
-      
+
       if (childrenTotalShare < requiredMinimum) {
         forcedHeirsIssues.push({
           isValid: false,
@@ -180,13 +180,13 @@ export class LegalValidator {
     // Determine overall compliance
     const hasErrors = forcedHeirsIssues.some(issue => issue.level === 'error');
     const hasWarnings = forcedHeirsIssues.some(issue => issue.level === 'warning');
-    
+
     // Build list of protected forced heirs
     const forcedHeirsProtected: string[] = [];
     if (children.length > 0) forcedHeirsProtected.push('child');
     if (spouse) forcedHeirsProtected.push('spouse');
     if (parents.length > 0) forcedHeirsProtected.push('parent');
-    
+
     return {
       overall: hasErrors ? 'non-compliant' : hasWarnings ? 'partial' : 'compliant',
       isCompliant: !hasErrors,
@@ -220,7 +220,7 @@ export class LegalValidator {
 
     // Check for conflicting asset assignments
     const assetRecipients = new Map<string, string[]>();
-    
+
     // Collect specific asset assignments
     assets.personalProperty?.forEach(item => {
       if (item.recipient) {
@@ -263,7 +263,7 @@ export class LegalValidator {
       });
     } else {
       // Check if executor is also a major beneficiary (potential conflict)
-      const executorIsBeneficiary = beneficiaries.some(b => 
+      const executorIsBeneficiary = beneficiaries.some(b =>
         b.name.toLowerCase() === executorData.primaryExecutor!.name.toLowerCase() && b.percentage > 50
       );
 
@@ -294,7 +294,7 @@ export class LegalValidator {
    */
   validateWitnessRequirements(willType: string, witnessData?: any): ValidationResult {
     const requiredWitnesses = this.rules.witnessRequirements[willType as keyof typeof this.rules.witnessRequirements];
-    
+
     if (requiredWitnesses === undefined) {
       return {
         isValid: false,
@@ -315,7 +315,7 @@ export class LegalValidator {
     }
 
     const actualWitnesses = witnessData?.length || 0;
-    
+
     if (actualWitnesses < requiredWitnesses) {
       return {
         isValid: false,
@@ -352,7 +352,7 @@ export class LegalValidator {
     const allResults: ValidationResult[] = [];
     const forcedHeirsReport = this.checkForcedHeirsCompliance(willData, this.jurisdiction);
     const legalConflicts = this.detectLegalConflicts(willData.assets, willData.beneficiaries);
-    
+
     // Basic validations
     allResults.push(this.validateBeneficiaryShares(willData.beneficiaries, this.jurisdiction));
     allResults.push(this.validateWitnessRequirements(willType));
@@ -421,7 +421,7 @@ export class LegalValidator {
     switch (fieldName) {
       case 'beneficiaries':
         return this.validateBeneficiaryShares(value, this.jurisdiction);
-      
+
       case 'testator.personalInfo.name':
       case 'testator_data.fullName':
         return {

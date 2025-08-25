@@ -192,7 +192,7 @@ export const FIVE_MINUTE_CHALLENGES: FiveMinuteChallenge[] = [
   },
 
   {
-    id: 'first_guardian_challenge', 
+    id: 'first_guardian_challenge',
     title: 'Vytvorte Kruh Dôvery',
     description: 'Určite aspoň jednu osobu, ktorej dôverujete. Nemusí mať prístup k ničomu, bude len vedieť, že existuje miesto, kde hľadať pomoc.',
     estimatedTime: 3,
@@ -251,33 +251,33 @@ export function calculateUnlockedMilestones(
 ): MilestoneCalculationResult {
   const currentMilestones = SERENITY_MILESTONES.map(milestone => {
     let isUnlocked = false;
-    
+
     switch (milestone.unlockCondition.type) {
       case 'documents_uploaded':
         isUnlocked = userStats.documentsCount >= (milestone.unlockCondition.value as number);
         break;
-        
+
       case 'guardians_added':
         isUnlocked = userStats.guardiansCount >= (milestone.unlockCondition.value as number);
         break;
-        
+
       case 'categories_filled': {
         const requiredCategories = milestone.unlockCondition.value as string[];
-        isUnlocked = requiredCategories.every(cat => 
+        isUnlocked = requiredCategories.every(cat =>
           userStats.categoriesWithDocuments.includes(cat)
         );
         break;
       }
-        
+
       case 'expiry_tracking':
         isUnlocked = userStats.hasExpiryTracking;
         break;
-        
+
       case 'legacy_created':
         isUnlocked = userStats.legacyItemsCount >= (milestone.unlockCondition.value as number);
         break;
     }
-    
+
     return {
       ...milestone,
       isUnlocked,
@@ -317,23 +317,23 @@ export function getNextChallenge(
   if (userStats.documentsCount === 0) {
     return FIVE_MINUTE_CHALLENGES.find(c => c.id === 'first_document_challenge') || null;
   }
-  
+
   // If no guardians yet, suggest adding guardian
   if (userStats.guardiansCount === 0) {
     return FIVE_MINUTE_CHALLENGES.find(c => c.id === 'first_guardian_challenge') || null;
   }
-  
+
   // If less than 3 categories, suggest organizing
   if (userStats.categoriesWithDocuments.length < 3) {
     return FIVE_MINUTE_CHALLENGES.find(c => c.id === 'organize_categories_challenge') || null;
   }
-  
+
   // If no expiry tracking, suggest it
   const hasExpiryMilestone = unlockedMilestones.find(m => m.id === 'time_guardian')?.isUnlocked;
   if (!hasExpiryMilestone) {
     return FIVE_MINUTE_CHALLENGES.find(c => c.id === 'expiry_protection_challenge') || null;
   }
-  
+
   return null; // No active challenge
 }
 
@@ -342,7 +342,7 @@ export function getNextChallenge(
  */
 export function generateSerenityMessage(unlockedMilestones: SerenityMilestone[]): string {
   const unlockedCount = unlockedMilestones.filter(m => m.isUnlocked).length;
-  
+
   if (unlockedCount === 0) {
     return "Vítajte na Ceste Pokoja. Každý krok, ktorý urobíte, prinesie vašej rodine väčšiu istotu a pokoj.";
   } else if (unlockedCount === 1) {

@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 export type CountryCode = 'sk' | 'cz' | 'en';
 export type LanguageCode = 'sk' | 'cs' | 'en';
@@ -30,7 +31,7 @@ const COUNTRY_MAPPINGS: Record<CountryCode, LocalizationState> = {
     currency: 'EUR'
   },
   cz: {
-    countryCode: 'cz', 
+    countryCode: 'cz',
     languageCode: 'cs',
     jurisdiction: 'Czech Republic',
     currency: 'CZK'
@@ -45,9 +46,9 @@ const COUNTRY_MAPPINGS: Record<CountryCode, LocalizationState> = {
 
 const detectCountryFromDomain = (): CountryCode => {
   if (typeof window === 'undefined') return 'en';
-  
+
   const hostname = window.location.hostname.toLowerCase();
-  
+
   // Check for country-specific domains
   if (hostname.includes('legacyguard.sk') || hostname.endsWith('.sk')) {
     return 'sk';
@@ -55,7 +56,7 @@ const detectCountryFromDomain = (): CountryCode => {
   if (hostname.includes('legacyguard.cz') || hostname.endsWith('.cz')) {
     return 'cz';
   }
-  
+
   // Check for development/staging patterns
   if (hostname.includes('slovakia') || hostname.includes('sk-')) {
     return 'sk';
@@ -63,7 +64,7 @@ const detectCountryFromDomain = (): CountryCode => {
   if (hostname.includes('czech') || hostname.includes('cz-')) {
     return 'cz';
   }
-  
+
   // Default to English for development and unknown domains
   return 'en';
 };
@@ -73,11 +74,11 @@ const detectCountryFromGeolocation = async (): Promise<CountryCode> => {
     // Simple IP-based country detection
     const response = await fetch('https://ipapi.co/json/');
     const data = await response.json();
-    
+
     const countryCode = data.country_code?.toLowerCase();
     if (countryCode === 'sk') return 'sk';
     if (countryCode === 'cz') return 'cz';
-    
+
     return 'en';
   } catch (error) {
     console.log('Geolocation detection failed, using default');
@@ -93,7 +94,7 @@ export const LocalizationProvider: React.FC<LocalizationProviderProps> = ({ chil
     const initializeLocalization = async () => {
       // First try domain detection (fastest and most reliable)
       let detectedCountry = detectCountryFromDomain();
-      
+
       // If no specific domain match, try geolocation as fallback
       if (detectedCountry === 'en' && typeof window !== 'undefined') {
         const geoCountry = await detectCountryFromGeolocation();
@@ -101,13 +102,13 @@ export const LocalizationProvider: React.FC<LocalizationProviderProps> = ({ chil
           detectedCountry = geoCountry;
         }
       }
-      
+
       // Check if user has previously selected a different country
       const savedCountry = localStorage.getItem('legacyguard-country') as CountryCode;
       if (savedCountry && COUNTRY_MAPPINGS[savedCountry]) {
         detectedCountry = savedCountry;
       }
-      
+
       setState(COUNTRY_MAPPINGS[detectedCountry]);
       setIsLoading(false);
     };
@@ -191,7 +192,7 @@ export const useCountryContent = <T,>(contentType: 'legal_info' | 'wizard_steps'
       } catch (err) {
         console.error(`Failed to load ${contentType} for ${countryCode}:`, err);
         setError(`Failed to load ${contentType}`);
-        
+
         // Fallback to English if country-specific content fails
         if (countryCode !== 'en') {
           try {

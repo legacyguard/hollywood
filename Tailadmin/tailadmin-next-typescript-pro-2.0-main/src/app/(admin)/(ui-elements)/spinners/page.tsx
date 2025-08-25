@@ -5,7 +5,7 @@ import React from "react";
 import SpinnerTwo from "./SpinnerTwo";
 import SpinnerThree from "./SpinnerThree";
 import SpinnerFour from "./SpinnerFour";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import SpinnerOne from "./SpinnerOne";
 
 export const metadata: Metadata = {

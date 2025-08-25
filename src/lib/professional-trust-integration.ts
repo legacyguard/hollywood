@@ -1,14 +1,16 @@
-import { 
-  ProfessionalReview, 
-  TrustSealLevel,
-  EnhancedTrustSeal 
+import type {
+  ProfessionalReview,
+  TrustSealLevel} from '@/components/trust/EnhancedTrustSeal';
+import {
+  EnhancedTrustSeal
 } from '@/components/trust/EnhancedTrustSeal';
-import { 
+import type {
   ReviewFeedback,
-  ReviewRequest,
-  professionalNetwork 
+  ReviewRequest} from '@/lib/professional-review-network';
+import {
+  professionalNetwork
 } from '@/lib/professional-review-network';
-import { WillData } from '@/types/will';
+import type { WillData } from '@/types/will';
 
 export interface TrustSealUpgrade {
   originalLevel: TrustSealLevel;
@@ -21,7 +23,7 @@ export interface TrustSealUpgrade {
 }
 
 export class ProfessionalTrustIntegration {
-  
+
   /**
    * Determines trust seal level based on professional reviews
    */
@@ -36,7 +38,7 @@ export class ProfessionalTrustIntegration {
     const hasAttorneyReview = professionalReviews.some(r => r.reviewType === 'attorney_review' && r.verified);
     const hasNotaryReview = professionalReviews.some(r => r.reviewType === 'notary_certification' && r.verified);
     const hasComprehensiveAudit = professionalReviews.some(r => r.reviewType === 'comprehensive_audit' && r.verified);
-    
+
     const averageScore = professionalReviews.reduce((sum, r) => sum + r.complianceScore, 0) / professionalReviews.length;
     const highQualityReviews = professionalReviews.filter(r => r.complianceScore >= 90 && r.verified).length;
 
@@ -71,13 +73,13 @@ export class ProfessionalTrustIntegration {
       licenseNumber?: string;
     }
   ): ProfessionalReview {
-    const reviewType = reviewRequest.type === 'attorney' ? 'attorney_review' : 
-                      reviewRequest.type === 'notary' ? 'notary_certification' : 
+    const reviewType = reviewRequest.type === 'attorney' ? 'attorney_review' :
+                      reviewRequest.type === 'notary' ? 'notary_certification' :
                       'comprehensive_audit';
 
     const complianceScore = Math.round(
-      (reviewFeedback.overall.legalCompliance + 
-       reviewFeedback.overall.completeness + 
+      (reviewFeedback.overall.legalCompliance +
+       reviewFeedback.overall.completeness +
        reviewFeedback.overall.recommendations) / 3
     );
 
@@ -105,7 +107,7 @@ export class ProfessionalTrustIntegration {
     currentTrustLevel: TrustSealLevel,
     professionalReviews: ProfessionalReview[] = []
   ): Promise<TrustSealUpgrade | null> {
-    
+
     // Don't upgrade if review requires revision
     if (reviewFeedback.requiresRevision) {
       return null;
@@ -118,7 +120,7 @@ export class ProfessionalTrustIntegration {
 
     // Create new professional review record
     const newReview = this.createProfessionalReview(reviewRequest, reviewFeedback, professionalInfo);
-    
+
     // Calculate new trust seal level with the new review
     const allReviews = [...professionalReviews, newReview];
     const newLevel = this.determineTrustSealLevel(allReviews, reviewFeedback.overall.legalCompliance);
@@ -147,7 +149,7 @@ export class ProfessionalTrustIntegration {
    */
   private static async getProfessionalInfo(professionalId: string): Promise<{
     name: string;
-    title: string; 
+    title: string;
     firmName: string;
     licenseNumber?: string;
   } | null> {
@@ -204,14 +206,14 @@ export class ProfessionalTrustIntegration {
    * Gets reason for trust seal upgrade
    */
   private static getUpgradeReason(
-    fromLevel: TrustSealLevel, 
-    toLevel: TrustSealLevel, 
+    fromLevel: TrustSealLevel,
+    toLevel: TrustSealLevel,
     review: ProfessionalReview
   ): string {
     switch (toLevel) {
       case 'premium':
         return `Multiple professional reviews with ${review.complianceScore}% compliance score achieved premium certification status.`;
-      case 'professional': 
+      case 'professional':
         return `Professional legal review by ${review.professionalTitle} ${review.professionalName} achieved ${review.complianceScore}% compliance.`;
       case 'verified':
         return `Professional verification completed with ${review.complianceScore}% compliance score.`;
@@ -264,7 +266,7 @@ export class ProfessionalTrustIntegration {
   ) {
     const jurisdiction = willData.legal_data?.jurisdiction || 'Slovakia';
     const level = this.determineTrustSealLevel(professionalReviews, validationScore);
-    const lastUpdated = professionalReviews.length > 0 
+    const lastUpdated = professionalReviews.length > 0
       ? new Date(Math.max(...professionalReviews.map(r => r.reviewDate.getTime())))
       : new Date();
 

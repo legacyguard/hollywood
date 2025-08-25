@@ -1,6 +1,6 @@
 import CRM from "@/components/Dashboard/CRM";
 
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 
 export const metadata: Metadata = {

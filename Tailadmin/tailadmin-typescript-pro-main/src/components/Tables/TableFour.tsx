@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { BRAND } from '../../types/brand';
+import type { BRAND } from '../../types/brand';
 import DropdownDefault from '../Dropdowns/DropdownDefault';
 import BrandOne from '../../images/brand/brand-01.svg';
 import BrandTwo from '../../images/brand/brand-02.svg';
@@ -101,7 +101,7 @@ const TableFour: React.FC = () => {
                 <div className="h-9 w-full max-w-9 flex-shrink-0">
                   <img src={brand.logo} alt="Brand" />
                 </div>
-                
+
                 <p className="hidden font-medium text-black dark:text-white sm:block">
                   {brand.name}
                 </p>

@@ -36,7 +36,7 @@ interface DocumentAnalysisResult {
     type: 'amount' | 'account' | 'reference' | 'contact' | 'other';
   }>;
   suggestedTags: string[];
-  
+
   // Bundle Intelligence (Phase 2)
   potentialBundles: Array<{
     bundleId: string;
@@ -47,7 +47,7 @@ interface DocumentAnalysisResult {
     matchScore: number;
     matchReasons: string[];
   }>;
-  
+
   suggestedNewBundle: {
     name: string;
     category: string;
@@ -57,7 +57,7 @@ interface DocumentAnalysisResult {
     confidence: number;
     reasoning: string;
   } | null;
-  
+
   // Document Versioning (Phase 3)
   potentialVersions: Array<{
     documentId: string;
@@ -67,14 +67,14 @@ interface DocumentAnalysisResult {
     similarityScore: number;
     matchReasons: string[];
   }>;
-  
+
   versioningSuggestion: {
     action: 'replace' | 'new_version' | 'separate';
     confidence: number;
     reasoning: string;
     suggestedArchiveReason?: string;
   } | null;
-  
+
   processingId: string;
   processingTime: number;
 }
@@ -118,7 +118,7 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
   const [selectedBundleAction, setSelectedBundleAction] = useState<'link' | 'new' | 'none'>('none');
   const [selectedBundleId, setSelectedBundleId] = useState<string | null>(null);
   const [newBundleName, setNewBundleName] = useState(analysisResult.suggestedNewBundle?.name || '');
-  
+
   // Phase 3: Document versioning state
   const [selectedVersionAction, setSelectedVersionAction] = useState<'replace' | 'new_version' | 'separate' | 'none'>(
     analysisResult.versioningSuggestion?.action || 'none'
@@ -127,7 +127,7 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
   const [customArchiveReason, setCustomArchiveReason] = useState(
     analysisResult.versioningSuggestion?.suggestedArchiveReason || ''
   );
-  
+
   const handleCategoryChange = (newCategory: string) => {
     setEditableData(prev => ({
       ...prev,
@@ -239,7 +239,7 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <h4 className="font-medium">Category</h4>
-                <Icon 
+                <Icon
                   name={getConfidenceIcon(editableData.suggestedCategory.confidence)}
                   className={cn("w-4 h-4", getConfidenceColor(editableData.suggestedCategory.confidence))}
                 />
@@ -267,7 +267,7 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <h4 className="font-medium">Document Title</h4>
-                <Icon 
+                <Icon
                   name={getConfidenceIcon(editableData.suggestedTitle.confidence)}
                   className={cn("w-4 h-4", getConfidenceColor(editableData.suggestedTitle.confidence))}
                 />
@@ -289,7 +289,7 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
                   <h4 className="font-medium">Expiration Date</h4>
-                  <Icon 
+                  <Icon
                     name={getConfidenceIcon(editableData.expirationDate.confidence)}
                     className={cn("w-4 h-4", getConfidenceColor(editableData.expirationDate.confidence))}
                   />
@@ -345,15 +345,15 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
                   <Icon name="clock" className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
                   <h4 className="font-medium text-yellow-800 dark:text-yellow-200">Document Version Detection</h4>
                 </div>
-                
+
                 {editableData.versioningSuggestion && (
                   <div className="p-3 bg-yellow-100 dark:bg-yellow-900/40 rounded-md">
                     <p className="text-sm text-yellow-800 dark:text-yellow-200 font-medium mb-2">
-                      {editableData.versioningSuggestion.action === 'replace' && 
+                      {editableData.versioningSuggestion.action === 'replace' &&
                         "This appears to be a newer version of an existing document."}
-                      {editableData.versioningSuggestion.action === 'new_version' && 
+                      {editableData.versioningSuggestion.action === 'new_version' &&
                         "This looks like a new version of an existing document."}
-                      {editableData.versioningSuggestion.action === 'separate' && 
+                      {editableData.versioningSuggestion.action === 'separate' &&
                         "This may be related to an existing document but appears different enough to keep separate."}
                     </p>
                     <p className="text-xs text-yellow-700 dark:text-yellow-300">
@@ -368,7 +368,7 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
                     <p className="text-sm text-muted-foreground">
                       Found similar documents that might be older versions:
                     </p>
-                    
+
                     {editableData.potentialVersions.map((version) => (
                       <div key={version.documentId} className="p-3 border rounded-lg bg-background">
                         <div className="flex items-center justify-between mb-2">
@@ -398,7 +398,7 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
                 {/* Versioning Action Selection */}
                 <div className="space-y-3">
                   <p className="text-sm font-medium">How would you like to handle this?</p>
-                  
+
                   {editableData.versioningSuggestion?.action === 'replace' && (
                     <label className="flex items-start gap-3 p-3 border rounded-lg hover:bg-muted/50 cursor-pointer">
                       <input
@@ -464,14 +464,14 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
                   <Icon name="link" className="w-5 h-5 text-primary" />
                   <h4 className="font-medium text-primary">Intelligent Document Linking</h4>
                 </div>
-                
+
                 {/* Existing Bundle Options */}
                 {editableData.potentialBundles.length > 0 && (
                   <div className="space-y-3">
                     <p className="text-sm text-muted-foreground">
                       I found existing document bundles that might be related to this document:
                     </p>
-                    
+
                     {editableData.potentialBundles.map((bundle) => (
                       <div key={bundle.bundleId} className="space-y-2">
                         <label className="flex items-start gap-3 p-3 border rounded-lg hover:bg-muted/50 cursor-pointer">
@@ -521,7 +521,7 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
                         </p>
                       </div>
                     )}
-                    
+
                     <label className="flex items-start gap-3 p-3 border rounded-lg hover:bg-muted/50 cursor-pointer">
                       <input
                         type="radio"
@@ -542,7 +542,7 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
                             {(editableData.suggestedNewBundle.confidence * 100).toFixed(0)}% confidence
                           </Badge>
                         </div>
-                        
+
                         {selectedBundleAction === 'new' && (
                           <input
                             type="text"
@@ -552,7 +552,7 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
                             placeholder="Bundle name"
                           />
                         )}
-                        
+
                         <p className="text-xs text-muted-foreground">
                           {editableData.suggestedNewBundle.reasoning}
                         </p>

@@ -29,9 +29,9 @@ interface WillTypeSelectorProps {
   onBack: () => void;
 }
 
-export const WillTypeSelector: React.FC<WillTypeSelectorProps> = ({ 
-  onWillTypeSelected, 
-  onBack 
+export const WillTypeSelector: React.FC<WillTypeSelectorProps> = ({
+  onWillTypeSelected,
+  onBack
 }) => {
   const { content: legalInfo, loading } = useCountryContent<LegalInfo>('legal_info');
   const [selectedType, setSelectedType] = useState<WillType | null>(null);
@@ -80,7 +80,7 @@ export const WillTypeSelector: React.FC<WillTypeSelectorProps> = ({
                   <div className="text-left">
                     <h3 className="font-semibold text-blue-900 dark:text-blue-200 mb-2">Sofia's Guidance</h3>
                     <p className="text-blue-800 dark:text-blue-300">
-                      Excellent. Creating a will is an important act of care. Under {legalInfo.jurisdiction} law, 
+                      Excellent. Creating a will is an important act of care. Under {legalInfo.jurisdiction} law,
                       you have two main forms to choose from. I'll help you select the right one for you.
                     </p>
                   </div>
@@ -146,7 +146,7 @@ export const WillTypeSelector: React.FC<WillTypeSelectorProps> = ({
                 </div>
 
                 <div className="flex gap-3 mt-6">
-                  <Button 
+                  <Button
                     onClick={() => handleTypeSelect('holographic')}
                     variant={selectedType === 'holographic' ? 'default' : 'outline'}
                     className="flex-1"
@@ -220,7 +220,7 @@ export const WillTypeSelector: React.FC<WillTypeSelectorProps> = ({
                 </div>
 
                 <div className="flex gap-3 mt-6">
-                  <Button 
+                  <Button
                     onClick={() => handleTypeSelect('witnessed')}
                     variant={selectedType === 'witnessed' ? 'default' : 'outline'}
                     className="flex-1"
@@ -255,7 +255,7 @@ export const WillTypeSelector: React.FC<WillTypeSelectorProps> = ({
                     <Icon name="x" className="w-4 h-4" />
                   </Button>
                 </div>
-                
+
                 <div className="grid md:grid-cols-3 gap-6">
                   <div>
                     <h4 className="font-medium mb-3 flex items-center gap-2">
@@ -271,7 +271,7 @@ export const WillTypeSelector: React.FC<WillTypeSelectorProps> = ({
                       ))}
                     </ul>
                   </div>
-                  
+
                   <div>
                     <h4 className="font-medium mb-3 flex items-center gap-2">
                       <Icon name="check-circle" className="w-4 h-4 text-green-600" />
@@ -286,7 +286,7 @@ export const WillTypeSelector: React.FC<WillTypeSelectorProps> = ({
                       ))}
                     </ul>
                   </div>
-                  
+
                   <div>
                     <h4 className="font-medium mb-3 flex items-center gap-2">
                       <Icon name="alert-circle" className="w-4 h-4 text-amber-600" />
@@ -312,8 +312,8 @@ export const WillTypeSelector: React.FC<WillTypeSelectorProps> = ({
               <Icon name="arrow-left" className="w-4 h-4 mr-2" />
               Back
             </Button>
-            
-            <Button 
+
+            <Button
               onClick={handleContinue}
               disabled={!selectedType}
               className="bg-primary hover:bg-primary-hover text-primary-foreground"

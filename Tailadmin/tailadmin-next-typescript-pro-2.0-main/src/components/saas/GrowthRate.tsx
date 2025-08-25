@@ -1,6 +1,6 @@
 "use client";
 import { MoreDotIcon } from "@/icons";
-import { ApexOptions } from "apexcharts";
+import type { ApexOptions } from "apexcharts";
 
 import dynamic from "next/dynamic";
 import { useState } from "react";

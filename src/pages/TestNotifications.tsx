@@ -83,7 +83,7 @@ export function TestNotifications() {
       });
 
       const result = await response.json();
-      
+
       if (response.status === 401) {
         toast.success('Cron job endpoint is secure (401 as expected)');
       } else if (response.ok) {
@@ -160,8 +160,8 @@ export function TestNotifications() {
               />
             </div>
 
-            <Button 
-              onClick={sendTestNotification} 
+            <Button
+              onClick={sendTestNotification}
               disabled={isLoading || !email}
               className="w-full"
             >
@@ -194,7 +194,7 @@ export function TestNotifications() {
             </div>
           </div>
 
-          <Button 
+          <Button
             onClick={testCronJob}
             disabled={isLoading}
             variant="outline"
@@ -218,8 +218,8 @@ export function TestNotifications() {
         {testResult && (
           <Card className={`p-6 ${testResult.success ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}`}>
             <div className="flex items-center gap-3 mb-4">
-              <Icon 
-                name={testResult.success ? "checkCircle" : "alertCircle"} 
+              <Icon
+                name={testResult.success ? "checkCircle" : "alertCircle"}
                 className={`w-6 h-6 ${testResult.success ? 'text-green-600' : 'text-red-600'}`}
               />
               <h3 className={`font-semibold ${testResult.success ? 'text-green-900' : 'text-red-900'}`}>
@@ -243,7 +243,7 @@ export function TestNotifications() {
             <Icon name="settings" className="w-5 h-5" />
             Configuration Status
           </h3>
-          
+
           <div className="space-y-3 text-sm">
             <div className="flex items-center justify-between">
               <span>Supabase URL</span>

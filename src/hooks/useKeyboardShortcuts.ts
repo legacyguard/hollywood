@@ -66,7 +66,7 @@ export const useKeyboardShortcuts = (onOpenSearch?: () => void) => {
     const showShortcutsHelp = () => {
       const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
       const modKeyName = isMac ? 'Cmd' : 'Ctrl';
-      
+
       toast.info(
         `Keyboard Shortcuts:\n${modKeyName}+1: Dashboard\n${modKeyName}+2: Vault\n${modKeyName}+3: Guardians\n${modKeyName}+4: Legacy\n${modKeyName}+K or ?: Help`,
         { duration: 5000 }

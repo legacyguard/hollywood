@@ -31,7 +31,7 @@ const mockAnalysisResult = {
   keyData: [
     {
       label: "Account Number",
-      value: "1234567890", 
+      value: "1234567890",
       confidence: 0.95,
       type: "account" as const
     },
@@ -49,7 +49,7 @@ const mockAnalysisResult = {
     }
   ],
   suggestedTags: ["utility", "monthly", "housing", "expires"],
-  
+
   // Bundle Intelligence (Phase 2) - Mock data
   potentialBundles: [
     {
@@ -62,7 +62,7 @@ const mockAnalysisResult = {
       matchReasons: ["Same address found", "Housing category match"]
     },
     {
-      bundleId: "bundle_002", 
+      bundleId: "bundle_002",
       bundleName: "Utility Bills",
       bundleCategory: "housing",
       primaryEntity: "Electric & Gas",
@@ -71,7 +71,7 @@ const mockAnalysisResult = {
       matchReasons: ["Utility category match", "Monthly recurring pattern"]
     }
   ],
-  
+
   suggestedNewBundle: {
     name: "Property: 123 Main St - Utilities",
     category: "housing",
@@ -81,7 +81,7 @@ const mockAnalysisResult = {
     confidence: 0.8,
     reasoning: "Detected property utility bill with specific address"
   },
-  
+
   processingId: "test_processing_12345",
   processingTime: 1250
 };
@@ -104,7 +104,7 @@ export const IntelligentDocumentTester: React.FC = () => {
   const handleConfirm = (confirmedData: typeof mockAnalysisResult & { bundleSelection?: any }) => {
     setIsProcessing(true);
     console.log('Confirmed data:', confirmedData);
-    
+
     // Simulate processing
     setTimeout(() => {
       setIsProcessing(false);
@@ -143,7 +143,7 @@ export const IntelligentDocumentTester: React.FC = () => {
             </p>
           </div>
         </div>
-        
+
         <div className="space-y-4">
           <div className="p-4 bg-muted rounded-lg">
             <h4 className="font-medium mb-2">Mock Document: Electric Utility Bill</h4>
@@ -155,7 +155,7 @@ export const IntelligentDocumentTester: React.FC = () => {
             </div>
           </div>
 
-          <Button 
+          <Button
             onClick={handleStartTest}
             className="w-full gap-2"
           >
@@ -163,7 +163,7 @@ export const IntelligentDocumentTester: React.FC = () => {
             Test Document Analysis Interface
           </Button>
         </div>
-        
+
         <div className="mt-4 p-3 bg-primary/5 rounded-lg">
           <div className="flex gap-2">
             <Icon name="info" className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />

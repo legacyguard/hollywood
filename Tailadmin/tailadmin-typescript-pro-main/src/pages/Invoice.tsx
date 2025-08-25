@@ -30,7 +30,7 @@ const Invoice: React.FC = () => {
           </div>
         </div>
       </div>
-      
+
     </DefaultLayout>
   );
 };

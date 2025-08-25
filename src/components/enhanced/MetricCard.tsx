@@ -16,12 +16,12 @@ interface MetricCardProps {
   className?: string;
 }
 
-export function MetricCard({ 
-  title, 
-  value, 
-  change, 
+export function MetricCard({
+  title,
+  value,
+  change,
   changeLabel,
-  icon, 
+  icon,
   trend = 'neutral',
   color = 'primary',
   loading = false,
@@ -52,7 +52,7 @@ export function MetricCard({
 
   return (
     <FadeIn duration={0.5}>
-      <Card 
+      <Card
         className={cn(
           "relative overflow-hidden transition-all duration-300",
           onClick && "cursor-pointer hover:shadow-lg hover:-translate-y-1",
@@ -64,7 +64,7 @@ export function MetricCard({
           <div className="flex items-center justify-between">
             <div className="flex-1">
               <p className="text-sm font-medium text-muted-foreground">{title}</p>
-              
+
               {loading ? (
                 <div className="mt-2 space-y-2">
                   <div className="h-8 w-24 bg-muted animate-pulse rounded" />
@@ -75,16 +75,16 @@ export function MetricCard({
                   <p className="text-2xl font-bold mt-2 text-card-foreground">
                     {value}
                   </p>
-                  
+
                   {(change !== undefined || changeLabel) && (
                     <div className={cn(
                       "flex items-center mt-2 text-sm",
                       trendClasses[trend]
                     )}>
                       {trend !== 'neutral' && (
-                        <Icon 
-                          name={trend === 'up' ? 'trending-up' : 'trending-down'} 
-                          className="w-4 h-4 mr-1" 
+                        <Icon
+                          name={trend === 'up' ? 'trending-up' : 'trending-down'}
+                          className="w-4 h-4 mr-1"
                         />
                       )}
                       {change !== undefined && (
@@ -98,7 +98,7 @@ export function MetricCard({
                 </>
               )}
             </div>
-            
+
             <div className={cn(
               "w-12 h-12 rounded-full flex items-center justify-center",
               colorClasses[color]
@@ -107,7 +107,7 @@ export function MetricCard({
             </div>
           </div>
         </div>
-        
+
         {/* Decorative gradient bar */}
         <div className={cn(
           "absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r",

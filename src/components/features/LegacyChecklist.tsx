@@ -121,8 +121,8 @@ export function LegacyChecklist({ className, onItemClick }: LegacyChecklistProps
               {completedItems}/{totalItems} completed
             </span>
           </div>
-          <Progress 
-            value={progressPercentage} 
+          <Progress
+            value={progressPercentage}
             className="h-2"
           />
         </div>
@@ -145,9 +145,9 @@ export function LegacyChecklist({ className, onItemClick }: LegacyChecklistProps
           >
             {/* Icon */}
             <div className="flex-shrink-0 w-10 h-10 rounded-lg border border-border flex items-center justify-center">
-              <Icon 
-                name={item.icon} 
-                className={cn('w-5 h-5', getPillarColor(item.pillar))} 
+              <Icon
+                name={item.icon}
+                className={cn('w-5 h-5', getPillarColor(item.pillar))}
               />
             </div>
 
@@ -178,8 +178,8 @@ export function LegacyChecklist({ className, onItemClick }: LegacyChecklistProps
         <p className="text-sm text-muted-foreground mb-3">
           You're {progressPercentage}% through your journey as a Guardian of Memories
         </p>
-        <Button 
-          className="w-full" 
+        <Button
+          className="w-full"
           onClick={() => {
             const nextItem = checklistItems.find(item => !item.isCompleted);
             if (nextItem && onItemClick) {

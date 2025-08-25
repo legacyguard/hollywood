@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { ApexOptions } from "apexcharts";
+import type { ApexOptions } from "apexcharts";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { MoreDotIcon } from "@/icons";

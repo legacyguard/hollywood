@@ -3,8 +3,8 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon-library';
 import { Badge } from '@/components/ui/badge';
-import { WillData } from './WillWizard';
-import { WillType } from './WillTypeSelector';
+import type { WillData } from './WillWizard';
+import type { WillType } from './WillTypeSelector';
 import { useLocalization } from '@/contexts/LocalizationContext';
 
 interface CheckItem {
@@ -76,7 +76,7 @@ export const SofiaCorrectnessCheck: React.FC<SofiaCorrectnessCheckProps> = ({
     if (jurisdiction === 'Slovakia' || jurisdiction === 'Czech Republic') {
       const hasChildren = willData.beneficiaries.some(b => b.relationship === 'child');
       const hasSpouse = willData.beneficiaries.some(b => b.relationship === 'spouse');
-      
+
       if (hasChildren || hasSpouse) {
         checks.push({
           id: 'forced_heirs',
@@ -140,7 +140,7 @@ export const SofiaCorrectnessCheck: React.FC<SofiaCorrectnessCheckProps> = ({
       if (!fullName) missing.push('full name');
       if (!dateOfBirth) missing.push('date of birth');
       if (!address) missing.push('address');
-      
+
       checks.push({
         id: 'personal_info',
         status: 'error',
@@ -169,11 +169,11 @@ export const SofiaCorrectnessCheck: React.FC<SofiaCorrectnessCheckProps> = ({
     }
 
     // Check 7: Assets inventory
-    const hasAssets = willData.assets.realEstate?.length || 
-                     willData.assets.vehicles?.length || 
-                     willData.assets.bankAccounts?.length || 
+    const hasAssets = willData.assets.realEstate?.length ||
+                     willData.assets.vehicles?.length ||
+                     willData.assets.bankAccounts?.length ||
                      willData.assets.personalProperty?.length;
-    
+
     if (hasAssets) {
       checks.push({
         id: 'assets',
@@ -236,7 +236,7 @@ export const SofiaCorrectnessCheck: React.FC<SofiaCorrectnessCheckProps> = ({
               Sofia's Correctness Check
             </h3>
             <p className="text-blue-800 dark:text-blue-300">
-              I've reviewed your will and created a comprehensive checklist to ensure everything 
+              I've reviewed your will and created a comprehensive checklist to ensure everything
               is complete and legally sound. Let's make sure you haven't missed anything important.
             </p>
           </div>
@@ -300,7 +300,7 @@ export const SofiaCorrectnessCheck: React.FC<SofiaCorrectnessCheckProps> = ({
             <Icon name="alert-circle" className="w-12 h-12 text-red-500 mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-red-600 mb-2">Please Fix Errors First</h3>
             <p className="text-muted-foreground">
-              Your will has {errorCount} error{errorCount !== 1 ? 's' : ''} that need to be resolved 
+              Your will has {errorCount} error{errorCount !== 1 ? 's' : ''} that need to be resolved
               before we can generate the final document.
             </p>
           </div>
@@ -309,13 +309,13 @@ export const SofiaCorrectnessCheck: React.FC<SofiaCorrectnessCheckProps> = ({
             <Icon name="check-circle" className="w-12 h-12 text-green-500 mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-green-600 mb-2">Ready to Generate Your Will</h3>
             <p className="text-muted-foreground">
-              All critical requirements are met. {warningCount > 0 && 
+              All critical requirements are met. {warningCount > 0 &&
               `There ${warningCount === 1 ? 'is' : 'are'} ${warningCount} warning${warningCount !== 1 ? 's' : ''} above, but they won't prevent will generation.`}
             </p>
           </div>
         )}
-        
-        <Button 
+
+        <Button
           onClick={onContinue}
           disabled={hasErrors}
           size="lg"

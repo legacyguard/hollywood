@@ -1,4 +1,5 @@
-import React, { Component, ErrorInfo, ReactNode } from 'react';
+import type { ErrorInfo, ReactNode } from 'react';
+import React, { Component } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon-library';
@@ -26,12 +27,12 @@ export class ErrorBoundary extends Component<Props, State> {
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('ErrorBoundary caught an error:', error, errorInfo);
-    
+
     // Log error to monitoring service in production
     if (process.env.NODE_ENV === 'production') {
       // TODO: Send to error monitoring service (Sentry, etc.)
     }
-    
+
     this.setState({
       error,
       errorInfo,
@@ -65,11 +66,11 @@ export class ErrorBoundary extends Component<Props, State> {
             <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
               <Icon name="alert-triangle" className="w-8 h-8 text-red-600" />
             </div>
-            
+
             <h2 className="text-2xl font-bold mb-4">Oops! Something went wrong</h2>
-            
+
             <p className="text-muted-foreground mb-6 leading-relaxed">
-              We're sorry, but something unexpected happened. Your data is safe, and we're 
+              We're sorry, but something unexpected happened. Your data is safe, and we're
               working to fix this issue. Please try one of the options below.
             </p>
 
@@ -78,12 +79,12 @@ export class ErrorBoundary extends Component<Props, State> {
                 <Icon name="refresh-cw" className="w-4 h-4 mr-2" />
                 Try Again
               </Button>
-              
+
               <Button onClick={this.handleGoHome} className="w-full" variant="outline">
                 <Icon name="home" className="w-4 h-4 mr-2" />
                 Go Home
               </Button>
-              
+
               <Button onClick={this.handleReload} className="w-full" variant="outline">
                 <Icon name="rotate-ccw" className="w-4 h-4 mr-2" />
                 Reload Page

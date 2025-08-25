@@ -101,7 +101,7 @@ const TaskHeader = () => {
           <TaskPopup
             popupOpen={popupOpen}
             setPopupOpen={setPopupOpen}
-            
+
           />
           {/* <!-- ===== Task Popup End ===== --> */}
         </div>

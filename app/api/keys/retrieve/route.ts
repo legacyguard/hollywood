@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest} from 'next/server';
+import { NextResponse } from 'next/server';
 import { getAuth } from '@clerk/nextjs/server';
 import { getKeyManagementService } from '@/lib/services/key-management.service';
 import { withRateLimit, rateLimitPresets } from '@/lib/rate-limiter';
@@ -9,7 +10,7 @@ export async function POST(req: NextRequest) {
     try {
       // Authenticate user
       const { userId } = getAuth(req);
-      
+
       if (!userId) {
         await auditLogger.logSecurity(
           AuditEventType.INVALID_ACCESS_ATTEMPT,
@@ -17,7 +18,7 @@ export async function POST(req: NextRequest) {
           'Unauthorized key retrieval attempt',
           { endpoint: '/api/keys/retrieve' }
         );
-        
+
         return NextResponse.json(
           { error: 'Unauthorized' },
           { status: 401 }
@@ -38,7 +39,7 @@ export async function POST(req: NextRequest) {
       // Retrieve keys
       const keyService = getKeyManagementService();
       const result = await keyService.getUserPrivateKey(userId, password);
-      
+
       if (!result.success) {
         // Don't reveal if it's a wrong password or keys don't exist
         return NextResponse.json(
@@ -55,7 +56,7 @@ export async function POST(req: NextRequest) {
       );
 
       return NextResponse.json(
-        { 
+        {
           success: true,
           privateKey: result.privateKey,
           publicKey: result.publicKey,
@@ -66,7 +67,7 @@ export async function POST(req: NextRequest) {
 
     } catch (error) {
       console.error('Key retrieval error:', error);
-      
+
       return NextResponse.json(
         { error: 'Internal server error' },
         { status: 500 }
@@ -81,7 +82,7 @@ export async function GET(req: NextRequest) {
     try {
       // Authenticate user
       const { userId } = getAuth(req);
-      
+
       if (!userId) {
         return NextResponse.json(
           { error: 'Unauthorized' },
@@ -92,7 +93,7 @@ export async function GET(req: NextRequest) {
       // Get public key
       const keyService = getKeyManagementService();
       const result = await keyService.getUserPublicKey(userId);
-      
+
       if (!result.success) {
         return NextResponse.json(
           { error: result.error || 'Public key not found' },
@@ -101,7 +102,7 @@ export async function GET(req: NextRequest) {
       }
 
       return NextResponse.json(
-        { 
+        {
           success: true,
           publicKey: result.publicKey,
           metadata: result.metadata
@@ -111,7 +112,7 @@ export async function GET(req: NextRequest) {
 
     } catch (error) {
       console.error('Public key retrieval error:', error);
-      
+
       return NextResponse.json(
         { error: 'Internal server error' },
         { status: 500 }

@@ -148,7 +148,7 @@ class DataMigrationTool {
    */
   public async cleanupLegacyData(): Promise<void> {
     const legacyData = await this.scanLegacyStorage();
-    
+
     for (const item of legacyData) {
       const key = `${this.LEGACY_STORAGE_PREFIX}${item.category}_${item.id}`;
       localStorage.removeItem(key);

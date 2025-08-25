@@ -3,7 +3,7 @@ import AllFolders from "@/components/file-manager/AllFolders";
 import AllMediaCard from "@/components/file-manager/AllMediaCard";
 import RecentFileTable from "@/components/file-manager/RecentFileTable";
 import StorageDetailsChart from "@/components/file-manager/StorageDetailsChart";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import React from "react";
 
 export const metadata: Metadata = {

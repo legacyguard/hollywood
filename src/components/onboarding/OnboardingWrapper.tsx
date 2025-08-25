@@ -18,7 +18,7 @@ export function OnboardingWrapper({ children }: OnboardingWrapperProps) {
 
     // Check if user has completed onboarding
     const hasCompletedOnboarding = user.publicMetadata?.onboardingCompleted;
-    
+
     if (hasCompletedOnboarding) {
       setShowOnboarding(false);
       setIsCheckingOnboarding(false);
@@ -50,7 +50,7 @@ export function OnboardingWrapper({ children }: OnboardingWrapperProps) {
           onboardingCompletedAt: new Date().toISOString()
         }
       });
-      
+
       setShowOnboarding(false);
     } catch (error) {
       console.error("Failed to update onboarding status:", error);

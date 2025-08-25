@@ -52,18 +52,18 @@ export const ValidationIndicator: React.FC<ValidationIndicatorProps> = ({
       <Popover>
         <PopoverTrigger asChild>
           <Button variant="ghost" size="sm" className={`p-1 h-6 w-6 ${className}`}>
-            <Icon 
-              name={getIconName(validation.level)} 
-              className={`w-4 h-4 ${getColorClass(validation.level)}`} 
+            <Icon
+              name={getIconName(validation.level)}
+              className={`w-4 h-4 ${getColorClass(validation.level)}`}
             />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-80" side="top">
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <Icon 
-                name={getIconName(validation.level)} 
-                className={`w-4 h-4 ${getColorClass(validation.level)}`} 
+              <Icon
+                name={getIconName(validation.level)}
+                className={`w-4 h-4 ${getColorClass(validation.level)}`}
               />
               <Badge variant={getBadgeVariant(validation.level)}>
                 {validation.level.toUpperCase()}
@@ -88,9 +88,9 @@ export const ValidationIndicator: React.FC<ValidationIndicatorProps> = ({
   return (
     <div className={`p-3 rounded-md border ${getValidationColor(validation.level)} ${className}`}>
       <div className="flex items-start gap-3">
-        <Icon 
-          name={getIconName(validation.level)} 
-          className={`w-5 h-5 ${getColorClass(validation.level)} flex-shrink-0 mt-0.5`} 
+        <Icon
+          name={getIconName(validation.level)}
+          className={`w-5 h-5 ${getColorClass(validation.level)} flex-shrink-0 mt-0.5`}
         />
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
@@ -173,7 +173,7 @@ export const ComplianceStatus: React.FC<ComplianceStatusProps> = ({
         <div className={`w-3 h-3 rounded-full ${status.color}`} />
         <span className="font-medium text-sm">{status.label}</span>
       </div>
-      
+
       <div className="flex items-center gap-4 text-xs text-muted-foreground">
         {errors > 0 && (
           <div className="flex items-center gap-1">

@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { CountrySelector } from './CountrySelector';
-import { WillTypeSelector, WillType } from './WillTypeSelector';
-import { WillWizard, WillData } from './WillWizard';
+import type { WillType } from './WillTypeSelector';
+import { WillTypeSelector } from './WillTypeSelector';
+import type { WillData } from './WillWizard';
+import { WillWizard } from './WillWizard';
 import { IntelligentWillDraftGenerator } from './IntelligentWillDraftGenerator';
 import { showMilestoneRecognition } from '@/components/dashboard/MilestoneCelebration';
 import { SERENITY_MILESTONES } from '@/lib/path-of-serenity';
@@ -59,7 +61,7 @@ export const EnhancedWillWizard: React.FC<EnhancedWillWizardProps> = ({
       ...willData,
       willType: selectedWillType!
     };
-    
+
     // Trigger milestone recognition for Legacy Foundation
     setTimeout(() => {
       const legacyMilestone = SERENITY_MILESTONES.find(m => m.id === 'legacy_foundation');
@@ -71,7 +73,7 @@ export const EnhancedWillWizard: React.FC<EnhancedWillWizardProps> = ({
         });
       }
     }, 1500); // Delay to show after success message
-    
+
     onComplete(enhancedWillData);
   };
 
@@ -81,7 +83,7 @@ export const EnhancedWillWizard: React.FC<EnhancedWillWizardProps> = ({
         switch (currentStep) {
           case 'country':
             return (
-              <CountrySelector 
+              <CountrySelector
                 onCountryConfirmed={handleCountryConfirmed}
               />
             );

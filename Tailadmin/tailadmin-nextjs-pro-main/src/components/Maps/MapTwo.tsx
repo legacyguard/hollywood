@@ -3,7 +3,7 @@ import jsVectorMap from "jsvectormap";
 import React, { useEffect } from "react";
 import "jsvectormap/dist/maps/world";
 import "jsvectormap/dist/jsvectormap.css";
-import { Country } from "@/types/country";
+import type { Country } from "@/types/country";
 import Image from "next/image";
 
 const countryData: Country[] = [

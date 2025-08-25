@@ -12,7 +12,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { Icon } from '@/components/ui/icon-library';
 import { FadeIn } from '@/components/motion/FadeIn';
-import { ProfileGrid, ProfileData } from '@/components/enhanced/ProfileCard';
+import type { ProfileData } from '@/components/enhanced/ProfileCard';
+import { ProfileGrid } from '@/components/enhanced/ProfileCard';
 import { MetricsGrid } from '@/components/enhanced/MetricCard';
 import { usePageTitle } from '@/hooks/usePageTitle';
 import { toast } from 'sonner';
@@ -63,17 +64,17 @@ const GUARDIAN_RELATIONSHIPS = [
 export default function GuardiansEnhanced() {
   usePageTitle('My Guardians');
   const { userId } = useAuth();
-  
+
   const [guardians, setGuardians] = useState<Guardian[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [editingGuardian, setEditingGuardian] = useState<Guardian | null>(null);
-  
+
   // Confirmation dialog state
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
   const [guardianToDelete, setGuardianToDelete] = useState<ProfileData | null>(null);
-  
+
   // Form state
   const [formData, setFormData] = useState<GuardianFormData>({
     name: '',
@@ -196,7 +197,7 @@ export default function GuardiansEnhanced() {
         setGuardians(prev => [...prev, newGuardian]);
         toast.success(`${formData.name} was successfully added as a guardian!`);
       }
-      
+
       // Reset form
       setFormData({
         name: '',
@@ -211,10 +212,10 @@ export default function GuardiansEnhanced() {
         is_will_executor: false,
         emergency_contact_priority: 1
       });
-      
+
       setIsDialogOpen(false);
       setEditingGuardian(null);
-      
+
     } catch (error) {
       console.error('Error saving guardian:', error);
       toast.error('Failed to save guardian. Please try again.');
@@ -229,7 +230,7 @@ export default function GuardiansEnhanced() {
     if (guardian.is_will_executor) roles.push('Executor');
     if (guardian.is_child_guardian) roles.push('Child Guardian');
     if (guardian.can_trigger_emergency) roles.push('Emergency Contact');
-    
+
     const completionPercentage = [
       guardian.name,
       guardian.email,
@@ -248,7 +249,7 @@ export default function GuardiansEnhanced() {
       status: guardian.is_active ? 'active' : 'inactive',
       completionPercentage,
       metadata: {
-        'Access': guardian.can_access_financial_docs && guardian.can_access_health_docs ? 'Full Access' : 
+        'Access': guardian.can_access_financial_docs && guardian.can_access_health_docs ? 'Full Access' :
                  guardian.can_access_health_docs ? 'Health Only' :
                  guardian.can_access_financial_docs ? 'Financial Only' : 'Limited',
         'Priority': `Level ${guardian.emergency_contact_priority}`,
@@ -288,10 +289,10 @@ export default function GuardiansEnhanced() {
   // Handle delete after confirmation
   const handleDeleteConfirm = async () => {
     if (!guardianToDelete) return;
-    
+
     setGuardians(prev => prev.filter(g => g.id !== guardianToDelete.id));
     toast.success(`${guardianToDelete.name} has been removed as a guardian`);
-    
+
     // Close dialog and reset state
     setIsConfirmDialogOpen(false);
     setGuardianToDelete(null);
@@ -307,9 +308,9 @@ export default function GuardiansEnhanced() {
   const handleViewDetails = (profile: ProfileData) => {
     const guardian = guardians.find(g => g.id === profile.id);
     if (guardian && guardian.notes) {
-      toast.info(guardian.notes, { 
+      toast.info(guardian.notes, {
         description: `Notes for ${guardian.name}`,
-        duration: 5000 
+        duration: 5000
       });
     }
   };
@@ -452,7 +453,7 @@ export default function GuardiansEnhanced() {
 
                       <div className="space-y-4">
                         <h4 className="font-medium">Family Shield Protocol Permissions</h4>
-                        
+
                         <div className="space-y-3">
                           <div className="flex items-center justify-between">
                             <Label htmlFor="emergency" className="text-sm">Can trigger emergency protocol</Label>
@@ -462,7 +463,7 @@ export default function GuardiansEnhanced() {
                               onCheckedChange={(checked) => handleInputChange('can_trigger_emergency', checked)}
                             />
                           </div>
-                          
+
                           <div className="flex items-center justify-between">
                             <Label htmlFor="health" className="text-sm">Can access health documents</Label>
                             <Switch
@@ -471,7 +472,7 @@ export default function GuardiansEnhanced() {
                               onCheckedChange={(checked) => handleInputChange('can_access_health_docs', checked)}
                             />
                           </div>
-                          
+
                           <div className="flex items-center justify-between">
                             <Label htmlFor="financial" className="text-sm">Can access financial documents</Label>
                             <Switch
@@ -480,7 +481,7 @@ export default function GuardiansEnhanced() {
                               onCheckedChange={(checked) => handleInputChange('can_access_financial_docs', checked)}
                             />
                           </div>
-                          
+
                           <div className="flex items-center justify-between">
                             <Label htmlFor="child" className="text-sm">Is designated child guardian</Label>
                             <Switch
@@ -489,7 +490,7 @@ export default function GuardiansEnhanced() {
                               onCheckedChange={(checked) => handleInputChange('is_child_guardian', checked)}
                             />
                           </div>
-                          
+
                           <div className="flex items-center justify-between">
                             <Label htmlFor="executor" className="text-sm">Is will executor</Label>
                             <Switch
@@ -502,8 +503,8 @@ export default function GuardiansEnhanced() {
 
                         <div className="space-y-2">
                           <Label htmlFor="priority">Emergency Contact Priority</Label>
-                          <Select 
-                            value={formData.emergency_contact_priority.toString()} 
+                          <Select
+                            value={formData.emergency_contact_priority.toString()}
                             onValueChange={(value) => handleInputChange('emergency_contact_priority', parseInt(value))}
                           >
                             <SelectTrigger>
@@ -595,12 +596,12 @@ export default function GuardiansEnhanced() {
                     <div>
                       <h4 className="font-semibold text-primary mb-2">The Trust Behind Your Guardians</h4>
                       <p className="text-muted-foreground mb-4">
-                        Your guardians represent the deepest level of trust - people who would protect your family's interests 
-                        just as you would. They're not just emergency contacts; they're the extension of your care and wisdom 
+                        Your guardians represent the deepest level of trust - people who would protect your family's interests
+                        just as you would. They're not just emergency contacts; they're the extension of your care and wisdom
                         when your loved ones need guidance most.
                       </p>
                       <p className="text-sm text-muted-foreground/80 italic">
-                        ✨ Every guardian you add strengthens your family's safety net, giving you peace of mind that someone 
+                        ✨ Every guardian you add strengthens your family's safety net, giving you peace of mind that someone
                         who truly understands your values will be there to help.
                       </p>
                     </div>

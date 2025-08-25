@@ -1,5 +1,5 @@
 import React, { useRef } from 'react'
-import { FaqItem } from '../../types/faqItem';
+import type { FaqItem } from '../../types/faqItem';
 
 const AccordionItemOne: React.FC<FaqItem> = ({ active, handleToggle, faq }) => {
   const contentEl = useRef<HTMLDivElement>(null);

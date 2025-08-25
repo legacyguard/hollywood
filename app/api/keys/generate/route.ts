@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest} from 'next/server';
+import { NextResponse } from 'next/server';
 import { getAuth } from '@clerk/nextjs/server';
 import { getKeyManagementService } from '@/lib/services/key-management.service';
 import { withRateLimit, rateLimitPresets } from '@/lib/rate-limiter';
@@ -10,7 +11,7 @@ export async function POST(req: NextRequest) {
     try {
       // Authenticate user
       const { userId } = getAuth(req);
-      
+
       if (!userId) {
         await auditLogger.logSecurity(
           AuditEventType.INVALID_ACCESS_ATTEMPT,
@@ -18,7 +19,7 @@ export async function POST(req: NextRequest) {
           'Unauthorized key generation attempt',
           { endpoint: '/api/keys/generate' }
         );
-        
+
         return NextResponse.json(
           { error: 'Unauthorized' },
           { status: 401 }
@@ -39,10 +40,10 @@ export async function POST(req: NextRequest) {
       // Validate password strength
       const keyService = getKeyManagementService();
       const passwordValidation = keyService.validatePasswordStrength(password);
-      
+
       if (!passwordValidation.isValid) {
         return NextResponse.json(
-          { 
+          {
             error: 'Password does not meet security requirements',
             details: passwordValidation.errors
           },
@@ -52,7 +53,7 @@ export async function POST(req: NextRequest) {
 
       // Generate and store keys
       const result = await keyService.createUserKeys(userId, password);
-      
+
       if (!result.success) {
         await auditLogger.logFailure(
           AuditEventType.SYSTEM_ERROR,
@@ -60,7 +61,7 @@ export async function POST(req: NextRequest) {
           'Failed to generate encryption keys',
           result.error || 'Unknown error'
         );
-        
+
         return NextResponse.json(
           { error: result.error || 'Failed to generate keys' },
           { status: 500 }
@@ -76,7 +77,7 @@ export async function POST(req: NextRequest) {
       );
 
       return NextResponse.json(
-        { 
+        {
           success: true,
           publicKey: result.publicKey,
           message: 'Encryption keys generated successfully'
@@ -86,7 +87,7 @@ export async function POST(req: NextRequest) {
 
     } catch (error) {
       console.error('Key generation error:', error);
-      
+
       await auditLogger.log({
         userId: null,
         eventType: AuditEventType.SYSTEM_ERROR,
@@ -95,7 +96,7 @@ export async function POST(req: NextRequest) {
         success: false,
         errorMessage: error instanceof Error ? error.message : 'Unknown error'
       });
-      
+
       return NextResponse.json(
         { error: 'Internal server error' },
         { status: 500 }

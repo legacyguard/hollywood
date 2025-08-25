@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon-library';
-import { ActionButton } from '@/lib/sofia-types';
+import type { ActionButton } from '@/lib/sofia-types';
 
 interface SofiaActionButtonsProps {
   actions: ActionButton[];
@@ -53,8 +53,8 @@ export const SofiaActionButtons: React.FC<SofiaActionButtonsProps> = ({
             variant={action.cost === 'premium' ? 'default' : 'outline'}
             className={`
               w-full justify-start gap-3 h-auto p-3 text-left
-              ${action.cost === 'premium' 
-                ? 'bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white' 
+              ${action.cost === 'premium'
+                ? 'bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white'
                 : 'hover:bg-accent'
               }
               ${isDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
@@ -68,27 +68,27 @@ export const SofiaActionButtons: React.FC<SofiaActionButtonsProps> = ({
               {action.icon && (
                 <div className={`
                   w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0
-                  ${action.cost === 'premium' 
-                    ? 'bg-white/20' 
+                  ${action.cost === 'premium'
+                    ? 'bg-white/20'
                     : 'bg-primary/10'
                   }
                 `}>
-                  <Icon 
-                    name={action.icon as string} 
+                  <Icon
+                    name={action.icon as string}
                     className={`w-4 h-4 ${
                       action.cost === 'premium' ? 'text-white' : 'text-primary'
-                    }`} 
+                    }`}
                   />
                 </div>
               )}
-              
+
               {/* Action Content */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <span className="font-medium text-sm truncate">
                     {action.text}
                   </span>
-                  
+
                   {/* Cost Badge */}
                   <span className={`
                     inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium
@@ -100,7 +100,7 @@ export const SofiaActionButtons: React.FC<SofiaActionButtonsProps> = ({
                     {action.cost === 'premium' && 'Premium'}
                   </span>
                 </div>
-                
+
                 {/* Action Description */}
                 {action.description && (
                   <p className={`text-xs mt-1 opacity-80 ${
@@ -110,7 +110,7 @@ export const SofiaActionButtons: React.FC<SofiaActionButtonsProps> = ({
                   </p>
                 )}
               </div>
-              
+
               {/* Confirmation indicator */}
               {action.requiresConfirmation && (
                 <div className={`
@@ -122,7 +122,7 @@ export const SofiaActionButtons: React.FC<SofiaActionButtonsProps> = ({
           </Button>
         </motion.div>
       ))}
-      
+
       {/* Helper text for premium features */}
       {actions.some(action => action.cost === 'premium') && (
         <motion.div

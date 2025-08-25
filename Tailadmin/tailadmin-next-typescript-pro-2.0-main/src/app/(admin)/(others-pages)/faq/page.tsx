@@ -2,7 +2,7 @@ import ComponentCard from "@/components/common/ComponentCard";
 import FaqsOneExample from "@/components/faqs/FaqOneExample";
 import FaqsThree from "@/components/faqs/FaqsThree";
 import FaqsTwo from "@/components/faqs/FaqsTwo";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import React from "react";
 
 export const metadata: Metadata = {

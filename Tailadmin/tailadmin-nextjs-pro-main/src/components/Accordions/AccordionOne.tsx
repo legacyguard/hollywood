@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import AccordionItemOne from "./AccordionItemOne";
-import { FAQ } from "@/types/faq";
+import type { FAQ } from "@/types/faq";
 
 const header = `How long we deliver your first blog post?`;
 const text = `It takes 2-3 weeks to get your first blog post ready. That includes the in-depth research & creation of your monthly content marketing strategy that we do before writing your first blog post, Ipsum available .`;

@@ -13,7 +13,8 @@ import { toast } from 'sonner';
 
 // New guided dialog imports
 import { sofiaRouter } from '@/lib/sofia-router';
-import { SofiaMessage, ActionButton, SofiaCommand, CommandResult, getContextualActions } from '@/lib/sofia-types';
+import type { SofiaMessage, ActionButton, SofiaCommand, CommandResult} from '@/lib/sofia-types';
+import { getContextualActions } from '@/lib/sofia-types';
 import SofiaActionButtons from './SofiaActionButtons';
 
 // Smart contextual suggestions based on current page
@@ -144,7 +145,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
   const [inputValue, setInputValue] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
-  
+
   const {
     messages,
     isTyping,
@@ -157,7 +158,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
   // Move getDefaultWelcome to prevent dependency issues
   const getDefaultWelcome = useCallback((): string => {
     if (!context) return 'Hello! I am Sofia and I am here to help you.';
-    
+
     const name = context.userName || 'there';
     return `Hello, ${name}! I am Sofia and I am here to help you protect your family. How can I help you today?`;
   }, [context]);
@@ -181,7 +182,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
 
       // Process through router
       const result = await sofiaRouter.processCommand(welcomeCommand);
-      
+
       // Simulate typing delay
       setTimeout(() => {
         const welcomeMessage: SofiaMessage = {
@@ -232,7 +233,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
 
       const sofiaMessage: SofiaMessage = {
         id: crypto.randomUUID(),
-        role: 'assistant', 
+        role: 'assistant',
         content: pendingAction.sofiaResponse,
         timestamp: new Date(),
         responseType: 'smart_suggestion',
@@ -240,7 +241,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
       };
 
       addMessage(userMessage);
-      
+
       // Add Sofia response after a short delay for natural feel
       setTimeout(() => {
         addMessage(sofiaMessage);
@@ -279,10 +280,10 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
       timestamp: new Date(),
       metadata: { cost: 'free', source: 'predefined' }
     };
-    
+
     // **FIX: Remove actions from the previous message to prevent multiple clicks**
     updateMessages(prevMessages => prevMessages.map(msg => ({ ...msg, actions: undefined })));
-    
+
     // Add the user message
     addMessage(userMessage);
 
@@ -340,7 +341,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
         if (result.payload.route) {
           navigate(result.payload.route);
           if (onClose) onClose(); // Close chat on navigation
-          
+
           // Add confirmation message
           const navMessage: SofiaMessage = {
             id: crypto.randomUUID(),
@@ -378,7 +379,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
       case 'error':
         handleError(result.payload.message);
         break;
-        
+
       case 'text_response':
         // Handle simple text responses with actions
         setTimeout(() => {
@@ -403,7 +404,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
         // Trigger document uploader
         const event = new CustomEvent('sofia:open_uploader', { detail: payload });
         window.dispatchEvent(event);
-        
+
         const uploaderMessage: SofiaMessage = {
           id: crypto.randomUUID(),
           role: 'assistant',
@@ -430,7 +431,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
 
   const handleTextInput = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!inputValue.trim() || !context || !userId || isProcessing) return;
 
     const userMessage: SofiaMessage = {
@@ -512,7 +513,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
           <Icon name="bot" className="w-4 h-4 text-primary" />
         </div>
       )}
-      
+
       <div className={`max-w-[85%] ${message.role === 'user' ? 'self-end' : 'self-start'}`}>
         <div
           className={`p-4 rounded-lg shadow-sm border ${
@@ -540,7 +541,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
             <p className="text-sm leading-relaxed">{message.content}</p>
           )}
         </div>
-        
+
         {/* Action Buttons for assistant messages */}
         {message.role === 'assistant' && message.actions && (
           <div className="mt-3">
@@ -551,12 +552,12 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
             />
           </div>
         )}
-        
+
         <div className={`text-xs text-muted-foreground mt-2 flex items-center gap-2 ${
           message.role === 'user' ? 'justify-end' : 'justify-start'
         }`}>
           <span>{message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-          
+
           {/* Cost/Source indicator */}
           {message.metadata && message.role === 'assistant' && (
             <span className="opacity-60">
@@ -567,7 +568,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
           )}
         </div>
       </div>
-      
+
       {message.role === 'user' && (
         <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
           <Icon name="user" className="w-4 h-4 text-primary" />
@@ -613,7 +614,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
             <p className="text-sm text-muted-foreground">Your digital guide</p>
           </div>
         </div>
-        
+
         {onClose && (
           <Button
             variant="ghost"
@@ -659,7 +660,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
             )}
           </Button>
         </form>
-        
+
         <p className="text-xs text-muted-foreground mt-2 text-center">
           Tip: Use the buttons above for the fastest responses 🚀
         </p>

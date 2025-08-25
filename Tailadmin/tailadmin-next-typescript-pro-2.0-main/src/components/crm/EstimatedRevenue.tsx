@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { MoreDotIcon } from "@/icons";
-import { ApexOptions } from "apexcharts";
+import type { ApexOptions } from "apexcharts";
 import dynamic from "next/dynamic";
 // Dynamically import the ReactApexChart component
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
