@@ -288,7 +288,7 @@ export const createSelectColumn = <TData,>(): ColumnDef<TData> => ({
 });
 
 export const createSortableHeader = (label: string) => {
-  return ({ column }: any) => {
+  return ({ column }: { column: { toggleSorting: (ascending: boolean) => void; getIsSorted: () => false | 'asc' | 'desc' } }) => {
     return (
       <Button
         variant="ghost"

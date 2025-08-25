@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Icon } from '@/components/ui/icon-library';
@@ -68,6 +69,10 @@ export default function GuardiansEnhanced() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [editingGuardian, setEditingGuardian] = useState<Guardian | null>(null);
+  
+  // Confirmation dialog state
+  const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
+  const [guardianToDelete, setGuardianToDelete] = useState<ProfileData | null>(null);
   
   // Form state
   const [formData, setFormData] = useState<GuardianFormData>({
@@ -274,12 +279,28 @@ export default function GuardiansEnhanced() {
     }
   };
 
-  // Handle delete
-  const handleDelete = async (profile: ProfileData) => {
-    if (!confirm(`Are you sure you want to remove ${profile.name} as a guardian?`)) return;
+  // Handle delete confirmation
+  const handleDeleteClick = (profile: ProfileData) => {
+    setGuardianToDelete(profile);
+    setIsConfirmDialogOpen(true);
+  };
+
+  // Handle delete after confirmation
+  const handleDeleteConfirm = async () => {
+    if (!guardianToDelete) return;
     
-    setGuardians(prev => prev.filter(g => g.id !== profile.id));
-    toast.success(`${profile.name} has been removed as a guardian`);
+    setGuardians(prev => prev.filter(g => g.id !== guardianToDelete.id));
+    toast.success(`${guardianToDelete.name} has been removed as a guardian`);
+    
+    // Close dialog and reset state
+    setIsConfirmDialogOpen(false);
+    setGuardianToDelete(null);
+  };
+
+  // Handle delete cancellation
+  const handleDeleteCancel = () => {
+    setIsConfirmDialogOpen(false);
+    setGuardianToDelete(null);
   };
 
   // Handle view details

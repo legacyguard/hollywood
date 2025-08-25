@@ -140,8 +140,13 @@ export default function GuardiansPage() {
   };
 
   // Handle form input changes
-  const handleInputChange = (field: keyof CreateGuardianRequest, value: string | boolean | number) => {
+  // Handle form input changes
+  const handleInputChange = <K extends keyof CreateGuardianRequest>(
+    field: K,
+    value: CreateGuardianRequest[K]
+  ) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
   };
 
   return (

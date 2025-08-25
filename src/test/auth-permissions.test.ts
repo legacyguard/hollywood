@@ -262,12 +262,24 @@ describe('Authentication & Permissions', () => {
       }).not.toThrow();
       
       // This should throw because invalidUserId is too short
-      expect(() => {
-        const testUserId = 'short'; // This is shorter than 10 characters
-        if (!testUserId || testUserId.length < 10) {
+      // Test valid user ID
+      await client.from('documents').select('*').eq('user_id', validUserId).single();
+      expect(client.from).toHaveBeenCalledWith('documents');
+      
+      // Test invalid user ID validation
+      const validateUserId = (userId: string) => {
+        // Clerk user IDs typically have a specific format
+        if (!userId || !userId.startsWith('user_') || userId.length < 10) {
           throw new Error('Invalid user ID');
         }
-      }).toThrow('Invalid user ID');
-    });
+      };
+      
+      // Valid ID should pass
+      expect(() => validateUserId(validUserId)).not.toThrow();
+      
+      // Invalid IDs should throw
+      expect(() => validateUserId('')).toThrow('Invalid user ID');
+      expect(() => validateUserId('short')).toThrow('Invalid user ID');
+      expect(() => validateUserId(invalidUserId)).toThrow('Invalid user ID');
   });
 });

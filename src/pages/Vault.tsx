@@ -1,18 +1,19 @@
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { FadeIn } from "@/components/motion/FadeIn";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+
 import { Icon } from "@/components/ui/icon-library";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import EnhancedDocumentUploader from "@/components/features/EnhancedDocumentUploader";
 import { DataTable, createSelectColumn, createSortableHeader, createActionsColumn } from "@/components/enhanced/DataTable";
 import { MetricsGrid } from "@/components/enhanced/MetricCard";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { useState, useEffect, useMemo } from "react";
 import { toast } from "sonner";
-import { ColumnDef } from "@tanstack/react-table";
-import { Download, Eye, Trash2, FileText, Shield, Clock, CheckCircle } from "lucide-react";
+import type { ColumnDef } from "@tanstack/react-table";
+import { Download, Eye, Trash2, Shield, Clock, CheckCircle } from "lucide-react";
 
 // Document interface
 interface Document {
@@ -34,6 +35,10 @@ export default function VaultPage() {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+  
+  // Confirmation dialog state
+  const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
+  const [documentToDelete, setDocumentToDelete] = useState<Document | null>(null);
 
   // Load documents from localStorage
   useEffect(() => {
@@ -296,14 +301,30 @@ export default function VaultPage() {
         label: 'Delete',
         icon: <Trash2 className="h-4 w-4 mr-2" />,
         onClick: (doc) => {
-          if (confirm(`Are you sure you want to delete ${doc.name}?`)) {
-            setDocuments(prev => prev.filter(d => d.id !== doc.id));
-            toast.error(`Deleted ${doc.name}`);
-          }
+          setDocumentToDelete(doc);
+          setIsConfirmDialogOpen(true);
         }
       }
     ])
   ], []);
+
+  // Handle delete confirmation
+  const handleDeleteConfirm = () => {
+    if (!documentToDelete) return;
+    
+    setDocuments(prev => prev.filter(d => d.id !== documentToDelete.id));
+    toast.error(`Deleted ${documentToDelete.name}`);
+    
+    // Close dialog and reset state
+    setIsConfirmDialogOpen(false);
+    setDocumentToDelete(null);
+  };
+
+  // Handle delete cancellation
+  const handleDeleteCancel = () => {
+    setIsConfirmDialogOpen(false);
+    setDocumentToDelete(null);
+  };
 
   const handleExport = () => {
     const csv = [
@@ -409,6 +430,24 @@ export default function VaultPage() {
           </div>
         </main>
       </div>
+      
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={isConfirmDialogOpen} onOpenChange={setIsConfirmDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Document</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete "{documentToDelete?.name}"? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={handleDeleteCancel}>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteConfirm} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </DashboardLayout>
   );
 }

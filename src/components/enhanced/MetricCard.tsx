@@ -138,8 +138,8 @@ export function MetricsGrid({ metrics, columns = 4, className }: MetricsGridProp
       gridCols[columns],
       className
     )}>
-      {metrics.map((metric, index) => (
-        <MetricCard key={index} {...metric} />
+      {metrics.map((metric) => (
+        <MetricCard key={`${metric.title}-${metric.value}`} {...metric} />
       ))}
     </div>
   );

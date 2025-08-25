@@ -144,7 +144,7 @@ export function DashboardContent() {
               activities={mockActivities}
               title="Recent Activity"
               maxHeight="600px"
-              onViewAll={() => console.warn('View all activities')}
+              onViewAll={() => navigate('/activity')}
             />
           </div>
         </div>

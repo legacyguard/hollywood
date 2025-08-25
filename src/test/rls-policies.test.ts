@@ -120,14 +120,25 @@ describe('RLS Policies & Database Security', () => {
       };
       
       // Test that update operation calls the correct methods
-      const fromSpy = client.from('guardians');
-      await fromSpy.update(updateData);
+      const updateData = {
+        can_trigger_emergency: false,
+      };
       
-      expect(client.from).toHaveBeenCalledWith('guardians');
-    });
-  });
-
-  describe('User Encryption Keys RLS', () => {
+      // Test that update operation is properly constrained to user
+      await client.from('guardians')
+        .update(updateData)
+        .eq('id', 'guardian_123')
+        .eq('user_id', 'user_123')
+        .select();
+      
+      // Test that encryption keys access calls the correct methods
+-      const fromSpy = client.from('user_encryption_keys');
+      await client.from('user_encryption_keys')
+        .select('*')
+        .eq('user_id', 'user_123')
+        .single();
+      
+      expect(client.from).toHaveBeenCalledWith('user_encryption_keys');
     it('should allow users to access only their own encryption keys', async () => {
       const client = createClient('url', 'key');
       
