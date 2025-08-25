@@ -98,6 +98,36 @@ export default function TimeCapsulePage() {
     toast.success(`Time Capsule "${newCapsule.message_title}" has been sealed and scheduled for delivery!`);
   };
 
+  // Handle test preview
+  const handleTestPreview = async (capsuleId: string) => {
+    try {
+      const supabase = await createSupabaseClient();
+      
+      const { error } = await supabase.functions.invoke('time-capsule-test-preview', {
+        body: { capsule_id: capsuleId }
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      toast.success(
+        'Test preview email sent!', 
+        { 
+          description: 'Check your email to see how your Time Capsule will look when delivered.' 
+        }
+      );
+    } catch (error) {
+      console.error('Failed to send test preview:', error);
+      toast.error(
+        'Failed to send test preview',
+        { 
+          description: 'Please try again or contact support if the issue persists.' 
+        }
+      );
+    }
+  };
+
   // Handle capsule deletion
   const handleDeleteCapsule = async (capsuleId: string) => {
     try {
@@ -268,6 +298,7 @@ export default function TimeCapsulePage() {
               <TimeCapsuleList
                 timeCapsules={timeCapsules}
                 onDelete={handleDeleteCapsule}
+                onTestPreview={handleTestPreview}
                 onRefresh={fetchData}
               />
             </FadeIn>

@@ -13,9 +13,10 @@ interface TimeCapsuleListProps {
   timeCapsules: TimeCapsule[];
   onDelete: (id: string) => void;
   onRefresh?: () => void;
+  onTestPreview?: (id: string) => void;
 }
 
-export function TimeCapsuleList({ timeCapsules, onDelete }: TimeCapsuleListProps) {
+export function TimeCapsuleList({ timeCapsules, onDelete, onTestPreview }: TimeCapsuleListProps) {
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
   const getInitials = (name: string): string => {
@@ -97,6 +98,7 @@ export function TimeCapsuleList({ timeCapsules, onDelete }: TimeCapsuleListProps
                 key={capsule.id}
                 capsule={capsule}
                 onDelete={() => setDeleteConfirm(capsule.id)}
+                onTestPreview={onTestPreview}
                 getInitials={getInitials}
                 formatDuration={formatDuration}
                 formatFileSize={formatFileSize}
@@ -121,6 +123,7 @@ export function TimeCapsuleList({ timeCapsules, onDelete }: TimeCapsuleListProps
                 key={capsule.id}
                 capsule={capsule}
                 onDelete={() => setDeleteConfirm(capsule.id)}
+                onTestPreview={onTestPreview}
                 getInitials={getInitials}
                 formatDuration={formatDuration}
                 formatFileSize={formatFileSize}
@@ -146,6 +149,7 @@ export function TimeCapsuleList({ timeCapsules, onDelete }: TimeCapsuleListProps
                 key={capsule.id}
                 capsule={capsule}
                 onDelete={() => setDeleteConfirm(capsule.id)}
+                onTestPreview={onTestPreview}
                 getInitials={getInitials}
                 formatDuration={formatDuration}
                 formatFileSize={formatFileSize}
@@ -186,6 +190,7 @@ export function TimeCapsuleList({ timeCapsules, onDelete }: TimeCapsuleListProps
 interface TimeCapsuleCardProps {
   capsule: TimeCapsule;
   onDelete: () => void;
+  onTestPreview?: (id: string) => void;
   getInitials: (name: string) => string;
   formatDuration: (seconds: number) => string;
   formatFileSize: (bytes: number) => string;
@@ -198,6 +203,7 @@ interface TimeCapsuleCardProps {
 function TimeCapsuleCard({
   capsule,
   onDelete,
+  onTestPreview,
   getInitials,
   formatDuration,
   formatFileSize,
@@ -206,18 +212,42 @@ function TimeCapsuleCard({
   isDelivered,
   isFailed
 }: TimeCapsuleCardProps) {
+  const capsuleId = capsule.id.slice(-8).toUpperCase();
+
   return (
-    <Card className="hover:shadow-md transition-shadow">
-      <CardHeader className="pb-3">
+    <Card className="hover:shadow-md transition-all duration-300 relative overflow-hidden group">
+      {/* Elegant seal corner */}
+      <div className="absolute -top-2 -right-2 w-16 h-16 bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-700 rotate-45 flex items-center justify-center">
+        <div className="rotate-[-45deg] text-white text-xs font-bold flex flex-col items-center">
+          <Icon name="shield-check" className="w-3 h-3 mb-0.5" />
+          <span className="text-[8px] leading-none">SEALED</span>
+        </div>
+      </div>
+      
+      {/* Premium gradient border for sealed capsules */}
+      <div className="absolute inset-0 bg-gradient-to-r from-purple-200/20 via-pink-200/20 to-indigo-200/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      
+      <CardHeader className="pb-3 relative">
         <div className="flex items-start justify-between">
           <div className="flex items-start space-x-3 flex-1">
-            <Avatar>
-              <AvatarFallback>
-                {getInitials(capsule.recipient_name)}
-              </AvatarFallback>
-            </Avatar>
+            {/* Enhanced avatar with gradient */}
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full blur-sm opacity-30" />
+              <Avatar className="relative border-2 border-white/50">
+                <AvatarFallback className="bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 font-semibold">
+                  {getInitials(capsule.recipient_name)}
+                </AvatarFallback>
+              </Avatar>
+            </div>
+            
             <div className="flex-1 min-w-0">
-              <h4 className="font-semibold text-lg truncate">{capsule.message_title}</h4>
+              <div className="flex items-center gap-2 mb-1">
+                <h4 className="font-semibold text-lg truncate">{capsule.message_title}</h4>
+                <div className="flex items-center gap-1 text-xs text-purple-600 bg-purple-50 px-2 py-0.5 rounded-full">
+                  <Icon name="lock" className="w-3 h-3" />
+                  <span>#{capsuleId}</span>
+                </div>
+              </div>
               <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
                 <Icon name="user" className="w-3 h-3 flex-shrink-0" />
                 <span className="truncate">For {capsule.recipient_name}</span>
@@ -226,8 +256,8 @@ function TimeCapsuleCard({
                 <span className="truncate">{capsule.recipient_email}</span>
               </div>
               {capsule.message_preview && (
-                <p className="text-sm text-muted-foreground mt-2 line-clamp-2">
-                  {capsule.message_preview}
+                <p className="text-sm text-muted-foreground mt-2 line-clamp-2 italic">
+                  "{capsule.message_preview}"
                 </p>
               )}
             </div>
@@ -255,6 +285,13 @@ function TimeCapsuleCard({
                     <Icon name="eye" className="w-4 h-4 mr-2" />
                     Preview Recording
                   </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    className="text-blue-600 focus:text-blue-600"
+                    onClick={() => onTestPreview?.(capsule.id)}
+                  >
+                    <Icon name="mail-check" className="w-4 h-4 mr-2" />
+                    Send Test Preview
+                  </DropdownMenuItem>
                   <DropdownMenuSeparator />
                 </>
               )}
@@ -271,28 +308,40 @@ function TimeCapsuleCard({
       </CardHeader>
 
       <CardContent className="pt-0 space-y-3">
-        {/* Delivery Information */}
-        <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-          <div className="flex items-center space-x-2">
-            <Icon
-              name={capsule.delivery_condition === 'ON_DATE' ? 'calendar' : 'shield'}
-              className="w-4 h-4 text-muted-foreground"
-            />
-            <span className="text-sm">
-              {capsule.delivery_condition === 'ON_DATE' && capsule.delivery_date
-                ? `Scheduled for ${format(new Date(capsule.delivery_date), "MMM d, yyyy")}`
-                : 'On Family Shield Activation'
-              }
-            </span>
-          </div>
+        {/* Enhanced Delivery Information */}
+        <div className="relative p-4 bg-gradient-to-r from-purple-50 via-pink-50 to-indigo-50 rounded-lg border border-purple-100">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="p-2 bg-white rounded-full shadow-sm">
+                <Icon
+                  name={capsule.delivery_condition === 'ON_DATE' ? 'calendar' : 'shield'}
+                  className="w-4 h-4 text-purple-600"
+                />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-900">
+                  {capsule.delivery_condition === 'ON_DATE' && capsule.delivery_date
+                    ? 'Scheduled Delivery'
+                    : 'Family Shield Activation'
+                  }
+                </p>
+                <p className="text-xs text-gray-600">
+                  {capsule.delivery_condition === 'ON_DATE' && capsule.delivery_date
+                    ? `Will be delivered: ${format(new Date(capsule.delivery_date), "MMMM d, yyyy")}`
+                    : 'Will be delivered when Family Shield is activated'
+                  }
+                </p>
+              </div>
+            </div>
 
-          <Badge className={getStatusColor(capsule.status)}>
-            <Icon name={getStatusIcon(capsule.status)} className="w-3 h-3 mr-1" />
-            {capsule.status === 'PENDING' ? 'Pending' :
-             capsule.status === 'DELIVERED' ? 'Delivered' :
-             capsule.status === 'FAILED' ? 'Failed' :
-             capsule.status}
-          </Badge>
+            <Badge className={`${getStatusColor(capsule.status)} shadow-sm`}>
+              <Icon name={getStatusIcon(capsule.status)} className="w-3 h-3 mr-1" />
+              {capsule.status === 'PENDING' ? 'Sealed' :
+               capsule.status === 'DELIVERED' ? 'Delivered' :
+               capsule.status === 'FAILED' ? 'Failed' :
+               capsule.status}
+            </Badge>
+          </div>
         </div>
 
         {/* Recording Details */}
