@@ -31,12 +31,12 @@ export function DashboardContent() {
               <div>
                 <FadeIn duration={0.5} delay={0.2}>
                   <h1 className="text-3xl lg:text-4xl font-bold font-heading text-card-foreground mb-3">
-                    Riadiace Centrum Vášho Odkazu{user?.firstName ? `, ${user.firstName}` : ''}
+                    Rodinný Štít{user?.firstName ? `, ${user.firstName}` : ''}
                   </h1>
                 </FadeIn>
                 <FadeIn duration={0.5} delay={0.4}>
                   <p className="text-lg leading-relaxed max-w-2xl text-muted-foreground">
-                    Miesto, kde máte plnú kontrolu nad zabezpečením svojej rodiny
+                    Prehľad všetkého, čo chráni vašu rodinu
                   </p>
                 </FadeIn>
               </div>

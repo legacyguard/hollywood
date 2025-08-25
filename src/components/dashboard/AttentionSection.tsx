@@ -90,11 +90,11 @@ export const AttentionSection: React.FC<AttentionSectionProps> = ({ className })
           <div className="flex items-center gap-3 mb-2">
             <Icon name="alert-circle" className="w-6 h-6 text-primary" />
             <h2 className="text-2xl font-bold font-heading text-card-foreground">
-              Akčné Položky
+              Aktuálne Výzvy
             </h2>
           </div>
           <p className="text-muted-foreground">
-            Priority na riešenie a strategické rozhodnutia
+            Situácie vyžadujúce vašu ochrannú pozornosť
           </p>
         </div>
 
