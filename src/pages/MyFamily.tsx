@@ -15,7 +15,7 @@ import {
   CheckCircle,
   Crown
 } from 'lucide-react';
-import { FamilyTreeVisualization } from '@/components/legacy/FamilyTreeVisualization';
+// import { FamilyTreeVisualization } from '@/components/family/FamilyTreeVisualization';
 import { PersonRoleAssignment } from '@/components/family/PersonRoleAssignment';
 import { FamilyInsights } from '@/components/family/FamilyInsights';
 import { WillData } from '@/types/will';
@@ -48,7 +48,7 @@ export const MyFamilyPage: React.FC<MyFamilyPageProps> = ({
 }) => {
   const [selectedPerson, setSelectedPerson] = useState<FamilyMember | null>(null);
   const [showRoleAssignment, setShowRoleAssignment] = useState(false);
-  const [familyMembers, setFamilyMembers] = useState<FamilyMember[]>([]);
+
 
   // Mock family data - in real app, this would come from user's family tree
   const mockFamilyMembers: FamilyMember[] = useMemo(() => [
@@ -117,7 +117,7 @@ export const MyFamilyPage: React.FC<MyFamilyPageProps> = ({
       
       // Update beneficiaries if heir role changed
       if (newRoles.isHeir !== undefined) {
-        const person = mockFamilyMembers.find(m => m.id === personId);
+        const person = familyMembers.find(m => m.id === personId);
         if (person && newRoles.isHeir) {
           const existingBeneficiary = updatedWillData.beneficiaries?.find(b => b.name === person.name);
           if (!existingBeneficiary) {
@@ -306,14 +306,17 @@ export const MyFamilyPage: React.FC<MyFamilyPageProps> = ({
               </p>
               
               {/* Enhanced Family Tree with role assignment capabilities */}
-              <FamilyTreeVisualization
+              {/* <FamilyTreeVisualization
                 willData={willData}
                 onWillDataUpdate={onWillDataUpdate}
                 onPersonClick={handlePersonClick}
                 showRoleIndicators={true}
                 enableDirectRoleAssignment={true}
                 familyMembers={mockFamilyMembers}
-              />
+              /> */}
+              <div className="p-8 text-center text-muted-foreground">
+                Family Tree Visualization component will be implemented here
+              </div>
             </CardContent>
           </Card>
         </div>

@@ -108,8 +108,7 @@ class SecureCryptoStore {
           // Check if key has expired
           if (result.metadata.expiresAt && new Date(result.metadata.expiresAt) < new Date()) {
             // Key has expired, remove it
-            this.removeKey(keyId);
-            resolve(null);
+            this.removeKey(keyId).then(() => resolve(null)).catch(reject);
           } else {
             resolve(result.key);
           }
@@ -143,16 +142,23 @@ class SecureCryptoStore {
         const results = request.result;
         const keys: CryptoKey[] = [];
         
+        const expiredKeys: string[] = [];
+        
         for (const result of results) {
           if (result.key) {
             // Check if key has expired
             if (result.metadata.expiresAt && new Date(result.metadata.expiresAt) < new Date()) {
               // Key has expired, remove it
-              this.removeKey(result.id);
+              expiredKeys.push(result.id);
             } else {
               keys.push(result.key);
             }
           }
+        }
+        
+        // Remove expired keys asynchronously
+        if (expiredKeys.length > 0) {
+          Promise.all(expiredKeys.map(id => this.removeKey(id))).catch(console.error);
         }
         
         resolve(keys);

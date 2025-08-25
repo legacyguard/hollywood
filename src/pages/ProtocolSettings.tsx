@@ -11,23 +11,23 @@ import { FadeIn } from '@/components/motion/FadeIn';
 import { usePageTitle } from '@/hooks/usePageTitle';
 import { toast } from 'sonner';
 import { useSupabaseWithClerk } from '@/integrations/supabase/client';
-import { ProtocolSettings, CreateProtocolSettingsRequest, Guardian } from '@/types/guardian';
+import { FamilyShieldSettings, CreateFamilyShieldSettingsRequest, Guardian } from '@/types/guardian';
 
 export default function ProtocolSettingsPage() {
   usePageTitle('Family Shield Settings');
   const { userId } = useAuth();
   const createSupabaseClient = useSupabaseWithClerk();
   
-  const [settings, setSettings] = useState<ProtocolSettings | null>(null);
+  const [settings, setSettings] = useState<FamilyShieldSettings | null>(null);
   const [guardians, setGuardians] = useState<Guardian[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   
   // Form state
-  const [formData, setFormData] = useState<CreateProtocolSettingsRequest>({
+  const [formData, setFormData] = useState<CreateFamilyShieldSettingsRequest>({
     inactivity_period_months: 6,
     required_guardians_for_activation: 2,
-    is_protocol_enabled: false
+    is_shield_enabled: false
   });
 
   // Fetch protocol settings and guardians
@@ -37,9 +37,9 @@ export default function ProtocolSettingsPage() {
     try {
       const supabase = await createSupabaseClient();
       
-      // Fetch protocol settings
+      // Fetch Family Shield settings
       const { data: settingsData, error: settingsError } = await supabase
-        .from('user_protocol_settings')
+        .from('family_shield_settings')
         .select('*')
         .eq('user_id', userId)
         .single();
@@ -53,7 +53,7 @@ export default function ProtocolSettingsPage() {
         setFormData({
           inactivity_period_months: settingsData.inactivity_period_months,
           required_guardians_for_activation: settingsData.required_guardians_for_activation,
-          is_protocol_enabled: settingsData.is_protocol_enabled
+          is_shield_enabled: settingsData.is_shield_enabled
         });
       }
 
@@ -85,12 +85,12 @@ export default function ProtocolSettingsPage() {
     if (!userId) return;
 
     // Validation
-    if (formData.inactivity_period_months! < 1 || formData.inactivity_period_months! > 24) {
+    if (!formData.inactivity_period_months || formData.inactivity_period_months < 1 || formData.inactivity_period_months > 24) {
       toast.error('Inactivity period must be between 1 and 24 months');
       return;
     }
 
-    if (formData.required_guardians_for_activation! < 1 || formData.required_guardians_for_activation! > guardians.length) {
+    if (!formData.required_guardians_for_activation || formData.required_guardians_for_activation < 1 || formData.required_guardians_for_activation > guardians.length) {
       toast.error(`Required guardians must be between 1 and ${guardians.length}`);
       return;
     }
@@ -104,14 +104,14 @@ export default function ProtocolSettingsPage() {
         user_id: userId,
         inactivity_period_months: formData.inactivity_period_months,
         required_guardians_for_activation: formData.required_guardians_for_activation,
-        is_protocol_enabled: formData.is_protocol_enabled
+        is_shield_enabled: formData.is_shield_enabled
       };
 
       let result;
       if (settings) {
         // Update existing settings
         result = await supabase
-          .from('user_protocol_settings')
+          .from('family_shield_settings')
           .update(settingsPayload)
           .eq('id', settings.id)
           .select()
@@ -119,7 +119,7 @@ export default function ProtocolSettingsPage() {
       } else {
         // Create new settings
         result = await supabase
-          .from('user_protocol_settings')
+          .from('family_shield_settings')
           .insert(settingsPayload)
           .select()
           .single();
@@ -139,7 +139,7 @@ export default function ProtocolSettingsPage() {
   };
 
   // Handle form input changes
-  const handleInputChange = (field: keyof CreateProtocolSettingsRequest, value: string | boolean | number) => {
+  const handleInputChange = (field: keyof CreateFamilyShieldSettingsRequest, value: string | boolean | number) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
@@ -196,16 +196,16 @@ export default function ProtocolSettingsPage() {
                   </div>
                   <div className="flex items-center gap-3">
                     <Switch
-                      checked={formData.is_protocol_enabled || false}
-                      onCheckedChange={(value) => handleInputChange('is_protocol_enabled', value)}
+                      checked={formData.is_shield_enabled || false}
+                      onCheckedChange={(value) => handleInputChange('is_shield_enabled', value)}
                     />
-                    <span className={`font-medium ${formData.is_protocol_enabled ? 'text-green-600' : 'text-muted-foreground'}`}>
-                      {formData.is_protocol_enabled ? 'Active' : 'Inactive'}
+                    <span className={`font-medium ${formData.is_shield_enabled ? 'text-green-600' : 'text-muted-foreground'}`}>
+                      {formData.is_shield_enabled ? 'Active' : 'Inactive'}
                     </span>
                   </div>
                 </div>
                 
-                {formData.is_protocol_enabled && (
+                {formData.is_shield_enabled && (
                   <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
                     <div className="flex items-center gap-2 text-green-800">
                       <Icon name="shield-check" className="w-5 h-5" />
@@ -234,10 +234,13 @@ export default function ProtocolSettingsPage() {
                       <Input
                         id="inactivity_period"
                         type="number"
-                        min="1"
+min="1"
                         max="24"
                         value={formData.inactivity_period_months}
-                        onChange={(e) => handleInputChange('inactivity_period_months', parseInt(e.target.value) || 6)}
+                        onChange={(e) => {
+                          const value = parseInt(e.target.value);
+                          handleInputChange('inactivity_period_months', isNaN(value) ? 6 : value);
+                        }}
                         className="w-20"
                       />
                       <span className="text-muted-foreground">months of no activity</span>
@@ -337,8 +340,8 @@ export default function ProtocolSettingsPage() {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                     <div>
                       <Label className="text-muted-foreground">Shield Status</Label>
-                      <p className={`font-medium ${settings.is_protocol_enabled ? 'text-green-600' : 'text-gray-600'}`}>
-                        {settings.is_protocol_enabled ? 'Active' : 'Inactive'}
+                      <p className={`font-medium ${settings.is_shield_enabled ? 'text-green-600' : 'text-gray-600'}`}>
+                        {settings.is_shield_enabled ? 'Active' : 'Inactive'}
                       </p>
                     </div>
                     <div>
@@ -350,7 +353,7 @@ export default function ProtocolSettingsPage() {
                     <div>
                       <Label className="text-muted-foreground">Shield State</Label>
                       <p className="font-medium capitalize">
-                        {settings.protocol_status.replace('_', ' ')}
+                        {settings.shield_status.replace('_', ' ')}
                       </p>
                     </div>
                   </div>

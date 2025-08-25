@@ -6,14 +6,14 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-interface ProtocolSettings {
+interface FamilyShieldSettings {
   id: string;
   user_id: string;
   inactivity_period_months: number;
   required_guardians_for_activation: number;
-  is_protocol_enabled: boolean;
+  is_shield_enabled: boolean;
   last_activity_check: string;
-  protocol_status: 'inactive' | 'pending_verification' | 'active';
+  shield_status: 'inactive' | 'pending_verification' | 'active';
 }
 
 interface Guardian {
@@ -38,15 +38,15 @@ serve(async (req) => {
 
     console.log('Starting inactivity check process...');
 
-    // Get all users with enabled protocols
-    const { data: protocolUsers, error: protocolError } = await supabaseClient
-      .from('user_protocol_settings')
+    // Get all users with enabled Family Shields
+    const { data: shieldUsers, error: shieldError } = await supabaseClient
+      .from('family_shield_settings')
       .select(`
         *,
         auth.users!inner(id, last_sign_in_at, email)
       `)
-      .eq('is_protocol_enabled', true)
-      .eq('protocol_status', 'inactive');
+      .eq('is_shield_enabled', true)
+      .eq('shield_status', 'inactive');
 
     if (protocolError) {
       console.error('Error fetching protocol users:', protocolError);

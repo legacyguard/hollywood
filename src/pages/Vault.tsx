@@ -313,7 +313,7 @@ export default function VaultPage() {
     if (!documentToDelete) return;
     
     setDocuments(prev => prev.filter(d => d.id !== documentToDelete.id));
-    toast.error(`Deleted ${documentToDelete.name}`);
+    toast.success(`Deleted ${documentToDelete.name}`);
     
     // Close dialog and reset state
     setIsConfirmDialogOpen(false);

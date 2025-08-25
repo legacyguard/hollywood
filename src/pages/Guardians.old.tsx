@@ -147,8 +147,6 @@ export default function GuardiansPage() {
   ) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
-  };
-
   return (
     <DashboardLayout>
       <div className="min-h-screen bg-background">

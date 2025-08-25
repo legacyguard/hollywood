@@ -1,5 +1,5 @@
--- Create emergency activation log table for Family Shield Protocol audit trail
-CREATE TABLE emergency_activation_log (
+-- Create Family Shield activation log table for audit trail
+CREATE TABLE family_shield_activation_log (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   guardian_id UUID REFERENCES guardians(id) ON DELETE SET NULL,
@@ -18,33 +18,33 @@ CREATE TABLE emergency_activation_log (
 );
 
 -- Add RLS (Row Level Security)
-ALTER TABLE emergency_activation_log ENABLE ROW LEVEL SECURITY;
+ALTER TABLE family_shield_activation_log ENABLE ROW LEVEL SECURITY;
 
 -- Policy: Users can view their own activation logs
-CREATE POLICY "Users can view own activation logs" ON emergency_activation_log
+CREATE POLICY "Users can view own activation logs" ON family_shield_activation_log
   FOR SELECT USING (auth.uid() = user_id);
 
 -- Policy: Only system can insert activation logs (no direct user insert)
-CREATE POLICY "System can insert activation logs" ON emergency_activation_log
+CREATE POLICY "System can insert activation logs" ON family_shield_activation_log
   FOR INSERT WITH CHECK (false); -- Will be bypassed by service role
 
 -- Policy: System can update activation logs (no direct user update)
-CREATE POLICY "System can update activation logs" ON emergency_activation_log
+CREATE POLICY "System can update activation logs" ON family_shield_activation_log
   FOR UPDATE USING (false); -- Will be bypassed by service role
 
 -- Add indexes for performance and queries
-CREATE INDEX idx_activation_log_user_id ON emergency_activation_log(user_id);
-CREATE INDEX idx_activation_log_guardian_id ON emergency_activation_log(guardian_id);
-CREATE INDEX idx_activation_log_status ON emergency_activation_log(status);
-CREATE INDEX idx_activation_log_token ON emergency_activation_log(verification_token) WHERE status = 'pending';
-CREATE INDEX idx_activation_log_created_at ON emergency_activation_log(created_at);
-CREATE INDEX idx_activation_log_expires ON emergency_activation_log(token_expires_at) WHERE status = 'pending';
+CREATE INDEX idx_activation_log_user_id ON family_shield_activation_log(user_id);
+CREATE INDEX idx_activation_log_guardian_id ON family_shield_activation_log(guardian_id);
+CREATE INDEX idx_activation_log_status ON family_shield_activation_log(status);
+CREATE INDEX idx_activation_log_token ON family_shield_activation_log(verification_token) WHERE status = 'pending';
+CREATE INDEX idx_activation_log_created_at ON family_shield_activation_log(created_at);
+CREATE INDEX idx_activation_log_expires ON family_shield_activation_log(token_expires_at) WHERE status = 'pending';
 
 -- Create function to automatically expire old tokens
 CREATE OR REPLACE FUNCTION expire_old_activation_tokens()
 RETURNS void AS $$
 BEGIN
-  UPDATE emergency_activation_log 
+  UPDATE family_shield_activation_log 
   SET 
     status = 'expired',
     expired_at = NOW()
@@ -55,7 +55,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Add comments
-COMMENT ON TABLE emergency_activation_log IS 'Audit log for Family Shield Protocol activation attempts';
+COMMENT ON TABLE family_shield_activation_log IS 'Audit log for Family Shield activation attempts';
 COMMENT ON COLUMN emergency_activation_log.user_id IS 'User whose protocol is being activated';
 COMMENT ON COLUMN emergency_activation_log.guardian_id IS 'Guardian who initiated the activation (if applicable)';
 COMMENT ON COLUMN emergency_activation_log.activation_type IS 'How the activation was triggered';

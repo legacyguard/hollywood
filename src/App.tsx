@@ -27,9 +27,9 @@ import SignUpPage from "./pages/auth/SignUp";
 import TestOCRPage from "./pages/test-ocr/TestOCRPage";
 import IntelligentOrganizer from "./pages/IntelligentOrganizer";
 import SettingsPage from "./pages/Settings";
-import ProtocolSettingsPage from "./pages/ProtocolSettings";
-import SurvivorManualPage from "./pages/SurvivorManual";
-import EmergencyAccessPage from "./pages/EmergencyAccess";
+import FamilyShieldSettingsPage from "./pages/ProtocolSettings";
+import FamilyGuidanceManualPage from "./pages/SurvivorManual";
+import FamilyShieldAccessPage from "./pages/EmergencyAccess";
 
 const queryClient = new QueryClient();
 
@@ -108,17 +108,17 @@ const App = () => (
             } />
             <Route path="/protocol-settings" element={
               <ProtectedRoute>
-                <ProtocolSettingsPage />
+                <FamilyShieldSettingsPage />
               </ProtectedRoute>
             } />
             <Route path="/survivor-manual" element={
               <ProtectedRoute>
-                <SurvivorManualPage />
+                <FamilyGuidanceManualPage />
               </ProtectedRoute>
             } />
 
             {/* Emergency access (public route with token verification) */}
-            <Route path="/emergency-access/:token" element={<EmergencyAccessPage />} />
+            <Route path="/emergency-access/:token" element={<FamilyShieldAccessPage />} />
 
             {/* 404 route */}
             <Route path="*" element={<NotFound />} />

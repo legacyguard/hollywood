@@ -120,8 +120,8 @@ export class BackupService {
       metadata: {
         exportDate: data.exportDate,
         userId: data.userId,
-        checksum: data.metadata.checksum,
-      },
+        version: '1.0'
+      }
     };
   }
 
@@ -133,6 +133,12 @@ export class BackupService {
     password: string
   ): Promise<BackupData | null> {
     try {
+      // Validate required fields
+      if (!encryptedData.salt || !encryptedData.nonce || !encryptedData.data) {
+        console.error('Invalid encrypted backup structure');
+        return null;
+      }
+
       const salt = decodeBase64(encryptedData.salt);
       const nonce = decodeBase64(encryptedData.nonce);
       const encrypted = decodeBase64(encryptedData.data);

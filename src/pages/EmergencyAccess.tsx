@@ -11,7 +11,7 @@ import { FadeIn } from '@/components/motion/FadeIn';
 import { toast } from 'sonner';
 import { useSupabaseWithClerk } from '@/integrations/supabase/client';
 
-interface EmergencyAccessData {
+interface FamilyShieldAccessData {
   user_name: string;
   guardian_name: string;
   guardian_permissions: {
@@ -43,12 +43,12 @@ interface EmergencyAccessData {
   }>;
 }
 
-export default function EmergencyAccessPage() {
+export default function FamilyShieldAccessPage() {
   const { token } = useParams<{ token: string }>();
   const navigate = useNavigate();
   const createSupabaseClient = useSupabaseWithClerk();
   
-  const [accessData, setAccessData] = useState<EmergencyAccessData | null>(null);
+  const [accessData, setAccessData] = useState<FamilyShieldAccessData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isVerifying, setIsVerifying] = useState(false);
   const [verificationCode, setVerificationCode] = useState('');
@@ -85,7 +85,7 @@ export default function EmergencyAccessPage() {
       */
       
       // Simulated response for demo
-      const mockData: EmergencyAccessData = {
+      const mockData: FamilyShieldAccessData = {
         user_name: "John Smith",
         guardian_name: "Jane Smith",
         guardian_permissions: {
@@ -139,7 +139,7 @@ export default function EmergencyAccessPage() {
       await new Promise(resolve => setTimeout(resolve, 1500));
       
       setAccessData(mockData);
-      toast.success(`Welcome, ${mockData.guardian_name}. Emergency access granted.`);
+      toast.success(`Welcome, ${mockData.guardian_name}. Family Shield access granted.`);
       
     } catch (err: unknown) {
       console.error('Error verifying token:', err);
@@ -188,7 +188,7 @@ export default function EmergencyAccessPage() {
         <Card className="p-8 max-w-md w-full mx-4">
           <div className="text-center">
             <Icon name="loader" className="w-8 h-8 animate-spin text-primary mx-auto mb-4" />
-            <h2 className="text-xl font-semibold mb-2">Verifying Emergency Access</h2>
+            <h2 className="text-xl font-semibold mb-2">Verifying Family Shield Access</h2>
             <p className="text-muted-foreground">
               Please wait while we securely verify your access token...
             </p>
@@ -292,7 +292,7 @@ export default function EmergencyAccessPage() {
                     <Icon name="shield-check" className="w-6 h-6 text-white" />
                   </div>
                   <h1 className="text-2xl font-bold text-gray-900">
-                    Family Shield Protocol - Emergency Access
+                    Family Shield - Guardian Access
                   </h1>
                 </div>
                 <p className="text-gray-600">
@@ -300,7 +300,7 @@ export default function EmergencyAccessPage() {
                 </p>
               </div>
               <Badge variant="destructive" className="text-sm">
-                Active Emergency
+                Family Shield Active
               </Badge>
             </div>
           </FadeIn>
@@ -398,7 +398,7 @@ export default function EmergencyAccessPage() {
             <Card className="p-6">
               <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
                 <Icon name="phone" className="w-5 h-5 text-primary" />
-                Emergency Contacts
+                Important Contacts
               </h3>
               <div className="grid gap-4">
                 {accessData.emergency_contacts.map((contact, index) => (

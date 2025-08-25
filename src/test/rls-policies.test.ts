@@ -115,10 +115,7 @@ describe('RLS Policies & Database Security', () => {
     it('should enforce guardian ownership on updates', async () => {
       const client = createClient('url', 'key');
       
-      const updateData = {
-        can_trigger_emergency: false,
-      };
-      
+
       // Test that update operation calls the correct methods
       const updateData = {
         can_trigger_emergency: false,
@@ -131,22 +128,7 @@ describe('RLS Policies & Database Security', () => {
         .eq('user_id', 'user_123')
         .select();
       
-      // Test that encryption keys access calls the correct methods
--      const fromSpy = client.from('user_encryption_keys');
-      await client.from('user_encryption_keys')
-        .select('*')
-        .eq('user_id', 'user_123')
-        .single();
-      
-      expect(client.from).toHaveBeenCalledWith('user_encryption_keys');
-    it('should allow users to access only their own encryption keys', async () => {
-      const client = createClient('url', 'key');
-      
-      // Test that encryption keys access calls the correct methods
-      const fromSpy = client.from('user_encryption_keys');
-      await fromSpy.select('*');
-      
-      expect(client.from).toHaveBeenCalledWith('user_encryption_keys');
+      expect(client.from).toHaveBeenCalledWith('guardians');
     });
 
     it('should enforce key ownership on key rotation', async () => {

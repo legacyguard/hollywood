@@ -1,5 +1,5 @@
--- Create survivor manual entries table for Family Shield Protocol
-CREATE TABLE survivor_manual_entries (
+-- Create Family Guidance Manual entries table for Family Shield
+CREATE TABLE family_guidance_entries (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   entry_type VARCHAR(50) NOT NULL CHECK (entry_type IN (
@@ -15,48 +15,56 @@ CREATE TABLE survivor_manual_entries (
   title TEXT NOT NULL,
   content TEXT NOT NULL,
   is_completed BOOLEAN DEFAULT false,
-  priority INTEGER DEFAULT 1 CHECK (priority > 0),
-  tags TEXT[],
-  related_document_ids UUID[],
+-- supabase/migrations/20250825163000_create_survivor_manual_entries.sql
+
+CREATE TABLE IF NOT EXISTS survivor_manual_entries (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  priority INTEGER NOT NULL DEFAULT 1 CHECK (priority > 0),
+  tags TEXT[] NOT NULL DEFAULT ARRAY[]::text[],
+  related_document_ids UUID[] NOT NULL DEFAULT ARRAY[]::uuid[],
   is_auto_generated BOOLEAN DEFAULT false,
+  -- ... other columns ...
+);
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 -- Add RLS (Row Level Security)
-ALTER TABLE survivor_manual_entries ENABLE ROW LEVEL SECURITY;
+ALTER TABLE family_guidance_entries ENABLE ROW LEVEL SECURITY;
 
 -- Policy: Users can view their own manual entries
-CREATE POLICY "Users can view own manual entries" ON survivor_manual_entries
+CREATE POLICY "Users can view own guidance entries" ON family_guidance_entries
   FOR SELECT USING (auth.uid() = user_id);
 
 -- Policy: Users can insert their own manual entries
-CREATE POLICY "Users can insert own manual entries" ON survivor_manual_entries
+CREATE POLICY "Users can insert own guidance entries" ON family_guidance_entries
   FOR INSERT WITH CHECK (auth.uid() = user_id);
 
 -- Policy: Users can update their own manual entries
-CREATE POLICY "Users can update own manual entries" ON survivor_manual_entries
+CREATE POLICY "Users can update own guidance entries" ON family_guidance_entries
   FOR UPDATE USING (auth.uid() = user_id);
 
 -- Policy: Users can delete their own manual entries
-CREATE POLICY "Users can delete own manual entries" ON survivor_manual_entries
+CREATE POLICY "Users can delete own guidance entries" ON family_guidance_entries
   FOR DELETE USING (auth.uid() = user_id);
 
 -- Add indexes for performance
-CREATE INDEX idx_manual_entries_user_id ON survivor_manual_entries(user_id);
-CREATE INDEX idx_manual_entries_type ON survivor_manual_entries(user_id, entry_type);
-CREATE INDEX idx_manual_entries_priority ON survivor_manual_entries(user_id, priority, is_completed);
-CREATE INDEX idx_manual_entries_completed ON survivor_manual_entries(user_id, is_completed);
-CREATE INDEX idx_manual_entries_tags ON survivor_manual_entries USING gin(tags);
+CREATE INDEX idx_guidance_entries_user_id ON family_guidance_entries(user_id);
+CREATE INDEX idx_guidance_entries_type ON family_guidance_entries(user_id, entry_type);
+CREATE INDEX idx_guidance_entries_priority ON family_guidance_entries(user_id, priority, is_completed);
+CREATE INDEX idx_guidance_entries_completed ON family_guidance_entries(user_id, is_completed);
+CREATE INDEX idx_guidance_entries_tags ON family_guidance_entries USING gin(tags);
 
 -- Add updated_at trigger
-CREATE TRIGGER update_manual_entries_updated_at 
-  BEFORE UPDATE ON survivor_manual_entries 
+CREATE TRIGGER update_guidance_entries_updated_at 
+  BEFORE UPDATE ON family_guidance_entries 
   FOR EACH ROW 
   EXECUTE FUNCTION update_updated_at_column();
 
 -- Create function to calculate completion percentage
-CREATE OR REPLACE FUNCTION get_manual_completion_percentage(p_user_id UUID)
+CREATE OR REPLACE FUNCTION get_guidance_completion_percentage(p_user_id UUID)
 RETURNS INTEGER AS $$
 DECLARE
   total_entries INTEGER;
@@ -64,7 +72,7 @@ DECLARE
   percentage INTEGER;
 BEGIN
   SELECT COUNT(*) INTO total_entries 
-  FROM survivor_manual_entries 
+  FROM family_guidance_entries 
   WHERE user_id = p_user_id;
   
   IF total_entries = 0 THEN
@@ -72,7 +80,7 @@ BEGIN
   END IF;
   
   SELECT COUNT(*) INTO completed_entries 
-  FROM survivor_manual_entries 
+  FROM family_guidance_entries 
   WHERE user_id = p_user_id AND is_completed = true;
   
   percentage := ROUND((completed_entries::DECIMAL / total_entries::DECIMAL) * 100);
@@ -82,13 +90,13 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Add comments
-COMMENT ON TABLE survivor_manual_entries IS 'User-created entries for the Family Shield Survivor Manual';
-COMMENT ON COLUMN survivor_manual_entries.user_id IS 'Reference to the user who owns this entry';
-COMMENT ON COLUMN survivor_manual_entries.entry_type IS 'Category of the manual entry';
-COMMENT ON COLUMN survivor_manual_entries.title IS 'Title/summary of the entry';
-COMMENT ON COLUMN survivor_manual_entries.content IS 'Detailed content/instructions';
-COMMENT ON COLUMN survivor_manual_entries.is_completed IS 'Whether this entry has been completed by the user';
-COMMENT ON COLUMN survivor_manual_entries.priority IS 'Priority level (1 = highest)';
-COMMENT ON COLUMN survivor_manual_entries.tags IS 'Array of tags for categorization';
-COMMENT ON COLUMN survivor_manual_entries.related_document_ids IS 'Array of related document IDs';
-COMMENT ON COLUMN survivor_manual_entries.is_auto_generated IS 'Whether this entry was auto-generated by the system';
+COMMENT ON TABLE family_guidance_entries IS 'User-created entries for the Family Guidance Manual';
+COMMENT ON COLUMN family_guidance_entries.user_id IS 'Reference to the user who owns this entry';
+COMMENT ON COLUMN family_guidance_entries.entry_type IS 'Category of the guidance entry';
+COMMENT ON COLUMN family_guidance_entries.title IS 'Title/summary of the entry';
+COMMENT ON COLUMN family_guidance_entries.content IS 'Detailed content/instructions';
+COMMENT ON COLUMN family_guidance_entries.is_completed IS 'Whether this entry has been completed by the user';
+COMMENT ON COLUMN family_guidance_entries.priority IS 'Priority level (1 = highest)';
+COMMENT ON COLUMN family_guidance_entries.tags IS 'Array of tags for categorization';
+COMMENT ON COLUMN family_guidance_entries.related_document_ids IS 'Array of related document IDs';
+COMMENT ON COLUMN family_guidance_entries.is_auto_generated IS 'Whether this entry was auto-generated by the system';

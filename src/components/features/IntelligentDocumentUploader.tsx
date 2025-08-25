@@ -9,7 +9,7 @@ import { Card } from '@/components/ui/card';
 import { Icon } from '@/components/ui/icon-library';
 import { FadeIn } from '@/components/motion/FadeIn';
 import { DocumentConfirmation } from './DocumentConfirmation';
-import { encryptionService } from '@/lib/encryption-v2';
+import { encryptionServiceV2 as encryptionService } from '@/lib/encryption-v2';
 import { toast } from 'sonner';
 
 // Document analysis result interface matching our Supabase Edge Function

@@ -262,9 +262,7 @@ describe('Authentication & Permissions', () => {
       }).not.toThrow();
       
       // This should throw because invalidUserId is too short
-      // Test valid user ID
-      await client.from('documents').select('*').eq('user_id', validUserId).single();
-      expect(client.from).toHaveBeenCalledWith('documents');
+// (Lines 265–267 removed as they duplicate an earlier test)
       
       // Test invalid user ID validation
       const validateUserId = (userId: string) => {

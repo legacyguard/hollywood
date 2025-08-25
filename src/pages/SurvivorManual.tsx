@@ -15,7 +15,7 @@ import { FadeIn } from '@/components/motion/FadeIn';
 import { usePageTitle } from '@/hooks/usePageTitle';
 import { toast } from 'sonner';
 import { useSupabaseWithClerk } from '@/integrations/supabase/client';
-import { SurvivorManualEntry, CreateManualEntryRequest, ManualEntryType, Guardian } from '@/types/guardian';
+import { FamilyGuidanceEntry, CreateGuidanceEntryRequest, ManualEntryType, Guardian } from '@/types/guardian';
 
 const ENTRY_TYPES: { value: ManualEntryType; label: string; description: string; icon: string; color: string }[] = [
   {
@@ -81,15 +81,15 @@ export default function SurvivorManualPage() {
   const { userId } = useAuth();
   const createSupabaseClient = useSupabaseWithClerk();
   
-  const [entries, setEntries] = useState<SurvivorManualEntry[]>([]);
+  const [entries, setEntries] = useState<FamilyGuidanceEntry[]>([]);
   const [guardians, setGuardians] = useState<Guardian[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [editingEntry, setEditingEntry] = useState<SurvivorManualEntry | null>(null);
+  const [editingEntry, setEditingEntry] = useState<FamilyGuidanceEntry | null>(null);
   
   // Form state
-  const [formData, setFormData] = useState<CreateManualEntryRequest>({
+  const [formData, setFormData] = useState<CreateGuidanceEntryRequest>({
     entry_type: 'important_contacts',
     title: '',
     content: '',
@@ -100,7 +100,7 @@ export default function SurvivorManualPage() {
 
   // Generate initial entries based on user's guardians and documents
   const generateInitialEntries = useCallback(async (supabase: unknown, userGuardians: Guardian[]) => {
-    const initialEntries: Omit<SurvivorManualEntry, 'id' | 'created_at' | 'updated_at'>[] = [];
+    const initialEntries: Omit<FamilyGuidanceEntry, 'id' | 'created_at' | 'updated_at'>[] = [];
 
     // Important Contacts - auto-filled with guardians
     if (userGuardians.length > 0) {
@@ -146,14 +146,16 @@ export default function SurvivorManualPage() {
 
     try {
       const { data, error } = await supabase
-        .from('survivor_manual_entries')
+        .from('family_guidance_entries')
         .insert(initialEntries)
         .select();
 
       if (error) throw error;
 
       setEntries(data || []);
-      toast.success('Initial survivor manual created! Please review and customize the entries.');
+      toast.success(
+        'Initial Family Guidance Manual created! Please review and customize the entries.'
+      );
     } catch (error) {
       console.error('Error generating initial entries:', error);
     }
@@ -161,42 +163,7 @@ export default function SurvivorManualPage() {
 
   // Fetch data
   const fetchData = useCallback(async () => {
-    if (!userId) return;
-
-    try {
-      const supabase = await createSupabaseClient();
-      
-      // Fetch manual entries
-      const { data: entriesData, error: entriesError } = await supabase
-        .from('survivor_manual_entries')
-        .select('*')
-        .eq('user_id', userId)
-        .order('priority', { ascending: true });
-
-      if (entriesError) throw entriesError;
-
-      // Fetch guardians for auto-suggestions
-      const { data: guardiansData, error: guardiansError } = await supabase
-        .from('guardians')
-        .select('*')
-        .eq('user_id', userId)
-        .eq('is_active', true);
-
-      if (guardiansError) throw guardiansError;
-
-      setEntries(entriesData || []);
-      setGuardians(guardiansData || []);
-
-      // Auto-generate entries if none exist
-      if (!entriesData || entriesData.length === 0) {
-        await generateInitialEntries(supabase, guardiansData || []);
-      }
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      toast.error('Failed to load survivor manual');
-    } finally {
-      setIsLoading(false);
-    }
+    // ... existing code ...
   }, [userId, createSupabaseClient, generateInitialEntries]);
 
 
@@ -224,7 +191,7 @@ export default function SurvivorManualPage() {
       if (editingEntry) {
         // Update existing entry
         const { data, error } = await supabase
-          .from('survivor_manual_entries')
+          .from('family_guidance_entries')
           .update({
             entry_type: formData.entry_type,
             title: formData.title.trim(),
@@ -245,7 +212,7 @@ export default function SurvivorManualPage() {
       } else {
         // Create new entry
         const { data, error } = await supabase
-          .from('survivor_manual_entries')
+          .from('family_guidance_entries')
           .insert({
             user_id: userId,
             entry_type: formData.entry_type,
@@ -288,7 +255,7 @@ export default function SurvivorManualPage() {
   };
 
   // Handle edit
-  const handleEdit = (entry: SurvivorManualEntry) => {
+  const handleEdit = (entry: FamilyGuidanceEntry) => {
     setFormData({
       entry_type: entry.entry_type,
       title: entry.title,
@@ -302,12 +269,12 @@ export default function SurvivorManualPage() {
   };
 
   // Toggle completion
-  const toggleCompletion = async (entry: SurvivorManualEntry) => {
+  const toggleCompletion = async (entry: FamilyGuidanceEntry) => {
     try {
       const supabase = await createSupabaseClient();
       
       const { data, error } = await supabase
-        .from('survivor_manual_entries')
+        .from('family_guidance_entries')
         .update({ is_completed: !entry.is_completed })
         .eq('id', entry.id)
         .select()
@@ -324,7 +291,7 @@ export default function SurvivorManualPage() {
   };
 
   // Handle form input changes
-  const handleInputChange = (field: keyof CreateManualEntryRequest, value: unknown) => {
+  const handleInputChange = (field: keyof CreateGuidanceEntryRequest, value: unknown) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
@@ -339,7 +306,7 @@ export default function SurvivorManualPage() {
     }
     acc[entry.entry_type].push(entry);
     return acc;
-  }, {} as Record<ManualEntryType, SurvivorManualEntry[]>);
+  }, {} as Record<ManualEntryType, FamilyGuidanceEntry[]>);
 
   const getTypeConfig = (type: ManualEntryType) => 
     ENTRY_TYPES.find(t => t.value === type) || ENTRY_TYPES[0];
@@ -349,7 +316,7 @@ export default function SurvivorManualPage() {
       <DashboardLayout>
         <div className="min-h-screen bg-background flex items-center justify-center">
           <Icon name="loader" className="w-8 h-8 animate-spin text-primary" />
-          <span className="ml-3 text-muted-foreground">Loading survivor manual...</span>
+          <span className="ml-3 text-muted-foreground">Loading Family Guidance Manual...</span>
         </div>
       </DashboardLayout>
     );

@@ -154,12 +154,21 @@ serve(async (req) => {
   }
 });
 
-function generateManualContent(entries: SurvivorManualEntry[], guardians: Guardian[], userProfile: any, settings: any) {
+function generateManualContent(
+  entries: SurvivorManualEntry[],
+  guardians: Guardian[],
+  userProfile: any,
+  settings: any
+) {
+  // Ensure userProfile has expected structure
+  const safeUserProfile = userProfile || {};
+  const userName = safeUserProfile.full_name || 'Unknown';
+
   const manual = {
     title: 'Family Survivor\'s Manual',
     generated_at: new Date().toISOString(),
-    user_name: userProfile?.full_name || 'Unknown',
-    introduction: generateIntroduction(userProfile, settings),
+    user_name: userName,
+    introduction: generateIntroduction(safeUserProfile, settings || {}),
     emergency_contacts: generateEmergencyContacts(guardians),
     sections: organizeEntriesByType(entries),
     quick_reference: generateQuickReference(entries, guardians)

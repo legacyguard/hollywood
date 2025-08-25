@@ -160,29 +160,35 @@ class EncryptionServiceV2 {
   /**
    * Decrypt file content using AES-GCM
    */
-  async decryptFile(
-    encryptedData: ArrayBuffer,
-    iv: Uint8Array,
-    userId: string
-  ): Promise<ArrayBuffer | null> {
-    try {
-      const key = await this.getUserEncryptionKey(userId);
-      
-      const decryptedData = await crypto.subtle.decrypt(
-        {
-          name: this.ALGORITHM,
-          iv: iv
-        },
-        key,
-        encryptedData
-      );
-
-      return decryptedData;
-    } catch (error) {
-      console.error('Decryption failed:', error);
+async decryptFile(
+  encryptedData: ArrayBuffer,
+  iv: Uint8Array,
+  userId: string
+): Promise<ArrayBuffer | null> {
+  try {
+    // Validate IV length for AES-GCM
+    if (iv.length !== 12) {
+      console.error('Invalid IV length. Expected 12 bytes for AES-GCM');
       return null;
     }
+
+    const key = await this.getUserEncryptionKey(userId);
+    
+    const decryptedData = await crypto.subtle.decrypt(
+      {
+        name: this.ALGORITHM,
+        iv: iv
+      },
+      key,
+      encryptedData
+    );
+
+    return decryptedData;
+  } catch (error) {
+    console.error('Decryption failed:', error);
+    return null;
   }
+}
 
   /**
    * Create encrypted blob for upload
@@ -349,7 +355,11 @@ class EncryptionServiceV2 {
   }
 
   private uint8ArrayToBase64(array: Uint8Array): string {
-    return btoa(String.fromCharCode(...array));
+    let binary = '';
+    for (let i = 0; i < array.length; i++) {
+      binary += String.fromCharCode(array[i]);
+    }
+    return btoa(binary);
   }
 
   private base64ToUint8Array(base64: string): Uint8Array {

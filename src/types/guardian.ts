@@ -7,7 +7,7 @@ export interface Guardian {
   relationship?: string | null;
   notes?: string | null;
   is_active: boolean;
-  // Family Shield Protocol permissions
+  // Family Shield permissions
   can_trigger_emergency: boolean;
   can_access_health_docs: boolean;
   can_access_financial_docs: boolean;
@@ -24,7 +24,7 @@ export interface CreateGuardianRequest {
   phone?: string;
   relationship?: string;
   notes?: string;
-  // Family Shield Protocol permissions
+  // Family Shield permissions
   can_trigger_emergency?: boolean;
   can_access_health_docs?: boolean;
   can_access_financial_docs?: boolean;
@@ -60,33 +60,33 @@ export const GUARDIAN_RELATIONSHIPS: { value: GuardianRelationship; label: strin
   { value: 'other', label: 'Other' },
 ];
 
-// Family Shield Protocol types
-export interface ProtocolSettings {
+// Family Shield types
+export interface FamilyShieldSettings {
   id: string;
   user_id: string;
   inactivity_period_months: number;
   required_guardians_for_activation: number;
-  is_protocol_enabled: boolean;
+  is_shield_enabled: boolean;
   last_activity_check: string;
-  protocol_status: 'inactive' | 'pending_verification' | 'active';
+  shield_status: 'inactive' | 'pending_verification' | 'active';
   created_at: string;
   updated_at: string;
 }
 
-export interface CreateProtocolSettingsRequest {
+export interface CreateFamilyShieldSettingsRequest {
   inactivity_period_months?: number;
   required_guardians_for_activation?: number;
-  is_protocol_enabled?: boolean;
+  is_shield_enabled?: boolean;
 }
 
-export type EmergencyActivationType = 'inactivity_detected' | 'manual_guardian' | 'admin_override';
+export type FamilyShieldActivationType = 'inactivity_detected' | 'manual_guardian' | 'admin_override';
 export type ActivationStatus = 'pending' | 'confirmed' | 'rejected' | 'expired';
 
-export interface EmergencyActivationLog {
+export interface FamilyShieldActivationLog {
   id: string;
   user_id: string;
   guardian_id?: string | null;
-  activation_type: EmergencyActivationType;
+  activation_type: FamilyShieldActivationType;
   status: ActivationStatus;
   verification_token: string;
   token_expires_at: string;
@@ -110,7 +110,7 @@ export type ManualEntryType =
   | 'emergency_procedure'
   | 'child_care_instructions';
 
-export interface SurvivorManualEntry {
+export interface FamilyGuidanceEntry {
   id: string;
   user_id: string;
   entry_type: ManualEntryType;
@@ -125,7 +125,7 @@ export interface SurvivorManualEntry {
   updated_at: string;
 }
 
-export interface CreateManualEntryRequest {
+export interface CreateGuidanceEntryRequest {
   entry_type: ManualEntryType;
   title: string;
   content: string;
