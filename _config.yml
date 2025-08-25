@@ -1,0 +1,25 @@
+# Jekyll configuration for GitHub Pages
+theme: jekyll-theme-primer
+
+# Exclude files from Jekyll processing
+exclude:
+  - node_modules
+  - package.json
+  - package-lock.json
+  - tsconfig.json
+  - next.config.js
+  - README.md
+  - claude-code-history-viewer
+  - .claude
+  - src
+  - components
+  - lib
+  - public
+  - styles
+  - "Complete UX Transformation Prompts for LegacyGuard.md"
+  - Tailadmin
+  - .next
+  - .env
+  - .env.local
+  - .gitignore
+  - LICENSE
