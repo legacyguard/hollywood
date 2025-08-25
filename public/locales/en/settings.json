@@ -1,0 +1,27 @@
+{
+  "sync": {
+    "mode": {
+      "title": "Data Sync Mode",
+      "local": "Local Only",
+      "hybrid": "Hybrid",
+      "full": "Full Cloud Sync",
+      "description": {
+        "local-only": "All data stays on your device. No data is synced to the cloud.",
+        "hybrid": "Choose which data categories to sync. Other data stays local.",
+        "full-sync": "All data is encrypted and synced to the cloud."
+      }
+    },
+    "categories": {
+      "title": "Sync Categories",
+      "tasks": "Tasks",
+      "documents": "Documents",
+      "reminders": "Reminders",
+      "preferences": "Preferences",
+      "stats": "{{local}} items, {{synced}} synced"
+    },
+    "help": {
+      "text": "Data is always encrypted before being synced to the cloud.",
+      "learnMore": "Learn more about our privacy-first approach"
+    }
+  }
+}
