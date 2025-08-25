@@ -143,9 +143,9 @@ export const SERENITY_MILESTONES: SerenityMilestone[] = [
 
   {
     id: 'legacy_foundation',
-    name: '💫 Odkaz pre Budúcnosť',
-    description: 'Tento špeciálny míľnik čaká na vytvorenie vášho prvého osobného odkazu',
-    completedDescription: 'Začali ste budovať svoj odkaz pre budúce generácie. Vaše hodnoty a múdrosť budú žiť ďalej.',
+    name: '💫 Legacy for the Future',
+    description: 'This special milestone awaits the creation of your first personal legacy',
+    completedDescription: 'You have unlocked a key Milestone of Peace: Legacy for the Future. Your voice will be heard even when you are no longer here.',
     category: 'legacy',
     unlockCondition: {
       type: 'legacy_created',
@@ -153,9 +153,9 @@ export const SERENITY_MILESTONES: SerenityMilestone[] = [
     },
     visualPosition: { x: 85, y: 25 },
     rewards: {
-      title: 'Večný odkaz',
-      description: 'Vaše hodnoty a múdrosť pre budúce generácie',
-      sofiaMessage: 'Práve ste začali vytvárať niečo nesmierně cenné - váš odkaz pre budúce generácie. Toto je možno najkrajší dar, aký môžete svojej rodine darovať.'
+      title: 'Eternal Legacy',
+      description: 'Your values and wisdom for future generations',
+      sofiaMessage: 'You have just begun creating something immensely valuable - your legacy for future generations. This is perhaps the most beautiful gift you can give to your family.'
     },
     isUnlocked: false,
     icon: 'heart'

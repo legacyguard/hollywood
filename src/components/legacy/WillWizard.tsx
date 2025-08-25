@@ -12,6 +12,8 @@ import { FadeIn } from '@/components/motion/FadeIn';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
+import { LiveWillPreview } from './LiveWillPreview';
+import { SofiaCorrectnessCheck } from './SofiaCorrectnessCheck';
 
 // Types based on our database schema
 export interface WillData {
@@ -123,7 +125,8 @@ const STEPS = [
   { id: 'executor', title: 'Executor', description: 'Who manages' },
   { id: 'guardianship', title: 'Guardianship', description: 'For minor children' },
   { id: 'wishes', title: 'Final Wishes', description: 'Special instructions' },
-  { id: 'review', title: 'Review', description: 'Confirm details' }
+  { id: 'sofia_check', title: 'Sofia\'s Check', description: 'Correctness review' },
+  { id: 'review', title: 'Final Review', description: 'Confirm and generate' }
 ];
 
 const JURISDICTIONS = [
@@ -194,6 +197,13 @@ export const WillWizard: React.FC<WillWizardProps> = ({ onClose, onComplete, onB
       onBack();
     }
   }, [currentStep, onBack]);
+
+  const goToStep = useCallback((stepId: string) => {
+    const stepIndex = STEPS.findIndex(step => step.id === stepId);
+    if (stepIndex !== -1) {
+      setCurrentStep(stepIndex);
+    }
+  }, []);
 
   const addBeneficiary = useCallback(() => {
     const newBeneficiary = {
@@ -512,6 +522,16 @@ export const WillWizard: React.FC<WillWizardProps> = ({ onClose, onComplete, onB
           </div>
         );
 
+      case 'sofia_check':
+        return (
+          <SofiaCorrectnessCheck
+            willData={willData}
+            willType={willType}
+            onContinue={() => setCurrentStep(prev => prev + 1)}
+            onGoToStep={goToStep}
+          />
+        );
+
       case 'review':
         return (
           <div className="space-y-6">
@@ -577,7 +597,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({ onClose, onComplete, onB
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
       <header className="bg-card border-b border-card-border sticky top-0 z-50">
         <div className="max-w-4xl mx-auto px-6 py-4">
@@ -623,40 +643,76 @@ export const WillWizard: React.FC<WillWizardProps> = ({ onClose, onComplete, onB
         </div>
       </div>
 
-      {/* Content */}
-      <main className="max-w-4xl mx-auto px-6 py-8">
-        <FadeIn key={currentStep} duration={0.3}>
-          <Card className="p-8">
-            <div className="mb-6">
-              <h2 className="text-2xl font-semibold mb-2">{STEPS[currentStep].title}</h2>
-              <p className="text-muted-foreground">{STEPS[currentStep].description}</p>
+      {/* Content - Conditional Layout */}
+      <main className="flex-1 flex overflow-hidden">
+        {currentStepId === 'sofia_check' || currentStepId === 'review' ? (
+          /* Full Width for Sofia Check and Review */
+          <div className="flex-1 flex flex-col">
+            <div className="p-6 overflow-y-auto max-w-4xl mx-auto w-full">
+              <FadeIn key={currentStep} duration={0.3}>
+                <div className="mb-6">
+                  <h2 className="text-2xl font-semibold mb-2">{STEPS[currentStep].title}</h2>
+                  <p className="text-muted-foreground">{STEPS[currentStep].description}</p>
+                </div>
+                
+                {renderStepContent()}
+              </FadeIn>
             </div>
-            
-            {renderStepContent()}
-          </Card>
-        </FadeIn>
+          </div>
+        ) : (
+          /* Dual Panel Layout for Form Steps */
+          <>
+            {/* Left Panel - Form (40% width) */}
+            <div className="w-2/5 flex flex-col border-r border-card-border">
+              <div className="p-6 overflow-y-auto">
+                <FadeIn key={currentStep} duration={0.3}>
+                  <div className="mb-6">
+                    <h2 className="text-2xl font-semibold mb-2">{STEPS[currentStep].title}</h2>
+                    <p className="text-muted-foreground">{STEPS[currentStep].description}</p>
+                  </div>
+                  
+                  {renderStepContent()}
+                </FadeIn>
+              </div>
+            </div>
+
+            {/* Right Panel - Live Preview (60% width) */}
+            <div className="w-3/5 flex flex-col">
+              <LiveWillPreview 
+                willData={willData}
+                willType={willType}
+                currentStep={currentStepId}
+              />
+            </div>
+          </>
+        )}
       </main>
 
       {/* Navigation */}
-      <footer className="bg-card border-t border-card-border sticky bottom-0">
-        <div className="max-w-4xl mx-auto px-6 py-4">
-          <div className="flex justify-between">
+      <footer className="bg-card border-t border-card-border">
+        <div className="px-6 py-4">
+          <div className="flex justify-between items-center">
             <Button 
               onClick={handleBack}
               variant="outline"
-              disabled={currentStep === 0}
+              disabled={currentStep === 0 && !onBack}
             >
               <Icon name="arrow-left" className="w-4 h-4 mr-2" />
-              Back
+              {currentStep === 0 ? 'Change Will Type' : 'Back'}
             </Button>
             
-            <Button 
-              onClick={handleNext}
-              className="bg-primary hover:bg-primary-hover text-primary-foreground"
-            >
-              {currentStep === STEPS.length - 1 ? 'Create Will' : 'Continue'}
-              {currentStep !== STEPS.length - 1 && <Icon name="arrow-right" className="w-4 h-4 ml-2" />}
-            </Button>
+            <div className="flex items-center gap-4">
+              <div className="text-sm text-muted-foreground">
+                Step {currentStep + 1} of {STEPS.length}
+              </div>
+              <Button 
+                onClick={handleNext}
+                className="bg-primary hover:bg-primary-hover text-primary-foreground"
+              >
+                {currentStep === STEPS.length - 1 ? 'Create Will' : 'Continue'}
+                {currentStep !== STEPS.length - 1 && <Icon name="arrow-right" className="w-4 h-4 ml-2" />}
+              </Button>
+            </div>
           </div>
         </div>
       </footer>

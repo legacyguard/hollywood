@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { CountrySelector } from './CountrySelector';
 import { WillTypeSelector, WillType } from './WillTypeSelector';
 import { WillWizard, WillData } from './WillWizard';
+import { showMilestoneRecognition } from '@/components/dashboard/MilestoneCelebration';
+import { SERENITY_MILESTONES } from '@/lib/path-of-serenity';
 
 interface EnhancedWillWizardProps {
   onClose: () => void;
@@ -40,6 +42,19 @@ export const EnhancedWillWizard: React.FC<EnhancedWillWizardProps> = ({
       ...willData,
       willType: selectedWillType!
     };
+    
+    // Trigger milestone recognition for Legacy Foundation
+    setTimeout(() => {
+      const legacyMilestone = SERENITY_MILESTONES.find(m => m.id === 'legacy_foundation');
+      if (legacyMilestone) {
+        showMilestoneRecognition({
+          ...legacyMilestone,
+          isUnlocked: true,
+          unlockedAt: new Date().toISOString()
+        });
+      }
+    }, 1500); // Delay to show after success message
+    
     onComplete(enhancedWillData);
   };
 
