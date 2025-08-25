@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon-library';
-import { useSupabaseClient } from '@/integrations/supabase/client';
+import { useSupabaseWithClerk } from '@/integrations/supabase/client';
 import { 
   findSofiaActions, 
   generateDynamicSuggestions,
@@ -36,7 +36,7 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({ isOpen, onClose, onSof
   const [isSearching, setIsSearching] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const { userId } = useAuth();
-  const createSupabaseClient = useSupabaseClient();
+  const createSupabaseClient = useSupabaseWithClerk();
   const navigate = useNavigate();
 
   // Quick actions memoized to prevent unnecessary re-renders
