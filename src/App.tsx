@@ -26,6 +26,9 @@ import SignUpPage from "./pages/auth/SignUp";
 import TestOCRPage from "./pages/test-ocr/TestOCRPage";
 import IntelligentOrganizer from "./pages/IntelligentOrganizer";
 import SettingsPage from "./pages/Settings";
+import ProtocolSettingsPage from "./pages/ProtocolSettings";
+import SurvivorManualPage from "./pages/SurvivorManual";
+import EmergencyAccessPage from "./pages/EmergencyAccess";
 
 const queryClient = new QueryClient();
 
@@ -100,6 +103,19 @@ const App = () => (
                 <SettingsPage />
               </ProtectedRoute>
             } />
+            <Route path="/protocol-settings" element={
+              <ProtectedRoute>
+                <ProtocolSettingsPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/survivor-manual" element={
+              <ProtectedRoute>
+                <SurvivorManualPage />
+              </ProtectedRoute>
+            } />
+            
+            {/* Emergency access (public route with token verification) */}
+            <Route path="/emergency-access/:token" element={<EmergencyAccessPage />} />
             
             {/* 404 route */}
             <Route path="*" element={<NotFound />} />

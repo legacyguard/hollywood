@@ -5,7 +5,8 @@
  */
 
 import { toast } from 'sonner';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+// TODO: Refactor to use proper Clerk-based Supabase client
+// import { useSupabaseWithClerk } from '@/integrations/supabase/client';
 import * as nacl from 'tweetnacl';
 import { encodeBase64, decodeBase64 } from 'tweetnacl-util';
 
@@ -56,7 +57,8 @@ export interface EncryptedBackupData {
 }
 
 export class BackupService {
-  private supabase = createClientComponentClient();
+  // TODO: Properly integrate with Clerk-based Supabase client
+  // private createSupabaseClient = useSupabaseWithClerk;
   private currentVersion = '1.0.0';
   private encryptionVersion = '1.0.0';
   private readonly PBKDF2_ITERATIONS = 100000;

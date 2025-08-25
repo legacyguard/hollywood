@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
 import { Icon } from '@/components/ui/icon-library';
 import { FadeIn } from '@/components/motion/FadeIn';
 import { usePageTitle } from '@/hooks/usePageTitle';
@@ -31,7 +32,14 @@ export default function GuardiansPage() {
     email: '',
     phone: '',
     relationship: '',
-    notes: ''
+    notes: '',
+    // Family Shield Protocol permissions - default to false
+    can_trigger_emergency: false,
+    can_access_health_docs: false,
+    can_access_financial_docs: false,
+    is_child_guardian: false,
+    is_will_executor: false,
+    emergency_contact_priority: 1
   });
 
   // Fetch guardians
@@ -87,7 +95,14 @@ export default function GuardiansPage() {
           email: formData.email.trim(),
           phone: formData.phone?.trim() || null,
           relationship: formData.relationship || null,
-          notes: formData.notes?.trim() || null
+          notes: formData.notes?.trim() || null,
+          // Family Shield Protocol permissions
+          can_trigger_emergency: formData.can_trigger_emergency || false,
+          can_access_health_docs: formData.can_access_health_docs || false,
+          can_access_financial_docs: formData.can_access_financial_docs || false,
+          is_child_guardian: formData.is_child_guardian || false,
+          is_will_executor: formData.is_will_executor || false,
+          emergency_contact_priority: formData.emergency_contact_priority || 1
         })
         .select()
         .single();
@@ -103,7 +118,14 @@ export default function GuardiansPage() {
         email: '',
         phone: '',
         relationship: '',
-        notes: ''
+        notes: '',
+        // Family Shield Protocol permissions - reset to defaults
+        can_trigger_emergency: false,
+        can_access_health_docs: false,
+        can_access_financial_docs: false,
+        is_child_guardian: false,
+        is_will_executor: false,
+        emergency_contact_priority: 1
       });
       
       setIsDialogOpen(false);
@@ -118,7 +140,7 @@ export default function GuardiansPage() {
   };
 
   // Handle form input changes
-  const handleInputChange = (field: keyof CreateGuardianRequest, value: string) => {
+  const handleInputChange = (field: keyof CreateGuardianRequest, value: string | boolean | number) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
@@ -218,6 +240,115 @@ export default function GuardiansPage() {
                           placeholder="Any additional information about this guardian..."
                           rows={3}
                         />
+                      </div>
+
+                      {/* Family Shield Protocol Permissions */}
+                      <div className="space-y-4 p-4 border border-primary/20 rounded-lg bg-primary/5">
+                        <div className="flex items-center gap-2 mb-4">
+                          <Icon name="shield-check" className="w-5 h-5 text-primary" />
+                          <h3 className="text-lg font-semibold text-primary">Family Shield Protocol Permissions</h3>
+                        </div>
+                        <p className="text-sm text-muted-foreground mb-4">
+                          Configure what this Guardian can access and do in emergency situations.
+                        </p>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="flex items-center justify-between space-x-2">
+                            <div className="space-y-0.5">
+                              <Label htmlFor="can_trigger_emergency" className="text-sm font-medium">
+                                Can Trigger Emergency Protocol
+                              </Label>
+                              <p className="text-xs text-muted-foreground">
+                                This person can activate the Family Shield Protocol
+                              </p>
+                            </div>
+                            <Switch
+                              id="can_trigger_emergency"
+                              checked={formData.can_trigger_emergency || false}
+                              onCheckedChange={(value) => handleInputChange('can_trigger_emergency', value)}
+                            />
+                          </div>
+
+                          <div className="flex items-center justify-between space-x-2">
+                            <div className="space-y-0.5">
+                              <Label htmlFor="can_access_health_docs" className="text-sm font-medium">
+                                Health Information Access
+                              </Label>
+                              <p className="text-xs text-muted-foreground">
+                                Access to medical records and health documents
+                              </p>
+                            </div>
+                            <Switch
+                              id="can_access_health_docs"
+                              checked={formData.can_access_health_docs || false}
+                              onCheckedChange={(value) => handleInputChange('can_access_health_docs', value)}
+                            />
+                          </div>
+
+                          <div className="flex items-center justify-between space-x-2">
+                            <div className="space-y-0.5">
+                              <Label htmlFor="can_access_financial_docs" className="text-sm font-medium">
+                                Financial Information Access
+                              </Label>
+                              <p className="text-xs text-muted-foreground">
+                                Access to bank accounts and financial documents
+                              </p>
+                            </div>
+                            <Switch
+                              id="can_access_financial_docs"
+                              checked={formData.can_access_financial_docs || false}
+                              onCheckedChange={(value) => handleInputChange('can_access_financial_docs', value)}
+                            />
+                          </div>
+
+                          <div className="flex items-center justify-between space-x-2">
+                            <div className="space-y-0.5">
+                              <Label htmlFor="is_child_guardian" className="text-sm font-medium">
+                                Child Guardian
+                              </Label>
+                              <p className="text-xs text-muted-foreground">
+                                Can care for and make decisions for children
+                              </p>
+                            </div>
+                            <Switch
+                              id="is_child_guardian"
+                              checked={formData.is_child_guardian || false}
+                              onCheckedChange={(value) => handleInputChange('is_child_guardian', value)}
+                            />
+                          </div>
+
+                          <div className="flex items-center justify-between space-x-2">
+                            <div className="space-y-0.5">
+                              <Label htmlFor="is_will_executor" className="text-sm font-medium">
+                                Will Executor
+                              </Label>
+                              <p className="text-xs text-muted-foreground">
+                                Responsible for executing the last will
+                              </p>
+                            </div>
+                            <Switch
+                              id="is_will_executor"
+                              checked={formData.is_will_executor || false}
+                              onCheckedChange={(value) => handleInputChange('is_will_executor', value)}
+                            />
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label htmlFor="emergency_contact_priority">Emergency Contact Priority</Label>
+                            <Input
+                              id="emergency_contact_priority"
+                              type="number"
+                              min="1"
+                              max="10"
+                              value={formData.emergency_contact_priority}
+                              onChange={(e) => handleInputChange('emergency_contact_priority', parseInt(e.target.value) || 1)}
+                              placeholder="1 = highest priority"
+                            />
+                            <p className="text-xs text-muted-foreground">
+                              1 = highest priority, higher numbers = lower priority
+                            </p>
+                          </div>
+                        </div>
                       </div>
 
                       <div className="flex justify-end gap-3 pt-4">
@@ -328,11 +459,23 @@ export default function GuardiansPage() {
                   <Card className="p-6 hover:shadow-md transition-shadow duration-200">
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                        <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center relative">
                           <Icon name="user" className="w-6 h-6 text-primary" />
+                          {guardian.can_trigger_emergency && (
+                            <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
+                              <Icon name="shield-check" className="w-2.5 h-2.5 text-white" />
+                            </div>
+                          )}
                         </div>
                         <div>
-                          <h3 className="font-semibold text-lg">{guardian.name}</h3>
+                          <div className="flex items-center gap-2">
+                            <h3 className="font-semibold text-lg">{guardian.name}</h3>
+                            {guardian.emergency_contact_priority && guardian.emergency_contact_priority <= 3 && (
+                              <span className="px-2 py-0.5 bg-primary/20 text-primary text-xs rounded-full font-medium">
+                                Priority {guardian.emergency_contact_priority}
+                              </span>
+                            )}
+                          </div>
                           {guardian.relationship && (
                             <span className="text-sm text-muted-foreground capitalize">
                               {guardian.relationship.replace('_', ' ')}
@@ -366,6 +509,50 @@ export default function GuardiansPage() {
                           <p className="text-sm text-muted-foreground">{guardian.notes}</p>
                         </div>
                       )}
+
+                      {/* Family Shield Protocol Permissions */}
+                      <div className="pt-3 border-t border-border">
+                        <h4 className="text-sm font-medium text-primary mb-2 flex items-center gap-1">
+                          <Icon name="shield-check" className="w-4 h-4" />
+                          Shield Permissions
+                        </h4>
+                        <div className="flex flex-wrap gap-1">
+                          {guardian.can_trigger_emergency && (
+                            <span className="px-2 py-1 bg-red-100 text-red-700 text-xs rounded-full">
+                              Emergency Trigger
+                            </span>
+                          )}
+                          {guardian.can_access_health_docs && (
+                            <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">
+                              Health Access
+                            </span>
+                          )}
+                          {guardian.can_access_financial_docs && (
+                            <span className="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full">
+                              Financial Access
+                            </span>
+                          )}
+                          {guardian.is_child_guardian && (
+                            <span className="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded-full">
+                              Child Guardian
+                            </span>
+                          )}
+                          {guardian.is_will_executor && (
+                            <span className="px-2 py-1 bg-amber-100 text-amber-700 text-xs rounded-full">
+                              Will Executor
+                            </span>
+                          )}
+                          {!guardian.can_trigger_emergency && 
+                           !guardian.can_access_health_docs && 
+                           !guardian.can_access_financial_docs && 
+                           !guardian.is_child_guardian && 
+                           !guardian.is_will_executor && (
+                            <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
+                              Basic Contact Only
+                            </span>
+                          )}
+                        </div>
+                      </div>
                     </div>
 
                     <div className="mt-4 pt-4 border-t border-border">

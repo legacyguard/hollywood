@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect, useCallback, createContext, useContext, ReactNode } from 'react';
-import { useAuth } from '@clerk/nextjs';
-import { encryptionService } from '@/lib/encryption-v2';
+import { useAuth } from '@clerk/clerk-react';
+import { encryptionService } from '../../../lib/encryption-v2';
 import { toast } from 'sonner';
 
 interface EncryptionContextType {

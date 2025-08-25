@@ -5,7 +5,7 @@
 
 import * as nacl from 'tweetnacl';
 import { encodeBase64, decodeBase64 } from 'tweetnacl-util';
-import { secureStorage } from '@/lib/security/secure-storage';
+import { secureStorage } from './security/secure-storage';
 
 export interface EncryptionKeys {
   publicKey: string;

@@ -5,7 +5,8 @@
 
 import * as nacl from 'tweetnacl';
 import { encodeBase64, decodeBase64 } from 'tweetnacl-util';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+// TODO: Refactor to use proper Clerk-based Supabase client
+// import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 // Password strength validation
 interface PasswordStrength {
@@ -17,7 +18,8 @@ interface PasswordStrength {
 }
 
 export class KeyManagementService {
-  private supabase = createClientComponentClient();
+  // TODO: Properly integrate with Clerk-based Supabase client
+  // private supabase = createClientComponentClient();
   private readonly PBKDF2_ITERATIONS = 100000;
   private readonly MIN_PASSWORD_SCORE = 3;
 
