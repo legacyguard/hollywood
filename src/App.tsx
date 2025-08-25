@@ -9,6 +9,7 @@ import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import { OnboardingWrapper } from "./components/onboarding/OnboardingWrapper";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { DocumentFilterProvider } from "./contexts/DocumentFilterContext";
+import { LocalizationProvider } from "./contexts/LocalizationContext";
 import SofiaContextProvider from "./components/sofia/SofiaContextProvider";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -31,9 +32,10 @@ const App = () => (
         <TooltipProvider>
           <Toaster />
           <Sonner />
-          <BrowserRouter future={routerFutureConfig}>
-            <DocumentFilterProvider>
-              <SofiaContextProvider>
+          <LocalizationProvider>
+            <BrowserRouter future={routerFutureConfig}>
+              <DocumentFilterProvider>
+                <SofiaContextProvider>
           <Routes>
             {/* Public routes */}
             <Route path="/sign-in/*" element={<SignInPage />} />
@@ -86,9 +88,10 @@ const App = () => (
             {/* 404 route */}
             <Route path="*" element={<NotFound />} />
           </Routes>
-          </SofiaContextProvider>
-            </DocumentFilterProvider>
-        </BrowserRouter>
+                </SofiaContextProvider>
+              </DocumentFilterProvider>
+            </BrowserRouter>
+          </LocalizationProvider>
       </TooltipProvider>
     </QueryClientProvider>
   </ClerkProvider>

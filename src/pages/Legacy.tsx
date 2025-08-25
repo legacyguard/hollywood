@@ -4,37 +4,40 @@ import { DashboardLayout } from "@/components/DashboardLayout";
 import { FadeIn } from "@/components/motion/FadeIn";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Icon } from "@/components/ui/icon-library";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { toast } from 'sonner';
+import { EnhancedWillWizard } from '@/components/legacy/EnhancedWillWizard';
+import { WillData } from '@/components/legacy/WillWizard';
+import { WillType } from '@/components/legacy/WillTypeSelector';
 
 export default function LegacyPage() {
   usePageTitle('Legacy Planning');
   const { user } = useAuth();
-  const [email, setEmail] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showWillWizard, setShowWillWizard] = useState(false);
   
   // Get user's first name from Clerk
   const firstName = user?.firstName || user?.fullName?.split(' ')[0] || 'Friend';
 
-  const handleNotifySubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email.trim()) {
-      toast.error('Please enter your email address');
-      return;
-    }
-
-    setIsSubmitting(true);
-    
-    // Simulate API call for email collection
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    toast.success('Thank you! We\'ll notify you when Legacy Planning is available.');
-    setEmail('');
-    setIsSubmitting(false);
+  const handleStartWillCreator = () => {
+    setShowWillWizard(true);
   };
+
+  const handleWillComplete = (willData: WillData & { willType: WillType }) => {
+    // TODO: Save will to database
+    console.log('Will completed:', willData);
+    toast.success('Will created successfully! You can access it from your vault.');
+    setShowWillWizard(false);
+  };
+
+  const handleCloseWizard = () => {
+    setShowWillWizard(false);
+  };
+
+  // Show Will Wizard if activated
+  if (showWillWizard) {
+    return <EnhancedWillWizard onClose={handleCloseWizard} onComplete={handleWillComplete} />;
+  }
 
   return (
     <DashboardLayout>
@@ -62,10 +65,14 @@ export default function LegacyPage() {
             </FadeIn>
 
             <FadeIn duration={0.8} delay={0.8}>
-              <div className="inline-flex items-center gap-3 px-6 py-3 bg-primary/10 rounded-full border border-primary/20">
-                <Icon name="sparkles" className="w-5 h-5 text-primary" />
-                <span className="text-primary font-medium">Coming Soon</span>
-              </div>
+              <Button 
+                onClick={handleStartWillCreator}
+                size="lg" 
+                className="bg-primary hover:bg-primary-hover text-primary-foreground px-8"
+              >
+                <Icon name="documents" className="w-5 h-5 mr-2" />
+                Create Your Will Now
+              </Button>
             </FadeIn>
           </div>
         </header>
@@ -84,15 +91,28 @@ export default function LegacyPage() {
           {/* Feature Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
             <FadeIn duration={0.6} delay={1.2}>
-              <Card className="p-8 text-center hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer group">
-                <div className="w-16 h-16 mx-auto mb-6 bg-blue-500/10 rounded-full flex items-center justify-center group-hover:bg-blue-500/20 transition-colors duration-300">
-                  <Icon name="documents" className="w-8 h-8 text-blue-600 group-hover:scale-110 transition-transform duration-300" />
+              <Card 
+                className="p-8 text-center hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer group border-2 border-primary/20 bg-primary/5" 
+                onClick={handleStartWillCreator}
+              >
+                <div className="w-16 h-16 mx-auto mb-6 bg-primary/10 rounded-full flex items-center justify-center group-hover:bg-primary/20 transition-colors duration-300">
+                  <Icon name="documents" className="w-8 h-8 text-primary group-hover:scale-110 transition-transform duration-300" />
                 </div>
-                <h3 className="text-xl font-semibold mb-4">Digital Will Creator</h3>
-                <p className="text-muted-foreground leading-relaxed">
+                <div className="flex items-center justify-center gap-2 mb-4">
+                  <h3 className="text-xl font-semibold">Digital Will Creator</h3>
+                  <div className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 dark:bg-green-900/30 rounded-full">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    <span className="text-xs font-medium text-green-700 dark:text-green-300">Available</span>
+                  </div>
+                </div>
+                <p className="text-muted-foreground leading-relaxed mb-4">
                   Step-by-step guidance to create a comprehensive will with built-in legal templates 
                   and jurisdiction-specific requirements.
                 </p>
+                <Button className="bg-primary hover:bg-primary-hover text-primary-foreground">
+                  <Icon name="arrow-right" className="w-4 h-4 mr-2" />
+                  Start Creating Your Will
+                </Button>
               </Card>
             </FadeIn>
 
@@ -199,50 +219,27 @@ export default function LegacyPage() {
             </Card>
           </FadeIn>
 
-          {/* Notify Me Section */}
+          {/* Action Section */}
           <FadeIn duration={0.6} delay={2.6}>
-            <Card className="p-10 text-center max-w-2xl mx-auto">
-              <h3 className="text-2xl font-bold mb-4">Be the First to Know</h3>
+            <Card className="p-10 text-center max-w-2xl mx-auto bg-gradient-to-r from-primary/5 to-primary/10 border-primary/20">
+              <Icon name="sparkles" className="w-12 h-12 text-primary mx-auto mb-6" />
+              <h3 className="text-2xl font-bold mb-4">Ready to Secure Your Legacy?</h3>
               <p className="text-muted-foreground mb-8">
-                Legacy Planning is coming soon. Enter your email to be notified the moment it becomes available, 
-                plus receive our comprehensive guide to preparing your digital legacy.
+                Take the first step towards peace of mind. Our Digital Will Creator guides you through 
+                every step with personalized templates and expert guidance.
               </p>
               
-              <form onSubmit={handleNotifySubmit} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="email" className="sr-only">Email address</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="Enter your email address"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="text-center"
-                    disabled={isSubmitting}
-                  />
-                </div>
-                <Button 
-                  type="submit" 
-                  size="lg" 
-                  className="w-full bg-primary hover:bg-primary-hover text-primary-foreground"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? (
-                    <>
-                      <Icon name="loader" className="w-4 h-4 mr-2 animate-spin" />
-                      Subscribing...
-                    </>
-                  ) : (
-                    <>
-                      <Icon name="mail" className="w-4 h-4 mr-2" />
-                      Notify Me When Available
-                    </>
-                  )}
-                </Button>
-              </form>
+              <Button 
+                onClick={handleStartWillCreator}
+                size="lg" 
+                className="bg-primary hover:bg-primary-hover text-primary-foreground px-8"
+              >
+                <Icon name="documents" className="w-5 h-5 mr-2" />
+                Start Your Will Now
+              </Button>
               
               <p className="text-xs text-muted-foreground mt-4">
-                We respect your privacy. Unsubscribe at any time.
+                Free to start • Legal templates included • Save progress anytime
               </p>
             </Card>
           </FadeIn>
