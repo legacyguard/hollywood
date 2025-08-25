@@ -11,6 +11,9 @@ import { Icon } from '@/components/ui/icon-library';
 import { FadeIn } from '@/components/motion/FadeIn';
 import { backupService } from '@/services/backupService';
 import { toast } from 'sonner';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -30,6 +33,12 @@ export function BackupRestore() {
   const [backupSize, setBackupSize] = useState<string>('');
   const [showClearDialog, setShowClearDialog] = useState(false);
   const [lastBackupDate, setLastBackupDate] = useState<string | null>(null);
+  const [encryptBackup, setEncryptBackup] = useState(true);
+  const [exportPassword, setExportPassword] = useState('');
+  const [importPassword, setImportPassword] = useState('');
+  const [showExportPassword, setShowExportPassword] = useState(false);
+  const [showImportPassword, setShowImportPassword] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   useEffect(() => {
     // Load last backup date from localStorage
@@ -52,9 +61,19 @@ export function BackupRestore() {
       return;
     }
 
+    if (encryptBackup && !exportPassword) {
+      toast.error('Please enter a password to encrypt your backup');
+      return;
+    }
+
+    if (encryptBackup && exportPassword.length < 8) {
+      toast.error('Password must be at least 8 characters long');
+      return;
+    }
+
     setIsExporting(true);
     try {
-      await backupService.exportData(userId);
+      await backupService.exportData(userId, encryptBackup ? exportPassword : undefined);
       
       // Save last backup date
       const now = new Date().toISOString();
@@ -68,12 +87,7 @@ export function BackupRestore() {
     }
   };
 
-  const handleImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (!userId) {
-      toast.error('You must be logged in to import data');
-      return;
-    }
-
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
@@ -89,14 +103,47 @@ export function BackupRestore() {
       return;
     }
 
+    setSelectedFile(file);
+    
+    // Check if file is encrypted by reading first part
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const content = JSON.parse(e.target?.result as string);
+        if (content.encrypted) {
+          setShowImportPassword(true);
+          toast.info('This backup is encrypted. Please enter the password.');
+        } else {
+          // Directly import if not encrypted
+          handleImport(file);
+        }
+      } catch (error) {
+        toast.error('Invalid backup file format');
+      }
+    };
+    reader.readAsText(file);
+  };
+
+  const handleImport = async (file?: File, password?: string) => {
+    if (!userId) {
+      toast.error('You must be logged in to import data');
+      return;
+    }
+
+    const fileToImport = file || selectedFile;
+    if (!fileToImport) return;
+
     setIsImporting(true);
     try {
-      await backupService.importData(file, userId);
+      await backupService.importData(fileToImport, userId, password || importPassword || undefined);
     } catch (error) {
       console.error('Import error:', error);
       toast.error('Failed to import data');
     } finally {
       setIsImporting(false);
+      setSelectedFile(null);
+      setImportPassword('');
+      setShowImportPassword(false);
       // Reset file input
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
@@ -158,14 +205,60 @@ export function BackupRestore() {
                 <h3 className="font-semibold mb-2">Export Your Data</h3>
                 <p className="text-sm text-muted-foreground mb-4">
                   Download a complete backup of all your data including documents, 
-                  settings, and preferences. Your backup will be saved as an encrypted 
-                  JSON file that you can store securely.
+                  settings, and preferences. You can optionally encrypt your backup 
+                  with a password for enhanced security.
                 </p>
                 {backupSize && (
                   <p className="text-xs text-muted-foreground mb-4">
                     Estimated backup size: <span className="font-medium">{backupSize}</span>
                   </p>
                 )}
+                
+                {/* Encryption Options */}
+                <div className="space-y-4 mb-4 p-4 bg-muted/10 rounded-lg border border-muted/20">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      id="encrypt-backup" 
+                      checked={encryptBackup}
+                      onCheckedChange={(checked) => setEncryptBackup(checked as boolean)}
+                    />
+                    <Label htmlFor="encrypt-backup" className="text-sm font-medium">
+                      Encrypt backup with password
+                    </Label>
+                  </div>
+                  
+                  {encryptBackup && (
+                    <div className="space-y-2">
+                      <Label htmlFor="export-password" className="text-sm">
+                        Backup Password
+                      </Label>
+                      <div className="relative">
+                        <Input
+                          id="export-password"
+                          type={showExportPassword ? "text" : "password"}
+                          value={exportPassword}
+                          onChange={(e) => setExportPassword(e.target.value)}
+                          placeholder="Enter a strong password"
+                          className="pr-10"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowExportPassword(!showExportPassword)}
+                          className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                        >
+                          <Icon 
+                            name={showExportPassword ? "eye-off" : "eye"} 
+                            className="w-4 h-4" 
+                          />
+                        </button>
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        ⚠️ Remember this password! You'll need it to restore your backup.
+                      </p>
+                    </div>
+                  )}
+                </div>
+                
                 <Button
                   onClick={handleExport}
                   disabled={isExporting || isImporting}
@@ -200,12 +293,59 @@ export function BackupRestore() {
                   This will merge the backup data with your existing data, 
                   avoiding duplicates where possible.
                 </p>
+                {/* Password input for encrypted backups */}
+                {showImportPassword && (
+                  <div className="space-y-4 mb-4 p-4 bg-muted/10 rounded-lg border border-muted/20">
+                    <div className="space-y-2">
+                      <Label htmlFor="import-password" className="text-sm font-medium">
+                        Backup Password Required
+                      </Label>
+                      <div className="relative">
+                        <Input
+                          id="import-password"
+                          type="password"
+                          value={importPassword}
+                          onChange={(e) => setImportPassword(e.target.value)}
+                          placeholder="Enter backup password"
+                          className="pr-10"
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' && importPassword) {
+                              handleImport(undefined, importPassword);
+                            }
+                          }}
+                        />
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          onClick={() => handleImport(undefined, importPassword)}
+                          disabled={!importPassword || isImporting}
+                        >
+                          <Icon name="unlock" className="w-4 h-4 mr-2" />
+                          Decrypt & Import
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            setShowImportPassword(false);
+                            setImportPassword('');
+                            setSelectedFile(null);
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                
                 <div className="flex items-center gap-3">
                   <input
                     ref={fileInputRef}
                     type="file"
                     accept=".json"
-                    onChange={handleImport}
+                    onChange={handleFileSelect}
                     disabled={isExporting || isImporting}
                     className="hidden"
                     id="backup-file-input"

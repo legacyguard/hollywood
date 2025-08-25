@@ -23,17 +23,28 @@ import {
 } from '@/lib/professional-review-network';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
+import { EnhancedTrustSeal, TrustSealLevel, ProfessionalReview } from '@/components/trust/EnhancedTrustSeal';
+import { professionalTrustIntegration, TrustSealUpgrade } from '@/lib/professional-trust-integration';
+import { toast } from 'sonner';
 
 interface ProfessionalReviewNetworkProps {
   willData: WillData;
   jurisdiction: string;
   onReviewComplete?: (feedback: ReviewFeedback) => void;
+  currentTrustLevel?: TrustSealLevel;
+  professionalReviews?: ProfessionalReview[];
+  onTrustSealUpgrade?: (upgrade: TrustSealUpgrade) => void;
+  validationScore?: number;
 }
 
 export const ProfessionalReviewNetwork: React.FC<ProfessionalReviewNetworkProps> = ({
   willData,
   jurisdiction,
-  onReviewComplete
+  onReviewComplete,
+  currentTrustLevel = 'basic',
+  professionalReviews = [],
+  onTrustSealUpgrade,
+  validationScore = 0
 }) => {
   const [activeTab, setActiveTab] = useState('attorney');
   const [reviewRequest, setReviewRequest] = useState<ReviewRequest | null>(null);
@@ -86,6 +97,28 @@ export const ProfessionalReviewNetwork: React.FC<ProfessionalReviewNetworkProps>
         setTimeout(async () => {
           const feedback = await professionalNetwork.submitForReview(request);
           setReviewFeedback(feedback);
+          
+          // Process Trust Seal upgrade after review
+          try {
+            const upgrade = await professionalTrustIntegration.processReviewUpgrade(
+              request,
+              feedback,
+              currentTrustLevel,
+              professionalReviews
+            );
+            
+            if (upgrade) {
+              const notification = professionalTrustIntegration.createUpgradeNotification(upgrade);
+              toast.success(notification.title, {
+                description: notification.message,
+                duration: 8000,
+              });
+              onTrustSealUpgrade?.(upgrade);
+            }
+          } catch (error) {
+            console.error('Failed to process trust seal upgrade:', error);
+          }
+          
           onReviewComplete?.(feedback);
         }, 3000);
       }
@@ -338,8 +371,34 @@ export const ProfessionalReviewNetwork: React.FC<ProfessionalReviewNetworkProps>
         </p>
       </div>
 
-      {renderReviewStatus()}
-      {renderReviewFeedback()}
+      {/* Current Trust Seal Display */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-1">
+          <EnhancedTrustSeal
+            level={currentTrustLevel}
+            jurisdiction={jurisdiction}
+            lastUpdated={new Date()}
+            professionalReviews={professionalReviews}
+            validationScore={validationScore}
+            className="h-fit"
+          />
+          
+          {professionalReviews.length === 0 && (
+            <Alert className="mt-4">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                <div className="font-medium mb-1">Enhance Your Trust Seal</div>
+                <div className="text-sm">
+                  Get professional review to upgrade your will's trust seal and enhance its legal credibility.
+                </div>
+              </AlertDescription>
+            </Alert>
+          )}
+        </div>
+        
+        <div className="lg:col-span-2 space-y-6">
+          {renderReviewStatus()}
+          {renderReviewFeedback()}
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-3">
@@ -672,6 +731,8 @@ export const ProfessionalReviewNetwork: React.FC<ProfessionalReviewNetworkProps>
           ))}
         </TabsContent>
       </Tabs>
+        </div>
+      </div>
     </div>
   );
 };

@@ -140,7 +140,7 @@ export class ProfessionalReviewNetwork {
     const reviewRequest: ReviewRequest = {
       id: this.generateId(),
       willData,
-      requestedBy: willData.testator.personalInfo.name,
+      requestedBy: willData.testator_data.fullName,
       type: 'attorney',
       priority: options.priority || 'standard',
       status: 'pending',
@@ -511,15 +511,17 @@ export class ProfessionalReviewNetwork {
     }
 
     // Check for vague asset descriptions
-    const vagueAssets = willData.assets.filter(asset => asset.description.length < 20);
-    if (vagueAssets.length > 0) {
-      issues.push({
-        category: 'Clarity',
-        severity: 'medium' as const,
-        description: `${vagueAssets.length} assets have insufficient descriptions`,
-        recommendation: 'Provide more detailed descriptions including serial numbers, addresses, or account numbers where applicable',
-        estimated_fix_time: '15 minutes'
-      });
+    if (willData.assets && willData.assets.realEstate) {
+      const vagueAssets = willData.assets.realEstate.filter(asset => asset.description.length < 20);
+      if (vagueAssets.length > 0) {
+        issues.push({
+          category: 'Clarity',
+          severity: 'medium' as const,
+          description: `${vagueAssets.length} assets have insufficient descriptions`,
+          recommendation: 'Provide more detailed descriptions including serial numbers, addresses, or account numbers where applicable',
+          estimated_fix_time: '15 minutes'
+        });
+      }
     }
 
     // Check for beneficiary share issues

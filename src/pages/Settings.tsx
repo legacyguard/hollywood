@@ -7,6 +7,7 @@ import { DashboardLayout } from "@/components/DashboardLayout";
 import { FadeIn } from "@/components/motion/FadeIn";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { BackupRestore } from "@/components/features/BackupRestore";
+import { SecurityDashboard } from "@/components/security/SecurityDashboard";
 import { Card } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon-library";
 import { Button } from "@/components/ui/button";
@@ -294,8 +295,19 @@ export default function SettingsPage() {
             </Card>
           </FadeIn>
 
-          {/* Backup & Restore Section */}
+          {/* Security Dashboard */}
           <FadeIn duration={0.5} delay={0.6}>
+            <div className="space-y-6">
+              <h2 className="text-2xl font-bold flex items-center gap-3">
+                <Icon name="shield-check" className="w-7 h-7 text-primary" />
+                Security Center
+              </h2>
+              <SecurityDashboard />
+            </div>
+          </FadeIn>
+
+          {/* Backup & Restore Section */}
+          <FadeIn duration={0.5} delay={0.7}>
             <BackupRestore />
           </FadeIn>
         </main>

@@ -19,6 +19,7 @@ import Onboarding from "./pages/onboarding/Onboarding";
 import VaultPage from "./pages/Vault";
 import GuardiansPage from "./pages/Guardians";
 import LegacyPage from "./pages/Legacy";
+import { MyFamilyPage } from "./pages/MyFamily";
 import TestNotifications from "./pages/TestNotifications";
 import SignInPage from "./pages/auth/SignIn";
 import SignUpPage from "./pages/auth/SignUp";
@@ -67,6 +68,11 @@ const App = () => (
             <Route path="/guardians" element={
               <ProtectedRoute>
                 <GuardiansPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/family" element={
+              <ProtectedRoute>
+                <MyFamilyPage />
               </ProtectedRoute>
             } />
             <Route path="/legacy" element={

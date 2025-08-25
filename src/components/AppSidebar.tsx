@@ -18,7 +18,7 @@ const navigationItems = [
   { title: "My Vault", url: "/vault", icon: "vault" },
   { title: "Documents", url: "/documents", icon: "documents" },
   { title: "AI Organizer", url: "/intelligent-organizer", icon: "brain" },
-  { title: "Guardians", url: "/guardians", icon: "guardians" },
+  { title: "My Family", url: "/family", icon: "users" },
   { title: "Legacy", url: "/legacy", icon: "legacy" },
   { title: "Timeline", url: "/timeline", icon: "timeline" },
   { title: "Wishes", url: "/wishes", icon: "wishes" },

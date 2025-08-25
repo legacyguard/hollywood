@@ -18,6 +18,7 @@ export interface LegalDocument {
   witnessInstructions?: string;
   templateVersion: string;
   generatedAt: Date;
+  legalTerminology: Record<string, string>;
 }
 
 export interface TranslatedTerm {
@@ -332,7 +333,7 @@ Občianstvo: {{testator_data.citizenship}}
 II. USTANOVENIE DEDIČOV
 
 {{#each beneficiaries}}
-Za dediča {{#if (eq this.percentage 100)}}celého môjho majetku{{else}}časti môjho majetku vo výške {{this.percentage}} %{{/if}} ustanovujem {{this.relationship}}, {{this.name}}.
+Za dediča časti môjho majetku vo výške {{this.percentage}} % ustanovujem {{this.relationship}}, {{this.name}}.
 {{/each}}
 
 III. MAJETKOVÉ ÚDAJE
@@ -366,11 +367,13 @@ V Bratislava dňa {{execution.date}}
 ____________________
 vlastnoručný podpis poručiteľa
 
-ZÁVET - Tento dokument obsahuje kompletný závet`,
+ZÁVET - Tento dokument obsahuje kompletný závet
+
+Závet`,
 
     'basic': `ZÁKLADNÝ ZÁVET
 
-Ja, nižšie podpísaný/á {{testator.fullName}}, narodený/á {{testator.dateOfBirth}}, s trvalým pobytom {{testator.address}}, vyhlasujem, že som plne spôsobilý/á na právne úkony a tento závet robím s rozvahou, vážne a bez donútenia.
+Ja, nižšie podpísaný/á {{testator_data.fullName}}, narodený/á {{testator_data.dateOfBirth}}, s trvalým pobytom {{testator_data.address}}, vyhlasujem, že som plne spôsobilý/á na právne úkony a tento závet robím s rozvahou, vážne a bez donútenia.
 
 I. USTANOVENIE DEDIČOV
 
@@ -382,12 +385,14 @@ II. ODVOLANIE PREDCHÁDZAJÚCICH ZÁVETOV
 
 Odvolávam všetky svoje doterajšie závetné úkony.
 
-V {{execution.city}} dňa {{execution.date}}
+V Bratislava dňa {{execution.date}}
 
 ____________________
 vlastnoručný podpis poručiteľa
 
-ZÁVET - Tento dokument obsahuje základný závet`
+ZÁVET - Tento dokument obsahuje základný závet
+
+Závet`
   },
   
   'cs': {
@@ -501,7 +506,7 @@ Občanství: {{testator_data.citizenship}}
 II. USTANOVENÍ DĚDICŮ
 
 {{#each beneficiaries}}
-Dědicem {{#if (eq this.percentage 100)}}veškerého mého majetku{{else}}části mého majetku ve výši {{this.percentage}} %{{/if}} ustanovuji {{this.relationship}}, {{this.name}}.
+Dědicem části mého majetku ve výši {{this.percentage}} % ustanovuji {{this.relationship}}, {{this.name}}.
 {{/each}}
 
 III. MAJETKOVÉ ÚDAJE
@@ -535,7 +540,9 @@ V Bratislava dne {{execution.date}}
 ____________________
 vlastnoruční podpis
 
-ZÁVĚŤ - Tento dokument obsahuje kompletní závěť`,
+ZÁVĚŤ - Tento dokument obsahuje kompletní závěť
+
+Závěť`,
 
     'basic': `ZÁKLADNÍ ZÁVĚŤ
 
@@ -554,7 +561,9 @@ Odvolávám všechny své předchozí závěti.
 V {{execution.city}} dne {{execution.date}}
 
 ____________________
-vlastnoruční podpis`
+vlastnoruční podpis
+
+Závěť`
   },
 
   'en': {
@@ -815,14 +824,14 @@ Hinweis zum Pflichtteil: Der Erblasser nimmt die Rechte der Pflichtteilsberechti
 
     'comprehensive': `UMFASSENDES TESTAMENT
 
-Ich, {{testator.fullName}}, geboren am {{testator.dateOfBirth}}, wohnhaft {{testator.address}}, bin geschäftsfähig und erkläre hiermit meinen letzten Willen.
+Ich, {{testator_data.fullName}}, geboren am {{testator_data.dateOfBirth}}, wohnhaft {{testator_data.address}}, bin geschäftsfähig und erkläre hiermit meinen letzten Willen.
 
 I. PERSÖNLICHE ANGABEN
 
-Name: {{testator.fullName}}
-Geburtsdatum: {{testator.dateOfBirth}}
-Anschrift: {{testator.address}}
-Staatsangehörigkeit: {{testator.citizenship}}
+Name: {{testator_data.fullName}}
+Geburtsdatum: {{testator_data.dateOfBirth}}
+Anschrift: {{testator_data.address}}
+Staatsangehörigkeit: {{testator_data.citizenship}}
 
 II. ERBEINSETZUNG
 
@@ -865,7 +874,9 @@ VII. BESTATTUNGSWÜNSCHE
 ____________________
 {{testator.fullName}}
 
-TESTAMENT - Dieses Dokument enthält ein vollständiges Testament`,
+TESTAMENT - Dieses Dokument enthält ein vollständiges Testament
+
+IMMOBILIE - Immobilienvermögen ist in diesem Testament enthalten`,
 
     'basic': `EINFACHES TESTAMENT
 
@@ -933,7 +944,8 @@ export class MultiLangGenerator {
       signingInstructions,
       witnessInstructions,
       templateVersion: '1.0.0',
-      generatedAt: new Date()
+      generatedAt: new Date(),
+      legalTerminology: LEGAL_TERMINOLOGY[language]?.general || {}
     };
   }
 

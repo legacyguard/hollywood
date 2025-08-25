@@ -1,10 +1,13 @@
 /**
  * BackupService - Comprehensive data backup and restore functionality
  * Handles export/import of all user data including localStorage, Supabase, and Clerk metadata
+ * Now with encryption support for secure backups
  */
 
 import { toast } from 'sonner';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import * as nacl from 'tweetnacl';
+import { encodeBase64, decodeBase64 } from 'tweetnacl-util';
 
 // Backup data structure
 export interface BackupData {
@@ -33,17 +36,121 @@ export interface BackupData {
     appVersion?: string;
     exportedFrom?: string;
     checksum?: string;
+    encrypted?: boolean;
+    encryptionVersion?: string;
+  };
+}
+
+export interface EncryptedBackupData {
+  version: string;
+  encrypted: true;
+  encryptionVersion: string;
+  salt: string;
+  nonce: string;
+  data: string; // Base64 encoded encrypted data
+  metadata: {
+    exportDate: string;
+    userId: string;
+    checksum?: string;
   };
 }
 
 export class BackupService {
   private supabase = createClientComponentClient();
   private currentVersion = '1.0.0';
+  private encryptionVersion = '1.0.0';
+  private readonly PBKDF2_ITERATIONS = 100000;
+
+  /**
+   * Derive encryption key from password
+   */
+  private async deriveKey(password: string, salt: Uint8Array): Promise<Uint8Array> {
+    const encoder = new TextEncoder();
+    const passwordData = encoder.encode(password);
+    
+    const keyMaterial = await crypto.subtle.importKey(
+      'raw',
+      passwordData,
+      'PBKDF2',
+      false,
+      ['deriveBits']
+    );
+
+    const key = await crypto.subtle.deriveBits(
+      {
+        name: 'PBKDF2',
+        salt: salt,
+        iterations: this.PBKDF2_ITERATIONS,
+        hash: 'SHA-256',
+      },
+      keyMaterial,
+      256 // 32 bytes
+    );
+
+    return new Uint8Array(key);
+  }
+
+  /**
+   * Encrypt backup data
+   */
+  private async encryptBackupData(
+    data: BackupData,
+    password: string
+  ): Promise<EncryptedBackupData> {
+    const salt = nacl.randomBytes(16);
+    const nonce = nacl.randomBytes(nacl.secretbox.nonceLength);
+    const key = await this.deriveKey(password, salt);
+    
+    const dataString = JSON.stringify(data);
+    const dataBytes = new TextEncoder().encode(dataString);
+    const encrypted = nacl.secretbox(dataBytes, nonce, key);
+    
+    return {
+      version: this.currentVersion,
+      encrypted: true,
+      encryptionVersion: this.encryptionVersion,
+      salt: encodeBase64(salt),
+      nonce: encodeBase64(nonce),
+      data: encodeBase64(encrypted),
+      metadata: {
+        exportDate: data.exportDate,
+        userId: data.userId,
+        checksum: data.metadata.checksum,
+      },
+    };
+  }
+
+  /**
+   * Decrypt backup data
+   */
+  private async decryptBackupData(
+    encryptedData: EncryptedBackupData,
+    password: string
+  ): Promise<BackupData | null> {
+    try {
+      const salt = decodeBase64(encryptedData.salt);
+      const nonce = decodeBase64(encryptedData.nonce);
+      const encrypted = decodeBase64(encryptedData.data);
+      const key = await this.deriveKey(password, salt);
+      
+      const decrypted = nacl.secretbox.open(encrypted, nonce, key);
+      
+      if (!decrypted) {
+        return null;
+      }
+      
+      const dataString = new TextDecoder().decode(decrypted);
+      return JSON.parse(dataString);
+    } catch (error) {
+      console.error('Decryption failed:', error);
+      return null;
+    }
+  }
 
   /**
    * Export all user data to a JSON backup file
    */
-  async exportData(userId: string): Promise<void> {
+  async exportData(userId: string, password?: string): Promise<void> {
     try {
       toast.info('Preparing your data export...');
 
@@ -64,8 +171,17 @@ export class BackupService {
       // Generate checksum for data integrity
       backupData.metadata.checksum = await this.generateChecksum(backupData);
 
+      // Encrypt if password provided
+      let finalData: BackupData | EncryptedBackupData = backupData;
+      if (password) {
+        backupData.metadata.encrypted = true;
+        backupData.metadata.encryptionVersion = this.encryptionVersion;
+        finalData = await this.encryptBackupData(backupData, password);
+        toast.info('Backup encrypted successfully');
+      }
+
       // Create and download the backup file
-      this.downloadBackupFile(backupData, userId);
+      this.downloadBackupFile(finalData, userId);
 
       toast.success('Data exported successfully!');
     } catch (error) {
@@ -77,12 +193,30 @@ export class BackupService {
   /**
    * Import data from a backup file
    */
-  async importData(file: File, userId: string): Promise<void> {
+  async importData(file: File, userId: string, password?: string): Promise<void> {
     try {
       toast.info('Reading backup file...');
 
       const fileContent = await this.readFile(file);
-      const backupData: BackupData = JSON.parse(fileContent);
+      let backupData: BackupData;
+      
+      // Check if file is encrypted
+      const parsedContent = JSON.parse(fileContent);
+      if (parsedContent.encrypted) {
+        if (!password) {
+          toast.error('This backup is encrypted. Please provide the password.');
+          throw new Error('Password required for encrypted backup');
+        }
+        
+        const decrypted = await this.decryptBackupData(parsedContent as EncryptedBackupData, password);
+        if (!decrypted) {
+          toast.error('Invalid password or corrupted backup file');
+          throw new Error('Decryption failed');
+        }
+        backupData = decrypted;
+      } else {
+        backupData = parsedContent as BackupData;
+      }
 
       // Validate backup data
       if (!await this.validateBackupData(backupData, userId)) {
@@ -382,7 +516,7 @@ export class BackupService {
   /**
    * Download backup file
    */
-  private downloadBackupFile(data: BackupData, userId: string): void {
+  private downloadBackupFile(data: BackupData | EncryptedBackupData, userId: string): void {
     const json = JSON.stringify(data, null, 2);
     const blob = new Blob([json], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
