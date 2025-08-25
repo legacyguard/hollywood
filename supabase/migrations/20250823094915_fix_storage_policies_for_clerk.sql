@@ -74,9 +74,10 @@ USING (
   AND (storage.foldername(name))[1] = auth.uid()::text
 );
 
--- Komentáre pre lepšiu orientáciu
-COMMENT ON POLICY "dev: allow authenticated users scoped to their folder" ON storage.objects IS 'Development policy - allows authenticated users access only to their own folder. NOT FOR PRODUCTION!';
-COMMENT ON POLICY "users_can_read_own_objects" ON storage.objects IS 'Production policy - users can read only files in their own folder using Clerk native integration.';
-COMMENT ON POLICY "users_can_insert_own_objects" ON storage.objects IS 'Production policy - users can insert files only into their own folder using Clerk native integration.';
-COMMENT ON POLICY "users_can_update_own_objects" ON storage.objects IS 'Production policy - users can update only files in their own folder using Clerk native integration.';
-COMMENT ON POLICY "users_can_delete_own_objects" ON storage.objects IS 'Production policy - users can delete only files in their own folder using Clerk native integration.';
+-- Note: Cannot add comments to policies on storage.objects as we don't own that table
+-- Policy descriptions:
+-- "dev: allow authenticated users scoped to their folder" - Development policy - allows authenticated users access only to their own folder. NOT FOR PRODUCTION!
+-- "users_can_read_own_objects" - Production policy - users can read only files in their own folder using Clerk native integration.
+-- "users_can_insert_own_objects" - Production policy - users can insert files only into their own folder using Clerk native integration.
+-- "users_can_update_own_objects" - Production policy - users can update only files in their own folder using Clerk native integration.
+-- "users_can_delete_own_objects" - Production policy - users can delete only files in their own folder using Clerk native integration.

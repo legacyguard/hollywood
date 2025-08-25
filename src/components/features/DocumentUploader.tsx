@@ -8,11 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { Icon } from '@/components/ui/icon-library';
 import { FadeIn } from '@/components/motion/FadeIn';
-import { 
-  getUserEncryptionKeys, 
-  encryptFile, 
-  createEncryptedBlob 
-} from '@/lib/encryption';
+import { useEncryption } from '@/hooks/useEncryption';
 import { toast } from 'sonner';
 
 export const DocumentUploader = () => {
@@ -21,7 +17,8 @@ export const DocumentUploader = () => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const { userId } = useAuth();
   const { user } = useUser();
-const createSupabaseClient = useSupabaseWithClerk();
+  const createSupabaseClient = useSupabaseWithClerk();
+  const { isUnlocked, encryptFile, showPasswordPrompt } = useEncryption();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -43,6 +40,13 @@ const createSupabaseClient = useSupabaseWithClerk();
       return;
     }
 
+    // Check if encryption is unlocked
+    if (!isUnlocked) {
+      showPasswordPrompt();
+      toast.info('Please unlock encryption to upload documents');
+      return;
+    }
+
     setIsUploading(true);
     setUploadProgress(0);
 
@@ -50,23 +54,22 @@ const createSupabaseClient = useSupabaseWithClerk();
       // Create Supabase client with Clerk token
       const supabase = await createSupabaseClient();
       
-      // Get user's encryption keys
-      const keys = getUserEncryptionKeys(userId);
-      
       // Update progress
       setUploadProgress(20);
       
-      // Encrypt the file
-      const { encryptedData, nonce, metadata } = await encryptFile(
-        file,
-        keys.publicKey,
-        keys.secretKey
-      );
+      // Encrypt the file using new encryption service
+      const encryptionResult = await encryptFile(file);
+      
+      if (!encryptionResult) {
+        throw new Error('Failed to encrypt file');
+      }
+      
+      const { encryptedData, nonce, metadata } = encryptionResult;
       
       setUploadProgress(50);
       
-      // Create encrypted blob
-      const encryptedBlob = createEncryptedBlob(encryptedData, nonce);
+      // Create encrypted blob from Uint8Array
+      const encryptedBlob = new Blob([encryptedData], { type: 'application/octet-stream' });
       
       // Generate unique file name
       const timestamp = Date.now();
@@ -95,6 +98,9 @@ const createSupabaseClient = useSupabaseWithClerk();
       
       // Save metadata to database
       // Pre development posielame user_id explicitne
+      // Store nonce with document for decryption
+      const nonceBase64 = btoa(String.fromCharCode(...nonce));
+      
       const { error: dbError } = await supabase
         .from('documents')
         .insert({
@@ -104,7 +110,8 @@ const createSupabaseClient = useSupabaseWithClerk();
           file_type: file.type,
           file_size: file.size,
           document_type: 'General',
-          encrypted_at: new Date().toISOString()
+          encrypted_at: new Date().toISOString(),
+          encryption_nonce: nonceBase64
         });
 
       if (dbError) {
@@ -116,17 +123,7 @@ const createSupabaseClient = useSupabaseWithClerk();
         throw new Error('Failed to save document metadata');
       }
       
-      // Also store in localStorage as backup (optional)
-      const documentsKey = `documents_${userId}`;
-      const existingDocs = JSON.parse(localStorage.getItem(documentsKey) || '[]');
-      existingDocs.push({
-        id: timestamp,
-        ...metadata,
-        filePath,
-        uploadedAt: new Date().toISOString(),
-        uploadedBy: user?.emailAddresses[0]?.emailAddress || 'Unknown'
-      });
-      localStorage.setItem(documentsKey, JSON.stringify(existingDocs));
+      // No longer storing in localStorage - all handled server-side
       
       setUploadProgress(100);
       

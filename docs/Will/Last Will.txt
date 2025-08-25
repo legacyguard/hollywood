@@ -1,0 +1,149 @@
+Chcem s tebou implementovat "upgrade" funkcnosti zavetu v aplikacii LegacyGuard. Vsetko prosim implementuj v angličtine a dodržují Claude.md instrukcie. Vytvořit si na to TO-DO list a implementuj systematicky a komplexne vsetky body:
+
+  1. Real-Time Legal Validation Engine
+
+  // Live legal compliance checking as user types
+  interface LegalValidator {
+    validateBeneficiaryShares(beneficiaries: Beneficiary[], jurisdiction: string): ValidationResult;
+    checkForcedHeirsCompliance(willData: WillData, jurisdiction: string): ComplianceReport;
+    detectLegalConflicts(assets: Assets[], beneficiaries: Beneficiary[]): ConflictAlert[];
+  }
+  - Red/yellow/green indicators next to each field
+  - Instant feedback: "⚠️ Slovak law requires children get minimum 50% share"
+  - Auto-suggestions: "Consider adding backup executor"
+
+  2. Multi-Language Document Generation
+
+  // Generate legally compliant documents in user's native language
+  interface MultiLangGenerator {
+    generateWill(willData: WillData, language: 'sk' | 'cs' | 'en' | 'de', jurisdiction: string): LegalDocument;
+    translateLegalTerms(term: string, fromLang: string, toLang: string): TranslatedTerm;
+  }
+  - Slovak/Czech/English/German versions of same will
+  - Legal terminology properly translated
+  - Jurisdiction-specific templates in native language
+
+  3. Family Tree Visualization
+
+  // Interactive family relationship mapper  
+  interface FamilyTreeBuilder {
+    buildFamilyTree(guardians: Guardian[]): FamilyNode[];
+    suggestMissingRelatives(tree: FamilyNode[]): RelativeSuggestion[];
+    visualizeInheritanceFlow(tree: FamilyNode[], will: WillData): InheritanceMap;
+  }
+  - Visual family tree showing inheritance flow
+  - Drag-and-drop beneficiary assignment
+  - Relationship conflict detection
+
+  4. Template Library & Will Comparison
+
+  // Curated will templates for different situations
+  interface WillTemplateLibrary {
+    getTemplatesForSituation(profile: UserProfile): WillTemplate[];
+    compareWillVersions(oldWill: WillData, newWill: WillData): ComparisonReport;
+    suggestTemplateModifications(template: WillTemplate, userData: WillData): Modification[];
+  }
+  - Curated templates: "Young professional", "Blended family", "Business owner"
+  - Side-by-side comparison of will versions
+  - Template customization suggestions
+
+  5. Emotional Guidance & Legacy Messages
+
+  // Emotional support during will creation
+  interface LegacyMessageBuilder {
+    createPersonalizedMessages(relationships: Guardian[], occasions: Occasion[]): LegacyMessage[];
+    generateMemoryPrompts(family: FamilyMember[]): MemoryPrompt[];
+    buildDigitalTimeCapsule(messages: LegacyMessage[], releaseDate: Date): TimeCapsule;
+  }
+  - Personal video messages for future delivery
+  - Memory prompts: "What would you want Anna to know on her wedding day?"
+  - Digital time capsules with delayed delivery
+
+  6. Professional Review Network
+
+  // Expert review and validation
+  interface ProfessionalNetwork {
+    requestAttorneyReview(will: WillData, jurisdiction: string): ReviewRequest;
+    getEstateplannerConsultation(will: WillData): ConsultationOffer;
+    connectWithNotary(location: string): NotaryMatch[];
+  }
+  - One-click attorney review requests
+  - Estate planner marketplace integration
+  - Implement notary scheduling system with professional legal office: brnoadvokati.cz
+
+
+Holografny a alografny vzor zavete pre Česku a Slovensku jurisdikci najdeš v /docs/will adresari.
+
+  🎨 Implementation Priority:
+
+  Tier 1 (Immediate Impact):
+
+  1. Real-Time Legal Validation - Builds confidence
+  2. Multi-Language Generation - Serves Slovak/Czech market
+  3. Voice-to-Text - Revolutionary accessibility
+
+  Tier 2 (High Value):
+
+  4. Smart Asset Valuation - Reduces user work
+  5. Family Tree Visualization - Makes relationships clear
+  6. Scenario Planning - Advanced planning tool
+
+  Tier 3 (Long-term Premium):
+
+  7. Digital Notarization - Full digital workflow
+  8. Template Library - Guided experiences
+  9. Legacy Messages - Emotional connection
+  10. Professional Network - Expert validation
+
+
+
+
+  7. Smart Asset Valuation Integration
+
+  // API integrations for real-time asset valuation
+  interface AssetValuator {
+    getRealEstateValue(address: string, country: string): Promise<PropertyValuation>;
+    getVehicleValue(make: string, model: string, year: number): Promise<VehicleValuation>;
+    getBankAccountSuggestions(bank: string): BankAccountType[];
+  }
+  - Auto-populate property values from real estate APIs
+  - Vehicle valuation from automotive databases
+  - Investment account integration with financial institutions
+
+
+  8. Digital Signature & Notarization
+
+  // Secure digital signing workflow
+  interface DigitalNotary {
+    initiateSigningCeremony(will: WillDocument, signers: Signer[]): SigningSession;
+    verifyWitnessIdentity(witness: Witness): IdentityVerification;
+    createDigitalSeal(document: SignedWill): NotarizedDocument;
+  }
+  - Video witness verification for remote signing
+  - Blockchain-based timestamp for authenticity
+  - Digital notary integration for legal validity
+
+  9. Scenario Planning & "What-If" Analysis
+
+  // Advanced inheritance scenario modeling
+  interface ScenarioPlanner {
+    calculateInheritanceScenarios(will: WillData): InheritanceScenario[];
+    simulateAssetDistribution(assets: Assets[], beneficiaries: Beneficiary[]): DistributionResult;
+    generateTaxImplications(scenario: InheritanceScenario, jurisdiction: string): TaxReport;
+  }
+  - "What if one beneficiary predeceases me?" scenarios
+  - Tax optimization suggestions
+  - Asset distribution timeline visualization
+
+
+  10. Voice-to-Text & AI Dictation
+
+  // Natural language will creation
+  interface VoiceWillBuilder {
+    transcribeSpeechToWillSections(audio: AudioBlob): WillSectionDraft;
+    interpretNaturalLanguageIntent(text: string): StructuredWillData;
+    suggestClarifyingQuestions(intent: WillIntent): Question[];
+  }
+  - "I want my house to go to my daughter..." → structured data
+  - Voice-guided will creation for accessibility
+  - Natural language understanding of inheritance wishes

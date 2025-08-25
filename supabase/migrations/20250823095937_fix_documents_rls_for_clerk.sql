@@ -1,23 +1,15 @@
 -- =================================================================
--- MIGRÁCIA: Produkčne pripravené Clerk-aware RLS Policies pre documents tabuľku
+-- MIGRÁCIA: Ensure Clerk-aware helper functions exist
 -- Verzia: 2.0 - Production Ready
 -- =================================================================
 
--- Táto migrácia implementuje produkčne pripravené RLS policies
--- pre Clerk autentifikáciu s proper security
-
--- Najprv odstránime existujúce development policies
-DROP POLICY IF EXISTS "Allow all operations for development" ON public.documents;
-DROP POLICY IF EXISTS "Users can view their own documents" ON public.documents;
-DROP POLICY IF EXISTS "Users can insert their own documents" ON public.documents;
-DROP POLICY IF EXISTS "Users can update their own documents" ON public.documents;
-DROP POLICY IF EXISTS "Users can delete their own documents" ON public.documents;
-
--- Vytvorenie app schema pre helper funkcie
+-- Create app schema if it doesn't exist
 CREATE SCHEMA IF NOT EXISTS app;
+
+-- Grant permissions to app schema
 GRANT USAGE ON SCHEMA app TO authenticated, service_role;
-GRANT EXECUTE ON FUNCTION app.current_external_id() TO authenticated, service_role;
--- Helper funkcia na čítanie Clerk subject z JWT
+
+-- Create or replace the helper function for Clerk user ID extraction
 CREATE OR REPLACE FUNCTION app.current_external_id()
 RETURNS TEXT
 LANGUAGE SQL
@@ -26,37 +18,8 @@ AS $$
   SELECT (current_setting('request.jwt.claims', true)::jsonb ->> 'sub')
 $$;
 
--- Produkčné RLS policies pre Clerk autentifikáciu
--- Používame user_id stĺpec (TEXT) ktorý obsahuje Clerk user ID
-
--- Policy pre čítanie dokumentov
-CREATE POLICY "Users can view their own documents"
-ON public.documents
-FOR SELECT
-TO authenticated
-USING (user_id = app.current_external_id());
-
--- Policy pre vkladanie dokumentov
-CREATE POLICY "Users can insert their own documents"
-ON public.documents
-FOR INSERT
-TO authenticated
-WITH CHECK (user_id = app.current_external_id());
-
--- Policy pre aktualizáciu dokumentov
-CREATE POLICY "Users can update their own documents"
-ON public.documents
-FOR UPDATE
-TO authenticated
-USING (user_id = app.current_external_id())
-WITH CHECK (user_id = app.current_external_id());
-
--- Policy pre mazanie dokumentov
-CREATE POLICY "Users can delete their own documents"
-ON public.documents
-FOR DELETE
-TO authenticated
-USING (user_id = app.current_external_id());
+-- Grant execute permission on the function
+GRANT EXECUTE ON FUNCTION app.current_external_id() TO authenticated, service_role;
 
 -- Vytvorenie indexu na user_id pre rýchle per-user queries
 CREATE INDEX IF NOT EXISTS idx_documents_user_id_clerk ON public.documents(user_id);

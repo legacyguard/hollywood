@@ -7,10 +7,22 @@ import { useUser } from "@clerk/clerk-react";
 import { PathOfSerenity } from "@/components/dashboard/PathOfSerenity";
 import { AttentionSection } from "@/components/dashboard/AttentionSection";
 import { LegacyOverviewSection } from "@/components/dashboard/LegacyOverviewSection";
+import { useEncryptionReady } from "@/hooks/encryption/useEncryption";
+import { EncryptionSetup } from "@/components/encryption/EncryptionSetup";
 
 export function DashboardContent() {
   const { user } = useUser();
   const navigate = useNavigate();
+  const { needsSetup, isLoading } = useEncryptionReady();
+  
+  // Show encryption setup if needed
+  if (!isLoading && needsSetup) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-6">
+        <EncryptionSetup />
+      </div>
+    );
+  }
   
   const handleNewInformation = () => {
     navigate('/vault');

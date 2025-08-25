@@ -24,7 +24,7 @@ CREATE TYPE relationship_type AS ENUM (
 -- Create wills table
 CREATE TABLE wills (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  user_id TEXT NOT NULL,
   
   -- Metadata
   title TEXT NOT NULL DEFAULT 'My Last Will and Testament',
@@ -148,18 +148,28 @@ CREATE TABLE will_templates (
 ALTER TABLE wills ENABLE ROW LEVEL SECURITY;
 ALTER TABLE will_templates ENABLE ROW LEVEL SECURITY;
 
+-- Ensure helper schema/function exist
+CREATE SCHEMA IF NOT EXISTS app;
+CREATE OR REPLACE FUNCTION app.current_external_id()
+RETURNS TEXT
+LANGUAGE SQL
+STABLE
+AS $$
+  SELECT (current_setting('request.jwt.claims', true)::jsonb ->> 'sub')
+$$;
+
 -- Users can only access their own wills
 CREATE POLICY "Users can view own wills" ON wills
-  FOR SELECT USING (auth.uid() = user_id);
+  FOR SELECT USING (app.current_external_id() = user_id);
 
 CREATE POLICY "Users can create own wills" ON wills
-  FOR INSERT WITH CHECK (auth.uid() = user_id);
+  FOR INSERT WITH CHECK (app.current_external_id() = user_id);
 
 CREATE POLICY "Users can update own wills" ON wills
-  FOR UPDATE USING (auth.uid() = user_id);
+  FOR UPDATE USING (app.current_external_id() = user_id);
 
 CREATE POLICY "Users can delete own wills" ON wills
-  FOR DELETE USING (auth.uid() = user_id);
+  FOR DELETE USING (app.current_external_id() = user_id);
 
 -- Templates are read-only for all authenticated users
 CREATE POLICY "Authenticated users can view templates" ON will_templates
@@ -193,7 +203,7 @@ CREATE TRIGGER update_wills_timestamp
 -- Function to create will version/revision
 CREATE OR REPLACE FUNCTION create_will_revision(
   original_will_id UUID,
-  user_id_param UUID
+  user_id_param TEXT
 ) RETURNS UUID AS $$
 DECLARE
   original_will RECORD;
@@ -275,7 +285,6 @@ INSERT INTO will_templates (jurisdiction, template_name, template_structure, leg
 GRANT SELECT, INSERT, UPDATE, DELETE ON wills TO authenticated;
 GRANT SELECT ON will_templates TO authenticated;
 GRANT EXECUTE ON FUNCTION create_will_revision TO authenticated;
-GRANT USAGE ON SEQUENCE wills_id_seq TO authenticated;
 
 -- Add comments
 COMMENT ON TABLE wills IS 'User-created wills with structured data for generation';

@@ -1,0 +1,648 @@
+import React, { useState, useCallback, useEffect } from 'react';
+import { useAuth } from '@clerk/clerk-react';
+import { WillType } from './WillTypeSelector';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Icon } from '@/components/ui/icon-library';
+import { FadeIn } from '@/components/motion/FadeIn';
+import { Progress } from '@/components/ui/progress';
+import { Badge } from '@/components/ui/badge';
+import { toast } from 'sonner';
+import { LiveWillPreview } from './LiveWillPreview';
+import { SofiaCorrectnessCheck } from './SofiaCorrectnessCheck';
+import { FocusModeWrapper } from './FocusModeWrapper';
+import { FocusModeToggle } from './FocusModeToggle';
+import { VaultAssetSelector } from './VaultAssetSelector';
+import { ValidationIndicator, FieldValidation, ComplianceStatus } from './ValidationIndicator';
+import { useFocusMode } from '@/contexts/FocusModeContext';
+import { useWillValidation } from '@/hooks/useWillValidation';
+import type { WillData } from './WillWizard';
+
+interface EnhancedWillWizardWithValidationProps {
+  onClose: () => void;
+  onComplete: (willData: WillData) => void;
+  onBack?: () => void;
+  willType: WillType;
+  initialData?: WillData | null;
+}
+
+const STEPS = [
+  { id: 'personal', title: 'Personal Info', description: 'Your details' },
+  { id: 'beneficiaries', title: 'Beneficiaries', description: 'Who inherits' },
+  { id: 'assets', title: 'Assets', description: 'What you own' },
+  { id: 'executor', title: 'Executor', description: 'Who manages' },
+  { id: 'guardianship', title: 'Guardianship', description: 'For minor children' },
+  { id: 'wishes', title: 'Final Wishes', description: 'Special instructions' },
+  { id: 'legal_validation', title: 'Legal Review', description: 'Compliance check' },
+  { id: 'sofia_check', title: 'Sofia\'s Check', description: 'AI review' },
+  { id: 'review', title: 'Final Review', description: 'Confirm and generate' }
+];
+
+const JURISDICTIONS = [
+  { value: 'Slovakia', label: 'Slovakia' },
+  { value: 'Czech-Republic', label: 'Czech Republic' },
+  { value: 'US-General', label: 'United States (General)' },
+  { value: 'US-California', label: 'California, USA' },
+  { value: 'US-Texas', label: 'Texas, USA' },
+  { value: 'US-Florida', label: 'Florida, USA' },
+  { value: 'US-NewYork', label: 'New York, USA' },
+  { value: 'UK', label: 'United Kingdom' },
+  { value: 'Canada', label: 'Canada' },
+  { value: 'Australia', label: 'Australia' }
+];
+
+const RELATIONSHIPS = [
+  { value: 'spouse', label: 'Spouse/Partner' },
+  { value: 'child', label: 'Child' },
+  { value: 'parent', label: 'Parent' },
+  { value: 'sibling', label: 'Sibling' },
+  { value: 'grandchild', label: 'Grandchild' },
+  { value: 'friend', label: 'Friend' },
+  { value: 'charity', label: 'Charity/Organization' },
+  { value: 'other', label: 'Other' }
+];
+
+export const EnhancedWillWizardWithValidation: React.FC<EnhancedWillWizardWithValidationProps> = ({ 
+  onClose, 
+  onComplete, 
+  onBack, 
+  willType, 
+  initialData 
+}) => {
+  const { user } = useAuth();
+  const { isFocusMode } = useFocusMode();
+  const [currentStep, setCurrentStep] = useState(0);
+  const [showVaultSelector, setShowVaultSelector] = useState(false);
+  const [vaultSelectorType, setVaultSelectorType] = useState<'realEstate' | 'vehicles' | 'bankAccounts' | 'personalProperty' | 'all'>('all');
+  
+  // Initialize with draft data if provided, otherwise use empty data
+  const [willData, setWillData] = useState<WillData>(initialData || {
+    testator_data: {
+      fullName: user?.fullName || '',
+    },
+    beneficiaries: [],
+    assets: {},
+    executor_data: {},
+    guardianship_data: {},
+    special_instructions: {},
+    legal_data: {
+      jurisdiction: 'Slovakia'
+    }
+  });
+
+  // Real-time validation
+  const {
+    complianceReport,
+    fieldValidations,
+    isValidating,
+    validationSummary,
+    isWillValid,
+    getFieldValidation,
+    hasFieldError,
+    hasFieldWarning,
+    getValidationMessages,
+    getJurisdictionGuidance,
+    triggerValidation
+  } = useWillValidation({
+    willData,
+    willType,
+    jurisdiction: willData.legal_data?.jurisdiction || 'Slovakia',
+    enableRealTime: true
+  });
+
+  const currentStepId = STEPS[currentStep].id;
+  const progress = ((currentStep + 1) / STEPS.length) * 100;
+
+  const updateWillData = useCallback((section: keyof WillData, data: Partial<WillData[keyof WillData]>) => {
+    setWillData(prev => ({
+      ...prev,
+      [section]: { ...prev[section], ...data }
+    }));
+  }, []);
+
+  // Trigger validation when jurisdiction changes
+  useEffect(() => {
+    if (willData.legal_data?.jurisdiction) {
+      triggerValidation();
+    }
+  }, [willData.legal_data?.jurisdiction, triggerValidation]);
+
+  const handleComplete = useCallback(() => {
+    if (!isWillValid) {
+      toast.error('Please resolve all legal compliance issues before creating your will');
+      return;
+    }
+    onComplete(willData);
+  }, [willData, onComplete, isWillValid]);
+
+  const handleNext = useCallback(() => {
+    // Check for critical errors in current step
+    const currentStepHasErrors = Array.from(fieldValidations.entries())
+      .some(([field, validation]) => 
+        validation.level === 'error' && 
+        field.includes(currentStepId)
+      );
+
+    if (currentStepHasErrors && currentStep < STEPS.length - 1) {
+      toast.warning('Please resolve validation errors before proceeding');
+      return;
+    }
+
+    if (currentStep < STEPS.length - 1) {
+      setCurrentStep(prev => prev + 1);
+    } else {
+      handleComplete();
+    }
+  }, [currentStep, handleComplete, fieldValidations, currentStepId]);
+
+  const handleBack = useCallback(() => {
+    if (currentStep > 0) {
+      setCurrentStep(prev => prev - 1);
+    } else if (onBack) {
+      onBack();
+    }
+  }, [currentStep, onBack]);
+
+  const goToStep = useCallback((stepId: string) => {
+    const stepIndex = STEPS.findIndex(step => step.id === stepId);
+    if (stepIndex !== -1) {
+      setCurrentStep(stepIndex);
+    }
+  }, []);
+
+  const addBeneficiary = useCallback(() => {
+    const newBeneficiary = {
+      id: crypto.randomUUID(),
+      name: '',
+      relationship: 'child' as const,
+      percentage: 0,
+      specificGifts: [],
+      conditions: ''
+    };
+    setWillData(prev => ({
+      ...prev,
+      beneficiaries: [...prev.beneficiaries, newBeneficiary]
+    }));
+  }, []);
+
+  const updateBeneficiary = useCallback((id: string, field: string, value: string | number | string[]) => {
+    setWillData(prev => ({
+      ...prev,
+      beneficiaries: prev.beneficiaries.map(b => 
+        b.id === id ? { ...b, [field]: value } : b
+      )
+    }));
+  }, []);
+
+  const removeBeneficiary = useCallback((id: string) => {
+    setWillData(prev => ({
+      ...prev,
+      beneficiaries: prev.beneficiaries.filter(b => b.id !== id)
+    }));
+  }, []);
+
+  const renderStepContent = () => {
+    switch (currentStepId) {
+      case 'personal':
+        return (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FieldValidation fieldName="testator_data.fullName" validation={getFieldValidation('testator_data.fullName')}>
+                <div>
+                  <Label htmlFor="fullName">Full Name</Label>
+                  <Input
+                    id="fullName"
+                    value={willData.testator_data.fullName || ''}
+                    onChange={(e) => updateWillData('testator_data', { fullName: e.target.value })}
+                    placeholder="Enter your full legal name"
+                    className={hasFieldError('testator_data.fullName') ? 'border-red-300' : hasFieldWarning('testator_data.fullName') ? 'border-yellow-300' : ''}
+                  />
+                </div>
+              </FieldValidation>
+              
+              <FieldValidation fieldName="testator_data.dateOfBirth" validation={getFieldValidation('testator_data.dateOfBirth')}>
+                <div>
+                  <Label htmlFor="dateOfBirth">Date of Birth</Label>
+                  <Input
+                    id="dateOfBirth"
+                    type="date"
+                    value={willData.testator_data.dateOfBirth || ''}
+                    onChange={(e) => updateWillData('testator_data', { dateOfBirth: e.target.value })}
+                    className={hasFieldError('testator_data.dateOfBirth') ? 'border-red-300' : ''}
+                  />
+                </div>
+              </FieldValidation>
+            </div>
+            
+            <FieldValidation fieldName="testator_data.address" validation={getFieldValidation('testator_data.address')}>
+              <div>
+                <Label htmlFor="address">Address</Label>
+                <Textarea
+                  id="address"
+                  value={willData.testator_data.address || ''}
+                  onChange={(e) => updateWillData('testator_data', { address: e.target.value })}
+                  placeholder="Enter your full address"
+                  rows={3}
+                  className={hasFieldError('testator_data.address') ? 'border-red-300' : ''}
+                />
+              </div>
+            </FieldValidation>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="citizenship">Citizenship</Label>
+                <Input
+                  id="citizenship"
+                  value={willData.testator_data.citizenship || ''}
+                  onChange={(e) => updateWillData('testator_data', { citizenship: e.target.value })}
+                  placeholder="e.g., Slovak, Czech, American"
+                />
+              </div>
+              
+              <div>
+                <Label htmlFor="jurisdiction">Legal Jurisdiction</Label>
+                <Select 
+                  value={willData.legal_data?.jurisdiction || 'Slovakia'} 
+                  onValueChange={(value) => updateWillData('legal_data', { jurisdiction: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select jurisdiction" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {JURISDICTIONS.map(jurisdiction => (
+                      <SelectItem key={jurisdiction.value} value={jurisdiction.value}>
+                        {jurisdiction.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            
+            <div>
+              <Label htmlFor="maritalStatus">Marital Status</Label>
+              <Select 
+                value={willData.testator_data.maritalStatus} 
+                onValueChange={(value) => updateWillData('testator_data', { maritalStatus: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="single">Single</SelectItem>
+                  <SelectItem value="married">Married</SelectItem>
+                  <SelectItem value="divorced">Divorced</SelectItem>
+                  <SelectItem value="widowed">Widowed</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        );
+
+      case 'beneficiaries':
+        return (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold flex items-center gap-2">
+                Your Beneficiaries
+                {getFieldValidation('beneficiaries') && (
+                  <ValidationIndicator validation={getFieldValidation('beneficiaries')!} />
+                )}
+              </h3>
+              <Button onClick={addBeneficiary} variant="outline" size="sm">
+                <Icon name="add" className="w-4 h-4 mr-2" />
+                Add Beneficiary
+              </Button>
+            </div>
+            
+            {/* Beneficiary percentage warning */}
+            {complianceReport?.forcedHeirsIssues.length > 0 && (
+              <div className="space-y-2">
+                {complianceReport.forcedHeirsIssues.map((issue, index) => (
+                  <ValidationIndicator key={index} validation={issue} showDetails />
+                ))}
+              </div>
+            )}
+            
+            {willData.beneficiaries.length === 0 ? (
+              <Card className="p-8 text-center">
+                <Icon name="users" className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                <p className="text-muted-foreground">No beneficiaries added yet</p>
+                <p className="text-sm text-muted-foreground mt-2">Click "Add Beneficiary" to start</p>
+              </Card>
+            ) : (
+              <div className="space-y-4">
+                {willData.beneficiaries.map((beneficiary, index) => (
+                  <Card key={beneficiary.id} className="p-4">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="secondary">Beneficiary {index + 1}</Badge>
+                        {hasFieldError(`beneficiaries[${index}]`) && (
+                          <ValidationIndicator validation={getFieldValidation(`beneficiaries[${index}]`)!} />
+                        )}
+                      </div>
+                      <Button 
+                        onClick={() => removeBeneficiary(beneficiary.id)}
+                        variant="ghost" 
+                        size="sm"
+                        className="text-red-600 hover:text-red-700"
+                      >
+                        <Icon name="trash" className="w-4 h-4" />
+                      </Button>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      <div>
+                        <Label>Name</Label>
+                        <Input
+                          value={beneficiary.name}
+                          onChange={(e) => updateBeneficiary(beneficiary.id, 'name', e.target.value)}
+                          placeholder="Beneficiary name"
+                        />
+                      </div>
+                      <div>
+                        <Label>Relationship</Label>
+                        <Select 
+                          value={beneficiary.relationship} 
+                          onValueChange={(value) => updateBeneficiary(beneficiary.id, 'relationship', value)}
+                        >
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {RELATIONSHIPS.map(rel => (
+                              <SelectItem key={rel.value} value={rel.value}>
+                                {rel.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label>Inheritance Percentage</Label>
+                        <Input
+                          type="number"
+                          min="0"
+                          max="100"
+                          value={beneficiary.percentage}
+                          onChange={(e) => updateBeneficiary(beneficiary.id, 'percentage', parseInt(e.target.value) || 0)}
+                          placeholder="0"
+                        />
+                      </div>
+                    </div>
+                    <div className="mt-4">
+                      <Label>Special Conditions (Optional)</Label>
+                      <Input
+                        value={beneficiary.conditions || ''}
+                        onChange={(e) => updateBeneficiary(beneficiary.id, 'conditions', e.target.value)}
+                        placeholder="e.g., if surviving, if over 18 years old"
+                      />
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            )}
+            
+            {/* Show jurisdiction-specific guidance */}
+            <Card className="p-4 bg-blue-50 border-blue-200">
+              <div className="flex items-start gap-3">
+                <Icon name="info" className="w-5 h-5 text-blue-600 flex-shrink-0 mt-1" />
+                <div>
+                  <h4 className="font-semibold text-blue-900 mb-2">Legal Guidance for {willData.legal_data?.jurisdiction}</h4>
+                  <p className="text-sm text-blue-800">
+                    {getJurisdictionGuidance().forcedHeirs}
+                  </p>
+                </div>
+              </div>
+            </Card>
+          </div>
+        );
+
+      case 'legal_validation':
+        return (
+          <div className="space-y-6">
+            <div className="text-center mb-8">
+              <Icon name="shield-check" className="w-12 h-12 text-primary mx-auto mb-4" />
+              <h3 className="text-2xl font-semibold mb-2">Legal Compliance Review</h3>
+              <p className="text-muted-foreground">
+                Your will is being checked against {willData.legal_data?.jurisdiction || 'Slovak'} law
+              </p>
+            </div>
+
+            {/* Compliance Status */}
+            <ComplianceStatus validationResults={getValidationMessages()} />
+
+            {/* Validation Messages */}
+            <div className="space-y-4">
+              {getValidationMessages('error').map((validation, index) => (
+                <ValidationIndicator key={`error-${index}`} validation={validation} showDetails />
+              ))}
+              
+              {getValidationMessages('warning').map((validation, index) => (
+                <ValidationIndicator key={`warning-${index}`} validation={validation} showDetails />
+              ))}
+              
+              {getValidationMessages('success').map((validation, index) => (
+                <ValidationIndicator key={`success-${index}`} validation={validation} showDetails />
+              ))}
+            </div>
+
+            {/* Jurisdiction Guidance */}
+            <Card className="p-6">
+              <h4 className="font-semibold mb-4 flex items-center gap-2">
+                <Icon name="book" className="w-5 h-5" />
+                Legal Requirements for {willData.legal_data?.jurisdiction}
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div>
+                  <h5 className="font-medium mb-2">Forced Heirs Protection</h5>
+                  <p className="text-muted-foreground">{getJurisdictionGuidance().forcedHeirs}</p>
+                </div>
+                <div>
+                  <h5 className="font-medium mb-2">Witness Requirements</h5>
+                  <p className="text-muted-foreground">{getJurisdictionGuidance().witnesses}</p>
+                </div>
+                <div>
+                  <h5 className="font-medium mb-2">Will Revocation</h5>
+                  <p className="text-muted-foreground">{getJurisdictionGuidance().revocation}</p>
+                </div>
+                <div>
+                  <h5 className="font-medium mb-2">Notarization</h5>
+                  <p className="text-muted-foreground">{getJurisdictionGuidance().notarization}</p>
+                </div>
+              </div>
+            </Card>
+          </div>
+        );
+
+      // ... other step cases would be implemented similarly with validation integration
+
+      default:
+        return <div>Step not implemented</div>;
+    }
+  };
+
+  return (
+    <FocusModeWrapper
+      currentStepTitle={STEPS[currentStep].title}
+      currentStepIndex={currentStep}
+      totalSteps={STEPS.length}
+      onExitWizard={onClose}
+    >
+      <div className="min-h-screen bg-background flex flex-col">
+        {/* Header - Hidden in Focus Mode */}
+        {!isFocusMode && (
+          <header className="bg-card border-b border-card-border sticky top-0 z-50">
+            <div className="max-w-4xl mx-auto px-6 py-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <Button 
+                    onClick={onClose} 
+                    variant="ghost" 
+                    size="sm"
+                    className="flex items-center gap-2"
+                  >
+                    <Icon name="arrow-left" className="w-4 h-4" />
+                    Back to Legacy Planning
+                  </Button>
+                </div>
+                <div className="text-center">
+                  <h1 className="text-xl font-semibold">Enhanced Will Creator</h1>
+                  <p className="text-sm text-muted-foreground">
+                    Step {currentStep + 1} of {STEPS.length}: {STEPS[currentStep].title}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  {/* Validation status indicator */}
+                  {validationSummary.total > 0 && (
+                    <div className="flex items-center gap-2 text-sm">
+                      {validationSummary.errors > 0 && (
+                        <Badge variant="destructive" className="text-xs">
+                          {validationSummary.errors} error{validationSummary.errors !== 1 ? 's' : ''}
+                        </Badge>
+                      )}
+                      {validationSummary.warnings > 0 && (
+                        <Badge variant="secondary" className="text-xs">
+                          {validationSummary.warnings} warning{validationSummary.warnings !== 1 ? 's' : ''}
+                        </Badge>
+                      )}
+                      {isValidating && (
+                        <Icon name="loader" className="w-4 h-4 animate-spin text-primary" />
+                      )}
+                    </div>
+                  )}
+                  <FocusModeToggle />
+                </div>
+              </div>
+            </div>
+          </header>
+        )}
+
+        {/* Progress Bar - Hidden in Focus Mode */}
+        {!isFocusMode && (
+          <div className="bg-card border-b border-card-border">
+            <div className="max-w-4xl mx-auto px-6 py-4">
+              <Progress value={progress} className="h-2" />
+              <div className="flex justify-between mt-2 text-xs text-muted-foreground">
+                {STEPS.map((step, index) => (
+                  <span 
+                    key={step.id}
+                    className={index <= currentStep ? 'text-primary font-medium' : ''}
+                  >
+                    {step.title}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Draft Data Indicator */}
+        {initialData && !isFocusMode && (
+          <div className="bg-primary/5 border-b border-primary/20">
+            <div className="max-w-4xl mx-auto px-6 py-3">
+              <div className="flex items-center gap-3 text-sm">
+                <Icon name="sparkles" className="w-4 h-4 text-primary" />
+                <span className="text-primary font-medium">Sofia's Intelligent Draft Active</span>
+                <span className="text-muted-foreground">
+                  Pre-filled with legal validation - Review and modify as needed
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Content */}
+        <main className="flex-1 flex overflow-hidden">
+          {/* Left Panel - Form */}
+          <div className="w-2/5 flex flex-col border-r border-card-border">
+            <div className="p-6 overflow-y-auto">
+              <FadeIn key={currentStep} duration={0.3}>
+                <div className="mb-6">
+                  <h2 className="text-2xl font-semibold mb-2">{STEPS[currentStep].title}</h2>
+                  <p className="text-muted-foreground">{STEPS[currentStep].description}</p>
+                </div>
+                
+                {renderStepContent()}
+              </FadeIn>
+            </div>
+          </div>
+
+          {/* Right Panel - Live Preview */}
+          <div className="w-3/5 flex flex-col">
+            <LiveWillPreview 
+              willData={willData}
+              willType={willType}
+              currentStep={currentStepId}
+              validationResults={getValidationMessages()}
+            />
+          </div>
+        </main>
+
+        {/* Navigation */}
+        <footer className="bg-card border-t border-card-border">
+          <div className="px-6 py-4">
+            <div className="flex justify-between items-center">
+              <Button 
+                onClick={handleBack}
+                variant="outline"
+                disabled={currentStep === 0 && !onBack}
+              >
+                <Icon name="arrow-left" className="w-4 h-4 mr-2" />
+                {currentStep === 0 ? 'Change Will Type' : 'Back'}
+              </Button>
+              
+              <div className="flex items-center gap-4">
+                {!isFocusMode && (
+                  <div className="text-sm text-muted-foreground">
+                    Step {currentStep + 1} of {STEPS.length}
+                  </div>
+                )}
+                <Button 
+                  onClick={handleNext}
+                  className="bg-primary hover:bg-primary-hover text-primary-foreground"
+                  disabled={validationSummary.errors > 0 && currentStep === STEPS.length - 1}
+                >
+                  {currentStep === STEPS.length - 1 ? 'Create Will' : 'Continue'}
+                  {currentStep !== STEPS.length - 1 && <Icon name="arrow-right" className="w-4 h-4 ml-2" />}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </footer>
+      </div>
+
+      {/* Vault Asset Selector Modal */}
+      {showVaultSelector && (
+        <VaultAssetSelector
+          onAssetsSelected={() => setShowVaultSelector(false)}
+          onClose={() => setShowVaultSelector(false)}
+          assetType={vaultSelectorType}
+        />
+      )}
+    </FocusModeWrapper>
+  );
+};

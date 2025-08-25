@@ -11,6 +11,8 @@ import { ErrorBoundary } from "./components/ErrorBoundary";
 import { DocumentFilterProvider } from "./contexts/DocumentFilterContext";
 import { LocalizationProvider } from "./contexts/LocalizationContext";
 import SofiaContextProvider from "./components/sofia/SofiaContextProvider";
+import { EncryptionProvider } from "@/hooks/encryption/useEncryption";
+import { PasswordPrompt } from "@/components/encryption/PasswordPrompt";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Onboarding from "./pages/onboarding/Onboarding";
@@ -22,6 +24,7 @@ import SignInPage from "./pages/auth/SignIn";
 import SignUpPage from "./pages/auth/SignUp";
 import TestOCRPage from "./pages/test-ocr/TestOCRPage";
 import IntelligentOrganizer from "./pages/IntelligentOrganizer";
+import SettingsPage from "./pages/Settings";
 
 const queryClient = new QueryClient();
 
@@ -33,10 +36,12 @@ const App = () => (
           <Toaster />
           <Sonner />
           <LocalizationProvider>
-            <BrowserRouter future={routerFutureConfig}>
-              <DocumentFilterProvider>
-                <SofiaContextProvider>
-          <Routes>
+            <EncryptionProvider>
+              <BrowserRouter future={routerFutureConfig}>
+                <DocumentFilterProvider>
+                  <SofiaContextProvider>
+                    <PasswordPrompt />
+                    <Routes>
             {/* Public routes */}
             <Route path="/sign-in/*" element={<SignInPage />} />
             <Route path="/sign-up/*" element={<SignUpPage />} />
@@ -84,17 +89,23 @@ const App = () => (
                 <IntelligentOrganizer />
               </ProtectedRoute>
             } />
+            <Route path="/settings" element={
+              <ProtectedRoute>
+                <SettingsPage />
+              </ProtectedRoute>
+            } />
             
             {/* 404 route */}
             <Route path="*" element={<NotFound />} />
-          </Routes>
-                </SofiaContextProvider>
-              </DocumentFilterProvider>
-            </BrowserRouter>
+                    </Routes>
+                  </SofiaContextProvider>
+                </DocumentFilterProvider>
+              </BrowserRouter>
+            </EncryptionProvider>
           </LocalizationProvider>
-      </TooltipProvider>
-    </QueryClientProvider>
-  </ClerkProvider>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </ClerkProvider>
   </ErrorBoundary>
 );
 

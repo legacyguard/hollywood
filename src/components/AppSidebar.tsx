@@ -23,6 +23,7 @@ const navigationItems = [
   { title: "Timeline", url: "/timeline", icon: "timeline" },
   { title: "Wishes", url: "/wishes", icon: "wishes" },
   { title: "Protection", url: "/protection", icon: "protection" },
+  { title: "Settings", url: "/settings", icon: "settings" },
 ];
 
 export function AppSidebar() {

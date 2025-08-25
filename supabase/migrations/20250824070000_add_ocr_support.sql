@@ -103,14 +103,13 @@ SELECT
   to_tsvector('english', COALESCE(d.title, '') || ' ' || COALESCE(d.description, '') || ' ' || COALESCE(d.ocr_text, '')) AS search_vector
 FROM documents d;
 
--- Add RLS policies for enhanced security
-CREATE POLICY "Users can view enhanced document info" ON documents_enhanced
-  FOR SELECT USING (auth.uid() = user_id);
+-- Note: Cannot create RLS policies on views
+-- The base documents table already has RLS policies that will be applied
 
 -- Create a function to search documents with OCR content
 CREATE OR REPLACE FUNCTION search_documents(
   search_query TEXT,
-  user_uuid UUID DEFAULT NULL,
+  user_id_param TEXT DEFAULT NULL,
   limit_count INTEGER DEFAULT 50
 ) RETURNS TABLE (
   id UUID,
@@ -139,7 +138,7 @@ BEGIN
     ts_rank(de.search_vector, plainto_tsquery('english', search_query)) AS rank
   FROM documents_enhanced de
   WHERE 
-    (user_uuid IS NULL OR de.user_id = user_uuid)
+    (user_id_param IS NULL OR de.user_id = user_id_param)
     AND de.search_vector @@ plainto_tsquery('english', search_query)
   ORDER BY 
     ts_rank(de.search_vector, plainto_tsquery('english', search_query)) DESC,
