@@ -30,6 +30,8 @@ import SettingsPage from "./pages/Settings";
 import FamilyShieldSettingsPage from "./pages/ProtocolSettings";
 import FamilyGuidanceManualPage from "./pages/SurvivorManual";
 import FamilyShieldAccessPage from "./pages/EmergencyAccess";
+import TimeCapsulePage from "./pages/TimeCapsule";
+import TimeCapsuleViewPage from "./pages/TimeCapsuleView";
 
 const queryClient = new QueryClient();
 
@@ -116,9 +118,17 @@ const App = () => (
                 <FamilyGuidanceManualPage />
               </ProtectedRoute>
             } />
+            <Route path="/time-capsule" element={
+              <ProtectedRoute>
+                <TimeCapsulePage />
+              </ProtectedRoute>
+            } />
 
             {/* Emergency access (public route with token verification) */}
             <Route path="/emergency-access/:token" element={<FamilyShieldAccessPage />} />
+            
+            {/* Time Capsule public viewing (public route with token verification) */}
+            <Route path="/time-capsule-view/:token" element={<TimeCapsuleViewPage />} />
 
             {/* 404 route */}
             <Route path="*" element={<NotFound />} />

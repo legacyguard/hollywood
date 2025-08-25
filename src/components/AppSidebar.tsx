@@ -20,6 +20,7 @@ const navigationItems = [
   { title: "AI Organizer", url: "/intelligent-organizer", icon: "brain" },
   { title: "My Family", url: "/family", icon: "users" },
   { title: "Legacy", url: "/legacy", icon: "legacy" },
+  { title: "Time Capsule", url: "/time-capsule", icon: "heart" },
   { title: "Timeline", url: "/timeline", icon: "timeline" },
   { title: "Wishes", url: "/wishes", icon: "wishes" },
   { title: "Protection", url: "/protection", icon: "protection" },
