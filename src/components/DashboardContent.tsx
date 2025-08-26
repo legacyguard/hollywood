@@ -12,6 +12,8 @@ import { EncryptionSetup } from "@/components/encryption/EncryptionSetup";
 import { MetricsGrid } from "@/components/enhanced/MetricCard";
 import { ActivityFeed, useMockActivities } from "@/components/enhanced/ActivityFeed";
 import { RadialProgress } from "@/components/enhanced/RadialProgress";
+import { GardenSeed } from "@/components/animations/GardenSeed";
+import { useGardenProgress } from "@/hooks/useGardenProgress";
 import { useState } from 'react';
 
 export function DashboardContent() {
@@ -19,6 +21,7 @@ export function DashboardContent() {
   const navigate = useNavigate();
   const { needsSetup, isLoading } = useEncryptionReady();
   const mockActivities = useMockActivities();
+  const { progress: gardenProgress, loading: gardenLoading } = useGardenProgress();
 
   // Mock metrics data - in production, this would come from your API
   const [metrics] = useState([
@@ -118,16 +121,35 @@ export function DashboardContent() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - Path & Overview */}
           <div className="lg:col-span-2 space-y-8">
-            {/* 1. Section: Path of Serenity with Radial Progress */}
+            {/* 1. Section: Path of Serenity with Garden Progress */}
             <div>
               <PathOfSerenity className="w-full" />
-            <div className="mt-6 flex justify-center">
-              <RadialProgress
-                value={75}
-                label="Overall Progress"
-                size="lg"
-                  color="primary"
-                />
+              <div className="mt-6 flex justify-center">
+                {!gardenLoading && gardenProgress ? (
+                  <div className="flex flex-col items-center space-y-4">
+                    <GardenSeed
+                      progress={gardenProgress.overallProgress}
+                      size="large"
+                      showPulse={true}
+                      onSeedClick={() => navigate('/legacy')}
+                    />
+                    <div className="text-center space-y-1">
+                      <p className="text-sm font-medium text-foreground">
+                        Your Garden Progress: {gardenProgress.overallProgress}%
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {gardenProgress.documentsCount} documents • {gardenProgress.guardiansCount} guardians • {gardenProgress.completedMilestones} milestones
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <RadialProgress
+                    value={75}
+                    label="Loading Garden Progress"
+                    size="lg"
+                    color="primary"
+                  />
+                )}
               </div>
             </div>
 

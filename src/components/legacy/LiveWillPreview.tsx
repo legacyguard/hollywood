@@ -42,7 +42,7 @@ export const LiveWillPreview: React.FC<LiveWillPreviewProps> = ({
         {/* Header */}
         <div className="text-center mb-8 border-b-2 border-gray-300 pb-6">
           <h1 className="text-2xl font-bold mb-2">LAST WILL AND TESTAMENT</h1>
-          <p className="text-lg">(Posledná vôľa a závet)</p>
+          <p className="text-lg">(Last Will and Testament)</p>
           <div className="mt-4">
             <Badge variant={willType === 'holographic' ? 'default' : 'secondary'}>
               {willType === 'holographic' ? 'Holographic Will' : 'Witnessed Will'}

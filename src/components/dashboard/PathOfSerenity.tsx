@@ -5,6 +5,9 @@ import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon-library';
 import { useAuth } from '@clerk/clerk-react';
 import { useSupabaseWithClerk } from '@/integrations/supabase/client';
+import { GardenSeed } from '@/components/animations/GardenSeed';
+import { useGardenProgress } from '@/hooks/useGardenProgress';
+import { useFirefly } from '@/contexts/FireflyContext';
 import type {
   SerenityMilestone,
   FiveMinuteChallenge} from '@/lib/path-of-serenity';
@@ -46,6 +49,10 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({ className = '' }
   });
   // Track previous milestones to prevent duplicate celebrations
   const [previousMilestones, setPreviousMilestones] = useState<SerenityMilestone[]>(SERENITY_MILESTONES);
+  
+  // Garden progress integration
+  const { progress: gardenProgress } = useGardenProgress();
+  const { celebrate, guideToElement } = useFirefly();
 
   const { userId } = useAuth();
   const navigate = useNavigate();
@@ -102,7 +109,7 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({ className = '' }
           // Additional quiet notifications for multiple milestones
           if (result.newlyUnlocked.length > 1) {
             setTimeout(() => {
-              toast.success(`🌟 You unlocked ${result.newlyUnlocked.length} milestones on your Path of Peace!`);
+              toast.success(`🌟 You unlocked ${result.newlyUnlocked.length} milestones in your Garden of Legacy!`);
             }, 1000);
           }
         }
@@ -129,7 +136,8 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({ className = '' }
   const handleChallengeClick = () => {
     if (nextChallenge) {
       navigate(nextChallenge.navigationTarget);
-      toast.success('Spustili ste novú výzvu! Sofia vás povedie krok za krokom.');
+      toast.success('Challenge started! Sofia will guide you step by step.');
+      celebrate('challenge_started', { challenge: nextChallenge.title });
     }
   };
 
@@ -143,7 +151,7 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({ className = '' }
         <div className="flex items-center justify-center h-64">
           <div className="flex items-center gap-3">
             <Icon name="loader" className="w-6 h-6 animate-spin text-primary" />
-            <span className="text-lg text-muted-foreground">Načítavanie vašej Cesty Pokoja...</span>
+            <span className="text-lg text-muted-foreground">Growing your Garden of Legacy...</span>
           </div>
         </div>
       </Card>
@@ -154,63 +162,145 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({ className = '' }
 
   return (
     <div className={`space-y-6 ${className}`}>
-      {/* Header with Serenity Message */}
-      <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 border-blue-200/50">
+      {/* Header with Garden Message */}
+      <Card className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 border-green-200/50">
         <CardContent className="p-6">
           <div className="text-center space-y-3">
             <div className="flex items-center justify-center gap-2">
-              <Icon name="sparkles" className="w-6 h-6 text-blue-600" />
-              <h2 className="text-2xl font-bold text-blue-900 dark:text-blue-100">
-                Cesta Pokoja
+              <Icon name="sparkles" className="w-6 h-6 text-green-600" />
+              <h2 className="text-2xl font-bold text-green-900 dark:text-green-100">
+                Garden of Your Legacy
               </h2>
-              <Icon name="sparkles" className="w-6 h-6 text-blue-600" />
+              <Icon name="sparkles" className="w-6 h-6 text-green-600" />
             </div>
-            <p className="text-blue-700 dark:text-blue-200 text-lg leading-relaxed max-w-2xl mx-auto">
+            <p className="text-green-700 dark:text-green-200 text-lg leading-relaxed max-w-2xl mx-auto">
               {serenityMessage}
             </p>
             {unlockedCount > 0 && (
-              <div className="flex items-center justify-center gap-2 text-sm text-blue-600">
-                <Icon name="check-circle" className="w-4 h-4" />
-                <span>Odomknuté míľniky: {unlockedCount} z {milestones.length}</span>
+              <div className="flex items-center justify-center gap-2 text-sm text-green-600">
+                <Icon name="checkCircle" className="w-4 h-4" />
+                <span>Milestones achieved: {unlockedCount} of {milestones.length}</span>
+              </div>
+            )}
+            {gardenProgress && (
+              <div className="flex justify-center mt-4">
+                <GardenSeed
+                  progress={gardenProgress.overallProgress}
+                  size="medium"
+                  showPulse={true}
+                  onSeedClick={() => guideToElement('garden-tree')}
+                />
               </div>
             )}
           </div>
         </CardContent>
       </Card>
 
-      {/* The Sacred Path Visualization */}
-      <Card className="overflow-hidden">
+      {/* The Growing Garden Tree Visualization */}
+      <Card className="overflow-hidden" id="garden-tree">
         <CardContent className="p-0">
-          <div className="relative h-80 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-blue-950 dark:to-indigo-900">
-            {/* Background Pattern */}
-            <div className="absolute inset-0 opacity-20">
-              <svg width="100%" height="100%" className="w-full h-full">
-                <defs>
-                  <pattern id="serenityPattern" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
-                    <circle cx="20" cy="20" r="1" fill="currentColor" className="text-blue-300" />
-                  </pattern>
-                </defs>
-                <rect width="100%" height="100%" fill="url(#serenityPattern)" />
-              </svg>
+          <div className="relative h-96 bg-gradient-to-br from-green-50 via-emerald-50 to-teal-100 dark:from-green-950 dark:via-emerald-950 dark:to-teal-900">
+            {/* Ground and sky background */}
+            <div className="absolute inset-0">
+              <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-amber-100 to-transparent dark:from-amber-900/30 dark:to-transparent"></div>
+              <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-blue-50 to-transparent dark:from-blue-950/30 dark:to-transparent"></div>
             </div>
 
-            {/* Path Line */}
+            {/* Floating particles/fireflies */}
+            <div className="absolute inset-0 opacity-30">
+              {[...Array(8)].map((_, i) => (
+                <motion.div
+                  key={i}
+                  className="absolute w-2 h-2 bg-yellow-300 rounded-full"
+                  style={{
+                    left: `${20 + Math.random() * 60}%`,
+                    top: `${10 + Math.random() * 40}%`,
+                  }}
+                  animate={{
+                    y: [-10, 10, -10],
+                    x: [-5, 5, -5],
+                    opacity: [0.3, 0.8, 0.3],
+                    scale: [0.8, 1.2, 0.8],
+                  }}
+                  transition={{
+                    duration: 3 + Math.random() * 2,
+                    repeat: Infinity,
+                    delay: Math.random() * 2,
+                    ease: "easeInOut",
+                  }}
+                />
+              ))}
+            </div>
+
+            {/* Main Tree Structure */}
             <svg className="absolute inset-0 w-full h-full" style={{ zIndex: 1 }}>
               <defs>
-                <linearGradient id="pathGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#93c5fd" />
-                  <stop offset="50%" stopColor="#3b82f6" />
-                  <stop offset="100%" stopColor="#6366f1" />
+                <linearGradient id="trunkGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#92400e" />
+                  <stop offset="50%" stopColor="#a16207" />
+                  <stop offset="100%" stopColor="#92400e" />
                 </linearGradient>
+                <radialGradient id="leavesGradient">
+                  <stop offset="0%" stopColor="#22c55e" />
+                  <stop offset="70%" stopColor="#16a34a" />
+                  <stop offset="100%" stopColor="#15803d" />
+                </radialGradient>
               </defs>
-              <path
-                d="M 60 340 Q 150 280 200 240 T 300 200 T 400 160 T 500 120 T 600 100"
-                fill="none"
-                stroke="url(#pathGradient)"
-                strokeWidth="3"
-                strokeDasharray="5,5"
-                className="opacity-60"
+              
+              {/* Tree trunk */}
+              <motion.rect
+                x="48%"
+                y="70%"
+                width="4%"
+                height={`${Math.min(30, 10 + (unlockedCount * 4))}%`}
+                fill="url(#trunkGradient)"
+                rx="2"
+                initial={{ height: '10%' }}
+                animate={{ height: `${Math.min(30, 10 + (unlockedCount * 4))}%` }}
+                transition={{ duration: 2, ease: "easeOut" }}
               />
+
+              {/* Tree branches - grow with progress */}
+              {unlockedCount >= 2 && (
+                <>
+                  <motion.path
+                    d="M 50% 75% Q 40% 65% 35% 55%"
+                    fill="none"
+                    stroke="url(#trunkGradient)"
+                    strokeWidth="6"
+                    initial={{ pathLength: 0 }}
+                    animate={{ pathLength: 1 }}
+                    transition={{ duration: 1.5, delay: 0.5 }}
+                  />
+                  <motion.path
+                    d="M 50% 75% Q 60% 65% 65% 55%"
+                    fill="none"
+                    stroke="url(#trunkGradient)"
+                    strokeWidth="6"
+                    initial={{ pathLength: 0 }}
+                    animate={{ pathLength: 1 }}
+                    transition={{ duration: 1.5, delay: 0.7 }}
+                  />
+                </>
+              )}
+
+              {/* Tree canopy - grows with milestones */}
+              {unlockedCount >= 1 && (
+                <motion.ellipse
+                  cx="50%"
+                  cy="50%"
+                  rx={`${Math.min(25, 8 + (unlockedCount * 2))}%`}
+                  ry={`${Math.min(20, 6 + (unlockedCount * 1.5))}%`}
+                  fill="url(#leavesGradient)"
+                  opacity="0.8"
+                  initial={{ rx: "5%", ry: "5%" }}
+                  animate={{ 
+                    rx: `${Math.min(25, 8 + (unlockedCount * 2))}%`,
+                    ry: `${Math.min(20, 6 + (unlockedCount * 1.5))}%`
+                  }}
+                  transition={{ duration: 2, ease: "easeOut" }}
+                />
+              )}
             </svg>
 
             {/* Milestone Points */}
@@ -257,7 +347,7 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({ className = '' }
                       />
                     </>
                   ) : (
-                    <Icon name="lock" className="w-7 h-7 text-slate-500" />
+                    <Icon name="locked" className="w-7 h-7 text-slate-500" />
                   )}
                 </div>
 
@@ -290,7 +380,7 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({ className = '' }
               <div className="flex-grow space-y-3">
                 <div>
                   <h3 className="text-lg font-semibold text-amber-900 dark:text-amber-100">
-                    Vaša ďalšia {nextChallenge.estimatedTime}-minútová cesta k pokoju
+                    Your next {nextChallenge.estimatedTime}-minute journey to peace
                   </h3>
                   <h4 className="text-xl font-bold text-amber-800 dark:text-amber-200 mt-1">
                     {nextChallenge.title}
@@ -304,12 +394,12 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({ className = '' }
                     onClick={handleChallengeClick}
                     className="bg-amber-500 hover:bg-amber-600 text-white font-medium px-6 py-2 rounded-lg shadow-md"
                   >
-                    <Icon name="play" className="w-4 h-4 mr-2" />
-                    Začať {nextChallenge.estimatedTime}-minútovú výzvu
+                    <Icon name="arrowRight" className="w-4 h-4 mr-2" />
+                    Start {nextChallenge.estimatedTime}-minute challenge
                   </Button>
                   <div className="text-xs text-amber-600 dark:text-amber-300 flex items-center gap-1">
-                    <Icon name="zap" className="w-3 h-3" />
-                    Sofia vás povedie krok za krokom
+                    <Icon name="sparkles" className="w-3 h-3" />
+                    Sofia will guide you step by step
                   </div>
                 </div>
               </div>
@@ -344,7 +434,7 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({ className = '' }
                   }
                 `}>
                   <Icon
-                    name={selectedMilestone.isUnlocked ? selectedMilestone.icon as never : 'lock'}
+                    name={selectedMilestone.isUnlocked ? selectedMilestone.icon as never : 'locked'}
                     className={`w-8 h-8 ${selectedMilestone.isUnlocked ? 'text-white' : 'text-slate-500'}`}
                   />
                 </div>
@@ -358,7 +448,7 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({ className = '' }
                       ? 'bg-green-100 text-green-800'
                       : 'bg-slate-100 text-slate-600'
                   }`}>
-                    {selectedMilestone.isUnlocked ? 'Odomknuté' : 'Čaká na odomknutie'}
+                    {selectedMilestone.isUnlocked ? 'Unlocked' : 'Awaiting unlock'}
                   </div>
                 </div>
 
@@ -385,7 +475,7 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({ className = '' }
                   variant="outline"
                   className="mt-4"
                 >
-                  Zavrieť
+                  Close
                 </Button>
               </div>
             </motion.div>

@@ -403,20 +403,27 @@ export function getNextChallenge(
 }
 
 /**
+ * Get all serenity milestones
+ */
+export function getSerenityMilestones(): SerenityMilestone[] {
+  return SERENITY_MILESTONES;
+}
+
+/**
  * Generate inspirational message based on user's progress
  */
 export function generateSerenityMessage(unlockedMilestones: SerenityMilestone[]): string {
   const unlockedCount = unlockedMilestones.filter(m => m.isUnlocked).length;
 
   if (unlockedCount === 0) {
-    return "Vítajte na Ceste Pokoja. Každý krok, ktorý urobíte, prinesie vašej rodine väčšiu istotu a pokoj.";
+    return "Welcome to your Path of Serenity. Every step you take will bring your family greater certainty and peace.";
   } else if (unlockedCount === 1) {
-    return "Výborne! Urobili ste prvý krok. Vaša rodina už má o niečo väčšiu istotu vďaka vám.";
+    return "Excellent! You've taken your first step. Your family already has greater certainty thanks to you.";
   } else if (unlockedCount <= 3) {
-    return `Krásne! Odomkli ste už ${unlockedCount} míľniky pokoja. Vaša rodina sa môže cítiť stále istejšie.`;
+    return `Beautiful! You've unlocked ${unlockedCount} milestones of peace. Your family can feel increasingly secure.`;
   } else if (unlockedCount <= 5) {
-    return `Fantastické! S ${unlockedCount} míľnikmi ste vytvorili skutočne solídny základ istoty pre svoju rodinu.`;
+    return `Fantastic! With ${unlockedCount} milestones, you've created a truly solid foundation of security for your family.`;
   } else {
-    return `Úžasné! ${unlockedCount} míľnikov pokoja - ste skutočným majstrom zabezpečovania pokoja a istoty.`;
+    return `Amazing! ${unlockedCount} milestones of peace - you are a true master of securing peace and certainty.`;
   }
 }

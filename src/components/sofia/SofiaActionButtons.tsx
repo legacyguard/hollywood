@@ -95,8 +95,8 @@ export const SofiaActionButtons: React.FC<SofiaActionButtonsProps> = ({
                     ${getCostBadgeColor(action.cost)}
                   `}>
                     <span className="text-xs">{getCostIcon(action.cost)}</span>
-                    {action.cost === 'free' && 'Zadarmo'}
-                    {action.cost === 'low_cost' && 'Rýchle'}
+                    {action.cost === 'free' && 'Free'}
+                    {action.cost === 'low_cost' && 'Quick'}
                     {action.cost === 'premium' && 'Premium'}
                   </span>
                 </div>
@@ -133,7 +133,7 @@ export const SofiaActionButtons: React.FC<SofiaActionButtonsProps> = ({
         >
           <Icon name="info" className="w-3 h-3 text-muted-foreground" />
           <span className="text-xs text-muted-foreground">
-            Premium funkcie vyžadujú aktívnu predplatnú
+            Premium features require an active subscription
           </span>
         </motion.div>
       )}

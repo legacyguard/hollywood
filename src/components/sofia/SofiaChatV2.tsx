@@ -294,7 +294,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
         const cancelMessage: SofiaMessage = {
           id: crypto.randomUUID(),
           role: 'assistant',
-          content: 'Rozumiem, zrušené. Čo môžem urobiť ešte?',
+          content: 'Understood, cancelled. What else can I help you with?',
           timestamp: new Date(),
           actions: getContextualActions(context),
           responseType: 'information',

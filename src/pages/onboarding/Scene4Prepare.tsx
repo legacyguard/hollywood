@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FadeIn } from "@/components/motion/FadeIn";
+import { BoxTransformation } from "@/components/animations/BoxTransformation";
 
 interface Scene4PrepareProps {
   onBack: () => void;
@@ -12,39 +13,65 @@ interface Scene4PrepareProps {
 export default function Scene4Prepare({ onBack, onComplete }: Scene4PrepareProps) {
   const [progress, setProgress] = useState(0);
   const [showFirefly, setShowFirefly] = useState(true);
+  const [showBoxTransformation, setShowBoxTransformation] = useState(true);
+  const [transformationComplete, setTransformationComplete] = useState(false);
 
   useEffect(() => {
-    // Progress animation
-    const progressTimer = setInterval(() => {
-      setProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(progressTimer);
-          return 100;
-        }
-        return prev + 2;
-      });
-    }, 32); // ~60fps
+    // Show box transformation first, then proceed with firefly animation
+    const transformationTimer = setTimeout(() => {
+      setShowBoxTransformation(false);
+      setTransformationComplete(true);
+      
+      // Start progress animation after transformation
+      const progressTimer = setInterval(() => {
+        setProgress(prev => {
+          if (prev >= 100) {
+            clearInterval(progressTimer);
+            return 100;
+          }
+          return prev + 2;
+        });
+      }, 32); // ~60fps
 
-    // Complete onboarding after animation
-    const completeTimer = setTimeout(() => {
-      setShowFirefly(false);
-      setTimeout(() => {
-        if (onComplete) {
-          onComplete();
-        }
-      }, 500);
-    }, 3000);
+      // Complete onboarding after animation
+      const completeTimer = setTimeout(() => {
+        setShowFirefly(false);
+        setTimeout(() => {
+          if (onComplete) {
+            onComplete();
+          }
+        }, 500);
+      }, 3000);
+
+      return () => {
+        clearInterval(progressTimer);
+        clearTimeout(completeTimer);
+      };
+    }, 4000); // Box transformation duration
 
     return () => {
-      clearInterval(progressTimer);
-      clearTimeout(completeTimer);
+      clearTimeout(transformationTimer);
     };
   }, [onComplete]);
 
+  const handleTransformationComplete = () => {
+    setTransformationComplete(true);
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-      <FadeIn duration={0.8}>
-        <Card className="w-full max-w-2xl text-center border-primary/20 shadow-xl bg-background/95 backdrop-blur">
+      {/* Box Transformation Animation */}
+      <BoxTransformation
+        isVisible={showBoxTransformation}
+        onComplete={handleTransformationComplete}
+        seedDestination={{ x: 0, y: -200 }}
+        duration={4000}
+      />
+
+      <AnimatePresence>
+        {transformationComplete && (
+          <FadeIn duration={0.8}>
+            <Card className="w-full max-w-2xl text-center border-primary/20 shadow-xl bg-background/95 backdrop-blur">
           <CardHeader>
             <motion.div
               initial={{ opacity: 0, y: -20 }}
@@ -282,6 +309,8 @@ export default function Scene4Prepare({ onBack, onComplete }: Scene4PrepareProps
           </CardContent>
         </Card>
       </FadeIn>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

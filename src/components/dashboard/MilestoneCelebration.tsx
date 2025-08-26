@@ -3,6 +3,7 @@ import { toast } from 'sonner';
 import { Icon } from '@/components/ui/icon-library';
 import { getAdaptiveMilestoneText, type SerenityMilestone } from '@/lib/path-of-serenity';
 import { UserPreferences, defaultUserPreferences } from '@/types/user-preferences';
+import { useFireflyCelebration } from '@/contexts/FireflyContext';
 
 // Legacy component interface for backward compatibility
 // Now implemented using toast system - no longer renders UI
@@ -30,6 +31,12 @@ export function showMilestoneRecognition(milestone: SerenityMilestone, userId?: 
       }
     }
   }
+
+  // Trigger firefly celebration
+  // Note: This is called from outside React component, so we'll use a global event
+  window.dispatchEvent(new CustomEvent('milestoneUnlocked', { 
+    detail: { milestone, userId } 
+  }));
 
   // Get adaptive text for the milestone
   const adaptiveCompletedDescription = getAdaptiveMilestoneText(

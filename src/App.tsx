@@ -11,6 +11,8 @@ import { ErrorBoundary } from "./components/ErrorBoundary";
 import { DocumentFilterProvider } from "./contexts/DocumentFilterContext";
 import { LocalizationProvider } from "./contexts/LocalizationContext";
 import SofiaContextProvider from "./components/sofia/SofiaContextProvider";
+import { FireflyProvider } from "./contexts/FireflyContext";
+import SofiaFirefly from "./components/animations/SofiaFirefly";
 // import { EncryptionProvider } from "@/hooks/encryption/useEncryption";
 // import { PasswordPrompt } from "@/components/encryption/PasswordPrompt";
 import Index from '@/pages/Index';
@@ -47,6 +49,7 @@ const App = () => (
               <BrowserRouter future={routerFutureConfig}>
                 <DocumentFilterProvider>
                   <SofiaContextProvider>
+                    <FireflyProvider>
                     {/* <PasswordPrompt /> */}
       <Routes>
         {/* Public routes */}
@@ -133,6 +136,10 @@ const App = () => (
             {/* 404 route */}
             <Route path="*" element={<NotFound />} />
                     </Routes>
+                      
+                      {/* Global Sofia Firefly */}
+                      <SofiaFirefly />
+                    </FireflyProvider>
                   </SofiaContextProvider>
                 </DocumentFilterProvider>
               </BrowserRouter>

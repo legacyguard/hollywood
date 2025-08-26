@@ -68,8 +68,8 @@ export class OCRService {
 
   constructor() {
     // These will be set from environment variables
-    this.projectId = process.env.NEXT_PUBLIC_GOOGLE_CLOUD_PROJECT_ID || '';
-    this.apiKey = process.env.NEXT_PUBLIC_GOOGLE_CLOUD_API_KEY || '';
+    this.projectId = (import.meta as any).env.VITE_GOOGLE_CLOUD_PROJECT_ID || '';
+    this.apiKey = (import.meta as any).env.VITE_GOOGLE_CLOUD_API_KEY || '';
     this.apiUrl = `https://vision.googleapis.com/v1/images:annotate?key=${this.apiKey}`;
   }
 
