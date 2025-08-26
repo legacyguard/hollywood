@@ -3,6 +3,25 @@
 
 export type CommunicationStyle = 'empathetic' | 'pragmatic' | 'default';
 
+// Strong typing for text keys to prevent typos at compile time
+export type TextKey =
+  | 'sofia_welcome'
+  | 'sofia_greeting_returning_user'
+  | 'milestone_time_capsule_unlocked'
+  | 'milestone_first_document_uploaded'
+  | 'milestone_guardian_assigned'
+  | 'milestone_will_completed'
+  | 'progress_pillar_unlocked'
+  | 'document_expiry_reminder'
+  | 'document_upload_success'
+  | 'backup_completed'
+  | 'upload_error'
+  | 'system_maintenance'
+  | 'next_step_suggestions'
+  | 'security_explanation'
+  | 'time_capsule_creation_prompt'
+  | 'time_capsule_recording_complete';
+
 export interface TextVariant {
   empathetic: string;
   pragmatic: string;
@@ -131,7 +150,7 @@ export class TextManager {
    */
   getText(key: string, style: CommunicationStyle = 'default', userId?: string): string {
     const textConfig = texts[key];
-    
+
     if (!textConfig) {
       console.warn(`Text key "${key}" not found in text manager`);
       return `[Missing text: ${key}]`;
@@ -187,7 +206,7 @@ export class TextManager {
     const currentScores = this.userStyleScores.get(userId) || { empathetic: 0, pragmatic: 0 };
     currentScores.empathetic += emphatheticScore;
     currentScores.pragmatic += pragmaticScore;
-    
+
     this.userStyleScores.set(userId, currentScores);
   }
 
@@ -224,6 +243,16 @@ export class TextManager {
       this.userStyleScores.set(userId, { empathetic: 10, pragmatic: 0 });
     } else if (style === 'pragmatic') {
       this.userStyleScores.set(userId, { empathetic: 0, pragmatic: 10 });
+    }
+
+    // Persist the style scores for consistency across sessions
+    try {
+      localStorage.setItem(
+        `style_scores_${userId}`,
+        JSON.stringify(this.userStyleScores.get(userId))
+      );
+    } catch (error) {
+      console.error('Failed to persist style scores:', error);
     }
   }
 

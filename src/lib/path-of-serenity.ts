@@ -1,8 +1,7 @@
 // Path of Serenity - Milestone System
 // Tracks user's journey toward family security and peace of mind
 
-import { textManager } from './text-manager';
-import type { CommunicationStyle } from './text-manager';
+import { textManager, type CommunicationStyle, type TextKey } from './text-manager';
 
 export interface SerenityMilestone {
   id: string;
@@ -29,11 +28,11 @@ export interface SerenityMilestone {
   icon: string;
   // Text manager keys for adaptive messaging
   textKeys?: {
-    name?: string;
-    description?: string;
-    completedDescription?: string;
-    rewardTitle?: string;
-    rewardDescription?: string;
+    name?: TextKey;
+    description?: TextKey;
+    completedDescription?: TextKey;
+    rewardTitle?: TextKey;
+    rewardDescription?: TextKey;
   };
 }
 
@@ -260,19 +259,46 @@ export interface MilestoneCalculationResult {
  * Get adaptive milestone text based on user's communication style
  */
 export function getAdaptiveMilestoneText(
-  milestone: SerenityMilestone, 
+  milestone: SerenityMilestone,
   field: 'name' | 'description' | 'completedDescription',
   userId?: string,
   style?: CommunicationStyle
 ): string {
-  // Check if milestone has text keys for adaptive messaging
   const textKey = milestone.textKeys?.[field];
   if (textKey && userId) {
-    return textManager.getText(textKey, style || 'default', userId);
+    try {
+      return textManager.getText(textKey, style ?? 'default', userId);
+    } catch (e) {
+      console.warn('Adaptive text fetch failed, falling back:', { field, textKey, e });
+    }
   }
-  
-  // Fallback to default milestone text
   return milestone[field];
+}
+
+/**
+ * Get adaptive reward text based on user's communication style
+ */
+export function getAdaptiveRewardText(
+  milestone: SerenityMilestone,
+  field: 'title' | 'description',
+  userId?: string,
+  style?: CommunicationStyle
+): string {
+  const rewards = milestone.rewards;
+  if (!rewards) return '';
+
+  const keyMap = { title: 'rewardTitle', description: 'rewardDescription' } as const;
+  const textKey = milestone.textKeys?.[keyMap[field]];
+
+  if (textKey && userId) {
+    try {
+      return textManager.getText(textKey, style ?? 'default', userId);
+    } catch (e) {
+      console.warn('Adaptive reward text fetch failed, falling back:', { field, textKey, e });
+    }
+  }
+
+  return rewards[field];
 }
 
 /**
