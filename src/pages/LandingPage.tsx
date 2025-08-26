@@ -1,18 +1,25 @@
-import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useRef, useCallback } from 'react';
+import { motion, useMotionValue, useTransform } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Icon } from '@/components/ui/icon-library';
 import { LegacyGuardLogo } from '@/components/LegacyGuardLogo';
-import { GardenSeed } from '@/components/animations/GardenSeed';
-import { SofiaFirefly } from '@/components/animations/SofiaFirefly';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@clerk/clerk-react';
 
 export function LandingPage() {
   const navigate = useNavigate();
   const { isSignedIn } = useAuth();
+  const [isFireflyOnButton, setIsFireflyOnButton] = useState(false);
+  const heroRef = useRef<HTMLDivElement>(null);
+  const ctaButtonRef = useRef<HTMLButtonElement>(null);
+
+  // Mouse tracking for firefly
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const fireflyX = useTransform(mouseX, (value) => value - 12); // Offset to center firefly
+  const fireflyY = useTransform(mouseY, (value) => value - 12);
 
   // Redirect authenticated users to dashboard
   React.useEffect(() => {
@@ -20,6 +27,14 @@ export function LandingPage() {
       navigate('/dashboard');
     }
   }, [isSignedIn, navigate]);
+
+  const handleMouseMove = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
+    if (heroRef.current) {
+      const rect = heroRef.current.getBoundingClientRect();
+      mouseX.set(event.clientX - rect.left);
+      mouseY.set(event.clientY - rect.top);
+    }
+  }, [mouseX, mouseY]);
 
   const handleGetStarted = () => {
     navigate('/sign-up');
@@ -29,37 +44,51 @@ export function LandingPage() {
     navigate('/sign-in');
   };
 
+  const handleCTAHover = () => {
+    setIsFireflyOnButton(true);
+  };
+
+  const handleCTALeave = () => {
+    setIsFireflyOnButton(false);
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 dark:from-green-950 dark:via-emerald-950 dark:to-teal-950">
-      {/* Navigation Header */}
-      <header className="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg border-b border-green-200/50 dark:border-green-800/50">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <motion.div 
-              className="flex items-center gap-3"
+    <div className='min-h-screen bg-slate-900'>
+      {/* Navigation Header - Semi-transparent overlay */}
+      <header className='absolute top-0 left-0 right-0 z-50 bg-slate-900/30 backdrop-blur-sm border-b border-slate-700/30'>
+        <div className='container mx-auto px-4 py-4'>
+          <div className='flex items-center justify-between'>
+            <motion.div
+              className='flex items-center gap-3'
               whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.2 }}
             >
               <LegacyGuardLogo />
-              <span className="text-2xl font-bold text-green-900 dark:text-green-100 font-heading">
+              <span className='text-2xl font-bold text-white font-heading'>
                 LegacyGuard
               </span>
             </motion.div>
 
-            <div className="flex items-center gap-4">
-              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                <Button 
-                  variant="ghost" 
+            <div className='flex items-center gap-4'>
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <Button
+                  variant='ghost'
                   onClick={handleSignIn}
-                  className="text-green-700 hover:text-green-900 hover:bg-green-100 dark:text-green-300 dark:hover:text-green-100"
+                  className='text-slate-200 hover:text-white hover:bg-slate-800/50 border-0'
                 >
                   Sign In
                 </Button>
               </motion.div>
-              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                <Button 
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <Button
                   onClick={handleGetStarted}
-                  className="bg-green-600 hover:bg-green-700 text-white"
+                  className='bg-slate-700/70 hover:bg-slate-600 text-white border-slate-600'
                 >
                   Get Started Free
                 </Button>
@@ -69,90 +98,565 @@ export function LandingPage() {
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="relative py-20 lg:py-32 overflow-hidden">
-        <div className="container mx-auto px-4 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-          >
-            <h1 className="text-5xl lg:text-7xl font-bold text-green-900 dark:text-green-100 mb-6 leading-tight">
-              Your Legacy, <span className="text-green-600">Secured</span>.
-              <br />
-              Your Family, <span className="text-emerald-600">Protected</span>.
-            </h1>
-            
-            <motion.p 
-              className="text-xl lg:text-2xl text-green-700 dark:text-green-200 mb-12 max-w-3xl mx-auto leading-relaxed"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-            >
-              The most intuitive and caring way to organize your life's most important information 
-              and ensure your family's peace of mind.
-            </motion.p>
+      {/* Hero Section - Full Screen Night Scene */}
+      <section
+        ref={heroRef}
+        className='relative min-h-screen flex items-center justify-center overflow-hidden cursor-none'
+        onMouseMove={handleMouseMove}
+        style={{
+          background: `
+            radial-gradient(circle at 20% 80%, rgba(6, 182, 212, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 80% 20%, rgba(139, 69, 19, 0.1) 0%, transparent 50%),
+            linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%)
+          `
+        }}
+      >
+        {/* Starry Background */}
+        <div className='absolute inset-0'>
+          {/* Stars */}
+          {[...Array(50)].map((_, i) => {
+            const size = Math.random() * 2 + 1;
+            const opacity = Math.random() * 0.8 + 0.2;
+            const x = Math.random() * 100;
+            const y = Math.random() * 100;
+            const animationDelay = Math.random() * 3;
 
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-            >
-              <Button 
-                size="lg"
-                onClick={handleGetStarted}
-                className="bg-green-600 hover:bg-green-700 text-white text-lg px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
-              >
-                <Icon name="sparkles" className="w-5 h-5 mr-2" />
-                Start Your Journey for Free
-              </Button>
-            </motion.div>
+            return (
+              <motion.div
+                key={i}
+                className='absolute bg-white rounded-full'
+                style={{
+                  width: `${size}px`,
+                  height: `${size}px`,
+                  left: `${x}%`,
+                  top: `${y}%`,
+                  opacity: opacity,
+                }}
+                animate={{
+                  opacity: [opacity, opacity * 0.3, opacity],
+                  scale: [1, 1.2, 1],
+                }}
+                transition={{
+                  duration: 2 + Math.random() * 2,
+                  repeat: Infinity,
+                  delay: animationDelay,
+                  ease: "easeInOut"
+                }}
+              />
+            );
+          })}
+        </div>
+
+        {/* Mountain Silhouettes */}
+        <div className='absolute bottom-0 left-0 right-0'>
+          <svg className='w-full h-64' viewBox='0 0 1200 256' preserveAspectRatio='none'>
+            <path
+              d='M0,256 L0,128 L200,180 L400,120 L600,160 L800,100 L1000,140 L1200,80 L1200,256 Z'
+              fill='rgba(15, 23, 42, 0.8)'
+            />
+            <path
+              d='M0,256 L0,160 L150,200 L350,140 L550,180 L750,120 L950,160 L1200,100 L1200,256 Z'
+              fill='rgba(30, 41, 59, 0.6)'
+            />
+            <path
+              d='M0,256 L0,200 L100,220 L300,180 L500,210 L700,160 L900,190 L1200,140 L1200,256 Z'
+              fill='rgba(51, 65, 85, 0.4)'
+            />
+          </svg>
+        </div>
+
+        {/* Interactive Sofia Firefly */}
+        <motion.div
+          className='fixed pointer-events-none z-40'
+          style={{
+            x: fireflyX,
+            y: fireflyY,
+          }}
+        >
+          {/* Firefly Glow */}
+          <motion.div
+            className='absolute inset-0 rounded-full'
+            animate={{
+              boxShadow: [
+                '0 0 20px rgba(255, 255, 0, 0.4)',
+                '0 0 30px rgba(255, 255, 0, 0.6)',
+                '0 0 20px rgba(255, 255, 0, 0.4)',
+              ],
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }}
+          />
+
+          {/* Firefly Body */}
+          <motion.div
+            className='w-6 h-6 bg-gradient-to-br from-yellow-200 to-yellow-400 rounded-full shadow-lg'
+            animate={{
+              scale: [1, 1.1, 1],
+            }}
+            style={{
+              filter: 'brightness(1.3)',
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }}
+          />
+
+          {/* Wings */}
+          <motion.div
+            className='absolute -top-1 -left-1 w-3 h-3'
+            animate={{
+              rotate: [0, 15, -15, 0],
+              opacity: [0.3, 0.7, 0.3],
+            }}
+            transition={{
+              duration: 0.3,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }}
+          >
+            <div className='w-full h-full bg-gradient-to-br from-blue-200/60 to-purple-200/60 rounded-full blur-sm' />
           </motion.div>
 
-          {/* Garden Visualization */}
-          <motion.div 
-            className="mt-16 relative"
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.6 }}
+          <motion.div
+            className='absolute -top-1 -right-1 w-3 h-3'
+            animate={{
+              rotate: [0, -15, 15, 0],
+              opacity: [0.3, 0.7, 0.3],
+            }}
+            transition={{
+              duration: 0.3,
+              repeat: Infinity,
+              ease: 'easeInOut',
+              delay: 0.15,
+            }}
           >
-            <div className="relative max-w-2xl mx-auto">
-              <GardenSeed 
-                progress={75} 
-                size="large" 
-                showPulse={true}
+            <div className='w-full h-full bg-gradient-to-br from-blue-200/60 to-purple-200/60 rounded-full blur-sm' />
+          </motion.div>
+        </motion.div>
+
+        {/* Main Content */}
+        <div className='relative z-30 text-center text-white max-w-4xl mx-auto px-4'>
+          <motion.h1
+            className='text-6xl lg:text-8xl font-bold mb-8 leading-tight'
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, ease: 'easeOut', delay: 0.5 }}
+          >
+            Your Legacy is a Story.
+            <br />
+            <span className='text-yellow-400'>Let's Make it a Legend.</span>
+          </motion.h1>
+
+          <motion.p
+            className='text-xl lg:text-2xl text-slate-300 mb-16 max-w-3xl mx-auto leading-relaxed'
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 1 }}
+          >
+            The most caring and secure way to organize your life's journey and protect your family's future.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 1.5 }}
+          >
+            <Button
+              ref={ctaButtonRef}
+              size='lg'
+              onClick={handleGetStarted}
+              onMouseEnter={handleCTAHover}
+              onMouseLeave={handleCTALeave}
+              className='bg-yellow-500 hover:bg-yellow-400 text-slate-900 text-xl px-12 py-6 rounded-full shadow-2xl hover:shadow-yellow-500/25 transition-all duration-300 font-semibold relative overflow-hidden'
+            >
+              <motion.div
+                className='absolute inset-0 bg-gradient-to-r from-yellow-400 to-yellow-300'
+                initial={{ x: '-100%' }}
+                whileHover={{ x: '0%' }}
+                transition={{ duration: 0.3 }}
               />
-              <SofiaFirefly 
-                isVisible={true}
-                mode="empathetic"
-              />
-            </div>
-            <p className="text-green-600 dark:text-green-400 mt-4 text-lg">
-              Watch your Garden of Legacy grow with every milestone
-            </p>
+              <span className='relative z-10'>Start Your Journey</span>
+
+              {/* Firefly Landing Spot */}
+              {isFireflyOnButton && (
+                <motion.div
+                  className='absolute top-2 right-4 w-2 h-2 bg-yellow-300 rounded-full z-20'
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                />
+              )}
+            </Button>
           </motion.div>
         </div>
       </section>
 
-      {/* How It Works Section */}
-      <section className="py-20 bg-white/60 dark:bg-slate-900/60">
-        <div className="container mx-auto px-4">
-          <motion.div 
-            className="text-center mb-16"
+      {/* Problem & Promise Section */}
+      <section className='py-32 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-700 overflow-hidden'>
+        <div className='container mx-auto px-4'>
+          <div className='grid lg:grid-cols-2 gap-16 items-center max-w-7xl mx-auto'>
+            {/* Chaos Side */}
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 1 }}
+              viewport={{ once: true }}
+              className='relative h-96 flex flex-col justify-center'
+            >
+              <div className='absolute inset-0 overflow-hidden'>
+                {/* Chaotic floating elements */}
+                {[...Array(12)].map((_, i) => {
+                  const icons = ['📄', '🔑', '%', '📋', '💾', '⚠️', '📅', '🔒', '📊', '💳', '📧', '🏠'];
+                  const randomDelay = Math.random() * 2;
+                  const randomDuration = 3 + Math.random() * 2;
+                  const randomX = Math.random() * 300;
+                  const randomY = Math.random() * 300;
+
+                  return (
+                    <motion.div
+                      key={i}
+                      className='absolute text-2xl opacity-60'
+                      initial={{
+                        x: randomX,
+                        y: randomY,
+                        rotate: Math.random() * 360
+                      }}
+                      animate={{
+                        x: [randomX, randomX + 50, randomX - 30, randomX],
+                        y: [randomY, randomY - 40, randomY + 20, randomY],
+                        rotate: [0, 180, 360],
+                        opacity: [0.6, 0.3, 0.6]
+                      }}
+                      transition={{
+                        duration: randomDuration,
+                        repeat: Infinity,
+                        delay: randomDelay,
+                        ease: "easeInOut"
+                      }}
+                    >
+                      {icons[i]}
+                    </motion.div>
+                  );
+                })}
+              </div>
+
+              <div className='relative z-10'>
+                <h3 className='text-4xl font-bold text-red-400 mb-6'>
+                  Life is Complex
+                </h3>
+                <p className='text-xl text-slate-300 leading-relaxed'>
+                  Documents expire. Passwords get lost. Instructions are unclear.
+                  <span className='text-red-300 font-medium'> In a crisis, this chaos becomes a burden for your loved ones.</span>
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Promise Side - Box of Certainty */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 1, delay: 0.3 }}
+              viewport={{ once: true }}
+              className='relative h-96 flex flex-col justify-center items-center'
+            >
+              {/* Box of Certainty */}
+              <motion.div
+                className='relative'
+                whileInView={{ scale: [1, 1.05, 1] }}
+                transition={{ duration: 2, delay: 1.5 }}
+                viewport={{ once: true }}
+              >
+                <div className='w-48 h-32 bg-gradient-to-br from-yellow-400/20 to-yellow-600/10 rounded-lg border-2 border-yellow-400/40 backdrop-blur-sm relative overflow-hidden'>
+                  {/* Gentle glow effect */}
+                  <motion.div
+                    className='absolute inset-0 bg-yellow-400/10 rounded-lg'
+                    animate={{
+                      opacity: [0.1, 0.3, 0.1],
+                    }}
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }}
+                  />
+
+                  {/* Lock symbol */}
+                  <motion.div
+                    className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'
+                    initial={{ opacity: 0, scale: 0 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 2, duration: 0.5 }}
+                    viewport={{ once: true }}
+                  >
+                    <Icon name='lock' className='w-8 h-8 text-yellow-400' />
+                  </motion.div>
+                </div>
+              </motion.div>
+
+              <div className='relative z-10 text-center mt-8'>
+                <h3 className='text-4xl font-bold text-yellow-400 mb-6'>
+                  Clarity is a Gift
+                </h3>
+                <p className='text-xl text-slate-300 leading-relaxed max-w-md'>
+                  We help you transform this chaos into a single, secure, and beautifully organized source of truth.
+                  <span className='text-yellow-300 font-medium'> A gift of peace for your family.</span>
+                </p>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Interactive 3-Act Story Section */}
+      <section className='py-32 bg-slate-800'>
+        <div className='container mx-auto px-4'>
+          <motion.div
+            className='text-center mb-16'
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-4xl lg:text-5xl font-bold text-green-900 dark:text-green-100 mb-6">
+            <h2 className='text-5xl lg:text-6xl font-bold text-white mb-6'>
+              Your Story in 3 Acts
+            </h2>
+            <p className='text-xl text-slate-300 max-w-2xl mx-auto'>
+              Experience how LegacyGuard transforms your journey from chaos to clarity
+            </p>
+          </motion.div>
+
+          {/* Horizontal Scrolling Story Cards */}
+          <div className='flex overflow-x-auto gap-8 pb-8 snap-x snap-mandatory'>
+            {/* Act 1: Organize Your Present */}
+            <motion.div
+              className='flex-none w-96 bg-slate-900/60 rounded-2xl p-8 border border-slate-700 backdrop-blur-sm snap-start'
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
+              whileHover={{ scale: 1.02, y: -5 }}
+            >
+              <div className='relative h-48 mb-6 overflow-hidden rounded-lg bg-gradient-to-br from-blue-500/20 to-purple-500/10'>
+                {/* Document scanning animation */}
+                <motion.div
+                  className='absolute inset-4 bg-white/90 rounded-lg shadow-lg'
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  whileInView={{ scale: 1, opacity: 1 }}
+                  transition={{ delay: 0.5, duration: 0.5 }}
+                  viewport={{ once: true }}
+                >
+                  <div className='p-4 space-y-2'>
+                    <div className='h-3 bg-slate-300 rounded w-3/4'></div>
+                    <div className='h-3 bg-slate-300 rounded w-1/2'></div>
+                    <div className='h-3 bg-slate-300 rounded w-5/6'></div>
+                  </div>
+
+                  {/* AI scanning effect */}
+                  <motion.div
+                    className='absolute inset-0 bg-gradient-to-r from-transparent via-blue-400/30 to-transparent'
+                    initial={{ x: '-100%' }}
+                    animate={{ x: '100%' }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      repeatDelay: 3,
+                      ease: "linear"
+                    }}
+                  />
+                </motion.div>
+              </div>
+
+              <h3 className='text-2xl font-bold text-white mb-4'>
+                Act 1: Organize Your Present
+              </h3>
+              <p className='text-slate-300 leading-relaxed'>
+                Our AI assistant, Sofia, intelligently analyzes your documents, extracts key data, and sets up reminders, so you don't have to.
+              </p>
+            </motion.div>
+
+            {/* Act 2: Protect Your Family */}
+            <motion.div
+              className='flex-none w-96 bg-slate-900/60 rounded-2xl p-8 border border-slate-700 backdrop-blur-sm snap-start'
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              viewport={{ once: true }}
+              whileHover={{ scale: 1.02, y: -5 }}
+            >
+              <div className='relative h-48 mb-6 overflow-hidden rounded-lg bg-gradient-to-br from-emerald-500/20 to-green-500/10'>
+                {/* Family Shield animation */}
+                <div className='absolute inset-0 flex items-center justify-center'>
+                  <motion.div
+                    className='relative'
+                    initial={{ scale: 0 }}
+                    whileInView={{ scale: 1 }}
+                    transition={{ delay: 0.5, duration: 0.8 }}
+                    viewport={{ once: true }}
+                  >
+                    {/* Central family silhouette */}
+                    <div className='w-16 h-16 bg-white/80 rounded-full flex items-center justify-center'>
+                      <Icon name='users' className='w-8 h-8 text-slate-700' />
+                    </div>
+
+                    {/* Guardian icons forming shield */}
+                    {[0, 72, 144, 216, 288].map((angle, i) => {
+                      const radians = (angle * Math.PI) / 180;
+                      const x = Math.cos(radians) * 60;
+                      const y = Math.sin(radians) * 60;
+
+                      return (
+                        <motion.div
+                          key={i}
+                          className='absolute w-8 h-8 bg-emerald-400/80 rounded-full flex items-center justify-center'
+                          style={{
+                            left: `calc(50% + ${x}px - 16px)`,
+                            top: `calc(50% + ${y}px - 16px)`,
+                          }}
+                          initial={{ scale: 0, opacity: 0 }}
+                          whileInView={{ scale: 1, opacity: 1 }}
+                          transition={{ delay: 1 + i * 0.2, duration: 0.3 }}
+                          viewport={{ once: true }}
+                        >
+                          <Icon name='shield' className='w-4 h-4 text-white' />
+                        </motion.div>
+                      );
+                    })}
+
+                    {/* Shield outline */}
+                    <motion.div
+                      className='absolute inset-0 border-2 border-emerald-400/40 rounded-full'
+                      style={{ width: '140px', height: '140px', left: '-60px', top: '-60px' }}
+                      initial={{ scale: 0, opacity: 0 }}
+                      whileInView={{ scale: 1, opacity: 1 }}
+                      transition={{ delay: 2, duration: 0.5 }}
+                      viewport={{ once: true }}
+                    />
+                  </motion.div>
+                </div>
+              </div>
+
+              <h3 className='text-2xl font-bold text-white mb-4'>
+                Act 2: Protect Your Family
+              </h3>
+              <p className='text-slate-300 leading-relaxed'>
+                Build your Family Shield by appointing trusted guardians with specific roles and permissions, ready to act in any emergency.
+              </p>
+            </motion.div>
+
+            {/* Act 3: Define Your Legacy */}
+            <motion.div
+              className='flex-none w-96 bg-slate-900/60 rounded-2xl p-8 border border-slate-700 backdrop-blur-sm snap-start'
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              viewport={{ once: true }}
+              whileHover={{ scale: 1.02, y: -5 }}
+            >
+              <div className='relative h-48 mb-6 overflow-hidden rounded-lg bg-gradient-to-br from-cyan-500/20 to-blue-500/10'>
+                {/* Legacy Garden animation */}
+                <div className='absolute inset-0 flex items-end justify-center pb-8'>
+                  {/* Ground */}
+                  <div className='absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-t from-green-800/40 to-transparent'></div>
+
+                  {/* Growing tree */}
+                  <motion.div
+                    className='relative'
+                    initial={{ scale: 0 }}
+                    whileInView={{ scale: 1 }}
+                    transition={{ delay: 0.5, duration: 1 }}
+                    viewport={{ once: true }}
+                  >
+                    {/* Tree trunk */}
+                    <motion.div
+                      className='w-3 h-16 bg-amber-700 rounded-sm mx-auto'
+                      initial={{ height: 0 }}
+                      whileInView={{ height: 64 }}
+                      transition={{ delay: 0.5, duration: 0.8 }}
+                      viewport={{ once: true }}
+                    />
+
+                    {/* Tree crown */}
+                    <motion.div
+                      className='w-12 h-12 bg-green-500 rounded-full absolute -top-6 left-1/2 transform -translate-x-1/2'
+                      initial={{ scale: 0 }}
+                      whileInView={{ scale: 1 }}
+                      transition={{ delay: 1.2, duration: 0.5 }}
+                      viewport={{ once: true }}
+                    />
+
+                    {/* Legacy elements floating around */}
+                    {['💌', '📜', '⏰'].map((emoji, i) => {
+                      const angle = i * 120;
+                      const radians = (angle * Math.PI) / 180;
+                      const x = Math.cos(radians) * 40;
+                      const y = Math.sin(radians) * 40;
+
+                      return (
+                        <motion.div
+                          key={i}
+                          className='absolute text-lg'
+                          style={{
+                            left: `calc(50% + ${x}px)`,
+                            top: `calc(50% + ${y}px)`,
+                          }}
+                          initial={{ scale: 0, opacity: 0 }}
+                          whileInView={{ scale: 1, opacity: 1 }}
+                          transition={{ delay: 1.5 + i * 0.2, duration: 0.3 }}
+                          viewport={{ once: true }}
+                          animate={{
+                            y: [0, -5, 0],
+                            rotate: [0, 5, -5, 0]
+                          }}
+                          transition={{
+                            duration: 3,
+                            repeat: Infinity,
+                            delay: i * 0.5
+                          }}
+                        >
+                          {emoji}
+                        </motion.div>
+                      );
+                    })}
+                  </motion.div>
+                </div>
+              </div>
+
+              <h3 className='text-2xl font-bold text-white mb-4'>
+                Act 3: Define Your Legacy
+              </h3>
+              <p className='text-slate-300 leading-relaxed'>
+                Go beyond documents. Create a legally-sound will, record personal messages, and watch your legacy garden grow with every act of care.
+              </p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works Section */}
+      <section className='py-20 bg-slate-800/90 backdrop-blur-sm'>
+        <div className='container mx-auto px-4'>
+          <motion.div
+            className='text-center mb-16'
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <h2 className='text-4xl lg:text-5xl font-bold text-white mb-6'>
               How It Works
             </h2>
-            <p className="text-xl text-green-700 dark:text-green-200 max-w-2xl mx-auto">
+            <p className='text-xl text-slate-300 max-w-2xl mx-auto'>
               Your journey to family security in three simple steps
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div className='grid md:grid-cols-3 gap-8 max-w-6xl mx-auto'>
             {/* Step 1 */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -160,21 +664,25 @@ export function LandingPage() {
               transition={{ duration: 0.8, delay: 0.1 }}
               viewport={{ once: true }}
             >
-              <Card className="text-center p-8 h-full border-green-200 hover:shadow-lg transition-all duration-300">
-                <CardContent className="space-y-4">
-                  <motion.div 
-                    className="w-20 h-20 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto"
+              <Card className='text-center p-8 h-full bg-slate-900/50 border-slate-700 hover:bg-slate-800/50 hover:border-slate-600 transition-all duration-300 backdrop-blur-sm'>
+                <CardContent className='space-y-4'>
+                  <motion.div
+                    className='w-20 h-20 bg-yellow-500/20 rounded-full flex items-center justify-center mx-auto'
                     whileHover={{ scale: 1.1, rotate: 5 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <Icon name="vault" className="w-10 h-10 text-green-600 dark:text-green-400" />
+                    <Icon
+                      name='vault'
+                      className='w-10 h-10 text-yellow-400'
+                    />
                   </motion.div>
-                  <h3 className="text-2xl font-bold text-green-900 dark:text-green-100">
+                  <h3 className='text-2xl font-bold text-white'>
                     Organize Your Present
                   </h3>
-                  <p className="text-green-700 dark:text-green-300 leading-relaxed">
-                    Securely upload and manage all your vital documents with AI-powered assistance. 
-                    Sofia guides you through every step with care and intelligence.
+                  <p className='text-slate-300 leading-relaxed'>
+                    Securely upload and manage all your vital documents with
+                    AI-powered assistance. Sofia guides you through every step
+                    with care and intelligence.
                   </p>
                 </CardContent>
               </Card>
@@ -187,21 +695,25 @@ export function LandingPage() {
               transition={{ duration: 0.8, delay: 0.2 }}
               viewport={{ once: true }}
             >
-              <Card className="text-center p-8 h-full border-green-200 hover:shadow-lg transition-all duration-300">
-                <CardContent className="space-y-4">
-                  <motion.div 
-                    className="w-20 h-20 bg-emerald-100 dark:bg-emerald-900 rounded-full flex items-center justify-center mx-auto"
+              <Card className='text-center p-8 h-full bg-slate-900/50 border-slate-700 hover:bg-slate-800/50 hover:border-slate-600 transition-all duration-300 backdrop-blur-sm'>
+                <CardContent className='space-y-4'>
+                  <motion.div
+                    className='w-20 h-20 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto'
                     whileHover={{ scale: 1.1, rotate: -5 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <Icon name="shield" className="w-10 h-10 text-emerald-600 dark:text-emerald-400" />
+                    <Icon
+                      name='shield'
+                      className='w-10 h-10 text-emerald-400'
+                    />
                   </motion.div>
-                  <h3 className="text-2xl font-bold text-green-900 dark:text-green-100">
+                  <h3 className='text-2xl font-bold text-white'>
                     Protect Your Family
                   </h3>
-                  <p className="text-green-700 dark:text-green-300 leading-relaxed">
-                    Build your Family Shield by appointing trusted guardians for any situation. 
-                    Ensure your loved ones know exactly what to do and where to find help.
+                  <p className='text-slate-300 leading-relaxed'>
+                    Build your Family Shield by appointing trusted guardians for
+                    any situation. Ensure your loved ones know exactly what to
+                    do and where to find help.
                   </p>
                 </CardContent>
               </Card>
@@ -214,21 +726,25 @@ export function LandingPage() {
               transition={{ duration: 0.8, delay: 0.3 }}
               viewport={{ once: true }}
             >
-              <Card className="text-center p-8 h-full border-green-200 hover:shadow-lg transition-all duration-300">
-                <CardContent className="space-y-4">
-                  <motion.div 
-                    className="w-20 h-20 bg-teal-100 dark:bg-teal-900 rounded-full flex items-center justify-center mx-auto"
+              <Card className='text-center p-8 h-full bg-slate-900/50 border-slate-700 hover:bg-slate-800/50 hover:border-slate-600 transition-all duration-300 backdrop-blur-sm'>
+                <CardContent className='space-y-4'>
+                  <motion.div
+                    className='w-20 h-20 bg-cyan-500/20 rounded-full flex items-center justify-center mx-auto'
                     whileHover={{ scale: 1.1, rotate: 5 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <Icon name="legacy" className="w-10 h-10 text-teal-600 dark:text-teal-400" />
+                    <Icon
+                      name='legacy'
+                      className='w-10 h-10 text-cyan-400'
+                    />
                   </motion.div>
-                  <h3 className="text-2xl font-bold text-green-900 dark:text-green-100">
+                  <h3 className='text-2xl font-bold text-white'>
                     Define Your Legacy
                   </h3>
-                  <p className="text-green-700 dark:text-green-300 leading-relaxed">
-                    Create a legally sound will and leave personal messages that last forever. 
-                    Your wisdom and love will guide your family for generations.
+                  <p className='text-slate-300 leading-relaxed'>
+                    Create a legally sound will and leave personal messages that
+                    last forever. Your wisdom and love will guide your family
+                    for generations.
                   </p>
                 </CardContent>
               </Card>
@@ -237,72 +753,155 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* Why LegacyGuard Section */}
-      <section className="py-20 bg-gradient-to-br from-green-100 to-emerald-100 dark:from-green-900 dark:to-emerald-900">
-        <div className="container mx-auto px-4">
-          <motion.div 
-            className="text-center mb-16"
+      {/* Our Commitments Section */}
+      <section className='py-32 bg-gradient-to-br from-slate-900 to-slate-800'>
+        <div className='container mx-auto px-4'>
+          <motion.div
+            className='text-center mb-16'
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-4xl lg:text-5xl font-bold text-green-900 dark:text-green-100 mb-6">
-              Why Choose LegacyGuard?
+            <h2 className='text-4xl lg:text-5xl font-bold text-white mb-6'>
+              Our Commitments to You
             </h2>
-            <p className="text-xl text-green-700 dark:text-green-200 max-w-2xl mx-auto">
-              More than just document storage – it's peace of mind for your entire family
+            <p className='text-xl text-slate-300 max-w-2xl mx-auto'>
+              The principles that guide everything we do
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+          <div className='grid md:grid-cols-2 gap-12 max-w-5xl mx-auto'>
             {[
               {
-                title: "Peace of Mind",
-                description: "Sleep soundly knowing your affairs are in perfect order.",
-                icon: "heart",
-                color: "green"
+                title: 'Empathy by Design',
+                description: 'We believe technology should be caring. Our platform is designed to support you emotionally, not just functionally.',
+                icon: 'heart',
+                visual: (
+                  <motion.div
+                    className='relative w-16 h-16 mx-auto mb-6'
+                    whileHover={{ scale: 1.1 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <Icon name='heart' className='w-12 h-12 text-yellow-400 absolute top-2 left-2' />
+                    <motion.div
+                      className='w-4 h-4 bg-yellow-300 rounded-full absolute top-1 right-1'
+                      animate={{
+                        scale: [1, 1.2, 1],
+                        opacity: [0.7, 1, 0.7],
+                      }}
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        ease: 'easeInOut',
+                      }}
+                    />
+                  </motion.div>
+                ),
               },
               {
-                title: "Empathetic Guidance", 
-                description: "Our AI assistant, Sofia, guides you with care, not complexity.",
-                icon: "sparkles",
-                color: "emerald"
+                title: 'Zero-Knowledge Security',
+                description: 'Your privacy is sacred. We use end-to-end encryption, meaning not even we can access your sensitive data.',
+                icon: 'shield-check',
+                visual: (
+                  <motion.div
+                    className='relative w-16 h-16 mx-auto mb-6'
+                    whileHover={{ scale: 1.1 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <motion.div
+                      className='w-12 h-12 border-2 border-yellow-400 rounded-lg absolute top-2 left-2'
+                      animate={{
+                        borderColor: ['#fbbf24', '#f59e0b', '#fbbf24'],
+                      }}
+                      transition={{
+                        duration: 3,
+                        repeat: Infinity,
+                        ease: 'easeInOut',
+                      }}
+                    />
+                    <Icon name='lock' className='w-6 h-6 text-yellow-400 absolute top-5 left-5' />
+                  </motion.div>
+                ),
               },
               {
-                title: "Bank-Level Security",
-                description: "Your data is protected with end-to-end encryption and zero-knowledge architecture.",
-                icon: "shield-check",
-                color: "teal"
+                title: 'Effortless Automation',
+                description: 'From AI-powered analysis to automated reminders, we do the heavy lifting so you can focus on what matters.',
+                icon: 'sparkles',
+                visual: (
+                  <motion.div
+                    className='relative w-16 h-16 mx-auto mb-6'
+                    whileHover={{ scale: 1.1 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <Icon name='sparkles' className='w-12 h-12 text-yellow-400 absolute top-2 left-2' />
+                    {[...Array(3)].map((_, i) => (
+                      <motion.div
+                        key={i}
+                        className='w-1 h-1 bg-yellow-300 rounded-full absolute'
+                        style={{
+                          left: `${20 + i * 8}px`,
+                          top: `${15 + i * 4}px`,
+                        }}
+                        animate={{
+                          scale: [0, 1, 0],
+                          opacity: [0, 1, 0],
+                        }}
+                        transition={{
+                          duration: 1.5,
+                          repeat: Infinity,
+                          delay: i * 0.3,
+                          ease: 'easeInOut',
+                        }}
+                      />
+                    ))}
+                  </motion.div>
+                ),
               },
               {
-                title: "A Lasting Gift",
-                description: "Give your family the ultimate gift: clarity and security in difficult times.",
-                icon: "legacy",
-                color: "green"
-              }
-            ].map((benefit, index) => (
+                title: 'A Living Legacy',
+                description: "This isn't a one-time task. It's a living, growing garden that evolves with you and your family's journey.",
+                icon: 'legacy',
+                visual: (
+                  <motion.div
+                    className='relative w-16 h-16 mx-auto mb-6'
+                    whileHover={{ scale: 1.1 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <motion.div
+                      className='w-3 h-8 bg-amber-600 rounded-sm absolute bottom-2 left-1/2 transform -translate-x-1/2'
+                      initial={{ height: 0 }}
+                      whileInView={{ height: 32 }}
+                      transition={{ duration: 1, delay: 0.5 }}
+                      viewport={{ once: true }}
+                    />
+                    <motion.div
+                      className='w-8 h-8 bg-green-500 rounded-full absolute top-2 left-1/2 transform -translate-x-1/2'
+                      initial={{ scale: 0 }}
+                      whileInView={{ scale: 1 }}
+                      transition={{ duration: 0.5, delay: 1.2 }}
+                      viewport={{ once: true }}
+                    />
+                  </motion.div>
+                ),
+              },
+            ].map((commitment, index) => (
               <motion.div
-                key={benefit.title}
+                key={commitment.title}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: index * 0.1 }}
+                transition={{ duration: 0.8, delay: index * 0.2 }}
                 viewport={{ once: true }}
+                className='text-center'
               >
-                <Card className="text-center p-6 h-full bg-white/80 dark:bg-slate-800/80 backdrop-blur border-green-200 hover:shadow-lg transition-all duration-300">
-                  <CardContent className="space-y-4">
-                    <motion.div 
-                      className={`w-16 h-16 bg-${benefit.color}-100 dark:bg-${benefit.color}-900 rounded-full flex items-center justify-center mx-auto`}
-                      whileHover={{ scale: 1.1, rotate: 360 }}
-                      transition={{ duration: 0.5 }}
-                    >
-                      <Icon name={benefit.icon as any} className={`w-8 h-8 text-${benefit.color}-600 dark:text-${benefit.color}-400`} />
-                    </motion.div>
-                    <h3 className="text-xl font-bold text-green-900 dark:text-green-100">
-                      {benefit.title}
+                <Card className='p-8 h-full bg-slate-900/60 backdrop-blur border-slate-700 hover:bg-slate-800/60 hover:border-yellow-400/30 transition-all duration-500'>
+                  <CardContent className='space-y-6'>
+                    {commitment.visual}
+                    <h3 className='text-2xl font-bold text-white'>
+                      {commitment.title}
                     </h3>
-                    <p className="text-green-700 dark:text-green-300 text-sm leading-relaxed">
-                      {benefit.description}
+                    <p className='text-slate-300 leading-relaxed text-lg'>
+                      {commitment.description}
                     </p>
                   </CardContent>
                 </Card>
@@ -313,24 +912,24 @@ export function LandingPage() {
       </section>
 
       {/* Pricing Section */}
-      <section className="py-20 bg-white/60 dark:bg-slate-900/60">
-        <div className="container mx-auto px-4">
-          <motion.div 
-            className="text-center mb-16"
+      <section className='py-20 bg-slate-800/90 backdrop-blur-sm'>
+        <div className='container mx-auto px-4'>
+          <motion.div
+            className='text-center mb-16'
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-4xl lg:text-5xl font-bold text-green-900 dark:text-green-100 mb-6">
+            <h2 className='text-4xl lg:text-5xl font-bold text-white mb-6'>
               Simple, Transparent Pricing
             </h2>
-            <p className="text-xl text-green-700 dark:text-green-200 max-w-2xl mx-auto">
+            <p className='text-xl text-slate-300 max-w-2xl mx-auto'>
               Start free, upgrade when you're ready for advanced features
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <div className='grid md:grid-cols-2 gap-8 max-w-4xl mx-auto'>
             {/* Free Plan */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -338,31 +937,40 @@ export function LandingPage() {
               transition={{ duration: 0.8, delay: 0.1 }}
               viewport={{ once: true }}
             >
-              <Card className="p-8 border-green-200 hover:shadow-lg transition-all duration-300">
-                <CardContent className="space-y-6">
-                  <div className="text-center">
-                    <h3 className="text-2xl font-bold text-green-900 dark:text-green-100">Free</h3>
-                    <div className="text-4xl font-bold text-green-600 mt-2">$0</div>
-                    <p className="text-green-700 dark:text-green-300">Forever</p>
+              <Card className='p-8 bg-slate-900/60 border-slate-700 hover:bg-slate-800/60 hover:border-slate-600 transition-all duration-300 backdrop-blur-sm'>
+                <CardContent className='space-y-6'>
+                  <div className='text-center'>
+                    <h3 className='text-2xl font-bold text-white'>
+                      Free
+                    </h3>
+                    <div className='text-4xl font-bold text-yellow-400 mt-2'>
+                      $0
+                    </div>
+                    <p className='text-slate-300'>
+                      Forever
+                    </p>
                   </div>
-                  
-                  <ul className="space-y-3">
+
+                  <ul className='space-y-3'>
                     {[
-                      "Up to 10 secure documents",
-                      "Basic Sofia AI guidance",
-                      "Simple will creation",
-                      "1 trusted guardian",
-                      "Email support"
+                      'Up to 10 secure documents',
+                      'Basic Sofia AI guidance',
+                      'Simple will creation',
+                      '1 trusted guardian',
+                      'Email support',
                     ].map((feature, index) => (
-                      <li key={index} className="flex items-center gap-2 text-green-700 dark:text-green-300">
-                        <Icon name="check" className="w-4 h-4 text-green-600" />
+                      <li
+                        key={index}
+                        className='flex items-center gap-2 text-slate-300'
+                      >
+                        <Icon name='check' className='w-4 h-4 text-yellow-400' />
                         {feature}
                       </li>
                     ))}
                   </ul>
 
-                  <Button 
-                    className="w-full bg-green-600 hover:bg-green-700"
+                  <Button
+                    className='w-full bg-yellow-500 hover:bg-yellow-400 text-slate-900'
                     onClick={handleGetStarted}
                   >
                     Start Free Today
@@ -378,37 +986,49 @@ export function LandingPage() {
               transition={{ duration: 0.8, delay: 0.2 }}
               viewport={{ once: true }}
             >
-              <Card className="p-8 border-emerald-300 bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-950 dark:to-green-950 hover:shadow-lg transition-all duration-300 relative">
-                <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-emerald-600">
+              <Card className='p-8 bg-gradient-to-br from-yellow-500/10 to-yellow-600/5 border-yellow-500/30 hover:border-yellow-400/50 transition-all duration-300 relative backdrop-blur-sm'>
+                <Badge className='absolute -top-3 left-1/2 transform -translate-x-1/2 bg-yellow-500 text-slate-900'>
                   Most Popular
                 </Badge>
-                <CardContent className="space-y-6">
-                  <div className="text-center">
-                    <h3 className="text-2xl font-bold text-green-900 dark:text-green-100">Premium</h3>
-                    <div className="text-4xl font-bold text-emerald-600 mt-2">$9.99</div>
-                    <p className="text-green-700 dark:text-green-300">per month</p>
+                <CardContent className='space-y-6'>
+                  <div className='text-center'>
+                    <h3 className='text-2xl font-bold text-white'>
+                      Premium
+                    </h3>
+                    <div className='text-4xl font-bold text-yellow-400 mt-2'>
+                      $9.99
+                    </div>
+                    <p className='text-slate-300'>
+                      per month
+                    </p>
                   </div>
-                  
-                  <ul className="space-y-3">
+
+                  <ul className='space-y-3'>
                     {[
-                      "Unlimited secure documents",
-                      "Advanced Sofia AI with personalization",
-                      "Professional will templates",
-                      "Unlimited trusted guardians",
-                      "Time capsule messages",
-                      "Advanced legacy planning",
-                      "Priority support",
-                      "Legal document review"
+                      'Unlimited secure documents',
+                      'Advanced Sofia AI with personalization',
+                      'Professional will templates',
+                      'Unlimited trusted guardians',
+                      'Time capsule messages',
+                      'Advanced legacy planning',
+                      'Priority support',
+                      'Legal document review',
                     ].map((feature, index) => (
-                      <li key={index} className="flex items-center gap-2 text-green-700 dark:text-green-300">
-                        <Icon name="check" className="w-4 h-4 text-emerald-600" />
+                      <li
+                        key={index}
+                        className='flex items-center gap-2 text-slate-300'
+                      >
+                        <Icon
+                          name='check'
+                          className='w-4 h-4 text-yellow-400'
+                        />
                         {feature}
                       </li>
                     ))}
                   </ul>
 
-                  <Button 
-                    className="w-full bg-emerald-600 hover:bg-emerald-700"
+                  <Button
+                    className='w-full bg-yellow-500 hover:bg-yellow-400 text-slate-900'
                     onClick={handleGetStarted}
                   >
                     Start Premium Trial
@@ -421,52 +1041,275 @@ export function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="py-12 bg-green-900 dark:bg-green-950 text-white">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div className="col-span-1">
-              <div className="flex items-center gap-3 mb-4">
+      <footer className='py-12 bg-slate-950 text-white'>
+        <div className='container mx-auto px-4'>
+          <div className='grid md:grid-cols-4 gap-8'>
+            <div className='col-span-1'>
+              <div className='flex items-center gap-3 mb-4'>
                 <LegacyGuardLogo />
-                <span className="text-xl font-bold font-heading">LegacyGuard</span>
+                <span className='text-xl font-bold font-heading'>
+                  LegacyGuard
+                </span>
               </div>
-              <p className="text-green-200 text-sm">
-                Securing your legacy, protecting your family, one document at a time.
+              <p className='text-slate-400 text-sm'>
+                Securing your legacy, protecting your family, one document at a
+                time.
               </p>
             </div>
-            
+
             <div>
-              <h4 className="font-semibold mb-3">Product</h4>
-              <ul className="space-y-2 text-sm text-green-200">
-                <li><Link to="/features" className="hover:text-white transition-colors">Features</Link></li>
-                <li><Link to="/security" className="hover:text-white transition-colors">Security</Link></li>
-                <li><Link to="/pricing" className="hover:text-white transition-colors">Pricing</Link></li>
+              <h4 className='font-semibold mb-3'>Product</h4>
+              <ul className='space-y-2 text-sm'>
+                <li>
+                  <Link
+                    to='/features'
+                    className='text-slate-400 hover:text-yellow-400 transition-colors'
+                  >
+                    Features
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to='/security'
+                    className='text-slate-400 hover:text-yellow-400 transition-colors'
+                  >
+                    Security
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to='/pricing'
+                    className='text-slate-400 hover:text-yellow-400 transition-colors'
+                  >
+                    Pricing
+                  </Link>
+                </li>
               </ul>
             </div>
-            
+
             <div>
-              <h4 className="font-semibold mb-3">Support</h4>
-              <ul className="space-y-2 text-sm text-green-200">
-                <li><Link to="/help" className="hover:text-white transition-colors">Help Center</Link></li>
-                <li><Link to="/contact" className="hover:text-white transition-colors">Contact Us</Link></li>
-                <li><Link to="/guides" className="hover:text-white transition-colors">User Guides</Link></li>
+              <h4 className='font-semibold mb-3'>Support</h4>
+              <ul className='space-y-2 text-sm'>
+                <li>
+                  <Link
+                    to='/help'
+                    className='text-slate-400 hover:text-yellow-400 transition-colors'
+                  >
+                    Help Center
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to='/contact'
+                    className='text-slate-400 hover:text-yellow-400 transition-colors'
+                  >
+                    Contact Us
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to='/guides'
+                    className='text-slate-400 hover:text-yellow-400 transition-colors'
+                  >
+                    User Guides
+                  </Link>
+                </li>
               </ul>
             </div>
-            
+
             <div>
-              <h4 className="font-semibold mb-3">Legal</h4>
-              <ul className="space-y-2 text-sm text-green-200">
-                <li><Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
-                <li><Link to="/terms" className="hover:text-white transition-colors">Terms of Service</Link></li>
-                <li><Link to="/security-policy" className="hover:text-white transition-colors">Security Policy</Link></li>
+              <h4 className='font-semibold mb-3'>Legal</h4>
+              <ul className='space-y-2 text-sm'>
+                <li>
+                  <Link
+                    to='/privacy'
+                    className='text-slate-400 hover:text-yellow-400 transition-colors'
+                  >
+                    Privacy Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to='/terms'
+                    className='text-slate-400 hover:text-yellow-400 transition-colors'
+                  >
+                    Terms of Service
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to='/security-policy'
+                    className='text-slate-400 hover:text-yellow-400 transition-colors'
+                  >
+                    Security Policy
+                  </Link>
+                </li>
               </ul>
             </div>
           </div>
-          
-          <div className="border-t border-green-800 mt-8 pt-8 text-center text-sm text-green-200">
+
+          <div className='border-t border-slate-800 mt-8 pt-8 text-center text-sm text-slate-400'>
             <p>&copy; 2024 LegacyGuard. All rights reserved.</p>
           </div>
         </div>
       </footer>
+
+      {/* Final CTA Section - Return to Night */}
+      <section className='relative min-h-screen flex items-center justify-center bg-gradient-to-b from-slate-950 to-slate-900 overflow-hidden'>
+        {/* Starry background */}
+        <div className='absolute inset-0'>
+          {[...Array(30)].map((_, i) => {
+            const size = Math.random() * 2 + 1;
+            const opacity = Math.random() * 0.6 + 0.2;
+            const x = Math.random() * 100;
+            const y = Math.random() * 100;
+            const animationDelay = Math.random() * 3;
+
+            return (
+              <motion.div
+                key={i}
+                className='absolute bg-white rounded-full'
+                style={{
+                  width: `${size}px`,
+                  height: `${size}px`,
+                  left: `${x}%`,
+                  top: `${y}%`,
+                  opacity: opacity,
+                }}
+                animate={{
+                  opacity: [opacity, opacity * 0.3, opacity],
+                }}
+                transition={{
+                  duration: 3 + Math.random() * 2,
+                  repeat: Infinity,
+                  delay: animationDelay,
+                  ease: "easeInOut"
+                }}
+              />
+            );
+          })}
+        </div>
+
+        {/* Sofia Returns - Center Stage */}
+        <motion.div
+          className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'
+          initial={{ scale: 0, opacity: 0 }}
+          whileInView={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 1.5, delay: 0.5 }}
+          viewport={{ once: true }}
+        >
+          {/* Large Sofia Firefly */}
+          <motion.div
+            className='relative'
+            animate={{
+              y: [0, -10, 0],
+            }}
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          >
+            {/* Glow effect */}
+            <motion.div
+              className='absolute inset-0 rounded-full w-16 h-16 -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2'
+              animate={{
+                boxShadow: [
+                  '0 0 30px rgba(255, 255, 0, 0.4)',
+                  '0 0 50px rgba(255, 255, 0, 0.6)',
+                  '0 0 30px rgba(255, 255, 0, 0.4)',
+                ],
+              }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                ease: 'easeInOut',
+              }}
+            />
+
+            {/* Body */}
+            <motion.div
+              className='w-12 h-12 bg-gradient-to-br from-yellow-200 to-yellow-400 rounded-full shadow-2xl'
+              animate={{
+                scale: [1, 1.1, 1],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: 'easeInOut',
+              }}
+            />
+
+            {/* Wings */}
+            <motion.div
+              className='absolute -top-2 -left-2 w-6 h-6'
+              animate={{
+                rotate: [0, 15, -15, 0],
+                opacity: [0.4, 0.8, 0.4],
+              }}
+              transition={{
+                duration: 0.4,
+                repeat: Infinity,
+                ease: 'easeInOut',
+              }}
+            >
+              <div className='w-full h-full bg-gradient-to-br from-blue-200/60 to-purple-200/60 rounded-full blur-sm' />
+            </motion.div>
+
+            <motion.div
+              className='absolute -top-2 -right-2 w-6 h-6'
+              animate={{
+                rotate: [0, -15, 15, 0],
+                opacity: [0.4, 0.8, 0.4],
+              }}
+              transition={{
+                duration: 0.4,
+                repeat: Infinity,
+                ease: 'easeInOut',
+                delay: 0.2,
+              }}
+            >
+              <div className='w-full h-full bg-gradient-to-br from-blue-200/60 to-purple-200/60 rounded-full blur-sm' />
+            </motion.div>
+          </motion.div>
+        </motion.div>
+
+        {/* Final Message */}
+        <div className='relative z-10 text-center text-white max-w-2xl mx-auto px-4 mt-32'>
+          <motion.h2
+            className='text-5xl lg:text-6xl font-bold mb-8 leading-tight'
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 1 }}
+            viewport={{ once: true }}
+          >
+            Your Story is Waiting
+          </motion.h2>
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 1.5 }}
+            viewport={{ once: true }}
+          >
+            <Button
+              size='lg'
+              onClick={handleGetStarted}
+              className='bg-yellow-500 hover:bg-yellow-400 text-slate-900 text-xl px-16 py-8 rounded-full shadow-2xl hover:shadow-yellow-500/25 transition-all duration-300 font-bold relative overflow-hidden group'
+            >
+              <motion.div
+                className='absolute inset-0 bg-gradient-to-r from-yellow-400 to-yellow-300'
+                initial={{ scale: 0 }}
+                whileHover={{ scale: 1 }}
+                transition={{ duration: 0.3 }}
+              />
+              <span className='relative z-10 group-hover:scale-105 transition-transform duration-200'>
+                Begin Your LegacyGuard Today
+              </span>
+            </Button>
+          </motion.div>
+        </div>
+      </section>
     </div>
   );
 }
