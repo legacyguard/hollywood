@@ -5,7 +5,7 @@
 
 import type { Document } from '@/integrations/supabase/types';
 import type { WillData } from '@/types/will';
-import { generateFamilyImpactStatement, generateMilestoneCelebration, type FamilyContext } from './family-impact-generator';
+import { generateFamilyImpactStatement, type FamilyContext } from './family-impact-generator';
 
 export interface LegacyMilestone {
   id: string;
@@ -431,7 +431,6 @@ export function getMilestoneProgress(conditions: MilestoneTriggerConditions): {
   progressToNext: number;
 } {
   let completedWeight = 0;
-  const totalWeight = 100;
 
   // Weight different aspects
   if (conditions.documentsCount >= 1) completedWeight += 10;

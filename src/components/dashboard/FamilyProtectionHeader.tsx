@@ -38,7 +38,7 @@ export function FamilyProtectionHeader({
   variant = 'full',
   className
 }: FamilyProtectionHeaderProps) {
-  
+
   const [protectionDays, setProtectionDays] = useState(0);
   const [timeOfDay, setTimeOfDay] = useState<'morning' | 'afternoon' | 'evening'>('morning');
   const [animatedDays, setAnimatedDays] = useState(0);
@@ -49,7 +49,7 @@ export function FamilyProtectionHeader({
       const firstDocDate = documents[0]?.created_at;
       const days = calculateFamilyProtectionDays(firstDocDate);
       setProtectionDays(days);
-      
+
       // Animate days counter
       let start = 0;
       const increment = Math.ceil(days / 20);
@@ -62,7 +62,7 @@ export function FamilyProtectionHeader({
           setAnimatedDays(start);
         }
       }, 50);
-      
+
       return () => clearInterval(timer);
     }
   }, [documents]);
@@ -78,7 +78,7 @@ export function FamilyProtectionHeader({
   const getGreeting = () => {
     const greetings = {
       morning: '🌅 Good morning',
-      afternoon: '☀️ Good afternoon', 
+      afternoon: '☀️ Good afternoon',
       evening: '🌙 Good evening'
     };
     return greetings[timeOfDay];
@@ -101,7 +101,7 @@ export function FamilyProtectionHeader({
 
   const getProtectionMessage = () => {
     const totalProtected = familyMembersCount + emergencyContactsCount;
-    
+
     if (protectionDays === 0) {
       return "Ready to start protecting your family's future?";
     } else if (protectionDays === 1) {
@@ -117,9 +117,9 @@ export function FamilyProtectionHeader({
 
   const getDaysDisplay = () => {
     if (protectionDays === 0) return null;
-    
+
     return (
-      <motion.div 
+      <motion.div
         className="flex items-center gap-2 text-2xl font-bold"
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
@@ -149,7 +149,7 @@ export function FamilyProtectionHeader({
           </h2>
           <p className="text-sm text-gray-600">{getProtectionMessage()}</p>
         </div>
-        
+
         {getDaysDisplay() && (
           <div className="text-right">
             {getDaysDisplay()}
@@ -182,7 +182,7 @@ export function FamilyProtectionHeader({
               </div>
             </div>
           </div>
-          
+
           <div className="text-right space-y-2">
             {getDaysDisplay()}
             {trustScore > 0 && (
@@ -205,7 +205,7 @@ export function FamilyProtectionHeader({
         <div className="absolute top-4 right-4 opacity-10">
           <Sparkles className="h-24 w-24" />
         </div>
-        
+
         <div className="relative space-y-4">
           {/* Main greeting */}
           <motion.div
@@ -222,7 +222,7 @@ export function FamilyProtectionHeader({
           </motion.div>
 
           {/* Stats row */}
-          <motion.div 
+          <motion.div
             className="flex items-center gap-6 pt-2"
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -278,15 +278,15 @@ export function FamilyProtectionHeader({
           </motion.div>
 
           {/* Action buttons */}
-          <motion.div 
+          <motion.div
             className="flex gap-3 pt-2"
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.4 }}
           >
             {onViewProgress && (
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 size="sm"
                 onClick={onViewProgress}
                 className="bg-white/10 border-white/20 text-white hover:bg-white/20 backdrop-blur-sm"
@@ -295,10 +295,10 @@ export function FamilyProtectionHeader({
                 View Progress
               </Button>
             )}
-            
+
             {familyMembersCount + emergencyContactsCount === 0 && onAddFamily && (
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 size="sm"
                 onClick={onAddFamily}
                 className="bg-emerald-500/20 border-emerald-300/30 text-emerald-100 hover:bg-emerald-500/30"
@@ -313,7 +313,7 @@ export function FamilyProtectionHeader({
 
       {/* Bottom message bar */}
       <div className="bg-gradient-to-r from-emerald-50 to-blue-50 px-6 py-3">
-        <motion.p 
+        <motion.p
           className="text-sm text-gray-700 text-center italic"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

@@ -4,13 +4,13 @@
  */
 
 import { useState, useEffect } from 'react';
-import { Heart, Users, Shield, Clock, FilePlus, UserPlus, ChevronRight, X, Lightbulb, Calendar } from 'lucide-react';
+import { Heart, Users, Shield, Clock, ChevronRight, X, Lightbulb, Calendar } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { getNextMilestoneSuggestion, type MilestoneTriggerConditions } from '@/lib/milestone-system';
+import { type MilestoneTriggerConditions } from '@/lib/milestone-system';
 
 interface FamilyNudge {
   id: string;
