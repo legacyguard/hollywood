@@ -14,11 +14,8 @@ export default function SurvivorAccess() {
   const isPublic = searchParams.get('public') === 'true';
 
   return (
-    <div className="min-h-screen">
-      <SurvivorInterface
-        accessToken={token}
-        isPublicAccess={isPublic}
-      />
+    <div className='min-h-screen'>
+      <SurvivorInterface accessToken={token} isPublicAccess={isPublic} />
     </div>
   );
 }

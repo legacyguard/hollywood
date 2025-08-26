@@ -1,4 +1,4 @@
-import type { ActionButton, SofiaContext} from './sofia-types';
+import type { ActionButton, SofiaContext } from './sofia-types';
 import { COMMON_ACTIONS } from './sofia-types';
 
 // Sofia Knowledge Base - Fast, cost-effective answers to common questions
@@ -36,9 +36,9 @@ Your documents are safer than in a bank! 🏛️`,
           icon: 'info',
           category: 'ai_query',
           cost: 'low_cost',
-          payload: { topic: 'technical_security' }
-        }
-      ]
+          payload: { topic: 'technical_security' },
+        },
+      ],
     },
 
     {
@@ -63,7 +63,7 @@ Your documents are safer than in a bank! 🏛️`,
 
 Your security is our top priority! 🔐`,
       tags: ['security', 'technical', 'encryption', 'infrastructure'],
-      followupActions: [COMMON_ACTIONS.ADD_DOCUMENT]
+      followupActions: [COMMON_ACTIONS.ADD_DOCUMENT],
     },
 
     // Guardians & Family Protection
@@ -87,9 +87,9 @@ Think of them as digital keys to help your loved ones when you can't. 🔑`,
           icon: 'settings',
           category: 'ai_query',
           cost: 'low_cost',
-          payload: { topic: 'permissions' }
-        }
-      ]
+          payload: { topic: 'permissions' },
+        },
+      ],
     },
 
     {
@@ -106,7 +106,7 @@ Think of them as digital keys to help your loved ones when you can't. 🔑`,
 **Pro tip:** Start with your most trusted family member or friend! 👨‍👩‍👧‍👦`,
       tags: ['guardians', 'howto', 'family'],
       followupActions: [COMMON_ACTIONS.GO_TO_GUARDIANS],
-      contextConditions: (context) => context.guardianCount === 0
+      contextConditions: context => context.guardianCount === 0,
     },
 
     // Documents & Vault
@@ -137,7 +137,10 @@ Think of them as digital keys to help your loved ones when you can't. 🔑`,
 
 Start with what's most important to your family! 📋`,
       tags: ['documents', 'vault', 'important', 'family'],
-      followupActions: [COMMON_ACTIONS.ADD_DOCUMENT, COMMON_ACTIONS.GO_TO_VAULT]
+      followupActions: [
+        COMMON_ACTIONS.ADD_DOCUMENT,
+        COMMON_ACTIONS.GO_TO_VAULT,
+      ],
     },
 
     {
@@ -154,7 +157,10 @@ Start with what's most important to your family! 📋`,
 
 **Supported formats:** PDF, images (JPG, PNG), Word docs, and more 📁`,
       tags: ['documents', 'upload', 'howto', 'vault'],
-      followupActions: [COMMON_ACTIONS.GO_TO_VAULT, COMMON_ACTIONS.ADD_DOCUMENT]
+      followupActions: [
+        COMMON_ACTIONS.GO_TO_VAULT,
+        COMMON_ACTIONS.ADD_DOCUMENT,
+      ],
     },
 
     // Progress & Completion
@@ -180,7 +186,7 @@ Start with what's most important to your family! 📋`,
 
 Every step makes your family more secure! 🛡️`,
       tags: ['progress', 'completion', 'milestones'],
-      followupActions: [COMMON_ACTIONS.VIEW_PROGRESS, COMMON_ACTIONS.NEXT_STEP]
+      followupActions: [COMMON_ACTIONS.VIEW_PROGRESS, COMMON_ACTIONS.NEXT_STEP],
     },
 
     // Pricing & Features
@@ -218,9 +224,9 @@ Every step makes your family more secure! 🛡️`,
           icon: 'star',
           category: 'ui_action',
           cost: 'free',
-          payload: { action: 'show_pricing' }
-        }
-      ]
+          payload: { action: 'show_pricing' },
+        },
+      ],
     },
 
     // Getting Started
@@ -249,8 +255,12 @@ Every step makes your family more secure! 🛡️`,
 
 Take it one step at a time - I'm here to help! 😊`,
       tags: ['getting-started', 'onboarding', 'help', 'guide'],
-      followupActions: [COMMON_ACTIONS.ADD_DOCUMENT, COMMON_ACTIONS.GO_TO_GUARDIANS],
-      contextConditions: (context) => context.documentCount === 0 && context.guardianCount === 0
+      followupActions: [
+        COMMON_ACTIONS.ADD_DOCUMENT,
+        COMMON_ACTIONS.GO_TO_GUARDIANS,
+      ],
+      contextConditions: context =>
+        context.documentCount === 0 && context.guardianCount === 0,
     },
 
     // Emergencies
@@ -276,8 +286,11 @@ Take it one step at a time - I'm here to help! 😊`,
 
 **Your family will know exactly what to do** because you prepared ahead! 🛡️`,
       tags: ['emergency', 'guardians', 'family', 'access'],
-      followupActions: [COMMON_ACTIONS.GO_TO_GUARDIANS, COMMON_ACTIONS.ADD_DOCUMENT]
-    }
+      followupActions: [
+        COMMON_ACTIONS.GO_TO_GUARDIANS,
+        COMMON_ACTIONS.ADD_DOCUMENT,
+      ],
+    },
   ];
 
   /**
@@ -295,10 +308,13 @@ Take it one step at a time - I'm here to help! 😊`,
         }
 
         // Search in question, content, and tags
-        const searchText = `${entry.question} ${entry.content} ${entry.tags.join(' ')}`.toLowerCase();
+        const searchText =
+          `${entry.question} ${entry.content} ${entry.tags.join(' ')}`.toLowerCase();
 
-        return words.some(word => searchText.includes(word)) ||
-               entry.tags.some(tag => lowerQuery.includes(tag));
+        return (
+          words.some(word => searchText.includes(word)) ||
+          entry.tags.some(tag => lowerQuery.includes(tag))
+        );
       })
       .sort((a, b) => {
         // Prioritize entries with more matching words

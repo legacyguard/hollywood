@@ -1,6 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { createClient } from '@supabase/supabase-js';
-import type { StorageItem} from './LocalDataAdapter';
+import type { StorageItem } from './LocalDataAdapter';
 import { localDataAdapter, SyncMode } from './LocalDataAdapter';
 import { SecureEncryptionService } from '../encryption-v2';
 import { secureStorage } from '../security/secure-storage';
@@ -17,11 +17,14 @@ interface SyncStats {
   lastSync: string;
   syncedItems: number;
   failedItems: number;
-  categories: Record<string, {
-    pending: number;
-    synced: number;
-    failed: number;
-  }>;
+  categories: Record<
+    string,
+    {
+      pending: number;
+      synced: number;
+      failed: number;
+    }
+  >;
 }
 
 class CloudSyncAdapter {
@@ -68,7 +71,7 @@ class CloudSyncAdapter {
       operation,
       category: item.category,
       timestamp: new Date().toISOString(),
-      retryCount: 0
+      retryCount: 0,
     };
 
     this.syncQueue.set(item.id, queueItem);
@@ -85,14 +88,14 @@ class CloudSyncAdapter {
    */
   private async processQueue(): Promise<void> {
     if (this.isSyncing || this.syncQueue.size === 0) return;
-    if (!await this.encryption.areKeysUnlocked()) return;
+    if (!(await this.encryption.areKeysUnlocked())) return;
 
     this.isSyncing = true;
     const stats: SyncStats = {
       lastSync: new Date().toISOString(),
       syncedItems: 0,
       failedItems: 0,
-      categories: {}
+      categories: {},
     };
 
     try {
@@ -114,7 +117,7 @@ class CloudSyncAdapter {
             stats.categories[item.category] = {
               pending: 0,
               synced: 0,
-              failed: 0
+              failed: 0,
             };
           }
 
@@ -138,9 +141,8 @@ class CloudSyncAdapter {
           this.syncQueue.delete(queueItem.id);
           await this.logSyncEvent('success', {
             item: item.id,
-            operation: queueItem.operation
+            operation: queueItem.operation,
           });
-
         } catch (error) {
           console.error('Sync error for item:', queueItem.id, error);
 
@@ -153,12 +155,11 @@ class CloudSyncAdapter {
             await this.logSyncEvent('error', {
               item: queueItem.id,
               operation: queueItem.operation,
-              error: error.message
+              error: error.message,
             });
           }
         }
       }
-
     } finally {
       this.isSyncing = false;
       await this.updateSyncStats(stats);
@@ -187,8 +188,8 @@ class CloudSyncAdapter {
         data: item.data,
         metadata: {
           ...item.metadata,
-          cloudEncrypted: true
-        }
+          cloudEncrypted: true,
+        },
       })
     );
 
@@ -197,15 +198,13 @@ class CloudSyncAdapter {
     }
 
     // Store in Supabase encrypted_items table
-    const { error } = await this.supabase
-      .from('encrypted_items')
-      .upsert({
-        id: item.id,
-        category: item.category,
-        encrypted_data: cloudEncrypted,
-        user_id: await this.getCurrentUserId(),
-        updated_at: new Date().toISOString()
-      });
+    const { error } = await this.supabase.from('encrypted_items').upsert({
+      id: item.id,
+      category: item.category,
+      encrypted_data: cloudEncrypted,
+      user_id: await this.getCurrentUserId(),
+      updated_at: new Date().toISOString(),
+    });
 
     if (error) throw error;
 
@@ -214,8 +213,8 @@ class CloudSyncAdapter {
       ...item,
       metadata: {
         ...item.metadata,
-        syncStatus: 'synced'
-      }
+        syncStatus: 'synced',
+      },
     });
   }
 
@@ -235,7 +234,7 @@ class CloudSyncAdapter {
    * Pull changes from cloud
    */
   public async pullFromCloud(): Promise<void> {
-    if (!await this.encryption.areKeysUnlocked()) {
+    if (!(await this.encryption.areKeysUnlocked())) {
       throw new Error('Encryption keys must be unlocked to sync');
     }
 
@@ -259,7 +258,9 @@ class CloudSyncAdapter {
     for (const item of data) {
       try {
         // Decrypt cloud layer
-        const decrypted = await this.encryption.decryptText(item.encrypted_data);
+        const decrypted = await this.encryption.decryptText(
+          item.encrypted_data
+        );
         if (!decrypted) {
           console.error('Failed to decrypt cloud item:', item.id);
           continue;
@@ -274,17 +275,16 @@ class CloudSyncAdapter {
           data,
           metadata: {
             ...metadata,
-            syncStatus: 'synced'
-          }
+            syncStatus: 'synced',
+          },
         });
 
         await this.logSyncEvent('pull_success', { item: item.id });
-
       } catch (error) {
         console.error('Error processing cloud item:', item.id, error);
         await this.logSyncEvent('pull_error', {
           item: item.id,
-          error: error.message
+          error: error.message,
         });
       }
     }
@@ -303,13 +303,16 @@ class CloudSyncAdapter {
   }> {
     const items = await localDataAdapter.query({ category });
 
-    return items.reduce((acc, item) => {
-      acc.total++;
-      if (item.metadata.syncStatus === 'synced') acc.synced++;
-      else if (item.metadata.syncStatus === 'pending') acc.pending++;
-      else acc.failed++;
-      return acc;
-    }, { total: 0, synced: 0, pending: 0, failed: 0 });
+    return items.reduce(
+      (acc, item) => {
+        acc.total++;
+        if (item.metadata.syncStatus === 'synced') acc.synced++;
+        else if (item.metadata.syncStatus === 'pending') acc.pending++;
+        else acc.failed++;
+        return acc;
+      },
+      { total: 0, synced: 0, pending: 0, failed: 0 }
+    );
   }
 
   /**

@@ -1,4 +1,9 @@
-import type { SofiaCommand, SofiaContext, CommandResult, ActionButton} from './sofia-types';
+import type {
+  SofiaCommand,
+  SofiaContext,
+  CommandResult,
+  ActionButton,
+} from './sofia-types';
 import { COMMON_ACTIONS, getContextualActions } from './sofia-types';
 import { sofiaKnowledgeBase } from './sofia-knowledge-base';
 import { sofiaAPI, createSofiaAPIRequest } from './sofia-api';
@@ -25,7 +30,9 @@ export class SofiaRouter {
   async processCommand(command: SofiaCommand): Promise<CommandResult> {
     const { command: commandText, category, context } = command;
 
-    console.log(`[Sofia Router] Processing command: ${commandText}, category: ${category}`);
+    console.log(
+      `[Sofia Router] Processing command: ${commandText}, category: ${category}`
+    );
 
     try {
       // Category 1: Free predefined actions (80% of interactions)
@@ -53,16 +60,15 @@ export class SofiaRouter {
 
       // Fallback: Try to parse free-form text input
       return this.handleFreeFormInput(commandText, context);
-
     } catch (error) {
       console.error('[Sofia Router] Error processing command:', error);
       return {
         type: 'error',
         payload: {
           message: 'I apologize, an error occurred. Please try again.',
-          actions: getContextualActions(context)
+          actions: getContextualActions(context),
         },
-        cost: 'free'
+        cost: 'free',
       };
     }
   }
@@ -70,12 +76,15 @@ export class SofiaRouter {
   /**
    * Handle navigation commands (FREE)
    */
-  private handleNavigationCommand(command: string, context: SofiaContext): CommandResult {
+  private handleNavigationCommand(
+    command: string,
+    context: SofiaContext
+  ): CommandResult {
     const navigationMap: Record<string, string> = {
-      'navigate_vault': '/vault',
-      'navigate_guardians': '/guardians',
-      'navigate_legacy': '/legacy',
-      'navigate_dashboard': '/'
+      navigate_vault: '/vault',
+      navigate_guardians: '/guardians',
+      navigate_legacy: '/legacy',
+      navigate_dashboard: '/',
     };
 
     const route = navigationMap[command];
@@ -83,7 +92,7 @@ export class SofiaRouter {
       return {
         type: 'error',
         payload: { message: 'Unknown navigation action.' },
-        cost: 'free'
+        cost: 'free',
       };
     }
 
@@ -92,30 +101,35 @@ export class SofiaRouter {
       payload: { route },
       cost: 'free',
       requiresFollowup: true,
-      followupActions: [{
-        id: 'back_to_sofia',
-        text: '↩️ Back to Sofia',
-        icon: 'bot',
-        category: 'ui_action',
-        cost: 'free',
-        payload: { action: 'show_sofia' }
-      }]
+      followupActions: [
+        {
+          id: 'back_to_sofia',
+          text: '↩️ Back to Sofia',
+          icon: 'bot',
+          category: 'ui_action',
+          cost: 'free',
+          payload: { action: 'show_sofia' },
+        },
+      ],
     };
   }
 
   /**
    * Handle UI action commands (FREE)
    */
-  private handleUIActionCommand(command: string, context: SofiaContext): CommandResult {
+  private handleUIActionCommand(
+    command: string,
+    context: SofiaContext
+  ): CommandResult {
     switch (command) {
       case 'trigger_upload':
         return {
           type: 'ui_action',
           payload: {
             action: 'open_uploader',
-            message: `Great, ${context.userName || ''}! Let's add a new document. What would you like to upload?`
+            message: `Great, ${context.userName || ''}! Let's add a new document. What would you like to upload?`,
           },
-          cost: 'free'
+          cost: 'free',
         };
 
       case 'show_progress':
@@ -127,10 +141,10 @@ export class SofiaRouter {
               completionPercentage: context.completionPercentage,
               documentCount: context.documentCount,
               guardianCount: context.guardianCount,
-              nextSteps: this.generateNextSteps(context)
-            }
+              nextSteps: this.generateNextSteps(context),
+            },
           },
-          cost: 'free'
+          cost: 'free',
         };
 
       case 'show_sofia':
@@ -138,16 +152,16 @@ export class SofiaRouter {
           type: 'response',
           payload: {
             message: this.generateWelcomeMessage(context),
-            actions: getContextualActions(context)
+            actions: getContextualActions(context),
           },
-          cost: 'free'
+          cost: 'free',
         };
 
       default:
         return {
           type: 'error',
           payload: { message: 'Unknown UI action.' },
-          cost: 'free'
+          cost: 'free',
         };
     }
   }
@@ -155,17 +169,21 @@ export class SofiaRouter {
   /**
    * Handle knowledge base queries (LOW COST)
    */
-  private handleKnowledgeBaseQuery(command: string, context: SofiaContext): CommandResult {
+  private handleKnowledgeBaseQuery(
+    command: string,
+    context: SofiaContext
+  ): CommandResult {
     const answer = sofiaKnowledgeBase.getById(command);
 
     if (!answer) {
       return {
         type: 'error',
         payload: {
-          message: 'I apologize, I don\'t have a prepared answer for this question.',
-          actions: getContextualActions(context)
+          message:
+            "I apologize, I don't have a prepared answer for this question.",
+          actions: getContextualActions(context),
         },
-        cost: 'free'
+        cost: 'free',
       };
     }
 
@@ -173,9 +191,9 @@ export class SofiaRouter {
       type: 'response',
       payload: {
         message: answer.content,
-        actions: answer.followupActions || getContextualActions(context)
+        actions: answer.followupActions || getContextualActions(context),
       },
-      cost: 'low_cost'
+      cost: 'low_cost',
     };
   }
 
@@ -194,23 +212,26 @@ export class SofiaRouter {
       icon: suggestion.icon,
       category: suggestion.category,
       cost: 'free',
-      payload: suggestion.payload
+      payload: suggestion.payload,
     }));
 
     return {
       type: 'response',
       payload: { message, actions },
-      cost: 'low_cost'
+      cost: 'low_cost',
     };
   }
 
   /**
    * Handle premium AI features (HIGH COST)
    */
-  private async handlePremiumFeature(command: string, context: SofiaContext): Promise<CommandResult> {
+  private async handlePremiumFeature(
+    command: string,
+    context: SofiaContext
+  ): Promise<CommandResult> {
     const prompts: Record<string, string> = {
-      'generate_legacy_letter': `Help me write a personal message for my family. I want to leave words of love and encouragement for my loved ones.`,
-      'generate_financial_summary': `Create a summary of my finances and assets that will help my family in need. Include practical steps and important contacts.`,
+      generate_legacy_letter: `Help me write a personal message for my family. I want to leave words of love and encouragement for my loved ones.`,
+      generate_financial_summary: `Create a summary of my finances and assets that will help my family in need. Include practical steps and important contacts.`,
     };
 
     const prompt = prompts[command];
@@ -218,13 +239,17 @@ export class SofiaRouter {
       return {
         type: 'error',
         payload: { message: 'Unknown premium feature.' },
-        cost: 'premium'
+        cost: 'premium',
       };
     }
 
     try {
       // Call AI API for premium generation
-      const apiRequest = createSofiaAPIRequest(prompt, context, 'premium_generation');
+      const apiRequest = createSofiaAPIRequest(
+        prompt,
+        context,
+        'premium_generation'
+      );
       const apiResponse = await sofiaAPI.processPremiumGeneration(apiRequest);
 
       if (apiResponse.success && apiResponse.response) {
@@ -232,33 +257,38 @@ export class SofiaRouter {
           type: 'response',
           payload: {
             message: apiResponse.response,
-            actions: getContextualActions(context)
+            actions: getContextualActions(context),
           },
-          cost: 'premium'
+          cost: 'premium',
         };
       } else {
         return {
           type: 'response',
           payload: {
-            message: apiResponse.error || 'Unfortunately, premium features are currently unavailable. Please try again later.',
-            actions: [{
-              id: 'retry_premium',
-              text: '🔄 Try again',
-              icon: 'sparkles',
-              category: 'premium_feature',
-              cost: 'premium',
-              payload: { command }
-            }]
+            message:
+              apiResponse.error ||
+              'Unfortunately, premium features are currently unavailable. Please try again later.',
+            actions: [
+              {
+                id: 'retry_premium',
+                text: '🔄 Try again',
+                icon: 'sparkles',
+                category: 'premium_feature',
+                cost: 'premium',
+                payload: { command },
+              },
+            ],
           },
-          cost: 'premium'
+          cost: 'premium',
         };
       }
     } catch (error) {
       console.error('[Sofia Router] Premium feature error:', error);
       return {
         type: 'text_response',
-        payload: 'I apologize, there was an error processing your premium request. Please check your connection and try again.',
-        cost: 'premium'
+        payload:
+          'I apologize, there was an error processing your premium request. Please check your connection and try again.',
+        cost: 'premium',
       };
     }
   }
@@ -266,32 +296,59 @@ export class SofiaRouter {
   /**
    * Handle free-form text input (try to parse and route)
    */
-  private async handleFreeFormInput(input: string, context: SofiaContext): Promise<CommandResult> {
+  private async handleFreeFormInput(
+    input: string,
+    context: SofiaContext
+  ): Promise<CommandResult> {
     const lowerInput = input.toLowerCase();
 
     // Simple keyword matching for common requests (FREE)
-    if (lowerInput.includes('document') || lowerInput.includes('upload') || lowerInput.includes('add')) {
+    if (
+      lowerInput.includes('document') ||
+      lowerInput.includes('upload') ||
+      lowerInput.includes('add')
+    ) {
       return this.handleUIActionCommand('trigger_upload', context);
     }
 
-    if (lowerInput.includes('vault') || lowerInput.includes('documents') || lowerInput.includes('storage')) {
+    if (
+      lowerInput.includes('vault') ||
+      lowerInput.includes('documents') ||
+      lowerInput.includes('storage')
+    ) {
       return this.handleNavigationCommand('navigate_vault', context);
     }
 
-    if (lowerInput.includes('guardian') || lowerInput.includes('protector') || lowerInput.includes('trusted')) {
+    if (
+      lowerInput.includes('guardian') ||
+      lowerInput.includes('protector') ||
+      lowerInput.includes('trusted')
+    ) {
       return this.handleNavigationCommand('navigate_guardians', context);
     }
 
-    if (lowerInput.includes('legacy') || lowerInput.includes('will') || lowerInput.includes('testament')) {
+    if (
+      lowerInput.includes('legacy') ||
+      lowerInput.includes('will') ||
+      lowerInput.includes('testament')
+    ) {
       return this.handleNavigationCommand('navigate_legacy', context);
     }
 
-    if (lowerInput.includes('help') || lowerInput.includes('what') || lowerInput.includes('how')) {
+    if (
+      lowerInput.includes('help') ||
+      lowerInput.includes('what') ||
+      lowerInput.includes('how')
+    ) {
       return this.handleNextStepSuggestion(context);
     }
 
     // Security/FAQ keywords (LOW COST)
-    if (lowerInput.includes('security') || lowerInput.includes('encryption') || lowerInput.includes('safe')) {
+    if (
+      lowerInput.includes('security') ||
+      lowerInput.includes('encryption') ||
+      lowerInput.includes('safe')
+    ) {
       return this.handleKnowledgeBaseQuery('faq_security', context);
     }
 
@@ -310,17 +367,18 @@ export class SofiaRouter {
             type: 'response',
             payload: {
               message: apiResponse.response,
-              actions: getContextualActions(context)
+              actions: getContextualActions(context),
             },
-            cost: 'low_cost'
+            cost: 'low_cost',
           };
         }
       } catch (error) {
         console.warn('[Sofia Router] AI interpretation failed:', error);
         return {
           type: 'text_response',
-          payload: "I apologize, I'm having trouble understanding your question right now. Please try again or use one of the suggested options.",
-          cost: 'free'
+          payload:
+            "I apologize, I'm having trouble understanding your question right now. Please try again or use one of the suggested options.",
+          cost: 'free',
         };
       }
     }
@@ -330,9 +388,9 @@ export class SofiaRouter {
       type: 'response',
       payload: {
         message: `Hmm, I'm not sure how I can help you with that. Try one of these options:`,
-        actions: getContextualActions(context)
+        actions: getContextualActions(context),
       },
-      cost: 'free'
+      cost: 'free',
     };
   }
 
@@ -349,18 +407,19 @@ export class SofiaRouter {
         actionId: 'trigger_upload',
         icon: 'upload',
         category: 'ui_action' as const,
-        payload: { action: 'open_uploader' }
+        payload: { action: 'open_uploader' },
       });
     }
 
     if (context.documentCount >= 3 && context.guardianCount === 0) {
       steps.push({
         title: '👥 Add first guardian',
-        description: 'Identify a trusted person who will help your family in emergencies',
+        description:
+          'Identify a trusted person who will help your family in emergencies',
         actionId: 'navigate_guardians',
         icon: 'guardians',
         category: 'navigation' as const,
-        payload: { route: '/guardians' }
+        payload: { route: '/guardians' },
       });
     }
 
@@ -371,7 +430,7 @@ export class SofiaRouter {
         actionId: 'navigate_legacy',
         icon: 'legacy',
         category: 'navigation' as const,
-        payload: { route: '/legacy' }
+        payload: { route: '/legacy' },
       });
     }
 
@@ -379,11 +438,11 @@ export class SofiaRouter {
     if (steps.length === 0) {
       steps.push({
         title: '🔍 Explore options',
-        description: 'Let\'s see what else you can improve',
+        description: "Let's see what else you can improve",
         actionId: 'show_progress',
         icon: 'info',
         category: 'ui_action' as const,
-        payload: { action: 'show_progress_modal' }
+        payload: { action: 'show_progress_modal' },
       });
     }
 
@@ -394,7 +453,8 @@ export class SofiaRouter {
    * Generate personalized welcome message
    */
   private generateWelcomeMessage(context: SofiaContext): string {
-    const { userName, completionPercentage, documentCount, guardianCount } = context;
+    const { userName, completionPercentage, documentCount, guardianCount } =
+      context;
     const greeting = this.getTimeBasedGreeting();
     const name = userName || 'tam';
 

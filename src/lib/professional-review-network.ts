@@ -1,8 +1,17 @@
 import type { WillData } from '@/types/will';
 
 export type ReviewPriority = 'standard' | 'urgent' | 'express';
-export type ReviewStatus = 'pending' | 'assigned' | 'in_review' | 'completed' | 'requires_revision';
-export type ProfessionalType = 'attorney' | 'estate_planner' | 'notary' | 'tax_advisor';
+export type ReviewStatus =
+  | 'pending'
+  | 'assigned'
+  | 'in_review'
+  | 'completed'
+  | 'requires_revision';
+export type ProfessionalType =
+  | 'attorney'
+  | 'estate_planner'
+  | 'notary'
+  | 'tax_advisor';
 
 export interface ProfessionalProfile {
   id: string;
@@ -150,16 +159,21 @@ export class ProfessionalReviewNetwork {
       budget: options.budget || { min: 200, max: 800, currency: 'EUR' },
       timeline: options.timeline || 'within_week',
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     };
 
     // Auto-match with suitable attorneys
-    const suitableAttorneys = await this.findSuitableAttorneys(jurisdiction, willData);
+    const suitableAttorneys = await this.findSuitableAttorneys(
+      jurisdiction,
+      willData
+    );
 
     if (suitableAttorneys.length > 0) {
       reviewRequest.professionalId = suitableAttorneys[0].id;
       reviewRequest.status = 'assigned';
-      reviewRequest.estimatedCompletion = this.calculateEstimatedCompletion(reviewRequest.priority);
+      reviewRequest.estimatedCompletion = this.calculateEstimatedCompletion(
+        reviewRequest.priority
+      );
     }
 
     return reviewRequest;
@@ -168,7 +182,9 @@ export class ProfessionalReviewNetwork {
   /**
    * Get estate planner consultation offers
    */
-  async getEstateplannerConsultation(willData: WillData): Promise<ConsultationOffer[]> {
+  async getEstateplannerConsultation(
+    willData: WillData
+  ): Promise<ConsultationOffer[]> {
     const complexity = this.assessWillComplexity(willData);
     const suitablePlanners = await this.findSuitablePlanners(willData);
 
@@ -178,22 +194,25 @@ export class ProfessionalReviewNetwork {
       willComplexityAssessment: {
         complexity: complexity.level,
         estimatedHours: complexity.estimatedHours,
-        keyIssues: complexity.keyIssues
+        keyIssues: complexity.keyIssues,
       },
-      recommendedServices: this.generateRecommendedServices(willData, complexity),
+      recommendedServices: this.generateRecommendedServices(
+        willData,
+        complexity
+      ),
       totalEstimate: {
         min: complexity.estimatedHours * (planner.hourlyRate * 0.8),
         max: complexity.estimatedHours * (planner.hourlyRate * 1.2),
-        currency: 'EUR'
+        currency: 'EUR',
       },
       proposedTimeline: this.calculateTimeline(complexity.level),
       nextSteps: [
         'Initial consultation call (30 minutes)',
         'Document review and analysis',
         'Preparation of recommendations',
-        'Implementation of suggested changes'
+        'Implementation of suggested changes',
       ],
-      validUntil: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
+      validUntil: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
     }));
   }
 
@@ -204,7 +223,10 @@ export class ProfessionalReviewNetwork {
     location: string,
     willData?: WillData,
     preferences: {
-      serviceType?: 'will_witnessing' | 'document_certification' | 'full_notarization';
+      serviceType?:
+        | 'will_witnessing'
+        | 'document_certification'
+        | 'full_notarization';
       language?: string;
       timeframe?: string;
     } = {}
@@ -212,7 +234,11 @@ export class ProfessionalReviewNetwork {
     const notaries = await this.findNotaries(location, preferences);
 
     // Include special integration with brnoadvokati.cz for Czech/Slovak users
-    if (location.toLowerCase().includes('brno') || location.toLowerCase().includes('czech') || location.toLowerCase().includes('slovakia')) {
+    if (
+      location.toLowerCase().includes('brno') ||
+      location.toLowerCase().includes('czech') ||
+      location.toLowerCase().includes('slovakia')
+    ) {
       const brnoLawyers = await this.getBrnoAdvokatiIntegration();
       notaries.push(...brnoLawyers);
     }
@@ -221,7 +247,7 @@ export class ProfessionalReviewNetwork {
       professional: notary,
       availableSlots: this.generateAvailableSlots(notary),
       services: this.getNotaryServices(notary, preferences.serviceType),
-      distanceFromUser: this.calculateDistance(location, notary.location.city)
+      distanceFromUser: this.calculateDistance(location, notary.location.city),
     }));
   }
 
@@ -233,7 +259,9 @@ export class ProfessionalReviewNetwork {
     const feedback = await this.processReview(reviewRequest);
 
     // Update request status
-    reviewRequest.status = feedback.requiresRevision ? 'requires_revision' : 'completed';
+    reviewRequest.status = feedback.requiresRevision
+      ? 'requires_revision'
+      : 'completed';
     reviewRequest.updatedAt = new Date();
 
     return feedback;
@@ -256,41 +284,68 @@ export class ProfessionalReviewNetwork {
 
     return allProfessionals.filter(professional => {
       if (professional.type !== type) return false;
-      if (filters.jurisdiction && !professional.jurisdiction.includes(filters.jurisdiction)) return false;
-      if (filters.language && !professional.languages.includes(filters.language)) return false;
-      if (filters.specialization && !professional.specializations.includes(filters.specialization)) return false;
-      if (filters.maxRate && professional.hourlyRate > filters.maxRate) return false;
-      if (filters.availability && professional.availability !== filters.availability) return false;
+      if (
+        filters.jurisdiction &&
+        !professional.jurisdiction.includes(filters.jurisdiction)
+      )
+        return false;
+      if (
+        filters.language &&
+        !professional.languages.includes(filters.language)
+      )
+        return false;
+      if (
+        filters.specialization &&
+        !professional.specializations.includes(filters.specialization)
+      )
+        return false;
+      if (filters.maxRate && professional.hourlyRate > filters.maxRate)
+        return false;
+      if (
+        filters.availability &&
+        professional.availability !== filters.availability
+      )
+        return false;
       return true;
     });
   }
 
   // Private helper methods
-  private async findSuitableAttorneys(jurisdiction: string, willData: WillData): Promise<ProfessionalProfile[]> {
+  private async findSuitableAttorneys(
+    jurisdiction: string,
+    willData: WillData
+  ): Promise<ProfessionalProfile[]> {
     const attorneys = await this.searchProfessionals('attorney', {
       jurisdiction,
-      specialization: 'estate_law'
+      specialization: 'estate_law',
     });
 
     // Sort by rating and availability
     return attorneys
       .sort((a, b) => {
-        if (a.availability === 'immediate' && b.availability !== 'immediate') return -1;
-        if (b.availability === 'immediate' && a.availability !== 'immediate') return 1;
+        if (a.availability === 'immediate' && b.availability !== 'immediate')
+          return -1;
+        if (b.availability === 'immediate' && a.availability !== 'immediate')
+          return 1;
         return b.rating - a.rating;
       })
       .slice(0, 5);
   }
 
-  private async findSuitablePlanners(willData: WillData): Promise<ProfessionalProfile[]> {
+  private async findSuitablePlanners(
+    willData: WillData
+  ): Promise<ProfessionalProfile[]> {
     return this.searchProfessionals('estate_planner', {
-      specialization: 'comprehensive_planning'
+      specialization: 'comprehensive_planning',
     });
   }
 
-  private async findNotaries(location: string, preferences: any): Promise<ProfessionalProfile[]> {
+  private async findNotaries(
+    location: string,
+    preferences: any
+  ): Promise<ProfessionalProfile[]> {
     return this.searchProfessionals('notary', {
-      language: preferences.language
+      language: preferences.language,
     });
   }
 
@@ -311,7 +366,9 @@ export class ProfessionalReviewNetwork {
     // Beneficiary complexity
     if (willData.beneficiaries.length > 3) {
       complexityScore += 1;
-      keyIssues.push('Multiple beneficiaries with different inheritance shares');
+      keyIssues.push(
+        'Multiple beneficiaries with different inheritance shares'
+      );
     }
 
     // Special provisions
@@ -347,10 +404,11 @@ export class ProfessionalReviewNetwork {
     const services = [
       {
         service: 'Will Review and Optimization',
-        description: 'Comprehensive review of will structure and legal compliance',
+        description:
+          'Comprehensive review of will structure and legal compliance',
         estimatedCost: complexity.estimatedHours * 150,
-        priority: 'essential' as const
-      }
+        priority: 'essential' as const,
+      },
     ];
 
     if (willData.assets.some(asset => asset.type === 'business')) {
@@ -358,7 +416,7 @@ export class ProfessionalReviewNetwork {
         service: 'Business Succession Planning',
         description: 'Specialized planning for business assets and succession',
         estimatedCost: 800,
-        priority: 'recommended' as const
+        priority: 'recommended' as const,
       });
     }
 
@@ -367,7 +425,7 @@ export class ProfessionalReviewNetwork {
         service: 'Tax Optimization Strategy',
         description: 'Minimize estate taxes and optimize inheritance structure',
         estimatedCost: 600,
-        priority: 'recommended' as const
+        priority: 'recommended' as const,
       });
     }
 
@@ -395,13 +453,13 @@ export class ProfessionalReviewNetwork {
         location: {
           city: 'Brno',
           country: 'Czech Republic',
-          address: 'Veveří 111, 602 00 Brno'
+          address: 'Veveří 111, 602 00 Brno',
         },
         contactInfo: {
           email: 'novak@brnoadvokati.cz',
           phone: '+420 123 456 789',
-          website: 'https://brnoadvokati.cz'
-        }
+          website: 'https://brnoadvokati.cz',
+        },
       },
       {
         id: 'brno-notary-001',
@@ -411,7 +469,11 @@ export class ProfessionalReviewNetwork {
         firm: 'Notary Office Brno Center',
         jurisdiction: ['Czech Republic'],
         languages: ['Czech', 'English', 'German'],
-        specializations: ['will_certification', 'inheritance_proceedings', 'property_transfers'],
+        specializations: [
+          'will_certification',
+          'inheritance_proceedings',
+          'property_transfers',
+        ],
         rating: 4.9,
         reviewCount: 89,
         hourlyRate: 120,
@@ -421,13 +483,13 @@ export class ProfessionalReviewNetwork {
         location: {
           city: 'Brno',
           country: 'Czech Republic',
-          address: 'Masarykova 456, 602 00 Brno'
+          address: 'Masarykova 456, 602 00 Brno',
         },
         contactInfo: {
           email: 'svobodova@notarbno.cz',
-          phone: '+420 987 654 321'
-        }
-      }
+          phone: '+420 987 654 321',
+        },
+      },
     ];
   }
 
@@ -446,53 +508,77 @@ export class ProfessionalReviewNetwork {
         time: '09:00',
         duration: 60,
         type: 'in_person' as const,
-        location: professional.location.address
+        location: professional.location.address,
       });
 
       slots.push({
         date,
         time: '14:00',
         duration: 60,
-        type: 'video_call' as const
+        type: 'video_call' as const,
       });
     }
 
     return slots.slice(0, 8); // Return next 8 available slots
   }
 
-  private getNotaryServices(professional: ProfessionalProfile, serviceType?: string) {
+  private getNotaryServices(
+    professional: ProfessionalProfile,
+    serviceType?: string
+  ) {
     const baseServices = [
       { service: 'Will Witnessing', price: 80, duration: 30 },
       { service: 'Document Certification', price: 50, duration: 15 },
-      { service: 'Full Notarization', price: 150, duration: 60 }
+      { service: 'Full Notarization', price: 150, duration: 60 },
     ];
 
     if (professional.location.country === 'Czech Republic') {
-      baseServices.push({ service: 'Inheritance Proceedings', price: 300, duration: 120 });
+      baseServices.push({
+        service: 'Inheritance Proceedings',
+        price: 300,
+        duration: 120,
+      });
     }
 
     return baseServices;
   }
 
-  private async processReview(reviewRequest: ReviewRequest): Promise<ReviewFeedback> {
+  private async processReview(
+    reviewRequest: ReviewRequest
+  ): Promise<ReviewFeedback> {
     // Simulate comprehensive will review
-    const issues = this.identifyPotentialIssues(reviewRequest.willData, reviewRequest.jurisdiction);
+    const issues = this.identifyPotentialIssues(
+      reviewRequest.willData,
+      reviewRequest.jurisdiction
+    );
 
     return {
       overall: {
-        legalCompliance: issues.length === 0 ? 95 : Math.max(60, 95 - issues.length * 10),
+        legalCompliance:
+          issues.length === 0 ? 95 : Math.max(60, 95 - issues.length * 10),
         clarity: 88,
         completeness: 92,
-        recommendations: 85
+        recommendations: 85,
       },
       specificIssues: issues,
-      summary: issues.length === 0
-        ? 'Your will appears to be legally sound and well-structured. Minor improvements suggested for clarity.'
-        : `${issues.length} issues identified that should be addressed to ensure legal compliance and clarity.`,
-      nextSteps: issues.length === 0
-        ? ['Consider adding more specific asset descriptions', 'Review beneficiary contact information']
-        : ['Address critical legal compliance issues', 'Revise unclear provisions', 'Consider additional legal consultation'],
-      requiresRevision: issues.some(issue => issue.severity === 'high' || issue.severity === 'critical')
+      summary:
+        issues.length === 0
+          ? 'Your will appears to be legally sound and well-structured. Minor improvements suggested for clarity.'
+          : `${issues.length} issues identified that should be addressed to ensure legal compliance and clarity.`,
+      nextSteps:
+        issues.length === 0
+          ? [
+              'Consider adding more specific asset descriptions',
+              'Review beneficiary contact information',
+            ]
+          : [
+              'Address critical legal compliance issues',
+              'Revise unclear provisions',
+              'Consider additional legal consultation',
+            ],
+      requiresRevision: issues.some(
+        issue => issue.severity === 'high' || issue.severity === 'critical'
+      ),
     };
   }
 
@@ -505,34 +591,41 @@ export class ProfessionalReviewNetwork {
         category: 'Legal Compliance',
         severity: 'high' as const,
         description: 'No executor appointed',
-        recommendation: 'Appoint a trusted person as executor to handle estate administration',
-        estimated_fix_time: '5 minutes'
+        recommendation:
+          'Appoint a trusted person as executor to handle estate administration',
+        estimated_fix_time: '5 minutes',
       });
     }
 
     // Check for vague asset descriptions
     if (willData.assets && willData.assets.realEstate) {
-      const vagueAssets = willData.assets.realEstate.filter(asset => asset.description.length < 20);
+      const vagueAssets = willData.assets.realEstate.filter(
+        asset => asset.description.length < 20
+      );
       if (vagueAssets.length > 0) {
         issues.push({
           category: 'Clarity',
           severity: 'medium' as const,
           description: `${vagueAssets.length} assets have insufficient descriptions`,
-          recommendation: 'Provide more detailed descriptions including serial numbers, addresses, or account numbers where applicable',
-          estimated_fix_time: '15 minutes'
+          recommendation:
+            'Provide more detailed descriptions including serial numbers, addresses, or account numbers where applicable',
+          estimated_fix_time: '15 minutes',
         });
       }
     }
 
     // Check for beneficiary share issues
-    const totalShares = willData.beneficiaries.reduce((sum, b) => sum + b.share, 0);
+    const totalShares = willData.beneficiaries.reduce(
+      (sum, b) => sum + b.share,
+      0
+    );
     if (Math.abs(totalShares - 100) > 0.01) {
       issues.push({
         category: 'Legal Compliance',
         severity: 'critical' as const,
         description: `Beneficiary shares total ${totalShares}% instead of 100%`,
         recommendation: 'Adjust beneficiary shares to total exactly 100%',
-        estimated_fix_time: '10 minutes'
+        estimated_fix_time: '10 minutes',
       });
     }
 
@@ -557,10 +650,14 @@ export class ProfessionalReviewNetwork {
 
   private calculateTimeline(complexity: string): string {
     switch (complexity) {
-      case 'simple': return '3-5 business days';
-      case 'moderate': return '1-2 weeks';
-      case 'complex': return '2-4 weeks';
-      default: return '1-2 weeks';
+      case 'simple':
+        return '3-5 business days';
+      case 'moderate':
+        return '1-2 weeks';
+      case 'complex':
+        return '2-4 weeks';
+      default:
+        return '1-2 weeks';
     }
   }
 
@@ -581,4 +678,6 @@ export class ProfessionalReviewNetwork {
 }
 
 // Export singleton instance
-export const professionalNetwork = new ProfessionalReviewNetwork(process.env.VITE_PROFESSIONAL_NETWORK_API_KEY || 'demo_key');
+export const professionalNetwork = new ProfessionalReviewNetwork(
+  process.env.VITE_PROFESSIONAL_NETWORK_API_KEY || 'demo_key'
+);

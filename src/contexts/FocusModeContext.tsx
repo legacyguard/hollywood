@@ -6,7 +6,9 @@ interface FocusModeContextType {
   exitFocusMode: () => void;
 }
 
-const FocusModeContext = createContext<FocusModeContextType | undefined>(undefined);
+const FocusModeContext = createContext<FocusModeContextType | undefined>(
+  undefined
+);
 
 export const useFocusMode = () => {
   const context = useContext(FocusModeContext);
@@ -20,7 +22,9 @@ interface FocusModeProviderProps {
   children: React.ReactNode;
 }
 
-export const FocusModeProvider: React.FC<FocusModeProviderProps> = ({ children }) => {
+export const FocusModeProvider: React.FC<FocusModeProviderProps> = ({
+  children,
+}) => {
   const [isFocusMode, setIsFocusMode] = useState(false);
 
   const enterFocusMode = () => {
@@ -42,7 +46,7 @@ export const FocusModeProvider: React.FC<FocusModeProviderProps> = ({ children }
   const value = {
     isFocusMode,
     enterFocusMode,
-    exitFocusMode
+    exitFocusMode,
   };
 
   return (

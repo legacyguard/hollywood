@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { useSupabaseWithClerk } from '@/integrations/supabase/client';
-import { SerenityMilestone, getSerenityMilestones } from '@/lib/path-of-serenity';
+import {
+  SerenityMilestone,
+  getSerenityMilestones,
+} from '@/lib/path-of-serenity';
 
 export interface GardenProgressData {
   overallProgress: number; // 0-100 percentage
@@ -14,11 +17,11 @@ export interface GardenProgressData {
   willProgress: number;
   seedState: 'dormant' | 'sprouting' | 'growing' | 'flourishing' | 'blooming';
   gardenElements: {
-    roots: number;      // Documents (foundation)
-    branches: number;   // Guardians (protection)
-    leaves: number;     // Active features
-    flowers: number;    // Milestones achieved
-    fruits: number;     // Time capsules / legacy items
+    roots: number; // Documents (foundation)
+    branches: number; // Guardians (protection)
+    leaves: number; // Active features
+    flowers: number; // Milestones achieved
+    fruits: number; // Time capsules / legacy items
   };
 }
 
@@ -47,7 +50,11 @@ export const useGardenProgress = () => {
         { data: wills, error: willsError },
       ] = await Promise.all([
         supabase.from('documents').select('*').eq('user_id', userId),
-        supabase.from('guardians').select('*').eq('user_id', userId).eq('is_active', true),
+        supabase
+          .from('guardians')
+          .select('*')
+          .eq('user_id', userId)
+          .eq('is_active', true),
         supabase.from('time_capsules').select('*').eq('user_id', userId),
         supabase.from('wills').select('*').eq('user_id', userId),
       ]);
@@ -81,33 +88,42 @@ export const useGardenProgress = () => {
       const timeCapsulesCount = timeCapsules?.length || 0;
 
       // Calculate will progress (0-100)
-      const willProgress = wills && wills.length > 0
-        ? Math.min((wills[0].completion_percentage || 0) * 100, 100)
-        : 0;
+      const willProgress =
+        wills && wills.length > 0
+          ? Math.min((wills[0].completion_percentage || 0) * 100, 100)
+          : 0;
 
       // Calculate overall progress with weighted components
       const weights = {
-        documents: 0.25,    // 25% - Foundation (documents)
-        guardians: 0.25,    // 25% - Protection (guardians)
-        milestones: 0.30,   // 30% - Growth (milestones)
-        timeCapsules: 0.10, // 10% - Legacy (time capsules)
-        will: 0.10,         // 10% - Legal foundation
+        documents: 0.25, // 25% - Foundation (documents)
+        guardians: 0.25, // 25% - Protection (guardians)
+        milestones: 0.3, // 30% - Growth (milestones)
+        timeCapsules: 0.1, // 10% - Legacy (time capsules)
+        will: 0.1, // 10% - Legal foundation
       };
 
       const normalizedScores = {
         documents: Math.min(documentsCount / 10, 1) * 100, // Normalize to 10 docs max
-        guardians: Math.min(guardiansCount / 5, 1) * 100,  // Normalize to 5 guardians max
+        guardians: Math.min(guardiansCount / 5, 1) * 100, // Normalize to 5 guardians max
         milestones: (completedCount / milestones.length) * 100,
         timeCapsules: Math.min(timeCapsulesCount / 3, 1) * 100, // Normalize to 3 capsules max
         will: willProgress,
       };
 
-      const overallProgress = Object.entries(weights).reduce((total, [key, weight]) => {
-        return total + (normalizedScores[key as keyof typeof normalizedScores] * weight);
-      }, 0);
+      const overallProgress = Object.entries(weights).reduce(
+        (total, [key, weight]) => {
+          return (
+            total +
+            normalizedScores[key as keyof typeof normalizedScores] * weight
+          );
+        },
+        0
+      );
 
       // Determine seed state based on overall progress
-      const getSeedState = (progress: number): GardenProgressData['seedState'] => {
+      const getSeedState = (
+        progress: number
+      ): GardenProgressData['seedState'] => {
         if (progress === 0) return 'dormant';
         if (progress < 20) return 'sprouting';
         if (progress < 50) return 'growing';
@@ -117,11 +133,11 @@ export const useGardenProgress = () => {
 
       // Calculate garden elements (visual representation)
       const gardenElements = {
-        roots: Math.min(documentsCount, 10),           // Documents as roots
-        branches: guardiansCount,                       // Guardians as branches
-        leaves: Math.floor(overallProgress / 10),      // General progress indicators
-        flowers: completedCount,                        // Milestones as flowers
-        fruits: timeCapsulesCount,                     // Time capsules as fruits
+        roots: Math.min(documentsCount, 10), // Documents as roots
+        branches: guardiansCount, // Guardians as branches
+        leaves: Math.floor(overallProgress / 10), // General progress indicators
+        flowers: completedCount, // Milestones as flowers
+        fruits: timeCapsulesCount, // Time capsules as fruits
       };
 
       const progressData: GardenProgressData = {
@@ -139,10 +155,11 @@ export const useGardenProgress = () => {
 
       setProgress(progressData);
       setError(null);
-
     } catch (err) {
       console.error('Error calculating garden progress:', err);
-      setError(err instanceof Error ? err.message : 'Failed to calculate progress');
+      setError(
+        err instanceof Error ? err.message : 'Failed to calculate progress'
+      );
     } finally {
       setLoading(false);
     }
@@ -150,7 +167,7 @@ export const useGardenProgress = () => {
 
   // Helper function to check if milestone is active
   const checkMilestoneActive = (
-    milestone: SerenityMilestone, 
+    milestone: SerenityMilestone,
     data: {
       documents: any[];
       guardians: any[];
@@ -166,7 +183,10 @@ export const useGardenProgress = () => {
       case 'digital_legacy':
         return data.timeCapsules.length >= 1;
       case 'will_creation':
-        return data.wills.length >= 1 && (data.wills[0].completion_percentage || 0) >= 0.8;
+        return (
+          data.wills.length >= 1 &&
+          (data.wills[0].completion_percentage || 0) >= 0.8
+        );
       case 'guardian_network':
         return data.guardians.length >= 3;
       case 'document_vault':

@@ -9,7 +9,7 @@ import { LanguageConfig } from './languages';
 import type { LegalTermCategory } from './legal-terminology';
 
 // Namespace types
-export type TranslationNamespace = typeof NAMESPACES[keyof typeof NAMESPACES];
+export type TranslationNamespace = (typeof NAMESPACES)[keyof typeof NAMESPACES];
 
 // Language codes (ISO 639-1)
 export type LanguageCode =
@@ -50,10 +50,45 @@ export type LanguageCode =
 
 // Jurisdiction codes (ISO 3166-1 alpha-2)
 export type JurisdictionCode =
-  | 'DE' | 'CZ' | 'SK' | 'FR' | 'ES' | 'IT' | 'NL' | 'BE' | 'LU' | 'CH'
-  | 'LI' | 'AT' | 'UK' | 'DK' | 'SE' | 'FI' | 'PT' | 'GR' | 'PL' | 'HU'
-  | 'SI' | 'EE' | 'LV' | 'LT' | 'MT' | 'CY' | 'IE' | 'NO' | 'IS' | 'RO'
-  | 'BG' | 'HR' | 'RS' | 'AL' | 'MK' | 'ME' | 'MD' | 'UA' | 'BA';
+  | 'DE'
+  | 'CZ'
+  | 'SK'
+  | 'FR'
+  | 'ES'
+  | 'IT'
+  | 'NL'
+  | 'BE'
+  | 'LU'
+  | 'CH'
+  | 'LI'
+  | 'AT'
+  | 'UK'
+  | 'DK'
+  | 'SE'
+  | 'FI'
+  | 'PT'
+  | 'GR'
+  | 'PL'
+  | 'HU'
+  | 'SI'
+  | 'EE'
+  | 'LV'
+  | 'LT'
+  | 'MT'
+  | 'CY'
+  | 'IE'
+  | 'NO'
+  | 'IS'
+  | 'RO'
+  | 'BG'
+  | 'HR'
+  | 'RS'
+  | 'AL'
+  | 'MK'
+  | 'ME'
+  | 'MD'
+  | 'UA'
+  | 'BA';
 
 // Translation key structure
 export interface TranslationKeys {
@@ -287,10 +322,7 @@ export interface TranslationKeys {
 }
 
 // Translation function types
-export type TFunction = (
-  key: string,
-  options?: TranslationOptions
-) => string;
+export type TFunction = (key: string, options?: TranslationOptions) => string;
 
 export interface TranslationOptions {
   ns?: TranslationNamespace;
@@ -361,7 +393,10 @@ export interface UseLegalTermReturn {
   getTerm: (key: string) => string;
   getDefinition: (key: string) => string | undefined;
   getReference: (key: string) => string | undefined;
-  searchTerms: (query: string, category?: LegalTermCategory) => Array<{
+  searchTerms: (
+    query: string,
+    category?: LegalTermCategory
+  ) => Array<{
     key: string;
     term: string;
     definition?: string;

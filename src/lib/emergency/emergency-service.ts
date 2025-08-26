@@ -8,10 +8,9 @@ import type {
   DetectionEngineConfig,
   EmergencyDashboardData,
   SurvivorInterface,
-  ActivityTracker} from '@/types/emergency';
-import {
-  EmergencyActivation
+  ActivityTracker,
 } from '@/types/emergency';
+import { EmergencyActivation } from '@/types/emergency';
 
 /**
  * Main Emergency Service that orchestrates all emergency system components
@@ -77,7 +76,9 @@ export class EmergencyService {
    * Initialize the emergency system for a user
    * Sets up default detection rules and shield settings
    */
-  async initializeForUser(userId: string): Promise<{ success: boolean; error?: string }> {
+  async initializeForUser(
+    userId: string
+  ): Promise<{ success: boolean; error?: string }> {
     try {
       const supabase = this.getServiceClient();
 
@@ -109,12 +110,11 @@ export class EmergencyService {
 
       // Initialize default emergency detection rules
       await supabase.rpc('initialize_default_emergency_rules', {
-        target_user_id: userId
+        target_user_id: userId,
       });
 
       this.isInitialized = true;
       return { success: true };
-
     } catch (error) {
       console.error('Error initializing emergency system:', error);
       return {
@@ -135,10 +135,12 @@ export class EmergencyService {
   }> {
     try {
       // Check current activity status
-      const activityTracker = await this.detectionEngine.checkUserActivity(userId);
+      const activityTracker =
+        await this.detectionEngine.checkUserActivity(userId);
 
       // Evaluate if emergency triggers should be activated
-      const evaluation = await this.detectionEngine.evaluateEmergencyTriggers(userId);
+      const evaluation =
+        await this.detectionEngine.evaluateEmergencyTriggers(userId);
 
       let triggerResult = null;
       if (evaluation.shouldTrigger && evaluation.triggerType) {
@@ -153,9 +155,9 @@ export class EmergencyService {
       return {
         activityTracker,
         triggerResult,
-        shouldAlert: evaluation.severity === 'high' || evaluation.severity === 'critical',
+        shouldAlert:
+          evaluation.severity === 'high' || evaluation.severity === 'critical',
       };
-
     } catch (error) {
       console.error('Error monitoring user activity:', error);
       throw error;
@@ -186,12 +188,12 @@ export class EmergencyService {
       }
 
       return result;
-
     } catch (error) {
       console.error('Error processing guardian response:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to process response',
+        error:
+          error instanceof Error ? error.message : 'Failed to process response',
       };
     }
   }
@@ -208,10 +210,12 @@ export class EmergencyService {
       // Get activation details
       const { data: activation, error: activationError } = await supabase
         .from('family_shield_activation_log')
-        .select(`
+        .select(
+          `
           *,
           guardians!inner (*)
-        `)
+        `
+        )
         .eq('verification_token', verificationToken)
         .single();
 
@@ -271,11 +275,11 @@ export class EmergencyService {
       };
 
       return { data: dashboardData };
-
     } catch (error) {
       console.error('Error getting emergency dashboard:', error);
       return {
-        error: error instanceof Error ? error.message : 'Failed to load dashboard',
+        error:
+          error instanceof Error ? error.message : 'Failed to load dashboard',
       };
     }
   }
@@ -359,7 +363,7 @@ export class EmergencyService {
             is_available: true,
             resource_type: 'contact' as const,
             metadata: { contact: c },
-          }))
+          })),
         ],
         emergency_contacts: resources.contacts,
         important_documents: resources.documents,
@@ -378,11 +382,13 @@ export class EmergencyService {
       };
 
       return { data: survivorData };
-
     } catch (error) {
       console.error('Error getting survivor interface:', error);
       return {
-        error: error instanceof Error ? error.message : 'Failed to load survivor interface',
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Failed to load survivor interface',
       };
     }
   }
@@ -461,7 +467,9 @@ export class EmergencyService {
 
     try {
       // Clean up expired activation tokens
-      const { error: tokenError } = await supabase.rpc('expire_old_activation_tokens');
+      const { error: tokenError } = await supabase.rpc(
+        'expire_old_activation_tokens'
+      );
       if (tokenError) {
         errors.push(`Token cleanup failed: ${tokenError.message}`);
       } else {
@@ -469,22 +477,27 @@ export class EmergencyService {
       }
 
       // Clean up expired notifications and access requests
-      const { error: cleanupError } = await supabase.rpc('cleanup_expired_emergency_data');
+      const { error: cleanupError } = await supabase.rpc(
+        'cleanup_expired_emergency_data'
+      );
       if (cleanupError) {
         errors.push(`Data cleanup failed: ${cleanupError.message}`);
       } else {
         cleaned++;
       }
 
-      console.warn(`Emergency cleanup completed: ${cleaned} operations, ${errors.length} errors`);
+      console.warn(
+        `Emergency cleanup completed: ${cleaned} operations, ${errors.length} errors`
+      );
 
       return { cleaned, errors };
-
     } catch (error) {
       console.error('Emergency cleanup error:', error);
       return {
         cleaned: 0,
-        errors: [error instanceof Error ? error.message : 'Unknown cleanup error'],
+        errors: [
+          error instanceof Error ? error.message : 'Unknown cleanup error',
+        ],
       };
     }
   }
@@ -509,23 +522,28 @@ export class EmergencyService {
         .select('*', { count: 'exact', head: true })
         .eq('is_shield_enabled', true);
 
-      if (shieldError) errors.push(`Shield count error: ${shieldError.message}`);
+      if (shieldError)
+        errors.push(`Shield count error: ${shieldError.message}`);
 
       // Count pending activations
-      const { count: pendingActivations, error: activationError } = await supabase
-        .from('family_shield_activation_log')
-        .select('*', { count: 'exact', head: true })
-        .eq('status', 'pending');
+      const { count: pendingActivations, error: activationError } =
+        await supabase
+          .from('family_shield_activation_log')
+          .select('*', { count: 'exact', head: true })
+          .eq('status', 'pending');
 
-      if (activationError) errors.push(`Activation count error: ${activationError.message}`);
+      if (activationError)
+        errors.push(`Activation count error: ${activationError.message}`);
 
       // Count pending notifications
-      const { count: pendingNotifications, error: notificationError } = await supabase
-        .from('guardian_notifications')
-        .select('*', { count: 'exact', head: true })
-        .eq('delivery_status', 'pending');
+      const { count: pendingNotifications, error: notificationError } =
+        await supabase
+          .from('guardian_notifications')
+          .select('*', { count: 'exact', head: true })
+          .eq('delivery_status', 'pending');
 
-      if (notificationError) errors.push(`Notification count error: ${notificationError.message}`);
+      if (notificationError)
+        errors.push(`Notification count error: ${notificationError.message}`);
 
       const isHealthy = errors.length === 0;
 
@@ -536,14 +554,15 @@ export class EmergencyService {
         pendingNotifications: pendingNotifications || 0,
         errors,
       };
-
     } catch (error) {
       return {
         isHealthy: false,
         activeShields: 0,
         pendingActivations: 0,
         pendingNotifications: 0,
-        errors: [error instanceof Error ? error.message : 'System status check failed'],
+        errors: [
+          error instanceof Error ? error.message : 'System status check failed',
+        ],
       };
     }
   }

@@ -26,20 +26,19 @@ export function SyncModeToggle() {
         setSyncMode(mode);
 
         // Load category stats
-        const categoryStats = await Promise.all([
-          'tasks',
-          'documents',
-          'reminders',
-          'preferences'
-        ].map(async (category) => {
-          const stats = await cloudSyncAdapter.getSyncStatus(category);
-          return {
-            name: category,
-            localCount: stats.total,
-            syncedCount: stats.synced,
-            syncEnabled: mode !== 'local-only'
-          };
-        }));
+        const categoryStats = await Promise.all(
+          ['tasks', 'documents', 'reminders', 'preferences'].map(
+            async category => {
+              const stats = await cloudSyncAdapter.getSyncStatus(category);
+              return {
+                name: category,
+                localCount: stats.total,
+                syncedCount: stats.synced,
+                syncEnabled: mode !== 'local-only',
+              };
+            }
+          )
+        );
 
         setCategories(categoryStats);
         setIsLoading(false);
@@ -60,9 +59,9 @@ export function SyncModeToggle() {
 
       // Update category stats
       const updatedCategories = await Promise.all(
-        categories.map(async (cat) => ({
+        categories.map(async cat => ({
           ...cat,
-          syncEnabled: mode !== 'local-only'
+          syncEnabled: mode !== 'local-only',
         }))
       );
 
@@ -103,7 +102,6 @@ export function SyncModeToggle() {
       if (!category.syncEnabled) {
         await cloudSyncAdapter.forceSyncCategory(categoryName);
       }
-
     } catch (error) {
       console.error('Failed to toggle category sync:', error);
     } finally {
@@ -113,23 +111,23 @@ export function SyncModeToggle() {
 
   if (isLoading) {
     return (
-      <div className="animate-pulse">
-        <div className="h-8 bg-gray-200 rounded w-48 mb-4" />
-        <div className="space-y-3">
-          <div className="h-16 bg-gray-200 rounded" />
-          <div className="h-16 bg-gray-200 rounded" />
-          <div className="h-16 bg-gray-200 rounded" />
+      <div className='animate-pulse'>
+        <div className='h-8 bg-gray-200 rounded w-48 mb-4' />
+        <div className='space-y-3'>
+          <div className='h-16 bg-gray-200 rounded' />
+          <div className='h-16 bg-gray-200 rounded' />
+          <div className='h-16 bg-gray-200 rounded' />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className='space-y-6'>
       {/* Mode Selection */}
-      <div className="flex flex-col space-y-2">
-        <h3 className="text-lg font-medium">{t('sync.mode.title')}</h3>
-        <div className="flex space-x-4">
+      <div className='flex flex-col space-y-2'>
+        <h3 className='text-lg font-medium'>{t('sync.mode.title')}</h3>
+        <div className='flex space-x-4'>
           <button
             onClick={() => handleModeChange('local-only')}
             className={`flex items-center px-4 py-2 rounded-lg ${
@@ -138,7 +136,7 @@ export function SyncModeToggle() {
                 : 'bg-gray-100 text-gray-700'
             }`}
           >
-            <span className="mr-2">🔒</span>
+            <span className='mr-2'>🔒</span>
             {t('sync.mode.local')}
           </button>
           <button
@@ -149,7 +147,7 @@ export function SyncModeToggle() {
                 : 'bg-gray-100 text-gray-700'
             }`}
           >
-            <span className="mr-2">🔄</span>
+            <span className='mr-2'>🔄</span>
             {t('sync.mode.hybrid')}
           </button>
           <button
@@ -160,43 +158,43 @@ export function SyncModeToggle() {
                 : 'bg-gray-100 text-gray-700'
             }`}
           >
-            <span className="mr-2">☁️</span>
+            <span className='mr-2'>☁️</span>
             {t('sync.mode.full')}
           </button>
         </div>
-        <p className="text-sm text-gray-500">
+        <p className='text-sm text-gray-500'>
           {t(`sync.mode.description.${syncMode}`)}
         </p>
       </div>
 
       {/* Category List */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-medium">{t('sync.categories.title')}</h3>
-        {categories.map((category) => (
+      <div className='space-y-4'>
+        <h3 className='text-lg font-medium'>{t('sync.categories.title')}</h3>
+        {categories.map(category => (
           <div
             key={category.name}
-            className="flex items-center justify-between p-4 bg-white rounded-lg shadow"
+            className='flex items-center justify-between p-4 bg-white rounded-lg shadow'
           >
-            <div className="flex items-center space-x-4">
-              <span className="text-xl">
+            <div className='flex items-center space-x-4'>
+              <span className='text-xl'>
                 {category.syncEnabled ? '☁️' : '🔒'}
               </span>
               <div>
-                <h4 className="font-medium capitalize">
+                <h4 className='font-medium capitalize'>
                   {t(`sync.categories.${category.name}`)}
                 </h4>
-                <p className="text-sm text-gray-500">
+                <p className='text-sm text-gray-500'>
                   {t('sync.categories.stats', {
                     local: category.localCount,
-                    synced: category.syncedCount
+                    synced: category.syncedCount,
                   })}
                 </p>
               </div>
             </div>
-            <label className="relative inline-flex items-center cursor-pointer">
+            <label className='relative inline-flex items-center cursor-pointer'>
               <input
-                type="checkbox"
-                className="sr-only peer"
+                type='checkbox'
+                className='sr-only peer'
                 checked={category.syncEnabled}
                 onChange={() => toggleCategorySync(category.name)}
                 disabled={syncMode === 'local-only' || syncMode === 'full-sync'}
@@ -208,9 +206,9 @@ export function SyncModeToggle() {
       </div>
 
       {/* Help Text */}
-      <p className="text-sm text-gray-500">
+      <p className='text-sm text-gray-500'>
         {t('sync.help.text')}
-        <button className="text-blue-600 hover:underline ml-1">
+        <button className='text-blue-600 hover:underline ml-1'>
           {t('sync.help.learnMore')}
         </button>
       </p>

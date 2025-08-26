@@ -14,7 +14,9 @@ interface SofiaStore {
   // Actions
   addMessage: (message: SofiaMessage) => void;
   setMessages: (messages: SofiaMessage[]) => void;
-  updateMessages: (updateFn: (messages: SofiaMessage[]) => SofiaMessage[]) => void;
+  updateMessages: (
+    updateFn: (messages: SofiaMessage[]) => SofiaMessage[]
+  ) => void;
   setTyping: (typing: boolean) => void;
   toggleVisibility: () => void;
   showSofia: () => void;
@@ -39,8 +41,8 @@ export const useSofiaStore = create<SofiaStore>()(
 
       // Actions
       addMessage: (message: SofiaMessage) => {
-        set((state) => ({
-          messages: [...state.messages, message]
+        set(state => ({
+          messages: [...state.messages, message],
         }));
       },
 
@@ -48,9 +50,11 @@ export const useSofiaStore = create<SofiaStore>()(
         set({ messages });
       },
 
-      updateMessages: (updateFn: (messages: SofiaMessage[]) => SofiaMessage[]) => {
-        set((state) => ({
-          messages: updateFn(state.messages)
+      updateMessages: (
+        updateFn: (messages: SofiaMessage[]) => SofiaMessage[]
+      ) => {
+        set(state => ({
+          messages: updateFn(state.messages),
         }));
       },
 
@@ -59,7 +63,7 @@ export const useSofiaStore = create<SofiaStore>()(
       },
 
       toggleVisibility: () => {
-        set((state) => ({ isVisible: !state.isVisible }));
+        set(state => ({ isVisible: !state.isVisible }));
       },
 
       showSofia: () => {
@@ -71,10 +75,10 @@ export const useSofiaStore = create<SofiaStore>()(
       },
 
       updateContext: (newContext: Partial<SofiaContext>) => {
-        set((state) => ({
+        set(state => ({
           context: state.context
             ? { ...state.context, ...newContext }
-            : newContext as SofiaContext
+            : (newContext as SofiaContext),
         }));
       },
 
@@ -96,15 +100,15 @@ export const useSofiaStore = create<SofiaStore>()(
       getMessageCount: () => {
         const { messages } = get();
         return messages.length;
-      }
+      },
     }),
     {
       name: 'sofia-store',
       // Only persist messages and context, not UI state
-      partialize: (state) => ({
+      partialize: state => ({
         messages: state.messages,
-        context: state.context
-      })
+        context: state.context,
+      }),
     }
   )
 );

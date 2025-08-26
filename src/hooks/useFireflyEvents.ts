@@ -17,34 +17,57 @@ interface GuardianEventDetail {
 }
 
 export const useFireflyEvents = () => {
-  const { celebrateMilestone, celebrateUpload, celebrateGuardian } = useFireflyCelebration();
+  const { celebrateMilestone, celebrateUpload, celebrateGuardian } =
+    useFireflyCelebration();
 
   useEffect(() => {
     // Handle milestone unlocked events
-    const handleMilestoneUnlocked = (event: CustomEvent<MilestoneEventDetail>) => {
+    const handleMilestoneUnlocked = (
+      event: CustomEvent<MilestoneEventDetail>
+    ) => {
       celebrateMilestone();
     };
 
     // Handle document uploaded events
-    const handleDocumentUploaded = (event: CustomEvent<DocumentEventDetail>) => {
+    const handleDocumentUploaded = (
+      event: CustomEvent<DocumentEventDetail>
+    ) => {
       celebrateUpload();
     };
 
-    // Handle guardian added events  
+    // Handle guardian added events
     const handleGuardianAdded = (event: CustomEvent<GuardianEventDetail>) => {
       celebrateGuardian();
     };
 
     // Add event listeners
-    window.addEventListener('milestoneUnlocked', handleMilestoneUnlocked as EventListener);
-    window.addEventListener('documentUploaded', handleDocumentUploaded as EventListener);
-    window.addEventListener('guardianAdded', handleGuardianAdded as EventListener);
+    window.addEventListener(
+      'milestoneUnlocked',
+      handleMilestoneUnlocked as EventListener
+    );
+    window.addEventListener(
+      'documentUploaded',
+      handleDocumentUploaded as EventListener
+    );
+    window.addEventListener(
+      'guardianAdded',
+      handleGuardianAdded as EventListener
+    );
 
     // Cleanup
     return () => {
-      window.removeEventListener('milestoneUnlocked', handleMilestoneUnlocked as EventListener);
-      window.removeEventListener('documentUploaded', handleDocumentUploaded as EventListener);
-      window.removeEventListener('guardianAdded', handleGuardianAdded as EventListener);
+      window.removeEventListener(
+        'milestoneUnlocked',
+        handleMilestoneUnlocked as EventListener
+      );
+      window.removeEventListener(
+        'documentUploaded',
+        handleDocumentUploaded as EventListener
+      );
+      window.removeEventListener(
+        'guardianAdded',
+        handleGuardianAdded as EventListener
+      );
     };
   }, [celebrateMilestone, celebrateUpload, celebrateGuardian]);
 };

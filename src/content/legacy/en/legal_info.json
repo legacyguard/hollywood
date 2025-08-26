@@ -1,6 +1,6 @@
 {
   "jurisdiction": "General (English)",
-  "countryCode": "en", 
+  "countryCode": "en",
   "languageCode": "en",
   "currency": "USD",
   "willTypes": {
@@ -10,7 +10,7 @@
       "requirements": [
         "Must be written entirely in your own handwriting",
         "Must be signed with your own signature",
-        "Date is strongly recommended", 
+        "Date is strongly recommended",
         "No witnesses required in most jurisdictions",
         "Must be in local language or translated"
       ],
@@ -21,7 +21,7 @@
         "Lower cost"
       ],
       "disadvantages": [
-        "Higher risk of being contested", 
+        "Higher risk of being contested",
         "Handwriting authentication may be required",
         "Risk of loss or damage",
         "Not valid in all jurisdictions"
@@ -33,7 +33,7 @@
       "description": "Can be typed or written by another person, requires witnesses",
       "requirements": [
         "Must be signed by testator in presence of witnesses",
-        "Witnesses must sign in testator's presence", 
+        "Witnesses must sign in testator's presence",
         "Number of witnesses varies by jurisdiction (usually 2-3)",
         "Witnesses must be legally capable adults",
         "Witnesses typically cannot be beneficiaries"
@@ -62,7 +62,10 @@
       "required": true,
       "canBeNonResident": true,
       "mustBeAdult": true,
-      "restrictions": ["Cannot be mentally incapacitated", "Should be trustworthy"]
+      "restrictions": [
+        "Cannot be mentally incapacitated",
+        "Should be trustworthy"
+      ]
     }
   },
   "witnessRequirements": {

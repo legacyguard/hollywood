@@ -4,8 +4,20 @@ import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon-library';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { toast } from 'sonner';
 import type { WillData } from './WillWizard';
 
@@ -43,7 +55,11 @@ export interface InheritanceMap {
   conflicts: ConflictType[];
 }
 
-export type ConflictType = 'forced_heirs' | 'percentage_overflow' | 'missing_heirs' | 'relationship_inconsistency';
+export type ConflictType =
+  | 'forced_heirs'
+  | 'percentage_overflow'
+  | 'missing_heirs'
+  | 'relationship_inconsistency';
 
 interface FamilyTreeVisualizationProps {
   willData: WillData;
@@ -57,19 +73,16 @@ interface FamilyTreeVisualizationProps {
   className?: string;
 }
 
-export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = ({
-  willData,
-  guardians = [],
-  onUpdateWillData,
-  className = ''
-}) => {
+export const FamilyTreeVisualization: React.FC<
+  FamilyTreeVisualizationProps
+> = ({ willData, guardians = [], onUpdateWillData, className = '' }) => {
   const [selectedNode, setSelectedNode] = useState<FamilyNode | null>(null);
   const [showAddRelative, setShowAddRelative] = useState(false);
   const [newRelative, setNewRelative] = useState({
     name: '',
     relationship: '',
     dateOfBirth: '',
-    isAlive: true
+    isAlive: true,
   });
 
   // Build family tree from will data and guardians
@@ -92,13 +105,18 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
     return suggestMissingRelatives(familyTree);
   }, [familyTree]);
 
-  const handleDragStart = useCallback((node: FamilyNode, event: React.DragEvent) => {
-    event.dataTransfer.setData('application/json', JSON.stringify(node));
-  }, []);
+  const handleDragStart = useCallback(
+    (node: FamilyNode, event: React.DragEvent) => {
+      event.dataTransfer.setData('application/json', JSON.stringify(node));
+    },
+    []
+  );
 
   const handleDrop = useCallback((event: React.DragEvent) => {
     event.preventDefault();
-    const nodeData = JSON.parse(event.dataTransfer.getData('application/json')) as FamilyNode;
+    const nodeData = JSON.parse(
+      event.dataTransfer.getData('application/json')
+    ) as FamilyNode;
     const rect = event.currentTarget.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
@@ -107,39 +125,42 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
     console.log(`Moving ${nodeData.name} to position (${x}, ${y})`);
   }, []);
 
-  const handleAssignInheritance = useCallback((nodeId: string, percentage: number) => {
-    const node = familyTree.find(n => n.id === nodeId);
-    if (!node) return;
+  const handleAssignInheritance = useCallback(
+    (nodeId: string, percentage: number) => {
+      const node = familyTree.find(n => n.id === nodeId);
+      if (!node) return;
 
-    // Check if person is already a beneficiary
-    const existingBeneficiaryIndex = willData.beneficiaries.findIndex(b =>
-      b.name.toLowerCase() === node.name.toLowerCase()
-    );
+      // Check if person is already a beneficiary
+      const existingBeneficiaryIndex = willData.beneficiaries.findIndex(
+        b => b.name.toLowerCase() === node.name.toLowerCase()
+      );
 
-    if (existingBeneficiaryIndex >= 0) {
-      // Update existing beneficiary
-      const updatedBeneficiaries = [...willData.beneficiaries];
-      updatedBeneficiaries[existingBeneficiaryIndex] = {
-        ...updatedBeneficiaries[existingBeneficiaryIndex],
-        percentage
-      };
-      onUpdateWillData({ beneficiaries: updatedBeneficiaries });
-    } else {
-      // Add new beneficiary
-      const newBeneficiary = {
-        id: crypto.randomUUID(),
-        name: node.name,
-        relationship: node.relationship,
-        percentage,
-        conditions: ''
-      };
-      onUpdateWillData({
-        beneficiaries: [...willData.beneficiaries, newBeneficiary]
-      });
-    }
+      if (existingBeneficiaryIndex >= 0) {
+        // Update existing beneficiary
+        const updatedBeneficiaries = [...willData.beneficiaries];
+        updatedBeneficiaries[existingBeneficiaryIndex] = {
+          ...updatedBeneficiaries[existingBeneficiaryIndex],
+          percentage,
+        };
+        onUpdateWillData({ beneficiaries: updatedBeneficiaries });
+      } else {
+        // Add new beneficiary
+        const newBeneficiary = {
+          id: crypto.randomUUID(),
+          name: node.name,
+          relationship: node.relationship,
+          percentage,
+          conditions: '',
+        };
+        onUpdateWillData({
+          beneficiaries: [...willData.beneficiaries, newBeneficiary],
+        });
+      }
 
-    toast.success(`Assigned ${percentage}% inheritance to ${node.name}`);
-  }, [familyTree, willData.beneficiaries, onUpdateWillData]);
+      toast.success(`Assigned ${percentage}% inheritance to ${node.name}`);
+    },
+    [familyTree, willData.beneficiaries, onUpdateWillData]
+  );
 
   const handleAddRelative = useCallback(() => {
     if (!newRelative.name || !newRelative.relationship) {
@@ -155,7 +176,7 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
       name: '',
       relationship: '',
       dateOfBirth: '',
-      isAlive: true
+      isAlive: true,
     });
     setShowAddRelative(false);
   }, [newRelative]);
@@ -163,18 +184,20 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
   return (
     <div className={`space-y-6 ${className}`}>
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className='flex items-center justify-between'>
         <div>
-          <h3 className="text-lg font-semibold">Family Tree & Inheritance Flow</h3>
-          <p className="text-sm text-muted-foreground">
+          <h3 className='text-lg font-semibold'>
+            Family Tree & Inheritance Flow
+          </h3>
+          <p className='text-sm text-muted-foreground'>
             Visualize relationships and plan inheritance distribution
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className='flex items-center gap-2'>
           <Dialog open={showAddRelative} onOpenChange={setShowAddRelative}>
             <DialogTrigger asChild>
-              <Button variant="outline" size="sm">
-                <Icon name="add" className="w-4 h-4 mr-2" />
+              <Button variant='outline' size='sm'>
+                <Icon name='add' className='w-4 h-4 mr-2' />
                 Add Relative
               </Button>
             </DialogTrigger>
@@ -182,49 +205,64 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
               <DialogHeader>
                 <DialogTitle>Add Family Member</DialogTitle>
               </DialogHeader>
-              <div className="space-y-4">
+              <div className='space-y-4'>
                 <div>
-                  <label className="text-sm font-medium">Name</label>
+                  <label className='text-sm font-medium'>Name</label>
                   <Input
                     value={newRelative.name}
-                    onChange={(e) => setNewRelative(prev => ({ ...prev, name: e.target.value }))}
-                    placeholder="Full name"
+                    onChange={e =>
+                      setNewRelative(prev => ({
+                        ...prev,
+                        name: e.target.value,
+                      }))
+                    }
+                    placeholder='Full name'
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium">Relationship</label>
+                  <label className='text-sm font-medium'>Relationship</label>
                   <Select
                     value={newRelative.relationship}
-                    onValueChange={(value) => setNewRelative(prev => ({ ...prev, relationship: value }))}
+                    onValueChange={value =>
+                      setNewRelative(prev => ({ ...prev, relationship: value }))
+                    }
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select relationship" />
+                      <SelectValue placeholder='Select relationship' />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="child">Child</SelectItem>
-                      <SelectItem value="spouse">Spouse</SelectItem>
-                      <SelectItem value="parent">Parent</SelectItem>
-                      <SelectItem value="sibling">Sibling</SelectItem>
-                      <SelectItem value="grandchild">Grandchild</SelectItem>
-                      <SelectItem value="grandparent">Grandparent</SelectItem>
+                      <SelectItem value='child'>Child</SelectItem>
+                      <SelectItem value='spouse'>Spouse</SelectItem>
+                      <SelectItem value='parent'>Parent</SelectItem>
+                      <SelectItem value='sibling'>Sibling</SelectItem>
+                      <SelectItem value='grandchild'>Grandchild</SelectItem>
+                      <SelectItem value='grandparent'>Grandparent</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div>
-                  <label className="text-sm font-medium">Date of Birth (Optional)</label>
+                  <label className='text-sm font-medium'>
+                    Date of Birth (Optional)
+                  </label>
                   <Input
-                    type="date"
+                    type='date'
                     value={newRelative.dateOfBirth}
-                    onChange={(e) => setNewRelative(prev => ({ ...prev, dateOfBirth: e.target.value }))}
+                    onChange={e =>
+                      setNewRelative(prev => ({
+                        ...prev,
+                        dateOfBirth: e.target.value,
+                      }))
+                    }
                   />
                 </div>
-                <div className="flex justify-end gap-2">
-                  <Button variant="outline" onClick={() => setShowAddRelative(false)}>
+                <div className='flex justify-end gap-2'>
+                  <Button
+                    variant='outline'
+                    onClick={() => setShowAddRelative(false)}
+                  >
                     Cancel
                   </Button>
-                  <Button onClick={handleAddRelative}>
-                    Add Relative
-                  </Button>
+                  <Button onClick={handleAddRelative}>Add Relative</Button>
                 </div>
               </div>
             </DialogContent>
@@ -234,21 +272,21 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
 
       {/* Conflicts and Suggestions */}
       {(conflicts.length > 0 || suggestions.length > 0) && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className='grid grid-cols-1 lg:grid-cols-2 gap-4'>
           {conflicts.length > 0 && (
-            <Card className="p-4 border-red-200 bg-red-50">
-              <h4 className="font-medium text-red-900 mb-2 flex items-center gap-2">
-                <Icon name="alert-triangle" className="w-4 h-4" />
+            <Card className='p-4 border-red-200 bg-red-50'>
+              <h4 className='font-medium text-red-900 mb-2 flex items-center gap-2'>
+                <Icon name='alert-triangle' className='w-4 h-4' />
                 Relationship Conflicts ({conflicts.length})
               </h4>
-              <div className="space-y-2">
+              <div className='space-y-2'>
                 {conflicts.slice(0, 3).map((conflict, index) => (
-                  <div key={index} className="text-sm text-red-800">
+                  <div key={index} className='text-sm text-red-800'>
                     • {getConflictDescription(conflict)}
                   </div>
                 ))}
                 {conflicts.length > 3 && (
-                  <div className="text-xs text-red-600">
+                  <div className='text-xs text-red-600'>
                     +{conflicts.length - 3} more conflicts
                   </div>
                 )}
@@ -257,21 +295,23 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
           )}
 
           {suggestions.length > 0 && (
-            <Card className="p-4 border-blue-200 bg-blue-50">
-              <h4 className="font-medium text-blue-900 mb-2 flex items-center gap-2">
-                <Icon name="lightbulb" className="w-4 h-4" />
+            <Card className='p-4 border-blue-200 bg-blue-50'>
+              <h4 className='font-medium text-blue-900 mb-2 flex items-center gap-2'>
+                <Icon name='lightbulb' className='w-4 h-4' />
                 Suggested Family Members ({suggestions.length})
               </h4>
-              <div className="space-y-2">
+              <div className='space-y-2'>
                 {suggestions.slice(0, 3).map((suggestion, index) => (
-                  <div key={index} className="text-sm">
-                    <div className="flex items-center gap-2">
-                      <Badge variant="outline" className="text-xs">
+                  <div key={index} className='text-sm'>
+                    <div className='flex items-center gap-2'>
+                      <Badge variant='outline' className='text-xs'>
                         {suggestion.priority}
                       </Badge>
-                      <span className="font-medium">{suggestion.relationship}</span>
+                      <span className='font-medium'>
+                        {suggestion.relationship}
+                      </span>
                     </div>
-                    <div className="text-blue-700 text-xs mt-1">
+                    <div className='text-blue-700 text-xs mt-1'>
                       {suggestion.reasoning}
                     </div>
                   </div>
@@ -283,35 +323,38 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
       )}
 
       {/* Family Tree Visualization */}
-      <Card className="p-6">
-        <div className="mb-4">
-          <h4 className="font-medium mb-2">Interactive Family Tree</h4>
-          <p className="text-sm text-muted-foreground">
-            Drag family members to rearrange. Click on a person to assign inheritance.
+      <Card className='p-6'>
+        <div className='mb-4'>
+          <h4 className='font-medium mb-2'>Interactive Family Tree</h4>
+          <p className='text-sm text-muted-foreground'>
+            Drag family members to rearrange. Click on a person to assign
+            inheritance.
           </p>
         </div>
 
         <div
-          className="relative w-full h-96 bg-gradient-to-b from-slate-50 to-slate-100 rounded-lg border-2 border-dashed border-gray-300 overflow-hidden"
+          className='relative w-full h-96 bg-gradient-to-b from-slate-50 to-slate-100 rounded-lg border-2 border-dashed border-gray-300 overflow-hidden'
           onDrop={handleDrop}
-          onDragOver={(e) => e.preventDefault()}
+          onDragOver={e => e.preventDefault()}
         >
           {/* Render family tree nodes */}
-          {familyTree.map((node) => (
+          {familyTree.map(node => (
             <FamilyTreeNode
               key={node.id}
               node={node}
               isSelected={selectedNode?.id === node.id}
               onClick={() => setSelectedNode(node)}
-              onDragStart={(e) => handleDragStart(node, e)}
-              onAssignInheritance={(percentage) => handleAssignInheritance(node.id, percentage)}
+              onDragStart={e => handleDragStart(node, e)}
+              onAssignInheritance={percentage =>
+                handleAssignInheritance(node.id, percentage)
+              }
             />
           ))}
 
           {/* Connection lines would be rendered here */}
-          <svg className="absolute inset-0 pointer-events-none w-full h-full">
-            {familyTree.map((node) =>
-              node.children.map((childId) => {
+          <svg className='absolute inset-0 pointer-events-none w-full h-full'>
+            {familyTree.map(node =>
+              node.children.map(childId => {
                 const child = familyTree.find(n => n.id === childId);
                 if (!child) return null;
 
@@ -322,10 +365,10 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
                     y1={node.position.y + 25}
                     x2={child.position.x + 60} // Center of child node
                     y2={child.position.y + 25}
-                    stroke="currentColor"
-                    className="text-slate-400"
-                    strokeWidth="2"
-                    strokeDasharray="5,5"
+                    stroke='currentColor'
+                    className='text-slate-400'
+                    strokeWidth='2'
+                    strokeDasharray='5,5'
                   />
                 );
               })
@@ -335,26 +378,31 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
       </Card>
 
       {/* Inheritance Summary */}
-      <Card className="p-6">
-        <h4 className="font-medium mb-4">Inheritance Distribution</h4>
-        <div className="space-y-4">
+      <Card className='p-6'>
+        <h4 className='font-medium mb-4'>Inheritance Distribution</h4>
+        <div className='space-y-4'>
           {inheritanceFlow.distributions.map((distribution, index) => (
-            <div key={index} className="flex items-center justify-between p-3 bg-muted/50 rounded">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                  <Icon name="user" className="w-5 h-5 text-primary" />
+            <div
+              key={index}
+              className='flex items-center justify-between p-3 bg-muted/50 rounded'
+            >
+              <div className='flex items-center gap-3'>
+                <div className='w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center'>
+                  <Icon name='user' className='w-5 h-5 text-primary' />
                 </div>
                 <div>
-                  <div className="font-medium">{distribution.recipientName}</div>
-                  <div className="text-sm text-muted-foreground">
+                  <div className='font-medium'>
+                    {distribution.recipientName}
+                  </div>
+                  <div className='text-sm text-muted-foreground'>
                     {distribution.assetTypes.join(', ')}
                   </div>
                 </div>
               </div>
-              <div className="text-right">
-                <div className="font-medium">{distribution.percentage}%</div>
+              <div className='text-right'>
+                <div className='font-medium'>{distribution.percentage}%</div>
                 {distribution.amount > 0 && (
-                  <div className="text-sm text-muted-foreground">
+                  <div className='text-sm text-muted-foreground'>
                     ${distribution.amount.toLocaleString()}
                   </div>
                 )}
@@ -363,10 +411,15 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
           ))}
 
           {inheritanceFlow.distributions.length === 0 && (
-            <div className="text-center text-muted-foreground py-8">
-              <Icon name="users" className="w-12 h-12 mx-auto mb-4 opacity-50" />
+            <div className='text-center text-muted-foreground py-8'>
+              <Icon
+                name='users'
+                className='w-12 h-12 mx-auto mb-4 opacity-50'
+              />
               <p>No inheritance distributions defined yet</p>
-              <p className="text-sm">Add beneficiaries to see the inheritance flow</p>
+              <p className='text-sm'>
+                Add beneficiaries to see the inheritance flow
+              </p>
             </div>
           )}
         </div>
@@ -389,18 +442,25 @@ const FamilyTreeNode: React.FC<FamilyTreeNodeProps> = ({
   isSelected,
   onClick,
   onDragStart,
-  onAssignInheritance
+  onAssignInheritance,
 }) => {
   const [showInheritanceDialog, setShowInheritanceDialog] = useState(false);
-  const [inheritancePercentage, setInheritancePercentage] = useState(node.inheritanceShare || 0);
+  const [inheritancePercentage, setInheritancePercentage] = useState(
+    node.inheritanceShare || 0
+  );
 
   const getGenerationColor = (generation: number): string => {
     switch (generation) {
-      case -1: return 'bg-blue-100 border-blue-300 text-blue-800'; // Parents
-      case 0: return 'bg-green-100 border-green-300 text-green-800'; // Testator
-      case 1: return 'bg-purple-100 border-purple-300 text-purple-800'; // Children
-      case 2: return 'bg-pink-100 border-pink-300 text-pink-800'; // Grandchildren
-      default: return 'bg-gray-100 border-gray-300 text-gray-800';
+      case -1:
+        return 'bg-blue-100 border-blue-300 text-blue-800'; // Parents
+      case 0:
+        return 'bg-green-100 border-green-300 text-green-800'; // Testator
+      case 1:
+        return 'bg-purple-100 border-purple-300 text-purple-800'; // Children
+      case 2:
+        return 'bg-pink-100 border-pink-300 text-pink-800'; // Grandchildren
+      default:
+        return 'bg-gray-100 border-gray-300 text-gray-800';
     }
   };
 
@@ -408,19 +468,26 @@ const FamilyTreeNode: React.FC<FamilyTreeNodeProps> = ({
     switch (relationship.toLowerCase()) {
       case 'spouse':
       case 'husband':
-      case 'wife': return 'heart';
+      case 'wife':
+        return 'heart';
       case 'child':
       case 'son':
-      case 'daughter': return 'baby';
+      case 'daughter':
+        return 'baby';
       case 'parent':
       case 'father':
-      case 'mother': return 'user-check';
+      case 'mother':
+        return 'user-check';
       case 'sibling':
       case 'brother':
-      case 'sister': return 'users';
-      case 'grandchild': return 'smile';
-      case 'grandparent': return 'user-plus';
-      default: return 'user';
+      case 'sister':
+        return 'users';
+      case 'grandchild':
+        return 'smile';
+      case 'grandparent':
+        return 'user-plus';
+      default:
+        return 'user';
     }
   };
 
@@ -438,12 +505,15 @@ const FamilyTreeNode: React.FC<FamilyTreeNodeProps> = ({
         onDragStart={onDragStart}
         onClick={onClick}
       >
-        <div className="flex items-center gap-2 mb-1">
-          <Icon name={getRelationshipIcon(node.relationship)} className="w-4 h-4" />
-          <span className="font-medium text-sm truncate">{node.name}</span>
+        <div className='flex items-center gap-2 mb-1'>
+          <Icon
+            name={getRelationshipIcon(node.relationship)}
+            className='w-4 h-4'
+          />
+          <span className='font-medium text-sm truncate'>{node.name}</span>
         </div>
 
-        <div className="text-xs opacity-75 mb-2">
+        <div className='text-xs opacity-75 mb-2'>
           {node.relationship}
           {node.dateOfBirth && (
             <div>Born: {new Date(node.dateOfBirth).getFullYear()}</div>
@@ -451,54 +521,64 @@ const FamilyTreeNode: React.FC<FamilyTreeNodeProps> = ({
         </div>
 
         {node.inheritanceShare && (
-          <Badge variant="secondary" className="text-xs">
+          <Badge variant='secondary' className='text-xs'>
             {node.inheritanceShare}%
           </Badge>
         )}
 
-        <div className="flex gap-1 mt-2">
+        <div className='flex gap-1 mt-2'>
           <Button
-            size="sm"
-            variant="ghost"
-            className="h-6 px-2 text-xs"
-            onClick={(e) => {
+            size='sm'
+            variant='ghost'
+            className='h-6 px-2 text-xs'
+            onClick={e => {
               e.stopPropagation();
               setShowInheritanceDialog(true);
             }}
           >
-            <Icon name="percent" className="w-3 h-3" />
+            <Icon name='percent' className='w-3 h-3' />
           </Button>
         </div>
 
         {node.conflicts && node.conflicts.length > 0 && (
-          <div className="absolute -top-2 -right-2">
-            <div className="w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
-              <Icon name="alert-triangle" className="w-2 h-2 text-white" />
+          <div className='absolute -top-2 -right-2'>
+            <div className='w-4 h-4 bg-red-500 rounded-full flex items-center justify-center'>
+              <Icon name='alert-triangle' className='w-2 h-2 text-white' />
             </div>
           </div>
         )}
       </div>
 
       {/* Inheritance Assignment Dialog */}
-      <Dialog open={showInheritanceDialog} onOpenChange={setShowInheritanceDialog}>
+      <Dialog
+        open={showInheritanceDialog}
+        onOpenChange={setShowInheritanceDialog}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Assign Inheritance to {node.name}</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4">
+          <div className='space-y-4'>
             <div>
-              <label className="text-sm font-medium">Inheritance Percentage</label>
+              <label className='text-sm font-medium'>
+                Inheritance Percentage
+              </label>
               <Input
-                type="number"
-                min="0"
-                max="100"
+                type='number'
+                min='0'
+                max='100'
                 value={inheritancePercentage}
-                onChange={(e) => setInheritancePercentage(parseInt(e.target.value) || 0)}
-                placeholder="0"
+                onChange={e =>
+                  setInheritancePercentage(parseInt(e.target.value) || 0)
+                }
+                placeholder='0'
               />
             </div>
-            <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setShowInheritanceDialog(false)}>
+            <div className='flex justify-end gap-2'>
+              <Button
+                variant='outline'
+                onClick={() => setShowInheritanceDialog(false)}
+              >
                 Cancel
               </Button>
               <Button
@@ -532,13 +612,13 @@ function buildFamilyTree(willData: WillData, guardians: any[]): FamilyNode[] {
     generation: 0,
     position: { x: 200, y: 150 }, // Center position
     children: [],
-    parents: []
+    parents: [],
   });
 
   // Add beneficiaries and guardians as family nodes
   const allPeople = [
     ...willData.beneficiaries.map(b => ({ ...b, source: 'beneficiary' })),
-    ...guardians.map(g => ({ ...g, source: 'guardian' }))
+    ...guardians.map(g => ({ ...g, source: 'guardian' })),
   ];
 
   allPeople.forEach((person, index) => {
@@ -555,7 +635,7 @@ function buildFamilyTree(willData: WillData, guardians: any[]): FamilyNode[] {
       position: basePosition,
       inheritanceShare: person.percentage || 0,
       children: [],
-      parents: generation === 0 ? [] : ['testator']
+      parents: generation === 0 ? [] : ['testator'],
     });
   });
 
@@ -573,33 +653,45 @@ function getGenerationFromRelationship(relationship: string): number {
   return 0;
 }
 
-function getPositionForGeneration(generation: number, index: number): { x: number; y: number } {
-  const baseY = 150 + (generation * 80); // Vertical spacing between generations
-  const baseX = 100 + (index * 150); // Horizontal spacing between siblings
+function getPositionForGeneration(
+  generation: number,
+  index: number
+): { x: number; y: number } {
+  const baseY = 150 + generation * 80; // Vertical spacing between generations
+  const baseX = 100 + index * 150; // Horizontal spacing between siblings
   return { x: baseX, y: Math.max(20, baseY) };
 }
 
-function visualizeInheritanceFlow(familyTree: FamilyNode[], willData: WillData): InheritanceMap {
+function visualizeInheritanceFlow(
+  familyTree: FamilyNode[],
+  willData: WillData
+): InheritanceMap {
   const distributions = willData.beneficiaries.map(beneficiary => ({
     recipientId: beneficiary.id,
     recipientName: beneficiary.name,
     amount: 0, // Would calculate based on total estate value
     percentage: beneficiary.percentage,
-    assetTypes: ['General Estate'] // Would be more specific based on assets
+    assetTypes: ['General Estate'], // Would be more specific based on assets
   }));
 
   return {
     totalValue: 0, // Would calculate from assets
     distributions,
-    conflicts: []
+    conflicts: [],
   };
 }
 
-function detectRelationshipConflicts(familyTree: FamilyNode[], willData: WillData): ConflictType[] {
+function detectRelationshipConflicts(
+  familyTree: FamilyNode[],
+  willData: WillData
+): ConflictType[] {
   const conflicts: ConflictType[] = [];
 
   // Check for percentage overflow
-  const totalPercentage = willData.beneficiaries.reduce((sum, b) => sum + b.percentage, 0);
+  const totalPercentage = willData.beneficiaries.reduce(
+    (sum, b) => sum + b.percentage,
+    0
+  );
   if (totalPercentage > 100) {
     conflicts.push('percentage_overflow');
   }
@@ -619,19 +711,23 @@ function detectRelationshipConflicts(familyTree: FamilyNode[], willData: WillDat
   return conflicts;
 }
 
-function suggestMissingRelatives(familyTree: FamilyNode[]): RelativeSuggestion[] {
+function suggestMissingRelatives(
+  familyTree: FamilyNode[]
+): RelativeSuggestion[] {
   const suggestions: RelativeSuggestion[] = [];
 
   // Check for missing spouse
   const hasSpouse = familyTree.some(node =>
-    ['spouse', 'husband', 'wife', 'partner'].includes(node.relationship.toLowerCase())
+    ['spouse', 'husband', 'wife', 'partner'].includes(
+      node.relationship.toLowerCase()
+    )
   );
 
   if (!hasSpouse) {
     suggestions.push({
       relationship: 'spouse',
       reasoning: 'Consider adding your spouse or partner to the family tree',
-      priority: 'high'
+      priority: 'high',
     });
   }
 
@@ -643,8 +739,9 @@ function suggestMissingRelatives(familyTree: FamilyNode[]): RelativeSuggestion[]
   if (!hasChildren) {
     suggestions.push({
       relationship: 'child',
-      reasoning: 'If you have children, they may be entitled to forced heir protection',
-      priority: 'high'
+      reasoning:
+        'If you have children, they may be entitled to forced heir protection',
+      priority: 'high',
     });
   }
 
@@ -653,10 +750,15 @@ function suggestMissingRelatives(familyTree: FamilyNode[]): RelativeSuggestion[]
 
 function getConflictDescription(conflict: ConflictType): string {
   switch (conflict) {
-    case 'forced_heirs': return 'Some family members may have forced heir rights';
-    case 'percentage_overflow': return 'Total inheritance percentages exceed 100%';
-    case 'missing_heirs': return 'Potential heirs are missing from the will';
-    case 'relationship_inconsistency': return 'Relationship definitions may be inconsistent';
-    default: return 'Unknown conflict detected';
+    case 'forced_heirs':
+      return 'Some family members may have forced heir rights';
+    case 'percentage_overflow':
+      return 'Total inheritance percentages exceed 100%';
+    case 'missing_heirs':
+      return 'Potential heirs are missing from the will';
+    case 'relationship_inconsistency':
+      return 'Relationship definitions may be inconsistent';
+    default:
+      return 'Unknown conflict detected';
   }
 }

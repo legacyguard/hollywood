@@ -16,7 +16,9 @@ interface SofiaContextProviderProps {
  * This component automatically tracks user context and updates Sofia's
  * understanding of the user's situation, progress, and needs.
  */
-const SofiaContextProvider: React.FC<SofiaContextProviderProps> = ({ children }) => {
+const SofiaContextProvider: React.FC<SofiaContextProviderProps> = ({
+  children,
+}) => {
   const { userId } = useAuth();
   const { user } = useUser();
   const location = useLocation();
@@ -78,18 +80,21 @@ const SofiaContextProvider: React.FC<SofiaContextProviderProps> = ({ children })
     }
 
     // Determine family status from user metadata or onboarding data
-// Determine family status from user metadata or onboarding data
-let familyStatus: SofiaContext['familyStatus'] = 'single';
+    // Determine family status from user metadata or onboarding data
+    let familyStatus: SofiaContext['familyStatus'] = 'single';
 
-try {
-  const onboardingData = localStorage.getItem(`onboarding_${userId}`);
-  if (onboardingData) {
-    const parsed = JSON.parse(onboardingData);
-    familyStatus = parsed.familyStatus || 'single';
-  }
-} catch (error) {
-  console.error('Failed to parse onboarding data from localStorage:', error);
-}
+    try {
+      const onboardingData = localStorage.getItem(`onboarding_${userId}`);
+      if (onboardingData) {
+        const parsed = JSON.parse(onboardingData);
+        familyStatus = parsed.familyStatus || 'single';
+      }
+    } catch (error) {
+      console.error(
+        'Failed to parse onboarding data from localStorage:',
+        error
+      );
+    }
 
     // Calculate milestone progress for Path of Serenity
     const userStats = {
@@ -97,16 +102,17 @@ try {
       guardiansCount: guardianCount,
       categoriesWithDocuments: [], // This would need to come from actual document data
       hasExpiryTracking: false, // This would need to come from actual document data
-      legacyItemsCount: 0 // This would need to come from legacy features
+      legacyItemsCount: 0, // This would need to come from legacy features
     };
 
     const milestoneResult = calculateUnlockedMilestones(userStats);
     const milestoneProgress = {
-      unlockedCount: milestoneResult.milestones.filter(m => m.isUnlocked).length,
+      unlockedCount: milestoneResult.milestones.filter(m => m.isUnlocked)
+        .length,
       totalMilestones: milestoneResult.milestones.length,
       nextMilestone: milestoneResult.milestones.find(m => !m.isUnlocked)?.name,
       hasExpiryTracking: userStats.hasExpiryTracking,
-      categoriesWithDocuments: userStats.categoriesWithDocuments
+      categoriesWithDocuments: userStats.categoriesWithDocuments,
     };
 
     // Create comprehensive context
@@ -119,11 +125,10 @@ try {
       recentActivity,
       familyStatus,
       language: languageCode,
-      milestoneProgress
+      milestoneProgress,
     };
 
     setContext(context);
-
   }, [userId, user, languageCode, setContext]);
 
   // Update context when location changes (for contextual help)
@@ -134,7 +139,6 @@ try {
     updateContext({
       // We could add currentPage to context if needed for more specific help
     });
-
   }, [location, userId, updateContext]);
 
   // Listen for document uploads and other events to update context
@@ -150,7 +154,9 @@ try {
       // Recalculate completion percentage
       const guardiansKey = `guardians_${userId}`;
       const storedGuardians = localStorage.getItem(guardiansKey);
-      const guardianCount = storedGuardians ? JSON.parse(storedGuardians).length : 0;
+      const guardianCount = storedGuardians
+        ? JSON.parse(storedGuardians).length
+        : 0;
 
       let completionPercentage = 0;
       completionPercentage += Math.min(documentCount * 8, 40);
@@ -161,8 +167,8 @@ try {
         completionPercentage: Math.min(completionPercentage, 100),
         recentActivity: [
           `${documentCount} documents uploaded`,
-          guardianCount > 0 ? `${guardianCount} guardians added` : ''
-        ].filter(Boolean)
+          guardianCount > 0 ? `${guardianCount} guardians added` : '',
+        ].filter(Boolean),
       });
     };
 
@@ -172,7 +178,9 @@ try {
       // Similar logic for guardian updates
       const guardiansKey = `guardians_${userId}`;
       const storedGuardians = localStorage.getItem(guardiansKey);
-      const guardianCount = storedGuardians ? JSON.parse(storedGuardians).length : 0;
+      const guardianCount = storedGuardians
+        ? JSON.parse(storedGuardians).length
+        : 0;
 
       const documentsKey = `documents_${userId}`;
       const storedDocs = localStorage.getItem(documentsKey);
@@ -187,8 +195,8 @@ try {
         completionPercentage: Math.min(completionPercentage, 100),
         recentActivity: [
           documentCount > 0 ? `${documentCount} documents uploaded` : '',
-          `${guardianCount} guardians added`
-        ].filter(Boolean)
+          `${guardianCount} guardians added`,
+        ].filter(Boolean),
       });
     };
 

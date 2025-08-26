@@ -59,7 +59,11 @@ describe('RLS Policies & Database Security', () => {
       const client = createClient('url', 'key');
 
       // Valid access to own documents
-      await client.from('documents').select('*').eq('user_id', 'user_123').single();
+      await client
+        .from('documents')
+        .select('*')
+        .eq('user_id', 'user_123')
+        .single();
 
       expect(client.from).toHaveBeenCalledWith('documents');
       // Verify the chain of calls was made
@@ -88,7 +92,11 @@ describe('RLS Policies & Database Security', () => {
       const client = createClient('url', 'key');
 
       // This should be blocked by RLS
-      await client.from('documents').select('*').eq('user_id', 'other_user').single();
+      await client
+        .from('documents')
+        .select('*')
+        .eq('user_id', 'other_user')
+        .single();
 
       // Verify the query was made (RLS will handle the blocking)
       expect(client.from).toHaveBeenCalledWith('documents');
@@ -117,14 +125,14 @@ describe('RLS Policies & Database Security', () => {
     it('should enforce guardian ownership on updates', async () => {
       const client = createClient('url', 'key');
 
-
       // Test that update operation calls the correct methods
       const updateData = {
         can_trigger_emergency: false,
       };
 
       // Test that update operation is properly constrained to user
-      await client.from('guardians')
+      await client
+        .from('guardians')
         .update(updateData)
         .eq('id', 'guardian_123')
         .eq('user_id', 'user_123')
@@ -247,12 +255,15 @@ describe('RLS Policies & Database Security', () => {
         p_document_id: 'doc_123',
       });
 
-      expect(client.rpc).toHaveBeenCalledWith('create_bundle_and_link_document', {
-        p_user_id: 'user_123',
-        p_bundle_name: 'Test Bundle',
-        p_bundle_category: 'personal',
-        p_document_id: 'doc_123',
-      });
+      expect(client.rpc).toHaveBeenCalledWith(
+        'create_bundle_and_link_document',
+        {
+          p_user_id: 'user_123',
+          p_bundle_name: 'Test Bundle',
+          p_bundle_category: 'personal',
+          p_document_id: 'doc_123',
+        }
+      );
     });
   });
 
@@ -308,7 +319,10 @@ describe('RLS Policies & Database Security', () => {
       const client = createClient('url', 'key');
 
       // Test cascade delete behavior
-      await client.from('user_encryption_keys').delete().eq('user_id', 'user_123');
+      await client
+        .from('user_encryption_keys')
+        .delete()
+        .eq('user_id', 'user_123');
 
       expect(client.from).toHaveBeenCalledWith('user_encryption_keys');
       // Verify the chain of calls was made

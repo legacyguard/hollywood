@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
-import { useUser } from "@clerk/clerk-react";
-import Onboarding from "@/pages/onboarding/Onboarding";
+import { useState, useEffect } from 'react';
+import { useUser } from '@clerk/clerk-react';
+import Onboarding from '@/pages/onboarding/Onboarding';
 
 interface OnboardingWrapperProps {
   children: React.ReactNode;
@@ -47,13 +47,13 @@ export function OnboardingWrapper({ children }: OnboardingWrapperProps) {
         publicMetadata: {
           ...user.publicMetadata,
           onboardingCompleted: true,
-          onboardingCompletedAt: new Date().toISOString()
-        }
+          onboardingCompletedAt: new Date().toISOString(),
+        },
       });
 
       setShowOnboarding(false);
     } catch (error) {
-      console.error("Failed to update onboarding status:", error);
+      console.error('Failed to update onboarding status:', error);
       // Even if metadata update fails, don't show onboarding again this session
       setShowOnboarding(false);
     }
@@ -62,10 +62,10 @@ export function OnboardingWrapper({ children }: OnboardingWrapperProps) {
   // Show loading state while checking onboarding status
   if (isCheckingOnboarding) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center">
-          <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Preparing your experience...</p>
+      <div className='min-h-screen flex items-center justify-center bg-background'>
+        <div className='text-center'>
+          <div className='w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4'></div>
+          <p className='text-muted-foreground'>Preparing your experience...</p>
         </div>
       </div>
     );

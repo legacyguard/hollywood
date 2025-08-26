@@ -5,10 +5,9 @@ import type {
   EmergencyActivation,
   EmergencyTriggerType,
   UserHealthCheck,
-  ShieldStatus} from '@/types/emergency';
-import {
-  DEFAULT_DETECTION_CONFIG
+  ShieldStatus,
 } from '@/types/emergency';
+import { DEFAULT_DETECTION_CONFIG } from '@/types/emergency';
 import { FamilyShieldSettings } from '@/types/guardian';
 
 export class EmergencyDetectionEngine {
@@ -39,25 +38,26 @@ export class EmergencyDetectionEngine {
     const supabase = this.getServiceClient();
 
     // Get user's last activities from various sources
-    const [authResponse, documentsResponse, profileResponse] = await Promise.all([
-      // Check last authentication activity
-      supabase.auth.admin.getUserById(userId),
+    const [authResponse, documentsResponse, profileResponse] =
+      await Promise.all([
+        // Check last authentication activity
+        supabase.auth.admin.getUserById(userId),
 
-      // Check last document access
-      supabase
-        .from('documents')
-        .select('updated_at')
-        .eq('user_id', userId)
-        .order('updated_at', { ascending: false })
-        .limit(1),
+        // Check last document access
+        supabase
+          .from('documents')
+          .select('updated_at')
+          .eq('user_id', userId)
+          .order('updated_at', { ascending: false })
+          .limit(1),
 
-      // Check profile/settings activity
-      supabase
-        .from('profiles')
-        .select('updated_at, last_seen_at')
-        .eq('user_id', userId)
-        .single(),
-    ]);
+        // Check profile/settings activity
+        supabase
+          .from('profiles')
+          .select('updated_at, last_seen_at')
+          .eq('user_id', userId)
+          .single(),
+      ]);
 
     const now = new Date();
     const lastLogin = authResponse.data.user?.last_sign_in_at
@@ -73,11 +73,13 @@ export class EmergencyDetectionEngine {
       : new Date(0);
 
     // Calculate the most recent activity
-    const lastActivity = new Date(Math.max(
-      lastLogin.getTime(),
-      lastDocumentAccess.getTime(),
-      lastProfileActivity.getTime()
-    ));
+    const lastActivity = new Date(
+      Math.max(
+        lastLogin.getTime(),
+        lastDocumentAccess.getTime(),
+        lastProfileActivity.getTime()
+      )
+    );
 
     // Calculate inactivity days
     const inactivityMs = now.getTime() - lastActivity.getTime();
@@ -86,7 +88,10 @@ export class EmergencyDetectionEngine {
     // Calculate activity score (0-100)
     let activityScore = 100;
     if (inactivityDays > 0) {
-      activityScore = Math.max(0, 100 - (inactivityDays / this.config.inactivity_threshold_days) * 100);
+      activityScore = Math.max(
+        0,
+        100 - (inactivityDays / this.config.inactivity_threshold_days) * 100
+      );
     }
 
     // Determine health check status
@@ -177,15 +182,21 @@ export class EmergencyDetectionEngine {
       shouldTrigger = true;
       triggerType = 'inactivity_detected';
       severity = 'critical';
-      reasons.push(`User inactive for ${activityTracker.inactivity_days} days (threshold: ${inactivityThreshold})`);
+      reasons.push(
+        `User inactive for ${activityTracker.inactivity_days} days (threshold: ${inactivityThreshold})`
+      );
       recommendations.push('Immediate guardian notification required');
     } else if (activityTracker.inactivity_days > inactivityThreshold * 0.8) {
       severity = 'high';
-      reasons.push(`User approaching inactivity threshold: ${activityTracker.inactivity_days}/${inactivityThreshold} days`);
+      reasons.push(
+        `User approaching inactivity threshold: ${activityTracker.inactivity_days}/${inactivityThreshold} days`
+      );
       recommendations.push('Send warning notification to user');
     } else if (activityTracker.inactivity_days > inactivityThreshold * 0.5) {
       severity = 'medium';
-      reasons.push(`Extended inactivity detected: ${activityTracker.inactivity_days} days`);
+      reasons.push(
+        `Extended inactivity detected: ${activityTracker.inactivity_days} days`
+      );
       recommendations.push('Send gentle activity reminder');
     }
 
@@ -194,11 +205,15 @@ export class EmergencyDetectionEngine {
       shouldTrigger = true;
       triggerType = 'health_check_failure';
       severity = 'high';
-      reasons.push(`${activityTracker.consecutive_missed_checks} consecutive missed health checks`);
+      reasons.push(
+        `${activityTracker.consecutive_missed_checks} consecutive missed health checks`
+      );
       recommendations.push('Escalate to guardian verification');
     } else if (activityTracker.consecutive_missed_checks >= 3) {
       severity = 'medium';
-      reasons.push(`${activityTracker.consecutive_missed_checks} missed health checks`);
+      reasons.push(
+        `${activityTracker.consecutive_missed_checks} missed health checks`
+      );
       recommendations.push('Increase health check frequency');
     }
 
@@ -208,7 +223,10 @@ export class EmergencyDetectionEngine {
       .select('*')
       .eq('user_id', userId)
       .eq('status', 'pending')
-      .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString());
+      .gte(
+        'created_at',
+        new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+      );
 
     if (pendingActivations && pendingActivations.length > 0) {
       shouldTrigger = false; // Don't trigger if already pending
@@ -267,9 +285,12 @@ export class EmergencyDetectionEngine {
       // Create activation log entry
       const verificationToken = crypto.randomUUID();
       const expiresAt = new Date();
-      expiresAt.setDate(expiresAt.getDate() + this.config.guardian_verification_timeout_days);
+      expiresAt.setDate(
+        expiresAt.getDate() + this.config.guardian_verification_timeout_days
+      );
 
-      const guardianInfo = guardians.find(g => g.id === guardianId) || guardians[0];
+      const guardianInfo =
+        guardians.find(g => g.id === guardianId) || guardians[0];
 
       const { data: activation, error: activationError } = await supabase
         .from('family_shield_activation_log')
@@ -309,7 +330,6 @@ export class EmergencyDetectionEngine {
         success: true,
         activationId: activation.id,
       };
-
     } catch (error) {
       console.error('Error triggering emergency activation:', error);
       return {
@@ -337,13 +357,14 @@ export class EmergencyDetectionEngine {
       action_required: true,
       priority: 'urgent',
       delivery_method: 'email',
-      expires_at: new Date(Date.now() + this.config.guardian_verification_timeout_days * 24 * 60 * 60 * 1000).toISOString(),
+      expires_at: new Date(
+        Date.now() +
+          this.config.guardian_verification_timeout_days * 24 * 60 * 60 * 1000
+      ).toISOString(),
     }));
 
     // Insert notification queue entries
-    await supabase
-      .from('guardian_notifications')
-      .insert(notifications);
+    await supabase.from('guardian_notifications').insert(notifications);
   }
 
   async processHealthCheck(
@@ -354,15 +375,13 @@ export class EmergencyDetectionEngine {
     const supabase = this.getServiceClient();
 
     // Record the health check
-    await supabase
-      .from('user_health_checks')
-      .insert({
-        user_id: userId,
-        check_type: checkType,
-        status: responded ? 'responded' : 'missed',
-        scheduled_at: new Date().toISOString(),
-        responded_at: responded ? new Date().toISOString() : null,
-      });
+    await supabase.from('user_health_checks').insert({
+      user_id: userId,
+      check_type: checkType,
+      status: responded ? 'responded' : 'missed',
+      scheduled_at: new Date().toISOString(),
+      responded_at: responded ? new Date().toISOString() : null,
+    });
 
     // Update last activity in shield settings
     if (responded) {
@@ -418,7 +437,8 @@ export class EmergencyDetectionEngine {
 
     return {
       hasActiveShield: shieldSettings?.is_shield_enabled || false,
-      shieldStatus: (shieldSettings?.shield_status as ShieldStatus) || 'inactive',
+      shieldStatus:
+        (shieldSettings?.shield_status as ShieldStatus) || 'inactive',
       pendingActivations: activations || [],
       lastActivity: activityTracker.last_api_activity,
       activityScore: activityTracker.activity_score,

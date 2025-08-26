@@ -19,7 +19,9 @@ interface AttentionSectionProps {
   className?: string;
 }
 
-export const AttentionSection: React.FC<AttentionSectionProps> = ({ className }) => {
+export const AttentionSection: React.FC<AttentionSectionProps> = ({
+  className,
+}) => {
   // Mock data - in real implementation, this would come from API/hooks
   const attentionItems: AttentionItem[] = [
     {
@@ -30,17 +32,17 @@ export const AttentionSection: React.FC<AttentionSectionProps> = ({ className })
       icon: 'calendar',
       actionText: 'View Details',
       onAction: () => console.log('Show passport details'),
-      urgency: 'medium'
+      urgency: 'medium',
     },
     {
       id: '2',
       type: 'guardian',
       title: 'You invited Jane Smith as a guardian',
-      description: 'She hasn\'t joined your circle of trust yet',
+      description: "She hasn't joined your circle of trust yet",
       icon: 'user-plus',
       actionText: 'Send Reminder',
       onAction: () => console.log('Send reminder to guardian'),
-      urgency: 'low'
+      urgency: 'low',
     },
     {
       id: '3',
@@ -50,8 +52,8 @@ export const AttentionSection: React.FC<AttentionSectionProps> = ({ className })
       icon: 'sparkles',
       actionText: 'View Suggestion',
       onAction: () => console.log('Show Sofia suggestion'),
-      urgency: 'low'
-    }
+      urgency: 'low',
+    },
   ];
 
   // If no items need attention, don't render the section
@@ -86,41 +88,45 @@ export const AttentionSection: React.FC<AttentionSectionProps> = ({ className })
   return (
     <FadeIn duration={0.5} delay={0.3}>
       <section className={className}>
-        <div className="mb-6">
-          <div className="flex items-center gap-3 mb-2">
-            <Icon name="alert-circle" className="w-6 h-6 text-primary" />
-            <h2 className="text-2xl font-bold font-heading text-card-foreground">
+        <div className='mb-6'>
+          <div className='flex items-center gap-3 mb-2'>
+            <Icon name='alert-circle' className='w-6 h-6 text-primary' />
+            <h2 className='text-2xl font-bold font-heading text-card-foreground'>
               Current Challenges
             </h2>
           </div>
-          <p className="text-muted-foreground">
+          <p className='text-muted-foreground'>
             Situations requiring your protective attention
           </p>
         </div>
 
-        <div className="space-y-4">
+        <div className='space-y-4'>
           {attentionItems.map((item, index) => (
             <FadeIn key={item.id} duration={0.4} delay={0.1 * index}>
-              <Card className={`p-4 border-l-4 ${getUrgencyStyles(item.urgency)}`}>
-                <div className="flex items-start justify-between">
-                  <div className="flex items-start gap-4 flex-1">
-                    <div className={`p-2 rounded-lg bg-background ${getIconColor(item.urgency)}`}>
-                      <Icon name={item.icon} className="w-5 h-5" />
+              <Card
+                className={`p-4 border-l-4 ${getUrgencyStyles(item.urgency)}`}
+              >
+                <div className='flex items-start justify-between'>
+                  <div className='flex items-start gap-4 flex-1'>
+                    <div
+                      className={`p-2 rounded-lg bg-background ${getIconColor(item.urgency)}`}
+                    >
+                      <Icon name={item.icon} className='w-5 h-5' />
                     </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-card-foreground mb-1">
+                    <div className='flex-1'>
+                      <h3 className='font-semibold text-card-foreground mb-1'>
                         {item.title}
                       </h3>
-                      <p className="text-sm text-muted-foreground">
+                      <p className='text-sm text-muted-foreground'>
                         {item.description}
                       </p>
                     </div>
                   </div>
                   <Button
-                    variant="outline"
-                    size="sm"
+                    variant='outline'
+                    size='sm'
                     onClick={item.onAction}
-                    className="ml-4 shrink-0"
+                    className='ml-4 shrink-0'
                   >
                     {item.actionText}
                   </Button>

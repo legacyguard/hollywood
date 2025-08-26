@@ -19,7 +19,9 @@ export const GardenSeed: React.FC<GardenSeedProps> = ({
 }) => {
   const { userId } = useAuth();
   const [isHovered, setIsHovered] = useState(false);
-  const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number; delay: number }>>([]);
+  const [particles, setParticles] = useState<
+    Array<{ id: number; x: number; y: number; delay: number }>
+  >([]);
 
   // Generate floating particles based on progress
   useEffect(() => {
@@ -37,9 +39,24 @@ export const GardenSeed: React.FC<GardenSeedProps> = ({
 
   // Size configuration
   const sizeConfig = {
-    small: { container: 'w-16 h-16', seed: 'w-4 h-4', glow: '0 0 8px', text: 'text-xs' },
-    medium: { container: 'w-24 h-24', seed: 'w-6 h-6', glow: '0 0 12px', text: 'text-sm' },
-    large: { container: 'w-32 h-32', seed: 'w-8 h-8', glow: '0 0 16px', text: 'text-base' },
+    small: {
+      container: 'w-16 h-16',
+      seed: 'w-4 h-4',
+      glow: '0 0 8px',
+      text: 'text-xs',
+    },
+    medium: {
+      container: 'w-24 h-24',
+      seed: 'w-6 h-6',
+      glow: '0 0 12px',
+      text: 'text-sm',
+    },
+    large: {
+      container: 'w-32 h-32',
+      seed: 'w-8 h-8',
+      glow: '0 0 16px',
+      text: 'text-base',
+    },
   };
 
   const config = sizeConfig[size];
@@ -100,10 +117,12 @@ export const GardenSeed: React.FC<GardenSeedProps> = ({
   const colors = getColors();
 
   return (
-    <div className={`relative flex items-center justify-center ${config.container} ${className}`}>
+    <div
+      className={`relative flex items-center justify-center ${config.container} ${className}`}
+    >
       {/* Background glow */}
       <motion.div
-        className="absolute inset-0 rounded-full"
+        className='absolute inset-0 rounded-full'
         animate={{
           boxShadow: showPulse
             ? [
@@ -116,7 +135,7 @@ export const GardenSeed: React.FC<GardenSeedProps> = ({
         transition={{
           duration: seedState === 'dormant' ? 4 : 2,
           repeat: showPulse ? Infinity : 0,
-          ease: "easeInOut",
+          ease: 'easeInOut',
         }}
       />
 
@@ -129,7 +148,7 @@ export const GardenSeed: React.FC<GardenSeedProps> = ({
         }}
         transition={{
           scale: { duration: 0.2 },
-          rotate: { duration: 4, repeat: Infinity, ease: "easeInOut" },
+          rotate: { duration: 4, repeat: Infinity, ease: 'easeInOut' },
         }}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
@@ -141,22 +160,22 @@ export const GardenSeed: React.FC<GardenSeedProps> = ({
         <AnimatePresence>
           {seedState !== 'dormant' && (
             <motion.div
-              className="absolute inset-1 rounded-full opacity-60"
+              className='absolute inset-1 rounded-full opacity-60'
               initial={{ opacity: 0, scale: 0 }}
               animate={{ opacity: 0.6, scale: 1 }}
               exit={{ opacity: 0, scale: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
+              transition={{ duration: 0.8, ease: 'easeOut' }}
             >
               {/* Sprouting indicator */}
               {(seedState === 'sprouting' || seedState === 'growing') && (
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1 w-0.5 h-2 bg-green-400 rounded-full" />
+                <div className='absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1 w-0.5 h-2 bg-green-400 rounded-full' />
               )}
 
               {/* Growth rings for flourishing state */}
               {seedState === 'flourishing' && (
                 <>
-                  <div className="absolute inset-0 rounded-full border border-emerald-300/50" />
-                  <div className="absolute inset-1 rounded-full border border-emerald-400/30" />
+                  <div className='absolute inset-0 rounded-full border border-emerald-300/50' />
+                  <div className='absolute inset-1 rounded-full border border-emerald-400/30' />
                 </>
               )}
 
@@ -166,7 +185,7 @@ export const GardenSeed: React.FC<GardenSeedProps> = ({
                   {[0, 60, 120, 180, 240, 300].map((rotation, index) => (
                     <motion.div
                       key={index}
-                      className="absolute top-1/2 left-1/2 w-1 h-3 bg-gradient-to-t from-violet-400 to-pink-300 rounded-full origin-bottom"
+                      className='absolute top-1/2 left-1/2 w-1 h-3 bg-gradient-to-t from-violet-400 to-pink-300 rounded-full origin-bottom'
                       style={{
                         transform: `translate(-50%, -100%) rotate(${rotation}deg)`,
                       }}
@@ -178,7 +197,7 @@ export const GardenSeed: React.FC<GardenSeedProps> = ({
                         duration: 2,
                         repeat: Infinity,
                         delay: index * 0.2,
-                        ease: "easeInOut",
+                        ease: 'easeInOut',
                       }}
                     />
                   ))}
@@ -191,10 +210,10 @@ export const GardenSeed: React.FC<GardenSeedProps> = ({
 
       {/* Progress particles */}
       <AnimatePresence>
-        {particles.map((particle) => (
+        {particles.map(particle => (
           <motion.div
             key={particle.id}
-            className="absolute w-1 h-1 rounded-full"
+            className='absolute w-1 h-1 rounded-full'
             style={{
               backgroundColor: colors.particles,
               left: '50%',
@@ -220,7 +239,7 @@ export const GardenSeed: React.FC<GardenSeedProps> = ({
               duration: 3,
               repeat: Infinity,
               delay: particle.delay,
-              ease: "easeOut",
+              ease: 'easeOut',
             }}
           />
         ))}
@@ -236,12 +255,10 @@ export const GardenSeed: React.FC<GardenSeedProps> = ({
             exit={{ opacity: 0, scale: 0.8, y: 10 }}
             transition={{ duration: 0.2 }}
           >
-            {progress === 0 ? (
-              'Plant your first seed'
-            ) : (
-              `Garden progress: ${Math.round(progress)}%`
-            )}
-            <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-black/80" />
+            {progress === 0
+              ? 'Plant your first seed'
+              : `Garden progress: ${Math.round(progress)}%`}
+            <div className='absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-black/80' />
           </motion.div>
         )}
       </AnimatePresence>
@@ -254,7 +271,7 @@ export const GardenSeed: React.FC<GardenSeedProps> = ({
           animate={{ opacity: 0.7, y: 0 }}
           transition={{ duration: 0.8, delay: 0.5 }}
         >
-          <span className="capitalize text-gray-600 dark:text-gray-400">
+          <span className='capitalize text-gray-600 dark:text-gray-400'>
             {seedState}
           </span>
         </motion.div>

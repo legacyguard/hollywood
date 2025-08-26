@@ -17,7 +17,9 @@ interface LocalizationContextType extends LocalizationState {
   isLoading: boolean;
 }
 
-const LocalizationContext = createContext<LocalizationContextType | undefined>(undefined);
+const LocalizationContext = createContext<LocalizationContextType | undefined>(
+  undefined
+);
 
 interface LocalizationProviderProps {
   children: ReactNode;
@@ -28,20 +30,20 @@ const COUNTRY_MAPPINGS: Record<CountryCode, LocalizationState> = {
     countryCode: 'sk',
     languageCode: 'sk',
     jurisdiction: 'Slovakia',
-    currency: 'EUR'
+    currency: 'EUR',
   },
   cz: {
     countryCode: 'cz',
     languageCode: 'cs',
     jurisdiction: 'Czech Republic',
-    currency: 'CZK'
+    currency: 'CZK',
   },
   en: {
     countryCode: 'en',
     languageCode: 'en',
     jurisdiction: 'General (English)',
-    currency: 'USD'
-  }
+    currency: 'USD',
+  },
 };
 
 const detectCountryFromDomain = (): CountryCode => {
@@ -86,7 +88,9 @@ const detectCountryFromGeolocation = async (): Promise<CountryCode> => {
   }
 };
 
-export const LocalizationProvider: React.FC<LocalizationProviderProps> = ({ children }) => {
+export const LocalizationProvider: React.FC<LocalizationProviderProps> = ({
+  children,
+}) => {
   const [state, setState] = useState<LocalizationState>(COUNTRY_MAPPINGS.en);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -104,7 +108,9 @@ export const LocalizationProvider: React.FC<LocalizationProviderProps> = ({ chil
       }
 
       // Check if user has previously selected a different country
-      const savedCountry = localStorage.getItem('legacyguard-country') as CountryCode;
+      const savedCountry = localStorage.getItem(
+        'legacyguard-country'
+      ) as CountryCode;
       if (savedCountry && COUNTRY_MAPPINGS[savedCountry]) {
         detectedCountry = savedCountry;
       }
@@ -130,7 +136,7 @@ export const LocalizationProvider: React.FC<LocalizationProviderProps> = ({ chil
     ...state,
     setCountryCode,
     setLanguageCode,
-    isLoading
+    isLoading,
   };
 
   return (
@@ -143,13 +149,17 @@ export const LocalizationProvider: React.FC<LocalizationProviderProps> = ({ chil
 export const useLocalization = (): LocalizationContextType => {
   const context = useContext(LocalizationContext);
   if (context === undefined) {
-    throw new Error('useLocalization must be used within a LocalizationProvider');
+    throw new Error(
+      'useLocalization must be used within a LocalizationProvider'
+    );
   }
   return context;
 };
 
 // Hook for loading country-specific content
-export const useCountryContent = <T,>(contentType: 'legal_info' | 'wizard_steps' | 'will_template') => {
+export const useCountryContent = <T,>(
+  contentType: 'legal_info' | 'wizard_steps' | 'will_template'
+) => {
   const { countryCode } = useLocalization();
   const [content, setContent] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
@@ -163,7 +173,9 @@ export const useCountryContent = <T,>(contentType: 'legal_info' | 'wizard_steps'
 
         if (contentType === 'will_template') {
           // For markdown templates, we'll need special handling
-          const response = await fetch(`/src/content/legacy/${countryCode}/will_template.md`);
+          const response = await fetch(
+            `/src/content/legacy/${countryCode}/will_template.md`
+          );
           if (!response.ok) {
             throw new Error(`Failed to fetch template: ${response.status}`);
           }
@@ -185,7 +197,9 @@ export const useCountryContent = <T,>(contentType: 'legal_info' | 'wizard_steps'
           } else if (countryCode === 'en' && contentType === 'wizard_steps') {
             module = await import('../content/legacy/en/wizard_steps.json');
           } else {
-            throw new Error(`Unsupported content type: ${contentType} for country: ${countryCode}`);
+            throw new Error(
+              `Unsupported content type: ${contentType} for country: ${countryCode}`
+            );
           }
           setContent(module.default as T);
         }
@@ -197,7 +211,9 @@ export const useCountryContent = <T,>(contentType: 'legal_info' | 'wizard_steps'
         if (countryCode !== 'en') {
           try {
             if (contentType === 'will_template') {
-              const response = await fetch(`/src/content/legacy/en/will_template.md`);
+              const response = await fetch(
+                `/src/content/legacy/en/will_template.md`
+              );
               if (response.ok) {
                 const text = await response.text();
                 setContent(text as T);
@@ -206,9 +222,13 @@ export const useCountryContent = <T,>(contentType: 'legal_info' | 'wizard_steps'
             } else {
               let fallbackModule;
               if (contentType === 'legal_info') {
-                fallbackModule = await import('../content/legacy/en/legal_info.json');
+                fallbackModule = await import(
+                  '../content/legacy/en/legal_info.json'
+                );
               } else if (contentType === 'wizard_steps') {
-                fallbackModule = await import('../content/legacy/en/wizard_steps.json');
+                fallbackModule = await import(
+                  '../content/legacy/en/wizard_steps.json'
+                );
               }
               if (fallbackModule) {
                 setContent(fallbackModule.default as T);

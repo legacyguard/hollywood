@@ -41,7 +41,8 @@ export interface CreateTimeCapsuleRequest {
   duration_seconds?: number;
 }
 
-export interface UpdateTimeCapsuleRequest extends Partial<CreateTimeCapsuleRequest> {
+export interface UpdateTimeCapsuleRequest
+  extends Partial<CreateTimeCapsuleRequest> {
   status?: CapsuleStatus;
 }
 
@@ -105,13 +106,13 @@ export const DEFAULT_RECORDING_CONSTRAINTS: RecordingConstraints = {
   video: {
     width: { ideal: 1280 },
     height: { ideal: 720 },
-    frameRate: { ideal: 30 }
+    frameRate: { ideal: 30 },
   },
   audio: {
     echoCancellation: true,
     noiseSuppression: true,
-    sampleRate: 44100
-  }
+    sampleRate: 44100,
+  },
 };
 
 export const MAX_RECORDING_DURATION = 300; // 5 minutes in seconds

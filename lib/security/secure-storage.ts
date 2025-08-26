@@ -208,7 +208,9 @@ export class SecureStorage {
         timestamp: Date.now()
       });
 
-      await tx.complete;
+      await new Promise((resolve) => {
+        tx.oncomplete = () => resolve(undefined);
+      });
     } catch (error) {
       console.error('Failed to store secure local data:', error);
     }
@@ -225,7 +227,12 @@ export class SecureStorage {
       const tx = db.transaction(['secure_store'], 'readonly');
       const store = tx.objectStore('secure_store');
 
-      const data = await store.get(key);
+      const request = store.get(key);
+      const data = await new Promise<any>((resolve) => {
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => resolve(null);
+      });
+      
       if (!data) return null;
 
       const encrypted = new Uint8Array(data.encrypted).buffer;
@@ -343,8 +350,10 @@ export class SecureStorage {
       const db = await this.openIndexedDB();
       const tx = db.transaction(['secure_store'], 'readwrite');
       const store = tx.objectStore('secure_store');
-      await store.delete(key);
-      await tx.complete;
+      store.delete(key);
+      await new Promise((resolve) => {
+        tx.oncomplete = () => resolve(undefined);
+      });
     } catch (error) {
       console.error('Failed to remove from IndexedDB:', error);
     }
@@ -355,8 +364,10 @@ export class SecureStorage {
       const db = await this.openIndexedDB();
       const tx = db.transaction(['secure_store'], 'readwrite');
       const store = tx.objectStore('secure_store');
-      await store.clear();
-      await tx.complete;
+      store.clear();
+      await new Promise((resolve) => {
+        tx.oncomplete = () => resolve(undefined);
+      });
     } catch (error) {
       console.error('Failed to clear IndexedDB:', error);
     }

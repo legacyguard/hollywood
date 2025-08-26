@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React, { useState } from 'react';
 import { Card } from '@/components/ui/card';
@@ -82,27 +82,29 @@ interface DocumentAnalysisResult {
 interface DocumentConfirmationProps {
   file: File;
   analysisResult: DocumentAnalysisResult;
-  onConfirm: (confirmedData: DocumentAnalysisResult & {
-    bundleSelection?: {
-      action: 'link' | 'new' | 'none';
-      bundleId: string | null;
-      newBundleName: string | null;
-      suggestedNewBundle: {
-        name: string;
-        category: string;
-        primaryEntity: string | null;
-        entityType: string | null;
-        keywords: string[];
-        confidence: number;
-        reasoning: string;
-      } | null;
-    };
-    versionSelection?: {
-      action: 'replace' | 'new_version' | 'separate' | 'none';
-      versionId: string | null;
-      archiveReason: string;
-    };
-  }) => void;
+  onConfirm: (
+    confirmedData: DocumentAnalysisResult & {
+      bundleSelection?: {
+        action: 'link' | 'new' | 'none';
+        bundleId: string | null;
+        newBundleName: string | null;
+        suggestedNewBundle: {
+          name: string;
+          category: string;
+          primaryEntity: string | null;
+          entityType: string | null;
+          keywords: string[];
+          confidence: number;
+          reasoning: string;
+        } | null;
+      };
+      versionSelection?: {
+        action: 'replace' | 'new_version' | 'separate' | 'none';
+        versionId: string | null;
+        archiveReason: string;
+      };
+    }
+  ) => void;
   onCancel: () => void;
   isProcessing?: boolean;
 }
@@ -112,18 +114,24 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
   analysisResult,
   onConfirm,
   onCancel,
-  isProcessing = false
+  isProcessing = false,
 }) => {
   const [editableData, setEditableData] = useState(analysisResult);
-  const [selectedBundleAction, setSelectedBundleAction] = useState<'link' | 'new' | 'none'>('none');
+  const [selectedBundleAction, setSelectedBundleAction] = useState<
+    'link' | 'new' | 'none'
+  >('none');
   const [selectedBundleId, setSelectedBundleId] = useState<string | null>(null);
-  const [newBundleName, setNewBundleName] = useState(analysisResult.suggestedNewBundle?.name || '');
+  const [newBundleName, setNewBundleName] = useState(
+    analysisResult.suggestedNewBundle?.name || ''
+  );
 
   // Phase 3: Document versioning state
-  const [selectedVersionAction, setSelectedVersionAction] = useState<'replace' | 'new_version' | 'separate' | 'none'>(
-    analysisResult.versioningSuggestion?.action || 'none'
+  const [selectedVersionAction, setSelectedVersionAction] = useState<
+    'replace' | 'new_version' | 'separate' | 'none'
+  >(analysisResult.versioningSuggestion?.action || 'none');
+  const [selectedVersionId, setSelectedVersionId] = useState<string | null>(
+    null
   );
-  const [selectedVersionId, setSelectedVersionId] = useState<string | null>(null);
   const [customArchiveReason, setCustomArchiveReason] = useState(
     analysisResult.versioningSuggestion?.suggestedArchiveReason || ''
   );
@@ -133,8 +141,8 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
       ...prev,
       suggestedCategory: {
         ...prev.suggestedCategory,
-        category: newCategory
-      }
+        category: newCategory,
+      },
     }));
   };
 
@@ -143,8 +151,8 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
       ...prev,
       suggestedTitle: {
         ...prev.suggestedTitle,
-        title: newTitle
-      }
+        title: newTitle,
+      },
     }));
   };
 
@@ -169,50 +177,50 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
     { id: 'legal', label: 'Legal', icon: 'scale' },
     { id: 'vehicles', label: 'Vehicles', icon: 'car' },
     { id: 'insurance', label: 'Insurance', icon: 'shield' },
-    { id: 'other', label: 'Other', icon: 'file' }
+    { id: 'other', label: 'Other', icon: 'file' },
   ];
 
   return (
     <FadeIn duration={0.5}>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-6xl mx-auto">
+      <div className='grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-6xl mx-auto'>
         {/* Document Preview */}
-        <Card className="p-6 bg-card border-card-border">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 bg-primary/10 rounded-lg">
-              <Icon name="documents" className="w-5 h-5 text-primary" />
+        <Card className='p-6 bg-card border-card-border'>
+          <div className='flex items-center gap-3 mb-4'>
+            <div className='p-2 bg-primary/10 rounded-lg'>
+              <Icon name='documents' className='w-5 h-5 text-primary' />
             </div>
-            <div className="flex-1">
-              <h3 className="font-semibold text-lg">Document Preview</h3>
-              <p className="text-sm text-muted-foreground">{file.name}</p>
+            <div className='flex-1'>
+              <h3 className='font-semibold text-lg'>Document Preview</h3>
+              <p className='text-sm text-muted-foreground'>{file.name}</p>
             </div>
           </div>
 
           {/* File Info */}
-          <div className="space-y-2 mb-4">
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">File Size:</span>
+          <div className='space-y-2 mb-4'>
+            <div className='flex justify-between text-sm'>
+              <span className='text-muted-foreground'>File Size:</span>
               <span>{(file.size / 1024).toFixed(1)} KB</span>
             </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">File Type:</span>
+            <div className='flex justify-between text-sm'>
+              <span className='text-muted-foreground'>File Type:</span>
               <span>{file.type || 'Unknown'}</span>
             </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Processing Time:</span>
+            <div className='flex justify-between text-sm'>
+              <span className='text-muted-foreground'>Processing Time:</span>
               <span>{(analysisResult.processingTime / 1000).toFixed(2)}s</span>
             </div>
           </div>
 
           {/* Extracted Text Preview */}
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-medium">Extracted Text</span>
-              <Badge variant="outline" className="text-xs">
+          <div className='space-y-2'>
+            <div className='flex items-center gap-2'>
+              <span className='text-sm font-medium'>Extracted Text</span>
+              <Badge variant='outline' className='text-xs'>
                 {(analysisResult.confidence * 100).toFixed(0)}% confidence
               </Badge>
             </div>
-            <div className="p-3 bg-muted rounded-lg max-h-32 overflow-y-auto">
-              <p className="text-sm text-muted-foreground whitespace-pre-wrap">
+            <div className='p-3 bg-muted rounded-lg max-h-32 overflow-y-auto'>
+              <p className='text-sm text-muted-foreground whitespace-pre-wrap'>
                 {analysisResult.extractedText.substring(0, 300)}
                 {analysisResult.extractedText.length > 300 && '...'}
               </p>
@@ -221,84 +229,115 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
         </Card>
 
         {/* Analysis Results */}
-        <Card className="p-6 bg-card border-card-border">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="p-2 bg-primary/10 rounded-lg">
-              <Icon name="brain" className="w-5 h-5 text-primary" />
+        <Card className='p-6 bg-card border-card-border'>
+          <div className='flex items-center gap-3 mb-6'>
+            <div className='p-2 bg-primary/10 rounded-lg'>
+              <Icon name='brain' className='w-5 h-5 text-primary' />
             </div>
             <div>
-              <h3 className="font-semibold text-lg">AI Analysis Results</h3>
-              <p className="text-sm text-muted-foreground">
+              <h3 className='font-semibold text-lg'>AI Analysis Results</h3>
+              <p className='text-sm text-muted-foreground'>
                 Review and adjust the suggestions below
               </p>
             </div>
           </div>
 
-          <div className="space-y-6">
+          <div className='space-y-6'>
             {/* Suggested Category */}
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <h4 className="font-medium">Category</h4>
+            <div className='space-y-3'>
+              <div className='flex items-center gap-2'>
+                <h4 className='font-medium'>Category</h4>
                 <Icon
-                  name={getConfidenceIcon(editableData.suggestedCategory.confidence)}
-                  className={cn("w-4 h-4", getConfidenceColor(editableData.suggestedCategory.confidence))}
+                  name={getConfidenceIcon(
+                    editableData.suggestedCategory.confidence
+                  )}
+                  className={cn(
+                    'w-4 h-4',
+                    getConfidenceColor(
+                      editableData.suggestedCategory.confidence
+                    )
+                  )}
                 />
               </div>
-              <div className="grid grid-cols-3 gap-2">
-                {categories.map((category) => (
+              <div className='grid grid-cols-3 gap-2'>
+                {categories.map(category => (
                   <Button
                     key={category.id}
-                    variant={editableData.suggestedCategory.category === category.id ? "default" : "outline"}
-                    size="sm"
+                    variant={
+                      editableData.suggestedCategory.category === category.id
+                        ? 'default'
+                        : 'outline'
+                    }
+                    size='sm'
                     onClick={() => handleCategoryChange(category.id)}
-                    className="justify-start gap-2"
+                    className='justify-start gap-2'
                   >
-                    <Icon name={category.icon as keyof typeof import('@/components/ui/icon-library').IconMap} className="w-4 h-4" />
+                    <Icon
+                      name={
+                        category.icon as keyof typeof import('@/components/ui/icon-library').IconMap
+                      }
+                      className='w-4 h-4'
+                    />
                     {category.label}
                   </Button>
                 ))}
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className='text-xs text-muted-foreground'>
                 {editableData.suggestedCategory.reasoning}
               </p>
             </div>
 
             {/* Suggested Title */}
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <h4 className="font-medium">Document Title</h4>
+            <div className='space-y-3'>
+              <div className='flex items-center gap-2'>
+                <h4 className='font-medium'>Document Title</h4>
                 <Icon
-                  name={getConfidenceIcon(editableData.suggestedTitle.confidence)}
-                  className={cn("w-4 h-4", getConfidenceColor(editableData.suggestedTitle.confidence))}
+                  name={getConfidenceIcon(
+                    editableData.suggestedTitle.confidence
+                  )}
+                  className={cn(
+                    'w-4 h-4',
+                    getConfidenceColor(editableData.suggestedTitle.confidence)
+                  )}
                 />
               </div>
               <input
-                type="text"
+                type='text'
                 value={editableData.suggestedTitle.title}
-                onChange={(e) => handleTitleChange(e.target.value)}
-                className="w-full p-2 border rounded-md bg-background"
-                placeholder="Document title"
+                onChange={e => handleTitleChange(e.target.value)}
+                className='w-full p-2 border rounded-md bg-background'
+                placeholder='Document title'
               />
-              <p className="text-xs text-muted-foreground">
+              <p className='text-xs text-muted-foreground'>
                 {editableData.suggestedTitle.reasoning}
               </p>
             </div>
 
             {/* Expiration Date */}
             {editableData.expirationDate.date && (
-              <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <h4 className="font-medium">Expiration Date</h4>
+              <div className='space-y-3'>
+                <div className='flex items-center gap-2'>
+                  <h4 className='font-medium'>Expiration Date</h4>
                   <Icon
-                    name={getConfidenceIcon(editableData.expirationDate.confidence)}
-                    className={cn("w-4 h-4", getConfidenceColor(editableData.expirationDate.confidence))}
+                    name={getConfidenceIcon(
+                      editableData.expirationDate.confidence
+                    )}
+                    className={cn(
+                      'w-4 h-4',
+                      getConfidenceColor(editableData.expirationDate.confidence)
+                    )}
                   />
                 </div>
-                <div className="flex items-center gap-2 p-2 bg-status-warning/10 rounded-md">
-                  <Icon name="calendar" className="w-4 h-4 text-status-warning" />
-                  <span className="text-sm">{editableData.expirationDate.date}</span>
+                <div className='flex items-center gap-2 p-2 bg-status-warning/10 rounded-md'>
+                  <Icon
+                    name='calendar'
+                    className='w-4 h-4 text-status-warning'
+                  />
+                  <span className='text-sm'>
+                    {editableData.expirationDate.date}
+                  </span>
                 </div>
-                <p className="text-xs text-muted-foreground">
+                <p className='text-xs text-muted-foreground'>
                   {editableData.expirationDate.reasoning}
                 </p>
               </div>
@@ -306,16 +345,21 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
 
             {/* Key Data */}
             {editableData.keyData.length > 0 && (
-              <div className="space-y-3">
-                <h4 className="font-medium">Key Information</h4>
-                <div className="space-y-2">
+              <div className='space-y-3'>
+                <h4 className='font-medium'>Key Information</h4>
+                <div className='space-y-2'>
                   {editableData.keyData.map((item, index) => (
-                    <div key={index} className="flex items-center gap-2 p-2 bg-muted rounded-md">
-                      <div className="flex items-center gap-2 flex-1">
-                        <span className="text-sm font-medium">{item.label}:</span>
-                        <span className="text-sm">{item.value}</span>
+                    <div
+                      key={index}
+                      className='flex items-center gap-2 p-2 bg-muted rounded-md'
+                    >
+                      <div className='flex items-center gap-2 flex-1'>
+                        <span className='text-sm font-medium'>
+                          {item.label}:
+                        </span>
+                        <span className='text-sm'>{item.value}</span>
                       </div>
-                      <Badge variant="outline" className="text-xs">
+                      <Badge variant='outline' className='text-xs'>
                         {(item.confidence * 100).toFixed(0)}%
                       </Badge>
                     </div>
@@ -326,11 +370,11 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
 
             {/* Suggested Tags */}
             {editableData.suggestedTags.length > 0 && (
-              <div className="space-y-3">
-                <h4 className="font-medium">Suggested Tags</h4>
-                <div className="flex flex-wrap gap-2">
+              <div className='space-y-3'>
+                <h4 className='font-medium'>Suggested Tags</h4>
+                <div className='flex flex-wrap gap-2'>
                   {editableData.suggestedTags.map((tag, index) => (
-                    <Badge key={index} variant="secondary">
+                    <Badge key={index} variant='secondary'>
                       {tag}
                     </Badge>
                   ))}
@@ -339,24 +383,32 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
             )}
 
             {/* Document Versioning Section (Phase 3) */}
-            {(editableData.potentialVersions.length > 0 || editableData.versioningSuggestion) && (
-              <div className="space-y-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
-                <div className="flex items-center gap-2">
-                  <Icon name="clock" className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
-                  <h4 className="font-medium text-yellow-800 dark:text-yellow-200">Document Version Detection</h4>
+            {(editableData.potentialVersions.length > 0 ||
+              editableData.versioningSuggestion) && (
+              <div className='space-y-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800'>
+                <div className='flex items-center gap-2'>
+                  <Icon
+                    name='clock'
+                    className='w-5 h-5 text-yellow-600 dark:text-yellow-400'
+                  />
+                  <h4 className='font-medium text-yellow-800 dark:text-yellow-200'>
+                    Document Version Detection
+                  </h4>
                 </div>
 
                 {editableData.versioningSuggestion && (
-                  <div className="p-3 bg-yellow-100 dark:bg-yellow-900/40 rounded-md">
-                    <p className="text-sm text-yellow-800 dark:text-yellow-200 font-medium mb-2">
+                  <div className='p-3 bg-yellow-100 dark:bg-yellow-900/40 rounded-md'>
+                    <p className='text-sm text-yellow-800 dark:text-yellow-200 font-medium mb-2'>
                       {editableData.versioningSuggestion.action === 'replace' &&
-                        "This appears to be a newer version of an existing document."}
-                      {editableData.versioningSuggestion.action === 'new_version' &&
-                        "This looks like a new version of an existing document."}
-                      {editableData.versioningSuggestion.action === 'separate' &&
-                        "This may be related to an existing document but appears different enough to keep separate."}
+                        'This appears to be a newer version of an existing document.'}
+                      {editableData.versioningSuggestion.action ===
+                        'new_version' &&
+                        'This looks like a new version of an existing document.'}
+                      {editableData.versioningSuggestion.action ===
+                        'separate' &&
+                        'This may be related to an existing document but appears different enough to keep separate.'}
                     </p>
-                    <p className="text-xs text-yellow-700 dark:text-yellow-300">
+                    <p className='text-xs text-yellow-700 dark:text-yellow-300'>
                       {editableData.versioningSuggestion.reasoning}
                     </p>
                   </div>
@@ -364,29 +416,36 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
 
                 {/* Existing Document Versions */}
                 {editableData.potentialVersions.length > 0 && (
-                  <div className="space-y-3">
-                    <p className="text-sm text-muted-foreground">
+                  <div className='space-y-3'>
+                    <p className='text-sm text-muted-foreground'>
                       Found similar documents that might be older versions:
                     </p>
 
-                    {editableData.potentialVersions.map((version) => (
-                      <div key={version.documentId} className="p-3 border rounded-lg bg-background">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="font-medium text-sm">{version.fileName}</span>
-                          <div className="flex items-center gap-2">
-                            <Badge variant="outline" className="text-xs">
+                    {editableData.potentialVersions.map(version => (
+                      <div
+                        key={version.documentId}
+                        className='p-3 border rounded-lg bg-background'
+                      >
+                        <div className='flex items-center justify-between mb-2'>
+                          <span className='font-medium text-sm'>
+                            {version.fileName}
+                          </span>
+                          <div className='flex items-center gap-2'>
+                            <Badge variant='outline' className='text-xs'>
                               v{version.versionNumber}
                             </Badge>
-                            <Badge variant="secondary" className="text-xs">
-                              {(version.similarityScore * 100).toFixed(0)}% similar
+                            <Badge variant='secondary' className='text-xs'>
+                              {(version.similarityScore * 100).toFixed(0)}%
+                              similar
                             </Badge>
                           </div>
                         </div>
-                        <p className="text-xs text-muted-foreground mb-2">
-                          Uploaded: {new Date(version.versionDate).toLocaleDateString()}
+                        <p className='text-xs text-muted-foreground mb-2'>
+                          Uploaded:{' '}
+                          {new Date(version.versionDate).toLocaleDateString()}
                         </p>
                         {version.matchReasons.length > 0 && (
-                          <p className="text-xs text-muted-foreground">
+                          <p className='text-xs text-muted-foreground'>
                             {version.matchReasons.join(', ')}
                           </p>
                         )}
@@ -396,39 +455,54 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
                 )}
 
                 {/* Versioning Action Selection */}
-                <div className="space-y-3">
-                  <p className="text-sm font-medium">How would you like to handle this?</p>
+                <div className='space-y-3'>
+                  <p className='text-sm font-medium'>
+                    How would you like to handle this?
+                  </p>
 
                   {editableData.versioningSuggestion?.action === 'replace' && (
-                    <label className="flex items-start gap-3 p-3 border rounded-lg hover:bg-muted/50 cursor-pointer">
+                    <label className='flex items-start gap-3 p-3 border rounded-lg hover:bg-muted/50 cursor-pointer'>
                       <input
-                        type="radio"
-                        name="versionAction"
-                        value="replace"
+                        type='radio'
+                        name='versionAction'
+                        value='replace'
                         checked={selectedVersionAction === 'replace'}
                         onChange={() => {
                           setSelectedVersionAction('replace');
-                          setSelectedVersionId(editableData.potentialVersions[0]?.documentId || null);
+                          setSelectedVersionId(
+                            editableData.potentialVersions[0]?.documentId ||
+                              null
+                          );
                         }}
-                        className="mt-0.5"
+                        className='mt-0.5'
                       />
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2">
-                          <Icon name="refresh-cw" className="w-4 h-4 text-yellow-600" />
-                          <span className="font-medium">Replace older version</span>
-                          <Badge variant="outline" className="text-xs">Recommended</Badge>
+                      <div className='flex-1'>
+                        <div className='flex items-center gap-2'>
+                          <Icon
+                            name='refresh-cw'
+                            className='w-4 h-4 text-yellow-600'
+                          />
+                          <span className='font-medium'>
+                            Replace older version
+                          </span>
+                          <Badge variant='outline' className='text-xs'>
+                            Recommended
+                          </Badge>
                         </div>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          Archive the older document and keep this as the current version
+                        <p className='text-sm text-muted-foreground mt-1'>
+                          Archive the older document and keep this as the
+                          current version
                         </p>
                         {selectedVersionAction === 'replace' && (
-                          <div className="mt-2">
+                          <div className='mt-2'>
                             <input
-                              type="text"
+                              type='text'
                               value={customArchiveReason}
-                              onChange={(e) => setCustomArchiveReason(e.target.value)}
-                              className="w-full p-2 border rounded-md bg-background text-sm"
-                              placeholder="Archive reason (optional)"
+                              onChange={e =>
+                                setCustomArchiveReason(e.target.value)
+                              }
+                              className='w-full p-2 border rounded-md bg-background text-sm'
+                              placeholder='Archive reason (optional)'
                             />
                           </div>
                         )}
@@ -436,21 +510,26 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
                     </label>
                   )}
 
-                  <label className="flex items-start gap-3 p-3 border rounded-lg hover:bg-muted/50 cursor-pointer">
+                  <label className='flex items-start gap-3 p-3 border rounded-lg hover:bg-muted/50 cursor-pointer'>
                     <input
-                      type="radio"
-                      name="versionAction"
-                      value="separate"
+                      type='radio'
+                      name='versionAction'
+                      value='separate'
                       checked={selectedVersionAction === 'separate'}
                       onChange={() => {
                         setSelectedVersionAction('separate');
                         setSelectedVersionId(null);
                       }}
-                      className="mt-0.5"
+                      className='mt-0.5'
                     />
-                    <div className="flex items-center gap-2">
-                      <Icon name="file-plus" className="w-4 h-4 text-blue-600" />
-                      <span className="font-medium">Keep as separate document</span>
+                    <div className='flex items-center gap-2'>
+                      <Icon
+                        name='file-plus'
+                        className='w-4 h-4 text-blue-600'
+                      />
+                      <span className='font-medium'>
+                        Keep as separate document
+                      </span>
                     </div>
                   </label>
                 </div>
@@ -458,49 +537,60 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
             )}
 
             {/* Bundle Intelligence Section (Phase 2) */}
-            {(editableData.potentialBundles.length > 0 || editableData.suggestedNewBundle) && (
-              <div className="space-y-4 p-4 bg-primary/5 rounded-lg border">
-                <div className="flex items-center gap-2">
-                  <Icon name="link" className="w-5 h-5 text-primary" />
-                  <h4 className="font-medium text-primary">Intelligent Document Linking</h4>
+            {(editableData.potentialBundles.length > 0 ||
+              editableData.suggestedNewBundle) && (
+              <div className='space-y-4 p-4 bg-primary/5 rounded-lg border'>
+                <div className='flex items-center gap-2'>
+                  <Icon name='link' className='w-5 h-5 text-primary' />
+                  <h4 className='font-medium text-primary'>
+                    Intelligent Document Linking
+                  </h4>
                 </div>
 
                 {/* Existing Bundle Options */}
                 {editableData.potentialBundles.length > 0 && (
-                  <div className="space-y-3">
-                    <p className="text-sm text-muted-foreground">
-                      I found existing document bundles that might be related to this document:
+                  <div className='space-y-3'>
+                    <p className='text-sm text-muted-foreground'>
+                      I found existing document bundles that might be related to
+                      this document:
                     </p>
 
-                    {editableData.potentialBundles.map((bundle) => (
-                      <div key={bundle.bundleId} className="space-y-2">
-                        <label className="flex items-start gap-3 p-3 border rounded-lg hover:bg-muted/50 cursor-pointer">
+                    {editableData.potentialBundles.map(bundle => (
+                      <div key={bundle.bundleId} className='space-y-2'>
+                        <label className='flex items-start gap-3 p-3 border rounded-lg hover:bg-muted/50 cursor-pointer'>
                           <input
-                            type="radio"
-                            name="bundleAction"
+                            type='radio'
+                            name='bundleAction'
                             value={bundle.bundleId}
-                            checked={selectedBundleAction === 'link' && selectedBundleId === bundle.bundleId}
+                            checked={
+                              selectedBundleAction === 'link' &&
+                              selectedBundleId === bundle.bundleId
+                            }
                             onChange={() => {
                               setSelectedBundleAction('link');
                               setSelectedBundleId(bundle.bundleId);
                             }}
-                            className="mt-0.5"
+                            className='mt-0.5'
                           />
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2">
-                              <span className="font-medium">{bundle.bundleName}</span>
-                              <Badge variant="outline" className="text-xs">
+                          <div className='flex-1'>
+                            <div className='flex items-center gap-2'>
+                              <span className='font-medium'>
+                                {bundle.bundleName}
+                              </span>
+                              <Badge variant='outline' className='text-xs'>
                                 {bundle.documentCount} documents
                               </Badge>
-                              <Badge variant="secondary" className="text-xs">
+                              <Badge variant='secondary' className='text-xs'>
                                 {bundle.matchScore}% match
                               </Badge>
                             </div>
                             {bundle.primaryEntity && (
-                              <p className="text-sm text-muted-foreground">{bundle.primaryEntity}</p>
+                              <p className='text-sm text-muted-foreground'>
+                                {bundle.primaryEntity}
+                              </p>
                             )}
                             {bundle.matchReasons.length > 0 && (
-                              <p className="text-xs text-muted-foreground mt-1">
+                              <p className='text-xs text-muted-foreground mt-1'>
                                 Match reasons: {bundle.matchReasons.join(', ')}
                               </p>
                             )}
@@ -513,47 +603,50 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
 
                 {/* New Bundle Option */}
                 {editableData.suggestedNewBundle && (
-                  <div className="space-y-3">
+                  <div className='space-y-3'>
                     {editableData.potentialBundles.length > 0 && (
-                      <div className="border-t pt-3">
-                        <p className="text-sm text-muted-foreground mb-3">
+                      <div className='border-t pt-3'>
+                        <p className='text-sm text-muted-foreground mb-3'>
                           Or create a new bundle:
                         </p>
                       </div>
                     )}
 
-                    <label className="flex items-start gap-3 p-3 border rounded-lg hover:bg-muted/50 cursor-pointer">
+                    <label className='flex items-start gap-3 p-3 border rounded-lg hover:bg-muted/50 cursor-pointer'>
                       <input
-                        type="radio"
-                        name="bundleAction"
-                        value="new"
+                        type='radio'
+                        name='bundleAction'
+                        value='new'
                         checked={selectedBundleAction === 'new'}
                         onChange={() => {
                           setSelectedBundleAction('new');
                           setSelectedBundleId(null);
                         }}
-                        className="mt-0.5"
+                        className='mt-0.5'
                       />
-                      <div className="flex-1 space-y-2">
-                        <div className="flex items-center gap-2">
-                          <Icon name="plus" className="w-4 h-4 text-primary" />
-                          <span className="font-medium">Create new bundle</span>
-                          <Badge variant="outline" className="text-xs">
-                            {(editableData.suggestedNewBundle.confidence * 100).toFixed(0)}% confidence
+                      <div className='flex-1 space-y-2'>
+                        <div className='flex items-center gap-2'>
+                          <Icon name='plus' className='w-4 h-4 text-primary' />
+                          <span className='font-medium'>Create new bundle</span>
+                          <Badge variant='outline' className='text-xs'>
+                            {(
+                              editableData.suggestedNewBundle.confidence * 100
+                            ).toFixed(0)}
+                            % confidence
                           </Badge>
                         </div>
 
                         {selectedBundleAction === 'new' && (
                           <input
-                            type="text"
+                            type='text'
                             value={newBundleName}
-                            onChange={(e) => setNewBundleName(e.target.value)}
-                            className="w-full p-2 border rounded-md bg-background text-sm"
-                            placeholder="Bundle name"
+                            onChange={e => setNewBundleName(e.target.value)}
+                            className='w-full p-2 border rounded-md bg-background text-sm'
+                            placeholder='Bundle name'
                           />
                         )}
 
-                        <p className="text-xs text-muted-foreground">
+                        <p className='text-xs text-muted-foreground'>
                           {editableData.suggestedNewBundle.reasoning}
                         </p>
                       </div>
@@ -562,19 +655,19 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
                 )}
 
                 {/* No Linking Option */}
-                <label className="flex items-center gap-3 p-3 border rounded-lg hover:bg-muted/50 cursor-pointer">
+                <label className='flex items-center gap-3 p-3 border rounded-lg hover:bg-muted/50 cursor-pointer'>
                   <input
-                    type="radio"
-                    name="bundleAction"
-                    value="none"
+                    type='radio'
+                    name='bundleAction'
+                    value='none'
                     checked={selectedBundleAction === 'none'}
                     onChange={() => {
                       setSelectedBundleAction('none');
                       setSelectedBundleId(null);
                     }}
                   />
-                  <div className="flex items-center gap-2">
-                    <Icon name="x" className="w-4 h-4 text-muted-foreground" />
+                  <div className='flex items-center gap-2'>
+                    <Icon name='x' className='w-4 h-4 text-muted-foreground' />
                     <span>Don't link to any bundle</span>
                   </div>
                 </label>
@@ -583,41 +676,48 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
           </div>
 
           {/* Action Buttons */}
-          <div className="flex gap-3 mt-6 pt-6 border-t">
+          <div className='flex gap-3 mt-6 pt-6 border-t'>
             <Button
               onClick={onCancel}
-              variant="outline"
+              variant='outline'
               disabled={isProcessing}
-              className="flex-1"
+              className='flex-1'
             >
               Cancel
             </Button>
             <Button
-              onClick={() => onConfirm({
-                ...editableData,
-                bundleSelection: {
-                  action: selectedBundleAction,
-                  bundleId: selectedBundleId,
-                  newBundleName: selectedBundleAction === 'new' ? newBundleName : null,
-                  suggestedNewBundle: editableData.suggestedNewBundle
-                },
-                versionSelection: {
-                  action: selectedVersionAction,
-                  versionId: selectedVersionId,
-                  archiveReason: customArchiveReason || editableData.versioningSuggestion?.suggestedArchiveReason || 'Replaced by newer version'
-                }
-              })}
+              onClick={() =>
+                onConfirm({
+                  ...editableData,
+                  bundleSelection: {
+                    action: selectedBundleAction,
+                    bundleId: selectedBundleId,
+                    newBundleName:
+                      selectedBundleAction === 'new' ? newBundleName : null,
+                    suggestedNewBundle: editableData.suggestedNewBundle,
+                  },
+                  versionSelection: {
+                    action: selectedVersionAction,
+                    versionId: selectedVersionId,
+                    archiveReason:
+                      customArchiveReason ||
+                      editableData.versioningSuggestion
+                        ?.suggestedArchiveReason ||
+                      'Replaced by newer version',
+                  },
+                })
+              }
               disabled={isProcessing}
-              className="flex-1 gap-2"
+              className='flex-1 gap-2'
             >
               {isProcessing ? (
                 <>
-                  <Icon name="upload" className="w-4 h-4 animate-pulse" />
+                  <Icon name='upload' className='w-4 h-4 animate-pulse' />
                   Saving...
                 </>
               ) : (
                 <>
-                  <Icon name="check" className="w-4 h-4" />
+                  <Icon name='check' className='w-4 h-4' />
                   Confirm & Save
                 </>
               )}

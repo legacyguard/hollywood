@@ -9,14 +9,14 @@
       "description": "Must be entirely written and signed by your own hand",
       "requirements": [
         "Must be written entirely in your own handwriting",
-        "Must be signed with your own signature", 
+        "Must be signed with your own signature",
         "Date is recommended but not mandatory",
         "No witnesses required",
         "Must be in Slovak language or translated"
       ],
       "advantages": [
         "Complete privacy and simplicity",
-        "No witnesses needed", 
+        "No witnesses needed",
         "Can be created anywhere, anytime",
         "Lower cost"
       ],
@@ -32,7 +32,7 @@
       "description": "Can be typed or written by another person, requires two witnesses",
       "requirements": [
         "Must be signed by testator in presence of two witnesses",
-        "Both witnesses must sign simultaneously", 
+        "Both witnesses must sign simultaneously",
         "Witnesses must be present at the same time",
         "Witnesses must be legally capable adults",
         "Witnesses cannot be beneficiaries or their relatives"
@@ -40,7 +40,7 @@
       "advantages": [
         "Greater legal certainty",
         "Suitable if you cannot write",
-        "Less likely to be contested", 
+        "Less likely to be contested",
         "Professional assistance possible"
       ],
       "disadvantages": [
@@ -61,7 +61,7 @@
           "description": "Children are entitled to half of their normal inheritance share"
         },
         "spouse": {
-          "share": "1/4", 
+          "share": "1/4",
           "description": "Spouse is entitled to quarter of the estate if there are children"
         },
         "parents": {
@@ -74,7 +74,10 @@
       "required": false,
       "canBeNonResident": true,
       "mustBeAdult": true,
-      "restrictions": ["Cannot be mentally incapacitated", "Cannot be criminally convicted"]
+      "restrictions": [
+        "Cannot be mentally incapacitated",
+        "Cannot be criminally convicted"
+      ]
     }
   },
   "witnessRequirements": {

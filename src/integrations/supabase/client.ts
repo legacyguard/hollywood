@@ -9,25 +9,31 @@ const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 // Validate environment variables
 if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-  throw new Error('Missing Supabase environment variables. Please check your .env.local file.');
+  throw new Error(
+    'Missing Supabase environment variables. Please check your .env.local file.'
+  );
 }
 
 // Base Supabase client (without user Authorization header). Useful for SSR-safe fallbacks.
-export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_ANON_KEY, {
-  auth: {
-    // SSR-safe: only use localStorage in browser environment
-    storage: typeof window !== 'undefined' ? window.localStorage : undefined,
-    // Enable only in the browser to avoid SSR touching storage/timers
-    persistSession: typeof window !== 'undefined',
-    autoRefreshToken: typeof window !== 'undefined',
-  },
-  // Enable real-time subscriptions
-  realtime: {
-    params: {
-      eventsPerSecond: 10,
+export const supabase = createClient<Database>(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY,
+  {
+    auth: {
+      // SSR-safe: only use localStorage in browser environment
+      storage: typeof window !== 'undefined' ? window.localStorage : undefined,
+      // Enable only in the browser to avoid SSR touching storage/timers
+      persistSession: typeof window !== 'undefined',
+      autoRefreshToken: typeof window !== 'undefined',
     },
-  },
-});
+    // Enable real-time subscriptions
+    realtime: {
+      params: {
+        eventsPerSecond: 10,
+      },
+    },
+  }
+);
 
 // Export for convenience
 export default supabase;
@@ -39,7 +45,9 @@ export const useSupabaseWithClerk = () => {
 
   const createAuthedClient = async () => {
     if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-      throw new Error('Supabase configuration is missing. Please check your environment variables.');
+      throw new Error(
+        'Supabase configuration is missing. Please check your environment variables.'
+      );
     }
 
     try {
@@ -48,7 +56,8 @@ export const useSupabaseWithClerk = () => {
       // Create a fresh client instance with the Authorization header if token exists
       return createClient<Database>(SUPABASE_URL, SUPABASE_ANON_KEY, {
         auth: {
-          storage: typeof window !== 'undefined' ? window.localStorage : undefined,
+          storage:
+            typeof window !== 'undefined' ? window.localStorage : undefined,
           persistSession: typeof window !== 'undefined',
           autoRefreshToken: typeof window !== 'undefined',
         },

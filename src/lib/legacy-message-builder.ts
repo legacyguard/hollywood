@@ -17,7 +17,12 @@ export interface LegacyMessage {
     triggerValue: string;
     deliveryInstructions: string;
   };
-  emotionalTone: 'loving' | 'encouraging' | 'wise' | 'celebratory' | 'reflective';
+  emotionalTone:
+    | 'loving'
+    | 'encouraging'
+    | 'wise'
+    | 'celebratory'
+    | 'reflective';
   privacy: 'private' | 'family_shared' | 'public';
   createdAt: Date;
   lastModified: Date;
@@ -31,7 +36,13 @@ export interface LegacyMessage {
 
 export interface MemoryPrompt {
   id: string;
-  category: 'childhood' | 'achievements' | 'relationships' | 'values' | 'advice' | 'family_history';
+  category:
+    | 'childhood'
+    | 'achievements'
+    | 'relationships'
+    | 'values'
+    | 'advice'
+    | 'family_history';
   question: string;
   context: string;
   suggestedRecipients: string[];
@@ -78,7 +89,11 @@ export type MessageOccasion =
 
 export interface EmotionalGuidanceSession {
   id: string;
-  sessionType: 'reflection' | 'memory_sharing' | 'value_expression' | 'future_visioning';
+  sessionType:
+    | 'reflection'
+    | 'memory_sharing'
+    | 'value_expression'
+    | 'future_visioning';
   prompts: MemoryPrompt[];
   responses: Array<{
     promptId: string;
@@ -101,179 +116,207 @@ const MEMORY_PROMPTS: Record<string, MemoryPrompt[]> = {
     {
       id: 'child_proud_moment',
       category: 'achievements',
-      question: "What moment with your child made you most proud, and what did it teach you about them?",
-      context: "Reflecting on special moments helps create meaningful messages for future milestones",
+      question:
+        'What moment with your child made you most proud, and what did it teach you about them?',
+      context:
+        'Reflecting on special moments helps create meaningful messages for future milestones',
       suggestedRecipients: ['child'],
       emotionalWeight: 'medium',
-      timeToReflect: 5
+      timeToReflect: 5,
     },
     {
       id: 'child_advice',
       category: 'advice',
-      question: "What's the most important life lesson you want to share with your child?",
-      context: "Your wisdom and experience are precious gifts to pass on",
+      question:
+        "What's the most important life lesson you want to share with your child?",
+      context: 'Your wisdom and experience are precious gifts to pass on',
       suggestedRecipients: ['child'],
       emotionalWeight: 'deep',
-      timeToReflect: 10
+      timeToReflect: 10,
     },
     {
       id: 'child_dreams',
       category: 'values',
       question: "What are your hopes and dreams for your child's future?",
-      context: "Sharing your vision can inspire and guide them through life",
+      context: 'Sharing your vision can inspire and guide them through life',
       suggestedRecipients: ['child'],
       emotionalWeight: 'deep',
-      timeToReflect: 8
+      timeToReflect: 8,
     },
     {
       id: 'child_wedding_day',
       category: 'relationships',
-      question: "What would you want to tell your child on their wedding day?",
+      question: 'What would you want to tell your child on their wedding day?',
       context: "A message for one of life's most important milestones",
       suggestedRecipients: ['child'],
       emotionalWeight: 'deep',
-      timeToReflect: 7
-    }
+      timeToReflect: 7,
+    },
   ],
   spouse: [
     {
       id: 'spouse_love_story',
       category: 'relationships',
-      question: "How would you describe your love story to future generations?",
-      context: "Preserving your love story helps family understand their heritage",
+      question: 'How would you describe your love story to future generations?',
+      context:
+        'Preserving your love story helps family understand their heritage',
       suggestedRecipients: ['spouse', 'children'],
       emotionalWeight: 'deep',
-      timeToReflect: 10
+      timeToReflect: 10,
     },
     {
       id: 'spouse_gratitude',
       category: 'relationships',
-      question: "What are you most grateful for in your relationship with your spouse?",
-      context: "Expressing gratitude deepens connection and creates lasting memories",
+      question:
+        'What are you most grateful for in your relationship with your spouse?',
+      context:
+        'Expressing gratitude deepens connection and creates lasting memories',
       suggestedRecipients: ['spouse'],
       emotionalWeight: 'medium',
-      timeToReflect: 6
+      timeToReflect: 6,
     },
     {
       id: 'spouse_partnership',
       category: 'values',
-      question: "What made your partnership strong, and how can this help your children?",
-      context: "Relationship wisdom is one of the most valuable inheritances you can leave",
+      question:
+        'What made your partnership strong, and how can this help your children?',
+      context:
+        'Relationship wisdom is one of the most valuable inheritances you can leave',
       suggestedRecipients: ['spouse', 'children'],
       emotionalWeight: 'medium',
-      timeToReflect: 8
-    }
+      timeToReflect: 8,
+    },
   ],
   family: [
     {
       id: 'family_traditions',
       category: 'family_history',
-      question: "What family traditions are most important to preserve and why?",
-      context: "Family traditions connect generations and create lasting bonds",
+      question:
+        'What family traditions are most important to preserve and why?',
+      context: 'Family traditions connect generations and create lasting bonds',
       suggestedRecipients: ['children', 'grandchildren'],
       emotionalWeight: 'medium',
-      timeToReflect: 6
+      timeToReflect: 6,
     },
     {
       id: 'family_values',
       category: 'values',
-      question: "What values define our family, and how did they develop?",
-      context: "Understanding family values helps future generations make good choices",
+      question: 'What values define our family, and how did they develop?',
+      context:
+        'Understanding family values helps future generations make good choices',
       suggestedRecipients: ['children', 'grandchildren'],
       emotionalWeight: 'deep',
-      timeToReflect: 10
+      timeToReflect: 10,
     },
     {
       id: 'ancestors_wisdom',
       category: 'family_history',
-      question: "What wisdom from your parents or grandparents do you want to pass on?",
-      context: "Ancestral wisdom creates a bridge between past and future generations",
+      question:
+        'What wisdom from your parents or grandparents do you want to pass on?',
+      context:
+        'Ancestral wisdom creates a bridge between past and future generations',
       suggestedRecipients: ['children', 'grandchildren'],
       emotionalWeight: 'deep',
-      timeToReflect: 8
-    }
-  ]
+      timeToReflect: 8,
+    },
+  ],
 };
 
 // Message templates for different occasions
-const MESSAGE_TEMPLATES: Record<MessageOccasion, Array<{
-  template: string;
-  tone: LegacyMessage['emotionalTone'];
-  context: string;
-}>> = {
+const MESSAGE_TEMPLATES: Record<
+  MessageOccasion,
+  Array<{
+    template: string;
+    tone: LegacyMessage['emotionalTone'];
+    context: string;
+  }>
+> = {
   birthday: [
     {
-      template: "My dearest {name}, on your birthday I want you to know how much joy you've brought to my life. {personal_memory} As you celebrate another year, remember that you are capable of amazing things. {life_advice}",
+      template:
+        "My dearest {name}, on your birthday I want you to know how much joy you've brought to my life. {personal_memory} As you celebrate another year, remember that you are capable of amazing things. {life_advice}",
       tone: 'loving',
-      context: 'General birthday message focusing on love and encouragement'
+      context: 'General birthday message focusing on love and encouragement',
     },
     {
-      template: "Happy birthday, {name}! {milestone_reflection} I'm so proud of the person you've become. {hopes_for_future}",
+      template:
+        "Happy birthday, {name}! {milestone_reflection} I'm so proud of the person you've become. {hopes_for_future}",
       tone: 'celebratory',
-      context: 'Milestone birthday focusing on achievements and future'
-    }
+      context: 'Milestone birthday focusing on achievements and future',
+    },
   ],
   wedding: [
     {
-      template: "My dear {name}, as you begin this new chapter with {spouse}, I want to share some thoughts about love and marriage. {marriage_advice} Remember that {relationship_wisdom}. May your love grow stronger with each passing year.",
+      template:
+        'My dear {name}, as you begin this new chapter with {spouse}, I want to share some thoughts about love and marriage. {marriage_advice} Remember that {relationship_wisdom}. May your love grow stronger with each passing year.',
       tone: 'wise',
-      context: 'Wedding day message with marriage wisdom'
+      context: 'Wedding day message with marriage wisdom',
     },
     {
-      template: "What a beautiful day this is! {name}, watching you find your soulmate fills my heart with happiness. {love_story_connection} Wishing you both a lifetime of love, laughter, and beautiful memories.",
+      template:
+        'What a beautiful day this is! {name}, watching you find your soulmate fills my heart with happiness. {love_story_connection} Wishing you both a lifetime of love, laughter, and beautiful memories.',
       tone: 'celebratory',
-      context: 'Joyful wedding celebration message'
-    }
+      context: 'Joyful wedding celebration message',
+    },
   ],
   graduation: [
     {
-      template: "Congratulations, {name}! Your graduation represents years of hard work and dedication. {proud_moment} As you step into the next phase of your life, remember that learning never stops. {life_advice}",
+      template:
+        'Congratulations, {name}! Your graduation represents years of hard work and dedication. {proud_moment} As you step into the next phase of your life, remember that learning never stops. {life_advice}',
       tone: 'encouraging',
-      context: 'Graduation message emphasizing achievement and future growth'
-    }
+      context: 'Graduation message emphasizing achievement and future growth',
+    },
   ],
   first_child: [
     {
-      template: "Welcome to parenthood, {name}! Becoming a parent is one of life's greatest adventures. {parenting_reflection} Trust your instincts, be patient with yourself, and remember that love is the most important thing you can give your child.",
+      template:
+        "Welcome to parenthood, {name}! Becoming a parent is one of life's greatest adventures. {parenting_reflection} Trust your instincts, be patient with yourself, and remember that love is the most important thing you can give your child.",
       tone: 'wise',
-      context: 'New parent support and wisdom'
-    }
+      context: 'New parent support and wisdom',
+    },
   ],
   difficult_time: [
     {
-      template: "My dear {name}, I know you're going through a challenging time right now. {acknowledgment} Remember that you are stronger than you know, and this difficult period will pass. {encouragement} I believe in you completely.",
+      template:
+        "My dear {name}, I know you're going through a challenging time right now. {acknowledgment} Remember that you are stronger than you know, and this difficult period will pass. {encouragement} I believe in you completely.",
       tone: 'encouraging',
-      context: 'Support message for difficult times'
-    }
+      context: 'Support message for difficult times',
+    },
   ],
   general_love: [
     {
-      template: "I want you to know how much you mean to me, {name}. {specific_qualities} You have brought so much {positive_impact} to my life and to our family. Never forget how deeply you are loved.",
+      template:
+        'I want you to know how much you mean to me, {name}. {specific_qualities} You have brought so much {positive_impact} to my life and to our family. Never forget how deeply you are loved.',
       tone: 'loving',
-      context: 'General expression of love and appreciation'
-    }
+      context: 'General expression of love and appreciation',
+    },
   ],
   life_wisdom: [
     {
-      template: "Dear {name}, I want to share some wisdom I've learned over the years. {life_lesson} Remember that {core_value}. Life is precious, so {encouragement_to_live_fully}.",
+      template:
+        "Dear {name}, I want to share some wisdom I've learned over the years. {life_lesson} Remember that {core_value}. Life is precious, so {encouragement_to_live_fully}.",
       tone: 'wise',
-      context: 'General life wisdom and guidance'
-    }
+      context: 'General life wisdom and guidance',
+    },
   ],
   family_history: [
     {
-      template: "I want to tell you about {family_member_or_event}, {name}. {historical_context} This is part of your heritage and helps explain {family_trait_or_value}. {connection_to_present}",
+      template:
+        'I want to tell you about {family_member_or_event}, {name}. {historical_context} This is part of your heritage and helps explain {family_trait_or_value}. {connection_to_present}',
       tone: 'reflective',
-      context: 'Sharing family history and heritage'
-    }
-  ]
+      context: 'Sharing family history and heritage',
+    },
+  ],
 };
 
 export class LegacyMessageBuilder {
   /**
    * Create personalized messages based on relationships and occasions
    */
-  createPersonalizedMessages(relationships: Array<{ name: string; relationship: string }>, occasions: MessageOccasion[]): LegacyMessage[] {
+  createPersonalizedMessages(
+    relationships: Array<{ name: string; relationship: string }>,
+    occasions: MessageOccasion[]
+  ): LegacyMessage[] {
     const messages: LegacyMessage[] = [];
 
     relationships.forEach(person => {
@@ -289,7 +332,11 @@ export class LegacyMessageBuilder {
             recipientName: person.name,
             recipientRelationship: person.relationship,
             occasion,
-            content: this.populateTemplate(template.template, person.name, person.relationship),
+            content: this.populateTemplate(
+              template.template,
+              person.name,
+              person.relationship
+            ),
             emotionalTone: template.tone,
             privacy: 'private',
             createdAt: new Date(),
@@ -297,8 +344,8 @@ export class LegacyMessageBuilder {
             isEncrypted: false,
             metadata: {
               wordCount: template.template.split(' ').length,
-              attachmentCount: 0
-            }
+              attachmentCount: 0,
+            },
           };
 
           messages.push(message);
@@ -312,24 +359,38 @@ export class LegacyMessageBuilder {
   /**
    * Generate memory prompts based on family structure
    */
-  generateMemoryPrompts(family: Array<{ name: string; relationship: string }>): MemoryPrompt[] {
+  generateMemoryPrompts(
+    family: Array<{ name: string; relationship: string }>
+  ): MemoryPrompt[] {
     const prompts: MemoryPrompt[] = [];
 
-    const hasChildren = family.some(f => ['child', 'son', 'daughter'].includes(f.relationship.toLowerCase()));
-    const hasSpouse = family.some(f => ['spouse', 'husband', 'wife', 'partner'].includes(f.relationship.toLowerCase()));
+    const hasChildren = family.some(f =>
+      ['child', 'son', 'daughter'].includes(f.relationship.toLowerCase())
+    );
+    const hasSpouse = family.some(f =>
+      ['spouse', 'husband', 'wife', 'partner'].includes(
+        f.relationship.toLowerCase()
+      )
+    );
 
     // Add child-specific prompts
     if (hasChildren) {
-      prompts.push(...MEMORY_PROMPTS.children.map(p => ({ ...p, relationship: 'child' })));
+      prompts.push(
+        ...MEMORY_PROMPTS.children.map(p => ({ ...p, relationship: 'child' }))
+      );
     }
 
     // Add spouse-specific prompts
     if (hasSpouse) {
-      prompts.push(...MEMORY_PROMPTS.spouse.map(p => ({ ...p, relationship: 'spouse' })));
+      prompts.push(
+        ...MEMORY_PROMPTS.spouse.map(p => ({ ...p, relationship: 'spouse' }))
+      );
     }
 
     // Add general family prompts
-    prompts.push(...MEMORY_PROMPTS.family.map(p => ({ ...p, relationship: 'family' })));
+    prompts.push(
+      ...MEMORY_PROMPTS.family.map(p => ({ ...p, relationship: 'family' }))
+    );
 
     // Randomize order and limit to reasonable number
     return this.shuffleArray(prompts).slice(0, 8);
@@ -338,7 +399,10 @@ export class LegacyMessageBuilder {
   /**
    * Build digital time capsule with delayed delivery
    */
-  buildDigitalTimeCapsule(messages: LegacyMessage[], releaseDate: Date): TimeCapsule {
+  buildDigitalTimeCapsule(
+    messages: LegacyMessage[],
+    releaseDate: Date
+  ): TimeCapsule {
     const timeCapsule: TimeCapsule = {
       id: `capsule_${Date.now()}`,
       name: `Time Capsule - ${releaseDate.getFullYear()}`,
@@ -348,16 +412,17 @@ export class LegacyMessageBuilder {
       releaseDate,
       releaseConditions: {
         primaryCondition: 'date',
-        executorInstructions: 'Deliver all messages to designated recipients on the specified date'
+        executorInstructions:
+          'Deliver all messages to designated recipients on the specified date',
       },
       accessControls: {
         requiresPassword: false,
         allowsEarlyAccess: false,
-        familyViewingRules: 'Individual messages are private to each recipient'
+        familyViewingRules: 'Individual messages are private to each recipient',
       },
       status: 'draft',
       createdAt: new Date(),
-      lastModified: new Date()
+      lastModified: new Date(),
     };
 
     return timeCapsule;
@@ -366,7 +431,10 @@ export class LegacyMessageBuilder {
   /**
    * Create guided emotional reflection session
    */
-  createGuidanceSession(sessionType: EmotionalGuidanceSession['sessionType'], family: Array<{ name: string; relationship: string }>): EmotionalGuidanceSession {
+  createGuidanceSession(
+    sessionType: EmotionalGuidanceSession['sessionType'],
+    family: Array<{ name: string; relationship: string }>
+  ): EmotionalGuidanceSession {
     const prompts = this.generateMemoryPrompts(family);
 
     return {
@@ -375,7 +443,7 @@ export class LegacyMessageBuilder {
       prompts: prompts.slice(0, 5), // Limit to 5 prompts per session
       responses: [],
       insights: [],
-      recommendedMessages: []
+      recommendedMessages: [],
     };
   }
 
@@ -411,7 +479,10 @@ export class LegacyMessageBuilder {
         } else if (prompt.category === 'achievements') {
           occasion = 'graduation';
           confidence = 0.8;
-        } else if (prompt.category === 'relationships' && recipient === 'spouse') {
+        } else if (
+          prompt.category === 'relationships' &&
+          recipient === 'spouse'
+        ) {
           occasion = 'anniversary';
           confidence = 0.85;
         }
@@ -419,8 +490,12 @@ export class LegacyMessageBuilder {
         suggestions.push({
           recipient,
           occasion,
-          suggestedContent: this.generateContentFromResponse(response.response, occasion, recipient),
-          confidence
+          suggestedContent: this.generateContentFromResponse(
+            response.response,
+            occasion,
+            recipient
+          ),
+          confidence,
         });
       });
     });
@@ -428,8 +503,14 @@ export class LegacyMessageBuilder {
     // Sort by confidence and remove duplicates
     return suggestions
       .sort((a, b) => b.confidence - a.confidence)
-      .filter((suggestion, index, arr) =>
-        index === arr.findIndex(s => s.recipient === suggestion.recipient && s.occasion === suggestion.occasion)
+      .filter(
+        (suggestion, index, arr) =>
+          index ===
+          arr.findIndex(
+            s =>
+              s.recipient === suggestion.recipient &&
+              s.occasion === suggestion.occasion
+          )
       )
       .slice(0, 5);
   }
@@ -449,7 +530,7 @@ export class LegacyMessageBuilder {
           context: 'Reflecting on special moments with your child',
           suggestedRecipients: [relationship],
           emotionalWeight: 'deep',
-          timeToReflect: 10
+          timeToReflect: 10,
         });
       } else if (relationship === 'spouse') {
         prompts.push({
@@ -459,7 +540,7 @@ export class LegacyMessageBuilder {
           context: 'Celebrating your partnership and love',
           suggestedRecipients: [relationship],
           emotionalWeight: 'deep',
-          timeToReflect: 15
+          timeToReflect: 15,
         });
       }
     });
@@ -470,7 +551,10 @@ export class LegacyMessageBuilder {
   /**
    * Create legacy messages for different occasions
    */
-  createLegacyMessages(recipients: string[], occasions: MessageOccasion[]): LegacyMessage[] {
+  createLegacyMessages(
+    recipients: string[],
+    occasions: MessageOccasion[]
+  ): LegacyMessage[] {
     const messages: LegacyMessage[] = [];
 
     recipients.forEach(recipient => {
@@ -490,8 +574,8 @@ export class LegacyMessageBuilder {
           isEncrypted: false,
           metadata: {
             wordCount: 20,
-            attachmentCount: 0
-          }
+            attachmentCount: 0,
+          },
         });
       });
     });
@@ -502,131 +586,280 @@ export class LegacyMessageBuilder {
   /**
    * Create time capsules with scheduled delivery
    */
-  createTimeCapsules(name: string, messages: string[], recipients: string[], releaseDate: Date): TimeCapsule[] {
-    return [{
-      id: `timecapsule_${Date.now()}_${Math.random()}`,
-      name,
-      description: `Time capsule for ${recipients.join(', ')}`,
-      messages,
-      recipients,
-      releaseDate,
-      releaseConditions: {
-        primaryCondition: 'date',
-        executorInstructions: 'Release on specified date'
+  createTimeCapsules(
+    name: string,
+    messages: string[],
+    recipients: string[],
+    releaseDate: Date
+  ): TimeCapsule[] {
+    return [
+      {
+        id: `timecapsule_${Date.now()}_${Math.random()}`,
+        name,
+        description: `Time capsule for ${recipients.join(', ')}`,
+        messages,
+        recipients,
+        releaseDate,
+        releaseConditions: {
+          primaryCondition: 'date',
+          executorInstructions: 'Release on specified date',
+        },
+        accessControls: {
+          requiresPassword: false,
+          allowsEarlyAccess: false,
+          familyViewingRules: 'Family only',
+        },
+        status: 'draft',
+        createdAt: new Date(),
+        lastModified: new Date(),
       },
-      accessControls: {
-        requiresPassword: false,
-        allowsEarlyAccess: false,
-        familyViewingRules: 'Family only'
-      },
-      status: 'draft',
-      createdAt: new Date(),
-      lastModified: new Date()
-    }];
+    ];
   }
 
   /**
    * Provide emotional support during will creation
    */
-  provideEmotionalSupport(stage: string): {
-    stage: string;
-    supportMessage: string;
-    guidanceCards: Array<{ title: string; content: string; type: string }>;
-  } | undefined {
+  provideEmotionalSupport(stage: string):
+    | {
+        stage: string;
+        supportMessage: string;
+        guidanceCards: Array<{ title: string; content: string; type: string }>;
+      }
+    | undefined {
     return this.getEmotionalSupport(stage);
   }
 
   /**
    * Get emotional support guidance based on will creation stage
    */
-  getEmotionalSupport(stage: string): {
-    stage: string;
-    supportMessage: string;
-    guidanceCards: Array<{ title: string; content: string; type: string }>;
-  } | undefined {
+  getEmotionalSupport(stage: string):
+    | {
+        stage: string;
+        supportMessage: string;
+        guidanceCards: Array<{ title: string; content: string; type: string }>;
+      }
+    | undefined {
     const support = {
       starting: {
         stage: 'starting',
-        supportMessage: "Taking this step shows how much you care about your family's future. You're doing something wonderful for them.",
+        supportMessage:
+          "Taking this step shows how much you care about your family's future. You're doing something wonderful for them.",
         guidanceCards: [
-          { title: 'Encouragement', content: "You're doing something wonderful for them.", type: 'encouragement' },
-          { title: 'Normalizing', content: "It's completely normal to feel emotional when thinking about these important matters.", type: 'normalizing' },
-          { title: 'Practical Tip', content: "Consider this as writing a love letter to your family.", type: 'practical' }
-        ]
+          {
+            title: 'Encouragement',
+            content: "You're doing something wonderful for them.",
+            type: 'encouragement',
+          },
+          {
+            title: 'Normalizing',
+            content:
+              "It's completely normal to feel emotional when thinking about these important matters.",
+            type: 'normalizing',
+          },
+          {
+            title: 'Practical Tip',
+            content: 'Consider this as writing a love letter to your family.',
+            type: 'practical',
+          },
+        ],
       },
       beneficiaries: {
         stage: 'beneficiaries',
-        supportMessage: "Deciding who inherits your life's work is a profound act of love and responsibility.",
+        supportMessage:
+          "Deciding who inherits your life's work is a profound act of love and responsibility.",
         guidanceCards: [
-          { title: 'Encouragement', content: "This is a profound act of love and responsibility.", type: 'encouragement' },
-          { title: 'Normalizing', content: "These decisions can feel overwhelming. Remember, you can always revisit and update your choices.", type: 'normalizing' },
-          { title: 'Practical Tip', content: "Think about each person's needs and circumstances, not just equal percentages.", type: 'practical' }
-        ]
+          {
+            title: 'Encouragement',
+            content: 'This is a profound act of love and responsibility.',
+            type: 'encouragement',
+          },
+          {
+            title: 'Normalizing',
+            content:
+              'These decisions can feel overwhelming. Remember, you can always revisit and update your choices.',
+            type: 'normalizing',
+          },
+          {
+            title: 'Practical Tip',
+            content:
+              "Think about each person's needs and circumstances, not just equal percentages.",
+            type: 'practical',
+          },
+        ],
       },
       assets: {
         stage: 'assets',
-        supportMessage: "You've built something meaningful in your life - now you're ensuring it continues to benefit those you love.",
+        supportMessage:
+          "You've built something meaningful in your life - now you're ensuring it continues to benefit those you love.",
         guidanceCards: [
-          { title: 'Encouragement', content: "You've built something meaningful in your life.", type: 'encouragement' },
-          { title: 'Normalizing', content: "It's natural to feel attached to possessions that hold memories.", type: 'normalizing' },
-          { title: 'Practical Tip', content: "Consider not just monetary value, but emotional significance when distributing personal items.", type: 'practical' }
-        ]
+          {
+            title: 'Encouragement',
+            content: "You've built something meaningful in your life.",
+            type: 'encouragement',
+          },
+          {
+            title: 'Normalizing',
+            content:
+              "It's natural to feel attached to possessions that hold memories.",
+            type: 'normalizing',
+          },
+          {
+            title: 'Practical Tip',
+            content:
+              'Consider not just monetary value, but emotional significance when distributing personal items.',
+            type: 'practical',
+          },
+        ],
       },
       asset_distribution: {
         stage: 'asset_distribution',
-        supportMessage: "You've built something meaningful in your life - now you're ensuring it continues to benefit those you love.",
+        supportMessage:
+          "You've built something meaningful in your life - now you're ensuring it continues to benefit those you love.",
         guidanceCards: [
-          { title: 'Encouragement', content: "You've built something meaningful in your life.", type: 'encouragement' },
-          { title: 'Normalizing', content: "It's natural to feel attached to possessions that hold memories.", type: 'normalizing' },
-          { title: 'Practical Tip', content: "Consider not just monetary value, but emotional significance when distributing personal items.", type: 'practical' }
-        ]
+          {
+            title: 'Encouragement',
+            content: "You've built something meaningful in your life.",
+            type: 'encouragement',
+          },
+          {
+            title: 'Normalizing',
+            content:
+              "It's natural to feel attached to possessions that hold memories.",
+            type: 'normalizing',
+          },
+          {
+            title: 'Practical Tip',
+            content:
+              'Consider not just monetary value, but emotional significance when distributing personal items.',
+            type: 'practical',
+          },
+        ],
       },
       final_wishes: {
         stage: 'final_wishes',
-        supportMessage: "Sharing your final wishes is a gift of clarity to your family during a difficult time.",
+        supportMessage:
+          'Sharing your final wishes is a gift of clarity to your family during a difficult time.',
         guidanceCards: [
-          { title: 'Encouragement', content: "Sharing your final wishes is a gift of clarity to your family.", type: 'encouragement' },
-          { title: 'Normalizing', content: "Thinking about end-of-life preferences can be difficult, but it shows tremendous thoughtfulness.", type: 'normalizing' },
-          { title: 'Practical Tip', content: "Include not just practical instructions, but also messages about how you'd like to be remembered.", type: 'practical' }
-        ]
+          {
+            title: 'Encouragement',
+            content:
+              'Sharing your final wishes is a gift of clarity to your family.',
+            type: 'encouragement',
+          },
+          {
+            title: 'Normalizing',
+            content:
+              'Thinking about end-of-life preferences can be difficult, but it shows tremendous thoughtfulness.',
+            type: 'normalizing',
+          },
+          {
+            title: 'Practical Tip',
+            content:
+              "Include not just practical instructions, but also messages about how you'd like to be remembered.",
+            type: 'practical',
+          },
+        ],
       },
       completing: {
         stage: 'completing',
-        supportMessage: "You've just completed one of the most caring acts possible - protecting and providing for your loved ones.",
+        supportMessage:
+          "You've just completed one of the most caring acts possible - protecting and providing for your loved ones.",
         guidanceCards: [
-          { title: 'Encouragement', content: "You've just completed one of the most caring acts possible.", type: 'encouragement' },
-          { title: 'Normalizing', content: "You might feel relieved, emotional, or both. All of these feelings are completely normal.", type: 'normalizing' },
-          { title: 'Practical Tip', content: "Share with your family that you've completed your will so they know you've taken care of them.", type: 'practical' }
-        ]
-      }
+          {
+            title: 'Encouragement',
+            content:
+              "You've just completed one of the most caring acts possible.",
+            type: 'encouragement',
+          },
+          {
+            title: 'Normalizing',
+            content:
+              'You might feel relieved, emotional, or both. All of these feelings are completely normal.',
+            type: 'normalizing',
+          },
+          {
+            title: 'Practical Tip',
+            content:
+              "Share with your family that you've completed your will so they know you've taken care of them.",
+            type: 'practical',
+          },
+        ],
+      },
     };
 
     return support[stage as keyof typeof support];
   }
 
   // Private helper methods
-  private populateTemplate(template: string, name: string, relationship: string): string {
-    return template.replace('{name}', name)
-                  .replace('{relationship}', relationship)
-                  .replace('{personal_memory}', '[Add a specific memory about ' + name + ']')
-                  .replace('{life_advice}', '[Share your most important advice for ' + name + ']')
-                  .replace('{hopes_for_future}', '[Express your hopes for ' + name + '\'s future]')
-                  .replace('{marriage_advice}', '[Share wisdom about marriage and relationships]')
-                  .replace('{relationship_wisdom}', '[Add specific relationship advice]')
-                  .replace('{love_story_connection}', '[Connect to your own love story or relationship experience]')
-                  .replace('{proud_moment}', '[Mention a specific moment when you felt proud of ' + name + ']')
-                  .replace('{parenting_reflection}', '[Share thoughts about becoming a parent]')
-                  .replace('{acknowledgment}', '[Acknowledge their specific challenge]')
-                  .replace('{encouragement}', '[Provide specific encouragement based on their situation]')
-                  .replace('{specific_qualities}', '[Mention specific qualities you admire in ' + name + ']')
-                  .replace('{positive_impact}', '[Describe how ' + name + ' has positively impacted your life]')
-                  .replace('{life_lesson}', '[Share an important life lesson]')
-                  .replace('{core_value}', '[Express a core family value]')
-                  .replace('{encouragement_to_live_fully}', '[Encourage them to live life fully]')
-                  .replace('{family_member_or_event}', '[Reference specific family member or historical event]')
-                  .replace('{historical_context}', '[Provide historical context]')
-                  .replace('{family_trait_or_value}', '[Connect to current family traits or values]')
-                  .replace('{connection_to_present}', '[Connect historical information to present day]');
+  private populateTemplate(
+    template: string,
+    name: string,
+    relationship: string
+  ): string {
+    return template
+      .replace('{name}', name)
+      .replace('{relationship}', relationship)
+      .replace(
+        '{personal_memory}',
+        '[Add a specific memory about ' + name + ']'
+      )
+      .replace(
+        '{life_advice}',
+        '[Share your most important advice for ' + name + ']'
+      )
+      .replace(
+        '{hopes_for_future}',
+        '[Express your hopes for ' + name + "'s future]"
+      )
+      .replace(
+        '{marriage_advice}',
+        '[Share wisdom about marriage and relationships]'
+      )
+      .replace('{relationship_wisdom}', '[Add specific relationship advice]')
+      .replace(
+        '{love_story_connection}',
+        '[Connect to your own love story or relationship experience]'
+      )
+      .replace(
+        '{proud_moment}',
+        '[Mention a specific moment when you felt proud of ' + name + ']'
+      )
+      .replace(
+        '{parenting_reflection}',
+        '[Share thoughts about becoming a parent]'
+      )
+      .replace('{acknowledgment}', '[Acknowledge their specific challenge]')
+      .replace(
+        '{encouragement}',
+        '[Provide specific encouragement based on their situation]'
+      )
+      .replace(
+        '{specific_qualities}',
+        '[Mention specific qualities you admire in ' + name + ']'
+      )
+      .replace(
+        '{positive_impact}',
+        '[Describe how ' + name + ' has positively impacted your life]'
+      )
+      .replace('{life_lesson}', '[Share an important life lesson]')
+      .replace('{core_value}', '[Express a core family value]')
+      .replace(
+        '{encouragement_to_live_fully}',
+        '[Encourage them to live life fully]'
+      )
+      .replace(
+        '{family_member_or_event}',
+        '[Reference specific family member or historical event]'
+      )
+      .replace('{historical_context}', '[Provide historical context]')
+      .replace(
+        '{family_trait_or_value}',
+        '[Connect to current family traits or values]'
+      )
+      .replace(
+        '{connection_to_present}',
+        '[Connect historical information to present day]'
+      );
   }
 
   private shuffleArray<T>(array: T[]): T[] {
@@ -638,12 +871,20 @@ export class LegacyMessageBuilder {
     return shuffled;
   }
 
-  private generateContentFromResponse(response: string, occasion: MessageOccasion, recipient: string): string {
+  private generateContentFromResponse(
+    response: string,
+    occasion: MessageOccasion,
+    recipient: string
+  ): string {
     // This would use AI/NLP to generate personalized content based on the user's response
     // For now, return a template-based suggestion
     const templates = MESSAGE_TEMPLATES[occasion];
     if (templates && templates.length > 0) {
-      return this.populateTemplate(templates[0].template, recipient, 'family member');
+      return this.populateTemplate(
+        templates[0].template,
+        recipient,
+        'family member'
+      );
     }
 
     return `Based on your reflection about "${response.substring(0, 50)}...", here's a personalized message for ${recipient}.`;

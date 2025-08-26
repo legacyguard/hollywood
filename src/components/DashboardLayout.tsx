@@ -1,15 +1,15 @@
-import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "@clerk/clerk-react";
-import { AppSidebar } from "@/components/AppSidebar";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
-import { QuickSearch } from "@/components/QuickSearch";
-import { executeSofiaAction } from "@/lib/sofia-action-router";
-import type { SofiaAction } from "@/lib/sofia-search-dictionary";
-import { useDocumentFilter } from "@/contexts/DocumentFilterContext";
-import SofiaChatV2 from "@/components/sofia/SofiaChatV2";
-import SofiaFloatingButton from "@/components/sofia/SofiaFloatingButton";
+import { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '@clerk/clerk-react';
+import { AppSidebar } from '@/components/AppSidebar';
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
+import { QuickSearch } from '@/components/QuickSearch';
+import { executeSofiaAction } from '@/lib/sofia-action-router';
+import type { SofiaAction } from '@/lib/sofia-search-dictionary';
+import { useDocumentFilter } from '@/contexts/DocumentFilterContext';
+import SofiaChatV2 from '@/components/sofia/SofiaChatV2';
+import SofiaFloatingButton from '@/components/sofia/SofiaFloatingButton';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -18,7 +18,10 @@ interface DashboardLayoutProps {
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   const [isSofiaOpen, setIsSofiaOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [sofiaPendingAction, setSofiaPendingAction] = useState<{ userMessage: string; sofiaResponse: string } | null>(null);
+  const [sofiaPendingAction, setSofiaPendingAction] = useState<{
+    userMessage: string;
+    sofiaResponse: string;
+  } | null>(null);
   const location = useLocation();
   const navigate = useNavigate();
   const { userId } = useAuth();
@@ -41,7 +44,10 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     setIsSofiaOpen(!isSofiaOpen);
   };
 
-  const handleSofiaAction = async (action: SofiaAction, searchQuery?: string) => {
+  const handleSofiaAction = async (
+    action: SofiaAction,
+    searchQuery?: string
+  ) => {
     try {
       // Generate contextual messages
       const userMessage = action.text;
@@ -54,41 +60,39 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         setDocumentFilter,
         onSofiaMessage: (user, sofia) => {
           sofiaResponse = sofia;
-        }
+        },
       });
 
       // Set pending action for Sofia to display
       if (sofiaResponse) {
         setSofiaPendingAction({
           userMessage,
-          sofiaResponse
+          sofiaResponse,
         });
       }
-
     } catch (error) {
       console.error('Error executing Sofia action:', error);
       setSofiaPendingAction({
         userMessage: action.text,
-        sofiaResponse: "I apologize, but I encountered an issue processing your request. Please try again."
+        sofiaResponse:
+          'I apologize, but I encountered an issue processing your request. Please try again.',
       });
     }
   };
 
   return (
     <SidebarProvider defaultOpen={false}>
-      <div className="min-h-screen flex w-full bg-background">
+      <div className='min-h-screen flex w-full bg-background'>
         <AppSidebar />
-        <div className="flex-1 flex flex-col min-w-0">
+        <div className='flex-1 flex flex-col min-w-0'>
           {/* Mobile Header with Sidebar Trigger */}
-          <header className="lg:hidden h-16 flex items-center px-4 border-b border-card-border bg-card">
-            <SidebarTrigger className="mr-4" />
-            <h1 className="font-semibold text-card-foreground">LegacyGuard</h1>
+          <header className='lg:hidden h-16 flex items-center px-4 border-b border-card-border bg-card'>
+            <SidebarTrigger className='mr-4' />
+            <h1 className='font-semibold text-card-foreground'>LegacyGuard</h1>
           </header>
 
           {/* Main Content */}
-          <main className="flex-1 bg-background">
-            {children}
-          </main>
+          <main className='flex-1 bg-background'>{children}</main>
         </div>
 
         {/* Sofia AI Assistant */}
@@ -103,7 +107,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             // Clear pending action when Sofia is closed
             setSofiaPendingAction(null);
           }}
-          variant="floating"
+          variant='floating'
           currentPage={getCurrentPage()}
           pendingAction={sofiaPendingAction}
         />
@@ -112,7 +116,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         <QuickSearch
           isOpen={isSearchOpen}
           onClose={() => setIsSearchOpen(false)}
-          onSofiaAction={async (action) => {
+          onSofiaAction={async action => {
             // Sofia action triggered from search
             setIsSearchOpen(false);
             await handleSofiaAction(action);

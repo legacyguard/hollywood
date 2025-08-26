@@ -1,5 +1,9 @@
 import { useState, useEffect, useMemo } from 'react';
-import { legalValidator, type ValidationResult, type ComplianceReport } from '@/lib/will-legal-validator';
+import {
+  legalValidator,
+  type ValidationResult,
+  type ComplianceReport,
+} from '@/lib/will-legal-validator';
 import type { WillData } from '@/components/legacy/WillWizard';
 
 interface UseWillValidationProps {
@@ -13,10 +17,13 @@ export const useWillValidation = ({
   willData,
   willType,
   jurisdiction = 'Slovakia',
-  enableRealTime = true
+  enableRealTime = true,
 }: UseWillValidationProps) => {
-  const [complianceReport, setComplianceReport] = useState<ComplianceReport | null>(null);
-  const [fieldValidations, setFieldValidations] = useState<Map<string, ValidationResult>>(new Map());
+  const [complianceReport, setComplianceReport] =
+    useState<ComplianceReport | null>(null);
+  const [fieldValidations, setFieldValidations] = useState<
+    Map<string, ValidationResult>
+  >(new Map());
   const [isValidating, setIsValidating] = useState(false);
 
   // Set jurisdiction on validator
@@ -36,7 +43,10 @@ export const useWillValidation = ({
       // Use setTimeout to debounce rapid changes
       const timeoutId = setTimeout(() => {
         try {
-          const report = legalValidator.validateWillDocument(willData, willType);
+          const report = legalValidator.validateWillDocument(
+            willData,
+            willType
+          );
           setComplianceReport(report);
 
           // Update field-specific validations
@@ -89,12 +99,16 @@ export const useWillValidation = ({
   };
 
   // Get validation for specific field
-  const getFieldValidation = (fieldName: string): ValidationResult | undefined => {
+  const getFieldValidation = (
+    fieldName: string
+  ): ValidationResult | undefined => {
     return fieldValidations.get(fieldName);
   };
 
   // Get validation for beneficiary by index
-  const getBeneficiaryValidation = (index: number): ValidationResult | undefined => {
+  const getBeneficiaryValidation = (
+    index: number
+  ): ValidationResult | undefined => {
     return fieldValidations.get(`beneficiaries[${index}]`);
   };
 
@@ -117,14 +131,14 @@ export const useWillValidation = ({
         errors: 0,
         warnings: 0,
         successes: 0,
-        overall: 'unknown' as const
+        overall: 'unknown' as const,
       };
     }
 
     const allValidations = [
       ...complianceReport.validationResults,
       ...complianceReport.forcedHeirsIssues,
-      ...complianceReport.legalConflicts
+      ...complianceReport.legalConflicts,
     ];
 
     return {
@@ -132,7 +146,7 @@ export const useWillValidation = ({
       errors: allValidations.filter(v => v.level === 'error').length,
       warnings: allValidations.filter(v => v.level === 'warning').length,
       successes: allValidations.filter(v => v.level === 'success').length,
-      overall: complianceReport.overall
+      overall: complianceReport.overall,
     };
   }, [complianceReport]);
 
@@ -148,7 +162,7 @@ export const useWillValidation = ({
     const allValidations = [
       ...complianceReport.validationResults,
       ...complianceReport.forcedHeirsIssues,
-      ...complianceReport.legalConflicts
+      ...complianceReport.legalConflicts,
     ];
 
     if (level) {
@@ -163,24 +177,29 @@ export const useWillValidation = ({
     switch (jurisdiction) {
       case 'Slovakia':
         return {
-          forcedHeirs: 'Slovak law protects certain family members (forced heirs) who must receive minimum inheritance shares.',
-          witnesses: 'Holographic wills require no witnesses, but alographic wills need exactly 2 witnesses present simultaneously.',
+          forcedHeirs:
+            'Slovak law protects certain family members (forced heirs) who must receive minimum inheritance shares.',
+          witnesses:
+            'Holographic wills require no witnesses, but alographic wills need exactly 2 witnesses present simultaneously.',
           revocation: 'Previous wills must be explicitly revoked.',
-          notarization: 'Consider notarial form for maximum legal security and NCRza registration.'
+          notarization:
+            'Consider notarial form for maximum legal security and NCRza registration.',
         };
       case 'Czech-Republic':
         return {
-          forcedHeirs: 'Czech law protects reserved heirs (nepominutelní dědici) with minimum inheritance rights.',
-          witnesses: 'Handwritten wills need no witnesses, but typed wills require 2 witnesses.',
+          forcedHeirs:
+            'Czech law protects reserved heirs (nepominutelní dědici) with minimum inheritance rights.',
+          witnesses:
+            'Handwritten wills need no witnesses, but typed wills require 2 witnesses.',
           revocation: 'Previous wills should be explicitly revoked.',
-          notarization: 'Notarial wills provide highest legal certainty.'
+          notarization: 'Notarial wills provide highest legal certainty.',
         };
       default:
         return {
           forcedHeirs: 'Check local laws regarding protected family members.',
           witnesses: 'Witness requirements vary by jurisdiction.',
           revocation: 'Previous wills should typically be revoked.',
-          notarization: 'Consider professional legal advice.'
+          notarization: 'Consider professional legal advice.',
         };
     }
   };
@@ -205,10 +224,12 @@ export const useWillValidation = ({
     getJurisdictionGuidance,
 
     // Raw validation results for custom processing
-    allValidations: complianceReport ? [
-      ...complianceReport.validationResults,
-      ...complianceReport.forcedHeirsIssues,
-      ...complianceReport.legalConflicts
-    ] : []
+    allValidations: complianceReport
+      ? [
+          ...complianceReport.validationResults,
+          ...complianceReport.forcedHeirsIssues,
+          ...complianceReport.legalConflicts,
+        ]
+      : [],
   };
 };

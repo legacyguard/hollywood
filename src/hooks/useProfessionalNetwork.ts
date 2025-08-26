@@ -7,11 +7,11 @@ import type {
   NotaryMatch,
   ReviewFeedback,
   ProfessionalType,
-  ReviewPriority
+  ReviewPriority,
 } from '@/lib/professional-review-network';
 import {
   professionalNetwork,
-  ProfessionalProfile
+  ProfessionalProfile,
 } from '@/lib/professional-review-network';
 
 interface AttorneyReviewOptions {
@@ -23,7 +23,10 @@ interface AttorneyReviewOptions {
 }
 
 interface NotarySearchOptions {
-  serviceType?: 'will_witnessing' | 'document_certification' | 'full_notarization';
+  serviceType?:
+    | 'will_witnessing'
+    | 'document_certification'
+    | 'full_notarization';
   language?: string;
   timeframe?: string;
 }
@@ -33,42 +36,58 @@ export const useProfessionalNetwork = () => {
 
   // Request attorney review
   const attorneyReviewMutation = useMutation({
-    mutationFn: ({ willData, jurisdiction, options }: {
+    mutationFn: ({
+      willData,
+      jurisdiction,
+      options,
+    }: {
       willData: WillData;
       jurisdiction: string;
       options?: AttorneyReviewOptions;
-    }) => professionalNetwork.requestAttorneyReview(willData, jurisdiction, options),
-    onSuccess: (data) => {
+    }) =>
+      professionalNetwork.requestAttorneyReview(
+        willData,
+        jurisdiction,
+        options
+      ),
+    onSuccess: data => {
       queryClient.setQueryData(['review-request', data.id], data);
-    }
+    },
   });
 
   // Get estate planner consultation offers
   const consultationOffersMutation = useMutation({
-    mutationFn: (willData: WillData) => professionalNetwork.getEstateplannerConsultation(willData),
-    onSuccess: (data) => {
+    mutationFn: (willData: WillData) =>
+      professionalNetwork.getEstateplannerConsultation(willData),
+    onSuccess: data => {
       queryClient.setQueryData(['consultation-offers'], data);
-    }
+    },
   });
 
   // Find notary services
   const notarySearchMutation = useMutation({
-    mutationFn: ({ location, willData, preferences }: {
+    mutationFn: ({
+      location,
+      willData,
+      preferences,
+    }: {
       location: string;
       willData?: WillData;
       preferences?: NotarySearchOptions;
-    }) => professionalNetwork.connectWithNotary(location, willData, preferences),
-    onSuccess: (data) => {
+    }) =>
+      professionalNetwork.connectWithNotary(location, willData, preferences),
+    onSuccess: data => {
       queryClient.setQueryData(['notary-matches'], data);
-    }
+    },
   });
 
   // Submit will for review
   const submitReviewMutation = useMutation({
-    mutationFn: (reviewRequest: ReviewRequest) => professionalNetwork.submitForReview(reviewRequest),
+    mutationFn: (reviewRequest: ReviewRequest) =>
+      professionalNetwork.submitForReview(reviewRequest),
     onSuccess: (data, reviewRequest) => {
       queryClient.setQueryData(['review-feedback', reviewRequest.id], data);
-    }
+    },
   });
 
   // Search professionals by type and filters
@@ -91,43 +110,53 @@ export const useProfessionalNetwork = () => {
 
   // Hook for attorney review workflow
   const useAttorneyReview = () => {
-    const [currentRequest, setCurrentRequest] = useState<ReviewRequest | null>(null);
+    const [currentRequest, setCurrentRequest] = useState<ReviewRequest | null>(
+      null
+    );
 
-    const requestReview = useCallback(async (
-      willData: WillData,
-      jurisdiction: string,
-      options?: AttorneyReviewOptions
-    ) => {
-      try {
-        const request = await attorneyReviewMutation.mutateAsync({
-          willData,
-          jurisdiction,
-          options
-        });
-        setCurrentRequest(request);
-        return request;
-      } catch (error) {
-        console.error('Failed to request attorney review:', error);
-        throw error;
-      }
-    }, [attorneyReviewMutation]);
+    const requestReview = useCallback(
+      async (
+        willData: WillData,
+        jurisdiction: string,
+        options?: AttorneyReviewOptions
+      ) => {
+        try {
+          const request = await attorneyReviewMutation.mutateAsync({
+            willData,
+            jurisdiction,
+            options,
+          });
+          setCurrentRequest(request);
+          return request;
+        } catch (error) {
+          console.error('Failed to request attorney review:', error);
+          throw error;
+        }
+      },
+      [attorneyReviewMutation]
+    );
 
-    const submitForReview = useCallback(async (reviewRequest: ReviewRequest) => {
-      try {
-        const feedback = await submitReviewMutation.mutateAsync(reviewRequest);
-        return feedback;
-      } catch (error) {
-        console.error('Failed to submit for review:', error);
-        throw error;
-      }
-    }, [submitReviewMutation]);
+    const submitForReview = useCallback(
+      async (reviewRequest: ReviewRequest) => {
+        try {
+          const feedback =
+            await submitReviewMutation.mutateAsync(reviewRequest);
+          return feedback;
+        } catch (error) {
+          console.error('Failed to submit for review:', error);
+          throw error;
+        }
+      },
+      [submitReviewMutation]
+    );
 
     return {
       currentRequest,
       requestReview,
       submitForReview,
-      isLoading: attorneyReviewMutation.isPending || submitReviewMutation.isPending,
-      error: attorneyReviewMutation.error || submitReviewMutation.error
+      isLoading:
+        attorneyReviewMutation.isPending || submitReviewMutation.isPending,
+      error: attorneyReviewMutation.error || submitReviewMutation.error,
     };
   };
 
@@ -135,22 +164,25 @@ export const useProfessionalNetwork = () => {
   const useEstatePlanningConsultation = () => {
     const [currentOffers, setCurrentOffers] = useState<ConsultationOffer[]>([]);
 
-    const getConsultationOffers = useCallback(async (willData: WillData) => {
-      try {
-        const offers = await consultationOffersMutation.mutateAsync(willData);
-        setCurrentOffers(offers);
-        return offers;
-      } catch (error) {
-        console.error('Failed to get consultation offers:', error);
-        throw error;
-      }
-    }, [consultationOffersMutation]);
+    const getConsultationOffers = useCallback(
+      async (willData: WillData) => {
+        try {
+          const offers = await consultationOffersMutation.mutateAsync(willData);
+          setCurrentOffers(offers);
+          return offers;
+        } catch (error) {
+          console.error('Failed to get consultation offers:', error);
+          throw error;
+        }
+      },
+      [consultationOffersMutation]
+    );
 
     return {
       currentOffers,
       getConsultationOffers,
       isLoading: consultationOffersMutation.isPending,
-      error: consultationOffersMutation.error
+      error: consultationOffersMutation.error,
     };
   };
 
@@ -158,77 +190,96 @@ export const useProfessionalNetwork = () => {
   const useNotaryServices = () => {
     const [currentMatches, setCurrentMatches] = useState<NotaryMatch[]>([]);
 
-    const findNotaries = useCallback(async (
-      location: string,
-      willData?: WillData,
-      preferences?: NotarySearchOptions
-    ) => {
-      try {
-        const matches = await notarySearchMutation.mutateAsync({
-          location,
-          willData,
-          preferences
-        });
-        setCurrentMatches(matches);
-        return matches;
-      } catch (error) {
-        console.error('Failed to find notaries:', error);
-        throw error;
-      }
-    }, [notarySearchMutation]);
+    const findNotaries = useCallback(
+      async (
+        location: string,
+        willData?: WillData,
+        preferences?: NotarySearchOptions
+      ) => {
+        try {
+          const matches = await notarySearchMutation.mutateAsync({
+            location,
+            willData,
+            preferences,
+          });
+          setCurrentMatches(matches);
+          return matches;
+        } catch (error) {
+          console.error('Failed to find notaries:', error);
+          throw error;
+        }
+      },
+      [notarySearchMutation]
+    );
 
     return {
       currentMatches,
       findNotaries,
       isLoading: notarySearchMutation.isPending,
-      error: notarySearchMutation.error
+      error: notarySearchMutation.error,
     };
   };
 
   // Composite hook for complete professional network workflow
-  const useProfessionalReviewWorkflow = (willData: WillData, jurisdiction: string) => {
-    const [activeService, setActiveService] = useState<'attorney' | 'planner' | 'notary' | null>(null);
+  const useProfessionalReviewWorkflow = (
+    willData: WillData,
+    jurisdiction: string
+  ) => {
+    const [activeService, setActiveService] = useState<
+      'attorney' | 'planner' | 'notary' | null
+    >(null);
     const [reviewHistory, setReviewHistory] = useState<ReviewFeedback[]>([]);
 
     const attorneyReview = useAttorneyReview();
     const estatePlanning = useEstatePlanningConsultation();
     const notaryServices = useNotaryServices();
 
-    const startAttorneyReview = useCallback(async (options?: AttorneyReviewOptions) => {
-      setActiveService('attorney');
-      const request = await attorneyReview.requestReview(willData, jurisdiction, options);
+    const startAttorneyReview = useCallback(
+      async (options?: AttorneyReviewOptions) => {
+        setActiveService('attorney');
+        const request = await attorneyReview.requestReview(
+          willData,
+          jurisdiction,
+          options
+        );
 
-      // Auto-submit for review if assigned
-      if (request.status === 'assigned') {
-        setTimeout(async () => {
-          const feedback = await attorneyReview.submitForReview(request);
-          setReviewHistory(prev => [...prev, feedback]);
-        }, 3000); // Simulate review time
-      }
+        // Auto-submit for review if assigned
+        if (request.status === 'assigned') {
+          setTimeout(async () => {
+            const feedback = await attorneyReview.submitForReview(request);
+            setReviewHistory(prev => [...prev, feedback]);
+          }, 3000); // Simulate review time
+        }
 
-      return request;
-    }, [willData, jurisdiction, attorneyReview]);
+        return request;
+      },
+      [willData, jurisdiction, attorneyReview]
+    );
 
     const startEstatePlanning = useCallback(async () => {
       setActiveService('planner');
       return await estatePlanning.getConsultationOffers(willData);
     }, [willData, estatePlanning]);
 
-    const startNotarySearch = useCallback(async (
-      location: string,
-      preferences?: NotarySearchOptions
-    ) => {
-      setActiveService('notary');
-      return await notaryServices.findNotaries(location, willData, preferences);
-    }, [willData, notaryServices]);
+    const startNotarySearch = useCallback(
+      async (location: string, preferences?: NotarySearchOptions) => {
+        setActiveService('notary');
+        return await notaryServices.findNotaries(
+          location,
+          willData,
+          preferences
+        );
+      },
+      [willData, notaryServices]
+    );
 
-    const isAnyServiceLoading = attorneyReview.isLoading ||
-                              estatePlanning.isLoading ||
-                              notaryServices.isLoading;
+    const isAnyServiceLoading =
+      attorneyReview.isLoading ||
+      estatePlanning.isLoading ||
+      notaryServices.isLoading;
 
-    const hasAnyError = attorneyReview.error ||
-                        estatePlanning.error ||
-                        notaryServices.error;
+    const hasAnyError =
+      attorneyReview.error || estatePlanning.error || notaryServices.error;
 
     return {
       activeService,
@@ -240,7 +291,7 @@ export const useProfessionalNetwork = () => {
       startEstatePlanning,
       startNotarySearch,
       isLoading: isAnyServiceLoading,
-      error: hasAnyError
+      error: hasAnyError,
     };
   };
 
@@ -255,7 +306,7 @@ export const useProfessionalNetwork = () => {
     attorneyReviewMutation,
     consultationOffersMutation,
     notarySearchMutation,
-    submitReviewMutation
+    submitReviewMutation,
   };
 };
 
@@ -275,7 +326,10 @@ export const useNotaryServices = () => {
   return useNotaryServices();
 };
 
-export const useProfessionalReviewWorkflow = (willData: WillData, jurisdiction: string) => {
+export const useProfessionalReviewWorkflow = (
+  willData: WillData,
+  jurisdiction: string
+) => {
   const { useProfessionalReviewWorkflow } = useProfessionalNetwork();
   return useProfessionalReviewWorkflow(willData, jurisdiction);
 };

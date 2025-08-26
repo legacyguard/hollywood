@@ -10,11 +10,8 @@ export default function EmergencyVerification() {
   const { token } = useParams<{ token: string }>();
 
   return (
-    <div className="min-h-screen">
-      <EmergencyDashboard
-        verificationToken={token}
-        guardianAccess={true}
-      />
+    <div className='min-h-screen'>
+      <EmergencyDashboard verificationToken={token} guardianAccess={true} />
     </div>
   );
 }

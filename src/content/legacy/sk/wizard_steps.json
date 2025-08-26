@@ -2,7 +2,7 @@
   "steps": [
     {
       "id": "will_type",
-      "title": "Will Type Selection", 
+      "title": "Will Type Selection",
       "description": "Choose the appropriate type of will for Slovak law",
       "sofiaIntro": "Excellent. Creating a will is an important act of care. Under Slovak law, you have two main forms to choose from. I'll help you select the right one for you.",
       "content": {
@@ -25,7 +25,7 @@
         },
         {
           "id": "birthDate",
-          "label": "Date of Birth", 
+          "label": "Date of Birth",
           "type": "date",
           "required": true,
           "helpText": "Required for legal identification"
@@ -33,7 +33,7 @@
         {
           "id": "birthPlace",
           "label": "Place of Birth",
-          "type": "text", 
+          "type": "text",
           "required": true,
           "helpText": "City and country of birth"
         },
@@ -74,11 +74,14 @@
           "type": "select",
           "required": true,
           "options": [
-            {"value": "single", "label": "Single"},
-            {"value": "married", "label": "Married"},
-            {"value": "divorced", "label": "Divorced"},
-            {"value": "widowed", "label": "Widowed"},
-            {"value": "registered_partnership", "label": "Registered Partnership"}
+            { "value": "single", "label": "Single" },
+            { "value": "married", "label": "Married" },
+            { "value": "divorced", "label": "Divorced" },
+            { "value": "widowed", "label": "Widowed" },
+            {
+              "value": "registered_partnership",
+              "label": "Registered Partnership"
+            }
           ]
         },
         {
@@ -94,9 +97,14 @@
           "type": "array",
           "helpText": "List all your children (biological and adopted)",
           "fields": [
-            {"id": "name", "label": "Full Name", "type": "text"},
-            {"id": "birthDate", "label": "Date of Birth", "type": "date"},
-            {"id": "isMinor", "label": "Is Minor", "type": "boolean", "computed": true}
+            { "id": "name", "label": "Full Name", "type": "text" },
+            { "id": "birthDate", "label": "Date of Birth", "type": "date" },
+            {
+              "id": "isMinor",
+              "label": "Is Minor",
+              "type": "boolean",
+              "computed": true
+            }
           ]
         }
       ],
@@ -116,11 +124,34 @@
           "name": "Real Estate",
           "description": "Properties, land, apartments",
           "fields": [
-            {"id": "type", "label": "Property Type", "type": "select", "options": ["apartment", "house", "land", "commercial", "other"]},
-            {"id": "address", "label": "Property Address", "type": "textarea"},
-            {"id": "cadastralNumber", "label": "Cadastral Number", "type": "text", "helpText": "LV number from Slovak cadastre"},
-            {"id": "estimatedValue", "label": "Estimated Value (EUR)", "type": "number"},
-            {"id": "ownership", "label": "Ownership Share", "type": "text", "helpText": "e.g., 1/1, 1/2, etc."}
+            {
+              "id": "type",
+              "label": "Property Type",
+              "type": "select",
+              "options": ["apartment", "house", "land", "commercial", "other"]
+            },
+            {
+              "id": "address",
+              "label": "Property Address",
+              "type": "textarea"
+            },
+            {
+              "id": "cadastralNumber",
+              "label": "Cadastral Number",
+              "type": "text",
+              "helpText": "LV number from Slovak cadastre"
+            },
+            {
+              "id": "estimatedValue",
+              "label": "Estimated Value (EUR)",
+              "type": "number"
+            },
+            {
+              "id": "ownership",
+              "label": "Ownership Share",
+              "type": "text",
+              "helpText": "e.g., 1/1, 1/2, etc."
+            }
           ]
         },
         {
@@ -128,10 +159,24 @@
           "name": "Bank Accounts",
           "description": "Savings, checking, investment accounts",
           "fields": [
-            {"id": "bank", "label": "Bank Name", "type": "text"},
-            {"id": "accountType", "label": "Account Type", "type": "select", "options": ["checking", "savings", "investment", "other"]},
-            {"id": "accountNumber", "label": "Account Number", "type": "text", "helpText": "Last 4 digits for privacy"},
-            {"id": "approximateBalance", "label": "Approximate Balance (EUR)", "type": "number"}
+            { "id": "bank", "label": "Bank Name", "type": "text" },
+            {
+              "id": "accountType",
+              "label": "Account Type",
+              "type": "select",
+              "options": ["checking", "savings", "investment", "other"]
+            },
+            {
+              "id": "accountNumber",
+              "label": "Account Number",
+              "type": "text",
+              "helpText": "Last 4 digits for privacy"
+            },
+            {
+              "id": "approximateBalance",
+              "label": "Approximate Balance (EUR)",
+              "type": "number"
+            }
           ]
         },
         {
@@ -139,12 +184,16 @@
           "name": "Vehicles",
           "description": "Cars, motorcycles, boats",
           "fields": [
-            {"id": "type", "label": "Vehicle Type", "type": "text"},
-            {"id": "make", "label": "Make", "type": "text"},
-            {"id": "model", "label": "Model", "type": "text"},
-            {"id": "year", "label": "Year", "type": "number"},
-            {"id": "licensePlate", "label": "License Plate", "type": "text"},
-            {"id": "estimatedValue", "label": "Estimated Value (EUR)", "type": "number"}
+            { "id": "type", "label": "Vehicle Type", "type": "text" },
+            { "id": "make", "label": "Make", "type": "text" },
+            { "id": "model", "label": "Model", "type": "text" },
+            { "id": "year", "label": "Year", "type": "number" },
+            { "id": "licensePlate", "label": "License Plate", "type": "text" },
+            {
+              "id": "estimatedValue",
+              "label": "Estimated Value (EUR)",
+              "type": "number"
+            }
           ]
         },
         {
@@ -152,9 +201,13 @@
           "name": "Personal Property",
           "description": "Jewelry, art, collectibles, furniture",
           "fields": [
-            {"id": "description", "label": "Description", "type": "text"},
-            {"id": "estimatedValue", "label": "Estimated Value (EUR)", "type": "number"},
-            {"id": "location", "label": "Current Location", "type": "text"}
+            { "id": "description", "label": "Description", "type": "text" },
+            {
+              "id": "estimatedValue",
+              "label": "Estimated Value (EUR)",
+              "type": "number"
+            },
+            { "id": "location", "label": "Current Location", "type": "text" }
           ]
         }
       ]
@@ -170,15 +223,59 @@
           "label": "Beneficiaries",
           "type": "array",
           "fields": [
-            {"id": "name", "label": "Full Name", "type": "text"},
-            {"id": "relationship", "label": "Relationship", "type": "select", "options": ["spouse", "child", "parent", "sibling", "grandchild", "friend", "charity", "other"]},
-            {"id": "address", "label": "Address", "type": "textarea"},
-            {"id": "personalId", "label": "Personal ID/Birth Date", "type": "text", "helpText": "For identification purposes"},
-            {"id": "inheritanceShare", "label": "Share of Inheritance", "type": "select", "options": ["percentage", "specific_assets", "monetary_amount"]},
-            {"id": "percentage", "label": "Percentage", "type": "number", "conditional": "inheritanceShare === 'percentage'"},
-            {"id": "specificAssets", "label": "Specific Assets", "type": "textarea", "conditional": "inheritanceShare === 'specific_assets'"},
-            {"id": "amount", "label": "Amount (EUR)", "type": "number", "conditional": "inheritanceShare === 'monetary_amount'"},
-            {"id": "conditions", "label": "Conditions", "type": "textarea", "helpText": "Optional conditions for inheritance"}
+            { "id": "name", "label": "Full Name", "type": "text" },
+            {
+              "id": "relationship",
+              "label": "Relationship",
+              "type": "select",
+              "options": [
+                "spouse",
+                "child",
+                "parent",
+                "sibling",
+                "grandchild",
+                "friend",
+                "charity",
+                "other"
+              ]
+            },
+            { "id": "address", "label": "Address", "type": "textarea" },
+            {
+              "id": "personalId",
+              "label": "Personal ID/Birth Date",
+              "type": "text",
+              "helpText": "For identification purposes"
+            },
+            {
+              "id": "inheritanceShare",
+              "label": "Share of Inheritance",
+              "type": "select",
+              "options": ["percentage", "specific_assets", "monetary_amount"]
+            },
+            {
+              "id": "percentage",
+              "label": "Percentage",
+              "type": "number",
+              "conditional": "inheritanceShare === 'percentage'"
+            },
+            {
+              "id": "specificAssets",
+              "label": "Specific Assets",
+              "type": "textarea",
+              "conditional": "inheritanceShare === 'specific_assets'"
+            },
+            {
+              "id": "amount",
+              "label": "Amount (EUR)",
+              "type": "number",
+              "conditional": "inheritanceShare === 'monetary_amount'"
+            },
+            {
+              "id": "conditions",
+              "label": "Conditions",
+              "type": "textarea",
+              "helpText": "Optional conditions for inheritance"
+            }
           ]
         }
       ]
@@ -203,7 +300,7 @@
           "required": true
         },
         {
-          "id": "executorAddress", 
+          "id": "executorAddress",
           "label": "Executor Address",
           "type": "textarea",
           "conditional": "hasExecutor === true"
@@ -240,10 +337,10 @@
           "label": "Primary Guardian",
           "type": "object",
           "fields": [
-            {"id": "name", "label": "Full Name", "type": "text"},
-            {"id": "address", "label": "Address", "type": "textarea"},
-            {"id": "relationship", "label": "Relationship", "type": "text"},
-            {"id": "phone", "label": "Phone Number", "type": "text"}
+            { "id": "name", "label": "Full Name", "type": "text" },
+            { "id": "address", "label": "Address", "type": "textarea" },
+            { "id": "relationship", "label": "Relationship", "type": "text" },
+            { "id": "phone", "label": "Phone Number", "type": "text" }
           ]
         },
         {
@@ -251,10 +348,10 @@
           "label": "Backup Guardian",
           "type": "object",
           "fields": [
-            {"id": "name", "label": "Full Name", "type": "text"},
-            {"id": "address", "label": "Address", "type": "textarea"}, 
-            {"id": "relationship", "label": "Relationship", "type": "text"},
-            {"id": "phone", "label": "Phone Number", "type": "text"}
+            { "id": "name", "label": "Full Name", "type": "text" },
+            { "id": "address", "label": "Address", "type": "textarea" },
+            { "id": "relationship", "label": "Relationship", "type": "text" },
+            { "id": "phone", "label": "Phone Number", "type": "text" }
           ]
         },
         {
@@ -282,9 +379,9 @@
           "label": "Organ Donation",
           "type": "select",
           "options": [
-            {"value": "yes", "label": "Yes, I wish to donate organs"},
-            {"value": "no", "label": "No, I do not wish to donate organs"},
-            {"value": "family_decides", "label": "Let my family decide"}
+            { "value": "yes", "label": "Yes, I wish to donate organs" },
+            { "value": "no", "label": "No, I do not wish to donate organs" },
+            { "value": "family_decides", "label": "Let my family decide" }
           ]
         },
         {
@@ -293,8 +390,8 @@
           "type": "array",
           "helpText": "Special messages to loved ones",
           "fields": [
-            {"id": "recipient", "label": "To", "type": "text"},
-            {"id": "message", "label": "Message", "type": "textarea"}
+            { "id": "recipient", "label": "To", "type": "text" },
+            { "id": "message", "label": "Message", "type": "textarea" }
           ]
         },
         {
@@ -302,9 +399,9 @@
           "label": "Charitable Donations",
           "type": "array",
           "fields": [
-            {"id": "organization", "label": "Organization", "type": "text"},
-            {"id": "amount", "label": "Amount (EUR)", "type": "number"},
-            {"id": "purpose", "label": "Purpose", "type": "text"}
+            { "id": "organization", "label": "Organization", "type": "text" },
+            { "id": "amount", "label": "Amount (EUR)", "type": "number" },
+            { "id": "purpose", "label": "Purpose", "type": "text" }
           ]
         },
         {
@@ -323,7 +420,7 @@
       "content": {
         "reviewSections": [
           "personal_info",
-          "family_status", 
+          "family_status",
           "assets",
           "beneficiaries",
           "executor",
@@ -338,7 +435,7 @@
             "required": true
           },
           {
-            "id": "legal_capacity_confirmation", 
+            "id": "legal_capacity_confirmation",
             "label": "I confirm that I am of legal age and sound mind",
             "type": "checkbox",
             "required": true
@@ -346,7 +443,7 @@
           {
             "id": "voluntary_confirmation",
             "label": "I confirm that I am creating this will voluntarily without coercion",
-            "type": "checkbox", 
+            "type": "checkbox",
             "required": true
           }
         ]

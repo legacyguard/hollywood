@@ -1,9 +1,16 @@
 // Enhanced Sofia AI Types for Guided Dialog System
 // Extends the existing sofia-ai.ts with action-based interaction types
 
-import type { SofiaContext as BaseSofiaContext, SofiaMessage as BaseSofiaMessage } from './sofia-ai';
+import type {
+  SofiaContext as BaseSofiaContext,
+  SofiaMessage as BaseSofiaMessage,
+} from './sofia-ai';
 
-export type ActionCategory = 'navigation' | 'ui_action' | 'ai_query' | 'premium_feature';
+export type ActionCategory =
+  | 'navigation'
+  | 'ui_action'
+  | 'ai_query'
+  | 'premium_feature';
 
 export type ActionCost = 'free' | 'low_cost' | 'premium';
 
@@ -23,7 +30,12 @@ export interface SofiaResponse {
   content: string;
   timestamp: Date;
   actions?: ActionButton[];
-  responseType: 'welcome' | 'information' | 'confirmation' | 'error' | 'loading';
+  responseType:
+    | 'welcome'
+    | 'information'
+    | 'confirmation'
+    | 'error'
+    | 'loading';
   cost: ActionCost;
   source: 'predefined' | 'knowledge_base' | 'ai_generated';
 }
@@ -78,7 +90,7 @@ export const COMMON_ACTIONS = {
     icon: 'vault',
     category: 'navigation' as ActionCategory,
     cost: 'free' as ActionCost,
-    payload: { route: '/vault' }
+    payload: { route: '/vault' },
   },
 
   GO_TO_GUARDIANS: {
@@ -87,7 +99,7 @@ export const COMMON_ACTIONS = {
     icon: 'guardians',
     category: 'navigation' as ActionCategory,
     cost: 'free' as ActionCost,
-    payload: { route: '/guardians' }
+    payload: { route: '/guardians' },
   },
 
   GO_TO_LEGACY: {
@@ -96,7 +108,7 @@ export const COMMON_ACTIONS = {
     icon: 'legacy',
     category: 'navigation' as ActionCategory,
     cost: 'free' as ActionCost,
-    payload: { route: '/legacy' }
+    payload: { route: '/legacy' },
   },
 
   // UI actions (free)
@@ -106,7 +118,7 @@ export const COMMON_ACTIONS = {
     icon: 'upload',
     category: 'ui_action' as ActionCategory,
     cost: 'free' as ActionCost,
-    payload: { action: 'open_uploader' }
+    payload: { action: 'open_uploader' },
   },
 
   VIEW_PROGRESS: {
@@ -115,7 +127,7 @@ export const COMMON_ACTIONS = {
     icon: 'info',
     category: 'ui_action' as ActionCategory,
     cost: 'free' as ActionCost,
-    payload: { action: 'show_progress_modal' }
+    payload: { action: 'show_progress_modal' },
   },
 
   // Knowledge base queries (low cost)
@@ -125,7 +137,7 @@ export const COMMON_ACTIONS = {
     icon: 'shield',
     category: 'ai_query' as ActionCategory,
     cost: 'low_cost' as ActionCost,
-    payload: { topic: 'security' }
+    payload: { topic: 'security' },
   },
 
   NEXT_STEP: {
@@ -133,7 +145,7 @@ export const COMMON_ACTIONS = {
     text: '💡 What should I do next?',
     icon: 'sparkles',
     category: 'ai_query' as ActionCategory,
-    cost: 'low_cost' as ActionCost
+    cost: 'low_cost' as ActionCost,
   },
 
   // Premium features
@@ -144,7 +156,7 @@ export const COMMON_ACTIONS = {
     category: 'premium_feature' as ActionCategory,
     cost: 'premium' as ActionCost,
     requiresConfirmation: true,
-    description: 'AI helps create a personal message for your loved ones'
+    description: 'AI helps create a personal message for your loved ones',
   },
 
   FINANCIAL_SUMMARY: {
@@ -154,8 +166,8 @@ export const COMMON_ACTIONS = {
     category: 'premium_feature' as ActionCategory,
     cost: 'premium' as ActionCost,
     requiresConfirmation: true,
-    description: 'AI creates a summary of your finances for emergencies'
-  }
+    description: 'AI creates a summary of your finances for emergencies',
+  },
 } as const;
 
 // Context-based action suggestions

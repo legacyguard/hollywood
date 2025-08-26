@@ -217,7 +217,11 @@ export const JURISDICTION_CONFIG: Record<string, JurisdictionConfig> = {
       hasInheritanceTax: true,
       rates: '0-55% by canton',
     },
-    documentTypes: ['Testament', 'Vorsorgeauftrag', 'mandat pour cause d\'inaptitude'],
+    documentTypes: [
+      'Testament',
+      'Vorsorgeauftrag',
+      "mandat pour cause d'inaptitude",
+    ],
     emergencyProtocols: true,
     pricing: { monthly: 19, currency: 'EUR' },
     features: {
@@ -407,7 +411,11 @@ export const JURISDICTION_CONFIG: Record<string, JurisdictionConfig> = {
       hasInheritanceTax: true,
       rates: '18% general',
     },
-    documentTypes: ['végrendelet', 'meghatalmazás', 'előzetes egészségügyi rendelkezés'],
+    documentTypes: [
+      'végrendelet',
+      'meghatalmazás',
+      'előzetes egészségügyi rendelkezés',
+    ],
     emergencyProtocols: true,
     pricing: { monthly: 19, currency: 'EUR' },
   },
@@ -837,7 +845,9 @@ export const JURISDICTION_CONFIG: Record<string, JurisdictionConfig> = {
 };
 
 // Helper functions
-export const getJurisdictionByDomain = (domain: string): JurisdictionConfig | undefined => {
+export const getJurisdictionByDomain = (
+  domain: string
+): JurisdictionConfig | undefined => {
   return Object.values(JURISDICTION_CONFIG).find(j => j.domain === domain);
 };
 
@@ -845,7 +855,9 @@ export const getJurisdictionsByTier = (tier: 1 | 2): JurisdictionConfig[] => {
   return Object.values(JURISDICTION_CONFIG).filter(j => j.tier === tier);
 };
 
-export const getJurisdictionsByLanguage = (language: string): JurisdictionConfig[] => {
+export const getJurisdictionsByLanguage = (
+  language: string
+): JurisdictionConfig[] => {
   return Object.values(JURISDICTION_CONFIG).filter(j =>
     j.supportedLanguages.includes(language)
   );

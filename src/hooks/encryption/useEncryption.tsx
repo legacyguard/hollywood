@@ -1,7 +1,13 @@
 'use client';
 
 import type { ReactNode } from 'react';
-import { useState, useEffect, useCallback, createContext, useContext } from 'react';
+import {
+  useState,
+  useEffect,
+  useCallback,
+  createContext,
+  useContext,
+} from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { encryptionService } from '../../../lib/encryption-v2';
 import { toast } from 'sonner';
@@ -16,15 +22,27 @@ interface EncryptionContextType {
   lockKeys: () => Promise<void>;
   checkKeyStatus: () => Promise<void>;
   migrateKeys: (password: string) => Promise<boolean>;
-  rotateKeys: (currentPassword: string, newPassword?: string) => Promise<boolean>;
-  encryptFile: (file: File) => Promise<{ encryptedData: Uint8Array; nonce: Uint8Array; metadata: any } | null>;
-  decryptFile: (encryptedData: Uint8Array, nonce: Uint8Array) => Promise<Uint8Array | null>;
+  rotateKeys: (
+    currentPassword: string,
+    newPassword?: string
+  ) => Promise<boolean>;
+  encryptFile: (file: File) => Promise<{
+    encryptedData: Uint8Array;
+    nonce: Uint8Array;
+    metadata: any;
+  } | null>;
+  decryptFile: (
+    encryptedData: Uint8Array,
+    nonce: Uint8Array
+  ) => Promise<Uint8Array | null>;
   showPasswordPrompt: () => void;
   hidePasswordPrompt: () => void;
   passwordPromptVisible: boolean;
 }
 
-const EncryptionContext = createContext<EncryptionContextType | undefined>(undefined);
+const EncryptionContext = createContext<EncryptionContextType | undefined>(
+  undefined
+);
 
 interface EncryptionProviderProps {
   children: ReactNode;
@@ -55,7 +73,9 @@ export function EncryptionProvider({ children }: EncryptionProviderProps) {
       const checkRotation = async () => {
         const needsRotation = await encryptionService.checkRotationNeeded();
         if (needsRotation) {
-          toast.warning('Your encryption keys are due for rotation. Please rotate them soon for security.');
+          toast.warning(
+            'Your encryption keys are due for rotation. Please rotate them soon for security.'
+          );
         }
       };
 
@@ -93,7 +113,6 @@ export function EncryptionProvider({ children }: EncryptionProviderProps) {
       // Check for legacy keys in localStorage
       const legacyKeys = localStorage.getItem(`encryptionKeys_${userId}`);
       setNeedsMigration(!!legacyKeys && !isInitialized);
-
     } catch (error) {
       console.error('Failed to check key status:', error);
       toast.error('Failed to check encryption key status');
@@ -102,66 +121,72 @@ export function EncryptionProvider({ children }: EncryptionProviderProps) {
     }
   }, [userId]);
 
-  const initializeKeys = useCallback(async (password: string): Promise<boolean> => {
-    if (!userId) {
-      toast.error('You must be signed in to initialize encryption');
-      return false;
-    }
-
-    setIsLoading(true);
-    try {
-      const result = await encryptionService.initializeKeys(password);
-
-      if (result.success) {
-        setIsInitialized(true);
-        setIsUnlocked(true);
-        toast.success('Encryption keys initialized successfully');
-        return true;
-      } else {
-        toast.error(result.error || 'Failed to initialize encryption keys');
+  const initializeKeys = useCallback(
+    async (password: string): Promise<boolean> => {
+      if (!userId) {
+        toast.error('You must be signed in to initialize encryption');
         return false;
       }
-    } catch (error) {
-      console.error('Key initialization error:', error);
-      toast.error('An error occurred while initializing encryption');
-      return false;
-    } finally {
-      setIsLoading(false);
-    }
-  }, [userId]);
 
-  const unlockKeys = useCallback(async (password: string): Promise<boolean> => {
-    if (!userId) {
-      toast.error('You must be signed in to unlock encryption');
-      return false;
-    }
+      setIsLoading(true);
+      try {
+        const result = await encryptionService.initializeKeys(password);
 
-    setIsLoading(true);
-    try {
-      const result = await encryptionService.unlockKeys(password);
-
-      if (result.success) {
-        setIsUnlocked(true);
-        toast.success('Encryption unlocked successfully');
-        setPasswordPromptVisible(false);
-        return true;
-      } else {
-        // Check if account is locked
-        if (result.error?.includes('locked')) {
-          toast.error('Too many failed attempts. Please try again later.');
+        if (result.success) {
+          setIsInitialized(true);
+          setIsUnlocked(true);
+          toast.success('Encryption keys initialized successfully');
+          return true;
         } else {
-          toast.error(result.error || 'Incorrect password');
+          toast.error(result.error || 'Failed to initialize encryption keys');
+          return false;
         }
+      } catch (error) {
+        console.error('Key initialization error:', error);
+        toast.error('An error occurred while initializing encryption');
+        return false;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [userId]
+  );
+
+  const unlockKeys = useCallback(
+    async (password: string): Promise<boolean> => {
+      if (!userId) {
+        toast.error('You must be signed in to unlock encryption');
         return false;
       }
-    } catch (error) {
-      console.error('Key unlock error:', error);
-      toast.error('An error occurred while unlocking encryption');
-      return false;
-    } finally {
-      setIsLoading(false);
-    }
-  }, [userId]);
+
+      setIsLoading(true);
+      try {
+        const result = await encryptionService.unlockKeys(password);
+
+        if (result.success) {
+          setIsUnlocked(true);
+          toast.success('Encryption unlocked successfully');
+          setPasswordPromptVisible(false);
+          return true;
+        } else {
+          // Check if account is locked
+          if (result.error?.includes('locked')) {
+            toast.error('Too many failed attempts. Please try again later.');
+          } else {
+            toast.error(result.error || 'Incorrect password');
+          }
+          return false;
+        }
+      } catch (error) {
+        console.error('Key unlock error:', error);
+        toast.error('An error occurred while unlocking encryption');
+        return false;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [userId]
+  );
 
   const lockKeys = useCallback(async () => {
     await encryptionService.lockKeys();
@@ -169,100 +194,119 @@ export function EncryptionProvider({ children }: EncryptionProviderProps) {
     toast.info('Encryption locked');
   }, []);
 
-  const migrateKeys = useCallback(async (password: string): Promise<boolean> => {
-    if (!userId) {
-      toast.error('You must be signed in to migrate encryption keys');
-      return false;
-    }
-
-    setIsLoading(true);
-    try {
-      const result = await encryptionService.migrateFromLocalStorage(password);
-
-      if (result.success) {
-        setIsInitialized(true);
-        setIsUnlocked(true);
-        setNeedsMigration(false);
-        toast.success('Encryption keys migrated successfully');
-        return true;
-      } else {
-        toast.error(result.error || 'Failed to migrate encryption keys');
+  const migrateKeys = useCallback(
+    async (password: string): Promise<boolean> => {
+      if (!userId) {
+        toast.error('You must be signed in to migrate encryption keys');
         return false;
       }
-    } catch (error) {
-      console.error('Key migration error:', error);
-      toast.error('An error occurred while migrating encryption');
-      return false;
-    } finally {
-      setIsLoading(false);
-    }
-  }, [userId]);
 
-  const rotateKeys = useCallback(async (currentPassword: string, newPassword?: string): Promise<boolean> => {
-    if (!userId) {
-      toast.error('You must be signed in to rotate encryption keys');
-      return false;
-    }
+      setIsLoading(true);
+      try {
+        const result =
+          await encryptionService.migrateFromLocalStorage(password);
 
-    setIsLoading(true);
-    try {
-      const result = await encryptionService.rotateKeys(currentPassword, newPassword);
+        if (result.success) {
+          setIsInitialized(true);
+          setIsUnlocked(true);
+          setNeedsMigration(false);
+          toast.success('Encryption keys migrated successfully');
+          return true;
+        } else {
+          toast.error(result.error || 'Failed to migrate encryption keys');
+          return false;
+        }
+      } catch (error) {
+        console.error('Key migration error:', error);
+        toast.error('An error occurred while migrating encryption');
+        return false;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [userId]
+  );
 
-      if (result.success) {
-        toast.success('Encryption keys rotated successfully');
-        return true;
-      } else {
-        toast.error(result.error || 'Failed to rotate encryption keys');
+  const rotateKeys = useCallback(
+    async (currentPassword: string, newPassword?: string): Promise<boolean> => {
+      if (!userId) {
+        toast.error('You must be signed in to rotate encryption keys');
         return false;
       }
-    } catch (error) {
-      console.error('Key rotation error:', error);
-      toast.error('An error occurred while rotating encryption keys');
-      return false;
-    } finally {
-      setIsLoading(false);
-    }
-  }, [userId]);
 
-  const encryptFile = useCallback(async (file: File) => {
-    if (!isUnlocked) {
-      setPasswordPromptVisible(true);
-      toast.info('Please unlock encryption to continue');
-      return null;
-    }
+      setIsLoading(true);
+      try {
+        const result = await encryptionService.rotateKeys(
+          currentPassword,
+          newPassword
+        );
 
-    try {
-      const result = await encryptionService.encryptFile(file);
-      if (!result) {
-        toast.error('Failed to encrypt file');
+        if (result.success) {
+          toast.success('Encryption keys rotated successfully');
+          return true;
+        } else {
+          toast.error(result.error || 'Failed to rotate encryption keys');
+          return false;
+        }
+      } catch (error) {
+        console.error('Key rotation error:', error);
+        toast.error('An error occurred while rotating encryption keys');
+        return false;
+      } finally {
+        setIsLoading(false);
       }
-      return result;
-    } catch (error) {
-      console.error('File encryption error:', error);
-      toast.error('An error occurred while encrypting the file');
-      return null;
-    }
-  }, [isUnlocked]);
+    },
+    [userId]
+  );
 
-  const decryptFile = useCallback(async (encryptedData: Uint8Array, nonce: Uint8Array) => {
-    if (!isUnlocked) {
-      setPasswordPromptVisible(true);
-      toast.info('Please unlock encryption to continue');
-      return null;
-    }
-
-    try {
-      const result = await encryptionService.decryptFile(encryptedData, nonce);
-      if (!result) {
-        toast.error('Failed to decrypt file');
+  const encryptFile = useCallback(
+    async (file: File) => {
+      if (!isUnlocked) {
+        setPasswordPromptVisible(true);
+        toast.info('Please unlock encryption to continue');
+        return null;
       }
-      return result;
-    } catch (error) {
-      console.error('File decryption error:', error);
-      toast.error('An error occurred while decrypting the file');
-      return null;
-    }
-  }, [isUnlocked]);
+
+      try {
+        const result = await encryptionService.encryptFile(file);
+        if (!result) {
+          toast.error('Failed to encrypt file');
+        }
+        return result;
+      } catch (error) {
+        console.error('File encryption error:', error);
+        toast.error('An error occurred while encrypting the file');
+        return null;
+      }
+    },
+    [isUnlocked]
+  );
+
+  const decryptFile = useCallback(
+    async (encryptedData: Uint8Array, nonce: Uint8Array) => {
+      if (!isUnlocked) {
+        setPasswordPromptVisible(true);
+        toast.info('Please unlock encryption to continue');
+        return null;
+      }
+
+      try {
+        const result = await encryptionService.decryptFile(
+          encryptedData,
+          nonce
+        );
+        if (!result) {
+          toast.error('Failed to decrypt file');
+        }
+        return result;
+      } catch (error) {
+        console.error('File decryption error:', error);
+        toast.error('An error occurred while decrypting the file');
+        return null;
+      }
+    },
+    [isUnlocked]
+  );
 
   const showPasswordPrompt = useCallback(() => {
     setPasswordPromptVisible(true);

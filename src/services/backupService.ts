@@ -69,7 +69,10 @@ export class BackupService {
   /**
    * Derive encryption key from password
    */
-  private async deriveKey(password: string, salt: Uint8Array): Promise<Uint8Array> {
+  private async deriveKey(
+    password: string,
+    salt: Uint8Array
+  ): Promise<Uint8Array> {
     const encoder = new TextEncoder();
     const passwordData = encoder.encode(password);
 
@@ -120,8 +123,8 @@ export class BackupService {
       metadata: {
         exportDate: data.exportDate,
         userId: data.userId,
-        version: '1.0'
-      }
+        version: '1.0',
+      },
     };
   }
 
@@ -204,7 +207,11 @@ export class BackupService {
   /**
    * Import data from a backup file
    */
-  async importData(file: File, userId: string, password?: string): Promise<void> {
+  async importData(
+    file: File,
+    userId: string,
+    password?: string
+  ): Promise<void> {
     try {
       toast.info('Reading backup file...');
 
@@ -219,7 +226,10 @@ export class BackupService {
           throw new Error('Password required for encrypted backup');
         }
 
-        const decrypted = await this.decryptBackupData(parsedContent as EncryptedBackupData, password);
+        const decrypted = await this.decryptBackupData(
+          parsedContent as EncryptedBackupData,
+          password
+        );
         if (!decrypted) {
           toast.error('Invalid password or corrupted backup file');
           throw new Error('Decryption failed');
@@ -230,7 +240,7 @@ export class BackupService {
       }
 
       // Validate backup data
-      if (!await this.validateBackupData(backupData, userId)) {
+      if (!(await this.validateBackupData(backupData, userId))) {
         throw new Error('Invalid backup file or data corruption detected');
       }
 
@@ -255,7 +265,9 @@ export class BackupService {
       }, 2000);
     } catch (error) {
       console.error('Import failed:', error);
-      toast.error('Failed to import data. Please check the file and try again.');
+      toast.error(
+        'Failed to import data. Please check the file and try again.'
+      );
     }
   }
 
@@ -348,7 +360,6 @@ export class BackupService {
       if (!onboardingError && onboarding) {
         supabaseData.onboardingResponses = onboarding;
       }
-
     } catch (error) {
       console.warn('Could not export all Supabase data:', error);
     }
@@ -364,7 +375,10 @@ export class BackupService {
 
     try {
       if (userData.preferences) {
-        localStorage.setItem(`preferences_${userId}`, JSON.stringify(userData.preferences));
+        localStorage.setItem(
+          `preferences_${userId}`,
+          JSON.stringify(userData.preferences)
+        );
       }
     } catch (error) {
       console.warn('Could not import user preferences:', error);
@@ -374,7 +388,10 @@ export class BackupService {
   /**
    * Import localStorage data
    */
-  private async importLocalStorageData(localData: any, userId: string): Promise<void> {
+  private async importLocalStorageData(
+    localData: any,
+    userId: string
+  ): Promise<void> {
     if (!localData) return;
 
     Object.entries(localData).forEach(([key, value]) => {
@@ -389,7 +406,10 @@ export class BackupService {
   /**
    * Import Supabase data
    */
-  private async importSupabaseData(supabaseData: any, userId: string): Promise<void> {
+  private async importSupabaseData(
+    supabaseData: any,
+    userId: string
+  ): Promise<void> {
     if (!supabaseData) return;
 
     // Import documents (without duplicating)
@@ -455,7 +475,7 @@ export class BackupService {
     const encoded = btoa(dataString);
     let checksum = 0;
     for (let i = 0; i < encoded.length; i++) {
-      checksum = ((checksum << 5) - checksum) + encoded.charCodeAt(i);
+      checksum = (checksum << 5) - checksum + encoded.charCodeAt(i);
       checksum = checksum & checksum;
     }
     return Math.abs(checksum).toString(16);
@@ -464,7 +484,10 @@ export class BackupService {
   /**
    * Validate backup data integrity
    */
-  private async validateBackupData(data: BackupData, userId: string): Promise<boolean> {
+  private async validateBackupData(
+    data: BackupData,
+    userId: string
+  ): Promise<boolean> {
     // Check required fields
     if (!data.version || !data.exportDate || !data.userId) {
       toast.error('Invalid backup file format');
@@ -484,7 +507,7 @@ export class BackupService {
     if (data.userId !== userId) {
       const proceed = confirm(
         'This backup appears to be from a different user account. ' +
-        'Importing it will merge the data with your current account. Continue?'
+          'Importing it will merge the data with your current account. Continue?'
       );
       return proceed;
     }
@@ -504,11 +527,13 @@ export class BackupService {
   /**
    * Confirm version mismatch with user
    */
-  private async confirmVersionMismatch(backupVersion: string): Promise<boolean> {
+  private async confirmVersionMismatch(
+    backupVersion: string
+  ): Promise<boolean> {
     return confirm(
       `This backup was created with version ${backupVersion}, ` +
-      `but you're currently using version ${this.currentVersion}. ` +
-      `The import might not work correctly. Continue anyway?`
+        `but you're currently using version ${this.currentVersion}. ` +
+        `The import might not work correctly. Continue anyway?`
     );
   }
 
@@ -518,7 +543,7 @@ export class BackupService {
   private readFile(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      reader.onload = (e) => resolve(e.target?.result as string);
+      reader.onload = e => resolve(e.target?.result as string);
       reader.onerror = reject;
       reader.readAsText(file);
     });
@@ -527,7 +552,10 @@ export class BackupService {
   /**
    * Download backup file
    */
-  private downloadBackupFile(data: BackupData | EncryptedBackupData, userId: string): void {
+  private downloadBackupFile(
+    data: BackupData | EncryptedBackupData,
+    userId: string
+  ): void {
     const json = JSON.stringify(data, null, 2);
     const blob = new Blob([json], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -562,7 +590,7 @@ export class BackupService {
   async clearAllData(userId: string): Promise<void> {
     const confirmed = confirm(
       'WARNING: This will delete ALL your local data. ' +
-      'Make sure you have a backup before proceeding. Continue?'
+        'Make sure you have a backup before proceeding. Continue?'
     );
 
     if (!confirmed) return;

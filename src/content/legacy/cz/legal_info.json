@@ -1,5 +1,5 @@
 {
-  "jurisdiction": "Czech Republic", 
+  "jurisdiction": "Czech Republic",
   "countryCode": "cz",
   "languageCode": "en",
   "currency": "CZK",
@@ -11,13 +11,13 @@
         "Must be written entirely in your own handwriting",
         "Must be signed with your own signature",
         "Date is mandatory",
-        "No witnesses required", 
+        "No witnesses required",
         "Must be in Czech language or translated"
       ],
       "advantages": [
         "Complete privacy and simplicity",
         "No witnesses needed",
-        "Can be created anywhere, anytime", 
+        "Can be created anywhere, anytime",
         "Lower cost"
       ],
       "disadvantages": [
@@ -33,7 +33,7 @@
       "requirements": [
         "Must be signed by testator in presence of two witnesses",
         "Both witnesses must sign simultaneously",
-        "Witnesses must be present at the same time", 
+        "Witnesses must be present at the same time",
         "Witnesses must be legally capable adults",
         "Witnesses cannot be beneficiaries or their spouses"
       ],
@@ -45,7 +45,7 @@
       ],
       "disadvantages": [
         "Requires finding suitable witnesses",
-        "Less privacy", 
+        "Less privacy",
         "More complex process"
       ],
       "legalBasis": "§ 1541 of Czech Civil Code"
@@ -65,16 +65,19 @@
           "description": "Spouse is entitled to quarter of the estate"
         },
         "parents": {
-          "share": "1/4", 
+          "share": "1/4",
           "description": "Parents are entitled if there are no children"
         }
       }
     },
     "executorRules": {
       "required": false,
-      "canBeNonResident": true, 
+      "canBeNonResident": true,
       "mustBeAdult": true,
-      "restrictions": ["Cannot be mentally incapacitated", "Cannot be criminally convicted"]
+      "restrictions": [
+        "Cannot be mentally incapacitated",
+        "Cannot be criminally convicted"
+      ]
     }
   },
   "witnessRequirements": {
@@ -93,7 +96,7 @@
   "revocation": {
     "methods": [
       "Creating a new will that explicitly revokes previous ones",
-      "Physical destruction of the will with intent to revoke", 
+      "Physical destruction of the will with intent to revoke",
       "Written revocation statement"
     ]
   }

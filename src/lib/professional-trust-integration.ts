@@ -1,15 +1,13 @@
 import type {
   ProfessionalReview,
-  TrustSealLevel} from '@/components/trust/EnhancedTrustSeal';
-import {
-  EnhancedTrustSeal
+  TrustSealLevel,
 } from '@/components/trust/EnhancedTrustSeal';
+import { EnhancedTrustSeal } from '@/components/trust/EnhancedTrustSeal';
 import type {
   ReviewFeedback,
-  ReviewRequest} from '@/lib/professional-review-network';
-import {
-  professionalNetwork
+  ReviewRequest,
 } from '@/lib/professional-review-network';
+import { professionalNetwork } from '@/lib/professional-review-network';
 import type { WillData } from '@/types/will';
 
 export interface TrustSealUpgrade {
@@ -23,7 +21,6 @@ export interface TrustSealUpgrade {
 }
 
 export class ProfessionalTrustIntegration {
-
   /**
    * Determines trust seal level based on professional reviews
    */
@@ -35,15 +32,30 @@ export class ProfessionalTrustIntegration {
       return validationScore >= 95 ? 'verified' : 'basic';
     }
 
-    const hasAttorneyReview = professionalReviews.some(r => r.reviewType === 'attorney_review' && r.verified);
-    const hasNotaryReview = professionalReviews.some(r => r.reviewType === 'notary_certification' && r.verified);
-    const hasComprehensiveAudit = professionalReviews.some(r => r.reviewType === 'comprehensive_audit' && r.verified);
+    const hasAttorneyReview = professionalReviews.some(
+      r => r.reviewType === 'attorney_review' && r.verified
+    );
+    const hasNotaryReview = professionalReviews.some(
+      r => r.reviewType === 'notary_certification' && r.verified
+    );
+    const hasComprehensiveAudit = professionalReviews.some(
+      r => r.reviewType === 'comprehensive_audit' && r.verified
+    );
 
-    const averageScore = professionalReviews.reduce((sum, r) => sum + r.complianceScore, 0) / professionalReviews.length;
-    const highQualityReviews = professionalReviews.filter(r => r.complianceScore >= 90 && r.verified).length;
+    const averageScore =
+      professionalReviews.reduce((sum, r) => sum + r.complianceScore, 0) /
+      professionalReviews.length;
+    const highQualityReviews = professionalReviews.filter(
+      r => r.complianceScore >= 90 && r.verified
+    ).length;
 
     // Premium Level: Multiple professional reviews with high scores
-    if (hasAttorneyReview && hasNotaryReview && averageScore >= 95 && highQualityReviews >= 2) {
+    if (
+      hasAttorneyReview &&
+      hasNotaryReview &&
+      averageScore >= 95 &&
+      highQualityReviews >= 2
+    ) {
       return 'premium';
     }
 
@@ -73,14 +85,18 @@ export class ProfessionalTrustIntegration {
       licenseNumber?: string;
     }
   ): ProfessionalReview {
-    const reviewType = reviewRequest.type === 'attorney' ? 'attorney_review' :
-                      reviewRequest.type === 'notary' ? 'notary_certification' :
-                      'comprehensive_audit';
+    const reviewType =
+      reviewRequest.type === 'attorney'
+        ? 'attorney_review'
+        : reviewRequest.type === 'notary'
+          ? 'notary_certification'
+          : 'comprehensive_audit';
 
     const complianceScore = Math.round(
       (reviewFeedback.overall.legalCompliance +
-       reviewFeedback.overall.completeness +
-       reviewFeedback.overall.recommendations) / 3
+        reviewFeedback.overall.completeness +
+        reviewFeedback.overall.recommendations) /
+        3
     );
 
     return {
@@ -94,7 +110,10 @@ export class ProfessionalTrustIntegration {
       reviewType,
       complianceScore,
       verified: !reviewFeedback.requiresRevision && complianceScore >= 75,
-      certificateUrl: complianceScore >= 85 ? this.generateCertificateUrl(reviewRequest.id) : undefined
+      certificateUrl:
+        complianceScore >= 85
+          ? this.generateCertificateUrl(reviewRequest.id)
+          : undefined,
     };
   }
 
@@ -107,30 +126,45 @@ export class ProfessionalTrustIntegration {
     currentTrustLevel: TrustSealLevel,
     professionalReviews: ProfessionalReview[] = []
   ): Promise<TrustSealUpgrade | null> {
-
     // Don't upgrade if review requires revision
     if (reviewFeedback.requiresRevision) {
       return null;
     }
 
-    const professionalInfo = await this.getProfessionalInfo(reviewRequest.professionalId || '');
+    const professionalInfo = await this.getProfessionalInfo(
+      reviewRequest.professionalId || ''
+    );
     if (!professionalInfo) {
       return null;
     }
 
     // Create new professional review record
-    const newReview = this.createProfessionalReview(reviewRequest, reviewFeedback, professionalInfo);
+    const newReview = this.createProfessionalReview(
+      reviewRequest,
+      reviewFeedback,
+      professionalInfo
+    );
 
     // Calculate new trust seal level with the new review
     const allReviews = [...professionalReviews, newReview];
-    const newLevel = this.determineTrustSealLevel(allReviews, reviewFeedback.overall.legalCompliance);
+    const newLevel = this.determineTrustSealLevel(
+      allReviews,
+      reviewFeedback.overall.legalCompliance
+    );
 
     // Only create upgrade if level actually increases
-    if (this.getTrustLevelRank(newLevel) <= this.getTrustLevelRank(currentTrustLevel)) {
+    if (
+      this.getTrustLevelRank(newLevel) <=
+      this.getTrustLevelRank(currentTrustLevel)
+    ) {
       return null;
     }
 
-    const upgradeReason = this.getUpgradeReason(currentTrustLevel, newLevel, newReview);
+    const upgradeReason = this.getUpgradeReason(
+      currentTrustLevel,
+      newLevel,
+      newReview
+    );
     const additionalBenefits = this.getUpgradeBenefits(newLevel);
 
     return {
@@ -140,7 +174,7 @@ export class ProfessionalTrustIntegration {
       upgradeDate: new Date(),
       certificateUrl: newReview.certificateUrl,
       upgradeReason,
-      additionalBenefits
+      additionalBenefits,
     };
   }
 
@@ -154,32 +188,37 @@ export class ProfessionalTrustIntegration {
     licenseNumber?: string;
   } | null> {
     // Mock implementation - in real app, would fetch from professional network
-    const mockProfessionals: Record<string, {
-      name: string;
-      title: string;
-      firmName: string;
-      licenseNumber: string;
-    }> = {
+    const mockProfessionals: Record<
+      string,
+      {
+        name: string;
+        title: string;
+        firmName: string;
+        licenseNumber: string;
+      }
+    > = {
       'brno-law-001': {
         name: 'JUDr. Pavel Novák',
         title: 'Partner Attorney',
         firmName: 'Brno Legal Partners',
-        licenseNumber: 'CZ-BAR-12345'
+        licenseNumber: 'CZ-BAR-12345',
       },
       'brno-notary-001': {
         name: 'JUDr. Marie Svobodová',
         title: 'Public Notary',
         firmName: 'Notary Office Brno Center',
-        licenseNumber: 'CZ-NOT-67890'
-      }
+        licenseNumber: 'CZ-NOT-67890',
+      },
     };
 
-    return mockProfessionals[professionalId] || {
-      name: 'Professional Legal Review',
-      title: 'Qualified Legal Professional',
-      firmName: 'Legal Review Network',
-      licenseNumber: undefined
-    };
+    return (
+      mockProfessionals[professionalId] || {
+        name: 'Professional Legal Review',
+        title: 'Qualified Legal Professional',
+        firmName: 'Legal Review Network',
+        licenseNumber: undefined,
+      }
+    );
   }
 
   /**
@@ -194,10 +233,10 @@ export class ProfessionalTrustIntegration {
    */
   private static getTrustLevelRank(level: TrustSealLevel): number {
     const ranks = {
-      'basic': 1,
-      'verified': 2,
-      'professional': 3,
-      'premium': 4
+      basic: 1,
+      verified: 2,
+      professional: 3,
+      premium: 4,
     };
     return ranks[level] || 1;
   }
@@ -234,7 +273,7 @@ export class ProfessionalTrustIntegration {
           'Premium certificate with enhanced credibility',
           'Priority support for legal updates',
           'Comprehensive audit trail',
-          'Enhanced document authenticity'
+          'Enhanced document authenticity',
         ];
       case 'professional':
         return [
@@ -242,14 +281,14 @@ export class ProfessionalTrustIntegration {
           'Attorney-reviewed and approved',
           'Professional certificate included',
           'Enhanced legal compliance',
-          'Professional network verification'
+          'Professional network verification',
         ];
       case 'verified':
         return [
           'Professional verification completed',
           'Enhanced legal compliance',
           'Verified by qualified professional',
-          'Improved document credibility'
+          'Improved document credibility',
         ];
       default:
         return ['Basic legal template compliance'];
@@ -265,17 +304,23 @@ export class ProfessionalTrustIntegration {
     validationScore: number = 0
   ) {
     const jurisdiction = willData.legal_data?.jurisdiction || 'Slovakia';
-    const level = this.determineTrustSealLevel(professionalReviews, validationScore);
-    const lastUpdated = professionalReviews.length > 0
-      ? new Date(Math.max(...professionalReviews.map(r => r.reviewDate.getTime())))
-      : new Date();
+    const level = this.determineTrustSealLevel(
+      professionalReviews,
+      validationScore
+    );
+    const lastUpdated =
+      professionalReviews.length > 0
+        ? new Date(
+            Math.max(...professionalReviews.map(r => r.reviewDate.getTime()))
+          )
+        : new Date();
 
     return {
       level,
       jurisdiction,
       lastUpdated,
       professionalReviews,
-      validationScore
+      validationScore,
     };
   }
 
@@ -290,7 +335,7 @@ export class ProfessionalTrustIntegration {
     return {
       title: `Trust Seal Upgraded to ${upgrade.upgradedLevel.charAt(0).toUpperCase() + upgrade.upgradedLevel.slice(1)}!`,
       message: `Your will has been upgraded from ${upgrade.originalLevel} to ${upgrade.upgradedLevel} level following professional review by ${upgrade.professionalReview.professionalName}. ${upgrade.upgradeReason}`,
-      type: 'success'
+      type: 'success',
     };
   }
 }

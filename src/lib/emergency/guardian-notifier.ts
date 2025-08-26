@@ -69,7 +69,9 @@ export class GuardianNotificationService {
         activationReason: this.getActivationReasonText(activation.trigger_type),
         verificationUrl,
         expiresAt: new Date(activation.token_expires_at).toLocaleString(),
-        emergencyInstructions: await this.getEmergencyInstructions(activation.user_id),
+        emergencyInstructions: await this.getEmergencyInstructions(
+          activation.user_id
+        ),
       };
 
       // Create notification record
@@ -88,14 +90,17 @@ export class GuardianNotificationService {
       };
 
       // Insert notification into database
-      const { data: notificationRecord, error: notificationError } = await supabase
-        .from('guardian_notifications')
-        .insert(notification)
-        .select()
-        .single();
+      const { data: notificationRecord, error: notificationError } =
+        await supabase
+          .from('guardian_notifications')
+          .insert(notification)
+          .select()
+          .single();
 
       if (notificationError) {
-        throw new Error(`Failed to create notification record: ${notificationError.message}`);
+        throw new Error(
+          `Failed to create notification record: ${notificationError.message}`
+        );
       }
 
       // Send email notification
@@ -111,7 +116,7 @@ export class GuardianNotificationService {
           .from('guardian_notifications')
           .update({
             delivery_error: emailResult.error,
-            attempted_at: new Date().toISOString()
+            attempted_at: new Date().toISOString(),
           })
           .eq('id', notificationRecord.id);
 
@@ -123,7 +128,7 @@ export class GuardianNotificationService {
         .from('guardian_notifications')
         .update({
           sent_at: new Date().toISOString(),
-          delivery_status: 'sent'
+          delivery_status: 'sent',
         })
         .eq('id', notificationRecord.id);
 
@@ -133,7 +138,6 @@ export class GuardianNotificationService {
       }
 
       return { success: true };
-
     } catch (error) {
       console.error('Error sending activation notification:', error);
       return {
@@ -146,7 +150,11 @@ export class GuardianNotificationService {
   async sendReminderNotification(
     activationId: string,
     reminderType: 'first_reminder' | 'urgent_reminder' | 'final_warning'
-  ): Promise<{ success: boolean; notificationsSent: number; errors: string[] }> {
+  ): Promise<{
+    success: boolean;
+    notificationsSent: number;
+    errors: string[];
+  }> {
     const supabase = this.getServiceClient();
     const errors: string[] = [];
     let notificationsSent = 0;
@@ -155,16 +163,22 @@ export class GuardianNotificationService {
       // Get activation details
       const { data: activation } = await supabase
         .from('family_shield_activation_log')
-        .select(`
+        .select(
+          `
           *,
           guardians!inner (*)
-        `)
+        `
+        )
         .eq('id', activationId)
         .eq('status', 'pending')
         .single();
 
       if (!activation) {
-        return { success: false, notificationsSent: 0, errors: ['Activation not found or not pending'] };
+        return {
+          success: false,
+          notificationsSent: 0,
+          errors: ['Activation not found or not pending'],
+        };
       }
 
       // Get user info
@@ -179,10 +193,12 @@ export class GuardianNotificationService {
       // Send reminders to all guardians who haven't responded
       const { data: unrespondedNotifications } = await supabase
         .from('guardian_notifications')
-        .select(`
+        .select(
+          `
           *,
           guardians!inner (*)
-        `)
+        `
+        )
         .eq('user_id', activation.user_id)
         .eq('verification_token', activation.verification_token)
         .is('responded_at', null);
@@ -198,10 +214,14 @@ export class GuardianNotificationService {
           const reminderMessage = this.generateReminderMessage(reminderType, {
             guardianName: guardian.name,
             userName,
-            activationReason: this.getActivationReasonText(activation.trigger_type),
+            activationReason: this.getActivationReasonText(
+              activation.trigger_type
+            ),
             verificationUrl: `${this.baseUrl}/emergency/verify/${activation.verification_token}`,
             expiresAt: new Date(activation.token_expires_at).toLocaleString(),
-            emergencyInstructions: await this.getEmergencyInstructions(activation.user_id),
+            emergencyInstructions: await this.getEmergencyInstructions(
+              activation.user_id
+            ),
           });
 
           const emailResult = await this.sendEmailNotification(
@@ -209,10 +229,14 @@ export class GuardianNotificationService {
             {
               guardianName: guardian.name,
               userName,
-              activationReason: this.getActivationReasonText(activation.trigger_type),
+              activationReason: this.getActivationReasonText(
+                activation.trigger_type
+              ),
               verificationUrl: `${this.baseUrl}/emergency/verify/${activation.verification_token}`,
               expiresAt: new Date(activation.token_expires_at).toLocaleString(),
-              emergencyInstructions: await this.getEmergencyInstructions(activation.user_id),
+              emergencyInstructions: await this.getEmergencyInstructions(
+                activation.user_id
+              ),
             },
             activation.trigger_type,
             reminderType
@@ -222,29 +246,29 @@ export class GuardianNotificationService {
             notificationsSent++;
 
             // Create new notification record for the reminder
-            await supabase
-              .from('guardian_notifications')
-              .insert({
-                guardian_id: guardian.id,
-                user_id: activation.user_id,
-                notification_type: 'verification_needed',
-                title: `Reminder: Emergency Activation Request (${reminderType.replace('_', ' ').toUpperCase()})`,
-                message: reminderMessage,
-                action_required: true,
-                action_url: `${this.baseUrl}/emergency/verify/${activation.verification_token}`,
-                verification_token: activation.verification_token,
-                priority: reminderType === 'final_warning' ? 'urgent' : 'high',
-                delivery_method: 'email',
-                sent_at: new Date().toISOString(),
-                expires_at: activation.token_expires_at,
-              });
-
+            await supabase.from('guardian_notifications').insert({
+              guardian_id: guardian.id,
+              user_id: activation.user_id,
+              notification_type: 'verification_needed',
+              title: `Reminder: Emergency Activation Request (${reminderType.replace('_', ' ').toUpperCase()})`,
+              message: reminderMessage,
+              action_required: true,
+              action_url: `${this.baseUrl}/emergency/verify/${activation.verification_token}`,
+              verification_token: activation.verification_token,
+              priority: reminderType === 'final_warning' ? 'urgent' : 'high',
+              delivery_method: 'email',
+              sent_at: new Date().toISOString(),
+              expires_at: activation.token_expires_at,
+            });
           } else {
-            errors.push(`Failed to send to ${guardian.email}: ${emailResult.error}`);
+            errors.push(
+              `Failed to send to ${guardian.email}: ${emailResult.error}`
+            );
           }
-
         } catch (error) {
-          errors.push(`Error processing guardian ${notification.guardian_id}: ${error}`);
+          errors.push(
+            `Error processing guardian ${notification.guardian_id}: ${error}`
+          );
         }
       }
 
@@ -253,7 +277,6 @@ export class GuardianNotificationService {
         notificationsSent,
         errors,
       };
-
     } catch (error) {
       console.error('Error sending reminder notifications:', error);
       return {
@@ -278,7 +301,11 @@ export class GuardianNotificationService {
         ? `REMINDER: Emergency Activation Request - ${templateData.userName}`
         : `Emergency Activation Request - ${templateData.userName}`;
 
-      const emailBody = this.generateEmailTemplate(templateData, triggerType, reminderType);
+      const emailBody = this.generateEmailTemplate(
+        templateData,
+        triggerType,
+        reminderType
+      );
 
       // Placeholder for actual email sending
       // await this.emailService.send({
@@ -290,7 +317,6 @@ export class GuardianNotificationService {
       console.warn(`Email notification sent to ${email}:`, subject);
 
       return { success: true };
-
     } catch (error) {
       console.error('Error sending email:', error);
       return {
@@ -316,7 +342,6 @@ export class GuardianNotificationService {
       console.warn(`SMS notification sent to ${phoneNumber}:`, message);
 
       return { success: true };
-
     } catch (error) {
       console.error('Error sending SMS:', error);
       return {
@@ -406,32 +431,36 @@ export class GuardianNotificationService {
     return `Emergency activation requested for ${data.userName}. Reason: ${data.activationReason}. Your verification is required by ${data.expiresAt}. Please check your email for detailed instructions.`;
   }
 
-  private generateReminderMessage(reminderType: string, data: EmailTemplateData): string {
-    const urgencyText = {
-      'first_reminder': 'REMINDER',
-      'urgent_reminder': 'URGENT REMINDER',
-      'final_warning': 'FINAL WARNING',
-    }[reminderType] || 'REMINDER';
+  private generateReminderMessage(
+    reminderType: string,
+    data: EmailTemplateData
+  ): string {
+    const urgencyText =
+      {
+        first_reminder: 'REMINDER',
+        urgent_reminder: 'URGENT REMINDER',
+        final_warning: 'FINAL WARNING',
+      }[reminderType] || 'REMINDER';
 
     return `${urgencyText}: Emergency activation for ${data.userName} still pending your verification. This request expires ${data.expiresAt}. Please respond immediately.`;
   }
 
   private getActivationReasonText(triggerType: string): string {
     const reasons = {
-      'inactivity_detected': 'Extended period of inactivity detected',
-      'manual_guardian': 'Manual activation requested by guardian',
-      'admin_override': 'Administrative emergency activation',
-      'health_check_failure': 'Multiple missed health check responses',
+      inactivity_detected: 'Extended period of inactivity detected',
+      manual_guardian: 'Manual activation requested by guardian',
+      admin_override: 'Administrative emergency activation',
+      health_check_failure: 'Multiple missed health check responses',
     };
     return reasons[triggerType] || 'Emergency activation requested';
   }
 
   private getPriorityFromTriggerType(triggerType: string): EmergencyPriority {
     const priorityMap = {
-      'inactivity_detected': 'high' as EmergencyPriority,
-      'manual_guardian': 'urgent' as EmergencyPriority,
-      'admin_override': 'urgent' as EmergencyPriority,
-      'health_check_failure': 'medium' as EmergencyPriority,
+      inactivity_detected: 'high' as EmergencyPriority,
+      manual_guardian: 'urgent' as EmergencyPriority,
+      admin_override: 'urgent' as EmergencyPriority,
+      health_check_failure: 'medium' as EmergencyPriority,
     };
     return priorityMap[triggerType] || 'medium';
   }
@@ -464,7 +493,9 @@ export class GuardianNotificationService {
       return defaultInstructions;
     }
 
-    return guidanceEntries.map(entry => entry.title).concat(defaultInstructions);
+    return guidanceEntries
+      .map(entry => entry.title)
+      .concat(defaultInstructions);
   }
 
   async markNotificationAsRead(
@@ -487,7 +518,6 @@ export class GuardianNotificationService {
       }
 
       return { success: true };
-
     } catch (error) {
       console.error('Error marking notification as read:', error);
       return {
@@ -535,7 +565,6 @@ export class GuardianNotificationService {
       }
 
       return { success: true };
-
     } catch (error) {
       console.error('Error recording guardian response:', error);
       return {

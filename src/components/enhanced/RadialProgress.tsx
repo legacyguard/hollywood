@@ -29,16 +29,37 @@ export function RadialProgress({
 
   // Size configurations
   const sizeConfig = {
-    sm: { width: 60, height: 60, fontSize: 'text-xs', stroke: strokeWidth || 4 },
-    md: { width: 100, height: 100, fontSize: 'text-sm', stroke: strokeWidth || 6 },
-    lg: { width: 140, height: 140, fontSize: 'text-base', stroke: strokeWidth || 8 },
-    xl: { width: 180, height: 180, fontSize: 'text-lg', stroke: strokeWidth || 10 },
+    sm: {
+      width: 60,
+      height: 60,
+      fontSize: 'text-xs',
+      stroke: strokeWidth || 4,
+    },
+    md: {
+      width: 100,
+      height: 100,
+      fontSize: 'text-sm',
+      stroke: strokeWidth || 6,
+    },
+    lg: {
+      width: 140,
+      height: 140,
+      fontSize: 'text-base',
+      stroke: strokeWidth || 8,
+    },
+    xl: {
+      width: 180,
+      height: 180,
+      fontSize: 'text-lg',
+      stroke: strokeWidth || 10,
+    },
   };
 
   const config = sizeConfig[size];
   const radius = (config.width - config.stroke) / 2;
   const circumference = radius * 2 * Math.PI;
-  const strokeDashoffset = circumference - (normalizedValue / 100) * circumference;
+  const strokeDashoffset =
+    circumference - (normalizedValue / 100) * circumference;
 
   // Color configurations
   const colorClasses = {
@@ -51,12 +72,14 @@ export function RadialProgress({
 
   return (
     <FadeIn duration={0.5}>
-      <div className={cn("relative inline-flex flex-col items-center", className)}>
-        <div className="relative">
+      <div
+        className={cn('relative inline-flex flex-col items-center', className)}
+      >
+        <div className='relative'>
           <svg
             width={config.width}
             height={config.height}
-            className="transform -rotate-90"
+            className='transform -rotate-90'
           >
             {/* Background circle */}
             <circle
@@ -65,8 +88,8 @@ export function RadialProgress({
               r={radius}
               stroke={backgroundColor}
               strokeWidth={config.stroke}
-              fill="none"
-              className="opacity-20"
+              fill='none'
+              className='opacity-20'
             />
 
             {/* Progress circle */}
@@ -74,13 +97,13 @@ export function RadialProgress({
               cx={config.width / 2}
               cy={config.height / 2}
               r={radius}
-              stroke="currentColor"
+              stroke='currentColor'
               strokeWidth={config.stroke}
-              fill="none"
-              strokeLinecap="round"
+              fill='none'
+              strokeLinecap='round'
               className={cn(
                 colorClasses[color],
-                animate && "transition-all duration-1000 ease-out"
+                animate && 'transition-all duration-1000 ease-out'
               )}
               style={{
                 strokeDasharray: circumference,
@@ -90,20 +113,24 @@ export function RadialProgress({
           </svg>
 
           {/* Center content */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
+          <div className='absolute inset-0 flex flex-col items-center justify-center'>
             {showValue && (
-              <span className={cn(
-                "font-bold text-card-foreground",
-                config.fontSize
-              )}>
+              <span
+                className={cn(
+                  'font-bold text-card-foreground',
+                  config.fontSize
+                )}
+              >
                 {normalizedValue}%
               </span>
             )}
             {label && (
-              <span className={cn(
-                "text-muted-foreground mt-1",
-                size === 'sm' ? 'text-[10px]' : 'text-xs'
-              )}>
+              <span
+                className={cn(
+                  'text-muted-foreground mt-1',
+                  size === 'sm' ? 'text-[10px]' : 'text-xs'
+                )}
+              >
                 {label}
               </span>
             )}
@@ -152,29 +179,31 @@ export function LinearProgress({
 
   return (
     <FadeIn duration={0.5}>
-      <div className={cn("w-full", className)}>
+      <div className={cn('w-full', className)}>
         {(label || showValue) && (
-          <div className="flex justify-between items-center mb-2">
+          <div className='flex justify-between items-center mb-2'>
             {label && (
-              <span className="text-sm font-medium text-card-foreground">
+              <span className='text-sm font-medium text-card-foreground'>
                 {label}
               </span>
             )}
             {showValue && (
-              <span className="text-sm text-muted-foreground">
+              <span className='text-sm text-muted-foreground'>
                 {normalizedValue}%
               </span>
             )}
           </div>
         )}
 
-        <div className={cn(
-          "w-full bg-muted rounded-full overflow-hidden",
-          heightClasses[height]
-        )}>
+        <div
+          className={cn(
+            'w-full bg-muted rounded-full overflow-hidden',
+            heightClasses[height]
+          )}
+        >
           <div
             className={cn(
-              "h-full rounded-full transition-all duration-1000 ease-out",
+              'h-full rounded-full transition-all duration-1000 ease-out',
               colorClasses[color]
             )}
             style={{
@@ -207,13 +236,13 @@ export function ProgressGroup({
   className,
 }: ProgressGroupProps) {
   return (
-    <div className={cn(
-      type === 'radial'
-        ? "flex flex-wrap gap-4"
-        : "space-y-4",
-      className
-    )}>
-      {items.map((item, index) => (
+    <div
+      className={cn(
+        type === 'radial' ? 'flex flex-wrap gap-4' : 'space-y-4',
+        className
+      )}
+    >
+      {items.map((item, index) =>
         type === 'radial' ? (
           <RadialProgress
             key={index}
@@ -231,7 +260,7 @@ export function ProgressGroup({
             height={size as 'sm' | 'md' | 'lg'}
           />
         )
-      ))}
+      )}
     </div>
   );
 }

@@ -19,11 +19,13 @@ type WizardStep = 'country' | 'will_type' | 'draft_choice' | 'wizard';
 
 export const EnhancedWillWizard: React.FC<EnhancedWillWizardProps> = ({
   onClose,
-  onComplete
+  onComplete,
 }) => {
   const { userId } = useAuth();
   const [currentStep, setCurrentStep] = useState<WizardStep>('country');
-  const [selectedWillType, setSelectedWillType] = useState<WillType | null>(null);
+  const [selectedWillType, setSelectedWillType] = useState<WillType | null>(
+    null
+  );
   const [draftData, setDraftData] = useState<WillData | null>(null);
 
   const handleCountryConfirmed = () => {
@@ -61,18 +63,23 @@ export const EnhancedWillWizard: React.FC<EnhancedWillWizardProps> = ({
     // Add the will type to the data
     const enhancedWillData = {
       ...willData,
-      willType: selectedWillType!
+      willType: selectedWillType!,
     };
 
     // Trigger milestone recognition for Legacy Foundation
     setTimeout(() => {
-      const legacyMilestone = SERENITY_MILESTONES.find(m => m.id === 'legacy_foundation');
+      const legacyMilestone = SERENITY_MILESTONES.find(
+        m => m.id === 'legacy_foundation'
+      );
       if (legacyMilestone) {
-        showMilestoneRecognition({
-          ...legacyMilestone,
-          isUnlocked: true,
-          unlockedAt: new Date().toISOString()
-        }, userId);
+        showMilestoneRecognition(
+          {
+            ...legacyMilestone,
+            isUnlocked: true,
+            unlockedAt: new Date().toISOString(),
+          },
+          userId
+        );
       }
     }, 1500); // Delay to show after success message
 
@@ -85,9 +92,7 @@ export const EnhancedWillWizard: React.FC<EnhancedWillWizardProps> = ({
         switch (currentStep) {
           case 'country':
             return (
-              <CountrySelector
-                onCountryConfirmed={handleCountryConfirmed}
-              />
+              <CountrySelector onCountryConfirmed={handleCountryConfirmed} />
             );
 
           case 'will_type':

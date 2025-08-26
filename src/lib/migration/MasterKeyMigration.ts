@@ -56,7 +56,7 @@ class MasterKeyMigration {
         {
           key: encrypted,
           version: 1,
-          migratedAt: new Date().toISOString()
+          migratedAt: new Date().toISOString(),
         },
         365 // Keep for 1 year
       );
@@ -65,7 +65,6 @@ class MasterKeyMigration {
       await this.logMigration('success');
 
       return true;
-
     } catch (error) {
       console.error('Master key migration failed:', error);
       await this.logMigration('failed', error.message);
@@ -112,7 +111,6 @@ class MasterKeyMigration {
 
       // Compare values
       return decrypted === legacyKey;
-
     } catch (error) {
       console.error('Migration verification failed:', error);
       return false;
@@ -130,7 +128,7 @@ class MasterKeyMigration {
       timestamp: new Date().toISOString(),
       type: 'master_key_migration',
       status,
-      error
+      error,
     };
 
     await secureStorage.setSecureLocal(

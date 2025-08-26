@@ -4,8 +4,23 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Icon } from '@/components/ui/icon-library';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import type { TimeCapsule } from '@/types/timeCapsule';
 import { format } from 'date-fns';
 
@@ -16,7 +31,11 @@ interface TimeCapsuleListProps {
   onTestPreview?: (id: string) => void;
 }
 
-export function TimeCapsuleList({ timeCapsules, onDelete, onTestPreview }: TimeCapsuleListProps) {
+export function TimeCapsuleList({
+  timeCapsules,
+  onDelete,
+  onTestPreview,
+}: TimeCapsuleListProps) {
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
   const getInitials = (name: string): string => {
@@ -75,25 +94,31 @@ export function TimeCapsuleList({ timeCapsules, onDelete, onTestPreview }: TimeC
   };
 
   // Group capsules by status
-  const groupedCapsules = timeCapsules.reduce((groups, capsule) => {
-    const key = capsule.is_delivered ? 'delivered' :
-                capsule.status === 'FAILED' ? 'failed' : 'pending';
-    if (!groups[key]) groups[key] = [];
-    groups[key].push(capsule);
-    return groups;
-  }, {} as Record<string, TimeCapsule[]>);
+  const groupedCapsules = timeCapsules.reduce(
+    (groups, capsule) => {
+      const key = capsule.is_delivered
+        ? 'delivered'
+        : capsule.status === 'FAILED'
+          ? 'failed'
+          : 'pending';
+      if (!groups[key]) groups[key] = [];
+      groups[key].push(capsule);
+      return groups;
+    },
+    {} as Record<string, TimeCapsule[]>
+  );
 
   return (
-    <div className="space-y-6">
+    <div className='space-y-6'>
       {/* Pending Capsules */}
       {groupedCapsules.pending && (
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold flex items-center gap-2">
-            <Icon name="clock" className="w-5 h-5 text-orange-600" />
+        <div className='space-y-4'>
+          <h3 className='text-lg font-semibold flex items-center gap-2'>
+            <Icon name='clock' className='w-5 h-5 text-orange-600' />
             Pending Delivery ({groupedCapsules.pending.length})
           </h3>
-          <div className="grid gap-4">
-            {groupedCapsules.pending.map((capsule) => (
+          <div className='grid gap-4'>
+            {groupedCapsules.pending.map(capsule => (
               <TimeCapsuleCard
                 key={capsule.id}
                 capsule={capsule}
@@ -112,13 +137,13 @@ export function TimeCapsuleList({ timeCapsules, onDelete, onTestPreview }: TimeC
 
       {/* Delivered Capsules */}
       {groupedCapsules.delivered && (
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold flex items-center gap-2">
-            <Icon name="check-circle" className="w-5 h-5 text-green-600" />
+        <div className='space-y-4'>
+          <h3 className='text-lg font-semibold flex items-center gap-2'>
+            <Icon name='check-circle' className='w-5 h-5 text-green-600' />
             Delivered ({groupedCapsules.delivered.length})
           </h3>
-          <div className="grid gap-4">
-            {groupedCapsules.delivered.map((capsule) => (
+          <div className='grid gap-4'>
+            {groupedCapsules.delivered.map(capsule => (
               <TimeCapsuleCard
                 key={capsule.id}
                 capsule={capsule}
@@ -138,13 +163,13 @@ export function TimeCapsuleList({ timeCapsules, onDelete, onTestPreview }: TimeC
 
       {/* Failed Capsules */}
       {groupedCapsules.failed && (
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold flex items-center gap-2">
-            <Icon name="alert-circle" className="w-5 h-5 text-red-600" />
+        <div className='space-y-4'>
+          <h3 className='text-lg font-semibold flex items-center gap-2'>
+            <Icon name='alert-circle' className='w-5 h-5 text-red-600' />
             Failed Delivery ({groupedCapsules.failed.length})
           </h3>
-          <div className="grid gap-4">
-            {groupedCapsules.failed.map((capsule) => (
+          <div className='grid gap-4'>
+            {groupedCapsules.failed.map(capsule => (
               <TimeCapsuleCard
                 key={capsule.id}
                 capsule={capsule}
@@ -163,20 +188,26 @@ export function TimeCapsuleList({ timeCapsules, onDelete, onTestPreview }: TimeC
       )}
 
       {/* Delete Confirmation Dialog */}
-      <AlertDialog open={!!deleteConfirm} onOpenChange={() => setDeleteConfirm(null)}>
+      <AlertDialog
+        open={!!deleteConfirm}
+        onOpenChange={() => setDeleteConfirm(null)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Time Capsule</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete this Time Capsule? This action cannot be undone,
-              and your recorded message will be permanently lost.
+              Are you sure you want to delete this Time Capsule? This action
+              cannot be undone, and your recorded message will be permanently
+              lost.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
-              onClick={() => deleteConfirm && handleDeleteConfirm(deleteConfirm)}
-              className="bg-red-600 hover:bg-red-700"
+              onClick={() =>
+                deleteConfirm && handleDeleteConfirm(deleteConfirm)
+              }
+              className='bg-red-600 hover:bg-red-700'
             >
               Delete Time Capsule
             </AlertDialogAction>
@@ -210,53 +241,55 @@ function TimeCapsuleCard({
   getStatusColor,
   getStatusIcon,
   isDelivered,
-  isFailed
+  isFailed,
 }: TimeCapsuleCardProps) {
   const capsuleId = capsule.id.slice(-8).toUpperCase();
 
   return (
-    <Card className="hover:shadow-md transition-all duration-300 relative overflow-hidden group">
+    <Card className='hover:shadow-md transition-all duration-300 relative overflow-hidden group'>
       {/* Elegant seal corner */}
-      <div className="absolute -top-2 -right-2 w-16 h-16 bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-700 rotate-45 flex items-center justify-center">
-        <div className="rotate-[-45deg] text-white text-xs font-bold flex flex-col items-center">
-          <Icon name="shield-check" className="w-3 h-3 mb-0.5" />
-          <span className="text-[8px] leading-none">SEALED</span>
+      <div className='absolute -top-2 -right-2 w-16 h-16 bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-700 rotate-45 flex items-center justify-center'>
+        <div className='rotate-[-45deg] text-white text-xs font-bold flex flex-col items-center'>
+          <Icon name='shield-check' className='w-3 h-3 mb-0.5' />
+          <span className='text-[8px] leading-none'>SEALED</span>
         </div>
       </div>
 
       {/* Premium gradient border for sealed capsules */}
-      <div className="absolute inset-0 bg-gradient-to-r from-purple-200/20 via-pink-200/20 to-indigo-200/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <div className='absolute inset-0 bg-gradient-to-r from-purple-200/20 via-pink-200/20 to-indigo-200/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
 
-      <CardHeader className="pb-3 relative">
-        <div className="flex items-start justify-between">
-          <div className="flex items-start space-x-3 flex-1">
+      <CardHeader className='pb-3 relative'>
+        <div className='flex items-start justify-between'>
+          <div className='flex items-start space-x-3 flex-1'>
             {/* Enhanced avatar with gradient */}
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full blur-sm opacity-30" />
-              <Avatar className="relative border-2 border-white/50">
-                <AvatarFallback className="bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 font-semibold">
+            <div className='relative'>
+              <div className='absolute inset-0 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full blur-sm opacity-30' />
+              <Avatar className='relative border-2 border-white/50'>
+                <AvatarFallback className='bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 font-semibold'>
                   {getInitials(capsule.recipient_name)}
                 </AvatarFallback>
               </Avatar>
             </div>
 
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-1">
-                <h4 className="font-semibold text-lg truncate">{capsule.message_title}</h4>
-                <div className="flex items-center gap-1 text-xs text-purple-600 bg-purple-50 px-2 py-0.5 rounded-full">
-                  <Icon name="lock" className="w-3 h-3" />
+            <div className='flex-1 min-w-0'>
+              <div className='flex items-center gap-2 mb-1'>
+                <h4 className='font-semibold text-lg truncate'>
+                  {capsule.message_title}
+                </h4>
+                <div className='flex items-center gap-1 text-xs text-purple-600 bg-purple-50 px-2 py-0.5 rounded-full'>
+                  <Icon name='lock' className='w-3 h-3' />
                   <span>#{capsuleId}</span>
                 </div>
               </div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
-                <Icon name="user" className="w-3 h-3 flex-shrink-0" />
-                <span className="truncate">For {capsule.recipient_name}</span>
+              <div className='flex items-center gap-2 text-sm text-muted-foreground mt-1'>
+                <Icon name='user' className='w-3 h-3 flex-shrink-0' />
+                <span className='truncate'>For {capsule.recipient_name}</span>
                 <span>•</span>
-                <Icon name="mail" className="w-3 h-3 flex-shrink-0" />
-                <span className="truncate">{capsule.recipient_email}</span>
+                <Icon name='mail' className='w-3 h-3 flex-shrink-0' />
+                <span className='truncate'>{capsule.recipient_email}</span>
               </div>
               {capsule.message_preview && (
-                <p className="text-sm text-muted-foreground mt-2 line-clamp-2 italic">
+                <p className='text-sm text-muted-foreground mt-2 line-clamp-2 italic'>
                   "{capsule.message_preview}"
                 </p>
               )}
@@ -265,15 +298,15 @@ function TimeCapsuleCard({
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm">
-                <Icon name="more-horizontal" className="w-4 h-4" />
+              <Button variant='ghost' size='sm'>
+                <Icon name='more-horizontal' className='w-4 h-4' />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align='end'>
               {isDelivered && (
                 <>
                   <DropdownMenuItem>
-                    <Icon name="external-link" className="w-4 h-4 mr-2" />
+                    <Icon name='external-link' className='w-4 h-4 mr-2' />
                     View Delivered Message
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
@@ -282,14 +315,14 @@ function TimeCapsuleCard({
               {!isDelivered && (
                 <>
                   <DropdownMenuItem>
-                    <Icon name="eye" className="w-4 h-4 mr-2" />
+                    <Icon name='eye' className='w-4 h-4 mr-2' />
                     Preview Recording
                   </DropdownMenuItem>
                   <DropdownMenuItem
-                    className="text-blue-600 focus:text-blue-600"
+                    className='text-blue-600 focus:text-blue-600'
                     onClick={() => onTestPreview?.(capsule.id)}
                   >
-                    <Icon name="mail-check" className="w-4 h-4 mr-2" />
+                    <Icon name='mail-check' className='w-4 h-4 mr-2' />
                     Send Test Preview
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
@@ -297,9 +330,9 @@ function TimeCapsuleCard({
               )}
               <DropdownMenuItem
                 onClick={onDelete}
-                className="text-red-600 focus:text-red-600"
+                className='text-red-600 focus:text-red-600'
               >
-                <Icon name="trash-2" className="w-4 h-4 mr-2" />
+                <Icon name='trash-2' className='w-4 h-4 mr-2' />
                 Delete
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -307,86 +340,109 @@ function TimeCapsuleCard({
         </div>
       </CardHeader>
 
-      <CardContent className="pt-0 space-y-3">
+      <CardContent className='pt-0 space-y-3'>
         {/* Enhanced Delivery Information */}
-        <div className="relative p-4 bg-gradient-to-r from-purple-50 via-pink-50 to-indigo-50 rounded-lg border border-purple-100">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="p-2 bg-white rounded-full shadow-sm">
+        <div className='relative p-4 bg-gradient-to-r from-purple-50 via-pink-50 to-indigo-50 rounded-lg border border-purple-100'>
+          <div className='flex items-center justify-between'>
+            <div className='flex items-center space-x-3'>
+              <div className='p-2 bg-white rounded-full shadow-sm'>
                 <Icon
-                  name={capsule.delivery_condition === 'ON_DATE' ? 'calendar' : 'shield'}
-                  className="w-4 h-4 text-purple-600"
+                  name={
+                    capsule.delivery_condition === 'ON_DATE'
+                      ? 'calendar'
+                      : 'shield'
+                  }
+                  className='w-4 h-4 text-purple-600'
                 />
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-900">
-                  {capsule.delivery_condition === 'ON_DATE' && capsule.delivery_date
+                <p className='text-sm font-medium text-gray-900'>
+                  {capsule.delivery_condition === 'ON_DATE' &&
+                  capsule.delivery_date
                     ? 'Scheduled Delivery'
-                    : 'Family Shield Activation'
-                  }
+                    : 'Family Shield Activation'}
                 </p>
-                <p className="text-xs text-gray-600">
-                  {capsule.delivery_condition === 'ON_DATE' && capsule.delivery_date
-                    ? `Will be delivered: ${format(new Date(capsule.delivery_date), "MMMM d, yyyy")}`
-                    : 'Will be delivered when Family Shield is activated'
-                  }
+                <p className='text-xs text-gray-600'>
+                  {capsule.delivery_condition === 'ON_DATE' &&
+                  capsule.delivery_date
+                    ? `Will be delivered: ${format(new Date(capsule.delivery_date), 'MMMM d, yyyy')}`
+                    : 'Will be delivered when Family Shield is activated'}
                 </p>
               </div>
             </div>
 
             <Badge className={`${getStatusColor(capsule.status)} shadow-sm`}>
-              <Icon name={getStatusIcon(capsule.status)} className="w-3 h-3 mr-1" />
-              {capsule.status === 'PENDING' ? 'Sealed' :
-               capsule.status === 'DELIVERED' ? 'Delivered' :
-               capsule.status === 'FAILED' ? 'Failed' :
-               capsule.status}
+              <Icon
+                name={getStatusIcon(capsule.status)}
+                className='w-3 h-3 mr-1'
+              />
+              {capsule.status === 'PENDING'
+                ? 'Sealed'
+                : capsule.status === 'DELIVERED'
+                  ? 'Delivered'
+                  : capsule.status === 'FAILED'
+                    ? 'Failed'
+                    : capsule.status}
             </Badge>
           </div>
         </div>
 
         {/* Recording Details */}
-        <div className="flex items-center justify-between text-sm">
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-1">
+        <div className='flex items-center justify-between text-sm'>
+          <div className='flex items-center space-x-4'>
+            <div className='flex items-center space-x-1'>
               <Icon
                 name={capsule.file_type === 'video' ? 'video' : 'mic'}
-                className="w-3 h-3 text-muted-foreground"
+                className='w-3 h-3 text-muted-foreground'
               />
-              <span className="capitalize">{capsule.file_type}</span>
+              <span className='capitalize'>{capsule.file_type}</span>
             </div>
             {capsule.duration_seconds && (
-              <div className="flex items-center space-x-1">
-                <Icon name="clock" className="w-3 h-3 text-muted-foreground" />
+              <div className='flex items-center space-x-1'>
+                <Icon name='clock' className='w-3 h-3 text-muted-foreground' />
                 <span>{formatDuration(capsule.duration_seconds)}</span>
               </div>
             )}
             {capsule.file_size_bytes && (
-              <div className="flex items-center space-x-1">
-                <Icon name="hard-drive" className="w-3 h-3 text-muted-foreground" />
+              <div className='flex items-center space-x-1'>
+                <Icon
+                  name='hard-drive'
+                  className='w-3 h-3 text-muted-foreground'
+                />
                 <span>{formatFileSize(capsule.file_size_bytes)}</span>
               </div>
             )}
           </div>
 
-          <span className="text-muted-foreground">
-            Created {format(new Date(capsule.created_at), "MMM d, yyyy")}
+          <span className='text-muted-foreground'>
+            Created {format(new Date(capsule.created_at), 'MMM d, yyyy')}
           </span>
         </div>
 
         {/* Delivery Status Details */}
         {isDelivered && capsule.delivered_at && (
-          <div className="p-2 bg-green-50 border border-green-200 rounded text-sm">
-            <Icon name="check-circle" className="w-4 h-4 inline mr-2 text-green-600" />
-            <span className="text-green-800">
-              Delivered on {format(new Date(capsule.delivered_at), "MMMM d, yyyy 'at' h:mm a")}
+          <div className='p-2 bg-green-50 border border-green-200 rounded text-sm'>
+            <Icon
+              name='check-circle'
+              className='w-4 h-4 inline mr-2 text-green-600'
+            />
+            <span className='text-green-800'>
+              Delivered on{' '}
+              {format(
+                new Date(capsule.delivered_at),
+                "MMMM d, yyyy 'at' h:mm a"
+              )}
             </span>
           </div>
         )}
 
         {isFailed && capsule.delivery_error && (
-          <div className="p-2 bg-red-50 border border-red-200 rounded text-sm">
-            <Icon name="alert-circle" className="w-4 h-4 inline mr-2 text-red-600" />
-            <span className="text-red-800">
+          <div className='p-2 bg-red-50 border border-red-200 rounded text-sm'>
+            <Icon
+              name='alert-circle'
+              className='w-4 h-4 inline mr-2 text-red-600'
+            />
+            <span className='text-red-800'>
               Delivery failed: {capsule.delivery_error}
             </span>
           </div>

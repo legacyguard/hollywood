@@ -50,22 +50,18 @@ export function KPICard({
   trendType = 'neutral',
   trendPosition = 'top',
   className,
-  showTrend = true
+  showTrend = true,
 }: KPICardProps) {
   return (
     <Card className={cn('border border-card-border p-4 relative', className)}>
-      <div className="flex flex-col gap-2">
-        <dt className="text-sm font-medium text-muted-foreground">
-          {title}
-        </dt>
-        <dd className="text-2xl font-semibold text-foreground">
-          {value}
-        </dd>
+      <div className='flex flex-col gap-2'>
+        <dt className='text-sm font-medium text-muted-foreground'>{title}</dt>
+        <dd className='text-2xl font-semibold text-foreground'>{value}</dd>
       </div>
 
       {showTrend && change && (
         <Badge
-          variant="secondary"
+          variant='secondary'
           className={cn(
             'absolute right-4 text-xs font-medium',
             getChangeColor(changeType),
@@ -75,10 +71,7 @@ export function KPICard({
             }
           )}
         >
-          <Icon
-            name={getTrendIcon(trendType)}
-            className="w-3 h-3 mr-1"
-          />
+          <Icon name={getTrendIcon(trendType)} className='w-3 h-3 mr-1' />
           {change}
         </Badge>
       )}

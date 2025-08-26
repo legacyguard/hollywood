@@ -1,26 +1,26 @@
-import { useAuth } from "@clerk/clerk-react";
-import { Navigate } from "react-router-dom";
+import React from 'react';
+import { Navigate } from 'react-router-dom';
+import { useUser } from '@clerk/clerk-react';
 
-export function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { isLoaded, isSignedIn } = useAuth();
+export const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { isLoaded, isSignedIn } = useUser();
 
-  // Wait for Clerk to load
   if (!isLoaded) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="flex h-screen items-center justify-center">
         <div className="text-center">
-          <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4" />
           <p className="text-muted-foreground">Loading...</p>
         </div>
       </div>
     );
   }
 
-  // Redirect to sign-in if not authenticated
   if (!isSignedIn) {
     return <Navigate to="/sign-in" replace />;
   }
 
-  // User is authenticated, show the protected content
   return <>{children}</>;
-}
+};
+
+export default ProtectedRoute;

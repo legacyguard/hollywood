@@ -14,13 +14,12 @@ import {
 } from './config';
 import { JURISDICTION_CONFIG } from './jurisdictions';
 import { LANGUAGE_CONFIG } from './languages';
-import type {
-  LegalTermCategory} from './legal-terminology';
+import type { LegalTermCategory } from './legal-terminology';
 import {
   getLegalTerm,
   getLegalDefinition,
   getLegalReference,
-  searchLegalTerms
+  searchLegalTerms,
 } from './legal-terminology';
 import type {
   LanguageCode,
@@ -39,7 +38,9 @@ export const useTranslation = (
   namespace?: TranslationNamespace | TranslationNamespace[]
 ): UseTranslationReturn => {
   const { t: i18nT, i18n } = useI18nTranslation(namespace);
-  const [jurisdiction, setJurisdiction] = useState<JurisdictionCode>(getCurrentJurisdiction());
+  const [jurisdiction, setJurisdiction] = useState<JurisdictionCode>(
+    getCurrentJurisdiction()
+  );
 
   // Load legal translations when jurisdiction or language changes
   useEffect(() => {
@@ -52,16 +53,19 @@ export const useTranslation = (
   }, [jurisdiction, i18n.language]);
 
   // Enhanced translation function with jurisdiction support
-  const t: TFunction = useCallback((key: string, options?: any) => {
-    // Try jurisdiction-specific translation first
-    const jurisdictionKey = `${key}_${jurisdiction}`;
-    if (i18n.exists(jurisdictionKey)) {
-      return i18nT(jurisdictionKey, options);
-    }
+  const t: TFunction = useCallback(
+    (key: string, options?: any) => {
+      // Try jurisdiction-specific translation first
+      const jurisdictionKey = `${key}_${jurisdiction}`;
+      if (i18n.exists(jurisdictionKey)) {
+        return i18nT(jurisdictionKey, options);
+      }
 
-    // Fallback to general translation
-    return i18nT(key, options);
-  }, [i18nT, jurisdiction]);
+      // Fallback to general translation
+      return i18nT(key, options);
+    },
+    [i18nT, jurisdiction]
+  );
 
   return {
     t,
@@ -82,7 +86,9 @@ export const useTranslation = (
  * Hook for jurisdiction-specific functionality
  */
 export const useJurisdiction = (): UseJurisdictionReturn => {
-  const [jurisdictionCode, setJurisdictionCode] = useState<JurisdictionCode>(getCurrentJurisdiction());
+  const [jurisdictionCode, setJurisdictionCode] = useState<JurisdictionCode>(
+    getCurrentJurisdiction()
+  );
   const jurisdiction = JURISDICTION_CONFIG[jurisdictionCode];
 
   const changeJurisdiction = useCallback((code: JurisdictionCode) => {
@@ -108,26 +114,38 @@ export const useLegalTerm = (): UseLegalTermReturn => {
   const { jurisdiction } = useJurisdiction();
   const { i18n } = useTranslation();
 
-  const getTerm = useCallback((key: string) => {
-    return getLegalTerm(key, jurisdiction.code, i18n.language);
-  }, [jurisdiction.code, i18n.language]);
+  const getTerm = useCallback(
+    (key: string) => {
+      return getLegalTerm(key, jurisdiction.code, i18n.language);
+    },
+    [jurisdiction.code, i18n.language]
+  );
 
-  const getDefinition = useCallback((key: string) => {
-    return getLegalDefinition(key, jurisdiction.code);
-  }, [jurisdiction.code]);
+  const getDefinition = useCallback(
+    (key: string) => {
+      return getLegalDefinition(key, jurisdiction.code);
+    },
+    [jurisdiction.code]
+  );
 
-  const getReference = useCallback((key: string) => {
-    return getLegalReference(key, jurisdiction.code);
-  }, [jurisdiction.code]);
+  const getReference = useCallback(
+    (key: string) => {
+      return getLegalReference(key, jurisdiction.code);
+    },
+    [jurisdiction.code]
+  );
 
-  const searchTerms = useCallback((query: string, category?: LegalTermCategory) => {
-    const results = searchLegalTerms(query, jurisdiction.code, category);
-    return results.map(term => ({
-      key: term.key,
-      term: term.jurisdictions[jurisdiction.code]?.term || term.key,
-      definition: term.jurisdictions[jurisdiction.code]?.definition,
-    }));
-  }, [jurisdiction.code]);
+  const searchTerms = useCallback(
+    (query: string, category?: LegalTermCategory) => {
+      const results = searchLegalTerms(query, jurisdiction.code, category);
+      return results.map(term => ({
+        key: term.key,
+        term: term.jurisdictions[jurisdiction.code]?.term || term.key,
+        definition: term.jurisdictions[jurisdiction.code]?.definition,
+      }));
+    },
+    [jurisdiction.code]
+  );
 
   return {
     getTerm,
@@ -144,59 +162,74 @@ export const useLanguage = () => {
   const { i18n } = useTranslation();
   const languageConfig = LANGUAGE_CONFIG[i18n.language];
 
-  const formatDate = useCallback((date: Date): string => {
-    if (!languageConfig) return date.toLocaleDateString();
+  const formatDate = useCallback(
+    (date: Date): string => {
+      if (!languageConfig) return date.toLocaleDateString();
 
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
 
-    return languageConfig.dateFormat
-      .replace('DD', day)
-      .replace('MM', month)
-      .replace('YYYY', String(year));
-  }, [languageConfig]);
+      return languageConfig.dateFormat
+        .replace('DD', day)
+        .replace('MM', month)
+        .replace('YYYY', String(year));
+    },
+    [languageConfig]
+  );
 
-  const formatTime = useCallback((date: Date): string => {
-    if (!languageConfig) return date.toLocaleTimeString();
+  const formatTime = useCallback(
+    (date: Date): string => {
+      if (!languageConfig) return date.toLocaleTimeString();
 
-    const hours = date.getHours();
-    const minutes = String(date.getMinutes()).padStart(2, '0');
+      const hours = date.getHours();
+      const minutes = String(date.getMinutes()).padStart(2, '0');
 
-    if (languageConfig.timeFormat === 'HH:mm') {
-      return `${String(hours).padStart(2, '0')}:${minutes}`;
-    } else {
-      // 12-hour format
-      const period = hours >= 12 ? 'PM' : 'AM';
-      const displayHours = hours % 12 || 12;
-      return `${displayHours}:${minutes} ${period}`;
-    }
-  }, [languageConfig]);
+      if (languageConfig.timeFormat === 'HH:mm') {
+        return `${String(hours).padStart(2, '0')}:${minutes}`;
+      } else {
+        // 12-hour format
+        const period = hours >= 12 ? 'PM' : 'AM';
+        const displayHours = hours % 12 || 12;
+        return `${displayHours}:${minutes} ${period}`;
+      }
+    },
+    [languageConfig]
+  );
 
-  const formatNumber = useCallback((num: number, decimals: number = 2): string => {
-    if (!languageConfig) return num.toLocaleString();
+  const formatNumber = useCallback(
+    (num: number, decimals: number = 2): string => {
+      if (!languageConfig) return num.toLocaleString();
 
-    const parts = num.toFixed(decimals).split('.');
-    const integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, languageConfig.thousandsSeparator);
-    const decimalPart = parts[1];
+      const parts = num.toFixed(decimals).split('.');
+      const integerPart = parts[0].replace(
+        /\B(?=(\d{3})+(?!\d))/g,
+        languageConfig.thousandsSeparator
+      );
+      const decimalPart = parts[1];
 
-    if (decimals > 0 && decimalPart) {
-      return `${integerPart}${languageConfig.decimalSeparator}${decimalPart}`;
-    }
-    return integerPart;
-  }, [languageConfig]);
+      if (decimals > 0 && decimalPart) {
+        return `${integerPart}${languageConfig.decimalSeparator}${decimalPart}`;
+      }
+      return integerPart;
+    },
+    [languageConfig]
+  );
 
-  const formatCurrency = useCallback((amount: number, currency: string): string => {
-    if (!languageConfig) return `${currency} ${amount}`;
+  const formatCurrency = useCallback(
+    (amount: number, currency: string): string => {
+      if (!languageConfig) return `${currency} ${amount}`;
 
-    const formattedAmount = formatNumber(amount, 2);
+      const formattedAmount = formatNumber(amount, 2);
 
-    if (languageConfig.currencyPosition === 'before') {
-      return `${currency} ${formattedAmount}`;
-    } else {
-      return `${formattedAmount} ${currency}`;
-    }
-  }, [languageConfig, formatNumber]);
+      if (languageConfig.currencyPosition === 'before') {
+        return `${currency} ${formattedAmount}`;
+      } else {
+        return `${formattedAmount} ${currency}`;
+      }
+    },
+    [languageConfig, formatNumber]
+  );
 
   return {
     language: i18n.language as LanguageCode,
@@ -226,11 +259,14 @@ export const useLanguageSwitcher = () => {
     }));
   }, [supportedLanguages, i18n.language]);
 
-  const switchLanguage = useCallback(async (code: LanguageCode) => {
-    await i18n.changeLanguage(code);
-    // Store preference
-    localStorage.setItem('preferredLanguage', code);
-  }, [i18n]);
+  const switchLanguage = useCallback(
+    async (code: LanguageCode) => {
+      await i18n.changeLanguage(code);
+      // Store preference
+      localStorage.setItem('preferredLanguage', code);
+    },
+    [i18n]
+  );
 
   return {
     currentLanguage: i18n.language as LanguageCode,
@@ -257,15 +293,18 @@ export const useJurisdictionSwitcher = () => {
       }));
   }, [jurisdiction.code, tier]);
 
-  const switchJurisdiction = useCallback((code: JurisdictionCode) => {
-    const newJurisdiction = JURISDICTION_CONFIG[code];
-    if (newJurisdiction) {
-      // In production, this would redirect to the new domain
-      changeJurisdiction(code);
-      // Store preference
-      localStorage.setItem('preferredJurisdiction', code);
-    }
-  }, [changeJurisdiction]);
+  const switchJurisdiction = useCallback(
+    (code: JurisdictionCode) => {
+      const newJurisdiction = JURISDICTION_CONFIG[code];
+      if (newJurisdiction) {
+        // In production, this would redirect to the new domain
+        changeJurisdiction(code);
+        // Store preference
+        localStorage.setItem('preferredJurisdiction', code);
+      }
+    },
+    [changeJurisdiction]
+  );
 
   return {
     currentJurisdiction: jurisdiction.code as JurisdictionCode,

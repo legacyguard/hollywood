@@ -1,7 +1,11 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, useAnimation, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@clerk/clerk-react';
-import { CommunicationStyle, UserPreferences, defaultUserPreferences } from '@/types/user-preferences';
+import {
+  CommunicationStyle,
+  UserPreferences,
+  defaultUserPreferences,
+} from '@/types/user-preferences';
 import { useFirefly } from '@/contexts/FireflyContext';
 import useFireflyEvents from '@/hooks/useFireflyEvents';
 
@@ -27,15 +31,18 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
 }) => {
   const { userId } = useAuth();
   const { state, onInteraction: contextInteraction } = useFirefly();
-  
+
   // Use firefly context state if props not provided
-  const effectiveIsVisible = isVisible !== undefined ? isVisible : state.isVisible;
+  const effectiveIsVisible =
+    isVisible !== undefined ? isVisible : state.isVisible;
   const effectiveTargetElement = targetElement || state.targetElement;
   const effectiveCelebrateEvent = celebrateEvent || state.celebrateEvent;
-  
+
   // Set up global event listeners for celebrations
   useFireflyEvents();
-  const [userPreferences, setUserPreferences] = useState<UserPreferences>(defaultUserPreferences);
+  const [userPreferences, setUserPreferences] = useState<UserPreferences>(
+    defaultUserPreferences
+  );
   const [position, setPosition] = useState<FireflyPosition>({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
   const [isIdle, setIsIdle] = useState(true);
@@ -59,7 +66,8 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
   }, [userId]);
 
   // Determine active mode (prop overrides user preference)
-  const activeMode = mode || userPreferences.communication.style || 'empathetic';
+  const activeMode =
+    mode || userPreferences.communication.style || 'empathetic';
 
   // Initialize position on mount
   useEffect(() => {
@@ -79,16 +87,19 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
   }, []);
 
   // Update trail points for empathetic mode
-  const updateTrail = useCallback((newPosition: FireflyPosition) => {
-    if (activeMode === 'empathetic') {
-      setTrailPoints(prev => {
-        const newTrail = [newPosition, ...prev].slice(0, 8); // Keep 8 trail points
-        return newTrail;
-      });
-    } else {
-      setTrailPoints([]);
-    }
-  }, [activeMode]);
+  const updateTrail = useCallback(
+    (newPosition: FireflyPosition) => {
+      if (activeMode === 'empathetic') {
+        setTrailPoints(prev => {
+          const newTrail = [newPosition, ...prev].slice(0, 8); // Keep 8 trail points
+          return newTrail;
+        });
+      } else {
+        setTrailPoints([]);
+      }
+    },
+    [activeMode]
+  );
 
   // Idle animation patterns
   const startIdleAnimation = useCallback(() => {
@@ -105,7 +116,7 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
       // Pragmatic: Subtle, purposeful movement in corner
       const idleX = rect.width - 80;
       const idleY = 60;
-      
+
       controls.start({
         x: [idleX - 10, idleX + 10, idleX],
         y: [idleY - 5, idleY + 5, idleY],
@@ -113,10 +124,9 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
         transition: {
           duration: 4,
           repeat: Infinity,
-          ease: "easeInOut",
+          ease: 'easeInOut',
         },
       });
-
     } else {
       // Empathetic: Organic, wandering movement
       const generatePath = () => {
@@ -140,7 +150,7 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
         transition: {
           duration: 12,
           repeat: Infinity,
-          ease: "easeInOut",
+          ease: 'easeInOut',
           onUpdate: (latest: any) => {
             if (typeof latest.x === 'number' && typeof latest.y === 'number') {
               updateTrail({ x: latest.x, y: latest.y });
@@ -156,12 +166,14 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
     if (!effectiveTargetElement || !containerRef.current) return;
 
     const container = containerRef.current;
-    const targetEl = document.querySelector(effectiveTargetElement) as HTMLElement;
+    const targetEl = document.querySelector(
+      effectiveTargetElement
+    ) as HTMLElement;
     if (!targetEl) return;
 
     const containerRect = container.getBoundingClientRect();
     const targetRect = targetEl.getBoundingClientRect();
-    
+
     // Calculate relative position
     const targetX = targetRect.left - containerRect.left + targetRect.width / 2;
     const targetY = targetRect.top - containerRect.top + targetRect.height / 2;
@@ -176,7 +188,7 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
         scale: [1, 1.2, 1],
         transition: {
           duration: 0.8,
-          ease: "easeOut",
+          ease: 'easeOut',
         },
       });
 
@@ -185,10 +197,9 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
         scale: [1, 1.3, 1, 1.3, 1],
         transition: {
           duration: 1,
-          ease: "easeInOut",
+          ease: 'easeInOut',
         },
       });
-
     } else {
       // Organic, curved path
       const currentPos = position;
@@ -200,7 +211,7 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
         y: [currentPos.y, midY, targetY],
         transition: {
           duration: 1.5,
-          ease: "easeInOut",
+          ease: 'easeInOut',
           onUpdate: (latest: any) => {
             if (typeof latest.x === 'number' && typeof latest.y === 'number') {
               updateTrail({ x: latest.x, y: latest.y });
@@ -219,16 +230,10 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
           targetX,
           targetX + radius,
         ],
-        y: [
-          targetY,
-          targetY - radius,
-          targetY,
-          targetY + radius,
-          targetY,
-        ],
+        y: [targetY, targetY - radius, targetY, targetY + radius, targetY],
         transition: {
           duration: 2,
-          ease: "easeInOut",
+          ease: 'easeInOut',
           onUpdate: (latest: any) => {
             if (typeof latest.x === 'number' && typeof latest.y === 'number') {
               updateTrail({ x: latest.x, y: latest.y });
@@ -243,7 +248,14 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
       setIsIdle(true);
       startIdleAnimation();
     }, 1000);
-  }, [effectiveTargetElement, activeMode, controls, position, updateTrail, startIdleAnimation]);
+  }, [
+    effectiveTargetElement,
+    activeMode,
+    controls,
+    position,
+    updateTrail,
+    startIdleAnimation,
+  ]);
 
   // Celebration animation
   const celebrate = useCallback(async () => {
@@ -258,10 +270,9 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
         rotate: [0, 180, 360],
         transition: {
           duration: 1.2,
-          ease: "easeOut",
+          ease: 'easeOut',
         },
       });
-
     } else {
       // Joyful, organic celebration
       const container = containerRef.current;
@@ -289,7 +300,7 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
         rotate: [0, 720],
         transition: {
           duration: 3,
-          ease: "easeInOut",
+          ease: 'easeInOut',
           onUpdate: (latest: any) => {
             if (typeof latest.x === 'number' && typeof latest.y === 'number') {
               updateTrail({ x: latest.x, y: latest.y });
@@ -304,7 +315,14 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
       setIsIdle(true);
       startIdleAnimation();
     }, 500);
-  }, [effectiveCelebrateEvent, activeMode, controls, effectiveIsVisible, updateTrail, startIdleAnimation]);
+  }, [
+    effectiveCelebrateEvent,
+    activeMode,
+    controls,
+    effectiveIsVisible,
+    updateTrail,
+    startIdleAnimation,
+  ]);
 
   // Handle target element changes
   useEffect(() => {
@@ -335,7 +353,7 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
       if (idleTimeoutRef.current) {
         clearTimeout(idleTimeoutRef.current);
       }
-      
+
       idleTimeoutRef.current = setTimeout(() => {
         if (!effectiveTargetElement && !effectiveCelebrateEvent) {
           setIsIdle(true);
@@ -344,7 +362,13 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
       }, 3000);
     };
 
-    const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
+    const events = [
+      'mousedown',
+      'mousemove',
+      'keypress',
+      'scroll',
+      'touchstart',
+    ];
     events.forEach(event => {
       document.addEventListener(event, resetIdleTimer, true);
     });
@@ -364,31 +388,32 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 pointer-events-none z-50"
+      className='fixed inset-0 pointer-events-none z-50'
       style={{ position: 'fixed' }}
     >
       {/* Trail points for empathetic mode */}
       <AnimatePresence>
-        {activeMode === 'empathetic' && trailPoints.map((point, index) => (
-          <motion.div
-            key={`trail-${index}`}
-            className="absolute w-1 h-1 bg-yellow-300/40 rounded-full"
-            style={{
-              left: point.x,
-              top: point.y,
-            }}
-            initial={{ opacity: 0.6, scale: 1 }}
-            animate={{ opacity: 0, scale: 0.3 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 2, delay: index * 0.1 }}
-          />
-        ))}
+        {activeMode === 'empathetic' &&
+          trailPoints.map((point, index) => (
+            <motion.div
+              key={`trail-${index}`}
+              className='absolute w-1 h-1 bg-yellow-300/40 rounded-full'
+              style={{
+                left: point.x,
+                top: point.y,
+              }}
+              initial={{ opacity: 0.6, scale: 1 }}
+              animate={{ opacity: 0, scale: 0.3 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 2, delay: index * 0.1 }}
+            />
+          ))}
       </AnimatePresence>
 
       {/* Main firefly */}
       <motion.div
         animate={controls}
-        className="absolute pointer-events-auto cursor-pointer"
+        className='absolute pointer-events-auto cursor-pointer'
         style={{
           x: position.x,
           y: position.y,
@@ -406,7 +431,7 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
       >
         {/* Firefly glow effect */}
         <motion.div
-          className="absolute inset-0 rounded-full"
+          className='absolute inset-0 rounded-full'
           animate={{
             boxShadow: [
               '0 0 10px rgba(255, 255, 0, 0.3)',
@@ -417,30 +442,34 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
           transition={{
             duration: activeMode === 'pragmatic' ? 3 : 2,
             repeat: Infinity,
-            ease: "easeInOut",
+            ease: 'easeInOut',
           }}
         />
 
         {/* Firefly body */}
         <motion.div
-          className="w-4 h-4 bg-gradient-to-br from-yellow-200 to-yellow-400 rounded-full shadow-lg"
+          className='w-4 h-4 bg-gradient-to-br from-yellow-200 to-yellow-400 rounded-full shadow-lg'
           animate={{
             scale: isHovering ? 1.3 : 1,
-            brightness: [1, 1.2, 1],
+            filter: [
+              'brightness(1)',
+              'brightness(1.2)',
+              'brightness(1)',
+            ],
           }}
           transition={{
             scale: { duration: 0.2 },
-            brightness: {
+            filter: {
               duration: activeMode === 'pragmatic' ? 3 : 2,
               repeat: Infinity,
-              ease: "easeInOut",
+              ease: 'easeInOut',
             },
           }}
         />
 
         {/* Wing flutter effect */}
         <motion.div
-          className="absolute -top-1 -left-1 w-2 h-2"
+          className='absolute -top-1 -left-1 w-2 h-2'
           animate={{
             rotate: [0, 15, -15, 0],
             opacity: [0.3, 0.7, 0.3],
@@ -448,14 +477,14 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
           transition={{
             duration: 0.2,
             repeat: Infinity,
-            ease: "easeInOut",
+            ease: 'easeInOut',
           }}
         >
-          <div className="w-full h-full bg-gradient-to-br from-blue-200/50 to-purple-200/50 rounded-full blur-sm" />
+          <div className='w-full h-full bg-gradient-to-br from-blue-200/50 to-purple-200/50 rounded-full blur-sm' />
         </motion.div>
-        
+
         <motion.div
-          className="absolute -top-1 -right-1 w-2 h-2"
+          className='absolute -top-1 -right-1 w-2 h-2'
           animate={{
             rotate: [0, -15, 15, 0],
             opacity: [0.3, 0.7, 0.3],
@@ -463,25 +492,25 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
           transition={{
             duration: 0.2,
             repeat: Infinity,
-            ease: "easeInOut",
+            ease: 'easeInOut',
             delay: 0.1,
           }}
         >
-          <div className="w-full h-full bg-gradient-to-br from-blue-200/50 to-purple-200/50 rounded-full blur-sm" />
+          <div className='w-full h-full bg-gradient-to-br from-blue-200/50 to-purple-200/50 rounded-full blur-sm' />
         </motion.div>
 
         {/* Interactive tooltip */}
         <AnimatePresence>
           {isHovering && (
             <motion.div
-              className="absolute -top-12 -left-16 bg-black/80 text-white text-xs px-2 py-1 rounded-lg whitespace-nowrap"
+              className='absolute -top-12 -left-16 bg-black/80 text-white text-xs px-2 py-1 rounded-lg whitespace-nowrap'
               initial={{ opacity: 0, scale: 0.8, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.8, y: 10 }}
               transition={{ duration: 0.2 }}
             >
               Sofia - Your Garden Guide
-              <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-black/80" />
+              <div className='absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-black/80' />
             </motion.div>
           )}
         </AnimatePresence>

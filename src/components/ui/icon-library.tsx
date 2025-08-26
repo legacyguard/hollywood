@@ -9,6 +9,7 @@ import {
   Heart,
   Shield,
   ShieldCheck,
+  ShieldAlert,
   CheckCircle,
   Infinity as InfinityIcon,
   Plus,
@@ -17,6 +18,7 @@ import {
   Lock,
   Unlock,
   AlertCircle,
+  AlertTriangle,
   Info,
   HelpCircle,
   Star,
@@ -49,6 +51,7 @@ import {
   Send,
   Loader2,
   Loader,
+  Loader2 as Loading,
   Sparkles,
   DollarSign,
   CreditCard,
@@ -64,12 +67,23 @@ import {
   Key,
   Car,
   Folder,
+  File,
   UserPlus,
   Upload as FileUpload,
   RefreshCw,
   FilePlus,
   CreditCard as Card,
-} from "lucide-react";
+  Play,
+  Brain,
+  Database,
+  Globe,
+  Lightbulb,
+  Inbox,
+  Link,
+  RotateCcw,
+  XCircle,
+  ArrowLeft,
+} from 'lucide-react';
 
 // Export all icons for direct use
 export {
@@ -244,11 +258,43 @@ export const IconMap = {
   'file-plus': FilePlus,
   'credit-card': Card,
   'alert-circle': AlertCircle,
+  'alert-triangle': AlertTriangle,
+  'shield-alert': ShieldAlert,
+
+  // File icons
+  file: File,
+  'file-text': FileText,
+
+  // Media controls
+  play: Play,
+
+  // Loading states
+  loading: Loading,
+  'loading-2': Loader2,
 
   // Aliases for common usage
   checkCircle: CheckCircle,
   heart: Heart,
   calendar: Calendar,
+  
+  // Additional icons
+  brain: Brain,
+  database: Database,
+  globe: Globe,
+  lightbulb: Lightbulb,
+  inbox: Inbox,
+  link: Link,
+  plus: Plus,
+  'rotate-ccw': RotateCcw,
+  'x-circle': XCircle,
+  'check-circle': CheckCircle,
+  'arrow-left': ArrowLeft,
+  'arrow-right': ArrowRight,
+  'trending-up': TrendingUp,
+  'trending-down': TrendingDown,
+  'eye-off': EyeOff,
+  unlock: Unlock,
+  'triangle-exclamation': AlertTriangle,
 } as const;
 
 // Type for icon names

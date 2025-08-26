@@ -13,7 +13,12 @@ import { toast } from 'sonner';
 
 // New guided dialog imports
 import { sofiaRouter } from '@/lib/sofia-router';
-import type { SofiaMessage, ActionButton, SofiaCommand, CommandResult} from '@/lib/sofia-types';
+import type {
+  SofiaMessage,
+  ActionButton,
+  SofiaCommand,
+  CommandResult,
+} from '@/lib/sofia-types';
 import { getContextualActions } from '@/lib/sofia-types';
 import SofiaActionButtons from './SofiaActionButtons';
 
@@ -27,22 +32,22 @@ const getContextualSuggestions = (currentPage: string): ActionButton[] => {
         icon: 'arrowRight',
         category: 'ui_action',
         cost: 'free',
-        payload: { action: 'show_progress' }
+        payload: { action: 'show_progress' },
       },
       {
         id: 'faq_security',
         text: 'How secure is my data?',
         icon: 'shield',
         category: 'ai_query',
-        cost: 'low_cost'
+        cost: 'low_cost',
       },
       {
         id: 'getting_started',
         text: 'How do I get started?',
         icon: 'help',
         category: 'ai_query',
-        cost: 'low_cost'
-      }
+        cost: 'low_cost',
+      },
     ],
     vault: [
       {
@@ -51,22 +56,22 @@ const getContextualSuggestions = (currentPage: string): ActionButton[] => {
         icon: 'upload',
         category: 'ui_action',
         cost: 'free',
-        payload: { action: 'open_uploader' }
+        payload: { action: 'open_uploader' },
       },
       {
         id: 'faq_documents',
         text: 'What documents should I upload?',
         icon: 'help',
         category: 'ai_query',
-        cost: 'low_cost'
+        cost: 'low_cost',
       },
       {
         id: 'upload_help',
         text: 'How do I organize my files?',
         icon: 'info',
         category: 'ai_query',
-        cost: 'low_cost'
-      }
+        cost: 'low_cost',
+      },
     ],
     guardians: [
       {
@@ -74,14 +79,14 @@ const getContextualSuggestions = (currentPage: string): ActionButton[] => {
         text: 'How do I add a guardian?',
         icon: 'help',
         category: 'ai_query',
-        cost: 'low_cost'
+        cost: 'low_cost',
       },
       {
         id: 'faq_guardians',
         text: 'What are guardians?',
         icon: 'info',
         category: 'ai_query',
-        cost: 'low_cost'
+        cost: 'low_cost',
       },
       {
         id: 'navigate_vault',
@@ -89,8 +94,8 @@ const getContextualSuggestions = (currentPage: string): ActionButton[] => {
         icon: 'vault',
         category: 'navigation',
         cost: 'free',
-        payload: { route: '/vault' }
-      }
+        payload: { route: '/vault' },
+      },
     ],
     legacy: [
       {
@@ -100,14 +105,14 @@ const getContextualSuggestions = (currentPage: string): ActionButton[] => {
         category: 'premium_feature',
         cost: 'premium',
         requiresConfirmation: true,
-        description: 'Create a heartfelt message for your loved ones'
+        description: 'Create a heartfelt message for your loved ones',
       },
       {
         id: 'faq_documents',
         text: 'What legal documents do I need?',
         icon: 'help',
         category: 'ai_query',
-        cost: 'low_cost'
+        cost: 'low_cost',
       },
       {
         id: 'navigate_vault',
@@ -115,9 +120,9 @@ const getContextualSuggestions = (currentPage: string): ActionButton[] => {
         icon: 'vault',
         category: 'navigation',
         cost: 'free',
-        payload: { route: '/vault' }
-      }
-    ]
+        payload: { route: '/vault' },
+      },
+    ],
   };
 
   return suggestions[currentPage] || suggestions.dashboard;
@@ -138,7 +143,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
   className = '',
   variant = 'floating',
   currentPage = 'dashboard',
-  pendingAction = null
+  pendingAction = null,
 }) => {
   const { userId } = useAuth();
   const navigate = useNavigate();
@@ -146,14 +151,8 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
   const [isProcessing, setIsProcessing] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
-  const {
-    messages,
-    isTyping,
-    context,
-    addMessage,
-    updateMessages,
-    setTyping,
-  } = useSofiaStore();
+  const { messages, isTyping, context, addMessage, updateMessages, setTyping } =
+    useSofiaStore();
 
   // Move getDefaultWelcome to prevent dependency issues
   const getDefaultWelcome = useCallback((): string => {
@@ -177,7 +176,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
         command: 'show_sofia',
         category: 'ui_action',
         context,
-        timestamp: new Date()
+        timestamp: new Date(),
       };
 
       // Process through router
@@ -190,34 +189,43 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
           role: 'assistant',
           content: result.payload.message || getDefaultWelcome(),
           timestamp: new Date(),
-          actions: result.payload.actions || getContextualSuggestions(currentPage),
+          actions:
+            result.payload.actions || getContextualSuggestions(currentPage),
           responseType: 'welcome',
           metadata: {
             cost: result.cost,
-            source: 'predefined'
-          }
+            source: 'predefined',
+          },
         };
 
         addMessage(welcomeMessage);
         setTyping(false);
         setIsProcessing(false);
       }, 1000);
-
     } catch (error) {
       console.error('[Sofia] Error initializing dialog:', error);
       const errorMessage: SofiaMessage = {
         id: crypto.randomUUID(),
         role: 'assistant',
-        content: 'I apologize, an error occurred during initialization. Please try again.',
+        content:
+          'I apologize, an error occurred during initialization. Please try again.',
         timestamp: new Date(),
         responseType: 'error',
-        metadata: { cost: 'free', source: 'predefined' }
+        metadata: { cost: 'free', source: 'predefined' },
       };
       addMessage(errorMessage);
       setTyping(false);
       setIsProcessing(false);
     }
-  }, [context, userId, addMessage, currentPage, getDefaultWelcome, setTyping, setIsProcessing]);
+  }, [
+    context,
+    userId,
+    addMessage,
+    currentPage,
+    getDefaultWelcome,
+    setTyping,
+    setIsProcessing,
+  ]);
 
   // Handle pending actions from search
   useEffect(() => {
@@ -228,7 +236,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
         role: 'user',
         content: pendingAction.userMessage,
         timestamp: new Date(),
-        metadata: { cost: 'free', source: 'search_action' }
+        metadata: { cost: 'free', source: 'search_action' },
       };
 
       const sofiaMessage: SofiaMessage = {
@@ -237,7 +245,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
         content: pendingAction.sofiaResponse,
         timestamp: new Date(),
         responseType: 'smart_suggestion',
-        metadata: { cost: 'free', source: 'search_integration' }
+        metadata: { cost: 'free', source: 'search_integration' },
       };
 
       addMessage(userMessage);
@@ -252,11 +260,13 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
   // Auto-scroll to bottom when new messages arrive with smooth scrolling
   useEffect(() => {
     if (scrollAreaRef.current) {
-      const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
+      const scrollContainer = scrollAreaRef.current.querySelector(
+        '[data-radix-scroll-area-viewport]'
+      );
       if (scrollContainer) {
         scrollContainer.scrollTo({
           top: scrollContainer.scrollHeight,
-          behavior: 'smooth'
+          behavior: 'smooth',
         });
       }
     }
@@ -278,11 +288,13 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
       role: 'user',
       content: `🎯 ${action.text}`,
       timestamp: new Date(),
-      metadata: { cost: 'free', source: 'predefined' }
+      metadata: { cost: 'free', source: 'predefined' },
     };
 
     // **FIX: Remove actions from the previous message to prevent multiple clicks**
-    updateMessages(prevMessages => prevMessages.map(msg => ({ ...msg, actions: undefined })));
+    updateMessages(prevMessages =>
+      prevMessages.map(msg => ({ ...msg, actions: undefined }))
+    );
 
     // Add the user message
     addMessage(userMessage);
@@ -298,7 +310,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
           timestamp: new Date(),
           actions: getContextualActions(context),
           responseType: 'information',
-          metadata: { cost: 'free', source: 'predefined' }
+          metadata: { cost: 'free', source: 'predefined' },
         };
         addMessage(cancelMessage);
         return;
@@ -316,7 +328,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
         category: action.category,
         parameters: action.payload,
         context,
-        timestamp: new Date()
+        timestamp: new Date(),
       };
 
       // Process through router
@@ -324,7 +336,6 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
 
       // Handle different result types
       await handleCommandResult(result, action);
-
     } catch (error) {
       console.error('[Sofia] Error processing action:', error);
       handleError('I apologize, an error occurred. Please try again.');
@@ -334,7 +345,10 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
     }
   };
 
-  const handleCommandResult = async (result: CommandResult, action: ActionButton) => {
+  const handleCommandResult = async (
+    result: CommandResult,
+    action: ActionButton
+  ) => {
     switch (result.type) {
       case 'navigation':
         // Navigate to route
@@ -349,7 +363,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
             content: `Redirecting you to ${getRouteName(result.payload.route)}...`,
             timestamp: new Date(),
             responseType: 'confirmation',
-            metadata: { cost: result.cost, source: 'predefined' }
+            metadata: { cost: result.cost, source: 'predefined' },
           };
           addMessage(navMessage);
         }
@@ -370,7 +384,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
             timestamp: new Date(),
             actions: result.payload.actions,
             responseType: 'information',
-            metadata: { cost: result.cost, source: 'predefined' }
+            metadata: { cost: result.cost, source: 'predefined' },
           };
           addMessage(responseMessage);
         }, 800);
@@ -390,7 +404,10 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
             timestamp: new Date(),
             actions: context ? getContextualActions(context) : [],
             responseType: 'information',
-            metadata: { cost: result.cost || 'low_cost', source: 'ai_generated' }
+            metadata: {
+              cost: result.cost || 'low_cost',
+              source: 'ai_generated',
+            },
           };
           addMessage(responseMessage);
         }, 800);
@@ -398,11 +415,17 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
     }
   };
 
-  const handleUIAction = (payload: { action: string; message?: string; data?: unknown }) => {
+  const handleUIAction = (payload: {
+    action: string;
+    message?: string;
+    data?: unknown;
+  }) => {
     switch (payload.action) {
       case 'open_uploader': {
         // Trigger document uploader
-        const event = new CustomEvent('sofia:open_uploader', { detail: payload });
+        const event = new CustomEvent('sofia:open_uploader', {
+          detail: payload,
+        });
         window.dispatchEvent(event);
 
         const uploaderMessage: SofiaMessage = {
@@ -411,7 +434,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
           content: payload.message || 'Opening document uploader...',
           timestamp: new Date(),
           responseType: 'confirmation',
-          metadata: { cost: 'free', source: 'predefined' }
+          metadata: { cost: 'free', source: 'predefined' },
         };
         addMessage(uploaderMessage);
         break;
@@ -419,7 +442,9 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
 
       case 'show_progress_modal': {
         // Show progress modal
-        const progressEvent = new CustomEvent('sofia:show_progress', { detail: payload.data });
+        const progressEvent = new CustomEvent('sofia:show_progress', {
+          detail: payload.data,
+        });
         window.dispatchEvent(progressEvent);
         break;
       }
@@ -439,7 +464,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
       role: 'user',
       content: inputValue.trim(),
       timestamp: new Date(),
-      metadata: { cost: 'free', source: 'predefined' }
+      metadata: { cost: 'free', source: 'predefined' },
     };
     addMessage(userMessage);
     setInputValue('');
@@ -453,16 +478,17 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
         command: userMessage.content,
         category: 'ai_query', // Will be routed appropriately
         context,
-        timestamp: new Date()
+        timestamp: new Date(),
       };
 
       // Process through router
       const result = await sofiaRouter.processCommand(command);
       await handleCommandResult(result, {} as ActionButton);
-
     } catch (error) {
       console.error('[Sofia] Error processing text input:', error);
-      handleError('I apologize, I don\'t understand. Please try one of the suggested options.');
+      handleError(
+        "I apologize, I don't understand. Please try one of the suggested options."
+      );
     } finally {
       setIsProcessing(false);
       setTyping(false);
@@ -477,13 +503,13 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
       timestamp: new Date(),
       actions: context ? getContextualActions(context) : [],
       responseType: 'error',
-      metadata: { cost: 'free', source: 'predefined' }
+      metadata: { cost: 'free', source: 'predefined' },
     };
     addMessage(errorMessage);
   };
 
   const showConfirmation = async (action: ActionButton): Promise<boolean> => {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       const confirmMessage = `${action.text}\n\n${action.description}\n\nContinue?`;
       const confirmed = window.confirm(confirmMessage);
       resolve(confirmed);
@@ -495,7 +521,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
       '/vault': 'your vault',
       '/guardians': 'guardian management',
       '/legacy': 'will creation',
-      '/': 'dashboard'
+      '/': 'dashboard',
     };
     return routeNames[route] || route;
   };
@@ -509,12 +535,14 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
       className={`flex gap-3 mb-6 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
     >
       {message.role === 'assistant' && (
-        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center flex-shrink-0">
-          <Icon name="bot" className="w-4 h-4 text-primary" />
+        <div className='w-8 h-8 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center flex-shrink-0'>
+          <Icon name='bot' className='w-4 h-4 text-primary' />
         </div>
       )}
 
-      <div className={`max-w-[85%] ${message.role === 'user' ? 'self-end' : 'self-start'}`}>
+      <div
+        className={`max-w-[85%] ${message.role === 'user' ? 'self-end' : 'self-start'}`}
+      >
         <div
           className={`p-4 rounded-lg shadow-sm border ${
             message.role === 'user'
@@ -523,28 +551,38 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
           }`}
         >
           {message.role === 'assistant' ? (
-            <div className="prose prose-sm dark:prose-invert max-w-none [&>*:last-child]:mb-0 [&>*:first-child]:mt-0">
+            <div className='prose prose-sm dark:prose-invert max-w-none [&>*:last-child]:mb-0 [&>*:first-child]:mt-0'>
               <ReactMarkdown
                 components={{
-                  p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
-                  ul: ({ children }) => <ul className="mb-2 last:mb-0 pl-4">{children}</ul>,
-                  ol: ({ children }) => <ol className="mb-2 last:mb-0 pl-4">{children}</ol>,
-                  li: ({ children }) => <li className="mb-1 last:mb-0">{children}</li>,
-                  strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
-                  em: ({ children }) => <em className="italic">{children}</em>,
+                  p: ({ children }) => (
+                    <p className='mb-2 last:mb-0'>{children}</p>
+                  ),
+                  ul: ({ children }) => (
+                    <ul className='mb-2 last:mb-0 pl-4'>{children}</ul>
+                  ),
+                  ol: ({ children }) => (
+                    <ol className='mb-2 last:mb-0 pl-4'>{children}</ol>
+                  ),
+                  li: ({ children }) => (
+                    <li className='mb-1 last:mb-0'>{children}</li>
+                  ),
+                  strong: ({ children }) => (
+                    <strong className='font-semibold'>{children}</strong>
+                  ),
+                  em: ({ children }) => <em className='italic'>{children}</em>,
                 }}
               >
                 {message.content}
               </ReactMarkdown>
             </div>
           ) : (
-            <p className="text-sm leading-relaxed">{message.content}</p>
+            <p className='text-sm leading-relaxed'>{message.content}</p>
           )}
         </div>
 
         {/* Action Buttons for assistant messages */}
         {message.role === 'assistant' && message.actions && (
-          <div className="mt-3">
+          <div className='mt-3'>
             <SofiaActionButtons
               actions={message.actions}
               onActionClick={handleActionClick}
@@ -553,14 +591,21 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
           </div>
         )}
 
-        <div className={`text-xs text-muted-foreground mt-2 flex items-center gap-2 ${
-          message.role === 'user' ? 'justify-end' : 'justify-start'
-        }`}>
-          <span>{message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+        <div
+          className={`text-xs text-muted-foreground mt-2 flex items-center gap-2 ${
+            message.role === 'user' ? 'justify-end' : 'justify-start'
+          }`}
+        >
+          <span>
+            {message.timestamp.toLocaleTimeString([], {
+              hour: '2-digit',
+              minute: '2-digit',
+            })}
+          </span>
 
           {/* Cost/Source indicator */}
           {message.metadata && message.role === 'assistant' && (
-            <span className="opacity-60">
+            <span className='opacity-60'>
               {message.metadata.cost === 'premium' && '⭐'}
               {message.metadata.cost === 'low_cost' && '⚡'}
               {message.metadata.cost === 'free' && '🆓'}
@@ -570,8 +615,8 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
       </div>
 
       {message.role === 'user' && (
-        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-          <Icon name="user" className="w-4 h-4 text-primary" />
+        <div className='w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0'>
+          <Icon name='user' className='w-4 h-4 text-primary' />
         </div>
       )}
     </motion.div>
@@ -582,16 +627,22 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
-      className="flex gap-3 mb-6"
+      className='flex gap-3 mb-6'
     >
-      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center flex-shrink-0">
-        <Icon name="bot" className="w-4 h-4 text-primary" />
+      <div className='w-8 h-8 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center flex-shrink-0'>
+        <Icon name='bot' className='w-4 h-4 text-primary' />
       </div>
-      <div className="bg-muted p-4 rounded-lg">
-        <div className="flex gap-1">
-          <div className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" />
-          <div className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
-          <div className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
+      <div className='bg-muted p-4 rounded-lg'>
+        <div className='flex gap-1'>
+          <div className='w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce' />
+          <div
+            className='w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce'
+            style={{ animationDelay: '0.1s' }}
+          />
+          <div
+            className='w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce'
+            style={{ animationDelay: '0.2s' }}
+          />
         </div>
       </div>
     </motion.div>
@@ -602,34 +653,34 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
   }
 
   const chatContent = (
-    <div className="flex flex-col h-full">
+    <div className='flex flex-col h-full'>
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
-            <Icon name="bot" className="w-5 h-5 text-primary" />
+      <div className='flex items-center justify-between p-4 border-b'>
+        <div className='flex items-center gap-3'>
+          <div className='w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center'>
+            <Icon name='bot' className='w-5 h-5 text-primary' />
           </div>
           <div>
-            <h3 className="font-semibold">Sofia</h3>
-            <p className="text-sm text-muted-foreground">Your digital guide</p>
+            <h3 className='font-semibold'>Sofia</h3>
+            <p className='text-sm text-muted-foreground'>Your digital guide</p>
           </div>
         </div>
 
         {onClose && (
           <Button
-            variant="ghost"
-            size="sm"
+            variant='ghost'
+            size='sm'
             onClick={onClose}
-            className="h-8 w-8 p-0"
+            className='h-8 w-8 p-0'
           >
-            <Icon name="x" className="w-4 h-4" />
+            <Icon name='x' className='w-4 h-4' />
           </Button>
         )}
       </div>
 
       {/* Messages */}
-      <ScrollArea ref={scrollAreaRef} className="flex-1 p-4">
-        <div className="space-y-4">
+      <ScrollArea ref={scrollAreaRef} className='flex-1 p-4'>
+        <div className='space-y-4'>
           {messages.map(renderMessage)}
           <AnimatePresence>
             {isTyping && renderTypingIndicator()}
@@ -638,30 +689,30 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
       </ScrollArea>
 
       {/* Input - simplified, actions are primary */}
-      <div className="p-4 border-t bg-background">
-        <form onSubmit={handleTextInput} className="flex gap-2">
+      <div className='p-4 border-t bg-background'>
+        <form onSubmit={handleTextInput} className='flex gap-2'>
           <Input
             value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            placeholder="Or type your own question..."
+            onChange={e => setInputValue(e.target.value)}
+            placeholder='Or type your own question...'
             disabled={isProcessing}
-            className="flex-1 text-sm"
+            className='flex-1 text-sm'
           />
           <Button
-            type="submit"
+            type='submit'
             disabled={!inputValue.trim() || isProcessing}
-            size="sm"
-            variant="outline"
+            size='sm'
+            variant='outline'
           >
             {isProcessing ? (
-              <Icon name="loader-2" className="w-4 h-4 animate-spin" />
+              <Icon name='loader-2' className='w-4 h-4 animate-spin' />
             ) : (
-              <Icon name="send" className="w-4 h-4" />
+              <Icon name='send' className='w-4 h-4' />
             )}
           </Button>
         </form>
 
-        <p className="text-xs text-muted-foreground mt-2 text-center">
+        <p className='text-xs text-muted-foreground mt-2 text-center'>
           Tip: Use the buttons above for the fastest responses 🚀
         </p>
       </div>
@@ -670,11 +721,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
 
   // Render variants
   if (variant === 'embedded') {
-    return (
-      <Card className={`h-[600px] ${className}`}>
-        {chatContent}
-      </Card>
-    );
+    return <Card className={`h-[600px] ${className}`}>{chatContent}</Card>;
   }
 
   if (variant === 'fullscreen') {
@@ -685,12 +732,10 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50"
+            className='fixed inset-0 bg-background/80 backdrop-blur-sm z-50'
           >
-            <div className="container mx-auto h-full max-w-4xl p-4">
-              <Card className="h-full">
-                {chatContent}
-              </Card>
+            <div className='container mx-auto h-full max-w-4xl p-4'>
+              <Card className='h-full'>{chatContent}</Card>
             </div>
           </motion.div>
         )}
@@ -708,7 +753,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
           className={`fixed bottom-4 right-4 w-96 h-[600px] z-50 ${className}`}
         >
-          <Card className="h-full shadow-lg border-primary/20">
+          <Card className='h-full shadow-lg border-primary/20'>
             {chatContent}
           </Card>
         </motion.div>

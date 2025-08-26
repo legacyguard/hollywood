@@ -2,12 +2,11 @@ import { createClient } from '@supabase/supabase-js';
 import EmergencyDetectionEngine from './detection-engine';
 import GuardianNotificationService from './guardian-notifier';
 import EmergencyAccessControl from './access-control';
-import type {
-  DetectionEngineConfig} from '@/types/emergency';
+import type { DetectionEngineConfig } from '@/types/emergency';
 import {
   EmergencyTriggerType,
   ActivityTracker,
-  EmergencyActivation
+  EmergencyActivation,
 } from '@/types/emergency';
 import { Guardian, FamilyShieldSettings } from '@/types/guardian';
 
@@ -22,24 +21,43 @@ interface TestScenario {
 }
 
 interface TestSetupStep {
-  action: 'create_user' | 'create_guardian' | 'set_shield_settings' | 'create_documents' | 'set_activity';
+  action:
+    | 'create_user'
+    | 'create_guardian'
+    | 'set_shield_settings'
+    | 'create_documents'
+    | 'set_activity';
   data: Record<string, any>;
 }
 
 interface TestExecutionStep {
-  action: 'trigger_detection' | 'send_notification' | 'verify_guardian' | 'access_resource' | 'wait';
+  action:
+    | 'trigger_detection'
+    | 'send_notification'
+    | 'verify_guardian'
+    | 'access_resource'
+    | 'wait';
   data: Record<string, any>;
   expectedResult?: any;
 }
 
 interface TestValidationStep {
-  check: 'shield_status' | 'notification_sent' | 'access_granted' | 'audit_logged' | 'guardian_notified';
+  check:
+    | 'shield_status'
+    | 'notification_sent'
+    | 'access_granted'
+    | 'audit_logged'
+    | 'guardian_notified';
   expected: any;
   timeout?: number;
 }
 
 interface TestCleanupStep {
-  action: 'delete_user' | 'delete_guardian' | 'reset_shield' | 'clear_notifications';
+  action:
+    | 'delete_user'
+    | 'delete_guardian'
+    | 'reset_shield'
+    | 'clear_notifications';
   data: Record<string, any>;
 }
 
@@ -127,7 +145,9 @@ export class EmergencyTestingSystem {
     const totalPassed = results.filter(r => r.passed).length;
     const totalTests = results.length;
 
-    console.warn(`\n🏁 Test Suite Complete: ${totalPassed}/${totalTests} scenarios passed`);
+    console.warn(
+      `\n🏁 Test Suite Complete: ${totalPassed}/${totalTests} scenarios passed`
+    );
 
     return results;
   }
@@ -137,11 +157,12 @@ export class EmergencyTestingSystem {
       {
         id: 'inactivity-detection',
         name: 'Inactivity Detection Trigger',
-        description: 'Test that extended inactivity properly triggers emergency activation',
+        description:
+          'Test that extended inactivity properly triggers emergency activation',
         setup: [
           {
             action: 'create_user',
-            data: { email: 'test-user-1@example.com', name: 'Test User 1' }
+            data: { email: 'test-user-1@example.com', name: 'Test User 1' },
           },
           {
             action: 'create_guardian',
@@ -149,34 +170,41 @@ export class EmergencyTestingSystem {
               name: 'Guardian 1',
               email: 'guardian1@example.com',
               can_trigger_emergency: true,
-              emergency_contact_priority: 1
-            }
+              emergency_contact_priority: 1,
+            },
           },
           {
             action: 'set_shield_settings',
             data: {
               is_shield_enabled: true,
               inactivity_period_months: 6,
-              required_guardians_for_activation: 1
-            }
+              required_guardians_for_activation: 1,
+            },
           },
           {
             action: 'set_activity',
-            data: { last_activity_days_ago: 200 } // Beyond 6 month threshold
-          }
+            data: { last_activity_days_ago: 200 }, // Beyond 6 month threshold
+          },
         ],
         execution: [
           {
             action: 'trigger_detection',
             data: { check_type: 'inactivity' },
-            expectedResult: { should_trigger: true, trigger_type: 'inactivity_detected' }
-          }
+            expectedResult: {
+              should_trigger: true,
+              trigger_type: 'inactivity_detected',
+            },
+          },
         ],
         validation: [
-          { check: 'shield_status', expected: 'pending_verification', timeout: 5000 },
+          {
+            check: 'shield_status',
+            expected: 'pending_verification',
+            timeout: 5000,
+          },
           { check: 'notification_sent', expected: true, timeout: 5000 },
-          { check: 'audit_logged', expected: true, timeout: 5000 }
-        ]
+          { check: 'audit_logged', expected: true, timeout: 5000 },
+        ],
       },
 
       {
@@ -186,7 +214,7 @@ export class EmergencyTestingSystem {
         setup: [
           {
             action: 'create_user',
-            data: { email: 'test-user-2@example.com', name: 'Test User 2' }
+            data: { email: 'test-user-2@example.com', name: 'Test User 2' },
           },
           {
             action: 'create_guardian',
@@ -194,29 +222,29 @@ export class EmergencyTestingSystem {
               name: 'Guardian 2',
               email: 'guardian2@example.com',
               can_trigger_emergency: true,
-              emergency_contact_priority: 1
-            }
+              emergency_contact_priority: 1,
+            },
           },
           {
             action: 'set_shield_settings',
-            data: { is_shield_enabled: true }
-          }
+            data: { is_shield_enabled: true },
+          },
         ],
         execution: [
           {
             action: 'trigger_detection',
-            data: { trigger_type: 'manual_guardian' }
+            data: { trigger_type: 'manual_guardian' },
           },
           { action: 'wait', data: { milliseconds: 1000 } },
           {
             action: 'verify_guardian',
-            data: { response: 'confirmed' }
-          }
+            data: { response: 'confirmed' },
+          },
         ],
         validation: [
           { check: 'shield_status', expected: 'active', timeout: 5000 },
-          { check: 'guardian_notified', expected: true, timeout: 5000 }
-        ]
+          { check: 'guardian_notified', expected: true, timeout: 5000 },
+        ],
       },
 
       {
@@ -226,7 +254,7 @@ export class EmergencyTestingSystem {
         setup: [
           {
             action: 'create_user',
-            data: { email: 'test-user-3@example.com', name: 'Test User 3' }
+            data: { email: 'test-user-3@example.com', name: 'Test User 3' },
           },
           {
             action: 'create_guardian',
@@ -234,39 +262,50 @@ export class EmergencyTestingSystem {
               name: 'Guardian 3',
               email: 'guardian3@example.com',
               can_access_health_docs: true,
-              can_access_financial_docs: false
-            }
+              can_access_financial_docs: false,
+            },
           },
           {
             action: 'create_documents',
             data: {
               documents: [
                 { name: 'medical-record.pdf', type: 'Health' },
-                { name: 'bank-statement.pdf', type: 'Financial' }
-              ]
-            }
+                { name: 'bank-statement.pdf', type: 'Financial' },
+              ],
+            },
           },
           {
             action: 'set_shield_settings',
-            data: { is_shield_enabled: true, shield_status: 'active' }
-          }
+            data: { is_shield_enabled: true, shield_status: 'active' },
+          },
         ],
         execution: [
           {
             action: 'access_resource',
-            data: { resource_type: 'document', document_type: 'Health', accessor_type: 'guardian' },
-            expectedResult: { granted: true }
+            data: {
+              resource_type: 'document',
+              document_type: 'Health',
+              accessor_type: 'guardian',
+            },
+            expectedResult: { granted: true },
           },
           {
             action: 'access_resource',
-            data: { resource_type: 'document', document_type: 'Financial', accessor_type: 'guardian' },
-            expectedResult: { granted: false }
-          }
+            data: {
+              resource_type: 'document',
+              document_type: 'Financial',
+              accessor_type: 'guardian',
+            },
+            expectedResult: { granted: false },
+          },
         ],
         validation: [
-          { check: 'access_granted', expected: { health: true, financial: false } },
-          { check: 'audit_logged', expected: true }
-        ]
+          {
+            check: 'access_granted',
+            expected: { health: true, financial: false },
+          },
+          { check: 'audit_logged', expected: true },
+        ],
       },
 
       {
@@ -276,33 +315,52 @@ export class EmergencyTestingSystem {
         setup: [
           {
             action: 'create_user',
-            data: { email: 'test-user-4@example.com', name: 'Test User 4' }
+            data: { email: 'test-user-4@example.com', name: 'Test User 4' },
           },
           {
             action: 'create_guardian',
             data: {
               name: 'Guardian 4',
               email: 'guardian4@example.com',
-              can_trigger_emergency: true
-            }
+              can_trigger_emergency: true,
+            },
           },
           {
             action: 'set_shield_settings',
-            data: { is_shield_enabled: true }
-          }
+            data: { is_shield_enabled: true },
+          },
         ],
         execution: [
           // Simulate 5 consecutive missed health checks
-          { action: 'trigger_detection', data: { check_type: 'health_check', responded: false } },
-          { action: 'trigger_detection', data: { check_type: 'health_check', responded: false } },
-          { action: 'trigger_detection', data: { check_type: 'health_check', responded: false } },
-          { action: 'trigger_detection', data: { check_type: 'health_check', responded: false } },
-          { action: 'trigger_detection', data: { check_type: 'health_check', responded: false } }
+          {
+            action: 'trigger_detection',
+            data: { check_type: 'health_check', responded: false },
+          },
+          {
+            action: 'trigger_detection',
+            data: { check_type: 'health_check', responded: false },
+          },
+          {
+            action: 'trigger_detection',
+            data: { check_type: 'health_check', responded: false },
+          },
+          {
+            action: 'trigger_detection',
+            data: { check_type: 'health_check', responded: false },
+          },
+          {
+            action: 'trigger_detection',
+            data: { check_type: 'health_check', responded: false },
+          },
         ],
         validation: [
-          { check: 'shield_status', expected: 'pending_verification', timeout: 5000 },
-          { check: 'notification_sent', expected: true, timeout: 5000 }
-        ]
+          {
+            check: 'shield_status',
+            expected: 'pending_verification',
+            timeout: 5000,
+          },
+          { check: 'notification_sent', expected: true, timeout: 5000 },
+        ],
       },
 
       {
@@ -312,20 +370,20 @@ export class EmergencyTestingSystem {
         setup: [
           {
             action: 'create_user',
-            data: { email: 'test-user-5@example.com', name: 'Test User 5' }
+            data: { email: 'test-user-5@example.com', name: 'Test User 5' },
           },
           {
             action: 'create_guardian',
             data: {
               name: 'Guardian 5',
               email: 'guardian5@example.com',
-              can_trigger_emergency: true
-            }
+              can_trigger_emergency: true,
+            },
           },
           {
             action: 'set_shield_settings',
-            data: { is_shield_enabled: true, shield_status: 'active' }
-          }
+            data: { is_shield_enabled: true, shield_status: 'active' },
+          },
         ],
         execution: [
           {
@@ -333,16 +391,16 @@ export class EmergencyTestingSystem {
             data: {
               resource_type: 'contact',
               accessor_type: 'survivor',
-              requester_email: 'family@example.com'
+              requester_email: 'family@example.com',
             },
-            expectedResult: { granted: true }
-          }
+            expectedResult: { granted: true },
+          },
         ],
         validation: [
           { check: 'access_granted', expected: true },
-          { check: 'audit_logged', expected: true }
-        ]
-      }
+          { check: 'audit_logged', expected: true },
+        ],
+      },
     ];
   }
 
@@ -374,15 +432,14 @@ export class EmergencyTestingSystem {
           stepResults.push({
             step: `Setup: ${setupStep.action}`,
             passed: true,
-            duration: Date.now() - stepStart
+            duration: Date.now() - stepStart,
           });
-
         } catch (error) {
           stepResults.push({
             step: `Setup: ${setupStep.action}`,
             passed: false,
             duration: Date.now() - stepStart,
-            error: error instanceof Error ? error.message : 'Unknown error'
+            error: error instanceof Error ? error.message : 'Unknown error',
           });
           throw error;
         }
@@ -399,24 +456,23 @@ export class EmergencyTestingSystem {
             testGuardianId
           );
 
-          const passed = executionStep.expectedResult ?
-            this.validateResult(result, executionStep.expectedResult) :
-            true;
+          const passed = executionStep.expectedResult
+            ? this.validateResult(result, executionStep.expectedResult)
+            : true;
 
           stepResults.push({
             step: `Execute: ${executionStep.action}`,
             passed: passed,
             duration: Date.now() - stepStart,
             actual: result,
-            expected: executionStep.expectedResult
+            expected: executionStep.expectedResult,
           });
-
         } catch (error) {
           stepResults.push({
             step: `Execute: ${executionStep.action}`,
             passed: false,
             duration: Date.now() - stepStart,
-            error: error instanceof Error ? error.message : 'Unknown error'
+            error: error instanceof Error ? error.message : 'Unknown error',
           });
           throw error;
         }
@@ -440,19 +496,20 @@ export class EmergencyTestingSystem {
             passed: passed,
             duration: Date.now() - stepStart,
             actual: result,
-            expected: validationStep.expected
+            expected: validationStep.expected,
           });
 
           if (!passed) {
-            throw new Error(`Validation failed: expected ${JSON.stringify(validationStep.expected)}, got ${JSON.stringify(result)}`);
+            throw new Error(
+              `Validation failed: expected ${JSON.stringify(validationStep.expected)}, got ${JSON.stringify(result)}`
+            );
           }
-
         } catch (error) {
           stepResults.push({
             step: `Validate: ${validationStep.check}`,
             passed: false,
             duration: Date.now() - stepStart,
-            error: error instanceof Error ? error.message : 'Unknown error'
+            error: error instanceof Error ? error.message : 'Unknown error',
           });
           throw error;
         }
@@ -461,7 +518,11 @@ export class EmergencyTestingSystem {
       // Cleanup if specified
       if (scenario.cleanup) {
         for (const cleanupStep of scenario.cleanup) {
-          await this.executeCleanupStep(cleanupStep, testUserId!, testGuardianId);
+          await this.executeCleanupStep(
+            cleanupStep,
+            testUserId!,
+            testGuardianId
+          );
         }
       }
 
@@ -471,16 +532,15 @@ export class EmergencyTestingSystem {
         scenario: scenario.name,
         passed: allPassed,
         duration: Date.now() - startTime,
-        steps: stepResults
+        steps: stepResults,
       };
-
     } catch (error) {
       return {
         scenario: scenario.name,
         passed: false,
         duration: Date.now() - startTime,
         steps: stepResults,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       };
     }
   }
@@ -491,22 +551,21 @@ export class EmergencyTestingSystem {
     switch (step.action) {
       case 'create_user':
         // Create test user via Supabase Auth Admin API
-        const { data: user, error: userError } = await supabase.auth.admin.createUser({
-          email: step.data.email,
-          email_confirm: true,
-          user_metadata: { full_name: step.data.name }
-        });
+        const { data: user, error: userError } =
+          await supabase.auth.admin.createUser({
+            email: step.data.email,
+            email_confirm: true,
+            user_metadata: { full_name: step.data.name },
+          });
 
         if (userError) throw userError;
 
         // Create profile
-        await supabase
-          .from('profiles')
-          .insert({
-            user_id: user.user.id,
-            full_name: step.data.name,
-            email: step.data.email
-          });
+        await supabase.from('profiles').insert({
+          user_id: user.user.id,
+          full_name: step.data.name,
+          email: step.data.email,
+        });
 
         return { userId: user.user.id };
 
@@ -520,9 +579,11 @@ export class EmergencyTestingSystem {
             email: step.data.email,
             can_trigger_emergency: step.data.can_trigger_emergency || false,
             can_access_health_docs: step.data.can_access_health_docs || false,
-            can_access_financial_docs: step.data.can_access_financial_docs || false,
-            emergency_contact_priority: step.data.emergency_contact_priority || 1,
-            is_active: true
+            can_access_financial_docs:
+              step.data.can_access_financial_docs || false,
+            emergency_contact_priority:
+              step.data.emergency_contact_priority || 1,
+            is_active: true,
           })
           .select()
           .single();
@@ -531,15 +592,14 @@ export class EmergencyTestingSystem {
         return { guardianId: guardian.id };
 
       case 'set_shield_settings':
-        await supabase
-          .from('family_shield_settings')
-          .upsert({
-            user_id: step.data.userId,
-            is_shield_enabled: step.data.is_shield_enabled || false,
-            inactivity_period_months: step.data.inactivity_period_months || 6,
-            required_guardians_for_activation: step.data.required_guardians_for_activation || 1,
-            shield_status: step.data.shield_status || 'inactive'
-          });
+        await supabase.from('family_shield_settings').upsert({
+          user_id: step.data.userId,
+          is_shield_enabled: step.data.is_shield_enabled || false,
+          inactivity_period_months: step.data.inactivity_period_months || 6,
+          required_guardians_for_activation:
+            step.data.required_guardians_for_activation || 1,
+          shield_status: step.data.shield_status || 'inactive',
+        });
 
         return { success: true };
 
@@ -554,7 +614,7 @@ export class EmergencyTestingSystem {
               document_type: doc.type,
               file_path: `test/${doc.name}`,
               file_type: 'application/pdf',
-              file_size: 1024
+              file_size: 1024,
             })
             .select()
             .single();
@@ -570,15 +630,13 @@ export class EmergencyTestingSystem {
         const oldDate = new Date();
         oldDate.setDate(oldDate.getDate() - daysAgo);
 
-        await supabase
-          .from('user_health_checks')
-          .insert({
-            user_id: step.data.userId,
-            check_type: 'login',
-            status: 'responded',
-            scheduled_at: oldDate.toISOString(),
-            responded_at: oldDate.toISOString()
-          });
+        await supabase.from('user_health_checks').insert({
+          user_id: step.data.userId,
+          check_type: 'login',
+          status: 'responded',
+          scheduled_at: oldDate.toISOString(),
+          responded_at: oldDate.toISOString(),
+        });
 
         return { success: true };
 
@@ -612,7 +670,8 @@ export class EmergencyTestingSystem {
         break;
 
       case 'verify_guardian':
-        if (!guardianId) throw new Error('Guardian ID required for verification');
+        if (!guardianId)
+          throw new Error('Guardian ID required for verification');
 
         // Get pending activation
         const supabase = this.getServiceClient();
@@ -648,7 +707,9 @@ export class EmergencyTestingSystem {
         );
 
       case 'wait':
-        await new Promise(resolve => setTimeout(resolve, step.data.milliseconds));
+        await new Promise(resolve =>
+          setTimeout(resolve, step.data.milliseconds)
+        );
         return { waited: step.data.milliseconds };
 
       default:
@@ -746,11 +807,23 @@ export class EmergencyTestingSystem {
       try {
         // Delete related data first
         await Promise.all([
-          supabase.from('guardian_notifications').delete().eq('user_id', userId),
+          supabase
+            .from('guardian_notifications')
+            .delete()
+            .eq('user_id', userId),
           supabase.from('user_health_checks').delete().eq('user_id', userId),
-          supabase.from('emergency_access_audit').delete().eq('user_id', userId),
-          supabase.from('family_shield_activation_log').delete().eq('user_id', userId),
-          supabase.from('family_shield_settings').delete().eq('user_id', userId),
+          supabase
+            .from('emergency_access_audit')
+            .delete()
+            .eq('user_id', userId),
+          supabase
+            .from('family_shield_activation_log')
+            .delete()
+            .eq('user_id', userId),
+          supabase
+            .from('family_shield_settings')
+            .delete()
+            .eq('user_id', userId),
           supabase.from('guardians').delete().eq('user_id', userId),
           supabase.from('documents').delete().eq('user_id', userId),
           supabase.from('profiles').delete().eq('user_id', userId),
@@ -758,7 +831,6 @@ export class EmergencyTestingSystem {
 
         // Delete user
         await supabase.auth.admin.deleteUser(userId);
-
       } catch (error) {
         console.warn(`Failed to cleanup test user ${userId}:`, error);
       }

@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React, { useState, useCallback } from 'react';
 import { useAuth, useUser } from '@clerk/clerk-react';
@@ -88,7 +88,8 @@ type UploadPhase = 'select' | 'analyzing' | 'confirm' | 'saving';
 export const IntelligentDocumentUploader = () => {
   const [file, setFile] = useState<File | null>(null);
   const [phase, setPhase] = useState<UploadPhase>('select');
-  const [analysisResult, setAnalysisResult] = useState<DocumentAnalysisResult | null>(null);
+  const [analysisResult, setAnalysisResult] =
+    useState<DocumentAnalysisResult | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
 
   const { userId } = useAuth();
@@ -114,11 +115,13 @@ export const IntelligentDocumentUploader = () => {
         'image/gif',
         'text/plain',
         'application/msword',
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
       ];
 
       if (!allowedTypes.includes(selectedFile.type)) {
-        toast.error('Please select a supported file type (PDF, images, or documents)');
+        toast.error(
+          'Please select a supported file type (PDF, images, or documents)'
+        );
         return;
       }
 
@@ -148,18 +151,21 @@ export const IntelligentDocumentUploader = () => {
       setUploadProgress(25);
 
       // Call our intelligent document analyzer Edge Function
-      const response = await fetch('/api/v1/supabase/functions/intelligent-document-analyzer', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          fileData: base64Data,
-          fileName: file.name,
-          fileType: file.type,
-          userId: userId // Include userId for bundle detection
-        })
-      });
+      const response = await fetch(
+        '/api/v1/supabase/functions/intelligent-document-analyzer',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            fileData: base64Data,
+            fileName: file.name,
+            fileType: file.type,
+            userId: userId, // Include userId for bundle detection
+          }),
+        }
+      );
 
       setUploadProgress(75);
 
@@ -179,36 +185,39 @@ export const IntelligentDocumentUploader = () => {
       setUploadProgress(100);
 
       toast.success('Document analyzed successfully!');
-
     } catch (error) {
       console.error('Analysis error:', error);
-      toast.error(error instanceof Error ? error.message : 'Failed to analyze document');
+      toast.error(
+        error instanceof Error ? error.message : 'Failed to analyze document'
+      );
       setPhase('select');
       setUploadProgress(0);
     }
   }, [file, userId]);
 
-  const handleConfirmAndSave = async (confirmedData: DocumentAnalysisResult & {
-    bundleSelection?: {
-      action: 'link' | 'new' | 'none';
-      bundleId: string | null;
-      newBundleName: string | null;
-      suggestedNewBundle: {
-        name: string;
-        category: string;
-        primaryEntity: string | null;
-        entityType: string | null;
-        keywords: string[];
-        confidence: number;
-        reasoning: string;
-      } | null;
-    };
-    versionSelection?: {
-      action: 'replace' | 'new_version' | 'separate' | 'none';
-      versionId: string | null;
-      archiveReason: string;
-    };
-  }) => {
+  const handleConfirmAndSave = async (
+    confirmedData: DocumentAnalysisResult & {
+      bundleSelection?: {
+        action: 'link' | 'new' | 'none';
+        bundleId: string | null;
+        newBundleName: string | null;
+        suggestedNewBundle: {
+          name: string;
+          category: string;
+          primaryEntity: string | null;
+          entityType: string | null;
+          keywords: string[];
+          confidence: number;
+          reasoning: string;
+        } | null;
+      };
+      versionSelection?: {
+        action: 'replace' | 'new_version' | 'separate' | 'none';
+        versionId: string | null;
+        archiveReason: string;
+      };
+    }
+  ) => {
     if (!file || !userId) return;
 
     setPhase('saving');
@@ -224,7 +233,9 @@ export const IntelligentDocumentUploader = () => {
       const encryptionResult = await encryptionService.encryptFile(file);
 
       if (!encryptionResult) {
-        throw new Error('Failed to encrypt file. Please check your encryption setup.');
+        throw new Error(
+          'Failed to encrypt file. Please check your encryption setup.'
+        );
       }
 
       const { encryptedData, nonce, metadata } = encryptionResult;
@@ -232,7 +243,9 @@ export const IntelligentDocumentUploader = () => {
       setUploadProgress(50);
 
       // Create encrypted blob
-      const encryptedBlob = new Blob([nonce, encryptedData], { type: 'application/octet-stream' });
+      const encryptedBlob = new Blob([nonce, encryptedData], {
+        type: 'application/octet-stream',
+      });
 
       // Generate unique file name
       const timestamp = Date.now();
@@ -246,12 +259,14 @@ export const IntelligentDocumentUploader = () => {
         .from('user_documents')
         .upload(filePath, encryptedBlob, {
           contentType: 'application/octet-stream',
-          upsert: false
+          upsert: false,
         });
 
       if (error) {
         if (error.message.includes('bucket')) {
-          throw new Error('Storage bucket not configured. Please set up Supabase Storage.');
+          throw new Error(
+            'Storage bucket not configured. Please set up Supabase Storage.'
+          );
         }
         throw error;
       }
@@ -278,7 +293,7 @@ export const IntelligentDocumentUploader = () => {
           ai_processing_id: confirmedData.processingId,
           encrypted_at: new Date().toISOString(),
           created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .select()
         .single();
@@ -286,9 +301,7 @@ export const IntelligentDocumentUploader = () => {
       if (dbError) {
         console.error('Database error:', dbError);
         // Try to delete the uploaded file if database insert fails
-        await supabase.storage
-          .from('user_documents')
-          .remove([filePath]);
+        await supabase.storage.from('user_documents').remove([filePath]);
         throw new Error('Failed to save document metadata');
       }
 
@@ -299,11 +312,14 @@ export const IntelligentDocumentUploader = () => {
 
           if (bundleSelection.action === 'link' && bundleSelection.bundleId) {
             // Link to existing bundle
-            const { error: linkError } = await supabase.rpc('link_document_to_bundle', {
-              p_document_id: documentData.id,
-              p_bundle_id: bundleSelection.bundleId,
-              p_user_id: userId
-            });
+            const { error: linkError } = await supabase.rpc(
+              'link_document_to_bundle',
+              {
+                p_document_id: documentData.id,
+                p_bundle_id: bundleSelection.bundleId,
+                p_user_id: userId,
+              }
+            );
 
             if (linkError) {
               console.error('Bundle linking error:', linkError);
@@ -312,30 +328,38 @@ export const IntelligentDocumentUploader = () => {
             } else {
               toast.success(`Document linked to bundle successfully!`);
             }
-
-          } else if (bundleSelection.action === 'new' && bundleSelection.newBundleName) {
+          } else if (
+            bundleSelection.action === 'new' &&
+            bundleSelection.newBundleName
+          ) {
             // Create new bundle and link document
             const newBundle = bundleSelection.suggestedNewBundle;
-            const { error: createError } = await supabase.rpc('create_bundle_and_link_document', {
-              p_user_id: userId,
-              p_bundle_name: bundleSelection.newBundleName,
-              p_bundle_category: newBundle?.category || confirmedData.suggestedCategory.category,
-              p_document_id: documentData.id,
-              p_description: newBundle?.reasoning || null,
-              p_primary_entity: newBundle?.primaryEntity || null,
-              p_entity_type: newBundle?.entityType || null,
-              p_keywords: newBundle?.keywords || confirmedData.suggestedTags
-            });
+            const { error: createError } = await supabase.rpc(
+              'create_bundle_and_link_document',
+              {
+                p_user_id: userId,
+                p_bundle_name: bundleSelection.newBundleName,
+                p_bundle_category:
+                  newBundle?.category ||
+                  confirmedData.suggestedCategory.category,
+                p_document_id: documentData.id,
+                p_description: newBundle?.reasoning || null,
+                p_primary_entity: newBundle?.primaryEntity || null,
+                p_entity_type: newBundle?.entityType || null,
+                p_keywords: newBundle?.keywords || confirmedData.suggestedTags,
+              }
+            );
 
             if (createError) {
               console.error('Bundle creation error:', createError);
               // Don't fail the entire operation if bundle creation fails
               toast.warning('Document saved but failed to create bundle');
             } else {
-              toast.success(`New bundle "${bundleSelection.newBundleName}" created and document linked!`);
+              toast.success(
+                `New bundle "${bundleSelection.newBundleName}" created and document linked!`
+              );
             }
           }
-
         } catch (bundleError) {
           console.error('Bundle handling error:', bundleError);
           // Don't fail the entire operation if bundle handling fails
@@ -348,28 +372,42 @@ export const IntelligentDocumentUploader = () => {
         try {
           const versionSelection = confirmedData.versionSelection;
 
-          if (versionSelection.action === 'replace' && versionSelection.versionId) {
+          if (
+            versionSelection.action === 'replace' &&
+            versionSelection.versionId
+          ) {
             // Archive old document and create version chain
-            const { error: archiveError } = await supabase.rpc('archive_document_and_create_version', {
-              old_document_id: versionSelection.versionId,
-              new_document_id: documentData.id,
-              archive_reason: versionSelection.archiveReason || 'Replaced by newer version'
-            });
+            const { error: archiveError } = await supabase.rpc(
+              'archive_document_and_create_version',
+              {
+                old_document_id: versionSelection.versionId,
+                new_document_id: documentData.id,
+                archive_reason:
+                  versionSelection.archiveReason || 'Replaced by newer version',
+              }
+            );
 
             if (archiveError) {
               console.error('Document archiving error:', archiveError);
               // Don't fail the entire operation if versioning fails
               toast.warning('Document saved but failed to archive old version');
             } else {
-              toast.success('Old document version archived and replaced successfully!');
+              toast.success(
+                'Old document version archived and replaced successfully!'
+              );
             }
-
-          } else if (versionSelection.action === 'new_version' && versionSelection.versionId) {
+          } else if (
+            versionSelection.action === 'new_version' &&
+            versionSelection.versionId
+          ) {
             // Create new version without archiving the old one
-            const { error: versionError } = await supabase.rpc('create_document_version', {
-              original_document_id: versionSelection.versionId,
-              new_document_id: documentData.id
-            });
+            const { error: versionError } = await supabase.rpc(
+              'create_document_version',
+              {
+                original_document_id: versionSelection.versionId,
+                new_document_id: documentData.id,
+              }
+            );
 
             if (versionError) {
               console.error('Version creation error:', versionError);
@@ -379,7 +417,6 @@ export const IntelligentDocumentUploader = () => {
               toast.success('New document version created successfully!');
             }
           }
-
         } catch (versionError) {
           console.error('Version handling error:', versionError);
           // Don't fail the entire operation if version handling fails
@@ -390,8 +427,12 @@ export const IntelligentDocumentUploader = () => {
       setUploadProgress(100);
 
       // Show appropriate success message based on operations performed
-      const bundleActionTaken = confirmedData.bundleSelection && confirmedData.bundleSelection.action !== 'none';
-      const versionActionTaken = confirmedData.versionSelection && confirmedData.versionSelection.action !== 'none';
+      const bundleActionTaken =
+        confirmedData.bundleSelection &&
+        confirmedData.bundleSelection.action !== 'none';
+      const versionActionTaken =
+        confirmedData.versionSelection &&
+        confirmedData.versionSelection.action !== 'none';
 
       if (!bundleActionTaken && !versionActionTaken) {
         toast.success('Document saved successfully with AI analysis!');
@@ -403,7 +444,9 @@ export const IntelligentDocumentUploader = () => {
       // If both actions taken, individual messages already shown
 
       // Emit event to refresh document list
-      window.dispatchEvent(new CustomEvent('documentUploaded', { detail: { userId } }));
+      window.dispatchEvent(
+        new CustomEvent('documentUploaded', { detail: { userId } })
+      );
 
       // Reset form
       setFile(null);
@@ -411,12 +454,17 @@ export const IntelligentDocumentUploader = () => {
       setPhase('select');
       setUploadProgress(0);
 
-      const fileInput = document.getElementById('intelligent-file-input') as HTMLInputElement;
+      const fileInput = document.getElementById(
+        'intelligent-file-input'
+      ) as HTMLInputElement;
       if (fileInput) fileInput.value = '';
-
     } catch (error: unknown) {
       console.error('Error saving document:', error);
-      toast.error(error instanceof Error ? error.message : 'Failed to save document. Please try again.');
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : 'Failed to save document. Please try again.'
+      );
       setPhase('confirm'); // Go back to confirmation screen
     }
   };
@@ -427,7 +475,9 @@ export const IntelligentDocumentUploader = () => {
     setPhase('select');
     setUploadProgress(0);
 
-    const fileInput = document.getElementById('intelligent-file-input') as HTMLInputElement;
+    const fileInput = document.getElementById(
+      'intelligent-file-input'
+    ) as HTMLInputElement;
     if (fileInput) fileInput.value = '';
   };
 
@@ -447,42 +497,44 @@ export const IntelligentDocumentUploader = () => {
   // Render upload screen
   return (
     <FadeIn duration={0.5} delay={0.3}>
-      <Card className="p-6 bg-card border-card-border max-w-2xl mx-auto">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="p-2 bg-primary/10 rounded-lg">
-            <Icon name="brain" className="w-5 h-5 text-primary" />
+      <Card className='p-6 bg-card border-card-border max-w-2xl mx-auto'>
+        <div className='flex items-center gap-3 mb-4'>
+          <div className='p-2 bg-primary/10 rounded-lg'>
+            <Icon name='brain' className='w-5 h-5 text-primary' />
           </div>
           <div>
-            <h3 className="font-semibold text-lg">Intelligent Document Organizer</h3>
-            <p className="text-sm text-muted-foreground">
+            <h3 className='font-semibold text-lg'>
+              Intelligent Document Organizer
+            </h3>
+            <p className='text-sm text-muted-foreground'>
               AI-powered document analysis and categorization
             </p>
           </div>
         </div>
 
-        <div className="space-y-4">
-          <div className="flex gap-2">
+        <div className='space-y-4'>
+          <div className='flex gap-2'>
             <Input
-              id="intelligent-file-input"
-              type="file"
+              id='intelligent-file-input'
+              type='file'
               onChange={handleFileChange}
-              className="flex-1"
-              accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.txt"
+              className='flex-1'
+              accept='.pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.txt'
               disabled={phase !== 'select'}
             />
             <Button
               onClick={analyzeDocument}
               disabled={!file || phase !== 'select'}
-              className="min-w-[140px]"
+              className='min-w-[140px]'
             >
               {phase === 'analyzing' ? (
                 <>
-                  <Icon name="brain" className="w-4 h-4 mr-2 animate-pulse" />
+                  <Icon name='brain' className='w-4 h-4 mr-2 animate-pulse' />
                   Analyzing...
                 </>
               ) : (
                 <>
-                  <Icon name="search" className="w-4 h-4 mr-2" />
+                  <Icon name='search' className='w-4 h-4 mr-2' />
                   Analyze Document
                 </>
               )}
@@ -490,43 +542,50 @@ export const IntelligentDocumentUploader = () => {
           </div>
 
           {phase === 'analyzing' && (
-            <div className="space-y-3">
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">
+            <div className='space-y-3'>
+              <div className='flex justify-between text-sm'>
+                <span className='text-muted-foreground'>
                   Thank you. Analyzing document to save you work...
                 </span>
-                <span className="text-primary">{uploadProgress}%</span>
+                <span className='text-primary'>{uploadProgress}%</span>
               </div>
-              <div className="w-full bg-gray-700 rounded-full h-2">
+              <div className='w-full bg-gray-700 rounded-full h-2'>
                 <div
-                  className="bg-primary h-2 rounded-full transition-all duration-300"
+                  className='bg-primary h-2 rounded-full transition-all duration-300'
                   style={{ width: `${uploadProgress}%` }}
                 />
               </div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Icon name="search" className="w-4 h-4 animate-pulse" />
+              <div className='flex items-center gap-2 text-sm text-muted-foreground'>
+                <Icon name='search' className='w-4 h-4 animate-pulse' />
                 <span>Extracting text and analyzing content...</span>
               </div>
             </div>
           )}
 
           {file && phase === 'select' && (
-            <div className="flex items-center gap-2 p-3 bg-primary/5 rounded-lg">
-              <Icon name="documents" className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium">{file.name}</span>
-              <span className="text-xs text-muted-foreground">
+            <div className='flex items-center gap-2 p-3 bg-primary/5 rounded-lg'>
+              <Icon name='documents' className='w-4 h-4 text-primary' />
+              <span className='text-sm font-medium'>{file.name}</span>
+              <span className='text-xs text-muted-foreground'>
                 ({(file.size / 1024).toFixed(1)} KB)
               </span>
             </div>
           )}
         </div>
 
-        <div className="mt-4 p-3 bg-primary/5 rounded-lg">
-          <div className="flex gap-2">
-            <Icon name="sparkles" className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
-            <div className="text-xs text-muted-foreground">
-              <p className="font-medium mb-1">AI-Powered Organization</p>
-              <p>Our system automatically categorizes your document, extracts key information, and suggests organization. You can review and adjust before saving.</p>
+        <div className='mt-4 p-3 bg-primary/5 rounded-lg'>
+          <div className='flex gap-2'>
+            <Icon
+              name='sparkles'
+              className='w-4 h-4 text-primary flex-shrink-0 mt-0.5'
+            />
+            <div className='text-xs text-muted-foreground'>
+              <p className='font-medium mb-1'>AI-Powered Organization</p>
+              <p>
+                Our system automatically categorizes your document, extracts key
+                information, and suggests organization. You can review and
+                adjust before saving.
+              </p>
             </div>
           </div>
         </div>

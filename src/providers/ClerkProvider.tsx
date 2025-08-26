@@ -3,14 +3,14 @@ import { ClerkProvider as BaseClerkProvider } from '@clerk/clerk-react';
 // Available authentication strategies
 const authStrategies = {
   oauth_google: true,
-  oauth_github: false,  // disabled for now
-  password: true,      // enable password-based auth
+  oauth_github: false, // disabled for now
+  password: true, // enable password-based auth
 };
 
 const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
 if (!clerkPubKey) {
-  throw new Error("Missing Clerk Publishable Key");
+  throw new Error('Missing Clerk Publishable Key');
 }
 
 export function ClerkProvider({ children }: { children: React.ReactNode }) {
@@ -36,7 +36,8 @@ export function ClerkProvider({ children }: { children: React.ReactNode }) {
         // Custom elements with your Tailwind classes
         elements: {
           // Forms and buttons
-          formButtonPrimary: 'bg-primary hover:bg-primary-hover text-primary-foreground shadow-md transition-all duration-200',
+          formButtonPrimary:
+            'bg-primary hover:bg-primary-hover text-primary-foreground shadow-md transition-all duration-200',
           formButtonReset: 'text-muted-foreground hover:text-foreground',
 
           // Cards and containers
@@ -49,15 +50,19 @@ export function ClerkProvider({ children }: { children: React.ReactNode }) {
 
           // Form fields
           formFieldLabel: 'text-foreground font-medium',
-          formFieldInput: 'bg-white border-border text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary',
-          formFieldInputShowPasswordButton: 'text-muted-foreground hover:text-foreground',
+          formFieldInput:
+            'bg-white border-border text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary',
+          formFieldInputShowPasswordButton:
+            'text-muted-foreground hover:text-foreground',
 
           // Social buttons
-          socialButtonsBlockButton: 'bg-white border-border hover:bg-muted text-foreground transition-colors',
+          socialButtonsBlockButton:
+            'bg-white border-border hover:bg-muted text-foreground transition-colors',
           socialButtonsBlockButtonText: 'text-foreground font-medium',
 
           // Links
-          footerActionLink: 'text-primary hover:text-primary-hover underline-offset-4 hover:underline',
+          footerActionLink:
+            'text-primary hover:text-primary-hover underline-offset-4 hover:underline',
           identityPreviewEditButton: 'text-primary hover:text-primary-hover',
 
           // Avatars
@@ -107,8 +112,10 @@ export function ClerkProvider({ children }: { children: React.ReactNode }) {
           borderRadius: '0.75rem', // 12px from your --radius
 
           // Font family
-          fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-          fontFamilyButtons: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+          fontFamily:
+            'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+          fontFamilyButtons:
+            'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
 
           // Font sizes
           fontSize: '1rem',
@@ -123,7 +130,7 @@ export function ClerkProvider({ children }: { children: React.ReactNode }) {
 
           // Spacing
           spacingUnit: '0.25rem', // 4px base
-        }
+        },
       }}
     >
       {children}

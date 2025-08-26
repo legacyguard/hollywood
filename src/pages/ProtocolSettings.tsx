@@ -11,7 +11,11 @@ import { FadeIn } from '@/components/motion/FadeIn';
 import { usePageTitle } from '@/hooks/usePageTitle';
 import { toast } from 'sonner';
 import { useSupabaseWithClerk } from '@/integrations/supabase/client';
-import type { FamilyShieldSettings, CreateFamilyShieldSettingsRequest, Guardian } from '@/types/guardian';
+import type {
+  FamilyShieldSettings,
+  CreateFamilyShieldSettingsRequest,
+  Guardian,
+} from '@/types/guardian';
 
 export default function ProtocolSettingsPage() {
   usePageTitle('Family Shield Settings');
@@ -27,7 +31,7 @@ export default function ProtocolSettingsPage() {
   const [formData, setFormData] = useState<CreateFamilyShieldSettingsRequest>({
     inactivity_period_months: 6,
     required_guardians_for_activation: 2,
-    is_shield_enabled: false
+    is_shield_enabled: false,
   });
 
   // Fetch protocol settings and guardians
@@ -44,7 +48,8 @@ export default function ProtocolSettingsPage() {
         .eq('user_id', userId)
         .single();
 
-      if (settingsError && settingsError.code !== 'PGRST116') { // Not found error is OK
+      if (settingsError && settingsError.code !== 'PGRST116') {
+        // Not found error is OK
         throw settingsError;
       }
 
@@ -52,8 +57,9 @@ export default function ProtocolSettingsPage() {
         setSettings(settingsData);
         setFormData({
           inactivity_period_months: settingsData.inactivity_period_months,
-          required_guardians_for_activation: settingsData.required_guardians_for_activation,
-          is_shield_enabled: settingsData.is_shield_enabled
+          required_guardians_for_activation:
+            settingsData.required_guardians_for_activation,
+          is_shield_enabled: settingsData.is_shield_enabled,
         });
       }
 
@@ -85,13 +91,23 @@ export default function ProtocolSettingsPage() {
     if (!userId) return;
 
     // Validation
-    if (!formData.inactivity_period_months || formData.inactivity_period_months < 1 || formData.inactivity_period_months > 24) {
+    if (
+      !formData.inactivity_period_months ||
+      formData.inactivity_period_months < 1 ||
+      formData.inactivity_period_months > 24
+    ) {
       toast.error('Inactivity period must be between 1 and 24 months');
       return;
     }
 
-    if (!formData.required_guardians_for_activation || formData.required_guardians_for_activation < 1 || formData.required_guardians_for_activation > guardians.length) {
-      toast.error(`Required guardians must be between 1 and ${guardians.length}`);
+    if (
+      !formData.required_guardians_for_activation ||
+      formData.required_guardians_for_activation < 1 ||
+      formData.required_guardians_for_activation > guardians.length
+    ) {
+      toast.error(
+        `Required guardians must be between 1 and ${guardians.length}`
+      );
       return;
     }
 
@@ -103,8 +119,9 @@ export default function ProtocolSettingsPage() {
       const settingsPayload = {
         user_id: userId,
         inactivity_period_months: formData.inactivity_period_months,
-        required_guardians_for_activation: formData.required_guardians_for_activation,
-        is_shield_enabled: formData.is_shield_enabled
+        required_guardians_for_activation:
+          formData.required_guardians_for_activation,
+        is_shield_enabled: formData.is_shield_enabled,
       };
 
       let result;
@@ -129,7 +146,6 @@ export default function ProtocolSettingsPage() {
 
       setSettings(result.data);
       toast.success('Family Shield settings saved successfully!');
-
     } catch (error) {
       console.error('Error saving settings:', error);
       toast.error('Failed to save settings. Please try again.');
@@ -139,7 +155,10 @@ export default function ProtocolSettingsPage() {
   };
 
   // Handle form input changes
-  const handleInputChange = (field: keyof CreateFamilyShieldSettingsRequest, value: string | boolean | number) => {
+  const handleInputChange = (
+    field: keyof CreateFamilyShieldSettingsRequest,
+    value: string | boolean | number
+  ) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
@@ -149,9 +168,11 @@ export default function ProtocolSettingsPage() {
   if (isLoading) {
     return (
       <DashboardLayout>
-        <div className="min-h-screen bg-background flex items-center justify-center">
-          <Icon name="loader" className="w-8 h-8 animate-spin text-primary" />
-          <span className="ml-3 text-muted-foreground">Loading Family Shield settings...</span>
+        <div className='min-h-screen bg-background flex items-center justify-center'>
+          <Icon name='loader' className='w-8 h-8 animate-spin text-primary' />
+          <span className='ml-3 text-muted-foreground'>
+            Loading Family Shield settings...
+          </span>
         </div>
       </DashboardLayout>
     );
@@ -159,60 +180,74 @@ export default function ProtocolSettingsPage() {
 
   return (
     <DashboardLayout>
-      <div className="min-h-screen bg-background">
+      <div className='min-h-screen bg-background'>
         {/* Header */}
-        <header className="bg-card border-b border-card-border">
-          <div className="max-w-4xl mx-auto px-6 lg:px-8 py-8">
+        <header className='bg-card border-b border-card-border'>
+          <div className='max-w-4xl mx-auto px-6 lg:px-8 py-8'>
             <FadeIn duration={0.5} delay={0.2}>
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-                  <Icon name="shield-check" className="w-6 h-6 text-primary" />
+              <div className='flex items-center gap-3 mb-3'>
+                <div className='w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center'>
+                  <Icon name='shield-check' className='w-6 h-6 text-primary' />
                 </div>
-                <h1 className="text-3xl lg:text-4xl font-bold font-heading text-card-foreground">
+                <h1 className='text-3xl lg:text-4xl font-bold font-heading text-card-foreground'>
                   Family Shield Settings
                 </h1>
               </div>
             </FadeIn>
             <FadeIn duration={0.5} delay={0.4}>
-              <p className="text-lg leading-relaxed max-w-3xl" style={{ color: 'hsl(var(--muted-text))' }}>
-                Configure your comprehensive family protection system to activate precisely when needed, ensuring your trusted circle receives clear guidance.
+              <p
+                className='text-lg leading-relaxed max-w-3xl'
+                style={{ color: 'hsl(var(--muted-text))' }}
+              >
+                Configure your comprehensive family protection system to
+                activate precisely when needed, ensuring your trusted circle
+                receives clear guidance.
               </p>
             </FadeIn>
           </div>
         </header>
 
         {/* Main Content */}
-        <main className="max-w-4xl mx-auto px-6 lg:px-8 py-12">
-          <div className="space-y-8">
+        <main className='max-w-4xl mx-auto px-6 lg:px-8 py-12'>
+          <div className='space-y-8'>
             {/* Protocol Status */}
             <FadeIn duration={0.5} delay={0.6}>
-              <Card className="p-6">
-                <div className="flex items-center justify-between">
+              <Card className='p-6'>
+                <div className='flex items-center justify-between'>
                   <div>
-                    <h3 className="text-xl font-semibold mb-2">Family Shield Status</h3>
-                    <p className="text-muted-foreground">
+                    <h3 className='text-xl font-semibold mb-2'>
+                      Family Shield Status
+                    </h3>
+                    <p className='text-muted-foreground'>
                       Enable or disable your Family Shield protection system
                     </p>
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className='flex items-center gap-3'>
                     <Switch
                       checked={formData.is_shield_enabled || false}
-                      onCheckedChange={(value) => handleInputChange('is_shield_enabled', value)}
+                      onCheckedChange={value =>
+                        handleInputChange('is_shield_enabled', value)
+                      }
                     />
-                    <span className={`font-medium ${formData.is_shield_enabled ? 'text-green-600' : 'text-muted-foreground'}`}>
+                    <span
+                      className={`font-medium ${formData.is_shield_enabled ? 'text-green-600' : 'text-muted-foreground'}`}
+                    >
                       {formData.is_shield_enabled ? 'Active' : 'Inactive'}
                     </span>
                   </div>
                 </div>
 
                 {formData.is_shield_enabled && (
-                  <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
-                    <div className="flex items-center gap-2 text-green-800">
-                      <Icon name="shield-check" className="w-5 h-5" />
-                      <span className="font-medium">Family Shield is Active</span>
+                  <div className='mt-4 p-4 bg-green-50 border border-green-200 rounded-lg'>
+                    <div className='flex items-center gap-2 text-green-800'>
+                      <Icon name='shield-check' className='w-5 h-5' />
+                      <span className='font-medium'>
+                        Family Shield is Active
+                      </span>
                     </div>
-                    <p className="text-sm text-green-700 mt-1">
-                      Your Family Shield monitors your wellbeing discreetly and stands ready to protect your loved ones with precision.
+                    <p className='text-sm text-green-700 mt-1'>
+                      Your Family Shield monitors your wellbeing discreetly and
+                      stands ready to protect your loved ones with precision.
                     </p>
                   </div>
                 )}
@@ -221,42 +256,64 @@ export default function ProtocolSettingsPage() {
 
             {/* Inactivity Detection */}
             <FadeIn duration={0.5} delay={0.8}>
-              <Card className="p-6">
-                <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                  <Icon name="clock" className="w-5 h-5 text-primary" />
+              <Card className='p-6'>
+                <h3 className='text-xl font-semibold mb-4 flex items-center gap-2'>
+                  <Icon name='clock' className='w-5 h-5 text-primary' />
                   Inactivity Detection
                 </h3>
 
-                <div className="space-y-4">
+                <div className='space-y-4'>
                   <div>
-                    <Label htmlFor="inactivity_period">How long should we wait before checking on you?</Label>
-                    <div className="flex items-center gap-4 mt-2">
+                    <Label htmlFor='inactivity_period'>
+                      How long should we wait before checking on you?
+                    </Label>
+                    <div className='flex items-center gap-4 mt-2'>
                       <Input
-                        id="inactivity_period"
-                        type="number"
-min="1"
-                        max="24"
+                        id='inactivity_period'
+                        type='number'
+                        min='1'
+                        max='24'
                         value={formData.inactivity_period_months}
-                        onChange={(e) => {
+                        onChange={e => {
                           const value = parseInt(e.target.value);
-                          handleInputChange('inactivity_period_months', isNaN(value) ? 6 : value);
+                          handleInputChange(
+                            'inactivity_period_months',
+                            isNaN(value) ? 6 : value
+                          );
                         }}
-                        className="w-20"
+                        className='w-20'
                       />
-                      <span className="text-muted-foreground">months of no activity</span>
+                      <span className='text-muted-foreground'>
+                        months of no activity
+                      </span>
                     </div>
-                    <p className="text-sm text-muted-foreground mt-2">
-                      If you don't sign in for this period, we'll start the verification process to ensure you're okay.
+                    <p className='text-sm text-muted-foreground mt-2'>
+                      If you don't sign in for this period, we'll start the
+                      verification process to ensure you're okay.
                     </p>
                   </div>
 
-                  <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                    <h4 className="font-medium text-blue-800 mb-2">How it works:</h4>
-                    <ol className="text-sm text-blue-700 space-y-1 list-decimal list-inside">
-                      <li>We notice you haven't signed in for {formData.inactivity_period_months} months</li>
-                      <li>We send you multiple emails asking you to confirm you're okay</li>
-                      <li>If you don't respond within 7 days, we notify your emergency guardians</li>
-                      <li>Your guardians can then access your family's survival guide</li>
+                  <div className='p-4 bg-blue-50 border border-blue-200 rounded-lg'>
+                    <h4 className='font-medium text-blue-800 mb-2'>
+                      How it works:
+                    </h4>
+                    <ol className='text-sm text-blue-700 space-y-1 list-decimal list-inside'>
+                      <li>
+                        We notice you haven't signed in for{' '}
+                        {formData.inactivity_period_months} months
+                      </li>
+                      <li>
+                        We send you multiple emails asking you to confirm you're
+                        okay
+                      </li>
+                      <li>
+                        If you don't respond within 7 days, we notify your
+                        emergency guardians
+                      </li>
+                      <li>
+                        Your guardians can then access your family's survival
+                        guide
+                      </li>
                     </ol>
                   </div>
                 </div>
@@ -265,62 +322,85 @@ min="1"
 
             {/* Guardian Activation */}
             <FadeIn duration={0.5} delay={1.0}>
-              <Card className="p-6">
-                <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                  <Icon name="users" className="w-5 h-5 text-primary" />
+              <Card className='p-6'>
+                <h3 className='text-xl font-semibold mb-4 flex items-center gap-2'>
+                  <Icon name='users' className='w-5 h-5 text-primary' />
                   Trusted Circle Activation
                 </h3>
 
-                <div className="space-y-4">
+                <div className='space-y-4'>
                   <div>
-                    <Label htmlFor="required_guardians">How many guardians needed to manually activate your Family Shield?</Label>
-                    <div className="flex items-center gap-4 mt-2">
+                    <Label htmlFor='required_guardians'>
+                      How many guardians needed to manually activate your Family
+                      Shield?
+                    </Label>
+                    <div className='flex items-center gap-4 mt-2'>
                       <Input
-                        id="required_guardians"
-                        type="number"
-                        min="1"
+                        id='required_guardians'
+                        type='number'
+                        min='1'
                         max={emergencyGuardians.length || 1}
                         value={formData.required_guardians_for_activation}
-                        onChange={(e) => handleInputChange('required_guardians_for_activation', parseInt(e.target.value) || 2)}
-                        className="w-20"
+                        onChange={e =>
+                          handleInputChange(
+                            'required_guardians_for_activation',
+                            parseInt(e.target.value) || 2
+                          )
+                        }
+                        className='w-20'
                       />
-                      <span className="text-muted-foreground">
+                      <span className='text-muted-foreground'>
                         of {emergencyGuardians.length} emergency guardians
                       </span>
                     </div>
-                    <p className="text-sm text-muted-foreground mt-2">
-                      This prevents false alarms and ensures multiple trusted people agree there's an emergency.
+                    <p className='text-sm text-muted-foreground mt-2'>
+                      This prevents false alarms and ensures multiple trusted
+                      people agree there's an emergency.
                     </p>
                   </div>
 
                   {emergencyGuardians.length === 0 && (
-                    <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg">
-                      <div className="flex items-center gap-2 text-amber-800">
-                        <Icon name="alert-triangle" className="w-5 h-5" />
-                        <span className="font-medium">No Emergency Guardians</span>
+                    <div className='p-4 bg-amber-50 border border-amber-200 rounded-lg'>
+                      <div className='flex items-center gap-2 text-amber-800'>
+                        <Icon name='alert-triangle' className='w-5 h-5' />
+                        <span className='font-medium'>
+                          No Emergency Guardians
+                        </span>
                       </div>
-                      <p className="text-sm text-amber-700 mt-1">
-                        You need to designate at least one guardian with "Can Trigger Family Shield" permission.
+                      <p className='text-sm text-amber-700 mt-1'>
+                        You need to designate at least one guardian with "Can
+                        Trigger Family Shield" permission.
                       </p>
                     </div>
                   )}
 
                   {emergencyGuardians.length > 0 && (
-                    <div className="space-y-3">
-                      <h4 className="font-medium text-sm">Your Emergency Guardians:</h4>
-                      <div className="space-y-2">
-                        {emergencyGuardians.map((guardian) => (
-                          <div key={guardian.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                            <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
-                              <Icon name="user" className="w-4 h-4 text-primary" />
+                    <div className='space-y-3'>
+                      <h4 className='font-medium text-sm'>
+                        Your Emergency Guardians:
+                      </h4>
+                      <div className='space-y-2'>
+                        {emergencyGuardians.map(guardian => (
+                          <div
+                            key={guardian.id}
+                            className='flex items-center gap-3 p-3 bg-gray-50 rounded-lg'
+                          >
+                            <div className='w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center'>
+                              <Icon
+                                name='user'
+                                className='w-4 h-4 text-primary'
+                              />
                             </div>
-                            <div className="flex-1">
-                              <p className="font-medium text-sm">{guardian.name}</p>
-                              <p className="text-xs text-muted-foreground">
-                                Priority {guardian.emergency_contact_priority} • {guardian.email}
+                            <div className='flex-1'>
+                              <p className='font-medium text-sm'>
+                                {guardian.name}
+                              </p>
+                              <p className='text-xs text-muted-foreground'>
+                                Priority {guardian.emergency_contact_priority} •{' '}
+                                {guardian.email}
                               </p>
                             </div>
-                            <span className="px-2 py-1 bg-red-100 text-red-700 text-xs rounded-full">
+                            <span className='px-2 py-1 bg-red-100 text-red-700 text-xs rounded-full'>
                               Emergency Access
                             </span>
                           </div>
@@ -335,24 +415,36 @@ min="1"
             {/* Current Status */}
             {settings && (
               <FadeIn duration={0.5} delay={1.2}>
-                <Card className="p-6">
-                  <h3 className="text-xl font-semibold mb-4">Current Status</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                <Card className='p-6'>
+                  <h3 className='text-xl font-semibold mb-4'>Current Status</h3>
+                  <div className='grid grid-cols-1 md:grid-cols-3 gap-4 text-sm'>
                     <div>
-                      <Label className="text-muted-foreground">Shield Status</Label>
-                      <p className={`font-medium ${settings.is_shield_enabled ? 'text-green-600' : 'text-gray-600'}`}>
+                      <Label className='text-muted-foreground'>
+                        Shield Status
+                      </Label>
+                      <p
+                        className={`font-medium ${settings.is_shield_enabled ? 'text-green-600' : 'text-gray-600'}`}
+                      >
                         {settings.is_shield_enabled ? 'Active' : 'Inactive'}
                       </p>
                     </div>
                     <div>
-                      <Label className="text-muted-foreground">Last Activity Check</Label>
-                      <p className="font-medium">
-                        {settings.last_activity_check ? new Date(settings.last_activity_check).toLocaleDateString() : 'Never'}
+                      <Label className='text-muted-foreground'>
+                        Last Activity Check
+                      </Label>
+                      <p className='font-medium'>
+                        {settings.last_activity_check
+                          ? new Date(
+                              settings.last_activity_check
+                            ).toLocaleDateString()
+                          : 'Never'}
                       </p>
                     </div>
                     <div>
-                      <Label className="text-muted-foreground">Shield State</Label>
-                      <p className="font-medium capitalize">
+                      <Label className='text-muted-foreground'>
+                        Shield State
+                      </Label>
+                      <p className='font-medium capitalize'>
                         {settings.shield_status.replace('_', ' ')}
                       </p>
                     </div>
@@ -363,21 +455,24 @@ min="1"
 
             {/* Save Button */}
             <FadeIn duration={0.5} delay={1.4}>
-              <div className="flex justify-end">
+              <div className='flex justify-end'>
                 <Button
                   onClick={handleSave}
                   disabled={isSaving}
-                  size="lg"
-                  className="bg-primary hover:bg-primary-hover"
+                  size='lg'
+                  className='bg-primary hover:bg-primary-hover'
                 >
                   {isSaving ? (
                     <>
-                      <Icon name="loader" className="w-4 h-4 mr-2 animate-spin" />
+                      <Icon
+                        name='loader'
+                        className='w-4 h-4 mr-2 animate-spin'
+                      />
                       Saving Settings...
                     </>
                   ) : (
                     <>
-                      <Icon name="save" className="w-4 h-4 mr-2" />
+                      <Icon name='save' className='w-4 h-4 mr-2' />
                       Save Family Shield Settings
                     </>
                   )}

@@ -18,12 +18,16 @@ interface DocumentFilterContextType {
   hasActiveFilter: boolean;
 }
 
-const DocumentFilterContext = createContext<DocumentFilterContextType | undefined>(undefined);
+const DocumentFilterContext = createContext<
+  DocumentFilterContextType | undefined
+>(undefined);
 
 export const useDocumentFilter = () => {
   const context = useContext(DocumentFilterContext);
   if (!context) {
-    throw new Error('useDocumentFilter must be used within a DocumentFilterProvider');
+    throw new Error(
+      'useDocumentFilter must be used within a DocumentFilterProvider'
+    );
   }
   return context;
 };
@@ -32,7 +36,9 @@ interface DocumentFilterProviderProps {
   children: ReactNode;
 }
 
-export const DocumentFilterProvider: React.FC<DocumentFilterProviderProps> = ({ children }) => {
+export const DocumentFilterProvider: React.FC<DocumentFilterProviderProps> = ({
+  children,
+}) => {
   const [filter, setFilterState] = useState<DocumentFilter>({});
 
   const setFilter = (newFilter: DocumentFilter) => {
@@ -49,12 +55,14 @@ export const DocumentFilterProvider: React.FC<DocumentFilterProviderProps> = ({ 
   });
 
   return (
-    <DocumentFilterContext.Provider value={{
-      filter,
-      setFilter,
-      clearFilter,
-      hasActiveFilter
-    }}>
+    <DocumentFilterContext.Provider
+      value={{
+        filter,
+        setFilter,
+        clearFilter,
+        hasActiveFilter,
+      }}
+    >
       {children}
     </DocumentFilterContext.Provider>
   );

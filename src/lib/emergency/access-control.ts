@@ -8,9 +8,23 @@ import type {
 } from '@/types/emergency';
 import { Guardian } from '@/types/guardian';
 
-export type AccessLevel = 'public' | 'guardian_verified' | 'emergency_activated' | 'will_executor';
-export type ResourceType = 'document' | 'contact' | 'time_capsule' | 'guidance' | 'memorial';
-export type AccessorType = 'guardian' | 'survivor' | 'family_member' | 'public' | 'system';
+export type AccessLevel =
+  | 'public'
+  | 'guardian_verified'
+  | 'emergency_activated'
+  | 'will_executor';
+export type ResourceType =
+  | 'document'
+  | 'contact'
+  | 'time_capsule'
+  | 'guidance'
+  | 'memorial';
+export type AccessorType =
+  | 'guardian'
+  | 'survivor'
+  | 'family_member'
+  | 'public'
+  | 'system';
 
 interface AccessContext {
   accessorType: AccessorType;
@@ -96,7 +110,8 @@ export class EmergencyAccessControl {
         .eq('user_id', userId)
         .single();
 
-      const hasActiveShield = shieldSettings?.is_shield_enabled &&
+      const hasActiveShield =
+        shieldSettings?.is_shield_enabled &&
         shieldSettings?.shield_status === 'active';
 
       // Guardian access validation
@@ -112,7 +127,10 @@ export class EmergencyAccessControl {
       }
 
       // Survivor/family access validation
-      if (context.accessorType === 'survivor' || context.accessorType === 'family_member') {
+      if (
+        context.accessorType === 'survivor' ||
+        context.accessorType === 'family_member'
+      ) {
         return await this.validateSurvivorAccess(
           userId,
           resourceType,
@@ -160,7 +178,6 @@ export class EmergencyAccessControl {
         reason: 'Access denied - insufficient permissions',
         accessLevel: 'public',
       };
-
     } catch (error) {
       console.error('Error validating access:', error);
 
@@ -174,7 +191,9 @@ export class EmergencyAccessControl {
         resource_id: resourceId,
         action: action as any,
         success: false,
-        metadata: { error: error instanceof Error ? error.message : 'Unknown error' },
+        metadata: {
+          error: error instanceof Error ? error.message : 'Unknown error',
+        },
       });
 
       return {
@@ -277,7 +296,7 @@ export class EmergencyAccessControl {
       metadata: {
         permissions: permissions,
         active_shield: hasActiveShield,
-        restrictions: restrictions
+        restrictions: restrictions,
       },
     });
 
@@ -361,7 +380,9 @@ export class EmergencyAccessControl {
     }
 
     // Add time-based restrictions for sensitive documents
-    if (['health', 'financial'].includes(document.document_type.toLowerCase())) {
+    if (
+      ['health', 'financial'].includes(document.document_type.toLowerCase())
+    ) {
       restrictions.push('Access logged and monitored');
       restrictions.push('Download requires additional verification');
     }
@@ -457,9 +478,9 @@ export class EmergencyAccessControl {
       case 'document':
         // Very limited document access
         granted = hasActiveShield;
-        reason = hasActiveShield ?
-          'Emergency document access' :
-          'Documents require active emergency protocol';
+        reason = hasActiveShield
+          ? 'Emergency document access'
+          : 'Documents require active emergency protocol';
         restrictions.push('Access logged and monitored');
         break;
 
@@ -493,7 +514,11 @@ export class EmergencyAccessControl {
     return {
       granted,
       reason,
-      accessLevel: granted ? (hasActiveShield ? 'emergency_activated' : 'public') : 'public',
+      accessLevel: granted
+        ? hasActiveShield
+          ? 'emergency_activated'
+          : 'public'
+        : 'public',
       restrictions: restrictions.length > 0 ? restrictions : undefined,
     };
   }
@@ -572,12 +597,12 @@ export class EmergencyAccessControl {
         success: true,
         requestId: accessRequest.id,
       };
-
     } catch (error) {
       console.error('Error processing access request:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to process request',
+        error:
+          error instanceof Error ? error.message : 'Failed to process request',
       };
     }
   }
@@ -613,9 +638,7 @@ export class EmergencyAccessControl {
       metadata: { request_id: requestId },
     }));
 
-    await supabase
-      .from('guardian_notifications')
-      .insert(notifications);
+    await supabase.from('guardian_notifications').insert(notifications);
   }
 
   async getAccessibleResources(
@@ -629,9 +652,14 @@ export class EmergencyAccessControl {
     accessLevel: AccessLevel;
   }> {
     const supabase = this.getServiceClient();
-    const accessLevel: AccessLevel = context.accessorType === 'system' ? 'emergency_activated' :
-      context.emergencyActivation ? 'emergency_activated' :
-      context.accessorType === 'guardian' ? 'guardian_verified' : 'public';
+    const accessLevel: AccessLevel =
+      context.accessorType === 'system'
+        ? 'emergency_activated'
+        : context.emergencyActivation
+          ? 'emergency_activated'
+          : context.accessorType === 'guardian'
+            ? 'guardian_verified'
+            : 'public';
 
     // Get documents based on access level
     const documents: EmergencyDocument[] = [];
@@ -686,23 +714,30 @@ export class EmergencyAccessControl {
 
     // Get time capsules if appropriate access level
     const timeCapsules: EmergencyTimeCapsule[] = [];
-    if (accessLevel === 'emergency_activated' || accessLevel === 'will_executor') {
+    if (
+      accessLevel === 'emergency_activated' ||
+      accessLevel === 'will_executor'
+    ) {
       const { data: capsules } = await supabase
         .from('time_capsules')
-        .select('id, message_title, message_preview, delivery_condition, access_token, created_at')
+        .select(
+          'id, message_title, message_preview, delivery_condition, access_token, created_at'
+        )
         .eq('user_id', userId)
         .eq('delivery_condition', 'ON_DEATH');
 
       if (capsules) {
-        timeCapsules.push(...capsules.map(tc => ({
-          id: tc.id,
-          message_title: tc.message_title,
-          message_preview: tc.message_preview,
-          delivery_condition: tc.delivery_condition as any,
-          access_token: tc.access_token,
-          is_available: true,
-          created_at: tc.created_at,
-        })));
+        timeCapsules.push(
+          ...capsules.map(tc => ({
+            id: tc.id,
+            message_title: tc.message_title,
+            message_preview: tc.message_preview,
+            delivery_condition: tc.delivery_condition as any,
+            access_token: tc.access_token,
+            is_available: true,
+            created_at: tc.created_at,
+          }))
+        );
       }
     }
 
@@ -727,21 +762,19 @@ export class EmergencyAccessControl {
     const supabase = this.getServiceClient();
 
     try {
-      await supabase
-        .from('emergency_access_audit')
-        .insert({
-          user_id: entry.user_id,
-          accessor_type: entry.accessor_type,
-          accessor_id: entry.accessor_id,
-          access_type: entry.access_type,
-          resource_type: entry.resource_type,
-          resource_id: entry.resource_id,
-          action: entry.action,
-          success: entry.success,
-          ip_address: entry.ip_address,
-          user_agent: entry.user_agent,
-          metadata: entry.metadata,
-        });
+      await supabase.from('emergency_access_audit').insert({
+        user_id: entry.user_id,
+        accessor_type: entry.accessor_type,
+        accessor_id: entry.accessor_id,
+        access_type: entry.access_type,
+        resource_type: entry.resource_type,
+        resource_id: entry.resource_id,
+        action: entry.action,
+        success: entry.success,
+        ip_address: entry.ip_address,
+        user_agent: entry.user_agent,
+        metadata: entry.metadata,
+      });
     } catch (error) {
       // Don't throw on audit failures, just log
       console.error('Failed to audit access:', error);

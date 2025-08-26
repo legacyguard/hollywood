@@ -1,9 +1,9 @@
-import type { IconMap } from "@/components/ui/icon-library";
-import { Icon } from "@/components/ui/icon-library";
-import { LegacyGuardLogo } from "./LegacyGuardLogo";
-import { NavLink } from "react-router-dom";
-import { UserButton, useUser } from "@clerk/clerk-react";
-import { motion, AnimatePresence } from "framer-motion";
+import type { IconMap } from '@/components/ui/icon-library';
+import { Icon } from '@/components/ui/icon-library';
+import { LegacyGuardLogo } from './LegacyGuardLogo';
+import { NavLink } from 'react-router-dom';
+import { UserButton, useUser } from '@clerk/clerk-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Sidebar,
   SidebarContent,
@@ -12,61 +12,61 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar";
-import { useSidebar } from "@/components/ui/sidebar-hooks";
+} from '@/components/ui/sidebar';
+import { useSidebar } from '@/components/ui/sidebar-hooks';
 
 const navigationItems = [
-  { title: "Dashboard", url: "/dashboard", icon: "dashboard" },
-  { title: "My Vault", url: "/vault", icon: "vault" },
-  { title: "Documents", url: "/documents", icon: "documents" },
-  { title: "AI Organizer", url: "/intelligent-organizer", icon: "brain" },
-  { title: "My Family", url: "/family", icon: "users" },
-  { title: "Legacy", url: "/legacy", icon: "legacy" },
-  { title: "Time Capsule", url: "/time-capsule", icon: "heart" },
-  { title: "Timeline", url: "/timeline", icon: "timeline" },
-  { title: "Wishes", url: "/wishes", icon: "wishes" },
-  { title: "Protection", url: "/protection", icon: "protection" },
-  { title: "Settings", url: "/settings", icon: "settings" },
+  { title: 'Dashboard', url: '/dashboard', icon: 'dashboard' },
+  { title: 'My Vault', url: '/vault', icon: 'vault' },
+  { title: 'Documents', url: '/documents', icon: 'documents' },
+  { title: 'AI Organizer', url: '/intelligent-organizer', icon: 'brain' },
+  { title: 'My Family', url: '/family', icon: 'users' },
+  { title: 'Legacy', url: '/legacy', icon: 'legacy' },
+  { title: 'Time Capsule', url: '/time-capsule', icon: 'heart' },
+  { title: 'Timeline', url: '/timeline', icon: 'timeline' },
+  { title: 'Wishes', url: '/wishes', icon: 'wishes' },
+  { title: 'Protection', url: '/protection', icon: 'protection' },
+  { title: 'Settings', url: '/settings', icon: 'settings' },
 ];
 
 export function AppSidebar() {
   const { state } = useSidebar();
-  const collapsed = state === "collapsed";
+  const collapsed = state === 'collapsed';
   const { user } = useUser();
 
   const getNavClasses = ({ isActive }: { isActive: boolean }) =>
     `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 ${
       isActive
-        ? "bg-sidebar-accent text-sidebar-text font-medium"
-        : "text-sidebar-muted hover:bg-sidebar-accent/50 hover:text-sidebar-text"
+        ? 'bg-sidebar-accent text-sidebar-text font-medium'
+        : 'text-sidebar-muted hover:bg-sidebar-accent/50 hover:text-sidebar-text'
     }`;
 
   return (
-    <Sidebar className="border-r-0 bg-sidebar-primary">
-      <div className="flex flex-col h-full">
+    <Sidebar className='border-r-0 bg-sidebar-primary'>
+      <div className='flex flex-col h-full'>
         {/* Logo Section */}
-        <motion.div 
-          className="p-6 border-b border-sidebar-accent/20"
-          whileHover={{ backgroundColor: "rgba(var(--sidebar-accent), 0.05)" }}
+        <motion.div
+          className='p-6 border-b border-sidebar-accent/20'
+          whileHover={{ backgroundColor: 'rgba(var(--sidebar-accent), 0.05)' }}
           transition={{ duration: 0.2 }}
         >
-          <div className="flex items-center gap-3">
+          <div className='flex items-center gap-3'>
             <motion.div
               whileHover={{ scale: 1.05, rotate: 5 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
+              transition={{ duration: 0.3, ease: 'easeInOut' }}
             >
               <LegacyGuardLogo />
             </motion.div>
-            <AnimatePresence mode="wait">
+            <AnimatePresence mode='wait'>
               {!collapsed && (
-                <motion.div 
-                  className="flex flex-col"
+                <motion.div
+                  className='flex flex-col'
                   initial={{ opacity: 0, width: 0 }}
-                  animate={{ opacity: 1, width: "auto" }}
+                  animate={{ opacity: 1, width: 'auto' }}
                   exit={{ opacity: 0, width: 0 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <span className="text-sidebar-text font-semibold text-lg font-heading">
+                  <span className='text-sidebar-text font-semibold text-lg font-heading'>
                     LegacyGuard
                   </span>
                 </motion.div>
@@ -76,13 +76,13 @@ export function AppSidebar() {
         </motion.div>
 
         {/* Navigation */}
-        <SidebarContent className="px-4 py-6">
+        <SidebarContent className='px-4 py-6'>
           <SidebarGroup>
             <SidebarGroupContent>
               <SidebarMenu>
                 {navigationItems.map((item, index) => (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild className="p-0">
+                    <SidebarMenuButton asChild className='p-0'>
                       <motion.div
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
@@ -94,14 +94,17 @@ export function AppSidebar() {
                             whileTap={{ scale: 0.95 }}
                             transition={{ duration: 0.2 }}
                           >
-                            <Icon name={item.icon as keyof typeof IconMap} className="w-5 h-5 flex-shrink-0" />
+                            <Icon
+                              name={item.icon as keyof typeof IconMap}
+                              className='w-5 h-5 flex-shrink-0'
+                            />
                           </motion.div>
-                          <AnimatePresence mode="wait">
+                          <AnimatePresence mode='wait'>
                             {!collapsed && (
-                              <motion.span 
-                                className="text-sm font-medium"
+                              <motion.span
+                                className='text-sm font-medium'
                                 initial={{ opacity: 0, width: 0 }}
-                                animate={{ opacity: 1, width: "auto" }}
+                                animate={{ opacity: 1, width: 'auto' }}
                                 exit={{ opacity: 0, width: 0 }}
                                 transition={{ duration: 0.2 }}
                               >
@@ -120,39 +123,39 @@ export function AppSidebar() {
         </SidebarContent>
 
         {/* User Profile Section */}
-        <motion.div 
-          className="p-4 mt-auto border-t border-sidebar-accent/20"
-          whileHover={{ backgroundColor: "rgba(var(--sidebar-accent), 0.05)" }}
+        <motion.div
+          className='p-4 mt-auto border-t border-sidebar-accent/20'
+          whileHover={{ backgroundColor: 'rgba(var(--sidebar-accent), 0.05)' }}
           transition={{ duration: 0.2 }}
         >
-          <div className="flex items-center gap-3">
+          <div className='flex items-center gap-3'>
             <motion.div
               whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.2 }}
             >
               <UserButton
-                afterSignOutUrl="/sign-in"
+                afterSignOutUrl='/sign-in'
                 appearance={{
                   elements: {
-                    avatarBox: "w-8 h-8",
-                    userButtonTrigger: "focus:shadow-none",
-                  }
+                    avatarBox: 'w-8 h-8',
+                    userButtonTrigger: 'focus:shadow-none',
+                  },
                 }}
               />
             </motion.div>
-            <AnimatePresence mode="wait">
+            <AnimatePresence mode='wait'>
               {!collapsed && user && (
-                <motion.div 
-                  className="flex-1"
+                <motion.div
+                  className='flex-1'
                   initial={{ opacity: 0, width: 0 }}
-                  animate={{ opacity: 1, width: "auto" }}
+                  animate={{ opacity: 1, width: 'auto' }}
                   exit={{ opacity: 0, width: 0 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <p className="text-sm font-medium text-sidebar-text">
+                  <p className='text-sm font-medium text-sidebar-text'>
                     {user.firstName || user.username || 'User'}
                   </p>
-                  <p className="text-xs text-sidebar-muted">
+                  <p className='text-xs text-sidebar-muted'>
                     {user.primaryEmailAddress?.emailAddress}
                   </p>
                 </motion.div>

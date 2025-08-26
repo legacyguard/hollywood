@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 
 interface ProgressBarProps {
   value: number;
@@ -18,20 +18,24 @@ export function ProgressBar({
   const percentage = Math.min(Math.max((value / max) * 100, 0), 100);
 
   return (
-    <div className={cn("w-full", className)}>
+    <div className={cn('w-full', className)}>
       {(label || showPercentage) && (
-        <div className="flex justify-between items-center mb-2">
+        <div className='flex justify-between items-center mb-2'>
           {label && (
-            <span className="text-sm font-medium text-card-foreground">{label}</span>
+            <span className='text-sm font-medium text-card-foreground'>
+              {label}
+            </span>
           )}
           {showPercentage && (
-            <span className="text-sm text-muted-foreground">{Math.round(percentage)}%</span>
+            <span className='text-sm text-muted-foreground'>
+              {Math.round(percentage)}%
+            </span>
           )}
         </div>
       )}
-      <div className="w-full bg-progress-bg rounded-full h-2 overflow-hidden">
+      <div className='w-full bg-progress-bg rounded-full h-2 overflow-hidden'>
         <div
-          className="h-full bg-progress-fill transition-all duration-500 ease-out rounded-full"
+          className='h-full bg-progress-fill transition-all duration-500 ease-out rounded-full'
           style={{ width: `${percentage}%` }}
         />
       </div>

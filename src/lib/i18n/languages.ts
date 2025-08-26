@@ -14,7 +14,9 @@ export interface LanguageConfig {
   decimalSeparator: string;
   thousandsSeparator: string;
   currencyPosition: 'before' | 'after';
-  pluralRules?: (count: number) => 'zero' | 'one' | 'two' | 'few' | 'many' | 'other';
+  pluralRules?: (
+    count: number
+  ) => 'zero' | 'one' | 'two' | 'few' | 'many' | 'other';
 }
 
 export const LANGUAGE_CONFIG: Record<string, LanguageConfig> = {
@@ -361,7 +363,8 @@ export const LANGUAGE_CONFIG: Record<string, LanguageConfig> = {
       if (count === 1) return 'one';
       const tens = count % 10;
       const hundreds = count % 100;
-      if (tens >= 2 && tens <= 4 && (hundreds < 10 || hundreds >= 20)) return 'few';
+      if (tens >= 2 && tens <= 4 && (hundreds < 10 || hundreds >= 20))
+        return 'few';
       return 'many';
     },
   },
@@ -410,7 +413,8 @@ export const LANGUAGE_CONFIG: Record<string, LanguageConfig> = {
       const tens = count % 10;
       const hundreds = count % 100;
       if (tens === 1 && hundreds !== 11) return 'one';
-      if (tens >= 2 && tens <= 4 && (hundreds < 10 || hundreds >= 20)) return 'few';
+      if (tens >= 2 && tens <= 4 && (hundreds < 10 || hundreds >= 20))
+        return 'few';
       return 'many';
     },
   },
@@ -520,7 +524,8 @@ export const LANGUAGE_CONFIG: Record<string, LanguageConfig> = {
       const tens = count % 10;
       const hundreds = count % 100;
       if (tens === 1 && hundreds !== 11) return 'one';
-      if (tens >= 2 && tens <= 4 && (hundreds < 10 || hundreds >= 20)) return 'few';
+      if (tens >= 2 && tens <= 4 && (hundreds < 10 || hundreds >= 20))
+        return 'few';
       return 'many';
     },
   },
@@ -531,12 +536,16 @@ export const getLanguageConfig = (code: string): LanguageConfig | undefined => {
   return LANGUAGE_CONFIG[code];
 };
 
-export const getLanguagesByScript = (script: LanguageConfig['script']): LanguageConfig[] => {
+export const getLanguagesByScript = (
+  script: LanguageConfig['script']
+): LanguageConfig[] => {
   return Object.values(LANGUAGE_CONFIG).filter(lang => lang.script === script);
 };
 
 export const getRTLLanguages = (): LanguageConfig[] => {
-  return Object.values(LANGUAGE_CONFIG).filter(lang => lang.direction === 'rtl');
+  return Object.values(LANGUAGE_CONFIG).filter(
+    lang => lang.direction === 'rtl'
+  );
 };
 
 // Format functions
@@ -559,13 +568,20 @@ export const formatNumber = (num: number, languageCode: string): string => {
   if (!config) return num.toLocaleString();
 
   const parts = num.toFixed(2).split('.');
-  const integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, config.thousandsSeparator);
+  const integerPart = parts[0].replace(
+    /\B(?=(\d{3})+(?!\d))/g,
+    config.thousandsSeparator
+  );
   const decimalPart = parts[1];
 
   return `${integerPart}${config.decimalSeparator}${decimalPart}`;
 };
 
-export const formatCurrency = (amount: number, currency: string, languageCode: string): string => {
+export const formatCurrency = (
+  amount: number,
+  currency: string,
+  languageCode: string
+): string => {
   const config = LANGUAGE_CONFIG[languageCode];
   if (!config) return `${currency} ${amount}`;
 

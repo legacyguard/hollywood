@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import type { Variants } from "framer-motion";
-import { motion } from "framer-motion";
-import React from "react";
+import type { Variants } from 'framer-motion';
+import { motion } from 'framer-motion';
+import React from 'react';
 
 interface FadeInProps {
   children: React.ReactNode;
@@ -22,7 +22,7 @@ const fadeInAnimation: Variants = {
     transition: {
       duration: custom.duration,
       delay: custom.delay,
-      ease: "easeInOut",
+      ease: 'easeInOut',
     },
   }),
 };
@@ -37,8 +37,8 @@ export const FadeIn = ({
     <motion.div
       className={className}
       variants={fadeInAnimation}
-      initial="initial"
-      animate="animate"
+      initial='initial'
+      animate='animate'
       custom={{ duration, delay }}
     >
       {children}

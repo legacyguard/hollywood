@@ -79,16 +79,18 @@ export const DocumentList = () => {
         try {
           const parsedDocs = JSON.parse(storedDocs);
           // Transform localStorage format to match database format
-          const transformedDocs = parsedDocs.map((doc: LocalStorageDocument) => ({
-            id: doc.id?.toString() || '',
-            file_name: doc.fileName || doc.file_name,
-            file_type: doc.fileType || doc.file_type,
-            file_size: doc.fileSize || doc.file_size,
-            file_path: doc.filePath || doc.file_path,
-            document_type: 'General',
-            encrypted_at: doc.encryptedAt || doc.encrypted_at,
-            created_at: doc.uploadedAt || doc.created_at
-          }));
+          const transformedDocs = parsedDocs.map(
+            (doc: LocalStorageDocument) => ({
+              id: doc.id?.toString() || '',
+              file_name: doc.fileName || doc.file_name,
+              file_type: doc.fileType || doc.file_type,
+              file_size: doc.fileSize || doc.file_size,
+              file_path: doc.filePath || doc.file_path,
+              document_type: 'General',
+              encrypted_at: doc.encryptedAt || doc.encrypted_at,
+              created_at: doc.uploadedAt || doc.created_at,
+            })
+          );
           setDocuments(transformedDocs);
         } catch (e) {
           console.error('Error parsing localStorage:', e);
@@ -140,7 +142,11 @@ export const DocumentList = () => {
     if (!userId) return;
 
     // Confirm deletion
-    if (!confirm(`Are you sure you want to delete "${doc.file_name}"? This action cannot be undone.`)) {
+    if (
+      !confirm(
+        `Are you sure you want to delete "${doc.file_name}"? This action cannot be undone.`
+      )
+    ) {
       return;
     }
 
@@ -173,8 +179,12 @@ export const DocumentList = () => {
 
       // Remove from localStorage backup
       const documentsKey = `documents_${userId}`;
-      const existingDocs = JSON.parse(localStorage.getItem(documentsKey) || '[]');
-     const updatedDocs = existingDocs.filter((d: { id: string | number }) => String(d.id) !== String(doc.id));
+      const existingDocs = JSON.parse(
+        localStorage.getItem(documentsKey) || '[]'
+      );
+      const updatedDocs = existingDocs.filter(
+        (d: { id: string | number }) => String(d.id) !== String(doc.id)
+      );
       localStorage.setItem(documentsKey, JSON.stringify(updatedDocs));
       localStorage.setItem(documentsKey, JSON.stringify(updatedDocs));
 
@@ -206,11 +216,17 @@ export const DocumentList = () => {
     };
 
     window.addEventListener('storage', handleStorageChange);
-    window.addEventListener('documentUploaded', handleDocumentUploaded as EventListener);
+    window.addEventListener(
+      'documentUploaded',
+      handleDocumentUploaded as EventListener
+    );
 
     return () => {
       window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('documentUploaded', handleDocumentUploaded as EventListener);
+      window.removeEventListener(
+        'documentUploaded',
+        handleDocumentUploaded as EventListener
+      );
     };
   }, [userId, fetchDocuments]);
 
@@ -231,9 +247,12 @@ export const DocumentList = () => {
   if (isLoading) {
     return (
       <FadeIn duration={0.5} delay={0.5}>
-        <Card className="p-12 text-center bg-card border-card-border">
-          <Icon name="upload" className="w-8 h-8 text-muted-foreground mx-auto mb-4 animate-pulse" />
-          <p className="text-muted-foreground">Loading documents...</p>
+        <Card className='p-12 text-center bg-card border-card-border'>
+          <Icon
+            name='upload'
+            className='w-8 h-8 text-muted-foreground mx-auto mb-4 animate-pulse'
+          />
+          <p className='text-muted-foreground'>Loading documents...</p>
         </Card>
       </FadeIn>
     );
@@ -242,12 +261,17 @@ export const DocumentList = () => {
   if (error) {
     return (
       <FadeIn duration={0.5} delay={0.5}>
-        <Card className="p-12 text-center bg-card border-card-border border-status-error/20">
-          <Icon name="info" className="w-8 h-8 text-status-error mx-auto mb-4" />
-          <h3 className="text-lg font-semibold mb-2 text-status-error">Error Loading Documents</h3>
-          <p className="text-muted-foreground mb-4">{error}</p>
-          <Button onClick={fetchDocuments} variant="outline" size="sm">
-            <Icon name="upload" className="w-4 h-4 mr-2" />
+        <Card className='p-12 text-center bg-card border-card-border border-status-error/20'>
+          <Icon
+            name='info'
+            className='w-8 h-8 text-status-error mx-auto mb-4'
+          />
+          <h3 className='text-lg font-semibold mb-2 text-status-error'>
+            Error Loading Documents
+          </h3>
+          <p className='text-muted-foreground mb-4'>{error}</p>
+          <Button onClick={fetchDocuments} variant='outline' size='sm'>
+            <Icon name='upload' className='w-4 h-4 mr-2' />
             Retry
           </Button>
         </Card>
@@ -258,10 +282,13 @@ export const DocumentList = () => {
   if (documents.length === 0) {
     return (
       <FadeIn duration={0.5} delay={0.5}>
-        <Card className="p-12 text-center bg-card border-card-border">
-          <Icon name="documents" className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-          <h3 className="text-lg font-semibold mb-2">No Documents Yet</h3>
-          <p className="text-muted-foreground">
+        <Card className='p-12 text-center bg-card border-card-border'>
+          <Icon
+            name='documents'
+            className='w-12 h-12 text-muted-foreground mx-auto mb-4'
+          />
+          <h3 className='text-lg font-semibold mb-2'>No Documents Yet</h3>
+          <p className='text-muted-foreground'>
             Upload your first document to get started with secure storage
           </p>
         </Card>
@@ -270,67 +297,73 @@ export const DocumentList = () => {
   }
 
   return (
-    <div className="space-y-4">
+    <div className='space-y-4'>
       <FadeIn duration={0.5} delay={0.5}>
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold">Your Encrypted Documents</h3>
-          <span className="text-sm text-muted-foreground">
+        <div className='flex justify-between items-center mb-4'>
+          <h3 className='text-lg font-semibold'>Your Encrypted Documents</h3>
+          <span className='text-sm text-muted-foreground'>
             {documents.length} document{documents.length !== 1 ? 's' : ''}
           </span>
         </div>
       </FadeIn>
 
-      <div className="grid gap-3">
+      <div className='grid gap-3'>
         {documents.map((doc, index) => (
           <FadeIn key={doc.id} duration={0.5} delay={0.6 + index * 0.1}>
-            <Card className="p-4 bg-card border-card-border hover:border-primary/20 transition-colors">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-primary/10 rounded-lg">
-                    <Icon name={getFileIcon(doc.file_type) as 'documents' | 'eye'} className="w-5 h-5 text-primary" />
+            <Card className='p-4 bg-card border-card-border hover:border-primary/20 transition-colors'>
+              <div className='flex items-center justify-between'>
+                <div className='flex items-center gap-3'>
+                  <div className='p-2 bg-primary/10 rounded-lg'>
+                    <Icon
+                      name={getFileIcon(doc.file_type) as 'documents' | 'eye'}
+                      className='w-5 h-5 text-primary'
+                    />
                   </div>
                   <div>
-                    <p className="font-medium">{doc.file_name}</p>
-                    <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                    <p className='font-medium'>{doc.file_name}</p>
+                    <div className='flex items-center gap-3 text-xs text-muted-foreground'>
                       <span>{formatFileSize(doc.file_size)}</span>
                       <span>•</span>
-                      <span>Encrypted {format(new Date(doc.encrypted_at), 'MMM d, yyyy')}</span>
+                      <span>
+                        Encrypted{' '}
+                        {format(new Date(doc.encrypted_at), 'MMM d, yyyy')}
+                      </span>
                       <span>•</span>
-                      <span className="flex items-center gap-1">
-                        <Icon name="locked" className="w-3 h-3" />
+                      <span className='flex items-center gap-1'>
+                        <Icon name='locked' className='w-3 h-3' />
                         Secure
                       </span>
                     </div>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className='flex items-center gap-2'>
                   <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-muted-foreground hover:text-primary"
+                    variant='ghost'
+                    size='sm'
+                    className='text-muted-foreground hover:text-primary'
                     onClick={() => handleDownload(doc)}
                     disabled={downloadingId === doc.id}
-                    title="Download document"
+                    title='Download document'
                   >
                     {downloadingId === doc.id ? (
-                      <Icon name="download" className="w-4 h-4 animate-pulse" />
+                      <Icon name='download' className='w-4 h-4 animate-pulse' />
                     ) : (
-                      <Icon name="download" className="w-4 h-4" />
+                      <Icon name='download' className='w-4 h-4' />
                     )}
                   </Button>
                   <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-muted-foreground hover:text-status-error"
+                    variant='ghost'
+                    size='sm'
+                    className='text-muted-foreground hover:text-status-error'
                     onClick={() => handleDelete(doc)}
                     disabled={deletingId === doc.id}
-                    title="Delete document"
+                    title='Delete document'
                   >
                     {deletingId === doc.id ? (
-                      <Icon name="delete" className="w-4 h-4 animate-pulse" />
+                      <Icon name='delete' className='w-4 h-4 animate-pulse' />
                     ) : (
-                      <Icon name="delete" className="w-4 h-4" />
+                      <Icon name='delete' className='w-4 h-4' />
                     )}
                   </Button>
                 </div>

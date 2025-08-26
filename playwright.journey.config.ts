@@ -1,22 +1,17 @@
 import { defineConfig, devices } from '@playwright/test';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
+import { fileURLToPath } from 'url';
+
+// Get __dirname equivalent for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Load environment variables based on NODE_ENV
 if (process.env.NODE_ENV === 'test') {
-  // __dirname is not available in ES modules, so use import.meta.url to resolve the directory
-  const __dirnameResolved = path.dirname(new URL(import.meta.url).pathname);
-
-  dotenv.config({
-    path: path.resolve(
-      __dirnameResolved,
-      '.env.test'
-    )
-  });
+  dotenv.config({ path: path.resolve(__dirname, '.env.test') });
 } else {
-  // Load local environment for development
-  const __dirnameResolved = path.dirname(new URL(import.meta.url).pathname);
-  dotenv.config({ path: path.resolve(__dirnameResolved, '.env.local') });
+  dotenv.config({ path: path.resolve(__dirname, '.env.local') });
 }
 
 // Map VITE_ prefixed variables to standard Clerk variables for testing
@@ -31,7 +26,7 @@ export default defineConfig({
   testDir: './tests',
   testMatch: '**/full-user-journey.spec.ts',
   /* Global setup file */
-  globalSetup: './tests/global.setup.ts',
+  globalSetup: path.resolve(__dirname, './tests/global.setup.ts'),
 
   /* Run tests in serial mode for journey tests */
   fullyParallel: false,

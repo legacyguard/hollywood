@@ -123,7 +123,7 @@ export const LEGAL_TERMS_DATABASE: LegalTerm[] = [
       },
     },
   },
-  
+
   // Tax terms
   {
     key: 'inheritance_tax',
@@ -155,7 +155,7 @@ export const LEGAL_TERMS_DATABASE: LegalTerm[] = [
       },
     },
   },
-  
+
   // Inheritance terms
   {
     key: 'heir',
@@ -232,7 +232,7 @@ export const LEGAL_TERMS_DATABASE: LegalTerm[] = [
       },
       FR: {
         term: 'exécuteur testamentaire',
-        definition: 'Personne chargée d'exécuter le testament',
+        definition: "Personne chargée d'exécuter le testament",
       },
       PL: {
         term: 'wykonawca testamentu',
@@ -240,7 +240,7 @@ export const LEGAL_TERMS_DATABASE: LegalTerm[] = [
       },
     },
   },
-  
+
   // Notary terms
   {
     key: 'notary',
@@ -299,7 +299,7 @@ export const LEGAL_TERMS_DATABASE: LegalTerm[] = [
       },
     },
   },
-  
+
   // Family law terms
   {
     key: 'guardian',
@@ -327,7 +327,7 @@ export const LEGAL_TERMS_DATABASE: LegalTerm[] = [
       },
     },
   },
-  
+
   // Property terms
   {
     key: 'real_estate',
@@ -365,13 +365,13 @@ export const getLegalTerm = (
 ): string => {
   const term = LEGAL_TERMS_DATABASE.find(t => t.key === termKey);
   if (!term) return termKey;
-  
+
   const jurisdictionTerm = term.jurisdictions[jurisdictionCode];
   if (!jurisdictionTerm) {
     // Fallback to English or first available
     return term.jurisdictions['EN']?.term || termKey;
   }
-  
+
   // TODO: Handle language-specific translations within jurisdiction
   return jurisdictionTerm.term;
 };
@@ -383,7 +383,7 @@ export const getLegalDefinition = (
 ): string | undefined => {
   const term = LEGAL_TERMS_DATABASE.find(t => t.key === termKey);
   if (!term) return undefined;
-  
+
   return term.jurisdictions[jurisdictionCode]?.definition;
 };
 
@@ -394,7 +394,7 @@ export const getLegalReference = (
 ): string | undefined => {
   const term = LEGAL_TERMS_DATABASE.find(t => t.key === termKey);
   if (!term) return undefined;
-  
+
   return term.jurisdictions[jurisdictionCode]?.legalReference;
 };
 
@@ -405,7 +405,7 @@ export const getRelatedLegalTerms = (
 ): string[] => {
   const term = LEGAL_TERMS_DATABASE.find(t => t.key === termKey);
   if (!term) return [];
-  
+
   return term.jurisdictions[jurisdictionCode]?.relatedTerms || [];
 };
 
@@ -418,17 +418,19 @@ export const searchLegalTerms = (
   return LEGAL_TERMS_DATABASE.filter(term => {
     // Filter by category if provided
     if (category && term.category !== category) return false;
-    
+
     // Search in jurisdiction-specific terms
     const jurisdictionTerm = term.jurisdictions[jurisdictionCode];
     if (!jurisdictionTerm) return false;
-    
+
     const searchString = query.toLowerCase();
     return (
       term.key.toLowerCase().includes(searchString) ||
       jurisdictionTerm.term.toLowerCase().includes(searchString) ||
       jurisdictionTerm.definition?.toLowerCase().includes(searchString) ||
-      jurisdictionTerm.relatedTerms?.some(rt => rt.toLowerCase().includes(searchString))
+      jurisdictionTerm.relatedTerms?.some(rt =>
+        rt.toLowerCase().includes(searchString)
+      )
     );
   });
 };
@@ -438,11 +440,11 @@ export const getLegalTermsByCategory = (
   category: LegalTermCategory,
   jurisdictionCode: string
 ): Array<{ key: string; term: string; definition?: string }> => {
-  return LEGAL_TERMS_DATABASE
-    .filter(t => t.category === category && t.jurisdictions[jurisdictionCode])
-    .map(t => ({
-      key: t.key,
-      term: t.jurisdictions[jurisdictionCode].term,
-      definition: t.jurisdictions[jurisdictionCode].definition,
-    }));
+  return LEGAL_TERMS_DATABASE.filter(
+    t => t.category === category && t.jurisdictions[jurisdictionCode]
+  ).map(t => ({
+    key: t.key,
+    term: t.jurisdictions[jurisdictionCode].term,
+    definition: t.jurisdictions[jurisdictionCode].definition,
+  }));
 };

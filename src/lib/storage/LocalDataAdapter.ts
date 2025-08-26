@@ -61,19 +61,26 @@ class LocalDataAdapter {
         resolve();
       };
 
-      request.onupgradeneeded = (event) => {
+      request.onupgradeneeded = event => {
         const db = (event.target as IDBOpenDBRequest).result;
 
         // Main data store
         if (!db.objectStoreNames.contains(this.STORE_NAME)) {
-          const store = db.createObjectStore(this.STORE_NAME, { keyPath: 'id' });
+          const store = db.createObjectStore(this.STORE_NAME, {
+            keyPath: 'id',
+          });
           store.createIndex('category', 'category', { unique: false });
-          store.createIndex('syncStatus', 'metadata.syncStatus', { unique: false });
+          store.createIndex('syncStatus', 'metadata.syncStatus', {
+            unique: false,
+          });
         }
 
         // Audit log store
         if (!db.objectStoreNames.contains(this.AUDIT_STORE)) {
-          const auditStore = db.createObjectStore(this.AUDIT_STORE, { keyPath: 'id', autoIncrement: true });
+          const auditStore = db.createObjectStore(this.AUDIT_STORE, {
+            keyPath: 'id',
+            autoIncrement: true,
+          });
           auditStore.createIndex('timestamp', 'timestamp', { unique: false });
           auditStore.createIndex('category', 'category', { unique: false });
         }
@@ -126,8 +133,8 @@ class LocalDataAdapter {
         updatedAt: now,
         version: 1,
         isEncrypted,
-        syncStatus: this.syncMode === 'local-only' ? 'local' : 'pending'
-      }
+        syncStatus: this.syncMode === 'local-only' ? 'local' : 'pending',
+      },
     };
 
     const tx = this.db!.transaction(this.STORE_NAME, 'readwrite');
@@ -158,7 +165,10 @@ class LocalDataAdapter {
     if (!item) return null;
 
     // Decrypt if encrypted and keys available
-    if (item.metadata.isEncrypted && await this.encryption.areKeysUnlocked()) {
+    if (
+      item.metadata.isEncrypted &&
+      (await this.encryption.areKeysUnlocked())
+    ) {
       const decrypted = await this.encryption.decryptText(item.data);
       if (decrypted) {
         item.data = JSON.parse(decrypted);
@@ -207,7 +217,7 @@ class LocalDataAdapter {
           if (decrypted) {
             return {
               ...item,
-              data: JSON.parse(decrypted)
+              data: JSON.parse(decrypted),
             };
           }
         }
@@ -248,8 +258,8 @@ class LocalDataAdapter {
         updatedAt: new Date().toISOString(),
         version: existing.metadata.version + 1,
         isEncrypted,
-        syncStatus: this.syncMode === 'local-only' ? 'local' : 'pending'
-      }
+        syncStatus: this.syncMode === 'local-only' ? 'local' : 'pending',
+      },
     };
 
     const tx = this.db!.transaction(this.STORE_NAME, 'readwrite');
@@ -296,7 +306,7 @@ class LocalDataAdapter {
     if (!this.db) await this.initializeDB();
 
     // Verify session is unlocked
-    if (!await this.encryption.areKeysUnlocked()) {
+    if (!(await this.encryption.areKeysUnlocked())) {
       throw new Error('Session must be unlocked to export data');
     }
 
@@ -311,7 +321,7 @@ class LocalDataAdapter {
           const decryptedData = await this.encryption.decryptText(item.data);
           return {
             ...item,
-            data: decryptedData ? JSON.parse(decryptedData) : item.data
+            data: decryptedData ? JSON.parse(decryptedData) : item.data,
           };
         }
         return item;
@@ -336,7 +346,7 @@ class LocalDataAdapter {
       category,
       action,
       details,
-      syncMode: this.syncMode
+      syncMode: this.syncMode,
     };
 
     const tx = this.db!.transaction(this.AUDIT_STORE, 'readwrite');
@@ -384,7 +394,7 @@ class LocalDataAdapter {
     // Log event
     await this.logAuditEvent('system', 'lock', {
       reason: 'inactivity',
-      inactiveTime: Date.now() - this.lastActivity
+      inactiveTime: Date.now() - this.lastActivity,
     });
   }
 
@@ -394,9 +404,12 @@ class LocalDataAdapter {
   private startPeriodicSync(): void {
     if (this.syncTimer) return;
 
-    this.syncTimer = setInterval(() => {
-      this.triggerSync();
-    }, 10 * 60 * 1000); // 10 minutes
+    this.syncTimer = setInterval(
+      () => {
+        this.triggerSync();
+      },
+      10 * 60 * 1000
+    ); // 10 minutes
   }
 
   /**
@@ -416,7 +429,7 @@ class LocalDataAdapter {
     // This will be implemented in CloudSyncAdapter
     // For now, just log the event
     await this.logAuditEvent('system', 'sync_triggered', {
-      mode: this.syncMode
+      mode: this.syncMode,
     });
   }
 }

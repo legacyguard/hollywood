@@ -26,7 +26,7 @@ export default function TimeCapsulePage() {
     delivered: 0,
     scheduled_for_date: 0,
     scheduled_on_death: 0,
-    failed: 0
+    failed: 0,
   });
   const [isLoading, setIsLoading] = useState(true);
   const [showWizard, setShowWizard] = useState(false);
@@ -66,12 +66,15 @@ export default function TimeCapsulePage() {
         total: capsules.length,
         pending: capsules.filter(c => c.status === 'PENDING').length,
         delivered: capsules.filter(c => c.is_delivered).length,
-        scheduled_for_date: capsules.filter(c => c.delivery_condition === 'ON_DATE' && !c.is_delivered).length,
-        scheduled_on_death: capsules.filter(c => c.delivery_condition === 'ON_DEATH' && !c.is_delivered).length,
-        failed: capsules.filter(c => c.status === 'FAILED').length
+        scheduled_for_date: capsules.filter(
+          c => c.delivery_condition === 'ON_DATE' && !c.is_delivered
+        ).length,
+        scheduled_on_death: capsules.filter(
+          c => c.delivery_condition === 'ON_DEATH' && !c.is_delivered
+        ).length,
+        failed: capsules.filter(c => c.status === 'FAILED').length,
       };
       setStats(newStats);
-
     } catch (error) {
       console.error('Error fetching data:', error);
       toast.error('Failed to load time capsules');
@@ -91,11 +94,19 @@ export default function TimeCapsulePage() {
       ...prev,
       total: prev.total + 1,
       pending: prev.pending + 1,
-      scheduled_for_date: newCapsule.delivery_condition === 'ON_DATE' ? prev.scheduled_for_date + 1 : prev.scheduled_for_date,
-      scheduled_on_death: newCapsule.delivery_condition === 'ON_DEATH' ? prev.scheduled_on_death + 1 : prev.scheduled_on_death
+      scheduled_for_date:
+        newCapsule.delivery_condition === 'ON_DATE'
+          ? prev.scheduled_for_date + 1
+          : prev.scheduled_for_date,
+      scheduled_on_death:
+        newCapsule.delivery_condition === 'ON_DEATH'
+          ? prev.scheduled_on_death + 1
+          : prev.scheduled_on_death,
     }));
     setShowWizard(false);
-    toast.success(`Time Capsule "${newCapsule.message_title}" has been sealed and scheduled for delivery!`);
+    toast.success(
+      `Time Capsule "${newCapsule.message_title}" has been sealed and scheduled for delivery!`
+    );
   };
 
   // Handle test preview
@@ -103,28 +114,27 @@ export default function TimeCapsulePage() {
     try {
       const supabase = await createSupabaseClient();
 
-      const { error } = await supabase.functions.invoke('time-capsule-test-preview', {
-        body: { capsule_id: capsuleId }
-      });
+      const { error } = await supabase.functions.invoke(
+        'time-capsule-test-preview',
+        {
+          body: { capsule_id: capsuleId },
+        }
+      );
 
       if (error) {
         throw error;
       }
 
-      toast.success(
-        'Test preview email sent!',
-        {
-          description: 'Check your email to see how your Time Capsule will look when delivered.'
-        }
-      );
+      toast.success('Test preview email sent!', {
+        description:
+          'Check your email to see how your Time Capsule will look when delivered.',
+      });
     } catch (error) {
       console.error('Failed to send test preview:', error);
-      toast.error(
-        'Failed to send test preview',
-        {
-          description: 'Please try again or contact support if the issue persists.'
-        }
-      );
+      toast.error('Failed to send test preview', {
+        description:
+          'Please try again or contact support if the issue persists.',
+      });
     }
   };
 
@@ -145,7 +155,6 @@ export default function TimeCapsulePage() {
       setTimeCapsules(prev => prev.filter(c => c.id !== capsuleId));
       fetchData(); // Refresh stats
       toast.success('Time Capsule deleted successfully');
-
     } catch (error) {
       console.error('Error deleting capsule:', error);
       toast.error('Failed to delete time capsule');
@@ -155,9 +164,11 @@ export default function TimeCapsulePage() {
   if (isLoading) {
     return (
       <DashboardLayout>
-        <div className="min-h-screen bg-background flex items-center justify-center">
-          <Icon name="loader" className="w-8 h-8 animate-spin text-primary" />
-          <span className="ml-3 text-muted-foreground">Loading Time Capsule...</span>
+        <div className='min-h-screen bg-background flex items-center justify-center'>
+          <Icon name='loader' className='w-8 h-8 animate-spin text-primary' />
+          <span className='ml-3 text-muted-foreground'>
+            Loading Time Capsule...
+          </span>
         </div>
       </DashboardLayout>
     );
@@ -165,32 +176,37 @@ export default function TimeCapsulePage() {
 
   return (
     <DashboardLayout>
-      <div className="min-h-screen bg-background">
+      <div className='min-h-screen bg-background'>
         {/* Header */}
-        <header className="bg-card border-b border-card-border">
-          <div className="max-w-7xl mx-auto px-6 lg:px-8 py-8">
+        <header className='bg-card border-b border-card-border'>
+          <div className='max-w-7xl mx-auto px-6 lg:px-8 py-8'>
             <FadeIn duration={0.5} delay={0.2}>
-              <div className="flex items-center justify-between">
+              <div className='flex items-center justify-between'>
                 <div>
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-12 h-12 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full flex items-center justify-center">
-                      <Icon name="heart" className="w-6 h-6 text-purple-600" />
+                  <div className='flex items-center gap-3 mb-3'>
+                    <div className='w-12 h-12 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full flex items-center justify-center'>
+                      <Icon name='heart' className='w-6 h-6 text-purple-600' />
                     </div>
-                    <h1 className="text-3xl lg:text-4xl font-bold font-heading text-card-foreground">
+                    <h1 className='text-3xl lg:text-4xl font-bold font-heading text-card-foreground'>
                       Time Capsule
                     </h1>
                   </div>
-                  <p className="text-lg leading-relaxed max-w-3xl" style={{ color: 'hsl(var(--muted-text))' }}>
-                    Create personal video or audio messages that will be delivered to your loved ones at just the right moment.
-                    Whether it's a birthday surprise or a final farewell, your words will reach them when they need them most.
+                  <p
+                    className='text-lg leading-relaxed max-w-3xl'
+                    style={{ color: 'hsl(var(--muted-text))' }}
+                  >
+                    Create personal video or audio messages that will be
+                    delivered to your loved ones at just the right moment.
+                    Whether it's a birthday surprise or a final farewell, your
+                    words will reach them when they need them most.
                   </p>
                 </div>
                 <Button
                   onClick={() => setShowWizard(true)}
-                  size="lg"
-                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg"
+                  size='lg'
+                  className='bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg'
                 >
-                  <Icon name="plus" className="w-5 h-5 mr-2" />
+                  <Icon name='plus' className='w-5 h-5 mr-2' />
                   Create Time Capsule
                 </Button>
               </div>
@@ -199,66 +215,94 @@ export default function TimeCapsulePage() {
         </header>
 
         {/* Stats Cards */}
-        <main className="max-w-7xl mx-auto px-6 lg:px-8 py-12">
+        <main className='max-w-7xl mx-auto px-6 lg:px-8 py-12'>
           <FadeIn duration={0.5} delay={0.4}>
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
-              <Card className="p-4">
-                <div className="flex items-center justify-between">
+            <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8'>
+              <Card className='p-4'>
+                <div className='flex items-center justify-between'>
                   <div>
-                    <p className="text-sm font-medium text-muted-foreground">Total</p>
-                    <p className="text-2xl font-bold">{stats.total}</p>
+                    <p className='text-sm font-medium text-muted-foreground'>
+                      Total
+                    </p>
+                    <p className='text-2xl font-bold'>{stats.total}</p>
                   </div>
-                  <Icon name="archive" className="w-5 h-5 text-muted-foreground" />
+                  <Icon
+                    name='archive'
+                    className='w-5 h-5 text-muted-foreground'
+                  />
                 </div>
               </Card>
 
-              <Card className="p-4">
-                <div className="flex items-center justify-between">
+              <Card className='p-4'>
+                <div className='flex items-center justify-between'>
                   <div>
-                    <p className="text-sm font-medium text-muted-foreground">Pending</p>
-                    <p className="text-2xl font-bold text-orange-600">{stats.pending}</p>
+                    <p className='text-sm font-medium text-muted-foreground'>
+                      Pending
+                    </p>
+                    <p className='text-2xl font-bold text-orange-600'>
+                      {stats.pending}
+                    </p>
                   </div>
-                  <Icon name="clock" className="w-5 h-5 text-orange-600" />
+                  <Icon name='clock' className='w-5 h-5 text-orange-600' />
                 </div>
               </Card>
 
-              <Card className="p-4">
-                <div className="flex items-center justify-between">
+              <Card className='p-4'>
+                <div className='flex items-center justify-between'>
                   <div>
-                    <p className="text-sm font-medium text-muted-foreground">Delivered</p>
-                    <p className="text-2xl font-bold text-green-600">{stats.delivered}</p>
+                    <p className='text-sm font-medium text-muted-foreground'>
+                      Delivered
+                    </p>
+                    <p className='text-2xl font-bold text-green-600'>
+                      {stats.delivered}
+                    </p>
                   </div>
-                  <Icon name="check-circle" className="w-5 h-5 text-green-600" />
+                  <Icon
+                    name='check-circle'
+                    className='w-5 h-5 text-green-600'
+                  />
                 </div>
               </Card>
 
-              <Card className="p-4">
-                <div className="flex items-center justify-between">
+              <Card className='p-4'>
+                <div className='flex items-center justify-between'>
                   <div>
-                    <p className="text-sm font-medium text-muted-foreground">By Date</p>
-                    <p className="text-2xl font-bold text-blue-600">{stats.scheduled_for_date}</p>
+                    <p className='text-sm font-medium text-muted-foreground'>
+                      By Date
+                    </p>
+                    <p className='text-2xl font-bold text-blue-600'>
+                      {stats.scheduled_for_date}
+                    </p>
                   </div>
-                  <Icon name="calendar" className="w-5 h-5 text-blue-600" />
+                  <Icon name='calendar' className='w-5 h-5 text-blue-600' />
                 </div>
               </Card>
 
-              <Card className="p-4">
-                <div className="flex items-center justify-between">
+              <Card className='p-4'>
+                <div className='flex items-center justify-between'>
                   <div>
-                    <p className="text-sm font-medium text-muted-foreground">On Passing</p>
-                    <p className="text-2xl font-bold text-purple-600">{stats.scheduled_on_death}</p>
+                    <p className='text-sm font-medium text-muted-foreground'>
+                      On Passing
+                    </p>
+                    <p className='text-2xl font-bold text-purple-600'>
+                      {stats.scheduled_on_death}
+                    </p>
                   </div>
-                  <Icon name="shield" className="w-5 h-5 text-purple-600" />
+                  <Icon name='shield' className='w-5 h-5 text-purple-600' />
                 </div>
               </Card>
 
-              <Card className="p-4">
-                <div className="flex items-center justify-between">
+              <Card className='p-4'>
+                <div className='flex items-center justify-between'>
                   <div>
-                    <p className="text-sm font-medium text-muted-foreground">Failed</p>
-                    <p className="text-2xl font-bold text-red-600">{stats.failed}</p>
+                    <p className='text-sm font-medium text-muted-foreground'>
+                      Failed
+                    </p>
+                    <p className='text-2xl font-bold text-red-600'>
+                      {stats.failed}
+                    </p>
                   </div>
-                  <Icon name="alert-circle" className="w-5 h-5 text-red-600" />
+                  <Icon name='alert-circle' className='w-5 h-5 text-red-600' />
                 </div>
               </Card>
             </div>
@@ -267,27 +311,31 @@ export default function TimeCapsulePage() {
           {/* Time Capsules List or Empty State */}
           {timeCapsules.length === 0 ? (
             <FadeIn duration={0.5} delay={0.6}>
-              <Card className="p-12 text-center">
-                <div className="w-20 h-20 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full mx-auto mb-6 flex items-center justify-center">
-                  <Icon name="heart" className="w-10 h-10 text-purple-600" />
+              <Card className='p-12 text-center'>
+                <div className='w-20 h-20 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full mx-auto mb-6 flex items-center justify-center'>
+                  <Icon name='heart' className='w-10 h-10 text-purple-600' />
                 </div>
-                <h3 className="text-2xl font-bold mb-4">Your Time Capsule Awaits</h3>
-                <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-                  Create your first Time Capsule - a personal video or audio message that will be delivered to someone special
-                  at exactly the right moment. Whether it's a future birthday surprise or a heartfelt goodbye,
-                  your words will be there when they're needed most.
+                <h3 className='text-2xl font-bold mb-4'>
+                  Your Time Capsule Awaits
+                </h3>
+                <p className='text-muted-foreground mb-6 max-w-2xl mx-auto'>
+                  Create your first Time Capsule - a personal video or audio
+                  message that will be delivered to someone special at exactly
+                  the right moment. Whether it's a future birthday surprise or a
+                  heartfelt goodbye, your words will be there when they're
+                  needed most.
                 </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <div className='flex flex-col sm:flex-row gap-4 justify-center'>
                   <Button
                     onClick={() => setShowWizard(true)}
-                    size="lg"
-                    className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
+                    size='lg'
+                    className='bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white'
                   >
-                    <Icon name="plus" className="w-5 h-5 mr-2" />
+                    <Icon name='plus' className='w-5 h-5 mr-2' />
                     Create Your First Time Capsule
                   </Button>
-                  <Button variant="outline" size="lg">
-                    <Icon name="play-circle" className="w-5 h-5 mr-2" />
+                  <Button variant='outline' size='lg'>
+                    <Icon name='play-circle' className='w-5 h-5 mr-2' />
                     Watch Demo
                   </Button>
                 </div>

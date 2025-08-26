@@ -23,7 +23,7 @@ export function DashboardStats({ className }: DashboardStatsProps) {
     documentsCount: 0,
     guardiansCount: 0,
     expiringDocuments: 0,
-    recentUploads: 0
+    recentUploads: 0,
   });
   const [isLoading, setIsLoading] = useState(true);
 
@@ -72,7 +72,7 @@ export function DashboardStats({ className }: DashboardStatsProps) {
         documentsCount: docsCount || 0,
         guardiansCount: guardiansCount || 0,
         expiringDocuments: expiringCount || 0,
-        recentUploads: recentCount || 0
+        recentUploads: recentCount || 0,
       });
     } catch (error) {
       console.error('Error fetching stats:', error);
@@ -86,20 +86,28 @@ export function DashboardStats({ className }: DashboardStatsProps) {
   }, [fetchStats]);
 
   const getStatsData = (): KPICardProps[] => {
-    const completionPercentage = Math.min(100, Math.round(
-      ((stats.documentsCount > 0 ? 30 : 0) +
-       (stats.guardiansCount > 0 ? 40 : 0) +
-       (stats.documentsCount >= 3 ? 30 : 0)) * 100 / 100
-    ));
+    const completionPercentage = Math.min(
+      100,
+      Math.round(
+        (((stats.documentsCount > 0 ? 30 : 0) +
+          (stats.guardiansCount > 0 ? 40 : 0) +
+          (stats.documentsCount >= 3 ? 30 : 0)) *
+          100) /
+          100
+      )
+    );
 
     return [
       {
         title: 'Documents Secured',
         value: stats.documentsCount.toString(),
-        change: stats.recentUploads > 0 ? `+${stats.recentUploads} this month` : 'No recent uploads',
+        change:
+          stats.recentUploads > 0
+            ? `+${stats.recentUploads} this month`
+            : 'No recent uploads',
         changeType: stats.recentUploads > 0 ? 'positive' : 'neutral',
         trendType: stats.recentUploads > 0 ? 'up' : 'neutral',
-        showTrend: true
+        showTrend: true,
       },
       {
         title: 'Guardians Added',
@@ -107,7 +115,7 @@ export function DashboardStats({ className }: DashboardStatsProps) {
         change: stats.guardiansCount > 0 ? 'Setup complete' : 'Needs setup',
         changeType: stats.guardiansCount > 0 ? 'positive' : 'negative',
         trendType: stats.guardiansCount > 0 ? 'up' : 'down',
-        showTrend: true
+        showTrend: true,
       },
       {
         title: 'Legacy Progress',
@@ -115,7 +123,7 @@ export function DashboardStats({ className }: DashboardStatsProps) {
         change: completionPercentage >= 50 ? 'Great progress!' : 'Keep going!',
         changeType: completionPercentage >= 50 ? 'positive' : 'neutral',
         trendType: completionPercentage >= 50 ? 'up' : 'neutral',
-        showTrend: true
+        showTrend: true,
       },
       {
         title: 'Expiring Soon',
@@ -123,8 +131,8 @@ export function DashboardStats({ className }: DashboardStatsProps) {
         change: stats.expiringDocuments > 0 ? 'Needs attention' : 'All current',
         changeType: stats.expiringDocuments > 0 ? 'negative' : 'positive',
         trendType: stats.expiringDocuments > 0 ? 'down' : 'up',
-        showTrend: true
-      }
+        showTrend: true,
+      },
     ];
   };
 
@@ -133,21 +141,24 @@ export function DashboardStats({ className }: DashboardStatsProps) {
   if (isLoading) {
     return (
       <div className={className}>
-        <div className="mb-6">
-          <h2 className="text-xl font-semibold text-foreground mb-2">
+        <div className='mb-6'>
+          <h2 className='text-xl font-semibold text-foreground mb-2'>
             Your Progress Overview
           </h2>
-          <p className="text-sm text-muted-foreground">
+          <p className='text-sm text-muted-foreground'>
             Track your journey as Guardian of Memories
           </p>
         </div>
 
-        <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {[1,2,3,4].map((i) => (
-            <div key={i} className="bg-card rounded-lg p-6 border animate-pulse">
-              <div className="h-4 bg-muted rounded w-3/4 mb-3"></div>
-              <div className="h-8 bg-muted rounded w-1/2 mb-2"></div>
-              <div className="h-3 bg-muted rounded w-2/3"></div>
+        <dl className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4'>
+          {[1, 2, 3, 4].map(i => (
+            <div
+              key={i}
+              className='bg-card rounded-lg p-6 border animate-pulse'
+            >
+              <div className='h-4 bg-muted rounded w-3/4 mb-3'></div>
+              <div className='h-8 bg-muted rounded w-1/2 mb-2'></div>
+              <div className='h-3 bg-muted rounded w-2/3'></div>
             </div>
           ))}
         </dl>
@@ -157,21 +168,21 @@ export function DashboardStats({ className }: DashboardStatsProps) {
 
   return (
     <div className={className}>
-      <div className="mb-6">
-        <h2 className="text-xl font-semibold text-foreground mb-2">
+      <div className='mb-6'>
+        <h2 className='text-xl font-semibold text-foreground mb-2'>
           Your Progress Overview
         </h2>
-        <p className="text-sm text-muted-foreground">
+        <p className='text-sm text-muted-foreground'>
           Track your journey as Guardian of Memories
         </p>
       </div>
 
-      <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <dl className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4'>
         {statsCards.map((stat, index) => (
           <KPICard
             key={index}
             {...stat}
-            className="hover:shadow-md transition-shadow duration-200"
+            className='hover:shadow-md transition-shadow duration-200'
           />
         ))}
       </dl>

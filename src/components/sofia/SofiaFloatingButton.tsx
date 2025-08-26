@@ -13,7 +13,7 @@ interface SofiaFloatingButtonProps {
 
 const SofiaFloatingButton: React.FC<SofiaFloatingButtonProps> = ({
   onToggleChat,
-  isChatOpen
+  isChatOpen,
 }) => {
   const { context, messages, getMessageCount } = useSofiaStore();
   const [hasNewSuggestion, setHasNewSuggestion] = useState(false);
@@ -40,8 +40,8 @@ const SofiaFloatingButton: React.FC<SofiaFloatingButtonProps> = ({
           duration: 3000,
           action: {
             label: 'View',
-            onClick: onToggleChat
-          }
+            onClick: onToggleChat,
+          },
         });
       }
     };
@@ -65,13 +65,14 @@ const SofiaFloatingButton: React.FC<SofiaFloatingButtonProps> = ({
     }
   }, [isChatOpen, hasNewSuggestion]);
 
-  const unreadCount = messages.filter(msg =>
-    msg.role === 'assistant' &&
-    msg.timestamp.getTime() > (lastSuggestionTime || 0)
+  const unreadCount = messages.filter(
+    msg =>
+      msg.role === 'assistant' &&
+      msg.timestamp.getTime() > (lastSuggestionTime || 0)
   ).length;
 
   return (
-    <div className="fixed bottom-6 right-6 z-40">
+    <div className='fixed bottom-6 right-6 z-40'>
       <motion.div
         initial={false}
         animate={{
@@ -80,41 +81,42 @@ const SofiaFloatingButton: React.FC<SofiaFloatingButtonProps> = ({
         transition={{
           duration: 0.6,
           repeat: hasNewSuggestion ? Infinity : 0,
-          repeatDelay: 2
+          repeatDelay: 2,
         }}
       >
         <Button
           onClick={onToggleChat}
           className={`
             h-14 w-14 rounded-full shadow-lg transition-all duration-300
-            ${isChatOpen
-              ? 'bg-muted hover:bg-muted-hover'
-              : 'bg-gradient-to-br from-primary to-primary-hover hover:from-primary-hover hover:to-primary'
+            ${
+              isChatOpen
+                ? 'bg-muted hover:bg-muted-hover'
+                : 'bg-gradient-to-br from-primary to-primary-hover hover:from-primary-hover hover:to-primary'
             }
           `}
-          size="icon"
+          size='icon'
         >
-          <AnimatePresence mode="wait">
+          <AnimatePresence mode='wait'>
             {isChatOpen ? (
               <motion.div
-                key="close"
+                key='close'
                 initial={{ rotate: -90, opacity: 0 }}
                 animate={{ rotate: 0, opacity: 1 }}
                 exit={{ rotate: 90, opacity: 0 }}
                 transition={{ duration: 0.2 }}
               >
-                <Icon name="close" className="w-6 h-6" />
+                <Icon name='close' className='w-6 h-6' />
               </motion.div>
             ) : (
               <motion.div
-                key="sofia"
+                key='sofia'
                 initial={{ rotate: 90, opacity: 0 }}
                 animate={{ rotate: 0, opacity: 1 }}
                 exit={{ rotate: -90, opacity: 0 }}
                 transition={{ duration: 0.2 }}
-                className="relative"
+                className='relative'
               >
-                <Icon name="bot" className="w-6 h-6" />
+                <Icon name='bot' className='w-6 h-6' />
 
                 {/* Notification indicator */}
                 <AnimatePresence>
@@ -123,12 +125,12 @@ const SofiaFloatingButton: React.FC<SofiaFloatingButtonProps> = ({
                       initial={{ scale: 0, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       exit={{ scale: 0, opacity: 0 }}
-                      className="absolute -top-1 -right-1 w-4 h-4 bg-status-success rounded-full border-2 border-background"
+                      className='absolute -top-1 -right-1 w-4 h-4 bg-status-success rounded-full border-2 border-background'
                     >
                       <motion.div
                         animate={{ scale: [1, 1.2, 1] }}
                         transition={{ duration: 1, repeat: Infinity }}
-                        className="w-full h-full bg-status-success rounded-full"
+                        className='w-full h-full bg-status-success rounded-full'
                       />
                     </motion.div>
                   )}
@@ -147,20 +149,23 @@ const SofiaFloatingButton: React.FC<SofiaFloatingButtonProps> = ({
             animate={{ opacity: 1, x: 0, y: 0 }}
             exit={{ opacity: 0, x: 20, y: 10 }}
             transition={{ delay: 2 }}
-            className="absolute bottom-16 right-0 bg-card border border-border rounded-lg p-3 shadow-lg max-w-xs"
+            className='absolute bottom-16 right-0 bg-card border border-border rounded-lg p-3 shadow-lg max-w-xs'
           >
-            <div className="flex items-start gap-2">
-              <Icon name="sparkles" className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+            <div className='flex items-start gap-2'>
+              <Icon
+                name='sparkles'
+                className='w-4 h-4 text-primary flex-shrink-0 mt-0.5'
+              />
               <div>
-                <p className="text-sm font-medium">Hi! I'm Sofia</p>
-                <p className="text-xs text-muted-foreground">
+                <p className='text-sm font-medium'>Hi! I'm Sofia</p>
+                <p className='text-xs text-muted-foreground'>
                   I'm here to help you protect your family. Click to chat!
                 </p>
               </div>
             </div>
 
             {/* Arrow pointing to button */}
-            <div className="absolute -bottom-2 right-6 w-4 h-4 bg-card border-r border-b border-border rotate-45" />
+            <div className='absolute -bottom-2 right-6 w-4 h-4 bg-card border-r border-b border-border rotate-45' />
           </motion.div>
         )}
       </AnimatePresence>

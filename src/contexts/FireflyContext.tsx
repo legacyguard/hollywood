@@ -1,13 +1,21 @@
-import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  ReactNode,
+} from 'react';
 import { CommunicationStyle } from '@/types/user-preferences';
 
-export type FireflyEventType = 
-  | 'milestone' 
-  | 'document_upload' 
-  | 'guardian_added' 
+export type FireflyEventType =
+  | 'milestone'
+  | 'document_upload'
+  | 'guardian_added'
   | 'will_completed'
   | 'time_capsule_created'
   | 'emergency_activated'
+  | 'challenge_started'
+  | 'achievement_unlocked'
   | null;
 
 interface FireflyState {
@@ -21,7 +29,7 @@ interface FireflyState {
 interface FireflyContextValue {
   // State
   state: FireflyState;
-  
+
   // Actions
   showFirefly: () => void;
   hideFirefly: () => void;
@@ -29,13 +37,15 @@ interface FireflyContextValue {
   guideToElement: (selector: string, duration?: number) => void;
   celebrate: (event: FireflyEventType, duration?: number) => void;
   onInteraction: () => void;
-  
+
   // Utilities
   isGuidingToTarget: boolean;
   isCelebrating: boolean;
 }
 
-const FireflyContext = createContext<FireflyContextValue | undefined>(undefined);
+const FireflyContext = createContext<FireflyContextValue | undefined>(
+  undefined
+);
 
 export const useFirefly = (): FireflyContextValue => {
   const context = useContext(FireflyContext);
@@ -70,8 +80,8 @@ export const FireflyProvider: React.FC<FireflyProviderProps> = ({
   }, []);
 
   const hideFirefly = useCallback(() => {
-    setState(prev => ({ 
-      ...prev, 
+    setState(prev => ({
+      ...prev,
       isVisible: false,
       targetElement: undefined,
       celebrateEvent: null,
@@ -84,46 +94,52 @@ export const FireflyProvider: React.FC<FireflyProviderProps> = ({
   }, []);
 
   // Guide to specific element
-  const guideToElement = useCallback((selector: string, duration: number = 3000) => {
-    setState(prev => ({ 
-      ...prev, 
-      targetElement: selector,
-      celebrateEvent: null,
-      isVisible: true,
-    }));
+  const guideToElement = useCallback(
+    (selector: string, duration: number = 3000) => {
+      setState(prev => ({
+        ...prev,
+        targetElement: selector,
+        celebrateEvent: null,
+        isVisible: true,
+      }));
 
-    // Clear guidance after duration
-    const timeout = setTimeout(() => {
-      setState(prev => ({ ...prev, targetElement: undefined }));
-    }, duration);
+      // Clear guidance after duration
+      const timeout = setTimeout(() => {
+        setState(prev => ({ ...prev, targetElement: undefined }));
+      }, duration);
 
-    return () => clearTimeout(timeout);
-  }, []);
+      return () => clearTimeout(timeout);
+    },
+    []
+  );
 
   // Trigger celebration
-  const celebrate = useCallback((event: FireflyEventType, duration: number = 4000) => {
-    if (!event) return;
+  const celebrate = useCallback(
+    (event: FireflyEventType, duration: number = 4000) => {
+      if (!event) return;
 
-    setState(prev => ({ 
-      ...prev, 
-      celebrateEvent: event,
-      targetElement: undefined,
-      isVisible: true,
-    }));
+      setState(prev => ({
+        ...prev,
+        celebrateEvent: event,
+        targetElement: undefined,
+        isVisible: true,
+      }));
 
-    // Clear celebration after duration
-    const timeout = setTimeout(() => {
-      setState(prev => ({ ...prev, celebrateEvent: null }));
-    }, duration);
+      // Clear celebration after duration
+      const timeout = setTimeout(() => {
+        setState(prev => ({ ...prev, celebrateEvent: null }));
+      }, duration);
 
-    return () => clearTimeout(timeout);
-  }, []);
+      return () => clearTimeout(timeout);
+    },
+    []
+  );
 
   // Handle firefly interaction
   const onInteraction = useCallback(() => {
-    setState(prev => ({ 
-      ...prev, 
-      interactionCount: prev.interactionCount + 1 
+    setState(prev => ({
+      ...prev,
+      interactionCount: prev.interactionCount + 1,
     }));
   }, []);
 
@@ -153,7 +169,7 @@ export const FireflyProvider: React.FC<FireflyProviderProps> = ({
 // Convenience hooks for specific events
 export const useFireflyGuidance = () => {
   const { guideToElement, state } = useFirefly();
-  
+
   return {
     guideToUpload: () => guideToElement('#document-upload-button', 4000),
     guideToGuardians: () => guideToElement('#guardians-section', 4000),
@@ -165,7 +181,7 @@ export const useFireflyGuidance = () => {
 
 export const useFireflyCelebration = () => {
   const { celebrate, state } = useFirefly();
-  
+
   return {
     celebrateMilestone: () => celebrate('milestone', 5000),
     celebrateUpload: () => celebrate('document_upload', 3000),

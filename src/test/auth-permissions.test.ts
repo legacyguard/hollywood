@@ -54,27 +54,29 @@ describe('Authentication & Permissions', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    
+
     // Setup default mocks
     (useAuth as any).mockReturnValue({
       userId: mockUserId,
       isSignedIn: true,
       isLoaded: true,
     });
-    
+
     (useUser as any).mockReturnValue({
       user: mockUser,
       isLoaded: true,
     });
-    
-    (useSupabaseWithClerk as any).mockReturnValue(() => Promise.resolve(mockSupabaseClient));
+
+    (useSupabaseWithClerk as any).mockReturnValue(() =>
+      Promise.resolve(mockSupabaseClient)
+    );
   });
 
   describe('User Authentication State', () => {
     it('should provide authenticated user context', () => {
       const auth = useAuth();
       const user = useUser();
-      
+
       expect(auth.userId).toBe(mockUserId);
       expect(auth.isSignedIn).toBe(true);
       expect(auth.isLoaded).toBe(true);
@@ -87,7 +89,7 @@ describe('Authentication & Permissions', () => {
         isSignedIn: false,
         isLoaded: true,
       });
-      
+
       (useUser as any).mockReturnValue({
         user: null,
         isLoaded: true,
@@ -95,7 +97,7 @@ describe('Authentication & Permissions', () => {
 
       const auth = useAuth();
       const user = useUser();
-      
+
       expect(auth.userId).toBeNull();
       expect(auth.isSignedIn).toBe(false);
       expect(user.user).toBeNull();
@@ -117,17 +119,19 @@ describe('Authentication & Permissions', () => {
     it('should create authenticated Supabase client', async () => {
       const createClient = useSupabaseWithClerk();
       const client = await createClient();
-      
+
       expect(client).toBeDefined();
       expect(client.from).toBeDefined();
       expect(client.storage).toBeDefined();
     });
 
     it('should handle client creation errors', async () => {
-      (useSupabaseWithClerk as any).mockReturnValue(() => Promise.reject(new Error('Client creation failed')));
-      
+      (useSupabaseWithClerk as any).mockReturnValue(() =>
+        Promise.reject(new Error('Client creation failed'))
+      );
+
       const createClient = useSupabaseWithClerk();
-      
+
       await expect(createClient()).rejects.toThrow('Client creation failed');
     });
   });
@@ -136,10 +140,14 @@ describe('Authentication & Permissions', () => {
     it('should enforce user-specific data access', async () => {
       const createClient = useSupabaseWithClerk();
       const client = await createClient();
-      
+
       // Test document access
-      await client.from('documents').select('*').eq('user_id', mockUserId).single();
-      
+      await client
+        .from('documents')
+        .select('*')
+        .eq('user_id', mockUserId)
+        .single();
+
       expect(client.from).toHaveBeenCalledWith('documents');
       // Verify the chain of calls was made
       expect(client.from).toHaveBeenCalled();
@@ -148,10 +156,14 @@ describe('Authentication & Permissions', () => {
     it('should prevent cross-user data access', async () => {
       const createClient = useSupabaseWithClerk();
       const client = await createClient();
-      
+
       // This should be blocked by RLS policies
-      await client.from('documents').select('*').eq('user_id', 'other_user').single();
-      
+      await client
+        .from('documents')
+        .select('*')
+        .eq('user_id', 'other_user')
+        .single();
+
       // Verify the query was made (RLS will handle the blocking)
       expect(client.from).toHaveBeenCalledWith('documents');
     });
@@ -159,10 +171,10 @@ describe('Authentication & Permissions', () => {
     it('should handle storage access control', async () => {
       const createClient = useSupabaseWithClerk();
       const client = await createClient();
-      
+
       const filePath = `${mockUserId}/document.pdf`;
       await client.storage.from('user_documents').upload(filePath, new Blob());
-      
+
       expect(client.storage.from).toHaveBeenCalledWith('user_documents');
     });
   });
@@ -171,20 +183,28 @@ describe('Authentication & Permissions', () => {
     it('should validate guardian permissions', async () => {
       const createClient = useSupabaseWithClerk();
       const client = await createClient();
-      
+
       // Test guardian access
-      await client.from('guardians').select('*').eq('user_id', mockUserId).single();
-      
+      await client
+        .from('guardians')
+        .select('*')
+        .eq('user_id', mockUserId)
+        .single();
+
       expect(client.from).toHaveBeenCalledWith('guardians');
     });
 
     it('should enforce document ownership', async () => {
       const createClient = useSupabaseWithClerk();
       const client = await createClient();
-      
+
       // Test document ownership check
-      await client.from('documents').select('*').eq('user_id', mockUserId).single();
-      
+      await client
+        .from('documents')
+        .select('*')
+        .eq('user_id', mockUserId)
+        .single();
+
       expect(client.from).toHaveBeenCalledWith('documents');
     });
   });
@@ -199,7 +219,7 @@ describe('Authentication & Permissions', () => {
       });
 
       const auth = useAuth();
-      
+
       expect(auth.error).toBeDefined();
       expect(auth.error.message).toBe('Auth failed');
     });
@@ -209,16 +229,22 @@ describe('Authentication & Permissions', () => {
       mockSupabaseClient.from.mockReturnValue({
         select: vi.fn(() => ({
           eq: vi.fn(() => ({
-            single: vi.fn(() => Promise.resolve({ data: null, error: mockError })),
+            single: vi.fn(() =>
+              Promise.resolve({ data: null, error: mockError })
+            ),
           })),
         })),
       });
 
       const createClient = useSupabaseWithClerk();
       const client = await createClient();
-      
-      const result = await client.from('documents').select('*').eq('user_id', mockUserId).single();
-      
+
+      const result = await client
+        .from('documents')
+        .select('*')
+        .eq('user_id', mockUserId)
+        .single();
+
       expect(result.error).toEqual(mockError);
     });
   });
@@ -226,7 +252,7 @@ describe('Authentication & Permissions', () => {
   describe('Security Best Practices', () => {
     it('should not expose sensitive user data', () => {
       const user = useUser();
-      
+
       // Ensure sensitive fields are not exposed
       expect(user.user?.password).toBeUndefined();
       expect(user.user?.privateKey).toBeUndefined();
@@ -235,32 +261,36 @@ describe('Authentication & Permissions', () => {
     it('should use secure storage for sensitive operations', async () => {
       const createClient = useSupabaseWithClerk();
       const client = await createClient();
-      
+
       // Verify storage bucket is user-scoped
       const filePath = `${mockUserId}/sensitive.pdf`;
       await client.storage.from('user_documents').upload(filePath, new Blob());
-      
+
       expect(filePath).toContain(mockUserId);
     });
 
     it('should validate user input before database operations', async () => {
       const createClient = useSupabaseWithClerk();
       const client = await createClient();
-      
+
       // Test input validation
       const validUserId = mockUserId;
       const invalidUserId = 'invalid-user-id';
-      
+
       // Valid user ID should work
-      await client.from('documents').select('*').eq('user_id', validUserId).single();
-      
+      await client
+        .from('documents')
+        .select('*')
+        .eq('user_id', validUserId)
+        .single();
+
       // Invalid user ID should be handled by validation
       expect(() => {
         if (!validUserId || validUserId.length < 3) {
           throw new Error('Invalid user ID');
         }
       }).not.toThrow();
-      
+
       // Test invalid user ID validation
       const validateUserId = (userId: string) => {
         // Clerk user IDs typically have a specific format
@@ -268,10 +298,10 @@ describe('Authentication & Permissions', () => {
           throw new Error('Invalid user ID');
         }
       };
-      
+
       // Valid ID should pass
       expect(() => validateUserId(validUserId)).not.toThrow();
-      
+
       // Invalid IDs should throw
       expect(() => validateUserId('')).toThrow('Invalid user ID');
       expect(() => validateUserId('short')).toThrow('Invalid user ID');

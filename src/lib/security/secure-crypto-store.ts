@@ -33,12 +33,14 @@ class SecureCryptoStore {
         resolve();
       };
 
-      request.onupgradeneeded = (event) => {
+      request.onupgradeneeded = event => {
         const db = (event.target as IDBOpenDBRequest).result;
 
         // Create object store for crypto keys
         if (!db.objectStoreNames.contains(this.storeName)) {
-          const keyStore = db.createObjectStore(this.storeName, { keyPath: 'id' });
+          const keyStore = db.createObjectStore(this.storeName, {
+            keyPath: 'id',
+          });
           keyStore.createIndex('userId', 'userId', { unique: false });
           keyStore.createIndex('expiresAt', 'expiresAt', { unique: false });
         }
@@ -66,7 +68,7 @@ class SecureCryptoStore {
       algorithm: key.algorithm.name,
       keyUsages: key.usages,
       createdAt: new Date().toISOString(),
-      expiresAt: expiresAt?.toISOString()
+      expiresAt: expiresAt?.toISOString(),
     };
 
     const transaction = this.db.transaction([this.storeName], 'readwrite');
@@ -78,7 +80,7 @@ class SecureCryptoStore {
         id: keyId,
         userId,
         key,
-        metadata
+        metadata,
       });
 
       request.onsuccess = () => resolve();
@@ -106,9 +108,14 @@ class SecureCryptoStore {
         const result = request.result;
         if (result && result.key) {
           // Check if key has expired
-          if (result.metadata.expiresAt && new Date(result.metadata.expiresAt) < new Date()) {
+          if (
+            result.metadata.expiresAt &&
+            new Date(result.metadata.expiresAt) < new Date()
+          ) {
             // Key has expired, remove it
-            this.removeKey(keyId).then(() => resolve(null)).catch(reject);
+            this.removeKey(keyId)
+              .then(() => resolve(null))
+              .catch(reject);
           } else {
             resolve(result.key);
           }
@@ -147,7 +154,10 @@ class SecureCryptoStore {
         for (const result of results) {
           if (result.key) {
             // Check if key has expired
-            if (result.metadata.expiresAt && new Date(result.metadata.expiresAt) < new Date()) {
+            if (
+              result.metadata.expiresAt &&
+              new Date(result.metadata.expiresAt) < new Date()
+            ) {
               // Key has expired, remove it
               expiredKeys.push(result.id);
             } else {
@@ -158,7 +168,9 @@ class SecureCryptoStore {
 
         // Remove expired keys asynchronously
         if (expiredKeys.length > 0) {
-          Promise.all(expiredKeys.map(id => this.removeKey(id))).catch(console.error);
+          Promise.all(expiredKeys.map(id => this.removeKey(id))).catch(
+            console.error
+          );
         }
 
         resolve(keys);
@@ -231,7 +243,9 @@ class SecureCryptoStore {
     const index = store.index('expiresAt');
 
     return new Promise((resolve, reject) => {
-      const request = index.openCursor(IDBKeyRange.upperBound(new Date().toISOString()));
+      const request = index.openCursor(
+        IDBKeyRange.upperBound(new Date().toISOString())
+      );
 
       request.onsuccess = () => {
         const cursor = request.result;

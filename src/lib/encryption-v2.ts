@@ -44,7 +44,7 @@ class EncryptionServiceV2 {
     return await crypto.subtle.generateKey(
       {
         name: this.ALGORITHM,
-        length: this.KEY_LENGTH
+        length: this.KEY_LENGTH,
       },
       false, // extractable: false - prevents key extraction
       ['encrypt', 'decrypt']
@@ -81,7 +81,9 @@ class EncryptionServiceV2 {
           key: existingKey,
           version: metadata.id,
           createdAt: new Date(metadata.createdAt),
-          expiresAt: metadata.expiresAt ? new Date(metadata.expiresAt) : undefined
+          expiresAt: metadata.expiresAt
+            ? new Date(metadata.expiresAt)
+            : undefined,
         };
 
         this.keyCache.set(userId, keyInfo);
@@ -103,7 +105,7 @@ class EncryptionServiceV2 {
       key: newKey,
       version: keyVersion,
       createdAt: new Date(),
-      expiresAt
+      expiresAt,
     };
     this.keyCache.set(userId, keyInfo);
 
@@ -131,7 +133,7 @@ class EncryptionServiceV2 {
     const encryptedData = await crypto.subtle.encrypt(
       {
         name: this.ALGORITHM,
-        iv: iv
+        iv: iv,
       },
       key,
       fileData
@@ -147,48 +149,48 @@ class EncryptionServiceV2 {
       fileSize: file.size,
       encryptedAt: new Date().toISOString(),
       algorithm: this.ALGORITHM,
-      keyVersion: metadata?.id || 'unknown'
+      keyVersion: metadata?.id || 'unknown',
     };
 
     return {
       encryptedData,
       iv,
-      metadata: fileMetadata
+      metadata: fileMetadata,
     };
   }
 
   /**
    * Decrypt file content using AES-GCM
    */
-async decryptFile(
-  encryptedData: ArrayBuffer,
-  iv: Uint8Array,
-  userId: string
-): Promise<ArrayBuffer | null> {
-  try {
-    // Validate IV length for AES-GCM
-    if (iv.length !== 12) {
-      console.error('Invalid IV length. Expected 12 bytes for AES-GCM');
+  async decryptFile(
+    encryptedData: ArrayBuffer,
+    iv: Uint8Array,
+    userId: string
+  ): Promise<ArrayBuffer | null> {
+    try {
+      // Validate IV length for AES-GCM
+      if (iv.length !== 12) {
+        console.error('Invalid IV length. Expected 12 bytes for AES-GCM');
+        return null;
+      }
+
+      const key = await this.getUserEncryptionKey(userId);
+
+      const decryptedData = await crypto.subtle.decrypt(
+        {
+          name: this.ALGORITHM,
+          iv: iv,
+        },
+        key,
+        encryptedData
+      );
+
+      return decryptedData;
+    } catch (error) {
+      console.error('Decryption failed:', error);
       return null;
     }
-
-    const key = await this.getUserEncryptionKey(userId);
-
-    const decryptedData = await crypto.subtle.decrypt(
-      {
-        name: this.ALGORITHM,
-        iv: iv
-      },
-      key,
-      encryptedData
-    );
-
-    return decryptedData;
-  } catch (error) {
-    console.error('Decryption failed:', error);
-    return null;
   }
-}
 
   /**
    * Create encrypted blob for upload
@@ -205,7 +207,9 @@ async decryptFile(
   /**
    * Extract IV and encrypted data from blob
    */
-  async extractFromBlob(blob: Blob): Promise<{ iv: Uint8Array; encryptedData: ArrayBuffer } | null> {
+  async extractFromBlob(
+    blob: Blob
+  ): Promise<{ iv: Uint8Array; encryptedData: ArrayBuffer } | null> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = () => {
@@ -277,7 +281,7 @@ async decryptFile(
       version: metadata.id,
       createdAt: new Date(metadata.createdAt),
       expiresAt: metadata.expiresAt ? new Date(metadata.expiresAt) : undefined,
-      algorithm: metadata.algorithm
+      algorithm: metadata.algorithm,
     };
   }
 
@@ -307,7 +311,7 @@ async decryptFile(
     const exportData = {
       encryptedData: this.arrayBufferToBase64(encryptedData),
       iv: this.uint8ArrayToBase64(iv),
-      metadata
+      metadata,
     };
 
     return JSON.stringify(exportData);
@@ -327,7 +331,7 @@ async decryptFile(
       return {
         encryptedData: this.base64ToArrayBuffer(exportData.encryptedData),
         iv: this.base64ToUint8Array(exportData.iv),
-        metadata: exportData.metadata
+        metadata: exportData.metadata,
       };
     } catch (error) {
       console.error('Import failed:', error);

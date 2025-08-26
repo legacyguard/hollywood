@@ -39,7 +39,7 @@ export class ErrorBoundary extends Component<Props, State> {
     });
 
     // Show user-friendly toast notification
-    toast.error('Something went wrong. We\'re working on fixing this issue.');
+    toast.error("Something went wrong. We're working on fixing this issue.");
   }
 
   private handleReload = () => {
@@ -61,53 +61,68 @@ export class ErrorBoundary extends Component<Props, State> {
       }
 
       return (
-        <div className="min-h-screen bg-background flex items-center justify-center p-6">
-          <Card className="max-w-md w-full p-8 text-center">
-            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Icon name="alert-triangle" className="w-8 h-8 text-red-600" />
+        <div className='min-h-screen bg-background flex items-center justify-center p-6'>
+          <Card className='max-w-md w-full p-8 text-center'>
+            <div className='w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6'>
+              <Icon name='alert-triangle' className='w-8 h-8 text-red-600' />
             </div>
 
-            <h2 className="text-2xl font-bold mb-4">Oops! Something went wrong</h2>
+            <h2 className='text-2xl font-bold mb-4'>
+              Oops! Something went wrong
+            </h2>
 
-            <p className="text-muted-foreground mb-6 leading-relaxed">
-              We're sorry, but something unexpected happened. Your data is safe, and we're
-              working to fix this issue. Please try one of the options below.
+            <p className='text-muted-foreground mb-6 leading-relaxed'>
+              We're sorry, but something unexpected happened. Your data is safe,
+              and we're working to fix this issue. Please try one of the options
+              below.
             </p>
 
-            <div className="space-y-3">
-              <Button onClick={this.handleRetry} className="w-full" variant="default">
-                <Icon name="refresh-cw" className="w-4 h-4 mr-2" />
+            <div className='space-y-3'>
+              <Button
+                onClick={this.handleRetry}
+                className='w-full'
+                variant='default'
+              >
+                <Icon name='refresh-cw' className='w-4 h-4 mr-2' />
                 Try Again
               </Button>
 
-              <Button onClick={this.handleGoHome} className="w-full" variant="outline">
-                <Icon name="home" className="w-4 h-4 mr-2" />
+              <Button
+                onClick={this.handleGoHome}
+                className='w-full'
+                variant='outline'
+              >
+                <Icon name='home' className='w-4 h-4 mr-2' />
                 Go Home
               </Button>
 
-              <Button onClick={this.handleReload} className="w-full" variant="outline">
-                <Icon name="rotate-ccw" className="w-4 h-4 mr-2" />
+              <Button
+                onClick={this.handleReload}
+                className='w-full'
+                variant='outline'
+              >
+                <Icon name='rotate-ccw' className='w-4 h-4 mr-2' />
                 Reload Page
               </Button>
             </div>
 
             {process.env.NODE_ENV === 'development' && this.state.error && (
-              <details className="mt-6 text-left">
-                <summary className="cursor-pointer text-sm text-muted-foreground hover:text-foreground">
+              <details className='mt-6 text-left'>
+                <summary className='cursor-pointer text-sm text-muted-foreground hover:text-foreground'>
                   Technical Details (Development)
                 </summary>
-                <div className="mt-3 p-3 bg-muted rounded text-xs font-mono text-left overflow-auto max-h-40">
-                  <div className="text-red-600 font-semibold mb-2">
+                <div className='mt-3 p-3 bg-muted rounded text-xs font-mono text-left overflow-auto max-h-40'>
+                  <div className='text-red-600 font-semibold mb-2'>
                     {this.state.error.name}: {this.state.error.message}
                   </div>
-                  <div className="whitespace-pre-wrap text-muted-foreground">
+                  <div className='whitespace-pre-wrap text-muted-foreground'>
                     {this.state.error.stack}
                   </div>
                 </div>
               </details>
             )}
 
-            <p className="text-xs text-muted-foreground mt-6">
+            <p className='text-xs text-muted-foreground mt-6'>
               If this problem persists, please contact our support team.
             </p>
           </Card>

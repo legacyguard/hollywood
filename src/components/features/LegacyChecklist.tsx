@@ -26,35 +26,39 @@ const checklistItems: ChecklistItem[] = [
     key: 'setup-vault',
     icon: 'shield',
     title: 'Setup your secure vault',
-    description: 'Create your encrypted document storage with client-side security.',
+    description:
+      'Create your encrypted document storage with client-side security.',
     isCompleted: true,
-    pillar: 'today'
+    pillar: 'today',
   },
   {
     key: 'upload-documents',
     icon: 'upload',
     title: 'Upload important documents',
-    description: 'Add your essential documents like IDs, insurance, and legal papers.',
+    description:
+      'Add your essential documents like IDs, insurance, and legal papers.',
     isCompleted: true,
-    pillar: 'today'
+    pillar: 'today',
   },
   {
     key: 'add-guardians',
     icon: 'users',
     title: 'Add trusted guardians',
-    description: 'Invite family members or friends who can access your documents if needed.',
+    description:
+      'Invite family members or friends who can access your documents if needed.',
     isCompleted: false,
     isActive: true,
-    pillar: 'tomorrow'
+    pillar: 'tomorrow',
   },
   // TOMORROW pillar items
   {
     key: 'set-permissions',
     icon: 'key',
     title: 'Set guardian permissions',
-    description: 'Define what each guardian can access and when they can access it.',
+    description:
+      'Define what each guardian can access and when they can access it.',
     isCompleted: false,
-    pillar: 'tomorrow'
+    pillar: 'tomorrow',
   },
   {
     key: 'emergency-contacts',
@@ -62,7 +66,7 @@ const checklistItems: ChecklistItem[] = [
     title: 'Add emergency contacts',
     description: 'Set up emergency contact information for your guardians.',
     isCompleted: false,
-    pillar: 'tomorrow'
+    pillar: 'tomorrow',
   },
   // FOREVER pillar items
   {
@@ -71,7 +75,7 @@ const checklistItems: ChecklistItem[] = [
     title: 'Create legacy messages',
     description: 'Record video messages and letters for your loved ones.',
     isCompleted: false,
-    pillar: 'forever'
+    pillar: 'forever',
   },
   {
     key: 'schedule-reviews',
@@ -79,11 +83,14 @@ const checklistItems: ChecklistItem[] = [
     title: 'Schedule regular reviews',
     description: 'Set up reminders to keep your legacy plan updated.',
     isCompleted: false,
-    pillar: 'forever'
-  }
+    pillar: 'forever',
+  },
 ];
 
-export function LegacyChecklist({ className, onItemClick }: LegacyChecklistProps) {
+export function LegacyChecklist({
+  className,
+  onItemClick,
+}: LegacyChecklistProps) {
   const completedItems = checklistItems.filter(item => item.isCompleted).length;
   const totalItems = checklistItems.length;
   const progressPercentage = Math.round((completedItems / totalItems) * 100);
@@ -110,27 +117,26 @@ export function LegacyChecklist({ className, onItemClick }: LegacyChecklistProps
   return (
     <Card className={cn('max-w-2xl p-6', className)}>
       {/* Header with progress */}
-      <div className="flex items-center gap-4 mb-6">
-        <div className="flex-shrink-0 w-14 h-14 rounded-full bg-gradient-to-br from-primary via-primary-foreground to-primary flex items-center justify-center">
-          <Icon name="sparkles" className="w-7 h-7 text-white" />
+      <div className='flex items-center gap-4 mb-6'>
+        <div className='flex-shrink-0 w-14 h-14 rounded-full bg-gradient-to-br from-primary via-primary-foreground to-primary flex items-center justify-center'>
+          <Icon name='sparkles' className='w-7 h-7 text-white' />
         </div>
-        <div className="flex-1">
-          <div className="flex items-center justify-between mb-2">
-            <h3 className="font-semibold text-lg">Guardian of Memories Progress</h3>
-            <span className="text-sm font-medium text-muted-foreground">
+        <div className='flex-1'>
+          <div className='flex items-center justify-between mb-2'>
+            <h3 className='font-semibold text-lg'>
+              Guardian of Memories Progress
+            </h3>
+            <span className='text-sm font-medium text-muted-foreground'>
               {completedItems}/{totalItems} completed
             </span>
           </div>
-          <Progress
-            value={progressPercentage}
-            className="h-2"
-          />
+          <Progress value={progressPercentage} className='h-2' />
         </div>
       </div>
 
       {/* Checklist items */}
-      <div className="space-y-3">
-        {checklistItems.map((item) => (
+      <div className='space-y-3'>
+        {checklistItems.map(item => (
           <div
             key={item.key}
             className={cn(
@@ -138,13 +144,13 @@ export function LegacyChecklist({ className, onItemClick }: LegacyChecklistProps
               {
                 'bg-accent/30 border-primary/30': item.isActive,
                 'border-border': !item.isActive,
-                'opacity-90': item.isCompleted
+                'opacity-90': item.isCompleted,
               }
             )}
             onClick={() => handleItemClick(item)}
           >
             {/* Icon */}
-            <div className="flex-shrink-0 w-10 h-10 rounded-lg border border-border flex items-center justify-center">
+            <div className='flex-shrink-0 w-10 h-10 rounded-lg border border-border flex items-center justify-center'>
               <Icon
                 name={item.icon}
                 className={cn('w-5 h-5', getPillarColor(item.pillar))}
@@ -152,21 +158,27 @@ export function LegacyChecklist({ className, onItemClick }: LegacyChecklistProps
             </div>
 
             {/* Content */}
-            <div className="flex-1 min-w-0">
-              <h4 className="font-medium text-sm text-foreground mb-1">
+            <div className='flex-1 min-w-0'>
+              <h4 className='font-medium text-sm text-foreground mb-1'>
                 {item.title}
               </h4>
-              <p className="text-xs text-muted-foreground line-clamp-2">
+              <p className='text-xs text-muted-foreground line-clamp-2'>
                 {item.description}
               </p>
             </div>
 
             {/* Status indicator */}
-            <div className="flex-shrink-0">
+            <div className='flex-shrink-0'>
               {item.isCompleted ? (
-                <Icon name="checkCircle" className="w-7 h-7 text-status-success" />
+                <Icon
+                  name='checkCircle'
+                  className='w-7 h-7 text-status-success'
+                />
               ) : (
-                <Icon name="arrowRight" className="w-7 h-7 text-muted-foreground" />
+                <Icon
+                  name='arrowRight'
+                  className='w-7 h-7 text-muted-foreground'
+                />
               )}
             </div>
           </div>
@@ -174,12 +186,13 @@ export function LegacyChecklist({ className, onItemClick }: LegacyChecklistProps
       </div>
 
       {/* Call to action */}
-      <div className="mt-6 pt-4 border-t border-border">
-        <p className="text-sm text-muted-foreground mb-3">
-          You're {progressPercentage}% through your journey as a Guardian of Memories
+      <div className='mt-6 pt-4 border-t border-border'>
+        <p className='text-sm text-muted-foreground mb-3'>
+          You're {progressPercentage}% through your journey as a Guardian of
+          Memories
         </p>
         <Button
-          className="w-full"
+          className='w-full'
           onClick={() => {
             const nextItem = checklistItems.find(item => !item.isCompleted);
             if (nextItem && onItemClick) {
@@ -188,7 +201,7 @@ export function LegacyChecklist({ className, onItemClick }: LegacyChecklistProps
           }}
         >
           Continue Your Journey
-          <Icon name="arrowRight" className="w-4 h-4 ml-2" />
+          <Icon name='arrowRight' className='w-4 h-4 ml-2' />
         </Button>
       </div>
     </Card>

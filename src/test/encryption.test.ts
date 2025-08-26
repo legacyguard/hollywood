@@ -31,7 +31,9 @@ describe('Encryption Service', () => {
     mockEncryptionService.decryptText.mockResolvedValue('decrypted text');
     mockEncryptionService.rotateKeys.mockResolvedValue({ success: true });
     mockEncryptionService.checkRotationNeeded.mockResolvedValue(false);
-    mockEncryptionService.migrateFromLocalStorage.mockResolvedValue({ success: true });
+    mockEncryptionService.migrateFromLocalStorage.mockResolvedValue({
+      success: true,
+    });
   });
 
   describe('Key Management', () => {
@@ -42,7 +44,8 @@ describe('Encryption Service', () => {
         json: () => Promise.resolve(mockResponse),
       });
 
-      const result = await mockEncryptionService.initializeKeys('testPassword123');
+      const result =
+        await mockEncryptionService.initializeKeys('testPassword123');
 
       expect(result.success).toBe(true);
       expect(fetch).toHaveBeenCalledWith('/api/keys/generate', {
@@ -100,10 +103,12 @@ describe('Encryption Service', () => {
       mockEncryptionService.encryptFile.mockResolvedValue({
         encryptedData: new Uint8Array([1, 2, 3]),
         nonce: new Uint8Array([4, 5, 6]),
-        metadata: { algorithm: 'nacl.secretbox' }
+        metadata: { algorithm: 'nacl.secretbox' },
       });
 
-      const mockFile = new File(['test content'], 'test.txt', { type: 'text/plain' });
+      const mockFile = new File(['test content'], 'test.txt', {
+        type: 'text/plain',
+      });
       const result = await mockEncryptionService.encryptFile(mockFile);
 
       expect(result).toBeDefined();
@@ -117,7 +122,9 @@ describe('Encryption Service', () => {
       mockEncryptionService.areKeysUnlocked.mockResolvedValue(false);
       mockEncryptionService.encryptFile.mockResolvedValue(null);
 
-      const mockFile = new File(['test content'], 'test.txt', { type: 'text/plain' });
+      const mockFile = new File(['test content'], 'test.txt', {
+        type: 'text/plain',
+      });
       const result = await mockEncryptionService.encryptFile(mockFile);
 
       expect(result).toBeNull();
@@ -131,10 +138,12 @@ describe('Encryption Service', () => {
       const mockEncrypted = {
         encrypted: new Uint8Array([7, 8, 9]),
         nonce: new Uint8Array([10, 11, 12]),
-        metadata: { algorithm: 'nacl.secretbox' }
+        metadata: { algorithm: 'nacl.secretbox' },
       };
       mockEncryptionService.encryptText.mockResolvedValue(mockEncrypted);
-      mockEncryptionService.decryptText.mockResolvedValue('Sensitive information');
+      mockEncryptionService.decryptText.mockResolvedValue(
+        'Sensitive information'
+      );
 
       const testText = 'Sensitive information';
       const encrypted = await mockEncryptionService.encryptText(testText);
@@ -158,13 +167,19 @@ describe('Encryption Service', () => {
         json: () => Promise.resolve(mockResponse),
       });
 
-      const result = await mockEncryptionService.rotateKeys('oldPassword', 'newPassword');
+      const result = await mockEncryptionService.rotateKeys(
+        'oldPassword',
+        'newPassword'
+      );
 
       expect(result.success).toBe(true);
       expect(fetch).toHaveBeenCalledWith('/api/keys/rotate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ currentPassword: 'oldPassword', newPassword: 'newPassword' }),
+        body: JSON.stringify({
+          currentPassword: 'oldPassword',
+          newPassword: 'newPassword',
+        }),
       });
     });
 
@@ -197,7 +212,8 @@ describe('Encryption Service', () => {
         json: () => Promise.resolve(mockResponse),
       });
 
-      const result = await mockEncryptionService.migrateFromLocalStorage('password');
+      const result =
+        await mockEncryptionService.migrateFromLocalStorage('password');
 
       expect(result.success).toBe(true);
     });
@@ -207,7 +223,7 @@ describe('Encryption Service', () => {
     it('should handle network errors gracefully', async () => {
       mockEncryptionService.initializeKeys.mockResolvedValueOnce({
         success: false,
-        error: 'Failed to initialize encryption keys: Network error'
+        error: 'Failed to initialize encryption keys: Network error',
       });
 
       const result = await mockEncryptionService.initializeKeys('password');
@@ -219,7 +235,7 @@ describe('Encryption Service', () => {
     it('should handle API errors', async () => {
       mockEncryptionService.initializeKeys.mockResolvedValueOnce({
         success: false,
-        error: 'Internal server error'
+        error: 'Internal server error',
       });
 
       const result = await mockEncryptionService.initializeKeys('password');

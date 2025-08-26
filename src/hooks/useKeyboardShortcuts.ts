@@ -8,9 +8,10 @@ export const useKeyboardShortcuts = (onOpenSearch?: () => void) => {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       // Check if user is typing in an input field
-      const isTyping = ['input', 'textarea', 'select'].includes(
-        (event.target as HTMLElement).tagName.toLowerCase()
-      ) || (event.target as HTMLElement).isContentEditable;
+      const isTyping =
+        ['input', 'textarea', 'select'].includes(
+          (event.target as HTMLElement).tagName.toLowerCase()
+        ) || (event.target as HTMLElement).isContentEditable;
 
       if (isTyping) return;
 

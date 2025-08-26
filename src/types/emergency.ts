@@ -1,13 +1,30 @@
-export type EmergencyTriggerType = 'inactivity_detected' | 'manual_guardian' | 'admin_override' | 'health_check_failure';
-export type EmergencyStatus = 'pending' | 'confirmed' | 'rejected' | 'expired' | 'cancelled';
-export type ShieldStatus = 'inactive' | 'pending_verification' | 'active' | 'triggered';
+export type EmergencyTriggerType =
+  | 'inactivity_detected'
+  | 'manual_guardian'
+  | 'admin_override'
+  | 'health_check_failure';
+export type EmergencyStatus =
+  | 'pending'
+  | 'confirmed'
+  | 'rejected'
+  | 'expired'
+  | 'cancelled';
+export type ShieldStatus =
+  | 'inactive'
+  | 'pending_verification'
+  | 'active'
+  | 'triggered';
 
 // Core Emergency Detection Types
 export interface EmergencyDetectionRule {
   id: string;
   name: string;
   description: string;
-  rule_type: 'inactivity' | 'health_check' | 'guardian_manual' | 'suspicious_activity';
+  rule_type:
+    | 'inactivity'
+    | 'health_check'
+    | 'guardian_manual'
+    | 'suspicious_activity';
   is_enabled: boolean;
   trigger_conditions: EmergencyTriggerCondition[];
   response_actions: EmergencyResponseAction[];
@@ -17,12 +34,21 @@ export interface EmergencyTriggerCondition {
   type: 'time_based' | 'activity_based' | 'guardian_based' | 'document_based';
   threshold_value: number;
   threshold_unit: 'days' | 'weeks' | 'months' | 'attempts' | 'guardians';
-  comparison_operator: 'greater_than' | 'less_than' | 'equal_to' | 'not_equal_to';
+  comparison_operator:
+    | 'greater_than'
+    | 'less_than'
+    | 'equal_to'
+    | 'not_equal_to';
   metadata?: Record<string, any>;
 }
 
 export interface EmergencyResponseAction {
-  type: 'notify_guardians' | 'activate_shield' | 'send_email' | 'create_alert' | 'log_event';
+  type:
+    | 'notify_guardians'
+    | 'activate_shield'
+    | 'send_email'
+    | 'create_alert'
+    | 'log_event';
   priority: number;
   delay_minutes: number;
   target_guardians?: string[]; // Guardian IDs
@@ -128,7 +154,11 @@ export interface GuardianNotification {
   id: string;
   guardian_id: string;
   user_id: string;
-  notification_type: 'activation_request' | 'verification_needed' | 'shield_activated' | 'status_update';
+  notification_type:
+    | 'activation_request'
+    | 'verification_needed'
+    | 'shield_activated'
+    | 'status_update';
   title: string;
   message: string;
   action_required: boolean;
@@ -167,7 +197,13 @@ export interface SurvivorInterface {
 
 export interface SurvivorResource {
   id: string;
-  category: 'financial' | 'legal' | 'medical' | 'personal' | 'contacts' | 'instructions';
+  category:
+    | 'financial'
+    | 'legal'
+    | 'medical'
+    | 'personal'
+    | 'contacts'
+    | 'instructions';
   title: string;
   description: string;
   access_level: 'immediate' | 'guardian_verified' | 'legal_required';
@@ -239,4 +275,5 @@ export const EMERGENCY_PRIORITY_LEVELS = {
   URGENT: 'urgent',
 } as const;
 
-export type EmergencyPriority = typeof EMERGENCY_PRIORITY_LEVELS[keyof typeof EMERGENCY_PRIORITY_LEVELS];
+export type EmergencyPriority =
+  (typeof EMERGENCY_PRIORITY_LEVELS)[keyof typeof EMERGENCY_PRIORITY_LEVELS];

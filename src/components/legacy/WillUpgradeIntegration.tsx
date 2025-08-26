@@ -1,12 +1,26 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
-import { CheckCircle, Star, Users, Globe, Shield, Heart, Eye } from 'lucide-react';
+import {
+  CheckCircle,
+  Star,
+  Users,
+  Globe,
+  Shield,
+  Heart,
+  Eye,
+} from 'lucide-react';
 import type { WillData } from '@/types/will';
 import { ValidationIndicator } from './ValidationIndicator';
 import { FamilyTreeVisualization } from './FamilyTreeVisualization';
@@ -31,10 +45,12 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
   willType,
   jurisdiction,
   onWillDataUpdate,
-  onUpgradeComplete
+  onUpgradeComplete,
 }) => {
   const [activeUpgrade, setActiveUpgrade] = useState<string | null>(null);
-  const [completedUpgrades, setCompletedUpgrades] = useState<Set<string>>(new Set());
+  const [completedUpgrades, setCompletedUpgrades] = useState<Set<string>>(
+    new Set()
+  );
   const [isUpgradeMode, setIsUpgradeMode] = useState(false);
   const [upgradeProgress, setUpgradeProgress] = useState(0);
 
@@ -45,119 +61,146 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
     isValidating,
     validationSummary,
     isWillValid,
-    getValidationMessages
+    getValidationMessages,
   } = useWillValidation({
     willData,
     willType,
     jurisdiction,
-    enableRealTime: true
+    enableRealTime: true,
   });
 
   // Multi-language generation
-  const {
-    generateDocument,
-    availableLanguages,
-    isGenerating
-  } = useMultiLangGenerator();
+  const { generateDocument, availableLanguages, isGenerating } =
+    useMultiLangGenerator();
 
   // Professional review integration
-  const professionalReview = useProfessionalReviewWorkflow(willData, jurisdiction);
+  const professionalReview = useProfessionalReviewWorkflow(
+    willData,
+    jurisdiction
+  );
 
   // Upgrade features configuration
   const upgradeFeatures = [
     {
       id: 'legal-validation',
       title: 'Real-Time Legal Validation',
-      description: 'Advanced legal compliance checking with jurisdiction-specific rules',
+      description:
+        'Advanced legal compliance checking with jurisdiction-specific rules',
       icon: Shield,
-      status: isWillValid ? 'completed' : validationSummary.errors > 0 ? 'needs-attention' : 'available',
-      component: 'validation'
+      status: isWillValid
+        ? 'completed'
+        : validationSummary.errors > 0
+          ? 'needs-attention'
+          : 'available',
+      component: 'validation',
     },
     {
       id: 'multi-language',
       title: 'Multi-Language Generation',
-      description: 'Generate will documents in Slovak, Czech, English, and German',
+      description:
+        'Generate will documents in Slovak, Czech, English, and German',
       icon: Globe,
-      status: completedUpgrades.has('multi-language') ? 'completed' : 'available',
-      component: 'multi-language'
+      status: completedUpgrades.has('multi-language')
+        ? 'completed'
+        : 'available',
+      component: 'multi-language',
     },
     {
       id: 'family-tree',
       title: 'Family Tree Visualization',
-      description: 'Visual inheritance flow mapping with drag-and-drop assignment',
+      description:
+        'Visual inheritance flow mapping with drag-and-drop assignment',
       icon: Users,
       status: completedUpgrades.has('family-tree') ? 'completed' : 'available',
-      component: 'family-tree'
+      component: 'family-tree',
     },
     {
       id: 'template-library',
       title: 'Template Library & Comparison',
       description: 'Curated will templates with version comparison',
       icon: Eye,
-      status: completedUpgrades.has('template-library') ? 'completed' : 'available',
-      component: 'template-library'
+      status: completedUpgrades.has('template-library')
+        ? 'completed'
+        : 'available',
+      component: 'template-library',
     },
     {
       id: 'emotional-guidance',
       title: 'Emotional Guidance & Legacy Messages',
       description: 'Memory prompts and time capsule creation for loved ones',
       icon: Heart,
-      status: completedUpgrades.has('emotional-guidance') ? 'completed' : 'available',
-      component: 'emotional-guidance'
+      status: completedUpgrades.has('emotional-guidance')
+        ? 'completed'
+        : 'available',
+      component: 'emotional-guidance',
     },
     {
       id: 'professional-review',
       title: 'Professional Review Network',
       description: 'Connect with attorneys, estate planners, and notaries',
       icon: Star,
-      status: professionalReview.reviewHistory.length > 0 ? 'completed' : 'available',
-      component: 'professional-review'
-    }
+      status:
+        professionalReview.reviewHistory.length > 0 ? 'completed' : 'available',
+      component: 'professional-review',
+    },
   ];
 
   // Calculate upgrade progress
   useEffect(() => {
     const totalFeatures = upgradeFeatures.length;
-    const completedCount = upgradeFeatures.filter(feature =>
-      feature.status === 'completed' || completedUpgrades.has(feature.id)
+    const completedCount = upgradeFeatures.filter(
+      feature =>
+        feature.status === 'completed' || completedUpgrades.has(feature.id)
     ).length;
     setUpgradeProgress((completedCount / totalFeatures) * 100);
   }, [completedUpgrades, upgradeFeatures]);
 
-  const handleUpgradeComplete = useCallback((upgradeId: string, updatedData?: WillData) => {
-    setCompletedUpgrades(prev => new Set([...prev, upgradeId]));
-    setActiveUpgrade(null);
+  const handleUpgradeComplete = useCallback(
+    (upgradeId: string, updatedData?: WillData) => {
+      setCompletedUpgrades(prev => new Set([...prev, upgradeId]));
+      setActiveUpgrade(null);
 
-    if (updatedData) {
-      onWillDataUpdate(updatedData);
-    }
+      if (updatedData) {
+        onWillDataUpdate(updatedData);
+      }
 
-    // Check if all upgrades are completed
-    if (completedUpgrades.size === upgradeFeatures.length - 1) {
-      setTimeout(() => {
-        onUpgradeComplete?.(updatedData || willData);
-      }, 1000);
-    }
-  }, [completedUpgrades, upgradeFeatures.length, onWillDataUpdate, onUpgradeComplete, willData]);
+      // Check if all upgrades are completed
+      if (completedUpgrades.size === upgradeFeatures.length - 1) {
+        setTimeout(() => {
+          onUpgradeComplete?.(updatedData || willData);
+        }, 1000);
+      }
+    },
+    [
+      completedUpgrades,
+      upgradeFeatures.length,
+      onWillDataUpdate,
+      onUpgradeComplete,
+      willData,
+    ]
+  );
 
   const renderUpgradeOverview = () => (
-    <div className="space-y-6">
-      <div className="text-center">
-        <h2 className="text-3xl font-bold mb-2">Will Upgrade Features</h2>
-        <p className="text-gray-600 mb-6">
-          Enhance your will with professional-grade features for complete peace of mind
+    <div className='space-y-6'>
+      <div className='text-center'>
+        <h2 className='text-3xl font-bold mb-2'>Will Upgrade Features</h2>
+        <p className='text-gray-600 mb-6'>
+          Enhance your will with professional-grade features for complete peace
+          of mind
         </p>
 
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium">Upgrade Progress</span>
-            <span className="text-sm text-gray-600">{Math.round(upgradeProgress)}% Complete</span>
+        <div className='mb-8'>
+          <div className='flex items-center justify-between mb-2'>
+            <span className='text-sm font-medium'>Upgrade Progress</span>
+            <span className='text-sm text-gray-600'>
+              {Math.round(upgradeProgress)}% Complete
+            </span>
           </div>
-          <Progress value={upgradeProgress} className="h-3" />
+          <Progress value={upgradeProgress} className='h-3' />
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
         {upgradeFeatures.map(feature => {
           const IconComponent = feature.icon;
 
@@ -165,48 +208,60 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
             <Card
               key={feature.id}
               className={`cursor-pointer transition-all hover:shadow-lg ${
-                feature.status === 'completed' ? 'border-green-200 bg-green-50' :
-                feature.status === 'needs-attention' ? 'border-yellow-200 bg-yellow-50' :
-                'hover:border-blue-200'
+                feature.status === 'completed'
+                  ? 'border-green-200 bg-green-50'
+                  : feature.status === 'needs-attention'
+                    ? 'border-yellow-200 bg-yellow-50'
+                    : 'hover:border-blue-200'
               }`}
               onClick={() => setActiveUpgrade(feature.id)}
             >
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <IconComponent className={`h-8 w-8 ${
-                    feature.status === 'completed' ? 'text-green-600' :
-                    feature.status === 'needs-attention' ? 'text-yellow-600' :
-                    'text-blue-600'
-                  }`} />
+              <CardHeader className='pb-3'>
+                <div className='flex items-center justify-between'>
+                  <IconComponent
+                    className={`h-8 w-8 ${
+                      feature.status === 'completed'
+                        ? 'text-green-600'
+                        : feature.status === 'needs-attention'
+                          ? 'text-yellow-600'
+                          : 'text-blue-600'
+                    }`}
+                  />
 
                   {feature.status === 'completed' && (
-                    <CheckCircle className="h-5 w-5 text-green-600" />
+                    <CheckCircle className='h-5 w-5 text-green-600' />
                   )}
                 </div>
 
-                <CardTitle className="text-lg">{feature.title}</CardTitle>
+                <CardTitle className='text-lg'>{feature.title}</CardTitle>
               </CardHeader>
 
               <CardContent>
-                <CardDescription className="text-sm mb-4">
+                <CardDescription className='text-sm mb-4'>
                   {feature.description}
                 </CardDescription>
 
-                <div className="flex items-center justify-between">
-                  <Badge variant={
-                    feature.status === 'completed' ? 'default' :
-                    feature.status === 'needs-attention' ? 'secondary' :
-                    'outline'
-                  }>
-                    {feature.status === 'completed' ? 'Completed' :
-                     feature.status === 'needs-attention' ? 'Needs Attention' :
-                     'Available'}
+                <div className='flex items-center justify-between'>
+                  <Badge
+                    variant={
+                      feature.status === 'completed'
+                        ? 'default'
+                        : feature.status === 'needs-attention'
+                          ? 'secondary'
+                          : 'outline'
+                    }
+                  >
+                    {feature.status === 'completed'
+                      ? 'Completed'
+                      : feature.status === 'needs-attention'
+                        ? 'Needs Attention'
+                        : 'Available'}
                   </Badge>
 
                   <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-blue-600 hover:text-blue-700"
+                    variant='ghost'
+                    size='sm'
+                    className='text-blue-600 hover:text-blue-700'
                   >
                     {feature.status === 'completed' ? 'Review' : 'Start'}
                   </Button>
@@ -217,11 +272,11 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
         })}
       </div>
 
-      <div className="text-center pt-6">
+      <div className='text-center pt-6'>
         <Button
           onClick={() => setIsUpgradeMode(true)}
-          size="lg"
-          className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+          size='lg'
+          className='bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700'
         >
           Start Comprehensive Upgrade
         </Button>
@@ -238,57 +293,68 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
     switch (feature.component) {
       case 'validation':
         return (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <h3 className="text-2xl font-bold">Real-Time Legal Validation</h3>
-              <Button variant="outline" onClick={() => setActiveUpgrade(null)}>
+          <div className='space-y-6'>
+            <div className='flex items-center justify-between'>
+              <h3 className='text-2xl font-bold'>Real-Time Legal Validation</h3>
+              <Button variant='outline' onClick={() => setActiveUpgrade(null)}>
                 Back to Overview
               </Button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-              <Card className="p-4 text-center">
-                <div className="text-2xl font-bold text-green-600">
+            <div className='grid grid-cols-1 md:grid-cols-3 gap-4 mb-6'>
+              <Card className='p-4 text-center'>
+                <div className='text-2xl font-bold text-green-600'>
                   {validationSummary.successes}
                 </div>
-                <div className="text-sm text-gray-600">Validations Passed</div>
+                <div className='text-sm text-gray-600'>Validations Passed</div>
               </Card>
-              <Card className="p-4 text-center">
-                <div className="text-2xl font-bold text-yellow-600">
+              <Card className='p-4 text-center'>
+                <div className='text-2xl font-bold text-yellow-600'>
                   {validationSummary.warnings}
                 </div>
-                <div className="text-sm text-gray-600">Warnings</div>
+                <div className='text-sm text-gray-600'>Warnings</div>
               </Card>
-              <Card className="p-4 text-center">
-                <div className="text-2xl font-bold text-red-600">
+              <Card className='p-4 text-center'>
+                <div className='text-2xl font-bold text-red-600'>
                   {validationSummary.errors}
                 </div>
-                <div className="text-sm text-gray-600">Critical Issues</div>
+                <div className='text-sm text-gray-600'>Critical Issues</div>
               </Card>
             </div>
 
-            <div className="space-y-4">
+            <div className='space-y-4'>
               {getValidationMessages('error').map((validation, index) => (
-                <ValidationIndicator key={`error-${index}`} validation={validation} showDetails />
+                <ValidationIndicator
+                  key={`error-${index}`}
+                  validation={validation}
+                  showDetails
+                />
               ))}
 
               {getValidationMessages('warning').map((validation, index) => (
-                <ValidationIndicator key={`warning-${index}`} validation={validation} showDetails />
+                <ValidationIndicator
+                  key={`warning-${index}`}
+                  validation={validation}
+                  showDetails
+                />
               ))}
             </div>
 
             {isWillValid && (
               <Alert>
-                <CheckCircle className="h-4 w-4" />
+                <CheckCircle className='h-4 w-4' />
                 <AlertDescription>
-                  Your will meets all legal requirements for {jurisdiction}. Ready for professional review or finalization.
+                  Your will meets all legal requirements for {jurisdiction}.
+                  Ready for professional review or finalization.
                 </AlertDescription>
               </Alert>
             )}
 
-            <div className="flex justify-end space-x-4">
+            <div className='flex justify-end space-x-4'>
               {isWillValid && (
-                <Button onClick={() => handleUpgradeComplete('legal-validation')}>
+                <Button
+                  onClick={() => handleUpgradeComplete('legal-validation')}
+                >
                   Mark Validation Complete
                 </Button>
               )}
@@ -298,26 +364,40 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
 
       case 'multi-language':
         return (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <h3 className="text-2xl font-bold">Multi-Language Document Generation</h3>
-              <Button variant="outline" onClick={() => setActiveUpgrade(null)}>
+          <div className='space-y-6'>
+            <div className='flex items-center justify-between'>
+              <h3 className='text-2xl font-bold'>
+                Multi-Language Document Generation
+              </h3>
+              <Button variant='outline' onClick={() => setActiveUpgrade(null)}>
                 Back to Overview
               </Button>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className='grid grid-cols-2 md:grid-cols-4 gap-4'>
               {availableLanguages.map(lang => (
-                <Card key={lang.code} className="p-4 text-center cursor-pointer hover:bg-gray-50">
-                  <div className="text-2xl mb-2">{lang.flag}</div>
-                  <div className="font-medium">{lang.name}</div>
-                  <div className="text-sm text-gray-600">{lang.jurisdiction}</div>
+                <Card
+                  key={lang.code}
+                  className='p-4 text-center cursor-pointer hover:bg-gray-50'
+                >
+                  <div className='text-2xl mb-2'>{lang.flag}</div>
+                  <div className='font-medium'>{lang.name}</div>
+                  <div className='text-sm text-gray-600'>
+                    {lang.jurisdiction}
+                  </div>
 
                   <Button
-                    className="mt-3 w-full"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => generateDocument(willData, lang.code as any, jurisdiction, willType)}
+                    className='mt-3 w-full'
+                    variant='outline'
+                    size='sm'
+                    onClick={() =>
+                      generateDocument(
+                        willData,
+                        lang.code as any,
+                        jurisdiction,
+                        willType
+                      )
+                    }
                     disabled={isGenerating}
                   >
                     {isGenerating ? 'Generating...' : 'Generate'}
@@ -326,7 +406,7 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
               ))}
             </div>
 
-            <div className="flex justify-end">
+            <div className='flex justify-end'>
               <Button onClick={() => handleUpgradeComplete('multi-language')}>
                 Complete Multi-Language Setup
               </Button>
@@ -336,10 +416,12 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
 
       case 'family-tree':
         return (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <h3 className="text-2xl font-bold">Family Tree & Inheritance Visualization</h3>
-              <Button variant="outline" onClick={() => setActiveUpgrade(null)}>
+          <div className='space-y-6'>
+            <div className='flex items-center justify-between'>
+              <h3 className='text-2xl font-bold'>
+                Family Tree & Inheritance Visualization
+              </h3>
+              <Button variant='outline' onClick={() => setActiveUpgrade(null)}>
                 Back to Overview
               </Button>
             </div>
@@ -354,10 +436,12 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
 
       case 'template-library':
         return (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <h3 className="text-2xl font-bold">Template Library & Will Comparison</h3>
-              <Button variant="outline" onClick={() => setActiveUpgrade(null)}>
+          <div className='space-y-6'>
+            <div className='flex items-center justify-between'>
+              <h3 className='text-2xl font-bold'>
+                Template Library & Will Comparison
+              </h3>
+              <Button variant='outline' onClick={() => setActiveUpgrade(null)}>
                 Back to Overview
               </Button>
             </div>
@@ -365,38 +449,46 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
             <WillTemplateLibrary
               currentWill={willData}
               jurisdiction={jurisdiction}
-              onTemplateApply={(updatedWillData) => {
+              onTemplateApply={updatedWillData => {
                 onWillDataUpdate(updatedWillData);
                 handleUpgradeComplete('template-library', updatedWillData);
               }}
-              onComparisonComplete={() => handleUpgradeComplete('template-library')}
+              onComparisonComplete={() =>
+                handleUpgradeComplete('template-library')
+              }
             />
           </div>
         );
 
       case 'emotional-guidance':
         return (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <h3 className="text-2xl font-bold">Emotional Guidance & Legacy Messages</h3>
-              <Button variant="outline" onClick={() => setActiveUpgrade(null)}>
+          <div className='space-y-6'>
+            <div className='flex items-center justify-between'>
+              <h3 className='text-2xl font-bold'>
+                Emotional Guidance & Legacy Messages
+              </h3>
+              <Button variant='outline' onClick={() => setActiveUpgrade(null)}>
                 Back to Overview
               </Button>
             </div>
 
             <EmotionalGuidanceSystem
               willData={willData}
-              onLegacyMessageCreated={() => handleUpgradeComplete('emotional-guidance')}
+              onLegacyMessageCreated={() =>
+                handleUpgradeComplete('emotional-guidance')
+              }
             />
           </div>
         );
 
       case 'professional-review':
         return (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <h3 className="text-2xl font-bold">Professional Review Network</h3>
-              <Button variant="outline" onClick={() => setActiveUpgrade(null)}>
+          <div className='space-y-6'>
+            <div className='flex items-center justify-between'>
+              <h3 className='text-2xl font-bold'>
+                Professional Review Network
+              </h3>
+              <Button variant='outline' onClick={() => setActiveUpgrade(null)}>
                 Back to Overview
               </Button>
             </div>
@@ -404,7 +496,9 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
             <ProfessionalReviewNetwork
               willData={willData}
               jurisdiction={jurisdiction}
-              onReviewComplete={() => handleUpgradeComplete('professional-review')}
+              onReviewComplete={() =>
+                handleUpgradeComplete('professional-review')
+              }
             />
           </div>
         );
@@ -415,27 +509,35 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
   };
 
   const renderUpgradeWorkflow = () => (
-    <div className="space-y-6">
-      <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold mb-2">Comprehensive Will Upgrade</h2>
-        <p className="text-gray-600 mb-6">
+    <div className='space-y-6'>
+      <div className='text-center mb-8'>
+        <h2 className='text-3xl font-bold mb-2'>Comprehensive Will Upgrade</h2>
+        <p className='text-gray-600 mb-6'>
           We'll guide you through all upgrade features systematically
         </p>
 
-        <div className="mb-8">
-          <Progress value={upgradeProgress} className="h-4" />
-          <div className="text-sm text-gray-600 mt-2">
-            {completedUpgrades.size} of {upgradeFeatures.length} upgrades completed
+        <div className='mb-8'>
+          <Progress value={upgradeProgress} className='h-4' />
+          <div className='text-sm text-gray-600 mt-2'>
+            {completedUpgrades.size} of {upgradeFeatures.length} upgrades
+            completed
           </div>
         </div>
       </div>
 
-      <Tabs value={activeUpgrade || upgradeFeatures[0].id} onValueChange={setActiveUpgrade}>
-        <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6">
+      <Tabs
+        value={activeUpgrade || upgradeFeatures[0].id}
+        onValueChange={setActiveUpgrade}
+      >
+        <TabsList className='grid w-full grid-cols-3 lg:grid-cols-6'>
           {upgradeFeatures.map(feature => (
-            <TabsTrigger key={feature.id} value={feature.id} className="text-xs">
+            <TabsTrigger
+              key={feature.id}
+              value={feature.id}
+              className='text-xs'
+            >
               {completedUpgrades.has(feature.id) && (
-                <CheckCircle className="w-3 h-3 mr-1" />
+                <CheckCircle className='w-3 h-3 mr-1' />
               )}
               {feature.title.split(' ')[0]}
             </TabsTrigger>
@@ -449,21 +551,18 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
         ))}
       </Tabs>
 
-      <div className="flex justify-between items-center pt-6 border-t">
-        <Button
-          variant="outline"
-          onClick={() => setIsUpgradeMode(false)}
-        >
+      <div className='flex justify-between items-center pt-6 border-t'>
+        <Button variant='outline' onClick={() => setIsUpgradeMode(false)}>
           Exit Upgrade Mode
         </Button>
 
-        <div className="text-sm text-gray-600">
+        <div className='text-sm text-gray-600'>
           Complete all upgrades for the ultimate will experience
         </div>
 
         {upgradeProgress === 100 && (
           <Button
-            className="bg-gradient-to-r from-green-600 to-emerald-600"
+            className='bg-gradient-to-r from-green-600 to-emerald-600'
             onClick={() => onUpgradeComplete?.(willData)}
           >
             Finalize Upgraded Will
@@ -474,10 +573,12 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
   );
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
-      {isUpgradeMode ? renderUpgradeWorkflow() :
-       activeUpgrade ? renderActiveUpgrade() :
-       renderUpgradeOverview()}
+    <div className='max-w-6xl mx-auto p-6'>
+      {isUpgradeMode
+        ? renderUpgradeWorkflow()
+        : activeUpgrade
+          ? renderActiveUpgrade()
+          : renderUpgradeOverview()}
     </div>
   );
 };

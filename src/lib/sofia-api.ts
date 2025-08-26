@@ -32,7 +32,9 @@ class SofiaAPI {
     if (this.initialized) {
       console.log('[Sofia API] Initialized with Supabase Edge Function');
     } else {
-      console.warn('[Sofia API] Supabase credentials not found. Using mock responses only.');
+      console.warn(
+        '[Sofia API] Supabase credentials not found. Using mock responses only.'
+      );
     }
   }
 
@@ -40,27 +42,32 @@ class SofiaAPI {
    * Process simple queries (Category 2: Low cost)
    * Used for knowledge base searches and simple Q&A
    */
-  async processSimpleQuery(request: SofiaAPIRequest): Promise<SofiaAPIResponse> {
+  async processSimpleQuery(
+    request: SofiaAPIRequest
+  ): Promise<SofiaAPIResponse> {
     if (!this.initialized) {
       return this.getMockResponse(request);
     }
 
     try {
-      const response = await fetch(`${this.supabaseUrl}/functions/v1/sofia-ai-guided`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.supabaseKey}`
-        },
-        body: JSON.stringify({
-          action: 'simple_query',
-          data: {
-            prompt: request.prompt,
-            context: request.context,
-            conversationHistory: request.conversationHistory
-          }
-        })
-      });
+      const response = await fetch(
+        `${this.supabaseUrl}/functions/v1/sofia-ai-guided`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${this.supabaseKey}`,
+          },
+          body: JSON.stringify({
+            action: 'simple_query',
+            data: {
+              prompt: request.prompt,
+              context: request.context,
+              conversationHistory: request.conversationHistory,
+            },
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`Server error: ${response.status}`);
@@ -72,9 +79,8 @@ class SofiaAPI {
         success: true,
         response: result.response,
         tokensUsed: result.tokensUsed || 0,
-        cost: 'low_cost'
+        cost: 'low_cost',
       };
-
     } catch (error) {
       console.error('[Sofia API] Error in simple query:', error);
       return this.getMockResponse(request);
@@ -85,31 +91,36 @@ class SofiaAPI {
    * Process premium AI features (Category 3: High cost)
    * Used for creative content generation like letters, summaries
    */
-  async processPremiumGeneration(request: SofiaAPIRequest): Promise<SofiaAPIResponse> {
+  async processPremiumGeneration(
+    request: SofiaAPIRequest
+  ): Promise<SofiaAPIResponse> {
     if (!this.initialized) {
       return {
         success: false,
         error: 'Premium features require server configuration.',
-        cost: 'premium'
+        cost: 'premium',
       };
     }
 
     try {
-      const response = await fetch(`${this.supabaseUrl}/functions/v1/sofia-ai-guided`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.supabaseKey}`
-        },
-        body: JSON.stringify({
-          action: 'premium_generation',
-          data: {
-            prompt: request.prompt,
-            context: request.context,
-            conversationHistory: request.conversationHistory
-          }
-        })
-      });
+      const response = await fetch(
+        `${this.supabaseUrl}/functions/v1/sofia-ai-guided`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${this.supabaseKey}`,
+          },
+          body: JSON.stringify({
+            action: 'premium_generation',
+            data: {
+              prompt: request.prompt,
+              context: request.context,
+              conversationHistory: request.conversationHistory,
+            },
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`Server error: ${response.status}`);
@@ -121,15 +132,15 @@ class SofiaAPI {
         success: true,
         response: result.response,
         tokensUsed: result.tokensUsed || 0,
-        cost: 'premium'
+        cost: 'premium',
       };
-
     } catch (error) {
       console.error('[Sofia API] Error in premium generation:', error);
       return {
         success: false,
-        error: 'Ospravedlňujem sa, vyskytla sa chyba pri generovaní prémiového obsahu.',
-        cost: 'premium'
+        error:
+          'Ospravedlňujem sa, vyskytla sa chyba pri generovaní prémiového obsahu.',
+        cost: 'premium',
       };
     }
   }
@@ -137,7 +148,10 @@ class SofiaAPI {
   /**
    * Generate system prompts based on context and request type
    */
-  private generateSystemPrompt(context: SofiaContext, type: 'simple' | 'premium'): string {
+  private generateSystemPrompt(
+    context: SofiaContext,
+    type: 'simple' | 'premium'
+  ): string {
     const basePrompt = `You are Sofia, a warm, intelligent AI assistant for LegacyGuard - a secure family protection platform. You help users organize their digital lives, protect their families, and create meaningful legacies.
 
 PERSONALITY:
@@ -163,21 +177,27 @@ RESPONSE STYLE:
 - Remember: You're helping someone protect what they love most`;
 
     if (type === 'simple') {
-      return basePrompt + `
+      return (
+        basePrompt +
+        `
 
 SIMPLE QUERY MODE:
 - Provide brief, direct answers (max 2-3 sentences)
 - Focus on being helpful and informative
-- Suggest relevant next steps when appropriate`;
+- Suggest relevant next steps when appropriate`
+      );
     }
 
-    return basePrompt + `
+    return (
+      basePrompt +
+      `
 
 PREMIUM MODE:
 - Take time to craft thoughtful, personalized responses
 - Use creative and emotional language when appropriate
 - Consider the user's family context deeply
-- Create meaningful, heartfelt content`;
+- Create meaningful, heartfelt content`
+    );
   }
 
   /**
@@ -187,23 +207,26 @@ PREMIUM MODE:
     const mockResponses = {
       simple_query: [
         "That's an interesting question. Based on your information, I would recommend first completing the upload of your basic documents.",
-        "I understand your situation. Given your progress, you might consider adding another guardian.",
-        "Your question is important. With your current setup, I would suggest focusing on securing your documents."
+        'I understand your situation. Given your progress, you might consider adding another guardian.',
+        'Your question is important. With your current setup, I would suggest focusing on securing your documents.',
       ],
       premium_generation: [
-        "Unfortunately, premium features require connection to AI services. Please try again later.",
-        "To generate personal messages, we need to configure AI services. For now, you can write your own messages."
-      ]
+        'Unfortunately, premium features require connection to AI services. Please try again later.',
+        'To generate personal messages, we need to configure AI services. For now, you can write your own messages.',
+      ],
     };
 
-    const responses = mockResponses[request.requestType] || mockResponses.simple_query;
-    const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+    const responses =
+      mockResponses[request.requestType] || mockResponses.simple_query;
+    const randomResponse =
+      responses[Math.floor(Math.random() * responses.length)];
 
     return {
       success: true,
       response: randomResponse,
       tokensUsed: 0,
-      cost: request.requestType === 'premium_generation' ? 'premium' : 'low_cost'
+      cost:
+        request.requestType === 'premium_generation' ? 'premium' : 'low_cost',
     };
   }
 
@@ -220,7 +243,7 @@ PREMIUM MODE:
   getStatus(): { available: boolean; hasSupabaseConfig: boolean } {
     return {
       available: this.initialized,
-      hasSupabaseConfig: !!(this.supabaseUrl && this.supabaseKey)
+      hasSupabaseConfig: !!(this.supabaseUrl && this.supabaseKey),
     };
   }
 }
@@ -239,6 +262,6 @@ export function createSofiaAPIRequest(
     prompt,
     context,
     requestType,
-    conversationHistory
+    conversationHistory,
   };
 }

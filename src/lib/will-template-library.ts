@@ -107,7 +107,11 @@ export interface ImpactAnalysis {
 export interface Modification {
   id: string;
   templateId: string;
-  type: 'field_change' | 'beneficiary_adjustment' | 'asset_addition' | 'custom_clause';
+  type:
+    | 'field_change'
+    | 'beneficiary_adjustment'
+    | 'asset_addition'
+    | 'custom_clause';
   description: string;
   rationale: string;
   priority: 'low' | 'medium' | 'high';
@@ -119,7 +123,8 @@ const WILL_TEMPLATES: WillTemplate[] = [
   {
     id: 'young_professional_simple',
     name: 'Young Professional - Simple Will',
-    description: 'Perfect for young professionals with modest assets and straightforward wishes',
+    description:
+      'Perfect for young professionals with modest assets and straightforward wishes',
     category: 'young_professional',
     jurisdiction: 'Slovakia',
     targetProfile: {
@@ -131,7 +136,7 @@ const WILL_TEMPLATES: WillTemplate[] = [
       hasBusinessInterests: false,
       hasInternationalAssets: false,
       complexFamilySituation: false,
-      specialConsiderations: []
+      specialConsiderations: [],
     },
     complexity: 'simple',
     estimatedCompletionTime: 15,
@@ -141,7 +146,7 @@ const WILL_TEMPLATES: WillTemplate[] = [
     tags: ['simple', 'young', 'basic', 'quick'],
     templateData: {
       testator_data: {
-        maritalStatus: 'single'
+        maritalStatus: 'single',
       },
       beneficiaries: [
         {
@@ -149,44 +154,54 @@ const WILL_TEMPLATES: WillTemplate[] = [
           name: '[PRIMARY_BENEFICIARY]',
           relationship: 'parent',
           percentage: 100,
-          conditions: ''
-        }
+          conditions: '',
+        },
       ],
       executor_data: {
         primaryExecutor: {
           name: '[EXECUTOR_NAME]',
-          relationship: 'parent'
-        }
+          relationship: 'parent',
+        },
       },
       special_instructions: {
-        organDonation: true
+        organDonation: true,
       },
       legal_data: {
-        jurisdiction: 'Slovakia'
-      }
+        jurisdiction: 'Slovakia',
+      },
     },
     placeholders: {
       '[PRIMARY_BENEFICIARY]': 'Name of main beneficiary (often parents)',
-      '[EXECUTOR_NAME]': 'Person who will handle your estate'
+      '[EXECUTOR_NAME]': 'Person who will handle your estate',
     },
-    requiredFields: ['testator_data.fullName', 'testator_data.address', 'beneficiaries'],
+    requiredFields: [
+      'testator_data.fullName',
+      'testator_data.address',
+      'beneficiaries',
+    ],
     optionalEnhancements: ['funeral_wishes', 'digital_assets', 'pet_care'],
     legalNotices: [
       'Consider updating when life circumstances change',
       'Ensure executor is willing and capable',
-      'Review beneficiary choices regularly'
+      'Review beneficiary choices regularly',
     ],
     preview: {
-      summaryText: 'Leaves everything to one primary beneficiary with simple execution',
-      keyFeatures: ['Single beneficiary', 'Simple execution', 'Organ donation included'],
+      summaryText:
+        'Leaves everything to one primary beneficiary with simple execution',
+      keyFeatures: [
+        'Single beneficiary',
+        'Simple execution',
+        'Organ donation included',
+      ],
       beneficiaryCount: 1,
-      assetTypes: ['general_estate']
-    }
+      assetTypes: ['general_estate'],
+    },
   },
   {
     id: 'new_parent_comprehensive',
     name: 'New Parent - Comprehensive Protection',
-    description: 'Comprehensive will for new parents focusing on child protection and guardianship',
+    description:
+      'Comprehensive will for new parents focusing on child protection and guardianship',
     category: 'new_parent',
     jurisdiction: 'Slovakia',
     targetProfile: {
@@ -198,7 +213,7 @@ const WILL_TEMPLATES: WillTemplate[] = [
       hasBusinessInterests: false,
       hasInternationalAssets: false,
       complexFamilySituation: false,
-      specialConsiderations: ['guardianship', 'education_fund']
+      specialConsiderations: ['guardianship', 'education_fund'],
     },
     complexity: 'moderate',
     estimatedCompletionTime: 30,
@@ -208,7 +223,7 @@ const WILL_TEMPLATES: WillTemplate[] = [
     tags: ['family', 'children', 'guardianship', 'comprehensive'],
     templateData: {
       testator_data: {
-        maritalStatus: 'married'
+        maritalStatus: 'married',
       },
       beneficiaries: [
         {
@@ -216,76 +231,89 @@ const WILL_TEMPLATES: WillTemplate[] = [
           name: '[SPOUSE_NAME]',
           relationship: 'spouse',
           percentage: 60,
-          conditions: 'if surviving'
+          conditions: 'if surviving',
         },
         {
           id: 'template_children',
           name: '[CHILDREN_NAMES]',
           relationship: 'child',
           percentage: 40,
-          conditions: 'to be divided equally among all children'
-        }
+          conditions: 'to be divided equally among all children',
+        },
       ],
       executor_data: {
         primaryExecutor: {
           name: '[SPOUSE_NAME]',
-          relationship: 'spouse'
+          relationship: 'spouse',
         },
         backupExecutor: {
           name: '[BACKUP_EXECUTOR]',
-          relationship: 'sibling'
-        }
+          relationship: 'sibling',
+        },
       },
       guardianship_data: {
         primaryGuardian: {
           name: '[PRIMARY_GUARDIAN]',
-          relationship: 'sibling'
+          relationship: 'sibling',
         },
         backupGuardian: {
           name: '[BACKUP_GUARDIAN]',
-          relationship: 'parent'
+          relationship: 'parent',
         },
-        guardianInstructions: 'Prioritize children\'s education and emotional well-being'
+        guardianInstructions:
+          "Prioritize children's education and emotional well-being",
       },
       special_instructions: {
         organDonation: false,
-        digitalAssets: 'Grant access to spouse for managing digital accounts and photos'
+        digitalAssets:
+          'Grant access to spouse for managing digital accounts and photos',
       },
       legal_data: {
-        jurisdiction: 'Slovakia'
-      }
+        jurisdiction: 'Slovakia',
+      },
     },
     placeholders: {
-      '[SPOUSE_NAME]': 'Your spouse\'s full name',
-      '[CHILDREN_NAMES]': 'Your children\'s names',
+      '[SPOUSE_NAME]': "Your spouse's full name",
+      '[CHILDREN_NAMES]': "Your children's names",
       '[BACKUP_EXECUTOR]': 'Trusted person if spouse cannot serve',
       '[PRIMARY_GUARDIAN]': 'Who will raise your children',
-      '[BACKUP_GUARDIAN]': 'Alternative guardian'
+      '[BACKUP_GUARDIAN]': 'Alternative guardian',
     },
     requiredFields: [
       'testator_data.fullName',
       'testator_data.address',
       'beneficiaries',
-      'guardianship_data.primaryGuardian'
+      'guardianship_data.primaryGuardian',
     ],
-    optionalEnhancements: ['education_fund', 'trust_provisions', 'insurance_instructions'],
+    optionalEnhancements: [
+      'education_fund',
+      'trust_provisions',
+      'insurance_instructions',
+    ],
     legalNotices: [
       'Guardian must consent to appointment',
       'Consider establishing education trust',
       'Review insurance beneficiaries',
-      'Update when more children are born'
+      'Update when more children are born',
     ],
     preview: {
-      summaryText: 'Protects spouse and children with comprehensive guardianship provisions',
-      keyFeatures: ['Spouse priority', 'Child guardianship', 'Education focus', 'Backup plans'],
+      summaryText:
+        'Protects spouse and children with comprehensive guardianship provisions',
+      keyFeatures: [
+        'Spouse priority',
+        'Child guardianship',
+        'Education focus',
+        'Backup plans',
+      ],
       beneficiaryCount: 2,
-      assetTypes: ['general_estate', 'guardianship']
-    }
+      assetTypes: ['general_estate', 'guardianship'],
+    },
   },
   {
     id: 'blended_family_balanced',
     name: 'Blended Family - Balanced Approach',
-    description: 'Carefully balanced will for blended families with children from multiple relationships',
+    description:
+      'Carefully balanced will for blended families with children from multiple relationships',
     category: 'blended_family',
     jurisdiction: 'Slovakia',
     targetProfile: {
@@ -297,7 +325,11 @@ const WILL_TEMPLATES: WillTemplate[] = [
       hasBusinessInterests: false,
       hasInternationalAssets: false,
       complexFamilySituation: true,
-      specialConsiderations: ['blended_family', 'step_children', 'ex_spouse_considerations']
+      specialConsiderations: [
+        'blended_family',
+        'step_children',
+        'ex_spouse_considerations',
+      ],
     },
     complexity: 'complex',
     estimatedCompletionTime: 45,
@@ -307,7 +339,7 @@ const WILL_TEMPLATES: WillTemplate[] = [
     tags: ['blended', 'complex', 'balanced', 'multiple_relationships'],
     templateData: {
       testator_data: {
-        maritalStatus: 'married'
+        maritalStatus: 'married',
       },
       beneficiaries: [
         {
@@ -315,74 +347,86 @@ const WILL_TEMPLATES: WillTemplate[] = [
           name: '[CURRENT_SPOUSE]',
           relationship: 'spouse',
           percentage: 40,
-          conditions: 'for lifetime use'
+          conditions: 'for lifetime use',
         },
         {
           id: 'template_bio_children',
           name: '[BIOLOGICAL_CHILDREN]',
           relationship: 'child',
           percentage: 35,
-          conditions: 'biological children from previous marriage'
+          conditions: 'biological children from previous marriage',
         },
         {
           id: 'template_step_children',
           name: '[STEP_CHILDREN]',
           relationship: 'child',
           percentage: 25,
-          conditions: 'step-children from current marriage'
-        }
+          conditions: 'step-children from current marriage',
+        },
       ],
       executor_data: {
         primaryExecutor: {
           name: '[NEUTRAL_EXECUTOR]',
-          relationship: 'friend'
-        }
+          relationship: 'friend',
+        },
       },
       guardianship_data: {
-        guardianInstructions: 'Consider existing custody arrangements and maintain sibling relationships'
+        guardianInstructions:
+          'Consider existing custody arrangements and maintain sibling relationships',
       },
       special_instructions: {
         personalMessages: [
           {
             recipient: '[CURRENT_SPOUSE]',
-            message: 'Thank you for embracing our blended family'
-          }
-        ]
+            message: 'Thank you for embracing our blended family',
+          },
+        ],
       },
       legal_data: {
-        jurisdiction: 'Slovakia'
-      }
+        jurisdiction: 'Slovakia',
+      },
     },
     placeholders: {
-      '[CURRENT_SPOUSE]': 'Current spouse\'s name',
+      '[CURRENT_SPOUSE]': "Current spouse's name",
       '[BIOLOGICAL_CHILDREN]': 'Your biological children',
       '[STEP_CHILDREN]': 'Your step-children',
-      '[NEUTRAL_EXECUTOR]': 'Neutral party to avoid family conflicts'
+      '[NEUTRAL_EXECUTOR]': 'Neutral party to avoid family conflicts',
     },
     requiredFields: [
       'testator_data.fullName',
       'testator_data.address',
       'beneficiaries',
-      'executor_data.primaryExecutor'
+      'executor_data.primaryExecutor',
     ],
-    optionalEnhancements: ['trust_provisions', 'conflict_resolution', 'family_mediation'],
+    optionalEnhancements: [
+      'trust_provisions',
+      'conflict_resolution',
+      'family_mediation',
+    ],
     legalNotices: [
       'Consider family dynamics carefully',
       'May require family discussions',
       'Consider separate trusts for different children',
-      'Regular updates recommended as children mature'
+      'Regular updates recommended as children mature',
     ],
     preview: {
-      summaryText: 'Balances interests of current spouse and children from multiple relationships',
-      keyFeatures: ['Balanced distribution', 'Neutral executor', 'Family harmony focus', 'Lifetime provisions'],
+      summaryText:
+        'Balances interests of current spouse and children from multiple relationships',
+      keyFeatures: [
+        'Balanced distribution',
+        'Neutral executor',
+        'Family harmony focus',
+        'Lifetime provisions',
+      ],
       beneficiaryCount: 3,
-      assetTypes: ['general_estate', 'trust_provisions']
-    }
+      assetTypes: ['general_estate', 'trust_provisions'],
+    },
   },
   {
     id: 'business_owner_comprehensive',
     name: 'Business Owner - Asset Protection',
-    description: 'Comprehensive will for business owners with succession planning and asset protection',
+    description:
+      'Comprehensive will for business owners with succession planning and asset protection',
     category: 'business_owner',
     jurisdiction: 'Slovakia',
     targetProfile: {
@@ -394,7 +438,11 @@ const WILL_TEMPLATES: WillTemplate[] = [
       hasBusinessInterests: true,
       hasInternationalAssets: false,
       complexFamilySituation: false,
-      specialConsiderations: ['business_succession', 'tax_planning', 'employee_protection']
+      specialConsiderations: [
+        'business_succession',
+        'tax_planning',
+        'employee_protection',
+      ],
     },
     complexity: 'complex',
     estimatedCompletionTime: 60,
@@ -404,7 +452,7 @@ const WILL_TEMPLATES: WillTemplate[] = [
     tags: ['business', 'succession', 'complex', 'assets'],
     templateData: {
       testator_data: {
-        maritalStatus: 'married'
+        maritalStatus: 'married',
       },
       beneficiaries: [
         {
@@ -412,67 +460,79 @@ const WILL_TEMPLATES: WillTemplate[] = [
           name: '[SPOUSE_NAME]',
           relationship: 'spouse',
           percentage: 45,
-          conditions: 'excluding business interests'
+          conditions: 'excluding business interests',
         },
         {
           id: 'template_children',
           name: '[CHILDREN_NAMES]',
           relationship: 'child',
           percentage: 45,
-          conditions: 'including business succession rights'
+          conditions: 'including business succession rights',
         },
         {
           id: 'template_employees',
           name: '[EMPLOYEE_TRUST]',
           relationship: 'other',
           percentage: 10,
-          conditions: 'employee benefit trust'
-        }
+          conditions: 'employee benefit trust',
+        },
       ],
       executor_data: {
         primaryExecutor: {
           name: '[BUSINESS_ATTORNEY]',
-          relationship: 'other'
-        }
+          relationship: 'other',
+        },
       },
       special_instructions: {
-        digitalAssets: 'Business continuity plan and digital asset inventory attached'
+        digitalAssets:
+          'Business continuity plan and digital asset inventory attached',
       },
       legal_data: {
-        jurisdiction: 'Slovakia'
-      }
+        jurisdiction: 'Slovakia',
+      },
     },
     placeholders: {
       '[SPOUSE_NAME]': 'Spouse who may or may not be involved in business',
       '[CHILDREN_NAMES]': 'Children being groomed for business succession',
       '[EMPLOYEE_TRUST]': 'Trust for key employees',
-      '[BUSINESS_ATTORNEY]': 'Business attorney or corporate executor'
+      '[BUSINESS_ATTORNEY]': 'Business attorney or corporate executor',
     },
     requiredFields: [
       'testator_data.fullName',
       'testator_data.address',
       'beneficiaries',
       'executor_data.primaryExecutor',
-      'assets.businessInterests'
+      'assets.businessInterests',
     ],
-    optionalEnhancements: ['business_valuation', 'tax_optimization', 'employee_succession'],
+    optionalEnhancements: [
+      'business_valuation',
+      'tax_optimization',
+      'employee_succession',
+    ],
     legalNotices: [
       'Coordinate with business attorney',
       'Consider tax implications',
       'Update buy-sell agreements',
-      'Review regularly as business grows'
+      'Review regularly as business grows',
     ],
     preview: {
-      summaryText: 'Protects family while ensuring business continuity and employee welfare',
-      keyFeatures: ['Business succession', 'Employee protection', 'Tax planning', 'Professional execution'],
+      summaryText:
+        'Protects family while ensuring business continuity and employee welfare',
+      keyFeatures: [
+        'Business succession',
+        'Employee protection',
+        'Tax planning',
+        'Professional execution',
+      ],
       beneficiaryCount: 3,
-      assetTypes: ['general_estate', 'business_interests', 'employee_benefits']
-    }
+      assetTypes: ['general_estate', 'business_interests', 'employee_benefits'],
+    },
   },
   {
     id: 'retiree_legacy_focused',
     name: 'Retiree - Legacy Focused',
-    description: 'Legacy-focused will for retirees with charitable giving and grandchildren provisions',
+    description:
+      'Legacy-focused will for retirees with charitable giving and grandchildren provisions',
     category: 'retiree',
     jurisdiction: 'Slovakia',
     targetProfile: {
@@ -484,7 +544,11 @@ const WILL_TEMPLATES: WillTemplate[] = [
       hasBusinessInterests: false,
       hasInternationalAssets: false,
       complexFamilySituation: false,
-      specialConsiderations: ['charitable_giving', 'grandchildren', 'legacy_planning']
+      specialConsiderations: [
+        'charitable_giving',
+        'grandchildren',
+        'legacy_planning',
+      ],
     },
     complexity: 'moderate',
     estimatedCompletionTime: 40,
@@ -494,7 +558,7 @@ const WILL_TEMPLATES: WillTemplate[] = [
     tags: ['legacy', 'charity', 'grandchildren', 'retiree'],
     templateData: {
       testator_data: {
-        maritalStatus: 'widowed'
+        maritalStatus: 'widowed',
       },
       beneficiaries: [
         {
@@ -502,73 +566,84 @@ const WILL_TEMPLATES: WillTemplate[] = [
           name: '[ADULT_CHILDREN]',
           relationship: 'child',
           percentage: 60,
-          conditions: 'to be divided equally'
+          conditions: 'to be divided equally',
         },
         {
           id: 'template_grandchildren',
           name: '[GRANDCHILDREN]',
           relationship: 'grandchild',
           percentage: 25,
-          conditions: 'education trust fund'
+          conditions: 'education trust fund',
         },
         {
           id: 'template_charity',
           name: '[PREFERRED_CHARITY]',
           relationship: 'charity',
           percentage: 15,
-          conditions: 'charitable bequest'
-        }
+          conditions: 'charitable bequest',
+        },
       ],
       executor_data: {
         primaryExecutor: {
           name: '[ELDEST_CHILD]',
-          relationship: 'child'
-        }
+          relationship: 'child',
+        },
       },
       special_instructions: {
-        funeralWishes: 'Simple funeral service, donations to charity in lieu of flowers',
+        funeralWishes:
+          'Simple funeral service, donations to charity in lieu of flowers',
         charitableBequests: [
           {
             charity: '[PREFERRED_CHARITY]',
-            amount: 15
-          }
+            amount: 15,
+          },
         ],
         personalMessages: [
           {
             recipient: '[GRANDCHILDREN]',
-            message: 'Education fund to help achieve your dreams'
-          }
-        ]
+            message: 'Education fund to help achieve your dreams',
+          },
+        ],
       },
       legal_data: {
-        jurisdiction: 'Slovakia'
-      }
+        jurisdiction: 'Slovakia',
+      },
     },
     placeholders: {
       '[ADULT_CHILDREN]': 'Your adult children',
       '[GRANDCHILDREN]': 'Your grandchildren',
       '[PREFERRED_CHARITY]': 'Charity close to your heart',
-      '[ELDEST_CHILD]': 'Most responsible adult child'
+      '[ELDEST_CHILD]': 'Most responsible adult child',
     },
     requiredFields: [
       'testator_data.fullName',
       'testator_data.address',
-      'beneficiaries'
+      'beneficiaries',
     ],
-    optionalEnhancements: ['memorial_service', 'family_heirlooms', 'oral_history'],
+    optionalEnhancements: [
+      'memorial_service',
+      'family_heirlooms',
+      'oral_history',
+    ],
     legalNotices: [
       'Consider tax implications of charitable giving',
       'Ensure charity is properly registered',
       'Consider education trust structures',
-      'Regular updates as grandchildren are born'
+      'Regular updates as grandchildren are born',
     ],
     preview: {
-      summaryText: 'Creates lasting legacy through family support and charitable giving',
-      keyFeatures: ['Multi-generational', 'Charitable giving', 'Education focus', 'Personal messages'],
+      summaryText:
+        'Creates lasting legacy through family support and charitable giving',
+      keyFeatures: [
+        'Multi-generational',
+        'Charitable giving',
+        'Education focus',
+        'Personal messages',
+      ],
       beneficiaryCount: 3,
-      assetTypes: ['general_estate', 'education_trust', 'charitable_bequest']
-    }
-  }
+      assetTypes: ['general_estate', 'education_trust', 'charitable_bequest'],
+    },
+  },
 ];
 
 export class WillTemplateLibrary {
@@ -580,7 +655,10 @@ export class WillTemplateLibrary {
       let matchScore = 0;
 
       // Marital status match
-      if (profile.maritalStatus && template.targetProfile.maritalStatus === profile.maritalStatus) {
+      if (
+        profile.maritalStatus &&
+        template.targetProfile.maritalStatus === profile.maritalStatus
+      ) {
         matchScore += 3;
       } else if (template.targetProfile.maritalStatus === 'unknown') {
         matchScore += 1;
@@ -592,7 +670,9 @@ export class WillTemplateLibrary {
       }
 
       // Minor children match
-      if (profile.hasMinorChildren === template.targetProfile.hasMinorChildren) {
+      if (
+        profile.hasMinorChildren === template.targetProfile.hasMinorChildren
+      ) {
         matchScore += 2;
       }
 
@@ -602,17 +682,25 @@ export class WillTemplateLibrary {
       }
 
       // Net worth match
-      if (profile.estimatedNetWorth === template.targetProfile.estimatedNetWorth) {
+      if (
+        profile.estimatedNetWorth === template.targetProfile.estimatedNetWorth
+      ) {
         matchScore += 1;
       }
 
       // Business interests match
-      if (profile.hasBusinessInterests === template.targetProfile.hasBusinessInterests) {
+      if (
+        profile.hasBusinessInterests ===
+        template.targetProfile.hasBusinessInterests
+      ) {
         matchScore += 2;
       }
 
       // Complex family situation match
-      if (profile.complexFamilySituation === template.targetProfile.complexFamilySituation) {
+      if (
+        profile.complexFamilySituation ===
+        template.targetProfile.complexFamilySituation
+      ) {
         matchScore += 2;
       }
 
@@ -620,8 +708,10 @@ export class WillTemplateLibrary {
       return matchScore >= 6;
     }).sort((a, b) => {
       // Sort by popularity and recency
-      const aScore = a.popularityScore + (new Date(a.lastUpdated).getTime() / 1000000000);
-      const bScore = b.popularityScore + (new Date(b.lastUpdated).getTime() / 1000000000);
+      const aScore =
+        a.popularityScore + new Date(a.lastUpdated).getTime() / 1000000000;
+      const bScore =
+        b.popularityScore + new Date(b.lastUpdated).getTime() / 1000000000;
       return bScore - aScore;
     });
   }
@@ -652,10 +742,11 @@ export class WillTemplateLibrary {
    */
   searchTemplates(query: string): WillTemplate[] {
     const queryLower = query.toLowerCase();
-    return WILL_TEMPLATES.filter(template =>
-      template.name.toLowerCase().includes(queryLower) ||
-      template.description.toLowerCase().includes(queryLower) ||
-      template.tags.some(tag => tag.toLowerCase().includes(queryLower))
+    return WILL_TEMPLATES.filter(
+      template =>
+        template.name.toLowerCase().includes(queryLower) ||
+        template.description.toLowerCase().includes(queryLower) ||
+        template.tags.some(tag => tag.toLowerCase().includes(queryLower))
     );
   }
 
@@ -672,31 +763,31 @@ export class WillTemplateLibrary {
     const mergedData: WillData = {
       testator_data: {
         ...template.templateData.testator_data,
-        ...currentData?.testator_data
+        ...currentData?.testator_data,
       },
       beneficiaries: currentData?.beneficiaries?.length
         ? currentData.beneficiaries
         : template.templateData.beneficiaries || [],
       assets: {
         ...template.templateData.assets,
-        ...currentData?.assets
+        ...currentData?.assets,
       },
       executor_data: {
         ...template.templateData.executor_data,
-        ...currentData?.executor_data
+        ...currentData?.executor_data,
       },
       guardianship_data: {
         ...template.templateData.guardianship_data,
-        ...currentData?.guardianship_data
+        ...currentData?.guardianship_data,
       },
       special_instructions: {
         ...template.templateData.special_instructions,
-        ...currentData?.special_instructions
+        ...currentData?.special_instructions,
       },
       legal_data: {
         ...template.templateData.legal_data,
-        ...currentData?.legal_data
-      }
+        ...currentData?.legal_data,
+      },
     };
 
     return mergedData;
@@ -709,22 +800,46 @@ export class WillTemplateLibrary {
     const changes: ChangeSet[] = [];
 
     // Compare testator data
-    this.compareSection('testator_data', oldWill.testator_data, newWill.testator_data, changes);
+    this.compareSection(
+      'testator_data',
+      oldWill.testator_data,
+      newWill.testator_data,
+      changes
+    );
 
     // Compare beneficiaries
-    this.compareBeneficiaries(oldWill.beneficiaries, newWill.beneficiaries, changes);
+    this.compareBeneficiaries(
+      oldWill.beneficiaries,
+      newWill.beneficiaries,
+      changes
+    );
 
     // Compare assets
     this.compareSection('assets', oldWill.assets, newWill.assets, changes);
 
     // Compare executor data
-    this.compareSection('executor_data', oldWill.executor_data, newWill.executor_data, changes);
+    this.compareSection(
+      'executor_data',
+      oldWill.executor_data,
+      newWill.executor_data,
+      changes
+    );
 
     // Compare guardianship data
-    this.compareSection('guardianship_data', oldWill.guardianship_data, newWill.guardianship_data, changes);
+    this.compareSection(
+      'guardianship_data',
+      oldWill.guardianship_data,
+      newWill.guardianship_data,
+      changes
+    );
 
     // Compare special instructions
-    this.compareSection('special_instructions', oldWill.special_instructions, newWill.special_instructions, changes);
+    this.compareSection(
+      'special_instructions',
+      oldWill.special_instructions,
+      newWill.special_instructions,
+      changes
+    );
 
     // Analyze impact
     const impactAnalysis = this.analyzeImpact(changes, oldWill, newWill);
@@ -737,14 +852,17 @@ export class WillTemplateLibrary {
       changes,
       impactAnalysis,
       recommendations: this.generateRecommendations(changes, impactAnalysis),
-      requiresLegalReview: this.requiresLegalReview(changes)
+      requiresLegalReview: this.requiresLegalReview(changes),
     };
   }
 
   /**
    * Suggest template modifications based on user data
    */
-  suggestTemplateModifications(template: WillTemplate, userData: WillData): Modification[] {
+  suggestTemplateModifications(
+    template: WillTemplate,
+    userData: WillData
+  ): Modification[] {
     const modifications: Modification[] = [];
 
     // Check if user has more complex needs than template
@@ -753,28 +871,36 @@ export class WillTemplateLibrary {
         id: `mod_${Date.now()}_beneficiaries`,
         templateId: template.id,
         type: 'beneficiary_adjustment',
-        description: 'Add additional beneficiaries to match your family situation',
+        description:
+          'Add additional beneficiaries to match your family situation',
         rationale: `You have ${userData.beneficiaries.length} beneficiaries but template handles ${template.preview.beneficiaryCount}`,
         priority: 'high',
-        estimatedImplementationTime: 10
+        estimatedImplementationTime: 10,
       });
     }
 
     // Check for business interests
-    if (userData.assets.businessInterests && !template.targetProfile.hasBusinessInterests) {
+    if (
+      userData.assets.businessInterests &&
+      !template.targetProfile.hasBusinessInterests
+    ) {
       modifications.push({
         id: `mod_${Date.now()}_business`,
         templateId: template.id,
         type: 'asset_addition',
         description: 'Add business succession planning',
-        rationale: 'You have business interests that require special consideration',
+        rationale:
+          'You have business interests that require special consideration',
         priority: 'high',
-        estimatedImplementationTime: 20
+        estimatedImplementationTime: 20,
       });
     }
 
     // Check for guardianship needs
-    if (userData.guardianship_data.minorChildren?.length && !template.templateData.guardianship_data?.primaryGuardian) {
+    if (
+      userData.guardianship_data.minorChildren?.length &&
+      !template.templateData.guardianship_data?.primaryGuardian
+    ) {
       modifications.push({
         id: `mod_${Date.now()}_guardianship`,
         templateId: template.id,
@@ -782,7 +908,7 @@ export class WillTemplateLibrary {
         description: 'Add comprehensive guardianship provisions',
         rationale: 'You have minor children who need guardian appointment',
         priority: 'high',
-        estimatedImplementationTime: 15
+        estimatedImplementationTime: 15,
       });
     }
 
@@ -795,36 +921,48 @@ export class WillTemplateLibrary {
   /**
    * Get all available categories
    */
-  getAvailableCategories(): Array<{category: TemplateCategory; count: number; description: string}> {
+  getAvailableCategories(): Array<{
+    category: TemplateCategory;
+    count: number;
+    description: string;
+  }> {
     const categoryCounts = new Map<TemplateCategory, number>();
 
     WILL_TEMPLATES.forEach(template => {
-      categoryCounts.set(template.category, (categoryCounts.get(template.category) || 0) + 1);
+      categoryCounts.set(
+        template.category,
+        (categoryCounts.get(template.category) || 0) + 1
+      );
     });
 
     const categoryDescriptions: Record<TemplateCategory, string> = {
-      'young_professional': 'For young adults starting their careers',
-      'new_parent': 'For new parents focusing on child protection',
-      'established_family': 'For families with stable assets and relationships',
-      'blended_family': 'For families with children from multiple relationships',
-      'business_owner': 'For entrepreneurs and business owners',
-      'retiree': 'For retirees focused on legacy and charitable giving',
-      'single_parent': 'For single parents with unique challenges',
-      'childless_couple': 'For couples without children',
-      'charitable_focused': 'For those prioritizing charitable giving',
-      'international': 'For those with international assets or concerns',
-      'special_needs': 'For families with special needs considerations'
+      young_professional: 'For young adults starting their careers',
+      new_parent: 'For new parents focusing on child protection',
+      established_family: 'For families with stable assets and relationships',
+      blended_family: 'For families with children from multiple relationships',
+      business_owner: 'For entrepreneurs and business owners',
+      retiree: 'For retirees focused on legacy and charitable giving',
+      single_parent: 'For single parents with unique challenges',
+      childless_couple: 'For couples without children',
+      charitable_focused: 'For those prioritizing charitable giving',
+      international: 'For those with international assets or concerns',
+      special_needs: 'For families with special needs considerations',
     };
 
     return Array.from(categoryCounts.entries()).map(([category, count]) => ({
       category,
       count,
-      description: categoryDescriptions[category]
+      description: categoryDescriptions[category],
     }));
   }
 
   // Helper methods
-  private compareSection(sectionName: keyof WillData, oldSection: any, newSection: any, changes: ChangeSet[]) {
+  private compareSection(
+    sectionName: keyof WillData,
+    oldSection: any,
+    newSection: any,
+    changes: ChangeSet[]
+  ) {
     if (!oldSection && !newSection) return;
 
     if (!oldSection && newSection) {
@@ -834,7 +972,7 @@ export class WillTemplateLibrary {
         changeType: 'added',
         newValue: newSection,
         impact: 'medium',
-        description: `Added ${sectionName} section`
+        description: `Added ${sectionName} section`,
       });
       return;
     }
@@ -846,13 +984,16 @@ export class WillTemplateLibrary {
         changeType: 'removed',
         oldValue: oldSection,
         impact: 'high',
-        description: `Removed ${sectionName} section`
+        description: `Removed ${sectionName} section`,
       });
       return;
     }
 
     // Compare individual fields
-    const allKeys = new Set([...Object.keys(oldSection || {}), ...Object.keys(newSection || {})]);
+    const allKeys = new Set([
+      ...Object.keys(oldSection || {}),
+      ...Object.keys(newSection || {}),
+    ]);
 
     allKeys.forEach(key => {
       const oldValue = oldSection?.[key];
@@ -866,13 +1007,17 @@ export class WillTemplateLibrary {
           oldValue,
           newValue,
           impact: this.determineImpact(sectionName, key, oldValue, newValue),
-          description: `${sectionName}.${key} ${!oldValue ? 'added' : !newValue ? 'removed' : 'modified'}`
+          description: `${sectionName}.${key} ${!oldValue ? 'added' : !newValue ? 'removed' : 'modified'}`,
         });
       }
     });
   }
 
-  private compareBeneficiaries(oldBeneficiaries: WillData['beneficiaries'], newBeneficiaries: WillData['beneficiaries'], changes: ChangeSet[]) {
+  private compareBeneficiaries(
+    oldBeneficiaries: WillData['beneficiaries'],
+    newBeneficiaries: WillData['beneficiaries'],
+    changes: ChangeSet[]
+  ) {
     const oldNames = new Set(oldBeneficiaries.map(b => b.name));
     const newNames = new Set(newBeneficiaries.map(b => b.name));
 
@@ -885,7 +1030,7 @@ export class WillTemplateLibrary {
           changeType: 'added',
           newValue: beneficiary,
           impact: 'high',
-          description: `Added beneficiary: ${beneficiary.name} (${beneficiary.percentage}%)`
+          description: `Added beneficiary: ${beneficiary.name} (${beneficiary.percentage}%)`,
         });
       }
     });
@@ -899,7 +1044,7 @@ export class WillTemplateLibrary {
           changeType: 'removed',
           oldValue: beneficiary,
           impact: 'critical',
-          description: `Removed beneficiary: ${beneficiary.name} (was ${beneficiary.percentage}%)`
+          description: `Removed beneficiary: ${beneficiary.name} (was ${beneficiary.percentage}%)`,
         });
       }
     });
@@ -907,7 +1052,11 @@ export class WillTemplateLibrary {
     // Check for modified beneficiaries
     oldBeneficiaries.forEach(oldBen => {
       const newBen = newBeneficiaries.find(b => b.name === oldBen.name);
-      if (newBen && (oldBen.percentage !== newBen.percentage || oldBen.relationship !== newBen.relationship)) {
+      if (
+        newBen &&
+        (oldBen.percentage !== newBen.percentage ||
+          oldBen.relationship !== newBen.relationship)
+      ) {
         changes.push({
           section: 'beneficiaries',
           field: 'modify',
@@ -915,20 +1064,31 @@ export class WillTemplateLibrary {
           oldValue: oldBen,
           newValue: newBen,
           impact: 'high',
-          description: `Modified beneficiary: ${newBen.name} (${oldBen.percentage}% → ${newBen.percentage}%)`
+          description: `Modified beneficiary: ${newBen.name} (${oldBen.percentage}% → ${newBen.percentage}%)`,
         });
       }
     });
   }
 
-  private determineImpact(section: keyof WillData, field: string, oldValue: any, newValue: any): ChangeSet['impact'] {
+  private determineImpact(
+    section: keyof WillData,
+    field: string,
+    oldValue: any,
+    newValue: any
+  ): ChangeSet['impact'] {
     // Critical impact fields
-    if (section === 'beneficiaries' || (section === 'executor_data' && field === 'primaryExecutor')) {
+    if (
+      section === 'beneficiaries' ||
+      (section === 'executor_data' && field === 'primaryExecutor')
+    ) {
       return 'critical';
     }
 
     // High impact fields
-    if (section === 'testator_data' && ['fullName', 'address'].includes(field)) {
+    if (
+      section === 'testator_data' &&
+      ['fullName', 'address'].includes(field)
+    ) {
       return 'high';
     }
 
@@ -944,7 +1104,11 @@ export class WillTemplateLibrary {
     return 'low';
   }
 
-  private analyzeImpact(changes: ChangeSet[], oldWill: WillData, newWill: WillData): ImpactAnalysis {
+  private analyzeImpact(
+    changes: ChangeSet[],
+    oldWill: WillData,
+    newWill: WillData
+  ): ImpactAnalysis {
     const criticalChanges = changes.filter(c => c.impact === 'critical').length;
     const highChanges = changes.filter(c => c.impact === 'high').length;
 
@@ -966,7 +1130,7 @@ export class WillTemplateLibrary {
             beneficiary: oldBen.name,
             oldPercentage: oldBen.percentage,
             newPercentage: newBen.percentage,
-            difference: newBen.percentage - oldBen.percentage
+            difference: newBen.percentage - oldBen.percentage,
           };
         }
         return null;
@@ -978,23 +1142,32 @@ export class WillTemplateLibrary {
       affectedBeneficiaries: [...new Set(affectedBeneficiaries)],
       changedInheritanceAmounts,
       newLegalRequirements: this.identifyNewLegalRequirements(changes),
-      potentialConflicts: this.identifyPotentialConflicts(changes)
+      potentialConflicts: this.identifyPotentialConflicts(changes),
     };
   }
 
-  private generateRecommendations(changes: ChangeSet[], impact: ImpactAnalysis): string[] {
+  private generateRecommendations(
+    changes: ChangeSet[],
+    impact: ImpactAnalysis
+  ): string[] {
     const recommendations: string[] = [];
 
     if (impact.overallImpact === 'major') {
-      recommendations.push('Consider professional legal review due to major changes');
+      recommendations.push(
+        'Consider professional legal review due to major changes'
+      );
     }
 
     if (impact.changedInheritanceAmounts.length > 0) {
-      recommendations.push('Notify affected beneficiaries of inheritance changes');
+      recommendations.push(
+        'Notify affected beneficiaries of inheritance changes'
+      );
     }
 
     if (changes.some(c => c.section === 'executor_data')) {
-      recommendations.push('Confirm executor is still willing and able to serve');
+      recommendations.push(
+        'Confirm executor is still willing and able to serve'
+      );
     }
 
     if (changes.some(c => c.section === 'guardianship_data')) {
@@ -1005,14 +1178,18 @@ export class WillTemplateLibrary {
   }
 
   private requiresLegalReview(changes: ChangeSet[]): boolean {
-    return changes.some(c =>
-      c.impact === 'critical' ||
-      (c.section === 'beneficiaries' && c.changeType === 'removed') ||
-      (c.section === 'executor_data' && c.field === 'primaryExecutor')
+    return changes.some(
+      c =>
+        c.impact === 'critical' ||
+        (c.section === 'beneficiaries' && c.changeType === 'removed') ||
+        (c.section === 'executor_data' && c.field === 'primaryExecutor')
     );
   }
 
-  private createSnapshot(willData: WillData, version: string): WillVersionSnapshot {
+  private createSnapshot(
+    willData: WillData,
+    version: string
+  ): WillVersionSnapshot {
     return {
       id: `snapshot_${Date.now()}_${version}`,
       version,
@@ -1022,8 +1199,8 @@ export class WillTemplateLibrary {
         jurisdiction: willData.legal_data?.jurisdiction || 'Unknown',
         totalBeneficiaries: willData.beneficiaries.length,
         totalAssetCategories: Object.keys(willData.assets || {}).length,
-        completionPercentage: this.calculateCompletionPercentage(willData)
-      }
+        completionPercentage: this.calculateCompletionPercentage(willData),
+      },
     };
   }
 
@@ -1035,7 +1212,7 @@ export class WillTemplateLibrary {
     const requiredFields = [
       willData.testator_data?.fullName,
       willData.testator_data?.address,
-      willData.beneficiaries?.length > 0
+      willData.beneficiaries?.length > 0,
     ];
 
     requiredFields.forEach(field => {
@@ -1053,7 +1230,11 @@ export class WillTemplateLibrary {
       requirements.push('Guardian consent documentation required');
     }
 
-    if (changes.some(c => c.section === 'beneficiaries' && c.changeType === 'added')) {
+    if (
+      changes.some(
+        c => c.section === 'beneficiaries' && c.changeType === 'added'
+      )
+    ) {
       requirements.push('Consider forced heir implications');
     }
 
@@ -1063,7 +1244,9 @@ export class WillTemplateLibrary {
   private identifyPotentialConflicts(changes: ChangeSet[]): string[] {
     const conflicts: string[] = [];
 
-    const beneficiaryChanges = changes.filter(c => c.section === 'beneficiaries');
+    const beneficiaryChanges = changes.filter(
+      c => c.section === 'beneficiaries'
+    );
     if (beneficiaryChanges.length > 0) {
       conflicts.push('Family members may question inheritance changes');
     }

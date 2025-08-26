@@ -3,7 +3,7 @@ import {
   decodeUTF8,
   encodeUTF8,
   encodeBase64,
-  decodeBase64
+  decodeBase64,
 } from 'tweetnacl-util';
 
 // For MVP, we'll use a derived key from user's Clerk ID
@@ -12,7 +12,7 @@ export const generateEncryptionKeys = () => {
   const keyPair = nacl.box.keyPair();
   return {
     publicKey: encodeBase64(keyPair.publicKey),
-    secretKey: encodeBase64(keyPair.secretKey)
+    secretKey: encodeBase64(keyPair.secretKey),
   };
 };
 
@@ -59,7 +59,11 @@ export const encryptFile = async (
   file: File,
   publicKey: string,
   secretKey: string
-): Promise<{ encryptedData: Uint8Array; nonce: Uint8Array; metadata: Record<string, string | number> }> => {
+): Promise<{
+  encryptedData: Uint8Array;
+  nonce: Uint8Array;
+  metadata: Record<string, string | number>;
+}> => {
   // Read file as ArrayBuffer
   const arrayBuffer = await file.arrayBuffer();
   const fileData = new Uint8Array(arrayBuffer);
@@ -85,13 +89,13 @@ export const encryptFile = async (
     fileSize: file.size,
     encryptedAt: new Date().toISOString(),
     nonce: encodeBase64(nonce),
-    ephemeralPublicKey: encodeBase64(ephemeralKeyPair.publicKey)
+    ephemeralPublicKey: encodeBase64(ephemeralKeyPair.publicKey),
   };
 
   return {
     encryptedData,
     nonce,
-    metadata
+    metadata,
   };
 };
 

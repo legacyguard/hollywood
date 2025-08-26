@@ -3,6 +3,9 @@
 
 import type { CommunicationStyle } from '@/lib/text-manager';
 
+// Re-export CommunicationStyle for convenience
+export type { CommunicationStyle } from '@/lib/text-manager';
+
 export interface UserPreferences {
   notifications: {
     email: boolean;
@@ -52,4 +55,3 @@ export interface ClerkUserMetadata {
   communicationAutoDetection?: boolean;
   preferences?: Partial<UserPreferences>;
 }
-

@@ -63,11 +63,11 @@
           "type": "select",
           "required": true,
           "options": [
-            {"value": "single", "label": "Single"},
-            {"value": "married", "label": "Married"},
-            {"value": "divorced", "label": "Divorced"},
-            {"value": "widowed", "label": "Widowed"},
-            {"value": "domestic_partnership", "label": "Domestic Partnership"}
+            { "value": "single", "label": "Single" },
+            { "value": "married", "label": "Married" },
+            { "value": "divorced", "label": "Divorced" },
+            { "value": "widowed", "label": "Widowed" },
+            { "value": "domestic_partnership", "label": "Domestic Partnership" }
           ]
         },
         {
@@ -82,9 +82,14 @@
           "type": "array",
           "helpText": "List all your children",
           "fields": [
-            {"id": "name", "label": "Full Name", "type": "text"},
-            {"id": "birthDate", "label": "Date of Birth", "type": "date"},
-            {"id": "isMinor", "label": "Is Minor", "type": "boolean", "computed": true}
+            { "id": "name", "label": "Full Name", "type": "text" },
+            { "id": "birthDate", "label": "Date of Birth", "type": "date" },
+            {
+              "id": "isMinor",
+              "label": "Is Minor",
+              "type": "boolean",
+              "computed": true
+            }
           ]
         }
       ]
@@ -99,10 +104,23 @@
           "name": "Real Estate",
           "description": "Properties, land, homes",
           "fields": [
-            {"id": "type", "label": "Property Type", "type": "select", "options": ["house", "apartment", "land", "commercial", "other"]},
-            {"id": "address", "label": "Property Address", "type": "textarea"},
-            {"id": "estimatedValue", "label": "Estimated Value", "type": "number"},
-            {"id": "ownership", "label": "Ownership Share", "type": "text"}
+            {
+              "id": "type",
+              "label": "Property Type",
+              "type": "select",
+              "options": ["house", "apartment", "land", "commercial", "other"]
+            },
+            {
+              "id": "address",
+              "label": "Property Address",
+              "type": "textarea"
+            },
+            {
+              "id": "estimatedValue",
+              "label": "Estimated Value",
+              "type": "number"
+            },
+            { "id": "ownership", "label": "Ownership Share", "type": "text" }
           ]
         },
         {
@@ -110,10 +128,24 @@
           "name": "Bank Accounts",
           "description": "Savings, checking, investment accounts",
           "fields": [
-            {"id": "bank", "label": "Bank Name", "type": "text"},
-            {"id": "accountType", "label": "Account Type", "type": "select", "options": ["checking", "savings", "investment", "other"]},
-            {"id": "accountNumber", "label": "Account Number", "type": "text", "helpText": "Last 4 digits for privacy"},
-            {"id": "approximateBalance", "label": "Approximate Balance", "type": "number"}
+            { "id": "bank", "label": "Bank Name", "type": "text" },
+            {
+              "id": "accountType",
+              "label": "Account Type",
+              "type": "select",
+              "options": ["checking", "savings", "investment", "other"]
+            },
+            {
+              "id": "accountNumber",
+              "label": "Account Number",
+              "type": "text",
+              "helpText": "Last 4 digits for privacy"
+            },
+            {
+              "id": "approximateBalance",
+              "label": "Approximate Balance",
+              "type": "number"
+            }
           ]
         },
         {
@@ -121,22 +153,30 @@
           "name": "Vehicles",
           "description": "Cars, motorcycles, boats",
           "fields": [
-            {"id": "type", "label": "Vehicle Type", "type": "text"},
-            {"id": "make", "label": "Make", "type": "text"},
-            {"id": "model", "label": "Model", "type": "text"},
-            {"id": "year", "label": "Year", "type": "number"},
-            {"id": "licensePlate", "label": "License Plate", "type": "text"},
-            {"id": "estimatedValue", "label": "Estimated Value", "type": "number"}
+            { "id": "type", "label": "Vehicle Type", "type": "text" },
+            { "id": "make", "label": "Make", "type": "text" },
+            { "id": "model", "label": "Model", "type": "text" },
+            { "id": "year", "label": "Year", "type": "number" },
+            { "id": "licensePlate", "label": "License Plate", "type": "text" },
+            {
+              "id": "estimatedValue",
+              "label": "Estimated Value",
+              "type": "number"
+            }
           ]
         },
         {
           "id": "personal_property",
-          "name": "Personal Property", 
+          "name": "Personal Property",
           "description": "Jewelry, art, collectibles, furniture",
           "fields": [
-            {"id": "description", "label": "Description", "type": "text"},
-            {"id": "estimatedValue", "label": "Estimated Value", "type": "number"},
-            {"id": "location", "label": "Current Location", "type": "text"}
+            { "id": "description", "label": "Description", "type": "text" },
+            {
+              "id": "estimatedValue",
+              "label": "Estimated Value",
+              "type": "number"
+            },
+            { "id": "location", "label": "Current Location", "type": "text" }
           ]
         }
       ]
@@ -151,15 +191,59 @@
           "label": "Beneficiaries",
           "type": "array",
           "fields": [
-            {"id": "name", "label": "Full Name", "type": "text"},
-            {"id": "relationship", "label": "Relationship", "type": "select", "options": ["spouse", "child", "parent", "sibling", "grandchild", "friend", "charity", "other"]},
-            {"id": "address", "label": "Address", "type": "textarea"},
-            {"id": "identification", "label": "Identification", "type": "text", "helpText": "For identification purposes"},
-            {"id": "inheritanceShare", "label": "Share of Inheritance", "type": "select", "options": ["percentage", "specific_assets", "monetary_amount"]},
-            {"id": "percentage", "label": "Percentage", "type": "number", "conditional": "inheritanceShare === 'percentage'"},
-            {"id": "specificAssets", "label": "Specific Assets", "type": "textarea", "conditional": "inheritanceShare === 'specific_assets'"},
-            {"id": "amount", "label": "Amount", "type": "number", "conditional": "inheritanceShare === 'monetary_amount'"},
-            {"id": "conditions", "label": "Conditions", "type": "textarea", "helpText": "Optional conditions for inheritance"}
+            { "id": "name", "label": "Full Name", "type": "text" },
+            {
+              "id": "relationship",
+              "label": "Relationship",
+              "type": "select",
+              "options": [
+                "spouse",
+                "child",
+                "parent",
+                "sibling",
+                "grandchild",
+                "friend",
+                "charity",
+                "other"
+              ]
+            },
+            { "id": "address", "label": "Address", "type": "textarea" },
+            {
+              "id": "identification",
+              "label": "Identification",
+              "type": "text",
+              "helpText": "For identification purposes"
+            },
+            {
+              "id": "inheritanceShare",
+              "label": "Share of Inheritance",
+              "type": "select",
+              "options": ["percentage", "specific_assets", "monetary_amount"]
+            },
+            {
+              "id": "percentage",
+              "label": "Percentage",
+              "type": "number",
+              "conditional": "inheritanceShare === 'percentage'"
+            },
+            {
+              "id": "specificAssets",
+              "label": "Specific Assets",
+              "type": "textarea",
+              "conditional": "inheritanceShare === 'specific_assets'"
+            },
+            {
+              "id": "amount",
+              "label": "Amount",
+              "type": "number",
+              "conditional": "inheritanceShare === 'monetary_amount'"
+            },
+            {
+              "id": "conditions",
+              "label": "Conditions",
+              "type": "textarea",
+              "helpText": "Optional conditions for inheritance"
+            }
           ]
         }
       ]
@@ -219,10 +303,10 @@
           "label": "Primary Guardian",
           "type": "object",
           "fields": [
-            {"id": "name", "label": "Full Name", "type": "text"},
-            {"id": "address", "label": "Address", "type": "textarea"},
-            {"id": "relationship", "label": "Relationship", "type": "text"},
-            {"id": "phone", "label": "Phone Number", "type": "text"}
+            { "id": "name", "label": "Full Name", "type": "text" },
+            { "id": "address", "label": "Address", "type": "textarea" },
+            { "id": "relationship", "label": "Relationship", "type": "text" },
+            { "id": "phone", "label": "Phone Number", "type": "text" }
           ]
         },
         {
@@ -230,10 +314,10 @@
           "label": "Backup Guardian",
           "type": "object",
           "fields": [
-            {"id": "name", "label": "Full Name", "type": "text"},
-            {"id": "address", "label": "Address", "type": "textarea"},
-            {"id": "relationship", "label": "Relationship", "type": "text"},
-            {"id": "phone", "label": "Phone Number", "type": "text"}
+            { "id": "name", "label": "Full Name", "type": "text" },
+            { "id": "address", "label": "Address", "type": "textarea" },
+            { "id": "relationship", "label": "Relationship", "type": "text" },
+            { "id": "phone", "label": "Phone Number", "type": "text" }
           ]
         },
         {
@@ -260,9 +344,9 @@
           "label": "Organ Donation",
           "type": "select",
           "options": [
-            {"value": "yes", "label": "Yes, I wish to donate organs"},
-            {"value": "no", "label": "No, I do not wish to donate organs"},
-            {"value": "family_decides", "label": "Let my family decide"}
+            { "value": "yes", "label": "Yes, I wish to donate organs" },
+            { "value": "no", "label": "No, I do not wish to donate organs" },
+            { "value": "family_decides", "label": "Let my family decide" }
           ]
         },
         {
@@ -271,8 +355,8 @@
           "type": "array",
           "helpText": "Special messages to loved ones",
           "fields": [
-            {"id": "recipient", "label": "To", "type": "text"},
-            {"id": "message", "label": "Message", "type": "textarea"}
+            { "id": "recipient", "label": "To", "type": "text" },
+            { "id": "message", "label": "Message", "type": "textarea" }
           ]
         },
         {
@@ -280,9 +364,9 @@
           "label": "Charitable Donations",
           "type": "array",
           "fields": [
-            {"id": "organization", "label": "Organization", "type": "text"},
-            {"id": "amount", "label": "Amount", "type": "number"},
-            {"id": "purpose", "label": "Purpose", "type": "text"}
+            { "id": "organization", "label": "Organization", "type": "text" },
+            { "id": "amount", "label": "Amount", "type": "number" },
+            { "id": "purpose", "label": "Purpose", "type": "text" }
           ]
         },
         {

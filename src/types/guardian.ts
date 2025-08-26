@@ -48,7 +48,10 @@ export type GuardianRelationship =
   | 'financial_advisor'
   | 'other';
 
-export const GUARDIAN_RELATIONSHIPS: { value: GuardianRelationship; label: string }[] = [
+export const GUARDIAN_RELATIONSHIPS: {
+  value: GuardianRelationship;
+  label: string;
+}[] = [
   { value: 'spouse', label: 'Spouse' },
   { value: 'partner', label: 'Partner' },
   { value: 'child', label: 'Child' },
@@ -79,7 +82,10 @@ export interface CreateFamilyShieldSettingsRequest {
   is_shield_enabled?: boolean;
 }
 
-export type FamilyShieldActivationType = 'inactivity_detected' | 'manual_guardian' | 'admin_override';
+export type FamilyShieldActivationType =
+  | 'inactivity_detected'
+  | 'manual_guardian'
+  | 'admin_override';
 export type ActivationStatus = 'pending' | 'confirmed' | 'rejected' | 'expired';
 
 export interface FamilyShieldActivationLog {

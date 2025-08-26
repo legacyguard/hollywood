@@ -1,6 +1,11 @@
 import { defineConfig, devices } from '@playwright/test';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
+import { fileURLToPath } from 'url';
+
+// Get __dirname equivalent for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 /**
  * Read environment variables from file.
@@ -23,7 +28,7 @@ process.env.CLERK_SECRET_KEY = process.env.VITE_CLERK_SECRET_KEY || process.env.
 export default defineConfig({
   testDir: './tests',
   /* Global setup file */
-  globalSetup: require.resolve('./tests/global.setup.ts'),
+  globalSetup: path.resolve(__dirname, './tests/global.setup.ts'),
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */

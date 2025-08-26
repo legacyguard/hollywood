@@ -1,7 +1,7 @@
 // Sofia Action Router - Handles actions from search without OpenAI
 import type { NavigateFunction } from 'react-router-dom';
 import { toast } from 'sonner';
-import type { SofiaAction} from './sofia-search-dictionary';
+import type { SofiaAction } from './sofia-search-dictionary';
 import { faqResponses } from './sofia-search-dictionary';
 import type { DocumentFilter } from '../contexts/DocumentFilterContext';
 
@@ -37,7 +37,8 @@ export const executeSofiaAction = async (
       navigate('/vault');
 
       const category = action.payload;
-      const categoryDisplayName = category.charAt(0).toUpperCase() + category.slice(1);
+      const categoryDisplayName =
+        category.charAt(0).toUpperCase() + category.slice(1);
 
       // Apply filter via context
       if (setDocumentFilter) {
@@ -48,12 +49,17 @@ export const executeSofiaAction = async (
         onSofiaMessage(
           action.text,
           `Perfect! I've filtered your documents to show only ${categoryDisplayName} category. ${
-            category === 'insurance' ? 'These are your insurance policies and related documents.' :
-            category === 'legal' ? 'These are your legal documents including contracts and official papers.' :
-            category === 'financial' ? 'These are your financial documents including bank statements and tax records.' :
-            category === 'medical' ? 'These are your healthcare documents and medical records.' :
-            category === 'personal' ? 'These are your personal identification documents.' :
-            'These are your important documents in this category.'
+            category === 'insurance'
+              ? 'These are your insurance policies and related documents.'
+              : category === 'legal'
+                ? 'These are your legal documents including contracts and official papers.'
+                : category === 'financial'
+                  ? 'These are your financial documents including bank statements and tax records.'
+                  : category === 'medical'
+                    ? 'These are your healthcare documents and medical records.'
+                    : category === 'personal'
+                      ? 'These are your personal identification documents.'
+                      : 'These are your important documents in this category.'
           }`
         );
       }
@@ -67,7 +73,9 @@ export const executeSofiaAction = async (
       navigate('/vault');
 
       const docType = action.payload;
-      const typeDisplayName = docType.replace('_', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase());
+      const typeDisplayName = docType
+        .replace('_', ' ')
+        .replace(/\b\w/g, (l: string) => l.toUpperCase());
 
       // Apply document type filter
       if (setDocumentFilter) {
@@ -78,9 +86,11 @@ export const executeSofiaAction = async (
         onSofiaMessage(
           action.text,
           `Perfect! I've found your ${typeDisplayName} documents. ${
-            docType === 'passport' ? 'Remember to check the expiration date and renew if needed.' :
-            docType === 'bank_statement' ? 'These statements help track your financial history.' :
-            'These documents are important for your records.'
+            docType === 'passport'
+              ? 'Remember to check the expiration date and renew if needed.'
+              : docType === 'bank_statement'
+                ? 'These statements help track your financial history.'
+                : 'These documents are important for your records.'
           }`
         );
       }
@@ -118,9 +128,15 @@ export const executeSofiaAction = async (
 
       if (onSofiaMessage) {
         let suggestionText = '';
-        if (suggestion.includes('poistka') || suggestion.includes('insurance')) {
+        if (
+          suggestion.includes('poistka') ||
+          suggestion.includes('insurance')
+        ) {
           suggestionText = `I see you want to add insurance documents. Click "AI Scan Mode" to automatically extract policy details, or use "Manual Entry" if you prefer to enter information yourself. I can help categorize it properly.`;
-        } else if (suggestion.includes('guardian') || suggestion.includes('strážcu')) {
+        } else if (
+          suggestion.includes('guardian') ||
+          suggestion.includes('strážcu')
+        ) {
           suggestionText = `Adding a guardian is a wise decision! Click "Add Guardian" and I'll guide you through selecting someone who truly understands your values and will honor your wishes.`;
         } else {
           suggestionText = `I've brought you here to help with "${suggestion}". Look for the relevant buttons or forms on this page, and I'm here if you need guidance.`;
@@ -167,7 +183,9 @@ export const executeSofiaAction = async (
         );
       }
 
-      toast.success(`Found ${matchedCount} documents related to "${searchTerm}"`);
+      toast.success(
+        `Found ${matchedCount} documents related to "${searchTerm}"`
+      );
       break;
     }
 
@@ -208,7 +226,7 @@ export const executeSofiaAction = async (
       if (setDocumentFilter) {
         setDocumentFilter({
           category,
-          searchQuery: searchTerm // Custom search filter
+          searchQuery: searchTerm, // Custom search filter
         });
       }
 
@@ -285,7 +303,7 @@ export const executeSofiaAction = async (
       if (setDocumentFilter) {
         setDocumentFilter({
           bundleName: bundleName,
-          searchQuery: primaryEntity // Search by entity too
+          searchQuery: primaryEntity, // Search by entity too
         });
       }
 
@@ -334,7 +352,10 @@ export const executeSofiaAction = async (
 };
 
 // Helper to create user-friendly messages based on search context
-export const generateContextualMessage = (searchQuery: string, action: SofiaAction): string => {
+export const generateContextualMessage = (
+  searchQuery: string,
+  action: SofiaAction
+): string => {
   const query = searchQuery.toLowerCase();
 
   if (query.includes('poistka') || query.includes('insurance')) {

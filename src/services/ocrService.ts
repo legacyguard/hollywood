@@ -7,13 +7,9 @@ import type {
   DocumentType,
   ExtractedEntity,
   TextBlock,
-  BoundingBox
+  BoundingBox,
 } from '@/types/ocr';
-import {
-  DOCUMENT_PATTERNS,
-  DocumentCategory,
-  EntityType
-} from '@/types/ocr';
+import { DOCUMENT_PATTERNS, DocumentCategory, EntityType } from '@/types/ocr';
 
 // Google Cloud Vision AI client configuration
 interface GoogleCloudVisionResponse {
@@ -68,7 +64,8 @@ export class OCRService {
 
   constructor() {
     // These will be set from environment variables
-    this.projectId = (import.meta as any).env.VITE_GOOGLE_CLOUD_PROJECT_ID || '';
+    this.projectId =
+      (import.meta as any).env.VITE_GOOGLE_CLOUD_PROJECT_ID || '';
     this.apiKey = (import.meta as any).env.VITE_GOOGLE_CLOUD_API_KEY || '';
     this.apiUrl = `https://vision.googleapis.com/v1/images:annotate?key=${this.apiKey}`;
   }
@@ -99,17 +96,24 @@ export class OCRService {
         type: 'other',
         confidence: 0,
         reasons: ['No classification performed'],
-        suggestedTags: []
+        suggestedTags: [],
       };
 
       if (config.enableDocumentClassification) {
-        classification = this.classifyDocument(ocrResult.text, extractedEntities);
+        classification = this.classifyDocument(
+          ocrResult.text,
+          extractedEntities
+        );
       }
 
       // Step 4: Extract structured metadata
       let extractedMetadata: DocumentMetadata = {};
       if (config.enableMetadataExtraction) {
-        extractedMetadata = this.extractMetadata(ocrResult.text, classification.type, extractedEntities);
+        extractedMetadata = this.extractMetadata(
+          ocrResult.text,
+          classification.type,
+          extractedEntities
+        );
       }
 
       // Step 5: Create processed document
@@ -120,18 +124,17 @@ export class OCRService {
           ...ocrResult,
           metadata: {
             ...ocrResult.metadata,
-            extractedEntities
-          }
+            extractedEntities,
+          },
         },
         classification,
         extractedMetadata,
         processingStatus: 'completed',
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
       };
 
       return processedDocument;
-
     } catch (error) {
       console.error('OCR processing failed:', error);
 
@@ -147,21 +150,22 @@ export class OCRService {
             processingTime: 0,
             imageSize: { width: 0, height: 0 },
             textBlocks: [],
-            extractedEntities: []
-          }
+            extractedEntities: [],
+          },
         },
         classification: {
           category: 'other',
           type: 'other',
           confidence: 0,
           reasons: ['Processing failed'],
-          suggestedTags: []
+          suggestedTags: [],
         },
         extractedMetadata: {},
         processingStatus: 'failed',
-        processingError: error instanceof Error ? error.message : 'Unknown error',
+        processingError:
+          error instanceof Error ? error.message : 'Unknown error',
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
       };
     }
   }
@@ -169,30 +173,33 @@ export class OCRService {
   /**
    * Perform OCR using Google Cloud Vision API
    */
-  private async performOCR(fileData: string, config: OCRProcessingConfig): Promise<OCRResult> {
+  private async performOCR(
+    fileData: string,
+    config: OCRProcessingConfig
+  ): Promise<OCRResult> {
     const startTime = Date.now();
 
     const request = {
       requests: [
         {
           image: {
-            content: fileData // base64 encoded image
+            content: fileData, // base64 encoded image
           },
           features: [
             {
               type: 'TEXT_DETECTION',
-              maxResults: 1
+              maxResults: 1,
             },
             {
               type: 'DOCUMENT_TEXT_DETECTION',
-              maxResults: 1
-            }
+              maxResults: 1,
+            },
           ],
           imageContext: {
-            languageHints: config.languageHints || ['en']
-          }
-        }
-      ]
+            languageHints: config.languageHints || ['en'],
+          },
+        },
+      ],
     };
 
     const response = await fetch(this.apiUrl, {
@@ -200,7 +207,7 @@ export class OCRService {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(request)
+      body: JSON.stringify(request),
     });
 
     if (!response.ok) {
@@ -224,7 +231,8 @@ export class OCRService {
 
     // Extract text and metadata
     const fullText = visionResponse.fullTextAnnotation?.text || '';
-    const detectedLanguage = visionResponse.textAnnotations?.[0]?.locale || 'en';
+    const detectedLanguage =
+      visionResponse.textAnnotations?.[0]?.locale || 'en';
 
     // Extract bounding boxes and text blocks
     const boundingBoxes: BoundingBox[] = [];
@@ -234,18 +242,22 @@ export class OCRService {
       const page = visionResponse.fullTextAnnotation.pages[0];
 
       page.blocks?.forEach(block => {
-        const bbox = this.convertVertexToBoundingBox(block.boundingBox.vertices);
+        const bbox = this.convertVertexToBoundingBox(
+          block.boundingBox.vertices
+        );
         boundingBoxes.push(bbox);
 
         block.paragraphs?.forEach(paragraph => {
-          const paragraphBbox = this.convertVertexToBoundingBox(paragraph.boundingBox.vertices);
+          const paragraphBbox = this.convertVertexToBoundingBox(
+            paragraph.boundingBox.vertices
+          );
           const paragraphText = this.extractTextFromParagraph(paragraph);
 
           textBlocks.push({
             text: paragraphText,
             confidence: paragraph.confidence,
             boundingBox: paragraphBbox,
-            type: 'paragraph'
+            type: 'paragraph',
           });
         });
       });
@@ -260,11 +272,11 @@ export class OCRService {
         processingTime,
         imageSize: {
           width: visionResponse.fullTextAnnotation?.pages?.[0]?.width || 0,
-          height: visionResponse.fullTextAnnotation?.pages?.[0]?.height || 0
+          height: visionResponse.fullTextAnnotation?.pages?.[0]?.height || 0,
         },
         textBlocks,
-        extractedEntities: [] // Will be populated later
-      }
+        extractedEntities: [], // Will be populated later
+      },
     };
   }
 
@@ -281,26 +293,27 @@ export class OCRService {
       entities.push({
         type: 'email',
         value: email,
-        confidence: 0.9
+        confidence: 0.9,
       });
     });
 
     // Phone pattern
-    const phonePattern = /(?:\+1\s?)?(?:\(\d{3}\)|\d{3})[\s.-]?\d{3}[\s.-]?\d{4}/g;
+    const phonePattern =
+      /(?:\+1\s?)?(?:\(\d{3}\)|\d{3})[\s.-]?\d{3}[\s.-]?\d{4}/g;
     const phones = text.match(phonePattern) || [];
     phones.forEach(phone => {
       entities.push({
         type: 'phone',
         value: phone,
-        confidence: 0.85
+        confidence: 0.85,
       });
     });
 
     // Date patterns
     const datePatterns = [
       /\b\d{1,2}\/\d{1,2}\/\d{2,4}\b/g, // MM/DD/YYYY
-      /\b\d{1,2}-\d{1,2}-\d{2,4}\b/g,   // MM-DD-YYYY
-      /\b[A-Za-z]+ \d{1,2},? \d{4}\b/g  // Month DD, YYYY
+      /\b\d{1,2}-\d{1,2}-\d{2,4}\b/g, // MM-DD-YYYY
+      /\b[A-Za-z]+ \d{1,2},? \d{4}\b/g, // Month DD, YYYY
     ];
 
     datePatterns.forEach(pattern => {
@@ -309,7 +322,7 @@ export class OCRService {
         entities.push({
           type: 'date',
           value: date,
-          confidence: 0.8
+          confidence: 0.8,
         });
       });
     });
@@ -321,7 +334,7 @@ export class OCRService {
       entities.push({
         type: 'ssn',
         value: ssn,
-        confidence: 0.9
+        confidence: 0.9,
       });
     });
 
@@ -332,7 +345,7 @@ export class OCRService {
       entities.push({
         type: 'amount',
         value: amount,
-        confidence: 0.7
+        confidence: 0.7,
       });
     });
 
@@ -343,7 +356,7 @@ export class OCRService {
       entities.push({
         type: 'account_number',
         value: match[1],
-        confidence: 0.75
+        confidence: 0.75,
       });
     });
 
@@ -353,9 +366,15 @@ export class OCRService {
   /**
    * Classify document based on content analysis
    */
-  private classifyDocument(text: string, entities: ExtractedEntity[]): DocumentClassification {
+  private classifyDocument(
+    text: string,
+    entities: ExtractedEntity[]
+  ): DocumentClassification {
     const textLower = text.toLowerCase();
-    const scores: Record<DocumentType, number> = {} as Record<DocumentType, number>;
+    const scores: Record<DocumentType, number> = {} as Record<
+      DocumentType,
+      number
+    >;
 
     // Score each document type based on keywords and patterns
     Object.entries(DOCUMENT_PATTERNS).forEach(([type, pattern]) => {
@@ -363,7 +382,10 @@ export class OCRService {
 
       // Keyword matching
       pattern.keywords.forEach(keyword => {
-        const keywordRegex = new RegExp(`\\b${keyword.replace(/\s+/g, '\\s+')}\\b`, 'i');
+        const keywordRegex = new RegExp(
+          `\\b${keyword.replace(/\s+/g, '\\s+')}\\b`,
+          'i'
+        );
         if (keywordRegex.test(text)) {
           score += 10;
         }
@@ -398,7 +420,7 @@ export class OCRService {
         type: 'other',
         confidence: 0,
         reasons: ['No matching patterns found'],
-        suggestedTags: this.generateSuggestedTags(text)
+        suggestedTags: this.generateSuggestedTags(text),
       };
     }
 
@@ -409,7 +431,7 @@ export class OCRService {
     const reasons = [
       `Matched ${pattern.keywords.length} keywords`,
       `Matched ${pattern.patterns.length} patterns`,
-      `Found ${entities.length} relevant entities`
+      `Found ${entities.length} relevant entities`,
     ].filter(reason => !reason.includes('0'));
 
     return {
@@ -417,7 +439,7 @@ export class OCRService {
       type: bestType as DocumentType,
       confidence,
       reasons,
-      suggestedTags: this.generateSuggestedTags(text)
+      suggestedTags: this.generateSuggestedTags(text),
     };
   }
 
@@ -445,13 +467,16 @@ export class OCRService {
     // Document-specific metadata extraction
     switch (docType) {
       case 'bank_statement': {
-        const accountEntities = entities.filter(e => e.type === 'account_number');
+        const accountEntities = entities.filter(
+          e => e.type === 'account_number'
+        );
         if (accountEntities.length > 0) {
           metadata.accountNumber = accountEntities[0].value;
         }
 
         // Try to extract institution name
-        const bankPattern = /(?:bank|credit union|financial)\s+(?:of\s+)?([A-Za-z\s]+)/i;
+        const bankPattern =
+          /(?:bank|credit union|financial)\s+(?:of\s+)?([A-Za-z\s]+)/i;
         const bankMatch = text.match(bankPattern);
         if (bankMatch) {
           metadata.institutionName = bankMatch[1].trim();
@@ -494,14 +519,14 @@ export class OCRService {
 
     // Common tag patterns
     const tagPatterns = {
-      'important': /important|urgent|critical|priority/i,
-      'expires': /expir|due|deadline|valid until/i,
-      'legal': /legal|attorney|court|law/i,
-      'financial': /financial|money|payment|account|loan/i,
-      'medical': /medical|health|doctor|hospital/i,
-      'insurance': /insurance|policy|coverage|premium/i,
-      'tax': /tax|irs|revenue|deduction/i,
-      'personal': /personal|private|confidential/i
+      important: /important|urgent|critical|priority/i,
+      expires: /expir|due|deadline|valid until/i,
+      legal: /legal|attorney|court|law/i,
+      financial: /financial|money|payment|account|loan/i,
+      medical: /medical|health|doctor|hospital/i,
+      insurance: /insurance|policy|coverage|premium/i,
+      tax: /tax|irs|revenue|deduction/i,
+      personal: /personal|private|confidential/i,
     };
 
     Object.entries(tagPatterns).forEach(([tag, pattern]) => {
@@ -520,7 +545,9 @@ export class OCRService {
     return `ocr_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
   }
 
-  private convertVertexToBoundingBox(vertices: Array<{ x: number; y: number }>): BoundingBox {
+  private convertVertexToBoundingBox(
+    vertices: Array<{ x: number; y: number }>
+  ): BoundingBox {
     const xs = vertices.map(v => v.x);
     const ys = vertices.map(v => v.y);
 
@@ -528,7 +555,7 @@ export class OCRService {
       x: Math.min(...xs),
       y: Math.min(...ys),
       width: Math.max(...xs) - Math.min(...xs),
-      height: Math.max(...ys) - Math.min(...ys)
+      height: Math.max(...ys) - Math.min(...ys),
     };
   }
 
@@ -538,8 +565,8 @@ export class OCRService {
     }>;
   }): string {
     let text = '';
-    paragraph.words?.forEach((word) => {
-      word.symbols?.forEach((symbol) => {
+    paragraph.words?.forEach(word => {
+      word.symbols?.forEach(symbol => {
         text += symbol.text;
       });
       text += ' ';
@@ -549,7 +576,10 @@ export class OCRService {
 
   private calculateAverageConfidence(textBlocks: TextBlock[]): number {
     if (textBlocks.length === 0) return 0;
-    const totalConfidence = textBlocks.reduce((sum, block) => sum + block.confidence, 0);
+    const totalConfidence = textBlocks.reduce(
+      (sum, block) => sum + block.confidence,
+      0
+    );
     return totalConfidence / textBlocks.length;
   }
 }

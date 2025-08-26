@@ -60,7 +60,9 @@ export const getCurrentJurisdiction = () => {
   };
 
   // Default to Czech for development
-  return jurisdictionMap[domain] || process.env.VITE_DEFAULT_JURISDICTION || 'CZ';
+  return (
+    jurisdictionMap[domain] || process.env.VITE_DEFAULT_JURISDICTION || 'CZ'
+  );
 };
 
 // Get supported languages for current jurisdiction
@@ -183,7 +185,10 @@ const i18nConfig = {
         const jurisdiction = getCurrentJurisdiction();
 
         // Try to load jurisdiction-specific translation first
-        const jurisdictionUrl = url.replace('/locales/', `/locales/${jurisdiction}/`);
+        const jurisdictionUrl = url.replace(
+          '/locales/',
+          `/locales/${jurisdiction}/`
+        );
 
         const response = await fetch(jurisdictionUrl);
         if (response.ok) {
@@ -244,7 +249,10 @@ i18n
   });
 
 // Function to load jurisdiction-specific legal translations
-export const loadLegalTranslations = async (jurisdiction: string, language: string) => {
+export const loadLegalTranslations = async (
+  jurisdiction: string,
+  language: string
+) => {
   const namespaces = [
     NAMESPACES.legalTerms,
     NAMESPACES.legalDocuments,
@@ -255,22 +263,24 @@ export const loadLegalTranslations = async (jurisdiction: string, language: stri
 
   for (const ns of namespaces) {
     try {
-      const response = await fetch(`/locales/${jurisdiction}/${language}/${ns}.json`);
+      const response = await fetch(
+        `/locales/${jurisdiction}/${language}/${ns}.json`
+      );
       if (response.ok) {
         const translations = await response.json();
         i18n.addResourceBundle(language, ns, translations, true, true);
       }
     } catch (error) {
-      console.error(`Failed to load legal translations for ${jurisdiction}/${language}/${ns}:`, error);
+      console.error(
+        `Failed to load legal translations for ${jurisdiction}/${language}/${ns}:`,
+        error
+      );
     }
   }
 };
 
 // Helper function to get translation with jurisdiction context
-export const getJurisdictionTranslation = (
-  key: string,
-  options?: any
-) => {
+export const getJurisdictionTranslation = (key: string, options?: any) => {
   const jurisdiction = getCurrentJurisdiction();
   const jurisdictionKey = `${key}_${jurisdiction}`;
 

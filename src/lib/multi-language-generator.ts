@@ -4,7 +4,12 @@
 import type { WillData } from '@/components/legacy/WillWizard';
 
 export type SupportedLanguage = 'sk' | 'cs' | 'en' | 'de';
-export type WillVariant = 'holographic' | 'alographic' | 'notarial' | 'comprehensive' | 'basic';
+export type WillVariant =
+  | 'holographic'
+  | 'alographic'
+  | 'notarial'
+  | 'comprehensive'
+  | 'basic';
 
 export interface LegalDocument {
   id: string;
@@ -32,197 +37,200 @@ export interface TranslatedTerm {
 }
 
 // Legal terminology dictionary for different languages and jurisdictions
-const LEGAL_TERMINOLOGY: Record<SupportedLanguage, Record<string, Record<string, string>>> = {
-  'sk': {
-    'general': {
-      'will': 'závet',
-      'testator': 'poručiteľ',
-      'heir': 'dedič',
-      'inheritance': 'dedičstvo',
-      'estate': 'majetok',
-      'executor': 'vykonávateľ závetu',
-      'witness': 'svedok',
-      'guardian': 'opatrovník',
-      'beneficiary': 'dedič',
-      'asset': 'majetok',
-      'property': 'majetok',
-      'share': 'podiel',
-      'percentage': 'percento',
-      'revocation': 'odvolanie',
-      'signature': 'podpis',
-      'date': 'dátum',
-      'place': 'miesto',
-      'legal_capacity': 'spôsobilosť na právne úkony',
-      'free_will': 'slobodná vôľa',
-      'forced_heirs': 'neopomenuteľní dedičia',
-      'reserved_portion': 'nevyhnutný diel',
-      'holographic_will': 'vlastnoručný závet',
-      'alographic_will': 'alografný závet',
-      'notarial_will': 'notársky závet'
+const LEGAL_TERMINOLOGY: Record<
+  SupportedLanguage,
+  Record<string, Record<string, string>>
+> = {
+  sk: {
+    general: {
+      will: 'závet',
+      testator: 'poručiteľ',
+      heir: 'dedič',
+      inheritance: 'dedičstvo',
+      estate: 'majetok',
+      executor: 'vykonávateľ závetu',
+      witness: 'svedok',
+      guardian: 'opatrovník',
+      beneficiary: 'dedič',
+      asset: 'majetok',
+      property: 'majetok',
+      share: 'podiel',
+      percentage: 'percento',
+      revocation: 'odvolanie',
+      signature: 'podpis',
+      date: 'dátum',
+      place: 'miesto',
+      legal_capacity: 'spôsobilosť na právne úkony',
+      free_will: 'slobodná vôľa',
+      forced_heirs: 'neopomenuteľní dedičia',
+      reserved_portion: 'nevyhnutný diel',
+      holographic_will: 'vlastnoručný závet',
+      alographic_will: 'alografný závet',
+      notarial_will: 'notársky závet',
     },
-    'relationships': {
-      'spouse': 'manžel/manželka',
-      'husband': 'manžel',
-      'wife': 'manželka',
-      'child': 'dieťa',
-      'son': 'syn',
-      'daughter': 'dcéra',
-      'parent': 'rodič',
-      'father': 'otec',
-      'mother': 'matka',
-      'sibling': 'súrodenec',
-      'brother': 'brat',
-      'sister': 'sestra',
-      'grandparent': 'starý rodič',
-      'grandchild': 'vnuk/vnučka',
-      'friend': 'priateľ',
-      'partner': 'partner/partnerka'
-    }
+    relationships: {
+      spouse: 'manžel/manželka',
+      husband: 'manžel',
+      wife: 'manželka',
+      child: 'dieťa',
+      son: 'syn',
+      daughter: 'dcéra',
+      parent: 'rodič',
+      father: 'otec',
+      mother: 'matka',
+      sibling: 'súrodenec',
+      brother: 'brat',
+      sister: 'sestra',
+      grandparent: 'starý rodič',
+      grandchild: 'vnuk/vnučka',
+      friend: 'priateľ',
+      partner: 'partner/partnerka',
+    },
   },
-  'cs': {
-    'general': {
-      'will': 'závěť',
-      'testator': 'pořizovatel',
-      'heir': 'dědic',
-      'inheritance': 'dědictví',
-      'estate': 'majetek',
-      'executor': 'vykonavatel závěti',
-      'witness': 'svědek',
-      'guardian': 'opatrovník',
-      'beneficiary': 'dědic',
-      'asset': 'majetek',
-      'property': 'majetek',
-      'share': 'podíl',
-      'percentage': 'procento',
-      'revocation': 'odvolání',
-      'signature': 'podpis',
-      'date': 'datum',
-      'place': 'místo',
-      'legal_capacity': 'svéprávnost',
-      'free_will': 'svobodná vůle',
-      'forced_heirs': 'nepominutelní dědicové',
-      'reserved_portion': 'povinný díl',
-      'holographic_will': 'vlastnoruční závěť',
-      'alographic_will': 'alografní závěť',
-      'notarial_will': 'notářská závěť'
+  cs: {
+    general: {
+      will: 'závěť',
+      testator: 'pořizovatel',
+      heir: 'dědic',
+      inheritance: 'dědictví',
+      estate: 'majetek',
+      executor: 'vykonavatel závěti',
+      witness: 'svědek',
+      guardian: 'opatrovník',
+      beneficiary: 'dědic',
+      asset: 'majetek',
+      property: 'majetek',
+      share: 'podíl',
+      percentage: 'procento',
+      revocation: 'odvolání',
+      signature: 'podpis',
+      date: 'datum',
+      place: 'místo',
+      legal_capacity: 'svéprávnost',
+      free_will: 'svobodná vůle',
+      forced_heirs: 'nepominutelní dědicové',
+      reserved_portion: 'povinný díl',
+      holographic_will: 'vlastnoruční závěť',
+      alographic_will: 'alografní závěť',
+      notarial_will: 'notářská závěť',
     },
-    'relationships': {
-      'spouse': 'manžel/manželka',
-      'husband': 'manžel',
-      'wife': 'manželka',
-      'child': 'dítě',
-      'son': 'syn',
-      'daughter': 'dcera',
-      'parent': 'rodič',
-      'father': 'otec',
-      'mother': 'matka',
-      'sibling': 'sourozenec',
-      'brother': 'bratr',
-      'sister': 'sestra',
-      'grandparent': 'prarodič',
-      'grandchild': 'vnuk/vnučka',
-      'friend': 'přítel',
-      'partner': 'partner/partnerka'
-    }
+    relationships: {
+      spouse: 'manžel/manželka',
+      husband: 'manžel',
+      wife: 'manželka',
+      child: 'dítě',
+      son: 'syn',
+      daughter: 'dcera',
+      parent: 'rodič',
+      father: 'otec',
+      mother: 'matka',
+      sibling: 'sourozenec',
+      brother: 'bratr',
+      sister: 'sestra',
+      grandparent: 'prarodič',
+      grandchild: 'vnuk/vnučka',
+      friend: 'přítel',
+      partner: 'partner/partnerka',
+    },
   },
-  'en': {
-    'general': {
-      'will': 'last will and testament',
-      'testator': 'testator',
-      'heir': 'heir',
-      'inheritance': 'inheritance',
-      'estate': 'estate',
-      'executor': 'executor',
-      'witness': 'witness',
-      'guardian': 'guardian',
-      'beneficiary': 'beneficiary',
-      'asset': 'asset',
-      'property': 'property',
-      'share': 'share',
-      'percentage': 'percentage',
-      'revocation': 'revocation',
-      'signature': 'signature',
-      'date': 'date',
-      'place': 'place',
-      'legal_capacity': 'legal capacity',
-      'free_will': 'free will',
-      'forced_heirs': 'forced heirs',
-      'reserved_portion': 'reserved portion',
-      'holographic_will': 'holographic will',
-      'alographic_will': 'attested will',
-      'notarial_will': 'notarial will'
+  en: {
+    general: {
+      will: 'last will and testament',
+      testator: 'testator',
+      heir: 'heir',
+      inheritance: 'inheritance',
+      estate: 'estate',
+      executor: 'executor',
+      witness: 'witness',
+      guardian: 'guardian',
+      beneficiary: 'beneficiary',
+      asset: 'asset',
+      property: 'property',
+      share: 'share',
+      percentage: 'percentage',
+      revocation: 'revocation',
+      signature: 'signature',
+      date: 'date',
+      place: 'place',
+      legal_capacity: 'legal capacity',
+      free_will: 'free will',
+      forced_heirs: 'forced heirs',
+      reserved_portion: 'reserved portion',
+      holographic_will: 'holographic will',
+      alographic_will: 'attested will',
+      notarial_will: 'notarial will',
     },
-    'relationships': {
-      'spouse': 'spouse',
-      'husband': 'husband',
-      'wife': 'wife',
-      'child': 'child',
-      'son': 'son',
-      'daughter': 'daughter',
-      'parent': 'parent',
-      'father': 'father',
-      'mother': 'mother',
-      'sibling': 'sibling',
-      'brother': 'brother',
-      'sister': 'sister',
-      'grandparent': 'grandparent',
-      'grandchild': 'grandchild',
-      'friend': 'friend',
-      'partner': 'partner'
-    }
+    relationships: {
+      spouse: 'spouse',
+      husband: 'husband',
+      wife: 'wife',
+      child: 'child',
+      son: 'son',
+      daughter: 'daughter',
+      parent: 'parent',
+      father: 'father',
+      mother: 'mother',
+      sibling: 'sibling',
+      brother: 'brother',
+      sister: 'sister',
+      grandparent: 'grandparent',
+      grandchild: 'grandchild',
+      friend: 'friend',
+      partner: 'partner',
+    },
   },
-  'de': {
-    'general': {
-      'will': 'Testament',
-      'testator': 'Erblasser',
-      'heir': 'Erbe',
-      'inheritance': 'Erbschaft',
-      'estate': 'Nachlass',
-      'executor': 'Testamentsvollstrecker',
-      'witness': 'Zeuge',
-      'guardian': 'Vormund',
-      'beneficiary': 'Begünstigter',
-      'asset': 'Vermögenswert',
-      'property': 'Eigentum',
-      'share': 'Anteil',
-      'percentage': 'Prozent',
-      'revocation': 'Widerruf',
-      'signature': 'Unterschrift',
-      'date': 'Datum',
-      'place': 'Ort',
-      'legal_capacity': 'Geschäftsfähigkeit',
-      'free_will': 'freier Wille',
-      'forced_heirs': 'Pflichtteilsberechtigte',
-      'reserved_portion': 'Pflichtteil',
-      'holographic_will': 'eigenhändiges Testament',
-      'alographic_will': 'öffentliches Testament',
-      'notarial_will': 'notarielles Testament'
+  de: {
+    general: {
+      will: 'Testament',
+      testator: 'Erblasser',
+      heir: 'Erbe',
+      inheritance: 'Erbschaft',
+      estate: 'Nachlass',
+      executor: 'Testamentsvollstrecker',
+      witness: 'Zeuge',
+      guardian: 'Vormund',
+      beneficiary: 'Begünstigter',
+      asset: 'Vermögenswert',
+      property: 'Eigentum',
+      share: 'Anteil',
+      percentage: 'Prozent',
+      revocation: 'Widerruf',
+      signature: 'Unterschrift',
+      date: 'Datum',
+      place: 'Ort',
+      legal_capacity: 'Geschäftsfähigkeit',
+      free_will: 'freier Wille',
+      forced_heirs: 'Pflichtteilsberechtigte',
+      reserved_portion: 'Pflichtteil',
+      holographic_will: 'eigenhändiges Testament',
+      alographic_will: 'öffentliches Testament',
+      notarial_will: 'notarielles Testament',
     },
-    'relationships': {
-      'spouse': 'Ehegatte',
-      'husband': 'Ehemann',
-      'wife': 'Ehefrau',
-      'child': 'Kind',
-      'son': 'Sohn',
-      'daughter': 'Tochter',
-      'parent': 'Elternteil',
-      'father': 'Vater',
-      'mother': 'Mutter',
-      'sibling': 'Geschwister',
-      'brother': 'Bruder',
-      'sister': 'Schwester',
-      'grandparent': 'Großelternteil',
-      'grandchild': 'Enkelkind',
-      'friend': 'Freund',
-      'partner': 'Partner'
-    }
-  }
+    relationships: {
+      spouse: 'Ehegatte',
+      husband: 'Ehemann',
+      wife: 'Ehefrau',
+      child: 'Kind',
+      son: 'Sohn',
+      daughter: 'Tochter',
+      parent: 'Elternteil',
+      father: 'Vater',
+      mother: 'Mutter',
+      sibling: 'Geschwister',
+      brother: 'Bruder',
+      sister: 'Schwester',
+      grandparent: 'Großelternteil',
+      grandchild: 'Enkelkind',
+      friend: 'Freund',
+      partner: 'Partner',
+    },
+  },
 };
 
 // Will templates for different languages and variants
 const WILL_TEMPLATES: Record<SupportedLanguage, Record<WillVariant, string>> = {
-  'sk': {
-    'holographic': `ZÁVET
+  sk: {
+    holographic: `ZÁVET
 
 Ja, nižšie podpísaný/á {{testator.fullName}}, narodený/á {{testator.dateOfBirth}}, s trvalým pobytom {{testator.address}}, vyhlasujem, že som plne spôsobilý/á na právne úkony a tento závet robím s rozvahou, vážne a bez donútenia.
 
@@ -261,7 +269,7 @@ vlastnoručný podpis poručiteľa
 
 UPOZORNENIE: Tento závet musí byť napísaný celý vlastnou rukou poručiteľa a vlastnoručne podpísaný. Deň, mesiac a rok podpisu musia byť uvedené (§ 476 ods. 2 OZ).`,
 
-    'alographic': `ZÁVET
+    alographic: `ZÁVET
 
 Ja, nižšie podpísaný/á {{testator.fullName}}, nar. {{testator.dateOfBirth}}, s trvalým pobytom {{testator.address}}, vyhlasujem, že som plne spôsobilý/á na právne úkony a tento závet robím s rozvahou, vážne a bez donútenia.
 
@@ -301,7 +309,7 @@ Svedok 2: Ja, {{witnesses.[1].name}}, nar. {{witnesses.[1].dateOfBirth}}, adresa
 ____________________
 podpis svedka`,
 
-    'notarial': `PODKLAD PRE NOTÁRSKU ZÁPISNICU – ZÁVET
+    notarial: `PODKLAD PRE NOTÁRSKU ZÁPISNICU – ZÁVET
 
 Poručiteľ: {{testator.fullName}}, nar. {{testator.dateOfBirth}}, r. č. {{testator.idNumber}}, trvalý pobyt {{testator.address}}.
 
@@ -319,7 +327,7 @@ NCRza/Úschova: registrácia v NCRza – {{#if ncrOptions.registerInNCR}}áno{{e
 
 Poznámka k neopomenuteľným dedičom (§ 479 OZ): Poručiteľ berie na vedomie práva neopomenuteľných dedičov.`,
 
-    'comprehensive': `KOMPLEXNÝ ZÁVET
+    comprehensive: `KOMPLEXNÝ ZÁVET
 
 Ja, nižšie podpísaný/á {{testator_data.fullName}}, narodený/á {{testator_data.dateOfBirth}}, s trvalým pobytom {{testator_data.address}}, vyhlasujem, že som plne spôsobilý/á na právne úkony a tento závet robím s rozvahou, vážne a bez donútenia.
 
@@ -371,7 +379,7 @@ ZÁVET - Tento dokument obsahuje kompletný závet
 
 Závet`,
 
-    'basic': `ZÁKLADNÝ ZÁVET
+    basic: `ZÁKLADNÝ ZÁVET
 
 Ja, nižšie podpísaný/á {{testator_data.fullName}}, narodený/á {{testator_data.dateOfBirth}}, s trvalým pobytom {{testator_data.address}}, vyhlasujem, že som plne spôsobilý/á na právne úkony a tento závet robím s rozvahou, vážne a bez donútenia.
 
@@ -392,11 +400,11 @@ vlastnoručný podpis poručiteľa
 
 ZÁVET - Tento dokument obsahuje základný závet
 
-Závet`
+Závet`,
   },
 
-  'cs': {
-    'holographic': `Závěť
+  cs: {
+    holographic: `Závěť
 
 Já, níže podepsaný/á {{testator.fullName}}, datum narození {{testator.dateOfBirth}}, s trvalým pobytem {{testator.address}}, prohlašuji, že jsem svéprávný/á, způsobilý/á samostatně právně jednat a že tuto závěť činím s rozvahou, vážně a bez donucení.
 
@@ -430,7 +438,7 @@ vlastnoruční podpis
 
 UPOZORNĚNÍ: Celá závěť musí být napsána vlastní rukou a vlastnoručně podepsána.`,
 
-    'alographic': `Závěť
+    alographic: `Závěť
 
 Já, níže podepsaný/á {{testator.fullName}}, datum narození {{testator.dateOfBirth}}, s trvalým pobytem {{testator.address}}, prohlašuji, že jsem svéprávný/á, že jsem způsobilý/á samostatně právně jednat a že tuto závěť činím s rozvahou, vážně a bez donucení.
 
@@ -476,7 +484,7 @@ V {{execution.city}} dne {{execution.date}}
 ____________________
 svědek – vlastnoruční podpis`,
 
-    'notarial': `PODKLAD PRO NOTÁŘSKÝ SPIS – ZÁVĚŤ
+    notarial: `PODKLAD PRO NOTÁŘSKÝ SPIS – ZÁVĚŤ
 
 Pořizovatel: {{testator.fullName}}, nar. {{testator.dateOfBirth}}, {{#if testator.idNumber}}r. č. {{testator.idNumber}}, {{/if}}trvalý pobyt {{testator.address}}.
 
@@ -492,7 +500,7 @@ Notářské údaje: místo sepsání {{notary.placeOfDeed}}, navrhované datum {
 
 Poznámka k nepominutelným dědicům (§ 1643 OZ): Pořizovatel bere na vědomí práva nepominutelných dědiců.`,
 
-    'comprehensive': `KOMPLEXNÍ ZÁVĚŤ
+    comprehensive: `KOMPLEXNÍ ZÁVĚŤ
 
 Já, níže podepsaný/á {{testator_data.fullName}}, datum narození {{testator_data.dateOfBirth}}, s trvalým pobytem {{testator_data.address}}, prohlašuji, že jsem svéprávný/á, způsobilý/á samostatně právně jednat a že tuto závěť činím s rozvahou, vážně a bez donucení.
 
@@ -544,7 +552,7 @@ ZÁVĚŤ - Tento dokument obsahuje kompletní závěť
 
 Závěť`,
 
-    'basic': `ZÁKLADNÍ ZÁVĚŤ
+    basic: `ZÁKLADNÍ ZÁVĚŤ
 
 Já, níže podepsaný/á {{testator.fullName}}, datum narození {{testator.dateOfBirth}}, s trvalým pobytem {{testator.address}}, prohlašuji, že jsem svéprávný/á, způsobilý/á samostatně právně jednat a že tuto závěť činím s rozvahou, vážně a bez donucení.
 
@@ -563,11 +571,11 @@ V {{execution.city}} dne {{execution.date}}
 ____________________
 vlastnoruční podpis
 
-Závěť`
+Závěť`,
   },
 
-  'en': {
-    'holographic': `LAST WILL AND TESTAMENT
+  en: {
+    holographic: `LAST WILL AND TESTAMENT
 
 I, {{testator.fullName}}, born {{testator.dateOfBirth}}, residing at {{testator.address}}, being of sound mind and disposing memory, do hereby make, publish and declare this to be my Last Will and Testament, hereby revoking all former wills and codicils by me at any time heretofore made.
 
@@ -602,7 +610,7 @@ ____________________
 
 NOTE: This holographic will must be entirely written in the testator's own handwriting and signed by the testator.`,
 
-    'alographic': `LAST WILL AND TESTAMENT
+    alographic: `LAST WILL AND TESTAMENT
 
 I, {{testator.fullName}}, born {{testator.dateOfBirth}}, residing at {{testator.address}}, being of sound mind and disposing memory, do hereby make, publish and declare this to be my Last Will and Testament, hereby revoking all former wills and codicils by me at any time heretofore made.
 
@@ -645,7 +653,7 @@ ____________________
 {{witnesses.[1].name}}  
 Address: {{witnesses.[1].address}}`,
 
-    'notarial': `DRAFT FOR NOTARIAL WILL
+    notarial: `DRAFT FOR NOTARIAL WILL
 
 Testator: {{testator.fullName}}, born {{testator.dateOfBirth}}, residing at {{testator.address}}.
 
@@ -661,7 +669,7 @@ Notarial details: place of execution {{notary.placeOfDeed}}, proposed date {{not
 
 Note regarding forced heirship: The testator acknowledges the rights of forced heirs under applicable law.`,
 
-    'comprehensive': `COMPREHENSIVE LAST WILL AND TESTAMENT
+    comprehensive: `COMPREHENSIVE LAST WILL AND TESTAMENT
 
 I, {{testator.fullName}}, born {{testator.dateOfBirth}}, residing at {{testator.address}}, being of sound mind and disposing memory, do hereby make, publish and declare this to be my Last Will and Testament, hereby revoking all former wills and codicils by me at any time heretofore made.
 
@@ -713,7 +721,7 @@ IN WITNESS WHEREOF, I have hereunto set my hand this {{execution.date}} day in {
 ____________________
 {{testator.fullName}}, Testator`,
 
-    'basic': `BASIC LAST WILL AND TESTAMENT
+    basic: `BASIC LAST WILL AND TESTAMENT
 
 I, {{testator.fullName}}, born {{testator.dateOfBirth}}, residing at {{testator.address}}, being of sound mind and disposing memory, do hereby make, publish and declare this to be my Last Will and Testament, hereby revoking all former wills and codicils by me at any time heretofore made.
 
@@ -730,11 +738,11 @@ I hereby revoke all wills and codicils heretofore made by me.
 IN WITNESS WHEREOF, I have hereunto set my hand this {{execution.date}} day in {{execution.city}}.
 
 ____________________
-{{testator.fullName}}, Testator`
+{{testator.fullName}}, Testator`,
   },
 
-  'de': {
-    'holographic': `TESTAMENT
+  de: {
+    holographic: `TESTAMENT
 
 Ich, {{testator.fullName}}, geboren am {{testator.dateOfBirth}}, wohnhaft {{testator.address}}, bin geschäftsfähig und erkläre hiermit meinen letzten Willen.
 
@@ -769,7 +777,7 @@ ____________________
 
 HINWEIS: Dieses eigenhändige Testament muss vollständig eigenhändig geschrieben und unterschrieben werden.`,
 
-    'alographic': `TESTAMENT
+    alographic: `TESTAMENT
 
 Ich, {{testator.fullName}}, geboren am {{testator.dateOfBirth}}, wohnhaft {{testator.address}}, bin geschäftsfähig und erkläre hiermit vor den unten genannten Zeugen meinen letzten Willen.
 
@@ -806,7 +814,7 @@ ____________________
 {{witnesses.[1].name}}
 Anschrift: {{witnesses.[1].address}}`,
 
-    'notarial': `ENTWURF FÜR NOTARIELLES TESTAMENT
+    notarial: `ENTWURF FÜR NOTARIELLES TESTAMENT
 
 Erblasser: {{testator.fullName}}, geboren am {{testator.dateOfBirth}}, wohnhaft {{testator.address}}.
 
@@ -822,7 +830,7 @@ Notarielle Angaben: Ort der Beurkundung {{notary.placeOfDeed}}, vorgeschlagenes 
 
 Hinweis zum Pflichtteil: Der Erblasser nimmt die Rechte der Pflichtteilsberechtigten zur Kenntnis.`,
 
-    'comprehensive': `UMFASSENDES TESTAMENT
+    comprehensive: `UMFASSENDES TESTAMENT
 
 Ich, {{testator_data.fullName}}, geboren am {{testator_data.dateOfBirth}}, wohnhaft {{testator_data.address}}, bin geschäftsfähig und erkläre hiermit meinen letzten Willen.
 
@@ -878,7 +886,7 @@ TESTAMENT - Dieses Dokument enthält ein vollständiges Testament
 
 IMMOBILIE - Immobilienvermögen ist in diesem Testament enthalten`,
 
-    'basic': `EINFACHES TESTAMENT
+    basic: `EINFACHES TESTAMENT
 
 Ich, {{testator.fullName}}, geboren am {{testator.dateOfBirth}}, wohnhaft {{testator.address}}, bin geschäftsfähig und erkläre hiermit meinen letzten Willen.
 
@@ -895,8 +903,8 @@ Ich widerrufe hiermit alle von mir früher errichteten Verfügungen von Todes we
 {{execution.city}}, den {{execution.date}}
 
 ____________________
-{{testator.fullName}}`
-  }
+{{testator.fullName}}`,
+  },
 };
 
 export class MultiLangGenerator {
@@ -909,29 +917,41 @@ export class MultiLangGenerator {
     jurisdiction: string,
     variant: WillVariant = 'holographic'
   ): Promise<LegalDocument> {
-
     // Prepare data with translated terms
-    const processedData = this.processWillDataWithTranslations(willData, language);
+    const processedData = this.processWillDataWithTranslations(
+      willData,
+      language
+    );
 
     // Get appropriate template
     const template = WILL_TEMPLATES[language][variant];
     if (!template) {
-      throw new Error(`Template not found for language ${language} and variant ${variant}`);
+      throw new Error(
+        `Template not found for language ${language} and variant ${variant}`
+      );
     }
 
     // Process template with data (simple template engine)
     const content = this.processTemplate(template, processedData);
 
     // Generate legal notices
-    const legalNotices = this.generateLegalNotices(language, variant, jurisdiction);
+    const legalNotices = this.generateLegalNotices(
+      language,
+      variant,
+      jurisdiction
+    );
 
     // Generate signing instructions
-    const signingInstructions = this.generateSigningInstructions(language, variant);
+    const signingInstructions = this.generateSigningInstructions(
+      language,
+      variant
+    );
 
     // Generate witness instructions if needed
-    const witnessInstructions = variant === 'alographic'
-      ? this.generateWitnessInstructions(language, jurisdiction)
-      : undefined;
+    const witnessInstructions =
+      variant === 'alographic'
+        ? this.generateWitnessInstructions(language, jurisdiction)
+        : undefined;
 
     return {
       id: `will_${variant}_${language}_${Date.now()}`,
@@ -945,7 +965,7 @@ export class MultiLangGenerator {
       witnessInstructions,
       templateVersion: '1.0.0',
       generatedAt: new Date(),
-      legalTerminology: LEGAL_TERMINOLOGY[language]?.general || {}
+      legalTerminology: LEGAL_TERMINOLOGY[language]?.general || {},
     };
   }
 
@@ -958,10 +978,13 @@ export class MultiLangGenerator {
     toLang: SupportedLanguage,
     context: 'legal' | 'relationship' = 'legal'
   ): TranslatedTerm {
-    const categoryKey = context === 'relationship' ? 'relationships' : 'general';
+    const categoryKey =
+      context === 'relationship' ? 'relationships' : 'general';
 
-    const originalTerm = LEGAL_TERMINOLOGY[fromLang]?.[categoryKey]?.[term.toLowerCase()] || term;
-    const translatedTerm = LEGAL_TERMINOLOGY[toLang]?.[categoryKey]?.[term.toLowerCase()] || term;
+    const originalTerm =
+      LEGAL_TERMINOLOGY[fromLang]?.[categoryKey]?.[term.toLowerCase()] || term;
+    const translatedTerm =
+      LEGAL_TERMINOLOGY[toLang]?.[categoryKey]?.[term.toLowerCase()] || term;
 
     return {
       original: originalTerm,
@@ -969,22 +992,31 @@ export class MultiLangGenerator {
       translatedTerm: translatedTerm, // Alias for translated
       language: toLang,
       context: context === 'relationship' ? 'relationship' : 'legal',
-      legalContext: `Legal term in ${toLang} context`
+      legalContext: `Legal term in ${toLang} context`,
     };
   }
 
   /**
    * Process will data and add translated relationship terms
    */
-  private processWillDataWithTranslations(willData: WillData, language: SupportedLanguage) {
+  private processWillDataWithTranslations(
+    willData: WillData,
+    language: SupportedLanguage
+  ) {
     const processedData = { ...willData };
 
     // Add translated relationship terms to beneficiaries
     if (processedData.beneficiaries) {
-      processedData.beneficiaries = processedData.beneficiaries.map(beneficiary => ({
-        ...beneficiary,
-        relationshipText: this.translateTerm(beneficiary.relationship, language, 'relationships')
-      }));
+      processedData.beneficiaries = processedData.beneficiaries.map(
+        beneficiary => ({
+          ...beneficiary,
+          relationshipText: this.translateTerm(
+            beneficiary.relationship,
+            language,
+            'relationships'
+          ),
+        })
+      );
     }
 
     // Add translated relationship terms to executor
@@ -995,7 +1027,7 @@ export class MultiLangGenerator {
           processedData.executor_data.primaryExecutor.relationship || '',
           language,
           'relationships'
-        )
+        ),
       };
     }
 
@@ -1007,7 +1039,7 @@ export class MultiLangGenerator {
           processedData.guardianship_data.primaryGuardian.relationship || '',
           language,
           'relationships'
-        )
+        ),
       };
     }
 
@@ -1027,27 +1059,38 @@ export class MultiLangGenerator {
     });
 
     // Handle conditional blocks {{#if condition}}...{{/if}}
-    processed = processed.replace(/\{\{#if\s+(\w+(?:\.\w+)*)\}\}([\s\S]*?)\{\{\/if\}\}/g, (match, path, content) => {
-      const value = this.getNestedValue(data, path);
-      return value ? content : '';
-    });
+    processed = processed.replace(
+      /\{\{#if\s+(\w+(?:\.\w+)*)\}\}([\s\S]*?)\{\{\/if\}\}/g,
+      (match, path, content) => {
+        const value = this.getNestedValue(data, path);
+        return value ? content : '';
+      }
+    );
 
     // Handle each blocks {{#each array}}...{{/each}} (simplified)
-    processed = processed.replace(/\{\{#each\s+(\w+)\}\}([\s\S]*?)\{\{\/each\}\}/g, (match, arrayPath, itemTemplate) => {
-      const array = this.getNestedValue(data, arrayPath);
-      if (!Array.isArray(array)) return '';
+    processed = processed.replace(
+      /\{\{#each\s+(\w+)\}\}([\s\S]*?)\{\{\/each\}\}/g,
+      (match, arrayPath, itemTemplate) => {
+        const array = this.getNestedValue(data, arrayPath);
+        if (!Array.isArray(array)) return '';
 
-      return array.map((item, index) => {
-        let itemContent = itemTemplate;
-        // Replace {{this.property}} with item values
-        itemContent = itemContent.replace(/\{\{this\.(\w+)\}\}/g, (match, prop) => {
-          return item[prop] !== undefined ? String(item[prop]) : match;
-        });
-        // Replace {{@index}} with array index
-        itemContent = itemContent.replace(/\{\{@index\}\}/g, String(index));
-        return itemContent;
-      }).join('\n');
-    });
+        return array
+          .map((item, index) => {
+            let itemContent = itemTemplate;
+            // Replace {{this.property}} with item values
+            itemContent = itemContent.replace(
+              /\{\{this\.(\w+)\}\}/g,
+              (match, prop) => {
+                return item[prop] !== undefined ? String(item[prop]) : match;
+              }
+            );
+            // Replace {{@index}} with array index
+            itemContent = itemContent.replace(/\{\{@index\}\}/g, String(index));
+            return itemContent;
+          })
+          .join('\n');
+      }
+    );
 
     return processed;
   }
@@ -1081,83 +1124,83 @@ export class MultiLangGenerator {
     jurisdiction: string
   ): string[] {
     const notices: Record<SupportedLanguage, Record<WillVariant, string[]>> = {
-      'sk': {
-        'holographic': [
+      sk: {
+        holographic: [
           'Tento závet musí byť napísaný celý vlastnou rukou poručiteľa.',
           'Závet musí byť vlastnoručne podpísaný.',
           'Deň, mesiac a rok podpisu musia byť uvedené (§ 476 ods. 2 OZ).',
-          'Berúc na vedomie práva neopomenuteľných dedičov podľa § 479 OZ.'
+          'Berúc na vedomie práva neopomenuteľných dedičov podľa § 479 OZ.',
         ],
-        'alographic': [
+        alographic: [
           'Závet musí byť podpísaný za súčasnej prítomnosti dvoch svedkov.',
           'Svedkovia musia byť plnoletí, spôsobilí na právne úkony a ovládať jazyk závetu.',
           'Svedkovia nesmú byť osoby, ktoré majú dediť podľa závetu.',
-          'Berúc na vedomie práva neopomenuteľných dedičov podľa § 479 OZ.'
+          'Berúc na vedomie práva neopomenuteľných dedičov podľa § 479 OZ.',
         ],
-        'notarial': [
+        notarial: [
           'Závet bude spísaný notárom vo forme notárskej zápisnice.',
           'Závet môže byť registrovaný v NCRza (Notárskom centrálnom registri závetov).',
           'Závet môže byť prijatý do notárskej úschovy.',
-          'Berúc na vedomie práva neopomenuteľných dedičov podľa § 479 OZ.'
-        ]
+          'Berúc na vedomie práva neopomenuteľných dedičov podľa § 479 OZ.',
+        ],
       },
-      'cs': {
-        'holographic': [
+      cs: {
+        holographic: [
           'Celá závěť musí být napsána vlastní rukou pořizovatele.',
           'Závěť musí být vlastnoručně podepsána.',
           'Datum musí být uvedeno.',
-          'Respektování práv nepominutelných dědiců dle § 1643 OZ.'
+          'Respektování práv nepominutelných dědiců dle § 1643 OZ.',
         ],
-        'alographic': [
+        alographic: [
           'Závěť musí být podepsána za současné přítomnosti dvou svědků.',
           'Svědci musí být svéprávní a znalí jazyka závěti.',
           'Svědci nesmí být dědicové podle závěti.',
-          'Respektování práv nepominutelných dědiců dle § 1643 OZ.'
+          'Respektování práv nepominutelných dědiců dle § 1643 OZ.',
         ],
-        'notarial': [
+        notarial: [
           'Závěť bude sepsána notářem ve formě notářského spisu.',
           'Závěť poskytuje nejvyšší míru právní jistoty.',
-          'Respektování práv nepominutelných dědiců dle § 1643 OZ.'
-        ]
+          'Respektování práv nepominutelných dědiců dle § 1643 OZ.',
+        ],
       },
-      'en': {
-        'holographic': [
-          'The entire will must be written in the testator\'s own handwriting.',
+      en: {
+        holographic: [
+          "The entire will must be written in the testator's own handwriting.",
           'The will must be signed by the testator.',
           'Check local laws for specific requirements.',
-          'Consider witness requirements in your jurisdiction.'
+          'Consider witness requirements in your jurisdiction.',
         ],
-        'alographic': [
+        alographic: [
           'The will must be signed in the presence of two witnesses.',
           'Witnesses must be competent adults.',
           'Witnesses should not be beneficiaries under the will.',
-          'Follow local witness requirements.'
+          'Follow local witness requirements.',
         ],
-        'notarial': [
+        notarial: [
           'The will is prepared by a notary for maximum legal certainty.',
           'Notarial wills are self-proving in most jurisdictions.',
-          'Check local notarial requirements.'
-        ]
+          'Check local notarial requirements.',
+        ],
       },
-      'de': {
-        'holographic': [
+      de: {
+        holographic: [
           'Das gesamte Testament muss eigenhändig geschrieben werden.',
           'Das Testament muss eigenhändig unterschrieben werden.',
           'Ort und Datum sind erforderlich.',
-          'Pflichtteilsrechte sind zu beachten.'
+          'Pflichtteilsrechte sind zu beachten.',
         ],
-        'alographic': [
+        alographic: [
           'Das Testament muss vor zwei Zeugen unterschrieben werden.',
           'Zeugen müssen geschäftsfähig sein.',
           'Zeugen dürfen nicht selbst Erben sein.',
-          'Pflichtteilsrechte sind zu beachten.'
+          'Pflichtteilsrechte sind zu beachten.',
         ],
-        'notarial': [
+        notarial: [
           'Das Testament wird notariell beurkundet.',
           'Notarielle Testamente bieten höchste Rechtssicherheit.',
-          'Pflichtteilsrechte sind zu beachten.'
-        ]
-      }
+          'Pflichtteilsrechte sind zu beachten.',
+        ],
+      },
     };
 
     return notices[language]?.[variant] || [];
@@ -1166,28 +1209,46 @@ export class MultiLangGenerator {
   /**
    * Generate signing instructions
    */
-  private generateSigningInstructions(language: SupportedLanguage, variant: WillVariant): string {
-    const instructions: Record<SupportedLanguage, Record<WillVariant, string>> = {
-      'sk': {
-        'holographic': 'Celý dokument napíšte vlastnou rukou a podpíšte. Uveďte miesto a presný dátum podpisu.',
-        'alographic': 'Podpíšte dokument za súčasnej prítomnosti dvoch svedkov, ktorí následne tiež podpíšu.',
-        'notarial': 'Kontaktujte notára pre spísanie závetu vo forme notárskej zápisnice.'
+  private generateSigningInstructions(
+    language: SupportedLanguage,
+    variant: WillVariant
+  ): string {
+    const instructions: Record<
+      SupportedLanguage,
+      Record<WillVariant, string>
+    > = {
+      sk: {
+        holographic:
+          'Celý dokument napíšte vlastnou rukou a podpíšte. Uveďte miesto a presný dátum podpisu.',
+        alographic:
+          'Podpíšte dokument za súčasnej prítomnosti dvoch svedkov, ktorí následne tiež podpíšu.',
+        notarial:
+          'Kontaktujte notára pre spísanie závetu vo forme notárskej zápisnice.',
       },
-      'cs': {
-        'holographic': 'Celý dokument napište vlastní rukou a podepište. Uveďte místo a datum podpisu.',
-        'alographic': 'Podepište dokument za současné přítomnosti dvou svědků, kteří následně také podepíší.',
-        'notarial': 'Kontaktujte notáře pro sepsání závěti ve formě notářského spisu.'
+      cs: {
+        holographic:
+          'Celý dokument napište vlastní rukou a podepište. Uveďte místo a datum podpisu.',
+        alographic:
+          'Podepište dokument za současné přítomnosti dvou svědků, kteří následně také podepíší.',
+        notarial:
+          'Kontaktujte notáře pro sepsání závěti ve formě notářského spisu.',
       },
-      'en': {
-        'holographic': 'Write the entire document in your own handwriting and sign it. Include the place and date of signing.',
-        'alographic': 'Sign the document in the simultaneous presence of two witnesses, who will then also sign.',
-        'notarial': 'Contact a notary to prepare the will as a notarial document.'
+      en: {
+        holographic:
+          'Write the entire document in your own handwriting and sign it. Include the place and date of signing.',
+        alographic:
+          'Sign the document in the simultaneous presence of two witnesses, who will then also sign.',
+        notarial:
+          'Contact a notary to prepare the will as a notarial document.',
       },
-      'de': {
-        'holographic': 'Schreiben Sie das gesamte Dokument eigenhändig und unterschreiben Sie es. Geben Sie Ort und Datum an.',
-        'alographic': 'Unterschreiben Sie das Dokument in gleichzeitiger Anwesenheit von zwei Zeugen, die danach ebenfalls unterschreiben.',
-        'notarial': 'Kontaktieren Sie einen Notar für die notarielle Beurkundung des Testaments.'
-      }
+      de: {
+        holographic:
+          'Schreiben Sie das gesamte Dokument eigenhändig und unterschreiben Sie es. Geben Sie Ort und Datum an.',
+        alographic:
+          'Unterschreiben Sie das Dokument in gleichzeitiger Anwesenheit von zwei Zeugen, die danach ebenfalls unterschreiben.',
+        notarial:
+          'Kontaktieren Sie einen Notar für die notarielle Beurkundung des Testaments.',
+      },
     };
 
     return instructions[language]?.[variant] || '';
@@ -1196,12 +1257,15 @@ export class MultiLangGenerator {
   /**
    * Generate witness instructions
    */
-  private generateWitnessInstructions(language: SupportedLanguage, jurisdiction: string): string {
+  private generateWitnessInstructions(
+    language: SupportedLanguage,
+    jurisdiction: string
+  ): string {
     const instructions: Record<SupportedLanguage, string> = {
-      'sk': 'Svedkovia musia byť plnoletí, spôsobilí na právne úkony, ovládať jazyk závetu a nesmú byť osoby, ktorým má pripadnúť dedičstvo. Obaja svedkovia musia byť súčasne prítomní pri podpise poručiteľa.',
-      'cs': 'Svědci musí být svéprávní, znalí jazyka závěti a nesmí být dědicové podle závěti. Oba svědci musí být současně přítomni při podpisu pořizovatele.',
-      'en': 'Witnesses must be competent adults, understand the language of the will, and should not be beneficiaries under the will. Both witnesses must be simultaneously present when the testator signs.',
-      'de': 'Zeugen müssen geschäftsfähig sein, die Sprache des Testaments verstehen und dürfen nicht selbst Erben sein. Beide Zeugen müssen gleichzeitig anwesend sein, wenn der Erblasser unterschreibt.'
+      sk: 'Svedkovia musia byť plnoletí, spôsobilí na právne úkony, ovládať jazyk závetu a nesmú byť osoby, ktorým má pripadnúť dedičstvo. Obaja svedkovia musia byť súčasne prítomní pri podpise poručiteľa.',
+      cs: 'Svědci musí být svéprávní, znalí jazyka závěti a nesmí být dědicové podle závěti. Oba svědci musí být současně přítomni při podpisu pořizovatele.',
+      en: 'Witnesses must be competent adults, understand the language of the will, and should not be beneficiaries under the will. Both witnesses must be simultaneously present when the testator signs.',
+      de: 'Zeugen müssen geschäftsfähig sein, die Sprache des Testaments verstehen und dürfen nicht selbst Erben sein. Beide Zeugen müssen gleichzeitig anwesend sein, wenn der Erblasser unterschreibt.',
     };
 
     return instructions[language] || '';

@@ -36,7 +36,7 @@ class DataMigrationTool {
       processed: 0,
       failed: 0,
       status: 'pending',
-      errors: []
+      errors: [],
     };
   }
 
@@ -52,7 +52,9 @@ class DataMigrationTool {
    */
   public async isMigrationNeeded(): Promise<boolean> {
     // Check if migration was already completed
-    const migrationCompleted = await secureStorage.getSecureLocal(this.MIGRATION_FLAG);
+    const migrationCompleted = await secureStorage.getSecureLocal(
+      this.MIGRATION_FLAG
+    );
     if (migrationCompleted) return false;
 
     // Check if there's legacy data
@@ -78,12 +80,14 @@ class DataMigrationTool {
         processed: 0,
         failed: 0,
         status: 'running',
-        errors: []
+        errors: [],
       };
 
       // Ensure encryption is available
-      if (!await this.encryption.areKeysUnlocked()) {
-        throw new Error('Encryption keys must be unlocked to perform migration');
+      if (!(await this.encryption.areKeysUnlocked())) {
+        throw new Error(
+          'Encryption keys must be unlocked to perform migration'
+        );
       }
 
       // Scan legacy storage
@@ -100,7 +104,7 @@ class DataMigrationTool {
           this.progress.failed++;
           this.progress.errors.push({
             id: item.id,
-            error: error.message
+            error: error.message,
           });
         }
         this.updateProgress();
@@ -115,16 +119,16 @@ class DataMigrationTool {
         );
       }
 
-      this.progress.status = this.progress.failed === 0 ? 'completed' : 'failed';
+      this.progress.status =
+        this.progress.failed === 0 ? 'completed' : 'failed';
       this.updateProgress();
 
       return this.progress;
-
     } catch (error) {
       this.progress.status = 'failed';
       this.progress.errors.push({
         id: 'general',
-        error: error.message
+        error: error.message,
       });
       this.updateProgress();
       throw error;
@@ -179,7 +183,7 @@ class DataMigrationTool {
             category,
             data: item.data,
             createdAt: item.createdAt || new Date(0).toISOString(),
-            updatedAt: item.updatedAt || new Date(0).toISOString()
+            updatedAt: item.updatedAt || new Date(0).toISOString(),
           });
         } catch (error) {
           console.error('Failed to parse legacy item:', key, error);
@@ -212,19 +216,15 @@ class DataMigrationTool {
         updatedAt: item.updatedAt,
         version: 1,
         isEncrypted: true,
-        legacyMigrated: true
-      }
+        legacyMigrated: true,
+      },
     });
 
     // Log migration event
-    await localDataAdapter.logAuditEvent(
-      'migration',
-      'migrate_item',
-      {
-        id: item.id,
-        category: item.category
-      }
-    );
+    await localDataAdapter.logAuditEvent('migration', 'migrate_item', {
+      id: item.id,
+      category: item.category,
+    });
   }
 
   /**

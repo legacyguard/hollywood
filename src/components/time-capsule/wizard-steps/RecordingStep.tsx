@@ -12,7 +12,7 @@ import {
   type CapsuleFileType,
   DEFAULT_RECORDING_CONSTRAINTS,
   MAX_RECORDING_DURATION,
-  MAX_FILE_SIZE
+  MAX_FILE_SIZE,
 } from '@/types/timeCapsule';
 
 interface RecordingStepProps {
@@ -32,7 +32,7 @@ export function RecordingStep({
   recording,
   onMessageTitleChange,
   onMessagePreviewChange,
-  onRecordingChange
+  onRecordingChange,
 }: RecordingStepProps) {
   const [recordingState, setRecordingState] = useState<RecordingState>('idle');
   const [recordingType, setRecordingType] = useState<CapsuleFileType>('video');
@@ -50,12 +50,15 @@ export function RecordingStep({
   // Request permissions
   const requestPermissions = useCallback(async () => {
     try {
-      const constraints = recordingType === 'video' ? {
-        video: DEFAULT_RECORDING_CONSTRAINTS.video,
-        audio: DEFAULT_RECORDING_CONSTRAINTS.audio
-      } : {
-        audio: DEFAULT_RECORDING_CONSTRAINTS.audio
-      };
+      const constraints =
+        recordingType === 'video'
+          ? {
+              video: DEFAULT_RECORDING_CONSTRAINTS.video,
+              audio: DEFAULT_RECORDING_CONSTRAINTS.audio,
+            }
+          : {
+              audio: DEFAULT_RECORDING_CONSTRAINTS.audio,
+            };
 
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       streamRef.current = stream;
@@ -69,7 +72,9 @@ export function RecordingStep({
       return stream;
     } catch (error) {
       console.error('Permission denied:', error);
-      toast.error(`Camera/microphone access denied. Please grant permission to record ${recordingType}.`);
+      toast.error(
+        `Camera/microphone access denied. Please grant permission to record ${recordingType}.`
+      );
       setIsPermissionGranted(false);
       return null;
     }
@@ -91,30 +96,35 @@ export function RecordingStep({
     canvas.height = video.videoHeight || 480;
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    return new Promise<Blob>((resolve) => {
-      canvas.toBlob((blob) => {
-        resolve(blob!);
-      }, 'image/jpeg', 0.8);
+    return new Promise<Blob>(resolve => {
+      canvas.toBlob(
+        blob => {
+          resolve(blob!);
+        },
+        'image/jpeg',
+        0.8
+      );
     }) as unknown as Blob;
   }, [recordingType]);
 
   // Start recording
   const startRecording = useCallback(async () => {
     try {
-      const stream = streamRef.current || await requestPermissions();
+      const stream = streamRef.current || (await requestPermissions());
       if (!stream) return;
 
       chunksRef.current = [];
       const options = {
-        mimeType: recordingType === 'video'
-          ? 'video/webm;codecs=vp8,opus'
-          : 'audio/ogg;codecs=opus'
+        mimeType:
+          recordingType === 'video'
+            ? 'video/webm;codecs=vp8,opus'
+            : 'audio/ogg;codecs=opus',
       };
 
       const mediaRecorder = new MediaRecorder(stream, options);
       mediaRecorderRef.current = mediaRecorder;
 
-      mediaRecorder.ondataavailable = (event) => {
+      mediaRecorder.ondataavailable = event => {
         if (event.data.size > 0) {
           chunksRef.current.push(event.data);
         }
@@ -122,7 +132,7 @@ export function RecordingStep({
 
       mediaRecorder.onstop = () => {
         const blob = new Blob(chunksRef.current, {
-          type: recordingType === 'video' ? 'video/webm' : 'audio/ogg'
+          type: recordingType === 'video' ? 'video/webm' : 'audio/ogg',
         });
 
         // Check file size
@@ -137,7 +147,7 @@ export function RecordingStep({
           blob,
           duration: duration,
           fileType: recordingType,
-          thumbnail
+          thumbnail,
         };
 
         onRecordingChange(recordingData);
@@ -158,12 +168,17 @@ export function RecordingStep({
           return prev + 1;
         });
       }, 1000);
-
     } catch (error) {
       console.error('Recording failed:', error);
       toast.error('Failed to start recording. Please try again.');
     }
-  }, [recordingType, requestPermissions, generateThumbnail, duration, onRecordingChange]);
+  }, [
+    recordingType,
+    requestPermissions,
+    generateThumbnail,
+    duration,
+    onRecordingChange,
+  ]);
 
   // Stop recording
   const stopRecording = useCallback(() => {
@@ -231,20 +246,25 @@ export function RecordingStep({
   }, []);
 
   // Switch recording type
-  const switchRecordingType = useCallback((type: CapsuleFileType) => {
-    if (recordingState !== 'idle') {
-      toast.error('Please stop the current recording before switching types.');
-      return;
-    }
+  const switchRecordingType = useCallback(
+    (type: CapsuleFileType) => {
+      if (recordingState !== 'idle') {
+        toast.error(
+          'Please stop the current recording before switching types.'
+        );
+        return;
+      }
 
-    setRecordingType(type);
-    setIsPermissionGranted(false);
+      setRecordingType(type);
+      setIsPermissionGranted(false);
 
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach(track => track.stop());
-      streamRef.current = null;
-    }
-  }, [recordingState]);
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
+        streamRef.current = null;
+      }
+    },
+    [recordingState]
+  );
 
   const formatTime = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
@@ -253,53 +273,53 @@ export function RecordingStep({
   };
 
   return (
-    <div className="space-y-6">
+    <div className='space-y-6'>
       {/* Message Details */}
-      <div className="space-y-4">
+      <div className='space-y-4'>
         <div>
-          <Label htmlFor="messageTitle">Message Title *</Label>
+          <Label htmlFor='messageTitle'>Message Title *</Label>
           <Input
-            id="messageTitle"
+            id='messageTitle'
             value={messageTitle}
-            onChange={(e) => onMessageTitleChange(e.target.value)}
-            placeholder="e.g., Happy 25th Birthday, Sarah"
-            className="mt-1"
+            onChange={e => onMessageTitleChange(e.target.value)}
+            placeholder='e.g., Happy 25th Birthday, Sarah'
+            className='mt-1'
           />
         </div>
 
         <div>
-          <Label htmlFor="messagePreview">Message Preview (Optional)</Label>
+          <Label htmlFor='messagePreview'>Message Preview (Optional)</Label>
           <Textarea
-            id="messagePreview"
+            id='messagePreview'
             value={messagePreview}
-            onChange={(e) => onMessagePreviewChange(e.target.value)}
-            placeholder="A brief description of what this message contains..."
+            onChange={e => onMessagePreviewChange(e.target.value)}
+            placeholder='A brief description of what this message contains...'
             rows={2}
-            className="mt-1"
+            className='mt-1'
           />
         </div>
       </div>
 
       {/* Recording Type Selection */}
-      <div className="space-y-3">
+      <div className='space-y-3'>
         <Label>Recording Type</Label>
-        <div className="flex gap-3">
+        <div className='flex gap-3'>
           <Button
             variant={recordingType === 'video' ? 'default' : 'outline'}
             onClick={() => switchRecordingType('video')}
-            className="flex-1"
+            className='flex-1'
             disabled={recordingState !== 'idle'}
           >
-            <Icon name="video" className="w-4 h-4 mr-2" />
+            <Icon name='video' className='w-4 h-4 mr-2' />
             Video Message
           </Button>
           <Button
             variant={recordingType === 'audio' ? 'default' : 'outline'}
             onClick={() => switchRecordingType('audio')}
-            className="flex-1"
+            className='flex-1'
             disabled={recordingState !== 'idle'}
           >
-            <Icon name="mic" className="w-4 h-4 mr-2" />
+            <Icon name='mic' className='w-4 h-4 mr-2' />
             Audio Message
           </Button>
         </div>
@@ -307,76 +327,89 @@ export function RecordingStep({
 
       {/* Recording Interface */}
       <Card>
-        <CardContent className="p-6">
+        <CardContent className='p-6'>
           {!isPermissionGranted && recordingState === 'idle' && (
-            <div className="text-center py-8">
-              <Icon name="camera" className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-              <p className="text-muted-foreground mb-4">
-                Click the button below to grant {recordingType} permissions and start recording your message.
+            <div className='text-center py-8'>
+              <Icon
+                name='camera'
+                className='w-12 h-12 text-muted-foreground mx-auto mb-4'
+              />
+              <p className='text-muted-foreground mb-4'>
+                Click the button below to grant {recordingType} permissions and
+                start recording your message.
               </p>
               <Button onClick={requestPermissions}>
-                <Icon name="camera" className="w-4 h-4 mr-2" />
-                Grant {recordingType === 'video' ? 'Camera' : 'Microphone'} Access
+                <Icon name='camera' className='w-4 h-4 mr-2' />
+                Grant {recordingType === 'video' ? 'Camera' : 'Microphone'}{' '}
+                Access
               </Button>
             </div>
           )}
 
           {isPermissionGranted && recordingState === 'idle' && (
-            <div className="text-center py-8">
+            <div className='text-center py-8'>
               {recordingType === 'video' ? (
                 <video
                   ref={videoRef}
                   autoPlay
                   muted
-                  className="w-full max-w-md mx-auto rounded-lg mb-4"
+                  className='w-full max-w-md mx-auto rounded-lg mb-4'
                 />
               ) : (
-                <div className="w-32 h-32 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Icon name="mic" className="w-12 h-12 text-gray-400" />
+                <div className='w-32 h-32 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4'>
+                  <Icon name='mic' className='w-12 h-12 text-gray-400' />
                 </div>
               )}
-              <Button onClick={startRecording} size="lg" className="bg-red-600 hover:bg-red-700">
-                <Icon name="circle" className="w-4 h-4 mr-2" />
+              <Button
+                onClick={startRecording}
+                size='lg'
+                className='bg-red-600 hover:bg-red-700'
+              >
+                <Icon name='circle' className='w-4 h-4 mr-2' />
                 Start Recording
               </Button>
             </div>
           )}
 
           {(recordingState === 'recording' || recordingState === 'paused') && (
-            <div className="space-y-4">
+            <div className='space-y-4'>
               {recordingType === 'video' && (
                 <video
                   ref={videoRef}
                   autoPlay
                   muted
-                  className="w-full max-w-md mx-auto rounded-lg"
+                  className='w-full max-w-md mx-auto rounded-lg'
                 />
               )}
 
-              <div className="text-center space-y-4">
-                <div className="flex items-center justify-center space-x-4">
+              <div className='text-center space-y-4'>
+                <div className='flex items-center justify-center space-x-4'>
                   {recordingState === 'recording' && (
-                    <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse" />
+                    <div className='w-3 h-3 bg-red-500 rounded-full animate-pulse' />
                   )}
-                  <span className="text-lg font-mono">
-                    {formatTime(duration)} / {formatTime(MAX_RECORDING_DURATION)}
+                  <span className='text-lg font-mono'>
+                    {formatTime(duration)} /{' '}
+                    {formatTime(MAX_RECORDING_DURATION)}
                   </span>
                 </div>
 
                 <Progress
                   value={(duration / MAX_RECORDING_DURATION) * 100}
-                  className="w-full max-w-sm mx-auto"
+                  className='w-full max-w-sm mx-auto'
                 />
 
-                <div className="flex justify-center space-x-2">
-                  <Button
-                    onClick={pauseRecording}
-                    variant="outline"
-                  >
-                    <Icon name={recordingState === 'paused' ? 'play' : 'pause'} className="w-4 h-4" />
+                <div className='flex justify-center space-x-2'>
+                  <Button onClick={pauseRecording} variant='outline'>
+                    <Icon
+                      name={recordingState === 'paused' ? 'play' : 'pause'}
+                      className='w-4 h-4'
+                    />
                   </Button>
-                  <Button onClick={stopRecording} className="bg-red-600 hover:bg-red-700">
-                    <Icon name="square" className="w-4 h-4" />
+                  <Button
+                    onClick={stopRecording}
+                    className='bg-red-600 hover:bg-red-700'
+                  >
+                    <Icon name='square' className='w-4 h-4' />
                   </Button>
                 </div>
               </div>
@@ -384,25 +417,27 @@ export function RecordingStep({
           )}
 
           {recordingState === 'completed' && recording && (
-            <div className="text-center py-4 space-y-4">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
-                <Icon name="check" className="w-8 h-8 text-green-600" />
+            <div className='text-center py-4 space-y-4'>
+              <div className='w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto'>
+                <Icon name='check' className='w-8 h-8 text-green-600' />
               </div>
               <div>
-                <h3 className="font-medium text-green-900">Recording Complete!</h3>
-                <p className="text-sm text-muted-foreground">
-                  Duration: {formatTime(Math.round(recording.duration))} •
-                  Size: {(recording.blob.size / (1024 * 1024)).toFixed(1)}MB
+                <h3 className='font-medium text-green-900'>
+                  Recording Complete!
+                </h3>
+                <p className='text-sm text-muted-foreground'>
+                  Duration: {formatTime(Math.round(recording.duration))} • Size:{' '}
+                  {(recording.blob.size / (1024 * 1024)).toFixed(1)}MB
                 </p>
               </div>
 
-              <div className="flex justify-center space-x-2">
-                <Button variant="outline" onClick={deleteRecording}>
-                  <Icon name="trash-2" className="w-4 h-4 mr-2" />
+              <div className='flex justify-center space-x-2'>
+                <Button variant='outline' onClick={deleteRecording}>
+                  <Icon name='trash-2' className='w-4 h-4 mr-2' />
                   Record Again
                 </Button>
-                <Button variant="outline">
-                  <Icon name="play" className="w-4 h-4 mr-2" />
+                <Button variant='outline'>
+                  <Icon name='play' className='w-4 h-4 mr-2' />
                   Preview
                 </Button>
               </div>

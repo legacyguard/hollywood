@@ -3,19 +3,18 @@ import {
   LegalValidator,
   ValidationLevel,
   ValidationResult,
-  ComplianceReport
+  ComplianceReport,
 } from '@/lib/will-legal-validator';
-import type {
-  SupportedLanguage} from '@/lib/multi-language-generator';
+import type { SupportedLanguage } from '@/lib/multi-language-generator';
 import {
   MultiLangGenerator,
-  LegalDocument
+  LegalDocument,
 } from '@/lib/multi-language-generator';
 import { WillTemplateLibrary } from '@/lib/will-template-library';
 import { LegacyMessageBuilder } from '@/lib/legacy-message-builder';
 import {
   professionalNetwork,
-  ProfessionalReviewNetwork
+  ProfessionalReviewNetwork,
 } from '@/lib/professional-review-network';
 import type { WillData } from '@/types/will';
 
@@ -25,7 +24,7 @@ const mockWillData: WillData = {
     fullName: 'John Doe',
     dateOfBirth: '1980-01-01',
     address: '123 Main St, Bratislava, Slovakia',
-    citizenship: 'Slovak'
+    citizenship: 'Slovak',
   },
   beneficiaries: [
     {
@@ -34,7 +33,7 @@ const mockWillData: WillData = {
       relationship: 'spouse',
       percentage: 50,
       specificGifts: [],
-      conditions: ''
+      conditions: '',
     },
     {
       id: '2',
@@ -42,40 +41,40 @@ const mockWillData: WillData = {
       relationship: 'child',
       percentage: 50,
       specificGifts: [],
-      conditions: 'if over 18 years old'
-    }
+      conditions: 'if over 18 years old',
+    },
   ],
   assets: {
     realEstate: [
       {
         description: 'Family home in Bratislava',
         address: '123 Main St, Bratislava, Slovakia',
-        value: 250000
-      }
-    ]
+        value: 250000,
+      },
+    ],
   },
   executor_data: {
     primaryExecutor: {
       name: 'Jane Doe',
       relationship: 'spouse',
-      phone: '+421123456789'
-    }
+      phone: '+421123456789',
+    },
   },
   guardianship: {
     guardians: [
       {
         name: 'Robert Doe',
         relationship: 'brother',
-        address: '456 Oak St, Bratislava, Slovakia'
-      }
-    ]
+        address: '456 Oak St, Bratislava, Slovakia',
+      },
+    ],
   },
   special_instructions: {
-    funeralWishes: 'Funeral expenses to be reasonable and dignified'
+    funeralWishes: 'Funeral expenses to be reasonable and dignified',
   },
   legal_data: {
-    jurisdiction: 'Slovakia'
-  }
+    jurisdiction: 'Slovakia',
+  },
 };
 
 describe('Will Upgrade Integration Tests', () => {
@@ -272,7 +271,7 @@ describe('Will Upgrade Integration Tests', () => {
         {
           priority: 'standard',
           specificConcerns: ['inheritance tax', 'forced heirs'],
-          budget: { min: 300, max: 600, currency: 'EUR' }
+          budget: { min: 300, max: 600, currency: 'EUR' },
         }
       );
 
@@ -282,7 +281,8 @@ describe('Will Upgrade Integration Tests', () => {
     });
 
     it('should get estate planner consultation offers', async () => {
-      const offers = await professionalNetwork.getEstateplannerConsultation(mockWillData);
+      const offers =
+        await professionalNetwork.getEstateplannerConsultation(mockWillData);
 
       // Method returns empty array for now
       expect(offers).toHaveLength(0);
@@ -295,7 +295,7 @@ describe('Will Upgrade Integration Tests', () => {
         {
           serviceType: 'will_witnessing',
           language: 'cs',
-          timeframe: 'within_week'
+          timeframe: 'within_week',
         }
       );
 
@@ -359,7 +359,10 @@ describe('Will Upgrade Integration Tests', () => {
       const invalidWillData = { ...mockWillData, beneficiaries: [] };
 
       // Validation should catch empty beneficiaries
-      const validationResult = validator.validateBeneficiaryShares([], 'Slovakia');
+      const validationResult = validator.validateBeneficiaryShares(
+        [],
+        'Slovakia'
+      );
       expect(validationResult.isValid).toBe(false);
 
       // Other systems should handle gracefully
@@ -378,12 +381,19 @@ describe('Will Upgrade Integration Tests', () => {
       // Template application should update will data
       const template = templateLibrary.getTemplate('comprehensive-family');
       if (template) {
-        const updatedData = templateLibrary.applyTemplate(workingWillData, template.id);
-        expect(updatedData.beneficiaries.length).toBeGreaterThanOrEqual(workingWillData.beneficiaries.length);
+        const updatedData = templateLibrary.applyTemplate(
+          workingWillData,
+          template.id
+        );
+        expect(updatedData.beneficiaries.length).toBeGreaterThanOrEqual(
+          workingWillData.beneficiaries.length
+        );
       } else {
         // Use original data if template not found
         const updatedData = workingWillData;
-        expect(updatedData.beneficiaries.length).toBeGreaterThanOrEqual(workingWillData.beneficiaries.length);
+        expect(updatedData.beneficiaries.length).toBeGreaterThanOrEqual(
+          workingWillData.beneficiaries.length
+        );
       }
 
       // Validation should work with updated data
@@ -431,7 +441,12 @@ describe('Will Upgrade Integration Tests', () => {
 
       const documents = await Promise.all(
         languages.map(lang =>
-          multiLangGenerator.generateWill(mockWillData, lang, 'Slovakia', 'basic')
+          multiLangGenerator.generateWill(
+            mockWillData,
+            lang,
+            'Slovakia',
+            'basic'
+          )
         )
       );
 
@@ -452,7 +467,8 @@ function toBeOneOf(received: any, expected: any[]) {
   const pass = expected.includes(received);
   if (pass) {
     return {
-      message: () => `expected ${received} not to be one of ${expected.join(', ')}`,
+      message: () =>
+        `expected ${received} not to be one of ${expected.join(', ')}`,
       pass: true,
     };
   } else {
