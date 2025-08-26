@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { Toaster } from '@/components/ui/toaster';
 import { Toaster as Sonner } from '@/components/ui/sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
@@ -13,32 +14,33 @@ import { LocalizationProvider } from './contexts/LocalizationContext';
 import SofiaContextProvider from './components/sofia/SofiaContextProvider';
 import { FireflyProvider } from './contexts/FireflyContext';
 import SofiaFirefly from './components/animations/SofiaFirefly';
-// import { EncryptionProvider } from "@/hooks/encryption/useEncryption";
-// import { PasswordPrompt } from "@/components/encryption/PasswordPrompt";
-import Index from '@/pages/Index';
-import NotFound from '@/pages/NotFound';
-import ComponentShowcase from '@/pages/ComponentShowcase';
-import { LandingPage } from '@/pages/LandingPage';
-import { PrivacyPage } from '@/pages/Privacy';
-import { TermsPage } from '@/pages/Terms';
-import { TermsOfService } from '@/pages/legal/TermsOfService';
-import { PrivacyPolicy } from '@/pages/legal/PrivacyPolicy';
-import Onboarding from './pages/onboarding/Onboarding';
-import VaultPage from './pages/Vault';
-import GuardiansPage from './pages/Guardians';
-import LegacyPage from './pages/Legacy';
-import { MyFamilyPage } from './pages/MyFamily';
-import TestNotifications from './pages/TestNotifications';
-import SignInPage from './pages/auth/SignIn';
-import SignUpPage from './pages/auth/SignUp';
-import TestOCRPage from './pages/test-ocr/TestOCRPage';
-import IntelligentOrganizer from './pages/IntelligentOrganizer';
-import SettingsPage from './pages/Settings';
-import FamilyShieldSettingsPage from './pages/ProtocolSettings';
-import FamilyGuidanceManualPage from './pages/SurvivorManual';
-import FamilyShieldAccessPage from './pages/EmergencyAccess';
-import TimeCapsulePage from './pages/TimeCapsule';
-import TimeCapsuleViewPage from './pages/TimeCapsuleView';
+import { PageLoader } from './components/ui/page-loader';
+
+// Lazy load pages for better performance
+const Index = lazy(() => import('@/pages/Index'));
+const NotFound = lazy(() => import('@/pages/NotFound'));
+const ComponentShowcase = lazy(() => import('@/pages/ComponentShowcase'));
+const LandingPage = lazy(() => import('@/pages/LandingPage').then(m => ({ default: m.LandingPage })));
+const PrivacyPage = lazy(() => import('@/pages/Privacy').then(m => ({ default: m.PrivacyPage })));
+const TermsPage = lazy(() => import('@/pages/Terms').then(m => ({ default: m.TermsPage })));
+const TermsOfService = lazy(() => import('@/pages/legal/TermsOfService').then(m => ({ default: m.TermsOfService })));
+const PrivacyPolicy = lazy(() => import('@/pages/legal/PrivacyPolicy').then(m => ({ default: m.PrivacyPolicy })));
+const Onboarding = lazy(() => import('./pages/onboarding/Onboarding'));
+const VaultPage = lazy(() => import('./pages/Vault'));
+const GuardiansPage = lazy(() => import('./pages/Guardians'));
+const LegacyPage = lazy(() => import('./pages/Legacy'));
+const MyFamilyPage = lazy(() => import('./pages/MyFamily').then(m => ({ default: m.MyFamilyPage })));
+const TestNotifications = lazy(() => import('./pages/TestNotifications'));
+const SignInPage = lazy(() => import('./pages/auth/SignIn'));
+const SignUpPage = lazy(() => import('./pages/auth/SignUp'));
+const TestOCRPage = lazy(() => import('./pages/test-ocr/TestOCRPage'));
+const IntelligentOrganizer = lazy(() => import('./pages/IntelligentOrganizer'));
+const SettingsPage = lazy(() => import('./pages/Settings'));
+const FamilyShieldSettingsPage = lazy(() => import('./pages/ProtocolSettings'));
+const FamilyGuidanceManualPage = lazy(() => import('./pages/SurvivorManual'));
+const FamilyShieldAccessPage = lazy(() => import('./pages/EmergencyAccess'));
+const TimeCapsulePage = lazy(() => import('./pages/TimeCapsule'));
+const TimeCapsuleViewPage = lazy(() => import('./pages/TimeCapsuleView'));
 
 const queryClient = new QueryClient();
 
@@ -56,7 +58,8 @@ const App = () => (
                 <SofiaContextProvider>
                   <FireflyProvider>
                     {/* <PasswordPrompt /> */}
-                    <Routes>
+                    <Suspense fallback={<PageLoader />}>
+                      <Routes>
                       {/* Public routes */}
                       <Route path='/' element={<LandingPage />} />
                       <Route path='/sign-in' element={<SignInPage />} />
@@ -193,7 +196,8 @@ const App = () => (
 
                       {/* 404 route */}
                       <Route path='*' element={<NotFound />} />
-                    </Routes>
+                      </Routes>
+                    </Suspense>
 
                     {/* Global Sofia Firefly */}
                     <SofiaFirefly />
