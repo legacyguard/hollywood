@@ -14,7 +14,7 @@ vi.mock('@/integrations/supabase/client', () => ({
 }));
 
 describe('Authentication & Permissions', () => {
-  const mockUserId = 'user_123';
+  const mockUserId = 'user_123456';
   const mockUser = {
     id: mockUserId,
     firstName: 'John',
@@ -261,9 +261,6 @@ describe('Authentication & Permissions', () => {
         }
       }).not.toThrow();
       
-      // This should throw because invalidUserId is too short
-// (Lines 265–267 removed as they duplicate an earlier test)
-      
       // Test invalid user ID validation
       const validateUserId = (userId: string) => {
         // Clerk user IDs typically have a specific format
@@ -279,5 +276,6 @@ describe('Authentication & Permissions', () => {
       expect(() => validateUserId('')).toThrow('Invalid user ID');
       expect(() => validateUserId('short')).toThrow('Invalid user ID');
       expect(() => validateUserId(invalidUserId)).toThrow('Invalid user ID');
+    });
   });
 });

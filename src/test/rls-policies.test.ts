@@ -17,11 +17,13 @@ describe('RLS Policies & Database Security', () => {
       insert: vi.fn(() => ({
         select: vi.fn(() => Promise.resolve({ data: null, error: null })),
       })),
-      update: vi.fn(() => ({
-        eq: vi.fn(() => ({
+      update: vi.fn(() => {
+        const updateBuilder: any = {
           select: vi.fn(() => Promise.resolve({ data: null, error: null })),
-        })),
-      })),
+        };
+        updateBuilder.eq = vi.fn().mockReturnValue(updateBuilder);
+        return updateBuilder;
+      }),
       delete: vi.fn(() => ({
         eq: vi.fn(() => Promise.resolve({ data: null, error: null })),
       })),
