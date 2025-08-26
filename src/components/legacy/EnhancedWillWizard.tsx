@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useAuth } from '@clerk/clerk-react';
 import { CountrySelector } from './CountrySelector';
 import type { WillType } from './WillTypeSelector';
 import { WillTypeSelector } from './WillTypeSelector';
@@ -20,6 +21,7 @@ export const EnhancedWillWizard: React.FC<EnhancedWillWizardProps> = ({
   onClose,
   onComplete
 }) => {
+  const { userId } = useAuth();
   const [currentStep, setCurrentStep] = useState<WizardStep>('country');
   const [selectedWillType, setSelectedWillType] = useState<WillType | null>(null);
   const [draftData, setDraftData] = useState<WillData | null>(null);
@@ -70,7 +72,7 @@ export const EnhancedWillWizard: React.FC<EnhancedWillWizardProps> = ({
           ...legacyMilestone,
           isUnlocked: true,
           unlockedAt: new Date().toISOString()
-        });
+        }, userId);
       }
     }, 1500); // Delay to show after success message
 

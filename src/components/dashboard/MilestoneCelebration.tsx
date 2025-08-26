@@ -1,9 +1,7 @@
 import React from 'react';
 import { toast } from 'sonner';
 import { Icon } from '@/components/ui/icon-library';
-import type { SerenityMilestone } from '@/lib/path-of-serenity';
-import { getAdaptiveMilestoneText } from '@/lib/path-of-serenity';
-import { useAuth } from '@clerk/clerk-react';
+import { SerenityMilestone, getAdaptiveMilestoneText } from '@/lib/path-of-serenity';
 import { UserPreferences, defaultUserPreferences } from '@/types/user-preferences';
 
 // Legacy component interface for backward compatibility
@@ -35,16 +33,16 @@ export function showMilestoneRecognition(milestone: SerenityMilestone, userId?: 
 
   // Get adaptive text for the milestone
   const adaptiveCompletedDescription = getAdaptiveMilestoneText(
-    milestone, 
-    'completedDescription', 
-    userId, 
+    milestone,
+    'completedDescription',
+    userId,
     userPreferences.communication.style
   );
 
   const adaptiveName = getAdaptiveMilestoneText(
-    milestone, 
-    'name', 
-    userId, 
+    milestone,
+    'name',
+    userId,
     userPreferences.communication.style
   );
 

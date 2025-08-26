@@ -97,7 +97,7 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({ className = '' }
         if (result.newlyUnlocked.length > 0) {
           // Show recognition for the first newly unlocked milestone
           const milestoneToRecognize = result.newlyUnlocked[0];
-          showMilestoneRecognition(milestoneToRecognize);
+          showMilestoneRecognition(milestoneToRecognize, userId);
 
           // Additional quiet notifications for multiple milestones
           if (result.newlyUnlocked.length > 1) {

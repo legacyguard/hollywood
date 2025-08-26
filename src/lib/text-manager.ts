@@ -295,3 +295,4 @@ export function getText(key: string, style: CommunicationStyle = 'default', user
 export function analyzeUserInput(input: string, userId: string): void {
   textManager.analyzeUserInput(input, userId);
 }
+

@@ -16,8 +16,9 @@ import { Label } from "@/components/ui/label";
 import { useAuth } from "@clerk/clerk-react";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { UserPreferences, defaultUserPreferences } from "@/types/user-preferences";
-import { CommunicationStyle, textManager } from "@/lib/text-manager";
+import type { UserPreferences, CommunicationStyle } from "@/types/user-preferences";
+import { defaultUserPreferences } from "@/types/user-preferences";
+import { textManager } from "@/lib/text-manager";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 export default function SettingsPage() {
@@ -159,7 +160,7 @@ export default function SettingsPage() {
           <FadeIn duration={0.5} delay={0.3}>
             <Card className="p-6 bg-card border-card-border">
               <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                <Icon name="bell" className="w-5 h-5 text-primary" />
+                <Icon name="notifications" className="w-5 h-5 text-primary" />
                 Notification Preferences
               </h2>
               <div className="space-y-4">
@@ -324,7 +325,7 @@ export default function SettingsPage() {
           <FadeIn duration={0.5} delay={0.6}>
             <Card className="p-6 bg-card border-card-border">
               <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                <Icon name="display" className="w-5 h-5 text-primary" />
+                <Icon name="settings" className="w-5 h-5 text-primary" />
                 Display Preferences
               </h2>
               <div className="space-y-4">

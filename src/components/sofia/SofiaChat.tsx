@@ -6,10 +6,10 @@ import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Icon } from '@/components/ui/icon-library';
 import { useSofiaStore } from '@/stores/sofiaStore';
-import type { SofiaMessage } from '@/lib/sofia-ai';
-import { sofiaAI, createSofiaMessage } from '@/lib/sofia-ai';
 import { useAuth } from '@clerk/clerk-react';
 import ReactMarkdown from 'react-markdown';
+import type { SofiaMessage } from '@/lib/sofia-ai';
+import { sofiaAI, createSofiaMessage } from '@/lib/sofia-ai';
 import { textManager, analyzeUserInput } from '@/lib/text-manager';
 import { UserPreferences, defaultUserPreferences } from '@/types/user-preferences';
 
@@ -74,12 +74,12 @@ const SofiaChat: React.FC<SofiaChatProps> = ({
           addMessage(welcomeMessage);
         } catch (error) {
           console.error('Failed to get contextual help:', error);
-          
+
           // Use adaptive welcome message based on user's communication preference
           const isReturningUser = context.documentCount > 0 || context.guardianCount > 0;
           const welcomeKey = isReturningUser ? 'sofia_greeting_returning_user' : 'sofia_welcome';
           const adaptiveWelcome = textManager.getText(welcomeKey, userPreferences.communication.style, userId);
-          
+
           const fallbackMessage = createSofiaMessage('assistant', adaptiveWelcome);
           addMessage(fallbackMessage);
         }
@@ -95,12 +95,12 @@ const SofiaChat: React.FC<SofiaChatProps> = ({
 
     const userMessage = createSofiaMessage('user', inputValue.trim());
     addMessage(userMessage);
-    
+
     // Analyze user input for communication style detection (if auto-detection is enabled)
     if (userPreferences.communication.autoDetection && userId) {
       analyzeUserInput(inputValue.trim(), userId);
     }
-    
+
     setInputValue('');
     setIsSubmitting(true);
     setTyping(true);
@@ -123,7 +123,7 @@ const SofiaChat: React.FC<SofiaChatProps> = ({
 
     } catch (error) {
       console.error('Error getting Sofia response:', error);
-      
+
       // Use adaptive error message
       const adaptiveError = textManager.getText('system_maintenance', userPreferences.communication.style, userId);
       const errorMessage = createSofiaMessage('assistant', adaptiveError);
@@ -232,8 +232,8 @@ const SofiaChat: React.FC<SofiaChatProps> = ({
           <div>
             <h3 className="font-semibold">Sofia</h3>
             <p className="text-sm text-muted-foreground">
-              {userPreferences.communication.style === 'empathetic' 
-                ? 'Your Caring Guide' 
+              {userPreferences.communication.style === 'empathetic'
+                ? 'Your Caring Guide'
                 : userPreferences.communication.style === 'pragmatic'
                 ? 'Your Digital Assistant'
                 : 'Your Family Guardian'

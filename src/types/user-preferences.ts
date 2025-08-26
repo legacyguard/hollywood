@@ -52,3 +52,4 @@ export interface ClerkUserMetadata {
   communicationAutoDetection?: boolean;
   preferences?: Partial<UserPreferences>;
 }
+
