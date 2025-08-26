@@ -4,9 +4,19 @@ import * as path from 'path';
 
 // Load environment variables based on NODE_ENV
 if (process.env.NODE_ENV === 'test') {
-  dotenv.config({ path: path.resolve(__dirname, '.env.test') });
+  // __dirname is not available in ES modules, so use import.meta.url to resolve the directory
+  const __dirnameResolved = path.dirname(new URL(import.meta.url).pathname);
+
+  dotenv.config({
+    path: path.resolve(
+      __dirnameResolved,
+      '.env.test'
+    )
+  });
 } else {
-  dotenv.config({ path: path.resolve(__dirname, '.env.local') });
+  // Load local environment for development
+  const __dirnameResolved = path.dirname(new URL(import.meta.url).pathname);
+  dotenv.config({ path: path.resolve(__dirnameResolved, '.env.local') });
 }
 
 // Map VITE_ prefixed variables to standard Clerk variables for testing
@@ -21,7 +31,7 @@ export default defineConfig({
   testDir: './tests',
   testMatch: '**/full-user-journey.spec.ts',
   /* Global setup file */
-  globalSetup: require.resolve('./tests/global.setup.ts'),
+  globalSetup: './tests/global.setup.ts',
 
   /* Run tests in serial mode for journey tests */
   fullyParallel: false,
