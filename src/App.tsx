@@ -18,6 +18,9 @@ import SofiaFirefly from "./components/animations/SofiaFirefly";
 import Index from '@/pages/Index';
 import NotFound from '@/pages/NotFound';
 import ComponentShowcase from '@/pages/ComponentShowcase';
+import { LandingPage } from '@/pages/LandingPage';
+import { PrivacyPage } from '@/pages/Privacy';
+import { TermsPage } from '@/pages/Terms';
 import Onboarding from "./pages/onboarding/Onboarding";
 import VaultPage from "./pages/Vault";
 import GuardiansPage from "./pages/Guardians";
@@ -53,13 +56,19 @@ const App = () => (
                     {/* <PasswordPrompt /> */}
       <Routes>
         {/* Public routes */}
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/sign-in" element={<SignInPage />} />
+        <Route path="/sign-up" element={<SignUpPage />} />
         <Route path="/auth/sign-in" element={<SignInPage />} />
         <Route path="/auth/sign-up" element={<SignUpPage />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/terms" element={<TermsPage />} />
 
         {/* Component Showcase (for development) */}
         <Route path="/showcase" element={<ComponentShowcase />} />
+        
             {/* Protected routes */}
-            <Route path="/" element={
+            <Route path="/dashboard" element={
               <ProtectedRoute>
                 <OnboardingWrapper>
                   <Index />

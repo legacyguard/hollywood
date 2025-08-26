@@ -16,7 +16,7 @@ import {
 import { useSidebar } from "@/components/ui/sidebar-hooks";
 
 const navigationItems = [
-  { title: "Dashboard", url: "/", icon: "dashboard" },
+  { title: "Dashboard", url: "/dashboard", icon: "dashboard" },
   { title: "My Vault", url: "/vault", icon: "vault" },
   { title: "Documents", url: "/documents", icon: "documents" },
   { title: "AI Organizer", url: "/intelligent-organizer", icon: "brain" },
