@@ -12,7 +12,14 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
-    "test:ocr": "node scripts/test-ocr.cjs"
+    "test:ocr": "node scripts/test-ocr.cjs",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:debug": "playwright test --debug",
+    "test:journey": "playwright test --config=playwright.journey.config.ts",
+    "test:journey:ui": "playwright test --config=playwright.journey.config.ts --ui",
+    "test:journey:debug": "playwright test --config=playwright.journey.config.ts --debug",
+    "test:journey:report": "playwright show-report playwright-report/journey"
   },
   "dependencies": {
     "@clerk/backend": "^1.7.0",
@@ -88,6 +95,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
+    "@playwright/test": "^1.55.0",
     "@tailwindcss/typography": "^0.5.16",
     "@testing-library/jest-dom": "^6.8.0",
     "@testing-library/react": "^16.3.0",

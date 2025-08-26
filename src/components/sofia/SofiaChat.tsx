@@ -11,7 +11,8 @@ import ReactMarkdown from 'react-markdown';
 import type { SofiaMessage } from '@/lib/sofia-ai';
 import { sofiaAI, createSofiaMessage } from '@/lib/sofia-ai';
 import { textManager, analyzeUserInput } from '@/lib/text-manager';
-import { UserPreferences, defaultUserPreferences } from '@/types/user-preferences';
+import type { UserPreferences} from '@/types/user-preferences';
+import { defaultUserPreferences } from '@/types/user-preferences';
 
 interface SofiaChatProps {
   isOpen?: boolean;

@@ -11,7 +11,8 @@ import { FadeIn } from '@/components/motion/FadeIn';
 import { useEncryption } from '@/hooks/useEncryption';
 import { toast } from 'sonner';
 import { textManager } from '@/lib/text-manager';
-import { UserPreferences, defaultUserPreferences } from '@/types/user-preferences';
+import type { UserPreferences} from '@/types/user-preferences';
+import { defaultUserPreferences } from '@/types/user-preferences';
 
 export const DocumentUploader = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -146,8 +147,8 @@ export const DocumentUploader = () => {
 
       // Use adaptive success message
       const adaptiveSuccessMessage = textManager.getText(
-        'document_upload_success', 
-        userPreferences.communication.style, 
+        'document_upload_success',
+        userPreferences.communication.style,
         userId
       );
       toast.success(adaptiveSuccessMessage);
@@ -162,11 +163,11 @@ export const DocumentUploader = () => {
 
     } catch (error: unknown) {
       console.error('Error uploading file:', error);
-      
+
       // Use adaptive error message
       const adaptiveErrorMessage = textManager.getText(
         'upload_error',
-        userPreferences.communication.style, 
+        userPreferences.communication.style,
         userId
       );
       toast.error(error instanceof Error ? error.message : adaptiveErrorMessage);

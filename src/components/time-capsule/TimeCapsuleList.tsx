@@ -223,10 +223,10 @@ function TimeCapsuleCard({
           <span className="text-[8px] leading-none">SEALED</span>
         </div>
       </div>
-      
+
       {/* Premium gradient border for sealed capsules */}
       <div className="absolute inset-0 bg-gradient-to-r from-purple-200/20 via-pink-200/20 to-indigo-200/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-      
+
       <CardHeader className="pb-3 relative">
         <div className="flex items-start justify-between">
           <div className="flex items-start space-x-3 flex-1">
@@ -239,7 +239,7 @@ function TimeCapsuleCard({
                 </AvatarFallback>
               </Avatar>
             </div>
-            
+
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
                 <h4 className="font-semibold text-lg truncate">{capsule.message_title}</h4>
@@ -285,7 +285,7 @@ function TimeCapsuleCard({
                     <Icon name="eye" className="w-4 h-4 mr-2" />
                     Preview Recording
                   </DropdownMenuItem>
-                  <DropdownMenuItem 
+                  <DropdownMenuItem
                     className="text-blue-600 focus:text-blue-600"
                     onClick={() => onTestPreview?.(capsule.id)}
                   >

@@ -1,7 +1,7 @@
 import React from 'react';
 import { toast } from 'sonner';
 import { Icon } from '@/components/ui/icon-library';
-import { SerenityMilestone, getAdaptiveMilestoneText } from '@/lib/path-of-serenity';
+import { getAdaptiveMilestoneText, type SerenityMilestone } from '@/lib/path-of-serenity';
 import { UserPreferences, defaultUserPreferences } from '@/types/user-preferences';
 
 // Legacy component interface for backward compatibility

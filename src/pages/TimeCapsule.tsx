@@ -102,7 +102,7 @@ export default function TimeCapsulePage() {
   const handleTestPreview = async (capsuleId: string) => {
     try {
       const supabase = await createSupabaseClient();
-      
+
       const { error } = await supabase.functions.invoke('time-capsule-test-preview', {
         body: { capsule_id: capsuleId }
       });
@@ -112,17 +112,17 @@ export default function TimeCapsulePage() {
       }
 
       toast.success(
-        'Test preview email sent!', 
-        { 
-          description: 'Check your email to see how your Time Capsule will look when delivered.' 
+        'Test preview email sent!',
+        {
+          description: 'Check your email to see how your Time Capsule will look when delivered.'
         }
       );
     } catch (error) {
       console.error('Failed to send test preview:', error);
       toast.error(
         'Failed to send test preview',
-        { 
-          description: 'Please try again or contact support if the issue persists.' 
+        {
+          description: 'Please try again or contact support if the issue persists.'
         }
       );
     }

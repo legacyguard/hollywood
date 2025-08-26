@@ -27,10 +27,11 @@ export class KeyManagementService {
    * Generate a new keypair for encryption
    */
   generateKeyPair(): { publicKey: string; secretKey: string } {
-    const keypair = nacl.box.keyPair();
+    // For symmetric encryption, generate a single key
+    const key = nacl.randomBytes(nacl.secretbox.keyLength);
     return {
-      publicKey: encodeBase64(keypair.publicKey),
-      secretKey: encodeBase64(keypair.secretKey),
+      publicKey: '', // Not applicable for symmetric encryption
+      secretKey: encodeBase64(key),
     };
   }
 
