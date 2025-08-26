@@ -14,9 +14,30 @@ export interface SofiaMessage {
     currentStep?: string;
     userPreferences?: {
       language?: string;
-      familyStatus?: 'single' | 'partner' | 'family' | 'parent_care' | 'business';
+      familyStatus?:
+        | 'single'
+        | 'partner'
+        | 'family'
+        | 'parent_care'
+        | 'business';
     };
   };
+  // Enhanced properties for UI interactions
+  actions?: ActionButton[];
+  route?: string;
+  message?: string; // Additional message content for complex responses
+}
+
+// Action button interface for Sofia AI responses
+export interface ActionButton {
+  id: string;
+  text: string;
+  icon?: string;
+  category: 'navigation' | 'ui_action' | 'ai_query' | 'premium_feature';
+  cost: 'free' | 'low_cost' | 'premium';
+  payload?: any;
+  requiresConfirmation?: boolean;
+  description?: string;
 }
 
 export interface SofiaContext {
@@ -51,42 +72,61 @@ class SofiaAI {
     }
   }
 
-
   private getMockResponse(message: string, context: SofiaContext): string {
     const responses = {
       greeting: [
         `Hello ${context.userName || 'there'}! I'm Sofia, your digital family guardian. I see you've uploaded ${context.documentCount} documents - that's a great start! How can I help you protect your family today?`,
-        `Welcome back! I noticed you're ${context.completionPercentage}% complete with your family protection plan. What would you like to work on next?`
+        `Welcome back! I noticed you're ${context.completionPercentage}% complete with your family protection plan. What would you like to work on next?`,
       ],
       documents: [
         "Excellent! Every document you upload is another layer of protection for your family. Based on what you have, I'd recommend adding your insurance policies next - they're often crucial in emergencies.",
-        "I love seeing your progress! With your current documents, you're building a solid foundation. Have you considered adding contact information for your important service providers?"
+        "I love seeing your progress! With your current documents, you're building a solid foundation. Have you considered adding contact information for your important service providers?",
       ],
       guardians: [
-        "Setting up guardians shows such thoughtful care for your family. The people you trust will be able to help when it matters most. Would you like to add another guardian or set up specific access permissions?",
-        "Your guardian network is growing - that's wonderful! Remember, each guardian you add makes your family's protection stronger."
+        'Setting up guardians shows such thoughtful care for your family. The people you trust will be able to help when it matters most. Would you like to add another guardian or set up specific access permissions?',
+        "Your guardian network is growing - that's wonderful! Remember, each guardian you add makes your family's protection stronger.",
       ],
       general: [
         "I'm here to help you every step of the way. What's on your mind today?",
         `You're doing amazing work protecting your family, ${context.userName || 'there'}. How can I assist you further?`,
-        "Every small step you take today makes a big difference for your family's future. What shall we focus on?"
-      ]
+        "Every small step you take today makes a big difference for your family's future. What shall we focus on?",
+      ],
     };
 
     // Simple keyword matching for mock responses
     const lowerMessage = message.toLowerCase();
 
-    if (lowerMessage.includes('hello') || lowerMessage.includes('hi') || lowerMessage.includes('hey')) {
-      return responses.greeting[Math.floor(Math.random() * responses.greeting.length)];
+    if (
+      lowerMessage.includes('hello') ||
+      lowerMessage.includes('hi') ||
+      lowerMessage.includes('hey')
+    ) {
+      return responses.greeting[
+        Math.floor(Math.random() * responses.greeting.length)
+      ];
     }
-    if (lowerMessage.includes('document') || lowerMessage.includes('upload') || lowerMessage.includes('file')) {
-      return responses.documents[Math.floor(Math.random() * responses.documents.length)];
+    if (
+      lowerMessage.includes('document') ||
+      lowerMessage.includes('upload') ||
+      lowerMessage.includes('file')
+    ) {
+      return responses.documents[
+        Math.floor(Math.random() * responses.documents.length)
+      ];
     }
-    if (lowerMessage.includes('guardian') || lowerMessage.includes('family') || lowerMessage.includes('emergency')) {
-      return responses.guardians[Math.floor(Math.random() * responses.guardians.length)];
+    if (
+      lowerMessage.includes('guardian') ||
+      lowerMessage.includes('family') ||
+      lowerMessage.includes('emergency')
+    ) {
+      return responses.guardians[
+        Math.floor(Math.random() * responses.guardians.length)
+      ];
     }
 
-    return responses.general[Math.floor(Math.random() * responses.general.length)];
+    return responses.general[
+      Math.floor(Math.random() * responses.general.length)
+    ];
   }
 
   async generateResponse(
@@ -100,24 +140,30 @@ class SofiaAI {
     }
 
     try {
-      console.log('Calling Sofia AI API:', `${this.supabaseUrl}/functions/v1/sofia-ai`);
+      console.log(
+        'Calling Sofia AI API:',
+        `${this.supabaseUrl}/functions/v1/sofia-ai`
+      );
 
       // Call the secure server-side Sofia AI API
-      const response = await fetch(`${this.supabaseUrl}/functions/v1/sofia-ai-guided`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
-        },
-        body: JSON.stringify({
-          action: 'generate_response',
-          data: {
-            message,
-            context,
-            conversationHistory
-          }
-        })
-      });
+      const response = await fetch(
+        `${this.supabaseUrl}/functions/v1/sofia-ai-guided`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          },
+          body: JSON.stringify({
+            action: 'generate_response',
+            data: {
+              message,
+              context,
+              conversationHistory,
+            },
+          }),
+        }
+      );
 
       if (!response.ok) {
         const errorText = await response.text();
@@ -126,8 +172,10 @@ class SofiaAI {
       }
 
       const result = await response.json();
-      return result.response || 'I apologize, but I\'m having trouble responding right now. Please try again.';
-
+      return (
+        result.response ||
+        "I apologize, but I'm having trouble responding right now. Please try again."
+      );
     } catch (error) {
       console.error('Error generating Sofia response:', error);
       console.log('Falling back to mock response');
@@ -136,23 +184,28 @@ class SofiaAI {
   }
 
   // Generate proactive suggestions based on user context
-  async generateProactiveSuggestion(context: SofiaContext): Promise<string | null> {
+  async generateProactiveSuggestion(
+    context: SofiaContext
+  ): Promise<string | null> {
     if (!this.initialized || !this.supabaseUrl) {
       return this.getMockProactiveSuggestion(context);
     }
 
     try {
-      const response = await fetch(`${this.supabaseUrl}/functions/v1/sofia-ai-guided`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
-        },
-        body: JSON.stringify({
-          action: 'generate_suggestion',
-          data: { context }
-        })
-      });
+      const response = await fetch(
+        `${this.supabaseUrl}/functions/v1/sofia-ai-guided`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          },
+          body: JSON.stringify({
+            action: 'generate_suggestion',
+            data: { context },
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`Server error: ${response.status}`);
@@ -160,7 +213,6 @@ class SofiaAI {
 
       const result = await response.json();
       return result.suggestion;
-
     } catch (error) {
       console.error('Error generating proactive suggestion:', error);
       return this.getMockProactiveSuggestion(context);
@@ -168,7 +220,8 @@ class SofiaAI {
   }
 
   private getMockProactiveSuggestion(context: SofiaContext): string | null {
-    const { documentCount, guardianCount, completionPercentage, familyStatus } = context;
+    const { documentCount, guardianCount, completionPercentage, familyStatus } =
+      context;
 
     // Early stage suggestions
     if (documentCount === 0) {
@@ -180,12 +233,20 @@ class SofiaAI {
     }
 
     // Guardian suggestions
-    if (documentCount >= 5 && guardianCount === 0 && familyStatus !== 'single') {
+    if (
+      documentCount >= 5 &&
+      guardianCount === 0 &&
+      familyStatus !== 'single'
+    ) {
       return "With your documents organized, it's time to set up your Circle of Trust. Adding guardians ensures your family can access what they need in emergencies.";
     }
 
     // Will creation suggestions
-    if (documentCount >= 10 && guardianCount >= 1 && completionPercentage < 60) {
+    if (
+      documentCount >= 10 &&
+      guardianCount >= 1 &&
+      completionPercentage < 60
+    ) {
       return "You've built a solid foundation! Ready to create your will? I'll guide you through a simple, 7-step process that focuses on protecting your loved ones.";
     }
 
@@ -193,23 +254,29 @@ class SofiaAI {
   }
 
   // Get contextual help based on current page/action
-  async getContextualHelp(page: string, context: SofiaContext): Promise<string> {
+  async getContextualHelp(
+    page: string,
+    context: SofiaContext
+  ): Promise<string> {
     if (!this.initialized || !this.supabaseUrl) {
       return this.getMockContextualHelp(page, context);
     }
 
     try {
-      const response = await fetch(`${this.supabaseUrl}/functions/v1/sofia-ai-guided`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
-        },
-        body: JSON.stringify({
-          action: 'get_contextual_help',
-          data: { page, context }
-        })
-      });
+      const response = await fetch(
+        `${this.supabaseUrl}/functions/v1/sofia-ai-guided`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          },
+          body: JSON.stringify({
+            action: 'get_contextual_help',
+            data: { page, context },
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`Server error: ${response.status}`);
@@ -217,7 +284,6 @@ class SofiaAI {
 
       const result = await response.json();
       return result.help;
-
     } catch (error) {
       console.error('Error getting contextual help:', error);
       return this.getMockContextualHelp(page, context);
@@ -240,18 +306,22 @@ class SofiaAI {
         return `Your Vault is where all your important documents live, safely encrypted. ${context.documentCount > 0 ? `You've already secured ${context.documentCount} documents - excellent work!` : 'Ready to add your first document?'} I can help you decide what to upload next.`;
 
       case 'guardians':
-        if (milestones && context.guardianCount === 0 && context.documentCount > 0) {
+        if (
+          milestones &&
+          context.guardianCount === 0 &&
+          context.documentCount > 0
+        ) {
           return `Hello ${context.userName || 'there'}! You've made excellent progress on your Path of Peace. Now it's time to create your Circle of Trust - the people who can help your family when you can't. This is one of the most meaningful steps you can take.`;
         } else if (milestones && milestones.unlockedCount > 0) {
           return `Hello ${context.userName || 'there'}! Your Path of Peace shows ${milestones.unlockedCount} unlocked milestones - you're doing amazingly well! ${context.guardianCount > 0 ? `Your Circle of Trust with ${context.guardianCount} guardian${context.guardianCount > 1 ? 's' : ''} brings such peace of mind.` : 'Adding guardians is the next beautiful step in protecting your family.'} What would you like to focus on today?`;
         }
-        return `Your Circle of Trust is about the people who matter most. ${context.guardianCount > 0 ? `You've trusted ${context.guardianCount} guardian${context.guardianCount > 1 ? 's' : ''} - that shows real care for your family.` : 'Guardians are the people who can help your family when you can\'t.'} Each person you add strengthens your family's protection.`;
+        return `Your Circle of Trust is about the people who matter most. ${context.guardianCount > 0 ? `You've trusted ${context.guardianCount} guardian${context.guardianCount > 1 ? 's' : ''} - that shows real care for your family.` : "Guardians are the people who can help your family when you can't."} Each person you add strengthens your family's protection.`;
 
       case 'legacy':
         if (milestones && milestones.unlockedCount >= 5) {
           return `Hello ${context.userName || 'there'}! With ${milestones.unlockedCount} milestones on your Path of Peace, you've built something truly meaningful. The Legacy section is where your love becomes eternal - creating messages and wishes that will guide your family long into the future.`;
         }
-        return 'Your Legacy section is where love becomes action - creating wills, recording messages, and sharing your wishes. This isn\'t about endings; it\'s about making sure your care continues.';
+        return "Your Legacy section is where love becomes action - creating wills, recording messages, and sharing your wishes. This isn't about endings; it's about making sure your care continues.";
 
       default:
         if (milestones && milestones.unlockedCount === 0) {
@@ -278,7 +348,7 @@ export function createSofiaMessage(
     role,
     content,
     timestamp: new Date(),
-    context
+    context,
   };
 }
 
@@ -290,7 +360,7 @@ export function getStoredConversation(userId: string): SofiaMessage[] {
     const parsed = JSON.parse(stored);
     return parsed.map((msg: { timestamp: string }) => ({
       ...msg,
-      timestamp: new Date(msg.timestamp)
+      timestamp: new Date(msg.timestamp),
     }));
   } catch (error) {
     console.error('Error loading Sofia conversation:', error);
@@ -302,7 +372,10 @@ export function saveConversation(userId: string, messages: SofiaMessage[]) {
   try {
     // Keep only last 50 messages to prevent storage bloat
     const messagesToSave = messages.slice(-50);
-    localStorage.setItem(`sofia_conversation_${userId}`, JSON.stringify(messagesToSave));
+    localStorage.setItem(
+      `sofia_conversation_${userId}`,
+      JSON.stringify(messagesToSave)
+    );
   } catch (error) {
     console.error('Error saving Sofia conversation:', error);
   }

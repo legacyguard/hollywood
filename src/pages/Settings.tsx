@@ -3,28 +3,33 @@
  * Includes backup/restore functionality
  */
 
-import { DashboardLayout } from "@/components/DashboardLayout";
-import { FadeIn } from "@/components/motion/FadeIn";
-import { usePageTitle } from "@/hooks/usePageTitle";
-import { BackupRestore } from "@/components/features/BackupRestore";
-import { SecurityDashboard } from "@/components/security/SecurityDashboard";
-import { Card } from "@/components/ui/card";
-import { Icon } from "@/components/ui/icon-library";
-import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import { useAuth } from "@clerk/clerk-react";
-import { useState, useEffect } from "react";
-import { toast } from "sonner";
-import type { UserPreferences, CommunicationStyle } from "@/types/user-preferences";
-import { defaultUserPreferences } from "@/types/user-preferences";
-import { textManager } from "@/lib/text-manager";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { DashboardLayout } from '@/components/DashboardLayout';
+import { FadeIn } from '@/components/motion/FadeIn';
+import { usePageTitle } from '@/hooks/usePageTitle';
+import { BackupRestore } from '@/components/features/BackupRestore';
+import { SecurityDashboard } from '@/components/security/SecurityDashboard';
+import { Card } from '@/components/ui/card';
+import { Icon } from '@/components/ui/icon-library';
+import { Button } from '@/components/ui/button';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
+import { useAuth, useUser } from '@clerk/clerk-react';
+import { useState, useEffect } from 'react';
+import { toast } from 'sonner';
+import type {
+  UserPreferences,
+  CommunicationStyle,
+} from '@/types/user-preferences';
+import { textManager } from '@/lib/text-manager';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 export default function SettingsPage() {
   usePageTitle('Settings');
-  const { user, userId } = useAuth();
-  const [preferences, setPreferences] = useState<UserPreferences>(defaultUserPreferences);
+  const { userId } = useAuth();
+  const { user } = useUser();
+  const [preferences, setPreferences] = useState<UserPreferences>(
+    defaultUserPreferences
+  );
   const [isSaving, setIsSaving] = useState(false);
 
   // Load preferences from localStorage
@@ -47,7 +52,10 @@ export default function SettingsPage() {
 
     setIsSaving(true);
     try {
-      localStorage.setItem(`preferences_${userId}`, JSON.stringify(preferences));
+      localStorage.setItem(
+        `preferences_${userId}`,
+        JSON.stringify(preferences)
+      );
 
       // Update Sofia's text manager with the new communication style
       if (preferences.communication.style !== 'default') {
@@ -65,7 +73,11 @@ export default function SettingsPage() {
     }
   };
 
-  const updatePreference = (category: keyof UserPreferences, key: string, value: boolean | string) => {
+  const updatePreference = (
+    category: keyof UserPreferences,
+    key: string,
+    value: boolean | string
+  ) => {
     setPreferences(prev => ({
       ...prev,
       [category]: {
@@ -81,41 +93,45 @@ export default function SettingsPage() {
       communication: {
         ...prev.communication,
         style: style,
-        lastDetectionUpdate: style === 'default' ? null : new Date().toISOString(),
+        lastDetectionUpdate:
+          style === 'default' ? null : new Date().toISOString(),
       },
     }));
   };
 
   return (
     <DashboardLayout>
-      <div className="min-h-screen bg-background">
+      <div className='min-h-screen bg-background'>
         {/* Header */}
-        <header className="border-b border-card-border bg-card/50 backdrop-blur-sm">
-          <div className="max-w-7xl mx-auto px-6 lg:px-8 py-6">
+        <header className='border-b border-card-border bg-card/50 backdrop-blur-sm'>
+          <div className='max-w-7xl mx-auto px-6 lg:px-8 py-6'>
             <FadeIn duration={0.5} delay={0.1}>
-              <div className="flex items-center justify-between">
+              <div className='flex items-center justify-between'>
                 <div>
-                  <h1 className="text-3xl font-bold flex items-center gap-3">
-                    <Icon name="settings" className="w-8 h-8 text-primary" />
+                  <h1 className='text-3xl font-bold flex items-center gap-3'>
+                    <Icon name='settings' className='w-8 h-8 text-primary' />
                     Settings
                   </h1>
-                  <p className="text-muted-foreground mt-1">
+                  <p className='text-muted-foreground mt-1'>
                     Manage your account preferences and application settings
                   </p>
                 </div>
                 <Button
                   onClick={savePreferences}
                   disabled={isSaving}
-                  className="bg-primary hover:bg-primary-hover"
+                  className='bg-primary hover:bg-primary-hover'
                 >
                   {isSaving ? (
                     <>
-                      <Icon name="upload" className="w-4 h-4 mr-2 animate-pulse" />
+                      <Icon
+                        name='upload'
+                        className='w-4 h-4 mr-2 animate-pulse'
+                      />
                       Saving...
                     </>
                   ) : (
                     <>
-                      <Icon name="check" className="w-4 h-4 mr-2" />
+                      <Icon name='check' className='w-4 h-4 mr-2' />
                       Save Changes
                     </>
                   )}
@@ -125,31 +141,39 @@ export default function SettingsPage() {
           </div>
         </header>
 
-        <main className="max-w-7xl mx-auto px-6 lg:px-8 py-8 space-y-8">
+        <main className='max-w-7xl mx-auto px-6 lg:px-8 py-8 space-y-8'>
           {/* Account Information */}
           <FadeIn duration={0.5} delay={0.2}>
-            <Card className="p-6 bg-card border-card-border">
-              <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                <Icon name="user" className="w-5 h-5 text-primary" />
+            <Card className='p-6 bg-card border-card-border'>
+              <h2 className='text-xl font-semibold mb-4 flex items-center gap-2'>
+                <Icon name='user' className='w-5 h-5 text-primary' />
                 Account Information
               </h2>
-              <div className="space-y-3 text-sm">
-                <div className="flex justify-between py-2 border-b border-card-border">
-                  <span className="text-muted-foreground">Name</span>
-                  <span className="font-medium">{user?.fullName || 'Not set'}</span>
+              <div className='space-y-3 text-sm'>
+                <div className='flex justify-between py-2 border-b border-card-border'>
+                  <span className='text-muted-foreground'>Name</span>
+                  <span className='font-medium'>
+                    {user?.fullName || 'Not set'}
+                  </span>
                 </div>
-                <div className="flex justify-between py-2 border-b border-card-border">
-                  <span className="text-muted-foreground">Email</span>
-                  <span className="font-medium">{user?.primaryEmailAddress?.emailAddress || 'Not set'}</span>
+                <div className='flex justify-between py-2 border-b border-card-border'>
+                  <span className='text-muted-foreground'>Email</span>
+                  <span className='font-medium'>
+                    {user?.primaryEmailAddress?.emailAddress || 'Not set'}
+                  </span>
                 </div>
-                <div className="flex justify-between py-2 border-b border-card-border">
-                  <span className="text-muted-foreground">User ID</span>
-                  <span className="font-mono text-xs bg-muted px-2 py-1 rounded">{userId}</span>
+                <div className='flex justify-between py-2 border-b border-card-border'>
+                  <span className='text-muted-foreground'>User ID</span>
+                  <span className='font-mono text-xs bg-muted px-2 py-1 rounded'>
+                    {userId}
+                  </span>
                 </div>
-                <div className="flex justify-between py-2">
-                  <span className="text-muted-foreground">Member Since</span>
-                  <span className="font-medium">
-                    {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'Unknown'}
+                <div className='flex justify-between py-2'>
+                  <span className='text-muted-foreground'>Member Since</span>
+                  <span className='font-medium'>
+                    {user?.createdAt
+                      ? new Date(user.createdAt).toLocaleDateString()
+                      : 'Unknown'}
                   </span>
                 </div>
               </div>
@@ -158,49 +182,59 @@ export default function SettingsPage() {
 
           {/* Notification Preferences */}
           <FadeIn duration={0.5} delay={0.3}>
-            <Card className="p-6 bg-card border-card-border">
-              <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                <Icon name="notifications" className="w-5 h-5 text-primary" />
+            <Card className='p-6 bg-card border-card-border'>
+              <h2 className='text-xl font-semibold mb-4 flex items-center gap-2'>
+                <Icon name='notifications' className='w-5 h-5 text-primary' />
                 Notification Preferences
               </h2>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <Label htmlFor="email-notifications">Email Notifications</Label>
-                    <p className="text-sm text-muted-foreground">
+              <div className='space-y-4'>
+                <div className='flex items-center justify-between'>
+                  <div className='space-y-0.5'>
+                    <Label htmlFor='email-notifications'>
+                      Email Notifications
+                    </Label>
+                    <p className='text-sm text-muted-foreground'>
                       Receive important updates via email
                     </p>
                   </div>
                   <Switch
-                    id="email-notifications"
+                    id='email-notifications'
                     checked={preferences.notifications.email}
-                    onCheckedChange={(checked) => updatePreference('notifications', 'email', checked)}
+                    onCheckedChange={checked =>
+                      updatePreference('notifications', 'email', checked)
+                    }
                   />
                 </div>
-                <div className="flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <Label htmlFor="push-notifications">Push Notifications</Label>
-                    <p className="text-sm text-muted-foreground">
+                <div className='flex items-center justify-between'>
+                  <div className='space-y-0.5'>
+                    <Label htmlFor='push-notifications'>
+                      Push Notifications
+                    </Label>
+                    <p className='text-sm text-muted-foreground'>
                       Get instant alerts in your browser
                     </p>
                   </div>
                   <Switch
-                    id="push-notifications"
+                    id='push-notifications'
                     checked={preferences.notifications.push}
-                    onCheckedChange={(checked) => updatePreference('notifications', 'push', checked)}
+                    onCheckedChange={checked =>
+                      updatePreference('notifications', 'push', checked)
+                    }
                   />
                 </div>
-                <div className="flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <Label htmlFor="reminders">Task Reminders</Label>
-                    <p className="text-sm text-muted-foreground">
+                <div className='flex items-center justify-between'>
+                  <div className='space-y-0.5'>
+                    <Label htmlFor='reminders'>Task Reminders</Label>
+                    <p className='text-sm text-muted-foreground'>
                       Receive reminders for important tasks and documents
                     </p>
                   </div>
                   <Switch
-                    id="reminders"
+                    id='reminders'
                     checked={preferences.notifications.reminders}
-                    onCheckedChange={(checked) => updatePreference('notifications', 'reminders', checked)}
+                    onCheckedChange={checked =>
+                      updatePreference('notifications', 'reminders', checked)
+                    }
                   />
                 </div>
               </div>
@@ -209,36 +243,40 @@ export default function SettingsPage() {
 
           {/* Privacy Settings */}
           <FadeIn duration={0.5} delay={0.4}>
-            <Card className="p-6 bg-card border-card-border">
-              <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                <Icon name="protection" className="w-5 h-5 text-primary" />
+            <Card className='p-6 bg-card border-card-border'>
+              <h2 className='text-xl font-semibold mb-4 flex items-center gap-2'>
+                <Icon name='protection' className='w-5 h-5 text-primary' />
                 Privacy & Security
               </h2>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <Label htmlFor="analytics">Share Analytics</Label>
-                    <p className="text-sm text-muted-foreground">
+              <div className='space-y-4'>
+                <div className='flex items-center justify-between'>
+                  <div className='space-y-0.5'>
+                    <Label htmlFor='analytics'>Share Analytics</Label>
+                    <p className='text-sm text-muted-foreground'>
                       Help improve the app by sharing anonymous usage data
                     </p>
                   </div>
                   <Switch
-                    id="analytics"
+                    id='analytics'
                     checked={preferences.privacy.shareAnalytics}
-                    onCheckedChange={(checked) => updatePreference('privacy', 'shareAnalytics', checked)}
+                    onCheckedChange={checked =>
+                      updatePreference('privacy', 'shareAnalytics', checked)
+                    }
                   />
                 </div>
-                <div className="flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <Label htmlFor="auto-backup">Automatic Backups</Label>
-                    <p className="text-sm text-muted-foreground">
+                <div className='flex items-center justify-between'>
+                  <div className='space-y-0.5'>
+                    <Label htmlFor='auto-backup'>Automatic Backups</Label>
+                    <p className='text-sm text-muted-foreground'>
                       Automatically backup your data weekly
                     </p>
                   </div>
                   <Switch
-                    id="auto-backup"
+                    id='auto-backup'
                     checked={preferences.privacy.autoBackup}
-                    onCheckedChange={(checked) => updatePreference('privacy', 'autoBackup', checked)}
+                    onCheckedChange={checked =>
+                      updatePreference('privacy', 'autoBackup', checked)
+                    }
                   />
                 </div>
               </div>
@@ -247,74 +285,99 @@ export default function SettingsPage() {
 
           {/* Sofia Communication Preferences */}
           <FadeIn duration={0.5} delay={0.5}>
-            <Card className="p-6 bg-card border-card-border">
-              <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                <Icon name="bot" className="w-5 h-5 text-primary" />
+            <Card className='p-6 bg-card border-card-border'>
+              <h2 className='text-xl font-semibold mb-4 flex items-center gap-2'>
+                <Icon name='bot' className='w-5 h-5 text-primary' />
                 Sofia Communication Style
               </h2>
-              <div className="space-y-4">
+              <div className='space-y-4'>
                 <div>
                   <Label>Communication Style</Label>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    Choose how Sofia communicates with you. She can adapt her personality to match your preferences.
+                  <p className='text-sm text-muted-foreground mb-4'>
+                    Choose how Sofia communicates with you. She can adapt her
+                    personality to match your preferences.
                   </p>
                   <RadioGroup
                     value={preferences.communication.style}
-                    onValueChange={(value) => updateCommunicationStyle(value as CommunicationStyle)}
-                    className="space-y-3"
+                    onValueChange={value =>
+                      updateCommunicationStyle(value as CommunicationStyle)
+                    }
+                    className='space-y-3'
                   >
-                    <div className="flex items-center space-x-3 p-3 border border-card-border rounded-lg">
-                      <RadioGroupItem value="default" id="style-default" />
-                      <div className="flex-1">
-                        <Label htmlFor="style-default" className="font-medium">
+                    <div className='flex items-center space-x-3 p-3 border border-card-border rounded-lg'>
+                      <RadioGroupItem value='default' id='style-default' />
+                      <div className='flex-1'>
+                        <Label htmlFor='style-default' className='font-medium'>
                           Automatic Detection
                         </Label>
-                        <p className="text-sm text-muted-foreground">
-                          Let Sofia learn your communication style from your interactions
+                        <p className='text-sm text-muted-foreground'>
+                          Let Sofia learn your communication style from your
+                          interactions
                         </p>
                       </div>
                     </div>
-                    <div className="flex items-center space-x-3 p-3 border border-card-border rounded-lg">
-                      <RadioGroupItem value="empathetic" id="style-empathetic" />
-                      <div className="flex-1">
-                        <Label htmlFor="style-empathetic" className="font-medium">
+                    <div className='flex items-center space-x-3 p-3 border border-card-border rounded-lg'>
+                      <RadioGroupItem
+                        value='empathetic'
+                        id='style-empathetic'
+                      />
+                      <div className='flex-1'>
+                        <Label
+                          htmlFor='style-empathetic'
+                          className='font-medium'
+                        >
                           Empathetic & Caring
                         </Label>
-                        <p className="text-sm text-muted-foreground">
-                          Sofia focuses on emotions, relationships, and the meaningful aspects of your legacy
+                        <p className='text-sm text-muted-foreground'>
+                          Sofia focuses on emotions, relationships, and the
+                          meaningful aspects of your legacy
                         </p>
                       </div>
                     </div>
-                    <div className="flex items-center space-x-3 p-3 border border-card-border rounded-lg">
-                      <RadioGroupItem value="pragmatic" id="style-pragmatic" />
-                      <div className="flex-1">
-                        <Label htmlFor="style-pragmatic" className="font-medium">
+                    <div className='flex items-center space-x-3 p-3 border border-card-border rounded-lg'>
+                      <RadioGroupItem value='pragmatic' id='style-pragmatic' />
+                      <div className='flex-1'>
+                        <Label
+                          htmlFor='style-pragmatic'
+                          className='font-medium'
+                        >
                           Direct & Practical
                         </Label>
-                        <p className="text-sm text-muted-foreground">
-                          Sofia communicates efficiently with facts, steps, and clear instructions
+                        <p className='text-sm text-muted-foreground'>
+                          Sofia communicates efficiently with facts, steps, and
+                          clear instructions
                         </p>
                       </div>
                     </div>
                   </RadioGroup>
                 </div>
-                <div className="flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <Label htmlFor="auto-detection">Auto-Detection</Label>
-                    <p className="text-sm text-muted-foreground">
-                      Allow Sofia to automatically learn your communication preferences over time
+                <div className='flex items-center justify-between'>
+                  <div className='space-y-0.5'>
+                    <Label htmlFor='auto-detection'>Auto-Detection</Label>
+                    <p className='text-sm text-muted-foreground'>
+                      Allow Sofia to automatically learn your communication
+                      preferences over time
                     </p>
                   </div>
                   <Switch
-                    id="auto-detection"
+                    id='auto-detection'
                     checked={preferences.communication.autoDetection}
-                    onCheckedChange={(checked) => updatePreference('communication', 'autoDetection', checked)}
+                    onCheckedChange={checked =>
+                      updatePreference(
+                        'communication',
+                        'autoDetection',
+                        checked
+                      )
+                    }
                   />
                 </div>
                 {preferences.communication.lastDetectionUpdate && (
-                  <div className="text-xs text-muted-foreground bg-muted p-2 rounded">
-                    <Icon name="info" className="w-3 h-3 inline mr-1" />
-                    Last style update: {new Date(preferences.communication.lastDetectionUpdate).toLocaleDateString()}
+                  <div className='text-xs text-muted-foreground bg-muted p-2 rounded'>
+                    <Icon name='info' className='w-3 h-3 inline mr-1' />
+                    Last style update:{' '}
+                    {new Date(
+                      preferences.communication.lastDetectionUpdate
+                    ).toLocaleDateString()}
                   </div>
                 )}
               </div>
@@ -323,36 +386,40 @@ export default function SettingsPage() {
 
           {/* Display Preferences */}
           <FadeIn duration={0.5} delay={0.6}>
-            <Card className="p-6 bg-card border-card-border">
-              <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                <Icon name="settings" className="w-5 h-5 text-primary" />
+            <Card className='p-6 bg-card border-card-border'>
+              <h2 className='text-xl font-semibold mb-4 flex items-center gap-2'>
+                <Icon name='settings' className='w-5 h-5 text-primary' />
                 Display Preferences
               </h2>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <Label htmlFor="compact-mode">Compact Mode</Label>
-                    <p className="text-sm text-muted-foreground">
+              <div className='space-y-4'>
+                <div className='flex items-center justify-between'>
+                  <div className='space-y-0.5'>
+                    <Label htmlFor='compact-mode'>Compact Mode</Label>
+                    <p className='text-sm text-muted-foreground'>
                       Show more content with reduced spacing
                     </p>
                   </div>
                   <Switch
-                    id="compact-mode"
+                    id='compact-mode'
                     checked={preferences.display.compactMode}
-                    onCheckedChange={(checked) => updatePreference('display', 'compactMode', checked)}
+                    onCheckedChange={checked =>
+                      updatePreference('display', 'compactMode', checked)
+                    }
                   />
                 </div>
-                <div className="flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <Label htmlFor="show-tips">Show Tips</Label>
-                    <p className="text-sm text-muted-foreground">
+                <div className='flex items-center justify-between'>
+                  <div className='space-y-0.5'>
+                    <Label htmlFor='show-tips'>Show Tips</Label>
+                    <p className='text-sm text-muted-foreground'>
                       Display helpful tips and guidance throughout the app
                     </p>
                   </div>
                   <Switch
-                    id="show-tips"
+                    id='show-tips'
                     checked={preferences.display.showTips}
-                    onCheckedChange={(checked) => updatePreference('display', 'showTips', checked)}
+                    onCheckedChange={checked =>
+                      updatePreference('display', 'showTips', checked)
+                    }
                   />
                 </div>
               </div>
@@ -361,9 +428,9 @@ export default function SettingsPage() {
 
           {/* Security Dashboard */}
           <FadeIn duration={0.5} delay={0.7}>
-            <div className="space-y-6">
-              <h2 className="text-2xl font-bold flex items-center gap-3">
-                <Icon name="shield-check" className="w-7 h-7 text-primary" />
+            <div className='space-y-6'>
+              <h2 className='text-2xl font-bold flex items-center gap-3'>
+                <Icon name='shield-check' className='w-7 h-7 text-primary' />
                 Security Center
               </h2>
               <SecurityDashboard />

@@ -3,9 +3,17 @@
 
 import type { WillData } from '@/components/legacy/WillWizard';
 
+// Export enum for ValidationLevel
+export enum ValidationLevel {
+  ERROR = 'error',
+  WARNING = 'warning',
+  INFO = 'info',
+  SUCCESS = 'success'
+}
+
 export interface ValidationResult {
   isValid: boolean;
-  level: 'error' | 'warning' | 'info' | 'success';
+  level: ValidationLevel;
   message: string;
   messageKey: string;
   field?: string;
@@ -22,7 +30,11 @@ export interface ComplianceReport {
 }
 
 export interface ConflictAlert {
-  type: 'forced_heirs' | 'witness_conflict' | 'percentage_conflict' | 'jurisdiction_conflict';
+  type:
+    | 'forced_heirs'
+    | 'witness_conflict'
+    | 'percentage_conflict'
+    | 'jurisdiction_conflict';
   severity: 'critical' | 'high' | 'medium' | 'low';
   message: string;
   affectedFields: string[];
@@ -31,41 +43,41 @@ export interface ConflictAlert {
 
 // Jurisdiction-specific legal rules
 const JURISDICTION_RULES = {
-  'Slovakia': {
+  Slovakia: {
     forcedHeirsMinimum: {
       minorChildren: 0.5, // 50% minimum for minor children
       adultChildren: 0.25, // 25% minimum for adult children
       spouse: 0.25, // 25% minimum for spouse
-      parents: 0.125 // 12.5% minimum for parents (if no children/spouse)
+      parents: 0.125, // 12.5% minimum for parents (if no children/spouse)
     },
     witnessRequirements: {
       holographic: 0,
       alographic: 2,
-      notarial: 0
+      notarial: 0,
     },
     legalCapacityAge: 18,
     revocationRules: {
       requiresExplicitRevocation: true,
-      allowsPartialRevocation: false
-    }
+      allowsPartialRevocation: false,
+    },
   },
   'Czech-Republic': {
     forcedHeirsMinimum: {
       minorChildren: 0.5, // 50% minimum for minor children
       adultChildren: 0.25, // 25% minimum for adult children
       spouse: 0.5, // 50% minimum for spouse
-      parents: 0.25 // 25% minimum for parents (if no children/spouse)
+      parents: 0.25, // 25% minimum for parents (if no children/spouse)
     },
     witnessRequirements: {
       holographic: 0,
       alographic: 2,
-      notarial: 0
+      notarial: 0,
     },
     legalCapacityAge: 18,
     revocationRules: {
       requiresExplicitRevocation: true,
-      allowsPartialRevocation: true
-    }
+      allowsPartialRevocation: true,
+    },
   },
   'US-General': {
     forcedHeirsMinimum: {
@@ -74,29 +86,34 @@ const JURISDICTION_RULES = {
     witnessRequirements: {
       holographic: 0, // Some states don't recognize holographic wills
       alographic: 2,
-      notarial: 0
+      notarial: 0,
     },
     legalCapacityAge: 18,
     revocationRules: {
       requiresExplicitRevocation: false,
-      allowsPartialRevocation: true
-    }
-  }
+      allowsPartialRevocation: true,
+    },
+  },
 };
 
 export class LegalValidator {
   private jurisdiction: string;
-  private rules: typeof JURISDICTION_RULES[keyof typeof JURISDICTION_RULES];
+  private rules: (typeof JURISDICTION_RULES)[keyof typeof JURISDICTION_RULES];
 
   constructor(jurisdiction: string = 'Slovakia') {
     this.jurisdiction = jurisdiction;
-    this.rules = JURISDICTION_RULES[jurisdiction as keyof typeof JURISDICTION_RULES] || JURISDICTION_RULES['Slovakia'];
+    this.rules =
+      JURISDICTION_RULES[jurisdiction as keyof typeof JURISDICTION_RULES] ||
+      JURISDICTION_RULES['Slovakia'];
   }
 
   /**
    * Validates beneficiary shares for legal compliance
    */
-  validateBeneficiaryShares(beneficiaries: WillData['beneficiaries'], jurisdiction: string): ValidationResult {
+  validateBeneficiaryShares(
+    beneficiaries: WillData['beneficiaries'],
+    _jurisdiction: string
+  ): ValidationResult {
     const totalShares = beneficiaries.reduce((sum, b) => sum + b.percentage, 0);
 
     if (totalShares !== 100) {
@@ -106,9 +123,10 @@ export class LegalValidator {
         message: `Beneficiary shares must total exactly 100%. Current total: ${totalShares}%`,
         messageKey: 'shares_total_invalid',
         field: 'beneficiaries',
-        autoSuggestion: totalShares < 100
-          ? `Add ${100 - totalShares}% to existing beneficiaries`
-          : `Reduce shares by ${totalShares - 100}%`
+        autoSuggestion:
+          totalShares < 100
+            ? `Add ${100 - totalShares}% to existing beneficiaries`
+            : `Reduce shares by ${totalShares - 100}%`,
       };
     }
 
@@ -116,14 +134,17 @@ export class LegalValidator {
       isValid: true,
       level: 'success',
       message: 'Beneficiary shares are correctly distributed',
-      messageKey: 'shares_valid'
+      messageKey: 'shares_valid',
     };
   }
 
   /**
    * Checks compliance with forced/reserved heirs laws
    */
-  checkForcedHeirsCompliance(willData: WillData, jurisdiction: string): ComplianceReport {
+  checkForcedHeirsCompliance(
+    willData: WillData,
+    jurisdiction: string
+  ): ComplianceReport {
     const results: ValidationResult[] = [];
     const forcedHeirsIssues: ValidationResult[] = [];
 
@@ -132,7 +153,9 @@ export class LegalValidator {
       ['child', 'son', 'daughter'].includes(b.relationship.toLowerCase())
     );
     const spouse = willData.beneficiaries.find(b =>
-      ['spouse', 'husband', 'wife', 'partner'].includes(b.relationship.toLowerCase())
+      ['spouse', 'husband', 'wife', 'partner'].includes(
+        b.relationship.toLowerCase()
+      )
     );
     const parents = willData.beneficiaries.filter(b =>
       ['parent', 'mother', 'father'].includes(b.relationship.toLowerCase())
@@ -140,7 +163,10 @@ export class LegalValidator {
 
     // Check children's forced heir rights
     if (children.length > 0) {
-      const childrenTotalShare = children.reduce((sum, child) => sum + child.percentage, 0);
+      const childrenTotalShare = children.reduce(
+        (sum, child) => sum + child.percentage,
+        0
+      );
       const requiredMinimum = this.rules.forcedHeirsMinimum.minorChildren * 100; // Assuming minor for safety
 
       if (childrenTotalShare < requiredMinimum) {
@@ -150,14 +176,14 @@ export class LegalValidator {
           message: `${jurisdiction} law requires children to receive minimum ${requiredMinimum}% share. Currently: ${childrenTotalShare}%`,
           messageKey: 'forced_heirs_children_violation',
           field: 'beneficiaries',
-          autoSuggestion: `Increase children's total share to at least ${requiredMinimum}%`
+          autoSuggestion: `Increase children's total share to at least ${requiredMinimum}%`,
         });
       } else {
         results.push({
           isValid: true,
           level: 'success',
-          message: 'Children\'s forced heir rights are respected',
-          messageKey: 'forced_heirs_children_compliant'
+          message: "Children's forced heir rights are respected",
+          messageKey: 'forced_heirs_children_compliant',
         });
       }
     }
@@ -172,14 +198,16 @@ export class LegalValidator {
           message: `${jurisdiction} law requires spouse to receive minimum ${requiredMinimum}% share. Currently: ${spouse.percentage}%`,
           messageKey: 'forced_heirs_spouse_violation',
           field: 'beneficiaries',
-          autoSuggestion: `Increase spouse's share to at least ${requiredMinimum}%`
+          autoSuggestion: `Increase spouse's share to at least ${requiredMinimum}%`,
         });
       }
     }
 
     // Determine overall compliance
     const hasErrors = forcedHeirsIssues.some(issue => issue.level === 'error');
-    const hasWarnings = forcedHeirsIssues.some(issue => issue.level === 'warning');
+    const hasWarnings = forcedHeirsIssues.some(
+      issue => issue.level === 'warning'
+    );
 
     // Build list of protected forced heirs
     const forcedHeirsProtected: string[] = [];
@@ -188,33 +216,43 @@ export class LegalValidator {
     if (parents.length > 0) forcedHeirsProtected.push('parent');
 
     return {
-      overall: hasErrors ? 'non-compliant' : hasWarnings ? 'partial' : 'compliant',
+      overall: hasErrors
+        ? 'non-compliant'
+        : hasWarnings
+          ? 'partial'
+          : 'compliant',
       isCompliant: !hasErrors,
       forcedHeirsProtected,
       validationResults: results,
       forcedHeirsIssues,
-      legalConflicts: []
+      legalConflicts: [],
     };
   }
 
   /**
    * Detects legal conflicts between assets and beneficiaries
    */
-  detectLegalConflicts(assets: WillData['assets'], beneficiaries: WillData['beneficiaries']): ConflictAlert[] {
+  detectLegalConflicts(
+    assets: WillData['assets'],
+    beneficiaries: WillData['beneficiaries']
+  ): ConflictAlert[] {
     const conflicts: ConflictAlert[] = [];
 
     // Check for witness-beneficiary conflicts (witnesses shouldn't be beneficiaries)
     // This would be checked against witness data if available
 
     // Check for percentage conflicts
-    const totalPercentage = beneficiaries.reduce((sum, b) => sum + b.percentage, 0);
+    const totalPercentage = beneficiaries.reduce(
+      (sum, b) => sum + b.percentage,
+      0
+    );
     if (totalPercentage > 100) {
       conflicts.push({
         type: 'percentage_conflict',
         severity: 'critical',
         message: `Total beneficiary percentages exceed 100% (${totalPercentage}%)`,
         affectedFields: ['beneficiaries'],
-        suggestion: `Reduce total allocation by ${totalPercentage - 100}%`
+        suggestion: `Reduce total allocation by ${totalPercentage - 100}%`,
       });
     }
 
@@ -238,7 +276,8 @@ export class LegalValidator {
           severity: 'high',
           message: `Asset "${asset}" is assigned to multiple recipients: ${recipients.join(', ')}`,
           affectedFields: ['assets.personalProperty'],
-          suggestion: 'Assign each asset to only one specific recipient, or specify shared ownership percentages'
+          suggestion:
+            'Assign each asset to only one specific recipient, or specify shared ownership percentages',
         });
       }
     });
@@ -249,7 +288,10 @@ export class LegalValidator {
   /**
    * Validates executor appointment
    */
-  validateExecutor(executorData: WillData['executor_data'], beneficiaries: WillData['beneficiaries']): ValidationResult[] {
+  validateExecutor(
+    executorData: WillData['executor_data'],
+    beneficiaries: WillData['beneficiaries']
+  ): ValidationResult[] {
     const results: ValidationResult[] = [];
 
     if (!executorData.primaryExecutor?.name) {
@@ -259,29 +301,33 @@ export class LegalValidator {
         message: 'Consider appointing an executor to manage your estate',
         messageKey: 'executor_missing',
         field: 'executor_data',
-        autoSuggestion: 'Add a trusted person as executor'
+        autoSuggestion: 'Add a trusted person as executor',
       });
     } else {
       // Check if executor is also a major beneficiary (potential conflict)
-      const executorIsBeneficiary = beneficiaries.some(b =>
-        b.name.toLowerCase() === executorData.primaryExecutor!.name.toLowerCase() && b.percentage > 50
+      const executorIsBeneficiary = beneficiaries.some(
+        b =>
+          b.name.toLowerCase() ===
+            executorData.primaryExecutor!.name.toLowerCase() &&
+          b.percentage > 50
       );
 
       if (executorIsBeneficiary) {
         results.push({
           isValid: true,
           level: 'warning',
-          message: 'Your executor is also a major beneficiary. Consider appointing a neutral executor or backup executor',
+          message:
+            'Your executor is also a major beneficiary. Consider appointing a neutral executor or backup executor',
           messageKey: 'executor_beneficiary_conflict',
           field: 'executor_data',
-          autoSuggestion: 'Add an independent backup executor'
+          autoSuggestion: 'Add an independent backup executor',
         });
       } else {
         results.push({
           isValid: true,
           level: 'success',
           message: 'Executor appointment looks good',
-          messageKey: 'executor_valid'
+          messageKey: 'executor_valid',
         });
       }
     }
@@ -292,8 +338,14 @@ export class LegalValidator {
   /**
    * Validates witness requirements based on will type and jurisdiction
    */
-  validateWitnessRequirements(willType: string, witnessData?: any): ValidationResult {
-    const requiredWitnesses = this.rules.witnessRequirements[willType as keyof typeof this.rules.witnessRequirements];
+  validateWitnessRequirements(
+    willType: string,
+    witnessData?: any
+  ): ValidationResult {
+    const requiredWitnesses =
+      this.rules.witnessRequirements[
+        willType as keyof typeof this.rules.witnessRequirements
+      ];
 
     if (requiredWitnesses === undefined) {
       return {
@@ -301,7 +353,7 @@ export class LegalValidator {
         level: 'warning',
         message: `Unknown will type: ${willType}`,
         messageKey: 'unknown_will_type',
-        field: 'will_type'
+        field: 'will_type',
       };
     }
 
@@ -310,7 +362,7 @@ export class LegalValidator {
         isValid: true,
         level: 'success',
         message: 'No witnesses required for this will type',
-        messageKey: 'witnesses_not_required'
+        messageKey: 'witnesses_not_required',
       };
     }
 
@@ -323,7 +375,7 @@ export class LegalValidator {
         message: `${this.jurisdiction} law requires ${requiredWitnesses} witnesses for ${willType} wills. You have ${actualWitnesses}`,
         messageKey: 'witnesses_insufficient',
         field: 'witnesses',
-        autoSuggestion: `Add ${requiredWitnesses - actualWitnesses} more witness${requiredWitnesses - actualWitnesses > 1 ? 'es' : ''}`
+        autoSuggestion: `Add ${requiredWitnesses - actualWitnesses} more witness${requiredWitnesses - actualWitnesses > 1 ? 'es' : ''}`,
       };
     }
 
@@ -333,7 +385,7 @@ export class LegalValidator {
         level: 'warning',
         message: `You have more witnesses than required (${actualWitnesses} vs ${requiredWitnesses}). This is allowed but not necessary`,
         messageKey: 'witnesses_excess',
-        field: 'witnesses'
+        field: 'witnesses',
       };
     }
 
@@ -341,7 +393,7 @@ export class LegalValidator {
       isValid: true,
       level: 'success',
       message: 'Witness requirements satisfied',
-      messageKey: 'witnesses_valid'
+      messageKey: 'witnesses_valid',
     };
   }
 
@@ -350,13 +402,23 @@ export class LegalValidator {
    */
   validateWillDocument(willData: WillData, willType: string): ComplianceReport {
     const allResults: ValidationResult[] = [];
-    const forcedHeirsReport = this.checkForcedHeirsCompliance(willData, this.jurisdiction);
-    const legalConflicts = this.detectLegalConflicts(willData.assets, willData.beneficiaries);
+    const forcedHeirsReport = this.checkForcedHeirsCompliance(
+      willData,
+      this.jurisdiction
+    );
+    const legalConflicts = this.detectLegalConflicts(
+      willData.assets,
+      willData.beneficiaries
+    );
 
     // Basic validations
-    allResults.push(this.validateBeneficiaryShares(willData.beneficiaries, this.jurisdiction));
+    allResults.push(
+      this.validateBeneficiaryShares(willData.beneficiaries, this.jurisdiction)
+    );
     allResults.push(this.validateWitnessRequirements(willType));
-    allResults.push(...this.validateExecutor(willData.executor_data, willData.beneficiaries));
+    allResults.push(
+      ...this.validateExecutor(willData.executor_data, willData.beneficiaries)
+    );
 
     // Personal data validation
     if (!willData.testator_data.fullName) {
@@ -365,7 +427,7 @@ export class LegalValidator {
         level: 'error',
         message: 'Full name is required',
         messageKey: 'testator_name_required',
-        field: 'testator_data.fullName'
+        field: 'testator_data.fullName',
       });
     }
 
@@ -375,7 +437,7 @@ export class LegalValidator {
         level: 'error',
         message: 'Date of birth is required',
         messageKey: 'testator_dob_required',
-        field: 'testator_data.dateOfBirth'
+        field: 'testator_data.dateOfBirth',
       });
     }
 
@@ -385,7 +447,7 @@ export class LegalValidator {
         level: 'error',
         message: 'Address is required',
         messageKey: 'testator_address_required',
-        field: 'testator_data.address'
+        field: 'testator_data.address',
       });
     }
 
@@ -393,31 +455,46 @@ export class LegalValidator {
     const combinedResults = [
       ...allResults,
       ...forcedHeirsReport.validationResults,
-      ...forcedHeirsReport.forcedHeirsIssues
+      ...forcedHeirsReport.forcedHeirsIssues,
     ];
 
-    const hasErrors = combinedResults.some(r => r.level === 'error') || legalConflicts.some(c => c.severity === 'critical');
-    const hasWarnings = combinedResults.some(r => r.level === 'warning') || legalConflicts.some(c => c.severity === 'high');
+    const hasErrors =
+      combinedResults.some(r => r.level === 'error') ||
+      legalConflicts.some(c => c.severity === 'critical');
+    const hasWarnings =
+      combinedResults.some(r => r.level === 'warning') ||
+      legalConflicts.some(c => c.severity === 'high');
 
     return {
-      overall: hasErrors ? 'non-compliant' : hasWarnings ? 'partial' : 'compliant',
+      overall: hasErrors
+        ? 'non-compliant'
+        : hasWarnings
+          ? 'partial'
+          : 'compliant',
       validationResults: combinedResults,
       forcedHeirsIssues: forcedHeirsReport.forcedHeirsIssues,
       legalConflicts: legalConflicts.map(conflict => ({
         isValid: false,
-        level: conflict.severity === 'critical' ? 'error' as const : 'warning' as const,
+        level:
+          conflict.severity === 'critical'
+            ? ('error' as const)
+            : ('warning' as const),
         message: conflict.message,
         messageKey: `conflict_${conflict.type}`,
         field: conflict.affectedFields[0],
-        autoSuggestion: conflict.suggestion
-      }))
+        autoSuggestion: conflict.suggestion,
+      })),
     };
   }
 
   /**
    * Get real-time validation for a specific field
    */
-  validateField(fieldName: string, value: any, willData: WillData): ValidationResult {
+  validateField(
+    fieldName: string,
+    value: any,
+    _willData: WillData
+  ): ValidationResult {
     switch (fieldName) {
       case 'beneficiaries':
         return this.validateBeneficiaryShares(value, this.jurisdiction);
@@ -427,9 +504,11 @@ export class LegalValidator {
         return {
           isValid: !!value && value.length > 0,
           level: value && value.length > 0 ? 'success' : 'error',
-          message: value && value.length > 0 ? 'Valid name' : 'Full name is required',
-          messageKey: value && value.length > 0 ? 'name_valid' : 'name_required',
-          field: fieldName
+          message:
+            value && value.length > 0 ? 'Valid name' : 'Full name is required',
+          messageKey:
+            value && value.length > 0 ? 'name_valid' : 'name_required',
+          field: fieldName,
         };
 
       case 'executor_data.primaryExecutor.name':
@@ -440,7 +519,7 @@ export class LegalValidator {
             message: 'Consider appointing an executor',
             messageKey: 'executor_recommended',
             field: fieldName,
-            autoSuggestion: 'Add a trusted person as executor'
+            autoSuggestion: 'Add a trusted person as executor',
           };
         }
         return {
@@ -448,7 +527,7 @@ export class LegalValidator {
           level: 'success',
           message: 'Executor appointed',
           messageKey: 'executor_valid',
-          field: fieldName
+          field: fieldName,
         };
 
       default:
@@ -457,7 +536,7 @@ export class LegalValidator {
           level: 'info',
           message: 'Field validation not implemented',
           messageKey: 'validation_not_implemented',
-          field: fieldName
+          field: fieldName,
         };
     }
   }
@@ -467,22 +546,96 @@ export class LegalValidator {
 export const legalValidator = new LegalValidator();
 
 // Utility functions for UI components
+// Add additional validation functions
+export const validateTestatorAge = (dateOfBirth: string): ValidationResult => {
+  const birthDate = new Date(dateOfBirth);
+  const age = new Date().getFullYear() - birthDate.getFullYear();
+
+  if (age < 18) {
+    return {
+      isValid: false,
+      level: ValidationLevel.ERROR,
+      message: 'Testator must be at least 18 years old to create a valid will',
+      messageKey: 'testator_age_invalid',
+      field: 'testator_data.dateOfBirth',
+      autoSuggestion: 'Verify the date of birth is correct'
+    };
+  }
+
+  return {
+    isValid: true,
+    level: ValidationLevel.SUCCESS,
+    message: 'Testator age is valid',
+    messageKey: 'testator_age_valid'
+  };
+};
+
+export const validateGuardianship = (guardianship: any): ValidationResult => {
+  if (!guardianship || (!guardianship.guardian && !guardianship.alternateGuardian)) {
+    return {
+      isValid: false,
+      level: ValidationLevel.WARNING,
+      message: 'Consider appointing a guardian for any minor children',
+      messageKey: 'guardianship_recommended',
+      field: 'guardianship',
+      autoSuggestion: 'Add a trusted person as guardian'
+    };
+  }
+
+  return {
+    isValid: true,
+    level: ValidationLevel.SUCCESS,
+    message: 'Guardianship provisions are complete',
+    messageKey: 'guardianship_valid'
+  };
+};
+
+export const validateSpecialProvisions = (specialProvisions: string[]): ValidationResult => {
+  if (!specialProvisions || specialProvisions.length === 0) {
+    return {
+      isValid: true,
+      level: ValidationLevel.INFO,
+      message: 'No special provisions specified',
+      messageKey: 'special_provisions_none'
+    };
+  }
+
+  return {
+    isValid: true,
+    level: ValidationLevel.SUCCESS,
+    message: `${specialProvisions.length} special provision(s) specified`,
+    messageKey: 'special_provisions_valid'
+  };
+};
+
 export const getValidationIcon = (level: ValidationResult['level']): string => {
   switch (level) {
-    case 'error': return '❌';
-    case 'warning': return '⚠️';
-    case 'success': return '✅';
-    case 'info': return 'ℹ️';
-    default: return '';
+    case 'error':
+      return '❌';
+    case 'warning':
+      return '⚠️';
+    case 'success':
+      return '✅';
+    case 'info':
+      return 'ℹ️';
+    default:
+      return '';
   }
 };
 
-export const getValidationColor = (level: ValidationResult['level']): string => {
+export const getValidationColor = (
+  level: ValidationResult['level']
+): string => {
   switch (level) {
-    case 'error': return 'text-red-600 border-red-200 bg-red-50';
-    case 'warning': return 'text-yellow-600 border-yellow-200 bg-yellow-50';
-    case 'success': return 'text-green-600 border-green-200 bg-green-50';
-    case 'info': return 'text-blue-600 border-blue-200 bg-blue-50';
-    default: return 'text-gray-600';
+    case 'error':
+      return 'text-red-600 border-red-200 bg-red-50';
+    case 'warning':
+      return 'text-yellow-600 border-yellow-200 bg-yellow-50';
+    case 'success':
+      return 'text-green-600 border-green-200 bg-green-50';
+    case 'info':
+      return 'text-blue-600 border-blue-200 bg-blue-50';
+    default:
+      return 'text-gray-600';
   }
 };
