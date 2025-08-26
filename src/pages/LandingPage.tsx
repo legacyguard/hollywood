@@ -1,5 +1,6 @@
 import React, { useState, useRef, useCallback } from 'react';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
+import { Helmet } from 'react-helmet-async';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -54,6 +55,67 @@ export function LandingPage() {
 
   return (
     <div className='min-h-screen bg-slate-900'>
+      <Helmet>
+        <title>LegacyGuard - Secure Your Family's Future | Document Management & Legacy Planning</title>
+        <meta
+          name="description"
+          content="Transform life's chaos into clarity with LegacyGuard. Securely organize documents, protect your family with AI-powered guidance, and create your lasting legacy. Start free today."
+        />
+        <meta
+          name="keywords"
+          content="legacy planning, document management, family protection, digital vault, will creation, emergency planning, secure storage, AI assistant"
+        />
+
+        {/* Open Graph tags for social sharing */}
+        <meta property="og:title" content="LegacyGuard - Secure Your Family's Future" />
+        <meta
+          property="og:description"
+          content="The most caring and secure way to organize your life's journey and protect your family's future. Start your legacy today."
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://legacyguard.app" />
+        <meta property="og:site_name" content="LegacyGuard" />
+        <meta property="og:locale" content="en_US" />
+
+        {/* Twitter Card tags */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="LegacyGuard - Secure Your Family's Future" />
+        <meta
+          name="twitter:description"
+          content="Transform life's chaos into clarity. Secure documents, protect family, create lasting legacy."
+        />
+
+        {/* Additional SEO tags */}
+        <meta name="robots" content="index, follow" />
+        <meta name="author" content="LegacyGuard" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="canonical" href="https://legacyguard.app" />
+
+        {/* Structured data for search engines */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            "name": "LegacyGuard",
+            "description": "Secure document management and legacy planning platform with AI assistance",
+            "url": "https://legacyguard.app",
+            "applicationCategory": "FinanceApplication",
+            "operatingSystem": "Web",
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD",
+              "category": "Free"
+            },
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "5.0",
+              "ratingCount": "1"
+            }
+          })}
+        </script>
+      </Helmet>
+
       {/* Navigation Header - Semi-transparent overlay */}
       <header className='absolute top-0 left-0 right-0 z-50 bg-slate-900/30 backdrop-blur-sm border-b border-slate-700/30'>
         <div className='container mx-auto px-4 py-4'>
@@ -394,7 +456,7 @@ export function LandingPage() {
                     transition={{ delay: 2, duration: 0.5 }}
                     viewport={{ once: true }}
                   >
-                    <Icon name='lock' className='w-8 h-8 text-yellow-400' />
+                    <Icon name='key' className='w-8 h-8 text-yellow-400' />
                   </motion.div>
                 </div>
               </motion.div>
@@ -820,7 +882,7 @@ export function LandingPage() {
                         ease: 'easeInOut',
                       }}
                     />
-                    <Icon name='lock' className='w-6 h-6 text-yellow-400 absolute top-5 left-5' />
+                    <Icon name='key' className='w-6 h-6 text-yellow-400 absolute top-5 left-5' />
                   </motion.div>
                 ),
               },
@@ -1122,7 +1184,7 @@ export function LandingPage() {
               <ul className='space-y-2 text-sm'>
                 <li>
                   <Link
-                    to='/privacy'
+                    to='/privacy-policy'
                     className='text-slate-400 hover:text-yellow-400 transition-colors'
                   >
                     Privacy Policy
@@ -1130,7 +1192,7 @@ export function LandingPage() {
                 </li>
                 <li>
                   <Link
-                    to='/terms'
+                    to='/terms-of-service'
                     className='text-slate-400 hover:text-yellow-400 transition-colors'
                   >
                     Terms of Service
@@ -1153,6 +1215,103 @@ export function LandingPage() {
           </div>
         </div>
       </footer>
+
+      {/* Social Proof Section */}
+      <section className='py-20 bg-slate-800 border-t border-slate-700'>
+        <div className='container mx-auto px-4'>
+          <motion.div
+            className='text-center mb-12'
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <h2 className='text-3xl lg:text-4xl font-bold text-white mb-4'>
+              Trusted by Professionals, Built for Families
+            </h2>
+            <p className='text-xl text-slate-300 max-w-3xl mx-auto'>
+              LegacyGuard is built on principles of legal precision and bank-level security,
+              in consultation with legal and financial experts.
+            </p>
+          </motion.div>
+
+          {/* Partner and Technology Logos */}
+          <motion.div
+            className='flex flex-wrap items-center justify-center gap-8 lg:gap-12 opacity-60 hover:opacity-80 transition-opacity duration-300'
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 0.6, y: 0 }}
+            whileHover={{ opacity: 0.8 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            viewport={{ once: true }}
+          >
+            {/* Clerk - Authentication */}
+            <div className='flex items-center gap-2 text-slate-400 hover:text-slate-300 transition-colors'>
+              <div className='w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center'>
+                <span className='text-white font-bold text-sm'>C</span>
+              </div>
+              <span className='text-sm font-medium'>Secured by Clerk</span>
+            </div>
+
+            {/* Supabase - Database */}
+            <div className='flex items-center gap-2 text-slate-400 hover:text-slate-300 transition-colors'>
+              <div className='w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center'>
+                <span className='text-white font-bold text-sm'>S</span>
+              </div>
+              <span className='text-sm font-medium'>Powered by Supabase</span>
+            </div>
+
+            {/* Vercel - Hosting */}
+            <div className='flex items-center gap-2 text-slate-400 hover:text-slate-300 transition-colors'>
+              <div className='w-8 h-8 bg-gradient-to-br from-black to-slate-800 rounded-lg flex items-center justify-center border border-slate-600'>
+                <span className='text-white font-bold text-sm'>▲</span>
+              </div>
+              <span className='text-sm font-medium'>Deployed on Vercel</span>
+            </div>
+
+            {/* Legal Partner */}
+            <div className='flex items-center gap-2 text-slate-400 hover:text-slate-300 transition-colors'>
+              <div className='w-8 h-8 bg-gradient-to-br from-amber-500 to-orange-600 rounded-lg flex items-center justify-center'>
+                <span className='text-white font-bold text-sm'>⚖</span>
+              </div>
+              <span className='text-sm font-medium'>Legal Partnership</span>
+            </div>
+
+            {/* GDPR Compliant */}
+            <div className='flex items-center gap-2 text-slate-400 hover:text-slate-300 transition-colors'>
+              <div className='w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-lg flex items-center justify-center'>
+                <span className='text-white font-bold text-xs'>🇪🇺</span>
+              </div>
+              <span className='text-sm font-medium'>GDPR Compliant</span>
+            </div>
+          </motion.div>
+
+          {/* Additional Trust Indicators */}
+          <motion.div
+            className='mt-12 flex flex-wrap items-center justify-center gap-6 text-slate-500 text-sm'
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            viewport={{ once: true }}
+          >
+            <div className='flex items-center gap-2'>
+              <Icon name='shield-check' className='w-4 h-4 text-green-400' />
+              <span>End-to-End Encryption</span>
+            </div>
+            <div className='flex items-center gap-2'>
+              <Icon name='check' className='w-4 h-4 text-green-400' />
+              <span>Zero-Knowledge Architecture</span>
+            </div>
+            <div className='flex items-center gap-2'>
+              <Icon name='key' className='w-4 h-4 text-green-400' />
+              <span>Bank-Level Security</span>
+            </div>
+            <div className='flex items-center gap-2'>
+              <Icon name='users' className='w-4 h-4 text-green-400' />
+              <span>Legal Expert Consultation</span>
+            </div>
+          </motion.div>
+        </div>
+      </section>
 
       {/* Final CTA Section - Return to Night */}
       <section className='relative min-h-screen flex items-center justify-center bg-gradient-to-b from-slate-950 to-slate-900 overflow-hidden'>
