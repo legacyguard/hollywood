@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { FadeIn } from '@/components/motion/FadeIn';
-import {
+import type {
   SurvivorInterface as SurvivorInterfaceData,
   SurvivorAccessRequest,
   SurvivorResource,
@@ -196,7 +196,7 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
         id: tc.id,
         message_title: tc.message_title,
         message_preview: tc.message_preview,
-        delivery_condition: tc.delivery_condition,
+        delivery_condition: tc.delivery_condition as 'ON_DATE' | 'ON_DEATH',
         access_token: tc.access_token,
         is_available: true,
         created_at: tc.created_at,

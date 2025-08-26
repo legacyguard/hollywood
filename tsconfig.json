@@ -1,25 +1,152 @@
 {
+  // TypeScript Project References for modular compilation
   "files": [],
   "references": [
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }
   ],
+  
+  // Base compiler options that apply to all configurations
   "compilerOptions": {
+    // === MODULE RESOLUTION ===
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@components/*": ["./src/components/*"],
+      "@hooks/*": ["./src/hooks/*"],
+      "@lib/*": ["./src/lib/*"],
+      "@features/*": ["./src/features/*"],
+      "@pages/*": ["./src/pages/*"],
+      "@types/*": ["./src/types/*"],
+      "@utils/*": ["./src/lib/utils/*"],
+      "@config/*": ["./src/config/*"],
+      "@integrations/*": ["./src/integrations/*"]
     },
+    
+    // === LANGUAGE AND ENVIRONMENT ===
+    // Target modern JavaScript features (ES2022 includes top-level await, class fields, etc.)
     "target": "ES2022",
+    // Use ESNext module system for Vite
     "module": "ESNext",
+    // Library files to include (DOM for browser APIs, ES2022 for modern JS)
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    // JSX configuration for React 17+ automatic runtime
+    "jsx": "react-jsx",
+    
+    // === MODULE CONFIGURATION ===
+    // Use 'bundler' for Vite/esbuild/webpack 5+
     "moduleResolution": "bundler",
+    // Allow importing TypeScript files directly (Vite handles this)
+    "allowImportingTsExtensions": true,
+    // Ensure each file is treated as a separate module
+    "isolatedModules": true,
+    // Force TypeScript to detect all modules
+    "moduleDetection": "force",
+    // Don't emit files (Vite handles this)
+    "noEmit": true,
+    
+    // === INTEROPERABILITY ===
+    // Allow default imports from modules without default exports
     "allowSyntheticDefaultImports": true,
+    // Enable interoperability between CommonJS and ES Modules
     "esModuleInterop": true,
-    "noImplicitAny": false,
-    "noUnusedParameters": false,
-    "skipLibCheck": true,
+    // Allow importing JSON files as modules
+    "resolveJsonModule": true,
+    // Use defineProperty for class fields (standard behavior)
+    "useDefineForClassFields": true,
+    // Allow JavaScript files in the project
     "allowJs": true,
+    // Enable type checking for JavaScript files
+    "checkJs": false,
+    
+    // === TYPE CHECKING (Balanced for Development) ===
+    // Disable strict mode for faster development (enable for production)
+    "strict": false,
+    // Allow 'any' type (helpful during development)
+    "noImplicitAny": false,
+    // Don't error on unused variables
     "noUnusedLocals": false,
+    // Don't error on unused parameters
+    "noUnusedParameters": false,
+    // Allow null/undefined checks
     "strictNullChecks": false,
-    "types": ["vite/client"]
+    // Allow implicit 'this' any
+    "noImplicitThis": false,
+    // Don't check function types strictly
+    "strictFunctionTypes": false,
+    // Don't strictly check bind, call, apply
+    "strictBindCallApply": false,
+    // Allow property initialization in constructors
+    "strictPropertyInitialization": false,
+    
+    // === ERROR HANDLING ===
+    // Allow fallthrough cases in switch statements
+    "noFallthroughCasesInSwitch": false,
+    // Don't force return types on getters/setters
+    "noImplicitReturns": false,
+    // Don't error on unreachable code
+    "allowUnreachableCode": true,
+    // Don't error on unused labels
+    "allowUnusedLabels": true,
+    
+    // === PERFORMANCE ===
+    // Skip type checking of declaration files for faster builds
+    "skipLibCheck": true,
+    // Skip checking default library declaration files
+    "skipDefaultLibCheck": true,
+    // Enable incremental compilation for faster rebuilds
+    "incremental": true,
+    // Store build information
+    "tsBuildInfoFile": ".tsbuildinfo",
+    
+    // === OUTPUT CONFIGURATION ===
+    // Generate source maps for debugging
+    "sourceMap": true,
+    // Include source in source maps
+    "inlineSources": false,
+    // Generate declaration files (for libraries)
+    "declaration": false,
+    // Generate declaration map files
+    "declarationMap": false,
+    
+    // === ADVANCED OPTIONS ===
+    // Preserve const enums (don't inline them)
+    "preserveConstEnums": true,
+    // Remove comments from output
+    "removeComments": false,
+    // Don't emit on error
+    "noEmitOnError": false,
+    // Force consistent casing in file names
+    "forceConsistentCasingInFileNames": true,
+    
+    // === EXPERIMENTAL OPTIONS ===
+    // Enable experimental decorators (if using)
+    "experimentalDecorators": true,
+    // Emit decorator metadata (if using)
+    "emitDecoratorMetadata": true,
+    
+    // === TYPE ROOTS AND TYPES ===
+    // Specify type roots
+    "typeRoots": ["./node_modules/@types", "./src/types"],
+    // Specify types to include
+    "types": ["vite/client", "node"]
+  },
+  
+  // === WATCH OPTIONS ===
+  "watchOptions": {
+    // Use native file system events for watching
+    "watchFile": "useFsEvents",
+    "watchDirectory": "useFsEvents",
+    // Poll for changes on network drives
+    "fallbackPolling": "dynamicPriority",
+    // Exclude directories from watching
+    "excludeDirectories": ["**/node_modules", "dist"]
+  },
+  
+  // === TYPE ACQUISITION (for JavaScript projects) ===
+  "typeAcquisition": {
+    "enable": true,
+    "include": ["jest", "node"],
+    "exclude": ["jquery"]
   }
 }

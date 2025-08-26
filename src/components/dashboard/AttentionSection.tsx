@@ -1,18 +1,18 @@
 import React from 'react';
-import { Icon } from '@/components/ui/icon-library';
-import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Icon, type IconName } from '@/components/ui/icon-library';
 import { FadeIn } from '@/components/motion/FadeIn';
 
 interface AttentionItem {
   id: string;
-  type: 'expiration' | 'guardian' | 'sofia_suggestion' | 'milestone';
+  type: 'expiration' | 'guardian' | 'sofia_suggestion' | 'task' | 'security';
   title: string;
   description: string;
-  icon: string;
+  icon: IconName;
   actionText: string;
   onAction: () => void;
-  urgency?: 'low' | 'medium' | 'high';
+  urgency: 'high' | 'medium' | 'low';
 }
 
 interface AttentionSectionProps {

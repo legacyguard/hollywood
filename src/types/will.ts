@@ -277,6 +277,12 @@ export interface WillData extends Will {
 
   // Guardianship appointments for minor children
   guardianship?: GuardianshipAppointment[];
+
+  // Professional Review System Integration
+  professional_review?: ProfessionalReview;
+  trust_score?: TrustScore;
+  review_eligibility: boolean;
+  family_protection_level: 'basic' | 'standard' | 'premium' | 'comprehensive';
 }
 
 // Will Builder Types
@@ -352,6 +358,53 @@ export interface TemplateVariable {
   default_value?: any;
   options?: { value: string; label: string }[];
   validation_rules?: any;
+}
+
+// Professional Review System Types
+export interface ProfessionalReviewer {
+  id: string;
+  name: string;
+  credentials: string;
+  bar_number?: string;
+  jurisdiction: string;
+  specializations: string[];
+  rating: number; // 1-5 star rating
+  reviews_completed: number;
+  average_turnaround_hours: number;
+  profile_verified: boolean;
+}
+
+export interface ProfessionalReview {
+  id: string;
+  document_id: string;
+  reviewer: ProfessionalReviewer;
+  status: 'pending' | 'in_review' | 'approved' | 'needs_revision' | 'rejected';
+  review_date: string;
+  completion_date?: string;
+  certification_level: 'basic' | 'premium' | 'legal_certified';
+  review_notes?: string;
+  recommended_changes?: string[];
+  legal_compliance_score: number; // 0-100
+  family_protection_score: number; // 0-100
+  review_fee?: number;
+}
+
+export interface TrustScore {
+  overall_score: number; // 0-100
+  validation_score: number; // Technical validation
+  professional_score: number; // Professional review score
+  completeness_score: number; // Document completeness
+  family_protection_score: number; // How well it protects family
+  last_updated: string;
+  factors: TrustFactor[];
+}
+
+export interface TrustFactor {
+  name: string;
+  score: number;
+  weight: number;
+  description: string;
+  improvement_suggestion?: string;
 }
 
 // Export functions for will management

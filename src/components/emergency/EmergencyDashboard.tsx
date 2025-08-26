@@ -8,7 +8,7 @@ import { Icon } from '@/components/ui/icon-library';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { FadeIn } from '@/components/motion/FadeIn';
-import {
+import type {
   EmergencyDashboardData,
   EmergencyActivation,
   EmergencyDocument,
@@ -183,7 +183,7 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
         id: tc.id,
         message_title: tc.message_title,
         message_preview: tc.message_preview,
-        delivery_condition: tc.delivery_condition,
+        delivery_condition: tc.delivery_condition as 'ON_DATE' | 'ON_DEATH',
         access_token: tc.access_token,
         is_available: true,
         created_at: tc.created_at,

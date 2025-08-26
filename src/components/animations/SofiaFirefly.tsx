@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, useAnimation, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@clerk/clerk-react';
-import {
+import type {
   CommunicationStyle,
-  UserPreferences,
+  UserPreferences} from '@/types/user-preferences';
+import {
   defaultUserPreferences,
 } from '@/types/user-preferences';
 import { useFirefly } from '@/contexts/FireflyContext';

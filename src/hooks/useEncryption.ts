@@ -63,7 +63,7 @@ export function useEncryption() {
   const generateKey = async (password: string): Promise<CryptoKey> => {
     const encoder = new TextEncoder();
     const salt = crypto.getRandomValues(new Uint8Array(16));
-    
+
     const keyMaterial = await crypto.subtle.importKey(
       'raw',
       encoder.encode(password),
@@ -93,13 +93,13 @@ export function useEncryption() {
       const key = await generateKey(password);
       setEncryptionKey(key);
       secureStorage.setMemory('encryption_key', key, 30 * 60 * 1000); // 30 minutes
-      
+
       setState({
         isInitialized: true,
         isLocked: false,
         hasKey: true,
       });
-      
+
       return true;
     } catch (error) {
       console.error('Error initializing encryption:', error);
@@ -125,10 +125,10 @@ export function useEncryption() {
     try {
       const encoder = new TextEncoder();
       const dataBuffer = typeof data === 'string' ? encoder.encode(data) : data;
-      
+
       const iv = crypto.getRandomValues(new Uint8Array(12));
       const salt = crypto.getRandomValues(new Uint8Array(16));
-      
+
       const encrypted = await crypto.subtle.encrypt(
         { name: 'AES-GCM', iv },
         encryptionKey,
@@ -159,7 +159,7 @@ export function useEncryption() {
     try {
       const encryptedBuffer = Uint8Array.from(atob(encryptedData), c => c.charCodeAt(0));
       const ivBuffer = Uint8Array.from(atob(iv), c => c.charCodeAt(0));
-      
+
       const decrypted = await crypto.subtle.decrypt(
         { name: 'AES-GCM', iv: ivBuffer },
         encryptionKey,
@@ -185,7 +185,7 @@ export function useEncryption() {
     try {
       const arrayBuffer = await file.arrayBuffer();
       const encryptionResult = await encryptData(arrayBuffer);
-      
+
       if (!encryptionResult) {
         throw new Error('Failed to encrypt file');
       }
@@ -226,9 +226,9 @@ export function useEncryption() {
       const arrayBuffer = await encryptedFile.arrayBuffer();
       const encryptedData = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
       const decrypted = await decryptData(encryptedData, iv, salt);
-      
+
       if (!decrypted) return null;
-      
+
       return new File([decrypted], 'decrypted-file', { type: 'application/octet-stream' });
     } catch (error) {
       console.error('File decryption error:', error);
@@ -256,7 +256,7 @@ export function useEncryption() {
     isLocked: state.isLocked,
     hasKey: state.hasKey,
     isUnlocked: !state.isLocked && state.hasKey,
-    
+
     // Methods
     initializeEncryption,
     lockEncryption,

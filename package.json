@@ -23,6 +23,11 @@
     "test:e2e:ui": "cross-env NODE_ENV=test playwright test --ui",
     "test:e2e:debug": "cross-env NODE_ENV=test playwright test --debug",
     "test:e2e:headed": "cross-env NODE_ENV=test playwright test --headed",
+    "test:smoke": "playwright test --config=playwright.smoke.config.ts tests/minimal-smoke-test.spec.ts",
+    "test:smoke:headed": "playwright test --config=playwright.smoke.config.ts tests/minimal-smoke-test.spec.ts --headed",
+    "test:smoke:basic": "playwright test tests/smoke-basic.spec.ts",
+    "test:smoke:basic:headed": "playwright test tests/smoke-basic.spec.ts --headed",
+    "test:unit:smoke": "vitest run tests/unit/utils.smoke.test.ts",
     "test:journey": "cross-env NODE_ENV=test playwright test --config=playwright.journey.config.ts",
     "test:journey:ui": "cross-env NODE_ENV=test playwright test --config=playwright.journey.config.ts --ui",
     "test:journey:debug": "cross-env NODE_ENV=test playwright test --config=playwright.journey.config.ts --debug",
@@ -63,9 +68,9 @@
     "@radix-ui/react-toggle-group": "^1.1.10",
     "@radix-ui/react-tooltip": "^1.2.7",
     "@supabase/supabase-js": "^2.56.0",
-    "@tanstack/react-query": "^5.83.0",
+    "@tanstack/react-query": "^5.85.5",
     "@tanstack/react-table": "^8.21.3",
-    "@vercel/node": "^5.3.13",
+    "@vercel/node": "^5.3.15",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
@@ -86,7 +91,7 @@
     "react-dom": "^18.3.1",
     "react-dropzone": "^14.3.8",
     "react-helmet-async": "^2.0.5",
-    "react-hook-form": "^7.61.1",
+    "react-hook-form": "^7.62.0",
     "react-i18next": "^15.7.2",
     "react-markdown": "^10.1.0",
     "react-resizable-panels": "^2.1.9",
@@ -101,6 +106,10 @@
     "vaul": "^0.9.9",
     "zod": "^3.25.76",
     "zustand": "^5.0.8"
+  },
+  "overrides": {
+    "tailwindcss": "~3.4.17",
+    "react-router-dom": "~6.30.1"
   },
   "devDependencies": {
     "@clerk/testing": "^1.11.3",

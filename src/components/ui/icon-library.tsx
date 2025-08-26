@@ -276,7 +276,7 @@ export const IconMap = {
   checkCircle: CheckCircle,
   heart: Heart,
   calendar: Calendar,
-  
+
   // Additional icons
   brain: Brain,
   database: Database,

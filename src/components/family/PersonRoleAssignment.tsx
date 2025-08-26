@@ -58,7 +58,7 @@ export const PersonRoleAssignment: React.FC<PersonRoleAssignmentProps> = ({
 }) => {
   const [roles, setRoles] = useState<FamilyMember['roles']>({});
   const [heirPercentage, setHeirPercentage] = useState(0);
-  const [legacyMessage, setLegacyMessage] = useState('');
+  const [_legacyMessage, _setLegacyMessage] = useState('');
   const [guardianNotes, setGuardianNotes] = useState('');
   const [contactInfo, setContactInfo] = useState({
     email: '',
@@ -70,9 +70,11 @@ export const PersonRoleAssignment: React.FC<PersonRoleAssignmentProps> = ({
     if (person) {
       setRoles(person.roles || {});
       setHeirPercentage(person.roles.heirPercentage || 0);
-      setContactInfo(
-        person.contactInfo || { email: '', phone: '', address: '' }
-      );
+      setContactInfo({
+        email: person.contactInfo?.email || '',
+        phone: person.contactInfo?.phone || '',
+        address: person.contactInfo?.address || ''
+      });
     }
   }, [person]);
 
@@ -104,7 +106,7 @@ export const PersonRoleAssignment: React.FC<PersonRoleAssignmentProps> = ({
     if (!willData?.beneficiaries) return 0;
     return willData.beneficiaries
       .filter(b => b.id !== person.id)
-      .reduce((total, beneficiary) => total + (beneficiary.percentage || 0), 0);
+      .reduce((total, beneficiary) => total + (beneficiary.share_percentage || 0), 0);
   };
 
   const remainingPercentage = 100 - getTotalInheritanceAssigned();
@@ -146,7 +148,7 @@ export const PersonRoleAssignment: React.FC<PersonRoleAssignmentProps> = ({
         b =>
           b.relationship === 'child' &&
           new Date().getFullYear() -
-            new Date(b.dateOfBirth || '').getFullYear() <
+            new Date(b.date_of_birth || '').getFullYear() <
             18
       );
 

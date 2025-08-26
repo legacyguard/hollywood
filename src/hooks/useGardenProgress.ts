@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { useSupabaseWithClerk } from '@/integrations/supabase/client';
+import type {
+  SerenityMilestone} from '@/lib/path-of-serenity';
 import {
-  SerenityMilestone,
   getSerenityMilestones,
 } from '@/lib/path-of-serenity';
 

@@ -101,11 +101,15 @@ export default function EnhancedDocumentUploader({
         ocr_text: processedDocument?.ocrResult.text || null,
         ocr_confidence: processedDocument?.ocrResult.confidence || null,
         extracted_entities:
-          processedDocument?.ocrResult.metadata.extractedEntities || null,
+          processedDocument?.ocrResult.metadata.extractedEntities
+            ? JSON.stringify(processedDocument.ocrResult.metadata.extractedEntities)
+            : null,
         classification_confidence:
           processedDocument?.classification.confidence || null,
-        extracted_metadata: processedDocument?.extractedMetadata || null,
-        processing_status: processedDocument?.processingStatus || 'manual',
+        extracted_metadata: processedDocument?.extractedMetadata
+          ? JSON.stringify(processedDocument.extractedMetadata)
+          : null,
+        processing_status: (processedDocument?.processingStatus as 'manual' | 'completed' | 'pending' | 'processing' | 'failed') || 'manual',
       };
 
       // Save to database

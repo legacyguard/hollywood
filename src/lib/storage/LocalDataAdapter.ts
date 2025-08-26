@@ -1,6 +1,3 @@
-import { secureStorage } from '../security/secure-storage';
-import { SecureEncryptionService } from '../encryption-v2';
-
 export interface StorageItem {
   id: string;
   category: string;
@@ -25,7 +22,6 @@ export type SyncMode = 'local-only' | 'hybrid' | 'full-sync';
 
 class LocalDataAdapter {
   private static instance: LocalDataAdapter;
-  private encryption: SecureEncryptionService;
   private readonly DB_NAME = 'LegacyGuardLocal';
   private readonly STORE_NAME = 'encrypted_data';
   private readonly AUDIT_STORE = 'audit_log';
@@ -36,7 +32,6 @@ class LocalDataAdapter {
   private syncTimer: NodeJS.Timeout | null = null;
 
   private constructor() {
-    this.encryption = SecureEncryptionService.getInstance();
     this.initializeDB().catch(console.error);
     this.setupActivityMonitoring();
   }
@@ -109,47 +104,40 @@ class LocalDataAdapter {
   public async store(category: string, data: any): Promise<StorageItem> {
     if (!this.db) await this.initializeDB();
 
-    const id = crypto.randomUUID();
-    const now = new Date().toISOString();
+    return new Promise((resolve, reject) => {
+      const id = crypto.randomUUID();
+      const now = new Date().toISOString();
 
-    let encryptedData = data;
-    let isEncrypted = false;
+      const item: StorageItem = {
+        id,
+        category,
+        data,
+        metadata: {
+          createdAt: now,
+          updatedAt: now,
+          version: 1,
+          isEncrypted: false,
+          syncStatus: this.syncMode === 'local-only' ? 'local' : 'pending',
+        },
+      };
 
-    // Encrypt data if keys are available
-    if (await this.encryption.areKeysUnlocked()) {
-      const encrypted = await this.encryption.encryptText(JSON.stringify(data));
-      if (encrypted) {
-        encryptedData = encrypted;
-        isEncrypted = true;
-      }
-    }
+      const tx = this.db!.transaction(this.STORE_NAME, 'readwrite');
+      const store = tx.objectStore(this.STORE_NAME);
+      const request = store.put(item);
 
-    const item: StorageItem = {
-      id,
-      category,
-      data: encryptedData,
-      metadata: {
-        createdAt: now,
-        updatedAt: now,
-        version: 1,
-        isEncrypted,
-        syncStatus: this.syncMode === 'local-only' ? 'local' : 'pending',
-      },
-    };
+      request.onsuccess = async () => {
+        // Log the event
+        await this.logAuditEvent(category, 'create', { id });
 
-    const tx = this.db!.transaction(this.STORE_NAME, 'readwrite');
-    const store = tx.objectStore(this.STORE_NAME);
-    await store.put(item);
+        // Trigger sync if needed
+        if (this.syncMode !== 'local-only') {
+          this.triggerSync();
+        }
 
-    // Log the event
-    await this.logAuditEvent(category, 'create', { id });
-
-    // Trigger sync if needed
-    if (this.syncMode !== 'local-only') {
-      this.triggerSync();
-    }
-
-    return item;
+        resolve(item);
+      };
+      request.onerror = () => reject(request.error);
+    });
   }
 
   /**
@@ -158,24 +146,14 @@ class LocalDataAdapter {
   public async retrieve(id: string): Promise<StorageItem | null> {
     if (!this.db) await this.initializeDB();
 
-    const tx = this.db!.transaction(this.STORE_NAME, 'readonly');
-    const store = tx.objectStore(this.STORE_NAME);
-    const item = await store.get(id);
+    return new Promise((resolve, reject) => {
+      const tx = this.db!.transaction(this.STORE_NAME, 'readonly');
+      const store = tx.objectStore(this.STORE_NAME);
+      const request = store.get(id);
 
-    if (!item) return null;
-
-    // Decrypt if encrypted and keys available
-    if (
-      item.metadata.isEncrypted &&
-      (await this.encryption.areKeysUnlocked())
-    ) {
-      const decrypted = await this.encryption.decryptText(item.data);
-      if (decrypted) {
-        item.data = JSON.parse(decrypted);
-      }
-    }
-
-    return item;
+      request.onsuccess = () => resolve(request.result || null);
+      request.onerror = () => reject(request.error);
+    });
   }
 
   /**
@@ -184,48 +162,36 @@ class LocalDataAdapter {
   public async query(params: StorageQuery): Promise<StorageItem[]> {
     if (!this.db) await this.initializeDB();
 
-    const tx = this.db!.transaction(this.STORE_NAME, 'readonly');
-    const store = tx.objectStore(this.STORE_NAME);
-    const categoryIndex = store.index('category');
+    return new Promise((resolve, reject) => {
+      const tx = this.db!.transaction(this.STORE_NAME, 'readonly');
+      const store = tx.objectStore(this.STORE_NAME);
+      const categoryIndex = store.index('category');
+      const request = categoryIndex.getAll(params.category);
 
-    const items = await categoryIndex.getAll(params.category);
+      request.onsuccess = () => {
+        let items = request.result;
 
-    // Apply filters if any
-    let filtered = items;
-    if (params.filter) {
-      filtered = items.filter(item => {
-        for (const [key, value] of Object.entries(params.filter!)) {
-          if (item.data[key] !== value) return false;
+        // Apply filters if any
+        if (params.filter) {
+          items = items.filter(item => {
+            for (const [key, value] of Object.entries(params.filter!)) {
+              if (item.data[key] !== value) return false;
+            }
+            return true;
+          });
         }
-        return true;
-      });
-    }
 
-    // Apply pagination
-    if (params.offset != null || params.limit != null) {
-      const start = params.offset || 0;
-      const end = params.limit ? start + params.limit : undefined;
-      filtered = filtered.slice(start, end);
-    }
-
-    // Decrypt items if possible
-    const keysUnlocked = await this.encryption.areKeysUnlocked();
-    const decrypted = await Promise.all(
-      filtered.map(async item => {
-        if (item.metadata.isEncrypted && keysUnlocked) {
-          const decrypted = await this.encryption.decryptText(item.data);
-          if (decrypted) {
-            return {
-              ...item,
-              data: JSON.parse(decrypted),
-            };
-          }
+        // Apply pagination
+        if (params.offset != null || params.limit != null) {
+          const start = params.offset || 0;
+          const end = params.limit ? start + params.limit : undefined;
+          items = items.slice(start, end);
         }
-        return item;
-      })
-    );
 
-    return decrypted;
+        resolve(items);
+      };
+      request.onerror = () => reject(request.error);
+    });
   }
 
   /**
@@ -238,43 +204,35 @@ class LocalDataAdapter {
     const existing = await this.retrieve(id);
     if (!existing) return null;
 
-    let encryptedData = data;
-    let isEncrypted = false;
+    return new Promise((resolve, reject) => {
+      const updated: StorageItem = {
+        ...existing,
+        data,
+        metadata: {
+          ...existing.metadata,
+          updatedAt: new Date().toISOString(),
+          version: existing.metadata.version + 1,
+          syncStatus: this.syncMode === 'local-only' ? 'local' : 'pending',
+        },
+      };
 
-    // Encrypt data if keys are available
-    if (await this.encryption.areKeysUnlocked()) {
-      const encrypted = await this.encryption.encryptText(JSON.stringify(data));
-      if (encrypted) {
-        encryptedData = encrypted;
-        isEncrypted = true;
-      }
-    }
+      const tx = this.db!.transaction(this.STORE_NAME, 'readwrite');
+      const store = tx.objectStore(this.STORE_NAME);
+      const request = store.put(updated);
 
-    const updated: StorageItem = {
-      ...existing,
-      data: encryptedData,
-      metadata: {
-        ...existing.metadata,
-        updatedAt: new Date().toISOString(),
-        version: existing.metadata.version + 1,
-        isEncrypted,
-        syncStatus: this.syncMode === 'local-only' ? 'local' : 'pending',
-      },
-    };
+      request.onsuccess = async () => {
+        // Log the event
+        await this.logAuditEvent(existing.category, 'update', { id });
 
-    const tx = this.db!.transaction(this.STORE_NAME, 'readwrite');
-    const store = tx.objectStore(this.STORE_NAME);
-    await store.put(updated);
+        // Trigger sync if needed
+        if (this.syncMode !== 'local-only') {
+          this.triggerSync();
+        }
 
-    // Log the event
-    await this.logAuditEvent(existing.category, 'update', { id });
-
-    // Trigger sync if needed
-    if (this.syncMode !== 'local-only') {
-      this.triggerSync();
-    }
-
-    return updated;
+        resolve(updated);
+      };
+      request.onerror = () => reject(request.error);
+    });
   }
 
   /**
@@ -286,49 +244,42 @@ class LocalDataAdapter {
     const existing = await this.retrieve(id);
     if (!existing) return;
 
-    const tx = this.db!.transaction(this.STORE_NAME, 'readwrite');
-    const store = tx.objectStore(this.STORE_NAME);
-    await store.delete(id);
+    return new Promise((resolve, reject) => {
+      const tx = this.db!.transaction(this.STORE_NAME, 'readwrite');
+      const store = tx.objectStore(this.STORE_NAME);
+      const request = store.delete(id);
 
-    // Log the event
-    await this.logAuditEvent(existing.category, 'delete', { id });
+      request.onsuccess = async () => {
+        // Log the event
+        await this.logAuditEvent(existing.category, 'delete', { id });
 
-    // Trigger sync if needed
-    if (this.syncMode !== 'local-only') {
-      this.triggerSync();
-    }
+        // Trigger sync if needed
+        if (this.syncMode !== 'local-only') {
+          this.triggerSync();
+        }
+
+        resolve();
+      };
+      request.onerror = () => reject(request.error);
+    });
   }
 
   /**
-   * Export all data (requires unlocked session)
+   * Export all data
    */
   public async exportData(): Promise<string | null> {
     if (!this.db) await this.initializeDB();
 
-    // Verify session is unlocked
-    if (!(await this.encryption.areKeysUnlocked())) {
-      throw new Error('Session must be unlocked to export data');
-    }
+    return new Promise((resolve, reject) => {
+      const tx = this.db!.transaction(this.STORE_NAME, 'readonly');
+      const store = tx.objectStore(this.STORE_NAME);
+      const request = store.getAll();
 
-    const tx = this.db!.transaction(this.STORE_NAME, 'readonly');
-    const store = tx.objectStore(this.STORE_NAME);
-    const items = await store.getAll();
-
-    // Decrypt all items
-    const decrypted = await Promise.all(
-      items.map(async item => {
-        if (item.metadata.isEncrypted) {
-          const decryptedData = await this.encryption.decryptText(item.data);
-          return {
-            ...item,
-            data: decryptedData ? JSON.parse(decryptedData) : item.data,
-          };
-        }
-        return item;
-      })
-    );
-
-    return JSON.stringify(decrypted, null, 2);
+      request.onsuccess = () => {
+        resolve(JSON.stringify(request.result, null, 2));
+      };
+      request.onerror = () => reject(request.error);
+    });
   }
 
   /**
@@ -341,17 +292,22 @@ class LocalDataAdapter {
   ): Promise<void> {
     if (!this.db) await this.initializeDB();
 
-    const event = {
-      timestamp: new Date().toISOString(),
-      category,
-      action,
-      details,
-      syncMode: this.syncMode,
-    };
+    return new Promise((resolve, reject) => {
+      const event = {
+        timestamp: new Date().toISOString(),
+        category,
+        action,
+        details,
+        syncMode: this.syncMode,
+      };
 
-    const tx = this.db!.transaction(this.AUDIT_STORE, 'readwrite');
-    const store = tx.objectStore(this.AUDIT_STORE);
-    await store.add(event);
+      const tx = this.db!.transaction(this.AUDIT_STORE, 'readwrite');
+      const store = tx.objectStore(this.AUDIT_STORE);
+      const request = store.add(event);
+
+      request.onsuccess = () => resolve();
+      request.onerror = () => reject(request.error);
+    });
   }
 
   /**
@@ -385,9 +341,6 @@ class LocalDataAdapter {
    * Lock the session
    */
   private async lock(): Promise<void> {
-    // Clear encryption keys
-    await this.encryption.lockKeys();
-
     // Stop sync
     this.stopPeriodicSync();
 

@@ -29,7 +29,7 @@ class SecureStorage {
    */
   async getMemory<T>(key: string): Promise<T | null> {
     const item = this.memoryStorage.get(key);
-    
+
     if (!item) {
       return null;
     }
@@ -74,7 +74,7 @@ class SecureStorage {
     try {
       const storageKey = this.STORAGE_PREFIX + key;
       const stored = localStorage.getItem(storageKey);
-      
+
       if (!stored) {
         return null;
       }
@@ -107,7 +107,7 @@ class SecureStorage {
    */
   clear(): void {
     this.memoryStorage.clear();
-    
+
     // Clear all items with our prefix from localStorage
     const keysToRemove: string[] = [];
     for (let i = 0; i < localStorage.length; i++) {
@@ -131,7 +131,7 @@ class SecureStorage {
       }
       return true;
     }
-    
+
     return localStorage.getItem(this.STORAGE_PREFIX + key) !== null;
   }
 
@@ -141,14 +141,14 @@ class SecureStorage {
   getAllKeys(): string[] {
     const memoryKeys = Array.from(this.memoryStorage.keys());
     const localKeys: string[] = [];
-    
+
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
       if (key?.startsWith(this.STORAGE_PREFIX)) {
         localKeys.push(key.replace(this.STORAGE_PREFIX, ''));
       }
     }
-    
+
     return [...new Set([...memoryKeys, ...localKeys])];
   }
 

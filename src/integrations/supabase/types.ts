@@ -510,6 +510,113 @@ export interface Database {
         };
         Relationships: [];
       };
+      professional_reviewers: {
+        Row: {
+          id: string;
+          name: string;
+          credentials: string;
+          bar_number: string | null;
+          jurisdiction: string;
+          specializations: string[];
+          rating: number;
+          reviews_completed: number;
+          average_turnaround_hours: number;
+          profile_verified: boolean;
+          contact_email: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          credentials: string;
+          bar_number?: string | null;
+          jurisdiction: string;
+          specializations?: string[];
+          rating?: number;
+          reviews_completed?: number;
+          average_turnaround_hours?: number;
+          profile_verified?: boolean;
+          contact_email: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          name?: string;
+          credentials?: string;
+          bar_number?: string | null;
+          jurisdiction?: string;
+          specializations?: string[];
+          rating?: number;
+          reviews_completed?: number;
+          average_turnaround_hours?: number;
+          profile_verified?: boolean;
+          contact_email?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      professional_reviews: {
+        Row: {
+          id: string;
+          document_id: string;
+          reviewer_id: string;
+          status: 'pending' | 'in_review' | 'approved' | 'needs_revision' | 'rejected';
+          review_date: string;
+          completion_date: string | null;
+          certification_level: 'basic' | 'premium' | 'legal_certified';
+          review_notes: string | null;
+          recommended_changes: string[] | null;
+          legal_compliance_score: number;
+          family_protection_score: number;
+          review_fee: number | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          document_id: string;
+          reviewer_id: string;
+          status?: 'pending' | 'in_review' | 'approved' | 'needs_revision' | 'rejected';
+          review_date?: string;
+          completion_date?: string | null;
+          certification_level?: 'basic' | 'premium' | 'legal_certified';
+          review_notes?: string | null;
+          recommended_changes?: string[] | null;
+          legal_compliance_score?: number;
+          family_protection_score?: number;
+          review_fee?: number | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          document_id?: string;
+          reviewer_id?: string;
+          status?: 'pending' | 'in_review' | 'approved' | 'needs_revision' | 'rejected';
+          review_date?: string;
+          completion_date?: string | null;
+          certification_level?: 'basic' | 'premium' | 'legal_certified';
+          review_notes?: string | null;
+          recommended_changes?: string[] | null;
+          legal_compliance_score?: number;
+          family_protection_score?: number;
+          review_fee?: number | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'professional_reviews_reviewer_id_fkey';
+            columns: ['reviewer_id'];
+            isOneToOne: false;
+            referencedRelation: 'professional_reviewers';
+            referencedColumns: ['id'];
+          }
+        ];
+      };
     };
     Views: {
       [_ in never]: never;

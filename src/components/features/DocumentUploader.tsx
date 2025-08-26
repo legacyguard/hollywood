@@ -90,14 +90,12 @@ export const DocumentUploader = () => {
         throw new Error('Failed to encrypt file');
       }
 
-      const { encryptedData, nonce, metadata } = encryptionResult;
+      const { encryptedFile, metadata } = encryptionResult;
 
       setUploadProgress(50);
 
-      // Create encrypted blob from Uint8Array
-      const encryptedBlob = new Blob([encryptedData], {
-        type: 'application/octet-stream',
-      });
+      // Use the encrypted blob directly
+      const encryptedBlob = encryptedFile;
 
       // Generate unique file name
       const timestamp = Date.now();
@@ -106,7 +104,7 @@ export const DocumentUploader = () => {
 
       setUploadProgress(70);
 
-      // Upload to Supabase Storage s autentifikovaným klientom
+      // Upload to Supabase Storage with authenticated client
       const { data, error } = await supabase.storage
         .from('user_documents')
         .upload(filePath, encryptedBlob, {
@@ -129,7 +127,7 @@ export const DocumentUploader = () => {
       // Save metadata to database
       // Pre development posielame user_id explicitne
       // Store nonce with document for decryption
-      const nonceBase64 = btoa(String.fromCharCode(...nonce));
+      const nonceBase64 = btoa(String.fromCharCode(...metadata.nonce));
 
       const { error: dbError } = await supabase.from('documents').insert({
         user_id: userId, // Explicitne posielame Clerk user ID

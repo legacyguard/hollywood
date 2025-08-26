@@ -188,7 +188,7 @@ export const useWillValidation = ({
       case 'Czech-Republic':
         return {
           forcedHeirs:
-            'Czech law protects reserved heirs (nepominutelní dědici) with minimum inheritance rights.',
+            'Czech law protects reserved heirs (forced heirs) with minimum inheritance rights.',
           witnesses:
             'Handwritten wills need no witnesses, but typed wills require 2 witnesses.',
           revocation: 'Previous wills should be explicitly revoked.',

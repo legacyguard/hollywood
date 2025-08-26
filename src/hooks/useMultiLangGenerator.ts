@@ -95,7 +95,7 @@ export function useMultiLangGenerator() {
 
       // Basic validation - check if required phrases exist
       for (const phrase of requiredPhrases) {
-        const translatedTerm = getLegalTerm(phrase, jurisdiction, language);
+        const translatedTerm = getLegalTerm(phrase, jurisdiction, _language);
         if (translatedTerm && !translation.includes(translatedTerm)) {
           console.warn(`Missing required legal phrase: ${phrase}`);
           return false;
@@ -216,8 +216,8 @@ function formatCurrency(content: string, currency: string): string {
     EUR: '€',
     USD: '$',
     GBP: '£',
-    CZK: 'Kč',
-    PLN: 'zł',
+    CZK: 'CZK',
+    PLN: 'PLN',
   };
 
   const symbol = currencySymbols[currency] || currency;

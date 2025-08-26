@@ -1,11 +1,12 @@
+import type {
+  ReactNode} from 'react';
 import React, {
   createContext,
   useContext,
   useState,
-  useCallback,
-  ReactNode,
+  useCallback
 } from 'react';
-import { CommunicationStyle } from '@/types/user-preferences';
+import type { CommunicationStyle } from '@/types/user-preferences';
 
 export type FireflyEventType =
   | 'milestone'

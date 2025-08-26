@@ -8,9 +8,10 @@ import { nanoid } from 'nanoid';
 // Encryption key derivation
 async function deriveKey(password: string, salt: Uint8Array): Promise<CryptoKey> {
   const encoder = new TextEncoder();
+  const passwordBuffer = encoder.encode(password);
   const keyMaterial = await crypto.subtle.importKey(
     'raw',
-    encoder.encode(password),
+    passwordBuffer as BufferSource,
     { name: 'PBKDF2' },
     false,
     ['deriveBits', 'deriveKey']
@@ -19,7 +20,7 @@ async function deriveKey(password: string, salt: Uint8Array): Promise<CryptoKey>
   return crypto.subtle.deriveKey(
     {
       name: 'PBKDF2',
-      salt,
+      salt: salt as BufferSource,
       iterations: 100000,
       hash: 'SHA-256'
     },
@@ -42,7 +43,7 @@ async function encryptData(data: string, password: string): Promise<{
   const key = await deriveKey(password, salt);
 
   const encrypted = await crypto.subtle.encrypt(
-    { name: 'AES-GCM', iv },
+    { name: 'AES-GCM', iv: iv as BufferSource },
     key,
     encoder.encode(data)
   );
@@ -59,7 +60,7 @@ async function decryptData(
 ): Promise<string> {
   const key = await deriveKey(password, salt);
   const decrypted = await crypto.subtle.decrypt(
-    { name: 'AES-GCM', iv },
+    { name: 'AES-GCM', iv: iv as BufferSource },
     key,
     encrypted
   );
