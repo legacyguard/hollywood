@@ -1,8 +1,12 @@
 import { test, expect } from '@playwright/test';
+import { setupClerkTestingToken } from '@clerk/testing/playwright';
 
 test.describe('Diagnostic Tests', () => {
   test('should load the application', async ({ page }) => {
     console.log('Starting diagnostic test...');
+    
+    // Setup Clerk testing token
+    await setupClerkTestingToken({ page });
     
     // Set a shorter timeout for this test
     test.setTimeout(15000);
@@ -55,6 +59,9 @@ test.describe('Diagnostic Tests', () => {
   
   test('should detect Clerk authentication', async ({ page }) => {
     console.log('Testing Clerk detection...');
+    
+    // Setup Clerk testing token
+    await setupClerkTestingToken({ page });
     
     await page.goto('http://127.0.0.1:8080');
     

@@ -1,4 +1,17 @@
 import { defineConfig, devices } from '@playwright/test';
+import * as dotenv from 'dotenv';
+import * as path from 'path';
+
+// Load environment variables based on NODE_ENV
+if (process.env.NODE_ENV === 'test') {
+  dotenv.config({ path: path.resolve(__dirname, '.env.test') });
+} else {
+  dotenv.config({ path: path.resolve(__dirname, '.env.local') });
+}
+
+// Map VITE_ prefixed variables to standard Clerk variables for testing
+process.env.CLERK_PUBLISHABLE_KEY = process.env.VITE_CLERK_PUBLISHABLE_KEY || process.env.CLERK_PUBLISHABLE_KEY;
+process.env.CLERK_SECRET_KEY = process.env.VITE_CLERK_SECRET_KEY || process.env.CLERK_SECRET_KEY;
 
 /**
  * Playwright configuration specifically for the full user journey tests
@@ -7,6 +20,8 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
   testDir: './tests',
   testMatch: '**/full-user-journey.spec.ts',
+  /* Global setup file */
+  globalSetup: require.resolve('./tests/global.setup.ts'),
 
   /* Run tests in serial mode for journey tests */
   fullyParallel: false,

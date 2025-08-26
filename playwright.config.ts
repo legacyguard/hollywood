@@ -1,18 +1,29 @@
 import { defineConfig, devices } from '@playwright/test';
+import * as dotenv from 'dotenv';
+import * as path from 'path';
 
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
  */
-// import dotenv from 'dotenv';
-// import path from 'path';
-// dotenv.config({ path: path.resolve(__dirname, '.env') });
+// Load environment variables based on NODE_ENV
+if (process.env.NODE_ENV === 'test') {
+  dotenv.config({ path: path.resolve(__dirname, '.env.test') });
+} else {
+  dotenv.config({ path: path.resolve(__dirname, '.env.local') });
+}
+
+// Map VITE_ prefixed variables to standard Clerk variables for testing
+process.env.CLERK_PUBLISHABLE_KEY = process.env.VITE_CLERK_PUBLISHABLE_KEY || process.env.CLERK_PUBLISHABLE_KEY;
+process.env.CLERK_SECRET_KEY = process.env.VITE_CLERK_SECRET_KEY || process.env.CLERK_SECRET_KEY;
 
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
   testDir: './tests',
+  /* Global setup file */
+  globalSetup: require.resolve('./tests/global.setup.ts'),
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */

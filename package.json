@@ -13,12 +13,13 @@
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
     "test:ocr": "node scripts/test-ocr.cjs",
-    "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui",
-    "test:e2e:debug": "playwright test --debug",
-    "test:journey": "playwright test --config=playwright.journey.config.ts",
-    "test:journey:ui": "playwright test --config=playwright.journey.config.ts --ui",
-    "test:journey:debug": "playwright test --config=playwright.journey.config.ts --debug",
+    "test:e2e": "cross-env NODE_ENV=test playwright test",
+    "test:e2e:ui": "cross-env NODE_ENV=test playwright test --ui",
+    "test:e2e:debug": "cross-env NODE_ENV=test playwright test --debug",
+    "test:e2e:headed": "cross-env NODE_ENV=test playwright test --headed",
+    "test:journey": "cross-env NODE_ENV=test playwright test --config=playwright.journey.config.ts",
+    "test:journey:ui": "cross-env NODE_ENV=test playwright test --config=playwright.journey.config.ts --ui",
+    "test:journey:debug": "cross-env NODE_ENV=test playwright test --config=playwright.journey.config.ts --debug",
     "test:journey:report": "playwright show-report playwright-report/journey"
   },
   "dependencies": {
@@ -94,6 +95,7 @@
     "zustand": "^5.0.8"
   },
   "devDependencies": {
+    "@clerk/testing": "^1.11.3",
     "@eslint/js": "^9.32.0",
     "@playwright/test": "^1.55.0",
     "@tailwindcss/typography": "^0.5.16",
@@ -106,6 +108,7 @@
     "@vitejs/plugin-react-swc": "^3.11.0",
     "@vitest/ui": "^3.2.4",
     "autoprefixer": "^10.4.21",
+    "cross-env": "^10.0.0",
     "dotenv": "^17.2.1",
     "eslint": "^9.32.0",
     "eslint-plugin-react-hooks": "^5.2.0",
