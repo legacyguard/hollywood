@@ -20,7 +20,7 @@ import { useGardenProgress } from '@/hooks/useGardenProgress';
 import { TrustScoreDisplay } from '@/components/trust/TrustScoreDisplay';
 import { calculateUserTrustScore } from '@/lib/trust-score/trust-score-calculator';
 import { EmailImportButton } from '@/components/features/EmailImportButton';
-import { BulkImportResult } from '@/types/gmail';
+import type { BulkImportResult } from '@/types/gmail';
 import { useState } from 'react';
 
 export function DashboardContent() {
@@ -51,9 +51,11 @@ export function DashboardContent() {
 
   // Handle email import completion
   const handleEmailImportComplete = (result: BulkImportResult) => {
-    console.log('Email import completed:', result);
     // In production, this would update the user's document count and trust score
     // Could also show a success toast or update the dashboard metrics
+    if (result.documents.length > 0) {
+      // Update dashboard metrics based on import results
+    }
   };
 
   // Mock metrics data - in production, this would come from your API

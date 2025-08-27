@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Mail, Upload, X, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -12,7 +12,7 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 import { EmailImportWizard } from '@/components/email-import/EmailImportWizard';
 import { BulkImportSummary } from '@/components/email-import/BulkImportSummary';
-import { BulkImportResult } from '@/types/gmail';
+import type { BulkImportResult } from '@/types/gmail';
 import { useABTest } from '@/lib/ab-testing/ab-testing-system';
 import { useUser } from '@clerk/clerk-react';
 
@@ -24,7 +24,7 @@ interface EmailImportButtonProps {
 export function EmailImportButton({ onImportComplete, className }: EmailImportButtonProps) {
   const { user } = useUser();
   const { isVariant } = useABTest('email_import_cta_v1', user?.id);
-  
+
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const [importResult, setImportResult] = useState<BulkImportResult | null>(null);
   const [showSummary, setShowSummary] = useState(false);
@@ -73,10 +73,10 @@ export function EmailImportButton({ onImportComplete, className }: EmailImportBu
           >
             <Mail className="h-6 w-6" />
           </Button>
-          
+
           {/* Pulse animation for attention */}
           <div className="absolute inset-0 rounded-full bg-blue-400 animate-ping opacity-20" />
-          
+
           {/* Tooltip */}
           <div className="absolute bottom-16 right-0 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 hover:opacity-100 transition-opacity">
             Import from Gmail
@@ -111,13 +111,13 @@ export function EmailImportButton({ onImportComplete, className }: EmailImportBu
           {/* Background decoration */}
           <div className="absolute top-0 right-0 w-32 h-32 bg-blue-100 rounded-full -translate-y-16 translate-x-16 opacity-30" />
           <div className="absolute bottom-0 left-0 w-24 h-24 bg-purple-100 rounded-full translate-y-12 -translate-x-12 opacity-30" />
-          
+
           <div className="relative z-10 flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
                 <Mail className="h-6 w-6 text-white" />
               </div>
-              
+
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   <h3 className="font-semibold text-gray-900">Import from Gmail</h3>
@@ -131,7 +131,7 @@ export function EmailImportButton({ onImportComplete, className }: EmailImportBu
                 </p>
               </div>
             </div>
-            
+
             <Button
               onClick={() => setIsWizardOpen(true)}
               className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-2 shadow-md hover:shadow-lg transition-all"
@@ -179,7 +179,7 @@ function EmailImportDialog({ isOpen, onClose, onImportComplete }: EmailImportDia
           >
             <X className="h-4 w-4" />
           </Button>
-          
+
           <div className="p-6">
             <EmailImportWizard
               onComplete={onImportComplete}
@@ -200,11 +200,11 @@ interface ImportSummaryDialogProps {
   onClose: () => void;
 }
 
-function ImportSummaryDialog({ 
-  isOpen, 
-  result, 
-  onViewDocuments, 
-  onClose 
+function ImportSummaryDialog({
+  isOpen,
+  result,
+  onViewDocuments,
+  onClose
 }: ImportSummaryDialogProps) {
   if (!result) return null;
 
@@ -220,7 +220,7 @@ function ImportSummaryDialog({
           >
             <X className="h-4 w-4" />
           </Button>
-          
+
           <div className="p-6">
             <BulkImportSummary
               result={result}

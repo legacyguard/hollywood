@@ -70,10 +70,10 @@ export function ProfessionalReviewButton({
   className
 }: ProfessionalReviewButtonProps) {
   const { variant, trackConversion } = useABTest('professional_review_cta_v1');
-  const { 
+  const {
     trackReviewButtonViewed,
     trackReviewButtonClicked,
-    trackReviewFlowStarted 
+    trackReviewFlowStarted
   } = useProfessionalReviewTracking();
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
