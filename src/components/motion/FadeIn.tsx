@@ -39,7 +39,7 @@ export const FadeIn = ({
       variants={fadeInAnimation}
       initial='initial'
       animate='animate'
-      custom={{ duration, delay }}
+      custom={ duration, delay }
     >
       {children}
     </motion.div>

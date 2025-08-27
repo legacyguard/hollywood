@@ -12,7 +12,7 @@ import { Progress } from '../ui/progress';
 import { Separator } from '../ui/separator';
 import { Calendar } from '../ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
-import { FolderOpen, Plus, Users, Clock, CheckCircle, AlertCircle, Calendar as CalendarIcon, Target, TrendingUp, FileText, Archive, Filter, MoreVertical, Edit3, Trash2, Eye, Share2, Bell, Flag, Star, Zap } from 'lucide-react';
+import { FolderOpen, Plus, Users, Clock, CheckCircle, AlertCircle, Calendar as CalendarIcon, Target, TrendingUp, FileText, Archive, Filter, MoreVertical, Edit3, Trash2, Eye, Share2, Bell, Flag, Star, Zap, MessageCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface FamilyMember {
@@ -134,9 +134,7 @@ const projectTemplates: ProjectTemplate[] = [
         priority: 'high',
         estimatedHours: 8,
         dependencies: [],
-        tags: ['information-gathering', 'assets'],
-        comments: [],
-        attachments: []
+        tags: ['information-gathering', 'assets']
       },
       {
         title: 'Define beneficiaries and inheritance wishes',
@@ -145,9 +143,7 @@ const projectTemplates: ProjectTemplate[] = [
         priority: 'high',
         estimatedHours: 4,
         dependencies: [],
-        tags: ['beneficiaries', 'inheritance'],
-        comments: [],
-        attachments: []
+        tags: ['beneficiaries', 'inheritance']
       },
       {
         title: 'Draft initial will document',
@@ -156,9 +152,7 @@ const projectTemplates: ProjectTemplate[] = [
         priority: 'medium',
         estimatedHours: 6,
         dependencies: [],
-        tags: ['drafting', 'legal'],
-        comments: [],
-        attachments: []
+        tags: ['drafting', 'legal']
       },
       {
         title: 'Family review and feedback',
@@ -167,9 +161,7 @@ const projectTemplates: ProjectTemplate[] = [
         priority: 'medium',
         estimatedHours: 4,
         dependencies: [],
-        tags: ['family-review', 'feedback'],
-        comments: [],
-        attachments: []
+        tags: ['family-review', 'feedback']
       },
       {
         title: 'Professional legal review',
@@ -178,9 +170,7 @@ const projectTemplates: ProjectTemplate[] = [
         priority: 'critical',
         estimatedHours: 3,
         dependencies: [],
-        tags: ['legal-review', 'attorney'],
-        comments: [],
-        attachments: []
+        tags: ['legal-review', 'attorney']
       },
       {
         title: 'Finalize and execute will',
@@ -189,9 +179,7 @@ const projectTemplates: ProjectTemplate[] = [
         priority: 'critical',
         estimatedHours: 2,
         dependencies: [],
-        tags: ['execution', 'signing'],
-        comments: [],
-        attachments: []
+        tags: ['execution', 'signing']
       }
     ],
     milestones: [
@@ -231,9 +219,7 @@ const projectTemplates: ProjectTemplate[] = [
         priority: 'high',
         estimatedHours: 3,
         dependencies: [],
-        tags: ['contacts', 'emergency'],
-        comments: [],
-        attachments: []
+        tags: ['contacts', 'emergency']
       },
       {
         title: 'Develop emergency procedures',
@@ -242,9 +228,7 @@ const projectTemplates: ProjectTemplate[] = [
         priority: 'high',
         estimatedHours: 6,
         dependencies: [],
-        tags: ['procedures', 'response'],
-        comments: [],
-        attachments: []
+        tags: ['procedures', 'response']
       },
       {
         title: 'Prepare emergency kits',
@@ -253,9 +237,7 @@ const projectTemplates: ProjectTemplate[] = [
         priority: 'medium',
         estimatedHours: 8,
         dependencies: [],
-        tags: ['emergency-kit', 'supplies'],
-        comments: [],
-        attachments: []
+        tags: ['emergency-kit', 'supplies']
       }
     ],
     milestones: [
@@ -289,9 +271,7 @@ const projectTemplates: ProjectTemplate[] = [
         priority: 'high',
         estimatedHours: 20,
         dependencies: [],
-        tags: ['interviews', 'stories', 'memories'],
-        comments: [],
-        attachments: []
+        tags: ['interviews', 'stories', 'memories']
       },
       {
         title: 'Digitize family photos',
@@ -300,9 +280,7 @@ const projectTemplates: ProjectTemplate[] = [
         priority: 'medium',
         estimatedHours: 15,
         dependencies: [],
-        tags: ['photos', 'digitization'],
-        comments: [],
-        attachments: []
+        tags: ['photos', 'digitization']
       },
       {
         title: 'Create family tree',
@@ -311,9 +289,7 @@ const projectTemplates: ProjectTemplate[] = [
         priority: 'medium',
         estimatedHours: 12,
         dependencies: [],
-        tags: ['genealogy', 'family-tree'],
-        comments: [],
-        attachments: []
+        tags: ['genealogy', 'family-tree']
       }
     ],
     milestones: [
@@ -431,7 +407,7 @@ export const FamilyLegacyProjectManagement: React.FC<FamilyLegacyProjectManageme
       ...activeProject,
       tasks: updatedTasks,
       progress,
-      status: progress === 100 ? ('completed' as const) : activeProject.status,
+      status: progress === 100 ? ('completed') : activeProject.status,
       completedDate: progress === 100 ? new Date() : undefined
     };
 
@@ -479,9 +455,7 @@ export const FamilyLegacyProjectManagement: React.FC<FamilyLegacyProjectManageme
       dueDate: taskData.dueDate,
       estimatedHours: taskData.estimatedHours || 1,
       dependencies: [],
-      tags: taskData.tags || [],
-      comments: [],
-      attachments: []
+      tags: taskData.tags || []
     };
 
     const updatedProject = {
@@ -574,8 +548,8 @@ export const FamilyLegacyProjectManagement: React.FC<FamilyLegacyProjectManageme
                 {projectTemplates.map((template) => (
                   <motion.div
                     key={template.id}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                    whileHover={{  scale: 1.02  }}
+                    whileTap={{  scale: 0.98  }}
                   >
                     <Card 
                       className="cursor-pointer hover:border-blue-300 transition-colors h-full"
@@ -590,10 +564,10 @@ export const FamilyLegacyProjectManagement: React.FC<FamilyLegacyProjectManageme
                             <h3 className="font-medium text-gray-900">{template.name}</h3>
                             <p className="text-sm text-gray-600 mt-1">{template.description}</p>
                             <div className="flex items-center gap-2 mt-3">
-                              <Badge variant="outline" className="text-xs">
+                              <Badge variant={"outline" as any} className="text-xs">
                                 {template.category.replace('-', ' ')}
                               </Badge>
-                              <Badge variant="secondary" className="text-xs">
+                              <Badge variant={"secondary" as any} className="text-xs">
                                 {template.estimatedDuration}
                               </Badge>
                             </div>
@@ -608,10 +582,10 @@ export const FamilyLegacyProjectManagement: React.FC<FamilyLegacyProjectManageme
                 ))}
               </div>
               <div className="flex justify-end gap-2 mt-4">
-                <Button variant="outline" onClick={() => setIsCreating(false)}>
+                <Button variant={"outline" as any} onClick={() => setIsCreating(false)}>
                   Cancel
                 </Button>
-                <Button variant="outline">
+                <Button variant={"outline" as any}>
                   Create Custom Project
                 </Button>
               </div>
@@ -664,7 +638,7 @@ export const FamilyLegacyProjectManagement: React.FC<FamilyLegacyProjectManageme
                     <SelectItem value="calendar">Calendar</SelectItem>
                   </SelectContent>
                 </Select>
-                <Button variant="outline" onClick={() => setActiveProject(null)}>
+                <Button variant={"outline" as any} onClick={() => setActiveProject(null)}>
                   Close
                 </Button>
               </div>
@@ -716,16 +690,16 @@ export const FamilyLegacyProjectManagement: React.FC<FamilyLegacyProjectManageme
                             {tasks.map((task) => (
                               <motion.div
                                 key={task.id}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -20 }}
+                                initial={{  opacity: 0, y: 20  }}
+                                animate={{  opacity: 1, y: 0  }}
+                                exit={{  opacity: 0, y: -20  }}
                                 layout
                               >
                                 <Card className="hover:shadow-md transition-shadow cursor-pointer">
                                   <CardContent className="p-3">
                                     <div className="flex items-start justify-between mb-2">
                                       <h5 className="font-medium text-sm">{task.title}</h5>
-                                      <Badge className={getPriorityColor(task.priority)} size="sm">
+                                      <Badge className={getPriorityColor(task.priority)}>
                                         {task.priority}
                                       </Badge>
                                     </div>
@@ -899,10 +873,10 @@ export const FamilyLegacyProjectManagement: React.FC<FamilyLegacyProjectManageme
                             <div className="font-medium">{member.name}</div>
                             <div className="text-sm text-gray-500">{member.email}</div>
                             <div className="flex items-center gap-2 mt-1">
-                              <Badge variant="outline" className="text-xs">
+                              <Badge variant={"outline" as any} className="text-xs">
                                 {member.role}
                               </Badge>
-                              <Badge variant="secondary" className="text-xs">
+                              <Badge variant={"secondary" as any} className="text-xs">
                                 {member.availability}
                               </Badge>
                             </div>
@@ -913,7 +887,7 @@ export const FamilyLegacyProjectManagement: React.FC<FamilyLegacyProjectManageme
                             <div className="text-xs text-gray-500 mb-1">Expertise:</div>
                             <div className="flex flex-wrap gap-1">
                               {member.expertise.map((skill) => (
-                                <Badge key={skill} variant="outline" className="text-xs">
+                                <Badge key={skill} variant={"outline" as any} className="text-xs">
                                   {skill}
                                 </Badge>
                               ))}
@@ -951,8 +925,8 @@ export const FamilyLegacyProjectManagement: React.FC<FamilyLegacyProjectManageme
         {filteredProjects.map((project) => (
           <motion.div
             key={project.id}
-            whileHover={{ y: -2 }}
-            transition={{ duration: 0.2 }}
+            whileHover={{  y: -2  }}
+            transition={{  duration: 0.2  }}
           >
             <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => setActiveProject(project)}>
               <CardHeader className="pb-2">
@@ -963,7 +937,7 @@ export const FamilyLegacyProjectManagement: React.FC<FamilyLegacyProjectManageme
                   </Badge>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Badge variant="outline" className="text-xs">
+                  <Badge variant={"outline" as any} className="text-xs">
                     {project.category.replace('-', ' ')}
                   </Badge>
                   <Badge className={getPriorityColor(project.priority)}>

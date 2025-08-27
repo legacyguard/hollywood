@@ -39,10 +39,10 @@ export default function Scene2Box({
         <motion.button
           onClick={onSkip}
           className='absolute top-6 right-6 text-sm text-muted-foreground hover:text-foreground transition-colors z-10 bg-background/80 backdrop-blur px-3 py-1 rounded-full border border-border/50 hover:border-border'
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1, duration: 0.5 }}
-          whileHover={{ scale: 1.05 }}
+          initial={{  opacity: 0, y: -10  }}
+          animate={{  opacity: 1, y: 0  }}
+          transition={{  delay: 1, duration: 0.5  }}
+          whileHover={{  scale: 1.05  }}
         >
           Skip introduction
         </motion.button>
@@ -52,9 +52,9 @@ export default function Scene2Box({
         <Card className='w-full max-w-3xl border-primary/20 shadow-xl'>
           <CardHeader>
             <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2, duration: 0.8 }}
+              initial={{  opacity: 0, x: -20  }}
+              animate={{  opacity: 1, x: 0  }}
+              transition={{  delay: 0.2, duration: 0.8  }}
             >
               <CardTitle className='text-2xl font-heading bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent'>
                 The Box of Certainty
@@ -63,9 +63,9 @@ export default function Scene2Box({
           </CardHeader>
           <CardContent>
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 0.8 }}
+              initial={{  opacity: 0, y: 10  }}
+              animate={{  opacity: 1, y: 0  }}
+              transition={{  delay: 0.4, duration: 0.8  }}
             >
               <p className='text-muted-foreground mb-6 text-lg leading-relaxed'>
                 Imagine leaving a single box for your loved ones. What would you
@@ -77,9 +77,9 @@ export default function Scene2Box({
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.6, duration: 0.8 }}
+              initial={{  opacity: 0, scale: 0.95  }}
+              animate={{  opacity: 1, scale: 1  }}
+              transition={{  delay: 0.6, duration: 0.8  }}
             >
               <Textarea
                 value={items}
@@ -93,9 +93,9 @@ export default function Scene2Box({
             {/* Enhanced animated box visualization */}
             <motion.div
               className='relative h-40 mb-6 rounded-lg border-2 border-primary/30 bg-gradient-to-br from-primary/5 to-background overflow-hidden'
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8, duration: 0.8 }}
+              initial={{  opacity: 0, y: 20  }}
+              animate={{  opacity: 1, y: 0  }}
+              transition={{  delay: 0.8, duration: 0.8  }}
             >
               {/* Box interior */}
               <div className='absolute inset-0 bg-gradient-to-br from-amber-50/20 to-amber-100/10 dark:from-amber-900/10 dark:to-amber-800/5' />
@@ -109,25 +109,25 @@ export default function Scene2Box({
                   <motion.div
                     key={`${word}-${index}`}
                     className='px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium border border-primary/20'
-                    initial={{
+                    initial={{ 
                       opacity: 0,
                       scale: 0.8,
-                      y: 20,
+                      y: 20
                     }}
-                    animate={{
+                    animate={{ 
                       opacity: 1,
                       scale: 1,
-                      y: [0, -5, 0],
+                      y: [0, -5, 0]
                     }}
-                    transition={{
+                    transition={{ 
                       delay: 0.1 * index + 1,
                       duration: 0.6,
                       y: {
                         duration: 2,
                         repeat: Infinity,
                         ease: 'easeInOut',
-                        delay: Math.random() * 2,
-                      },
+                        delay: Math.random() * 2
+                      }
                     }}
                   >
                     {word}
@@ -143,8 +143,8 @@ export default function Scene2Box({
                 <div className='absolute inset-0 flex items-center justify-center'>
                   <motion.p
                     className='text-muted-foreground/60 text-sm italic'
-                    animate={{ opacity: [0.4, 0.8, 0.4] }}
-                    transition={{ duration: 2, repeat: Infinity }}
+                    animate={{  opacity: [0.4, 0.8, 0.4]  }}
+                    transition={{  duration: 2, repeat: Infinity  }}
                   >
                     Your treasures will appear here...
                   </motion.p>
@@ -154,12 +154,12 @@ export default function Scene2Box({
 
             <motion.div
               className='flex gap-3 justify-between'
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1, duration: 0.6 }}
+              initial={{  opacity: 0, y: 10  }}
+              animate={{  opacity: 1, y: 0  }}
+              transition={{  delay: 1, duration: 0.6  }}
             >
               <Button
-                variant='outline'
+                variant={"outline" as any}
                 onClick={onBack}
                 className='border-primary/20 hover:border-primary/40'
               >
@@ -167,7 +167,7 @@ export default function Scene2Box({
               </Button>
               <div className='flex gap-3'>
                 <Button
-                  variant='outline'
+                  variant={"outline" as any}
                   onClick={() => setItems('')}
                   className='border-muted hover:border-muted-foreground/40'
                 >
@@ -186,9 +186,9 @@ export default function Scene2Box({
             {/* Character count and encouragement */}
             <motion.div
               className='mt-4 text-center'
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.2, duration: 0.6 }}
+              initial={{  opacity: 0  }}
+              animate={{  opacity: 1  }}
+              transition={{  delay: 1.2, duration: 0.6  }}
             >
               <p className='text-xs text-muted-foreground/70'>
                 {items.trim() ? `${items.trim().length} characters • ` : ''}

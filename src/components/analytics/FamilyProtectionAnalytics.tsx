@@ -5,17 +5,13 @@ import { Badge } from '../ui/badge';
 import { Progress } from '../ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { Alert, AlertDescription } from '../ui/alert';
-import { Separator } from '../ui/separator';
-import { 
-  Shield, 
-  TrendingUp, 
-  TrendingDown, 
-  AlertTriangle, 
-  CheckCircle, 
-  Clock, 
-  Users, 
-  FileText, 
-  Heart, 
+import {
+  Shield,
+  TrendingUp,
+  TrendingDown,
+  AlertTriangle,
+  CheckCircle,
+  Clock,
   Target,
   BarChart3,
   PieChart,
@@ -92,12 +88,12 @@ interface FamilyProtectionAnalyticsProps {
 }
 
 export const FamilyProtectionAnalytics: React.FC<FamilyProtectionAnalyticsProps> = ({
-  familyMembers = [],
+  familyMembers: _familyMembers = [],
   onRecommendationAction,
   onRiskMitigation
 }) => {
   const [protectionAreas, setProtectionAreas] = useState<ProtectionArea[]>([]);
-  const [securityTrends, setSecurityTrends] = useState<SecurityTrend[]>([]);
+  const [_securityTrends, _setSecurityTrends] = useState<SecurityTrend[]>([]);
   const [overallScore, setOverallScore] = useState(0);
   const [selectedTimeframe, setSelectedTimeframe] = useState<'7d' | '30d' | '90d' | '1y'>('30d');
   const [showDetailedAnalysis, setShowDetailedAnalysis] = useState(false);
@@ -228,7 +224,7 @@ export const FamilyProtectionAnalytics: React.FC<FamilyProtectionAnalyticsProps>
     }
 
     setProtectionAreas(mockProtectionAreas);
-    setSecurityTrends(mockTrends);
+    _setSecurityTrends(mockTrends);
     setOverallScore(Math.round(mockProtectionAreas.reduce((sum, area) => sum + (area.currentScore / area.maxScore) * 100, 0) / mockProtectionAreas.length));
   }, []);
 
@@ -268,7 +264,7 @@ export const FamilyProtectionAnalytics: React.FC<FamilyProtectionAnalyticsProps>
     return 'bg-red-50 border-red-200';
   };
 
-  const getTrendIcon = (trend: string, value: number) => {
+  const getTrendIcon = (trend: string, _value: number) => {
     if (trend === 'improving') return <TrendingUp className="h-4 w-4 text-green-600" />;
     if (trend === 'declining') return <TrendingDown className="h-4 w-4 text-red-600" />;
     return <Activity className="h-4 w-4 text-gray-600" />;
@@ -304,7 +300,7 @@ export const FamilyProtectionAnalytics: React.FC<FamilyProtectionAnalyticsProps>
         </div>
         <div className="flex gap-2">
           <Button
-            variant="outline"
+            variant={"outline" as any}
             onClick={() => setShowDetailedAnalysis(!showDetailedAnalysis)}
             className="gap-2"
           >
@@ -367,7 +363,7 @@ export const FamilyProtectionAnalytics: React.FC<FamilyProtectionAnalyticsProps>
               <span className="font-medium text-red-800">
                 {criticalRisks.length} critical risk{criticalRisks.length > 1 ? 's' : ''} detected
               </span>
-              <Button size="sm" variant="destructive">
+              <Button size="sm" variant={"destructive" as any}>
                 Review Now
               </Button>
             </div>
@@ -390,9 +386,9 @@ export const FamilyProtectionAnalytics: React.FC<FamilyProtectionAnalyticsProps>
               {protectionAreas.map((area) => (
                 <motion.div
                   key={area.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
+                  initial={{  opacity: 0, y: 20  }}
+                  animate={{  opacity: 1, y: 0  }}
+                  exit={{  opacity: 0, y: -20  }}
                   layout
                 >
                   <Card className="hover:shadow-lg transition-shadow">
@@ -418,7 +414,7 @@ export const FamilyProtectionAnalytics: React.FC<FamilyProtectionAnalyticsProps>
                           </div>
                           <Progress value={(area.currentScore / area.maxScore) * 100} className="h-2" />
                         </div>
-                        
+
                         {area.trend !== 'stable' && (
                           <div className="flex items-center gap-1 text-xs">
                             {area.trend === 'improving' ? (
@@ -455,9 +451,9 @@ export const FamilyProtectionAnalytics: React.FC<FamilyProtectionAnalyticsProps>
           <div className="flex items-center gap-2 mb-4">
             <Lightbulb className="h-5 w-5 text-yellow-600" />
             <h3 className="text-lg font-medium">AI-Generated Recommendations</h3>
-            <Badge variant="secondary">Powered by LegacyGuard AI</Badge>
+            <Badge variant={"secondary" as any}>Powered by LegacyGuard AI</Badge>
           </div>
-          
+
           <div className="space-y-3">
             {topRecommendations.map((recommendation, index) => (
               <Card key={recommendation.id} className="hover:shadow-md transition-shadow">
@@ -468,7 +464,7 @@ export const FamilyProtectionAnalytics: React.FC<FamilyProtectionAnalyticsProps>
                         <Badge className={getPriorityColor(recommendation.priority)}>
                           {recommendation.priority}
                         </Badge>
-                        <Badge variant="outline" className="text-xs">
+                        <Badge variant={"outline" as any} className="text-xs">
                           {recommendation.category.replace('-', ' ')}
                         </Badge>
                         <span className="text-xs text-gray-500">
@@ -550,7 +546,7 @@ export const FamilyProtectionAnalytics: React.FC<FamilyProtectionAnalyticsProps>
                 <p className="text-xs text-gray-500">Financial + Family</p>
               </CardContent>
             </Card>
-            
+
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2 mb-2">
@@ -561,7 +557,7 @@ export const FamilyProtectionAnalytics: React.FC<FamilyProtectionAnalyticsProps>
                 <p className="text-xs text-gray-500">Legal</p>
               </CardContent>
             </Card>
-            
+
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2 mb-2">
@@ -579,9 +575,9 @@ export const FamilyProtectionAnalytics: React.FC<FamilyProtectionAnalyticsProps>
           <div className="flex items-center gap-2 mb-4">
             <AlertTriangle className="h-5 w-5 text-red-600" />
             <h3 className="text-lg font-medium">Risk Analysis</h3>
-            <Badge variant="destructive">{criticalRisks.length} Critical</Badge>
+            <Badge variant={"destructive" as any}>{criticalRisks.length} Critical</Badge>
           </div>
-          
+
           <div className="space-y-3">
             {criticalRisks.map((risk) => (
               <Card key={risk.id} className={`border-l-4 ${getSeverityColor(risk.severity)}`}>
@@ -592,7 +588,7 @@ export const FamilyProtectionAnalytics: React.FC<FamilyProtectionAnalyticsProps>
                         <Badge className={getPriorityColor(risk.severity)}>
                           {risk.severity}
                         </Badge>
-                        <Badge variant="outline" className="text-xs">
+                        <Badge variant={"outline" as any} className="text-xs">
                           {risk.timeframe.replace('-', ' ')}
                         </Badge>
                         <span className="text-xs text-gray-500">
@@ -608,7 +604,7 @@ export const FamilyProtectionAnalytics: React.FC<FamilyProtectionAnalyticsProps>
                     </div>
                     <Button
                       size="sm"
-                      variant="outline"
+                      variant={"outline" as any}
                       onClick={() => onRiskMitigation?.(risk.id)}
                       className="gap-2"
                     >

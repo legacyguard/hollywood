@@ -174,7 +174,7 @@ export const PersonRoleAssignment: React.FC<PersonRoleAssignmentProps> = ({
             <CardTitle className='text-2xl'>{person.name}</CardTitle>
             <p className='text-gray-600 capitalize'>{person.relationship}</p>
           </div>
-          <Button variant='ghost' size='sm' onClick={onClose}>
+          <Button variant={"ghost" as any} size='sm' onClick={onClose}>
             <X className='h-4 w-4' />
           </Button>
         </CardHeader>
@@ -389,7 +389,7 @@ export const PersonRoleAssignment: React.FC<PersonRoleAssignmentProps> = ({
                         Create personal messages, time capsules, and memory
                         prompts for this person.
                       </p>
-                      <Button variant='outline' size='sm'>
+                      <Button variant={"outline" as any} size='sm'>
                         <Heart className='h-4 w-4 mr-2' />
                         Create Legacy Message
                       </Button>
@@ -492,11 +492,11 @@ export const PersonRoleAssignment: React.FC<PersonRoleAssignmentProps> = ({
 
           {/* Action Buttons */}
           <div className='flex justify-between'>
-            <Button variant='outline' onClick={onClose}>
+            <Button variant={"outline" as any} onClick={onClose}>
               Cancel
             </Button>
             <div className='space-x-2'>
-              <Button variant='outline'>
+              <Button variant={"outline" as any}>
                 <Heart className='h-4 w-4 mr-2' />
                 Create Time Capsule
               </Button>

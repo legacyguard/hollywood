@@ -114,8 +114,8 @@ export function EncryptionProvider({ children }: EncryptionProviderProps) {
       const legacyKeys = localStorage.getItem(`encryptionKeys_${userId}`);
       setNeedsMigration(!!legacyKeys && !isInitialized);
     } catch (error) {
-      console.error('Failed to check key status:', error);
-      toast.error('Failed to check encryption key status');
+      console.error('Failed to check key status: ', error);
+      toast.error(' as constFailed to check encryption key status');
     } finally {
       setIsLoading(false);
     }

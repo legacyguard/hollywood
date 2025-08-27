@@ -100,7 +100,7 @@ export function ABTestOnboardingFlow({
           <h1 className="text-2xl font-bold text-gray-900">
             {variant === 'variant_a' ? 'Protect Your Family' : 'Welcome to LegacyGuard'}
           </h1>
-          <Badge variant="outline" className="text-sm">
+          <Badge variant={"outline" as any} className="text-sm">
             {currentStep + 1} of {steps.length}
           </Badge>
         </div>
@@ -117,10 +117,10 @@ export function ABTestOnboardingFlow({
       <AnimatePresence mode="wait">
         <motion.div
           key={currentStep}
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -20 }}
-          transition={{ duration: 0.3 }}
+          initial={{  opacity: 0, x: 20  }}
+          animate={{  opacity: 1, x: 0  }}
+          exit={{  opacity: 0, x: -20  }}
+          transition={{  duration: 0.3  }}
         >
           {currentStepData && (
             <currentStepData.component
@@ -228,7 +228,7 @@ function NameStep({ onComplete, onSkip }: { onComplete: (data: any) => void; onS
             Continue
             <ArrowRight className="h-4 w-4 ml-2" />
           </Button>
-          <Button variant="ghost" onClick={onSkip}>
+          <Button variant={"ghost" as any} onClick={onSkip}>
             Skip
           </Button>
         </div>
@@ -277,7 +277,7 @@ function PurposeStep({ onComplete, onSkip }: { onComplete: (data: any) => void; 
             Continue
             <ArrowRight className="h-4 w-4 ml-2" />
           </Button>
-          <Button variant="ghost" onClick={onSkip}>
+          <Button variant={"ghost" as any} onClick={onSkip}>
             Skip
           </Button>
         </div>
@@ -342,7 +342,7 @@ function FamilyStep({ onComplete, onSkip }: { onComplete: (data: any) => void; o
             Continue
             <ArrowRight className="h-4 w-4 ml-2" />
           </Button>
-          <Button variant="ghost" onClick={onSkip}>
+          <Button variant={"ghost" as any} onClick={onSkip}>
             Skip
           </Button>
         </div>
@@ -387,7 +387,7 @@ function NextStepsStep({ onComplete, userData: _userData }: { onComplete: (data:
               <h4 className="font-medium">{rec.title}</h4>
               <p className="text-sm text-gray-600">{rec.description}</p>
             </div>
-            <Badge variant="outline" className="text-xs">
+            <Badge variant={"outline" as any} className="text-xs">
               <Clock className="h-3 w-3 mr-1" />
               {rec.time}
             </Badge>
@@ -485,7 +485,7 @@ function FamilyImpactStep({ onComplete, onSkip }: { onComplete: (data: any) => v
             Continue Protecting My Family
             <ArrowRight className="h-4 w-4 ml-2" />
           </Button>
-          <Button variant="ghost" onClick={onSkip}>
+          <Button variant={"ghost" as any} onClick={onSkip}>
             Skip
           </Button>
         </div>
@@ -592,7 +592,7 @@ function ProtectionGoalsStep({ onComplete, onSkip }: { onComplete: (data: any) =
             Build My Protection Plan
             <ArrowRight className="h-4 w-4 ml-2" />
           </Button>
-          <Button variant="ghost" onClick={onSkip}>
+          <Button variant={"ghost" as any} onClick={onSkip}>
             Skip
           </Button>
         </div>
@@ -648,7 +648,7 @@ function PersonalInfoStep({ onComplete, onSkip }: { onComplete: (data: any) => v
             Continue
             <ArrowRight className="h-4 w-4 ml-2" />
           </Button>
-          <Button variant="ghost" onClick={onSkip}>
+          <Button variant={"ghost" as any} onClick={onSkip}>
             Skip
           </Button>
         </div>

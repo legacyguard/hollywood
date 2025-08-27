@@ -35,19 +35,19 @@ const mockAnalysisResult = {
       label: 'Account Number',
       value: '1234567890',
       confidence: 0.95,
-      type: 'account' as const,
+      type: 'account',
     },
     {
       label: 'Total Amount',
       value: '$97.70',
       confidence: 0.92,
-      type: 'amount' as const,
+      type: 'amount',
     },
     {
       label: 'Service Address',
       value: '123 Main St, Springfield, IL',
       confidence: 0.85,
-      type: 'contact' as const,
+      type: 'contact',
     },
   ],
   suggestedTags: ['utility', 'monthly', 'housing', 'expires'],
@@ -138,7 +138,7 @@ export const IntelligentDocumentTester: React.FC = () => {
       <Card className='p-6 bg-card border-card-border max-w-2xl mx-auto'>
         <div className='flex items-center gap-3 mb-4'>
           <div className='p-2 bg-primary/10 rounded-lg'>
-            <Icon name='play' className='w-5 h-5 text-primary' />
+            <Icon name={"play" as any} className='w-5 h-5 text-primary' />
           </div>
           <div>
             <h3 className='font-semibold text-lg'>
@@ -164,15 +164,14 @@ export const IntelligentDocumentTester: React.FC = () => {
           </div>
 
           <Button onClick={handleStartTest} className='w-full gap-2'>
-            <Icon name='play' className='w-4 h-4' />
+            <Icon name={"play" as any} className='w-4 h-4' />
             Test Document Analysis Interface
           </Button>
         </div>
 
         <div className='mt-4 p-3 bg-primary/5 rounded-lg'>
           <div className='flex gap-2'>
-            <Icon
-              name='info'
+            <Icon name={"info" as any}
               className='w-4 h-4 text-primary flex-shrink-0 mt-0.5'
             />
             <div className='text-xs text-muted-foreground'>

@@ -53,8 +53,8 @@ export function OnboardingWrapper({ children }: OnboardingWrapperProps) {
 
       setShowOnboarding(false);
     } catch (error) {
-      console.error('Failed to update onboarding status:', error);
-      // Even if metadata update fails, don't show onboarding again this session
+      console.error('Failed to update onboarding status: ', error);
+      // Even if metadata update fails, don' as constt show onboarding again this session
       setShowOnboarding(false);
     }
   };

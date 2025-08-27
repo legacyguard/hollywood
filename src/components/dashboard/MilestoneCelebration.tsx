@@ -71,8 +71,7 @@ export function showMilestoneRecognition(
           {/* Milestone Icon */}
           <div className='flex-shrink-0'>
             <div className='w-12 h-12 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center shadow-md'>
-              <Icon
-                name={milestone.icon as never}
+              <Icon name={milestone.icon as any}
                 className='w-6 h-6 text-white'
               />
             </div>
@@ -106,7 +105,7 @@ export function showMilestoneRecognition(
                 onClick={() => toast.dismiss(t)}
                 className='flex-shrink-0 ml-4 p-1 text-green-500 hover:text-green-600 dark:text-green-400 dark:hover:text-green-300 transition-colors'
               >
-                <Icon name='x' className='w-4 h-4' />
+                <Icon name={"x" as any} className='w-4 h-4' />
               </button>
             </div>
           </div>

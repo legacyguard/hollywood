@@ -5,8 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  Sparkles,
+import { Sparkles,
   Star,
   MapPin,
   Clock,
@@ -31,8 +30,7 @@ import {
   Scale,
   Briefcase,
   User,
-  Info
-} from 'lucide-react';
+  Info, FileText } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -374,8 +372,8 @@ export function ProfessionalRecommendationEngine({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{  opacity: 0, y: 20  }}
+      animate={{  opacity: 1, y: 0  }}
       className={cn('space-y-6', className)}
     >
       {/* Header */}
@@ -400,7 +398,7 @@ export function ProfessionalRecommendationEngine({
               Your Legal Needs
             </CardTitle>
             <Button
-              variant="outline"
+              variant={"outline" as any}
               size="sm"
               onClick={() => setShowFilters(!showFilters)}
             >
@@ -474,9 +472,9 @@ export function ProfessionalRecommendationEngine({
           <AnimatePresence>
             {showFilters && (
               <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
+                initial={{  opacity: 0, height: 0  }}
+                animate={{  opacity: 1, height: 'auto'  }}
+                exit={{  opacity: 0, height: 0  }}
                 className="space-y-6 border-t pt-6"
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -607,7 +605,7 @@ export function ProfessionalRecommendationEngine({
             <h3 className="text-xl font-semibold">
               {recommendations.length} Recommended Professionals
             </h3>
-            <Badge variant="outline" className="bg-green-50 text-green-700">
+            <Badge variant={"outline" as any} className="bg-green-50 text-green-700">
               <CheckCircle className="h-3 w-3 mr-1" />
               All Verified & Licensed
             </Badge>
@@ -620,9 +618,9 @@ export function ProfessionalRecommendationEngine({
               return (
                 <motion.div
                   key={professional.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
+                  initial={{  opacity: 0, y: 20  }}
+                  animate={{  opacity: 1, y: 0  }}
+                  transition={{  delay: index * 0.1  }}
                 >
                   <Card className="hover:shadow-lg transition-all duration-300 border-2 hover:border-blue-200">
                     <CardContent className="p-6">
@@ -682,7 +680,7 @@ export function ProfessionalRecommendationEngine({
                                 <Label className="text-sm font-medium mb-2 block">Specializations:</Label>
                                 <div className="flex flex-wrap gap-1">
                                   {professional.specializations?.map(spec => (
-                                    <Badge key={spec.id} variant="secondary" className="text-xs">
+                                    <Badge key={spec.id} variant={"secondary" as any} className="text-xs">
                                       {spec.name}
                                     </Badge>
                                   ))}
@@ -693,7 +691,7 @@ export function ProfessionalRecommendationEngine({
                                 <Label className="text-sm font-medium mb-2 block">Why This Match:</Label>
                                 <div className="flex flex-wrap gap-1">
                                   {recommendation.matchReasons.map((reason, idx) => (
-                                    <Badge key={idx} variant="outline" className="text-xs">
+                                    <Badge key={idx} variant={"outline" as any} className="text-xs">
                                       {reason}
                                     </Badge>
                                   ))}
@@ -731,7 +729,7 @@ export function ProfessionalRecommendationEngine({
                             {recommendation.suggestedServices.map((service, idx) => (
                               <div key={idx} className="border rounded-lg p-3 hover:border-blue-200 transition-colors">
                                 <div className="flex items-center justify-between mb-2">
-                                  <Badge variant="outline" className="text-xs">
+                                  <Badge variant={"outline" as any} className="text-xs">
                                     {service.type}
                                   </Badge>
                                   <span className="font-semibold">${service.estimatedCost}</span>
@@ -754,7 +752,7 @@ export function ProfessionalRecommendationEngine({
                               Book Consultation
                             </Button>
                             <Button
-                              variant="outline"
+                              variant={"outline" as any}
                               onClick={() => onSelectProfessional(professional, 'review')}
                               className="w-full"
                             >
@@ -765,7 +763,7 @@ export function ProfessionalRecommendationEngine({
 
                           <div className="text-center">
                             <Button
-                              variant="ghost"
+                              variant={"ghost" as any}
                               size="sm"
                               onClick={() => setSelectedRecommendation(recommendation)}
                             >
@@ -790,7 +788,7 @@ export function ProfessionalRecommendationEngine({
                                     ))}
                                   </div>
                                   {review.verified && (
-                                    <Badge variant="outline" className="text-xs">
+                                    <Badge variant={"outline" as any} className="text-xs">
                                       <Shield className="h-2 w-2 mr-1" />
                                       Verified
                                     </Badge>
@@ -825,7 +823,7 @@ export function ProfessionalRecommendationEngine({
             <p className="text-muted-foreground mb-4">
               Try adjusting your criteria or expanding your budget range to see more recommendations.
             </p>
-            <Button variant="outline" onClick={() => setShowFilters(true)}>
+            <Button variant={"outline" as any} onClick={() => setShowFilters(true)}>
               <Sliders className="h-4 w-4 mr-2" />
               Adjust Filters
             </Button>

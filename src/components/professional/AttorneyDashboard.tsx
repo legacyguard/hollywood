@@ -165,7 +165,7 @@ export function AttorneyDashboard({
           <Badge className="bg-emerald-100 text-emerald-800 border-emerald-200">
             {reviewer.status === 'active' ? 'Active' : reviewer.status}
           </Badge>
-          <Badge variant="outline" className="flex items-center gap-1">
+          <Badge variant={"outline" as any} className="flex items-center gap-1">
             <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
             {stats.averageRating}
           </Badge>
@@ -175,9 +175,9 @@ export function AttorneyDashboard({
       {/* Stats Overview */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.1 }}
+          initial={{  y: 20, opacity: 0  }}
+          animate={{  y: 0, opacity: 1  }}
+          transition={{  delay: 0.1  }}
         >
           <Card>
             <CardContent className="p-6">
@@ -195,9 +195,9 @@ export function AttorneyDashboard({
         </motion.div>
 
         <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.2 }}
+          initial={{  y: 20, opacity: 0  }}
+          animate={{  y: 0, opacity: 1  }}
+          transition={{  delay: 0.2  }}
         >
           <Card>
             <CardContent className="p-6">
@@ -215,9 +215,9 @@ export function AttorneyDashboard({
         </motion.div>
 
         <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.3 }}
+          initial={{  y: 20, opacity: 0  }}
+          animate={{  y: 0, opacity: 1  }}
+          transition={{  delay: 0.3  }}
         >
           <Card>
             <CardContent className="p-6">
@@ -235,9 +235,9 @@ export function AttorneyDashboard({
         </motion.div>
 
         <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.4 }}
+          initial={{  y: 20, opacity: 0  }}
+          animate={{  y: 0, opacity: 1  }}
+          transition={{  delay: 0.4  }}
         >
           <Card>
             <CardContent className="p-6">
@@ -326,9 +326,9 @@ export function AttorneyDashboard({
               filteredReviews.map((review, index) => (
                 <motion.div
                   key={review.id}
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: index * 0.1 }}
+                  initial={{  y: 20, opacity: 0  }}
+                  animate={{  y: 0, opacity: 1  }}
+                  transition={{  delay: index * 0.1  }}
                 >
                   <Card className="hover:shadow-lg transition-shadow">
                     <CardContent className="p-6">
@@ -377,7 +377,7 @@ export function AttorneyDashboard({
                             <>
                               <Button
                                 size="sm"
-                                variant="outline"
+                                variant={"outline" as any}
                                 onClick={() => onDeclineReview(review.id)}
                                 className="text-gray-600 hover:text-red-600"
                               >
@@ -397,7 +397,7 @@ export function AttorneyDashboard({
                             <>
                               <Button
                                 size="sm"
-                                variant="outline"
+                                variant={"outline" as any}
                                 onClick={() => onReviewDocument(review.id)}
                                 className="flex items-center gap-1"
                               >
@@ -452,7 +452,7 @@ export function AttorneyDashboard({
                             +${review.review_fee}
                           </span>
                         )}
-                        <Button size="sm" variant="outline">
+                        <Button size="sm" variant={"outline" as any}>
                           <Eye className="h-4 w-4 mr-1" />
                           View Report
                         </Button>
@@ -534,7 +534,7 @@ export function AttorneyDashboard({
                   </div>
 
                   <div className="pt-4 border-t">
-                    <Button className="w-full" variant="outline">
+                    <Button className="w-full" variant={"outline" as any}>
                       <Download className="h-4 w-4 mr-2" />
                       Download Monthly Report
                     </Button>

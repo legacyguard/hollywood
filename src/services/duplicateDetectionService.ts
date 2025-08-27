@@ -502,9 +502,9 @@ export class DuplicateDetectionService {
       suggestions.push('Strong indicators suggest this is the same document');
     }
 
-    if (match.confidence === 'high') {
+    if (match?.confidence === 'high') {
       suggestions.push('High confidence duplicate detection');
-    } else if (match.confidence === 'low') {
+    } else if (match?.confidence === 'low') {
       suggestions.push('Low confidence - documents may be unrelated');
     }
 

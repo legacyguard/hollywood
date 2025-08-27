@@ -297,7 +297,7 @@ export function FamilyMemberDashboard({ userId }: FamilyMemberDashboardProps) {
                 className="gap-2"
               >
                 {label}
-                <Badge variant="secondary" className="ml-1 text-xs">
+                <Badge variant={"secondary" as any} className="ml-1 text-xs">
                   {count}
                 </Badge>
               </Button>
@@ -310,10 +310,10 @@ export function FamilyMemberDashboard({ userId }: FamilyMemberDashboardProps) {
               {filteredMembers.map((member, index) => (
                 <motion.div
                   key={member.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ delay: index * 0.1 }}
+                  initial={{  opacity: 0, y: 20  }}
+                  animate={{  opacity: 1, y: 0  }}
+                  exit={{  opacity: 0, y: -20  }}
+                  transition={{  delay: index * 0.1  }}
                 >
                   <Card className="hover:shadow-md transition-shadow">
                     <CardContent className="p-6">
@@ -332,11 +332,11 @@ export function FamilyMemberDashboard({ userId }: FamilyMemberDashboardProps) {
                           <div className="space-y-1">
                             <div className="flex items-center gap-2">
                               <h3 className="font-semibold">{member.name}</h3>
-                              <Badge className={getRoleColor(member.role)} variant="outline">
+                              <Badge className={getRoleColor(member.role)} variant={"outline" as any}>
                                 {member.role.replace('_', ' ')}
                               </Badge>
                               {member.emergencyPriority && (
-                                <Badge variant="secondary" className="bg-red-50 text-red-700">
+                                <Badge variant={"secondary" as any} className="bg-red-50 text-red-700">
                                   Priority #{member.emergencyPriority}
                                 </Badge>
                               )}
@@ -397,7 +397,7 @@ export function FamilyMemberDashboard({ userId }: FamilyMemberDashboardProps) {
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                               <Button
-                                variant="ghost"
+                                variant={"ghost" as any}
                                 size="sm"
                                 disabled={actionInProgress === member.id}
                               >

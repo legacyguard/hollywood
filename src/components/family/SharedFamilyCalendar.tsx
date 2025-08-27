@@ -290,7 +290,7 @@ export function SharedFamilyCalendar({ userId, familyMembers }: SharedFamilyCale
                 </div>
 
                 <div className="flex items-center justify-end space-x-2 pt-4">
-                  <Button variant="outline" onClick={() => setShowNewEventDialog(false)}>
+                  <Button variant={"outline" as any} onClick={() => setShowNewEventDialog(false)}>
                     Cancel
                   </Button>
                   <Button onClick={handleCreateEvent} disabled={!newEventForm.title || !newEventForm.date || isLoading}>
@@ -401,10 +401,10 @@ export function SharedFamilyCalendar({ userId, familyMembers }: SharedFamilyCale
                     return (
                       <motion.div
                         key={event.id}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        transition={{ delay: index * 0.1 }}
+                        initial={{  opacity: 0, y: 10  }}
+                        animate={{  opacity: 1, y: 0  }}
+                        exit={{  opacity: 0, y: -10  }}
+                        transition={{  delay: index * 0.1  }}
                         className={`p-3 rounded-lg border-l-4 ${priorityColors[event.priority]} bg-gray-50`}
                       >
                         <div className="flex items-start justify-between">
@@ -419,7 +419,7 @@ export function SharedFamilyCalendar({ userId, familyMembers }: SharedFamilyCale
                               </p>
                             )}
                             <div className="flex items-center gap-2">
-                              <Badge className={config.color} variant="outline">
+                              <Badge className={config.color} variant={"outline" as any}>
                                 {config.label}
                               </Badge>
                               {member && (
@@ -483,10 +483,10 @@ export function SharedFamilyCalendar({ userId, familyMembers }: SharedFamilyCale
                   return (
                     <motion.div
                       key={event.id}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ delay: index * 0.05 }}
+                      initial={{  opacity: 0, y: 10  }}
+                      animate={{  opacity: 1, y: 0  }}
+                      exit={{  opacity: 0, y: -10  }}
+                      transition={{  delay: index * 0.05  }}
                       className={`p-4 rounded-lg border-l-4 ${priorityColors[event.priority]} bg-white border ${isOverdue ? 'bg-red-50 border-red-200' : 'border-gray-200'}`}
                     >
                       <div className="flex items-center justify-between">
@@ -494,14 +494,14 @@ export function SharedFamilyCalendar({ userId, familyMembers }: SharedFamilyCale
                           <div className="flex items-center gap-2 mb-2">
                             <config.icon className="h-5 w-5" />
                             <h3 className="font-semibold">{event.title}</h3>
-                            <Badge className={config.color} variant="outline">
+                            <Badge className={config.color} variant={"outline" as any}>
                               {config.label}
                             </Badge>
                             {isOverdue && (
-                              <Badge variant="destructive">Overdue</Badge>
+                              <Badge variant={"destructive" as any}>Overdue</Badge>
                             )}
                             {event.recurring && (
-                              <Badge variant="secondary" className="gap-1">
+                              <Badge variant={"secondary" as any} className="gap-1">
                                 <Repeat className="h-3 w-3" />
                                 {event.recurring.frequency}
                               </Badge>

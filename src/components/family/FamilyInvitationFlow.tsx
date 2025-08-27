@@ -164,9 +164,9 @@ export function FamilyInvitationFlow({
         <div className="w-full bg-gray-200 rounded-full h-2">
           <motion.div
             className="bg-gradient-to-r from-blue-600 to-purple-600 h-2 rounded-full"
-            initial={{ width: 0 }}
-            animate={{ width: `${progress}%` }}
-            transition={{ duration: 0.5 }}
+            initial={{  width: 0  }}
+            animate={{  width: `${progress }}%` }}
+            transition={{  duration: 0.5  }}
           />
         </div>
         <p className="text-sm text-muted-foreground mt-2">{currentStepInfo.description}</p>
@@ -203,7 +203,7 @@ export function FamilyInvitationFlow({
           >
             <span className="font-medium">{label}</span>
             {invitationData.relationship === key && (
-              <Badge variant="secondary" className="text-xs">
+              <Badge variant={"secondary" as any} className="text-xs">
                 {getRoleRecommendation(key as RelationshipType)}
               </Badge>
             )}
@@ -328,7 +328,7 @@ export function FamilyInvitationFlow({
             {getEmotionalMessage(invitationData.relationship || 'other')}
           </p>
           <Button
-            variant="outline"
+            variant={"outline" as any}
             size="sm"
             className="mt-3"
             onClick={() => setInvitationData(prev => ({
@@ -375,7 +375,7 @@ export function FamilyInvitationFlow({
             </div>
             <div>
               <Label className="text-muted-foreground">Access Level</Label>
-              <Badge variant="secondary">{invitationData.role}</Badge>
+              <Badge variant={"secondary" as any}>{invitationData.role}</Badge>
             </div>
           </div>
 
@@ -389,7 +389,7 @@ export function FamilyInvitationFlow({
       </Card>
 
       {error && (
-        <Alert variant="destructive">
+        <Alert variant={"destructive" as any}>
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>Error</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
@@ -402,8 +402,8 @@ export function FamilyInvitationFlow({
     <div className="text-center space-y-6">
       <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto">
         <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+          animate={{  rotate: 360  }}
+          transition={{  duration: 2, repeat: Infinity, ease: "linear"  }}
         >
           <Mail className="h-10 w-10 text-blue-600" />
         </motion.div>
@@ -442,9 +442,9 @@ export function FamilyInvitationFlow({
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.95 }}
+      initial={{  opacity: 0, scale: 0.95  }}
+      animate={{  opacity: 1, scale: 1  }}
+      exit={{  opacity: 0, scale: 0.95  }}
       className={cn('max-w-2xl mx-auto', className)}
     >
       <Card>
@@ -454,7 +454,7 @@ export function FamilyInvitationFlow({
               <Users className="h-6 w-6 text-blue-600" />
               Invite Family Member
             </CardTitle>
-            <Button variant="ghost" size="sm" onClick={onCancel}>
+            <Button variant={"ghost" as any} size="sm" onClick={onCancel}>
               ×
             </Button>
           </div>
@@ -466,10 +466,10 @@ export function FamilyInvitationFlow({
           <AnimatePresence mode="wait">
             <motion.div
               key={currentStep}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.3 }}
+              initial={{  opacity: 0, x: 20  }}
+              animate={{  opacity: 1, x: 0  }}
+              exit={{  opacity: 0, x: -20  }}
+              transition={{  duration: 0.3  }}
             >
               {currentStep === 'relationship' && renderRelationshipStep()}
               {currentStep === 'details' && renderDetailsStep()}
@@ -484,7 +484,7 @@ export function FamilyInvitationFlow({
           {!['sending', 'complete'].includes(currentStep) && (
             <div className="flex justify-between mt-8">
               <Button
-                variant="outline"
+                variant={"outline" as any}
                 onClick={handleBack}
                 disabled={getCurrentStepIndex() === 0}
               >

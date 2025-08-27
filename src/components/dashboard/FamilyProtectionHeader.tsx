@@ -121,14 +121,14 @@ export function FamilyProtectionHeader({
     return (
       <motion.div
         className="flex items-center gap-2 text-2xl font-bold"
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ delay: 0.5, type: 'spring' }}
+        initial={{  scale: 0  }}
+        animate={{  scale: 1  }}
+        transition={{  delay: 0.5, type: 'spring'  }}
       >
         <motion.span
           key={animatedDays}
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
+          initial={{  y: 20, opacity: 0  }}
+          animate={{  y: 0, opacity: 1  }}
           className="text-emerald-600"
         >
           {animatedDays}
@@ -209,9 +209,9 @@ export function FamilyProtectionHeader({
         <div className="relative space-y-4">
           {/* Main greeting */}
           <motion.div
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.6 }}
+            initial={{  y: 20, opacity: 0  }}
+            animate={{  y: 0, opacity: 1  }}
+            transition={{  duration: 0.6  }}
           >
             <h1 className="text-3xl font-bold mb-2">
               {getGreeting()}, {userName}! 👋
@@ -224,9 +224,9 @@ export function FamilyProtectionHeader({
           {/* Stats row */}
           <motion.div
             className="flex items-center gap-6 pt-2"
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            initial={{  y: 20, opacity: 0  }}
+            animate={{  y: 0, opacity: 1  }}
+            transition={{  duration: 0.6, delay: 0.2  }}
           >
             {/* Days Protected */}
             {protectionDays > 0 && (
@@ -280,13 +280,13 @@ export function FamilyProtectionHeader({
           {/* Action buttons */}
           <motion.div
             className="flex gap-3 pt-2"
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
+            initial={{  y: 20, opacity: 0  }}
+            animate={{  y: 0, opacity: 1  }}
+            transition={{  duration: 0.6, delay: 0.4  }}
           >
             {onViewProgress && (
               <Button
-                variant="outline"
+                variant={"outline" as any}
                 size="sm"
                 onClick={onViewProgress}
                 className="bg-white/10 border-white/20 text-white hover:bg-white/20 backdrop-blur-sm"
@@ -298,7 +298,7 @@ export function FamilyProtectionHeader({
 
             {familyMembersCount + emergencyContactsCount === 0 && onAddFamily && (
               <Button
-                variant="outline"
+                variant={"outline" as any}
                 size="sm"
                 onClick={onAddFamily}
                 className="bg-emerald-500/20 border-emerald-300/30 text-emerald-100 hover:bg-emerald-500/30"
@@ -315,9 +315,9 @@ export function FamilyProtectionHeader({
       <div className="bg-gradient-to-r from-emerald-50 to-blue-50 px-6 py-3">
         <motion.p
           className="text-sm text-gray-700 text-center italic"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.8 }}
+          initial={{  opacity: 0  }}
+          animate={{  opacity: 1  }}
+          transition={{  delay: 0.8  }}
         >
           {getFamilyImpactMessage(trustScore, familyMembersCount)}
         </motion.p>

@@ -169,9 +169,9 @@ export function ProfessionalOnboardingFlow({
         return (
           <motion.div
             key="step1"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
+            initial={{  opacity: 0, x: 20  }}
+            animate={{  opacity: 1, x: 0  }}
+            exit={{  opacity: 0, x: -20  }}
             className="space-y-6"
           >
             <div className="space-y-4">
@@ -227,9 +227,9 @@ export function ProfessionalOnboardingFlow({
         return (
           <motion.div
             key="step2"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
+            initial={{  opacity: 0, x: 20  }}
+            animate={{  opacity: 1, x: 0  }}
+            exit={{  opacity: 0, x: -20  }}
             className="space-y-6"
           >
             <div className="space-y-4">
@@ -271,7 +271,7 @@ export function ProfessionalOnboardingFlow({
                 {formData.licensed_states.length > 0 && (
                   <div className="mt-2 flex flex-wrap gap-2">
                     {formData.licensed_states.map(state => (
-                      <Badge key={state} variant="secondary" className="text-xs">
+                      <Badge key={state} variant={"secondary" as any} className="text-xs">
                         {state}
                       </Badge>
                     ))}
@@ -286,9 +286,9 @@ export function ProfessionalOnboardingFlow({
         return (
           <motion.div
             key="step3"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
+            initial={{  opacity: 0, x: 20  }}
+            animate={{  opacity: 1, x: 0  }}
+            exit={{  opacity: 0, x: -20  }}
             className="space-y-6"
           >
             <div className="space-y-4">
@@ -336,7 +336,7 @@ export function ProfessionalOnboardingFlow({
                     {formData.specializations.map(specId => {
                       const spec = SPECIALIZATIONS.find(s => s.id === specId);
                       return spec ? (
-                        <Badge key={spec.id} variant="secondary" className="text-xs">
+                        <Badge key={spec.id} variant={"secondary" as any} className="text-xs">
                           {spec.name}
                         </Badge>
                       ) : null;
@@ -352,9 +352,9 @@ export function ProfessionalOnboardingFlow({
         return (
           <motion.div
             key="step4"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
+            initial={{  opacity: 0, x: 20  }}
+            animate={{  opacity: 1, x: 0  }}
+            exit={{  opacity: 0, x: -20  }}
             className="space-y-6"
           >
             <div className="space-y-4">
@@ -433,8 +433,8 @@ export function ProfessionalOnboardingFlow({
       {/* Header */}
       <div className="text-center mb-8">
         <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
+          initial={{  y: 20, opacity: 0  }}
+          animate={{  y: 0, opacity: 1  }}
           className="flex items-center justify-center gap-3 mb-4"
         >
           <Scale className="h-8 w-8 text-blue-600" />
@@ -501,7 +501,7 @@ export function ProfessionalOnboardingFlow({
             <div>
               {currentStep > 1 && (
                 <Button
-                  variant="outline"
+                  variant={"outline" as any}
                   onClick={handlePrevious}
                   className="flex items-center gap-2"
                 >
@@ -511,7 +511,7 @@ export function ProfessionalOnboardingFlow({
               )}
               {onCancel && currentStep === 1 && (
                 <Button
-                  variant="outline"
+                  variant={"outline" as any}
                   onClick={onCancel}
                   className="text-gray-600"
                 >

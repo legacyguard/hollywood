@@ -33,14 +33,14 @@ export const FocusModeWrapper: React.FC<FocusModeWrapperProps> = ({
           {/* Left side - Step info */}
           <div className='flex items-center gap-4'>
             <div className='flex items-center gap-2'>
-              <Icon name='document-text' className='w-5 h-5 text-primary' />
+              <Icon name={"document-text" as any} className='w-5 h-5 text-primary' />
               <span className='font-semibold text-lg'>Will Creation</span>
             </div>
 
             {currentStepTitle && (
               <div className='hidden sm:flex items-center gap-3'>
                 <div className='w-px h-6 bg-border' />
-                <Badge variant='secondary' className='font-medium'>
+                <Badge variant={"secondary" as any} className='font-medium'>
                   Step {currentStepIndex ? currentStepIndex + 1 : 1} of{' '}
                   {totalSteps || 8}
                 </Badge>
@@ -54,12 +54,12 @@ export const FocusModeWrapper: React.FC<FocusModeWrapperProps> = ({
           {/* Right side - Exit button */}
           <div className='flex items-center gap-2'>
             <Button
-              variant='ghost'
+              variant={"ghost" as any}
               size='sm'
               onClick={exitFocusMode}
               className='text-muted-foreground hover:text-foreground'
             >
-              <Icon name='minimize-2' className='w-4 h-4 mr-2' />
+              <Icon name={"minimize-2" as any} className='w-4 h-4 mr-2' />
               Exit Focus Mode
             </Button>
 
@@ -67,12 +67,12 @@ export const FocusModeWrapper: React.FC<FocusModeWrapperProps> = ({
               <>
                 <div className='w-px h-6 bg-border mx-2' />
                 <Button
-                  variant='ghost'
+                  variant={"ghost" as any}
                   size='sm'
                   onClick={onExitWizard}
                   className='text-muted-foreground hover:text-foreground'
                 >
-                  <Icon name='x' className='w-4 h-4 mr-2' />
+                  <Icon name={"x" as any} className='w-4 h-4 mr-2' />
                   Close Wizard
                 </Button>
               </>

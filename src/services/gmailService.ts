@@ -280,7 +280,7 @@ export class GmailService {
       // Ensure proper padding
       const paddedData = base64Data + '=='.slice(0, (4 - base64Data.length % 4) % 4);
       const binaryString = atob(paddedData);
-      const bytes = new Uint8Array(binaryString.length);
+      const bytes = new Uint8Array(binaryString.length as ArrayBuffer);
       for (let i = 0; i < binaryString.length; i++) {
         bytes[i] = binaryString.charCodeAt(i);
       }

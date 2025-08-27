@@ -107,7 +107,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             // Clear pending action when Sofia is closed
             setSofiaPendingAction(null);
           }}
-          variant='floating'
+          variant={"floating" as any}
           currentPage={getCurrentPage()}
           pendingAction={sofiaPendingAction}
         />

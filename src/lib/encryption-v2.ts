@@ -41,10 +41,10 @@ export const encryptionServiceV2 = {
       const userId = 'current-user';
       const keys = getUserEncryptionKeys(userId);
       const message = decodeUTF8(value);
-      const nonce = nacl.randomBytes(nacl.secretbox.nonceLength);
+      const nonce = nacl.randomBytes(nacl.secretbox?.nonceLength);
       const keyBytes = decodeBase64(keys.secretKey).slice(0, 32);
       const encrypted = nacl.secretbox(message, nonce, keyBytes);
-      const combined = new Uint8Array(nonce.length + encrypted.length);
+      const combined = new Uint8Array(nonce.length + encrypted.length as ArrayBuffer);
       combined.set(nonce);
       combined.set(encrypted, nonce.length);
       localStorage.setItem(key, encodeBase64(combined));
@@ -61,8 +61,8 @@ export const encryptionServiceV2 = {
       const stored = localStorage.getItem(key);
       if (!stored) return null;
       const combined = decodeBase64(stored);
-      const nonce = combined.slice(0, nacl.secretbox.nonceLength);
-      const encrypted = combined.slice(nacl.secretbox.nonceLength);
+      const nonce = combined.slice(0, nacl.secretbox?.nonceLength);
+      const encrypted = combined.slice(nacl.secretbox?.nonceLength);
       const keyBytes = decodeBase64(keys.secretKey).slice(0, 32);
       const decrypted = nacl.secretbox.open(encrypted, nonce, keyBytes);
       if (!decrypted) return null;

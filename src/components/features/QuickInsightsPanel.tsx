@@ -133,7 +133,7 @@ export function QuickInsightsPanel({
                     <span className="text-2xl font-bold text-primary">
                       {formatInsightValue(insight)}
                     </span>
-                    <Badge variant="outline" className={getInsightColor(insight.impact)}>
+                    <Badge variant={"outline" as any} className={getInsightColor(insight.impact)}>
                       {insight.impact} impact
                     </Badge>
                   </div>
@@ -191,7 +191,7 @@ export function QuickInsightsPanel({
                       {insight.action_suggestion && (
                         <Button
                           size="sm"
-                          variant="ghost"
+                          variant={"ghost" as any}
                           onClick={() => onActionClick?.(insight.action_suggestion!)}
                           className="h-auto p-1 text-xs"
                         >

@@ -1,3 +1,4 @@
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 /**
  * A/B Testing System Tests
  * Validates core functionality of the A/B testing framework

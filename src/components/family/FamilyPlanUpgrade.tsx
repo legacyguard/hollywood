@@ -136,9 +136,9 @@ export function FamilyPlanUpgrade({
 
     return (
       <motion.div
-        whileHover={{ y: -4 }}
-        whileTap={{ scale: 0.98 }}
-        transition={{ duration: 0.2 }}
+        whileHover={{  y: -4  }}
+        whileTap={{  scale: 0.98  }}
+        transition={{  duration: 0.2  }}
       >
         <Card
           className={`relative cursor-pointer transition-all duration-200 ${
@@ -157,7 +157,7 @@ export function FamilyPlanUpgrade({
 
           {isCurrentPlan && (
             <div className="absolute top-4 right-4">
-              <Badge variant="secondary">Current</Badge>
+              <Badge variant={"secondary" as any}>Current</Badge>
             </div>
           )}
 
@@ -186,7 +186,7 @@ export function FamilyPlanUpgrade({
             )}
 
             {plan.trialDays && !isCurrentPlan && (
-              <Badge variant="outline" className="mt-2">
+              <Badge variant={"outline" as any} className="mt-2">
                 {plan.trialDays} days free trial
               </Badge>
             )}
@@ -279,7 +279,7 @@ export function FamilyPlanUpgrade({
                 className="gap-2"
               >
                 Yearly
-                <Badge variant="secondary" className="bg-green-100 text-green-800">
+                <Badge variant={"secondary" as any} className="bg-green-100 text-green-800">
                   Save up to 20%
                 </Badge>
               </Button>
@@ -292,9 +292,9 @@ export function FamilyPlanUpgrade({
               {Object.entries(FAMILY_PLANS).map(([key, plan]) => (
                 <motion.div
                   key={key}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: key === 'family' ? 0.1 : key === 'premium' ? 0.2 : 0 }}
+                  initial={{  opacity: 0, y: 20  }}
+                  animate={{  opacity: 1, y: 0  }}
+                  transition={{  delay: key === 'family' ? 0.1 : key === 'premium' ? 0.2 : 0  }}
                 >
                   <PlanCard planKey={key as 'free' | 'family' | 'premium'} plan={plan} />
                 </motion.div>
@@ -342,7 +342,7 @@ export function FamilyPlanUpgrade({
 
           {/* Action Buttons */}
           <div className="flex justify-between items-center pt-6 border-t">
-            <Button variant="outline" onClick={() => onOpenChange(false)}>
+            <Button variant={"outline" as any} onClick={() => onOpenChange(false)}>
               Maybe Later
             </Button>
 

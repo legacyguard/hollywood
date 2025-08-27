@@ -259,7 +259,7 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
                   </Badge>
 
                   <Button
-                    variant='ghost'
+                    variant={"ghost" as any}
                     size='sm'
                     className='text-blue-600 hover:text-blue-700'
                   >
@@ -296,7 +296,7 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
           <div className='space-y-6'>
             <div className='flex items-center justify-between'>
               <h3 className='text-2xl font-bold'>Real-Time Legal Validation</h3>
-              <Button variant='outline' onClick={() => setActiveUpgrade(null)}>
+              <Button variant={"outline" as any} onClick={() => setActiveUpgrade(null)}>
                 Back to Overview
               </Button>
             </div>
@@ -369,7 +369,7 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
               <h3 className='text-2xl font-bold'>
                 Multi-Language Document Generation
               </h3>
-              <Button variant='outline' onClick={() => setActiveUpgrade(null)}>
+              <Button variant={"outline" as any} onClick={() => setActiveUpgrade(null)}>
                 Back to Overview
               </Button>
             </div>
@@ -388,7 +388,7 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
 
                   <Button
                     className='mt-3 w-full'
-                    variant='outline'
+                    variant={"outline" as any}
                     size='sm'
                     onClick={() =>
                       generateDocument(
@@ -421,7 +421,7 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
               <h3 className='text-2xl font-bold'>
                 Family Tree & Inheritance Visualization
               </h3>
-              <Button variant='outline' onClick={() => setActiveUpgrade(null)}>
+              <Button variant={"outline" as any} onClick={() => setActiveUpgrade(null)}>
                 Back to Overview
               </Button>
             </div>
@@ -441,7 +441,7 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
               <h3 className='text-2xl font-bold'>
                 Template Library & Will Comparison
               </h3>
-              <Button variant='outline' onClick={() => setActiveUpgrade(null)}>
+              <Button variant={"outline" as any} onClick={() => setActiveUpgrade(null)}>
                 Back to Overview
               </Button>
             </div>
@@ -467,7 +467,7 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
               <h3 className='text-2xl font-bold'>
                 Emotional Guidance & Legacy Messages
               </h3>
-              <Button variant='outline' onClick={() => setActiveUpgrade(null)}>
+              <Button variant={"outline" as any} onClick={() => setActiveUpgrade(null)}>
                 Back to Overview
               </Button>
             </div>
@@ -488,7 +488,7 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
               <h3 className='text-2xl font-bold'>
                 Professional Review Network
               </h3>
-              <Button variant='outline' onClick={() => setActiveUpgrade(null)}>
+              <Button variant={"outline" as any} onClick={() => setActiveUpgrade(null)}>
                 Back to Overview
               </Button>
             </div>
@@ -552,7 +552,7 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
       </Tabs>
 
       <div className='flex justify-between items-center pt-6 border-t'>
-        <Button variant='outline' onClick={() => setIsUpgradeMode(false)}>
+        <Button variant={"outline" as any} onClick={() => setIsUpgradeMode(false)}>
           Exit Upgrade Mode
         </Button>
 

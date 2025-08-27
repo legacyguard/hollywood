@@ -225,22 +225,19 @@ export function LegacyGardenVisualization({
             <motion.div
               key={`sparkle_${i}`}
               className="absolute pointer-events-none"
-              initial={{
-                x: Math.random() * 100 + '%',
+              initial={{  x: Math.random() * 100 + '%',
                 y: Math.random() * 100 + '%',
                 scale: 0,
                 opacity: 0
-              }}
-              animate={{
-                scale: [0, 1, 0],
+               }}
+              animate={{  scale: [0, 1, 0],
                 opacity: [0, 1, 0],
                 rotate: 360
-              }}
-              transition={{
-                duration: 2 + Math.random() * 2,
+               }}
+              transition={{  duration: 2 + Math.random() * 2,
                 repeat: Infinity,
                 delay: Math.random() * 2
-              }}
+               }}
             >
               <Sparkles className="h-3 w-3 text-yellow-400" />
             </motion.div>
@@ -256,21 +253,18 @@ export function LegacyGardenVisualization({
             <motion.div
               key={`rain_${i}`}
               className="absolute pointer-events-none"
-              initial={{
-                x: Math.random() * 100 + '%',
+              initial={{  x: Math.random() * 100 + '%',
                 y: '-5%',
                 opacity: 0.4
-              }}
-              animate={{
-                y: '105%',
+               }}
+              animate={{  y: '105%',
                 opacity: [0.4, 0.6, 0]
-              }}
-              transition={{
-                duration: 1.5 + Math.random() * 0.5,
+               }}
+              transition={{  duration: 1.5 + Math.random() * 0.5,
                 repeat: Infinity,
                 delay: Math.random() * 1.5,
                 ease: 'linear'
-              }}
+               }}
             >
               <Droplets className="h-2 w-2 text-blue-400" />
             </motion.div>
@@ -283,8 +277,8 @@ export function LegacyGardenVisualization({
       return (
         <motion.div
           className="absolute top-4 right-4 pointer-events-none"
-          animate={{ rotate: 360 }}
-          transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+          animate={{  rotate: 360  }}
+          transition={{  duration: 20, repeat: Infinity, ease: 'linear'  }}
         >
           <Sun className="h-8 w-8 text-yellow-500 opacity-60" />
         </motion.div>
@@ -302,8 +296,8 @@ export function LegacyGardenVisualization({
         hoveredElement === element.id && interactive && 'scale-110',
         element.color
       )}
-      style={{
-        left: `${element.x}%`,
+      style={{ 
+        left: `${element.x }}%`,
         top: `${element.y}%`,
         opacity: element.unlocked ? 1 : 0.3
       }}
@@ -325,15 +319,13 @@ export function LegacyGardenVisualization({
 
       {element.type === 'butterfly' && animated && (
         <motion.div
-          animate={{
-            x: [0, 10, -5, 15, 0],
+          animate={{  x: [0, 10, -5, 15, 0],
             y: [0, -8, 3, -12, 0]
-          }}
-          transition={{
-            duration: 4 + Math.random() * 2,
+           }}
+          transition={{  duration: 4 + Math.random() * 2,
             repeat: Infinity,
             ease: 'easeInOut'
-          }}
+           }}
           className="absolute inset-0"
         >
           <div className="text-2xl select-none">{element.emoji}</div>
@@ -342,8 +334,8 @@ export function LegacyGardenVisualization({
 
       {hoveredElement === element.id && interactive && (
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{  opacity: 0, y: 10  }}
+          animate={{  opacity: 1, y: 0  }}
           className="absolute top-8 left-1/2 transform -translate-x-1/2 bg-black/75 text-white px-2 py-1 rounded text-xs whitespace-nowrap z-10"
         >
           {element.milestone}
@@ -391,8 +383,8 @@ export function LegacyGardenVisualization({
       {/* Clouds */}
       <motion.div
         className="absolute top-4 left-10 text-white opacity-60"
-        animate={{ x: [0, 20, 0] }}
-        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+        animate={{  x: [0, 20, 0]  }}
+        transition={{  duration: 8, repeat: Infinity, ease: 'easeInOut'  }}
       >
         <Cloud className="h-8 w-8" />
       </motion.div>
@@ -413,8 +405,8 @@ export function LegacyGardenVisualization({
         {/* Garden message */}
         <div className="absolute bottom-6 left-6 right-6">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{  opacity: 0, y: 20  }}
+            animate={{  opacity: 1, y: 0  }}
             className="bg-white/90 backdrop-blur-sm rounded-lg p-4 shadow-lg"
           >
             <h3 className="font-semibold text-green-800 mb-1">Your Legacy Garden</h3>

@@ -365,7 +365,7 @@ export default function SurvivorManualPage() {
     return (
       <DashboardLayout>
         <div className='min-h-screen bg-background flex items-center justify-center'>
-          <Icon name='loader' className='w-8 h-8 animate-spin text-primary' />
+          <Icon name={"loader" as any} className='w-8 h-8 animate-spin text-primary' />
           <span className='ml-3 text-muted-foreground'>
             Loading Family Guidance Manual...
           </span>
@@ -385,7 +385,7 @@ export default function SurvivorManualPage() {
                 <FadeIn duration={0.5} delay={0.2}>
                   <div className='flex items-center gap-3 mb-3'>
                     <div className='w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center'>
-                      <Icon name='book-open' className='w-6 h-6 text-primary' />
+                      <Icon name={"book-open" as any} className='w-6 h-6 text-primary' />
                     </div>
                     <h1 className='text-3xl lg:text-4xl font-bold font-heading text-card-foreground'>
                       Family Guidance Manual
@@ -395,7 +395,7 @@ export default function SurvivorManualPage() {
                 <FadeIn duration={0.5} delay={0.4}>
                   <p
                     className='text-lg leading-relaxed max-w-3xl mb-4'
-                    style={{ color: 'hsl(var(--muted-text))' }}
+                    style={{  color: 'hsl(var(--muted-text))'  }}
                   >
                     A step-by-step guide for your loved ones. Sofia is helping
                     you create a comprehensive manual that will give your family
@@ -409,8 +409,7 @@ export default function SurvivorManualPage() {
                       </span>
                     </div>
                     <div className='flex items-center gap-2'>
-                      <Icon
-                        name='check-circle'
+                      <Icon name={"check-circle" as any}
                         className='w-4 h-4 text-green-600'
                       />
                       <span className='text-sm text-muted-foreground'>
@@ -429,7 +428,7 @@ export default function SurvivorManualPage() {
                       size='lg'
                       onClick={() => setEditingEntry(null)}
                     >
-                      <Icon name='plus' className='w-5 h-5 mr-2' />
+                      <Icon name={"plus" as any} className='w-5 h-5 mr-2' />
                       Add Entry
                     </Button>
                   </DialogTrigger>
@@ -461,8 +460,7 @@ export default function SurvivorManualPage() {
                               {ENTRY_TYPES.map(type => (
                                 <SelectItem key={type.value} value={type.value}>
                                   <div className='flex items-center gap-2'>
-                                    <Icon
-                                      name={type.icon as never}
+                                    <Icon name={type.icon as any}
                                       className='w-4 h-4'
                                     />
                                     {type.label}
@@ -522,7 +520,7 @@ export default function SurvivorManualPage() {
                       <div className='flex justify-end gap-3 pt-4'>
                         <Button
                           type='button'
-                          variant='outline'
+                          variant={"outline" as any}
                           onClick={resetForm}
                         >
                           Cancel
@@ -530,15 +528,14 @@ export default function SurvivorManualPage() {
                         <Button type='submit' disabled={isSubmitting}>
                           {isSubmitting ? (
                             <>
-                              <Icon
-                                name='loader'
+                              <Icon name={"loader" as any}
                                 className='w-4 h-4 mr-2 animate-spin'
                               />
                               {editingEntry ? 'Updating...' : 'Adding...'}
                             </>
                           ) : (
                             <>
-                              <Icon name='save' className='w-4 h-4 mr-2' />
+                              <Icon name={"save" as any} className='w-4 h-4 mr-2' />
                               {editingEntry ? 'Update Entry' : 'Add Entry'}
                             </>
                           )}
@@ -558,7 +555,7 @@ export default function SurvivorManualPage() {
             <FadeIn duration={0.5} delay={0.8}>
               <Card className='p-12 text-center'>
                 <div className='w-16 h-16 bg-primary/10 rounded-full mx-auto mb-6 flex items-center justify-center'>
-                  <Icon name='book-open' className='w-8 h-8 text-primary' />
+                  <Icon name={"book-open" as any} className='w-8 h-8 text-primary' />
                 </div>
                 <h3 className='text-2xl font-bold mb-4'>
                   Creating Your Family Guidance Manual
@@ -569,7 +566,7 @@ export default function SurvivorManualPage() {
                   step-by-step guidance when they need it most.
                 </p>
                 <Button onClick={() => setIsDialogOpen(true)}>
-                  <Icon name='plus' className='w-4 h-4 mr-2' />
+                  <Icon name={"plus" as any} className='w-4 h-4 mr-2' />
                   Start Creating Manual
                 </Button>
               </Card>
@@ -588,7 +585,7 @@ export default function SurvivorManualPage() {
                   <div className='w-full bg-gray-200 rounded-full h-3 mb-4'>
                     <div
                       className='bg-primary h-3 rounded-full transition-all duration-300'
-                      style={{ width: `${completionPercentage}%` }}
+                      style={{  width: `${completionPercentage }}%` }}
                     />
                   </div>
                   <p className='text-sm text-muted-foreground'>
@@ -615,8 +612,7 @@ export default function SurvivorManualPage() {
                         <div
                           className={`w-10 h-10 bg-${typeConfig.color}-100 rounded-lg flex items-center justify-center`}
                         >
-                          <Icon
-                            name={typeConfig.icon as never}
+                          <Icon name={typeConfig.icon as any}
                             className={`w-5 h-5 text-${typeConfig.color}-600`}
                           />
                         </div>
@@ -628,7 +624,7 @@ export default function SurvivorManualPage() {
                             {typeConfig.description}
                           </p>
                         </div>
-                        <Badge variant='secondary' className='ml-auto'>
+                        <Badge variant={"secondary" as any} className='ml-auto'>
                           {typeEntries.filter(e => e.is_completed).length} of{' '}
                           {typeEntries.length} complete
                         </Badge>
@@ -659,7 +655,7 @@ export default function SurvivorManualPage() {
                                       {entry.tags.map(tag => (
                                         <Badge
                                           key={tag}
-                                          variant='outline'
+                                          variant={"outline" as any}
                                           className='text-xs'
                                         >
                                           {tag}
@@ -672,10 +668,10 @@ export default function SurvivorManualPage() {
                               <div className='flex gap-2'>
                                 <Button
                                   size='sm'
-                                  variant='outline'
+                                  variant={"outline" as any}
                                   onClick={() => handleEdit(entry)}
                                 >
-                                  <Icon name='pencil' className='w-4 h-4' />
+                                  <Icon name={"pencil" as any} className='w-4 h-4' />
                                 </Button>
                               </div>
                             </div>
@@ -688,9 +684,8 @@ export default function SurvivorManualPage() {
                             </div>
                             {entry.is_auto_generated && (
                               <div className='pl-7 mt-2'>
-                                <Badge variant='secondary' className='text-xs'>
-                                  <Icon
-                                    name='sparkles'
+                                <Badge variant={"secondary" as any} className='text-xs'>
+                                  <Icon name={"sparkles" as any}
                                     className='w-3 h-3 mr-1'
                                   />
                                   Auto-generated by Sofia

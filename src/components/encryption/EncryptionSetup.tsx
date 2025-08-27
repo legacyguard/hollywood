@@ -346,7 +346,7 @@ export function EncryptionSetup() {
                         'h-full transition-all duration-300',
                         getStrengthColor(passwordStrength.score)
                       )}
-                      style={{ width: `${(passwordStrength.score + 1) * 20}%` }}
+                      style={{  width: `${(passwordStrength.score + 1) * 20 }}%` }}
                     />
                   </div>
                   {passwordStrength.feedback.length > 0 && (
@@ -421,7 +421,7 @@ export function EncryptionSetup() {
         )}
 
         {error && (
-          <Alert variant='destructive' className='mt-4'>
+          <Alert variant={"destructive" as any} className='mt-4'>
             <AlertCircle className='h-4 w-4' />
             <AlertDescription>{error}</AlertDescription>
           </Alert>
@@ -430,7 +430,7 @@ export function EncryptionSetup() {
 
       <CardFooter className='flex justify-between'>
         {step > 1 && (
-          <Button variant='outline' onClick={handleBack} disabled={isLoading}>
+          <Button variant={"outline" as any} onClick={handleBack} disabled={isLoading}>
             Back
           </Button>
         )}

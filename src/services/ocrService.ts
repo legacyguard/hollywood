@@ -255,7 +255,7 @@ export class OCRService {
 
           textBlocks.push({
             text: paragraphText,
-            confidence: paragraph.confidence,
+            confidence: paragraph?.confidence,
             boundingBox: paragraphBbox,
             type: 'paragraph',
           });
@@ -577,7 +577,7 @@ export class OCRService {
   private calculateAverageConfidence(textBlocks: TextBlock[]): number {
     if (textBlocks.length === 0) return 0;
     const totalConfidence = textBlocks.reduce(
-      (sum, block) => sum + block.confidence,
+      (sum, block) => sum + block?.confidence,
       0
     );
     return totalConfidence / textBlocks.length;

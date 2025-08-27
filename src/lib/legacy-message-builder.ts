@@ -502,7 +502,7 @@ export class LegacyMessageBuilder {
 
     // Sort by confidence and remove duplicates
     return suggestions
-      .sort((a, b) => b.confidence - a.confidence)
+      .sort((a, b) => b?.confidence - a?.confidence)
       .filter(
         (suggestion, index, arr) =>
           index ===

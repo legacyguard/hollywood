@@ -132,10 +132,10 @@ export function ReviewCompletionNotifier({
   return (
     <AnimatePresence>
       <motion.div
-        initial={{ opacity: 0, y: 50, scale: 0.9 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        exit={{ opacity: 0, y: -50, scale: 0.9 }}
-        transition={{ type: "spring", duration: 0.5 }}
+        initial={{  opacity: 0, y: 50, scale: 0.9  }}
+        animate={{  opacity: 1, y: 0, scale: 1  }}
+        exit={{  opacity: 0, y: -50, scale: 0.9  }}
+        transition={{  type: "spring", duration: 0.5  }}
         className={cn('relative', className)}
       >
         {/* Main Notification Card */}
@@ -151,32 +151,30 @@ export function ReviewCompletionNotifier({
             <div className="absolute inset-0 bg-black/10" />
             <motion.div
               className="absolute -top-4 -right-4 w-24 h-24 rounded-full bg-white/20"
-              animate={{
-                scale: [1, 1.1, 1],
+              animate={{  scale: [1, 1.1, 1],
                 rotate: [0, 180, 360]
-              }}
-              transition={{
-                duration: 8,
+               }}
+              transition={{  duration: 8,
                 repeat: Infinity,
                 ease: "linear"
-              }}
+               }}
             />
 
             <div className="relative flex items-start justify-between">
               <div className="flex-1">
                 <motion.h2
                   className="text-2xl font-bold mb-2"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.2 }}
+                  initial={{  opacity: 0, x: -20  }}
+                  animate={{  opacity: 1, x: 0  }}
+                  transition={{  delay: 0.2  }}
                 >
                   {variant.title}
                 </motion.h2>
                 <motion.p
                   className="text-white/90 leading-relaxed"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.3 }}
+                  initial={{  opacity: 0, x: -20  }}
+                  animate={{  opacity: 1, x: 0  }}
+                  transition={{  delay: 0.3  }}
                 >
                   {variant.message}
                 </motion.p>
@@ -184,7 +182,7 @@ export function ReviewCompletionNotifier({
 
               {onDismiss && (
                 <Button
-                  variant="ghost"
+                  variant={"ghost" as any}
                   size="sm"
                   onClick={onDismiss}
                   className="text-white/80 hover:text-white hover:bg-white/20 relative z-10"
@@ -200,9 +198,9 @@ export function ReviewCompletionNotifier({
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <motion.div
                 className="text-center p-3 bg-white rounded-lg shadow-sm"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
+                initial={{  opacity: 0, y: 20  }}
+                animate={{  opacity: 1, y: 0  }}
+                transition={{  delay: 0.4  }}
               >
                 <div className={cn(
                   'text-2xl font-bold mb-1',
@@ -216,9 +214,9 @@ export function ReviewCompletionNotifier({
 
               <motion.div
                 className="text-center p-3 bg-white rounded-lg shadow-sm"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 }}
+                initial={{  opacity: 0, y: 20  }}
+                animate={{  opacity: 1, y: 0  }}
+                transition={{  delay: 0.5  }}
               >
                 <div className="text-2xl font-bold text-emerald-600 mb-1">
                   +{result.trust_score_impact}
@@ -228,9 +226,9 @@ export function ReviewCompletionNotifier({
 
               <motion.div
                 className="text-center p-3 bg-white rounded-lg shadow-sm"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 }}
+                initial={{  opacity: 0, y: 20  }}
+                animate={{  opacity: 1, y: 0  }}
+                transition={{  delay: 0.6  }}
               >
                 <div className="text-2xl font-bold text-blue-600 mb-1">
                   {result.recommendations.length}
@@ -240,9 +238,9 @@ export function ReviewCompletionNotifier({
 
               <motion.div
                 className="text-center p-3 bg-white rounded-lg shadow-sm"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.7 }}
+                initial={{  opacity: 0, y: 20  }}
+                animate={{  opacity: 1, y: 0  }}
+                transition={{  delay: 0.7  }}
               >
                 <div className="text-2xl font-bold text-purple-600 mb-1">
                   {result.legal_compliance_score}%
@@ -280,9 +278,9 @@ export function ReviewCompletionNotifier({
                 {result.recommendations.slice(0, 2).map((rec, index) => (
                   <motion.div
                     key={index}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.8 + (index * 0.1) }}
+                    initial={{  opacity: 0, x: -20  }}
+                    animate={{  opacity: 1, x: 0  }}
+                    transition={{  delay: 0.8 + (index * 0.1)  }}
                     className="flex items-start gap-3 p-3 bg-green-50 rounded-lg"
                   >
                     <ThumbsUp className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
@@ -296,9 +294,9 @@ export function ReviewCompletionNotifier({
                 {result.issues_found.slice(0, 2).map((issue, index) => (
                   <motion.div
                     key={index}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 1.0 + (index * 0.1) }}
+                    initial={{  opacity: 0, x: -20  }}
+                    animate={{  opacity: 1, x: 0  }}
+                    transition={{  delay: 1.0 + (index * 0.1)  }}
                     className="flex items-start gap-3 p-3 bg-orange-50 rounded-lg"
                   >
                     <AlertTriangle className="h-4 w-4 text-orange-600 mt-0.5 flex-shrink-0" />
@@ -325,7 +323,7 @@ export function ReviewCompletionNotifier({
                 <Dialog open={showRating} onOpenChange={setShowRating}>
                   <DialogTrigger asChild>
                     <Button
-                      variant="outline"
+                      variant={"outline" as any}
                       className="flex-1 sm:flex-none"
                     >
                       <Star className="h-4 w-4 mr-2" />
@@ -378,7 +376,7 @@ export function ReviewCompletionNotifier({
                       {/* Submit */}
                       <div className="flex gap-3">
                         <Button
-                          variant="outline"
+                          variant={"outline" as any}
                           onClick={() => setShowRating(false)}
                           className="flex-1"
                         >
@@ -421,22 +419,19 @@ export function ReviewCompletionNotifier({
               <motion.div
                 key={i}
                 className="absolute w-2 h-2 bg-yellow-400 rounded-full"
-                initial={{
-                  x: Math.random() * 400,
+                initial={{  x: Math.random() * 400,
                   y: '100%',
                   scale: 0,
                   rotate: 0,
-                }}
-                animate={{
-                  y: '-10%',
+                 }}
+                animate={{  y: '-10%',
                   scale: [0, 1, 0],
                   rotate: 360,
-                }}
-                transition={{
-                  duration: 3 + Math.random() * 2,
+                 }}
+                transition={{  duration: 3 + Math.random() * 2,
                   delay: Math.random() * 2,
                   ease: 'easeOut',
-                }}
+                 }}
               />
             ))}
           </div>

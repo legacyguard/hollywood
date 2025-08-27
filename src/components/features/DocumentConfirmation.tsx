@@ -187,7 +187,7 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
         <Card className='p-6 bg-card border-card-border'>
           <div className='flex items-center gap-3 mb-4'>
             <div className='p-2 bg-primary/10 rounded-lg'>
-              <Icon name='documents' className='w-5 h-5 text-primary' />
+              <Icon name={"documents" as any} className='w-5 h-5 text-primary' />
             </div>
             <div className='flex-1'>
               <h3 className='font-semibold text-lg'>Document Preview</h3>
@@ -215,8 +215,8 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
           <div className='space-y-2'>
             <div className='flex items-center gap-2'>
               <span className='text-sm font-medium'>Extracted Text</span>
-              <Badge variant='outline' className='text-xs'>
-                {(analysisResult.confidence * 100).toFixed(0)}% confidence
+              <Badge variant={"outline" as any} className='text-xs'>
+                {(analysisResult?.confidence * 100).toFixed(0)}% confidence
               </Badge>
             </div>
             <div className='p-3 bg-muted rounded-lg max-h-32 overflow-y-auto'>
@@ -232,7 +232,7 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
         <Card className='p-6 bg-card border-card-border'>
           <div className='flex items-center gap-3 mb-6'>
             <div className='p-2 bg-primary/10 rounded-lg'>
-              <Icon name='brain' className='w-5 h-5 text-primary' />
+              <Icon name={"brain" as any} className='w-5 h-5 text-primary' />
             </div>
             <div>
               <h3 className='font-semibold text-lg'>AI Analysis Results</h3>
@@ -249,12 +249,12 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
                 <h4 className='font-medium'>Category</h4>
                 <Icon
                   name={getConfidenceIcon(
-                    editableData.suggestedCategory.confidence
+                    editableData.suggestedCategory?.confidence
                   )}
                   className={cn(
                     'w-4 h-4',
                     getConfidenceColor(
-                      editableData.suggestedCategory.confidence
+                      editableData.suggestedCategory?.confidence
                     )
                   )}
                 />
@@ -293,11 +293,11 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
                 <h4 className='font-medium'>Document Title</h4>
                 <Icon
                   name={getConfidenceIcon(
-                    editableData.suggestedTitle.confidence
+                    editableData.suggestedTitle?.confidence
                   )}
                   className={cn(
                     'w-4 h-4',
-                    getConfidenceColor(editableData.suggestedTitle.confidence)
+                    getConfidenceColor(editableData.suggestedTitle?.confidence)
                   )}
                 />
               </div>
@@ -320,17 +320,16 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
                   <h4 className='font-medium'>Expiration Date</h4>
                   <Icon
                     name={getConfidenceIcon(
-                      editableData.expirationDate.confidence
+                      editableData.expirationDate?.confidence
                     )}
                     className={cn(
                       'w-4 h-4',
-                      getConfidenceColor(editableData.expirationDate.confidence)
+                      getConfidenceColor(editableData.expirationDate?.confidence)
                     )}
                   />
                 </div>
                 <div className='flex items-center gap-2 p-2 bg-status-warning/10 rounded-md'>
-                  <Icon
-                    name='calendar'
+                  <Icon name={"calendar" as any}
                     className='w-4 h-4 text-status-warning'
                   />
                   <span className='text-sm'>
@@ -359,8 +358,8 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
                         </span>
                         <span className='text-sm'>{item.value}</span>
                       </div>
-                      <Badge variant='outline' className='text-xs'>
-                        {(item.confidence * 100).toFixed(0)}%
+                      <Badge variant={"outline" as any} className='text-xs'>
+                        {(item?.confidence * 100).toFixed(0)}%
                       </Badge>
                     </div>
                   ))}
@@ -374,7 +373,7 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
                 <h4 className='font-medium'>Suggested Tags</h4>
                 <div className='flex flex-wrap gap-2'>
                   {editableData.suggestedTags.map((tag, index) => (
-                    <Badge key={index} variant='secondary'>
+                    <Badge key={index} variant={"secondary" as any}>
                       {tag}
                     </Badge>
                   ))}
@@ -387,8 +386,7 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
               editableData.versioningSuggestion) && (
               <div className='space-y-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800'>
                 <div className='flex items-center gap-2'>
-                  <Icon
-                    name='clock'
+                  <Icon name={"clock" as any}
                     className='w-5 h-5 text-yellow-600 dark:text-yellow-400'
                   />
                   <h4 className='font-medium text-yellow-800 dark:text-yellow-200'>
@@ -431,10 +429,10 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
                             {version.fileName}
                           </span>
                           <div className='flex items-center gap-2'>
-                            <Badge variant='outline' className='text-xs'>
+                            <Badge variant={"outline" as any} className='text-xs'>
                               v{version.versionNumber}
                             </Badge>
-                            <Badge variant='secondary' className='text-xs'>
+                            <Badge variant={"secondary" as any} className='text-xs'>
                               {(version.similarityScore * 100).toFixed(0)}%
                               similar
                             </Badge>
@@ -478,14 +476,13 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
                       />
                       <div className='flex-1'>
                         <div className='flex items-center gap-2'>
-                          <Icon
-                            name='refresh-cw'
+                          <Icon name={"refresh-cw" as any}
                             className='w-4 h-4 text-yellow-600'
                           />
                           <span className='font-medium'>
                             Replace older version
                           </span>
-                          <Badge variant='outline' className='text-xs'>
+                          <Badge variant={"outline" as any} className='text-xs'>
                             Recommended
                           </Badge>
                         </div>
@@ -523,8 +520,7 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
                       className='mt-0.5'
                     />
                     <div className='flex items-center gap-2'>
-                      <Icon
-                        name='file-plus'
+                      <Icon name={"file-plus" as any}
                         className='w-4 h-4 text-blue-600'
                       />
                       <span className='font-medium'>
@@ -541,7 +537,7 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
               editableData.suggestedNewBundle) && (
               <div className='space-y-4 p-4 bg-primary/5 rounded-lg border'>
                 <div className='flex items-center gap-2'>
-                  <Icon name='link' className='w-5 h-5 text-primary' />
+                  <Icon name={"link" as any} className='w-5 h-5 text-primary' />
                   <h4 className='font-medium text-primary'>
                     Intelligent Document Linking
                   </h4>
@@ -577,10 +573,10 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
                               <span className='font-medium'>
                                 {bundle.bundleName}
                               </span>
-                              <Badge variant='outline' className='text-xs'>
+                              <Badge variant={"outline" as any} className='text-xs'>
                                 {bundle.documentCount} documents
                               </Badge>
-                              <Badge variant='secondary' className='text-xs'>
+                              <Badge variant={"secondary" as any} className='text-xs'>
                                 {bundle.matchScore}% match
                               </Badge>
                             </div>
@@ -626,11 +622,11 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
                       />
                       <div className='flex-1 space-y-2'>
                         <div className='flex items-center gap-2'>
-                          <Icon name='plus' className='w-4 h-4 text-primary' />
+                          <Icon name={"plus" as any} className='w-4 h-4 text-primary' />
                           <span className='font-medium'>Create new bundle</span>
-                          <Badge variant='outline' className='text-xs'>
+                          <Badge variant={"outline" as any} className='text-xs'>
                             {(
-                              editableData.suggestedNewBundle.confidence * 100
+                              editableData.suggestedNewBundle?.confidence * 100
                             ).toFixed(0)}
                             % confidence
                           </Badge>
@@ -667,7 +663,7 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
                     }}
                   />
                   <div className='flex items-center gap-2'>
-                    <Icon name='x' className='w-4 h-4 text-muted-foreground' />
+                    <Icon name={"x" as any} className='w-4 h-4 text-muted-foreground' />
                     <span>Don't link to any bundle</span>
                   </div>
                 </label>
@@ -679,7 +675,7 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
           <div className='flex gap-3 mt-6 pt-6 border-t'>
             <Button
               onClick={onCancel}
-              variant='outline'
+              variant={"outline" as any}
               disabled={isProcessing}
               className='flex-1'
             >
@@ -712,12 +708,12 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
             >
               {isProcessing ? (
                 <>
-                  <Icon name='upload' className='w-4 h-4 animate-pulse' />
+                  <Icon name={"upload" as any} className='w-4 h-4 animate-pulse' />
                   Saving...
                 </>
               ) : (
                 <>
-                  <Icon name='check' className='w-4 h-4' />
+                  <Icon name={"check" as any} className='w-4 h-4' />
                   Confirm & Save
                 </>
               )}

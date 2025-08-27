@@ -260,16 +260,15 @@ export const VaultAssetSelector: React.FC<VaultAssetSelectorProps> = ({
               document vault
             </p>
           </div>
-          <Button onClick={onClose} variant='ghost' size='sm'>
-            <Icon name='x' className='w-4 h-4' />
+          <Button onClick={onClose} variant={"ghost" as any} size='sm'>
+            <Icon name={"x" as any} className='w-4 h-4' />
           </Button>
         </div>
 
         {/* Search */}
         <div className='p-6 border-b border-border'>
           <div className='relative'>
-            <Icon
-              name='search'
+            <Icon name={"search" as any}
               className='absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground'
             />
             <Input
@@ -286,8 +285,7 @@ export const VaultAssetSelector: React.FC<VaultAssetSelectorProps> = ({
           {loading ? (
             <div className='flex items-center justify-center py-12'>
               <div className='text-center'>
-                <Icon
-                  name='loader'
+                <Icon name={"loader" as any}
                   className='w-8 h-8 animate-spin mx-auto mb-4 text-muted-foreground'
                 />
                 <p className='text-muted-foreground'>Loading your assets...</p>
@@ -295,8 +293,7 @@ export const VaultAssetSelector: React.FC<VaultAssetSelectorProps> = ({
             </div>
           ) : filteredAssets.length === 0 ? (
             <div className='text-center py-12'>
-              <Icon
-                name='folder-open'
+              <Icon name={"folder-open" as any}
                 className='w-12 h-12 mx-auto mb-4 text-muted-foreground'
               />
               <h3 className='font-semibold mb-2'>No Assets Found</h3>
@@ -338,11 +335,11 @@ export const VaultAssetSelector: React.FC<VaultAssetSelectorProps> = ({
                       )}
 
                       <div className='flex items-center gap-2 mt-2'>
-                        <Badge variant='secondary' className='text-xs'>
+                        <Badge variant={"secondary" as any} className='text-xs'>
                           {asset.documentType}
                         </Badge>
                         {asset.bundle && (
-                          <Badge variant='outline' className='text-xs'>
+                          <Badge variant={"outline" as any} className='text-xs'>
                             {asset.bundle.name}
                           </Badge>
                         )}
@@ -351,7 +348,7 @@ export const VaultAssetSelector: React.FC<VaultAssetSelectorProps> = ({
 
                     {selectedIds.includes(asset.id) && (
                       <div className='text-primary'>
-                        <Icon name='check-circle' className='w-5 h-5' />
+                        <Icon name={"check-circle" as any} className='w-5 h-5' />
                       </div>
                     )}
                   </div>
@@ -369,7 +366,7 @@ export const VaultAssetSelector: React.FC<VaultAssetSelectorProps> = ({
               selected
             </p>
             <div className='flex items-center gap-2'>
-              <Button onClick={onClose} variant='outline'>
+              <Button onClick={onClose} variant={"outline" as any}>
                 Cancel
               </Button>
               <Button
@@ -377,7 +374,7 @@ export const VaultAssetSelector: React.FC<VaultAssetSelectorProps> = ({
                 disabled={selectedIds.length === 0}
                 className='bg-primary hover:bg-primary-hover text-primary-foreground'
               >
-                <Icon name='check' className='w-4 h-4 mr-2' />
+                <Icon name={"check" as any} className='w-4 h-4 mr-2' />
                 Add Selected Assets
               </Button>
             </div>

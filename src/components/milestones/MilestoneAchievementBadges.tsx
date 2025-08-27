@@ -142,10 +142,10 @@ export function MilestoneAchievementBadges({
                 data.achieved && rarityEffects.glowClass,
                 isHovered && 'scale-110'
               )}
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: index * 0.1, duration: 0.3 }}
-              whileHover={{ scale: 1.1 }}
+              initial={{  scale: 0, opacity: 0  }}
+              animate={{  scale: 1, opacity: 1  }}
+              transition={{  delay: index * 0.1, duration: 0.3  }}
+              whileHover={{  scale: 1.1  }}
               onHoverStart={() => setHoveredBadge(data.milestone.id)}
               onHoverEnd={() => setHoveredBadge(null)}
               onClick={() => data.achieved && onBadgeClick?.(data.milestone)}
@@ -175,19 +175,17 @@ export function MilestoneAchievementBadges({
                       <motion.div
                         key={i}
                         className="absolute w-1 h-1 bg-white rounded-full"
-                        style={{
-                          top: `${20 + Math.sin(i * (360 / rarityEffects.sparkleCount) * (Math.PI / 180)) * 25}%`,
+                        style={{ 
+                          top: `${20 + Math.sin(i * (360 / rarityEffects.sparkleCount) * (Math.PI / 180)) * 25 }}%`,
                           left: `${50 + Math.cos(i * (360 / rarityEffects.sparkleCount) * (Math.PI / 180)) * 30}%`,
                         }}
-                        animate={{
-                          opacity: [0, 1, 0],
+                        animate={{  opacity: [0, 1, 0],
                           scale: [0.5, 1, 0.5],
-                        }}
-                        transition={{
-                          duration: 2,
+                         }}
+                        transition={{  duration: 2,
                           repeat: Infinity,
                           delay: i * 0.3,
-                        }}
+                         }}
                       />
                     ))}
                   </>
@@ -197,14 +195,12 @@ export function MilestoneAchievementBadges({
                 {data.achieved && data.rarity === 'legendary' && (
                   <motion.div
                     className="absolute inset-0 rounded-full bg-yellow-300/20"
-                    animate={{
-                      scale: [1, 1.2, 1],
+                    animate={{  scale: [1, 1.2, 1],
                       opacity: [0.3, 0.1, 0.3],
-                    }}
-                    transition={{
-                      duration: 2,
+                     }}
+                    transition={{  duration: 2,
                       repeat: Infinity,
-                    }}
+                     }}
                   />
                 )}
               </div>
@@ -212,7 +208,7 @@ export function MilestoneAchievementBadges({
               {/* Rarity indicator */}
               <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2">
                 <Badge
-                  variant="outline"
+                  variant={"outline" as any}
                   className={cn(
                     'text-xs px-1 py-0 h-4',
                     data.rarity === 'legendary' && 'border-yellow-400 text-yellow-600 bg-yellow-50',
@@ -313,7 +309,7 @@ export function MilestoneAchievementBadges({
     <div className={cn('', className)}>
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold">Achievement Badges</h3>
-        <Badge variant="outline" className="text-xs">
+        <Badge variant={"outline" as any} className="text-xs">
           {achievedMilestones.length} / {badgeData.length}
         </Badge>
       </div>

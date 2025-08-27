@@ -318,8 +318,8 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
               {storyTemplates.map((template) => (
                 <motion.div
                   key={template.id}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                  whileHover={{  scale: 1.02  }}
+                  whileTap={{  scale: 0.98  }}
                 >
                   <Card 
                     className="cursor-pointer hover:border-blue-300 transition-colors"
@@ -335,7 +335,7 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
                           <p className="text-sm text-gray-600 mt-1">{template.description}</p>
                           <div className="flex flex-wrap gap-1 mt-2">
                             {template.suggestedContent.map((content) => (
-                              <Badge key={content} variant="secondary" className="text-xs">
+                              <Badge key={content} variant={"secondary" as any} className="text-xs">
                                 {content}
                               </Badge>
                             ))}
@@ -349,7 +349,7 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
             </div>
             <div className="flex justify-end gap-2 mt-4">
               <Button 
-                variant="outline" 
+                variant={"outline" as any} 
                 onClick={() => createNewStory()}
               >
                 Start from Scratch
@@ -383,7 +383,7 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
                 </div>
               </div>
               <div className="flex gap-2">
-                <Button variant="outline" onClick={() => setIsCreating(false)}>
+                <Button variant={"outline" as any} onClick={() => setIsCreating(false)}>
                   Cancel
                 </Button>
                 <Button onClick={saveStory}>
@@ -404,7 +404,7 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
                 {/* Content Creation Tools */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                   <Button
-                    variant="outline"
+                    variant={"outline" as any}
                     className="gap-2"
                     onClick={() => {
                       const text = prompt('Enter your story text:');
@@ -416,7 +416,7 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
                   </Button>
                   
                   <Button
-                    variant="outline"
+                    variant={"outline" as any}
                     className="gap-2"
                     onClick={() => startRecording('audio')}
                     disabled={isRecording}
@@ -426,7 +426,7 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
                   </Button>
                   
                   <Button
-                    variant="outline"
+                    variant={"outline" as any}
                     className="gap-2"
                     onClick={() => startRecording('video')}
                     disabled={isRecording}
@@ -436,7 +436,7 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
                   </Button>
                   
                   <Button
-                    variant="outline"
+                    variant={"outline" as any}
                     className="gap-2"
                     onClick={() => fileInputRef.current?.click()}
                   >
@@ -448,8 +448,8 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
                 {/* Recording Interface */}
                 {isRecording && (
                   <motion.div 
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    initial={{  opacity: 0, y: -10  }}
+                    animate={{  opacity: 1, y: 0  }}
                     className="bg-red-50 border border-red-200 rounded-lg p-4"
                   >
                     <div className="flex items-center justify-between">
@@ -461,7 +461,7 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
                       </div>
                       <Button
                         size="sm"
-                        variant="outline"
+                        variant={"outline" as any}
                         onClick={stopRecording}
                         className="gap-2"
                       >
@@ -479,9 +479,9 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
                     {activeStory.contents.map((content, index) => (
                       <motion.div
                         key={content.id}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
+                        initial={{  opacity: 0, y: 10  }}
+                        animate={{  opacity: 1, y: 0  }}
+                        exit={{  opacity: 0, y: -10  }}
                         className="bg-gray-50 rounded-lg p-3 flex items-center justify-between"
                       >
                         <div className="flex items-center gap-3">
@@ -505,7 +505,7 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
                         </div>
                         <Button
                           size="sm"
-                          variant="ghost"
+                          variant={"ghost" as any}
                           onClick={() => removeContent(content.id)}
                           className="text-red-600 hover:text-red-700"
                         >
@@ -536,7 +536,7 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
                           <p className="text-gray-700">{prompt}</p>
                           <Button 
                             size="sm" 
-                            variant="link" 
+                            variant={"link" as any} 
                             className="p-0 h-auto mt-2"
                             onClick={() => {
                               const response = prompt('Your response:');
@@ -611,8 +611,8 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
         {stories.map((story) => (
           <motion.div
             key={story.id}
-            whileHover={{ y: -2 }}
-            transition={{ duration: 0.2 }}
+            whileHover={{  y: -2  }}
+            transition={{  duration: 0.2  }}
           >
             <Card className="hover:shadow-lg transition-shadow">
               <CardHeader className="pb-2">
@@ -636,12 +636,12 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
                 
                 <div className="flex flex-wrap gap-1 mb-3">
                   {story.tags.slice(0, 3).map((tag) => (
-                    <Badge key={tag} variant="outline" className="text-xs">
+                    <Badge key={tag} variant={"outline" as any} className="text-xs">
                       {tag}
                     </Badge>
                   ))}
                   {story.tags.length > 3 && (
-                    <Badge variant="outline" className="text-xs">
+                    <Badge variant={"outline" as any} className="text-xs">
                       +{story.tags.length - 3}
                     </Badge>
                   )}
@@ -650,7 +650,7 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
                 <div className="flex gap-2">
                   <Button
                     size="sm"
-                    variant="outline"
+                    variant={"outline" as any}
                     onClick={() => setActiveStory(story)}
                     className="gap-1"
                   >
@@ -659,7 +659,7 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
                   </Button>
                   <Button
                     size="sm"
-                    variant="outline"
+                    variant={"outline" as any}
                     className="gap-1"
                   >
                     <Play className="h-3 w-3" />
@@ -667,7 +667,7 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
                   </Button>
                   <Button
                     size="sm"
-                    variant="outline"
+                    variant={"outline" as any}
                     className="gap-1"
                   >
                     <Share2 className="h-3 w-3" />

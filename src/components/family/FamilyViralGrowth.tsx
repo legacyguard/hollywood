@@ -248,7 +248,7 @@ export function FamilyViralGrowth({
               <CardTitle className="text-lg">Family Circle Progress</CardTitle>
             </div>
             <Button
-              variant="outline"
+              variant={"outline" as any}
               size="sm"
               onClick={() => setShowMilestones(true)}
               className="gap-2"
@@ -270,7 +270,7 @@ export function FamilyViralGrowth({
                   <nextMilestone.icon className="h-4 w-4 text-blue-600" />
                   <span className="font-medium">{nextMilestone.title}</span>
                 </div>
-                <Badge variant="secondary">
+                <Badge variant={"secondary" as any}>
                   {currentMembers.length}/{nextMilestone.targetCount}
                 </Badge>
               </div>
@@ -308,7 +308,7 @@ export function FamilyViralGrowth({
               Invite Family Member
             </Button>
             {currentMembers.length > 0 && (
-              <Button variant="outline" className="gap-2">
+              <Button variant={"outline" as any} className="gap-2">
                 <Share2 className="h-4 w-4" />
                 Share Progress
               </Button>
@@ -323,10 +323,10 @@ export function FamilyViralGrowth({
           <Dialog open={showInvitePrompt} onOpenChange={setShowInvitePrompt}>
             <DialogContent className="max-w-md">
               <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.2 }}
+                initial={{  opacity: 0, scale: 0.95  }}
+                animate={{  opacity: 1, scale: 1  }}
+                exit={{  opacity: 0, scale: 0.95  }}
+                transition={{  duration: 0.2  }}
               >
                 <DialogHeader>
                   <DialogTitle className="text-center">
@@ -358,7 +358,7 @@ export function FamilyViralGrowth({
 
                   <div className="flex gap-3">
                     <Button
-                      variant="outline"
+                      variant={"outline" as any}
                       onClick={() => setShowInvitePrompt(false)}
                       className="flex-1"
                     >

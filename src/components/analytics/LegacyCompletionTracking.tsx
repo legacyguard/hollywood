@@ -4,14 +4,12 @@ import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { Progress } from '../ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
-import { Separator } from '../ui/separator';
-import { 
-  Target, 
-  CheckCircle, 
-  Clock, 
+import {
+  Target,
+  CheckCircle,
+  Clock,
   Calendar,
-  TrendingUp, 
-  Award, 
+  TrendingUp,
   MapPin,
   Route,
   Flag,
@@ -25,10 +23,10 @@ import {
   Crown,
   Sparkles,
   BarChart3,
-  Timeline,
+  BarChart3 as Timeline,
   Plus
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 interface LegacyArea {
   id: string;
@@ -106,13 +104,13 @@ interface LegacyCompletionTrackingProps {
 
 export const LegacyCompletionTracking: React.FC<LegacyCompletionTrackingProps> = ({
   onTaskStart,
-  onGoalCreate,
-  onMilestoneAchieved
+  onGoalCreate: _onGoalCreate,
+  onMilestoneAchieved: _onMilestoneAchieved
 }) => {
   const [legacyAreas, setLegacyAreas] = useState<LegacyArea[]>([]);
   const [goals, setGoals] = useState<Goal[]>([]);
   const [achievements, setAchievements] = useState<Achievement[]>([]);
-  const [selectedTimeframe, setSelectedTimeframe] = useState<'week' | 'month' | 'quarter' | 'year'>('month');
+  const [_selectedTimeframe, _setSelectedTimeframe] = useState<'week' | 'month' | 'quarter' | 'year'>('month');
   const [showRoadmap, setShowRoadmap] = useState(false);
   const [currentStreak, setCurrentStreak] = useState(0);
   const [totalRewardPoints, setTotalRewardPoints] = useState(0);
@@ -336,7 +334,7 @@ export const LegacyCompletionTracking: React.FC<LegacyCompletionTrackingProps> =
 
   const overallCompleteness = useMemo(() => {
     const totalTasks = legacyAreas.reduce((sum, area) => sum + area.tasks.length, 0);
-    const completedTasks = legacyAreas.reduce((sum, area) => 
+    const completedTasks = legacyAreas.reduce((sum, area) =>
       sum + area.tasks.filter(task => task.status === 'completed').length, 0
     );
     return totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
@@ -456,7 +454,7 @@ export const LegacyCompletionTracking: React.FC<LegacyCompletionTrackingProps> =
         </CardHeader>
         <CardContent>
           <Progress value={overallCompleteness} className="h-3 mb-4" />
-          
+
           {/* Quick Stats */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
             <div className="flex items-center gap-2">
@@ -499,14 +497,14 @@ export const LegacyCompletionTracking: React.FC<LegacyCompletionTrackingProps> =
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {availableTasks.map((task, index) => (
+                {availableTasks.map((task) => (
                   <div key={task.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
                         <Badge className={getPriorityColor(task.impact)}>
                           {task.impact}
                         </Badge>
-                        <Badge variant="outline" className="text-xs">
+                        <Badge variant={"outline" as any} className="text-xs">
                           ~{task.estimatedMinutes}min
                         </Badge>
                         <span className="text-xs text-gray-500">
@@ -561,7 +559,7 @@ export const LegacyCompletionTracking: React.FC<LegacyCompletionTrackingProps> =
                       </div>
                       <Progress value={area.completeness} className="h-2" />
                     </div>
-                    
+
                     <div className="flex items-center justify-between text-xs text-gray-500">
                       <span>{area.tasks.filter(t => t.status === 'completed').length}/{area.tasks.length} tasks</span>
                       <span>{area.estimatedTime}</span>
@@ -596,7 +594,7 @@ export const LegacyCompletionTracking: React.FC<LegacyCompletionTrackingProps> =
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-medium">Personal Legacy Roadmap</h3>
             <Button
-              variant="outline"
+              variant={"outline" as any}
               onClick={() => setShowRoadmap(!showRoadmap)}
               className="gap-2"
             >
@@ -611,14 +609,14 @@ export const LegacyCompletionTracking: React.FC<LegacyCompletionTrackingProps> =
               <div className="relative">
                 {/* Timeline Line */}
                 <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gray-200"></div>
-                
+
                 <div className="space-y-8">
-                  {legacyAreas.map((area, index) => (
+                  {legacyAreas.map((area) => (
                     <div key={area.id} className="relative flex items-start gap-4">
                       {/* Timeline Node */}
                       <div className={`w-16 h-16 rounded-full border-4 flex items-center justify-center ${
-                        area.completeness >= 100 
-                          ? 'bg-green-100 border-green-500' 
+                        area.completeness >= 100
+                          ? 'bg-green-100 border-green-500'
                           : area.completeness > 0
                           ? 'bg-blue-100 border-blue-500'
                           : 'bg-gray-100 border-gray-300'
@@ -641,7 +639,7 @@ export const LegacyCompletionTracking: React.FC<LegacyCompletionTrackingProps> =
                           </Badge>
                         </div>
                         <p className="text-sm text-gray-600 mb-2">{area.description}</p>
-                        
+
                         <div className="flex items-center gap-4 text-xs text-gray-500 mb-2">
                           <span>{area.completeness}% complete</span>
                           <span>{area.estimatedTime}</span>
@@ -704,7 +702,7 @@ export const LegacyCompletionTracking: React.FC<LegacyCompletionTrackingProps> =
                       </div>
                       <Progress value={goal.currentProgress} className="h-2" />
                     </div>
-                    
+
                     <div className="flex items-center justify-between text-xs text-gray-500">
                       <div className="flex items-center gap-1">
                         <Calendar className="h-3 w-3" />
@@ -717,7 +715,7 @@ export const LegacyCompletionTracking: React.FC<LegacyCompletionTrackingProps> =
                     </div>
 
                     <div className="flex items-center justify-between">
-                      <Badge variant="outline" className="text-xs">
+                      <Badge variant={"outline" as any} className="text-xs">
                         {goal.category.replace('-', ' ')}
                       </Badge>
                       <div className={`text-xs ${goal.isActive ? 'text-green-600' : 'text-gray-500'}`}>
@@ -735,16 +733,16 @@ export const LegacyCompletionTracking: React.FC<LegacyCompletionTrackingProps> =
           <div className="flex items-center gap-2 mb-4">
             <Medal className="h-5 w-5 text-yellow-600" />
             <h3 className="text-lg font-medium">Achievements Earned</h3>
-            <Badge variant="secondary">{achievements.length} total</Badge>
+            <Badge variant={"secondary" as any}>{achievements.length} total</Badge>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {achievements.map((achievement) => (
               <motion.div
                 key={achievement.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                whileHover={{ y: -2 }}
+                initial={{  opacity: 0, y: 10  }}
+                animate={{  opacity: 1, y: 0  }}
+                whileHover={{  y: -2  }}
               >
                 <Card className={`border-2 ${getRarityColor(achievement.rarity)} hover:shadow-lg transition-all`}>
                   <CardContent className="p-4">
@@ -791,7 +789,7 @@ export const LegacyCompletionTracking: React.FC<LegacyCompletionTrackingProps> =
                 <p className="text-xs text-gray-500">Total time spent</p>
               </CardContent>
             </Card>
-            
+
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2 mb-2">
@@ -802,7 +800,7 @@ export const LegacyCompletionTracking: React.FC<LegacyCompletionTrackingProps> =
                 <p className="text-xs text-gray-500">Tasks per week</p>
               </CardContent>
             </Card>
-            
+
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2 mb-2">
@@ -813,7 +811,7 @@ export const LegacyCompletionTracking: React.FC<LegacyCompletionTrackingProps> =
                 <p className="text-xs text-gray-500">Estimated vs actual time</p>
               </CardContent>
             </Card>
-            
+
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-2 mb-2">

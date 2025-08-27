@@ -406,7 +406,7 @@ export class SofiaRouter {
         description: 'Upload your ID, passport, and insurance card',
         actionId: 'trigger_upload',
         icon: 'upload',
-        category: 'ui_action' as const,
+        category: 'ui_action',
         payload: { action: 'open_uploader' },
       });
     }
@@ -418,7 +418,7 @@ export class SofiaRouter {
           'Identify a trusted person who will help your family in emergencies',
         actionId: 'navigate_guardians',
         icon: 'guardians',
-        category: 'navigation' as const,
+        category: 'navigation',
         payload: { route: '/guardians' },
       });
     }
@@ -429,7 +429,7 @@ export class SofiaRouter {
         description: 'Secure your family by creating a basic will',
         actionId: 'navigate_legacy',
         icon: 'legacy',
-        category: 'navigation' as const,
+        category: 'navigation',
         payload: { route: '/legacy' },
       });
     }
@@ -441,7 +441,7 @@ export class SofiaRouter {
         description: "Let's see what else you can improve",
         actionId: 'show_progress',
         icon: 'info',
-        category: 'ui_action' as const,
+        category: 'ui_action',
         payload: { action: 'show_progress_modal' },
       });
     }

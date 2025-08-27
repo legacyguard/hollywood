@@ -122,8 +122,8 @@ export function LandingPage() {
           <div className='flex items-center justify-between'>
             <motion.div
               className='flex items-center gap-3'
-              whileHover={{ scale: 1.02 }}
-              transition={{ duration: 0.2 }}
+              whileHover={{  scale: 1.02  }}
+              transition={{  duration: 0.2  }}
             >
               <LegacyGuardLogo />
               <span className='text-2xl font-bold text-white font-heading'>
@@ -133,11 +133,11 @@ export function LandingPage() {
 
             <div className='flex items-center gap-4'>
               <motion.div
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+                whileHover={{  scale: 1.02  }}
+                whileTap={{  scale: 0.98  }}
               >
                 <Button
-                  variant='ghost'
+                  variant={"ghost" as any}
                   onClick={handleSignIn}
                   className='text-slate-200 hover:text-white hover:bg-slate-800/50 border-0'
                 >
@@ -145,8 +145,8 @@ export function LandingPage() {
                 </Button>
               </motion.div>
               <motion.div
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+                whileHover={{  scale: 1.02  }}
+                whileTap={{  scale: 0.98  }}
               >
                 <Button
                   onClick={handleGetStarted}
@@ -165,13 +165,12 @@ export function LandingPage() {
         ref={heroRef}
         className='relative min-h-screen flex items-center justify-center overflow-hidden cursor-none'
         onMouseMove={handleMouseMove}
-        style={{
-          background: `
+        style={{  background: `
             radial-gradient(circle at 20% 80%, rgba(6, 182, 212, 0.1) 0%, transparent 50%),
             radial-gradient(circle at 80% 20%, rgba(139, 69, 19, 0.1) 0%, transparent 50%),
             linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%)
           `
-        }}
+         }}
       >
         {/* Starry Background */}
         <div className='absolute inset-0'>
@@ -187,23 +186,21 @@ export function LandingPage() {
               <motion.div
                 key={i}
                 className='absolute bg-white rounded-full'
-                style={{
-                  width: `${size}px`,
+                style={{ 
+                  width: `${size }}px`,
                   height: `${size}px`,
                   left: `${x}%`,
                   top: `${y}%`,
                   opacity: opacity,
                 }}
-                animate={{
-                  opacity: [opacity, opacity * 0.3, opacity],
+                animate={{  opacity: [opacity, opacity * 0.3, opacity],
                   scale: [1, 1.2, 1],
-                }}
-                transition={{
-                  duration: 2 + Math.random() * 2,
+                 }}
+                transition={{  duration: 2 + Math.random() * 2,
                   repeat: Infinity,
                   delay: animationDelay,
                   ease: "easeInOut"
-                }}
+                 }}
               />
             );
           })}
@@ -230,72 +227,62 @@ export function LandingPage() {
         {/* Interactive Sofia Firefly */}
         <motion.div
           className='fixed pointer-events-none z-40'
-          style={{
-            x: fireflyX,
+          style={{  x: fireflyX,
             y: fireflyY,
-          }}
+           }}
         >
           {/* Firefly Glow */}
           <motion.div
             className='absolute inset-0 rounded-full'
-            animate={{
-              boxShadow: [
+            animate={{  boxShadow: [
                 '0 0 20px rgba(255, 255, 0, 0.4)',
                 '0 0 30px rgba(255, 255, 0, 0.6)',
                 '0 0 20px rgba(255, 255, 0, 0.4)',
               ],
-            }}
-            transition={{
-              duration: 2,
+             }}
+            transition={{  duration: 2,
               repeat: Infinity,
               ease: 'easeInOut',
-            }}
+             }}
           />
 
           {/* Firefly Body */}
           <motion.div
             className='w-6 h-6 bg-gradient-to-br from-yellow-200 to-yellow-400 rounded-full shadow-lg'
-            animate={{
-              scale: [1, 1.1, 1],
-            }}
-            style={{
-              filter: 'brightness(1.3)',
-            }}
-            transition={{
-              duration: 2,
+            animate={{  scale: [1, 1.1, 1],
+             }}
+            style={{  filter: 'brightness(1.3)',
+             }}
+            transition={{  duration: 2,
               repeat: Infinity,
               ease: 'easeInOut',
-            }}
+             }}
           />
 
           {/* Wings */}
           <motion.div
             className='absolute -top-1 -left-1 w-3 h-3'
-            animate={{
-              rotate: [0, 15, -15, 0],
+            animate={{  rotate: [0, 15, -15, 0],
               opacity: [0.3, 0.7, 0.3],
-            }}
-            transition={{
-              duration: 0.3,
+             }}
+            transition={{  duration: 0.3,
               repeat: Infinity,
               ease: 'easeInOut',
-            }}
+             }}
           >
             <div className='w-full h-full bg-gradient-to-br from-blue-200/60 to-purple-200/60 rounded-full blur-sm' />
           </motion.div>
 
           <motion.div
             className='absolute -top-1 -right-1 w-3 h-3'
-            animate={{
-              rotate: [0, -15, 15, 0],
+            animate={{  rotate: [0, -15, 15, 0],
               opacity: [0.3, 0.7, 0.3],
-            }}
-            transition={{
-              duration: 0.3,
+             }}
+            transition={{  duration: 0.3,
               repeat: Infinity,
               ease: 'easeInOut',
               delay: 0.15,
-            }}
+             }}
           >
             <div className='w-full h-full bg-gradient-to-br from-blue-200/60 to-purple-200/60 rounded-full blur-sm' />
           </motion.div>
@@ -305,9 +292,9 @@ export function LandingPage() {
         <div className='relative z-30 text-center text-white max-w-4xl mx-auto px-4'>
           <motion.h1
             className='text-6xl lg:text-8xl font-bold mb-8 leading-tight'
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, ease: 'easeOut', delay: 0.5 }}
+            initial={{  opacity: 0, y: 30  }}
+            animate={{  opacity: 1, y: 0  }}
+            transition={{  duration: 1, ease: 'easeOut', delay: 0.5  }}
           >
             Your Legacy is a Story.
             <br />
@@ -316,17 +303,17 @@ export function LandingPage() {
 
           <motion.p
             className='text-xl lg:text-2xl text-slate-300 mb-16 max-w-3xl mx-auto leading-relaxed'
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 1 }}
+            initial={{  opacity: 0  }}
+            animate={{  opacity: 1  }}
+            transition={{  duration: 1, delay: 1  }}
           >
             The most caring and secure way to organize your life's journey and protect your family's future.
           </motion.p>
 
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 1.5 }}
+            initial={{  opacity: 0, scale: 0.9  }}
+            animate={{  opacity: 1, scale: 1  }}
+            transition={{  duration: 0.8, delay: 1.5  }}
           >
             <Button
               ref={ctaButtonRef}
@@ -338,9 +325,9 @@ export function LandingPage() {
             >
               <motion.div
                 className='absolute inset-0 bg-gradient-to-r from-yellow-400 to-yellow-300'
-                initial={{ x: '-100%' }}
-                whileHover={{ x: '0%' }}
-                transition={{ duration: 0.3 }}
+                initial={{  x: '-100%'  }}
+                whileHover={{  x: '0%'  }}
+                transition={{  duration: 0.3  }}
               />
               <span className='relative z-10'>Start Your Journey</span>
 
@@ -348,10 +335,10 @@ export function LandingPage() {
               {isFireflyOnButton && (
                 <motion.div
                   className='absolute top-2 right-4 w-2 h-2 bg-yellow-300 rounded-full z-20'
-                  initial={{ scale: 0, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  exit={{ scale: 0, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
+                  initial={{  scale: 0, opacity: 0  }}
+                  animate={{  scale: 1, opacity: 1  }}
+                  exit={{  scale: 0, opacity: 0  }}
+                  transition={{  duration: 0.2  }}
                 />
               )}
             </Button>
@@ -365,10 +352,10 @@ export function LandingPage() {
           <div className='grid lg:grid-cols-2 gap-16 items-center max-w-7xl mx-auto'>
             {/* Chaos Side */}
             <motion.div
-              initial={{ opacity: 0, x: -50 }}
+              initial={{  opacity: 0, x: -50  }}
               whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 1 }}
-              viewport={{ once: true }}
+              transition={{  duration: 1  }}
+              viewport={{  once: true  }}
               className='relative h-96 flex flex-col justify-center'
             >
               <div className='absolute inset-0 overflow-hidden'>
@@ -384,23 +371,20 @@ export function LandingPage() {
                     <motion.div
                       key={i}
                       className='absolute text-2xl opacity-60'
-                      initial={{
-                        x: randomX,
+                      initial={{  x: randomX,
                         y: randomY,
                         rotate: Math.random() * 360
-                      }}
-                      animate={{
-                        x: [randomX, randomX + 50, randomX - 30, randomX],
+                       }}
+                      animate={{  x: [randomX, randomX + 50, randomX - 30, randomX],
                         y: [randomY, randomY - 40, randomY + 20, randomY],
                         rotate: [0, 180, 360],
                         opacity: [0.6, 0.3, 0.6]
-                      }}
-                      transition={{
-                        duration: randomDuration,
+                       }}
+                      transition={{  duration: randomDuration,
                         repeat: Infinity,
                         delay: randomDelay,
                         ease: "easeInOut"
-                      }}
+                       }}
                     >
                       {icons[i]}
                     </motion.div>
@@ -421,42 +405,40 @@ export function LandingPage() {
 
             {/* Promise Side - Box of Certainty */}
             <motion.div
-              initial={{ opacity: 0, x: 50 }}
+              initial={{  opacity: 0, x: 50  }}
               whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 1, delay: 0.3 }}
-              viewport={{ once: true }}
+              transition={{  duration: 1, delay: 0.3  }}
+              viewport={{  once: true  }}
               className='relative h-96 flex flex-col justify-center items-center'
             >
               {/* Box of Certainty */}
               <motion.div
                 className='relative'
                 whileInView={{ scale: [1, 1.05, 1] }}
-                transition={{ duration: 2, delay: 1.5 }}
-                viewport={{ once: true }}
+                transition={{  duration: 2, delay: 1.5  }}
+                viewport={{  once: true  }}
               >
                 <div className='w-48 h-32 bg-gradient-to-br from-yellow-400/20 to-yellow-600/10 rounded-lg border-2 border-yellow-400/40 backdrop-blur-sm relative overflow-hidden'>
                   {/* Gentle glow effect */}
                   <motion.div
                     className='absolute inset-0 bg-yellow-400/10 rounded-lg'
-                    animate={{
-                      opacity: [0.1, 0.3, 0.1],
-                    }}
-                    transition={{
-                      duration: 3,
+                    animate={{  opacity: [0.1, 0.3, 0.1],
+                     }}
+                    transition={{  duration: 3,
                       repeat: Infinity,
                       ease: "easeInOut"
-                    }}
+                     }}
                   />
 
                   {/* Lock symbol */}
                   <motion.div
                     className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'
-                    initial={{ opacity: 0, scale: 0 }}
+                    initial={{  opacity: 0, scale: 0  }}
                     whileInView={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 2, duration: 0.5 }}
-                    viewport={{ once: true }}
+                    transition={{  delay: 2, duration: 0.5  }}
+                    viewport={{  once: true  }}
                   >
-                    <Icon name='key' className='w-8 h-8 text-yellow-400' />
+                    <Icon name={"key" as any} className='w-8 h-8 text-yellow-400' />
                   </motion.div>
                 </div>
               </motion.div>
@@ -480,10 +462,10 @@ export function LandingPage() {
         <div className='container mx-auto px-4'>
           <motion.div
             className='text-center mb-16'
-            initial={{ opacity: 0, y: 30 }}
+            initial={{  opacity: 0, y: 30  }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
+            transition={{  duration: 0.8  }}
+            viewport={{  once: true  }}
           >
             <h2 className='text-5xl lg:text-6xl font-bold text-white mb-6'>
               Your Story in 3 Acts
@@ -498,20 +480,20 @@ export function LandingPage() {
             {/* Act 1: Organize Your Present */}
             <motion.div
               className='flex-none w-96 bg-slate-900/60 rounded-2xl p-8 border border-slate-700 backdrop-blur-sm snap-start'
-              initial={{ opacity: 0, x: -50 }}
+              initial={{  opacity: 0, x: -50  }}
               whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              whileHover={{ scale: 1.02, y: -5 }}
+              transition={{  duration: 0.8  }}
+              viewport={{  once: true  }}
+              whileHover={{  scale: 1.02, y: -5  }}
             >
               <div className='relative h-48 mb-6 overflow-hidden rounded-lg bg-gradient-to-br from-blue-500/20 to-purple-500/10'>
                 {/* Document scanning animation */}
                 <motion.div
                   className='absolute inset-4 bg-white/90 rounded-lg shadow-lg'
-                  initial={{ scale: 0.8, opacity: 0 }}
+                  initial={{  scale: 0.8, opacity: 0  }}
                   whileInView={{ scale: 1, opacity: 1 }}
-                  transition={{ delay: 0.5, duration: 0.5 }}
-                  viewport={{ once: true }}
+                  transition={{  delay: 0.5, duration: 0.5  }}
+                  viewport={{  once: true  }}
                 >
                   <div className='p-4 space-y-2'>
                     <div className='h-3 bg-slate-300 rounded w-3/4'></div>
@@ -522,14 +504,13 @@ export function LandingPage() {
                   {/* AI scanning effect */}
                   <motion.div
                     className='absolute inset-0 bg-gradient-to-r from-transparent via-blue-400/30 to-transparent'
-                    initial={{ x: '-100%' }}
-                    animate={{ x: '100%' }}
-                    transition={{
-                      duration: 2,
+                    initial={{  x: '-100%'  }}
+                    animate={{  x: '100%'  }}
+                    transition={{  duration: 2,
                       repeat: Infinity,
                       repeatDelay: 3,
                       ease: "linear"
-                    }}
+                     }}
                   />
                 </motion.div>
               </div>
@@ -545,25 +526,25 @@ export function LandingPage() {
             {/* Act 2: Protect Your Family */}
             <motion.div
               className='flex-none w-96 bg-slate-900/60 rounded-2xl p-8 border border-slate-700 backdrop-blur-sm snap-start'
-              initial={{ opacity: 0, x: -50 }}
+              initial={{  opacity: 0, x: -50  }}
               whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              viewport={{ once: true }}
-              whileHover={{ scale: 1.02, y: -5 }}
+              transition={{  duration: 0.8, delay: 0.2  }}
+              viewport={{  once: true  }}
+              whileHover={{  scale: 1.02, y: -5  }}
             >
               <div className='relative h-48 mb-6 overflow-hidden rounded-lg bg-gradient-to-br from-emerald-500/20 to-green-500/10'>
                 {/* Family Shield animation */}
                 <div className='absolute inset-0 flex items-center justify-center'>
                   <motion.div
                     className='relative'
-                    initial={{ scale: 0 }}
+                    initial={{  scale: 0  }}
                     whileInView={{ scale: 1 }}
-                    transition={{ delay: 0.5, duration: 0.8 }}
-                    viewport={{ once: true }}
+                    transition={{  delay: 0.5, duration: 0.8  }}
+                    viewport={{  once: true  }}
                   >
                     {/* Central family silhouette */}
                     <div className='w-16 h-16 bg-white/80 rounded-full flex items-center justify-center'>
-                      <Icon name='users' className='w-8 h-8 text-slate-700' />
+                      <Icon name={"users" as any} className='w-8 h-8 text-slate-700' />
                     </div>
 
                     {/* Guardian icons forming shield */}
@@ -576,16 +557,16 @@ export function LandingPage() {
                         <motion.div
                           key={i}
                           className='absolute w-8 h-8 bg-emerald-400/80 rounded-full flex items-center justify-center'
-                          style={{
-                            left: `calc(50% + ${x}px - 16px)`,
+                          style={{ 
+                            left: `calc(50% + ${x }}px - 16px)`,
                             top: `calc(50% + ${y}px - 16px)`,
                           }}
-                          initial={{ scale: 0, opacity: 0 }}
+                          initial={{  scale: 0, opacity: 0  }}
                           whileInView={{ scale: 1, opacity: 1 }}
-                          transition={{ delay: 1 + i * 0.2, duration: 0.3 }}
-                          viewport={{ once: true }}
+                          transition={{  delay: 1 + i * 0.2, duration: 0.3  }}
+                          viewport={{  once: true  }}
                         >
-                          <Icon name='shield' className='w-4 h-4 text-white' />
+                          <Icon name={"shield" as any} className='w-4 h-4 text-white' />
                         </motion.div>
                       );
                     })}
@@ -593,11 +574,11 @@ export function LandingPage() {
                     {/* Shield outline */}
                     <motion.div
                       className='absolute inset-0 border-2 border-emerald-400/40 rounded-full'
-                      style={{ width: '140px', height: '140px', left: '-60px', top: '-60px' }}
-                      initial={{ scale: 0, opacity: 0 }}
+                      style={{  width: '140px', height: '140px', left: '-60px', top: '-60px'  }}
+                      initial={{  scale: 0, opacity: 0  }}
                       whileInView={{ scale: 1, opacity: 1 }}
-                      transition={{ delay: 2, duration: 0.5 }}
-                      viewport={{ once: true }}
+                      transition={{  delay: 2, duration: 0.5  }}
+                      viewport={{  once: true  }}
                     />
                   </motion.div>
                 </div>
@@ -614,11 +595,11 @@ export function LandingPage() {
             {/* Act 3: Define Your Legacy */}
             <motion.div
               className='flex-none w-96 bg-slate-900/60 rounded-2xl p-8 border border-slate-700 backdrop-blur-sm snap-start'
-              initial={{ opacity: 0, x: -50 }}
+              initial={{  opacity: 0, x: -50  }}
               whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              viewport={{ once: true }}
-              whileHover={{ scale: 1.02, y: -5 }}
+              transition={{  duration: 0.8, delay: 0.4  }}
+              viewport={{  once: true  }}
+              whileHover={{  scale: 1.02, y: -5  }}
             >
               <div className='relative h-48 mb-6 overflow-hidden rounded-lg bg-gradient-to-br from-cyan-500/20 to-blue-500/10'>
                 {/* Legacy Garden animation */}
@@ -629,27 +610,27 @@ export function LandingPage() {
                   {/* Growing tree */}
                   <motion.div
                     className='relative'
-                    initial={{ scale: 0 }}
+                    initial={{  scale: 0  }}
                     whileInView={{ scale: 1 }}
-                    transition={{ delay: 0.5, duration: 1 }}
-                    viewport={{ once: true }}
+                    transition={{  delay: 0.5, duration: 1  }}
+                    viewport={{  once: true  }}
                   >
                     {/* Tree trunk */}
                     <motion.div
                       className='w-3 h-16 bg-amber-700 rounded-sm mx-auto'
-                      initial={{ height: 0 }}
+                      initial={{  height: 0  }}
                       whileInView={{ height: 64 }}
-                      transition={{ delay: 0.5, duration: 0.8 }}
-                      viewport={{ once: true }}
+                      transition={{  delay: 0.5, duration: 0.8  }}
+                      viewport={{  once: true  }}
                     />
 
                     {/* Tree crown */}
                     <motion.div
                       className='w-12 h-12 bg-green-500 rounded-full absolute -top-6 left-1/2 transform -translate-x-1/2'
-                      initial={{ scale: 0 }}
+                      initial={{  scale: 0  }}
                       whileInView={{ scale: 1 }}
-                      transition={{ delay: 1.2, duration: 0.5 }}
-                      viewport={{ once: true }}
+                      transition={{  delay: 1.2, duration: 0.5  }}
+                      viewport={{  once: true  }}
                     />
 
                     {/* Legacy elements floating around */}
@@ -663,23 +644,24 @@ export function LandingPage() {
                         <motion.div
                           key={i}
                           className='absolute text-lg'
-                          style={{
-                            left: `calc(50% + ${x}px)`,
+                          style={{ 
+                            left: `calc(50% + ${x }}px)`,
                             top: `calc(50% + ${y}px)`,
                           }}
-                          initial={{ scale: 0, opacity: 0 }}
-                          whileInView={{ scale: 1, opacity: 1 }}
-                          transition={{ delay: 1.5 + i * 0.2, duration: 0.3 }}
-                          viewport={{ once: true }}
-                          animate={{
-                            y: [0, -5, 0],
-                            rotate: [0, 5, -5, 0]
+                          initial={{  scale: 0, opacity: 0  }}
+                          whileInView={{ 
+                            scale: 1, 
+                            opacity: 1,
+                            transition: { delay: 1.5 + i * 0.2, duration: 0.3 }
                           }}
-                          transition={{
-                            duration: 3,
+                          viewport={{  once: true  }}
+                          animate={{  y: [0, -5, 0],
+                            rotate: [0, 5, -5, 0]
+                           }}
+                          transition={{  duration: 3,
                             repeat: Infinity,
                             delay: i * 0.5
-                          }}
+                           }}
                         >
                           {emoji}
                         </motion.div>
@@ -705,10 +687,10 @@ export function LandingPage() {
         <div className='container mx-auto px-4'>
           <motion.div
             className='text-center mb-16'
-            initial={{ opacity: 0, y: 30 }}
+            initial={{  opacity: 0, y: 30  }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
+            transition={{  duration: 0.8  }}
+            viewport={{  once: true  }}
           >
             <h2 className='text-4xl lg:text-5xl font-bold text-white mb-6'>
               How It Works
@@ -721,20 +703,19 @@ export function LandingPage() {
           <div className='grid md:grid-cols-3 gap-8 max-w-6xl mx-auto'>
             {/* Step 1 */}
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
+              initial={{  opacity: 0, y: 30  }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.1 }}
-              viewport={{ once: true }}
+              transition={{  duration: 0.8, delay: 0.1  }}
+              viewport={{  once: true  }}
             >
               <Card className='text-center p-8 h-full bg-slate-900/50 border-slate-700 hover:bg-slate-800/50 hover:border-slate-600 transition-all duration-300 backdrop-blur-sm'>
                 <CardContent className='space-y-4'>
                   <motion.div
                     className='w-20 h-20 bg-yellow-500/20 rounded-full flex items-center justify-center mx-auto'
-                    whileHover={{ scale: 1.1, rotate: 5 }}
-                    transition={{ duration: 0.3 }}
+                    whileHover={{  scale: 1.1, rotate: 5  }}
+                    transition={{  duration: 0.3  }}
                   >
-                    <Icon
-                      name='vault'
+                    <Icon name={"vault" as any}
                       className='w-10 h-10 text-yellow-400'
                     />
                   </motion.div>
@@ -752,20 +733,19 @@ export function LandingPage() {
 
             {/* Step 2 */}
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
+              initial={{  opacity: 0, y: 30  }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              viewport={{ once: true }}
+              transition={{  duration: 0.8, delay: 0.2  }}
+              viewport={{  once: true  }}
             >
               <Card className='text-center p-8 h-full bg-slate-900/50 border-slate-700 hover:bg-slate-800/50 hover:border-slate-600 transition-all duration-300 backdrop-blur-sm'>
                 <CardContent className='space-y-4'>
                   <motion.div
                     className='w-20 h-20 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto'
-                    whileHover={{ scale: 1.1, rotate: -5 }}
-                    transition={{ duration: 0.3 }}
+                    whileHover={{  scale: 1.1, rotate: -5  }}
+                    transition={{  duration: 0.3  }}
                   >
-                    <Icon
-                      name='shield'
+                    <Icon name={"shield" as any}
                       className='w-10 h-10 text-emerald-400'
                     />
                   </motion.div>
@@ -783,20 +763,19 @@ export function LandingPage() {
 
             {/* Step 3 */}
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
+              initial={{  opacity: 0, y: 30  }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
-              viewport={{ once: true }}
+              transition={{  duration: 0.8, delay: 0.3  }}
+              viewport={{  once: true  }}
             >
               <Card className='text-center p-8 h-full bg-slate-900/50 border-slate-700 hover:bg-slate-800/50 hover:border-slate-600 transition-all duration-300 backdrop-blur-sm'>
                 <CardContent className='space-y-4'>
                   <motion.div
                     className='w-20 h-20 bg-cyan-500/20 rounded-full flex items-center justify-center mx-auto'
-                    whileHover={{ scale: 1.1, rotate: 5 }}
-                    transition={{ duration: 0.3 }}
+                    whileHover={{  scale: 1.1, rotate: 5  }}
+                    transition={{  duration: 0.3  }}
                   >
-                    <Icon
-                      name='legacy'
+                    <Icon name={"legacy" as any}
                       className='w-10 h-10 text-cyan-400'
                     />
                   </motion.div>
@@ -820,10 +799,10 @@ export function LandingPage() {
         <div className='container mx-auto px-4'>
           <motion.div
             className='text-center mb-16'
-            initial={{ opacity: 0, y: 30 }}
+            initial={{  opacity: 0, y: 30  }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
+            transition={{  duration: 0.8  }}
+            viewport={{  once: true  }}
           >
             <h2 className='text-4xl lg:text-5xl font-bold text-white mb-6'>
               Our Commitments to You
@@ -842,21 +821,19 @@ export function LandingPage() {
                 visual: (
                   <motion.div
                     className='relative w-16 h-16 mx-auto mb-6'
-                    whileHover={{ scale: 1.1 }}
-                    transition={{ duration: 0.3 }}
+                    whileHover={{  scale: 1.1  }}
+                    transition={{  duration: 0.3  }}
                   >
-                    <Icon name='heart' className='w-12 h-12 text-yellow-400 absolute top-2 left-2' />
+                    <Icon name={"heart" as any} className='w-12 h-12 text-yellow-400 absolute top-2 left-2' />
                     <motion.div
                       className='w-4 h-4 bg-yellow-300 rounded-full absolute top-1 right-1'
-                      animate={{
-                        scale: [1, 1.2, 1],
+                      animate={{  scale: [1, 1.2, 1],
                         opacity: [0.7, 1, 0.7],
-                      }}
-                      transition={{
-                        duration: 2,
+                       }}
+                      transition={{  duration: 2,
                         repeat: Infinity,
                         ease: 'easeInOut',
-                      }}
+                       }}
                     />
                   </motion.div>
                 ),
@@ -868,21 +845,19 @@ export function LandingPage() {
                 visual: (
                   <motion.div
                     className='relative w-16 h-16 mx-auto mb-6'
-                    whileHover={{ scale: 1.1 }}
-                    transition={{ duration: 0.3 }}
+                    whileHover={{  scale: 1.1  }}
+                    transition={{  duration: 0.3  }}
                   >
                     <motion.div
                       className='w-12 h-12 border-2 border-yellow-400 rounded-lg absolute top-2 left-2'
-                      animate={{
-                        borderColor: ['#fbbf24', '#f59e0b', '#fbbf24'],
-                      }}
-                      transition={{
-                        duration: 3,
+                      animate={{  borderColor: ['#fbbf24', '#f59e0b', '#fbbf24'],
+                       }}
+                      transition={{  duration: 3,
                         repeat: Infinity,
                         ease: 'easeInOut',
-                      }}
+                       }}
                     />
-                    <Icon name='key' className='w-6 h-6 text-yellow-400 absolute top-5 left-5' />
+                    <Icon name={"key" as any} className='w-6 h-6 text-yellow-400 absolute top-5 left-5' />
                   </motion.div>
                 ),
               },
@@ -893,28 +868,26 @@ export function LandingPage() {
                 visual: (
                   <motion.div
                     className='relative w-16 h-16 mx-auto mb-6'
-                    whileHover={{ scale: 1.1 }}
-                    transition={{ duration: 0.3 }}
+                    whileHover={{  scale: 1.1  }}
+                    transition={{  duration: 0.3  }}
                   >
-                    <Icon name='sparkles' className='w-12 h-12 text-yellow-400 absolute top-2 left-2' />
+                    <Icon name={"sparkles" as any} className='w-12 h-12 text-yellow-400 absolute top-2 left-2' />
                     {[...Array(3)].map((_, i) => (
                       <motion.div
                         key={i}
                         className='w-1 h-1 bg-yellow-300 rounded-full absolute'
-                        style={{
-                          left: `${20 + i * 8}px`,
+                        style={{ 
+                          left: `${20 + i * 8 }}px`,
                           top: `${15 + i * 4}px`,
                         }}
-                        animate={{
-                          scale: [0, 1, 0],
+                        animate={{  scale: [0, 1, 0],
                           opacity: [0, 1, 0],
-                        }}
-                        transition={{
-                          duration: 1.5,
+                         }}
+                        transition={{  duration: 1.5,
                           repeat: Infinity,
                           delay: i * 0.3,
                           ease: 'easeInOut',
-                        }}
+                         }}
                       />
                     ))}
                   </motion.div>
@@ -927,22 +900,22 @@ export function LandingPage() {
                 visual: (
                   <motion.div
                     className='relative w-16 h-16 mx-auto mb-6'
-                    whileHover={{ scale: 1.1 }}
-                    transition={{ duration: 0.3 }}
+                    whileHover={{  scale: 1.1  }}
+                    transition={{  duration: 0.3  }}
                   >
                     <motion.div
                       className='w-3 h-8 bg-amber-600 rounded-sm absolute bottom-2 left-1/2 transform -translate-x-1/2'
-                      initial={{ height: 0 }}
+                      initial={{  height: 0  }}
                       whileInView={{ height: 32 }}
-                      transition={{ duration: 1, delay: 0.5 }}
-                      viewport={{ once: true }}
+                      transition={{  duration: 1, delay: 0.5  }}
+                      viewport={{  once: true  }}
                     />
                     <motion.div
                       className='w-8 h-8 bg-green-500 rounded-full absolute top-2 left-1/2 transform -translate-x-1/2'
-                      initial={{ scale: 0 }}
+                      initial={{  scale: 0  }}
                       whileInView={{ scale: 1 }}
-                      transition={{ duration: 0.5, delay: 1.2 }}
-                      viewport={{ once: true }}
+                      transition={{  duration: 0.5, delay: 1.2  }}
+                      viewport={{  once: true  }}
                     />
                   </motion.div>
                 ),
@@ -950,10 +923,10 @@ export function LandingPage() {
             ].map((commitment, index) => (
               <motion.div
                 key={commitment.title}
-                initial={{ opacity: 0, y: 30 }}
+                initial={{  opacity: 0, y: 30  }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: index * 0.2 }}
-                viewport={{ once: true }}
+                transition={{  duration: 0.8, delay: index * 0.2  }}
+                viewport={{  once: true  }}
                 className='text-center'
               >
                 <Card className='p-8 h-full bg-slate-900/60 backdrop-blur border-slate-700 hover:bg-slate-800/60 hover:border-yellow-400/30 transition-all duration-500'>
@@ -978,10 +951,10 @@ export function LandingPage() {
         <div className='container mx-auto px-4'>
           <motion.div
             className='text-center mb-16'
-            initial={{ opacity: 0, y: 30 }}
+            initial={{  opacity: 0, y: 30  }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
+            transition={{  duration: 0.8  }}
+            viewport={{  once: true  }}
           >
             <h2 className='text-4xl lg:text-5xl font-bold text-white mb-6'>
               Simple, Transparent Pricing
@@ -994,10 +967,10 @@ export function LandingPage() {
           <div className='grid md:grid-cols-2 gap-8 max-w-4xl mx-auto'>
             {/* Free Plan */}
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
+              initial={{  opacity: 0, y: 30  }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.1 }}
-              viewport={{ once: true }}
+              transition={{  duration: 0.8, delay: 0.1  }}
+              viewport={{  once: true  }}
             >
               <Card className='p-8 bg-slate-900/60 border-slate-700 hover:bg-slate-800/60 hover:border-slate-600 transition-all duration-300 backdrop-blur-sm'>
                 <CardContent className='space-y-6'>
@@ -1025,7 +998,7 @@ export function LandingPage() {
                         key={index}
                         className='flex items-center gap-2 text-slate-300'
                       >
-                        <Icon name='check' className='w-4 h-4 text-yellow-400' />
+                        <Icon name={"check" as any} className='w-4 h-4 text-yellow-400' />
                         {feature}
                       </li>
                     ))}
@@ -1043,10 +1016,10 @@ export function LandingPage() {
 
             {/* Premium Plan */}
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
+              initial={{  opacity: 0, y: 30  }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              viewport={{ once: true }}
+              transition={{  duration: 0.8, delay: 0.2  }}
+              viewport={{  once: true  }}
             >
               <Card className='p-8 bg-gradient-to-br from-yellow-500/10 to-yellow-600/5 border-yellow-500/30 hover:border-yellow-400/50 transition-all duration-300 relative backdrop-blur-sm'>
                 <Badge className='absolute -top-3 left-1/2 transform -translate-x-1/2 bg-yellow-500 text-slate-900'>
@@ -1080,8 +1053,7 @@ export function LandingPage() {
                         key={index}
                         className='flex items-center gap-2 text-slate-300'
                       >
-                        <Icon
-                          name='check'
+                        <Icon name={"check" as any}
                           className='w-4 h-4 text-yellow-400'
                         />
                         {feature}
@@ -1221,10 +1193,10 @@ export function LandingPage() {
         <div className='container mx-auto px-4'>
           <motion.div
             className='text-center mb-12'
-            initial={{ opacity: 0, y: 30 }}
+            initial={{  opacity: 0, y: 30  }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
+            transition={{  duration: 0.8  }}
+            viewport={{  once: true  }}
           >
             <h2 className='text-3xl lg:text-4xl font-bold text-white mb-4'>
               Trusted by Professionals, Built for Families
@@ -1238,11 +1210,11 @@ export function LandingPage() {
           {/* Partner and Technology Logos */}
           <motion.div
             className='flex flex-wrap items-center justify-center gap-8 lg:gap-12 opacity-60 hover:opacity-80 transition-opacity duration-300'
-            initial={{ opacity: 0, y: 20 }}
+            initial={{  opacity: 0, y: 20  }}
             whileInView={{ opacity: 0.6, y: 0 }}
-            whileHover={{ opacity: 0.8 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            viewport={{ once: true }}
+            whileHover={{  opacity: 0.8  }}
+            transition={{  duration: 0.8, delay: 0.2  }}
+            viewport={{  once: true  }}
           >
             {/* Clerk - Authentication */}
             <div className='flex items-center gap-2 text-slate-400 hover:text-slate-300 transition-colors'>
@@ -1288,25 +1260,25 @@ export function LandingPage() {
           {/* Additional Trust Indicators */}
           <motion.div
             className='mt-12 flex flex-wrap items-center justify-center gap-6 text-slate-500 text-sm'
-            initial={{ opacity: 0 }}
+            initial={{  opacity: 0  }}
             whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            viewport={{ once: true }}
+            transition={{  duration: 0.8, delay: 0.4  }}
+            viewport={{  once: true  }}
           >
             <div className='flex items-center gap-2'>
-              <Icon name='shield-check' className='w-4 h-4 text-green-400' />
+              <Icon name={"shield-check" as any} className='w-4 h-4 text-green-400' />
               <span>End-to-End Encryption</span>
             </div>
             <div className='flex items-center gap-2'>
-              <Icon name='check' className='w-4 h-4 text-green-400' />
+              <Icon name={"check" as any} className='w-4 h-4 text-green-400' />
               <span>Zero-Knowledge Architecture</span>
             </div>
             <div className='flex items-center gap-2'>
-              <Icon name='key' className='w-4 h-4 text-green-400' />
+              <Icon name={"key" as any} className='w-4 h-4 text-green-400' />
               <span>Bank-Level Security</span>
             </div>
             <div className='flex items-center gap-2'>
-              <Icon name='users' className='w-4 h-4 text-green-400' />
+              <Icon name={"users" as any} className='w-4 h-4 text-green-400' />
               <span>Legal Expert Consultation</span>
             </div>
           </motion.div>
@@ -1328,22 +1300,20 @@ export function LandingPage() {
               <motion.div
                 key={i}
                 className='absolute bg-white rounded-full'
-                style={{
-                  width: `${size}px`,
+                style={{ 
+                  width: `${size }}px`,
                   height: `${size}px`,
                   left: `${x}%`,
                   top: `${y}%`,
                   opacity: opacity,
                 }}
-                animate={{
-                  opacity: [opacity, opacity * 0.3, opacity],
-                }}
-                transition={{
-                  duration: 3 + Math.random() * 2,
+                animate={{  opacity: [opacity, opacity * 0.3, opacity],
+                 }}
+                transition={{  duration: 3 + Math.random() * 2,
                   repeat: Infinity,
                   delay: animationDelay,
                   ease: "easeInOut"
-                }}
+                 }}
               />
             );
           })}
@@ -1352,81 +1322,71 @@ export function LandingPage() {
         {/* Sofia Returns - Center Stage */}
         <motion.div
           className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'
-          initial={{ scale: 0, opacity: 0 }}
+          initial={{  scale: 0, opacity: 0  }}
           whileInView={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 1.5, delay: 0.5 }}
-          viewport={{ once: true }}
+          transition={{  duration: 1.5, delay: 0.5  }}
+          viewport={{  once: true  }}
         >
           {/* Large Sofia Firefly */}
           <motion.div
             className='relative'
-            animate={{
-              y: [0, -10, 0],
-            }}
-            transition={{
-              duration: 4,
+            animate={{  y: [0, -10, 0],
+             }}
+            transition={{  duration: 4,
               repeat: Infinity,
               ease: "easeInOut"
-            }}
+             }}
           >
             {/* Glow effect */}
             <motion.div
               className='absolute inset-0 rounded-full w-16 h-16 -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2'
-              animate={{
-                boxShadow: [
+              animate={{  boxShadow: [
                   '0 0 30px rgba(255, 255, 0, 0.4)',
                   '0 0 50px rgba(255, 255, 0, 0.6)',
                   '0 0 30px rgba(255, 255, 0, 0.4)',
                 ],
-              }}
-              transition={{
-                duration: 3,
+               }}
+              transition={{  duration: 3,
                 repeat: Infinity,
                 ease: 'easeInOut',
-              }}
+               }}
             />
 
             {/* Body */}
             <motion.div
               className='w-12 h-12 bg-gradient-to-br from-yellow-200 to-yellow-400 rounded-full shadow-2xl'
-              animate={{
-                scale: [1, 1.1, 1],
-              }}
-              transition={{
-                duration: 2,
+              animate={{  scale: [1, 1.1, 1],
+               }}
+              transition={{  duration: 2,
                 repeat: Infinity,
                 ease: 'easeInOut',
-              }}
+               }}
             />
 
             {/* Wings */}
             <motion.div
               className='absolute -top-2 -left-2 w-6 h-6'
-              animate={{
-                rotate: [0, 15, -15, 0],
+              animate={{  rotate: [0, 15, -15, 0],
                 opacity: [0.4, 0.8, 0.4],
-              }}
-              transition={{
-                duration: 0.4,
+               }}
+              transition={{  duration: 0.4,
                 repeat: Infinity,
                 ease: 'easeInOut',
-              }}
+               }}
             >
               <div className='w-full h-full bg-gradient-to-br from-blue-200/60 to-purple-200/60 rounded-full blur-sm' />
             </motion.div>
 
             <motion.div
               className='absolute -top-2 -right-2 w-6 h-6'
-              animate={{
-                rotate: [0, -15, 15, 0],
+              animate={{  rotate: [0, -15, 15, 0],
                 opacity: [0.4, 0.8, 0.4],
-              }}
-              transition={{
-                duration: 0.4,
+               }}
+              transition={{  duration: 0.4,
                 repeat: Infinity,
                 ease: 'easeInOut',
                 delay: 0.2,
-              }}
+               }}
             >
               <div className='w-full h-full bg-gradient-to-br from-blue-200/60 to-purple-200/60 rounded-full blur-sm' />
             </motion.div>
@@ -1437,19 +1397,19 @@ export function LandingPage() {
         <div className='relative z-10 text-center text-white max-w-2xl mx-auto px-4 mt-32'>
           <motion.h2
             className='text-5xl lg:text-6xl font-bold mb-8 leading-tight'
-            initial={{ opacity: 0, y: 30 }}
+            initial={{  opacity: 0, y: 30  }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 1 }}
-            viewport={{ once: true }}
+            transition={{  duration: 1, delay: 1  }}
+            viewport={{  once: true  }}
           >
             Your Story is Waiting
           </motion.h2>
 
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={{  opacity: 0, scale: 0.9  }}
             whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 1.5 }}
-            viewport={{ once: true }}
+            transition={{  duration: 0.8, delay: 1.5  }}
+            viewport={{  once: true  }}
           >
             <Button
               size='lg'
@@ -1458,9 +1418,9 @@ export function LandingPage() {
             >
               <motion.div
                 className='absolute inset-0 bg-gradient-to-r from-yellow-400 to-yellow-300'
-                initial={{ scale: 0 }}
-                whileHover={{ scale: 1 }}
-                transition={{ duration: 0.3 }}
+                initial={{  scale: 0  }}
+                whileHover={{  scale: 1  }}
+                transition={{  duration: 0.3  }}
               />
               <span className='relative z-10 group-hover:scale-105 transition-transform duration-200'>
                 Begin Your LegacyGuard Today

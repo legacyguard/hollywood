@@ -5,7 +5,7 @@ import { Badge } from '../ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { FamilyProtectionAnalytics } from './FamilyProtectionAnalytics';
 import { LegacyCompletionTracking } from './LegacyCompletionTracking';
-import { 
+import {
   BarChart3,
   TrendingUp,
   Users,
@@ -56,11 +56,11 @@ interface AdvancedAnalyticsDashboardProps {
 
 export const AdvancedAnalyticsDashboard: React.FC<AdvancedAnalyticsDashboardProps> = ({
   onInsightAction,
-  compactMode = false,
-  familyId
+  compactMode: _compactMode = false,
+  familyId: _familyId
 }) => {
   const [showSmartInsights, setShowSmartInsights] = useState(true);
-  const [selectedTimeframe, setSelectedTimeframe] = useState<'7d' | '30d' | '90d' | '1y'>('30d');
+  const [_selectedTimeframe, _setSelectedTimeframe] = useState<'7d' | '30d' | '90d' | '1y'>('30d');
   const [activeView, setActiveView] = useState<'overview' | 'protection' | 'progress'>('overview');
 
   // Mock metrics data
@@ -134,7 +134,7 @@ export const AdvancedAnalyticsDashboard: React.FC<AdvancedAnalyticsDashboardProp
 
   const getInsightColor = (type: SmartInsight['type'], priority: SmartInsight['priority']) => {
     if (priority === 'critical') return 'border-red-500 bg-red-50';
-    
+
     switch (type) {
       case 'warning': return 'border-orange-500 bg-orange-50';
       case 'recommendation': return 'border-blue-500 bg-blue-50';
@@ -159,7 +159,7 @@ export const AdvancedAnalyticsDashboard: React.FC<AdvancedAnalyticsDashboardProp
     const diffMs = now.getTime() - date.getTime();
     const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
     const diffDays = Math.floor(diffHours / 24);
-    
+
     if (diffDays > 0) return `${diffDays}d ago`;
     if (diffHours > 0) return `${diffHours}h ago`;
     return 'Just now';
@@ -175,7 +175,7 @@ export const AdvancedAnalyticsDashboard: React.FC<AdvancedAnalyticsDashboardProp
         </div>
         <div className="flex gap-2">
           <Button
-            variant="outline"
+            variant={"outline" as any}
             onClick={() => setShowSmartInsights(!showSmartInsights)}
             className="gap-2"
           >
@@ -284,13 +284,13 @@ export const AdvancedAnalyticsDashboard: React.FC<AdvancedAnalyticsDashboardProp
               <CardTitle className="flex items-center gap-2">
                 <Brain className="h-5 w-5 text-blue-600" />
                 AI-Powered Smart Insights
-                <Badge variant="secondary" className="text-xs">Powered by LegacyGuard AI</Badge>
+                <Badge variant={"secondary" as any} className="text-xs">Powered by LegacyGuard AI</Badge>
               </CardTitle>
               <div className="flex items-center gap-2">
-                <Badge variant="outline" className="text-xs">
+                <Badge variant={"outline" as any} className="text-xs">
                   {smartInsights.filter(i => i.priority === 'critical' || i.priority === 'high').length} urgent
                 </Badge>
-                <Button size="sm" variant="ghost" onClick={() => setShowSmartInsights(false)}>
+                <Button size="sm" variant={"ghost" as any} onClick={() => setShowSmartInsights(false)}>
                   <EyeOff className="h-4 w-4" />
                 </Button>
               </div>
@@ -301,8 +301,8 @@ export const AdvancedAnalyticsDashboard: React.FC<AdvancedAnalyticsDashboardProp
               {smartInsights.slice(0, 4).map((insight) => (
                 <motion.div
                   key={insight.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  initial={{  opacity: 0, y: 10  }}
+                  animate={{  opacity: 1, y: 0  }}
                   className={`p-4 rounded-lg border-l-4 ${getInsightColor(insight.type, insight.priority)}`}
                 >
                   <div className="flex items-start justify-between mb-2">
@@ -311,7 +311,7 @@ export const AdvancedAnalyticsDashboard: React.FC<AdvancedAnalyticsDashboardProp
                       <h4 className="font-medium text-gray-900">{insight.title}</h4>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Badge className={getPriorityBadgeColor(insight.priority)} size="sm">
+                      <Badge className={getPriorityBadgeColor(insight.priority)}>
                         {insight.priority}
                       </Badge>
                       <span className="text-xs text-gray-500">
@@ -322,7 +322,7 @@ export const AdvancedAnalyticsDashboard: React.FC<AdvancedAnalyticsDashboardProp
                   <p className="text-sm text-gray-700 mb-3">{insight.message}</p>
                   <div className="flex items-center justify-between">
                     <div className="text-xs text-gray-500">
-                      Confidence: {insight.confidence}%
+                      Confidence: {insight?.confidence}%
                     </div>
                     {insight.action && (
                       <Button
@@ -343,7 +343,7 @@ export const AdvancedAnalyticsDashboard: React.FC<AdvancedAnalyticsDashboardProp
       )}
 
       {/* Main Analytics Tabs */}
-      <Tabs value={activeView} onValueChange={(value) => setActiveView(value as any)} className="w-full">
+      <Tabs value={activeView} onValueChange={(value) => setActiveView(value as 'overview' | 'protection' | 'progress')} className="w-full">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="overview" className="gap-2">
             <BarChart3 className="h-4 w-4" />
@@ -433,17 +433,17 @@ export const AdvancedAnalyticsDashboard: React.FC<AdvancedAnalyticsDashboardProp
         </TabsContent>
 
         <TabsContent value="protection">
-          <FamilyProtectionAnalytics 
-            onRecommendationAction={(id) => console.log('Recommendation action:', id)}
-            onRiskMitigation={(id) => console.log('Risk mitigation:', id)}
+          <FamilyProtectionAnalytics
+            onRecommendationAction={(id) => console.warn('Recommendation action:', id)}
+            onRiskMitigation={(id) => console.warn('Risk mitigation:', id)}
           />
         </TabsContent>
 
         <TabsContent value="progress">
-          <LegacyCompletionTracking 
-            onTaskStart={(id) => console.log('Task started:', id)}
-            onGoalCreate={(goal) => console.log('Goal created:', goal)}
-            onMilestoneAchieved={(id) => console.log('Milestone achieved:', id)}
+          <LegacyCompletionTracking
+            onTaskStart={(id) => console.warn('Task started:', id)}
+            onGoalCreate={(goal) => console.warn('Goal created:', goal)}
+            onMilestoneAchieved={(id) => console.warn('Milestone achieved:', id)}
           />
         </TabsContent>
       </Tabs>

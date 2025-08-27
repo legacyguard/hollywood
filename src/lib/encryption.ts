@@ -50,7 +50,7 @@ export const fileToBase64 = (file: File): Promise<string> => {
 
 // Convert ArrayBuffer to base64
 export const arrayBufferToBase64 = (buffer: ArrayBuffer): string => {
-  const bytes = new Uint8Array(buffer);
+  const bytes = new Uint8Array(buffer as ArrayBuffer);
   return encodeBase64(bytes);
 };
 
@@ -66,10 +66,10 @@ export const encryptFile = async (
 }> => {
   // Read file as ArrayBuffer
   const arrayBuffer = await file.arrayBuffer();
-  const fileData = new Uint8Array(arrayBuffer);
+  const fileData = new Uint8Array(arrayBuffer as ArrayBuffer);
 
   // Generate nonce
-  const nonce = nacl.randomBytes(nacl.box.nonceLength);
+  const nonce = nacl.randomBytes(nacl.box?.nonceLength);
 
   // Create ephemeral key pair for this encryption
   const ephemeralKeyPair = nacl.box.keyPair();
@@ -127,7 +127,7 @@ export const createEncryptedBlob = (
   nonce: Uint8Array
 ): Blob => {
   // Combine nonce and encrypted data
-  const combined = new Uint8Array(nonce.length + encryptedData.length);
+  const combined = new Uint8Array(nonce.length + encryptedData.length as ArrayBuffer);
   combined.set(nonce);
   combined.set(encryptedData, nonce.length);
 

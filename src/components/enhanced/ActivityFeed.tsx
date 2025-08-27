@@ -88,13 +88,13 @@ export function ActivityFeed({
           <CardTitle className='text-lg font-semibold'>{title}</CardTitle>
           {showViewAll && onViewAll && (
             <Button
-              variant='ghost'
+              variant={"ghost" as any}
               size='sm'
               onClick={onViewAll}
               className='text-primary hover:text-primary-hover'
             >
               View all
-              <Icon name='arrowRight' className='ml-2 h-4 w-4' />
+              <Icon name={"arrowRight" as any} className='ml-2 h-4 w-4' />
             </Button>
           )}
         </CardHeader>
@@ -113,8 +113,7 @@ export function ActivityFeed({
             </div>
           ) : activities.length === 0 ? (
             <div className='p-6 text-center text-muted-foreground'>
-              <Icon
-                name='inbox'
+              <Icon name={"inbox" as any}
                 className='w-12 h-12 mx-auto mb-3 opacity-50'
               />
               <p>{emptyMessage}</p>
@@ -194,7 +193,7 @@ function ActivityItem({
                 {Object.entries(item.metadata)
                   .slice(0, 3)
                   .map(([key, value]) => (
-                    <Badge key={key} variant='secondary' className='text-xs'>
+                    <Badge key={key} variant={"secondary" as any} className='text-xs'>
                       {key}: {String(value)}
                     </Badge>
                   ))}
@@ -205,7 +204,7 @@ function ActivityItem({
 
         {/* Timestamp and user */}
         <div className='flex items-center mt-2 text-xs text-muted-foreground'>
-          <Icon name='clock' className='w-3 h-3 mr-1' />
+          <Icon name={"clock" as any} className='w-3 h-3 mr-1' />
           <span>
             {formatDistanceToNow(item.timestamp, { addSuffix: true })}
           </span>

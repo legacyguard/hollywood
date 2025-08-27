@@ -356,9 +356,9 @@ export function EmailImportWizard({ onComplete, onClose, className }: EmailImpor
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.95 }}
+      initial={{  opacity: 0, scale: 0.95  }}
+      animate={{  opacity: 1, scale: 1  }}
+      exit={{  opacity: 0, scale: 0.95  }}
       className={cn('max-w-4xl mx-auto', className)}
     >
       <Card className="min-h-[600px]">
@@ -390,10 +390,10 @@ export function EmailImportWizard({ onComplete, onClose, className }: EmailImpor
           <AnimatePresence mode="wait">
             <motion.div
               key={state.step}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.3 }}
+              initial={{  opacity: 0, x: 20  }}
+              animate={{  opacity: 1, x: 0  }}
+              exit={{  opacity: 0, x: -20  }}
+              transition={{  duration: 0.3  }}
             >
               {renderStep()}
             </motion.div>
@@ -426,7 +426,7 @@ function AuthenticationStep({ onAuthenticate, isLoading, error }: Authentication
       </div>
 
       {error && (
-        <Alert variant="destructive">
+        <Alert variant={"destructive" as any}>
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>Authentication Error</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
@@ -661,7 +661,7 @@ function ProcessingStep({ session }: ProcessingStepProps) {
 
       {session && session.foundDocuments.length > 0 && (
         <div className="text-center">
-          <Badge variant="secondary" className="text-sm">
+          <Badge variant={"secondary" as any} className="text-sm">
             {session.foundDocuments.length} documents found
           </Badge>
         </div>
@@ -713,14 +713,14 @@ function ReviewStep({
             </p>
             <div className="flex gap-2">
               <Button
-                variant="outline"
+                variant={"outline" as any}
                 size="sm"
                 onClick={() => documents.forEach(doc => onToggleSelection(doc.id))}
               >
                 Select All
               </Button>
               <Button
-                variant="outline"
+                variant={"outline" as any}
                 size="sm"
                 onClick={() => selectedDocuments.forEach(id => onToggleSelection(id))}
               >
@@ -752,7 +752,7 @@ function ReviewStep({
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-2">
                           <h4 className="font-medium truncate">{document.filename}</h4>
-                          <Badge variant="secondary" className="text-xs">
+                          <Badge variant={"secondary" as any} className="text-xs">
                             {document.mimeType.split('/')[1].toUpperCase()}
                           </Badge>
                           {categorization && (
@@ -784,7 +784,7 @@ function ReviewStep({
 
                       <div className="text-right">
                         <div className="text-xs text-muted-foreground">
-                          Confidence: {categorization ? Math.round(categorization.confidence * 100) : 0}%
+                          Confidence: {categorization ? Math.round(categorization?.confidence * 100) : 0}%
                         </div>
                       </div>
                     </div>

@@ -99,13 +99,13 @@ export default function EnhancedDocumentUploader({
 
         // OCR-specific fields
         ocr_text: processedDocument?.ocrResult.text || null,
-        ocr_confidence: processedDocument?.ocrResult.confidence || null,
+        ocr_confidence: processedDocument?.ocrResult?.confidence || null,
         extracted_entities:
           processedDocument?.ocrResult.metadata.extractedEntities
             ? JSON.stringify(processedDocument.ocrResult.metadata.extractedEntities)
             : null,
         classification_confidence:
-          processedDocument?.classification.confidence || null,
+          processedDocument?.classification?.confidence || null,
         extracted_metadata: processedDocument?.extractedMetadata
           ? JSON.stringify(processedDocument.extractedMetadata)
           : null,
@@ -167,7 +167,7 @@ export default function EnhancedDocumentUploader({
             onClick={() => setMode('scan')}
             className='flex items-center gap-2'
           >
-            <Icon name='sparkles' className='w-4 h-4' />
+            <Icon name={"sparkles" as any} className='w-4 h-4' />
             AI Scan Mode
           </Button>
           <Button
@@ -175,7 +175,7 @@ export default function EnhancedDocumentUploader({
             onClick={() => setMode('manual')}
             className='flex items-center gap-2'
           >
-            <Icon name='edit' className='w-4 h-4' />
+            <Icon name={"edit" as any} className='w-4 h-4' />
             Manual Entry
           </Button>
         </div>
@@ -201,8 +201,8 @@ export default function EnhancedDocumentUploader({
             <div className='flex items-center justify-between mb-6'>
               <h3 className='text-xl font-semibold'>Document Information</h3>
               {processedDocument && (
-                <Badge variant='secondary' className='flex items-center gap-2'>
-                  <Icon name='sparkles' className='w-3 h-3' />
+                <Badge variant={"secondary" as any} className='flex items-center gap-2'>
+                  <Icon name={"sparkles" as any} className='w-3 h-3' />
                   AI Enhanced
                 </Badge>
               )}
@@ -448,7 +448,7 @@ export default function EnhancedDocumentUploader({
             {processedDocument && (
               <div className='mt-6 p-4 bg-primary/5 border border-primary/20 rounded-lg'>
                 <h4 className='font-semibold mb-2 flex items-center gap-2'>
-                  <Icon name='sparkles' className='w-4 h-4 text-primary' />
+                  <Icon name={"sparkles" as any} className='w-4 h-4 text-primary' />
                   AI Analysis Results
                 </h4>
                 <div className='grid md:grid-cols-3 gap-4 text-sm'>
@@ -457,7 +457,7 @@ export default function EnhancedDocumentUploader({
                     <p className='text-muted-foreground'>
                       {processedDocument.classification.type.replace('_', ' ')}(
                       {Math.round(
-                        processedDocument.classification.confidence * 100
+                        processedDocument.classification?.confidence * 100
                       )}
                       % confidence)
                     </p>
@@ -465,7 +465,7 @@ export default function EnhancedDocumentUploader({
                   <div>
                     <span className='font-medium'>Text Quality:</span>
                     <p className='text-muted-foreground'>
-                      {Math.round(processedDocument.ocrResult.confidence * 100)}
+                      {Math.round(processedDocument.ocrResult?.confidence * 100)}
                       % accuracy
                     </p>
                   </div>
@@ -493,12 +493,12 @@ export default function EnhancedDocumentUploader({
               >
                 {isUploading ? (
                   <>
-                    <Icon name='loader' className='w-4 h-4 mr-2 animate-spin' />
+                    <Icon name={"loader" as any} className='w-4 h-4 mr-2 animate-spin' />
                     Saving...
                   </>
                 ) : (
                   <>
-                    <Icon name='check' className='w-4 h-4 mr-2' />
+                    <Icon name={"check" as any} className='w-4 h-4 mr-2' />
                     Save Document
                   </>
                 )}

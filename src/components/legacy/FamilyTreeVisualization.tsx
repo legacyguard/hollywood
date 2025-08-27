@@ -196,8 +196,8 @@ export const FamilyTreeVisualization: React.FC<
         <div className='flex items-center gap-2'>
           <Dialog open={showAddRelative} onOpenChange={setShowAddRelative}>
             <DialogTrigger asChild>
-              <Button variant='outline' size='sm'>
-                <Icon name='add' className='w-4 h-4 mr-2' />
+              <Button variant={"outline" as any} size='sm'>
+                <Icon name={"add" as any} className='w-4 h-4 mr-2' />
                 Add Relative
               </Button>
             </DialogTrigger>
@@ -257,7 +257,7 @@ export const FamilyTreeVisualization: React.FC<
                 </div>
                 <div className='flex justify-end gap-2'>
                   <Button
-                    variant='outline'
+                    variant={"outline" as any}
                     onClick={() => setShowAddRelative(false)}
                   >
                     Cancel
@@ -276,7 +276,7 @@ export const FamilyTreeVisualization: React.FC<
           {conflicts.length > 0 && (
             <Card className='p-4 border-red-200 bg-red-50'>
               <h4 className='font-medium text-red-900 mb-2 flex items-center gap-2'>
-                <Icon name='alert-triangle' className='w-4 h-4' />
+                <Icon name={"alert-triangle" as any} className='w-4 h-4' />
                 Relationship Conflicts ({conflicts.length})
               </h4>
               <div className='space-y-2'>
@@ -297,14 +297,14 @@ export const FamilyTreeVisualization: React.FC<
           {suggestions.length > 0 && (
             <Card className='p-4 border-blue-200 bg-blue-50'>
               <h4 className='font-medium text-blue-900 mb-2 flex items-center gap-2'>
-                <Icon name='lightbulb' className='w-4 h-4' />
+                <Icon name={"lightbulb" as any} className='w-4 h-4' />
                 Suggested Family Members ({suggestions.length})
               </h4>
               <div className='space-y-2'>
                 {suggestions.slice(0, 3).map((suggestion, index) => (
                   <div key={index} className='text-sm'>
                     <div className='flex items-center gap-2'>
-                      <Badge variant='outline' className='text-xs'>
+                      <Badge variant={"outline" as any} className='text-xs'>
                         {suggestion.priority}
                       </Badge>
                       <span className='font-medium'>
@@ -388,7 +388,7 @@ export const FamilyTreeVisualization: React.FC<
             >
               <div className='flex items-center gap-3'>
                 <div className='w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center'>
-                  <Icon name='user' className='w-5 h-5 text-primary' />
+                  <Icon name={"user" as any} className='w-5 h-5 text-primary' />
                 </div>
                 <div>
                   <div className='font-medium'>
@@ -412,8 +412,7 @@ export const FamilyTreeVisualization: React.FC<
 
           {inheritanceFlow.distributions.length === 0 && (
             <div className='text-center text-muted-foreground py-8'>
-              <Icon
-                name='users'
+              <Icon name={"users" as any}
                 className='w-12 h-12 mx-auto mb-4 opacity-50'
               />
               <p>No inheritance distributions defined yet</p>
@@ -497,8 +496,8 @@ const FamilyTreeNode: React.FC<FamilyTreeNodeProps> = ({
         className={`absolute cursor-move select-none ${getGenerationColor(node.generation)} ${
           isSelected ? 'ring-2 ring-primary ring-offset-2' : ''
         } rounded-lg border-2 p-2 min-w-[120px] shadow-sm hover:shadow-md transition-all`}
-        style={{
-          left: `${node.position.x}px`,
+        style={{ 
+          left: `${node.position.x }}px`,
           top: `${node.position.y}px`,
         }}
         draggable
@@ -521,7 +520,7 @@ const FamilyTreeNode: React.FC<FamilyTreeNodeProps> = ({
         </div>
 
         {node.inheritanceShare && (
-          <Badge variant='secondary' className='text-xs'>
+          <Badge variant={"secondary" as any} className='text-xs'>
             {node.inheritanceShare}%
           </Badge>
         )}
@@ -529,21 +528,21 @@ const FamilyTreeNode: React.FC<FamilyTreeNodeProps> = ({
         <div className='flex gap-1 mt-2'>
           <Button
             size='sm'
-            variant='ghost'
+            variant={"ghost" as any}
             className='h-6 px-2 text-xs'
             onClick={e => {
               e.stopPropagation();
               setShowInheritanceDialog(true);
             }}
           >
-            <Icon name='percent' className='w-3 h-3' />
+            <Icon name={"percent" as any} className='w-3 h-3' />
           </Button>
         </div>
 
         {node.conflicts && node.conflicts.length > 0 && (
           <div className='absolute -top-2 -right-2'>
             <div className='w-4 h-4 bg-red-500 rounded-full flex items-center justify-center'>
-              <Icon name='alert-triangle' className='w-2 h-2 text-white' />
+              <Icon name={"alert-triangle" as any} className='w-2 h-2 text-white' />
             </div>
           </div>
         )}
@@ -576,7 +575,7 @@ const FamilyTreeNode: React.FC<FamilyTreeNodeProps> = ({
             </div>
             <div className='flex justify-end gap-2'>
               <Button
-                variant='outline'
+                variant={"outline" as any}
                 onClick={() => setShowInheritanceDialog(false)}
               >
                 Cancel

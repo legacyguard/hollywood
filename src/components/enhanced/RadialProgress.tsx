@@ -105,10 +105,9 @@ export function RadialProgress({
                 colorClasses[color],
                 animate && 'transition-all duration-1000 ease-out'
               )}
-              style={{
-                strokeDasharray: circumference,
+              style={{  strokeDasharray: circumference,
                 strokeDashoffset: animate ? strokeDashoffset : circumference,
-              }}
+               }}
             />
           </svg>
 
@@ -206,8 +205,8 @@ export function LinearProgress({
               'h-full rounded-full transition-all duration-1000 ease-out',
               colorClasses[color]
             )}
-            style={{
-              width: animate ? `${normalizedValue}%` : '0%',
+            style={{ 
+              width: animate ? `${normalizedValue }}%` : '0%',
               transition: animate ? 'width 1s ease-out' : 'none',
             }}
           />

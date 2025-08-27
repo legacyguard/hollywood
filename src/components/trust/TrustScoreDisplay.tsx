@@ -115,7 +115,7 @@ export function TrustScoreDisplay({
           <TooltipTrigger asChild>
             <motion.div
               className={cn('relative', className)}
-              whileHover={{ scale: 1.05 }}
+              whileHover={{  scale: 1.05  }}
               onClick={handleClick}
             >
               <Card className="border-2 border-secondary bg-gradient-to-br from-accent/10 to-primary/10 cursor-pointer hover:shadow-md transition-all">
@@ -196,7 +196,7 @@ export function TrustScoreDisplay({
         <TooltipTrigger asChild>
           <motion.div
             className={cn('', className)}
-            whileHover={{ scale: 1.02 }}
+            whileHover={{  scale: 1.02  }}
             onClick={handleClick}
           >
             <Card className="border-l-4 border-l-blue-600 bg-white hover:shadow-md transition-all cursor-pointer">
@@ -232,7 +232,7 @@ export function TrustScoreDisplay({
                       <div key={index} className="flex items-center gap-2 text-xs">
                         <boost.icon className="h-3 w-3 text-blue-600" />
                         <span className="flex-1">{boost.action}</span>
-                        <Badge variant="outline" className="text-xs">
+                        <Badge variant={"outline" as any} className="text-xs">
                           +{boost.boost}
                         </Badge>
                       </div>
@@ -243,7 +243,7 @@ export function TrustScoreDisplay({
                 {showDetails && (
                   <Button
                     size="sm"
-                    variant="outline"
+                    variant={"outline" as any}
                     className="w-full mt-3"
                     onClick={handleClick}
                   >
@@ -348,7 +348,7 @@ export function TrustScoreBadge({
       <Tooltip>
         <TooltipTrigger asChild>
           <Button
-            variant="ghost"
+            variant={"ghost" as any}
             size="sm"
             onClick={handleClick}
             className={cn(

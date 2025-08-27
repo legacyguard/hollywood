@@ -386,7 +386,7 @@ export function FamilyDocumentSharing({ userId, familyMembers }: FamilyDocumentS
               </div>
 
               <div className="flex items-center justify-end space-x-2 pt-4">
-                <Button variant="outline" onClick={() => setShowShareDialog(false)}>
+                <Button variant={"outline" as any} onClick={() => setShowShareDialog(false)}>
                   Cancel
                 </Button>
                 <Button
@@ -442,10 +442,10 @@ export function FamilyDocumentSharing({ userId, familyMembers }: FamilyDocumentS
             return (
               <motion.div
                 key={doc.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ delay: index * 0.1 }}
+                initial={{  opacity: 0, y: 20  }}
+                animate={{  opacity: 1, y: 0  }}
+                exit={{  opacity: 0, y: -20  }}
+                transition={{  delay: index * 0.1  }}
               >
                 <Card className="hover:shadow-md transition-shadow">
                   <CardContent className="p-6">
@@ -458,17 +458,17 @@ export function FamilyDocumentSharing({ userId, familyMembers }: FamilyDocumentS
                         <div className="flex-1 space-y-2">
                           <div className="flex items-center gap-2">
                             <h3 className="font-semibold">{doc.name}</h3>
-                            <Badge className={categoryConfig.color} variant="outline">
+                            <Badge className={categoryConfig.color} variant={"outline" as any}>
                               {categoryConfig.label}
                             </Badge>
                             {doc.isEncrypted && (
-                              <Badge variant="secondary" className="gap-1">
+                              <Badge variant={"secondary" as any} className="gap-1">
                                 <Lock className="h-3 w-3" />
                                 Encrypted
                               </Badge>
                             )}
                             {doc.emergencyAccess && (
-                              <Badge variant="destructive" className="gap-1">
+                              <Badge variant={"destructive" as any} className="gap-1">
                                 <AlertTriangle className="h-3 w-3" />
                                 Emergency Access
                               </Badge>
@@ -504,7 +504,7 @@ export function FamilyDocumentSharing({ userId, familyMembers }: FamilyDocumentS
                                         </AvatarFallback>
                                       </Avatar>
                                       <span className="text-sm font-medium">{member.name}</span>
-                                      <Badge className={accessConfig.color} variant="outline">
+                                      <Badge className={accessConfig.color} variant={"outline" as any}>
                                         {accessConfig.label}
                                       </Badge>
                                     </div>
@@ -526,11 +526,11 @@ export function FamilyDocumentSharing({ userId, familyMembers }: FamilyDocumentS
                       </div>
 
                       <div className="flex items-center gap-2">
-                        <Button variant="outline" size="sm" className="gap-2">
+                        <Button variant={"outline" as any} size="sm" className="gap-2">
                           <Eye className="h-4 w-4" />
                           View
                         </Button>
-                        <Button variant="outline" size="sm" className="gap-2">
+                        <Button variant={"outline" as any} size="sm" className="gap-2">
                           <Share2 className="h-4 w-4" />
                           Share
                         </Button>

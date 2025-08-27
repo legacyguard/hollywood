@@ -1,3 +1,4 @@
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 /**
  * Trust Score Calculator Tests
  * Validates trust score calculation logic and accuracy
@@ -288,7 +289,7 @@ describe('TrustScoreCalculator', () => {
         documents: Array(3).fill({}),
         professional_reviews: Array(1).fill({}),
         emergency_contacts: Array(2).fill({}),
-        guardians: [],
+        guardianshipAppointments: [],
         will_completed: false,
         encryption_enabled: true,
         two_factor_enabled: false,

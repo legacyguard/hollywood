@@ -171,10 +171,10 @@ const i18nConfig = {
   // Backend settings for lazy loading
   backend: {
     // Path to translation files
-    loadPath: '/locales/{{lng}}/{{ns}}.json',
+    loadPath: '/locales/{lng}/{ns}.json',
 
     // Add jurisdiction-specific overrides
-    addPath: '/locales/{{lng}}/{{ns}}.missing.json',
+    addPath: '/locales/{lng}/{ns}.missing.json',
 
     // Allow cross-domain loading for different jurisdictions
     crossDomain: true,

@@ -15,6 +15,7 @@ import { BulkImportSummary } from '@/components/email-import/BulkImportSummary';
 import type { BulkImportResult } from '@/types/gmail';
 import { useABTest } from '@/lib/ab-testing/ab-testing-system';
 import { useUser } from '@clerk/clerk-react';
+import { useNavigate } from 'react-router-dom';
 
 interface EmailImportButtonProps {
   onImportComplete?: (result: BulkImportResult) => void;
@@ -22,6 +23,7 @@ interface EmailImportButtonProps {
 }
 
 export function EmailImportButton({ onImportComplete, className }: EmailImportButtonProps) {
+  const navigate = useNavigate();
   const { user } = useUser();
   const { isVariant } = useABTest('email_import_cta_v1', user?.id);
 
@@ -38,21 +40,8 @@ export function EmailImportButton({ onImportComplete, className }: EmailImportBu
 
   const handleViewDocuments = () => {
     setShowSummary(false);
-    // Navigate to documents page - would integrate with router
-// At the top of the file, alongside your other imports:
-import { useNavigate } from 'react-router-dom';
-
-export function EmailImportButton({ onImportComplete, className }: EmailImportButtonProps) {
-  const navigate = useNavigate();
-  // ... existing code ...
-
-  const handleViewDocuments = () => {
-    setShowSummary(false);
     navigate('/vault');
   };
-
-  // ... rest of component ...
-}
 
   const handleCloseSummary = () => {
     setShowSummary(false);
@@ -73,10 +62,10 @@ export function EmailImportButton({ onImportComplete, className }: EmailImportBu
             'fixed bottom-6 right-6 z-50',
             className
           )}
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+          initial={{  scale: 0  }}
+          animate={{  scale: 1  }}
+          whileHover={{  scale: 1.05  }}
+          whileTap={{  scale: 0.95  }}
         >
           <Button
             onClick={() => setIsWizardOpen(true)}
@@ -107,15 +96,16 @@ export function EmailImportButton({ onImportComplete, className }: EmailImportBu
           onViewDocuments={handleViewDocuments}
           onClose={handleCloseSummary}
         />
-        <div className="bg-gradient-to-r from-primary/5 to-accent/5 border border-primary/20 rounded-xl p-6 relative overflow-hidden">
+      </>
     );
-          <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full -translate-y-16 translate-x-16 opacity-30" />
-          <div className="absolute bottom-0 left-0 w-24 h-24 bg-accent/10 rounded-full translate-y-12 -translate-x-12 opacity-30" />
+  }
+
+  // Default inline variant
   return (
     <>
       <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
+        initial={{  opacity: 0, y: -20  }}
+        animate={{  opacity: 1, y: 0  }}
         className={cn('w-full', className)}
       >
         <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-xl p-6 relative overflow-hidden">
@@ -132,7 +122,7 @@ export function EmailImportButton({ onImportComplete, className }: EmailImportBu
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   <h3 className="font-semibold text-gray-900">Import from Gmail</h3>
-                  <Badge variant="secondary" className="text-xs bg-yellow-100 text-yellow-800">
+                  <Badge variant={"secondary" as any} className="text-xs bg-yellow-100 text-yellow-800">
                     <Sparkles className="h-3 w-3 mr-1" />
                     New
                   </Badge>
@@ -183,7 +173,7 @@ function EmailImportDialog({ isOpen, onClose, onImportComplete }: EmailImportDia
       <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto p-0">
         <div className="relative">
           <Button
-            variant="ghost"
+            variant={"ghost" as any}
             size="sm"
             onClick={onClose}
             className="absolute top-4 right-4 z-10 rounded-full"
@@ -224,7 +214,7 @@ function ImportSummaryDialog({
       <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto p-0">
         <div className="relative">
           <Button
-            variant="ghost"
+            variant={"ghost" as any}
             size="sm"
             onClick={onClose}
             className="absolute top-4 right-4 z-10 rounded-full"

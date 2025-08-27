@@ -166,8 +166,8 @@ export function DuplicateResolutionStep({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{  opacity: 0, y: 20  }}
+      animate={{  opacity: 1, y: 0  }}
       className={cn('space-y-6', className)}
     >
       {/* Header */}
@@ -208,7 +208,7 @@ export function DuplicateResolutionStep({
                     <CardTitle className="text-sm font-medium flex items-center gap-2">
                       <FileText className="h-4 w-4" />
                       {duplicate.document.filename}
-                      <Badge className={cn('text-xs', getConfidenceColor(duplicate.confidence))}>
+                      <Badge className={cn('text-xs', getConfidenceColor(duplicate?.confidence))}>
                         {Math.round(duplicate.similarity * 100)}% match
                       </Badge>
                     </CardTitle>
@@ -266,7 +266,7 @@ export function DuplicateResolutionStep({
                   <h4 className="font-medium text-sm">Why this might be a duplicate:</h4>
                   <div className="flex flex-wrap gap-2">
                     {duplicate.matchReasons.map((reason, idx) => (
-                      <Badge key={idx} variant="outline" className="text-xs">
+                      <Badge key={idx} variant={"outline" as any} className="text-xs">
                         {reason.description}
                       </Badge>
                     ))}
@@ -337,7 +337,7 @@ export function DuplicateResolutionStep({
         </div>
 
         <div className="flex gap-3">
-          <Button variant="outline" onClick={onSkip}>
+          <Button variant={"outline" as any} onClick={onSkip}>
             Skip All Duplicates
           </Button>
           <Button onClick={handleResolve}>

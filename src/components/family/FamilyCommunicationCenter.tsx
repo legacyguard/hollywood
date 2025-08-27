@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { Separator } from '../ui/separator';
 import { ScrollArea } from '../ui/scroll-area';
-import { MessageCircle, Send, Phone, Video, Calendar, Bell, Users, Pin, Archive, Search, Settings, Plus, Paperclip, Image, Mic, Smile, MoreVertical, Reply, Heart, Clock, Check, CheckCheck } from 'lucide-react';
+import { MessageCircle, Send, Phone, Video, Calendar, Bell, Users, Pin, Archive, Search, Settings, Plus, Paperclip, Image, Mic, Smile, MoreVertical, Reply, Heart, Clock, Check, CheckCheck, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface FamilyMember {
@@ -393,14 +393,14 @@ export const FamilyCommunicationCenter: React.FC<FamilyCommunicationCenterProps>
             <div className="flex gap-2">
               <Button
                 size="sm"
-                variant="ghost"
+                variant={"ghost" as any}
                 onClick={() => setShowSearch(!showSearch)}
               >
                 <Search className="h-4 w-4" />
               </Button>
               <Dialog open={isCreatingChannel} onOpenChange={setIsCreatingChannel}>
                 <DialogTrigger asChild>
-                  <Button size="sm" variant="ghost">
+                  <Button size="sm" variant={"ghost" as any}>
                     <Plus className="h-4 w-4" />
                   </Button>
                 </DialogTrigger>
@@ -448,7 +448,7 @@ export const FamilyCommunicationCenter: React.FC<FamilyCommunicationCenterProps>
             <h3 className="font-medium text-gray-900">Announcements</h3>
             <Dialog>
               <DialogTrigger asChild>
-                <Button size="sm" variant="ghost">
+                <Button size="sm" variant={"ghost" as any}>
                   <Plus className="h-3 w-3" />
                 </Button>
               </DialogTrigger>
@@ -505,7 +505,7 @@ export const FamilyCommunicationCenter: React.FC<FamilyCommunicationCenterProps>
               {channels.map((channel) => (
                 <motion.div
                   key={channel.id}
-                  whileHover={{ x: 2 }}
+                  whileHover={{  x: 2  }}
                   className={`p-3 rounded cursor-pointer transition-colors ${
                     activeChannel?.id === channel.id 
                       ? 'bg-blue-100 text-blue-900' 
@@ -520,7 +520,7 @@ export const FamilyCommunicationCenter: React.FC<FamilyCommunicationCenterProps>
                       {channel.isPinned && <Pin className="h-3 w-3" />}
                     </div>
                     {channel.unreadCount > 0 && (
-                      <Badge variant="destructive" className="text-xs">
+                      <Badge variant={"destructive" as any} className="text-xs">
                         {channel.unreadCount}
                       </Badge>
                     )}
@@ -575,13 +575,13 @@ export const FamilyCommunicationCenter: React.FC<FamilyCommunicationCenterProps>
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <Button size="sm" variant="ghost">
+                <Button size="sm" variant={"ghost" as any}>
                   <Phone className="h-4 w-4" />
                 </Button>
-                <Button size="sm" variant="ghost">
+                <Button size="sm" variant={"ghost" as any}>
                   <Video className="h-4 w-4" />
                 </Button>
-                <Button size="sm" variant="ghost">
+                <Button size="sm" variant={"ghost" as any}>
                   <Settings className="h-4 w-4" />
                 </Button>
               </div>
@@ -599,9 +599,9 @@ export const FamilyCommunicationCenter: React.FC<FamilyCommunicationCenterProps>
                     return (
                       <motion.div
                         key={message.id}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
+                        initial={{  opacity: 0, y: 10  }}
+                        animate={{  opacity: 1, y: 0  }}
+                        exit={{  opacity: 0, y: -10  }}
                         className={`flex gap-3 group ${message.senderId === currentUserId ? 'justify-end' : ''}`}
                       >
                         {message.senderId !== currentUserId && showAvatar && (
@@ -756,27 +756,27 @@ export const FamilyCommunicationCenter: React.FC<FamilyCommunicationCenterProps>
                   <div className="flex gap-1">
                     <Button
                       size="sm"
-                      variant="ghost"
+                      variant={"ghost" as any}
                       onClick={() => fileInputRef.current?.click()}
                     >
                       <Paperclip className="h-4 w-4" />
                     </Button>
                     <Button
                       size="sm"
-                      variant="ghost"
+                      variant={"ghost" as any}
                       onClick={() => fileInputRef.current?.click()}
                     >
                       <Image className="h-4 w-4" />
                     </Button>
                     <Button
                       size="sm"
-                      variant="ghost"
+                      variant={"ghost" as any}
                       onClick={isRecording ? stopVoiceRecording : startVoiceRecording}
                       className={isRecording ? 'text-red-500' : ''}
                     >
                       <Mic className="h-4 w-4" />
                     </Button>
-                    <Button size="sm" variant="ghost">
+                    <Button size="sm" variant={"ghost" as any}>
                       <Smile className="h-4 w-4" />
                     </Button>
                   </div>

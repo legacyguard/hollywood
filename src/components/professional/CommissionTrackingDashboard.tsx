@@ -215,7 +215,7 @@ export function CommissionTrackingDashboard({
 
     setCommissions(prev => prev.map(c =>
       c.id === commissionId
-        ? { ...c, status: 'paid' as const, paidAt: new Date().toISOString() }
+        ? { ...c, status: 'paid', paidAt: new Date().toISOString() }
         : c
     ));
 
@@ -232,8 +232,8 @@ export function CommissionTrackingDashboard({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{  opacity: 0, y: 20  }}
+      animate={{  opacity: 1, y: 0  }}
       className={cn('space-y-6', className)}
     >
       {/* Header */}
@@ -246,7 +246,7 @@ export function CommissionTrackingDashboard({
         </div>
 
         <div className="flex gap-3">
-          <Button variant="outline" onClick={onExportData}>
+          <Button variant={"outline" as any} onClick={onExportData}>
             <Download className="h-4 w-4 mr-2" />
             Export
           </Button>
@@ -457,8 +457,8 @@ export function CommissionTrackingDashboard({
                 {filteredCommissions.map(commission => (
                   <motion.div
                     key={commission.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    initial={{  opacity: 0, y: 10  }}
+                    animate={{  opacity: 1, y: 0  }}
                     className="border rounded-lg p-4 hover:border-blue-200 transition-colors"
                   >
                     <div className="flex items-start justify-between mb-3">
@@ -471,7 +471,7 @@ export function CommissionTrackingDashboard({
                               {commission.status}
                             </div>
                           </Badge>
-                          <Badge variant="outline" className="capitalize">
+                          <Badge variant={"outline" as any} className="capitalize">
                             {commission.serviceType}
                           </Badge>
                         </div>
@@ -482,7 +482,7 @@ export function CommissionTrackingDashboard({
 
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="sm">
+                          <Button variant={"ghost" as any} size="sm">
                             <MoreVertical className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
@@ -533,7 +533,7 @@ export function CommissionTrackingDashboard({
                         <span>Paid: {new Date(commission.paidAt).toLocaleDateString()}</span>
                       )}
                       {commission.paymentMethod && (
-                        <Badge variant="outline" className="text-xs">
+                        <Badge variant={"outline" as any} className="text-xs">
                           {commission.paymentMethod.replace('_', ' ')}
                         </Badge>
                       )}

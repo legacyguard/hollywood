@@ -72,7 +72,7 @@ const TestOCRPage: React.FC = () => {
         enableMetadataExtraction: true,
         confidenceThreshold: 0.7,
         languageHints: ['en'],
-        processingMode: 'accurate' as const,
+        processingMode: 'accurate',
       };
       const ocrResult = await ocrService.processDocument(
         base64,
@@ -220,7 +220,7 @@ const TestOCRPage: React.FC = () => {
               </Button>
 
               {error && (
-                <Alert variant='destructive'>
+                <Alert variant={"destructive" as any}>
                   <AlertCircle className='h-4 w-4' />
                   <AlertDescription>{error}</AlertDescription>
                 </Alert>
@@ -247,7 +247,7 @@ const TestOCRPage: React.FC = () => {
                       {getDocumentTypeLabel(result.classification.type)}
                     </span>
                     <span className='text-xs text-gray-500'>
-                      {(result.classification.confidence * 100).toFixed(1)}%
+                      {(result.classification?.confidence * 100).toFixed(1)}%
                       confidence
                     </span>
                   </div>

@@ -64,18 +64,18 @@ export function DashboardContent() {
       title: 'Documents Protected',
       value: '24',
       change: 12,
-      trend: 'up' as const,
+      trend: 'up',
       icon: 'file-text',
-      color: 'primary' as const,
+      color: 'primary',
       onClick: () => navigate('/vault'),
     },
     {
       title: 'Family Members',
       value: '8',
       change: 2,
-      trend: 'up' as const,
+      trend: 'up',
       icon: 'users',
-      color: 'success' as const,
+      color: 'success',
       onClick: () => navigate('/family'),
     },
     {
@@ -83,14 +83,14 @@ export function DashboardContent() {
       value: '3',
       changeLabel: 'Active',
       icon: 'shield',
-      color: 'warning' as const,
+      color: 'warning',
       onClick: () => navigate('/guardians'),
     },
     {
       title: 'Days Protected',
       value: '147',
       icon: 'calendar',
-      color: 'info' as const,
+      color: 'info',
     },
   ]);
 
@@ -134,7 +134,7 @@ export function DashboardContent() {
                 className='bg-primary hover:bg-primary-hover text-primary-foreground shadow-md'
                 size='lg'
               >
-                <Icon name='add' className='w-5 h-5 mr-2' />
+                <Icon name={"add" as any} className='w-5 h-5 mr-2' />
                 Secure New Information
               </Button>
             </FadeIn>

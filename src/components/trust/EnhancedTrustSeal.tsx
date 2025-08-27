@@ -169,7 +169,7 @@ export const EnhancedTrustSeal: React.FC<EnhancedTrustSealProps> = ({
                 <Shield className='h-3 w-3 mr-2' />
                 Attorney Reviews
               </span>
-              <Badge variant='secondary' className='text-xs'>
+              <Badge variant={"secondary" as any} className='text-xs'>
                 {attorneyReviews.length} Review
                 {attorneyReviews.length > 1 ? 's' : ''}
               </Badge>
@@ -182,7 +182,7 @@ export const EnhancedTrustSeal: React.FC<EnhancedTrustSealProps> = ({
                 <FileText className='h-3 w-3 mr-2' />
                 Notary Certifications
               </span>
-              <Badge variant='secondary' className='text-xs'>
+              <Badge variant={"secondary" as any} className='text-xs'>
                 {notaryReviews.length} Certification
                 {notaryReviews.length > 1 ? 's' : ''}
               </Badge>
@@ -195,7 +195,7 @@ export const EnhancedTrustSeal: React.FC<EnhancedTrustSealProps> = ({
                 <Award className='h-3 w-3 mr-2' />
                 Comprehensive Audits
               </span>
-              <Badge variant='secondary' className='text-xs'>
+              <Badge variant={"secondary" as any} className='text-xs'>
                 {comprehensiveReviews.length} Audit
                 {comprehensiveReviews.length > 1 ? 's' : ''}
               </Badge>
@@ -279,7 +279,7 @@ export const EnhancedTrustSeal: React.FC<EnhancedTrustSealProps> = ({
             <div className='mt-2 bg-white bg-opacity-20 rounded-full h-2'>
               <div
                 className='bg-white rounded-full h-2 transition-all duration-500'
-                style={{ width: `${validationScore}%` }}
+                style={{  width: `${validationScore }}%` }}
               />
             </div>
           </div>

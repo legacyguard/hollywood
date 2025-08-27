@@ -379,7 +379,7 @@ export class TrustScoreCalculator {
     if (factors.documentsUploaded < 3) {
       risks.push({
         area: 'Essential Documents Missing',
-        risk: 'high' as const,
+        risk: 'high',
         description: 'Your family lacks access to critical information',
         improvements: [
           'Upload ID documents and insurance policies',
@@ -393,7 +393,7 @@ export class TrustScoreCalculator {
     if (factors.professionalReviews === 0 && factors.willCompleted) {
       risks.push({
         area: 'Legal Validation Needed',
-        risk: 'medium' as const,
+        risk: 'medium',
         description: 'Documents may not meet legal requirements',
         improvements: [
           'Request professional review of your will',
@@ -407,7 +407,7 @@ export class TrustScoreCalculator {
     if (factors.emergencyContactsAdded === 0) {
       risks.push({
         area: 'Emergency Access Gap',
-        risk: 'high' as const,
+        risk: 'high',
         description: 'No one can access your information in emergency',
         improvements: [
           'Add trusted family members as emergency contacts',
@@ -421,7 +421,7 @@ export class TrustScoreCalculator {
     if (!factors.twoFactorAuth) {
       risks.push({
         area: 'Account Security Risk',
-        risk: 'medium' as const,
+        risk: 'medium',
         description: 'Account could be compromised without 2FA',
         improvements: [
           'Enable two-factor authentication',
@@ -435,7 +435,7 @@ export class TrustScoreCalculator {
     if (factors.lastActivityDays > 90) {
       risks.push({
         area: 'Outdated Information Risk',
-        risk: 'low' as const,
+        risk: 'low',
         description: 'Information may become stale without regular updates',
         improvements: [
           'Schedule regular review reminders',

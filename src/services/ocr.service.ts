@@ -214,8 +214,8 @@ export class OcrService {
 
     annotation.pages.forEach((page: any) => {
       page.blocks?.forEach((block: any) => {
-        if (block.confidence) {
-          totalConfidence += block.confidence;
+        if (block?.confidence) {
+          totalConfidence += block?.confidence;
           blockCount++;
         }
       });

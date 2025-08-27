@@ -84,8 +84,8 @@ export function BulkImportSummary({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{  opacity: 0, y: 20  }}
+      animate={{  opacity: 1, y: 0  }}
       className={cn('max-w-4xl mx-auto space-y-6', className)}
     >
       {/* Success Header */}
@@ -294,7 +294,7 @@ export function BulkImportSummary({
         </div>
 
         <div className="flex gap-3">
-          <Button variant="outline" onClick={onClose}>
+          <Button variant={"outline" as any} onClick={onClose}>
             Continue Later
           </Button>
           <Button onClick={onViewDocuments} className="bg-blue-600 hover:bg-blue-700">

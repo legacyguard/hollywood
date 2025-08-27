@@ -286,7 +286,7 @@ export const IntelligentDocumentUploader = () => {
           category: confirmedData.suggestedCategory.category,
           // Store AI analysis results as metadata
           ai_extracted_text: confirmedData.extractedText,
-          ai_confidence: confirmedData.confidence,
+          ai_confidence: confirmedData?.confidence,
           ai_suggested_tags: confirmedData.suggestedTags,
           expiration_date: confirmedData.expirationDate.date,
           ai_key_data: confirmedData.keyData,
@@ -500,7 +500,7 @@ export const IntelligentDocumentUploader = () => {
       <Card className='p-6 bg-card border-card-border max-w-2xl mx-auto'>
         <div className='flex items-center gap-3 mb-4'>
           <div className='p-2 bg-primary/10 rounded-lg'>
-            <Icon name='brain' className='w-5 h-5 text-primary' />
+            <Icon name={"brain" as any} className='w-5 h-5 text-primary' />
           </div>
           <div>
             <h3 className='font-semibold text-lg'>
@@ -529,12 +529,12 @@ export const IntelligentDocumentUploader = () => {
             >
               {phase === 'analyzing' ? (
                 <>
-                  <Icon name='brain' className='w-4 h-4 mr-2 animate-pulse' />
+                  <Icon name={"brain" as any} className='w-4 h-4 mr-2 animate-pulse' />
                   Analyzing...
                 </>
               ) : (
                 <>
-                  <Icon name='search' className='w-4 h-4 mr-2' />
+                  <Icon name={"search" as any} className='w-4 h-4 mr-2' />
                   Analyze Document
                 </>
               )}
@@ -552,11 +552,11 @@ export const IntelligentDocumentUploader = () => {
               <div className='w-full bg-gray-700 rounded-full h-2'>
                 <div
                   className='bg-primary h-2 rounded-full transition-all duration-300'
-                  style={{ width: `${uploadProgress}%` }}
+                  style={{  width: `${uploadProgress }}%` }}
                 />
               </div>
               <div className='flex items-center gap-2 text-sm text-muted-foreground'>
-                <Icon name='search' className='w-4 h-4 animate-pulse' />
+                <Icon name={"search" as any} className='w-4 h-4 animate-pulse' />
                 <span>Extracting text and analyzing content...</span>
               </div>
             </div>
@@ -564,7 +564,7 @@ export const IntelligentDocumentUploader = () => {
 
           {file && phase === 'select' && (
             <div className='flex items-center gap-2 p-3 bg-primary/5 rounded-lg'>
-              <Icon name='documents' className='w-4 h-4 text-primary' />
+              <Icon name={"documents" as any} className='w-4 h-4 text-primary' />
               <span className='text-sm font-medium'>{file.name}</span>
               <span className='text-xs text-muted-foreground'>
                 ({(file.size / 1024).toFixed(1)} KB)
@@ -575,8 +575,7 @@ export const IntelligentDocumentUploader = () => {
 
         <div className='mt-4 p-3 bg-primary/5 rounded-lg'>
           <div className='flex gap-2'>
-            <Icon
-              name='sparkles'
+            <Icon name={"sparkles" as any}
               className='w-4 h-4 text-primary flex-shrink-0 mt-0.5'
             />
             <div className='text-xs text-muted-foreground'>

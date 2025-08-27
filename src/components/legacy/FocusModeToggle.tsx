@@ -22,7 +22,7 @@ export const FocusModeToggle: React.FC<FocusModeToggleProps> = ({
   const ToggleButton = () => (
     <Button
       onClick={enterFocusMode}
-      variant='outline'
+      variant={"outline" as any}
       className={`group transition-all duration-200 hover:bg-primary/5 hover:border-primary/20 ${className}`}
     >
       <Icon

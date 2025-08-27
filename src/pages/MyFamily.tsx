@@ -224,24 +224,24 @@ export const MyFamilyPage: React.FC<MyFamilyPageProps> = ({
         <div className='space-y-2'>
           <div className='flex flex-wrap gap-1'>
             {member.roles.isHeir && (
-              <Badge variant='default' className='text-xs'>
+              <Badge variant={"default" as any} className='text-xs'>
                 Heir ({member.roles.heirPercentage}%)
               </Badge>
             )}
             {member.roles.isExecutor && (
-              <Badge variant='secondary' className='text-xs'>
+              <Badge variant={"secondary" as any} className='text-xs'>
                 <Crown className='h-3 w-3 mr-1' />
                 Executor
               </Badge>
             )}
             {member.roles.isGuardian && (
-              <Badge variant='outline' className='text-xs'>
+              <Badge variant={"outline" as any} className='text-xs'>
                 <Shield className='h-3 w-3 mr-1' />
                 Guardian
               </Badge>
             )}
             {member.roles.hasLegacyMessages && (
-              <Badge variant='outline' className='text-xs'>
+              <Badge variant={"outline" as any} className='text-xs'>
                 <Heart className='h-3 w-3 mr-1' />
                 Legacy
               </Badge>

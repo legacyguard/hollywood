@@ -96,8 +96,8 @@ export function ProfessionalPartnershipTemplate({
       {/* Header */}
       <div className="text-center mb-8">
         <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
+          initial={{  y: 20, opacity: 0  }}
+          animate={{  y: 0, opacity: 1  }}
           className="flex items-center justify-center gap-3 mb-4"
         >
           <Scale className="h-8 w-8 text-blue-600" />
@@ -107,11 +107,11 @@ export function ProfessionalPartnershipTemplate({
           LegacyGuard Professional Network Partnership Terms
         </p>
         <div className="flex items-center justify-center gap-4 mt-4">
-          <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+          <Badge variant={"outline" as any} className="bg-blue-50 text-blue-700 border-blue-200">
             Attorney: {reviewerName}
           </Badge>
           {lawFirm && (
-            <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+            <Badge variant={"outline" as any} className="bg-green-50 text-green-700 border-green-200">
               Firm: {lawFirm}
             </Badge>
           )}
@@ -123,9 +123,9 @@ export function ProfessionalPartnershipTemplate({
         {keyTerms.map((term, index) => (
           <motion.div
             key={term.label}
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: index * 0.1 }}
+            initial={{  y: 20, opacity: 0  }}
+            animate={{  y: 0, opacity: 1  }}
+            transition={{  delay: index * 0.1  }}
           >
             <Card>
               <CardContent className="p-4 text-center">
@@ -410,7 +410,7 @@ export function ProfessionalPartnershipTemplate({
                 <div className="flex gap-3">
                   {onDownload && (
                     <Button
-                      variant="outline"
+                      variant={"outline" as any}
                       onClick={onDownload}
                       className="flex items-center gap-2"
                     >
@@ -423,7 +423,7 @@ export function ProfessionalPartnershipTemplate({
                 <div className="flex gap-3">
                   {onDecline && (
                     <Button
-                      variant="outline"
+                      variant={"outline" as any}
                       onClick={onDecline}
                       className="text-gray-600 hover:text-red-600"
                     >

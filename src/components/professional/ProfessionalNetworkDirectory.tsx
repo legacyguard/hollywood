@@ -374,8 +374,8 @@ export function ProfessionalNetworkDirectory({
   const renderProfessionalCard = (professional: ProfessionalProfile) => (
     <motion.div
       key={professional.id}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{  opacity: 0, y: 20  }}
+      animate={{  opacity: 1, y: 0  }}
       className="group"
     >
       <Card className="h-full hover:shadow-xl transition-all duration-300 border-2 hover:border-blue-200 cursor-pointer"
@@ -413,7 +413,7 @@ export function ProfessionalNetworkDirectory({
                     <span className="text-sm font-medium">{professional.rating}</span>
                     <span className="text-xs text-muted-foreground">({professional.reviewCount})</span>
                   </div>
-                  <Badge className={getAvailabilityColor(professional.availability)} variant="outline">
+                  <Badge className={getAvailabilityColor(professional.availability)} variant={"outline" as any}>
                     {professional.availability}
                   </Badge>
                 </div>
@@ -442,12 +442,12 @@ export function ProfessionalNetworkDirectory({
             <Label className="text-sm font-medium mb-2 block">Specializations</Label>
             <div className="flex flex-wrap gap-1">
               {professional.specializations.slice(0, 3).map(spec => (
-                <Badge key={spec.id} variant="secondary" className="text-xs">
+                <Badge key={spec.id} variant={"secondary" as any} className="text-xs">
                   {spec.name}
                 </Badge>
               ))}
               {professional.specializations.length > 3 && (
-                <Badge variant="outline" className="text-xs">
+                <Badge variant={"outline" as any} className="text-xs">
                   +{professional.specializations.length - 3} more
                 </Badge>
               )}
@@ -496,7 +496,7 @@ export function ProfessionalNetworkDirectory({
               </Button>
               <Button
                 size="sm"
-                variant="outline"
+                variant={"outline" as any}
                 onClick={(e) => {
                   e.stopPropagation();
                   onRequestReview(professional);
@@ -516,8 +516,8 @@ export function ProfessionalNetworkDirectory({
   const renderProfessionalListItem = (professional: ProfessionalProfile) => (
     <motion.div
       key={professional.id}
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{  opacity: 0, y: 10  }}
+      animate={{  opacity: 1, y: 0  }}
       className="group"
     >
       <Card className="hover:shadow-lg transition-all duration-300 border hover:border-blue-200 cursor-pointer"
@@ -569,7 +569,7 @@ export function ProfessionalNetworkDirectory({
 
                   <div className="flex flex-wrap gap-1 mb-3">
                     {professional.specializations.map(spec => (
-                      <Badge key={spec.id} variant="secondary" className="text-xs">
+                      <Badge key={spec.id} variant={"secondary" as any} className="text-xs">
                         {spec.name}
                       </Badge>
                     ))}
@@ -578,7 +578,7 @@ export function ProfessionalNetworkDirectory({
                   {professional.achievements && professional.achievements.length > 0 && (
                     <div className="flex flex-wrap gap-1">
                       {professional.achievements.slice(0, 2).map(achievement => (
-                        <Badge key={achievement} variant="outline" className="text-xs">
+                        <Badge key={achievement} variant={"outline" as any} className="text-xs">
                           <Award className="h-2 w-2 mr-1" />
                           {achievement}
                         </Badge>
@@ -617,7 +617,7 @@ export function ProfessionalNetworkDirectory({
                     </Button>
                     <Button
                       size="sm"
-                      variant="outline"
+                      variant={"outline" as any}
                       onClick={(e) => {
                         e.stopPropagation();
                         onRequestReview(professional);
@@ -638,8 +638,8 @@ export function ProfessionalNetworkDirectory({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{  opacity: 0, y: 20  }}
+      animate={{  opacity: 1, y: 0  }}
       className={cn('space-y-6', className)}
     >
       {/* Header */}
@@ -674,7 +674,7 @@ export function ProfessionalNetworkDirectory({
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <Button
-                  variant="outline"
+                  variant={"outline" as any}
                   onClick={() => setShowFilters(!showFilters)}
                   className="gap-2"
                 >
@@ -698,7 +698,7 @@ export function ProfessionalNetworkDirectory({
                   </Select>
 
                   <Button
-                    variant="outline"
+                    variant={"outline" as any}
                     size="sm"
                     onClick={() => setFilters(prev => ({
                       ...prev,
@@ -742,9 +742,9 @@ export function ProfessionalNetworkDirectory({
             <AnimatePresence>
               {showFilters && (
                 <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
+                  initial={{  opacity: 0, height: 0  }}
+                  animate={{  opacity: 1, height: 'auto'  }}
+                  exit={{  opacity: 0, height: 0  }}
                   className="border-t pt-6"
                 >
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -857,17 +857,17 @@ export function ProfessionalNetworkDirectory({
                       <div className="flex items-center justify-between">
                         <Label className="font-medium">Active Filters</Label>
                         {(filters.specializations.length > 0 || filters.states.length > 0 || filters.languages.length > 0) && (
-                          <Button variant="ghost" size="sm" onClick={resetFilters}>
+                          <Button variant={"ghost" as any} size="sm" onClick={resetFilters}>
                             Clear All
                           </Button>
                         )}
                       </div>
                       <div className="flex flex-wrap gap-1">
                         {filters.specializations.map(spec => (
-                          <Badge key={spec} variant="secondary" className="text-xs">
+                          <Badge key={spec} variant={"secondary" as any} className="text-xs">
                             {spec}
                             <Button
-                              variant="ghost"
+                              variant={"ghost" as any}
                               size="sm"
                               className="ml-1 h-auto p-0 text-xs"
                               onClick={() => setFilters(prev => ({
@@ -911,7 +911,7 @@ export function ProfessionalNetworkDirectory({
               <p className="text-muted-foreground mb-4">
                 Try adjusting your search criteria or filters to find more professionals.
               </p>
-              <Button variant="outline" onClick={resetFilters}>
+              <Button variant={"outline" as any} onClick={resetFilters}>
                 Reset Filters
               </Button>
             </CardContent>
@@ -983,11 +983,11 @@ export function ProfessionalNetworkDirectory({
                       <Calendar className="h-4 w-4 mr-2" />
                       Book Consultation
                     </Button>
-                    <Button variant="outline" onClick={() => onRequestReview(selectedProfessional)}>
+                    <Button variant={"outline" as any} onClick={() => onRequestReview(selectedProfessional)}>
                       <FileText className="h-4 w-4 mr-2" />
                       Request Review
                     </Button>
-                    <Button variant="outline">
+                    <Button variant={"outline" as any}>
                       <MessageSquare className="h-4 w-4 mr-2" />
                       Send Message
                     </Button>
@@ -1017,7 +1017,7 @@ export function ProfessionalNetworkDirectory({
                           <Label className="font-medium mb-2 block">Specializations</Label>
                           <div className="flex flex-wrap gap-2">
                             {selectedProfessional.specializations.map(spec => (
-                              <Badge key={spec.id} variant="secondary">
+                              <Badge key={spec.id} variant={"secondary" as any}>
                                 {spec.name}
                               </Badge>
                             ))}
@@ -1028,7 +1028,7 @@ export function ProfessionalNetworkDirectory({
                           <Label className="font-medium mb-2 block">Licensed States</Label>
                           <div className="flex flex-wrap gap-2">
                             {selectedProfessional.licensed_states.map(state => (
-                              <Badge key={state} variant="outline">
+                              <Badge key={state} variant={"outline" as any}>
                                 {state}
                               </Badge>
                             ))}
@@ -1040,7 +1040,7 @@ export function ProfessionalNetworkDirectory({
                             <Label className="font-medium mb-2 block">Languages</Label>
                             <div className="flex flex-wrap gap-2">
                               {selectedProfessional.languages.map(lang => (
-                                <Badge key={lang} variant="outline">
+                                <Badge key={lang} variant={"outline" as any}>
                                   {lang}
                                 </Badge>
                               ))}
@@ -1072,7 +1072,7 @@ export function ProfessionalNetworkDirectory({
                       <CardContent className="p-6">
                         <div className="flex items-start justify-between mb-3">
                           <div>
-                            <Badge variant="outline" className="mb-2 capitalize">
+                            <Badge variant={"outline" as any} className="mb-2 capitalize">
                               {service.type}
                             </Badge>
                             <h3 className="font-semibold">{service.description}</h3>

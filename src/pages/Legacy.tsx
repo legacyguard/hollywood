@@ -56,7 +56,7 @@ export default function LegacyPage() {
           <div className='max-w-4xl mx-auto px-6 lg:px-8 py-16 text-center'>
             <FadeIn duration={0.8} delay={0.2}>
               <div className='w-20 h-20 mx-auto mb-8 bg-primary/10 rounded-full flex items-center justify-center'>
-                <Icon name='wishes' className='w-10 h-10 text-primary' />
+                <Icon name={"wishes" as any} className='w-10 h-10 text-primary' />
               </div>
             </FadeIn>
 
@@ -80,7 +80,7 @@ export default function LegacyPage() {
                 size='lg'
                 className='bg-primary hover:bg-primary-hover text-primary-foreground px-8'
               >
-                <Icon name='documents' className='w-5 h-5 mr-2' />
+                <Icon name={"documents" as any} className='w-5 h-5 mr-2' />
                 Create Your Will Now
               </Button>
             </FadeIn>
@@ -109,8 +109,7 @@ export default function LegacyPage() {
                 onClick={handleStartWillCreator}
               >
                 <div className='w-16 h-16 mx-auto mb-6 bg-primary/10 rounded-full flex items-center justify-center group-hover:bg-primary/20 transition-colors duration-300'>
-                  <Icon
-                    name='documents'
+                  <Icon name={"documents" as any}
                     className='w-8 h-8 text-primary group-hover:scale-110 transition-transform duration-300'
                   />
                 </div>
@@ -131,7 +130,7 @@ export default function LegacyPage() {
                   requirements.
                 </p>
                 <Button className='bg-primary hover:bg-primary-hover text-primary-foreground'>
-                  <Icon name='arrow-right' className='w-4 h-4 mr-2' />
+                  <Icon name={"arrow-right" as any} className='w-4 h-4 mr-2' />
                   Start Creating Your Will
                 </Button>
               </Card>
@@ -140,8 +139,7 @@ export default function LegacyPage() {
             <FadeIn duration={0.6} delay={1.4}>
               <Card className='p-8 text-center hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer group'>
                 <div className='w-16 h-16 mx-auto mb-6 bg-purple-500/10 rounded-full flex items-center justify-center group-hover:bg-purple-500/20 transition-colors duration-300'>
-                  <Icon
-                    name='video'
+                  <Icon name={"video" as any}
                     className='w-8 h-8 text-purple-600 group-hover:scale-110 transition-transform duration-300'
                   />
                 </div>
@@ -158,8 +156,7 @@ export default function LegacyPage() {
             <FadeIn duration={0.6} delay={1.6}>
               <Card className='p-8 text-center hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer group'>
                 <div className='w-16 h-16 mx-auto mb-6 bg-green-500/10 rounded-full flex items-center justify-center group-hover:bg-green-500/20 transition-colors duration-300'>
-                  <Icon
-                    name='protection'
+                  <Icon name={"protection" as any}
                     className='w-8 h-8 text-green-600 group-hover:scale-110 transition-transform duration-300'
                   />
                 </div>
@@ -176,8 +173,7 @@ export default function LegacyPage() {
             <FadeIn duration={0.6} delay={1.8}>
               <Card className='p-8 text-center hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer group'>
                 <div className='w-16 h-16 mx-auto mb-6 bg-amber-500/10 rounded-full flex items-center justify-center group-hover:bg-amber-500/20 transition-colors duration-300'>
-                  <Icon
-                    name='financial'
+                  <Icon name={"financial" as any}
                     className='w-8 h-8 text-amber-600 group-hover:scale-110 transition-transform duration-300'
                   />
                 </div>
@@ -195,8 +191,7 @@ export default function LegacyPage() {
             <FadeIn duration={0.6} delay={2.0}>
               <Card className='p-8 text-center hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer group'>
                 <div className='w-16 h-16 mx-auto mb-6 bg-rose-500/10 rounded-full flex items-center justify-center group-hover:bg-rose-500/20 transition-colors duration-300'>
-                  <Icon
-                    name='wishes'
+                  <Icon name={"wishes" as any}
                     className='w-8 h-8 text-rose-600 group-hover:scale-110 transition-transform duration-300'
                   />
                 </div>
@@ -212,8 +207,7 @@ export default function LegacyPage() {
             <FadeIn duration={0.6} delay={2.2}>
               <Card className='p-8 text-center hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer group'>
                 <div className='w-16 h-16 mx-auto mb-6 bg-indigo-500/10 rounded-full flex items-center justify-center group-hover:bg-indigo-500/20 transition-colors duration-300'>
-                  <Icon
-                    name='users'
+                  <Icon name={"users" as any}
                     className='w-8 h-8 text-indigo-600 group-hover:scale-110 transition-transform duration-300'
                   />
                 </div>
@@ -232,8 +226,7 @@ export default function LegacyPage() {
           <FadeIn duration={0.6} delay={2.4}>
             <Card className='p-12 bg-gradient-to-r from-primary/5 to-primary/10 border-primary/20 mb-16'>
               <div className='max-w-4xl mx-auto text-center'>
-                <Icon
-                  name='heart'
+                <Icon name={"heart" as any}
                   className='w-12 h-12 text-primary mx-auto mb-6'
                 />
                 <h3 className='text-2xl font-bold mb-6'>
@@ -248,8 +241,7 @@ export default function LegacyPage() {
                 </p>
                 <div className='grid md:grid-cols-3 gap-8 text-left'>
                   <div className='flex gap-4'>
-                    <Icon
-                      name='shield-check'
+                    <Icon name={"shield-check" as any}
                       className='w-6 h-6 text-primary flex-shrink-0 mt-1'
                     />
                     <div>
@@ -261,8 +253,7 @@ export default function LegacyPage() {
                     </div>
                   </div>
                   <div className='flex gap-4'>
-                    <Icon
-                      name='heart'
+                    <Icon name={"heart" as any}
                       className='w-6 h-6 text-primary flex-shrink-0 mt-1'
                     />
                     <div>
@@ -274,8 +265,7 @@ export default function LegacyPage() {
                     </div>
                   </div>
                   <div className='flex gap-4'>
-                    <Icon
-                      name='clock'
+                    <Icon name={"clock" as any}
                       className='w-6 h-6 text-primary flex-shrink-0 mt-1'
                     />
                     <div>
@@ -294,8 +284,7 @@ export default function LegacyPage() {
           {/* Action Section */}
           <FadeIn duration={0.6} delay={2.6}>
             <Card className='p-10 text-center max-w-2xl mx-auto bg-gradient-to-r from-primary/5 to-primary/10 border-primary/20'>
-              <Icon
-                name='sparkles'
+              <Icon name={"sparkles" as any}
                 className='w-12 h-12 text-primary mx-auto mb-6'
               />
               <h3 className='text-2xl font-bold mb-4'>
@@ -312,7 +301,7 @@ export default function LegacyPage() {
                 size='lg'
                 className='bg-primary hover:bg-primary-hover text-primary-foreground px-8'
               >
-                <Icon name='documents' className='w-5 h-5 mr-2' />
+                <Icon name={"documents" as any} className='w-5 h-5 mr-2' />
                 Start Your Will Now
               </Button>
 
@@ -326,8 +315,7 @@ export default function LegacyPage() {
           <FadeIn duration={0.6} delay={2.8}>
             <Card className='mt-12 p-6 bg-muted/30 border-muted'>
               <div className='flex gap-3'>
-                <Icon
-                  name='info'
+                <Icon name={"info" as any}
                   className='w-5 h-5 text-muted-foreground flex-shrink-0 mt-1'
                 />
                 <div>

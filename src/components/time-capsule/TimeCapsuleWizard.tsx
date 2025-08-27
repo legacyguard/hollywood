@@ -235,7 +235,7 @@ export function TimeCapsuleWizard({
         <DialogHeader>
           <DialogTitle className='flex items-center gap-3 text-xl'>
             <div className='w-8 h-8 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full flex items-center justify-center'>
-              <Icon name='heart' className='w-4 h-4 text-purple-600' />
+              <Icon name={"heart" as any} className='w-4 h-4 text-purple-600' />
             </div>
             Create Time Capsule
           </DialogTitle>
@@ -260,7 +260,7 @@ export function TimeCapsuleWizard({
                   }`}
                 >
                   {step.id < currentStep ? (
-                    <Icon name='check' className='w-4 h-4' />
+                    <Icon name={"check" as any} className='w-4 h-4' />
                   ) : (
                     step.id
                   )}
@@ -334,16 +334,16 @@ export function TimeCapsuleWizard({
         {/* Navigation Buttons */}
         <div className='flex justify-between pt-4 border-t'>
           <Button
-            variant='outline'
+            variant={"outline" as any}
             onClick={prevStep}
             disabled={currentStep === 1}
           >
-            <Icon name='chevron-left' className='w-4 h-4 mr-2' />
+            <Icon name={"chevron-left" as any} className='w-4 h-4 mr-2' />
             Previous
           </Button>
 
           <div className='flex gap-2'>
-            <Button variant='ghost' onClick={handleClose}>
+            <Button variant={"ghost" as any} onClick={handleClose}>
               Cancel
             </Button>
 
@@ -354,7 +354,7 @@ export function TimeCapsuleWizard({
                 className='bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white'
               >
                 Continue
-                <Icon name='chevron-right' className='w-4 h-4 ml-2' />
+                <Icon name={"chevron-right" as any} className='w-4 h-4 ml-2' />
               </Button>
             ) : (
               <Button
@@ -364,12 +364,12 @@ export function TimeCapsuleWizard({
               >
                 {isSubmitting ? (
                   <>
-                    <Icon name='loader' className='w-4 h-4 mr-2 animate-spin' />
+                    <Icon name={"loader" as any} className='w-4 h-4 mr-2 animate-spin' />
                     Sealing Capsule...
                   </>
                 ) : (
                   <>
-                    <Icon name='archive' className='w-4 h-4 mr-2' />
+                    <Icon name={"archive" as any} className='w-4 h-4 mr-2' />
                     Seal Time Capsule
                   </>
                 )}

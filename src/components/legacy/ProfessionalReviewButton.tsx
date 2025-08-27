@@ -122,8 +122,8 @@ export function ProfessionalReviewButton({
   if (variant === 'banner') {
     return (
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
+        initial={{  opacity: 0, y: 20  }}
+        animate={{  opacity: 1, y: 0  }}
         className={cn('', className)}
       >
         <Card className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-0">
@@ -151,7 +151,7 @@ export function ProfessionalReviewButton({
               <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogTrigger asChild>
                   <Button
-                    variant="outline"
+                    variant={"outline" as any}
                     size="lg"
                     className="bg-white text-blue-600 border-white hover:bg-blue-50"
                     onClick={handleButtonClick}
@@ -182,8 +182,8 @@ export function ProfessionalReviewButton({
   if (variant === 'card') {
     return (
       <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
+        initial={{  opacity: 0, scale: 0.95  }}
+        animate={{  opacity: 1, scale: 1  }}
         className={cn('', className)}
       >
         <Card className="border-2 border-blue-200 bg-blue-50/50 hover:bg-blue-50 transition-colors">
@@ -276,14 +276,13 @@ export function ProfessionalReviewButton({
           {/* Subtle shine effect */}
           <motion.div
             className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
-            initial={{ x: '-100%' }}
-            animate={{ x: '100%' }}
-            transition={{
-              duration: 2,
+            initial={{  x: '-100%'  }}
+            animate={{  x: '100%'  }}
+            transition={{  duration: 2,
               repeat: Infinity,
               repeatDelay: 3,
               ease: 'linear'
-            }}
+             }}
           />
 
           <Scale className={cn(
@@ -372,7 +371,7 @@ export function WillWizardProfessionalReview({
         documentType="Will"
         documentName="Your Will"
         familyContext={familyContext}
-        variant="card"
+        variant={"card" as any}
         showBenefits
         onReviewRequested={onReviewRequested}
         className="border-amber-200 bg-amber-50/50"

@@ -195,9 +195,9 @@ export function ReviewRequestWorkflow({
         return (
           <motion.div
             key="step1"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
+            initial={{  opacity: 0, x: 20  }}
+            animate={{  opacity: 1, x: 0  }}
+            exit={{  opacity: 0, x: -20  }}
             className="space-y-6"
           >
             <div>
@@ -264,9 +264,9 @@ export function ReviewRequestWorkflow({
         return (
           <motion.div
             key="step2"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
+            initial={{  opacity: 0, x: 20  }}
+            animate={{  opacity: 1, x: 0  }}
+            exit={{  opacity: 0, x: -20  }}
             className="space-y-6"
           >
             <div>
@@ -366,7 +366,7 @@ export function ReviewRequestWorkflow({
                       </div>
                       <div className="mt-2 flex flex-wrap gap-1">
                         {reviewer.specializations.slice(0, 3).map(spec => (
-                          <Badge key={spec.id} variant="secondary" className="text-xs">
+                          <Badge key={spec.id} variant={"secondary" as any} className="text-xs">
                             {spec.name}
                           </Badge>
                         ))}
@@ -398,9 +398,9 @@ export function ReviewRequestWorkflow({
         return (
           <motion.div
             key="step3"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
+            initial={{  opacity: 0, x: 20  }}
+            animate={{  opacity: 1, x: 0  }}
+            exit={{  opacity: 0, x: -20  }}
             className="space-y-6"
           >
             <div>
@@ -541,7 +541,7 @@ export function ReviewRequestWorkflow({
             <div>
               {currentStep > 1 && (
                 <Button
-                  variant="outline"
+                  variant={"outline" as any}
                   onClick={() => setCurrentStep(prev => prev - 1)}
                   className="flex items-center gap-2"
                 >
@@ -550,7 +550,7 @@ export function ReviewRequestWorkflow({
               )}
               {onCancel && currentStep === 1 && (
                 <Button
-                  variant="outline"
+                  variant={"outline" as any}
                   onClick={onCancel}
                   className="text-gray-600"
                 >

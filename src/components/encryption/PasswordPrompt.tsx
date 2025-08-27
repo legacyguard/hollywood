@@ -120,7 +120,7 @@ export function PasswordPrompt() {
           </div>
 
           {error && (
-            <Alert variant='destructive'>
+            <Alert variant={"destructive" as any}>
               <AlertCircle className='h-4 w-4' />
               <AlertDescription>{error}</AlertDescription>
             </Alert>
@@ -140,7 +140,7 @@ export function PasswordPrompt() {
           <DialogFooter>
             <Button
               type='button'
-              variant='outline'
+              variant={"outline" as any}
               onClick={handleCancel}
               disabled={isLoading}
             >

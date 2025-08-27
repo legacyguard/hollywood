@@ -290,7 +290,7 @@ export function ProfessionalApplicationForm({
               {application.licensed_states && application.licensed_states.length > 0 && (
                 <div className="flex flex-wrap gap-1 mt-2">
                   {application.licensed_states.map(state => (
-                    <Badge key={state} variant="secondary" className="text-xs">
+                    <Badge key={state} variant={"secondary" as any} className="text-xs">
                       {state}
                     </Badge>
                   ))}
@@ -340,7 +340,7 @@ export function ProfessionalApplicationForm({
                       )}
                     </div>
                     <p className="text-sm text-muted-foreground">{specialization.description}</p>
-                    <Badge variant="outline" className="mt-2 text-xs">
+                    <Badge variant={"outline" as any} className="mt-2 text-xs">
                       {specialization.category.replace('_', ' ')}
                     </Badge>
                   </CardContent>
@@ -503,8 +503,8 @@ export function ProfessionalApplicationForm({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{  opacity: 0, y: 20  }}
+      animate={{  opacity: 1, y: 0  }}
       className={cn('max-w-4xl mx-auto', className)}
     >
       <Card className="border-2">
@@ -514,7 +514,7 @@ export function ProfessionalApplicationForm({
               <CardTitle className="text-2xl font-bold">Join Our Professional Network</CardTitle>
               <p className="text-muted-foreground">Help families secure their legacy with professional legal review</p>
             </div>
-            <Badge variant="outline" className="bg-blue-50 text-blue-700">
+            <Badge variant={"outline" as any} className="bg-blue-50 text-blue-700">
               Step {currentStepIndex + 1} of {steps.length}
             </Badge>
           </div>
@@ -555,10 +555,10 @@ export function ProfessionalApplicationForm({
           <AnimatePresence mode="wait">
             <motion.div
               key={currentStep}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.2 }}
+              initial={{  opacity: 0, x: 20  }}
+              animate={{  opacity: 1, x: 0  }}
+              exit={{  opacity: 0, x: -20  }}
+              transition={{  duration: 0.2  }}
             >
               {renderStepContent()}
             </motion.div>
@@ -571,12 +571,12 @@ export function ProfessionalApplicationForm({
           <div className="flex items-center justify-between">
             <div className="flex gap-3">
               {currentStepIndex > 0 && (
-                <Button variant="outline" onClick={handleBack}>
+                <Button variant={"outline" as any} onClick={handleBack}>
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   Back
                 </Button>
               )}
-              <Button variant="outline" onClick={onCancel}>
+              <Button variant={"outline" as any} onClick={onCancel}>
                 Cancel
               </Button>
             </div>

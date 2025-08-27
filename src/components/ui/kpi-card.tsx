@@ -61,7 +61,7 @@ export function KPICard({
 
       {showTrend && change && (
         <Badge
-          variant='secondary'
+          variant={"secondary" as any}
           className={cn(
             'absolute right-4 text-xs font-medium',
             getChangeColor(changeType),

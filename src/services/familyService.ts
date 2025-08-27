@@ -468,7 +468,7 @@ export class FamilyService {
    * Generate secure invitation token
    */
   private generateInvitationToken(): string {
-    return 'inv_' + Array.from(crypto.getRandomValues(new Uint8Array(32)))
+    return 'inv_' + Array.from(crypto.getRandomValues(new Uint8Array(32 as ArrayBuffer)))
       .map(b => b.toString(16).padStart(2, '0'))
       .join('');
   }
@@ -531,25 +531,25 @@ export class FamilyService {
         relationship: 'spouse' as RelationshipType,
         role: 'collaborator' as FamilyRole,
         reason: 'Your spouse should have full access to family documents and decision-making',
-        priority: 'high' as const
+        priority: 'high'
       },
       {
         relationship: 'child' as RelationshipType,
         role: 'viewer' as FamilyRole,
         reason: 'Adult children benefit from knowing about family planning and important documents',
-        priority: 'high' as const
+        priority: 'high'
       },
       {
         relationship: 'attorney' as RelationshipType,
         role: 'viewer' as FamilyRole,
         reason: 'Your attorney can provide better service with access to relevant documents',
-        priority: 'medium' as const
+        priority: 'medium'
       },
       {
         relationship: 'sibling' as RelationshipType,
         role: 'emergency_contact' as FamilyRole,
         reason: 'A trusted sibling can serve as an important emergency contact',
-        priority: 'medium' as const
+        priority: 'medium'
       }
     ];
 

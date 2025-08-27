@@ -310,7 +310,7 @@ export function RecordingStep({
             className='flex-1'
             disabled={recordingState !== 'idle'}
           >
-            <Icon name='video' className='w-4 h-4 mr-2' />
+            <Icon name={"video" as any} className='w-4 h-4 mr-2' />
             Video Message
           </Button>
           <Button
@@ -319,7 +319,7 @@ export function RecordingStep({
             className='flex-1'
             disabled={recordingState !== 'idle'}
           >
-            <Icon name='mic' className='w-4 h-4 mr-2' />
+            <Icon name={"mic" as any} className='w-4 h-4 mr-2' />
             Audio Message
           </Button>
         </div>
@@ -330,8 +330,7 @@ export function RecordingStep({
         <CardContent className='p-6'>
           {!isPermissionGranted && recordingState === 'idle' && (
             <div className='text-center py-8'>
-              <Icon
-                name='camera'
+              <Icon name={"camera" as any}
                 className='w-12 h-12 text-muted-foreground mx-auto mb-4'
               />
               <p className='text-muted-foreground mb-4'>
@@ -339,7 +338,7 @@ export function RecordingStep({
                 start recording your message.
               </p>
               <Button onClick={requestPermissions}>
-                <Icon name='camera' className='w-4 h-4 mr-2' />
+                <Icon name={"camera" as any} className='w-4 h-4 mr-2' />
                 Grant {recordingType === 'video' ? 'Camera' : 'Microphone'}{' '}
                 Access
               </Button>
@@ -357,7 +356,7 @@ export function RecordingStep({
                 />
               ) : (
                 <div className='w-32 h-32 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4'>
-                  <Icon name='mic' className='w-12 h-12 text-gray-400' />
+                  <Icon name={"mic" as any} className='w-12 h-12 text-gray-400' />
                 </div>
               )}
               <Button
@@ -365,7 +364,7 @@ export function RecordingStep({
                 size='lg'
                 className='bg-red-600 hover:bg-red-700'
               >
-                <Icon name='circle' className='w-4 h-4 mr-2' />
+                <Icon name={"circle" as any} className='w-4 h-4 mr-2' />
                 Start Recording
               </Button>
             </div>
@@ -399,7 +398,7 @@ export function RecordingStep({
                 />
 
                 <div className='flex justify-center space-x-2'>
-                  <Button onClick={pauseRecording} variant='outline'>
+                  <Button onClick={pauseRecording} variant={"outline" as any}>
                     <Icon
                       name={recordingState === 'paused' ? 'play' : 'pause'}
                       className='w-4 h-4'
@@ -409,7 +408,7 @@ export function RecordingStep({
                     onClick={stopRecording}
                     className='bg-red-600 hover:bg-red-700'
                   >
-                    <Icon name='square' className='w-4 h-4' />
+                    <Icon name={"square" as any} className='w-4 h-4' />
                   </Button>
                 </div>
               </div>
@@ -419,7 +418,7 @@ export function RecordingStep({
           {recordingState === 'completed' && recording && (
             <div className='text-center py-4 space-y-4'>
               <div className='w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto'>
-                <Icon name='check' className='w-8 h-8 text-green-600' />
+                <Icon name={"check" as any} className='w-8 h-8 text-green-600' />
               </div>
               <div>
                 <h3 className='font-medium text-green-900'>
@@ -432,12 +431,12 @@ export function RecordingStep({
               </div>
 
               <div className='flex justify-center space-x-2'>
-                <Button variant='outline' onClick={deleteRecording}>
-                  <Icon name='trash-2' className='w-4 h-4 mr-2' />
+                <Button variant={"outline" as any} onClick={deleteRecording}>
+                  <Icon name={"trash-2" as any} className='w-4 h-4 mr-2' />
                   Record Again
                 </Button>
-                <Button variant='outline'>
-                  <Icon name='play' className='w-4 h-4 mr-2' />
+                <Button variant={"outline" as any}>
+                  <Icon name={"play" as any} className='w-4 h-4 mr-2' />
                   Preview
                 </Button>
               </div>
@@ -447,10 +446,10 @@ export function RecordingStep({
       </Card>
 
       {/* Hidden canvas for thumbnail generation */}
-      <canvas ref={canvasRef} style={{ display: 'none' }} />
+      <canvas ref={canvasRef} style={{  display: 'none'  }} />
 
       {/* Hidden audio element for audio playback */}
-      <audio ref={audioRef} style={{ display: 'none' }} />
+      <audio ref={audioRef} style={{  display: 'none'  }} />
     </div>
   );
 }

@@ -82,7 +82,7 @@ export function DataMigrationDialog({
                     ? 'bg-green-500'
                     : 'bg-blue-500'
               }`}
-              style={{ width: `${progressPercentage}%` }}
+              style={{  width: `${progressPercentage }}%` }}
             />
           </div>
           <div className='flex justify-between mt-2 text-sm text-gray-500'>

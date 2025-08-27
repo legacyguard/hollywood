@@ -407,7 +407,7 @@ export class ProfessionalReviewNetwork {
         description:
           'Comprehensive review of will structure and legal compliance',
         estimatedCost: complexity.estimatedHours * 150,
-        priority: 'essential' as const,
+        priority: 'essential',
       },
     ];
 
@@ -416,7 +416,7 @@ export class ProfessionalReviewNetwork {
         service: 'Business Succession Planning',
         description: 'Specialized planning for business assets and succession',
         estimatedCost: 800,
-        priority: 'recommended' as const,
+        priority: 'recommended',
       });
     }
 
@@ -425,7 +425,7 @@ export class ProfessionalReviewNetwork {
         service: 'Tax Optimization Strategy',
         description: 'Minimize estate taxes and optimize inheritance structure',
         estimatedCost: 600,
-        priority: 'recommended' as const,
+        priority: 'recommended',
       });
     }
 
@@ -507,7 +507,7 @@ export class ProfessionalReviewNetwork {
         date,
         time: '09:00',
         duration: 60,
-        type: 'in_person' as const,
+        type: 'in_person',
         location: professional.location.address,
       });
 
@@ -515,7 +515,7 @@ export class ProfessionalReviewNetwork {
         date,
         time: '14:00',
         duration: 60,
-        type: 'video_call' as const,
+        type: 'video_call',
       });
     }
 
@@ -589,7 +589,7 @@ export class ProfessionalReviewNetwork {
     if (!willData.executor) {
       issues.push({
         category: 'Legal Compliance',
-        severity: 'high' as const,
+        severity: 'high',
         description: 'No executor appointed',
         recommendation:
           'Appoint a trusted person as executor to handle estate administration',
@@ -605,7 +605,7 @@ export class ProfessionalReviewNetwork {
       if (vagueAssets.length > 0) {
         issues.push({
           category: 'Clarity',
-          severity: 'medium' as const,
+          severity: 'medium',
           description: `${vagueAssets.length} assets have insufficient descriptions`,
           recommendation:
             'Provide more detailed descriptions including serial numbers, addresses, or account numbers where applicable',
@@ -622,7 +622,7 @@ export class ProfessionalReviewNetwork {
     if (Math.abs(totalShares - 100) > 0.01) {
       issues.push({
         category: 'Legal Compliance',
-        severity: 'critical' as const,
+        severity: 'critical',
         description: `Beneficiary shares total ${totalShares}% instead of 100%`,
         recommendation: 'Adjust beneficiary shares to total exactly 100%',
         estimated_fix_time: '10 minutes',

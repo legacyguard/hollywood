@@ -46,13 +46,13 @@ export function AppSidebar() {
         {/* Logo Section */}
         <motion.div
           className='p-6 border-b border-sidebar-accent/20'
-          whileHover={{ backgroundColor: 'rgba(var(--sidebar-accent), 0.05)' }}
-          transition={{ duration: 0.2 }}
+          whileHover={{  backgroundColor: 'rgba(var(--sidebar-accent), 0.05)'  }}
+          transition={{  duration: 0.2  }}
         >
           <div className='flex items-center gap-3'>
             <motion.div
-              whileHover={{ scale: 1.05, rotate: 5 }}
-              transition={{ duration: 0.3, ease: 'easeInOut' }}
+              whileHover={{  scale: 1.05, rotate: 5  }}
+              transition={{  duration: 0.3, ease: 'easeInOut'  }}
             >
               <LegacyGuardLogo />
             </motion.div>
@@ -60,10 +60,10 @@ export function AppSidebar() {
               {!collapsed && (
                 <motion.div
                   className='flex flex-col'
-                  initial={{ opacity: 0, width: 0 }}
-                  animate={{ opacity: 1, width: 'auto' }}
-                  exit={{ opacity: 0, width: 0 }}
-                  transition={{ duration: 0.3 }}
+                  initial={{  opacity: 0, width: 0  }}
+                  animate={{  opacity: 1, width: 'auto'  }}
+                  exit={{  opacity: 0, width: 0  }}
+                  transition={{  duration: 0.3  }}
                 >
                   <span className='text-sidebar-text font-semibold text-lg font-heading'>
                     LegacyGuard
@@ -83,15 +83,15 @@ export function AppSidebar() {
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton asChild className='p-0'>
                       <motion.div
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.3, delay: index * 0.05 }}
+                        initial={{  opacity: 0, x: -20  }}
+                        animate={{  opacity: 1, x: 0  }}
+                        transition={{  duration: 0.3, delay: index * 0.05  }}
                       >
                         <NavLink to={item.url} end className={getNavClasses}>
                           <motion.div
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.95 }}
-                            transition={{ duration: 0.2 }}
+                            whileHover={{  scale: 1.1  }}
+                            whileTap={{  scale: 0.95  }}
+                            transition={{  duration: 0.2  }}
                           >
                             <Icon
                               name={item.icon as keyof typeof IconMap}
@@ -102,10 +102,10 @@ export function AppSidebar() {
                             {!collapsed && (
                               <motion.span
                                 className='text-sm font-medium'
-                                initial={{ opacity: 0, width: 0 }}
-                                animate={{ opacity: 1, width: 'auto' }}
-                                exit={{ opacity: 0, width: 0 }}
-                                transition={{ duration: 0.2 }}
+                                initial={{  opacity: 0, width: 0  }}
+                                animate={{  opacity: 1, width: 'auto'  }}
+                                exit={{  opacity: 0, width: 0  }}
+                                transition={{  duration: 0.2  }}
                               >
                                 {item.title}
                               </motion.span>
@@ -124,13 +124,13 @@ export function AppSidebar() {
         {/* User Profile Section */}
         <motion.div
           className='p-4 mt-auto border-t border-sidebar-accent/20'
-          whileHover={{ backgroundColor: 'rgba(var(--sidebar-accent), 0.05)' }}
-          transition={{ duration: 0.2 }}
+          whileHover={{  backgroundColor: 'rgba(var(--sidebar-accent), 0.05)'  }}
+          transition={{  duration: 0.2  }}
         >
           <div className='flex items-center gap-3'>
             <motion.div
-              whileHover={{ scale: 1.05 }}
-              transition={{ duration: 0.2 }}
+              whileHover={{  scale: 1.05  }}
+              transition={{  duration: 0.2  }}
             >
               <UserButton
                 afterSignOutUrl='/sign-in'
@@ -146,10 +146,10 @@ export function AppSidebar() {
               {!collapsed && user && (
                 <motion.div
                   className='flex-1'
-                  initial={{ opacity: 0, width: 0 }}
-                  animate={{ opacity: 1, width: 'auto' }}
-                  exit={{ opacity: 0, width: 0 }}
-                  transition={{ duration: 0.3 }}
+                  initial={{  opacity: 0, width: 0  }}
+                  animate={{  opacity: 1, width: 'auto'  }}
+                  exit={{  opacity: 0, width: 0  }}
+                  transition={{  duration: 0.3  }}
                 >
                   <p className='text-sm font-medium text-sidebar-text'>
                     {user.firstName || user.username || 'User'}

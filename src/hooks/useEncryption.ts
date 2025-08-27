@@ -51,7 +51,7 @@ export function useEncryption() {
         });
       }
     } catch (error) {
-      console.error('Error checking encryption status:', error);
+      console.error('Error checking encryption status: ', error);
       setState({
         isInitialized: true,
         isLocked: true,
@@ -62,10 +62,10 @@ export function useEncryption() {
 
   const generateKey = async (password: string): Promise<CryptoKey> => {
     const encoder = new TextEncoder();
-    const salt = crypto.getRandomValues(new Uint8Array(16));
+    const salt = crypto.getRandomValues(new Uint8Array(16 as ArrayBuffer));
 
     const keyMaterial = await crypto.subtle.importKey(
-      'raw',
+      ' as constraw',
       encoder.encode(password),
       { name: 'PBKDF2' },
       false,
@@ -126,8 +126,8 @@ export function useEncryption() {
       const encoder = new TextEncoder();
       const dataBuffer = typeof data === 'string' ? encoder.encode(data) : data;
 
-      const iv = crypto.getRandomValues(new Uint8Array(12));
-      const salt = crypto.getRandomValues(new Uint8Array(16));
+      const iv = crypto.getRandomValues(new Uint8Array(12 as ArrayBuffer));
+      const salt = crypto.getRandomValues(new Uint8Array(16 as ArrayBuffer));
 
       const encrypted = await crypto.subtle.encrypt(
         { name: 'AES-GCM', iv },
@@ -136,7 +136,7 @@ export function useEncryption() {
       );
 
       return {
-        encrypted: btoa(String.fromCharCode(...new Uint8Array(encrypted))),
+        encrypted: btoa(String.fromCharCode(...new Uint8Array(encrypted as ArrayBuffer))),
         iv: btoa(String.fromCharCode(...iv)),
         salt: btoa(String.fromCharCode(...salt)),
       };
@@ -184,7 +184,7 @@ export function useEncryption() {
 
     try {
       const arrayBuffer = await file.arrayBuffer();
-      const encryptionResult = await encryptData(arrayBuffer);
+      const encryptionResult = await encryptData(arrayBuffer, "", "");
 
       if (!encryptionResult) {
         throw new Error('Failed to encrypt file');
@@ -213,7 +213,7 @@ export function useEncryption() {
     const encoder = new TextEncoder();
     const data = encoder.encode(password);
     const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashArray = Array.from(new Uint8Array(hashBuffer as ArrayBuffer));
     return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
   }, []);
 
@@ -224,7 +224,7 @@ export function useEncryption() {
   ): Promise<File | null> => {
     try {
       const arrayBuffer = await encryptedFile.arrayBuffer();
-      const encryptedData = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
+      const encryptedData = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer as ArrayBuffer)));
       const decrypted = await decryptData(encryptedData, iv, salt);
 
       if (!decrypted) return null;

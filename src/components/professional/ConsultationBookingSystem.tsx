@@ -256,8 +256,8 @@ export function ConsultationBookingSystem({
       case 'type':
         return (
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
+            initial={{  opacity: 0, x: 20  }}
+            animate={{  opacity: 1, x: 0  }}
             className="space-y-6"
           >
             <div className="text-center mb-8">
@@ -300,7 +300,7 @@ export function ConsultationBookingSystem({
                           <div className="flex items-center justify-between mb-2">
                             <h4 className="font-semibold">{type.name}</h4>
                             {reviewer.hourly_rate && (
-                              <Badge variant="outline">
+                              <Badge variant={"outline" as any}>
                                 ${Math.round(reviewer.hourly_rate * type.priceMultiplier)}/hour
                               </Badge>
                             )}
@@ -313,7 +313,7 @@ export function ConsultationBookingSystem({
                               <span className="text-sm text-muted-foreground">Available durations:</span>
                               <div className="flex gap-2">
                                 {type.duration.map(duration => (
-                                  <Badge key={duration} variant="secondary" className="text-xs">
+                                  <Badge key={duration} variant={"secondary" as any} className="text-xs">
                                     {duration} min
                                   </Badge>
                                 ))}
@@ -387,8 +387,8 @@ export function ConsultationBookingSystem({
       case 'schedule':
         return (
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
+            initial={{  opacity: 0, x: 20  }}
+            animate={{  opacity: 1, x: 0  }}
             className="space-y-6"
           >
             <div className="text-center mb-8">
@@ -419,8 +419,8 @@ export function ConsultationBookingSystem({
             {/* Time Selection */}
             {selectedDate && (
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
+                initial={{  opacity: 0, y: 20  }}
+                animate={{  opacity: 1, y: 0  }}
                 className="space-y-4"
               >
                 <Label className="text-base font-medium">Available Times</Label>
@@ -463,8 +463,8 @@ export function ConsultationBookingSystem({
       case 'details':
         return (
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
+            initial={{  opacity: 0, x: 20  }}
+            animate={{  opacity: 1, x: 0  }}
             className="space-y-6"
           >
             <div className="text-center mb-8">
@@ -587,8 +587,8 @@ export function ConsultationBookingSystem({
       case 'review':
         return (
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
+            initial={{  opacity: 0, x: 20  }}
+            animate={{  opacity: 1, x: 0  }}
             className="space-y-6"
           >
             <div className="text-center mb-8">
@@ -648,7 +648,7 @@ export function ConsultationBookingSystem({
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="text-muted-foreground">Type:</span>
-                      <Badge variant="outline">
+                      <Badge variant={"outline" as any}>
                         {CONSULTATION_TYPES.find(t => t.id === booking.consultationType)?.name}
                       </Badge>
                     </div>
@@ -728,8 +728,8 @@ export function ConsultationBookingSystem({
       case 'confirmation':
         return (
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
+            initial={{  opacity: 0, scale: 0.9  }}
+            animate={{  opacity: 1, scale: 1  }}
             className="text-center space-y-6 py-8"
           >
             <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto">
@@ -773,7 +773,7 @@ export function ConsultationBookingSystem({
 
             <div className="flex gap-4 justify-center">
               <Button onClick={onCancel}>Done</Button>
-              <Button variant="outline">Add to Calendar</Button>
+              <Button variant={"outline" as any}>Add to Calendar</Button>
             </div>
           </motion.div>
         );
@@ -808,8 +808,8 @@ export function ConsultationBookingSystem({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{  opacity: 0, y: 20  }}
+      animate={{  opacity: 1, y: 0  }}
       className={cn('max-w-4xl mx-auto', className)}
     >
       <Card className="border-2">
@@ -819,7 +819,7 @@ export function ConsultationBookingSystem({
               <CardTitle className="text-2xl font-bold">Book Legal Consultation</CardTitle>
               <p className="text-muted-foreground">Schedule a consultation with {reviewer.full_name}</p>
             </div>
-            <Badge variant="outline" className="bg-blue-50 text-blue-700">
+            <Badge variant={"outline" as any} className="bg-blue-50 text-blue-700">
               Step {currentStepIndex + 1} of {steps.length}
             </Badge>
           </div>
@@ -860,10 +860,10 @@ export function ConsultationBookingSystem({
           <AnimatePresence mode="wait">
             <motion.div
               key={currentStep}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.2 }}
+              initial={{  opacity: 0, x: 20  }}
+              animate={{  opacity: 1, x: 0  }}
+              exit={{  opacity: 0, x: -20  }}
+              transition={{  duration: 0.2  }}
             >
               {renderStepContent()}
             </motion.div>
@@ -876,12 +876,12 @@ export function ConsultationBookingSystem({
           <div className="flex items-center justify-between">
             <div className="flex gap-3">
               {currentStepIndex > 0 && (
-                <Button variant="outline" onClick={handleBack}>
+                <Button variant={"outline" as any} onClick={handleBack}>
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   Back
                 </Button>
               )}
-              <Button variant="outline" onClick={onCancel}>
+              <Button variant={"outline" as any} onClick={onCancel}>
                 Cancel
               </Button>
             </div>

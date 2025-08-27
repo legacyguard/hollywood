@@ -162,15 +162,15 @@ export default function VaultPage() {
         title: 'Total Documents',
         value: documents.length.toString(),
         icon: 'file-text',
-        color: 'primary' as const,
+        color: 'primary',
         change: 12,
-        trend: 'up' as const,
+        trend: 'up',
       },
       {
         title: 'Encrypted',
         value: documents.filter(d => d.isEncrypted).length.toString(),
         icon: 'lock',
-        color: 'success' as const,
+        color: 'success',
         changeLabel: 'Secured',
       },
       {
@@ -179,7 +179,7 @@ export default function VaultPage() {
           .filter(d => d.ocrStatus === 'complete')
           .length.toString(),
         icon: 'scan',
-        color: 'info' as const,
+        color: 'info',
         changeLabel: 'Searchable',
       },
       {
@@ -194,7 +194,7 @@ export default function VaultPage() {
           })
           .length.toString(),
         icon: 'alert-circle',
-        color: 'warning' as const,
+        color: 'warning',
         changeLabel: 'Within 90 days',
       },
     ],
@@ -222,7 +222,7 @@ export default function VaultPage() {
         accessorKey: 'category',
         header: createSortableHeader('Category'),
         cell: ({ row }) => (
-          <Badge variant='outline' className='text-xs'>
+          <Badge variant={"outline" as any} className='text-xs'>
             {row.getValue('category')}
           </Badge>
         ),
@@ -319,12 +319,12 @@ export default function VaultPage() {
           return (
             <div className='flex flex-wrap gap-1'>
               {tags.slice(0, 2).map((tag, i) => (
-                <Badge key={i} variant='secondary' className='text-xs'>
+                <Badge key={i} variant={"secondary" as any} className='text-xs'>
                   {tag}
                 </Badge>
               ))}
               {tags.length > 2 && (
-                <Badge variant='secondary' className='text-xs'>
+                <Badge variant={"secondary" as any} className='text-xs'>
                   +{tags.length - 2}
                 </Badge>
               )}
@@ -418,7 +418,7 @@ export default function VaultPage() {
             <FadeIn duration={0.5} delay={0.4}>
               <p
                 className='text-lg leading-relaxed max-w-2xl'
-                style={{ color: 'hsl(var(--muted-text))' }}
+                style={{  color: 'hsl(var(--muted-text))'  }}
               >
                 Securely store and automatically analyze your important
                 documents with AI-powered OCR technology.
@@ -438,7 +438,7 @@ export default function VaultPage() {
             {showOcrInfo && (
               <FadeIn duration={0.5} delay={0.8}>
                 <Alert className='bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200'>
-                  <Icon name='sparkles' className='h-4 w-4 text-blue-600' />
+                  <Icon name={"sparkles" as any} className='h-4 w-4 text-blue-600' />
                   <AlertDescription className='flex items-center justify-between'>
                     <div>
                       <strong className='text-blue-900'>
@@ -452,12 +452,12 @@ export default function VaultPage() {
                       </p>
                     </div>
                     <Button
-                      variant='ghost'
+                      variant={"ghost" as any}
                       size='sm'
                       onClick={() => setShowOcrInfo(false)}
                       className='text-blue-600 hover:text-blue-800 ml-4'
                     >
-                      <Icon name='x' className='h-4 w-4' />
+                      <Icon name={"x" as any} className='h-4 w-4' />
                     </Button>
                   </AlertDescription>
                 </Alert>
@@ -469,11 +469,11 @@ export default function VaultPage() {
               <EnhancedDocumentUploader />
               <Button
                 onClick={() => setRefreshTrigger(prev => prev + 1)}
-                variant='outline'
+                variant={"outline" as any}
                 size='sm'
                 className='mt-4'
               >
-                <Icon name='refresh-cw' className='h-4 w-4 mr-2' />
+                <Icon name={"refresh-cw" as any} className='h-4 w-4 mr-2' />
                 Refresh Documents
               </Button>
             </div>

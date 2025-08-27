@@ -197,14 +197,14 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
     return (
       <motion.div
         key={member.id}
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        whileHover={{ scale: 1.05 }}
+        initial={{  opacity: 0, scale: 0.8  }}
+        animate={{  opacity: 1, scale: 1  }}
+        whileHover={{  scale: 1.05  }}
         className={`absolute cursor-pointer transition-all duration-200 ${
           selectedMember?.id === member.id ? 'z-20 scale-110' : 'z-10'
         }`}
-        style={{
-          left: `${member.position.x + 300}px`,
+        style={{ 
+          left: `${member.position.x + 300 }}px`,
           top: `${member.position.y + 200}px`,
           transform: 'translate(-50%, -50%)'
         }}
@@ -220,12 +220,12 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
             {member.roles.length > 0 && (
               <div className="flex flex-wrap gap-1 mt-1">
                 {member.roles.slice(0, 2).map(role => (
-                  <Badge key={role} variant="secondary" className="text-xs px-1 py-0">
+                  <Badge key={role} variant={"secondary" as any} className="text-xs px-1 py-0">
                     {role}
                   </Badge>
                 ))}
                 {member.roles.length > 2 && (
-                  <Badge variant="secondary" className="text-xs px-1 py-0">
+                  <Badge variant={"secondary" as any} className="text-xs px-1 py-0">
                     +{member.roles.length - 2}
                   </Badge>
                 )}
@@ -239,7 +239,7 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
 
   const TreeConnections = () => {
     return (
-      <svg className="absolute inset-0 pointer-events-none" style={{ zIndex: 5 }}>
+      <svg className="absolute inset-0 pointer-events-none" style={{  zIndex: 5  }}>
         {connections.map(conn => {
           const fromMember = layoutMembers.find(m => m.id === conn.fromId);
           const toMember = layoutMembers.find(m => m.id === conn.toId);
@@ -308,7 +308,7 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
         
         <div className="flex items-center gap-2">
           <Button
-            variant="outline"
+            variant={"outline" as any}
             size="sm"
             onClick={() => setIsZoomed(!isZoomed)}
           >
@@ -316,7 +316,7 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
           </Button>
           
           <Button
-            variant="outline"
+            variant={"outline" as any}
             size="sm"
             onClick={() => {}}
           >
@@ -350,7 +350,7 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
           </Select>
           
           <Button
-            variant="outline"
+            variant={"outline" as any}
             size="sm"
             onClick={onShareTree}
           >
@@ -418,7 +418,7 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
                   </div>
                   <div className="flex justify-end gap-2">
                     <Button
-                      variant="outline"
+                      variant={"outline" as any}
                       onClick={() => setShowAddMemberDialog(false)}
                     >
                       Cancel
@@ -466,9 +466,9 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
       <AnimatePresence>
         {selectedMember && (
           <motion.div
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
+            initial={{  x: '100%'  }}
+            animate={{  x: 0  }}
+            exit={{  x: '100%'  }}
             className="fixed right-0 top-0 h-full w-96 bg-white shadow-2xl z-30 overflow-y-auto"
           >
             <div className="p-6 border-b">
@@ -478,7 +478,7 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
                   <p className="text-gray-600 capitalize">{selectedMember.relationship}</p>
                 </div>
                 <Button
-                  variant="ghost"
+                  variant={"ghost" as any}
                   size="sm"
                   onClick={() => setSelectedMember(null)}
                 >
@@ -507,7 +507,7 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
                   <Label className="text-sm font-medium">Roles</Label>
                   <div className="flex flex-wrap gap-2 mt-1">
                     {selectedMember.roles.map(role => (
-                      <Badge key={role} variant="secondary">
+                      <Badge key={role} variant={"secondary" as any}>
                         {role.replace('_', ' ')}
                       </Badge>
                     ))}
@@ -535,7 +535,7 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
               {isEditable && (
                 <div className="flex gap-2 pt-4">
                   <Button
-                    variant="outline"
+                    variant={"outline" as any}
                     size="sm"
                     onClick={() => {
                       setEditingMember(selectedMember);
@@ -546,7 +546,7 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
                     Edit
                   </Button>
                   <Button
-                    variant="outline"
+                    variant={"outline" as any}
                     size="sm"
                     onClick={() => onDeleteMember?.(selectedMember.id)}
                   >

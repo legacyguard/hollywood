@@ -389,7 +389,7 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
     <div
       ref={containerRef}
       className='fixed inset-0 pointer-events-none z-50'
-      style={{ position: 'fixed' }}
+      style={{  position: 'fixed'  }}
     >
       {/* Trail points for empathetic mode */}
       <AnimatePresence>
@@ -398,14 +398,13 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
             <motion.div
               key={`trail-${index}`}
               className='absolute w-1 h-1 bg-yellow-300/40 rounded-full'
-              style={{
-                left: point.x,
+              style={{  left: point.x,
                 top: point.y,
-              }}
-              initial={{ opacity: 0.6, scale: 1 }}
-              animate={{ opacity: 0, scale: 0.3 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 2, delay: index * 0.1 }}
+               }}
+              initial={{  opacity: 0.6, scale: 1  }}
+              animate={{  opacity: 0, scale: 0.3  }}
+              exit={{  opacity: 0  }}
+              transition={{  duration: 2, delay: index * 0.1  }}
             />
           ))}
       </AnimatePresence>
@@ -414,10 +413,9 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
       <motion.div
         animate={controls}
         className='absolute pointer-events-auto cursor-pointer'
-        style={{
-          x: position.x,
+        style={{  x: position.x,
           y: position.y,
-        }}
+         }}
         onHoverStart={() => setIsHovering(true)}
         onHoverEnd={() => setIsHovering(false)}
         onClick={() => {
@@ -432,32 +430,29 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
         {/* Firefly glow effect */}
         <motion.div
           className='absolute inset-0 rounded-full'
-          animate={{
-            boxShadow: [
+          animate={{  boxShadow: [
               '0 0 10px rgba(255, 255, 0, 0.3)',
               '0 0 20px rgba(255, 255, 0, 0.5)',
               '0 0 10px rgba(255, 255, 0, 0.3)',
             ],
-          }}
-          transition={{
-            duration: activeMode === 'pragmatic' ? 3 : 2,
+           }}
+          transition={{  duration: activeMode === 'pragmatic' ? 3 : 2,
             repeat: Infinity,
             ease: 'easeInOut',
-          }}
+           }}
         />
 
         {/* Firefly body */}
         <motion.div
           className='w-4 h-4 bg-gradient-to-br from-yellow-200 to-yellow-400 rounded-full shadow-lg'
-          animate={{
-            scale: isHovering ? 1.3 : 1,
+          animate={{  scale: isHovering ? 1.3 : 1,
             filter: [
               'brightness(1)',
               'brightness(1.2)',
               'brightness(1)',
             ],
-          }}
-          transition={{
+           }}
+          transition={{ 
             scale: { duration: 0.2 },
             filter: {
               duration: activeMode === 'pragmatic' ? 3 : 2,
@@ -470,31 +465,27 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
         {/* Wing flutter effect */}
         <motion.div
           className='absolute -top-1 -left-1 w-2 h-2'
-          animate={{
-            rotate: [0, 15, -15, 0],
+          animate={{  rotate: [0, 15, -15, 0],
             opacity: [0.3, 0.7, 0.3],
-          }}
-          transition={{
-            duration: 0.2,
+           }}
+          transition={{  duration: 0.2,
             repeat: Infinity,
             ease: 'easeInOut',
-          }}
+           }}
         >
           <div className='w-full h-full bg-gradient-to-br from-blue-200/50 to-purple-200/50 rounded-full blur-sm' />
         </motion.div>
 
         <motion.div
           className='absolute -top-1 -right-1 w-2 h-2'
-          animate={{
-            rotate: [0, -15, 15, 0],
+          animate={{  rotate: [0, -15, 15, 0],
             opacity: [0.3, 0.7, 0.3],
-          }}
-          transition={{
-            duration: 0.2,
+           }}
+          transition={{  duration: 0.2,
             repeat: Infinity,
             ease: 'easeInOut',
             delay: 0.1,
-          }}
+           }}
         >
           <div className='w-full h-full bg-gradient-to-br from-blue-200/50 to-purple-200/50 rounded-full blur-sm' />
         </motion.div>
@@ -504,10 +495,10 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
           {isHovering && (
             <motion.div
               className='absolute -top-12 -left-16 bg-black/80 text-white text-xs px-2 py-1 rounded-lg whitespace-nowrap'
-              initial={{ opacity: 0, scale: 0.8, y: 10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.8, y: 10 }}
-              transition={{ duration: 0.2 }}
+              initial={{  opacity: 0, scale: 0.8, y: 10  }}
+              animate={{  opacity: 1, scale: 1, y: 0  }}
+              exit={{  opacity: 0, scale: 0.8, y: 10  }}
+              transition={{  duration: 0.2  }}
             >
               Sofia - Your Garden Guide
               <div className='absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-black/80' />

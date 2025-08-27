@@ -193,7 +193,6 @@ export function LegallyReviewedStamp({
           size === 'lg' && 'text-sm'
         )}>
            {(review.reviewed_at || review.updated_at)
--            ? new Date(review.reviewed_at || review.updated_at).toLocaleDateString()
             ? new Date(review.reviewed_at || review.updated_at).toLocaleDateString()
             : 'Date not available'}
         </p>

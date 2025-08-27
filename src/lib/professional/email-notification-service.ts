@@ -218,35 +218,35 @@ export class ProfessionalEmailNotificationService {
           </div>
 
           <div class="content">
-            <h2>Hello {{reviewerName}},</h2>
+            <h2>Hello {reviewerName},</h2>
 
-            <p>You have received a new {{reviewType}} review request for a family protection document.</p>
+            <p>You have received a new {reviewType} review request for a family protection document.</p>
 
-            <div class="info-box {{priorityClass}}">
+            <div class="info-box {priorityClass}">
               <h3>📄 Review Details</h3>
               <ul>
-                <li><strong>Document:</strong> {{documentName}}</li>
-                <li><strong>Review Type:</strong> {{reviewType}}</li>
-                <li><strong>Priority:</strong> {{priority}}</li>
-                <li><strong>Review Fee:</strong> \${{estimatedFee}}</li>
-                <li><strong>Due Date:</strong> {{dueDate}}</li>
+                <li><strong>Document:</strong> {documentName}</li>
+                <li><strong>Review Type:</strong> {reviewType}</li>
+                <li><strong>Priority:</strong> {priority}</li>
+                <li><strong>Review Fee:</strong> \${estimatedFee}</li>
+                <li><strong>Due Date:</strong> {dueDate}</li>
               </ul>
             </div>
 
             <div class="info-box">
               <h3>👨‍👩‍👧‍👦 Family Context</h3>
-              <p>This review will help protect {{familyMembersCount}} family members. The client has specifically requested your expertise to ensure their family's legacy is properly secured.</p>
+              <p>This review will help protect {familyMembersCount} family members. The client has specifically requested your expertise to ensure their family's legacy is properly secured.</p>
             </div>
 
             <div class="info-box">
               <h3>⏰ Response Required</h3>
-              <p><strong>Please accept or decline this request by {{responseDeadline}}.</strong></p>
+              <p><strong>Please accept or decline this request by {responseDeadline}.</strong></p>
               <p>If you do not respond within 48 hours, this request will be reassigned to another reviewer.</p>
             </div>
 
             <div style="text-align: center; margin: 30px 0;">
-              <a href="${this.baseUrl}/professional/review/{{requestId}}/accept" class="button">Accept Request</a>
-              <a href="${this.baseUrl}/professional/review/{{requestId}}/decline" class="button secondary">Decline Request</a>
+              <a href="${this.baseUrl}/professional/review/{requestId}/accept" class="button">Accept Request</a>
+              <a href="${this.baseUrl}/professional/review/{requestId}/decline" class="button secondary">Decline Request</a>
             </div>
 
             <p>If you have any questions or need additional information, please contact our support team.</p>
@@ -320,18 +320,18 @@ LegacyGuard Professional Review Network
           </div>
 
           <div class="content">
-            <h2>Hello {{clientName}},</h2>
+            <h2>Hello {clientName},</h2>
 
-            <p>Thank you for trusting LegacyGuard with your {{documentName}} review. We've received your request and are now matching you with the most qualified legal professional.</p>
+            <p>Thank you for trusting LegacyGuard with your {documentName} review. We've received your request and are now matching you with the most qualified legal professional.</p>
 
             <div class="info-box">
               <h3>📋 Request Summary</h3>
               <ul>
-                <li><strong>Document:</strong> {{documentName}}</li>
-                <li><strong>Review Type:</strong> {{reviewType}}</li>
-                <li><strong>Estimated Cost:</strong> {{estimatedCost}}</li>
-                <li><strong>Expected Timeframe:</strong> {{expectedTimeframe}}</li>
-                <li><strong>Request ID:</strong> {{requestId}}</li>
+                <li><strong>Document:</strong> {documentName}</li>
+                <li><strong>Review Type:</strong> {reviewType}</li>
+                <li><strong>Estimated Cost:</strong> {estimatedCost}</li>
+                <li><strong>Expected Timeframe:</strong> {expectedTimeframe}</li>
+                <li><strong>Request ID:</strong> {requestId}</li>
               </ul>
             </div>
 
@@ -346,12 +346,12 @@ LegacyGuard Professional Review Network
             </div>
 
             <p style="text-align: center; margin: 30px 0;">
-              <a href="{{dashboardUrl}}" style="display: inline-block; background: #10B981; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600;">
+              <a href="{dashboardUrl}" style="display: inline-block; background: #10B981; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600;">
                 Track Your Review
               </a>
             </p>
 
-            <p>If you have any questions, our support team is here to help at {{supportEmail}}.</p>
+            <p>If you have any questions, our support team is here to help at {supportEmail}.</p>
           </div>
 
           <div class="footer">
@@ -429,31 +429,31 @@ The LegacyGuard Team
           </div>
 
           <div class="content">
-            <h2>Hello {{reviewerName}},</h2>
+            <h2>Hello {reviewerName},</h2>
 
             <p>Thank you for accepting this review request. The document is now available for your review.</p>
 
             <div class="info-box">
               <h3>📄 Assignment Details</h3>
               <ul>
-                <li><strong>Client:</strong> {{clientName}}</li>
-                <li><strong>Document:</strong> {{documentName}}</li>
-                <li><strong>Review Type:</strong> {{reviewType}}</li>
-                <li><strong>Priority:</strong> {{priority}}</li>
-                <li><strong>Due Date:</strong> {{dueDate}}</li>
-                <li><strong>Review Fee:</strong> \${{reviewFee}}</li>
+                <li><strong>Client:</strong> {clientName}</li>
+                <li><strong>Document:</strong> {documentName}</li>
+                <li><strong>Review Type:</strong> {reviewType}</li>
+                <li><strong>Priority:</strong> {priority}</li>
+                <li><strong>Due Date:</strong> {dueDate}</li>
+                <li><strong>Review Fee:</strong> \${reviewFee}</li>
               </ul>
             </div>
 
             <div style="text-align: center; margin: 30px 0;">
-              <a href="{{documentUrl}}" style="display: inline-block; background: #6366F1; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600;">
+              <a href="{documentUrl}" style="display: inline-block; background: #6366F1; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600;">
                 Start Review
               </a>
             </div>
 
             <p>The document is available in your professional dashboard. Please complete the review by the due date.</p>
 
-            <p>Access your dashboard: <a href="{{dashboardUrl}}">{{dashboardUrl}}</a></p>
+            <p>Access your dashboard: <a href="{dashboardUrl}">{dashboardUrl}</a></p>
           </div>
 
           <div class="footer">
@@ -532,17 +532,17 @@ LegacyGuard Professional Review Network
           </div>
 
           <div class="content">
-            <h2>Hello {{clientName}},</h2>
+            <h2>Hello {clientName},</h2>
 
-            <p>Good news! {{reviewerName}} has completed the professional review of your {{documentName}}.</p>
+            <p>Good news! {reviewerName} has completed the professional review of your {documentName}.</p>
 
             <div class="${result.overall_status === 'approved' ? 'info-box' : result.overall_status === 'requires_revision' ? 'warning-box' : 'error-box'}">
               <h3>📊 Review Summary</h3>
               <ul>
-                <li><strong>Overall Status:</strong> {{overallStatus}}</li>
-                <li><strong>Trust Score Impact:</strong> {{trustScoreImpact}}</li>
-                <li><strong>Recommendations:</strong> {{recommendationsCount}}</li>
-                <li><strong>Issues Found:</strong> {{issuesCount}}</li>
+                <li><strong>Overall Status:</strong> {overallStatus}</li>
+                <li><strong>Trust Score Impact:</strong> {trustScoreImpact}</li>
+                <li><strong>Recommendations:</strong> {recommendationsCount}</li>
+                <li><strong>Issues Found:</strong> {issuesCount}</li>
               </ul>
             </div>
 
@@ -554,7 +554,7 @@ LegacyGuard Professional Review Network
             ` : ''}
 
             <div style="text-align: center; margin: 30px 0;">
-              <a href="{{reviewUrl}}" style="display: inline-block; background: #10B981; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600;">
+              <a href="{reviewUrl}" style="display: inline-block; background: #10B981; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600;">
                 View Full Review
               </a>
             </div>
@@ -635,25 +635,25 @@ The LegacyGuard Team
           </div>
 
           <div class="content">
-            <h2>Hello {{reviewerName}},</h2>
+            <h2>Hello {reviewerName},</h2>
 
             <p>${daysOverdue > 0
-              ? `This is a reminder that your review for {{documentName}} is now {{daysOverdue}} days overdue.`
-              : `This is a friendly reminder that you have a pending review for {{documentName}}.`}
+              ? `This is a reminder that your review for {documentName} is now {daysOverdue} days overdue.`
+              : `This is a friendly reminder that you have a pending review for {documentName}.`}
             </p>
 
             <div class="info-box">
               <h3>📄 Review Details</h3>
               <ul>
-                <li><strong>Document:</strong> {{documentName}}</li>
-                <li><strong>Review Type:</strong> {{reviewType}}</li>
-                <li><strong>Assigned Date:</strong> {{assignedDate}}</li>
-                ${daysOverdue > 0 ? '<li><strong style="color: #EF4444;">Days Overdue:</strong> {{daysOverdue}}</li>' : ''}
+                <li><strong>Document:</strong> {documentName}</li>
+                <li><strong>Review Type:</strong> {reviewType}</li>
+                <li><strong>Assigned Date:</strong> {assignedDate}</li>
+                ${daysOverdue > 0 ? '<li><strong style="color: #EF4444;">Days Overdue:</strong> {daysOverdue}</li>' : ''}
               </ul>
             </div>
 
             <div style="text-align: center; margin: 30px 0;">
-              <a href="{{dashboardUrl}}" style="display: inline-block; background: ${daysOverdue > 0 ? '#EF4444' : '#F59E0B'}; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600;">
+              <a href="{dashboardUrl}" style="display: inline-block; background: ${daysOverdue > 0 ? '#EF4444' : '#F59E0B'}; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600;">
                 Complete Review Now
               </a>
             </div>
@@ -783,7 +783,7 @@ LegacyGuard Professional Review Network
     let result = template;
 
     Object.keys(data).forEach(key => {
-      const regex = new RegExp(`{{${key}}}`, 'g');
+      const regex = new RegExp(`{${key}}`, 'g');
       result = result.replace(regex, String(data[key]));
     });
 

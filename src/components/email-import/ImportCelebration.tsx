@@ -88,15 +88,13 @@ export function ImportCelebration({ result, onContinue, className }: ImportCeleb
         {/* Floating sparkles */}
         <div className="absolute top-6 left-6">
           <motion.div
-            animate={{
-              rotate: [0, 360],
+            animate={{  rotate: [0, 360],
               scale: [1, 1.2, 1],
-            }}
-            transition={{
-              duration: 3,
+             }}
+            transition={{  duration: 3,
               repeat: Infinity,
               ease: "easeInOut"
-            }}
+             }}
           >
             <Sparkles className="h-6 w-6 text-yellow-500" />
           </motion.div>
@@ -104,16 +102,14 @@ export function ImportCelebration({ result, onContinue, className }: ImportCeleb
 
         <div className="absolute top-8 right-8">
           <motion.div
-            animate={{
-              rotate: [360, 0],
+            animate={{  rotate: [360, 0],
               scale: [1, 1.3, 1],
-            }}
-            transition={{
-              duration: 4,
+             }}
+            transition={{  duration: 4,
               repeat: Infinity,
               ease: "easeInOut",
               delay: 1
-            }}
+             }}
           >
             <Sparkles className="h-4 w-4 text-blue-500" />
           </motion.div>
@@ -127,8 +123,8 @@ export function ImportCelebration({ result, onContinue, className }: ImportCeleb
             {/* Success Icon */}
             <motion.div
               className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={{  scale: 1.05  }}
+              whileTap={{  scale: 0.95  }}
             >
               <Shield className="h-10 w-10 text-green-600" />
             </motion.div>

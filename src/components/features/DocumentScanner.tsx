@@ -203,7 +203,7 @@ export default function DocumentScanner({
         <div className='text-center space-y-4'>
           <FadeIn duration={0.5}>
             <div className='w-16 h-16 mx-auto mb-4 bg-primary/10 rounded-full flex items-center justify-center'>
-              <Icon name='documents' className='w-8 h-8 text-primary' />
+              <Icon name={"documents" as any} className='w-8 h-8 text-primary' />
             </div>
             <h3 className='text-xl font-semibold'>Scan & Analyze Document</h3>
             <p className='text-muted-foreground'>
@@ -223,8 +223,7 @@ export default function DocumentScanner({
                 }`}
               >
                 <input {...getInputProps()} />
-                <Icon
-                  name='upload'
+                <Icon name={"upload" as any}
                   className='w-12 h-12 text-muted-foreground mx-auto mb-4'
                 />
                 <p className='text-lg font-medium mb-2'>
@@ -236,7 +235,7 @@ export default function DocumentScanner({
                   Supports images (PNG, JPG, GIF, WebP) and PDFs up to 10MB
                 </p>
                 <Button onClick={handleManualFileSelect} type='button'>
-                  <Icon name='documents' className='w-4 h-4 mr-2' />
+                  <Icon name={"documents" as any} className='w-4 h-4 mr-2' />
                   Choose File
                 </Button>
                 <input
@@ -255,7 +254,7 @@ export default function DocumentScanner({
                 <div className='border rounded-lg p-4 bg-muted/5'>
                   <div className='flex items-center justify-between mb-4'>
                     <div className='flex items-center gap-3'>
-                      <Icon name='documents' className='w-5 h-5 text-primary' />
+                      <Icon name={"documents" as any} className='w-5 h-5 text-primary' />
                       <div className='text-left'>
                         <p className='font-medium'>{selectedFile.name}</p>
                         <p className='text-sm text-muted-foreground'>
@@ -265,11 +264,11 @@ export default function DocumentScanner({
                       </div>
                     </div>
                     <Button
-                      variant='outline'
+                      variant={"outline" as any}
                       size='sm'
                       onClick={clearSelection}
                     >
-                      <Icon name='x' className='w-4 h-4' />
+                      <Icon name={"x" as any} className='w-4 h-4' />
                     </Button>
                   </div>
 
@@ -294,25 +293,24 @@ export default function DocumentScanner({
                   >
                     {isProcessing ? (
                       <>
-                        <Icon
-                          name='loader'
+                        <Icon name={"loader" as any}
                           className='w-4 h-4 mr-2 animate-spin'
                         />
                         Processing...
                       </>
                     ) : (
                       <>
-                        <Icon name='sparkles' className='w-4 h-4 mr-2' />
+                        <Icon name={"sparkles" as any} className='w-4 h-4 mr-2' />
                         Scan Document
                       </>
                     )}
                   </Button>
 
                   <Button
-                    variant='outline'
+                    variant={"outline" as any}
                     onClick={() => setShowAdvancedOptions(!showAdvancedOptions)}
                   >
-                    <Icon name='settings' className='w-4 h-4 mr-2' />
+                    <Icon name={"settings" as any} className='w-4 h-4 mr-2' />
                     Options
                   </Button>
                 </div>
@@ -439,14 +437,14 @@ export default function DocumentScanner({
                 <div>
                   <Label htmlFor='confidence-threshold'>
                     Confidence Threshold:{' '}
-                    {Math.round(config.confidenceThreshold * 100)}%
+                    {Math.round(config?.confidenceThreshold * 100)}%
                   </Label>
                   <input
                     type='range'
                     min='0.3'
                     max='1'
                     step='0.1'
-                    value={config.confidenceThreshold}
+                    value={config?.confidenceThreshold}
                     onChange={e =>
                       setConfig(prev => ({
                         ...prev,
@@ -494,14 +492,14 @@ export default function DocumentScanner({
                 </h3>
                 <div className='flex items-center gap-3'>
                   <Badge
-                    variant='secondary'
+                    variant={"secondary" as any}
                     className='bg-green-100 text-green-800'
                   >
                     {processedDocument.classification.type.replace('_', ' ')}
                   </Badge>
                   <span className='text-sm text-green-600'>
                     {Math.round(
-                      processedDocument.classification.confidence * 100
+                      processedDocument.classification?.confidence * 100
                     )}
                     % confidence
                   </span>
@@ -525,7 +523,7 @@ export default function DocumentScanner({
                         >
                           <div>
                             <Badge
-                              variant='outline'
+                              variant={"outline" as any}
                               className='mb-1 text-green-700 border-green-300'
                             >
                               {entity.type.replace('_', ' ')}
@@ -535,7 +533,7 @@ export default function DocumentScanner({
                             </p>
                           </div>
                           <div className='text-right text-sm text-green-600'>
-                            {Math.round(entity.confidence * 100)}% sure
+                            {Math.round(entity?.confidence * 100)}% sure
                           </div>
                         </div>
                       )
@@ -559,7 +557,7 @@ export default function DocumentScanner({
               </div>
 
               <div className='flex gap-3 justify-end pt-4 border-t'>
-                <Button variant='outline' onClick={() => setShowResults(false)}>
+                <Button variant={"outline" as any} onClick={() => setShowResults(false)}>
                   Review Later
                 </Button>
                 <Button
@@ -605,24 +603,24 @@ function DocumentResults({ document }: { document: ProcessedDocument }) {
       <div className='flex gap-1 mb-6 bg-muted/30 p-1 rounded-lg'>
         {[
           {
-            key: 'overview' as const,
+            key: 'overview',
             label: 'Overview',
-            icon: 'info' as const,
+            icon: 'info',
           },
           {
-            key: 'text' as const,
+            key: 'text',
             label: 'Extracted Text',
-            icon: 'documents' as const,
+            icon: 'documents',
           },
           {
-            key: 'entities' as const,
+            key: 'entities',
             label: 'Entities',
-            icon: 'sparkles' as const,
+            icon: 'sparkles',
           },
           {
-            key: 'metadata' as const,
+            key: 'metadata',
             label: 'Metadata',
-            icon: 'settings' as const,
+            icon: 'settings',
           },
         ].map(tab => (
           <button
@@ -649,20 +647,20 @@ function DocumentResults({ document }: { document: ProcessedDocument }) {
               <div className='space-y-2'>
                 <div className='flex items-center justify-between'>
                   <span className='text-sm'>Type:</span>
-                  <Badge variant='outline'>
+                  <Badge variant={"outline" as any}>
                     {document.classification.type.replace('_', ' ')}
                   </Badge>
                 </div>
                 <div className='flex items-center justify-between'>
                   <span className='text-sm'>Category:</span>
-                  <Badge variant='secondary'>
+                  <Badge variant={"secondary" as any}>
                     {document.classification.category}
                   </Badge>
                 </div>
                 <div className='flex items-center justify-between'>
                   <span className='text-sm'>Confidence:</span>
                   <span className='text-sm font-medium'>
-                    {Math.round(document.classification.confidence * 100)}%
+                    {Math.round(document.classification?.confidence * 100)}%
                   </span>
                 </div>
               </div>
@@ -672,7 +670,7 @@ function DocumentResults({ document }: { document: ProcessedDocument }) {
                   <h5 className='font-medium mb-2'>Suggested Tags</h5>
                   <div className='flex flex-wrap gap-2'>
                     {document.classification.suggestedTags.map(tag => (
-                      <Badge key={tag} variant='outline' className='text-xs'>
+                      <Badge key={tag} variant={"outline" as any} className='text-xs'>
                         {tag}
                       </Badge>
                     ))}
@@ -691,7 +689,7 @@ function DocumentResults({ document }: { document: ProcessedDocument }) {
                 <div className='flex justify-between'>
                   <span>Text Confidence:</span>
                   <span>
-                    {Math.round(document.ocrResult.confidence * 100)}%
+                    {Math.round(document.ocrResult?.confidence * 100)}%
                   </span>
                 </div>
                 <div className='flex justify-between'>
@@ -734,14 +732,14 @@ function DocumentResults({ document }: { document: ProcessedDocument }) {
                       className='flex items-center justify-between p-3 bg-muted/20 rounded-lg'
                     >
                       <div>
-                        <Badge variant='outline' className='mb-1'>
+                        <Badge variant={"outline" as any} className='mb-1'>
                           {entity.type.replace('_', ' ')}
                         </Badge>
                         <p className='text-sm'>{entity.value}</p>
                       </div>
                       <div className='text-right'>
                         <p className='text-sm text-muted-foreground'>
-                          {Math.round(entity.confidence * 100)}% confidence
+                          {Math.round(entity?.confidence * 100)}% confidence
                         </p>
                       </div>
                     </div>

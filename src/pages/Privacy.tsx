@@ -17,8 +17,8 @@ export function PrivacyPage() {
             <motion.div
               className='flex items-center gap-3 cursor-pointer'
               onClick={() => navigate('/')}
-              whileHover={{ scale: 1.02 }}
-              transition={{ duration: 0.2 }}
+              whileHover={{  scale: 1.02  }}
+              transition={{  duration: 0.2  }}
             >
               <LegacyGuardLogo />
               <span className='text-2xl font-bold text-green-900 dark:text-green-100 font-heading'>
@@ -27,7 +27,7 @@ export function PrivacyPage() {
             </motion.div>
 
             <Button
-              variant='ghost'
+              variant={"ghost" as any}
               onClick={() => navigate('/')}
               className='text-green-700 hover:text-green-900'
             >
@@ -40,9 +40,9 @@ export function PrivacyPage() {
       {/* Content */}
       <div className='container mx-auto px-4 py-12 max-w-4xl'>
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          initial={{  opacity: 0, y: 30  }}
+          animate={{  opacity: 1, y: 0  }}
+          transition={{  duration: 0.8  }}
         >
           <h1 className='text-4xl font-bold text-green-900 dark:text-green-100 mb-8 text-center'>
             Privacy Policy

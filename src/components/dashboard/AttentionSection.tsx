@@ -90,7 +90,7 @@ export const AttentionSection: React.FC<AttentionSectionProps> = ({
       <section className={className}>
         <div className='mb-6'>
           <div className='flex items-center gap-3 mb-2'>
-            <Icon name='alert-circle' className='w-6 h-6 text-primary' />
+            <Icon name={"alert-circle" as any} className='w-6 h-6 text-primary' />
             <h2 className='text-2xl font-bold font-heading text-card-foreground'>
               Current Challenges
             </h2>
@@ -123,7 +123,7 @@ export const AttentionSection: React.FC<AttentionSectionProps> = ({
                     </div>
                   </div>
                   <Button
-                    variant='outline'
+                    variant={"outline" as any}
                     size='sm'
                     onClick={item.onAction}
                     className='ml-4 shrink-0'

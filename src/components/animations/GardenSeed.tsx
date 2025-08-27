@@ -123,35 +123,33 @@ export const GardenSeed: React.FC<GardenSeedProps> = ({
       {/* Background glow */}
       <motion.div
         className='absolute inset-0 rounded-full'
-        animate={{
+        animate={{ 
           boxShadow: showPulse
             ? [
-                `${config.glow} ${colors.glow}`,
+                `${config.glow }} ${colors.glow}`,
                 `${config.glow.replace(/\d+px/g, m => `${parseInt(m) * 1.5}px`)} ${colors.glow}`,
                 `${config.glow} ${colors.glow}`,
               ]
             : `${config.glow} ${colors.glow}`,
         }}
-        transition={{
-          duration: seedState === 'dormant' ? 4 : 2,
+        transition={{  duration: seedState === 'dormant' ? 4 : 2,
           repeat: showPulse ? Infinity : 0,
           ease: 'easeInOut',
-        }}
+         }}
       />
 
       {/* Main seed */}
       <motion.div
         className={`relative ${config.seed} rounded-full bg-gradient-to-br ${colors.seed} shadow-lg cursor-pointer`}
-        animate={{
-          scale: isHovered ? 1.1 : 1,
+        animate={{  scale: isHovered ? 1.1 : 1,
           rotate: progress > 0 ? [0, 5, -5, 0] : 0,
-        }}
-        transition={{
+         }}
+        transition={{ 
           scale: { duration: 0.2 },
-          rotate: { duration: 4, repeat: Infinity, ease: 'easeInOut' },
+          rotate: { duration: 4, repeat: Infinity, ease: 'easeInOut' }
         }}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.95 }}
+        whileHover={{  scale: 1.1  }}
+        whileTap={{  scale: 0.95  }}
         onHoverStart={() => setIsHovered(true)}
         onHoverEnd={() => setIsHovered(false)}
         onClick={onSeedClick}
@@ -161,10 +159,10 @@ export const GardenSeed: React.FC<GardenSeedProps> = ({
           {seedState !== 'dormant' && (
             <motion.div
               className='absolute inset-1 rounded-full opacity-60'
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ opacity: 0.6, scale: 1 }}
-              exit={{ opacity: 0, scale: 0 }}
-              transition={{ duration: 0.8, ease: 'easeOut' }}
+              initial={{  opacity: 0, scale: 0  }}
+              animate={{  opacity: 0.6, scale: 1  }}
+              exit={{  opacity: 0, scale: 0  }}
+              transition={{  duration: 0.8, ease: 'easeOut'  }}
             >
               {/* Sprouting indicator */}
               {(seedState === 'sprouting' || seedState === 'growing') && (
@@ -186,19 +184,17 @@ export const GardenSeed: React.FC<GardenSeedProps> = ({
                     <motion.div
                       key={index}
                       className='absolute top-1/2 left-1/2 w-1 h-3 bg-gradient-to-t from-violet-400 to-pink-300 rounded-full origin-bottom'
-                      style={{
-                        transform: `translate(-50%, -100%) rotate(${rotation}deg)`,
+                      style={{ 
+                        transform: `translate(-50%, -100%) rotate(${rotation }}deg)`,
                       }}
-                      animate={{
-                        scale: [0.8, 1, 0.8],
+                      animate={{  scale: [0.8, 1, 0.8],
                         opacity: [0.6, 1, 0.6],
-                      }}
-                      transition={{
-                        duration: 2,
+                       }}
+                      transition={{  duration: 2,
                         repeat: Infinity,
                         delay: index * 0.2,
                         ease: 'easeInOut',
-                      }}
+                       }}
                     />
                   ))}
                 </>
@@ -214,33 +210,28 @@ export const GardenSeed: React.FC<GardenSeedProps> = ({
           <motion.div
             key={particle.id}
             className='absolute w-1 h-1 rounded-full'
-            style={{
-              backgroundColor: colors.particles,
+            style={{  backgroundColor: colors.particles,
               left: '50%',
               top: '50%',
-            }}
-            initial={{
-              x: 0,
+             }}
+            initial={{  x: 0,
               y: 0,
               opacity: 0,
               scale: 0,
-            }}
-            animate={{
-              x: particle.x,
+             }}
+            animate={{  x: particle.x,
               y: particle.y,
               opacity: [0, 0.8, 0],
               scale: [0, 1, 0],
-            }}
-            exit={{
-              opacity: 0,
+             }}
+            exit={{  opacity: 0,
               scale: 0,
-            }}
-            transition={{
-              duration: 3,
+             }}
+            transition={{  duration: 3,
               repeat: Infinity,
               delay: particle.delay,
               ease: 'easeOut',
-            }}
+             }}
           />
         ))}
       </AnimatePresence>
@@ -250,10 +241,10 @@ export const GardenSeed: React.FC<GardenSeedProps> = ({
         {isHovered && (
           <motion.div
             className={`absolute -top-12 left-1/2 -translate-x-1/2 bg-black/80 text-white px-3 py-1 rounded-lg whitespace-nowrap ${config.text}`}
-            initial={{ opacity: 0, scale: 0.8, y: 10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.8, y: 10 }}
-            transition={{ duration: 0.2 }}
+            initial={{  opacity: 0, scale: 0.8, y: 10  }}
+            animate={{  opacity: 1, scale: 1, y: 0  }}
+            exit={{  opacity: 0, scale: 0.8, y: 10  }}
+            transition={{  duration: 0.2  }}
           >
             {progress === 0
               ? 'Plant your first seed'
@@ -267,9 +258,9 @@ export const GardenSeed: React.FC<GardenSeedProps> = ({
       {seedState !== 'dormant' && (
         <motion.div
           className={`absolute -bottom-8 left-1/2 -translate-x-1/2 ${config.text} font-medium text-center`}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 0.7, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.5 }}
+          initial={{  opacity: 0, y: 10  }}
+          animate={{  opacity: 0.7, y: 0  }}
+          transition={{  duration: 0.8, delay: 0.5  }}
         >
           <span className='capitalize text-gray-600 dark:text-gray-400'>
             {seedState}

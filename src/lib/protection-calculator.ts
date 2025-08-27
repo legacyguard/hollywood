@@ -230,7 +230,7 @@ export function getProtectionImprovements(metrics: ProtectionMetrics, documents:
 
   if (!willData || !willData.beneficiaries?.length) {
     suggestions.push({
-      priority: 'high' as const,
+      priority: 'high',
       action: 'Complete your will',
       impact: 'Increase protection by 25+ points',
       timeEstimate: '15 minutes'
@@ -240,7 +240,7 @@ export function getProtectionImprovements(metrics: ProtectionMetrics, documents:
   const hasInsurance = documents.some(d => d.category === 'insurance');
   if (!hasInsurance) {
     suggestions.push({
-      priority: 'high' as const,
+      priority: 'high',
       action: 'Add insurance documents',
       impact: 'Major financial protection for family',
       timeEstimate: '5 minutes'
@@ -250,7 +250,7 @@ export function getProtectionImprovements(metrics: ProtectionMetrics, documents:
   const hasMedical = documents.some(d => d.category === 'medical');
   if (!hasMedical) {
     suggestions.push({
-      priority: 'medium' as const,
+      priority: 'medium',
       action: 'Upload medical information',
       impact: 'Enable faster emergency decisions',
       timeEstimate: '3 minutes'
@@ -259,7 +259,7 @@ export function getProtectionImprovements(metrics: ProtectionMetrics, documents:
 
   if (metrics.protectionScore < 70) {
     suggestions.push({
-      priority: 'medium' as const,
+      priority: 'medium',
       action: 'Add emergency contact',
       impact: 'Immediate access in crises',
       timeEstimate: '30 seconds'

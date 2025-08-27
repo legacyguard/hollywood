@@ -331,8 +331,8 @@ export function ProfessionalReviewPricing({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{  opacity: 0, y: 20  }}
+      animate={{  opacity: 1, y: 0  }}
       className={cn('space-y-8', className)}
     >
       {/* Header */}
@@ -373,9 +373,9 @@ export function ProfessionalReviewPricing({
           return (
             <motion.div
               key={tier.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
+              initial={{  opacity: 0, y: 20  }}
+              animate={{  opacity: 1, y: 0  }}
+              transition={{  delay: index * 0.1  }}
               className="relative"
             >
               <Card className={cn(
@@ -501,7 +501,7 @@ export function ProfessionalReviewPricing({
       {/* Feature Comparison Toggle */}
       <div className="text-center">
         <Button
-          variant="outline"
+          variant={"outline" as any}
           onClick={() => setShowComparison(!showComparison)}
           className="gap-2"
         >
@@ -513,9 +513,9 @@ export function ProfessionalReviewPricing({
       {/* Detailed Feature Comparison */}
       {showComparison && (
         <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: 'auto' }}
-          exit={{ opacity: 0, height: 0 }}
+          initial={{  opacity: 0, height: 0  }}
+          animate={{  opacity: 1, height: 'auto'  }}
+          exit={{  opacity: 0, height: 0  }}
           className="max-w-6xl mx-auto"
         >
           <Card>

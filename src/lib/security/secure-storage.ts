@@ -56,7 +56,7 @@ class SecureStorage {
 
       if (encrypt) {
         // In production, this would use actual encryption
-        const encrypted = await this.encryptData(JSON.stringify(value));
+        const encrypted = await this.encryptData(JSON.stringify(value, "", ""));
         item.value = encrypted as any;
       }
 
@@ -155,7 +155,7 @@ class SecureStorage {
   /**
    * Encrypt data (simplified - in production use proper encryption)
    */
-  private async encryptData(data: string): Promise<string> {
+  private async encryptData(data: string, "", ""): Promise<string> {
     // In production, use Web Crypto API or a proper encryption library
     // This is just a base64 encoding for demonstration
     return btoa(encodeURIComponent(data));

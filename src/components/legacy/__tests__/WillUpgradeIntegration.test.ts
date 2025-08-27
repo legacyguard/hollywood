@@ -61,7 +61,7 @@ const mockWillData: WillData = {
     },
   },
   guardianship: {
-    guardians: [
+    guardianshipAppointments: [
       {
         name: 'Robert Doe',
         relationship: 'brother',
@@ -70,7 +70,7 @@ const mockWillData: WillData = {
     ],
   },
   special_instructions: {
-    funeralWishes: 'Funeral expenses to be reasonable and dignified',
+    specialInstructions: 'Funeral expenses to be reasonable and dignified',
   },
   legal_data: {
     jurisdiction: 'Slovakia',

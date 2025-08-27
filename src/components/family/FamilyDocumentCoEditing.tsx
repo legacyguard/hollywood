@@ -379,7 +379,7 @@ export const FamilyDocumentCoEditing: React.FC<FamilyDocumentCoEditingProps> = (
               <div className="flex gap-2">
                 <Button
                   size="sm"
-                  variant="outline"
+                  variant={"outline" as any}
                   onClick={() => setShowComments(!showComments)}
                   className="gap-2"
                 >
@@ -388,7 +388,7 @@ export const FamilyDocumentCoEditing: React.FC<FamilyDocumentCoEditingProps> = (
                 </Button>
                 <Button
                   size="sm"
-                  variant="outline"
+                  variant={"outline" as any}
                   onClick={() => setShowVersionHistory(!showVersionHistory)}
                   className="gap-2"
                 >
@@ -401,7 +401,7 @@ export const FamilyDocumentCoEditing: React.FC<FamilyDocumentCoEditingProps> = (
                 </Button>
                 <Button 
                   size="sm" 
-                  variant="outline" 
+                  variant={"outline" as any} 
                   onClick={() => {
                     setActiveDocument(null);
                     setIsCreating(false);
@@ -432,22 +432,22 @@ export const FamilyDocumentCoEditing: React.FC<FamilyDocumentCoEditingProps> = (
                     {cursors.map((cursor) => (
                       <motion.div
                         key={cursor.userId}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
+                        initial={{  opacity: 0  }}
+                        animate={{  opacity: 1  }}
+                        exit={{  opacity: 0  }}
                         className="absolute pointer-events-none"
-                        style={{
-                          top: `${Math.floor(cursor.position / 80) * 1.5}em`,
+                        style={{ 
+                          top: `${Math.floor(cursor.position / 80) * 1.5 }}em`,
                           left: `${(cursor.position % 80) * 0.6}em`,
                         }}
                       >
                         <div
                           className="w-0.5 h-5 animate-pulse"
-                          style={{ backgroundColor: cursor.color }}
+                          style={{  backgroundColor: cursor.color  }}
                         />
                         <div
                           className="text-xs px-2 py-1 rounded text-white mt-1 whitespace-nowrap"
-                          style={{ backgroundColor: cursor.color }}
+                          style={{  backgroundColor: cursor.color  }}
                         >
                           {cursor.userName}
                         </div>
@@ -487,7 +487,7 @@ export const FamilyDocumentCoEditing: React.FC<FamilyDocumentCoEditingProps> = (
                   <div className="flex gap-2">
                     <Dialog>
                       <DialogTrigger asChild>
-                        <Button size="sm" variant="outline" className="gap-2">
+                        <Button size="sm" variant={"outline" as any} className="gap-2">
                           <Users className="h-3 w-3" />
                           Share ({activeDocument.collaborators.length})
                         </Button>
@@ -561,7 +561,7 @@ export const FamilyDocumentCoEditing: React.FC<FamilyDocumentCoEditingProps> = (
                     <h3 className="font-medium">Comments</h3>
                     <Button
                       size="sm"
-                      variant="outline"
+                      variant={"outline" as any}
                       onClick={() => {
                         const text = prompt('Add a comment:');
                         if (text) addComment(text, 0);
@@ -577,8 +577,8 @@ export const FamilyDocumentCoEditing: React.FC<FamilyDocumentCoEditingProps> = (
                     {activeDocument.comments.map((comment) => (
                       <motion.div
                         key={comment.id}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
+                        initial={{  opacity: 0, y: 10  }}
+                        animate={{  opacity: 1, y: 0  }}
                         className={`p-3 rounded-lg border ${comment.isResolved ? 'bg-green-50 border-green-200' : 'bg-gray-50'}`}
                       >
                         <div className="flex items-start justify-between mb-2">
@@ -599,7 +599,7 @@ export const FamilyDocumentCoEditing: React.FC<FamilyDocumentCoEditingProps> = (
                         {!comment.isResolved && (
                           <Button
                             size="sm"
-                            variant="outline"
+                            variant={"outline" as any}
                             onClick={() => resolveComment(comment.id)}
                             className="gap-1"
                           >
@@ -657,8 +657,8 @@ export const FamilyDocumentCoEditing: React.FC<FamilyDocumentCoEditingProps> = (
         {documents.map((document) => (
           <motion.div
             key={document.id}
-            whileHover={{ y: -2 }}
-            transition={{ duration: 0.2 }}
+            whileHover={{  y: -2  }}
+            transition={{  duration: 0.2  }}
           >
             <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => setActiveDocument(document)}>
               <CardHeader className="pb-2">
@@ -674,11 +674,11 @@ export const FamilyDocumentCoEditing: React.FC<FamilyDocumentCoEditingProps> = (
               </CardHeader>
               <CardContent>
                 <div className="flex items-center gap-2 mb-3">
-                  <Badge variant="outline" className="text-xs">
+                  <Badge variant={"outline" as any} className="text-xs">
                     {document.type}
                   </Badge>
                   {document.isLocked && (
-                    <Badge variant="secondary" className="text-xs gap-1">
+                    <Badge variant={"secondary" as any} className="text-xs gap-1">
                       <Lock className="h-2 w-2" />
                       Locked
                     </Badge>

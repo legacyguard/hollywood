@@ -130,7 +130,7 @@ export function LegacyProgressVisualization({
         {nextSuggestion && (
           <Button
             size="sm"
-            variant="outline"
+            variant={"outline" as any}
             onClick={() => onNextAction?.(nextSuggestion.suggestion)}
             className="text-xs"
           >
@@ -147,7 +147,7 @@ export function LegacyProgressVisualization({
         <CardContent className="p-4">
           <div className="flex items-center justify-between mb-3">
             <h3 className="font-semibold text-sm">Legacy Progress</h3>
-            <Badge variant="outline" className="text-xs">
+            <Badge variant={"outline" as any} className="text-xs">
               {progress.overall}%
             </Badge>
           </div>
@@ -161,7 +161,7 @@ export function LegacyProgressVisualization({
           {nextSuggestion && (
             <Button
               size="sm"
-              variant="ghost"
+              variant={"ghost" as any}
               onClick={() => onNextAction?.(nextSuggestion.suggestion)}
               className="w-full justify-between text-xs h-8"
             >
@@ -191,11 +191,10 @@ export function LegacyProgressVisualization({
           {showGardenGrowth && (
             <motion.div
               className="text-4xl"
-              animate={{
-                scale: gardenStage === 'flourishing' ? [1, 1.1, 1] : 1,
+              animate={{  scale: gardenStage === 'flourishing' ? [1, 1.1, 1] : 1,
                 rotate: gardenStage === 'flourishing' ? [0, 5, -5, 0] : 0
-              }}
-              transition={{ duration: 2, repeat: gardenStage === 'flourishing' ? Infinity : 0 }}
+               }}
+              transition={{  duration: 2, repeat: gardenStage === 'flourishing' ? Infinity : 0  }}
             >
               {garden.emoji}
             </motion.div>
@@ -214,13 +213,13 @@ export function LegacyProgressVisualization({
           <Progress value={animatedProgress} className="h-4">
             <div
               className="h-full bg-gradient-to-r from-green-400 to-emerald-500 rounded-full transition-all duration-1000 ease-out flex items-center justify-end pr-2"
-              style={{ width: `${animatedProgress}%` }}
+              style={{  width: `${animatedProgress }}%` }}
             >
               {animatedProgress > 20 && (
                 <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ delay: 1 }}
+                  initial={{  scale: 0  }}
+                  animate={{  scale: 1  }}
+                  transition={{  delay: 1  }}
                 >
                   <Sparkles className="h-3 w-3 text-white" />
                 </motion.div>

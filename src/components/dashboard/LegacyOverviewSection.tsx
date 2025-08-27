@@ -131,7 +131,7 @@ export const LegacyOverviewSection: React.FC<LegacyOverviewSectionProps> = ({
       <section className={className}>
         <div className='mb-6'>
           <div className='flex items-center gap-3 mb-2'>
-            <Icon name='folder' className='w-6 h-6 text-primary' />
+            <Icon name={"folder" as any} className='w-6 h-6 text-primary' />
             <h2 className='text-2xl font-bold font-heading text-card-foreground'>
               Your Shield Areas
             </h2>
@@ -158,7 +158,7 @@ export const LegacyOverviewSection: React.FC<LegacyOverviewSectionProps> = ({
                     />
                   </div>
                   {bundle.isRecent && (
-                    <Badge variant='secondary' className='text-xs'>
+                    <Badge variant={"secondary" as any} className='text-xs'>
                       New
                     </Badge>
                   )}

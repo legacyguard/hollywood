@@ -234,7 +234,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
 
     const updatedDecision = {
       ...decision,
-      status: 'voting' as const
+      status: 'voting'
     };
 
     setDecisions(decisions.map(d => d.id === decisionId ? updatedDecision : d));
@@ -407,8 +407,8 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
                 {decisionTemplates.map((template) => (
                   <motion.div
                     key={template.id}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                    whileHover={{  scale: 1.02  }}
+                    whileTap={{  scale: 0.98  }}
                   >
                     <Card 
                       className="cursor-pointer hover:border-blue-300 transition-colors"
@@ -426,7 +426,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
                               <Badge className={getPriorityColor(template.priority)}>
                                 {template.priority}
                               </Badge>
-                              <Badge variant="outline" className="text-xs">
+                              <Badge variant={"outline" as any} className="text-xs">
                                 {template.category.replace('-', ' ')}
                               </Badge>
                             </div>
@@ -439,7 +439,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
               </div>
               <div className="flex justify-end gap-2 mt-4">
                 <Button 
-                  variant="outline" 
+                  variant={"outline" as any} 
                   onClick={() => createNewDecision()}
                 >
                   Create Custom Decision
@@ -504,7 +504,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
                 />
               </div>
               <div className="flex gap-2">
-                <Button variant="outline" onClick={() => setIsCreating(false)}>
+                <Button variant={"outline" as any} onClick={() => setIsCreating(false)}>
                   Cancel
                 </Button>
                 <Button onClick={saveDecision}>
@@ -538,7 +538,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
                         />
                         <Button
                           size="sm"
-                          variant="outline"
+                          variant={"outline" as any}
                           onClick={() => {
                             const updatedOptions = activeDecision.options.filter((_, i) => i !== index);
                             setActiveDecision({...activeDecision, options: updatedOptions});
@@ -551,7 +551,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
                   </div>
                   <Button
                     size="sm"
-                    variant="outline"
+                    variant={"outline" as any}
                     onClick={() => {
                       const newOption: VoteOption = {
                         id: `option-${activeDecision.options.length}`,
@@ -679,9 +679,9 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
             return (
               <motion.div
                 key={decision.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
+                initial={{  opacity: 0, y: 10  }}
+                animate={{  opacity: 1, y: 0  }}
+                exit={{  opacity: 0, y: -10  }}
                 layout
               >
                 <Card className="hover:shadow-lg transition-shadow">
@@ -713,7 +713,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
                         )}
                         <Button
                           size="sm"
-                          variant="outline"
+                          variant={"outline" as any}
                           onClick={() => setActiveDecision(decision)}
                           className="gap-2"
                         >
@@ -732,7 +732,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
                           {decision.options.map((option) => (
                             <Button
                               key={option.id}
-                              variant="outline"
+                              variant={"outline" as any}
                               className="justify-start"
                               onClick={() => setVotingFor(option.id)}
                             >
@@ -756,7 +756,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
                                 </div>
                               )}
                               <div className="flex gap-2 justify-end">
-                                <Button variant="outline" onClick={() => setVotingFor(null)}>
+                                <Button variant={"outline" as any} onClick={() => setVotingFor(null)}>
                                   Cancel
                                 </Button>
                                 <Button onClick={() => votingFor && castVote(decision.id, votingFor)}>

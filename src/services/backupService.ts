@@ -95,7 +95,7 @@ export class BackupService {
       256 // 32 bytes
     );
 
-    return new Uint8Array(key);
+    return new Uint8Array(key as ArrayBuffer);
   }
 
   /**
@@ -106,7 +106,7 @@ export class BackupService {
     password: string
   ): Promise<EncryptedBackupData> {
     const salt = nacl.randomBytes(16);
-    const nonce = nacl.randomBytes(nacl.secretbox.nonceLength);
+    const nonce = nacl.randomBytes(nacl.secretbox?.nonceLength);
     const key = await this.deriveKey(password, salt);
 
     const dataString = JSON.stringify(data);
@@ -137,13 +137,13 @@ export class BackupService {
   ): Promise<BackupData | null> {
     try {
       // Validate required fields
-      if (!encryptedData.salt || !encryptedData.nonce || !encryptedData.data) {
+      if (!encryptedData.salt || !encryptedData?.nonce || !encryptedData.data) {
         console.error('Invalid encrypted backup structure');
         return null;
       }
 
       const salt = decodeBase64(encryptedData.salt);
-      const nonce = decodeBase64(encryptedData.nonce);
+      const nonce = decodeBase64(encryptedData?.nonce);
       const encrypted = decodeBase64(encryptedData.data);
       const key = await this.deriveKey(password, salt);
 

@@ -353,29 +353,29 @@ export default function GuardiansEnhanced() {
         title: 'Total Guardians',
         value: guardians.length.toString(),
         icon: 'shield',
-        color: 'primary' as const,
-        trend: guardians.length > 0 ? ('up' as const) : ('neutral' as const),
+        color: 'primary',
+        trend: guardians.length > 0 ? ('up') : ('neutral'),
         onClick: () => {},
       },
       {
         title: 'Executors',
         value: guardians.filter(g => g.is_will_executor).length.toString(),
         icon: 'user-check',
-        color: 'success' as const,
+        color: 'success',
         changeLabel: 'Appointed',
       },
       {
         title: 'Child Guardians',
         value: guardians.filter(g => g.is_child_guardian).length.toString(),
         icon: 'users',
-        color: 'info' as const,
+        color: 'info',
         changeLabel: 'Designated',
       },
       {
         title: 'Emergency Contacts',
         value: guardians.filter(g => g.can_trigger_emergency).length.toString(),
         icon: 'alert-circle',
-        color: 'warning' as const,
+        color: 'warning',
         changeLabel: 'Ready',
       },
     ],
@@ -406,7 +406,7 @@ export default function GuardiansEnhanced() {
                 <FadeIn duration={0.5} delay={0.4}>
                   <p
                     className='text-lg leading-relaxed max-w-2xl mb-4'
-                    style={{ color: 'hsl(var(--muted-text))' }}
+                    style={{  color: 'hsl(var(--muted-text))'  }}
                   >
                     Your Circle of Trust. These trusted people can help your
                     family access important information when needed.
@@ -425,7 +425,7 @@ export default function GuardiansEnhanced() {
                       className='bg-primary hover:bg-primary-hover text-primary-foreground shadow-md'
                       size='lg'
                     >
-                      <Icon name='add' className='w-5 h-5 mr-2' />
+                      <Icon name={"add" as any} className='w-5 h-5 mr-2' />
                       Add Guardian
                     </Button>
                   </DialogTrigger>
@@ -626,7 +626,7 @@ export default function GuardiansEnhanced() {
                       <div className='flex justify-end space-x-2'>
                         <Button
                           type='button'
-                          variant='outline'
+                          variant={"outline" as any}
                           onClick={() => {
                             setIsDialogOpen(false);
                             setEditingGuardian(null);
@@ -662,8 +662,7 @@ export default function GuardiansEnhanced() {
               {isLoading ? (
                 <div className='flex items-center justify-center py-12'>
                   <div className='text-center'>
-                    <Icon
-                      name='loader'
+                    <Icon name={"loader" as any}
                       className='w-8 h-8 animate-spin mx-auto mb-4 text-primary'
                     />
                     <p className='text-muted-foreground'>
@@ -674,8 +673,7 @@ export default function GuardiansEnhanced() {
               ) : guardians.length === 0 ? (
                 <Card className='p-12'>
                   <div className='text-center'>
-                    <Icon
-                      name='shield'
+                    <Icon name={"shield" as any}
                       className='w-16 h-16 mx-auto mb-4 text-muted-foreground/50'
                     />
                     <h3 className='text-xl font-semibold mb-2'>
@@ -686,7 +684,7 @@ export default function GuardiansEnhanced() {
                       to important information when needed.
                     </p>
                     <Button size='lg' onClick={() => setIsDialogOpen(true)}>
-                      <Icon name='add' className='w-5 h-5 mr-2' />
+                      <Icon name={"add" as any} className='w-5 h-5 mr-2' />
                       Add Your First Guardian
                     </Button>
                   </div>
@@ -717,8 +715,7 @@ export default function GuardiansEnhanced() {
               <FadeIn duration={0.5} delay={1.2}>
                 <Card className='p-8 bg-primary/5 border-primary/20'>
                   <div className='flex items-start gap-4'>
-                    <Icon
-                      name='info'
+                    <Icon name={"info" as any}
                       className='w-6 h-6 text-primary flex-shrink-0 mt-1'
                     />
                     <div>

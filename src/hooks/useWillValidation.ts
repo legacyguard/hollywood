@@ -131,7 +131,7 @@ export const useWillValidation = ({
         errors: 0,
         warnings: 0,
         successes: 0,
-        overall: 'unknown' as const,
+        overall: 'unknown',
       };
     }
 

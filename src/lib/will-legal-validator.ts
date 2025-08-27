@@ -477,8 +477,8 @@ export class LegalValidator {
         isValid: false,
         level:
           conflict.severity === 'critical'
-            ? ('error' as const)
-            : ('warning' as const),
+            ? ('error')
+            : ('warning'),
         message: conflict.message,
         messageKey: `conflict_${conflict.type}`,
         field: conflict.affectedFields[0],

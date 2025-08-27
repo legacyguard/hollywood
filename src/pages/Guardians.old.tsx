@@ -176,7 +176,7 @@ export default function GuardiansPage() {
                 <FadeIn duration={0.5} delay={0.4}>
                   <p
                     className='text-lg leading-relaxed max-w-2xl mb-4'
-                    style={{ color: 'hsl(var(--muted-text))' }}
+                    style={{  color: 'hsl(var(--muted-text))'  }}
                   >
                     Your Circle of Trust. These trusted people can help your
                     family access important information when needed.
@@ -195,7 +195,7 @@ export default function GuardiansPage() {
                       className='bg-primary hover:bg-primary-hover text-primary-foreground shadow-md'
                       size='lg'
                     >
-                      <Icon name='add' className='w-5 h-5 mr-2' />
+                      <Icon name={"add" as any} className='w-5 h-5 mr-2' />
                       Add Guardian
                     </Button>
                   </DialogTrigger>
@@ -283,8 +283,7 @@ export default function GuardiansPage() {
                       {/* Family Shield Protocol Permissions */}
                       <div className='space-y-4 p-4 border border-primary/20 rounded-lg bg-primary/5'>
                         <div className='flex items-center gap-2 mb-4'>
-                          <Icon
-                            name='shield-check'
+                          <Icon name={"shield-check" as any}
                             className='w-5 h-5 text-primary'
                           />
                           <h3 className='text-lg font-semibold text-primary'>
@@ -443,7 +442,7 @@ export default function GuardiansPage() {
                       <div className='flex justify-end gap-3 pt-4'>
                         <Button
                           type='button'
-                          variant='outline'
+                          variant={"outline" as any}
                           onClick={() => setIsDialogOpen(false)}
                         >
                           Cancel
@@ -451,15 +450,14 @@ export default function GuardiansPage() {
                         <Button type='submit' disabled={isSubmitting}>
                           {isSubmitting ? (
                             <>
-                              <Icon
-                                name='loader'
+                              <Icon name={"loader" as any}
                                 className='w-4 h-4 mr-2 animate-spin'
                               />
                               Adding...
                             </>
                           ) : (
                             <>
-                              <Icon name='add' className='w-4 h-4 mr-2' />
+                              <Icon name={"add" as any} className='w-4 h-4 mr-2' />
                               Add Guardian
                             </>
                           )}
@@ -477,8 +475,7 @@ export default function GuardiansPage() {
         <main className='max-w-7xl mx-auto px-6 lg:px-8 py-12'>
           {isLoading ? (
             <div className='flex items-center justify-center py-12'>
-              <Icon
-                name='loader'
+              <Icon name={"loader" as any}
                 className='w-8 h-8 animate-spin text-primary'
               />
               <span className='ml-3 text-muted-foreground'>
@@ -492,7 +489,7 @@ export default function GuardiansPage() {
                   {/* Decorative background circle */}
                   <div className='w-24 h-24 bg-primary/10 rounded-full mx-auto mb-4 flex items-center justify-center relative'>
                     <div className='w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center'>
-                      <Icon name='users' className='w-8 h-8 text-primary' />
+                      <Icon name={"users" as any} className='w-8 h-8 text-primary' />
                     </div>
                     {/* Small decorative dots */}
                     <div className='absolute -top-2 -right-2 w-4 h-4 bg-primary/30 rounded-full'></div>
@@ -522,8 +519,7 @@ export default function GuardiansPage() {
                 <div className='flex flex-col sm:flex-row gap-6 mb-10 max-w-2xl mx-auto'>
                   <div className='flex items-center gap-3 text-sm'>
                     <div className='w-8 h-8 bg-green-500/10 rounded-full flex items-center justify-center flex-shrink-0'>
-                      <Icon
-                        name='shield-check'
+                      <Icon name={"shield-check" as any}
                         className='w-4 h-4 text-green-600'
                       />
                     </div>
@@ -533,7 +529,7 @@ export default function GuardiansPage() {
                   </div>
                   <div className='flex items-center gap-3 text-sm'>
                     <div className='w-8 h-8 bg-blue-500/10 rounded-full flex items-center justify-center flex-shrink-0'>
-                      <Icon name='heart' className='w-4 h-4 text-blue-600' />
+                      <Icon name={"heart" as any} className='w-4 h-4 text-blue-600' />
                     </div>
                     <span className='text-muted-foreground'>
                       Peace of mind for family
@@ -541,7 +537,7 @@ export default function GuardiansPage() {
                   </div>
                   <div className='flex items-center gap-3 text-sm'>
                     <div className='w-8 h-8 bg-purple-500/10 rounded-full flex items-center justify-center flex-shrink-0'>
-                      <Icon name='clock' className='w-4 h-4 text-purple-600' />
+                      <Icon name={"clock" as any} className='w-4 h-4 text-purple-600' />
                     </div>
                     <span className='text-muted-foreground'>
                       Always available help
@@ -554,7 +550,7 @@ export default function GuardiansPage() {
                   size='lg'
                   className='bg-primary hover:bg-primary-hover text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-200'
                 >
-                  <Icon name='add' className='w-5 h-5 mr-2' />
+                  <Icon name={"add" as any} className='w-5 h-5 mr-2' />
                   Add Your First Guardian
                 </Button>
 
@@ -576,11 +572,10 @@ export default function GuardiansPage() {
                     <div className='flex items-start justify-between mb-4'>
                       <div className='flex items-center gap-3'>
                         <div className='w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center relative'>
-                          <Icon name='user' className='w-6 h-6 text-primary' />
+                          <Icon name={"user" as any} className='w-6 h-6 text-primary' />
                           {guardian.can_trigger_emergency && (
                             <div className='absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center'>
-                              <Icon
-                                name='shield-check'
+                              <Icon name={"shield-check" as any}
                                 className='w-2.5 h-2.5 text-white'
                               />
                             </div>
@@ -606,19 +601,18 @@ export default function GuardiansPage() {
                         </div>
                       </div>
                       <div className='flex gap-2'>
-                        <Button size='sm' variant='outline' disabled>
-                          <Icon name='pencil' className='w-4 h-4' />
+                        <Button size='sm' variant={"outline" as any} disabled>
+                          <Icon name={"pencil" as any} className='w-4 h-4' />
                         </Button>
-                        <Button size='sm' variant='outline' disabled>
-                          <Icon name='trash' className='w-4 h-4' />
+                        <Button size='sm' variant={"outline" as any} disabled>
+                          <Icon name={"trash" as any} className='w-4 h-4' />
                         </Button>
                       </div>
                     </div>
 
                     <div className='space-y-3'>
                       <div className='flex items-center gap-3 text-sm'>
-                        <Icon
-                          name='mail'
+                        <Icon name={"mail" as any}
                           className='w-4 h-4 text-muted-foreground'
                         />
                         <span className='text-muted-foreground'>
@@ -627,8 +621,7 @@ export default function GuardiansPage() {
                       </div>
                       {guardian.phone && (
                         <div className='flex items-center gap-3 text-sm'>
-                          <Icon
-                            name='phone'
+                          <Icon name={"phone" as any}
                             className='w-4 h-4 text-muted-foreground'
                           />
                           <span className='text-muted-foreground'>
@@ -647,7 +640,7 @@ export default function GuardiansPage() {
                       {/* Family Shield Protocol Permissions */}
                       <div className='pt-3 border-t border-border'>
                         <h4 className='text-sm font-medium text-primary mb-2 flex items-center gap-1'>
-                          <Icon name='shield-check' className='w-4 h-4' />
+                          <Icon name={"shield-check" as any} className='w-4 h-4' />
                           Shield Permissions
                         </h4>
                         <div className='flex flex-wrap gap-1'>
@@ -706,8 +699,7 @@ export default function GuardiansPage() {
             <FadeIn duration={0.5} delay={1.2}>
               <Card className='mt-12 p-8 bg-primary/5 border-primary/20'>
                 <div className='flex items-start gap-4'>
-                  <Icon
-                    name='info'
+                  <Icon name={"info" as any}
                     className='w-6 h-6 text-primary flex-shrink-0 mt-1'
                   />
                   <div>

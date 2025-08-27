@@ -140,7 +140,7 @@ export function DataTable<TData, TValue>({
             </div>
 
             {selectedRowsCount > 0 && (
-              <Badge variant='secondary' className='ml-2'>
+              <Badge variant={"secondary" as any} className='ml-2'>
                 {selectedRowsCount} selected
               </Badge>
             )}
@@ -149,7 +149,7 @@ export function DataTable<TData, TValue>({
           <div className='flex items-center space-x-2'>
             {showExport && (
               <Button
-                variant='outline'
+                variant={"outline" as any}
                 size='sm'
                 onClick={onExport}
                 disabled={loading}
@@ -162,7 +162,7 @@ export function DataTable<TData, TValue>({
             {showViewOptions && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant='outline' size='sm'>
+                  <Button variant={"outline" as any} size='sm'>
                     <Filter className='mr-2 h-4 w-4' />
                     View
                     <ChevronDown className='ml-2 h-4 w-4' />
@@ -274,7 +274,7 @@ export function DataTable<TData, TValue>({
               {table.getPageCount()}
             </p>
             <Button
-              variant='outline'
+              variant={"outline" as any}
               size='sm'
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
@@ -282,7 +282,7 @@ export function DataTable<TData, TValue>({
               Previous
             </Button>
             <Button
-              variant='outline'
+              variant={"outline" as any}
               size='sm'
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
@@ -328,7 +328,7 @@ export const createSortableHeader = (label: string) => {
   }) => {
     return (
       <Button
-        variant='ghost'
+        variant={"ghost" as any}
         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         className='-ml-3 h-8 data-[state=open]:bg-accent'
       >
@@ -352,7 +352,7 @@ export const createActionsColumn = <TData,>(
     return (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant='ghost' className='h-8 w-8 p-0'>
+          <Button variant={"ghost" as any} className='h-8 w-8 p-0'>
             <span className='sr-only'>Open menu</span>
             <MoreHorizontal className='h-4 w-4' />
           </Button>

@@ -89,13 +89,6 @@ export default defineConfig(({ mode }) => {
       },
       // Minification options
       minify: mode === 'production' ? 'terser' : false,
-      // Terser options for production
-      terserOptions: mode === 'production' ? {
-        compress: {
-          drop_console: true,
-          drop_debugger: true,
-        },
-      } : undefined,
       // Chunk size warning limit (in KB)
       chunkSizeWarningLimit: 1000,
       // Target browsers
@@ -109,16 +102,7 @@ export default defineConfig(({ mode }) => {
     // Plugin Configuration
     plugins: [
       // React plugin with SWC for fast compilation
-      react({
-        // Use SWC instead of Babel for faster builds
-        // SWC is a Rust-based compiler that's much faster than Babel
-        // Enable React Fast Refresh
-        fastRefresh: true,
-        // JSX runtime configuration
-        jsxRuntime: 'automatic',
-        // Development mode optimizations
-        development: mode === 'development',
-      }),
+      react(),
     ].filter(Boolean),
 
     // Module Resolution
