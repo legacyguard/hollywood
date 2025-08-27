@@ -114,7 +114,7 @@ export function MetricCard({
                 colorClasses[color]
               )}
             >
-              <Icon name={icon} className='w-6 h-6' />
+              <Icon name={icon as any} className='w-6 h-6' />
             </div>
           </div>
         </div>

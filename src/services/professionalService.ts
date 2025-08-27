@@ -6,13 +6,20 @@
 import { supabase } from '@/integrations/supabase/client';
 import type {
   ProfessionalReviewer,
+  ProfessionalReviewerInsert,
   ProfessionalOnboarding,
+  ProfessionalOnboardingInsert,
   DocumentReview,
+  DocumentReviewInsert,
   ReviewRequest,
-  ProfessionalPartnership,
+  ReviewRequestInsert,
   ReviewResult,
-  ProfessionalSpecialization
-} from '@/types/professional';
+  ReviewResultInsert,
+  ProfessionalSpecialization,
+  ProfessionalSpecializationInsert,
+  Consultation,
+  ConsultationInsert
+} from '@/integrations/supabase/types';
 
 export class ProfessionalService {
   private static instance: ProfessionalService;
@@ -25,7 +32,7 @@ export class ProfessionalService {
   }
 
   // Professional Applications
-  async submitApplication(application: Omit<ProfessionalOnboarding, 'id' | 'created_at' | 'updated_at'>): Promise<ProfessionalOnboarding> {
+  async submitApplication(application: Omit<ProfessionalOnboardingInsert, 'id' | 'created_at' | 'updated_at'>): Promise<ProfessionalOnboarding> {
     const { data, error } = await supabase
       .from('professional_onboarding')
       .insert({
@@ -55,11 +62,11 @@ export class ProfessionalService {
     return data;
   }
 
-  async getApplicationByEmail(email: string): Promise<ProfessionalOnboarding | null> {
+  async getApplicationByUserId(userId: string): Promise<ProfessionalOnboarding | null> {
     const { data, error } = await supabase
       .from('professional_onboarding')
       .select('*')
-      .eq('email', email)
+      .eq('user_id', userId)
       .single();
 
     if (error && error.code !== 'PGRST116') throw error;
@@ -68,17 +75,13 @@ export class ProfessionalService {
 
   async updateApplicationStatus(
     id: string,
-    status: ProfessionalOnboarding['status'],
+    status: ProfessionalOnboarding['verification_status'],
     reviewNotes?: string
   ): Promise<ProfessionalOnboarding> {
     const updates: Partial<ProfessionalOnboarding> = {
-      status,
+      verification_status: status,
       updated_at: new Date().toISOString()
     };
-
-    if (status === 'under_review' || status === 'approved' || status === 'rejected') {
-      updates.reviewed_at = new Date().toISOString();
-    }
 
     const { data, error } = await supabase
       .from('professional_onboarding')
@@ -97,23 +100,20 @@ export class ProfessionalService {
 
   // Professional Reviewers
   async createReviewerProfile(
-    application: ProfessionalOnboarding,
+    onboarding: ProfessionalOnboarding,
     userId: string
   ): Promise<ProfessionalReviewer> {
-    const reviewer: Omit<ProfessionalReviewer, 'id' | 'created_at' | 'updated_at'> = {
-      user_id: userId,
-      email: application.email,
-      full_name: application.full_name,
-      professional_title: application.professional_title,
-      law_firm_name: application.law_firm_name,
-      bar_number: application.bar_number,
-      licensed_states: application.licensed_states,
-      specializations: await this.getSpecializationsByNames(application.specializations),
-      experience_years: application.experience_years,
-      status: 'active',
-      verification_status: 'verified',
-      hourly_rate: application.hourly_rate,
-      bio: application.bio
+    const reviewer: Omit<ProfessionalReviewerInsert, 'id' | 'created_at' | 'updated_at'> = {
+      name: onboarding.credentials?.full_name || 'Unknown',
+      credentials: onboarding.credentials?.professional_title || 'Professional',
+      bar_number: onboarding.credentials?.bar_number || null,
+      jurisdiction: onboarding.credentials?.licensed_states?.[0] || 'Unknown',
+      specializations: onboarding.credentials?.specializations || [],
+      rating: 0,
+      reviews_completed: 0,
+      average_turnaround_hours: 48,
+      profile_verified: onboarding.verification_status === 'verified',
+      contact_email: onboarding.credentials?.email || 'unknown@example.com'
     };
 
     const { data, error } = await supabase
@@ -127,9 +127,6 @@ export class ProfessionalService {
       .single();
 
     if (error) throw error;
-
-    // Create default partnership settings
-    await this.createDefaultPartnership(data.id);
 
     return data;
   }
@@ -145,18 +142,7 @@ export class ProfessionalService {
     return data;
   }
 
-  async getReviewerByUserId(userId: string): Promise<ProfessionalReviewer | null> {
-    const { data, error } = await supabase
-      .from('professional_reviewers')
-      .select('*')
-      .eq('user_id', userId)
-      .single();
-
-    if (error && error.code !== 'PGRST116') throw error;
-    return data;
-  }
-
-  async updateReviewer(id: string, updates: Partial<ProfessionalReviewer>): Promise<ProfessionalReviewer> {
+  async updateReviewer(id: string, updates: Partial<ProfessionalReviewerUpdate>): Promise<ProfessionalReviewer> {
     const { data, error } = await supabase
       .from('professional_reviewers')
       .update({
@@ -173,10 +159,9 @@ export class ProfessionalService {
 
   async searchReviewers(filters: {
     specializations?: string[];
-    states?: string[];
-    experienceMin?: number;
-    status?: ProfessionalReviewer['status'];
-    available?: boolean;
+    jurisdiction?: string;
+    ratingMin?: number;
+    verified?: boolean;
   }): Promise<ProfessionalReviewer[]> {
     let query = supabase
       .from('professional_reviewers')
@@ -186,16 +171,16 @@ export class ProfessionalService {
       query = query.overlaps('specializations', filters.specializations);
     }
 
-    if (filters.states?.length) {
-      query = query.overlaps('licensed_states', filters.states);
+    if (filters.jurisdiction) {
+      query = query.eq('jurisdiction', filters.jurisdiction);
     }
 
-    if (filters.experienceMin) {
-      query = query.gte('experience_years', filters.experienceMin);
+    if (filters.ratingMin !== undefined) {
+      query = query.gte('rating', filters.ratingMin);
     }
 
-    if (filters.status) {
-      query = query.eq('status', filters.status);
+    if (filters.verified !== undefined) {
+      query = query.eq('profile_verified', filters.verified);
     }
 
     const { data, error } = await query;
@@ -205,7 +190,7 @@ export class ProfessionalService {
   }
 
   // Review Requests and Assignments
-  async createReviewRequest(request: Omit<ReviewRequest, 'id' | 'created_at' | 'updated_at'>): Promise<ReviewRequest> {
+  async createReviewRequest(request: Omit<ReviewRequestInsert, 'id' | 'created_at' | 'updated_at'>): Promise<ReviewRequest> {
     const { data, error } = await supabase
       .from('review_requests')
       .insert({
@@ -218,18 +203,14 @@ export class ProfessionalService {
 
     if (error) throw error;
 
-    // Find and notify suitable reviewers
-    await this.findAndNotifyReviewers(data);
-
     return data;
   }
 
   async assignReviewRequest(
     requestId: string,
-    reviewerId: string,
-    estimatedHours?: number
+    reviewerId: string
   ): Promise<DocumentReview> {
-    // Create the document review record
+    // Get the review request
     const { data: request } = await supabase
       .from('review_requests')
       .select('*')
@@ -238,17 +219,14 @@ export class ProfessionalService {
 
     if (!request) throw new Error('Review request not found');
 
-    const review: Omit<DocumentReview, 'id' | 'created_at' | 'updated_at'> = {
+    // Create the document review record
+    const review: Omit<DocumentReviewInsert, 'id' | 'created_at' | 'updated_at'> = {
       document_id: request.document_id,
       reviewer_id: reviewerId,
-      user_id: request.user_id,
-      review_type: request.review_type,
-      status: 'assigned',
-      priority: request.priority,
-      requested_at: request.created_at,
-      assigned_at: new Date().toISOString(),
-      due_date: request.deadline,
-      estimated_hours: estimatedHours
+      review_type: 'legal',
+      status: 'pending',
+      risk_level: 'medium',
+      review_date: new Date().toISOString()
     };
 
     const { data, error } = await supabase
@@ -268,12 +246,10 @@ export class ProfessionalService {
       .from('review_requests')
       .update({
         status: 'assigned',
+        reviewer_id: reviewerId,
         updated_at: new Date().toISOString()
       })
       .eq('id', requestId);
-
-    // Notify reviewer and client
-    await this.notifyReviewAssignment(data);
 
     return data;
   }
@@ -281,17 +257,15 @@ export class ProfessionalService {
   async updateReviewStatus(
     reviewId: string,
     status: DocumentReview['status'],
-    result?: Partial<ReviewResult>
+    result?: Partial<ReviewResultInsert>
   ): Promise<DocumentReview> {
-    const updates: Partial<DocumentReview> = {
+    const updates: Partial<DocumentReviewUpdate> = {
       status,
       updated_at: new Date().toISOString()
     };
 
-    if (status === 'in_progress') {
-      updates.assigned_at = new Date().toISOString();
-    } else if (status === 'completed') {
-      updates.completed_at = new Date().toISOString();
+    if (status === 'completed') {
+      updates.completion_date = new Date().toISOString();
     }
 
     const { data, error } = await supabase
@@ -308,55 +282,44 @@ export class ProfessionalService {
       await this.createReviewResult(reviewId, result);
     }
 
-    // Send notifications
-    await this.notifyReviewStatusChange(data);
-
     return data;
   }
 
   // Professional Network Directory
   async getNetworkDirectory(filters?: {
     specialization?: string;
-    state?: string;
-    experience?: 'junior' | 'mid' | 'senior';
+    jurisdiction?: string;
+    rating?: number;
   }): Promise<ProfessionalReviewer[]> {
     let query = supabase
       .from('professional_reviewers')
       .select('*')
-      .eq('status', 'active')
-      .eq('verification_status', 'verified');
+      .eq('profile_verified', true);
 
     if (filters?.specialization) {
       query = query.contains('specializations', [filters.specialization]);
     }
 
-    if (filters?.state) {
-      query = query.contains('licensed_states', [filters.state]);
+    if (filters?.jurisdiction) {
+      query = query.eq('jurisdiction', filters.jurisdiction);
     }
 
-    if (filters?.experience) {
-      const experienceRanges = {
-        junior: [1, 5],
-        mid: [6, 15],
-        senior: [16, 50]
-      };
-      const [min, max] = experienceRanges[filters.experience];
-      query = query.gte('experience_years', min).lte('experience_years', max);
+    if (filters?.rating !== undefined) {
+      query = query.gte('rating', filters.rating);
     }
 
-    const { data, error } = await query.order('experience_years', { ascending: false });
+    const { data, error } = await query.order('rating', { ascending: false });
     if (error) throw error;
 
     return data || [];
   }
 
   // Pricing and Booking
-  async getReviewPricing(_reviewType: DocumentReview['review_type']): Promise<{
+  async getReviewPricing(): Promise<{
     basic: number;
     comprehensive: number;
     certified: number;
   }> {
-    // This would typically come from a pricing configuration table
     const pricing = {
       basic: 150,
       comprehensive: 350,
@@ -367,23 +330,19 @@ export class ProfessionalService {
   }
 
   async bookConsultation(
-    reviewerId: string,
+    professionalId: string,
     userId: string,
-    consultationType: 'phone' | 'video' | 'in_person',
-    preferredDateTime: string,
+    consultationType: Consultation['consultation_type'],
+    scheduledTime: string,
     duration: number = 60
-  ): Promise<{
-    consultationId: string;
-    scheduledAt: string;
-    meetingLink?: string;
-  }> {
+  ): Promise<Consultation> {
     const { data, error } = await supabase
       .from('consultations')
       .insert({
-        reviewer_id: reviewerId,
         user_id: userId,
+        professional_id: professionalId,
         consultation_type: consultationType,
-        scheduled_at: preferredDateTime,
+        scheduled_time: scheduledTime,
         duration_minutes: duration,
         status: 'scheduled',
         created_at: new Date().toISOString(),
@@ -394,63 +353,25 @@ export class ProfessionalService {
 
     if (error) throw error;
 
-    // Generate meeting link if video consultation
-    let meetingLink: string | undefined;
-    if (consultationType === 'video') {
-      meetingLink = await this.generateVideoMeetingLink(data.id);
-    }
-
-    // Send confirmation emails
-    await this.notifyConsultationScheduled(data, meetingLink);
-
-    return {
-      consultationId: data.id,
-      scheduledAt: data.scheduled_at,
-      meetingLink
-    };
+    return data;
   }
 
-  // Private helper methods
-  private async getSpecializationsByNames(names: string[]): Promise<ProfessionalSpecialization[]> {
+  // Specializations
+  async getSpecializations(): Promise<ProfessionalSpecialization[]> {
     const { data, error } = await supabase
       .from('professional_specializations')
       .select('*')
-      .in('name', names);
+      .eq('is_active', true);
 
     if (error) throw error;
     return data || [];
   }
 
-  private async createDefaultPartnership(reviewerId: string): Promise<ProfessionalPartnership> {
-    const partnership: Omit<ProfessionalPartnership, 'id' | 'created_at' | 'updated_at'> = {
-      reviewer_id: reviewerId,
-      partnership_type: 'individual',
-      commission_rate: 30, // 30% commission
-      minimum_review_fee: 100,
-      preferred_review_types: ['basic', 'comprehensive'],
-      availability_hours: {
-        monday: ['09:00-17:00'],
-        tuesday: ['09:00-17:00'],
-        wednesday: ['09:00-17:00'],
-        thursday: ['09:00-17:00'],
-        friday: ['09:00-17:00'],
-        saturday: [],
-        sunday: []
-      },
-      max_concurrent_reviews: 5,
-      auto_assign_enabled: false,
-      notification_preferences: {
-        email: true,
-        sms: false,
-        in_app: true
-      },
-      status: 'active'
-    };
-
+  async createSpecialization(specialization: Omit<ProfessionalSpecializationInsert, 'id' | 'created_at' | 'updated_at'>): Promise<ProfessionalSpecialization> {
     const { data, error } = await supabase
-      .from('professional_partnerships')
+      .from('professional_specializations')
       .insert({
-        ...partnership,
+        ...specialization,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       })
@@ -461,22 +382,10 @@ export class ProfessionalService {
     return data;
   }
 
-  private async findAndNotifyReviewers(request: ReviewRequest): Promise<void> {
-    const reviewers = await this.searchReviewers({
-      specializations: request.required_specializations,
-      status: 'active',
-      available: true
-    });
-
-    // Send notifications to suitable reviewers
-    for (const reviewer of reviewers.slice(0, 5)) { // Notify top 5 matches
-      await this.notifyReviewerOpportunity(reviewer, request);
-    }
-  }
-
+  // Review Results
   private async createReviewResult(
     reviewId: string,
-    result: Partial<ReviewResult>
+    result: Partial<ReviewResultInsert>
   ): Promise<ReviewResult> {
     const { data, error } = await supabase
       .from('review_results')
@@ -493,12 +402,6 @@ export class ProfessionalService {
     return data;
   }
 
-  private async generateVideoMeetingLink(consultationId: string): Promise<string> {
-    // Integration with video meeting service (Zoom, Google Meet, etc.)
-    // This is a placeholder implementation
-    return `https://meet.legacyguard.com/consultation/${consultationId}`;
-  }
-
   // Notification methods (placeholders for email/SMS integration)
   private async notifyAdminNewApplication(application: ProfessionalOnboarding): Promise<void> {
     console.log('Admin notification: New professional application', application.id);
@@ -508,7 +411,7 @@ export class ProfessionalService {
     application: ProfessionalOnboarding,
     _notes?: string
   ): Promise<void> {
-    console.log('Applicant notification: Status changed to', application.status);
+    console.log('Applicant notification: Status changed to', application.verification_status);
   }
 
   private async notifyReviewAssignment(review: DocumentReview): Promise<void> {
@@ -517,20 +420,6 @@ export class ProfessionalService {
 
   private async notifyReviewStatusChange(review: DocumentReview): Promise<void> {
     console.log('Review status change notification', review.status);
-  }
-
-  private async notifyReviewerOpportunity(
-    reviewer: ProfessionalReviewer,
-    request: ReviewRequest
-  ): Promise<void> {
-    console.log('Reviewer opportunity notification', reviewer.id, request.id);
-  }
-
-  private async notifyConsultationScheduled(
-    consultation: any,
-    _meetingLink?: string
-  ): Promise<void> {
-    console.log('Consultation scheduled notification', consultation.id);
   }
 }
 

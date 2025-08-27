@@ -234,7 +234,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
 
     const updatedDecision = {
       ...decision,
-      status: 'voting'
+      status: 'voting' as const
     };
 
     setDecisions(decisions.map(d => d.id === decisionId ? updatedDecision : d));

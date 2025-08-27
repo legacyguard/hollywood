@@ -257,11 +257,10 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
       }
 
       // Record guardian response in notifications
-      const { error: notificationError } = await supabase
-        .from(' as constguardian_notifications')
-        .update({
-          responded_at: new Date().toISOString(),
-        })
+      const updateData = { responded_at: new Date().toISOString() };
+      const { error: notificationError } = await (supabase as any)
+        .from('guardian_notifications')
+        .update(updateData)
         .eq('verification_token', currentToken);
 
       if (notificationError) {
@@ -295,9 +294,9 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
     }
   };
 
-  const downloadDocument = async (documentId: string, fileName: string) => {
+  const downloadDocument = async (_documentId: string, _fileName: string) => {
     try {
-      const supabase = await createSupabaseClient();
+      const _supabase = await createSupabaseClient();
 
       // Get document download URL (would need to implement decryption)
       toast.info(

@@ -526,30 +526,35 @@ export class FamilyService {
     const members = await this.getFamilyMembers(userId);
     const existingRelationships = new Set(members.map(m => m.relationship));
 
-    const recommendations = [
+    const recommendations: Array<{
+      relationship: RelationshipType;
+      role: FamilyRole;
+      reason: string;
+      priority: 'high' | 'medium' | 'low';
+    }> = [
       {
         relationship: 'spouse' as RelationshipType,
         role: 'collaborator' as FamilyRole,
         reason: 'Your spouse should have full access to family documents and decision-making',
-        priority: 'high'
+        priority: 'high' as const
       },
       {
         relationship: 'child' as RelationshipType,
         role: 'viewer' as FamilyRole,
         reason: 'Adult children benefit from knowing about family planning and important documents',
-        priority: 'high'
+        priority: 'high' as const
       },
       {
         relationship: 'attorney' as RelationshipType,
         role: 'viewer' as FamilyRole,
         reason: 'Your attorney can provide better service with access to relevant documents',
-        priority: 'medium'
+        priority: 'medium' as const
       },
       {
         relationship: 'sibling' as RelationshipType,
         role: 'emergency_contact' as FamilyRole,
         reason: 'A trusted sibling can serve as an important emergency contact',
-        priority: 'medium'
+        priority: 'medium' as const
       }
     ];
 

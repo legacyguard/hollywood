@@ -617,6 +617,366 @@ export interface Database {
           }
         ];
       };
+      // New professional network tables
+      professional_specializations: {
+        Row: {
+          id: string;
+          name: string;
+          description: string | null;
+          category: string;
+          is_active: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          description?: string | null;
+          category: string;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          name?: string;
+          description?: string | null;
+          category?: string;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      professional_onboarding: {
+        Row: {
+          id: string;
+          user_id: string;
+          professional_type: 'attorney' | 'notary' | 'financial_advisor' | 'estate_planner' | 'tax_specialist';
+          credentials: Json;
+          verification_status: 'pending' | 'verified' | 'rejected';
+          background_check_status: 'pending' | 'passed' | 'failed';
+          onboarding_step: string;
+          completed_steps: string[];
+          documents_uploaded: Json;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          professional_type: 'attorney' | 'notary' | 'financial_advisor' | 'estate_planner' | 'tax_specialist';
+          credentials?: Json;
+          verification_status?: 'pending' | 'verified' | 'rejected';
+          background_check_status?: 'pending' | 'passed' | 'failed';
+          onboarding_step?: string;
+          completed_steps?: string[];
+          documents_uploaded?: Json;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          professional_type?: 'attorney' | 'notary' | 'financial_advisor' | 'estate_planner' | 'tax_specialist';
+          credentials?: Json;
+          verification_status?: 'pending' | 'verified' | 'rejected';
+          background_check_status?: 'pending' | 'passed' | 'failed';
+          onboarding_step?: string;
+          completed_steps?: string[];
+          documents_uploaded?: Json;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'professional_onboarding_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: true;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          }
+        ];
+      };
+      review_requests: {
+        Row: {
+          id: string;
+          user_id: string;
+          document_id: string;
+          reviewer_id: string | null;
+          status: 'pending' | 'assigned' | 'in_progress' | 'completed' | 'cancelled';
+          priority: 'low' | 'medium' | 'high' | 'urgent';
+          requested_date: string;
+          due_date: string | null;
+          completion_date: string | null;
+          notes: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          document_id: string;
+          reviewer_id?: string | null;
+          status?: 'pending' | 'assigned' | 'in_progress' | 'completed' | 'cancelled';
+          priority?: 'low' | 'medium' | 'high' | 'urgent';
+          requested_date?: string;
+          due_date?: string | null;
+          completion_date?: string | null;
+          notes?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          document_id?: string;
+          reviewer_id?: string | null;
+          status?: 'pending' | 'assigned' | 'in_progress' | 'completed' | 'cancelled';
+          priority?: 'low' | 'medium' | 'high' | 'urgent';
+          requested_date?: string;
+          due_date?: string | null;
+          completion_date?: string | null;
+          notes?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'review_requests_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'review_requests_reviewer_id_fkey';
+            columns: ['reviewer_id'];
+            isOneToOne: false;
+            referencedRelation: 'professional_reviewers';
+            referencedColumns: ['id'];
+          }
+        ];
+      };
+      document_reviews: {
+        Row: {
+          id: string;
+          document_id: string;
+          reviewer_id: string;
+          review_type: 'legal' | 'financial' | 'medical' | 'general';
+          status: 'pending' | 'in_progress' | 'completed' | 'needs_revision';
+          findings: Json | null;
+          recommendations: Json | null;
+          risk_level: 'low' | 'medium' | 'high' | 'critical';
+          compliance_score: number | null;
+          review_date: string;
+          completion_date: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          document_id: string;
+          reviewer_id: string;
+          review_type: 'legal' | 'financial' | 'medical' | 'general';
+          status?: 'pending' | 'in_progress' | 'completed' | 'needs_revision';
+          findings?: Json | null;
+          recommendations?: Json | null;
+          risk_level?: 'low' | 'medium' | 'high' | 'critical';
+          compliance_score?: number | null;
+          review_date?: string;
+          completion_date?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          document_id?: string;
+          reviewer_id?: string;
+          review_type?: 'legal' | 'financial' | 'medical' | 'general';
+          status?: 'pending' | 'in_progress' | 'completed' | 'needs_revision';
+          findings?: Json | null;
+          recommendations?: Json | null;
+          risk_level?: 'low' | 'medium' | 'high' | 'critical';
+          compliance_score?: number | null;
+          review_date?: string;
+          completion_date?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'document_reviews_reviewer_id_fkey';
+            columns: ['reviewer_id'];
+            isOneToOne: false;
+            referencedRelation: 'professional_reviewers';
+            referencedColumns: ['id'];
+          }
+        ];
+      };
+      review_results: {
+        Row: {
+          id: string;
+          review_id: string;
+          result_type: 'approval' | 'rejection' | 'revision_required' | 'conditional_approval';
+          summary: string;
+          detailed_findings: Json;
+          action_items: Json;
+          legal_references: string[] | null;
+          next_steps: string[] | null;
+          validity_period: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          review_id: string;
+          result_type: 'approval' | 'rejection' | 'revision_required' | 'conditional_approval';
+          summary: string;
+          detailed_findings?: Json;
+          action_items?: Json;
+          legal_references?: string[] | null;
+          next_steps?: string[] | null;
+          validity_period?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          review_id?: string;
+          result_type?: 'approval' | 'rejection' | 'revision_required' | 'conditional_approval';
+          summary?: string;
+          detailed_findings?: Json;
+          action_items?: Json;
+          legal_references?: string[] | null;
+          next_steps?: string[] | null;
+          validity_period?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'review_results_review_id_fkey';
+            columns: ['review_id'];
+            isOneToOne: false;
+            referencedRelation: 'document_reviews';
+            referencedColumns: ['id'];
+          }
+        ];
+      };
+      professional_partnerships: {
+        Row: {
+          id: string;
+          professional_id: string;
+          partner_type: 'law_firm' | 'accounting_firm' | 'financial_institution' | 'insurance_company' | 'estate_service';
+          partner_name: string;
+          partner_contact: Json;
+          partnership_status: 'active' | 'pending' | 'suspended' | 'terminated';
+          agreement_details: Json;
+          commission_structure: Json;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          professional_id: string;
+          partner_type: 'law_firm' | 'accounting_firm' | 'financial_institution' | 'insurance_company' | 'estate_service';
+          partner_name: string;
+          partner_contact?: Json;
+          partnership_status?: 'active' | 'pending' | 'suspended' | 'terminated';
+          agreement_details?: Json;
+          commission_structure?: Json;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          professional_id?: string;
+          partner_type?: 'law_firm' | 'accounting_firm' | 'financial_institution' | 'insurance_company' | 'estate_service';
+          partner_name?: string;
+          partner_contact?: Json;
+          partnership_status?: 'active' | 'pending' | 'suspended' | 'terminated';
+          agreement_details?: Json;
+          commission_structure?: Json;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'professional_partnerships_professional_id_fkey';
+            columns: ['professional_id'];
+            isOneToOne: false;
+            referencedRelation: 'professional_reviewers';
+            referencedColumns: ['id'];
+          }
+        ];
+      };
+      consultations: {
+        Row: {
+          id: string;
+          user_id: string;
+          professional_id: string;
+          consultation_type: 'initial' | 'follow_up' | 'urgent' | 'document_review';
+          status: 'scheduled' | 'in_progress' | 'completed' | 'cancelled' | 'no_show';
+          scheduled_time: string;
+          duration_minutes: number;
+          consultation_notes: string | null;
+          follow_up_required: boolean;
+          follow_up_date: string | null;
+          fee_charged: number | null;
+          payment_status: 'pending' | 'paid' | 'refunded' | 'disputed';
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          professional_id: string;
+          consultation_type?: 'initial' | 'follow_up' | 'urgent' | 'document_review';
+          status?: 'scheduled' | 'in_progress' | 'completed' | 'cancelled' | 'no_show';
+          scheduled_time?: string;
+          duration_minutes?: number;
+          consultation_notes?: string | null;
+          follow_up_required?: boolean;
+          follow_up_date?: string | null;
+          fee_charged?: number | null;
+          payment_status?: 'pending' | 'paid' | 'refunded' | 'disputed';
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          professional_id?: string;
+          consultation_type?: 'initial' | 'follow_up' | 'urgent' | 'document_review';
+          status?: 'scheduled' | 'in_progress' | 'completed' | 'cancelled' | 'no_show';
+          scheduled_time?: string;
+          duration_minutes?: number;
+          consultation_notes?: string | null;
+          follow_up_required?: boolean;
+          follow_up_date?: string | null;
+          fee_charged?: number | null;
+          payment_status?: 'pending' | 'paid' | 'refunded' | 'disputed';
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'consultations_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'consultations_professional_id_fkey';
+            columns: ['professional_id'];
+            isOneToOne: false;
+            referencedRelation: 'professional_reviewers';
+            referencedColumns: ['id'];
+          }
+        ];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -656,10 +1016,53 @@ export type GuardianInsert =
 export type GuardianUpdate =
   Database['public']['Tables']['guardians']['Update'];
 
+// New professional network types
+export type ProfessionalReviewer = Database['public']['Tables']['professional_reviewers']['Row'];
+export type ProfessionalReviewerInsert = Database['public']['Tables']['professional_reviewers']['Insert'];
+export type ProfessionalReviewerUpdate = Database['public']['Tables']['professional_reviewers']['Update'];
+
+export type ProfessionalReview = Database['public']['Tables']['professional_reviews']['Row'];
+export type ProfessionalReviewInsert = Database['public']['Tables']['professional_reviews']['Insert'];
+export type ProfessionalReviewUpdate = Database['public']['Tables']['professional_reviews']['Update'];
+
+export type ProfessionalSpecialization = Database['public']['Tables']['professional_specializations']['Row'];
+export type ProfessionalSpecializationInsert = Database['public']['Tables']['professional_specializations']['Insert'];
+export type ProfessionalSpecializationUpdate = Database['public']['Tables']['professional_specializations']['Update'];
+
+export type ProfessionalOnboarding = Database['public']['Tables']['professional_onboarding']['Row'];
+export type ProfessionalOnboardingInsert = Database['public']['Tables']['professional_onboarding']['Insert'];
+export type ProfessionalOnboardingUpdate = Database['public']['Tables']['professional_onboarding']['Update'];
+
+export type ReviewRequest = Database['public']['Tables']['review_requests']['Row'];
+export type ReviewRequestInsert = Database['public']['Tables']['review_requests']['Insert'];
+export type ReviewRequestUpdate = Database['public']['Tables']['review_requests']['Update'];
+
+export type DocumentReview = Database['public']['Tables']['document_reviews']['Row'];
+export type DocumentReviewInsert = Database['public']['Tables']['document_reviews']['Insert'];
+export type DocumentReviewUpdate = Database['public']['Tables']['document_reviews']['Update'];
+
+export type ReviewResult = Database['public']['Tables']['review_results']['Row'];
+export type ReviewResultInsert = Database['public']['Tables']['review_results']['Insert'];
+export type ReviewResultUpdate = Database['public']['Tables']['review_results']['Update'];
+
+export type ProfessionalPartnership = Database['public']['Tables']['professional_partnerships']['Row'];
+export type ProfessionalPartnershipInsert = Database['public']['Tables']['professional_partnerships']['Insert'];
+export type ProfessionalPartnershipUpdate = Database['public']['Tables']['professional_partnerships']['Update'];
+
+export type Consultation = Database['public']['Tables']['consultations']['Row'];
+export type ConsultationInsert = Database['public']['Tables']['consultations']['Insert'];
+export type ConsultationUpdate = Database['public']['Tables']['consultations']['Update'];
+
 // Category and status types for better type safety
 export type LegacyItemCategory = LegacyItem['category'];
 export type LegacyItemStatus = LegacyItem['status'];
 export type LegacyItemPriority = LegacyItem['priority'];
+
+// Professional types
+export type ProfessionalType = 'attorney' | 'notary' | 'financial_advisor' | 'estate_planner' | 'tax_specialist';
+export type ReviewStatus = 'pending' | 'in_review' | 'approved' | 'needs_revision' | 'rejected';
+export type ConsultationStatus = 'scheduled' | 'in_progress' | 'completed' | 'cancelled' | 'no_show';
+export type ConsultationType = 'initial' | 'follow_up' | 'urgent' | 'document_review';
 
 // Emergency contact type
 export interface EmergencyContact {
@@ -697,4 +1100,32 @@ export interface LegacyItemMetadata {
   completed_recipes?: number;
   format?: string;
   [key: string]: unknown;
+}
+
+// Professional network metadata types
+export interface ProfessionalCredentials {
+  license_number?: string;
+  bar_number?: string;
+  certification_body?: string;
+  years_experience?: number;
+  education?: string[];
+  specializations?: string[];
+  languages?: string[];
+  jurisdictions?: string[];
+}
+
+export interface PartnershipDetails {
+  agreement_type?: string;
+  commission_rate?: number;
+  exclusivity?: boolean;
+  territory?: string;
+  services?: string[];
+}
+
+export interface ReviewFindings {
+  legal_issues?: string[];
+  compliance_gaps?: string[];
+  recommendations?: string[];
+  risk_factors?: string[];
+  best_practices?: string[];
 }
