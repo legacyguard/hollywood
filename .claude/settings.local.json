@@ -27,7 +27,8 @@
       "Bash(curl:*)",
       "Bash(git fetch:*)",
       "Bash(npm:*)",
-      "WebSearch"
+      "WebSearch",
+      "Read(//tmp/**)"
     ],
     "deny": [],
     "ask": [],
