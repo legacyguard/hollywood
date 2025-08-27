@@ -26,7 +26,8 @@
       "Bash(grep:*)",
       "Bash(curl:*)",
       "Bash(git fetch:*)",
-      "Bash(npm:*)"
+      "Bash(npm:*)",
+      "WebSearch"
     ],
     "deny": [],
     "ask": [],

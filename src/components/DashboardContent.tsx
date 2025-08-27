@@ -19,6 +19,8 @@ import { GardenSeed } from '@/components/animations/GardenSeed';
 import { useGardenProgress } from '@/hooks/useGardenProgress';
 import { TrustScoreDisplay } from '@/components/trust/TrustScoreDisplay';
 import { calculateUserTrustScore } from '@/lib/trust-score/trust-score-calculator';
+import { EmailImportButton } from '@/components/features/EmailImportButton';
+import { BulkImportResult } from '@/types/gmail';
 import { useState } from 'react';
 
 export function DashboardContent() {
@@ -46,6 +48,13 @@ export function DashboardContent() {
   };
 
   const trustScore = calculateUserTrustScore(mockUserStats);
+
+  // Handle email import completion
+  const handleEmailImportComplete = (result: BulkImportResult) => {
+    console.log('Email import completed:', result);
+    // In production, this would update the user's document count and trust score
+    // Could also show a success toast or update the dashboard metrics
+  };
 
   // Mock metrics data - in production, this would come from your API
   const [metrics] = useState([
@@ -140,6 +149,13 @@ export function DashboardContent() {
               Your Legacy at a Glance
             </h2>
             <MetricsGrid metrics={metrics} columns={4} />
+          </FadeIn>
+        </section>
+
+        {/* Email Import Feature */}
+        <section>
+          <FadeIn duration={0.5} delay={1.0}>
+            <EmailImportButton onImportComplete={handleEmailImportComplete} />
           </FadeIn>
         </section>
 
