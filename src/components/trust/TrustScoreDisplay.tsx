@@ -96,7 +96,7 @@ export function TrustScoreDisplay({
 
   const percentage = Math.min((trustScore / maxScore) * 100, 100);
   const trustLevel = getTrustLevel(percentage);
-  const nextBoosts = TRUST_BOOST_SUGGESTIONS.filter(boost => percentage < 80);
+  const nextBoosts = TRUST_BOOST_SUGGESTIONS.filter(_boost => percentage < 80);
 
   // Don't show trust score in control variant
   if (isVariant('control')) {

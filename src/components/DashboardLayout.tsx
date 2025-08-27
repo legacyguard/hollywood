@@ -46,7 +46,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
   const handleSofiaAction = async (
     action: SofiaAction,
-    searchQuery?: string
+    _searchQuery?: string
   ) => {
     try {
       // Generate contextual messages

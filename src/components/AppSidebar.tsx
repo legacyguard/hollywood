@@ -1,5 +1,4 @@
-import type { IconMap } from '@/components/ui/icon-library';
-import { Icon } from '@/components/ui/icon-library';
+import { Icon, type IconMap } from '@/components/ui/icon-library';
 import { LegacyGuardLogo } from './LegacyGuardLogo';
 import { NavLink } from 'react-router-dom';
 import { UserButton, useUser } from '@clerk/clerk-react';
