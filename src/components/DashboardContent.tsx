@@ -17,6 +17,8 @@ import {
 import { RadialProgress } from '@/components/enhanced/RadialProgress';
 import { GardenSeed } from '@/components/animations/GardenSeed';
 import { useGardenProgress } from '@/hooks/useGardenProgress';
+import { TrustScoreDisplay } from '@/components/trust/TrustScoreDisplay';
+import { calculateUserTrustScore } from '@/lib/trust-score/trust-score-calculator';
 import { useState } from 'react';
 
 export function DashboardContent() {
@@ -26,6 +28,24 @@ export function DashboardContent() {
   const mockActivities = useMockActivities();
   const { progress: gardenProgress, loading: gardenLoading } =
     useGardenProgress();
+
+  // Mock user stats for trust score calculation
+  const mockUserStats = {
+    documents: Array(5).fill({}), // 5 documents uploaded
+    professional_reviews: [], // No professional reviews yet
+    emergency_contacts: Array(1).fill({}), // 1 emergency contact
+    guardians: [], // No guardians assigned
+    will_completed: false, // Will not completed
+    encryption_enabled: true, // Encryption enabled
+    two_factor_enabled: false, // 2FA not enabled
+    family_members: Array(2).fill({}), // 2 family members
+    shared_documents: Array(3).fill({}), // 3 documents shared
+    last_activity_days: 2, // Active 2 days ago
+    account_age_days: 45, // Account is 45 days old
+    legal_compliance_score: 0, // No legal compliance score yet
+  };
+
+  const trustScore = calculateUserTrustScore(mockUserStats);
 
   // Mock metrics data - in production, this would come from your API
   const [metrics] = useState([
@@ -168,12 +188,32 @@ export function DashboardContent() {
             <LegacyOverviewSection />
           </div>
 
-          {/* Right Column - Activity Feed */}
-          <div className='lg:col-span-1'>
+          {/* Right Column - Trust Score & Activity Feed */}
+          <div className='lg:col-span-1 space-y-6'>
+            {/* Trust Score Display */}
+            <FadeIn duration={0.5} delay={1.0}>
+              <TrustScoreDisplay
+                trustScore={trustScore.totalScore}
+                showDetails={true}
+                showBoosts={true}
+                userId={user?.id}
+                onImproveClick={() => {
+                  // Navigate to improvement suggestions or professional review
+                  if (trustScore.nextMilestone?.suggestions.includes('professional')) {
+                    navigate('/legacy'); // Will wizard with professional review
+                  } else {
+                    navigate('/vault'); // Document upload area
+                  }
+                }}
+                className="mb-6"
+              />
+            </FadeIn>
+
+            {/* Activity Feed */}
             <ActivityFeed
               activities={mockActivities}
               title='Recent Activity'
-              maxHeight='600px'
+              maxHeight='500px'
               onViewAll={() => navigate('/activity')}
             />
           </div>

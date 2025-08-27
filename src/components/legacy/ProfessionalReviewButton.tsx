@@ -12,6 +12,8 @@ import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { ReviewRequestWorkflow } from '@/components/professional/ReviewRequestWorkflow';
+import { useProfessionalReviewTracking } from '@/hooks/useConversionTracking';
+import { useABTest } from '@/lib/ab-testing/ab-testing-system';
 import type { ReviewRequest, ProfessionalReviewer } from '@/types/professional';
 
 interface ProfessionalReviewButtonProps {
@@ -67,6 +69,12 @@ export function ProfessionalReviewButton({
   onReviewRequested,
   className
 }: ProfessionalReviewButtonProps) {
+  const { variant, trackConversion } = useABTest('professional_review_cta_v1');
+  const { 
+    trackReviewButtonViewed,
+    trackReviewButtonClicked,
+    trackReviewFlowStarted 
+  } = useProfessionalReviewTracking();
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [availableReviewers] = useState<ProfessionalReviewer[]>([]); // Mock for now
@@ -99,8 +107,16 @@ export function ProfessionalReviewButton({
   };
 
   const handleReviewRequest = (request: Omit<ReviewRequest, 'id' | 'user_id' | 'created_at' | 'updated_at'>) => {
+    trackReviewFlowStarted(request.review_type, getEstimatedCost());
+    trackConversion('review_flow_started', 1, { variant, estimatedCost: getEstimatedCost() });
     onReviewRequested?.(request);
     setIsDialogOpen(false);
+  };
+
+  const handleButtonClick = () => {
+    trackReviewButtonClicked(trustScore, variant);
+    trackConversion('button_clicked', 1, { variant, trustScore });
+    setIsDialogOpen(true);
   };
 
   if (variant === 'banner') {
@@ -138,6 +154,7 @@ export function ProfessionalReviewButton({
                     variant="outline"
                     size="lg"
                     className="bg-white text-blue-600 border-white hover:bg-blue-50"
+                    onClick={handleButtonClick}
                   >
                     Get Professional Review
                     <ArrowRight className="h-4 w-4 ml-2" />
