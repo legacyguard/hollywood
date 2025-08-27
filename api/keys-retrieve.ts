@@ -1,37 +1,78 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { auth } from '@clerk/backend';
 import { createClient } from '@supabase/supabase-js';
-import * as nacl from 'tweetnacl';
-import { encode as encodeBase64, decode as decodeBase64 } from 'tweetnacl-util';
+import nacl from 'tweetnacl';
+import { encodeBase64, decodeBase64 } from 'tweetnacl-util';
+
+// Validate required environment variables
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+if (!supabaseUrl || !supabaseServiceRoleKey) {
+  throw new Error('Missing required environment variables: NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY');
+}
 
 // Initialize Supabase admin client
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
 
 // Derive key from password
-function deriveKeyFromPassword(password: string, salt: Uint8Array): Uint8Array {
+async function deriveKeyFromPassword(password: string, salt: Uint8Array): Promise<Uint8Array> {
   const encoder = new TextEncoder();
   const passwordBytes = encoder.encode(password);
-  const combined = new Uint8Array(passwordBytes.length + salt.length);
-  combined.set(passwordBytes);
-  combined.set(salt, passwordBytes.length);
 
-  return nacl.hash(combined).slice(0, nacl.secretbox.keyLength);
+  // Use PBKDF2 with sufficient iterations
+  const keyMaterial = await globalThis.crypto.subtle.importKey(
+    'raw',
+    passwordBytes,
+    'PBKDF2',
+    false,
+    ['deriveBits']
+  );
+
+  const derivedBits = await globalThis.crypto.subtle.deriveBits(
+    {
+      name: 'PBKDF2',
+      salt,
+      iterations: 100000, // Minimum recommended
+      hash: 'SHA-256'
+    },
+    keyMaterial,
+    nacl.secretbox.keyLength * 8
+  );
+
+  return new Uint8Array(derivedBits);
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  // Handle GET for public key retrieval
-  if (req.method === 'GET') {
-    try {
+  try {
+    // Handle GET for public key retrieval
+    if (req.method === 'GET') {
       const authHeader = req.headers.authorization;
       if (!authHeader?.startsWith('Bearer ')) {
         return res.status(401).json({ error: 'Unauthorized' });
       }
 
       const token = authHeader.slice(7);
-      const { userId } = await auth().verifyToken(token);
+      let userId: string | undefined;
+      
+      try {
+        // Dynamically import Clerk server SDK to avoid exposing secrets and for type safety
+        const { verifyToken } = await import('@clerk/backend');
+        const audience = process.env.CLERK_JWT_AUDIENCE;
+        const authorizedParty = process.env.CLERK_FRONTEND_API;
+
+        if (!audience || !authorizedParty) {
+          throw new Error('Missing Clerk JWT audience or frontend API environment variables');
+        }
+
+        const verificationResult = await verifyToken(token, {
+          audience,
+          authorizedParties: [authorizedParty]
+        });
+        userId = verificationResult.sub;
+      } catch (error) {
+        console.error('Token verification failed:', error);
+        return res.status(401).json({ error: 'Invalid token' });
+      }
 
       if (!userId) {
         return res.status(401).json({ error: 'Invalid token' });
@@ -60,22 +101,38 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           updatedAt: data.updated_at
         }
       });
-    } catch (error) {
-      console.error('Public key retrieval error:', error);
-      return res.status(500).json({ error: 'Internal server error' });
     }
-  }
 
-  // Handle POST for private key retrieval with password
-  if (req.method === 'POST') {
-    try {
+    // Handle POST for private key retrieval with password
+    if (req.method === 'POST') {
       const authHeader = req.headers.authorization;
       if (!authHeader?.startsWith('Bearer ')) {
         return res.status(401).json({ error: 'Unauthorized' });
       }
 
       const token = authHeader.slice(7);
-      const { userId } = await auth().verifyToken(token);
+      let userId: string | undefined;
+
+      try {
+        // Import verifyToken dynamically to ensure it is available
+        const { verifyToken } = await import('@clerk/backend');
+
+        const audience = process.env.CLERK_JWT_AUDIENCE;
+        const authorizedParty = process.env.CLERK_FRONTEND_API;
+
+        if (!audience || !authorizedParty) {
+          throw new Error('Missing Clerk JWT audience or frontend API environment variables');
+        }
+
+        const verificationResult = await verifyToken(token, {
+          audience,
+          authorizedParties: [authorizedParty]
+        });
+        userId = verificationResult.sub;
+      } catch (error) {
+        console.error('Token verification failed:', error);
+        return res.status(401).json({ error: 'Invalid token' });
+      }
 
       if (!userId) {
         return res.status(401).json({ error: 'Invalid token' });
@@ -106,7 +163,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const salt = decodeBase64(data.salt);
         const nonce = decodeBase64(data.nonce);
         const encryptedPrivateKey = decodeBase64(data.encrypted_private_key);
-        const derivedKey = deriveKeyFromPassword(password, salt);
+        const derivedKey = await deriveKeyFromPassword(password, salt);
 
         const privateKey = nacl.secretbox.open(encryptedPrivateKey, nonce, derivedKey);
 
@@ -136,19 +193,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           message: 'Keys retrieved successfully'
         });
 
-      } catch (decryptError) {
+      } catch (_decryptError) {
         // Decryption failed - likely wrong password
         return res.status(401).json({
           error: 'Failed to retrieve keys. Please check your password.'
         });
       }
-
-    } catch (error) {
-      console.error('Key retrieval error:', error);
-      return res.status(500).json({ error: 'Internal server error' });
     }
-  }
 
-  // Method not allowed
-  return res.status(405).json({ error: 'Method not allowed' });
+    // Method not allowed
+    return res.status(405).json({ error: 'Method not allowed' });
+  } catch (error) {
+    console.error('Key retrieval error:', error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
 }

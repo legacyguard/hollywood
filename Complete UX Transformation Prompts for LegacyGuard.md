@@ -1,16 +1,17 @@
 # Complete UX Transformation Prompts for LegacyGuard
+
 ## From Technical Tool to Personal Assistant Experience
 
 ---
 
-# **Prompt 4: Intelligent Onboarding Enhancement and Personalized Dashboard Generation**
+## **Prompt 4: Intelligent Onboarding Enhancement and Personalized Dashboard Generation**
 
 **Context:**
 Transform the onboarding process from basic question collection to intelligent family situation analysis that generates a personalized, pre-populated dashboard. Eliminate the "empty dashboard chaos" by creating meaningful, contextual content based on user responses.
 
 **Primary Prompt:**
 
-```
+```text
 Enhance the OnboardingWizard to intelligently analyze user responses and generate a personalized dashboard experience that eliminates empty screens and provides immediate, relevant guidance based on their specific family situation and priorities.
 
 **A) Expand Onboarding Questions (/src/components/onboarding/OnboardingWizard.tsx):**
@@ -47,7 +48,7 @@ export const generatePersonalizedDashboard = (profile: UserProfile): DashboardCo
   // Create personalized assistant messages
   // Suggest immediate next steps
 };
-```
+```text
 
 **C) Create Personalized Dashboard Generator (/src/components/dashboard/PersonalizedDashboard.tsx):**
 
@@ -64,21 +65,24 @@ const PersonalizedDashboard: React.FC<{ userProfile: UserProfile }> = ({ userPro
     </div>
   );
 };
-```
+```text
 
 **D) Pre-populate Based on User Type:**
 
 **Young Family Profile:**
+
 - Priority: Guardianship planning, life insurance, basic will
 - Pre-filled suggestions: "Tell us about your home", "Who would care for your children?"
 - Assistant message: "Since you have young children, let's start with the most important protections for them."
 
 **Business Owner Profile:**
+
 - Priority: Business succession, complex assets, tax planning
 - Pre-filled suggestions: Business asset categories, key employee information
 - Assistant message: "I see you own a business. Let's organize both personal and business assets for your family."
 
 **Empty Nesters Profile:**
+
 - Priority: Estate planning, healthcare directives, legacy planning
 - Pre-filled suggestions: Retirement accounts, healthcare preferences
 - Assistant message: "Let's focus on organizing your accumulated assets and healthcare wishes."
@@ -86,6 +90,7 @@ const PersonalizedDashboard: React.FC<{ userProfile: UserProfile }> = ({ userPro
 **E) Intelligent Task Prioritization:**
 
 Create dynamic priority scoring based on:
+
 - Family vulnerability (young children = higher priority for guardianship)
 - Asset complexity (business = higher priority for succession planning)
 - User anxiety level (high anxiety = simpler, more reassuring tasks first)
@@ -93,18 +98,19 @@ Create dynamic priority scoring based on:
 
 **Expected Outcome:**
 Users complete onboarding and immediately see a thoughtfully prepared dashboard that understands their situation and provides clear, personalized next steps instead of overwhelming empty screens.
-```
+
+```text
 
 ---
 
-# **Prompt 5: Progressive Disclosure System Implementation**
+## **Prompt 5: Progressive Disclosure System Implementation**
 
 **Context:**
 Implement a progressive disclosure system that reveals application features gradually based on user progress and comfort level, preventing overwhelming users with too many options while maintaining a sense of accomplishment and forward momentum.
 
 **Primary Prompt:**
 
-```
+```text
 Create a progressive disclosure system that intelligently reveals features and options based on user progress, preventing cognitive overload while maintaining engagement and sense of accomplishment throughout the family protection journey.
 
 **A) Create Progressive Disclosure Engine (/src/services/progressiveDisclosure.ts):**
@@ -127,23 +133,26 @@ export const shouldShowFeature = (featureId: string, userProgress: UserProgress)
   // Intelligent feature visibility logic
   // Consider user comfort level, progress, and emotional state
 };
-```
+```text
 
 **B) Implement Gradual Feature Revelation:**
 
 **Level 1 - Foundation (First Visit):**
+
 - Basic asset entry (home, primary accounts)
 - Simple family member addition
 - Essential document upload
 - Basic will creation
 
 **Level 2 - Building Confidence (After 3-5 completed items):**
+
 - Additional asset categories
 - Trusted circle roles and permissions
 - Document organization and categorization
 - Legacy letters introduction
 
 **Level 3 - Advanced Planning (After solid foundation):**
+
 - Complex asset management
 - Advanced will features
 - Business planning tools
@@ -168,34 +177,37 @@ const MilestoneCelebration: React.FC<{ milestone: Milestone }> = ({ milestone })
     </div>
   );
 };
-```
+```text
 
 **D) Implement Contextual Feature Introduction:**
 
 Instead of showing all features at once, introduce them contextually:
+
 - Show "Add trusted person" after adding first asset
 - Reveal "Legacy letters" after completing basic will
 - Introduce "Advanced planning" after foundation is solid
 
 **Expected Outcome:**
 Users feel guided through a logical progression rather than overwhelmed by options, with regular celebration of progress and clear understanding of how each step helps their family.
-```
+
+```text
 
 ---
 
-# **Prompt 6: Life Inventory Assistant Transformation**
+## **Prompt 6: Life Inventory Assistant Transformation**
 
 **Context:**
 Transform the AssetOverview component from a technical asset management interface into a "Life Inventory Assistant" that helps users think about and organize their life's important elements in terms of family impact and emotional significance.
 
 **Primary Prompt:**
 
-```
+```text
 Transform the asset management system from technical "asset tracking" to empathetic "life inventory organization" that helps families understand and organize what truly matters in their lives from their family's perspective.
 
 **A) Redesign Asset Categories with Family Context:**
 
 Replace technical categories with life-focused ones:
+
 - "Real Estate" → "Places Important to Your Family"
 - "Financial Accounts" → "Money and Accounts Your Family Should Know About"
 - "Investments" → "Savings and Investments for Your Family's Future"
@@ -219,11 +231,12 @@ const LifeInventoryAssistant: React.FC = () => {
     </div>
   );
 };
-```
+```text
 
 **C) Add Emotional Context to Asset Entry:**
 
 For each asset, ask:
+
 - "Why is this important to your family?"
 - "What should your family know about this?"
 - "How would this help or affect your family?"
@@ -232,29 +245,32 @@ For each asset, ask:
 **D) Create Family Impact Visualization:**
 
 Show users how their inventory organization directly helps their family:
+
 - "Your family will know about $X in accounts they can access"
 - "Your family has clear information about Y important things"
 - "Your family won't have to search for information about Z"
 
 **Expected Outcome:**
 Users think about their possessions and accounts in terms of family impact rather than technical categorization, making the process more meaningful and emotionally engaging.
-```
+
+```text
 
 ---
 
-# **Prompt 7: Family Information Organizer Transformation**
+## **Prompt 7: Family Information Organizer Transformation**
 
 **Context:**
 Transform the DocumentManagement system from technical file storage into a "Family Information Organizer" that helps users think about documents in terms of what their family will need to know and access during different life situations.
 
 **Primary Prompt:**
 
-```
+```text
 Transform document management from technical file storage to empathetic family information organization that prioritizes documents based on family needs and emotional importance during difficult times.
 
 **A) Redesign Document Categories by Family Need:**
 
 Replace technical categories with family-focused ones:
+
 - "Legal Documents" → "Important Papers Your Family Will Need"
 - "Financial Records" → "Money Information Your Family Should Have"
 - "Insurance Policies" → "Protection Your Family Can Count On"
@@ -276,11 +292,12 @@ const FamilyInformationOrganizer: React.FC = () => {
     </div>
   );
 };
-```
+```text
 
 **C) Implement Urgency-Based Organization:**
 
 Categorize documents by when family might need them:
+
 - **Immediate Need** (within days): Death certificate, will, insurance policies
 - **Short Term** (within weeks): Bank accounts, property deeds, investment accounts
 - **Long Term** (within months): Tax records, business documents, personal items
@@ -288,6 +305,7 @@ Categorize documents by when family might need them:
 **D) Add Family Context Questions:**
 
 For each document:
+
 - "When might your family need this?"
 - "How urgent is this for your family to find?"
 - "What should your family do with this information?"
@@ -295,23 +313,25 @@ For each document:
 
 **Expected Outcome:**
 Users organize documents based on family urgency and emotional importance rather than technical categories, making the system more intuitive and family-focused.
-```
+
+```text
 
 ---
 
-# **Prompt 8: Legacy Planning Assistant for Will Generation**
+## **Prompt 8: Legacy Planning Assistant for Will Generation**
 
 **Context:**
 Transform the WillGenerator from a technical legal document creator into a "Legacy Planning Assistant" that helps users think through their wishes and values in terms of family impact and emotional legacy.
 
 **Primary Prompt:**
 
-```
+```text
 Transform will generation from technical legal document creation to empathetic legacy planning that helps users think about their wishes, values, and family impact while creating meaningful legal protection.
 
 **A) Redesign Will Creation as Legacy Conversation:**
 
 Replace legal terminology with family-focused language:
+
 - "Estate Distribution" → "How You Want to Take Care of Your Family"
 - "Beneficiary Designation" → "Who You Want to Help and Protect"
 - "Executor Appointment" → "Who You Trust to Handle Everything"
@@ -332,11 +352,12 @@ const LegacyPlanningAssistant: React.FC = () => {
     </div>
   );
 };
-```
+```text
 
 **C) Add Emotional Context to Legal Decisions:**
 
 For each will section, provide family-focused guidance:
+
 - **Asset Distribution**: "Think about what would help each person in your family most"
 - **Guardian Selection**: "Who shares your values and would love your children?"
 - **Executor Choice**: "Who is organized and would handle this responsibility with care?"
@@ -344,24 +365,26 @@ For each will section, provide family-focused guidance:
 **D) Create Legacy Impact Visualization:**
 
 Show users the emotional impact of their decisions:
+
 - "Your children will be cared for by someone who loves them"
 - "Your family will understand exactly what you wanted"
 - "Your spouse will have the financial security you planned for them"
 
 **Expected Outcome:**
 Users approach will creation as meaningful legacy planning rather than technical legal compliance, making decisions based on family love and care rather than legal requirements.
-```
+
+```text
 
 ---
 
-# **Prompt 9: Emotional Checkpoints System**
+## **Prompt 9: Emotional Checkpoints System**
 
 **Context:**
 Create an emotional intelligence system that recognizes when users might be experiencing difficult emotions during the estate planning process and provides appropriate support, encouragement, and gentle guidance.
 
 **Primary Prompt:**
 
-```
+```text
 Implement an emotional checkpoint system that recognizes emotional difficulty during estate planning and provides empathetic support, validation, and gentle guidance to help users through challenging moments.
 
 **A) Create Emotional Detection System (/src/services/emotionalIntelligence.ts):**
@@ -380,11 +403,12 @@ export const detectEmotionalState = (userBehavior: UserBehavior): EmotionalState
   // - Repeated visits without progress (procrastination)
   // - Quick completion (avoidance or confidence)
 };
-```
+```text
 
 **B) Create Emotional Support Components:**
 
 **Overwhelm Support (/src/components/emotional/OverwhelmSupport.tsx):**
+
 ```typescript
 const OverwhelmSupport: React.FC = () => {
   return (
@@ -399,9 +423,10 @@ const OverwhelmSupport: React.FC = () => {
     </div>
   );
 };
-```
+```text
 
 **Procrastination Support:**
+
 ```typescript
 const ProcrastinationSupport: React.FC = () => {
   return (
@@ -415,11 +440,12 @@ const ProcrastinationSupport: React.FC = () => {
     </div>
   );
 };
-```
+```text
 
 **C) Implement Emotional Checkpoints:**
 
 Trigger emotional support at key moments:
+
 - **Will Creation Start**: Acknowledge the emotional weight
 - **Guardian Selection**: Validate the difficulty of the decision
 - **Asset Organization**: Recognize the overwhelming nature of life inventory
@@ -428,24 +454,26 @@ Trigger emotional support at key moments:
 **D) Create Validation and Encouragement System:**
 
 Provide regular emotional validation:
+
 - "You're doing something really important for your family"
 - "These decisions aren't easy, and it's okay to take your time"
 - "Your family will be so grateful for the care you're showing"
 
 **Expected Outcome:**
 Users feel emotionally supported throughout the process, with recognition of the difficulty and appropriate guidance to help them through challenging moments.
-```
+
+```text
 
 ---
 
-# **Prompt 10: Family Impact Preview System**
+## **Prompt 10: Family Impact Preview System**
 
 **Context:**
 Create a system that shows users the concrete, positive impact their actions will have on their family during difficult times, helping them understand the real-world benefit of their estate planning efforts.
 
 **Primary Prompt:**
 
-```
+```text
 Implement a Family Impact Preview system that shows users specific, concrete examples of how their estate planning actions will help their family during difficult times, making the benefits tangible and emotionally meaningful.
 
 **A) Create Family Impact Visualization (/src/components/impact/FamilyImpactPreview.tsx):**
@@ -465,21 +493,24 @@ const FamilyImpactPreview: React.FC<{ userActions: UserAction[] }> = ({ userActi
     </div>
   );
 };
-```
+```text
 
 **B) Create Specific Impact Scenarios:**
 
 **Asset Organization Impact:**
+
 - "Instead of searching through papers for weeks, your family will find your bank account information in 5 minutes"
 - "Your spouse won't have to guess which accounts exist or how to access them"
 - "Your children will know exactly what assets they're inheriting and where to find them"
 
 **Will Creation Impact:**
+
 - "Your family won't have to guess what you wanted - they'll know exactly what you decided"
 - "There won't be family arguments about who gets what - you've made it clear"
 - "Your children will be cared for by the person you chose, not decided by a court"
 
 **Trusted Circle Impact:**
+
 - "Your family will have specific people to call who know how to help"
 - "Important decisions won't fall only on your spouse - others can help"
 - "Your family will have a support network ready to step in"
@@ -487,11 +518,13 @@ const FamilyImpactPreview: React.FC<{ userActions: UserAction[] }> = ({ userActi
 **C) Create Before/After Comparisons:**
 
 **Without LegacyGuard:**
+
 - "Your family spends months searching for account information"
 - "Important deadlines are missed because no one knew about them"
 - "Family members argue about what you would have wanted"
 
 **With LegacyGuard:**
+
 - "Your family has immediate access to all important information"
 - "Clear instructions guide your family through necessary steps"
 - "Your wishes are documented and clear to everyone"
@@ -499,6 +532,7 @@ const FamilyImpactPreview: React.FC<{ userActions: UserAction[] }> = ({ userActi
 **D) Implement Progress-Based Impact Updates:**
 
 As users complete more tasks, show increasing family protection:
+
 - 25% Complete: "Your family now knows about your most important accounts"
 - 50% Complete: "Your family has clear guidance for most situations"
 - 75% Complete: "Your family is well-prepared for almost any situation"
@@ -506,18 +540,19 @@ As users complete more tasks, show increasing family protection:
 
 **Expected Outcome:**
 Users clearly understand how their efforts directly translate to reduced stress and increased security for their family during difficult times.
-```
+
+```text
 
 ---
 
-# **Prompt 11: Celebration Moments System**
+## **Prompt 11: Celebration Moments System**
 
 **Context:**
 Create a celebration system that recognizes and celebrates user progress in meaningful ways, emphasizing the positive impact on family protection and building momentum for continued engagement.
 
 **Primary Prompt:**
 
-```
+```text
 Implement a celebration system that recognizes user progress with meaningful, family-focused celebrations that build momentum and reinforce the positive impact of their estate planning efforts.
 
 **A) Create Celebration Trigger System (/src/services/celebrationTriggers.ts):**
@@ -538,11 +573,12 @@ export const detectCelebrationMoments = (userProgress: UserProgress): Celebratio
   // - Will completed
   // - Major milestones reached
 };
-```
+```text
 
 **B) Create Celebration Components:**
 
 **Milestone Celebration (/src/components/celebrations/MilestoneCelebration.tsx):**
+
 ```typescript
 const MilestoneCelebration: React.FC<{ milestone: CelebrationMoment }> = ({ milestone }) => {
   return (
@@ -563,21 +599,24 @@ const MilestoneCelebration: React.FC<{ milestone: CelebrationMoment }> = ({ mile
     </div>
   );
 };
-```
+```text
 
 **C) Define Celebration Moments:**
 
 **First Asset Added:**
+
 - Message: "You've taken the first important step!"
 - Impact: "Your family now knows about one of your most important possessions"
 - Next: "Each thing you add makes your family more prepared"
 
 **First Trusted Person Added:**
+
 - Message: "Your family now has someone to turn to!"
 - Impact: "Your family won't have to handle everything alone"
 - Next: "Consider adding one more person as a backup"
 
 **Will Completed:**
+
 - Message: "You've created something incredibly valuable for your family!"
 - Impact: "Your family will never have to guess what you wanted"
 - Next: "Your family is now much more secure and prepared"
@@ -585,6 +624,7 @@ const MilestoneCelebration: React.FC<{ milestone: CelebrationMoment }> = ({ mile
 **D) Create Progress Visualization:**
 
 Show family protection growing with each action:
+
 - Visual progress bar showing "Family Preparedness Level"
 - Family silhouettes becoming more "protected" (visual metaphor)
 - Growing shield or safety net around family representation
@@ -592,24 +632,26 @@ Show family protection growing with each action:
 **E) Implement Gentle Momentum Building:**
 
 After celebrations, provide gentle next steps:
+
 - "When you're ready, here's something else that would help your family..."
 - "No rush, but your family would also benefit from..."
 - "You're doing great - here's another way to help your family..."
 
 **Expected Outcome:**
 Users feel genuinely celebrated for their progress and motivated to continue, with clear understanding of how each step increases their family's security and preparedness.
-```
+
+```text
 
 ---
 
-# **Prompt 12: Smart Suggestions Engine**
+## **Prompt 12: Smart Suggestions Engine**
 
 **Context:**
 Create an intelligent suggestion system that provides personalized, contextual recommendations based on user behavior, progress, and family situation, making the application feel truly intelligent and helpful.
 
 **Primary Prompt:**
 
-```
+```text
 Implement a smart suggestions engine that provides personalized, contextual recommendations based on user behavior, family situation, and progress patterns, making the application feel intelligently helpful rather than generic.
 
 **A) Create Smart Suggestions Engine (/src/services/smartSuggestions.ts):**
@@ -636,17 +678,19 @@ export const generateSmartSuggestions = (
   // Consider family composition, asset complexity, emotional state
   // Prioritize based on family impact and user capacity
 };
-```
+```text
 
 **B) Implement Context-Aware Suggestions:**
 
 **Based on Family Composition:**
+
 - Young children → Prioritize guardianship and life insurance
 - Aging parents → Suggest healthcare directives and elder care planning
 - Business ownership → Recommend business succession planning
 - High net worth → Suggest tax planning and trust considerations
 
 **Based on User Behavior:**
+
 - Frequent short sessions → Suggest quick, high-impact tasks
 - Long detailed sessions → Offer comprehensive planning options
 - Procrastination patterns → Provide simplified, less overwhelming tasks
@@ -655,6 +699,7 @@ export const generateSmartSuggestions = (
 **C) Create Intelligent Timing:**
 
 **Right-Time Suggestions:**
+
 - After adding assets → "Now let's think about who should inherit these"
 - After selecting executor → "Let's make sure they know where to find everything"
 - After completing will → "Consider adding personal messages for your family"
@@ -663,6 +708,7 @@ export const generateSmartSuggestions = (
 **D) Implement Learning from User Responses:**
 
 Track which suggestions users act on:
+
 - High acceptance → Similar suggestions for similar users
 - Low acceptance → Adjust suggestion algorithms
 - User feedback → Refine suggestion quality and timing
@@ -670,16 +716,19 @@ Track which suggestions users act on:
 **E) Create Suggestion Categories:**
 
 **Quick Wins (5-10 minutes):**
+
 - "Add your primary bank account"
 - "Upload a photo of your driver's license"
 - "Add your spouse's phone number"
 
 **High Impact (15-30 minutes):**
+
 - "Create a basic will"
 - "Add information about your home"
 - "Choose someone to help your family"
 
 **Comprehensive Planning (45+ minutes):**
+
 - "Organize all your financial accounts"
 - "Create detailed guardianship instructions"
 - "Plan your business succession"
@@ -687,6 +736,7 @@ Track which suggestions users act on:
 **F) Implement Suggestion Presentation:**
 
 Present suggestions with clear context:
+
 - Why this suggestion is relevant to their situation
 - How it specifically helps their family
 - What the time commitment is
@@ -694,18 +744,19 @@ Present suggestions with clear context:
 
 **Expected Outcome:**
 Users receive intelligent, personalized suggestions that feel relevant to their specific situation and family needs, making the application feel like a knowledgeable advisor rather than a generic tool.
-```
+
+```text
 
 ---
 
-# **Prompt 13: Life Event Triggers System**
+## **Prompt 13: Life Event Triggers System**
 
 **Context:**
 Create a system that recognizes major life events and automatically suggests relevant updates to the user's family protection plan, ensuring their planning stays current with their changing life circumstances.
 
 **Primary Prompt:**
 
-```
+```text
 Implement a life event triggers system that recognizes significant life changes and proactively suggests relevant updates to keep family protection plans current and comprehensive as life evolves.
 
 **A) Create Life Event Detection (/src/services/lifeEventDetection.ts):**
@@ -731,11 +782,12 @@ export const detectLifeEvents = (
   // - Job title changes
   // - Asset value changes
 };
-```
+```text
 
 **B) Create Life Event Response System:**
 
 **Marriage/Partnership:**
+
 - Update beneficiaries across all assets
 - Review and update will
 - Add spouse to trusted circle
@@ -743,6 +795,7 @@ export const detectLifeEvents = (
 - Consider joint asset ownership
 
 **New Child/Adoption:**
+
 - Add child as beneficiary
 - Update or create guardianship plans
 - Review life insurance needs
@@ -750,6 +803,7 @@ export const detectLifeEvents = (
 - Consider education savings planning
 
 **Death of Family Member:**
+
 - Update beneficiaries to remove deceased
 - Review executor/guardian choices
 - Update trusted circle
@@ -757,6 +811,7 @@ export const detectLifeEvents = (
 - Consider grief counseling resources
 
 **Job Change/Retirement:**
+
 - Update employment information
 - Review retirement account beneficiaries
 - Update income information
@@ -791,21 +846,24 @@ const LifeEventNotification: React.FC<{ lifeEvent: LifeEvent }> = ({ lifeEvent }
     </div>
   );
 };
-```
+```text
 
 **D) Implement Gentle Reminders:**
 
 **Immediate Updates (within days):**
+
 - New child → Update guardianship immediately
 - Marriage → Update beneficiaries soon
 - Death in family → Review and update affected areas
 
 **Soon Updates (within weeks):**
+
 - Job change → Update employment information
 - Move → Update addresses and local contacts
 - Major asset acquisition → Add to inventory
 
 **Convenient Updates (within months):**
+
 - Annual review → General plan review
 - Tax season → Financial document organization
 - Birthday milestones → Age-related planning updates
@@ -813,6 +871,7 @@ const LifeEventNotification: React.FC<{ lifeEvent: LifeEvent }> = ({ lifeEvent }
 **E) Create Update Assistance Workflows:**
 
 **Guided Update Process:**
+
 1. Recognize the life event
 2. Explain why updates are important
 3. Show specific areas that need attention
@@ -823,6 +882,7 @@ const LifeEventNotification: React.FC<{ lifeEvent: LifeEvent }> = ({ lifeEvent }
 **F) Implement Learning and Adaptation:**
 
 Track which life events users confirm or dismiss:
+
 - Improve detection accuracy over time
 - Reduce false positives
 - Better understand user preferences
@@ -830,18 +890,19 @@ Track which life events users confirm or dismiss:
 
 **Expected Outcome:**
 Users receive timely, relevant suggestions to keep their family protection plans current with their evolving life circumstances, ensuring their planning remains effective and comprehensive.
-```
+
+```text
 
 ---
 
-# **Prompt 14: Family Situation Awareness System**
+## **Prompt 14: Family Situation Awareness System**
 
 **Context:**
 Create a system that understands and adapts to different family situations, providing appropriate communication, suggestions, and features based on the unique dynamics and needs of each family structure.
 
 **Primary Prompt:**
 
-```
+```text
 Implement a family situation awareness system that adapts communication, suggestions, and features based on specific family dynamics, ensuring the application feels relevant and appropriate for diverse family structures and situations.
 
 **A) Create Family Situation Analysis (/src/services/familySituationAnalysis.ts):**
@@ -864,29 +925,33 @@ export const analyzeFamilySituation = (
   // Identify special considerations and needs
   // Determine appropriate communication approach
 };
-```
+```text
 
 **B) Adapt Communication by Family Situation:**
 
 **Single Parent Families:**
+
 - Emphasize backup planning and support networks
 - Focus on guardian selection and child protection
 - Acknowledge the extra responsibility and provide encouragement
 - Suggest building strong trusted circle for support
 
 **Blended Families:**
+
 - Address complex beneficiary considerations
 - Provide guidance on step-children and multiple relationships
 - Suggest clear communication about intentions
 - Help navigate potentially sensitive family dynamics
 
 **Multigenerational Families:**
+
 - Consider elder care planning alongside child protection
 - Address cultural and traditional considerations
 - Suggest involving multiple generations in planning
 - Provide guidance on complex family hierarchies
 
 **Childless Couples:**
+
 - Focus on spouse protection and care
 - Suggest charitable giving considerations
 - Address pet care and personal property distribution
@@ -895,18 +960,21 @@ export const analyzeFamilySituation = (
 **C) Create Situation-Specific Features:**
 
 **Special Needs Family Members:**
+
 - Enhanced guardianship planning tools
 - Special needs trust considerations
 - Detailed care instruction capabilities
 - Connection to specialized legal resources
 
 **Military Families:**
+
 - Deployment-specific planning features
 - Military benefit considerations
 - Geographic mobility planning
 - Service-specific legal requirements
 
 **Business-Owning Families:**
+
 - Business succession planning integration
 - Employee consideration features
 - Complex asset management tools
@@ -931,23 +999,26 @@ const CulturalAdaptation: React.FC<{ culturalContext: CulturalContext }> = ({ cu
     </div>
   );
 };
-```
+```text
 
 **E) Adapt Suggestions by Family Dynamics:**
 
 **High-Conflict Families:**
+
 - Emphasize clear documentation and legal protection
 - Suggest mediation resources
 - Provide extra guidance on communication
 - Focus on reducing potential disputes
 
 **Close-Knit Families:**
+
 - Encourage family involvement in planning
 - Suggest family meetings and discussions
 - Provide tools for collaborative planning
 - Emphasize shared values and goals
 
 **Geographically Dispersed Families:**
+
 - Focus on digital access and communication
 - Suggest video conferencing for family discussions
 - Provide tools for remote collaboration
@@ -956,6 +1027,7 @@ const CulturalAdaptation: React.FC<{ culturalContext: CulturalContext }> = ({ cu
 **F) Create Adaptive User Interface:**
 
 Adjust interface elements based on family situation:
+
 - Simplified options for overwhelmed single parents
 - Detailed options for complex blended families
 - Cultural symbols and language for diverse backgrounds
@@ -963,18 +1035,19 @@ Adjust interface elements based on family situation:
 
 **Expected Outcome:**
 The application feels personally relevant and culturally appropriate for each family's unique situation, providing tailored guidance that respects their specific dynamics and needs.
-```
+
+```text
 
 ---
 
-# **Prompt 15: Empathetic Loading States and Transitions**
+## **Prompt 15: Empathetic Loading States and Transitions**
 
 **Context:**
 Transform all loading states, transitions, and waiting periods from technical messages to empathetic, reassuring communications that maintain the caring assistant personality even during system processes.
 
 **Primary Prompt:**
 
-```
+```text
 Replace all technical loading states and transitions with empathetic, reassuring messages that maintain the caring assistant personality and provide emotional support during waiting periods and system processes.
 
 **A) Create Empathetic Loading Messages (/src/i18n/locales/en/loading-states.json):**
@@ -1020,11 +1093,12 @@ Replace all technical loading states and transitions with empathetic, reassuring
     "sensitive_area": "I understand this is personal - handling with extra care..."
   }
 }
-```
+```text
 
 **B) Create Empathetic Loading Components:**
 
 **EmpatheticLoader (/src/components/loading/EmpatheteicLoader.tsx):**
+
 ```typescript
 const EmpatheticLoader: React.FC<{ 
   context: string, 
@@ -1054,16 +1128,18 @@ const EmpatheticLoader: React.FC<{
     </div>
   );
 };
-```
+```text
 
 **C) Create Context-Aware Transitions:**
 
 **Page Transitions:**
+
 - From Dashboard to Assets: "Let's look at your family's important things..."
 - From Assets to Family: "Now let's think about the people who can help..."
 - From Family to Will: "Time to document your wishes for your family..."
 
 **Process Transitions:**
+
 - Starting complex task: "This is important work for your family - let's take our time..."
 - Completing section: "Great progress! Your family is more prepared now..."
 - Saving critical information: "This is safely stored for your family..."
@@ -1071,12 +1147,14 @@ const EmpatheticLoader: React.FC<{
 **D) Implement Emotional State Awareness:**
 
 **For Overwhelmed Users:**
+
 - Slower, more reassuring messages
 - Extra encouragement and validation
 - Simplified language and concepts
 - Gentle pacing indicators
 
 **For Confident Users:**
+
 - Efficient, supportive messages
 - Progress-focused communication
 - Achievement-oriented language
@@ -1085,6 +1163,7 @@ const EmpatheticLoader: React.FC<{
 **E) Create Progress Storytelling:**
 
 Instead of technical progress bars, tell the story:
+
 - "Organizing your information... 25%"
 - "Building your family's protection plan... 50%"
 - "Finalizing everything for your family... 75%"
@@ -1093,35 +1172,39 @@ Instead of technical progress bars, tell the story:
 **F) Add Micro-Interactions with Empathy:**
 
 **Button Hover States:**
+
 - "Save" → "Keep this safe for your family"
 - "Delete" → "Remove this carefully"
 - "Share" → "Let your family know about this"
 
 **Form Validation:**
+
 - Instead of "Required field" → "Your family needs this information"
 - Instead of "Invalid format" → "Let me help you with the right format"
 
 **G) Create Reassuring Error Recovery:**
 
 When things go wrong:
+
 - "Something didn't work quite right, but your information is safe..."
 - "Let me try that again for you..."
 - "No worries - I'll make sure this gets saved properly..."
 
 **Expected Outcome:**
 Every loading state, transition, and system process maintains the caring assistant personality, providing emotional support and reassurance even during technical operations.
-```
+
+```text
 
 ---
 
-# **Prompt 16: Comprehensive Empathetic Error Handling**
+## **Prompt 16: Comprehensive Empathetic Error Handling**
 
 **Context:**
 Create a comprehensive error handling system that explains problems in human terms, provides emotional support during frustrating moments, and offers concrete, helpful solutions rather than technical error messages.
 
 **Primary Prompt:**
 
-```
+```text
 Implement a comprehensive empathetic error handling system that transforms technical errors into human, supportive communications that provide emotional comfort and practical solutions during frustrating moments.
 
 **A) Create Empathetic Error Messages (/src/i18n/locales/en/empathetic-errors.json):**
@@ -1193,11 +1276,12 @@ Implement a comprehensive empathetic error handling system that transforms techn
     "data_secure": "Your family's information remains completely secure despite this technical issue."
   }
 }
-```
+```text
 
 **B) Create Empathetic Error Components:**
 
 **EmpatheticErrorBoundary (/src/components/errors/EmpatheticErrorBoundary.tsx):**
+
 ```typescript
 const EmpatheticErrorBoundary: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [hasError, setHasError] = useState(false);
@@ -1243,11 +1327,12 @@ const EmpatheticErrorBoundary: React.FC<{ children: React.ReactNode }> = ({ chil
     </ErrorBoundary>
   );
 };
-```
+```text
 
 **C) Create Context-Aware Error Responses:**
 
 **Form Validation Errors:**
+
 ```typescript
 const EmpatheticFormError: React.FC<{ field: string, error: string }> = ({ field, error }) => {
   const { t } = useTranslation('empathetic-errors');
@@ -1264,30 +1349,35 @@ const EmpatheticFormError: React.FC<{ field: string, error: string }> = ({ field
     </div>
   );
 };
-```
+```text
 
 **D) Implement Progressive Error Recovery:**
 
 **Level 1 - Gentle Retry:**
+
 - Automatic retry with encouraging message
 - "Let me try that again for you..."
 
 **Level 2 - Alternative Approach:**
+
 - Suggest different method or simplified approach
 - "Let me try a different way to help you with this..."
 
 **Level 3 - Human Support:**
+
 - Offer personal assistance
 - "I'd like to connect you with someone who can help personally..."
 
 **E) Create Error Prevention Through Empathy:**
 
 **Proactive Guidance:**
+
 - "This next part can be tricky - let me guide you through it"
 - "I'll save your work frequently so you don't lose anything"
 - "Take your time with this - there's no rush"
 
 **Validation Before Problems:**
+
 - Check for common issues before they cause errors
 - Provide helpful hints before users make mistakes
 - Offer examples and guidance proactively
@@ -1295,6 +1385,7 @@ const EmpatheticFormError: React.FC<{ field: string, error: string }> = ({ field
 **F) Implement Emotional Recovery Support:**
 
 **After Errors Occur:**
+
 ```typescript
 const EmotionalRecoverySupport: React.FC<{ errorType: string }> = ({ errorType }) => {
   return (
@@ -1312,22 +1403,23 @@ const EmotionalRecoverySupport: React.FC<{ errorType: string }> = ({ errorType }
     </div>
   );
 };
-```
+```text
 
 **Expected Outcome:**
 Users experience technical problems as minor inconveniences rather than major frustrations, with emotional support and clear guidance that maintains their motivation to continue their important family planning work.
-```
+
+```text
 
 ---
 
-# **Prompt 17: Final UX Audit and Testing Framework**
+## **Prompt 17: Final UX Audit and Testing Framework**
 
 **Context:**
 Create a comprehensive UX audit and testing framework to verify that the application successfully functions as a caring personal assistant rather than a technical tool, with specific metrics and tests for empathetic user experience.
 
 **Primary Prompt:**
 
-```
+```text
 Implement a comprehensive UX audit and testing framework that verifies the application successfully delivers an empathetic personal assistant experience rather than a technical tool experience, with specific metrics for emotional engagement and family-focused outcomes.
 
 **A) Create UX Audit Framework (/src/testing/uxAudit.ts):**
@@ -1360,11 +1452,12 @@ export const auditEmpatheticUX = (): UXAuditResult[] => {
     auditOverallFlow()
   ];
 };
-```
+```text
 
 **B) Create Specific Audit Categories:**
 
 **Language Empathy Audit:**
+
 ```typescript
 const auditLanguageEmpathy = (): UXAuditResult => {
   const technicalTermsFound = scanForTechnicalLanguage();
@@ -1387,9 +1480,10 @@ const auditLanguageEmpathy = (): UXAuditResult => {
     emotionalTone: empathyScore > 7 ? 'empathetic' : empathyScore > 5 ? 'warm' : 'technical'
   };
 };
-```
+```text
 
 **Family Focus Audit:**
+
 ```typescript
 const auditFamilyFocus = (): UXAuditResult => {
   const familyReferences = countFamilyReferences();
@@ -1408,11 +1502,12 @@ const auditFamilyFocus = (): UXAuditResult => {
     emotionalTone: familyFocusRatio > 0.7 ? 'empathetic' : 'neutral'
   };
 };
-```
+```text
 
 **C) Create Automated Testing Suite:**
 
 **Empathy Testing (/src/testing/empathyTests.ts):**
+
 ```typescript
 describe('Empathetic UX Tests', () => {
   test('All user-facing text uses empathetic language', () => {
@@ -1442,11 +1537,12 @@ describe('Empathetic UX Tests', () => {
     });
   });
 });
-```
+```text
 
 **D) Create User Journey Testing:**
 
 **Emotional Journey Tests:**
+
 ```typescript
 const testEmotionalJourney = async () => {
   const journeySteps = [
@@ -1465,11 +1561,12 @@ const testEmotionalJourney = async () => {
     expect(emotionalResponse.trust).toBeGreaterThan(8);
   }
 };
-```
+```text
 
 **E) Create Family Impact Verification:**
 
 **Family Benefit Testing:**
+
 ```typescript
 const verifyFamilyBenefitClarity = () => {
   const allActions = getAllUserActions();
@@ -1486,11 +1583,12 @@ const verifyFamilyBenefitClarity = () => {
     expect(action.description).not.toMatch(/system|database|configuration/i);
   });
 };
-```
+```text
 
 **F) Create Assistant Personality Testing:**
 
 **Personal Assistant Verification:**
+
 ```typescript
 const verifyAssistantPersonality = () => {
   const assistantMessages = getAllAssistantMessages();
@@ -1509,11 +1607,12 @@ const verifyAssistantPersonality = () => {
     expect(message.personality).toBe('caring_assistant');
   });
 };
-```
+```text
 
 **G) Create Accessibility and Emotional Accessibility Testing:**
 
 **Emotional Accessibility Tests:**
+
 ```typescript
 const testEmotionalAccessibility = () => {
   // Test for users in different emotional states
@@ -1527,11 +1626,12 @@ const testEmotionalAccessibility = () => {
     expect(adaptedInterface.pressureLevel).toBeLessThan(2);
   });
 };
-```
+```text
 
 **H) Create Comprehensive UX Metrics Dashboard:**
 
 **UX Metrics Tracking (/src/components/admin/UXMetricsDashboard.tsx):**
+
 ```typescript
 const UXMetricsDashboard: React.FC = () => {
   const metrics = useUXMetrics();
@@ -1568,11 +1668,12 @@ const UXMetricsDashboard: React.FC = () => {
     </div>
   );
 };
-```
+```text
 
 **I) Create User Feedback Integration:**
 
 **Empathy Feedback Collection:**
+
 ```typescript
 const collectEmpathyFeedback = () => {
   return {
@@ -1586,22 +1687,23 @@ const collectEmpathyFeedback = () => {
     followUp: "What would make this feel more personal and caring?"
   };
 };
-```
+```text
 
 **Expected Outcome:**
 A comprehensive testing framework that ensures the application consistently delivers an empathetic, family-focused experience that feels like a caring personal assistant rather than a technical estate planning tool.
-```
+
+```text
 
 ---
 
-# **Prompt 18: Implementation Completion and Quality Assurance**
+## **Prompt 18: Implementation Completion and Quality Assurance**
 
 **Context:**
 Finalize the complete transformation by ensuring all components work together seamlessly, conducting final quality assurance, and creating documentation for maintaining the empathetic user experience going forward.
 
 **Primary Prompt:**
 
-```
+```text
 Complete the transformation by integrating all empathetic UX components, conducting comprehensive quality assurance, and establishing processes to maintain the caring personal assistant experience as the application evolves.
 
 **A) Final Integration Verification (/src/services/integrationVerification.ts):**
@@ -1643,11 +1745,12 @@ const verifyPersonalAssistantIntegration = (): IntegrationCheck => {
     issues: identifyAssistantIntegrationIssues()
   };
 };
-```
+```text
 
 **B) Create Comprehensive Quality Assurance Checklist:**
 
 **Empathetic Experience QA Checklist:**
+
 ```typescript
 const empathyQAChecklist = [
   {
@@ -1691,11 +1794,12 @@ const empathyQAChecklist = [
     ]
   }
 ];
-```
+```text
 
 **C) Create Final User Journey Validation:**
 
 **Complete Journey Testing (/src/testing/completeJourneyTest.ts):**
+
 ```typescript
 const testCompleteEmpatheticJourney = async () => {
   const testUser = createTestUser({
@@ -1744,11 +1848,12 @@ const testCompleteEmpatheticJourney = async () => {
     expect(result.behavioralResponse).toBe(step.expectedAction);
   }
 };
-```
+```text
 
 **D) Create Maintenance Guidelines:**
 
 **Empathy Maintenance Guide (/docs/empathy-maintenance.md):**
+
 ```markdown
 # Maintaining Empathetic UX
 
@@ -1774,11 +1879,12 @@ const testCompleteEmpatheticJourney = async () => {
 3. Provide clear family impact visualization
 4. Integrate with personal assistant personality
 5. Test with users in different emotional states
-```
+```text
 
 **E) Create Performance Monitoring for Empathy:**
 
 **Empathy Performance Monitoring (/src/monitoring/empathyMetrics.ts):**
+
 ```typescript
 interface EmpathyMetrics {
   userSatisfaction: number;
@@ -1812,11 +1918,12 @@ export const generateEmpathyReport = (): EmpathyReport => {
     nextActions: prioritizeEmpathyImprovements(recommendations)
   };
 };
-```
+```text
 
 **F) Create User Success Metrics:**
 
 **Family Protection Success Metrics:**
+
 ```typescript
 const familyProtectionSuccessMetrics = {
   completionRates: {
@@ -1840,11 +1947,12 @@ const familyProtectionSuccessMetrics = {
     wishesClarity: 'Clear understanding of user wishes and intentions'
   }
 };
-```
+```text
 
 **G) Create Final Documentation:**
 
 **Complete Implementation Documentation:**
+
 ```typescript
 const implementationDocumentation = {
   transformationSummary: {
@@ -1874,11 +1982,12 @@ const implementationDocumentation = {
     completion: 'Higher completion rates due to supportive experience'
   }
 };
-```
+```text
 
 **Expected Outcome:**
 A completely transformed application that consistently delivers an empathetic, family-focused experience with comprehensive quality assurance, monitoring, and maintenance processes to ensure the caring personal assistant experience is maintained as the application evolves.
-```
+
+```text
 
 ---
 

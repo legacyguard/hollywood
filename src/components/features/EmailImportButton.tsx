@@ -39,8 +39,20 @@ export function EmailImportButton({ onImportComplete, className }: EmailImportBu
   const handleViewDocuments = () => {
     setShowSummary(false);
     // Navigate to documents page - would integrate with router
-    window.location.href = '/vault';
+// At the top of the file, alongside your other imports:
+import { useNavigate } from 'react-router-dom';
+
+export function EmailImportButton({ onImportComplete, className }: EmailImportButtonProps) {
+  const navigate = useNavigate();
+  // ... existing code ...
+
+  const handleViewDocuments = () => {
+    setShowSummary(false);
+    navigate('/vault');
   };
+
+  // ... rest of component ...
+}
 
   const handleCloseSummary = () => {
     setShowSummary(false);
@@ -53,7 +65,7 @@ export function EmailImportButton({ onImportComplete, className }: EmailImportBu
   }
 
   // Floating button variant
-  if (isVariant('floating_fab')) {
+  if (isVariant('fab')) {
     return (
       <>
         <motion.div
@@ -95,11 +107,10 @@ export function EmailImportButton({ onImportComplete, className }: EmailImportBu
           onViewDocuments={handleViewDocuments}
           onClose={handleCloseSummary}
         />
-      </>
+        <div className="bg-gradient-to-r from-primary/5 to-accent/5 border border-primary/20 rounded-xl p-6 relative overflow-hidden">
     );
-  }
-
-  // Prominent banner variant (default)
+          <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full -translate-y-16 translate-x-16 opacity-30" />
+          <div className="absolute bottom-0 left-0 w-24 h-24 bg-accent/10 rounded-full translate-y-12 -translate-x-12 opacity-30" />
   return (
     <>
       <motion.div

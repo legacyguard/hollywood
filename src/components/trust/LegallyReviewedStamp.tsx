@@ -146,7 +146,7 @@ export function LegallyReviewedStamp({
         </span>
         {review.certification_level === 'legal_certified' && (
           <Sparkles className={cn(
-            'animate-pulse text-yellow-500',
+             'animate-pulse text-accent',
             size === 'sm' && 'h-3 w-3',
             size === 'md' && 'h-4 w-4',
             size === 'lg' && 'h-5 w-5'
@@ -192,7 +192,10 @@ export function LegallyReviewedStamp({
           size === 'md' && 'text-xs',
           size === 'lg' && 'text-sm'
         )}>
-          {new Date(review.reviewed_at || review.updated_at).toLocaleDateString()}
+           {(review.reviewed_at || review.updated_at)
+-            ? new Date(review.reviewed_at || review.updated_at).toLocaleDateString()
+            ? new Date(review.reviewed_at || review.updated_at).toLocaleDateString()
+            : 'Date not available'}
         </p>
       </div>
 

@@ -107,14 +107,18 @@ export function TrustScoreDisplay({
   if (isVariant('variant_a')) {
     return (
       <TooltipProvider>
-        <Tooltip>
+        <Tooltip onOpenChange={(open) => {
+          if (open) {
+            handleTooltipOpen();
+          }
+        }}>
           <TooltipTrigger asChild>
             <motion.div
               className={cn('relative', className)}
               whileHover={{ scale: 1.05 }}
               onClick={handleClick}
             >
-              <Card className="border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50 cursor-pointer hover:shadow-md transition-all">
+              <Card className="border-2 border-secondary bg-gradient-to-br from-accent/10 to-primary/10 cursor-pointer hover:shadow-md transition-all">
                 <CardContent className="p-6">
                   <div className="flex items-center gap-4">
                     <div className="relative">
@@ -167,7 +171,7 @@ export function TrustScoreDisplay({
               </Card>
             </motion.div>
           </TooltipTrigger>
-          <TooltipContent onClick={handleTooltipOpen}>
+          <TooltipContent>
             <div className="max-w-xs">
               <p className="font-medium mb-2">Your Family Protection Score</p>
               <p className="text-sm mb-2">
@@ -184,7 +188,11 @@ export function TrustScoreDisplay({
   // Badge Display Variant (default/variant_b)
   return (
     <TooltipProvider>
-      <Tooltip>
+      <Tooltip onOpenChange={(open) => {
+        if (open) {
+          handleTooltipOpen();
+        }
+      }}>
         <TooltipTrigger asChild>
           <motion.div
             className={cn('', className)}
@@ -196,7 +204,13 @@ export function TrustScoreDisplay({
                 <CardTitle className="flex items-center gap-2 text-sm font-medium">
                   <Shield className="h-4 w-4 text-blue-600" />
                   Family Protection Score
-                  <Info className="h-3 w-3 text-gray-400" onClick={handleTooltipOpen} />
+                  <Info
+                    className="h-3 w-3 text-gray-400"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleTooltipOpen();
+                    }}
+                  />
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-0">
@@ -240,7 +254,7 @@ export function TrustScoreDisplay({
             </Card>
           </motion.div>
         </TooltipTrigger>
-        <TooltipContent onClick={handleTooltipOpen}>
+        <TooltipContent>
           <div className="max-w-xs">
             <p className="font-medium mb-2">Family Protection Score</p>
             <p className="text-sm mb-2">
@@ -326,7 +340,7 @@ export function TrustScoreBadge({
     return null;
   }
 
-  const percentage = Math.min((trustScore / 100) * 100, 100);
+  const percentage = Math.min(trustScore, 100);
   const trustLevel = getTrustLevel(percentage);
 
   return (

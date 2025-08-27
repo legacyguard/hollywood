@@ -159,9 +159,17 @@ export function ConsultationBookingSystem({
   const progress = ((currentStepIndex + 1) / steps.length) * 100;
 
   useEffect(() => {
-    if (selectedDate && SAMPLE_AVAILABILITY[selectedDate]) {
-      setAvailableSlots(SAMPLE_AVAILABILITY[selectedDate]);
+   useEffect(() => {
+    if (selectedDate && selectedDate in SAMPLE_AVAILABILITY) {
+      setAvailableSlots(
+        SAMPLE_AVAILABILITY[
+          selectedDate as keyof typeof SAMPLE_AVAILABILITY
+        ]
+      );
+    } else {
+      setAvailableSlots([]);
     }
+   }, [selectedDate]);
   }, [selectedDate]);
 
   const calculateTotalCost = () => {
@@ -195,8 +203,25 @@ export function ConsultationBookingSystem({
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 2000));
 
+    if (
+      !booking.consultationType ||
+      !booking.date ||
+      !booking.time ||
+      !booking.duration ||
+      !booking.clientInfo
+    ) {
+      console.error('Missing required booking fields');
+      return;
+    }
+
     const finalBooking: ConsultationBooking = {
-      ...booking as ConsultationBooking,
+      reviewerId: booking.reviewerId!,
+      consultationType: booking.consultationType,
+      date: booking.date,
+      time: booking.time,
+      duration: booking.duration,
+      clientInfo: booking.clientInfo,
+      specialRequests: booking.specialRequests,
       totalCost: calculateTotalCost()
     };
 

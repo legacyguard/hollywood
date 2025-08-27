@@ -26,12 +26,13 @@ export function ProfessionalReviewBadge({
       <Badge
         variant="outline"
         className={cn(
-          'border-orange-200 bg-orange-50 text-orange-800 gap-1.5',
-          size === 'sm' && 'px-2 py-0.5 text-xs',
-          size === 'md' && 'px-2.5 py-1 text-sm',
-          size === 'lg' && 'px-3 py-1.5 text-base',
-          className
-        )}
+className={cn(
+          'border-accent/20 bg-accent/5 text-accent gap-1.5',
+           size === 'sm' && 'px-2 py-0.5 text-xs',
+           size === 'md' && 'px-2.5 py-1 text-sm',
+           size === 'lg' && 'px-3 py-1.5 text-base',
+           className
+         )}
       >
         {showIcon && <AlertTriangle className="h-3 w-3" />}
         Not Reviewed
@@ -96,9 +97,9 @@ export function ProfessionalReviewBadge({
       )}
     >
       {showIcon && <IconComponent className="h-3 w-3" />}
-      {config.label}
       {review.certification_level === 'legal_certified' && (
-        <Shield className="h-3 w-3 text-emerald-600" />
+        <Shield className="h-3 w-3 text-primary" />
+      )}
       )}
     </Badge>
   );

@@ -1,24 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Calendar } from '@/components/ui/calendar';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
+import { Button } from '../ui/button';
+import { Badge } from '../ui/badge';
+import { Avatar, AvatarFallback } from '../ui/avatar';
+import { Calendar } from '../ui/calendar';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
+import { Input } from '../ui/input';
+import { Textarea } from '../ui/textarea';
+import { Label } from '../ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { Checkbox } from '../ui/checkbox';
 import {
   Calendar as CalendarIcon,
   Plus,
   Bell,
-  FileText,
   Heart,
   Gift,
   Clock,
-  Users,
   AlertTriangle,
   Star,
   Repeat
@@ -27,6 +25,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import type { FamilyCalendarEvent, FamilyMember } from '@/types/family';
 import { familyService } from '@/services/familyService';
 import { format, startOfMonth, endOfMonth, isSameDay, isToday, isBefore, addDays } from 'date-fns';
+import { useToast } from '../ui/use-toast';
 
 interface SharedFamilyCalendarProps {
   userId: string;
@@ -57,34 +56,31 @@ const defaultForm: NewEventForm = {
 };
 
 const eventTypeConfig = {
-  birthday: { icon: Gift, color: 'bg-pink-100 text-pink-800 border-pink-200', label: 'Birthday' },
-  anniversary: { icon: Heart, color: 'bg-red-100 text-red-800 border-red-200', label: 'Anniversary' },
-  document_expiry: { icon: AlertTriangle, color: 'bg-yellow-100 text-yellow-800 border-yellow-200', label: 'Document Expiry' },
-  appointment: { icon: Clock, color: 'bg-blue-100 text-blue-800 border-blue-200', label: 'Appointment' },
-  milestone: { icon: Star, color: 'bg-purple-100 text-purple-800 border-purple-200', label: 'Milestone' },
-  custom: { icon: CalendarIcon, color: 'bg-gray-100 text-gray-800 border-gray-200', label: 'Custom Event' }
+  birthday:       { icon: Gift,        color: 'bg-accent/10 text-accent border-accent/20',       label: 'Birthday' },
+  anniversary:    { icon: Heart,       color: 'bg-secondary/10 text-secondary border-secondary/20', label: 'Anniversary' },
+  document_expiry:{ icon: AlertTriangle, color: 'bg-warning/10 text-warning border-warning/20',     label: 'Document Expiry' },
+  appointment:    { icon: Clock,       color: 'bg-primary/10 text-primary border-primary/20',       label: 'Appointment' },
+  milestone:      { icon: Star,        color: 'bg-accent/10 text-accent border-accent/20',       label: 'Milestone' },
+  custom:         { icon: CalendarIcon, color: 'bg-background text-text-main border-border',      label: 'Custom Event' }
 };
 
 const priorityColors = {
-  high: 'border-l-red-500',
-  medium: 'border-l-yellow-500',
-  low: 'border-l-green-500'
+  low: 'border-blue-400',
+  medium: 'border-yellow-400', 
+  high: 'border-orange-400',
+  critical: 'border-red-400'
 };
-
 export function SharedFamilyCalendar({ userId, familyMembers }: SharedFamilyCalendarProps) {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [events, setEvents] = useState<FamilyCalendarEvent[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [showNewEventDialog, setShowNewEventDialog] = useState(false);
   const [newEventForm, setNewEventForm] = useState<NewEventForm>(defaultForm);
   const [view, setView] = useState<'calendar' | 'list'>('calendar');
   const [filter, setFilter] = useState<'all' | 'upcoming' | 'birthdays' | 'documents'>('all');
+  const { toast } = useToast();
 
-  useEffect(() => {
-    loadCalendarEvents();
-  }, [userId, selectedDate]);
-
-  const loadCalendarEvents = async () => {
+  const loadCalendarEvents = useCallback(async () => {
     try {
       setIsLoading(true);
       const startDate = startOfMonth(selectedDate);
@@ -96,23 +92,38 @@ export function SharedFamilyCalendar({ userId, familyMembers }: SharedFamilyCale
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [userId, selectedDate]);
+
+  useEffect(() => {
+    loadCalendarEvents();
+  }, [loadCalendarEvents]);
 
   const handleCreateEvent = async () => {
+    setIsLoading(true);
     try {
       const event = await familyService.createCalendarEvent(userId, {
         ...newEventForm,
-        createdBy: userId
+        createdBy: userId,
       });
 
       setEvents(prev => [...prev, event]);
       setNewEventForm(defaultForm);
       setShowNewEventDialog(false);
+      toast({
+        title: "Success",
+        description: "Event created successfully!",
+      });
     } catch (error) {
       console.error('Failed to create event:', error);
+      toast({
+        title: "Error",
+        description: "Failed to create event. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
-
   const getEventsForDate = (date: Date) => {
     return events.filter(event => isSameDay(new Date(event.date), date));
   };
@@ -279,17 +290,11 @@ export function SharedFamilyCalendar({ userId, familyMembers }: SharedFamilyCale
                 </div>
 
                 <div className="flex items-center justify-end space-x-2 pt-4">
-                  <Button
-                    variant="outline"
-                    onClick={() => setShowNewEventDialog(false)}
-                  >
+                  <Button variant="outline" onClick={() => setShowNewEventDialog(false)}>
                     Cancel
                   </Button>
-                  <Button
-                    onClick={handleCreateEvent}
-                    disabled={!newEventForm.title || !newEventForm.date}
-                  >
-                    Create Event
+                  <Button onClick={handleCreateEvent} disabled={!newEventForm.title || !newEventForm.date || isLoading}>
+                    {isLoading ? 'Creating...' : 'Create Event'}
                   </Button>
                 </div>
               </div>
@@ -453,7 +458,7 @@ export function SharedFamilyCalendar({ userId, familyMembers }: SharedFamilyCale
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle>All Events</CardTitle>
-              <Select value={filter} onValueChange={(v: any) => setFilter(v)}>
+              <Select value={filter} onValueChange={(v: 'all' | 'upcoming' | 'birthdays' | 'documents') => setFilter(v)}>
                 <SelectTrigger className="w-40">
                   <SelectValue />
                 </SelectTrigger>
@@ -557,4 +562,3 @@ export function SharedFamilyCalendar({ userId, familyMembers }: SharedFamilyCale
     </div>
   );
 }
-

@@ -35,12 +35,12 @@ export function OcrStatus({
       <div className={`flex items-center gap-2 text-sm ${className}`}>
         {isAvailable ? (
           <>
-            <CheckCircle2 className="h-4 w-4 text-green-500" />
+            <CheckCircle2 className="h-4 w-4 text-primary" />
             <span className="text-muted-foreground">OCR available</span>
           </>
         ) : (
           <>
-            <Info className="h-4 w-4 text-yellow-500" />
+            <Info className="h-4 w-4 text-accent" />
             <span className="text-muted-foreground">Manual entry mode</span>
           </>
         )}

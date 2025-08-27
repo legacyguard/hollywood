@@ -8,11 +8,16 @@ import type {
   GmailTokens,
   GmailMessage,
   GmailAttachment,
+  GmailPayload,
   ExtractedDocument,
   EmailImportConfig,
   DocumentType,
   DocumentCategorizationResult
 } from '@/types/gmail';
+import type {
+  GoogleAuthUser,
+  GoogleAuthInstance
+} from '@/types/google-api';
 
 export class GmailService {
   private static instance: GmailService;
@@ -20,8 +25,12 @@ export class GmailService {
   private config: GmailAuthConfig;
 
   private constructor() {
+    if (!import.meta.env.VITE_GOOGLE_CLIENT_ID) {
+      console.error('VITE_GOOGLE_CLIENT_ID is not configured');
+    }
+
     this.config = {
-      clientId: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+      clientId: import.meta.env.VITE_GOOGLE_CLIENT_ID || '',
       redirectUri: `${window.location.origin}/auth/gmail/callback`,
       scopes: [
         'https://www.googleapis.com/auth/gmail.readonly',
@@ -56,7 +65,7 @@ export class GmailService {
             client_id: this.config.clientId,
             scope: this.config.scopes.join(' ')
           }).then(() => {
-            const authInstance = window.gapi.auth2.getAuthInstance();
+            const authInstance: GoogleAuthInstance = window.gapi.auth2.getAuthInstance();
 
             if (authInstance.isSignedIn.get()) {
               const user = authInstance.currentUser.get();
@@ -71,7 +80,7 @@ export class GmailService {
 
               resolve(this.tokens);
             } else {
-              authInstance.signIn().then((user: any) => {
+              authInstance.signIn().then((user: GoogleAuthUser) => {
                 const authResponse = user.getAuthResponse();
 
                 this.tokens = {
@@ -100,6 +109,11 @@ export class GmailService {
     return new Promise((resolve, reject) => {
       if (window.gapi) {
         resolve();
+        return;
+      }
+
+      if (!import.meta.env.VITE_GOOGLE_API_KEY) {
+        reject(new Error('Google API key not configured'));
         return;
       }
 
@@ -214,7 +228,7 @@ export class GmailService {
   /**
    * Recursively find attachments in message payload
    */
-  private findAttachments(payload: any, attachments: GmailAttachment[] = []): GmailAttachment[] {
+  private findAttachments(payload: GmailPayload, attachments: GmailAttachment[] = []): GmailAttachment[] {
     if (payload.body && payload.body.attachmentId && payload.filename) {
       attachments.push({
         partId: payload.partId,
@@ -225,7 +239,7 @@ export class GmailService {
     }
 
     if (payload.parts) {
-      payload.parts.forEach((part: any) => {
+      payload.parts.forEach((part: GmailPayload) => {
         this.findAttachments(part, attachments);
       });
     }
@@ -250,7 +264,7 @@ export class GmailService {
   }
 
   /**
-   * Download attachment content
+   * Download attachment content from Gmail
    */
   private async downloadAttachment(message: GmailMessage, attachment: GmailAttachment): Promise<ExtractedDocument> {
     try {
@@ -262,7 +276,9 @@ export class GmailService {
 
       // Decode base64 data
       const base64Data = response.result.data.replace(/-/g, '+').replace(/_/g, '/');
-      const binaryString = atob(base64Data);
+      // Ensure proper padding
+      const paddedData = base64Data + '=='.slice(0, (4 - base64Data.length % 4) % 4);
+      const binaryString = atob(paddedData);
       const bytes = new Uint8Array(binaryString.length);
       for (let i = 0; i < binaryString.length; i++) {
         bytes[i] = binaryString.charCodeAt(i);
@@ -512,7 +528,7 @@ export class GmailService {
   /**
    * Generate insights about the document
    */
-  private generateInsights(type: DocumentType, content: string, metadata: any): string[] {
+  private generateInsights(type: DocumentType, content: string, metadata: { date: string }): string[] {
     const insights: string[] = [];
 
     switch (type) {
@@ -586,11 +602,6 @@ export class GmailService {
   }
 }
 
-// Global type declarations for Google APIs
-declare global {
-  interface Window {
-    gapi: any;
-  }
-}
+// Global type declarations for Google APIs are now in @/types/google-api
 
 export const gmailService = GmailService.getInstance();

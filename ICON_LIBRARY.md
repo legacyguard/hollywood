@@ -31,6 +31,7 @@ import { LayoutDashboard, Vault } from "@/components/ui/icon-library";
 ## Available Icons
 
 ### Navigation Icons
+
 - `dashboard` - Main dashboard
 - `vault` - Document vault
 - `documents` - Document management
@@ -42,6 +43,7 @@ import { LayoutDashboard, Vault } from "@/components/ui/icon-library";
 - `settings` - Application settings
 
 ### Action Icons
+
 - `add` - Add new item
 - `edit` - Edit existing item
 - `delete` - Delete item
@@ -53,6 +55,7 @@ import { LayoutDashboard, Vault } from "@/components/ui/icon-library";
 - `filter` - Filter options
 
 ### Status Icons
+
 - `success` - Success state
 - `warning` - Warning state
 - `info` - Information
@@ -61,6 +64,7 @@ import { LayoutDashboard, Vault } from "@/components/ui/icon-library";
 - `unlocked` - Unlocked state
 
 ### UI Elements
+
 - `close` - Close button
 - `check` - Checkmark
 - `circle` - Circle indicator
@@ -73,6 +77,7 @@ import { LayoutDashboard, Vault } from "@/components/ui/icon-library";
 - `more` - More options
 
 ### Legacy Specific
+
 - `infinity` - Forever/legacy
 - `star` - Favorite/important
 - `home` - Home navigation
@@ -95,6 +100,7 @@ import { IconSizes } from "@/components/ui/icon-library";
 ## Best Practices
 
 ### 1. Use Semantic Names
+
 ```tsx
 // ✅ Good - semantic meaning
 <Icon name="vault" />
@@ -104,6 +110,7 @@ import { IconSizes } from "@/components/ui/icon-library";
 ```
 
 ### 2. Consistent Sizing
+
 ```tsx
 // ✅ Good - consistent sizing
 <Icon name="dashboard" className="w-5 h-5" />
@@ -115,6 +122,7 @@ import { IconSizes } from "@/components/ui/icon-library";
 ```
 
 ### 3. Use Icon Library for Common Icons
+
 ```tsx
 // ✅ Good - use Icon component
 <Icon name="add" className="w-5 h-5" />
@@ -125,6 +133,7 @@ import { Plus } from "lucide-react";
 ```
 
 ### 4. Direct Import for Complex Cases
+
 ```tsx
 // ✅ Good - direct import for complex animations
 import { Heart } from "@/components/ui/icon-library";
@@ -181,8 +190,8 @@ import { Icon } from "@/components/ui/icon-library";
 ## Accessibility
 
 All icons inherit accessibility features from Lucide React:
+
 - Proper ARIA labels when used with `aria-label`
 - Screen reader support
 - Keyboard navigation support
 - High contrast mode support
-

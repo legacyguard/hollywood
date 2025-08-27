@@ -229,7 +229,7 @@ export function EmailImportWizard({ onComplete, onClose, className }: EmailImpor
   const handleSkipDuplicates = useCallback(() => {
     // Skip all duplicates and proceed with unique documents only
     const selectedDocuments = new Set<string>();
-    state.resolvedDocuments.forEach((doc, index) => {
+    state.resolvedDocuments.forEach((doc) => {
       // Find categorization for this document
       const originalIndex = state.documents.findIndex(d => d.id === doc.id);
       if (originalIndex >= 0) {
@@ -284,7 +284,7 @@ export function EmailImportWizard({ onComplete, onClose, className }: EmailImpor
         session: { ...state.session, status: 'completed' },
         documents: selectedDocs,
         categorizations: selectedCategorizations,
-        duplicates: 0, // TODO: Implement duplicate detection
+        duplicates: state.duplicates.length,
         timeSaved,
         protectionIncrease
       };
@@ -301,7 +301,7 @@ export function EmailImportWizard({ onComplete, onClose, className }: EmailImpor
     } finally {
       setIsLoading(false);
     }
-  }, [state.session, state.config, state.documents, state.categorizations, state.selectedDocuments, onComplete]);
+  }, [state.session, state.config, state.documents, state.categorizations, state.selectedDocuments, state.duplicates.length, onComplete]);
 
   const renderStep = () => {
     switch (state.step) {

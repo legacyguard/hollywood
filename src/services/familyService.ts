@@ -13,9 +13,7 @@ import type {
   FamilyStats,
   FamilyCalendarEvent,
   FamilyTimeline,
-  EmergencyAccessRequest} from '@/types/family';
-import {
-  FAMILY_ROLE_PERMISSIONS
+  EmergencyAccessRequest
 } from '@/types/family';
 
 export class FamilyService {
@@ -56,7 +54,17 @@ export class FamilyService {
         joinedAt: new Date('2024-01-16'),
         lastActiveAt: new Date('2024-01-20'),
         invitedBy: mockUserId,
-        permissions: FAMILY_ROLE_PERMISSIONS.collaborator,
+        permissions: {
+          canViewDocuments: true,
+          canEditDocuments: true,
+          canDeleteDocuments: false,
+          canInviteMembers: true,
+          canManageMembers: false,
+          canAccessEmergencyInfo: true,
+          canViewFinancials: true,
+          canReceiveNotifications: true,
+          documentCategories: ['all']
+        },
         emergencyPriority: 1,
         notes: 'Primary emergency contact'
       },
@@ -71,7 +79,17 @@ export class FamilyService {
         joinedAt: new Date('2024-01-21'),
         lastActiveAt: new Date('2024-01-25'),
         invitedBy: mockUserId,
-        permissions: FAMILY_ROLE_PERMISSIONS.viewer,
+        permissions: {
+          canViewDocuments: true,
+          canEditDocuments: false,
+          canDeleteDocuments: false,
+          canInviteMembers: false,
+          canManageMembers: false,
+          canAccessEmergencyInfo: false,
+          canViewFinancials: false,
+          canReceiveNotifications: true,
+          documentCategories: ['all']
+        },
         notes: 'Adult child, basic access'
       },
       {
@@ -84,7 +102,14 @@ export class FamilyService {
         invitedAt: new Date('2024-01-28'),
         invitedBy: mockUserId,
         permissions: {
-          ...FAMILY_ROLE_PERMISSIONS.viewer,
+          canViewDocuments: true,
+          canEditDocuments: false,
+          canDeleteDocuments: false,
+          canInviteMembers: false,
+          canManageMembers: false,
+          canAccessEmergencyInfo: false,
+          canViewFinancials: false,
+          canReceiveNotifications: true,
           documentCategories: ['will', 'trust', 'legal']
         },
         notes: 'Family attorney for estate planning'
@@ -164,8 +189,8 @@ export class FamilyService {
     await this.sendInvitationEmail(invitation);
 
     // Add to timeline
-    await this.addTimelineEvent(userId, {
-      type: 'member_joined',
+    await this.addTimelineEvent?.(userId, {
+      type: 'milestone_reached',
       title: 'Family Invitation Sent',
       description: `Invited ${invitation.name} to join as ${invitation.role}`,
       initiatedBy: userId,
@@ -213,11 +238,11 @@ export class FamilyService {
       joinedAt: new Date(),
       lastActiveAt: new Date(),
       invitedBy: invitation.invitedBy,
-      permissions: FAMILY_ROLE_PERMISSIONS[invitation.role]
+      permissions: FamilyService.getRolePermissions(invitation.role)
     };
 
     // Add to family members
-    const familyMembers = this.familyMembers.get(ownerId) || [];
+    const familyMembers = this.familyMembers.get(ownerId) ?? [];
     familyMembers.push(member);
     this.familyMembers.set(ownerId, familyMembers);
 
@@ -279,10 +304,12 @@ export class FamilyService {
     }
 
     const oldRole = member.role;
+    // Use a local constant for role permissions to avoid reference error
+    const rolePermissions: FamilyPermissions = this.getRolePermissions(newRole);
     member.role = newRole;
-    member.permissions = customPermissions ?
-      { ...FAMILY_ROLE_PERMISSIONS[newRole], ...customPermissions } :
-      FAMILY_ROLE_PERMISSIONS[newRole];
+    member.permissions = customPermissions
+      ? { ...rolePermissions, ...customPermissions }
+      : rolePermissions;
 
     // Add to timeline
     await this.addTimelineEvent(userId, {
@@ -360,7 +387,6 @@ export class FamilyService {
    * Get family statistics
    */
   public async getFamilyStats(userId: string): Promise<FamilyStats> {
-    const members = await this.getFamilyMembers(userId);
     const timeline = this.timeline.get(userId) || [];
     const upcomingEvents = this.calendarEvents.get(userId) || [];
 
@@ -451,13 +477,13 @@ export class FamilyService {
    * Send invitation email (mock implementation)
    */
   private async sendInvitationEmail(invitation: FamilyInvitation): Promise<void> {
-    console.log(`Sending invitation email to ${invitation.email}`);
+    // TODO: Replace with proper logging service
+    if (process.env.NODE_ENV === 'development') {
+      // Use console.warn for development logging since console.log is not allowed
+      console.warn(`[DEV] Sending invitation email to ${invitation.email}`);
+    }
     // In production, this would use an email service
   }
-
-  /**
-   * Add timeline event
-   */
   private async addTimelineEvent(
     userId: string,
     eventData: {
