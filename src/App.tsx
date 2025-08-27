@@ -29,7 +29,6 @@ const Onboarding = lazy(() => import('./pages/onboarding/Onboarding'));
 const VaultPage = lazy(() => import('./pages/Vault'));
 const GuardiansPage = lazy(() => import('./pages/Guardians'));
 const LegacyPage = lazy(() => import('./pages/Legacy'));
-const MyFamilyPage = lazy(() => import('./pages/MyFamily').then(m => ({ default: m.MyFamilyPage })));
 const FamilyPage = lazy(() => import('./pages/Family'));
 const TestNotifications = lazy(() => import('./pages/TestNotifications'));
 const SignInPage = lazy(() => import('./pages/auth/SignIn'));

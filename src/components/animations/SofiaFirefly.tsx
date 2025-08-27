@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, useAnimation, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@clerk/clerk-react';
-import type {
-  CommunicationStyle,
-  UserPreferences} from '@/types/user-preferences';
 import {
   defaultUserPreferences,
+  type CommunicationStyle,
+  type UserPreferences
 } from '@/types/user-preferences';
 import { useFirefly } from '@/contexts/FireflyContext';
 import useFireflyEvents from '@/hooks/useFireflyEvents';
@@ -110,8 +109,8 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
     if (!container) return;
 
     const rect = container.getBoundingClientRect();
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
+    const _centerX = rect.width / 2;
+    const _centerY = rect.height / 2;
 
     if (activeMode === 'pragmatic') {
       // Pragmatic: Subtle, purposeful movement in corner

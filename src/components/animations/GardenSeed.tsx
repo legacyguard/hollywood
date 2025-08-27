@@ -17,7 +17,7 @@ export const GardenSeed: React.FC<GardenSeedProps> = ({
   onSeedClick,
   className = '',
 }) => {
-  const { userId } = useAuth();
+  const { userId: _userId } = useAuth();
   const [isHovered, setIsHovered] = useState(false);
   const [particles, setParticles] = useState<
     Array<{ id: number; x: number; y: number; delay: number }>
