@@ -26,7 +26,6 @@ export function ProfessionalReviewBadge({
       <Badge
         variant="outline"
         className={cn(
-className={cn(
           'border-accent/20 bg-accent/5 text-accent gap-1.5',
            size === 'sm' && 'px-2 py-0.5 text-xs',
            size === 'md' && 'px-2.5 py-1 text-sm',
@@ -99,7 +98,6 @@ className={cn(
       {showIcon && <IconComponent className="h-3 w-3" />}
       {review.certification_level === 'legal_certified' && (
         <Shield className="h-3 w-3 text-primary" />
-      )}
       )}
     </Badge>
   );

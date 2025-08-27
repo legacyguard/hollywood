@@ -1,6 +1,11 @@
 /**
  * Gmail API Service
- * Handles Gmail API integration for document import
+ * Secure client-side service that communicates with server-side Gmail API
+ * 
+ * Security measures:
+ * - All Gmail API operations are performed server-side
+ * - OAuth2 tokens are stored securely on the server
+ * - Client only handles user authorization flow
  */
 
 import type {
@@ -14,29 +19,16 @@ import type {
   DocumentType,
   DocumentCategorizationResult
 } from '@/types/gmail';
-import type {
-  GoogleAuthUser,
-  GoogleAuthInstance
-} from '@/types/google-api';
+import { useAuth } from '@clerk/clerk-react';
 
 export class GmailService {
   private static instance: GmailService;
-  private tokens: GmailTokens | null = null;
-  private config: GmailAuthConfig;
+  private apiEndpoint: string;
+  private isAuthorized: boolean = false;
 
   private constructor() {
-    if (!import.meta.env.VITE_GOOGLE_CLIENT_ID) {
-      console.error('VITE_GOOGLE_CLIENT_ID is not configured');
-    }
-
-    this.config = {
-      clientId: import.meta.env.VITE_GOOGLE_CLIENT_ID || '',
-      redirectUri: `${window.location.origin}/auth/gmail/callback`,
-      scopes: [
-        'https://www.googleapis.com/auth/gmail.readonly',
-        'https://www.googleapis.com/auth/gmail.modify'
-      ]
-    };
+    // Use server-side API endpoint
+    this.apiEndpoint = '/api/gmail';
   }
 
   public static getInstance(): GmailService {
@@ -47,54 +39,60 @@ export class GmailService {
   }
 
   /**
-   * Initialize OAuth2 authentication flow
+   * Get authorization token from Clerk
    */
-  public async authenticate(): Promise<GmailTokens> {
+  private async getAuthToken(): Promise<string> {
+    // Get auth token from Clerk - this would need to be passed from a component context
+    const token = await window.Clerk?.session?.getToken();
+    if (!token) {
+      throw new Error('Authentication required');
+    }
+    return token;
+  }
+
+  /**
+   * Initialize OAuth2 authentication flow through secure server endpoint
+   */
+  public async authenticate(): Promise<boolean> {
     try {
-      if (!this.config.clientId) {
-        throw new Error('Gmail API client ID not configured. Please set VITE_GOOGLE_CLIENT_ID in environment variables.');
+      const token = await this.getAuthToken();
+
+      // Get OAuth2 authorization URL from server
+      const authUrlResponse = await fetch(`${this.apiEndpoint}?action=auth-url`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!authUrlResponse.ok) {
+        throw new Error('Failed to get authorization URL');
       }
 
-      // Load Google APIs
-      await this.loadGoogleAPIs();
+      const { authUrl } = await authUrlResponse.json();
 
-      // Initialize OAuth2
+      // Open OAuth2 consent window
+      const authWindow = window.open(authUrl, 'gmail-auth', 'width=500,height=600');
+      
       return new Promise((resolve, reject) => {
-        window.gapi.load('auth2', () => {
-          window.gapi.auth2.init({
-            client_id: this.config.clientId,
-            scope: this.config.scopes.join(' ')
-          }).then(() => {
-            const authInstance: GoogleAuthInstance = window.gapi.auth2.getAuthInstance();
-
-            if (authInstance.isSignedIn.get()) {
-              const user = authInstance.currentUser.get();
-              const authResponse = user.getAuthResponse();
-
-              this.tokens = {
-                accessToken: authResponse.access_token,
-                refreshToken: authResponse.refresh_token,
-                expiryDate: authResponse.expires_at,
-                tokenType: 'Bearer'
-              };
-
-              resolve(this.tokens);
-            } else {
-              authInstance.signIn().then((user: GoogleAuthUser) => {
-                const authResponse = user.getAuthResponse();
-
-                this.tokens = {
-                  accessToken: authResponse.access_token,
-                  refreshToken: authResponse.refresh_token,
-                  expiryDate: authResponse.expires_at,
-                  tokenType: 'Bearer'
-                };
-
-                resolve(this.tokens);
+        // Listen for OAuth callback
+        const checkInterval = setInterval(() => {
+          try {
+            if (authWindow?.closed) {
+              clearInterval(checkInterval);
+              // Check if authorization was successful
+              this.checkAuthStatus().then(authorized => {
+                this.isAuthorized = authorized;
+                resolve(authorized);
               }).catch(reject);
             }
-          }).catch(reject);
-        });
+          } catch (error) {
+            // Window closed or error
+            clearInterval(checkInterval);
+            reject(error);
+          }
+        }, 1000);
       });
     } catch (error) {
       console.error('Gmail authentication failed:', error);
@@ -103,73 +101,62 @@ export class GmailService {
   }
 
   /**
-   * Load Google APIs dynamically
+   * Check if user has authorized Gmail access
    */
-  private async loadGoogleAPIs(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      if (window.gapi) {
-        resolve();
-        return;
-      }
+  private async checkAuthStatus(): Promise<boolean> {
+    try {
+      const token = await this.getAuthToken();
+      const response = await fetch(`${this.apiEndpoint}?action=status`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
 
-      if (!import.meta.env.VITE_GOOGLE_API_KEY) {
-        reject(new Error('Google API key not configured'));
-        return;
+      if (response.ok) {
+        const { authorized } = await response.json();
+        return authorized || false;
       }
-
-      const script = document.createElement('script');
-      script.src = 'https://apis.google.com/js/api.js';
-      script.onload = () => {
-        window.gapi.load('client:auth2', () => {
-          window.gapi.client.init({
-            apiKey: import.meta.env.VITE_GOOGLE_API_KEY,
-            clientId: this.config.clientId,
-            discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest'],
-            scope: this.config.scopes.join(' ')
-          }).then(resolve).catch(reject);
-        });
-      };
-      script.onerror = reject;
-      document.head.appendChild(script);
-    });
+      return false;
+    } catch (error) {
+      return false;
+    }
   }
 
   /**
-   * Search for emails with potential documents
+   * Search for emails with potential documents through secure server endpoint
    */
   public async searchEmails(config: EmailImportConfig): Promise<GmailMessage[]> {
-    if (!this.tokens) {
+    if (!this.isAuthorized) {
       throw new Error('Not authenticated. Please call authenticate() first.');
     }
 
     try {
+      const token = await this.getAuthToken();
       const query = this.buildSearchQuery(config);
 
-      const response = await window.gapi.client.gmail.users.messages.list({
-        userId: 'me',
-        q: query,
-        maxResults: Math.min(config.maxDocuments, 100)
+      const response = await fetch(`${this.apiEndpoint}?action=search`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          query,
+          maxResults: Math.min(config.maxDocuments, 100)
+        })
       });
 
-      if (!response.result.messages) {
-        return [];
-      }
-
-      // Fetch detailed message data for each message
-      const messages: GmailMessage[] = [];
-      for (const messageRef of response.result.messages) {
-        try {
-          const messageResponse = await window.gapi.client.gmail.users.messages.get({
-            userId: 'me',
-            id: messageRef.id
-          });
-          messages.push(messageResponse.result);
-        } catch (error) {
-          console.warn(`Failed to fetch message ${messageRef.id}:`, error);
+      if (!response.ok) {
+        if (response.status === 401) {
+          this.isAuthorized = false;
+          throw new Error('Gmail authorization expired. Please re-authenticate.');
         }
+        throw new Error('Failed to search emails');
       }
 
-      return messages;
+      const { messages } = await response.json();
+      return messages || [];
     } catch (error) {
       console.error('Failed to search emails:', error);
       throw error;
@@ -264,18 +251,32 @@ export class GmailService {
   }
 
   /**
-   * Download attachment content from Gmail
+   * Download attachment content through secure server endpoint
    */
   private async downloadAttachment(message: GmailMessage, attachment: GmailAttachment): Promise<ExtractedDocument> {
     try {
-      const response = await window.gapi.client.gmail.users.messages.attachments.get({
-        userId: 'me',
-        messageId: message.id,
-        id: attachment.partId
+      const token = await this.getAuthToken();
+      
+      const response = await fetch(`${this.apiEndpoint}?action=attachment`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          messageId: message.id,
+          attachmentId: attachment.partId
+        })
       });
 
+      if (!response.ok) {
+        throw new Error(`Failed to download attachment: ${response.statusText}`);
+      }
+
+      const { data, size } = await response.json();
+
       // Decode base64 data
-      const base64Data = response.result.data.replace(/-/g, '+').replace(/_/g, '/');
+      const base64Data = data.replace(/-/g, '+').replace(/_/g, '/');
       // Ensure proper padding
       const paddedData = base64Data + '=='.slice(0, (4 - base64Data.length % 4) % 4);
       const binaryString = atob(paddedData);
@@ -293,7 +294,7 @@ export class GmailService {
         id: `${message.id}_${attachment.partId}`,
         filename: attachment.filename,
         mimeType: attachment.mimeType,
-        size: attachment.size,
+        size: size || attachment.size,
         content: bytes.buffer,
         metadata: {
           fromEmail: fromHeader?.value || '',
@@ -582,23 +583,33 @@ export class GmailService {
   }
 
   /**
-   * Sign out and clear tokens
+   * Revoke Gmail authorization through secure server endpoint
    */
   public async signOut(): Promise<void> {
-    if (window.gapi && window.gapi.auth2) {
-      const authInstance = window.gapi.auth2.getAuthInstance();
-      if (authInstance) {
-        await authInstance.signOut();
-      }
+    try {
+      const token = await this.getAuthToken();
+      
+      await fetch(`${this.apiEndpoint}?action=revoke`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      this.isAuthorized = false;
+    } catch (error) {
+      console.error('Failed to revoke Gmail authorization:', error);
+      // Even if revocation fails, mark as unauthorized locally
+      this.isAuthorized = false;
     }
-    this.tokens = null;
   }
 
   /**
-   * Check if user is authenticated
+   * Check if user is authenticated with Gmail
    */
   public isAuthenticated(): boolean {
-    return this.tokens !== null && this.tokens.accessToken !== '';
+    return this.isAuthorized;
   }
 }
 

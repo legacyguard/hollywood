@@ -1,0 +1,845 @@
+import React, { useState, useEffect, useMemo } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Button } from '../ui/button';
+import { Badge } from '../ui/badge';
+import { Progress } from '../ui/progress';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
+import { Separator } from '../ui/separator';
+import { 
+  Target, 
+  CheckCircle, 
+  Clock, 
+  Calendar,
+  TrendingUp, 
+  Award, 
+  MapPin,
+  Route,
+  Flag,
+  Star,
+  Zap,
+  ArrowRight,
+  PlayCircle,
+  PauseCircle,
+  Trophy,
+  Medal,
+  Crown,
+  Sparkles,
+  BarChart3,
+  Timeline,
+  Plus
+} from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+
+interface LegacyArea {
+  id: string;
+  name: string;
+  category: 'essential' | 'important' | 'comprehensive' | 'premium';
+  description: string;
+  completeness: number;
+  maxScore: number;
+  priority: 'critical' | 'high' | 'medium' | 'low';
+  estimatedTime: string;
+  tasks: LegacyTask[];
+  dependencies: string[];
+  unlockedAt?: Date;
+  completedAt?: Date;
+  milestones: Milestone[];
+}
+
+interface LegacyTask {
+  id: string;
+  title: string;
+  description: string;
+  category: 'quick-start' | 'planning' | 'documentation' | 'review' | 'maintenance';
+  status: 'locked' | 'available' | 'in-progress' | 'completed' | 'needs-review';
+  completedAt?: Date;
+  estimatedMinutes: number;
+  actualMinutes?: number;
+  impact: 'low' | 'medium' | 'high' | 'critical';
+  difficulty: 'easy' | 'medium' | 'hard' | 'expert';
+  prerequisites: string[];
+  reward: number;
+  streak?: number;
+}
+
+interface Milestone {
+  id: string;
+  title: string;
+  description: string;
+  threshold: number;
+  achieved: boolean;
+  achievedAt?: Date;
+  reward: string;
+  badge: string;
+}
+
+interface Goal {
+  id: string;
+  title: string;
+  description: string;
+  targetDate: Date;
+  targetCompleteness: number;
+  currentProgress: number;
+  category: 'short-term' | 'medium-term' | 'long-term';
+  priority: 'low' | 'medium' | 'high' | 'critical';
+  milestones: string[];
+  isActive: boolean;
+  createdAt: Date;
+}
+
+interface Achievement {
+  id: string;
+  title: string;
+  description: string;
+  type: 'milestone' | 'streak' | 'speed' | 'completeness' | 'consistency';
+  earnedAt: Date;
+  rarity: 'common' | 'rare' | 'epic' | 'legendary';
+  icon: React.ReactNode;
+  reward: string;
+}
+
+interface LegacyCompletionTrackingProps {
+  onTaskStart?: (taskId: string) => void;
+  onGoalCreate?: (goal: Goal) => void;
+  onMilestoneAchieved?: (milestoneId: string) => void;
+}
+
+export const LegacyCompletionTracking: React.FC<LegacyCompletionTrackingProps> = ({
+  onTaskStart,
+  onGoalCreate,
+  onMilestoneAchieved
+}) => {
+  const [legacyAreas, setLegacyAreas] = useState<LegacyArea[]>([]);
+  const [goals, setGoals] = useState<Goal[]>([]);
+  const [achievements, setAchievements] = useState<Achievement[]>([]);
+  const [selectedTimeframe, setSelectedTimeframe] = useState<'week' | 'month' | 'quarter' | 'year'>('month');
+  const [showRoadmap, setShowRoadmap] = useState(false);
+  const [currentStreak, setCurrentStreak] = useState(0);
+  const [totalRewardPoints, setTotalRewardPoints] = useState(0);
+
+  // Mock data initialization
+  useEffect(() => {
+    const mockLegacyAreas: LegacyArea[] = [
+      {
+        id: 'essential-protection',
+        name: 'Essential Family Protection',
+        category: 'essential',
+        description: 'Critical documents and plans every family needs',
+        completeness: 85,
+        maxScore: 100,
+        priority: 'critical',
+        estimatedTime: '4-6 hours',
+        dependencies: [],
+        unlockedAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+        tasks: [
+          {
+            id: 'basic-will',
+            title: 'Create Basic Will',
+            description: 'Essential will covering asset distribution and guardianship',
+            category: 'documentation',
+            status: 'completed',
+            completedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000),
+            estimatedMinutes: 120,
+            actualMinutes: 95,
+            impact: 'critical',
+            difficulty: 'medium',
+            prerequisites: [],
+            reward: 100,
+            streak: 1
+          },
+          {
+            id: 'emergency-contacts',
+            title: 'Emergency Contact List',
+            description: 'Comprehensive list of emergency contacts for family',
+            category: 'quick-start',
+            status: 'completed',
+            completedAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000),
+            estimatedMinutes: 30,
+            actualMinutes: 25,
+            impact: 'high',
+            difficulty: 'easy',
+            prerequisites: [],
+            reward: 50
+          },
+          {
+            id: 'healthcare-proxy',
+            title: 'Healthcare Proxy',
+            description: 'Designate someone to make healthcare decisions',
+            category: 'documentation',
+            status: 'in-progress',
+            estimatedMinutes: 60,
+            impact: 'critical',
+            difficulty: 'medium',
+            prerequisites: [],
+            reward: 80
+          }
+        ],
+        milestones: [
+          {
+            id: 'essential-50',
+            title: 'Foundation Builder',
+            description: 'Complete 50% of essential protection',
+            threshold: 50,
+            achieved: true,
+            achievedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+            reward: 'Priority support access',
+            badge: '🏗️'
+          },
+          {
+            id: 'essential-complete',
+            title: 'Family Guardian',
+            description: 'Complete all essential protection items',
+            threshold: 100,
+            achieved: false,
+            reward: 'Professional review credit',
+            badge: '🛡️'
+          }
+        ]
+      },
+      {
+        id: 'financial-planning',
+        name: 'Financial Legacy Planning',
+        category: 'important',
+        description: 'Comprehensive financial planning and asset management',
+        completeness: 45,
+        maxScore: 100,
+        priority: 'high',
+        estimatedTime: '6-8 hours',
+        dependencies: ['essential-protection'],
+        unlockedAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000),
+        tasks: [
+          {
+            id: 'asset-inventory',
+            title: 'Complete Asset Inventory',
+            description: 'Comprehensive list of all assets and accounts',
+            category: 'planning',
+            status: 'completed',
+            completedAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000),
+            estimatedMinutes: 180,
+            actualMinutes: 160,
+            impact: 'high',
+            difficulty: 'medium',
+            prerequisites: [],
+            reward: 75
+          },
+          {
+            id: 'beneficiary-review',
+            title: 'Review All Beneficiaries',
+            description: 'Update beneficiaries on all accounts and policies',
+            category: 'review',
+            status: 'available',
+            estimatedMinutes: 90,
+            impact: 'high',
+            difficulty: 'easy',
+            prerequisites: ['asset-inventory'],
+            reward: 60
+          }
+        ],
+        milestones: [
+          {
+            id: 'financial-foundation',
+            title: 'Financial Foundation',
+            description: 'Complete basic financial planning tasks',
+            threshold: 50,
+            achieved: false,
+            reward: 'Financial planning guide',
+            badge: '💰'
+          }
+        ]
+      },
+      {
+        id: 'family-harmony',
+        name: 'Family Harmony & Communication',
+        category: 'comprehensive',
+        description: 'Advanced family collaboration and communication systems',
+        completeness: 20,
+        maxScore: 100,
+        priority: 'medium',
+        estimatedTime: '8-12 hours',
+        dependencies: ['essential-protection', 'financial-planning'],
+        tasks: [
+          {
+            id: 'family-meetings',
+            title: 'Establish Family Meetings',
+            description: 'Set up regular family legacy planning discussions',
+            category: 'planning',
+            status: 'locked',
+            estimatedMinutes: 120,
+            impact: 'medium',
+            difficulty: 'medium',
+            prerequisites: ['basic-will', 'asset-inventory'],
+            reward: 70
+          }
+        ],
+        milestones: []
+      }
+    ];
+
+    const mockGoals: Goal[] = [
+      {
+        id: 'q1-essential',
+        title: 'Complete Essential Protection',
+        description: 'Finish all critical family protection items by end of quarter',
+        targetDate: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000),
+        targetCompleteness: 100,
+        currentProgress: 85,
+        category: 'short-term',
+        priority: 'high',
+        milestones: ['essential-complete'],
+        isActive: true,
+        createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+      },
+      {
+        id: 'year-comprehensive',
+        title: 'Comprehensive Legacy Plan',
+        description: 'Build complete family legacy plan with all advanced features',
+        targetDate: new Date(Date.now() + 300 * 24 * 60 * 60 * 1000),
+        targetCompleteness: 90,
+        currentProgress: 35,
+        category: 'long-term',
+        priority: 'medium',
+        milestones: ['essential-complete', 'financial-foundation'],
+        isActive: true,
+        createdAt: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000)
+      }
+    ];
+
+    const mockAchievements: Achievement[] = [
+      {
+        id: 'first-task',
+        title: 'Getting Started',
+        description: 'Complete your first legacy planning task',
+        type: 'milestone',
+        earnedAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000),
+        rarity: 'common',
+        icon: <PlayCircle className="h-4 w-4" />,
+        reward: '25 bonus points'
+      },
+      {
+        id: 'speed-demon',
+        title: 'Speed Demon',
+        description: 'Complete a task 25% faster than estimated',
+        type: 'speed',
+        earnedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000),
+        rarity: 'rare',
+        icon: <Zap className="h-4 w-4" />,
+        reward: 'Priority feature access'
+      }
+    ];
+
+    setLegacyAreas(mockLegacyAreas);
+    setGoals(mockGoals);
+    setAchievements(mockAchievements);
+    setCurrentStreak(7);
+    setTotalRewardPoints(485);
+  }, []);
+
+  const overallCompleteness = useMemo(() => {
+    const totalTasks = legacyAreas.reduce((sum, area) => sum + area.tasks.length, 0);
+    const completedTasks = legacyAreas.reduce((sum, area) => 
+      sum + area.tasks.filter(task => task.status === 'completed').length, 0
+    );
+    return totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+  }, [legacyAreas]);
+
+  const nextMilestones = useMemo(() => {
+    return legacyAreas.flatMap(area => area.milestones)
+      .filter(milestone => !milestone.achieved)
+      .sort((a, b) => a.threshold - b.threshold)
+      .slice(0, 3);
+  }, [legacyAreas]);
+
+  const availableTasks = useMemo(() => {
+    return legacyAreas.flatMap(area => area.tasks)
+      .filter(task => task.status === 'available' || task.status === 'in-progress')
+      .sort((a, b) => {
+        const impactOrder = { critical: 4, high: 3, medium: 2, low: 1 };
+        return impactOrder[b.impact] - impactOrder[a.impact];
+      })
+      .slice(0, 5);
+  }, [legacyAreas]);
+
+  const getCompletenessColor = (completeness: number) => {
+    if (completeness >= 90) return 'text-green-600';
+    if (completeness >= 75) return 'text-blue-600';
+    if (completeness >= 50) return 'text-yellow-600';
+    return 'text-red-600';
+  };
+
+  const getCompletenessBackground = (completeness: number) => {
+    if (completeness >= 90) return 'bg-green-50 border-green-200';
+    if (completeness >= 75) return 'bg-blue-50 border-blue-200';
+    if (completeness >= 50) return 'bg-yellow-50 border-yellow-200';
+    return 'bg-red-50 border-red-200';
+  };
+
+  const getPriorityColor = (priority: string) => {
+    switch (priority) {
+      case 'critical': return 'bg-red-100 text-red-800';
+      case 'high': return 'bg-orange-100 text-orange-800';
+      case 'medium': return 'bg-yellow-100 text-yellow-800';
+      case 'low': return 'bg-green-100 text-green-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const getTaskStatusColor = (status: string) => {
+    switch (status) {
+      case 'completed': return 'text-green-600';
+      case 'in-progress': return 'text-blue-600';
+      case 'available': return 'text-yellow-600';
+      case 'locked': return 'text-gray-400';
+      case 'needs-review': return 'text-purple-600';
+      default: return 'text-gray-600';
+    }
+  };
+
+  const getRarityColor = (rarity: string) => {
+    switch (rarity) {
+      case 'legendary': return 'text-purple-600 bg-purple-50 border-purple-200';
+      case 'epic': return 'text-blue-600 bg-blue-50 border-blue-200';
+      case 'rare': return 'text-green-600 bg-green-50 border-green-200';
+      case 'common': return 'text-gray-600 bg-gray-50 border-gray-200';
+      default: return 'text-gray-600 bg-gray-50 border-gray-200';
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900">Legacy Completion Tracking</h2>
+          <p className="text-gray-600">Track your progress toward comprehensive family protection</p>
+        </div>
+        <div className="flex items-center gap-4">
+          <div className="text-right">
+            <div className="text-sm text-gray-500">Current Streak</div>
+            <div className="text-xl font-bold text-orange-600 flex items-center gap-1">
+              <Sparkles className="h-4 w-4" />
+              {currentStreak} days
+            </div>
+          </div>
+          <div className="text-right">
+            <div className="text-sm text-gray-500">Reward Points</div>
+            <div className="text-xl font-bold text-purple-600 flex items-center gap-1">
+              <Star className="h-4 w-4" />
+              {totalRewardPoints}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Overall Progress */}
+      <Card className={`border-2 ${getCompletenessBackground(overallCompleteness)}`}>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-white rounded-lg shadow-sm">
+                <Target className={`h-6 w-6 ${getCompletenessColor(overallCompleteness)}`} />
+              </div>
+              <div>
+                <CardTitle className="text-xl">Legacy Completion Score</CardTitle>
+                <p className="text-sm text-gray-600">Overall progress toward family protection goals</p>
+              </div>
+            </div>
+            <div className="text-right">
+              <div className={`text-3xl font-bold ${getCompletenessColor(overallCompleteness)}`}>
+                {overallCompleteness}%
+              </div>
+              <div className="text-sm text-gray-500">
+                {legacyAreas.reduce((sum, area) => sum + area.tasks.filter(t => t.status === 'completed').length, 0)} /
+                {legacyAreas.reduce((sum, area) => sum + area.tasks.length, 0)} tasks completed
+              </div>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <Progress value={overallCompleteness} className="h-3 mb-4" />
+          
+          {/* Quick Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
+            <div className="flex items-center gap-2">
+              <Crown className="h-4 w-4 text-yellow-600" />
+              <span>{legacyAreas.filter(area => area.completeness >= 90).length} areas mastered</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Trophy className="h-4 w-4 text-blue-600" />
+              <span>{achievements.length} achievements earned</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Clock className="h-4 w-4 text-green-600" />
+              <span>{availableTasks.length} tasks ready</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Flag className="h-4 w-4 text-purple-600" />
+              <span>{nextMilestones.length} milestones pending</span>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Tabs defaultValue="progress" className="w-full">
+        <TabsList className="grid w-full grid-cols-5">
+          <TabsTrigger value="progress">Progress</TabsTrigger>
+          <TabsTrigger value="roadmap">Roadmap</TabsTrigger>
+          <TabsTrigger value="goals">Goals</TabsTrigger>
+          <TabsTrigger value="achievements">Achievements</TabsTrigger>
+          <TabsTrigger value="analytics">Analytics</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="progress" className="space-y-4">
+          {/* Next Actions */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <PlayCircle className="h-5 w-5 text-blue-600" />
+                Recommended Next Actions
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {availableTasks.map((task, index) => (
+                  <div key={task.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <Badge className={getPriorityColor(task.impact)}>
+                          {task.impact}
+                        </Badge>
+                        <Badge variant="outline" className="text-xs">
+                          ~{task.estimatedMinutes}min
+                        </Badge>
+                        <span className="text-xs text-gray-500">
+                          +{task.reward} points
+                        </span>
+                      </div>
+                      <h4 className="font-medium text-gray-900">{task.title}</h4>
+                      <p className="text-sm text-gray-600">{task.description}</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className={`text-sm ${getTaskStatusColor(task.status)}`}>
+                        {task.status === 'in-progress' && <PauseCircle className="h-4 w-4" />}
+                        {task.status === 'available' && <PlayCircle className="h-4 w-4" />}
+                      </div>
+                      <Button
+                        size="sm"
+                        onClick={() => onTaskStart?.(task.id)}
+                        disabled={task.status === 'locked'}
+                        className="gap-2"
+                      >
+                        {task.status === 'in-progress' ? 'Continue' : 'Start'}
+                        <ArrowRight className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Legacy Areas */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {legacyAreas.map((area) => (
+              <Card key={area.id} className="hover:shadow-lg transition-shadow">
+                <CardHeader className="pb-2">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-base">{area.name}</CardTitle>
+                    <Badge className={getPriorityColor(area.priority)}>
+                      {area.priority}
+                    </Badge>
+                  </div>
+                  <p className="text-sm text-gray-600">{area.description}</p>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <div>
+                      <div className="flex items-center justify-between text-sm mb-1">
+                        <span>Completeness</span>
+                        <span className={getCompletenessColor(area.completeness)}>
+                          {area.completeness}%
+                        </span>
+                      </div>
+                      <Progress value={area.completeness} className="h-2" />
+                    </div>
+                    
+                    <div className="flex items-center justify-between text-xs text-gray-500">
+                      <span>{area.tasks.filter(t => t.status === 'completed').length}/{area.tasks.length} tasks</span>
+                      <span>{area.estimatedTime}</span>
+                    </div>
+
+                    {/* Milestones */}
+                    {area.milestones.length > 0 && (
+                      <div className="space-y-1">
+                        {area.milestones.map((milestone) => (
+                          <div key={milestone.id} className="flex items-center gap-2 text-xs">
+                            {milestone.achieved ? (
+                              <CheckCircle className="h-3 w-3 text-green-600" />
+                            ) : (
+                              <Clock className="h-3 w-3 text-gray-400" />
+                            )}
+                            <span className={milestone.achieved ? 'text-green-600' : 'text-gray-500'}>
+                              {milestone.title}
+                            </span>
+                            <span>{milestone.badge}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </TabsContent>
+
+        <TabsContent value="roadmap" className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-medium">Personal Legacy Roadmap</h3>
+            <Button
+              variant="outline"
+              onClick={() => setShowRoadmap(!showRoadmap)}
+              className="gap-2"
+            >
+              <Route className="h-4 w-4" />
+              {showRoadmap ? 'Simple View' : 'Detailed Roadmap'}
+            </Button>
+          </div>
+
+          {/* Roadmap Timeline */}
+          <Card>
+            <CardContent className="p-6">
+              <div className="relative">
+                {/* Timeline Line */}
+                <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gray-200"></div>
+                
+                <div className="space-y-8">
+                  {legacyAreas.map((area, index) => (
+                    <div key={area.id} className="relative flex items-start gap-4">
+                      {/* Timeline Node */}
+                      <div className={`w-16 h-16 rounded-full border-4 flex items-center justify-center ${
+                        area.completeness >= 100 
+                          ? 'bg-green-100 border-green-500' 
+                          : area.completeness > 0
+                          ? 'bg-blue-100 border-blue-500'
+                          : 'bg-gray-100 border-gray-300'
+                      }`}>
+                        {area.completeness >= 100 ? (
+                          <CheckCircle className="h-6 w-6 text-green-600" />
+                        ) : area.completeness > 0 ? (
+                          <Clock className="h-6 w-6 text-blue-600" />
+                        ) : (
+                          <MapPin className="h-6 w-6 text-gray-400" />
+                        )}
+                      </div>
+
+                      {/* Content */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-2">
+                          <h4 className="font-medium text-gray-900">{area.name}</h4>
+                          <Badge className={getPriorityColor(area.category)}>
+                            {area.category}
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-gray-600 mb-2">{area.description}</p>
+                        
+                        <div className="flex items-center gap-4 text-xs text-gray-500 mb-2">
+                          <span>{area.completeness}% complete</span>
+                          <span>{area.estimatedTime}</span>
+                          <span>{area.tasks.length} tasks</span>
+                        </div>
+
+                        {/* Progress Bar */}
+                        <Progress value={area.completeness} className="h-1.5 mb-2" />
+
+                        {/* Dependencies */}
+                        {area.dependencies.length > 0 && (
+                          <div className="text-xs text-gray-500">
+                            <span>Requires: </span>
+                            {area.dependencies.map((dep, i) => (
+                              <span key={dep}>
+                                {legacyAreas.find(a => a.id === dep)?.name}
+                                {i < area.dependencies.length - 1 && ', '}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="goals" className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-medium">Personal Goals</h3>
+            <Button className="gap-2">
+              <Plus className="h-4 w-4" />
+              Set New Goal
+            </Button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {goals.map((goal) => (
+              <Card key={goal.id} className="hover:shadow-md transition-shadow">
+                <CardHeader className="pb-2">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-base">{goal.title}</CardTitle>
+                    <Badge className={getPriorityColor(goal.priority)}>
+                      {goal.priority}
+                    </Badge>
+                  </div>
+                  <p className="text-sm text-gray-600">{goal.description}</p>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <div>
+                      <div className="flex items-center justify-between text-sm mb-1">
+                        <span>Progress</span>
+                        <span className={getCompletenessColor(goal.currentProgress)}>
+                          {goal.currentProgress}%
+                        </span>
+                      </div>
+                      <Progress value={goal.currentProgress} className="h-2" />
+                    </div>
+                    
+                    <div className="flex items-center justify-between text-xs text-gray-500">
+                      <div className="flex items-center gap-1">
+                        <Calendar className="h-3 w-3" />
+                        Target: {goal.targetDate.toLocaleDateString()}
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Target className="h-3 w-3" />
+                        {goal.targetCompleteness}%
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <Badge variant="outline" className="text-xs">
+                        {goal.category.replace('-', ' ')}
+                      </Badge>
+                      <div className={`text-xs ${goal.isActive ? 'text-green-600' : 'text-gray-500'}`}>
+                        {goal.isActive ? 'Active' : 'Paused'}
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </TabsContent>
+
+        <TabsContent value="achievements" className="space-y-4">
+          <div className="flex items-center gap-2 mb-4">
+            <Medal className="h-5 w-5 text-yellow-600" />
+            <h3 className="text-lg font-medium">Achievements Earned</h3>
+            <Badge variant="secondary">{achievements.length} total</Badge>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {achievements.map((achievement) => (
+              <motion.div
+                key={achievement.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                whileHover={{ y: -2 }}
+              >
+                <Card className={`border-2 ${getRarityColor(achievement.rarity)} hover:shadow-lg transition-all`}>
+                  <CardContent className="p-4">
+                    <div className="flex items-start gap-3">
+                      <div className="p-2 bg-white rounded-lg shadow-sm">
+                        {achievement.icon}
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h4 className="font-medium text-gray-900">{achievement.title}</h4>
+                          <Badge className={getRarityColor(achievement.rarity).replace('text-', 'bg-').replace('bg-', 'text-')}>
+                            {achievement.rarity}
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-gray-600 mb-2">{achievement.description}</p>
+                        <div className="flex items-center justify-between text-xs text-gray-500">
+                          <span>Earned {achievement.earnedAt.toLocaleDateString()}</span>
+                          <span className="font-medium">{achievement.reward}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </TabsContent>
+
+        <TabsContent value="analytics" className="space-y-4">
+          <div className="flex items-center gap-2 mb-4">
+            <BarChart3 className="h-5 w-5 text-blue-600" />
+            <h3 className="text-lg font-medium">Progress Analytics</h3>
+          </div>
+
+          {/* Time-based Analytics */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <Clock className="h-4 w-4 text-blue-600" />
+                  <span className="text-sm font-medium">Time Invested</span>
+                </div>
+                <div className="text-2xl font-bold text-blue-600">12.5h</div>
+                <p className="text-xs text-gray-500">Total time spent</p>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <TrendingUp className="h-4 w-4 text-green-600" />
+                  <span className="text-sm font-medium">Velocity</span>
+                </div>
+                <div className="text-2xl font-bold text-green-600">3.2</div>
+                <p className="text-xs text-gray-500">Tasks per week</p>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <Target className="h-4 w-4 text-purple-600" />
+                  <span className="text-sm font-medium">Efficiency</span>
+                </div>
+                <div className="text-2xl font-bold text-purple-600">87%</div>
+                <p className="text-xs text-gray-500">Estimated vs actual time</p>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <Sparkles className="h-4 w-4 text-orange-600" />
+                  <span className="text-sm font-medium">Best Streak</span>
+                </div>
+                <div className="text-2xl font-bold text-orange-600">14</div>
+                <p className="text-xs text-gray-500">Consecutive days</p>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Progress Chart Placeholder */}
+          <Card>
+            <CardContent className="p-6">
+              <div className="h-64 flex items-center justify-center text-gray-500">
+                <div className="text-center">
+                  <Timeline className="h-12 w-12 mx-auto mb-2 text-gray-300" />
+                  <p>Progress analytics chart would be implemented here</p>
+                  <p className="text-sm">Shows completion trends over time</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+};

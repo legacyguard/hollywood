@@ -28,11 +28,12 @@
       "Bash(git fetch:*)",
       "Bash(npm:*)",
       "WebSearch",
-      "Read(//tmp/**)",
-      "Bash(find:*)"
+      "Read(//tmp/**)"
     ],
     "deny": [],
-    "ask": [],
+    "ask": [
+      "Bash(find:*)"
+    ],
     "additionalDirectories": [
       "/Users/luborfedak/Documents/Github"
     ]
