@@ -4,22 +4,17 @@
  */
 
 import { useState } from 'react';
-import { 
-  Send, 
-  Clock, 
-  DollarSign, 
-  FileText, 
-  Users, 
-  AlertCircle,
+import {
+  Send,
+  Clock,
+  Users,
   CheckCircle,
   Scale,
-  Calendar,
   Star,
   ArrowRight,
-  Mail,
-  User
+  Mail
 } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -27,7 +22,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import type { ReviewRequest, ProfessionalReviewer } from '@/types/professional';
@@ -122,7 +116,7 @@ export function ReviewRequestWorkflow({
   onCancel,
   className
 }: ReviewRequestWorkflowProps) {
-  
+
   const [currentStep, setCurrentStep] = useState(1);
   const [form, setForm] = useState<RequestForm>({
     review_type: 'comprehensive',
@@ -140,9 +134,9 @@ export function ReviewRequestWorkflow({
 
   const getRecommendedReviewers = () => {
     return availableReviewers
-      .filter(reviewer => 
+      .filter(reviewer =>
         reviewer.status === 'active' &&
-        form.required_specializations.some(spec => 
+        form.required_specializations.some(spec =>
           reviewer.specializations.some(s => s.name.toLowerCase().includes(spec))
         )
       )
@@ -155,24 +149,24 @@ export function ReviewRequestWorkflow({
       comprehensive: 425,
       certified: 625
     };
-    
+
     let cost = basePrice[form.review_type];
-    
+
     // Priority adjustments
     if (form.priority === 'urgent') cost *= 1.5;
     else if (form.priority === 'high') cost *= 1.25;
-    
+
     // Family complexity adjustments
     if (familyContext.complex_assets) cost += 50;
     if (familyContext.business_interests) cost += 75;
     if (familyContext.minor_children) cost += 25;
-    
+
     return Math.round(cost);
   };
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
-    
+
     try {
       const request: Omit<ReviewRequest, 'id' | 'user_id' | 'created_at' | 'updated_at'> = {
         document_id: documentId,
@@ -231,7 +225,7 @@ export function ReviewRequestWorkflow({
                           <div className="text-sm text-gray-500">{type.turnaroundTime}</div>
                         </div>
                       </div>
-                      
+
                       <div className="grid grid-cols-2 gap-4 text-sm">
                         {type.features.map((feature, index) => (
                           <div key={index} className="flex items-center gap-2">
@@ -277,7 +271,7 @@ export function ReviewRequestWorkflow({
           >
             <div>
               <h3 className="text-xl font-semibold mb-4">Reviewer Preferences</h3>
-              
+
               <div className="space-y-4">
                 <div>
                   <Label>Required Specializations</Label>
@@ -411,7 +405,7 @@ export function ReviewRequestWorkflow({
           >
             <div>
               <h3 className="text-xl font-semibold mb-4">Additional Details</h3>
-              
+
               <div>
                 <Label htmlFor="special_instructions">Special Instructions or Questions</Label>
                 <Textarea

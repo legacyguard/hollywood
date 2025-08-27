@@ -4,15 +4,12 @@
  */
 
 import { useState, useEffect } from 'react';
-import { 
-  FileText, 
-  Clock, 
-  CheckCircle, 
-  AlertTriangle, 
-  Users, 
-  DollarSign, 
+import {
+  FileText,
+  Clock,
+  CheckCircle,
+  DollarSign,
   Calendar,
-  Filter,
   Search,
   Eye,
   Download,
@@ -31,7 +28,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import type { DocumentReview, ReviewResult, ProfessionalReviewer } from '@/types/professional';
+import type { DocumentReview, ProfessionalReviewer } from '@/types/professional';
 
 interface AttorneyDashboardProps {
   reviewer: ProfessionalReviewer;
@@ -61,7 +58,7 @@ export function AttorneyDashboard({
   onDeclineReview,
   className
 }: AttorneyDashboardProps) {
-  
+
   const [searchQuery, setSearchQuery] = useState('');
   const [priorityFilter, setPriorityFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -78,7 +75,7 @@ export function AttorneyDashboard({
   useEffect(() => {
     const now = new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    
+
     const completedThisMonth = completedReviews.filter(
       review => new Date(review.completed_at || '') >= startOfMonth
     ).length;
@@ -98,13 +95,13 @@ export function AttorneyDashboard({
   }, [pendingReviews, completedReviews]);
 
   const filteredReviews = pendingReviews.filter(review => {
-    const matchesSearch = searchQuery === '' || 
+    const matchesSearch = searchQuery === '' ||
       review.document_id.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    const matchesPriority = priorityFilter === 'all' || 
+
+    const matchesPriority = priorityFilter === 'all' ||
       review.priority === priorityFilter;
-    
-    const matchesStatus = statusFilter === 'all' || 
+
+    const matchesStatus = statusFilter === 'all' ||
       review.status === statusFilter;
 
     return matchesSearch && matchesPriority && matchesStatus;
@@ -144,7 +141,7 @@ export function AttorneyDashboard({
     const date = new Date(dateString);
     const now = new Date();
     const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
-    
+
     if (diffInHours < 1) return 'Just now';
     if (diffInHours < 24) return `${diffInHours}h ago`;
     const diffInDays = Math.floor(diffInHours / 24);
@@ -486,7 +483,7 @@ export function AttorneyDashboard({
                     </div>
                     <Progress value={85} className="h-2" />
                   </div>
-                  
+
                   <div>
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-sm text-gray-600">Client Satisfaction</span>
@@ -519,7 +516,7 @@ export function AttorneyDashboard({
                     <span className="text-gray-600">Reviews Completed</span>
                     <span className="font-semibold">{stats.completedThisMonth}</span>
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
                     <span className="text-gray-600">Earnings This Month</span>
                     <span className="font-semibold text-green-600">
@@ -530,8 +527,8 @@ export function AttorneyDashboard({
                   <div className="flex items-center justify-between">
                     <span className="text-gray-600">Average Per Review</span>
                     <span className="font-semibold">
-                      ${stats.completedThisMonth > 0 
-                        ? Math.round(stats.totalEarnings / stats.completedThisMonth).toLocaleString() 
+                      ${stats.completedThisMonth > 0
+                        ? Math.round(stats.totalEarnings / stats.completedThisMonth).toLocaleString()
                         : '0'}
                     </span>
                   </div>

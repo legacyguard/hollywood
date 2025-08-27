@@ -4,8 +4,8 @@
  */
 
 import { useState } from 'react';
-import { ArrowRight, ArrowLeft, CheckCircle, Scale, Award, Users, Shield, Mail, Phone, MapPin, Building } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { ArrowRight, ArrowLeft, CheckCircle, Scale, Award, Users, Shield } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';

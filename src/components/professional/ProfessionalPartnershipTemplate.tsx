@@ -4,7 +4,7 @@
  */
 
 import { useState } from 'react';
-import { FileText, Download, Eye, CheckCircle, AlertTriangle, Scale, Shield, DollarSign } from 'lucide-react';
+import { Download, CheckCircle, AlertTriangle, Scale, Shield, DollarSign } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -54,7 +54,7 @@ export function ProfessionalPartnershipTemplate({
   onDownload,
   className
 }: ProfessionalPartnershipTemplateProps) {
-  
+
   const [activeSection, setActiveSection] = useState<string>('overview');
 
   const formatCurrency = (amount: number) => {
@@ -158,17 +158,17 @@ export function ProfessionalPartnershipTemplate({
                 <h3 className="text-xl font-semibold mb-4">Partnership Overview</h3>
                 <div className="prose max-w-none text-gray-700">
                   <p>
-                    This Professional Partnership Agreement ("Agreement") is entered into between 
-                    LegacyGuard Technologies, Inc. ("LegacyGuard") and {reviewerName} 
-                    {lawFirm && ` of ${lawFirm}`} ("Professional") for the provision of legal 
+                    This Professional Partnership Agreement ("Agreement") is entered into between
+                    LegacyGuard Technologies, Inc. ("LegacyGuard") and {reviewerName}
+                    {lawFirm && ` of ${lawFirm}`} ("Professional") for the provision of legal
                     document review services to LegacyGuard clients.
                   </p>
-                  
+
                   <h4 className="text-lg font-semibold mt-6 mb-3">Purpose</h4>
                   <p>
-                    LegacyGuard operates a platform that helps families protect their legacy through 
-                    secure document management and professional legal guidance. Professional agrees 
-                    to provide high-quality legal document review services to LegacyGuard clients 
+                    LegacyGuard operates a platform that helps families protect their legacy through
+                    secure document management and professional legal guidance. Professional agrees
+                    to provide high-quality legal document review services to LegacyGuard clients
                     in accordance with the terms set forth in this Agreement.
                   </p>
 
@@ -186,7 +186,7 @@ export function ProfessionalPartnershipTemplate({
           <TabsContent value="compensation" className="p-6">
             <div className="space-y-6">
               <h3 className="text-xl font-semibold">Compensation Structure</h3>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Card className="bg-green-50 border-green-200">
                   <CardHeader>
@@ -254,7 +254,7 @@ export function ProfessionalPartnershipTemplate({
           <TabsContent value="responsibilities" className="p-6">
             <div className="space-y-6">
               <h3 className="text-xl font-semibold">Professional Responsibilities</h3>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <h4 className="font-semibold text-green-800 mb-3 flex items-center gap-2">
@@ -313,7 +313,7 @@ export function ProfessionalPartnershipTemplate({
                   <div>
                     <h5 className="font-semibold text-yellow-800 mb-1">Response Time Requirements</h5>
                     <p className="text-sm text-yellow-700">
-                      Professional must respond to new review requests within {terms.response_time_sla} hours. 
+                      Professional must respond to new review requests within {terms.response_time_sla} hours.
                       Failure to maintain response times may result in reduced review assignments.
                     </p>
                   </div>
@@ -325,7 +325,7 @@ export function ProfessionalPartnershipTemplate({
           <TabsContent value="terms" className="p-6">
             <div className="space-y-6">
               <h3 className="text-xl font-semibold">Terms and Conditions</h3>
-              
+
               <div className="space-y-6">
                 <div>
                   <h4 className="font-semibold mb-3">Agreement Duration and Termination</h4>
@@ -381,18 +381,18 @@ export function ProfessionalPartnershipTemplate({
           <TabsContent value="signature" className="p-6">
             <div className="space-y-6">
               <h3 className="text-xl font-semibold">Agreement Acceptance</h3>
-              
+
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
                 <div className="flex items-start gap-4">
                   <Scale className="h-8 w-8 text-blue-600 mt-1" />
                   <div>
                     <h4 className="font-semibold text-blue-900 mb-2">Ready to Join Our Professional Network?</h4>
                     <p className="text-blue-800 mb-4">
-                      By accepting this agreement, you confirm that you have read, understood, and agree 
-                      to all terms and conditions outlined above. You also confirm that you are 
+                      By accepting this agreement, you confirm that you have read, understood, and agree
+                      to all terms and conditions outlined above. You also confirm that you are
                       authorized to enter into this agreement.
                     </p>
-                    
+
                     <div className="text-sm text-blue-700 mb-4">
                       <strong>Professional Confirmations:</strong>
                       <ul className="list-disc ml-6 mt-2 space-y-1">
