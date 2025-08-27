@@ -33,6 +33,9 @@ import type {
   DocumentCategorizationResult,
   BulkImportResult
 } from '@/types/gmail';
+import { duplicateDetectionService } from '@/services/duplicateDetectionService';
+import type { DuplicateMatch, DuplicateResolutionChoice } from '@/services/duplicateDetectionService';
+import { DuplicateResolutionStep } from './DuplicateResolutionStep';
 
 interface EmailImportWizardProps {
   onComplete: (result: BulkImportResult) => void;
@@ -40,7 +43,7 @@ interface EmailImportWizardProps {
   className?: string;
 }
 
-type WizardStep = 'auth' | 'config' | 'scanning' | 'processing' | 'review' | 'importing' | 'complete';
+type WizardStep = 'auth' | 'config' | 'scanning' | 'processing' | 'duplicates' | 'review' | 'importing' | 'complete';
 
 interface WizardState {
   step: WizardStep;
@@ -50,6 +53,8 @@ interface WizardState {
   documents: ExtractedDocument[];
   categorizations: DocumentCategorizationResult[];
   selectedDocuments: Set<string>;
+  duplicates: DuplicateMatch[];
+  resolvedDocuments: ExtractedDocument[];
   error: string | null;
 }
 
@@ -62,6 +67,8 @@ export function EmailImportWizard({ onComplete, onClose, className }: EmailImpor
     documents: [],
     categorizations: [],
     selectedDocuments: new Set(),
+    duplicates: [],
+    resolvedDocuments: [],
     error: null
   });
 
@@ -124,14 +131,8 @@ export function EmailImportWizard({ onComplete, onClose, className }: EmailImpor
       // Categorize documents
       const categorizations = await gmailService.categorizeDocuments(documents);
 
-      // Select all high and medium relevance documents by default
-      const selectedDocuments = new Set<string>();
-      documents.forEach((doc, index) => {
-        const categorization = categorizations[index];
-        if (categorization && categorization.familyRelevance !== 'low') {
-          selectedDocuments.add(doc.id);
-        }
-      });
+      // Detect duplicates
+      const duplicateResult = await duplicateDetectionService.detectDuplicates(documents);
 
       const completedSession: EmailImportSession = {
         ...session,
@@ -141,14 +142,36 @@ export function EmailImportWizard({ onComplete, onClose, className }: EmailImpor
         completedAt: new Date()
       };
 
-      setState(prev => ({
-        ...prev,
-        session: completedSession,
-        documents,
-        categorizations,
-        selectedDocuments,
-        step: 'review'
-      }));
+      if (duplicateResult.duplicates.length > 0) {
+        // Has duplicates - go to duplicate resolution step
+        setState(prev => ({
+          ...prev,
+          session: completedSession,
+          documents,
+          categorizations,
+          duplicates: duplicateResult.duplicates,
+          resolvedDocuments: duplicateResult.uniqueDocuments,
+          step: 'duplicates'
+        }));
+      } else {
+        // No duplicates - select all high and medium relevance documents by default
+        const selectedDocuments = new Set<string>();
+        documents.forEach((doc, index) => {
+          const categorization = categorizations[index];
+          if (categorization && categorization.familyRelevance !== 'low') {
+            selectedDocuments.add(doc.id);
+          }
+        });
+
+        setState(prev => ({
+          ...prev,
+          session: completedSession,
+          documents,
+          categorizations,
+          selectedDocuments,
+          step: 'review'
+        }));
+      }
 
     } catch (error) {
       setState(prev => ({
@@ -160,6 +183,70 @@ export function EmailImportWizard({ onComplete, onClose, className }: EmailImpor
       setIsLoading(false);
     }
   }, []);
+
+  // Duplicate resolution
+  const handleDuplicateResolution = useCallback(async (choices: DuplicateResolutionChoice[]) => {
+    try {
+      // Apply resolution choices
+      const resolvedDuplicates = await duplicateDetectionService.applyResolution(state.duplicates, choices);
+
+      // Combine resolved duplicates with unique documents
+      const allDocuments = [...state.resolvedDocuments, ...resolvedDuplicates];
+
+      // Find categorizations for all documents
+      const allCategorizations: DocumentCategorizationResult[] = [];
+      allDocuments.forEach(doc => {
+        const index = state.documents.findIndex(d => d.id === doc.id);
+        if (index >= 0 && state.categorizations[index]) {
+          allCategorizations.push(state.categorizations[index]);
+        }
+      });
+
+      // Select all high and medium relevance documents by default
+      const selectedDocuments = new Set<string>();
+      allDocuments.forEach((doc, index) => {
+        const categorization = allCategorizations[index];
+        if (categorization && categorization.familyRelevance !== 'low') {
+          selectedDocuments.add(doc.id);
+        }
+      });
+
+      setState(prev => ({
+        ...prev,
+        documents: allDocuments,
+        categorizations: allCategorizations,
+        selectedDocuments,
+        step: 'review'
+      }));
+    } catch (error) {
+      setState(prev => ({
+        ...prev,
+        error: `Failed to resolve duplicates: ${error instanceof Error ? error.message : 'Unknown error'}`
+      }));
+    }
+  }, [state.duplicates, state.resolvedDocuments, state.documents, state.categorizations]);
+
+  const handleSkipDuplicates = useCallback(() => {
+    // Skip all duplicates and proceed with unique documents only
+    const selectedDocuments = new Set<string>();
+    state.resolvedDocuments.forEach((doc, index) => {
+      // Find categorization for this document
+      const originalIndex = state.documents.findIndex(d => d.id === doc.id);
+      if (originalIndex >= 0) {
+        const categorization = state.categorizations[originalIndex];
+        if (categorization && categorization.familyRelevance !== 'low') {
+          selectedDocuments.add(doc.id);
+        }
+      }
+    });
+
+    setState(prev => ({
+      ...prev,
+      documents: state.resolvedDocuments,
+      selectedDocuments,
+      step: 'review'
+    }));
+  }, [state.resolvedDocuments, state.documents, state.categorizations]);
 
   // Document selection
   const toggleDocumentSelection = useCallback((documentId: string) => {
@@ -226,6 +313,14 @@ export function EmailImportWizard({ onComplete, onClose, className }: EmailImpor
         return <ScanningStep session={state.session} />;
       case 'processing':
         return <ProcessingStep session={state.session} />;
+      case 'duplicates':
+        return (
+          <DuplicateResolutionStep
+            duplicates={state.duplicates}
+            onResolve={handleDuplicateResolution}
+            onSkip={handleSkipDuplicates}
+          />
+        );
       case 'review':
         return (
           <ReviewStep
@@ -246,8 +341,16 @@ export function EmailImportWizard({ onComplete, onClose, className }: EmailImpor
   };
 
   const getStepProgress = () => {
-    const steps: WizardStep[] = ['auth', 'config', 'scanning', 'processing', 'review', 'importing', 'complete'];
-    const currentIndex = steps.indexOf(state.step);
+    const steps: WizardStep[] = ['auth', 'config', 'scanning', 'processing', 'duplicates', 'review', 'importing', 'complete'];
+    let currentIndex = steps.indexOf(state.step);
+
+    // If no duplicates found, skip the duplicates step in progress calculation
+    if (state.duplicates.length === 0 && state.step !== 'duplicates') {
+      const stepsWithoutDuplicates: WizardStep[] = ['auth', 'config', 'scanning', 'processing', 'review', 'importing', 'complete'];
+      currentIndex = stepsWithoutDuplicates.indexOf(state.step);
+      return ((currentIndex + 1) / stepsWithoutDuplicates.length) * 100;
+    }
+
     return ((currentIndex + 1) / steps.length) * 100;
   };
 
@@ -275,6 +378,7 @@ export function EmailImportWizard({ onComplete, onClose, className }: EmailImpor
               <span>Configure</span>
               <span>Scan</span>
               <span>Process</span>
+              {state.duplicates.length > 0 && <span>Duplicates</span>}
               <span>Review</span>
               <span>Import</span>
               <span>Complete</span>

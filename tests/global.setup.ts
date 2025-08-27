@@ -11,14 +11,14 @@ setup.describe.configure({ mode: 'serial' });
 
 setup('global setup', async ({}) => {
   console.log('🔐 Setting up Clerk testing environment...');
-  
+
   // Ensure environment variables are set
   if (!process.env.CLERK_PUBLISHABLE_KEY || !process.env.CLERK_SECRET_KEY) {
     console.error('❌ Missing Clerk environment variables!');
     console.error('Please set CLERK_PUBLISHABLE_KEY and CLERK_SECRET_KEY');
     process.exit(1);
   }
-  
+
   try {
     // This obtains a Testing Token when your test suite starts
     await clerkSetup();

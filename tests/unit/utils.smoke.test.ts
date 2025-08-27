@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import { cn } from '@/lib/utils';
-import { 
-  encryptData, 
-  decryptData, 
-  hashPassword, 
+import {
+  encryptData,
+  decryptData,
+  hashPassword,
   verifyPassword,
   generateSecureToken
 } from '@/lib/secure-storage';
@@ -42,7 +42,7 @@ describe('Smoke Tests - Core Utilities', () => {
 
     it('should fail decryption with wrong password', async () => {
       const encrypted = await encryptData(testData, testPassword);
-      
+
       await expect(
         decryptData(encrypted, 'wrong-password')
       ).rejects.toThrow();
@@ -51,9 +51,9 @@ describe('Smoke Tests - Core Utilities', () => {
     it('should generate different encrypted outputs for same data', async () => {
       const encrypted1 = await encryptData(testData, testPassword);
       const encrypted2 = await encryptData(testData, testPassword);
-      
+
       expect(encrypted1).not.toBe(encrypted2);
-      
+
       // But both should decrypt to same data
       const decrypted1 = await decryptData(encrypted1, testPassword);
       const decrypted2 = await decryptData(encrypted2, testPassword);
@@ -83,9 +83,9 @@ describe('Smoke Tests - Core Utilities', () => {
     it('should generate different hashes for same password', async () => {
       const hash1 = await hashPassword(testPassword);
       const hash2 = await hashPassword(testPassword);
-      
+
       expect(hash1).not.toBe(hash2);
-      
+
       // But both should verify with original password
       expect(await verifyPassword(testPassword, hash1)).toBe(true);
       expect(await verifyPassword(testPassword, hash2)).toBe(true);
@@ -133,7 +133,7 @@ describe('Smoke Tests - Core Utilities', () => {
         'user.name@company.co.uk',
         'first+last@domain.org'
       ];
-      
+
       const invalidEmails = [
         'not-an-email',
         '@missing-local.com',

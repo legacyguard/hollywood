@@ -39,13 +39,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (error) {
       if (error.code === 'PGRST116') {
         // No rows found - user has no keys
-        return res.status(200).json({ 
-          hasKeys: false 
+        return res.status(200).json({
+          hasKeys: false
         });
       }
       console.error('Database error:', error);
-      return res.status(500).json({ 
-        error: 'Failed to check key status' 
+      return res.status(500).json({
+        error: 'Failed to check key status'
       });
     }
 
@@ -61,8 +61,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   } catch (error) {
     console.error('Error checking key status:', error);
-    return res.status(500).json({ 
-      error: 'Internal server error' 
+    return res.status(500).json({
+      error: 'Internal server error'
     });
   }
 }

@@ -13,13 +13,13 @@ const supabase = createClient(
 // Password validation
 function validatePasswordStrength(password: string): { isValid: boolean; errors?: string[] } {
   const errors: string[] = [];
-  
+
   if (password.length < 12) errors.push('Password must be at least 12 characters');
   if (!/[A-Z]/.test(password)) errors.push('Password must contain uppercase letters');
   if (!/[a-z]/.test(password)) errors.push('Password must contain lowercase letters');
   if (!/[0-9]/.test(password)) errors.push('Password must contain numbers');
   if (!/[^A-Za-z0-9]/.test(password)) errors.push('Password must contain special characters');
-  
+
   return {
     isValid: errors.length === 0,
     errors: errors.length > 0 ? errors : undefined
@@ -35,7 +35,7 @@ function deriveKeyFromPassword(password: string, salt: Uint8Array): Uint8Array {
   const combined = new Uint8Array(passwordBytes.length + salt.length);
   combined.set(passwordBytes);
   combined.set(salt, passwordBytes.length);
-  
+
   return nacl.hash(combined).slice(0, nacl.secretbox.keyLength);
 }
 
@@ -68,7 +68,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Validate password strength
     const validation = validatePasswordStrength(password);
     if (!validation.isValid) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         error: 'Password does not meet security requirements',
         details: validation.errors
       });
@@ -83,8 +83,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       .single();
 
     if (existingKeys) {
-      return res.status(400).json({ 
-        error: 'Keys already exist. Use key rotation endpoint to update.' 
+      return res.status(400).json({
+        error: 'Keys already exist. Use key rotation endpoint to update.'
       });
     }
 
@@ -92,7 +92,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const keyPair = nacl.box.keyPair();
     const salt = nacl.randomBytes(16);
     const derivedKey = deriveKeyFromPassword(password, salt);
-    
+
     // Encrypt private key with derived key
     const nonce = nacl.randomBytes(nacl.secretbox.nonceLength);
     const encryptedPrivateKey = nacl.secretbox(keyPair.secretKey, nonce, derivedKey);

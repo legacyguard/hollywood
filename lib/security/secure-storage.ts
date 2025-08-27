@@ -233,7 +233,7 @@ export class SecureStorage {
         request.onsuccess = () => resolve(request.result);
         request.onerror = () => resolve(null);
       });
-      
+
       if (!data) return null;
 
       const encrypted = new Uint8Array(data.encrypted).buffer;

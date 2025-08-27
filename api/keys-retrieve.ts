@@ -17,7 +17,7 @@ function deriveKeyFromPassword(password: string, salt: Uint8Array): Uint8Array {
   const combined = new Uint8Array(passwordBytes.length + salt.length);
   combined.set(passwordBytes);
   combined.set(salt, passwordBytes.length);
-  
+
   return nacl.hash(combined).slice(0, nacl.secretbox.keyLength);
 }
 
@@ -46,9 +46,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         .single();
 
       if (error || !data) {
-        return res.status(404).json({ 
+        return res.status(404).json({
           success: false,
-          error: 'Public key not found' 
+          error: 'Public key not found'
         });
       }
 
@@ -96,8 +96,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         .single();
 
       if (error || !data) {
-        return res.status(401).json({ 
-          error: 'Failed to retrieve keys. Please check your password.' 
+        return res.status(401).json({
+          error: 'Failed to retrieve keys. Please check your password.'
         });
       }
 
@@ -112,8 +112,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
         if (!privateKey) {
           // Wrong password
-          return res.status(401).json({ 
-            error: 'Failed to retrieve keys. Please check your password.' 
+          return res.status(401).json({
+            error: 'Failed to retrieve keys. Please check your password.'
           });
         }
 
@@ -138,8 +138,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       } catch (decryptError) {
         // Decryption failed - likely wrong password
-        return res.status(401).json({ 
-          error: 'Failed to retrieve keys. Please check your password.' 
+        return res.status(401).json({
+          error: 'Failed to retrieve keys. Please check your password.'
         });
       }
 

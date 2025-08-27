@@ -12,7 +12,7 @@ export default defineConfig(({ mode }) => {
   // Load env file based on `mode` in the current working directory.
   // Set the third parameter to '' to load all env regardless of the `VITE_` prefix.
   const env = loadEnv(mode, process.cwd(), '');
-  
+
   return {
     // Server Configuration
     server: {
@@ -44,7 +44,7 @@ export default defineConfig(({ mode }) => {
         ignored: ['**/node_modules/**', '**/dist/**'],
       },
     },
-    
+
     // Build Configuration
     build: {
       // Output directory
@@ -105,7 +105,7 @@ export default defineConfig(({ mode }) => {
       // Assets inline limit (4kb)
       assetsInlineLimit: 4096,
     },
-    
+
     // Plugin Configuration
     plugins: [
       // React plugin with SWC for fast compilation
@@ -120,7 +120,7 @@ export default defineConfig(({ mode }) => {
         development: mode === 'development',
       }),
     ].filter(Boolean),
-    
+
     // Module Resolution
     resolve: {
       // Aliases for cleaner imports
@@ -139,7 +139,7 @@ export default defineConfig(({ mode }) => {
       // Extensions to resolve
       extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json'],
     },
-    
+
     // CSS Configuration
     css: {
       // CSS modules configuration
@@ -147,7 +147,7 @@ export default defineConfig(({ mode }) => {
         // Local scope by default for CSS modules
         localsConvention: 'camelCaseOnly',
         // Generate scoped class names
-        generateScopedName: mode === 'production' 
+        generateScopedName: mode === 'production'
           ? '[hash:base64:8]'
           : '[name]__[local]__[hash:base64:5]',
       },
@@ -159,7 +159,7 @@ export default defineConfig(({ mode }) => {
         // }
       },
     },
-    
+
     // Optimization Configuration
     optimizeDeps: {
       // Pre-bundle these dependencies for faster cold start
@@ -178,7 +178,7 @@ export default defineConfig(({ mode }) => {
       // Force optimization of these dependencies
       force: false,
     },
-    
+
     // Environment Variables
     define: {
       // Define global constants
@@ -186,7 +186,7 @@ export default defineConfig(({ mode }) => {
       __BUILD_DATE__: JSON.stringify(new Date().toISOString()),
       __DEV__: mode === 'development',
     },
-    
+
     // Performance options
     esbuild: {
       // Drop console and debugger in production
@@ -196,14 +196,14 @@ export default defineConfig(({ mode }) => {
       // Target for esbuild
       target: 'es2022',
     },
-    
+
     // Preview server configuration (for production preview)
     preview: {
       host: '::',
       port: 4173,
       strictPort: false,
     },
-    
+
     // Worker configuration
     worker: {
       format: 'es',

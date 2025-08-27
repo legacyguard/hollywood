@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
 import { setupClerkTestingToken } from '@clerk/testing/playwright';
 
 /**
@@ -47,13 +47,13 @@ export async function setupClerkTestingForPage(page: Page): Promise<void> {
 export async function waitForClerk(page: Page): Promise<void> {
   // Setup testing token first
   await setupClerkTestingToken({ page });
-  
+
   // Wait for Clerk to be available on window
   await page.waitForFunction(() => {
-    return typeof window !== 'undefined' && 
+    return typeof window !== 'undefined' &&
            (window as any).Clerk !== undefined;
   }, { timeout: 10000 });
-  
+
   // Additional wait for Clerk UI to render
   await page.waitForLoadState('networkidle');
 }
