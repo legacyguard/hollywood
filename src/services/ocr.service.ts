@@ -13,7 +13,7 @@ interface OcrConfig {
 export function checkOcrAvailability(): OcrConfig {
   const googleVisionKey = import.meta.env.VITE_GOOGLE_VISION_API_KEY;
   const googleProjectId = import.meta.env.VITE_GOOGLE_CLOUD_PROJECT_ID;
-  
+
   // Check for Google Vision API
   if (googleVisionKey && googleProjectId) {
     return {
@@ -23,7 +23,7 @@ export function checkOcrAvailability(): OcrConfig {
       projectId: googleProjectId,
     };
   }
-  
+
   // Check for alternative OCR providers (future expansion)
   // const tesseractEndpoint = import.meta.env.VITE_TESSERACT_ENDPOINT;
   // if (tesseractEndpoint) {
@@ -32,10 +32,10 @@ export function checkOcrAvailability(): OcrConfig {
   //     provider: 'tesseract',
   //   };
   // }
-  
+
   // OCR not configured
   console.warn('OCR service not configured. Please set up Google Vision API credentials.');
-  
+
   return {
     isAvailable: false,
     provider: 'none',
@@ -55,16 +55,16 @@ export interface OcrResult {
 // Main OCR service class with fallback handling
 export class OcrService {
   private config: OcrConfig;
-  
+
   constructor() {
     this.config = checkOcrAvailability();
   }
-  
+
   // Check if OCR is available
   public isAvailable(): boolean {
     return this.config.isAvailable;
   }
-  
+
   // Get OCR status message
   public getStatusMessage(): string {
     if (this.config.isAvailable) {
@@ -72,7 +72,7 @@ export class OcrService {
     }
     return this.config.message || 'OCR service unavailable';
   }
-  
+
   // Perform OCR with graceful fallback
   public async performOcr(
     file: File | Blob,
@@ -90,16 +90,16 @@ export class OcrService {
         provider: 'none',
       };
     }
-    
+
     try {
       switch (this.config.provider) {
         case 'google-vision':
           return await this.performGoogleVisionOcr(file, options);
-        
+
         // Future providers can be added here
         // case 'tesseract':
         //   return await this.performTesseractOcr(file, options);
-        
+
         default:
           return {
             success: false,
@@ -109,7 +109,7 @@ export class OcrService {
       }
     } catch (error) {
       console.error('OCR processing error:', error);
-      
+
       // Return graceful error
       return {
         success: false,
@@ -118,7 +118,7 @@ export class OcrService {
       };
     }
   }
-  
+
   // Google Vision OCR implementation
   private async performGoogleVisionOcr(
     file: File | Blob,
@@ -130,7 +130,7 @@ export class OcrService {
     try {
       // Convert file to base64
       const base64 = await this.fileToBase64(file);
-      
+
       // Prepare request body
       const requestBody = {
         requests: [
@@ -150,7 +150,7 @@ export class OcrService {
           },
         ],
       };
-      
+
       // Call Google Vision API
       const response = await fetch(
         `https://vision.googleapis.com/v1/images:annotate?key=${this.config.apiKey}`,
@@ -162,17 +162,17 @@ export class OcrService {
           body: JSON.stringify(requestBody),
         }
       );
-      
+
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(
           errorData.error?.message || `Google Vision API error: ${response.status}`
         );
       }
-      
+
       const data = await response.json();
       const fullTextAnnotation = data.responses?.[0]?.fullTextAnnotation;
-      
+
       if (!fullTextAnnotation) {
         return {
           success: false,
@@ -180,20 +180,20 @@ export class OcrService {
           provider: 'google-vision',
         };
       }
-      
+
       return {
         success: true,
         text: fullTextAnnotation.text,
         confidence: this.calculateConfidence(fullTextAnnotation),
         provider: 'google-vision',
       };
-      
+
     } catch (error) {
       console.error('Google Vision OCR error:', error);
       throw error;
     }
   }
-  
+
   // Convert file to base64
   private fileToBase64(file: File | Blob): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -203,15 +203,15 @@ export class OcrService {
       reader.onerror = (error) => reject(error);
     });
   }
-  
+
   // Calculate confidence score from OCR response
   private calculateConfidence(annotation: any): number {
     // Simple confidence calculation based on detected blocks
     if (!annotation.pages?.length) return 0;
-    
+
     let totalConfidence = 0;
     let blockCount = 0;
-    
+
     annotation.pages.forEach((page: any) => {
       page.blocks?.forEach((block: any) => {
         if (block.confidence) {
@@ -220,7 +220,7 @@ export class OcrService {
         }
       });
     });
-    
+
     return blockCount > 0 ? totalConfidence / blockCount : 0.5;
   }
 }
@@ -239,7 +239,7 @@ export function getOcrService(): OcrService {
 // React hook for OCR service
 export function useOcrService() {
   const service = getOcrService();
-  
+
   const performOcrWithFeedback = async (
     file: File | Blob,
     options?: {
@@ -253,20 +253,20 @@ export function useOcrService() {
       toast.warning('OCR temporarily unavailable', {
         description: 'Please enter document details manually',
       });
-      
+
       return {
         success: false,
         error: service.getStatusMessage(),
         provider: 'none',
       };
     }
-    
+
     // Show progress
     options?.onProgress?.('Processing document...');
-    
+
     try {
       const result = await service.performOcr(file, options);
-      
+
       if (result.success) {
         toast.success('Document processed successfully');
       } else {
@@ -274,15 +274,15 @@ export function useOcrService() {
           description: result.error || 'Please enter details manually',
         });
       }
-      
+
       return result;
     } catch (error) {
       console.error('OCR error:', error);
-      
+
       toast.error('OCR service error', {
         description: 'Please try again or enter details manually',
       });
-      
+
       return {
         success: false,
         error: error instanceof Error ? error.message : 'OCR processing failed',
@@ -290,7 +290,7 @@ export function useOcrService() {
       };
     }
   };
-  
+
   return {
     isAvailable: service.isAvailable(),
     statusMessage: service.getStatusMessage(),

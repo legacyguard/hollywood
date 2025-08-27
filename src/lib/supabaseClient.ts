@@ -68,7 +68,7 @@ export function useSupabaseClient() {
     const createAuthedClient = async () => {
       try {
         const token = await getToken({ template: 'supabase' });
-        
+
         if (!token) {
           setClient(supabaseClient);
           return;
@@ -154,7 +154,7 @@ export function useSupabaseSession() {
   const refreshSession = async () => {
     try {
       const refreshToken = localStorage.getItem(SUPABASE_REFRESH_TOKEN_KEY);
-      
+
       if (!refreshToken) {
         console.warn('No refresh token available');
         return null;

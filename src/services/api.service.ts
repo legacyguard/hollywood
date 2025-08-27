@@ -30,7 +30,7 @@ async function fetchApi<T = any>(
   token?: string | null
 ): Promise<T> {
   const url = `${API_BASE_URL}${endpoint}`;
-  
+
   const headers: HeadersInit = {
     'Content-Type': 'application/json',
     ...options.headers,
@@ -71,7 +71,7 @@ async function fetchApi<T = any>(
     if (error instanceof ApiError) {
       throw error;
     }
-    
+
     if (error instanceof TypeError && error.message === 'Failed to fetch') {
       throw new ApiError('Network error - please check your connection', 0);
     }

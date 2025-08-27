@@ -9,8 +9,8 @@ interface OcrStatusProps {
   variant?: 'inline' | 'alert';
 }
 
-export function OcrStatus({ 
-  className, 
+export function OcrStatus({
+  className,
   showOnlyWhenUnavailable = false,
   variant = 'alert'
 }: OcrStatusProps) {
@@ -70,7 +70,7 @@ export function OcrBadge({ className }: { className?: string }) {
 
   if (!isAvailable) {
     return (
-      <span 
+      <span
         className={`inline-flex items-center gap-1 rounded-full bg-yellow-500/10 px-2 py-1 text-xs font-medium text-yellow-600 dark:text-yellow-400 ${className}`}
       >
         <Info className="h-3 w-3" />
@@ -80,7 +80,7 @@ export function OcrBadge({ className }: { className?: string }) {
   }
 
   return (
-    <span 
+    <span
       className={`inline-flex items-center gap-1 rounded-full bg-green-500/10 px-2 py-1 text-xs font-medium text-green-600 dark:text-green-400 ${className}`}
     >
       <CheckCircle2 className="h-3 w-3" />
