@@ -6,25 +6,35 @@
 import { supabase } from '@/integrations/supabase/client';
 import { 
   professionalReviewCache, 
-  useCachedProfessionalReviews,
   cacheInvalidation 
 } from '@/lib/performance/caching';
-import type {
-  ProfessionalReviewer,
-  ProfessionalReviewerInsert,
-  ProfessionalOnboarding,
-  ProfessionalOnboardingInsert,
-  DocumentReview,
-  DocumentReviewInsert,
-  ReviewRequest,
-  ReviewRequestInsert,
-  ReviewResult,
-  ReviewResultInsert,
-  ProfessionalSpecialization,
-  ProfessionalSpecializationInsert,
-  Consultation,
-  ConsultationInsert
-} from '@/integrations/supabase/types';
+import type { Database } from '@/integrations/supabase/types';
+
+// Type definitions from database schema
+type ProfessionalReviewer = Database['public']['Tables']['professional_reviewers']['Row'];
+type ProfessionalReviewerInsert = Database['public']['Tables']['professional_reviewers']['Insert'];
+type ProfessionalOnboarding = Database['public']['Tables']['professional_onboarding']['Row'];
+type ProfessionalOnboardingInsert = Database['public']['Tables']['professional_onboarding']['Insert'];
+type DocumentReview = Database['public']['Tables']['document_reviews']['Row'];
+type DocumentReviewInsert = Database['public']['Tables']['document_reviews']['Insert'];
+type ReviewRequest = Database['public']['Tables']['review_requests']['Row'];
+type ReviewRequestInsert = Database['public']['Tables']['review_requests']['Insert'];
+type ReviewResult = Database['public']['Tables']['review_results']['Row'];
+type ReviewResultInsert = Database['public']['Tables']['review_results']['Insert'];
+type ProfessionalSpecialization = Database['public']['Tables']['professional_specializations']['Row'];
+type ProfessionalSpecializationInsert = Database['public']['Tables']['professional_specializations']['Insert'];
+type Consultation = Database['public']['Tables']['consultations']['Row'];
+type ConsultationInsert = Database['public']['Tables']['consultations']['Insert'];
+
+// Type for credentials JSON structure
+interface ProfessionalCredentials {
+  full_name?: string;
+  professional_title?: string;
+  bar_number?: string;
+  licensed_states?: string[];
+  specializations?: string[];
+  email?: string;
+}
 
 export class ProfessionalService {
   private static instance: ProfessionalService;
@@ -51,7 +61,9 @@ export class ProfessionalService {
     if (error) throw error;
 
     // Send notification to admin team
-    await this.notifyAdminNewApplication(data);
+    if (data) {
+      await this.notifyAdminNewApplication(data);
+    }
 
     return data;
   }
@@ -108,17 +120,19 @@ export class ProfessionalService {
     onboarding: ProfessionalOnboarding,
     userId: string
   ): Promise<ProfessionalReviewer> {
+    const credentials = onboarding.credentials as ProfessionalCredentials;
+    
     const reviewer: Omit<ProfessionalReviewerInsert, 'id' | 'created_at' | 'updated_at'> = {
-      name: onboarding.credentials?.full_name || 'Unknown',
-      credentials: onboarding.credentials?.professional_title || 'Professional',
-      bar_number: onboarding.credentials?.bar_number || null,
-      jurisdiction: onboarding.credentials?.licensed_states?.[0] || 'Unknown',
-      specializations: onboarding.credentials?.specializations || [],
+      name: credentials?.full_name || 'Unknown',
+      credentials: credentials?.professional_title || 'Professional',
+      bar_number: credentials?.bar_number || null,
+      jurisdiction: credentials?.licensed_states?.[0] || 'Unknown',
+      specializations: credentials?.specializations || [],
       rating: 0,
       reviews_completed: 0,
       average_turnaround_hours: 48,
       profile_verified: onboarding.verification_status === 'verified',
-      contact_email: onboarding.credentials?.email || 'unknown@example.com'
+      contact_email: credentials?.email || 'unknown@example.com'
     };
 
     const { data, error } = await supabase
@@ -216,22 +230,23 @@ export class ProfessionalService {
     reviewerId: string
   ): Promise<DocumentReview> {
     // Get the review request
-    const { data: request } = await supabase
+    const { data: request, error: requestError } = await supabase
       .from('review_requests')
       .select('*')
       .eq('id', requestId)
+      .single();
+
+    if (requestError || !request) {
+      throw requestError || new Error('Review request not found');
+    }
+
     // Create the document review record
     const review: Omit<DocumentReviewInsert, 'id' | 'created_at' | 'updated_at'> = {
       document_id: request.document_id,
       reviewer_id: reviewerId,
-      review_type: request.review_type || 'general',              // Use request type or fallback
-      status: 'pending',                                          // Initial status remains pending
-      risk_level: request.priority === 'urgent' ? 'high' : 'medium', // Derive from request priority
-      review_date: new Date().toISOString()
-    };
-      review_type: 'legal',
+      review_type: 'general', // Default to general since review_requests doesn't have review_type
       status: 'pending',
-      risk_level: 'medium',
+      risk_level: request.priority === 'urgent' ? 'high' : 'medium',
       review_date: new Date().toISOString()
     };
 
@@ -260,16 +275,15 @@ export class ProfessionalService {
     return data;
   }
 
-import type {
-  ProfessionalReviewer,
-  ProfessionalReviewerInsert,
-  ProfessionalReviewerUpdate,
-  ProfessionalOnboarding,
-  ProfessionalOnboardingInsert,
-  DocumentReview,
-  DocumentReviewInsert,
-  DocumentReviewUpdate,
-} from '@/db/schemas';
+  // Update document review
+  async updateDocumentReview(
+    reviewId: string,
+    status: DocumentReview['status'],
+    result?: Partial<ReviewResultInsert>
+  ): Promise<DocumentReview> {
+    const updates: Partial<DocumentReview> = {
+      status,
+      updated_at: new Date().toISOString()
     };
 
     if (status === 'completed') {
@@ -286,7 +300,7 @@ import type {
     if (error) throw error;
 
     // Create review result if provided
-    if (result && status === 'completed') {
+    if (data && result && status === 'completed') {
       await this.createReviewResult(reviewId, result);
     }
 
@@ -395,14 +409,21 @@ import type {
     reviewId: string,
     result: Partial<ReviewResultInsert>
   ): Promise<ReviewResult> {
+    // Ensure required fields are present
+    const reviewResult: ReviewResultInsert = {
+      review_id: reviewId,
+      result_type: result.result_type || 'approval',
+      summary: result.summary || 'Review completed',
+      detailed_findings: result.detailed_findings || {},
+      action_items: result.action_items || {},
+      legal_references: result.legal_references || null,
+      next_steps: result.next_steps || null,
+      validity_period: result.validity_period || null
+    };
+
     const { data, error } = await supabase
       .from('review_results')
-      .insert({
-        review_id: reviewId,
-        ...result,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      })
+      .insert(reviewResult)
       .select()
       .single();
 
@@ -425,11 +446,9 @@ import type {
         *,
         professional_reviewers(
           id,
-          first_name,
-          last_name,
+          name,
           credentials,
-          specializations,
-          profile_image_url
+          specializations
         ),
         review_results(*)
       `)
@@ -456,11 +475,9 @@ import type {
         *,
         professional_reviewers(
           id,
-          first_name,
-          last_name,
+          name,
           credentials,
-          specializations,
-          profile_image_url
+          specializations
         ),
         review_results(*)
       `)
@@ -490,9 +507,8 @@ import type {
         *,
         professional_specializations(*)
       `)
-      .eq('is_active', true)
-      .eq('verification_status', 'verified')
-      .order('rating_average', { ascending: false });
+      .eq('profile_verified', true)
+      .order('rating', { ascending: false });
 
     if (error) throw error;
 
@@ -522,17 +538,19 @@ import type {
   // Email notification system with actual API integration
   private async notifyAdminNewApplication(application: ProfessionalOnboarding): Promise<void> {
     try {
+      const credentials = application.credentials as ProfessionalCredentials;
+      
       const emailData = {
         to: 'admin@legacyguard.app',
-        subject: `New Professional Application - ${application.credentials?.full_name}`,
+        subject: `New Professional Application - ${credentials?.full_name || 'Unknown'}`,
         template: 'admin_new_application',
         data: {
-          applicantName: application.credentials?.full_name,
+          applicantName: credentials?.full_name || 'Unknown',
           applicationId: application.id,
-          professionalTitle: application.credentials?.professional_title,
-          barNumber: application.credentials?.bar_number,
-          licensedStates: application.credentials?.licensed_states,
-          specializations: application.credentials?.specializations,
+          professionalTitle: credentials?.professional_title || 'Unknown',
+          barNumber: credentials?.bar_number || 'N/A',
+          licensedStates: credentials?.licensed_states || [],
+          specializations: credentials?.specializations || [],
           applicationDate: new Date().toLocaleDateString(),
           reviewUrl: `${window.location.origin}/admin/applications/${application.id}`
         }
@@ -564,6 +582,8 @@ import type {
     reviewNotes?: string
   ): Promise<void> {
     try {
+      const credentials = application.credentials as ProfessionalCredentials;
+      
       const templateMap = {
         'pending': 'application_received',
         'under_review': 'application_under_review',
@@ -572,11 +592,11 @@ import type {
       };
 
       const emailData = {
-        to: application.credentials?.email || 'unknown@example.com',
+        to: credentials?.email || 'unknown@example.com',
         subject: `Professional Application Update - ${application.verification_status}`,
         template: templateMap[application.verification_status] || 'application_status_change',
         data: {
-          applicantName: application.credentials?.full_name,
+          applicantName: credentials?.full_name || 'Unknown',
           status: application.verification_status,
           statusDisplay: this.formatStatusForDisplay(application.verification_status),
           reviewNotes: reviewNotes || 'No additional notes provided',
@@ -590,7 +610,7 @@ import type {
       
       await this.logNotification({
         type: 'applicant_status_change',
-        recipient: application.credentials?.email || 'unknown@example.com',
+        recipient: credentials?.email || 'unknown@example.com',
         applicationId: application.id,
         status: 'sent',
         metadata: { newStatus: application.verification_status }
@@ -599,7 +619,7 @@ import type {
       console.error('Failed to send applicant notification:', error);
       await this.logNotification({
         type: 'applicant_status_change',
-        recipient: application.credentials?.email || 'unknown@example.com',
+        recipient: 'unknown@example.com',
         applicationId: application.id,
         status: 'failed',
         error: error instanceof Error ? error.message : 'Unknown error'
@@ -622,13 +642,13 @@ import type {
 
       const emailData = {
         to: reviewer.contact_email,
-        subject: `New Document Review Assignment - ${document?.type || 'Document'}`,
+        subject: `New Document Review Assignment - ${document?.document_type || 'Document'}`,
         template: 'reviewer_assignment',
         data: {
           reviewerName: reviewer.name,
           reviewId: review.id,
-          documentType: document?.type || 'Unknown Document',
-          documentTitle: document?.title || 'Untitled Document',
+          documentType: document?.document_type || 'Unknown Document',
+          documentTitle: document?.file_name || 'Untitled Document',
           reviewType: review.review_type,
           riskLevel: review.risk_level,
           assignmentDate: new Date().toLocaleDateString(),
@@ -663,11 +683,20 @@ import type {
       // Get document and user details
       const { data: document } = await supabase
         .from('documents')
-        .select('*, profiles(email, full_name)')
+        .select('*')
         .eq('id', review.document_id)
         .single();
 
-      if (!document || !document.profiles) return;
+      if (!document) return;
+
+      // Get user profile
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('email, full_name')
+        .eq('id', document.user_id)
+        .single();
+
+      if (!profile) return;
 
       const statusMessages = {
         'pending': 'Your document review has been assigned and is pending',
@@ -677,13 +706,13 @@ import type {
       };
 
       const emailData = {
-        to: document.profiles.email,
+        to: profile.email || 'unknown@example.com',
         subject: `Document Review Update - ${review.status}`,
         template: 'review_status_update',
         data: {
-          userName: document.profiles.full_name,
-          documentTitle: document.title || 'Untitled Document',
-          documentType: document.type,
+          userName: profile.full_name || 'User',
+          documentTitle: document.file_name || 'Untitled Document',
+          documentType: document.document_type,
           reviewStatus: review.status,
           statusMessage: statusMessages[review.status] || 'Status updated',
           reviewId: review.id,
@@ -697,7 +726,7 @@ import type {
 
       await this.logNotification({
         type: 'review_status_change',
-        recipient: document.profiles.email,
+        recipient: profile.email || 'unknown@example.com',
         reviewId: review.id,
         status: 'sent',
         metadata: { newStatus: review.status }
@@ -750,12 +779,16 @@ import type {
     metadata?: Record<string, any>;
   }): Promise<void> {
     try {
-      await supabase
-        .from('notification_logs')
-        .insert({
-          ...notification,
-          created_at: new Date().toISOString()
-        });
+      // Since notification_logs table doesn't exist, we'll use console logging for now
+      console.log('Notification logged:', notification);
+      
+      // TODO: Create notification_logs table in database schema
+      // await supabase
+      //   .from('notification_logs')
+      //   .insert({
+      //     ...notification,
+      //     created_at: new Date().toISOString()
+      //   });
     } catch (error) {
       console.error('Failed to log notification:', error);
     }
@@ -763,17 +796,21 @@ import type {
 
   private async logFailedEmail(emailData: any, error: string): Promise<void> {
     try {
-      await supabase
-        .from('failed_emails')
-        .insert({
-          recipient: emailData.to,
-          subject: emailData.subject,
-          template: emailData.template,
-          email_data: emailData.data,
-          error_message: error,
-          retry_count: 0,
-          created_at: new Date().toISOString()
-        });
+      // Since failed_emails table doesn't exist, we'll use console logging for now
+      console.log('Failed email logged:', { emailData, error });
+      
+      // TODO: Create failed_emails table in database schema
+      // await supabase
+      //   .from('failed_emails')
+      //   .insert({
+      //     recipient: emailData.to,
+      //     subject: emailData.subject,
+      //     template: emailData.template,
+      //     email_data: emailData.data,
+      //     error_message: error,
+      //     retry_count: 0,
+      //     created_at: new Date().toISOString()
+      //   });
     } catch (logError) {
       console.error('Failed to log failed email:', logError);
     }
