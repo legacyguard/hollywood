@@ -119,3 +119,5 @@ export default defineConfig({
   /* Output folder for test artifacts */
   outputDir: './test-results/journey',
 });
+
+

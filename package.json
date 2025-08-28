@@ -11,6 +11,7 @@
     "lint:fix": "eslint . --ext ts,tsx --fix",
     "test": "vitest",
     "test:e2e": "playwright test",
+    "test:e2e:journey": "playwright test --config=playwright.journey.config.mts",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",
     "test:watch": "vitest --watch",

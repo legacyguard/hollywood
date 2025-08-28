@@ -1,10 +1,12 @@
 # 🔴 KRITICKÝ BEZPEČNOSTNÝ INCIDENT - PLÁN ROTÁCIE KĽÚČOV
+
 **Dátum: 28.08.2025**
 **Status: URGENT - .env súbor je v Git histórii**
 
 ## FÁZA 0: OKAMŽITÉ ZASTAVENIE ŠKÔD (Urob HNEĎ)
 
 ### 1. Zastav všetky automatické deploye
+
 ```bash
 # Vercel - zastav auto-deploy
 vercel project hollywood --build-command="echo 'DEPLOYMENT PAUSED FOR SECURITY'"
@@ -14,32 +16,39 @@ gh workflow disable --all
 ```
 
 ### 2. Audit kompromitovaných kľúčov
+
 Skontroluj .env súbor a identifikuj VŠETKY exponované kľúče:
 
 ## KOMPROMITOVANÉ SLUŽBY A KĽÚČE
 
 ### 1. **Supabase**
+
 - `VITE_SUPABASE_URL` - verejný, OK
 - `VITE_SUPABASE_ANON_KEY` - verejný, OK  
 - `SUPABASE_SERVICE_ROLE_KEY` - **KRITICKÝ, MUSÍ BYŤ ROTOVANÝ**
 
 ### 2. **Clerk**
+
 - `VITE_CLERK_PUBLISHABLE_KEY` - verejný, OK
 - `CLERK_SECRET_KEY` - **KRITICKÝ, MUSÍ BYŤ ROTOVANÝ**
 - `CLERK_WEBHOOK_SECRET` - **KRITICKÝ, MUSÍ BYŤ ROTOVANÝ**
 
 ### 3. **OpenAI**
+
 - `OPENAI_API_KEY` - **KRITICKÝ, MUSÍ BYŤ ROTOVANÝ**
 
 ### 4. **Google APIs**
+
 - `GOOGLE_CLIENT_ID` - čiastočne citlivý
 - `GOOGLE_CLIENT_SECRET` - **KRITICKÝ, MUSÍ BYŤ ROTOVANÝ**
 - `GOOGLE_REDIRECT_URI` - verejný, OK
 
 ### 5. **Resend**
+
 - `RESEND_API_KEY` - **KRITICKÝ, MUSÍ BYŤ ROTOVANÝ**
 
 ### 6. **Stripe (pripravované)**
+
 - `STRIPE_PUBLISHABLE_KEY` - verejný, OK
 - `STRIPE_SECRET_KEY` - **KRITICKÝ, MUSÍ BYŤ ROTOVANÝ**
 - `STRIPE_WEBHOOK_SECRET` - **KRITICKÝ, MUSÍ BYŤ ROTOVANÝ**
@@ -47,6 +56,7 @@ Skontroluj .env súbor a identifikuj VŠETKY exponované kľúče:
 ## FÁZA 1: PRÍPRAVA INFRAŠTRUKTÚRY
 
 ### 1.1 Vytvor .env.template
+
 ```bash
 cat > .env.template << 'EOF'
 # === PUBLIC KEYS (Safe to expose) ===
@@ -92,6 +102,7 @@ EOF
 ## FÁZA 2: ROTAČNÉ SKRIPTY
 
 ### 2.1 Hlavný rotačný skript
+
 ```bash
 cat > scripts/rotate-keys.sh << 'EOF'
 #!/bin/bash
@@ -235,6 +246,7 @@ chmod +x scripts/rotate-keys.sh
 ## FÁZA 3: AUTOMATIZÁCIA ROTÁCIE PER PROVIDER
 
 ### 3.1 Supabase Rotácia
+
 ```bash
 cat > scripts/rotate-supabase.sh << 'EOF'
 #!/bin/bash
@@ -248,6 +260,7 @@ EOF
 ```
 
 ### 3.2 Clerk Rotácia
+
 ```bash
 cat > scripts/rotate-clerk.sh << 'EOF'
 #!/bin/bash
@@ -261,6 +274,7 @@ EOF
 ```
 
 ### 3.3 OpenAI Rotácia
+
 ```bash
 cat > scripts/rotate-openai.sh << 'EOF'
 #!/bin/bash
@@ -281,6 +295,7 @@ EOF
 ## FÁZA 4: MONITORING A ALERTING
 
 ### 4.1 Key Health Check
+
 ```bash
 cat > scripts/check-key-health.sh << 'EOF'
 #!/bin/bash
@@ -332,6 +347,7 @@ git clone https://github.com/legacyguard/hollywood.git hollywood-clean"
 ## FÁZA 6: PRAVIDELNÁ ROTÁCIA (Cron/GitHub Actions)
 
 ### 6.1 GitHub Action pre mesačnú rotáciu
+
 ```yaml
 # .github/workflows/rotate-keys.yml
 name: Monthly Key Rotation Reminder
@@ -353,6 +369,7 @@ jobs:
 ```
 
 ### 6.2 Package.json skripty
+
 ```json
 {
   "scripts": {
@@ -392,13 +409,13 @@ jobs:
 
 ## KONTAKTY PRE NÚDZOVÉ SITUÁCIE
 
-- Supabase Support: support@supabase.com
-- Clerk Support: support@clerk.com
+- Supabase Support: <support@supabase.com>
+- Clerk Support: <support@clerk.com>
 - OpenAI: Cez dashboard - no direct support
 - Google Cloud: cloud.google.com/support
-- Resend: support@resend.com
+- Resend: <support@resend.com>
 - Stripe: support.stripe.com
 
 ---
-**DÔLEŽITÉ**: Tento dokument obsahuje citlivé bezpečnostné informácie. 
+**DÔLEŽITÉ**: Tento dokument obsahuje citlivé bezpečnostné informácie.
 Nikdy ho necommituj s vyplnenými hodnotami kľúčov!

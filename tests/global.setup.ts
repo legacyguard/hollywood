@@ -1,15 +1,11 @@
 import { clerkSetup } from '@clerk/testing/playwright';
-import { test as setup } from '@playwright/test';
 
 /**
- * Global setup for Playwright tests with Clerk authentication
+ * Global setup for Playwright tests with Clerk authentication  
  * This runs once before all tests to obtain a Testing Token
  */
 
-// Setup must be run serially, this is necessary if Playwright is configured to run fully parallel
-setup.describe.configure({ mode: 'serial' });
-
-setup('global setup', async ({}) => {
+async function globalSetup() {
   console.log('🔐 Setting up Clerk testing environment...');
 
   // Ensure environment variables are set
@@ -27,6 +23,6 @@ setup('global setup', async ({}) => {
     console.error('❌ Failed to setup Clerk testing:', error);
     throw error;
   }
-});
+}
 
-export default setup;
+export default globalSetup;

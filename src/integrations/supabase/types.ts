@@ -133,6 +133,13 @@ export interface Database {
           expires_at: string | null;
           encrypted_at: string | null;
           last_notification_sent_at: string | null;
+          // Professional review fields
+          professional_review_status: 'none' | 'requested' | 'in_progress' | 'completed' | 'cancelled' | null;
+          professional_review_score: number | null;
+          professional_review_date: string | null;
+          professional_reviewer_id: string | null;
+          review_findings: Json | null;
+          review_recommendations: Json | null;
           // New OCR and AI fields
           category: string | null;
           title: string | null;
@@ -165,6 +172,13 @@ export interface Database {
           expires_at?: string | null;
           encrypted_at?: string | null;
           last_notification_sent_at?: string | null;
+          // Professional review fields
+          professional_review_status?: 'none' | 'requested' | 'in_progress' | 'completed' | 'cancelled' | null;
+          professional_review_score?: number | null;
+          professional_review_date?: string | null;
+          professional_reviewer_id?: string | null;
+          review_findings?: Json | null;
+          review_recommendations?: Json | null;
           // New OCR and AI fields
           category?: string | null;
           title?: string | null;
@@ -197,6 +211,13 @@ export interface Database {
           expires_at?: string | null;
           encrypted_at?: string | null;
           last_notification_sent_at?: string | null;
+          // Professional review fields
+          professional_review_status?: 'none' | 'requested' | 'in_progress' | 'completed' | 'cancelled' | null;
+          professional_review_score?: number | null;
+          professional_review_date?: string | null;
+          professional_reviewer_id?: string | null;
+          review_findings?: Json | null;
+          review_recommendations?: Json | null;
           // New OCR and AI fields
           category?: string | null;
           title?: string | null;
@@ -911,6 +932,157 @@ export interface Database {
           }
         ];
       };
+      // New Analytics and Insights Tables
+      quick_insights: {
+        Row: {
+          id: string;
+          user_id: string;
+          document_id: string | null;
+          type: 'document_analysis' | 'family_impact' | 'time_saved' | 'protection_level' | 'completion_gap' | 'urgent_action';
+          title: string;
+          description: string;
+          value: string | null;
+          impact: 'high' | 'medium' | 'low';
+          priority: 'urgent' | 'important' | 'nice_to_have';
+          actionable: boolean;
+          action_text: string | null;
+          action_url: string | null;
+          metadata: Json;
+          family_impact: Json;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          document_id?: string | null;
+          type: 'document_analysis' | 'family_impact' | 'time_saved' | 'protection_level' | 'completion_gap' | 'urgent_action';
+          title: string;
+          description: string;
+          value?: string | null;
+          impact: 'high' | 'medium' | 'low';
+          priority: 'urgent' | 'important' | 'nice_to_have';
+          actionable?: boolean;
+          action_text?: string | null;
+          action_url?: string | null;
+          metadata?: Json;
+          family_impact?: Json;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          document_id?: string | null;
+          type?: 'document_analysis' | 'family_impact' | 'time_saved' | 'protection_level' | 'completion_gap' | 'urgent_action';
+          title?: string;
+          description?: string;
+          value?: string | null;
+          impact?: 'high' | 'medium' | 'low';
+          priority?: 'urgent' | 'important' | 'nice_to_have';
+          actionable?: boolean;
+          action_text?: string | null;
+          action_url?: string | null;
+          metadata?: Json;
+          family_impact?: Json;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      legacy_milestones: {
+        Row: {
+          id: string;
+          user_id: string;
+          type: 'first_document' | 'protection_threshold' | 'family_complete' | 'professional_review' | 'annual_update' | 'legacy_complete';
+          title: string;
+          description: string;
+          category: 'foundation' | 'protection' | 'family' | 'professional' | 'maintenance' | 'mastery';
+          criteria_type: 'document_count' | 'protection_percentage' | 'family_members' | 'time_based' | 'action_completed' | 'review_score';
+          criteria_threshold: string;
+          criteria_current_value: string;
+          criteria_is_complete: boolean;
+          progress_percentage: number;
+          progress_steps_completed: number;
+          progress_total_steps: number;
+          progress_next_action: string | null;
+          progress_next_action_url: string | null;
+          celebration_should_show: boolean;
+          celebration_text: string | null;
+          celebration_family_impact_message: string | null;
+          celebration_emotional_framing: string | null;
+          celebration_icon: string | null;
+          celebration_color: string | null;
+          rewards: Json;
+          triggers: Json;
+          metadata: Json;
+          created_at: string;
+          completed_at: string | null;
+          last_checked_at: string | null;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          type: 'first_document' | 'protection_threshold' | 'family_complete' | 'professional_review' | 'annual_update' | 'legacy_complete';
+          title: string;
+          description: string;
+          category: 'foundation' | 'protection' | 'family' | 'professional' | 'maintenance' | 'mastery';
+          criteria_type: 'document_count' | 'protection_percentage' | 'family_members' | 'time_based' | 'action_completed' | 'review_score';
+          criteria_threshold: string;
+          criteria_current_value: string;
+          criteria_is_complete?: boolean;
+          progress_percentage?: number;
+          progress_steps_completed?: number;
+          progress_total_steps?: number;
+          progress_next_action?: string | null;
+          progress_next_action_url?: string | null;
+          celebration_should_show?: boolean;
+          celebration_text?: string | null;
+          celebration_family_impact_message?: string | null;
+          celebration_emotional_framing?: string | null;
+          celebration_icon?: string | null;
+          celebration_color?: string | null;
+          rewards?: Json;
+          triggers?: Json;
+          metadata?: Json;
+          created_at?: string;
+          completed_at?: string | null;
+          last_checked_at?: string | null;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          type?: 'first_document' | 'protection_threshold' | 'family_complete' | 'professional_review' | 'annual_update' | 'legacy_complete';
+          title?: string;
+          description?: string;
+          category?: 'foundation' | 'protection' | 'family' | 'professional' | 'maintenance' | 'mastery';
+          criteria_type?: 'document_count' | 'protection_percentage' | 'family_members' | 'time_based' | 'action_completed' | 'review_score';
+          criteria_threshold?: string;
+          criteria_current_value?: string;
+          criteria_is_complete?: boolean;
+          progress_percentage?: number;
+          progress_steps_completed?: number;
+          progress_total_steps?: number;
+          progress_next_action?: string | null;
+          progress_next_action_url?: string | null;
+          celebration_should_show?: boolean;
+          celebration_text?: string | null;
+          celebration_family_impact_message?: string | null;
+          celebration_emotional_framing?: string | null;
+          celebration_icon?: string | null;
+          celebration_color?: string | null;
+          rewards?: Json;
+          triggers?: Json;
+          metadata?: Json;
+          created_at?: string;
+          completed_at?: string | null;
+          last_checked_at?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       consultations: {
         Row: {
           id: string;
@@ -977,6 +1149,425 @@ export interface Database {
           }
         ];
       };
+      // Family System Tables
+      family_members: {
+        Row: {
+          id: string;
+          family_owner_id: string;
+          user_id: string | null;
+          email: string;
+          name: string;
+          role: 'owner' | 'co_owner' | 'collaborator' | 'viewer' | 'emergency_contact';
+          relationship: 'spouse' | 'parent' | 'child' | 'sibling' | 'grandparent' | 'grandchild' | 'aunt_uncle' | 'cousin' | 'friend' | 'professional' | 'other';
+          permissions: Json;
+          is_active: boolean;
+          phone: string | null;
+          address: Json;
+          date_of_birth: string | null;
+          emergency_contact: boolean;
+          access_level: 'view' | 'edit' | 'admin';
+          preferences: Json;
+          trusted_devices: Json;
+          emergency_access_enabled: boolean;
+          avatar_url: string | null;
+          last_active_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          family_owner_id: string;
+          user_id?: string | null;
+          email: string;
+          name: string;
+          role: 'owner' | 'co_owner' | 'collaborator' | 'viewer' | 'emergency_contact';
+          relationship: 'spouse' | 'parent' | 'child' | 'sibling' | 'grandparent' | 'grandchild' | 'aunt_uncle' | 'cousin' | 'friend' | 'professional' | 'other';
+          permissions?: Json;
+          is_active?: boolean;
+          phone?: string | null;
+          address?: Json;
+          date_of_birth?: string | null;
+          emergency_contact?: boolean;
+          access_level?: 'view' | 'edit' | 'admin';
+          preferences?: Json;
+          trusted_devices?: Json;
+          emergency_access_enabled?: boolean;
+          avatar_url?: string | null;
+          last_active_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          family_owner_id?: string;
+          user_id?: string | null;
+          email?: string;
+          name?: string;
+          role?: 'owner' | 'co_owner' | 'collaborator' | 'viewer' | 'emergency_contact';
+          relationship?: 'spouse' | 'parent' | 'child' | 'sibling' | 'grandparent' | 'grandchild' | 'aunt_uncle' | 'cousin' | 'friend' | 'professional' | 'other';
+          permissions?: Json;
+          is_active?: boolean;
+          phone?: string | null;
+          address?: Json;
+          date_of_birth?: string | null;
+          emergency_contact?: boolean;
+          access_level?: 'view' | 'edit' | 'admin';
+          preferences?: Json;
+          trusted_devices?: Json;
+          emergency_access_enabled?: boolean;
+          avatar_url?: string | null;
+          last_active_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      family_invitations: {
+        Row: {
+          id: string;
+          sender_id: string;
+          family_member_id: string;
+          email: string;
+          token: string;
+          status: 'pending' | 'accepted' | 'declined' | 'expired';
+          message: string | null;
+          expires_at: string;
+          accepted_at: string | null;
+          declined_at: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          sender_id: string;
+          family_member_id: string;
+          email: string;
+          token: string;
+          status?: 'pending' | 'accepted' | 'declined' | 'expired';
+          message?: string | null;
+          expires_at: string;
+          accepted_at?: string | null;
+          declined_at?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          sender_id?: string;
+          family_member_id?: string;
+          email?: string;
+          token?: string;
+          status?: 'pending' | 'accepted' | 'declined' | 'expired';
+          message?: string | null;
+          expires_at?: string;
+          accepted_at?: string | null;
+          declined_at?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      emergency_access_requests: {
+        Row: {
+          id: string;
+          requester_id: string;
+          owner_id: string;
+          reason: string;
+          status: 'pending' | 'approved' | 'denied' | 'expired';
+          requested_at: string;
+          expires_at: string;
+          responded_at: string | null;
+          approver_name: string | null;
+          approver_relation: string | null;
+          access_granted_until: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          requester_id: string;
+          owner_id: string;
+          reason: string;
+          status?: 'pending' | 'approved' | 'denied' | 'expired';
+          requested_at?: string;
+          expires_at: string;
+          responded_at?: string | null;
+          approver_name?: string | null;
+          approver_relation?: string | null;
+          access_granted_until?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          requester_id?: string;
+          owner_id?: string;
+          reason?: string;
+          status?: 'pending' | 'approved' | 'denied' | 'expired';
+          requested_at?: string;
+          expires_at?: string;
+          responded_at?: string | null;
+          approver_name?: string | null;
+          approver_relation?: string | null;
+          access_granted_until?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      document_shares: {
+        Row: {
+          id: string;
+          document_id: string;
+          owner_id: string;
+          shared_with_id: string | null;
+          shared_with_email: string | null;
+          family_member_id: string | null;
+          permission_level: 'view' | 'edit' | 'admin';
+          shared_at: string;
+          expires_at: string | null;
+          access_count: number;
+          last_accessed_at: string | null;
+          is_active: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          document_id: string;
+          owner_id: string;
+          shared_with_id?: string | null;
+          shared_with_email?: string | null;
+          family_member_id?: string | null;
+          permission_level?: 'view' | 'edit' | 'admin';
+          shared_at?: string;
+          expires_at?: string | null;
+          access_count?: number;
+          last_accessed_at?: string | null;
+          is_active?: boolean;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          document_id?: string;
+          owner_id?: string;
+          shared_with_id?: string | null;
+          shared_with_email?: string | null;
+          family_member_id?: string | null;
+          permission_level?: 'view' | 'edit' | 'admin';
+          shared_at?: string;
+          expires_at?: string | null;
+          access_count?: number;
+          last_accessed_at?: string | null;
+          is_active?: boolean;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      family_activity_log: {
+        Row: {
+          id: string;
+          family_owner_id: string;
+          actor_id: string | null;
+          actor_name: string | null;
+          action_type: 'member_added' | 'member_removed' | 'member_updated' | 'invitation_sent' | 'invitation_accepted' | 'document_shared' | 'document_accessed' | 'emergency_access_requested' | 'emergency_access_granted' | 'role_changed';
+          target_type: 'family_member' | 'document' | 'invitation' | 'emergency_request' | null;
+          target_id: string | null;
+          details: Json;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          family_owner_id: string;
+          actor_id?: string | null;
+          actor_name?: string | null;
+          action_type: 'member_added' | 'member_removed' | 'member_updated' | 'invitation_sent' | 'invitation_accepted' | 'document_shared' | 'document_accessed' | 'emergency_access_requested' | 'emergency_access_granted' | 'role_changed';
+          target_type?: 'family_member' | 'document' | 'invitation' | 'emergency_request' | null;
+          target_id?: string | null;
+          details?: Json;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          family_owner_id?: string;
+          actor_id?: string | null;
+          actor_name?: string | null;
+          action_type?: 'member_added' | 'member_removed' | 'member_updated' | 'invitation_sent' | 'invitation_accepted' | 'document_shared' | 'document_accessed' | 'emergency_access_requested' | 'emergency_access_granted' | 'role_changed';
+          target_type?: 'family_member' | 'document' | 'invitation' | 'emergency_request' | null;
+          target_id?: string | null;
+          details?: Json;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      family_calendar_events: {
+        Row: {
+          id: string;
+          family_owner_id: string;
+          created_by_id: string | null;
+          title: string;
+          description: string | null;
+          event_type: 'reminder' | 'review' | 'meeting' | 'deadline' | 'celebration';
+          scheduled_at: string;
+          duration_minutes: number;
+          attendees: Json;
+          location: string | null;
+          meeting_url: string | null;
+          is_recurring: boolean;
+          recurrence_pattern: string | null;
+          recurrence_end_date: string | null;
+          status: 'scheduled' | 'completed' | 'cancelled' | 'rescheduled';
+          reminders: Json;
+          metadata: Json;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          family_owner_id: string;
+          created_by_id?: string | null;
+          title: string;
+          description?: string | null;
+          event_type?: 'reminder' | 'review' | 'meeting' | 'deadline' | 'celebration';
+          scheduled_at: string;
+          duration_minutes?: number;
+          attendees?: Json;
+          location?: string | null;
+          meeting_url?: string | null;
+          is_recurring?: boolean;
+          recurrence_pattern?: string | null;
+          recurrence_end_date?: string | null;
+          status?: 'scheduled' | 'completed' | 'cancelled' | 'rescheduled';
+          reminders?: Json;
+          metadata?: Json;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          family_owner_id?: string;
+          created_by_id?: string | null;
+          title?: string;
+          description?: string | null;
+          event_type?: 'reminder' | 'review' | 'meeting' | 'deadline' | 'celebration';
+          scheduled_at?: string;
+          duration_minutes?: number;
+          attendees?: Json;
+          location?: string | null;
+          meeting_url?: string | null;
+          is_recurring?: boolean;
+          recurrence_pattern?: string | null;
+          recurrence_end_date?: string | null;
+          status?: 'scheduled' | 'completed' | 'cancelled' | 'rescheduled';
+          reminders?: Json;
+          metadata?: Json;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      // Aggregated Analytics Tables
+      insight_analytics: {
+        Row: {
+          id: string;
+          user_id: string;
+          timeframe_start: string;
+          timeframe_end: string;
+          total_insights: number;
+          actionable_insights: number;
+          completed_actions: number;
+          average_protection_level: number;
+          total_time_saved: number;
+          top_categories: Json;
+          trend_data: Json;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          timeframe_start: string;
+          timeframe_end: string;
+          total_insights?: number;
+          actionable_insights?: number;
+          completed_actions?: number;
+          average_protection_level?: number;
+          total_time_saved?: number;
+          top_categories?: Json;
+          trend_data?: Json;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          timeframe_start?: string;
+          timeframe_end?: string;
+          total_insights?: number;
+          actionable_insights?: number;
+          completed_actions?: number;
+          average_protection_level?: number;
+          total_time_saved?: number;
+          top_categories?: Json;
+          trend_data?: Json;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      milestone_analytics: {
+        Row: {
+          id: string;
+          user_id: string;
+          timeframe_start: string;
+          timeframe_end: string;
+          milestones_completed: number;
+          average_completion_time_hours: number;
+          completion_rate: number;
+          most_active_category: string | null;
+          preferred_difficulty: string | null;
+          completion_trend: 'improving' | 'stable' | 'declining' | null;
+          total_protection_increase: number;
+          total_time_saved: number;
+          features_unlocked: Json;
+          celebration_engagement: number;
+          recommendation_follow_rate: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          timeframe_start: string;
+          timeframe_end: string;
+          milestones_completed?: number;
+          average_completion_time_hours?: number;
+          completion_rate?: number;
+          most_active_category?: string | null;
+          preferred_difficulty?: string | null;
+          completion_trend?: 'improving' | 'stable' | 'declining' | null;
+          total_protection_increase?: number;
+          total_time_saved?: number;
+          features_unlocked?: Json;
+          celebration_engagement?: number;
+          recommendation_follow_rate?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          timeframe_start?: string;
+          timeframe_end?: string;
+          milestones_completed?: number;
+          average_completion_time_hours?: number;
+          completion_rate?: number;
+          most_active_category?: string | null;
+          preferred_difficulty?: string | null;
+          completion_trend?: 'improving' | 'stable' | 'declining' | null;
+          total_protection_increase?: number;
+          total_time_saved?: number;
+          features_unlocked?: Json;
+          celebration_engagement?: number;
+          recommendation_follow_rate?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -992,6 +1583,15 @@ export interface Database {
     };
   };
 }
+
+// Type helpers for better developer experience
+export type QuickInsight = Database['public']['Tables']['quick_insights']['Row'];
+export type QuickInsightInsert = Database['public']['Tables']['quick_insights']['Insert'];
+export type QuickInsightUpdate = Database['public']['Tables']['quick_insights']['Update'];
+
+export type LegacyMilestone = Database['public']['Tables']['legacy_milestones']['Row'];
+export type LegacyMilestoneInsert = Database['public']['Tables']['legacy_milestones']['Insert'];
+export type LegacyMilestoneUpdate = Database['public']['Tables']['legacy_milestones']['Update'];
 
 // Type helpers for better developer experience
 export type Profile = Database['public']['Tables']['profiles']['Row'];
