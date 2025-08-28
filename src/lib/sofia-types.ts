@@ -14,6 +14,59 @@ export type ActionCategory =
 
 export type ActionCost = 'free' | 'low_cost' | 'premium';
 
+// Adaptive Personality System Types
+export type PersonalityMode = 'empathetic' | 'pragmatic' | 'adaptive';
+
+export type CommunicationStyle = 'empathetic' | 'pragmatic' | 'balanced';
+
+export interface InteractionPattern {
+  timestamp: Date;
+  action: string;
+  duration: number;
+  context: string;
+  responseTime: number;
+}
+
+export interface PersonalityAnalysis {
+  detectedStyle: CommunicationStyle;
+  confidence: number; // 0-100
+  analysisFactors: {
+    responseSpeed: number; // Fast responses suggest pragmatic preference
+    actionTypes: string[]; // Direct actions vs exploratory actions
+    sessionDuration: number; // Long sessions suggest empathetic preference
+    helpSeekingBehavior: boolean; // Frequent help suggests empathetic preference
+  };
+  lastAnalyzed: Date;
+}
+
+export interface SofiaPersonality {
+  mode: PersonalityMode;
+  currentStyle: CommunicationStyle;
+  confidence: number; // How confident Sofia is in style selection
+  userPreferences: {
+    detectedStyle?: CommunicationStyle;
+    manualOverride?: CommunicationStyle;
+    lastInteractions: InteractionPattern[];
+    adaptationEnabled: boolean;
+  };
+  analysis?: PersonalityAnalysis;
+}
+
+export interface AdaptiveMessageConfig {
+  empathetic: {
+    greeting: string;
+    guidance: string;
+    celebration: string;
+    support: string;
+  };
+  pragmatic: {
+    greeting: string;
+    guidance: string;
+    celebration: string;
+    support: string;
+  };
+}
+
 export interface ActionButton {
   id: string;
   text: string;
@@ -59,6 +112,8 @@ export interface SofiaContext extends BaseSofiaContext {
     skipIntros?: boolean;
     expertMode?: boolean;
   };
+  // Adaptive personality integration
+  personality?: SofiaPersonality;
 }
 
 // Enhanced message type with actions support
@@ -69,6 +124,12 @@ export interface SofiaMessage extends BaseSofiaMessage {
     cost: ActionCost;
     source: SofiaResponse['source'];
     processingTime?: number;
+  };
+  // Adaptive personality context
+  personalityStyle?: CommunicationStyle;
+  adaptedContent?: {
+    empathetic?: string;
+    pragmatic?: string;
   };
 }
 
@@ -195,4 +256,67 @@ export function getContextualActions(context: SofiaContext): ActionButton[] {
   actions.push(COMMON_ACTIONS.SECURITY_INFO);
 
   return actions.slice(0, 4); // Limit to 4 actions max
+}
+
+// Personality utility functions
+export function createDefaultPersonality(): SofiaPersonality {
+  return {
+    mode: 'adaptive',
+    currentStyle: 'balanced',
+    confidence: 50,
+    userPreferences: {
+      lastInteractions: [],
+      adaptationEnabled: true,
+    },
+  };
+}
+
+export function shouldUseEmpathetic(personality: SofiaPersonality): boolean {
+  if (personality.userPreferences.manualOverride) {
+    return personality.userPreferences.manualOverride === 'empathetic';
+  }
+  
+  if (personality.mode === 'empathetic') {
+    return true;
+  }
+  
+  if (personality.mode === 'pragmatic') {
+    return false;
+  }
+  
+  // Adaptive mode: use detection or default to empathetic
+  return personality.userPreferences.detectedStyle === 'empathetic' || 
+         personality.currentStyle === 'empathetic' ||
+         (!personality.userPreferences.detectedStyle && personality.confidence < 70);
+}
+
+export function shouldUsePragmatic(personality: SofiaPersonality): boolean {
+  if (personality.userPreferences.manualOverride) {
+    return personality.userPreferences.manualOverride === 'pragmatic';
+  }
+  
+  if (personality.mode === 'pragmatic') {
+    return true;
+  }
+  
+  if (personality.mode === 'empathetic') {
+    return false;
+  }
+  
+  // Adaptive mode: use detection
+  return personality.userPreferences.detectedStyle === 'pragmatic' || 
+         personality.currentStyle === 'pragmatic';
+}
+
+export function getPersonalityDisplayName(mode: PersonalityMode): string {
+  switch (mode) {
+    case 'empathetic':
+      return 'Warm & Supportive';
+    case 'pragmatic':
+      return 'Direct & Efficient';
+    case 'adaptive':
+      return 'Smart Adaptation';
+    default:
+      return 'Unknown';
+  }
 }
