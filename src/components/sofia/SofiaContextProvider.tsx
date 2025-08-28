@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useAuth, useUser } from '@clerk/clerk-react';
 import { useSofiaStore } from '@/stores/sofiaStore';
 import type { SofiaContext } from '@/lib/sofia-types';
 import { useLocation } from 'react-router-dom';
 import { calculateUnlockedMilestones } from '@/lib/path-of-serenity';
 import { useLocalization } from '@/contexts/LocalizationContext';
+import { AdaptivePersonalityManager } from '@/lib/sofia-personality';
 
 interface SofiaContextProviderProps {
   children: React.ReactNode;
@@ -23,8 +24,22 @@ const SofiaContextProvider: React.FC<SofiaContextProviderProps> = ({
   const { user } = useUser();
   const location = useLocation();
   const { setContext, updateContext } = useSofiaStore();
-
   const { languageCode } = useLocalization();
+
+  // Personality manager instance (persists across re-renders)
+  const personalityManagerRef = useRef<AdaptivePersonalityManager | null>(null);
+
+  // Initialize personality manager when userId is available
+  useEffect(() => {
+    if (!userId) {
+      personalityManagerRef.current = null;
+      return;
+    }
+
+    if (!personalityManagerRef.current) {
+      personalityManagerRef.current = new AdaptivePersonalityManager(userId);
+    }
+  }, [userId]);
 
   // Initialize Sofia context when user data is available
   useEffect(() => {
@@ -115,6 +130,10 @@ const SofiaContextProvider: React.FC<SofiaContextProviderProps> = ({
       categoriesWithDocuments: userStats.categoriesWithDocuments,
     };
 
+    // Get personality data from manager
+    const personalityManager = personalityManagerRef.current;
+    const personality = personalityManager?.getPersonality();
+
     // Create comprehensive context
     const context: SofiaContext = {
       userId,
@@ -126,6 +145,7 @@ const SofiaContextProvider: React.FC<SofiaContextProviderProps> = ({
       familyStatus,
       language: languageCode,
       milestoneProgress,
+      personality,
     };
 
     setContext(context);
@@ -136,8 +156,21 @@ const SofiaContextProvider: React.FC<SofiaContextProviderProps> = ({
     if (!userId) return;
 
     const currentPage = location.pathname.split('/')[1] || 'dashboard';
+    const personalityManager = personalityManagerRef.current;
+
+    // Track page navigation for personality learning
+    if (personalityManager) {
+      personalityManager.recordInteraction({
+        timestamp: new Date(),
+        action: `navigate_${currentPage}`,
+        duration: 0, // Will be updated when user leaves the page
+        context: currentPage,
+        responseTime: 0, // Navigation is immediate
+      });
+    }
+
     updateContext({
-      // We could add currentPage to context if needed for more specific help
+      currentPage,
     });
   }, [location, userId, updateContext]);
 
@@ -145,6 +178,19 @@ const SofiaContextProvider: React.FC<SofiaContextProviderProps> = ({
   useEffect(() => {
     const handleDocumentUploaded = () => {
       if (!userId) return;
+
+      const personalityManager = personalityManagerRef.current;
+
+      // Track document upload action for personality learning
+      if (personalityManager) {
+        personalityManager.recordInteraction({
+          timestamp: new Date(),
+          action: 'upload_document',
+          duration: 5000, // Estimate 5 seconds for upload action
+          context: 'document_management',
+          responseTime: 2000, // Estimate 2 seconds response time
+        });
+      }
 
       // Refetch document count
       const documentsKey = `documents_${userId}`;
@@ -169,11 +215,25 @@ const SofiaContextProvider: React.FC<SofiaContextProviderProps> = ({
           `${documentCount} documents uploaded`,
           guardianCount > 0 ? `${guardianCount} guardians added` : '',
         ].filter(Boolean),
+        personality: personalityManager?.getPersonality(),
       });
     };
 
     const handleGuardianAdded = () => {
       if (!userId) return;
+
+      const personalityManager = personalityManagerRef.current;
+
+      // Track guardian addition for personality learning
+      if (personalityManager) {
+        personalityManager.recordInteraction({
+          timestamp: new Date(),
+          action: 'add_guardian',
+          duration: 10000, // Estimate 10 seconds for guardian addition
+          context: 'guardian_management',
+          responseTime: 3000, // Estimate 3 seconds response time
+        });
+      }
 
       // Similar logic for guardian updates
       const guardiansKey = `guardians_${userId}`;
@@ -197,6 +257,7 @@ const SofiaContextProvider: React.FC<SofiaContextProviderProps> = ({
           documentCount > 0 ? `${documentCount} documents uploaded` : '',
           `${guardianCount} guardians added`,
         ].filter(Boolean),
+        personality: personalityManager?.getPersonality(),
       });
     };
 
@@ -211,6 +272,25 @@ const SofiaContextProvider: React.FC<SofiaContextProviderProps> = ({
   }, [userId, updateContext]);
 
   return <>{children}</>;
+};
+
+// Export a way to access the personality manager from other components
+export const usePersonalityManager = (): AdaptivePersonalityManager | null => {
+  const { userId } = useAuth();
+  const personalityManagerRef = useRef<AdaptivePersonalityManager | null>(null);
+
+  useEffect(() => {
+    if (!userId) {
+      personalityManagerRef.current = null;
+      return;
+    }
+
+    if (!personalityManagerRef.current) {
+      personalityManagerRef.current = new AdaptivePersonalityManager(userId);
+    }
+  }, [userId]);
+
+  return personalityManagerRef.current;
 };
 
 export default SofiaContextProvider;
