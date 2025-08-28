@@ -10,11 +10,11 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { 
-  Users, 
-  MessageCircle, 
-  Share, 
-  Plus, 
+import {
+  Users,
+  MessageCircle,
+  Share,
+  Plus,
   Calendar,
   FileText,
   Clock,
@@ -74,7 +74,7 @@ export const MobileFamilyCollaboration: React.FC<MobileFamilyCollaborationProps>
       completedTasks: 8
     },
     {
-      id: '2', 
+      id: '2',
       name: 'Mike Johnson',
       role: 'spouse',
       avatar: undefined,
@@ -87,7 +87,7 @@ export const MobileFamilyCollaboration: React.FC<MobileFamilyCollaborationProps>
     },
     {
       id: '3',
-      name: 'Emma Johnson', 
+      name: 'Emma Johnson',
       role: 'child',
       avatar: undefined,
       email: 'emma@example.com',
@@ -131,7 +131,7 @@ export const MobileFamilyCollaboration: React.FC<MobileFamilyCollaborationProps>
   }
 
   const renderMemberCard = (member: FamilyMember) => (
-    <Card 
+    <Card
       key={member.id}
       {...mobileOptimized.card(true)}
       className="hover:shadow-md transition-shadow"
@@ -158,7 +158,7 @@ export const MobileFamilyCollaboration: React.FC<MobileFamilyCollaborationProps>
                 {member.role}
               </Badge>
             </div>
-            
+
             <div className="flex items-center space-x-4 text-sm text-gray-500">
               <div className="flex items-center">
                 <FileText className="w-3 h-3 mr-1" />
@@ -207,7 +207,7 @@ export const MobileFamilyCollaboration: React.FC<MobileFamilyCollaborationProps>
             <h1 className="text-lg font-bold text-gray-900">Family Collaboration</h1>
             <p className="text-sm text-gray-600">{familyMembers.length} family members</p>
           </div>
-          <Button 
+          <Button
             size="sm"
             {...mobileOptimized.button('md')}
             onClick={() => onNavigate?.('invite')}
@@ -344,15 +344,15 @@ export const MobileFamilyCollaboration: React.FC<MobileFamilyCollaborationProps>
             <div className="space-y-4 mt-6">
               {/* Contact Actions */}
               <div className="grid grid-cols-3 gap-3">
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   {...mobileOptimized.button('lg')}
                   onClick={() => onNavigate?.('message', { memberId: selectedMember.id })}
                 >
                   <MessageCircle className="w-4 h-4 mb-1" />
                   <span className="text-xs">Message</span>
                 </Button>
-                <Button 
+                <Button
                   variant="outline"
                   {...mobileOptimized.button('lg')}
                   onClick={() => window.open(`tel:${selectedMember.phone}`)}
@@ -360,7 +360,7 @@ export const MobileFamilyCollaboration: React.FC<MobileFamilyCollaborationProps>
                   <Phone className="w-4 h-4 mb-1" />
                   <span className="text-xs">Call</span>
                 </Button>
-                <Button 
+                <Button
                   variant="outline"
                   {...mobileOptimized.button('lg')}
                   onClick={() => window.open(`mailto:${selectedMember.email}`)}
@@ -398,8 +398,8 @@ export const MobileFamilyCollaboration: React.FC<MobileFamilyCollaborationProps>
 
               {/* Quick Actions */}
               <div className="space-y-2">
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   className="w-full justify-start"
                   {...mobileOptimized.button('lg')}
                   onClick={() => onNavigate?.('share', { memberId: selectedMember.id })}
@@ -407,8 +407,8 @@ export const MobileFamilyCollaboration: React.FC<MobileFamilyCollaborationProps>
                   <Share className="w-4 h-4 mr-3" />
                   Share Documents
                 </Button>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   className="w-full justify-start"
                   {...mobileOptimized.button('lg')}
                   onClick={() => onNavigate?.('calendar', { memberId: selectedMember.id })}

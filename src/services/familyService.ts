@@ -36,7 +36,7 @@ export class FamilyService {
   async getFamilyMembers(userId: string): Promise<FamilyMember[]> {
     const cacheKey = `family_members_${userId}`;
     const cached = familyDataCache.get(cacheKey);
-    
+
     if (cached) {
       return cached;
     }
@@ -106,7 +106,7 @@ export class FamilyService {
     try {
       // For now, return a mock family member since the database tables don't exist in types
       console.warn('Using mock family member creation');
-      
+
       const familyMember: FamilyMember = {
         id: `member_${Date.now()}`,
         email: memberData.email,
@@ -154,7 +154,7 @@ export class FamilyService {
   ): Promise<FamilyMember> {
     try {
       console.warn('Using mock family member update');
-      
+
       // Return updated mock member
       const familyMember: FamilyMember = {
         id: memberId,
@@ -188,7 +188,7 @@ export class FamilyService {
   async removeFamilyMember(userId: string, memberId: string): Promise<void> {
     try {
       console.warn('Using mock family member removal');
-      
+
       // Clear cache
       familyDataCache.invalidatePattern(new RegExp(`family_.*${userId}.*`));
     } catch (error) {
@@ -209,10 +209,10 @@ export class FamilyService {
 
       // Use fallback since tables don't exist in Supabase types
       console.warn('Using fallback for family invitation');
-      
+
       const token = crypto.randomUUID();
       const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-      
+
       return {
         id: crypto.randomUUID(),
         email,
@@ -238,7 +238,7 @@ export class FamilyService {
   async getFamilyInvitations(userId: string): Promise<FamilyInvitation[]> {
     try {
       console.warn('Using mock family invitations');
-      
+
       // Return mock invitations
       return [
         {
@@ -269,7 +269,7 @@ export class FamilyService {
     try {
       // Use fallback since tables don't exist in Supabase types
       console.warn('Using fallback for invitation acceptance');
-      
+
       const familyMember: FamilyMember = {
         id: crypto.randomUUID(),
         email: 'accepted@example.com',
@@ -361,7 +361,7 @@ export class FamilyService {
     try {
       // Use fallback since tables don't exist in Supabase types
       console.warn('Using fallback for emergency access request');
-      
+
       const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
       return {
@@ -443,7 +443,6 @@ export class FamilyService {
   }
 
 
-
   private async getFamilyDocumentStats(_userId: string): Promise<{ total: number; shared: number }> {
     try {
       const { count: total } = await supabase
@@ -496,7 +495,7 @@ export class FamilyService {
     const memberScore = Math.min(100, (members.length * 20));
     const documentScore = Math.min(100, (documents.total * 10));
     const sharingScore = documents.total > 0 ? Math.min(100, (documents.shared / documents.total) * 100) : 0;
-    
+
     return Math.round((memberScore + documentScore + sharingScore) / 3);
   }
 
@@ -512,7 +511,7 @@ export class FamilyService {
 
   private identifyProtectionGaps(members: FamilyMember[], documents: any): string[] {
     const gaps: string[] = [];
-    
+
     if (members.length === 0) {
       gaps.push('No family members added');
     }
@@ -525,7 +524,7 @@ export class FamilyService {
     if (!members.some(m => m.emergencyPriority)) {
       gaps.push('No emergency contacts designated');
     }
-    
+
     return gaps;
   }
 

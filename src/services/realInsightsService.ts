@@ -385,7 +385,7 @@ class RealInsightsService {
   private async extractDocumentValue(document: any) {
     const keyInfo = [];
     const missingInfo = [];
-    let qualityScore = 75;
+    const qualityScore = 75;
     let completenessPercentage = 80;
 
     // Analyze document based on type
@@ -516,7 +516,7 @@ class RealInsightsService {
         .select('*')
         .eq('family_owner_id', userId)
         .eq('is_active', true);
-      
+
       return data || [];
     } catch (error) {
       console.warn('Family members table not available, using fallback');
@@ -545,7 +545,7 @@ class RealInsightsService {
 
   private calculateAverageImpact(insights: any[]): string {
     if (insights.length === 0) return 'none';
-    
+
     const impactScores = insights.map(i => {
       switch (i.impact) {
         case 'high': return 3;
@@ -554,9 +554,9 @@ class RealInsightsService {
         default: return 0;
       }
     });
-    
+
     const avg = impactScores.reduce((sum, score) => sum + score, 0) / insights.length;
-    
+
     if (avg >= 2.5) return 'high';
     if (avg >= 1.5) return 'medium';
     return 'low';
@@ -566,16 +566,16 @@ class RealInsightsService {
     // Simplified trend data generation
     const days = Math.ceil((new Date(timeframe.end).getTime() - new Date(timeframe.start).getTime()) / (1000 * 60 * 60 * 24));
     const trendData = [];
-    
+
     for (let i = 0; i < Math.min(days, 30); i++) {
       const date = new Date(timeframe.start);
       date.setDate(date.getDate() + i);
-      
+
       const dayInsights = insights.filter(insight => {
         const insightDate = new Date(insight.created_at);
         return insightDate.toDateString() === date.toDateString();
       });
-      
+
       trendData.push({
         date: date.toISOString().split('T')[0],
         insightsGenerated: dayInsights.length,
@@ -583,7 +583,7 @@ class RealInsightsService {
         protectionLevel: this.calculateProtectionLevel([], [])
       });
     }
-    
+
     return trendData;
   }
 
@@ -630,7 +630,7 @@ class RealInsightsService {
 
   private generateImpactDescription(protectionLevel: number, familyCount: number): string {
     const familyText = familyCount > 0 ? `your ${familyCount} family members` : 'your loved ones';
-    
+
     if (protectionLevel >= 80) {
       return `Your comprehensive planning provides excellent protection for ${familyText}, giving them clear guidance and secure access to important information.`;
     } else if (protectionLevel >= 60) {
@@ -653,7 +653,7 @@ class RealInsightsService {
 
   private async analyzeProtectionGaps(documents: any[], familyMembers: any[]) {
     const gaps = [];
-    
+
     if (documents.length === 0) {
       gaps.push({
         area: 'Document Foundation',
@@ -662,7 +662,7 @@ class RealInsightsService {
         urgency: 'immediate' as const
       });
     }
-    
+
     if (!documents.some(d => d.type === 'will')) {
       gaps.push({
         area: 'Will Documentation',
@@ -671,7 +671,7 @@ class RealInsightsService {
         urgency: 'near_term' as const
       });
     }
-    
+
     if (familyMembers.length === 0) {
       gaps.push({
         area: 'Family Access',
@@ -680,26 +680,26 @@ class RealInsightsService {
         urgency: 'near_term' as const
       });
     }
-    
+
     return gaps;
   }
 
   private generateEmotionalBenefits(protectionLevel: number, familyCount: number): string[] {
     const benefits = [];
-    
+
     if (protectionLevel > 50) {
       benefits.push('Peace of mind knowing your family is protected');
       benefits.push('Reduced stress during difficult times');
     }
-    
+
     if (familyCount > 0) {
       benefits.push('Clear guidance for your loved ones');
       benefits.push('Preserved family harmony through clear instructions');
     }
-    
+
     benefits.push('Legacy of care and thoughtfulness');
     benefits.push('Professional organization of important matters');
-    
+
     return benefits;
   }
 }

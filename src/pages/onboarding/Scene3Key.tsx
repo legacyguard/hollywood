@@ -162,7 +162,7 @@ export default function Scene3Key({
                           <motion.div
                             key={i}
                             className='absolute w-1 h-1 bg-yellow-300 rounded-full'
-                            style={{ 
+                            style={{
                               left: `${20 + Math.random() * 60 }}%`,
                               top: `${20 + Math.random() * 60}%`,
                             }}

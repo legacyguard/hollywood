@@ -10,19 +10,19 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { 
-  Sparkles, 
-  Heart, 
-  Shield, 
-  Users, 
-  Trophy, 
+import {
+  Sparkles,
+  Heart,
+  Shield,
+  Users,
+  Trophy,
   Star,
   Share2,
   CheckCircle2,
   ArrowRight,
   Gift
 } from 'lucide-react';
-import { LegacyMilestone, MilestoneLevel } from '@/types/milestones';
+import type { LegacyMilestone, MilestoneLevel } from '@/types/milestones';
 import { milestonesService } from '@/services/milestonesService';
 import { cn } from '@/lib/utils';
 
@@ -69,8 +69,8 @@ export const MilestoneCelebration: React.FC<MilestoneCelebrationProps> = ({
       '🏆': <Trophy className="w-12 h-12 text-yellow-500" />,
       '⭐': <Star className="w-12 h-12 text-purple-500" />,
     };
-    
-    return iconMap[milestone.celebration.celebrationIcon as keyof typeof iconMap] || 
+
+    return iconMap[milestone.celebration.celebrationIcon as keyof typeof iconMap] ||
            <Trophy className="w-12 h-12 text-yellow-500" />;
   };
 
@@ -82,8 +82,8 @@ export const MilestoneCelebration: React.FC<MilestoneCelebrationProps> = ({
       'yellow': 'from-yellow-400 to-orange-500',
       'purple': 'from-purple-500 to-violet-600',
     };
-    
-    return colorMap[milestone.celebration.celebrationColor as keyof typeof colorMap] || 
+
+    return colorMap[milestone.celebration.celebrationColor as keyof typeof colorMap] ||
            'from-blue-500 to-indigo-600';
   };
 
@@ -112,22 +112,22 @@ export const MilestoneCelebration: React.FC<MilestoneCelebrationProps> = ({
             {Array.from({ length: 20 }).map((_, i) => (
               <motion.div
                 key={i}
-                initial={{ 
-                  opacity: 0, 
-                  y: 0, 
-                  x: 0, 
+                initial={{
+                  opacity: 0,
+                  y: 0,
+                  x: 0,
                   rotate: 0,
-                  scale: 0 
+                  scale: 0
                 }}
-                animate={{ 
-                  opacity: [0, 1, 0], 
-                  y: [-20, -100, -200], 
+                animate={{
+                  opacity: [0, 1, 0],
+                  y: [-20, -100, -200],
                   x: [0, (Math.random() - 0.5) * 200],
                   rotate: [0, Math.random() * 360],
                   scale: [0, 1, 0]
                 }}
-                transition={{ 
-                  duration: 2, 
+                transition={{
+                  duration: 2,
                   delay: i * 0.1,
                   ease: "easeOut"
                 }}
@@ -171,7 +171,7 @@ export const MilestoneCelebration: React.FC<MilestoneCelebrationProps> = ({
         >
           {milestone.title} Complete!
         </motion.h2>
-        
+
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -200,7 +200,7 @@ export const MilestoneCelebration: React.FC<MilestoneCelebrationProps> = ({
           See Family Impact
           <ArrowRight className="w-4 h-4 ml-2" />
         </Button>
-        
+
         {onShare && (
           <Button
             variant="outline"
@@ -273,7 +273,7 @@ export const MilestoneCelebration: React.FC<MilestoneCelebrationProps> = ({
         >
           Back
         </Button>
-        
+
         <Button
           onClick={() => setCelebrationStage('rewards')}
           className="flex-1"
@@ -353,9 +353,9 @@ export const MilestoneCelebration: React.FC<MilestoneCelebrationProps> = ({
                   <p className="font-semibold text-gray-900">New Features</p>
                   <div className="flex flex-wrap gap-1 mt-1">
                     {milestone.rewards.features.map((feature, index) => (
-                      <Badge 
-                        key={index} 
-                        variant="secondary" 
+                      <Badge
+                        key={index}
+                        variant="secondary"
                         className="text-xs"
                       >
                         {feature.replace('_', ' ')}
@@ -380,9 +380,9 @@ export const MilestoneCelebration: React.FC<MilestoneCelebrationProps> = ({
                   <p className="font-semibold text-gray-900">Badges Earned</p>
                   <div className="flex flex-wrap gap-1 mt-1">
                     {milestone.rewards.badges.map((badge, index) => (
-                      <Badge 
-                        key={index} 
-                        variant="outline" 
+                      <Badge
+                        key={index}
+                        variant="outline"
                         className="text-xs text-yellow-600 border-yellow-200"
                       >
                         {badge.replace('_', ' ')}
@@ -408,7 +408,7 @@ export const MilestoneCelebration: React.FC<MilestoneCelebrationProps> = ({
             <ArrowRight className="w-4 h-4 ml-2" />
           </Button>
         )}
-        
+
         <Button
           variant="outline"
           onClick={handleClose}
@@ -459,8 +459,8 @@ export const MilestoneProgress: React.FC<{
           <span>{Math.round(progress)}%</span>
         </div>
       )}
-      <Progress 
-        value={progress} 
+      <Progress
+        value={progress}
         className="h-2"
       />
     </div>

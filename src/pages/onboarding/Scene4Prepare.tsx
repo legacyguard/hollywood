@@ -110,12 +110,12 @@ export default function Scene4Prepare({
                     <motion.div
                       key={i}
                       className='absolute w-0.5 h-0.5 bg-white/60 rounded-full'
-                      style={{ 
+                      style={{
                         left: `${Math.random() * 100}%`,
                         top: `${Math.random() * 100}%`
                       }}
                       animate={{ opacity: [0.3, 1, 0.3] }}
-                      transition={{ 
+                      transition={{
                         duration: 2 + Math.random() * 3,
                         repeat: Infinity,
                         delay: Math.random() * 2
@@ -129,15 +129,15 @@ export default function Scene4Prepare({
                         {/* Main firefly */}
                         <motion.div
                           className='absolute w-3 h-3 bg-yellow-300 rounded-full shadow-lg'
-                          style={{ 
+                          style={{
                             boxShadow: '0 0 15px #fde047, 0 0 30px #facc15, 0 0 45px #eab308'
                           }}
                           initial={{  x: 50, y: 120  }}
-                          animate={{ 
+                          animate={{
                             x: [50, 150, 280, 320, 280, 150, 100, 50],
                             y: [120, 60, 40, 80, 140, 100, 80, 120]
                           }}
-                          transition={{ 
+                          transition={{
                             duration: 8,
                             ease: 'easeInOut',
                             times: [0, 0.15, 0.3, 0.45, 0.6, 0.75, 0.9, 1]
@@ -154,7 +154,7 @@ export default function Scene4Prepare({
                             strokeLinecap='round'
                             initial={{  pathLength: 0, opacity: 0  }}
                             animate={{  pathLength: 1, opacity: 0.8  }}
-                            transition={{ 
+                            transition={{
                               pathLength: { duration: 8, ease: 'easeInOut' },
                               opacity: { duration: 1, delay: 0.5 }
                             }}
@@ -191,17 +191,17 @@ export default function Scene4Prepare({
                           <motion.div
                             key={i}
                             className='absolute w-1 h-1 bg-yellow-200 rounded-full'
-                            initial={{ 
+                            initial={{
                               x: 50 + i * 30,
                               y: 120 - i * 8 + Math.sin(i) * 20,
                               opacity: 0,
                               scale: 0
                             }}
-                            animate={{ 
+                            animate={{
                               opacity: [0, 1, 0],
                               scale: [0, 1, 0]
                             }}
-                            transition={{ 
+                            transition={{
                               duration: 1,
                               delay: i * 0.3 + 1,
                               repeat: Infinity,
@@ -253,7 +253,7 @@ export default function Scene4Prepare({
                             <motion.div
                               className='text-yellow-300 text-2xl mb-2'
                               animate={{ scale: [1, 1.1, 1] }}
-                              transition={{ 
+                              transition={{
                                 duration: 2,
                                 repeat: Infinity
                               }}
@@ -314,7 +314,7 @@ export default function Scene4Prepare({
                   >
                     <motion.div
                       animate={{ rotate: 360 }}
-                      transition={{ 
+                      transition={{
                         duration: 2,
                         repeat: Infinity,
                         ease: 'linear'

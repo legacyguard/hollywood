@@ -9,12 +9,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { 
-  Sparkles, 
-  Users, 
-  Brain, 
-  Shield, 
-  Target, 
+import {
+  Sparkles,
+  Users,
+  Brain,
+  Shield,
+  Target,
   TrendingUp,
   Star,
   Award,
@@ -75,7 +75,7 @@ export const FeatureAnnouncement: React.FC<FeatureAnnouncementProps> = ({
       title: 'Advanced Family Collaboration',
       description: 'Collaborate seamlessly with family members on legacy planning, document sharing, and decision making.',
       icon: Users,
-      category: 'collaboration', 
+      category: 'collaboration',
       isNew: true,
       benefits: [
         'Real-time family member collaboration',
@@ -117,7 +117,7 @@ export const FeatureAnnouncement: React.FC<FeatureAnnouncementProps> = ({
 
   const categoryColors = {
     analytics: 'bg-blue-500',
-    collaboration: 'bg-green-500', 
+    collaboration: 'bg-green-500',
     professional: 'bg-purple-500',
     mobile: 'bg-orange-500'
   };
@@ -148,7 +148,7 @@ export const FeatureAnnouncement: React.FC<FeatureAnnouncementProps> = ({
       const timer = setInterval(() => {
         setCurrentSlide((prev) => (prev + 1) % newFeatures.length);
       }, 4000);
-      
+
       return () => clearInterval(timer);
     }
   }, [hasInteracted, newFeatures.length]);
@@ -273,7 +273,7 @@ export const FeatureAnnouncement: React.FC<FeatureAnnouncementProps> = ({
                 <h4 className="font-semibold text-gray-900 text-center mb-4">
                   All New Features
                 </h4>
-                
+
                 <div className="grid grid-cols-1 gap-3">
                   {newFeatures.map((feature, index) => (
                     <motion.div
@@ -282,11 +282,11 @@ export const FeatureAnnouncement: React.FC<FeatureAnnouncementProps> = ({
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.1 }}
                     >
-                      <Card 
+                      <Card
                         className={cn(
                           "cursor-pointer transition-all hover:shadow-md border-2",
-                          index === currentSlide 
-                            ? "border-blue-500 bg-blue-50" 
+                          index === currentSlide
+                            ? "border-blue-500 bg-blue-50"
                             : "border-gray-200 hover:border-gray-300"
                         )}
                         onClick={() => setCurrentSlide(index)}
@@ -347,19 +347,19 @@ export const FeatureAnnouncement: React.FC<FeatureAnnouncementProps> = ({
 
             {/* Navigation */}
             <div className="flex justify-between items-center mt-6 pt-6 border-t border-gray-200">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={prevSlide}
                 disabled={currentSlide === 0}
               >
                 Previous
               </Button>
-              
+
               <div className="text-sm text-gray-500">
                 {currentSlide + 1} of {newFeatures.length}
               </div>
-              
-              <Button 
+
+              <Button
                 onClick={currentSlide === newFeatures.length - 1 ? handleClose : nextSlide}
               >
                 {currentSlide === newFeatures.length - 1 ? 'Get Started' : 'Next'}
@@ -390,7 +390,7 @@ export const FeatureAnnouncementTrigger: React.FC<FeatureAnnouncementTriggerProp
   useEffect(() => {
     // Check if user has seen this version of features
     const lastSeenVersion = localStorage.getItem(`feature-announcement-${userId}`);
-    
+
     if (lastSeenVersion !== featureVersion) {
       setShouldShow(true);
       onShow?.();
@@ -405,10 +405,10 @@ export const FeatureAnnouncementTrigger: React.FC<FeatureAnnouncementTriggerProp
   const handleFeatureExplore = (featureId: string) => {
     // Navigate to specific feature
     console.log(`Exploring feature: ${featureId}`);
-    
+
     // Mark as seen and close
     handleDismiss();
-    
+
     // Navigate based on feature
     switch (featureId) {
       case 'ai-analytics':

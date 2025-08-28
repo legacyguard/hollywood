@@ -246,7 +246,7 @@ export function FamilyMemberProgressiveLoader({
               member.name.charAt(0).toUpperCase()
             )}
           </div>
-          
+
           <div className="flex-1 min-w-0">
             <div className="flex items-center space-x-2">
               <h4 className="font-medium text-gray-900 truncate">{member.name}</h4>

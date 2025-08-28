@@ -390,8 +390,8 @@ export const FamilyLegacyProjectManagement: React.FC<FamilyLegacyProjectManageme
 
     const updatedTasks = activeProject.tasks.map(task => {
       if (task.id === taskId) {
-        const updatedTask = { 
-          ...task, 
+        const updatedTask = {
+          ...task,
           status: newStatus,
           completedAt: newStatus === 'completed' ? new Date() : undefined
         };
@@ -426,8 +426,8 @@ export const FamilyLegacyProjectManagement: React.FC<FamilyLegacyProjectManageme
       timestamp: new Date()
     };
 
-    const updatedTasks = activeProject.tasks.map(task => 
-      task.id === taskId 
+    const updatedTasks = activeProject.tasks.map(task =>
+      task.id === taskId
         ? { ...task, comments: [...task.comments, comment] }
         : task
     );
@@ -500,7 +500,7 @@ export const FamilyLegacyProjectManagement: React.FC<FamilyLegacyProjectManageme
     }
   };
 
-  const filteredProjects = projects.filter(project => 
+  const filteredProjects = projects.filter(project =>
     filterStatus === 'all' || project.status === filterStatus
   );
 
@@ -532,7 +532,7 @@ export const FamilyLegacyProjectManagement: React.FC<FamilyLegacyProjectManageme
               <SelectItem value="completed">Completed</SelectItem>
             </SelectContent>
           </Select>
-          
+
           <Dialog open={isCreating} onOpenChange={setIsCreating}>
             <DialogTrigger asChild>
               <Button className="gap-2">
@@ -551,7 +551,7 @@ export const FamilyLegacyProjectManagement: React.FC<FamilyLegacyProjectManageme
                     whileHover={{  scale: 1.02  }}
                     whileTap={{  scale: 0.98  }}
                   >
-                    <Card 
+                    <Card
                       className="cursor-pointer hover:border-blue-300 transition-colors h-full"
                       onClick={() => createProjectFromTemplate(template)}
                     >
@@ -643,7 +643,7 @@ export const FamilyLegacyProjectManagement: React.FC<FamilyLegacyProjectManageme
                 </Button>
               </div>
             </div>
-            
+
             {/* Progress Bar */}
             <div className="mt-4">
               <div className="flex items-center justify-between mb-2">
@@ -665,8 +665,8 @@ export const FamilyLegacyProjectManagement: React.FC<FamilyLegacyProjectManageme
               <TabsContent value="tasks" className="space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="font-medium">Tasks ({activeProject.tasks.length})</h3>
-                  <Button 
-                    size="sm" 
+                  <Button
+                    size="sm"
                     onClick={() => setShowTaskForm(true)}
                     className="gap-2"
                   >
@@ -706,7 +706,7 @@ export const FamilyLegacyProjectManagement: React.FC<FamilyLegacyProjectManageme
                                     <p className="text-xs text-gray-600 mb-3 line-clamp-2">
                                       {task.description}
                                     </p>
-                                    
+
                                     <div className="flex items-center justify-between">
                                       <div className="flex items-center gap-1">
                                         <Avatar className="w-5 h-5">
@@ -792,7 +792,7 @@ export const FamilyLegacyProjectManagement: React.FC<FamilyLegacyProjectManageme
                         </Select>
                       </div>
                       <Input type="number" placeholder="Estimated hours" min="1" />
-                      <Button 
+                      <Button
                         onClick={() => createNewTask({ title: 'New Task', description: 'Task description' })}
                         className="w-full"
                       >
@@ -811,7 +811,7 @@ export const FamilyLegacyProjectManagement: React.FC<FamilyLegacyProjectManageme
                     Add Milestone
                   </Button>
                 </div>
-                
+
                 <div className="space-y-3">
                   {activeProject.milestones.map((milestone) => (
                     <Card key={milestone.id} className={milestone.isCompleted ? 'bg-green-50 border-green-200' : ''}>
@@ -859,7 +859,7 @@ export const FamilyLegacyProjectManagement: React.FC<FamilyLegacyProjectManageme
                     Add Member
                   </Button>
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {activeProject.teamMembers.map((member) => (
                     <Card key={member.id}>
@@ -908,7 +908,7 @@ export const FamilyLegacyProjectManagement: React.FC<FamilyLegacyProjectManageme
                     Add Resource
                   </Button>
                 </div>
-                
+
                 <div className="text-center py-8 text-gray-500">
                   <FolderOpen className="h-12 w-12 mx-auto mb-3 text-gray-300" />
                   <p>No resources added yet</p>
@@ -947,7 +947,7 @@ export const FamilyLegacyProjectManagement: React.FC<FamilyLegacyProjectManageme
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-gray-600 mb-4 line-clamp-2">{project.description}</p>
-                
+
                 <div className="space-y-3">
                   <div>
                     <div className="flex items-center justify-between text-sm mb-1">
@@ -956,7 +956,7 @@ export const FamilyLegacyProjectManagement: React.FC<FamilyLegacyProjectManageme
                     </div>
                     <Progress value={project.progress} className="h-2" />
                   </div>
-                  
+
                   <div className="flex items-center justify-between text-xs text-gray-500">
                     <div className="flex items-center gap-1">
                       <CheckCircle className="h-3 w-3" />
@@ -967,7 +967,7 @@ export const FamilyLegacyProjectManagement: React.FC<FamilyLegacyProjectManageme
                       {project.teamMembers.length} members
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center justify-between text-xs text-gray-500">
                     <div>Started {project.startDate.toLocaleDateString()}</div>
                     {project.targetDate && (
@@ -986,7 +986,7 @@ export const FamilyLegacyProjectManagement: React.FC<FamilyLegacyProjectManageme
           <FolderOpen className="h-12 w-12 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">No Projects Found</h3>
           <p className="text-gray-600 mb-4">
-            {filterStatus !== 'all' 
+            {filterStatus !== 'all'
               ? 'Try adjusting your filters to see more projects'
               : 'Create your first legacy project to start organizing your family planning'
             }

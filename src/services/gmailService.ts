@@ -1,7 +1,7 @@
 /**
  * Gmail API Service
  * Secure client-side service that communicates with server-side Gmail API
- * 
+ *
  * Security measures:
  * - All Gmail API operations are performed server-side
  * - OAuth2 tokens are stored securely on the server
@@ -74,7 +74,7 @@ export class GmailService {
 
       // Open OAuth2 consent window
       const authWindow = window.open(authUrl, 'gmail-auth', 'width=500,height=600');
-      
+
       return new Promise((resolve, reject) => {
         // Listen for OAuth callback
         const checkInterval = setInterval(() => {
@@ -256,7 +256,7 @@ export class GmailService {
   private async downloadAttachment(message: GmailMessage, attachment: GmailAttachment): Promise<ExtractedDocument> {
     try {
       const token = await this.getAuthToken();
-      
+
       const response = await fetch(`${this.apiEndpoint}?action=attachment`, {
         method: 'POST',
         headers: {
@@ -588,7 +588,7 @@ export class GmailService {
   public async signOut(): Promise<void> {
     try {
       const token = await this.getAuthToken();
-      
+
       await fetch(`${this.apiEndpoint}?action=revoke`, {
         method: 'POST',
         headers: {

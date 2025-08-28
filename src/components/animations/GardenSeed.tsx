@@ -123,7 +123,7 @@ export const GardenSeed: React.FC<GardenSeedProps> = ({
       {/* Background glow */}
       <motion.div
         className='absolute inset-0 rounded-full'
-        animate={{ 
+        animate={{
           boxShadow: showPulse
             ? [
                 `${config.glow }} ${colors.glow}`,
@@ -144,7 +144,7 @@ export const GardenSeed: React.FC<GardenSeedProps> = ({
         animate={{  scale: isHovered ? 1.1 : 1,
           rotate: progress > 0 ? [0, 5, -5, 0] : 0,
          }}
-        transition={{ 
+        transition={{
           scale: { duration: 0.2 },
           rotate: { duration: 4, repeat: Infinity, ease: 'easeInOut' }
         }}
@@ -184,7 +184,7 @@ export const GardenSeed: React.FC<GardenSeedProps> = ({
                     <motion.div
                       key={index}
                       className='absolute top-1/2 left-1/2 w-1 h-3 bg-gradient-to-t from-violet-400 to-pink-300 rounded-full origin-bottom'
-                      style={{ 
+                      style={{
                         transform: `translate(-50%, -100%) rotate(${rotation }}deg)`,
                       }}
                       animate={{  scale: [0.8, 1, 0.8],

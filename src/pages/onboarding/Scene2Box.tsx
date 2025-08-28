@@ -109,17 +109,17 @@ export default function Scene2Box({
                   <motion.div
                     key={`${word}-${index}`}
                     className='px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium border border-primary/20'
-                    initial={{ 
+                    initial={{
                       opacity: 0,
                       scale: 0.8,
                       y: 20
                     }}
-                    animate={{ 
+                    animate={{
                       opacity: 1,
                       scale: 1,
                       y: [0, -5, 0]
                     }}
-                    transition={{ 
+                    transition={{
                       delay: 0.1 * index + 1,
                       duration: 0.6,
                       y: {

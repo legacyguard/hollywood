@@ -10,10 +10,10 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { 
-  Shield, 
-  Users, 
-  TrendingUp, 
+import {
+  Shield,
+  Users,
+  TrendingUp,
   Star,
   CheckCircle,
   Award,
@@ -131,16 +131,16 @@ const AttorneyLandingPage: React.FC = () => {
               <Scale className="h-3 w-3 mr-1" />
               Professional Partnership Program
             </Badge>
-            
+
             <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
               Join the Leading
               <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                 {' '}Legal Network
               </span>
             </h1>
-            
+
             <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-              Partner with LegacyGuard to provide professional document reviews and legal guidance 
+              Partner with LegacyGuard to provide professional document reviews and legal guidance
               to families planning their legacy. Earn additional revenue while making a meaningful impact.
             </p>
 
@@ -209,8 +209,8 @@ const AttorneyLandingPage: React.FC = () => {
                     <div className="flex items-center mb-4">
                       <div className={cn(
                         "p-3 rounded-full mr-4",
-                        benefit.highlight 
-                          ? "bg-blue-500 text-white" 
+                        benefit.highlight
+                          ? "bg-blue-500 text-white"
                           : "bg-gray-100 text-gray-600"
                       )}>
                         <benefit.icon className="h-6 w-6" />
@@ -416,7 +416,7 @@ const ClientMarketplace: React.FC = () => {
 
   const specializations = [
     'All Specializations',
-    'Estate Planning', 
+    'Estate Planning',
     'Family Law',
     'Elder Law',
     'Tax Law',
@@ -443,7 +443,7 @@ const ClientMarketplace: React.FC = () => {
       name: 'Michael Chen, Esq.',
       firm: 'Chen Family Law Group',
       specializations: ['Family Law', 'Estate Planning'],
-      location: 'Los Angeles, CA', 
+      location: 'Los Angeles, CA',
       rating: 4.8,
       reviews: 89,
       hourlyRate: '$275',
@@ -486,7 +486,7 @@ const ClientMarketplace: React.FC = () => {
           <div className="flex flex-col md:flex-row gap-4 justify-center">
             <div className="flex items-center space-x-2">
               <label className="text-sm font-medium text-gray-700">Specialization:</label>
-              <select 
+              <select
                 value={selectedSpecialization}
                 onChange={(e) => setSelectedSpecialization(e.target.value)}
                 className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -500,7 +500,7 @@ const ClientMarketplace: React.FC = () => {
             </div>
             <div className="flex items-center space-x-2">
               <label className="text-sm font-medium text-gray-700">Location:</label>
-              <select 
+              <select
                 value={selectedLocation}
                 onChange={(e) => setSelectedLocation(e.target.value)}
                 className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"

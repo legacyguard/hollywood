@@ -96,7 +96,7 @@ export const professionalApplicationApi = {
   ): Promise<{ success: boolean; message: string }> {
     try {
       await professionalService.updateApplicationStatus(applicationId, status, reviewNotes);
-      
+
       return {
         success: true,
         message: `Application status updated to ${status}`
@@ -159,7 +159,7 @@ export const reviewRequestApi = {
   async assign(requestId: string, reviewerId: string): Promise<{ success: boolean; reviewId: string }> {
     try {
       const review = await professionalService.assignReviewRequest(requestId, reviewerId);
-      
+
       return {
         success: true,
         reviewId: review.id
@@ -441,7 +441,7 @@ export const professionalAnalyticsApi = {
       if (error) throw error;
 
       const totalReviews = reviews?.length || 0;
-      const averageRating = reviews?.length 
+      const averageRating = reviews?.length
         ? reviews.reduce((sum, r) => sum + (r.review_results?.[0]?.score || 0), 0) / reviews.length
         : 0;
 

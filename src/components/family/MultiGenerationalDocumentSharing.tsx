@@ -3,10 +3,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
-import { FileText, 
-  Users, 
-  Share2, 
-  Lock, 
+import { FileText,
+  Users,
+  Share2,
+  Lock,
   Unlock,
   Eye,
   EyeOff,
@@ -123,14 +123,14 @@ export const MultiGenerationalDocumentSharing: React.FC<MultiGenerationalDocumen
 
   // Filter and sort documents
   const filteredAndSortedDocuments = useMemo(() => {
-    let filtered = documents.filter(doc => {
+    const filtered = documents.filter(doc => {
       const matchesSearch = doc.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                            doc.metadata.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
                            doc.metadata.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
-      
+
       const matchesGeneration = filterGeneration === 'all' || doc.generation.toString() === filterGeneration;
       const matchesType = filterType === 'all' || doc.type === filterType;
-      
+
       return matchesSearch && matchesGeneration && matchesType;
     });
 
@@ -167,12 +167,12 @@ export const MultiGenerationalDocumentSharing: React.FC<MultiGenerationalDocumen
   }, [filteredAndSortedDocuments]);
 
   // Get unique generations and document types
-  const generations = useMemo(() => 
+  const generations = useMemo(() =>
     Array.from(new Set(documents.map(doc => doc.generation))).sort((a, b) => a - b),
     [documents]
   );
 
-  const documentTypes = useMemo(() => 
+  const documentTypes = useMemo(() =>
     Array.from(new Set(documents.map(doc => doc.type))),
     [documents]
   );
@@ -255,7 +255,7 @@ export const MultiGenerationalDocumentSharing: React.FC<MultiGenerationalDocumen
                   </p>
                 </div>
               </div>
-              <Badge 
+              <Badge
                 variant={doc.metadata.importance === 'critical' ? 'destructive' : 'secondary'}
                 className="text-xs"
               >
@@ -263,7 +263,7 @@ export const MultiGenerationalDocumentSharing: React.FC<MultiGenerationalDocumen
               </Badge>
             </div>
           </CardHeader>
-          
+
           <CardContent className="pt-0">
             <div className="space-y-3">
               {doc.metadata.description && (
@@ -271,12 +271,12 @@ export const MultiGenerationalDocumentSharing: React.FC<MultiGenerationalDocumen
                   {doc.metadata.description}
                 </p>
               )}
-              
+
               <div className="flex items-center gap-2 text-xs text-gray-500">
                 <Calendar className="h-3 w-3" />
                 {new Date(doc.uploadDate).toLocaleDateString()}
               </div>
-              
+
               {doc.metadata.tags.length > 0 && (
                 <div className="flex flex-wrap gap-1">
                   {doc.metadata.tags.slice(0, 3).map(tag => (
@@ -291,7 +291,7 @@ export const MultiGenerationalDocumentSharing: React.FC<MultiGenerationalDocumen
                   )}
                 </div>
               )}
-              
+
               <div className="flex items-center gap-2">
                 <div className="flex -space-x-1">
                   {doc.permissions.canView.slice(0, 3).map(memberId => {
@@ -312,7 +312,7 @@ export const MultiGenerationalDocumentSharing: React.FC<MultiGenerationalDocumen
                     </div>
                   )}
                 </div>
-                
+
                 <div className="flex gap-1 ml-auto">
                   {canView && (
                     <Button
@@ -324,7 +324,7 @@ export const MultiGenerationalDocumentSharing: React.FC<MultiGenerationalDocumen
                       <Eye className="h-4 w-4" />
                     </Button>
                   )}
-                  
+
                   {canShare && (
                     <Button
                       variant={"ghost" as any}
@@ -338,7 +338,7 @@ export const MultiGenerationalDocumentSharing: React.FC<MultiGenerationalDocumen
                       <Share2 className="h-4 w-4" />
                     </Button>
                   )}
-                  
+
                   {canDownload && (
                     <Button
                       variant={"ghost" as any}
@@ -360,7 +360,7 @@ export const MultiGenerationalDocumentSharing: React.FC<MultiGenerationalDocumen
 
   const TimelineView = () => {
     const sortedGenerations = Array.from(documentsByGeneration.keys()).sort((a, b) => a - b);
-    
+
     return (
       <div className="space-y-8">
         {sortedGenerations.map(generation => {
@@ -375,7 +375,7 @@ export const MultiGenerationalDocumentSharing: React.FC<MultiGenerationalDocumen
                   {docs.length} document{docs.length !== 1 ? 's' : ''}
                 </p>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-4">
                 {docs.map(doc => (
                   <DocumentCard key={doc.id} doc={doc} />
@@ -401,7 +401,7 @@ export const MultiGenerationalDocumentSharing: React.FC<MultiGenerationalDocumen
             Manage and share family documents across generations
           </p>
         </div>
-        
+
         <Button>
           <Upload className="h-4 w-4 mr-2" />
           Upload Document
@@ -421,7 +421,7 @@ export const MultiGenerationalDocumentSharing: React.FC<MultiGenerationalDocumen
             />
           </div>
         </div>
-        
+
         <Select value={filterGeneration} onValueChange={setFilterGeneration}>
           <SelectTrigger className="w-48">
             <SelectValue placeholder="Filter by generation" />
@@ -435,7 +435,7 @@ export const MultiGenerationalDocumentSharing: React.FC<MultiGenerationalDocumen
             ))}
           </SelectContent>
         </Select>
-        
+
         <Select value={filterType} onValueChange={setFilterType}>
           <SelectTrigger className="w-48">
             <SelectValue placeholder="Filter by type" />
@@ -449,7 +449,7 @@ export const MultiGenerationalDocumentSharing: React.FC<MultiGenerationalDocumen
             ))}
           </SelectContent>
         </Select>
-        
+
         <Select value={sortBy} onValueChange={setSortBy}>
           <SelectTrigger className="w-48">
             <SelectValue placeholder="Sort by" />
@@ -461,7 +461,7 @@ export const MultiGenerationalDocumentSharing: React.FC<MultiGenerationalDocumen
             <SelectItem value="generation">Generation</SelectItem>
           </SelectContent>
         </Select>
-        
+
         <div className="flex border rounded-lg">
           <Button
             variant={viewMode === 'grid' ? 'default' : 'ghost'}
@@ -503,7 +503,7 @@ export const MultiGenerationalDocumentSharing: React.FC<MultiGenerationalDocumen
         ) : (
           <>
             {viewMode === 'timeline' && <TimelineView />}
-            
+
             {viewMode === 'grid' && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {filteredAndSortedDocuments.map(doc => (
@@ -511,7 +511,7 @@ export const MultiGenerationalDocumentSharing: React.FC<MultiGenerationalDocumen
                 ))}
               </div>
             )}
-            
+
             {viewMode === 'list' && (
               <div className="space-y-4">
                 {filteredAndSortedDocuments.map(doc => (
@@ -529,7 +529,7 @@ export const MultiGenerationalDocumentSharing: React.FC<MultiGenerationalDocumen
                         </div>
                         <Badge variant={"secondary" as any}>{doc.metadata.importance}</Badge>
                       </div>
-                      
+
                       <div className="flex items-center gap-2">
                         {canPerformAction(doc, 'view') && (
                           <Button variant={"ghost" as any} size="sm" onClick={() => onViewDocument?.(doc.id)}>
@@ -569,7 +569,7 @@ export const MultiGenerationalDocumentSharing: React.FC<MultiGenerationalDocumen
           <DialogHeader>
             <DialogTitle>Share Document</DialogTitle>
           </DialogHeader>
-          
+
           {selectedDoc && (
             <div className="space-y-6">
               <div className="bg-gray-50 p-4 rounded-lg">
@@ -578,7 +578,7 @@ export const MultiGenerationalDocumentSharing: React.FC<MultiGenerationalDocumen
                   {selectedDoc.metadata.description}
                 </p>
               </div>
-              
+
               <div>
                 <h4 className="font-medium mb-3">Select Family Members</h4>
                 <div className="space-y-2 max-h-48 overflow-y-auto">
@@ -610,7 +610,7 @@ export const MultiGenerationalDocumentSharing: React.FC<MultiGenerationalDocumen
                   ))}
                 </div>
               </div>
-              
+
               <div>
                 <h4 className="font-medium mb-3">Permissions</h4>
                 <div className="space-y-2">
@@ -634,12 +634,12 @@ export const MultiGenerationalDocumentSharing: React.FC<MultiGenerationalDocumen
                   ))}
                 </div>
               </div>
-              
+
               <div className="flex justify-end gap-2">
                 <Button variant={"outline" as any} onClick={() => setShowShareDialog(false)}>
                   Cancel
                 </Button>
-                <Button 
+                <Button
                   onClick={handleShareDocument}
                   disabled={selectedMembers.length === 0 || selectedPermissions.length === 0}
                 >

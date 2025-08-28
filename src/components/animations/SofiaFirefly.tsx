@@ -452,7 +452,7 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
               'brightness(1)',
             ],
            }}
-          transition={{ 
+          transition={{
             scale: { duration: 0.2 },
             filter: {
               duration: activeMode === 'pragmatic' ? 3 : 2,

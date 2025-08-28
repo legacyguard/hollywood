@@ -22,9 +22,10 @@ export function LandingPage() {
   const fireflyX = useTransform(mouseX, (value) => value - 12); // Offset to center firefly
   const fireflyY = useTransform(mouseY, (value) => value - 12);
 
-  // Redirect authenticated users to dashboard
+  // Redirect authenticated users to dashboard with onboarding check
   React.useEffect(() => {
     if (isSignedIn) {
+      // Navigate to dashboard, OnboardingWrapper will handle onboarding check
       navigate('/dashboard');
     }
   }, [isSignedIn, navigate]);
@@ -186,7 +187,7 @@ export function LandingPage() {
               <motion.div
                 key={i}
                 className='absolute bg-white rounded-full'
-                style={{ 
+                style={{
                   width: `${size }}px`,
                   height: `${size}px`,
                   left: `${x}%`,
@@ -557,7 +558,7 @@ export function LandingPage() {
                         <motion.div
                           key={i}
                           className='absolute w-8 h-8 bg-emerald-400/80 rounded-full flex items-center justify-center'
-                          style={{ 
+                          style={{
                             left: `calc(50% + ${x }}px - 16px)`,
                             top: `calc(50% + ${y}px - 16px)`,
                           }}
@@ -644,13 +645,13 @@ export function LandingPage() {
                         <motion.div
                           key={i}
                           className='absolute text-lg'
-                          style={{ 
+                          style={{
                             left: `calc(50% + ${x }}px)`,
                             top: `calc(50% + ${y}px)`,
                           }}
                           initial={{  scale: 0, opacity: 0  }}
-                          whileInView={{ 
-                            scale: 1, 
+                          whileInView={{
+                            scale: 1,
                             opacity: 1,
                             transition: { delay: 1.5 + i * 0.2, duration: 0.3 }
                           }}
@@ -876,7 +877,7 @@ export function LandingPage() {
                       <motion.div
                         key={i}
                         className='w-1 h-1 bg-yellow-300 rounded-full absolute'
-                        style={{ 
+                        style={{
                           left: `${20 + i * 8 }}px`,
                           top: `${15 + i * 4}px`,
                         }}
@@ -1300,7 +1301,7 @@ export function LandingPage() {
               <motion.div
                 key={i}
                 className='absolute bg-white rounded-full'
-                style={{ 
+                style={{
                   width: `${size }}px`,
                   height: `${size}px`,
                   left: `${x}%`,

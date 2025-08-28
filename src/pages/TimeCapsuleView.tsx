@@ -293,7 +293,7 @@ export default function TimeCapsuleViewPage() {
                             <div className='w-full bg-white/20 rounded-full h-1'>
                               <div
                                 className='bg-white h-1 rounded-full transition-all duration-100'
-                                style={{ 
+                                style={{
                                   width: `${duration > 0 ? (currentTime / duration) * 100 : 0 }}%`,
                                 }}
                               />
@@ -357,7 +357,7 @@ export default function TimeCapsuleViewPage() {
                           <div className='w-full bg-white/20 rounded-full h-2'>
                             <div
                               className='bg-white h-2 rounded-full transition-all duration-100'
-                              style={{ 
+                              style={{
                                 width: `${duration > 0 ? (currentTime / duration) * 100 : 0 }}%`,
                               }}
                             />

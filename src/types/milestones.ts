@@ -10,7 +10,7 @@ export interface LegacyMilestone {
   title: string;
   description: string;
   category: 'foundation' | 'protection' | 'family' | 'professional' | 'maintenance' | 'mastery';
-  
+
   // Milestone criteria
   criteria: {
     type: 'document_count' | 'protection_percentage' | 'family_members' | 'time_based' | 'action_completed' | 'review_score';
@@ -77,7 +77,7 @@ export interface MilestoneProgress {
   overallProgress: number; // 0-100
   currentLevel: MilestoneLevel;
   nextLevel: MilestoneLevel | null;
-  
+
   // Category progress
   categoryProgress: {
     [key in LegacyMilestone['category']]: {
@@ -90,7 +90,7 @@ export interface MilestoneProgress {
   // Recent achievements
   recentAchievements: LegacyMilestone[];
   pendingCelebrations: LegacyMilestone[];
-  
+
   // Next recommended actions
   recommendations: {
     milestone: LegacyMilestone;
@@ -149,22 +149,22 @@ export interface MilestoneAnalytics {
     start: string;
     end: string;
   };
-  
+
   // Completion metrics
   milestonesCompleted: number;
   averageCompletionTime: number; // hours
   completionRate: number; // percentage
-  
+
   // Progress patterns
   mostActiveCategory: LegacyMilestone['category'];
   preferredDifficulty: LegacyMilestone['metadata']['difficulty'];
   completionTrend: 'improving' | 'stable' | 'declining';
-  
+
   // Impact metrics
   totalProtectionIncrease: number;
   totalTimeSaved: number;
   featuresUnlocked: string[];
-  
+
   // Behavioral insights
   celebrationEngagement: number; // 0-1
   recommendationFollowRate: number; // 0-1

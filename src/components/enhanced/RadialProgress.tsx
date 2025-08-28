@@ -205,7 +205,7 @@ export function LinearProgress({
               'h-full rounded-full transition-all duration-1000 ease-out',
               colorClasses[color]
             )}
-            style={{ 
+            style={{
               width: animate ? `${normalizedValue }}%` : '0%',
               transition: animate ? 'width 1s ease-out' : 'none',
             }}

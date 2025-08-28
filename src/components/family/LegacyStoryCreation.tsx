@@ -125,19 +125,19 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
 
   const startRecording = async (type: 'audio' | 'video') => {
     try {
-      const constraints = type === 'video' 
+      const constraints = type === 'video'
         ? { video: true, audio: true }
         : { audio: true };
-      
+
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       const recorder = new MediaRecorder(stream);
       const chunks: BlobPart[] = [];
-      
+
       recorder.ondataavailable = (e) => chunks.push(e.data);
       recorder.onstop = () => {
         const blob = new Blob(chunks, { type: type === 'video' ? 'video/webm' : 'audio/webm' });
         const file = new File([blob], `recording-${Date.now()}.webm`, { type: blob.type });
-        
+
         if (activeStory) {
           const newContent: StoryContent = {
             id: `content-${Date.now()}`,
@@ -145,21 +145,21 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
             content: file,
             timestamp: new Date()
           };
-          
+
           setActiveStory({
             ...activeStory,
             contents: [...activeStory.contents, newContent]
           });
         }
-        
+
         stream.getTracks().forEach(track => track.stop());
       };
-      
+
       recorder.start();
       setMediaRecorder(recorder);
       setIsRecording(true);
       setRecordingType(type);
-      
+
       let progress = 0;
       const interval = setInterval(() => {
         progress += 1;
@@ -169,7 +169,7 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
           stopRecording();
         }
       }, 1000);
-      
+
     } catch (error) {
       console.error('Failed to start recording:', error);
     }
@@ -198,7 +198,7 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
       estimatedDuration: 0,
       tags: []
     };
-    
+
     setActiveStory(newStory);
     setSelectedTemplate(template || null);
     setIsCreating(true);
@@ -211,7 +211,7 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
         lastUpdated: new Date(),
         estimatedDuration: calculateDuration(activeStory.contents)
       };
-      
+
       const existingIndex = stories.findIndex(s => s.id === activeStory.id);
       if (existingIndex >= 0) {
         const updatedStories = [...stories];
@@ -220,7 +220,7 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
       } else {
         setStories([...stories, updatedStory]);
       }
-      
+
       onStoryCreated?.(updatedStory);
       setIsCreating(false);
       setActiveStory(null);
@@ -244,7 +244,7 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
         content: text,
         timestamp: new Date()
       };
-      
+
       setActiveStory({
         ...activeStory,
         contents: [...activeStory.contents, newContent]
@@ -254,20 +254,20 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
 
   const handleFileUpload = (files: FileList | null) => {
     if (!files || !activeStory) return;
-    
+
     Array.from(files).forEach(file => {
-      const type = file.type.startsWith('image/') ? 'image' 
+      const type = file.type.startsWith('image/') ? 'image'
                  : file.type.startsWith('video/') ? 'video'
                  : file.type.startsWith('audio/') ? 'audio'
                  : 'text';
-      
+
       const newContent: StoryContent = {
         id: `content-${Date.now()}-${Math.random()}`,
         type,
         content: file,
         timestamp: new Date()
       };
-      
+
       setActiveStory({
         ...activeStory,
         contents: [...activeStory.contents, newContent]
@@ -321,7 +321,7 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
                   whileHover={{  scale: 1.02  }}
                   whileTap={{  scale: 0.98  }}
                 >
-                  <Card 
+                  <Card
                     className="cursor-pointer hover:border-blue-300 transition-colors"
                     onClick={() => createNewStory(template)}
                   >
@@ -348,8 +348,8 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
               ))}
             </div>
             <div className="flex justify-end gap-2 mt-4">
-              <Button 
-                variant={"outline" as any} 
+              <Button
+                variant={"outline" as any}
                 onClick={() => createNewStory()}
               >
                 Start from Scratch
@@ -414,7 +414,7 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
                     <Edit3 className="h-4 w-4" />
                     Add Text
                   </Button>
-                  
+
                   <Button
                     variant={"outline" as any}
                     className="gap-2"
@@ -424,7 +424,7 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
                     <Mic className="h-4 w-4" />
                     Record Audio
                   </Button>
-                  
+
                   <Button
                     variant={"outline" as any}
                     className="gap-2"
@@ -434,7 +434,7 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
                     <Video className="h-4 w-4" />
                     Record Video
                   </Button>
-                  
+
                   <Button
                     variant={"outline" as any}
                     className="gap-2"
@@ -447,7 +447,7 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
 
                 {/* Recording Interface */}
                 {isRecording && (
-                  <motion.div 
+                  <motion.div
                     initial={{  opacity: 0, y: -10  }}
                     animate={{  opacity: 1, y: 0  }}
                     className="bg-red-50 border border-red-200 rounded-lg p-4"
@@ -493,7 +493,7 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
                           </div>
                           <div>
                             <div className="font-medium">
-                              {content.type === 'text' 
+                              {content.type === 'text'
                                 ? `Text (${content.content.toString().slice(0, 50)}...)`
                                 : `${content.type} content`
                               }
@@ -534,9 +534,9 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
                       {selectedTemplate.prompts.map((prompt, index) => (
                         <div key={index} className="bg-blue-50 rounded-lg p-4">
                           <p className="text-gray-700">{prompt}</p>
-                          <Button 
-                            size="sm" 
-                            variant={"link" as any} 
+                          <Button
+                            size="sm"
+                            variant={"link" as any}
                             className="p-0 h-auto mt-2"
                             onClick={() => {
                               const response = prompt('Your response:');
@@ -556,9 +556,9 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="text-sm font-medium text-gray-700">Category</label>
-                    <Select 
+                    <Select
                       value={activeStory.category}
-                      onValueChange={(value: LegacyStory['category']) => 
+                      onValueChange={(value: LegacyStory['category']) =>
                         setActiveStory({...activeStory, category: value})
                       }
                     >
@@ -575,27 +575,27 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
                       </SelectContent>
                     </Select>
                   </div>
-                  
+
                   <div>
                     <label className="text-sm font-medium text-gray-700">Target Audience</label>
-                    <Input 
+                    <Input
                       placeholder="e.g., children, grandchildren, family"
                       value={activeStory.targetAudience.join(', ')}
                       onChange={(e) => setActiveStory({
-                        ...activeStory, 
+                        ...activeStory,
                         targetAudience: e.target.value.split(',').map(s => s.trim())
                       })}
                     />
                   </div>
                 </div>
-                
+
                 <div>
                   <label className="text-sm font-medium text-gray-700">Tags</label>
-                  <Input 
+                  <Input
                     placeholder="Add tags separated by commas"
                     value={activeStory.tags.join(', ')}
                     onChange={(e) => setActiveStory({
-                      ...activeStory, 
+                      ...activeStory,
                       tags: e.target.value.split(',').map(s => s.trim())
                     })}
                   />
@@ -628,12 +628,12 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-gray-600 mb-3">{story.description}</p>
-                
+
                 <div className="flex items-center justify-between text-xs text-gray-500 mb-3">
                   <span>{story.contents.length} content items</span>
                   <span>~{story.estimatedDuration}min</span>
                 </div>
-                
+
                 <div className="flex flex-wrap gap-1 mb-3">
                   {story.tags.slice(0, 3).map((tag) => (
                     <Badge key={tag} variant={"outline" as any} className="text-xs">
@@ -646,7 +646,7 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
                     </Badge>
                   )}
                 </div>
-                
+
                 <div className="flex gap-2">
                   <Button
                     size="sm"

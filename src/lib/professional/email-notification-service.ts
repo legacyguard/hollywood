@@ -504,7 +504,7 @@ LegacyGuard Professional Review Network
   ): EmailTemplate {
     const subject = `Your Professional Review is Complete - ${documentName}`;
 
-    const statusEmoji = result.overall_status === 'approved' ? '✅' : 
+    const statusEmoji = result.overall_status === 'approved' ? '✅' :
                         result.overall_status === 'requires_revision' ? '⚠️' : '❌';
 
     const htmlBody = `

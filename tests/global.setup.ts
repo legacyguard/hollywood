@@ -1,7 +1,7 @@
 import { clerkSetup } from '@clerk/testing/playwright';
 
 /**
- * Global setup for Playwright tests with Clerk authentication  
+ * Global setup for Playwright tests with Clerk authentication
  * This runs once before all tests to obtain a Testing Token
  */
 

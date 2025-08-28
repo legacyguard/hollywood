@@ -121,7 +121,7 @@ export const BoxTransformation: React.FC<BoxTransformationProps> = ({
                         <motion.div
                           key={i}
                           className='absolute top-1/2 left-1/2 w-1 bg-gradient-to-t from-yellow-400 to-transparent origin-bottom'
-                          style={{ 
+                          style={{
                             height: '200px',
                             transform: `translate(-50%, -50%) rotate(${i * 60 }}deg)`,
                           }}
@@ -149,7 +149,7 @@ export const BoxTransformation: React.FC<BoxTransformationProps> = ({
                         opacity: 1,
                        }}
                       exit={{  scale: 0, opacity: 0  }}
-                      transition={{ 
+                      transition={{
                         scale: { duration: 0.8, ease: 'easeOut' },
                         y: {
                           duration: 2,

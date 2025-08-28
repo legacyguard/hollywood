@@ -9,12 +9,12 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { 
-  ChevronLeft, 
-  ChevronRight, 
-  X, 
-  Lightbulb, 
-  Target, 
+import {
+  ChevronLeft,
+  ChevronRight,
+  X,
+  Lightbulb,
+  Target,
   Sparkles,
   Play,
   CheckCircle
@@ -73,7 +73,7 @@ export const OnboardingTooltips: React.FC<OnboardingTooltipsProps> = ({
   const calculatePosition = useCallback((targetElement: Element, position: string = 'auto') => {
     const targetRect = targetElement.getBoundingClientRect();
     const tooltipRect = tooltipRef.current?.getBoundingClientRect();
-    
+
     if (!tooltipRect) return { x: 0, y: 0 };
 
     let x = 0;
@@ -101,7 +101,7 @@ export const OnboardingTooltips: React.FC<OnboardingTooltipsProps> = ({
         // Smart positioning based on viewport space
         const viewportWidth = window.innerWidth;
         const viewportHeight = window.innerHeight;
-        
+
         if (targetRect.top > tooltipRect.height + offset) {
           // Top
           x = targetRect.left + targetRect.width / 2 - tooltipRect.width / 2;
@@ -210,7 +210,7 @@ export const OnboardingTooltips: React.FC<OnboardingTooltipsProps> = ({
     setIsVisible(false);
     setActiveFlow(null);
     setCurrentStepIndex(0);
-    
+
     // Remove any highlights
     document.querySelectorAll('.onboarding-highlight').forEach(el => {
       el.classList.remove('onboarding-highlight');
@@ -221,7 +221,7 @@ export const OnboardingTooltips: React.FC<OnboardingTooltipsProps> = ({
     if (currentStep?.action?.callback) {
       currentStep.action.callback();
     }
-    
+
     // Auto-advance after action
     setTimeout(nextStep, 500);
   };
@@ -275,7 +275,7 @@ export const OnboardingTooltips: React.FC<OnboardingTooltipsProps> = ({
                   <Sparkles className="h-4 w-4 mr-2 text-blue-500" />
                   {currentStep.title}
                 </h3>
-                
+
                 <p className="text-sm text-gray-600 leading-relaxed">
                   {currentStep.content}
                 </p>
@@ -302,7 +302,7 @@ export const OnboardingTooltips: React.FC<OnboardingTooltipsProps> = ({
                         Back
                       </Button>
                     )}
-                    
+
                     {currentStep.showSkip !== false && (
                       <Button size="sm" variant="ghost" onClick={skipFlow}>
                         Skip Tour
@@ -329,7 +329,7 @@ export const OnboardingTooltips: React.FC<OnboardingTooltipsProps> = ({
           </Card>
 
           {/* Pointer/Arrow */}
-          <div className="absolute w-3 h-3 bg-white border-2 border-blue-200 transform rotate-45 -z-10" 
+          <div className="absolute w-3 h-3 bg-white border-2 border-blue-200 transform rotate-45 -z-10"
             style={{
               left: '50%',
               top: tooltipPosition.y < window.innerHeight / 2 ? '-6px' : 'calc(100% - 6px)',
@@ -400,7 +400,7 @@ export const defaultOnboardingFlows: OnboardingFlow[] = [
   },
   {
     id: 'family-collaboration-tour',
-    name: 'Family Collaboration Tour', 
+    name: 'Family Collaboration Tour',
     description: 'Discover new ways to collaborate with family members',
     version: '1.0.0',
     trigger: 'feature-first-use',

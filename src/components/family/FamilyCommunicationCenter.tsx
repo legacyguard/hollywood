@@ -167,7 +167,7 @@ export const FamilyCommunicationCenter: React.FC<FamilyCommunicationCenterProps>
           }
         }
       ];
-      
+
       setChannels(defaultChannels);
       setActiveChannel(defaultChannels[0]);
     }
@@ -206,7 +206,7 @@ export const FamilyCommunicationCenter: React.FC<FamilyCommunicationCenterProps>
     setActiveChannel(updatedChannel);
     setNewMessage('');
     setReplyingTo(null);
-    
+
     onMessageSent?.(newMsg, activeChannel.id);
   };
 
@@ -217,7 +217,7 @@ export const FamilyCommunicationCenter: React.FC<FamilyCommunicationCenterProps>
       if (msg.id === messageId) {
         // Check if user already reacted with this emoji
         const existingReaction = msg.reactions.find(r => r.userId === currentUserId && r.emoji === emoji);
-        
+
         if (existingReaction) {
           // Remove reaction
           return {
@@ -361,23 +361,23 @@ export const FamilyCommunicationCenter: React.FC<FamilyCommunicationCenterProps>
   const formatTime = (date: Date) => {
     const now = new Date();
     const diffInHours = Math.abs(now.getTime() - date.getTime()) / (1000 * 60 * 60);
-    
+
     if (diffInHours < 24) {
-      return date.toLocaleTimeString('en-US', { 
-        hour: 'numeric', 
+      return date.toLocaleTimeString('en-US', {
+        hour: 'numeric',
         minute: '2-digit',
-        hour12: true 
+        hour12: true
       });
     } else {
-      return date.toLocaleDateString('en-US', { 
-        month: 'short', 
-        day: 'numeric' 
+      return date.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric'
       });
     }
   };
 
   const filteredMessages = activeChannel?.messages.filter(msg =>
-    !searchQuery || 
+    !searchQuery ||
     msg.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
     msg.senderName.toLowerCase().includes(searchQuery.toLowerCase())
   ) || [];
@@ -421,7 +421,7 @@ export const FamilyCommunicationCenter: React.FC<FamilyCommunicationCenterProps>
                         <SelectItem value="private">Private</SelectItem>
                       </SelectContent>
                     </Select>
-                    <Button 
+                    <Button
                       onClick={() => createChannel('New Channel', 'Channel description', 'general')}
                       className="w-full"
                     >
@@ -470,7 +470,7 @@ export const FamilyCommunicationCenter: React.FC<FamilyCommunicationCenterProps>
                       <SelectItem value="urgent">Urgent</SelectItem>
                     </SelectContent>
                   </Select>
-                  <Button 
+                  <Button
                     onClick={() => createAnnouncement('New Announcement', 'Announcement content', 'medium')}
                     className="w-full"
                   >
@@ -507,8 +507,8 @@ export const FamilyCommunicationCenter: React.FC<FamilyCommunicationCenterProps>
                   key={channel.id}
                   whileHover={{  x: 2  }}
                   className={`p-3 rounded cursor-pointer transition-colors ${
-                    activeChannel?.id === channel.id 
-                      ? 'bg-blue-100 text-blue-900' 
+                    activeChannel?.id === channel.id
+                      ? 'bg-blue-100 text-blue-900'
                       : 'hover:bg-gray-100'
                   }`}
                   onClick={() => setActiveChannel(channel)}
@@ -592,7 +592,7 @@ export const FamilyCommunicationCenter: React.FC<FamilyCommunicationCenterProps>
               <div className="space-y-4">
                 <AnimatePresence>
                   {filteredMessages.map((message, index) => {
-                    const showAvatar = index === 0 || 
+                    const showAvatar = index === 0 ||
                       filteredMessages[index - 1].senderId !== message.senderId ||
                       (message.timestamp.getTime() - filteredMessages[index - 1].timestamp.getTime()) > 300000; // 5 minutes
 
@@ -612,7 +612,7 @@ export const FamilyCommunicationCenter: React.FC<FamilyCommunicationCenterProps>
                             </AvatarFallback>
                           </Avatar>
                         )}
-                        
+
                         {message.senderId !== currentUserId && !showAvatar && (
                           <div className="w-8" />
                         )}
@@ -628,7 +628,7 @@ export const FamilyCommunicationCenter: React.FC<FamilyCommunicationCenterProps>
                               </span>
                             </div>
                           )}
-                          
+
                           <div
                             className={`p-3 rounded-lg ${
                               message.senderId === currentUserId
@@ -663,7 +663,7 @@ export const FamilyCommunicationCenter: React.FC<FamilyCommunicationCenterProps>
                               {Array.from(new Set(message.reactions.map(r => r.emoji))).map(emoji => {
                                 const count = message.reactions.filter(r => r.emoji === emoji).length;
                                 const userReacted = message.reactions.some(r => r.userId === currentUserId && r.emoji === emoji);
-                                
+
                                 return (
                                   <button
                                     key={emoji}
@@ -738,7 +738,7 @@ export const FamilyCommunicationCenter: React.FC<FamilyCommunicationCenterProps>
                   </div>
                 </div>
               )}
-              
+
               <div className="flex items-center gap-2">
                 <div className="flex-1 flex items-center gap-2 bg-gray-50 rounded-lg p-2">
                   <Input
@@ -781,7 +781,7 @@ export const FamilyCommunicationCenter: React.FC<FamilyCommunicationCenterProps>
                     </Button>
                   </div>
                 </div>
-                <Button 
+                <Button
                   onClick={() => sendMessage(newMessage)}
                   disabled={!newMessage.trim()}
                   className="gap-2"

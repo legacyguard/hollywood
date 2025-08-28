@@ -2,11 +2,11 @@ import React, { useState, useCallback, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
-import { 
-  Users, 
-  Plus, 
-  Edit3, 
-  Heart, 
+import {
+  Users,
+  Plus,
+  Edit3,
+  Heart,
   Crown,
   Baby,
   User,
@@ -129,14 +129,14 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
     Array.from(membersByGeneration.keys()).sort().forEach(gen => {
       const genMembers = membersByGeneration.get(gen) || [];
       const genY = (gen - (currentUser.generation || 0)) * generationWidth;
-      
+
       genMembers.forEach((member, index) => {
         if (member.id === currentUser.id) return; // Skip root, already positioned
-        
+
         const genWidth = genMembers.length * memberSpacing;
         const startX = -genWidth / 2;
         const x = startX + (index * memberSpacing);
-        
+
         positioned.set(member.id, {
           ...member,
           position: { x, y: genY }
@@ -168,7 +168,7 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
 
   const handleAddMember = () => {
     if (!newMember.name || !newMember.relationship) return;
-    
+
     const member: Omit<FamilyMember, 'id'> = {
       name: newMember.name,
       relationship: newMember.relationship as FamilyMember['relationship'],
@@ -178,7 +178,7 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
       roles: [],
       ...newMember
     };
-    
+
     onAddMember?.(member);
     setNewMember({
       name: '',
@@ -193,7 +193,7 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
 
   const MemberCard = ({ member }: { member: FamilyMember }) => {
     const IconComponent = getMemberIcon(member);
-    
+
     return (
       <motion.div
         key={member.id}
@@ -203,7 +203,7 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
         className={`absolute cursor-pointer transition-all duration-200 ${
           selectedMember?.id === member.id ? 'z-20 scale-110' : 'z-10'
         }`}
-        style={{ 
+        style={{
           left: `${member.position.x + 300 }}px`,
           top: `${member.position.y + 200}px`,
           transform: 'translate(-50%, -50%)'
@@ -243,17 +243,17 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
         {connections.map(conn => {
           const fromMember = layoutMembers.find(m => m.id === conn.fromId);
           const toMember = layoutMembers.find(m => m.id === conn.toId);
-          
+
           if (!fromMember || !toMember) return null;
-          
+
           const startX = fromMember.position.x + 300;
           const startY = fromMember.position.y + 200;
           const endX = toMember.position.x + 300;
           const endY = toMember.position.y + 200;
-          
+
           const strokeColor = conn.type === 'spouse' ? '#ef4444' : '#6b7280';
           const strokeWidth = conn.type === 'spouse' ? 2 : 1;
-          
+
           return (
             <line
               key={conn.id}
@@ -305,7 +305,7 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
             </Button>
           </div>
         </div>
-        
+
         <div className="flex items-center gap-2">
           <Button
             variant={"outline" as any}
@@ -314,7 +314,7 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
           >
             {isZoomed ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
           </Button>
-          
+
           <Button
             variant={"outline" as any}
             size="sm"
@@ -322,7 +322,7 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
           >
             <RotateCcw className="h-4 w-4" />
           </Button>
-          
+
           <Select>
             <SelectTrigger className="w-32">
               <SelectValue placeholder="Export" />
@@ -348,7 +348,7 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
               </SelectItem>
             </SelectContent>
           </Select>
-          
+
           <Button
             variant={"outline" as any}
             size="sm"
@@ -356,7 +356,7 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
           >
             <Share2 className="h-4 w-4" />
           </Button>
-          
+
           {isEditable && (
             <Dialog open={showAddMemberDialog} onOpenChange={setShowAddMemberDialog}>
               <DialogTrigger asChild>
@@ -444,7 +444,7 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
             ))}
           </>
         )}
-        
+
         {viewMode === 'timeline' && (
           <div className="p-8">
             <div className="text-center text-gray-600">
@@ -452,7 +452,7 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
             </div>
           </div>
         )}
-        
+
         {viewMode === 'roles' && (
           <div className="p-8">
             <div className="text-center text-gray-600">
@@ -486,7 +486,7 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
                 </Button>
               </div>
             </div>
-            
+
             <div className="p-6 space-y-6">
               {selectedMember.email && (
                 <div>
@@ -494,14 +494,14 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
                   <p className="text-sm text-gray-600">{selectedMember.email}</p>
                 </div>
               )}
-              
+
               {selectedMember.phone && (
                 <div>
                   <Label className="text-sm font-medium">Phone</Label>
                   <p className="text-sm text-gray-600">{selectedMember.phone}</p>
                 </div>
               )}
-              
+
               {selectedMember.roles.length > 0 && (
                 <div>
                   <Label className="text-sm font-medium">Roles</Label>
@@ -514,24 +514,24 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
                   </div>
                 </div>
               )}
-              
+
               {selectedMember.notes && (
                 <div>
                   <Label className="text-sm font-medium">Notes</Label>
                   <p className="text-sm text-gray-600">{selectedMember.notes}</p>
                 </div>
               )}
-              
+
               <div>
                 <Label className="text-sm font-medium">Status</Label>
-                <Badge 
+                <Badge
                   variant={selectedMember.status === 'active' ? 'default' : 'secondary'}
                   className="ml-2"
                 >
                   {selectedMember.status}
                 </Badge>
               </div>
-              
+
               {isEditable && (
                 <div className="flex gap-2 pt-4">
                   <Button

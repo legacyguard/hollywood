@@ -496,7 +496,7 @@ const FamilyTreeNode: React.FC<FamilyTreeNodeProps> = ({
         className={`absolute cursor-move select-none ${getGenerationColor(node.generation)} ${
           isSelected ? 'ring-2 ring-primary ring-offset-2' : ''
         } rounded-lg border-2 p-2 min-w-[120px] shadow-sm hover:shadow-md transition-all`}
-        style={{ 
+        style={{
           left: `${node.position.x }}px`,
           top: `${node.position.y}px`,
         }}

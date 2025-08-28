@@ -226,7 +226,7 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({
                 <motion.div
                   key={i}
                   className='absolute w-2 h-2 bg-yellow-300 rounded-full'
-                  style={{ 
+                  style={{
                     left: `${20 + Math.random() * 60 }}%`,
                     top: `${10 + Math.random() * 40}%`,
                   }}
@@ -315,7 +315,7 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({
                   fill='url(#leavesGradient)'
                   opacity='0.8'
                   initial={{  rx: '5%', ry: '5%'  }}
-                  animate={{ 
+                  animate={{
                     rx: `${Math.min(25, 8 + unlockedCount * 2) }}%`,
                     ry: `${Math.min(20, 6 + unlockedCount * 1.5)}%`,
                   }}
@@ -329,7 +329,7 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({
               <motion.div
                 key={milestone.id}
                 className='absolute cursor-pointer transform -translate-x-1/2 -translate-y-1/2'
-                style={{ 
+                style={{
                   left: `${milestone.visualPosition.x }}%`,
                   top: `${milestone.visualPosition.y}%`,
                   zIndex: 10,
@@ -338,7 +338,7 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({
                 whileHover={{  scale: 1.1  }}
                 whileTap={{  scale: 0.95  }}
                 initial={{  opacity: 0, scale: 0  }}
-                animate={{ 
+                animate={{
                   opacity: 1,
                   scale: 1
                 }}

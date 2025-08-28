@@ -160,16 +160,16 @@ class RealMilestonesService {
       for (const milestone of milestones) {
         if (await this.shouldCheckMilestone(milestone, event)) {
           const updatedMilestone = await this.evaluateMilestone(milestone, event);
-          
+
           if (updatedMilestone.criteria.isComplete && !milestone.criteria.isComplete) {
             updatedMilestone.completedAt = new Date().toISOString();
             updatedMilestone.celebration.shouldShow = true;
-            
+
             const savedMilestone = await this.updateMilestone(milestone.id, updatedMilestone);
             completedMilestones.push(savedMilestone);
-            
+
             await this.triggerMilestoneCelebration(savedMilestone);
-          } else if (updatedMilestone.criteria.currentValue !== milestone.criteria.currentValue || 
+          } else if (updatedMilestone.criteria.currentValue !== milestone.criteria.currentValue ||
                      updatedMilestone.progress.percentage !== milestone.progress.percentage) {
             await this.updateMilestone(milestone.id, updatedMilestone);
           }
@@ -187,7 +187,7 @@ class RealMilestonesService {
     try {
       const milestones = await this.getUserMilestones(userId);
       const completed = milestones.filter(m => m.criteria.isComplete);
-      
+
       // Calculate category progress
       const categoryProgress: MilestoneProgress['categoryProgress'] = {
         foundation: this.calculateCategoryProgress(milestones, 'foundation'),
@@ -201,12 +201,12 @@ class RealMilestonesService {
       // Get recent achievements (last 30 days)
       const thirtyDaysAgo = new Date();
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-      const recentAchievements = completed.filter(m => 
+      const recentAchievements = completed.filter(m =>
         m.completedAt && new Date(m.completedAt) > thirtyDaysAgo
       );
 
       // Get pending celebrations
-      const pendingCelebrations = milestones.filter(m => 
+      const pendingCelebrations = milestones.filter(m =>
         m.celebration.shouldShow && m.criteria.isComplete
       );
 
@@ -324,9 +324,9 @@ class RealMilestonesService {
   async getMilestoneAnalytics(userId: string, timeframe: { start: string; end: string }): Promise<MilestoneAnalytics> {
     try {
       const milestones = await this.getUserMilestones(userId);
-      const completed = milestones.filter(m => 
-        m.completedAt && 
-        m.completedAt >= timeframe.start && 
+      const completed = milestones.filter(m =>
+        m.completedAt &&
+        m.completedAt >= timeframe.start &&
         m.completedAt <= timeframe.end
       );
 
@@ -474,7 +474,7 @@ class RealMilestonesService {
           updatedMilestone.criteria.isComplete = currentCount >= (milestone.criteria.threshold as number);
         }
         break;
-        
+
       case 'family_members':
         if (event.type === 'family_member_added') {
           const currentCount = await this.getUserFamilyMemberCount(event.userId);
@@ -483,14 +483,14 @@ class RealMilestonesService {
           updatedMilestone.criteria.isComplete = currentCount >= (milestone.criteria.threshold as number);
         }
         break;
-        
+
       case 'protection_percentage':
         const protectionLevel = await this.calculateUserProtectionLevel(event.userId);
         updatedMilestone.criteria.currentValue = protectionLevel;
         updatedMilestone.progress.percentage = Math.min(100, (protectionLevel / (milestone.criteria.threshold as number)) * 100);
         updatedMilestone.criteria.isComplete = protectionLevel >= (milestone.criteria.threshold as number);
         break;
-        
+
       case 'review_score':
         if (event.type === 'review_completed' && event.reviewId) {
           // Would get actual review score from database
@@ -508,7 +508,7 @@ class RealMilestonesService {
   private async triggerMilestoneCelebration(milestone: LegacyMilestone): Promise<void> {
     try {
       console.log(`🎉 Milestone completed: ${milestone.title}`);
-      
+
       // Store celebration notification
       await supabase.from('notifications').insert({
         user_id: milestone.userId,
@@ -526,7 +526,7 @@ class RealMilestonesService {
 
       // Send celebration email
       await this.sendCelebrationEmail(milestone);
-      
+
     } catch (error) {
       console.error('Failed to trigger milestone celebration:', error);
     }
@@ -591,11 +591,11 @@ class RealMilestonesService {
     try {
       const documentCount = await this.getUserDocumentCount(userId);
       const familyCount = await this.getUserFamilyMemberCount(userId);
-      
+
       // Simple protection level calculation
       const documentScore = Math.min(60, documentCount * 15);
       const familyScore = Math.min(40, familyCount * 10);
-      
+
       return Math.round(documentScore + familyScore);
     } catch (error) {
       console.error('Failed to calculate protection level:', error);
@@ -606,7 +606,7 @@ class RealMilestonesService {
   private calculateCategoryProgress(milestones: LegacyMilestone[], category: string) {
     const categoryMilestones = milestones.filter(m => m.category === category);
     const completed = categoryMilestones.filter(m => m.criteria.isComplete);
-    
+
     return {
       completed: completed.length,
       total: categoryMilestones.length,
@@ -647,7 +647,7 @@ class RealMilestonesService {
         progressThreshold: 20
       };
     }
-    
+
     return {
       level: 1,
       name: 'Guardian Awakening',
@@ -661,7 +661,7 @@ class RealMilestonesService {
 
   private calculateNextLevel(currentLevel: MilestoneLevel): MilestoneLevel | null {
     if (currentLevel.level >= 4) return null;
-    
+
     return {
       level: currentLevel.level + 1,
       name: currentLevel.level === 1 ? 'Memory Keeper' : currentLevel.level === 2 ? 'Legacy Architect' : 'Heritage Guardian',
@@ -690,7 +690,7 @@ class RealMilestonesService {
 
   private calculateCompletionTrend(completed: LegacyMilestone[]): 'improving' | 'stable' | 'declining' {
     if (completed.length < 2) return 'stable';
-    
+
     // Simple trend calculation based on recent completions
     const recent = completed.filter(m => {
       if (!m.completedAt) return false;
@@ -717,18 +717,18 @@ class RealMilestonesService {
 
   private calculateAverageGap(completed: LegacyMilestone[]): number {
     if (completed.length < 2) return 0;
-    
+
     const sortedByCompletion = completed
       .filter(m => m.completedAt)
       .sort((a, b) => new Date(a.completedAt!).getTime() - new Date(b.completedAt!).getTime());
-    
+
     let totalGap = 0;
     for (let i = 1; i < sortedByCompletion.length; i++) {
       const prevDate = new Date(sortedByCompletion[i - 1].completedAt!).getTime();
       const currentDate = new Date(sortedByCompletion[i].completedAt!).getTime();
       totalGap += (currentDate - prevDate) / (1000 * 60 * 60 * 24); // days
     }
-    
+
     return totalGap / (sortedByCompletion.length - 1);
   }
 }

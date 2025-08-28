@@ -53,7 +53,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       const token = authHeader.slice(7);
       let userId: string | undefined;
-      
+
       try {
         // Dynamically import Clerk server SDK to avoid exposing secrets and for type safety
         const { verifyToken } = await import('@clerk/backend');

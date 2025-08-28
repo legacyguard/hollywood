@@ -4,12 +4,13 @@
  */
 
 import { supabase } from '@/integrations/supabase/client';
-import { 
-  LegacyMilestone, 
-  MilestoneProgress, 
+import type {
+  LegacyMilestone,
+  MilestoneProgress,
   MilestoneTriggerEvent,
   MilestoneAnalytics,
-  MilestoneLevel,
+  MilestoneLevel} from '@/types/milestones';
+import {
   DEFAULT_MILESTONE_TEMPLATES,
   MILESTONE_LEVELS
 } from '@/types/milestones';
@@ -24,7 +25,7 @@ export class MilestonesService {
   async initializeUserMilestones(userId: string): Promise<void> {
     try {
       const milestones = await this.createMilestonesFromTemplates(userId);
-      
+
       const { error } = await supabase
         .from('legacy_milestones')
         .insert(milestones);
@@ -49,15 +50,15 @@ export class MilestonesService {
 
       for (const milestone of milestones) {
         if (milestone.completedAt) continue; // Already completed
-        
+
         if (await this.shouldCheckMilestone(milestone, event)) {
           const updatedMilestone = await this.evaluateMilestone(milestone, event.userId);
-          
+
           if (updatedMilestone.criteria.isComplete && !milestone.criteria.isComplete) {
             // Milestone just completed!
             updatedMilestone.completedAt = new Date().toISOString();
             updatedMilestone.celebration.shouldShow = true;
-            
+
             await this.saveMilestone(updatedMilestone);
             completedMilestones.push(updatedMilestone);
 
@@ -103,7 +104,7 @@ export class MilestonesService {
       if (error) throw error;
 
       const milestones = (data || []) as LegacyMilestone[];
-      
+
       // Cache the results
       this.milestoneCache.set(cacheKey, { data: milestones, timestamp: Date.now() });
 
@@ -141,7 +142,7 @@ export class MilestonesService {
       });
 
       // Get pending celebrations
-      const pendingCelebrations = milestones.filter(m => 
+      const pendingCelebrations = milestones.filter(m =>
         m.completedAt && m.celebration.shouldShow
       );
 
@@ -172,7 +173,7 @@ export class MilestonesService {
   async evaluateAllMilestones(userId: string): Promise<void> {
     try {
       const milestones = await this.getUserMilestones(userId);
-      
+
       for (const milestone of milestones) {
         if (!milestone.completedAt) {
           const updatedMilestone = await this.evaluateMilestone(milestone, userId);
@@ -194,7 +195,7 @@ export class MilestonesService {
     try {
       const { error } = await supabase
         .from('legacy_milestones')
-        .update({ 
+        .update({
           celebration: { shouldShow: false },
           updated_at: new Date().toISOString()
         })
@@ -216,9 +217,9 @@ export class MilestonesService {
   async getMilestoneAnalytics(userId: string, timeframe?: { start: string; end: string }): Promise<MilestoneAnalytics> {
     try {
       const milestones = await this.getUserMilestones(userId);
-      
+
       // Filter by timeframe if provided
-      const filteredMilestones = timeframe 
+      const filteredMilestones = timeframe
         ? milestones.filter(m => {
             if (!m.completedAt) return false;
             const completedDate = new Date(m.completedAt);
@@ -404,7 +405,7 @@ export class MilestonesService {
 
   private async evaluateMilestone(milestone: LegacyMilestone, userId: string): Promise<LegacyMilestone> {
     const updatedMilestone = { ...milestone };
-    
+
     switch (milestone.criteria.type) {
       case 'document_count':
         const docCount = await this.getDocumentCount(userId);
@@ -466,13 +467,13 @@ export class MilestonesService {
       if (!documents) return 0;
 
       const essentialDocs = ['will', 'power_of_attorney', 'healthcare_directive', 'insurance_policy'];
-      const hasEssential = essentialDocs.filter(type => 
+      const hasEssential = essentialDocs.filter(type =>
         documents.some(doc => doc.type === type)
       );
 
       const basePercentage = (hasEssential.length / essentialDocs.length) * 70;
       const bonusPercentage = Math.min(30, documents.length * 3);
-      
+
       return Math.min(100, Math.round(basePercentage + bonusPercentage));
     } catch (error) {
       console.error('Error calculating protection level:', error);
@@ -535,7 +536,7 @@ export class MilestonesService {
 
   private async updateMilestoneProgress(userId: string): Promise<void> {
     const progress = await this.getMilestoneProgress(userId);
-    
+
     // Store or update progress record
     await supabase
       .from('milestone_progress')
@@ -553,11 +554,11 @@ export class MilestonesService {
     for (const category of categories) {
       const categoryMilestones = milestones.filter(m => m.category === category);
       const completedCategory = categoryMilestones.filter(m => m.completedAt);
-      
+
       categoryProgress[category] = {
         completed: completedCategory.length,
         total: categoryMilestones.length,
-        percentage: categoryMilestones.length > 0 
+        percentage: categoryMilestones.length > 0
           ? Math.round((completedCategory.length / categoryMilestones.length) * 100)
           : 0
       };
@@ -570,7 +571,7 @@ export class MilestonesService {
     // Find the highest level the user qualifies for
     for (let i = MILESTONE_LEVELS.length - 1; i >= 0; i--) {
       const level = MILESTONE_LEVELS[i];
-      
+
       if (overallProgress >= level.progressThreshold) {
         // Check if they meet the requirements
         if (completedMilestones.length >= level.requirements.milestonesRequired) {
@@ -613,7 +614,7 @@ export class MilestonesService {
       const priorityOrder = { 'critical': 4, 'high': 3, 'medium': 2, 'low': 1 };
       const aPriority = priorityOrder[a.metadata.priority];
       const bPriority = priorityOrder[b.metadata.priority];
-      
+
       if (aPriority !== bPriority) return bPriority - aPriority;
       return b.progress.percentage - a.progress.percentage;
     });
@@ -658,13 +659,13 @@ export class MilestonesService {
   }
 
   private calculateMilestoneAnalytics(
-    userId: string, 
-    milestones: LegacyMilestone[], 
+    userId: string,
+    milestones: LegacyMilestone[],
     timeframe?: { start: string; end: string }
   ): MilestoneAnalytics {
     const completedMilestones = milestones.filter(m => m.completedAt);
     const now = new Date();
-    
+
     // Calculate completion times
     const completionTimes = completedMilestones.map(m => {
       const created = new Date(m.createdAt).getTime();
@@ -672,12 +673,12 @@ export class MilestonesService {
       return (completed - created) / (1000 * 60 * 60); // hours
     });
 
-    const averageCompletionTime = completionTimes.length > 0 
-      ? completionTimes.reduce((sum, time) => sum + time, 0) / completionTimes.length 
+    const averageCompletionTime = completionTimes.length > 0
+      ? completionTimes.reduce((sum, time) => sum + time, 0) / completionTimes.length
       : 0;
 
-    const completionRate = milestones.length > 0 
-      ? (completedMilestones.length / milestones.length) * 100 
+    const completionRate = milestones.length > 0
+      ? (completedMilestones.length / milestones.length) * 100
       : 0;
 
     // Calculate category and difficulty preferences
@@ -698,12 +699,12 @@ export class MilestonesService {
       .sort(([,a], [,b]) => b - a)[0]?.[0] as LegacyMilestone['metadata']['difficulty'] || 'easy';
 
     // Calculate impact metrics
-    const totalProtectionIncrease = completedMilestones.reduce((sum, m) => 
+    const totalProtectionIncrease = completedMilestones.reduce((sum, m) =>
       sum + (m.rewards.protectionIncrease || 0), 0);
-    
-    const totalTimeSaved = completedMilestones.reduce((sum, m) => 
+
+    const totalTimeSaved = completedMilestones.reduce((sum, m) =>
       sum + (m.rewards.timeSaved || 0), 0);
-    
+
     const featuresUnlocked = Array.from(new Set(
       completedMilestones.flatMap(m => m.rewards.features || [])
     ));
@@ -757,7 +758,7 @@ export class MilestonesService {
   private clearUserCache(userIdOrMilestoneId: string): void {
     const keysToDelete = Array.from(this.milestoneCache.keys())
       .filter(key => key.includes(userIdOrMilestoneId));
-    
+
     keysToDelete.forEach(key => this.milestoneCache.delete(key));
   }
 }

@@ -1,8 +1,8 @@
 import { test, expect } from '@playwright/test';
-import { generateTestUser, signUpUser, signInUser, waitForClerk } from './helpers/auth';
+import { generateTestUser, waitForClerk } from './helpers/auth';
 
 test.describe('Complete User Journey - Registration to Dashboard', () => {
-  const testUser = generateTestUser();
+  const _testUser = generateTestUser();
 
   test.describe.configure({ mode: 'serial' });
 

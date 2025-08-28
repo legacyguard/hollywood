@@ -73,7 +73,7 @@ export const AdvancedAnalyticsDashboard: React.FC<AdvancedAnalyticsDashboardProp
     queryKey: ['quick-insights', user?.id, selectedTimeframe],
     queryFn: async () => {
       if (!user?.id) return [];
-      
+
       // Calculate date range based on timeframe
       const now = new Date();
       const startDate = new Date();
@@ -91,7 +91,7 @@ export const AdvancedAnalyticsDashboard: React.FC<AdvancedAnalyticsDashboardProp
           startDate.setFullYear(now.getFullYear() - 1);
           break;
       }
-      
+
       const { data, error } = await supabase
         .from('quick_insights')
         .select('*')
@@ -100,12 +100,12 @@ export const AdvancedAnalyticsDashboard: React.FC<AdvancedAnalyticsDashboardProp
         .order('priority', { ascending: true })
         .order('created_at', { ascending: false })
         .limit(10);
-      
+
       if (error) {
         console.error('Error fetching insights:', error);
         return [];
       }
-      
+
       return data || [];
     },
     enabled: !!user?.id,
@@ -161,7 +161,7 @@ export const AdvancedAnalyticsDashboard: React.FC<AdvancedAnalyticsDashboardProp
     queryKey: ['insight-analytics', user?.id, selectedTimeframe],
     queryFn: async () => {
       if (!user?.id) return null;
-      
+
       // Calculate date range
       const now = new Date();
       const startDate = new Date();
@@ -179,7 +179,7 @@ export const AdvancedAnalyticsDashboard: React.FC<AdvancedAnalyticsDashboardProp
           startDate.setFullYear(now.getFullYear() - 1);
           break;
       }
-      
+
       const { data, error } = await supabase
         .from('insight_analytics')
         .select('*')
@@ -188,11 +188,11 @@ export const AdvancedAnalyticsDashboard: React.FC<AdvancedAnalyticsDashboardProp
         .order('created_at', { ascending: false })
         .limit(1)
         .single();
-      
+
       if (error && error.code !== 'PGRST116') { // Ignore "no rows" error
         console.error('Error fetching analytics:', error);
       }
-      
+
       return data;
     },
     enabled: !!user?.id
@@ -203,7 +203,7 @@ export const AdvancedAnalyticsDashboard: React.FC<AdvancedAnalyticsDashboardProp
     queryKey: ['milestone-analytics', user?.id, selectedTimeframe],
     queryFn: async () => {
       if (!user?.id) return null;
-      
+
       const now = new Date();
       const startDate = new Date();
       switch (selectedTimeframe) {
@@ -220,7 +220,7 @@ export const AdvancedAnalyticsDashboard: React.FC<AdvancedAnalyticsDashboardProp
           startDate.setFullYear(now.getFullYear() - 1);
           break;
       }
-      
+
       const { data, error } = await supabase
         .from('milestone_analytics')
         .select('*')
@@ -229,11 +229,11 @@ export const AdvancedAnalyticsDashboard: React.FC<AdvancedAnalyticsDashboardProp
         .order('created_at', { ascending: false })
         .limit(1)
         .single();
-      
+
       if (error && error.code !== 'PGRST116') {
         console.error('Error fetching milestone analytics:', error);
       }
-      
+
       return data;
     },
     enabled: !!user?.id

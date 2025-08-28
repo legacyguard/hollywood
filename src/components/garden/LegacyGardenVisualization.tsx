@@ -296,7 +296,7 @@ export function LegacyGardenVisualization({
         hoveredElement === element.id && interactive && 'scale-110',
         element.color
       )}
-      style={{ 
+      style={{
         left: `${element.x }}%`,
         top: `${element.y}%`,
         opacity: element.unlocked ? 1 : 0.3

@@ -9,13 +9,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { 
-  Crown, 
-  Star, 
-  Zap, 
-  Shield, 
-  Users, 
-  Clock, 
+import {
+  Crown,
+  Star,
+  Zap,
+  Shield,
+  Users,
+  Clock,
   CheckCircle,
   X,
   ArrowRight,
@@ -77,7 +77,7 @@ export const UpgradePrompts: React.FC<UpgradePromptProps> = ({
             "Family decision voting system"
           ]
         };
-      
+
       case 'professional-review':
         return {
           title: "Get Professional Review",
@@ -220,7 +220,7 @@ export const UpgradePrompts: React.FC<UpgradePromptProps> = ({
   const handleDismiss = () => {
     setIsVisible(false);
     onDismiss?.();
-    
+
     // Track dismissal for smart timing
     const dismissals = JSON.parse(localStorage.getItem(`upgrade-dismissals-${userId}`) || '[]');
     dismissals.push({
@@ -314,8 +314,8 @@ export const UpgradePrompts: React.FC<UpgradePromptProps> = ({
                 >
                   <Card className={cn(
                     "cursor-pointer transition-all hover:shadow-lg border-2",
-                    selectedPlan === plan.id 
-                      ? "border-blue-500 bg-blue-50" 
+                    selectedPlan === plan.id
+                      ? "border-blue-500 bg-blue-50"
                       : plan.popular || plan.recommended
                       ? "border-purple-500"
                       : "border-gray-200 hover:border-gray-300"
@@ -456,11 +456,11 @@ export const SmartUpgradeTrigger: React.FC<SmartUpgradeTriggerProps> = ({
   const shouldShowTrigger = (trigger: string) => {
     // Check dismissal history to avoid spam
     const dismissals = JSON.parse(localStorage.getItem(`upgrade-dismissals-${userId}`) || '[]');
-    const recentDismissals = dismissals.filter((d: any) => 
-      d.trigger === trigger && 
+    const recentDismissals = dismissals.filter((d: any) =>
+      d.trigger === trigger &&
       new Date(d.dismissedAt) > new Date(Date.now() - 24 * 60 * 60 * 1000) // 24 hours
     );
-    
+
     return recentDismissals.length === 0;
   };
 
@@ -540,7 +540,7 @@ export const FeatureUpgradePrompt: React.FC<FeatureUpgradePromptProps> = ({
           <div className="p-4 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full">
             <IconComponent className="h-8 w-8 text-white" />
           </div>
-          
+
           <div>
             <h3 className="text-lg font-bold text-gray-900 mb-2">
               {featureInfo.title}

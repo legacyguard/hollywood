@@ -246,7 +246,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
 
     // Remove any existing vote by this user
     const filteredVotes = decision.votes.filter(v => v.userId !== currentUserId);
-    
+
     // Add new vote
     const newVote: Vote = {
       id: `vote-${Date.now()}`,
@@ -260,10 +260,10 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
 
     // Update options with vote counts
     const updatedOptions = decision.options.map(option => {
-      const votes = option.id === optionId 
+      const votes = option.id === optionId
         ? [...option.votes.filter(v => v !== currentUserId), currentUserId]
         : option.votes.filter(v => v !== currentUserId);
-      
+
       return {
         ...option,
         votes,
@@ -280,7 +280,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
     // Check if decision is complete
     const totalVotes = updatedDecision.votes.length;
     const requiredVotes = updatedDecision.requiredVotes || updatedDecision.eligibleVoters.length;
-    
+
     if (totalVotes >= requiredVotes || checkDecisionComplete(updatedDecision)) {
       const winningOption = getWinningOption(updatedDecision);
       updatedDecision.status = 'decided';
@@ -299,17 +299,17 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
     if (decision.requiresUnanimity) {
       return decision.votes.length === decision.eligibleVoters.length;
     }
-    
+
     const totalVotes = decision.votes.length;
     const requiredVotes = decision.requiredVotes || Math.ceil(decision.eligibleVoters.length / 2);
-    
+
     return totalVotes >= requiredVotes;
   };
 
   const getWinningOption = (decision: FamilyDecision): VoteOption | null => {
     if (decision.options.length === 0) return null;
-    
-    return decision.options.reduce((winner, option) => 
+
+    return decision.options.reduce((winner, option) =>
       option.votes.length > winner.votes.length ? option : winner
     );
   };
@@ -378,7 +378,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
   };
 
   const canVote = (decision: FamilyDecision) => {
-    return decision.status === 'voting' && 
+    return decision.status === 'voting' &&
            decision.eligibleVoters.includes(currentUserId) &&
            (!decision.votingDeadline || new Date() < decision.votingDeadline);
   };
@@ -410,7 +410,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
                     whileHover={{  scale: 1.02  }}
                     whileTap={{  scale: 0.98  }}
                   >
-                    <Card 
+                    <Card
                       className="cursor-pointer hover:border-blue-300 transition-colors"
                       onClick={() => createNewDecision(template)}
                     >
@@ -438,8 +438,8 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
                 ))}
               </div>
               <div className="flex justify-end gap-2 mt-4">
-                <Button 
-                  variant={"outline" as any} 
+                <Button
+                  variant={"outline" as any}
                   onClick={() => createNewDecision()}
                 >
                   Create Custom Decision
@@ -576,9 +576,9 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="text-sm font-medium text-gray-700">Priority</label>
-                    <Select 
+                    <Select
                       value={activeDecision.priority}
-                      onValueChange={(value: FamilyDecision['priority']) => 
+                      onValueChange={(value: FamilyDecision['priority']) =>
                         setActiveDecision({...activeDecision, priority: value})
                       }
                     >
@@ -596,9 +596,9 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
 
                   <div>
                     <label className="text-sm font-medium text-gray-700">Category</label>
-                    <Select 
+                    <Select
                       value={activeDecision.category}
-                      onValueChange={(value: FamilyDecision['category']) => 
+                      onValueChange={(value: FamilyDecision['category']) =>
                         setActiveDecision({...activeDecision, category: value})
                       }
                     >
@@ -624,7 +624,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
                     type="datetime-local"
                     value={activeDecision.votingDeadline?.toISOString().slice(0, 16) || ''}
                     onChange={(e) => setActiveDecision({
-                      ...activeDecision, 
+                      ...activeDecision,
                       votingDeadline: e.target.value ? new Date(e.target.value) : undefined
                     })}
                   />
@@ -675,7 +675,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
           {filteredDecisions.map((decision) => {
             const userVote = getUserVote(decision);
             const winningOption = getWinningOption(decision);
-            
+
             return (
               <motion.div
                 key={decision.id}
@@ -740,7 +740,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
                             </Button>
                           ))}
                         </div>
-                        
+
                         {/* Vote Confirmation Dialog */}
                         <Dialog open={!!votingFor} onOpenChange={() => setVotingFor(null)}>
                           <DialogContent>
@@ -794,8 +794,8 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
                               {option.votes.length} votes ({option.percentage}%)
                             </span>
                           </div>
-                          <Progress 
-                            value={option.percentage} 
+                          <Progress
+                            value={option.percentage}
                             className={`h-2 ${decision.result?.winningOption === option.id ? 'bg-green-100' : ''}`}
                           />
                         </div>
@@ -853,7 +853,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
           <Vote className="h-12 w-12 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">No Decisions Found</h3>
           <p className="text-gray-600 mb-4">
-            {filterStatus !== 'all' || filterCategory !== 'all' 
+            {filterStatus !== 'all' || filterCategory !== 'all'
               ? 'Try adjusting your filters to see more decisions'
               : 'Create your first family decision to get started with collaborative decision-making'
             }

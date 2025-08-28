@@ -30,7 +30,7 @@ async function verifyAuth(authHeader: string | undefined): Promise<string | null
   }
 
   const token = authHeader.slice(7);
-  
+
   try {
     const { verifyToken } = await import('@clerk/backend');
     const audience = process.env.CLERK_JWT_AUDIENCE;
@@ -44,7 +44,7 @@ async function verifyAuth(authHeader: string | undefined): Promise<string | null
       audience,
       authorizedParties: [authorizedParty]
     });
-    
+
     return verificationResult.sub;
   } catch (error) {
     console.error('Token verification failed:', error);
@@ -111,7 +111,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       case 'callback':
         // Handle OAuth2 callback
         const { code, state } = req.body;
-        
+
         if (!code) {
           return res.status(400).json({ error: 'Authorization code required' });
         }
@@ -124,11 +124,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         try {
           const { tokens } = await oauth2Client.getToken(code);
           oauth2Client.setCredentials(tokens);
-          
+
           // Store tokens securely
           await storeUserTokens(userId, tokens);
 
-          return res.status(200).json({ 
+          return res.status(200).json({
             success: true,
             message: 'Gmail authorization successful'
           });
@@ -147,7 +147,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         oauth2Client.setCredentials(userTokens);
 
         const { query, maxResults = 10 } = req.body;
-        
+
         try {
           const response = await gmail.users.messages.list({
             userId: 'me',
@@ -156,7 +156,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           });
 
           const messages = response.data.messages || [];
-          
+
           // Fetch detailed message data
           const detailedMessages = await Promise.all(
             messages.slice(0, 10).map(async (msg) => {
@@ -191,7 +191,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         oauth2Client.setCredentials(attachmentTokens);
 
         const { messageId, attachmentId } = req.body;
-        
+
         if (!messageId || !attachmentId) {
           return res.status(400).json({ error: 'Message ID and attachment ID required' });
         }

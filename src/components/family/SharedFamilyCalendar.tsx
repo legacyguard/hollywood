@@ -66,7 +66,7 @@ const eventTypeConfig = {
 
 const priorityColors = {
   low: 'border-blue-400',
-  medium: 'border-yellow-400', 
+  medium: 'border-yellow-400',
   high: 'border-orange-400',
   critical: 'border-red-400'
 };

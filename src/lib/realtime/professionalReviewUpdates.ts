@@ -4,7 +4,7 @@
  */
 
 import { supabase } from '@/integrations/supabase/client';
-import { RealtimeChannel } from '@supabase/supabase-js';
+import type { RealtimeChannel } from '@supabase/supabase-js';
 import { toast } from '@/hooks/use-toast';
 
 export interface ReviewUpdateData {
@@ -104,7 +104,7 @@ class ProfessionalReviewRealtimeService {
 
       if (eventType === 'UPDATE' && newRecord && oldRecord) {
         // Check if professional review fields changed
-        const hasReviewChange = 
+        const hasReviewChange =
           newRecord.professional_review_status !== oldRecord.professional_review_status ||
           newRecord.professional_review_score !== oldRecord.professional_review_score ||
           newRecord.review_findings !== oldRecord.review_findings;
@@ -279,7 +279,7 @@ class ProfessionalReviewRealtimeService {
           break;
         case 'completed':
           title = '✅ Review Completed';
-          description = data.score 
+          description = data.score
             ? `Review completed with score: ${data.score}/100`
             : 'Your document review has been completed';
           break;
@@ -352,14 +352,14 @@ class ProfessionalReviewRealtimeService {
   async updateReviewProgress(documentId: string, progress: number, status?: string): Promise<void> {
     try {
       const updates: any = {};
-      
+
       if (status) {
         updates.professional_review_status = status;
       }
-      
+
       // If we had a separate reviews table, we'd update progress there
       // For now, we calculate progress from status
-      
+
       const { error } = await supabase
         .from('documents')
         .update(updates)
@@ -430,7 +430,7 @@ export function useProfessionalReviewUpdates(userId: string) {
   }, [userId]);
 
   const markNotificationAsRead = (notificationId: string) => {
-    setNotifications(prev => 
+    setNotifications(prev =>
       prev.map(n => n.id === notificationId ? { ...n, read: true } : n)
     );
   };

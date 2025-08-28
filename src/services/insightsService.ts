@@ -4,10 +4,10 @@
  */
 
 import { supabase } from '@/integrations/supabase/client';
-import { 
-  QuickInsight, 
-  InsightCalculation, 
-  DocumentAnalysis, 
+import type {
+  QuickInsight,
+  InsightCalculation,
+  DocumentAnalysis,
   FamilyImpactStatement,
   InsightFilters,
   InsightAnalytics
@@ -36,7 +36,7 @@ export class InsightsService {
 
       // Analyze document content (this would integrate with AI/ML service)
       const analysis = await this.performDocumentAnalysis(document);
-      
+
       // Generate insights based on analysis
       const insights = await this.generateDocumentInsights(document, analysis);
 
@@ -75,7 +75,7 @@ export class InsightsService {
 
       // Calculate protection gaps and levels
       const protectionAnalysis = this.calculateProtectionLevel(documents || [], familyMembers || []);
-      
+
       // Generate impact scenarios
       const impactScenarios = this.generateImpactScenarios(familyMembers || [], documents || []);
 
@@ -188,7 +188,7 @@ export class InsightsService {
       if (error) throw error;
 
       const insights = (data || []) as QuickInsight[];
-      
+
       // Cache the results
       this.insightCache.set(cacheKey, { data: insights, timestamp: Date.now() });
 
@@ -260,9 +260,9 @@ export class InsightsService {
   private async performDocumentAnalysis(document: any): Promise<DocumentAnalysis['extractedValue']> {
     // This would integrate with AI service for document analysis
     // For now, providing structured analysis based on document type
-    
+
     const baseScore = Math.random() * 0.3 + 0.7; // 70-100% quality score
-    
+
     return {
       keyInfo: this.extractKeyInformation(document),
       missingInfo: this.identifyMissingInformation(document),
@@ -273,7 +273,7 @@ export class InsightsService {
 
   private extractKeyInformation(document: any): string[] {
     const info: string[] = [];
-    
+
     if (document.type === 'will') {
       info.push('Beneficiaries identified', 'Asset distribution specified', 'Executor named');
     } else if (document.type === 'insurance_policy') {
@@ -281,13 +281,13 @@ export class InsightsService {
     } else if (document.type === 'property_deed') {
       info.push('Property address confirmed', 'Ownership details clear', 'Transfer conditions set');
     }
-    
+
     return info;
   }
 
   private identifyMissingInformation(document: any): string[] {
     const missing: string[] = [];
-    
+
     // Basic validation based on document type
     if (!document.beneficiaries?.length) {
       missing.push('Beneficiary information');
@@ -295,7 +295,7 @@ export class InsightsService {
     if (!document.metadata?.guardian_info) {
       missing.push('Guardian designation');
     }
-    
+
     return missing;
   }
 
@@ -359,7 +359,7 @@ export class InsightsService {
 
   private calculateProtectionLevel(documents: any[], familyMembers: any[]): InsightCalculation['protectionLevel'] {
     const essentialDocs = ['will', 'power_of_attorney', 'healthcare_directive', 'insurance_policy'];
-    const hasEssential = essentialDocs.filter(type => 
+    const hasEssential = essentialDocs.filter(type =>
       documents.some(doc => doc.type === type)
     );
 
@@ -367,7 +367,7 @@ export class InsightsService {
     const bonusPercentage = Math.min(30, documents.length * 5);
     const percentage = Math.min(100, basePercentage + bonusPercentage);
 
-    const gaps = essentialDocs.filter(type => 
+    const gaps = essentialDocs.filter(type =>
       !documents.some(doc => doc.type === type)
     );
 
@@ -398,7 +398,7 @@ export class InsightsService {
 
     // Missing essential documents
     const essentialDocs = ['will', 'power_of_attorney', 'healthcare_directive'];
-    const missingEssential = essentialDocs.filter(type => 
+    const missingEssential = essentialDocs.filter(type =>
       !documents.some(doc => doc.type === type)
     );
 
@@ -423,7 +423,7 @@ export class InsightsService {
 
   private generateImpactDescription(protectionAnalysis: any, familyMembers: any[]): string {
     const level = protectionAnalysis.percentage;
-    
+
     if (level > 80) {
       return `Your family has strong protection with ${level}% coverage. ${familyMembers.length} family members will benefit from your comprehensive planning.`;
     } else if (level > 50) {
@@ -451,7 +451,7 @@ export class InsightsService {
 
   private calculateMemberRisk(member: any, protectionAnalysis: any): 'high' | 'medium' | 'low' {
     const level = protectionAnalysis.percentage;
-    
+
     if (member.role === 'spouse' && level < 60) return 'high';
     if (member.role === 'child' && level < 70) return 'medium';
     if (level < 50) return 'high';
@@ -463,7 +463,7 @@ export class InsightsService {
     const gaps: FamilyImpactStatement['protectionGaps'] = [];
 
     const essentialDocs = ['will', 'power_of_attorney', 'healthcare_directive'];
-    
+
     essentialDocs.forEach(docType => {
       if (!documents.some(doc => doc.type === docType)) {
         gaps.push({
@@ -591,7 +591,7 @@ export class InsightsService {
 
     // Calculate average protection level from recent insights
     const protectionInsights = insights.filter(i => i.type === 'protection_level');
-    const averageProtectionLevel = protectionInsights.length > 0 
+    const averageProtectionLevel = protectionInsights.length > 0
       ? protectionInsights.reduce((sum, i) => sum + parseInt(i.value || '0'), 0) / protectionInsights.length
       : 0;
 
@@ -634,7 +634,7 @@ export class InsightsService {
 
   private calculateAverageImpact(insights: any[]): string {
     if (insights.length === 0) return 'medium';
-    
+
     const impactScores = insights.map(i => {
       switch (i.impact) {
         case 'high': return 3;
@@ -645,7 +645,7 @@ export class InsightsService {
     });
 
     const average = impactScores.reduce((sum, score) => sum + score, 0) / impactScores.length;
-    
+
     if (average > 2.5) return 'high';
     if (average > 1.5) return 'medium';
     return 'low';
@@ -661,7 +661,7 @@ export class InsightsService {
     return last30Days.map(date => {
       const dayInsights = insights.filter(i => i.created_at?.startsWith(date));
       const dayActions = actions.filter(a => a.created_at?.startsWith(date) && a.completed);
-      
+
       const protectionInsights = dayInsights.filter(i => i.type === 'protection_level');
       const avgProtection = protectionInsights.length > 0
         ? protectionInsights.reduce((sum, i) => sum + parseInt(i.value || '0'), 0) / protectionInsights.length

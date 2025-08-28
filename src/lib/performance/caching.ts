@@ -38,7 +38,7 @@ class MemoryCache<T> {
   set(key: string, data: T): void {
     // Remove expired entries and enforce size limit
     this.cleanup();
-    
+
     if (this.cache.size >= this.config.maxSize) {
       // Remove oldest entry
       const oldestKey = this.cache.keys().next().value;
@@ -104,7 +104,7 @@ class MemoryCache<T> {
 
   invalidatePattern(pattern: RegExp): void {
     const keysToDelete: string[] = [];
-    
+
     for (const key of this.cache.keys()) {
       if (pattern.test(key)) {
         keysToDelete.push(key);

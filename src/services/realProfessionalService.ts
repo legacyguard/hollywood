@@ -145,15 +145,15 @@ class RealProfessionalService {
       let filteredData = data || [];
 
       if (filters?.specializations?.length) {
-        filteredData = filteredData.filter(attorney => 
-          attorney.credentials?.specializations?.some((spec: string) => 
+        filteredData = filteredData.filter(attorney =>
+          attorney.credentials?.specializations?.some((spec: string) =>
             filters.specializations!.includes(spec)
           )
         );
       }
 
       if (filters?.jurisdiction) {
-        filteredData = filteredData.filter(attorney => 
+        filteredData = filteredData.filter(attorney =>
           attorney.credentials?.licensed_states?.includes(filters.jurisdiction!)
         );
       }
@@ -422,8 +422,8 @@ class RealProfessionalService {
       if (reviewers?.length) {
         // Send notifications to matching reviewers
         const notifications = reviewers
-          .filter(reviewer => 
-            !request.specialization_required || 
+          .filter(reviewer =>
+            !request.specialization_required ||
             reviewer.credentials?.specializations?.includes(request.specialization_required)
           )
           .map(reviewer => ({
@@ -478,9 +478,9 @@ class RealProfessionalService {
         type: 'review_completed',
         title: 'Document Review Completed',
         message: `Your document review has been completed with a score of ${review.score}/100`,
-        data: { 
-          review_id: review.id, 
-          document_id: review.document_id, 
+        data: {
+          review_id: review.id,
+          document_id: review.document_id,
           score: review.score,
           findings_count: review.findings.length,
           recommendations_count: review.recommendations.length

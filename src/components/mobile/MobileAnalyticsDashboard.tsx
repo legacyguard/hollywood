@@ -10,12 +10,12 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  BarChart3, 
-  Shield, 
-  Target, 
-  Award, 
-  Users, 
+import {
+  BarChart3,
+  Shield,
+  Target,
+  Award,
+  Users,
   TrendingUp,
   ChevronRight,
   Activity,
@@ -117,8 +117,8 @@ export const MobileAnalyticsDashboard: React.FC<MobileAnalyticsDashboardProps> =
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
           >
-            <Card 
-              {...mobileOptimized.card(true)} 
+            <Card
+              {...mobileOptimized.card(true)}
               className="hover:shadow-md transition-shadow"
               onClick={() => onNavigate?.('progress')}
             >
@@ -145,8 +145,8 @@ export const MobileAnalyticsDashboard: React.FC<MobileAnalyticsDashboardProps> =
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            <Card 
-              {...mobileOptimized.card(true)} 
+            <Card
+              {...mobileOptimized.card(true)}
               className="hover:shadow-md transition-shadow"
               onClick={() => onNavigate?.('family')}
             >
@@ -173,8 +173,8 @@ export const MobileAnalyticsDashboard: React.FC<MobileAnalyticsDashboardProps> =
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
           >
-            <Card 
-              {...mobileOptimized.card(true)} 
+            <Card
+              {...mobileOptimized.card(true)}
               className="hover:shadow-md transition-shadow"
               onClick={() => onNavigate?.('documents')}
             >
@@ -201,8 +201,8 @@ export const MobileAnalyticsDashboard: React.FC<MobileAnalyticsDashboardProps> =
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
           >
-            <Card 
-              {...mobileOptimized.card(true)} 
+            <Card
+              {...mobileOptimized.card(true)}
               className="hover:shadow-md transition-shadow"
               onClick={() => onNavigate?.('achievements')}
             >
@@ -295,8 +295,8 @@ export const MobileAnalyticsDashboard: React.FC<MobileAnalyticsDashboardProps> =
                 <BarChart3 className="h-5 w-5" />
                 <span>Recent Activity</span>
               </div>
-              <Button 
-                variant="ghost" 
+              <Button
+                variant="ghost"
                 size="sm"
                 {...mobileOptimized.button('sm')}
                 onClick={() => onNavigate?.('activity')}

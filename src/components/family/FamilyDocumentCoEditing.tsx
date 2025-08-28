@@ -145,7 +145,7 @@ export const FamilyDocumentCoEditing: React.FC<FamilyDocumentCoEditingProps> = (
           color: member.color,
           position: Math.floor(Math.random() * (activeDocument.content?.length || 100))
         }));
-      
+
       setCursors(activeCursors);
     }, 3000);
 
@@ -250,7 +250,7 @@ export const FamilyDocumentCoEditing: React.FC<FamilyDocumentCoEditingProps> = (
 
     setActiveDocument({
       ...activeDocument,
-      collaborators: activeDocument.collaborators.map(c => 
+      collaborators: activeDocument.collaborators.map(c =>
         c.id === memberId ? { ...c, role: newRole } : c
       )
     });
@@ -282,7 +282,7 @@ export const FamilyDocumentCoEditing: React.FC<FamilyDocumentCoEditingProps> = (
 
     setActiveDocument({
       ...activeDocument,
-      comments: activeDocument.comments.map(c => 
+      comments: activeDocument.comments.map(c =>
         c.id === commentId ? { ...c, isResolved: true } : c
       )
     });
@@ -348,9 +348,9 @@ export const FamilyDocumentCoEditing: React.FC<FamilyDocumentCoEditingProps> = (
                   <Badge className={getStatusColor(activeDocument.status)}>
                     {activeDocument.status}
                   </Badge>
-                  <Select 
+                  <Select
                     value={activeDocument.type}
-                    onValueChange={(value: SharedDocument['type']) => 
+                    onValueChange={(value: SharedDocument['type']) =>
                       setActiveDocument({...activeDocument, type: value})
                     }
                   >
@@ -399,9 +399,9 @@ export const FamilyDocumentCoEditing: React.FC<FamilyDocumentCoEditingProps> = (
                   <Save className="h-3 w-3" />
                   Save
                 </Button>
-                <Button 
-                  size="sm" 
-                  variant={"outline" as any} 
+                <Button
+                  size="sm"
+                  variant={"outline" as any}
                   onClick={() => {
                     setActiveDocument(null);
                     setIsCreating(false);
@@ -426,7 +426,7 @@ export const FamilyDocumentCoEditing: React.FC<FamilyDocumentCoEditingProps> = (
                     className="min-h-96 resize-none font-mono text-sm"
                     disabled={activeDocument.isLocked && activeDocument.lockedBy !== currentUserId}
                   />
-                  
+
                   {/* Real-time Cursors */}
                   <AnimatePresence>
                     {cursors.map((cursor) => (
@@ -436,7 +436,7 @@ export const FamilyDocumentCoEditing: React.FC<FamilyDocumentCoEditingProps> = (
                         animate={{  opacity: 1  }}
                         exit={{  opacity: 0  }}
                         className="absolute pointer-events-none"
-                        style={{ 
+                        style={{
                           top: `${Math.floor(cursor.position / 80) * 1.5 }}em`,
                           left: `${(cursor.position % 80) * 0.6}em`,
                         }}
@@ -527,9 +527,9 @@ export const FamilyDocumentCoEditing: React.FC<FamilyDocumentCoEditingProps> = (
                                     <div className="text-xs text-gray-500">{collaborator.email}</div>
                                   </div>
                                 </div>
-                                <Select 
+                                <Select
                                   value={collaborator.role}
-                                  onValueChange={(value: FamilyMember['role']) => 
+                                  onValueChange={(value: FamilyMember['role']) =>
                                     updateCollaboratorRole(collaborator.id, value)
                                   }
                                   disabled={collaborator.id === activeDocument.ownerId}
@@ -684,7 +684,7 @@ export const FamilyDocumentCoEditing: React.FC<FamilyDocumentCoEditingProps> = (
                     </Badge>
                   )}
                 </div>
-                
+
                 <div className="flex items-center gap-2 mb-3">
                   <Users className="h-4 w-4 text-gray-500" />
                   <span className="text-sm text-gray-600">
@@ -700,7 +700,7 @@ export const FamilyDocumentCoEditing: React.FC<FamilyDocumentCoEditingProps> = (
                     ))}
                   </div>
                 </div>
-                
+
                 <div className="flex items-center justify-between text-xs text-gray-500">
                   <div className="flex items-center gap-1">
                     <MessageSquare className="h-3 w-3" />
