@@ -145,3 +145,29 @@ secrets.yml
 *.old
 claude-code-history-viewer/
 .claude/
+
+# ---- Tighten ignores for build/env/artifacts ----
+
+# env
+.env
+.env.*.local
+!.env.template
+
+# node
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# vite / build
+dist/
+.vite/
+
+# typescript
+*.tsbuildinfo
+
+# vercel local env
+.vercel/*.local
+
+# backups/temporary
+*.backup.*
+*~
