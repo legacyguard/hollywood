@@ -2,11 +2,14 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Complete User Journey', () => {
   test('should complete full user journey from signup to project completion', async ({ page }) => {
+    // Generate unique email for this test run to ensure idempotency
+    const uniqueEmail = `alice.johnson.${Date.now()}@example.com`;
+    
     // 1. Sign up as new user
     await page.goto('/sign-up');
     await page.fill('input[name="firstName"]', 'Alice');
     await page.fill('input[name="lastName"]', 'Johnson');
-    await page.fill('input[type="email"]', 'alice.johnson@example.com');
+    await page.fill('input[type="email"]', uniqueEmail);
     await page.fill('input[type="password"]', 'SecurePass123!');
     await page.click('button[type="submit"]');
     await page.waitForURL('**/dashboard');
@@ -64,7 +67,7 @@ test.describe('Complete User Journey', () => {
     await page.waitForURL('**/sign-in');
     
     // 8. Sign back in to verify data persistence
-    await page.fill('input[type="email"]', 'alice.johnson@example.com');
+    await page.fill('input[type="email"]', uniqueEmail);
     await page.fill('input[type="password"]', 'SecurePass123!');
     await page.click('button[type="submit"]');
     await page.waitForURL('**/dashboard');

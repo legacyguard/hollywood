@@ -47,7 +47,7 @@ export class ProfessionalEmailNotificationService {
       data: {
         reviewerId: reviewer.id,
         requestId: request.id,
-        reviewerName: reviewer.full_name,
+        reviewerName: reviewer.fullName,
         documentName,
         reviewType: request.review_type,
         priority: request.priority,
@@ -105,7 +105,7 @@ export class ProfessionalEmailNotificationService {
       to: [reviewer.email],
       template,
       data: {
-        reviewerName: reviewer.full_name,
+        reviewerName: reviewer.fullName,
         clientName,
         documentName,
         reviewType: review.review_type,
@@ -168,7 +168,7 @@ export class ProfessionalEmailNotificationService {
       to: [reviewer.email],
       template,
       data: {
-        reviewerName: reviewer.full_name,
+        reviewerName: reviewer.fullName,
         documentName,
         reviewType: review.review_type,
         assignedDate: review.assigned_at
@@ -268,7 +268,7 @@ export class ProfessionalEmailNotificationService {
     const textBody = `
 New Review Request - ${documentName}
 
-Hello ${reviewer.full_name},
+Hello ${reviewer.fullName},
 
 You have received a new ${request.review_type} review request for a family protection document.
 

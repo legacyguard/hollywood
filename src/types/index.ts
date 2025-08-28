@@ -3,6 +3,13 @@
  * Centralized type definitions for the entire application
  */
 
+// Import Supabase types for database operations
+import type { Database } from '../integrations/supabase/types';
+
+export type ProfessionalReviewer = Database['public']['Tables']['professional_reviewers']['Row'];
+export type ProfessionalReviewerInsert = Database['public']['Tables']['professional_reviewers']['Insert'];
+export type ProfessionalReviewerUpdate = Database['public']['Tables']['professional_reviewers']['Update'];
+
 // Base types
 export type UUID = string;
 export type ISO8601Date = string;
@@ -148,10 +155,12 @@ export interface AllocationDetails {
   conditions?: string[];
 }
 
-// Professional network types
-export interface ProfessionalReviewer {
+// Professional network types - Domain model for business logic
+export interface ProfessionalReviewerDTO {
   id: UUID;
   userId: UUID;
+  email: string; // Email address for notifications
+  fullName: string; // Full name for display and notifications
   type: ProfessionalType;
   licenseNumber: string;
   jurisdiction: string;
@@ -173,6 +182,87 @@ export type OnboardingStatus =
   | 'rejected'
   | 'suspended';
 
+// Mapper function to convert Supabase type to domain type
+export function mapSupabaseToDomainReviewer(
+  supabaseReviewer: ProfessionalReviewer
+): ProfessionalReviewerDTO {
+  return {
+    id: supabaseReviewer.id,
+    userId: supabaseReviewer.contact_email, // Map contact_email to userId for domain logic
+    email: supabaseReviewer.contact_email, // Use contact_email as email
+    fullName: supabaseReviewer.name, // Use name as fullName
+    type: mapCredentialsToType(supabaseReviewer.credentials),
+    licenseNumber: supabaseReviewer.bar_number || '',
+    jurisdiction: supabaseReviewer.jurisdiction,
+    specializations: supabaseReviewer.specializations || [],
+    experience: calculateExperience(supabaseReviewer.reviews_completed),
+    verified: supabaseReviewer.profile_verified,
+    onboardingStatus: mapVerificationToOnboardingStatus(supabaseReviewer.profile_verified),
+    createdAt: supabaseReviewer.created_at,
+    updatedAt: supabaseReviewer.updated_at,
+  };
+}
+
+// Mapper function to convert domain type to Supabase type
+export function mapDomainToSupabaseReviewer(
+  domainReviewer: ProfessionalReviewerDTO
+): Omit<ProfessionalReviewerInsert, 'id' | 'created_at' | 'updated_at'> {
+  return {
+    name: `${domainReviewer.userId}`, // Map userId to name field
+    credentials: mapTypeToCredentials(domainReviewer.type),
+    bar_number: domainReviewer.licenseNumber,
+    jurisdiction: domainReviewer.jurisdiction,
+    specializations: domainReviewer.specializations,
+    rating: 0, // Default value
+    reviews_completed: 0, // Default value
+    average_turnaround_hours: 24, // Default value
+    profile_verified: domainReviewer.verified,
+    contact_email: domainReviewer.userId, // Map userId to contact_email
+  };
+}
+
+// Helper functions for mapping
+function mapCredentialsToType(credentials: string): ProfessionalType {
+  if (credentials.toLowerCase().includes('attorney') || credentials.toLowerCase().includes('lawyer')) {
+    return 'attorney';
+  } else if (credentials.toLowerCase().includes('notary')) {
+    return 'notary';
+  } else if (credentials.toLowerCase().includes('financial') || credentials.toLowerCase().includes('advisor')) {
+    return 'financial_advisor';
+  } else if (credentials.toLowerCase().includes('estate') || credentials.toLowerCase().includes('planner')) {
+    return 'estate_planner';
+  } else if (credentials.toLowerCase().includes('tax')) {
+    return 'tax_advisor';
+  }
+  return 'attorney'; // Default fallback
+}
+
+function mapTypeToCredentials(type: ProfessionalType): string {
+  switch (type) {
+    case 'attorney':
+      return 'Attorney at Law';
+    case 'notary':
+      return 'Notary Public';
+    case 'financial_advisor':
+      return 'Financial Advisor';
+    case 'estate_planner':
+      return 'Estate Planning Specialist';
+    case 'tax_advisor':
+      return 'Tax Advisor';
+    default:
+      return 'Legal Professional';
+  }
+}
+
+function calculateExperience(reviewsCompleted: number): number {
+  // Simple heuristic: assume each review represents some experience
+  return Math.max(1, Math.floor(reviewsCompleted / 10));
+}
+
+function mapVerificationToOnboardingStatus(verified: boolean): OnboardingStatus {
+  return verified ? 'approved' : 'pending';
+}
+
 export interface ReviewRequest {
   id: UUID;
   estatePlanId: UUID;
@@ -184,10 +274,12 @@ export interface ReviewRequest {
   notes?: string;
   deadline?: ISO8601Date;
   createdAt: ISO8601Date;
-  updatedAt: ISO8601Date;
-}
-
-export type ReviewType = 'legal_review' | 'financial_review' | 'compliance_review' | 'final_review';
+   storage: {
+     // Encryption keys should be managed securely, not stored in config
+     encryptionKeyId: string; // Reference to key in secure storage
+     maxFileSize: number;
+     allowedMimeTypes: string[];
+   };
 export type ReviewStatus = 'pending' | 'in_progress' | 'completed' | 'rejected' | 'needs_revision';
 export type Priority = 'low' | 'medium' | 'high' | 'urgent';
 

@@ -1,5 +1,5 @@
 import { Card } from '@/components/ui/card';
-import { Icon } from '@/components/ui/icon-library';
+import { Icon, type IconName } from '@/components/ui/icon-library';
 import { FadeIn } from '@/components/motion/FadeIn';
 import { cn } from '@/lib/utils';
 
@@ -8,7 +8,7 @@ interface MetricCardProps {
   value: string | number;
   change?: number;
   changeLabel?: string;
-  icon: string;
+  icon: IconName;
   trend?: 'up' | 'down' | 'neutral';
   color?: 'primary' | 'success' | 'warning' | 'danger' | 'info';
   loading?: boolean;
@@ -114,7 +114,7 @@ export function MetricCard({
                 colorClasses[color]
               )}
             >
-              <Icon name={icon as any} className='w-6 h-6' />
+              <Icon name={icon} className='w-6 h-6' />
             </div>
           </div>
         </div>

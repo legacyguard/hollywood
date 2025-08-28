@@ -147,7 +147,7 @@ export class ProfessionalService {
     return data;
   }
 
-  async updateReviewer(id: string, updates: Partial<ProfessionalReviewerUpdate>): Promise<ProfessionalReviewer> {
+  async updateReviewer(id: string, updates: Partial<ProfessionalReviewer>): Promise<ProfessionalReviewer> {
     const { data, error } = await supabase
       .from('professional_reviewers')
       .update({
@@ -220,14 +220,15 @@ export class ProfessionalService {
       .from('review_requests')
       .select('*')
       .eq('id', requestId)
-      .single();
-
-    if (!request) throw new Error('Review request not found');
-
     // Create the document review record
     const review: Omit<DocumentReviewInsert, 'id' | 'created_at' | 'updated_at'> = {
       document_id: request.document_id,
       reviewer_id: reviewerId,
+      review_type: request.review_type || 'general',              // Use request type or fallback
+      status: 'pending',                                          // Initial status remains pending
+      risk_level: request.priority === 'urgent' ? 'high' : 'medium', // Derive from request priority
+      review_date: new Date().toISOString()
+    };
       review_type: 'legal',
       status: 'pending',
       risk_level: 'medium',
@@ -259,14 +260,16 @@ export class ProfessionalService {
     return data;
   }
 
-  async updateReviewStatus(
-    reviewId: string,
-    status: DocumentReview['status'],
-    result?: Partial<ReviewResultInsert>
-  ): Promise<DocumentReview> {
-    const updates: Partial<DocumentReviewUpdate> = {
-      status,
-      updated_at: new Date().toISOString()
+import type {
+  ProfessionalReviewer,
+  ProfessionalReviewerInsert,
+  ProfessionalReviewerUpdate,
+  ProfessionalOnboarding,
+  ProfessionalOnboardingInsert,
+  DocumentReview,
+  DocumentReviewInsert,
+  DocumentReviewUpdate,
+} from '@/db/schemas';
     };
 
     if (status === 'completed') {
@@ -516,24 +519,291 @@ export class ProfessionalService {
     await this.getCachedProfessionalReviewers();
   }
 
-  // Notification methods (placeholders for email/SMS integration)
+  // Email notification system with actual API integration
   private async notifyAdminNewApplication(application: ProfessionalOnboarding): Promise<void> {
-    console.log('Admin notification: New professional application', application.id);
+    try {
+      const emailData = {
+        to: 'admin@legacyguard.app',
+        subject: `New Professional Application - ${application.credentials?.full_name}`,
+        template: 'admin_new_application',
+        data: {
+          applicantName: application.credentials?.full_name,
+          applicationId: application.id,
+          professionalTitle: application.credentials?.professional_title,
+          barNumber: application.credentials?.bar_number,
+          licensedStates: application.credentials?.licensed_states,
+          specializations: application.credentials?.specializations,
+          applicationDate: new Date().toLocaleDateString(),
+          reviewUrl: `${window.location.origin}/admin/applications/${application.id}`
+        }
+      };
+
+      await this.sendEmail(emailData);
+      
+      // Log notification in database for tracking
+      await this.logNotification({
+        type: 'admin_application',
+        recipient: 'admin@legacyguard.app',
+        applicationId: application.id,
+        status: 'sent'
+      });
+    } catch (error) {
+      console.error('Failed to send admin notification:', error);
+      await this.logNotification({
+        type: 'admin_application',
+        recipient: 'admin@legacyguard.app',
+        applicationId: application.id,
+        status: 'failed',
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
   }
 
   private async notifyApplicantStatusChange(
     application: ProfessionalOnboarding,
-    _notes?: string
+    reviewNotes?: string
   ): Promise<void> {
-    console.log('Applicant notification: Status changed to', application.verification_status);
+    try {
+      const templateMap = {
+        'pending': 'application_received',
+        'under_review': 'application_under_review',
+        'verified': 'application_approved',
+        'rejected': 'application_rejected'
+      };
+
+      const emailData = {
+        to: application.credentials?.email || 'unknown@example.com',
+        subject: `Professional Application Update - ${application.verification_status}`,
+        template: templateMap[application.verification_status] || 'application_status_change',
+        data: {
+          applicantName: application.credentials?.full_name,
+          status: application.verification_status,
+          statusDisplay: this.formatStatusForDisplay(application.verification_status),
+          reviewNotes: reviewNotes || 'No additional notes provided',
+          nextSteps: this.getNextStepsForStatus(application.verification_status),
+          supportEmail: 'support@legacyguard.app',
+          dashboardUrl: `${window.location.origin}/professional/dashboard`
+        }
+      };
+
+      await this.sendEmail(emailData);
+      
+      await this.logNotification({
+        type: 'applicant_status_change',
+        recipient: application.credentials?.email || 'unknown@example.com',
+        applicationId: application.id,
+        status: 'sent',
+        metadata: { newStatus: application.verification_status }
+      });
+    } catch (error) {
+      console.error('Failed to send applicant notification:', error);
+      await this.logNotification({
+        type: 'applicant_status_change',
+        recipient: application.credentials?.email || 'unknown@example.com',
+        applicationId: application.id,
+        status: 'failed',
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
   }
 
   private async notifyReviewAssignment(review: DocumentReview): Promise<void> {
-    console.log('Review assignment notification', review.id);
+    try {
+      // Get reviewer details
+      const reviewer = await this.getReviewer(review.reviewer_id);
+      if (!reviewer) return;
+
+      // Get document details
+      const { data: document } = await supabase
+        .from('documents')
+        .select('*')
+        .eq('id', review.document_id)
+        .single();
+
+      const emailData = {
+        to: reviewer.contact_email,
+        subject: `New Document Review Assignment - ${document?.type || 'Document'}`,
+        template: 'reviewer_assignment',
+        data: {
+          reviewerName: reviewer.name,
+          reviewId: review.id,
+          documentType: document?.type || 'Unknown Document',
+          documentTitle: document?.title || 'Untitled Document',
+          reviewType: review.review_type,
+          riskLevel: review.risk_level,
+          assignmentDate: new Date().toLocaleDateString(),
+          expectedCompletionDate: this.calculateExpectedCompletion(reviewer.average_turnaround_hours),
+          reviewPortalUrl: `${window.location.origin}/professional/review/${review.id}`,
+          supportEmail: 'support@legacyguard.app'
+        }
+      };
+
+      await this.sendEmail(emailData);
+
+      await this.logNotification({
+        type: 'review_assignment',
+        recipient: reviewer.contact_email,
+        reviewId: review.id,
+        status: 'sent'
+      });
+    } catch (error) {
+      console.error('Failed to send review assignment notification:', error);
+      await this.logNotification({
+        type: 'review_assignment',
+        recipient: 'unknown',
+        reviewId: review.id,
+        status: 'failed',
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
   }
 
   private async notifyReviewStatusChange(review: DocumentReview): Promise<void> {
-    console.log('Review status change notification', review.status);
+    try {
+      // Get document and user details
+      const { data: document } = await supabase
+        .from('documents')
+        .select('*, profiles(email, full_name)')
+        .eq('id', review.document_id)
+        .single();
+
+      if (!document || !document.profiles) return;
+
+      const statusMessages = {
+        'pending': 'Your document review has been assigned and is pending',
+        'in_progress': 'Your document review is currently in progress',
+        'completed': 'Your document review has been completed',
+        'cancelled': 'Your document review has been cancelled'
+      };
+
+      const emailData = {
+        to: document.profiles.email,
+        subject: `Document Review Update - ${review.status}`,
+        template: 'review_status_update',
+        data: {
+          userName: document.profiles.full_name,
+          documentTitle: document.title || 'Untitled Document',
+          documentType: document.type,
+          reviewStatus: review.status,
+          statusMessage: statusMessages[review.status] || 'Status updated',
+          reviewId: review.id,
+          completionDate: review.completion_date ? new Date(review.completion_date).toLocaleDateString() : null,
+          dashboardUrl: `${window.location.origin}/vault/${document.id}/reviews`,
+          supportEmail: 'support@legacyguard.app'
+        }
+      };
+
+      await this.sendEmail(emailData);
+
+      await this.logNotification({
+        type: 'review_status_change',
+        recipient: document.profiles.email,
+        reviewId: review.id,
+        status: 'sent',
+        metadata: { newStatus: review.status }
+      });
+    } catch (error) {
+      console.error('Failed to send review status notification:', error);
+      await this.logNotification({
+        type: 'review_status_change',
+        recipient: 'unknown',
+        reviewId: review.id,
+        status: 'failed',
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  }
+
+  // Email service integration
+  private async sendEmail(emailData: {
+    to: string;
+    subject: string;
+    template: string;
+    data: Record<string, any>;
+  }): Promise<void> {
+    // For now, we'll use Supabase Edge Functions for email sending
+    // In production, this would integrate with SendGrid, AWS SES, or similar service
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('send-email', {
+        body: emailData
+      });
+
+      if (error) throw error;
+      
+      console.log('Email sent successfully:', emailData.to);
+    } catch (error) {
+      console.error('Email sending failed:', error);
+      // Fallback: log to database for manual processing
+      await this.logFailedEmail(emailData, error instanceof Error ? error.message : 'Unknown error');
+      throw error;
+    }
+  }
+
+  private async logNotification(notification: {
+    type: string;
+    recipient: string;
+    applicationId?: string;
+    reviewId?: string;
+    status: 'sent' | 'failed';
+    error?: string;
+    metadata?: Record<string, any>;
+  }): Promise<void> {
+    try {
+      await supabase
+        .from('notification_logs')
+        .insert({
+          ...notification,
+          created_at: new Date().toISOString()
+        });
+    } catch (error) {
+      console.error('Failed to log notification:', error);
+    }
+  }
+
+  private async logFailedEmail(emailData: any, error: string): Promise<void> {
+    try {
+      await supabase
+        .from('failed_emails')
+        .insert({
+          recipient: emailData.to,
+          subject: emailData.subject,
+          template: emailData.template,
+          email_data: emailData.data,
+          error_message: error,
+          retry_count: 0,
+          created_at: new Date().toISOString()
+        });
+    } catch (logError) {
+      console.error('Failed to log failed email:', logError);
+    }
+  }
+
+  // Helper methods
+  private formatStatusForDisplay(status: string): string {
+    const statusMap = {
+      'pending': 'Pending Review',
+      'under_review': 'Under Review',
+      'verified': 'Approved & Verified',
+      'rejected': 'Application Rejected'
+    };
+    return statusMap[status as keyof typeof statusMap] || status;
+  }
+
+  private getNextStepsForStatus(status: string): string {
+    const nextStepsMap = {
+      'pending': 'Your application is in queue for review. You will be notified when the review begins.',
+      'under_review': 'Our team is currently reviewing your credentials. This typically takes 2-3 business days.',
+      'verified': 'Congratulations! You can now access the professional portal and start accepting review assignments.',
+      'rejected': 'Please review the feedback provided and feel free to reapply after addressing the noted concerns.'
+    };
+    return nextStepsMap[status as keyof typeof nextStepsMap] || 'Please check your dashboard for updates.';
+  }
+
+  private calculateExpectedCompletion(averageTurnaroundHours: number): string {
+    const completionDate = new Date();
+    completionDate.setHours(completionDate.getHours() + averageTurnaroundHours);
+    return completionDate.toLocaleDateString();
   }
 }
 

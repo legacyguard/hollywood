@@ -1,3 +1,5 @@
+import type { ErrorInfo } from 'react';
+
 /**
  * Comprehensive Logging System for LegacyGuard
  * Provides structured logging with different levels and transports
@@ -55,6 +57,8 @@ export class Logger {
         redactSensitiveData: true,
       };
       Logger.instance = new Logger({ ...defaultConfig, ...config });
+    } else if (config) {
+      console.warn('Logger already initialized. Configuration changes ignored.');
     }
     return Logger.instance;
   }
@@ -112,7 +116,7 @@ export class Logger {
     ];
 
     const redacted = { ...data };
-    
+
     for (const key in redacted) {
       if (sensitiveKeys.some(sensitive => key.toLowerCase().includes(sensitive))) {
         redacted[key] = '[REDACTED]';
@@ -130,15 +134,16 @@ export class Logger {
     }
 
     this.isProcessing = true;
-
-    while (this.queue.length > 0) {
-      const entry = this.queue.shift();
-      if (entry) {
-        await this.writeLog(entry);
+    try {
+      while (this.queue.length > 0) {
+        const entry = this.queue.shift();
+        if (entry) {
+          await this.writeLog(entry);
+        }
       }
+    } finally {
+      this.isProcessing = false;
     }
-
-    this.isProcessing = false;
   }
 
   private async writeLog(entry: LogEntry): Promise<void> {
@@ -193,12 +198,14 @@ export class Logger {
     return `[${entry.timestamp.toISOString()}] ${level} ${context} ${entry.message}`;
   }
 
-  private async writeToFile(entry: LogEntry): Promise<void> {
-    console.log('Writing to file:', this.formatLogMessage(entry));
+  private async writeToFile(_entry: LogEntry): Promise<void> {
+    // TODO: Implement file logging
+    throw new Error('File logging not yet implemented');
   }
 
-  private async writeToRemote(entry: LogEntry): Promise<void> {
-    console.log('Writing to remote:', this.formatLogMessage(entry));
+  private async writeToRemote(_entry: LogEntry): Promise<void> {
+    // TODO: Implement remote logging
+    throw new Error('Remote logging not yet implemented');
   }
 
   public createChildLogger(context: string): Logger {
@@ -302,12 +309,12 @@ export class RequestLogger {
 export interface ErrorBoundaryState {
   hasError: boolean;
   error: Error | null;
-  errorInfo: React.ErrorInfo | null;
+  errorInfo: ErrorInfo | null;
 }
 
 export function logComponentError(
   error: Error,
-  errorInfo: React.ErrorInfo,
+  errorInfo: ErrorInfo,
   componentName?: string
 ): void {
   logger.error(

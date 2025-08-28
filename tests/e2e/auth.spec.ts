@@ -11,44 +11,45 @@ test.describe('Authentication Flow', () => {
   });
 
   test('should allow user to sign in with email and password', async ({ page }) => {
-    await page.fill('input[type="email"]', 'test@example.com');
-    await page.fill('input[type="password"]', 'password123');
-    await page.click('button[type="submit"]');
-    
+    await page.getByLabel(/email/i).fill('test@example.com');
+    await page.getByLabel(/password/i).fill('password123');
+    await page.getByRole('button', { name: /sign in|submit/i }).click();
+
     await expect(page).toHaveURL(/.*\/dashboard/);
   });
 
   test('should show error for invalid credentials', async ({ page }) => {
-    await page.fill('input[type="email"]', 'invalid@example.com');
-    await page.fill('input[type="password"]', 'wrongpassword');
-    await page.click('button[type="submit"]');
-    
+    await page.getByLabel(/email/i).fill('invalid@example.com');
+    await page.getByLabel(/password/i).fill('wrongpassword');
+    await page.getByRole('button', { name: /sign in|submit/i }).click();
+
     await expect(page.locator('text=Invalid credentials')).toBeVisible();
   });
 
   test('should allow user to sign up', async ({ page }) => {
-    await page.click('text=Sign up');
+    const uniqueEmail = `e2e+${Date.now()}@example.com`;
+    await page.getByRole('link', { name: /sign up/i }).click();
     await expect(page).toHaveURL(/.*\/sign-up/);
-    
-    await page.fill('input[name="firstName"]', 'Test');
-    await page.fill('input[name="lastName"]', 'User');
-    await page.fill('input[type="email"]', 'newuser@example.com');
-    await page.fill('input[type="password"]', 'password123');
-    await page.click('button[type="submit"]');
-    
+
+    await page.getByLabel(/first name/i).fill('Test');
+    await page.getByLabel(/last name/i).fill('User');
+    await page.getByLabel(/email/i).fill(uniqueEmail);
+    await page.getByLabel(/password/i).fill('password123');
+    await page.getByRole('button', { name: /sign up|submit/i }).click();
+
     await expect(page).toHaveURL(/.*\/dashboard/);
   });
 
   test('should allow user to sign out', async ({ page }) => {
     // First sign in
-    await page.fill('input[type="email"]', 'test@example.com');
-    await page.fill('input[type="password"]', 'password123');
-    await page.click('button[type="submit"]');
-    
+    await page.getByLabel(/email/i).fill('test@example.com');
+    await page.getByLabel(/password/i).fill('password123');
+    await page.getByRole('button', { name: /sign in|submit/i }).click();
+
     // Then sign out
-    await page.click('button[aria-label="User menu"]');
+    await page.getByRole('button', { name: /user menu/i }).click();
     await page.click('text=Sign out');
-    
+
     await expect(page).toHaveURL(/.*\/sign-in/);
   });
 });

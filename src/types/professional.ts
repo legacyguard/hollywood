@@ -3,26 +3,8 @@
  * Types for attorney and professional reviewer system
  */
 
-export interface ProfessionalReviewer {
-  id: string;
-  user_id: string;
-  email: string;
-  full_name: string;
-  professional_title: string;
-  law_firm_name?: string;
-  bar_number: string;
-  licensed_states: string[];
-  specializations: ProfessionalSpecialization[];
-  experience_years: number;
-  status: 'pending' | 'active' | 'suspended' | 'inactive';
-  verification_status: 'unverified' | 'pending' | 'verified' | 'rejected';
-  hourly_rate?: number;
-  bio?: string;
-  profile_image_url?: string;
-  created_at: string;
-  updated_at: string;
-  last_active_at?: string;
-}
+// Import the domain model interface from main types
+export type { ProfessionalReviewerDTO as ProfessionalReviewer } from './index';
 
 export interface ProfessionalSpecialization {
   id: string;
@@ -160,5 +142,6 @@ export interface ProfessionalPartnership {
 }
 
 export type ReviewStatus = DocumentReview['status'];
-export type ReviewerStatus = ProfessionalReviewer['status'];
+// Note: ProfessionalReviewer no longer has a 'status' field, use 'onboardingStatus' instead
+export type ReviewerStatus = 'pending' | 'active' | 'suspended' | 'inactive';
 export type OnboardingStatus = ProfessionalOnboarding['status'];

@@ -1,14 +1,21 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Projects Management', () => {
+// tests/e2e/projects.spec.ts
+
+import { test, expect } from '@playwright/test';
+import { AuthHelper } from './helpers/auth-helper';
+
+test.describe('Projects Management', () => {
   test.beforeEach(async ({ page }) => {
-    // Sign in before each test
-    await page.goto('/sign-in');
-    await page.fill('input[type="email"]', 'test@example.com');
-    await page.fill('input[type="password"]', 'password123');
-    await page.click('button[type="submit"]');
-    await page.waitForURL('**/dashboard');
+    const authHelper = new AuthHelper(page);
+    await authHelper.signIn();
   });
+
+  test('can create a new project', async ({ page }) => {
+    // …rest of your test…
+  });
+});
 
   test('should create a new project', async ({ page }) => {
     await page.click('text=Projects');
@@ -42,12 +49,21 @@ test.describe('Projects Management', () => {
     await page.click('text=Projects');
     await page.waitForURL('**/projects');
     
+    // Verify project exists before deletion
+    const projectCard = page.locator('.project-card:first-child');
+    await expect(projectCard).toBeVisible();
+    const projectName = await projectCard.locator('[data-testid="project-name"]').textContent();
+    
     // Click on first project
-    await page.click('.project-card:first-child');
+    await projectCard.click();
     await page.click('text=Delete');
     await page.click('text=Confirm');
     
     await expect(page.locator('text=Project deleted successfully')).toBeVisible();
+    
+    // Verify project is removed from the list
+    await page.waitForURL('**/projects');
+    await expect(page.locator(`text="${projectName}"`)).not.toBeVisible();
   });
 
   test('should filter projects by status', async ({ page }) => {
