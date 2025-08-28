@@ -4,6 +4,11 @@
  */
 
 import { supabase } from '@/integrations/supabase/client';
+import { 
+  professionalReviewCache, 
+  useCachedProfessionalReviews,
+  cacheInvalidation 
+} from '@/lib/performance/caching';
 import type {
   ProfessionalReviewer,
   ProfessionalReviewerInsert,
@@ -400,6 +405,115 @@ export class ProfessionalService {
 
     if (error) throw error;
     return data;
+  }
+
+  // Caching methods for performance optimization
+  async getCachedReviews(userId: string): Promise<DocumentReview[]> {
+    const cacheKey = `document_reviews_${userId}`;
+    const cached = professionalReviewCache.get(cacheKey);
+    
+    if (cached) {
+      return cached;
+    }
+
+    const { data, error } = await supabase
+      .from('document_reviews')
+      .select(`
+        *,
+        professional_reviewers(
+          id,
+          first_name,
+          last_name,
+          credentials,
+          specializations,
+          profile_image_url
+        ),
+        review_results(*)
+      `)
+      .eq('reviewer_id', userId)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+
+    professionalReviewCache.set(cacheKey, data || []);
+    return data || [];
+  }
+
+  async getCachedReviewById(reviewId: string): Promise<DocumentReview | null> {
+    const cacheKey = `document_review_${reviewId}`;
+    const cached = professionalReviewCache.get(cacheKey);
+    
+    if (cached) {
+      return cached;
+    }
+
+    const { data, error } = await supabase
+      .from('document_reviews')
+      .select(`
+        *,
+        professional_reviewers(
+          id,
+          first_name,
+          last_name,
+          credentials,
+          specializations,
+          profile_image_url
+        ),
+        review_results(*)
+      `)
+      .eq('id', reviewId)
+      .single();
+
+    if (error && error.code !== 'PGRST116') throw error;
+
+    if (data) {
+      professionalReviewCache.set(cacheKey, data);
+    }
+    
+    return data || null;
+  }
+
+  async getCachedProfessionalReviewers(): Promise<ProfessionalReviewer[]> {
+    const cacheKey = 'active_professional_reviewers';
+    const cached = professionalReviewCache.get(cacheKey);
+    
+    if (cached) {
+      return cached;
+    }
+
+    const { data, error } = await supabase
+      .from('professional_reviewers')
+      .select(`
+        *,
+        professional_specializations(*)
+      `)
+      .eq('is_active', true)
+      .eq('verification_status', 'verified')
+      .order('rating_average', { ascending: false });
+
+    if (error) throw error;
+
+    professionalReviewCache.set(cacheKey, data || []);
+    return data || [];
+  }
+
+  // Cache invalidation methods
+  async invalidateUserReviewCache(userId: string): Promise<void> {
+    cacheInvalidation.invalidateProfessionalReviewCaches();
+    professionalReviewCache.invalidate(`document_reviews_${userId}`);
+    professionalReviewCache.invalidate(`professional_reviews_${userId}`);
+  }
+
+  async invalidateReviewCache(reviewId: string): Promise<void> {
+    professionalReviewCache.invalidate(`document_review_${reviewId}`);
+    // Also invalidate any user-specific caches that might contain this review
+    cacheInvalidation.invalidateProfessionalReviewCaches(reviewId);
+  }
+
+  async refreshProfessionalReviewersCache(): Promise<void> {
+    professionalReviewCache.invalidate('active_professional_reviewers');
+    // Pre-warm the cache
+    await this.getCachedProfessionalReviewers();
   }
 
   // Notification methods (placeholders for email/SMS integration)

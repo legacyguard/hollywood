@@ -146,6 +146,62 @@ export class FamilyService {
   }
 
   /**
+   * Get role permissions
+   */
+  private getRolePermissions(role: FamilyRole): FamilyPermissions {
+    switch (role) {
+      case 'admin':
+        return {
+          canViewDocuments: true,
+          canEditDocuments: true,
+          canDeleteDocuments: true,
+          canInviteMembers: true,
+          canManageMembers: true,
+          canAccessEmergencyInfo: true,
+          canViewFinancials: true,
+          canReceiveNotifications: true,
+          documentCategories: ['all']
+        };
+      case 'collaborator':
+        return {
+          canViewDocuments: true,
+          canEditDocuments: true,
+          canDeleteDocuments: false,
+          canInviteMembers: true,
+          canManageMembers: false,
+          canAccessEmergencyInfo: true,
+          canViewFinancials: true,
+          canReceiveNotifications: true,
+          documentCategories: ['will', 'trust', 'insurance', 'financial']
+        };
+      case 'viewer':
+        return {
+          canViewDocuments: true,
+          canEditDocuments: false,
+          canDeleteDocuments: false,
+          canInviteMembers: false,
+          canManageMembers: false,
+          canAccessEmergencyInfo: false,
+          canViewFinancials: false,
+          canReceiveNotifications: true,
+          documentCategories: ['will', 'trust']
+        };
+      default:
+        return {
+          canViewDocuments: false,
+          canEditDocuments: false,
+          canDeleteDocuments: false,
+          canInviteMembers: false,
+          canManageMembers: false,
+          canAccessEmergencyInfo: false,
+          canViewFinancials: false,
+          canReceiveNotifications: false,
+          documentCategories: []
+        };
+    }
+  }
+
+  /**
    * Get pending invitations for a user
    */
   public async getPendingInvitations(userId: string): Promise<FamilyInvitation[]> {
@@ -238,7 +294,7 @@ export class FamilyService {
       joinedAt: new Date(),
       lastActiveAt: new Date(),
       invitedBy: invitation.invitedBy,
-      permissions: FamilyService.getRolePermissions(invitation.role)
+      permissions: this.getRolePermissions(invitation.role)
     };
 
     // Add to family members
@@ -468,7 +524,7 @@ export class FamilyService {
    * Generate secure invitation token
    */
   private generateInvitationToken(): string {
-    return 'inv_' + Array.from(crypto.getRandomValues(new Uint8Array(32 as ArrayBuffer)))
+    return 'inv_' + Array.from(crypto.getRandomValues(new Uint8Array(32)))
       .map(b => b.toString(16).padStart(2, '0'))
       .join('');
   }
