@@ -30,6 +30,7 @@ const VaultPage = lazy(() => import('./pages/Vault'));
 const GuardiansPage = lazy(() => import('./pages/Guardians'));
 const LegacyPage = lazy(() => import('./pages/Legacy'));
 const FamilyPage = lazy(() => import('./pages/Family'));
+const FamilyProtectionPage = lazy(() => import('./pages/FamilyProtection'));
 const TestNotifications = lazy(() => import('./pages/TestNotifications'));
 const SignInPage = lazy(() => import('./pages/auth/SignIn'));
 const SignUpPage = lazy(() => import('./pages/auth/SignUp'));
@@ -106,6 +107,14 @@ const App = () => (
                         element={
                           <ProtectedRoute>
                             <GuardiansPage />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path='/family-protection'
+                        element={
+                          <ProtectedRoute>
+                            <FamilyProtectionPage />
                           </ProtectedRoute>
                         }
                       />

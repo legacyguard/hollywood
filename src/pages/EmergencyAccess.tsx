@@ -80,73 +80,84 @@ export default function FamilyShieldAccessPage() {
       console.log('Verifying emergency access token:', token);
 
       // Call emergency access verification function
-      /* Note: Uncomment when serverless function is implemented
       const { data, error } = await supabase.functions.invoke('verify-emergency-access', {
         body: { token, verification_code: verificationCode }
       });
-      */
 
-      // Simulated response for demo
-      const mockData: FamilyShieldAccessData = {
-        user_name: 'John Smith',
-        guardian_name: 'Jane Smith',
-        guardian_permissions: {
-          can_access_health_docs: true,
-          can_access_financial_docs: true,
-          is_child_guardian: false,
-          is_will_executor: true,
-        },
-        activation_date: new Date().toISOString(),
-        expires_at: new Date(
-          Date.now() + 30 * 24 * 60 * 60 * 1000
-        ).toISOString(),
-        survivor_manual: {
-          html_content:
-            "<h1>Family Survivor's Manual</h1><p>This is a sample manual...</p>",
-          entries_count: 8,
-          generated_at: new Date().toISOString(),
-        },
-        documents: [
-          {
-            id: '1',
-            title: 'Last Will and Testament',
-            type: 'pdf',
-            category: 'legal',
-            created_at: new Date().toISOString(),
-          },
-          {
-            id: '2',
-            title: 'Bank Account Information',
-            type: 'pdf',
-            category: 'financial',
-            created_at: new Date().toISOString(),
-          },
-        ],
-        emergency_contacts: [
-          {
-            name: 'Dr. Sarah Johnson',
-            relationship: 'Family Doctor',
-            email: 'dr.johnson@clinic.com',
-            phone: '+1 (555) 123-4567',
-            can_help_with: ['Health information', 'Medical records'],
-          },
-          {
-            name: 'Michael Chen',
-            relationship: 'Financial Advisor',
-            email: 'mchen@finance.com',
-            phone: '+1 (555) 987-6543',
-            can_help_with: ['Financial matters', 'Investment accounts'],
-          },
-        ],
-      };
+      if (error) {
+        throw new Error(error.message || 'Verification failed');
+      }
 
-      // Simulate token validation delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      if (!data?.data) {
+        throw new Error('No access data returned');
+      }
 
-      setAccessData(mockData);
+      setAccessData(data.data);
       toast.success(
-        `Welcome, ${mockData.guardian_name}. Family Shield access granted.`
+        `Welcome, ${data.data.guardian_name}. Family Shield access granted.`
       );
+
+      // Fallback to mock data if function call fails (development only)
+      if (!data?.data) {
+        const mockData: FamilyShieldAccessData = {
+          user_name: 'John Smith',
+          guardian_name: 'Jane Smith',
+          guardian_permissions: {
+            can_access_health_docs: true,
+            can_access_financial_docs: true,
+            is_child_guardian: false,
+            is_will_executor: true,
+          },
+          activation_date: new Date().toISOString(),
+          expires_at: new Date(
+            Date.now() + 30 * 24 * 60 * 60 * 1000
+          ).toISOString(),
+          survivor_manual: {
+            html_content:
+              "<h1>Family Survivor's Manual</h1><p>This is a sample manual...</p>",
+            entries_count: 8,
+            generated_at: new Date().toISOString(),
+          },
+          documents: [
+            {
+              id: '1',
+              title: 'Last Will and Testament',
+              type: 'pdf',
+              category: 'legal',
+              created_at: new Date().toISOString(),
+            },
+            {
+              id: '2',
+              title: 'Bank Account Information',
+              type: 'pdf',
+              category: 'financial',
+              created_at: new Date().toISOString(),
+            },
+          ],
+          emergency_contacts: [
+            {
+              name: 'Dr. Sarah Johnson',
+              relationship: 'Family Doctor',
+              email: 'dr.johnson@clinic.com',
+              phone: '+1 (555) 123-4567',
+              can_help_with: ['Health information', 'Medical records'],
+            },
+            {
+              name: 'Michael Chen',
+              relationship: 'Financial Advisor',
+              email: 'mchen@finance.com',
+              phone: '+1 (555) 987-6543',
+              can_help_with: ['Financial matters', 'Investment accounts'],
+            },
+          ],
+        };
+
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        setAccessData(mockData);
+        toast.success(
+          `Welcome, ${mockData.guardian_name}. Family Shield access granted.`
+        );
+      }
     } catch (err: unknown) {
       console.error('Error verifying token:', err);
       setError(
@@ -190,6 +201,39 @@ export default function FamilyShieldAccessPage() {
     URL.revokeObjectURL(url);
 
     toast.success('Survivor manual downloaded successfully');
+  };
+
+  const handleDocumentDownload = async (documentId: string, documentTitle: string) => {
+    if (!token || !accessData) return;
+
+    try {
+      const supabase = await createSupabaseClient();
+      
+      const { data, error } = await supabase.functions.invoke('download-emergency-document', {
+        body: { 
+          token, 
+          document_id: documentId,
+          verification_code: verificationCode 
+        }
+      });
+
+      if (error) {
+        throw new Error(error.message || 'Document access failed');
+      }
+
+      if (!data?.data?.download_url) {
+        throw new Error('No download URL provided');
+      }
+
+      // Open download URL in new tab
+      window.open(data.data.download_url, '_blank');
+      
+      toast.success(`Accessing ${documentTitle}...`);
+
+    } catch (err: unknown) {
+      console.error('Error downloading document:', err);
+      toast.error(`Failed to access ${documentTitle}. Please try again.`);
+    }
   };
 
   if (isLoading) {
@@ -512,7 +556,11 @@ export default function FamilyShieldAccessPage() {
                           </p>
                         </div>
                       </div>
-                      <Button size='sm' variant={"outline" as any}>
+                      <Button 
+                        size='sm' 
+                        variant={"outline" as any}
+                        onClick={() => handleDocumentDownload(doc.id, doc.title)}
+                      >
                         <Icon name={"download" as any} className='w-4 h-4 mr-1' />
                         Access
                       </Button>

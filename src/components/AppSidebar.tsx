@@ -24,7 +24,7 @@ const navigationItems = [
   { title: 'Time Capsule', url: '/time-capsule', icon: 'heart' },
   { title: 'Timeline', url: '/timeline', icon: 'timeline' },
   { title: 'Wishes', url: '/wishes', icon: 'wishes' },
-  { title: 'Protection', url: '/protection', icon: 'protection' },
+  { title: 'Family Shield', url: '/family-protection', icon: 'protection' },
   { title: 'Settings', url: '/settings', icon: 'settings' },
 ];
 

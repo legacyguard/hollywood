@@ -1,4 +1,4 @@
-// Animation System - Main exports for Phase 1B Animation Foundation
+// Advanced Animation System - Phase 3B: Micro-Interactions & Enhanced Animations
 // Provides centralized access to all animation components and utilities
 
 // Core animation system
@@ -52,6 +52,77 @@ export { default as EnhancedFirefly } from './EnhancedFirefly';
 
 // Re-export existing firefly for backward compatibility
 export { default as SofiaFirefly } from './SofiaFirefly';
+
+// Phase 3B: Advanced Micro-Interactions
+export { 
+  MicroAnimation,
+  MicroAnimationProvider,
+  AnimatedButton,
+  AnimatedCard,
+  AnimatedInput,
+  useMicroAnimation,
+  usePersonalityAnimation
+} from './MicroInteractionSystem';
+
+export type { 
+  MicroAnimationType,
+  MicroAnimationProps
+} from './MicroInteractionSystem';
+
+// Loading animations
+export {
+  LoadingAnimation,
+  PageLoader,
+  ButtonLoader,
+  FormLoader,
+  CardLoader,
+  ProgressLoader,
+  LoadingProvider,
+  useLoading
+} from './LoadingAnimations';
+
+export type {
+  LoadingAnimationType,
+  LoadingAnimationProps
+} from './LoadingAnimations';
+
+// Enhanced UI components with animations
+export {
+  EnhancedButton,
+  LoadingButton,
+  PersonalityButton,
+  ActionButton,
+  buttonVariants
+} from '../ui/enhanced-button';
+
+export type {
+  EnhancedButtonProps
+} from '../ui/enhanced-button';
+
+export {
+  EnhancedInput,
+  PersonalityInput,
+  ValidatedInput,
+  inputVariants
+} from '../ui/enhanced-input';
+
+export type {
+  EnhancedInputProps,
+  FieldState
+} from '../ui/enhanced-input';
+
+export {
+  EnhancedCard,
+  PersonalityCard,
+  InteractiveCard,
+  ContentCard,
+  cardVariants
+} from '../ui/enhanced-card';
+
+export type {
+  EnhancedCardProps,
+  CardInteractionType
+} from '../ui/enhanced-card';
 
 // Common animation presets
 export {
@@ -152,12 +223,46 @@ export const ANIMATION_PERFORMANCE = {
   }),
 } as const;
 
+// Phase 3B Animation System Constants
+export const MICRO_ANIMATION_CONFIG = {
+  empathetic: {
+    defaultType: 'glow',
+    colors: ['#ec4899', '#f97316', '#8b5cf6'],
+    duration: 0.4,
+    easing: 'easeOut',
+    scale: 1.05,
+    bounce: 0.3
+  },
+  pragmatic: {
+    defaultType: 'lift',
+    colors: ['#6b7280', '#374151', '#111827'],
+    duration: 0.2,
+    easing: 'easeInOut',
+    scale: 1.02,
+    bounce: 0
+  },
+  adaptive: {
+    defaultType: 'tilt',
+    colors: ['#3b82f6', '#10b981', '#06b6d4'],
+    duration: 0.3,
+    easing: 'easeOut',
+    scale: 1.03,
+    bounce: 0.1
+  }
+} as const;
+
 // Animation system status
 export const ANIMATION_SYSTEM_INFO = {
-  version: '1.0.0',
-  phase: '1B',
+  version: '3.0.0',
+  phase: '3B',
+  name: 'Advanced Micro-Interactions',
   features: [
     'Personality-aware animations',
+    'Micro-interaction framework',
+    'Enhanced button hover effects',
+    'Advanced form field animations',
+    'Loading state animations',
+    'Card interaction animations',
     'Accessibility compliance',
     'Performance optimization',
     'Responsive behavior',
@@ -165,10 +270,39 @@ export const ANIMATION_SYSTEM_INFO = {
   ],
   components: [
     'AdaptiveAnimationProvider',
+    'MicroAnimationProvider',
     'PageTransitions',
     'InteractiveAnimations',
     'ProgressAnimations',
     'MilestoneAnimations',
     'EnhancedFirefly',
+    'EnhancedButton',
+    'EnhancedInput',
+    'EnhancedCard',
+    'LoadingAnimations',
   ],
 } as const;
+
+// Utility functions for advanced animations
+export const ANIMATION_UTILS = {
+  /**
+   * Check if user prefers reduced motion
+   */
+  prefersReducedMotion: () => {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  },
+
+  /**
+   * Create staggered animation delays for lists
+   */
+  createStaggerDelays: (count: number, baseDelay: number = 0.05): number[] => {
+    return Array.from({ length: count }, (_, i) => i * baseDelay);
+  },
+
+  /**
+   * Get personality-specific animation timing
+   */
+  getPersonalityTiming: (personality: 'empathetic' | 'pragmatic' | 'adaptive') => {
+    return MICRO_ANIMATION_CONFIG[personality];
+  }
+};
