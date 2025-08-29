@@ -1,5 +1,5 @@
 import React from 'react';
-import { Helmet } from 'react-helmet-async';
+import { MetaTags } from '@/components/common/MetaTags';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { LegacyGuardLogo } from '@/components/LegacyGuardLogo';
@@ -8,11 +8,10 @@ import { Link } from 'react-router-dom';
 export function TermsOfService() {
   return (
     <div className='min-h-screen bg-slate-50 dark:bg-slate-900'>
-      <Helmet>
-        <title>Terms of Service - LegacyGuard</title>
-        <meta name="description" content="LegacyGuard Terms of Service - Legal terms and conditions for using our secure document management and legacy planning platform." />
-        <meta name="robots" content="index, follow" />
-      </Helmet>
+      <MetaTags 
+        title="Terms of Service"
+        description="LegacyGuard Terms of Service - Legal terms and conditions for using our secure document management and legacy planning platform."
+      />
 
       {/* Header */}
       <header className='sticky top-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-lg border-b border-slate-200 dark:border-slate-700'>

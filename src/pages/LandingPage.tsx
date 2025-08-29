@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback } from 'react';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
-import { Helmet } from 'react-helmet-async';
+import { MetaTags } from '@/components/common/MetaTags';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -56,66 +56,11 @@ export function LandingPage() {
 
   return (
     <div className='min-h-screen bg-slate-900'>
-      <Helmet>
-        <title>LegacyGuard - Secure Your Family's Future | Document Management & Legacy Planning</title>
-        <meta
-          name="description"
-          content="Transform life's chaos into clarity with LegacyGuard. Securely organize documents, protect your family with AI-powered guidance, and create your lasting legacy. Start free today."
-        />
-        <meta
-          name="keywords"
-          content="legacy planning, document management, family protection, digital vault, will creation, emergency planning, secure storage, AI assistant"
-        />
-
-        {/* Open Graph tags for social sharing */}
-        <meta property="og:title" content="LegacyGuard - Secure Your Family's Future" />
-        <meta
-          property="og:description"
-          content="The most caring and secure way to organize your life's journey and protect your family's future. Start your legacy today."
-        />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://legacyguard.app" />
-        <meta property="og:site_name" content="LegacyGuard" />
-        <meta property="og:locale" content="en_US" />
-
-        {/* Twitter Card tags */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="LegacyGuard - Secure Your Family's Future" />
-        <meta
-          name="twitter:description"
-          content="Transform life's chaos into clarity. Secure documents, protect family, create lasting legacy."
-        />
-
-        {/* Additional SEO tags */}
-        <meta name="robots" content="index, follow" />
-        <meta name="author" content="LegacyGuard" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="canonical" href="https://legacyguard.app" />
-
-        {/* Structured data for search engines */}
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebApplication",
-            "name": "LegacyGuard",
-            "description": "Secure document management and legacy planning platform with AI assistance",
-            "url": "https://legacyguard.app",
-            "applicationCategory": "FinanceApplication",
-            "operatingSystem": "Web",
-            "offers": {
-              "@type": "Offer",
-              "price": "0",
-              "priceCurrency": "USD",
-              "category": "Free"
-            },
-            "aggregateRating": {
-              "@type": "AggregateRating",
-              "ratingValue": "5.0",
-              "ratingCount": "1"
-            }
-          })}
-        </script>
-      </Helmet>
+      <MetaTags 
+        title="Secure Your Family's Future | Document Management & Legacy Planning"
+        description="Transform life's chaos into clarity with LegacyGuard. Securely organize documents, protect your family with AI-powered guidance, and create your lasting legacy. Start free today."
+        url="https://legacyguard.app"
+      />
 
       {/* Navigation Header - Semi-transparent overlay */}
       <header className='absolute top-0 left-0 right-0 z-50 bg-slate-900/30 backdrop-blur-sm border-b border-slate-700/30'>
@@ -133,6 +78,19 @@ export function LandingPage() {
             </motion.div>
 
             <div className='flex items-center gap-4'>
+              <motion.div
+                whileHover={{  scale: 1.02  }}
+                whileTap={{  scale: 0.98  }}
+              >
+                <Link to="/blog">
+                  <Button
+                    variant={"ghost" as any}
+                    className='text-slate-200 hover:text-white hover:bg-slate-800/50 border-0'
+                  >
+                    Blog
+                  </Button>
+                </Link>
+              </motion.div>
               <motion.div
                 whileHover={{  scale: 1.02  }}
                 whileTap={{  scale: 0.98  }}

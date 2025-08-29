@@ -1,5 +1,5 @@
 import React from 'react';
-import { Helmet } from 'react-helmet-async';
+import { MetaTags } from '@/components/common/MetaTags';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { LegacyGuardLogo } from '@/components/LegacyGuardLogo';
@@ -8,11 +8,10 @@ import { Link } from 'react-router-dom';
 export function PrivacyPolicy() {
   return (
     <div className='min-h-screen bg-slate-50 dark:bg-slate-900'>
-      <Helmet>
-        <title>Privacy Policy - LegacyGuard</title>
-        <meta name="description" content="LegacyGuard Privacy Policy - How we collect, use, and protect your personal information on our secure platform." />
-        <meta name="robots" content="index, follow" />
-      </Helmet>
+      <MetaTags 
+        title="Privacy Policy"
+        description="LegacyGuard Privacy Policy - How we collect, use, and protect your personal information on our secure platform."
+      />
 
       {/* Header */}
       <header className='sticky top-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-lg border-b border-slate-200 dark:border-slate-700'>

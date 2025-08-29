@@ -1,6 +1,7 @@
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { FadeIn } from '@/components/motion/FadeIn';
 import { Button } from '@/components/ui/button';
+import { MetaTags } from '@/components/common/MetaTags';
 
 import { Icon } from '@/components/ui/icon-library';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -406,8 +407,14 @@ export default function VaultPage() {
   };
 
   return (
-    <DashboardLayout>
-      <div className='min-h-screen bg-background'>
+    <>
+      <MetaTags 
+        title="Document Vault"
+        description="Securely store and automatically analyze your important documents with AI-powered OCR technology. Your digital vault for all important documents."
+        keywords="document vault, secure storage, AI OCR, document analysis, encrypted documents"
+      />
+      <DashboardLayout>
+        <div className='min-h-screen bg-background'>
         <header className='bg-card border-b border-card-border'>
           <div className='max-w-7xl mx-auto px-6 lg:px-8 py-8'>
             <FadeIn duration={0.5} delay={0.2}>
@@ -521,6 +528,7 @@ export default function VaultPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </DashboardLayout>
-  );
+        </DashboardLayout>
+      </>
+    );
 }
