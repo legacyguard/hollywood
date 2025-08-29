@@ -32,7 +32,11 @@
     "build:auto": "npm run auto:optimize && npm run build",
     "optimize:images": "node scripts/image-optimizer.js",
     "optimize:performance": "node scripts/performance-automation.js",
-    "build:optimized": "npm run optimize:images && npm run build"
+    "build:optimized": "npm run optimize:images && npm run build",
+    "i18n:analyze": "tsx scripts/i18n-tools.ts analyze",
+    "i18n:validate": "tsx scripts/i18n-tools.ts validate",
+    "i18n:coverage": "tsx scripts/i18n-tools.ts coverage",
+    "i18n:split": "tsx scripts/i18n-tools.ts split"
   },
   "dependencies": {
     "@clerk/clerk-react": "^5.15.1",
