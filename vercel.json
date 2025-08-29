@@ -3,6 +3,13 @@
   "outputDirectory": "dist",
   "installCommand": "npm install --legacy-peer-deps",
   "framework": "vite",
+  "alias": [
+    "legacyguard.cz",
+    "www.legacyguard.cz",
+    "app.legacyguard.cz",
+    "api.legacyguard.cz",
+    "staging.legacyguard.cz"
+  ],
   "rewrites": [
     {
       "source": "/api/:path*",
@@ -11,6 +18,19 @@
     {
       "source": "/(.*)",
       "destination": "/index.html"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.legacyguard.cz"
+        }
+      ],
+      "destination": "https://legacyguard.cz/$1",
+      "permanent": true
     }
   ],
   "headers": [

@@ -8,9 +8,18 @@
     <meta name="author" content="LegacyGuard" />
     
     <!-- Performance & SEO Meta Tags -->
-    <meta name="theme-color" content="#7C3AED" />
+    <meta name="theme-color" content="#3b82f6" />
     <meta name="color-scheme" content="light dark" />
     <meta name="supported-color-schemes" content="light dark" />
+    
+    <!-- PWA Meta Tags -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="LegacyGuard" />
+    <meta name="application-name" content="LegacyGuard" />
+    <meta name="msapplication-TileColor" content="#3b82f6" />
+    <meta name="msapplication-config" content="/browserconfig.xml" />
     
     <!-- Resource Hints for Performance -->
     <link rel="dns-prefetch" href="//fonts.googleapis.com" />
@@ -65,9 +74,8 @@
 
     <!-- Additional Performance Meta Tags -->
     <meta name="format-detection" content="telephone=no" />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="HandheldFriendly" content="true" />
     
     <!-- Performance Monitoring -->
     <script>
@@ -167,16 +175,33 @@
       });
       
       // Service Worker registration for PWA features
-      if ('serviceWorker' in navigator && import.meta.env?.PROD) {
+      if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js')
+          navigator.serviceWorker.register('/sw.js', {
+            scope: '/'
+          })
             .then(registration => {
-              console.log('SW registered: ', registration);
+              console.log('🔧 Service Worker registered:', registration.scope);
+              
+              // Check for updates
+              registration.addEventListener('updatefound', () => {
+                const newWorker = registration.installing;
+                if (newWorker) {
+                  console.log('🆕 New Service Worker installing...');
+                  newWorker.addEventListener('statechange', () => {
+                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                      console.log('✨ New content available! Please refresh.');
+                    }
+                  });
+                }
+              });
             })
             .catch(registrationError => {
-              console.log('SW registration failed: ', registrationError);
+              console.error('❌ Service Worker registration failed:', registrationError);
             });
         });
+      } else {
+        console.log('📱 Service Worker not supported');
       }
     </script>
   </body>
