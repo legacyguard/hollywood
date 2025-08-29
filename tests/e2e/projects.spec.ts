@@ -1,9 +1,4 @@
 import { test, expect } from '@playwright/test';
-
-test.describe('Projects Management', () => {
-// tests/e2e/projects.spec.ts
-
-import { test, expect } from '@playwright/test';
 import { AuthHelper } from './helpers/auth-helper';
 
 test.describe('Projects Management', () => {
@@ -11,11 +6,6 @@ test.describe('Projects Management', () => {
     const authHelper = new AuthHelper(page);
     await authHelper.signIn();
   });
-
-  test('can create a new project', async ({ page }) => {
-    // …rest of your test…
-  });
-});
 
   test('should create a new project', async ({ page }) => {
     await page.click('text=Projects');
