@@ -14,12 +14,11 @@ import {
   ActivityFeed,
   useMockActivities,
 } from '@/components/enhanced/ActivityFeed';
-import { RadialProgress } from '@/components/enhanced/RadialProgress';
-import { GardenSeed } from '@/components/animations/GardenSeed';
-import { useGardenProgress } from '@/hooks/useGardenProgress';
+import { usePersonalityManager } from '@/components/sofia/SofiaContextProvider';
 import { TrustScoreDisplay } from '@/components/trust/TrustScoreDisplay';
 import { calculateUserTrustScore } from '@/lib/trust-score/trust-score-calculator';
 import { EmailImportButton } from '@/components/features/EmailImportButton';
+import { EnhancedGardenSection } from '@/components/dashboard/EnhancedGardenSection';
 import type { BulkImportResult } from '@/types/gmail';
 import { useState } from 'react';
 
@@ -28,8 +27,11 @@ export function DashboardContent() {
   const navigate = useNavigate();
   const { needsSetup, isLoading } = useEncryptionReady();
   const mockActivities = useMockActivities();
-  const { progress: gardenProgress, loading: gardenLoading } =
-    useGardenProgress();
+  const personalityManager = usePersonalityManager();
+
+  // Get current personality mode for dashboard adaptation
+  const personalityMode = personalityManager?.getCurrentStyle() || 'adaptive';
+  const effectiveMode = personalityMode === 'balanced' ? 'adaptive' : personalityMode;
 
   // Mock user stats for trust score calculation
   const mockUserStats = {
@@ -123,7 +125,9 @@ export function DashboardContent() {
                 </FadeIn>
                 <FadeIn duration={0.5} delay={0.4}>
                   <p className='text-lg leading-relaxed max-w-2xl text-muted-foreground'>
-                    Overview of everything protecting your family
+                    {effectiveMode === 'empathetic' ? 'A loving overview of your family\'s protection and care' :
+                     effectiveMode === 'pragmatic' ? 'System status and family protection metrics' :
+                     'Overview of everything protecting your family'}
                   </p>
                 </FadeIn>
               </div>
@@ -134,7 +138,7 @@ export function DashboardContent() {
                 className='bg-primary hover:bg-primary-hover text-primary-foreground shadow-md'
                 size='lg'
               >
-                <Icon name={"add" as any} className='w-5 h-5 mr-2' />
+                <Icon name="add" className='w-5 h-5 mr-2' />
                 Secure New Information
               </Button>
             </FadeIn>
@@ -144,12 +148,21 @@ export function DashboardContent() {
 
       {/* Main Content */}
       <main className='max-w-7xl mx-auto px-6 lg:px-8 py-12 space-y-16'>
-        {/* Analytics Metrics */}
+        {/* Analytics Metrics - Personality Adapted */}
         <section>
           <FadeIn duration={0.5} delay={0.8}>
-            <h2 className='text-xl font-semibold mb-6 text-card-foreground'>
-              Your Legacy at a Glance
-            </h2>
+            <div className='flex items-center justify-between mb-6'>
+              <h2 className='text-xl font-semibold text-card-foreground'>
+                {effectiveMode === 'empathetic' ? '💫 Your Family\'s Circle of Love' :
+                 effectiveMode === 'pragmatic' ? '📈 System Performance Metrics' :
+                 'Your Legacy at a Glance'}
+              </h2>
+              {effectiveMode === 'empathetic' && (
+                <span className='text-sm text-muted-foreground italic'>
+                  Every number represents care and protection
+                </span>
+              )}
+            </div>
             <MetricsGrid metrics={metrics} columns={4} />
           </FadeIn>
         </section>
@@ -165,37 +178,23 @@ export function DashboardContent() {
         <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
           {/* Left Column - Path & Overview */}
           <div className='lg:col-span-2 space-y-8'>
-            {/* 1. Section: Path of Serenity with Garden Progress */}
+            {/* 1. Section: Path of Serenity with Enhanced Garden */}
             <div>
               <PathOfSerenity className='w-full' />
-              <div className='mt-6 flex justify-center'>
-                {!gardenLoading && gardenProgress ? (
-                  <div className='flex flex-col items-center space-y-4'>
-                    <GardenSeed
-                      progress={gardenProgress.overallProgress}
-                      size='large'
-                      showPulse={true}
-                      onSeedClick={() => navigate('/legacy')}
-                    />
-                    <div className='text-center space-y-1'>
-                      <p className='text-sm font-medium text-foreground'>
-                        Your Garden Progress: {gardenProgress.overallProgress}%
-                      </p>
-                      <p className='text-xs text-muted-foreground'>
-                        {gardenProgress.documentsCount} documents •{' '}
-                        {gardenProgress.guardiansCount} guardians •{' '}
-                        {gardenProgress.completedMilestones} milestones
-                      </p>
-                    </div>
-                  </div>
-                ) : (
-                  <RadialProgress
-                    value={75}
-                    label='Loading Garden Progress'
-                    size='lg'
-                    color='primary'
+
+              {/* Enhanced Garden Integration */}
+              <div className='mt-8'>
+                <FadeIn duration={0.5} delay={1.2}>
+                  <EnhancedGardenSection
+                    personalityMode={effectiveMode}
+                    size='medium'
+                    variant='standard'
+                    showHeader={true}
+                    showProgress={true}
+                    showQuickActions={true}
+                    className='w-full'
                   />
-                )}
+                </FadeIn>
               </div>
             </div>
 

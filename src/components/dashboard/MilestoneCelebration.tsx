@@ -6,10 +6,9 @@ import {
   type SerenityMilestone,
 } from '@/lib/path-of-serenity';
 import {
-  UserPreferences,
   defaultUserPreferences,
 } from '@/types/user-preferences';
-import { useFireflyCelebration } from '@/contexts/FireflyContext';
+import type { PersonalityMode } from '@/lib/sofia-types';
 
 // Legacy component interface for backward compatibility
 // Now implemented using toast system - no longer renders UI
@@ -26,7 +25,8 @@ export const MilestoneCelebration: React.FC<MilestoneCelebrationProps> = () => {
 
 export function showMilestoneRecognition(
   milestone: SerenityMilestone,
-  userId?: string
+  userId?: string,
+  personalityMode?: PersonalityMode
 ) {
   // Load user preferences for communication style
   let userPreferences = defaultUserPreferences;
@@ -40,6 +40,47 @@ export function showMilestoneRecognition(
       }
     }
   }
+
+  // Get personality-aware styling and content
+  const getPersonalityContent = (mode: PersonalityMode) => {
+    switch (mode) {
+      case 'empathetic':
+        return {
+          bgGradient: 'from-green-50 to-emerald-50 dark:from-green-950/90 dark:to-emerald-950/90',
+          borderColor: 'border-green-200/50 dark:border-green-800/50',
+          iconBg: 'from-green-400 to-emerald-500',
+          textPrimary: 'text-green-900 dark:text-green-100',
+          textSecondary: 'text-green-700 dark:text-green-300',
+          textTertiary: 'text-green-600 dark:text-green-400',
+          celebrationText: '💚 New Milestone of Love Achieved:',
+          duration: 5000,
+        };
+      case 'pragmatic':
+        return {
+          bgGradient: 'from-blue-50 to-slate-50 dark:from-blue-950/90 dark:to-slate-950/90',
+          borderColor: 'border-blue-200/50 dark:border-blue-800/50',
+          iconBg: 'from-blue-500 to-slate-600',
+          textPrimary: 'text-blue-900 dark:text-blue-100',
+          textSecondary: 'text-blue-700 dark:text-blue-300',
+          textTertiary: 'text-blue-600 dark:text-blue-400',
+          celebrationText: '🛡️ System Milestone Completed:',
+          duration: 3000,
+        };
+      default:
+        return {
+          bgGradient: 'from-purple-50 to-pink-50 dark:from-purple-950/90 dark:to-pink-950/90',
+          borderColor: 'border-purple-200/50 dark:border-purple-800/50',
+          iconBg: 'from-purple-500 to-pink-500',
+          textPrimary: 'text-purple-900 dark:text-purple-100',
+          textSecondary: 'text-purple-700 dark:text-purple-300',
+          textTertiary: 'text-purple-600 dark:text-purple-400',
+          celebrationText: '🌟 Legacy Milestone Unlocked:',
+          duration: 4000,
+        };
+    }
+  };
+
+  const personalityContent = getPersonalityContent(personalityMode || 'adaptive');
 
   // Trigger firefly celebration
   // Note: This is called from outside React component, so we'll use a global event
@@ -66,12 +107,12 @@ export function showMilestoneRecognition(
 
   toast.custom(
     t => (
-      <div className='w-full max-w-4xl bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/90 dark:to-emerald-950/90 border border-green-200/50 dark:border-green-800/50 shadow-lg backdrop-blur-sm'>
+      <div className={`w-full max-w-4xl bg-gradient-to-r ${personalityContent.bgGradient} border ${personalityContent.borderColor} shadow-lg backdrop-blur-sm`}>
         <div className='flex items-center gap-4 p-4'>
           {/* Milestone Icon */}
           <div className='flex-shrink-0'>
-            <div className='w-12 h-12 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center shadow-md'>
-              <Icon name={milestone.icon as any}
+            <div className={`w-12 h-12 bg-gradient-to-br ${personalityContent.iconBg} rounded-full flex items-center justify-center shadow-md`}>
+              <Icon name={milestone.icon}
                 className='w-6 h-6 text-white'
               />
             </div>
@@ -81,8 +122,8 @@ export function showMilestoneRecognition(
           <div className='flex-1 min-w-0'>
             <div className='flex items-start justify-between'>
               <div>
-                <p className='font-medium text-green-900 dark:text-green-100'>
-                  New Milestone of Peace Unlocked:{' '}
+                <p className={`font-medium ${personalityContent.textPrimary}`}>
+                  {personalityContent.celebrationText}{' '}
                   <span className='font-semibold'>
                     {adaptiveName.replace(
                       /^[\u{1F5FF}\u{1F91D}\u{1F3DB}\u{23F0}\u{1F5FA}\u{1F4AB}\u{1F451}]\s/u,
@@ -90,11 +131,11 @@ export function showMilestoneRecognition(
                     )}
                   </span>
                 </p>
-                <p className='text-sm text-green-700 dark:text-green-300 mt-1 leading-relaxed'>
+                <p className={`text-sm ${personalityContent.textSecondary} mt-1 leading-relaxed`}>
                   {adaptiveCompletedDescription}
                 </p>
                 {milestone.rewards && (
-                  <p className='text-xs text-green-600 dark:text-green-400 mt-2 italic'>
+                  <p className={`text-xs ${personalityContent.textTertiary} mt-2 italic`}>
                     ✨ {milestone.rewards.title}
                   </p>
                 )}
@@ -103,9 +144,9 @@ export function showMilestoneRecognition(
               {/* Close button */}
               <button
                 onClick={() => toast.dismiss(t)}
-                className='flex-shrink-0 ml-4 p-1 text-green-500 hover:text-green-600 dark:text-green-400 dark:hover:text-green-300 transition-colors'
+                className={`flex-shrink-0 ml-4 p-1 ${personalityContent.textTertiary} hover:opacity-80 transition-colors`}
               >
-                <Icon name={"x" as any} className='w-4 h-4' />
+                <Icon name="x" className='w-4 h-4' />
               </button>
             </div>
           </div>
@@ -113,7 +154,7 @@ export function showMilestoneRecognition(
       </div>
     ),
     {
-      duration: 4000,
+      duration: personalityContent.duration,
       position: 'top-center',
       className: 'milestone-recognition-toast',
       unstyled: true,
