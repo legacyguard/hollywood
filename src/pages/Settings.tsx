@@ -20,17 +20,23 @@ import type {
   UserPreferences,
   CommunicationStyle,
 } from '@/types/user-preferences';
+import { defaultUserPreferences } from '@/types/user-preferences';
 import { textManager } from '@/lib/text-manager';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { usePersonalityManager } from '@/components/sofia/SofiaContextProvider';
+import type { PersonalityMode } from '@/lib/sofia-types';
+import { getPersonalityDisplayName } from '@/lib/sofia-personality';
 
 export default function SettingsPage() {
   usePageTitle('Settings');
   const { userId } = useAuth();
   const { user } = useUser();
+  const personalityManager = usePersonalityManager();
   const [preferences, setPreferences] = useState<UserPreferences>(
     defaultUserPreferences
   );
   const [isSaving, setIsSaving] = useState(false);
+  const [personalityInsight, setPersonalityInsight] = useState<string>('');
 
   // Load preferences from localStorage
   useEffect(() => {
@@ -46,9 +52,40 @@ export default function SettingsPage() {
     }
   }, [userId]);
 
+  // Load personality insights when personality manager is available
+  useEffect(() => {
+    if (personalityManager) {
+      const insight = personalityManager.getPersonalityInsight();
+      setPersonalityInsight(insight);
+      
+      // Sync personality settings with preferences
+      const personality = personalityManager.getPersonality();
+      const currentMode = personality.mode;
+      
+      // Map personality mode to legacy communication style
+      let legacyStyle: CommunicationStyle = 'default';
+      if (currentMode === 'empathetic') {
+        legacyStyle = 'empathetic';
+      } else if (currentMode === 'pragmatic') {
+        legacyStyle = 'pragmatic';
+      } else if (personality.userPreferences.manualOverride) {
+        legacyStyle = personality.userPreferences.manualOverride === 'empathetic' ? 'empathetic' : 'pragmatic';
+      }
+      
+      setPreferences(prev => ({
+        ...prev,
+        communication: {
+          ...prev.communication,
+          style: legacyStyle,
+          autoDetection: personality.userPreferences.adaptationEnabled,
+        }
+      }));
+    }
+  }, [personalityManager]);
+
   // Save preferences to localStorage and update Sofia's text manager
   const savePreferences = async () => {
-    if (!userId) return;
+    if (!userId || !personalityManager) return;
 
     setIsSaving(true);
     try {
@@ -61,6 +98,24 @@ export default function SettingsPage() {
       if (preferences.communication.style !== 'default') {
         textManager.setUserStyle(userId, preferences.communication.style);
       }
+
+      // Update the personality manager with new settings
+      if (preferences.communication.style === 'default') {
+        // Adaptive mode - let Sofia learn automatically
+        personalityManager.setMode('adaptive');
+        personalityManager.setManualOverride(undefined);
+      } else {
+        // Manual override mode
+        const manualStyle = preferences.communication.style === 'empathetic' ? 'empathetic' : 'pragmatic';
+        personalityManager.setManualOverride(manualStyle);
+      }
+
+      // Update adaptation setting
+      personalityManager.enableAdaptation(preferences.communication.autoDetection);
+
+      // Refresh personality insight after changes
+      const newInsight = personalityManager.getPersonalityInsight();
+      setPersonalityInsight(newInsight);
 
       // TODO: Also save to Supabase or Clerk metadata for cloud sync
 
@@ -282,19 +337,32 @@ export default function SettingsPage() {
             </Card>
           </FadeIn>
 
-          {/* Sofia Communication Preferences */}
+          {/* Sofia Adaptive Personality */}
           <FadeIn duration={0.5} delay={0.5}>
             <Card className='p-6 bg-card border-card-border'>
               <h2 className='text-xl font-semibold mb-4 flex items-center gap-2'>
                 <Icon name={"bot" as any} className='w-5 h-5 text-primary' />
-                Sofia Communication Style
+                Sofia's Adaptive Personality
               </h2>
+              
+              {/* Personality Insights */}
+              {personalityInsight && (
+                <div className='mb-6 p-4 bg-primary/5 border border-primary/20 rounded-lg'>
+                  <div className='flex items-start gap-3'>
+                    <Icon name={"sparkles" as any} className='w-5 h-5 text-primary mt-0.5' />
+                    <div>
+                      <h3 className='font-medium text-sm mb-1'>Sofia's Analysis</h3>
+                      <p className='text-sm text-muted-foreground'>{personalityInsight}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <div className='space-y-4'>
                 <div>
                   <Label>Communication Style</Label>
                   <p className='text-sm text-muted-foreground mb-4'>
-                    Choose how Sofia communicates with you. She can adapt her
-                    personality to match your preferences.
+                    Choose how Sofia communicates with you. She learns from your interactions to provide the best experience.
                   </p>
                   <RadioGroup
                     value={preferences.communication.style}
@@ -303,19 +371,18 @@ export default function SettingsPage() {
                     }
                     className='space-y-3'
                   >
-                    <div className='flex items-center space-x-3 p-3 border border-card-border rounded-lg'>
+                    <div className='flex items-center space-x-3 p-3 border border-card-border rounded-lg hover:bg-muted/30 transition-colors'>
                       <RadioGroupItem value='default' id='style-default' />
                       <div className='flex-1'>
                         <Label htmlFor='style-default' className='font-medium'>
-                          Automatic Detection
+                          🎯 Smart Adaptation
                         </Label>
                         <p className='text-sm text-muted-foreground'>
-                          Let Sofia learn your communication style from your
-                          interactions
+                          Sofia automatically learns your communication preferences from how you interact with the app
                         </p>
                       </div>
                     </div>
-                    <div className='flex items-center space-x-3 p-3 border border-card-border rounded-lg'>
+                    <div className='flex items-center space-x-3 p-3 border border-card-border rounded-lg hover:bg-muted/30 transition-colors'>
                       <RadioGroupItem
                         value='empathetic'
                         id='style-empathetic'
@@ -325,37 +392,38 @@ export default function SettingsPage() {
                           htmlFor='style-empathetic'
                           className='font-medium'
                         >
-                          Empathetic & Caring
+                          💝 Warm & Supportive
                         </Label>
                         <p className='text-sm text-muted-foreground'>
-                          Sofia focuses on emotions, relationships, and the
-                          meaningful aspects of your legacy
+                          Sofia focuses on emotions, family connections, and the meaningful aspects of your legacy planning
                         </p>
                       </div>
                     </div>
-                    <div className='flex items-center space-x-3 p-3 border border-card-border rounded-lg'>
+                    <div className='flex items-center space-x-3 p-3 border border-card-border rounded-lg hover:bg-muted/30 transition-colors'>
                       <RadioGroupItem value='pragmatic' id='style-pragmatic' />
                       <div className='flex-1'>
                         <Label
                           htmlFor='style-pragmatic'
                           className='font-medium'
                         >
-                          Direct & Practical
+                          ⚡ Direct & Efficient
                         </Label>
                         <p className='text-sm text-muted-foreground'>
-                          Sofia communicates efficiently with facts, steps, and
-                          clear instructions
+                          Sofia communicates with clear steps, facts, and practical guidance to help you complete tasks quickly
                         </p>
                       </div>
                     </div>
                   </RadioGroup>
                 </div>
-                <div className='flex items-center justify-between'>
+                
+                <div className='flex items-center justify-between p-3 border border-card-border rounded-lg'>
                   <div className='space-y-0.5'>
-                    <Label htmlFor='auto-detection'>Auto-Detection</Label>
+                    <Label htmlFor='auto-detection' className='flex items-center gap-2'>
+                      <Icon name={"brain" as any} className='w-4 h-4 text-primary' />
+                      Learning Mode
+                    </Label>
                     <p className='text-sm text-muted-foreground'>
-                      Allow Sofia to automatically learn your communication
-                      preferences over time
+                      Allow Sofia to continuously learn and adapt to your communication preferences over time
                     </p>
                   </div>
                   <Switch
@@ -370,13 +438,33 @@ export default function SettingsPage() {
                     }
                   />
                 </div>
+
+                {personalityManager && (
+                  <div className='space-y-3'>
+                    <div className='flex justify-between items-center text-sm'>
+                      <span className='text-muted-foreground'>Confidence Level:</span>
+                      <div className='flex items-center gap-2'>
+                        <div className={`w-2 h-2 rounded-full ${
+                          personalityManager.getConfidenceLevel() === 'high' ? 'bg-green-500' :
+                          personalityManager.getConfidenceLevel() === 'medium' ? 'bg-yellow-500' : 'bg-gray-400'
+                        }`} />
+                        <span className='capitalize'>{personalityManager.getConfidenceLevel()}</span>
+                      </div>
+                    </div>
+                    
+                    {personalityManager.shouldShowPersonalityHint() && (
+                      <div className='text-xs text-muted-foreground bg-blue-50 p-3 rounded-lg border border-blue-200'>
+                        <Icon name={"lightbulb" as any} className='w-3 h-3 inline mr-2' />
+                        Sofia is still learning your preferences. Consider manually selecting your preferred style above for more accurate communication.
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 {preferences.communication.lastDetectionUpdate && (
-                  <div className='text-xs text-muted-foreground bg-muted p-2 rounded'>
-                    <Icon name={"info" as any} className='w-3 h-3 inline mr-1' />
-                    Last style update:{' '}
-                    {new Date(
-                      preferences.communication.lastDetectionUpdate
-                    ).toLocaleDateString()}
+                  <div className='text-xs text-muted-foreground bg-muted p-2 rounded flex items-center gap-2'>
+                    <Icon name={"info" as any} className='w-3 h-3' />
+                    Last style update: {new Date(preferences.communication.lastDetectionUpdate).toLocaleDateString()}
                   </div>
                 )}
               </div>
