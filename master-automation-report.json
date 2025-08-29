@@ -1,0 +1,68 @@
+{
+  "timestamp": "2025-08-29T19:11:35.790Z",
+  "summary": {
+    "totalSteps": 4,
+    "completed": 0,
+    "failed": 2,
+    "warnings": 2,
+    "totalDuration": 5370,
+    "successRate": "0.0"
+  },
+  "steps": [
+    {
+      "name": "Image Optimization",
+      "script": "image-optimizer.js",
+      "required": true,
+      "status": "failed"
+    },
+    {
+      "name": "Performance Automation",
+      "script": "performance-automation.js",
+      "required": true,
+      "status": "failed"
+    },
+    {
+      "name": "Performance Testing",
+      "script": "performance-tester.js",
+      "required": false,
+      "status": "skipped"
+    },
+    {
+      "name": "Bundle Analysis",
+      "script": "analyze-bundle.js",
+      "required": false,
+      "status": "skipped"
+    }
+  ],
+  "results": {
+    "completed": [],
+    "failed": [
+      {
+        "name": "Image Optimization",
+        "error": "Command failed: node /Users/luborfedak/Documents/Github/hollywood/scripts/image-optimizer.js",
+        "script": "image-optimizer.js"
+      },
+      {
+        "name": "Performance Automation",
+        "error": "Command failed: node /Users/luborfedak/Documents/Github/hollywood/scripts/performance-automation.js",
+        "script": "performance-automation.js"
+      }
+    ],
+    "warnings": [
+      "Performance Testing: Command failed: node /Users/luborfedak/Documents/Github/hollywood/scripts/performance-tester.js",
+      "Bundle Analysis: Command failed: node /Users/luborfedak/Documents/Github/hollywood/scripts/analyze-bundle.js"
+    ]
+  },
+  "recommendations": [
+    "Address failed optimization steps before deployment",
+    "Review warnings and consider addressing them"
+  ],
+  "nextSteps": [
+    "Fix failed optimization steps and re-run automation",
+    "Review generated reports for detailed insights",
+    "Test the optimized application thoroughly",
+    "Deploy with confidence knowing performance is optimized",
+    "Set up continuous performance monitoring",
+    "Schedule regular optimization runs"
+  ]
+}

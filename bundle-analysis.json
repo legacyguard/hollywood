@@ -1,130 +1,137 @@
 {
-  "timestamp": "2025-08-29T15:52:09.842Z",
+  "timestamp": "2025-08-29T19:11:35.785Z",
   "summary": {
-    "totalBundleSize": 3362.46,
-    "totalJSSize": 3204.63,
-    "totalCSSSize": 157.83,
-    "chunkCount": 124,
+    "totalBundleSize": 3448.13,
+    "totalJSSize": 3287.6,
+    "totalCSSSize": 160.53,
+    "chunkCount": 119,
     "status": "error"
   },
   "chunks": [
     {
-      "file": "react-vendor-BYEDTLVj.js",
-      "chunkName": "react-vendor-BYEDTLVj",
+      "file": "react-vendor-Usg8RgKV.js",
+      "chunkName": "react-vendor-Usg8RgKV",
       "category": "vendor-react",
-      "sizeKB": 603.09,
+      "sizeKB": 606.15,
       "status": "error"
     },
     {
-      "file": "legacy-garden-CC7h2E7h.js",
-      "chunkName": "legacy-garden-CC7h2E7h",
+      "file": "legacy-garden-Blr4vN94.js",
+      "chunkName": "legacy-garden-Blr4vN94",
       "category": "other",
       "sizeKB": 287.84,
       "status": "warning"
     },
     {
-      "file": "Index-DEo4rMXZ.js",
-      "chunkName": "Index-DEo4rMXZ",
+      "file": "Index-D1AeJjIB.js",
+      "chunkName": "Index-D1AeJjIB",
       "category": "components",
       "sizeKB": 212.63,
       "status": "ok"
     },
     {
-      "file": "Family-CgrksMzw.js",
-      "chunkName": "Family-CgrksMzw",
+      "file": "marketing-pages-CWOmO2YB.js",
+      "chunkName": "marketing-pages-CWOmO2YB",
+      "category": "other",
+      "sizeKB": 209.18,
+      "status": "ok"
+    },
+    {
+      "file": "Family-B9Rz_8a2.js",
+      "chunkName": "Family-B9Rz_8a2",
       "category": "features",
-      "sizeKB": 197.29,
+      "sizeKB": 197.28,
       "status": "ok"
     },
     {
-      "file": "TimeCapsule-DxWbdBij.js",
-      "chunkName": "TimeCapsule-DxWbdBij",
+      "file": "TimeCapsule-vEzeaiSM.js",
+      "chunkName": "TimeCapsule-vEzeaiSM",
       "category": "other",
-      "sizeKB": 122.25,
+      "sizeKB": 122.26,
       "status": "ok"
     },
     {
-      "file": "database-vendor-CXEGUkA6.js",
-      "chunkName": "database-vendor-CXEGUkA6",
+      "file": "database-vendor-Bbobauek.js",
+      "chunkName": "database-vendor-Bbobauek",
       "category": "other",
-      "sizeKB": 121.64,
+      "sizeKB": 121.73,
       "status": "ok"
     },
     {
-      "file": "family-shield-BDEKurde.js",
-      "chunkName": "family-shield-BDEKurde",
+      "file": "family-shield-BXN_Ss9R.js",
+      "chunkName": "family-shield-BXN_Ss9R",
       "category": "other",
       "sizeKB": 117.64,
       "status": "ok"
     },
     {
-      "file": "vault-page-B2mZnJao.js",
-      "chunkName": "vault-page-B2mZnJao",
+      "file": "settings-page-CJv2Zc7Z.js",
+      "chunkName": "settings-page-CJv2Zc7Z",
       "category": "other",
-      "sizeKB": 117.24,
+      "sizeKB": 111.37,
       "status": "ok"
     },
     {
-      "file": "settings-page-DR_9Mwrf.js",
-      "chunkName": "settings-page-DR_9Mwrf",
+      "file": "vault-page-BLMjQhO0.js",
+      "chunkName": "vault-page-BLMjQhO0",
       "category": "other",
-      "sizeKB": 112.29,
+      "sizeKB": 92.12,
       "status": "ok"
     },
     {
-      "file": "sofia-system-DJnphSKF.js",
-      "chunkName": "sofia-system-DJnphSKF",
+      "file": "sofia-system-Bzl7Moxv.js",
+      "chunkName": "sofia-system-Bzl7Moxv",
       "category": "other",
-      "sizeKB": 84.35,
+      "sizeKB": 82.87,
       "status": "ok"
     },
     {
-      "file": "animation-vendor-C7xiOweI.js",
-      "chunkName": "animation-vendor-C7xiOweI",
+      "file": "animation-vendor-Dpev9I7v.js",
+      "chunkName": "animation-vendor-Dpev9I7v",
       "category": "other",
       "sizeKB": 78.68,
       "status": "ok"
     },
     {
-      "file": "vendor-tanstack-CpMwiJy1.js",
-      "chunkName": "vendor-tanstack-CpMwiJy1",
+      "file": "vendor-tanstack-Dj4WXc3j.js",
+      "chunkName": "vendor-tanstack-Dj4WXc3j",
       "category": "other",
       "sizeKB": 76.26,
       "status": "ok"
     },
     {
-      "file": "LandingPage-BcYgr1Gu.js",
-      "chunkName": "LandingPage-BcYgr1Gu",
+      "file": "IntelligentOrganizer-C6wEa0jy.js",
+      "chunkName": "IntelligentOrganizer-C6wEa0jy",
       "category": "other",
-      "sizeKB": 75.14,
+      "sizeKB": 68.71,
       "status": "ok"
     },
     {
-      "file": "IntelligentOrganizer-D1bq1CX6.js",
-      "chunkName": "IntelligentOrganizer-D1bq1CX6",
+      "file": "legal-pages-CXZAIY2R.js",
+      "chunkName": "legal-pages-CXZAIY2R",
       "category": "other",
-      "sizeKB": 68.68,
+      "sizeKB": 64.55,
       "status": "ok"
     },
     {
-      "file": "dashboard-layout-3kb2ZmlX.js",
-      "chunkName": "dashboard-layout-3kb2ZmlX",
+      "file": "dashboard-layout-D1JwPsPQ.js",
+      "chunkName": "dashboard-layout-D1JwPsPQ",
       "category": "other",
-      "sizeKB": 53.91,
+      "sizeKB": 62.17,
       "status": "ok"
     },
     {
-      "file": "index-k0GKocxi.js",
-      "chunkName": "index-k0GKocxi",
+      "file": "index-CIbeyGLV.js",
+      "chunkName": "index-CIbeyGLV",
       "category": "main",
-      "sizeKB": 47.18,
+      "sizeKB": 49.04,
       "status": "ok"
     },
     {
-      "file": "utils-vendor-Xlwt_pLH.js",
-      "chunkName": "utils-vendor-Xlwt_pLH",
+      "file": "utils-vendor-WfXJCeGN.js",
+      "chunkName": "utils-vendor-WfXJCeGN",
       "category": "vendor-utils",
-      "sizeKB": 44.18,
+      "sizeKB": 48.88,
       "status": "ok"
     },
     {
@@ -135,8 +142,8 @@
       "status": "ok"
     },
     {
-      "file": "onboarding-page-CZ00BBEJ.js",
-      "chunkName": "onboarding-page-CZ00BBEJ",
+      "file": "onboarding-page-B-KDyBYc.js",
+      "chunkName": "onboarding-page-B-KDyBYc",
       "category": "other",
       "sizeKB": 40.56,
       "status": "ok"
@@ -149,94 +156,73 @@
       "status": "ok"
     },
     {
-      "file": "PrivacyPolicy-BLzZeZ7Y.js",
-      "chunkName": "PrivacyPolicy-BLzZeZ7Y",
+      "file": "TestOCRPage-DB9KF7Dk.js",
+      "chunkName": "TestOCRPage-DB9KF7Dk",
       "category": "other",
-      "sizeKB": 34.05,
+      "sizeKB": 33.81,
       "status": "ok"
     },
     {
-      "file": "TestOCRPage-0pPqrQEb.js",
-      "chunkName": "TestOCRPage-0pPqrQEb",
+      "file": "EmergencyAccess-CmN0MWY3.js",
+      "chunkName": "EmergencyAccess-CmN0MWY3",
       "category": "other",
-      "sizeKB": 33.77,
+      "sizeKB": 33.43,
       "status": "ok"
     },
     {
-      "file": "EmergencyAccess-OBBJoKmw.js",
-      "chunkName": "EmergencyAccess-OBBJoKmw",
+      "file": "vendor-sonner-B4YI4IHN.js",
+      "chunkName": "vendor-sonner-B4YI4IHN",
       "category": "other",
-      "sizeKB": 33.39,
+      "sizeKB": 32.98,
       "status": "ok"
     },
     {
-      "file": "vendor-micromark-core-commonmark-BgLWmJee.js",
-      "chunkName": "vendor-micromark-core-commonmark-BgLWmJee",
+      "file": "crypto-vendor-CMipJh0j.js",
+      "chunkName": "crypto-vendor-CMipJh0j",
+      "category": "other",
+      "sizeKB": 32.65,
+      "status": "ok"
+    },
+    {
+      "file": "vendor-micromark-core-commonmark-BjbaiROZ.js",
+      "chunkName": "vendor-micromark-core-commonmark-BjbaiROZ",
       "category": "other",
       "sizeKB": 32.6,
       "status": "ok"
     },
     {
-      "file": "crypto-vendor-Cis7Y2Yf.js",
-      "chunkName": "crypto-vendor-Cis7Y2Yf",
+      "file": "SurvivorManual-D-CBOJC2.js",
+      "chunkName": "SurvivorManual-D-CBOJC2",
       "category": "other",
-      "sizeKB": 32.57,
+      "sizeKB": 29.65,
       "status": "ok"
     },
     {
-      "file": "vendor-sonner-Ca776QS2.js",
-      "chunkName": "vendor-sonner-Ca776QS2",
+      "file": "Guardians-ABKAkxYw.js",
+      "chunkName": "Guardians-ABKAkxYw",
       "category": "other",
-      "sizeKB": 32.02,
+      "sizeKB": 27.89,
       "status": "ok"
     },
     {
-      "file": "SurvivorManual-sOh1d5H2.js",
-      "chunkName": "SurvivorManual-sOh1d5H2",
-      "category": "other",
-      "sizeKB": 29.61,
-      "status": "ok"
-    },
-    {
-      "file": "Guardians-CQ-QIUYv.js",
-      "chunkName": "Guardians-CQ-QIUYv",
-      "category": "other",
-      "sizeKB": 27.92,
-      "status": "ok"
-    },
-    {
-      "file": "animation-system-CtRMu_mL.js",
-      "chunkName": "animation-system-CtRMu_mL",
+      "file": "animation-system-Bu4gNegg.js",
+      "chunkName": "animation-system-Bu4gNegg",
       "category": "other",
       "sizeKB": 26.77,
       "status": "ok"
     },
     {
-      "file": "ComponentShowcase-CY67yGYW.js",
-      "chunkName": "ComponentShowcase-CY67yGYW",
+      "file": "TimeCapsuleView-CgYHyLsb.js",
+      "chunkName": "TimeCapsuleView-CgYHyLsb",
       "category": "other",
-      "sizeKB": 25.96,
+      "sizeKB": 21,
       "status": "ok"
     },
     {
-      "file": "TimeCapsuleView-Beq4_E_m.js",
-      "chunkName": "TimeCapsuleView-Beq4_E_m",
+      "file": "TestNotifications-DhMxu7LC.js",
+      "chunkName": "TestNotifications-DhMxu7LC",
       "category": "other",
-      "sizeKB": 20.96,
-      "status": "ok"
-    },
-    {
-      "file": "TermsOfService-CzyhQrNK.js",
-      "chunkName": "TermsOfService-CzyhQrNK",
-      "category": "other",
-      "sizeKB": 19.55,
-      "status": "ok"
-    },
-    {
-      "file": "TestNotifications-B8gc9Ign.js",
-      "chunkName": "TestNotifications-B8gc9Ign",
-      "category": "other",
-      "sizeKB": 19.02,
+      "sizeKB": 19.06,
       "status": "ok"
     },
     {
@@ -254,43 +240,36 @@
       "status": "ok"
     },
     {
-      "file": "ProfileCard-CGxElWj9.js",
-      "chunkName": "ProfileCard-CGxElWj9",
+      "file": "Privacy-0TCgBW4k.js",
+      "chunkName": "Privacy-0TCgBW4k",
       "category": "other",
-      "sizeKB": 15.17,
+      "sizeKB": 14.78,
       "status": "ok"
     },
     {
-      "file": "Privacy-B4IZl6m5.js",
-      "chunkName": "Privacy-B4IZl6m5",
-      "category": "other",
-      "sizeKB": 14.74,
-      "status": "ok"
-    },
-    {
-      "file": "vendor-mdast-util-from-markdown-BTzfzSV5.js",
-      "chunkName": "vendor-mdast-util-from-markdown-BTzfzSV5",
+      "file": "vendor-mdast-util-from-markdown-CYFcgbNj.js",
+      "chunkName": "vendor-mdast-util-from-markdown-CYFcgbNj",
       "category": "other",
       "sizeKB": 13.53,
       "status": "ok"
     },
     {
-      "file": "vendor-micromark-BySy-w32.js",
-      "chunkName": "vendor-micromark-BySy-w32",
+      "file": "vendor-micromark-DNoG6qoI.js",
+      "chunkName": "vendor-micromark-DNoG6qoI",
       "category": "other",
       "sizeKB": 13.18,
       "status": "ok"
     },
     {
-      "file": "Terms-Bb4FFGVC.js",
-      "chunkName": "Terms-Bb4FFGVC",
+      "file": "Terms-DWIj2gQS.js",
+      "chunkName": "Terms-DWIj2gQS",
       "category": "components",
-      "sizeKB": 12.9,
+      "sizeKB": 12.94,
       "status": "ok"
     },
     {
-      "file": "vendor-swr-C1EL0gSG.js",
-      "chunkName": "vendor-swr-C1EL0gSG",
+      "file": "vendor-swr-Blv2F4Py.js",
+      "chunkName": "vendor-swr-Blv2F4Py",
       "category": "other",
       "sizeKB": 12.6,
       "status": "ok"
@@ -303,31 +282,24 @@
       "status": "ok"
     },
     {
-      "file": "vendor-mdast-util-to-hast-DTAjeMPL.js",
-      "chunkName": "vendor-mdast-util-to-hast-DTAjeMPL",
+      "file": "vendor-mdast-util-to-hast-DMZFyI0w.js",
+      "chunkName": "vendor-mdast-util-to-hast-DMZFyI0w",
       "category": "other",
       "sizeKB": 10.8,
       "status": "ok"
     },
     {
-      "file": "wizard_steps-_DFGggE9.js",
-      "chunkName": "wizard_steps-_DFGggE9",
+      "file": "wizard_steps-BxVHA23t.js",
+      "chunkName": "wizard_steps-BxVHA23t",
       "category": "other",
-      "sizeKB": 10.68,
+      "sizeKB": 9.95,
       "status": "ok"
     },
     {
-      "file": "wizard_steps-CO47DM4w.js",
-      "chunkName": "wizard_steps-CO47DM4w",
+      "file": "wizard_steps-w52LJWog.js",
+      "chunkName": "wizard_steps-w52LJWog",
       "category": "other",
-      "sizeKB": 10.61,
-      "status": "ok"
-    },
-    {
-      "file": "ActivityFeed-DBBuz9Qi.js",
-      "chunkName": "ActivityFeed-DBBuz9Qi",
-      "category": "other",
-      "sizeKB": 9.59,
+      "sizeKB": 9.88,
       "status": "ok"
     },
     {
@@ -338,10 +310,10 @@
       "status": "ok"
     },
     {
-      "file": "vendor-prop-types-C4I5OF0M.js",
-      "chunkName": "vendor-prop-types-C4I5OF0M",
+      "file": "vendor-prop-types-BWPfy2XD.js",
+      "chunkName": "vendor-prop-types-BWPfy2XD",
       "category": "other",
-      "sizeKB": 8.01,
+      "sizeKB": 7.76,
       "status": "ok"
     },
     {
@@ -352,17 +324,17 @@
       "status": "ok"
     },
     {
-      "file": "vendor-hast-util-to-jsx-runtime-6brPtBsZ.js",
-      "chunkName": "vendor-hast-util-to-jsx-runtime-6brPtBsZ",
+      "file": "vendor-hast-util-to-jsx-runtime-CUFrXIzy.js",
+      "chunkName": "vendor-hast-util-to-jsx-runtime-CUFrXIzy",
       "category": "other",
       "sizeKB": 6.38,
       "status": "ok"
     },
     {
-      "file": "NotFound-BaK4gt9S.js",
-      "chunkName": "NotFound-BaK4gt9S",
+      "file": "NotFound-D56vhJxH.js",
+      "chunkName": "NotFound-D56vhJxH",
       "category": "other",
-      "sizeKB": 5.08,
+      "sizeKB": 5.59,
       "status": "ok"
     },
     {
@@ -380,43 +352,43 @@
       "status": "ok"
     },
     {
-      "file": "SignIn-alVcbKaf.js",
-      "chunkName": "SignIn-alVcbKaf",
+      "file": "SignIn-IEYxjrX8.js",
+      "chunkName": "SignIn-IEYxjrX8",
       "category": "other",
-      "sizeKB": 4.76,
+      "sizeKB": 4.79,
       "status": "ok"
     },
     {
-      "file": "SignUp-CQQnXYBp.js",
-      "chunkName": "SignUp-CQQnXYBp",
+      "file": "SignUp-BhDPOrAI.js",
+      "chunkName": "SignUp-BhDPOrAI",
       "category": "other",
-      "sizeKB": 4.76,
+      "sizeKB": 4.79,
       "status": "ok"
     },
     {
-      "file": "vendor-debug-BFMg9_QT.js",
-      "chunkName": "vendor-debug-BFMg9_QT",
+      "file": "vendor-debug-D2wAinav.js",
+      "chunkName": "vendor-debug-D2wAinav",
       "category": "other",
-      "sizeKB": 4.73,
+      "sizeKB": 4.71,
       "status": "ok"
     },
     {
-      "file": "vendor-unified-JcNMbsNk.js",
-      "chunkName": "vendor-unified-JcNMbsNk",
+      "file": "vendor-unified-Bifoon3j.js",
+      "chunkName": "vendor-unified-Bifoon3j",
       "category": "other",
       "sizeKB": 4.54,
       "status": "ok"
     },
     {
-      "file": "vendor-scheduler-BU5xut3V.js",
-      "chunkName": "vendor-scheduler-BU5xut3V",
+      "file": "vendor-scheduler-Dj0T90Ik.js",
+      "chunkName": "vendor-scheduler-Dj0T90Ik",
       "category": "other",
-      "sizeKB": 4.36,
+      "sizeKB": 4.29,
       "status": "ok"
     },
     {
-      "file": "vendor-micromark-util-subtokenize-i_t0GK6Z.js",
-      "chunkName": "vendor-micromark-util-subtokenize-i_t0GK6Z",
+      "file": "vendor-micromark-util-subtokenize-CDfdrKuw.js",
+      "chunkName": "vendor-micromark-util-subtokenize-CDfdrKuw",
       "category": "other",
       "sizeKB": 4.06,
       "status": "ok"
@@ -464,24 +436,17 @@
       "status": "ok"
     },
     {
-      "file": "calendar-sYCqhuvf.js",
-      "chunkName": "calendar-sYCqhuvf",
+      "file": "calendar-B5vJ1GvN.js",
+      "chunkName": "calendar-B5vJ1GvN",
       "category": "other",
       "sizeKB": 2.23,
       "status": "ok"
     },
     {
-      "file": "vendor-use-sync-external-store-CChf5GFk.js",
-      "chunkName": "vendor-use-sync-external-store-CChf5GFk",
+      "file": "vendor-use-sync-external-store-BKrdVFQ8.js",
+      "chunkName": "vendor-use-sync-external-store-BKrdVFQ8",
       "category": "other",
-      "sizeKB": 1.86,
-      "status": "ok"
-    },
-    {
-      "file": "vendor-inline-style-parser-D8_Zmyug.js",
-      "chunkName": "vendor-inline-style-parser-D8_Zmyug",
-      "category": "other",
-      "sizeKB": 1.55,
+      "sizeKB": 1.82,
       "status": "ok"
     },
     {
@@ -489,6 +454,13 @@
       "chunkName": "vendor-dequal-YSOPF_Lt",
       "category": "other",
       "sizeKB": 1.53,
+      "status": "ok"
+    },
+    {
+      "file": "vendor-inline-style-parser-BFz9PO4J.js",
+      "chunkName": "vendor-inline-style-parser-BFz9PO4J",
+      "category": "other",
+      "sizeKB": 1.51,
       "status": "ok"
     },
     {
@@ -506,13 +478,6 @@
       "status": "ok"
     },
     {
-      "file": "vendor-next-themes-CNY_bdZ_.js",
-      "chunkName": "vendor-next-themes-CNY_bdZ_",
-      "category": "other",
-      "sizeKB": 1.4,
-      "status": "ok"
-    },
-    {
       "file": "vendor-vfile-message-BoHjAdL7.js",
       "chunkName": "vendor-vfile-message-BoHjAdL7",
       "category": "other",
@@ -520,31 +485,31 @@
       "status": "ok"
     },
     {
-      "file": "vendor-micromark-factory-destination-CHMi-xDW.js",
-      "chunkName": "vendor-micromark-factory-destination-CHMi-xDW",
+      "file": "vendor-tweetnacl-util-Cg4oNxCC.js",
+      "chunkName": "vendor-tweetnacl-util-Cg4oNxCC",
+      "category": "other",
+      "sizeKB": 1.34,
+      "status": "ok"
+    },
+    {
+      "file": "vendor-micromark-factory-destination-BWuw1tEL.js",
+      "chunkName": "vendor-micromark-factory-destination-BWuw1tEL",
       "category": "other",
       "sizeKB": 1.32,
       "status": "ok"
     },
     {
-      "file": "vendor-tweetnacl-util-D8bk10B-.js",
-      "chunkName": "vendor-tweetnacl-util-D8bk10B-",
-      "category": "other",
-      "sizeKB": 1.31,
-      "status": "ok"
-    },
-    {
-      "file": "vendor-use-sidecar-CEPFco9a.js",
-      "chunkName": "vendor-use-sidecar-CEPFco9a",
+      "file": "vendor-use-sidecar-CJ5aB_6e.js",
+      "chunkName": "vendor-use-sidecar-CJ5aB_6e",
       "category": "other",
       "sizeKB": 1.23,
       "status": "ok"
     },
     {
-      "file": "vendor-extend-bQJ2HL79.js",
-      "chunkName": "vendor-extend-bQJ2HL79",
+      "file": "vendor-extend-DORm7hJ-.js",
+      "chunkName": "vendor-extend-DORm7hJ-",
       "category": "other",
-      "sizeKB": 1.22,
+      "sizeKB": 1.16,
       "status": "ok"
     },
     {
@@ -555,29 +520,29 @@
       "status": "ok"
     },
     {
-      "file": "vendor-micromark-factory-label-B3jDw4-v.js",
-      "chunkName": "vendor-micromark-factory-label-B3jDw4-v",
+      "file": "vendor-micromark-factory-label-DtkdKQDd.js",
+      "chunkName": "vendor-micromark-factory-label-DtkdKQDd",
       "category": "other",
       "sizeKB": 1.06,
       "status": "ok"
     },
     {
-      "file": "avatar-DbpDBof4.js",
-      "chunkName": "avatar-DbpDBof4",
+      "file": "vendor-next-themes-DZZV6lpa.js",
+      "chunkName": "vendor-next-themes-DZZV6lpa",
       "category": "other",
-      "sizeKB": 1.04,
+      "sizeKB": 0.98,
       "status": "ok"
     },
     {
-      "file": "vendor-object-assign-D9dOiq-I.js",
-      "chunkName": "vendor-object-assign-D9dOiq-I",
+      "file": "vendor-object-assign-C2orZRhR.js",
+      "chunkName": "vendor-object-assign-C2orZRhR",
       "category": "other",
-      "sizeKB": 0.99,
+      "sizeKB": 0.94,
       "status": "ok"
     },
     {
-      "file": "vendor-micromark-factory-title-CoS41jE6.js",
-      "chunkName": "vendor-micromark-factory-title-CoS41jE6",
+      "file": "vendor-micromark-factory-title-CTgDf5d-.js",
+      "chunkName": "vendor-micromark-factory-title-CTgDf5d-",
       "category": "other",
       "sizeKB": 0.9,
       "status": "ok"
@@ -590,10 +555,10 @@
       "status": "ok"
     },
     {
-      "file": "vendor-style-to-js-BH5kYfuY.js",
-      "chunkName": "vendor-style-to-js-BH5kYfuY",
+      "file": "vendor-style-to-js-BvGiIexa.js",
+      "chunkName": "vendor-style-to-js-BvGiIexa",
       "category": "other",
-      "sizeKB": 0.87,
+      "sizeKB": 0.78,
       "status": "ok"
     },
     {
@@ -611,31 +576,31 @@
       "status": "ok"
     },
     {
-      "file": "vendor-micromark-util-sanitize-uri-CF-3tCCC.js",
-      "chunkName": "vendor-micromark-util-sanitize-uri-CF-3tCCC",
+      "file": "vendor-micromark-util-sanitize-uri-DIcN8Zcm.js",
+      "chunkName": "vendor-micromark-util-sanitize-uri-DIcN8Zcm",
       "category": "other",
       "sizeKB": 0.66,
       "status": "ok"
     },
     {
-      "file": "vendor-use-callback-ref-C9vHMDI_.js",
-      "chunkName": "vendor-use-callback-ref-C9vHMDI_",
+      "file": "vendor-use-callback-ref-BiSfX288.js",
+      "chunkName": "vendor-use-callback-ref-BiSfX288",
       "category": "other",
       "sizeKB": 0.66,
       "status": "ok"
     },
     {
-      "file": "vendor-micromark-util-character-RF-hPqai.js",
-      "chunkName": "vendor-micromark-util-character-RF-hPqai",
+      "file": "vendor-micromark-util-character-BjXMVlXZ.js",
+      "chunkName": "vendor-micromark-util-character-BjXMVlXZ",
       "category": "other",
       "sizeKB": 0.61,
       "status": "ok"
     },
     {
-      "file": "vendor-micromark-util-decode-string-rfxUJ0CK.js",
-      "chunkName": "vendor-micromark-util-decode-string-rfxUJ0CK",
+      "file": "vendor-micromark-util-decode-string-DyKFD--8.js",
+      "chunkName": "vendor-micromark-util-decode-string-DyKFD--8",
       "category": "other",
-      "sizeKB": 0.56,
+      "sizeKB": 0.57,
       "status": "ok"
     },
     {
@@ -646,24 +611,17 @@
       "status": "ok"
     },
     {
-      "file": "vendor-invariant-DVw_PcR4.js",
-      "chunkName": "vendor-invariant-DVw_PcR4",
-      "category": "other",
-      "sizeKB": 0.5,
-      "status": "ok"
-    },
-    {
-      "file": "vendor-shallowequal-DQU-Y8lU.js",
-      "chunkName": "vendor-shallowequal-DQU-Y8lU",
+      "file": "vendor-style-to-object-myBzvdTf.js",
+      "chunkName": "vendor-style-to-object-myBzvdTf",
       "category": "other",
       "sizeKB": 0.49,
       "status": "ok"
     },
     {
-      "file": "vendor-style-to-object-C0GE4e_m.js",
-      "chunkName": "vendor-style-to-object-C0GE4e_m",
+      "file": "vendor-invariant-w31wLM_N.js",
+      "chunkName": "vendor-invariant-w31wLM_N",
       "category": "other",
-      "sizeKB": 0.49,
+      "sizeKB": 0.48,
       "status": "ok"
     },
     {
@@ -674,24 +632,24 @@
       "status": "ok"
     },
     {
-      "file": "vendor-micromark-util-chunked-B-mR2v_o.js",
-      "chunkName": "vendor-micromark-util-chunked-B-mR2v_o",
+      "file": "vendor-shallowequal-CYgX7Cue.js",
+      "chunkName": "vendor-shallowequal-CYgX7Cue",
+      "category": "other",
+      "sizeKB": 0.47,
+      "status": "ok"
+    },
+    {
+      "file": "vendor-micromark-util-chunked-Cd28KxeL.js",
+      "chunkName": "vendor-micromark-util-chunked-Cd28KxeL",
       "category": "other",
       "sizeKB": 0.45,
       "status": "ok"
     },
     {
-      "file": "vendor-micromark-util-combine-extensions-D8cCohgj.js",
-      "chunkName": "vendor-micromark-util-combine-extensions-D8cCohgj",
+      "file": "vendor-micromark-util-combine-extensions-C8e0d4oQ.js",
+      "chunkName": "vendor-micromark-util-combine-extensions-C8e0d4oQ",
       "category": "other",
       "sizeKB": 0.45,
-      "status": "ok"
-    },
-    {
-      "file": "vendor-attr-accept-DgSvvGg1.js",
-      "chunkName": "vendor-attr-accept-DgSvvGg1",
-      "category": "other",
-      "sizeKB": 0.44,
       "status": "ok"
     },
     {
@@ -709,8 +667,8 @@
       "status": "ok"
     },
     {
-      "file": "vendor-micromark-factory-whitespace-DiDSHLYj.js",
-      "chunkName": "vendor-micromark-factory-whitespace-DiDSHLYj",
+      "file": "vendor-micromark-factory-whitespace-CJ0MGiSn.js",
+      "chunkName": "vendor-micromark-factory-whitespace-CJ0MGiSn",
       "category": "other",
       "sizeKB": 0.39,
       "status": "ok"
@@ -723,6 +681,13 @@
       "status": "ok"
     },
     {
+      "file": "vendor-attr-accept-DmDGbZLL.js",
+      "chunkName": "vendor-attr-accept-DmDGbZLL",
+      "category": "other",
+      "sizeKB": 0.34,
+      "status": "ok"
+    },
+    {
       "file": "vendor-html-url-attributes-BA_i5Yxb.js",
       "chunkName": "vendor-html-url-attributes-BA_i5Yxb",
       "category": "other",
@@ -730,8 +695,8 @@
       "status": "ok"
     },
     {
-      "file": "vendor-micromark-util-decode-numeric-character-reference-1plJ4h4g.js",
-      "chunkName": "vendor-micromark-util-decode-numeric-character-reference-1plJ4h4g",
+      "file": "vendor-micromark-util-decode-numeric-character-reference-C5xs6Xjz.js",
+      "chunkName": "vendor-micromark-util-decode-numeric-character-reference-C5xs6Xjz",
       "category": "other",
       "sizeKB": 0.31,
       "status": "ok"
@@ -751,22 +716,22 @@
       "status": "ok"
     },
     {
-      "file": "vendor-micromark-factory-space-DqZyHDY8.js",
-      "chunkName": "vendor-micromark-factory-space-DqZyHDY8",
+      "file": "vendor-micromark-factory-space-1sy4tHlV.js",
+      "chunkName": "vendor-micromark-factory-space-1sy4tHlV",
       "category": "other",
       "sizeKB": 0.27,
       "status": "ok"
     },
     {
-      "file": "vendor-micromark-util-classify-character-COLZ7Hsm.js",
-      "chunkName": "vendor-micromark-util-classify-character-COLZ7Hsm",
+      "file": "vendor-micromark-util-classify-character-Capftd0i.js",
+      "chunkName": "vendor-micromark-util-classify-character-Capftd0i",
       "category": "other",
       "sizeKB": 0.27,
       "status": "ok"
     },
     {
-      "file": "vendor-remark-parse-BF4j1d43.js",
-      "chunkName": "vendor-remark-parse-BF4j1d43",
+      "file": "vendor-remark-parse-DbO3IN2_.js",
+      "chunkName": "vendor-remark-parse-DbO3IN2_",
       "category": "other",
       "sizeKB": 0.26,
       "status": "ok"
@@ -779,8 +744,8 @@
       "status": "ok"
     },
     {
-      "file": "vendor-remark-rehype-DZgPmbrR.js",
-      "chunkName": "vendor-remark-rehype-DZgPmbrR",
+      "file": "vendor-remark-rehype-leuq2kve.js",
+      "chunkName": "vendor-remark-rehype-leuq2kve",
       "category": "other",
       "sizeKB": 0.22,
       "status": "ok"
@@ -879,8 +844,8 @@
   ],
   "css": [
     {
-      "file": "index-oc84tPuC.css",
-      "sizeKB": 157.83,
+      "file": "index-C6NeuGLl.css",
+      "sizeKB": 160.53,
       "status": "ok"
     }
   ],
@@ -892,22 +857,22 @@
       "description": "Found 2 chunks larger than 250KB",
       "action": "Consider code splitting or lazy loading for these components",
       "chunks": [
-        "react-vendor-BYEDTLVj.js (603.09KB)",
-        "legacy-garden-CC7h2E7h.js (287.84KB)"
+        "react-vendor-Usg8RgKV.js (606.15KB)",
+        "legacy-garden-Blr4vN94.js (287.84KB)"
       ]
     },
     {
       "type": "bundling",
       "priority": "medium",
       "title": "Large Vendor Bundle",
-      "description": "Total vendor bundle size: 647.46KB",
+      "description": "Total vendor bundle size: 655.22KB",
       "action": "Consider splitting vendor libraries or using dynamic imports"
     },
     {
       "type": "styling",
       "priority": "medium",
       "title": "Large CSS Bundle",
-      "description": "CSS bundle size: 157.83KB",
+      "description": "CSS bundle size: 160.53KB",
       "action": "Consider CSS code splitting or removing unused styles"
     }
   ]
