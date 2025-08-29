@@ -19,6 +19,7 @@ const navigationItems = [
   { title: 'My Vault', url: '/vault', icon: 'vault' },
   { title: 'Documents', url: '/documents', icon: 'documents' },
   { title: 'AI Organizer', url: '/intelligent-organizer', icon: 'brain' },
+  { title: 'Analytics', url: '/analytics', icon: 'chart' },
   { title: 'My Family', url: '/family', icon: 'users' },
   { title: 'Legacy', url: '/legacy', icon: 'legacy' },
   { title: 'Time Capsule', url: '/time-capsule', icon: 'heart' },

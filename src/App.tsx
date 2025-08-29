@@ -47,6 +47,7 @@ const TimeCapsuleViewPage = lazy(() => import('./pages/TimeCapsuleView'));
 const BlogPage = lazy(() => import('./pages/Blog'));
 const BlogArticlePage = lazy(() => import('./pages/BlogArticle'));
 const MonitoringPage = lazy(() => import('./pages/MonitoringPage'));
+const AnalyticsPage = lazy(() => import('./pages/AnalyticsPage'));
 
 const queryClient = new QueryClient();
 
@@ -87,6 +88,13 @@ const App = () => (
                       
                       {/* Monitoring Dashboard (for development) */}
                       <Route path='/monitoring' element={<MonitoringPage />} />
+                      
+                      {/* Analytics Dashboard */}
+                      <Route path='/analytics' element={
+                        <ProtectedRoute>
+                          <AnalyticsPage />
+                        </ProtectedRoute>
+                      } />
 
                       {/* Protected routes */}
                       <Route
