@@ -2,7 +2,6 @@ import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
 import { fileURLToPath } from "url";
-import { compression } from 'vite-plugin-compression';
 
 // Get __dirname equivalent for ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -54,6 +53,20 @@ export default defineConfig(({ mode }) => {
       assetsDir: 'assets',
       // Enable source maps for production debugging
       sourcemap: mode === 'development',
+      // Enable CSS minification
+      cssMinify: mode === 'production',
+      // Report bundle size
+      reportCompressedSize: true,
+      // Minification options
+      minify: mode === 'production' ? 'terser' : false,
+      // Chunk size warning limit (in KB)
+      chunkSizeWarningLimit: 1000,
+      // Target browsers
+      target: 'esnext',
+      // CSS code splitting
+      cssCodeSplit: true,
+      // Assets inline limit (4kb)
+      assetsInlineLimit: 4096,
       // Rollup options for advanced configuration
       rollupOptions: {
         output: {
@@ -174,26 +187,9 @@ export default defineConfig(({ mode }) => {
           // Entry file naming
           entryFileNames: 'assets/js/[name]-[hash].js',
         },
-      },
-      // Minification options
-      minify: mode === 'production' ? 'terser' : false,
-      // Chunk size warning limit (in KB)
-      chunkSizeWarningLimit: 1000,
-      // Target browsers
-      target: 'esnext',
-      // CSS code splitting
-      cssCodeSplit: true,
-      // Assets inline limit (4kb)
-      assetsInlineLimit: 4096,
-      // Enable CSS minification
-      cssMinify: mode === 'production',
-      // Report bundle size
-      reportCompressedSize: true,
-      // Enable rollup-plugin-visualizer in production
-      rollupOptions: {
+        // Add bundle analyzer plugin in production
         ...(mode === 'production' && {
           plugins: [
-            // Add visualizer for bundle analysis
             {
               name: 'bundle-analyzer',
               generateBundle(options, bundle) {
@@ -214,20 +210,6 @@ export default defineConfig(({ mode }) => {
     plugins: [
       // React plugin with SWC for fast compilation
       react(),
-      // Compression plugin for production builds
-      mode === 'production' && compression({
-        algorithm: 'gzip',
-        ext: '.gz',
-        threshold: 10240, // Only compress files larger than 10KB
-        deleteOriginFile: false,
-      }),
-      // Brotli compression for better compression ratios
-      mode === 'production' && compression({
-        algorithm: 'brotliCompress',
-        ext: '.br',
-        threshold: 10240,
-        deleteOriginFile: false,
-      }),
     ].filter(Boolean),
 
     // Module Resolution
@@ -336,14 +318,6 @@ export default defineConfig(({ mode }) => {
           entryFileNames: 'assets/worker/[name]-[hash].js',
         },
       },
-    },
-
-    // Performance optimizations
-    experimental: {
-      // Enable render worker
-      renderWorkerEntry: true,
-      // Enable CSS code splitting
-      cssCodeSplit: true,
     },
   };
 });
