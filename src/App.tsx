@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react';
 import { Toaster } from '@/components/ui/toaster';
 import { Toaster as Sonner } from '@/components/ui/sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
+import { PerformanceMonitor } from '@/components/monitoring/PerformanceMonitor';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { routerFutureConfig } from './lib/router';
@@ -45,6 +46,7 @@ const TimeCapsulePage = lazy(() => import('./pages/TimeCapsule'));
 const TimeCapsuleViewPage = lazy(() => import('./pages/TimeCapsuleView'));
 const BlogPage = lazy(() => import('./pages/Blog'));
 const BlogArticlePage = lazy(() => import('./pages/BlogArticle'));
+const MonitoringPage = lazy(() => import('./pages/MonitoringPage'));
 
 const queryClient = new QueryClient();
 
@@ -82,6 +84,9 @@ const App = () => (
 
                       {/* Component Showcase (for development) */}
                       <Route path='/showcase' element={<ComponentShowcase />} />
+                      
+                      {/* Monitoring Dashboard (for development) */}
+                      <Route path='/monitoring' element={<MonitoringPage />} />
 
                       {/* Protected routes */}
                       <Route
@@ -220,6 +225,9 @@ const App = () => (
 
                     {/* Global Sofia Firefly */}
                     <SofiaFirefly />
+                    
+                    {/* Performance Monitoring */}
+                    <PerformanceMonitor />
                   </FireflyProvider>
                 </SofiaContextProvider>
               </DocumentFilterProvider>
