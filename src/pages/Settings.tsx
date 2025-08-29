@@ -25,7 +25,6 @@ import { textManager } from '@/lib/text-manager';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { usePersonalityManager } from '@/components/sofia/SofiaContextProvider';
 import type { PersonalityMode } from '@/lib/sofia-types';
-import { getPersonalityDisplayName } from '@/lib/sofia-personality';
 
 export default function SettingsPage() {
   usePageTitle('Settings');
@@ -57,11 +56,11 @@ export default function SettingsPage() {
     if (personalityManager) {
       const insight = personalityManager.getPersonalityInsight();
       setPersonalityInsight(insight);
-      
+
       // Sync personality settings with preferences
       const personality = personalityManager.getPersonality();
       const currentMode = personality.mode;
-      
+
       // Map personality mode to legacy communication style
       let legacyStyle: CommunicationStyle = 'default';
       if (currentMode === 'empathetic') {
@@ -71,7 +70,7 @@ export default function SettingsPage() {
       } else if (personality.userPreferences.manualOverride) {
         legacyStyle = personality.userPreferences.manualOverride === 'empathetic' ? 'empathetic' : 'pragmatic';
       }
-      
+
       setPreferences(prev => ({
         ...prev,
         communication: {
@@ -344,7 +343,7 @@ export default function SettingsPage() {
                 <Icon name={"bot" as any} className='w-5 h-5 text-primary' />
                 Sofia's Adaptive Personality
               </h2>
-              
+
               {/* Personality Insights */}
               {personalityInsight && (
                 <div className='mb-6 p-4 bg-primary/5 border border-primary/20 rounded-lg'>
@@ -415,7 +414,7 @@ export default function SettingsPage() {
                     </div>
                   </RadioGroup>
                 </div>
-                
+
                 <div className='flex items-center justify-between p-3 border border-card-border rounded-lg'>
                   <div className='space-y-0.5'>
                     <Label htmlFor='auto-detection' className='flex items-center gap-2'>
@@ -451,7 +450,7 @@ export default function SettingsPage() {
                         <span className='capitalize'>{personalityManager.getConfidenceLevel()}</span>
                       </div>
                     </div>
-                    
+
                     {personalityManager.shouldShowPersonalityHint() && (
                       <div className='text-xs text-muted-foreground bg-blue-50 p-3 rounded-lg border border-blue-200'>
                         <Icon name={"lightbulb" as any} className='w-3 h-3 inline mr-2' />

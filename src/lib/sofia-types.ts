@@ -275,17 +275,17 @@ export function shouldUseEmpathetic(personality: SofiaPersonality): boolean {
   if (personality.userPreferences.manualOverride) {
     return personality.userPreferences.manualOverride === 'empathetic';
   }
-  
+
   if (personality.mode === 'empathetic') {
     return true;
   }
-  
+
   if (personality.mode === 'pragmatic') {
     return false;
   }
-  
+
   // Adaptive mode: use detection or default to empathetic
-  return personality.userPreferences.detectedStyle === 'empathetic' || 
+  return personality.userPreferences.detectedStyle === 'empathetic' ||
          personality.currentStyle === 'empathetic' ||
          (!personality.userPreferences.detectedStyle && personality.confidence < 70);
 }
@@ -294,17 +294,17 @@ export function shouldUsePragmatic(personality: SofiaPersonality): boolean {
   if (personality.userPreferences.manualOverride) {
     return personality.userPreferences.manualOverride === 'pragmatic';
   }
-  
+
   if (personality.mode === 'pragmatic') {
     return true;
   }
-  
+
   if (personality.mode === 'empathetic') {
     return false;
   }
-  
+
   // Adaptive mode: use detection
-  return personality.userPreferences.detectedStyle === 'pragmatic' || 
+  return personality.userPreferences.detectedStyle === 'pragmatic' ||
          personality.currentStyle === 'pragmatic';
 }
 

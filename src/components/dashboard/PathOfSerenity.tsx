@@ -8,16 +8,13 @@ import { useSupabaseWithClerk } from '@/integrations/supabase/client';
 import { GardenSeed } from '@/components/animations/GardenSeed';
 import { useGardenProgress } from '@/hooks/useGardenProgress';
 import { useFirefly } from '@/contexts/FireflyContext';
-import type {
-  SerenityMilestone,
-  FiveMinuteChallenge,
-} from '@/lib/path-of-serenity';
 import {
   SERENITY_MILESTONES,
   calculateUnlockedMilestones,
   getNextChallenge,
   generateSerenityMessage,
-  MilestoneCalculationResult,
+  type SerenityMilestone,
+  type FiveMinuteChallenge,
 } from '@/lib/path-of-serenity';
 import { showMilestoneRecognition } from './MilestoneCelebration';
 import { useNavigate } from 'react-router-dom';
@@ -46,7 +43,7 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({
   const [isLoading, setIsLoading] = useState(true);
   const [selectedMilestone, setSelectedMilestone] =
     useState<SerenityMilestone | null>(null);
-  const [userStats, setUserStats] = useState<UserStats>({
+  const [_userStats, setUserStats] = useState<UserStats>({
     documentsCount: 0,
     guardiansCount: 0,
     categoriesWithDocuments: [],

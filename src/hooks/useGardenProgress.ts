@@ -1,11 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { useSupabaseWithClerk } from '@/integrations/supabase/client';
 import { usePersonalityManager } from '@/components/sofia/SofiaContextProvider';
-import type {
-  SerenityMilestone} from '@/lib/path-of-serenity';
 import {
   getSerenityMilestones,
+  type SerenityMilestone,
 } from '@/lib/path-of-serenity';
 import type { PersonalityMode } from '@/lib/sofia-types';
 
@@ -48,7 +47,7 @@ export const useGardenProgress = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const calculateProgress = async () => {
+  const calculateProgress = useCallback(async () => {
     if (!userId) {
       setLoading(false);
       return;
@@ -106,7 +105,7 @@ export const useGardenProgress = () => {
       // Calculate will progress (0-100)
       const willProgress =
         wills && wills.length > 0
-          ? Math.min((wills[0].completion_percentage || 0) * 100, 100)
+          ? Math.min(((wills[0] as Record<string, unknown>).completion_percentage as number || 0) * 100, 100)
           : 0;
 
       // Calculate overall progress with weighted components
@@ -166,7 +165,7 @@ export const useGardenProgress = () => {
         let personalizedMessage = 'Your legacy garden is ready to grow';
 
         if (documentsCount === 0) {
-          nextAction = effectiveMode === 'empathetic' 
+          nextAction = effectiveMode === 'empathetic'
             ? 'Plant the first seed of love by uploading a cherished document'
             : effectiveMode === 'pragmatic'
             ? 'Initialize protection protocol: upload first document'
@@ -249,16 +248,16 @@ export const useGardenProgress = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [userId, personalityManager, createSupabaseClient]);
 
   // Helper function to check if milestone is active
   const checkMilestoneActive = (
     milestone: SerenityMilestone,
     data: {
-      documents: any[];
-      guardians: any[];
-      timeCapsules: any[];
-      wills: any[];
+      documents: Record<string, unknown>[];
+      guardians: Record<string, unknown>[];
+      timeCapsules: Record<string, unknown>[];
+      wills: Record<string, unknown>[];
     }
   ): boolean => {
     switch (milestone.id) {
@@ -271,7 +270,7 @@ export const useGardenProgress = () => {
       case 'will_creation':
         return (
           data.wills.length >= 1 &&
-          (data.wills[0].completion_percentage || 0) >= 0.8
+          ((data.wills[0] as Record<string, unknown>).completion_percentage as number || 0) >= 0.8
         );
       case 'guardian_network':
         return data.guardians.length >= 3;
@@ -280,7 +279,7 @@ export const useGardenProgress = () => {
       case 'time_capsule_collection':
         return data.timeCapsules.length >= 3;
       case 'family_shield':
-        return data.guardians.some(g => g.can_trigger_emergency);
+        return data.guardians.some((g: Record<string, unknown>) => g.can_trigger_emergency);
       default:
         return false;
     }
@@ -289,7 +288,7 @@ export const useGardenProgress = () => {
   // Refresh progress when user data changes
   useEffect(() => {
     calculateProgress();
-  }, [userId]);
+  }, [calculateProgress]);
 
   // Listen for document/guardian updates
   useEffect(() => {
@@ -310,7 +309,7 @@ export const useGardenProgress = () => {
       window.removeEventListener('willUpdated', handleDataUpdate);
       window.removeEventListener('timeCapsuleCreated', handleDataUpdate);
     };
-  }, []);
+  }, [calculateProgress]);
 
   return {
     progress,

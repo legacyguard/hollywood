@@ -4,9 +4,9 @@
  */
 
 import { supabase } from '@/integrations/supabase/client';
-import { 
-  professionalReviewCache, 
-  cacheInvalidation 
+import {
+  professionalReviewCache,
+  cacheInvalidation
 } from '@/lib/performance/caching';
 import type { Database } from '@/integrations/supabase/types';
 
@@ -24,7 +24,6 @@ type ReviewResultInsert = Database['public']['Tables']['review_results']['Insert
 type ProfessionalSpecialization = Database['public']['Tables']['professional_specializations']['Row'];
 type ProfessionalSpecializationInsert = Database['public']['Tables']['professional_specializations']['Insert'];
 type Consultation = Database['public']['Tables']['consultations']['Row'];
-type ConsultationInsert = Database['public']['Tables']['consultations']['Insert'];
 
 // Type for credentials JSON structure
 interface ProfessionalCredentials {
@@ -34,6 +33,38 @@ interface ProfessionalCredentials {
   licensed_states?: string[];
   specializations?: string[];
   email?: string;
+}
+
+// Type for email data structure
+interface EmailData {
+  applicantName?: string;
+  applicationId?: string;
+  professionalTitle?: string;
+  barNumber?: string;
+  licensedStates?: string[];
+  specializations?: string[];
+  applicationDate?: string;
+  reviewUrl?: string;
+  status?: string;
+  statusDisplay?: string;
+  reviewNotes?: string;
+  nextSteps?: string;
+  supportEmail?: string;
+  dashboardUrl?: string;
+  reviewerName?: string;
+  reviewId?: string;
+  documentType?: string;
+  documentTitle?: string;
+  reviewType?: string;
+  riskLevel?: string;
+  assignmentDate?: string;
+  expectedCompletionDate?: string;
+  reviewPortalUrl?: string;
+  userName?: string;
+  reviewStatus?: string;
+  statusMessage?: string;
+  completionDate?: string | null;
+  [key: string]: string | string[] | null | undefined;
 }
 
 export class ProfessionalService {
@@ -118,10 +149,10 @@ export class ProfessionalService {
   // Professional Reviewers
   async createReviewerProfile(
     onboarding: ProfessionalOnboarding,
-    userId: string
+    _userId: string
   ): Promise<ProfessionalReviewer> {
     const credentials = onboarding.credentials as ProfessionalCredentials;
-    
+
     const reviewer: Omit<ProfessionalReviewerInsert, 'id' | 'created_at' | 'updated_at'> = {
       name: credentials?.full_name || 'Unknown',
       credentials: credentials?.professional_title || 'Professional',
@@ -435,8 +466,8 @@ export class ProfessionalService {
   async getCachedReviews(userId: string): Promise<DocumentReview[]> {
     const cacheKey = `document_reviews_${userId}`;
     const cached = professionalReviewCache.get(cacheKey);
-    
-    if (cached) {
+
+    if (Array.isArray(cached)) {
       return cached;
     }
 
@@ -464,9 +495,9 @@ export class ProfessionalService {
   async getCachedReviewById(reviewId: string): Promise<DocumentReview | null> {
     const cacheKey = `document_review_${reviewId}`;
     const cached = professionalReviewCache.get(cacheKey);
-    
-    if (cached) {
-      return cached;
+
+    if (cached && typeof cached === 'object' && cached !== null && 'id' in cached) {
+      return cached as DocumentReview;
     }
 
     const { data, error } = await supabase
@@ -489,16 +520,16 @@ export class ProfessionalService {
     if (data) {
       professionalReviewCache.set(cacheKey, data);
     }
-    
+
     return data || null;
   }
 
   async getCachedProfessionalReviewers(): Promise<ProfessionalReviewer[]> {
     const cacheKey = 'active_professional_reviewers';
     const cached = professionalReviewCache.get(cacheKey);
-    
-    if (cached) {
-      return cached;
+
+    if (Array.isArray(cached)) {
+      return cached as ProfessionalReviewer[];
     }
 
     const { data, error } = await supabase
@@ -539,25 +570,28 @@ export class ProfessionalService {
   private async notifyAdminNewApplication(application: ProfessionalOnboarding): Promise<void> {
     try {
       const credentials = application.credentials as ProfessionalCredentials;
-      
-      const emailData = {
+
+      const emailData: EmailData = {
         to: 'admin@legacyguard.app',
         subject: `New Professional Application - ${credentials?.full_name || 'Unknown'}`,
         template: 'admin_new_application',
-        data: {
-          applicantName: credentials?.full_name || 'Unknown',
-          applicationId: application.id,
-          professionalTitle: credentials?.professional_title || 'Unknown',
-          barNumber: credentials?.bar_number || 'N/A',
-          licensedStates: credentials?.licensed_states || [],
-          specializations: credentials?.specializations || [],
-          applicationDate: new Date().toLocaleDateString(),
-          reviewUrl: `${window.location.origin}/admin/applications/${application.id}`
-        }
+        applicantName: credentials?.full_name || 'Unknown',
+        applicationId: application.id,
+        professionalTitle: credentials?.professional_title || 'Unknown',
+        barNumber: credentials?.bar_number || 'N/A',
+        licensedStates: credentials?.licensed_states || [],
+        specializations: credentials?.specializations || [],
+        applicationDate: new Date().toLocaleDateString(),
+        reviewUrl: `${window.location.origin}/admin/applications/${application.id}`
       };
 
-      await this.sendEmail(emailData);
-      
+      await this.sendEmail({
+        to: 'admin@legacyguard.app',
+        subject: `New Professional Application - ${credentials?.full_name || 'Unknown'}`,
+        template: 'admin_new_application',
+        data: emailData
+      });
+
       // Log notification in database for tracking
       await this.logNotification({
         type: 'admin_application',
@@ -583,7 +617,7 @@ export class ProfessionalService {
   ): Promise<void> {
     try {
       const credentials = application.credentials as ProfessionalCredentials;
-      
+
       const templateMap = {
         'pending': 'application_received',
         'under_review': 'application_under_review',
@@ -591,23 +625,26 @@ export class ProfessionalService {
         'rejected': 'application_rejected'
       };
 
-      const emailData = {
+      const emailData: EmailData = {
         to: credentials?.email || 'unknown@example.com',
         subject: `Professional Application Update - ${application.verification_status}`,
         template: templateMap[application.verification_status] || 'application_status_change',
-        data: {
-          applicantName: credentials?.full_name || 'Unknown',
-          status: application.verification_status,
-          statusDisplay: this.formatStatusForDisplay(application.verification_status),
-          reviewNotes: reviewNotes || 'No additional notes provided',
-          nextSteps: this.getNextStepsForStatus(application.verification_status),
-          supportEmail: 'support@legacyguard.app',
-          dashboardUrl: `${window.location.origin}/professional/dashboard`
-        }
+        applicantName: credentials?.full_name || 'Unknown',
+        status: application.verification_status,
+        statusDisplay: this.formatStatusForDisplay(application.verification_status),
+        reviewNotes: reviewNotes || 'No additional notes provided',
+        nextSteps: this.getNextStepsForStatus(application.verification_status),
+        supportEmail: 'support@legacyguard.app',
+        dashboardUrl: `${window.location.origin}/professional/dashboard`
       };
 
-      await this.sendEmail(emailData);
-      
+      await this.sendEmail({
+        to: credentials?.email || 'unknown@example.com',
+        subject: `Professional Application Update - ${application.verification_status}`,
+        template: templateMap[application.verification_status] || 'application_status_change',
+        data: emailData
+      });
+
       await this.logNotification({
         type: 'applicant_status_change',
         recipient: credentials?.email || 'unknown@example.com',
@@ -640,25 +677,28 @@ export class ProfessionalService {
         .eq('id', review.document_id)
         .single();
 
-      const emailData = {
+      const emailData: EmailData = {
         to: reviewer.contact_email,
         subject: `New Document Review Assignment - ${document?.document_type || 'Document'}`,
         template: 'reviewer_assignment',
-        data: {
-          reviewerName: reviewer.name,
-          reviewId: review.id,
-          documentType: document?.document_type || 'Unknown Document',
-          documentTitle: document?.file_name || 'Untitled Document',
-          reviewType: review.review_type,
-          riskLevel: review.risk_level,
-          assignmentDate: new Date().toLocaleDateString(),
-          expectedCompletionDate: this.calculateExpectedCompletion(reviewer.average_turnaround_hours),
-          reviewPortalUrl: `${window.location.origin}/professional/review/${review.id}`,
-          supportEmail: 'support@legacyguard.app'
-        }
+        reviewerName: reviewer.name,
+        reviewId: review.id,
+        documentType: document?.document_type || 'Unknown Document',
+        documentTitle: document?.file_name || 'Untitled Document',
+        reviewType: review.review_type,
+        riskLevel: review.risk_level,
+        assignmentDate: new Date().toLocaleDateString(),
+        expectedCompletionDate: this.calculateExpectedCompletion(reviewer.average_turnaround_hours),
+        reviewPortalUrl: `${window.location.origin}/professional/review/${review.id}`,
+        supportEmail: 'support@legacyguard.app'
       };
 
-      await this.sendEmail(emailData);
+      await this.sendEmail({
+        to: reviewer.contact_email,
+        subject: `New Document Review Assignment - ${document?.document_type || 'Document'}`,
+        template: 'reviewer_assignment',
+        data: emailData
+      });
 
       await this.logNotification({
         type: 'review_assignment',
@@ -705,24 +745,27 @@ export class ProfessionalService {
         'cancelled': 'Your document review has been cancelled'
       };
 
-      const emailData = {
+      const emailData: EmailData = {
         to: profile.email || 'unknown@example.com',
         subject: `Document Review Update - ${review.status}`,
         template: 'review_status_update',
-        data: {
-          userName: profile.full_name || 'User',
-          documentTitle: document.file_name || 'Untitled Document',
-          documentType: document.document_type,
-          reviewStatus: review.status,
-          statusMessage: statusMessages[review.status] || 'Status updated',
-          reviewId: review.id,
-          completionDate: review.completion_date ? new Date(review.completion_date).toLocaleDateString() : null,
-          dashboardUrl: `${window.location.origin}/vault/${document.id}/reviews`,
-          supportEmail: 'support@legacyguard.app'
-        }
+        userName: profile.full_name || 'User',
+        documentTitle: document.file_name || 'Untitled Document',
+        documentType: document.document_type,
+        reviewStatus: review.status,
+        statusMessage: statusMessages[review.status] || 'Status updated',
+        reviewId: review.id,
+        completionDate: review.completion_date ? new Date(review.completion_date).toLocaleDateString() : null,
+        dashboardUrl: `${window.location.origin}/vault/${document.id}/reviews`,
+        supportEmail: 'support@legacyguard.app'
       };
 
-      await this.sendEmail(emailData);
+      await this.sendEmail({
+        to: profile.email || 'unknown@example.com',
+        subject: `Document Review Update - ${review.status}`,
+        template: 'review_status_update',
+        data: emailData
+      });
 
       await this.logNotification({
         type: 'review_status_change',
@@ -748,19 +791,19 @@ export class ProfessionalService {
     to: string;
     subject: string;
     template: string;
-    data: Record<string, any>;
+    data: EmailData;
   }): Promise<void> {
     // For now, we'll use Supabase Edge Functions for email sending
     // In production, this would integrate with SendGrid, AWS SES, or similar service
-    
+
     try {
-      const { data, error } = await supabase.functions.invoke('send-email', {
+      const { error } = await supabase.functions.invoke('send-email', {
         body: emailData
       });
 
       if (error) throw error;
-      
-      console.log('Email sent successfully:', emailData.to);
+
+      console.warn('Email sent successfully:', emailData.to);
     } catch (error) {
       console.error('Email sending failed:', error);
       // Fallback: log to database for manual processing
@@ -776,12 +819,12 @@ export class ProfessionalService {
     reviewId?: string;
     status: 'sent' | 'failed';
     error?: string;
-    metadata?: Record<string, any>;
+    metadata?: Record<string, string | number | boolean | null | undefined>;
   }): Promise<void> {
     try {
       // Since notification_logs table doesn't exist, we'll use console logging for now
-      console.log('Notification logged:', notification);
-      
+      console.warn('Notification logged:', notification);
+
       // TODO: Create notification_logs table in database schema
       // await supabase
       //   .from('notification_logs')
@@ -794,11 +837,16 @@ export class ProfessionalService {
     }
   }
 
-  private async logFailedEmail(emailData: any, error: string): Promise<void> {
+  private async logFailedEmail(emailData: {
+    to: string;
+    subject: string;
+    template: string;
+    data: EmailData;
+  }, error: string): Promise<void> {
     try {
       // Since failed_emails table doesn't exist, we'll use console logging for now
-      console.log('Failed email logged:', { emailData, error });
-      
+      console.warn('Failed email logged:', { emailData, error });
+
       // TODO: Create failed_emails table in database schema
       // await supabase
       //   .from('failed_emails')

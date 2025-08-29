@@ -173,7 +173,7 @@ export const GardenOrchestrator: React.FC<GardenOrchestratorProps> = ({
         // Could trigger celebration animation here
       }
     }
-  }, [progress?.completedMilestones, lastCelebration, enableCelebrations]);
+  }, [progress, lastCelebration, enableCelebrations]);
 
   // Get size configuration
   const getSizeConfig = () => {

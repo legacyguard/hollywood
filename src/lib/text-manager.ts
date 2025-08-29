@@ -269,13 +269,13 @@ export class TextManager {
       if (personalityManager) {
         // Create base message
         const baseMessage = textConfig.pragmatic || textConfig.empathetic || '';
-        
+
         // Use personality manager's adaptive message system
         const adaptedMessage = personalityManager.adaptMessage(baseMessage, {
           empathetic: textConfig,
           pragmatic: textConfig,
         });
-        
+
         if (adaptedMessage !== baseMessage) {
           return adaptedMessage;
         }

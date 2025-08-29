@@ -6,14 +6,11 @@ import type {
   PersonalityMode,
   CommunicationStyle,
   InteractionPattern,
-  PersonalityAnalysis,
   AdaptiveMessageConfig,
 } from './sofia-types';
 
 import {
   createDefaultPersonality,
-  shouldUseEmpathetic,
-  shouldUsePragmatic,
 } from './sofia-types';
 
 export class AdaptivePersonalityManager {
@@ -37,7 +34,7 @@ export class AdaptivePersonalityManager {
 
   setMode(mode: PersonalityMode): void {
     this.personality.mode = mode;
-    
+
     // Reset manual override when changing to adaptive mode
     if (mode === 'adaptive') {
       this.personality.userPreferences.manualOverride = undefined;
@@ -45,7 +42,7 @@ export class AdaptivePersonalityManager {
       // Set current style to match mode
       this.personality.currentStyle = mode === 'empathetic' ? 'empathetic' : 'pragmatic';
     }
-    
+
     this.saveToStorage();
   }
 
@@ -66,19 +63,19 @@ export class AdaptivePersonalityManager {
   // Interaction tracking
   recordInteraction(pattern: InteractionPattern): void {
     this.personality.userPreferences.lastInteractions.push(pattern);
-    
+
     // Keep only last 50 interactions for performance
     if (this.personality.userPreferences.lastInteractions.length > 50) {
-      this.personality.userPreferences.lastInteractions = 
+      this.personality.userPreferences.lastInteractions =
         this.personality.userPreferences.lastInteractions.slice(-50);
     }
-    
+
     // Trigger analysis if we have enough data and adaptation is enabled
-    if (this.personality.userPreferences.adaptationEnabled && 
+    if (this.personality.userPreferences.adaptationEnabled &&
         this.personality.userPreferences.lastInteractions.length >= 10) {
       this.analyzePersonality();
     }
-    
+
     this.saveToStorage();
   }
 
@@ -88,10 +85,10 @@ export class AdaptivePersonalityManager {
     if (interactions.length < 5) return;
 
     const recentInteractions = interactions.slice(-20); // Analyze last 20 interactions
-    
+
     let empathicScore = 0;
     let pragmaticScore = 0;
-    
+
     recentInteractions.forEach(interaction => {
       // Fast responses (< 3s) suggest pragmatic preference
       if (interaction.responseTime < 3000) {
@@ -100,30 +97,30 @@ export class AdaptivePersonalityManager {
         // Slow, thoughtful responses suggest empathetic preference
         empathicScore += 1;
       }
-      
+
       // Long sessions suggest empathetic preference
       if (interaction.duration > 300000) { // 5 minutes
         empathicScore += 2;
       } else if (interaction.duration < 60000) { // 1 minute
         pragmaticScore += 1;
       }
-      
+
       // Specific action patterns
       if (interaction.action.includes('help') || interaction.action.includes('info')) {
         empathicScore += 1;
       }
-      
+
       if (interaction.action.includes('direct') || interaction.action.includes('skip')) {
         pragmaticScore += 1;
       }
     });
-    
+
     const totalScore = empathicScore + pragmaticScore;
     const empathicRatio = totalScore > 0 ? empathicScore / totalScore : 0.5;
-    
+
     let detectedStyle: CommunicationStyle;
     let confidence: number;
-    
+
     if (empathicRatio > 0.65) {
       detectedStyle = 'empathetic';
       confidence = Math.min(90, 50 + (empathicRatio - 0.5) * 80);
@@ -134,7 +131,7 @@ export class AdaptivePersonalityManager {
       detectedStyle = 'balanced';
       confidence = 60;
     }
-    
+
     // Update personality analysis
     this.personality.analysis = {
       detectedStyle,
@@ -147,7 +144,7 @@ export class AdaptivePersonalityManager {
       },
       lastAnalyzed: new Date(),
     };
-    
+
     // Update current style and confidence if we don't have manual override
     if (!this.personality.userPreferences.manualOverride && this.personality.mode === 'adaptive') {
       this.personality.userPreferences.detectedStyle = detectedStyle;
@@ -166,7 +163,7 @@ export class AdaptivePersonalityManager {
 
   adaptMessage(baseMessage: string, messageConfig?: AdaptiveMessageConfig): string {
     const currentStyle = this.getCurrentStyle();
-    
+
     // If we have adaptive config, use it
     if (messageConfig) {
       switch (currentStyle) {
@@ -179,7 +176,7 @@ export class AdaptivePersonalityManager {
           return baseMessage;
       }
     }
-    
+
     // Otherwise, apply style modifications to base message
     return this.applyStyleToMessage(baseMessage, currentStyle);
   }
@@ -204,13 +201,13 @@ export class AdaptivePersonalityManager {
       'You\'re doing something wonderful for your loved ones',
       'I\'m here to support you through this',
     ];
-    
+
     // Add supportive intro occasionally
     if (Math.random() < 0.3 && message.length > 50) {
       const intro = empathicPhrases[Math.floor(Math.random() * empathicPhrases.length)];
       return `${intro}. ${message}`;
     }
-    
+
     return message
       .replace(/\bYou need to\b/g, 'You might want to')
       .replace(/\bYou should\b/g, 'I\'d suggest you')
@@ -222,7 +219,7 @@ export class AdaptivePersonalityManager {
     // Make messages more direct and action-oriented
     return message
       .replace(/\bI think you might want to consider\b/g, 'You should')
-      .replace(/\bwhen you\'re ready,?\s*/gi, '')
+      .replace(/\bwhen you're ready,?\s*/gi, '')
       .replace(/\bperhaps\b/g, '')
       .replace(/\bmight\b/g, 'will')
       .replace(/\bcould\b/g, 'can')
@@ -274,7 +271,7 @@ export class AdaptivePersonalityManager {
 
   shouldShowPersonalityHint(): boolean {
     // Show hint if confidence is low and we have enough interactions
-    return this.personality.confidence < 60 && 
+    return this.personality.confidence < 60 &&
            this.personality.userPreferences.lastInteractions.length > 15 &&
            !this.personality.userPreferences.manualOverride;
   }
@@ -284,10 +281,10 @@ export class AdaptivePersonalityManager {
     if (!analysis) {
       return 'I\'m still learning your communication preferences.';
     }
-    
+
     const style = analysis.detectedStyle;
     const confidence = Math.round(analysis.confidence);
-    
+
     switch (style) {
       case 'empathetic':
         return `Based on your interactions, you seem to prefer supportive, detailed guidance (${confidence}% confidence).`;
