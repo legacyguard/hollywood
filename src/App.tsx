@@ -25,6 +25,7 @@ const PrivacyPage = lazy(() => import('@/pages/Privacy').then(m => ({ default: m
 const TermsPage = lazy(() => import('@/pages/Terms').then(m => ({ default: m.TermsPage })));
 const TermsOfService = lazy(() => import('@/pages/legal/TermsOfService').then(m => ({ default: m.TermsOfService })));
 const PrivacyPolicy = lazy(() => import('@/pages/legal/PrivacyPolicy').then(m => ({ default: m.PrivacyPolicy })));
+const SecurityPolicy = lazy(() => import('@/pages/legal/SecurityPolicy').then(m => ({ default: m.SecurityPolicy })));
 const Onboarding = lazy(() => import('./pages/onboarding/Onboarding'));
 const VaultPage = lazy(() => import('./pages/Vault'));
 const GuardiansPage = lazy(() => import('./pages/Guardians'));
@@ -42,6 +43,8 @@ const FamilyGuidanceManualPage = lazy(() => import('./pages/SurvivorManual'));
 const FamilyShieldAccessPage = lazy(() => import('./pages/EmergencyAccess'));
 const TimeCapsulePage = lazy(() => import('./pages/TimeCapsule'));
 const TimeCapsuleViewPage = lazy(() => import('./pages/TimeCapsuleView'));
+const BlogPage = lazy(() => import('./pages/Blog'));
+const BlogArticlePage = lazy(() => import('./pages/BlogArticle'));
 
 const queryClient = new QueryClient();
 
@@ -71,6 +74,11 @@ const App = () => (
                       <Route path='/terms' element={<TermsPage />} />
                       <Route path='/terms-of-service' element={<TermsOfService />} />
                       <Route path='/privacy-policy' element={<PrivacyPolicy />} />
+                      <Route path='/security-policy' element={<SecurityPolicy />} />
+                      
+                      {/* Blog routes */}
+                      <Route path='/blog' element={<BlogPage />} />
+                      <Route path='/blog/:slug' element={<BlogArticlePage />} />
 
                       {/* Component Showcase (for development) */}
                       <Route path='/showcase' element={<ComponentShowcase />} />

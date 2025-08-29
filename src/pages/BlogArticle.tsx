@@ -6,18 +6,29 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Icon } from '@/components/ui/icon-library';
 import { LegacyGuardLogo } from '@/components/LegacyGuardLogo';
-import { Link } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 
 const BlogArticle = () => {
+  const { slug } = useParams();
+  const navigate = useNavigate();
+  
+  // For now, we'll hardcode the article data, but this could be fetched from an API
   const article = {
     title: "5 Reasons to Create Your Will Today",
     excerpt: "Discover why creating a will is one of the most important acts of care for your family, and how to approach this crucial decision with clarity and confidence.",
     featureImage: "https://legacyguard.app/blog/will-creation-guide.png",
-    url: "https://legacyguard.app/blog/5-reasons-create-will",
+    url: `https://legacyguard.app/blog/${slug}`,
     author: "LegacyGuard Legal Team",
     publishDate: "January 2025",
     readTime: "8 min read"
   };
+  
+  // If slug doesn't match our known article, redirect to blog listing
+  React.useEffect(() => {
+    if (slug !== '5-reasons-create-will') {
+      navigate('/blog');
+    }
+  }, [slug, navigate]);
 
   return (
     <>
