@@ -103,14 +103,14 @@ class PerformanceTester {
   async checkDependencies() {
     const requiredPackages = ['lighthouse', 'puppeteer'];
     
-    for (const pkg of requiredPackages) {
-      try {
-        require.resolve(pkg);
-      } catch {
-        console.log(`📦 Installing ${pkg}...`);
-        execSync(`npm install --save-dev ${pkg}`, { stdio: 'inherit' });
+          for (const pkg of requiredPackages) {
+        try {
+          require.resolve(pkg);
+        } catch {
+          console.log(`📦 Installing ${pkg}...`);
+          execSync(`npm install --save-dev ${pkg} --legacy-peer-deps`, { stdio: 'inherit' });
+        }
       }
-    }
     
     console.log('✅ All dependencies are available');
   }

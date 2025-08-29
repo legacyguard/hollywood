@@ -81,7 +81,7 @@ class ImageOptimizer {
       console.log('✅ Sharp is available');
     } catch {
       console.log('📦 Installing Sharp...');
-      execSync('npm install --save-dev sharp', { stdio: 'inherit' });
+      execSync('npm install --save-dev sharp --legacy-peer-deps', { stdio: 'inherit' });
     }
   }
 
