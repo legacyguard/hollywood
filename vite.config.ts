@@ -2,6 +2,7 @@ import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
 import { fileURLToPath } from "url";
+import { compression } from 'vite-plugin-compression';
 
 // Get __dirname equivalent for ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -130,6 +131,18 @@ export default defineConfig(({ mode }) => {
               return 'onboarding-page';
             }
             
+            // Legal pages
+            if (id.includes('src/pages/legal') || id.includes('TermsOfService') || 
+                id.includes('PrivacyPolicy') || id.includes('SecurityPolicy')) {
+              return 'legal-pages';
+            }
+            
+            // Landing page and marketing
+            if (id.includes('src/pages/LandingPage') || id.includes('Blog') || 
+                id.includes('ComponentShowcase')) {
+              return 'marketing-pages';
+            }
+            
             // All other node_modules as separate vendor chunks
             if (id.includes('node_modules')) {
               const chunks = id.split('node_modules/')[1];
@@ -172,12 +185,49 @@ export default defineConfig(({ mode }) => {
       cssCodeSplit: true,
       // Assets inline limit (4kb)
       assetsInlineLimit: 4096,
+      // Enable CSS minification
+      cssMinify: mode === 'production',
+      // Report bundle size
+      reportCompressedSize: true,
+      // Enable rollup-plugin-visualizer in production
+      rollupOptions: {
+        ...(mode === 'production' && {
+          plugins: [
+            // Add visualizer for bundle analysis
+            {
+              name: 'bundle-analyzer',
+              generateBundle(options, bundle) {
+                // Log bundle sizes
+                const sizes = Object.entries(bundle).map(([name, asset]) => ({
+                  name,
+                  size: asset.type === 'chunk' ? asset.code?.length || 0 : asset.source?.length || 0,
+                }));
+                console.log('📦 Bundle Analysis:', sizes);
+              },
+            },
+          ],
+        }),
+      },
     },
 
     // Plugin Configuration
     plugins: [
       // React plugin with SWC for fast compilation
       react(),
+      // Compression plugin for production builds
+      mode === 'production' && compression({
+        algorithm: 'gzip',
+        ext: '.gz',
+        threshold: 10240, // Only compress files larger than 10KB
+        deleteOriginFile: false,
+      }),
+      // Brotli compression for better compression ratios
+      mode === 'production' && compression({
+        algorithm: 'brotliCompress',
+        ext: '.br',
+        threshold: 10240,
+        deleteOriginFile: false,
+      }),
     ].filter(Boolean),
 
     // Module Resolution
@@ -236,6 +286,13 @@ export default defineConfig(({ mode }) => {
       exclude: [],
       // Force optimization of these dependencies
       force: false,
+      // Enable esbuild optimization
+      esbuildOptions: {
+        // Target modern browsers
+        target: 'es2022',
+        // Enable tree shaking
+        treeShaking: true,
+      },
     },
 
     // Environment Variables
@@ -254,6 +311,14 @@ export default defineConfig(({ mode }) => {
       legalComments: 'none',
       // Target for esbuild
       target: 'es2022',
+      // Enable tree shaking
+      treeShaking: true,
+      // Minify identifiers
+      minifyIdentifiers: mode === 'production',
+      // Minify syntax
+      minifySyntax: mode === 'production',
+      // Minify whitespace
+      minifyWhitespace: mode === 'production',
     },
 
     // Preview server configuration (for production preview)
@@ -271,6 +336,14 @@ export default defineConfig(({ mode }) => {
           entryFileNames: 'assets/worker/[name]-[hash].js',
         },
       },
+    },
+
+    // Performance optimizations
+    experimental: {
+      // Enable render worker
+      renderWorkerEntry: true,
+      // Enable CSS code splitting
+      cssCodeSplit: true,
     },
   };
 });
