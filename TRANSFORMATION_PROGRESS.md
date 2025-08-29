@@ -41,7 +41,7 @@
 | 1A2 | Create AdaptivePersonalityManager | ✅ COMPLETE | `sofia-personality.ts` | ✅ Unit tests pass (15/15) |
 | 1A3 | Update SofiaContextProvider | ✅ COMPLETE | `SofiaContextProvider.tsx` | ✅ Build passes, integration works |
 | 1A4 | Add Settings page controls | ✅ COMPLETE | `Settings.tsx` | ✅ UI integrated, build passes |
-| 1A5 | Implement text adaptation | ⏳ PENDING | `text-manager.ts` | Message variation test |
+| 1A5 | Implement text adaptation | ✅ COMPLETE | `text-manager.ts` | ✅ Integration tests pass (11/11) |
 | 1A6 | Integration testing | ⏳ PENDING | Multiple | E2E flow test |
 
 ---

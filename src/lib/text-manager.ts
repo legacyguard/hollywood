@@ -205,6 +205,7 @@ export class TextManager {
     string,
     { empathetic: number; pragmatic: number }
   > = new Map();
+  private personalityManagerCache: Map<string, any> = new Map(); // Cache for personality managers
 
   static getInstance(): TextManager {
     if (!TextManager.instance) {
@@ -214,7 +215,22 @@ export class TextManager {
   }
 
   /**
+   * Register a personality manager for a user to enable advanced text adaptation
+   */
+  registerPersonalityManager(userId: string, personalityManager: any): void {
+    this.personalityManagerCache.set(userId, personalityManager);
+  }
+
+  /**
+   * Get personality manager for a user
+   */
+  private getPersonalityManager(userId: string): any {
+    return this.personalityManagerCache.get(userId);
+  }
+
+  /**
    * Get text based on user's preferred communication style
+   * Now enhanced with AdaptivePersonalityManager integration
    */
   getText(
     key: string,
@@ -236,10 +252,37 @@ export class TextManager {
     // Determine style to use
     let resolvedStyle = style;
     if (style === 'default' && userId) {
-      resolvedStyle = this.getUserPreferredStyle(userId);
+      // First try to use the personality manager if available
+      const personalityManager = this.getPersonalityManager(userId);
+      if (personalityManager) {
+        const currentStyle = personalityManager.getCurrentStyle();
+        resolvedStyle = currentStyle === 'balanced' ? 'pragmatic' : currentStyle;
+      } else {
+        // Fall back to legacy style detection
+        resolvedStyle = this.getUserPreferredStyle(userId);
+      }
     }
 
-    // Return appropriate variant
+    // Use AdaptivePersonalityManager for message adaptation if available
+    if (userId && typeof textConfig === 'object') {
+      const personalityManager = this.getPersonalityManager(userId);
+      if (personalityManager) {
+        // Create base message
+        const baseMessage = textConfig.pragmatic || textConfig.empathetic || '';
+        
+        // Use personality manager's adaptive message system
+        const adaptedMessage = personalityManager.adaptMessage(baseMessage, {
+          empathetic: textConfig,
+          pragmatic: textConfig,
+        });
+        
+        if (adaptedMessage !== baseMessage) {
+          return adaptedMessage;
+        }
+      }
+    }
+
+    // Return appropriate variant using legacy system
     if (resolvedStyle === 'empathetic' && textConfig.empathetic) {
       return textConfig.empathetic;
     } else if (resolvedStyle === 'pragmatic' && textConfig.pragmatic) {
@@ -254,6 +297,7 @@ export class TextManager {
 
   /**
    * Analyze user input to detect communication style preference
+   * Enhanced with AdaptivePersonalityManager integration
    */
   analyzeUserInput(input: string, userId: string): void {
     if (!userId) return;
@@ -276,21 +320,46 @@ export class TextManager {
       }
     });
 
-    // Update user's style scores
-    const currentScores = this.userStyleScores.get(userId) || {
-      empathetic: 0,
-      pragmatic: 0,
-    };
-    currentScores.empathetic += emphatheticScore;
-    currentScores.pragmatic += pragmaticScore;
+    // If personality manager is available, record this as an interaction
+    const personalityManager = this.getPersonalityManager(userId);
+    if (personalityManager) {
+      // Record interaction with personality insights
+      personalityManager.recordInteraction({
+        timestamp: new Date(),
+        action: 'text_input_analysis',
+        duration: input.length * 50, // Estimate reading time
+        context: 'user_communication',
+        responseTime: 1000, // Estimate 1 second for text analysis
+      });
+    } else {
+      // Fallback to legacy system
+      const currentScores = this.userStyleScores.get(userId) || {
+        empathetic: 0,
+        pragmatic: 0,
+      };
+      currentScores.empathetic += emphatheticScore;
+      currentScores.pragmatic += pragmaticScore;
 
-    this.userStyleScores.set(userId, currentScores);
+      this.userStyleScores.set(userId, currentScores);
+    }
   }
 
   /**
    * Get user's preferred communication style based on their interaction history
+   * Enhanced with AdaptivePersonalityManager integration
    */
   getUserPreferredStyle(userId: string): CommunicationStyle {
+    // First check if we have a personality manager with better insights
+    const personalityManager = this.getPersonalityManager(userId);
+    if (personalityManager) {
+      const currentStyle = personalityManager.getCurrentStyle();
+      // Map personality manager styles to text manager styles
+      if (currentStyle === 'empathetic') return 'empathetic';
+      if (currentStyle === 'pragmatic') return 'pragmatic';
+      if (currentStyle === 'balanced') return 'pragmatic'; // Default balanced to pragmatic
+    }
+
+    // Fallback to legacy scoring system
     const scores = this.userStyleScores.get(userId);
     if (!scores) return 'pragmatic'; // Default to pragmatic
 
