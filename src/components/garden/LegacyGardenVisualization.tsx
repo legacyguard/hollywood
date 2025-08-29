@@ -7,6 +7,9 @@ import { useEffect, useState } from 'react';
 import { Sparkles, Sun, Cloud, Droplets } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { usePersonalityManager } from '@/components/sofia/SofiaContextProvider';
+import { AnimationSystem } from '@/lib/animation-system';
+import type { PersonalityMode } from '@/lib/sofia-types';
 
 interface GardenElement {
   id: string;
@@ -38,6 +41,7 @@ interface LegacyGardenVisualizationProps {
   animated?: boolean;
   interactive?: boolean;
   showWeather?: boolean;
+  personalityMode?: PersonalityMode;
   onElementClick?: (element: GardenElement) => void;
   className?: string;
 }
@@ -54,9 +58,18 @@ export function LegacyGardenVisualization({
   animated = true,
   interactive = true,
   showWeather = true,
+  personalityMode,
   onElementClick,
   className
 }: LegacyGardenVisualizationProps) {
+  const personalityManager = usePersonalityManager();
+
+  // Get personality mode from prop or context
+  const detectedMode = personalityManager?.getCurrentStyle() || 'adaptive';
+  const effectiveMode = personalityMode || (detectedMode === 'balanced' ? 'adaptive' : detectedMode);
+
+  // Check for reduced motion
+  const shouldReduceMotion = AnimationSystem.shouldReduceMotion();
 
   const [gardenElements, setGardenElements] = useState<GardenElement[]>([]);
   const [weather, setWeather] = useState<WeatherEffect>({ type: 'sun', active: true, intensity: 0.5 });
@@ -75,35 +88,43 @@ export function LegacyGardenVisualization({
     else setGardenStage('empty');
   }, [documentsCount, familyMembersCount, emergencyContactsCount, willCompleted, trustScore]);
 
-  // Generate garden elements based on progress
+  // Generate garden elements based on progress and personality
   useEffect(() => {
     const elements: GardenElement[] = [];
+    const _animConfig = AnimationSystem.getConfig(effectiveMode);
 
-    // Seeds for first documents (up to 5)
+    // Seeds for first documents (up to 5) - personality-aware positioning
+    const seedSpacing = effectiveMode === 'empathetic' ? 18 : effectiveMode === 'pragmatic' ? 12 : 15;
     for (let i = 0; i < Math.min(documentsCount, 5); i++) {
       elements.push({
         id: `seed_${i}`,
         type: i < documentsCount ? 'sprout' : 'seed',
-        x: 20 + (i * 15),
-        y: 70 + (Math.random() * 10 - 5),
-        size: 'small',
-        color: 'text-green-400',
-        emoji: i < documentsCount ? '🌱' : '🌰',
+        x: 20 + (i * seedSpacing) + (effectiveMode === 'empathetic' ? Math.random() * 5 - 2.5 : 0),
+        y: 70 + (effectiveMode === 'empathetic' ? Math.random() * 15 - 7.5 : Math.random() * 10 - 5),
+        size: effectiveMode === 'empathetic' ? 'medium' : 'small',
+        color: effectiveMode === 'empathetic' ? 'text-green-500' : effectiveMode === 'pragmatic' ? 'text-green-600' : 'text-green-400',
+        emoji: i < documentsCount ? (effectiveMode === 'empathetic' ? '🌿' : '🌱') : '🌰',
         unlocked: i < documentsCount,
         milestone: `Document ${i + 1} uploaded`
       });
     }
 
-    // Family member flowers
+    // Family member flowers - personality-aware varieties
+    const familyEmojis = {
+      empathetic: ['🌸', '🌺', '💐', '🌻', '🌹', '🌷', '🌼'],
+      pragmatic: ['🌻', '🌹', '🌷', '🌼', '🌺'],
+      adaptive: ['🌸', '🌺', '💐', '🌻', '🌹']
+    };
+
     for (let i = 0; i < familyMembersCount; i++) {
       elements.push({
         id: `family_${i}`,
         type: 'flower',
-        x: 15 + (i * 20) + Math.random() * 10,
-        y: 50 + Math.random() * 15,
-        size: 'medium',
-        color: 'text-pink-500',
-        emoji: ['🌸', '🌺', '💐', '🌻', '🌹'][i % 5],
+        x: 15 + (i * (effectiveMode === 'empathetic' ? 25 : 20)) + (effectiveMode === 'empathetic' ? Math.random() * 15 : Math.random() * 10),
+        y: 50 + (effectiveMode === 'empathetic' ? Math.random() * 20 : Math.random() * 15),
+        size: effectiveMode === 'empathetic' ? 'large' : 'medium',
+        color: effectiveMode === 'empathetic' ? 'text-pink-400' : effectiveMode === 'pragmatic' ? 'text-purple-600' : 'text-pink-500',
+        emoji: familyEmojis[effectiveMode][i % familyEmojis[effectiveMode].length],
         unlocked: true,
         milestone: `Family member ${i + 1} protected`
       });
@@ -185,34 +206,54 @@ export function LegacyGardenVisualization({
     }
 
     setGardenElements(elements);
-  }, [documentsCount, familyMembersCount, emergencyContactsCount, willCompleted, trustScore, protectionDays, achievedMilestones]);
+  }, [documentsCount, familyMembersCount, emergencyContactsCount, willCompleted, trustScore, protectionDays, achievedMilestones, effectiveMode]);
 
-  // Weather effects based on recent activity
+  // Weather effects based on recent activity and personality
   useEffect(() => {
+    let intensity = 0.5;
+    let weatherType: WeatherEffect['type'] = 'sun';
+
+    // Base weather on garden stage
     if (documentsCount === 0) {
-      setWeather({ type: 'sun', active: true, intensity: 0.3 });
+      weatherType = 'sun';
+      intensity = 0.3;
     } else if (gardenStage === 'seeded' || gardenStage === 'growing') {
-      setWeather({ type: 'rain', active: true, intensity: 0.6 });
+      weatherType = effectiveMode === 'empathetic' ? 'rain' : 'sun';
+      intensity = effectiveMode === 'empathetic' ? 0.7 : 0.4;
     } else if (gardenStage === 'blooming' || gardenStage === 'flourishing') {
-      setWeather({ type: 'sparkles', active: true, intensity: 0.8 });
+      weatherType = 'sparkles';
+      intensity = effectiveMode === 'empathetic' ? 0.9 : effectiveMode === 'pragmatic' ? 0.6 : 0.8;
     }
-  }, [gardenStage, documentsCount]);
+
+    setWeather({ type: weatherType, active: true, intensity });
+  }, [gardenStage, documentsCount, effectiveMode]);
 
   const getGardenMessage = () => {
-    switch (gardenStage) {
-      case 'empty':
-        return 'Your legacy garden awaits the first seed of protection 🌱';
-      case 'seeded':
-        return 'Seeds of protection have been planted - watch them grow! 🌿';
-      case 'growing':
-        return 'Your family\'s garden is growing strong with each loving action 🌸';
-      case 'blooming':
-        return 'Beautiful! Your garden blooms with family protection and care 🌺';
-      case 'flourishing':
-        return 'Magnificent! Your legacy garden flourishes with comprehensive protection 🌈';
-      default:
-        return 'Your legacy garden is taking shape...';
-    }
+    const messages = {
+      empathetic: {
+        empty: 'Your heart\'s garden awaits the first gentle seed of love and protection 💚',
+        seeded: 'Beautiful beginnings! Your seeds of care are taking root with tender hope 🌿',
+        growing: 'How wonderful! Your family\'s garden grows stronger with each act of love 🌸',
+        blooming: 'Your heart is blooming! This garden reflects the love you share with family 🌺',
+        flourishing: 'Breathtaking! Your legacy garden flourishes with the depth of your caring spirit 🌈'
+      },
+      pragmatic: {
+        empty: 'Garden initialization ready. Plant your first protection seed to begin 🌱',
+        seeded: 'Protection protocols active. Document security systems are growing 🌿',
+        growing: 'System expansion in progress. Family protection network strengthening 🌸',
+        blooming: 'Optimal growth achieved. Your protection systems are fully operational 🌺',
+        flourishing: 'Maximum efficiency reached. Comprehensive family protection network established 🌈'
+      },
+      adaptive: {
+        empty: 'Your legacy garden awaits the first seed of protection 🌱',
+        seeded: 'Seeds of protection have been planted - watch them grow! 🌿',
+        growing: 'Your family\'s garden is growing strong with each loving action 🌸',
+        blooming: 'Beautiful! Your garden blooms with family protection and care 🌺',
+        flourishing: 'Magnificent! Your legacy garden flourishes with comprehensive protection 🌈'
+      }
+    };
+
+    return messages[effectiveMode][gardenStage] || 'Your legacy garden is taking shape...';
   };
 
   const renderWeatherEffect = () => {
@@ -288,7 +329,11 @@ export function LegacyGardenVisualization({
     return null;
   };
 
-  const renderGardenElement = (element: GardenElement) => (
+  const renderGardenElement = (element: GardenElement) => {
+    const animConfig = AnimationSystem.getConfig(effectiveMode);
+    const delayMultiplier = effectiveMode === 'pragmatic' ? 0.05 : effectiveMode === 'empathetic' ? 0.15 : 0.1;
+
+    return (
     <motion.div
       key={element.id}
       className={cn(
@@ -297,18 +342,26 @@ export function LegacyGardenVisualization({
         element.color
       )}
       style={{
-        left: `${element.x }}%`,
+        left: `${element.x}%`,
         top: `${element.y}%`,
         opacity: element.unlocked ? 1 : 0.3
       }}
-      initial={animated ? { scale: 0, opacity: 0 } : undefined}
-      animate={animated ? { scale: 1, opacity: element.unlocked ? 1 : 0.3 } : undefined}
-      transition={animated ? {
-        duration: 0.5,
-        delay: gardenElements.indexOf(element) * 0.1,
-        type: 'spring'
+      initial={animated && !shouldReduceMotion ? { scale: 0, opacity: 0, y: 20 } : undefined}
+      animate={animated && !shouldReduceMotion ? {
+        scale: 1,
+        opacity: element.unlocked ? 1 : 0.3,
+        y: 0
       } : undefined}
-      whileHover={interactive ? { scale: 1.2 } : undefined}
+      transition={animated && !shouldReduceMotion ? {
+        duration: animConfig.duration,
+        delay: gardenElements.indexOf(element) * delayMultiplier,
+        ease: animConfig.ease,
+        type: effectiveMode === 'pragmatic' ? 'tween' : 'spring'
+      } : undefined}
+      whileHover={interactive && !shouldReduceMotion ? {
+        scale: effectiveMode === 'empathetic' ? 1.3 : 1.2,
+        rotate: effectiveMode === 'empathetic' ? [-2, 2, -2, 0] : 0
+      } : undefined}
       onHoverStart={() => interactive && setHoveredElement(element.id)}
       onHoverEnd={() => setHoveredElement(null)}
       onClick={() => interactive && onElementClick?.(element)}
@@ -317,15 +370,17 @@ export function LegacyGardenVisualization({
         {element.emoji}
       </div>
 
-      {element.type === 'butterfly' && animated && (
+      {element.type === 'butterfly' && animated && !shouldReduceMotion && (
         <motion.div
-          animate={{  x: [0, 10, -5, 15, 0],
-            y: [0, -8, 3, -12, 0]
-           }}
-          transition={{  duration: 4 + Math.random() * 2,
+          animate={{
+            x: effectiveMode === 'empathetic' ? [0, 15, -8, 20, 0] : [0, 10, -5, 15, 0],
+            y: effectiveMode === 'empathetic' ? [0, -12, 5, -18, 0] : [0, -8, 3, -12, 0]
+          }}
+          transition={{
+            duration: effectiveMode === 'empathetic' ? 5 + Math.random() * 3 : 4 + Math.random() * 2,
             repeat: Infinity,
-            ease: 'easeInOut'
-           }}
+            ease: animConfig.ease
+          }}
           className="absolute inset-0"
         >
           <div className="text-2xl select-none">{element.emoji}</div>
@@ -342,7 +397,8 @@ export function LegacyGardenVisualization({
         </motion.div>
       )}
     </motion.div>
-  );
+    );
+  };
 
   if (variant === 'compact') {
     return (

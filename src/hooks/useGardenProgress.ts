@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { useSupabaseWithClerk } from '@/integrations/supabase/client';
+import { usePersonalityManager } from '@/components/sofia/SofiaContextProvider';
 import type {
   SerenityMilestone} from '@/lib/path-of-serenity';
 import {
   getSerenityMilestones,
 } from '@/lib/path-of-serenity';
+import type { PersonalityMode } from '@/lib/sofia-types';
 
 export interface GardenProgressData {
   overallProgress: number; // 0-100 percentage
@@ -17,6 +19,13 @@ export interface GardenProgressData {
   timeCapsules: number;
   willProgress: number;
   seedState: 'dormant' | 'sprouting' | 'growing' | 'flourishing' | 'blooming';
+  personalityMode: PersonalityMode;
+  personalityInfluence: {
+    growthRate: number; // How personality affects growth visualization
+    elementDensity: number; // How many garden elements to show
+    animationIntensity: number; // How animated the garden should be
+    colorPalette: 'warm' | 'cool' | 'balanced'; // Color scheme preference
+  };
   gardenElements: {
     roots: number; // Documents (foundation)
     branches: number; // Guardians (protection)
@@ -24,11 +33,17 @@ export interface GardenProgressData {
     flowers: number; // Milestones achieved
     fruits: number; // Time capsules / legacy items
   };
+  adaptiveRecommendations: {
+    nextAction: string;
+    focusArea: 'documents' | 'guardians' | 'family' | 'milestones';
+    personalizedMessage: string;
+  };
 }
 
 export const useGardenProgress = () => {
   const { userId } = useAuth();
   const createSupabaseClient = useSupabaseWithClerk();
+  const personalityManager = usePersonalityManager();
   const [progress, setProgress] = useState<GardenProgressData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -132,13 +147,80 @@ export const useGardenProgress = () => {
         return 'blooming';
       };
 
-      // Calculate garden elements (visual representation)
+      // Get personality mode for adaptive calculations
+      const personalityMode = personalityManager?.getCurrentStyle() || 'adaptive';
+      const effectiveMode = personalityMode === 'balanced' ? 'adaptive' : personalityMode;
+
+      // Calculate personality influence on garden visualization
+      const personalityInfluence = {
+        growthRate: effectiveMode === 'empathetic' ? 1.3 : effectiveMode === 'pragmatic' ? 0.8 : 1.0,
+        elementDensity: effectiveMode === 'empathetic' ? 1.4 : effectiveMode === 'pragmatic' ? 0.7 : 1.0,
+        animationIntensity: effectiveMode === 'empathetic' ? 1.5 : effectiveMode === 'pragmatic' ? 0.6 : 1.0,
+        colorPalette: effectiveMode === 'empathetic' ? 'warm' as const : effectiveMode === 'pragmatic' ? 'cool' as const : 'balanced' as const
+      };
+
+      // Calculate adaptive recommendations based on personality and progress
+      const getAdaptiveRecommendations = () => {
+        let nextAction = 'Upload your first document to begin';
+        let focusArea: 'documents' | 'guardians' | 'family' | 'milestones' = 'documents';
+        let personalizedMessage = 'Your legacy garden is ready to grow';
+
+        if (documentsCount === 0) {
+          nextAction = effectiveMode === 'empathetic' 
+            ? 'Plant the first seed of love by uploading a cherished document'
+            : effectiveMode === 'pragmatic'
+            ? 'Initialize protection protocol: upload first document'
+            : 'Begin your legacy journey with your first document';
+          focusArea = 'documents';
+        } else if (guardiansCount === 0) {
+          nextAction = effectiveMode === 'empathetic'
+            ? 'Invite a trusted friend to be your guardian'
+            : effectiveMode === 'pragmatic'
+            ? 'Assign guardian for system redundancy'
+            : 'Add your first guardian to strengthen protection';
+          focusArea = 'guardians';
+        } else if (completedCount < 3) {
+          nextAction = 'Complete more milestones to grow your garden';
+          focusArea = 'milestones';
+        }
+
+        // Personality-specific messages
+        if (effectiveMode === 'empathetic') {
+          personalizedMessage = overallProgress < 25
+            ? 'Your garden of love is just beginning to sprout 💚'
+            : overallProgress < 50
+            ? 'Beautiful growth! Your family\'s protection is blossoming'
+            : overallProgress < 75
+            ? 'Your caring heart has created a thriving garden'
+            : 'Magnificent! Your legacy garden flourishes with love';
+        } else if (effectiveMode === 'pragmatic') {
+          personalizedMessage = overallProgress < 25
+            ? 'Protection system initialization: 25% complete'
+            : overallProgress < 50
+            ? 'Core protection modules: 50% operational'
+            : overallProgress < 75
+            ? 'Advanced security protocols: 75% implemented'
+            : 'Full family protection matrix: operational';
+        } else {
+          personalizedMessage = overallProgress < 25
+            ? 'Your legacy foundation is taking shape'
+            : overallProgress < 50
+            ? 'Strong progress! Your protection is growing'
+            : overallProgress < 75
+            ? 'Excellent! Your legacy system is thriving'
+            : 'Outstanding! Your comprehensive protection is complete';
+        }
+
+        return { nextAction, focusArea, personalizedMessage };
+      };
+
+      // Calculate garden elements (visual representation) with personality influence
       const gardenElements = {
-        roots: Math.min(documentsCount, 10), // Documents as roots
-        branches: guardiansCount, // Guardians as branches
-        leaves: Math.floor(overallProgress / 10), // General progress indicators
-        flowers: completedCount, // Milestones as flowers
-        fruits: timeCapsulesCount, // Time capsules as fruits
+        roots: Math.min(Math.floor(documentsCount * personalityInfluence.elementDensity), 10),
+        branches: Math.floor(guardiansCount * personalityInfluence.elementDensity),
+        leaves: Math.floor((overallProgress / 10) * personalityInfluence.elementDensity),
+        flowers: Math.floor(completedCount * personalityInfluence.elementDensity),
+        fruits: Math.floor(timeCapsulesCount * personalityInfluence.elementDensity),
       };
 
       const progressData: GardenProgressData = {
@@ -151,7 +233,10 @@ export const useGardenProgress = () => {
         timeCapsules: timeCapsulesCount,
         willProgress: Math.round(willProgress),
         seedState: getSeedState(overallProgress),
+        personalityMode: effectiveMode,
+        personalityInfluence,
         gardenElements,
+        adaptiveRecommendations: getAdaptiveRecommendations(),
       };
 
       setProgress(progressData);
