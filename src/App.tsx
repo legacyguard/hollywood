@@ -27,6 +27,7 @@ const TermsPage = lazy(() => import('@/pages/Terms').then(m => ({ default: m.Ter
 const TermsOfService = lazy(() => import('@/pages/legal/TermsOfService').then(m => ({ default: m.TermsOfService })));
 const PrivacyPolicy = lazy(() => import('@/pages/legal/PrivacyPolicy').then(m => ({ default: m.PrivacyPolicy })));
 const SecurityPolicy = lazy(() => import('@/pages/legal/SecurityPolicy').then(m => ({ default: m.SecurityPolicy })));
+const SecurityDeepDivePage = lazy(() => import('@/pages/SecurityDeepDivePage'));
 const Onboarding = lazy(() => import('./pages/onboarding/Onboarding'));
 const VaultPage = lazy(() => import('./pages/Vault'));
 const GuardiansPage = lazy(() => import('./pages/Guardians'));
@@ -79,24 +80,25 @@ const App = () => (
                       <Route path='/terms-of-service' element={<TermsOfService />} />
                       <Route path='/privacy-policy' element={<PrivacyPolicy />} />
                       <Route path='/security-policy' element={<SecurityPolicy />} />
-                      
+                      <Route path='/security-deep-dive' element={<SecurityDeepDivePage />} />
+
                       {/* Blog routes */}
                       <Route path='/blog' element={<BlogPage />} />
                       <Route path='/blog/:slug' element={<BlogArticlePage />} />
 
                       {/* Component Showcase (for development) */}
                       <Route path='/showcase' element={<ComponentShowcase />} />
-                      
+
                       {/* Monitoring Dashboard (for development) */}
                       <Route path='/monitoring' element={<MonitoringPage />} />
-                      
+
                       {/* Analytics Dashboard */}
                       <Route path='/analytics' element={
                         <ProtectedRoute>
                           <AnalyticsPage />
                         </ProtectedRoute>
                       } />
-                      
+
                       {/* Social Collaboration */}
                       <Route path='/collaboration' element={
                         <ProtectedRoute>
@@ -241,7 +243,7 @@ const App = () => (
 
                     {/* Global Sofia Firefly */}
                     <SofiaFirefly />
-                    
+
                     {/* Performance Monitoring */}
                     <PerformanceMonitor />
                   </FireflyProvider>

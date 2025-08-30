@@ -10,8 +10,8 @@ interface RateLimitConfig {
   maxRequests: number; // Maximum requests per window
   skipSuccessfulRequests?: boolean; // Skip counting successful requests
   skipFailedRequests?: boolean; // Skip counting failed requests
-  keyGenerator?: (context: any) => string; // Custom key generator
-  handler?: (context: any) => void; // Custom handler when limit exceeded
+  keyGenerator?: (context: unknown) => string; // Custom key generator
+  handler?: (context: unknown) => void; // Custom handler when limit exceeded
 }
 
 interface RateLimitStore {
@@ -114,8 +114,8 @@ class RateLimiter {
   private generateKey(
     identifier: string,
     endpoint: string,
-    customKeyGenerator?: (context: any) => string,
-    context?: any
+      customKeyGenerator?: (context: unknown) => string,
+  context?: unknown
   ): string {
     if (customKeyGenerator && context) {
       return customKeyGenerator(context);
@@ -221,7 +221,7 @@ export function createRateLimitMiddleware(
     ? RATE_LIMIT_PRESETS[presetOrConfig]
     : presetOrConfig;
 
-  return async (req: any, res: any, next: any) => {
+  return async (req: unknown, res: unknown, next: unknown) => {
     // Get identifier (user ID or IP address)
     const identifier = req.user?.id || req.ip || 'anonymous';
     const endpoint = req.path;
@@ -298,10 +298,10 @@ export function RateLimit(presetOrConfig: keyof typeof RATE_LIMIT_PRESETS | Rate
     ? RATE_LIMIT_PRESETS[presetOrConfig]
     : presetOrConfig;
 
-  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+  return function (target: unknown, propertyKey: string, descriptor: PropertyDescriptor) {
     const originalMethod = descriptor.value;
 
-    descriptor.value = async function (...args: any[]) {
+    descriptor.value = async function (...args: unknown[]) {
       const identifier = this.userId || this.sessionId || 'system';
       const endpoint = `${target.constructor.name}.${propertyKey}`;
       

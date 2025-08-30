@@ -8,10 +8,11 @@ import { Icon } from '@/components/ui/icon-library';
 import { LegacyGuardLogo } from '@/components/LegacyGuardLogo';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@clerk/clerk-react';
+import { SecurityPromiseSection } from '@/components/landing/SecurityPromiseSection';
 
 export function LandingPage() {
   const navigate = useNavigate();
-  const { isSignedIn } = useAuth();
+  const { isSignedIn, isLoaded } = useAuth();
   const [isFireflyOnButton, setIsFireflyOnButton] = useState(false);
   const heroRef = useRef<HTMLDivElement>(null);
   const ctaButtonRef = useRef<HTMLButtonElement>(null);
@@ -24,11 +25,12 @@ export function LandingPage() {
 
   // Redirect authenticated users to dashboard with onboarding check
   React.useEffect(() => {
-    if (isSignedIn) {
+    // Only redirect if Clerk has loaded and user is signed in
+    if (isLoaded && isSignedIn) {
       // Navigate to dashboard, OnboardingWrapper will handle onboarding check
       navigate('/dashboard');
     }
-  }, [isSignedIn, navigate]);
+  }, [isLoaded, isSignedIn, navigate]);
 
   const handleMouseMove = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
     if (heroRef.current) {
@@ -752,6 +754,9 @@ export function LandingPage() {
           </div>
         </div>
       </section>
+
+      {/* Security Promise Section */}
+      <SecurityPromiseSection />
 
       {/* Our Commitments Section */}
       <section className='py-32 bg-gradient-to-br from-slate-900 to-slate-800'>

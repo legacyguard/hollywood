@@ -1,7 +1,6 @@
 'use client';
 
-import type { ReactNode } from 'react';
-import { useState, useEffect, useCallback, createContext, useContext } from 'react';
+import { useState, useEffect, useCallback, createContext, useContext, type ReactNode } from 'react';
 import { useAuth } from '@clerk/nextjs';
 import { encryptionService } from '@/lib/encryption-v2';
 import { toast } from 'sonner';
@@ -17,7 +16,7 @@ interface EncryptionContextType {
   checkKeyStatus: () => Promise<void>;
   migrateKeys: (password: string) => Promise<boolean>;
   rotateKeys: (currentPassword: string, newPassword?: string) => Promise<boolean>;
-  encryptFile: (file: File) => Promise<{ encryptedData: Uint8Array; nonce: Uint8Array; metadata: any } | null>;
+  encryptFile: (file: File) => Promise<{ encryptedData: Uint8Array; nonce: Uint8Array; metadata: Record<string, unknown> } | null>;
   decryptFile: (encryptedData: Uint8Array, nonce: Uint8Array) => Promise<Uint8Array | null>;
   showPasswordPrompt: () => void;
   hidePasswordPrompt: () => void;
@@ -47,7 +46,7 @@ export function EncryptionProvider({ children }: EncryptionProviderProps) {
       setIsInitialized(false);
       setIsLoading(false);
     }
-  }, [isSignedIn, userId]);
+  }, [isSignedIn, userId, checkKeyStatus]);
 
   // Check if keys need rotation periodically
   useEffect(() => {

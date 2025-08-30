@@ -75,7 +75,7 @@ async function decryptData(
 export class SecureStorage {
   private static instance: SecureStorage;
   private sessionKey: string;
-  private memoryStore: Map<string, any>;
+  private memoryStore: Map<string, unknown>;
   private expiryTimers: Map<string, NodeJS.Timeout>;
 
   private constructor() {
@@ -100,7 +100,7 @@ export class SecureStorage {
   /**
    * Store data in memory with optional expiry
    */
-  public setMemory(key: string, value: any, expiryMs?: number): void {
+  public setMemory(key: string, value: unknown, expiryMs?: number): void {
     // Clear existing timer if any
     this.clearExpiry(key);
 
@@ -121,7 +121,7 @@ export class SecureStorage {
   /**
    * Get data from memory
    */
-  public getMemory<T = any>(key: string): T | null {
+  public getMemory<T = unknown>(key: string): T | null {
     const item = this.memoryStore.get(key);
     return item ? item.value : null;
   }
@@ -129,7 +129,7 @@ export class SecureStorage {
   /**
    * Store encrypted data in sessionStorage
    */
-  public async setSecureSession(key: string, value: any, expiryMinutes: number = 30): Promise<void> {
+  public async setSecureSession(key: string, value: unknown, expiryMinutes: number = 30): Promise<void> {
     if (typeof window === 'undefined') return;
 
     try {
@@ -155,7 +155,7 @@ export class SecureStorage {
   /**
    * Get encrypted data from sessionStorage
    */
-  public async getSecureSession<T = any>(key: string): Promise<T | null> {
+  public async getSecureSession<T = unknown>(key: string): Promise<T | null> {
     if (typeof window === 'undefined') return null;
 
     try {
@@ -186,7 +186,7 @@ export class SecureStorage {
   /**
    * Store data in IndexedDB with encryption
    */
-  public async setSecureLocal(key: string, value: any, expiryDays: number = 7): Promise<void> {
+  public async setSecureLocal(key: string, value: unknown, expiryDays: number = 7): Promise<void> {
     if (typeof window === 'undefined') return;
 
     try {
@@ -220,7 +220,7 @@ export class SecureStorage {
   /**
    * Get encrypted data from IndexedDB
    */
-  public async getSecureLocal<T = any>(key: string): Promise<T | null> {
+  public async getSecureLocal<T = unknown>(key: string): Promise<T | null> {
     if (typeof window === 'undefined') return null;
 
     try {
@@ -229,7 +229,7 @@ export class SecureStorage {
       const store = tx.objectStore('secure_store');
 
       const request = store.get(key);
-      const data = await new Promise<any>((resolve) => {
+      const data = await new Promise<{ encrypted: number[]; salt: number[]; iv: number[] } | null>((resolve) => {
         request.onsuccess = () => resolve(request.result);
         request.onerror = () => resolve(null);
       });
@@ -397,14 +397,14 @@ export async function getAuthToken(): Promise<string | null> {
 /**
  * Store user session data
  */
-export async function storeUserSession(userData: any): Promise<void> {
+export async function storeUserSession(userData: Record<string, unknown>): Promise<void> {
   await secureStorage.setSecureSession('user_session', userData, 120); // 2 hours expiry
 }
 
 /**
  * Get user session data
  */
-export async function getUserSession(): Promise<any> {
+export async function getUserSession(): Promise<Record<string, unknown> | null> {
   return secureStorage.getSecureSession('user_session');
 }
 

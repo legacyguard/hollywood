@@ -1,6 +1,4 @@
-import type { NextRequest} from 'next/server';
-import { NextResponse } from 'next/server';
-import { headers } from 'next/headers';
+import { NextResponse, type NextRequest } from 'next/server';
 
 // In-memory store for rate limiting (consider Redis for production)
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
@@ -99,43 +97,13 @@ export const rateLimitPresets = {
   upload: {
     windowMs: 60 * 1000, // 1 minute
     maxRequests: 3,
-    message: 'Upload limit exceeded. Please wait before uploading more documents.',
+    message: 'Too many uploads. Please try again later.',
   },
 
-  // Relaxed limit for general API calls
+  // General API endpoints
   api: {
     windowMs: 60 * 1000, // 1 minute
-    maxRequests: 30,
-    message: 'API rate limit exceeded. Please slow down your requests.',
-  },
-
-  // Very strict limit for AI/expensive operations
-  ai: {
-    windowMs: 5 * 60 * 1000, // 5 minutes
-    maxRequests: 10,
-    message: 'AI processing limit reached. Please wait before making more requests.',
-  },
-
-  // Strict limit for email/SMS notifications
-  notification: {
-    windowMs: 60 * 60 * 1000, // 1 hour
-    maxRequests: 10,
-    message: 'Notification limit reached. Please try again later.',
+    maxRequests: 100,
+    message: 'Too many API requests. Please try again later.',
   },
 };
-
-// Helper function to apply rate limiting to API route
-export async function withRateLimit(
-  req: NextRequest,
-  handler: (req: NextRequest) => Promise<NextResponse>,
-  config?: RateLimitConfig
-): Promise<NextResponse> {
-  const limiter = rateLimit(config);
-  const limitResponse = await limiter(req);
-
-  if (limitResponse) {
-    return limitResponse;
-  }
-
-  return handler(req);
-}

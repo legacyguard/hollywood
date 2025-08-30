@@ -274,12 +274,8 @@ export interface ReviewRequest {
   notes?: string;
   deadline?: ISO8601Date;
   createdAt: ISO8601Date;
-   storage: {
-     // Encryption keys should be managed securely, not stored in config
-     encryptionKeyId: string; // Reference to key in secure storage
-     maxFileSize: number;
-     allowedMimeTypes: string[];
-   };
+}
+
 export type ReviewStatus = 'pending' | 'in_progress' | 'completed' | 'rejected' | 'needs_revision';
 export type Priority = 'low' | 'medium' | 'high' | 'urgent';
 

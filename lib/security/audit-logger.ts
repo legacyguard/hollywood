@@ -54,7 +54,7 @@ export interface AuditEvent {
   eventType: AuditEventType;
   severity: AuditSeverity;
   description: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   ipAddress?: string;
   userAgent?: string;
   sessionId?: string;
@@ -68,7 +68,7 @@ class AuditLogger {
   private static instance: AuditLogger;
   private queue: AuditEvent[] = [];
   private flushInterval: NodeJS.Timeout | null = null;
-  private supabase: any = null;
+  private supabase: SupabaseClient | null = null;
   private isInitialized = false;
 
   private constructor() {
@@ -131,7 +131,7 @@ class AuditLogger {
     eventType: AuditEventType,
     userId: string | null,
     description: string,
-    metadata?: Record<string, any>,
+    metadata?: Record<string, unknown>,
     severity: AuditSeverity = AuditSeverity.WARNING
   ): Promise<void> {
     await this.log({
@@ -151,7 +151,7 @@ class AuditLogger {
     eventType: AuditEventType,
     userId: string,
     description: string,
-    metadata?: Record<string, any>
+    metadata?: Record<string, unknown>
   ): Promise<void> {
     await this.log({
       userId,
@@ -171,7 +171,7 @@ class AuditLogger {
     userId: string | null,
     description: string,
     error: Error | string,
-    metadata?: Record<string, any>
+    metadata?: Record<string, unknown>
   ): Promise<void> {
     await this.log({
       userId,
@@ -192,7 +192,7 @@ class AuditLogger {
     documentId: string,
     action: 'upload' | 'download' | 'delete' | 'share',
     success: boolean,
-    metadata?: Record<string, any>
+    metadata?: Record<string, unknown>
   ): Promise<void> {
     const eventTypeMap = {
       upload: AuditEventType.DOCUMENT_UPLOAD,
@@ -220,7 +220,7 @@ class AuditLogger {
     userId: string | null,
     action: 'login' | 'logout' | 'reset',
     success: boolean,
-    metadata?: Record<string, any>
+    metadata?: Record<string, unknown>
   ): Promise<void> {
     const eventTypeMap = {
       login: success ? AuditEventType.LOGIN_SUCCESS : AuditEventType.LOGIN_FAILED,
@@ -309,7 +309,7 @@ class AuditLogger {
   /**
    * Export audit logs
    */
-  public async export(filters: any): Promise<string> {
+  public async export(filters: Record<string, unknown>): Promise<string> {
     const logs = await this.query(filters);
     return JSON.stringify(logs, null, 2);
   }
@@ -399,20 +399,21 @@ class AuditLogger {
     return 'unknown';
   }
 
-  private consoleLog(event: AuditEvent): void {
-    const color = {
-      [AuditSeverity.INFO]: 'color: blue',
-      [AuditSeverity.WARNING]: 'color: orange',
-      [AuditSeverity.ERROR]: 'color: red',
-      [AuditSeverity.CRITICAL]: 'color: red; font-weight: bold',
-    }[event.severity];
+  private consoleLog(_event: AuditEvent): void {
+    // Development logging - would be replaced with proper logging in production
+    // const color = {
+    //   [AuditSeverity.INFO]: 'color: blue',
+    //   [AuditSeverity.WARNING]: 'color: orange',
+    //   [AuditSeverity.ERROR]: 'color: red',
+    //   [AuditSeverity.CRITICAL]: 'color: red; font-weight: bold',
+    // }[event.severity];
 
-    console.log(
-      `%c[AUDIT] ${event.severity}`,
-      color,
-      `${event.eventType}: ${event.description}`,
-      event.metadata || ''
-    );
+    // console.log(
+    //   `%c[AUDIT] ${event.severity}`,
+    //   color,
+    //   `${event.eventType}: ${event.description}`,
+    //   event.metadata || ''
+    // );
   }
 }
 
@@ -423,7 +424,7 @@ export const auditLogger = AuditLogger.getInstance();
 
 export function logSecurityEvent(
   description: string,
-  metadata?: Record<string, any>
+  metadata?: Record<string, unknown>
 ): void {
   auditLogger.logSecurity(
     AuditEventType.SUSPICIOUS_ACTIVITY,
