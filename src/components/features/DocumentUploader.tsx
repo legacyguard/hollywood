@@ -15,6 +15,9 @@ import { textManager } from '@/lib/text-manager';
 import type { UserPreferences } from '@/types/user-preferences';
 import { defaultUserPreferences } from '@/types/user-preferences';
 import { useFireflyCelebration } from '@/contexts/FireflyContext';
+import { MagicalDropZone, DocumentAnalysisAnimation } from './MagicalDocumentUpload';
+import { usePersonalityManager } from '@/components/sofia/usePersonalityManager';
+import type { PersonalityMode } from '@/lib/sofia-types';
 
 export const DocumentUploader = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -23,11 +26,13 @@ export const DocumentUploader = () => {
   const [userPreferences, setUserPreferences] = useState<UserPreferences>(
     defaultUserPreferences
   );
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [analysisProgress, setAnalysisProgress] = useState(0);
   const { userId } = useAuth();
-  const { user } = useUser();
   const createSupabaseClient = useSupabaseWithClerk();
   const { isUnlocked, encryptFile, showPasswordPrompt } = useEncryption();
   const { celebrateUpload } = useFireflyCelebration();
+  const personalityManager = usePersonalityManager();
 
   // Load user preferences
   React.useEffect(() => {
@@ -36,15 +41,18 @@ export const DocumentUploader = () => {
       if (savedPrefs) {
         try {
           setUserPreferences(JSON.parse(savedPrefs));
-        } catch (error) {
-          console.error('Error loading user preferences:', error);
+        } catch {
+          // Error loading user preferences - use defaults
         }
       }
     }
   }, [userId]);
 
   const [isDragOver, setIsDragOver] = useState(false);
-  const [fileHover, setFileHover] = useState(false);
+
+  // Get personality mode for magical animations
+  const detectedMode = personalityManager?.getCurrentStyle() || 'adaptive';
+  const personalityMode: PersonalityMode = detectedMode === 'balanced' ? 'adaptive' : detectedMode;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -75,6 +83,10 @@ export const DocumentUploader = () => {
 
     setIsUploading(true);
     setUploadProgress(0);
+    
+    // Start magical analysis animation
+    setIsAnalyzing(true);
+    setAnalysisProgress(0);
 
     try {
       // Create Supabase client with Clerk token
@@ -82,6 +94,7 @@ export const DocumentUploader = () => {
 
       // Update progress
       setUploadProgress(20);
+      setAnalysisProgress(25);
 
       // Encrypt the file using new encryption service
       const encryptionResult = await encryptFile(file);
@@ -93,6 +106,7 @@ export const DocumentUploader = () => {
       const { encryptedFile, metadata } = encryptionResult;
 
       setUploadProgress(50);
+      setAnalysisProgress(60);
 
       // Use the encrypted blob directly
       const encryptedBlob = encryptedFile;
@@ -103,9 +117,10 @@ export const DocumentUploader = () => {
       const filePath = `${userId}/${encryptedFileName}`;
 
       setUploadProgress(70);
+      setAnalysisProgress(85);
 
       // Upload to Supabase Storage with authenticated client
-      const { data, error } = await supabase.storage
+      const { error } = await supabase.storage
         .from('user_documents')
         .upload(filePath, encryptedBlob, {
           contentType: 'application/octet-stream',
@@ -123,11 +138,12 @@ export const DocumentUploader = () => {
       }
 
       setUploadProgress(90);
+      setAnalysisProgress(95);
 
       // Save metadata to database
       // Pre development posielame user_id explicitne
       // Store nonce with document for decryption
-      const nonceBase64 = btoa(String.fromCharCode(...metadata?.nonce));
+      const nonceBase64 = btoa(String.fromCharCode(...(metadata?.nonce || [])));
 
       const { error: dbError } = await supabase.from('documents').insert({
         user_id: userId, // Explicitne posielame Clerk user ID
@@ -141,7 +157,7 @@ export const DocumentUploader = () => {
       });
 
       if (dbError) {
-        console.error('Database error:', dbError);
+        // // console.error('Database error:', dbError);
         // Try to delete the uploaded file if database insert fails
         await supabase.storage.from('user_documents').remove([filePath]);
         throw new Error('Failed to save document metadata');
@@ -150,6 +166,7 @@ export const DocumentUploader = () => {
       // No longer storing in localStorage - all handled server-side
 
       setUploadProgress(100);
+      setAnalysisProgress(100);
 
       // Use adaptive success message
       const adaptiveSuccessMessage = textManager.getText(
@@ -167,14 +184,18 @@ export const DocumentUploader = () => {
       // Celebrate with Sofia firefly
       celebrateUpload();
 
-      // Reset form
-      setFile(null);
-      const fileInput = document.getElementById(
-        'file-input'
-      ) as HTMLInputElement;
-      if (fileInput) fileInput.value = '';
+      // Reset form after animation completes
+      setTimeout(() => {
+        setFile(null);
+        setIsAnalyzing(false);
+        setAnalysisProgress(0);
+        const fileInput = document.getElementById(
+          'file-input'
+        ) as HTMLInputElement;
+        if (fileInput) fileInput.value = '';
+      }, 1500);
     } catch (error: unknown) {
-      console.error('Error uploading file:', error);
+      // // console.error('Error uploading file:', error);
 
       // Use adaptive error message
       const adaptiveErrorMessage = textManager.getText(
@@ -188,6 +209,7 @@ export const DocumentUploader = () => {
     } finally {
       setIsUploading(false);
       setUploadProgress(0);
+      // Keep analysis animation state for success animation
     }
   };
 
@@ -264,89 +286,71 @@ export const DocumentUploader = () => {
         </div>
 
         <div className='space-y-4'>
-          {/* Enhanced Drag & Drop Upload Area */}
-          <motion.div
-            className={`relative border-2 border-dashed rounded-lg p-8 transition-all duration-300 ${
-              isDragOver
-                ? 'border-primary bg-primary/5 scale-[1.02]'
-                : 'border-gray-300 hover:border-primary/50 hover:bg-primary/2'
-            }`}
-            onDragEnter={handleDragEnter}
-            onDragLeave={handleDragLeave}
-            onDragOver={handleDragOver}
-            onDrop={handleDrop}
-            whileHover={{  scale: 1.01  }}
-            transition={{  duration: 0.2, ease: 'easeOut'  }}
-          >
-            <AnimatePresence>
-              {isDragOver && (
+          {/* Show analysis animation during upload */}
+          {isAnalyzing ? (
+            <DocumentAnalysisAnimation
+              isAnalyzing={isAnalyzing}
+              fileName={file?.name || 'Document'}
+              analysisProgress={analysisProgress}
+              personalityMode={personalityMode}
+              onAnimationComplete={() => {
+                setIsAnalyzing(false);
+                setAnalysisProgress(0);
+              }}
+            />
+          ) : (
+            /* Enhanced Magical Drag & Drop Upload Area */
+            <MagicalDropZone
+              isDragOver={isDragOver}
+              onDragEnter={handleDragEnter}
+              onDragLeave={handleDragLeave}
+              onDragOver={handleDragOver}
+              onDrop={handleDrop}
+              personalityMode={personalityMode}
+              className="p-8"
+            >
+              <div className='text-center space-y-4'>
                 <motion.div
-                  className='absolute inset-0 bg-primary/10 rounded-lg flex items-center justify-center'
-                  initial={{  opacity: 0, scale: 0.9  }}
-                  animate={{  opacity: 1, scale: 1  }}
-                  exit={{  opacity: 0, scale: 0.9  }}
-                  transition={{  duration: 0.2  }}
+                  className='mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center'
+                  whileHover={{
+                    scale: 1.1,
+                    backgroundColor: 'rgb(var(--primary) / 0.15)',
+                  }}
+                  transition={{ duration: 0.2 }}
                 >
-                  <div className='text-center'>
-                    <motion.div
-                      animate={{  y: [-5, 5, -5]  }}
-                      transition={{  duration: 1.5,
-                        repeat: Infinity,
-                        ease: 'easeInOut',
-                       }}
-                    >
-                      <Icon name={"upload" as any}
-                        className='w-8 h-8 text-primary mx-auto mb-2'
-                      />
-                    </motion.div>
-                    <p className='text-primary font-medium'>
-                      Drop your file here
-                    </p>
-                  </div>
+                  <Icon name={"upload" as any} className='w-6 h-6 text-primary' />
                 </motion.div>
-              )}
-            </AnimatePresence>
 
-            <div className='text-center space-y-4'>
-              <motion.div
-                className='mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center'
-                whileHover={{  scale: 1.1,
-                  backgroundColor: 'rgb(var(--primary) / 0.15)',
-                 }}
-                transition={{  duration: 0.2  }}
-              >
-                <Icon name={"upload" as any} className='w-6 h-6 text-primary' />
-              </motion.div>
+                <div>
+                  <p className='text-lg font-medium mb-2'>
+                    Choose a file or drag & drop
+                  </p>
+                  <p id="upload-instructions" className='text-sm text-muted-foreground mb-4'>
+                    Supports PDF, DOC, DOCX, JPG, PNG, TXT (max 10MB). Press Enter or Space to browse files.
+                  </p>
 
-              <div>
-                <p className='text-lg font-medium mb-2'>
-                  Choose a file or drag & drop
-                </p>
-                <p className='text-sm text-muted-foreground mb-4'>
-                  Supports PDF, DOC, DOCX, JPG, PNG, TXT (max 10MB)
-                </p>
+                  <Input
+                    id='file-input'
+                    type='file'
+                    onChange={handleFileChange}
+                    className='sr-only'
+                    accept='.pdf,.doc,.docx,.jpg,.jpeg,.png,.txt'
+                    disabled={isUploading}
+                  />
 
-                <Input
-                  id='file-input'
-                  type='file'
-                  onChange={handleFileChange}
-                  className='sr-only'
-                  accept='.pdf,.doc,.docx,.jpg,.jpeg,.png,.txt'
-                  disabled={isUploading}
-                />
-
-                <motion.label
-                  htmlFor='file-input'
-                  className='inline-flex items-center gap-2 px-4 py-2 bg-primary/10 hover:bg-primary/20 text-primary rounded-lg cursor-pointer transition-colors'
-                  whileHover={{  scale: 1.05  }}
-                  whileTap={{  scale: 0.95  }}
-                >
-                  <Icon name={"documents" as any} className='w-4 h-4' />
-                  Browse Files
-                </motion.label>
+                  <motion.label
+                    htmlFor='file-input'
+                    className='inline-flex items-center gap-2 px-4 py-2 bg-primary/10 hover:bg-primary/20 text-primary rounded-lg cursor-pointer transition-colors'
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Icon name={"documents" as any} className='w-4 h-4' />
+                    Browse Files
+                  </motion.label>
+                </div>
               </div>
-            </div>
-          </motion.div>
+            </MagicalDropZone>
+          )}
 
           <div className='flex gap-2'>
             <motion.div whileHover={{  scale: 1.02  }} whileTap={{  scale: 0.98  }}>

@@ -56,7 +56,7 @@ export const SofiaFireflyWelcome: React.FC<SofiaFireflyWelcomeProps> = ({
   isVisible,
   personalityMode = 'adaptive',
   containerBounds,
-  message = 'Welcome! I'll help you organize this document ✨'
+  message = "Welcome! I'll help you organize this document ✨"
 }) => {
   const shouldReduceMotion = AnimationSystem.shouldReduceMotion();
   
@@ -106,6 +106,7 @@ export const SofiaFireflyWelcome: React.FC<SofiaFireflyWelcomeProps> = ({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
+        aria-label="Sofia's welcome animation"
       >
         {/* Sofia Firefly */}
         <motion.div
@@ -303,7 +304,14 @@ export const DocumentAnalysisAnimation: React.FC<DocumentAnalysisAnimationProps>
   }
 
   return (
-    <div className="relative w-full h-64 bg-gradient-to-b from-blue-50 to-purple-50 rounded-lg overflow-hidden">
+    <div 
+      className="relative w-full h-64 bg-gradient-to-b from-blue-50 to-purple-50 rounded-lg overflow-hidden"
+      role="progressbar"
+      aria-valuenow={analysisProgress}
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-label={`Document analysis in progress: ${analysisProgress}% complete`}
+    >
       {/* Document representation */}
       <AnimatePresence>
         {showDocument && (
@@ -433,6 +441,15 @@ export const MagicalDropZone: React.FC<MagicalDropZoneProps> = ({
   const shouldReduceMotion = AnimationSystem.shouldReduceMotion();
   const [showFirefly, setShowFirefly] = useState(false);
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      // Trigger the file input click
+      const fileInput = document.getElementById('file-input') as HTMLInputElement;
+      fileInput?.click();
+    }
+  };
+
   useEffect(() => {
     if (isDragOver) {
       setShowFirefly(true);
@@ -481,11 +498,16 @@ export const MagicalDropZone: React.FC<MagicalDropZoneProps> = ({
       onDragLeave={onDragLeave}
       onDragOver={onDragOver}
       onDrop={onDrop}
+      onKeyDown={handleKeyDown}
       animate={!shouldReduceMotion ? {
         scale: isDragOver ? 1.02 : 1,
         borderRadius: isDragOver ? '12px' : '8px'
       } : undefined}
       transition={{ duration: 0.2, ease: 'easeOut' }}
+      role="button"
+      tabIndex={0}
+      aria-label="Drag and drop file upload area"
+      aria-describedby="upload-instructions"
     >
       {children}
       
@@ -494,7 +516,7 @@ export const MagicalDropZone: React.FC<MagicalDropZoneProps> = ({
         isVisible={showFirefly}
         personalityMode={personalityMode}
         message={
-          personalityMode === 'empathetic' ? 'I'm here to help you with your precious document! 💖' :
+          personalityMode === 'empathetic' ? "I'm here to help you with your precious document! 💖" :
           personalityMode === 'pragmatic' ? 'Ready to process your document efficiently.' :
           'Welcome! Let me help organize this for you ✨'
         }
