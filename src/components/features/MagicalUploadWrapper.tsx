@@ -7,9 +7,8 @@
 
 import React, { useState } from 'react';
 import { DocumentUploader } from './DocumentUploader';
-import { 
-  MagicalDropZone, 
-  DocumentAnalysisAnimation 
+import {
+  DocumentAnalysisAnimation
 } from './MagicalDocumentUpload';
 import { usePersonalityManager } from '@/components/sofia/usePersonalityManager';
 import type { PersonalityMode } from '@/lib/sofia-types';
@@ -30,7 +29,7 @@ export const MagicalUploadWrapper: React.FC<MagicalUploadWrapperProps> = ({
 }) => {
   const personalityManager = usePersonalityManager();
   const [isProcessing, setIsProcessing] = useState(false);
-  const [processingFileName, setProcessingFileName] = useState<string>();
+  const [processingFileName, _setProcessingFileName] = useState<string>();
 
   // Get effective personality mode
   const detectedMode = personalityManager?.getCurrentStyle() || 'adaptive';

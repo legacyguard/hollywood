@@ -7,8 +7,8 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { 
-  MagicalDropZone, 
+import {
+  MagicalDropZone,
   DocumentAnalysisAnimation,
   SofiaFireflyWelcome
 } from './MagicalDocumentUpload';
@@ -49,7 +49,7 @@ export const MagicalUploadTest: React.FC<MagicalUploadTestProps> = ({
     e.preventDefault();
     e.stopPropagation();
     setIsDragOver(false);
-    
+
     const files = e.dataTransfer.files;
     if (files && files[0]) {
       setSelectedFile(files[0]);
@@ -60,11 +60,11 @@ export const MagicalUploadTest: React.FC<MagicalUploadTestProps> = ({
   const startMagicalAnalysis = () => {
     setIsAnalyzing(true);
     setAnalysisProgress(0);
-    
+
     // Simulate analysis phases
     const phases = [25, 60, 90, 100];
     let currentPhase = 0;
-    
+
     const progressInterval = setInterval(() => {
       if (currentPhase < phases.length) {
         setAnalysisProgress(phases[currentPhase]);
@@ -176,9 +176,9 @@ export const MagicalUploadTest: React.FC<MagicalUploadTestProps> = ({
                   isVisible={showFireflyDemo}
                   personalityMode={personalityMode}
                   message={
-                    personalityMode === 'empathetic' ? 
+                    personalityMode === 'empathetic' ?
                       "Welcome, dear friend! I'll lovingly help organize your precious documents! 💖" :
-                    personalityMode === 'pragmatic' ? 
+                    personalityMode === 'pragmatic' ?
                       "Document processing interface ready. Initiating upload protocols." :
                       "Welcome! Let me work some magic on your document ✨"
                   }

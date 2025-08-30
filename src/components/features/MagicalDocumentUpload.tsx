@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, FileText, Calendar, Hash, Type, Upload } from 'lucide-react';
+import { Sparkles, FileText, Calendar, Hash, Type } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { AnimationSystem } from '@/lib/animation-system';
 import type { PersonalityMode } from '@/lib/sofia-types';
@@ -55,11 +55,11 @@ interface DataParticle {
 export const SofiaFireflyWelcome: React.FC<SofiaFireflyWelcomeProps> = ({
   isVisible,
   personalityMode = 'adaptive',
-  containerBounds,
+  containerBounds: _containerBounds,
   message = "Welcome! I'll help you organize this document ✨"
 }) => {
   const shouldReduceMotion = AnimationSystem.shouldReduceMotion();
-  
+
   if (!isVisible || shouldReduceMotion) {
     return isVisible ? (
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -113,8 +113,8 @@ export const SofiaFireflyWelcome: React.FC<SofiaFireflyWelcomeProps> = ({
           className="relative"
           initial={{ x: -50, y: -50, scale: 0 }}
           animate={{
-            x: animation.pathType === 'heart' ? [0, 20, 0, -20, 0] : 
-               animation.pathType === 'direct' ? [0, 10, 0] : 
+            x: animation.pathType === 'heart' ? [0, 20, 0, -20, 0] :
+               animation.pathType === 'direct' ? [0, 10, 0] :
                [0, 15, -10, 20, 0],
             y: animation.pathType === 'heart' ? [0, -15, -30, -15, 0] :
                animation.pathType === 'direct' ? [0, -5, 0] :
@@ -141,7 +141,7 @@ export const SofiaFireflyWelcome: React.FC<SofiaFireflyWelcomeProps> = ({
               ease: 'easeInOut'
             }}
           />
-          
+
           {/* Firefly sparkle */}
           <motion.div
             animate={{
@@ -168,7 +168,7 @@ export const SofiaFireflyWelcome: React.FC<SofiaFireflyWelcomeProps> = ({
           <div className="text-sm text-gray-700 text-center max-w-xs">
             {message}
           </div>
-          
+
           {/* Message pointer */}
           <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-white border-l border-t rotate-45" />
         </motion.div>
@@ -304,7 +304,7 @@ export const DocumentAnalysisAnimation: React.FC<DocumentAnalysisAnimationProps>
   }
 
   return (
-    <div 
+    <div
       className="relative w-full h-64 bg-gradient-to-b from-blue-50 to-purple-50 rounded-lg overflow-hidden"
       role="progressbar"
       aria-valuenow={analysisProgress}
@@ -318,8 +318,8 @@ export const DocumentAnalysisAnimation: React.FC<DocumentAnalysisAnimationProps>
           <motion.div
             className="absolute top-1/4 left-1/2 transform -translate-x-1/2"
             initial={{ scale: 1, opacity: 1 }}
-            exit={{ 
-              scale: 0.3, 
+            exit={{
+              scale: 0.3,
               opacity: 0.2,
               rotate: personalityMode === 'empathetic' ? 15 : personalityMode === 'pragmatic' ? 0 : 5
             }}
@@ -328,7 +328,7 @@ export const DocumentAnalysisAnimation: React.FC<DocumentAnalysisAnimationProps>
             {/* Document icon with scanning effect */}
             <motion.div className="relative">
               <FileText className="w-16 h-16 text-blue-600" />
-              
+
               {/* Scanning line */}
               {phase === 'scanning' && (
                 <motion.div
@@ -343,7 +343,7 @@ export const DocumentAnalysisAnimation: React.FC<DocumentAnalysisAnimationProps>
                   }}
                 />
               )}
-              
+
               {/* File name */}
               <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-sm text-gray-600 whitespace-nowrap">
                 {fileName}
@@ -510,7 +510,7 @@ export const MagicalDropZone: React.FC<MagicalDropZoneProps> = ({
       aria-describedby="upload-instructions"
     >
       {children}
-      
+
       {/* Sofia Firefly Welcome */}
       <SofiaFireflyWelcome
         isVisible={showFirefly}

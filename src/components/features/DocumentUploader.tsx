@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useAuth, useUser } from '@clerk/clerk-react';
+import { useAuth } from '@clerk/clerk-react';
 import { useSupabaseWithClerk } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,8 +12,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useEncryption } from '@/hooks/useEncryption';
 import { toast } from 'sonner';
 import { textManager } from '@/lib/text-manager';
-import type { UserPreferences } from '@/types/user-preferences';
-import { defaultUserPreferences } from '@/types/user-preferences';
+import { defaultUserPreferences, type UserPreferences } from '@/types/user-preferences';
 import { useFireflyCelebration } from '@/contexts/FireflyContext';
 import { MagicalDropZone, DocumentAnalysisAnimation } from './MagicalDocumentUpload';
 import { usePersonalityManager } from '@/components/sofia/usePersonalityManager';
@@ -83,7 +82,7 @@ export const DocumentUploader = () => {
 
     setIsUploading(true);
     setUploadProgress(0);
-    
+
     // Start magical analysis animation
     setIsAnalyzing(true);
     setAnalysisProgress(0);
