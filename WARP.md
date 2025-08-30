@@ -1,0 +1,263 @@
+# WARP.md
+
+This file provides guidance to WARP (warp.dev) when working with code in this repository.
+
+## Project Overview
+
+LegacyGuard Mobile - A mobile application for the LegacyGuard platform, providing users with secure access to their legacy planning, will generation, and document management features on mobile devices.
+
+## Technology Stack
+
+### Setup
+- **Framework**: Expo with React Native and TypeScript
+- **State Management**: Redux Toolkit or Zustand
+- **Authentication**: Clerk integration (matching web app)
+- **Storage**: Expo SecureStore for sensitive data, AsyncStorage for general data
+- **API Communication**: RESTful API or GraphQL to LegacyGuard backend
+- **Navigation**: React Navigation v6
+
+## Core Features to Implement
+
+Based on the LegacyGuard platform:
+
+1. **Authentication & Security** ✅ Implemented
+   - Clerk authentication integration ✅
+   - Biometric authentication support ✅
+   - Secure local data storage with encryption (expo-secure-store) ✅
+   - JWT token management for Supabase ✅
+
+2. **Will Generator**
+   - Step-by-step wizard interface
+   - Integration with people and asset services
+   - Offline capability with sync
+
+3. **Document Management** 🚧 In Progress
+   - Intelligent Document Scanner ✅
+     - Camera integration with react-native-vision-camera
+     - Document edge detection frame
+     - Quality validation
+     - Future: OCR and AI metadata extraction
+   - Secure document vault
+   - Category-based organization
+   - File upload and metadata management
+
+4. **People Management (Trusted Circle)**
+   - Manage guardians, beneficiaries, executors
+   - Contact information and role management
+
+5. **Asset Management (My Possessions)**
+   - Track and categorize assets
+   - Asset valuation and details
+
+## Development Setup
+
+### Prerequisites
+```bash
+# Install Expo CLI globally (optional, npx can be used instead)
+npm install -g expo-cli
+
+# For iOS development
+xcode-select --install
+# Install Xcode from Mac App Store
+
+# For Android development
+# Install Android Studio and configure Android SDK
+```
+
+### Environment Setup
+
+1. **Create .env file** from .env.example:
+```bash
+cp .env.example .env
+```
+
+2. **Add your Clerk Publishable Key** to .env:
+```
+EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
+```
+
+### Common Commands
+
+```bash
+# Install dependencies
+npm install
+
+# Start Expo development server
+npm start
+# or
+expo start
+
+# Run on iOS simulator
+npm run ios
+# or
+expo start --ios
+
+# Run on Android emulator
+npm run android
+# or
+expo start --android
+
+# Run on web
+npm run web
+# or
+expo start --web
+
+# Clear cache and start fresh
+expo start -c
+
+# Build for production
+eas build --platform ios
+eas build --platform android
+
+# Type checking
+npx tsc --noEmit
+
+# Lint code (once configured)
+npm run lint
+```
+
+## Project Structure Guidelines
+
+```
+mobile/
+├── src/
+│   ├── components/       # Reusable UI components
+│   ├── screens/          # Screen components
+│   ├── navigation/       # Navigation configuration
+│   ├── services/         # API and service layer
+│   ├── store/           # State management
+│   ├── utils/           # Utility functions
+│   ├── hooks/           # Custom React hooks
+│   └── constants/       # App constants
+├── ios/                 # iOS specific code
+├── android/             # Android specific code
+└── __tests__/          # Test files
+```
+
+## Security Considerations
+
+1. **Data Encryption**
+   - All sensitive data must be encrypted at rest
+   - Use platform-specific secure storage (iOS Keychain, Android Keystore)
+
+2. **Authentication**
+   - Implement biometric authentication where available
+   - Ensure Clerk tokens are securely stored
+   - Implement session timeout for security
+
+3. **Network Security**
+   - All API communications must use HTTPS
+   - Implement certificate pinning for additional security
+   - Handle offline scenarios gracefully
+
+## UI/UX Guidelines
+
+Based on LegacyGuard's design philosophy:
+
+1. **Design Principles**
+   - Serious, contemplative UX
+   - Premium, minimalist interface
+   - Empathetic and reassuring tone
+   - Focus on clarity and simplicity
+
+2. **Component Patterns**
+   - Step-by-step wizards for complex tasks
+   - Progressive disclosure of information
+   - Clear visual hierarchy
+   - Consistent navigation patterns
+
+3. **Accessibility**
+   - Support for screen readers
+   - Adequate touch targets (minimum 44x44 points)
+   - High contrast mode support
+   - Font scaling support
+
+## API Integration
+
+1. **Endpoints**
+   - Maintain consistency with web app API structure
+   - Implement proper error handling
+   - Cache responses where appropriate
+
+2. **Offline Support**
+   - Queue actions for sync when online
+   - Local data caching strategy
+   - Conflict resolution for data sync
+
+## Testing Strategy
+
+1. **Unit Tests**
+   - Test business logic and utilities
+   - Mock external dependencies
+
+2. **Integration Tests**
+   - Test API integrations
+   - Test navigation flows
+
+3. **E2E Tests**
+   - Use Detox or Appium for end-to-end testing
+   - Cover critical user journeys
+
+## Performance Optimization
+
+1. **App Size**
+   - Minimize bundle size
+   - Use code splitting where applicable
+   - Optimize images and assets
+
+2. **Runtime Performance**
+   - Implement lazy loading
+   - Optimize list rendering with virtualization
+   - Minimize re-renders
+
+3. **Memory Management**
+   - Proper cleanup of listeners and subscriptions
+   - Efficient image caching
+
+## Release Process
+
+1. **Version Management**
+   - Follow semantic versioning
+   - Maintain changelog
+
+2. **Build Process**
+   - Configure CI/CD pipelines
+   - Automate build and deployment
+
+3. **App Store Submission**
+   - Prepare app store assets
+   - Handle review guidelines compliance
+
+## Platform-Specific Considerations
+
+### iOS
+- Handle iOS-specific permissions
+- Implement proper background task handling
+- Support for latest iOS versions
+
+### Android
+- Handle Android permissions model
+- Support for different screen sizes
+- Background service implementation
+
+## Internationalization
+
+- Prepare for multi-language support (34+ languages)
+- Use modular translation structure
+- RTL language support consideration
+
+## Important Context from Web App
+
+The mobile app should maintain feature parity with key web app features:
+- Will Generator wizard flow
+- MicroTaskEngine for breaking down complex tasks
+- ScenarioPlanner for "what if" scenarios
+- Document management with categories
+- People management (Trusted Circle)
+- Asset tracking (My Possessions)
+
+Maintain consistency with the web app's:
+- Privacy-first architecture
+- Empathetic UX approach
+- Step-by-step task philosophy
+- Progressive disclosure patterns
