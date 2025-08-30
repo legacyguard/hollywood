@@ -80,7 +80,7 @@ Object.defineProperty(global, 'crypto', {
       deriveBits: vi.fn(),
       sign: vi.fn(),
       verify: vi.fn(),
-      digest: vi.fn((algorithm, data) => {
+      digest: vi.fn((_algorithm, _data) => {
         // Simple mock implementation
         return Promise.resolve(new ArrayBuffer(32));
       }),
@@ -102,7 +102,7 @@ beforeAll(() => {
       originalError(...args);
     }
   });
-  
+
   console.warn = vi.fn((...args) => {
     // Only log actual warnings, not expected ones
     if (!args[0]?.includes?.('Expected')) {
@@ -122,7 +122,7 @@ export const testUtils = {
    * Wait for async operations
    */
   waitFor: (ms: number) => new Promise(resolve => setTimeout(resolve, ms)),
-  
+
   /**
    * Create mock user
    */
@@ -134,7 +134,7 @@ export const testUtils = {
     imageUrl: 'https://example.com/avatar.jpg',
     ...overrides,
   }),
-  
+
   /**
    * Create mock document
    */
@@ -148,17 +148,17 @@ export const testUtils = {
     updatedAt: new Date().toISOString(),
     ...overrides,
   }),
-  
+
   /**
    * Mock API response
    */
-  mockApiResponse: (data: any, status = 200) => {
+  mockApiResponse: (data: Record<string, unknown>, status = 200) => {
     return new Response(JSON.stringify(data), {
       status,
       headers: { 'Content-Type': 'application/json' },
     });
   },
-  
+
   /**
    * Mock Supabase client
    */
@@ -186,7 +186,7 @@ export const testUtils = {
       })),
     },
   }),
-  
+
   /**
    * Mock Clerk
    */
@@ -205,3 +205,4 @@ export const testUtils = {
 export * from '@testing-library/react';
 export { default as userEvent } from '@testing-library/user-event';
 export { testUtils };
+

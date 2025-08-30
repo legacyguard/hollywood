@@ -16,7 +16,7 @@ const NotFound = () => {
 
   return (
     <>
-      <MetaTags 
+      <MetaTags
         title="Page Not Found"
         description="The page you're looking for doesn't exist. Return to LegacyGuard to continue securing your family's future."
         robots="noindex, nofollow"
@@ -35,3 +35,4 @@ const NotFound = () => {
 };
 
 export default NotFound;
+

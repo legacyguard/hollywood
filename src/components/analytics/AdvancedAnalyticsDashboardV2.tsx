@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
@@ -13,7 +13,7 @@ import {
   Target,
   Brain,
   Zap,
-  Star,
+
   Award,
   Activity,
   Clock,
@@ -305,7 +305,7 @@ export const AdvancedAnalyticsDashboard: React.FC<AdvancedAnalyticsDashboardProp
         <div className="flex gap-2">
           <select
             value={selectedTimeframe}
-            onChange={(e) => setSelectedTimeframe(e.target.value as any)}
+            onChange={(e) => setSelectedTimeframe(e.target.value as '7d' | '30d' | '90d' | '1y')}
             className="px-3 py-1 border rounded-md text-sm"
           >
             <option value="7d">Last 7 days</option>
@@ -314,7 +314,7 @@ export const AdvancedAnalyticsDashboard: React.FC<AdvancedAnalyticsDashboardProp
             <option value="1y">Last year</option>
           </select>
           <Button
-            variant={"outline" as any}
+            variant="outline"
             onClick={() => setShowSmartInsights(!showSmartInsights)}
             className="gap-2"
           >
@@ -489,7 +489,7 @@ export const AdvancedAnalyticsDashboard: React.FC<AdvancedAnalyticsDashboardProp
       )}
 
       {/* Tabbed Analytics Views */}
-      <Tabs value={activeView} onValueChange={(v) => setActiveView(v as any)}>
+      <Tabs value={activeView} onValueChange={(v) => setActiveView(v as 'overview' | 'protection' | 'progress')}>
         <TabsList>
           <TabsTrigger value="overview">
             <BarChart3 className="h-4 w-4 mr-2" />

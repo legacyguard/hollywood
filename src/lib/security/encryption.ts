@@ -123,12 +123,12 @@ export class EncryptionService {
     try {
       const encoder = new TextEncoder();
       const plaintext = encoder.encode(data);
-      
+
       // Generate IV
       const iv = this.generateRandomBytes(IV_LENGTH);
-      
+
       // Get or derive context-specific key
-      const key = context 
+      const key = context
         ? await this.getContextKey(context)
         : this.masterKey;
 
@@ -179,7 +179,7 @@ export class EncryptionService {
       const ivData = Uint8Array.from(atob(iv), c => c.charCodeAt(0));
 
       // Get or derive context-specific key
-      const key = context 
+      const key = context
         ? await this.getContextKey(context)
         : this.masterKey;
 
@@ -216,7 +216,7 @@ export class EncryptionService {
     const keyMaterial = await this.getKeyMaterial();
     const contextKey = await this.deriveKey(keyMaterial, context);
     this.keyCache.set(context, contextKey);
-    
+
     return contextKey;
   }
 
@@ -238,7 +238,7 @@ export class EncryptionService {
       if (obj[field] !== undefined && obj[field] !== null) {
         const value = String(obj[field]);
         const { encrypted: encryptedValue, iv } = await this.encrypt(value, String(field));
-        
+
         encrypted[field] = encryptedValue as any;
         encryptionMetadata[String(field)] = { iv, encrypted: true };
       }
@@ -289,10 +289,10 @@ export class EncryptionService {
   public async hash(data: string): Promise<string> {
     const encoder = new TextEncoder();
     const dataBuffer = encoder.encode(data);
-    
+
     const hashBuffer = await crypto.subtle.digest('SHA-256', dataBuffer);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
-    
+
     return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
   }
 
@@ -313,13 +313,13 @@ export class EncryptionService {
     if (!this.enabled) return;
 
     console.log('Starting key rotation...');
-    
+
     // Clear key cache
     this.keyCache.clear();
-    
+
     // Re-initialize master key
     await this.initializeMasterKey();
-    
+
     console.log('Key rotation completed');
   }
 
@@ -328,12 +328,12 @@ export class EncryptionService {
    */
   public secureCompare(a: string, b: string): boolean {
     if (a.length !== b.length) return false;
-    
+
     let result = 0;
     for (let i = 0; i < a.length; i++) {
       result |= a.charCodeAt(i) ^ b.charCodeAt(i);
     }
-    
+
     return result === 0;
   }
 }
@@ -346,7 +346,7 @@ export const encryptionService = EncryptionService.getInstance();
  */
 export class SecureStorage {
   private prefix = 'secure_';
-  
+
   /**
    * Set encrypted item in storage
    */
@@ -354,20 +354,20 @@ export class SecureStorage {
     try {
       const serialized = JSON.stringify(value);
       const { encrypted, iv } = await encryptionService.encrypt(serialized, key);
-      
+
       const storageData = {
         data: encrypted,
         iv,
         timestamp: Date.now(),
       };
-      
+
       localStorage.setItem(this.prefix + key, JSON.stringify(storageData));
     } catch (error) {
       console.error('Failed to store encrypted data:', error);
       throw error;
     }
   }
-  
+
   /**
    * Get and decrypt item from storage
    */
@@ -375,28 +375,28 @@ export class SecureStorage {
     try {
       const stored = localStorage.getItem(this.prefix + key);
       if (!stored) return null;
-      
+
       const storageData = JSON.parse(stored);
       const decrypted = await encryptionService.decrypt(
         storageData.data,
         storageData.iv,
         key
       );
-      
+
       return JSON.parse(decrypted) as T;
     } catch (error) {
       console.error('Failed to retrieve encrypted data:', error);
       return null;
     }
   }
-  
+
   /**
    * Remove item from storage
    */
   removeItem(key: string): void {
     localStorage.removeItem(this.prefix + key);
   }
-  
+
   /**
    * Clear all secure storage
    */
@@ -408,7 +408,7 @@ export class SecureStorage {
       }
     });
   }
-  
+
   /**
    * Get all keys in secure storage
    */
@@ -431,7 +431,7 @@ export function useEncryptedState<T>(
 ): [T, (value: T) => Promise<void>] {
   const [state, setState] = React.useState<T>(initialValue);
   const [loading, setLoading] = React.useState(true);
-  
+
   React.useEffect(() => {
     // Load encrypted state on mount
     secureStorage.getItem<T>(key).then(value => {
@@ -441,12 +441,12 @@ export function useEncryptedState<T>(
       setLoading(false);
     });
   }, [key]);
-  
+
   const setEncryptedState = React.useCallback(async (value: T) => {
     setState(value);
     await secureStorage.setItem(key, value);
   }, [key]);
-  
+
   return [state, setEncryptedState];
 }
 
@@ -456,10 +456,10 @@ export function useEncryptedState<T>(
 export function EncryptParams(...paramIndices: number[]) {
   return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
     const originalMethod = descriptor.value;
-    
+
     descriptor.value = async function (...args: any[]) {
       const encryptedArgs = [...args];
-      
+
       for (const index of paramIndices) {
         if (args[index] !== undefined) {
           const { encrypted, iv } = await encryptionService.encrypt(
@@ -468,10 +468,10 @@ export function EncryptParams(...paramIndices: number[]) {
           encryptedArgs[index] = { encrypted, iv };
         }
       }
-      
+
       return originalMethod.apply(this, encryptedArgs);
     };
-    
+
     return descriptor;
   };
 }
@@ -481,17 +481,17 @@ export function EncryptParams(...paramIndices: number[]) {
  */
 export function EncryptResult(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
   const originalMethod = descriptor.value;
-  
+
   descriptor.value = async function (...args: any[]) {
     const result = await originalMethod.apply(this, args);
-    
+
     if (result !== undefined) {
       return await encryptionService.encrypt(JSON.stringify(result));
     }
-    
+
     return result;
   };
-  
+
   return descriptor;
 }
 

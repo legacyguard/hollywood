@@ -8,7 +8,7 @@ export type WorkspaceType = 'family' | 'professional' | 'legal' | 'financial' | 
 export type MemberRole = 'owner' | 'admin' | 'advisor' | 'contributor' | 'viewer';
 export type PermissionType = 'read' | 'write' | 'comment' | 'share' | 'admin';
 export type CollaborationType = 'synchronous' | 'asynchronous';
-export type ActivityType = 
+export type ActivityType =
   | 'document_created'
   | 'document_updated'
   | 'comment_added'
@@ -300,7 +300,7 @@ export class TeamCollaborationService {
 
     this.workspaces.set(workspace.id, workspace);
     this.activityFeed.set(workspace.id, []);
-    
+
     await this.logActivity(workspace.id, 'workspace_created', workspace.ownerId, {
       workspaceId: workspace.id,
       workspaceName: workspace.name
@@ -628,7 +628,7 @@ export class TeamCollaborationService {
 
   async getActivityFeed(workspaceId: string, limit: number = 50): Promise<ActivityFeed[]> {
     const activities = this.activityFeed.get(workspaceId) || [];
-    return activities.slice(0, limit).sort((a, b) => 
+    return activities.slice(0, limit).sort((a, b) =>
       new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
     );
   }

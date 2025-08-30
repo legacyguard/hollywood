@@ -38,7 +38,7 @@ class TranslationOrganizer {
 
     async analyzeCurrentStructure(): Promise<TranslationReport> {
     // 🔍 Analyzing translation structure...
-    
+
     const files = await glob('**/*.json', {
       cwd: this.LOCALES_DIR,
       ignore: ['**/node_modules/**']
@@ -299,11 +299,11 @@ class TranslationOrganizer {
       suggestions.push(currentSuggestion);
     }
 
-    for (const suggestion of suggestions) {
-      // console.log(`  - ${suggestion.file}.json`);
-      // console.log(`    Keys: ${suggestion.keys.join(', ')}`);
-      // console.log(`    Estimated lines: ${suggestion.estimatedLines}`);
-    }
+          for (const _suggestion of suggestions) {
+        // console.log(`  - ${_suggestion.file}.json`);
+        // console.log(`    Keys: ${_suggestion.keys.join(', ')}`);
+        // console.log(`    Estimated lines: ${_suggestion.estimatedLines}`);
+      }
   }
 
   async validate(): Promise<boolean> {
@@ -338,7 +338,9 @@ class TranslationOrganizer {
         // console.log('\n⚠️  Warnings:');
         for (const issue of warnings) {
           // console.log(`  - ${issue.message}`);
-          if (issue.file) // console.log(`    File: ${issue.file}`);
+          if (issue.file) {
+            // console.log(`    File: ${issue.file}`);
+          }
         }
       }
 
@@ -346,15 +348,17 @@ class TranslationOrganizer {
         // console.log('\nℹ️  Info:');
         for (const issue of info) {
           // console.log(`  - ${issue.message}`);
-          if (issue.file) // console.log(`    File: ${issue.file}`);
+          if (issue.file) {
+            // console.log(`    File: ${issue.file}`);
+          }
         }
       }
     }
 
     if (report.suggestions.length > 0) {
       // console.log('\n💡 Suggestions:');
-      for (const suggestion of report.suggestions) {
-        // console.log(`  - ${suggestion}`);
+      for (const _suggestion of report.suggestions) {
+        // console.log(`  - ${_suggestion}`);
       }
     }
 
@@ -404,13 +408,13 @@ class TranslationOrganizer {
     // console.log('-'.repeat(20 + languages.length * 10));
 
     for (const [namespace, langCoverage] of Object.entries(coverage)) {
-      const row = namespace.padEnd(20);
-      const values = languages.map(lang => {
+      const _row = namespace.padEnd(20);
+      const _values = languages.map(lang => {
         const percent = langCoverage[lang];
         const emoji = percent === 100 ? '✅' : percent >= 80 ? '🟡' : '❌';
         return `${percent}% ${emoji}`.padEnd(10);
       }).join('');
-      // console.log(row + values);
+      // console.log(_row + _values);
     }
 
     // Calculate overall coverage
@@ -436,21 +440,24 @@ async function main() {
   const organizer = new TranslationOrganizer();
 
   switch (command) {
-    case 'analyze':
-      const report = await organizer.analyzeCurrentStructure();
+    case 'analyze': {
+      const _report = await organizer.analyzeCurrentStructure();
       // console.log('\n✅ Analysis complete');
       break;
+    }
 
-    case 'validate':
+    case 'validate': {
       const isValid = await organizer.validate();
       process.exit(isValid ? 0 : 1);
       break;
+    }
 
-    case 'coverage':
+    case 'coverage': {
       await organizer.generateCoverage();
       break;
+    }
 
-    case 'split':
+    case 'split': {
       const namespace = process.argv[3];
       const language = process.argv[4] || 'en';
       if (!namespace) {
@@ -459,6 +466,7 @@ async function main() {
       }
       await organizer.suggestOptimalSplit(namespace, language);
       break;
+    }
 
     default:
       // console.log('Usage: npm run i18n:<command>');
@@ -471,4 +479,4 @@ async function main() {
   }
 }
 
-main().catch(// console.error);
+main().catch(console.error);

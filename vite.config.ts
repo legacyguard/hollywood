@@ -35,8 +35,8 @@ export default defineConfig(({ mode }) => {
       hmr: {
         // Use WebSocket for HMR
         protocol: 'ws',
-        // Port for HMR WebSocket (defaults to server.port)
-        port: 8080,
+        // Don't specify port - let Vite use the same as server port
+        // This prevents HMR connection issues when port changes
       },
       // Watch options for file changes
       watch: {

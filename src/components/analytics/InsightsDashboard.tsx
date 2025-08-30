@@ -1,12 +1,12 @@
 /**
  * Document Insights Analytics Dashboard
  * Phase 6: AI Intelligence & Document Analysis
- * 
+ *
  * Comprehensive dashboard for document analytics, security insights,
  * usage patterns, and actionable recommendations.
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -14,8 +14,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
 import {
-  BarChart,
-  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -32,27 +30,21 @@ import {
 import {
   Activity,
   AlertTriangle,
-  BarChart3,
-  Clock,
   Download,
   FileText,
   HardDrive,
   RefreshCw,
   Shield,
   TrendingUp,
-  Users,
   AlertCircle,
   CheckCircle2,
-  Eye,
-  Filter,
-  Calendar,
   Zap
 } from 'lucide-react';
 import {
   documentInsightsService,
-  InsightsDashboardData,
-  SecurityRecommendation,
-  AnalyticsFilter
+  type InsightsDashboardData,
+  type SecurityRecommendation,
+  type AnalyticsFilter
 } from '@/lib/ai/documentInsights';
 import { cn } from '@/lib/utils';
 
@@ -71,10 +63,10 @@ export default function InsightsDashboard({ className }: InsightsDashboardProps)
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
-  const [filter, setFilter] = useState<AnalyticsFilter>({});
+  const [filter] = useState<AnalyticsFilter>({});
   const [lastRefresh, setLastRefresh] = useState<Date>(new Date());
 
-  const loadDashboardData = async () => {
+  const loadDashboardData = useCallback(async () => {
     try {
       setIsRefreshing(true);
       const [data, recs] = await Promise.all([
@@ -90,11 +82,11 @@ export default function InsightsDashboard({ className }: InsightsDashboardProps)
       setIsLoading(false);
       setIsRefreshing(false);
     }
-  };
+  }, [filter]);
 
   useEffect(() => {
     loadDashboardData();
-  }, [filter]);
+  }, [loadDashboardData]);
 
   const formatBytes = (bytes: number): string => {
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
@@ -127,8 +119,8 @@ export default function InsightsDashboard({ className }: InsightsDashboardProps)
   const exportData = async (format: 'json' | 'csv') => {
     try {
       const data = await documentInsightsService.exportInsights(format, filter);
-      const blob = new Blob([data], { 
-        type: format === 'csv' ? 'text/csv' : 'application/json' 
+      const blob = new Blob([data], {
+        type: format === 'csv' ? 'text/csv' : 'application/json'
       });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');

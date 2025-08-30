@@ -80,7 +80,7 @@ export interface DocumentMetadata {
   size: number;
 }
 
-export type IntentType = 
+export type IntentType =
   | 'search'
   | 'filter'
   | 'find'
@@ -148,10 +148,10 @@ class NaturalLanguageSearchService {
   }> {
     // Parse and process the query
     const searchQuery = await this.processQuery(query);
-    
+
     // Execute search
     const results = await this.executeSearch(searchQuery, options);
-    
+
     // Generate suggestions
     const suggestions = await this.generateSuggestions(searchQuery, results);
 
@@ -188,12 +188,12 @@ class NaturalLanguageSearchService {
    */
   private async analyzeIntent(query: string): Promise<QueryIntent> {
     const lowerQuery = query.toLowerCase();
-    
+
     // Simple intent classification (in production, would use ML model)
     let type: IntentType = 'search';
     let action: QueryAction = 'retrieve';
-    let target: QueryTarget = 'documents';
-    
+    const target: QueryTarget = 'documents';
+
     if (lowerQuery.includes('show me') || lowerQuery.includes('find')) {
       type = 'search';
     } else if (lowerQuery.includes('how many') || lowerQuery.includes('count')) {
@@ -220,11 +220,11 @@ class NaturalLanguageSearchService {
    */
   private async extractEntities(query: string): Promise<QueryEntity[]> {
     const entities: QueryEntity[] = [];
-    
+
     // Extract dates
     const datePattern = /\b\d{1,2}\/\d{1,2}\/\d{4}\b|\b\d{4}\b|\b(january|february|march|april|may|june|july|august|september|october|november|december)\s+\d{4}\b/gi;
     const dateMatches = query.match(datePattern) || [];
-    
+
     for (const match of dateMatches) {
       entities.push({
         type: 'date',
@@ -238,7 +238,7 @@ class NaturalLanguageSearchService {
     // Extract amounts
     const amountPattern = /\$[\d,]+\.?\d*|\b\d+\s*(dollars?|k|thousand|million)\b/gi;
     const amountMatches = query.match(amountPattern) || [];
-    
+
     for (const match of amountMatches) {
       entities.push({
         type: 'amount',
@@ -252,7 +252,7 @@ class NaturalLanguageSearchService {
     // Extract document types
     const docTypePattern = /\b(will|insurance|tax|contract|deed|policy|certificate|statement|report)\b/gi;
     const docTypeMatches = query.match(docTypePattern) || [];
-    
+
     for (const match of docTypeMatches) {
       entities.push({
         type: 'document_type',
@@ -272,7 +272,7 @@ class NaturalLanguageSearchService {
   private async processQueryText(query: string): Promise<ProcessedQuery> {
     // Extract keywords
     const words = query.toLowerCase().match(/\b\w+\b/g) || [];
-    const keywords = words.filter(word => 
+    const keywords = words.filter(word =>
       word.length > 2 && !this.isStopWord(word)
     );
 
@@ -345,7 +345,7 @@ class NaturalLanguageSearchService {
   ): Promise<{ results: SearchResult[]; totalCount: number }> {
     // This would integrate with actual search engine (Elasticsearch, etc.)
     // For demo purposes, return mock results
-    
+
     const mockResults: SearchResult[] = [
       {
         documentId: '1',
@@ -466,24 +466,24 @@ class NaturalLanguageSearchService {
 
   private normalizeAmount(amountStr: string): string {
     const numStr = amountStr.replace(/[$,]/g, '').toLowerCase();
-    
+
     if (numStr.includes('k') || numStr.includes('thousand')) {
       return (parseFloat(numStr) * 1000).toString();
     }
     if (numStr.includes('million')) {
       return (parseFloat(numStr) * 1000000).toString();
     }
-    
+
     return parseFloat(numStr).toString();
   }
 
   private getContext(text: string, term: string, contextLength: number = 50): string {
     const index = text.toLowerCase().indexOf(term.toLowerCase());
     if (index === -1) return '';
-    
+
     const start = Math.max(0, index - contextLength);
     const end = Math.min(text.length, index + term.length + contextLength);
-    
+
     return text.substring(start, end);
   }
 
@@ -494,7 +494,7 @@ class NaturalLanguageSearchService {
       'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'must',
       'i', 'you', 'he', 'she', 'it', 'we', 'they', 'me', 'him', 'her', 'us', 'them'
     ];
-    
+
     return stopWords.includes(word.toLowerCase());
   }
 
@@ -504,7 +504,7 @@ class NaturalLanguageSearchService {
       acc[cat] = (acc[cat] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
-    
+
     return Object.entries(counts)
       .sort(([,a], [,b]) => b - a)[0]?.[0] || 'documents';
   }

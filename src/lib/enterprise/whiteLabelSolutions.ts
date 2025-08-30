@@ -4,7 +4,7 @@
  * banks, and advisory firms to offer branded estate planning services.
  */
 
-export type OrganizationType = 
+export type OrganizationType =
   | 'bank'
   | 'credit_union'
   | 'wealth_management'
@@ -324,7 +324,7 @@ export class WhiteLabelSolutionsService {
 
     await this.regenerateAssets(partnerId);
     await this.updateDeployment(partnerId, { branding: partner.branding });
-    
+
     partner.updatedAt = new Date().toISOString();
     return partner.branding;
   }
@@ -345,7 +345,7 @@ export class WhiteLabelSolutionsService {
 
     await this.setupIntegrations(partnerId);
     partner.updatedAt = new Date().toISOString();
-    
+
     return partner.integration;
   }
 
@@ -376,10 +376,10 @@ export class WhiteLabelSolutionsService {
     };
 
     this.deployments.set(deployment.id, deployment);
-    
+
     // Start deployment process
     await this.executeDeployment(deployment);
-    
+
     return deployment;
   }
 
@@ -475,7 +475,7 @@ export class WhiteLabelSolutionsService {
     }
 
     partner.licensing.revenue = revenueConfig;
-    
+
     const setup: RevenueSharingSetup = {
       partnerId,
       configuration: revenueConfig,
@@ -685,7 +685,7 @@ export class WhiteLabelSolutionsService {
       environment: 'production' as const,
       region: 'us-east-1'
     };
-    
+
     await this.deployPartnerInstance(partner.id, deploymentConfig);
   }
 
@@ -696,7 +696,7 @@ export class WhiteLabelSolutionsService {
 
     // Generate CSS with partner colors
     partner.branding.customCSS = this.generatePartnerCSS(partner.branding);
-    
+
     // Process logo variants
     if (partner.branding.logo.url) {
       partner.branding.logo.variants = await this.generateLogoVariants(partner.branding.logo);
@@ -739,7 +739,7 @@ export class WhiteLabelSolutionsService {
       'integration': 2.0,
       'report': 1.2
     };
-    
+
     return baseCost * (complexityMultiplier[spec.type] || 1.0);
   }
 
@@ -802,7 +802,7 @@ export class WhiteLabelSolutionsService {
   private createDefaultComplianceConfig(): ComplianceConfiguration { return {} as ComplianceConfiguration; }
   private createDefaultLocalization(): LocalizationSettings { return {} as LocalizationSettings; }
   private createDefaultWorkflow(): WorkflowConfiguration { return {} as WorkflowConfiguration; }
-  
+
   private async updateDeployment(partnerId: string, updates: any): Promise<void> {}
   private async setupIntegrations(partnerId: string): Promise<void> {}
   private generateDeploymentConfig(partner: WhiteLabelPartner): any { return {}; }

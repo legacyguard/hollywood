@@ -62,7 +62,7 @@ class MultiFactorAuthService {
    */
   async isWebAuthnSupported(): Promise<boolean> {
     if (typeof window === 'undefined') return false;
-    
+
     return !!(
       window.PublicKeyCredential &&
       typeof window.PublicKeyCredential === 'function' &&
@@ -75,7 +75,7 @@ class MultiFactorAuthService {
    */
   async getBiometricCapabilities(): Promise<BiometricCapabilities> {
     const isSupported = await this.isWebAuthnSupported();
-    
+
     if (!isSupported) {
       return {
         isSupported: false,
@@ -87,7 +87,7 @@ class MultiFactorAuthService {
 
     try {
       const platformAuthenticator = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
-      
+
       return {
         isSupported: true,
         availableAuthenticators: platformAuthenticator ? ['platform', 'cross-platform'] : ['cross-platform'],
@@ -145,10 +145,10 @@ class MultiFactorAuthService {
 
     try {
       const registrationResponse = await startRegistration(options);
-      
+
       // Verify registration on server
       const verified = await this.verifyRegistration(registrationResponse, options);
-      
+
       if (!verified) {
         throw new Error('Registration verification failed');
       }
@@ -193,10 +193,10 @@ class MultiFactorAuthService {
 
     try {
       const authResponse = await startAuthentication(options);
-      
+
       // Verify authentication on server
       const verified = await this.verifyAuthentication(authResponse, options);
-      
+
       return verified;
     } catch (error) {
       console.error('WebAuthn authentication failed:', error);
@@ -214,7 +214,7 @@ class MultiFactorAuthService {
   }> {
     // Generate a random secret
     const secret = OTPAuth.Secret.random();
-    
+
     // Create TOTP instance
     const totp = new OTPAuth.TOTP({
       issuer: serviceName,
@@ -227,7 +227,7 @@ class MultiFactorAuthService {
 
     // Generate QR code URL
     const qrCodeDataUrl = await QRCode.toDataURL(totp.toString());
-    
+
     // Generate backup codes
     const backupCodes = this.generateBackupCodes(8);
 
@@ -253,7 +253,7 @@ class MultiFactorAuthService {
       // Allow for clock skew (±1 period)
       const currentTime = Date.now();
       const window = 1;
-      
+
       for (let i = -window; i <= window; i++) {
         const timeOffset = currentTime + (i * 30 * 1000);
         if (totp.generate({ timestamp: timeOffset }) === token) {
@@ -274,7 +274,7 @@ class MultiFactorAuthService {
   async requestSMSAuth(phoneNumber: string): Promise<MFAChallenge> {
     // Generate 6-digit code
     const code = Math.floor(100000 + Math.random() * 900000).toString();
-    
+
     const challenge: MFAChallenge = {
       challengeId: this.generateId(),
       type: 'sms',
@@ -286,9 +286,9 @@ class MultiFactorAuthService {
 
     // TODO: Integrate with SMS provider (Twilio, AWS SNS, etc.)
     // await this.sendSMS(phoneNumber, `Your LegacyGuard verification code: ${code}`);
-    
+
     console.log(`SMS verification code for ${phoneNumber}: ${code}`);
-    
+
     return challenge;
   }
 
@@ -305,7 +305,7 @@ class MultiFactorAuthService {
     }
 
     challenge.attempts++;
-    
+
     return challenge.challenge === code;
   }
 
@@ -314,7 +314,7 @@ class MultiFactorAuthService {
    */
   async registerBiometric(userId: string): Promise<MFADevice> {
     const capabilities = await this.getBiometricCapabilities();
-    
+
     if (!capabilities.isSupported || !capabilities.platformAuthenticator) {
       throw new Error('Biometric authentication not supported on this device');
     }
@@ -327,7 +327,7 @@ class MultiFactorAuthService {
    */
   async authenticateBiometric(credentialId: string): Promise<boolean> {
     const capabilities = await this.getBiometricCapabilities();
-    
+
     if (!capabilities.isSupported) {
       throw new Error('Biometric authentication not supported');
     }
@@ -340,19 +340,19 @@ class MultiFactorAuthService {
    */
   generateBackupCodes(count: number = 8): string[] {
     const codes: string[] = [];
-    
+
     for (let i = 0; i < count; i++) {
       // Generate 8-character alphanumeric code
       const code = Array.from(
-        { length: 8 }, 
+        { length: 8 },
         () => 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'[Math.floor(Math.random() * 36)]
       ).join('');
-      
+
       // Format as XXXX-XXXX
       const formattedCode = `${code.slice(0, 4)}-${code.slice(4)}`;
       codes.push(formattedCode);
     }
-    
+
     return codes;
   }
 
@@ -366,7 +366,7 @@ class MultiFactorAuthService {
   } {
     const activeDevices = devices.filter(d => d.isActive);
     const deviceTypes = new Set(activeDevices.map(d => d.type));
-    
+
     const missingFactors: string[] = [];
     const recommendations: string[] = [];
 
@@ -425,10 +425,10 @@ class MultiFactorAuthService {
     // 2. Verify the origin matches
     // 3. Verify the attestation
     // 4. Store the credential
-    
+
     console.log('Registration response:', registrationResponse);
     console.log('Registration options:', options);
-    
+
     // For now, return true (in production, this must be properly implemented)
     return true;
   }
@@ -443,10 +443,10 @@ class MultiFactorAuthService {
     // 2. Verify the origin matches
     // 3. Verify the signature against the stored public key
     // 4. Update the sign count
-    
+
     console.log('Authentication response:', authResponse);
     console.log('Authentication options:', options);
-    
+
     // For now, return true (in production, this must be properly implemented)
     return true;
   }

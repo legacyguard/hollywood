@@ -12,18 +12,18 @@ const envSchema = z.object({
     .string()
     .min(1, 'Clerk publishable key is required')
     .regex(/^pk_(test|live)_/, 'Invalid Clerk publishable key format'),
-  
+
   // Supabase Configuration
   VITE_SUPABASE_URL: z
     .string()
     .url('Invalid Supabase URL')
     .regex(/^https:\/\//, 'Supabase URL must use HTTPS'),
-  
+
   VITE_SUPABASE_ANON_KEY: z
     .string()
     .min(1, 'Supabase anon key is required')
     .regex(/^eyJ/, 'Invalid Supabase key format'),
-  
+
   // Optional: Sentry Configuration
   VITE_SENTRY_DSN: z
     .string()
@@ -33,22 +33,22 @@ const envSchema = z.object({
       (val) => !val || val.startsWith('https://'),
       'Sentry DSN must use HTTPS'
     ),
-  
+
   // App Configuration
   VITE_APP_VERSION: z.string().default('1.0.0'),
   VITE_APP_ENV: z.enum(['development', 'staging', 'production']).default('development'),
-  
+
   // Feature Flags
   VITE_ENABLE_2FA: z
     .string()
     .transform((val) => val === 'true')
     .default('false'),
-  
+
   VITE_ENABLE_RATE_LIMITING: z
     .string()
     .transform((val) => val === 'true')
     .default('true'),
-  
+
   VITE_ENABLE_ENCRYPTION: z
     .string()
     .transform((val) => val === 'true')
@@ -96,14 +96,14 @@ class EnvironmentConfigManager {
       };
 
       this.config = envSchema.parse(env);
-      
+
       // Security checks
       this.performSecurityChecks();
     } catch (error) {
       if (error instanceof z.ZodError) {
         this.validationErrors = error;
         console.error('❌ Environment configuration validation failed:', error.errors);
-        
+
         // In production, fail fast
         if (import.meta.env.PROD) {
           throw new Error('Critical: Invalid environment configuration');
@@ -131,12 +131,12 @@ class EnvironmentConfigManager {
       if (this.config.VITE_CLERK_PUBLISHABLE_KEY.includes('pk_test')) {
         throw new Error('❌ Critical: Test keys detected in production environment');
       }
-      
+
       // Ensure security features are enabled in production
       if (!this.config.VITE_ENABLE_RATE_LIMITING) {
         console.error('❌ Critical: Rate limiting must be enabled in production');
       }
-      
+
       if (!this.config.VITE_ENABLE_ENCRYPTION) {
         console.error('❌ Critical: Encryption must be enabled in production');
       }

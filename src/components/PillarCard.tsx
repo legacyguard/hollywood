@@ -87,7 +87,7 @@ export function PillarCard({
             </a>
           ) : (
             <Button
-              variant={"outline" as any}
+              variant="outline"
               size='sm'
               onClick={actionButton.onClick}
               className='border-primary/20 text-primary hover:bg-primary hover:text-primary-foreground'

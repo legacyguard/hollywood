@@ -175,7 +175,7 @@ export const AdvancedAnalyticsDashboard: React.FC<AdvancedAnalyticsDashboardProp
         </div>
         <div className="flex gap-2">
           <Button
-            variant={"outline" as any}
+            variant="outline"
             onClick={() => setShowSmartInsights(!showSmartInsights)}
             className="gap-2"
           >
@@ -284,13 +284,13 @@ export const AdvancedAnalyticsDashboard: React.FC<AdvancedAnalyticsDashboardProp
               <CardTitle className="flex items-center gap-2">
                 <Brain className="h-5 w-5 text-blue-600" />
                 AI-Powered Smart Insights
-                <Badge variant={"secondary" as any} className="text-xs">Powered by LegacyGuard AI</Badge>
+                <Badge variant="secondary" className="text-xs">Powered by LegacyGuard AI</Badge>
               </CardTitle>
               <div className="flex items-center gap-2">
-                <Badge variant={"outline" as any} className="text-xs">
+                <Badge variant="outline" className="text-xs">
                   {smartInsights.filter(i => i.priority === 'critical' || i.priority === 'high').length} urgent
                 </Badge>
-                <Button size="sm" variant={"ghost" as any} onClick={() => setShowSmartInsights(false)}>
+                <Button size="sm" variant="ghost" onClick={() => setShowSmartInsights(false)}>
                   <EyeOff className="h-4 w-4" />
                 </Button>
               </div>

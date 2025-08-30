@@ -141,7 +141,7 @@ class AdvancedSharingControlsService {
   ): Promise<ShareLink> {
     // Generate secure share token
     const shareToken = customToken || this.generateSecureToken();
-    
+
     // Encrypt document access key
     const documentAccessKey = await this.getDocumentAccessKey(documentId);
     if (!documentAccessKey) {
@@ -151,7 +151,7 @@ class AdvancedSharingControlsService {
     const encryptedAccessKey = await this.encryptAccessKey(documentAccessKey, shareToken);
 
     // Calculate expiration
-    const expiresAt = permissions.timeLimit 
+    const expiresAt = permissions.timeLimit
       ? new Date(Date.now() + permissions.timeLimit * 60000).toISOString()
       : undefined;
 
@@ -194,7 +194,7 @@ class AdvancedSharingControlsService {
     }
   ): Promise<{ allowed: boolean; session?: ViewSession; reason?: string }> {
     const shareLink = await this.getShareLinkByToken(shareToken);
-    
+
     if (!shareLink || !shareLink.isActive) {
       return { allowed: false, reason: 'Invalid or inactive share link' };
     }
@@ -274,11 +274,11 @@ class AdvancedSharingControlsService {
     // - For images: Use canvas or image processing library
     // - For PDFs: Use PDF manipulation library
     // - For documents: Embed invisible watermark in metadata
-    
+
     // For now, return original data with watermark metadata
     const watermarkedData = new Uint8Array(documentData.byteLength + 1024);
     watermarkedData.set(new Uint8Array(documentData));
-    
+
     // Append watermark metadata (in production, this would be embedded properly)
     const metadataString = JSON.stringify(watermarkData);
     const metadataBytes = new TextEncoder().encode(metadataString);
@@ -369,18 +369,18 @@ class AdvancedSharingControlsService {
     }
 
     // Check accuracy requirements
-    if (geofencing.requireGPSAccuracy && 
-        location.accuracy && 
+    if (geofencing.requireGPSAccuracy &&
+        location.accuracy &&
         location.accuracy > geofencing.requireGPSAccuracy) {
       return { allowed: false, reason: 'GPS accuracy insufficient' };
     }
 
     // Check allowed regions
     if (geofencing.allowedRegions.length > 0) {
-      const inAllowedRegion = geofencing.allowedRegions.some(region => 
+      const inAllowedRegion = geofencing.allowedRegions.some(region =>
         this.isLocationInRegion(location, region)
       );
-      
+
       if (!inAllowedRegion) {
         return { allowed: false, reason: 'Location not in allowed region' };
       }
@@ -391,7 +391,7 @@ class AdvancedSharingControlsService {
       const inRestrictedRegion = geofencing.restrictedRegions.some(region =>
         this.isLocationInRegion(location, region)
       );
-      
+
       if (inRestrictedRegion) {
         return { allowed: false, reason: 'Location in restricted region' };
       }

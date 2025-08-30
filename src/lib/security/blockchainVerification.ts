@@ -46,9 +46,9 @@ export interface VerificationResult {
   warnings: string[];
 }
 
-export type BlockchainAction = 
+export type BlockchainAction =
   | 'CREATE'
-  | 'UPDATE' 
+  | 'UPDATE'
   | 'DELETE'
   | 'SHARE'
   | 'ACCESS'
@@ -68,7 +68,7 @@ class BlockchainVerificationService {
   private readonly BLOCKCHAIN_VERSION = 1;
   private readonly HASH_ALGORITHM = 'sha256';
   private readonly DIFFICULTY = 4; // Number of leading zeros for proof of work
-  
+
   /**
    * Create a new blockchain entry
    */
@@ -81,7 +81,7 @@ class BlockchainVerificationService {
   ): Promise<BlockchainEntry> {
     const timestamp = Date.now();
     const previousHash = await this.getLastBlockHash(documentId) || '0'.repeat(64);
-    
+
     // Create document fingerprint if action involves document content
     let documentFingerprint: DocumentFingerprint | undefined;
     if (['CREATE', 'UPDATE', 'ENCRYPT'].includes(action) && metadata.fileData) {
@@ -109,7 +109,7 @@ class BlockchainVerificationService {
 
     // Calculate current hash
     const currentHash = this.calculateHash(entryData);
-    
+
     // Create Merkle tree for this block
     const merkleTree = this.createMerkleTree([
       currentHash,
@@ -118,7 +118,7 @@ class BlockchainVerificationService {
     ]);
 
     // Sign the entry
-    const signature = privateKey 
+    const signature = privateKey
       ? this.signEntry(entryData, privateKey)
       : this.createSystemSignature(entryData);
 
@@ -144,7 +144,7 @@ class BlockchainVerificationService {
     mimeType: string
   ): Promise<DocumentFingerprint> {
     const dataArray = fileData instanceof ArrayBuffer ? new Uint8Array(fileData) : fileData;
-    
+
     // Calculate SHA-256 hash
     const hash = createHash(this.HASH_ALGORITHM);
     hash.update(dataArray);
@@ -201,7 +201,7 @@ class BlockchainVerificationService {
       );
 
       documentIntegrity = latestFingerprint.sha256Hash === currentFingerprint.sha256Hash;
-      
+
       if (!documentIntegrity) {
         errors.push('Document content has been modified since last blockchain entry');
       }
@@ -235,7 +235,7 @@ class BlockchainVerificationService {
   async getAuditTrail(documentId: string): Promise<AuditTrail | null> {
     try {
       const entries = await this.getBlockchainEntries(documentId);
-      
+
       if (entries.length === 0) {
         return null;
       }
@@ -245,7 +245,7 @@ class BlockchainVerificationService {
 
       // Verify chain integrity
       const chainIntegrity = await this.verifyChainIntegrity(entries);
-      
+
       return {
         documentId,
         entries,
@@ -269,36 +269,36 @@ class BlockchainVerificationService {
 
     // Remove empty strings and duplicates
     const cleanLeaves = [...new Set(leaves.filter(leaf => leaf))];
-    
+
     if (cleanLeaves.length === 0) {
       throw new Error('No valid leaves provided for Merkle tree');
     }
 
     // Hash all leaves
     const hashedLeaves = cleanLeaves.map(leaf => this.hashData(leaf));
-    
+
     let currentLevel = hashedLeaves;
     const proofs: Record<string, string[]> = {};
 
     // Build tree bottom-up
     while (currentLevel.length > 1) {
       const nextLevel: string[] = [];
-      
+
       for (let i = 0; i < currentLevel.length; i += 2) {
         const left = currentLevel[i];
         const right = i + 1 < currentLevel.length ? currentLevel[i + 1] : left;
-        
+
         const combined = this.hashData(left + right);
         nextLevel.push(combined);
-        
+
         // Store proof paths
         if (!proofs[left]) proofs[left] = [];
         if (!proofs[right]) proofs[right] = [];
-        
+
         proofs[left].push(right);
         proofs[right].push(left);
       }
-      
+
       currentLevel = nextLevel;
     }
 
@@ -318,11 +318,11 @@ class BlockchainVerificationService {
     root: string
   ): boolean {
     let computedHash = this.hashData(leaf);
-    
+
     for (const proofElement of proof) {
       computedHash = this.hashData(computedHash + proofElement);
     }
-    
+
     return computedHash === root;
   }
 
@@ -412,11 +412,11 @@ class BlockchainVerificationService {
         delete (entryData as any).signature;
         delete (entryData as any).currentHash;
         delete (entryData as any).merkleRoot;
-        
+
         const expectedHash = createHash('sha256')
           .update(JSON.stringify(entryData))
           .digest('hex');
-        
+
         return entry.signature === expectedHash;
       }
 
@@ -450,13 +450,13 @@ class BlockchainVerificationService {
   private getLatestDocumentFingerprint(entries: BlockchainEntry[]): DocumentFingerprint | null {
     // Sort by timestamp descending
     const sortedEntries = [...entries].sort((a, b) => b.timestamp - a.timestamp);
-    
+
     for (const entry of sortedEntries) {
       if (entry.metadata?.documentFingerprint) {
         return entry.metadata.documentFingerprint;
       }
     }
-    
+
     return null;
   }
 
@@ -476,7 +476,7 @@ class BlockchainVerificationService {
   private async storeBlockchainEntry(entry: BlockchainEntry): Promise<void> {
     // Store in IndexedDB for local verification
     await this.storeInIndexedDB('blockchain_entries', entry);
-    
+
     // TODO: Store in Supabase for persistence
     // await this.storeInSupabase('blockchain_entries', entry);
   }
@@ -490,7 +490,7 @@ class BlockchainVerificationService {
   private async getLastBlockHash(documentId: string): Promise<string | null> {
     const entries = await this.getBlockchainEntries(documentId);
     if (entries.length === 0) return null;
-    
+
     // Sort by timestamp and get latest
     const latest = entries.sort((a, b) => b.timestamp - a.timestamp)[0];
     return latest.currentHash;
@@ -502,19 +502,19 @@ class BlockchainVerificationService {
   private async storeInIndexedDB(storeName: string, data: any): Promise<void> {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open('LegacyGuardBlockchain', 1);
-      
+
       request.onerror = () => reject(request.error);
-      
+
       request.onsuccess = () => {
         const db = request.result;
         const transaction = db.transaction([storeName], 'readwrite');
         const store = transaction.objectStore(storeName);
-        
+
         const putRequest = store.put(data, `${data.documentId}_${data.id}`);
         putRequest.onsuccess = () => resolve();
         putRequest.onerror = () => reject(putRequest.error);
       };
-      
+
       request.onupgradeneeded = () => {
         const db = request.result;
         if (!db.objectStoreNames.contains(storeName)) {
@@ -527,14 +527,14 @@ class BlockchainVerificationService {
   private async getFromIndexedDB(storeName: string, documentId: string): Promise<BlockchainEntry[]> {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open('LegacyGuardBlockchain', 1);
-      
+
       request.onerror = () => reject(request.error);
-      
+
       request.onsuccess = () => {
         const db = request.result;
         const transaction = db.transaction([storeName], 'readonly');
         const store = transaction.objectStore(storeName);
-        
+
         const getAllRequest = store.getAll();
         getAllRequest.onsuccess = () => {
           const allEntries = getAllRequest.result as BlockchainEntry[];
@@ -543,7 +543,7 @@ class BlockchainVerificationService {
         };
         getAllRequest.onerror = () => reject(getAllRequest.error);
       };
-      
+
       request.onupgradeneeded = () => {
         const db = request.result;
         if (!db.objectStoreNames.contains(storeName)) {
@@ -566,7 +566,7 @@ class BlockchainVerificationService {
     integrityStatus: string;
   } | null> {
     const auditTrail = await this.getAuditTrail(documentId);
-    
+
     if (!auditTrail) {
       return null;
     }

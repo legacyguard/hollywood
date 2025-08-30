@@ -4,7 +4,7 @@
  * for enterprise clients and business owners.
  */
 
-export type BusinessType = 
+export type BusinessType =
   | 'sole_proprietorship'
   | 'partnership'
   | 'llc'
@@ -12,7 +12,7 @@ export type BusinessType =
   | 'non_profit'
   | 'trust';
 
-export type SuccessionTrigger = 
+export type SuccessionTrigger =
   | 'death'
   | 'disability'
   | 'retirement'
@@ -21,7 +21,7 @@ export type SuccessionTrigger =
   | 'merger'
   | 'dissolution';
 
-export type StakeholderRole = 
+export type StakeholderRole =
   | 'owner'
   | 'partner'
   | 'shareholder'
@@ -30,7 +30,7 @@ export type StakeholderRole =
   | 'advisor'
   | 'successor';
 
-export type BusinessAssetType = 
+export type BusinessAssetType =
   | 'intellectual_property'
   | 'real_estate'
   | 'equipment'
@@ -181,7 +181,7 @@ export interface CorporateDocument {
   relatedDocuments: string[];
 }
 
-export type CorporateDocumentType = 
+export type CorporateDocumentType =
   | 'articles_of_incorporation'
   | 'operating_agreement'
   | 'shareholder_agreement'
@@ -529,7 +529,7 @@ export class BusinessSuccessionPlanningService {
     // Simplified valuation calculation
     const assetValue = business.assets.reduce((sum, asset) => sum + asset.valuation.amount, 0);
     const liabilityValue = business.liabilities.reduce((sum, liability) => sum + liability.amount, 0);
-    
+
     switch (method) {
       case 'asset_based':
         return assetValue - liabilityValue;
@@ -552,7 +552,7 @@ export class BusinessSuccessionPlanningService {
       market_multiple: ['Industry multiple: 1.5x', 'Revenue multiple: 2x'],
       asset_based: ['Market value of assets', 'Book value of liabilities']
     };
-    
+
     return assumptions[method as keyof typeof assumptions] || [];
   }
 
@@ -711,24 +711,24 @@ export class BusinessSuccessionPlanningService {
       const action = scenario.actions.find(a => a.id === actionId);
       if (action) return action;
     }
-    
+
     for (const contingency of plan.contingencies) {
       const action = contingency.actions.find(a => a.id === actionId);
       if (action) return action;
     }
-    
+
     return undefined;
   }
 
   private async updatePlanProgress(plan: SuccessionPlan): Promise<void> {
     const readinessScore = this.calculateReadinessScore(plan);
-    
+
     if (readinessScore.overall >= 90) {
       plan.status = 'active';
     } else if (readinessScore.overall >= 50) {
       plan.status = 'under_review';
     }
-    
+
     plan.updatedAt = new Date().toISOString();
   }
 

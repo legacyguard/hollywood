@@ -3,7 +3,8 @@
  * Phase 6: AI Intelligence & Document Analysis
  */
 
-import { documentAnalyzer, DocumentCategory, DocumentAnalysisResult } from './documentAnalyzer';
+import type { DocumentCategory, DocumentAnalysisResult } from './documentAnalyzer';
+import { documentAnalyzer } from './documentAnalyzer';
 
 export interface CategoryRule {
   id: string;
@@ -84,7 +85,7 @@ export class DocumentCategorizer {
     existingAnalysis?: DocumentAnalysisResult
   ): Promise<CategorySuggestion> {
     const startTime = performance.now();
-    
+
     try {
       // Check cache first
       const cacheKey = this.generateCacheKey(content, filename);
@@ -94,29 +95,29 @@ export class DocumentCategorizer {
 
       // Get AI analysis if not provided
       const analysis = existingAnalysis || await documentAnalyzer.analyzeDocument(content, filename);
-      
+
       // Apply rule-based categorization
       const ruleBasedSuggestion = await this.applyRules(content, filename, analysis);
-      
+
       // Apply AI-based categorization
       const aiSuggestion = await this.applyAIClassification(analysis);
-      
+
       // Combine suggestions using weighted voting
       const finalSuggestion = this.combineSuggestions([ruleBasedSuggestion, aiSuggestion]);
-      
+
       // Learn from the result
       if (this.learningEnabled) {
         this.updateLearningModel(content, finalSuggestion);
       }
-      
+
       // Cache the result
       this.categoryCache.set(cacheKey, finalSuggestion);
-      
+
       // Update statistics
       this.updateStatistics(performance.now() - startTime);
-      
+
       return finalSuggestion;
-      
+
     } catch (error) {
       throw new Error(`Document categorization failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
@@ -131,7 +132,7 @@ export class DocumentCategorizer {
     analysis?: DocumentAnalysisResult
   ): Promise<AutoTaggingResult> {
     const generatedTags: AutoTaggingResult['generatedTags'] = [];
-    
+
     // Category-based tags
     if (category) {
       generatedTags.push({
@@ -140,7 +141,7 @@ export class DocumentCategorizer {
         source: 'category',
         reasoning: 'Primary document category'
       });
-      
+
       if (category.secondary) {
         generatedTags.push({
           tag: category.secondary.toLowerCase().replace(/\s+/g, '-'),
@@ -150,21 +151,21 @@ export class DocumentCategorizer {
         });
       }
     }
-    
+
     // Content-based tags
     const contentTags = this.extractContentBasedTags(content);
     generatedTags.push(...contentTags);
-    
+
     // Analysis-based tags
     if (analysis) {
       const analysisTags = this.extractAnalysisBasedTags(analysis);
       generatedTags.push(...analysisTags);
     }
-    
+
     // Metadata-based tags
     const metadataTags = this.extractMetadataBasedTags(content, analysis);
     generatedTags.push(...metadataTags);
-    
+
     // Remove duplicates and sort by confidence
     const uniqueTags = this.deduplicateTags(generatedTags);
     const suggestedTags = uniqueTags
@@ -172,7 +173,7 @@ export class DocumentCategorizer {
       .sort((a, b) => b.confidence - a.confidence)
       .slice(0, 10) // Limit to top 10 tags
       .map(tag => tag.tag);
-    
+
     return {
       suggestedTags,
       confidence: this.calculateTaggingConfidence(uniqueTags),
@@ -200,7 +201,7 @@ export class DocumentCategorizer {
   updateRule(ruleId: string, updates: Partial<CategoryRule>): boolean {
     const existingRule = this.rules.get(ruleId);
     if (!existingRule) return false;
-    
+
     const updatedRule = { ...existingRule, ...updates };
     this.rules.set(ruleId, updatedRule);
     return true;
@@ -232,33 +233,33 @@ export class DocumentCategorizer {
     }>
   ): Promise<void> {
     console.log(`Training categorizer on ${dataset.length} documents...`);
-    
+
     let correctPredictions = 0;
     const categoryErrors: Record<string, number> = {};
-    
+
     for (const sample of dataset) {
       try {
         const suggestion = await this.categorizeDocument(sample.content, sample.filename);
-        
+
         if (suggestion.category.primary === sample.expectedCategory.primary) {
           correctPredictions++;
         } else {
           const errorKey = `${sample.expectedCategory.primary}->${suggestion.category.primary}`;
           categoryErrors[errorKey] = (categoryErrors[errorKey] || 0) + 1;
         }
-        
+
         // Update rules based on training feedback
         this.updateRulesFromFeedback(sample, suggestion);
-        
+
       } catch (error) {
         console.warn(`Training error on document: ${error}`);
       }
     }
-    
+
     const accuracy = correctPredictions / dataset.length;
     console.log(`Training completed. Accuracy: ${(accuracy * 100).toFixed(2)}%`);
     console.log('Common misclassifications:', categoryErrors);
-    
+
     // Update statistics
     this.statistics.accuracyMetrics.overallAccuracy = accuracy;
   }
@@ -298,7 +299,7 @@ export class DocumentCategorizer {
         this.rules.set(rule.id, rule);
       });
     }
-    
+
     if (config.customCategories) {
       this.customCategories.clear();
       Object.entries(config.customCategories).forEach(([id, category]) => {
@@ -440,13 +441,13 @@ export class DocumentCategorizer {
     analysis?: DocumentAnalysisResult
   ): Promise<CategorySuggestion> {
     const scores: Map<string, { score: number; reasons: string[] }> = new Map();
-    
+
     for (const rule of this.rules.values()) {
       if (!rule.enabled) continue;
-      
+
       let ruleScore = 0;
       const reasons: string[] = [];
-      
+
       for (const pattern of rule.patterns) {
         const patternScore = this.evaluatePattern(pattern, content, filename, analysis);
         if (patternScore > 0) {
@@ -454,7 +455,7 @@ export class DocumentCategorizer {
           reasons.push(`Matched pattern: ${pattern.pattern} (score: ${patternScore})`);
         }
       }
-      
+
       if (ruleScore > 0) {
         const categoryKey = `${rule.primary}:${rule.secondary || ''}`;
         const existing = scores.get(categoryKey) || { score: 0, reasons: [] };
@@ -463,19 +464,19 @@ export class DocumentCategorizer {
         scores.set(categoryKey, existing);
       }
     }
-    
+
     // Find the best match
     const sortedScores = Array.from(scores.entries())
       .sort((a, b) => b[1].score - a[1].score);
-    
+
     if (sortedScores.length === 0) {
       // Fallback to AI classification
       return this.applyAIClassification(analysis);
     }
-    
+
     const [bestCategoryKey, bestScore] = sortedScores[0];
     const [primary, secondary] = bestCategoryKey.split(':');
-    
+
     const alternativeCategories = sortedScores.slice(1, 4).map(([categoryKey, scoreData]) => {
       const [altPrimary, altSecondary] = categoryKey.split(':');
       return {
@@ -487,7 +488,7 @@ export class DocumentCategorizer {
         reasoning: `Rule-based classification (score: ${scoreData.score.toFixed(2)})`
       };
     });
-    
+
     return {
       category: {
         primary: primary as DocumentCategory['primary'],
@@ -511,7 +512,7 @@ export class DocumentCategorizer {
         alternativeCategories: []
       };
     }
-    
+
     return {
       category: analysis.category,
       confidence: analysis.confidence,
@@ -529,10 +530,10 @@ export class DocumentCategorizer {
         alternativeCategories: []
       };
     }
-    
+
     // Weighted voting based on confidence
     const categoryScores: Map<string, { score: number; reasons: string[] }> = new Map();
-    
+
     for (const suggestion of suggestions) {
       const key = `${suggestion.category.primary}:${suggestion.category.secondary || ''}`;
       const existing = categoryScores.get(key) || { score: 0, reasons: [] };
@@ -540,13 +541,13 @@ export class DocumentCategorizer {
       existing.reasons.push(...suggestion.reasoning);
       categoryScores.set(key, existing);
     }
-    
+
     // Find the winner
     const winner = Array.from(categoryScores.entries())
       .reduce((a, b) => a[1].score > b[1].score ? a : b);
-    
+
     const [primary, secondary] = winner[0].split(':');
-    
+
     return {
       category: {
         primary: primary as DocumentCategory['primary'],
@@ -565,7 +566,7 @@ export class DocumentCategorizer {
     analysis?: DocumentAnalysisResult
   ): number {
     let targetText = '';
-    
+
     // Select target text based on context
     switch (pattern.context) {
       case 'title':
@@ -580,9 +581,9 @@ export class DocumentCategorizer {
         targetText = content;
         break;
     }
-    
+
     targetText = targetText.toLowerCase();
-    
+
     // Evaluate pattern based on type
     switch (pattern.type) {
       case 'keyword':
@@ -603,7 +604,7 @@ export class DocumentCategorizer {
   private evaluateKeywordPattern(pattern: string, text: string): number {
     const keywords = pattern.toLowerCase().split('|');
     let matches = 0;
-    
+
     for (const keyword of keywords) {
       const regex = new RegExp(`\\b${keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'g');
       const keywordMatches = text.match(regex);
@@ -611,7 +612,7 @@ export class DocumentCategorizer {
         matches += keywordMatches.length;
       }
     }
-    
+
     return Math.min(matches, 5); // Cap at 5 to prevent over-weighting
   }
 
@@ -630,19 +631,19 @@ export class DocumentCategorizer {
     // Simplified semantic matching - in production would use embeddings/NLP
     const semanticKeywords = pattern.toLowerCase().split(',').map(k => k.trim());
     let score = 0;
-    
+
     for (const keyword of semanticKeywords) {
       if (text.includes(keyword)) {
         score += 1;
       }
     }
-    
+
     return Math.min(score, 3);
   }
 
   private evaluateStructurePattern(pattern: string, analysis?: DocumentAnalysisResult): number {
     if (!analysis) return 0;
-    
+
     // Evaluate document structure patterns
     switch (pattern) {
       case 'has_dates':
@@ -660,17 +661,17 @@ export class DocumentCategorizer {
 
   private evaluateMetadataPattern(pattern: string, analysis?: DocumentAnalysisResult): number {
     if (!analysis?.metadata) return 0;
-    
+
     const metadata = analysis.metadata;
     const patternLower = pattern.toLowerCase();
-    
+
     if (patternLower.includes('page_count') && metadata.pageCount) {
       const match = patternLower.match(/page_count\s*([><=]+)\s*(\d+)/);
       if (match) {
         const operator = match[1];
         const threshold = parseInt(match[2]);
         const pageCount = metadata.pageCount;
-        
+
         switch (operator) {
           case '>':
             return pageCount > threshold ? 1 : 0;
@@ -686,14 +687,14 @@ export class DocumentCategorizer {
         }
       }
     }
-    
+
     return 0;
   }
 
   private extractContentBasedTags(content: string): AutoTaggingResult['generatedTags'] {
     const tags: AutoTaggingResult['generatedTags'] = [];
     const contentLower = content.toLowerCase();
-    
+
     // Common document indicators
     const indicators = {
       'confidential': { pattern: /confidential|private|sensitive/g, confidence: 0.9 },
@@ -705,7 +706,7 @@ export class DocumentCategorizer {
       'draft': { pattern: /draft|preliminary|proposed/g, confidence: 0.75 },
       'final': { pattern: /final|executed|completed/g, confidence: 0.8 }
     };
-    
+
     for (const [tag, { pattern, confidence }] of Object.entries(indicators)) {
       const matches = contentLower.match(pattern);
       if (matches && matches.length > 0) {
@@ -717,13 +718,13 @@ export class DocumentCategorizer {
         });
       }
     }
-    
+
     return tags;
   }
 
   private extractAnalysisBasedTags(analysis: DocumentAnalysisResult): AutoTaggingResult['generatedTags'] {
     const tags: AutoTaggingResult['generatedTags'] = [];
-    
+
     // Importance level tags
     tags.push({
       tag: `importance-${analysis.importanceLevel}`,
@@ -731,7 +732,7 @@ export class DocumentCategorizer {
       source: 'metadata',
       reasoning: `Document importance level determined by AI analysis`
     });
-    
+
     // Sensitivity level tags
     tags.push({
       tag: `sensitivity-${analysis.sensitivityLevel}`,
@@ -739,7 +740,7 @@ export class DocumentCategorizer {
       source: 'metadata',
       reasoning: `Document sensitivity level based on content analysis`
     });
-    
+
     // PII detection tags
     if (analysis.piiDetected.length > 0) {
       tags.push({
@@ -749,7 +750,7 @@ export class DocumentCategorizer {
         reasoning: `Document contains ${analysis.piiDetected.length} PII elements`
       });
     }
-    
+
     // Key information tags
     if (analysis.keyInformation.importantDates.length > 0) {
       tags.push({
@@ -759,7 +760,7 @@ export class DocumentCategorizer {
         reasoning: `Document contains ${analysis.keyInformation.importantDates.length} important dates`
       });
     }
-    
+
     if (analysis.keyInformation.amounts.length > 0) {
       tags.push({
         tag: 'financial-amounts',
@@ -768,16 +769,16 @@ export class DocumentCategorizer {
         reasoning: `Document contains ${analysis.keyInformation.amounts.length} financial amounts`
       });
     }
-    
+
     return tags;
   }
 
   private extractMetadataBasedTags(content: string, analysis?: DocumentAnalysisResult): AutoTaggingResult['generatedTags'] {
     const tags: AutoTaggingResult['generatedTags'] = [];
-    
+
     if (analysis?.metadata) {
       const metadata = analysis.metadata;
-      
+
       // Document size tags
       if (metadata.pageCount) {
         if (metadata.pageCount === 1) {
@@ -796,7 +797,7 @@ export class DocumentCategorizer {
           });
         }
       }
-      
+
       // Language tags
       if (metadata.language && metadata.language !== 'en') {
         tags.push({
@@ -807,26 +808,26 @@ export class DocumentCategorizer {
         });
       }
     }
-    
+
     return tags;
   }
 
   private deduplicateTags(tags: AutoTaggingResult['generatedTags']): AutoTaggingResult['generatedTags'] {
     const tagMap = new Map<string, AutoTaggingResult['generatedTags'][0]>();
-    
+
     for (const tag of tags) {
       const existing = tagMap.get(tag.tag);
       if (!existing || tag.confidence > existing.confidence) {
         tagMap.set(tag.tag, tag);
       }
     }
-    
+
     return Array.from(tagMap.values());
   }
 
   private calculateTaggingConfidence(tags: AutoTaggingResult['generatedTags']): number {
     if (tags.length === 0) return 0;
-    
+
     const totalConfidence = tags.reduce((sum, tag) => sum + tag.confidence, 0);
     return totalConfidence / tags.length;
   }
@@ -847,15 +848,15 @@ export class DocumentCategorizer {
     // Simple learning implementation - in production would use more sophisticated ML
     // For now, just update statistics
     this.statistics.totalDocuments++;
-    
+
     const categoryKey = suggestion.category.primary;
-    this.statistics.categoryDistribution[categoryKey] = 
+    this.statistics.categoryDistribution[categoryKey] =
       (this.statistics.categoryDistribution[categoryKey] || 0) + 1;
   }
 
   private updateStatistics(processingTime: number): void {
     const current = this.statistics.performanceMetrics;
-    current.averageProcessingTime = 
+    current.averageProcessingTime =
       (current.averageProcessingTime + processingTime) / 2;
     current.throughput = 1000 / current.averageProcessingTime; // docs per second
   }
@@ -866,7 +867,7 @@ export class DocumentCategorizer {
   ): void {
     // Simple rule adjustment based on feedback
     // In production, this would be more sophisticated
-    
+
     if (suggestion.category.primary !== sample.expectedCategory.primary) {
       // Find rules that fired for the wrong category and reduce their confidence
       // This is a simplified implementation

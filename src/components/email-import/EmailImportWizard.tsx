@@ -426,7 +426,7 @@ function AuthenticationStep({ onAuthenticate, isLoading, error }: Authentication
       </div>
 
       {error && (
-        <Alert variant={"destructive" as any}>
+                        <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>Authentication Error</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
@@ -661,7 +661,7 @@ function ProcessingStep({ session }: ProcessingStepProps) {
 
       {session && session.foundDocuments.length > 0 && (
         <div className="text-center">
-          <Badge variant={"secondary" as any} className="text-sm">
+                          <Badge variant="secondary" className="text-sm">
             {session.foundDocuments.length} documents found
           </Badge>
         </div>
@@ -713,14 +713,14 @@ function ReviewStep({
             </p>
             <div className="flex gap-2">
               <Button
-                variant={"outline" as any}
+                variant="outline"
                 size="sm"
                 onClick={() => documents.forEach(doc => onToggleSelection(doc.id))}
               >
                 Select All
               </Button>
               <Button
-                variant={"outline" as any}
+                variant="outline"
                 size="sm"
                 onClick={() => selectedDocuments.forEach(id => onToggleSelection(id))}
               >
@@ -752,7 +752,7 @@ function ReviewStep({
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-2">
                           <h4 className="font-medium truncate">{document.filename}</h4>
-                          <Badge variant={"secondary" as any} className="text-xs">
+                          <Badge variant="secondary" className="text-xs">
                             {document.mimeType.split('/')[1].toUpperCase()}
                           </Badge>
                           {categorization && (

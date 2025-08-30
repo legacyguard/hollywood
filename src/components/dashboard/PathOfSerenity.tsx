@@ -157,7 +157,7 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({
       <Card className={`p-6 ${className}`}>
         <div className='flex items-center justify-center h-64'>
           <div className='flex items-center gap-3'>
-            <Icon name={"loader" as any} className='w-6 h-6 animate-spin text-primary' />
+            <Icon name="loader" className='w-6 h-6 animate-spin text-primary' />
             <span className='text-lg text-muted-foreground'>
               Growing your Garden of Legacy...
             </span>
@@ -176,18 +176,18 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({
         <CardContent className='p-6'>
           <div className='text-center space-y-3'>
             <div className='flex items-center justify-center gap-2'>
-              <Icon name={"sparkles" as any} className='w-6 h-6 text-green-600' />
+              <Icon name="sparkles" className='w-6 h-6 text-green-600' />
               <h2 className='text-2xl font-bold text-green-900 dark:text-green-100'>
                 Garden of Your Legacy
               </h2>
-              <Icon name={"sparkles" as any} className='w-6 h-6 text-green-600' />
+              <Icon name="sparkles" className='w-6 h-6 text-green-600' />
             </div>
             <p className='text-green-700 dark:text-green-200 text-lg leading-relaxed max-w-2xl mx-auto'>
               {serenityMessage}
             </p>
             {unlockedCount > 0 && (
               <div className='flex items-center justify-center gap-2 text-sm text-green-600'>
-                <Icon name={"checkCircle" as any} className='w-4 h-4' />
+                <Icon name="checkCircle" className='w-4 h-4' />
                 <span>
                   Milestones achieved: {unlockedCount} of {milestones.length}
                 </span>
@@ -357,7 +357,7 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({
                 >
                   {milestone.isUnlocked ? (
                     <>
-                      <Icon name={milestone.icon as any}
+                      <Icon name={milestone.icon}
                         className='w-7 h-7 text-white'
                       />
                       <motion.div
@@ -372,7 +372,7 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({
                       />
                     </>
                   ) : (
-                    <Icon name={"locked" as any} className='w-7 h-7 text-slate-500' />
+                    <Icon name="locked" className='w-7 h-7 text-slate-500' />
                   )}
                 </div>
 
@@ -405,7 +405,7 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({
             <div className='flex items-start gap-4'>
               <div className='flex-shrink-0'>
                 <div className='w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center'>
-                  <Icon name={"clock" as any} className='w-6 h-6 text-amber-600' />
+                  <Icon name="clock" className='w-6 h-6 text-amber-600' />
                 </div>
               </div>
               <div className='flex-grow space-y-3'>
@@ -426,11 +426,11 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({
                     onClick={handleChallengeClick}
                     className='bg-amber-500 hover:bg-amber-600 text-white font-medium px-6 py-2 rounded-lg shadow-md'
                   >
-                    <Icon name={"arrowRight" as any} className='w-4 h-4 mr-2' />
+                    <Icon name="arrowRight" className='w-4 h-4 mr-2' />
                     Start {nextChallenge.estimatedTime}-minute challenge
                   </Button>
                   <div className='text-xs text-amber-600 dark:text-amber-300 flex items-center gap-1'>
-                    <Icon name={"sparkles" as any} className='w-3 h-3' />
+                    <Icon name="sparkles" className='w-3 h-3' />
                     Sofia will guide you step by step
                   </div>
                 </div>
@@ -514,7 +514,7 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({
 
                 <Button
                   onClick={() => setSelectedMilestone(null)}
-                  variant={"outline" as any}
+                  variant="outline"
                   className='mt-4'
                 >
                   Close

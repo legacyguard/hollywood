@@ -73,17 +73,30 @@ const detectCountryFromDomain = (): CountryCode => {
 
 const detectCountryFromGeolocation = async (): Promise<CountryCode> => {
   try {
+    // Check if we already have cached geolocation
+    const cachedGeo = sessionStorage.getItem('legacyguard-geo-country');
+    if (cachedGeo) {
+      return cachedGeo as CountryCode;
+    }
+
     // Simple IP-based country detection
     const response = await fetch('https://ipapi.co/json/');
     const data = await response.json();
 
     const countryCode = data.country_code?.toLowerCase();
-    if (countryCode === 'sk') return 'sk';
-    if (countryCode === 'cz') return 'cz';
+    let result: CountryCode = 'en';
 
-    return 'en';
+    if (countryCode === 'sk') result = 'sk';
+    else if (countryCode === 'cz') result = 'cz';
+
+    // Cache the result for this session
+    sessionStorage.setItem('legacyguard-geo-country', result);
+
+    return result;
   } catch (error) {
     console.log('Geolocation detection failed, using default');
+    // Cache the default to avoid repeated failures
+    sessionStorage.setItem('legacyguard-geo-country', 'en');
     return 'en';
   }
 };

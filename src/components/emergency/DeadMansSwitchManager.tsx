@@ -154,7 +154,7 @@ export const DeadMansSwitchManager: React.FC<DeadMansSwitchProps> = ({
         .from('user_health_checks')
         .insert({
           user_id: userId,
-          check_type: activityType as any,
+          check_type: activityType,
           status: 'responded',
           responded_at: new Date().toISOString(),
           response_method: 'dashboard',

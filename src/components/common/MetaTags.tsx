@@ -17,18 +17,18 @@ const DEFAULTS = {
   TITLE: 'LegacyGuard | Your Legacy, Secured. Your Family, Protected.',
   DESCRIPTION: "The most caring and secure way to organize your life's journey and protect your family's future. AI-powered document management, family shield protocol, and will creation.",
   // Social media image - 1200x630px for optimal sharing
-  IMAGE_URL: 'https://legacyguard.app/og-image.png', 
+  IMAGE_URL: 'https://legacyguard.app/og-image.png',
   URL: 'https://legacyguard.app',
   KEYWORDS: 'legacy planning, document management, family protection, digital vault, will creation, emergency planning, secure storage, AI assistant',
   AUTHOR: 'LegacyGuard',
   ROBOTS: 'index, follow',
 };
 
-export const MetaTags = ({ 
-  title, 
-  description, 
-  imageUrl, 
-  url, 
+export const MetaTags = ({
+  title,
+  description,
+  imageUrl,
+  url,
   structuredData,
   keywords,
   author,

@@ -17,7 +17,7 @@ export function getCSPConfig(isDevelopment: boolean = false): CSPConfig {
     directives: {
       // Default source for all content types
       'default-src': ["'self'"],
-      
+
       // Script sources
       'script-src': [
         "'self'",
@@ -28,21 +28,21 @@ export function getCSPConfig(isDevelopment: boolean = false): CSPConfig {
         'https://*.clerk.com',
         'https://*.clerk.accounts.dev',
       ].filter(Boolean),
-      
+
       // Style sources
       'style-src': [
         "'self'",
         "'unsafe-inline'", // Required for Tailwind
         'https://fonts.googleapis.com',
       ],
-      
+
       // Font sources
       'font-src': [
         "'self'",
         'data:',
         'https://fonts.gstatic.com',
       ],
-      
+
       // Image sources
       'img-src': [
         "'self'",
@@ -53,14 +53,14 @@ export function getCSPConfig(isDevelopment: boolean = false): CSPConfig {
         'https://img.clerk.com',
         'https://www.gravatar.com',
       ],
-      
+
       // Media sources
       'media-src': [
         "'self'",
         'blob:',
         'https://*.supabase.co',
       ],
-      
+
       // Connect sources (API calls, WebSockets)
       'connect-src': [
         "'self'",
@@ -73,7 +73,7 @@ export function getCSPConfig(isDevelopment: boolean = false): CSPConfig {
         isDevelopment ? 'ws://localhost:*' : '',
         isDevelopment ? 'http://localhost:*' : '',
       ].filter(Boolean),
-      
+
       // Frame sources
       'frame-src': [
         "'self'",
@@ -81,22 +81,22 @@ export function getCSPConfig(isDevelopment: boolean = false): CSPConfig {
         'https://*.clerk.com',
         'https://*.clerk.accounts.dev',
       ],
-      
+
       // Frame ancestors (who can embed us)
       'frame-ancestors': ["'none'"],
-      
+
       // Object sources (plugins)
       'object-src': ["'none'"],
-      
+
       // Base URI
       'base-uri': ["'self'"],
-      
+
       // Form action
       'form-action': ["'self'"],
-      
+
       // Upgrade insecure requests
       'upgrade-insecure-requests': isDevelopment ? [] : [''],
-      
+
       // Block all mixed content
       'block-all-mixed-content': isDevelopment ? [] : [''],
     },

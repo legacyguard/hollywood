@@ -160,53 +160,53 @@ export interface LegalRecommendation {
   timeline: string;
 }
 
-export type ComplianceCategory = 
-  | 'privacy' 
-  | 'data_protection' 
-  | 'financial' 
-  | 'healthcare' 
-  | 'estate_planning' 
-  | 'tax' 
-  | 'insurance' 
-  | 'employment' 
-  | 'corporate' 
+export type ComplianceCategory =
+  | 'privacy'
+  | 'data_protection'
+  | 'financial'
+  | 'healthcare'
+  | 'estate_planning'
+  | 'tax'
+  | 'insurance'
+  | 'employment'
+  | 'corporate'
   | 'international'
   | 'industry_specific';
 
-export type ComplianceStatus = 
-  | 'compliant' 
-  | 'non_compliant' 
-  | 'partial' 
-  | 'under_review' 
-  | 'exempt' 
+export type ComplianceStatus =
+  | 'compliant'
+  | 'non_compliant'
+  | 'partial'
+  | 'under_review'
+  | 'exempt'
   | 'unknown';
 
-export type LegalReviewType = 
-  | 'contract_review' 
-  | 'compliance_check' 
-  | 'risk_assessment' 
-  | 'estate_planning' 
-  | 'tax_implications' 
+export type LegalReviewType =
+  | 'contract_review'
+  | 'compliance_check'
+  | 'risk_assessment'
+  | 'estate_planning'
+  | 'tax_implications'
   | 'regulatory_filing'
   | 'dispute_prevention'
   | 'general_counsel';
 
-export type LegalReviewStatus = 
-  | 'pending' 
-  | 'in_progress' 
-  | 'completed' 
-  | 'requires_followup' 
+export type LegalReviewStatus =
+  | 'pending'
+  | 'in_progress'
+  | 'completed'
+  | 'requires_followup'
   | 'escalated';
 
-export type LegalIssueCategory = 
-  | 'contract_terms' 
-  | 'liability' 
-  | 'compliance_violation' 
-  | 'regulatory_change' 
-  | 'tax_implication' 
-  | 'estate_law' 
-  | 'privacy_law' 
-  | 'intellectual_property' 
+export type LegalIssueCategory =
+  | 'contract_terms'
+  | 'liability'
+  | 'compliance_violation'
+  | 'regulatory_change'
+  | 'tax_implication'
+  | 'estate_law'
+  | 'privacy_law'
+  | 'intellectual_property'
   | 'employment_law';
 
 class ComplianceCheckerService {
@@ -363,7 +363,7 @@ class ComplianceCheckerService {
   ): Promise<ComplianceCheck[]> {
     const checks: ComplianceCheck[] = [];
 
-    for (const [ruleId, rule] of this.complianceRules.entries()) {
+    for (const [_ruleId, rule] of this.complianceRules.entries()) {
       const check = await this.performSingleComplianceCheck(
         documentId,
         content,
@@ -402,7 +402,7 @@ class ComplianceCheckerService {
 
     // Perform validation
     const findings = await this.validateAgainstRule(content, metadata, rule);
-    
+
     if (findings.length === 0) {
       // Document is compliant with this rule
       return {
@@ -460,7 +460,7 @@ class ComplianceCheckerService {
     let confidence = 0;
 
     // Check keywords
-    const keywordMatches = rule.keywords.filter(keyword => 
+    const keywordMatches = rule.keywords.filter(keyword =>
       content.toLowerCase().includes(keyword.toLowerCase())
     );
     if (keywordMatches.length > 0) {
@@ -565,7 +565,7 @@ class ComplianceCheckerService {
           id: this.generateId(),
           title: `Address ${rule.regulation} Compliance`,
           description: `Resolve compliance issue: ${finding.description}`,
-          priority: finding.severity === 'critical' ? 'immediate' : 
+          priority: finding.severity === 'critical' ? 'immediate' :
                    finding.severity === 'high' ? 'high' : 'medium',
           category: 'regulatory',
           actions: finding.remediation.map(r => r.description),
@@ -634,7 +634,7 @@ class ComplianceCheckerService {
     };
 
     await this.storeLegalReview(review);
-    
+
     return review;
   }
 
@@ -681,7 +681,7 @@ class ComplianceCheckerService {
       /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/, // Email
       /\b\d{3}-?\d{3}-?\d{4}\b/, // Phone
     ];
-    
+
     return patterns.some(pattern => pattern.test(content));
   }
 
@@ -690,7 +690,7 @@ class ComplianceCheckerService {
       'medical', 'health', 'patient', 'diagnosis', 'treatment',
       'prescription', 'doctor', 'physician', 'hospital', 'clinic'
     ];
-    
+
     const lowerContent = content.toLowerCase();
     return healthKeywords.some(keyword => lowerContent.includes(keyword));
   }
@@ -713,12 +713,12 @@ class ComplianceCheckerService {
     return 'low';
   }
 
-  private extractEvidence(content: string, condition: string): string[] {
+  private extractEvidence(content: string, _condition: string): string[] {
     // Extract relevant text snippets as evidence
     const sentences = content.split('.').filter(s => s.trim().length > 10);
     return sentences.filter(s => {
       const lower = s.toLowerCase();
-      return lower.includes('personal') || lower.includes('health') || 
+      return lower.includes('personal') || lower.includes('health') ||
              lower.includes('will') || lower.includes('testament');
     }).slice(0, 3);
   }
@@ -766,21 +766,21 @@ class ComplianceCheckerService {
     exemptions: AppliedExemption[]
   ): ComplianceStatus {
     if (exemptions.length > 0) return 'exempt';
-    
+
     const violations = findings.filter(f => f.type === 'violation');
     if (violations.length === 0) return 'compliant';
-    
+
     const criticalViolations = violations.filter(f => f.severity === 'critical');
     if (criticalViolations.length > 0) return 'non_compliant';
-    
+
     return 'partial';
   }
 
   private calculateNextCheckDate(rule: ComplianceRule): string {
     // Calculate based on rule severity and type
-    const months = rule.severity === 'critical' ? 3 : 
+    const months = rule.severity === 'critical' ? 3 :
                   rule.severity === 'high' ? 6 : 12;
-    
+
     const nextCheck = new Date();
     nextCheck.setMonth(nextCheck.getMonth() + months);
     return nextCheck.toISOString();
@@ -790,19 +790,19 @@ class ComplianceCheckerService {
     const days = urgency === 'immediate' ? 1 :
                  urgency === 'high' ? 3 :
                  urgency === 'normal' ? 7 : 14;
-    
+
     const dueDate = new Date();
     dueDate.setDate(dueDate.getDate() + days);
     return dueDate.toISOString();
   }
 
   // Placeholder implementations
-  private async checkContractIssues(content: string): Promise<LegalIssue[]> { return []; }
-  private async checkEstatePlanningIssues(content: string): Promise<LegalIssue[]> { return []; }
-  private async checkTaxIssues(content: string): Promise<LegalIssue[]> { return []; }
-  
+  private async checkContractIssues(_content: string): Promise<LegalIssue[]> { return []; }
+  private async checkEstatePlanningIssues(_content: string): Promise<LegalIssue[]> { return []; }
+  private async checkTaxIssues(_content: string): Promise<LegalIssue[]> { return []; }
+
   private convertComplianceToLegalIssues(checks: ComplianceCheck[]): LegalIssue[] {
-    return checks.flatMap(check => 
+    return checks.flatMap(check =>
       check.findings.map(finding => ({
         id: this.generateId(),
         category: 'compliance_violation' as LegalIssueCategory,
@@ -837,7 +837,7 @@ class ComplianceCheckerService {
 
   private async storeLegalReview(review: LegalReview): Promise<void> {
     // Store review request
-    console.log('Legal review requested:', review.id);
+    console.warn('Legal review requested:', review.id);
   }
 
   private generateId(): string {

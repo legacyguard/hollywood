@@ -1,11 +1,11 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSofia } from '../sofia/SofiaContextProvider';
-import { Icon, type IconMap } from '../ui/icon-library';
+import { Icon } from '../ui/icon-library';
 import { cn } from '@/lib/utils';
 
 // Loading animation type definitions
-export type LoadingAnimationType = 
+export type LoadingAnimationType =
   | 'spinner'
   | 'dots'
   | 'pulse'
@@ -60,7 +60,7 @@ export const LoadingAnimation: React.FC<LoadingAnimationProps> = ({
   duration
 }) => {
   const { personality } = useSofia();
-  
+
   const config = PERSONALITY_LOADING_CONFIGS[personality.mode];
   const animationType = personalityAdapt ? (type || config.defaultType) : (type || 'spinner');
   const animationDuration = duration || config.duration;
@@ -68,7 +68,7 @@ export const LoadingAnimation: React.FC<LoadingAnimationProps> = ({
 
   const sizeClasses = {
     sm: 'w-4 h-4',
-    md: 'w-8 h-8', 
+    md: 'w-8 h-8',
     lg: 'w-12 h-12',
     xl: 'w-16 h-16'
   };
@@ -232,9 +232,9 @@ export const LoadingAnimation: React.FC<LoadingAnimationProps> = ({
                 times: [0, 0.14, 0.28, 0.42, 1]
               }}
             >
-              <Icon 
-                name="heart" 
-                className={cn(sizeClasses[size])} 
+              <Icon
+                name="heart"
+                className={cn(sizeClasses[size])}
                 style={{ color: animationColor }}
               />
             </motion.div>
@@ -250,7 +250,7 @@ export const LoadingAnimation: React.FC<LoadingAnimationProps> = ({
                 className={cn(
                   'rounded-t',
                   size === 'sm' && 'w-1',
-                  size === 'md' && 'w-2', 
+                  size === 'md' && 'w-2',
                   size === 'lg' && 'w-3',
                   size === 'xl' && 'w-4'
                 )}
@@ -323,8 +323,8 @@ export const PageLoader: React.FC<{
   text?: string;
   overlay?: boolean;
   className?: string;
-}> = ({ 
-  text = 'Loading...', 
+}> = ({
+  text = 'Loading...',
   overlay = false,
   className = ''
 }) => {

@@ -1,13 +1,13 @@
 /**
  * Document Insights and Analytics Service
  * Phase 6: AI Intelligence & Document Analysis
- * 
+ *
  * Provides comprehensive analytics and insights for document management,
  * including usage patterns, security metrics, and actionable recommendations.
  */
 
 import { supabase } from '@/integrations/supabase/client';
-import { DocumentAnalysisResult } from './documentAnalyzer';
+import type { DocumentAnalysisResult } from './documentAnalyzer';
 
 export interface DocumentMetrics {
   totalDocuments: number;
@@ -170,23 +170,18 @@ export class DocumentInsightsService {
    * Get document metrics and statistics
    */
   async getDocumentMetrics(filter?: AnalyticsFilter): Promise<DocumentMetrics> {
-    const { data: documents, error } = await supabase
-      .from('documents')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (error) throw error;
-
+    // Using mock data for now until Supabase table is set up
+    const documents = this.generateMockDocuments();
     const filteredDocs = this.applyFilter(documents || [], filter);
     const now = new Date();
     const thisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     const thisWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
     const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
 
-    const docsThisMonth = filteredDocs.filter(doc => 
+    const docsThisMonth = filteredDocs.filter(doc =>
       new Date(doc.created_at) >= thisMonth
     );
-    const docsThisWeek = filteredDocs.filter(doc => 
+    const docsThisWeek = filteredDocs.filter(doc =>
       new Date(doc.created_at) >= thisWeek
     );
     const docsLastMonth = filteredDocs.filter(doc => {
@@ -199,7 +194,7 @@ export class DocumentInsightsService {
     const typeDist = this.getDistribution(filteredDocs, 'type');
     const securityDist = this.getDistribution(filteredDocs, 'security_level');
 
-    const growthRate = docsLastMonth.length > 0 
+    const growthRate = docsLastMonth.length > 0
       ? ((docsThisMonth.length - docsLastMonth.length) / docsLastMonth.length) * 100
       : docsThisMonth.length > 0 ? 100 : 0;
 
@@ -220,13 +215,8 @@ export class DocumentInsightsService {
    * Get security insights and recommendations
    */
   async getSecurityInsights(filter?: AnalyticsFilter): Promise<SecurityInsights> {
-    const { data: documents, error } = await supabase
-      .from('documents')
-      .select('*, analysis_result')
-      .order('created_at', { ascending: false });
-
-    if (error) throw error;
-
+    // Using mock data for now until Supabase table is set up
+    const documents = this.generateMockDocuments();
     const filteredDocs = this.applyFilter(documents || [], filter);
     const now = new Date();
     const thirtyDaysFromNow = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
@@ -246,7 +236,7 @@ export class DocumentInsightsService {
 
     filteredDocs.forEach(doc => {
       const analysis = doc.analysis_result as DocumentAnalysisResult;
-      
+
       if (analysis?.piiDetection?.hasPII) {
         documentsWithPII++;
       }
@@ -304,11 +294,7 @@ export class DocumentInsightsService {
   async getUsagePatterns(filter?: AnalyticsFilter): Promise<UsagePatterns> {
     // In a real implementation, this would analyze user activity logs
     // For now, we'll provide simulated realistic patterns
-    const { data: documents } = await supabase
-      .from('documents')
-      .select('*')
-      .order('created_at', { ascending: false });
-
+    const documents = this.generateMockDocuments();
     const filteredDocs = this.applyFilter(documents || [], filter);
 
     // Analyze upload patterns by hour
@@ -320,10 +306,10 @@ export class DocumentInsightsService {
       const date = new Date(doc.created_at);
       const hour = date.getHours();
       const day = date.toLocaleDateString('en-US', { weekday: 'long' });
-      
+
       hourlyUploads[hour]++;
       dailyUploads[day] = (dailyUploads[day] || 0) + 1;
-      
+
       const category = doc.category || 'uncategorized';
       categoryAccess[category] = (categoryAccess[category] || 0) + 1;
     });
@@ -367,13 +353,8 @@ export class DocumentInsightsService {
    * Get document health analysis
    */
   async getDocumentHealth(filter?: AnalyticsFilter): Promise<DocumentHealth> {
-    const { data: documents, error } = await supabase
-      .from('documents')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (error) throw error;
-
+    // Using mock data for now until Supabase table is set up
+    const documents = this.generateMockDocuments();
     const filteredDocs = this.applyFilter(documents || [], filter);
     const issues: DocumentIssue[] = [];
     const duplicates: DuplicateGroup[] = [];
@@ -555,11 +536,11 @@ export class DocumentInsightsService {
    */
   async exportInsights(format: 'json' | 'csv' = 'json', filter?: AnalyticsFilter): Promise<string> {
     const data = await this.getDashboardData(filter);
-    
+
     if (format === 'csv') {
       return this.convertToCSV(data);
     }
-    
+
     return JSON.stringify(data, null, 2);
   }
 
@@ -613,7 +594,7 @@ export class DocumentInsightsService {
 
     documents.forEach(doc => {
       const analysis = doc.analysis_result as DocumentAnalysisResult;
-      
+
       // Check for PII without protection
       if (analysis?.piiDetection?.hasPII && !doc.is_password_protected) {
         issues++;
@@ -657,9 +638,9 @@ export class DocumentInsightsService {
     documents.forEach(doc => {
       if (processed.has(doc.id)) return;
 
-      const similar = documents.filter(other => 
-        other.id !== doc.id && 
-        !processed.has(other.id) && 
+      const similar = documents.filter(other =>
+        other.id !== doc.id &&
+        !processed.has(other.id) &&
         this.calculateFileSimilarity(doc.name, other.name) > 0.8
       );
 
@@ -670,7 +651,7 @@ export class DocumentInsightsService {
           similarity: 0.8
         };
         groups.push(group);
-        
+
         [doc, ...similar].forEach(d => processed.add(d.id));
       }
     });
@@ -715,12 +696,12 @@ export class DocumentInsightsService {
   private getLast30Days(): Date[] {
     const dates: Date[] = [];
     const now = new Date();
-    
+
     for (let i = 29; i >= 0; i--) {
       const date = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
       dates.push(date);
     }
-    
+
     return dates;
   }
 
@@ -788,6 +769,56 @@ export class DocumentInsightsService {
       systemLoad: Math.random() * 100,
       storageUsed: Math.random() * 80 + 20
     };
+  }
+
+  /**
+   * Generate mock documents for testing
+   */
+  private generateMockDocuments(): any[] {
+    const categories = ['financial', 'legal', 'personal', 'medical', 'insurance'];
+    const types = ['pdf', 'docx', 'jpg', 'png', 'xlsx'];
+    const securityLevels = ['public', 'private', 'confidential', 'restricted'];
+    const now = new Date();
+    const documents = [];
+
+    // Generate realistic mock documents
+    for (let i = 0; i < 45; i++) {
+      const daysAgo = Math.floor(Math.random() * 180); // Random date within last 6 months
+      const created_at = new Date(now.getTime() - daysAgo * 24 * 60 * 60 * 1000);
+      const category = categories[Math.floor(Math.random() * categories.length)];
+      const type = types[Math.floor(Math.random() * types.length)];
+      const hasExpiry = Math.random() > 0.5;
+      const expiryDays = Math.floor(Math.random() * 365) - 30; // -30 to +335 days from now
+      const hasPII = Math.random() > 0.6;
+      const isPasswordProtected = Math.random() > 0.4;
+
+      documents.push({
+        id: `doc_${i + 1}`,
+        name: `${category}_document_${i + 1}.${type}`,
+        category,
+        type,
+        size: Math.floor(Math.random() * 15000000) + 100000, // 100KB to 15MB
+        created_at: created_at.toISOString(),
+        updated_at: created_at.toISOString(),
+        user_id: 'user_1',
+        security_level: securityLevels[Math.floor(Math.random() * securityLevels.length)],
+        is_password_protected: isPasswordProtected,
+        expiry_date: hasExpiry ? new Date(now.getTime() + expiryDays * 24 * 60 * 60 * 1000).toISOString() : null,
+        analysis_result: {
+          category,
+          piiDetection: {
+            hasPII,
+            types: hasPII ? ['ssn', 'email', 'phone'].slice(0, Math.floor(Math.random() * 3) + 1) : []
+          },
+          security: {
+            vulnerabilities: Math.random() > 0.8 ? ['outdated_encryption'] : []
+          },
+          timestamp: created_at.toISOString()
+        }
+      });
+    }
+
+    return documents;
   }
 }
 

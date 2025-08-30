@@ -206,7 +206,7 @@ export interface Beneficiary {
   contactInfo: ContactInfo;
 }
 
-export type WorkflowCategory = 
+export type WorkflowCategory =
   | 'basic_will'
   | 'trust_planning'
   | 'tax_planning'
@@ -219,7 +219,7 @@ export type WorkflowCategory =
 
 export type WorkflowComplexity = 'simple' | 'moderate' | 'complex' | 'expert';
 
-export type StepType = 
+export type StepType =
   | 'information_gathering'
   | 'decision_making'
   | 'document_creation'
@@ -228,7 +228,7 @@ export type StepType =
   | 'consultation'
   | 'validation';
 
-export type SessionStatus = 
+export type SessionStatus =
   | 'started'
   | 'in_progress'
   | 'paused'
@@ -236,7 +236,7 @@ export type SessionStatus =
   | 'completed'
   | 'cancelled';
 
-export type InstructionType = 
+export type InstructionType =
   | 'text'
   | 'checklist'
   | 'form'
@@ -246,7 +246,7 @@ export type InstructionType =
   | 'video'
   | 'document_review';
 
-export type OutputType = 
+export type OutputType =
   | 'document'
   | 'data'
   | 'decision'
@@ -254,7 +254,7 @@ export type OutputType =
   | 'recommendation'
   | 'appointment';
 
-export type ProfessionalType = 
+export type ProfessionalType =
   | 'attorney'
   | 'financial_advisor'
   | 'tax_advisor'
@@ -264,7 +264,7 @@ export type ProfessionalType =
   | 'appraiser'
   | 'notary';
 
-export type ConsultationType = 
+export type ConsultationType =
   | 'initial_consultation'
   | 'document_review'
   | 'strategy_session'
@@ -272,7 +272,7 @@ export type ConsultationType =
   | 'annual_review'
   | 'emergency_consultation';
 
-export type PlanStatus = 
+export type PlanStatus =
   | 'draft'
   | 'under_review'
   | 'approved'
@@ -280,7 +280,7 @@ export type PlanStatus =
   | 'needs_update'
   | 'expired';
 
-export type ComponentType = 
+export type ComponentType =
   | 'will'
   | 'trust'
   | 'power_of_attorney'
@@ -290,7 +290,7 @@ export type ComponentType =
   | 'insurance_policy'
   | 'tax_strategy';
 
-export type ComponentStatus = 
+export type ComponentStatus =
   | 'planned'
   | 'drafted'
   | 'reviewed'
@@ -298,7 +298,7 @@ export type ComponentStatus =
   | 'active'
   | 'expired';
 
-export type AssetType = 
+export type AssetType =
   | 'real_estate'
   | 'bank_account'
   | 'investment_account'
@@ -309,7 +309,7 @@ export type AssetType =
   | 'life_insurance'
   | 'collectible';
 
-export type TransferMethod = 
+export type TransferMethod =
   | 'will'
   | 'trust'
   | 'beneficiary_designation'
@@ -494,9 +494,9 @@ class EstatePlanningWorkflowService {
     userProfile: Record<string, any>
   ): Promise<EstatePlanningWorkflow[]> {
     const allWorkflows = Array.from(this.workflows.values());
-    
+
     // Filter based on user's situation and needs
-    return allWorkflows.filter(workflow => 
+    return allWorkflows.filter(workflow =>
       this.isWorkflowApplicable(workflow, userProfile)
     );
   }
@@ -579,12 +579,12 @@ class EstatePlanningWorkflowService {
 
     // Determine next step
     const nextStep = this.getNextStep(workflow, session);
-    
+
     if (!nextStep) {
       // Workflow complete
       session.status = 'completed';
       session.completedAt = new Date().toISOString();
-      
+
       // Generate final estate plan
       const estatePlan = await this.generateEstatePlan(session);
       await this.saveEstatePlan(estatePlan);
@@ -910,7 +910,7 @@ Witness 2: _________________________ Date: _________
     if (workflow.complexity === 'expert' && !userProfile.hasLegalExperience) {
       return false;
     }
-    
+
     return true;
   }
 
@@ -952,7 +952,7 @@ Witness 2: _________________________ Date: _________
   }
 
   private getNextStep(workflow: EstatePlanningWorkflow, session: WorkflowSession): WorkflowStep | null {
-    const remainingSteps = workflow.steps.filter(step => 
+    const remainingSteps = workflow.steps.filter(step =>
       !session.completedSteps.includes(step.id)
     );
 
@@ -960,10 +960,10 @@ Witness 2: _________________________ Date: _________
 
     // Find next step with satisfied dependencies
     for (const step of remainingSteps.sort((a, b) => a.order - b.order)) {
-      const dependenciesSatisfied = step.dependencies.every(depId => 
+      const dependenciesSatisfied = step.dependencies.every(depId =>
         session.completedSteps.includes(depId)
       );
-      
+
       if (dependenciesSatisfied) {
         return step;
       }
@@ -1057,7 +1057,7 @@ Witness 2: _________________________ Date: _________
 
     if (currentStep) {
       actions.push(`Complete: ${currentStep.title}`);
-      
+
       if (currentStep.professionalGuidance?.required) {
         actions.push(`Schedule consultation with ${currentStep.professionalGuidance.professionalType}`);
       }

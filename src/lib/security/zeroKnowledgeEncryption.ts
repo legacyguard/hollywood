@@ -5,8 +5,7 @@ import {
   encodeUTF8,
   decodeUTF8,
 } from 'tweetnacl-util';
-import { pbkdf2 } from 'crypto-js';
-import CryptoJS from 'crypto-js';
+import CryptoJS, { pbkdf2 } from 'crypto-js';
 
 export interface EncryptionKeyPair {
   publicKey: string;
@@ -65,32 +64,32 @@ class ZeroKnowledgeEncryptionService {
    * Initialize user encryption keys with master password
    * The server never sees the master password or private keys
    */
-  async initializeUserKeys(masterPassword: string, userId: string): Promise<EncryptionKeyPair> {
+  async initializeUserKeys(masterPassword: string, _userId: string): Promise<EncryptionKeyPair> {
     // Generate salt for key derivation
     const keyDerivationSalt = encodeBase64(nacl.randomBytes(32));
-    
+
     // Generate encryption key pair
     const keyPair = nacl.box.keyPair();
-    
+
     // Derive encryption key from master password
     const derivedKey = pbkdf2(masterPassword, keyDerivationSalt, {
       keySize: 32,
       iterations: this.KEY_DERIVATION_ITERATIONS,
     });
-    
+
     // Encrypt private key with derived key
     const encryptedPrivateKey = CryptoJS.AES.encrypt(
       encodeBase64(keyPair.secretKey),
       derivedKey.toString()
     ).toString();
-    
+
     const keyData: EncryptionKeyPair = {
       publicKey: encodeBase64(keyPair.publicKey),
       encryptedPrivateKey,
       keyDerivationSalt,
       keyDerivationIterations: this.KEY_DERIVATION_ITERATIONS,
     };
-    
+
     return keyData;
   }
 
@@ -99,33 +98,33 @@ class ZeroKnowledgeEncryptionService {
    * Private key is decrypted client-side only
    */
   async unlockSession(
-    masterPassword: string, 
-    userKeys: EncryptionKeyPair, 
-    userId: string
+    masterPassword: string,
+    userKeys: EncryptionKeyPair,
+    _userId: string
   ): Promise<ZeroKnowledgeSession> {
     // Derive decryption key from master password
     const derivedKey = pbkdf2(masterPassword, userKeys.keyDerivationSalt, {
       keySize: 32,
       iterations: userKeys.keyDerivationIterations,
     });
-    
+
     try {
       // Decrypt private key
       const decryptedPrivateKeyBase64 = CryptoJS.AES.decrypt(
         userKeys.encryptedPrivateKey,
         derivedKey.toString()
       ).toString(CryptoJS.enc.Utf8);
-      
+
       if (!decryptedPrivateKeyBase64) {
         throw new Error('Invalid master password');
       }
-      
-      const privateKey = decodeBase64(decryptedPrivateKeyBase64);
-      const publicKey = decodeBase64(userKeys.publicKey);
-      
+
+      const _privateKey = decodeBase64(decryptedPrivateKeyBase64);
+      const _publicKey = decodeBase64(userKeys.publicKey);
+
       // Create ephemeral key pair for this session
       const ephemeralKeyPair = nacl.box.keyPair();
-      
+
       const session: ZeroKnowledgeSession = {
         sessionId: encodeBase64(nacl.randomBytes(16)),
         publicKey: userKeys.publicKey,
@@ -135,16 +134,16 @@ class ZeroKnowledgeEncryptionService {
         unlockTimestamp: Date.now(),
         autoLockTimeout: this.SESSION_TIMEOUT,
       };
-      
+
       this.currentSession = session;
-      
+
       // Auto-lock session after timeout
       setTimeout(() => {
         this.lockSession();
       }, this.SESSION_TIMEOUT);
-      
+
       return session;
-    } catch (error) {
+    } catch (_error) {
       throw new Error('Failed to unlock session: Invalid credentials');
     }
   }
@@ -180,10 +179,10 @@ class ZeroKnowledgeEncryptionService {
 
     // Read file data
     const fileData = new Uint8Array(await file.arrayBuffer());
-    
+
     // Encrypt file with document key
     const encryptedFileData = nacl.secretbox(fileData, nonce, documentKey);
-    
+
     // Prepare metadata
     const documentMetadata = {
       fileName: file.name,
@@ -194,7 +193,7 @@ class ZeroKnowledgeEncryptionService {
       version: this.ENCRYPTION_VERSION,
       ...metadata,
     };
-    
+
     // Encrypt metadata with document key
     const metadataNonce = nacl.randomBytes(nacl.secretbox.nonceLength);
     const encryptedMetadata = nacl.secretbox(
@@ -202,7 +201,7 @@ class ZeroKnowledgeEncryptionService {
       metadataNonce,
       documentKey
     );
-    
+
     const encryptedDoc: EncryptedDocument = {
       id: encodeBase64(nacl.randomBytes(16)),
       encryptedData: encodeBase64(encryptedFileData),
@@ -213,10 +212,10 @@ class ZeroKnowledgeEncryptionService {
       createdAt: new Date().toISOString(),
       modifiedAt: new Date().toISOString(),
     };
-    
+
     // Store document key encrypted with user's public key for later retrieval
     await this.storeDocumentAccess(encryptedDoc.id, documentKey);
-    
+
     return encryptedDoc;
   }
 
@@ -275,7 +274,7 @@ class ZeroKnowledgeEncryptionService {
     const encryptedData = decodeBase64(encryptedDoc.encryptedData);
     const nonce = decodeBase64(encryptedDoc.nonce);
     const decryptedFileData = nacl.secretbox.open(encryptedData, nonce, documentKey);
-    
+
     if (!decryptedFileData) {
       throw new Error('Failed to decrypt document data');
     }
@@ -285,7 +284,7 @@ class ZeroKnowledgeEncryptionService {
     const encryptedMetadata = decodeBase64(encryptedMetadataBase64);
     const metadataNonce = decodeBase64(metadataNonceBase64);
     const decryptedMetadata = nacl.secretbox.open(encryptedMetadata, metadataNonce, documentKey);
-    
+
     if (!decryptedMetadata) {
       throw new Error('Failed to decrypt document metadata');
     }
@@ -330,7 +329,7 @@ class ZeroKnowledgeEncryptionService {
       recipientPublicKey,
       encryptedDocumentKey: encodeBase64(encryptedDocumentKey) + ':' + encodeBase64(nonce),
       permissions,
-      expiresAt: permissions.timeLimit 
+      expiresAt: permissions.timeLimit
         ? new Date(Date.now() + permissions.timeLimit * 60000).toISOString()
         : undefined,
       createdAt: new Date().toISOString(),
@@ -366,7 +365,7 @@ class ZeroKnowledgeEncryptionService {
       const [encryptedKeyBase64, nonceBase64] = access.encryptedDocumentKey.split(':');
       const encryptedKey = decodeBase64(encryptedKeyBase64);
       const nonce = decodeBase64(nonceBase64);
-      
+
       const decryptedKey = nacl.box.open(
         encryptedKey,
         nonce,
@@ -384,22 +383,22 @@ class ZeroKnowledgeEncryptionService {
   /**
    * IndexedDB operations for client-side key storage
    */
-  private async storeInIndexedDB(storeName: string, data: any): Promise<void> {
+  private async storeInIndexedDB(storeName: string, data: unknown): Promise<void> {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open('LegacyGuardSecure', 1);
-      
+
       request.onerror = () => reject(request.error);
-      
+
       request.onsuccess = () => {
         const db = request.result;
         const transaction = db.transaction([storeName], 'readwrite');
         const store = transaction.objectStore(storeName);
-        
+
         const putRequest = store.put(data, data.documentId || data.id);
         putRequest.onsuccess = () => resolve();
         putRequest.onerror = () => reject(putRequest.error);
       };
-      
+
       request.onupgradeneeded = () => {
         const db = request.result;
         if (!db.objectStoreNames.contains(storeName)) {
@@ -409,22 +408,22 @@ class ZeroKnowledgeEncryptionService {
     });
   }
 
-  private async getFromIndexedDB(storeName: string, key: string): Promise<any> {
+  private async getFromIndexedDB(storeName: string, key: string): Promise<unknown> {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open('LegacyGuardSecure', 1);
-      
+
       request.onerror = () => reject(request.error);
-      
+
       request.onsuccess = () => {
         const db = request.result;
         const transaction = db.transaction([storeName], 'readonly');
         const store = transaction.objectStore(storeName);
-        
+
         const getRequest = store.get(key);
         getRequest.onsuccess = () => resolve(getRequest.result);
         getRequest.onerror = () => reject(getRequest.error);
       };
-      
+
       request.onupgradeneeded = () => {
         const db = request.result;
         if (!db.objectStoreNames.contains(storeName)) {
@@ -437,14 +436,14 @@ class ZeroKnowledgeEncryptionService {
   private async removeFromIndexedDB(storeName: string, key: string): Promise<void> {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open('LegacyGuardSecure', 1);
-      
+
       request.onerror = () => reject(request.error);
-      
+
       request.onsuccess = () => {
         const db = request.result;
         const transaction = db.transaction([storeName], 'readwrite');
         const store = transaction.objectStore(storeName);
-        
+
         const deleteRequest = store.delete(key);
         deleteRequest.onsuccess = () => resolve();
         deleteRequest.onerror = () => reject(deleteRequest.error);
@@ -460,7 +459,7 @@ class ZeroKnowledgeEncryptionService {
       return { isUnlocked: false };
     }
 
-    const timeRemaining = this.currentSession.autoLockTimeout 
+    const timeRemaining = this.currentSession.autoLockTimeout
       ? this.currentSession.autoLockTimeout - (Date.now() - (this.currentSession.unlockTimestamp || 0))
       : undefined;
 
@@ -503,20 +502,20 @@ class ZeroKnowledgeEncryptionService {
     try {
       // First, try to decrypt the backup
       const decryptedData = CryptoJS.AES.decrypt(encryptedBackup, masterPassword).toString(CryptoJS.enc.Utf8);
-      
+
       if (!decryptedData) {
         throw new Error('Invalid backup or password');
       }
 
       const backupData = JSON.parse(decryptedData);
-      
+
       // Verify the backup contains valid keys
       if (!backupData.keys || !backupData.keys.publicKey || !backupData.keys.encryptedPrivateKey) {
         throw new Error('Invalid backup format');
       }
 
       return backupData.keys;
-    } catch (error) {
+    } catch (_error) {
       throw new Error('Failed to import keys: Invalid backup or password');
     }
   }

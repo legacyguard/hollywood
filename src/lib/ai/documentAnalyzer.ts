@@ -8,25 +8,25 @@ export interface DocumentAnalysisResult {
   category: DocumentCategory;
   subcategory: string;
   confidence: number;
-  
+
   // Content Analysis
   keyInformation: KeyInformation;
   importanceLevel: 'low' | 'medium' | 'high' | 'critical';
-  
+
   // Metadata Extraction
   metadata: DocumentMetadata;
-  
+
   // AI Insights
   insights: DocumentInsight[];
   tags: string[];
-  
+
   // Recommendations
   recommendations: DocumentRecommendation[];
-  
+
   // Privacy & Security
   sensitivityLevel: 'public' | 'private' | 'confidential' | 'restricted';
   piiDetected: PIIDetection[];
-  
+
   // Processing Info
   processingTime: number;
   analysisVersion: string;
@@ -44,20 +44,20 @@ export interface KeyInformation {
   importantDates: ExtractedDate[];
   expirationDate?: Date;
   effectiveDate?: Date;
-  
+
   // People & Entities
   people: ExtractedPerson[];
   organizations: string[];
-  
+
   // Financial Information
   amounts: ExtractedAmount[];
   accounts: string[];
-  
+
   // Legal Information
   contractTerms: string[];
   obligations: string[];
   rights: string[];
-  
+
   // Contact Information
   addresses: ExtractedAddress[];
   phoneNumbers: string[];
@@ -139,19 +139,19 @@ export interface AnalysisOptions {
   enableDeepAnalysis: boolean;
   extractMetadata: boolean;
   detectPII: boolean;
-  
+
   // AI Model Preferences
   useAdvancedModels: boolean;
   languageModel: 'gpt-4' | 'claude-3' | 'gemini-pro' | 'local';
-  
+
   // Privacy Options
   localProcessing: boolean;
   anonymizeResults: boolean;
-  
+
   // Performance Options
   timeout: number;
   maxPages: number;
-  
+
   // Custom Categories
   customCategories?: string[];
   organizationContext?: string;
@@ -174,11 +174,11 @@ export class DocumentAnalyzer {
     mimeType?: string
   ): Promise<DocumentAnalysisResult> {
     const startTime = performance.now();
-    
+
     try {
       // Generate cache key
       const cacheKey = await this.generateCacheKey(content, filename);
-      
+
       // Check cache first
       if (this.analysisCache.has(cacheKey)) {
         return this.analysisCache.get(cacheKey)!;
@@ -186,20 +186,20 @@ export class DocumentAnalyzer {
 
       // Extract text content
       const textContent = await this.extractTextContent(content, mimeType);
-      
+
       // Perform analysis
       const result = await this.performAnalysis(textContent, filename);
-      
+
       // Add processing metadata
       result.processingTime = performance.now() - startTime;
       result.analysisVersion = '1.0.0';
       result.timestamp = Date.now();
-      
+
       // Cache result
       this.analysisCache.set(cacheKey, result);
-      
+
       return result;
-      
+
     } catch (error) {
       throw new Error(`Document analysis failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
@@ -210,20 +210,20 @@ export class DocumentAnalyzer {
    */
   async classifyDocument(content: string, filename?: string): Promise<DocumentCategory> {
     const patterns = this.getClassificationPatterns();
-    
+
     // Analyze content for classification signals
     const contentLower = content.toLowerCase();
     const scores: Record<string, number> = {};
-    
+
     // Score each category
     for (const [category, pattern] of Object.entries(patterns)) {
       scores[category] = this.calculateCategoryScore(contentLower, pattern);
     }
-    
+
     // Find best match
     const bestCategory = Object.entries(scores)
       .reduce((a, b) => scores[a[0]] > scores[b[0]] ? a : b)[0];
-    
+
     return {
       primary: bestCategory as DocumentCategory['primary'],
       secondary: this.getSubcategory(bestCategory, content),
@@ -253,12 +253,12 @@ export class DocumentAnalyzer {
    * Generate insights about the document
    */
   async generateInsights(
-    content: string, 
+    content: string,
     keyInfo: KeyInformation,
     category: DocumentCategory
   ): Promise<DocumentInsight[]> {
     const insights: DocumentInsight[] = [];
-    
+
     // Expiration warnings
     for (const date of keyInfo.importantDates) {
       if (date.type === 'expiration' && this.isExpiringSoon(date.date)) {
@@ -272,7 +272,7 @@ export class DocumentAnalyzer {
         });
       }
     }
-    
+
     // Missing information warnings
     if (category.primary === 'legal' && keyInfo.contractTerms.length === 0) {
       insights.push({
@@ -283,7 +283,7 @@ export class DocumentAnalyzer {
         actionRequired: false
       });
     }
-    
+
     // Opportunity insights
     if (category.primary === 'financial' && keyInfo.amounts.length > 0) {
       const hasLargeAmounts = keyInfo.amounts.some(amount => amount.amount > 10000);
@@ -296,7 +296,7 @@ export class DocumentAnalyzer {
         });
       }
     }
-    
+
     return insights;
   }
 
@@ -310,9 +310,9 @@ export class DocumentAnalyzer {
       email: /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g,
       phone: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g,
     };
-    
+
     const detections: PIIDetection[] = [];
-    
+
     for (const [type, pattern] of Object.entries(piiPatterns)) {
       const matches = content.matchAll(pattern);
       for (const match of matches) {
@@ -327,7 +327,7 @@ export class DocumentAnalyzer {
         }
       }
     }
-    
+
     return detections;
   }
 
@@ -341,18 +341,18 @@ export class DocumentAnalyzer {
     if (typeof content === 'string') {
       return content;
     }
-    
+
     // For File/Blob objects, we would typically use libraries like:
     // - pdf-parse for PDFs
     // - mammoth for Word documents
     // - xlsx for Excel files
     // For now, we'll simulate this functionality
-    
+
     if (content instanceof File) {
       const text = await content.text();
       return text;
     }
-    
+
     return 'Simulated extracted text content';
   }
 
@@ -365,25 +365,25 @@ export class DocumentAnalyzer {
   ): Promise<DocumentAnalysisResult> {
     // Classify document
     const category = await this.classifyDocument(textContent, filename);
-    
+
     // Extract key information
     const keyInformation = await this.extractKeyInformation(textContent);
-    
+
     // Generate metadata
     const metadata = this.generateMetadata(textContent, filename);
-    
+
     // Generate insights
     const insights = await this.generateInsights(textContent, keyInformation, category);
-    
+
     // Detect PII
     const piiDetected = this.config.detectPII ? await this.detectPII(textContent) : [];
-    
+
     // Generate recommendations
     const recommendations = this.generateRecommendations(category, keyInformation, insights);
-    
+
     // Generate tags
     const tags = this.generateTags(category, keyInformation, textContent);
-    
+
     return {
       category,
       subcategory: category.secondary || 'General',
@@ -496,15 +496,15 @@ export class DocumentAnalyzer {
       { pattern: /\b\d{4}-\d{2}-\d{2}\b/g, format: 'YYYY-MM-DD' },
       { pattern: /\b\d{1,2}-\d{1,2}-\d{4}\b/g, format: 'MM-DD-YYYY' }
     ];
-    
+
     const dates: ExtractedDate[] = [];
-    
+
     for (const { pattern, format } of datePatterns) {
       const matches = content.matchAll(pattern);
       for (const match of matches) {
         const dateStr = match[0];
         const date = new Date(dateStr);
-        
+
         if (!isNaN(date.getTime())) {
           dates.push({
             date,
@@ -515,7 +515,7 @@ export class DocumentAnalyzer {
         }
       }
     }
-    
+
     return dates;
   }
 
@@ -523,7 +523,7 @@ export class DocumentAnalyzer {
     // Simple name extraction (in production, would use NLP libraries)
     const namePattern = /\b([A-Z][a-z]+ [A-Z][a-z]+)\b/g;
     const people: ExtractedPerson[] = [];
-    
+
     const matches = content.matchAll(namePattern);
     for (const match of matches) {
       people.push({
@@ -532,7 +532,7 @@ export class DocumentAnalyzer {
         role: this.inferPersonRole(content, match.index || 0)
       });
     }
-    
+
     return people;
   }
 
@@ -542,28 +542,28 @@ export class DocumentAnalyzer {
       /\b([A-Z][a-z]+ (?:Inc|LLC|Corp|Corporation|Company|Co|Ltd)\.?)\b/g,
       /\b([A-Z][a-z]+ [A-Z][a-z]+ (?:Inc|LLC|Corp|Corporation|Company|Co|Ltd)\.?)\b/g
     ];
-    
+
     const organizations: string[] = [];
-    
+
     for (const pattern of orgPatterns) {
       const matches = content.matchAll(pattern);
       for (const match of matches) {
         organizations.push(match[1]);
       }
     }
-    
+
     return [...new Set(organizations)]; // Remove duplicates
   }
 
   private extractAmounts(content: string): ExtractedAmount[] {
     const amountPattern = /\$[\d,]+\.?\d*/g;
     const amounts: ExtractedAmount[] = [];
-    
+
     const matches = content.matchAll(amountPattern);
     for (const match of matches) {
       const amountStr = match[0].replace(/[\$,]/g, '');
       const amount = parseFloat(amountStr);
-      
+
       if (!isNaN(amount)) {
         amounts.push({
           amount,
@@ -574,19 +574,19 @@ export class DocumentAnalyzer {
         });
       }
     }
-    
+
     return amounts;
   }
 
   private extractAccountNumbers(content: string): string[] {
     const accountPattern = /(?:account|acct)[\s#:]*(\d{8,})/gi;
     const accounts: string[] = [];
-    
+
     const matches = content.matchAll(accountPattern);
     for (const match of matches) {
       accounts.push(match[1]);
     }
-    
+
     return accounts;
   }
 
@@ -596,16 +596,16 @@ export class DocumentAnalyzer {
       /condition(?:s)?.*?(?:\.|;|\n)/gi,
       /obligation(?:s)?.*?(?:\.|;|\n)/gi
     ];
-    
+
     const terms: string[] = [];
-    
+
     for (const pattern of termPatterns) {
       const matches = content.match(pattern);
       if (matches) {
         terms.push(...matches.map(term => term.trim()));
       }
     }
-    
+
     return terms;
   }
 
@@ -624,7 +624,7 @@ export class DocumentAnalyzer {
   private extractAddresses(content: string): ExtractedAddress[] {
     const addressPattern = /\b\d+\s+[A-Za-z\s]+(?:Street|St|Avenue|Ave|Road|Rd|Drive|Dr|Lane|Ln|Boulevard|Blvd)(?:,\s*[A-Za-z\s]+,?\s*\d{5})?/g;
     const addresses: ExtractedAddress[] = [];
-    
+
     const matches = content.matchAll(addressPattern);
     for (const match of matches) {
       addresses.push({
@@ -633,7 +633,7 @@ export class DocumentAnalyzer {
         type: this.inferAddressType(content, match.index || 0)
       });
     }
-    
+
     return addresses;
   }
 
@@ -668,14 +668,14 @@ export class DocumentAnalyzer {
       /title:\s*(.+)/i,
       /^(.{1,100})/
     ];
-    
+
     for (const pattern of titlePatterns) {
       const match = content.match(pattern);
       if (match && match[1].trim().length > 0) {
         return match[1].trim();
       }
     }
-    
+
     return filename ? filename.replace(/\.[^/.]+$/, '') : 'Untitled Document';
   }
 
@@ -702,7 +702,7 @@ export class DocumentAnalyzer {
         }
       }
     }
-    
+
     return 'Document';
   }
 
@@ -712,7 +712,7 @@ export class DocumentAnalyzer {
     insights: DocumentInsight[]
   ): DocumentRecommendation[] {
     const recommendations: DocumentRecommendation[] = [];
-    
+
     // Expiration-based recommendations
     if (keyInfo.importantDates.some(d => d.type === 'expiration')) {
       recommendations.push({
@@ -723,7 +723,7 @@ export class DocumentAnalyzer {
         estimatedEffort: 'quick'
       });
     }
-    
+
     // Security recommendations for sensitive documents
     if (category.primary === 'financial' || category.primary === 'legal') {
       recommendations.push({
@@ -734,7 +734,7 @@ export class DocumentAnalyzer {
         estimatedEffort: 'quick'
       });
     }
-    
+
     return recommendations;
   }
 
@@ -744,26 +744,26 @@ export class DocumentAnalyzer {
     content: string
   ): string[] {
     const tags: string[] = [];
-    
+
     // Category-based tags
     tags.push(category.primary);
     if (category.secondary) {
       tags.push(category.secondary.toLowerCase().replace(/\s+/g, '-'));
     }
-    
+
     // Content-based tags
     if (keyInfo.importantDates.length > 0) {
       tags.push('dated');
     }
-    
+
     if (keyInfo.amounts.length > 0) {
       tags.push('financial-amounts');
     }
-    
+
     if (keyInfo.people.length > 0) {
       tags.push('personal-info');
     }
-    
+
     return tags;
   }
 
@@ -773,7 +773,7 @@ export class DocumentAnalyzer {
     insights: DocumentInsight[]
   ): 'low' | 'medium' | 'high' | 'critical' {
     let score = 0;
-    
+
     // Category importance
     const categoryWeights: Record<string, number> = {
       legal: 3,
@@ -787,19 +787,19 @@ export class DocumentAnalyzer {
       education: 1,
       other: 0
     };
-    
+
     score += categoryWeights[category.primary] || 0;
-    
+
     // Large amounts increase importance
     if (keyInfo.amounts.some(a => a.amount > 10000)) {
       score += 2;
     }
-    
+
     // Critical insights increase importance
     if (insights.some(i => i.type === 'warning' && i.actionRequired)) {
       score += 2;
     }
-    
+
     if (score >= 6) return 'critical';
     if (score >= 4) return 'high';
     if (score >= 2) return 'medium';
@@ -813,15 +813,15 @@ export class DocumentAnalyzer {
     if (piiDetected.some(pii => pii.type === 'ssn' || pii.type === 'credit_card')) {
       return 'restricted';
     }
-    
+
     if (category.primary === 'legal' || category.primary === 'financial') {
       return 'confidential';
     }
-    
+
     if (piiDetected.length > 0) {
       return 'private';
     }
-    
+
     return 'public';
   }
 
@@ -862,48 +862,48 @@ export class DocumentAnalyzer {
 
   private inferDateType(content: string, position: number): ExtractedDate['type'] {
     const context = this.getContextAroundPosition(content, position, 30).toLowerCase();
-    
+
     if (context.includes('expir')) return 'expiration';
     if (context.includes('effective') || context.includes('start')) return 'effective';
     if (context.includes('birth')) return 'birth';
     if (context.includes('due')) return 'due';
-    
+
     return 'event';
   }
 
   private inferPersonRole(content: string, position: number): string | undefined {
     const context = this.getContextAroundPosition(content, position, 50).toLowerCase();
-    
+
     if (context.includes('attorney') || context.includes('lawyer')) return 'attorney';
     if (context.includes('client')) return 'client';
     if (context.includes('witness')) return 'witness';
     if (context.includes('doctor') || context.includes('physician')) return 'doctor';
-    
+
     return undefined;
   }
 
   private inferAmountType(content: string, position: number): ExtractedAmount['type'] {
     const context = this.getContextAroundPosition(content, position, 30).toLowerCase();
-    
+
     if (context.includes('fee') || context.includes('charge')) return 'fee';
     if (context.includes('payment') || context.includes('pay')) return 'payment';
     if (context.includes('salary') || context.includes('wage')) return 'salary';
     if (context.includes('benefit')) return 'benefit';
     if (context.includes('penalty') || context.includes('fine')) return 'penalty';
     if (context.includes('limit')) return 'limit';
-    
+
     return 'value';
   }
 
   private inferAddressType(content: string, position: number): ExtractedAddress['type'] | undefined {
     const context = this.getContextAroundPosition(content, position, 50).toLowerCase();
-    
+
     if (context.includes('home') || context.includes('residence')) return 'home';
     if (context.includes('work') || context.includes('office') || context.includes('business')) return 'work';
     if (context.includes('billing')) return 'billing';
     if (context.includes('mailing') || context.includes('mail')) return 'mailing';
     if (context.includes('property')) return 'property';
-    
+
     return undefined;
   }
 

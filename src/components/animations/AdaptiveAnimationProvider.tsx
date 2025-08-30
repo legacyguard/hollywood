@@ -94,3 +94,4 @@ export const useAnimationVariants = () => {
 };
 
 export default AdaptiveAnimationProvider;
+

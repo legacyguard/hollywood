@@ -85,7 +85,7 @@ export interface ThirdPartyIntegration {
   lastSync?: string;
 }
 
-export type IntegrationCategory = 
+export type IntegrationCategory =
   | 'crm'
   | 'accounting'
   | 'legal'
@@ -97,7 +97,7 @@ export type IntegrationCategory =
   | 'security'
   | 'compliance';
 
-export type IntegrationStatus = 
+export type IntegrationStatus =
   | 'active'
   | 'inactive'
   | 'error'
@@ -400,7 +400,7 @@ export class APIEcosystemService {
 
     const endpointConfig = Array.from(this.endpoints.values())
       .find(e => e.path === endpoint && e.method === method);
-    
+
     if (!endpointConfig) {
       throw new Error('Endpoint not found');
     }
@@ -463,7 +463,7 @@ export class APIEcosystemService {
       delivery.status = 'delivered';
       delivery.deliveredAt = new Date().toISOString();
       delivery.response = response;
-      
+
       webhook.deliveryStats.successful++;
       webhook.lastDelivery = new Date().toISOString();
     } catch (error) {
@@ -487,7 +487,7 @@ export class APIEcosystemService {
     endpoints: string[]
   ): Promise<SDKPackage> {
     const selectedEndpoints = endpoints.map(id => this.endpoints.get(id)).filter(Boolean) as APIEndpoint[];
-    
+
     const sdk: SDKPackage = {
       id: this.generateId(),
       language,
@@ -532,7 +532,7 @@ export class APIEcosystemService {
 
     // Review and certification process
     await this.reviewIntegration(integration);
-    
+
     if (integration.status === 'published') {
       this.marketplace.integrations.push(integration);
       await this.updateMarketplaceAnalytics();
@@ -707,7 +707,7 @@ export class APIEcosystemService {
 
   private async generateClientAuthentication(type: AuthenticationType): Promise<ClientAuthentication> {
     const auth: ClientAuthentication = {};
-    
+
     if (type === 'api_key') {
       auth.apiKey = {
         key: this.generateAPIKey(),

@@ -3,7 +3,7 @@
  * Phase 6: AI Intelligence & Document Analysis
  */
 
-import { DocumentAnalysisResult, DocumentCategory } from './documentAnalyzer';
+import type { DocumentAnalysisResult, DocumentCategory } from './documentAnalyzer';
 import { CategorySuggestion } from './documentCategorizer';
 
 export interface SmartSearchQuery {
@@ -38,13 +38,13 @@ export interface SearchOptions {
   semanticSearch?: boolean;
   includeContent?: boolean;
   includeMetadata?: boolean;
-  
+
   // Result options
   maxResults?: number;
   offset?: number;
   sortBy?: 'relevance' | 'date' | 'importance' | 'alphabetical';
   sortOrder?: 'asc' | 'desc';
-  
+
   // AI enhancement
   expandQuery?: boolean;
   suggestAlternatives?: boolean;
@@ -138,30 +138,30 @@ export class SmartSearchService {
    */
   async search(searchQuery: SmartSearchQuery): Promise<SmartSearchResults> {
     const startTime = performance.now();
-    
+
     try {
       // Expand and enhance the query
       const enhancedQuery = await this.enhanceQuery(searchQuery);
-      
+
       // Perform the search
       const rawResults = await this.executeSearch(enhancedQuery);
-      
+
       // Re-rank and personalize results
       const rankedResults = await this.rankResults(rawResults, enhancedQuery);
-      
+
       // Generate recommendations
       const recommendations = await this.generateRecommendations(rankedResults, enhancedQuery);
-      
+
       // Generate facets
       const facets = this.generateFacets(rawResults);
-      
+
       // Generate query suggestions
       const suggestedQueries = await this.generateQuerySuggestions(searchQuery.query);
-      
+
       // Update analytics
       const searchTime = performance.now() - startTime;
       this.updateSearchAnalytics(searchQuery.query, searchTime, rankedResults.length);
-      
+
       return {
         results: rankedResults.slice(0, enhancedQuery.options?.maxResults || 50),
         totalResults: rawResults.length,
@@ -171,7 +171,7 @@ export class SmartSearchService {
         facets,
         recommendations
       };
-      
+
     } catch (error) {
       throw new Error(`Search failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
@@ -182,19 +182,19 @@ export class SmartSearchService {
    */
   async getSuggestions(partialQuery: string, limit = 10): Promise<QuerySuggestion[]> {
     const suggestions: QuerySuggestion[] = [];
-    
+
     // Historical query suggestions
     const historicalSuggestions = this.getHistoricalSuggestions(partialQuery);
     suggestions.push(...historicalSuggestions);
-    
+
     // Content-based suggestions
     const contentSuggestions = await this.getContentBasedSuggestions(partialQuery);
     suggestions.push(...contentSuggestions);
-    
+
     // Category-based suggestions
     const categorySuggestions = this.getCategorySuggestions(partialQuery);
     suggestions.push(...categorySuggestions);
-    
+
     // Remove duplicates and sort by confidence
     const uniqueSuggestions = this.deduplicateSuggestions(suggestions);
     return uniqueSuggestions
@@ -222,7 +222,7 @@ export class SmartSearchService {
       embedding: await this.generateEmbedding(content),
       lastIndexed: new Date()
     };
-    
+
     this.searchIndex.set(documentId, indexEntry);
   }
 
@@ -244,18 +244,18 @@ export class SmartSearchService {
     if (!existing) {
       throw new Error(`Document ${documentId} not found in index`);
     }
-    
+
     const updated: SearchIndex = {
       ...existing,
       ...updates,
       lastIndexed: new Date()
     };
-    
+
     // Regenerate embedding if content changed
     if (updates.content) {
       updated.embedding = await this.generateEmbedding(updates.content);
     }
-    
+
     this.searchIndex.set(documentId, updated);
   }
 
@@ -271,18 +271,18 @@ export class SmartSearchService {
     if (!targetDoc) {
       throw new Error(`Document ${documentId} not found in index`);
     }
-    
+
     const similarities: Array<{ doc: SearchIndex; score: number }> = [];
-    
+
     for (const [id, doc] of this.searchIndex.entries()) {
       if (id === documentId) continue;
-      
+
       const similarity = this.calculateDocumentSimilarity(targetDoc, doc);
       if (similarity >= threshold) {
         similarities.push({ doc, score: similarity });
       }
     }
-    
+
     // Sort by similarity and convert to search results
     return similarities
       .sort((a, b) => b.score - a.score)
@@ -299,7 +299,7 @@ export class SmartSearchService {
     limit = 10
   ): Promise<DocumentRecommendation[]> {
     const recommendations: DocumentRecommendation[] = [];
-    
+
     // Expiring documents
     const expiringDocs = this.findExpiringDocuments();
     if (expiringDocs.length > 0) {
@@ -312,11 +312,11 @@ export class SmartSearchService {
         reasoning: ['Documents with expiration dates within 60 days']
       });
     }
-    
+
     // Incomplete document sets
     const incompleteSets = await this.findIncompleteDocumentSets();
     recommendations.push(...incompleteSets);
-    
+
     // Frequently accessed categories
     const trendingCategories = this.getTrendingCategories();
     if (trendingCategories.length > 0) {
@@ -330,7 +330,7 @@ export class SmartSearchService {
         reasoning: ['Based on recent search and access patterns']
       });
     }
-    
+
     return recommendations.slice(0, limit);
   }
 
@@ -352,11 +352,11 @@ export class SmartSearchService {
     lastIndexed: Date;
   } {
     const docs = Array.from(this.searchIndex.values());
-    
+
     const categories: Record<string, number> = {};
     let totalContentLength = 0;
     let lastIndexed = new Date(0);
-    
+
     for (const doc of docs) {
       const category = doc.analysis.category.primary;
       categories[category] = (categories[category] || 0) + 1;
@@ -365,7 +365,7 @@ export class SmartSearchService {
         lastIndexed = doc.lastIndexed;
       }
     }
-    
+
     return {
       totalDocuments: docs.length,
       totalContent: totalContentLength,
@@ -389,28 +389,28 @@ export class SmartSearchService {
       synonyms: [],
       corrections: []
     };
-    
+
     // Query expansion
     if (query.options?.expandQuery !== false) {
       enhanced.expandedTerms = await this.expandQuery(query.query);
     }
-    
+
     // Add synonyms
     enhanced.synonyms = this.findSynonyms(query.query);
-    
+
     // Auto-correct common typos
     enhanced.corrections = this.correctSpelling(query.query);
-    
+
     return enhanced;
   }
 
   private async executeSearch(query: EnhancedQuery): Promise<SearchResult[]> {
     const results: SearchResult[] = [];
     const searchTerms = this.extractSearchTerms(query.query);
-    
+
     for (const [documentId, indexEntry] of this.searchIndex.entries()) {
       const relevanceScore = this.calculateRelevance(indexEntry, searchTerms, query);
-      
+
       if (relevanceScore > 0) {
         const result = this.convertToSearchResult(
           indexEntry,
@@ -420,7 +420,7 @@ export class SmartSearchService {
         results.push(result);
       }
     }
-    
+
     return results;
   }
 
@@ -430,20 +430,20 @@ export class SmartSearchService {
   ): Promise<SearchResult[]> {
     // Apply machine learning ranking if available
     const rankedResults = [...results];
-    
+
     // Sort by relevance score
     rankedResults.sort((a, b) => {
       switch (query.options?.sortBy) {
         case 'date':
-          return query.options.sortOrder === 'asc' 
+          return query.options.sortOrder === 'asc'
             ? a.lastModified.getTime() - b.lastModified.getTime()
             : b.lastModified.getTime() - a.lastModified.getTime();
         case 'importance':
           const importanceOrder = { critical: 4, high: 3, medium: 2, low: 1 };
           const aImportance = importanceOrder[a.analysis?.importanceLevel || 'low'];
           const bImportance = importanceOrder[b.analysis?.importanceLevel || 'low'];
-          return query.options.sortOrder === 'asc' 
-            ? aImportance - bImportance 
+          return query.options.sortOrder === 'asc'
+            ? aImportance - bImportance
             : bImportance - aImportance;
         case 'alphabetical':
           return query.options.sortOrder === 'asc'
@@ -454,12 +454,12 @@ export class SmartSearchService {
           return b.relevanceScore - a.relevanceScore;
       }
     });
-    
+
     // Apply personalization
     if (query.options?.personalizeResults) {
       return this.personalizeResults(rankedResults);
     }
-    
+
     return rankedResults;
   }
 
@@ -468,12 +468,12 @@ export class SmartSearchService {
     query: EnhancedQuery
   ): Promise<DocumentRecommendation[]> {
     const recommendations: DocumentRecommendation[] = [];
-    
+
     // Similar documents recommendation
     if (results.length > 0) {
       const topResult = results[0];
       const similarDocs = await this.findSimilarDocuments(topResult.documentId, 3, 0.6);
-      
+
       if (similarDocs.length > 0) {
         recommendations.push({
           type: 'similar',
@@ -485,11 +485,11 @@ export class SmartSearchService {
         });
       }
     }
-    
+
     // Category completion recommendations
     const categoryCompletions = this.findCategoryCompletions(results);
     recommendations.push(...categoryCompletions);
-    
+
     return recommendations;
   }
 
@@ -501,30 +501,30 @@ export class SmartSearchService {
       importanceLevels: {},
       fileTypes: {}
     };
-    
+
     for (const result of results) {
       // Categories
       const category = result.category.primary;
       facets.categories[category] = (facets.categories[category] || 0) + 1;
-      
+
       // Tags
       if (result.analysis?.tags) {
         for (const tag of result.analysis.tags) {
           facets.tags[tag] = (facets.tags[tag] || 0) + 1;
         }
       }
-      
+
       // Importance levels
       if (result.analysis?.importanceLevel) {
         const importance = result.analysis.importanceLevel;
         facets.importanceLevels[importance] = (facets.importanceLevels[importance] || 0) + 1;
       }
-      
+
       // Date ranges (simplified)
       const now = new Date();
       const monthsAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
       const yearAgo = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
-      
+
       if (result.lastModified > monthsAgo) {
         facets.dateRanges['recent'] = (facets.dateRanges['recent'] || 0) + 1;
       } else if (result.lastModified > yearAgo) {
@@ -532,7 +532,7 @@ export class SmartSearchService {
       } else {
         facets.dateRanges['older'] = (facets.dateRanges['older'] || 0) + 1;
       }
-      
+
       // File types
       if (result.filename) {
         const ext = result.filename.split('.').pop()?.toLowerCase();
@@ -541,13 +541,13 @@ export class SmartSearchService {
         }
       }
     }
-    
+
     return facets;
   }
 
   private async generateQuerySuggestions(query: string): Promise<QuerySuggestion[]> {
     const suggestions: QuerySuggestion[] = [];
-    
+
     // Related terms based on indexed content
     const relatedTerms = this.findRelatedTerms(query);
     for (const term of relatedTerms) {
@@ -558,11 +558,11 @@ export class SmartSearchService {
         exampleResults: this.estimateResults(term)
       });
     }
-    
+
     // Category-specific suggestions
     const categoryQueries = this.generateCategoryQueries(query);
     suggestions.push(...categoryQueries);
-    
+
     return suggestions.slice(0, 8); // Limit suggestions
   }
 
@@ -572,39 +572,39 @@ export class SmartSearchService {
     query: EnhancedQuery
   ): number {
     let score = 0;
-    
+
     // Title matching (highest weight)
     const titleMatches = this.countMatches(indexEntry.title.toLowerCase(), searchTerms);
     score += titleMatches * 3;
-    
+
     // Content matching
     const contentMatches = this.countMatches(indexEntry.content.toLowerCase(), searchTerms);
     score += contentMatches * 1;
-    
+
     // Tag matching
     const tagMatches = indexEntry.tags.reduce((matches, tag) => {
       return matches + this.countMatches(tag.toLowerCase(), searchTerms);
     }, 0);
     score += tagMatches * 2;
-    
+
     // Category matching
     const categoryText = `${indexEntry.analysis.category.primary} ${indexEntry.analysis.category.secondary || ''}`;
     const categoryMatches = this.countMatches(categoryText.toLowerCase(), searchTerms);
     score += categoryMatches * 1.5;
-    
+
     // Apply filters
     if (query.filters) {
       if (!this.passesFilters(indexEntry, query.filters)) {
         return 0;
       }
     }
-    
+
     // Boost recent documents slightly
     const daysSinceModified = (Date.now() - new Date(indexEntry.metadata.lastModified || 0).getTime()) / (1000 * 60 * 60 * 24);
     if (daysSinceModified < 30) {
       score *= 1.1;
     }
-    
+
     // Boost important documents
     const importanceBoost = {
       critical: 1.5,
@@ -613,7 +613,7 @@ export class SmartSearchService {
       low: 1.0
     };
     score *= importanceBoost[indexEntry.analysis.importanceLevel] || 1.0;
-    
+
     return score;
   }
 
@@ -632,22 +632,22 @@ export class SmartSearchService {
     if (filters.categories && !filters.categories.includes(indexEntry.analysis.category.primary)) {
       return false;
     }
-    
+
     // Tag filter
     if (filters.tags && !filters.tags.some(tag => indexEntry.tags.includes(tag))) {
       return false;
     }
-    
+
     // Importance level filter
     if (filters.importanceLevel && !filters.importanceLevel.includes(indexEntry.analysis.importanceLevel)) {
       return false;
     }
-    
+
     // Sensitivity level filter
     if (filters.sensitivityLevel && !filters.sensitivityLevel.includes(indexEntry.analysis.sensitivityLevel)) {
       return false;
     }
-    
+
     // Date range filter
     if (filters.dateRange) {
       const targetDate = this.getDateFromEntry(indexEntry, filters.dateRange.field);
@@ -655,20 +655,20 @@ export class SmartSearchService {
         return false;
       }
     }
-    
+
     // Content-based filters
     if (filters.hasAmounts && indexEntry.analysis.keyInformation.amounts.length === 0) {
       return false;
     }
-    
+
     if (filters.hasPeople && indexEntry.analysis.keyInformation.people.length === 0) {
       return false;
     }
-    
+
     if (filters.hasExpiration && !indexEntry.analysis.keyInformation.importantDates.some(d => d.type === 'expiration')) {
       return false;
     }
-    
+
     return true;
   }
 
@@ -712,10 +712,10 @@ export class SmartSearchService {
 
   private generateHighlights(indexEntry: SearchIndex, matchedFields: string[]): SearchHighlight[] {
     const highlights: SearchHighlight[] = [];
-    
+
     // This is a simplified implementation
     // In production, would generate proper highlights with context
-    
+
     if (matchedFields.includes('title')) {
       highlights.push({
         field: 'title',
@@ -725,7 +725,7 @@ export class SmartSearchService {
         endPosition: indexEntry.title.length
       });
     }
-    
+
     if (matchedFields.includes('content')) {
       // Generate content excerpt
       const excerpt = indexEntry.content.substring(0, 200) + '...';
@@ -737,26 +737,26 @@ export class SmartSearchService {
         endPosition: 200
       });
     }
-    
+
     return highlights;
   }
 
   private findMatchedFields(indexEntry: SearchIndex, searchTerms: string[]): string[] {
     const matched: string[] = [];
-    
+
     if (this.countMatches(indexEntry.title.toLowerCase(), searchTerms) > 0) {
       matched.push('title');
     }
-    
+
     if (this.countMatches(indexEntry.content.toLowerCase(), searchTerms) > 0) {
       matched.push('content');
     }
-    
+
     const tagsText = indexEntry.tags.join(' ').toLowerCase();
     if (this.countMatches(tagsText, searchTerms) > 0) {
       matched.push('tags');
     }
-    
+
     return matched;
   }
 
@@ -773,7 +773,7 @@ export class SmartSearchService {
   private async expandQuery(query: string): Promise<string[]> {
     // Simplified query expansion
     const expansions: string[] = [];
-    
+
     // Add plural/singular forms
     const words = query.split(/\s+/);
     for (const word of words) {
@@ -783,7 +783,7 @@ export class SmartSearchService {
         expansions.push(word + 's');
       }
     }
-    
+
     return expansions;
   }
 
@@ -794,37 +794,37 @@ export class SmartSearchService {
       'financial': ['monetary', 'economic', 'fiscal'],
       'medical': ['health', 'healthcare', 'clinical']
     };
-    
+
     const synonyms: string[] = [];
     const words = query.toLowerCase().split(/\s+/);
-    
+
     for (const word of words) {
       if (synonymMap[word]) {
         synonyms.push(...synonymMap[word]);
       }
     }
-    
+
     return synonyms;
   }
 
   private correctSpelling(query: string): string[] {
     // Simplified spell correction
     const corrections: string[] = [];
-    
+
     const commonCorrections: Record<string, string> = {
       'docuemnt': 'document',
       'recrod': 'record',
       'finacial': 'financial',
       'contarct': 'contract'
     };
-    
+
     const words = query.split(/\s+/);
     for (const word of words) {
       if (commonCorrections[word.toLowerCase()]) {
         corrections.push(commonCorrections[word.toLowerCase()]);
       }
     }
-    
+
     return corrections;
   }
 
@@ -854,29 +854,29 @@ export class SmartSearchService {
         similarity += 0.2;
       }
     }
-    
+
     // Tag similarity
     const commonTags = doc1.tags.filter(tag => doc2.tags.includes(tag));
     similarity += (commonTags.length / Math.max(doc1.tags.length, doc2.tags.length)) * 0.3;
-    
+
     // Content similarity (simplified)
     const commonWords = this.findCommonWords(doc1.content, doc2.content);
     similarity += Math.min(commonWords / 100, 0.2);
-    
+
     return similarity;
   }
 
   private findCommonWords(text1: string, text2: string): number {
     const words1 = new Set(text1.toLowerCase().split(/\s+/));
     const words2 = new Set(text2.toLowerCase().split(/\s+/));
-    
+
     let common = 0;
     for (const word of words1) {
       if (words2.has(word)) {
         common++;
       }
     }
-    
+
     return common;
   }
 
@@ -884,9 +884,9 @@ export class SmartSearchService {
   private updateSearchAnalytics(query: string, responseTime: number, resultCount: number): void {
     this.searchAnalytics.totalQueries++;
     this.searchAnalytics.topQueries[query] = (this.searchAnalytics.topQueries[query] || 0) + 1;
-    this.searchAnalytics.averageResponseTime = 
+    this.searchAnalytics.averageResponseTime =
       (this.searchAnalytics.averageResponseTime + responseTime) / 2;
-    
+
     this.queryHistory.push(query);
     if (this.queryHistory.length > 1000) {
       this.queryHistory.shift();
@@ -940,26 +940,26 @@ export class SmartSearchService {
     // Simplified result estimation
     const terms = this.extractSearchTerms(query);
     let estimate = 0;
-    
+
     for (const indexEntry of this.searchIndex.values()) {
       if (this.calculateRelevance(indexEntry, terms, { query } as EnhancedQuery) > 0) {
         estimate++;
       }
     }
-    
+
     return estimate;
   }
 
   private findExpiringDocuments(daysAhead = 60): SearchResult[] {
     const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() + daysAhead);
-    
+
     const expiring: SearchResult[] = [];
-    
+
     for (const indexEntry of this.searchIndex.values()) {
       const expirationDates = indexEntry.analysis.keyInformation.importantDates
         .filter(d => d.type === 'expiration');
-      
+
       for (const dateInfo of expirationDates) {
         if (dateInfo.date <= cutoffDate) {
           expiring.push(this.convertToSearchResult(indexEntry, 1.0, ['expiration']));
@@ -967,7 +967,7 @@ export class SmartSearchService {
         }
       }
     }
-    
+
     return expiring;
   }
 
@@ -980,12 +980,12 @@ export class SmartSearchService {
   private getTrendingCategories(): DocumentCategory['primary'][] {
     // Simplified trending calculation
     const categoryCounts: Record<string, number> = {};
-    
+
     for (const indexEntry of this.searchIndex.values()) {
       const category = indexEntry.analysis.category.primary;
       categoryCounts[category] = (categoryCounts[category] || 0) + 1;
     }
-    
+
     return Object.entries(categoryCounts)
       .sort(([,a], [,b]) => b - a)
       .slice(0, 3)
@@ -994,13 +994,13 @@ export class SmartSearchService {
 
   private getDocumentsByCategories(categories: DocumentCategory['primary'][]): SearchResult[] {
     const results: SearchResult[] = [];
-    
+
     for (const indexEntry of this.searchIndex.values()) {
       if (categories.includes(indexEntry.analysis.category.primary)) {
         results.push(this.convertToSearchResult(indexEntry, 1.0, ['category']));
       }
     }
-    
+
     return results.slice(0, 10);
   }
 
@@ -1019,21 +1019,21 @@ export class SmartSearchService {
     // Extract related terms from content
     const relatedTerms: string[] = [];
     const queryTerms = this.extractSearchTerms(query);
-    
+
     // Simple co-occurrence analysis
     const cooccurrenceMap: Record<string, number> = {};
-    
+
     for (const indexEntry of this.searchIndex.values()) {
       const contentWords = this.extractSearchTerms(indexEntry.content);
       let hasQueryTerm = false;
-      
+
       for (const queryTerm of queryTerms) {
         if (contentWords.includes(queryTerm)) {
           hasQueryTerm = true;
           break;
         }
       }
-      
+
       if (hasQueryTerm) {
         for (const word of contentWords) {
           if (!queryTerms.includes(word)) {
@@ -1042,7 +1042,7 @@ export class SmartSearchService {
         }
       }
     }
-    
+
     return Object.entries(cooccurrenceMap)
       .sort(([,a], [,b]) => b - a)
       .slice(0, 5)

@@ -129,95 +129,95 @@ export interface FamilyRelationshipMap {
   generationalFlow: GenerationFlow[];
 }
 
-export type EventType = 
-  | 'birth' 
-  | 'death' 
-  | 'marriage' 
-  | 'divorce' 
-  | 'graduation' 
-  | 'career_milestone' 
-  | 'relocation' 
-  | 'achievement' 
-  | 'celebration' 
-  | 'crisis' 
+export type EventType =
+  | 'birth'
+  | 'death'
+  | 'marriage'
+  | 'divorce'
+  | 'graduation'
+  | 'career_milestone'
+  | 'relocation'
+  | 'achievement'
+  | 'celebration'
+  | 'crisis'
   | 'legal_event'
   | 'financial_event'
   | 'health_event'
   | 'family_gathering';
 
-export type EventCategory = 
-  | 'personal' 
-  | 'professional' 
-  | 'family' 
-  | 'legal' 
-  | 'financial' 
-  | 'health' 
-  | 'social' 
-  | 'achievement' 
+export type EventCategory =
+  | 'personal'
+  | 'professional'
+  | 'family'
+  | 'legal'
+  | 'financial'
+  | 'health'
+  | 'social'
+  | 'achievement'
   | 'milestone';
 
-export type MilestoneType = 
-  | 'family_founding' 
-  | 'generational_achievement' 
-  | 'legacy_creation' 
-  | 'tradition_establishment' 
-  | 'crisis_overcome' 
-  | 'major_acquisition' 
+export type MilestoneType =
+  | 'family_founding'
+  | 'generational_achievement'
+  | 'legacy_creation'
+  | 'tradition_establishment'
+  | 'crisis_overcome'
+  | 'major_acquisition'
   | 'educational_achievement'
   | 'business_success'
   | 'community_impact';
 
-export type AssociationType = 
-  | 'created_during' 
-  | 'relates_to' 
-  | 'proves' 
-  | 'commemorates' 
-  | 'legal_for' 
-  | 'financial_for' 
+export type AssociationType =
+  | 'created_during'
+  | 'relates_to'
+  | 'proves'
+  | 'commemorates'
+  | 'legal_for'
+  | 'financial_for'
   | 'inherited_from'
   | 'prepared_for';
 
-export type ViewType = 
-  | 'chronological' 
-  | 'generational' 
-  | 'relationship' 
-  | 'document_focused' 
-  | 'milestone_focused' 
+export type ViewType =
+  | 'chronological'
+  | 'generational'
+  | 'relationship'
+  | 'document_focused'
+  | 'milestone_focused'
   | 'person_focused'
   | 'theme_focused';
 
-export type FilterType = 
-  | 'date_range' 
-  | 'person' 
-  | 'event_type' 
-  | 'document_type' 
-  | 'location' 
-  | 'significance' 
+export type FilterType =
+  | 'date_range'
+  | 'person'
+  | 'event_type'
+  | 'document_type'
+  | 'location'
+  | 'significance'
   | 'privacy_level';
 
-export type ParticipantRole = 
-  | 'subject' 
-  | 'spouse' 
-  | 'parent' 
-  | 'child' 
-  | 'sibling' 
-  | 'witness' 
-  | 'officiant' 
+export type ParticipantRole =
+  | 'subject'
+  | 'spouse'
+  | 'parent'
+  | 'child'
+  | 'sibling'
+  | 'witness'
+  | 'officiant'
   | 'supporter'
   | 'beneficiary';
 
-export type EventSignificance = 
-  | 'life_changing' 
-  | 'major' 
-  | 'moderate' 
-  | 'minor' 
+export type EventSignificance =
+  | 'life_changing'
+  | 'major'
+  | 'moderate'
+  | 'minor'
   | 'commemorative';
 
-export type EventPrivacy = 
-  | 'public' 
-  | 'family_only' 
-  | 'immediate_family' 
-  | 'private' 
+export type EventPrivacy =
+  | 'public'
+  | 'family_only'
+  | 'immediate_family'
+  | 'private'
   | 'restricted';
 
 interface TimeSpan {
@@ -518,13 +518,13 @@ class FamilyTimelineService {
 
     // Extract relationships from events
     const relationships = await this.extractRelationships(timeline.events);
-    
+
     // Calculate connection strengths
     const connectionStrength = await this.calculateConnectionStrength(relationships);
-    
+
     // Identify influence patterns
     const influenceNetwork = await this.identifyInfluencePatterns(timeline.events, relationships);
-    
+
     // Analyze generational flow
     const generationalFlow = await this.analyzeGenerationalFlow(timeline.generations);
 
@@ -552,7 +552,7 @@ class FamilyTimelineService {
 
     // Remove duplicates and validate
     const uniqueEvents = await this.deduplicateEvents(detectedEvents);
-    
+
     return uniqueEvents;
   }
 
@@ -617,7 +617,7 @@ class FamilyTimelineService {
 
     // Check for document references in event description
     const documentReferences = this.extractDocumentReferences(event.description);
-    
+
     for (const reference of documentReferences) {
       associations.push({
         documentId: reference.id,
@@ -688,7 +688,7 @@ class FamilyTimelineService {
     const influences: InfluenceEdge[] = [];
 
     // Look for mentor-mentee patterns in events
-    const mentorshipEvents = events.filter(e => 
+    const mentorshipEvents = events.filter(e =>
       e.category === 'achievement' || e.category === 'professional'
     );
 
@@ -752,7 +752,7 @@ class FamilyTimelineService {
 
   private async extractGenerationalThemes(generations: FamilyGeneration[]): Promise<string[]> {
     const themes = new Set<string>();
-    
+
     generations.forEach(gen => {
       gen.characteristics.forEach(char => themes.add(char));
       gen.legacy.values.forEach(value => themes.add(value));
@@ -846,13 +846,13 @@ class FamilyTimelineService {
 
   private extractRelationshipsFromEvent(event: TimelineEvent): FamilyRelationship[] {
     const relationships: FamilyRelationship[] = [];
-    
+
     // Extract relationships based on participant roles
     for (let i = 0; i < event.participants.length; i++) {
       for (let j = i + 1; j < event.participants.length; j++) {
         const participant1 = event.participants[i];
         const participant2 = event.participants[j];
-        
+
         relationships.push({
           fromMember: participant1.memberId,
           toMember: participant2.memberId,
@@ -890,7 +890,7 @@ class FamilyTimelineService {
     const currentValues = new Set(currentGen.legacy.values);
     const nextValues = new Set(nextGen.legacy.values);
     const overlap = new Set([...currentValues].filter(v => nextValues.has(v)));
-    
+
     return overlap.size / currentValues.size;
   }
 
@@ -902,7 +902,7 @@ class FamilyTimelineService {
   private extractMainThemes(timeline: FamilyTimeline): string[] {
     // Extract main themes from events and milestones
     const themes = new Set<string>();
-    
+
     timeline.events.forEach(event => {
       event.tags.forEach(tag => themes.add(tag));
     });
@@ -918,15 +918,15 @@ class FamilyTimelineService {
   }
 
   private calculateRelationshipStrength(
-    event: TimelineEvent, 
-    p1: EventParticipant, 
+    event: TimelineEvent,
+    p1: EventParticipant,
     p2: EventParticipant
   ): number {
     let strength = 0.5; // Base strength
-    
+
     if (event.significance === 'life_changing') strength += 0.3;
     if (p1.significance === 'primary' || p2.significance === 'primary') strength += 0.2;
-    
+
     return Math.min(1, strength);
   }
 

@@ -17,7 +17,7 @@ import { useABTest } from '@/lib/ab-testing/ab-testing-system';
 import { useOnboardingTracking } from '@/hooks/useConversionTracking';
 
 interface OnboardingFlowProps {
-  onComplete: (userData: any) => void;
+  onComplete: (userData: Record<string, unknown>) => void;
   onSkip?: () => void;
   userId?: string;
   className?: string;
@@ -27,7 +27,7 @@ interface OnboardingStep {
   id: string;
   title: string;
   description: string;
-  component: React.ComponentType<any>;
+  component: React.ComponentType<Record<string, unknown>>;
 }
 
 export function ABTestOnboardingFlow({
@@ -49,7 +49,7 @@ export function ABTestOnboardingFlow({
     trackConversion('onboarding_started', 1, { variant });
   }, [trackOnboardingStart, trackConversion, variant]);
 
-  const handleStepComplete = (stepData: any) => {
+  const handleStepComplete = (stepData: Record<string, unknown>) => {
     const timeSpent = Date.now() - stepStartTime;
     const stepId = getSteps(variant)[currentStep]?.id || 'unknown';
 
@@ -100,7 +100,7 @@ export function ABTestOnboardingFlow({
           <h1 className="text-2xl font-bold text-gray-900">
             {variant === 'variant_a' ? 'Protect Your Family' : 'Welcome to LegacyGuard'}
           </h1>
-          <Badge variant={"outline" as any} className="text-sm">
+          <Badge variant="outline" className="text-sm">
             {currentStep + 1} of {steps.length}
           </Badge>
         </div>
@@ -200,7 +200,7 @@ function getSteps(variant: string): OnboardingStep[] {
 /**
  * Control Flow Step Components
  */
-function NameStep({ onComplete, onSkip }: { onComplete: (data: any) => void; onSkip: () => void }) {
+function NameStep({ onComplete, onSkip }: { onComplete: (data: Record<string, unknown>) => void; onSkip: () => void }) {
   const [name, setName] = useState('');
 
   return (
@@ -228,7 +228,7 @@ function NameStep({ onComplete, onSkip }: { onComplete: (data: any) => void; onS
             Continue
             <ArrowRight className="h-4 w-4 ml-2" />
           </Button>
-          <Button variant={"ghost" as any} onClick={onSkip}>
+          <Button variant="ghost" onClick={onSkip}>
             Skip
           </Button>
         </div>
@@ -237,7 +237,7 @@ function NameStep({ onComplete, onSkip }: { onComplete: (data: any) => void; onS
   );
 }
 
-function PurposeStep({ onComplete, onSkip }: { onComplete: (data: any) => void; onSkip: () => void }) {
+function PurposeStep({ onComplete, onSkip }: { onComplete: (data: Record<string, unknown>) => void; onSkip: () => void }) {
   const [purpose, setPurpose] = useState('');
 
   const purposes = [
@@ -277,7 +277,7 @@ function PurposeStep({ onComplete, onSkip }: { onComplete: (data: any) => void; 
             Continue
             <ArrowRight className="h-4 w-4 ml-2" />
           </Button>
-          <Button variant={"ghost" as any} onClick={onSkip}>
+          <Button variant="ghost" onClick={onSkip}>
             Skip
           </Button>
         </div>
@@ -286,7 +286,7 @@ function PurposeStep({ onComplete, onSkip }: { onComplete: (data: any) => void; 
   );
 }
 
-function FamilyStep({ onComplete, onSkip }: { onComplete: (data: any) => void; onSkip: () => void }) {
+function FamilyStep({ onComplete, onSkip }: { onComplete: (data: Record<string, unknown>) => void; onSkip: () => void }) {
   const [familySize, setFamilySize] = useState('');
   const [hasMinors, setHasMinors] = useState<boolean | null>(null);
 
@@ -342,7 +342,7 @@ function FamilyStep({ onComplete, onSkip }: { onComplete: (data: any) => void; o
             Continue
             <ArrowRight className="h-4 w-4 ml-2" />
           </Button>
-          <Button variant={"ghost" as any} onClick={onSkip}>
+          <Button variant="ghost" onClick={onSkip}>
             Skip
           </Button>
         </div>
@@ -351,7 +351,7 @@ function FamilyStep({ onComplete, onSkip }: { onComplete: (data: any) => void; o
   );
 }
 
-function NextStepsStep({ onComplete, userData: _userData }: { onComplete: (data: any) => void; userData: any }) {
+function NextStepsStep({ onComplete, userData: _userData }: { onComplete: (data: Record<string, unknown>) => void; userData: Record<string, unknown> }) {
   const recommendations = [
     {
       icon: Shield,
@@ -387,7 +387,7 @@ function NextStepsStep({ onComplete, userData: _userData }: { onComplete: (data:
               <h4 className="font-medium">{rec.title}</h4>
               <p className="text-sm text-gray-600">{rec.description}</p>
             </div>
-            <Badge variant={"outline" as any} className="text-xs">
+            <Badge variant="outline" className="text-xs">
               <Clock className="h-3 w-3 mr-1" />
               {rec.time}
             </Badge>
@@ -410,7 +410,7 @@ function NextStepsStep({ onComplete, userData: _userData }: { onComplete: (data:
 /**
  * Emotion-First Flow Step Components
  */
-function FamilyImpactStep({ onComplete, onSkip }: { onComplete: (data: any) => void; onSkip: () => void }) {
+function FamilyImpactStep({ onComplete, onSkip }: { onComplete: (data: Record<string, unknown>) => void; onSkip: () => void }) {
   const [selectedPeople, setSelectedPeople] = useState<string[]>([]);
 
   const people = [
@@ -485,7 +485,7 @@ function FamilyImpactStep({ onComplete, onSkip }: { onComplete: (data: any) => v
             Continue Protecting My Family
             <ArrowRight className="h-4 w-4 ml-2" />
           </Button>
-          <Button variant={"ghost" as any} onClick={onSkip}>
+          <Button variant="ghost" onClick={onSkip}>
             Skip
           </Button>
         </div>
@@ -494,7 +494,7 @@ function FamilyImpactStep({ onComplete, onSkip }: { onComplete: (data: any) => v
   );
 }
 
-function ProtectionGoalsStep({ onComplete, onSkip }: { onComplete: (data: any) => void; onSkip: () => void }) {
+function ProtectionGoalsStep({ onComplete, onSkip }: { onComplete: (data: Record<string, unknown>) => void; onSkip: () => void }) {
   const [goals, setGoals] = useState<string[]>([]);
 
   const protectionGoals = [
@@ -592,7 +592,7 @@ function ProtectionGoalsStep({ onComplete, onSkip }: { onComplete: (data: any) =
             Build My Protection Plan
             <ArrowRight className="h-4 w-4 ml-2" />
           </Button>
-          <Button variant={"ghost" as any} onClick={onSkip}>
+          <Button variant="ghost" onClick={onSkip}>
             Skip
           </Button>
         </div>
@@ -601,7 +601,7 @@ function ProtectionGoalsStep({ onComplete, onSkip }: { onComplete: (data: any) =
   );
 }
 
-function PersonalInfoStep({ onComplete, onSkip }: { onComplete: (data: any) => void; onSkip: () => void }) {
+function PersonalInfoStep({ onComplete, onSkip }: { onComplete: (data: Record<string, unknown>) => void; onSkip: () => void }) {
   const [name, setName] = useState('');
   const [location, setLocation] = useState('');
 
@@ -648,7 +648,7 @@ function PersonalInfoStep({ onComplete, onSkip }: { onComplete: (data: any) => v
             Continue
             <ArrowRight className="h-4 w-4 ml-2" />
           </Button>
-          <Button variant={"ghost" as any} onClick={onSkip}>
+          <Button variant="ghost" onClick={onSkip}>
             Skip
           </Button>
         </div>
@@ -657,7 +657,7 @@ function PersonalInfoStep({ onComplete, onSkip }: { onComplete: (data: any) => v
   );
 }
 
-function FirstActionStep({ onComplete, userData: _userData }: { onComplete: (data: any) => void; userData: any }) {
+function FirstActionStep({ onComplete, userData: _userData }: { onComplete: (data: Record<string, unknown>) => void; userData: Record<string, unknown> }) {
   const quickActions = [
     {
       id: 'upload_document',

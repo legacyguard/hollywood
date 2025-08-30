@@ -118,7 +118,7 @@ export interface FamilyMediation {
   status: MediationStatus;
 }
 
-export type ProfessionalType = 
+export type ProfessionalType =
   | 'estate_attorney'
   | 'tax_attorney'
   | 'financial_planner'
@@ -133,7 +133,7 @@ export type ProfessionalType =
   | 'business_attorney'
   | 'real_estate_attorney';
 
-export type ServiceType = 
+export type ServiceType =
   | 'will_drafting'
   | 'trust_creation'
   | 'estate_planning'
@@ -148,7 +148,7 @@ export type ServiceType =
   | 'consultation'
   | 'ongoing_management';
 
-export type RequestType = 
+export type RequestType =
   | 'consultation'
   | 'document_preparation'
   | 'review'
@@ -158,7 +158,7 @@ export type RequestType =
   | 'mediation'
   | 'representation';
 
-export type ConsultationType = 
+export type ConsultationType =
   | 'initial'
   | 'follow_up'
   | 'document_review'
@@ -167,14 +167,14 @@ export type ConsultationType =
   | 'mediation'
   | 'annual_review';
 
-export type ConsultationFormat = 
+export type ConsultationFormat =
   | 'in_person'
   | 'video_call'
   | 'phone_call'
   | 'document_review'
   | 'email_consultation';
 
-export type ConflictType = 
+export type ConflictType =
   | 'inheritance_dispute'
   | 'executor_disagreement'
   | 'guardianship_conflict'
@@ -185,7 +185,7 @@ export type ConflictType =
   | 'family_business'
   | 'trust_administration';
 
-export type ConflictStatus = 
+export type ConflictStatus =
   | 'reported'
   | 'mediation_requested'
   | 'in_mediation'
@@ -194,7 +194,7 @@ export type ConflictStatus =
   | 'escalated'
   | 'legal_action';
 
-export type MediationStatus = 
+export type MediationStatus =
   | 'scheduled'
   | 'in_progress'
   | 'completed'
@@ -202,7 +202,7 @@ export type MediationStatus =
   | 'agreement_reached'
   | 'agreement_failed';
 
-export type RequestStatus = 
+export type RequestStatus =
   | 'open'
   | 'responses_received'
   | 'professional_selected'
@@ -211,7 +211,7 @@ export type RequestStatus =
   | 'completed'
   | 'cancelled';
 
-export type ConsultationStatus = 
+export type ConsultationStatus =
   | 'scheduled'
   | 'confirmed'
   | 'in_progress'
@@ -219,14 +219,14 @@ export type ConsultationStatus =
   | 'cancelled'
   | 'rescheduled';
 
-export type VerificationStatus = 
+export type VerificationStatus =
   | 'pending'
   | 'verified'
   | 'premium_verified'
   | 'suspended'
   | 'revoked';
 
-export type IntegrationLevel = 
+export type IntegrationLevel =
   | 'basic'
   | 'standard'
   | 'premium'
@@ -776,8 +776,8 @@ class ProfessionalNetworkService {
     rating?: number;
   }): Promise<Professional[]> {
     const allProfessionals = Array.from(this.professionals.values());
-    
-    return allProfessionals.filter(professional => 
+
+    return allProfessionals.filter(professional =>
       this.matchesCriteria(professional, requirements)
     ).sort((a, b) => this.calculateRelevanceScore(b, requirements) - this.calculateRelevanceScore(a, requirements));
   }
@@ -796,10 +796,10 @@ class ProfessionalNetworkService {
     };
 
     this.requests.set(request.id, request);
-    
+
     // Notify matching professionals
     await this.notifyMatchingProfessionals(request);
-    
+
     return request;
   }
 
@@ -815,10 +815,10 @@ class ProfessionalNetworkService {
     };
 
     this.consultations.set(consultation.id, consultation);
-    
+
     // Send calendar invites and reminders
     await this.sendConsultationNotifications(consultation);
-    
+
     return consultation;
   }
 
@@ -840,10 +840,10 @@ class ProfessionalNetworkService {
     };
 
     this.conflicts.set(conflict.id, conflict);
-    
+
     // Trigger conflict analysis and mediation recommendations
     await this.analyzeConflict(conflict);
-    
+
     return conflict;
   }
 
@@ -935,7 +935,7 @@ class ProfessionalNetworkService {
     };
 
     this.mediations.set(mediation.id, mediation);
-    
+
     // Update conflict status
     conflict.status = 'in_mediation';
     conflict.mediator = {
@@ -960,7 +960,7 @@ class ProfessionalNetworkService {
     const hasServiceType = requirements.serviceType.some((service: ServiceType) =>
       professional.specializations.some(spec => spec.area.includes(service))
     );
-    
+
     if (!hasServiceType) return false;
 
     // Budget match
@@ -990,7 +990,7 @@ class ProfessionalNetworkService {
     let score = 0;
 
     // Rating weight (30%)
-    const avgRating = professional.ratings.length > 0 
+    const avgRating = professional.ratings.length > 0
       ? professional.ratings.reduce((sum, r) => sum + r.rating, 0) / professional.ratings.length
       : 3;
     score += (avgRating / 5) * 30;
@@ -1006,7 +1006,7 @@ class ProfessionalNetworkService {
     score += isAvailable ? 20 : 10;
 
     // Verification weight (10%)
-    const verificationBonus = professional.verificationStatus === 'premium_verified' ? 10 : 
+    const verificationBonus = professional.verificationStatus === 'premium_verified' ? 10 :
                              professional.verificationStatus === 'verified' ? 5 : 0;
     score += verificationBonus;
 
@@ -1023,13 +1023,13 @@ class ProfessionalNetworkService {
     const R = 3959; // Earth's radius in miles
     const dLat = this.degreesToRadians(point2.lat - point1.lat);
     const dLng = this.degreesToRadians(point2.lng - point1.lng);
-    
+
     const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
               Math.cos(this.degreesToRadians(point1.lat)) * Math.cos(this.degreesToRadians(point2.lat)) *
               Math.sin(dLng/2) * Math.sin(dLng/2);
-    
+
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    
+
     return R * c;
   }
 
@@ -1042,7 +1042,7 @@ class ProfessionalNetworkService {
     const matchingProfessionals = Array.from(this.professionals.values()).filter(professional =>
       this.matchesCriteria(professional, {
         serviceType: request.serviceNeeded,
-        location: request.location.type === 'in_person' ? 
+        location: request.location.type === 'in_person' ?
           { lat: 0, lng: 0, radius: request.location.maxDistance || 50 } : undefined,
       })
     );
@@ -1065,7 +1065,7 @@ class ProfessionalNetworkService {
   private async analyzeConflict(conflict: ConflictResolution): Promise<void> {
     // Analyze conflict complexity and recommend resolution approach
     const complexity = this.assessConflictComplexity(conflict);
-    
+
     if (complexity === 'low') {
       conflict.resolution.approach = 'direct_negotiation';
     } else if (complexity === 'medium') {

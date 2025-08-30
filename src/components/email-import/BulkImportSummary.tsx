@@ -294,7 +294,7 @@ export function BulkImportSummary({
         </div>
 
         <div className="flex gap-3">
-          <Button variant={"outline" as any} onClick={onClose}>
+          <Button variant="outline" onClick={onClose}>
             Continue Later
           </Button>
           <Button onClick={onViewDocuments} className="bg-blue-600 hover:bg-blue-700">

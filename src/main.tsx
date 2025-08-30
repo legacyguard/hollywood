@@ -15,7 +15,7 @@ async function initializePWA() {
       offlineStorageService.initialize(),
       pushNotificationService.initialize()
     ]);
-    
+
     console.log('✅ PWA services initialized successfully');
   } catch (error) {
     console.error('❌ PWA initialization failed:', error);

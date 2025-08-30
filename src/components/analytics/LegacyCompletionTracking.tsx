@@ -504,7 +504,7 @@ export const LegacyCompletionTracking: React.FC<LegacyCompletionTrackingProps> =
                         <Badge className={getPriorityColor(task.impact)}>
                           {task.impact}
                         </Badge>
-                        <Badge variant={"outline" as any} className="text-xs">
+                        <Badge variant="outline" className="text-xs">
                           ~{task.estimatedMinutes}min
                         </Badge>
                         <span className="text-xs text-gray-500">
@@ -594,7 +594,7 @@ export const LegacyCompletionTracking: React.FC<LegacyCompletionTrackingProps> =
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-medium">Personal Legacy Roadmap</h3>
             <Button
-              variant={"outline" as any}
+              variant="outline"
               onClick={() => setShowRoadmap(!showRoadmap)}
               className="gap-2"
             >
@@ -715,7 +715,7 @@ export const LegacyCompletionTracking: React.FC<LegacyCompletionTrackingProps> =
                     </div>
 
                     <div className="flex items-center justify-between">
-                      <Badge variant={"outline" as any} className="text-xs">
+                      <Badge variant="outline" className="text-xs">
                         {goal.category.replace('-', ' ')}
                       </Badge>
                       <div className={`text-xs ${goal.isActive ? 'text-green-600' : 'text-gray-500'}`}>
@@ -733,7 +733,7 @@ export const LegacyCompletionTracking: React.FC<LegacyCompletionTrackingProps> =
           <div className="flex items-center gap-2 mb-4">
             <Medal className="h-5 w-5 text-yellow-600" />
             <h3 className="text-lg font-medium">Achievements Earned</h3>
-            <Badge variant={"secondary" as any}>{achievements.length} total</Badge>
+            <Badge variant="secondary">{achievements.length} total</Badge>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

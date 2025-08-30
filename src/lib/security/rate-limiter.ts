@@ -27,31 +27,31 @@ export const RATE_LIMIT_PRESETS = {
     maxRequests: 5, // 5 attempts per 15 minutes
     skipSuccessfulRequests: true,
   },
-  
+
   // API endpoints - moderate
   api: {
     windowMs: 1 * 60 * 1000, // 1 minute
     maxRequests: 60, // 60 requests per minute
   },
-  
+
   // Document upload - strict
   upload: {
     windowMs: 5 * 60 * 1000, // 5 minutes
     maxRequests: 10, // 10 uploads per 5 minutes
   },
-  
+
   // AI/LLM endpoints - expensive operations
   ai: {
     windowMs: 1 * 60 * 1000, // 1 minute
     maxRequests: 10, // 10 AI requests per minute
   },
-  
+
   // Public endpoints - lenient
   public: {
     windowMs: 1 * 60 * 1000, // 1 minute
     maxRequests: 100, // 100 requests per minute
   },
-  
+
   // Critical operations (will generation, etc.)
   critical: {
     windowMs: 60 * 60 * 1000, // 1 hour
@@ -67,7 +67,7 @@ class RateLimiter {
 
   private constructor() {
     this.enabled = envConfig.getSecurityFeatures().enableRateLimiting;
-    
+
     if (this.enabled) {
       this.startCleanup();
     }
@@ -120,7 +120,7 @@ class RateLimiter {
     if (customKeyGenerator && context) {
       return customKeyGenerator(context);
     }
-    
+
     // Default key: identifier + endpoint
     return `${identifier}:${endpoint}`;
   }
@@ -140,10 +140,10 @@ class RateLimiter {
 
     const key = this.generateKey(identifier, endpoint, config.keyGenerator);
     const now = Date.now();
-    
+
     // Get or create store entry
     let entry = this.store.get(key);
-    
+
     if (!entry || entry.resetTime < now) {
       // Create new entry or reset expired one
       entry = {
@@ -152,7 +152,7 @@ class RateLimiter {
       };
       this.store.set(key, entry);
     }
-    
+
     // Check if limit exceeded
     if (entry.requests >= config.maxRequests) {
       return {
@@ -161,10 +161,10 @@ class RateLimiter {
         resetTime: entry.resetTime,
       };
     }
-    
+
     // Increment request count
     entry.requests++;
-    
+
     return {
       allowed: true,
       remaining: config.maxRequests - entry.requests,
@@ -217,7 +217,7 @@ export const rateLimiter = RateLimiter.getInstance();
 export function createRateLimitMiddleware(
   presetOrConfig: keyof typeof RATE_LIMIT_PRESETS | RateLimitConfig
 ) {
-  const config = typeof presetOrConfig === 'string' 
+  const config = typeof presetOrConfig === 'string'
     ? RATE_LIMIT_PRESETS[presetOrConfig]
     : presetOrConfig;
 
@@ -225,14 +225,14 @@ export function createRateLimitMiddleware(
     // Get identifier (user ID or IP address)
     const identifier = req.user?.id || req.ip || 'anonymous';
     const endpoint = req.path;
-    
+
     const result = await rateLimiter.checkLimit(identifier, endpoint, config);
-    
+
     // Set rate limit headers
     res.setHeader('X-RateLimit-Limit', config.maxRequests);
     res.setHeader('X-RateLimit-Remaining', result.remaining);
     res.setHeader('X-RateLimit-Reset', new Date(result.resetTime).toISOString());
-    
+
     if (!result.allowed) {
       // Rate limit exceeded
       res.status(429).json({
@@ -240,18 +240,18 @@ export function createRateLimitMiddleware(
         message: 'Rate limit exceeded. Please try again later.',
         retryAfter: Math.ceil((result.resetTime - Date.now()) / 1000),
       });
-      
+
       // Log the incident
       console.warn(`Rate limit exceeded for ${identifier} on ${endpoint}`);
-      
+
       // Custom handler if provided
       if (config.handler) {
         config.handler({ req, res, identifier, endpoint });
       }
-      
+
       return;
     }
-    
+
     next();
   };
 }
@@ -269,24 +269,24 @@ export function useRateLimit(
 } {
   const [remaining, setRemaining] = React.useState(config.maxRequests);
   const [resetTime, setResetTime] = React.useState(0);
-  
+
   const checkLimit = React.useCallback(async () => {
     // Use session ID or generate a unique client ID
-    const identifier = sessionStorage.getItem('clientId') || 
+    const identifier = sessionStorage.getItem('clientId') ||
       (() => {
         const id = crypto.randomUUID();
         sessionStorage.setItem('clientId', id);
         return id;
       })();
-    
+
     const result = await rateLimiter.checkLimit(identifier, endpoint, config);
-    
+
     setRemaining(result.remaining);
     setResetTime(result.resetTime);
-    
+
     return result.allowed;
   }, [endpoint, config]);
-  
+
   return { checkLimit, remaining, resetTime };
 }
 
@@ -294,7 +294,7 @@ export function useRateLimit(
  * Decorator for rate limiting class methods
  */
 export function RateLimit(presetOrConfig: keyof typeof RATE_LIMIT_PRESETS | RateLimitConfig) {
-  const config = typeof presetOrConfig === 'string' 
+  const config = typeof presetOrConfig === 'string'
     ? RATE_LIMIT_PRESETS[presetOrConfig]
     : presetOrConfig;
 
@@ -304,13 +304,13 @@ export function RateLimit(presetOrConfig: keyof typeof RATE_LIMIT_PRESETS | Rate
     descriptor.value = async function (...args: unknown[]) {
       const identifier = this.userId || this.sessionId || 'system';
       const endpoint = `${target.constructor.name}.${propertyKey}`;
-      
+
       const result = await rateLimiter.checkLimit(identifier, endpoint, config);
-      
+
       if (!result.allowed) {
         throw new Error(`Rate limit exceeded. Try again in ${Math.ceil((result.resetTime - Date.now()) / 1000)} seconds.`);
       }
-      
+
       return originalMethod.apply(this, args);
     };
 
@@ -325,37 +325,37 @@ export class DDoSProtection {
   private static instance: DDoSProtection;
   private suspiciousIPs: Map<string, number> = new Map();
   private blockedIPs: Set<string> = new Set();
-  
+
   private constructor() {
     // Start monitoring
     this.startMonitoring();
   }
-  
+
   public static getInstance(): DDoSProtection {
     if (!DDoSProtection.instance) {
       DDoSProtection.instance = new DDoSProtection();
     }
     return DDoSProtection.instance;
   }
-  
+
   private startMonitoring(): void {
     // Reset suspicious IPs every hour
     setInterval(() => {
       this.suspiciousIPs.clear();
     }, 60 * 60 * 1000);
   }
-  
+
   public checkRequest(ip: string, userAgent: string): boolean {
     // Check if IP is blocked
     if (this.blockedIPs.has(ip)) {
       return false;
     }
-    
+
     // Check for suspicious patterns
     if (this.isSuspicious(ip, userAgent)) {
       const count = (this.suspiciousIPs.get(ip) || 0) + 1;
       this.suspiciousIPs.set(ip, count);
-      
+
       // Block after 10 suspicious requests
       if (count > 10) {
         this.blockedIPs.add(ip);
@@ -363,10 +363,10 @@ export class DDoSProtection {
         return false;
       }
     }
-    
+
     return true;
   }
-  
+
   private isSuspicious(ip: string, userAgent: string): boolean {
     // Check for common bot patterns
     const botPatterns = [
@@ -377,15 +377,15 @@ export class DDoSProtection {
       /curl/i,
       /wget/i,
     ];
-    
+
     return botPatterns.some(pattern => pattern.test(userAgent));
   }
-  
+
   public unblockIP(ip: string): void {
     this.blockedIPs.delete(ip);
     this.suspiciousIPs.delete(ip);
   }
-  
+
   public getBlockedIPs(): string[] {
     return Array.from(this.blockedIPs);
   }

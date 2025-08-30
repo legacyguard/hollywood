@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useMemo } from 'react';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 import { MetaTags } from '@/components/common/MetaTags';
 import { Button } from '@/components/ui/button';
@@ -9,13 +9,52 @@ import { LegacyGuardLogo } from '@/components/LegacyGuardLogo';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@clerk/clerk-react';
 import { SecurityPromiseSection } from '@/components/landing/SecurityPromiseSection';
+import { RedirectGuard } from '@/lib/utils/redirect-guard';
 
 export function LandingPage() {
   const navigate = useNavigate();
   const { isSignedIn, isLoaded } = useAuth();
   const [isFireflyOnButton, setIsFireflyOnButton] = useState(false);
+  const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false);
   const heroRef = useRef<HTMLDivElement>(null);
   const ctaButtonRef = useRef<HTMLButtonElement>(null);
+
+  // Generate random values once and memoize them to prevent re-renders
+  const heroStars = useMemo(() => 
+    Array.from({ length: 50 }, (_, i) => ({
+      id: i,
+      size: Math.random() * 2 + 1,
+      opacity: Math.random() * 0.8 + 0.2,
+      x: Math.random() * 100,
+      y: Math.random() * 100,
+      animationDelay: Math.random() * 3,
+      duration: 2 + Math.random() * 2
+    })), 
+  []);
+
+  const finalStars = useMemo(() => 
+    Array.from({ length: 30 }, (_, i) => ({
+      id: i,
+      size: Math.random() * 2 + 1,
+      opacity: Math.random() * 0.6 + 0.2,
+      x: Math.random() * 100,
+      y: Math.random() * 100,
+      animationDelay: Math.random() * 3,
+      duration: 3 + Math.random() * 2
+    })), 
+  []);
+
+  const chaosIcons = useMemo(() => 
+    Array.from({ length: 12 }, (_, i) => ({
+      id: i,
+      icon: ['📄', '🔑', '%', '📋', '💾', '⚠️', '📅', '🔒', '📊', '💳', '📧', '🏠'][i],
+      randomDelay: Math.random() * 2,
+      randomDuration: 3 + Math.random() * 2,
+      randomX: Math.random() * 300,
+      randomY: Math.random() * 300,
+      randomRotate: Math.random() * 360
+    })),
+  []);
 
   // Mouse tracking for firefly
   const mouseX = useMotionValue(0);
@@ -26,11 +65,32 @@ export function LandingPage() {
   // Redirect authenticated users to dashboard with onboarding check
   React.useEffect(() => {
     // Only redirect if Clerk has loaded and user is signed in
-    if (isLoaded && isSignedIn) {
+    // AND we're actually on the landing page (not already navigating)
+    // AND we haven't hit a redirect loop
+    if (isLoaded && isSignedIn && window.location.pathname === '/' && RedirectGuard.canRedirect('/dashboard')) {
       // Navigate to dashboard, OnboardingWrapper will handle onboarding check
-      navigate('/dashboard');
+      navigate('/dashboard', { replace: true });
     }
   }, [isLoaded, isSignedIn, navigate]);
+
+  // Prevent animation triggers when scrolling to bottom
+  React.useEffect(() => {
+    const handleScroll = () => {
+      const scrollHeight = document.documentElement.scrollHeight;
+      const scrollTop = document.documentElement.scrollTop;
+      const clientHeight = document.documentElement.clientHeight;
+      
+      // Check if we're near the bottom (within 200px)
+      if (scrollHeight - scrollTop - clientHeight < 200) {
+        if (!hasScrolledToBottom) {
+          setHasScrolledToBottom(true);
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [hasScrolledToBottom]);
 
   const handleMouseMove = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
     if (heroRef.current) {
@@ -87,7 +147,7 @@ export function LandingPage() {
                 <Link to="/blog">
                   <Button
                     variant={"ghost" as any}
-                    className='text-slate-200 hover:text-white hover:bg-slate-800/50 border-0'
+                    className='text-slate-200 hover:text-white hover:bg-slate-800/50 border-0 text-lg font-medium px-4 py-2'
                   >
                     Blog
                   </Button>
@@ -100,7 +160,7 @@ export function LandingPage() {
                 <Button
                   variant={"ghost" as any}
                   onClick={handleSignIn}
-                  className='text-slate-200 hover:text-white hover:bg-slate-800/50 border-0'
+                  className='text-slate-200 hover:text-white hover:bg-slate-800/50 border-0 text-lg font-medium px-4 py-2'
                 >
                   Sign In
                 </Button>
@@ -111,7 +171,7 @@ export function LandingPage() {
               >
                 <Button
                   onClick={handleGetStarted}
-                  className='bg-slate-700/70 hover:bg-slate-600 text-white border-slate-600'
+                  className='bg-slate-700/70 hover:bg-slate-600 text-white border-slate-600 text-lg font-semibold px-6 py-2'
                 >
                   Get Started Free
                 </Button>
@@ -136,35 +196,29 @@ export function LandingPage() {
         {/* Starry Background */}
         <div className='absolute inset-0'>
           {/* Stars */}
-          {[...Array(50)].map((_, i) => {
-            const size = Math.random() * 2 + 1;
-            const opacity = Math.random() * 0.8 + 0.2;
-            const x = Math.random() * 100;
-            const y = Math.random() * 100;
-            const animationDelay = Math.random() * 3;
-
-            return (
-              <motion.div
-                key={i}
-                className='absolute bg-white rounded-full'
-                style={{
-                  width: `${size }}px`,
-                  height: `${size}px`,
-                  left: `${x}%`,
-                  top: `${y}%`,
-                  opacity: opacity,
-                }}
-                animate={{  opacity: [opacity, opacity * 0.3, opacity],
-                  scale: [1, 1.2, 1],
-                 }}
-                transition={{  duration: 2 + Math.random() * 2,
-                  repeat: Infinity,
-                  delay: animationDelay,
-                  ease: "easeInOut"
-                 }}
-              />
-            );
-          })}
+          {heroStars.map((star) => (
+            <motion.div
+              key={star.id}
+              className='absolute bg-white rounded-full'
+              style={{
+                width: `${star.size}px`,
+                height: `${star.size}px`,
+                left: `${star.x}%`,
+                top: `${star.y}%`,
+                opacity: star.opacity,
+              }}
+              animate={{
+                opacity: [star.opacity, star.opacity * 0.3, star.opacity],
+                scale: [1, 1.2, 1],
+              }}
+              transition={{
+                duration: star.duration,
+                repeat: Infinity,
+                delay: star.animationDelay,
+                ease: "easeInOut"
+              }}
+            />
+          ))}
         </div>
 
         {/* Mountain Silhouettes */}
@@ -321,36 +375,31 @@ export function LandingPage() {
             >
               <div className='absolute inset-0 overflow-hidden'>
                 {/* Chaotic floating elements */}
-                {[...Array(12)].map((_, i) => {
-                  const icons = ['📄', '🔑', '%', '📋', '💾', '⚠️', '📅', '🔒', '📊', '💳', '📧', '🏠'];
-                  const randomDelay = Math.random() * 2;
-                  const randomDuration = 3 + Math.random() * 2;
-                  const randomX = Math.random() * 300;
-                  const randomY = Math.random() * 300;
-
-                  return (
-                    <motion.div
-                      key={i}
-                      className='absolute text-2xl opacity-60'
-                      initial={{  x: randomX,
-                        y: randomY,
-                        rotate: Math.random() * 360
-                       }}
-                      animate={{  x: [randomX, randomX + 50, randomX - 30, randomX],
-                        y: [randomY, randomY - 40, randomY + 20, randomY],
-                        rotate: [0, 180, 360],
-                        opacity: [0.6, 0.3, 0.6]
-                       }}
-                      transition={{  duration: randomDuration,
-                        repeat: Infinity,
-                        delay: randomDelay,
-                        ease: "easeInOut"
-                       }}
-                    >
-                      {icons[i]}
-                    </motion.div>
-                  );
-                })}
+                {chaosIcons.map((item) => (
+                  <motion.div
+                    key={item.id}
+                    className='absolute text-2xl opacity-60'
+                    initial={{
+                      x: item.randomX,
+                      y: item.randomY,
+                      rotate: item.randomRotate
+                    }}
+                    animate={{
+                      x: [item.randomX, item.randomX + 50, item.randomX - 30, item.randomX],
+                      y: [item.randomY, item.randomY - 40, item.randomY + 20, item.randomY],
+                      rotate: [0, 180, 360],
+                      opacity: [0.6, 0.3, 0.6]
+                    }}
+                    transition={{
+                      duration: item.randomDuration,
+                      repeat: Infinity,
+                      delay: item.randomDelay,
+                      ease: "easeInOut"
+                    }}
+                  >
+                    {item.icon}
+                  </motion.div>
+                ))}
               </div>
 
               <div className='relative z-10'>
@@ -391,7 +440,7 @@ export function LandingPage() {
                      }}
                   />
 
-                  {/* Lock symbol */}
+                  {/* Gift Package symbol */}
                   <motion.div
                     className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'
                     initial={{  opacity: 0, scale: 0  }}
@@ -399,7 +448,7 @@ export function LandingPage() {
                     transition={{  delay: 2, duration: 0.5  }}
                     viewport={{  once: true  }}
                   >
-                    <Icon name={"key" as any} className='w-8 h-8 text-yellow-400' />
+                    <Icon name={"gift" as any} className='w-8 h-8 text-yellow-400' />
                   </motion.div>
                 </div>
               </motion.div>
@@ -448,32 +497,63 @@ export function LandingPage() {
               whileHover={{  scale: 1.02, y: -5  }}
             >
               <div className='relative h-48 mb-6 overflow-hidden rounded-lg bg-gradient-to-br from-blue-500/20 to-purple-500/10'>
-                {/* Document scanning animation */}
-                <motion.div
-                  className='absolute inset-4 bg-white/90 rounded-lg shadow-lg'
-                  initial={{  scale: 0.8, opacity: 0  }}
-                  whileInView={{ scale: 1, opacity: 1 }}
-                  transition={{  delay: 0.5, duration: 0.5  }}
-                  viewport={{  once: true  }}
-                >
-                  <div className='p-4 space-y-2'>
-                    <div className='h-3 bg-slate-300 rounded w-3/4'></div>
-                    <div className='h-3 bg-slate-300 rounded w-1/2'></div>
-                    <div className='h-3 bg-slate-300 rounded w-5/6'></div>
-                  </div>
-
-                  {/* AI scanning effect */}
+                {/* Premium Document Organization Illustration */}
+                <div className='absolute inset-0 flex items-center justify-center'>
+                  {/* Floating documents */}
                   <motion.div
-                    className='absolute inset-0 bg-gradient-to-r from-transparent via-blue-400/30 to-transparent'
-                    initial={{  x: '-100%'  }}
-                    animate={{  x: '100%'  }}
-                    transition={{  duration: 2,
-                      repeat: Infinity,
-                      repeatDelay: 3,
-                      ease: "linear"
-                     }}
-                  />
-                </motion.div>
+                    className='absolute w-32 h-40 bg-white/90 rounded-lg shadow-xl -rotate-6 left-8 top-8'
+                    initial={{  y: -100, opacity: 0  }}
+                    whileInView={{ y: 0, opacity: 1 }}
+                    transition={{  delay: 0.2, duration: 0.6  }}
+                    viewport={{  once: true  }}
+                  >
+                    <div className='p-3'>
+                      <div className='h-2 bg-slate-400 rounded w-3/4 mb-2'></div>
+                      <div className='h-2 bg-slate-300 rounded w-1/2 mb-2'></div>
+                      <div className='h-2 bg-slate-300 rounded w-5/6'></div>
+                    </div>
+                    <Icon name={"file-text" as any} className='absolute bottom-2 right-2 w-6 h-6 text-blue-400' />
+                  </motion.div>
+                  
+                  <motion.div
+                    className='absolute w-32 h-40 bg-white/80 rounded-lg shadow-lg rotate-3 right-8 top-6'
+                    initial={{  y: -100, opacity: 0  }}
+                    whileInView={{ y: 0, opacity: 1 }}
+                    transition={{  delay: 0.4, duration: 0.6  }}
+                    viewport={{  once: true  }}
+                  >
+                    <div className='p-3'>
+                      <div className='h-2 bg-slate-400 rounded w-3/4 mb-2'></div>
+                      <div className='h-2 bg-slate-300 rounded w-2/3 mb-2'></div>
+                      <div className='h-2 bg-slate-300 rounded w-1/2'></div>
+                    </div>
+                    <Icon name={"shield" as any} className='absolute bottom-2 right-2 w-6 h-6 text-purple-400' />
+                  </motion.div>
+                  
+                  {/* Central folder */}
+                  <motion.div
+                    className='relative z-10'
+                    initial={{  scale: 0  }}
+                    whileInView={{ scale: 1 }}
+                    transition={{  delay: 0.6, duration: 0.5, type: "spring"  }}
+                    viewport={{  once: true  }}
+                  >
+                    <div className='w-24 h-20 bg-yellow-400 rounded-t-lg transform perspective-100'></div>
+                    <div className='w-24 h-16 bg-yellow-500 rounded-b-lg shadow-2xl'>
+                      <Icon name={"folder" as any} className='w-8 h-8 text-white mx-auto mt-4' />
+                    </div>
+                    {/* Success checkmark */}
+                    <motion.div
+                      className='absolute -top-2 -right-2 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center'
+                      initial={{  scale: 0  }}
+                      whileInView={{ scale: 1 }}
+                      transition={{  delay: 1, duration: 0.3  }}
+                      viewport={{  once: true  }}
+                    >
+                      <Icon name={"check" as any} className='w-5 h-5 text-white' />
+                    </motion.div>
+                  </motion.div>
+                </div>
               </div>
 
               <h3 className='text-2xl font-bold text-white mb-4'>
@@ -494,54 +574,79 @@ export function LandingPage() {
               whileHover={{  scale: 1.02, y: -5  }}
             >
               <div className='relative h-48 mb-6 overflow-hidden rounded-lg bg-gradient-to-br from-emerald-500/20 to-green-500/10'>
-                {/* Family Shield animation */}
+                {/* Premium Family Shield Illustration */}
                 <div className='absolute inset-0 flex items-center justify-center'>
+                  {/* Shield background */}
                   <motion.div
-                    className='relative'
+                    className='absolute w-40 h-44 bg-gradient-to-b from-emerald-500/30 to-emerald-600/20 rounded-t-3xl rounded-b-lg'
+                    initial={{  scale: 0, opacity: 0  }}
+                    whileInView={{ scale: 1, opacity: 1 }}
+                    transition={{  delay: 0.2, duration: 0.6, type: "spring"  }}
+                    viewport={{  once: true  }}
+                    style={{ clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)' }}
+                  />
+                  
+                  {/* Central family */}
+                  <motion.div
+                    className='relative z-10'
                     initial={{  scale: 0  }}
                     whileInView={{ scale: 1 }}
-                    transition={{  delay: 0.5, duration: 0.8  }}
+                    transition={{  delay: 0.5, duration: 0.5  }}
                     viewport={{  once: true  }}
                   >
-                    {/* Central family silhouette */}
-                    <div className='w-16 h-16 bg-white/80 rounded-full flex items-center justify-center'>
-                      <Icon name={"users" as any} className='w-8 h-8 text-slate-700' />
+                    <div className='w-20 h-20 bg-white/90 rounded-full shadow-xl flex items-center justify-center'>
+                      <Icon name={"users" as any} className='w-10 h-10 text-emerald-600' />
                     </div>
-
-                    {/* Guardian icons forming shield */}
-                    {[0, 72, 144, 216, 288].map((angle, i) => {
-                      const radians = (angle * Math.PI) / 180;
-                      const x = Math.cos(radians) * 60;
-                      const y = Math.sin(radians) * 60;
-
-                      return (
-                        <motion.div
-                          key={i}
-                          className='absolute w-8 h-8 bg-emerald-400/80 rounded-full flex items-center justify-center'
-                          style={{
-                            left: `calc(50% + ${x }}px - 16px)`,
-                            top: `calc(50% + ${y}px - 16px)`,
-                          }}
-                          initial={{  scale: 0, opacity: 0  }}
-                          whileInView={{ scale: 1, opacity: 1 }}
-                          transition={{  delay: 1 + i * 0.2, duration: 0.3  }}
-                          viewport={{  once: true  }}
-                        >
-                          <Icon name={"shield" as any} className='w-4 h-4 text-white' />
-                        </motion.div>
-                      );
-                    })}
-
-                    {/* Shield outline */}
+                    
+                    {/* Protection ring */}
                     <motion.div
-                      className='absolute inset-0 border-2 border-emerald-400/40 rounded-full'
-                      style={{  width: '140px', height: '140px', left: '-60px', top: '-60px'  }}
-                      initial={{  scale: 0, opacity: 0  }}
+                      className='absolute inset-0 border-4 border-emerald-400 rounded-full'
+                      initial={{  scale: 1.5, opacity: 0  }}
                       whileInView={{ scale: 1, opacity: 1 }}
-                      transition={{  delay: 2, duration: 0.5  }}
+                      transition={{  delay: 0.8, duration: 0.5  }}
                       viewport={{  once: true  }}
                     />
                   </motion.div>
+                  
+                  {/* Guardian figures */}
+                  {[
+                    { x: -60, y: -20, delay: 0.9 },
+                    { x: 60, y: -20, delay: 1.0 },
+                    { x: -40, y: 40, delay: 1.1 },
+                    { x: 40, y: 40, delay: 1.2 },
+                  ].map((pos, i) => (
+                    <motion.div
+                      key={i}
+                      className='absolute w-10 h-10 bg-emerald-400/80 rounded-full flex items-center justify-center shadow-lg'
+                      style={{ left: `calc(50% + ${pos.x}px - 20px)`, top: `calc(50% + ${pos.y}px - 20px)` }}
+                      initial={{  scale: 0, opacity: 0  }}
+                      whileInView={{ scale: 1, opacity: 1 }}
+                      transition={{  delay: pos.delay, duration: 0.3  }}
+                      viewport={{  once: true  }}
+                    >
+                      <Icon name={"user" as any} className='w-5 h-5 text-white' />
+                    </motion.div>
+                  ))}
+                  
+                  {/* Connection lines */}
+                  <motion.svg
+                    className='absolute inset-0 w-full h-full'
+                    initial={{  opacity: 0  }}
+                    whileInView={{ opacity: 1 }}
+                    transition={{  delay: 1.3, duration: 0.5  }}
+                    viewport={{  once: true  }}
+                  >
+                    <motion.path
+                      d='M 50 50 L 20 30 M 50 50 L 80 30 M 50 50 L 30 70 M 50 50 L 70 70'
+                      stroke='rgba(52, 211, 153, 0.3)'
+                      strokeWidth='2'
+                      fill='none'
+                      initial={{  pathLength: 0  }}
+                      whileInView={{ pathLength: 1 }}
+                      transition={{  delay: 1.4, duration: 0.8  }}
+                      viewport={{  once: true  }}
+                    />
+                  </motion.svg>
                 </div>
               </div>
 
@@ -702,12 +807,12 @@ export function LandingPage() {
               <Card className='text-center p-8 h-full bg-slate-900/50 border-slate-700 hover:bg-slate-800/50 hover:border-slate-600 transition-all duration-300 backdrop-blur-sm'>
                 <CardContent className='space-y-4'>
                   <motion.div
-                    className='w-20 h-20 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto'
+                    className='w-20 h-20 bg-yellow-500/20 rounded-full flex items-center justify-center mx-auto'
                     whileHover={{  scale: 1.1, rotate: -5  }}
                     transition={{  duration: 0.3  }}
                   >
                     <Icon name={"shield" as any}
-                      className='w-10 h-10 text-emerald-400'
+                      className='w-10 h-10 text-yellow-400'
                     />
                   </motion.div>
                   <h3 className='text-2xl font-bold text-white'>
@@ -732,12 +837,12 @@ export function LandingPage() {
               <Card className='text-center p-8 h-full bg-slate-900/50 border-slate-700 hover:bg-slate-800/50 hover:border-slate-600 transition-all duration-300 backdrop-blur-sm'>
                 <CardContent className='space-y-4'>
                   <motion.div
-                    className='w-20 h-20 bg-cyan-500/20 rounded-full flex items-center justify-center mx-auto'
+                    className='w-20 h-20 bg-yellow-500/20 rounded-full flex items-center justify-center mx-auto'
                     whileHover={{  scale: 1.1, rotate: 5  }}
                     transition={{  duration: 0.3  }}
                   >
                     <Icon name={"legacy" as any}
-                      className='w-10 h-10 text-cyan-400'
+                      className='w-10 h-10 text-yellow-400'
                     />
                   </motion.div>
                   <h3 className='text-2xl font-bold text-white'>
@@ -860,26 +965,23 @@ export function LandingPage() {
               {
                 title: 'A Living Legacy',
                 description: "This isn't a one-time task. It's a living, growing garden that evolves with you and your family's journey.",
-                icon: 'legacy',
+                icon: 'book',
                 visual: (
                   <motion.div
                     className='relative w-16 h-16 mx-auto mb-6'
                     whileHover={{  scale: 1.1  }}
                     transition={{  duration: 0.3  }}
                   >
+                    <Icon name={"book-open" as any} className='w-12 h-12 text-yellow-400 absolute top-2 left-2' />
                     <motion.div
-                      className='w-3 h-8 bg-amber-600 rounded-sm absolute bottom-2 left-1/2 transform -translate-x-1/2'
-                      initial={{  height: 0  }}
-                      whileInView={{ height: 32 }}
-                      transition={{  duration: 1, delay: 0.5  }}
-                      viewport={{  once: true  }}
-                    />
-                    <motion.div
-                      className='w-8 h-8 bg-green-500 rounded-full absolute top-2 left-1/2 transform -translate-x-1/2'
-                      initial={{  scale: 0  }}
-                      whileInView={{ scale: 1 }}
-                      transition={{  duration: 0.5, delay: 1.2  }}
-                      viewport={{  once: true  }}
+                      className='absolute top-0 right-0 w-3 h-3 bg-yellow-300 rounded-full'
+                      animate={{  scale: [1, 1.3, 1],
+                        opacity: [0.5, 1, 0.5],
+                       }}
+                      transition={{  duration: 2.5,
+                        repeat: Infinity,
+                        ease: 'easeInOut',
+                       }}
                     />
                   </motion.div>
                 ),
@@ -985,8 +1087,8 @@ export function LandingPage() {
               transition={{  duration: 0.8, delay: 0.2  }}
               viewport={{  once: true  }}
             >
-              <Card className='p-8 bg-gradient-to-br from-yellow-500/10 to-yellow-600/5 border-yellow-500/30 hover:border-yellow-400/50 transition-all duration-300 relative backdrop-blur-sm'>
-                <Badge className='absolute -top-3 left-1/2 transform -translate-x-1/2 bg-yellow-500 text-slate-900'>
+              <Card className='p-8 bg-slate-900/60 border-slate-700 hover:bg-slate-800/60 hover:border-yellow-500/50 transition-all duration-300 relative backdrop-blur-sm'>
+                <Badge className='absolute -top-3 left-1/2 transform -translate-x-1/2 bg-yellow-500 text-slate-900 font-bold px-4 py-1'>
                   Most Popular
                 </Badge>
                 <CardContent className='space-y-6'>
@@ -1037,120 +1139,6 @@ export function LandingPage() {
           </div>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className='py-12 bg-slate-950 text-white'>
-        <div className='container mx-auto px-4'>
-          <div className='grid md:grid-cols-4 gap-8'>
-            <div className='col-span-1'>
-              <div className='flex items-center gap-3 mb-4'>
-                <LegacyGuardLogo />
-                <span className='text-xl font-bold font-heading'>
-                  LegacyGuard
-                </span>
-              </div>
-              <p className='text-slate-400 text-sm'>
-                Securing your legacy, protecting your family, one document at a
-                time.
-              </p>
-            </div>
-
-            <div>
-              <h4 className='font-semibold mb-3'>Product</h4>
-              <ul className='space-y-2 text-sm'>
-                <li>
-                  <Link
-                    to='/features'
-                    className='text-slate-400 hover:text-yellow-400 transition-colors'
-                  >
-                    Features
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to='/security'
-                    className='text-slate-400 hover:text-yellow-400 transition-colors'
-                  >
-                    Security
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to='/pricing'
-                    className='text-slate-400 hover:text-yellow-400 transition-colors'
-                  >
-                    Pricing
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className='font-semibold mb-3'>Support</h4>
-              <ul className='space-y-2 text-sm'>
-                <li>
-                  <Link
-                    to='/help'
-                    className='text-slate-400 hover:text-yellow-400 transition-colors'
-                  >
-                    Help Center
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to='/contact'
-                    className='text-slate-400 hover:text-yellow-400 transition-colors'
-                  >
-                    Contact Us
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to='/guides'
-                    className='text-slate-400 hover:text-yellow-400 transition-colors'
-                  >
-                    User Guides
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className='font-semibold mb-3'>Legal</h4>
-              <ul className='space-y-2 text-sm'>
-                <li>
-                  <Link
-                    to='/privacy-policy'
-                    className='text-slate-400 hover:text-yellow-400 transition-colors'
-                  >
-                    Privacy Policy
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to='/terms-of-service'
-                    className='text-slate-400 hover:text-yellow-400 transition-colors'
-                  >
-                    Terms of Service
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to='/security-policy'
-                    className='text-slate-400 hover:text-yellow-400 transition-colors'
-                  >
-                    Security Policy
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div className='border-t border-slate-800 mt-8 pt-8 text-center text-sm text-slate-400'>
-            <p>&copy; 2024 LegacyGuard. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
 
       {/* Social Proof Section */}
       <section className='py-20 bg-slate-800 border-t border-slate-700'>
@@ -1250,37 +1238,32 @@ export function LandingPage() {
       </section>
 
       {/* Final CTA Section - Return to Night */}
+      {!hasScrolledToBottom ? (
       <section className='relative min-h-screen flex items-center justify-center bg-gradient-to-b from-slate-950 to-slate-900 overflow-hidden'>
         {/* Starry background */}
         <div className='absolute inset-0'>
-          {[...Array(30)].map((_, i) => {
-            const size = Math.random() * 2 + 1;
-            const opacity = Math.random() * 0.6 + 0.2;
-            const x = Math.random() * 100;
-            const y = Math.random() * 100;
-            const animationDelay = Math.random() * 3;
-
-            return (
-              <motion.div
-                key={i}
-                className='absolute bg-white rounded-full'
-                style={{
-                  width: `${size }}px`,
-                  height: `${size}px`,
-                  left: `${x}%`,
-                  top: `${y}%`,
-                  opacity: opacity,
-                }}
-                animate={{  opacity: [opacity, opacity * 0.3, opacity],
-                 }}
-                transition={{  duration: 3 + Math.random() * 2,
-                  repeat: Infinity,
-                  delay: animationDelay,
-                  ease: "easeInOut"
-                 }}
-              />
-            );
-          })}
+          {finalStars.map((star) => (
+            <motion.div
+              key={star.id}
+              className='absolute bg-white rounded-full'
+              style={{
+                width: `${star.size}px`,
+                height: `${star.size}px`,
+                left: `${star.x}%`,
+                top: `${star.y}%`,
+                opacity: star.opacity,
+              }}
+              animate={{
+                opacity: [star.opacity, star.opacity * 0.3, star.opacity],
+              }}
+              transition={{
+                duration: star.duration,
+                repeat: Infinity,
+                delay: star.animationDelay,
+                ease: "easeInOut"
+              }}
+            />
+          ))}
         </div>
 
         {/* Sofia Returns - Center Stage */}
@@ -1393,6 +1376,164 @@ export function LandingPage() {
           </motion.div>
         </div>
       </section>
+      ) : (
+        /* Static version when scrolled to bottom */
+        <section className='relative min-h-screen flex items-center justify-center bg-gradient-to-b from-slate-950 to-slate-900 overflow-hidden'>
+          <div className='absolute inset-0'>
+            {finalStars.map((star) => (
+              <div
+                key={star.id}
+                className='absolute bg-white rounded-full'
+                style={{
+                  width: `${star.size}px`,
+                  height: `${star.size}px`,
+                  left: `${star.x}%`,
+                  top: `${star.y}%`,
+                  opacity: star.opacity * 0.5,
+                }}
+              />
+            ))}
+          </div>
+          
+          <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
+            <div className='relative'>
+              <div className='absolute inset-0 rounded-full w-16 h-16 -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2'
+                style={{ boxShadow: '0 0 40px rgba(255, 255, 0, 0.5)' }}
+              />
+              <div className='w-12 h-12 bg-gradient-to-br from-yellow-200 to-yellow-400 rounded-full shadow-2xl' />
+            </div>
+          </div>
+
+          <div className='relative z-10 text-center text-white max-w-2xl mx-auto px-4 mt-32'>
+            <h2 className='text-5xl lg:text-6xl font-bold mb-8 leading-tight'>
+              Your Story is Waiting
+            </h2>
+            <Button
+              size='lg'
+              onClick={handleGetStarted}
+              className='bg-yellow-500 hover:bg-yellow-400 text-slate-900 text-xl px-16 py-8 rounded-full shadow-2xl hover:shadow-yellow-500/25 transition-all duration-300 font-bold relative overflow-hidden group'
+            >
+              <span className='relative z-10 group-hover:scale-105 transition-transform duration-200'>
+                Begin Your LegacyGuard Today
+              </span>
+            </Button>
+          </div>
+        </section>
+      )}
+
+      {/* Footer - Now at the very end */}
+      <footer className='py-12 bg-slate-950 text-white'>
+        <div className='container mx-auto px-4'>
+          <div className='grid md:grid-cols-4 gap-8'>
+            <div className='col-span-1'>
+              <div className='flex items-center gap-3 mb-4'>
+                <LegacyGuardLogo />
+                <span className='text-xl font-bold font-heading'>
+                  LegacyGuard
+                </span>
+              </div>
+              <p className='text-slate-400 text-sm'>
+                Securing your legacy, protecting your family, one document at a
+                time.
+              </p>
+            </div>
+
+            <div>
+              <h4 className='font-semibold mb-3'>Product</h4>
+              <ul className='space-y-2 text-sm'>
+                <li>
+                  <Link
+                    to='/features'
+                    className='text-slate-400 hover:text-yellow-400 transition-colors'
+                  >
+                    Features
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to='/security'
+                    className='text-slate-400 hover:text-yellow-400 transition-colors'
+                  >
+                    Security
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to='/pricing'
+                    className='text-slate-400 hover:text-yellow-400 transition-colors'
+                  >
+                    Pricing
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className='font-semibold mb-3'>Support</h4>
+              <ul className='space-y-2 text-sm'>
+                <li>
+                  <Link
+                    to='/help'
+                    className='text-slate-400 hover:text-yellow-400 transition-colors'
+                  >
+                    Help Center
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to='/contact'
+                    className='text-slate-400 hover:text-yellow-400 transition-colors'
+                  >
+                    Contact Us
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to='/guides'
+                    className='text-slate-400 hover:text-yellow-400 transition-colors'
+                  >
+                    User Guides
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className='font-semibold mb-3'>Legal</h4>
+              <ul className='space-y-2 text-sm'>
+                <li>
+                  <Link
+                    to='/privacy-policy'
+                    className='text-slate-400 hover:text-yellow-400 transition-colors'
+                  >
+                    Privacy Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to='/terms-of-service'
+                    className='text-slate-400 hover:text-yellow-400 transition-colors'
+                  >
+                    Terms of Service
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to='/security-policy'
+                    className='text-slate-400 hover:text-yellow-400 transition-colors'
+                  >
+                    Security Policy
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div className='border-t border-slate-800 mt-8 pt-8 text-center text-sm text-slate-400'>
+            <p>&copy; {new Date().getFullYear()} LegacyGuard. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

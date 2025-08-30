@@ -159,7 +159,7 @@ class SessionManager {
         // Sign out from Clerk
         const { signOut } = useAuth();
         await signOut?.();
-        
+
         // Redirect to login
         window.location.href = '/sign-in?reason=session_expired';
       } catch (error) {

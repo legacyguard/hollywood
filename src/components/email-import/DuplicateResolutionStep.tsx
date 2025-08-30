@@ -196,7 +196,7 @@ export function DuplicateResolutionStep({
 
       {/* Duplicate Documents List */}
       <div className="space-y-4 max-h-96 overflow-y-auto">
-        {duplicates.map((duplicate, index) => {
+        {duplicates.map((duplicate) => {
           const choice = choices[duplicate.document.id];
           const customFilename = customFilenames[duplicate.document.id] || '';
 
@@ -266,7 +266,7 @@ export function DuplicateResolutionStep({
                   <h4 className="font-medium text-sm">Why this might be a duplicate:</h4>
                   <div className="flex flex-wrap gap-2">
                     {duplicate.matchReasons.map((reason, idx) => (
-                      <Badge key={idx} variant={"outline" as any} className="text-xs">
+                      <Badge key={idx} variant="outline" className="text-xs">
                         {reason.description}
                       </Badge>
                     ))}
@@ -337,7 +337,7 @@ export function DuplicateResolutionStep({
         </div>
 
         <div className="flex gap-3">
-          <Button variant={"outline" as any} onClick={onSkip}>
+                              <Button variant="outline" onClick={onSkip}>
             Skip All Duplicates
           </Button>
           <Button onClick={handleResolve}>

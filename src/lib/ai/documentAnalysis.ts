@@ -90,15 +90,15 @@ export interface ComplianceCheck {
   deadline?: string;
 }
 
-export type AnalysisType = 
+export type AnalysisType =
   | 'classification'
-  | 'extraction' 
+  | 'extraction'
   | 'insights'
   | 'compliance'
   | 'risk'
   | 'recommendations';
 
-export type DocumentCategory = 
+export type DocumentCategory =
   | 'legal'
   | 'financial'
   | 'insurance'
@@ -224,9 +224,9 @@ export interface SuggestedAction {
   resources?: string[];
 }
 
-export type EntityType = 
+export type EntityType =
   | 'person'
-  | 'organization' 
+  | 'organization'
   | 'location'
   | 'date'
   | 'money'
@@ -266,7 +266,7 @@ class DocumentAnalysisService {
     try {
       // Prepare content for analysis
       let textContent: string;
-      
+
       if (content instanceof ArrayBuffer) {
         textContent = await this.extractTextFromBuffer(content, metadata.mimeType);
       } else {
@@ -313,7 +313,7 @@ class DocumentAnalysisService {
   private async classifyDocument(content: string, metadata: Record<string, any>): Promise<DocumentClassification> {
     // AI-powered classification logic
     const classification = await this.performClassification(content, metadata);
-    
+
     return {
       category: classification.category || 'other',
       subcategory: classification.subcategory || 'general',
@@ -427,7 +427,7 @@ class DocumentAnalysisService {
   /**
    * Check compliance with regulations
    */
-  private async checkCompliance(content: string, metadata: Record<string, any>): Promise<ComplianceCheck[]> {
+  private async checkCompliance(content: string, _metadata: Record<string, unknown>): Promise<ComplianceCheck[]> {
     const checks: ComplianceCheck[] = [];
 
     // Common compliance frameworks
@@ -452,15 +452,15 @@ class DocumentAnalysisService {
   private async extractTextFromBuffer(buffer: ArrayBuffer, mimeType?: string): Promise<string> {
     // This would integrate with OCR and document parsing libraries
     // For now, return a placeholder implementation
-    
+
     if (mimeType?.includes('pdf')) {
       return await this.extractTextFromPDF(buffer);
     }
-    
+
     if (mimeType?.includes('image')) {
       return await this.extractTextFromImage(buffer);
     }
-    
+
     if (mimeType?.includes('text') || mimeType?.includes('json')) {
       const decoder = new TextDecoder();
       return decoder.decode(buffer);
@@ -479,10 +479,10 @@ class DocumentAnalysisService {
   /**
    * Mock AI analysis methods (in production, these would call actual AI services)
    */
-  private async performClassification(content: string, metadata: Record<string, any>): Promise<any> {
+  private async performClassification(content: string, _metadata: Record<string, unknown>): Promise<unknown> {
     // Mock classification based on keywords and patterns
     const keywords = content.toLowerCase();
-    
+
     if (keywords.includes('will') || keywords.includes('testament') || keywords.includes('estate')) {
       return {
         category: 'legal',
@@ -491,7 +491,7 @@ class DocumentAnalysisService {
         confidence: 0.9,
       };
     }
-    
+
     if (keywords.includes('insurance') || keywords.includes('policy') || keywords.includes('premium')) {
       return {
         category: 'insurance',
@@ -500,7 +500,7 @@ class DocumentAnalysisService {
         confidence: 0.85,
       };
     }
-    
+
     if (keywords.includes('tax') || keywords.includes('1040') || keywords.includes('irs')) {
       return {
         category: 'tax',
@@ -521,7 +521,7 @@ class DocumentAnalysisService {
 
   private async extractEntities(content: string): Promise<ExtractedEntity[]> {
     const entities: ExtractedEntity[] = [];
-    
+
     // Simple regex-based entity extraction (in production, use NLP libraries)
     const patterns = {
       person: /\b[A-Z][a-z]+ [A-Z][a-z]+\b/g,
@@ -551,12 +551,12 @@ class DocumentAnalysisService {
     const dates: ImportantDate[] = [];
     const datePattern = /\d{1,2}\/\d{1,2}\/\d{4}/g;
     const matches = content.match(datePattern) || [];
-    
+
     for (const match of matches) {
       const context = this.getContext(content, match);
       const type = this.determineDateType(context);
       const importance = this.determineDateImportance(type, context);
-      
+
       dates.push({
         type,
         date: match,
@@ -573,11 +573,11 @@ class DocumentAnalysisService {
     const amounts: MonetaryAmount[] = [];
     const moneyPattern = /\$[\d,]+\.?\d*/g;
     const matches = content.match(moneyPattern) || [];
-    
+
     for (const match of matches) {
       const context = this.getContext(content, match);
       const numericValue = parseFloat(match.replace(/[$,]/g, ''));
-      
+
       amounts.push({
         amount: numericValue,
         currency: 'USD',
@@ -595,7 +595,7 @@ class DocumentAnalysisService {
     // Simple address pattern (in production, use sophisticated address parsing)
     const addressPattern = /\d+\s+[\w\s]+,\s*[\w\s]+,\s*[A-Z]{2}\s+\d{5}/g;
     const matches = content.match(addressPattern) || [];
-    
+
     for (const match of matches) {
       addresses.push({
         type: 'other',
@@ -610,13 +610,13 @@ class DocumentAnalysisService {
 
   private async extractContacts(content: string): Promise<ContactInfo[]> {
     const contacts: ContactInfo[] = [];
-    
+
     // Extract emails and associate with nearby names
     const emails = content.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g) || [];
     for (const email of emails) {
       const context = this.getContext(content, email);
       const name = this.extractNameNearEmail(content, email);
-      
+
       contacts.push({
         type: 'person',
         name: name || 'Unknown',
@@ -638,7 +638,7 @@ class DocumentAnalysisService {
     const terms: KeyTerm[] = [];
     const words = content.toLowerCase().match(/\b\w{4,}\b/g) || [];
     const wordFreq = new Map<string, number>();
-    
+
     // Count word frequencies
     for (const word of words) {
       wordFreq.set(word, (wordFreq.get(word) || 0) + 1);
@@ -669,10 +669,10 @@ class DocumentAnalysisService {
   private getContext(content: string, term: string, contextLength = 100): string {
     const index = content.indexOf(term);
     if (index === -1) return '';
-    
+
     const start = Math.max(0, index - contextLength / 2);
     const end = Math.min(content.length, index + term.length + contextLength / 2);
-    
+
     return content.substring(start, end);
   }
 
@@ -689,18 +689,18 @@ class DocumentAnalysisService {
 
   private determineDateType(context: string): DateType {
     const lowerContext = context.toLowerCase();
-    
+
     if (lowerContext.includes('expire') || lowerContext.includes('expiry')) return 'expiration';
     if (lowerContext.includes('renew')) return 'renewal';
     if (lowerContext.includes('birth')) return 'birth';
     if (lowerContext.includes('death')) return 'death';
     if (lowerContext.includes('effective')) return 'effective';
     if (lowerContext.includes('deadline')) return 'deadline';
-    
+
     return 'other' as DateType;
   }
 
-  private determineDateImportance(type: DateType, context: string): 'critical' | 'high' | 'medium' | 'low' {
+  private determineDateImportance(type: DateType, _context: string): 'critical' | 'high' | 'medium' | 'low' {
     switch (type) {
       case 'expiration':
       case 'deadline':
@@ -716,20 +716,20 @@ class DocumentAnalysisService {
 
   private determineAmountType(context: string): MonetaryAmount['type'] {
     const lowerContext = context.toLowerCase();
-    
+
     if (lowerContext.includes('premium')) return 'premium';
     if (lowerContext.includes('benefit')) return 'benefit';
     if (lowerContext.includes('debt')) return 'debt';
     if (lowerContext.includes('income')) return 'income';
     if (lowerContext.includes('value')) return 'value';
-    
+
     return 'value';
   }
 
   private parseAddressComponents(address: string): Address['components'] {
     // Simple address parsing (in production, use proper address parser)
     const parts = address.split(',').map(p => p.trim());
-    
+
     return {
       street: parts[0] || '',
       city: parts[1] || '',
@@ -743,7 +743,7 @@ class DocumentAnalysisService {
     const emailIndex = content.indexOf(email);
     const beforeEmail = content.substring(Math.max(0, emailIndex - 50), emailIndex);
     const nameMatch = beforeEmail.match(/\b[A-Z][a-z]+ [A-Z][a-z]+\b$/);
-    
+
     return nameMatch ? nameMatch[0] : null;
   }
 
@@ -758,7 +758,7 @@ class DocumentAnalysisService {
     if (['legal', 'law', 'attorney', 'court'].some(w => term.includes(w))) return 'legal';
     if (['financial', 'money', 'account', 'bank'].some(w => term.includes(w))) return 'financial';
     if (['medical', 'health', 'doctor', 'hospital'].some(w => term.includes(w))) return 'medical';
-    
+
     return 'general';
   }
 
@@ -796,11 +796,11 @@ class DocumentAnalysisService {
 
   private generateTags(content: string, classification: any): string[] {
     const tags = [classification.category, classification.documentType];
-    
+
     if (content.includes('urgent')) tags.push('urgent');
     if (content.includes('important')) tags.push('important');
     if (content.includes('confidential')) tags.push('confidential');
-    
+
     return [...new Set(tags)];
   }
 
@@ -816,11 +816,11 @@ class DocumentAnalysisService {
     const sentences = content.split('.').filter(s => s.trim().length > 10);
     const keyPoints = sentences.filter(s => {
       const lower = s.toLowerCase();
-      return lower.includes('important') || lower.includes('amount') || 
+      return lower.includes('important') || lower.includes('amount') ||
              lower.includes('date') || lower.includes('expires') ||
              lower.includes('beneficiary') || lower.includes('coverage');
     });
-    
+
     return keyPoints.slice(0, 5).map(s => s.trim());
   }
 
@@ -828,7 +828,7 @@ class DocumentAnalysisService {
     const actionItems: ActionItem[] = [];
     const actionWords = ['renew', 'update', 'contact', 'review', 'sign', 'submit'];
     const sentences = content.split('.').filter(s => s.trim().length > 10);
-    
+
     for (const sentence of sentences) {
       if (actionWords.some(word => sentence.toLowerCase().includes(word))) {
         actionItems.push({
@@ -840,7 +840,7 @@ class DocumentAnalysisService {
         });
       }
     }
-    
+
     return actionItems.slice(0, 5);
   }
 
@@ -848,14 +848,14 @@ class DocumentAnalysisService {
     const warnings: ExpirationWarning[] = [];
     const datePattern = /\d{1,2}\/\d{1,2}\/\d{4}/g;
     const dates = content.match(datePattern) || [];
-    
+
     for (const date of dates) {
       const context = this.getContext(content, date);
       if (context.toLowerCase().includes('expire')) {
         const expirationDate = new Date(date);
         const today = new Date();
         const daysUntil = Math.floor((expirationDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-        
+
         if (daysUntil >= 0 && daysUntil <= 90) {
           warnings.push({
             type: 'document_expiration',
@@ -867,30 +867,30 @@ class DocumentAnalysisService {
         }
       }
     }
-    
+
     return warnings;
   }
 
-  private async identifyMissingInfo(content: string, metadata: Record<string, any>): Promise<string[]> {
+  private async identifyMissingInfo(content: string, _metadata: Record<string, unknown>): Promise<string[]> {
     const missing: string[] = [];
-    
+
     // Check for common missing information patterns
     if (!content.includes('@') && !content.includes('email')) {
       missing.push('Contact email address');
     }
-    
+
     if (!content.match(/\(\d{3}\) \d{3}-\d{4}/)) {
       missing.push('Phone number');
     }
-    
+
     if (!content.includes('beneficiary') && content.includes('insurance')) {
       missing.push('Beneficiary information');
     }
-    
+
     return missing;
   }
 
-  private async findRelatedDocuments(content: string, metadata: Record<string, any>): Promise<string[]> {
+  private async findRelatedDocuments(_content: string, _metadata: Record<string, unknown>): Promise<string[]> {
     // This would search for documents with similar content or keywords
     // For now, return empty array
     return [];
@@ -899,7 +899,7 @@ class DocumentAnalysisService {
   private async estimateDocumentValue(content: string): Promise<number | undefined> {
     const amounts = content.match(/\$[\d,]+\.?\d*/g) || [];
     if (amounts.length === 0) return undefined;
-    
+
     // Find the largest monetary amount as estimated value
     const values = amounts.map(amount => parseFloat(amount.replace(/[$,]/g, '')));
     return Math.max(...values);
@@ -908,13 +908,13 @@ class DocumentAnalysisService {
   private async identifyLegalImplications(content: string): Promise<string[]> {
     const implications: string[] = [];
     const legalKeywords = ['contract', 'agreement', 'obligation', 'liability', 'rights', 'terms'];
-    
+
     for (const keyword of legalKeywords) {
       if (content.toLowerCase().includes(keyword)) {
         implications.push(`Document contains ${keyword} that may have legal implications`);
       }
     }
-    
+
     return implications.slice(0, 3);
   }
 
@@ -966,7 +966,7 @@ class DocumentAnalysisService {
 
   private async storeAnalysis(analysis: DocumentAnalysis): Promise<void> {
     // Store analysis results in IndexedDB or send to server
-    console.log('Analysis completed:', analysis.id);
+    console.warn('Analysis completed:', analysis.id);
   }
 }
 

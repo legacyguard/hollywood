@@ -2,38 +2,28 @@ import React from 'react';
 
 interface LegacyGuardLogoProps {
   className?: string;
+  color?: string;
 }
 
 export function LegacyGuardLogo({
   className = 'w-8 h-8',
+  color = '#facc15', // Yellow-400 color
 }: LegacyGuardLogoProps) {
   return (
     <div className={className}>
-      <svg viewBox='0 0 32 32' fill='none' xmlns='http://www.w3.org/2000/svg'>
-        {/* Shield background */}
-        <path
-          d='M16 2L7 6V15.5C7 22.5 11.5 28.5 16 30C20.5 28.5 25 22.5 25 15.5V6L16 2Z'
-          fill='hsl(95 35% 42%)'
-          stroke='hsl(95 35% 35%)'
-          strokeWidth='0.5'
-        />
+      <svg viewBox='0 0 256 256' fill='none' xmlns='http://www.w3.org/2000/svg' aria-label='LegacyGuard - Shield with Open Book'>
+        <g fill='none' stroke={color} strokeLinecap='round' strokeLinejoin='round'>
+          {/* Shield */}
+          <path strokeWidth='14' d='M128 20 48 56v64c0 60 44 100 80 116 36-16 80-56 80-116V56Z'/>
 
-        {/* Leaf design inside shield */}
-        <g transform='translate(16, 16)'>
-          {/* Main leaf */}
-          <path
-            d='M0 -6C-2 -4 -3 -1 -3 2C-3 4 -2 6 0 8C2 6 3 4 3 2C3 -1 2 -4 0 -6Z'
-            fill='hsl(42 33% 98%)'
-          />
-          {/* Leaf stem */}
-          <path
-            d='M0 2L0 8'
-            stroke='hsl(42 33% 98%)'
-            strokeWidth='1'
-            strokeLinecap='round'
-          />
-          {/* Small leaves */}
-          <path d='M-1 0C-2 1 -1 3 0 2C1 3 2 1 1 0' fill='hsl(42 33% 98%)' />
+          {/* Left side of book */}
+          <path strokeWidth='12' d='M128 96 h-40 a12 12 0 0 0 -12 12 v52 a12 12 0 0 0 12 12 h40 Z'/>
+
+          {/* Right side of book */}
+          <path strokeWidth='12' d='M128 96 h40 a12 12 0 0 1 12 12 v52 a12 12 0 0 1 -12 12 h-40 Z'/>
+
+          {/* Center - book spine */}
+          <line x1='128' y1='96' x2='128' y2='172' strokeWidth='8'/>
         </g>
       </svg>
     </div>
