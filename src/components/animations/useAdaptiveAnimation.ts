@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import type { PersonalityMode } from '@/lib/sofia-types';
-import { AnimationSystem, useAnimationConfig, type AnimationConfig } from '@/lib/animation-system';
+import { AnimationSystem, type AnimationConfig } from '@/lib/animation-system';
 
 interface AnimationContextType {
   personalityMode: PersonalityMode;

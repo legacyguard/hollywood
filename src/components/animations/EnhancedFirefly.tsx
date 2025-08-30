@@ -310,7 +310,7 @@ export const EnhancedFirefly: React.FC<EnhancedFireflyProps> = ({
       if (idleTimeoutRef.current) clearTimeout(idleTimeoutRef.current);
       if (trailCleanupRef.current) clearTimeout(trailCleanupRef.current);
     };
-  }, []);
+  }, [idleTimeoutRef, trailCleanupRef]);
 
   if (!isVisible) return null;
 
