@@ -73,12 +73,13 @@ import {
 } from 'lucide-react';
 import {
   collaborationService,
-  FamilyGroup,
-  FamilyMember,
-  FamilyRole,
-  FamilyPermissions,
-  CollaborationActivity
+  type FamilyGroup,
+  type FamilyMember,
+  type FamilyRole,
+  type FamilyPermissions,
+  type CollaborationActivity
 } from '@/lib/social/collaborationService';
+import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 

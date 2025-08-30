@@ -48,6 +48,7 @@ const BlogPage = lazy(() => import('./pages/Blog'));
 const BlogArticlePage = lazy(() => import('./pages/BlogArticle'));
 const MonitoringPage = lazy(() => import('./pages/MonitoringPage'));
 const AnalyticsPage = lazy(() => import('./pages/AnalyticsPage'));
+const SocialCollaborationPage = lazy(() => import('./pages/SocialCollaborationPage'));
 
 const queryClient = new QueryClient();
 
@@ -93,6 +94,13 @@ const App = () => (
                       <Route path='/analytics' element={
                         <ProtectedRoute>
                           <AnalyticsPage />
+                        </ProtectedRoute>
+                      } />
+                      
+                      {/* Social Collaboration */}
+                      <Route path='/collaboration' element={
+                        <ProtectedRoute>
+                          <SocialCollaborationPage />
                         </ProtectedRoute>
                       } />
 
