@@ -149,7 +149,7 @@ class SecureEncryptionService {
     // This would typically come from Clerk's useAuth hook
     // For server-side, we'd need to pass it differently
     if (typeof window !== 'undefined') {
-      const clerk = (window as any).Clerk;
+      const clerk = (window as { Clerk?: { user?: { id: string } } }).Clerk;
       if (clerk?.user) {
         return clerk.user.id;
       }
@@ -163,7 +163,7 @@ class SecureEncryptionService {
   public async encryptFile(
     file: File,
     recipientPublicKey?: string
-  ): Promise<{ encryptedData: Uint8Array; nonce: Uint8Array; metadata: any } | null> {
+  ): Promise<{ encryptedData: Uint8Array; nonce: Uint8Array; metadata: Record<string, unknown> } | null> {
     try {
       const keys = await this.getKeys();
       if (!keys) {
@@ -450,8 +450,8 @@ class SecureEncryptionService {
         return { success: false, error: 'No legacy keys found' };
       }
 
-      // Parse old keys
-      const oldKeys = JSON.parse(oldKeysString);
+      // Parse old keys (validate format)
+      const _oldKeys = JSON.parse(oldKeysString);
 
       // Initialize new server-side keys
       const result = await this.initializeKeys(password);
@@ -459,7 +459,7 @@ class SecureEncryptionService {
       if (result.success) {
         // Remove old keys from localStorage
         localStorage.removeItem(`encryptionKeys_${userId}`);
-        console.log('Successfully migrated encryption keys to server-side storage');
+        // Successfully migrated encryption keys to server-side storage
       }
 
       return result;
@@ -478,7 +478,7 @@ export const encryptionService = SecureEncryptionService.getInstance();
 export async function encryptFile(
   file: File,
   recipientPublicKey?: string
-): Promise<{ encryptedData: Uint8Array; nonce: Uint8Array; metadata: any } | null> {
+): Promise<{ encryptedData: Uint8Array; nonce: Uint8Array; metadata: Record<string, unknown> } | null> {
   return encryptionService.encryptFile(file, recipientPublicKey);
 }
 

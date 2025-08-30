@@ -31,7 +31,9 @@ export const AttentionSection: React.FC<AttentionSectionProps> = ({
       description: 'Consider checking renewal options',
       icon: 'calendar',
       actionText: 'View Details',
-      onAction: () => console.log('Show passport details'),
+      onAction: () => {
+        // Show passport details
+      },
       urgency: 'medium',
     },
     {
@@ -41,7 +43,9 @@ export const AttentionSection: React.FC<AttentionSectionProps> = ({
       description: "She hasn't joined your circle of trust yet",
       icon: 'user-plus',
       actionText: 'Send Reminder',
-      onAction: () => console.log('Send reminder to guardian'),
+      onAction: () => {
+        // Send reminder to guardian
+      },
       urgency: 'low',
     },
     {
@@ -51,7 +55,9 @@ export const AttentionSection: React.FC<AttentionSectionProps> = ({
       description: 'To the "Home Mortgage" bundle we can add related documents',
       icon: 'sparkles',
       actionText: 'View Suggestion',
-      onAction: () => console.log('Show Sofia suggestion'),
+      onAction: () => {
+        // Show Sofia suggestion
+      },
       urgency: 'low',
     },
   ];
@@ -90,7 +96,7 @@ export const AttentionSection: React.FC<AttentionSectionProps> = ({
       <section className={className}>
         <div className='mb-6'>
           <div className='flex items-center gap-3 mb-2'>
-            <Icon name={"alert-circle" as any} className='w-6 h-6 text-primary' />
+            <Icon name="alert-circle" className='w-6 h-6 text-primary' />
             <h2 className='text-2xl font-bold font-heading text-card-foreground'>
               Current Challenges
             </h2>
@@ -123,7 +129,7 @@ export const AttentionSection: React.FC<AttentionSectionProps> = ({
                     </div>
                   </div>
                   <Button
-                    variant={"outline" as any}
+                    variant="outline"
                     size='sm'
                     onClick={item.onAction}
                     className='ml-4 shrink-0'

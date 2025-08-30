@@ -25,7 +25,7 @@ test.describe('Clerk Testing Token Verification', () => {
 
     // Check if Clerk is loaded
     const clerkLoaded = await page.evaluate(() => {
-      return typeof (window as any).Clerk !== 'undefined';
+      return typeof (window as Record<string, unknown>).Clerk !== 'undefined';
     });
 
     console.log('Clerk loaded:', clerkLoaded);

@@ -1,11 +1,6 @@
 import { ClerkProvider as BaseClerkProvider } from '@clerk/clerk-react';
 
-// Available authentication strategies
-const authStrategies = {
-  oauth_google: true,
-  oauth_github: false, // disabled for now
-  password: true, // enable password-based auth
-};
+
 
 const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 

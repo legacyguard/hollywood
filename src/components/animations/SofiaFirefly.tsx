@@ -151,7 +151,7 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
           duration: 12,
           repeat: Infinity,
           ease: 'easeInOut',
-          onUpdate: (latest: any) => {
+          onUpdate: (latest: { x?: number; y?: number }) => {
             if (typeof latest.x === 'number' && typeof latest.y === 'number') {
               updateTrail({ x: latest.x, y: latest.y });
             }
@@ -212,7 +212,7 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
         transition: {
           duration: 1.5,
           ease: 'easeInOut',
-          onUpdate: (latest: any) => {
+          onUpdate: (latest: { x?: number; y?: number }) => {
             if (typeof latest.x === 'number' && typeof latest.y === 'number') {
               updateTrail({ x: latest.x, y: latest.y });
             }
@@ -234,7 +234,7 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
         transition: {
           duration: 2,
           ease: 'easeInOut',
-          onUpdate: (latest: any) => {
+          onUpdate: (latest: { x?: number; y?: number }) => {
             if (typeof latest.x === 'number' && typeof latest.y === 'number') {
               updateTrail({ x: latest.x, y: latest.y });
             }
@@ -301,7 +301,7 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
         transition: {
           duration: 3,
           ease: 'easeInOut',
-          onUpdate: (latest: any) => {
+          onUpdate: (latest: { x?: number; y?: number }) => {
             if (typeof latest.x === 'number' && typeof latest.y === 'number') {
               updateTrail({ x: latest.x, y: latest.y });
             }

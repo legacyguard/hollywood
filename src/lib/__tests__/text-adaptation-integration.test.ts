@@ -23,7 +23,7 @@ describe('Text Adaptation Integration', () => {
     vi.clearAllMocks();
     textManager = TextManager.getInstance();
     personalityManager = new AdaptivePersonalityManager(testUserId);
-    
+
     // Register personality manager with text manager
     textManager.registerPersonalityManager(testUserId, personalityManager);
   });
@@ -35,28 +35,28 @@ describe('Text Adaptation Integration', () => {
 
       // Get text - should use personality manager's style
       const result = textManager.getText('sofia_welcome', 'default', testUserId);
-      
+
       expect(result).toContain("gentle guide");
       expect(result).toContain("meaningful journey");
     });
 
     it('should use personality manager for pragmatic mode', () => {
-      // Set personality manager to pragmatic mode  
+      // Set personality manager to pragmatic mode
       personalityManager.setManualOverride('pragmatic');
 
       // Get text - should use personality manager's style
       const result = textManager.getText('sofia_welcome', 'default', testUserId);
-      
+
       expect(result).toContain("digital assistant");
       expect(result).toContain("efficiently");
     });
 
     it('should fall back to legacy system when no personality manager', () => {
       const otherUserId = 'other-user';
-      
+
       // This user has no registered personality manager
       const result = textManager.getText('sofia_welcome', 'empathetic', otherUserId);
-      
+
       expect(result).toContain("gentle guide");
     });
   });
@@ -78,7 +78,7 @@ describe('Text Adaptation Integration', () => {
 
     it('should not record interactions for users without personality manager', () => {
       const otherUserId = 'other-user-no-manager';
-      
+
       // This should not throw error and should use legacy system
       expect(() => {
         textManager.analyzeUserInput('Test input', otherUserId);
@@ -92,7 +92,7 @@ describe('Text Adaptation Integration', () => {
       personalityManager.setManualOverride('empathetic');
 
       const result = textManager.getText('milestone_first_document_uploaded', 'default', testUserId);
-      
+
       // Should get empathetic variant
       expect(result).toContain("family's mosaic of certainty");
       expect(result).toContain("care about protecting");
@@ -103,7 +103,7 @@ describe('Text Adaptation Integration', () => {
       personalityManager.setManualOverride('pragmatic');
 
       const result = textManager.getText('milestone_first_document_uploaded', 'default', testUserId);
-      
+
       // Should get pragmatic variant
       expect(result).toContain("encrypted and stored securely");
       expect(result).toContain("digital legacy system");
@@ -129,7 +129,7 @@ describe('Text Adaptation Integration', () => {
       // After learning, should prefer empathetic style
       const currentStyle = personalityManager.getCurrentStyle();
       const result = textManager.getText('sofia_welcome', 'default', testUserId);
-      
+
       // Should lean towards empathetic communication
       if (currentStyle === 'empathetic') {
         expect(result).toContain("gentle guide");
@@ -155,9 +155,9 @@ describe('Text Adaptation Integration', () => {
 
     it('should handle users without personality managers', () => {
       const unknownUserId = 'unknown-user';
-      
+
       const result = textManager.getText('sofia_welcome', 'default', unknownUserId);
-      
+
       // Should still work, falling back to default behavior
       expect(result).toBeTruthy();
       expect(typeof result).toBe('string');

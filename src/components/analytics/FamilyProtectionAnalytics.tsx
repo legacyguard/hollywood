@@ -300,7 +300,7 @@ export const FamilyProtectionAnalytics: React.FC<FamilyProtectionAnalyticsProps>
         </div>
         <div className="flex gap-2">
           <Button
-            variant={"outline" as any}
+            variant="outline"
             onClick={() => setShowDetailedAnalysis(!showDetailedAnalysis)}
             className="gap-2"
           >
@@ -363,7 +363,7 @@ export const FamilyProtectionAnalytics: React.FC<FamilyProtectionAnalyticsProps>
               <span className="font-medium text-red-800">
                 {criticalRisks.length} critical risk{criticalRisks.length > 1 ? 's' : ''} detected
               </span>
-              <Button size="sm" variant={"destructive" as any}>
+              <Button size="sm" variant="destructive">
                 Review Now
               </Button>
             </div>
@@ -451,7 +451,7 @@ export const FamilyProtectionAnalytics: React.FC<FamilyProtectionAnalyticsProps>
           <div className="flex items-center gap-2 mb-4">
             <Lightbulb className="h-5 w-5 text-yellow-600" />
             <h3 className="text-lg font-medium">AI-Generated Recommendations</h3>
-            <Badge variant={"secondary" as any}>Powered by LegacyGuard AI</Badge>
+            <Badge variant="secondary">Powered by LegacyGuard AI</Badge>
           </div>
 
           <div className="space-y-3">
@@ -464,7 +464,7 @@ export const FamilyProtectionAnalytics: React.FC<FamilyProtectionAnalyticsProps>
                         <Badge className={getPriorityColor(recommendation.priority)}>
                           {recommendation.priority}
                         </Badge>
-                        <Badge variant={"outline" as any} className="text-xs">
+                        <Badge variant="outline" className="text-xs">
                           {recommendation.category.replace('-', ' ')}
                         </Badge>
                         <span className="text-xs text-gray-500">
@@ -575,7 +575,7 @@ export const FamilyProtectionAnalytics: React.FC<FamilyProtectionAnalyticsProps>
           <div className="flex items-center gap-2 mb-4">
             <AlertTriangle className="h-5 w-5 text-red-600" />
             <h3 className="text-lg font-medium">Risk Analysis</h3>
-            <Badge variant={"destructive" as any}>{criticalRisks.length} Critical</Badge>
+            <Badge variant="destructive">{criticalRisks.length} Critical</Badge>
           </div>
 
           <div className="space-y-3">
@@ -588,7 +588,7 @@ export const FamilyProtectionAnalytics: React.FC<FamilyProtectionAnalyticsProps>
                         <Badge className={getPriorityColor(risk.severity)}>
                           {risk.severity}
                         </Badge>
-                        <Badge variant={"outline" as any} className="text-xs">
+                        <Badge variant="outline" className="text-xs">
                           {risk.timeframe.replace('-', ' ')}
                         </Badge>
                         <span className="text-xs text-gray-500">
@@ -604,7 +604,7 @@ export const FamilyProtectionAnalytics: React.FC<FamilyProtectionAnalyticsProps>
                     </div>
                     <Button
                       size="sm"
-                      variant={"outline" as any}
+                      variant="outline"
                       onClick={() => onRiskMitigation?.(risk.id)}
                       className="gap-2"
                     >

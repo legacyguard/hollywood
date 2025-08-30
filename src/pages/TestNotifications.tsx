@@ -94,7 +94,7 @@ export function TestNotifications() {
       } else {
         toast.error(`Cron job test failed: ${result.message}`);
       }
-    } catch (error) {
+    } catch (_error) {
       toast.error('Cron job endpoint test failed');
     } finally {
       setIsLoading(false);

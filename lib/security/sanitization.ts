@@ -50,7 +50,7 @@ export function sanitizeFilename(filename: string): string {
   // Remove path traversal patterns and dangerous characters
   return filename
     .replace(/\.\./g, '') // Remove ..
-    .replace(/[\/\\]/g, '_') // Replace slashes with underscore
+    .replace(/[/\\]/g, '_') // Replace slashes with underscore
     .replace(/^\.+/, '') // Remove leading dots
     .replace(/[^a-zA-Z0-9._-]/g, '_') // Keep only safe characters
     .substring(0, 255); // Limit length
@@ -147,7 +147,7 @@ export function sanitizeSqlInput(input: string): string {
 /**
  * Validate and sanitize numeric input
  */
-export function sanitizeNumber(input: any, options: {
+export function sanitizeNumber(input: unknown, options: {
   min?: number;
   max?: number;
   allowFloat?: boolean;
@@ -165,7 +165,7 @@ export function sanitizeNumber(input: any, options: {
 /**
  * Sanitize object keys and values recursively
  */
-export function sanitizeObject(obj: any, maxDepth: number = 10): any {
+export function sanitizeObject(obj: unknown, maxDepth: number = 10): unknown {
   if (maxDepth <= 0) return null;
 
   if (obj === null || obj === undefined) return obj;
@@ -183,7 +183,7 @@ export function sanitizeObject(obj: any, maxDepth: number = 10): any {
   }
 
   if (typeof obj === 'object') {
-    const sanitized: any = {};
+    const sanitized: Record<string, unknown> = {};
     for (const [key, value] of Object.entries(obj)) {
       // Sanitize the key
       const sanitizedKey = sanitizeText(key);

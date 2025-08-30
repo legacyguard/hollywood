@@ -78,11 +78,11 @@ export interface EnhancedButtonProps
 }
 
 const EnhancedButton = React.forwardRef<HTMLButtonElement, EnhancedButtonProps>(
-  ({ 
-    className, 
-    variant, 
-    size, 
-    asChild = false, 
+  ({
+    className,
+    variant,
+    size,
+    asChild = false,
     animationType = 'button-press',
     personalityAdapt = true,
     loading = false,
@@ -101,14 +101,14 @@ const EnhancedButton = React.forwardRef<HTMLButtonElement, EnhancedButtonProps>(
     children,
     disabled,
     onClick,
-    ...props 
+    ...props
   }, ref) => {
     const { personality } = useSofia()
     const [ripples, setRipples] = React.useState<Array<{ id: number, x: number, y: number }>>([])
     const buttonRef = React.useRef<HTMLButtonElement>(null)
 
     // Auto-adapt variant based on personality if enabled
-    const adaptedVariant = personalityAdapt 
+    const adaptedVariant = personalityAdapt
       ? (variant === 'default' ? personality.mode : variant)
       : variant
 
@@ -144,21 +144,21 @@ const EnhancedButton = React.forwardRef<HTMLButtonElement, EnhancedButtonProps>(
         const rect = buttonRef.current.getBoundingClientRect()
         const x = event.clientX - rect.left
         const y = event.clientY - rect.top
-        
-        const newRipple = { 
-          id: Date.now() + Math.random(), 
-          x, 
-          y 
+
+        const newRipple = {
+          id: Date.now() + Math.random(),
+          x,
+          y
         }
-        
+
         setRipples(prev => [...prev, newRipple])
-        
+
         // Remove ripple after animation
         setTimeout(() => {
           setRipples(prev => prev.filter(r => r.id !== newRipple.id))
         }, 600)
       }
-      
+
       if (onClick && !disabled && !loading) {
         onClick(event)
       }
@@ -167,7 +167,7 @@ const EnhancedButton = React.forwardRef<HTMLButtonElement, EnhancedButtonProps>(
     // Personality-specific animation configurations
     const getPersonalityAnimation = () => {
       if (!personalityAdapt) return animationType
-      
+
       switch (personality.mode) {
         case 'empathetic':
           return 'hover-glow'
@@ -213,8 +213,8 @@ const EnhancedButton = React.forwardRef<HTMLButtonElement, EnhancedButtonProps>(
                         height: 20,
                       }}
                       initial={{ scale: 0, opacity: 0.6 }}
-                      animate={{ 
-                        scale: 4, 
+                      animate={{
+                        scale: 4,
                         opacity: 0,
                         transition: { duration: 0.6, ease: "easeOut" }
                       }}
@@ -245,13 +245,13 @@ const EnhancedButton = React.forwardRef<HTMLButtonElement, EnhancedButtonProps>(
                 <motion.div
                   key={getCurrentIcon()}
                   initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ 
-                    opacity: 1, 
+                  animate={{
+                    opacity: 1,
                     scale: 1,
                     rotate: currentState.isLoading ? 360 : 0
                   }}
                   exit={{ opacity: 0, scale: 0.8 }}
-                  transition={{ 
+                  transition={{
                     duration: 0.3,
                     rotate: {
                       duration: currentState.isLoading ? 1 : 0.3,
@@ -260,12 +260,12 @@ const EnhancedButton = React.forwardRef<HTMLButtonElement, EnhancedButtonProps>(
                     }
                   }}
                 >
-                  <Icon 
-                    name={getCurrentIcon()!} 
+                  <Icon
+                    name={getCurrentIcon()!}
                     className={cn(
                       "w-4 h-4",
                       currentState.isLoading && "animate-spin"
-                    )} 
+                    )}
                   />
                 </motion.div>
               )}
@@ -308,7 +308,7 @@ const EnhancedButton = React.forwardRef<HTMLButtonElement, EnhancedButtonProps>(
 EnhancedButton.displayName = "EnhancedButton"
 
 // Specialized button components
-export const LoadingButton = React.forwardRef<HTMLButtonElement, 
+export const LoadingButton = React.forwardRef<HTMLButtonElement,
   Omit<EnhancedButtonProps, 'loading' | 'loadingText'> & {
     isLoading: boolean
     loadingText?: string
@@ -324,7 +324,7 @@ export const LoadingButton = React.forwardRef<HTMLButtonElement,
 
 LoadingButton.displayName = "LoadingButton"
 
-export const PersonalityButton = React.forwardRef<HTMLButtonElement, 
+export const PersonalityButton = React.forwardRef<HTMLButtonElement,
   Omit<EnhancedButtonProps, 'personalityAdapt'>
 >((props, ref) => (
   <EnhancedButton
@@ -337,7 +337,7 @@ export const PersonalityButton = React.forwardRef<HTMLButtonElement,
 
 PersonalityButton.displayName = "PersonalityButton"
 
-export const ActionButton = React.forwardRef<HTMLButtonElement, 
+export const ActionButton = React.forwardRef<HTMLButtonElement,
   EnhancedButtonProps & {
     action?: 'save' | 'delete' | 'edit' | 'add' | 'cancel' | 'submit'
   }

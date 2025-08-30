@@ -51,7 +51,7 @@ export async function waitForClerk(page: Page): Promise<void> {
   // Wait for Clerk to be available on window
   await page.waitForFunction(() => {
     return typeof window !== 'undefined' &&
-           (window as any).Clerk !== undefined;
+           (window as Record<string, unknown>).Clerk !== undefined;
   }, { timeout: 10000 });
 
   // Additional wait for Clerk UI to render

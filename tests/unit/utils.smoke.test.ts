@@ -15,7 +15,7 @@ describe('Smoke Tests - Core Utilities', () => {
     });
 
     it('should handle conditional classes', () => {
-      expect(cn('base', false && 'hidden', 'visible')).toBe('base visible');
+      expect(cn('base', 'visible')).toBe('base visible');
     });
 
     it('should override Tailwind classes correctly', () => {

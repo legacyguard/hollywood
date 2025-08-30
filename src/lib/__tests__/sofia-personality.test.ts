@@ -46,7 +46,7 @@ describe('AdaptivePersonalityManager', () => {
       localStorageMock.getItem.mockReturnValue(JSON.stringify(storedPersonality));
       const newManager = new AdaptivePersonalityManager('test-user-2');
       const personality = newManager.getPersonality();
-      
+
       expect(personality.mode).toBe('empathetic');
       expect(personality.userPreferences.manualOverride).toBe('empathetic');
     });
@@ -56,7 +56,7 @@ describe('AdaptivePersonalityManager', () => {
     it('should set personality mode correctly', () => {
       manager.setMode('pragmatic');
       const personality = manager.getPersonality();
-      
+
       expect(personality.mode).toBe('pragmatic');
       expect(personality.currentStyle).toBe('pragmatic');
     });
@@ -64,7 +64,7 @@ describe('AdaptivePersonalityManager', () => {
     it('should reset manual override when switching to adaptive', () => {
       manager.setManualOverride('empathetic');
       manager.setMode('adaptive');
-      
+
       const personality = manager.getPersonality();
       expect(personality.userPreferences.manualOverride).toBeUndefined();
     });
@@ -72,7 +72,7 @@ describe('AdaptivePersonalityManager', () => {
     it('should handle manual override correctly', () => {
       manager.setManualOverride('pragmatic');
       const personality = manager.getPersonality();
-      
+
       expect(personality.userPreferences.manualOverride).toBe('pragmatic');
       expect(personality.currentStyle).toBe('pragmatic');
       expect(personality.confidence).toBe(100);
@@ -91,7 +91,7 @@ describe('AdaptivePersonalityManager', () => {
 
       manager.recordInteraction(interaction);
       const personality = manager.getPersonality();
-      
+
       expect(personality.userPreferences.lastInteractions).toHaveLength(1);
       expect(personality.userPreferences.lastInteractions[0]).toMatchObject({
         action: 'test_action',
@@ -115,7 +115,7 @@ describe('AdaptivePersonalityManager', () => {
 
       const personality = manager.getPersonality();
       expect(personality.userPreferences.lastInteractions).toHaveLength(50);
-      
+
       // Should keep the most recent ones
       expect(personality.userPreferences.lastInteractions[49].action).toBe('action_59');
     });
@@ -125,7 +125,7 @@ describe('AdaptivePersonalityManager', () => {
     it('should return base message for balanced style', () => {
       const baseMessage = 'Please upload your document';
       const result = manager.adaptMessage(baseMessage);
-      
+
       expect(result).toBe(baseMessage);
     });
 
@@ -133,7 +133,7 @@ describe('AdaptivePersonalityManager', () => {
       manager.setManualOverride('empathetic');
       const baseMessage = 'You need to upload your document';
       const result = manager.adaptMessage(baseMessage);
-      
+
       expect(result).toContain('You might want to upload');
     });
 
@@ -141,7 +141,7 @@ describe('AdaptivePersonalityManager', () => {
       manager.setManualOverride('pragmatic');
       const baseMessage = 'I think you might want to consider uploading your document when you\'re ready.';
       const result = manager.adaptMessage(baseMessage);
-      
+
       expect(result).toBe('You should uploading your document .');
     });
 
@@ -192,8 +192,8 @@ describe('AdaptivePersonalityManager', () => {
         context: 'test',
         responseTime: 1000,
       }));
-      
-      manager.updatePersonality({ 
+
+      manager.updatePersonality({
         confidence: 50,
         userPreferences: {
           lastInteractions: interactions,
@@ -235,7 +235,7 @@ describe('AdaptivePersonalityManager', () => {
   describe('Storage', () => {
     it('should save to localStorage when personality is updated', () => {
       manager.setMode('empathetic');
-      
+
       expect(localStorageMock.setItem).toHaveBeenCalledWith(
         `sofia_personality_${testUserId}`,
         expect.stringContaining('"mode":"empathetic"')

@@ -147,14 +147,14 @@ class RealProfessionalService {
       if (filters?.specializations?.length) {
         filteredData = filteredData.filter(attorney =>
           attorney.credentials?.specializations?.some((spec: string) =>
-            filters.specializations!.includes(spec)
+            filters.specializations?.includes(spec)
           )
         );
       }
 
       if (filters?.jurisdiction) {
         filteredData = filteredData.filter(attorney =>
-          attorney.credentials?.licensed_states?.includes(filters.jurisdiction!)
+          attorney.credentials?.licensed_states?.includes(filters.jurisdiction || '')
         );
       }
 
@@ -540,7 +540,7 @@ class RealProfessionalService {
     to: string;
     subject: string;
     template: string;
-    data: Record<string, any>;
+    data: Record<string, unknown>;
   }): Promise<void> {
     try {
       await supabase.functions.invoke('send-email', {

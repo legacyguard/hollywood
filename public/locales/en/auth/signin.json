@@ -1,0 +1,84 @@
+{
+  "title": "Sign In",
+  "subtitle": "Welcome back to LegacyGuard",
+  "description": "Sign in to your account to continue",
+  "form": {
+    "email": {
+      "label": "Email Address",
+      "placeholder": "Enter your email",
+      "error": {
+        "required": "Email is required",
+        "invalid": "Please enter a valid email address"
+      }
+    },
+    "password": {
+      "label": "Password",
+      "placeholder": "Enter your password",
+      "error": {
+        "required": "Password is required",
+        "invalid": "Invalid password"
+      }
+    },
+    "rememberMe": {
+      "label": "Remember me"
+    },
+    "forgotPassword": {
+      "label": "Forgot password?",
+      "link": "Reset it here"
+    },
+    "submit": {
+      "label": "Sign In",
+      "loading": "Signing in..."
+    }
+  },
+  "social": {
+    "title": "Or sign in with",
+    "google": "Sign in with Google",
+    "microsoft": "Sign in with Microsoft",
+    "apple": "Sign in with Apple"
+  },
+  "error": {
+    "invalidCredentials": "Invalid email or password",
+    "accountLocked": "Your account has been locked. Please contact support",
+    "accountDisabled": "Your account has been disabled",
+    "emailNotVerified": "Please verify your email address",
+    "tooManyAttempts": "Too many failed attempts. Please try again later",
+    "networkError": "Network error. Please check your connection",
+    "serverError": "Server error. Please try again later",
+    "generic": "An error occurred during sign in"
+  },
+  "success": {
+    "signedIn": "Successfully signed in",
+    "redirecting": "Redirecting to dashboard..."
+  },
+  "link": {
+    "noAccount": "Don't have an account?",
+    "signUp": "Sign up",
+    "help": "Need help?",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service"
+  },
+  "twoFactor": {
+    "title": "Two-Factor Authentication",
+    "subtitle": "Enter the verification code",
+    "description": "We've sent a verification code to your registered device",
+    "code": {
+      "label": "Verification Code",
+      "placeholder": "Enter 6-digit code",
+      "error": {
+        "required": "Code is required",
+        "invalid": "Invalid code",
+        "expired": "Code has expired"
+      }
+    },
+    "resend": {
+      "label": "Didn't receive the code?",
+      "button": "Resend code",
+      "success": "Code sent successfully",
+      "wait": "Please wait {{seconds}} seconds"
+    },
+    "useBackup": {
+      "label": "Use backup code instead"
+    }
+  }
+}

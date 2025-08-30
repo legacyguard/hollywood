@@ -1,5 +1,5 @@
 import { defineConfig, loadEnv } from "vite";
-import react from "@vitejs/plugin-react-swc";
+import react from "@vitejs/plugin-react";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -35,8 +35,8 @@ export default defineConfig(({ mode }) => {
       hmr: {
         // Use WebSocket for HMR
         protocol: 'ws',
-        // Port for HMR WebSocket (defaults to server.port)
-        port: 8080,
+        // Don't specify port - let Vite use the same as server port
+        // This prevents HMR connection issues when port changes
       },
       // Watch options for file changes
       watch: {
@@ -53,6 +53,20 @@ export default defineConfig(({ mode }) => {
       assetsDir: 'assets',
       // Enable source maps for production debugging
       sourcemap: mode === 'development',
+      // Enable CSS minification
+      cssMinify: mode === 'production',
+      // Report bundle size
+      reportCompressedSize: true,
+      // Minification options
+      minify: mode === 'production' ? 'terser' : false,
+      // Chunk size warning limit (in KB)
+      chunkSizeWarningLimit: 1000,
+      // Target browsers
+      target: 'esnext',
+      // CSS code splitting
+      cssCodeSplit: true,
+      // Assets inline limit (4kb)
+      assetsInlineLimit: 4096,
       // Rollup options for advanced configuration
       rollupOptions: {
         output: {
@@ -62,63 +76,63 @@ export default defineConfig(({ mode }) => {
             if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
               return 'react-vendor';
             }
-            
+
             // Animation libraries
             if (id.includes('framer-motion')) {
               return 'animation-vendor';
             }
-            
+
             // Authentication
             if (id.includes('@clerk')) {
               return 'auth-vendor';
             }
-            
+
             // Supabase and database
             if (id.includes('@supabase') || id.includes('postgrest')) {
               return 'database-vendor';
             }
-            
+
             // UI component libraries
             if (id.includes('@radix-ui')) {
               return 'ui-vendor';
             }
-            
+
             // Utility libraries
-            if (id.includes('clsx') || id.includes('tailwind-merge') || id.includes('date-fns') || 
+            if (id.includes('clsx') || id.includes('tailwind-merge') || id.includes('date-fns') ||
                 id.includes('class-variance-authority') || id.includes('lucide-react')) {
               return 'utils-vendor';
             }
-            
+
             // Sofia personality system
-            if (id.includes('src/components/sofia') || id.includes('src/lib/sofia') || 
+            if (id.includes('src/components/sofia') || id.includes('src/lib/sofia') ||
                 id.includes('src/hooks/use') && id.includes('sofia')) {
               return 'sofia-system';
             }
-            
+
             // Animation and micro-interaction system
             if (id.includes('src/components/animations') || id.includes('src/lib/animation') ||
                 id.includes('enhanced-button') || id.includes('enhanced-card') || id.includes('enhanced-input')) {
               return 'animation-system';
             }
-            
+
             // Emergency and family shield system
             if (id.includes('src/components/emergency') || id.includes('FamilyProtection') ||
                 id.includes('family-shield') || id.includes('emergency-access')) {
               return 'family-shield';
             }
-            
+
             // Legacy garden system
-            if (id.includes('src/components/garden') || id.includes('Legacy') || 
+            if (id.includes('src/components/garden') || id.includes('Legacy') ||
                 id.includes('garden') && !id.includes('node_modules')) {
               return 'legacy-garden';
             }
-            
+
             // Dashboard and layout components
-            if (id.includes('DashboardLayout') || id.includes('AppSidebar') || 
+            if (id.includes('DashboardLayout') || id.includes('AppSidebar') ||
                 id.includes('src/components/layout')) {
               return 'dashboard-layout';
             }
-            
+
             // Pages - split by feature
             if (id.includes('src/pages/vault') || id.includes('Vault')) {
               return 'vault-page';
@@ -129,18 +143,30 @@ export default defineConfig(({ mode }) => {
             if (id.includes('src/pages/onboarding') || id.includes('Onboarding')) {
               return 'onboarding-page';
             }
-            
+
+            // Legal pages
+            if (id.includes('src/pages/legal') || id.includes('TermsOfService') ||
+                id.includes('PrivacyPolicy') || id.includes('SecurityPolicy')) {
+              return 'legal-pages';
+            }
+
+            // Landing page and marketing
+            if (id.includes('src/pages/LandingPage') || id.includes('Blog') ||
+                id.includes('ComponentShowcase')) {
+              return 'marketing-pages';
+            }
+
             // All other node_modules as separate vendor chunks
             if (id.includes('node_modules')) {
               const chunks = id.split('node_modules/')[1];
               const packageName = chunks.split('/')[0];
-              
+
               // Group small packages together
               const smallPackages = ['crypto-js', 'tweetnacl', 'buffer', 'process'];
               if (smallPackages.includes(packageName)) {
                 return 'crypto-vendor';
               }
-              
+
               return `vendor-${packageName.replace('@', '').replace('/', '-')}`;
             }
           },
@@ -161,17 +187,23 @@ export default defineConfig(({ mode }) => {
           // Entry file naming
           entryFileNames: 'assets/js/[name]-[hash].js',
         },
+        // Add bundle analyzer plugin in production
+        ...(mode === 'production' && {
+          plugins: [
+            {
+              name: 'bundle-analyzer',
+              generateBundle(options, bundle) {
+                // Log bundle sizes
+                const sizes = Object.entries(bundle).map(([name, asset]) => ({
+                  name,
+                  size: asset.type === 'chunk' ? asset.code?.length || 0 : asset.source?.length || 0,
+                }));
+                console.log('📦 Bundle Analysis:', sizes);
+              },
+            },
+          ],
+        }),
       },
-      // Minification options
-      minify: mode === 'production' ? 'terser' : false,
-      // Chunk size warning limit (in KB)
-      chunkSizeWarningLimit: 1000,
-      // Target browsers
-      target: 'esnext',
-      // CSS code splitting
-      cssCodeSplit: true,
-      // Assets inline limit (4kb)
-      assetsInlineLimit: 4096,
     },
 
     // Plugin Configuration
@@ -236,6 +268,13 @@ export default defineConfig(({ mode }) => {
       exclude: [],
       // Force optimization of these dependencies
       force: false,
+      // Enable esbuild optimization
+      esbuildOptions: {
+        // Target modern browsers
+        target: 'es2022',
+        // Enable tree shaking
+        treeShaking: true,
+      },
     },
 
     // Environment Variables
@@ -254,6 +293,14 @@ export default defineConfig(({ mode }) => {
       legalComments: 'none',
       // Target for esbuild
       target: 'es2022',
+      // Enable tree shaking
+      treeShaking: true,
+      // Minify identifiers
+      minifyIdentifiers: mode === 'production',
+      // Minify syntax
+      minifySyntax: mode === 'production',
+      // Minify whitespace
+      minifyWhitespace: mode === 'production',
     },
 
     // Preview server configuration (for production preview)

@@ -278,7 +278,7 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({
       <DialogContent className='max-w-2xl p-0 gap-0'>
         <DialogHeader className='px-6 pt-6 pb-4'>
           <DialogTitle className='flex items-center gap-2'>
-            <Icon name={"search" as any} className='w-5 h-5' />
+            <Icon name="search" className='w-5 h-5' />
             Quick Search
           </DialogTitle>
         </DialogHeader>
@@ -297,7 +297,7 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({
         <div className='max-h-80 overflow-y-auto'>
           {isSearching ? (
             <div className='flex items-center justify-center py-8 text-muted-foreground'>
-              <Icon name={"loader" as any} className='w-5 h-5 animate-spin mr-2' />
+              <Icon name="loader" className='w-5 h-5 animate-spin mr-2' />
               Searching...
             </div>
           ) : results.length > 0 ? (
@@ -309,7 +309,7 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({
                   className='w-full justify-start h-auto p-4 mx-4'
                   onClick={result.action}
                 >
-                  <Icon name={result.icon as any}
+                  <Icon name={result.icon}
                     className='w-5 h-5 mr-3 flex-shrink-0'
                   />
                   <div className='text-left'>
@@ -325,7 +325,7 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({
             </div>
           ) : query.trim() ? (
             <div className='flex flex-col items-center justify-center py-8 text-muted-foreground'>
-              <Icon name={"search-x" as any} className='w-8 h-8 mb-2' />
+              <Icon name="search-x" className='w-8 h-8 mb-2' />
               <p>No results found for "{query}"</p>
               <p className='text-sm mt-1'>
                 Try searching for documents, guardians, or actions
@@ -340,7 +340,7 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({
             <div className='px-6 py-4'>
               <div className='flex items-center gap-2 mb-3'>
                 <div className='w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center'>
-                  <Icon name={"sparkles" as any} className='w-3 h-3 text-primary' />
+                  <Icon name="sparkles" className='w-3 h-3 text-primary' />
                 </div>
                 <span className='text-sm font-medium text-primary'>
                   {hasDocumentBasedSuggestions(
@@ -371,7 +371,7 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({
                   return (
                     <Button
                       key={`sofia-${index}`}
-                      variant={"outline" as any}
+                      variant="outline"
                       className={`w-full justify-start h-auto p-3 ${
                         isDynamic
                           ? 'border-green-200 hover:bg-green-50 hover:border-green-300 bg-green-50/50'
@@ -421,7 +421,7 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({
                   }))
                 ) ? (
                   <>
-                    <Icon name={"zap" as any} className='w-3 h-3 inline mr-1' />
+                    <Icon name="zap" className='w-3 h-3 inline mr-1' />
                     Sofia remembers your document patterns
                   </>
                 ) : (

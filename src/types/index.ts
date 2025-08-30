@@ -274,12 +274,8 @@ export interface ReviewRequest {
   notes?: string;
   deadline?: ISO8601Date;
   createdAt: ISO8601Date;
-   storage: {
-     // Encryption keys should be managed securely, not stored in config
-     encryptionKeyId: string; // Reference to key in secure storage
-     maxFileSize: number;
-     allowedMimeTypes: string[];
-   };
+}
+
 export type ReviewStatus = 'pending' | 'in_progress' | 'completed' | 'rejected' | 'needs_revision';
 export type Priority = 'low' | 'medium' | 'high' | 'urgent';
 
@@ -294,7 +290,7 @@ export interface ApiResponse<T> {
 export interface ApiError {
   code: string;
   message: string;
-  details?: Record<string, any>;
+  details?: Record<string, unknown>;
   timestamp: ISO8601Date;
 }
 
@@ -310,7 +306,7 @@ export interface PaginationParams {
   limit: number;
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
-  filters?: Record<string, any>;
+  filters?: Record<string, unknown>;
 }
 
 export interface PaginatedResponse<T> {
@@ -349,7 +345,7 @@ export type DeepPartial<T> = {
 // Event types
 export interface AppEvent {
   type: string;
-  payload: Record<string, any>;
+  payload: Record<string, unknown>;
   timestamp: ISO8601Date;
   userId?: UUID;
 }
@@ -380,7 +376,7 @@ export interface AppConfig {
 // Webhook types
 export interface WebhookPayload {
   event: string;
-  data: Record<string, any>;
+  data: Record<string, unknown>;
   timestamp: ISO8601Date;
   signature: string;
 }

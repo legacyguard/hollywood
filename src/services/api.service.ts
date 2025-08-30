@@ -3,20 +3,14 @@ import { useAuth } from '@clerk/clerk-react';
 // Base API URL - in production this will be your Vercel deployment URL
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
-// API Response types
-interface ApiResponse<T = any> {
-  success: boolean;
-  data?: T;
-  error?: string;
-  message?: string;
-}
+
 
 // Custom error class for API errors
 export class ApiError extends Error {
   constructor(
     message: string,
     public status?: number,
-    public data?: any
+    public data?: unknown
   ) {
     super(message);
     this.name = 'ApiError';
@@ -24,7 +18,7 @@ export class ApiError extends Error {
 }
 
 // Generic fetch wrapper with error handling
-async function fetchApi<T = any>(
+async function fetchApi<T = unknown>(
   endpoint: string,
   options: RequestInit = {},
   token?: string | null
@@ -53,7 +47,7 @@ async function fetchApi<T = any>(
       if (!response.ok) {
         throw new ApiError(`HTTP error! status: ${response.status}`, response.status);
       }
-      return response.text() as any;
+      return response.text() as unknown;
     }
 
     const data = await response.json();
@@ -113,7 +107,7 @@ export const keyManagementService = {
   async getPublicKey(token: string): Promise<{
     success: boolean;
     publicKey: string;
-    metadata?: any;
+    metadata?: unknown;
   }> {
     return fetchApi('/keys-retrieve', {
       method: 'GET',
@@ -165,7 +159,7 @@ export function useApiService() {
   const { getToken } = useAuth();
 
   // Wrapper to get token and call service
-  const callWithAuth = async <T extends any[], R>(
+  const callWithAuth = async <T extends unknown[], R>(
     serviceFn: (...args: [...T, string]) => Promise<R>,
     ...args: T
   ): Promise<R> => {

@@ -39,7 +39,7 @@ export interface EmergencyTriggerCondition {
     | 'less_than'
     | 'equal_to'
     | 'not_equal_to';
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface EmergencyResponseAction {
@@ -53,7 +53,7 @@ export interface EmergencyResponseAction {
   delay_minutes: number;
   target_guardians?: string[]; // Guardian IDs
   message_template?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 // Emergency Activation System
@@ -209,7 +209,7 @@ export interface SurvivorResource {
   access_level: 'immediate' | 'guardian_verified' | 'legal_required';
   is_available: boolean;
   resource_type: 'document' | 'contact' | 'instruction' | 'time_capsule';
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface SurvivorGuidanceEntry {
@@ -256,7 +256,7 @@ export interface UserHealthCheck {
   scheduled_at: string;
   responded_at?: string;
   response_method?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export const DEFAULT_DETECTION_CONFIG: DetectionEngineConfig = {

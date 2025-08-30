@@ -426,7 +426,7 @@ export class BackupService {
 
           if (!existing) {
             // Remove id to let database generate new one
-            const { id, ...docData } = doc;
+            const { id: _id, ...docData } = doc;
             await this.supabase
               .from('documents')
               .insert({ ...docData, user_id: userId });
@@ -450,7 +450,7 @@ export class BackupService {
             .single();
 
           if (!existing) {
-            const { id, ...guardianData } = guardian;
+            const { id: _id, ...guardianData } = guardian;
             await this.supabase
               .from('guardians')
               .insert({ ...guardianData, user_id: userId });
@@ -554,7 +554,7 @@ export class BackupService {
    */
   private downloadBackupFile(
     data: BackupData | EncryptedBackupData,
-    userId: string
+    _userId: string
   ): void {
     const json = JSON.stringify(data, null, 2);
     const blob = new Blob([json], { type: 'application/json' });

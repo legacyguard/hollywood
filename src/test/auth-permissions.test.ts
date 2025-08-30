@@ -56,18 +56,18 @@ describe('Authentication & Permissions', () => {
     vi.clearAllMocks();
 
     // Setup default mocks
-    (useAuth as any).mockReturnValue({
+    (useAuth as unknown as jest.Mock).mockReturnValue({
       userId: mockUserId,
       isSignedIn: true,
       isLoaded: true,
     });
 
-    (useUser as any).mockReturnValue({
+    (useUser as unknown as jest.Mock).mockReturnValue({
       user: mockUser,
       isLoaded: true,
     });
 
-    (useSupabaseWithClerk as any).mockReturnValue(() =>
+    (useSupabaseWithClerk as unknown as jest.Mock).mockReturnValue(() =>
       Promise.resolve(mockSupabaseClient)
     );
   });
@@ -84,13 +84,13 @@ describe('Authentication & Permissions', () => {
     });
 
     it('should handle unauthenticated state', () => {
-      (useAuth as any).mockReturnValue({
+      (useAuth as unknown as jest.Mock).mockReturnValue({
         userId: null,
         isSignedIn: false,
         isLoaded: true,
       });
 
-      (useUser as any).mockReturnValue({
+      (useUser as unknown as jest.Mock).mockReturnValue({
         user: null,
         isLoaded: true,
       });
@@ -104,7 +104,7 @@ describe('Authentication & Permissions', () => {
     });
 
     it('should handle loading state', () => {
-      (useAuth as any).mockReturnValue({
+      (useAuth as unknown as jest.Mock).mockReturnValue({
         userId: null,
         isSignedIn: false,
         isLoaded: false,
@@ -126,7 +126,7 @@ describe('Authentication & Permissions', () => {
     });
 
     it('should handle client creation errors', async () => {
-      (useSupabaseWithClerk as any).mockReturnValue(() =>
+      (useSupabaseWithClerk as unknown as jest.Mock).mockReturnValue(() =>
         Promise.reject(new Error('Client creation failed'))
       );
 
@@ -211,7 +211,7 @@ describe('Authentication & Permissions', () => {
 
   describe('Error Handling', () => {
     it('should handle authentication errors gracefully', async () => {
-      (useAuth as any).mockReturnValue({
+      (useAuth as unknown as jest.Mock).mockReturnValue({
         userId: null,
         isSignedIn: false,
         isLoaded: true,

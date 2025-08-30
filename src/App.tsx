@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react';
 import { Toaster } from '@/components/ui/toaster';
 import { Toaster as Sonner } from '@/components/ui/sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
+import { PerformanceMonitor } from '@/components/monitoring/PerformanceMonitor';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { routerFutureConfig } from './lib/router';
@@ -25,6 +26,8 @@ const PrivacyPage = lazy(() => import('@/pages/Privacy').then(m => ({ default: m
 const TermsPage = lazy(() => import('@/pages/Terms').then(m => ({ default: m.TermsPage })));
 const TermsOfService = lazy(() => import('@/pages/legal/TermsOfService').then(m => ({ default: m.TermsOfService })));
 const PrivacyPolicy = lazy(() => import('@/pages/legal/PrivacyPolicy').then(m => ({ default: m.PrivacyPolicy })));
+const SecurityPolicy = lazy(() => import('@/pages/legal/SecurityPolicy').then(m => ({ default: m.SecurityPolicy })));
+const SecurityDeepDivePage = lazy(() => import('@/pages/SecurityDeepDivePage'));
 const Onboarding = lazy(() => import('./pages/onboarding/Onboarding'));
 const VaultPage = lazy(() => import('./pages/Vault'));
 const GuardiansPage = lazy(() => import('./pages/Guardians'));
@@ -42,6 +45,11 @@ const FamilyGuidanceManualPage = lazy(() => import('./pages/SurvivorManual'));
 const FamilyShieldAccessPage = lazy(() => import('./pages/EmergencyAccess'));
 const TimeCapsulePage = lazy(() => import('./pages/TimeCapsule'));
 const TimeCapsuleViewPage = lazy(() => import('./pages/TimeCapsuleView'));
+const BlogPage = lazy(() => import('./pages/Blog'));
+const BlogArticlePage = lazy(() => import('./pages/BlogArticle'));
+const MonitoringPage = lazy(() => import('./pages/MonitoringPage'));
+const AnalyticsPage = lazy(() => import('./pages/AnalyticsPage'));
+const SocialCollaborationPage = lazy(() => import('./pages/SocialCollaborationPage'));
 
 const queryClient = new QueryClient();
 
@@ -71,9 +79,32 @@ const App = () => (
                       <Route path='/terms' element={<TermsPage />} />
                       <Route path='/terms-of-service' element={<TermsOfService />} />
                       <Route path='/privacy-policy' element={<PrivacyPolicy />} />
+                      <Route path='/security-policy' element={<SecurityPolicy />} />
+                      <Route path='/security-deep-dive' element={<SecurityDeepDivePage />} />
+
+                      {/* Blog routes */}
+                      <Route path='/blog' element={<BlogPage />} />
+                      <Route path='/blog/:slug' element={<BlogArticlePage />} />
 
                       {/* Component Showcase (for development) */}
                       <Route path='/showcase' element={<ComponentShowcase />} />
+
+                      {/* Monitoring Dashboard (for development) */}
+                      <Route path='/monitoring' element={<MonitoringPage />} />
+
+                      {/* Analytics Dashboard */}
+                      <Route path='/analytics' element={
+                        <ProtectedRoute>
+                          <AnalyticsPage />
+                        </ProtectedRoute>
+                      } />
+
+                      {/* Social Collaboration */}
+                      <Route path='/collaboration' element={
+                        <ProtectedRoute>
+                          <SocialCollaborationPage />
+                        </ProtectedRoute>
+                      } />
 
                       {/* Protected routes */}
                       <Route
@@ -212,6 +243,9 @@ const App = () => (
 
                     {/* Global Sofia Firefly */}
                     <SofiaFirefly />
+
+                    {/* Performance Monitoring */}
+                    <PerformanceMonitor />
                   </FireflyProvider>
                 </SofiaContextProvider>
               </DocumentFilterProvider>

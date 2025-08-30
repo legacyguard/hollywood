@@ -18,7 +18,7 @@ describe('RLS Policies & Database Security', () => {
         select: vi.fn(() => Promise.resolve({ data: null, error: null })),
       })),
       update: vi.fn(() => {
-        const updateBuilder: any = {
+        const updateBuilder: Record<string, unknown> = {
           select: vi.fn(() => Promise.resolve({ data: null, error: null })),
         };
         updateBuilder.eq = vi.fn().mockReturnValue(updateBuilder);
@@ -40,7 +40,7 @@ describe('RLS Policies & Database Security', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    (createClient as any).mockReturnValue(mockSupabaseClient);
+    (createClient as unknown as jest.Mock).mockReturnValue(mockSupabaseClient);
 
     // Ensure storage is properly mocked
     if (!mockSupabaseClient.storage) {

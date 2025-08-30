@@ -169,7 +169,7 @@ export default function ProtocolSettingsPage() {
     return (
       <DashboardLayout>
         <div className='min-h-screen bg-background flex items-center justify-center'>
-          <Icon name={"loader" as any} className='w-8 h-8 animate-spin text-primary' />
+                        <Icon name="loader" className='w-8 h-8 animate-spin text-primary' />
           <span className='ml-3 text-muted-foreground'>
             Loading Family Shield settings...
           </span>
@@ -187,7 +187,7 @@ export default function ProtocolSettingsPage() {
             <FadeIn duration={0.5} delay={0.2}>
               <div className='flex items-center gap-3 mb-3'>
                 <div className='w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center'>
-                  <Icon name={"shield-check" as any} className='w-6 h-6 text-primary' />
+                  <Icon name="shield-check" className='w-6 h-6 text-primary' />
                 </div>
                 <h1 className='text-3xl lg:text-4xl font-bold font-heading text-card-foreground'>
                   Family Shield Settings
@@ -240,7 +240,7 @@ export default function ProtocolSettingsPage() {
                 {formData.is_shield_enabled && (
                   <div className='mt-4 p-4 bg-green-50 border border-green-200 rounded-lg'>
                     <div className='flex items-center gap-2 text-green-800'>
-                      <Icon name={"shield-check" as any} className='w-5 h-5' />
+                      <Icon name="shield-check" className='w-5 h-5' />
                       <span className='font-medium'>
                         Family Shield is Active
                       </span>
@@ -258,7 +258,7 @@ export default function ProtocolSettingsPage() {
             <FadeIn duration={0.5} delay={0.8}>
               <Card className='p-6'>
                 <h3 className='text-xl font-semibold mb-4 flex items-center gap-2'>
-                  <Icon name={"clock" as any} className='w-5 h-5 text-primary' />
+                  <Icon name="clock" className='w-5 h-5 text-primary' />
                   Inactivity Detection
                 </h3>
 
@@ -324,7 +324,7 @@ export default function ProtocolSettingsPage() {
             <FadeIn duration={0.5} delay={1.0}>
               <Card className='p-6'>
                 <h3 className='text-xl font-semibold mb-4 flex items-center gap-2'>
-                  <Icon name={"users" as any} className='w-5 h-5 text-primary' />
+                  <Icon name="users" className='w-5 h-5 text-primary' />
                   Trusted Circle Activation
                 </h3>
 
@@ -362,7 +362,7 @@ export default function ProtocolSettingsPage() {
                   {emergencyGuardians.length === 0 && (
                     <div className='p-4 bg-amber-50 border border-amber-200 rounded-lg'>
                       <div className='flex items-center gap-2 text-amber-800'>
-                        <Icon name={"alert-triangle" as any} className='w-5 h-5' />
+                        <Icon name="alert-triangle" className='w-5 h-5' />
                         <span className='font-medium'>
                           No Emergency Guardians
                         </span>
@@ -386,7 +386,7 @@ export default function ProtocolSettingsPage() {
                             className='flex items-center gap-3 p-3 bg-gray-50 rounded-lg'
                           >
                             <div className='w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center'>
-                              <Icon name={"user" as any}
+                              <Icon name="user"
                                 className='w-4 h-4 text-primary'
                               />
                             </div>
@@ -463,14 +463,14 @@ export default function ProtocolSettingsPage() {
                 >
                   {isSaving ? (
                     <>
-                      <Icon name={"loader" as any}
+                      <Icon name="loader"
                         className='w-4 h-4 mr-2 animate-spin'
                       />
                       Saving Settings...
                     </>
                   ) : (
                     <>
-                      <Icon name={"save" as any} className='w-4 h-4 mr-2' />
+                      <Icon name="save" className='w-4 h-4 mr-2' />
                       Save Family Shield Settings
                     </>
                   )}

@@ -9,8 +9,7 @@ import type {
   MilestoneProgress,
   MilestoneTriggerEvent,
   MilestoneAnalytics,
-  MilestoneLevel,
-  MilestoneCelebrationConfig
+  MilestoneLevel
 } from '@/types/milestones';
 
 class RealMilestonesService {
@@ -86,7 +85,7 @@ class RealMilestonesService {
 
   async updateMilestone(milestoneId: string, updates: Partial<LegacyMilestone>): Promise<LegacyMilestone> {
     try {
-      const updateData: any = {
+      const updateData: Record<string, unknown> = {
         updated_at: new Date().toISOString()
       };
 
@@ -152,7 +151,7 @@ class RealMilestonesService {
   // Milestone Tracking and Progress
   async checkMilestones(event: MilestoneTriggerEvent): Promise<LegacyMilestone[]> {
     try {
-      console.log(`Checking milestones for event: ${event.type} for user: ${event.userId}`);
+      // console.log(`Checking milestones for event: ${event.type} for user: ${event.userId}`);
 
       const milestones = await this.getUserMilestones(event.userId);
       const completedMilestones: LegacyMilestone[] = [];
@@ -315,7 +314,7 @@ class RealMilestonesService {
         await this.createMilestone(milestone);
       }
 
-      console.log(`Initialized ${initialMilestones.length} milestones for user ${userId}`);
+      // console.log(`Initialized ${initialMilestones.length} milestones for user ${userId}`);
     } catch (error) {
       console.error('Failed to initialize user milestones:', error);
     }
@@ -369,8 +368,8 @@ class RealMilestonesService {
         milestonesCompleted: completed.length,
         averageCompletionTime,
         completionRate: milestones.length > 0 ? (completed.length / milestones.length) * 100 : 0,
-        mostActiveCategory: mostActiveCategory as any,
-        preferredDifficulty: preferredDifficulty as any,
+        mostActiveCategory: mostActiveCategory as string,
+        preferredDifficulty: preferredDifficulty as string,
         completionTrend: this.calculateCompletionTrend(completed),
         totalProtectionIncrease: completed.reduce((sum, m) => sum + (m.rewards.protectionIncrease || 0), 0),
         totalTimeSaved: completed.reduce((sum, m) => sum + (m.rewards.timeSaved || 0), 0),
@@ -401,7 +400,7 @@ class RealMilestonesService {
   }
 
   // Private Helper Methods
-  private mapDbToMilestone(data: any): LegacyMilestone {
+  private mapDbToMilestone(data: Record<string, unknown>): LegacyMilestone {
     return {
       id: data.id,
       userId: data.user_id,
@@ -484,14 +483,15 @@ class RealMilestonesService {
         }
         break;
 
-      case 'protection_percentage':
+      case 'protection_percentage': {
         const protectionLevel = await this.calculateUserProtectionLevel(event.userId);
         updatedMilestone.criteria.currentValue = protectionLevel;
         updatedMilestone.progress.percentage = Math.min(100, (protectionLevel / (milestone.criteria.threshold as number)) * 100);
         updatedMilestone.criteria.isComplete = protectionLevel >= (milestone.criteria.threshold as number);
         break;
+      }
 
-      case 'review_score':
+      case 'review_score': {
         if (event.type === 'review_completed' && event.reviewId) {
           // Would get actual review score from database
           const reviewScore = 85; // Placeholder
@@ -500,6 +500,7 @@ class RealMilestonesService {
           updatedMilestone.criteria.isComplete = reviewScore >= (milestone.criteria.threshold as number);
         }
         break;
+      }
     }
 
     return updatedMilestone;
@@ -507,7 +508,7 @@ class RealMilestonesService {
 
   private async triggerMilestoneCelebration(milestone: LegacyMilestone): Promise<void> {
     try {
-      console.log(`🎉 Milestone completed: ${milestone.title}`);
+      // console.log(`🎉 Milestone completed: ${milestone.title}`);
 
       // Store celebration notification
       await supabase.from('notifications').insert({
@@ -528,7 +529,7 @@ class RealMilestonesService {
       await this.sendCelebrationEmail(milestone);
 
     } catch (error) {
-      console.error('Failed to trigger milestone celebration:', error);
+      // console.error('Failed to trigger milestone celebration:', error);
     }
   }
 
@@ -549,7 +550,7 @@ class RealMilestonesService {
         }
       });
     } catch (error) {
-      console.error('Failed to send celebration email:', error);
+      // console.error('Failed to send celebration email:', error);
     }
   }
 
@@ -614,7 +615,7 @@ class RealMilestonesService {
     };
   }
 
-  private calculateCurrentLevel(completedCount: number, categoryProgress: MilestoneProgress['categoryProgress']): MilestoneLevel {
+  private calculateCurrentLevel(completedCount: number, _categoryProgress: MilestoneProgress['categoryProgress']): MilestoneLevel {
     // Simplified level calculation
     if (completedCount >= 10) {
       return {
@@ -720,12 +721,12 @@ class RealMilestonesService {
 
     const sortedByCompletion = completed
       .filter(m => m.completedAt)
-      .sort((a, b) => new Date(a.completedAt!).getTime() - new Date(b.completedAt!).getTime());
+      .sort((a, b) => new Date(a.completedAt || '').getTime() - new Date(b.completedAt || '').getTime());
 
     let totalGap = 0;
     for (let i = 1; i < sortedByCompletion.length; i++) {
-      const prevDate = new Date(sortedByCompletion[i - 1].completedAt!).getTime();
-      const currentDate = new Date(sortedByCompletion[i].completedAt!).getTime();
+      const prevDate = new Date(sortedByCompletion[i - 1].completedAt || '').getTime();
+      const currentDate = new Date(sortedByCompletion[i].completedAt || '').getTime();
       totalGap += (currentDate - prevDate) / (1000 * 60 * 60 * 24); // days
     }
 

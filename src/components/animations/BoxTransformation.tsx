@@ -31,7 +31,7 @@ export const BoxTransformation: React.FC<BoxTransformationProps> = ({
     ];
 
     const timeouts = stageTransitions.map(({ stage, delay }) =>
-      setTimeout(() => setStage(stage as any), delay)
+      setTimeout(() => setStage(stage as 'initial' | 'opening' | 'revealing' | 'complete'), delay)
     );
 
     // Show seed during revealing stage

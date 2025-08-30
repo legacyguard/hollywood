@@ -95,10 +95,10 @@ export const FamilyProtectionDashboard: React.FC<FamilyProtectionDashboardProps>
   };
 
   const handleContactsUpdate = (total: number, primary: number) => {
-    setProtectionStatus(prev => ({ 
-      ...prev, 
-      contactsCount: total, 
-      primaryContactsCount: primary 
+    setProtectionStatus(prev => ({
+      ...prev,
+      contactsCount: total,
+      primaryContactsCount: primary
     }));
   };
 
@@ -260,7 +260,7 @@ export const FamilyProtectionDashboard: React.FC<FamilyProtectionDashboardProps>
               >
                 <IconComponent className="w-8 h-8" />
               </motion.div>
-              
+
               <div>
                 <h1 className="text-2xl font-bold text-gray-800 mb-2">
                   {personalityContent.title}
@@ -324,13 +324,13 @@ export const FamilyProtectionDashboard: React.FC<FamilyProtectionDashboardProps>
                 <span className="text-sm font-medium text-gray-700">Last Check</span>
               </div>
               <div className="text-sm font-bold text-gray-800">
-                {protectionStatus.lastActivity 
+                {protectionStatus.lastActivity
                   ? protectionStatus.lastActivity.toLocaleDateString()
                   : 'Never'
                 }
               </div>
               <div className="text-xs text-gray-500">
-                {protectionStatus.lastActivity 
+                {protectionStatus.lastActivity
                   ? protectionStatus.lastActivity.toLocaleTimeString()
                   : 'No recent activity'
                 }
@@ -421,7 +421,7 @@ export const FamilyProtectionDashboard: React.FC<FamilyProtectionDashboardProps>
                    effectiveMode === 'pragmatic' ? '⚡ System Actions' :
                    '🚀 Quick Actions'}
                 </h3>
-                
+
                 <div className="space-y-3">
                   <Button
                     variant="outline"
@@ -433,7 +433,7 @@ export const FamilyProtectionDashboard: React.FC<FamilyProtectionDashboardProps>
                      effectiveMode === 'pragmatic' ? 'Add emergency contact' :
                      'Add guardian'}
                   </Button>
-                  
+
                   <Button
                     variant="outline"
                     className="w-full justify-start"
@@ -444,7 +444,7 @@ export const FamilyProtectionDashboard: React.FC<FamilyProtectionDashboardProps>
                      effectiveMode === 'pragmatic' ? 'Send status update' :
                      'Send notification'}
                   </Button>
-                  
+
                   <Button
                     variant="outline"
                     className="w-full justify-start"
@@ -458,7 +458,7 @@ export const FamilyProtectionDashboard: React.FC<FamilyProtectionDashboardProps>
 
                   <div className="pt-3 border-t border-gray-200">
                     <p className="text-sm text-gray-600 text-center">
-                      {effectiveMode === 'empathetic' ? 
+                      {effectiveMode === 'empathetic' ?
                         'Your family is surrounded by love and protection 💚' :
                         effectiveMode === 'pragmatic' ?
                         'All systems monitoring and ready for response' :

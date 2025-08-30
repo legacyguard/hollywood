@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { Card } from '@/components/ui/card';
@@ -13,16 +13,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
+// import {
+//   AlertDialog,
+//   AlertDialogAction,
+//   AlertDialogCancel,
+//   AlertDialogContent,
+//   AlertDialogDescription,
+//   AlertDialogFooter,
+//   AlertDialogHeader,
+//   AlertDialogTitle,
+// } from '@/components/ui/alert-dialog';
 import {
   Select,
   SelectContent,
@@ -33,8 +33,7 @@ import {
 import { Switch } from '@/components/ui/switch';
 import { Icon } from '@/components/ui/icon-library';
 import { FadeIn } from '@/components/motion/FadeIn';
-import type { ProfileData } from '@/components/enhanced/ProfileCard';
-import { ProfileGrid } from '@/components/enhanced/ProfileCard';
+import { ProfileGrid, type ProfileData } from '@/components/enhanced/ProfileCard';
 import { MetricsGrid } from '@/components/enhanced/MetricCard';
 import { usePageTitle } from '@/hooks/usePageTitle';
 import { toast } from 'sonner';
@@ -84,7 +83,7 @@ const GUARDIAN_RELATIONSHIPS = [
 
 export default function GuardiansEnhanced() {
   usePageTitle('My Guardians');
-  const { userId } = useAuth();
+  const { userId: _userId } = useAuth();
 
   const [guardians, setGuardians] = useState<Guardian[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -93,7 +92,7 @@ export default function GuardiansEnhanced() {
   const [editingGuardian, setEditingGuardian] = useState<Guardian | null>(null);
 
   // Confirmation dialog state
-  const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
+  const [_isConfirmDialogOpen, _setIsConfirmDialogOpen] = useState(false);
   const [guardianToDelete, setGuardianToDelete] = useState<ProfileData | null>(
     null
   );
@@ -312,26 +311,26 @@ export default function GuardiansEnhanced() {
   };
 
   // Handle delete confirmation
-  const handleDeleteClick = (profile: ProfileData) => {
+  const _handleDeleteClick = (profile: ProfileData) => {
     setGuardianToDelete(profile);
-    setIsConfirmDialogOpen(true);
+    _setIsConfirmDialogOpen(true);
   };
 
   // Handle delete after confirmation
-  const handleDeleteConfirm = async () => {
+  const _handleDeleteConfirm = async () => {
     if (!guardianToDelete) return;
 
     setGuardians(prev => prev.filter(g => g.id !== guardianToDelete.id));
     toast.success(`${guardianToDelete.name} has been removed as a guardian`);
 
     // Close dialog and reset state
-    setIsConfirmDialogOpen(false);
+    _setIsConfirmDialogOpen(false);
     setGuardianToDelete(null);
   };
 
   // Handle delete cancellation
-  const handleDeleteCancel = () => {
-    setIsConfirmDialogOpen(false);
+  const _handleDeleteCancel = () => {
+    _setIsConfirmDialogOpen(false);
     setGuardianToDelete(null);
   };
 

@@ -30,7 +30,8 @@
       "WebSearch",
       "Read(//tmp/**)",
       "Bash(npx playwright:*)",
-      "Bash(git merge:*)"
+      "Bash(git merge:*)",
+      "Bash(git checkout:*)"
     ],
     "deny": [],
     "ask": [

@@ -3,13 +3,11 @@
  * Handles secure key generation, storage, and retrieval
  */
 
-import type { SupabaseClient } from '@supabase/supabase-js';
-import { createClient } from '@supabase/supabase-js';
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import * as nacl from 'tweetnacl';
 import { encodeBase64, decodeBase64 } from 'tweetnacl-util';
-import { pbkdf2 } from 'crypto';
+import { pbkdf2, randomBytes } from 'crypto';
 import { promisify } from 'util';
-import { randomBytes } from 'crypto';
 
 const pbkdf2Async = promisify(pbkdf2);
 
@@ -354,7 +352,7 @@ export class KeyManagementService {
       );
 
       // Call rotation function
-      const { data, error } = await this.supabase
+      const { error } = await this.supabase
         .rpc('rotate_user_key', {
           p_user_id: userId,
           p_new_encrypted_private_key: encryptedPrivateKey,
@@ -404,7 +402,7 @@ export class KeyManagementService {
   public async setupRecovery(
     userId: string,
     method: 'guardian' | 'security_questions' | 'backup_phrase',
-    recoveryData: any
+    recoveryData: Record<string, unknown>
   ): Promise<{ success: boolean; error?: string }> {
     try {
       // Update recovery settings

@@ -1,7 +1,6 @@
 'use client';
 
-import type { ReactNode } from 'react';
-import { useState, useEffect, useCallback, createContext, useContext } from 'react';
+import { useState, useEffect, useCallback, createContext, useContext, type ReactNode } from 'react';
 import { useAuth } from '@clerk/nextjs';
 import { encryptionService } from '@/lib/encryption-v2';
 import { toast } from 'sonner';
@@ -17,7 +16,7 @@ interface EncryptionContextType {
   checkKeyStatus: () => Promise<void>;
   migrateKeys: (password: string) => Promise<boolean>;
   rotateKeys: (currentPassword: string, newPassword?: string) => Promise<boolean>;
-  encryptFile: (file: File) => Promise<{ encryptedData: Uint8Array; nonce: Uint8Array; metadata: any } | null>;
+  encryptFile: (file: File) => Promise<{ encryptedData: Uint8Array; nonce: Uint8Array; metadata: Record<string, unknown> } | null>;
   decryptFile: (encryptedData: Uint8Array, nonce: Uint8Array) => Promise<Uint8Array | null>;
   showPasswordPrompt: () => void;
   hidePasswordPrompt: () => void;
@@ -47,7 +46,7 @@ export function EncryptionProvider({ children }: EncryptionProviderProps) {
       setIsInitialized(false);
       setIsLoading(false);
     }
-  }, [isSignedIn, userId]);
+  }, [isSignedIn, userId, checkKeyStatus]);
 
   // Check if keys need rotation periodically
   useEffect(() => {
@@ -196,7 +195,7 @@ export function EncryptionProvider({ children }: EncryptionProviderProps) {
     } finally {
       setIsLoading(false);
     }
-  }, [userId]);
+  }, [userId, setNeedsMigration, isInitialized]);
 
   const rotateKeys = useCallback(async (currentPassword: string, newPassword?: string): Promise<boolean> => {
     if (!userId) {
@@ -297,37 +296,4 @@ export function EncryptionProvider({ children }: EncryptionProviderProps) {
   );
 }
 
-export function useEncryption() {
-  const context = useContext(EncryptionContext);
-  if (context === undefined) {
-    throw new Error('useEncryption must be used within an EncryptionProvider');
-  }
-  return context;
-}
-
-// Hook for automatic encryption unlock on certain pages
-export function useAutoUnlock() {
-  const { isInitialized, isUnlocked, showPasswordPrompt } = useEncryption();
-
-  useEffect(() => {
-    if (isInitialized && !isUnlocked) {
-      // Show password prompt after a short delay
-      const timer = setTimeout(() => {
-        showPasswordPrompt();
-      }, 500);
-
-      return () => clearTimeout(timer);
-    }
-  }, [isInitialized, isUnlocked, showPasswordPrompt]);
-}
-
-// Hook for checking if encryption is ready
-export function useEncryptionReady() {
-  const { isInitialized, isUnlocked, isLoading } = useEncryption();
-  return {
-    isReady: isInitialized && isUnlocked && !isLoading,
-    isLoading,
-    needsSetup: !isInitialized && !isLoading,
-    needsUnlock: isInitialized && !isUnlocked && !isLoading,
-  };
-}
+// Hooks are now exported from useEncryptionHooks.ts

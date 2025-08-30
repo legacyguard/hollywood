@@ -159,7 +159,7 @@ export default function Scene2Box({
               transition={{  delay: 1, duration: 0.6  }}
             >
               <Button
-                variant={"outline" as any}
+                variant="outline"
                 onClick={onBack}
                 className='border-primary/20 hover:border-primary/40'
               >
@@ -167,7 +167,7 @@ export default function Scene2Box({
               </Button>
               <div className='flex gap-3'>
                 <Button
-                  variant={"outline" as any}
+                  variant="outline"
                   onClick={() => setItems('')}
                   className='border-muted hover:border-muted-foreground/40'
                 >

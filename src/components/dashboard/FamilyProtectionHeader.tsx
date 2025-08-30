@@ -15,7 +15,7 @@ import { getFamilyImpactMessage } from '@/lib/trust-score';
 
 interface FamilyProtectionHeaderProps {
   userName?: string;
-  documents?: any[];
+  documents?: Array<{ created_at?: string }>;
   familyMembersCount?: number;
   emergencyContactsCount?: number;
   trustScore?: number;
@@ -286,7 +286,7 @@ export function FamilyProtectionHeader({
           >
             {onViewProgress && (
               <Button
-                variant={"outline" as any}
+                variant="outline"
                 size="sm"
                 onClick={onViewProgress}
                 className="bg-white/10 border-white/20 text-white hover:bg-white/20 backdrop-blur-sm"
@@ -298,7 +298,7 @@ export function FamilyProtectionHeader({
 
             {familyMembersCount + emergencyContactsCount === 0 && onAddFamily && (
               <Button
-                variant={"outline" as any}
+                variant="outline"
                 size="sm"
                 onClick={onAddFamily}
                 className="bg-emerald-500/20 border-emerald-300/30 text-emerald-100 hover:bg-emerald-500/30"

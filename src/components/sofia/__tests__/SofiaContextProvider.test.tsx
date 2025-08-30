@@ -60,10 +60,10 @@ describe('SofiaContextProvider', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    
+
     mockSetContext = vi.fn();
     mockUpdateContext = vi.fn();
-    
+
     (useSofiaStore as any).mockReturnValue({
       setContext: mockSetContext,
       updateContext: mockUpdateContext,
@@ -136,7 +136,7 @@ describe('SofiaContextProvider', () => {
 
   it('should handle guardian added events with personality tracking', () => {
     localStorageMock.getItem
-      .mockReturnValueOnce('[]') // documents  
+      .mockReturnValueOnce('[]') // documents
       .mockReturnValueOnce('[]'); // guardians
 
     render(
@@ -171,7 +171,7 @@ describe('usePersonalityManager', () => {
 
   it('should provide personality manager when user is authenticated', () => {
     render(<TestComponentWithHook />);
-    
+
     expect(screen.getByTestId('personality-manager')).toHaveTextContent('Manager Available');
   });
 
@@ -182,7 +182,7 @@ describe('usePersonalityManager', () => {
     });
 
     render(<TestComponentWithHook />);
-    
+
     expect(screen.getByTestId('personality-manager')).toHaveTextContent('No Manager');
   });
 });

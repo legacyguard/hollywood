@@ -289,7 +289,7 @@ export const GuardianNotificationCenter: React.FC<GuardianNotificationCenterProp
         priority: template.priority,
         delivery_method: template.delivery_method,
         verification_token: template.type === 'verification_needed' ? crypto.randomUUID() : null,
-        expires_at: template.type === 'verification_needed' 
+        expires_at: template.type === 'verification_needed'
           ? new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() // 24 hours
           : null,
       }));
@@ -300,7 +300,7 @@ export const GuardianNotificationCenter: React.FC<GuardianNotificationCenterProp
 
       if (error) throw error;
 
-      toast.success(effectiveMode === 'empathetic' 
+      toast.success(effectiveMode === 'empathetic'
         ? `💚 ${notifications.length} loving messages sent to your guardians`
         : effectiveMode === 'pragmatic'
         ? `🛡️ ${notifications.length} notifications dispatched successfully`
@@ -328,7 +328,7 @@ export const GuardianNotificationCenter: React.FC<GuardianNotificationCenterProp
   const markAsRead = useCallback(async (notificationId: string) => {
     try {
       const supabase = await createSupabaseClient();
-      
+
       const { error } = await supabase
         .from('guardian_notifications')
         .update({ read_at: new Date().toISOString() })
@@ -336,7 +336,7 @@ export const GuardianNotificationCenter: React.FC<GuardianNotificationCenterProp
 
       if (error) throw error;
 
-      setNotifications(prev => prev.map(n => 
+      setNotifications(prev => prev.map(n =>
         n.id === notificationId ? { ...n, read_at: new Date().toISOString() } : n
       ));
 
@@ -350,11 +350,11 @@ export const GuardianNotificationCenter: React.FC<GuardianNotificationCenterProp
   const archiveNotification = useCallback(async (notificationId: string) => {
     try {
       const supabase = await createSupabaseClient();
-      
+
       // In a real implementation, you might add an archived_at column
       // For now, we'll just remove it from the UI
       setNotifications(prev => prev.filter(n => n.id !== notificationId));
-      
+
       toast.success('Notification archived');
     } catch (err) {
       console.error('Error archiving notification:', err);
@@ -461,7 +461,7 @@ export const GuardianNotificationCenter: React.FC<GuardianNotificationCenterProp
             >
               <IconComponent className="w-6 h-6" />
             </motion.div>
-            
+
             <div>
               <h3 className="text-lg font-semibold text-gray-800 mb-1">
                 {personalityContent.title}
@@ -476,7 +476,7 @@ export const GuardianNotificationCenter: React.FC<GuardianNotificationCenterProp
             <Button variant="outline" size="sm" onClick={loadNotificationData}>
               <RefreshCw className="w-4 h-4" />
             </Button>
-            
+
             <Dialog open={showSendDialog} onOpenChange={setShowSendDialog}>
               <DialogTrigger asChild>
                 <Button size="sm" className="bg-white/90 backdrop-blur-sm">
@@ -488,7 +488,7 @@ export const GuardianNotificationCenter: React.FC<GuardianNotificationCenterProp
                 <DialogHeader>
                   <DialogTitle>{personalityContent.sendButtonText}</DialogTitle>
                 </DialogHeader>
-                
+
                 <div className="space-y-4">
                   <div>
                     <Label htmlFor="guardians">Select Guardians</Label>
@@ -555,9 +555,9 @@ export const GuardianNotificationCenter: React.FC<GuardianNotificationCenterProp
                   </div>
 
                   <div className="flex gap-2">
-                    <Button 
-                      onClick={sendNotification} 
-                      className="flex-1" 
+                    <Button
+                      onClick={sendNotification}
+                      className="flex-1"
                       disabled={selectedGuardians.length === 0 || (!selectedTemplate && !customMessage)}
                     >
                       {personalityContent.sendButtonText}
@@ -662,9 +662,9 @@ export const GuardianNotificationCenter: React.FC<GuardianNotificationCenterProp
                         <div className="w-2 h-2 bg-blue-500 rounded-full" />
                       )}
                     </div>
-                    
+
                     <p className="text-sm text-gray-600 mb-2">{notification.message}</p>
-                    
+
                     <div className="flex items-center gap-4 text-xs text-gray-500">
                       <div className="flex items-center gap-1">
                         <Users className="w-3 h-3" />

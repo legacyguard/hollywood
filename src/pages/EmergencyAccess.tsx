@@ -208,12 +208,12 @@ export default function FamilyShieldAccessPage() {
 
     try {
       const supabase = await createSupabaseClient();
-      
+
       const { data, error } = await supabase.functions.invoke('download-emergency-document', {
-        body: { 
-          token, 
+        body: {
+          token,
           document_id: documentId,
-          verification_code: verificationCode 
+          verification_code: verificationCode
         }
       });
 
@@ -227,7 +227,7 @@ export default function FamilyShieldAccessPage() {
 
       // Open download URL in new tab
       window.open(data.data.download_url, '_blank');
-      
+
       toast.success(`Accessing ${documentTitle}...`);
 
     } catch (err: unknown) {
@@ -556,8 +556,8 @@ export default function FamilyShieldAccessPage() {
                           </p>
                         </div>
                       </div>
-                      <Button 
-                        size='sm' 
+                      <Button
+                        size='sm'
                         variant={"outline" as any}
                         onClick={() => handleDocumentDownload(doc.id, doc.title)}
                       >

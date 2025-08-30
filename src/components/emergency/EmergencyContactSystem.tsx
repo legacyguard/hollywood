@@ -196,7 +196,7 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
 
     try {
       const supabase = await createSupabaseClient();
-      
+
       const contactData = {
         user_id: userId,
         name: contactForm.name,
@@ -255,17 +255,17 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
       if (editingContact) {
         setContacts(prev => prev.map(c => c.id === editingContact.id ? newContact : c));
         onContactUpdated?.(newContact);
-        toast.success(effectiveMode === 'empathetic' ? 
+        toast.success(effectiveMode === 'empathetic' ?
           '💚 Your trusted contact has been updated with love' :
-          effectiveMode === 'pragmatic' ? 
+          effectiveMode === 'pragmatic' ?
           '🛡️ Emergency contact updated successfully' :
           '✅ Contact updated and ready to help');
       } else {
         setContacts(prev => [...prev, newContact]);
         onContactAdded?.(newContact);
-        toast.success(effectiveMode === 'empathetic' ? 
+        toast.success(effectiveMode === 'empathetic' ?
           '💚 Another loving guardian added to your circle of care' :
-          effectiveMode === 'pragmatic' ? 
+          effectiveMode === 'pragmatic' ?
           '🛡️ Emergency contact added to protection network' :
           '✅ New emergency contact added');
       }
@@ -308,9 +308,9 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
         guardian_id: contactId,
         user_id: userId,
         notification_type: 'status_update' as const,
-        title: effectiveMode === 'empathetic' ? 
+        title: effectiveMode === 'empathetic' ?
           'Test of Love - Family Care System' :
-          effectiveMode === 'pragmatic' ? 
+          effectiveMode === 'pragmatic' ?
           'Emergency System Test' :
           'Family Protection Test',
         message: effectiveMode === 'empathetic' ?
@@ -342,7 +342,7 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
 
     try {
       const supabase = await createSupabaseClient();
-      
+
       const { error } = await supabase
         .from('guardians')
         .delete()
@@ -446,7 +446,7 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
               >
                 <IconComponent className="w-6 h-6" />
               </motion.div>
-              
+
               <div>
                 <h3 className="text-lg font-semibold text-gray-800 mb-1">
                   {personalityContent.title}
@@ -459,8 +459,8 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
 
             <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
               <DialogTrigger asChild>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   size="sm"
                   className="bg-white/90 backdrop-blur-sm"
                   onClick={() => {
@@ -492,7 +492,7 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
                     {editingContact ? 'Edit Contact' : personalityContent.addButtonText}
                   </DialogTitle>
                 </DialogHeader>
-                
+
                 <div className="space-y-4">
                   <div>
                     <Label htmlFor="name">Name</Label>
@@ -506,8 +506,8 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
 
                   <div>
                     <Label htmlFor="relationship">Relationship</Label>
-                    <Select 
-                      value={contactForm.relationship} 
+                    <Select
+                      value={contactForm.relationship}
                       onValueChange={(value) => setContactForm(prev => ({ ...prev, relationship: value }))}
                     >
                       <SelectTrigger>
@@ -668,7 +668,7 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
                               </div>
                             </div>
                           </div>
-                          
+
                           <div className="flex items-center gap-2">
                             <Button
                               variant="ghost"
@@ -709,7 +709,7 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
                             </Button>
                           </div>
                         </div>
-                        
+
                         {contact.notes && (
                           <p className="text-xs text-gray-600 mt-2 pl-13">{contact.notes}</p>
                         )}
@@ -745,7 +745,7 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
                             <div className="text-xs text-gray-600">{contact.relationship}</div>
                           </div>
                         </div>
-                        
+
                         <div className="flex items-center gap-1">
                           <Button
                             variant="ghost"

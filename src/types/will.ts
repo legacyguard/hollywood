@@ -99,12 +99,12 @@ export interface GuardianshipAppointment {
   primary_guardian: {
     full_name: string;
     relationship: string;
-    contact_info: any;
+    contact_info: Record<string, unknown>;
   };
   alternate_guardian?: {
     full_name: string;
     relationship: string;
-    contact_info: any;
+    contact_info: Record<string, unknown>;
   };
   special_instructions?: string;
 }
@@ -114,7 +114,7 @@ export interface ExecutorAppointment {
   type: 'primary' | 'alternate' | 'co-executor';
   full_name: string;
   relationship: string;
-  contact_info: any;
+  contact_info: Record<string, unknown>;
   professional?: boolean;
   compensation?: string;
   powers_granted: string[];
@@ -355,9 +355,9 @@ export interface TemplateVariable {
   label: string;
   type: 'text' | 'number' | 'date' | 'select' | 'boolean';
   required: boolean;
-  default_value?: any;
+  default_value?: string | number | boolean;
   options?: { value: string; label: string }[];
-  validation_rules?: any;
+  validation_rules?: Record<string, unknown>;
 }
 
 // Professional Review System Types

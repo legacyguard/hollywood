@@ -1,54 +1,13 @@
-import React, { useContext, createContext, ReactNode } from 'react';
-import { motion, AnimatePresence, Variants, MotionProps } from 'framer-motion';
+import React, { useContext, createContext, type ReactNode } from 'react';
+import { motion, type Variants } from 'framer-motion';
 import { useSofia } from '../sofia/SofiaContextProvider';
 
-// Micro-interaction animation configurations based on personality
-interface PersonalityAnimationConfig {
-  empathetic: {
-    duration: number;
-    ease: string;
-    scale: number;
-    bounce: number;
-  };
-  pragmatic: {
-    duration: number;
-    ease: string;
-    scale: number;
-    bounce: number;
-  };
-  adaptive: {
-    duration: number;
-    ease: string;
-    scale: number;
-    bounce: number;
-  };
-}
-
-const PERSONALITY_CONFIGS: PersonalityAnimationConfig = {
-  empathetic: {
-    duration: 0.4,
-    ease: "easeOut",
-    scale: 1.05,
-    bounce: 0.3
-  },
-  pragmatic: {
-    duration: 0.2,
-    ease: "easeInOut", 
-    scale: 1.02,
-    bounce: 0
-  },
-  adaptive: {
-    duration: 0.3,
-    ease: "easeOut",
-    scale: 1.03,
-    bounce: 0.1
-  }
-};
+// Configurations and context are now exported from useMicroInteraction.tsx
 
 // Animation type definitions
-export type MicroAnimationType = 
+export type MicroAnimationType =
   | 'hover-lift'
-  | 'hover-glow' 
+  | 'hover-glow'
   | 'tap-bounce'
   | 'focus-ring'
   | 'loading-pulse'
@@ -69,37 +28,7 @@ export interface MicroAnimationProps {
   onAnimationComplete?: () => void;
 }
 
-// Context for sharing animation state
-interface MicroAnimationContextType {
-  reduceMotion: boolean;
-  globalAnimationScale: number;
-}
-
-const MicroAnimationContext = createContext<MicroAnimationContextType>({
-  reduceMotion: false,
-  globalAnimationScale: 1
-});
-
-export const useMicroAnimation = () => useContext(MicroAnimationContext);
-
-// Provider component for micro-animation system
-interface MicroAnimationProviderProps {
-  children: ReactNode;
-  reduceMotion?: boolean;
-  globalAnimationScale?: number;
-}
-
-export const MicroAnimationProvider: React.FC<MicroAnimationProviderProps> = ({
-  children,
-  reduceMotion = false,
-  globalAnimationScale = 1
-}) => {
-  return (
-    <MicroAnimationContext.Provider value={{ reduceMotion, globalAnimationScale }}>
-      {children}
-    </MicroAnimationContext.Provider>
-  );
-};
+// Context and provider are now exported from useMicroInteraction.tsx
 
 // Main micro-animation component
 export const MicroAnimation: React.FC<MicroAnimationProps> = ({
@@ -112,7 +41,7 @@ export const MicroAnimation: React.FC<MicroAnimationProps> = ({
 }) => {
   const { personality } = useSofia();
   const { reduceMotion, globalAnimationScale } = useMicroAnimation();
-  
+
   if (disabled || reduceMotion) {
     return <div className={className}>{children}</div>;
   }
@@ -131,8 +60,8 @@ export const MicroAnimation: React.FC<MicroAnimationProps> = ({
       case 'hover-lift':
         return {
           initial: { scale: 1, y: 0 },
-          hover: { 
-            scale: config.scale, 
+          hover: {
+            scale: config.scale,
             y: -2,
             transition: baseTransition
           },
@@ -141,11 +70,11 @@ export const MicroAnimation: React.FC<MicroAnimationProps> = ({
 
       case 'hover-glow':
         return {
-          initial: { 
+          initial: {
             scale: 1,
             boxShadow: '0 0 0 rgba(var(--primary), 0)'
           },
-          hover: { 
+          hover: {
             scale: config.scale,
             boxShadow: `0 0 20px rgba(var(--primary), 0.3)`,
             transition: baseTransition
@@ -155,11 +84,11 @@ export const MicroAnimation: React.FC<MicroAnimationProps> = ({
       case 'tap-bounce':
         return {
           initial: { scale: 1 },
-          tap: { 
+          tap: {
             scale: 0.95,
-            transition: { 
-              ...baseTransition, 
-              duration: adjustedDuration * 0.5 
+            transition: {
+              ...baseTransition,
+              duration: adjustedDuration * 0.5
             }
           },
           hover: {
@@ -170,11 +99,11 @@ export const MicroAnimation: React.FC<MicroAnimationProps> = ({
 
       case 'focus-ring':
         return {
-          initial: { 
+          initial: {
             scale: 1,
             boxShadow: '0 0 0 0 rgba(var(--primary), 0)'
           },
-          focus: { 
+          focus: {
             scale: 1.02,
             boxShadow: '0 0 0 3px rgba(var(--primary), 0.3)',
             transition: baseTransition
@@ -222,13 +151,13 @@ export const MicroAnimation: React.FC<MicroAnimationProps> = ({
 
       case 'slide-reveal':
         return {
-          initial: { 
-            opacity: 0, 
+          initial: {
+            opacity: 0,
             x: -20,
             scale: 0.95
           },
-          animate: { 
-            opacity: 1, 
+          animate: {
+            opacity: 1,
             x: 0,
             scale: 1,
             transition: baseTransition
@@ -243,13 +172,13 @@ export const MicroAnimation: React.FC<MicroAnimationProps> = ({
 
       case 'fade-in-up':
         return {
-          initial: { 
-            opacity: 0, 
+          initial: {
+            opacity: 0,
             y: 20,
             scale: 0.95
           },
-          animate: { 
-            opacity: 1, 
+          animate: {
+            opacity: 1,
             y: 0,
             scale: 1,
             transition: baseTransition
@@ -264,11 +193,11 @@ export const MicroAnimation: React.FC<MicroAnimationProps> = ({
 
       case 'scale-in':
         return {
-          initial: { 
+          initial: {
             scale: 0,
             opacity: 0
           },
-          animate: { 
+          animate: {
             scale: 1,
             opacity: 1,
             transition: {
@@ -302,17 +231,17 @@ export const MicroAnimation: React.FC<MicroAnimationProps> = ({
 
       case 'button-press':
         return {
-          initial: { 
+          initial: {
             scale: 1,
             boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
           },
-          hover: { 
+          hover: {
             scale: config.scale,
             boxShadow: '0 6px 12px rgba(0, 0, 0, 0.15)',
             y: -1,
             transition: baseTransition
           },
-          tap: { 
+          tap: {
             scale: 0.98,
             boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
             y: 0,
@@ -359,15 +288,15 @@ export const AnimatedButton: React.FC<{
   className?: string;
   onClick?: () => void;
   disabled?: boolean;
-}> = ({ 
-  children, 
-  variant = 'primary', 
-  className = "", 
-  onClick, 
-  disabled = false 
+}> = ({
+  children,
+  _variant = 'primary',
+  className = "",
+  onClick,
+  disabled = false
 }) => (
-  <MicroAnimation 
-    type="button-press" 
+  <MicroAnimation
+    type="button-press"
     disabled={disabled}
     className={className}
   >
@@ -386,14 +315,14 @@ export const AnimatedCard: React.FC<{
   className?: string;
   onClick?: () => void;
   hoverable?: boolean;
-}> = ({ 
-  children, 
-  className = "", 
+}> = ({
+  children,
+  className = "",
   onClick,
-  hoverable = true 
+  hoverable = true
 }) => (
-  <MicroAnimation 
-    type={hoverable ? "card-flip" : "fade-in-up"} 
+  <MicroAnimation
+    type={hoverable ? "card-flip" : "fade-in-up"}
     className={className}
   >
     <div
@@ -410,13 +339,13 @@ export const AnimatedInput: React.FC<{
   className?: string;
   focused?: boolean;
   error?: boolean;
-}> = ({ 
-  children, 
-  className = "", 
-  focused = false,
-  error = false 
+}> = ({
+  children,
+  className = "",
+  _focused = false,
+  error = false
 }) => (
-  <MicroAnimation 
+  <MicroAnimation
     type={error ? "error-shake" : "focus-ring"}
     className={className}
   >
@@ -424,37 +353,6 @@ export const AnimatedInput: React.FC<{
   </MicroAnimation>
 );
 
-// Utility hook for creating custom animated components
-export const usePersonalityAnimation = () => {
-  const { personality } = useSofia();
-  const { reduceMotion } = useMicroAnimation();
-  
-  return {
-    config: PERSONALITY_CONFIGS[personality.mode],
-    reduceMotion,
-    createVariants: (baseVariants: Variants): Variants => {
-      if (reduceMotion) return {};
-      
-      const config = PERSONALITY_CONFIGS[personality.mode];
-      
-      // Apply personality-specific timing to variants
-      return Object.entries(baseVariants).reduce((acc, [key, value]) => {
-        if (typeof value === 'object' && value.transition) {
-          acc[key] = {
-            ...value,
-            transition: {
-              ...value.transition,
-              duration: config.duration,
-              ease: config.ease
-            }
-          };
-        } else {
-          acc[key] = value;
-        }
-        return acc;
-      }, {} as Variants);
-    }
-  };
-};
+// Utility hook is now exported from useMicroInteraction.tsx
 
 export default MicroAnimation;

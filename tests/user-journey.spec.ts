@@ -232,7 +232,7 @@ test.describe('Will Generation Flow', () => {
       if (await wizardSteps.first().isVisible({ timeout: 5000 }).catch(() => false)) {
         // Document the wizard flow
         const stepCount = await wizardSteps.count();
-        console.log(`Will wizard has ${stepCount} steps`);
+        // console.log(`Will wizard has ${stepCount} steps`);
       }
     }
   });
@@ -283,7 +283,7 @@ test.describe('MicroTask Engine', () => {
         // Check for task content
         const taskContent = page.locator('.task-content, [data-testid="task-content"]');
         const taskText = await taskContent.textContent();
-        console.log('Current task:', taskText);
+        // console.log('Current task:', taskText);
       }
     }
   });

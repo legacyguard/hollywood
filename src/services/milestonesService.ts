@@ -4,15 +4,14 @@
  */
 
 import { supabase } from '@/integrations/supabase/client';
-import type {
-  LegacyMilestone,
-  MilestoneProgress,
-  MilestoneTriggerEvent,
-  MilestoneAnalytics,
-  MilestoneLevel} from '@/types/milestones';
 import {
   DEFAULT_MILESTONE_TEMPLATES,
-  MILESTONE_LEVELS
+  MILESTONE_LEVELS,
+  type LegacyMilestone,
+  type MilestoneProgress,
+  type MilestoneTriggerEvent,
+  type MilestoneAnalytics,
+  type MilestoneLevel
 } from '@/types/milestones';
 
 export class MilestonesService {
@@ -407,33 +406,37 @@ export class MilestonesService {
     const updatedMilestone = { ...milestone };
 
     switch (milestone.criteria.type) {
-      case 'document_count':
+      case 'document_count': {
         const docCount = await this.getDocumentCount(userId);
         updatedMilestone.criteria.currentValue = docCount;
         updatedMilestone.criteria.isComplete = docCount >= Number(milestone.criteria.threshold);
         updatedMilestone.progress.percentage = Math.min(100, (docCount / Number(milestone.criteria.threshold)) * 100);
         break;
+      }
 
-      case 'protection_percentage':
+      case 'protection_percentage': {
         const protectionLevel = await this.calculateProtectionLevel(userId);
         updatedMilestone.criteria.currentValue = protectionLevel;
         updatedMilestone.criteria.isComplete = protectionLevel >= Number(milestone.criteria.threshold);
         updatedMilestone.progress.percentage = Math.min(100, (protectionLevel / Number(milestone.criteria.threshold)) * 100);
         break;
+      }
 
-      case 'family_members':
+      case 'family_members': {
         const familyCount = await this.getFamilyMemberCount(userId);
         updatedMilestone.criteria.currentValue = familyCount;
         updatedMilestone.criteria.isComplete = familyCount >= Number(milestone.criteria.threshold);
         updatedMilestone.progress.percentage = Math.min(100, (familyCount / Number(milestone.criteria.threshold)) * 100);
         break;
+      }
 
-      case 'review_score':
+      case 'review_score': {
         const reviewScore = await this.getAverageReviewScore(userId);
         updatedMilestone.criteria.currentValue = reviewScore;
         updatedMilestone.criteria.isComplete = reviewScore >= Number(milestone.criteria.threshold);
         updatedMilestone.progress.percentage = Math.min(100, (reviewScore / Number(milestone.criteria.threshold)) * 100);
         break;
+      }
     }
 
     updatedMilestone.progress.stepsCompleted = updatedMilestone.criteria.isComplete ? 1 : 0;
@@ -605,7 +608,7 @@ export class MilestonesService {
     return currentIndex < MILESTONE_LEVELS.length - 1 ? MILESTONE_LEVELS[currentIndex + 1] : null;
   }
 
-  private async generateRecommendations(milestones: LegacyMilestone[], userId: string): Promise<MilestoneProgress['recommendations']> {
+  private async generateRecommendations(milestones: LegacyMilestone[], _userId: string): Promise<MilestoneProgress['recommendations']> {
     const incompleteMilestones = milestones.filter(m => !m.completedAt);
     const recommendations: MilestoneProgress['recommendations'] = [];
 
@@ -669,7 +672,7 @@ export class MilestonesService {
     // Calculate completion times
     const completionTimes = completedMilestones.map(m => {
       const created = new Date(m.createdAt).getTime();
-      const completed = new Date(m.completedAt!).getTime();
+      const completed = new Date(m.completedAt || '').getTime();
       return (completed - created) / (1000 * 60 * 60); // hours
     });
 

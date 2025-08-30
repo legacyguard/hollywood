@@ -1,13 +1,17 @@
 {
-  "name": "LegacyGuard - Family Preparedness Platform",
+  "name": "LegacyGuard - Secure Document Management",
   "short_name": "LegacyGuard",
-  "description": "Secure family preparedness and legacy planning platform that protects what matters most",
-  "start_url": "/",
+  "description": "Secure document management platform for preserving family legacy and memories",
+  "start_url": "/dashboard",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#7C3AED",
+  "background_color": "#0f172a",
+  "theme_color": "#3b82f6",
   "orientation": "portrait-primary",
+  "categories": ["productivity", "utilities", "lifestyle"],
   "scope": "/",
+  "lang": "en-US",
+  "dir": "ltr",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
   "icons": [
     {
       "src": "/shield-icon.svg",
@@ -68,28 +72,65 @@
   ],
   "shortcuts": [
     {
-      "name": "My Possessions",
-      "short_name": "Possessions",
-      "description": "View what you own and cherish",
-      "url": "/possessions",
+      "name": "Upload Document",
+      "short_name": "Upload",
+      "description": "Quick document upload",
+      "url": "/vault?action=upload",
       "icons": [{ "src": "/shield-icon.svg", "sizes": "96x96" }]
     },
     {
-      "name": "Trusted People",
-      "short_name": "People",
-      "description": "Manage people you trust",
-      "url": "/trusted-people",
+      "name": "View Analytics",
+      "short_name": "Analytics",
+      "description": "Document insights dashboard",
+      "url": "/analytics",
       "icons": [{ "src": "/shield-icon.svg", "sizes": "96x96" }]
     },
     {
-      "name": "Important Papers",
-      "short_name": "Papers",
-      "description": "Access your important documents",
-      "url": "/documents",
+      "name": "Family Protection",
+      "short_name": "Shield",
+      "description": "Family emergency access",
+      "url": "/family-protection",
+      "icons": [{ "src": "/shield-icon.svg", "sizes": "96x96" }]
+    },
+    {
+      "name": "AI Organizer",
+      "short_name": "AI",
+      "description": "Intelligent document organization",
+      "url": "/intelligent-organizer",
       "icons": [{ "src": "/shield-icon.svg", "sizes": "96x96" }]
     }
   ],
-  "categories": ["lifestyle", "productivity", "utilities"],
+  "file_handlers": [
+    {
+      "action": "/vault",
+      "accept": {
+        "application/pdf": [".pdf"],
+        "image/*": [".jpg", ".jpeg", ".png", ".gif", ".webp"],
+        "application/msword": [".doc"],
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"],
+        "text/plain": [".txt"]
+      }
+    }
+  ],
+  "share_target": {
+    "action": "/vault",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url",
+      "files": [
+        {
+          "name": "files",
+          "accept": ["image/*", "application/pdf", ".doc", ".docx", ".txt"]
+        }
+      ]
+    }
+  },
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
   "related_applications": [],
   "prefer_related_applications": false
 }

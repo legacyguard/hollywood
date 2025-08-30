@@ -16,7 +16,7 @@ const supabaseUrl = process.env.VITE_SUPABASE_URL;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 if (!supabaseUrl || !supabaseServiceKey) {
-  console.error('Missing environment variables. Please check your .env.local file');
+  // console.error('Missing environment variables. Please check your .env.local file');
   process.exit(1);
 }
 
@@ -34,8 +34,8 @@ interface QuickInsightSeed {
   actionable: boolean;
   action_text?: string;
   action_url?: string;
-  metadata: any;
-  family_impact: any;
+  metadata: Record<string, unknown>;
+  family_impact: Record<string, unknown>;
 }
 
 interface LegacyMilestoneSeed {
@@ -55,12 +55,12 @@ interface LegacyMilestoneSeed {
   progress_next_action_url?: string;
   celebration_should_show: boolean;
   celebration_text?: string;
-  rewards: any;
-  metadata: any;
+  rewards: Record<string, unknown>;
+  metadata: Record<string, unknown>;
 }
 
 async function seedQuickInsights(userId: string) {
-  console.log('Seeding quick insights...');
+  // console.log('Seeding quick insights...');
 
   const insights: QuickInsightSeed[] = [
     {
@@ -178,20 +178,20 @@ async function seedQuickInsights(userId: string) {
     }
   ];
 
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from('quick_insights')
     .insert(insights)
     .select();
 
   if (error) {
-    console.error('Error seeding quick insights:', error);
+    // console.error('Error seeding quick insights:', error);
   } else {
-    console.log(`Seeded ${data?.length || 0} quick insights`);
+    // console.log(`Seeded ${data?.length || 0} quick insights`);
   }
 }
 
 async function seedLegacyMilestones(userId: string) {
-  console.log('Seeding legacy milestones...');
+  // console.log('Seeding legacy milestones...');
 
   const milestones: LegacyMilestoneSeed[] = [
     {
@@ -316,20 +316,20 @@ async function seedLegacyMilestones(userId: string) {
     }
   ];
 
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from('legacy_milestones')
     .insert(milestones)
     .select();
 
   if (error) {
-    console.error('Error seeding legacy milestones:', error);
+    // console.error('Error seeding legacy milestones:', error);
   } else {
-    console.log(`Seeded ${data?.length || 0} legacy milestones`);
+    // console.log(`Seeded ${data?.length || 0} legacy milestones`);
   }
 }
 
 async function seedInsightAnalytics(userId: string) {
-  console.log('Seeding insight analytics...');
+  // console.log('Seeding insight analytics...');
 
   const now = new Date();
   const thirtyDaysAgo = new Date(now);
@@ -362,14 +362,14 @@ async function seedInsightAnalytics(userId: string) {
     .insert(analytics);
 
   if (error) {
-    console.error('Error seeding insight analytics:', error);
+    // console.error('Error seeding insight analytics:', error);
   } else {
-    console.log('Seeded insight analytics');
+    // console.log('Seeded insight analytics');
   }
 }
 
 async function seedMilestoneAnalytics(userId: string) {
-  console.log('Seeding milestone analytics...');
+  // console.log('Seeding milestone analytics...');
 
   const now = new Date();
   const thirtyDaysAgo = new Date(now);
@@ -401,14 +401,14 @@ async function seedMilestoneAnalytics(userId: string) {
     .insert(analytics);
 
   if (error) {
-    console.error('Error seeding milestone analytics:', error);
+    // console.error('Error seeding milestone analytics:', error);
   } else {
-    console.log('Seeded milestone analytics');
+    // console.log('Seeded milestone analytics');
   }
 }
 
 async function main() {
-  console.log('Starting seed process...');
+  // console.log('Starting seed process...');
 
   // Get the first user to use for seeding
   const { data: users, error: userError } = await supabase
@@ -417,12 +417,12 @@ async function main() {
     .limit(1);
 
   if (userError || !users || users.length === 0) {
-    console.error('No users found. Please create a user first.');
+    // console.error('No users found. Please create a user first.');
     return;
   }
 
   const userId = users[0].id;
-  console.log(`Using user ID: ${userId}`);
+  // console.log(`Using user ID: ${userId}`);
 
   try {
     // Check if tables exist by attempting to query them
@@ -432,13 +432,13 @@ async function main() {
       .limit(1);
 
     if (tableCheckError && tableCheckError.code === '42P01') {
-      console.error('Tables do not exist. Please run migrations first.');
-      console.log('Run: supabase db push --linked');
+      // console.error('Tables do not exist. Please run migrations first.');
+      // console.log('Run: supabase db push --linked');
       return;
     }
 
     // Clear existing data (optional)
-    console.log('Clearing existing seed data...');
+    // console.log('Clearing existing seed data...');
     await supabase.from('quick_insights').delete().eq('user_id', userId);
     await supabase.from('legacy_milestones').delete().eq('user_id', userId);
     await supabase.from('insight_analytics').delete().eq('user_id', userId);
@@ -450,9 +450,9 @@ async function main() {
     await seedInsightAnalytics(userId);
     await seedMilestoneAnalytics(userId);
 
-    console.log('✅ Seed process completed successfully!');
-  } catch (error) {
-    console.error('Error during seed process:', error);
+    // console.log('✅ Seed process completed successfully!');
+  } catch (_error) {
+    // console.error('Error during seed process:', _error);
     process.exit(1);
   }
 }

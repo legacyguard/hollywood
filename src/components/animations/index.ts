@@ -54,7 +54,7 @@ export { default as EnhancedFirefly } from './EnhancedFirefly';
 export { default as SofiaFirefly } from './SofiaFirefly';
 
 // Phase 3B: Advanced Micro-Interactions
-export { 
+export {
   MicroAnimation,
   MicroAnimationProvider,
   AnimatedButton,
@@ -64,7 +64,7 @@ export {
   usePersonalityAnimation
 } from './MicroInteractionSystem';
 
-export type { 
+export type {
   MicroAnimationType,
   MicroAnimationProps
 } from './MicroInteractionSystem';

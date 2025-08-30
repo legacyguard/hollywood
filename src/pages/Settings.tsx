@@ -16,15 +16,14 @@ import { Label } from '@/components/ui/label';
 import { useAuth, useUser } from '@clerk/clerk-react';
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
-import type {
-  UserPreferences,
-  CommunicationStyle,
+import {
+  type UserPreferences,
+  type CommunicationStyle,
+  defaultUserPreferences,
 } from '@/types/user-preferences';
-import { defaultUserPreferences } from '@/types/user-preferences';
 import { textManager } from '@/lib/text-manager';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { usePersonalityManager } from '@/components/sofia/SofiaContextProvider';
-import type { PersonalityMode } from '@/lib/sofia-types';
 
 export default function SettingsPage() {
   usePageTitle('Settings');
@@ -163,7 +162,7 @@ export default function SettingsPage() {
               <div className='flex items-center justify-between'>
                 <div>
                   <h1 className='text-3xl font-bold flex items-center gap-3'>
-                    <Icon name={"settings" as any} className='w-8 h-8 text-primary' />
+                    <Icon name="settings" className='w-8 h-8 text-primary' />
                     Settings
                   </h1>
                   <p className='text-muted-foreground mt-1'>
@@ -177,14 +176,14 @@ export default function SettingsPage() {
                 >
                   {isSaving ? (
                     <>
-                      <Icon name={"upload" as any}
+                      <Icon name="upload"
                         className='w-4 h-4 mr-2 animate-pulse'
                       />
                       Saving...
                     </>
                   ) : (
                     <>
-                      <Icon name={"check" as any} className='w-4 h-4 mr-2' />
+                      <Icon name="check" className='w-4 h-4 mr-2' />
                       Save Changes
                     </>
                   )}
@@ -199,7 +198,7 @@ export default function SettingsPage() {
           <FadeIn duration={0.5} delay={0.2}>
             <Card className='p-6 bg-card border-card-border'>
               <h2 className='text-xl font-semibold mb-4 flex items-center gap-2'>
-                <Icon name={"user" as any} className='w-5 h-5 text-primary' />
+                <Icon name="user" className='w-5 h-5 text-primary' />
                 Account Information
               </h2>
               <div className='space-y-3 text-sm'>
@@ -237,7 +236,7 @@ export default function SettingsPage() {
           <FadeIn duration={0.5} delay={0.3}>
             <Card className='p-6 bg-card border-card-border'>
               <h2 className='text-xl font-semibold mb-4 flex items-center gap-2'>
-                <Icon name={"notifications" as any} className='w-5 h-5 text-primary' />
+                <Icon name="mail" className='w-5 h-5 text-primary' />
                 Notification Preferences
               </h2>
               <div className='space-y-4'>
@@ -298,7 +297,7 @@ export default function SettingsPage() {
           <FadeIn duration={0.5} delay={0.4}>
             <Card className='p-6 bg-card border-card-border'>
               <h2 className='text-xl font-semibold mb-4 flex items-center gap-2'>
-                <Icon name={"protection" as any} className='w-5 h-5 text-primary' />
+                <Icon name="protection" className='w-5 h-5 text-primary' />
                 Privacy & Security
               </h2>
               <div className='space-y-4'>
@@ -340,7 +339,7 @@ export default function SettingsPage() {
           <FadeIn duration={0.5} delay={0.5}>
             <Card className='p-6 bg-card border-card-border'>
               <h2 className='text-xl font-semibold mb-4 flex items-center gap-2'>
-                <Icon name={"bot" as any} className='w-5 h-5 text-primary' />
+                <Icon name="bot" className='w-5 h-5 text-primary' />
                 Sofia's Adaptive Personality
               </h2>
 
@@ -348,7 +347,7 @@ export default function SettingsPage() {
               {personalityInsight && (
                 <div className='mb-6 p-4 bg-primary/5 border border-primary/20 rounded-lg'>
                   <div className='flex items-start gap-3'>
-                    <Icon name={"sparkles" as any} className='w-5 h-5 text-primary mt-0.5' />
+                    <Icon name="sparkles" className='w-5 h-5 text-primary mt-0.5' />
                     <div>
                       <h3 className='font-medium text-sm mb-1'>Sofia's Analysis</h3>
                       <p className='text-sm text-muted-foreground'>{personalityInsight}</p>
@@ -418,7 +417,7 @@ export default function SettingsPage() {
                 <div className='flex items-center justify-between p-3 border border-card-border rounded-lg'>
                   <div className='space-y-0.5'>
                     <Label htmlFor='auto-detection' className='flex items-center gap-2'>
-                      <Icon name={"brain" as any} className='w-4 h-4 text-primary' />
+                      <Icon name="brain" className='w-4 h-4 text-primary' />
                       Learning Mode
                     </Label>
                     <p className='text-sm text-muted-foreground'>
@@ -453,7 +452,7 @@ export default function SettingsPage() {
 
                     {personalityManager.shouldShowPersonalityHint() && (
                       <div className='text-xs text-muted-foreground bg-blue-50 p-3 rounded-lg border border-blue-200'>
-                        <Icon name={"lightbulb" as any} className='w-3 h-3 inline mr-2' />
+                        <Icon name="lightbulb" className='w-3 h-3 inline mr-2' />
                         Sofia is still learning your preferences. Consider manually selecting your preferred style above for more accurate communication.
                       </div>
                     )}
@@ -462,7 +461,7 @@ export default function SettingsPage() {
 
                 {preferences.communication.lastDetectionUpdate && (
                   <div className='text-xs text-muted-foreground bg-muted p-2 rounded flex items-center gap-2'>
-                    <Icon name={"info" as any} className='w-3 h-3' />
+                    <Icon name="info" className='w-3 h-3' />
                     Last style update: {new Date(preferences.communication.lastDetectionUpdate).toLocaleDateString()}
                   </div>
                 )}
@@ -474,7 +473,7 @@ export default function SettingsPage() {
           <FadeIn duration={0.5} delay={0.6}>
             <Card className='p-6 bg-card border-card-border'>
               <h2 className='text-xl font-semibold mb-4 flex items-center gap-2'>
-                <Icon name={"settings" as any} className='w-5 h-5 text-primary' />
+                <Icon name="settings" className='w-5 h-5 text-primary' />
                 Display Preferences
               </h2>
               <div className='space-y-4'>
@@ -516,7 +515,7 @@ export default function SettingsPage() {
           <FadeIn duration={0.5} delay={0.7}>
             <div className='space-y-6'>
               <h2 className='text-2xl font-bold flex items-center gap-3'>
-                <Icon name={"shield-check" as any} className='w-7 h-7 text-primary' />
+                <Icon name="shield-check" className='w-7 h-7 text-primary' />
                 Security Center
               </h2>
               <SecurityDashboard />
