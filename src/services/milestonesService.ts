@@ -6,14 +6,12 @@
 import { supabase } from '@/integrations/supabase/client';
 import {
   DEFAULT_MILESTONE_TEMPLATES,
-  MILESTONE_LEVELS
-} from '@/types/milestones';
-import type {
-  LegacyMilestone,
-  MilestoneProgress,
-  MilestoneTriggerEvent,
-  MilestoneAnalytics,
-  MilestoneLevel
+  MILESTONE_LEVELS,
+  type LegacyMilestone,
+  type MilestoneProgress,
+  type MilestoneTriggerEvent,
+  type MilestoneAnalytics,
+  type MilestoneLevel
 } from '@/types/milestones';
 
 export class MilestonesService {

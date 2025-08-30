@@ -3,13 +3,7 @@ import { useAuth } from '@clerk/clerk-react';
 // Base API URL - in production this will be your Vercel deployment URL
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
-// API Response types
-interface _ApiResponse<T = unknown> {
-  success: boolean;
-  data?: T;
-  error?: string;
-  message?: string;
-}
+
 
 // Custom error class for API errors
 export class ApiError extends Error {
@@ -113,7 +107,7 @@ export const keyManagementService = {
   async getPublicKey(token: string): Promise<{
     success: boolean;
     publicKey: string;
-    metadata?: any;
+    metadata?: unknown;
   }> {
     return fetchApi('/keys-retrieve', {
       method: 'GET',
@@ -165,7 +159,7 @@ export function useApiService() {
   const { getToken } = useAuth();
 
   // Wrapper to get token and call service
-  const callWithAuth = async <T extends any[], R>(
+  const callWithAuth = async <T extends unknown[], R>(
     serviceFn: (...args: [...T, string]) => Promise<R>,
     ...args: T
   ): Promise<R> => {

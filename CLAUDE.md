@@ -121,6 +121,40 @@ Located in `supabase/migrations/`:
 **Theme**: User becomes a "Guardian of Memories" guided by a friendly "Firefly"
 **Tone**: Calming, dignified, celebratory of care and love (not fear or loss)
 
+### Unified Application Terminology
+
+The application follows a cohesive garden metaphor with three distinct areas:
+
+#### 1. Dashboard = "The Living Garden" (Záhrada Vášho Odkazu)
+- **What it is**: The interactive heart of the application featuring the central visual element (growing tree/plant) that replaces static milestone lists
+- **Purpose**: 
+  - Visually represent progress: Users literally see their legacy "grow" and "bloom" with each important action
+  - Serve as emotional center: A place users return to see the beauty and peace they've created
+  - Provide interactivity: Where "magical" moments happen - Sofia firefly arrives to "light up" new branches, new leaves appear after document uploads
+- **Location**: Inside the application, post-login. Main part of the dashboard
+- **Component**: `LegacyGarden` component
+
+#### 2. Landing Page = "The Garden's Antechamber" (Predsieň Záhrady)
+- **What it is**: Public introduction page serving as the "shop window"
+- **Purpose**:
+  - Provide a taste: Uses themes and visual elements from "The Garden" (flying firefly animation, growing tree imagery)
+  - Promise experience: Communicates that inside the app awaits this living, growing "Legacy Garden"
+- **Location**: Publicly accessible on main domain. First thing non-logged visitors see
+- **Component**: Landing page components
+
+#### 3. Onboarding = "The Journey to the Seed" (Cesta k Semienku)
+- **What it is**: Introductory, story-driven process for new users
+- **Purpose**:
+  - Create the seed: At onboarding end, a symbolic "seed" is created in the "Box of Certainty"
+  - Plant the seed: In final onboarding step, Sofia firefly symbolically carries and "plants" the seed, smoothly transitioning to dashboard where "The Garden" foundation awaits
+- **Location**: Shows only once, after first user registration
+- **Component**: Onboarding scene components
+
+**Simple Metaphor Summary**:
+- Landing Page = Beautiful, inviting gate to your garden
+- Onboarding = Path from gate to where you plant the first seed  
+- Dashboard = The Garden itself, cultivated and watched growing throughout life
+
 ### Onboarding Flow (Act 1)
 
 - Scene 1 – Promise of calm: Firefly animation over night scene, CTA: "Start writing my story"

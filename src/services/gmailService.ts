@@ -19,7 +19,6 @@ import type {
   DocumentType,
   DocumentCategorizationResult
 } from '@/types/gmail';
-// import { useAuth } from '@clerk/clerk-react';
 
 export class GmailService {
   private static instance: GmailService;

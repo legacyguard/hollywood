@@ -195,7 +195,7 @@ export function EncryptionProvider({ children }: EncryptionProviderProps) {
     } finally {
       setIsLoading(false);
     }
-  }, [userId]);
+  }, [userId, setNeedsMigration, isInitialized]);
 
   const rotateKeys = useCallback(async (currentPassword: string, newPassword?: string): Promise<boolean> => {
     if (!userId) {

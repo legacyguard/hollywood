@@ -13,8 +13,6 @@ import type {
   FamilyPermissions,
   FamilyProtectionStatus,
   FamilyStats,
-  // FamilyCalendarEvent,
-  // FamilyTimeline,
   EmergencyAccessRequest
 } from '@/types/family';
 

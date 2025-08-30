@@ -8,8 +8,10 @@ import { Icon } from '@/components/ui/icon-library';
 import { useSofiaStore } from '@/stores/sofiaStore';
 import { useAuth } from '@clerk/clerk-react';
 import ReactMarkdown from 'react-markdown';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
+import { getSofiaMemory } from '@/lib/sofia-memory';
+import { getSofiaProactive, type ProactiveIntervention } from '@/lib/sofia-proactive';
 
 // New guided dialog imports
 import { sofiaRouter } from '@/lib/sofia-router';
@@ -147,16 +149,72 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
 }) => {
   const { userId } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [inputValue, setInputValue] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
+  const [showProactiveIntervention, setShowProactiveIntervention] = useState(false);
+  const [currentIntervention, setCurrentIntervention] = useState<ProactiveIntervention | null>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const memoryServiceRef = useRef<ReturnType<typeof getSofiaMemory> | null>(null);
+  const proactiveServiceRef = useRef<ReturnType<typeof getSofiaProactive> | null>(null);
 
   const { messages, isTyping, context, addMessage, updateMessages, setTyping } =
     useSofiaStore();
 
+  // Initialize memory and proactive services
+  useEffect(() => {
+    if (userId) {
+      memoryServiceRef.current = getSofiaMemory(userId);
+      proactiveServiceRef.current = getSofiaProactive(userId);
+      
+      // Start monitoring current page
+      const currentRoutePage = location.pathname.split('/')[1] || 'dashboard';
+      proactiveServiceRef.current.startMonitoring(currentRoutePage);
+      
+      return () => {
+        // Clean up monitoring when component unmounts
+        proactiveServiceRef.current?.stopMonitoring();
+      };
+    }
+  }, [userId, location.pathname]);
+
+  // Save conversation to memory when closing
+  useEffect(() => {
+    return () => {
+      if (!isOpen && messages.length > 0 && memoryServiceRef.current) {
+        memoryServiceRef.current.rememberConversation(messages);
+      }
+    };
+  }, [isOpen, messages]);
+
+  // Check for proactive interventions
+  useEffect(() => {
+    if (isOpen && proactiveServiceRef.current && !currentIntervention) {
+      const checkInterval = setInterval(() => {
+        if (proactiveServiceRef.current?.hasPendingInterventions()) {
+          const intervention = proactiveServiceRef.current.getNextIntervention();
+          if (intervention) {
+            setCurrentIntervention(intervention);
+            setTimeout(() => {
+              setShowProactiveIntervention(true);
+            }, intervention.displayAfterMs);
+          }
+        }
+      }, 5000); // Check every 5 seconds
+      
+      return () => clearInterval(checkInterval);
+    }
+  }, [isOpen, currentIntervention]);
+
   // Move getDefaultWelcome to prevent dependency issues
   const getDefaultWelcome = useCallback((): string => {
     if (!context) return 'Hello! I am Sofia and I am here to help you.';
+
+    // Check if we have conversation memory
+    if (memoryServiceRef.current) {
+      const welcomeMessage = memoryServiceRef.current.getWelcomeBackMessage(context);
+      return welcomeMessage;
+    }
 
     const name = context.userName || 'there';
     return `Hello, ${name}! I am Sofia and I am here to help you protect your family. How can I help you today?`;
@@ -275,9 +333,46 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
   // Initialize with guided welcome message if no messages exist
   useEffect(() => {
     if (messages.length === 0 && context && isOpen) {
+      // Check for return greeting first
+      if (proactiveServiceRef.current && memoryServiceRef.current) {
+        const returnGreeting = proactiveServiceRef.current.createReturnGreeting(context);
+        if (returnGreeting) {
+          setCurrentIntervention(returnGreeting);
+          setTimeout(() => {
+            setShowProactiveIntervention(true);
+          }, returnGreeting.displayAfterMs);
+          return;
+        }
+      }
       initializeGuidedDialog();
     }
   }, [isOpen, messages.length, context, initializeGuidedDialog]);
+
+  const handleProactiveAction = async (action: string) => {
+    if (!currentIntervention || !proactiveServiceRef.current) return;
+    
+    // Mark intervention as completed
+    proactiveServiceRef.current.markInterventionCompleted(currentIntervention.id, action);
+    
+    // Hide the intervention
+    setShowProactiveIntervention(false);
+    setCurrentIntervention(null);
+    
+    // Handle the action
+    if (action === 'dismiss') {
+      return;
+    }
+    
+    // Process the action through the normal flow
+    const actionButton: ActionButton = {
+      id: action,
+      text: currentIntervention.actions?.find(a => a.action === action)?.text || action,
+      category: 'ui_action' as const,
+      cost: 'free' as const,
+    };
+    
+    await handleActionClick(actionButton);
+  };
 
   const handleActionClick = async (action: ActionButton) => {
     if (!context || !userId) return;
@@ -654,6 +749,41 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
 
   const chatContent = (
     <div className='flex flex-col h-full'>
+      {/* Proactive Intervention Notification */}
+      <AnimatePresence>
+        {showProactiveIntervention && currentIntervention && (
+          <motion.div
+            initial={{  opacity: 0, y: -20  }}
+            animate={{  opacity: 1, y: 0  }}
+            exit={{  opacity: 0, y: -20  }}
+            className='bg-primary/10 border-b border-primary/20 p-3'
+          >
+            <div className='flex items-start gap-2'>
+              <Icon name={"sparkles" as any} className='w-4 h-4 text-primary mt-1 flex-shrink-0' />
+              <div className='flex-1'>
+                <p className='text-sm text-foreground mb-2'>{currentIntervention.message}</p>
+                {currentIntervention.actions && (
+                  <div className='flex flex-wrap gap-2'>
+                    {currentIntervention.actions.map((action) => (
+                      <Button
+                        key={action.action}
+                        size='sm'
+                        variant={action.action === 'dismiss' ? 'ghost' : 'secondary'}
+                        onClick={() => handleProactiveAction(action.action)}
+                        className='text-xs'
+                      >
+                        {action.icon && <Icon name={action.icon as any} className='w-3 h-3 mr-1' />}
+                        {action.text}
+                      </Button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      
       {/* Header */}
       <div className='flex items-center justify-between p-4 border-b'>
         <div className='flex items-center gap-3'>
@@ -662,7 +792,11 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
           </div>
           <div>
             <h3 className='font-semibold'>Sofia</h3>
-            <p className='text-sm text-muted-foreground'>Your digital guide</p>
+            <p className='text-sm text-muted-foreground'>
+              {memoryServiceRef.current?.getConversationInsights().totalConversations > 0
+                ? 'Welcome back! I remember you.'
+                : 'Your digital guide'}
+            </p>
           </div>
         </div>
 

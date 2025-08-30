@@ -6,6 +6,15 @@ export { LegacyGardenVisualization } from './LegacyGardenVisualization';
 export { AdaptiveLegacyTree } from './AdaptiveLegacyTree';
 export { GardenOrchestrator } from './GardenOrchestrator';
 
+// Interactive enhancements
+export { 
+  InteractiveGardenEnhancements,
+  TreeLeaf,
+  SofiaFirefly,
+  CelebrationFirefly,
+  MilestoneGlow 
+} from './InteractiveGardenEnhancements';
+
 // Garden hooks and utilities
 export { useGardenProgress, type GardenProgressData } from '@/hooks/useGardenProgress';
 
@@ -209,10 +218,10 @@ export const GardenUtils = {
 
 // Garden system information
 export const GARDEN_SYSTEM_INFO = {
-  version: '2.0.0',
-  phase: '2A',
-  name: 'Legacy Garden Core',
-  description: 'Advanced tree visualization system with Sofia personality adaptation',
+  version: '2.1.0',
+  phase: '2B',
+  name: 'Interactive Living Garden',
+  description: 'Advanced tree visualization system with continuous animations and Sofia personality adaptation',
   features: [
     'Adaptive Legacy Tree visualization',
     'Personality-aware garden elements',
@@ -222,6 +231,12 @@ export const GARDEN_SYSTEM_INFO = {
     'Accessibility-compliant animations',
     'Mobile-responsive design',
     'Real-time data integration',
+    'Continuous leaf movement animations',
+    'Sofia firefly floating companion',
+    'Milestone celebration effects',
+    'Dynamic branch glow animations',
+    'Firefly swarm celebrations',
+    'Organic interaction patterns',
   ],
   components: [
     'LegacyGardenVisualization - Complete garden with weather and elements',
@@ -229,6 +244,11 @@ export const GARDEN_SYSTEM_INFO = {
     'GardenOrchestrator - Central management and view switching',
     'GardenSeed - Minimalist progress indicator',
     'useGardenProgress - Data hook with personality integration',
+    'InteractiveGardenEnhancements - Continuous animations and celebrations',
+    'TreeLeaf - Subtle leaf movement animation',
+    'SofiaFirefly - Floating Sofia companion',
+    'CelebrationFirefly - Milestone celebration effects',
+    'MilestoneGlow - Achievement highlighting system',
   ],
 } as const;
 

@@ -43,7 +43,7 @@ test.describe('Minimal Smoke Tests', () => {
             !text.includes('React Router Future Flag') &&
             !text.includes('hydration')) {
           consoleErrors++;
-          console.log('Console error:', text);
+          // console.log('Console error:', text);
         }
       }
     });
@@ -223,7 +223,7 @@ test.describe('Minimal Smoke Tests', () => {
     expect(errors.length).toBeLessThanOrEqual(2);
 
     if (errors.length > 0) {
-      console.log('Route errors encountered (expected with legacy code):', errors);
+              // console.log('Route errors encountered (expected with legacy code):', errors);
     }
   });
 
@@ -315,7 +315,7 @@ test.describe('Minimal Smoke Tests', () => {
     expect(failedRequests.length).toBeLessThanOrEqual(5);
 
     if (failedRequests.length > 0) {
-      console.log('Failed resource requests (may be expected):', failedRequests.slice(0, 3));
+              // console.log('Failed resource requests (may be expected):', failedRequests.slice(0, 3));
     }
   });
 });

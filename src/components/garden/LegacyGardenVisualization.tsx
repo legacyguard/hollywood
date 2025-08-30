@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils';
 import { usePersonalityManager } from '@/components/sofia/SofiaContextProvider';
 import { AnimationSystem } from '@/lib/animation-system';
 import type { PersonalityMode } from '@/lib/sofia-types';
+import { InteractiveGardenEnhancements } from './InteractiveGardenEnhancements';
 
 interface GardenElement {
   id: string;
@@ -43,6 +44,12 @@ interface LegacyGardenVisualizationProps {
   showWeather?: boolean;
   personalityMode?: PersonalityMode;
   onElementClick?: (element: GardenElement) => void;
+  
+  // Interactive Garden Enhancement props
+  showInteractiveEnhancements?: boolean;
+  recentlyCompletedMilestones?: string[];
+  onSofiaFireflyClick?: () => void;
+  
   className?: string;
 }
 
@@ -60,6 +67,12 @@ export function LegacyGardenVisualization({
   showWeather = true,
   personalityMode,
   onElementClick,
+  
+  // Interactive Garden Enhancement props
+  showInteractiveEnhancements = true,
+  recentlyCompletedMilestones = [],
+  onSofiaFireflyClick,
+  
   className
 }: LegacyGardenVisualizationProps) {
   const personalityManager = usePersonalityManager();
@@ -75,6 +88,11 @@ export function LegacyGardenVisualization({
   const [weather, setWeather] = useState<WeatherEffect>({ type: 'sun', active: true, intensity: 0.5 });
   const [hoveredElement, setHoveredElement] = useState<string | null>(null);
   const [gardenStage, setGardenStage] = useState<'empty' | 'seeded' | 'growing' | 'blooming' | 'flourishing'>('empty');
+  
+  // Interactive enhancement state
+  const [activeCelebrations, setActiveCelebrations] = useState<string[]>([]);
+  const [glowingElements, setGlowingElements] = useState<string[]>([]);
+  const [previousMilestoneCount, setPreviousMilestoneCount] = useState(0);
 
   // Calculate garden stage based on progress
   useEffect(() => {
@@ -227,6 +245,48 @@ export function LegacyGardenVisualization({
 
     setWeather({ type: weatherType, active: true, intensity });
   }, [gardenStage, documentsCount, effectiveMode]);
+
+  // Handle milestone celebrations
+  useEffect(() => {
+    if (!showInteractiveEnhancements) return;
+
+    const currentMilestoneCount = achievedMilestones.length;
+    
+    // Trigger celebration for new milestones
+    if (currentMilestoneCount > previousMilestoneCount && previousMilestoneCount > 0) {
+      const newCelebrationId = `milestone-${Date.now()}`;
+      setActiveCelebrations(prev => [...prev, newCelebrationId]);
+      
+      // Add glow effect to newly achieved elements
+      const newAchievedMilestones = achievedMilestones.slice(previousMilestoneCount);
+      setGlowingElements(prev => [...prev, ...newAchievedMilestones]);
+      
+      // Clear glow effect after 3 seconds
+      setTimeout(() => {
+        setGlowingElements(prev => prev.filter(id => !newAchievedMilestones.includes(id)));
+      }, 3000);
+    }
+    
+    setPreviousMilestoneCount(currentMilestoneCount);
+  }, [achievedMilestones.length, previousMilestoneCount, showInteractiveEnhancements]);
+
+  // Handle recently completed milestones for immediate celebration
+  useEffect(() => {
+    if (recentlyCompletedMilestones && recentlyCompletedMilestones.length > 0) {
+      const celebrationId = `recent-${Date.now()}`;
+      setActiveCelebrations(prev => [...prev, celebrationId]);
+      setGlowingElements(prev => [...prev, ...recentlyCompletedMilestones]);
+      
+      // Clear celebration after animation
+      setTimeout(() => {
+        setActiveCelebrations(prev => prev.filter(id => id !== celebrationId));
+      }, 5000);
+      
+      setTimeout(() => {
+        setGlowingElements(prev => prev.filter(id => !recentlyCompletedMilestones.includes(id)));
+      }, 3000);
+    }
+  }, [recentlyCompletedMilestones]);
 
   const getGardenMessage = () => {
     const messages = {
@@ -457,6 +517,40 @@ export function LegacyGardenVisualization({
 
         {/* Weather effects */}
         {renderWeatherEffect()}
+        
+        {/* Interactive Garden Enhancements */}
+        {showInteractiveEnhancements && (
+          <InteractiveGardenEnhancements
+            showLeafMovement={animated && !shouldReduceMotion}
+            leafCount={Math.min(gardenElements.filter(e => e.type === 'tree' || e.type === 'sprout').length * 4, 16)}
+            treeElements={gardenElements
+              .filter(e => e.type === 'tree' || e.type === 'sprout')
+              .map(e => ({ id: e.id, x: e.x, y: e.y }))}
+            showSofiaFirefly={true}
+            sofiaFireflyActive={interactive}
+            showCelebrations={true}
+            activeCelebrations={activeCelebrations}
+            glowingElements={glowingElements}
+            personalityMode={effectiveMode}
+            containerWidth={400}
+            containerHeight={300}
+            reducedMotion={shouldReduceMotion}
+            onFireflyClick={() => {
+              onSofiaFireflyClick?.();
+              // Optional: trigger a small celebration when Sofia is clicked
+              if (interactive) {
+                const clickCelebrationId = `sofia-click-${Date.now()}`;
+                setActiveCelebrations(prev => [...prev, clickCelebrationId]);
+                setTimeout(() => {
+                  setActiveCelebrations(prev => prev.filter(id => id !== clickCelebrationId));
+                }, 3000);
+              }
+            }}
+            onCelebrationComplete={(celebrationId) => {
+              setActiveCelebrations(prev => prev.filter(id => id !== celebrationId));
+            }}
+          />
+        )}
 
         {/* Garden message */}
         <div className="absolute bottom-6 left-6 right-6">

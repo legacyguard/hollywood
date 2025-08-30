@@ -50,7 +50,7 @@ export class AuthenticationError extends LegacyGuardError {
 }
 
 export class AuthorizationError extends LegacyGuardError {
-  constructor(message: string = 'Access denied', details?: Record<string, any>) {
+  constructor(message: string = 'Access denied', details?: Record<string, unknown>) {
     super(message, 'AUTHORIZATION_ERROR', 403, details);
     this.name = 'AuthorizationError';
   }
@@ -107,7 +107,7 @@ export class ExternalServiceError extends LegacyGuardError {
 }
 
 export class EncryptionError extends LegacyGuardError {
-  constructor(message: string, details?: Record<string, any>) {
+  constructor(message: string, details?: Record<string, unknown>) {
     super(message, 'ENCRYPTION_ERROR', 500, details);
     this.name = 'EncryptionError';
   }

@@ -8,7 +8,6 @@ import type {
   QuickInsight,
   DocumentAnalysis,
   FamilyImpactStatement,
-  // InsightCalculation,
   InsightFilters,
   InsightAnalytics
 } from '@/types/insights';

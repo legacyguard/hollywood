@@ -9,8 +9,7 @@ import type {
   MilestoneProgress,
   MilestoneTriggerEvent,
   MilestoneAnalytics,
-  MilestoneLevel,
-  // MilestoneCelebrationConfig
+  MilestoneLevel
 } from '@/types/milestones';
 
 class RealMilestonesService {
@@ -86,7 +85,7 @@ class RealMilestonesService {
 
   async updateMilestone(milestoneId: string, updates: Partial<LegacyMilestone>): Promise<LegacyMilestone> {
     try {
-      const updateData: any = {
+      const updateData: Record<string, unknown> = {
         updated_at: new Date().toISOString()
       };
 
@@ -152,7 +151,7 @@ class RealMilestonesService {
   // Milestone Tracking and Progress
   async checkMilestones(event: MilestoneTriggerEvent): Promise<LegacyMilestone[]> {
     try {
-      console.log(`Checking milestones for event: ${event.type} for user: ${event.userId}`);
+      // console.log(`Checking milestones for event: ${event.type} for user: ${event.userId}`);
 
       const milestones = await this.getUserMilestones(event.userId);
       const completedMilestones: LegacyMilestone[] = [];
@@ -315,7 +314,7 @@ class RealMilestonesService {
         await this.createMilestone(milestone);
       }
 
-      console.log(`Initialized ${initialMilestones.length} milestones for user ${userId}`);
+      // console.log(`Initialized ${initialMilestones.length} milestones for user ${userId}`);
     } catch (error) {
       console.error('Failed to initialize user milestones:', error);
     }
@@ -369,8 +368,8 @@ class RealMilestonesService {
         milestonesCompleted: completed.length,
         averageCompletionTime,
         completionRate: milestones.length > 0 ? (completed.length / milestones.length) * 100 : 0,
-        mostActiveCategory: mostActiveCategory as any,
-        preferredDifficulty: preferredDifficulty as any,
+        mostActiveCategory: mostActiveCategory as string,
+        preferredDifficulty: preferredDifficulty as string,
         completionTrend: this.calculateCompletionTrend(completed),
         totalProtectionIncrease: completed.reduce((sum, m) => sum + (m.rewards.protectionIncrease || 0), 0),
         totalTimeSaved: completed.reduce((sum, m) => sum + (m.rewards.timeSaved || 0), 0),
@@ -401,7 +400,7 @@ class RealMilestonesService {
   }
 
   // Private Helper Methods
-  private mapDbToMilestone(data: any): LegacyMilestone {
+  private mapDbToMilestone(data: Record<string, unknown>): LegacyMilestone {
     return {
       id: data.id,
       userId: data.user_id,

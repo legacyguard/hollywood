@@ -102,7 +102,7 @@ export interface FamilyTimeline {
   affectedMembers: string[]; // Array of member IDs
   relatedDocumentId?: string;
   relatedEventId?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface FamilyProtectionStatus {

@@ -286,7 +286,7 @@ test.describe('🎭 Working Guardian Journey', () => {
     expect(pageInfo.buttonCount).toBeGreaterThan(0);
     expect(pageInfo.linkCount).toBeGreaterThan(0);
 
-    console.log('✅ All basic functionality verified');
+    // console.log('✅ All basic functionality verified');
   });
 });
 
@@ -301,6 +301,6 @@ test.describe('🚀 Essential Smoke Test', () => {
     await expect(page.locator('body')).toBeVisible();
     await expect(page.locator('button').first()).toBeVisible();
 
-    console.log('✅ Critical path smoke test passed');
+    // console.log('✅ Critical path smoke test passed');
   });
 });
