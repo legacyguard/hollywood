@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { View, Text, Button, Image, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import { IntelligentDocumentScanner } from '@/components/scanner/IntelligentDocumentScanner';
+import { api, ApiError } from '@/api/apiClient';
 import * as FileSystem from 'expo-file-system';
 
 export const ScannerScreen = () => {
@@ -25,29 +26,13 @@ export const ScannerScreen = () => {
         encoding: FileSystem.EncodingType.Base64,
       });
       
-      // TODO: Replace with your actual API endpoint
-      const API_ENDPOINT = process.env.EXPO_PUBLIC_API_URL || 'https://your-api.com';
-      
-      // Send to serverless function for AI analysis
-      const response = await fetch(`${API_ENDPOINT}/api/analyze-document`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          // Add authentication headers if needed
-          // 'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          image: base64,
-          mimeType: 'image/jpeg',
-          fileName: `scan_${Date.now()}.jpg`,
-        }),
+      // Use the API client to upload the document
+      const result = await api.documents.upload({
+        base64,
+        mimeType: 'image/jpeg',
+        fileName: `scan_${Date.now()}.jpg`,
       });
       
-      if (!response.ok) {
-        throw new Error(`Upload failed: ${response.status}`);
-      }
-      
-      const result = await response.json();
       console.log('Upload successful:', result);
       
       // Show success message
@@ -67,10 +52,24 @@ export const ScannerScreen = () => {
       );
     } catch (error) {
       console.error('Upload error:', error);
-      Alert.alert(
-        'Upload Failed',
-        error instanceof Error ? error.message : 'Failed to upload document. Please try again.',
-      );
+      
+      let errorMessage = 'Failed to upload document. Please try again.';
+      
+      if (error instanceof ApiError) {
+        if (error.status === 401) {
+          errorMessage = 'Please log in to upload documents.';
+        } else if (error.status === 413) {
+          errorMessage = 'Document is too large. Please try a smaller file.';
+        } else if (error.status >= 500) {
+          errorMessage = 'Server error. Please try again later.';
+        } else {
+          errorMessage = error.message;
+        }
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      
+      Alert.alert('Upload Failed', errorMessage);
     } finally {
       setIsUploading(false);
     }
