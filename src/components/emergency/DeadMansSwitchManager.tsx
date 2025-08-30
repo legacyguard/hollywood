@@ -168,14 +168,14 @@ export const DeadMansSwitchManager: React.FC<DeadMansSwitchProps> = ({
       setSwitchStatus('active');
 
       // Show personality-aware success message
-      const message = effectiveMode === 'empathetic' 
+      const message = effectiveMode === 'empathetic'
         ? '💚 Thank you for letting us know you\'re safe! Your family\'s protection is updated.'
         : effectiveMode === 'pragmatic'
         ? '🛡️ Activity confirmed. Protection protocols updated.'
         : '✅ Activity recorded. Your legacy protection is active.';
 
       toast.success(message);
-      
+
     } catch (err) {
       console.error('Error recording activity:', err);
       toast.error('Failed to record activity. Please try again.');
@@ -186,7 +186,7 @@ export const DeadMansSwitchManager: React.FC<DeadMansSwitchProps> = ({
   const toggleRule = useCallback(async (ruleId: string, enabled: boolean) => {
     try {
       const supabase = await createSupabaseClient();
-      
+
       const { error } = await supabase
         .from('emergency_detection_rules')
         .update({ is_enabled: enabled, updated_at: new Date().toISOString() })
@@ -194,7 +194,7 @@ export const DeadMansSwitchManager: React.FC<DeadMansSwitchProps> = ({
 
       if (error) throw error;
 
-      setEmergencyRules(prev => prev.map(rule => 
+      setEmergencyRules(prev => prev.map(rule =>
         rule.id === ruleId ? { ...rule, is_enabled: enabled } : rule
       ));
 
@@ -381,7 +381,7 @@ export const DeadMansSwitchManager: React.FC<DeadMansSwitchProps> = ({
             >
               <IconComponent className="w-6 h-6" />
             </motion.div>
-            
+
             <div>
               <h3 className="text-lg font-semibold text-gray-800 mb-1">
                 {personalityContent.title}
@@ -449,8 +449,8 @@ export const DeadMansSwitchManager: React.FC<DeadMansSwitchProps> = ({
                 <button
                   onClick={() => toggleRule(rule.id, !rule.is_enabled)}
                   className={`text-xs px-2 py-1 rounded ${
-                    rule.is_enabled 
-                      ? 'bg-green-100 text-green-700 hover:bg-green-200' 
+                    rule.is_enabled
+                      ? 'bg-green-100 text-green-700 hover:bg-green-200'
                       : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                   } transition-colors`}
                 >

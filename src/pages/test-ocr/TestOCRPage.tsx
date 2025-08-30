@@ -220,7 +220,7 @@ const TestOCRPage: React.FC = () => {
               </Button>
 
               {error && (
-                <Alert variant={"destructive" as any}>
+                <Alert variant="destructive">
                   <AlertCircle className='h-4 w-4' />
                   <AlertDescription>{error}</AlertDescription>
                 </Alert>

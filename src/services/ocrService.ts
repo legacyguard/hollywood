@@ -8,8 +8,8 @@ import type {
   ExtractedEntity,
   TextBlock,
   BoundingBox,
+  DOCUMENT_PATTERNS
 } from '@/types/ocr';
-import { DOCUMENT_PATTERNS, DocumentCategory, EntityType } from '@/types/ocr';
 
 // Google Cloud Vision AI client configuration
 interface GoogleCloudVisionResponse {
@@ -370,7 +370,7 @@ export class OCRService {
     text: string,
     entities: ExtractedEntity[]
   ): DocumentClassification {
-    const textLower = text.toLowerCase();
+    // const textLower = text.toLowerCase();
     const scores: Record<DocumentType, number> = {} as Record<
       DocumentType,
       number
@@ -515,7 +515,7 @@ export class OCRService {
    */
   private generateSuggestedTags(text: string): string[] {
     const tags: string[] = [];
-    const textLower = text.toLowerCase();
+    // const textLower = text.toLowerCase();
 
     // Common tag patterns
     const tagPatterns = {

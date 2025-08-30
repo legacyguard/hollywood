@@ -21,7 +21,7 @@ export interface Beneficiary extends OriginalBeneficiary {
 }
 
 // Helper function to convert legacy Beneficiary to new format
-export const normalizeBeneficiary = (beneficiary: any): Beneficiary => {
+export const normalizeBeneficiary = (beneficiary: Record<string, unknown>): Beneficiary => {
   return {
     id: beneficiary.id || '',
     type: beneficiary.type || 'primary',
@@ -45,7 +45,7 @@ export const normalizeBeneficiary = (beneficiary: any): Beneficiary => {
 };
 
 // Type guard for Beneficiary
-export const isValidBeneficiary = (obj: any): obj is Beneficiary => {
+export const isValidBeneficiary = (obj: unknown): obj is Beneficiary => {
   return (
     typeof obj === 'object' &&
     obj !== null &&

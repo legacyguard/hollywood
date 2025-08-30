@@ -9,8 +9,8 @@ export function PrivacyPolicy() {
       <section className='mb-8'>
         <h2 className='text-2xl font-semibold mb-4'>Our Commitment to Your Privacy</h2>
         <p className='leading-relaxed mb-4'>
-          Your trust is the foundation of our service. This Privacy Policy explains what information we collect, how we use it, 
-          and most importantly, how we protect it. Our guiding principle is data minimization—we only collect what is necessary 
+          Your trust is the foundation of our service. This Privacy Policy explains what information we collect, how we use it,
+          and most importantly, how we protect it. Our guiding principle is data minimization—we only collect what is necessary
           to provide the service.
         </p>
       </section>
@@ -49,11 +49,11 @@ export function PrivacyPolicy() {
             <strong>To Provide and Maintain the Service:</strong> To manage your account, provide customer support, and operate the platform.
           </li>
           <li>
-            <strong>To Improve the Service:</strong> To understand how our users interact with LegacyGuard so we can make it better, 
+            <strong>To Improve the Service:</strong> To understand how our users interact with LegacyGuard so we can make it better,
             more intuitive, and more secure.
           </li>
           <li>
-            <strong>To Communicate with You:</strong> To send you important service announcements, security alerts, 
+            <strong>To Communicate with You:</strong> To send you important service announcements, security alerts,
             and (with your consent) product updates.
           </li>
         </ul>
@@ -66,11 +66,11 @@ export function PrivacyPolicy() {
         </p>
         <ul className='list-disc pl-6 mb-4'>
           <li>
-            <strong>End-to-End Encryption:</strong> Your sensitive data is encrypted on your device and decrypted on your device. 
+            <strong>End-to-End Encryption:</strong> Your sensitive data is encrypted on your device and decrypted on your device.
             It is never in a readable format on our servers.
           </li>
           <li>
-            <strong>Data Storage:</strong> We use secure, GDPR-compliant cloud infrastructure (Supabase) with servers located 
+            <strong>Data Storage:</strong> We use secure, GDPR-compliant cloud infrastructure (Supabase) with servers located
             within the European Union.
           </li>
         </ul>
@@ -79,7 +79,7 @@ export function PrivacyPolicy() {
       <section className='mb-8'>
         <h2 className='text-2xl font-semibold mb-4'>4. Data Sharing and Third Parties</h2>
         <p className='leading-relaxed mb-4'>
-          We do not sell, trade, or rent your personal identification information to others. We may share data with trusted 
+          We do not sell, trade, or rent your personal identification information to others. We may share data with trusted
           third-party service providers who assist us in operating our Service, under strict data protection agreements. These include:
         </p>
         <ul className='list-disc pl-6 mb-4'>
@@ -87,7 +87,7 @@ export function PrivacyPolicy() {
           <li><strong>Supabase:</strong> For database and encrypted file storage.</li>
           <li><strong>Vercel:</strong> For hosting our application.</li>
           <li><strong>Resend:</strong> For sending transactional emails.</li>
-          <li><strong>AI Services:</strong> For AI-powered document analysis (only the content of a single document is sent for 
+          <li><strong>AI Services:</strong> For AI-powered document analysis (only the content of a single document is sent for
           analysis and is not stored by them long-term).</li>
         </ul>
       </section>
@@ -124,7 +124,7 @@ export function PrivacyPolicy() {
       <section className='mb-8'>
         <h2 className='text-2xl font-semibold mb-4'>7. Changes to This Policy</h2>
         <p className='leading-relaxed mb-4'>
-          We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new policy 
+          We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new policy
           on this page and, if the changes are significant, by sending you an email notification.
         </p>
       </section>

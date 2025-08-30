@@ -59,9 +59,9 @@ export function TermsOfService() {
           legal advice, and we cannot guarantee the legal validity of documents created using our platform in all jurisdictions.
         </p>
         <p className='leading-relaxed mb-4'>
-          <strong>Important:</strong> LegacyGuard is a tool for organization and planning. It does not provide legal, financial, or tax advice. 
-          The "Will Generator" and other features produce documents based on templates and user-provided data. These are not a substitute 
-          for professional advice from a qualified lawyer or financial advisor. We strongly recommend you consult with a professional 
+          <strong>Important:</strong> LegacyGuard is a tool for organization and planning. It does not provide legal, financial, or tax advice.
+          The "Will Generator" and other features produce documents based on templates and user-provided data. These are not a substitute
+          for professional advice from a qualified lawyer or financial advisor. We strongly recommend you consult with a professional
           to ensure your will and estate plan are legally valid and suit your specific situation.
         </p>
       </section>
@@ -69,8 +69,8 @@ export function TermsOfService() {
       <section className='mb-8'>
         <h2 className='text-2xl font-semibold mb-4'>6. Security and Data</h2>
         <p className='leading-relaxed mb-4'>
-          We implement state-of-the-art security measures, including end-to-end, client-side encryption, to protect your data. 
-          This "Zero-Knowledge" architecture means that we, the Company, cannot access or decrypt the content of your uploaded documents. 
+          We implement state-of-the-art security measures, including end-to-end, client-side encryption, to protect your data.
+          This "Zero-Knowledge" architecture means that we, the Company, cannot access or decrypt the content of your uploaded documents.
           You acknowledge that the ultimate security of your data also depends on you protecting your account password and recovery keys.
         </p>
       </section>
@@ -78,7 +78,7 @@ export function TermsOfService() {
       <section className='mb-8'>
         <h2 className='text-2xl font-semibold mb-4'>7. Termination</h2>
         <p className='leading-relaxed mb-4'>
-          We may terminate or suspend your access to the Service at any time, without prior notice or liability, for any reason whatsoever, 
+          We may terminate or suspend your access to the Service at any time, without prior notice or liability, for any reason whatsoever,
           including without limitation if you breach the Terms.
         </p>
       </section>
@@ -86,8 +86,8 @@ export function TermsOfService() {
       <section className='mb-8'>
         <h2 className='text-2xl font-semibold mb-4'>8. Limitation of Liability</h2>
         <p className='leading-relaxed mb-4'>
-          In no event shall the Company be liable for any indirect, incidental, special, consequential or punitive damages, 
-          including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from your 
+          In no event shall the Company be liable for any indirect, incidental, special, consequential or punitive damages,
+          including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from your
           access to or use of or inability to access or use the Service.
         </p>
       </section>
@@ -95,7 +95,7 @@ export function TermsOfService() {
       <section className='mb-8'>
         <h2 className='text-2xl font-semibold mb-4'>9. Changes to Terms</h2>
         <p className='leading-relaxed mb-4'>
-          We reserve the right, at our sole discretion, to modify or replace these Terms at any time. 
+          We reserve the right, at our sole discretion, to modify or replace these Terms at any time.
           We will provide at least 30 days' notice prior to any new terms taking effect.
         </p>
       </section>
@@ -103,7 +103,7 @@ export function TermsOfService() {
       <section className='mb-8'>
         <h2 className='text-2xl font-semibold mb-4'>10. Governing Law</h2>
         <p className='leading-relaxed mb-4'>
-          These Terms shall be governed and construed in accordance with the laws of the European Union and applicable member state laws, 
+          These Terms shall be governed and construed in accordance with the laws of the European Union and applicable member state laws,
           without regard to its conflict of law provisions.
         </p>
       </section>

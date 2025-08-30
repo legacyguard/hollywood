@@ -9,8 +9,8 @@
  */
 
 import type {
-  GmailAuthConfig,
-  GmailTokens,
+  // GmailAuthConfig,
+  // GmailTokens,
   GmailMessage,
   GmailAttachment,
   GmailPayload,
@@ -19,7 +19,7 @@ import type {
   DocumentType,
   DocumentCategorizationResult
 } from '@/types/gmail';
-import { useAuth } from '@clerk/clerk-react';
+// import { useAuth } from '@clerk/clerk-react';
 
 export class GmailService {
   private static instance: GmailService;
@@ -118,7 +118,7 @@ export class GmailService {
         return authorized || false;
       }
       return false;
-    } catch (error) {
+    } catch (_error) {
       return false;
     }
   }

@@ -39,7 +39,7 @@ describe('Encryption Service', () => {
   describe('Key Management', () => {
     it.skip('should initialize keys with valid password', async () => {
       const mockResponse = { success: true };
-      (fetch as any).mockResolvedValueOnce({
+      (fetch as unknown as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockResponse),
       });
@@ -61,7 +61,7 @@ describe('Encryption Service', () => {
         publicKey: 'mockPublicKey',
       };
 
-      (fetch as any).mockResolvedValueOnce({
+      (fetch as unknown as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockKeys),
       });
@@ -77,7 +77,7 @@ describe('Encryption Service', () => {
     });
 
     it.skip('should reject invalid password', async () => {
-      (fetch as any).mockResolvedValueOnce({
+      (fetch as unknown as jest.Mock).mockResolvedValueOnce({
         ok: false,
         json: () => Promise.resolve({ error: 'Invalid password' }),
       });
@@ -154,7 +154,7 @@ describe('Encryption Service', () => {
       expect(encrypted?.metadata?.algorithm).toBe('nacl.secretbox');
 
       // Test decryption
-      const decrypted = await mockEncryptionService.decryptText(encrypted!);
+      const decrypted = await mockEncryptionService.decryptText(encrypted || { encrypted: new Uint8Array(), nonce: new Uint8Array(), metadata: { algorithm: 'nacl.secretbox' } });
       expect(decrypted).toBe(testText);
     });
   });
@@ -162,7 +162,7 @@ describe('Encryption Service', () => {
   describe('Security Features', () => {
     it.skip('should handle key rotation', async () => {
       const mockResponse = { success: true };
-      (fetch as any).mockResolvedValueOnce({
+      (fetch as unknown as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockResponse),
       });
@@ -185,7 +185,7 @@ describe('Encryption Service', () => {
 
     it.skip('should check rotation needs', async () => {
       const mockResponse = { rotationNeeded: true };
-      (fetch as any).mockResolvedValueOnce({
+      (fetch as unknown as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockResponse),
       });
@@ -207,7 +207,7 @@ describe('Encryption Service', () => {
       });
 
       const mockResponse = { success: true };
-      (fetch as any).mockResolvedValueOnce({
+      (fetch as unknown as jest.Mock).mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockResponse),
       });

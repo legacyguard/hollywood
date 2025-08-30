@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef, Suspense, lazy, ComponentType } from 'react';
+import type { ComponentType } from 'react';
+import React, { useState, useEffect, useRef, Suspense, lazy } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
@@ -47,15 +48,15 @@ export const LazyLoad: React.FC<LazyLoadProps> = ({
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             setIsVisible(true);
-            
+
             // Apply delay based on priority
             const actualDelay = priority === 'high' ? 0 : delay;
-            
+
             setTimeout(() => {
               setIsLoaded(true);
               onLoad?.();
             }, actualDelay);
-            
+
             observer.disconnect();
           }
         });
@@ -107,7 +108,7 @@ export const LazyLoad: React.FC<LazyLoadProps> = ({
           key="content"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 20 }}
-          transition={{ 
+          transition={{
             duration: 0.5,
             delay: priority === 'high' ? 0 : 0.1,
           }}

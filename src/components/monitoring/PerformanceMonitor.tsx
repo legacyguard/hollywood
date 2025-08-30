@@ -47,7 +47,7 @@ export const PerformanceMonitor: React.FC = () => {
         healthCheckInterval = window.setInterval(async () => {
           try {
             const health = await runHealthCheck();
-            
+
             // Track health status changes
             if (health.overall !== 'healthy') {
               trackPerformance('health_status', health.overall === 'degraded' ? 0.5 : 0, {
@@ -68,20 +68,20 @@ export const PerformanceMonitor: React.FC = () => {
         performanceReportInterval = window.setInterval(() => {
           try {
             const metrics = getPerformanceMetrics();
-            
+
             // Report key metrics to analytics
             if (metrics.webVitals.LCP) {
               trackPerformance('lcp', metrics.webVitals.LCP.value, {
                 rating: metrics.webVitals.LCP.rating
               });
             }
-            
+
             if (metrics.webVitals.FID) {
               trackPerformance('fid', metrics.webVitals.FID.value, {
                 rating: metrics.webVitals.FID.rating
               });
             }
-            
+
             if (metrics.webVitals.CLS) {
               trackPerformance('cls', metrics.webVitals.CLS.value, {
                 rating: metrics.webVitals.CLS.rating
@@ -137,7 +137,7 @@ export const PerformanceDashboard: React.FC = () => {
       try {
         const performance = getPerformanceMetrics();
         const health = getLastHealthStatus();
-        
+
         setPerformanceData(performance);
         setHealthData(health);
       } catch (error) {
@@ -162,8 +162,8 @@ export const PerformanceDashboard: React.FC = () => {
     <div className="fixed bottom-4 right-4 w-80 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-4 text-xs font-mono max-h-96 overflow-y-auto z-50">
       <div className="flex items-center justify-between mb-2">
         <h3 className="font-semibold text-gray-800 dark:text-gray-200">Performance Monitor</h3>
-        <select 
-          value={refreshInterval} 
+        <select
+          value={refreshInterval}
           onChange={(e) => setRefreshInterval(Number(e.target.value))}
           className="text-xs bg-gray-100 dark:bg-gray-700 border rounded px-1"
         >

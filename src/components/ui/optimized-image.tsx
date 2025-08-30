@@ -111,7 +111,7 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
 
     const baseUrl = imageSrc.split('.')[0];
     const extension = imageSrc.split('.').pop();
-    
+
     return [
       `${baseUrl}-300w.${extension} 300w`,
       `${baseUrl}-600w.${extension} 600w`,
@@ -133,7 +133,7 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
           canvas.width = img.width;
           canvas.height = img.height;
           ctx.drawImage(img, 0, 0);
-          
+
           // Convert to WebP if possible
           try {
             canvas.toBlob((blob) => {

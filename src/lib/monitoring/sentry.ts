@@ -65,7 +65,7 @@ export class ErrorTracker {
     // Handle global errors
     window.addEventListener('error', (event) => {
       this.captureException(event.error, {
-        tags: { 
+        tags: {
           source: 'global_error',
           filename: event.filename,
           lineno: String(event.lineno),
@@ -192,12 +192,12 @@ export class ErrorTracker {
       // Store in localStorage as fallback for now
       const errors = JSON.parse(localStorage.getItem('legacyguard-errors') || '[]');
       errors.push(payload);
-      
+
       // Keep only last 100 errors
       if (errors.length > 100) {
         errors.shift();
       }
-      
+
       localStorage.setItem('legacyguard-errors', JSON.stringify(errors));
     }
   }

@@ -1,7 +1,7 @@
 /**
  * Social Collaboration Page
  * Phase 8: Social Collaboration & Family Features
- * 
+ *
  * Main hub for family collaboration, document sharing, and social features
  */
 
@@ -176,7 +176,7 @@ export default function SocialCollaborationPage() {
                       <p className="text-xs text-muted-foreground">Everyone has accessed shared documents recently</p>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
                     <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                     <div className="flex-1">
@@ -184,7 +184,7 @@ export default function SocialCollaborationPage() {
                       <p className="text-xs text-muted-foreground">Family members added important files this week</p>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center gap-3 p-3 bg-yellow-50 rounded-lg">
                     <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
                     <div className="flex-1">
@@ -311,7 +311,7 @@ function EmergencyAccessTab() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-4">
               <h3 className="text-lg font-semibold">Emergency Contacts</h3>
-              
+
               {[
                 {
                   name: 'Sarah Johnson',
@@ -366,7 +366,7 @@ function EmergencyAccessTab() {
                   </CardContent>
                 </Card>
               ))}
-              
+
               <Button variant="outline" className="w-full">
                 <Users className="h-4 w-4 mr-2" />
                 Add Emergency Contact
@@ -375,7 +375,7 @@ function EmergencyAccessTab() {
 
             <div className="space-y-4">
               <h3 className="text-lg font-semibold">Emergency Protocols</h3>
-              
+
               <Card>
                 <CardContent className="p-4">
                   <div className="space-y-3">
@@ -396,7 +396,7 @@ function EmergencyAccessTab() {
                       <Badge variant="outline">72 hours</Badge>
                     </div>
                   </div>
-                  
+
                   <div className="mt-4 pt-3 border-t">
                     <p className="text-xs text-muted-foreground">
                       Last tested: Never
@@ -567,15 +567,15 @@ function ActivityFeedTab() {
                       <>
                         <span>•</span>
                         <span>
-                          {activity.type === 'document_shared' && 
+                          {activity.type === 'document_shared' &&
                             `Shared with ${activity.metadata.recipients} member(s)`}
-                          {activity.type === 'member_joined' && 
+                          {activity.type === 'member_joined' &&
                             `Role: ${activity.metadata.role}`}
-                          {activity.type === 'emergency_updated' && 
+                          {activity.type === 'emergency_updated' &&
                             `${activity.metadata.changes?.length} changes made`}
-                          {activity.type === 'document_accessed' && 
+                          {activity.type === 'document_accessed' &&
                             `Access type: ${activity.metadata.access_type}`}
-                          {activity.type === 'member_invited' && 
+                          {activity.type === 'member_invited' &&
                             `${activity.metadata.relationship} - ${activity.metadata.role}`}
                         </span>
                       </>
@@ -588,7 +588,7 @@ function ActivityFeedTab() {
               </div>
             ))}
           </div>
-          
+
           <div className="mt-6 pt-4 border-t">
             <Button variant="outline" className="w-full">
               Load More Activity

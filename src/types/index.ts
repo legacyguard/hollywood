@@ -290,7 +290,7 @@ export interface ApiResponse<T> {
 export interface ApiError {
   code: string;
   message: string;
-  details?: Record<string, any>;
+  details?: Record<string, unknown>;
   timestamp: ISO8601Date;
 }
 
@@ -306,7 +306,7 @@ export interface PaginationParams {
   limit: number;
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
-  filters?: Record<string, any>;
+  filters?: Record<string, unknown>;
 }
 
 export interface PaginatedResponse<T> {
@@ -345,7 +345,7 @@ export type DeepPartial<T> = {
 // Event types
 export interface AppEvent {
   type: string;
-  payload: Record<string, any>;
+  payload: Record<string, unknown>;
   timestamp: ISO8601Date;
   userId?: UUID;
 }
@@ -376,7 +376,7 @@ export interface AppConfig {
 // Webhook types
 export interface WebhookPayload {
   event: string;
-  data: Record<string, any>;
+  data: Record<string, unknown>;
   timestamp: ISO8601Date;
   signature: string;
 }

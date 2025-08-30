@@ -40,7 +40,7 @@ describe('RLS Policies & Database Security', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    (createClient as any).mockReturnValue(mockSupabaseClient);
+    (createClient as unknown as jest.Mock).mockReturnValue(mockSupabaseClient);
 
     // Ensure storage is properly mocked
     if (!mockSupabaseClient.storage) {

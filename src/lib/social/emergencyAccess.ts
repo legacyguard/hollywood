@@ -1,7 +1,7 @@
 /**
  * Emergency Access Service
  * Phase 8: Social Collaboration & Family Features
- * 
+ *
  * Handles emergency document access, guardian protocols,
  * time-locked access, and crisis management workflows.
  */
@@ -78,7 +78,7 @@ export interface EmergencyVerification {
   created_at: string;
 }
 
-export type EmergencyTriggerType = 
+export type EmergencyTriggerType =
   | 'manual_request'
   | 'inactivity_timeout'
   | 'family_request'
@@ -87,7 +87,7 @@ export type EmergencyTriggerType =
   | 'court_order'
   | 'automatic';
 
-export type EmergencyStatus = 
+export type EmergencyStatus =
   | 'pending'
   | 'time_locked'
   | 'verification_required'
@@ -96,13 +96,13 @@ export type EmergencyStatus =
   | 'denied'
   | 'expired';
 
-export type EmergencyAccessLevel = 
+export type EmergencyAccessLevel =
   | 'basic'        // View basic contact info and key documents
   | 'standard'     // Access financial and medical documents
   | 'full'         // Access all documents except private
   | 'complete';    // Access all documents including private
 
-export type VerificationMethod = 
+export type VerificationMethod =
   | 'email_code'
   | 'sms_code'
   | 'identity_document'
@@ -110,7 +110,7 @@ export type VerificationMethod =
   | 'multiple_contacts'
   | 'legal_document';
 
-export type VerificationStatus = 
+export type VerificationStatus =
   | 'pending'
   | 'in_progress'
   | 'verified'
@@ -191,13 +191,13 @@ export class EmergencyAccessService {
     try {
       // Load active emergencies
       await this.loadActiveEmergencies(userId);
-      
+
       // Setup monitoring for automatic triggers
       this.setupAutomaticTriggers(userId);
-      
+
       // Setup real-time subscriptions
       this.setupRealtimeSubscriptions();
-      
+
       console.log('Emergency access service initialized');
     } catch (error) {
       console.error('Emergency access service initialization failed:', error);
@@ -289,10 +289,10 @@ export class EmergencyAccessService {
 
       // Get user's emergency protocol
       const protocol = await this.getUserEmergencyProtocol(data.userId);
-      
+
       // Calculate time locks based on protocol
       const timeLocks = this.calculateTimeLocks(protocol, data.accessLevel, data.expedite);
-      
+
       // Create emergency access record
       const emergencyData: Omit<EmergencyAccess, 'id'> = {
         user_id: data.userId,
@@ -326,13 +326,13 @@ export class EmergencyAccessService {
 
       // Start notification sequence
       await this.startNotificationSequence(emergency, protocol);
-      
+
       // Cache active emergency
       this.activeEmergencies.set(data.userId, emergency);
-      
+
       // Notify listeners
       this.notifyEmergencyListeners(emergency);
-      
+
       console.log('Emergency access triggered:', emergency.id);
       return emergency;
     } catch (error) {
@@ -411,7 +411,7 @@ export class EmergencyAccessService {
 
       // Process verification based on method
       const isVerified = await this.processVerification(verification, data.verificationData);
-      
+
       if (isVerified) {
         // Update verification status
         await supabase
@@ -424,7 +424,7 @@ export class EmergencyAccessService {
 
         // Update emergency access
         await this.activateEmergencyAccess(data.emergencyId);
-        
+
         return true;
       } else {
         // Update verification status
@@ -432,7 +432,7 @@ export class EmergencyAccessService {
           .from('emergency_verifications')
           .update({ status: 'failed' })
           .eq('id', verification.id);
-          
+
         return false;
       }
     } catch (error) {
@@ -502,10 +502,10 @@ export class EmergencyAccessService {
 
       // Remove from active cache
       this.activeEmergencies.delete(emergency.user_id);
-      
+
       // Notify relevant parties
       await this.notifyEmergencyResolution(emergency, reason);
-      
+
       console.log('Emergency access resolved:', emergencyId);
     } catch (error) {
       console.error('Failed to resolve emergency access:', error);
@@ -574,10 +574,10 @@ export class EmergencyAccessService {
   private setupRealtimeSubscriptions(): void {
     supabase
       .channel('emergency_access')
-      .on('postgres_changes', 
-        { 
-          event: '*', 
-          schema: 'public', 
+      .on('postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
           table: 'emergency_access'
         },
         (payload) => {
@@ -617,10 +617,10 @@ export class EmergencyAccessService {
         full: 72,
         complete: 168
       };
-      
+
       const delayHours = expedite ? Math.floor(delays[accessLevel] / 2) : delays[accessLevel];
       const unlockTime = delayHours > 0 ? new Date(Date.now() + delayHours * 60 * 60 * 1000) : null;
-      
+
       return {
         timeLockedUntil: unlockTime?.toISOString(),
         autoUnlockAt: unlockTime?.toISOString()
@@ -632,12 +632,12 @@ export class EmergencyAccessService {
       return { timeLockedUntil: null, autoUnlockAt: null };
     }
 
-    const delayHours = expedite && timeDelay.can_expedite ? 
-      Math.floor(timeDelay.delay_hours / 2) : 
+    const delayHours = expedite && timeDelay.can_expedite ?
+      Math.floor(timeDelay.delay_hours / 2) :
       timeDelay.delay_hours;
-    
+
     const unlockTime = delayHours > 0 ? new Date(Date.now() + delayHours * 60 * 60 * 1000) : null;
-    
+
     return {
       timeLockedUntil: unlockTime?.toISOString(),
       autoUnlockAt: unlockTime?.toISOString()
@@ -647,7 +647,7 @@ export class EmergencyAccessService {
   private async getAccessibleDocuments(userId: string, accessLevel: EmergencyAccessLevel): Promise<string[]> {
     try {
       let categories: string[];
-      
+
       switch (accessLevel) {
         case 'basic':
           categories = ['legal', 'emergency'];
@@ -738,7 +738,7 @@ export class EmergencyAccessService {
     };
 
     emergency.metadata.contact_attempts.push(attempt);
-    
+
     // Update emergency record
     await supabase
       .from('emergency_access')
@@ -805,16 +805,16 @@ export class EmergencyAccessService {
 
     // Update cache
     this.activeEmergencies.set(emergency.user_id, emergency);
-    
+
     // Notify listeners
     this.notifyEmergencyListeners(emergency);
-    
+
     console.log('Emergency access activated:', emergencyId);
   }
 
   private async notifyEmergencyResolution(emergency: EmergencyAccess, reason: string): Promise<void> {
     const contacts = await this.getEmergencyContacts(emergency.user_id);
-    
+
     for (const contact of contacts) {
       if (contact.contact_user_id) {
         await pushNotificationService.sendNotification('security_alert', {
@@ -890,7 +890,7 @@ export class EmergencyAccessService {
 
       if (protocol.data) {
         const contacts = await this.getEmergencyContacts(protocol.data.user_id);
-        
+
         for (const contact of contacts) {
           await pushNotificationService.sendNotification('system_update', {
             message: `Emergency protocol test - ${protocol.data.name}`,

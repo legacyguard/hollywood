@@ -1,7 +1,7 @@
 /**
  * Mobile Navigation Component
  * Phase 7: Mobile & PWA Capabilities
- * 
+ *
  * Bottom navigation bar optimized for mobile devices with
  * touch-friendly interface and haptic feedback support.
  */
@@ -63,7 +63,7 @@ const secondaryNavItems: NavigationItem[] = [
   { title: 'Settings', url: '/settings', icon: Settings }
 ];
 
-export default function MobileNavigation({ 
+export default function MobileNavigation({
   className,
   notificationCount = 0,
   showLabels = true,
@@ -90,20 +90,20 @@ export default function MobileNavigation({
   const handleNavClick = (url: string) => {
     triggerHaptic();
     setActiveItem(url);
-    
+
     // Close menu if navigating from sheet
     if (isMenuOpen) {
       setIsMenuOpen(false);
     }
   };
 
-  const NavButton = ({ 
-    item, 
-    isActive, 
-    showLabel = true 
-  }: { 
-    item: NavigationItem; 
-    isActive: boolean; 
+  const NavButton = ({
+    item,
+    isActive,
+    showLabel = true
+  }: {
+    item: NavigationItem;
+    isActive: boolean;
     showLabel?: boolean;
   }) => (
     <NavLink
@@ -121,22 +121,22 @@ export default function MobileNavigation({
           'w-5 h-5 transition-transform duration-200',
           isActive && 'scale-110'
         )} />
-        
+
         {item.badge && item.badge > 0 && (
-          <Badge 
-            variant="destructive" 
+          <Badge
+            variant="destructive"
             className="absolute -top-2 -right-2 w-4 h-4 p-0 flex items-center justify-center text-xs min-w-[16px]"
           >
             {item.badge > 99 ? '99+' : item.badge}
           </Badge>
         )}
-        
+
         {/* Active indicator */}
         {isActive && (
           <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-600 rounded-full" />
         )}
       </div>
-      
+
       {showLabel && showLabels && (
         <span className={cn(
           'text-xs mt-1 font-medium transition-colors duration-200',
@@ -165,7 +165,7 @@ export default function MobileNavigation({
               isActive={activeItem === item.url}
             />
           ))}
-          
+
           {/* More Menu */}
           <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
             <SheetTrigger asChild>
@@ -177,10 +177,10 @@ export default function MobileNavigation({
               >
                 <Menu className="w-5 h-5" />
                 {showLabels && <span className="text-xs mt-1 font-medium text-gray-500">More</span>}
-                
+
                 {notificationCount > 0 && (
-                  <Badge 
-                    variant="destructive" 
+                  <Badge
+                    variant="destructive"
                     className="absolute top-1 right-1 w-4 h-4 p-0 flex items-center justify-center text-xs"
                   >
                     {notificationCount > 99 ? '99+' : notificationCount}
@@ -188,7 +188,7 @@ export default function MobileNavigation({
                 )}
               </Button>
             </SheetTrigger>
-            
+
             <SheetContent side="bottom" className="rounded-t-xl">
               <SheetHeader className="text-left">
                 <SheetTitle>Navigation Menu</SheetTitle>
@@ -196,7 +196,7 @@ export default function MobileNavigation({
                   Access all LegacyGuard features
                 </SheetDescription>
               </SheetHeader>
-              
+
               <div className="mt-6 space-y-4">
                 {/* Quick Actions */}
                 <div>
@@ -217,7 +217,7 @@ export default function MobileNavigation({
                         Upload Document
                       </NavLink>
                     </Button>
-                    
+
                     <Button
                       variant="outline"
                       size="sm"
@@ -233,7 +233,7 @@ export default function MobileNavigation({
                     </Button>
                   </div>
                 </div>
-                
+
                 {/* All Navigation Items */}
                 <div>
                   <h3 className="text-sm font-medium text-gray-900 mb-3">All Features</h3>
@@ -252,7 +252,7 @@ export default function MobileNavigation({
             </SheetContent>
           </Sheet>
         </div>
-        
+
         {/* Safe area padding for devices with home indicator */}
         <div className="h-safe-area-inset-bottom" />
       </div>
@@ -294,7 +294,7 @@ export function useMobileNavigation() {
 
     checkMobile();
     window.addEventListener('resize', checkMobile);
-    
+
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 

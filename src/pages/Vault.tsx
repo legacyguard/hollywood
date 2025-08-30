@@ -72,7 +72,7 @@ export default function VaultPage() {
       if (storedDocs) {
         const parsed = JSON.parse(storedDocs);
         // Convert date strings back to Date objects
-        const docs = parsed.map((doc: any) => ({
+        const docs = parsed.map((doc: Record<string, unknown>) => ({
           ...doc,
           uploadedAt: new Date(doc.uploadedAt),
           expiresAt: doc.expiresAt ? new Date(doc.expiresAt) : undefined,
@@ -223,7 +223,7 @@ export default function VaultPage() {
         accessorKey: 'category',
         header: createSortableHeader('Category'),
         cell: ({ row }) => (
-          <Badge variant={"outline" as any} className='text-xs'>
+                          <Badge variant="outline" className='text-xs'>
             {row.getValue('category')}
           </Badge>
         ),
@@ -320,12 +320,12 @@ export default function VaultPage() {
           return (
             <div className='flex flex-wrap gap-1'>
               {tags.slice(0, 2).map((tag, i) => (
-                <Badge key={i} variant={"secondary" as any} className='text-xs'>
+                <Badge key={i} variant="secondary" className='text-xs'>
                   {tag}
                 </Badge>
               ))}
               {tags.length > 2 && (
-                <Badge variant={"secondary" as any} className='text-xs'>
+                <Badge variant="secondary" className='text-xs'>
                   +{tags.length - 2}
                 </Badge>
               )}
@@ -408,7 +408,7 @@ export default function VaultPage() {
 
   return (
     <>
-      <MetaTags 
+      <MetaTags
         title="Document Vault"
         description="Securely store and automatically analyze your important documents with AI-powered OCR technology. Your digital vault for all important documents."
         keywords="document vault, secure storage, AI OCR, document analysis, encrypted documents"
@@ -445,7 +445,7 @@ export default function VaultPage() {
             {showOcrInfo && (
               <FadeIn duration={0.5} delay={0.8}>
                 <Alert className='bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200'>
-                  <Icon name={"sparkles" as any} className='h-4 w-4 text-blue-600' />
+                  <Icon name="sparkles" className='h-4 w-4 text-blue-600' />
                   <AlertDescription className='flex items-center justify-between'>
                     <div>
                       <strong className='text-blue-900'>
@@ -459,12 +459,12 @@ export default function VaultPage() {
                       </p>
                     </div>
                     <Button
-                      variant={"ghost" as any}
+                      variant="ghost"
                       size='sm'
                       onClick={() => setShowOcrInfo(false)}
                       className='text-blue-600 hover:text-blue-800 ml-4'
                     >
-                      <Icon name={"x" as any} className='h-4 w-4' />
+                      <Icon name="x" className='h-4 w-4' />
                     </Button>
                   </AlertDescription>
                 </Alert>
@@ -476,11 +476,11 @@ export default function VaultPage() {
               <EnhancedDocumentUploader />
               <Button
                 onClick={() => setRefreshTrigger(prev => prev + 1)}
-                variant={"outline" as any}
+                variant="outline"
                 size='sm'
                 className='mt-4'
               >
-                <Icon name={"refresh-cw" as any} className='h-4 w-4 mr-2' />
+                <Icon name="refresh-cw" className='h-4 w-4 mr-2' />
                 Refresh Documents
               </Button>
             </div>

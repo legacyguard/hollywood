@@ -13,8 +13,8 @@ import type {
   FamilyPermissions,
   FamilyProtectionStatus,
   FamilyStats,
-  FamilyCalendarEvent,
-  FamilyTimeline,
+  // FamilyCalendarEvent,
+  // FamilyTimeline,
   EmergencyAccessRequest
 } from '@/types/family';
 
@@ -80,8 +80,8 @@ export class FamilyService {
 
       familyDataCache.set(cacheKey, familyMembers);
       return familyMembers;
-    } catch (error) {
-      console.error('Failed to fetch family members:', error);
+    } catch (_error) {
+      console.error('Failed to fetch family members:', _error);
       return [];
     }
   }
@@ -128,8 +128,8 @@ export class FamilyService {
       familyDataCache.invalidatePattern(new RegExp(`family_.*${userId}.*`));
 
       return familyMember;
-    } catch (error) {
-      console.error('Failed to add family member:', error);
+    } catch (_error) {
+      console.error('Failed to add family member:', _error);
       throw error;
     }
   }
@@ -185,14 +185,14 @@ export class FamilyService {
   /**
    * Remove family member
    */
-  async removeFamilyMember(userId: string, memberId: string): Promise<void> {
+  async removeFamilyMember(userId: string, _memberId: string): Promise<void> {
     try {
       console.warn('Using mock family member removal');
 
       // Clear cache
       familyDataCache.invalidatePattern(new RegExp(`family_.*${userId}.*`));
-    } catch (error) {
-      console.error('Failed to remove family member:', error);
+    } catch (_error) {
+      console.error('Failed to remove family member:', _error);
       throw error;
     }
   }
@@ -455,7 +455,7 @@ export class FamilyService {
         total: total || 0,
         shared: Math.floor((total || 0) * 0.3) // Mock 30% sharing rate
       };
-    } catch (error) {
+    } catch (_error) {
       console.warn('Error getting document stats, using fallback');
       return { total: 0, shared: 0 };
     }
@@ -468,7 +468,7 @@ export class FamilyService {
         total: 5,
         actionable: 2
       };
-    } catch (error) {
+    } catch (_error) {
       return { total: 0, actionable: 0 };
     }
   }
@@ -480,7 +480,7 @@ export class FamilyService {
         completed: 3,
         total: 8
       };
-    } catch (error) {
+    } catch (_error) {
       return { completed: 0, total: 0 };
     }
   }

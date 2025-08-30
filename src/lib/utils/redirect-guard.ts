@@ -8,7 +8,7 @@ export class RedirectGuard {
 
   static canRedirect(toPath: string): boolean {
     const now = Date.now();
-    
+
     // Reset counter if enough time has passed
     if (now - this.lastRedirectTime > this.REDIRECT_WINDOW) {
       this.redirectCount = 0;
@@ -27,9 +27,9 @@ export class RedirectGuard {
       this.redirectCount = 1;
       this.lastRedirectPath = toPath;
     }
-    
+
     this.lastRedirectTime = now;
-    
+
     return true;
   }
 

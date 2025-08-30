@@ -1,7 +1,7 @@
 /**
  * Family Management Component
  * Phase 8: Social Collaboration & Family Features
- * 
+ *
  * Comprehensive family group management interface with member
  * invitations, roles, permissions, and collaboration features.
  */
@@ -96,7 +96,7 @@ export default function FamilyManagement({ className }: FamilyManagementProps) {
   const [showInviteDialog, setShowInviteDialog] = useState(false);
   const [showCreateFamily, setShowCreateFamily] = useState(false);
   const [memberToRemove, setMemberToRemove] = useState<FamilyMember | null>(null);
-  
+
   const { toast } = useToast();
 
   useEffect(() => {
@@ -133,7 +133,7 @@ export default function FamilyManagement({ className }: FamilyManagementProps) {
 
   const loadFamilyMembers = async () => {
     if (!selectedFamily) return;
-    
+
     try {
       const familyMembers = await collaborationService.getFamilyMembers(selectedFamily.id);
       setMembers(familyMembers);
@@ -148,7 +148,7 @@ export default function FamilyManagement({ className }: FamilyManagementProps) {
 
   const loadFamilyActivities = async () => {
     if (!selectedFamily) return;
-    
+
     try {
       const familyActivities = await collaborationService.getFamilyActivity(selectedFamily.id);
       setActivities(familyActivities);
@@ -334,7 +334,7 @@ export default function FamilyManagement({ className }: FamilyManagementProps) {
           <AlertDialogHeader>
             <AlertDialogTitle>Remove Family Member</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to remove {memberToRemove?.name} from the family? 
+              Are you sure you want to remove {memberToRemove?.name} from the family?
               This will revoke their access to all shared documents.
             </AlertDialogDescription>
           </AlertDialogHeader>
@@ -400,12 +400,12 @@ function CreateFirstFamily({ onCreated }: { onCreated: () => void }) {
   );
 }
 
-function FamilyMembersTab({ 
-  family, 
-  members, 
-  onMemberUpdate, 
-  onRemoveMember 
-}: { 
+function FamilyMembersTab({
+  family,
+  members,
+  onMemberUpdate,
+  onRemoveMember
+}: {
   family: FamilyGroup;
   members: FamilyMember[];
   onMemberUpdate: () => void;
@@ -444,13 +444,13 @@ function FamilyMembersTab({
                   )}
                 </div>
               </div>
-              
+
               <div className="flex items-center gap-2">
                 {getStatusIcon(member.status)}
                 <span className="text-sm text-muted-foreground capitalize">
                   {member.status}
                 </span>
-                
+
                 {member.role !== 'owner' && (
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -525,10 +525,10 @@ function FamilyActivityTab({ activities }: { activities: CollaborationActivity[]
   );
 }
 
-function FamilySettingsTab({ 
-  family, 
-  onSettingsUpdate 
-}: { 
+function FamilySettingsTab({
+  family,
+  onSettingsUpdate
+}: {
   family: FamilyGroup;
   onSettingsUpdate: () => void;
 }) {
@@ -559,8 +559,8 @@ function FamilySettingsTab({
           </div>
           <div>
             <Label htmlFor="description">Description</Label>
-            <Textarea 
-              id="description" 
+            <Textarea
+              id="description"
               defaultValue={family.description || ''}
               placeholder="Describe your family group..."
             />
@@ -609,11 +609,11 @@ function FamilySettingsTab({
   );
 }
 
-function InviteMemberDialog({ 
-  family, 
-  open, 
-  onOpenChange, 
-  onInviteSent 
+function InviteMemberDialog({
+  family,
+  open,
+  onOpenChange,
+  onInviteSent
 }: {
   family: FamilyGroup | null;
   open: boolean;
@@ -629,7 +629,7 @@ function InviteMemberDialog({
 
   const handleInvite = async () => {
     if (!family || !email) return;
-    
+
     setIsInviting(true);
     try {
       await collaborationService.inviteFamilyMember({
@@ -639,15 +639,15 @@ function InviteMemberDialog({
         relationship,
         message
       });
-      
+
       toast({
         title: "Invitation sent",
         description: `Invitation sent to ${email}`
       });
-      
+
       onInviteSent();
       onOpenChange(false);
-      
+
       // Reset form
       setEmail('');
       setRole('member');
@@ -673,7 +673,7 @@ function InviteMemberDialog({
             Send an invitation to join {family?.name}
           </DialogDescription>
         </DialogHeader>
-        
+
         <div className="space-y-4">
           <div>
             <Label htmlFor="invite-email">Email Address</Label>
@@ -685,7 +685,7 @@ function InviteMemberDialog({
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
-          
+
           <div>
             <Label htmlFor="invite-role">Role</Label>
             <Select value={role} onValueChange={(value: FamilyRole) => setRole(value)}>
@@ -699,7 +699,7 @@ function InviteMemberDialog({
               </SelectContent>
             </Select>
           </div>
-          
+
           <div>
             <Label htmlFor="relationship">Relationship (Optional)</Label>
             <Input
@@ -709,7 +709,7 @@ function InviteMemberDialog({
               onChange={(e) => setRelationship(e.target.value)}
             />
           </div>
-          
+
           <div>
             <Label htmlFor="invite-message">Personal Message (Optional)</Label>
             <Textarea
@@ -720,7 +720,7 @@ function InviteMemberDialog({
             />
           </div>
         </div>
-        
+
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
@@ -739,11 +739,11 @@ function InviteMemberDialog({
   );
 }
 
-function CreateFamilyDialog({ 
-  open, 
-  onOpenChange, 
-  onFamilyCreated, 
-  trigger 
+function CreateFamilyDialog({
+  open,
+  onOpenChange,
+  onFamilyCreated,
+  trigger
 }: {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
@@ -757,22 +757,22 @@ function CreateFamilyDialog({
 
   const handleCreate = async () => {
     if (!name) return;
-    
+
     setIsCreating(true);
     try {
       await collaborationService.createFamily({
         name,
         description
       });
-      
+
       toast({
         title: "Family created",
         description: `${name} has been created successfully`
       });
-      
+
       onFamilyCreated();
       onOpenChange?.(false);
-      
+
       // Reset form
       setName('');
       setDescription('');
@@ -795,7 +795,7 @@ function CreateFamilyDialog({
           Create a new family group to start collaborating and sharing documents
         </DialogDescription>
       </DialogHeader>
-      
+
       <div className="space-y-4">
         <div>
           <Label htmlFor="family-name">Family Name</Label>
@@ -806,7 +806,7 @@ function CreateFamilyDialog({
             onChange={(e) => setName(e.target.value)}
           />
         </div>
-        
+
         <div>
           <Label htmlFor="family-description">Description (Optional)</Label>
           <Textarea
@@ -817,7 +817,7 @@ function CreateFamilyDialog({
           />
         </div>
       </div>
-      
+
       <DialogFooter>
         <Button variant="outline" onClick={() => onOpenChange?.(false)}>
           Cancel

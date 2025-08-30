@@ -10,7 +10,7 @@ import type {
   MilestoneTriggerEvent,
   MilestoneAnalytics,
   MilestoneLevel,
-  MilestoneCelebrationConfig
+  // MilestoneCelebrationConfig
 } from '@/types/milestones';
 
 class RealMilestonesService {
@@ -484,14 +484,15 @@ class RealMilestonesService {
         }
         break;
 
-      case 'protection_percentage':
+      case 'protection_percentage': {
         const protectionLevel = await this.calculateUserProtectionLevel(event.userId);
         updatedMilestone.criteria.currentValue = protectionLevel;
         updatedMilestone.progress.percentage = Math.min(100, (protectionLevel / (milestone.criteria.threshold as number)) * 100);
         updatedMilestone.criteria.isComplete = protectionLevel >= (milestone.criteria.threshold as number);
         break;
+      }
 
-      case 'review_score':
+      case 'review_score': {
         if (event.type === 'review_completed' && event.reviewId) {
           // Would get actual review score from database
           const reviewScore = 85; // Placeholder
@@ -500,6 +501,7 @@ class RealMilestonesService {
           updatedMilestone.criteria.isComplete = reviewScore >= (milestone.criteria.threshold as number);
         }
         break;
+      }
     }
 
     return updatedMilestone;
@@ -507,7 +509,7 @@ class RealMilestonesService {
 
   private async triggerMilestoneCelebration(milestone: LegacyMilestone): Promise<void> {
     try {
-      console.log(`🎉 Milestone completed: ${milestone.title}`);
+      // console.log(`🎉 Milestone completed: ${milestone.title}`);
 
       // Store celebration notification
       await supabase.from('notifications').insert({
@@ -528,7 +530,7 @@ class RealMilestonesService {
       await this.sendCelebrationEmail(milestone);
 
     } catch (error) {
-      console.error('Failed to trigger milestone celebration:', error);
+      // console.error('Failed to trigger milestone celebration:', error);
     }
   }
 
@@ -549,7 +551,7 @@ class RealMilestonesService {
         }
       });
     } catch (error) {
-      console.error('Failed to send celebration email:', error);
+      // console.error('Failed to send celebration email:', error);
     }
   }
 
@@ -614,7 +616,7 @@ class RealMilestonesService {
     };
   }
 
-  private calculateCurrentLevel(completedCount: number, categoryProgress: MilestoneProgress['categoryProgress']): MilestoneLevel {
+  private calculateCurrentLevel(completedCount: number, _categoryProgress: MilestoneProgress['categoryProgress']): MilestoneLevel {
     // Simplified level calculation
     if (completedCount >= 10) {
       return {
@@ -720,12 +722,12 @@ class RealMilestonesService {
 
     const sortedByCompletion = completed
       .filter(m => m.completedAt)
-      .sort((a, b) => new Date(a.completedAt!).getTime() - new Date(b.completedAt!).getTime());
+      .sort((a, b) => new Date(a.completedAt || '').getTime() - new Date(b.completedAt || '').getTime());
 
     let totalGap = 0;
     for (let i = 1; i < sortedByCompletion.length; i++) {
-      const prevDate = new Date(sortedByCompletion[i - 1].completedAt!).getTime();
-      const currentDate = new Date(sortedByCompletion[i].completedAt!).getTime();
+      const prevDate = new Date(sortedByCompletion[i - 1].completedAt || '').getTime();
+      const currentDate = new Date(sortedByCompletion[i].completedAt || '').getTime();
       totalGap += (currentDate - prevDate) / (1000 * 60 * 60 * 24); // days
     }
 

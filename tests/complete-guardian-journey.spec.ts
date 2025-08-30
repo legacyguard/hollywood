@@ -1,5 +1,4 @@
-import type { Page } from '@playwright/test';
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 import { generateTestUser, waitForClerk } from './helpers/auth';
 
 /**
@@ -24,8 +23,8 @@ test.describe('🎭 Complete Guardian of Memories Journey', () => {
     page = await context.newPage();
 
     // Enable console logging for debugging
-    page.on('console', msg => console.log('Browser:', msg.text()));
-    page.on('pageerror', error => console.error('Page Error:', error.message));
+    page.on('console', msg => /* console.log('Browser:', msg.text()) */);
+    page.on('pageerror', error => /* console.error('Page Error:', error.message) */);
   });
 
   test.afterAll(async () => {
@@ -33,7 +32,7 @@ test.describe('🎭 Complete Guardian of Memories Journey', () => {
   });
 
   test('Act 1: Landing & Authentication - Sofia\'s Welcome', async () => {
-    console.log('🚀 Starting Guardian Journey with user:', testUser.email);
+    // console.log('🚀 Starting Guardian Journey with user:', testUser.email);
 
     // Navigate to landing page
     await page.goto('/');
@@ -52,7 +51,7 @@ test.describe('🎭 Complete Guardian of Memories Journey', () => {
     // Look for firefly animation (Sofia)
     const fireflyElement = page.locator('.firefly, [class*="firefly"], [style*="yellow"]').first();
     if (await fireflyElement.isVisible({ timeout: 3000 }).catch(() => false)) {
-      console.log('✅ Sofia firefly animation detected');
+      // console.log('✅ Sofia firefly animation detected');
     }
 
     // Click "Start Your Journey" button
@@ -64,7 +63,7 @@ test.describe('🎭 Complete Guardian of Memories Journey', () => {
     await page.waitForURL(/sign-up/, { timeout: 10000 });
     await waitForClerk(page);
 
-    console.log('✅ Landing page and navigation to sign-up completed');
+          // console.log('✅ Landing page and navigation to sign-up completed');
   });
 
   test('Act 2: Registration - Beginning the Guardian Path', async () => {
@@ -111,7 +110,7 @@ test.describe('🎭 Complete Guardian of Memories Journey', () => {
     // The flow should now redirect to dashboard, which triggers OnboardingWrapper
     await page.waitForURL(/dashboard|onboarding/, { timeout: 15000 });
 
-    console.log('✅ Registration completed');
+          // console.log('✅ Registration completed');
   });
 
   test('Scene 1: Promise of Calm - Sofia\'s Introduction', async () => {
@@ -125,7 +124,7 @@ test.describe('🎭 Complete Guardian of Memories Journey', () => {
 
     // Scene 1: Promise of Calm
     // Look for the onboarding introduction
-    const sceneContainer = page.locator('[data-testid="scene1"], .scene1, .onboarding-scene').first();
+    // const sceneContainer = page.locator('[data-testid="scene1"], .scene1, .onboarding-scene').first();
 
     // More flexible selectors for Scene 1 content
     const promiseTitle = page.locator('text=/Promise of Calm/i, text=/Your story begins/i, h1, h2, [class*="title"]');
@@ -139,7 +138,7 @@ test.describe('🎭 Complete Guardian of Memories Journey', () => {
     // Look for firefly animation in onboarding
     const onboardingFirefly = page.locator('.firefly, [class*="yellow"], [style*="animation"]');
     if (await onboardingFirefly.isVisible({ timeout: 3000 }).catch(() => false)) {
-      console.log('✅ Onboarding firefly animation detected');
+      // console.log('✅ Onboarding firefly animation detected');
     }
 
     // Look for "Start writing my story" button or similar
@@ -149,12 +148,12 @@ test.describe('🎭 Complete Guardian of Memories Journey', () => {
 
     if (await startStoryButton.isVisible({ timeout: 5000 })) {
       await startStoryButton.click();
-      console.log('✅ Started onboarding story');
+      // console.log('✅ Started onboarding story');
     } else {
-      console.log('⚠️ Start button not found, continuing...');
+              // console.log('⚠️ Start button not found, continuing...');
     }
 
-    console.log('✅ Scene 1: Promise of Calm completed');
+          // console.log('✅ Scene 1: Promise of Calm completed');
   });
 
   test('Scene 2: Box of Certainty - Emotional Connection', async () => {
@@ -187,9 +186,9 @@ Contact information for trusted advisors`;
         await continueButton.click();
       }
 
-      console.log('✅ Scene 2: Box of Certainty completed');
+      // console.log('✅ Scene 2: Box of Certainty completed');
     } else {
-      console.log('⚠️ Box of Certainty not found, might be different scene structure');
+              // console.log('⚠️ Box of Certainty not found, might be different scene structure');
     }
   });
 
@@ -213,7 +212,7 @@ Contact information for trusted advisors`;
       // Look for key visualization update
       const keyVisualization = page.locator('text=/For Martina/i, .key-visual');
       if (await keyVisualization.isVisible({ timeout: 3000 }).catch(() => false)) {
-        console.log('✅ Key personalization detected');
+        // console.log('✅ Key personalization detected');
       }
 
       // Continue to next scene
@@ -222,9 +221,9 @@ Contact information for trusted advisors`;
         await continueButton.click();
       }
 
-      console.log('✅ Scene 3: Key of Trust completed');
+      // console.log('✅ Scene 3: Key of Trust completed');
     } else {
-      console.log('⚠️ Trusted person input not found');
+              // console.log('⚠️ Trusted person input not found');
     }
   });
 
@@ -245,7 +244,7 @@ Contact information for trusted advisors`;
       // Look for firefly trail animation
       const fireflyTrail = page.locator('.firefly-trail, [class*="trail"], [class*="animation"]');
       if (await fireflyTrail.isVisible({ timeout: 3000 }).catch(() => false)) {
-        console.log('✅ Firefly trail animation detected');
+        // console.log('✅ Firefly trail animation detected');
       }
     }
 
@@ -255,7 +254,7 @@ Contact information for trusted advisors`;
     // Verify we're on dashboard
     await expect(page).toHaveURL(/dashboard|home|\//);
 
-    console.log('✅ Scene 4: Path prepared, redirected to dashboard');
+          // console.log('✅ Scene 4: Path prepared, redirected to dashboard');
   });
 
   test('Dashboard: First Guardian Experience', async () => {
@@ -282,14 +281,14 @@ Contact information for trusted advisors`;
     let dashboardFound = false;
     for (const selector of dashboardElements) {
       if (await page.locator(selector).isVisible({ timeout: 2000 }).catch(() => false)) {
-        console.log(`✅ Dashboard element found: ${selector}`);
+        // console.log(`✅ Dashboard element found: ${selector}`);
         dashboardFound = true;
         break;
       }
     }
 
     if (!dashboardFound) {
-      console.log('⚠️ Dashboard elements not clearly identified');
+      // console.log('⚠️ Dashboard elements not clearly identified');
     }
 
     // Look for challenge or task suggestions
@@ -298,17 +297,17 @@ Contact information for trusted advisors`;
     );
 
     if (await challengeSection.first().isVisible({ timeout: 5000 }).catch(() => false)) {
-      console.log('✅ Micro-task challenge section found');
+      // console.log('✅ Micro-task challenge section found');
 
       // Try to interact with first challenge
       const startChallenge = page.locator('button:has-text("Start"), button:has-text("Begin")').first();
       if (await startChallenge.isVisible({ timeout: 3000 }).catch(() => false)) {
         await startChallenge.click();
-        console.log('✅ Started first challenge');
+        // console.log('✅ Started first challenge');
       }
     }
 
-    console.log('✅ Dashboard experience verified');
+          // console.log('✅ Dashboard experience verified');
   });
 
   test('Navigation: Explore Core Features', async () => {
@@ -331,7 +330,7 @@ Contact information for trusted advisors`;
             fullPage: true
           });
 
-          console.log(`✅ Navigated to ${section.name}`);
+          // console.log(`✅ Navigated to ${section.name}`);
 
           // Navigate back to dashboard
           await page.goto('/dashboard');
@@ -368,14 +367,14 @@ Contact information for trusted advisors`;
           fullPage: true
         });
 
-        console.log('✅ Successfully signed out');
+        // console.log('✅ Successfully signed out');
       }
     } else {
-      console.log('⚠️ User menu not found, might need different approach');
+              // console.log('⚠️ User menu not found, might need different approach');
     }
 
-    console.log('🎉 Complete Guardian Journey finished!');
-    console.log(`📧 Test user: ${testUser.email}`);
+    // console.log('🎉 Complete Guardian Journey finished!');
+    // console.log(`📧 Test user: ${testUser.email}`);
   });
 });
 
@@ -394,6 +393,6 @@ test.describe('🔄 Returning Guardian Experience', () => {
       // Implementation depends on testing strategy
     });
 
-    console.log('✅ Returning user experience placeholder');
+    // console.log('✅ Returning user experience placeholder');
   });
 });

@@ -37,7 +37,7 @@ export const usePerformanceMonitoring = () => {
           setMetrics(prev => ({ ...prev, LCP: lastEntry.startTime }));
         }
       });
-      
+
       observer.observe({ entryTypes: ['largest-contentful-paint'] });
       return () => observer.disconnect();
     }
@@ -54,7 +54,7 @@ export const usePerformanceMonitoring = () => {
           }
         });
       });
-      
+
       observer.observe({ entryTypes: ['first-input'] });
       return () => observer.disconnect();
     }
@@ -72,7 +72,7 @@ export const usePerformanceMonitoring = () => {
         }
         setMetrics(prev => ({ ...prev, CLS: clsValue }));
       });
-      
+
       observer.observe({ entryTypes: ['layout-shift'] });
       return () => observer.disconnect();
     }
@@ -88,7 +88,7 @@ export const usePerformanceMonitoring = () => {
           setMetrics(prev => ({ ...prev, FCP: firstEntry.startTime }));
         }
       });
-      
+
       observer.observe({ entryTypes: ['paint'] });
       return () => observer.disconnect();
     }
@@ -106,7 +106,7 @@ export const usePerformanceMonitoring = () => {
           }
         });
       });
-      
+
       observer.observe({ entryTypes: ['navigation'] });
       return () => observer.disconnect();
     }

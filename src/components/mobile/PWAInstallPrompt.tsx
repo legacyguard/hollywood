@@ -1,7 +1,7 @@
 /**
  * PWA Install Prompt Component
  * Phase 7: Mobile & PWA Capabilities
- * 
+ *
  * Provides a user-friendly interface for PWA installation
  * with device-specific instructions and fallback options.
  */
@@ -33,7 +33,8 @@ import {
   Info,
   ExternalLink
 } from 'lucide-react';
-import { pwaService, PWACapabilities } from '@/lib/pwa/pwaService';
+import type { PWACapabilities } from '@/lib/pwa/pwaService';
+import { pwaService } from '@/lib/pwa/pwaService';
 import { cn } from '@/lib/utils';
 
 interface PWAInstallPromptProps {
@@ -42,8 +43,8 @@ interface PWAInstallPromptProps {
   showMinimal?: boolean;
 }
 
-export default function PWAInstallPrompt({ 
-  className, 
+export default function PWAInstallPrompt({
+  className,
   autoShow = false,
   showMinimal = false
 }: PWAInstallPromptProps) {
@@ -57,7 +58,7 @@ export default function PWAInstallPrompt({
     const updateCapabilities = () => {
       const caps = pwaService.getCapabilities();
       setCapabilities(caps);
-      
+
       if (autoShow && caps.canInstall && !dismissed && !caps.isInstalled) {
         setIsVisible(true);
       }
@@ -86,7 +87,7 @@ export default function PWAInstallPrompt({
     try {
       setIsInstalling(true);
       const installed = await pwaService.installPWA();
-      
+
       if (installed) {
         setIsVisible(false);
         setDismissed(true);
@@ -261,7 +262,7 @@ export default function PWAInstallPrompt({
               )}
               <span>{capabilities?.isOnline ? 'Online' : 'Offline'}</span>
             </div>
-            
+
             <div className="flex items-center gap-2">
               <Shield className="h-4 w-4 text-blue-500" />
               <span>Secure Context</span>
@@ -288,7 +289,7 @@ export default function PWAInstallPrompt({
                 </>
               )}
             </Button>
-            
+
             <Button variant="outline" onClick={handleDismiss}>
               Later
             </Button>

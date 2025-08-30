@@ -25,9 +25,9 @@ export default function LegacyPage() {
     setShowWillWizard(true);
   };
 
-  const handleWillComplete = (willData: WillData & { willType: WillType }) => {
+  const handleWillComplete = (_willData: WillData & { willType: WillType }) => {
     // TODO: Save will to database
-    console.log('Will completed:', willData);
+    // console.log('Will completed:', willData);
     toast.success(
       'Will created successfully! You can access it from your vault.'
     );

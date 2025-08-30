@@ -26,7 +26,7 @@ export interface EmergencyConfig {
 // Emergency system constants
 export const EMERGENCY_PRIORITIES = {
   LOW: 'low',
-  MEDIUM: 'medium', 
+  MEDIUM: 'medium',
   HIGH: 'high',
   URGENT: 'urgent',
 } as const;
@@ -93,12 +93,12 @@ export const EmergencyUtils = {
    * Generate emergency message based on personality
    */
   generateEmergencyMessage: (
-    type: string, 
+    type: string,
     personalityMode: 'empathetic' | 'pragmatic' | 'adaptive',
     recipientName?: string
   ): { title: string; message: string } => {
     const name = recipientName || 'Guardian';
-    
+
     const templates = {
       empathetic: {
         activation: {

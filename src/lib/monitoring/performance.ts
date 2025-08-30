@@ -89,7 +89,7 @@ export class PerformanceMonitor {
       const observer = new PerformanceObserver((list) => {
         const entries = list.getEntries();
         const lastEntry = entries[entries.length - 1] as PerformanceEntry;
-        
+
         const metric: WebVitalsMetric = {
           name: 'LCP',
           value: lastEntry.startTime,
@@ -146,12 +146,12 @@ export class PerformanceMonitor {
     if (!('PerformanceObserver' in window)) return;
 
     let clsValue = 0;
-    let clsEntries: PerformanceEntry[] = [];
+    const clsEntries: PerformanceEntry[] = [];
 
     try {
       const observer = new PerformanceObserver((list) => {
         const entries = list.getEntries();
-        
+
         entries.forEach((entry: any) => {
           if (!entry.hadRecentInput) {
             clsValue += entry.value;
@@ -188,7 +188,7 @@ export class PerformanceMonitor {
       const observer = new PerformanceObserver((list) => {
         const entries = list.getEntries();
         const fcpEntry = entries.find(entry => entry.name === 'first-contentful-paint');
-        
+
         if (fcpEntry) {
           const metric: WebVitalsMetric = {
             name: 'FCP',
@@ -215,7 +215,7 @@ export class PerformanceMonitor {
    */
   private trackTTFB(): void {
     const navigationEntries = performance.getEntriesByType('navigation') as PerformanceNavigationTiming[];
-    
+
     if (navigationEntries.length > 0) {
       const nav = navigationEntries[0];
       const ttfb = nav.responseStart - nav.requestStart;
@@ -244,7 +244,7 @@ export class PerformanceMonitor {
 
     const trackRouteChange = (route: string) => {
       const startTime = performance.now();
-      
+
       // Wait for next frame to measure load time
       requestAnimationFrame(() => {
         const loadTime = performance.now() - startTime;
@@ -258,7 +258,7 @@ export class PerformanceMonitor {
         };
 
         this.routePerformance.push(routeMetric);
-        
+
         // Keep only last 50 route metrics
         if (this.routePerformance.length > 50) {
           this.routePerformance.shift();
@@ -293,7 +293,7 @@ export class PerformanceMonitor {
     try {
       const observer = new PerformanceObserver((list) => {
         const entries = list.getEntries();
-        
+
         entries.forEach((entry: any) => {
           // Track slow resources (> 1 second)
           if (entry.duration > 1000) {
@@ -324,7 +324,7 @@ export class PerformanceMonitor {
     };
 
     this.userTimings.push(timing);
-    
+
     // Also use Performance API if available
     if ('mark' in performance) {
       performance.mark(name);
@@ -336,7 +336,7 @@ export class PerformanceMonitor {
    */
   measure(name: string, startMark: string, endMark?: string): number {
     const startTiming = this.userTimings.find(t => t.name === startMark);
-    const endTime = endMark 
+    const endTime = endMark
       ? this.userTimings.find(t => t.name === endMark)?.startTime || performance.now()
       : performance.now();
 
@@ -412,7 +412,7 @@ export class PerformanceMonitor {
    */
   private getRating(metricName: keyof PerformanceConfig['thresholds'], value: number): 'good' | 'needs-improvement' | 'poor' {
     const thresholds = this.config.thresholds[metricName];
-    
+
     if (value <= thresholds.good) return 'good';
     if (value <= thresholds.poor) return 'needs-improvement';
     return 'poor';
@@ -430,7 +430,7 @@ export class PerformanceMonitor {
    */
   private getNavigationType(): WebVitalsMetric['navigationType'] {
     const nav = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
-    
+
     if (nav) {
       switch (nav.type) {
         case 'reload': return 'reload';
@@ -438,7 +438,7 @@ export class PerformanceMonitor {
         default: return 'navigate';
       }
     }
-    
+
     return 'navigate';
   }
 
@@ -463,7 +463,7 @@ export class PerformanceMonitor {
     if (Math.random() > this.config.sampleRate) return;
 
     const metrics = this.getMetrics();
-    
+
     // In development, log to console
     if (import.meta.env.NODE_ENV === 'development') {
       console.info('📊 Performance metrics:', metrics);
@@ -494,12 +494,12 @@ export class PerformanceMonitor {
       // For now, store in localStorage
       const storedMetrics = JSON.parse(localStorage.getItem('legacyguard-metrics') || '[]');
       storedMetrics.push(payload);
-      
+
       // Keep only last 50 metric reports
       if (storedMetrics.length > 50) {
         storedMetrics.shift();
       }
-      
+
       localStorage.setItem('legacyguard-metrics', JSON.stringify(storedMetrics));
     }
   }

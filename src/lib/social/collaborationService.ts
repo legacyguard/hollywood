@@ -1,7 +1,7 @@
 /**
  * Collaboration Service
  * Phase 8: Social Collaboration & Family Features
- * 
+ *
  * Handles family member management, document sharing, permissions,
  * collaboration workflows, and family group management.
  */
@@ -71,7 +71,7 @@ export interface CollaborationActivity {
 export type FamilyRole = 'owner' | 'admin' | 'member' | 'guardian' | 'beneficiary';
 export type MemberStatus = 'invited' | 'active' | 'suspended' | 'left';
 export type ShareStatus = 'pending' | 'accepted' | 'rejected' | 'expired' | 'revoked';
-export type ActivityType = 
+export type ActivityType =
   | 'member_invited'
   | 'member_joined'
   | 'member_left'
@@ -148,7 +148,7 @@ export class CollaborationService {
     try {
       // Get user's family groups
       const families = await this.getUserFamilies(userId);
-      
+
       if (families.length > 0) {
         this.currentFamilyId = families[0].id;
       }
@@ -220,7 +220,7 @@ export class CollaborationService {
       });
 
       this.currentFamilyId = family.id;
-      
+
       // Log activity
       await this.logActivity({
         type: 'settings_changed',
@@ -358,10 +358,10 @@ export class CollaborationService {
         target_id: invite.id,
         target_type: 'member',
         message: `Invited ${data.email} as ${data.role}`,
-        metadata: { 
-          email: data.email, 
+        metadata: {
+          email: data.email,
           role: data.role,
-          relationship: data.relationship 
+          relationship: data.relationship
         }
       });
 
@@ -501,9 +501,9 @@ export class CollaborationService {
         target_id: data.documentId,
         target_type: 'document',
         message: `Shared document with ${data.recipients.length} member(s)`,
-        metadata: { 
+        metadata: {
           recipients: data.recipients.length,
-          permissions: data.permissions 
+          permissions: data.permissions
         }
       });
 
@@ -520,7 +520,7 @@ export class CollaborationService {
   async getSharedDocuments(userId: string, type: 'shared_by_me' | 'shared_with_me' = 'shared_with_me'): Promise<DocumentShare[]> {
     try {
       const column = type === 'shared_by_me' ? 'shared_by' : 'shared_with';
-      
+
       const { data: shares, error } = await supabase
         .from('document_shares')
         .select(`
@@ -562,14 +562,14 @@ export class CollaborationService {
   async updateMemberRole(memberId: string, role: FamilyRole, permissions?: Partial<FamilyPermissions>): Promise<void> {
     try {
       const updateData: any = { role };
-      
+
       if (permissions) {
         const { data: currentMember } = await supabase
           .from('family_members')
           .select('permissions')
           .eq('id', memberId)
           .single();
-        
+
         updateData.permissions = { ...currentMember?.permissions, ...permissions };
       }
 
@@ -603,7 +603,7 @@ export class CollaborationService {
       // Update status to left instead of deleting
       const { error } = await supabase
         .from('family_members')
-        .update({ 
+        .update({
           status: 'left',
           left_at: new Date().toISOString()
         })
@@ -740,7 +740,7 @@ export class CollaborationService {
 
   private async addFamilyMember(familyId: string, data: Partial<FamilyMember>): Promise<void> {
     const userId = (await supabase.auth.getUser()).data.user?.id;
-    
+
     const memberData = {
       user_id: userId,
       family_id: familyId,
@@ -770,7 +770,7 @@ export class CollaborationService {
   private async logActivity(data: Omit<CollaborationActivity, 'id' | 'user_id' | 'created_at' | 'read_by'>): Promise<void> {
     try {
       const userId = (await supabase.auth.getUser()).data.user?.id;
-      
+
       const activityData = {
         ...data,
         user_id: userId,
@@ -809,10 +809,10 @@ export class CollaborationService {
     // Subscribe to family activities
     supabase
       .channel('family_activities')
-      .on('postgres_changes', 
-        { 
-          event: 'INSERT', 
-          schema: 'public', 
+      .on('postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
           table: 'collaboration_activities',
           filter: `family_id=eq.${this.currentFamilyId}`
         },

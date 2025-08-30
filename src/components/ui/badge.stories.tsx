@@ -252,7 +252,7 @@ export const BadgeList: Story = {
           </Badge>
         </div>
       </div>
-      
+
       <div className="flex items-center justify-between p-4 border rounded-lg">
         <div>
           <h3 className="font-medium">Power of Attorney</h3>

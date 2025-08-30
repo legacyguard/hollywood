@@ -301,7 +301,7 @@ export default function Scene4Prepare({
                   transition={{  delay: 1.2, duration: 0.6  }}
                 >
                   <Button
-                    variant={"outline" as any}
+                    variant="outline"
                     onClick={onBack}
                     className='border-primary/20 hover:border-primary/40'
                     disabled={progress > 50}

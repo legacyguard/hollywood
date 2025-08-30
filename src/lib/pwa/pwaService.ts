@@ -1,7 +1,7 @@
 /**
  * PWA Service for Mobile & Progressive Web App Capabilities
  * Phase 7: Mobile & PWA Capabilities
- * 
+ *
  * Handles service worker registration, push notifications,
  * offline functionality, and PWA installation prompts.
  */
@@ -63,21 +63,21 @@ export class PWAService {
     try {
       // Register service worker
       await this.registerServiceWorker();
-      
+
       // Setup install prompt listener
       this.setupInstallPromptListener();
-      
+
       // Setup online/offline listeners
       this.setupNetworkListeners();
-      
+
       // Check notification permission
       this.checkNotificationPermission();
-      
+
       // Setup push notifications if supported
       if (this.serviceWorkerRegistration) {
         await this.setupPushNotifications();
       }
-      
+
       console.log('PWA Service initialized successfully');
     } catch (error) {
       console.error('PWA Service initialization failed:', error);
@@ -178,7 +178,7 @@ export class PWAService {
     try {
       // Check for existing subscription
       this.pushSubscription = await this.serviceWorkerRegistration.pushManager.getSubscription();
-      
+
       if (this.pushSubscription) {
         console.log('Existing push subscription found');
         // Send subscription to server
@@ -259,13 +259,13 @@ export class PWAService {
     try {
       await this.installPrompt.prompt();
       const { outcome } = await this.installPrompt.userChoice;
-      
+
       if (outcome === 'accepted') {
         this.installPrompt = null;
         this.notifyInstallListeners(false);
         return true;
       }
-      
+
       return false;
     } catch (error) {
       console.error('PWA installation failed:', error);
@@ -309,17 +309,17 @@ export class PWAService {
     try {
       // Generate VAPID keys (in production, these should be from your server)
       const vapidPublicKey = 'BEl62iUYgUivxIkv69yViEuiBIa40HI46fkfLx-tGSoHJNFG4K2wSh6GK8rSkZn1JzJFkEO1Y5bN5VGpLPAJlMc';
-      
+
       const subscription = await this.serviceWorkerRegistration.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: this.urlBase64ToUint8Array(vapidPublicKey)
       });
 
       this.pushSubscription = subscription;
-      
+
       // Send subscription to server
       await this.sendSubscriptionToServer(subscription);
-      
+
       return {
         endpoint: subscription.endpoint,
         keys: {
@@ -371,13 +371,13 @@ export class PWAService {
     try {
       await this.pushSubscription.unsubscribe();
       this.pushSubscription = null;
-      
+
       // Notify server about unsubscription
       await fetch('/api/notifications/unsubscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' }
       });
-      
+
       console.log('Unsubscribed from push notifications');
     } catch (error) {
       console.error('Push unsubscription failed:', error);
@@ -422,7 +422,7 @@ export class PWAService {
 
     return new Promise((resolve, reject) => {
       const messageChannel = new MessageChannel();
-      
+
       messageChannel.port1.onmessage = (event) => {
         if (event.data.success) {
           resolve();
@@ -447,7 +447,7 @@ export class PWAService {
     }
 
     await this.serviceWorkerRegistration.update();
-    
+
     if (this.serviceWorkerRegistration.waiting) {
       this.serviceWorkerRegistration.waiting.postMessage({ type: 'SKIP_WAITING' });
       window.location.reload();
@@ -553,7 +553,7 @@ export class PWAService {
    */
   getNetworkInfo(): { type?: string; effectiveType?: string; downlink?: number; rtt?: number } {
     const connection = (navigator as any).connection || (navigator as any).mozConnection || (navigator as any).webkitConnection;
-    
+
     if (!connection) {
       return {};
     }

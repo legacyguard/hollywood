@@ -20,7 +20,7 @@ export function LandingPage() {
   const ctaButtonRef = useRef<HTMLButtonElement>(null);
 
   // Generate random values once and memoize them to prevent re-renders
-  const heroStars = useMemo(() => 
+  const heroStars = useMemo(() =>
     Array.from({ length: 50 }, (_, i) => ({
       id: i,
       size: Math.random() * 2 + 1,
@@ -29,10 +29,10 @@ export function LandingPage() {
       y: Math.random() * 100,
       animationDelay: Math.random() * 3,
       duration: 2 + Math.random() * 2
-    })), 
+    })),
   []);
 
-  const finalStars = useMemo(() => 
+  const finalStars = useMemo(() =>
     Array.from({ length: 30 }, (_, i) => ({
       id: i,
       size: Math.random() * 2 + 1,
@@ -41,10 +41,10 @@ export function LandingPage() {
       y: Math.random() * 100,
       animationDelay: Math.random() * 3,
       duration: 3 + Math.random() * 2
-    })), 
+    })),
   []);
 
-  const chaosIcons = useMemo(() => 
+  const chaosIcons = useMemo(() =>
     Array.from({ length: 12 }, (_, i) => ({
       id: i,
       icon: ['📄', '🔑', '%', '📋', '💾', '⚠️', '📅', '🔒', '📊', '💳', '📧', '🏠'][i],
@@ -79,7 +79,7 @@ export function LandingPage() {
       const scrollHeight = document.documentElement.scrollHeight;
       const scrollTop = document.documentElement.scrollTop;
       const clientHeight = document.documentElement.clientHeight;
-      
+
       // Check if we're near the bottom (within 200px)
       if (scrollHeight - scrollTop - clientHeight < 200) {
         if (!hasScrolledToBottom) {
@@ -118,7 +118,7 @@ export function LandingPage() {
 
   return (
     <div className='min-h-screen bg-slate-900'>
-      <MetaTags 
+      <MetaTags
         title="Secure Your Family's Future | Document Management & Legacy Planning"
         description="Transform life's chaos into clarity with LegacyGuard. Securely organize documents, protect your family with AI-powered guidance, and create your lasting legacy. Start free today."
         url="https://legacyguard.app"
@@ -514,7 +514,7 @@ export function LandingPage() {
                     </div>
                     <Icon name={"file-text" as any} className='absolute bottom-2 right-2 w-6 h-6 text-blue-400' />
                   </motion.div>
-                  
+
                   <motion.div
                     className='absolute w-32 h-40 bg-white/80 rounded-lg shadow-lg rotate-3 right-8 top-6'
                     initial={{  y: -100, opacity: 0  }}
@@ -529,7 +529,7 @@ export function LandingPage() {
                     </div>
                     <Icon name={"shield" as any} className='absolute bottom-2 right-2 w-6 h-6 text-purple-400' />
                   </motion.div>
-                  
+
                   {/* Central folder */}
                   <motion.div
                     className='relative z-10'
@@ -585,7 +585,7 @@ export function LandingPage() {
                     viewport={{  once: true  }}
                     style={{ clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)' }}
                   />
-                  
+
                   {/* Central family */}
                   <motion.div
                     className='relative z-10'
@@ -597,7 +597,7 @@ export function LandingPage() {
                     <div className='w-20 h-20 bg-white/90 rounded-full shadow-xl flex items-center justify-center'>
                       <Icon name={"users" as any} className='w-10 h-10 text-emerald-600' />
                     </div>
-                    
+
                     {/* Protection ring */}
                     <motion.div
                       className='absolute inset-0 border-4 border-emerald-400 rounded-full'
@@ -607,7 +607,7 @@ export function LandingPage() {
                       viewport={{  once: true  }}
                     />
                   </motion.div>
-                  
+
                   {/* Guardian figures */}
                   {[
                     { x: -60, y: -20, delay: 0.9 },
@@ -627,7 +627,7 @@ export function LandingPage() {
                       <Icon name={"user" as any} className='w-5 h-5 text-white' />
                     </motion.div>
                   ))}
-                  
+
                   {/* Connection lines */}
                   <motion.svg
                     className='absolute inset-0 w-full h-full'
@@ -1394,7 +1394,7 @@ export function LandingPage() {
               />
             ))}
           </div>
-          
+
           <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
             <div className='relative'>
               <div className='absolute inset-0 rounded-full w-16 h-16 -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2'

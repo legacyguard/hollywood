@@ -48,7 +48,7 @@ export const LegalPageLayout = ({ children, title, description }: LegalPageLayou
           <p className='text-xl text-muted-foreground mb-8'>
             Last updated: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
           </p>
-          
+
           {/* Legal content with consistent styling */}
           <div className='prose prose-lg max-w-none text-foreground prose-headings:text-primary prose-strong:text-foreground prose-p:text-foreground prose-li:text-foreground'>
             {children}

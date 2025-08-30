@@ -1,7 +1,7 @@
 /**
  * Responsive Layout Component
  * Phase 7: Mobile & PWA Capabilities
- * 
+ *
  * Adaptive layout that switches between desktop sidebar navigation
  * and mobile bottom navigation based on screen size.
  */
@@ -45,7 +45,7 @@ export default function ResponsiveLayout({
     checkPWAInstallation();
 
     window.addEventListener('resize', checkScreenSize);
-    
+
     return () => {
       window.removeEventListener('resize', checkScreenSize);
     };
@@ -68,7 +68,7 @@ export default function ResponsiveLayout({
                 <h1 className="text-lg font-semibold text-gray-900">LegacyGuard</h1>
               </div>
             </div>
-            
+
             {/* PWA Install Prompt - Minimal */}
             {showPWAPrompt && !isInstalled && (
               <PWAInstallPrompt showMinimal />
@@ -97,7 +97,7 @@ export default function ResponsiveLayout({
   return (
     <DashboardLayout className={className}>
       {children}
-      
+
       {/* Desktop PWA Install Prompt */}
       {showPWAPrompt && !isInstalled && (
         <div className="fixed bottom-4 right-4 z-50">
@@ -124,7 +124,7 @@ export function useResponsive() {
     const updateScreenSize = () => {
       const width = window.innerWidth;
       const height = window.innerHeight;
-      
+
       setScreenSize({
         isMobile: width < 768,
         isTablet: width >= 768 && width < 1024,
@@ -136,7 +136,7 @@ export function useResponsive() {
 
     updateScreenSize();
     window.addEventListener('resize', updateScreenSize);
-    
+
     return () => window.removeEventListener('resize', updateScreenSize);
   }, []);
 
@@ -167,22 +167,22 @@ export function useDeviceCapabilities() {
     const updateCapabilities = () => {
       // Touch screen detection
       const hasTouchScreen = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-      
+
       // Hover support detection
       const hasHoverSupport = window.matchMedia('(hover: hover)').matches;
-      
+
       // Motion support detection
       const hasMotionSupport = 'DeviceMotionEvent' in window;
-      
+
       // Geolocation support
       const hasGeolocation = 'geolocation' in navigator;
-      
+
       // Camera support
       const hasCamera = 'mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices;
-      
+
       // Notifications support
       const hasNotifications = 'Notification' in window;
-      
+
       // Network connection info
       const connection = (navigator as any).connection || (navigator as any).mozConnection || (navigator as any).webkitConnection;
       const connectionInfo = connection ? {
@@ -214,7 +214,7 @@ export function useDeviceCapabilities() {
     // Listen for network changes
     window.addEventListener('online', updateCapabilities);
     window.addEventListener('offline', updateCapabilities);
-    
+
     // Listen for connection changes
     const connection = (navigator as any).connection;
     if (connection) {
@@ -247,7 +247,7 @@ export function useSafeArea() {
   useEffect(() => {
     const updateSafeArea = () => {
       const computedStyle = getComputedStyle(document.documentElement);
-      
+
       setSafeArea({
         top: parseInt(computedStyle.getPropertyValue('--safe-area-inset-top') || '0'),
         right: parseInt(computedStyle.getPropertyValue('--safe-area-inset-right') || '0'),
@@ -283,7 +283,7 @@ export function useOrientation() {
     const updateOrientation = () => {
       const angle = (screen as any).orientation?.angle || window.orientation || 0;
       const isPortrait = window.innerHeight > window.innerWidth;
-      
+
       setOrientation({
         angle,
         isPortrait,

@@ -1,7 +1,7 @@
 /**
  * Document Sharing Component
  * Phase 8: Social Collaboration & Family Features
- * 
+ *
  * Advanced document sharing interface with granular permissions,
  * expiration settings, access tracking, and collaboration features.
  */
@@ -87,10 +87,10 @@ interface DocumentSharingProps {
   className?: string;
 }
 
-export default function DocumentSharing({ 
-  documentId, 
-  documentName, 
-  className 
+export default function DocumentSharing({
+  documentId,
+  documentName,
+  className
 }: DocumentSharingProps) {
   const [sharedByMe, setSharedByMe] = useState<DocumentShare[]>([]);
   const [sharedWithMe, setSharedWithMe] = useState<DocumentShare[]>([]);
@@ -331,12 +331,12 @@ function ShareDocumentTab({
                 <Switch
                   id="can-view"
                   checked={permissions.canView}
-                  onCheckedChange={(checked) => 
+                  onCheckedChange={(checked) =>
                     setPermissions(prev => ({ ...prev, canView: checked }))
                   }
                 />
               </div>
-              
+
               <div className="flex items-center justify-between">
                 <div>
                   <Label htmlFor="can-download">Can Download</Label>
@@ -345,12 +345,12 @@ function ShareDocumentTab({
                 <Switch
                   id="can-download"
                   checked={permissions.canDownload}
-                  onCheckedChange={(checked) => 
+                  onCheckedChange={(checked) =>
                     setPermissions(prev => ({ ...prev, canDownload: checked }))
                   }
                 />
               </div>
-              
+
               <div className="flex items-center justify-between">
                 <div>
                   <Label htmlFor="can-comment">Can Comment</Label>
@@ -359,12 +359,12 @@ function ShareDocumentTab({
                 <Switch
                   id="can-comment"
                   checked={permissions.canComment}
-                  onCheckedChange={(checked) => 
+                  onCheckedChange={(checked) =>
                     setPermissions(prev => ({ ...prev, canComment: checked }))
                   }
                 />
               </div>
-              
+
               <div className="flex items-center justify-between">
                 <div>
                   <Label htmlFor="can-reshare">Can Reshare</Label>
@@ -373,7 +373,7 @@ function ShareDocumentTab({
                 <Switch
                   id="can-reshare"
                   checked={permissions.canReshare}
-                  onCheckedChange={(checked) => 
+                  onCheckedChange={(checked) =>
                     setPermissions(prev => ({ ...prev, canReshare: checked }))
                   }
                 />
@@ -418,8 +418,8 @@ function ShareDocumentTab({
           </div>
 
           {/* Share Button */}
-          <Button 
-            onClick={handleShare} 
+          <Button
+            onClick={handleShare}
             disabled={selectedMembers.length === 0}
             className="w-full"
           >
@@ -432,10 +432,10 @@ function ShareDocumentTab({
   );
 }
 
-function SharedWithMeTab({ 
-  shares, 
-  onUpdate 
-}: { 
+function SharedWithMeTab({
+  shares,
+  onUpdate
+}: {
   shares: DocumentShare[];
   onUpdate: () => void;
 }) {
@@ -475,7 +475,7 @@ function SharedWithMeTab({
                       {share.documents?.type || 'Unknown'}
                     </Badge>
                   </div>
-                  
+
                   <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
                     <div className="flex items-center gap-1">
                       <Users className="h-3 w-3" />
@@ -531,10 +531,10 @@ function SharedWithMeTab({
   );
 }
 
-function SharedByMeTab({ 
-  shares, 
-  onUpdate 
-}: { 
+function SharedByMeTab({
+  shares,
+  onUpdate
+}: {
   shares: DocumentShare[];
   onUpdate: () => void;
 }) {
@@ -563,14 +563,14 @@ function SharedByMeTab({
                     <Badge variant="outline">
                       {share.documents?.type || 'Unknown'}
                     </Badge>
-                    <Badge 
+                    <Badge
                       variant={share.status === 'accepted' ? 'default' : 'secondary'}
                       className="capitalize"
                     >
                       {share.status}
                     </Badge>
                   </div>
-                  
+
                   <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
                     <div className="flex items-center gap-1">
                       <Users className="h-3 w-3" />
@@ -664,7 +664,7 @@ function ShareDocumentDialog({
       message,
       expiresAt: expiresAt?.toISOString()
     });
-    
+
     // Reset form
     setSelectedMembers([]);
     setPermissions({
@@ -687,14 +687,14 @@ function ShareDocumentDialog({
             Share "{documentName || 'document'}" with family members
           </DialogDescription>
         </DialogHeader>
-        
+
         <div className="space-y-4">
           {/* Quick share options */}
           <div>
             <Label>Quick Actions</Label>
             <div className="flex gap-2 mt-2">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 size="sm"
                 onClick={() => {
                   setSelectedMembers(familyMembers.map(m => m.id));
@@ -703,8 +703,8 @@ function ShareDocumentDialog({
               >
                 Share with All
               </Button>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 size="sm"
                 onClick={() => {
                   const guardians = familyMembers.filter(m => m.role === 'guardian').map(m => m.id);

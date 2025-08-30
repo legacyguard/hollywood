@@ -202,16 +202,16 @@ export default function Scene3Key({
               animate={{  opacity: 1, y: 0  }}
               transition={{  delay: 1, duration: 0.6  }}
             >
-              <Button
-                variant={"outline" as any}
-                onClick={onBack}
-                className='border-primary/20 hover:border-primary/40'
-              >
+                              <Button
+                  variant="outline"
+                  onClick={onBack}
+                  className='border-primary/20 hover:border-primary/40'
+                >
                 ← Back
               </Button>
               <div className='flex gap-3'>
                 <Button
-                  variant={"outline" as any}
+                  variant="outline"
                   onClick={() => setName('')}
                   className='border-muted hover:border-muted-foreground/40'
                 >

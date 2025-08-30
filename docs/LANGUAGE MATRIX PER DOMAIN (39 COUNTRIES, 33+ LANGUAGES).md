@@ -1,6 +1,6 @@
 # LANGUAGE MATRIX PER DOMAIN (39 COUNTRIES, 33+ LANGUAGES)
 
-## TIER 1 LAUNCH MARKETS (€19/month)
+## TIER 1 LAUNCH MARKETS 
 
 🇪🇺 **GERMANY** (legacyguard.de):
 
@@ -242,7 +242,7 @@
 - Norwegian (NO) - cultural connections
 - Ukrainian (UK) - diaspora
 
-## TIER 2 EXPANSION MARKETS (€14/month)
+## TIER 2 EXPANSION MARKETS 
 
 🇷🇴 **ROMANIA** (legacyguard.ro):
 

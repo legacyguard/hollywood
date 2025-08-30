@@ -4,7 +4,7 @@ import { useAuth } from '@clerk/clerk-react';
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 // API Response types
-interface ApiResponse<T = any> {
+interface _ApiResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: string;
@@ -16,7 +16,7 @@ export class ApiError extends Error {
   constructor(
     message: string,
     public status?: number,
-    public data?: any
+    public data?: unknown
   ) {
     super(message);
     this.name = 'ApiError';
@@ -24,7 +24,7 @@ export class ApiError extends Error {
 }
 
 // Generic fetch wrapper with error handling
-async function fetchApi<T = any>(
+async function fetchApi<T = unknown>(
   endpoint: string,
   options: RequestInit = {},
   token?: string | null
@@ -53,7 +53,7 @@ async function fetchApi<T = any>(
       if (!response.ok) {
         throw new ApiError(`HTTP error! status: ${response.status}`, response.status);
       }
-      return response.text() as any;
+      return response.text() as unknown;
     }
 
     const data = await response.json();

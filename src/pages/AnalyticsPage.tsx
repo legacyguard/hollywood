@@ -1,7 +1,7 @@
 /**
  * Analytics Page
  * Phase 6: AI Intelligence & Document Analysis
- * 
+ *
  * Main page for document insights and analytics dashboard
  */
 

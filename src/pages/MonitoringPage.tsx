@@ -9,21 +9,21 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { 
-  Activity, 
-  AlertCircle, 
-  CheckCircle2, 
-  Clock, 
-  Database, 
-  HardDrive, 
-  Network, 
-  RefreshCw,
-  Settings,
-  TrendingUp,
-  Users,
-  Zap
+import {
+  Activity,
+  AlertCircle,
+  CheckCircle2,
+  Clock,
+  // Database,
+  // HardDrive,
+  // Network,
+  // RefreshCw,
+  // Settings,
+  // TrendingUp,
+  // Users,
+  // Zap
 } from 'lucide-react';
-import { runHealthCheck, getLastHealthStatus } from '@/lib/monitoring/healthCheck';
+import { runHealthCheck } from '@/lib/monitoring/healthCheck';
 import { getPerformanceMetrics } from '@/lib/monitoring/performance';
 import { captureError } from '@/lib/monitoring/sentry';
 import { analyticsService } from '@/lib/monitoring/analytics';
@@ -67,10 +67,10 @@ export default function MonitoringPage() {
 
   useEffect(() => {
     refreshData();
-    
+
     // Auto-refresh every 30 seconds
     const interval = setInterval(refreshData, 30000);
-    
+
     return () => clearInterval(interval);
   }, []);
 
@@ -130,8 +130,8 @@ export default function MonitoringPage() {
             <div className="text-sm text-muted-foreground">
               Last updated: {lastRefresh.toLocaleTimeString()}
             </div>
-            <Button 
-              onClick={refreshData} 
+            <Button
+              onClick={refreshData}
               disabled={isRefreshing}
               size="sm"
               variant="outline"
@@ -176,8 +176,8 @@ export default function MonitoringPage() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {performanceData?.memory ? 
-                  `${Math.round((performanceData.memory.usedJSHeapSize / performanceData.memory.jsHeapSizeLimit) * 100)}%` 
+                {performanceData?.memory ?
+                  `${Math.round((performanceData.memory.usedJSHeapSize / performanceData.memory.jsHeapSizeLimit) * 100)}%`
                   : '--'
                 }
               </div>
@@ -191,8 +191,8 @@ export default function MonitoringPage() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {sessionData ? 
-                  formatUptime(Date.now() - sessionData.startTime) 
+                {sessionData ?
+                  formatUptime(Date.now() - sessionData.startTime)
                   : '--'
                 }
               </div>

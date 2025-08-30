@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogDescription, 
-  DialogFooter, 
-  DialogHeader, 
-  DialogTitle, 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
   DialogTrigger,
   DialogClose
 } from './dialog';
@@ -236,7 +236,7 @@ export const InformationDialog: Story = {
               </div>
             </dl>
           </div>
-          
+
           <div className="rounded-lg border p-4">
             <h4 className="text-sm font-medium mb-2">Beneficiaries</h4>
             <ul className="space-y-2 text-sm">
@@ -292,7 +292,7 @@ export const SettingsDialog: Story = {
               Configure
             </Button>
           </div>
-          
+
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
               <Label>Email Notifications</Label>
@@ -304,7 +304,7 @@ export const SettingsDialog: Story = {
               Configure
             </Button>
           </div>
-          
+
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
               <Label>Version History</Label>
@@ -346,26 +346,26 @@ export const LargeDialog: Story = {
           <section>
             <h3 className="font-medium mb-2">1. Introduction</h3>
             <p className="text-sm text-muted-foreground">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor 
-              incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud 
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+              incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
               exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
             </p>
           </section>
-          
+
           <section>
             <h3 className="font-medium mb-2">2. User Responsibilities</h3>
             <p className="text-sm text-muted-foreground">
-              Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
-              fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in 
+              Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+              fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
               culpa qui officia deserunt mollit anim id est laborum.
             </p>
           </section>
-          
+
           <section>
             <h3 className="font-medium mb-2">3. Privacy Policy</h3>
             <p className="text-sm text-muted-foreground">
-              Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque 
-              laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi 
+              Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque
+              laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi
               architecto beatae vitae dicta sunt explicabo.
             </p>
           </section>

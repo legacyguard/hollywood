@@ -7,7 +7,7 @@ import { generateTestUser } from './helpers/auth';
  */
 
 test.describe('🎭 Working Guardian Journey', () => {
-  const testUser = generateTestUser();
+  const _testUser = generateTestUser();
   let page: Page;
 
   test.describe.configure({ mode: 'serial' });
@@ -22,12 +22,12 @@ test.describe('🎭 Working Guardian Journey', () => {
     });
     page = await context.newPage();
 
-    // Basic console logging
-    page.on('console', msg => {
-      if (msg.type() === 'error') {
-        console.log('Browser Error:', msg.text());
-      }
-    });
+      // Basic console logging
+  page.on('console', msg => {
+    if (msg.type() === 'error') {
+      // console.log('Browser Error:', msg.text());
+    }
+  });
   });
 
   test.afterAll(async () => {
@@ -35,7 +35,7 @@ test.describe('🎭 Working Guardian Journey', () => {
   });
 
   test('Step 1: Landing Page - Verify Basic Elements', async () => {
-    console.log('🚀 Starting with user:', testUser.email);
+    // console.log('🚀 Starting with user:', testUser.email);
 
     await page.goto('/');
     await page.waitForLoadState('networkidle');
@@ -56,7 +56,7 @@ test.describe('🎭 Working Guardian Journey', () => {
 
     await expect(ctaButton.first()).toBeVisible({ timeout: 10000 });
 
-    console.log('✅ Landing page basic elements verified');
+          // console.log('✅ Landing page basic elements verified');
   });
 
   test('Step 2: Navigate to Authentication', async () => {
@@ -88,16 +88,16 @@ test.describe('🎭 Working Guardian Journey', () => {
     let authFound = false;
     for (const selector of authElements) {
       if (await page.locator(selector).isVisible({ timeout: 3000 }).catch(() => false)) {
-        console.log(`✅ Auth element found: ${selector}`);
+        // console.log(`✅ Auth element found: ${selector}`);
         authFound = true;
         break;
       }
     }
 
     if (!authFound) {
-      console.log('⚠️ Auth elements not immediately visible, checking URL...');
+      // console.log('⚠️ Auth elements not immediately visible, checking URL...');
       const currentUrl = page.url();
-      console.log('Current URL:', currentUrl);
+      // console.log('Current URL:', currentUrl);
 
       // If we're not on an auth page, try to navigate to sign-up
       if (!currentUrl.includes('sign-up') && !currentUrl.includes('sign-in')) {
@@ -106,7 +106,7 @@ test.describe('🎭 Working Guardian Journey', () => {
       }
     }
 
-    console.log('✅ Navigation to authentication completed');
+          // console.log('✅ Navigation to authentication completed');
   });
 
   test('Step 3: Explore Main Navigation', async () => {
@@ -125,12 +125,12 @@ test.describe('🎭 Working Guardian Journey', () => {
       'a[href*="legacy"]'
     ];
 
-    let navFound = false;
+    let _navFound = false;
     for (const selector of navElements) {
       const elements = await page.locator(selector).count();
       if (elements > 0) {
-        console.log(`✅ Navigation elements found: ${elements} x ${selector}`);
-        navFound = true;
+        // console.log(`✅ Navigation elements found: ${elements} x ${selector}`);
+        _navFound = true;
       }
     }
 
@@ -139,7 +139,7 @@ test.describe('🎭 Working Guardian Journey', () => {
       fullPage: true
     });
 
-    console.log(navFound ? '✅ Navigation exploration completed' : '⚠️ Navigation structure needs investigation');
+          // console.log(navFound ? '✅ Navigation exploration completed' : '⚠️ Navigation structure needs investigation');
   });
 
   test('Step 4: Test Responsive Design', async () => {
@@ -168,7 +168,7 @@ test.describe('🎭 Working Guardian Journey', () => {
     // Back to desktop
     await page.setViewportSize({ width: 1280, height: 720 });
 
-    console.log('✅ Responsive design test completed');
+          // console.log('✅ Responsive design test completed');
   });
 
   test('Step 5: Performance and Accessibility Check', async () => {
@@ -176,19 +176,19 @@ test.describe('🎭 Working Guardian Journey', () => {
     await page.waitForLoadState('networkidle');
 
     // Check for basic accessibility elements
-    const accessibilityElements = await Promise.all([
+    const _accessibilityElements = await Promise.all([
       page.locator('[alt]').count(), // Images with alt text
       page.locator('button[aria-label]').count(), // Buttons with aria-label
       page.locator('[role]').count(), // Elements with roles
       page.locator('h1, h2, h3, h4, h5, h6').count() // Heading structure
     ]);
 
-    console.log('Accessibility metrics:', {
-      imagesWithAlt: accessibilityElements[0],
-      buttonsWithAriaLabel: accessibilityElements[1],
-      elementsWithRoles: accessibilityElements[2],
-      headings: accessibilityElements[3]
-    });
+    // console.log('Accessibility metrics:', {
+    //   imagesWithAlt: accessibilityElements[0],
+    //   buttonsWithAriaLabel: accessibilityElements[1],
+    //   elementsWithRoles: accessibilityElements[2],
+    //   headings: accessibilityElements[3]
+    // });
 
     // Basic performance check - page load time
     const performanceTiming = await page.evaluate(() => {
@@ -199,12 +199,12 @@ test.describe('🎭 Working Guardian Journey', () => {
       };
     });
 
-    console.log('Performance metrics:', performanceTiming);
+    // console.log('Performance metrics:', performanceTiming);
 
     // Assert reasonable load times (less than 5 seconds)
     expect(performanceTiming.loadComplete).toBeLessThan(5000);
 
-    console.log('✅ Performance and accessibility check completed');
+    // console.log('✅ Performance and accessibility check completed');
   });
 
   test('Step 6: Error Handling', async () => {
@@ -223,7 +223,7 @@ test.describe('🎭 Working Guardian Journey', () => {
 
     expect(is404 || hasContent).toBeTruthy();
 
-    console.log(is404 ? '✅ 404 page found' : '✅ Fallback content displayed');
+    // console.log(is404 ? '✅ 404 page found' : '✅ Fallback content displayed');
   });
 
   test('Step 7: Core Features Accessibility', async () => {
@@ -246,16 +246,16 @@ test.describe('🎭 Working Guardian Journey', () => {
             path: `tests/screenshots/working-07-${route.name.toLowerCase().replace(' ', '-')}.png`,
             fullPage: true
           });
-          console.log(`✅ ${route.name} accessible`);
+          // console.log(`✅ ${route.name} accessible`);
         } else {
-          console.log(`⚠️ ${route.name} has minimal content`);
+          // console.log(`⚠️ ${route.name} has minimal content`);
         }
-      } catch (error) {
-        console.log(`⚠️ ${route.name} not accessible:`, error);
+      } catch (_error) {
+        // console.log(`⚠️ ${route.name} not accessible:`, _error);
       }
     }
 
-    console.log('✅ Core features accessibility test completed');
+    // console.log('✅ Core features accessibility test completed');
   });
 
   test('Step 8: Final Summary', async () => {
@@ -277,9 +277,9 @@ test.describe('🎭 Working Guardian Journey', () => {
       imageCount: await page.locator('img').count()
     };
 
-    console.log('🎉 Guardian Journey Test Complete!');
-    console.log('Final page info:', pageInfo);
-    console.log(`📧 Test user: ${testUser.email}`);
+    // console.log('🎉 Guardian Journey Test Complete!');
+    // console.log('Final page info:', pageInfo);
+    // console.log(`📧 Test user: ${testUser.email}`);
 
     // Basic assertions to ensure the test actually tested something meaningful
     expect(pageInfo.title).toBeTruthy();

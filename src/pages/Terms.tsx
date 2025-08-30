@@ -27,7 +27,7 @@ export function TermsPage() {
             </motion.div>
 
             <Button
-              variant={"ghost" as any}
+              variant="ghost"
               onClick={() => navigate('/')}
               className='text-green-700 hover:text-green-900'
             >

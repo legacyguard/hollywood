@@ -1,7 +1,7 @@
 /**
  * Push Notifications Service
  * Phase 7: Mobile & PWA Capabilities
- * 
+ *
  * Handles push notification subscriptions, local notifications,
  * and notification interactions with proper permission management.
  */
@@ -53,7 +53,7 @@ export interface NotificationPreferences {
   };
 }
 
-export type NotificationType = 
+export type NotificationType =
   | 'document_uploaded'
   | 'document_expired'
   | 'security_alert'
@@ -93,10 +93,10 @@ export class PushNotificationService {
     try {
       // Load preferences from storage
       await this.loadPreferences();
-      
+
       // Check existing subscription
       await this.checkExistingSubscription();
-      
+
       console.log('Push notification service initialized');
     } catch (error) {
       console.error('Push notification initialization failed:', error);
@@ -118,7 +118,7 @@ export class PushNotificationService {
 
       // Request permission
       const permission = await Notification.requestPermission();
-      
+
       if (permission !== 'granted') {
         console.log('Notification permission denied');
         return false;
@@ -126,17 +126,17 @@ export class PushNotificationService {
 
       // Subscribe to push notifications
       const subscriptionData = await pwaService.subscribeToPushNotifications();
-      
+
       // Store subscription details
       await this.storeSubscription(subscriptionData);
-      
+
       // Update preferences to enabled
       this.preferences.enabled = true;
       await this.savePreferences();
-      
+
       console.log('Successfully subscribed to push notifications');
       return true;
-      
+
     } catch (error) {
       console.error('Failed to subscribe to notifications:', error);
       captureError(error instanceof Error ? error : new Error(String(error)), {
@@ -152,14 +152,14 @@ export class PushNotificationService {
   async unsubscribe(): Promise<boolean> {
     try {
       await pwaService.unsubscribeFromPushNotifications();
-      
+
       this.subscription = null;
       this.preferences.enabled = false;
       await this.savePreferences();
-      
+
       console.log('Successfully unsubscribed from push notifications');
       return true;
-      
+
     } catch (error) {
       console.error('Failed to unsubscribe from notifications:', error);
       return false;
@@ -244,10 +244,10 @@ export class PushNotificationService {
 
     // Customize config with data
     const finalConfig = this.customizeNotificationConfig(config, data);
-    
+
     // Show local notification
     const notification = await this.showLocalNotification(finalConfig);
-    
+
     return notification !== null;
   }
 
@@ -276,18 +276,18 @@ export class PushNotificationService {
       case 'document_expired':
       case 'backup_completed':
         return this.preferences.documentUpdates;
-      
+
       case 'security_alert':
         return this.preferences.securityAlerts;
-      
+
       case 'family_access_requested':
       case 'share_received':
         return this.preferences.familyUpdates;
-      
+
       case 'system_update':
       case 'maintenance_scheduled':
         return this.preferences.systemMaintenance;
-      
+
       default:
         return true;
     }
@@ -309,7 +309,7 @@ export class PushNotificationService {
     if (startTime > endTime) {
       return currentTime >= startTime || currentTime <= endTime;
     }
-    
+
     // Handle same-day quiet hours (e.g., 12:00 to 14:00)
     return currentTime >= startTime && currentTime <= endTime;
   }
@@ -323,14 +323,14 @@ export class PushNotificationService {
     // Focus or open app window
     try {
       const clients = await self.clients?.matchAll({ type: 'window', includeUncontrolled: true }) || [];
-      
+
       if (clients.length > 0) {
         // Focus existing window
         const client = clients[0];
         if (client.focus) {
           await client.focus();
         }
-        
+
         // Navigate if needed
         if (notification.data?.url && client.navigate) {
           await client.navigate(notification.data.url);
@@ -360,7 +360,7 @@ export class PushNotificationService {
           { action: 'dismiss', title: 'Dismiss' }
         ]
       },
-      
+
       document_expired: {
         title: 'Document Expiring Soon',
         body: 'One of your important documents is expiring within 30 days.',
@@ -371,7 +371,7 @@ export class PushNotificationService {
           { action: 'extend', title: 'Extend' }
         ]
       },
-      
+
       security_alert: {
         title: 'Security Alert',
         body: 'Unusual activity detected on your account.',
@@ -383,7 +383,7 @@ export class PushNotificationService {
           { action: 'secure', title: 'Secure Account' }
         ]
       },
-      
+
       family_access_requested: {
         title: 'Family Access Request',
         body: 'A family member has requested access to your emergency documents.',
@@ -394,7 +394,7 @@ export class PushNotificationService {
           { action: 'deny', title: 'Deny' }
         ]
       },
-      
+
       system_update: {
         title: 'System Update Available',
         body: 'A new version of LegacyGuard is available with security improvements.',
@@ -404,13 +404,13 @@ export class PushNotificationService {
           { action: 'later', title: 'Later' }
         ]
       },
-      
+
       backup_completed: {
         title: 'Backup Completed',
         body: 'Your documents have been successfully backed up.',
         tag: 'backup-complete'
       },
-      
+
       share_received: {
         title: 'Document Shared',
         body: 'A family member has shared a document with you.',
@@ -420,7 +420,7 @@ export class PushNotificationService {
           { action: 'dismiss', title: 'Dismiss' }
         ]
       },
-      
+
       maintenance_scheduled: {
         title: 'Scheduled Maintenance',
         body: 'LegacyGuard will be undergoing maintenance tonight at 2 AM UTC.',

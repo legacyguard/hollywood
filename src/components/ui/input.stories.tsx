@@ -215,9 +215,9 @@ export const ErrorState: Story = {
   render: () => (
     <div className="grid w-full max-w-sm items-center gap-1.5">
       <Label htmlFor="error">Email</Label>
-      <Input 
-        type="email" 
-        id="error" 
+      <Input
+        type="email"
+        id="error"
         placeholder="john@example.com"
         className="border-destructive focus-visible:ring-destructive"
         aria-invalid="true"
@@ -241,7 +241,7 @@ export const FormExample: Story = {
           <Input id="form-name" className="pl-8" placeholder="John Doe" />
         </div>
       </div>
-      
+
       <div className="grid gap-1.5">
         <Label htmlFor="form-email">Email</Label>
         <div className="relative">
@@ -249,7 +249,7 @@ export const FormExample: Story = {
           <Input id="form-email" className="pl-8" type="email" placeholder="john@example.com" />
         </div>
       </div>
-      
+
       <div className="grid gap-1.5">
         <Label htmlFor="form-phone">Phone</Label>
         <div className="relative">
@@ -257,7 +257,7 @@ export const FormExample: Story = {
           <Input id="form-phone" className="pl-8" type="tel" placeholder="+1 (555) 000-0000" />
         </div>
       </div>
-      
+
       <div className="grid gap-1.5">
         <Label htmlFor="form-card">Card Number</Label>
         <div className="relative">

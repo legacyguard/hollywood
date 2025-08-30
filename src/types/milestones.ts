@@ -125,7 +125,7 @@ export interface MilestoneTriggerEvent {
   familyMemberId?: string;
   reviewId?: string;
   actionType?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   timestamp: string;
 }
 

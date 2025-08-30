@@ -129,14 +129,14 @@ export const PerformanceDashboard: React.FC = () => {
               onClick={() => setIsExpanded(!isExpanded)}
               className="h-8 w-8 p-0"
             >
-              <Icon 
-                name={isExpanded ? 'chevron-up' : 'chevron-down'} 
-                className="h-4 w-4" 
+              <Icon
+                name={isExpanded ? 'chevron-up' : 'chevron-down'}
+                className="h-4 w-4"
               />
             </Button>
           </div>
         </div>
-        
+
         {/* Performance Score */}
         <div className="flex items-center gap-4">
           <div className="flex-1">
@@ -176,13 +176,13 @@ export const PerformanceDashboard: React.FC = () => {
                   <Card key={metric.name} className="p-4">
                     <div className="flex items-center justify-between mb-2">
                       <div className="font-medium text-sm">{metric.name}</div>
-                      <Badge 
-                        variant="secondary" 
+                      <Badge
+                        variant="secondary"
                         className={getStatusColor(metric.status)}
                       >
-                        <Icon 
-                          name={getStatusIcon(metric.status)} 
-                          className="h-3 w-3 mr-1" 
+                        <Icon
+                          name={getStatusIcon(metric.status)}
+                          className="h-3 w-3 mr-1"
                         />
                         {metric.status.replace('-', ' ')}
                       </Badge>

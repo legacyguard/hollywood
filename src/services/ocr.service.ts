@@ -205,17 +205,17 @@ export class OcrService {
   }
 
   // Calculate confidence score from OCR response
-  private calculateConfidence(annotation: any): number {
+  private calculateConfidence(annotation: Record<string, unknown>): number {
     // Simple confidence calculation based on detected blocks
     if (!annotation.pages?.length) return 0;
 
     let totalConfidence = 0;
     let blockCount = 0;
 
-    annotation.pages.forEach((page: any) => {
-      page.blocks?.forEach((block: any) => {
+    annotation.pages.forEach((page: Record<string, unknown>) => {
+      page.blocks?.forEach((block: Record<string, unknown>) => {
         if (block?.confidence) {
-          totalConfidence += block?.confidence;
+          totalConfidence += (block.confidence as number) || 0;
           blockCount++;
         }
       });

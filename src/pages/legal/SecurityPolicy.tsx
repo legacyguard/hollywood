@@ -9,8 +9,8 @@ export function SecurityPolicy() {
       <section className='mb-8'>
         <h2 className='text-2xl font-semibold mb-4'>Our Security Commitment</h2>
         <p className='leading-relaxed mb-4'>
-          At LegacyGuard, security is not just a feature—it's the foundation of everything we do. We understand that you're 
-          entrusting us with your most sensitive and personal information, and we've built our platform with bank-level 
+          At LegacyGuard, security is not just a feature—it's the foundation of everything we do. We understand that you're
+          entrusting us with your most sensitive and personal information, and we've built our platform with bank-level
           security standards to protect it.
         </p>
       </section>

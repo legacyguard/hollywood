@@ -6,14 +6,14 @@
 export class LegacyGuardError extends Error {
   public readonly code: string;
   public readonly statusCode: number;
-  public readonly details?: Record<string, any>;
+  public readonly details?: Record<string, unknown>;
   public readonly timestamp: Date;
 
   constructor(
     message: string,
     code: string,
     statusCode: number = 500,
-    details?: Record<string, any>
+    details?: Record<string, unknown>
   ) {
     super(message);
     this.name = 'LegacyGuardError';
@@ -36,14 +36,14 @@ export class LegacyGuardError extends Error {
 }
 
 export class ValidationError extends LegacyGuardError {
-  constructor(message: string, details?: Record<string, any>) {
+  constructor(message: string, details?: Record<string, unknown>) {
     super(message, 'VALIDATION_ERROR', 400, details);
     this.name = 'ValidationError';
   }
 }
 
 export class AuthenticationError extends LegacyGuardError {
-  constructor(message: string = 'Authentication required', details?: Record<string, any>) {
+  constructor(message: string = 'Authentication required', details?: Record<string, unknown>) {
     super(message, 'AUTHENTICATION_ERROR', 401, details);
     this.name = 'AuthenticationError';
   }
@@ -69,7 +69,7 @@ export class NotFoundError extends LegacyGuardError {
 }
 
 export class ConflictError extends LegacyGuardError {
-  constructor(message: string, details?: Record<string, any>) {
+  constructor(message: string, details?: Record<string, unknown>) {
     super(message, 'CONFLICT', 409, details);
     this.name = 'ConflictError';
   }
@@ -88,14 +88,14 @@ export class RateLimitError extends LegacyGuardError {
 }
 
 export class DatabaseError extends LegacyGuardError {
-  constructor(message: string, details?: Record<string, any>) {
+  constructor(message: string, details?: Record<string, unknown>) {
     super(message, 'DATABASE_ERROR', 500, details);
     this.name = 'DatabaseError';
   }
 }
 
 export class ExternalServiceError extends LegacyGuardError {
-  constructor(service: string, message: string, details?: Record<string, any>) {
+  constructor(service: string, message: string, details?: Record<string, unknown>) {
     super(
       `External service ${service} error: ${message}`,
       'EXTERNAL_SERVICE_ERROR',

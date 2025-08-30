@@ -331,7 +331,7 @@ export class InsightsService {
     return { immediate, potential };
   }
 
-  private generateRecommendations(analysis: DocumentAnalysis['extractedValue'], document: any) {
+  private generateRecommendations(analysis: DocumentAnalysis['extractedValue'], _document: any) {
     const recommendations = [];
 
     if (analysis.completenessPercentage < 90) {
@@ -378,7 +378,7 @@ export class InsightsService {
     };
   }
 
-  private calculateFamilyImpactMetrics(familyMembers: any[], documents: any[]): InsightCalculation['familyImpact'] {
+  private calculateFamilyImpactMetrics(familyMembers: any[], _documents: any[]): InsightCalculation['familyImpact'] {
     return {
       members: familyMembers.length,
       scenarios: ['Sudden incapacity', 'Estate distribution', 'Healthcare decisions', 'Financial management'],
@@ -439,7 +439,7 @@ export class InsightsService {
     };
   }
 
-  private calculateMemberImpact(member: any, documents: any[]): string {
+  private calculateMemberImpact(member: any, _documents: any[]): string {
     if (member.role === 'spouse') {
       return 'Primary beneficiary with full access to estate planning decisions';
     } else if (member.role === 'child') {

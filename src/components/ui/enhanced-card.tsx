@@ -41,7 +41,7 @@ const cardVariants = cva(
 )
 
 // Card interaction types
-export type CardInteractionType = 
+export type CardInteractionType =
   | 'lift'
   | 'tilt'
   | 'glow'
@@ -61,36 +61,36 @@ export interface EnhancedCardProps
   personalityAdapt?: boolean
   hoverEffect?: boolean
   clickEffect?: boolean
-  
+
   // Content props
   title?: string
   subtitle?: string
   description?: string
   icon?: keyof IconMap
   image?: string
-  
+
   // State props
   loading?: boolean
   disabled?: boolean
   selected?: boolean
   highlighted?: boolean
-  
+
   // Interaction props
   href?: string
   onClick?: () => void
   onDoubleClick?: () => void
   onHover?: (isHovered: boolean) => void
-  
+
   // Visual props
   glowColor?: string
   borderGradient?: boolean
   backgroundPattern?: boolean
-  
+
   // Layout props
   expandable?: boolean
   collapsible?: boolean
   expanded?: boolean
-  
+
   // Animation timing
   staggerDelay?: number
   animationDuration?: number
@@ -142,14 +142,14 @@ const EnhancedCard = React.forwardRef<HTMLDivElement, EnhancedCardProps>(
     const rotateY = useTransform(mouseX, [-100, 100], [-5, 5])
 
     // Auto-adapt variant based on personality
-    const adaptedVariant = personalityAdapt && variant === 'default' 
-      ? personality.mode 
+    const adaptedVariant = personalityAdapt && variant === 'default'
+      ? personality.mode
       : variant
 
     // Get personality-specific animation
     const getPersonalityAnimation = (): CardInteractionType => {
       if (!personalityAdapt) return animationType
-      
+
       switch (personality.mode) {
         case 'empathetic':
           return 'glow'
@@ -167,13 +167,13 @@ const EnhancedCard = React.forwardRef<HTMLDivElement, EnhancedCardProps>(
     // Handle mouse movement for tilt effects
     const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
       if (currentAnimation !== 'tilt' || disabled) return
-      
+
       const rect = cardRef.current?.getBoundingClientRect()
       if (!rect) return
-      
+
       const centerX = rect.left + rect.width / 2
       const centerY = rect.top + rect.height / 2
-      
+
       mouseX.set(event.clientX - centerX)
       mouseY.set(event.clientY - centerY)
     }
@@ -182,7 +182,7 @@ const EnhancedCard = React.forwardRef<HTMLDivElement, EnhancedCardProps>(
     const handleHover = (hovered: boolean) => {
       setIsHovered(hovered)
       onHover?.(hovered)
-      
+
       if (!hovered && currentAnimation === 'tilt') {
         mouseX.set(0)
         mouseY.set(0)
@@ -192,7 +192,7 @@ const EnhancedCard = React.forwardRef<HTMLDivElement, EnhancedCardProps>(
     // Get animation variants
     const getCardVariants = () => {
       const baseVariants = {
-        initial: { 
+        initial: {
           scale: 1,
           rotateX: 0,
           rotateY: 0,
@@ -275,7 +275,7 @@ const EnhancedCard = React.forwardRef<HTMLDivElement, EnhancedCardProps>(
             ...baseVariants,
             hover: {
               y: [0, -10, 0],
-              transition: { 
+              transition: {
                 duration: animationDuration * 2,
                 ease: "easeOut"
               }
@@ -315,10 +315,10 @@ const EnhancedCard = React.forwardRef<HTMLDivElement, EnhancedCardProps>(
         <CardComponent
           ref={ref || cardRef}
           className={cn(
-            cardVariants({ 
-              variant: adaptedVariant, 
-              size, 
-              interactive: interactiveLevel 
+            cardVariants({
+              variant: adaptedVariant,
+              size,
+              interactive: interactiveLevel
             }),
             selected && "ring-2 ring-primary ring-offset-2",
             highlighted && "ring-2 ring-yellow-400 ring-offset-2",
@@ -368,7 +368,7 @@ const EnhancedCard = React.forwardRef<HTMLDivElement, EnhancedCardProps>(
           <div className="relative">
             {/* Header section */}
             {(title || subtitle || icon || image) && (
-              <motion.div 
+              <motion.div
                 className="flex items-start space-x-4 mb-4"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -460,9 +460,9 @@ const EnhancedCard = React.forwardRef<HTMLDivElement, EnhancedCardProps>(
               animate={{ scale: isHovered ? 1 : 0 }}
               transition={{ duration: 0.2 }}
             >
-              <Icon 
-                name={href ? "external-link" : "arrow-right"} 
-                className="w-4 h-4 text-muted-foreground" 
+              <Icon
+                name={href ? "external-link" : "arrow-right"}
+                className="w-4 h-4 text-muted-foreground"
               />
             </motion.div>
           )}
@@ -475,7 +475,7 @@ const EnhancedCard = React.forwardRef<HTMLDivElement, EnhancedCardProps>(
 EnhancedCard.displayName = "EnhancedCard"
 
 // Specialized card components
-export const PersonalityCard = React.forwardRef<HTMLDivElement, 
+export const PersonalityCard = React.forwardRef<HTMLDivElement,
   Omit<EnhancedCardProps, 'personalityAdapt'>
 >((props, ref) => (
   <EnhancedCard

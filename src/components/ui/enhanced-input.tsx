@@ -41,14 +41,14 @@ export interface EnhancedInputProps
   animateOnFocus?: boolean
   animateOnError?: boolean
   animateLabel?: boolean
-  
-  // Field state props  
+
+  // Field state props
   state?: FieldState
   loading?: boolean
   success?: boolean
   error?: boolean | string
   warning?: boolean | string
-  
+
   // Icon props
   leftIcon?: keyof IconMap
   rightIcon?: keyof IconMap
@@ -56,20 +56,20 @@ export interface EnhancedInputProps
   successIcon?: keyof IconMap
   errorIcon?: keyof IconMap
   warningIcon?: keyof IconMap
-  
+
   // Enhanced label and help text
   label?: string
   helpText?: string
   successText?: string
   errorText?: string
   warningText?: string
-  
+
   // Visual enhancements
   showCharacterCount?: boolean
   maxLength?: number
   rippleEffect?: boolean
   glowEffect?: boolean
-  
+
   // Stagger animation delay
   staggerDelay?: number
 }
@@ -93,7 +93,7 @@ const EnhancedInput = React.forwardRef<HTMLInputElement, EnhancedInputProps>(
     rightIcon,
     loadingIcon = "loader",
     successIcon = "check-circle",
-    errorIcon = "alert-circle", 
+    errorIcon = "alert-circle",
     warningIcon = "alert-triangle",
     label,
     helpText,
@@ -121,7 +121,7 @@ const EnhancedInput = React.forwardRef<HTMLInputElement, EnhancedInputProps>(
     const currentState: FieldState = React.useMemo(() => {
       if (loading) return 'loading'
       if (error) return 'error'
-      if (warning) return 'warning'  
+      if (warning) return 'warning'
       if (success) return 'success'
       if (isFocused) return 'focused'
       if (hasValue) return 'filled'
@@ -185,15 +185,15 @@ const EnhancedInput = React.forwardRef<HTMLInputElement, EnhancedInputProps>(
         const rect = inputRef.current.getBoundingClientRect()
         const x = event.clientX - rect.left
         const y = event.clientY - rect.top
-        
-        const newRipple = { 
-          id: Date.now() + Math.random(), 
-          x, 
-          y 
+
+        const newRipple = {
+          id: Date.now() + Math.random(),
+          x,
+          y
         }
-        
+
         setRipples(prev => [...prev, newRipple])
-        
+
         setTimeout(() => {
           setRipples(prev => prev.filter(r => r.id !== newRipple.id))
         }, 600)
@@ -203,7 +203,7 @@ const EnhancedInput = React.forwardRef<HTMLInputElement, EnhancedInputProps>(
     // Get personality-specific animation type
     const getPersonalityAnimation = () => {
       if (!personalityAdapt) return 'focus-ring'
-      
+
       switch (personality.mode) {
         case 'empathetic':
           return 'hover-glow'
@@ -234,7 +234,7 @@ const EnhancedInput = React.forwardRef<HTMLInputElement, EnhancedInputProps>(
             <label className={cn(
               "block text-sm font-medium transition-colors duration-200",
               currentState === 'error' && "text-red-600",
-              currentState === 'warning' && "text-yellow-600", 
+              currentState === 'warning' && "text-yellow-600",
               currentState === 'success' && "text-green-600",
               currentState === 'focused' && personalityAdapt && {
                 'text-pink-600': personality.mode === 'empathetic',
@@ -273,8 +273,8 @@ const EnhancedInput = React.forwardRef<HTMLInputElement, EnhancedInputProps>(
                           height: 20,
                         }}
                         initial={{ scale: 0, opacity: 0.3 }}
-                        animate={{ 
-                          scale: 3, 
+                        animate={{
+                          scale: 3,
                           opacity: 0,
                           transition: { duration: 0.6, ease: "easeOut" }
                         }}
@@ -356,14 +356,14 @@ const EnhancedInput = React.forwardRef<HTMLInputElement, EnhancedInputProps>(
                     <motion.div
                       key={getCurrentStateIcon()}
                       initial={{ opacity: 0, scale: 0.8, rotate: -90 }}
-                      animate={{ 
-                        opacity: 1, 
+                      animate={{
+                        opacity: 1,
                         scale: 1,
                         rotate: 0,
                         ...(loading && { rotate: 360 })
                       }}
                       exit={{ opacity: 0, scale: 0.8, rotate: 90 }}
-                      transition={{ 
+                      transition={{
                         duration: 0.3,
                         rotate: {
                           duration: loading ? 1 : 0.3,
@@ -372,15 +372,15 @@ const EnhancedInput = React.forwardRef<HTMLInputElement, EnhancedInputProps>(
                         }
                       }}
                     >
-                      <Icon 
-                        name={getCurrentStateIcon()!} 
+                      <Icon
+                        name={getCurrentStateIcon()!}
                         className={cn(
                           "w-4 h-4",
                           currentState === 'error' && "text-red-500",
                           currentState === 'warning' && "text-yellow-500",
                           currentState === 'success' && "text-green-500",
                           currentState === 'loading' && "text-primary animate-spin"
-                        )} 
+                        )}
                       />
                     </motion.div>
                   )}
@@ -429,7 +429,7 @@ const EnhancedInput = React.forwardRef<HTMLInputElement, EnhancedInputProps>(
 EnhancedInput.displayName = "EnhancedInput"
 
 // Specialized input components
-export const PersonalityInput = React.forwardRef<HTMLInputElement, 
+export const PersonalityInput = React.forwardRef<HTMLInputElement,
   Omit<EnhancedInputProps, 'personalityAdapt'>
 >((props, ref) => (
   <EnhancedInput
@@ -444,7 +444,7 @@ export const PersonalityInput = React.forwardRef<HTMLInputElement,
 
 PersonalityInput.displayName = "PersonalityInput"
 
-export const ValidatedInput = React.forwardRef<HTMLInputElement, 
+export const ValidatedInput = React.forwardRef<HTMLInputElement,
   EnhancedInputProps & {
     validation?: (value: string) => { valid: boolean, message?: string }
   }

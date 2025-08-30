@@ -1,7 +1,7 @@
 import { ClerkProvider as BaseClerkProvider } from '@clerk/clerk-react';
 
 // Available authentication strategies
-const authStrategies = {
+const _authStrategies = {
   oauth_google: true,
   oauth_github: false, // disabled for now
   password: true, // enable password-based auth

@@ -1,8 +1,9 @@
-# TARGET MARKETS (39 countries with dedicated domains)
+# TARGET MARKETS (40 countries with dedicated domains)
 
-## TIER 1 LAUNCH MARKETS (Western & Central Europe) - €19/month
+## TIER 1 LAUNCH MARKETS (Western & Central Europe)
 
-- legacyguard.eu - Germany
+- legacyguard.eu - All Countries Not Covered In The List Below
+- legacyguard.de - Germany
 - legacyguard.fr - France
 - legacyguard.es - Spain
 - legacyguard.it - Italy
@@ -32,7 +33,7 @@
 - legacyguard.no - Norway
 - legacyguard.is - Iceland
 
-## TIER 2 EXPANSION MARKETS (Eastern Europe & Balkans) - €14/month
+## TIER 2 EXPANSION MARKETS (Eastern Europe & Balkans)
 
 - legacyguard.ro - Romania
 - legacyguard.bg - Bulgaria
@@ -49,17 +50,15 @@
 
 # IMPLEMENTATION STRATEGY
 
-## PHASE 1: TIER 1 MARKETS (Months 1-6)
+## PHASE 1: TIER 1 MARKETS
 
 - Launch with 29 Western & Central European countries
-- Single pricing: €19/month
 - Focus on high-value markets with strong purchasing power
 - Validate product-market fit and gather testimonials
 
-## PHASE 2: TIER 2 EXPANSION (Months 7-12)
+## PHASE 2: TIER 2 EXPANSION
 
 - Add 10 Eastern European and Balkan countries
-- Competitive pricing: €14/month
 - Leverage success stories from Tier 1 markets
 - Localised marketing and partnerships
 

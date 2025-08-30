@@ -1,10 +1,10 @@
 {
-  "timestamp": "2025-08-30T06:31:03.219Z",
+  "timestamp": "2025-08-30T11:16:22.558Z",
   "stats": {
     "imagesOptimized": 1,
     "webpGenerated": 1,
     "avifGenerated": 1,
-    "bundlesAnalyzed": 145,
+    "bundlesAnalyzed": 146,
     "performanceIssues": 1
   },
   "recommendations": [

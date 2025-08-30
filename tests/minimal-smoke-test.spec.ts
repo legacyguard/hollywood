@@ -254,11 +254,11 @@ test.describe('Minimal Smoke Tests', () => {
       'button svg' // Often mobile menus are icon buttons
     ];
 
-    let hasMobileElements = false;
+    const _hasMobileElements = false;
     for (const selector of mobileMenuSelectors) {
       const count = await page.locator(selector).count();
       if (count > 0) {
-        hasMobileElements = true;
+        // hasMobileElements = true;
         break;
       }
     }

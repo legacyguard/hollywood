@@ -24,8 +24,7 @@ import { SharedFamilyCalendar } from '@/components/family/SharedFamilyCalendar';
 import { FamilyDocumentSharing } from '@/components/family/FamilyDocumentSharing';
 import { FamilyViralGrowth } from '@/components/family/FamilyViralGrowth';
 import { FamilyPlanUpgrade } from '@/components/family/FamilyPlanUpgrade';
-import type { FamilyMember, FamilyProtectionStatus} from '@/types/family';
-import { FAMILY_PLANS } from '@/types/family';
+import { FAMILY_PLANS, type FamilyMember, type FamilyProtectionStatus} from '@/types/family';
 import { familyService } from '@/services/familyService';
 
 export default function Family() {
@@ -35,8 +34,8 @@ export default function Family() {
   const [currentPlan, setCurrentPlan] = useState<'free' | 'family' | 'premium'>('free');
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
-  const [showInviteFlow, setShowInviteFlow] = useState(false);
-  const [showPlanUpgrade, setShowPlanUpgrade] = useState(false);
+  const [_showInviteFlow, _setShowInviteFlow] = useState(false);
+  const [_showPlanUpgrade, _setShowPlanUpgrade] = useState(false);
   const [documentsCount, setDocumentsCount] = useState(0);
 
   useEffect(() => {
@@ -90,7 +89,7 @@ export default function Family() {
   const handlePlanUpgrade = (newPlan: 'free' | 'family' | 'premium') => {
     setCurrentPlan(newPlan);
     // In real app, this would handle payment processing
-    console.log(`Upgrading to ${newPlan} plan`);
+    // console.log(`Upgrading to ${newPlan} plan`);
   };
 
   if (isLoading) {

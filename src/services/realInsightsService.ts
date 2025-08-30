@@ -8,7 +8,7 @@ import type {
   QuickInsight,
   DocumentAnalysis,
   FamilyImpactStatement,
-  InsightCalculation,
+  // InsightCalculation,
   InsightFilters,
   InsightAnalytics
 } from '@/types/insights';
@@ -58,8 +58,8 @@ class RealInsightsService {
         },
         recommendations
       };
-    } catch (error) {
-      console.error('Document analysis failed:', error);
+    } catch (_error) {
+      console.error('Document analysis failed:', _error);
       throw error;
     }
   }
@@ -97,8 +97,8 @@ class RealInsightsService {
       await this.storeFamilyImpactStatement(statement);
 
       return statement;
-    } catch (error) {
-      console.error('Failed to generate family impact statement:', error);
+    } catch (_error) {
+      console.error('Failed to generate family impact statement:', _error);
       throw error;
     }
   }
@@ -518,7 +518,7 @@ class RealInsightsService {
         .eq('is_active', true);
 
       return data || [];
-    } catch (error) {
+    } catch (_error) {
       console.warn('Family members table not available, using fallback');
       return [];
     }

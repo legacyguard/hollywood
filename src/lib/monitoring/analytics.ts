@@ -117,7 +117,7 @@ export class AnalyticsService {
     this.clearStoredData();
     this.session = null;
     this.eventQueue = [];
-    
+
     if (this.flushTimer) {
       clearInterval(this.flushTimer);
       this.flushTimer = undefined;
@@ -131,14 +131,14 @@ export class AnalyticsService {
     if (!this.consentGiven) return;
 
     this.userProperties = { ...this.userProperties, ...properties };
-    
+
     // Store user properties (without PII)
     const sanitizedProps = {
       personalityMode: properties.personalityMode,
       isNewUser: properties.isNewUser,
       sessionCount: properties.sessionCount
     };
-    
+
     localStorage.setItem('legacyguard-user-props', JSON.stringify(sanitizedProps));
   }
 
@@ -287,7 +287,7 @@ export class AnalyticsService {
 
     // Update session count
     const sessionCount = (this.userProperties.sessionCount || 0) + 1;
-    this.setUser({ 
+    this.setUser({
       sessionCount,
       lastSeen: Date.now(),
       isNewUser: sessionCount === 1
@@ -402,7 +402,7 @@ export class AnalyticsService {
    * Check if Do Not Track is enabled
    */
   private isDoNotTrackEnabled(): boolean {
-    return navigator.doNotTrack === '1' || 
+    return navigator.doNotTrack === '1' ||
            (window as any).doNotTrack === '1' ||
            (navigator as any).msDoNotTrack === '1';
   }

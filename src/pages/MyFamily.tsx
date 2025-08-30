@@ -2,7 +2,7 @@ import React, { useState, useCallback, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
+// import { Separator } from '@/components/ui/separator';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   Users,
@@ -10,7 +10,7 @@ import {
   Heart,
   FileText,
   UserPlus,
-  Settings,
+  // Settings,
   AlertCircle,
   CheckCircle,
   Crown,

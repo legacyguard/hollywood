@@ -45,7 +45,7 @@ export interface ValidationStep {
 export interface ValidationCriteria {
   field: string;
   operator: 'contains' | 'equals' | 'matches' | 'greater_than' | 'less_than' | 'between';
-  value: any;
+  value: unknown;
   required: boolean;
 }
 
@@ -359,7 +359,7 @@ class ComplianceCheckerService {
   async checkCompliance(
     documentId: string,
     content: string,
-    metadata: Record<string, any> = {}
+    metadata: Record<string, unknown> = {}
   ): Promise<ComplianceCheck[]> {
     const checks: ComplianceCheck[] = [];
 
@@ -391,7 +391,7 @@ class ComplianceCheckerService {
   private async performSingleComplianceCheck(
     documentId: string,
     content: string,
-    metadata: Record<string, any>,
+    metadata: Record<string, unknown>,
     rule: ComplianceRule
   ): Promise<ComplianceCheck | null> {
     // Check if rule applies to this document
@@ -453,7 +453,7 @@ class ComplianceCheckerService {
    */
   private async checkRuleApplicability(
     content: string,
-    metadata: Record<string, any>,
+    metadata: Record<string, unknown>,
     rule: ComplianceRule
   ): Promise<{ applies: boolean; confidence: number; reasons: string[] }> {
     const reasons: string[] = [];
@@ -493,7 +493,7 @@ class ComplianceCheckerService {
    */
   private async validateAgainstRule(
     content: string,
-    metadata: Record<string, any>,
+    metadata: Record<string, unknown>,
     rule: ComplianceRule
   ): Promise<ComplianceFinding[]> {
     const findings: ComplianceFinding[] = [];
@@ -513,7 +513,7 @@ class ComplianceCheckerService {
    */
   private async checkValidationStep(
     content: string,
-    metadata: Record<string, any>,
+    metadata: Record<string, unknown>,
     step: ValidationStep,
     rule: ComplianceRule
   ): Promise<ComplianceFinding | null> {
@@ -662,11 +662,12 @@ class ComplianceCheckerService {
       case 'tax_implications':
         issues.push(...await this.checkTaxIssues(content));
         break;
-      case 'compliance_check':
+      case 'compliance_check': {
         // Use existing compliance checks
         const complianceChecks = this.activeChecks.get(documentId) || [];
         issues.push(...this.convertComplianceToLegalIssues(complianceChecks));
         break;
+      }
     }
 
     return issues;
@@ -817,7 +818,7 @@ class ComplianceCheckerService {
 
   private async generateLegalRecommendations(
     issues: LegalIssue[],
-    reviewType: LegalReviewType
+    _reviewType: LegalReviewType
   ): Promise<LegalRecommendation[]> {
     return issues.map(issue => ({
       id: this.generateId(),
@@ -830,7 +831,7 @@ class ComplianceCheckerService {
     }));
   }
 
-  private async getDocumentContent(documentId: string): Promise<string | null> {
+  private async getDocumentContent(_documentId: string): Promise<string | null> {
     // In production, would retrieve from document store
     return null;
   }

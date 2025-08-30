@@ -57,14 +57,14 @@ const Blog = () => {
 
   return (
     <>
-      <MetaTags 
+      <MetaTags
         title="Legacy Planning Blog"
         description="Expert insights and practical guidance on estate planning, family protection, and securing your legacy. Learn from legal professionals and security experts."
         imageUrl="https://legacyguard.app/blog/legacy-planning-blog.png"
         url="https://legacyguard.app/blog"
         keywords="legacy planning blog, estate planning articles, family protection guides, will creation advice, legal document tips"
       />
-      
+
       <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
         {/* Header */}
         <header className="sticky top-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-lg border-b border-slate-200 dark:border-slate-700">
@@ -102,7 +102,7 @@ const Blog = () => {
                 <span className="block text-blue-300">Insights & Guidance</span>
               </h1>
               <p className="text-xl text-slate-300 mb-8 leading-relaxed max-w-3xl mx-auto">
-                Expert advice on estate planning, family protection, and securing your legacy. 
+                Expert advice on estate planning, family protection, and securing your legacy.
                 Learn from legal professionals and security experts who understand what matters most.
               </p>
               <div className="flex flex-wrap justify-center gap-4">
@@ -132,7 +132,7 @@ const Blog = () => {
               <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-8 text-center">
                 Featured Article
               </h2>
-              
+
               {blogPosts.filter(post => post.featured).map((post) => (
                 <Card key={post.id} className="max-w-4xl mx-auto shadow-xl border-0 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20">
                   <CardContent className="p-0">
@@ -186,7 +186,7 @@ const Blog = () => {
               <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-8 text-center">
                 Explore by Category
               </h2>
-              
+
               <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto">
                 {categories.map((category) => (
                   <Card key={category.name} className="text-center hover:shadow-lg transition-shadow cursor-pointer">
@@ -219,7 +219,7 @@ const Blog = () => {
               <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-8 text-center">
                 All Articles
               </h2>
-              
+
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
                 {blogPosts.map((post) => (
                   <Card key={post.id} className="hover:shadow-lg transition-shadow">
@@ -235,12 +235,12 @@ const Blog = () => {
                           {post.excerpt}
                         </p>
                       </div>
-                      
+
                       <div className="flex items-center justify-between text-sm text-slate-500 dark:text-slate-400 mb-4">
                         <span>{post.author}</span>
                         <span>{post.readTime}</span>
                       </div>
-                      
+
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-slate-500 dark:text-slate-400">
                           {post.publishDate}
@@ -275,7 +275,7 @@ const Blog = () => {
                 Get the latest insights on legacy planning, family protection, and estate planning delivered to your inbox.
                 Expert advice from legal professionals and security experts.
               </p>
-              
+
               <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
                 <input
                   type="email"
@@ -286,7 +286,7 @@ const Blog = () => {
                   Subscribe
                 </Button>
               </div>
-              
+
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-4">
                 We respect your privacy. Unsubscribe at any time.
               </p>
@@ -307,10 +307,10 @@ const Blog = () => {
                 Ready to Secure Your Legacy?
               </h2>
               <p className="text-slate-300 mb-8 leading-relaxed">
-                Knowledge is power, but action creates security. Start building your family's protection today 
+                Knowledge is power, but action creates security. Start building your family's protection today
                 with LegacyGuard's comprehensive platform.
               </p>
-              
+
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link to="/sign-up">
                   <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white">

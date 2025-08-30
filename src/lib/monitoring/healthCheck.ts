@@ -92,19 +92,19 @@ export class HealthCheckService {
    */
   private async runSingleCheck(name: string, checkFn: HealthCheckFunction): Promise<HealthCheckResult> {
     let lastError: Error | null = null;
-    
+
     for (let attempt = 1; attempt <= this.config.retries; attempt++) {
       try {
         const startTime = performance.now();
-        
+
         // Run check with timeout
         const result = await Promise.race([
           checkFn(),
           this.createTimeoutPromise(name)
         ]);
-        
+
         const duration = performance.now() - startTime;
-        
+
         return {
           ...result,
           duration,
@@ -112,7 +112,7 @@ export class HealthCheckService {
         };
       } catch (error) {
         lastError = error instanceof Error ? error : new Error(String(error));
-        
+
         if (attempt < this.config.retries) {
           // Wait before retry (exponential backoff)
           await new Promise(resolve => setTimeout(resolve, attempt * 1000));
@@ -220,11 +220,11 @@ healthCheckService.registerCheck('localStorage', async (): Promise<HealthCheckRe
   try {
     const testKey = '__health_check_test__';
     const testValue = 'test';
-    
+
     localStorage.setItem(testKey, testValue);
     const retrieved = localStorage.getItem(testKey);
     localStorage.removeItem(testKey);
-    
+
     if (retrieved !== testValue) {
       throw new Error('Local storage write/read test failed');
     }
@@ -255,7 +255,7 @@ healthCheckService.registerCheck('memory', async (): Promise<HealthCheckResult> 
       const usedMB = memory.usedJSHeapSize / 1024 / 1024;
       const totalMB = memory.totalJSHeapSize / 1024 / 1024;
       const limitMB = memory.jsHeapSizeLimit / 1024 / 1024;
-      
+
       const usagePercent = (usedMB / limitMB) * 100;
 
       let status: 'healthy' | 'degraded' | 'unhealthy';
@@ -308,15 +308,15 @@ healthCheckService.registerCheck('memory', async (): Promise<HealthCheckResult> 
 healthCheckService.registerCheck('network', async (): Promise<HealthCheckResult> => {
   try {
     const startTime = performance.now();
-    
+
     // Use a simple fetch to test network connectivity
-    const response = await fetch('/favicon.ico', { 
+    const response = await fetch('/favicon.ico', {
       method: 'HEAD',
       cache: 'no-cache'
     });
-    
+
     const duration = performance.now() - startTime;
-    
+
     if (!response.ok && response.status !== 404) {
       throw new Error(`Network request failed with status: ${response.status}`);
     }
@@ -357,5 +357,5 @@ healthCheckService.registerCheck('network', async (): Promise<HealthCheckResult>
 // Export convenience functions
 export const runHealthCheck = () => healthCheckService.runHealthChecks();
 export const getLastHealthStatus = () => healthCheckService.getLastHealth();
-export const registerHealthCheck = (name: string, checkFn: HealthCheckFunction) => 
+export const registerHealthCheck = (name: string, checkFn: HealthCheckFunction) =>
   healthCheckService.registerCheck(name, checkFn);

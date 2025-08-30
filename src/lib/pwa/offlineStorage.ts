@@ -1,7 +1,7 @@
 /**
  * Offline Storage Service
  * Phase 7: Mobile & PWA Capabilities
- * 
+ *
  * Handles offline data storage using IndexedDB for documents,
  * analytics, and user preferences with automatic sync.
  */
@@ -138,7 +138,7 @@ export class OfflineStorageService {
 
     const transaction = this.db.transaction(['documents'], 'readwrite');
     const store = transaction.objectStore('documents');
-    
+
     await new Promise<void>((resolve, reject) => {
       const request = store.put(storedDoc);
       request.onsuccess = () => resolve();
@@ -156,33 +156,33 @@ export class OfflineStorageService {
 
     const transaction = this.db.transaction(['documents'], 'readonly');
     const store = transaction.objectStore('documents');
-    
+
     return new Promise<StoredDocument[]>((resolve, reject) => {
       const request = store.getAll();
-      
+
       request.onsuccess = () => {
         let documents = request.result;
-        
+
         // Apply filters
         if (filter?.category) {
           documents = documents.filter(doc => doc.category === filter.category);
         }
-        
+
         if (filter?.type) {
           documents = documents.filter(doc => doc.type === filter.type);
         }
-        
+
         // Sort by last modified (newest first)
         documents.sort((a, b) => b.lastModified - a.lastModified);
-        
+
         // Apply limit
         if (filter?.limit) {
           documents = documents.slice(0, filter.limit);
         }
-        
+
         resolve(documents);
       };
-      
+
       request.onerror = () => reject(request.error);
     });
   }
@@ -195,7 +195,7 @@ export class OfflineStorageService {
 
     const transaction = this.db.transaction(['documents'], 'readonly');
     const store = transaction.objectStore('documents');
-    
+
     return new Promise<StoredDocument | null>((resolve, reject) => {
       const request = store.get(id);
       request.onsuccess = () => resolve(request.result || null);
@@ -211,7 +211,7 @@ export class OfflineStorageService {
 
     const transaction = this.db.transaction(['documents'], 'readwrite');
     const store = transaction.objectStore('documents');
-    
+
     const document = await new Promise<StoredDocument>((resolve, reject) => {
       const request = store.get(id);
       request.onsuccess = () => resolve(request.result);
@@ -221,7 +221,7 @@ export class OfflineStorageService {
     if (document) {
       document.syncStatus = status;
       document.lastModified = Date.now();
-      
+
       await new Promise<void>((resolve, reject) => {
         const request = store.put(document);
         request.onsuccess = () => resolve();
@@ -244,7 +244,7 @@ export class OfflineStorageService {
 
     const transaction = this.db.transaction(['analytics'], 'readwrite');
     const store = transaction.objectStore('analytics');
-    
+
     await new Promise<void>((resolve, reject) => {
       const request = store.add(storedEvent);
       request.onsuccess = () => resolve();
@@ -261,7 +261,7 @@ export class OfflineStorageService {
     const transaction = this.db.transaction(['analytics'], 'readonly');
     const store = transaction.objectStore('analytics');
     const index = store.index('syncStatus');
-    
+
     return new Promise<AnalyticsEvent[]>((resolve, reject) => {
       const request = index.getAll('pending');
       request.onsuccess = () => resolve(request.result);
@@ -278,10 +278,10 @@ export class OfflineStorageService {
     const transaction = this.db.transaction(['analytics'], 'readwrite');
     const store = transaction.objectStore('analytics');
     const index = store.index('syncStatus');
-    
+
     return new Promise<void>((resolve, reject) => {
       const request = index.openCursor(IDBKeyRange.only('synced'));
-      
+
       request.onsuccess = (event) => {
         const cursor = (event.target as IDBRequest).result;
         if (cursor) {
@@ -291,7 +291,7 @@ export class OfflineStorageService {
           resolve();
         }
       };
-      
+
       request.onerror = () => reject(request.error);
     });
   }
@@ -311,7 +311,7 @@ export class OfflineStorageService {
 
     const transaction = this.db.transaction(['preferences'], 'readwrite');
     const store = transaction.objectStore('preferences');
-    
+
     await new Promise<void>((resolve, reject) => {
       const request = store.put(preference);
       request.onsuccess = () => resolve();
@@ -327,7 +327,7 @@ export class OfflineStorageService {
 
     const transaction = this.db.transaction(['preferences'], 'readonly');
     const store = transaction.objectStore('preferences');
-    
+
     return new Promise<any>((resolve, reject) => {
       const request = store.get(key);
       request.onsuccess = () => {
@@ -352,7 +352,7 @@ export class OfflineStorageService {
 
     const transaction = this.db.transaction(['offlineQueue'], 'readwrite');
     const store = transaction.objectStore('offlineQueue');
-    
+
     await new Promise<void>((resolve, reject) => {
       const request = store.add(queueItem);
       request.onsuccess = () => resolve();
@@ -370,7 +370,7 @@ export class OfflineStorageService {
 
     const transaction = this.db.transaction(['offlineQueue'], 'readonly');
     const store = transaction.objectStore('offlineQueue');
-    
+
     return new Promise<OfflineQueueItem[]>((resolve, reject) => {
       const request = store.getAll();
       request.onsuccess = () => {
@@ -391,7 +391,7 @@ export class OfflineStorageService {
 
     const transaction = this.db.transaction(['offlineQueue'], 'readwrite');
     const store = transaction.objectStore('offlineQueue');
-    
+
     await new Promise<void>((resolve, reject) => {
       const request = store.delete(id);
       request.onsuccess = () => resolve();
@@ -407,7 +407,7 @@ export class OfflineStorageService {
 
     const transaction = this.db.transaction(['offlineQueue'], 'readwrite');
     const store = transaction.objectStore('offlineQueue');
-    
+
     const item = await new Promise<OfflineQueueItem>((resolve, reject) => {
       const request = store.get(id);
       request.onsuccess = () => resolve(request.result);
@@ -416,7 +416,7 @@ export class OfflineStorageService {
 
     if (item) {
       item.retryCount++;
-      
+
       await new Promise<void>((resolve, reject) => {
         const request = store.put(item);
         request.onsuccess = () => resolve();
@@ -440,7 +440,7 @@ export class OfflineStorageService {
 
     const transaction = this.db.transaction(['cacheMetadata'], 'readwrite');
     const store = transaction.objectStore('cacheMetadata');
-    
+
     await new Promise<void>((resolve, reject) => {
       const request = store.put(cacheItem);
       request.onsuccess = () => resolve();
@@ -456,7 +456,7 @@ export class OfflineStorageService {
 
     const transaction = this.db.transaction(['cacheMetadata'], 'readonly');
     const store = transaction.objectStore('cacheMetadata');
-    
+
     return new Promise<any>((resolve, reject) => {
       const request = store.get(key);
       request.onsuccess = () => {
@@ -488,7 +488,7 @@ export class OfflineStorageService {
 
     const transaction = this.db.transaction(['cacheMetadata'], 'readwrite');
     const store = transaction.objectStore('cacheMetadata');
-    
+
     await new Promise<void>((resolve, reject) => {
       const request = store.delete(key);
       request.onsuccess = () => resolve();
@@ -505,11 +505,11 @@ export class OfflineStorageService {
     const transaction = this.db.transaction(['cacheMetadata'], 'readwrite');
     const store = transaction.objectStore('cacheMetadata');
     const index = store.index('expiry');
-    
+
     return new Promise<void>((resolve, reject) => {
       const now = Date.now();
       const request = index.openCursor(IDBKeyRange.upperBound(now));
-      
+
       request.onsuccess = (event) => {
         const cursor = (event.target as IDBRequest).result;
         if (cursor) {
@@ -519,7 +519,7 @@ export class OfflineStorageService {
           resolve();
         }
       };
-      
+
       request.onerror = () => reject(request.error);
     });
   }
@@ -574,7 +574,7 @@ export class OfflineStorageService {
 
     const transaction = this.db.transaction([storeName], 'readonly');
     const store = transaction.objectStore(storeName);
-    
+
     return new Promise<number>((resolve, reject) => {
       const request = store.count();
       request.onsuccess = () => resolve(request.result);
@@ -589,11 +589,11 @@ export class OfflineStorageService {
     if (!this.db) throw new Error('Database not initialized');
 
     const stores = ['documents', 'analytics', 'preferences', 'offlineQueue', 'cacheMetadata'];
-    
+
     for (const storeName of stores) {
       const transaction = this.db.transaction([storeName], 'readwrite');
       const store = transaction.objectStore(storeName);
-      
+
       await new Promise<void>((resolve, reject) => {
         const request = store.clear();
         request.onsuccess = () => resolve();
