@@ -17,7 +17,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Switch } from '@/components/ui/switch';
+// Switch import removed as unused
 import { Label } from '@/components/ui/label';
 
 // Icons
@@ -28,23 +28,13 @@ import {
   Shield,
   Clock,
   Send,
-  MessageSquare,
-  Phone,
-  Mail,
-  CheckCircle,
-  XCircle,
   Eye,
-  EyeOff,
-  Settings,
   Users,
-  Zap,
-  Sparkles,
   Filter,
   RefreshCw,
   Archive,
   Star,
   AlertCircle,
-  CheckCircle2,
 } from 'lucide-react';
 
 interface GuardianNotification {
@@ -97,9 +87,9 @@ interface GuardianNotificationCenterProps {
 export const GuardianNotificationCenter: React.FC<GuardianNotificationCenterProps> = ({
   className = '',
   personalityMode,
-  onNotificationSent,
-  onNotificationRead,
-  onEmergencyTriggered,
+  _onNotificationSent,
+  _onNotificationRead,
+  _onEmergencyTriggered,
 }) => {
   const { userId } = useAuth();
   const createSupabaseClient = useSupabaseWithClerk();

@@ -4,13 +4,13 @@ import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
 import { Badge } from '../ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { Avatar, AvatarFallback } from '../ui/avatar';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { Progress } from '../ui/progress';
 import { Separator } from '../ui/separator';
-import { Vote, Users, Clock, CheckCircle, XCircle, AlertCircle, MessageSquare, Calendar, Plus, Eye, ThumbsUp, ThumbsDown, Minus, Settings, Archive, Filter, TrendingUp } from 'lucide-react';
+import { Vote, Users, Clock, CheckCircle, AlertCircle, MessageSquare, Calendar, Plus, Eye, Minus, Settings, Archive, Filter } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface FamilyMember {

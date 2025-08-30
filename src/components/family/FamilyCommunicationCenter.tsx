@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+// Card components import removed as unused
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
@@ -7,10 +7,10 @@ import { Badge } from '../ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
-import { Separator } from '../ui/separator';
+// Tabs components import removed as unused
+// Separator import removed as unused
 import { ScrollArea } from '../ui/scroll-area';
-import { MessageCircle, Send, Phone, Video, Calendar, Bell, Users, Pin, Archive, Search, Settings, Plus, Paperclip, Image, Mic, Smile, MoreVertical, Reply, Heart, Clock, Check, CheckCheck, X } from 'lucide-react';
+import { MessageCircle, Send, Phone, Video, Calendar, Bell, Users, Pin, Search, Settings, Plus, Paperclip, Image, Mic, Smile, Reply, Check, CheckCheck, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface FamilyMember {

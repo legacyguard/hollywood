@@ -1,4 +1,3 @@
-import React from 'react';
 import { toast } from 'sonner';
 import {
   getAdaptiveMilestoneText,
@@ -21,8 +20,8 @@ export function showMilestoneRecognition(
     if (savedPrefs) {
       try {
         userPreferences = JSON.parse(savedPrefs);
-      } catch (error) {
-        // // console.error('Error loading user preferences for milestone:', error);
+      } catch (_error) {
+        // console.error('Error loading user preferences for milestone:', _error);
       }
     }
   }
@@ -86,14 +85,20 @@ export function showMilestoneRecognition(
 
   // Show toast notification
   toast.success(
-    <div className="space-y-2">
-      <div className="font-semibold">{personalityContent.celebrationText}</div>
-      <div className="text-sm opacity-90">{milestone.title}</div>
-      <div className="text-xs opacity-75">{adaptiveCompletedDescription}</div>
-    </div>,
+    `${personalityContent.celebrationText} ${milestone.title}`,
     {
+      description: adaptiveCompletedDescription,
       duration: personalityContent.duration,
       className: `bg-gradient-to-r ${personalityContent.bgGradient} border ${personalityContent.borderColor}`,
     }
   );
+
+  return {
+    milestone,
+    userId,
+    personalityMode,
+    userPreferences,
+    personalityContent,
+    adaptiveCompletedDescription,
+  };
 }

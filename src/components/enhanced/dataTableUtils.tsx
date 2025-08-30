@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { cn } from '@/lib/utils';
+// cn import removed as unused
 
 export const createSelectColumn = <TData,>(): ColumnDef<TData> => ({
   id: 'select',

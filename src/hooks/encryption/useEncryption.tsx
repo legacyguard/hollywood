@@ -1,12 +1,12 @@
 'use client';
 
-import type { ReactNode } from 'react';
 import {
   useState,
   useEffect,
   useCallback,
   createContext,
   useContext,
+  type ReactNode,
 } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { encryptionService } from '../../../lib/encryption-v2';

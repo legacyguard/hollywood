@@ -2,7 +2,7 @@
 // Phase 3A: Family Shield System - Enhanced emergency contact and guardian notification system
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useAuth } from '@clerk/clerk-react';
 import { usePersonalityManager } from '@/components/sofia/SofiaContextProvider';
 import { AnimationSystem } from '@/lib/animation-system';
@@ -25,19 +25,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import {
   Phone,
   Mail,
-  User,
   Heart,
   Shield,
   AlertTriangle,
   Plus,
   Edit3,
   Trash2,
-  Bell,
-  Clock,
   Users,
-  Star,
-  CheckCircle,
-  XCircle,
   Send,
   MessageSquare,
   Zap,
@@ -90,9 +84,9 @@ interface EmergencyContactSystemProps {
 export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
   className = '',
   personalityMode,
-  onContactAdded,
-  onContactUpdated,
-  onNotificationSent,
+  _onContactAdded,
+  _onContactUpdated,
+  _onNotificationSent,
 }) => {
   const { userId } = useAuth();
   const createSupabaseClient = useSupabaseWithClerk();

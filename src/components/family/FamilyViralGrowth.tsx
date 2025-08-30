@@ -10,7 +10,6 @@ import {
   UserPlus,
   Gift,
   Heart,
-  Star,
   Trophy,
   Target,
   ArrowRight,

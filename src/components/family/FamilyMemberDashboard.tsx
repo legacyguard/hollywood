@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
@@ -23,7 +23,6 @@ import {
   MoreVertical,
   Mail,
   Phone,
-  MapPin,
   Clock,
   AlertTriangle,
   Star,
@@ -31,7 +30,7 @@ import {
 } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import type { FamilyMember, FamilyProtectionStatus, FamilyStats} from '@/types/family';
-import { RELATIONSHIP_LABELS, FAMILY_ROLE_PERMISSIONS } from '@/types/family';
+import { RELATIONSHIP_LABELS } from '@/types/family';
 import { familyService } from '@/services/familyService';
 import { FamilyInvitationFlow } from './FamilyInvitationFlow';
 
@@ -47,18 +46,18 @@ interface MemberAction {
 export function FamilyMemberDashboard({ userId }: FamilyMemberDashboardProps) {
   const [members, setMembers] = useState<FamilyMember[]>([]);
   const [protectionStatus, setProtectionStatus] = useState<FamilyProtectionStatus | null>(null);
-  const [stats, setStats] = useState<FamilyStats | null>(null);
+  const [_stats, setStats] = useState<FamilyStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showInviteFlow, setShowInviteFlow] = useState(false);
-  const [selectedMember, setSelectedMember] = useState<FamilyMember | null>(null);
+  const [_selectedMember, setSelectedMember] = useState<FamilyMember | null>(null);
   const [actionInProgress, setActionInProgress] = useState<string | null>(null);
   const [filter, setFilter] = useState<'all' | 'active' | 'pending' | 'emergency'>('all');
 
   useEffect(() => {
     loadFamilyData();
-  }, [userId]);
+  }, [userId, loadFamilyData]);
 
-  const loadFamilyData = async () => {
+  const loadFamilyData = useCallback(async () => {
     try {
       setIsLoading(true);
       const [membersData, protectionData, statsData] = await Promise.all([
@@ -75,7 +74,7 @@ export function FamilyMemberDashboard({ userId }: FamilyMemberDashboardProps) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [userId]);
 
   const handleMemberAction = async (action: MemberAction) => {
     setActionInProgress(action.member.id);
@@ -108,7 +107,7 @@ export function FamilyMemberDashboard({ userId }: FamilyMemberDashboardProps) {
     }
   };
 
-  const handleInvitationSent = (invitation: any) => {
+  const handleInvitationSent = (_invitation: any) => {
     setShowInviteFlow(false);
     loadFamilyData();
   };

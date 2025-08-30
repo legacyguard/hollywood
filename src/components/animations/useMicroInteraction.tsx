@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import type { Variants } from 'framer-motion';
-import { useSofia } from '../sofia/SofiaContextProvider';
+// useSofia import removed as unused
 
 // Micro-interaction animation configurations based on personality
 interface PersonalityAnimationConfig {

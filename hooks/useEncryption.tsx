@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, createContext, useContext, type ReactNode } from 'react';
+import { useState, useEffect, useCallback, createContext, type ReactNode } from 'react';
 import { useAuth } from '@clerk/nextjs';
 import { encryptionService } from '@/lib/encryption-v2';
 import { toast } from 'sonner';
@@ -99,7 +99,7 @@ export function EncryptionProvider({ children }: EncryptionProviderProps) {
     } finally {
       setIsLoading(false);
     }
-  }, [userId]);
+  }, [userId, isInitialized]);
 
   const initializeKeys = useCallback(async (password: string): Promise<boolean> => {
     if (!userId) {
@@ -195,7 +195,7 @@ export function EncryptionProvider({ children }: EncryptionProviderProps) {
     } finally {
       setIsLoading(false);
     }
-  }, [userId, setNeedsMigration, isInitialized]);
+  }, [userId]);
 
   const rotateKeys = useCallback(async (currentPassword: string, newPassword?: string): Promise<boolean> => {
     if (!userId) {

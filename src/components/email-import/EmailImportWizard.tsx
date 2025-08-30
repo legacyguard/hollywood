@@ -33,8 +33,7 @@ import type {
   DocumentCategorizationResult,
   BulkImportResult
 } from '@/types/gmail';
-import { duplicateDetectionService } from '@/services/duplicateDetectionService';
-import type { DuplicateMatch, DuplicateResolutionChoice } from '@/services/duplicateDetectionService';
+import { duplicateDetectionService, type DuplicateMatch, type DuplicateResolutionChoice } from '@/services/duplicateDetectionService';
 import { DuplicateResolutionStep } from './DuplicateResolutionStep';
 
 interface EmailImportWizardProps {

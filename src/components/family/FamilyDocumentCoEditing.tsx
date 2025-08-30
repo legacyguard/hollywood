@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -7,9 +7,9 @@ import { Badge } from '../ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
+// Tabs components import removed as unused
 import { Separator } from '../ui/separator';
-import { Users, Edit3, MessageSquare, History, Save, Share2, Lock, Unlock, Eye, EyeOff, Clock, Check, X, Plus, FileText, User, AlertCircle, Zap, Activity } from 'lucide-react';
+import { Users, MessageSquare, History, Save, Lock, Unlock, Eye, EyeOff, Clock, Check, Plus, FileText, Activity } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface FamilyMember {

@@ -19,9 +19,6 @@ import {
   Phone,
   Calendar,
   MapPin,
-  Shield,
-  Users,
-  FileText,
 } from 'lucide-react';
 
 export interface ProfileData {

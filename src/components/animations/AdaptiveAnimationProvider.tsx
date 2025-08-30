@@ -1,7 +1,7 @@
 // Adaptive Animation Provider - Provides animation context based on Sofia's personality
 // Centralizes animation behavior and adapts to user preferences
 
-import React, { createContext, useContext, type ReactNode } from 'react';
+import React, { createContext, type ReactNode } from 'react';
 import { usePersonalityManager } from '@/components/sofia/SofiaContextProvider';
 import { AnimationSystem, useAnimationConfig, type AnimationConfig } from '@/lib/animation-system';
 import type { PersonalityMode } from '@/lib/sofia-types';

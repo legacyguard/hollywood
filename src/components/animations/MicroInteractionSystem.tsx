@@ -1,4 +1,4 @@
-import React, { useContext, createContext, type ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
 import { motion, type Variants } from 'framer-motion';
 import { useSofia } from '../sofia/SofiaContextProvider';
 

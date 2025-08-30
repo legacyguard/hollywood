@@ -16,16 +16,9 @@ import {
   Heart,
   AlertTriangle,
   Clock,
-  Users,
   Activity,
   CheckCircle,
   XCircle,
-  Settings,
-  Bell,
-  Phone,
-  Mail,
-  User,
-  Calendar,
   Zap,
 } from 'lucide-react';
 
@@ -69,8 +62,8 @@ interface DeadMansSwitchProps {
 export const DeadMansSwitchManager: React.FC<DeadMansSwitchProps> = ({
   className = '',
   personalityMode,
-  onEmergencyTriggered,
-  onHealthCheckMissed,
+  _onEmergencyTriggered,
+  _onHealthCheckMissed,
 }) => {
   const { userId } = useAuth();
   const createSupabaseClient = useSupabaseWithClerk();

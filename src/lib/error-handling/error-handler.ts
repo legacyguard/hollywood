@@ -4,6 +4,7 @@
  */
 
 import { envConfig } from '../security/env-config';
+import React from 'react';
 
 // Error severity levels
 export enum ErrorSeverity {
@@ -557,5 +558,4 @@ export {
   EncryptionError as CryptoError,
 };
 
-// Import React for error boundary
-import React from 'react';
+// React import moved to top of file

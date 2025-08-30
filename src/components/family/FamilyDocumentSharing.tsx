@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
+import { Card, CardContent } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
@@ -14,20 +14,13 @@ import {
   Shield,
   Users,
   Eye,
-  Edit,
-  Download,
-  Clock,
-  CheckCircle,
   AlertTriangle,
-  Lock,
-  Unlock,
-  Copy,
-  Mail
+  Lock
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { FamilyMember} from '@/types/family';
-import { FamilyPermissions } from '@/types/family';
-import { familyService } from '@/services/familyService';
+// FamilyPermissions import removed as unused
+// familyService import removed as unused
 
 interface Document {
   id: string;

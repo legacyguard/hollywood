@@ -31,14 +31,10 @@ import {
   CheckCircle,
   XCircle,
   Zap,
-  Phone,
   MessageSquare,
   Settings,
-  Eye,
   TrendingUp,
   Globe,
-  Lock,
-  Sparkles,
 } from 'lucide-react';
 
 interface ProtectionStatus {
