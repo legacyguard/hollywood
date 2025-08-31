@@ -23,8 +23,8 @@ test.describe('🎭 Complete Guardian of Memories Journey', () => {
     page = await context.newPage();
 
     // Enable console logging for debugging
-    page.on('console', msg => /* console.log('Browser:', msg.text()) */);
-    page.on('pageerror', error => /* console.error('Page Error:', error.message) */);
+    page.on('console', msg => { /* console.log('Browser:', msg.text()) */ });
+    page.on('pageerror', error => { /* console.error('Page Error:', error.message) */ });
   });
 
   test.afterAll(async () => {
