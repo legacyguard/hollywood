@@ -279,3 +279,39 @@
 2025-08-31T14:25:15.453204Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("mobile/.turbo/turbo-type-check.log")}
 2025-08-31T14:25:15.453248Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("mobile"), path: AnchoredSystemPathBuf("mobile") }}))
 2025-08-31T14:25:15.453294Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2025-08-31T14:25:29.753587Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("package.json")}
+2025-08-31T14:25:29.753601Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(All)
+2025-08-31T14:25:29.953260Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("package-lock.json")}
+2025-08-31T14:25:29.953279Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T14:25:31.052077Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("package.json")}
+2025-08-31T14:25:31.052086Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(All)
+2025-08-31T14:25:31.252626Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("package-lock.json")}
+2025-08-31T14:25:31.252642Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T14:25:32.352804Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("package.json")}
+2025-08-31T14:25:32.352819Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(All)
+2025-08-31T14:25:32.553504Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("package-lock.json")}
+2025-08-31T14:25:32.553520Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T14:25:33.854325Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("mobile/.turbo/turbo-build.log")}
+2025-08-31T14:25:33.854381Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("mobile"), path: AnchoredSystemPathBuf("mobile") }}))
+2025-08-31T14:25:33.862688Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2025-08-31T14:25:34.653357Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("mobile/dist")}
+2025-08-31T14:25:34.653368Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("mobile"), path: AnchoredSystemPathBuf("mobile") }}))
+2025-08-31T14:25:34.653983Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2025-08-31T14:25:37.552523Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("mobile/.turbo/turbo-build.log")}
+2025-08-31T14:25:37.552556Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("mobile"), path: AnchoredSystemPathBuf("mobile") }}))
+2025-08-31T14:25:37.597268Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2025-08-31T14:25:37.852637Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/pages/Performance.tsx"), AnchoredSystemPathBuf(".github/workflows/performance.yml"), AnchoredSystemPathBuf("performance-report.json")}
+2025-08-31T14:25:37.852656Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T14:25:38.653179Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("mobile/.turbo/turbo-build.log")}
+2025-08-31T14:25:38.653190Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("mobile"), path: AnchoredSystemPathBuf("mobile") }}))
+2025-08-31T14:25:38.653217Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2025-08-31T14:25:38.952640Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("mobile/dist")}
+2025-08-31T14:25:38.952655Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("mobile"), path: AnchoredSystemPathBuf("mobile") }}))
+2025-08-31T14:25:38.999219Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2025-08-31T14:25:41.752970Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("mobile/.turbo/turbo-build.log")}
+2025-08-31T14:25:41.753001Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("mobile"), path: AnchoredSystemPathBuf("mobile") }}))
+2025-08-31T14:25:41.769793Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2025-08-31T14:26:10.454741Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/hooks/encryption/EncryptionProvider.tsx")}
+2025-08-31T14:26:10.454899Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T14:26:16.852012Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/hooks/useEncryption.ts")}
+2025-08-31T14:26:16.852775Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
