@@ -11,7 +11,104 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { subscriptionService, stripeService, SubscriptionLimits } from '@hollywood/shared';
+// import { subscriptionService, stripeService, SubscriptionLimits } from '@hollywood/shared';
+
+// Temporary placeholder types and services
+interface SubscriptionLimits {
+  plan: string;
+  max_documents: number;
+  max_storage_mb: number;
+  max_time_capsules: number;
+  max_scans_per_month: number;
+  offline_access: boolean;
+  ai_features: boolean;
+  advanced_search: boolean;
+  family_sharing: boolean;
+  legal_tools: boolean;
+  priority_support: boolean;
+  max_family_members: number;
+  price_monthly: number;
+  price_yearly: number;
+}
+
+const subscriptionService = {
+  getAllPlans: async (): Promise<SubscriptionLimits[]> => {
+    return [
+      {
+        plan: 'free',
+        max_documents: 10,
+        max_storage_mb: 100,
+        max_time_capsules: 1,
+        max_scans_per_month: 5,
+        offline_access: false,
+        ai_features: false,
+        advanced_search: false,
+        family_sharing: false,
+        legal_tools: false,
+        priority_support: false,
+        max_family_members: 1,
+        price_monthly: 0,
+        price_yearly: 0,
+      },
+      {
+        plan: 'essential',
+        max_documents: 100,
+        max_storage_mb: 1000,
+        max_time_capsules: 5,
+        max_scans_per_month: 50,
+        offline_access: true,
+        ai_features: false,
+        advanced_search: true,
+        family_sharing: false,
+        legal_tools: false,
+        priority_support: false,
+        max_family_members: 1,
+        price_monthly: 9.99,
+        price_yearly: 99.99,
+      },
+      {
+        plan: 'family',
+        max_documents: 500,
+        max_storage_mb: 5000,
+        max_time_capsules: 20,
+        max_scans_per_month: 200,
+        offline_access: true,
+        ai_features: true,
+        advanced_search: true,
+        family_sharing: true,
+        legal_tools: false,
+        priority_support: true,
+        max_family_members: 5,
+        price_monthly: 19.99,
+        price_yearly: 199.99,
+      },
+      {
+        plan: 'premium',
+        max_documents: 1000,
+        max_storage_mb: 10000,
+        max_time_capsules: 50,
+        max_scans_per_month: 500,
+        offline_access: true,
+        ai_features: true,
+        advanced_search: true,
+        family_sharing: true,
+        legal_tools: true,
+        priority_support: true,
+        max_family_members: 10,
+        price_monthly: 29.99,
+        price_yearly: 299.99,
+      },
+    ];
+  },
+  getCurrentSubscription: async (): Promise<{ plan: string; billing_cycle: string } | null> => ({
+    plan: 'free',
+    billing_cycle: 'month',
+  }),
+};
+
+const stripeService = {
+  createCheckoutSession: async (priceId: string, successUrl: string, cancelUrl: string) => ({ url: 'https://example.com' }),
+};
 import { useAuth } from '../../hooks/useAuth';
 
 interface PlanFeature {

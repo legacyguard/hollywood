@@ -9,6 +9,7 @@ LegacyGuard Mobile - A mobile application for the LegacyGuard platform, providin
 ## Technology Stack
 
 ### Setup
+
 - **Framework**: Expo with React Native and TypeScript
 - **State Management**: Redux Toolkit or Zustand
 - **Authentication**: Clerk integration (matching web app)
@@ -52,6 +53,7 @@ Based on the LegacyGuard platform:
 ## Development Setup
 
 ### Prerequisites
+
 ```bash
 # Install Expo CLI globally (optional, npx can be used instead)
 npm install -g expo-cli
@@ -67,12 +69,14 @@ xcode-select --install
 ### Environment Setup
 
 1. **Create .env file** from .env.example:
+
 ```bash
 cp .env.example .env
 ```
 
-2. **Add your Clerk Publishable Key** to .env:
-```
+1. **Add your Clerk Publishable Key** to .env:
+
+```bash
 EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
 ```
 
@@ -118,7 +122,7 @@ npm run lint
 
 ## Project Structure Guidelines
 
-```
+```text
 mobile/
 ├── src/
 │   ├── components/       # Reusable UI components
@@ -231,11 +235,13 @@ Based on LegacyGuard's design philosophy:
 ## Platform-Specific Considerations
 
 ### iOS
+
 - Handle iOS-specific permissions
 - Implement proper background task handling
 - Support for latest iOS versions
 
 ### Android
+
 - Handle Android permissions model
 - Support for different screen sizes
 - Background service implementation
@@ -249,6 +255,7 @@ Based on LegacyGuard's design philosophy:
 ## Important Context from Web App
 
 The mobile app should maintain feature parity with key web app features:
+
 - Will Generator wizard flow
 - MicroTaskEngine for breaking down complex tasks
 - ScenarioPlanner for "what if" scenarios
@@ -257,7 +264,103 @@ The mobile app should maintain feature parity with key web app features:
 - Asset tracking (My Possessions)
 
 Maintain consistency with the web app's:
+
 - Privacy-first architecture
 - Empathetic UX approach
 - Step-by-step task philosophy
 - Progressive disclosure patterns
+
+## Monorepo Architecture
+
+LegacyGuard is structured as a monorepo with shared packages:
+
+```
+/legacyguard-platform/
+├── apps/
+│   ├── web/              # Hollywood web application
+│   └── mobile/           # React Native mobile app  
+├── packages/
+│   ├── ui/               # Tamagui cross-platform components
+│   ├── shared/           # Shared services and utilities
+│   ├── locales/          # Centralized translations
+│   └── config/           # Shared configurations
+└── docs/                 # Project documentation
+```
+
+### Shared Packages
+
+1. **@legacyguard/ui**
+   - Tamagui-based cross-platform components
+   - Consistent design system across web and mobile
+   - Theme management and responsive design
+
+2. **@legacyguard/shared**
+   - Encryption services (TweetNaCl)
+   - Supabase client configuration
+   - Real-time sync utilities
+   - Common business logic
+
+3. **@legacyguard/locales**
+   - Centralized translation management
+   - Support for 34+ languages
+   - Modular structure for better performance
+
+4. **@legacyguard/config**
+   - Shared TypeScript configurations
+   - ESLint and build configurations
+   - Common development tooling
+
+## Development Workflow
+
+### Quality Control Protocol
+
+After every file creation/modification:
+
+#### Error Checking
+- [ ] Syntax validation of all modified files
+- [ ] TypeScript type checking
+- [ ] ESLint validation
+- [ ] Import/export path verification
+- [ ] Dependencies compatibility check
+
+#### Impact Analysis
+- [ ] Analysis of effects on other files
+- [ ] Breaking changes detection
+- [ ] Cross-platform compatibility verification
+- [ ] Performance impact assessment
+- [ ] Security implications review
+
+#### Testing
+- [ ] Unit tests run for affected components
+- [ ] Integration tests where relevant
+- [ ] Build verification for affected packages
+- [ ] Hot reload testing in development
+
+### Performance Targets
+
+- **Mobile app**: < 50MB bundle size, < 3s cold start
+- **Web app**: Maintain current performance
+- **Shared components**: < 100ms render time
+- **Real-time sync**: < 2s propagation delay
+
+### Security Requirements
+
+- Maintain existing TweetNaCl encryption
+- No keys in plain text
+- Client-side encryption before upload
+- Preserve Supabase RLS policies
+
+### Error Handling Protocol
+
+When errors occur:
+1. **Immediate Fix**: Fix error before continuing
+2. **Root Cause Analysis**: Identify the cause
+3. **Prevention**: Implement preventive measures
+4. **Documentation**: Record in change log
+
+### Debugging Protocol
+
+- Console logs only in development mode
+- Structured error reporting
+- Performance monitoring hooks
+- User-friendly error messages in production

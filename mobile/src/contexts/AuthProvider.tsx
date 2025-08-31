@@ -6,7 +6,7 @@ import { useUser } from '@clerk/clerk-expo'; // Use Clerk's hook to track state
 
 interface AuthContextType {
   // Clerk already manages user state, so we don't need to hold it here
-  // user: any; 
+  user: any; // Temporary placeholder
   isLoggedIn: boolean;
   isLoading: boolean;
   // We no longer need login/logout functions directly here,
@@ -24,6 +24,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const value = {
+    user: null, // Temporary placeholder
     isLoggedIn: !!isSignedIn,
     isLoading: !isLoaded,
     logout,

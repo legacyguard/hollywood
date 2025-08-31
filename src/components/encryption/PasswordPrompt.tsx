@@ -73,7 +73,7 @@ export function PasswordPrompt() {
   return (
     <Dialog
       open={passwordPromptVisible}
-      onOpenChange={open => !open && hidePasswordPrompt()}
+      onOpenChange={(open: boolean) => !open && hidePasswordPrompt()}
     >
       <DialogContent className='sm:max-w-[425px]'>
         <DialogHeader>
@@ -120,7 +120,7 @@ export function PasswordPrompt() {
           </div>
 
           {error && (
-            <Alert variant={"destructive" as any}>
+            <Alert variant="destructive">
               <AlertCircle className='h-4 w-4' />
               <AlertDescription>{error}</AlertDescription>
             </Alert>
@@ -140,7 +140,7 @@ export function PasswordPrompt() {
           <DialogFooter>
             <Button
               type='button'
-              variant={"outline" as any}
+              variant="outline"
               onClick={handleCancel}
               disabled={isLoading}
             >

@@ -4,7 +4,7 @@
 export default {
   plugins: {
     // Tailwind CSS - Utility-first CSS framework
-    tailwindcss: {},
+    '@tailwindcss/postcss': {},
     
     // Autoprefixer - Adds vendor prefixes automatically
     autoprefixer: {

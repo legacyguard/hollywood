@@ -11,13 +11,76 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import {
-  subscriptionService,
-  stripeService,
-  UserSubscription,
-  UserUsage,
-  SubscriptionLimits,
-} from '@hollywood/shared';
+// import {
+//   subscriptionService,
+//   stripeService,
+//   UserSubscription,
+//   UserUsage,
+//   SubscriptionLimits,
+// } from '@hollywood/shared';
+
+// Temporary placeholder types and services
+interface SubscriptionLimits {
+  plan: string;
+  max_documents: number;
+  max_storage_mb: number;
+  max_time_capsules: number;
+  max_scans_per_month: number;
+  offline_access: boolean;
+  ai_features: boolean;
+  advanced_search: boolean;
+  family_sharing: boolean;
+  legal_tools: boolean;
+  priority_support: boolean;
+  max_family_members: number;
+  price_monthly: number;
+  price_yearly: number;
+}
+
+interface UserSubscription {
+  plan: string;
+  status: string;
+  billing_cycle: string;
+  expires_at?: string;
+}
+
+interface UserUsage {
+  document_count: number;
+  storage_used_mb: number;
+  time_capsule_count: number;
+  scans_this_month: number;
+}
+
+const subscriptionService = {
+  getCurrentSubscription: async (): Promise<UserSubscription | null> => null,
+  getCurrentUsage: async (): Promise<UserUsage | null> => ({
+    document_count: 0,
+    storage_used_mb: 0,
+    time_capsule_count: 0,
+    scans_this_month: 0,
+  }),
+  getPlanLimits: async (plan: string): Promise<SubscriptionLimits | null> => ({
+    plan: 'free',
+    max_documents: 10,
+    max_storage_mb: 100,
+    max_time_capsules: 1,
+    max_scans_per_month: 5,
+    offline_access: false,
+    ai_features: false,
+    advanced_search: false,
+    family_sharing: false,
+    legal_tools: false,
+    priority_support: false,
+    max_family_members: 1,
+    price_monthly: 0,
+    price_yearly: 0,
+  }),
+  getDaysRemaining: async (): Promise<number> => 0,
+};
+
+const stripeService = {
+  getCustomerPortalUrl: async (): Promise<string | null> => null,
+};
 import { useAuth } from '../../hooks/useAuth';
 
 interface UsageBarProps {
@@ -154,7 +217,7 @@ export const SubscriptionStatus: React.FC = () => {
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {/* Plan Card */}
       <LinearGradient
-        colors={colors}
+        colors={colors as [string, string]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.planCard}

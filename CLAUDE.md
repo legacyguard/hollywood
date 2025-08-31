@@ -203,6 +203,93 @@ The application follows a cohesive garden metaphor with three distinct areas:
 - **Exception**: i18n translation keys and values for internationalization can be in Slovak/Czech
 - All other code, variable names, function names, and comments must remain in English
 
+## Development Workflow & Quality Control
+
+### Quality Control Protocol
+
+After every file creation/modification:
+
+#### Error Checking
+- [ ] Syntax validation of all modified files
+- [ ] TypeScript type checking
+- [ ] ESLint validation
+- [ ] Import/export path verification
+- [ ] Dependencies compatibility check
+
+#### Impact Analysis
+- [ ] Analysis of effects on other files
+- [ ] Breaking changes detection
+- [ ] Cross-platform compatibility verification
+- [ ] Performance impact assessment
+- [ ] Security implications review
+
+#### Testing
+- [ ] Unit tests run for affected components
+- [ ] Integration tests where relevant
+- [ ] Build verification for affected packages
+- [ ] Hot reload testing in development
+
+### Git Workflow
+
+After completing each development phase:
+- [ ] Stage all changes: `git add .`
+- [ ] Commit with descriptive message: `git commit -m "feat: implement [feature description]"`
+- [ ] Push to GitHub: `git push origin main`
+- [ ] Verify successful push
+
+### Error Handling Protocol
+
+When errors occur:
+1. **Immediate Fix**: Fix error before continuing
+2. **Root Cause Analysis**: Identify the cause
+3. **Prevention**: Implement preventive measures
+4. **Documentation**: Record in change log
+
+### Performance Targets
+
+- **Mobile app**: < 50MB bundle size, < 3s cold start
+- **Web app**: Maintain current performance
+- **Shared components**: < 100ms render time
+- **Real-time sync**: < 2s propagation delay
+
+### Security Requirements
+
+- Maintain existing TweetNaCl encryption
+- No keys in plain text
+- Client-side encryption before upload
+- Preserve Supabase RLS policies
+
+### Debugging Protocol
+
+- Console logs only in development mode
+- Structured error reporting
+- Performance monitoring hooks
+- User-friendly error messages in production
+
+## Monorepo Architecture
+
+LegacyGuard is structured as a monorepo with shared packages:
+
+```
+/legacyguard-platform/
+├── apps/
+│   ├── web/              # Hollywood web application
+│   └── mobile/           # React Native mobile app  
+├── packages/
+│   ├── ui/               # Tamagui cross-platform components
+│   ├── shared/           # Shared services and utilities
+│   ├── locales/          # Centralized translations
+│   └── config/           # Shared configurations
+└── docs/                 # Project documentation
+```
+
+### Current Development Priorities
+
+1. **Phase 1**: Monorepo setup and Tamagui implementation
+2. **Critical components**: Button, Card, Input with cross-platform support
+3. **i18n migration**: Centralization of all translations
+4. **Testing setup**: Automated validation pipeline
+
 ## Development Notes
 
 - The application uses React Router v7 future flags for forward compatibility

@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { usePersonalityManager } from '@/components/sofia/SofiaContextProvider';
 import { GardenOrchestrator, useGardenProgress } from '@/components/garden';
 import { AnimationSystem } from '@/lib/animation-system';
-import { showMilestoneRecognition } from '@/components/dashboard/MilestoneCelebration';
+import { showMilestoneRecognition } from '@/components/dashboard/milestoneUtils';
 import type { PersonalityMode } from '@/lib/sofia-types';
 import type { SerenityMilestone } from '@/lib/path-of-serenity';
 

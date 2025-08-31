@@ -11,6 +11,9 @@ interface EncryptionState {
   isInitialized: boolean;
   isLocked: boolean;
   hasKey: boolean;
+  isLoading: boolean;
+  passwordPromptVisible: boolean;
+  needsMigration: boolean;
 }
 
 interface EncryptionResult {
@@ -24,6 +27,9 @@ export function useEncryption() {
     isInitialized: false,
     isLocked: true,
     hasKey: false,
+    isLoading: false,
+    passwordPromptVisible: false,
+    needsMigration: false,
   });
 
   const [encryptionKey, setEncryptionKey] = useState<CryptoKey | null>(null);
@@ -94,11 +100,12 @@ export function useEncryption() {
       setEncryptionKey(key);
       secureStorage.setMemory('encryption_key', key, 30 * 60 * 1000); // 30 minutes
 
-      setState({
+      setState(prev => ({
+        ...prev,
         isInitialized: true,
         isLocked: false,
         hasKey: true,
-      });
+      }));
 
       return true;
     } catch (error) {
@@ -106,6 +113,18 @@ export function useEncryption() {
       return false;
     }
   }, []);
+
+  const initializeKeys = useCallback(async (password: string) => {
+    setState(prev => ({ ...prev, isLoading: true }));
+    try {
+      const success = await initializeEncryption(password);
+      setState(prev => ({ ...prev, isLoading: false }));
+      return success;
+    } catch (error) {
+      setState(prev => ({ ...prev, isLoading: false }));
+      return false;
+    }
+  }, [initializeEncryption]);
 
   const lockEncryption = useCallback(() => {
     setEncryptionKey(null);
@@ -241,6 +260,7 @@ export function useEncryption() {
   }, [generateSecureToken]);
 
   const showPasswordPrompt = useCallback(async (): Promise<boolean> => {
+    setState(prev => ({ ...prev, passwordPromptVisible: true }));
     // This would typically show a modal or prompt for the password
     // For now, use browser prompt as placeholder
     const password = prompt('Enter encryption password:');
@@ -250,15 +270,48 @@ export function useEncryption() {
     return false;
   }, [initializeEncryption]);
 
+  const hidePasswordPrompt = useCallback(() => {
+    setState(prev => ({ ...prev, passwordPromptVisible: false }));
+  }, []);
+
+  const unlockKeys = useCallback(async (password: string): Promise<boolean> => {
+    setState(prev => ({ ...prev, isLoading: true }));
+    try {
+      const success = await initializeEncryption(password);
+      setState(prev => ({ ...prev, isLoading: false }));
+      return success;
+    } catch (error) {
+      setState(prev => ({ ...prev, isLoading: false }));
+      return false;
+    }
+  }, [initializeEncryption]);
+
+  const migrateKeys = useCallback(async (): Promise<boolean> => {
+    setState(prev => ({ ...prev, isLoading: true }));
+    try {
+      // Placeholder for key migration logic
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      setState(prev => ({ ...prev, needsMigration: false, isLoading: false }));
+      return true;
+    } catch (error) {
+      setState(prev => ({ ...prev, isLoading: false }));
+      return false;
+    }
+  }, []);
+
   return {
     // State
     isInitialized: state.isInitialized,
     isLocked: state.isLocked,
     hasKey: state.hasKey,
     isUnlocked: !state.isLocked && state.hasKey,
+    isLoading: state.isLoading,
+    passwordPromptVisible: state.passwordPromptVisible,
+    needsMigration: state.needsMigration,
 
     // Methods
     initializeEncryption,
+    initializeKeys,
     lockEncryption,
     encryptData,
     decryptData,
@@ -269,6 +322,9 @@ export function useEncryption() {
     hashPassword,
     checkEncryptionStatus,
     showPasswordPrompt,
+    hidePasswordPrompt,
+    unlockKeys,
+    migrateKeys,
   };
 }
 

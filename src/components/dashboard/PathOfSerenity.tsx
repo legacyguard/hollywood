@@ -16,7 +16,7 @@ import {
   type SerenityMilestone,
   type FiveMinuteChallenge,
 } from '@/lib/path-of-serenity';
-import { showMilestoneRecognition } from './MilestoneCelebration';
+import { showMilestoneRecognition } from './milestoneUtils';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
