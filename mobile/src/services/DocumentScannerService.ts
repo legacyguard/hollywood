@@ -5,7 +5,7 @@
 
 export const DocumentScannerService = {
   // Future scanner-related functions can be added here
-  
+
   // Process captured image
   processImage: async (imageUri: string) => {
     // In the future, this could include:

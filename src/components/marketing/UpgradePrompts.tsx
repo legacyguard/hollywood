@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -12,7 +12,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import {
   Crown,
   Star,
-  Zap,
   Shield,
   Users,
   Clock,
@@ -21,7 +20,6 @@ import {
   ArrowRight,
   Sparkles,
   TrendingUp,
-  Award,
   Lock
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -493,7 +491,7 @@ interface FeatureUpgradePromptProps {
 
 export const FeatureUpgradePrompt: React.FC<FeatureUpgradePromptProps> = ({
   feature,
-  currentPlan,
+  currentPlan: _currentPlan,
   className,
   onUpgrade
 }) => {

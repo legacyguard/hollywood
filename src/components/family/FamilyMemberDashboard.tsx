@@ -4,7 +4,7 @@ import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Progress } from '../ui/progress';
-import { Separator } from '../ui/separator';
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,12 +13,11 @@ import {
   DropdownMenuSeparator
 } from '../ui/dropdown-menu';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
-import { Alert, AlertDescription } from '../ui/alert';
+
 import {
   Users,
   UserPlus,
   Shield,
-  Calendar,
   FileText,
   MoreVertical,
   Mail,
@@ -29,8 +28,7 @@ import {
   CheckCircle
 } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
-import type { FamilyMember, FamilyProtectionStatus, FamilyStats} from '@/types/family';
-import { RELATIONSHIP_LABELS } from '@/types/family';
+import { type FamilyMember, type FamilyProtectionStatus, type FamilyStats, RELATIONSHIP_LABELS } from '@/types/family';
 import { familyService } from '@/services/familyService';
 import { FamilyInvitationFlow } from './FamilyInvitationFlow';
 
@@ -107,7 +105,7 @@ export function FamilyMemberDashboard({ userId }: FamilyMemberDashboardProps) {
     }
   };
 
-  const handleInvitationSent = (_invitation: any) => {
+  const handleInvitationSent = (_invitation: unknown) => {
     setShowInviteFlow(false);
     loadFamilyData();
   };
@@ -292,11 +290,11 @@ export function FamilyMemberDashboard({ userId }: FamilyMemberDashboardProps) {
                 key={key}
                 variant={filter === key ? 'default' : 'outline'}
                 size="sm"
-                onClick={() => setFilter(key as any)}
+                onClick={() => setFilter(key as typeof filter)}
                 className="gap-2"
               >
                 {label}
-                <Badge variant={"secondary" as any} className="ml-1 text-xs">
+                <Badge variant="secondary" className="ml-1 text-xs">
                   {count}
                 </Badge>
               </Button>
@@ -331,11 +329,11 @@ export function FamilyMemberDashboard({ userId }: FamilyMemberDashboardProps) {
                           <div className="space-y-1">
                             <div className="flex items-center gap-2">
                               <h3 className="font-semibold">{member.name}</h3>
-                              <Badge className={getRoleColor(member.role)} variant={"outline" as any}>
+                              <Badge className={getRoleColor(member.role)} variant="outline">
                                 {member.role.replace('_', ' ')}
                               </Badge>
                               {member.emergencyPriority && (
-                                <Badge variant={"secondary" as any} className="bg-red-50 text-red-700">
+                                <Badge variant="secondary" className="bg-red-50 text-red-700">
                                   Priority #{member.emergencyPriority}
                                 </Badge>
                               )}
@@ -396,7 +394,7 @@ export function FamilyMemberDashboard({ userId }: FamilyMemberDashboardProps) {
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                               <Button
-                                variant={"ghost" as any}
+                                variant="ghost"
                                 size="sm"
                                 disabled={actionInProgress === member.id}
                               >

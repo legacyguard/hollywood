@@ -6,7 +6,7 @@
  * and mobile bottom navigation based on screen size.
  */
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import MobileNavigation from './MobileNavigation';
 import PWAInstallPrompt from './PWAInstallPrompt';

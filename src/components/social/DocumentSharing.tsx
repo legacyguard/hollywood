@@ -18,7 +18,7 @@ import { Switch } from '@/components/ui/switch';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { Calendar } from '@/components/ui/calendar';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+
 import {
   Dialog,
   DialogContent,
@@ -26,7 +26,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import {
   Popover,
@@ -52,23 +51,15 @@ import {
   Users,
   Eye,
   Download,
-  Edit,
-  MessageCircle,
   RefreshCw,
   Calendar as CalendarIcon,
   Clock,
-  Shield,
-  Link2,
-  Mail,
-  Check,
-  X,
   MoreVertical,
   Copy,
   Trash2,
   Settings,
   Activity,
-  AlertTriangle,
-  ExternalLink
+  AlertTriangle
 } from 'lucide-react';
 import {
   collaborationService,
@@ -88,7 +79,7 @@ interface DocumentSharingProps {
 }
 
 export default function DocumentSharing({
-  documentId,
+  documentId: _documentId,
   documentName,
   className
 }: DocumentSharingProps) {
@@ -97,7 +88,7 @@ export default function DocumentSharing({
   const [familyMembers, setFamilyMembers] = useState<FamilyMember[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showShareDialog, setShowShareDialog] = useState(false);
-  const [activeTab, setActiveTab] = useState(documentId ? 'share' : 'shared-with-me');
+  const [activeTab, setActiveTab] = useState(_documentId ? 'share' : 'shared-with-me');
 
   const { toast } = useToast();
 
@@ -146,11 +137,11 @@ export default function DocumentSharing({
     message?: string;
     expiresAt?: string;
   }) => {
-    if (!documentId) return;
+    if (!_documentId) return;
 
     try {
       await collaborationService.shareDocument({
-        documentId,
+        _documentId,
         ...shareData
       });
 
@@ -188,7 +179,7 @@ export default function DocumentSharing({
             Share documents with family members and manage access permissions
           </p>
         </div>
-        {documentId && (
+        {_documentId && (
           <Button onClick={() => setShowShareDialog(true)}>
             <Share2 className="h-4 w-4 mr-2" />
             Share Document
@@ -199,17 +190,17 @@ export default function DocumentSharing({
       {/* Main Content */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <TabsList className="grid w-full grid-cols-3">
-          {documentId && (
+          {_documentId && (
             <TabsTrigger value="share">Share Document</TabsTrigger>
           )}
           <TabsTrigger value="shared-with-me">Shared With Me</TabsTrigger>
           <TabsTrigger value="shared-by-me">Shared By Me</TabsTrigger>
         </TabsList>
 
-        {documentId && (
+        {_documentId && (
           <TabsContent value="share">
             <ShareDocumentTab
-              documentId={documentId}
+              documentId={_documentId}
               documentName={documentName}
               familyMembers={familyMembers}
               onShare={handleShare}
@@ -228,7 +219,7 @@ export default function DocumentSharing({
 
       {/* Share Dialog */}
       <ShareDocumentDialog
-        documentId={documentId}
+        documentId={_documentId}
         documentName={documentName}
         familyMembers={familyMembers}
         open={showShareDialog}
@@ -242,7 +233,7 @@ export default function DocumentSharing({
 // Sub-components
 
 function ShareDocumentTab({
-  documentId,
+  documentId: _documentId,
   documentName,
   familyMembers,
   onShare
@@ -434,7 +425,7 @@ function ShareDocumentTab({
 
 function SharedWithMeTab({
   shares,
-  onUpdate
+  onUpdate: _onUpdate
 }: {
   shares: DocumentShare[];
   onUpdate: () => void;
@@ -533,7 +524,7 @@ function SharedWithMeTab({
 
 function SharedByMeTab({
   shares,
-  onUpdate
+  onUpdate: _onUpdate
 }: {
   shares: DocumentShare[];
   onUpdate: () => void;
@@ -632,7 +623,7 @@ function SharedByMeTab({
 }
 
 function ShareDocumentDialog({
-  documentId,
+  documentId: _documentId,
   documentName,
   familyMembers,
   open,

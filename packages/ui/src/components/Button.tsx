@@ -1,9 +1,9 @@
-import { styled, Button as TamaguiButton, ButtonProps as TamaguiButtonProps, GetProps } from 'tamagui'
+import { type GetProps, styled, Button as TamaguiButton } from 'tamagui'
 
 // Create styled Button with LegacyGuard variants
 export const Button = styled(TamaguiButton, {
   name: 'LGButton',
-  
+
   // Base styles
   backgroundColor: '$primaryBlue',
   color: 'white',
@@ -19,7 +19,7 @@ export const Button = styled(TamaguiButton, {
   justifyContent: 'center',
   flexDirection: 'row',
   gap: '$2',
-  
+
   // Animations
   animation: 'quick',
   pressStyle: {
@@ -40,7 +40,7 @@ export const Button = styled(TamaguiButton, {
     color: '$gray6',
     cursor: 'not-allowed',
   },
-  
+
   // Variants
   variants: {
     variant: {
@@ -99,7 +99,7 @@ export const Button = styled(TamaguiButton, {
         },
       },
     },
-    
+
     size: {
       small: {
         paddingHorizontal: '$3',
@@ -126,13 +126,13 @@ export const Button = styled(TamaguiButton, {
         height: 56,
       },
     },
-    
+
     fullWidth: {
       true: {
         width: '100%',
       },
     },
-    
+
     rounded: {
       true: {
         borderRadius: 9999,
@@ -141,7 +141,7 @@ export const Button = styled(TamaguiButton, {
         borderRadius: '$2',
       },
     },
-    
+
     loading: {
       true: {
         opacity: 0.7,
@@ -149,7 +149,7 @@ export const Button = styled(TamaguiButton, {
       },
     },
   } as const,
-  
+
   // Default variants
   defaultVariants: {
     variant: 'primary',
@@ -168,7 +168,7 @@ export const IconButton = styled(Button, {
   name: 'LGIconButton',
   paddingHorizontal: 0,
   aspectRatio: 1,
-  
+
   variants: {
     size: {
       small: {
@@ -189,7 +189,7 @@ export const IconButton = styled(Button, {
       },
     },
   },
-  
+
   defaultVariants: {
     size: 'medium',
   },

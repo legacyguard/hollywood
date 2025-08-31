@@ -3,7 +3,7 @@
  * Handles notifications when professional reviews are completed
  */
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   CheckCircle,
   Star,

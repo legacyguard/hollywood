@@ -3,7 +3,7 @@
  * Manages usage limits, tracking, and upgrade flows
  */
 
-import { SupabaseClient } from '@supabase/supabase-js';
+import type { SupabaseClient } from '@supabase/supabase-js';
 import { Linking } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -59,7 +59,7 @@ export class FreemiumManager {
     try {
       const cachedPlan = await AsyncStorage.getItem('user_plan');
       const cachedLimits = await AsyncStorage.getItem('usage_limits');
-      
+
       if (cachedPlan) this.userPlan = JSON.parse(cachedPlan);
       if (cachedLimits) this.cachedLimits = JSON.parse(cachedLimits);
     } catch (error) {
@@ -127,9 +127,9 @@ export class FreemiumManager {
     const limits = this.calculateLimits(usage);
     this.cachedLimits = limits;
     this.lastLimitCheck = new Date();
-    
+
     await AsyncStorage.setItem('usage_limits', JSON.stringify(limits));
-    
+
     return limits;
   }
 
@@ -241,7 +241,7 @@ export class FreemiumManager {
    */
   checkFeatureAccess(feature: string): FeatureAccess {
     const currentPlan = this.userPlan?.plan || 'free';
-    
+
     const featureRequirements: Record<string, string> = {
       'advanced_ocr': 'essential',
       'family_sharing': 'family',
@@ -253,7 +253,7 @@ export class FreemiumManager {
     };
 
     const requiredPlan = featureRequirements[feature];
-    
+
     if (!requiredPlan || this.isPlanSufficient(currentPlan, requiredPlan as any)) {
       return {
         feature,
@@ -309,11 +309,11 @@ export class FreemiumManager {
    */
   async openUpgradeFlow(feature?: string): Promise<void> {
     let url = `${this.WEB_BASE_URL}/upgrade?from=mobile`;
-    
+
     if (feature) {
       url += `&feature=${feature}`;
     }
-    
+
     if (this.userId) {
       url += `&user=${this.userId}`;
     }
@@ -330,10 +330,10 @@ export class FreemiumManager {
    */
   getUsagePercentage(limitType: keyof UsageLimits): number {
     if (!this.cachedLimits) return 0;
-    
+
     const limit = this.cachedLimits[limitType];
     if (limit.limit === Infinity) return 0;
-    
+
     return Math.min(100, Math.round((limit.current / limit.limit) * 100));
   }
 
@@ -342,7 +342,7 @@ export class FreemiumManager {
    */
   getUpgradeBenefits(): string[] {
     const currentPlan = this.userPlan?.plan || 'free';
-    
+
     const benefits: Record<string, string[]> = {
       free: [
         '100 documents (10x more)',

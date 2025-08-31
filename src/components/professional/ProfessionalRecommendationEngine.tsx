@@ -9,41 +9,27 @@ import { Sparkles,
   Star,
   MapPin,
   Clock,
-  DollarSign,
   Award,
   CheckCircle,
   ArrowRight,
-  Filter,
   Search,
   Sliders,
-  Users,
   Calendar,
-  Phone,
-  Video,
-  MessageSquare,
   Shield,
-  Zap,
-  Heart,
   TrendingUp,
   Target,
-  BookOpen,
-  Scale,
-  Briefcase,
-  User,
-  Info, FileText } from 'lucide-react';
+  FileText,
+  Heart } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { Progress } from '@/components/ui/progress';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
 import type { ProfessionalReviewer } from '@/types/professional';
 
@@ -280,7 +266,7 @@ export function ProfessionalRecommendationEngine({
   const [recommendations, setRecommendations] = useState<ProfessionalRecommendation[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
-  const [selectedRecommendation, setSelectedRecommendation] = useState<ProfessionalRecommendation | null>(null);
+  const [_selectedRecommendation, setSelectedRecommendation] = useState<ProfessionalRecommendation | null>(null);
 
   useEffect(() => {
     generateRecommendations();

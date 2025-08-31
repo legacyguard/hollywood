@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { Progress } from '../ui/progress';
-import { Separator } from '../ui/separator';
+
 import { Vote, Users, Clock, CheckCircle, AlertCircle, MessageSquare, Calendar, Plus, Eye, Minus, Settings, Archive, Filter } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -32,7 +32,7 @@ interface VoteOption {
   percentage: number;
 }
 
-interface Vote {
+interface VoteRecord {
   id: string;
   userId: string;
   userName: string;
@@ -65,7 +65,7 @@ interface FamilyDecision {
   requiresUnanimity: boolean;
   eligibleVoters: string[];
   options: VoteOption[];
-  votes: Vote[];
+  votes: VoteRecord[];
   comments: DecisionComment[];
   result?: {
     winningOption: string;
@@ -154,7 +154,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
   const [decisions, setDecisions] = useState<FamilyDecision[]>(existingDecisions);
   const [activeDecision, setActiveDecision] = useState<FamilyDecision | null>(null);
   const [isCreating, setIsCreating] = useState(false);
-  const [selectedTemplate, setSelectedTemplate] = useState<DecisionTemplate | null>(null);
+  const [_selectedTemplate, setSelectedTemplate] = useState<DecisionTemplate | null>(null);
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [filterCategory, setFilterCategory] = useState<string>('all');
   const [currentUserId] = useState('current-user-id');
@@ -312,27 +312,6 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
     return decision.options.reduce((winner, option) =>
       option.votes.length > winner.votes.length ? option : winner
     );
-  };
-
-  const addComment = (decisionId: string, content: string) => {
-    const decision = decisions.find(d => d.id === decisionId);
-    if (!decision || !content.trim()) return;
-
-    const comment: DecisionComment = {
-      id: `comment-${Date.now()}`,
-      userId: currentUserId,
-      userName: currentUser.name,
-      content,
-      timestamp: new Date(),
-      replies: []
-    };
-
-    const updatedDecision = {
-      ...decision,
-      comments: [...decision.comments, comment]
-    };
-
-    setDecisions(decisions.map(d => d.id === decisionId ? updatedDecision : d));
   };
 
   const getPriorityColor = (priority: FamilyDecision['priority']) => {

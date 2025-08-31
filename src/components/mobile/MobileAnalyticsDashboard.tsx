@@ -7,9 +7,9 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+
 import { Progress } from '@/components/ui/progress';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
 import {
   BarChart3,
   Shield,
@@ -31,11 +31,11 @@ interface MobileAnalyticsDashboardProps {
 }
 
 export const MobileAnalyticsDashboard: React.FC<MobileAnalyticsDashboardProps> = ({
-  userId,
+  userId: _userId,
   onNavigate
 }) => {
   const { isSmall } = useBreakpoint();
-  const [selectedTab, setSelectedTab] = useState('overview');
+  const [_selectedTab, _setSelectedTab] = useState('overview');
 
   // Mobile-optimized metrics data
   const metrics = {

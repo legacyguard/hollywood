@@ -44,24 +44,24 @@ export const useOfflineVault = (): UseOfflineVaultReturn => {
   const getOrCreateEncryptionKey = useCallback(async (): Promise<Uint8Array> => {
     try {
       let keyHex = await SecureStore.getItemAsync(ENCRYPTION_KEY_NAME);
-      
+
       if (!keyHex) {
         // Generate a new 64-byte key
         const randomBytes = await Crypto.getRandomBytesAsync(64);
         keyHex = Array.from(randomBytes)
           .map((b: number) => b.toString(16).padStart(2, '0'))
           .join('');
-        
+
         await SecureStore.setItemAsync(ENCRYPTION_KEY_NAME, keyHex);
         console.log('New encryption key generated and stored');
       }
-      
+
       // Convert hex string to Uint8Array
       const keyBytes = new Uint8Array(64);
       for (let i = 0; i < 64; i++) {
         keyBytes[i] = parseInt(keyHex.substr(i * 2, 2), 16);
       }
-      
+
       return keyBytes;
     } catch (error) {
       console.error('Failed to get/create encryption key:', error);
@@ -76,12 +76,12 @@ export const useOfflineVault = (): UseOfflineVaultReturn => {
     const initializeVault = async () => {
       setIsLoading(true);
       setError(null);
-      
+
       try {
         const encryptionKey = await getOrCreateEncryptionKey();
         await OfflineVaultService.open(encryptionKey);
         setIsVaultOpen(true);
-        
+
         // Load initial documents
         await loadDocuments();
       } catch (error) {
@@ -109,11 +109,11 @@ export const useOfflineVault = (): UseOfflineVaultReturn => {
       console.warn('Vault is not open');
       return;
     }
-    
+
     try {
       const docs = await OfflineVaultService.getDocuments();
       setDocuments(docs);
-      
+
       const vaultStats = await OfflineVaultService.getStats();
       setStats({
         documentCount: vaultStats.documentCount,
@@ -132,7 +132,7 @@ export const useOfflineVault = (): UseOfflineVaultReturn => {
     if (!isVaultOpen) {
       throw new Error('Vault is not open');
     }
-    
+
     try {
       await OfflineVaultService.addDocument(doc);
       await loadDocuments(); // Reload to update list
@@ -150,7 +150,7 @@ export const useOfflineVault = (): UseOfflineVaultReturn => {
     if (!isVaultOpen) {
       throw new Error('Vault is not open');
     }
-    
+
     try {
       const success = await OfflineVaultService.removeDocument(id);
       if (success) {
@@ -170,7 +170,7 @@ export const useOfflineVault = (): UseOfflineVaultReturn => {
     if (!isVaultOpen) {
       throw new Error('Vault is not open');
     }
-    
+
     try {
       return await OfflineVaultService.getDocument(id);
     } catch (error) {
@@ -186,7 +186,7 @@ export const useOfflineVault = (): UseOfflineVaultReturn => {
     if (!isVaultOpen) {
       throw new Error('Vault is not open');
     }
-    
+
     try {
       await OfflineVaultService.clearAll();
       await loadDocuments(); // Reload to update list
@@ -204,7 +204,7 @@ export const useOfflineVault = (): UseOfflineVaultReturn => {
     if (!isVaultOpen) {
       throw new Error('Vault is not open');
     }
-    
+
     try {
       // TODO: Implement cloud sync
       // 1. Get list of documents from API

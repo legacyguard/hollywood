@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import React, { useContext } from 'react';
 
 interface FocusModeContextType {
   isFocusMode: boolean;

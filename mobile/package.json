@@ -1,6 +1,7 @@
 {
   "name": "mobile",
   "version": "1.0.0",
+  "type": "module",
   "main": "index.ts",
   "scripts": {
     "start": "expo start",
@@ -8,7 +9,12 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "test": "jest",
-    "lint": "eslint . --ext .ts,.tsx",
+    "test:maestro": "./scripts/run-maestro-tests.sh",
+    "test:maestro:auth": "maestro test .maestro/flows/01-auth-flow.yaml",
+    "test:maestro:navigation": "maestro test .maestro/flows/02-navigation-flow.yaml",
+    "test:maestro:dark": "maestro test .maestro/flows/03-dark-mode-flow.yaml",
+    "test:maestro:tablet": "maestro test .maestro/flows/04-tablet-flow.yaml",
+    "lint": "eslint .",
     "type-check": "tsc --noEmit",
     "build": "expo export --platform all",
     "dev": "expo start"

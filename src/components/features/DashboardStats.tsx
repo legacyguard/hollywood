@@ -18,7 +18,7 @@ interface StatsData {
 export function DashboardStats({ className }: DashboardStatsProps) {
   const { userId } = useAuth();
   const createSupabaseClient = useSupabaseWithClerk();
-  const { context } = useSofiaStore();
+  const { context: _context } = useSofiaStore();
   const [stats, setStats] = useState<StatsData>({
     documentsCount: 0,
     guardiansCount: 0,

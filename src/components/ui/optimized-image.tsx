@@ -26,7 +26,7 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
   height,
   className,
   priority = false,
-  placeholder = 'color',
+      placeholder: _placeholder = 'color',
   placeholderColor = 'hsl(var(--muted))',
   sizes = '100vw',
   onLoad,
@@ -104,7 +104,7 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
   }, [priority, src]);
 
   // Generate responsive srcSet for modern formats
-  const generateSrcSet = useCallback((imageSrc: string) => {
+  const _generateSrcSet = useCallback((imageSrc: string) => {
     if (!imageSrc.includes('.webp') && !imageSrc.includes('.avif')) {
       return undefined; // Only generate srcSet for modern formats
     }
@@ -121,7 +121,7 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
   }, []);
 
   // Convert image to WebP if supported
-  const getOptimizedSrc = useCallback((imageSrc: string) => {
+  const _getOptimizedSrc = useCallback((imageSrc: string) => {
     if (typeof window !== 'undefined' && 'createImageBitmap' in window) {
       // Check if WebP is supported
       const canvas = document.createElement('canvas');

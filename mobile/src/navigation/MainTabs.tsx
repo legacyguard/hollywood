@@ -11,7 +11,7 @@ const Tab = createBottomTabNavigator();
 
 export const MainTabs = () => {
   const theme = useTheme();
-  
+
   return (
     <Tab.Navigator
       screenOptions={{
@@ -45,38 +45,38 @@ export const MainTabs = () => {
         },
       }}
   >
-    <Tab.Screen 
-      name="Dashboard" 
-      component={DashboardScreenV2} 
-      options={{ 
+    <Tab.Screen
+      name="Dashboard"
+      component={DashboardScreenV2}
+      options={{
         tabBarIcon: ({ color, size }) => <Home color={color} size={size} />,
         tabBarLabel: 'Home',
-      }} 
+      }}
     />
-    <Tab.Screen 
-      name="Scan" 
-      component={ScannerScreen} 
-      options={{ 
+    <Tab.Screen
+      name="Scan"
+      component={ScannerScreen}
+      options={{
         tabBarIcon: ({ color, size }) => <Camera color={color} size={size} />,
         tabBarLabel: 'Scan',
         headerShown: false, // Hide header for full-screen scanner
-      }} 
+      }}
     />
-    <Tab.Screen 
-      name="Vault" 
-      component={VaultScreenV2} 
-      options={{ 
+    <Tab.Screen
+      name="Vault"
+      component={VaultScreenV2}
+      options={{
         tabBarIcon: ({ color, size }) => <Shield color={color} size={size} />,
         tabBarLabel: 'Vault',
-      }} 
+      }}
     />
-    <Tab.Screen 
-      name="Profile" 
-      component={ProfileScreen} 
-      options={{ 
+    <Tab.Screen
+      name="Profile"
+      component={ProfileScreen}
+      options={{
         tabBarIcon: ({ color, size }) => <User color={color} size={size} />,
         tabBarLabel: 'Profile',
-      }} 
+      }}
     />
     </Tab.Navigator>
   );

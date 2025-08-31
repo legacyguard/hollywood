@@ -16,7 +16,7 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { FreemiumManager, UsageLimits, FeatureAccess } from '../services/FreemiumManager';
+import type { FreemiumManager, UsageLimits, FeatureAccess } from '../services/FreemiumManager';
 
 interface UpgradePromptProps {
   freemiumManager: FreemiumManager;
@@ -45,7 +45,7 @@ export const UpgradePrompt: React.FC<UpgradePromptProps> = ({
 
   const checkAccess = async () => {
     setLoading(true);
-    
+
     try {
       // Check feature access
       if (feature) {
@@ -149,13 +149,13 @@ export const UpgradePrompt: React.FC<UpgradePromptProps> = ({
             <TouchableOpacity style={styles.closeButton} onPress={handleClose}>
               <Ionicons name="close" size={24} color="white" />
             </TouchableOpacity>
-            
+
             <Ionicons name="lock-closed" size={48} color="white" />
-            
+
             <Text style={styles.headerTitle}>
               {action ? 'Limit Reached' : 'Premium Feature'}
             </Text>
-            
+
             <Text style={styles.headerMessage}>
               {action ? getLimitMessage() : getFeatureMessage()}
             </Text>
@@ -186,19 +186,19 @@ export const UpgradePrompt: React.FC<UpgradePromptProps> = ({
                 <Text style={styles.featureTitle}>More Documents</Text>
                 <Text style={styles.featureDescription}>Store more documents securely</Text>
               </View>
-              
+
               <View style={styles.featureCard}>
                 <Ionicons name="scan" size={32} color="#1e40af" />
                 <Text style={styles.featureTitle}>Advanced Scanning</Text>
                 <Text style={styles.featureDescription}>AI-powered document analysis</Text>
               </View>
-              
+
               <View style={styles.featureCard}>
                 <Ionicons name="people" size={32} color="#1e40af" />
                 <Text style={styles.featureTitle}>Family Sharing</Text>
                 <Text style={styles.featureDescription}>Share with loved ones</Text>
               </View>
-              
+
               <View style={styles.featureCard}>
                 <Ionicons name="shield-checkmark" size={32} color="#1e40af" />
                 <Text style={styles.featureTitle}>Legal Tools</Text>
@@ -210,7 +210,7 @@ export const UpgradePrompt: React.FC<UpgradePromptProps> = ({
               <Text style={styles.ctaText}>
                 Complete your legacy protection with full access to all features
               </Text>
-              
+
               <TouchableOpacity style={styles.upgradeButton} onPress={handleUpgrade}>
                 <LinearGradient
                   colors={['#f59e0b', '#d97706']}
@@ -220,7 +220,7 @@ export const UpgradePrompt: React.FC<UpgradePromptProps> = ({
                   <Ionicons name="arrow-forward" size={20} color="white" />
                 </LinearGradient>
               </TouchableOpacity>
-              
+
               <Text style={styles.webNote}>
                 You'll be redirected to our secure web platform to complete your upgrade
               </Text>

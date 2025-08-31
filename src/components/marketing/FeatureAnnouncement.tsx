@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -21,14 +21,11 @@ import {
   ChevronRight,
   X,
   Play,
-  FileText,
-  Calendar,
   BarChart3
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface FeatureAnnouncementProps {
-  userId: string;
   onFeatureExplore?: (featureId: string) => void;
   onDismiss?: () => void;
 }
@@ -46,7 +43,6 @@ interface NewFeature {
 }
 
 export const FeatureAnnouncement: React.FC<FeatureAnnouncementProps> = ({
-  userId,
   onFeatureExplore,
   onDismiss
 }) => {
@@ -431,7 +427,6 @@ export const FeatureAnnouncementTrigger: React.FC<FeatureAnnouncementTriggerProp
 
   return (
     <FeatureAnnouncement
-      userId={userId}
       onFeatureExplore={handleFeatureExplore}
       onDismiss={handleDismiss}
     />

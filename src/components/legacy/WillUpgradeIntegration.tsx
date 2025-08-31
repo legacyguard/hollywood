@@ -9,7 +9,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
+
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
 import {
@@ -56,9 +56,9 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
 
   // Integration with validation system
   const {
-    complianceReport,
-    fieldValidations,
-    isValidating,
+    complianceReport: _complianceReport,
+    fieldValidations: _fieldValidations,
+    isValidating: _isValidating,
     validationSummary,
     isWillValid,
     getValidationMessages,

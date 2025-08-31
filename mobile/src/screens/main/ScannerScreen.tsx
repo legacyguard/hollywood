@@ -18,23 +18,23 @@ export const ScannerScreen = () => {
 
   const handleUpload = async () => {
     if (!scannedImageUri) return;
-    
+
     setIsUploading(true);
     try {
       // Read the file and convert to base64
       const base64 = await FileSystem.readAsStringAsync(scannedImageUri, {
         encoding: FileSystem.EncodingType.Base64,
       });
-      
+
       // Use the API client to upload the document
       const result = await api.documents.upload({
         base64,
         mimeType: 'image/jpeg',
         fileName: `scan_${Date.now()}.jpg`,
       });
-      
+
       console.log('Upload successful:', result);
-      
+
       // Show success message
       Alert.alert(
         'Success',
@@ -52,9 +52,9 @@ export const ScannerScreen = () => {
       );
     } catch (error) {
       console.error('Upload error:', error);
-      
+
       let errorMessage = 'Failed to upload document. Please try again.';
-      
+
       if (error instanceof ApiError) {
         if (error.status === 401) {
           errorMessage = 'Please log in to upload documents.';
@@ -68,7 +68,7 @@ export const ScannerScreen = () => {
       } else if (error instanceof Error) {
         errorMessage = error.message;
       }
-      
+
       Alert.alert('Upload Failed', errorMessage);
     } finally {
       setIsUploading(false);
@@ -88,7 +88,7 @@ export const ScannerScreen = () => {
 
   if (isScanning && !scannedImageUri) {
     return (
-      <IntelligentDocumentScanner 
+      <IntelligentDocumentScanner
         onScanComplete={handleScanComplete}
         onCancel={handleCancel}
       />
@@ -98,24 +98,24 @@ export const ScannerScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Review Your Scan</Text>
-      
+
       {scannedImageUri && (
         <View style={styles.imageContainer}>
           <Image source={{ uri: scannedImageUri }} style={styles.previewImage} />
         </View>
       )}
-      
+
       <View style={styles.buttonContainer}>
-        <TouchableOpacity 
-          style={[styles.button, styles.secondaryButton]} 
+        <TouchableOpacity
+          style={[styles.button, styles.secondaryButton]}
           onPress={handleRetake}
           disabled={isUploading}
         >
           <Text style={styles.secondaryButtonText}>Retake</Text>
         </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={[styles.button, styles.primaryButton, isUploading && styles.disabledButton]} 
+
+        <TouchableOpacity
+          style={[styles.button, styles.primaryButton, isUploading && styles.disabledButton]}
           onPress={handleUpload}
           disabled={isUploading}
         >
@@ -126,12 +126,12 @@ export const ScannerScreen = () => {
           )}
         </TouchableOpacity>
       </View>
-      
+
       {!scannedImageUri && !isScanning && (
         <View style={styles.emptyState}>
           <Text style={styles.emptyStateText}>No document scanned</Text>
-          <TouchableOpacity 
-            style={[styles.button, styles.primaryButton]} 
+          <TouchableOpacity
+            style={[styles.button, styles.primaryButton]}
             onPress={() => setIsScanning(true)}
           >
             <Text style={styles.primaryButtonText}>Start Scanning</Text>

@@ -11,8 +11,8 @@ function TamaguiProviderInner({ children }: ProvidersProps) {
   const { actualTheme } = useAppTheme()
 
   return (
-    <TamaguiProviderBase 
-      config={tamaguiConfig} 
+    <TamaguiProviderBase
+      config={tamaguiConfig}
       defaultTheme={actualTheme}
     >
       {children}

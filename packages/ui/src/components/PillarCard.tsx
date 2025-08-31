@@ -1,16 +1,16 @@
 import React from 'react';
-import { 
-  Card, 
-  H3, 
-  Paragraph, 
-  Button, 
-  Stack, 
-  View, 
+import {
+  type GetProps,
+  Card,
+  H3,
+  Paragraph,
+  Button,
+  Stack,
+  View,
   styled,
-  GetProps,
   AnimatePresence
 } from 'tamagui';
-import { Lucide, LucideIcon } from 'lucide-react-native';
+import { type LucideIcon, Lucide } from 'lucide-react-native';
 
 // Styled components for PillarCard
 const PillarCardContainer = styled(Card, {
@@ -22,7 +22,7 @@ const PillarCardContainer = styled(Card, {
   borderColor: '$borderColor',
   overflow: 'hidden',
   position: 'relative',
-  
+
   variants: {
     isActive: {
       true: {
@@ -36,11 +36,11 @@ const PillarCardContainer = styled(Card, {
       },
     },
   },
-  
+
   pressStyle: {
     scale: 0.98,
   },
-  
+
   hoverStyle: {
     borderColor: '$primaryBlueLight',
     shadowColor: '$shadowColor',
@@ -58,7 +58,7 @@ const IconContainer = styled(View, {
   alignItems: 'center',
   justifyContent: 'center',
   marginBottom: '$4',
-  
+
   variants: {
     isActive: {
       true: {
@@ -122,13 +122,13 @@ export function PillarCard({
   actionButton,
   ...props
 }: PillarCardProps) {
-  const IconComponent = typeof icon === 'string' 
+  const IconComponent = typeof icon === 'string'
     ? Lucide[icon as keyof typeof Lucide] || Lucide.HelpCircle
     : icon;
 
   return (
-    <PillarCardContainer 
-      isActive={isActive} 
+    <PillarCardContainer
+      isActive={isActive}
       isLocked={isLocked}
       animation="medium"
       {...props}
@@ -136,7 +136,7 @@ export function PillarCard({
       {/* Active card gradient background */}
       <AnimatePresence>
         {isActive && (
-          <ActiveGradient 
+          <ActiveGradient
             animation="medium"
             enterStyle={{ opacity: 0 }}
             exitStyle={{ opacity: 0 }}
@@ -155,14 +155,14 @@ export function PillarCard({
 
       <Stack space="$4" zIndex={1}>
         {/* Icon */}
-        <IconContainer 
-          isActive={isActive} 
+        <IconContainer
+          isActive={isActive}
           isLocked={isLocked}
           animation="medium"
         >
-          <IconComponent 
-            size={28} 
-            color={isActive ? '#ffffff' : isLocked ? '#6b7280' : '#1e40af'} 
+          <IconComponent
+            size={28}
+            color={isActive ? '#ffffff' : isLocked ? '#6b7280' : '#1e40af'}
           />
         </IconContainer>
 

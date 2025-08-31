@@ -1,5 +1,5 @@
 import type * as React from "react"
-import type { VariantProps } from "class-variance-authority"
+
 import type { IconMap } from "@/components/ui/icon-library"
 
 // Re-export inputVariants for type usage
@@ -9,8 +9,7 @@ export { inputVariants } from './enhanced-input-variants'
 export type FieldState = 'idle' | 'focused' | 'filled' | 'success' | 'error' | 'warning' | 'loading'
 
 export interface EnhancedInputProps
-  extends React.InputHTMLAttributes<HTMLInputElement>,
-    VariantProps<typeof inputVariants> {
+  extends React.InputHTMLAttributes<HTMLInputElement> {
   // Animation props
   personalityAdapt?: boolean
   animateOnFocus?: boolean

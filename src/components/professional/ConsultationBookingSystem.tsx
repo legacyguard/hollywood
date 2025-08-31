@@ -159,7 +159,6 @@ export function ConsultationBookingSystem({
   const progress = ((currentStepIndex + 1) / steps.length) * 100;
 
   useEffect(() => {
-   useEffect(() => {
     if (selectedDate && selectedDate in SAMPLE_AVAILABILITY) {
       setAvailableSlots(
         SAMPLE_AVAILABILITY[
@@ -169,7 +168,6 @@ export function ConsultationBookingSystem({
     } else {
       setAvailableSlots([]);
     }
-   }, [selectedDate]);
   }, [selectedDate]);
 
   const calculateTotalCost = () => {

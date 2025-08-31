@@ -21,7 +21,8 @@ import { useUser } from '@clerk/clerk-expo';
 import { useNavigation } from '@react-navigation/native';
 import { RefreshControl, Alert, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { DocumentService, Document } from '@hollywood/shared/src/services/documentService';
+import type { Document } from '@hollywood/shared/src/services/documentService';
+import { DocumentService } from '@hollywood/shared/src/services/documentService';
 
 // Document Categories
 const CATEGORIES = [
@@ -42,30 +43,30 @@ interface DocumentCardProps {
 
 const DocumentCard = ({ document, onPress, onDelete }: DocumentCardProps) => {
   const category = CATEGORIES.find(c => c.id === document.category) || CATEGORIES[0];
-  
+
   return (
-    <Card 
-      variant="default" 
+    <Card
+      variant="default"
       padding="medium"
       clickable
       onPress={onPress}
       fullWidth
     >
       <Row space="medium" align="center">
-        <Box 
-          padding="small" 
-          style={{ 
+        <Box
+          padding="small"
+          style={{
             backgroundColor: `${category.color}20`,
             borderRadius: 12,
           }}
         >
-          <Ionicons 
-            name={category.icon as any} 
-            size={24} 
-            color={category.color} 
+          <Ionicons
+            name={category.icon as any}
+            size={24}
+            color={category.color}
           />
         </Box>
-        
+
         <Stack space="xs" style={{ flex: 1 }}>
           <Paragraph weight="semibold">{document.name}</Paragraph>
           <Row space="small" align="center">
@@ -82,7 +83,7 @@ const DocumentCard = ({ document, onPress, onDelete }: DocumentCardProps) => {
             )}
           </Row>
         </Stack>
-        
+
         <TouchableOpacity onPress={onDelete}>
           <Ionicons name="trash-outline" size={20} color="#dc2626" />
         </TouchableOpacity>
@@ -170,7 +171,7 @@ export function VaultScreenV2() {
 
   const loadDocuments = async () => {
     if (!user?.id) return;
-    
+
     setLoading(true);
     try {
       const docs = await DocumentService.getDocuments(user.id);
@@ -186,12 +187,12 @@ export function VaultScreenV2() {
 
   const filterDocuments = () => {
     let filtered = [...documents];
-    
+
     // Filter by category
     if (selectedCategory !== 'all') {
       filtered = filtered.filter(doc => doc.category === selectedCategory);
     }
-    
+
     // Filter by search query
     if (searchQuery) {
       filtered = filtered.filter(doc =>
@@ -199,7 +200,7 @@ export function VaultScreenV2() {
         doc.notes?.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
-    
+
     setFilteredDocuments(filtered);
   };
 

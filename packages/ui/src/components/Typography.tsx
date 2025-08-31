@@ -1,4 +1,4 @@
-import { styled, Text, GetProps } from 'tamagui'
+import { type GetProps, styled, Text } from 'tamagui'
 
 // Heading components
 export const H1 = styled(Text, {
@@ -10,7 +10,7 @@ export const H1 = styled(Text, {
   lineHeight: 1.2,
   color: '$color',
   letterSpacing: '$4',
-  
+
   variants: {
     color: {
       primary: { color: '$primaryBlue' },
@@ -32,7 +32,7 @@ export const H2 = styled(Text, {
   lineHeight: 1.25,
   color: '$color',
   letterSpacing: '$3',
-  
+
   variants: {
     color: {
       primary: { color: '$primaryBlue' },
@@ -54,7 +54,7 @@ export const H3 = styled(Text, {
   lineHeight: 1.3,
   color: '$color',
   letterSpacing: '$2',
-  
+
   variants: {
     color: {
       primary: { color: '$primaryBlue' },
@@ -76,7 +76,7 @@ export const H4 = styled(Text, {
   lineHeight: 1.4,
   color: '$color',
   letterSpacing: '$2',
-  
+
   variants: {
     color: {
       primary: { color: '$primaryBlue' },
@@ -98,7 +98,7 @@ export const H5 = styled(Text, {
   lineHeight: 1.5,
   color: '$color',
   letterSpacing: '$1',
-  
+
   variants: {
     color: {
       primary: { color: '$primaryBlue' },
@@ -120,7 +120,7 @@ export const H6 = styled(Text, {
   lineHeight: 1.5,
   color: '$color',
   letterSpacing: '$1',
-  
+
   variants: {
     color: {
       primary: { color: '$primaryBlue' },
@@ -142,7 +142,7 @@ export const Paragraph = styled(Text, {
   fontWeight: '$2',
   lineHeight: 1.6,
   color: '$color',
-  
+
   variants: {
     size: {
       small: {
@@ -173,7 +173,7 @@ export const Paragraph = styled(Text, {
       bold: { fontWeight: '$5' },
     },
   },
-  
+
   defaultVariants: {
     size: 'medium',
     weight: 'normal',
@@ -189,7 +189,7 @@ export const Span = styled(Text, {
   fontWeight: 'inherit',
   lineHeight: 'inherit',
   color: 'inherit',
-  
+
   variants: {
     color: {
       primary: { color: '$primaryBlue' },
@@ -224,7 +224,7 @@ export const Label = styled(Text, {
   color: '$gray7',
   textTransform: 'uppercase',
   letterSpacing: 0.5,
-  
+
   variants: {
     size: {
       small: {
@@ -249,7 +249,7 @@ export const Label = styled(Text, {
       muted: { color: '$gray5' },
     },
   },
-  
+
   defaultVariants: {
     size: 'medium',
   },
@@ -263,7 +263,7 @@ export const Caption = styled(Text, {
   fontWeight: '$2',
   lineHeight: 1.4,
   color: '$gray6',
-  
+
   variants: {
     color: {
       primary: { color: '$primaryBlue' },

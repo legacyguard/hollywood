@@ -3,7 +3,7 @@
  * Displays earned badges and achievement progress with family impact focus
  */
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Crown, Shield, Users, FileCheck, Calendar, TrendingUp, Sparkles, Lock, Info } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';

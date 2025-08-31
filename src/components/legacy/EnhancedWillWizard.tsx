@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { CountrySelector } from './CountrySelector';
-import type { WillType } from './WillTypeSelector';
-import { WillTypeSelector } from './WillTypeSelector';
-import type { WillData } from './WillWizard';
-import { WillWizard } from './WillWizard';
+import { type WillType, WillTypeSelector } from './WillTypeSelector';
+import { type WillData, WillWizard } from './WillWizard';
 import { IntelligentWillDraftGenerator } from './IntelligentWillDraftGenerator';
 import { showMilestoneRecognition } from '@/components/dashboard/milestoneUtils';
 import { SERENITY_MILESTONES } from '@/lib/path-of-serenity';
@@ -51,7 +49,7 @@ export const EnhancedWillWizard: React.FC<EnhancedWillWizardProps> = ({
     setCurrentStep('country');
   };
 
-  const handleBackToWillType = () => {
+  const _handleBackToWillType = () => {
     setCurrentStep('will_type');
   };
 

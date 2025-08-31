@@ -22,10 +22,10 @@ import { useUser, useClerk } from '@clerk/clerk-expo';
 import { useNavigation } from '@react-navigation/native';
 import { Switch, Alert } from 'react-native';
 import { useAppTheme } from '@/contexts/ThemeContext';
-import { 
-  User, 
-  Moon, 
-  Sun, 
+import {
+  User,
+  Moon,
+  Sun,
   Smartphone,
   Shield,
   Bell,
@@ -45,26 +45,26 @@ interface SettingItemProps {
   showArrow?: boolean;
 }
 
-const SettingItem = ({ 
-  icon, 
-  title, 
-  description, 
-  value, 
+const SettingItem = ({
+  icon,
+  title,
+  description,
+  value,
   onPress,
-  showArrow = true 
+  showArrow = true
 }: SettingItemProps) => {
   return (
-    <Card 
-      variant="ghost" 
+    <Card
+      variant="ghost"
       padding="medium"
       clickable={!!onPress}
       onPress={onPress}
       fullWidth
     >
       <Row space="medium" align="center">
-        <Box 
-          padding="small" 
-          style={{ 
+        <Box
+          padding="small"
+          style={{
             backgroundColor: '#e0e7ff',
             borderRadius: 10,
           }}
@@ -104,8 +104,8 @@ export function ProfileScreen() {
       'Are you sure you want to sign out?',
       [
         { text: 'Cancel', style: 'cancel' },
-        { 
-          text: 'Sign Out', 
+        {
+          text: 'Sign Out',
           style: 'destructive',
           onPress: async () => {
             try {
@@ -144,10 +144,10 @@ export function ProfileScreen() {
           {/* User Card */}
           <Card variant="elevated" padding="large">
             <Stack space="medium" align="center">
-              <Box 
-                style={{ 
-                  width: 80, 
-                  height: 80, 
+              <Box
+                style={{
+                  width: 80,
+                  height: 80,
                   borderRadius: 40,
                   backgroundColor: '#e0e7ff',
                   alignItems: 'center',
@@ -160,32 +160,32 @@ export function ProfileScreen() {
                 <H2>{user?.fullName || 'User'}</H2>
                 <Paragraph color="muted">{user?.primaryEmailAddress?.emailAddress}</Paragraph>
               </Stack>
-              
+
               {/* Trust Score */}
               <Stack space="small" align="center" style={{ width: '100%' }}>
                 <Row justify="between" style={{ width: '100%' }}>
                   <Paragraph weight="medium">Trust Score</Paragraph>
                   <Paragraph color="primary" weight="bold">{profileCompletion}%</Paragraph>
                 </Row>
-                <Box 
-                  style={{ 
-                    height: 8, 
+                <Box
+                  style={{
+                    height: 8,
                     width: '100%',
-                    backgroundColor: '#e5e7eb', 
+                    backgroundColor: '#e5e7eb',
                     borderRadius: 4,
-                    overflow: 'hidden' 
+                    overflow: 'hidden'
                   }}
                 >
-                  <Box 
-                    style={{ 
-                      width: `${profileCompletion}%`, 
-                      height: '100%', 
-                      backgroundColor: '#f59e0b' 
-                    }} 
+                  <Box
+                    style={{
+                      width: `${profileCompletion}%`,
+                      height: '100%',
+                      backgroundColor: '#f59e0b'
+                    }}
                   />
                 </Box>
-                <Button 
-                  variant="premium" 
+                <Button
+                  variant="premium"
                   size="small"
                   fullWidth
                   onPress={() => navigation.navigate('ProfileCompletion' as never)}

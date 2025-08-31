@@ -107,7 +107,7 @@ const subscriptionService = {
 };
 
 const stripeService = {
-  createCheckoutSession: async (priceId: string, successUrl: string, cancelUrl: string) => ({ url: 'https://example.com' }),
+  createCheckoutSession: async (_priceId: string, _successUrl: string, _cancelUrl: string) => ({ url: 'https://example.com' }),
 };
 import { useAuth } from '../../hooks/useAuth';
 

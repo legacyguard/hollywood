@@ -3,7 +3,7 @@
  * Adds continuous subtle animations and celebration effects to make the Living Garden truly alive
  */
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -160,8 +160,8 @@ export const TreeLeaf: React.FC<TreeLeafProps> = ({
 export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
   isActive = true,
   personalityMode = 'adaptive',
-  containerWidth = 400,
-  containerHeight = 300,
+  containerWidth: _containerWidth = 400,
+  containerHeight: _containerHeight = 300,
   onFireflyClick
 }) => {
   const shouldReduceMotion = AnimationSystem.shouldReduceMotion();
@@ -327,7 +327,7 @@ export const CelebrationFirefly: React.FC<CelebrationFireflyProps> = ({
  * Creates a subtle glow around newly achieved elements
  */
 export const MilestoneGlow: React.FC<MilestoneGlowProps> = ({
-  elementId,
+  elementId: _elementId,
   duration = 3000,
   color = 'text-yellow-400',
   intensity = 'medium'

@@ -9,7 +9,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
@@ -19,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Progress } from '@/components/ui/progress';
+
 import { toast } from 'sonner';
 import {
   willTemplateLibrary,
@@ -147,21 +146,6 @@ export const WillTemplateLibrary: React.FC<WillTemplateLibraryProps> = ({
     }
   };
 
-  const getComplexityColor = (
-    complexity: WillTemplate['complexity']
-  ): string => {
-    switch (complexity) {
-      case 'simple':
-        return 'text-green-600 bg-green-100';
-      case 'moderate':
-        return 'text-yellow-600 bg-yellow-100';
-      case 'complex':
-        return 'text-red-600 bg-red-100';
-      default:
-        return 'text-gray-600 bg-gray-100';
-    }
-  };
-
   return (
     <div className={`space-y-6 ${className}`}>
       {/* Header */}
@@ -194,7 +178,7 @@ export const WillTemplateLibrary: React.FC<WillTemplateLibraryProps> = ({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value='all'>All Categories</SelectItem>
-            {categories.map(({ category, count, description }) => (
+            {categories.map(({ category, count, description: _description }) => (
               <SelectItem key={category} value={category}>
                 {category.replace('_', ' ')} ({count})
               </SelectItem>

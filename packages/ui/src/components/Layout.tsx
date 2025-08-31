@@ -1,4 +1,4 @@
-import { styled, View, ScrollView, GetProps } from 'tamagui'
+import { type GetProps, styled, View, ScrollView } from 'tamagui'
 
 // Container - Main content wrapper
 export const Container = styled(View, {
@@ -7,7 +7,7 @@ export const Container = styled(View, {
   maxWidth: 1280,
   marginHorizontal: 'auto',
   paddingHorizontal: '$4',
-  
+
   variants: {
     size: {
       small: {
@@ -41,7 +41,7 @@ export const Container = styled(View, {
       },
     },
   } as const,
-  
+
   defaultVariants: {
     size: 'xlarge',
     padding: 'medium',
@@ -52,7 +52,7 @@ export const Container = styled(View, {
 export const Stack = styled(View, {
   name: 'LGStack',
   flexDirection: 'column',
-  
+
   variants: {
     space: {
       none: { gap: 0 },
@@ -83,7 +83,7 @@ export const Stack = styled(View, {
       true: { height: '100%' },
     },
   } as const,
-  
+
   defaultVariants: {
     space: 'medium',
     align: 'stretch',
@@ -97,7 +97,7 @@ export const Stack = styled(View, {
 export const Row = styled(View, {
   name: 'LGRow',
   flexDirection: 'row',
-  
+
   variants: {
     space: {
       none: { gap: 0 },
@@ -130,7 +130,7 @@ export const Row = styled(View, {
       true: { width: '100%' },
     },
   } as const,
-  
+
   defaultVariants: {
     space: 'medium',
     align: 'center',
@@ -146,7 +146,7 @@ export const Grid = styled(View, {
   display: 'flex',
   flexDirection: 'row',
   flexWrap: 'wrap',
-  
+
   variants: {
     columns: {
       1: {
@@ -177,7 +177,7 @@ export const Grid = styled(View, {
       xlarge: { gap: '$8' },
     },
   } as const,
-  
+
   defaultVariants: {
     columns: 1,
     gap: 'medium',
@@ -187,7 +187,7 @@ export const Grid = styled(View, {
 // Box - Basic container
 export const Box = styled(View, {
   name: 'LGBox',
-  
+
   variants: {
     padding: {
       none: { padding: 0 },
@@ -216,7 +216,7 @@ export const Box = styled(View, {
       false: { flex: 0 },
     },
   } as const,
-  
+
   defaultVariants: {
     padding: 'none',
     margin: 'none',
@@ -230,7 +230,7 @@ export const Section = styled(View, {
   name: 'LGSection',
   width: '100%',
   paddingVertical: '$8',
-  
+
   variants: {
     background: {
       default: { backgroundColor: '$background' },
@@ -247,7 +247,7 @@ export const Section = styled(View, {
       xlarge: { paddingVertical: '$16' },
     },
   } as const,
-  
+
   defaultVariants: {
     background: 'default',
     padding: 'medium',
@@ -258,7 +258,7 @@ export const Section = styled(View, {
 export const Divider = styled(View, {
   name: 'LGDivider',
   backgroundColor: '$gray3',
-  
+
   variants: {
     orientation: {
       horizontal: {
@@ -289,7 +289,7 @@ export const Divider = styled(View, {
       primary: { backgroundColor: '$primaryBlue' },
     },
   } as const,
-  
+
   defaultVariants: {
     orientation: 'horizontal',
     spacing: 'medium',
@@ -301,7 +301,7 @@ export const Divider = styled(View, {
 export const Spacer = styled(View, {
   name: 'LGSpacer',
   flex: 1,
-  
+
   variants: {
     size: {
       xs: { height: '$1', flex: 0 },
@@ -318,7 +318,7 @@ export const Spacer = styled(View, {
       },
     },
   } as const,
-  
+
   defaultVariants: {
     size: 'flex',
     horizontal: false,
@@ -329,7 +329,7 @@ export const Spacer = styled(View, {
 export const ScrollContainer = styled(ScrollView, {
   name: 'LGScrollContainer',
   flex: 1,
-  
+
   variants: {
     padding: {
       none: { padding: 0 },
@@ -348,7 +348,7 @@ export const ScrollContainer = styled(ScrollView, {
       },
     },
   } as const,
-  
+
   defaultVariants: {
     padding: 'none',
     showsScrollIndicator: false,

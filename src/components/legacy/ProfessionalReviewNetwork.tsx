@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Card,
   CardContent,
@@ -23,7 +23,6 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import {
   AlertCircle,
-  Calendar,
   Clock,
   MapPin,
   Star,
@@ -33,27 +32,11 @@ import {
   RefreshCw,
 } from 'lucide-react';
 import type { WillData } from '@/types/will';
-import type {
-  ProfessionalProfile,
-  ReviewRequest,
-  ConsultationOffer,
-  NotaryMatch,
-  ReviewFeedback,
-  ReviewPriority,
-} from '@/lib/professional-review-network';
-import {
-  professionalNetwork,
-  ProfessionalType,
-} from '@/lib/professional-review-network';
+import { type ProfessionalProfile, type ReviewRequest, type ConsultationOffer, type NotaryMatch, type ReviewFeedback, type ReviewPriority, professionalNetwork } from '@/lib/professional-review-network';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
-import type {
-  TrustSealLevel,
-  ProfessionalReview,
-} from '@/components/trust/EnhancedTrustSeal';
-import { EnhancedTrustSeal } from '@/components/trust/EnhancedTrustSeal';
-import type { TrustSealUpgrade } from '@/lib/professional-trust-integration';
-import { professionalTrustIntegration } from '@/lib/professional-trust-integration';
+import { type TrustSealLevel, type ProfessionalReview, EnhancedTrustSeal } from '@/components/trust/EnhancedTrustSeal';
+import { type TrustSealUpgrade, professionalTrustIntegration } from '@/lib/professional-trust-integration';
 import { toast } from 'sonner';
 
 interface ProfessionalReviewNetworkProps {
@@ -85,7 +68,7 @@ export const ProfessionalReviewNetwork: React.FC<
     ConsultationOffer[]
   >([]);
   const [notaryMatches, setNotaryMatches] = useState<NotaryMatch[]>([]);
-  const [selectedProfessional, setSelectedProfessional] =
+  const [_selectedProfessional, _setSelectedProfessional] =
     useState<ProfessionalProfile | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [reviewFeedback, setReviewFeedback] = useState<ReviewFeedback | null>(
@@ -103,7 +86,7 @@ export const ProfessionalReviewNetwork: React.FC<
   });
 
   // Estate Planner Tab
-  const [plannerLocation, setPlannerLocation] = useState('');
+  const [_plannerLocation, _setPlannerLocation] = useState('');
 
   // Notary Tab
   const [notaryForm, setNotaryForm] = useState({

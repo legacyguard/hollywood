@@ -15,14 +15,10 @@ import {
   Zap,
   Users,
   Phone,
-  Video,
   Calendar,
-  DollarSign,
   ArrowRight,
-  Info,
   Sparkles,
   Crown,
-  Timer,
   MessageSquare,
   BookOpen,
   Scale,
@@ -34,7 +30,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Progress } from '@/components/ui/progress';
+
 import { cn } from '@/lib/utils';
 
 interface ReviewTier {
@@ -270,7 +266,7 @@ const REVIEW_TIERS: ReviewTier[] = [
 export function ProfessionalReviewPricing({
   onSelectTier,
   selectedTier,
-  documentType = 'will',
+          _documentType = 'will',
   familyContext,
   className
 }: ProfessionalReviewPricingProps) {

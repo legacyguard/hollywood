@@ -3,7 +3,7 @@
  * Comprehensive directory of verified legal professionals
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Search,
@@ -11,32 +11,19 @@ import {
   Star,
   MapPin,
   Award,
-  Users,
-  Phone,
-  Mail,
-  ExternalLink,
   Calendar,
   Clock,
-  DollarSign,
   CheckCircle,
   Shield,
-  Briefcase,
-  GraduationCap,
-  TrendingUp,
   Eye,
   MessageSquare,
-  Video,
   FileText,
   Target,
-  Zap,
-  Heart,
   Grid3X3,
   List,
   SortAsc,
   SortDesc,
-  ChevronDown,
-  Sparkles,
-  Building2
+  ChevronDown
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -51,7 +38,7 @@ import { Slider } from '@/components/ui/slider';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
-import type { ProfessionalReviewer, ProfessionalSpecialization } from '@/types/professional';
+import type { ProfessionalReviewer } from '@/types/professional';
 
 interface ProfessionalProfile extends ProfessionalReviewer {
   rating: number;
@@ -221,7 +208,7 @@ const SPECIALIZATIONS = [
   'Elder Law', 'Asset Protection', 'Probate Law', 'Healthcare Directives'
 ];
 
-const STATES = [
+const _STATES = [
   'California', 'New York', 'Texas', 'Florida', 'Illinois', 'Pennsylvania',
   'Ohio', 'Georgia', 'North Carolina', 'Michigan', 'New Jersey', 'Virginia',
   'Washington', 'Arizona', 'Massachusetts', 'Tennessee', 'Indiana', 'Missouri',
@@ -229,15 +216,15 @@ const STATES = [
   'Louisiana', 'Kentucky', 'Oregon', 'Oklahoma', 'Connecticut', 'Utah'
 ];
 
-const LANGUAGES = ['English', 'Spanish', 'Mandarin', 'French', 'German', 'Portuguese', 'Italian'];
+const _LANGUAGES = ['English', 'Spanish', 'Mandarin', 'French', 'German', 'Portuguese', 'Italian'];
 
 export function ProfessionalNetworkDirectory({
-  onSelectProfessional,
+  onSelectProfessional: _onSelectProfessional,
   onBookConsultation,
   onRequestReview,
   className
 }: ProfessionalNetworkDirectoryProps) {
-  const [professionals, setProfessionals] = useState<ProfessionalProfile[]>(SAMPLE_PROFESSIONALS);
+  const [professionals, _setProfessionals] = useState<ProfessionalProfile[]>(SAMPLE_PROFESSIONALS);
   const [filters, setFilters] = useState<DirectoryFilters>({
     search: '',
     specializations: [],
@@ -253,7 +240,7 @@ export function ProfessionalNetworkDirectory({
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [showFilters, setShowFilters] = useState(false);
   const [selectedProfessional, setSelectedProfessional] = useState<ProfessionalProfile | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [_isLoading, _setIsLoading] = useState(false);
 
   const filteredAndSortedProfessionals = professionals
     .filter(prof => {

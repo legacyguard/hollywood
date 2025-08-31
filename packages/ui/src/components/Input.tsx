@@ -1,9 +1,9 @@
-import { styled, Input as TamaguiInput, TextArea as TamaguiTextArea, View, Text, GetProps } from 'tamagui'
+import { type GetProps, styled, Input as TamaguiInput, TextArea as TamaguiTextArea, View, Text } from 'tamagui'
 
 // Base Input component
 export const Input = styled(TamaguiInput, {
   name: 'LGInput',
-  
+
   // Base styles
   backgroundColor: '$background',
   borderWidth: 1,
@@ -17,7 +17,7 @@ export const Input = styled(TamaguiInput, {
   placeholderTextColor: '$gray5',
   height: 40,
   width: '100%',
-  
+
   // Focus styles
   focusStyle: {
     borderColor: '$primaryBlue',
@@ -26,12 +26,12 @@ export const Input = styled(TamaguiInput, {
     outlineWidth: 2,
     outlineOffset: 1,
   },
-  
+
   // Hover styles
   hoverStyle: {
     borderColor: '$gray4',
   },
-  
+
   // Disabled styles
   disabledStyle: {
     backgroundColor: '$gray2',
@@ -39,7 +39,7 @@ export const Input = styled(TamaguiInput, {
     cursor: 'not-allowed',
     opacity: 0.6,
   },
-  
+
   // Variants
   variants: {
     variant: {
@@ -74,7 +74,7 @@ export const Input = styled(TamaguiInput, {
         },
       },
     },
-    
+
     size: {
       small: {
         height: 32,
@@ -95,7 +95,7 @@ export const Input = styled(TamaguiInput, {
         paddingVertical: '$3',
       },
     },
-    
+
     fullWidth: {
       true: {
         width: '100%',
@@ -105,7 +105,7 @@ export const Input = styled(TamaguiInput, {
       },
     },
   } as const,
-  
+
   // Default variants
   defaultVariants: {
     variant: 'default',
@@ -117,7 +117,7 @@ export const Input = styled(TamaguiInput, {
 // TextArea component
 export const TextArea = styled(TamaguiTextArea, {
   name: 'LGTextArea',
-  
+
   // Inherit all Input styles
   backgroundColor: '$background',
   borderWidth: 1,
@@ -132,7 +132,7 @@ export const TextArea = styled(TamaguiTextArea, {
   width: '100%',
   minHeight: 100,
   textAlignVertical: 'top',
-  
+
   // Focus styles
   focusStyle: {
     borderColor: '$primaryBlue',
@@ -141,12 +141,12 @@ export const TextArea = styled(TamaguiTextArea, {
     outlineWidth: 2,
     outlineOffset: 1,
   },
-  
+
   // Hover styles
   hoverStyle: {
     borderColor: '$gray4',
   },
-  
+
   // Disabled styles
   disabledStyle: {
     backgroundColor: '$gray2',
@@ -154,7 +154,7 @@ export const TextArea = styled(TamaguiTextArea, {
     cursor: 'not-allowed',
     opacity: 0.6,
   },
-  
+
   // Variants (same as Input)
   variants: {
     variant: {
@@ -181,7 +181,7 @@ export const TextArea = styled(TamaguiTextArea, {
         },
       },
     },
-    
+
     size: {
       small: {
         minHeight: 80,
@@ -203,7 +203,7 @@ export const TextArea = styled(TamaguiTextArea, {
       },
     },
   } as const,
-  
+
   // Default variants
   defaultVariants: {
     variant: 'default',

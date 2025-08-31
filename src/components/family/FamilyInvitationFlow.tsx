@@ -28,8 +28,7 @@ import { Badge } from '../ui/badge';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { cn } from '@/lib/utils';
 import { familyService } from '@/services/familyService';
-import type { FamilyRole, RelationshipType, FamilyInvitation } from '@/types/family';
-import { RELATIONSHIP_LABELS } from '@/types/family';
+import { type FamilyRole, type RelationshipType, type FamilyInvitation, RELATIONSHIP_LABELS } from '@/types/family';
 
 interface FamilyInvitationFlowProps {
   userId: string;
@@ -342,7 +341,7 @@ export function FamilyInvitationFlow({
             {getEmotionalMessage(invitationData.relationship || 'other')}
           </p>
           <Button
-            variant={"outline" as any}
+            variant="outline"
             size="sm"
             className="mt-3"
             onClick={() => setInvitationData(prev => ({
@@ -389,7 +388,7 @@ export function FamilyInvitationFlow({
             </div>
             <div>
               <Label className="text-muted-foreground">Access Level</Label>
-              <Badge variant={"secondary" as any}>{invitationData.role}</Badge>
+              <Badge variant="secondary">{invitationData.role}</Badge>
             </div>
           </div>
 
@@ -403,7 +402,7 @@ export function FamilyInvitationFlow({
       </Card>
 
       {error && (
-        <Alert variant={"destructive" as any}>
+        <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>Error</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
@@ -468,7 +467,7 @@ export function FamilyInvitationFlow({
               <Users className="h-6 w-6 text-blue-600" />
               Invite Family Member
             </CardTitle>
-            <Button variant={"ghost" as any} size="sm" onClick={onCancel}>
+            <Button variant="ghost" size="sm" onClick={onCancel}>
               ×
             </Button>
           </div>
@@ -498,7 +497,7 @@ export function FamilyInvitationFlow({
           {!['sending', 'complete'].includes(currentStep) && (
             <div className="flex justify-between mt-8">
               <Button
-                variant={"outline" as any}
+                variant="outline"
                 onClick={handleBack}
                 disabled={getCurrentStepIndex() === 0}
               >

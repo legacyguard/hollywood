@@ -33,8 +33,7 @@ import {
   Info,
   ExternalLink
 } from 'lucide-react';
-import type { PWACapabilities } from '@/lib/pwa/pwaService';
-import { pwaService } from '@/lib/pwa/pwaService';
+import { type PWACapabilities, pwaService } from '@/lib/pwa/pwaService';
 import { cn } from '@/lib/utils';
 
 interface PWAInstallPromptProps {
@@ -67,7 +66,7 @@ export default function PWAInstallPrompt({
     updateCapabilities();
 
     // Listen for install availability changes
-    const handleInstallChange = (canInstall: boolean) => {
+    const handleInstallChange = (_canInstall: boolean) => {
       updateCapabilities();
     };
 

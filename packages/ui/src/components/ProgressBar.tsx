@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Stack, Paragraph, styled, GetProps } from 'tamagui';
+import { type GetProps, View, Stack, Paragraph, styled } from 'tamagui';
 
 // Styled components for ProgressBar
 const ProgressBarContainer = styled(Stack, {
@@ -25,7 +25,7 @@ const ProgressFill = styled(View, {
   position: 'absolute',
   left: 0,
   top: 0,
-  
+
   variants: {
     variant: {
       primary: {
@@ -51,7 +51,7 @@ const ProgressFill = styled(View, {
       },
     },
   },
-  
+
   defaultVariants: {
     variant: 'primary',
     animated: true,
@@ -93,10 +93,10 @@ export function ProgressBar({
   // Ensure value is between 0 and maxValue
   const normalizedValue = Math.min(Math.max(0, value), maxValue);
   const percentage = (normalizedValue / maxValue) * 100;
-  
-  const displayLabel = formatLabel 
+
+  const displayLabel = formatLabel
     ? formatLabel(normalizedValue, maxValue)
-    : showPercentage 
+    : showPercentage
       ? `${Math.round(percentage)}%`
       : `${normalizedValue} / ${maxValue}`;
 
@@ -114,7 +114,7 @@ export function ProgressBar({
           </Paragraph>
         </ProgressLabel>
       )}
-      
+
       <ProgressTrack height={height}>
         <ProgressFill
           variant={variant}
@@ -136,10 +136,7 @@ const CircularProgressContainer = styled(View, {
   position: 'relative',
 });
 
-const CircularProgressSVG = styled(View, {
-  name: 'CircularProgressSVG',
-  position: 'absolute',
-});
+// Removed unused CircularProgressSVG component
 
 const CircularProgressText = styled(View, {
   name: 'CircularProgressText',
@@ -167,7 +164,7 @@ export function CircularProgress({
   const radius = (size - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
   const strokeDashoffset = circumference - (value / 100) * circumference;
-  
+
   const colors = {
     primary: '#1e40af',
     success: '#16a34a',
@@ -175,7 +172,7 @@ export function CircularProgress({
     danger: '#dc2626',
     premium: '#f59e0b',
   };
-  
+
   return (
     <CircularProgressContainer width={size} height={size}>
       <svg
@@ -208,7 +205,7 @@ export function CircularProgress({
           }}
         />
       </svg>
-      
+
       <CircularProgressText>
         {showPercentage && (
           <Paragraph size="$6" fontWeight="700" color="$color">
@@ -238,7 +235,7 @@ const ProgressSegment = styled(View, {
   flex: 1,
   height: 6,
   backgroundColor: '$gray3',
-  
+
   variants: {
     isActive: {
       true: {
@@ -285,7 +282,7 @@ export function SegmentedProgress({
           const isCompleted = index < currentSegment;
           const isActive = index === currentSegment;
           const position = index === 0 ? 'first' : index === segments - 1 ? 'last' : 'middle';
-          
+
           return (
             <ProgressSegment
               key={index}
@@ -297,7 +294,7 @@ export function SegmentedProgress({
           );
         })}
       </SegmentedProgressContainer>
-      
+
       {showLabels && labels.length > 0 && (
         <Stack flexDirection="row" justifyContent="space-between">
           {labels.map((label, index) => (

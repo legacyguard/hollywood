@@ -101,7 +101,7 @@ const EnhancedCard = React.forwardRef<HTMLDivElement, EnhancedCardProps>(
     className,
     variant,
     size,
-    interactive,
+    interactive: _interactive,
     animationType = 'lift',
     personalityAdapt = true,
     hoverEffect = true,
@@ -122,9 +122,9 @@ const EnhancedCard = React.forwardRef<HTMLDivElement, EnhancedCardProps>(
     glowColor,
     borderGradient = false,
     backgroundPattern = false,
-    expandable = false,
-    collapsible = false,
-    expanded = false,
+    expandable: _expandable = false,
+    collapsible: _collapsible = false,
+    expanded: _expanded = false,
     staggerDelay = 0,
     animationDuration = 0.3,
     children,
@@ -132,7 +132,7 @@ const EnhancedCard = React.forwardRef<HTMLDivElement, EnhancedCardProps>(
   }, ref) => {
     const { personality } = useSofia()
     const [isHovered, setIsHovered] = React.useState(false)
-    const [isPressed, setIsPressed] = React.useState(false)
+    const [_isPressed, setIsPressed] = React.useState(false)
     const cardRef = React.useRef<HTMLDivElement>(null)
 
     // Motion values for advanced interactions
@@ -494,7 +494,7 @@ export const InteractiveCard = React.forwardRef<HTMLDivElement,
   EnhancedCardProps & {
     rippleEffect?: boolean
   }
->(({ rippleEffect = true, ...props }, ref) => (
+>(({ rippleEffect: _rippleEffect = true, ...props }, ref) => (
   <EnhancedCard
     ref={ref}
     animationType="lift"

@@ -10,17 +10,17 @@ const legacyGuardColors = {
   primaryBlue: '#1e40af',
   primaryBlueLight: '#3b82f6',
   primaryBlueDark: '#1e3a8a',
-  
+
   // Primary Green - pre úspech a potvrdenie
   primaryGreen: '#16a34a',
   primaryGreenLight: '#22c55e',
   primaryGreenDark: '#15803d',
-  
+
   // Accent Gold - pre premium funkcie
   accentGold: '#f59e0b',
   accentGoldLight: '#fbbf24',
   accentGoldDark: '#d97706',
-  
+
   // Neutral Colors
   gray50: '#f9fafb',
   gray100: '#f3f4f6',
@@ -32,13 +32,13 @@ const legacyGuardColors = {
   gray700: '#374151',
   gray800: '#1f2937',
   gray900: '#111827',
-  
+
   // Semantic Colors
   success: '#16a34a',
   warning: '#f59e0b',
   error: '#dc2626',
   info: '#3b82f6',
-  
+
   // Background Colors
   backgroundPrimary: '#ffffff',
   backgroundSecondary: '#f9fafb',
@@ -98,7 +98,7 @@ const tokens = createTokens({
     accentGold: legacyGuardColors.accentGold,
     accentGoldLight: legacyGuardColors.accentGoldLight,
     accentGoldDark: legacyGuardColors.accentGoldDark,
-    
+
     // Grays
     gray1: legacyGuardColors.gray50,
     gray2: legacyGuardColors.gray100,
@@ -110,13 +110,13 @@ const tokens = createTokens({
     gray8: legacyGuardColors.gray700,
     gray9: legacyGuardColors.gray800,
     gray10: legacyGuardColors.gray900,
-    
+
     // Semantic
     success: legacyGuardColors.success,
     warning: legacyGuardColors.warning,
     error: legacyGuardColors.error,
     info: legacyGuardColors.info,
-    
+
     // Backgrounds
     background: legacyGuardColors.backgroundPrimary,
     backgroundSecondary: legacyGuardColors.backgroundSecondary,
@@ -124,7 +124,7 @@ const tokens = createTokens({
     backgroundDark: legacyGuardColors.backgroundDark,
     backgroundDarkSecondary: legacyGuardColors.backgroundDarkSecondary,
   },
-  
+
   space: {
     1: 4,
     2: 8,
@@ -144,7 +144,7 @@ const tokens = createTokens({
     16: 64,
     true: 16,
   },
-  
+
   size: {
     0: 0,
     0.25: 2,
@@ -168,7 +168,7 @@ const tokens = createTokens({
     16: 140,
     true: 44,
   },
-  
+
   radius: {
     0: 0,
     1: 4,
@@ -183,7 +183,7 @@ const tokens = createTokens({
     10: 40,
     true: 8,
   },
-  
+
   zIndex: {
     0: 0,
     1: 100,
@@ -249,7 +249,7 @@ const legacyGuardThemes = {
     shadowColorPress: 'rgba(0,0,0,0.2)',
     shadowColorFocus: 'rgba(0,0,0,0.15)',
   },
-  
+
   dark: {
     background: tokens.color.backgroundDark,
     backgroundHover: tokens.color.backgroundDarkSecondary,
@@ -272,7 +272,7 @@ const legacyGuardThemes = {
     shadowColorPress: 'rgba(0,0,0,0.5)',
     shadowColorFocus: 'rgba(0,0,0,0.4)',
   },
-  
+
   // Brand specific themes
   primary: {
     ...defaultThemes.blue,
@@ -283,7 +283,7 @@ const legacyGuardThemes = {
     color: '#ffffff',
     borderColor: tokens.color.primaryBlue,
   },
-  
+
   success: {
     ...defaultThemes.green,
     background: tokens.color.primaryGreen,
@@ -293,7 +293,7 @@ const legacyGuardThemes = {
     color: '#ffffff',
     borderColor: tokens.color.primaryGreen,
   },
-  
+
   premium: {
     ...defaultThemes.yellow,
     background: tokens.color.accentGold,

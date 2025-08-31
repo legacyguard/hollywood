@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { Progress } from '../ui/progress';
@@ -16,13 +16,11 @@ import {
   Zap,
   Heart,
   Lock,
-  Unlock,
   ArrowRight,
   Sparkles
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import type { FamilyPlan } from '@/types/family';
-import { FAMILY_PLANS } from '@/types/family';
+import { type FamilyPlan, FAMILY_PLANS } from '@/types/family';
 
 interface FamilyPlanUpgradeProps {
   currentPlan: 'free' | 'family' | 'premium';
@@ -39,7 +37,7 @@ const planColors = {
   premium: 'border-purple-200 bg-purple-50 ring-2 ring-purple-200'
 };
 
-const planBadgeColors = {
+const _planBadgeColors = {
   free: 'bg-gray-100 text-gray-800',
   family: 'bg-blue-100 text-blue-800',
   premium: 'bg-purple-100 text-purple-800'
@@ -157,7 +155,7 @@ export function FamilyPlanUpgrade({
 
           {isCurrentPlan && (
             <div className="absolute top-4 right-4">
-              <Badge variant={"secondary" as any}>Current</Badge>
+                              <Badge variant="secondary">Current</Badge>
             </div>
           )}
 
@@ -186,7 +184,7 @@ export function FamilyPlanUpgrade({
             )}
 
             {plan.trialDays && !isCurrentPlan && (
-              <Badge variant={"outline" as any} className="mt-2">
+                              <Badge variant="outline" className="mt-2">
                 {plan.trialDays} days free trial
               </Badge>
             )}
@@ -279,7 +277,7 @@ export function FamilyPlanUpgrade({
                 className="gap-2"
               >
                 Yearly
-                <Badge variant={"secondary" as any} className="bg-green-100 text-green-800">
+                <Badge variant="secondary" className="bg-green-100 text-green-800">
                   Save up to 20%
                 </Badge>
               </Button>
@@ -342,7 +340,7 @@ export function FamilyPlanUpgrade({
 
           {/* Action Buttons */}
           <div className="flex justify-between items-center pt-6 border-t">
-            <Button variant={"outline" as any} onClick={() => onOpenChange(false)}>
+                          <Button variant="outline" onClick={() => onOpenChange(false)}>
               Maybe Later
             </Button>
 

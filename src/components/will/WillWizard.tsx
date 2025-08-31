@@ -3,14 +3,14 @@
  * Multi-step will creation interface with Sofia AI integration
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Textarea } from '../ui/textarea';
-import { Checkbox } from '../ui/checkbox';
+
 import { Progress } from '../ui/progress';
 import { Alert, AlertDescription } from '../ui/alert';
 import { Badge } from '../ui/badge';
@@ -22,10 +22,10 @@ import type {
   WillTemplateType,
   ValidationError
 } from '../../types/will-templates';
+import { CZ_SK_JURISDICTIONS } from '../../types/will-templates';
 import { willApiService } from '../../services/willApiService';
 import { templateLibrary } from '../../lib/templateLibrary';
 import { willValidationService } from '../../lib/willValidation';
-import { CZ_SK_JURISDICTIONS } from '../../types/will-templates';
 
 interface WillWizardProps {
   onComplete?: (willId: string) => void;
@@ -49,7 +49,7 @@ interface WizardState {
 export const WillWizard: React.FC<WillWizardProps> = ({
   onComplete,
   onCancel,
-  initialData
+  initialData: _initialData
 }) => {
   const [state, setState] = useState<WizardState>({
     currentStep: 'setup',

@@ -1,25 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { Progress } from '../ui/progress';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
 import {
   Users,
   UserPlus,
-  Gift,
   Heart,
   Trophy,
   Target,
-  ArrowRight,
   Share2,
-  Clock,
   CheckCircle,
-  Sparkles,
-  Crown,
-  Mail,
-  MessageCircle
+  Crown
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { FamilyMember } from '@/types/family';
@@ -142,7 +136,7 @@ const invitationPrompts: Record<string, InvitationPrompt> = {
 };
 
 export function FamilyViralGrowth({
-  userId,
+  userId: _userId,
   currentMembers,
   protectionLevel,
   documentsCount,
@@ -156,9 +150,9 @@ export function FamilyViralGrowth({
   useEffect(() => {
     updateMilestoneProgress();
     checkForInvitationPrompts();
-  }, [currentMembers.length, documentsCount, protectionLevel]);
+  }, [currentMembers.length, documentsCount, protectionLevel, updateMilestoneProgress, checkForInvitationPrompts]);
 
-  const updateMilestoneProgress = () => {
+  const updateMilestoneProgress = useCallback(() => {
     const memberCount = currentMembers.length;
     const updatedMilestones = milestones.map(milestone => ({
       ...milestone,
@@ -166,9 +160,9 @@ export function FamilyViralGrowth({
       completed: memberCount >= milestone.targetCount
     }));
     setMilestones(updatedMilestones);
-  };
+  }, [currentMembers.length, milestones]);
 
-  const checkForInvitationPrompts = () => {
+  const checkForInvitationPrompts = useCallback(() => {
     // Don't show prompts if already at high member count
     if (currentMembers.length >= 8) return;
 
@@ -196,7 +190,7 @@ export function FamilyViralGrowth({
       // Small delay to make it feel natural
       setTimeout(() => setShowInvitePrompt(true), 2000);
     }
-  };
+  }, [currentMembers.length, documentsCount, protectionLevel, showInvitePrompt]);
 
   const handleInviteClick = () => {
     setShowInvitePrompt(false);
@@ -247,7 +241,7 @@ export function FamilyViralGrowth({
               <CardTitle className="text-lg">Family Circle Progress</CardTitle>
             </div>
             <Button
-              variant={"outline" as any}
+                              variant="outline"
               size="sm"
               onClick={() => setShowMilestones(true)}
               className="gap-2"
@@ -269,7 +263,7 @@ export function FamilyViralGrowth({
                   <nextMilestone.icon className="h-4 w-4 text-blue-600" />
                   <span className="font-medium">{nextMilestone.title}</span>
                 </div>
-                <Badge variant={"secondary" as any}>
+                <Badge variant="secondary">
                   {currentMembers.length}/{nextMilestone.targetCount}
                 </Badge>
               </div>
@@ -307,7 +301,7 @@ export function FamilyViralGrowth({
               Invite Family Member
             </Button>
             {currentMembers.length > 0 && (
-              <Button variant={"outline" as any} className="gap-2">
+                              <Button variant="outline" className="gap-2">
                 <Share2 className="h-4 w-4" />
                 Share Progress
               </Button>
@@ -357,7 +351,7 @@ export function FamilyViralGrowth({
 
                   <div className="flex gap-3">
                     <Button
-                      variant={"outline" as any}
+                      variant="outline"
                       onClick={() => setShowInvitePrompt(false)}
                       className="flex-1"
                     >
@@ -389,7 +383,7 @@ export function FamilyViralGrowth({
           </DialogHeader>
 
           <div className="space-y-4">
-            {milestones.map((milestone, index) => (
+            {milestones.map((milestone, _index) => (
               <Card key={milestone.id} className={milestone.completed ? 'bg-green-50 border-green-200' : ''}>
                 <CardContent className="p-4">
                   <div className="flex items-center gap-4">

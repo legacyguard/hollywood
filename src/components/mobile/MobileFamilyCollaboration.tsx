@@ -5,11 +5,11 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import {
   Users,
   MessageCircle,
@@ -20,13 +20,10 @@ import {
   Clock,
   CheckCircle,
   AlertCircle,
-  Video,
   Phone,
-  Mail,
-  MoreHorizontal
+  Mail
 } from 'lucide-react';
-import { useBreakpoint, mobileOptimized, useTouchGestures } from '@/lib/performance/mobile-optimization';
-import { FamilyMemberProgressiveLoader } from '@/components/performance/ProgressiveLoader';
+import { useBreakpoint, mobileOptimized } from '@/lib/performance/mobile-optimization';
 import { cn } from '@/lib/utils';
 
 interface FamilyMember {
@@ -50,8 +47,8 @@ interface MobileFamilyCollaborationProps {
 }
 
 export const MobileFamilyCollaboration: React.FC<MobileFamilyCollaborationProps> = ({
-  familyId,
-  currentUserId,
+  familyId: _familyId,
+  currentUserId: _currentUserId,
   onNavigate
 }) => {
   const { isSmall } = useBreakpoint();

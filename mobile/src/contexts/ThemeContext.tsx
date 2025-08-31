@@ -33,7 +33,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         setIsLoading(false);
       }
     };
-    
+
     loadTheme();
   }, []);
 
@@ -47,7 +47,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const actualTheme = themeMode === 'system' 
+  const actualTheme = themeMode === 'system'
     ? (systemColorScheme || 'light')
     : themeMode;
 
@@ -57,7 +57,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <ThemeContext.Provider 
+    <ThemeContext.Provider
       value={{
         themeMode,
         actualTheme,

@@ -93,7 +93,7 @@ interface UsageBarProps {
 const UsageBar: React.FC<UsageBarProps> = ({ label, current, max, unit = '' }) => {
   const percentage = max ? Math.min((current / max) * 100, 100) : 0;
   const isUnlimited = max === null;
-  
+
   const getBarColor = () => {
     if (isUnlimited) return '#48bb78';
     if (percentage >= 90) return '#f56565';
@@ -152,13 +152,13 @@ export const SubscriptionStatus: React.FC = () => {
         setSubscription(sub);
         const planLimits = await subscriptionService.getPlanLimits(sub.plan);
         setLimits(planLimits);
-        
+
         if (sub.expires_at) {
           const days = await subscriptionService.getDaysRemaining();
           setDaysRemaining(days);
         }
       }
-      
+
       if (usg) {
         setUsage(usg);
       }
@@ -232,13 +232,13 @@ export const SubscriptionStatus: React.FC = () => {
             </View>
           )}
         </View>
-        
+
         {subscription?.billing_cycle && (
           <Text style={styles.billingCycle}>
             Billed {subscription.billing_cycle === 'month' ? 'Monthly' : 'Yearly'}
           </Text>
         )}
-        
+
         {daysRemaining !== null && (
           <Text style={styles.expiryText}>
             {daysRemaining > 0
@@ -251,7 +251,7 @@ export const SubscriptionStatus: React.FC = () => {
       {/* Usage Statistics */}
       <View style={styles.usageSection}>
         <Text style={styles.sectionTitle}>Current Usage</Text>
-        
+
         {usage && limits && (
           <>
             <UsageBar
@@ -259,20 +259,20 @@ export const SubscriptionStatus: React.FC = () => {
               current={usage.document_count}
               max={limits.max_documents}
             />
-            
+
             <UsageBar
               label="Storage"
               current={Number(usage.storage_used_mb)}
               max={limits.max_storage_mb}
               unit=" MB"
             />
-            
+
             <UsageBar
               label="Time Capsules"
               current={usage.time_capsule_count}
               max={limits.max_time_capsules}
             />
-            
+
             <UsageBar
               label="Scans this month"
               current={usage.scans_this_month}
@@ -285,7 +285,7 @@ export const SubscriptionStatus: React.FC = () => {
       {/* Features */}
       <View style={styles.featuresSection}>
         <Text style={styles.sectionTitle}>Your Features</Text>
-        
+
         {limits && (
           <View style={styles.featuresList}>
             <View style={styles.featureRow}>
@@ -296,7 +296,7 @@ export const SubscriptionStatus: React.FC = () => {
               />
               <Text style={styles.featureText}>Offline Access</Text>
             </View>
-            
+
             <View style={styles.featureRow}>
               <Ionicons
                 name={limits.ai_features ? 'checkmark-circle' : 'close-circle'}
@@ -305,7 +305,7 @@ export const SubscriptionStatus: React.FC = () => {
               />
               <Text style={styles.featureText}>AI Features</Text>
             </View>
-            
+
             <View style={styles.featureRow}>
               <Ionicons
                 name={limits.advanced_search ? 'checkmark-circle' : 'close-circle'}
@@ -314,7 +314,7 @@ export const SubscriptionStatus: React.FC = () => {
               />
               <Text style={styles.featureText}>Advanced Search</Text>
             </View>
-            
+
             <View style={styles.featureRow}>
               <Ionicons
                 name={limits.priority_support ? 'checkmark-circle' : 'close-circle'}
@@ -323,7 +323,7 @@ export const SubscriptionStatus: React.FC = () => {
               />
               <Text style={styles.featureText}>Priority Support</Text>
             </View>
-            
+
             {limits.max_family_members > 1 && (
               <View style={styles.featureRow}>
                 <Ionicons name="people" size={24} color="#667eea" />
@@ -350,7 +350,7 @@ export const SubscriptionStatus: React.FC = () => {
             >
               <Text style={styles.manageButtonText}>Manage Subscription</Text>
             </TouchableOpacity>
-            
+
             {subscription?.plan !== 'premium' && (
               <TouchableOpacity
                 style={styles.upgradeButtonOutline}

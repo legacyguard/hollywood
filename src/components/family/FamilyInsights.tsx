@@ -5,7 +5,6 @@ import { Badge } from '../ui/badge';
 import { Alert, AlertDescription } from '../ui/alert';
 import {
   TrendingUp,
-  AlertTriangle,
   CheckCircle2,
   Users,
   Shield,
@@ -30,11 +29,7 @@ interface FamilyInsightsProps {
 }
 
 export const FamilyInsights: React.FC<FamilyInsightsProps> = ({ insights }) => {
-  const getCompletionColor = (rate: number) => {
-    if (rate >= 90) return 'text-green-600';
-    if (rate >= 70) return 'text-yellow-600';
-    return 'text-red-600';
-  };
+
 
   const getCompletionVariant = (rate: number) => {
     if (rate >= 90) return 'default';

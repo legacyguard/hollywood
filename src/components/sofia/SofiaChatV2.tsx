@@ -9,19 +9,19 @@ import { useSofiaStore } from '@/stores/sofiaStore';
 import { useAuth } from '@clerk/clerk-react';
 import ReactMarkdown from 'react-markdown';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { toast } from 'sonner';
+
 import { getSofiaMemory } from '@/lib/sofia-memory';
 import { getSofiaProactive, type ProactiveIntervention } from '@/lib/sofia-proactive';
 
 // New guided dialog imports
 import { sofiaRouter } from '@/lib/sofia-router';
-import type {
-  SofiaMessage,
-  ActionButton,
-  SofiaCommand,
-  CommandResult,
+import {
+  type SofiaMessage,
+  type ActionButton,
+  type SofiaCommand,
+  type CommandResult,
+  getContextualActions
 } from '@/lib/sofia-types';
-import { getContextualActions } from '@/lib/sofia-types';
 import SofiaActionButtons from './SofiaActionButtons';
 
 // Smart contextual suggestions based on current page
@@ -442,7 +442,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
 
   const handleCommandResult = async (
     result: CommandResult,
-    action: ActionButton
+    _action: ActionButton
   ) => {
     switch (result.type) {
       case 'navigation':

@@ -50,7 +50,7 @@ const LoginScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Login</Text>
-      
+
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -60,7 +60,7 @@ const LoginScreen = () => {
         autoCapitalize="none"
         editable={!isLoading}
       />
-      
+
       <TextInput
         style={styles.input}
         placeholder="Password"
@@ -69,7 +69,7 @@ const LoginScreen = () => {
         secureTextEntry
         editable={!isLoading}
       />
-      
+
       {isLoading ? (
         <ActivityIndicator size="large" color="#007AFF" style={styles.loader} />
       ) : (

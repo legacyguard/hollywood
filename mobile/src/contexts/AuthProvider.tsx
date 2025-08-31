@@ -1,6 +1,7 @@
 // src/contexts/AuthProvider.tsx
 
-import React, { createContext, useState, useEffect, ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 import { AuthenticationService } from '@/services/AuthenticationService';
 import { useUser } from '@clerk/clerk-expo'; // Use Clerk's hook to track state
 

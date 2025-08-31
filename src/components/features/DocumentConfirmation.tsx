@@ -273,9 +273,7 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
                     className='justify-start gap-2'
                   >
                     <Icon
-                      name={
-                        category.icon as keyof typeof import('@/components/ui/icon-library').IconMap
-                      }
+                      name={category.icon as string}
                       className='w-4 h-4'
                     />
                     {category.label}

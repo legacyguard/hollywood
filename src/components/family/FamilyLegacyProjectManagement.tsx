@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -9,10 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { Progress } from '../ui/progress';
-import { Separator } from '../ui/separator';
-import { Calendar } from '../ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
-import { FolderOpen, Plus, Users, Clock, CheckCircle, AlertCircle, Calendar as CalendarIcon, Target, TrendingUp, FileText, Archive, Filter, MoreVertical, Edit3, Trash2, Eye, Share2, Bell, Flag, Star, Zap, MessageCircle } from 'lucide-react';
+import { FolderOpen, Plus, Users, Clock, CheckCircle, AlertCircle, Calendar as CalendarIcon, Target, FileText, Archive, MessageCircle, Star } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface FamilyMember {
@@ -325,12 +322,12 @@ export const FamilyLegacyProjectManagement: React.FC<FamilyLegacyProjectManageme
   const [projects, setProjects] = useState<LegacyProject[]>(existingProjects);
   const [activeProject, setActiveProject] = useState<LegacyProject | null>(null);
   const [isCreating, setIsCreating] = useState(false);
-  const [selectedTemplate, setSelectedTemplate] = useState<ProjectTemplate | null>(null);
+  const [_selectedTemplate, setSelectedTemplate] = useState<ProjectTemplate | null>(null);
   const [viewMode, setViewMode] = useState<'kanban' | 'list' | 'calendar'>('kanban');
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [currentUserId] = useState('current-user-id');
   const [showTaskForm, setShowTaskForm] = useState(false);
-  const [editingTask, setEditingTask] = useState<Task | null>(null);
+  const [_editingTask, _setEditingTask] = useState<Task | null>(null);
 
   // Mock current user
   const currentUser: FamilyMember = {
@@ -342,7 +339,7 @@ export const FamilyLegacyProjectManagement: React.FC<FamilyLegacyProjectManageme
     availability: 'full-time'
   };
 
-  const allMembers = [currentUser, ...familyMembers];
+  const _allMembers = [currentUser, ...familyMembers];
 
   const createProjectFromTemplate = (template: ProjectTemplate) => {
     const newProject: LegacyProject = {
@@ -415,32 +412,6 @@ export const FamilyLegacyProjectManagement: React.FC<FamilyLegacyProjectManageme
     setProjects(projects.map(p => p.id === activeProject.id ? updatedProject : p));
   };
 
-  const addTaskComment = (taskId: string, content: string) => {
-    if (!activeProject || !content.trim()) return;
-
-    const comment: TaskComment = {
-      id: `comment-${Date.now()}`,
-      userId: currentUserId,
-      userName: currentUser.name,
-      content,
-      timestamp: new Date()
-    };
-
-    const updatedTasks = activeProject.tasks.map(task =>
-      task.id === taskId
-        ? { ...task, comments: [...task.comments, comment] }
-        : task
-    );
-
-    const updatedProject = {
-      ...activeProject,
-      tasks: updatedTasks
-    };
-
-    setActiveProject(updatedProject);
-    setProjects(projects.map(p => p.id === activeProject.id ? updatedProject : p));
-  };
-
   const createNewTask = (taskData: Partial<Task>) => {
     if (!activeProject) return;
 
@@ -485,17 +456,6 @@ export const FamilyLegacyProjectManagement: React.FC<FamilyLegacyProjectManageme
       case 'high': return 'bg-orange-100 text-orange-800';
       case 'medium': return 'bg-yellow-100 text-yellow-800';
       case 'low': return 'bg-green-100 text-green-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
-  };
-
-  const getTaskStatusColor = (status: Task['status']) => {
-    switch (status) {
-      case 'todo': return 'bg-gray-100 text-gray-800';
-      case 'in-progress': return 'bg-blue-100 text-blue-800';
-      case 'review': return 'bg-yellow-100 text-yellow-800';
-      case 'completed': return 'bg-green-100 text-green-800';
-      case 'blocked': return 'bg-red-100 text-red-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
@@ -564,10 +524,10 @@ export const FamilyLegacyProjectManagement: React.FC<FamilyLegacyProjectManageme
                             <h3 className="font-medium text-gray-900">{template.name}</h3>
                             <p className="text-sm text-gray-600 mt-1">{template.description}</p>
                             <div className="flex items-center gap-2 mt-3">
-                              <Badge variant={"outline" as any} className="text-xs">
+                              <Badge variant="outline" className="text-xs">
                                 {template.category.replace('-', ' ')}
                               </Badge>
-                              <Badge variant={"secondary" as any} className="text-xs">
+                              <Badge variant="secondary" className="text-xs">
                                 {template.estimatedDuration}
                               </Badge>
                             </div>
@@ -582,10 +542,10 @@ export const FamilyLegacyProjectManagement: React.FC<FamilyLegacyProjectManageme
                 ))}
               </div>
               <div className="flex justify-end gap-2 mt-4">
-                <Button variant={"outline" as any} onClick={() => setIsCreating(false)}>
+                <Button variant="outline" onClick={() => setIsCreating(false)}>
                   Cancel
                 </Button>
-                <Button variant={"outline" as any}>
+                <Button variant="outline">
                   Create Custom Project
                 </Button>
               </div>
@@ -628,7 +588,7 @@ export const FamilyLegacyProjectManagement: React.FC<FamilyLegacyProjectManageme
                 </div>
               </div>
               <div className="flex gap-2">
-                <Select value={viewMode} onValueChange={(value: any) => setViewMode(value)}>
+                <Select value={viewMode} onValueChange={(value: string) => setViewMode(value)}>
                   <SelectTrigger className="w-32">
                     <SelectValue />
                   </SelectTrigger>
@@ -638,7 +598,7 @@ export const FamilyLegacyProjectManagement: React.FC<FamilyLegacyProjectManageme
                     <SelectItem value="calendar">Calendar</SelectItem>
                   </SelectContent>
                 </Select>
-                <Button variant={"outline" as any} onClick={() => setActiveProject(null)}>
+                <Button variant="outline" onClick={() => setActiveProject(null)}>
                   Close
                 </Button>
               </div>
@@ -873,10 +833,10 @@ export const FamilyLegacyProjectManagement: React.FC<FamilyLegacyProjectManageme
                             <div className="font-medium">{member.name}</div>
                             <div className="text-sm text-gray-500">{member.email}</div>
                             <div className="flex items-center gap-2 mt-1">
-                              <Badge variant={"outline" as any} className="text-xs">
+                              <Badge variant="outline" className="text-xs">
                                 {member.role}
                               </Badge>
-                              <Badge variant={"secondary" as any} className="text-xs">
+                              <Badge variant="secondary" className="text-xs">
                                 {member.availability}
                               </Badge>
                             </div>
@@ -887,7 +847,7 @@ export const FamilyLegacyProjectManagement: React.FC<FamilyLegacyProjectManageme
                             <div className="text-xs text-gray-500 mb-1">Expertise:</div>
                             <div className="flex flex-wrap gap-1">
                               {member.expertise.map((skill) => (
-                                <Badge key={skill} variant={"outline" as any} className="text-xs">
+                                <Badge key={skill} variant="outline" className="text-xs">
                                   {skill}
                                 </Badge>
                               ))}
@@ -937,7 +897,7 @@ export const FamilyLegacyProjectManagement: React.FC<FamilyLegacyProjectManageme
                   </Badge>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Badge variant={"outline" as any} className="text-xs">
+                  <Badge variant="outline" className="text-xs">
                     {project.category.replace('-', ' ')}
                   </Badge>
                   <Badge className={getPriorityColor(project.priority)}>

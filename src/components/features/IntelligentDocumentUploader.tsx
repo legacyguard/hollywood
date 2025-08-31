@@ -93,7 +93,7 @@ export const IntelligentDocumentUploader = () => {
   const [uploadProgress, setUploadProgress] = useState(0);
 
   const { userId } = useAuth();
-  const { user } = useUser();
+  const { user: _user } = useUser();
   const createSupabaseClient = useSupabaseWithClerk();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -238,7 +238,7 @@ export const IntelligentDocumentUploader = () => {
         );
       }
 
-      const { encryptedData, nonce, metadata } = encryptionResult;
+      const { encryptedData, nonce, metadata: _metadata } = encryptionResult;
 
       setUploadProgress(50);
 
@@ -255,7 +255,7 @@ export const IntelligentDocumentUploader = () => {
       setUploadProgress(70);
 
       // Upload to Supabase Storage
-      const { data, error } = await supabase.storage
+      const { data: _data, error } = await supabase.storage
         .from('user_documents')
         .upload(filePath, encryptedBlob, {
           contentType: 'application/octet-stream',

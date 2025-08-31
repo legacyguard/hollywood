@@ -2,13 +2,14 @@
   "name": "@legacyguard/ui",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "scripts": {
     "dev": "tsc --watch",
     "build": "tsc",
     "type-check": "tsc --noEmit",
-    "lint": "eslint . --ext .ts,.tsx"
+    "lint": "eslint ."
   },
   "dependencies": {
     "@tamagui/animations-react-native": "^1.116.9",

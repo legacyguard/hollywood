@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useMemo } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import React, { useState, useMemo } from 'react';
+import { Card, CardContent } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import {
@@ -15,8 +15,7 @@ import {
   Minimize2,
   RotateCcw,
   Download,
-  Share2,
-  Settings
+  Share2
 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
 import { Input } from '../ui/input';
@@ -71,9 +70,9 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
   members,
   connections,
   onAddMember,
-  onEditMember,
+  onEditMember: _onEditMember,
   onDeleteMember,
-  onAddConnection,
+  onAddConnection: _onAddConnection,
   onExportTree,
   onShareTree,
   currentUserId,
@@ -83,7 +82,7 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
   const [isZoomed, setIsZoomed] = useState(false);
   const [viewMode, setViewMode] = useState<'tree' | 'timeline' | 'roles'>('tree');
   const [showAddMemberDialog, setShowAddMemberDialog] = useState(false);
-  const [editingMember, setEditingMember] = useState<FamilyMember | null>(null);
+  const [_editingMember, setEditingMember] = useState<FamilyMember | null>(null);
   const [newMember, setNewMember] = useState<Partial<FamilyMember>>({
     name: '',
     relationship: 'child',
@@ -101,7 +100,10 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
       if (!generations.has(gen)) {
         generations.set(gen, []);
       }
-      generations.get(gen)!.push(member);
+      const genMembers = generations.get(gen);
+      if (genMembers) {
+        genMembers.push(member);
+      }
     });
     return generations;
   }, [members]);
@@ -220,12 +222,12 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
             {member.roles.length > 0 && (
               <div className="flex flex-wrap gap-1 mt-1">
                 {member.roles.slice(0, 2).map(role => (
-                  <Badge key={role} variant={"secondary" as any} className="text-xs px-1 py-0">
+                  <Badge key={role} variant="secondary" className="text-xs px-1 py-0">
                     {role}
                   </Badge>
                 ))}
                 {member.roles.length > 2 && (
-                  <Badge variant={"secondary" as any} className="text-xs px-1 py-0">
+                  <Badge variant="secondary" className="text-xs px-1 py-0">
                     +{member.roles.length - 2}
                   </Badge>
                 )}
@@ -308,7 +310,7 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
 
         <div className="flex items-center gap-2">
           <Button
-            variant={"outline" as any}
+            variant="outline"
             size="sm"
             onClick={() => setIsZoomed(!isZoomed)}
           >
@@ -316,7 +318,7 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
           </Button>
 
           <Button
-            variant={"outline" as any}
+            variant="outline"
             size="sm"
             onClick={() => {}}
           >
@@ -350,7 +352,7 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
           </Select>
 
           <Button
-            variant={"outline" as any}
+            variant="outline"
             size="sm"
             onClick={onShareTree}
           >
@@ -418,7 +420,7 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
                   </div>
                   <div className="flex justify-end gap-2">
                     <Button
-                      variant={"outline" as any}
+                      variant="outline"
                       onClick={() => setShowAddMemberDialog(false)}
                     >
                       Cancel
@@ -478,7 +480,7 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
                   <p className="text-gray-600 capitalize">{selectedMember.relationship}</p>
                 </div>
                 <Button
-                  variant={"ghost" as any}
+                  variant="ghost"
                   size="sm"
                   onClick={() => setSelectedMember(null)}
                 >
@@ -507,7 +509,7 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
                   <Label className="text-sm font-medium">Roles</Label>
                   <div className="flex flex-wrap gap-2 mt-1">
                     {selectedMember.roles.map(role => (
-                      <Badge key={role} variant={"secondary" as any}>
+                      <Badge key={role} variant="secondary">
                         {role.replace('_', ' ')}
                       </Badge>
                     ))}
@@ -535,7 +537,7 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
               {isEditable && (
                 <div className="flex gap-2 pt-4">
                   <Button
-                    variant={"outline" as any}
+                    variant="outline"
                     size="sm"
                     onClick={() => {
                       setEditingMember(selectedMember);
@@ -546,7 +548,7 @@ export const FamilyTreeVisualization: React.FC<FamilyTreeVisualizationProps> = (
                     Edit
                   </Button>
                   <Button
-                    variant={"outline" as any}
+                    variant="outline"
                     size="sm"
                     onClick={() => onDeleteMember?.(selectedMember.id)}
                   >

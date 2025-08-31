@@ -1,5 +1,4 @@
-import type { ReactNode } from 'react';
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { type ReactNode, createContext, useContext, useState, useEffect } from 'react';
 
 export type CountryCode = 'sk' | 'cz' | 'en';
 export type LanguageCode = 'sk' | 'cs' | 'en';
@@ -178,8 +177,7 @@ export const useCountryContent = <T,>(
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const loadContent = async () => {
+  const loadContent = async () => {
       try {
         setLoading(true);
         setError(null);
@@ -257,6 +255,7 @@ export const useCountryContent = <T,>(
       }
     };
 
+  useEffect(() => {
     loadContent();
   }, [countryCode, contentType]);
 

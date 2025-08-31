@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
@@ -107,9 +107,9 @@ export function FamilyDocumentSharing({ userId, familyMembers }: FamilyDocumentS
 
   useEffect(() => {
     loadDocuments();
-  }, [userId]);
+  }, [userId, loadDocuments]);
 
-  const loadDocuments = async () => {
+  const loadDocuments = useCallback(async () => {
     try {
       setIsLoading(true);
       // Mock document data - in real app, this would come from your document service
@@ -174,12 +174,12 @@ export function FamilyDocumentSharing({ userId, familyMembers }: FamilyDocumentS
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [userId]);
 
   const handleShareDocuments = async () => {
     try {
       // In real app, this would call your sharing service
-      console.log('Sharing documents:', shareForm);
+      // console.log('Sharing documents:', shareForm);
 
       // Mock sharing success
       await new Promise(resolve => setTimeout(resolve, 1000));

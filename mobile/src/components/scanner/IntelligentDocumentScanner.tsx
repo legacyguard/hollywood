@@ -1,6 +1,6 @@
 // src/components/scanner/IntelligentDocumentScanner.tsx
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Text, Button, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Camera, useCameraDevice, useCameraPermission } from 'react-native-vision-camera';
 import { DocumentScannerService } from '@/services/DocumentScannerService';
 
@@ -9,9 +9,9 @@ interface IntelligentDocumentScannerProps {
   onCancel?: () => void;
 }
 
-export const IntelligentDocumentScanner = ({ 
-  onScanComplete, 
-  onCancel 
+export const IntelligentDocumentScanner = ({
+  onScanComplete,
+  onCancel
 }: IntelligentDocumentScannerProps) => {
   const { hasPermission, requestPermission } = useCameraPermission();
   const device = useCameraDevice('back');
@@ -34,13 +34,13 @@ export const IntelligentDocumentScanner = ({
           flash: 'off',
           enableShutterSound: false,
         });
-        
+
         // Process the image through our service
         const processedImageUri = await DocumentScannerService.processImage(photo.path);
-        
+
         // Validate document quality
         const isValid = DocumentScannerService.validateDocumentQuality(processedImageUri);
-        
+
         if (isValid) {
           setIsActive(false); // Stop the camera after taking a photo
           onScanComplete(processedImageUri);
@@ -86,7 +86,7 @@ export const IntelligentDocumentScanner = ({
         isActive={isActive}
         photo={true}
       />
-      
+
       {/* Overlay with scanning frame */}
       <View style={styles.overlay}>
         <View style={styles.scanFrame}>
@@ -95,26 +95,26 @@ export const IntelligentDocumentScanner = ({
           <View style={[styles.corner, styles.bottomLeft]} />
           <View style={[styles.corner, styles.bottomRight]} />
         </View>
-        
+
         <Text style={styles.instructionText}>
           Position document within the frame
         </Text>
       </View>
-      
+
       {/* Control buttons */}
       <View style={styles.buttonContainer}>
         {onCancel && (
-          <TouchableOpacity 
-            style={[styles.button, styles.cancelButton]} 
+          <TouchableOpacity
+            style={[styles.button, styles.cancelButton]}
             onPress={onCancel}
             disabled={isProcessing}
           >
             <Text style={styles.buttonText}>Cancel</Text>
           </TouchableOpacity>
         )}
-        
-        <TouchableOpacity 
-          style={[styles.button, styles.captureButton, isProcessing && styles.disabledButton]} 
+
+        <TouchableOpacity
+          style={[styles.button, styles.captureButton, isProcessing && styles.disabledButton]}
           onPress={takePhoto}
           disabled={isProcessing}
         >

@@ -3,7 +3,7 @@
 import { AuthenticationService } from '@/services/AuthenticationService';
 
 // Define response types
-interface ApiResponse<T = any> {
+interface _ApiResponse<T = any> {
   data?: T;
   error?: string;
   status: number;
@@ -31,10 +31,10 @@ class ApiClient {
   /**
    * Get authentication headers
    */
-  private async getAuthHeaders(): Promise<HeadersInit> {
+  private async getAuthHeaders(): Promise<Record<string, string>> {
     const token = await AuthenticationService.getSupabaseToken();
-    
-    const headers: HeadersInit = {
+
+    const headers: Record<string, string> = {
       'Content-Type': 'application/json',
     };
 
@@ -67,7 +67,7 @@ class ApiClient {
    */
   async get<T = any>(endpoint: string): Promise<T> {
     const headers = await this.getAuthHeaders();
-    
+
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
       method: 'GET',
       headers,
@@ -81,7 +81,7 @@ class ApiClient {
    */
   async post<T = any>(endpoint: string, data?: any): Promise<T> {
     const headers = await this.getAuthHeaders();
-    
+
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
       method: 'POST',
       headers,
@@ -96,7 +96,7 @@ class ApiClient {
    */
   async put<T = any>(endpoint: string, data?: any): Promise<T> {
     const headers = await this.getAuthHeaders();
-    
+
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
       method: 'PUT',
       headers,
@@ -111,7 +111,7 @@ class ApiClient {
    */
   async delete<T = any>(endpoint: string): Promise<T> {
     const headers = await this.getAuthHeaders();
-    
+
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
       method: 'DELETE',
       headers,
@@ -129,7 +129,7 @@ class ApiClient {
     fileName: string;
   }): Promise<any> {
     const token = await AuthenticationService.getSupabaseToken();
-    
+
     if (!token) {
       throw new ApiError(401, 'Authentication required');
     }
@@ -160,27 +160,27 @@ export const api = {
   documents: {
     upload: (file: { base64: string; mimeType: string; fileName: string }) =>
       apiClient.uploadFile('/api/analyze-document', file),
-    
+
     list: () => apiClient.get('/api/documents'),
-    
+
     get: (id: string) => apiClient.get(`/api/documents/${id}`),
-    
+
     delete: (id: string) => apiClient.delete(`/api/documents/${id}`),
   },
 
   // User operations
   user: {
     getProfile: () => apiClient.get('/api/user/profile'),
-    
+
     updateProfile: (data: any) => apiClient.put('/api/user/profile', data),
   },
 
   // Will operations
   will: {
     create: (data: any) => apiClient.post('/api/will', data),
-    
+
     get: () => apiClient.get('/api/will'),
-    
+
     update: (data: any) => apiClient.put('/api/will', data),
   },
 };

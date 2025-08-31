@@ -5,7 +5,7 @@ import { useAuth } from '@/hooks/useAuth';
 
 export const DashboardScreen = () => {
   const { logout } = useAuth();
-  
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Dashboard</Text>

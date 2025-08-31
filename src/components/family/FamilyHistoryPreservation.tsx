@@ -17,7 +17,8 @@ import {
   Share2,
   Image as ImageIcon,
   Music,
-  Sparkles
+  Sparkles,
+  Calendar
 } from 'lucide-react';
 import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
@@ -95,7 +96,7 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
   onUploadPhoto
 }) => {
   const [activeTab, setActiveTab] = useState('overview');
-  const [_selectedItem, setSelectedItem] = useState<HistoryItem | null>(null);
+  const [_selectedItem, _setSelectedItem] = useState<HistoryItem | null>(null);
   const [isRecording, setIsRecording] = useState<'audio' | 'video' | null>(null);
   const [recordingTime, setRecordingTime] = useState(0);
   const [showCreateDialog, setShowCreateDialog] = useState(false);

@@ -34,15 +34,15 @@ interface MetricCardProps {
   onPress?: () => void;
 }
 
-const MetricCard = ({ 
-  title, 
-  value, 
-  change, 
-  changeLabel, 
-  trend, 
-  icon, 
+const MetricCard = ({
+  title,
+  value,
+  change,
+  changeLabel,
+  trend,
+  icon,
   color,
-  onPress 
+  onPress
 }: MetricCardProps) => {
   const iconColor = {
     primary: '#1e40af',
@@ -52,8 +52,8 @@ const MetricCard = ({
   }[color];
 
   return (
-    <Card 
-      variant="elevated" 
+    <Card
+      variant="elevated"
       padding="medium"
       clickable={!!onPress}
       onPress={onPress}
@@ -65,10 +65,10 @@ const MetricCard = ({
           {(change || changeLabel) && (
             <Row space="xs" align="center">
               {trend && (
-                <Ionicons 
-                  name={trend === 'up' ? 'trending-up' : 'trending-down'} 
-                  size={16} 
-                  color={trend === 'up' ? '#16a34a' : '#dc2626'} 
+                <Ionicons
+                  name={trend === 'up' ? 'trending-up' : 'trending-down'}
+                  size={16}
+                  color={trend === 'up' ? '#16a34a' : '#dc2626'}
                 />
               )}
               <Paragraph size="small" color="muted">
@@ -93,35 +93,35 @@ interface ActionCardProps {
   variant?: 'primary' | 'success' | 'premium';
 }
 
-const ActionCard = ({ 
-  title, 
-  description, 
-  icon, 
+const ActionCard = ({
+  title,
+  description,
+  icon,
   onPress,
-  variant = 'primary' 
+  variant = 'primary'
 }: ActionCardProps) => {
   return (
-    <Card 
-      variant="default" 
+    <Card
+      variant="default"
       padding="large"
       clickable
       onPress={onPress}
       fullWidth
     >
       <Row space="medium" align="center">
-        <Box 
-          padding="small" 
-          style={{ 
-            backgroundColor: variant === 'primary' ? '#e0e7ff' : 
+        <Box
+          padding="small"
+          style={{
+            backgroundColor: variant === 'primary' ? '#e0e7ff' :
                            variant === 'success' ? '#dcfce7' : '#fef3c7',
             borderRadius: 12,
           }}
         >
-          <Ionicons 
-            name={icon as any} 
-            size={24} 
-            color={variant === 'primary' ? '#1e40af' : 
-                  variant === 'success' ? '#16a34a' : '#f59e0b'} 
+          <Ionicons
+            name={icon as any}
+            size={24}
+            color={variant === 'primary' ? '#1e40af' :
+                  variant === 'success' ? '#16a34a' : '#f59e0b'}
           />
         </Box>
         <Stack space="xs" style={{ flex: 1 }}>
@@ -146,7 +146,7 @@ export function DashboardScreenV2() {
       trend: 'up' as const,
       icon: 'document-text',
       color: 'primary' as const,
-      onPress: () => navigation.navigate('Vault' as never),
+      onPress: () => navigation.navigate('Documents' as never),
     },
     {
       title: 'Family Members',
@@ -155,7 +155,7 @@ export function DashboardScreenV2() {
       trend: 'up' as const,
       icon: 'people',
       color: 'success' as const,
-      onPress: () => navigation.navigate('Family' as never),
+      onPress: () => navigation.navigate('People' as never),
     },
     {
       title: 'Guardians',
@@ -186,14 +186,14 @@ export function DashboardScreenV2() {
       description: 'Expand your trusted circle',
       icon: 'person-add',
       variant: 'success' as const,
-      onPress: () => navigation.navigate('Family' as never),
+      onPress: () => navigation.navigate('People' as never),
     },
     {
       title: 'Create Will',
       description: 'Start your legacy planning',
       icon: 'document',
       variant: 'premium' as const,
-      onPress: () => navigation.navigate('WillGenerator' as never),
+      onPress: () => navigation.navigate('Will' as never),
     },
   ];
 
@@ -229,8 +229,8 @@ export function DashboardScreenV2() {
           </Stack>
 
           {/* Primary Action Button */}
-          <Button 
-            variant="primary" 
+          <Button
+            variant="primary"
             size="large"
             fullWidth
             onPress={() => navigation.navigate('Vault' as never)}
@@ -278,25 +278,25 @@ export function DashboardScreenV2() {
           <Stack space="medium">
             <Row justify="between" align="center">
               <H2>Recent Activity</H2>
-              <Button 
-                variant="ghost" 
+              <Button
+                variant="ghost"
                 size="small"
                 onPress={() => navigation.navigate('Activity' as never)}
               >
                 View All
               </Button>
             </Row>
-            
+
             <Stack space="small">
               <Card variant="default" padding="medium">
                 <Row space="small" align="center">
-                  <Box 
-                    style={{ 
-                      width: 8, 
-                      height: 8, 
-                      borderRadius: 4, 
-                      backgroundColor: '#16a34a' 
-                    }} 
+                  <Box
+                    style={{
+                      width: 8,
+                      height: 8,
+                      borderRadius: 4,
+                      backgroundColor: '#16a34a'
+                    }}
                   />
                   <Stack space="xs" style={{ flex: 1 }}>
                     <Paragraph weight="medium">Document added</Paragraph>
@@ -306,16 +306,16 @@ export function DashboardScreenV2() {
                   </Stack>
                 </Row>
               </Card>
-              
+
               <Card variant="default" padding="medium">
                 <Row space="small" align="center">
-                  <Box 
-                    style={{ 
-                      width: 8, 
-                      height: 8, 
-                      borderRadius: 4, 
-                      backgroundColor: '#3b82f6' 
-                    }} 
+                  <Box
+                    style={{
+                      width: 8,
+                      height: 8,
+                      borderRadius: 4,
+                      backgroundColor: '#3b82f6'
+                    }}
                   />
                   <Stack space="xs" style={{ flex: 1 }}>
                     <Paragraph weight="medium">Guardian invited</Paragraph>
@@ -342,24 +342,24 @@ export function DashboardScreenV2() {
                   <H1 color="primary">78</H1>
                   <Paragraph color="success">+5 this month</Paragraph>
                 </Row>
-                <Box 
-                  style={{ 
-                    height: 8, 
-                    backgroundColor: '#e5e7eb', 
+                <Box
+                  style={{
+                    height: 8,
+                    backgroundColor: '#e5e7eb',
                     borderRadius: 4,
-                    overflow: 'hidden' 
+                    overflow: 'hidden'
                   }}
                 >
-                  <Box 
-                    style={{ 
-                      width: '78%', 
-                      height: '100%', 
-                      backgroundColor: '#f59e0b' 
-                    }} 
+                  <Box
+                    style={{
+                      width: '78%',
+                      height: '100%',
+                      backgroundColor: '#f59e0b'
+                    }}
                   />
                 </Box>
-                <Button 
-                  variant="premium" 
+                <Button
+                  variant="premium"
                   size="medium"
                   fullWidth
                   onPress={() => navigation.navigate('Profile' as never)}

@@ -2,9 +2,9 @@ import React, { useState, useRef, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+
 import {
   Select,
   SelectContent,
@@ -29,7 +29,6 @@ import type {
   OCRProcessingConfig,
   OCRProcessingResponse,
 } from '@/types/ocr';
-import { DocumentCategory, DocumentType, DOCUMENT_PATTERNS } from '@/types/ocr';
 import { useAuth } from '@clerk/clerk-react';
 
 interface DocumentScannerProps {
@@ -53,7 +52,7 @@ export default function DocumentScanner({
   const [processedDocument, setProcessedDocument] =
     useState<ProcessedDocument | null>(null);
   const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
-  const [processingStage, setProcessingStage] = useState<
+  const [_processingStage, setProcessingStage] = useState<
     'upload' | 'analyzing' | 'completed'
   >('upload');
   const [showResults, setShowResults] = useState(false);

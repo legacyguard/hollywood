@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import type { SyncMode } from '@/lib/storage/LocalDataAdapter';
-import { localDataAdapter } from '@/lib/storage/LocalDataAdapter';
+import { type SyncMode, localDataAdapter } from '@/lib/storage/LocalDataAdapter';
 import { cloudSyncAdapter } from '@/lib/storage/CloudSyncAdapter';
 import { useTranslation } from 'next-i18next';
 

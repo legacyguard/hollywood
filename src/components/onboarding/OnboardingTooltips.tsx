@@ -14,12 +14,11 @@ import {
   ChevronRight,
   X,
   Lightbulb,
-  Target,
   Sparkles,
   Play,
   CheckCircle
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
+
 
 interface TooltipStep {
   id: string;
@@ -79,6 +78,8 @@ export const OnboardingTooltips: React.FC<OnboardingTooltipsProps> = ({
     let x = 0;
     let y = 0;
     const offset = 12;
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
 
     switch (position) {
       case 'top':
@@ -99,9 +100,6 @@ export const OnboardingTooltips: React.FC<OnboardingTooltipsProps> = ({
         break;
       default: // auto
         // Smart positioning based on viewport space
-        const viewportWidth = window.innerWidth;
-        const viewportHeight = window.innerHeight;
-
         if (targetRect.top > tooltipRect.height + offset) {
           // Top
           x = targetRect.left + targetRect.width / 2 - tooltipRect.width / 2;
@@ -119,6 +117,7 @@ export const OnboardingTooltips: React.FC<OnboardingTooltipsProps> = ({
           x = targetRect.right + offset;
           y = targetRect.top + targetRect.height / 2 - tooltipRect.height / 2;
         }
+        break;
     }
 
     // Keep tooltip in viewport

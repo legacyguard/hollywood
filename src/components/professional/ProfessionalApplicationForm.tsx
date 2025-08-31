@@ -7,19 +7,15 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   User,
-  Building2,
   Scale,
   GraduationCap,
-  MapPin,
   DollarSign,
-  FileText,
   CheckCircle,
   AlertCircle,
   ArrowLeft,
   ArrowRight,
   Star,
   Shield,
-  Calendar,
   Clock
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';

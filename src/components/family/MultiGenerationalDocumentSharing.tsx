@@ -1,35 +1,25 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
+
 import { FileText,
-  Users,
   Share2,
-  Lock,
-  Unlock,
-  Eye,
-  EyeOff,
-  Clock,
   Download,
   Upload,
   Search,
-  Filter,
-  ArrowUpDown,
   Calendar,
-  AlertTriangle,
-  CheckCircle,
-  History,
-  Globe,
   Shield,
   Crown,
-  Heart, Camera } from 'lucide-react';
+  Heart,
+  Eye,
+  Camera,
+  Globe } from 'lucide-react';
 import { Input } from '../ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
 import { Checkbox } from '../ui/checkbox';
-import { Textarea } from '../ui/textarea';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 export interface GenerationalDocument {
   id: string;
@@ -106,10 +96,10 @@ export const MultiGenerationalDocumentSharing: React.FC<MultiGenerationalDocumen
   familyMembers,
   currentUserId,
   onShareDocument,
-  onUpdatePermissions,
+  onUpdatePermissions: _onUpdatePermissions,
   onDownloadDocument,
   onViewDocument,
-  onUploadDocument
+  onUploadDocument: _onUploadDocument
 }) => {
   const [selectedDoc, setSelectedDoc] = useState<GenerationalDocument | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -141,9 +131,10 @@ export const MultiGenerationalDocumentSharing: React.FC<MultiGenerationalDocumen
           return new Date(b.uploadDate).getTime() - new Date(a.uploadDate).getTime();
         case 'name':
           return a.name.localeCompare(b.name);
-        case 'importance':
+        case 'importance': {
           const importanceOrder = { critical: 4, high: 3, medium: 2, low: 1 };
           return importanceOrder[b.metadata.importance] - importanceOrder[a.metadata.importance];
+        }
         case 'generation':
           return a.generation - b.generation;
         default:
@@ -161,7 +152,10 @@ export const MultiGenerationalDocumentSharing: React.FC<MultiGenerationalDocumen
       if (!generations.has(doc.generation)) {
         generations.set(doc.generation, []);
       }
-      generations.get(doc.generation)!.push(doc);
+      const genMembers = generations.get(doc.generation);
+      if (genMembers) {
+        genMembers.push(doc);
+      }
     });
     return generations;
   }, [filteredAndSortedDocuments]);

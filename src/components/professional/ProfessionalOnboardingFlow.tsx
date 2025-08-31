@@ -3,7 +3,7 @@
  * Multi-step onboarding process for attorneys and legal professionals
  */
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { ArrowRight, ArrowLeft, CheckCircle, Scale, Award, Users, Shield } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';

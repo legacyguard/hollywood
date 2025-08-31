@@ -276,7 +276,7 @@ export const LiveWillPreview: React.FC<LiveWillPreviewProps> = ({
             </p>
 
             {willData.beneficiaries.length > 0 ? (
-              willData.beneficiaries.map((beneficiary, idx) => (
+              willData.beneficiaries.map((beneficiary, _idx) => (
                 <div
                   key={beneficiary.id}
                   className='mb-4 p-3 border border-gray-200 rounded'

@@ -1,5 +1,4 @@
-import type { ComponentType } from 'react';
-import React, { useState, useEffect, useRef, Suspense, lazy } from 'react';
+import React, { type ComponentType, useState, useEffect, useRef, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 

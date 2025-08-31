@@ -8,7 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 // Tabs components import removed as unused
-import { Separator } from '../ui/separator';
+
 import { Users, MessageSquare, History, Save, Lock, Unlock, Eye, EyeOff, Clock, Check, Plus, FileText, Activity } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -109,12 +109,12 @@ export const FamilyDocumentCoEditing: React.FC<FamilyDocumentCoEditingProps> = (
 }) => {
   const [documents, setDocuments] = useState<SharedDocument[]>(existingDocuments);
   const [activeDocument, setActiveDocument] = useState<SharedDocument | null>(null);
-  const [isEditing, setIsEditing] = useState(false);
+  const [_isEditing, setIsEditing] = useState(false);
   const [cursors, setCursors] = useState<Cursor[]>([]);
-  const [comments, setComments] = useState<Comment[]>([]);
+  const [_comments, _setComments] = useState<Comment[]>([]);
   const [showComments, setShowComments] = useState(true);
   const [showVersionHistory, setShowVersionHistory] = useState(false);
-  const [selectedText, setSelectedText] = useState<{start: number, end: number} | null>(null);
+  const [_selectedText, _setSelectedText] = useState<{start: number, end: number} | null>(null);
   const [currentUserId] = useState('current-user-id');
   const [isCreating, setIsCreating] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -304,16 +304,6 @@ export const FamilyDocumentCoEditing: React.FC<FamilyDocumentCoEditingProps> = (
       case 'review': return 'bg-yellow-100 text-yellow-800';
       case 'approved': return 'bg-green-100 text-green-800';
       case 'final': return 'bg-blue-100 text-blue-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
-  };
-
-  const getRoleColor = (role: FamilyMember['role']) => {
-    switch (role) {
-      case 'owner': return 'bg-purple-100 text-purple-800';
-      case 'editor': return 'bg-blue-100 text-blue-800';
-      case 'commenter': return 'bg-green-100 text-green-800';
-      case 'viewer': return 'bg-gray-100 text-gray-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };

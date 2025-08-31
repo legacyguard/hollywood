@@ -50,7 +50,7 @@ export function TamaguiDemo() {
             <Button variant="ghost">Ghost</Button>
             <Button variant="outline">Outline</Button>
           </Row>
-          
+
           <H3>Button Sizes</H3>
           <Row space="small" align="center">
             <Button size="small">Small</Button>
@@ -72,7 +72,7 @@ export function TamaguiDemo() {
         {/* Cards Demo */}
         <Stack space="medium">
           <H2>Cards</H2>
-          
+
           <Card variant="default">
             <CardHeader>
               <CardTitle>Default Card</CardTitle>
@@ -116,11 +116,11 @@ export function TamaguiDemo() {
         {/* Input Fields Demo */}
         <Stack space="medium">
           <H2>Form Elements</H2>
-          
+
           <InputGroup>
             <InputLabel>Email Address</InputLabel>
-            <Input 
-              placeholder="Enter your email" 
+            <Input
+              placeholder="Enter your email"
               variant="default"
             />
             <InputHelper>We'll never share your email with anyone.</InputHelper>
@@ -128,8 +128,8 @@ export function TamaguiDemo() {
 
           <InputGroup>
             <InputLabel>Password</InputLabel>
-            <Input 
-              placeholder="Enter password" 
+            <Input
+              placeholder="Enter password"
               variant="default"
               secureTextEntry
             />
@@ -137,8 +137,8 @@ export function TamaguiDemo() {
 
           <InputGroup>
             <InputLabel>Success State</InputLabel>
-            <Input 
-              placeholder="Valid input" 
+            <Input
+              placeholder="Valid input"
               variant="success"
               value="valid@example.com"
             />
@@ -146,8 +146,8 @@ export function TamaguiDemo() {
 
           <InputGroup>
             <InputLabel>Error State</InputLabel>
-            <Input 
-              placeholder="Invalid input" 
+            <Input
+              placeholder="Invalid input"
               variant="error"
               value="invalid"
             />
@@ -155,8 +155,8 @@ export function TamaguiDemo() {
 
           <InputGroup>
             <InputLabel>Message</InputLabel>
-            <TextArea 
-              placeholder="Type your message here..." 
+            <TextArea
+              placeholder="Type your message here..."
               variant="default"
             />
           </InputGroup>
@@ -167,12 +167,12 @@ export function TamaguiDemo() {
         {/* Color Palette */}
         <Stack space="medium">
           <H2>LegacyGuard Color Palette</H2>
-          
+
           <Row space="small">
-            <Box 
-              padding="medium" 
-              style={{ 
-                backgroundColor: '#1e40af', 
+            <Box
+              padding="medium"
+              style={{
+                backgroundColor: '#1e40af',
                 borderRadius: 8,
                 width: 100,
                 height: 100,
@@ -182,11 +182,11 @@ export function TamaguiDemo() {
             >
               <Paragraph style={{ color: 'white' }}>Primary Blue</Paragraph>
             </Box>
-            
-            <Box 
-              padding="medium" 
-              style={{ 
-                backgroundColor: '#16a34a', 
+
+            <Box
+              padding="medium"
+              style={{
+                backgroundColor: '#16a34a',
                 borderRadius: 8,
                 width: 100,
                 height: 100,
@@ -196,11 +196,11 @@ export function TamaguiDemo() {
             >
               <Paragraph style={{ color: 'white' }}>Success Green</Paragraph>
             </Box>
-            
-            <Box 
-              padding="medium" 
-              style={{ 
-                backgroundColor: '#f59e0b', 
+
+            <Box
+              padding="medium"
+              style={{
+                backgroundColor: '#f59e0b',
                 borderRadius: 8,
                 width: 100,
                 height: 100,

@@ -6,7 +6,7 @@
  * touch-friendly interface and haptic feedback support.
  */
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, createContext, useContext } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -310,8 +310,6 @@ interface MobileNavContextType {
   hapticFeedback: boolean;
   setHapticFeedback: (enabled: boolean) => void;
 }
-
-import { createContext, useContext } from 'react';
 
 const MobileNavContext = createContext<MobileNavContextType | undefined>(undefined);
 

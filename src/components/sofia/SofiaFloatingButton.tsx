@@ -65,7 +65,7 @@ const SofiaFloatingButton: React.FC<SofiaFloatingButtonProps> = ({
     }
   }, [isChatOpen, hasNewSuggestion]);
 
-  const unreadCount = messages.filter(
+  const _unreadCount = messages.filter(
     msg =>
       msg.role === 'assistant' &&
       msg.timestamp.getTime() > (lastSuggestionTime || 0)

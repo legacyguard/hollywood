@@ -1,5 +1,6 @@
+import type React from 'react';
 import { useContext, useState, useCallback } from 'react';
-import type { FireflyContextValue, FireflyEventType, CommunicationStyle } from './fireflyTypes';
+import type { FireflyContextValue, FireflyEventType } from './fireflyTypes';
 
 // This context is defined in FireflyContext.tsx
 declare const FireflyContext: React.Context<FireflyContextValue | undefined>;

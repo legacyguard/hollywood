@@ -3,7 +3,7 @@
  * Tracks and displays the status of professional document reviews
  */
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Clock,
   CheckCircle,

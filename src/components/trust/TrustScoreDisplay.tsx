@@ -3,7 +3,7 @@
  * Shows user's trust score with different variants for A/B testing
  */
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Shield, CheckCircle, TrendingUp, Lock, Award, Info } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';

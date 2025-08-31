@@ -1,17 +1,5 @@
-import type { ComponentType } from 'react';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { type ComponentType, useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { cn } from '@/lib/utils';
-
-interface LazyComponentProps {
-  component: ComponentType<any>;
-  props?: Record<string, any>;
-  fallback?: React.ReactNode;
-  threshold?: number;
-  rootMargin?: string;
-  delay?: number;
-  priority?: 'low' | 'medium' | 'high';
-}
 
 // Higher-order component for lazy loading
 export function withLazyLoading<P extends object>(

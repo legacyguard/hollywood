@@ -218,14 +218,14 @@ export const DocumentList = () => {
     window.addEventListener('storage', handleStorageChange);
     window.addEventListener(
       'documentUploaded',
-      handleDocumentUploaded as EventListener
+      handleDocumentUploaded as (event: Event) => void
     );
 
     return () => {
       window.removeEventListener('storage', handleStorageChange);
       window.removeEventListener(
         'documentUploaded',
-        handleDocumentUploaded as EventListener
+        handleDocumentUploaded as (event: Event) => void
       );
     };
   }, [userId, fetchDocuments]);

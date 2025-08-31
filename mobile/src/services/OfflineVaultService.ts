@@ -38,7 +38,7 @@ export const OfflineVaultService = {
    */
   open: async (encryptionKey: Uint8Array): Promise<void> => {
     if (realm && !realm.isClosed) return; // Already open
-    
+
     try {
       realm = await Realm.open({
         path: 'legacyguard.realm',
@@ -59,12 +59,12 @@ export const OfflineVaultService = {
    */
   addDocument: async (doc: OfflineDocument): Promise<void> => {
     if (!realm) throw new Error('Vault is not open.');
-    
+
     try {
       // Encrypt content before storing
       // In production, use a proper encryption library
       const encryptedContent = await encryptContent(doc.content);
-      
+
       realm.write(() => {
         realm!.create('OfflineDocument', {
           _id: doc.id,
@@ -77,7 +77,7 @@ export const OfflineVaultService = {
           lastAccessedAt: null,
         }, Realm.UpdateMode.Modified);
       });
-      
+
       console.log(`Document ${doc.fileName} added to offline vault`);
     } catch (error) {
       console.error('Failed to add document to vault:', error);
@@ -90,20 +90,20 @@ export const OfflineVaultService = {
    */
   getDocuments: async (): Promise<OfflineDocument[]> => {
     if (!realm) throw new Error('Vault is not open.');
-    
+
     try {
       const documents = realm.objects('OfflineDocument');
       const decryptedDocs: OfflineDocument[] = [];
-      
+
       for (const doc of documents) {
         // Update last accessed time
         realm.write(() => {
           (doc as any).lastAccessedAt = new Date();
         });
-        
+
         // Decrypt content before returning
         const decryptedContent = await decryptContent((doc as any).encryptedContent);
-        
+
         decryptedDocs.push({
           id: (doc as any)._id,
           fileName: (doc as any).fileName,
@@ -114,7 +114,7 @@ export const OfflineVaultService = {
           tags: Array.from((doc as any).tags || []),
         });
       }
-      
+
       return decryptedDocs;
     } catch (error) {
       console.error('Failed to get documents from vault:', error);
@@ -127,19 +127,19 @@ export const OfflineVaultService = {
    */
   getDocument: async (id: string): Promise<OfflineDocument | null> => {
     if (!realm) throw new Error('Vault is not open.');
-    
+
     try {
       const doc = realm.objectForPrimaryKey('OfflineDocument', id);
       if (!doc) return null;
-      
+
       // Update last accessed time
       realm.write(() => {
         (doc as any).lastAccessedAt = new Date();
       });
-      
+
       // Decrypt content
       const decryptedContent = await decryptContent((doc as any).encryptedContent);
-      
+
       return {
         id: (doc as any)._id,
         fileName: (doc as any).fileName,
@@ -160,15 +160,15 @@ export const OfflineVaultService = {
    */
   removeDocument: async (id: string): Promise<boolean> => {
     if (!realm) throw new Error('Vault is not open.');
-    
+
     try {
       const doc = realm.objectForPrimaryKey('OfflineDocument', id);
       if (!doc) return false;
-      
+
       realm.write(() => {
         realm!.delete(doc);
       });
-      
+
       console.log(`Document ${id} removed from offline vault`);
       return true;
     } catch (error) {
@@ -182,7 +182,7 @@ export const OfflineVaultService = {
    */
   clearAll: async (): Promise<void> => {
     if (!realm) throw new Error('Vault is not open.');
-    
+
     try {
       realm.write(() => {
         realm!.deleteAll();
@@ -203,14 +203,14 @@ export const OfflineVaultService = {
     lastSync?: Date;
   }> => {
     if (!realm) throw new Error('Vault is not open.');
-    
+
     const documents = realm.objects('OfflineDocument');
     let totalSize = 0;
-    
+
     for (const doc of documents) {
       totalSize += (doc as any).fileSize || 0;
     }
-    
+
     return {
       documentCount: documents.length,
       totalSize,

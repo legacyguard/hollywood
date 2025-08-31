@@ -4,13 +4,11 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
   FileText,
   Clock,
-  User,
   Star,
-  MapPin,
   Calendar,
   DollarSign,
   AlertTriangle,
@@ -22,10 +20,7 @@ import {
   SortDesc,
   Users,
   Zap,
-  Shield,
-  Award,
-  Timer,
-  TrendingUp
+  Timer
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -33,18 +28,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import { Separator } from '@/components/ui/separator';
 import { Progress } from '@/components/ui/progress';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 import type {
   ReviewRequest,
   ProfessionalReviewer,
-  DocumentReview,
-  ProfessionalSpecialization
+  DocumentReview
 } from '@/types/professional';
 
 interface ReviewAssignmentQueueProps {
@@ -73,8 +64,8 @@ export function ReviewAssignmentQueue({
   reviewers,
   activeReviews,
   onAssignReview,
-  onReassignReview,
-  onUpdatePriority,
+  onReassignReview: _onReassignReview,
+  onUpdatePriority: _onUpdatePriority,
   className
 }: ReviewAssignmentQueueProps) {
   const [selectedRequest, setSelectedRequest] = useState<ReviewRequest | null>(null);
@@ -85,7 +76,7 @@ export function ReviewAssignmentQueue({
     reviewType: 'all'
   });
   const [searchQuery, setSearchQuery] = useState('');
-  const [sortField, setSortField] = useState<SortField>('created_at');
+  const [sortField, _setSortField] = useState<SortField>('created_at');
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
   const [queueStats, setQueueStats] = useState({
     pending: 0,

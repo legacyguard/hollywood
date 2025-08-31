@@ -1,13 +1,13 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { useAuth } from '@/hooks/useAuth';
 import { AuthStack } from './AuthStack';
-import { MainTabs } from './MainTabs';
+import { MainStack } from './MainStack';
 
 export const AppNavigator = () => {
   const { isLoggedIn } = useAuth();
   return (
     <NavigationContainer>
-      {isLoggedIn ? <MainTabs /> : <AuthStack />}
+      {isLoggedIn ? <MainStack /> : <AuthStack />}
     </NavigationContainer>
   );
 };

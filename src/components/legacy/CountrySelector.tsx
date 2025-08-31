@@ -3,8 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Icon } from '@/components/ui/icon-library';
 import { FadeIn } from '@/components/motion/FadeIn';
-import type { CountryCode } from '@/contexts/LocalizationContext';
-import { useLocalization } from '@/contexts/LocalizationContext';
+import { type CountryCode, useLocalization } from '@/contexts/LocalizationContext';
 
 interface CountrySelectorProps {
   onCountryConfirmed: () => void;

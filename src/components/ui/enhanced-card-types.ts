@@ -1,5 +1,5 @@
 import type * as React from "react"
-import { type VariantProps } from "class-variance-authority"
+
 import type { IconMap } from "@/components/ui/icon-library"
 
 // Re-export cardVariants for type usage
@@ -19,8 +19,7 @@ export type CardInteractionType =
   | 'morphing';
 
 export interface EnhancedCardProps
-  extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof cardVariants> {
+  extends React.HTMLAttributes<HTMLDivElement> {
   // Animation props
   animationType?: CardInteractionType
   personalityAdapt?: boolean

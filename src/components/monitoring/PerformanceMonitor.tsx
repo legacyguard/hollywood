@@ -4,7 +4,7 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { performanceMonitor, getPerformanceMetrics } from '@/lib/monitoring/performance';
+import { getPerformanceMetrics } from '@/lib/monitoring/performance';
 import { runHealthCheck, getLastHealthStatus } from '@/lib/monitoring/healthCheck';
 import { captureError } from '@/lib/monitoring/sentry';
 import { trackPerformance, trackAction } from '@/lib/monitoring/analytics';
@@ -29,7 +29,7 @@ interface HealthData {
  * Performance monitoring component that runs in the background
  */
 export const PerformanceMonitor: React.FC = () => {
-  const [isEnabled, setIsEnabled] = useState(true);
+  const [isEnabled, _setIsEnabled] = useState(true);
 
   useEffect(() => {
     if (!isEnabled) return;

@@ -6,7 +6,7 @@
  * invitations, roles, permissions, and collaboration features.
  */
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -14,7 +14,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Separator } from '@/components/ui/separator';
+
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
@@ -53,14 +53,10 @@ import {
 import {
   Users,
   UserPlus,
-  Settings,
   Shield,
   Mail,
-  Phone,
-  Calendar,
   MoreVertical,
   Copy,
-  Share,
   Crown,
   AlertTriangle,
   CheckCircle,
@@ -76,7 +72,6 @@ import {
   type FamilyGroup,
   type FamilyMember,
   type FamilyRole,
-  type FamilyPermissions,
   type CollaborationActivity
 } from '@/lib/social/collaborationService';
 import { supabase } from '@/integrations/supabase/client';
@@ -158,45 +153,6 @@ export default function FamilyManagement({ className }: FamilyManagementProps) {
         description: "Failed to load family activities",
         variant: "destructive"
       });
-    }
-  };
-
-  const getRoleIcon = (role: FamilyRole) => {
-    switch (role) {
-      case 'owner':
-        return <Crown className="h-4 w-4 text-yellow-500" />;
-      case 'admin':
-        return <Shield className="h-4 w-4 text-blue-500" />;
-      case 'guardian':
-        return <Shield className="h-4 w-4 text-green-500" />;
-      default:
-        return <Users className="h-4 w-4 text-gray-500" />;
-    }
-  };
-
-  const getRoleBadgeVariant = (role: FamilyRole): "default" | "secondary" | "destructive" | "outline" => {
-    switch (role) {
-      case 'owner':
-        return 'default';
-      case 'admin':
-        return 'secondary';
-      case 'guardian':
-        return 'outline';
-      default:
-        return 'outline';
-    }
-  };
-
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'active':
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
-      case 'invited':
-        return <Clock className="h-4 w-4 text-yellow-500" />;
-      case 'suspended':
-        return <AlertTriangle className="h-4 w-4 text-red-500" />;
-      default:
-        return <Activity className="h-4 w-4 text-gray-500" />;
     }
   };
 
@@ -403,7 +359,7 @@ function CreateFirstFamily({ onCreated }: { onCreated: () => void }) {
 function FamilyMembersTab({
   family,
   members,
-  onMemberUpdate,
+  onMemberUpdate: _onMemberUpdate,
   onRemoveMember
 }: {
   family: FamilyGroup;
@@ -411,6 +367,44 @@ function FamilyMembersTab({
   onMemberUpdate: () => void;
   onRemoveMember: (member: FamilyMember) => void;
 }) {
+  const getRoleIcon = (role: FamilyRole) => {
+    switch (role) {
+      case 'owner':
+        return <Crown className="h-4 w-4 text-yellow-500" />;
+      case 'admin':
+        return <Shield className="h-4 w-4 text-blue-500" />;
+      case 'guardian':
+        return <Shield className="h-4 w-4 text-green-500" />;
+      default:
+        return <Users className="h-4 w-4 text-gray-500" />;
+    }
+  };
+
+  const getRoleBadgeVariant = (role: FamilyRole): "default" | "secondary" | "destructive" | "outline" => {
+    switch (role) {
+      case 'owner':
+        return 'default';
+      case 'admin':
+        return 'secondary';
+      case 'guardian':
+        return 'outline';
+      default:
+        return 'outline';
+    }
+  };
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'active':
+        return <CheckCircle className="h-4 w-4 text-green-500" />;
+      case 'invited':
+        return <Clock className="h-4 w-4 text-yellow-500" />;
+      case 'suspended':
+        return <AlertTriangle className="h-4 w-4 text-red-500" />;
+      default:
+        return <Activity className="h-4 w-4 text-gray-500" />;
+    }
+  };
   return (
     <Card>
       <CardHeader>
@@ -527,7 +521,7 @@ function FamilyActivityTab({ activities }: { activities: CollaborationActivity[]
 
 function FamilySettingsTab({
   family,
-  onSettingsUpdate
+  onSettingsUpdate: _onSettingsUpdate
 }: {
   family: FamilyGroup;
   onSettingsUpdate: () => void;

@@ -10,7 +10,6 @@ import { Button } from '@/components/ui/button';
 import type {
   ValidationResult,
   getValidationColor,
-  getValidationIcon,
 } from '@/lib/will-legal-validator';
 
 interface ValidationIndicatorProps {
@@ -156,7 +155,7 @@ interface FieldValidationProps {
 }
 
 export const FieldValidation: React.FC<FieldValidationProps> = ({
-  fieldName,
+  fieldName: _fieldName,
   validation,
   children,
 }) => {

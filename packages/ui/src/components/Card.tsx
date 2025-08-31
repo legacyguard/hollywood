@@ -1,9 +1,9 @@
-import { styled, View, Text, GetProps } from 'tamagui'
+import { type GetProps, styled, View, Text } from 'tamagui'
 
 // Main Card container
 export const Card = styled(View, {
   name: 'LGCard',
-  
+
   // Base styles
   backgroundColor: '$background',
   borderRadius: '$3',
@@ -15,7 +15,7 @@ export const Card = styled(View, {
   shadowOpacity: 0.1,
   shadowRadius: 4,
   elevation: 2, // For Android shadow
-  
+
   // Animations
   animation: 'lazy',
   enterStyle: {
@@ -26,7 +26,7 @@ export const Card = styled(View, {
     opacity: 0,
     scale: 0.95,
   },
-  
+
   // Hover effects
   hoverStyle: {
     borderColor: '$gray4',
@@ -34,7 +34,7 @@ export const Card = styled(View, {
     shadowRadius: 6,
     elevation: 3,
   },
-  
+
   // Variants
   variants: {
     variant: {
@@ -75,7 +75,7 @@ export const Card = styled(View, {
         elevation: 0,
       },
     },
-    
+
     padding: {
       none: {
         padding: 0,
@@ -93,7 +93,7 @@ export const Card = styled(View, {
         padding: '$6',
       },
     },
-    
+
     clickable: {
       true: {
         cursor: 'pointer',
@@ -103,14 +103,14 @@ export const Card = styled(View, {
         },
       },
     },
-    
+
     fullWidth: {
       true: {
         width: '100%',
       },
     },
   } as const,
-  
+
   // Default variants
   defaultVariants: {
     variant: 'default',
@@ -130,7 +130,7 @@ export const CardHeader = styled(View, {
   paddingBottom: '$3',
   borderBottomWidth: 1,
   borderBottomColor: '$gray3',
-  
+
   variants: {
     noBorder: {
       true: {
@@ -139,7 +139,7 @@ export const CardHeader = styled(View, {
       },
     },
   },
-  
+
   defaultVariants: {
     noBorder: false,
   },
@@ -180,7 +180,7 @@ export const CardFooter = styled(View, {
   borderTopWidth: 1,
   borderTopColor: '$gray3',
   gap: '$2',
-  
+
   variants: {
     noBorder: {
       true: {
@@ -203,7 +203,7 @@ export const CardFooter = styled(View, {
       },
     },
   },
-  
+
   defaultVariants: {
     noBorder: false,
     justify: 'end',

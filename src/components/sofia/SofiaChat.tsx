@@ -8,11 +8,9 @@ import { Icon } from '@/components/ui/icon-library';
 import { useSofiaStore } from '@/stores/sofiaStore';
 import { useAuth } from '@clerk/clerk-react';
 import ReactMarkdown from 'react-markdown';
-import type { SofiaMessage } from '@/lib/sofia-ai';
-import { sofiaAI, createSofiaMessage } from '@/lib/sofia-ai';
+import { type SofiaMessage, sofiaAI, createSofiaMessage } from '@/lib/sofia-ai';
 import { textManager, analyzeUserInput } from '@/lib/text-manager';
-import type { UserPreferences } from '@/types/user-preferences';
-import { defaultUserPreferences } from '@/types/user-preferences';
+import { type UserPreferences, defaultUserPreferences } from '@/types/user-preferences';
 
 interface SofiaChatProps {
   isOpen?: boolean;

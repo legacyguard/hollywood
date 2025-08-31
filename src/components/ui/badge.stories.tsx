@@ -128,7 +128,7 @@ export const Error: Story = {
   ),
 };
 
-export const Info: Story = {
+export const InfoBadge: Story = {
   render: () => (
     <Badge variant="secondary">
       <Info className="mr-1 h-3 w-3" />
