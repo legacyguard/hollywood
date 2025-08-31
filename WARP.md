@@ -2,144 +2,262 @@
 
 This file provides guidance to WARP (warp.dev) when working with code in this repository.
 
-## Repository Overview
+## Project Overview
 
-- Stack: Vite + React + TypeScript, Tailwind CSS, shadcn/ui primitives, React Router, TanStack Query, Supabase client
-- Path alias: "@" -> ./src (configured in vite.config.ts and tsconfig)
-- Application: LegacyGuard - Family Preparedness Platform
+LegacyGuard Mobile - A mobile application for the LegacyGuard platform, providing users with secure access to their legacy planning, will generation, and document management features on mobile devices.
 
-## Common Commands
+## Technology Stack
 
-- Install dependencies
-  - npm install
-- Start development server (Vite)
-  - npm run dev
-  - Server config: host "::" (IPv6 all interfaces), port 8080 (see vite.config.ts)
-- Build
-  - Production build: npm run build
-  - Development-mode build: npm run build:dev
-- Preview the production build locally
-  - npm run preview
-- Lint
-  - npm run lint
-- Tests
-  - Test runner: Vitest with React Testing Library
-  - npm run test - Run tests in watch mode
-  - npm run test -- --run - Run tests once
-  - npm run test:ui - Run tests with UI interface
-  - npm run test:coverage - Run tests with coverage report
-  - Test setup file: src/test/setup.ts (includes DOM mocks)
-  - Configuration: vitest.config.ts
+### Setup
+- **Framework**: Expo with React Native and TypeScript
+- **State Management**: Redux Toolkit or Zustand
+- **Authentication**: Clerk integration (matching web app)
+- **Storage**: Expo SecureStore for sensitive data, AsyncStorage for general data
+- **API Communication**: RESTful API or GraphQL to LegacyGuard backend
+- **Navigation**: React Navigation v6
 
-## High-level Architecture
+## Core Features to Implement
 
-### Tooling and Config
+Based on the LegacyGuard platform:
 
-- Vite (vite.config.ts)
-  - Plugins: @vitejs/plugin-react-swc
-  - Resolve alias: "@" -> ./src
-  - Dev server: host "::", port 8080
-- TypeScript
-  - tsconfig.app.json for app code, tsconfig.node.json for tooling, tsconfig.json sets baseUrl and paths
-- Tailwind
-  - tailwind.config.ts extends theme to map CSS variables (tokens), uses tailwindcss-animate plugin
-  - postcss.config.js enables tailwindcss and autoprefixer
-- ESLint
-  - Flat config (eslint.config.js) with typescript-eslint, react-hooks, and react-refresh
+1. **Authentication & Security** ✅ Implemented
+   - Clerk authentication integration ✅
+   - Biometric authentication support ✅
+   - Secure local data storage with encryption (expo-secure-store) ✅
+   - JWT token management for Supabase ✅
 
-### Entry and Application Shell
+2. **Will Generator**
+   - Step-by-step wizard interface
+   - Integration with people and asset services
+   - Offline capability with sync
 
-- src/main.tsx mounts App component to #root
-- src/App.tsx wraps the app with providers and routing:
-  - QueryClientProvider (TanStack Query)
-  - TooltipProvider (shadcn/ui)
-  - Toaster (shadcn/ui) and Sonner notifications
-  - BrowserRouter with routes:
-    - "/" -> src/pages/Index.tsx
-    - "*" -> src/pages/NotFound.tsx
+3. **Document Management** 🚧 In Progress
+   - Intelligent Document Scanner ✅
+     - Camera integration with react-native-vision-camera
+     - Document edge detection frame
+     - Quality validation
+     - Future: OCR and AI metadata extraction
+   - Secure document vault
+   - Category-based organization
+   - File upload and metadata management
 
-### Routing and Pages
+4. **People Management (Trusted Circle)**
+   - Manage guardians, beneficiaries, executors
+   - Contact information and role management
 
-- src/pages/Index.tsx composes the dashboard page using the shared layout (DashboardLayout) and feature content (DashboardContent)
-- src/pages/NotFound.tsx logs 404s to console.error and renders a simple fallback with a link back to "/"
+5. **Asset Management (My Possessions)**
+   - Track and categorize assets
+   - Asset valuation and details
 
-### Layout System
+## Development Setup
 
-- src/components/DashboardLayout.tsx
-  - Provides the app shell: left sidebar + main content
-  - Uses SidebarProvider/SidebarTrigger from the local sidebar implementation
-- src/components/AppSidebar.tsx
-  - Sidebar nav built with components from components/ui/sidebar
-  - Uses React Router NavLink for active states; renders navigation items and a simple user block
-- src/components/ui/sidebar.tsx
-  - Local, composable sidebar primitives with context
-  - Persists expanded/collapsed state to a cookie ("sidebar:state")
-  - Mobile behavior uses a Sheet overlay; desktop uses fixed/inset/floating variants
-  - Keyboard shortcut: Ctrl/Cmd + b toggles the sidebar
+### Prerequisites
+```bash
+# Install Expo CLI globally (optional, npx can be used instead)
+npm install -g expo-cli
 
-### UI Primitives and Theming
+# For iOS development
+xcode-select --install
+# Install Xcode from Mac App Store
 
-- components/ui/* contains shadcn-style primitives extended for this design system (e.g., button.tsx uses class-variance-authority and cn from src/lib/utils)
-- src/index.css defines the design tokens with CSS variables (HSL), including brand colors, sidebar palette, status/progress tokens, radii, and shadows
-- tailwind.config.ts maps those variables to Tailwind theme keys (colors, shadows, radii) and enables class-based dark mode
+# For Android development
+# Install Android Studio and configure Android SDK
+```
 
-### State, Data, and Notifications
+### Environment Setup
 
-- TanStack Query is pre-wired via QueryClientProvider (no queries shown yet)
-- Notifications
-  - components/ui/toaster and components/ui/sonner are mounted in App
-  - hooks/use-toast.ts implements a lightweight in-memory toast store compatible with shadcn/ui Toast
+1. **Create .env file** from .env.example:
+```bash
+cp .env.example .env
+```
 
-### Supabase Integration
+2. **Add your Clerk Publishable Key** to .env:
+```
+EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
+```
 
-- src/integrations/supabase/client.ts creates a typed Supabase client with SSR-safe configuration and Clerk integration
-- The client is ready for use via: import { supabase, useSupabaseClient } from "@/integrations/supabase/client"
-- Includes useSupabaseClient hook for Clerk authentication integration
+### Common Commands
 
-## Development Notes
+```bash
+# Install dependencies
+npm install
 
-- Import alias "@" is preferred for intra-project imports (e.g., "@/components/...", "@/lib/utils")
-- To add a routed page, create a component under src/pages and register a Route in src/App.tsx
-- The dashboard UI is composed from reusable primitives in components/ui and higher-level pieces in components/* (e.g., DashboardLayout, AppSidebar, PillarCard, ProgressBar)
+# Start Expo development server
+npm start
+# or
+expo start
 
-## Important README Context
+# Run on iOS simulator
+npm run ios
+# or
+expo start --ios
 
-- Local development: ensure Node.js and npm are installed; use npm install and npm run dev
-- The project is a standalone React/Vite application that can be deployed to any static hosting service
+# Run on Android emulator
+npm run android
+# or
+expo start --android
 
-## Product Onboarding Narrative (Guardian of Memories)
+# Run on web
+npm run web
+# or
+expo start --web
 
-- Theme: The user becomes a "Guardian of Memories" guided by a friendly "Firefly". Tone is calming, dignified, celebratory of care and love (not fear or loss). All UI copy must reflect this.
+# Clear cache and start fresh
+expo start -c
 
-### Act 1: Invitation to the Journey (Onboarding)
+# Build for production
+eas build --platform ios
+eas build --platform android
 
-- Scene 1 – Promise of calm: Subtle firefly animation over a calm night scene (dark theme). CTA: "Start writing my story".
-- Scene 2 – The Box of Certainty: Assistant asks an emotional prompt about what would go into a single box for loved ones. Large free-form input; entered items gently animate into a visual box.
-- Scene 3 – The Key of Trust: Assistant asks for the one trusted person's name; the key engraving updates with that name (e.g., "For Martina").
-- Scene 4 – Preparing the path: Thank you message; firefly draws a light trail (logo-like) as a loading animation and then redirect to the dashboard.
+# Type checking
+npx tsc --noEmit
 
-### Act 2: Building the Legacy (First Month)
+# Lint code (once configured)
+npm run lint
+```
 
-- Scene 1 – First mosaic stone: On first successful document upload and extraction, show a tasteful notification with a mosaic icon: "Great! You've placed the first stone in your family's mosaic of certainty." Reinforce meaning over mechanics.
-- Scene 2 – Quiet guardian: For documents approaching expiry (e.g., passport in 3 months), send a gentle notification/email. Example subject: "A small reminder from your memory guardian." Body emphasizes reassurance and discretion.
-- Scene 3 – Unlocking the next chamber: After securing 5–7 items in the TODAY pillar, on next sign-in present a light unlock moment; make the TOMORROW – Family Protection pillar active.
+## Project Structure Guidelines
 
-### Act 3: Message to the Future (Long-term)
+```
+mobile/
+├── src/
+│   ├── components/       # Reusable UI components
+│   ├── screens/          # Screen components
+│   ├── navigation/       # Navigation configuration
+│   ├── services/         # API and service layer
+│   ├── store/           # State management
+│   ├── utils/           # Utility functions
+│   ├── hooks/           # Custom React hooks
+│   └── constants/       # App constants
+├── ios/                 # iOS specific code
+├── android/             # Android specific code
+└── __tests__/          # Test files
+```
 
-- Scene 1 – Time Capsule (Premium): Video messages presented like letter writing (e.g., "For my daughter Anna" → "On her 18th birthday"). After upload, animate sealing into an envelope and placing it into the Box of Certainty.
-- Scene 2 – Annual ritual: One year after registration, send a dignified summary email with progress metrics and a reflective nudge to review and update.
-- Scene 3 – Legacy complete: When all three pillars reach ~90%+, celebrate with a brief, tasteful animation: the Box of Certainty glows warmly; the engraved key meets the box. Assistant copy acknowledges completion and continued guardianship.
+## Security Considerations
 
-## Implementation Pointers (Non-prescriptive)
+1. **Data Encryption**
+   - All sensitive data must be encrypted at rest
+   - Use platform-specific secure storage (iOS Keychain, Android Keystore)
 
-- Routing and flow: Implement onboarding as a short multi-step flow (e.g., /onboarding) that collects non-sensitive, emotionally framed inputs. On completion, redirect to "/".
-- Visual language: Prefer subtle motion (firefly trails) over spinners; use existing design tokens (CSS variables) for colors and elevation; dark mode friendly.
-- Progress and gating: Use existing pillar cards (isActive/isLocked) to reflect unlocks; drive from simple heuristics (e.g., count of secured items) until backend rules exist.
-- Notifications: Keep copy supportive and non-intrusive. Use the example subject/body as tone references. Prefer in-app toast for instant feedback; email/push for time-based reminders.
-- Data handling: Initial onboarding inputs can be ephemeral (client state) unless explicitly persisted. When persistence is introduced, prefer typed Supabase interactions via the provided client.
+2. **Authentication**
+   - Implement biometric authentication where available
+   - Ensure Clerk tokens are securely stored
+   - Implement session timeout for security
 
-## Language Policy (Critical)
+3. **Network Security**
+   - All API communications must use HTTPS
+   - Implement certificate pinning for additional security
+   - Handle offline scenarios gracefully
 
-- All code, comments, and UI strings must be written in English.
-- Even if tasks or prompts are provided in Slovak or Czech, implement UI copy and identifiers in English. If localization is needed, add/extend i18n resources but keep defaults in English.
-- If any Slovak/Czech text is discovered outside i18n resources, replace it with English.
+## UI/UX Guidelines
+
+Based on LegacyGuard's design philosophy:
+
+1. **Design Principles**
+   - Serious, contemplative UX
+   - Premium, minimalist interface
+   - Empathetic and reassuring tone
+   - Focus on clarity and simplicity
+
+2. **Component Patterns**
+   - Step-by-step wizards for complex tasks
+   - Progressive disclosure of information
+   - Clear visual hierarchy
+   - Consistent navigation patterns
+
+3. **Accessibility**
+   - Support for screen readers
+   - Adequate touch targets (minimum 44x44 points)
+   - High contrast mode support
+   - Font scaling support
+
+## API Integration
+
+1. **Endpoints**
+   - Maintain consistency with web app API structure
+   - Implement proper error handling
+   - Cache responses where appropriate
+
+2. **Offline Support**
+   - Queue actions for sync when online
+   - Local data caching strategy
+   - Conflict resolution for data sync
+
+## Testing Strategy
+
+1. **Unit Tests**
+   - Test business logic and utilities
+   - Mock external dependencies
+
+2. **Integration Tests**
+   - Test API integrations
+   - Test navigation flows
+
+3. **E2E Tests**
+   - Use Detox or Appium for end-to-end testing
+   - Cover critical user journeys
+
+## Performance Optimization
+
+1. **App Size**
+   - Minimize bundle size
+   - Use code splitting where applicable
+   - Optimize images and assets
+
+2. **Runtime Performance**
+   - Implement lazy loading
+   - Optimize list rendering with virtualization
+   - Minimize re-renders
+
+3. **Memory Management**
+   - Proper cleanup of listeners and subscriptions
+   - Efficient image caching
+
+## Release Process
+
+1. **Version Management**
+   - Follow semantic versioning
+   - Maintain changelog
+
+2. **Build Process**
+   - Configure CI/CD pipelines
+   - Automate build and deployment
+
+3. **App Store Submission**
+   - Prepare app store assets
+   - Handle review guidelines compliance
+
+## Platform-Specific Considerations
+
+### iOS
+- Handle iOS-specific permissions
+- Implement proper background task handling
+- Support for latest iOS versions
+
+### Android
+- Handle Android permissions model
+- Support for different screen sizes
+- Background service implementation
+
+## Internationalization
+
+- Prepare for multi-language support (34+ languages)
+- Use modular translation structure
+- RTL language support consideration
+
+## Important Context from Web App
+
+The mobile app should maintain feature parity with key web app features:
+- Will Generator wizard flow
+- MicroTaskEngine for breaking down complex tasks
+- ScenarioPlanner for "what if" scenarios
+- Document management with categories
+- People management (Trusted Circle)
+- Asset tracking (My Possessions)
+
+Maintain consistency with the web app's:
+- Privacy-first architecture
+- Empathetic UX approach
+- Step-by-step task philosophy
+- Progressive disclosure patterns

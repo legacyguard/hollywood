@@ -1,9 +1,10 @@
 /**
- * Real-time Synchronization Service for Web Application
+ * Real-time Synchronization Service
  * Manages real-time data sync between web and mobile applications
  */
 
 import { createClient, SupabaseClient, RealtimeChannel } from '@supabase/supabase-js';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export interface Document {
   id: string;
@@ -34,54 +35,25 @@ export class RealtimeSync {
   constructor(supabaseUrl: string, supabaseKey: string) {
     this.supabase = createClient(supabaseUrl, supabaseKey, {
       auth: {
-        storage: localStorage,
+        storage: AsyncStorage,
         autoRefreshToken: true,
         persistSession: true,
-        detectSessionInUrl: true,
+        detectSessionInUrl: false,
       },
     });
 
     this.initializeNetworkListener();
-    this.initializeGardenEventListener();
   }
 
   /**
    * Initialize network state listener
    */
   private initializeNetworkListener() {
-    window.addEventListener('online', () => this.handleOnline());
-    window.addEventListener('offline', () => this.handleOffline());
-  }
-
-  /**
-   * Initialize garden update event listener
-   */
-  private initializeGardenEventListener() {
-    // Listen for garden update events from mobile app
-    window.addEventListener('garden-update', (event: any) => {
-      this.handleGardenUpdate(event.detail);
-    });
-  }
-
-  /**
-   * Handle garden updates from mobile app
-   */
-  private handleGardenUpdate(detail: any) {
-    // Trigger visual update in the Legacy Garden visualization
-    const gardenElement = document.querySelector('.legacy-garden-container');
-    if (gardenElement) {
-      // Add new leaf animation
-      gardenElement.dispatchEvent(new CustomEvent('add-leaf', {
-        detail: {
-          category: detail.category,
-          documentId: detail.documentId,
-          animate: true,
-        }
-      }));
+    // React Native network detection
+    if (typeof window !== 'undefined' && window.addEventListener) {
+      window.addEventListener('online', () => this.handleOnline());
+      window.addEventListener('offline', () => this.handleOffline());
     }
-
-    // Update dashboard statistics
-    this.updateDashboardStats();
   }
 
   /**
@@ -151,69 +123,25 @@ export class RealtimeSync {
     this.updateLocalCache(event);
 
     // Trigger UI updates
-    this.triggerUIUpdate(event);
+    this.updateGardenVisualization(event.document);
   }
 
   /**
-   * Trigger UI updates based on sync events
+   * Update garden visualization (for web dashboard)
    */
-  private triggerUIUpdate(event: SyncEvent) {
-    // Update Sofia personality messages
-    if (event.type === 'INSERT') {
-      this.showSofiaNotification(
-        `New document "${event.document.title}" has been added from your mobile device!`,
-        'success'
-      );
-    }
-
-    // Update dashboard cards
-    this.updateDashboardStats();
-
-    // Trigger garden animation
-    if (event.type === 'INSERT' || event.type === 'UPDATE') {
-      this.animateGardenGrowth(event.document);
-    }
-  }
-
-  /**
-   * Show Sofia personality notification
-   */
-  private showSofiaNotification(message: string, type: 'success' | 'info' | 'warning' = 'info') {
-    const sofiaEvent = new CustomEvent('sofia-message', {
+  private updateGardenVisualization(document: Document) {
+    // Emit event for garden update
+    const gardenEvent = new CustomEvent('garden-update', {
       detail: {
-        message,
-        type,
-        personality: 'adaptive', // Can be changed based on user preference
-      }
-    });
-    window.dispatchEvent(sofiaEvent);
-  }
-
-  /**
-   * Animate garden growth
-   */
-  private animateGardenGrowth(document: Document) {
-    const gardenEvent = new CustomEvent('garden-growth', {
-      detail: {
-        documentId: document.id,
+        type: 'new-leaf',
         category: document.category,
-        growth: 'new-leaf',
-      }
+        documentId: document.id,
+      },
     });
-    window.dispatchEvent(gardenEvent);
-  }
 
-  /**
-   * Update dashboard statistics
-   */
-  private updateDashboardStats() {
-    const statsEvent = new CustomEvent('dashboard-update', {
-      detail: {
-        source: 'realtime-sync',
-        timestamp: new Date().toISOString(),
-      }
-    });
-    window.dispatchEvent(statsEvent);
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(gardenEvent);
+    }
   }
 
   /**
@@ -221,7 +149,7 @@ export class RealtimeSync {
    */
   private async updateLocalCache(event: SyncEvent) {
     const cacheKey = `documents_${this.userId}`;
-    const cachedData = localStorage.getItem(cacheKey);
+    const cachedData = await AsyncStorage.getItem(cacheKey);
     let documents: Document[] = cachedData ? JSON.parse(cachedData) : [];
 
     switch (event.type) {
@@ -238,7 +166,7 @@ export class RealtimeSync {
         break;
     }
 
-    localStorage.setItem(cacheKey, JSON.stringify(documents));
+    await AsyncStorage.setItem(cacheKey, JSON.stringify(documents));
   }
 
   /**
@@ -277,18 +205,7 @@ export class RealtimeSync {
       return null;
     }
 
-    // Notify mobile app
-    this.notifyMobileApp('document-uploaded', data);
-
     return data;
-  }
-
-  /**
-   * Notify mobile app of changes
-   */
-  private notifyMobileApp(event: string, data: any) {
-    // This will be picked up by the mobile app's realtime subscription
-    console.log(`RealtimeSync: Notifying mobile app - ${event}`, data);
   }
 
   /**
@@ -329,7 +246,7 @@ export class RealtimeSync {
     if (this.syncQueue.length > 0) {
       await this.saveQueueToStorage();
     } else {
-      localStorage.removeItem('sync_queue');
+      await AsyncStorage.removeItem('sync_queue');
     }
   }
 
@@ -337,14 +254,14 @@ export class RealtimeSync {
    * Save sync queue to storage
    */
   private async saveQueueToStorage() {
-    localStorage.setItem('sync_queue', JSON.stringify(this.syncQueue));
+    await AsyncStorage.setItem('sync_queue', JSON.stringify(this.syncQueue));
   }
 
   /**
    * Load sync queue from storage
    */
   async loadQueueFromStorage() {
-    const queue = localStorage.getItem('sync_queue');
+    const queue = await AsyncStorage.getItem('sync_queue');
     if (queue) {
       this.syncQueue = JSON.parse(queue);
     }
@@ -382,46 +299,5 @@ export class RealtimeSync {
       isOnline: this.isOnline,
       queueLength: this.syncQueue.length,
     };
-  }
-
-  /**
-   * Get all synced documents
-   */
-  async getSyncedDocuments(): Promise<Document[]> {
-    if (!this.userId) return [];
-
-    const { data, error } = await this.supabase
-      .from('documents')
-      .select('*')
-      .eq('user_id', this.userId)
-      .order('created_at', { ascending: false });
-
-    if (error) {
-      console.error('RealtimeSync: Error fetching documents', error);
-      return [];
-    }
-
-    return data || [];
-  }
-
-  /**
-   * Monitor sync activity
-   */
-  getSyncActivity(): { lastSync: string | null; pendingChanges: number } {
-    const lastSync = localStorage.getItem('last_sync_time');
-    return {
-      lastSync,
-      pendingChanges: this.syncQueue.length,
-    };
-  }
-
-  /**
-   * Force sync all pending changes
-   */
-  async forceSyncAll(): Promise<void> {
-    if (this.isOnline) {
-      await this.processSyncQueue();
-      localStorage.setItem('last_sync_time', new Date().toISOString());
-    }
   }
 }
