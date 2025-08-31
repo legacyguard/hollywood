@@ -1,104 +1,105 @@
-# LegacyGuard - Family Preparedness Platform
+# 🏰 Document Safe - Monorepo
 
-## Language Requirement
+[![CI/CD](https://github.com/legacyguard/hollywood/actions/workflows/ci.yml/badge.svg)](https://github.com/legacyguard/hollywood/actions/workflows/ci.yml)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue)](https://www.typescriptlang.org/)
 
-**IMPORTANT**: All code changes and the entire codebase must be in English language (except i18n key values).
+## 📱 Complete Document Management Ecosystem
 
-## 🔒 Security & Environment Variables
+Document Safe (formerly LegacyGuard) is a comprehensive document management platform with web and mobile applications, featuring end-to-end encryption, AI-powered document processing, and real-time synchronization.
 
-**CRITICAL**: This project contains sensitive configuration that must NEVER be committed to Git.
+## 🏗️ Monorepo Structure
 
-### Environment Setup
+```
+hollywood/
+├── hollywood/          # 🌐 Web application (Vite + React)
+├── mobile/            # 📱 Mobile application (React Native + Expo)
+├── packages/          # 📦 Shared packages
+│   └── shared/       # Shared services and utilities
+├── supabase/         # 🔧 Backend and Edge Functions
+├── docs/             # 📚 Documentation
+├── scripts/          # 🛠️ Utility scripts
+└── turbo.json        # ⚡ Turborepo configuration
+```
 
-1. Copy the template: `cp env.template .env.local`
-2. Edit `.env.local` with your actual values
-3. Never commit `.env.local` to Git
+## 🚀 Quick Start
 
-### Security Features
+### Prerequisites
+- Node.js 18+ and npm 9+
+- iOS Simulator (for mobile iOS development)
+- Android Studio (for mobile Android development)
+- Supabase CLI
 
-- ✅ `.gitignore` blocks all environment files
-- ✅ Pre-commit hook prevents accidental commits
-- ✅ Comprehensive security documentation
-- ✅ Environment template system
+### Installation
 
-**For detailed security information, see [SECURITY.md](./SECURITY.md)**
+```bash
+# Clone the repository
+git clone https://github.com/legacyguard/hollywood.git
+cd hollywood
 
-## Project Info
+# Install dependencies
+npm install
 
-**LegacyGuard** is a comprehensive family preparedness platform that helps users organize their digital life, protect their loved ones, and create a lasting legacy.
+# Set up environment variables
+cp .env.example .env.local
+```
 
-## Development Setup
+### Development
 
-### Use Your Preferred IDE
-
-Clone this repository and start developing locally using your favorite IDE.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+```bash
+# Run all applications
 npm run dev
+
+# Run specific applications
+npm run web:dev      # Web only
+npm run mobile:dev   # Mobile only
 ```
 
-### Edit a File Directly in GitHub
+## 🎯 Features
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Web Application
+- 🔐 End-to-end encryption
+- 📸 Document scanning with OCR
+- 🤖 AI-powered categorization
+- ⏰ Time Capsule feature
+- 👨‍👩‍👧‍👦 Family sharing
+- 💳 Stripe payments
+- 📊 Analytics dashboard
 
-### Use GitHub Codespaces
+### Mobile Application
+- 📱 Native performance
+- 📸 Advanced camera scanning
+- 🔄 Offline-first architecture
+- 🔑 Biometric authentication
+- 📍 Location-based organization
+- 🔔 Push notifications
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 💳 Subscription Plans
 
-## What Technologies Are Used for This Project?
+| Feature | Free | Essential ($9.99) | Family ($19.99) | Premium ($39.99) |
+|---------|------|------------------|-----------------|------------------|
+| Documents | 100 | 1,000 | 5,000 | Unlimited |
+| Storage | 500 MB | 5 GB | 20 GB | Unlimited |
+| Offline | ❌ | ✅ | ✅ | ✅ |
+| AI Features | ❌ | ❌ | ✅ | ✅ |
 
-This project is built with:
+## 🧪 Testing
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+Test cards for Stripe (test mode):
+- Success: `4242 4242 4242 4242`
+- 3D Secure: `4000 0025 0000 3155`
+- Declined: `4000 0000 0000 0002`
 
-## Deployment
+## 📚 Documentation
 
-### Build for Production
+- [Stripe Testing Guide](docs/STRIPE_TESTING_GUIDE.md)
+- [Architecture Overview](docs/ARCHITECTURE.md)
+- [API Documentation](docs/API.md)
 
-```sh
-npm run build
-```
+## 📄 License
 
-### Preview Production Build
+MIT License - see [LICENSE](LICENSE) file for details.
 
-```sh
-npm run preview
-```
+---
 
-### Deploy to Your Platform
-
-This project can be deployed to any static hosting platform that supports SPA (Single Page Applications):
-
-- Vercel
-- Netlify
-- AWS S3 + CloudFront
-- Google Cloud Platform
-- Azure Static Web Apps
-
-## Custom Domain
-
-To connect a custom domain, configure it with your hosting provider's DNS settings.
+Built with ❤️ by the Document Safe team
