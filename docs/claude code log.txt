@@ -682,7 +682,7 @@
 
 ⏺ I see the issue. The file has SERENITY_MILESTONES but I need to create a function getSerenityMilestones. Let me add it:
 
-⏺ Update(/Users/luborfedka/Documents/Github/hollywood/src/lib/path-of-serenity.ts)
+⏺ Update(/Users/luborfedak/Documents/Github/hollywood/src/lib/path-of-serenity.ts)
   ⎿  Error editing file
 
 ⏺ Update(src/lib/path-of-serenity.ts)
