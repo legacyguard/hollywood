@@ -290,7 +290,7 @@ export function SharedFamilyCalendar({ userId, familyMembers }: SharedFamilyCale
                 </div>
 
                 <div className="flex items-center justify-end space-x-2 pt-4">
-                  <Button variant={"outline" as any} onClick={() => setShowNewEventDialog(false)}>
+                  <Button variant="outline" onClick={() => setShowNewEventDialog(false)}>
                     Cancel
                   </Button>
                   <Button onClick={handleCreateEvent} disabled={!newEventForm.title || !newEventForm.date || isLoading}>
@@ -419,7 +419,7 @@ export function SharedFamilyCalendar({ userId, familyMembers }: SharedFamilyCale
                               </p>
                             )}
                             <div className="flex items-center gap-2">
-                              <Badge className={config.color} variant={"outline" as any}>
+                              <Badge className={config.color} variant="outline">
                                 {config.label}
                               </Badge>
                               {member && (
@@ -494,14 +494,14 @@ export function SharedFamilyCalendar({ userId, familyMembers }: SharedFamilyCale
                           <div className="flex items-center gap-2 mb-2">
                             <config.icon className="h-5 w-5" />
                             <h3 className="font-semibold">{event.title}</h3>
-                            <Badge className={config.color} variant={"outline" as any}>
+                            <Badge className={config.color} variant="outline">
                               {config.label}
                             </Badge>
                             {isOverdue && (
-                              <Badge variant={"destructive" as any}>Overdue</Badge>
+                              <Badge variant="destructive">Overdue</Badge>
                             )}
                             {event.recurring && (
-                              <Badge variant={"secondary" as any} className="gap-1">
+                              <Badge variant="secondary" className="gap-1">
                                 <Repeat className="h-3 w-3" />
                                 {event.recurring.frequency}
                               </Badge>

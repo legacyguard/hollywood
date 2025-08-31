@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import type { Variants } from 'framer-motion';
-import { usePersonalityManager } from '../sofia/usePersonalityManager';
+import { usePersonalityManager } from '../sofia/SofiaContextProvider';
 
 // Micro-interaction animation configurations based on personality
 interface PersonalityAnimationConfig {
@@ -45,14 +45,11 @@ export const PERSONALITY_CONFIGS: PersonalityAnimationConfig = {
   }
 };
 
-// Context for sharing animation state
-interface MicroAnimationContextType {
+// This context is defined in useMicroInteraction.tsx
+declare const MicroAnimationContext: {
   reduceMotion: boolean;
   globalAnimationScale: number;
-}
-
-// This context is defined in useMicroInteraction.tsx
-declare const MicroAnimationContext: React.Context<MicroAnimationContextType>;
+};
 
 export const useMicroAnimation = () => useContext(MicroAnimationContext);
 

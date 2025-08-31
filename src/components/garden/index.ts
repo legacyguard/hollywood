@@ -7,12 +7,12 @@ export { AdaptiveLegacyTree } from './AdaptiveLegacyTree';
 export { GardenOrchestrator } from './GardenOrchestrator';
 
 // Interactive enhancements
-export { 
+export {
   InteractiveGardenEnhancements,
   TreeLeaf,
   SofiaFirefly,
   CelebrationFirefly,
-  MilestoneGlow 
+  MilestoneGlow
 } from './InteractiveGardenEnhancements';
 
 // Garden hooks and utilities

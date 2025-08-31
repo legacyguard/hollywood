@@ -130,7 +130,7 @@ export class SofiaMemoryService {
       return `Hello ${context.userName || 'there'}! I'm here to help you protect what matters most. What would you like to work on today?`;
     }
 
-    const hoursSinceLastInteraction = 
+    const hoursSinceLastInteraction =
       (Date.now() - lastInteraction.getTime()) / (1000 * 60 * 60);
 
     // Different messages based on time elapsed
@@ -293,7 +293,7 @@ export class SofiaMemoryService {
 }
 
 // Singleton instance manager
-let memoryInstances: Map<string, SofiaMemoryService> = new Map();
+const memoryInstances: Map<string, SofiaMemoryService> = new Map();
 
 export function getSofiaMemory(userId: string): SofiaMemoryService {
   if (!memoryInstances.has(userId)) {

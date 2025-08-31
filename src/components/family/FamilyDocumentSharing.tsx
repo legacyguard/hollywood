@@ -346,7 +346,7 @@ export function FamilyDocumentSharing({ userId, familyMembers }: FamilyDocumentS
 
               <div className="space-y-2">
                 <Label>Access Level</Label>
-                <Select value={shareForm.accessLevel} onValueChange={(value: any) =>
+                <Select value={shareForm.accessLevel} onValueChange={(value: string) =>
                   setShareForm(prev => ({ ...prev, accessLevel: value }))
                 }>
                   <SelectTrigger>
@@ -379,7 +379,7 @@ export function FamilyDocumentSharing({ userId, familyMembers }: FamilyDocumentS
               </div>
 
               <div className="flex items-center justify-end space-x-2 pt-4">
-                <Button variant={"outline" as any} onClick={() => setShowShareDialog(false)}>
+                <Button variant="outline" onClick={() => setShowShareDialog(false)}>
                   Cancel
                 </Button>
                 <Button
@@ -396,7 +396,7 @@ export function FamilyDocumentSharing({ userId, familyMembers }: FamilyDocumentS
 
       {/* Filters */}
       <div className="flex flex-wrap gap-2">
-        <Select value={filter} onValueChange={(v: any) => setFilter(v)}>
+        <Select value={filter} onValueChange={(v: string) => setFilter(v)}>
           <SelectTrigger className="w-40">
             <SelectValue placeholder="Filter by sharing" />
           </SelectTrigger>
@@ -451,17 +451,17 @@ export function FamilyDocumentSharing({ userId, familyMembers }: FamilyDocumentS
                         <div className="flex-1 space-y-2">
                           <div className="flex items-center gap-2">
                             <h3 className="font-semibold">{doc.name}</h3>
-                            <Badge className={categoryConfig.color} variant={"outline" as any}>
+                            <Badge className={categoryConfig.color} variant="outline">
                               {categoryConfig.label}
                             </Badge>
                             {doc.isEncrypted && (
-                              <Badge variant={"secondary" as any} className="gap-1">
+                              <Badge variant="secondary" className="gap-1">
                                 <Lock className="h-3 w-3" />
                                 Encrypted
                               </Badge>
                             )}
                             {doc.emergencyAccess && (
-                              <Badge variant={"destructive" as any} className="gap-1">
+                              <Badge variant="destructive" className="gap-1">
                                 <AlertTriangle className="h-3 w-3" />
                                 Emergency Access
                               </Badge>
@@ -497,7 +497,7 @@ export function FamilyDocumentSharing({ userId, familyMembers }: FamilyDocumentS
                                         </AvatarFallback>
                                       </Avatar>
                                       <span className="text-sm font-medium">{member.name}</span>
-                                      <Badge className={accessConfig.color} variant={"outline" as any}>
+                                      <Badge className={accessConfig.color} variant="outline">
                                         {accessConfig.label}
                                       </Badge>
                                     </div>
@@ -519,11 +519,11 @@ export function FamilyDocumentSharing({ userId, familyMembers }: FamilyDocumentS
                       </div>
 
                       <div className="flex items-center gap-2">
-                        <Button variant={"outline" as any} size="sm" className="gap-2">
+                        <Button variant="outline" size="sm" className="gap-2">
                           <Eye className="h-4 w-4" />
                           View
                         </Button>
-                        <Button variant={"outline" as any} size="sm" className="gap-2">
+                        <Button variant="outline" size="sm" className="gap-2">
                           <Share2 className="h-4 w-4" />
                           Share
                         </Button>

@@ -3,7 +3,13 @@ module.exports = function(api) {
   return {
     presets: ['babel-preset-expo'],
     plugins: [
-      // Reanimated plugin has to be listed last.
+      [
+        '@tamagui/babel-plugin',
+        {
+          components: ['@legacyguard/ui', 'tamagui'],
+          config: './node_modules/@legacyguard/ui/src/tamagui.config.ts',
+        },
+      ],
       'react-native-reanimated/plugin',
     ],
   };

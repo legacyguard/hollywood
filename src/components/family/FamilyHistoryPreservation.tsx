@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
@@ -9,15 +9,12 @@ import {
   Video,
   FileText,
   MapPin,
-  Calendar,
   Book,
   Archive,
   Square,
   Edit3,
   Trash2,
   Share2,
-  Clock,
-  Tag,
   Image as ImageIcon,
   Music,
   Sparkles
@@ -27,7 +24,7 @@ import { Textarea } from '../ui/textarea';
 import { Label } from '../ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 export interface HistoryItem {
   id: string;
@@ -79,9 +76,9 @@ interface FamilyHistoryPreservationProps {
   onUpdateHistoryItem?: (item: HistoryItem) => void;
   onDeleteHistoryItem?: (itemId: string) => void;
   onCreateTimeline?: (timeline: Omit<FamilyTimeline, 'id'>) => void;
-  onRecordAudio?: (audioBlob: Blob, metadata: any) => void;
-  onRecordVideo?: (videoBlob: Blob, metadata: any) => void;
-  onUploadPhoto?: (file: File, metadata: any) => void;
+  onRecordAudio?: (audioBlob: Blob, metadata: Record<string, unknown>) => void;
+  onRecordVideo?: (videoBlob: Blob, metadata: Record<string, unknown>) => void;
+  onUploadPhoto?: (file: File, metadata: Record<string, unknown>) => void;
 }
 
 export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps> = ({
@@ -90,7 +87,7 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
   familyMembers,
   currentUserId,
   onSaveHistoryItem,
-  onUpdateHistoryItem,
+  onUpdateHistoryItem: _onUpdateHistoryItem,
   onDeleteHistoryItem,
   onCreateTimeline,
   onRecordAudio,
@@ -98,17 +95,17 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
   onUploadPhoto
 }) => {
   const [activeTab, setActiveTab] = useState('overview');
-  const [selectedItem, setSelectedItem] = useState<HistoryItem | null>(null);
+  const [_selectedItem, setSelectedItem] = useState<HistoryItem | null>(null);
   const [isRecording, setIsRecording] = useState<'audio' | 'video' | null>(null);
   const [recordingTime, setRecordingTime] = useState(0);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showTimelineDialog, setShowTimelineDialog] = useState(false);
-  const [editingItem, setEditingItem] = useState<HistoryItem | null>(null);
+  const [_editingItem, setEditingItem] = useState<HistoryItem | null>(null);
 
   // Recording state
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
-  const recordingIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const recordingIntervalRef = useRef<number | null>(null);
   const videoPreviewRef = useRef<HTMLVideoElement>(null);
 
   // New item state
@@ -152,7 +149,7 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
       const mediaRecorder = new MediaRecorder(stream);
       mediaRecorderRef.current = mediaRecorder;
 
-      const chunks: BlobPart[] = [];
+      const chunks: Blob[] = [];
       mediaRecorder.ondataavailable = (event) => {
         if (event.data.size > 0) {
           chunks.push(event.data);
@@ -352,7 +349,7 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
                 >
                   {item.importance}
                 </Badge>
-                {item.isPrivate && <Badge variant={"outline" as any} className="text-xs">Private</Badge>}
+                {item.isPrivate && <Badge variant="outline" className="text-xs">Private</Badge>}
               </div>
             </div>
           </CardHeader>
@@ -375,12 +372,12 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
               {item.tags.length > 0 && (
                 <div className="flex flex-wrap gap-1">
                   {item.tags.slice(0, 3).map(tag => (
-                    <Badge key={tag} variant={"outline" as any} className="text-xs px-1">
+                    <Badge key={tag} variant="outline" className="text-xs px-1">
                       #{tag}
                     </Badge>
                   ))}
                   {item.tags.length > 3 && (
-                    <Badge variant={"outline" as any} className="text-xs px-1">
+                    <Badge variant="outline" className="text-xs px-1">
                       +{item.tags.length - 3}
                     </Badge>
                   )}
@@ -410,7 +407,7 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
 
                 <div className="flex gap-1 ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
                   <Button
-                    variant={"ghost" as any}
+                    variant="ghost"
                     size="sm"
                     className="h-8 w-8 p-0"
                     onClick={() => setEditingItem(item)}
@@ -418,7 +415,7 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
                     <Edit3 className="h-4 w-4" />
                   </Button>
                   <Button
-                    variant={"ghost" as any}
+                    variant="ghost"
                     size="sm"
                     className="h-8 w-8 p-0"
                     onClick={() => onDeleteHistoryItem?.(item.id)}
@@ -426,7 +423,7 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
                     <Trash2 className="h-4 w-4" />
                   </Button>
                   <Button
-                    variant={"ghost" as any}
+                    variant="ghost"
                     size="sm"
                     className="h-8 w-8 p-0"
                   >
@@ -491,7 +488,7 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
 
           <div className="flex gap-2">
             <Button
-              variant={"destructive" as any}
+              variant="destructive"
               onClick={stopRecording}
               className="flex-1"
             >
@@ -520,7 +517,7 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
 
         <div className="flex gap-2">
           <Button
-            variant={"outline" as any}
+            variant="outline"
             onClick={() => startRecording('audio')}
             disabled={!!isRecording}
           >
@@ -529,7 +526,7 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
           </Button>
 
           <Button
-            variant={"outline" as any}
+            variant="outline"
             onClick={() => startRecording('video')}
             disabled={!!isRecording}
           >
@@ -544,7 +541,7 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
             className="hidden"
             id="photo-upload"
           />
-          <Button variant={"outline" as any} onClick={() => document.getElementById('photo-upload')?.click()}>
+          <Button variant="outline" onClick={() => document.getElementById('photo-upload')?.click()}>
             <Camera className="h-4 w-4 mr-2" />
             Upload Photo
           </Button>
@@ -666,7 +663,7 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
                 </div>
 
                 <div className="flex justify-end gap-2">
-                  <Button variant={"outline" as any} onClick={() => setShowCreateDialog(false)}>
+                  <Button variant="outline" onClick={() => setShowCreateDialog(false)}>
                     Cancel
                   </Button>
                   <Button onClick={handleSaveItem}>
@@ -857,7 +854,7 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
                     </div>
 
                     <div className="flex justify-end gap-2">
-                      <Button variant={"outline" as any} onClick={() => setShowTimelineDialog(false)}>
+                      <Button variant="outline" onClick={() => setShowTimelineDialog(false)}>
                         Cancel
                       </Button>
                       <Button onClick={handleCreateTimeline}>
@@ -892,10 +889,10 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
                       </div>
 
                       <div className="flex gap-2">
-                        <Button variant={"outline" as any} size="sm">
+                        <Button variant="outline" size="sm">
                           <Edit3 className="h-4 w-4" />
                         </Button>
-                        <Button variant={"outline" as any} size="sm">
+                        <Button variant="outline" size="sm">
                           <Share2 className="h-4 w-4" />
                         </Button>
                       </div>
@@ -916,6 +913,5 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
 
 // Helper component for missing import
 const BookIcon = Book;
-const Camera = ImageIcon;
 
 export default FamilyHistoryPreservation;

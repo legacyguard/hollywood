@@ -3,7 +3,8 @@
  * Handles subscription management and payment processing
  */
 
-import { loadStripe, Stripe } from '@stripe/stripe-js';
+import type { Stripe } from '@stripe/stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
 import { supabase } from '@/integrations/supabase/client';
 
 // Initialize Stripe
@@ -271,7 +272,7 @@ export class StripeService {
   async manageSubscription(): Promise<void> {
     const returnUrl = window.location.href;
     const portalUrl = await this.createPortalSession(returnUrl);
-    
+
     if (portalUrl) {
       window.location.href = portalUrl;
     }
@@ -395,7 +396,7 @@ export class StripeService {
     if (!recommendedPlanName) return null;
 
     // Return monthly plan by default
-    return PRICING_PLANS.find(p => 
+    return PRICING_PLANS.find(p =>
       p.name === recommendedPlanName && p.interval === 'month'
     ) || null;
   }

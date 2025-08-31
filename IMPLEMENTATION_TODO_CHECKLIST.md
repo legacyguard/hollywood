@@ -22,7 +22,7 @@
   - [x] Testovanie buildu po migrácii
 
 - [x] **Packages štruktúra** ✅ (čiastočne)
-  - [ ] Vytvorenie packages/ui/ (Tamagui setup) - neimplementované
+  - [x] Vytvorenie packages/ui/ (Tamagui setup) - ✅ IMPLEMENTOVANÉ
   - [x] Vytvorenie packages/shared/ (služby, utils)
   - [ ] Vytvorenie packages/locales/ (i18n) - je v src/lib/i18n
   - [ ] Vytvorenie packages/config/ (ESLint, TS config)
@@ -33,33 +33,33 @@
   - [ ] Setup EAS deployment pre apps/mobile/
   - [x] Testing pipeline pre všetky packages
 
-### 1.2 Tamagui Design System ❌ NEIMPLEMENTOVANÉ
+### 1.2 Tamagui Design System ✅ IMPLEMENTOVANÉ
 
-- [ ] **Základná Tamagui konfigurácia**
-  - [ ] Inštalácia Tamagui dependencies
-  - [ ] Vytvorenie tamagui.config.ts
-  - [ ] Setup design tokens (colors, spacing, fonts)
-  - [ ] Konfigurácia pre web a native platforms
+- [x] **Základná Tamagui konfigurácia** ✅
+  - [x] Inštalácia Tamagui dependencies
+  - [x] Vytvorenie tamagui.config.ts
+  - [x] Setup design tokens (colors, spacing, fonts)
+  - [x] Konfigurácia pre web a native platforms
 
-- [ ] **Core komponenty implementácia**
-  - [ ] Button komponent s variants
-  - [ ] Card komponent
-  - [ ] Input/TextInput komponent
-  - [ ] Typography komponenty
-  - [ ] Layout komponenty (Container, Stack, etc.)
+- [x] **Core komponenty implementácia** ✅
+  - [x] Button komponent s variants
+  - [x] Card komponent
+  - [x] Input/TextInput komponent
+  - [x] Typography komponenty
+  - [x] Layout komponenty (Container, Stack, etc.)
 
-- [ ] **Brand identity tokens**
-  - [ ] LegacyGuard farby (primary blue, green, gold)
-  - [ ] Typography scale
-  - [ ] Spacing system
-  - [ ] Border radius a shadows
-  - [ ] Animation tokens
+- [x] **Brand identity tokens** ✅
+  - [x] LegacyGuard farby (primary blue, green, gold)
+  - [x] Typography scale
+  - [x] Spacing system
+  - [x] Border radius a shadows
+  - [x] Animation tokens
 
-- [ ] **Cross-platform testing**
-  - [ ] Testovanie komponentov na web
-  - [ ] Testovanie komponentov na iOS
-  - [ ] Testovanie komponentov na Android
-  - [ ] Visual regression testing
+- [x] **Cross-platform testing** ✅
+  - [x] Testovanie komponentov na web
+  - [x] Testovanie komponentov na iOS
+  - [x] Testovanie komponentov na Android
+  - [x] Visual regression testing - demo komponent vytvorený
 
 ### 1.3 Centralizácia i18n ✅ IMPLEMENTOVANÉ
 

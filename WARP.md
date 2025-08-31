@@ -274,7 +274,7 @@ Maintain consistency with the web app's:
 
 LegacyGuard is structured as a monorepo with shared packages:
 
-```
+```text
 /legacyguard-platform/
 ├── apps/
 │   ├── web/              # Hollywood web application
@@ -317,6 +317,7 @@ LegacyGuard is structured as a monorepo with shared packages:
 After every file creation/modification:
 
 #### Error Checking
+
 - [ ] Syntax validation of all modified files
 - [ ] TypeScript type checking
 - [ ] ESLint validation
@@ -324,6 +325,7 @@ After every file creation/modification:
 - [ ] Dependencies compatibility check
 
 #### Impact Analysis
+
 - [ ] Analysis of effects on other files
 - [ ] Breaking changes detection
 - [ ] Cross-platform compatibility verification
@@ -331,6 +333,7 @@ After every file creation/modification:
 - [ ] Security implications review
 
 #### Testing
+
 - [ ] Unit tests run for affected components
 - [ ] Integration tests where relevant
 - [ ] Build verification for affected packages
@@ -353,6 +356,7 @@ After every file creation/modification:
 ### Error Handling Protocol
 
 When errors occur:
+
 1. **Immediate Fix**: Fix error before continuing
 2. **Root Cause Analysis**: Identify the cause
 3. **Prevention**: Implement preventive measures

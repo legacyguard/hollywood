@@ -93,11 +93,25 @@ export function FamilyInvitationFlow({
     setError(null);
 
     try {
-      const invitation = await familyService.sendInvitation(userId, invitationData as InvitationData);
+      // The sendInvitation method expects 4-5 arguments, so we provide the required ones.
+      // Assuming the method signature is:
+      // sendInvitation(userId: string, data: InvitationData, options?: object, signal?: AbortSignal): Promise<Invitation>
+      // Pass the correct InvitationData object as the second argument, and undefined for optional arguments.
+      // Fix: Ensure the second argument is a string (likely an email or similar identifier), not an object.
+      // If invitationData.email is the intended identifier, use it here.
+      if (!invitationData.email) {
+        throw new Error('Email is required to send an invitation.');
+      }
+      const invitation = await familyService.sendInvitation(
+        userId,
+        invitationData.email,
+        invitationData.role as FamilyRole,
+        invitationData.relationship as RelationshipType
+      );
       setCurrentStep('complete');
       onComplete(invitation);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to send invitation');
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Failed to send invitation');
       setCurrentStep('review');
     } finally {
       setIsLoading(false);
@@ -203,7 +217,7 @@ export function FamilyInvitationFlow({
           >
             <span className="font-medium">{label}</span>
             {invitationData.relationship === key && (
-              <Badge variant={"secondary" as any} className="text-xs">
+              <Badge variant="secondary" className="text-xs">
                 {getRoleRecommendation(key as RelationshipType)}
               </Badge>
             )}

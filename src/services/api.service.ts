@@ -4,7 +4,6 @@ import { useAuth } from '@clerk/clerk-react';
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 
-
 // Custom error class for API errors
 export class ApiError extends Error {
   constructor(

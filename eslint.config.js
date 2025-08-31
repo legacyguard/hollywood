@@ -1,29 +1,39 @@
-// For more info, see https://github.com/storybookjs/eslint-plugin-storybook#configuration-flat-config-format
-import storybook from "eslint-plugin-storybook";
-
+// ESLint configuration for the Hollywood project
 import js from "@eslint/js";
 import globals from "globals";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
-import tseslint from "typescript-eslint";
+import tseslint from "@typescript-eslint/eslint-plugin";
+import tseslintParser from "@typescript-eslint/parser";
 
-export default tseslint.config(
+export default [
   { ignores: ["dist", "node_modules", "supabase/functions", "claude-code-history-viewer"] },
   {
-    extends: [
-      js.configs.recommended, 
-      ...tseslint.configs.recommended
-    ],
     files: ["**/*.{ts,tsx}"],
     languageOptions: {
       ecmaVersion: 2022,
       globals: { ...globals.browser, ...globals.node },
+      parser: tseslintParser,
+      parserOptions: {
+        ecmaVersion: 2022,
+        sourceType: "module",
+        ecmaFeatures: {
+          jsx: true
+        }
+      }
     },
     plugins: {
+      "@typescript-eslint": tseslint,
       "react-hooks": reactHooks,
       "react-refresh": reactRefresh,
     },
     rules: {
+      // Base ESLint rules
+      ...js.configs.recommended.rules,
+      
+      // TypeScript rules
+      ...tseslint.configs.recommended.rules,
+      
       // React Hooks
       ...reactHooks.configs.recommended.rules,
       
@@ -71,6 +81,5 @@ export default tseslint.config(
       "@typescript-eslint/no-unused-vars": "off",
       "no-console": "off",
     },
-  },
-  storybook.configs["flat/recommended"]
-);
+  }
+];

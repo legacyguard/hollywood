@@ -32,7 +32,7 @@ export const InteractiveGardenTest: React.FC<InteractiveGardenTestProps> = ({
     const newMilestone = `document_${documentsCount + 1}`;
     setAchievedMilestones(prev => [...prev, newMilestone]);
     setRecentlyCompletedMilestones([newMilestone]);
-    
+
     // Clear recent milestone after 2 seconds
     setTimeout(() => setRecentlyCompletedMilestones([]), 2000);
   };
@@ -42,7 +42,7 @@ export const InteractiveGardenTest: React.FC<InteractiveGardenTestProps> = ({
     const newMilestone = `family_${familyMembersCount + 1}`;
     setAchievedMilestones(prev => [...prev, newMilestone]);
     setRecentlyCompletedMilestones([newMilestone]);
-    
+
     setTimeout(() => setRecentlyCompletedMilestones([]), 2000);
   };
 
@@ -53,7 +53,7 @@ export const InteractiveGardenTest: React.FC<InteractiveGardenTestProps> = ({
       setAchievedMilestones(prev => [...prev, newMilestone]);
       setRecentlyCompletedMilestones([newMilestone]);
       setTrustScore(85);
-      
+
       setTimeout(() => setRecentlyCompletedMilestones([]), 2000);
     }
   };
@@ -61,7 +61,7 @@ export const InteractiveGardenTest: React.FC<InteractiveGardenTestProps> = ({
   const triggerCelebration = () => {
     const celebrationMilestone = `test_celebration_${Date.now()}`;
     setRecentlyCompletedMilestones([celebrationMilestone]);
-    
+
     setTimeout(() => setRecentlyCompletedMilestones([]), 2000);
   };
 

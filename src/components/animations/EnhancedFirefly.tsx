@@ -4,6 +4,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, useAnimation, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@clerk/clerk-react';
+import type { Timeout } from 'node:timers';
 import { usePersonalityManager } from '@/components/sofia/SofiaContextProvider';
 import { AnimationSystem } from '@/lib/animation-system';
 import { Sparkles, Heart, Target } from 'lucide-react';
@@ -54,8 +55,8 @@ export const EnhancedFirefly: React.FC<EnhancedFireflyProps> = ({
 
   const controls = useAnimation();
   const containerRef = useRef<HTMLDivElement>(null);
-  const idleTimeoutRef = useRef<NodeJS.Timeout>();
-  const trailCleanupRef = useRef<NodeJS.Timeout>();
+  const idleTimeoutRef = useRef<Timeout>();
+  const trailCleanupRef = useRef<Timeout>();
 
   // Check for reduced motion
   const shouldReduceMotion = AnimationSystem.shouldReduceMotion();

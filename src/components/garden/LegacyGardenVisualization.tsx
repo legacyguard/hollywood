@@ -44,12 +44,12 @@ interface LegacyGardenVisualizationProps {
   showWeather?: boolean;
   personalityMode?: PersonalityMode;
   onElementClick?: (element: GardenElement) => void;
-  
+
   // Interactive Garden Enhancement props
   showInteractiveEnhancements?: boolean;
   recentlyCompletedMilestones?: string[];
   onSofiaFireflyClick?: () => void;
-  
+
   className?: string;
 }
 
@@ -67,12 +67,12 @@ export function LegacyGardenVisualization({
   showWeather = true,
   personalityMode,
   onElementClick,
-  
+
   // Interactive Garden Enhancement props
   showInteractiveEnhancements = true,
   recentlyCompletedMilestones = [],
   onSofiaFireflyClick,
-  
+
   className
 }: LegacyGardenVisualizationProps) {
   const personalityManager = usePersonalityManager();
@@ -88,7 +88,7 @@ export function LegacyGardenVisualization({
   const [weather, setWeather] = useState<WeatherEffect>({ type: 'sun', active: true, intensity: 0.5 });
   const [hoveredElement, setHoveredElement] = useState<string | null>(null);
   const [gardenStage, setGardenStage] = useState<'empty' | 'seeded' | 'growing' | 'blooming' | 'flourishing'>('empty');
-  
+
   // Interactive enhancement state
   const [activeCelebrations, setActiveCelebrations] = useState<string[]>([]);
   const [glowingElements, setGlowingElements] = useState<string[]>([]);
@@ -251,22 +251,22 @@ export function LegacyGardenVisualization({
     if (!showInteractiveEnhancements) return;
 
     const currentMilestoneCount = achievedMilestones.length;
-    
+
     // Trigger celebration for new milestones
     if (currentMilestoneCount > previousMilestoneCount && previousMilestoneCount > 0) {
       const newCelebrationId = `milestone-${Date.now()}`;
       setActiveCelebrations(prev => [...prev, newCelebrationId]);
-      
+
       // Add glow effect to newly achieved elements
       const newAchievedMilestones = achievedMilestones.slice(previousMilestoneCount);
       setGlowingElements(prev => [...prev, ...newAchievedMilestones]);
-      
+
       // Clear glow effect after 3 seconds
       setTimeout(() => {
         setGlowingElements(prev => prev.filter(id => !newAchievedMilestones.includes(id)));
       }, 3000);
     }
-    
+
     setPreviousMilestoneCount(currentMilestoneCount);
   }, [achievedMilestones.length, previousMilestoneCount, showInteractiveEnhancements]);
 
@@ -276,12 +276,12 @@ export function LegacyGardenVisualization({
       const celebrationId = `recent-${Date.now()}`;
       setActiveCelebrations(prev => [...prev, celebrationId]);
       setGlowingElements(prev => [...prev, ...recentlyCompletedMilestones]);
-      
+
       // Clear celebration after animation
       setTimeout(() => {
         setActiveCelebrations(prev => prev.filter(id => id !== celebrationId));
       }, 5000);
-      
+
       setTimeout(() => {
         setGlowingElements(prev => prev.filter(id => !recentlyCompletedMilestones.includes(id)));
       }, 3000);
@@ -517,7 +517,7 @@ export function LegacyGardenVisualization({
 
         {/* Weather effects */}
         {renderWeatherEffect()}
-        
+
         {/* Interactive Garden Enhancements */}
         {showInteractiveEnhancements && (
           <InteractiveGardenEnhancements

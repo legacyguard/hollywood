@@ -1,5 +1,4 @@
-import React from 'react';
-import { showMilestoneRecognition } from './milestoneUtils';
+import type React from 'react';
 import type { SerenityMilestone } from '@/lib/path-of-serenity';
 
 // Legacy component interface for backward compatibility

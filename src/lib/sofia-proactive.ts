@@ -65,7 +65,7 @@ export class SofiaProactiveService {
    */
   startMonitoring(page: string): void {
     this.stopMonitoring(); // Clean up any existing monitoring
-    
+
     this.activityState = {
       ...this.initializeActivityState(),
       currentPage: page,
@@ -201,7 +201,7 @@ export class SofiaProactiveService {
     if (currentPage === 'dashboard' && timeOnPage > 60000 && timeOnPage < 90000) {
       const memory = getSofiaMemory(this.userId);
       const insights = memory.getConversationInsights();
-      
+
       if (insights.totalConversations === 0) {
         this.queueIntervention({
           id: 'first_time_dashboard_help',
@@ -294,7 +294,7 @@ export class SofiaProactiveService {
       return null;
     }
 
-    const hoursSinceLastInteraction = 
+    const hoursSinceLastInteraction =
       (Date.now() - lastInteraction.getTime()) / (1000 * 60 * 60);
 
     // Only show return greeting if it's been at least 2 hours
@@ -383,7 +383,7 @@ export class SofiaProactiveService {
 }
 
 // Singleton instance manager
-let proactiveInstances: Map<string, SofiaProactiveService> = new Map();
+const proactiveInstances: Map<string, SofiaProactiveService> = new Map();
 
 export function getSofiaProactive(userId: string): SofiaProactiveService {
   if (!proactiveInstances.has(userId)) {

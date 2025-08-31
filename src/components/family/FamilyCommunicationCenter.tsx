@@ -298,7 +298,7 @@ export const FamilyCommunicationCenter: React.FC<FamilyCommunicationCenterProps>
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const mediaRecorder = new MediaRecorder(stream);
-      const chunks: BlobPart[] = [];
+      const chunks: Blob[] = [];
 
       mediaRecorder.ondataavailable = (e) => chunks.push(e.data);
       mediaRecorder.onstop = () => {
@@ -393,14 +393,14 @@ export const FamilyCommunicationCenter: React.FC<FamilyCommunicationCenterProps>
             <div className="flex gap-2">
               <Button
                 size="sm"
-                variant={"ghost" as any}
+                variant="ghost"
                 onClick={() => setShowSearch(!showSearch)}
               >
                 <Search className="h-4 w-4" />
               </Button>
               <Dialog open={isCreatingChannel} onOpenChange={setIsCreatingChannel}>
                 <DialogTrigger asChild>
-                  <Button size="sm" variant={"ghost" as any}>
+                  <Button size="sm" variant="ghost">
                     <Plus className="h-4 w-4" />
                   </Button>
                 </DialogTrigger>
@@ -448,7 +448,7 @@ export const FamilyCommunicationCenter: React.FC<FamilyCommunicationCenterProps>
             <h3 className="font-medium text-gray-900">Announcements</h3>
             <Dialog>
               <DialogTrigger asChild>
-                <Button size="sm" variant={"ghost" as any}>
+                <Button size="sm" variant="ghost">
                   <Plus className="h-3 w-3" />
                 </Button>
               </DialogTrigger>
@@ -520,7 +520,7 @@ export const FamilyCommunicationCenter: React.FC<FamilyCommunicationCenterProps>
                       {channel.isPinned && <Pin className="h-3 w-3" />}
                     </div>
                     {channel.unreadCount > 0 && (
-                      <Badge variant={"destructive" as any} className="text-xs">
+                      <Badge variant="destructive" className="text-xs">
                         {channel.unreadCount}
                       </Badge>
                     )}
@@ -575,13 +575,13 @@ export const FamilyCommunicationCenter: React.FC<FamilyCommunicationCenterProps>
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <Button size="sm" variant={"ghost" as any}>
+                <Button size="sm" variant="ghost">
                   <Phone className="h-4 w-4" />
                 </Button>
-                <Button size="sm" variant={"ghost" as any}>
+                <Button size="sm" variant="ghost">
                   <Video className="h-4 w-4" />
                 </Button>
-                <Button size="sm" variant={"ghost" as any}>
+                <Button size="sm" variant="ghost">
                   <Settings className="h-4 w-4" />
                 </Button>
               </div>
@@ -756,27 +756,27 @@ export const FamilyCommunicationCenter: React.FC<FamilyCommunicationCenterProps>
                   <div className="flex gap-1">
                     <Button
                       size="sm"
-                      variant={"ghost" as any}
+                      variant="ghost"
                       onClick={() => fileInputRef.current?.click()}
                     >
                       <Paperclip className="h-4 w-4" />
                     </Button>
                     <Button
                       size="sm"
-                      variant={"ghost" as any}
+                      variant="ghost"
                       onClick={() => fileInputRef.current?.click()}
                     >
                       <Image className="h-4 w-4" />
                     </Button>
                     <Button
                       size="sm"
-                      variant={"ghost" as any}
+                      variant="ghost"
                       onClick={isRecording ? stopVoiceRecording : startVoiceRecording}
                       className={isRecording ? 'text-red-500' : ''}
                     >
                       <Mic className="h-4 w-4" />
                     </Button>
-                    <Button size="sm" variant={"ghost" as any}>
+                    <Button size="sm" variant="ghost">
                       <Smile className="h-4 w-4" />
                     </Button>
                   </div>

@@ -79,16 +79,17 @@ export const MicroAnimationProvider: React.FC<MicroAnimationProviderProps> = ({
 
 // Utility hook for creating custom animated components
 export const usePersonalityAnimation = () => {
-  const { personality } = useSofia();
+  // TODO: Implement proper personality integration
+  // const { personality } = useSofia();
   const { reduceMotion } = useMicroAnimation();
 
   return {
-    config: PERSONALITY_CONFIGS[personality.mode],
+    config: PERSONALITY_CONFIGS.adaptive, // Default to adaptive for now
     reduceMotion,
     createVariants: (baseVariants: Variants): Variants => {
       if (reduceMotion) return {};
 
-      const config = PERSONALITY_CONFIGS[personality.mode];
+      const config = PERSONALITY_CONFIGS.adaptive; // Default to adaptive for now
 
       // Apply personality-specific timing to variants
       return Object.entries(baseVariants).reduce((acc, [key, value]) => {

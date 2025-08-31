@@ -166,11 +166,11 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
     if (userId) {
       memoryServiceRef.current = getSofiaMemory(userId);
       proactiveServiceRef.current = getSofiaProactive(userId);
-      
+
       // Start monitoring current page
       const currentRoutePage = location.pathname.split('/')[1] || 'dashboard';
       proactiveServiceRef.current.startMonitoring(currentRoutePage);
-      
+
       return () => {
         // Clean up monitoring when component unmounts
         proactiveServiceRef.current?.stopMonitoring();
@@ -201,7 +201,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
           }
         }
       }, 5000); // Check every 5 seconds
-      
+
       return () => clearInterval(checkInterval);
     }
   }, [isOpen, currentIntervention]);
@@ -350,19 +350,19 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
 
   const handleProactiveAction = async (action: string) => {
     if (!currentIntervention || !proactiveServiceRef.current) return;
-    
+
     // Mark intervention as completed
     proactiveServiceRef.current.markInterventionCompleted(currentIntervention.id, action);
-    
+
     // Hide the intervention
     setShowProactiveIntervention(false);
     setCurrentIntervention(null);
-    
+
     // Handle the action
     if (action === 'dismiss') {
       return;
     }
-    
+
     // Process the action through the normal flow
     const actionButton: ActionButton = {
       id: action,
@@ -370,7 +370,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
       category: 'ui_action' as const,
       cost: 'free' as const,
     };
-    
+
     await handleActionClick(actionButton);
   };
 
@@ -783,7 +783,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
           </motion.div>
         )}
       </AnimatePresence>
-      
+
       {/* Header */}
       <div className='flex items-center justify-between p-4 border-b'>
         <div className='flex items-center gap-3'>

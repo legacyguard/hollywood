@@ -1,6 +1,5 @@
 import React, { type ReactNode } from 'react';
 import { motion, type Variants } from 'framer-motion';
-import { useSofia } from '../sofia/SofiaContextProvider';
 
 // Configurations and context are now exported from useMicroInteraction.tsx
 
@@ -39,15 +38,21 @@ export const MicroAnimation: React.FC<MicroAnimationProps> = ({
   className = "",
   onAnimationComplete
 }) => {
-  const { personality } = useSofia();
-  const { reduceMotion, globalAnimationScale } = useMicroAnimation();
+  // TODO: Implement proper personality-based animations
+  // const { personality } = useSofia();
+  // const { reduceMotion, globalAnimationScale } = useMicroAnimation();
 
-  if (disabled || reduceMotion) {
+  if (disabled) {
     return <div className={className}>{children}</div>;
   }
 
-  const config = PERSONALITY_CONFIGS[personality.mode];
-  const adjustedDuration = config.duration * globalAnimationScale;
+  // Default animation config for now
+  const config = {
+    duration: 0.3,
+    ease: "easeOut",
+    scale: 1.05
+  };
+  const adjustedDuration = config.duration;
 
   const getAnimationVariants = (): Variants => {
     const baseTransition = {

@@ -44,6 +44,7 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({
   const [sofiaActions, setSofiaActions] = useState<SofiaAction[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [documents, setDocuments] = useState<SearchResult[]>([]);
   const { userId } = useAuth();
   const createSupabaseClient = useSupabaseWithClerk();
   const navigate = useNavigate();
@@ -232,6 +233,7 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({
           ),
         ].slice(0, 6); // Limit total suggestions
 
+        setDocuments(documents);
         setResults([...filteredActions, ...documents, ...guardians]);
         setSofiaActions(allSuggestions);
       } catch (error) {

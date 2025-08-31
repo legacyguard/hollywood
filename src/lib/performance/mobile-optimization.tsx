@@ -244,12 +244,12 @@ export function useMobilePerformance() {
     if ('performance' in window) {
       const observer = new PerformanceObserver((list) => {
         const entries = list.getEntries();
-        const renderTime = entries.reduce((max, entry) => 
+        const renderTime = entries.reduce((max, entry) =>
           Math.max(max, entry.duration), 0
         );
         setPerformance(prev => ({ ...prev, renderTime }));
       });
-      
+
       observer.observe({ entryTypes: ['measure', 'navigation'] });
 
       return () => observer.disconnect();
@@ -318,8 +318,8 @@ export function renderMobileOptimized<T extends Record<string, any>>(
   props: T
 ) {
   const { isSmall } = useBreakpoint();
-  
-  return isSmall ? 
-    <MobileComponent {...props} /> : 
+
+  return isSmall ?
+    <MobileComponent {...props} /> :
     <DesktopComponent {...props} />;
 }

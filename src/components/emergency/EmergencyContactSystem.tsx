@@ -248,7 +248,7 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
 
       if (editingContact) {
         setContacts(prev => prev.map(c => c.id === editingContact.id ? newContact : c));
-        onContactUpdated?.(newContact);
+        _onContactUpdated?.(newContact);
         toast.success(effectiveMode === 'empathetic' ?
           '💚 Your trusted contact has been updated with love' :
           effectiveMode === 'pragmatic' ?
@@ -256,7 +256,7 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
           '✅ Contact updated and ready to help');
       } else {
         setContacts(prev => [...prev, newContact]);
-        onContactAdded?.(newContact);
+        _onContactAdded?.(newContact);
         toast.success(effectiveMode === 'empathetic' ?
           '💚 Another loving guardian added to your circle of care' :
           effectiveMode === 'pragmatic' ?
@@ -287,7 +287,7 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
       console.error('Error saving contact:', err);
       toast.error('Failed to save emergency contact. Please try again.');
     }
-  }, [userId, createSupabaseClient, contactForm, editingContact, effectiveMode, onContactAdded, onContactUpdated]);
+  }, [userId, createSupabaseClient, contactForm, editingContact, effectiveMode, _onContactAdded, _onContactUpdated]);
 
   // Send test notification
   const sendTestNotification = useCallback(async (contactId: string) => {

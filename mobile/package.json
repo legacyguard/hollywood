@@ -16,6 +16,7 @@
   "dependencies": {
     "@clerk/clerk-expo": "^2.14.25",
     "@hollywood/shared": "file:../packages/shared",
+    "@legacyguard/ui": "file:../packages/ui",
     "@react-native-async-storage/async-storage": "^2.2.0",
     "@react-navigation/bottom-tabs": "^7.4.6",
     "@react-navigation/native": "^7.1.17",

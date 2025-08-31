@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -426,7 +426,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
                               <Badge className={getPriorityColor(template.priority)}>
                                 {template.priority}
                               </Badge>
-                              <Badge variant={"outline" as any} className="text-xs">
+                              <Badge variant="outline" className="text-xs">
                                 {template.category.replace('-', ' ')}
                               </Badge>
                             </div>
@@ -439,7 +439,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
               </div>
               <div className="flex justify-end gap-2 mt-4">
                 <Button
-                  variant={"outline" as any}
+                  variant="outline"
                   onClick={() => createNewDecision()}
                 >
                   Create Custom Decision
@@ -504,7 +504,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
                 />
               </div>
               <div className="flex gap-2">
-                <Button variant={"outline" as any} onClick={() => setIsCreating(false)}>
+                <Button variant="outline" onClick={() => setIsCreating(false)}>
                   Cancel
                 </Button>
                 <Button onClick={saveDecision}>
@@ -538,7 +538,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
                         />
                         <Button
                           size="sm"
-                          variant={"outline" as any}
+                          variant="outline"
                           onClick={() => {
                             const updatedOptions = activeDecision.options.filter((_, i) => i !== index);
                             setActiveDecision({...activeDecision, options: updatedOptions});
@@ -551,7 +551,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
                   </div>
                   <Button
                     size="sm"
-                    variant={"outline" as any}
+                    variant="outline"
                     onClick={() => {
                       const newOption: VoteOption = {
                         id: `option-${activeDecision.options.length}`,
@@ -713,7 +713,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
                         )}
                         <Button
                           size="sm"
-                          variant={"outline" as any}
+                          variant="outline"
                           onClick={() => setActiveDecision(decision)}
                           className="gap-2"
                         >
@@ -732,7 +732,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
                           {decision.options.map((option) => (
                             <Button
                               key={option.id}
-                              variant={"outline" as any}
+                              variant="outline"
                               className="justify-start"
                               onClick={() => setVotingFor(option.id)}
                             >
@@ -756,7 +756,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
                                 </div>
                               )}
                               <div className="flex gap-2 justify-end">
-                                <Button variant={"outline" as any} onClick={() => setVotingFor(null)}>
+                                <Button variant="outline" onClick={() => setVotingFor(null)}>
                                   Cancel
                                 </Button>
                                 <Button onClick={() => votingFor && castVote(decision.id, votingFor)}>

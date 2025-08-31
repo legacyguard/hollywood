@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useEncryption } from '@/hooks/encryption/useEncryption';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

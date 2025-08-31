@@ -136,9 +136,11 @@ export {
 // Animation hooks and utilities
 export { default as useFireflyEvents } from '@/hooks/useFireflyEvents';
 
+import type { ReactNode } from 'react';
+
 // Type definitions for animations
 export interface AnimationComponentProps {
-  children?: React.ReactNode;
+  children?: ReactNode;
   className?: string;
   personalityMode?: 'empathetic' | 'pragmatic' | 'adaptive';
   shouldReduceMotion?: boolean;

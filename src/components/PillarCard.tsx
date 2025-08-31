@@ -1,3 +1,4 @@
+import React from 'react';
 import { Icon, type IconName } from '@/components/ui/icon-library';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';

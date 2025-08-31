@@ -251,21 +251,21 @@ export class ErrorHandler {
    */
   public handleError(error: Error | AppError): void {
     const appError = this.normalizeError(error);
-    
+
     // Add to queue
     this.addToQueue(appError);
-    
+
     // Log error
     this.logError(appError);
-    
+
     // Notify listeners
     this.notifyListeners(appError);
-    
+
     // Send to monitoring service
     if (appError.severity === ErrorSeverity.HIGH || appError.severity === ErrorSeverity.CRITICAL) {
       this.sendToMonitoring(appError);
     }
-    
+
     // Take action based on severity
     this.takeAction(appError);
   }
@@ -285,7 +285,7 @@ export class ErrorHandler {
       ErrorCategory.UNKNOWN,
       ErrorSeverity.MEDIUM
     );
-    
+
     appError.stack = error.stack;
     return appError;
   }
@@ -294,7 +294,7 @@ export class ErrorHandler {
    * Check if error is AppError
    */
   private isAppError(error: any): error is AppError {
-    return error && 
+    return error &&
            typeof error.code === 'string' &&
            typeof error.category === 'string' &&
            typeof error.severity === 'string';
@@ -305,7 +305,7 @@ export class ErrorHandler {
    */
   private addToQueue(error: AppError): void {
     this.errorQueue.push(error);
-    
+
     // Maintain queue size
     if (this.errorQueue.length > this.maxQueueSize) {
       this.errorQueue.shift();
@@ -397,14 +397,14 @@ export class ErrorHandler {
           this.forceReauthentication();
         }
         break;
-      
+
       case ErrorSeverity.HIGH:
         // High severity errors might require user notification
         if (error.userMessage) {
           this.showErrorNotification(error.userMessage);
         }
         break;
-      
+
       default:
         // Lower severity errors are logged but no immediate action
         break;
@@ -487,7 +487,7 @@ export class ErrorHandler {
     this.errorQueue.forEach(error => {
       // Count by category
       stats.byCategory[error.category] = (stats.byCategory[error.category] || 0) + 1;
-      
+
       // Count by severity
       stats.bySeverity[error.severity] = (stats.bySeverity[error.severity] || 0) + 1;
     });

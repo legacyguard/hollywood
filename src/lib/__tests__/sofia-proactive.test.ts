@@ -13,7 +13,7 @@ describe('SofiaProactiveService', () => {
     sessionStorage.clear();
     vi.clearAllMocks();
     mockCallback.mockClear();
-    
+
     // Initialize service
     service = new SofiaProactiveService();
   });
@@ -26,7 +26,7 @@ describe('SofiaProactiveService', () => {
   describe('startMonitoring', () => {
     it('should start monitoring user activity', () => {
       service.startMonitoring('/vault', mockCallback);
-      
+
       // Simulate user activity
       const mouseEvent = new MouseEvent('mousemove');
       document.dispatchEvent(mouseEvent);
@@ -43,7 +43,7 @@ describe('SofiaProactiveService', () => {
       document.dispatchEvent(new MouseEvent('mousemove'));
       document.dispatchEvent(new MouseEvent('click'));
       document.dispatchEvent(new Event('scroll'));
-      
+
       const activity = service.getCurrentActivity();
       expect(activity.mouseMovements).toBe(1);
       expect(activity.clicks).toBe(1);
@@ -72,7 +72,7 @@ describe('SofiaProactiveService', () => {
 
       // Simulate activity after stopping
       document.dispatchEvent(new MouseEvent('mousemove'));
-      
+
       // Activity should not be tracked
       expect(service.getCurrentActivity().mouseMovements).toBe(0);
     });
@@ -168,7 +168,7 @@ describe('SofiaProactiveService', () => {
 
     it('should remember shown interventions in sessionStorage', () => {
       service.startMonitoring('/vault', mockCallback);
-      
+
       // Trigger intervention
       vi.advanceTimersByTime(5 * 60 * 1000);
 
@@ -187,12 +187,12 @@ describe('SofiaProactiveService', () => {
       // Simulate various activities
       document.dispatchEvent(new MouseEvent('mousemove'));
       document.dispatchEvent(new MouseEvent('click'));
-      
+
       const input = document.createElement('input');
       input.dispatchEvent(new Event('input'));
 
       const activity = service.getCurrentActivity();
-      
+
       expect(activity).toMatchObject({
         mouseMovements: 1,
         clicks: 1,
@@ -205,7 +205,7 @@ describe('SofiaProactiveService', () => {
 
     it('should return empty activity when not monitoring', () => {
       const activity = service.getCurrentActivity();
-      
+
       expect(activity).toMatchObject({
         mouseMovements: 0,
         clicks: 0,

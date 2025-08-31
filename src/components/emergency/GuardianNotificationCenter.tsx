@@ -2,7 +2,7 @@
 // Phase 3A: Family Shield System - Comprehensive notification and response coordination system
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useAuth } from '@clerk/clerk-react';
 import { usePersonalityManager } from '@/components/sofia/SofiaContextProvider';
 import { AnimationSystem } from '@/lib/animation-system';
@@ -33,7 +33,6 @@ import {
   Filter,
   RefreshCw,
   Archive,
-  Star,
   AlertCircle,
 } from 'lucide-react';
 
@@ -306,13 +305,13 @@ export const GuardianNotificationCenter: React.FC<GuardianNotificationCenterProp
       await loadNotificationData();
 
       // Trigger callback
-      notifications.forEach(n => onNotificationSent?.(n as GuardianNotification));
+      notifications.forEach(n => _onNotificationSent?.(n as GuardianNotification));
 
     } catch (err) {
       console.error('Error sending notification:', err);
       toast.error('Failed to send notifications. Please try again.');
     }
-  }, [userId, createSupabaseClient, selectedGuardians, selectedTemplate, customMessage, notificationTemplates, effectiveMode, loadNotificationData, onNotificationSent]);
+  }, [userId, createSupabaseClient, selectedGuardians, selectedTemplate, customMessage, notificationTemplates, effectiveMode, loadNotificationData, _onNotificationSent]);
 
   // Mark notification as read
   const markAsRead = useCallback(async (notificationId: string) => {
@@ -330,16 +329,16 @@ export const GuardianNotificationCenter: React.FC<GuardianNotificationCenterProp
         n.id === notificationId ? { ...n, read_at: new Date().toISOString() } : n
       ));
 
-      onNotificationRead?.(notificationId);
+      _onNotificationRead?.(notificationId);
     } catch (err) {
       console.error('Error marking notification as read:', err);
     }
-  }, [createSupabaseClient, onNotificationRead]);
+  }, [createSupabaseClient, _onNotificationRead]);
 
   // Archive notification
   const archiveNotification = useCallback(async (notificationId: string) => {
     try {
-      const supabase = await createSupabaseClient();
+      const _supabase = await createSupabaseClient();
 
       // In a real implementation, you might add an archived_at column
       // For now, we'll just remove it from the UI
@@ -592,7 +591,7 @@ export const GuardianNotificationCenter: React.FC<GuardianNotificationCenterProp
         {/* Filter */}
         <div className="flex items-center gap-2 mb-4">
           <Filter className="w-4 h-4 text-gray-500" />
-          <Select value={filterStatus} onValueChange={(value: any) => setFilterStatus(value)}>
+          <Select value={filterStatus} onValueChange={(value: string) => setFilterStatus(value)}>
             <SelectTrigger className="w-48 h-8">
               <SelectValue />
             </SelectTrigger>

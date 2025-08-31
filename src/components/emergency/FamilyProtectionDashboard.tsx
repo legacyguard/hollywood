@@ -1,7 +1,7 @@
 // Family Protection Dashboard - Comprehensive emergency management hub with Sofia integration
 // Phase 3A: Family Shield System - Central command center for all family protection features
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '@clerk/clerk-react';
 import { usePersonalityManager } from '@/components/sofia/SofiaContextProvider';
@@ -62,7 +62,7 @@ export const FamilyProtectionDashboard: React.FC<FamilyProtectionDashboardProps>
   className = '',
   personalityMode,
 }) => {
-  const { user } = useAuth();
+  const { userId: _userId } = useAuth();
   const personalityManager = usePersonalityManager();
 
   // State
@@ -86,7 +86,7 @@ export const FamilyProtectionDashboard: React.FC<FamilyProtectionDashboardProps>
   const animConfig = AnimationSystem.getConfig(effectiveMode);
 
   // Callback handlers to update status from child components
-  const handleSwitchStatusChange = (status: ProtectionStatus['switchStatus']) => {
+  const _handleSwitchStatusChange = (status: ProtectionStatus['switchStatus']) => {
     setProtectionStatus(prev => ({ ...prev, switchStatus: status }));
   };
 
@@ -396,12 +396,11 @@ export const FamilyProtectionDashboard: React.FC<FamilyProtectionDashboardProps>
               {/* Dead Man's Switch Overview */}
               <DeadMansSwitchManager
                 personalityMode={effectiveMode}
-                onEmergencyTriggered={(ruleId) => {
-                  console.log('Emergency triggered:', ruleId);
+                onEmergencyTriggered={(_ruleId) => {
                   handleEmergencyTriggered();
                 }}
-                onHealthCheckMissed={(checkId) => {
-                  console.log('Health check missed:', checkId);
+                onHealthCheckMissed={(_checkId) => {
+                  // Health check missed - could trigger additional monitoring
                 }}
               />
 
@@ -470,8 +469,8 @@ export const FamilyProtectionDashboard: React.FC<FamilyProtectionDashboardProps>
             <DeadMansSwitchManager
               personalityMode={effectiveMode}
               onEmergencyTriggered={handleEmergencyTriggered}
-              onHealthCheckMissed={(checkId) => {
-                console.log('Health check missed:', checkId);
+              onHealthCheckMissed={(_checkId) => {
+                // Health check missed - could trigger additional monitoring
               }}
             />
           </TabsContent>
@@ -480,15 +479,14 @@ export const FamilyProtectionDashboard: React.FC<FamilyProtectionDashboardProps>
             <EmergencyContactSystem
               personalityMode={effectiveMode}
               onContactAdded={(contact) => {
-                console.log('Contact added:', contact);
                 // Update counts
                 handleContactsUpdate(protectionStatus.contactsCount + 1, protectionStatus.primaryContactsCount + (contact.can_trigger_emergency ? 1 : 0));
               }}
-              onContactUpdated={(contact) => {
-                console.log('Contact updated:', contact);
+              onContactUpdated={(_contact) => {
+                // Contact updated successfully
               }}
-              onNotificationSent={(notification) => {
-                console.log('Notification sent:', notification);
+              onNotificationSent={(_notification) => {
+                // Notification sent successfully
               }}
             />
           </TabsContent>
@@ -496,11 +494,10 @@ export const FamilyProtectionDashboard: React.FC<FamilyProtectionDashboardProps>
           <TabsContent value="notifications">
             <GuardianNotificationCenter
               personalityMode={effectiveMode}
-              onNotificationSent={(notification) => {
-                console.log('Notification sent:', notification);
+              onNotificationSent={(_notification) => {
+                // Notification sent successfully
               }}
-              onNotificationRead={(notificationId) => {
-                console.log('Notification read:', notificationId);
+              onNotificationRead={(_notificationId) => {
                 handleNotificationsUpdate(
                   Math.max(0, protectionStatus.unreadNotifications - 1),
                   protectionStatus.actionRequiredNotifications

@@ -13,7 +13,7 @@ export function initWebVitals() {
         },
       });
     }
-    
+
     // Send to Google Analytics if available
     if ((window as any).gtag) {
       (window as any).gtag('event', metric.name, {

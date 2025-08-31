@@ -6,7 +6,7 @@ import { WillTypeSelector } from './WillTypeSelector';
 import type { WillData } from './WillWizard';
 import { WillWizard } from './WillWizard';
 import { IntelligentWillDraftGenerator } from './IntelligentWillDraftGenerator';
-import { showMilestoneRecognition } from '@/components/dashboard/MilestoneCelebration';
+import { showMilestoneRecognition } from '@/components/dashboard/milestoneUtils';
 import { SERENITY_MILESTONES } from '@/lib/path-of-serenity';
 import { FocusModeProvider } from '@/contexts/FocusModeContext';
 

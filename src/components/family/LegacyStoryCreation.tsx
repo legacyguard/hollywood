@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { Progress } from '../ui/progress';
-import { BookOpen, Camera, Mic, Video, Image, Calendar, Users, Heart, Star, Play, Pause, Square, Download, Share2, Edit3, Trash2, Plus, FileText, Archive } from 'lucide-react';
+import { BookOpen, Mic, Video, Image, Calendar, Users, Heart, Star, Play, Square, Share2, Edit3, Trash2, Plus, FileText, Archive } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface StoryContent {
@@ -131,7 +131,7 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
 
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       const recorder = new MediaRecorder(stream);
-      const chunks: BlobPart[] = [];
+      const chunks: Blob[] = [];
 
       recorder.ondataavailable = (e) => chunks.push(e.data);
       recorder.onstop = () => {
@@ -335,7 +335,7 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
                           <p className="text-sm text-gray-600 mt-1">{template.description}</p>
                           <div className="flex flex-wrap gap-1 mt-2">
                             {template.suggestedContent.map((content) => (
-                              <Badge key={content} variant={"secondary" as any} className="text-xs">
+                              <Badge key={content} variant="secondary" className="text-xs">
                                 {content}
                               </Badge>
                             ))}
@@ -349,7 +349,7 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
             </div>
             <div className="flex justify-end gap-2 mt-4">
               <Button
-                variant={"outline" as any}
+                variant="outline"
                 onClick={() => createNewStory()}
               >
                 Start from Scratch
@@ -383,7 +383,7 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
                 </div>
               </div>
               <div className="flex gap-2">
-                <Button variant={"outline" as any} onClick={() => setIsCreating(false)}>
+                <Button variant="outline" onClick={() => setIsCreating(false)}>
                   Cancel
                 </Button>
                 <Button onClick={saveStory}>
@@ -404,7 +404,7 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
                 {/* Content Creation Tools */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                   <Button
-                    variant={"outline" as any}
+                    variant="outline"
                     className="gap-2"
                     onClick={() => {
                       const text = prompt('Enter your story text:');
@@ -416,7 +416,7 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
                   </Button>
 
                   <Button
-                    variant={"outline" as any}
+                    variant="outline"
                     className="gap-2"
                     onClick={() => startRecording('audio')}
                     disabled={isRecording}
@@ -426,7 +426,7 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
                   </Button>
 
                   <Button
-                    variant={"outline" as any}
+                    variant="outline"
                     className="gap-2"
                     onClick={() => startRecording('video')}
                     disabled={isRecording}
@@ -436,7 +436,7 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
                   </Button>
 
                   <Button
-                    variant={"outline" as any}
+                    variant="outline"
                     className="gap-2"
                     onClick={() => fileInputRef.current?.click()}
                   >
@@ -461,7 +461,7 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
                       </div>
                       <Button
                         size="sm"
-                        variant={"outline" as any}
+                        variant="outline"
                         onClick={stopRecording}
                         className="gap-2"
                       >
@@ -476,7 +476,7 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
                 {/* Content List */}
                 <div className="space-y-2">
                   <AnimatePresence>
-                    {activeStory.contents.map((content, index) => (
+                    {activeStory.contents.map((content) => (
                       <motion.div
                         key={content.id}
                         initial={{  opacity: 0, y: 10  }}
@@ -505,7 +505,7 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
                         </div>
                         <Button
                           size="sm"
-                          variant={"ghost" as any}
+                          variant="ghost"
                           onClick={() => removeContent(content.id)}
                           className="text-red-600 hover:text-red-700"
                         >
@@ -536,7 +536,7 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
                           <p className="text-gray-700">{prompt}</p>
                           <Button
                             size="sm"
-                            variant={"link" as any}
+                            variant="link"
                             className="p-0 h-auto mt-2"
                             onClick={() => {
                               const response = prompt('Your response:');
@@ -636,12 +636,12 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
 
                 <div className="flex flex-wrap gap-1 mb-3">
                   {story.tags.slice(0, 3).map((tag) => (
-                    <Badge key={tag} variant={"outline" as any} className="text-xs">
+                    <Badge key={tag} variant="outline" className="text-xs">
                       {tag}
                     </Badge>
                   ))}
                   {story.tags.length > 3 && (
-                    <Badge variant={"outline" as any} className="text-xs">
+                    <Badge variant="outline" className="text-xs">
                       +{story.tags.length - 3}
                     </Badge>
                   )}
@@ -650,7 +650,7 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
                 <div className="flex gap-2">
                   <Button
                     size="sm"
-                    variant={"outline" as any}
+                    variant="outline"
                     onClick={() => setActiveStory(story)}
                     className="gap-1"
                   >
@@ -659,7 +659,7 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
                   </Button>
                   <Button
                     size="sm"
-                    variant={"outline" as any}
+                    variant="outline"
                     className="gap-1"
                   >
                     <Play className="h-3 w-3" />
@@ -667,7 +667,7 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
                   </Button>
                   <Button
                     size="sm"
-                    variant={"outline" as any}
+                    variant="outline"
                     className="gap-1"
                   >
                     <Share2 className="h-3 w-3" />

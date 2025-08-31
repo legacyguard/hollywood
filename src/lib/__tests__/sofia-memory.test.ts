@@ -22,7 +22,7 @@ describe('SofiaMemoryService', () => {
     // Clear localStorage before each test
     localStorage.clear();
     vi.clearAllMocks();
-    
+
     // Initialize service
     service = new SofiaMemoryService(testUserId);
   });

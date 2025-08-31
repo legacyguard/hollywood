@@ -6,6 +6,8 @@ import { AuthProvider } from '@/contexts/AuthProvider';
 import { AppNavigator } from '@/navigation/AppNavigator';
 import { ClerkProvider } from '@clerk/clerk-expo';
 import { AuthenticationService } from '@/services/AuthenticationService';
+import { TamaguiProvider } from '@/providers/TamaguiProvider';
+import { StatusBar } from 'expo-status-bar';
 import * as SecureStore from 'expo-secure-store';
 
 // Helper for token management with Clerk
@@ -39,13 +41,16 @@ export default function App() {
   }, []);
 
   return (
-    <ClerkProvider
-      tokenCache={tokenCache}
-      publishableKey={CLERK_PUBLISHABLE_KEY}
-    >
-      <AuthProvider>
-        <AppNavigator />
-      </AuthProvider>
-    </ClerkProvider>
+    <TamaguiProvider>
+      <ClerkProvider
+        tokenCache={tokenCache}
+        publishableKey={CLERK_PUBLISHABLE_KEY}
+      >
+        <AuthProvider>
+          <StatusBar style="auto" />
+          <AppNavigator />
+        </AuthProvider>
+      </ClerkProvider>
+    </TamaguiProvider>
   );
 }

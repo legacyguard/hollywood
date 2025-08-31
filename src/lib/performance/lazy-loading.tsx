@@ -3,7 +3,8 @@
  * Implements code splitting and progressive loading for large components
  */
 
-import { lazy, ComponentType, ReactElement, Suspense } from 'react';
+import type { ComponentType, ReactElement} from 'react';
+import { lazy, Suspense } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 
 // Generic loading skeleton component
@@ -29,7 +30,7 @@ export const AnalyticsLoadingSkeleton = () => (
       </div>
       <Skeleton className="h-10 w-32" />
     </div>
-    
+
     {/* Key Metrics Grid */}
     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
       {Array.from({ length: 8 }).map((_, i) => (
@@ -67,7 +68,7 @@ export const FamilyCollaborationLoadingSkeleton = () => (
   </div>
 );
 
-// Professional review loading skeleton  
+// Professional review loading skeleton
 export const ProfessionalReviewLoadingSkeleton = () => (
   <div className="space-y-4">
     <div className="flex items-center gap-4">
@@ -93,9 +94,9 @@ export const createLazyComponent = <T extends ComponentType<any>>(
   errorFallback?: ReactElement
 ) => {
   const LazyComponent = lazy(importFn);
-  
+
   return (props: Parameters<T>[0]) => (
-    <Suspense 
+    <Suspense
       fallback={fallback || <LoadingSkeleton />}
     >
       <LazyComponent {...props} />

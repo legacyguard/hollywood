@@ -133,7 +133,7 @@ export const FamilyInsights: React.FC<FamilyInsightsProps> = ({ insights }) => {
                 <FileText className='h-3 w-3 mr-1' />
                 Heirs
               </span>
-              <Badge variant={"outline" as any}>
+              <Badge variant="outline">
                 {insights.heirsAssigned}/{insights.totalMembers}
               </Badge>
             </div>
@@ -155,7 +155,7 @@ export const FamilyInsights: React.FC<FamilyInsightsProps> = ({ insights }) => {
                 <Shield className='h-3 w-3 mr-1' />
                 Guardians
               </span>
-              <Badge variant={"outline" as any}>{insights.guardiansAssigned}</Badge>
+              <Badge variant="outline">{insights.guardiansAssigned}</Badge>
             </div>
 
             <div className='flex justify-between'>
@@ -163,7 +163,7 @@ export const FamilyInsights: React.FC<FamilyInsightsProps> = ({ insights }) => {
                 <Heart className='h-3 w-3 mr-1' />
                 Legacy Msgs
               </span>
-              <Badge variant={"outline" as any}>{insights.legacyMessages}</Badge>
+              <Badge variant="outline">{insights.legacyMessages}</Badge>
             </div>
           </div>
         </div>
@@ -224,7 +224,7 @@ export const FamilyInsights: React.FC<FamilyInsightsProps> = ({ insights }) => {
 
         {/* Success Message */}
         {insights.completionRate === 100 && (
-          <Alert variant={"default" as any} className='border-green-200 bg-green-50'>
+          <Alert variant="default" className='border-green-200 bg-green-50'>
             <CheckCircle2 className='h-4 w-4 text-green-600' />
             <AlertDescription className='text-green-800'>
               Congratulations! Your family estate plan is complete. All family

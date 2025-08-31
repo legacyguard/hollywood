@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import type { PersonalityMode } from '@/lib/sofia-types';
-import { AnimationSystem, type AnimationConfig } from '@/lib/animation-system';
+import type { AnimationSystem, AnimationConfig } from '@/lib/animation-system';
 
 interface AnimationContextType {
   personalityMode: PersonalityMode;
@@ -10,7 +10,12 @@ interface AnimationContextType {
 }
 
 // This context is defined in AdaptiveAnimationProvider.tsx
-declare const AnimationContext: React.Context<AnimationContextType | null>;
+declare const AnimationContext: {
+  personalityMode: PersonalityMode;
+  animationConfig: AnimationConfig;
+  shouldReduceMotion: boolean;
+  animationSystem: typeof AnimationSystem;
+} | null;
 
 /**
  * Hook to access animation context

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, useAnimation, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@clerk/clerk-react';
+import type { Timeout } from 'node:timers';
 import {
   defaultUserPreferences,
   type CommunicationStyle,
@@ -49,7 +50,7 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
   const [trailPoints, setTrailPoints] = useState<FireflyPosition[]>([]);
   const controls = useAnimation();
   const containerRef = useRef<HTMLDivElement>(null);
-  const idleTimeoutRef = useRef<NodeJS.Timeout>();
+  const idleTimeoutRef = useRef<Timeout>();
 
   // Load user preferences to determine behavior mode
   useEffect(() => {

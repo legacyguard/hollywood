@@ -379,7 +379,7 @@ export const FamilyDocumentCoEditing: React.FC<FamilyDocumentCoEditingProps> = (
               <div className="flex gap-2">
                 <Button
                   size="sm"
-                  variant={"outline" as any}
+                  variant="outline"
                   onClick={() => setShowComments(!showComments)}
                   className="gap-2"
                 >
@@ -388,7 +388,7 @@ export const FamilyDocumentCoEditing: React.FC<FamilyDocumentCoEditingProps> = (
                 </Button>
                 <Button
                   size="sm"
-                  variant={"outline" as any}
+                  variant="outline"
                   onClick={() => setShowVersionHistory(!showVersionHistory)}
                   className="gap-2"
                 >
@@ -401,7 +401,7 @@ export const FamilyDocumentCoEditing: React.FC<FamilyDocumentCoEditingProps> = (
                 </Button>
                 <Button
                   size="sm"
-                  variant={"outline" as any}
+                  variant="outline"
                   onClick={() => {
                     setActiveDocument(null);
                     setIsCreating(false);
@@ -487,7 +487,7 @@ export const FamilyDocumentCoEditing: React.FC<FamilyDocumentCoEditingProps> = (
                   <div className="flex gap-2">
                     <Dialog>
                       <DialogTrigger asChild>
-                        <Button size="sm" variant={"outline" as any} className="gap-2">
+                        <Button size="sm" variant="outline" className="gap-2">
                           <Users className="h-3 w-3" />
                           Share ({activeDocument.collaborators.length})
                         </Button>
@@ -561,7 +561,7 @@ export const FamilyDocumentCoEditing: React.FC<FamilyDocumentCoEditingProps> = (
                     <h3 className="font-medium">Comments</h3>
                     <Button
                       size="sm"
-                      variant={"outline" as any}
+                      variant="outline"
                       onClick={() => {
                         const text = prompt('Add a comment:');
                         if (text) addComment(text, 0);
@@ -599,7 +599,7 @@ export const FamilyDocumentCoEditing: React.FC<FamilyDocumentCoEditingProps> = (
                         {!comment.isResolved && (
                           <Button
                             size="sm"
-                            variant={"outline" as any}
+                            variant="outline"
                             onClick={() => resolveComment(comment.id)}
                             className="gap-1"
                           >
@@ -674,11 +674,11 @@ export const FamilyDocumentCoEditing: React.FC<FamilyDocumentCoEditingProps> = (
               </CardHeader>
               <CardContent>
                 <div className="flex items-center gap-2 mb-3">
-                  <Badge variant={"outline" as any} className="text-xs">
+                  <Badge variant="outline" className="text-xs">
                     {document.type}
                   </Badge>
                   {document.isLocked && (
-                    <Badge variant={"secondary" as any} className="text-xs gap-1">
+                    <Badge variant="secondary" className="text-xs gap-1">
                       <Lock className="h-2 w-2" />
                       Locked
                     </Badge>

@@ -1,17 +1,17 @@
 // src/App.tsx - Web Application Entry Point
 
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ClerkProvider } from '@clerk/clerk-react';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { DashboardLayout } from '@/components/DashboardLayout';
 
 // Public Pages
-import LandingPage from '@/pages/LandingPage';
+import { LandingPage } from '@/pages/LandingPage';
 import Blog from '@/pages/Blog';
 import BlogArticle from '@/pages/BlogArticle';
-import Terms from '@/pages/Terms';
-import Privacy from '@/pages/Privacy';
+import { TermsPage as Terms } from '@/pages/Terms';
+import { PrivacyPage as Privacy } from '@/pages/Privacy';
 import NotFound from '@/pages/NotFound';
 
 // Protected Pages
@@ -23,7 +23,7 @@ import TimeCapsule from '@/pages/TimeCapsule';
 import TimeCapsuleView from '@/pages/TimeCapsuleView';
 import Settings from '@/pages/Settings';
 import ProtocolSettings from '@/pages/ProtocolSettings';
-import MyFamily from '@/pages/MyFamily';
+import { MyFamilyPage as MyFamily } from '@/pages/MyFamily';
 import Family from '@/pages/Family';
 import FamilyProtection from '@/pages/FamilyProtection';
 import EmergencyAccess from '@/pages/EmergencyAccess';
@@ -32,13 +32,13 @@ import EmergencyConfirmation from '@/pages/EmergencyConfirmation';
 import SurvivorAccess from '@/pages/SurvivorAccess';
 import SurvivorManual from '@/pages/SurvivorManual';
 import SocialCollaborationPage from '@/pages/SocialCollaborationPage';
-import SecurityDeepDivePage from '@/pages/SecurityDeepDivePage';
+import { SecurityDeepDivePage } from '@/pages/SecurityDeepDivePage';
 import MonitoringPage from '@/pages/MonitoringPage';
 import AnalyticsPage from '@/pages/AnalyticsPage';
 import IntelligentOrganizer from '@/pages/IntelligentOrganizer';
 import ComponentShowcase from '@/pages/ComponentShowcase';
 import Performance from '@/pages/Performance';
-import WillManagement from '@/pages/WillManagement';
+import { WillManagement } from '@/pages/WillManagement';
 
 // Test Pages
 import TestNotifications from '@/pages/TestNotifications';
@@ -60,7 +60,7 @@ export default function App() {
             <Route path="/blog/:slug" element={<BlogArticle />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/privacy" element={<Privacy />} />
-            
+
             {/* Protected Routes with Dashboard Layout */}
             <Route path="/dashboard" element={
               <ProtectedRoute>
@@ -69,7 +69,7 @@ export default function App() {
                 </DashboardLayout>
               </ProtectedRoute>
             } />
-            
+
             <Route path="/vault" element={
               <ProtectedRoute>
                 <DashboardLayout>
@@ -77,7 +77,7 @@ export default function App() {
                 </DashboardLayout>
               </ProtectedRoute>
             } />
-            
+
             <Route path="/guardians" element={
               <ProtectedRoute>
                 <DashboardLayout>
@@ -85,7 +85,7 @@ export default function App() {
                 </DashboardLayout>
               </ProtectedRoute>
             } />
-            
+
             <Route path="/legacy" element={
               <ProtectedRoute>
                 <DashboardLayout>
@@ -93,7 +93,7 @@ export default function App() {
                 </DashboardLayout>
               </ProtectedRoute>
             } />
-            
+
             <Route path="/time-capsule" element={
               <ProtectedRoute>
                 <DashboardLayout>
@@ -101,7 +101,7 @@ export default function App() {
                 </DashboardLayout>
               </ProtectedRoute>
             } />
-            
+
             <Route path="/time-capsule/:id" element={
               <ProtectedRoute>
                 <DashboardLayout>
@@ -109,7 +109,7 @@ export default function App() {
                 </DashboardLayout>
               </ProtectedRoute>
             } />
-            
+
             <Route path="/settings" element={
               <ProtectedRoute>
                 <DashboardLayout>
@@ -117,7 +117,7 @@ export default function App() {
                 </DashboardLayout>
               </ProtectedRoute>
             } />
-            
+
             <Route path="/protocol-settings" element={
               <ProtectedRoute>
                 <DashboardLayout>
@@ -125,7 +125,7 @@ export default function App() {
                 </DashboardLayout>
               </ProtectedRoute>
             } />
-            
+
             <Route path="/my-family" element={
               <ProtectedRoute>
                 <DashboardLayout>
@@ -133,7 +133,7 @@ export default function App() {
                 </DashboardLayout>
               </ProtectedRoute>
             } />
-            
+
             <Route path="/family" element={
               <ProtectedRoute>
                 <DashboardLayout>
@@ -141,7 +141,7 @@ export default function App() {
                 </DashboardLayout>
               </ProtectedRoute>
             } />
-            
+
             <Route path="/family-protection" element={
               <ProtectedRoute>
                 <DashboardLayout>
@@ -149,7 +149,7 @@ export default function App() {
                 </DashboardLayout>
               </ProtectedRoute>
             } />
-            
+
             <Route path="/emergency-access" element={
               <ProtectedRoute>
                 <DashboardLayout>
@@ -157,7 +157,7 @@ export default function App() {
                 </DashboardLayout>
               </ProtectedRoute>
             } />
-            
+
             <Route path="/emergency-verification" element={
               <ProtectedRoute>
                 <DashboardLayout>
@@ -165,7 +165,7 @@ export default function App() {
                 </DashboardLayout>
               </ProtectedRoute>
             } />
-            
+
             <Route path="/emergency-confirmation" element={
               <ProtectedRoute>
                 <DashboardLayout>
@@ -173,7 +173,7 @@ export default function App() {
                 </DashboardLayout>
               </ProtectedRoute>
             } />
-            
+
             <Route path="/survivor-access" element={
               <ProtectedRoute>
                 <DashboardLayout>
@@ -181,7 +181,7 @@ export default function App() {
                 </DashboardLayout>
               </ProtectedRoute>
             } />
-            
+
             <Route path="/survivor-manual" element={
               <ProtectedRoute>
                 <DashboardLayout>
@@ -189,7 +189,7 @@ export default function App() {
                 </DashboardLayout>
               </ProtectedRoute>
             } />
-            
+
             <Route path="/social-collaboration" element={
               <ProtectedRoute>
                 <DashboardLayout>
@@ -197,7 +197,7 @@ export default function App() {
                 </DashboardLayout>
               </ProtectedRoute>
             } />
-            
+
             <Route path="/security-deep-dive" element={
               <ProtectedRoute>
                 <DashboardLayout>
@@ -205,7 +205,7 @@ export default function App() {
                 </DashboardLayout>
               </ProtectedRoute>
             } />
-            
+
             <Route path="/monitoring" element={
               <ProtectedRoute>
                 <DashboardLayout>
@@ -213,7 +213,7 @@ export default function App() {
                 </DashboardLayout>
               </ProtectedRoute>
             } />
-            
+
             <Route path="/analytics" element={
               <ProtectedRoute>
                 <DashboardLayout>
@@ -221,7 +221,7 @@ export default function App() {
                 </DashboardLayout>
               </ProtectedRoute>
             } />
-            
+
             <Route path="/intelligent-organizer" element={
               <ProtectedRoute>
                 <DashboardLayout>
@@ -229,7 +229,7 @@ export default function App() {
                 </DashboardLayout>
               </ProtectedRoute>
             } />
-            
+
             <Route path="/component-showcase" element={
               <ProtectedRoute>
                 <DashboardLayout>
@@ -237,7 +237,7 @@ export default function App() {
                 </DashboardLayout>
               </ProtectedRoute>
             } />
-            
+
             <Route path="/performance" element={
               <ProtectedRoute>
                 <DashboardLayout>
@@ -245,7 +245,7 @@ export default function App() {
                 </DashboardLayout>
               </ProtectedRoute>
             } />
-            
+
             <Route path="/will-management" element={
               <ProtectedRoute>
                 <DashboardLayout>
@@ -253,7 +253,7 @@ export default function App() {
                 </DashboardLayout>
               </ProtectedRoute>
             } />
-            
+
             {/* Test Routes */}
             <Route path="/test-notifications" element={
               <ProtectedRoute>
@@ -262,7 +262,7 @@ export default function App() {
                 </DashboardLayout>
               </ProtectedRoute>
             } />
-            
+
             {/* 404 Route */}
             <Route path="*" element={<NotFound />} />
           </Routes>

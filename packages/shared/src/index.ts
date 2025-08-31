@@ -5,6 +5,8 @@ export * from './services/sync.service';
 export * from './services/freemium.service';
 export * from './services/subscription.service';
 export * from './services/stripe.service';
+export { DocumentService } from './services/documentService';
+export type { Document } from './services/documentService';
 
 // Export Supabase client
 export * from './supabase/client';

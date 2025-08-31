@@ -2,7 +2,7 @@
 // Phase 3A: Family Shield System - Advanced inactivity detection and emergency protocols
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useAuth } from '@clerk/clerk-react';
 import { usePersonalityManager } from '@/components/sofia/SofiaContextProvider';
 import { AnimationSystem } from '@/lib/animation-system';

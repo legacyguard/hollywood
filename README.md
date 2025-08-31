@@ -10,7 +10,7 @@ Document Safe (formerly LegacyGuard) is a comprehensive document management plat
 
 ## 🏗️ Monorepo Structure
 
-```
+```text
 hollywood/
 ├── hollywood/          # 🌐 Web application (Vite + React)
 ├── mobile/            # 📱 Mobile application (React Native + Expo)
@@ -25,6 +25,7 @@ hollywood/
 ## 🚀 Quick Start
 
 ### Prerequisites
+
 - Node.js 18+ and npm 9+
 - iOS Simulator (for mobile iOS development)
 - Android Studio (for mobile Android development)
@@ -58,6 +59,7 @@ npm run mobile:dev   # Mobile only
 ## 🎯 Features
 
 ### Web Application
+
 - 🔐 End-to-end encryption
 - 📸 Document scanning with OCR
 - 🤖 AI-powered categorization
@@ -67,6 +69,7 @@ npm run mobile:dev   # Mobile only
 - 📊 Analytics dashboard
 
 ### Mobile Application
+
 - 📱 Native performance
 - 📸 Advanced camera scanning
 - 🔄 Offline-first architecture
@@ -86,6 +89,7 @@ npm run mobile:dev   # Mobile only
 ## 🧪 Testing
 
 Test cards for Stripe (test mode):
+
 - Success: `4242 4242 4242 4242`
 - 3D Secure: `4000 0025 0000 3155`
 - Declined: `4000 0000 0000 0002`

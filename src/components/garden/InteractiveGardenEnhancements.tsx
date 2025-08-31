@@ -46,28 +46,28 @@ interface InteractiveGardenEnhancementsProps {
   showLeafMovement?: boolean;
   leafCount?: number;
   treeElements?: Array<{ id: string; x: number; y: number }>;
-  
+
   // Sofia firefly
   showSofiaFirefly?: boolean;
   sofiaFireflyActive?: boolean;
-  
+
   // Celebration effects
   showCelebrations?: boolean;
   activeCelebrations?: string[];
-  
+
   // Milestone glow
   glowingElements?: string[];
-  
+
   // General settings
   personalityMode?: PersonalityMode;
   containerWidth?: number;
   containerHeight?: number;
   reducedMotion?: boolean;
-  
+
   // Event handlers
   onFireflyClick?: () => void;
   onCelebrationComplete?: (celebrationId: string) => void;
-  
+
   className?: string;
 }
 
@@ -84,7 +84,7 @@ export const TreeLeaf: React.FC<TreeLeafProps> = ({
   delay = 0
 }) => {
   const shouldReduceMotion = AnimationSystem.shouldReduceMotion();
-  
+
   // Personality-aware animation parameters
   const getAnimationParams = () => {
     switch (personalityMode) {
@@ -166,7 +166,7 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
 }) => {
   const shouldReduceMotion = AnimationSystem.shouldReduceMotion();
   const [currentPath, setCurrentPath] = useState(0);
-  
+
   // Generate organic flight paths based on personality
   const getFlightPaths = () => {
     const paths = {
@@ -189,20 +189,20 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
         { x: [30, 60, 80, 50, 20, 30], y: [45, 25, 50, 70, 55, 45] }
       ]
     };
-    
+
     return paths[personalityMode] || paths.adaptive;
   };
 
   const flightPaths = getFlightPaths();
-  
+
   // Cycle through paths
   useEffect(() => {
     if (!isActive) return;
-    
+
     const interval = setInterval(() => {
       setCurrentPath((prev) => (prev + 1) % flightPaths.length);
     }, personalityMode === 'empathetic' ? 12000 : personalityMode === 'pragmatic' ? 8000 : 10000);
-    
+
     return () => clearInterval(interval);
   }, [isActive, personalityMode, flightPaths.length]);
 
@@ -219,8 +219,8 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
   }
 
   const currentFlightPath = flightPaths[currentPath];
-  const duration = personalityMode === 'empathetic' ? 8 + Math.random() * 4 : 
-                  personalityMode === 'pragmatic' ? 4 + Math.random() * 2 : 
+  const duration = personalityMode === 'empathetic' ? 8 + Math.random() * 4 :
+                  personalityMode === 'pragmatic' ? 4 + Math.random() * 2 :
                   6 + Math.random() * 3;
 
   return (
@@ -253,7 +253,7 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
       >
         <Sparkles className="w-4 h-4 text-yellow-400 drop-shadow-sm" />
       </motion.div>
-      
+
       {/* Glow effect */}
       <motion.div
         className="absolute inset-0 bg-yellow-300 rounded-full blur-sm opacity-30"
@@ -282,7 +282,7 @@ export const CelebrationFirefly: React.FC<CelebrationFireflyProps> = ({
   onComplete
 }) => {
   const shouldReduceMotion = AnimationSystem.shouldReduceMotion();
-  
+
   if (shouldReduceMotion) {
     return (
       <div
@@ -333,15 +333,15 @@ export const MilestoneGlow: React.FC<MilestoneGlowProps> = ({
   intensity = 'medium'
 }) => {
   const shouldReduceMotion = AnimationSystem.shouldReduceMotion();
-  
+
   const intensityConfig = {
     subtle: { scale: [1, 1.1, 1], opacity: [1, 0.8, 1], blur: 'blur-sm' },
     medium: { scale: [1, 1.15, 1], opacity: [1, 0.7, 1], blur: 'blur-md' },
     bright: { scale: [1, 1.25, 1], opacity: [1, 0.5, 1], blur: 'blur-lg' }
   };
-  
+
   const config = intensityConfig[intensity];
-  
+
   if (shouldReduceMotion) {
     return (
       <div className={`absolute inset-0 ${color} opacity-20 rounded-full ${config.blur}`} />
@@ -386,14 +386,14 @@ export const InteractiveGardenEnhancements: React.FC<InteractiveGardenEnhancemen
   className
 }) => {
   const [celebrationFireflies, setCelebrationFireflies] = useState<Array<{ id: string; x: number; y: number }>>([]);
-  
+
   // Generate random leaf positions around tree elements
   const generateLeafPositions = () => {
     const leaves: Array<{ x: number; y: number; delay: number }> = [];
-    
+
     treeElements.forEach((tree, treeIndex) => {
       const leavesPerTree = Math.ceil(leafCount / Math.max(treeElements.length, 1));
-      
+
       for (let i = 0; i < leavesPerTree; i++) {
         leaves.push({
           x: tree.x + (Math.random() - 0.5) * 20, // Spread around tree
@@ -402,7 +402,7 @@ export const InteractiveGardenEnhancements: React.FC<InteractiveGardenEnhancemen
         });
       }
     });
-    
+
     // If no tree elements, generate random positions
     if (treeElements.length === 0) {
       for (let i = 0; i < leafCount; i++) {
@@ -413,7 +413,7 @@ export const InteractiveGardenEnhancements: React.FC<InteractiveGardenEnhancemen
         });
       }
     }
-    
+
     return leaves;
   };
 
@@ -427,7 +427,7 @@ export const InteractiveGardenEnhancements: React.FC<InteractiveGardenEnhancemen
     const newFireflies = activeCelebrations.flatMap((celebrationId, celebrationIndex) => {
       const centerX = 50 + (celebrationIndex - activeCelebrations.length / 2) * 20;
       const centerY = 40;
-      
+
       return Array.from({ length: 8 }, (_, i) => ({
         id: `${celebrationId}-${i}`,
         x: centerX + (Math.random() - 0.5) * 30,
@@ -481,7 +481,7 @@ export const InteractiveGardenEnhancements: React.FC<InteractiveGardenEnhancemen
             y={firefly.y}
             index={index}
             onComplete={() => {
-              setCelebrationFireflies(prev => 
+              setCelebrationFireflies(prev =>
                 prev.filter(f => f.id !== firefly.id)
               );
             }}
@@ -498,7 +498,7 @@ export const InteractiveGardenEnhancements: React.FC<InteractiveGardenEnhancemen
           <MilestoneGlow
             elementId={elementId}
             intensity={personalityMode === 'empathetic' ? 'bright' : 'medium'}
-            color={personalityMode === 'empathetic' ? 'text-pink-300' : 
+            color={personalityMode === 'empathetic' ? 'text-pink-300' :
                    personalityMode === 'pragmatic' ? 'text-blue-300' : 'text-purple-300'}
           />
         </div>

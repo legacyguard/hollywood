@@ -15,7 +15,7 @@ export interface ActivityItem {
   timestamp: Date;
   icon?: string;
   color?: 'primary' | 'success' | 'warning' | 'danger' | 'info';
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   user?: {
     name: string;
     avatar?: string;
@@ -88,13 +88,13 @@ export function ActivityFeed({
           <CardTitle className='text-lg font-semibold'>{title}</CardTitle>
           {showViewAll && onViewAll && (
             <Button
-              variant={"ghost" as any}
+              variant="ghost"
               size='sm'
               onClick={onViewAll}
               className='text-primary hover:text-primary-hover'
             >
               View all
-              <Icon name={"arrowRight" as any} className='ml-2 h-4 w-4' />
+              <Icon name="arrowRight" className='ml-2 h-4 w-4' />
             </Button>
           )}
         </CardHeader>
@@ -113,7 +113,7 @@ export function ActivityFeed({
             </div>
           ) : activities.length === 0 ? (
             <div className='p-6 text-center text-muted-foreground'>
-              <Icon name={"inbox" as any}
+              <Icon name="inbox"
                 className='w-12 h-12 mx-auto mb-3 opacity-50'
               />
               <p>{emptyMessage}</p>
@@ -122,7 +122,7 @@ export function ActivityFeed({
             <ScrollArea className='px-6' style={{ maxHeight }}>
               <div className='space-y-4 pb-4'>
                 {activities.map((activity, index) => (
-                  <ActivityItem
+                  <ActivityItemComponent
                     key={activity.id}
                     item={activity}
                     icon={getActivityIcon(activity)}
@@ -150,7 +150,7 @@ interface ActivityItemProps {
   isLast: boolean;
 }
 
-function ActivityItem({
+function ActivityItemComponent({
   item,
   icon,
   color,
@@ -173,7 +173,7 @@ function ActivityItem({
           colorClasses[color]
         )}
       >
-        <Icon name={icon as any} className='w-5 h-5' />
+        <Icon name={icon} className='w-5 h-5' />
       </div>
 
       {/* Content */}
@@ -193,7 +193,7 @@ function ActivityItem({
                 {Object.entries(item.metadata)
                   .slice(0, 3)
                   .map(([key, value]) => (
-                    <Badge key={key} variant={"secondary" as any} className='text-xs'>
+                    <Badge key={key} variant="secondary" className='text-xs'>
                       {key}: {String(value)}
                     </Badge>
                   ))}
@@ -204,7 +204,7 @@ function ActivityItem({
 
         {/* Timestamp and user */}
         <div className='flex items-center mt-2 text-xs text-muted-foreground'>
-          <Icon name={"clock" as any} className='w-3 h-3 mr-1' />
+          <Icon name="clock" className='w-3 h-3 mr-1' />
           <span>
             {formatDistanceToNow(item.timestamp, { addSuffix: true })}
           </span>

@@ -33,7 +33,7 @@ export interface ProfileData {
   roles?: string[];
   status?: 'active' | 'pending' | 'inactive';
   completionPercentage?: number;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 interface ProfileCardProps {
@@ -171,7 +171,7 @@ export function ProfileCard({
             {showActions && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant={"ghost" as any} size='sm' className='h-8 w-8 p-0'>
+                  <Button variant="ghost" size='sm' className='h-8 w-8 p-0'>
                     <MoreVertical className='h-4 w-4' />
                   </Button>
                 </DropdownMenuTrigger>
@@ -180,7 +180,7 @@ export function ProfileCard({
                   <DropdownMenuSeparator />
                   {onViewDetails && (
                     <DropdownMenuItem onClick={() => onViewDetails(profile)}>
-                      <Icon name={"eye" as any} className='mr-2 h-4 w-4' />
+                      <Icon name="eye" className='mr-2 h-4 w-4' />
                       View Details
                     </DropdownMenuItem>
                   )}
@@ -192,7 +192,7 @@ export function ProfileCard({
                   )}
                   {onEdit && (
                     <DropdownMenuItem onClick={() => onEdit(profile)}>
-                      <Icon name={"edit" as any} className='mr-2 h-4 w-4' />
+                      <Icon name="edit" className='mr-2 h-4 w-4' />
                       Edit
                     </DropdownMenuItem>
                   )}
@@ -203,7 +203,7 @@ export function ProfileCard({
                         onClick={() => onDelete(profile)}
                         className='text-red-600'
                       >
-                        <Icon name={"trash" as any} className='mr-2 h-4 w-4' />
+                        <Icon name="trash" className='mr-2 h-4 w-4' />
                         Delete
                       </DropdownMenuItem>
                     </>

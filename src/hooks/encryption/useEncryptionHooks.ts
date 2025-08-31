@@ -54,9 +54,9 @@ export function useAutoUnlock() {
 // Hook for checking if encryption is ready
 export function useEncryptionReady() {
   const { isInitialized, isLoading } = useEncryption();
-  return { 
-    isReady: isInitialized && !isLoading, 
+  return {
+    isReady: isInitialized && !isLoading,
     needsSetup: !isInitialized && !isLoading,
-    isLoading 
+    isLoading
   };
 }
