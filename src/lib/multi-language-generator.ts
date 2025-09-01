@@ -1049,7 +1049,7 @@ export class MultiLangGenerator {
   /**
    * Simple template processor (replaces {variable} patterns)
    */
-  private processTemplate(template: string, data: any): string {
+  private processTemplate(template: string, data: Record<string, string>): string {
     let processed = template;
 
     // Handle simple variable substitution {variable}
@@ -1098,8 +1098,8 @@ export class MultiLangGenerator {
   /**
    * Get nested object value by dot notation path
    */
-  private getNestedValue(obj: any, path: string): any {
-    return path.split('.').reduce((current, key) => current?.[key], obj);
+  private getNestedValue(obj: Record<string, unknown>, path: string): unknown {
+    return path.split('.').reduce((current, key) => (current as Record<string, unknown>)?.[key], obj);
   }
 
   /**

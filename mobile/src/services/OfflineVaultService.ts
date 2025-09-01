@@ -1,23 +1,6 @@
 // src/services/OfflineVaultService.ts
-import Realm from 'realm';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Crypto from 'expo-crypto';
-
-// Define schema for document in local database
-const DocumentSchema: Realm.ObjectSchema = {
-  name: 'OfflineDocument',
-  properties: {
-    _id: 'string', // Supabase ID
-    fileName: 'string',
-    documentType: 'string',
-    // Important: We store encrypted content or path to encrypted file
-    encryptedContent: 'string',
-    uploadedAt: 'date',
-    lastAccessedAt: 'date?',
-    fileSize: 'int?',
-    tags: 'string[]',
-  },
-  primaryKey: '_id',
-};
 
 interface OfflineDocument {
   id: string;
@@ -29,7 +12,8 @@ interface OfflineDocument {
   tags?: string[];
 }
 
-let realm: Realm | null = null;
+const VAULT_KEY = '@legacyguard_vault';
+const VAULT_METADATA_KEY = '@legacyguard_vault_metadata';
 
 export const OfflineVaultService = {
   /**
@@ -37,19 +21,16 @@ export const OfflineVaultService = {
    * @param encryptionKey - 64-byte encryption key
    */
   open: async (encryptionKey: Uint8Array): Promise<void> => {
-    if (realm && !realm.isClosed) return; // Already open
-
     try {
-      realm = await Realm.open({
-        path: 'legacyguard.realm',
-        schema: [DocumentSchema],
-        schemaVersion: 1,
-        encryptionKey, // 64-byte key for encryption
-      });
+      // Initialize vault if it doesn't exist
+      const vault = await AsyncStorage.getItem(VAULT_KEY);
+      if (!vault) {
+        await AsyncStorage.setItem(VAULT_KEY, JSON.stringify({}));
+        await AsyncStorage.setItem(VAULT_METADATA_KEY, JSON.stringify({ initialized: new Date() }));
+      }
       console.log('Secure offline vault opened successfully.');
     } catch (error) {
       console.error('Failed to open offline vault:', error);
-      realm = null;
       throw new Error('Failed to open secure vault');
     }
   },
@@ -58,26 +39,28 @@ export const OfflineVaultService = {
    * Add document to offline vault
    */
   addDocument: async (doc: OfflineDocument): Promise<void> => {
-    if (!realm) throw new Error('Vault is not open.');
-
     try {
+      // Get existing vault
+      const vaultData = await AsyncStorage.getItem(VAULT_KEY);
+      const vault = vaultData ? JSON.parse(vaultData) : {};
+      
       // Encrypt content before storing
-      // In production, use a proper encryption library
       const encryptedContent = await encryptContent(doc.content);
-
-      realm.write(() => {
-        realm!.create('OfflineDocument', {
-          _id: doc.id,
-          fileName: doc.fileName,
-          documentType: doc.documentType,
-          encryptedContent,
-          uploadedAt: doc.uploadedAt || new Date(),
-          fileSize: doc.fileSize,
-          tags: doc.tags || [],
-          lastAccessedAt: null,
-        }, Realm.UpdateMode.Modified);
-      });
-
+      
+      // Add document to vault
+      vault[doc.id] = {
+        _id: doc.id,
+        fileName: doc.fileName,
+        documentType: doc.documentType,
+        encryptedContent,
+        uploadedAt: doc.uploadedAt || new Date(),
+        fileSize: doc.fileSize,
+        tags: doc.tags || [],
+        lastAccessedAt: null,
+      };
+      
+      // Save updated vault
+      await AsyncStorage.setItem(VAULT_KEY, JSON.stringify(vault));
       console.log(`Document ${doc.fileName} added to offline vault`);
     } catch (error) {
       console.error('Failed to add document to vault:', error);
@@ -89,32 +72,36 @@ export const OfflineVaultService = {
    * Get all documents from offline vault
    */
   getDocuments: async (): Promise<OfflineDocument[]> => {
-    if (!realm) throw new Error('Vault is not open.');
-
     try {
-      const documents = realm.objects('OfflineDocument');
+      const vaultData = await AsyncStorage.getItem(VAULT_KEY);
+      if (!vaultData) return [];
+      
+      const vault = JSON.parse(vaultData);
       const decryptedDocs: OfflineDocument[] = [];
-
-      for (const doc of documents) {
+      
+      for (const docId in vault) {
+        const doc = vault[docId];
+        
         // Update last accessed time
-        realm.write(() => {
-          (doc as any).lastAccessedAt = new Date();
-        });
-
+        doc.lastAccessedAt = new Date();
+        
         // Decrypt content before returning
-        const decryptedContent = await decryptContent((doc as any).encryptedContent);
-
+        const decryptedContent = await decryptContent(doc.encryptedContent);
+        
         decryptedDocs.push({
-          id: (doc as any)._id,
-          fileName: (doc as any).fileName,
-          documentType: (doc as any).documentType,
+          id: doc._id,
+          fileName: doc.fileName,
+          documentType: doc.documentType,
           content: decryptedContent,
-          uploadedAt: (doc as any).uploadedAt,
-          fileSize: (doc as any).fileSize,
-          tags: Array.from((doc as any).tags || []),
+          uploadedAt: doc.uploadedAt,
+          fileSize: doc.fileSize,
+          tags: doc.tags || [],
         });
       }
-
+      
+      // Save updated vault with last accessed times
+      await AsyncStorage.setItem(VAULT_KEY, JSON.stringify(vault));
+      
       return decryptedDocs;
     } catch (error) {
       console.error('Failed to get documents from vault:', error);
@@ -126,28 +113,29 @@ export const OfflineVaultService = {
    * Get single document by ID
    */
   getDocument: async (id: string): Promise<OfflineDocument | null> => {
-    if (!realm) throw new Error('Vault is not open.');
-
     try {
-      const doc = realm.objectForPrimaryKey('OfflineDocument', id);
+      const vaultData = await AsyncStorage.getItem(VAULT_KEY);
+      if (!vaultData) return null;
+      
+      const vault = JSON.parse(vaultData);
+      const doc = vault[id];
       if (!doc) return null;
-
+      
       // Update last accessed time
-      realm.write(() => {
-        (doc as any).lastAccessedAt = new Date();
-      });
-
+      doc.lastAccessedAt = new Date();
+      await AsyncStorage.setItem(VAULT_KEY, JSON.stringify(vault));
+      
       // Decrypt content
-      const decryptedContent = await decryptContent((doc as any).encryptedContent);
-
+      const decryptedContent = await decryptContent(doc.encryptedContent);
+      
       return {
-        id: (doc as any)._id,
-        fileName: (doc as any).fileName,
-        documentType: (doc as any).documentType,
+        id: doc._id,
+        fileName: doc.fileName,
+        documentType: doc.documentType,
         content: decryptedContent,
-        uploadedAt: (doc as any).uploadedAt,
-        fileSize: (doc as any).fileSize,
-        tags: Array.from((doc as any).tags || []),
+        uploadedAt: doc.uploadedAt,
+        fileSize: doc.fileSize,
+        tags: doc.tags || [],
       };
     } catch (error) {
       console.error('Failed to get document from vault:', error);
@@ -159,16 +147,16 @@ export const OfflineVaultService = {
    * Remove document from vault
    */
   removeDocument: async (id: string): Promise<boolean> => {
-    if (!realm) throw new Error('Vault is not open.');
-
     try {
-      const doc = realm.objectForPrimaryKey('OfflineDocument', id);
-      if (!doc) return false;
-
-      realm.write(() => {
-        realm!.delete(doc);
-      });
-
+      const vaultData = await AsyncStorage.getItem(VAULT_KEY);
+      if (!vaultData) return false;
+      
+      const vault = JSON.parse(vaultData);
+      if (!vault[id]) return false;
+      
+      delete vault[id];
+      await AsyncStorage.setItem(VAULT_KEY, JSON.stringify(vault));
+      
       console.log(`Document ${id} removed from offline vault`);
       return true;
     } catch (error) {
@@ -181,12 +169,8 @@ export const OfflineVaultService = {
    * Clear all documents from vault
    */
   clearAll: async (): Promise<void> => {
-    if (!realm) throw new Error('Vault is not open.');
-
     try {
-      realm.write(() => {
-        realm!.deleteAll();
-      });
+      await AsyncStorage.setItem(VAULT_KEY, JSON.stringify({}));
       console.log('All documents cleared from offline vault');
     } catch (error) {
       console.error('Failed to clear vault:', error);
@@ -202,38 +186,44 @@ export const OfflineVaultService = {
     totalSize: number;
     lastSync?: Date;
   }> => {
-    if (!realm) throw new Error('Vault is not open.');
-
-    const documents = realm.objects('OfflineDocument');
-    let totalSize = 0;
-
-    for (const doc of documents) {
-      totalSize += (doc as any).fileSize || 0;
+    try {
+      const vaultData = await AsyncStorage.getItem(VAULT_KEY);
+      if (!vaultData) return { documentCount: 0, totalSize: 0 };
+      
+      const vault = JSON.parse(vaultData);
+      let totalSize = 0;
+      let documentCount = 0;
+      
+      for (const docId in vault) {
+        documentCount++;
+        totalSize += vault[docId].fileSize || 0;
+      }
+      
+      return {
+        documentCount,
+        totalSize,
+        lastSync: undefined, // Can be implemented with sync functionality
+      };
+    } catch (error) {
+      console.error('Failed to get vault stats:', error);
+      return { documentCount: 0, totalSize: 0 };
     }
-
-    return {
-      documentCount: documents.length,
-      totalSize,
-      lastSync: undefined, // Can be implemented with sync functionality
-    };
   },
 
   /**
    * Close the database
    */
   close: (): void => {
-    if (realm && !realm.isClosed) {
-      realm.close();
-      console.log('Offline vault closed');
-    }
-    realm = null;
+    // No-op for AsyncStorage - it doesn't need to be closed
+    console.log('Offline vault closed');
   },
 
   /**
    * Check if vault is open
    */
   isOpen: (): boolean => {
-    return realm !== null && !realm.isClosed;
+    // AsyncStorage is always available
+    return true;
   },
 };
 

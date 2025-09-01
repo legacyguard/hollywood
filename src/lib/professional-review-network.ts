@@ -342,7 +342,7 @@ export class ProfessionalReviewNetwork {
 
   private async findNotaries(
     location: string,
-    preferences: any
+    preferences: Record<string, unknown>
   ): Promise<ProfessionalProfile[]> {
     return this.searchProfessionals('notary', {
       language: preferences.language,
@@ -400,7 +400,7 @@ export class ProfessionalReviewNetwork {
     return { level, estimatedHours, keyIssues };
   }
 
-  private generateRecommendedServices(willData: WillData, complexity: any) {
+  private generateRecommendedServices(willData: WillData, complexity: Record<string, unknown>) {
     const services = [
       {
         service: 'Will Review and Optimization',

@@ -507,11 +507,11 @@ export const trackFeature = (feature: string, properties?: Record<string, unknow
   analyticsService.trackFeature(feature, properties);
 };
 
-export const trackPerformance = (metric: string, value: number, properties?: Record<string, any>) => {
+export const trackPerformance = (metric: string, value: number, properties?: Record<string, unknown>) => {
   analyticsService.trackPerformance(metric, value, properties);
 };
 
-export const trackError = (error: string, properties?: Record<string, any>) => {
+export const trackError = (error: string, properties?: Record<string, unknown>) => {
   analyticsService.trackError(error, properties);
 };
 

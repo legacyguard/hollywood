@@ -16,7 +16,7 @@ export interface NotificationConfig {
   badge?: string;
   image?: string;
   tag?: string;
-  data?: any;
+  data?: Record<string, unknown>;
   actions?: NotificationAction[];
   requireInteraction?: boolean;
   silent?: boolean;
@@ -227,7 +227,7 @@ export class PushNotificationService {
   /**
    * Send targeted notification based on type
    */
-  async sendNotification(type: NotificationType, data: any = {}): Promise<boolean> {
+  async sendNotification(type: NotificationType, data: Record<string, unknown> = {}): Promise<boolean> {
     const configs = this.getNotificationConfigs();
     const config = configs[type];
 
@@ -433,7 +433,7 @@ export class PushNotificationService {
   /**
    * Customize notification config with dynamic data
    */
-  private customizeNotificationConfig(config: NotificationConfig, data: any): NotificationConfig {
+  private customizeNotificationConfig(config: NotificationConfig, data: Record<string, unknown>): NotificationConfig {
     const customized = { ...config };
 
     // Replace placeholders in title and body
