@@ -9,6 +9,7 @@ import { LegacyGuardLogo } from '@/components/LegacyGuardLogo';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@clerk/clerk-react';
 import { SecurityPromiseSection } from '@/components/landing/SecurityPromiseSection';
+import { PricingSection } from '@/components/landing/PricingSection';
 import { RedirectGuard } from '@/lib/utils/redirect-guard';
 
 export function LandingPage() {
@@ -1013,132 +1014,7 @@ export function LandingPage() {
       </section>
 
       {/* Pricing Section */}
-      <section className='py-20 bg-slate-800/90 backdrop-blur-sm'>
-        <div className='container mx-auto px-4'>
-          <motion.div
-            className='text-center mb-16'
-            initial={{  opacity: 0, y: 30  }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{  duration: 0.8  }}
-            viewport={{  once: true  }}
-          >
-            <h2 className='text-4xl lg:text-5xl font-bold text-white mb-6'>
-              Simple, Transparent Pricing
-            </h2>
-            <p className='text-xl text-slate-300 max-w-2xl mx-auto'>
-              Start free, upgrade when you're ready for advanced features
-            </p>
-          </motion.div>
-
-          <div className='grid md:grid-cols-2 gap-8 max-w-4xl mx-auto'>
-            {/* Free Plan */}
-            <motion.div
-              initial={{  opacity: 0, y: 30  }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{  duration: 0.8, delay: 0.1  }}
-              viewport={{  once: true  }}
-            >
-              <Card className='p-8 bg-slate-900/60 border-slate-700 hover:bg-slate-800/60 hover:border-slate-600 transition-all duration-300 backdrop-blur-sm'>
-                <CardContent className='space-y-6'>
-                  <div className='text-center'>
-                    <h3 className='text-2xl font-bold text-white'>
-                      Free
-                    </h3>
-                    <div className='text-4xl font-bold text-yellow-400 mt-2'>
-                      $0
-                    </div>
-                    <p className='text-slate-300'>
-                      Forever
-                    </p>
-                  </div>
-
-                  <ul className='space-y-3'>
-                    {[
-                      'Up to 10 secure documents',
-                      'Basic Sofia AI guidance',
-                      'Simple will creation',
-                      '1 trusted guardian',
-                      'Email support',
-                    ].map((feature, index) => (
-                      <li
-                        key={index}
-                        className='flex items-center gap-2 text-slate-300'
-                      >
-                        <Icon name={"check" as any} className='w-4 h-4 text-yellow-400' />
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-
-                  <Button
-                    className='w-full bg-yellow-500 hover:bg-yellow-400 text-slate-900'
-                    onClick={handleGetStarted}
-                  >
-                    Start Free Today
-                  </Button>
-                </CardContent>
-              </Card>
-            </motion.div>
-
-            {/* Premium Plan */}
-            <motion.div
-              initial={{  opacity: 0, y: 30  }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{  duration: 0.8, delay: 0.2  }}
-              viewport={{  once: true  }}
-            >
-              <Card className='p-8 bg-slate-900/60 border-slate-700 hover:bg-slate-800/60 hover:border-yellow-500/50 transition-all duration-300 relative backdrop-blur-sm'>
-                <Badge className='absolute -top-3 left-1/2 transform -translate-x-1/2 bg-yellow-500 text-slate-900 font-bold px-4 py-1'>
-                  Most Popular
-                </Badge>
-                <CardContent className='space-y-6'>
-                  <div className='text-center'>
-                    <h3 className='text-2xl font-bold text-white'>
-                      Premium
-                    </h3>
-                    <div className='text-4xl font-bold text-yellow-400 mt-2'>
-                      $9.99
-                    </div>
-                    <p className='text-slate-300'>
-                      per month
-                    </p>
-                  </div>
-
-                  <ul className='space-y-3'>
-                    {[
-                      'Unlimited secure documents',
-                      'Advanced Sofia AI with personalization',
-                      'Professional will templates',
-                      'Unlimited trusted guardians',
-                      'Time capsule messages',
-                      'Advanced legacy planning',
-                      'Priority support',
-                      'Legal document review',
-                    ].map((feature, index) => (
-                      <li
-                        key={index}
-                        className='flex items-center gap-2 text-slate-300'
-                      >
-                        <Icon name={"check" as any}
-                          className='w-4 h-4 text-yellow-400'
-                        />
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-
-                  <Button
-                    className='w-full bg-yellow-500 hover:bg-yellow-400 text-slate-900'
-                    onClick={handleGetStarted}
-                  >
-                    Start Premium Trial
-                  </Button>
-                </CardContent>
-              </Card>
-            </motion.div>
-          </div>
-        </div>
-      </section>
+      <PricingSection />
 
       {/* Social Proof Section */}
       <section className='py-20 bg-slate-800 border-t border-slate-700'>

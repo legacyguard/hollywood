@@ -257,16 +257,18 @@ export function useMobilePerformance() {
 
     // Memory usage monitoring (if available)
     if ('memory' in performance) {
-      const memoryInfo = (performance as any).memory;
-      setPerformance(prev => ({
-        ...prev,
-        memoryUsage: memoryInfo.usedJSHeapSize / memoryInfo.jsHeapSizeLimit
-      }));
+      const memoryInfo = (performance as { memory?: { usedJSHeapSize: number; jsHeapSizeLimit: number } }).memory;
+      if (memoryInfo) {
+        setPerformance(prev => ({
+          ...prev,
+          memoryUsage: memoryInfo.usedJSHeapSize / memoryInfo.jsHeapSizeLimit
+        }));
+      }
     }
 
     // Connection type detection
     if ('connection' in navigator) {
-      const connection = (navigator as any).connection;
+      const connection = (navigator as { connection?: { effectiveType?: string } }).connection;
       setPerformance(prev => ({
         ...prev,
         connectionType: connection.effectiveType || 'unknown'
@@ -330,11 +332,11 @@ export function MobileOptimizedComponent<T extends Record<string, any>>({
 // Backward compatibility wrapper
 /**
  * @deprecated Use MobileOptimizedComponent instead. This function will be removed in a future version.
- * 
+ *
  * Example migration:
  * // Old API
  * renderMobileOptimized(MobileComp, DesktopComp, props)
- * 
+ *
  * // New API
  * <MobileOptimizedComponent MobileComponent={MobileComp} DesktopComponent={DesktopComp} {...props} />
  */

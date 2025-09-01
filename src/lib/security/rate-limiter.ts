@@ -62,7 +62,7 @@ export const RATE_LIMIT_PRESETS = {
 class RateLimiter {
   private static instance: RateLimiter;
   private store: Map<string, RateLimitStore> = new Map();
-  private cleanupInterval: NodeJS.Timeout | null = null;
+  private cleanupInterval: number | null = null;
   private enabled: boolean;
 
   private constructor() {

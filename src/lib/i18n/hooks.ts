@@ -14,12 +14,12 @@ import {
 } from './config';
 import { JURISDICTION_CONFIG } from './jurisdictions';
 import { LANGUAGE_CONFIG } from './languages';
-import type { LegalTermCategory } from './legal-terminology';
 import {
   getLegalTerm,
   getLegalDefinition,
   getLegalReference,
   searchLegalTerms,
+  type LegalTermCategory,
 } from './legal-terminology';
 import type {
   LanguageCode,

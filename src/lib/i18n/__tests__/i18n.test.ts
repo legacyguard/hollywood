@@ -106,7 +106,7 @@ describe('i18n Translation System', () => {
     });
 
     it('should have tax information for each jurisdiction', () => {
-      for (const [code, config] of Object.entries(JURISDICTION_CONFIG)) {
+      for (const [_code, config] of Object.entries(JURISDICTION_CONFIG)) {
         expect(config.inheritanceTax).toBeDefined();
         expect(config.inheritanceTax.hasInheritanceTax).toBeDefined();
 
@@ -117,7 +117,7 @@ describe('i18n Translation System', () => {
     });
 
     it('should have notary requirements for each jurisdiction', () => {
-      for (const [code, config] of Object.entries(JURISDICTION_CONFIG)) {
+      for (const [_code, config] of Object.entries(JURISDICTION_CONFIG)) {
         expect(config.notary).toBeDefined();
         expect(config.notary.required).toBeDefined();
         expect(config.notary.documents).toBeDefined();
@@ -140,7 +140,7 @@ describe('i18n Translation System', () => {
 
     it('should have RTL configuration for applicable languages', () => {
       // Check if RTL languages have proper configuration
-      for (const [code, config] of Object.entries(LANGUAGE_CONFIG)) {
+      for (const [_code, config] of Object.entries(LANGUAGE_CONFIG)) {
         if (config.rtl) {
           expect(config.rtl).toBe(true);
         }
@@ -148,7 +148,7 @@ describe('i18n Translation System', () => {
     });
 
     it('should have date and number formatting rules', () => {
-      for (const [code, config] of Object.entries(LANGUAGE_CONFIG)) {
+      for (const [_code, config] of Object.entries(LANGUAGE_CONFIG)) {
         expect(config.dateFormat).toBeDefined();
         expect(config.timeFormat).toBeDefined();
         expect(config.numberFormat).toBeDefined();

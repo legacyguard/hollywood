@@ -17,6 +17,7 @@ The new `MetaTags` component in `src/components/common/MetaTags.tsx` handles all
 **Solutions**:
 
 #### Quick Fix (Current Session)
+
 ```bash
 # Increase file limit for current terminal session
 ulimit -n 10240
@@ -26,6 +27,7 @@ npm run build
 ```
 
 #### Using the Helper Script
+
 ```bash
 # Run the script to set proper limits
 ./scripts/increase-file-limits.sh
@@ -35,36 +37,42 @@ npm run build
 ```
 
 #### Permanent Fix (macOS)
+
 1. Create or edit `~/.zshrc` (or `~/.bash_profile` for bash):
+
 ```bash
 echo "ulimit -n 10240" >> ~/.zshrc
 source ~/.zshrc
 ```
 
-2. For system-wide changes, you may need to modify system limits. See Apple's documentation for details.
+1. For system-wide changes, you may need to modify system limits. See Apple's documentation for details.
 
 ### 3. Mobile Build Issues
 
 **Problem**: Mobile app can't resolve `@legacyguard/ui` package.
 
-**Temporary Workaround**: 
+**Temporary Workaround**:
+
 - Build packages first: `cd packages/ui && npm run build`
 - Ensure all workspace dependencies are properly linked: `npm install`
 
-**Metro Configuration**: 
+**Metro Configuration**:
+
 We've added `metro.config.js` to optimize file handling:
+
 - Set maxWorkers to 2 (top-level Metro option to limit concurrent processing)
 - Disabled hierarchical lookup
 - Limited watched folders
 
 ### 4. CI/CD Pipeline Fixes
 
-For GitHub Actions, the pipeline should now work correctly after removing `react-helmet-async`. 
+For GitHub Actions, the pipeline should now work correctly after removing `react-helmet-async`.
 
 If you still encounter issues:
 
 1. Ensure all dependencies are compatible with React 19
-2. Clear caches in CI/CD:
+1. Clear caches in CI/CD:
+
 ```yaml
 - name: Clear caches
   run: |
@@ -73,20 +81,22 @@ If you still encounter issues:
     npm install
 ```
 
-3. Use `npm ci` instead of `npm install` in CI/CD for reproducible builds
+1. Use `npm ci` instead of `npm install` in CI/CD for reproducible builds
 
 ## Build Commands
 
 ### Development
+
 ```bash
 # Web development
 npm run web:dev
 
-# Mobile development  
+# Mobile development
 npm run mobile:dev
 ```
 
 ### Production Build
+
 ```bash
 # Build all packages
 npm run build
@@ -99,6 +109,7 @@ cd mobile && npm run build
 ```
 
 ### Clean Build
+
 ```bash
 # Remove all node_modules and reinstall
 rm -rf node_modules package-lock.json mobile/node_modules

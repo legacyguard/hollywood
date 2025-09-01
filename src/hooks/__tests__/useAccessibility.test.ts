@@ -13,19 +13,19 @@ describe('useAccessibility Hooks', () => {
   describe('useAnnouncement', () => {
     it('calls announceToScreenReader with correct parameters', () => {
       const { result } = renderHook(() => useAnnouncement());
-      
+
       // Create a temporary element to test announcement
       const tempDiv = document.createElement('div');
       document.body.appendChild(tempDiv);
-      
+
       act(() => {
         result.current('Test message', 'assertive');
       });
-      
+
       // Check that an announcement element was created
       const announcement = document.querySelector('[aria-live="assertive"]');
       expect(announcement).toBeTruthy();
-      
+
       // Cleanup
       document.body.innerHTML = '';
     });
@@ -35,7 +35,7 @@ describe('useAccessibility Hooks', () => {
     it('handles arrow key navigation correctly', () => {
       const items = ['Item 1', 'Item 2', 'Item 3'];
       const onSelect = vi.fn();
-      
+
       const { result } = renderHook(() =>
         useKeyboardNavigation(items, { onSelect })
       );
@@ -69,7 +69,7 @@ describe('useAccessibility Hooks', () => {
 
     it('handles Home and End keys', () => {
       const items = ['Item 1', 'Item 2', 'Item 3'];
-      
+
       const { result } = renderHook(() => useKeyboardNavigation(items));
 
       // Test End key
@@ -91,7 +91,7 @@ describe('useAccessibility Hooks', () => {
 
     it('supports loop navigation', () => {
       const items = ['Item 1', 'Item 2', 'Item 3'];
-      
+
       const { result } = renderHook(() =>
         useKeyboardNavigation(items, { loop: true })
       );
@@ -144,7 +144,7 @@ describe('useAccessibility Hooks', () => {
   describe('useRovingTabIndex', () => {
     it('manages roving tabindex correctly', () => {
       const items = ['Item 1', 'Item 2', 'Item 3'];
-      
+
       const { result } = renderHook(() => useRovingTabIndex(items, 1));
 
       expect(result.current.currentIndex).toBe(1);

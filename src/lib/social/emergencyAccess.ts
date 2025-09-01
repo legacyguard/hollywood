@@ -815,8 +815,8 @@ export class EmergencyAccessService {
   private async notifyEmergencyResolution(emergency: EmergencyAccess, reason: string): Promise<void> {
     const contacts = await this.getEmergencyContacts(emergency.user_id);
 
-    for (const contact of contacts) {
-      if (contact.contact_user_id) {
+    for (const _contact of contacts) {
+      if (_contact.contact_user_id) {
         await pushNotificationService.sendNotification('security_alert', {
           message: `Emergency access resolved: ${reason}`,
           emergencyId: emergency.id
@@ -891,7 +891,7 @@ export class EmergencyAccessService {
       if (protocol.data) {
         const contacts = await this.getEmergencyContacts(protocol.data.user_id);
 
-        for (const contact of contacts) {
+        for (const _contact of contacts) {
           await pushNotificationService.sendNotification('system_update', {
             message: `Emergency protocol test - ${protocol.data.name}`,
             testMode: true

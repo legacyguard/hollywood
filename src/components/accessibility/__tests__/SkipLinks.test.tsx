@@ -5,7 +5,7 @@ import { SkipLinks } from '../SkipLinks';
 describe('SkipLinks Component', () => {
   it('renders default skip links', () => {
     render(<SkipLinks />);
-    
+
     expect(screen.getByText('Skip to main content')).toBeInTheDocument();
     expect(screen.getByText('Skip to navigation')).toBeInTheDocument();
     expect(screen.getByText('Skip to search')).toBeInTheDocument();
@@ -18,7 +18,7 @@ describe('SkipLinks Component', () => {
     ];
 
     render(<SkipLinks links={customLinks} />);
-    
+
     expect(screen.getByText('Custom Link 1')).toBeInTheDocument();
     expect(screen.getByText('Custom Link 2')).toBeInTheDocument();
   });
@@ -44,7 +44,7 @@ describe('SkipLinks Component', () => {
     });
 
     render(<SkipLinks />);
-    
+
     const mainContentLink = screen.getByText('Skip to main content');
     fireEvent.click(mainContentLink);
 
@@ -58,7 +58,7 @@ describe('SkipLinks Component', () => {
 
   it('applies correct accessibility attributes', () => {
     render(<SkipLinks />);
-    
+
     const nav = screen.getByRole('navigation', { name: 'Skip links' });
     expect(nav).toBeInTheDocument();
     expect(nav).toHaveAttribute('aria-label', 'Skip links');
@@ -66,7 +66,7 @@ describe('SkipLinks Component', () => {
 
   it('links are keyboard accessible', () => {
     render(<SkipLinks />);
-    
+
     const links = screen.getAllByRole('link');
     links.forEach(link => {
       expect(link).toHaveAttribute('href');

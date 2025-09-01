@@ -1,8 +1,7 @@
 // Sofia Action Router - Handles actions from search without OpenAI
 import type { NavigateFunction } from 'react-router-dom';
 import { toast } from 'sonner';
-import type { SofiaAction } from './sofia-search-dictionary';
-import { faqResponses } from './sofia-search-dictionary';
+import { faqResponses, type SofiaAction } from './sofia-search-dictionary';
 import type { DocumentFilter } from '../contexts/DocumentFilterContext';
 
 export interface SofiaActionContext {
@@ -16,7 +15,7 @@ export const executeSofiaAction = async (
   action: SofiaAction,
   context: SofiaActionContext
 ): Promise<void> => {
-  const { navigate, userId, setDocumentFilter, onSofiaMessage } = context;
+  const { navigate, userId: _userId, setDocumentFilter, onSofiaMessage } = context;
 
   switch (action.actionId) {
     case 'navigate':
@@ -123,7 +122,7 @@ export const executeSofiaAction = async (
 
     case 'navigate_and_suggest': {
       // Navigate and provide contextual suggestion
-      const { url, suggestion, category: suggestedCategory } = action.payload;
+      const { url, suggestion, category: _suggestedCategory } = action.payload;
       navigate(url);
 
       if (onSofiaMessage) {
@@ -193,7 +192,7 @@ export const executeSofiaAction = async (
       // Navigate to vault and highlight specific document
       navigate('/vault');
 
-      const { documentId, documentTitle } = action.payload as {
+      const { documentId: _documentId, documentTitle } = action.payload as {
         documentId: string;
         documentTitle: string;
       };

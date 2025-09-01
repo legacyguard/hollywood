@@ -1,16 +1,13 @@
 // Sofia Adaptive Personality Manager
 // Handles personality detection, adaptation, and message personalization
 
-import type {
-  SofiaPersonality,
-  PersonalityMode,
-  CommunicationStyle,
-  InteractionPattern,
-  AdaptiveMessageConfig,
-} from './sofia-types';
-
 import {
   createDefaultPersonality,
+  type SofiaPersonality,
+  type PersonalityMode,
+  type CommunicationStyle,
+  type InteractionPattern,
+  type AdaptiveMessageConfig,
 } from './sofia-types';
 
 export class AdaptivePersonalityManager {
@@ -237,7 +234,7 @@ export class AdaptivePersonalityManager {
         // Convert date strings back to Date objects
         if (parsed.userPreferences?.lastInteractions) {
           parsed.userPreferences.lastInteractions = parsed.userPreferences.lastInteractions.map(
-            (interaction: any) => ({
+            (interaction: InteractionPattern) => ({
               ...interaction,
               timestamp: new Date(interaction.timestamp),
             })

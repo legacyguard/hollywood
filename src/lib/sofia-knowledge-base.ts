@@ -1,5 +1,4 @@
-import type { ActionButton, SofiaContext } from './sofia-types';
-import { COMMON_ACTIONS } from './sofia-types';
+import { COMMON_ACTIONS, type ActionButton, type SofiaContext } from './sofia-types';
 
 // Sofia Knowledge Base - Fast, cost-effective answers to common questions
 // Uses pre-written responses instead of AI for 80% of queries

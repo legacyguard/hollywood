@@ -3,7 +3,7 @@
  * Handles session timeouts, refresh tokens, and activity tracking
  */
 
-import { useAuth } from '@clerk/clerk-react';
+import { _useAuth } from '@clerk/clerk-react';
 
 export interface SessionConfig {
   maxIdleTime: number; // milliseconds
@@ -23,9 +23,9 @@ class SessionManager {
   private config: SessionConfig;
   private state: SessionState;
   private timers: {
-    idle?: NodeJS.Timeout;
-    warning?: NodeJS.Timeout;
-    refresh?: NodeJS.Timeout;
+    idle?: number;
+    warning?: number;
+    refresh?: number;
   } = {};
   private listeners: Set<(state: SessionState) => void> = new Set();
   private activityEvents = [
@@ -156,11 +156,7 @@ class SessionManager {
     // Log out user
     if (typeof window !== 'undefined') {
       try {
-        // Sign out from Clerk
-        const { signOut } = useAuth();
-        await signOut?.();
-
-        // Redirect to login
+        // Redirect to login (sign out will be handled by the auth system)
         window.location.href = '/sign-in?reason=session_expired';
       } catch (error) {
         console.error('Failed to sign out:', error);

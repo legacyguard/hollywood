@@ -9,9 +9,9 @@ module.exports = function(api) {
           root: ['./'],
           alias: {
             '@': './src',
-            '@legacyguard/ui': '../packages/ui/src',
-            '@legacyguard/logic': '../packages/logic/src',
-            '@hollywood/shared': '../packages/shared/src'
+            '@legacyguard/ui': '../packages/ui',
+            '@legacyguard/logic': '../packages/logic',
+            '@hollywood/shared': '../packages/shared'
           }
         }
       ],
