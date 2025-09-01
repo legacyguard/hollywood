@@ -53,7 +53,7 @@ source ~/.zshrc
 
 **Metro Configuration**: 
 We've added `metro.config.js` to optimize file handling:
-- Reduced worker count to 2
+- Set maxWorkers to 2 (top-level Metro option to limit concurrent processing)
 - Disabled hierarchical lookup
 - Limited watched folders
 

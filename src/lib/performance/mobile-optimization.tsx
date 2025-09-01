@@ -323,6 +323,29 @@ export function MobileOptimizedComponent<T extends Record<string, any>>({
   const { isSmall } = useBreakpoint();
 
   return isSmall ?
-    <MobileComponent {...(props as T)} /> :
-    <DesktopComponent {...(props as T)} />;
+    <MobileComponent {...(props as unknown as T)} /> :
+    <DesktopComponent {...(props as unknown as T)} />;
+}
+
+// Backward compatibility wrapper
+/**
+ * @deprecated Use MobileOptimizedComponent instead. This function will be removed in a future version.
+ * 
+ * Example migration:
+ * // Old API
+ * renderMobileOptimized(MobileComp, DesktopComp, props)
+ * 
+ * // New API
+ * <MobileOptimizedComponent MobileComponent={MobileComp} DesktopComponent={DesktopComp} {...props} />
+ */
+export function renderMobileOptimized<T extends Record<string, any>>(
+  MobileComponent: React.ComponentType<T>,
+  DesktopComponent: React.ComponentType<T>,
+  props: T
+) {
+  console.warn(
+    'renderMobileOptimized is deprecated. Use MobileOptimizedComponent instead. ' +
+    'See the function documentation for migration details.'
+  );
+  return <MobileOptimizedComponent MobileComponent={MobileComponent} DesktopComponent={DesktopComponent} {...props} />;
 }

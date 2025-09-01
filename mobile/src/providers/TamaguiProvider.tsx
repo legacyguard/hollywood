@@ -1,5 +1,6 @@
 import React from 'react'
-import { TamaguiProvider as TamaguiProviderBase, tamaguiConfig } from '@legacyguard/ui'
+import { TamaguiProvider as TamaguiProviderBase } from 'tamagui'
+import { config as tamaguiConfig } from '../tamagui.config'
 import { ThemeProvider as AppThemeProvider, useAppTheme } from '@/contexts/ThemeContext'
 
 interface ProvidersProps {

@@ -610,7 +610,7 @@ class AdvancedSharingControlsService {
   }
 
   // Placeholder methods for data operations (would integrate with IndexedDB/Supabase)
-  private async storeShareLink(shareLink: ShareLink): Promise<void> {
+  private async storeShareLink(_shareLink: ShareLink): Promise<void> {
     // TODO: Store in database
   }
 

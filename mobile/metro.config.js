@@ -1,9 +1,36 @@
 const { getDefaultConfig } = require('expo/metro-config');
+const path = require('path');
 
-const config = getDefaultConfig(__dirname);
+const projectRoot = __dirname;
+const workspaceRoot = path.resolve(projectRoot, '..');
 
-// Increase the transformer worker pool to handle more files
-config.maxWorkers = 2;
+const config = getDefaultConfig(projectRoot);
+
+// Watch all files in the monorepo
+config.watchFolders = [
+  workspaceRoot,
+  path.resolve(workspaceRoot, 'packages/ui'),
+  path.resolve(workspaceRoot, 'packages/logic'),
+  path.resolve(workspaceRoot, 'packages/shared'),
+];
+
+// Ensure Metro includes monorepo packages
+config.resolver.nodeModulesPaths = [
+  path.resolve(projectRoot, 'node_modules'),
+  path.resolve(workspaceRoot, 'node_modules'),
+];
+
+// Add support for TypeScript files
+config.resolver.sourceExts = [...config.resolver.sourceExts, 'ts', 'tsx'];
+
+// Fix for @legacyguard packages
+config.resolver.extraNodeModules = {
+  '@legacyguard/ui': path.resolve(workspaceRoot, 'packages/ui'),
+  '@legacyguard/logic': path.resolve(workspaceRoot, 'packages/logic'),
+  '@hollywood/shared': path.resolve(workspaceRoot, 'packages/shared'),
+};
+
+module.exports = config;
 
 // Configure watchman to use less file handles
 config.watchFolders = [__dirname];
@@ -34,4 +61,8 @@ config.server = {
   },
 };
 
-module.exports = config;
+// Export config with maxWorkers as a top-level option
+module.exports = {
+  ...config,
+  maxWorkers: 2,
+};

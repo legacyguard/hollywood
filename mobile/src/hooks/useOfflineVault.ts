@@ -21,8 +21,10 @@ interface UseOfflineVaultReturn {
   isLoading: boolean;
   error: string | null;
   documents: VaultDocument[];
+  offlineDocuments: VaultDocument[]; // Alias for compatibility
   documentCount: number;
   totalSize: number;
+  isAvailable: boolean; // Added for compatibility
   loadDocuments: () => Promise<void>;
   addDocument: (doc: VaultDocument) => Promise<void>;
   removeDocument: (id: string) => Promise<void>;
@@ -223,8 +225,10 @@ export const useOfflineVault = (): UseOfflineVaultReturn => {
     isLoading,
     error,
     documents,
+    offlineDocuments: documents, // Alias for compatibility
     documentCount: stats.documentCount,
     totalSize: stats.totalSize,
+    isAvailable: isVaultOpen && !isLoading, // Added for compatibility
     loadDocuments,
     addDocument,
     removeDocument,

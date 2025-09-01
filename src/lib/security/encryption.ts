@@ -9,8 +9,8 @@ import { envConfig } from './env-config';
 const ALGORITHM = 'AES-GCM';
 const KEY_LENGTH = 256;
 const IV_LENGTH = 12;
-const TAG_LENGTH = 16;
-const SALT_LENGTH = 32;
+const _TAG_LENGTH = 16;
+const _SALT_LENGTH = 32;
 const ITERATIONS = 100000;
 
 /**
@@ -430,7 +430,7 @@ export function useEncryptedState<T>(
   initialValue: T
 ): [T, (value: T) => Promise<void>] {
   const [state, setState] = React.useState<T>(initialValue);
-  const [loading, setLoading] = React.useState(true);
+  const [_loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
     // Load encrypted state on mount

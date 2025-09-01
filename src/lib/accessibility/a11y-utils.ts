@@ -84,7 +84,7 @@ export const trapFocus = (element: HTMLElement): (() => void) => {
   const focusableElements = element.querySelectorAll<HTMLElement>(
     'a[href], button, textarea, input[type="text"], input[type="radio"], input[type="checkbox"], select, [tabindex]:not([tabindex="-1"])'
   );
-  
+
   const firstFocusable = focusableElements[0];
   const lastFocusable = focusableElements[focusableElements.length - 1];
 
