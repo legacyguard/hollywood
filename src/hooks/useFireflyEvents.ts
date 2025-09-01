@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, type EventListener } from 'react';
 import { useFireflyCelebration } from '@/contexts/FireflyContext';
 import type { SerenityMilestone } from '@/lib/path-of-serenity';
 
@@ -23,20 +23,20 @@ export const useFireflyEvents = () => {
   useEffect(() => {
     // Handle milestone unlocked events
     const handleMilestoneUnlocked = (
-      event: CustomEvent<MilestoneEventDetail>
+      _event: CustomEvent<MilestoneEventDetail>
     ) => {
       celebrateMilestone();
     };
 
     // Handle document uploaded events
     const handleDocumentUploaded = (
-      event: CustomEvent<DocumentEventDetail>
+      _event: CustomEvent<DocumentEventDetail>
     ) => {
       celebrateUpload();
     };
 
     // Handle guardian added events
-    const handleGuardianAdded = (event: CustomEvent<GuardianEventDetail>) => {
+    const handleGuardianAdded = (_event: CustomEvent<GuardianEventDetail>) => {
       celebrateGuardian();
     };
 

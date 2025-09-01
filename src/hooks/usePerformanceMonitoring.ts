@@ -211,7 +211,7 @@ export const usePerformanceMonitoring = () => {
     metrics,
     insights,
     // Utility functions for manual measurements
-    measureCustomMetric: (name: string, value: number) => {
+    measureCustomMetric: (name: string, _value: number) => {
       if ('performance' in window) {
         performance.mark(`${name}-start`);
         performance.mark(`${name}-end`);

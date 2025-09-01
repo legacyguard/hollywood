@@ -168,7 +168,7 @@ export function useEncryption() {
   const decryptData = useCallback(async (
     encryptedData: string,
     iv: string,
-    salt?: string
+    _salt?: string
   ): Promise<ArrayBuffer | null> => {
     if (!encryptionKey) {
       console.error('Encryption key not available');

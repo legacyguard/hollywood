@@ -355,10 +355,16 @@ export const ScrollContainer = styled(ScrollView, {
   },
 })
 
+// Aliases for better Tamagui compatibility
+export const YStack = Stack // Vertical Stack
+export const XStack = Row   // Horizontal Stack
+
 // Export types
 export type ContainerProps = GetProps<typeof Container>
 export type StackProps = GetProps<typeof Stack>
+export type YStackProps = StackProps
 export type RowProps = GetProps<typeof Row>
+export type XStackProps = RowProps
 export type GridProps = GetProps<typeof Grid>
 export type BoxProps = GetProps<typeof Box>
 export type SectionProps = GetProps<typeof Section>

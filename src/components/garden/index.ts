@@ -2,12 +2,12 @@
 // Phase 2A: Legacy Garden Core - Advanced tree visualization with personality adaptation
 
 // Core garden components
-export { LegacyGardenVisualization } from './LegacyGardenVisualization';
-export { AdaptiveLegacyTree } from './AdaptiveLegacyTree';
-export { GardenOrchestrator } from './GardenOrchestrator';
+import { LegacyGardenVisualization } from './LegacyGardenVisualization';
+import { AdaptiveLegacyTree } from './AdaptiveLegacyTree';
+import { GardenOrchestrator } from './GardenOrchestrator';
 
 // Interactive enhancements
-export {
+import {
   InteractiveGardenEnhancements,
   TreeLeaf,
   SofiaFirefly,
@@ -16,10 +16,10 @@ export {
 } from './InteractiveGardenEnhancements';
 
 // Garden hooks and utilities
-export { useGardenProgress, type GardenProgressData } from '@/hooks/useGardenProgress';
+import { useGardenProgress, type GardenProgressData } from '@/hooks/useGardenProgress';
 
 // Re-export garden seed from animations
-export { GardenSeed } from '@/components/animations/GardenSeed';
+import { GardenSeed } from '@/components/animations/GardenSeed';
 
 // Garden system types and interfaces
 export interface GardenTheme {
@@ -261,4 +261,9 @@ export default {
   GardenUtils,
   GARDEN_PRESETS,
   GARDEN_SYSTEM_INFO,
+  InteractiveGardenEnhancements,
+  TreeLeaf,
+  SofiaFirefly,
+  CelebrationFirefly,
+  MilestoneGlow,
 };

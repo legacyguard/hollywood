@@ -1,9 +1,11 @@
 // Sofia Context Provider Integration Tests
+import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { ClerkProvider } from '@clerk/clerk-react';
+
 import SofiaContextProvider, { usePersonalityManager } from '../SofiaContextProvider';
 import { useSofiaStore } from '@/stores/sofiaStore';
+import { useAuth } from '@clerk/clerk-react';
 
 // Mock dependencies
 vi.mock('@clerk/clerk-react', () => ({
@@ -177,7 +179,7 @@ describe('usePersonalityManager', () => {
 
   it('should return null when no user is authenticated', () => {
     // Mock no user
-    vi.mocked(require('@clerk/clerk-react').useAuth).mockReturnValue({
+    vi.mocked(useAuth).mockReturnValue({
       userId: null,
     });
 

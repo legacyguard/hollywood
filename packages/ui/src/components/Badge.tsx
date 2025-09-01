@@ -1,0 +1,222 @@
+import { type GetProps, styled, View, Text } from 'tamagui'
+
+// Badge Container
+export const Badge = styled(View, {
+  name: 'LGBadge',
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  borderRadius: '$1',
+  paddingHorizontal: '$2',
+  paddingVertical: '$0.5',
+  
+  variants: {
+    variant: {
+      default: {
+        backgroundColor: '$gray2',
+        borderColor: '$gray3',
+      },
+      primary: {
+        backgroundColor: '$primaryBlue',
+        borderColor: '$primaryBlueDark',
+      },
+      secondary: {
+        backgroundColor: '$gray5',
+        borderColor: '$gray6',
+      },
+      success: {
+        backgroundColor: '$success',
+        borderColor: '$primaryGreenDark',
+      },
+      warning: {
+        backgroundColor: '$warning',
+        borderColor: '$accentGoldDark',
+      },
+      error: {
+        backgroundColor: '$error',
+        borderColor: 'rgba(220, 38, 38, 0.8)',
+      },
+      outline: {
+        backgroundColor: 'transparent',
+        borderWidth: 1,
+        borderColor: '$borderColor',
+      },
+      premium: {
+        backgroundColor: '$accentGold',
+        borderColor: '$accentGoldDark',
+      },
+    },
+    size: {
+      small: {
+        paddingHorizontal: '$1.5',
+        paddingVertical: '$0.25',
+        borderRadius: '$0.5',
+      },
+      medium: {
+        paddingHorizontal: '$2',
+        paddingVertical: '$0.5',
+        borderRadius: '$1',
+      },
+      large: {
+        paddingHorizontal: '$3',
+        paddingVertical: '$1',
+        borderRadius: '$1.5',
+      },
+    },
+    rounded: {
+      true: {
+        borderRadius: 9999,
+      },
+    },
+  } as const,
+  
+  defaultVariants: {
+    variant: 'default',
+    size: 'medium',
+    rounded: false,
+  },
+})
+
+// Badge Text
+export const BadgeText = styled(Text, {
+  name: 'LGBadgeText',
+  fontSize: '$3',
+  fontWeight: '500',
+  lineHeight: 1,
+  
+  variants: {
+    variant: {
+      default: {
+        color: '$gray9',
+      },
+      primary: {
+        color: 'white',
+      },
+      secondary: {
+        color: 'white',
+      },
+      success: {
+        color: 'white',
+      },
+      warning: {
+        color: 'white',
+      },
+      error: {
+        color: 'white',
+      },
+      outline: {
+        color: '$color',
+      },
+      premium: {
+        color: 'white',
+      },
+    },
+    size: {
+      small: {
+        fontSize: '$2',
+      },
+      medium: {
+        fontSize: '$3',
+      },
+      large: {
+        fontSize: '$4',
+      },
+    },
+  } as const,
+  
+  defaultVariants: {
+    variant: 'default',
+    size: 'medium',
+  },
+})
+
+// Badge with Icon support
+export const BadgeWithIcon = ({ 
+  children,
+  icon,
+  variant = 'default',
+  size = 'medium',
+  ...props
+}: {
+  children: React.ReactNode
+  icon?: React.ReactNode
+  variant?: GetProps<typeof Badge>['variant']
+  size?: GetProps<typeof Badge>['size']
+} & Omit<GetProps<typeof Badge>, 'variant' | 'size'>) => {
+  return (
+    <Badge variant={variant} size={size} {...props}>
+      {icon && <View marginRight="$1">{icon}</View>}
+      <BadgeText variant={variant} size={size}>
+        {children}
+      </BadgeText>
+    </Badge>
+  )
+}
+
+// Badge Dot for status indicators
+export const BadgeDot = styled(View, {
+  name: 'LGBadgeDot',
+  width: 8,
+  height: 8,
+  borderRadius: 9999,
+  
+  variants: {
+    status: {
+      online: {
+        backgroundColor: '$success',
+      },
+      offline: {
+        backgroundColor: '$gray5',
+      },
+      busy: {
+        backgroundColor: '$error',
+      },
+      away: {
+        backgroundColor: '$warning',
+      },
+    },
+    pulse: {
+      true: {
+        animation: 'quick',
+      },
+    },
+  } as const,
+  
+  defaultVariants: {
+    status: 'offline',
+    pulse: false,
+  },
+})
+
+// Badge Group for multiple badges
+export const BadgeGroup = styled(View, {
+  name: 'LGBadgeGroup',
+  flexDirection: 'row',
+  flexWrap: 'wrap',
+  gap: '$2',
+  
+  variants: {
+    size: {
+      small: {
+        gap: '$1',
+      },
+      medium: {
+        gap: '$2',
+      },
+      large: {
+        gap: '$3',
+      },
+    },
+  } as const,
+  
+  defaultVariants: {
+    size: 'medium',
+  },
+})
+
+// Export types
+export type BadgeProps = GetProps<typeof Badge>
+export type BadgeTextProps = GetProps<typeof BadgeText>
+export type BadgeDotProps = GetProps<typeof BadgeDot>
+export type BadgeGroupProps = GetProps<typeof BadgeGroup>
+export type BadgeWithIconProps = Parameters<typeof BadgeWithIcon>[0]

@@ -9,10 +9,7 @@ import type {
   ProfessionalType,
   ReviewPriority,
 } from '@/lib/professional-review-network';
-import {
-  professionalNetwork,
-  ProfessionalProfile,
-} from '@/lib/professional-review-network';
+import { professionalNetwork } from '@/lib/professional-review-network';
 
 interface AttorneyReviewOptions {
   priority?: ReviewPriority;

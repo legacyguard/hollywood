@@ -1,20 +1,12 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import {
   LegalValidator,
-  ValidationLevel,
-  ValidationResult,
-  ComplianceReport,
 } from '@/lib/will-legal-validator';
-import type { SupportedLanguage } from '@/lib/multi-language-generator';
-import {
-  MultiLangGenerator,
-  LegalDocument,
-} from '@/lib/multi-language-generator';
+import { type SupportedLanguage, MultiLangGenerator } from '@/lib/multi-language-generator';
 import { WillTemplateLibrary } from '@/lib/will-template-library';
 import { LegacyMessageBuilder } from '@/lib/legacy-message-builder';
 import {
   professionalNetwork,
-  ProfessionalReviewNetwork,
 } from '@/lib/professional-review-network';
 import type { WillData } from '@/types/will';
 

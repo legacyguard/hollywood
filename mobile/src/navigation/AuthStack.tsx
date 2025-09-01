@@ -1,5 +1,14 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Text, View, Button, TextInput, ActivityIndicator, Alert, StyleSheet } from 'react-native';
+import { Alert } from 'react-native';
+import { 
+  YStack, 
+  XStack, 
+  H1, 
+  Button, 
+  Input, 
+  Container,
+  Spinner
+} from '@legacyguard/ui';
 import { useAuth } from '@/hooks/useAuth';
 import { AuthenticationService } from '@/services/AuthenticationService';
 import { useState } from 'react';
@@ -16,10 +25,18 @@ type WelcomeScreenProps = {
 
 // Placeholder Screens
 const WelcomeScreen = ({ navigation }: WelcomeScreenProps) => (
-  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-    <Text>Welcome to LegacyGuard</Text>
-    <Button title="Login" onPress={() => navigation.navigate('Login')} />
-  </View>
+  <Container size="small" padding="large">
+    <YStack flex={1} justify="center" align="center" space="$4">
+      <H1>Welcome to LegacyGuard</H1>
+      <Button 
+        variant="primary" 
+        size="large"
+        onPress={() => navigation.navigate('Login')}
+      >
+        Login
+      </Button>
+    </YStack>
+  </Container>
 );
 
 const LoginScreen = () => {
@@ -48,63 +65,49 @@ const LoginScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
+    <Container size="small" padding="large">
+      <YStack flex={1} justify="center" space="$4">
+        <H1 textAlign="center" marginBottom="$6">Login</H1>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-        autoCapitalize="none"
-        editable={!isLoading}
-      />
+        <Input
+          placeholder="Email"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
+          disabled={isLoading}
+          size="large"
+        />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-        editable={!isLoading}
-      />
+        <Input
+          placeholder="Password"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+          disabled={isLoading}
+          size="large"
+        />
 
-      {isLoading ? (
-        <ActivityIndicator size="large" color="#007AFF" style={styles.loader} />
-      ) : (
-        <Button title="Log In" onPress={handleLogin} />
-      )}
-    </View>
+        {isLoading ? (
+          <YStack align="center" marginTop="$4">
+            <Spinner size="large" color="$primaryBlue" />
+          </YStack>
+        ) : (
+          <Button 
+            variant="primary" 
+            size="large"
+            onPress={handleLogin}
+            marginTop="$4"
+          >
+            Log In
+          </Button>
+        )}
+      </YStack>
+    </Container>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 30,
-  },
-  input: {
-    width: '100%',
-    height: 50,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    paddingHorizontal: 15,
-    marginBottom: 15,
-    fontSize: 16,
-  },
-  loader: {
-    marginTop: 20,
-  },
-});
+// Styles are now handled by Tamagui components, no need for StyleSheet
 
 const Stack = createNativeStackNavigator();
 

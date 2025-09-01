@@ -2442,3 +2442,132 @@
 2025-08-31T22:17:46.015307Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
 2025-08-31T22:18:08.415484Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/contexts/useFocusMode.ts")}
 2025-08-31T22:18:08.415542Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:18:29.715665Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("package-lock.json")}
+2025-08-31T22:18:29.715703Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:18:32.116060Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("package-lock.json")}
+2025-08-31T22:18:32.116104Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:18:34.415279Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("package-lock.json")}
+2025-08-31T22:18:34.415301Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:18:36.516990Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("packages/ui/.turbo/turbo-build.log"), AnchoredSystemPathBuf("packages/shared/.turbo/turbo-build.log")}
+2025-08-31T22:18:36.517076Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@legacyguard/ui"), path: AnchoredSystemPathBuf("packages/ui") }, WorkspacePackage { name: Other("@hollywood/shared"), path: AnchoredSystemPathBuf("packages/shared") }}))
+2025-08-31T22:18:36.564033Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2025-08-31T22:18:41.516613Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/contexts/useFocusMode.ts")}
+2025-08-31T22:18:41.516924Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:18:43.715953Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("packages/ui/.turbo/turbo-build.log"), AnchoredSystemPathBuf("packages/shared/.turbo/turbo-build.log")}
+2025-08-31T22:18:43.715982Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@legacyguard/ui"), path: AnchoredSystemPathBuf("packages/ui") }, WorkspacePackage { name: Other("@hollywood/shared"), path: AnchoredSystemPathBuf("packages/shared") }}))
+2025-08-31T22:18:43.716001Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2025-08-31T22:18:43.716011Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2025-08-31T22:18:44.015095Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/pages/Performance.tsx"), AnchoredSystemPathBuf(".github/workflows/performance.yml"), AnchoredSystemPathBuf("performance-report.json")}
+2025-08-31T22:18:44.015105Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:18:44.715713Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("packages/shared/.turbo/turbo-build.log"), AnchoredSystemPathBuf("packages/ui/.turbo/turbo-build.log")}
+2025-08-31T22:18:44.715723Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@legacyguard/ui"), path: AnchoredSystemPathBuf("packages/ui") }, WorkspacePackage { name: Other("@hollywood/shared"), path: AnchoredSystemPathBuf("packages/shared") }}))
+2025-08-31T22:18:44.715739Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2025-08-31T22:18:44.715748Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2025-08-31T22:18:49.816187Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("packages/ui/.turbo/turbo-build.log"), AnchoredSystemPathBuf("packages/shared/.turbo/turbo-build.log")}
+2025-08-31T22:18:49.816220Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@hollywood/shared"), path: AnchoredSystemPathBuf("packages/shared") }, WorkspacePackage { name: Other("@legacyguard/ui"), path: AnchoredSystemPathBuf("packages/ui") }}))
+2025-08-31T22:18:49.838608Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2025-08-31T22:18:49.838628Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2025-08-31T22:19:03.817757Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/hooks/encryption/EncryptionProvider.tsx")}
+2025-08-31T22:19:03.817897Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:19:33.917144Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/hooks/encryption/useEncryptionContext.ts")}
+2025-08-31T22:19:33.917444Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:19:57.317737Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/hooks/encryption/useEncryptionContext.ts")}
+2025-08-31T22:19:57.317793Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:20:20.516488Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/hooks/encryption/useEncryptionContext.ts")}
+2025-08-31T22:20:20.516553Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:20:50.317611Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/hooks/encryption/useEncryptionHooks.ts")}
+2025-08-31T22:20:50.317757Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:21:09.521539Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/hooks/encryption/useEncryptionHooks.ts")}
+2025-08-31T22:21:09.521906Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:21:30.618395Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/hooks/encryption/useEncryptionHooks.ts")}
+2025-08-31T22:21:30.618505Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:22:17.121286Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/hooks/useEncryption.ts")}
+2025-08-31T22:22:17.121346Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:23:02.918194Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/components/legacy/__tests__/WillUpgradeIntegration.test.ts")}
+2025-08-31T22:23:02.918270Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:23:17.119567Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/components/legacy/__tests__/WillUpgradeIntegration.test.ts")}
+2025-08-31T22:23:17.119695Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:23:30.819641Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/components/legacy/__tests__/WillUpgradeIntegration.test.ts")}
+2025-08-31T22:23:30.819721Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:23:45.421059Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/components/legacy/__tests__/WillUpgradeIntegration.test.ts")}
+2025-08-31T22:23:45.421381Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:24:04.921074Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/components/legacy/__tests__/WillUpgradeIntegration.test.ts")}
+2025-08-31T22:24:04.921195Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:24:25.121158Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/components/legacy/__tests__/WillUpgradeIntegration.test.ts")}
+2025-08-31T22:24:25.121300Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:24:52.921328Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/components/sofia/__tests__/SofiaContextProvider.test.tsx")}
+2025-08-31T22:24:52.921435Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:25:07.020813Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/components/sofia/__tests__/SofiaContextProvider.test.tsx")}
+2025-08-31T22:25:07.020866Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:25:23.820128Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/components/sofia/__tests__/SofiaContextProvider.test.tsx")}
+2025-08-31T22:25:23.820251Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:25:37.921831Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/components/sofia/__tests__/SofiaContextProvider.test.tsx")}
+2025-08-31T22:25:37.921898Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:25:50.921844Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/components/sofia/__tests__/SofiaContextProvider.test.tsx")}
+2025-08-31T22:25:50.921901Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:27:16.322879Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/components/garden/index.ts")}
+2025-08-31T22:27:16.322982Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:27:46.223906Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/components/garden/index.ts")}
+2025-08-31T22:27:46.224141Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:28:34.323562Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/hooks/encryption/useEncryptionHooks.ts"), AnchoredSystemPathBuf("src/components/sofia/__tests__/SofiaContextProvider.test.tsx"), AnchoredSystemPathBuf("src/contexts/useFirefly.ts"), AnchoredSystemPathBuf("src/hooks/encryption/useEncryptionContext.ts"), AnchoredSystemPathBuf("src/hooks/encryption/EncryptionProvider.tsx"), AnchoredSystemPathBuf("src/contexts/useFocusMode.ts"), AnchoredSystemPathBuf("src/components/legacy/__tests__/WillUpgradeIntegration.test.ts"), AnchoredSystemPathBuf("src/hooks/useEncryption.ts"), AnchoredSystemPathBuf("src/components/garden/index.ts")}
+2025-08-31T22:28:34.323628Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:32:43.232408Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/hooks/useFireflyEvents.ts")}
+2025-08-31T22:32:43.232523Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:33:01.132363Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/hooks/useFireflyEvents.ts")}
+2025-08-31T22:33:01.132431Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:33:36.335735Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/hooks/useFireflyEvents.ts")}
+2025-08-31T22:33:36.335797Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:34:17.532908Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/hooks/usePerformanceMonitoring.ts")}
+2025-08-31T22:34:17.533253Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:34:58.833483Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("packages/ui/src/tamagui.config.ts")}
+2025-08-31T22:34:58.833779Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@legacyguard/ui"), path: AnchoredSystemPathBuf("packages/ui") }}))
+2025-08-31T22:34:59.432483Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/hooks/useProfessionalNetwork.ts")}
+2025-08-31T22:34:59.432502Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:35:29.532990Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/hooks/useProfessionalNetwork.ts")}
+2025-08-31T22:35:29.533072Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:35:40.333096Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("packages/ui/src/components/Layout.tsx")}
+2025-08-31T22:35:40.333126Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@legacyguard/ui"), path: AnchoredSystemPathBuf("packages/ui") }}))
+2025-08-31T22:35:42.234372Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/hooks/useProfessionalNetwork.ts")}
+2025-08-31T22:35:42.234458Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:36:02.535104Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("packages/ui/src/index.ts")}
+2025-08-31T22:36:02.535234Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@legacyguard/ui"), path: AnchoredSystemPathBuf("packages/ui") }}))
+2025-08-31T22:36:08.033754Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/hooks/useProfessionalNetwork.ts")}
+2025-08-31T22:36:08.033829Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:36:38.340842Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("packages/ui/src/components/Alert.tsx")}
+2025-08-31T22:36:38.341364Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@legacyguard/ui"), path: AnchoredSystemPathBuf("packages/ui") }}))
+2025-08-31T22:36:39.133814Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/hooks/useProfessionalNetwork.ts")}
+2025-08-31T22:36:39.133913Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:37:11.271087Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("packages/ui/src/components/Badge.tsx")}
+2025-08-31T22:37:11.271975Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@legacyguard/ui"), path: AnchoredSystemPathBuf("packages/ui") }}))
+2025-08-31T22:37:17.135105Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/hooks/useZodForm.ts")}
+2025-08-31T22:37:17.135182Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:37:29.034826Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/hooks/useZodForm.ts")}
+2025-08-31T22:37:29.034906Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:37:44.236562Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/hooks/useZodForm.ts")}
+2025-08-31T22:37:44.236648Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:37:54.234911Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("packages/ui/src/components/Skeleton.tsx")}
+2025-08-31T22:37:54.234941Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@legacyguard/ui"), path: AnchoredSystemPathBuf("packages/ui") }}))
+2025-08-31T22:37:55.635874Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/hooks/useZodForm.ts")}
+2025-08-31T22:37:55.635927Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:38:07.435254Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("packages/ui/src/index.ts")}
+2025-08-31T22:38:07.435289Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@legacyguard/ui"), path: AnchoredSystemPathBuf("packages/ui") }}))
+2025-08-31T22:38:47.445357Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/hooks/useZodForm.ts")}
+2025-08-31T22:38:47.445601Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:39:17.837224Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/hooks/useZodForm.ts")}
+2025-08-31T22:39:17.837287Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:39:28.936874Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/components/PillarCard.tsx")}
+2025-08-31T22:39:28.936919Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:39:48.336728Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/hooks/useZodForm.ts")}
+2025-08-31T22:39:48.336893Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:40:15.937468Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/hooks/useZodForm.ts")}
+2025-08-31T22:40:15.937633Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:40:19.736689Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("mobile/src/navigation/AuthStack.tsx")}
+2025-08-31T22:40:19.736715Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("mobile"), path: AnchoredSystemPathBuf("mobile") }}))
+2025-08-31T22:40:43.737440Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/hooks/useZodForm.ts")}
+2025-08-31T22:40:43.737497Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:41:24.837546Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("packages/ui/README.md")}
+2025-08-31T22:41:24.837578Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("@legacyguard/ui"), path: AnchoredSystemPathBuf("packages/ui") }}))
+2025-08-31T22:41:37.037585Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/hooks/useZodForm.ts"), AnchoredSystemPathBuf("src/hooks/usePerformanceMonitoring.ts"), AnchoredSystemPathBuf("src/hooks/useProfessionalNetwork.ts"), AnchoredSystemPathBuf("src/hooks/useFireflyEvents.ts")}
+2025-08-31T22:41:37.037603Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-08-31T22:41:37.137507Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("src/hooks/useZodForm.ts"), AnchoredSystemPathBuf("src/hooks/useProfessionalNetwork.ts"), AnchoredSystemPathBuf("src/hooks/usePerformanceMonitoring.ts"), AnchoredSystemPathBuf("src/hooks/useFireflyEvents.ts")}
+2025-08-31T22:41:37.137528Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))

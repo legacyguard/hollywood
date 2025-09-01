@@ -1,7 +1,15 @@
 import React from 'react';
 import { Icon, type IconName } from '@/components/ui/icon-library';
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+import {
+  Card,
+  CardContent,
+  Button,
+  YStack,
+  H3,
+  Paragraph,
+  Box,
+  Badge
+} from '@legacyguard/ui';
 
 interface PillarCardProps {
   title: string;
@@ -27,76 +35,93 @@ export function PillarCard({
   actionButton,
 }: PillarCardProps) {
   return (
-    <div
-      className={cn(
-        'pillar-card rounded-2xl p-8 transition-all duration-300 hover:shadow-xl relative overflow-hidden',
-        isActive && 'ring-2 ring-primary/20',
-        isLocked && 'opacity-60'
-      )}
+    <Card
+      padding="$8"
+      borderRadius="$4"
+      animation="medium"
+      hoverStyle={{
+        scale: 1.02,
+        shadowColor: '$shadowColor',
+        shadowRadius: 20,
+        shadowOpacity: 0.2,
+      }}
+      pressStyle={{
+        scale: 0.98,
+      }}
+      opacity={isLocked ? 0.6 : 1}
+      borderWidth={isActive ? 2 : 0}
+      borderColor={isActive ? '$primaryBlue' : undefined}
+      position="relative"
+      overflow="hidden"
     >
       {/* Background Gradient for Active Card */}
       {isActive && (
-        <div className='absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent rounded-2xl' />
+        <Box
+          position="absolute"
+          top={0}
+          left={0}
+          right={0}
+          bottom={0}
+          backgroundColor="$primaryBlue"
+          opacity={0.05}
+          borderRadius="$4"
+        />
       )}
 
       {/* Lock Badge */}
       {isLocked && (
-        <div className='absolute top-4 right-4 px-3 py-1 bg-status-locked text-status-locked-foreground text-xs font-medium rounded-full'>
+        <Badge
+          variant="outline"
+          position="absolute"
+          top="$4"
+          right="$4"
+          zIndex={1}
+        >
           Coming Soon
-        </div>
+        </Badge>
       )}
 
-      <div className='relative z-10'>
-        {/* Icon */}
-        <div
-          className={cn(
-            'w-16 h-16 rounded-2xl flex items-center justify-center mb-6',
-            isActive
-              ? 'bg-primary text-primary-foreground'
-              : isLocked
-                ? 'bg-status-locked text-status-locked-foreground'
-                : 'bg-primary/10 text-primary'
-          )}
-        >
-          <Icon name={icon} className='w-8 h-8' />
-        </div>
+      <CardContent>
+        <YStack space="$6">
+          {/* Icon */}
+          <Box
+            width="$16"
+            height="$16"
+            borderRadius="$4"
+            backgroundColor={isActive ? '$primaryBlue' : isLocked ? '$gray5' : '$primaryBlue'}
+            opacity={isActive || isLocked ? 1 : 0.1}
+            alignItems="center"
+            justifyContent="center"
+          >
+            <Icon name={icon} className='w-8 h-8' />
+          </Box>
 
-        {/* Title Section */}
-        <div className='mb-6'>
-          <h3 className='text-xl font-bold font-heading text-card-foreground mb-2'>
-            {title}
-          </h3>
-          {subtitle && (
-            <p className='text-sm text-muted-foreground leading-relaxed'>
-              {subtitle}
-            </p>
-          )}
-        </div>
+          {/* Title Section */}
+          <YStack space="$2">
+            <H3>{title}</H3>
+            {subtitle && (
+              <Paragraph size="$3" color="$gray6">
+                {subtitle}
+              </Paragraph>
+            )}
+          </YStack>
 
-        {/* Content */}
-        {children && <div className='mb-6'>{children}</div>}
+          {/* Content */}
+          {children && <Box>{children}</Box>}
 
-        {/* Action Button */}
-        {actionButton &&
-          !isLocked &&
-          (actionButton.href ? (
-            <a
-              href={actionButton.href}
-              className='inline-flex items-center justify-center rounded-md border border-primary/20 px-3 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary hover:text-primary-foreground'
-            >
-              {actionButton.text}
-            </a>
-          ) : (
+          {/* Action Button */}
+          {actionButton && !isLocked && (
             <Button
               variant="outline"
-              size='sm'
-              onClick={actionButton.onClick}
-              className='border-primary/20 text-primary hover:bg-primary hover:text-primary-foreground'
+              size="small"
+              onPress={actionButton.onClick}
+              {...(actionButton.href && { as: 'a', href: actionButton.href })}
             >
               {actionButton.text}
             </Button>
-          ))}
-      </div>
-    </div>
+          )}
+        </YStack>
+      </CardContent>
+    </Card>
   );
 }
