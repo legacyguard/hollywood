@@ -635,7 +635,7 @@ export class TeamCollaborationService {
 
   private initializeCollaborationTemplates(): void {
     // Initialize workspace and document templates
-    const templates = [
+    const _templates = [
       {
         id: 'estate_planning_team',
         name: 'Estate Planning Team',
@@ -818,9 +818,9 @@ export class TeamCollaborationService {
   }
 
   private async processApprovalStep(
-    workspaceId: string,
-    workflowId: string,
-    stepIndex: number
+    _workspaceId: string,
+    _workflowId: string,
+    _stepIndex: number
   ): Promise<void> {
     // Implementation for processing approval steps
     // This would handle notifications, reminders, and escalations
@@ -834,7 +834,7 @@ export class TeamCollaborationService {
     return Math.min(100, recentActivities.length * 2);
   }
 
-  private calculateCollaborationMetrics(workspaceId: string): CollaborationMetrics {
+  private calculateCollaborationMetrics(_workspaceId: string): CollaborationMetrics {
     // Implementation for calculating collaboration metrics
     return {
       averageResponseTime: 120, // minutes
@@ -844,8 +844,8 @@ export class TeamCollaborationService {
     };
   }
 
-  private calculateProductivityMetrics(workspaceId: string): ProductivityMetrics {
-    const workspace = this.workspaces.get(workspaceId);
+  private calculateProductivityMetrics(_workspaceId: string): ProductivityMetrics {
+    const workspace = this.workspaces.get(_workspaceId);
     if (!workspace) return { tasksCompleted: 0, documentsReviewed: 0, meetingsHeld: 0, decisionsReached: 0 };
 
     return {
@@ -856,8 +856,8 @@ export class TeamCollaborationService {
     };
   }
 
-  private calculateEngagementMetrics(workspaceId: string): EngagementMetrics {
-    const workspace = this.workspaces.get(workspaceId);
+  private calculateEngagementMetrics(_workspaceId: string): EngagementMetrics {
+    const workspace = this.workspaces.get(_workspaceId);
     if (!workspace) return { activeMembers: 0, messagesSent: 0, commentsAdded: 0, hoursSpent: 0 };
 
     return {
@@ -898,21 +898,21 @@ export class TeamCollaborationService {
     });
   }
 
-  private async getDocumentTitle(documentId: string): Promise<string> {
+  private async getDocumentTitle(_documentId: string): Promise<string> {
     // Mock implementation
-    return `Document ${documentId.substring(0, 8)}`;
+    return `Document ${_documentId.substring(0, 8)}`;
   }
 
-  private async getDocumentType(documentId: string): Promise<string> {
+  private async getDocumentType(_documentId: string): Promise<string> {
     return 'legal_document';
   }
 
-  private async getDocumentCategory(documentId: string): Promise<string> {
+  private async getDocumentCategory(_documentId: string): Promise<string> {
     return 'estate_planning';
   }
 
-  private async getDocumentPath(documentId: string): Promise<string> {
-    return `/documents/${documentId}`;
+  private async getDocumentPath(_documentId: string): Promise<string> {
+    return `/documents/${_documentId}`;
   }
 
   private generateId(): string {

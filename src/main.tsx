@@ -2,6 +2,7 @@ import { createRoot } from 'react-dom/client';
 import { HelmetProvider } from 'react-helmet-async';
 import App from './App.tsx';
 import './index.css';
+import './lib/i18n/config'; // Initialize i18n
 import { pwaService } from './lib/pwa/pwaService';
 import { offlineStorageService } from './lib/pwa/offlineStorage';
 import { pushNotificationService } from './lib/pwa/pushNotifications';

@@ -21,16 +21,16 @@ export interface APIEndpoint {
   description: string;
   authentication: AuthenticationRequirement;
   parameters: APIParameter[];
-  requestSchema: JSONSchema;
-  responseSchema: JSONSchema;
+  requestSchema: Record<string, any>;
+  responseSchema: Record<string, any>;
   rateLimits: RateLimit[];
-  caching: CachingConfiguration;
-  monitoring: EndpointMonitoring;
-  documentation: EndpointDocumentation;
+  caching: Record<string, any>;
+  monitoring: Record<string, any>;
+  documentation: Record<string, any>;
   deprecated: boolean;
   deprecationDate?: string;
   replacementEndpoint?: string;
-  testCases: APITestCase[];
+  testCases: Record<string, any>[];
   createdAt: string;
   updatedAt: string;
 }
@@ -42,7 +42,7 @@ export interface APIParameter {
   required: boolean;
   description: string;
   defaultValue?: any;
-  validation: ValidationRule[];
+  validation: Record<string, any>[];
   examples: any[];
 }
 
@@ -70,9 +70,9 @@ export interface ThirdPartyIntegration {
   category: IntegrationCategory;
   type: IntegrationType;
   status: IntegrationStatus;
-  configuration: IntegrationConfiguration;
-  authentication: IntegrationAuthentication;
-  endpoints: IntegrationEndpoint[];
+  configuration: Record<string, any>;
+  authentication: Record<string, any>;
+  endpoints: Record<string, any>[];
   dataMapping: DataMapping[];
   scheduling: IntegrationSchedule;
   monitoring: IntegrationMonitoring;

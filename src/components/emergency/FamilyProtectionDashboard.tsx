@@ -495,8 +495,8 @@ export const FamilyProtectionDashboard: React.FC<FamilyProtectionDashboardProps>
 
                         // Show success message
                         toast.success(
-                          effectiveMode === 'empathetic' 
-                            ? '💚 Your family manual has been lovingly prepared!' 
+                          effectiveMode === 'empathetic'
+                            ? '💚 Your family manual has been lovingly prepared!'
                             : effectiveMode === 'pragmatic'
                             ? 'Family manual generated successfully'
                             : 'Your family manual is ready!'

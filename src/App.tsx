@@ -1,8 +1,10 @@
 // src/App.tsx - Web Application Entry Point
 
-import React from 'react';
+import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ClerkProvider } from '@clerk/clerk-react';
+import { I18nextProvider } from 'react-i18next';
+import i18n from '@/lib/i18n/config';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { DashboardLayout } from '@/components/DashboardLayout';
 
@@ -51,8 +53,10 @@ if (!CLERK_PUBLISHABLE_KEY) {
 
 export default function App() {
   return (
-    <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY}>
-      <Router>
+    <I18nextProvider i18n={i18n}>
+      <Suspense fallback={<div>Loading translations...</div>}>
+        <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY}>
+          <Router>
         <Routes>
             {/* Public Routes */}
             <Route path="/" element={<LandingPage />} />
@@ -265,8 +269,10 @@ export default function App() {
 
             {/* 404 Route */}
             <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Router>
-      </ClerkProvider>
+            </Routes>
+          </Router>
+        </ClerkProvider>
+      </Suspense>
+    </I18nextProvider>
   );
 }

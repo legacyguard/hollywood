@@ -683,7 +683,7 @@ class FamilyTimelineService {
 
   private async identifyInfluencePatterns(
     events: TimelineEvent[],
-    relationships: FamilyRelationship[]
+    _relationships: FamilyRelationship[]
   ): Promise<InfluenceEdge[]> {
     const influences: InfluenceEdge[] = [];
 
@@ -720,7 +720,7 @@ class FamilyTimelineService {
   }
 
   // Placeholder implementations for complex analysis methods
-  private async analyzeDocumentForEvents(documentId: string): Promise<TimelineEvent[]> {
+  private async analyzeDocumentForEvents(_documentId: string): Promise<TimelineEvent[]> {
     // Would analyze document content for dates, names, events
     return [];
   }
@@ -814,33 +814,33 @@ class FamilyTimelineService {
     return !isNaN(Date.parse(dateStr));
   }
 
-  private extractDocumentReferences(text: string): Array<{id: string; title: string; type: string}> {
+  private extractDocumentReferences(_text: string): Array<{id: string; title: string; type: string}> {
     // Extract document references from text (placeholder)
     return [];
   }
 
-  private determineAssociationType(event: TimelineEvent, reference: any): AssociationType {
+  private determineAssociationType(event: TimelineEvent, _reference: any): AssociationType {
     if (event.type === 'birth') return 'created_during';
     if (event.type === 'marriage') return 'legal_for';
     if (event.type === 'death') return 'relates_to';
     return 'relates_to';
   }
 
-  private assessDocumentImportance(event: TimelineEvent, reference: any): DocumentAssociation['importance'] {
+  private assessDocumentImportance(event: TimelineEvent, _reference: any): DocumentAssociation['importance'] {
     if (event.significance === 'life_changing') return 'critical';
     if (event.significance === 'major') return 'high';
     return 'medium';
   }
 
-  private async recordMarriageRelationship(event: TimelineEvent): Promise<void> {
+  private async recordMarriageRelationship(_event: TimelineEvent): Promise<void> {
     // Record marriage relationship between participants
   }
 
-  private async recordParentChildRelationship(event: TimelineEvent): Promise<void> {
+  private async recordParentChildRelationship(_event: TimelineEvent): Promise<void> {
     // Record parent-child relationship from birth event
   }
 
-  private async updateDeathRecord(event: TimelineEvent): Promise<void> {
+  private async updateDeathRecord(_event: TimelineEvent): Promise<void> {
     // Update family member death record
   }
 
@@ -880,7 +880,7 @@ class FamilyTimelineService {
     });
   }
 
-  private extractInfluenceFromEvent(event: TimelineEvent): InfluenceEdge[] {
+  private extractInfluenceFromEvent(_event: TimelineEvent): InfluenceEdge[] {
     // Extract influence patterns from achievement events
     return [];
   }
@@ -894,7 +894,7 @@ class FamilyTimelineService {
     return overlap.size / currentValues.size;
   }
 
-  private identifyAdaptations(currentGen: FamilyGeneration, nextGen: FamilyGeneration): string[] {
+  private identifyAdaptations(_currentGen: FamilyGeneration, _nextGen: FamilyGeneration): string[] {
     // Identify how values/traditions were adapted between generations
     return ['Modern interpretations of traditional values'];
   }

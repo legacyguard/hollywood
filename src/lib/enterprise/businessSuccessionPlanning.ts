@@ -556,14 +556,14 @@ export class BusinessSuccessionPlanningService {
     return assumptions[method as keyof typeof assumptions] || [];
   }
 
-  private calculateDiscounts(business: BusinessEntity): DiscountFactor[] {
+  private calculateDiscounts(_business: BusinessEntity): DiscountFactor[] {
     return [
       { type: 'marketability', rate: 0.2, reason: 'Private company discount' },
       { type: 'control', rate: 0.1, reason: 'Minority interest discount' }
     ];
   }
 
-  private getIndustryMultiples(industry: string): IndustryMultiple[] {
+  private getIndustryMultiples(_industry: string): IndustryMultiple[] {
     // Industry-specific multiples (simplified)
     return [
       { metric: 'revenue', multiple: 2.0 },
@@ -583,13 +583,13 @@ export class BusinessSuccessionPlanningService {
     };
   }
 
-  private generateExecutiveSummary(business: BusinessEntity, plan: SuccessionPlan): string {
-    return `This succession plan for ${business.name} outlines a comprehensive strategy for business continuity and ownership transition. The plan addresses ${plan.triggers.length} potential succession triggers and includes ${plan.scenarios.length} detailed scenarios.`;
+  private generateExecutiveSummary(business: BusinessEntity, _plan: SuccessionPlan): string {
+    return `This succession plan for ${business.name} outlines a comprehensive strategy for business continuity and ownership transition. The plan addresses ${_plan.triggers.length} potential succession triggers and includes ${_plan.scenarios.length} detailed scenarios.`;
   }
 
-  private calculateReadinessScore(plan: SuccessionPlan): ReadinessScore {
-    const totalItems = this.countTotalActionItems(plan);
-    const completedItems = this.countCompletedActionItems(plan);
+  private calculateReadinessScore(_plan: SuccessionPlan): ReadinessScore {
+    const totalItems = this.countTotalActionItems(_plan);
+    const completedItems = this.countCompletedActionItems(_plan);
     const score = totalItems > 0 ? (completedItems / totalItems) * 100 : 0;
 
     return {
@@ -603,7 +603,7 @@ export class BusinessSuccessionPlanningService {
     };
   }
 
-  private async performGapAnalysis(plan: SuccessionPlan): Promise<GapAnalysis[]> {
+  private async performGapAnalysis(_plan: SuccessionPlan): Promise<GapAnalysis[]> {
     return [
       {
         category: 'Documentation',
@@ -616,7 +616,7 @@ export class BusinessSuccessionPlanningService {
     ];
   }
 
-  private async generateRecommendations(plan: SuccessionPlan): Promise<Recommendation[]> {
+  private async generateRecommendations(_plan: SuccessionPlan): Promise<Recommendation[]> {
     return [
       {
         id: this.generateId(),
@@ -632,7 +632,7 @@ export class BusinessSuccessionPlanningService {
     ];
   }
 
-  private generateImplementationTimeline(plan: SuccessionPlan): ImplementationMilestone[] {
+  private generateImplementationTimeline(_plan: SuccessionPlan): ImplementationMilestone[] {
     return [
       {
         id: this.generateId(),
@@ -646,7 +646,7 @@ export class BusinessSuccessionPlanningService {
     ];
   }
 
-  private async assessRisks(plan: SuccessionPlan): Promise<RiskAssessment[]> {
+  private async assessRisks(_plan: SuccessionPlan): Promise<RiskAssessment[]> {
     return [
       {
         id: this.generateId(),
@@ -662,7 +662,7 @@ export class BusinessSuccessionPlanningService {
     ];
   }
 
-  private async createFinancialProjections(plan: SuccessionPlan): Promise<FinancialProjection[]> {
+  private async createFinancialProjections(_plan: SuccessionPlan): Promise<FinancialProjection[]> {
     return [
       {
         scenario: 'base_case',
@@ -677,7 +677,7 @@ export class BusinessSuccessionPlanningService {
     ];
   }
 
-  private generateActionItems(plan: SuccessionPlan): ActionItem[] {
+  private generateActionItems(_plan: SuccessionPlan): ActionItem[] {
     return [
       {
         id: this.generateId(),
@@ -696,7 +696,7 @@ export class BusinessSuccessionPlanningService {
     ];
   }
 
-  private createReviewSchedule(plan: SuccessionPlan): ReviewSchedule {
+  private createReviewSchedule(_plan: SuccessionPlan): ReviewSchedule {
     return {
       frequency: 'quarterly',
       participants: ['owner', 'advisors', 'successors'],

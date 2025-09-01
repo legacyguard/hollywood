@@ -1,7 +1,7 @@
 import nacl from 'tweetnacl';
 import {
-  decodeUTF8,
-  encodeUTF8,
+  _decodeUTF8,
+  _encodeUTF8,
   encodeBase64,
   decodeBase64,
 } from 'tweetnacl-util';

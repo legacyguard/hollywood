@@ -495,7 +495,7 @@ export class WhiteLabelSolutionsService {
       throw new Error(`Partner not found: ${partnerId}`);
     }
 
-    const deployment = Array.from(this.deployments.values())
+    const _deployment = Array.from(this.deployments.values())
       .find(d => d.partnerId === partnerId);
 
     const healthCheck: PartnerHealthCheck = {
@@ -803,32 +803,32 @@ export class WhiteLabelSolutionsService {
   private createDefaultLocalization(): LocalizationSettings { return {} as LocalizationSettings; }
   private createDefaultWorkflow(): WorkflowConfiguration { return {} as WorkflowConfiguration; }
 
-  private async updateDeployment(partnerId: string, updates: any): Promise<void> {}
-  private async setupIntegrations(partnerId: string): Promise<void> {}
-  private generateDeploymentConfig(partner: WhiteLabelPartner): any { return {}; }
-  private async provisionInfrastructure(partner: WhiteLabelPartner): Promise<any> { return {}; }
-  private setupMonitoring(partnerId: string): any { return {}; }
-  private setupBackup(partnerId: string): any { return {}; }
-  private setupSecurity(partner: WhiteLabelPartner): any { return {}; }
-  private async executeDeployment(deployment: Deployment): Promise<void> {}
-  private async createDevelopmentTask(partnerId: string, feature: CustomFeature): Promise<void> {}
-  private calculateOnboardingTime(onboarding: OnboardingConfiguration): string { return ''; }
-  private async executeOnboardingWorkflow(partner: WhiteLabelPartner, result: OnboardingResult): Promise<void> {}
-  private async collectReportData(partner: WhiteLabelPartner, type: string, period: any): Promise<any> { return {}; }
-  private async generateVisualizations(partner: WhiteLabelPartner, type: string): Promise<any> { return {}; }
-  private async generateInsights(partner: WhiteLabelPartner, type: string, period: any): Promise<any> { return {}; }
-  private async generateRecommendations(partner: WhiteLabelPartner, type: string): Promise<any> { return {}; }
-  private async createPayoutSchedule(config: RevenueSharing): Promise<any> { return {}; }
-  private async setupRevenueTracking(partnerId: string): Promise<any> { return {}; }
-  private async setupRevenueReporting(partnerId: string): Promise<any> { return {}; }
-  private async checkInfrastructure(partnerId: string): Promise<any> { return { status: 'healthy' }; }
-  private async checkPerformance(partnerId: string): Promise<any> { return { status: 'healthy' }; }
-  private async checkSecurity(partnerId: string): Promise<any> { return { status: 'healthy' }; }
-  private async checkCompliance(partnerId: string): Promise<any> { return { status: 'healthy' }; }
-  private async checkIntegrations(partnerId: string): Promise<any> { return { status: 'healthy' }; }
-  private async checkClientSatisfaction(partnerId: string): Promise<any> { return { status: 'healthy' }; }
-  private async getActiveAlerts(partnerId: string): Promise<any[]> { return []; }
-  private async getHealthRecommendations(partnerId: string): Promise<any[]> { return []; }
+  private async updateDeployment(_partnerId: string, _updates: any): Promise<void> {}
+  private async setupIntegrations(_partnerId: string): Promise<void> {}
+  private generateDeploymentConfig(_partner: WhiteLabelPartner): any { return {}; }
+  private async provisionInfrastructure(_partner: WhiteLabelPartner): Promise<any> { return {}; }
+  private setupMonitoring(_partnerId: string): any { return {}; }
+  private setupBackup(_partnerId: string): any { return {}; }
+  private setupSecurity(_partner: WhiteLabelPartner): any { return {}; }
+  private async executeDeployment(_deployment: Deployment): Promise<void> {}
+  private async createDevelopmentTask(_partnerId: string, _feature: CustomFeature): Promise<void> {}
+  private calculateOnboardingTime(_onboarding: OnboardingConfiguration): string { return ''; }
+  private async executeOnboardingWorkflow(_partner: WhiteLabelPartner, _result: OnboardingResult): Promise<void> {}
+  private async collectReportData(_partner: WhiteLabelPartner, _type: string, _period: any): Promise<any> { return {}; }
+  private async generateVisualizations(_partner: WhiteLabelPartner, _type: string): Promise<any> { return {}; }
+  private async generateInsights(_partner: WhiteLabelPartner, _type: string, _period: any): Promise<any> { return {}; }
+  private async generateRecommendations(_partner: WhiteLabelPartner, _type: string): Promise<any> { return {}; }
+  private async createPayoutSchedule(_config: RevenueSharing): Promise<any> { return {}; }
+  private async setupRevenueTracking(_partnerId: string): Promise<any> { return {}; }
+  private async setupRevenueReporting(_partnerId: string): Promise<any> { return {}; }
+  private async checkInfrastructure(_partnerId: string): Promise<any> { return { status: 'healthy' }; }
+  private async checkPerformance(_partnerId: string): Promise<any> { return { status: 'healthy' }; }
+  private async checkSecurity(_partnerId: string): Promise<any> { return { status: 'healthy' }; }
+  private async checkCompliance(_partnerId: string): Promise<any> { return { status: 'healthy' }; }
+  private async checkIntegrations(_partnerId: string): Promise<any> { return { status: 'healthy' }; }
+  private async checkClientSatisfaction(_partnerId: string): Promise<any> { return { status: 'healthy' }; }
+  private async getActiveAlerts(_partnerId: string): Promise<any[]> { return []; }
+  private async getHealthRecommendations(_partnerId: string): Promise<any[]> { return []; }
 }
 
 // Export the service instance

@@ -600,7 +600,7 @@ export class EmergencyTestingSystem {
         return { success: true };
       }
 
-      case 'create_documents':
+      case 'create_documents': {
         const documentIds = [];
         for (const doc of step.data.documents) {
           const { data: document, error: docError } = await supabase
@@ -620,8 +620,9 @@ export class EmergencyTestingSystem {
           documentIds.push(document.id);
         }
         return { documentIds };
+      }
 
-      case 'set_activity':
+      case 'set_activity': {
         // Simulate old activity by inserting old health check records
         const daysAgo = step.data.last_activity_days_ago || 0;
         const oldDate = new Date();
@@ -636,6 +637,7 @@ export class EmergencyTestingSystem {
         });
 
         return { success: true };
+      }
 
       default:
         throw new Error(`Unknown setup action: ${step.action}`);
@@ -648,7 +650,7 @@ export class EmergencyTestingSystem {
     guardianId?: string | null
   ): Promise<any> {
     switch (step.action) {
-      case 'trigger_detection':
+      case 'trigger_detection': {
         if (step.data.check_type === 'inactivity') {
           return await this.detectionEngine.evaluateEmergencyTriggers(userId);
         } else if (step.data.check_type === 'health_check') {
@@ -665,8 +667,9 @@ export class EmergencyTestingSystem {
           );
         }
         break;
+      }
 
-      case 'verify_guardian':
+      case 'verify_guardian': {
         if (!guardianId)
           throw new Error('Guardian ID required for verification');
 
@@ -687,8 +690,9 @@ export class EmergencyTestingSystem {
           step.data.response,
           step.data.notes
         );
+      }
 
-      case 'access_resource':
+      case 'access_resource': {
         const context = {
           accessorType: step.data.accessor_type,
           accessorId: guardianId,
@@ -702,12 +706,14 @@ export class EmergencyTestingSystem {
           'view',
           context
         );
+      }
 
-      case 'wait':
+      case 'wait': {
         await new Promise(resolve =>
           setTimeout(resolve, step.data.milliseconds)
         );
         return { waited: step.data.milliseconds };
+      }
 
       default:
         throw new Error(`Unknown execution action: ${step.action}`);
@@ -722,7 +728,7 @@ export class EmergencyTestingSystem {
     const supabase = this.getServiceClient();
 
     switch (step.check) {
-      case 'shield_status':
+      case 'shield_status': {
         const { data: settings } = await supabase
           .from('family_shield_settings')
           .select('shield_status')
@@ -730,34 +736,39 @@ export class EmergencyTestingSystem {
           .single();
 
         return settings?.shield_status;
+      }
 
-      case 'notification_sent':
+      case 'notification_sent': {
         const { data: notifications } = await supabase
           .from('guardian_notifications')
           .select('*')
           .eq('user_id', userId);
 
         return notifications && notifications.length > 0;
+      }
 
-      case 'access_granted':
+      case 'access_granted': {
         // This would be validated based on previous execution steps
         return step.expected;
+      }
 
-      case 'audit_logged':
+      case 'audit_logged': {
         const { data: auditLogs } = await supabase
           .from('emergency_access_audit')
           .select('*')
           .eq('user_id', userId);
 
         return auditLogs && auditLogs.length > 0;
+      }
 
-      case 'guardian_notified':
+      case 'guardian_notified': {
         const { data: guardianNotifications } = await supabase
           .from('guardian_notifications')
           .select('*')
           .eq('guardian_id', guardianId);
 
         return guardianNotifications && guardianNotifications.length > 0;
+      }
 
       default:
         throw new Error(`Unknown validation check: ${step.check}`);
@@ -767,23 +778,25 @@ export class EmergencyTestingSystem {
   private async executeCleanupStep(
     step: TestCleanupStep,
     userId: string,
-    guardianId?: string | null
+    _guardianId?: string | null
   ): Promise<void> {
     const supabase = this.getServiceClient();
 
     switch (step.action) {
-      case 'delete_user':
+      case 'delete_user': {
         if (userId) {
           await supabase.auth.admin.deleteUser(userId);
         }
         break;
+      }
 
-      case 'clear_notifications':
+      case 'clear_notifications': {
         await supabase
           .from('guardian_notifications')
           .delete()
           .eq('user_id', userId);
         break;
+      }
 
       default:
         console.warn(`Unknown cleanup action: ${step.action}`);

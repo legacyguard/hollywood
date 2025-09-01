@@ -1018,7 +1018,7 @@ Witness 2: _________________________ Date: _________
   private async generateStepRecommendations(
     session: WorkflowSession,
     step: WorkflowStep,
-    stepData: Record<string, any>
+    _stepData: Record<string, any>
   ): Promise<string[]> {
     const recommendations: string[] = [];
 

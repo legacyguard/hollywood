@@ -276,6 +276,7 @@ export interface ReviewRequest {
   createdAt: ISO8601Date;
 }
 
+export type ReviewType = 'legal' | 'financial' | 'medical' | 'technical' | 'compliance';
 export type ReviewStatus = 'pending' | 'in_progress' | 'completed' | 'rejected' | 'needs_revision';
 export type Priority = 'low' | 'medium' | 'high' | 'urgent';
 
