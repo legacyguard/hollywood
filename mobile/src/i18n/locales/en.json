@@ -1,0 +1,46 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "retry": "Retry",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "done": "Done"
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "signOut": "Sign Out",
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot Password?"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome back",
+    "recentActivity": "Recent Activity"
+  },
+  "documents": {
+    "title": "Documents",
+    "upload": "Upload Document",
+    "scan": "Scan Document",
+    "noDocuments": "No documents yet"
+  },
+  "family": {
+    "title": "Family",
+    "members": "Family Members",
+    "guardians": "Guardians",
+    "addMember": "Add Family Member"
+  },
+  "settings": {
+    "title": "Settings",
+    "profile": "Profile",
+    "security": "Security",
+    "notifications": "Notifications",
+    "language": "Language"
+  }
+}

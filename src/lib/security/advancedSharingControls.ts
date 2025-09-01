@@ -614,43 +614,43 @@ class AdvancedSharingControlsService {
     // TODO: Store in database
   }
 
-  private async getShareLinkByToken(token: string): Promise<ShareLink | null> {
+  private async getShareLinkByToken(_token: string): Promise<ShareLink | null> {
     // TODO: Retrieve from database
     return null;
   }
 
-  private async getShareLinkById(id: string): Promise<ShareLink | null> {
+  private async getShareLinkById(_id: string): Promise<ShareLink | null> {
     // TODO: Retrieve from database
     return null;
   }
 
-  private async getDocumentAccessKey(documentId: string): Promise<string | null> {
+  private async getDocumentAccessKey(_documentId: string): Promise<string | null> {
     // TODO: Retrieve from secure storage
     return null;
   }
 
-  private async encryptAccessKey(accessKey: string, shareToken: string): Promise<string> {
+  private async encryptAccessKey(accessKey: string, _shareToken: string): Promise<string> {
     // TODO: Encrypt access key with share token
     return encodeBase64(new TextEncoder().encode(accessKey));
   }
 
-  private async deactivateShareLink(id: string): Promise<void> {
+  private async deactivateShareLink(_id: string): Promise<void> {
     // TODO: Mark as inactive in database
   }
 
-  private async incrementAccessCount(id: string): Promise<void> {
+  private async incrementAccessCount(_id: string): Promise<void> {
     // TODO: Increment access count in database
   }
 
-  private async incrementDownloadCount(id: string): Promise<void> {
+  private async incrementDownloadCount(_id: string): Promise<void> {
     // TODO: Increment download count in database
   }
 
-  private async logAccessAttempt(shareId: string, attempt: AccessAttempt): Promise<void> {
+  private async logAccessAttempt(_shareId: string, _attempt: AccessAttempt): Promise<void> {
     // TODO: Log access attempt
   }
 
-  private async updateViewSession(session: ViewSession): Promise<void> {
+  private async updateViewSession(_session: ViewSession): Promise<void> {
     // TODO: Update session in storage
   }
 }

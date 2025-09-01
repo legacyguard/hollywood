@@ -1,0 +1,100 @@
+/**
+ * Skip Links component for improved keyboard navigation
+ */
+
+import React from 'react';
+import { cn } from '@/lib/utils';
+
+interface SkipLink {
+  id: string;
+  label: string;
+  href: string;
+}
+
+const defaultLinks: SkipLink[] = [
+  { id: 'main-content', label: 'Skip to main content', href: '#main-content' },
+  { id: 'navigation', label: 'Skip to navigation', href: '#navigation' },
+  { id: 'search', label: 'Skip to search', href: '#search' },
+];
+
+interface SkipLinksProps {
+  links?: SkipLink[];
+  className?: string;
+}
+
+export const SkipLinks: React.FC<SkipLinksProps> = ({
+  links = defaultLinks,
+  className,
+}) => {
+  return (
+    <nav
+      aria-label="Skip links"
+      className={cn(
+        'skip-links',
+        'fixed top-0 left-0 z-[100] bg-background',
+        className
+      )}
+    >
+      <ul className="list-none p-0 m-0">
+        {links.map((link) => (
+          <li key={link.id}>
+            <a
+              href={link.href}
+              className={cn(
+                'skip-link',
+                'absolute left-[-9999px] top-auto',
+                'px-4 py-2 bg-primary text-primary-foreground',
+                'rounded-md no-underline',
+                'focus:left-4 focus:top-4 focus:z-[101]',
+                'transition-all duration-200'
+              )}
+              onClick={(e) => {
+                e.preventDefault();
+                const target = document.querySelector(link.href);
+                if (target) {
+                  (target as HTMLElement).focus();
+                  target.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
+            >
+              {link.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  );
+};
+
+// Add CSS for screen readers only class
+const srOnlyStyles = `
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+  
+  .sr-only-focusable:focus {
+    position: absolute;
+    width: auto;
+    height: auto;
+    padding: 0.5rem 1rem;
+    margin: 0;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+  }
+`;
+
+// Inject styles
+if (typeof document !== 'undefined') {
+  const styleSheet = document.createElement('style');
+  styleSheet.textContent = srOnlyStyles;
+  document.head.appendChild(styleSheet);
+}

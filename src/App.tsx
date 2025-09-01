@@ -7,6 +7,7 @@ import { I18nextProvider } from 'react-i18next';
 import i18n from '@/lib/i18n/config';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { DashboardLayout } from '@/components/DashboardLayout';
+import { SkipLinks } from '@/components/accessibility/SkipLinks';
 
 // Public Pages
 import { LandingPage } from '@/pages/LandingPage';
@@ -57,6 +58,7 @@ export default function App() {
       <Suspense fallback={<div>Loading translations...</div>}>
         <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY}>
           <Router>
+            <SkipLinks />
         <Routes>
             {/* Public Routes */}
             <Route path="/" element={<LandingPage />} />

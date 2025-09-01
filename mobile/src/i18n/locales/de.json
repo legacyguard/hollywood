@@ -1,0 +1,46 @@
+{
+  "common": {
+    "loading": "Lädt...",
+    "error": "Fehler",
+    "retry": "Erneut versuchen",
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "delete": "Löschen",
+    "confirm": "Bestätigen",
+    "back": "Zurück",
+    "next": "Weiter",
+    "done": "Fertig"
+  },
+  "auth": {
+    "signIn": "Anmelden",
+    "signUp": "Registrieren",
+    "signOut": "Abmelden",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "forgotPassword": "Passwort vergessen?"
+  },
+  "dashboard": {
+    "title": "Übersicht",
+    "welcome": "Willkommen zurück",
+    "recentActivity": "Letzte Aktivität"
+  },
+  "documents": {
+    "title": "Dokumente",
+    "upload": "Dokument hochladen",
+    "scan": "Dokument scannen",
+    "noDocuments": "Noch keine Dokumente"
+  },
+  "family": {
+    "title": "Familie",
+    "members": "Familienmitglieder",
+    "guardians": "Betreuer",
+    "addMember": "Familienmitglied hinzufügen"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "profile": "Profil",
+    "security": "Sicherheit",
+    "notifications": "Benachrichtigungen",
+    "language": "Sprache"
+  }
+}

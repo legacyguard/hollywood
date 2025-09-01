@@ -78,12 +78,10 @@ print_status "Packages built successfully"
 # Build web application
 echo ""
 echo "🌐 Building web application..."
-if command -v vite &> /dev/null; then
-    npx vite build
-    print_status "Web application built successfully"
-else
-    print_warning "Vite not found. Skipping web build."
-fi
+# Build web application
+echo ""
+echo "🌐 Building web application..."
+npm run build:web 2>/dev/null && print_status "Web application built successfully" || print_warning "Web build failed (not critical)"
 
 # Try to build mobile (may fail, not critical)
 echo ""

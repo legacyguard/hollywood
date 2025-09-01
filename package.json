@@ -28,7 +28,7 @@
     "mobile:build": "cd mobile && npx expo export --platform all",
     "test:web": "cd hollywood && npm run test",
     "test:mobile": "cd mobile && npm run test",
-    "preinstall": "node -e \"if(process.platform === 'darwin') { require('child_process').execSync('ulimit -n 10240', {stdio: 'inherit'}) }\"",
+    "preinstall": "bash -lc '[[ $(uname) == Darwin ]] && ./scripts/increase-file-limits.sh || true'",
     "postinstall": "echo 'Dependencies installed successfully!'"
   },
   "devDependencies": {
@@ -43,6 +43,7 @@
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "@typescript-eslint/parser": "^7.18.0",
     "@vitejs/plugin-react": "^5.0.2",
+    "@vitest/ui": "^3.2.4",
     "cypress": "^14.5.4",
     "eslint": "^8.57.1",
     "eslint-plugin-react-hooks": "^5.2.0",

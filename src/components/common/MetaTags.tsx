@@ -76,9 +76,18 @@ export const MetaTags = ({
       let element = document.querySelector(selector) as HTMLMetaElement;
       if (!element) {
         element = document.createElement('meta');
-        const [type, value] = selector.split('=');
-        const attrName = type.includes('property') ? 'property' : 'name';
-        element.setAttribute(attrName, value.replace(/["[\]]/g, ''));
+        // Parse selector more robustly
+        const propertyMatch = selector.match(/\[property="([^"]+)"\]/);
+        const nameMatch = selector.match(/\[name="([^"]+)"\]/);
+
+        if (propertyMatch) {
+          element.setAttribute('property', propertyMatch[1]);
+        } else if (nameMatch) {
+          element.setAttribute('name', nameMatch[1]);
+        } else {
+          console.warn(`Unable to parse meta tag selector: ${selector}`);
+          return;
+        }
         document.head.appendChild(element);
       }
       element.content = content;
@@ -125,7 +134,12 @@ export const MetaTags = ({
       scriptElement.type = 'application/ld+json';
       document.head.appendChild(scriptElement);
     }
-    scriptElement.textContent = JSON.stringify(finalStructuredData);
+    try {
+      scriptElement.textContent = JSON.stringify(finalStructuredData);
+    } catch (error) {
+      console.error('Failed to serialize structured data:', error);
+      scriptElement.textContent = JSON.stringify(defaultStructuredData);
+    }
 
     // Cleanup function (optional - keeps meta tags in place for SPA navigation)
     return () => {
