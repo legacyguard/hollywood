@@ -86,7 +86,7 @@ export class AuthService {
     console.log('Password reset email sent to:', email);
   }
 
-  async updatePassword(oldPassword: string, newPassword: string): Promise<void> {
+  async updatePassword(_oldPassword: string, _newPassword: string): Promise<void> {
     if (!this.isAuthenticated()) {
       throw new Error('Not authenticated');
     }

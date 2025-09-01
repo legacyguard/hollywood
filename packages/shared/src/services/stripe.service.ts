@@ -38,7 +38,6 @@ export interface PaymentIntent {
 
 export class StripeService {
   private static instance: StripeService;
-  private apiKey?: string;
 
   private constructor() {}
 
@@ -49,8 +48,9 @@ export class StripeService {
     return StripeService.instance;
   }
 
-  initialize(apiKey: string): void {
-    this.apiKey = apiKey;
+  initialize(_apiKey: string): void {
+    // Store API key for future use
+    // this.apiKey = apiKey;
   }
 
   async createCustomer(email: string, name?: string): Promise<StripeCustomer> {
@@ -78,7 +78,7 @@ export class StripeService {
   }
 
   async attachPaymentMethod(
-    customerId: string,
+    _customerId: string,
     paymentMethodId: string
   ): Promise<PaymentMethod> {
     // Mock implementation
@@ -92,8 +92,8 @@ export class StripeService {
   }
 
   async createSubscription(
-    customerId: string,
-    priceId: string
+    _customerId: string,
+    _priceId: string
   ): Promise<{ id: string; status: string }> {
     // Mock implementation
     return {

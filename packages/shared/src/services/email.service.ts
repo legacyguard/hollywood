@@ -57,7 +57,7 @@ class EmailService {
    */
   private async sendEmail(template: EmailTemplate): Promise<boolean> {
     try {
-      const { data, error } = await supabase.functions.invoke('send-email', {
+      const { error } = await supabase.functions.invoke('send-email', {
         body: {
           to: template.to,
           subject: template.subject,

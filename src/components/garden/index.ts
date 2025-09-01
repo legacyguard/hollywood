@@ -252,6 +252,20 @@ export const GARDEN_SYSTEM_INFO = {
   ],
 } as const;
 
+export {
+  LegacyGardenVisualization,
+  AdaptiveLegacyTree,
+  GardenOrchestrator,
+  GardenSeed,
+  useGardenProgress,
+  InteractiveGardenEnhancements,
+  TreeLeaf,
+  SofiaFirefly,
+  CelebrationFirefly,
+  MilestoneGlow,
+  type GardenProgressData
+};
+
 export default {
   LegacyGardenVisualization,
   AdaptiveLegacyTree,
