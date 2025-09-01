@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react'
-import { 
-  Container, 
-  Stack, 
-  H2, 
+import React, { useState, useEffect, useCallback } from 'react'
+import {
+  Container,
+  Stack,
+  H2,
   H3,
-  Paragraph, 
-  Card, 
+  Paragraph,
+  Card,
   CardContent,
   Button,
   Row,
@@ -15,15 +15,15 @@ import {
   Input,
   IconButton,
   RadioGroup,
-  CheckboxGroup,
-  Switch,
+  // CheckboxGroup,
+  // Switch,
   useMedia,
   Grid
 } from '@legacyguard/ui'
-import { 
-  Search, 
-  UserPlus, 
-  Mail, 
+import {
+  Search,
+  UserPlus,
+  Mail,
   Phone,
   Shield,
   Heart,
@@ -33,8 +33,8 @@ import {
   AlertCircle,
   User
 } from 'lucide-react-native'
-import { RefreshControl, Alert, Platform } from 'react-native'
-import { useNavigation } from '@react-navigation/native'
+import { RefreshControl, Alert } from 'react-native'
+// import { useNavigation } from '@react-navigation/native' // Uncomment when navigation is implemented
 
 // Person types and roles
 export interface PersonRole {
@@ -63,29 +63,30 @@ interface Person {
 }
 
 export const PeopleScreen = () => {
-  const navigation = useNavigation()
+  // const navigation = useNavigation() // Uncomment when navigation is implemented
   const theme = useTheme()
   const media = useMedia()
-  
+
   const [people, setPeople] = useState<Person[]>([])
   const [filteredPeople, setFilteredPeople] = useState<Person[]>([])
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedRole, setSelectedRole] = useState('all')
   const [isRefreshing, setIsRefreshing] = useState(false)
-  const [showAddModal, setShowAddModal] = useState(false)
-  const [editingPerson, setEditingPerson] = useState<Person | null>(null)
-  
+  // Modal states - uncomment when modal implementation is added
+  // const [showAddModal, setShowAddModal] = useState(false)
+  // const [editingPerson, setEditingPerson] = useState<Person | null>(null)
+
   // Load people on mount
   useEffect(() => {
     loadPeople()
-  }, [])
-  
+  }, [loadPeople])
+
   // Filter people when search or role changes
   useEffect(() => {
     filterPeople()
-  }, [searchQuery, selectedRole, people])
-  
-  const loadPeople = async () => {
+  }, [filterPeople])
+
+  const loadPeople = useCallback(async () => {
     setIsRefreshing(true)
     try {
       // TODO: Load from API/Supabase
@@ -120,68 +121,70 @@ export const PeopleScreen = () => {
           addedAt: new Date('2024-03-10')
         }
       ]
-      
+
       setPeople(mockPeople)
     } catch (error) {
       console.error('Failed to load people:', error)
     } finally {
       setIsRefreshing(false)
     }
-  }
-  
-  const filterPeople = () => {
+  }, [])
+
+  const filterPeople = useCallback(() => {
     let filtered = [...people]
-    
+
     // Apply role filter
     if (selectedRole !== 'all') {
-      filtered = filtered.filter(person => 
+      filtered = filtered.filter(person =>
         person.roles.includes(selectedRole)
       )
     }
-    
+
     // Apply search filter
     if (searchQuery) {
       const query = searchQuery.toLowerCase()
-      filtered = filtered.filter(person => 
+      filtered = filtered.filter(person =>
         person.name.toLowerCase().includes(query) ||
         person.email?.toLowerCase().includes(query) ||
         person.relationship.toLowerCase().includes(query)
       )
     }
-    
+
     setFilteredPeople(filtered)
-  }
-  
+  }, [people, selectedRole, searchQuery])
+
   const getRoleIcon = (roleId: string) => {
     const role = PERSON_ROLES.find(r => r.id === roleId)
     return role?.icon || User
   }
-  
-  const getRoleColor = (roleId: string) => {
-    const role = PERSON_ROLES.find(r => r.id === roleId)
-    return role?.color || '$gray6'
-  }
-  
+
+  // const getRoleColor = (roleId: string) => {
+  //   const role = PERSON_ROLES.find(r => r.id === roleId)
+  //   return role?.color || '$gray6'
+  // }
+
   const handleAddPerson = () => {
-    // Navigate to add person screen or show modal
+    // TODO: Navigate to add person screen or show modal
     // navigation.navigate('AddPerson')
-    setShowAddModal(true)
+    // setShowAddModal(true)
+    console.log('Add person clicked') // Temporary placeholder
   }
-  
+
   const handleEditPerson = (person: Person) => {
-    setEditingPerson(person)
-    // Navigate to edit screen or show modal
+    // TODO: Navigate to edit screen or show modal
+    // setEditingPerson(person)
     // navigation.navigate('EditPerson', { personId: person.id })
+    console.log('Edit person:', person.id) // Temporary placeholder
   }
-  
+
   const handleDeletePerson = (person: Person) => {
     Alert.alert(
       'Remove Person',
       `Are you sure you want to remove ${person.name} from your trusted circle?`,
       [
         { text: 'Cancel', style: 'cancel' },
-        { 
-          text: 'Remove', 
+        {
+          text: 'Remove',
           style: 'destructive',
           onPress: () => {
             setPeople(prev => prev.filter(p => p.id !== person.id))
@@ -190,7 +193,7 @@ export const PeopleScreen = () => {
       ]
     )
   }
-  
+
   const handleContactPerson = (person: Person, method: 'email' | 'phone') => {
     if (method === 'email' && person.email) {
       // TODO: Open email client
@@ -200,7 +203,7 @@ export const PeopleScreen = () => {
       console.log('Call:', person.phone)
     }
   }
-  
+
   const renderPersonCard = (person: Person) => {
     return (
       <Card
@@ -225,7 +228,7 @@ export const PeopleScreen = () => {
                 >
                   <User size={24} color={theme.gray6.val} />
                 </Stack>
-                
+
                 <Stack flex={1}>
                   <Row alignItems="center" gap="$2">
                     <Paragraph fontWeight="600" fontSize="$5">
@@ -240,7 +243,7 @@ export const PeopleScreen = () => {
                   </Paragraph>
                 </Stack>
               </Row>
-              
+
               <Row gap="$2">
                 <IconButton
                   size="small"
@@ -258,14 +261,14 @@ export const PeopleScreen = () => {
                 </IconButton>
               </Row>
             </Row>
-            
+
             {/* Roles */}
             <Row gap="$2" flexWrap="wrap">
               {person.roles.map(roleId => {
                 const role = PERSON_ROLES.find(r => r.id === roleId)
                 const Icon = getRoleIcon(roleId)
                 return (
-                  <Row 
+                  <Row
                     key={roleId}
                     backgroundColor="$gray2"
                     paddingHorizontal="$2"
@@ -282,12 +285,12 @@ export const PeopleScreen = () => {
                 )
               })}
             </Row>
-            
+
             {/* Contact Info */}
             <Stack gap="$2">
               {person.email && (
-                <Row 
-                  alignItems="center" 
+                <Row
+                  alignItems="center"
                   gap="$2"
                   onPress={() => handleContactPerson(person, 'email')}
                 >
@@ -298,8 +301,8 @@ export const PeopleScreen = () => {
                 </Row>
               )}
               {person.phone && (
-                <Row 
-                  alignItems="center" 
+                <Row
+                  alignItems="center"
                   gap="$2"
                   onPress={() => handleContactPerson(person, 'phone')}
                 >
@@ -310,7 +313,7 @@ export const PeopleScreen = () => {
                 </Row>
               )}
             </Stack>
-            
+
             {/* Notes */}
             {person.notes && (
               <Paragraph size="$2" color="$gray6" fontStyle="italic">
@@ -322,7 +325,7 @@ export const PeopleScreen = () => {
       </Card>
     )
   }
-  
+
   const roleFilterOptions = [
     { value: 'all', label: 'All Roles' },
     ...PERSON_ROLES.map(role => ({
@@ -330,7 +333,7 @@ export const PeopleScreen = () => {
       label: role.label
     }))
   ]
-  
+
   return (
     <Container>
       <Stack padding="$4" gap="$4">
@@ -351,7 +354,7 @@ export const PeopleScreen = () => {
             {media.gtSm ? 'Add Person' : 'Add'}
           </Button>
         </Row>
-        
+
         {/* Search and Filter */}
         <Stack gap="$3">
           <Input
@@ -361,7 +364,7 @@ export const PeopleScreen = () => {
             onChangeText={setSearchQuery}
             icon={Search}
           />
-          
+
           <RadioGroup
             options={roleFilterOptions}
             value={selectedRole}
@@ -370,9 +373,9 @@ export const PeopleScreen = () => {
             size="small"
           />
         </Stack>
-        
+
         <Divider />
-        
+
         {/* People List */}
         <ScrollContainer
           refreshControl={
@@ -387,7 +390,7 @@ export const PeopleScreen = () => {
             <Stack alignItems="center" justifyContent="center" padding="$8">
               <Shield size={48} color={theme.gray5.val} />
               <Paragraph color="$gray6" marginTop="$3" textAlign="center">
-                {searchQuery || selectedRole !== 'all' 
+                {searchQuery || selectedRole !== 'all'
                   ? 'No people found matching your criteria'
                   : 'Your trusted circle is empty'}
               </Paragraph>
@@ -431,7 +434,7 @@ export const PeopleScreen = () => {
                   </Row>
                 </CardContent>
               </Card>
-              
+
               {/* People Cards */}
               {media.gtSm ? (
                 <Grid columns={media.gtMd ? 3 : 2} gap="$3">

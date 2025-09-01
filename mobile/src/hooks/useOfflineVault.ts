@@ -85,7 +85,14 @@ export const useOfflineVault = (): UseOfflineVaultReturn => {
         setIsVaultOpen(true);
 
         // Load initial documents
-        await loadDocuments();
+        const docs = await OfflineVaultService.getDocuments();
+        setDocuments(docs);
+
+        const vaultStats = await OfflineVaultService.getStats();
+        setStats({
+          documentCount: vaultStats.documentCount,
+          totalSize: vaultStats.totalSize,
+        });
       } catch (error) {
         console.error('Failed to initialize vault:', error);
         setError(error instanceof Error ? error.message : 'Failed to open vault');
@@ -101,7 +108,7 @@ export const useOfflineVault = (): UseOfflineVaultReturn => {
     return () => {
       OfflineVaultService.close();
     };
-  }, []);
+  }, [getOrCreateEncryptionKey]);
 
   /**
    * Load all documents from vault

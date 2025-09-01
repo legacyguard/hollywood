@@ -1,12 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Container,
   Stack,
   Row,
   Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
   Button,
   Input,
   InputGroup,
@@ -21,8 +18,7 @@ import { useUser } from '@clerk/clerk-expo';
 import { useNavigation } from '@react-navigation/native';
 import { RefreshControl, Alert, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import type { Document } from '@hollywood/shared/src/services/documentService';
-import { DocumentService } from '@hollywood/shared/src/services/documentService';
+import { DocumentService, type Document } from '@hollywood/shared/src/services/documentService';
 
 // Document Categories
 const CATEGORIES = [
@@ -159,17 +155,7 @@ export function VaultScreenV2() {
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
 
-  // Load documents
-  useEffect(() => {
-    loadDocuments();
-  }, [user]);
-
-  // Filter documents
-  useEffect(() => {
-    filterDocuments();
-  }, [documents, selectedCategory, searchQuery]);
-
-  const loadDocuments = async () => {
+  const loadDocuments = useCallback(async () => {
     if (!user?.id) return;
 
     setLoading(true);
@@ -183,9 +169,9 @@ export function VaultScreenV2() {
       setLoading(false);
       setRefreshing(false);
     }
-  };
+  }, [user?.id]);
 
-  const filterDocuments = () => {
+  const filterDocuments = useCallback(() => {
     let filtered = [...documents];
 
     // Filter by category
@@ -202,12 +188,22 @@ export function VaultScreenV2() {
     }
 
     setFilteredDocuments(filtered);
-  };
+  }, [documents, selectedCategory, searchQuery]);
+
+  // Load documents
+  useEffect(() => {
+    loadDocuments();
+  }, [loadDocuments]);
+
+  // Filter documents
+  useEffect(() => {
+    filterDocuments();
+  }, [filterDocuments]);
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     loadDocuments();
-  }, [user]);
+  }, [loadDocuments]);
 
   const handleDeleteDocument = async (documentId: string) => {
     Alert.alert(
