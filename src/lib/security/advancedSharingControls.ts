@@ -4,8 +4,8 @@
  */
 
 import { createHash } from 'crypto';
-import nacl from 'tweetnacl';
-import { encodeBase64, decodeBase64 } from 'tweetnacl-util';
+import _nacl from 'tweetnacl';
+import { encodeBase64, _decodeBase64 } from 'tweetnacl-util';
 
 export interface SharePermissions {
   canView: boolean;
@@ -557,7 +557,7 @@ class AdvancedSharingControlsService {
 
   private validateDeviceRestrictions(
     restrictions: DeviceRestriction[],
-    userAgent: string
+    _userAgent: string
   ): { allowed: boolean; reason?: string } {
     for (const restriction of restrictions) {
       if (restriction.type === 'block') {
@@ -585,7 +585,7 @@ class AdvancedSharingControlsService {
   private async createViewSession(
     shareLink: ShareLink,
     accessRequest: any,
-    deviceFingerprint: string
+    _deviceFingerprint: string
   ): Promise<ViewSession> {
     const session: ViewSession = {
       sessionId: this.generateId(),

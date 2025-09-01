@@ -313,7 +313,7 @@ export class ProfessionalReviewNetwork {
   // Private helper methods
   private async findSuitableAttorneys(
     jurisdiction: string,
-    willData: WillData
+    _willData: WillData
   ): Promise<ProfessionalProfile[]> {
     const attorneys = await this.searchProfessionals('attorney', {
       jurisdiction,
@@ -333,7 +333,7 @@ export class ProfessionalReviewNetwork {
   }
 
   private async findSuitablePlanners(
-    willData: WillData
+    _willData: WillData
   ): Promise<ProfessionalProfile[]> {
     return this.searchProfessionals('estate_planner', {
       specialization: 'comprehensive_planning',
@@ -524,7 +524,7 @@ export class ProfessionalReviewNetwork {
 
   private getNotaryServices(
     professional: ProfessionalProfile,
-    serviceType?: string
+    _serviceType?: string
   ) {
     const baseServices = [
       { service: 'Will Witnessing', price: 80, duration: 30 },
@@ -582,7 +582,7 @@ export class ProfessionalReviewNetwork {
     };
   }
 
-  private identifyPotentialIssues(willData: WillData, jurisdiction: string) {
+  private identifyPotentialIssues(willData: WillData, _jurisdiction: string) {
     const issues = [];
 
     // Check for missing executor
@@ -661,7 +661,7 @@ export class ProfessionalReviewNetwork {
     }
   }
 
-  private calculateDistance(location1: string, location2: string): number {
+  private calculateDistance(_location1: string, _location2: string): number {
     // Simplified distance calculation - in real implementation would use geolocation APIs
     return Math.random() * 50; // Random distance in km for demonstration
   }

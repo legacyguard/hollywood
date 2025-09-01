@@ -2,11 +2,14 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
+    "jsx": "react-native",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@legacyguard/ui": ["../packages/ui/src"],
+      "@legacyguard/logic": ["../packages/logic/src"],
+      "@hollywood/shared": ["../packages/shared/src"]
     },
-    "skipLibCheck": true,
     "noEmit": true
   },
   "include": [

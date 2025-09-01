@@ -381,6 +381,9 @@ export const config = createTamagui({
   media,
 })
 
+// Also export as tamaguiConfig for compatibility
+export const tamaguiConfig = config
+
 // Export types
 export type AppConfig = typeof config
 

@@ -511,7 +511,7 @@ export class PushNotificationService {
   /**
    * Get notification permission status
    */
-  getPermissionStatus(): NotificationPermission {
+  getPermissionStatus(): 'granted' | 'denied' | 'default' {
     if ('Notification' in window) {
       return Notification.permission;
     }

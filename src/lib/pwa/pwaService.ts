@@ -388,7 +388,7 @@ export class PWAService {
   /**
    * Show local notification
    */
-  async showNotification(title: string, options?: NotificationOptions): Promise<void> {
+  async showNotification(title: string, options?: Record<string, any>): Promise<void> {
     if (!('Notification' in window)) {
       throw new Error('Notifications not supported');
     }

@@ -1,7 +1,7 @@
 // Emotional Guidance & Legacy Message System
 // Provides emotional support and legacy message creation during will preparation
 
-import type { WillData } from '@/components/legacy/WillWizard';
+import type { _WillData } from '@/components/legacy/WillWizard';
 
 export interface LegacyMessage {
   id: string;

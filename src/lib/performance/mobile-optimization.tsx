@@ -3,7 +3,7 @@
  * Responsive design helpers, touch optimizations, and mobile-specific performance enhancements
  */
 
-import { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { cn } from '@/lib/utils';
 
 // Breakpoint definitions matching Tailwind CSS
@@ -312,14 +312,17 @@ export const mobileAnalytics = {
 };
 
 // Utility for mobile-optimized component rendering
-export function renderMobileOptimized<T extends Record<string, any>>(
-  MobileComponent: React.ComponentType<T>,
-  DesktopComponent: React.ComponentType<T>,
-  props: T
-) {
+export function MobileOptimizedComponent<T extends Record<string, any>>({
+  MobileComponent,
+  DesktopComponent,
+  ...props
+}: {
+  MobileComponent: React.ComponentType<T>;
+  DesktopComponent: React.ComponentType<T>;
+} & T) {
   const { isSmall } = useBreakpoint();
 
   return isSmall ?
-    <MobileComponent {...props} /> :
-    <DesktopComponent {...props} />;
+    <MobileComponent {...(props as T)} /> :
+    <DesktopComponent {...(props as T)} />;
 }

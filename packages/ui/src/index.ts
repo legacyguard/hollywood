@@ -1,5 +1,5 @@
 // Export configuration
-export { config as tamaguiConfig } from './tamagui.config'
+export { config, tamaguiConfig } from './tamagui.config'
 export type { AppConfig } from './tamagui.config'
 
 // Export Button components

@@ -4,13 +4,25 @@ module.exports = function(api) {
     presets: ['babel-preset-expo'],
     plugins: [
       [
+        'module-resolver',
+        {
+          root: ['./'],
+          alias: {
+            '@': './src',
+            '@legacyguard/ui': '../packages/ui/src',
+            '@legacyguard/logic': '../packages/logic/src',
+            '@hollywood/shared': '../packages/shared/src'
+          }
+        }
+      ],
+      [
         '@tamagui/babel-plugin',
         {
           components: ['@legacyguard/ui', 'tamagui'],
-          config: './node_modules/@legacyguard/ui/src/tamagui.config.ts',
+          config: '../packages/ui/src/tamagui.config.ts',
         },
       ],
-      'react-native-reanimated/plugin',
-    ],
+      'react-native-reanimated/plugin'
+    ]
   };
 };

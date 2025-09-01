@@ -149,7 +149,7 @@ function calculateTimeSaved(documents: Document[], willData?: WillData): number 
  */
 function calculateProtectionLevel(documents: Document[], willData?: WillData, familyMembers: number) {
   let score = 0;
-  const maxScore = 100;
+  const _maxScore = 100;
 
   // Document coverage (40 points)
   const docScore = Math.min(40, (documents.length / 10) * 40);
@@ -315,7 +315,7 @@ function generateNextActionInsights(documents: Document[], willData?: WillData, 
 
   // Document gaps
   const hasInsurance = documents.some(d => d.category === 'insurance');
-  const hasMedical = documents.some(d => d.category === 'medical');
+  const _hasMedical = documents.some(d => d.category === 'medical');
 
   if (!hasInsurance && documents.length >= 3) {
     insights.push({

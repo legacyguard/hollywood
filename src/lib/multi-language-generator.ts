@@ -1109,7 +1109,7 @@ export class MultiLangGenerator {
     term: string,
     language: SupportedLanguage,
     category: 'general' | 'relationships',
-    jurisdiction?: string
+    _jurisdiction?: string
   ): string {
     const terminology = LEGAL_TERMINOLOGY[language]?.[category];
     return terminology?.[term.toLowerCase()] || term;
@@ -1121,7 +1121,7 @@ export class MultiLangGenerator {
   private generateLegalNotices(
     language: SupportedLanguage,
     variant: WillVariant,
-    jurisdiction: string
+    _jurisdiction: string
   ): string[] {
     const notices: Record<SupportedLanguage, Record<WillVariant, string[]>> = {
       sk: {
@@ -1259,7 +1259,7 @@ export class MultiLangGenerator {
    */
   private generateWitnessInstructions(
     language: SupportedLanguage,
-    jurisdiction: string
+    _jurisdiction: string
   ): string {
     const instructions: Record<SupportedLanguage, string> = {
       sk: 'Svedkovia musia byť plnoletí, spôsobilí na právne úkony, ovládať jazyk závetu a nesmú byť osoby, ktorým má pripadnúť dedičstvo. Obaja svedkovia musia byť súčasne prítomní pri podpise poručiteľa.',

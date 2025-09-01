@@ -467,7 +467,7 @@ export class AnalyticsService {
   /**
    * Throttle function calls
    */
-  private throttle(func: Function, wait: number): Function {
+  private throttle(func: (...args: any[]) => void, wait: number): (...args: any[]) => void {
     let timeout: number | null = null;
     return (...args: any[]) => {
       if (timeout === null) {

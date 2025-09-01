@@ -23,8 +23,16 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
       
+      - name: Increase file limits
+        run: |
+          echo "fs.file-max = 100000" | sudo tee -a /etc/sysctl.conf
+          sudo sysctl -p
+          ulimit -n 10240
+      
       - name: Install dependencies
-        run: npm ci
+        run: |
+          npm cache clean --force
+          npm ci
       
       - name: Run linters
         run: npm run lint
@@ -48,7 +56,9 @@ jobs:
           cache: 'npm'
       
       - name: Install dependencies
-        run: npm ci
+        run: |
+          npm cache clean --force
+          npm ci
       
       - name: Run web tests
         run: npm run test --workspace=hollywood
@@ -72,8 +82,16 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
       
+      - name: Increase file limits
+        run: |
+          echo "fs.file-max = 100000" | sudo tee -a /etc/sysctl.conf
+          sudo sysctl -p
+          ulimit -n 10240
+      
       - name: Install dependencies
-        run: npm ci
+        run: |
+          npm cache clean --force
+          npm ci
       
       - name: Build ${{ matrix.app }}
         run: |
@@ -85,6 +103,7 @@ jobs:
         continue-on-error: true
         env:
           NODE_ENV: production
+          NODE_OPTIONS: "--max-old-space-size=4096"
       
       - name: Upload build artifacts
         uses: actions/upload-artifact@v3

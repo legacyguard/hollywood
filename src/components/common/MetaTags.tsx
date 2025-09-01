@@ -67,36 +67,73 @@ export const MetaTags = ({
 
   const finalStructuredData = structuredData || defaultStructuredData;
 
-  return (
-    <Helmet>
-      {/* Standard SEO */}
-      <title>{pageTitle}</title>
-      <meta name="description" content={pageDescription} />
-      <meta name="keywords" content={pageKeywords} />
-      <meta name="author" content={pageAuthor} />
-      <meta name="robots" content={pageRobots} />
-      <link rel="canonical" href={pageUrl} />
+  useEffect(() => {
+    // Update document title
+    document.title = pageTitle;
 
-      {/* Open Graph for Social Media (Facebook, LinkedIn, etc.) */}
-      <meta property="og:type" content="website" />
-      <meta property="og:url" content={pageUrl} />
-      <meta property="og:title" content={pageTitle} />
-      <meta property="og:description" content={pageDescription} />
-      <meta property="og:image" content={pageImageUrl} />
-      <meta property="og:site_name" content="LegacyGuard" />
-      <meta property="og:locale" content="en_US" />
+    // Helper function to update or create meta tags
+    const updateMetaTag = (selector: string, content: string) => {
+      let element = document.querySelector(selector) as HTMLMetaElement;
+      if (!element) {
+        element = document.createElement('meta');
+        const [type, value] = selector.split('=');
+        const attrName = type.includes('property') ? 'property' : 'name';
+        element.setAttribute(attrName, value.replace(/["[\]]/g, ''));
+        document.head.appendChild(element);
+      }
+      element.content = content;
+    };
 
-      {/* Twitter Card */}
-      <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:url" content={pageUrl} />
-      <meta name="twitter:title" content={pageTitle} />
-      <meta name="twitter:description" content={pageDescription} />
-      <meta name="twitter:image" content={pageImageUrl} />
+    // Helper function to update or create link tags
+    const updateLinkTag = (rel: string, href: string) => {
+      let element = document.querySelector(`link[rel="${rel}"]`) as HTMLLinkElement;
+      if (!element) {
+        element = document.createElement('link');
+        element.rel = rel;
+        document.head.appendChild(element);
+      }
+      element.href = href;
+    };
 
-      {/* Structured data for search engines */}
-      <script type="application/ld+json">
-        {JSON.stringify(finalStructuredData)}
-      </script>
-    </Helmet>
-  );
+    // Update standard SEO meta tags
+    updateMetaTag('meta[name="description"]', pageDescription);
+    updateMetaTag('meta[name="keywords"]', pageKeywords);
+    updateMetaTag('meta[name="author"]', pageAuthor);
+    updateMetaTag('meta[name="robots"]', pageRobots);
+    updateLinkTag('canonical', pageUrl);
+
+    // Update Open Graph meta tags
+    updateMetaTag('meta[property="og:type"]', 'website');
+    updateMetaTag('meta[property="og:url"]', pageUrl);
+    updateMetaTag('meta[property="og:title"]', pageTitle);
+    updateMetaTag('meta[property="og:description"]', pageDescription);
+    updateMetaTag('meta[property="og:image"]', pageImageUrl);
+    updateMetaTag('meta[property="og:site_name"]', 'LegacyGuard');
+    updateMetaTag('meta[property="og:locale"]', 'en_US');
+
+    // Update Twitter Card meta tags
+    updateMetaTag('meta[name="twitter:card"]', 'summary_large_image');
+    updateMetaTag('meta[name="twitter:url"]', pageUrl);
+    updateMetaTag('meta[name="twitter:title"]', pageTitle);
+    updateMetaTag('meta[name="twitter:description"]', pageDescription);
+    updateMetaTag('meta[name="twitter:image"]', pageImageUrl);
+
+    // Update structured data
+    let scriptElement = document.querySelector('script[type="application/ld+json"]');
+    if (!scriptElement) {
+      scriptElement = document.createElement('script');
+      scriptElement.type = 'application/ld+json';
+      document.head.appendChild(scriptElement);
+    }
+    scriptElement.textContent = JSON.stringify(finalStructuredData);
+
+    // Cleanup function (optional - keeps meta tags in place for SPA navigation)
+    return () => {
+      // If you want to reset to defaults when component unmounts, uncomment below:
+      // document.title = DEFAULTS.TITLE;
+    };
+  }, [pageTitle, pageDescription, pageImageUrl, pageUrl, pageKeywords, pageAuthor, pageRobots, finalStructuredData]);
+
+  // This component doesn't render anything visible
+  return null;
 };

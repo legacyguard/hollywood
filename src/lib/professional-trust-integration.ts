@@ -2,12 +2,10 @@ import type {
   ProfessionalReview,
   TrustSealLevel,
 } from '@/components/trust/EnhancedTrustSeal';
-import { EnhancedTrustSeal } from '@/components/trust/EnhancedTrustSeal';
 import type {
   ReviewFeedback,
   ReviewRequest,
 } from '@/lib/professional-review-network';
-import { professionalNetwork } from '@/lib/professional-review-network';
 import type { WillData } from '@/types/will';
 
 export interface TrustSealUpgrade {
