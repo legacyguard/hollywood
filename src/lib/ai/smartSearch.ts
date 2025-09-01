@@ -468,7 +468,7 @@ export class SmartSearchService {
 
   private async generateRecommendations(
     results: SearchResult[],
-    query: EnhancedQuery
+    _query: EnhancedQuery
   ): Promise<DocumentRecommendation[]> {
     const recommendations: DocumentRecommendation[] = [];
 
@@ -552,7 +552,7 @@ export class SmartSearchService {
     const suggestions: QuerySuggestion[] = [];
 
     // Related terms based on indexed content
-    const relatedTerms = this.findRelatedTerms(query);
+    const relatedTerms = this.findRelatedTerms(_query);
     for (const term of relatedTerms) {
       suggestions.push({
         query: term,
@@ -563,7 +563,7 @@ export class SmartSearchService {
     }
 
     // Category-specific suggestions
-    const categoryQueries = this.generateCategoryQueries(query);
+    const categoryQueries = this.generateCategoryQueries(_query);
     suggestions.push(...categoryQueries);
 
     return suggestions.slice(0, 8); // Limit suggestions
@@ -1009,20 +1009,20 @@ export class SmartSearchService {
     return results.slice(0, 10);
   }
 
-  private personalizeResults(results: SearchResult[]): SearchResult[] {
+  private personalizeResults(_results: SearchResult[]): SearchResult[] {
     // Simplified personalization based on user preferences
     // In production would use ML models and user behavior data
-    return results;
+    return _results;
   }
 
-  private findCategoryCompletions(results: SearchResult[]): DocumentRecommendation[] {
+  private findCategoryCompletions(_results: SearchResult[]): DocumentRecommendation[] {
     // Analyze results for potential document set completions
     return [];
   }
 
   private findRelatedTerms(query: string): string[] {
     // Extract related terms from content
-    const relatedTerms: string[] = [];
+    const _relatedTerms: string[] = [];
     const queryTerms = this.extractSearchTerms(query);
 
     // Simple co-occurrence analysis

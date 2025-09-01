@@ -6,7 +6,7 @@ import type {
   EmergencyDocument,
   EmergencyTimeCapsule,
 } from '@/types/emergency';
-import { Guardian } from '@/types/guardian';
+import { _Guardian } from '@/types/guardian';
 
 export type AccessLevel =
   | 'public'
@@ -244,7 +244,7 @@ export class EmergencyAccessControl {
 
     // Check specific resource permissions
     switch (resourceType) {
-      case 'document':
+      case 'document': {
         const docAccess = await this.validateDocumentAccess(
           userId,
           resourceId,
@@ -255,6 +255,7 @@ export class EmergencyAccessControl {
         reason = docAccess.reason;
         restrictions.push(...(docAccess.restrictions || []));
         break;
+      }
 
       case 'contact':
         // Guardians can always access emergency contacts
@@ -451,7 +452,7 @@ export class EmergencyAccessControl {
         reason = 'Emergency contact access';
         break;
 
-      case 'time_capsule':
+      case 'time_capsule': {
         // Time capsules for emergency delivery
         const { data: capsule } = await supabase
           .from('time_capsules')
@@ -467,6 +468,7 @@ export class EmergencyAccessControl {
           reason = 'Time capsule not available for emergency access';
         }
         break;
+      }
 
       case 'guidance':
         // Basic guidance entries available

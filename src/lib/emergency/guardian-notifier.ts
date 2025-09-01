@@ -15,7 +15,7 @@ interface EmailTemplateData {
   emergencyInstructions: string[];
 }
 
-interface NotificationChannel {
+interface _NotificationChannel {
   type: 'email' | 'sms' | 'push';
   enabled: boolean;
   config?: Record<string, any>;
@@ -301,7 +301,7 @@ export class GuardianNotificationService {
         ? `REMINDER: Emergency Activation Request - ${templateData.userName}`
         : `Emergency Activation Request - ${templateData.userName}`;
 
-      const emailBody = this.generateEmailTemplate(
+      const _emailBody = this.generateEmailTemplate(
         templateData,
         triggerType,
         reminderType

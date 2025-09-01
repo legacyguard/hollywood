@@ -35,6 +35,8 @@ import {
   Settings,
   TrendingUp,
   Globe,
+  Download,
+  BookOpen,
 } from 'lucide-react';
 
 interface ProtectionStatus {
@@ -449,6 +451,78 @@ export const FamilyProtectionDashboard: React.FC<FamilyProtectionDashboardProps>
                     {effectiveMode === 'empathetic' ? 'Care settings' :
                      effectiveMode === 'pragmatic' ? 'Protocol settings' :
                      'Protection settings'}
+                  </Button>
+
+                  <Button
+                    variant="default"
+                    className="w-full justify-start bg-primary hover:bg-primary-hover"
+                    onClick={async () => {
+                      try {
+                        // Get Supabase URL from environment or use the default
+                        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || window.location.origin;
+                        const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+                        
+                        // Call the Supabase Edge Function
+                        const response = await fetch(`${supabaseUrl}/functions/v1/generate-survivor-manual`, {
+                          method: 'POST',
+                          headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${supabaseAnonKey}`,
+                          },
+                          body: JSON.stringify({
+                            user_id: _userId,
+                          }),
+                          credentials: 'include',
+                        });
+
+                        if (!response.ok) {
+                          throw new Error('Failed to generate manual');
+                        }
+
+                        // Get the PDF blob
+                        const blob = await response.blob();
+                        
+                        // Create download link
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = `family-manual-${new Date().toISOString().split('T')[0]}.pdf`;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        window.URL.revokeObjectURL(url);
+                        
+                        // Show success message
+                        if (window.toast) {
+                          window.toast.success(
+                            effectiveMode === 'empathetic' 
+                              ? '💚 Your family manual has been lovingly prepared!' 
+                              : effectiveMode === 'pragmatic'
+                              ? 'Family manual generated successfully'
+                              : 'Your family manual is ready!'
+                          );
+                        }
+                      } catch (error) {
+                        console.error('Error generating manual:', error);
+                        if (window.toast) {
+                          window.toast.error(
+                            effectiveMode === 'empathetic'
+                              ? 'Oh dear, something went wrong. Let\'s try again together.'
+                              : effectiveMode === 'pragmatic'
+                              ? 'Error: Failed to generate manual'
+                              : 'Failed to generate family manual'
+                          );
+                        }
+                      }
+                    }}
+                  >
+                    <BookOpen className="w-4 h-4 mr-3" />
+                    <span className="flex-1 text-left">
+                      {effectiveMode === 'empathetic' ? 'Create Family Love Letter' :
+                       effectiveMode === 'pragmatic' ? 'Generate Emergency Manual' :
+                       'Download Family Manual'}
+                    </span>
+                    <Download className="w-4 h-4 ml-2" />
                   </Button>
 
                   <div className="pt-3 border-t border-gray-200">

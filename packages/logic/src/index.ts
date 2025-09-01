@@ -1,5 +1,6 @@
 // Services
 export * from './services/textManager'
+export * from './services/textAnalyzer'
 export * from './services/legacyGarden'
 
 // Types

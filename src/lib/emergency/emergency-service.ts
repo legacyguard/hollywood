@@ -9,8 +9,8 @@ import type {
   EmergencyDashboardData,
   SurvivorInterface,
   ActivityTracker,
+  _EmergencyActivation
 } from '@/types/emergency';
-import { EmergencyActivation } from '@/types/emergency';
 
 /**
  * Main Emergency Service that orchestrates all emergency system components

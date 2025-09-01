@@ -6,9 +6,9 @@ import type {
   EmergencyTriggerType,
   UserHealthCheck,
   ShieldStatus,
+  DEFAULT_DETECTION_CONFIG
 } from '@/types/emergency';
-import { DEFAULT_DETECTION_CONFIG } from '@/types/emergency';
-import { FamilyShieldSettings } from '@/types/guardian';
+import { _FamilyShieldSettings } from '@/types/guardian';
 
 export class EmergencyDetectionEngine {
   private config: DetectionEngineConfig;

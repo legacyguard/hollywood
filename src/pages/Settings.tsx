@@ -83,7 +83,7 @@ export default function SettingsPage() {
 
   // Save preferences to localStorage and update Sofia's text manager
   const savePreferences = async () => {
-    if (!userId || !personalityManager) return;
+    if (!userId || !personalityManager || !user) return;
 
     setIsSaving(true);
     try {
@@ -115,7 +115,20 @@ export default function SettingsPage() {
       const newInsight = personalityManager.getPersonalityInsight();
       setPersonalityInsight(newInsight);
 
-      // TODO: Also save to Supabase or Clerk metadata for cloud sync
+      // Update Clerk user metadata with communication style
+      try {
+        await user.update({
+          publicMetadata: {
+            ...user.publicMetadata,
+            communicationStyle: preferences.communication.style,
+            sofiaAdaptationEnabled: preferences.communication.autoDetection,
+            sofiaLastStyleUpdate: new Date().toISOString()
+          }
+        });
+      } catch (clerkError) {
+        console.error('Failed to update Clerk metadata:', clerkError);
+        // Continue even if Clerk update fails - local storage is still updated
+      }
 
       toast.success('Settings saved successfully');
     } catch (error) {
