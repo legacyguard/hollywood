@@ -340,8 +340,8 @@ class NaturalLanguageSearchService {
    * Execute search query
    */
   private async executeSearch(
-    query: SearchQuery,
-    options: { limit?: number; offset?: number }
+    _query: SearchQuery,
+    _options: { limit?: number; offset?: number }
   ): Promise<{ results: SearchResult[]; totalCount: number }> {
     // This would integrate with actual search engine (Elasticsearch, etc.)
     // For demo purposes, return mock results

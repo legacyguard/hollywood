@@ -208,7 +208,7 @@ export class DocumentAnalyzer {
   /**
    * Classify documents into categories
    */
-  async classifyDocument(content: string, filename?: string): Promise<DocumentCategory> {
+  async classifyDocument(content: string, _filename?: string): Promise<DocumentCategory> {
     const patterns = this.getClassificationPatterns();
 
     // Analyze content for classification signals
@@ -336,7 +336,7 @@ export class DocumentAnalyzer {
    */
   private async extractTextContent(
     content: string | File | Blob,
-    mimeType?: string
+    _mimeType?: string
   ): Promise<string> {
     if (typeof content === 'string') {
       return content;
@@ -499,7 +499,7 @@ export class DocumentAnalyzer {
 
     const dates: ExtractedDate[] = [];
 
-    for (const { pattern, format } of datePatterns) {
+    for (const { pattern, format: _format } of datePatterns) {
       const matches = content.matchAll(pattern);
       for (const match of matches) {
         const dateStr = match[0];
@@ -561,7 +561,7 @@ export class DocumentAnalyzer {
 
     const matches = content.matchAll(amountPattern);
     for (const match of matches) {
-      const amountStr = match[0].replace(/[\$,]/g, '');
+      const amountStr = match[0].replace(/[$,]/g, '');
       const amount = parseFloat(amountStr);
 
       if (!isNaN(amount)) {
@@ -709,7 +709,7 @@ export class DocumentAnalyzer {
   private generateRecommendations(
     category: DocumentCategory,
     keyInfo: KeyInformation,
-    insights: DocumentInsight[]
+    _insights: DocumentInsight[]
   ): DocumentRecommendation[] {
     const recommendations: DocumentRecommendation[] = [];
 
@@ -741,7 +741,7 @@ export class DocumentAnalyzer {
   private generateTags(
     category: DocumentCategory,
     keyInfo: KeyInformation,
-    content: string
+    _content: string
   ): string[] {
     const tags: string[] = [];
 
@@ -831,9 +831,10 @@ export class DocumentAnalyzer {
         return content.replace(/\d(?=\d{4})/g, '*');
       case 'credit_card':
         return content.replace(/\d(?=\d{4})/g, '*');
-      case 'email':
+      case 'email': {
         const [local, domain] = content.split('@');
         return `${local.slice(0, 2)}***@${domain}`;
+      }
       default:
         return content.replace(/./g, '*');
     }

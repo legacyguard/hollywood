@@ -49,7 +49,7 @@ export interface GrowthFactors {
 export class LegacyGarden {
   private milestones: Milestone[] = []
   private treeState: TreeState
-  
+
   constructor() {
     this.treeState = this.initializeTree()
     this.initializeMilestones()
@@ -166,62 +166,62 @@ export class LegacyGarden {
   calculateGrowth(factors: GrowthFactors): TreeState {
     // Base growth calculation
     const growthRate = this.calculateGrowthRate(factors)
-    
+
     // Update tree height (max 100)
     this.treeState.height = Math.min(100, this.treeState.height + growthRate * 2)
-    
+
     // Update stage based on height
     this.updateStage()
-    
+
     // Calculate branches based on documents
     this.treeState.branches = Math.floor(factors.documentsCreated / 2)
-    
+
     // Calculate leaves (more leaves with regular activity)
     const activityMultiplier = factors.lastUpdateDays < 7 ? 1.5 : 1
     this.treeState.leaves = Math.floor(factors.documentsCreated * 3 * activityMultiplier)
-    
+
     // Calculate fruits (milestones achieved)
     this.treeState.fruits = this.milestones.filter(m => m.achieved).length
-    
+
     // Calculate roots (based on categories and shares)
     this.treeState.roots = 1 + factors.categoriesUsed + Math.floor(factors.documentsShared / 3)
-    
+
     // Calculate health (decreases with inactivity)
     const healthPenalty = Math.min(50, factors.lastUpdateDays * 2)
     this.treeState.health = Math.max(20, 100 - healthPenalty)
-    
+
     // Update age
     this.treeState.age = factors.daysActive
-    
+
     return this.treeState
   }
 
   private calculateGrowthRate(factors: GrowthFactors): number {
     let rate = 0
-    
+
     // Document creation contributes most to growth
     rate += factors.documentsCreated * 2
-    
+
     // Regular activity bonus
     if (factors.lastUpdateDays < 3) rate += 5
     else if (factors.lastUpdateDays < 7) rate += 3
     else if (factors.lastUpdateDays < 14) rate += 1
-    
+
     // Completion rate bonus
     rate += factors.completionRate * 10
-    
+
     // Category diversity bonus
     rate += factors.categoriesUsed * 1.5
-    
+
     // Sharing bonus
     rate += factors.documentsShared * 0.5
-    
+
     return rate
   }
 
   private updateStage(): void {
     const height = this.treeState.height
-    
+
     if (height < 10) {
       this.treeState.stage = 'seed'
     } else if (height < 25) {
@@ -239,12 +239,12 @@ export class LegacyGarden {
 
   checkMilestones(factors: GrowthFactors): Milestone[] {
     const newlyAchieved: Milestone[] = []
-    
+
     this.milestones.forEach(milestone => {
       if (milestone.achieved) return
-      
+
       let achieved = false
-      
+
       switch (milestone.requirement.type) {
         case 'documents':
           achieved = factors.documentsCreated >= milestone.requirement.value
@@ -259,14 +259,14 @@ export class LegacyGarden {
           achieved = factors.categoriesUsed >= milestone.requirement.value
           break
       }
-      
+
       if (achieved) {
         milestone.achieved = true
         milestone.achievedAt = new Date()
         newlyAchieved.push(milestone)
       }
     })
-    
+
     return newlyAchieved
   }
 
@@ -292,7 +292,7 @@ export class LegacyGarden {
 
   getHealthStatus(): 'excellent' | 'good' | 'fair' | 'poor' {
     const health = this.treeState.health
-    
+
     if (health >= 80) return 'excellent'
     if (health >= 60) return 'good'
     if (health >= 40) return 'fair'
@@ -331,7 +331,7 @@ export class LegacyGarden {
         description: 'Your legacy has become a monument of wisdom and love.',
       }
     }
-    
+
     return stageInfo[this.treeState.stage]
   }
 

@@ -23,7 +23,7 @@ export interface UserContext {
 export class TextManager {
   private mode: SofiaMode = 'balanced'
   private responseHistory: SofiaResponse[] = []
-  
+
   constructor(initialMode?: SofiaMode) {
     if (initialMode) {
       this.mode = initialMode
@@ -40,12 +40,12 @@ export class TextManager {
 
   generateGreeting(context: UserContext): SofiaResponse {
     const { name, documentsCreated = 0, lastActivity } = context
-    
+
     let text = ''
     let emotion: SofiaResponse['emotion'] = 'happy'
     let animation: SofiaResponse['animation'] = 'flutter'
-    
-    const daysSinceLastActivity = lastActivity 
+
+    const daysSinceLastActivity = lastActivity
       ? Math.floor((Date.now() - lastActivity.getTime()) / (1000 * 60 * 60 * 24))
       : null
 
@@ -90,7 +90,7 @@ export class TextManager {
   generateMilestoneMessage(milestone: string, context: UserContext): SofiaResponse {
     let text = ''
     let emotion: SofiaResponse['emotion'] = 'proud'
-    
+
     switch (this.mode) {
       case 'empathetic':
         text = `🎉 This is amazing, ${context.name || 'dear one'}! You've reached "${milestone}"! I'm so proud of how far you've come. Your loved ones will cherish this forever.`
@@ -114,7 +114,7 @@ export class TextManager {
     }
   }
 
-  generateEncouragement(context: UserContext): SofiaResponse {
+  generateEncouragement(_context: UserContext): SofiaResponse {
     const encouragements = {
       empathetic: [
         "Remember, every document you create is a gift of love to those who matter most. 💝",
@@ -145,7 +145,7 @@ export class TextManager {
 
   generateError(errorType: string): SofiaResponse {
     let text = ''
-    
+
     switch (this.mode) {
       case 'empathetic':
         text = "Oh dear, something went wrong. Don't worry, we'll figure this out together. 🤗"
@@ -168,7 +168,7 @@ export class TextManager {
 
   private generateSuggestions(context: UserContext): string[] {
     const suggestions: string[] = []
-    
+
     if (!context.documentsCreated || context.documentsCreated === 0) {
       suggestions.push("Create your first will document")
       suggestions.push("Add emergency contacts")

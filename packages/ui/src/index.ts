@@ -203,6 +203,26 @@ export {
   type FormRowProps,
 } from './components/forms'
 
+// Export Garden and Firefly components
+export {
+  LegacyGarden,
+  type LegacyGardenProps,
+} from './components/LegacyGarden'
+
+export {
+  SofiaFirefly,
+  type SofiaFireflyProps,
+} from './components/SofiaFirefly'
+
+// Export Event Bus utilities
+export {
+  eventBus,
+  EVENTS,
+  useEventBus,
+  useEventEmitter,
+  type EventType,
+} from './utils/eventBus'
+
 // Export Animation constants
 export {
   CardAnimation,

@@ -1,5 +1,4 @@
-import type React from 'react';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, type React } from 'react';
 
 interface EncryptionContextType {
   isUnlocked: boolean;

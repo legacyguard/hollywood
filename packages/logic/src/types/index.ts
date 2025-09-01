@@ -53,7 +53,7 @@ export interface Document {
   lastAccessedAt?: Date
 }
 
-export type DocumentType = 
+export type DocumentType =
   | 'will'
   | 'healthcare-directive'
   | 'power-of-attorney'
@@ -65,7 +65,7 @@ export type DocumentType =
   | 'funeral-wishes'
   | 'family-history'
 
-export type DocumentStatus = 
+export type DocumentStatus =
   | 'draft'
   | 'complete'
   | 'reviewed'
@@ -133,7 +133,7 @@ export interface SharedUser {
   lastAccessed?: Date
 }
 
-export type SharingPermission = 
+export type SharingPermission =
   | 'view'
   | 'comment'
   | 'edit'
@@ -154,20 +154,20 @@ export interface Subscription {
   usage: SubscriptionUsage
 }
 
-export type SubscriptionPlan = 
+export type SubscriptionPlan =
   | 'free'
   | 'premium'
   | 'family'
   | 'enterprise'
 
-export type SubscriptionStatus = 
+export type SubscriptionStatus =
   | 'active'
   | 'trialing'
   | 'past_due'
   | 'canceled'
   | 'expired'
 
-export type BillingCycle = 
+export type BillingCycle =
   | 'monthly'
   | 'yearly'
   | 'lifetime'
@@ -204,7 +204,7 @@ export interface UserActivity {
   userAgent?: string
 }
 
-export type ActivityAction = 
+export type ActivityAction =
   | 'create'
   | 'read'
   | 'update'
@@ -215,7 +215,7 @@ export type ActivityAction =
   | 'archive'
   | 'restore'
 
-export type ResourceType = 
+export type ResourceType =
   | 'document'
   | 'template'
   | 'contact'
@@ -256,7 +256,7 @@ export interface TemplateField {
   validation?: ValidationRule
 }
 
-export type FieldType = 
+export type FieldType =
   | 'text'
   | 'textarea'
   | 'number'
@@ -300,7 +300,7 @@ export interface Contact {
   updatedAt: Date
 }
 
-export type ContactType = 
+export type ContactType =
   | 'beneficiary'
   | 'executor'
   | 'guardian'

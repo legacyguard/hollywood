@@ -1,15 +1,15 @@
 import { useState, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import type { WillData } from '@/types/will';
-import type {
-  ReviewRequest,
-  ConsultationOffer,
-  NotaryMatch,
-  ReviewFeedback,
-  ProfessionalType,
-  ReviewPriority,
+import {
+  type ReviewRequest,
+  type ConsultationOffer,
+  type NotaryMatch,
+  type ReviewFeedback,
+  type ProfessionalType,
+  type ReviewPriority,
+  professionalNetwork
 } from '@/lib/professional-review-network';
-import { professionalNetwork } from '@/lib/professional-review-network';
 
 interface AttorneyReviewOptions {
   priority?: ReviewPriority;

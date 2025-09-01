@@ -5,22 +5,22 @@
 
 export function formatDate(date: Date | string, format: 'short' | 'long' | 'relative' = 'short'): string {
   const d = typeof date === 'string' ? new Date(date) : date
-  
+
   if (format === 'relative') {
     return getRelativeTime(d)
   }
-  
-  const options: Intl.DateTimeFormatOptions = format === 'long' 
+
+  const options: Intl.DateTimeFormatOptions = format === 'long'
     ? { year: 'numeric', month: 'long', day: 'numeric' }
     : { year: 'numeric', month: 'short', day: 'numeric' }
-  
+
   return d.toLocaleDateString('en-US', options)
 }
 
 export function getRelativeTime(date: Date): string {
   const now = new Date()
   const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000)
-  
+
   if (diffInSeconds < 60) return 'just now'
   if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`
   if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`
@@ -57,7 +57,7 @@ export function formatTime(date: Date, use24Hour: boolean = false): string {
   const options: Intl.DateTimeFormatOptions = use24Hour
     ? { hour: '2-digit', minute: '2-digit', hour12: false }
     : { hour: 'numeric', minute: '2-digit', hour12: true }
-  
+
   return date.toLocaleTimeString('en-US', options)
 }
 
@@ -82,7 +82,7 @@ export function isThisWeek(date: Date): boolean {
   const now = new Date()
   const weekStart = new Date(now.setDate(now.getDate() - now.getDay()))
   const weekEnd = new Date(now.setDate(now.getDate() - now.getDay() + 6))
-  
+
   return date >= getStartOfDay(weekStart) && date <= getEndOfDay(weekEnd)
 }
 
@@ -95,10 +95,10 @@ export function getAge(birthDate: Date): number {
   const today = new Date()
   let age = today.getFullYear() - birthDate.getFullYear()
   const monthDiff = today.getMonth() - birthDate.getMonth()
-  
+
   if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
     age--
   }
-  
+
   return age
 }

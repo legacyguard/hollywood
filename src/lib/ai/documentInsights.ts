@@ -6,7 +6,7 @@
  * including usage patterns, security metrics, and actionable recommendations.
  */
 
-import { supabase } from '@/integrations/supabase/client';
+import { _supabase } from '@/integrations/supabase/client';
 import type { DocumentAnalysisResult } from './documentAnalyzer';
 
 export interface DocumentMetrics {
@@ -444,7 +444,7 @@ export class DocumentInsightsService {
   /**
    * Get trend analysis
    */
-  private async getTrends(filter?: AnalyticsFilter) {
+  private async getTrends(_filter?: AnalyticsFilter) {
     // Generate simulated trend data
     const dates = this.getLast30Days();
     const storageGrowth = dates.map(date => ({
@@ -476,7 +476,7 @@ export class DocumentInsightsService {
   /**
    * Get predictions and forecasts
    */
-  private async getPredictions(filter?: AnalyticsFilter) {
+  private async getPredictions(_filter?: AnalyticsFilter) {
     // Simulate predictions based on current trends
     return {
       storageNeeded: 2.5, // GB

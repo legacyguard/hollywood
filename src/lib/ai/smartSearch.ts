@@ -4,7 +4,7 @@
  */
 
 import type { DocumentAnalysisResult, DocumentCategory } from './documentAnalyzer';
-import { CategorySuggestion } from './documentCategorizer';
+import { _CategorySuggestion } from './documentCategorizer';
 
 export interface SmartSearchQuery {
   query: string;
@@ -408,7 +408,7 @@ export class SmartSearchService {
     const results: SearchResult[] = [];
     const searchTerms = this.extractSearchTerms(query.query);
 
-    for (const [documentId, indexEntry] of this.searchIndex.entries()) {
+    for (const [_documentId, indexEntry] of this.searchIndex.entries()) {
       const relevanceScore = this.calculateRelevance(indexEntry, searchTerms, query);
 
       if (relevanceScore > 0) {
@@ -438,20 +438,23 @@ export class SmartSearchService {
           return query.options.sortOrder === 'asc'
             ? a.lastModified.getTime() - b.lastModified.getTime()
             : b.lastModified.getTime() - a.lastModified.getTime();
-        case 'importance':
+        case 'importance': {
           const importanceOrder = { critical: 4, high: 3, medium: 2, low: 1 };
           const aImportance = importanceOrder[a.analysis?.importanceLevel || 'low'];
           const bImportance = importanceOrder[b.analysis?.importanceLevel || 'low'];
           return query.options.sortOrder === 'asc'
             ? aImportance - bImportance
             : bImportance - aImportance;
-        case 'alphabetical':
+        }
+        case 'alphabetical': {
           return query.options.sortOrder === 'asc'
             ? a.title.localeCompare(b.title)
             : b.title.localeCompare(a.title);
+        }
         case 'relevance':
-        default:
+        default: {
           return b.relevanceScore - a.relevanceScore;
+        }
       }
     });
 
@@ -545,7 +548,7 @@ export class SmartSearchService {
     return facets;
   }
 
-  private async generateQuerySuggestions(query: string): Promise<QuerySuggestion[]> {
+  private async generateQuerySuggestions(_query: string): Promise<QuerySuggestion[]> {
     const suggestions: QuerySuggestion[] = [];
 
     // Related terms based on indexed content
@@ -678,14 +681,16 @@ export class SmartSearchService {
         return indexEntry.metadata.created ? new Date(indexEntry.metadata.created) : null;
       case 'modified':
         return indexEntry.metadata.lastModified ? new Date(indexEntry.metadata.lastModified) : null;
-      case 'expiration':
+      case 'expiration': {
         const expirationDate = indexEntry.analysis.keyInformation.importantDates
           .find(d => d.type === 'expiration');
         return expirationDate ? expirationDate.date : null;
-      case 'effective':
+      }
+      case 'effective': {
         const effectiveDate = indexEntry.analysis.keyInformation.importantDates
           .find(d => d.type === 'effective');
         return effectiveDate ? effectiveDate.date : null;
+      }
       default:
         return null;
     }
@@ -881,7 +886,7 @@ export class SmartSearchService {
   }
 
   // Additional methods for completeness...
-  private updateSearchAnalytics(query: string, responseTime: number, resultCount: number): void {
+  private updateSearchAnalytics(query: string, responseTime: number, _resultCount: number): void {
     this.searchAnalytics.totalQueries++;
     this.searchAnalytics.topQueries[query] = (this.searchAnalytics.topQueries[query] || 0) + 1;
     this.searchAnalytics.averageResponseTime =
@@ -905,7 +910,7 @@ export class SmartSearchService {
       }));
   }
 
-  private async getContentBasedSuggestions(partialQuery: string): Promise<QuerySuggestion[]> {
+  private async getContentBasedSuggestions(_partialQuery: string): Promise<QuerySuggestion[]> {
     // Extract common terms from indexed content
     const suggestions: QuerySuggestion[] = [];
     // Implementation would analyze indexed content for related terms
