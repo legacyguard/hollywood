@@ -403,7 +403,7 @@ export class EmergencyTestingSystem {
     const stepResults: StepResult[] = [];
     let testUserId: string | null = null;
     let testGuardianId: string | null = null;
-    let testDocuments: string[] = [];
+    let _testDocuments: string[] = [];
 
     try {
       // Setup phase
@@ -420,7 +420,7 @@ export class EmergencyTestingSystem {
           } else if (setupStep.action === 'create_guardian') {
             testGuardianId = result.guardianId;
           } else if (setupStep.action === 'create_documents') {
-            testDocuments = result.documentIds || [];
+            _testDocuments = result.documentIds || [];
           }
 
           stepResults.push({
@@ -543,7 +543,7 @@ export class EmergencyTestingSystem {
     const supabase = this.getServiceClient();
 
     switch (step.action) {
-      case 'create_user':
+      case 'create_user': {
         // Create test user via Supabase Auth Admin API
         const { data: user, error: userError } =
           await supabase.auth.admin.createUser({
@@ -562,8 +562,9 @@ export class EmergencyTestingSystem {
         });
 
         return { userId: user.user.id };
+      }
 
-      case 'create_guardian':
+      case 'create_guardian': {
         // Need userId from previous step context
         const { data: guardian, error: guardianError } = await supabase
           .from('guardians')
@@ -584,8 +585,9 @@ export class EmergencyTestingSystem {
 
         if (guardianError) throw guardianError;
         return { guardianId: guardian.id };
+      }
 
-      case 'set_shield_settings':
+      case 'set_shield_settings': {
         await supabase.from('family_shield_settings').upsert({
           user_id: step.data.userId,
           is_shield_enabled: step.data.is_shield_enabled || false,
@@ -596,6 +598,7 @@ export class EmergencyTestingSystem {
         });
 
         return { success: true };
+      }
 
       case 'create_documents':
         const documentIds = [];
