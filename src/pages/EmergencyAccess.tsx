@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -57,16 +57,7 @@ export default function FamilyShieldAccessPage() {
   const [needsVerification, setNeedsVerification] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (token) {
-      verifyToken();
-    } else {
-      setError('No access token provided');
-      setIsLoading(false);
-    }
-  }, [token, verifyToken]);
-
-  const verifyToken = async () => {
+  const verifyToken = React.useCallback(async () => {
     if (!token) return;
 
     try {
@@ -166,7 +157,16 @@ export default function FamilyShieldAccessPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [token, verificationCode, createSupabaseClient]);
+
+  useEffect(() => {
+    if (token) {
+      verifyToken();
+    } else {
+      setError('No access token provided');
+      setIsLoading(false);
+    }
+  }, [token, verifyToken]);
 
   const handleVerificationSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -241,7 +241,7 @@ export default function FamilyShieldAccessPage() {
       <div className='min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center'>
         <Card className='p-8 max-w-md w-full mx-4'>
           <div className='text-center'>
-            <Icon name={"loader" as any}
+            <Icon name="loader"
               className='w-8 h-8 animate-spin text-primary mx-auto mb-4'
             />
             <h2 className='text-xl font-semibold mb-2'>
@@ -261,7 +261,7 @@ export default function FamilyShieldAccessPage() {
       <div className='min-h-screen bg-gradient-to-br from-red-50 to-pink-100 flex items-center justify-center'>
         <Card className='p-8 max-w-md w-full mx-4'>
           <div className='text-center'>
-            <Icon name={"alert-triangle" as any}
+            <Icon name="alert-triangle"
               className='w-12 h-12 text-red-500 mx-auto mb-4'
             />
             <h2 className='text-xl font-semibold text-red-800 mb-4'>
@@ -269,7 +269,7 @@ export default function FamilyShieldAccessPage() {
             </h2>
             <p className='text-red-700 mb-6'>{error}</p>
             <Button onClick={() => navigate('/')} variant={"outline" as any}>
-              <Icon name={"home" as any} className='w-4 h-4 mr-2' />
+              <Icon name="home" className='w-4 h-4 mr-2' />
               Return to Home
             </Button>
           </div>
@@ -284,7 +284,7 @@ export default function FamilyShieldAccessPage() {
         <Card className='p-8 max-w-md w-full mx-4'>
           <form onSubmit={handleVerificationSubmit}>
             <div className='text-center mb-6'>
-              <Icon name={"shield-check" as any}
+              <Icon name="shield-check"
                 className='w-12 h-12 text-amber-600 mx-auto mb-4'
               />
               <h2 className='text-xl font-semibold mb-2'>
@@ -313,7 +313,7 @@ export default function FamilyShieldAccessPage() {
               <Button type='submit' disabled={isVerifying} className='w-full'>
                 {isVerifying ? (
                   <>
-                    <Icon name={"loader" as any} className='w-4 h-4 mr-2 animate-spin' />
+                    <Icon name="loader" className='w-4 h-4 mr-2 animate-spin' />
                     Verifying...
                   </>
                 ) : (
@@ -358,7 +358,7 @@ export default function FamilyShieldAccessPage() {
               <div>
                 <div className='flex items-center gap-3 mb-2'>
                   <div className='w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center'>
-                    <Icon name={"shield-check" as any} className='w-6 h-6 text-white' />
+                    <Icon name="shield-check" className='w-6 h-6 text-white' />
                   </div>
                   <h1 className='text-2xl font-bold text-gray-900'>
                     Family Shield - Guardian Access

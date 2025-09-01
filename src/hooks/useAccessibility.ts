@@ -50,11 +50,11 @@ export const useAnnouncement = () => {
  * Hook for keyboard navigation
  */
 export const useKeyboardNavigation = (
-  items: any[],
+  items: unknown[],
   options: {
     orientation?: 'horizontal' | 'vertical' | 'both';
     loop?: boolean;
-    onSelect?: (item: any, index: number) => void;
+    onSelect?: (item: unknown, index: number) => void;
   } = {}
 ) => {
   const { orientation = 'vertical', loop = true, onSelect } = options;
@@ -185,7 +185,7 @@ export const useAriaId = (prefix: string = 'aria') => {
 /**
  * Hook for roving tabindex pattern
  */
-export const useRovingTabIndex = (items: any[], activeIndex: number = 0) => {
+export const useRovingTabIndex = (items: unknown[], activeIndex: number = 0) => {
   const [currentIndex, setCurrentIndex] = useState(activeIndex);
 
   const getRovingProps = useCallback(

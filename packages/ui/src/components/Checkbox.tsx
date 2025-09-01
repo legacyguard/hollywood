@@ -1,5 +1,5 @@
 import React from 'react'
-import { styled, Checkbox as TamaguiCheckbox, CheckboxProps as TamaguiCheckboxProps, Label, XStack, Theme } from 'tamagui'
+import { styled, Checkbox as TamaguiCheckbox, Label, XStack, Theme, type CheckboxProps as TamaguiCheckboxProps } from 'tamagui'
 import { Check } from 'lucide-react-native'
 
 // Base Checkbox component with LegacyGuard styling
@@ -10,7 +10,7 @@ const StyledCheckbox = styled(TamaguiCheckbox, {
   borderColor: '$gray4',
   borderRadius: '$2',
   animation: 'quick',
-  
+
   variants: {
     size: {
       small: {
@@ -26,7 +26,7 @@ const StyledCheckbox = styled(TamaguiCheckbox, {
         height: 26,
       },
     },
-    
+
     variant: {
       primary: {
         focusStyle: {
@@ -53,14 +53,14 @@ const StyledCheckbox = styled(TamaguiCheckbox, {
         },
       },
     },
-    
+
     checked: {
       true: {
         backgroundColor: '$primaryBlue',
         borderColor: '$primaryBlue',
       },
     },
-    
+
     disabled: {
       true: {
         opacity: 0.5,
@@ -68,7 +68,7 @@ const StyledCheckbox = styled(TamaguiCheckbox, {
       },
     },
   },
-  
+
   defaultVariants: {
     size: 'medium' as const,
     variant: 'primary' as const,
@@ -99,22 +99,22 @@ export interface CheckboxProps extends Omit<TamaguiCheckboxProps, 'size'> {
 
 // Main Checkbox component
 export const Checkbox = React.forwardRef<HTMLButtonElement, CheckboxProps>(
-  ({ 
-    size = 'medium', 
-    variant = 'primary', 
-    label, 
+  ({
+    size = 'medium',
+    variant = 'primary',
+    label,
     labelPosition = 'right',
     disabled = false,
     checked,
     defaultChecked,
     onCheckedChange,
     indeterminate = false,
-    ...props 
+    ...props
   }, ref) => {
-    
+
     // Calculate icon size based on checkbox size
     const iconSize = size === 'small' ? 12 : size === 'medium' ? 16 : 20
-    
+
     const checkboxComponent = (
       <StyledCheckbox
         ref={ref}
@@ -129,9 +129,9 @@ export const Checkbox = React.forwardRef<HTMLButtonElement, CheckboxProps>(
         <StyledIndicator>
           {indeterminate ? (
             <Theme name={variant}>
-              <XStack 
-                width={iconSize * 0.7} 
-                height={2} 
+              <XStack
+                width={iconSize * 0.7}
+                height={2}
                 backgroundColor="white"
                 borderRadius="$1"
               />
@@ -142,14 +142,14 @@ export const Checkbox = React.forwardRef<HTMLButtonElement, CheckboxProps>(
         </StyledIndicator>
       </StyledCheckbox>
     )
-    
+
     if (!label) {
       return checkboxComponent
     }
-    
+
     return (
-      <XStack 
-        alignItems="center" 
+      <XStack
+        alignItems="center"
         gap="$3"
         opacity={disabled ? 0.5 : 1}
         cursor={disabled ? 'not-allowed' : 'pointer'}
@@ -160,8 +160,8 @@ export const Checkbox = React.forwardRef<HTMLButtonElement, CheckboxProps>(
         }}
       >
         {labelPosition === 'left' && (
-          <Label 
-            htmlFor={props.id} 
+          <Label
+            htmlFor={props.id}
             disabled={disabled}
             cursor={disabled ? 'not-allowed' : 'pointer'}
           >
@@ -170,8 +170,8 @@ export const Checkbox = React.forwardRef<HTMLButtonElement, CheckboxProps>(
         )}
         {checkboxComponent}
         {labelPosition === 'right' && (
-          <Label 
-            htmlFor={props.id} 
+          <Label
+            htmlFor={props.id}
             disabled={disabled}
             cursor={disabled ? 'not-allowed' : 'pointer'}
           >
@@ -201,16 +201,16 @@ export interface CheckboxGroupProps {
 }
 
 export const CheckboxGroup = React.forwardRef<HTMLDivElement, CheckboxGroupProps>(
-  ({ 
-    options, 
-    value = [], 
-    onValueChange, 
+  ({
+    options,
+    value = [],
+    onValueChange,
     orientation = 'vertical',
     size = 'medium',
     variant = 'primary',
     disabled = false,
   }, ref) => {
-    
+
     const handleCheckboxChange = (optionValue: string, checked: boolean) => {
       if (checked) {
         onValueChange([...value, optionValue])
@@ -218,11 +218,11 @@ export const CheckboxGroup = React.forwardRef<HTMLDivElement, CheckboxGroupProps
         onValueChange(value.filter(v => v !== optionValue))
       }
     }
-    
+
     const StackComponent = orientation === 'horizontal' ? XStack : styled(XStack, {
       flexDirection: 'column',
     })
-    
+
     return (
       <StackComponent ref={ref} gap="$3" flexWrap="wrap">
         {options.map((option) => (

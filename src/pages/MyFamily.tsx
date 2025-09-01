@@ -52,7 +52,7 @@ export const MyFamilyPage: React.FC<MyFamilyPageProps> = ({
   const [showRoleAssignment, setShowRoleAssignment] = useState(false);
 
   // Mock family data - in real app, this would come from user's family tree
-  const mockFamilyMembers: FamilyMember[] = useMemo(
+  const initialFamilyMembers: FamilyMember[] = useMemo(
     () => [
       {
         id: '1',
@@ -103,6 +103,8 @@ export const MyFamilyPage: React.FC<MyFamilyPageProps> = ({
     []
   );
 
+  const [familyMembers, setFamilyMembers] = useState<FamilyMember[]>(initialFamilyMembers);
+
   const handlePersonClick = useCallback((person: FamilyMember) => {
     setSelectedPerson(person);
     setShowRoleAssignment(true);
@@ -152,21 +154,21 @@ export const MyFamilyPage: React.FC<MyFamilyPageProps> = ({
         onWillDataUpdate(updatedWillData);
       }
     },
-    [willData, onWillDataUpdate, mockFamilyMembers]
+    [willData, onWillDataUpdate, familyMembers]
   );
 
   const getFamilyInsights = useCallback(() => {
     const insights = {
-      totalMembers: mockFamilyMembers.length,
-      heirsAssigned: mockFamilyMembers.filter(m => m.roles.isHeir).length,
-      guardiansAssigned: mockFamilyMembers.filter(m => m.roles.isGuardian)
+      totalMembers: familyMembers.length,
+      heirsAssigned: familyMembers.filter(m => m.roles.isHeir).length,
+      guardiansAssigned: familyMembers.filter(m => m.roles.isGuardian)
         .length,
-      executorAssigned: mockFamilyMembers.some(m => m.roles.isExecutor),
-      legacyMessages: mockFamilyMembers.filter(m => m.roles.hasLegacyMessages)
+      executorAssigned: familyMembers.some(m => m.roles.isExecutor),
+      legacyMessages: familyMembers.filter(m => m.roles.hasLegacyMessages)
         .length,
-      missingRoles: mockFamilyMembers.filter(m => m.status === 'missing_info')
+      missingRoles: familyMembers.filter(m => m.status === 'missing_info')
         .length,
-      partiallyConfigured: mockFamilyMembers.filter(m => m.status === 'partial')
+      partiallyConfigured: familyMembers.filter(m => m.status === 'partial')
         .length,
     };
 
@@ -179,7 +181,7 @@ export const MyFamilyPage: React.FC<MyFamilyPageProps> = ({
     );
 
     return { ...insights, completionRate };
-  }, [mockFamilyMembers]);
+  }, [familyMembers]);
 
   const insights = getFamilyInsights();
 
@@ -367,7 +369,7 @@ export const MyFamilyPage: React.FC<MyFamilyPageProps> = ({
               <CardTitle>Family Members</CardTitle>
             </CardHeader>
             <CardContent className='space-y-3'>
-              {mockFamilyMembers.map(renderFamilyMemberCard)}
+              {familyMembers.map(renderFamilyMemberCard)}
             </CardContent>
           </Card>
 

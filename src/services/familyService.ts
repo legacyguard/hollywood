@@ -128,7 +128,7 @@ export class FamilyService {
       return familyMember;
     } catch (_error) {
       console.error('Failed to add family member:', _error);
-      throw error;
+      throw _error;
     }
   }
 
@@ -191,7 +191,7 @@ export class FamilyService {
       familyDataCache.invalidatePattern(new RegExp(`family_.*${userId}.*`));
     } catch (_error) {
       console.error('Failed to remove family member:', _error);
-      throw error;
+      throw _error;
     }
   }
 
@@ -460,27 +460,19 @@ export class FamilyService {
   }
 
   private async getFamilyInsightStats(_userId: string): Promise<{ total: number; actionable: number }> {
-    try {
-      // Mock data since quick_insights table isn't in types yet
-      return {
-        total: 5,
-        actionable: 2
-      };
-    } catch (_error) {
-      return { total: 0, actionable: 0 };
-    }
+    // Mock data since quick_insights table isn't in types yet
+    return {
+      total: 5,
+      actionable: 2
+    };
   }
 
   private async getFamilyMilestoneStats(_userId: string): Promise<{ completed: number; total: number }> {
-    try {
-      // Mock data since legacy_milestones table isn't in types yet
-      return {
-        completed: 3,
-        total: 8
-      };
-    } catch (_error) {
-      return { completed: 0, total: 0 };
-    }
+    // Mock data since legacy_milestones table isn't in types yet
+    return {
+      completed: 3,
+      total: 8
+    };
   }
 
   private async getRecentFamilyActivity(_userId: string): Promise<any[]> {

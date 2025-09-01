@@ -122,7 +122,7 @@ export const FamilyTreeVisualization: React.FC<
     const y = event.clientY - rect.top;
 
     // Update node position (in a real implementation, you'd update the family tree state)
-    console.log(`Moving ${nodeData.name} to position (${x}, ${y})`);
+    // Moving ${nodeData.name} to position (${x}, ${y})
   }, []);
 
   const handleAssignInheritance = useCallback(

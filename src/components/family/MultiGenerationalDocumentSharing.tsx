@@ -274,12 +274,12 @@ export const MultiGenerationalDocumentSharing: React.FC<MultiGenerationalDocumen
               {doc.metadata.tags.length > 0 && (
                 <div className="flex flex-wrap gap-1">
                   {doc.metadata.tags.slice(0, 3).map(tag => (
-                    <Badge key={tag} variant={"outline" as any} className="text-xs px-1">
+                    <Badge key={tag} variant="outline" className="text-xs px-1">
                       {tag}
                     </Badge>
                   ))}
                   {doc.metadata.tags.length > 3 && (
-                    <Badge variant={"outline" as any} className="text-xs px-1">
+                    <Badge variant="outline" className="text-xs px-1">
                       +{doc.metadata.tags.length - 3}
                     </Badge>
                   )}
@@ -310,7 +310,7 @@ export const MultiGenerationalDocumentSharing: React.FC<MultiGenerationalDocumen
                 <div className="flex gap-1 ml-auto">
                   {canView && (
                     <Button
-                      variant={"ghost" as any}
+                      variant="ghost"
                       size="sm"
                       className="h-8 w-8 p-0"
                       onClick={() => onViewDocument?.(doc.id)}
@@ -321,7 +321,7 @@ export const MultiGenerationalDocumentSharing: React.FC<MultiGenerationalDocumen
 
                   {canShare && (
                     <Button
-                      variant={"ghost" as any}
+                      variant="ghost"
                       size="sm"
                       className="h-8 w-8 p-0"
                       onClick={() => {
@@ -335,7 +335,7 @@ export const MultiGenerationalDocumentSharing: React.FC<MultiGenerationalDocumen
 
                   {canDownload && (
                     <Button
-                      variant={"ghost" as any}
+                      variant="ghost"
                       size="sm"
                       className="h-8 w-8 p-0"
                       onClick={() => onDownloadDocument?.(doc.id)}
@@ -521,18 +521,18 @@ export const MultiGenerationalDocumentSharing: React.FC<MultiGenerationalDocumen
                             </p>
                           </div>
                         </div>
-                        <Badge variant={"secondary" as any}>{doc.metadata.importance}</Badge>
+                        <Badge variant="secondary">{doc.metadata.importance}</Badge>
                       </div>
 
                       <div className="flex items-center gap-2">
                         {canPerformAction(doc, 'view') && (
-                          <Button variant={"ghost" as any} size="sm" onClick={() => onViewDocument?.(doc.id)}>
+                          <Button variant="ghost" size="sm" onClick={() => onViewDocument?.(doc.id)}>
                             <Eye className="h-4 w-4" />
                           </Button>
                         )}
                         {canPerformAction(doc, 'share') && (
                           <Button
-                            variant={"ghost" as any}
+                            variant="ghost"
                             size="sm"
                             onClick={() => {
                               setSelectedDoc(doc);
@@ -543,7 +543,7 @@ export const MultiGenerationalDocumentSharing: React.FC<MultiGenerationalDocumen
                           </Button>
                         )}
                         {canPerformAction(doc, 'download') && (
-                          <Button variant={"ghost" as any} size="sm" onClick={() => onDownloadDocument?.(doc.id)}>
+                          <Button variant="ghost" size="sm" onClick={() => onDownloadDocument?.(doc.id)}>
                             <Download className="h-4 w-4" />
                           </Button>
                         )}
@@ -597,7 +597,7 @@ export const MultiGenerationalDocumentSharing: React.FC<MultiGenerationalDocumen
                               {member.relationship} • {getGenerationLabel(member.generation)}
                             </p>
                           </div>
-                          <Badge variant={"outline" as any}>{member.status}</Badge>
+                          <Badge variant="outline">{member.status}</Badge>
                         </div>
                       </label>
                     </div>
@@ -630,7 +630,7 @@ export const MultiGenerationalDocumentSharing: React.FC<MultiGenerationalDocumen
               </div>
 
               <div className="flex justify-end gap-2">
-                <Button variant={"outline" as any} onClick={() => setShowShareDialog(false)}>
+                <Button variant="outline" onClick={() => setShowShareDialog(false)}>
                   Cancel
                 </Button>
                 <Button

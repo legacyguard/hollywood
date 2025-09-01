@@ -231,7 +231,7 @@ export class DocumentCategorizer {
       tags?: string[];
     }>
   ): Promise<void> {
-    console.log(`Training categorizer on ${dataset.length} documents...`);
+    // Training categorizer on ${dataset.length} documents
 
     let correctPredictions = 0;
     const categoryErrors: Record<string, number> = {};
@@ -256,8 +256,8 @@ export class DocumentCategorizer {
     }
 
     const accuracy = correctPredictions / dataset.length;
-    console.log(`Training completed. Accuracy: ${(accuracy * 100).toFixed(2)}%`);
-    console.log('Common misclassifications:', categoryErrors);
+    // Training completed. Accuracy: ${(accuracy * 100).toFixed(2)}%
+    // Common misclassifications: ${JSON.stringify(categoryErrors)}
 
     // Update statistics
     this.statistics.accuracyMetrics.overallAccuracy = accuracy;
@@ -870,7 +870,7 @@ export class DocumentCategorizer {
     if (suggestion.category.primary !== sample.expectedCategory.primary) {
       // Find rules that fired for the wrong category and reduce their confidence
       // This is a simplified implementation
-      console.log(`Adjusting rules based on misclassification: ${suggestion.category.primary} -> ${sample.expectedCategory.primary}`);
+      // Adjusting rules based on misclassification: ${suggestion.category.primary} -> ${sample.expectedCategory.primary}
     }
   }
 }

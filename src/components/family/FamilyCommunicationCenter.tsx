@@ -171,7 +171,7 @@ export const FamilyCommunicationCenter: React.FC<FamilyCommunicationCenterProps>
       setChannels(defaultChannels);
       setActiveChannel(defaultChannels[0]);
     }
-  }, [allMembers, currentUserId]);
+  }, [allMembers, currentUserId, channels.length]);
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {

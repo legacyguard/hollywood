@@ -12,8 +12,6 @@ import {
   Plus,
   FileText,
   Download,
-  Eye,
-  Edit,
   Trash2,
   RefreshCw,
   AlertCircle,
@@ -71,7 +69,7 @@ export const WillManagement: React.FC = () => {
   /**
    * Handle will creation completion
    */
-  const handleWillCreated = (willId: string) => {
+  const handleWillCreated = () => {
     setState(prev => ({ ...prev, viewMode: 'list' }));
     loadWills(); // Refresh the list
   };

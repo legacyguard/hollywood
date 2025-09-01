@@ -14,14 +14,11 @@ import {
   AlertCircle,
   CheckCircle2,
   Clock,
-  // Database,
-  // HardDrive,
-  // Network,
-  // RefreshCw,
-  // Settings,
-  // TrendingUp,
-  // Users,
-  // Zap
+  HardDrive,
+  Network,
+  RefreshCw,
+  TrendingUp,
+  Users
 } from 'lucide-react';
 import { runHealthCheck } from '@/lib/monitoring/healthCheck';
 import { getPerformanceMetrics } from '@/lib/monitoring/performance';

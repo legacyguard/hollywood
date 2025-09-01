@@ -1,10 +1,10 @@
-import type {
-  SofiaCommand,
-  SofiaContext,
-  CommandResult,
-  ActionButton,
+import {
+  type SofiaCommand,
+  type SofiaContext,
+  type CommandResult,
+  type ActionButton,
+  getContextualActions,
 } from './sofia-types';
-import { COMMON_ACTIONS, getContextualActions } from './sofia-types';
 import { sofiaKnowledgeBase } from './sofia-knowledge-base';
 import { sofiaAPI, createSofiaAPIRequest } from './sofia-api';
 
@@ -78,7 +78,7 @@ export class SofiaRouter {
    */
   private handleNavigationCommand(
     command: string,
-    context: SofiaContext
+    _context: SofiaContext
   ): CommandResult {
     const navigationMap: Record<string, string> = {
       navigate_vault: '/vault',
@@ -453,7 +453,7 @@ export class SofiaRouter {
    * Generate personalized welcome message
    */
   private generateWelcomeMessage(context: SofiaContext): string {
-    const { userName, completionPercentage, documentCount, guardianCount } =
+    const { userName, completionPercentage, documentCount, guardianCount: _guardianCount } =
       context;
     const greeting = this.getTimeBasedGreeting();
     const name = userName || 'tam';

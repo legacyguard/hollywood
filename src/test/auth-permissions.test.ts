@@ -56,18 +56,18 @@ describe('Authentication & Permissions', () => {
     vi.clearAllMocks();
 
     // Setup default mocks
-    (useAuth as unknown as jest.Mock).mockReturnValue({
+    (useAuth as any).mockReturnValue({
       userId: mockUserId,
       isSignedIn: true,
       isLoaded: true,
     });
 
-    (useUser as unknown as jest.Mock).mockReturnValue({
+    (useUser as any).mockReturnValue({
       user: mockUser,
       isLoaded: true,
     });
 
-    (useSupabaseWithClerk as unknown as jest.Mock).mockReturnValue(() =>
+    (useSupabaseWithClerk as any).mockReturnValue(() =>
       Promise.resolve(mockSupabaseClient)
     );
   });

@@ -37,7 +37,7 @@ export class SofiaProactiveService {
   private activityState: UserActivityState;
   private interventionQueue: ProactiveIntervention[] = [];
   private shownInterventions: Set<string> = new Set();
-  private idleTimer: NodeJS.Timeout | null = null;
+  private idleTimer: number | null = null;
   private activityTrackers: Map<string, () => void> = new Map();
 
   constructor(userId: string) {
@@ -389,5 +389,5 @@ export function getSofiaProactive(userId: string): SofiaProactiveService {
   if (!proactiveInstances.has(userId)) {
     proactiveInstances.set(userId, new SofiaProactiveService(userId));
   }
-  return proactiveInstances.get(userId)!;
+  return proactiveInstances.get(userId) || new SofiaProactiveService(userId);
 }

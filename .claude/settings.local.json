@@ -31,14 +31,17 @@
       "Read(//tmp/**)",
       "Bash(npx playwright:*)",
       "Bash(git merge:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(./node_modules/.bin/eslint:*)",
+      "Bash(find:*)",
+      "Bash(rg:*)"
     ],
     "deny": [],
-    "ask": [
-      "Bash(find:*)"
-    ],
     "additionalDirectories": [
       "/Users/luborfedak/Documents/Github"
+    ],
+    "ask": [
+      "Bash(find:*)"
     ]
   }
 }

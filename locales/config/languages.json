@@ -1,0 +1,53 @@
+{
+  "supportedLanguages": ["en", "sk", "cs", "de", "pl"],
+  "defaultLanguage": "en",
+  "fallbackLanguage": "en",
+  "namespaces": {
+    "core": [
+      "common.ui",
+      "common.navigation",
+      "common.validation",
+      "auth.login",
+      "errors.client"
+    ],
+    "features": {
+      "vault": [
+        "features.vault.categories",
+        "features.vault.actions",
+        "features.vault.sharing"
+      ],
+      "garden": [
+        "features.garden.tree",
+        "features.garden.milestones",
+        "features.garden.prompts"
+      ],
+      "family": [
+        "features.family.guardians",
+        "features.family.emergency"
+      ],
+      "sofia": [
+        "features.sofia.personality",
+        "features.sofia.guidance"
+      ]
+    },
+    "platform": {
+      "web": [
+        "web.landing.hero",
+        "web.landing.features",
+        "web.onboarding.wizard",
+        "web.seo.metadata"
+      ],
+      "mobile": [
+        "mobile.native.permissions",
+        "mobile.native.offline",
+        "mobile.compact.summaries"
+      ]
+    },
+    "legal": {
+      "terms": [
+        "legal.terms.service",
+        "legal.terms.privacy"
+      ]
+    }
+  }
+}

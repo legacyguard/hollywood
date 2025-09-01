@@ -3,18 +3,17 @@
  * Manages will templates for different jurisdictions and languages
  */
 
-import type {
-  TemplateLibrary,
-  WillTemplate,
-  WillJurisdictionConfig,
-  WillUserData,
-  WillValidationResult,
-  Jurisdiction,
-  LanguageCode,
-  WillTemplateType,
-  ValidationError} from '../types/will-templates';
 import {
-  CZ_SK_JURISDICTIONS
+  CZ_SK_JURISDICTIONS,
+  type TemplateLibrary,
+  type WillTemplate,
+  type WillJurisdictionConfig,
+  type WillUserData,
+  type WillValidationResult,
+  type Jurisdiction,
+  type LanguageCode,
+  type WillTemplateType,
+  type ValidationError
 } from '../types/will-templates';
 
 class TemplateLibraryImpl implements TemplateLibrary {
@@ -179,7 +178,7 @@ class TemplateLibraryImpl implements TemplateLibrary {
     // Apply validation rules
     for (const rule of template.validationRules) {
       const fieldValue = this.getDataValue(data, rule.field, 'user');
-      const validationError = this.applyValidationRule(rule, fieldValue, data);
+      const validationError = this.applyValidationRule(rule, fieldValue);
 
       if (validationError) {
         if (validationError.severity === 'error') {
@@ -207,14 +206,14 @@ class TemplateLibraryImpl implements TemplateLibrary {
       warnings,
       legalRequirementsMet: legalErrors.length === 0,
       missingRequiredFields: missingRequired,
-      suggestedImprovements: this.generateSuggestedImprovements(data, template)
+      suggestedImprovements: this.generateSuggestedImprovements(data)
     };
   }
 
   /**
    * Get data value based on source and key
    */
-  private getDataValue(data: WillUserData, key: string, source: string): any {
+  private getDataValue(data: WillUserData, key: string, source: string): unknown {
     switch (source) {
       case 'user':
         return this.getNestedValue(data.personal, key) ||
@@ -237,7 +236,7 @@ class TemplateLibraryImpl implements TemplateLibrary {
   /**
    * Apply validation rule to field value
    */
-  private applyValidationRule(rule: any, value: any, data: WillUserData): ValidationError | null {
+  private applyValidationRule(rule: Record<string, unknown>, value: unknown): ValidationError | null {
     switch (rule.type) {
       case 'required':
         if (this.isEmpty(value)) {
@@ -322,7 +321,7 @@ class TemplateLibraryImpl implements TemplateLibrary {
 
     // Forced heirship compliance (if applicable)
     if (config.legalRequirements.forcedHeirship) {
-      const forcedHeirErrors = this.validateForcedHeirship(data, config);
+      const forcedHeirErrors = this.validateForcedHeirship(data);
       errors.push(...forcedHeirErrors);
     }
 
@@ -332,7 +331,7 @@ class TemplateLibraryImpl implements TemplateLibrary {
   /**
    * Validate forced heirship requirements
    */
-  private validateForcedHeirship(data: WillUserData, config: WillJurisdictionConfig): ValidationError[] {
+  private validateForcedHeirship(data: WillUserData): ValidationError[] {
     const errors: ValidationError[] = [];
 
     // This is a simplified check - in practice, this would be more complex
@@ -366,7 +365,7 @@ class TemplateLibraryImpl implements TemplateLibrary {
   /**
    * Generate suggested improvements
    */
-  private generateSuggestedImprovements(data: WillUserData, template: WillTemplate): string[] {
+  private generateSuggestedImprovements(data: WillUserData): string[] {
     const suggestions: string[] = [];
 
     // Check for executors
@@ -399,13 +398,13 @@ class TemplateLibraryImpl implements TemplateLibrary {
   /**
    * Utility methods
    */
-  private isEmpty(value: any): boolean {
+  private isEmpty(value: unknown): boolean {
     return value === null || value === undefined || value === '' ||
            (Array.isArray(value) && value.length === 0) ||
            (typeof value === 'object' && Object.keys(value).length === 0);
   }
 
-  private getNestedValue(obj: any, path: string): any {
+  private getNestedValue(obj: Record<string, unknown>, path: string): unknown {
     if (!obj || !path) return null;
     return path.split('.').reduce((current, prop) => current?.[prop], obj);
   }

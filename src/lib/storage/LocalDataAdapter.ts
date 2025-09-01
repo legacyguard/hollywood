@@ -1,7 +1,7 @@
 export interface StorageItem {
   id: string;
   category: string;
-  data: any;
+  data: unknown;
   metadata: {
     createdAt: string;
     updatedAt: string;
@@ -13,7 +13,7 @@ export interface StorageItem {
 
 export interface StorageQuery {
   category: string;
-  filter?: Record<string, any>;
+  filter?: Record<string, unknown>;
   limit?: number;
   offset?: number;
 }
@@ -28,8 +28,8 @@ class LocalDataAdapter {
   private db: IDBDatabase | null = null;
   private syncMode: SyncMode = 'local-only';
   private lastActivity: number = Date.now();
-  private lockTimer: NodeJS.Timeout | null = null;
-  private syncTimer: NodeJS.Timeout | null = null;
+  private lockTimer: ReturnType<typeof setTimeout> | null = null;
+  private syncTimer: ReturnType<typeof setInterval> | null = null;
 
   private constructor() {
     this.initializeDB().catch(console.error);
@@ -101,7 +101,7 @@ class LocalDataAdapter {
   /**
    * Store item
    */
-  public async store(category: string, data: any): Promise<StorageItem> {
+  public async store(category: string, data: unknown): Promise<StorageItem> {
     if (!this.db) await this.initializeDB();
 
     return new Promise((resolve, reject) => {
@@ -197,7 +197,7 @@ class LocalDataAdapter {
   /**
    * Update item
    */
-  public async update(id: string, data: any): Promise<StorageItem | null> {
+  public async update(id: string, data: unknown): Promise<StorageItem | null> {
     if (!this.db) await this.initializeDB();
 
     // Get existing item
@@ -288,7 +288,7 @@ class LocalDataAdapter {
   private async logAuditEvent(
     category: string,
     action: string,
-    details: Record<string, any>
+    details: Record<string, unknown>
   ): Promise<void> {
     if (!this.db) await this.initializeDB();
 

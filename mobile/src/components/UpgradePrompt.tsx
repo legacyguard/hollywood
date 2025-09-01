@@ -3,7 +3,7 @@
  * Displays upgrade prompts and handles upgrade flow
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -39,11 +39,7 @@ export const UpgradePrompt: React.FC<UpgradePromptProps> = ({
   const [loading, setLoading] = useState(true);
   const [benefits, setBenefits] = useState<string[]>([]);
 
-  useEffect(() => {
-    checkAccess();
-  }, [feature, action]);
-
-  const checkAccess = async () => {
+  const checkAccess = useCallback(async () => {
     setLoading(true);
 
     try {
@@ -74,7 +70,11 @@ export const UpgradePrompt: React.FC<UpgradePromptProps> = ({
     } finally {
       setLoading(false);
     }
-  };
+  }, [freemiumManager, feature, action]);
+
+  useEffect(() => {
+    checkAccess();
+  }, [checkAccess]);
 
   const handleUpgrade = async () => {
     await freemiumManager.openUpgradeFlow(feature);

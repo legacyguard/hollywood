@@ -1,3 +1,4 @@
+import React from 'react';
 import { ClerkProvider as BaseClerkProvider } from '@clerk/clerk-react';
 
 

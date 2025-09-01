@@ -298,7 +298,7 @@ export function ConsultationBookingSystem({
                           <div className="flex items-center justify-between mb-2">
                             <h4 className="font-semibold">{type.name}</h4>
                             {reviewer.hourly_rate && (
-                              <Badge variant={"outline" as any}>
+                              <Badge variant="outline">
                                 ${Math.round(reviewer.hourly_rate * type.priceMultiplier)}/hour
                               </Badge>
                             )}
@@ -311,7 +311,7 @@ export function ConsultationBookingSystem({
                               <span className="text-sm text-muted-foreground">Available durations:</span>
                               <div className="flex gap-2">
                                 {type.duration.map(duration => (
-                                  <Badge key={duration} variant={"secondary" as any} className="text-xs">
+                                  <Badge key={duration} variant="secondary" className="text-xs">
                                     {duration} min
                                   </Badge>
                                 ))}
@@ -646,7 +646,7 @@ export function ConsultationBookingSystem({
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="text-muted-foreground">Type:</span>
-                      <Badge variant={"outline" as any}>
+                      <Badge variant="outline">
                         {CONSULTATION_TYPES.find(t => t.id === booking.consultationType)?.name}
                       </Badge>
                     </div>
@@ -771,7 +771,7 @@ export function ConsultationBookingSystem({
 
             <div className="flex gap-4 justify-center">
               <Button onClick={onCancel}>Done</Button>
-              <Button variant={"outline" as any}>Add to Calendar</Button>
+              <Button variant="outline">Add to Calendar</Button>
             </div>
           </motion.div>
         );
@@ -817,7 +817,7 @@ export function ConsultationBookingSystem({
               <CardTitle className="text-2xl font-bold">Book Legal Consultation</CardTitle>
               <p className="text-muted-foreground">Schedule a consultation with {reviewer.full_name}</p>
             </div>
-            <Badge variant={"outline" as any} className="bg-blue-50 text-blue-700">
+            <Badge variant="outline" className="bg-blue-50 text-blue-700">
               Step {currentStepIndex + 1} of {steps.length}
             </Badge>
           </div>
@@ -874,12 +874,12 @@ export function ConsultationBookingSystem({
           <div className="flex items-center justify-between">
             <div className="flex gap-3">
               {currentStepIndex > 0 && (
-                <Button variant={"outline" as any} onClick={handleBack}>
+                <Button variant="outline" onClick={handleBack}>
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   Back
                 </Button>
               )}
-              <Button variant={"outline" as any} onClick={onCancel}>
+              <Button variant="outline" onClick={onCancel}>
                 Cancel
               </Button>
             </div>

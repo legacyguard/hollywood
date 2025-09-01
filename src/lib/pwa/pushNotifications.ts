@@ -475,7 +475,7 @@ export class PushNotificationService {
   /**
    * Store subscription details
    */
-  private async storeSubscription(subscriptionData: any): Promise<void> {
+  private async storeSubscription(subscriptionData: Record<string, unknown>): Promise<void> {
     try {
       localStorage.setItem('pwa-push-subscription', JSON.stringify(subscriptionData));
     } catch (error) {

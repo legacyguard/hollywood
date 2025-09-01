@@ -7,22 +7,56 @@ import type {
   WillTemplate,
   WillGenerationRequest,
   GeneratedWill,
-  AISuggestion,
   WillUserData,
   Jurisdiction,
   LanguageCode,
   TemplateLibrary,
   SofiaWillAssistant
 } from '../types/will-templates';
-import {
-  WillValidationResult,
-  WillTemplateType
-} from '../types/will-templates';
 import type { Guardian } from '../types/guardian';
+
+// Internal interfaces for will generation
+interface ChildData {
+  id: string;
+  name: string;
+  birthDate: string;
+  isMinor: boolean;
+  relationship: string;
+}
+
+interface AddressData {
+  street?: string;
+  city?: string;
+  postalCode?: string;
+  country?: string;
+}
+
+interface AssetData {
+  id: string;
+  type: string;
+  description: string;
+  value?: number;
+  location?: string;
+}
+
+interface BeneficiaryData {
+  id: string;
+  name: string;
+  relationship: string;
+  percentage?: number;
+  isContingent?: boolean;
+  conditions?: string[];
+}
+
+interface InstructionData {
+  id: string;
+  type: 'funeral' | 'burial' | 'organ_donation' | 'digital_assets' | 'personal_message' | 'charitable';
+  content: string;
+  priority?: number;
+}
 import { templateLibrary } from '../lib/templateLibrary';
 import { sofiaAI } from '../lib/sofiaAI';
 import { guardianService } from './guardianService';
-import { complianceChecker } from '../lib/ai/complianceChecker';
 
 export class WillGenerationService {
   private templateLibrary: TemplateLibrary;
@@ -48,8 +82,7 @@ export class WillGenerationService {
       // 2. Enhance user data with Sofia AI suggestions
       const enhancedUserData = await this.enhanceUserData(
         request.userData,
-        request.jurisdiction,
-        template
+        request.jurisdiction
       );
 
       // 3. Validate data against template requirements
@@ -112,15 +145,14 @@ export class WillGenerationService {
    */
   private async enhanceUserData(
     userData: WillUserData,
-    jurisdiction: Jurisdiction,
-    template: WillTemplate
+    jurisdiction: Jurisdiction
   ): Promise<WillUserData> {
     const enhanced = { ...userData };
 
     // Integrate guardian data
     if (userData.personal.userId) {
       try {
-        const userGuardians = await guardianService.getGuardians(userData.personal.userId);
+        const userGuardians = await guardianService.getGuardians();
         enhanced.executors = this.mapGuardiansToExecutors(userGuardians);
         enhanced.guardians = this.mapGuardiansToGuardianship(userGuardians, userData.family.children);
       } catch (error) {
@@ -145,9 +177,7 @@ export class WillGenerationService {
     // Validate forced heirship compliance
     if (this.hasForcedHeirship(jurisdiction)) {
       enhanced.beneficiaries = await this.ensureForcedHeirshipCompliance(
-        enhanced.beneficiaries,
-        enhanced.family,
-        jurisdiction
+        enhanced.beneficiaries
       );
     }
 
@@ -177,7 +207,7 @@ export class WillGenerationService {
     // Generate PDF if requested
     let pdfContent: ArrayBuffer | undefined;
     if (preferences.generatePdf) {
-      pdfContent = await this.generatePdf(htmlContent);
+      pdfContent = await this.generatePdf();
     }
 
     return {
@@ -358,7 +388,7 @@ export class WillGenerationService {
   /**
    * Generate PDF from HTML content
    */
-  private async generatePdf(html: string): Promise<ArrayBuffer> {
+  private async generatePdf(): Promise<ArrayBuffer> {
     // This would integrate with a PDF generation library like Puppeteer or jsPDF
     // For now, return empty buffer as placeholder
     return new ArrayBuffer(0);
@@ -394,7 +424,7 @@ export class WillGenerationService {
   /**
    * Map guardians to guardianship info
    */
-  private mapGuardiansToGuardianship(guardians: Guardian[], children: any[]) {
+  private mapGuardiansToGuardianship(guardians: Guardian[], children: ChildData[]) {
     const childGuardians = guardians.filter(g => g.is_child_guardian);
     if (childGuardians.length === 0 || !children) return [];
 
@@ -468,7 +498,7 @@ export class WillGenerationService {
     return new Date(dateString).toLocaleDateString();
   }
 
-  private formatAddress(address: any): string {
+  private formatAddress(address: AddressData): string {
     if (!address) return '';
     return `${address.street}, ${address.city}, ${address.postalCode}, ${address.country}`;
   }
@@ -486,33 +516,33 @@ export class WillGenerationService {
     return age;
   }
 
-  private hasMinorChildren(children: any[]): boolean {
+  private hasMinorChildren(children: ChildData[]): boolean {
     return children.some(child => child.isMinor);
   }
 
-  private getMinorChildren(children: any[]) {
+  private getMinorChildren(children: ChildData[]) {
     return children.filter(child => child.isMinor);
   }
 
-  private getAdultChildren(children: any[]) {
+  private getAdultChildren(children: ChildData[]) {
     return children.filter(child => !child.isMinor);
   }
 
-  private mapAssetsByType(assets: any[], type: string) {
+  private mapAssetsByType(assets: AssetData[], type: string) {
     return assets.filter(asset => asset.type === type);
   }
 
-  private getResiduaryBeneficiary(beneficiaries: any[]) {
+  private getResiduaryBeneficiary(beneficiaries: BeneficiaryData[]) {
     const residuary = beneficiaries.find(b => b.share.type === 'remainder');
     return residuary?.name || beneficiaries[0]?.name || 'my heirs';
   }
 
-  private getFuneralWishes(instructions: any[]) {
+  private getFuneralWishes(instructions: InstructionData[]) {
     const funeral = instructions.find(i => i.type === 'funeral');
     return funeral?.content || '';
   }
 
-  private getOrganDonation(instructions: any[]) {
+  private getOrganDonation(instructions: InstructionData[]) {
     const organ = instructions.find(i => i.type === 'organ_donation');
     if (!organ) return null;
 
@@ -523,12 +553,12 @@ export class WillGenerationService {
     };
   }
 
-  private getDigitalAssets(instructions: any[]) {
+  private getDigitalAssets(instructions: InstructionData[]) {
     const digital = instructions.find(i => i.type === 'digital_assets');
     return digital?.content || '';
   }
 
-  private getPersonalMessages(instructions: any[]) {
+  private getPersonalMessages(instructions: InstructionData[]) {
     return instructions
       .filter(i => i.type === 'personal_message')
       .map(i => ({
@@ -537,7 +567,7 @@ export class WillGenerationService {
       }));
   }
 
-  private getCharitableBequests(instructions: any[]) {
+  private getCharitableBequests(instructions: InstructionData[]) {
     return instructions
       .filter(i => i.type === 'charitable_giving')
       .map(i => ({
@@ -561,21 +591,22 @@ export class WillGenerationService {
     return forcedHeirshipJurisdictions.includes(jurisdiction);
   }
 
-  private getNestedValue(obj: any, path: string): any {
+  private getNestedValue(obj: Record<string, unknown>, path: string): unknown {
     return path.split('.').reduce((current, prop) => current?.[prop], obj);
   }
 
   private async ensureForcedHeirshipCompliance(
-    beneficiaries: any[],
-    family: any,
-    jurisdiction: Jurisdiction
+    beneficiaries: BeneficiaryData[]
   ) {
     // Implementation would check and adjust beneficiary shares to comply with forced heirship rules
     return beneficiaries;
   }
 
-  private applyBeneficiaryOptimizations(beneficiaries: any[], optimizations: AISuggestion[]) {
+  private applyBeneficiaryOptimizations(beneficiaries: BeneficiaryData[], optimizations?: Array<{ type: string; condition: string; adjustment: string }>) {
     // Implementation would apply non-breaking AI optimization suggestions
+    if (optimizations) {
+      // Process optimizations here when needed
+    }
     return beneficiaries;
   }
 
@@ -597,7 +628,7 @@ export class WillGenerationService {
 
   private async saveWillToDatabase(will: GeneratedWill): Promise<void> {
     // Implementation would save to Supabase database
-    console.log('Saving will to database:', will.id);
+    // Saving will to database: ${will.id}
   }
 }
 

@@ -379,7 +379,7 @@ export class SmartSearchService {
 
   private initializeSearchService(): void {
     // Initialize any required search components
-    console.log('Smart search service initialized');
+    // Smart search service initialized
   }
 
   private async enhanceQuery(query: SmartSearchQuery): Promise<EnhancedQuery> {

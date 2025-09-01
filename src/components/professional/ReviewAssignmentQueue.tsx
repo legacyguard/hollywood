@@ -376,7 +376,7 @@ export function ReviewAssignmentQueue({
             <CardTitle>Review Requests ({sortedRequests.length})</CardTitle>
             <div className="flex items-center gap-2">
               <Button
-                variant={"outline" as any}
+                variant="outline"
                 size="sm"
                 onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
               >
@@ -401,7 +401,7 @@ export function ReviewAssignmentQueue({
                       <Badge className={getPriorityColor(request.priority)}>
                         {request.priority}
                       </Badge>
-                      <Badge variant={"outline" as any}>
+                      <Badge variant="outline">
                         {request.review_type}
                       </Badge>
                     </div>
@@ -428,7 +428,7 @@ export function ReviewAssignmentQueue({
                   <div className="flex items-center gap-2">
                     <Button
                       size="sm"
-                      variant={"outline" as any}
+                      variant="outline"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleRequestSelect(request);
@@ -445,7 +445,7 @@ export function ReviewAssignmentQueue({
                     <Label className="text-sm font-medium">Required Specializations:</Label>
                     <div className="flex flex-wrap gap-1 mt-1">
                       {request.required_specializations.map(spec => (
-                        <Badge key={spec} variant={"secondary" as any} className="text-xs">
+                        <Badge key={spec} variant="secondary" className="text-xs">
                           {spec}
                         </Badge>
                       ))}
@@ -518,7 +518,7 @@ export function ReviewAssignmentQueue({
                     <Label className="font-medium">Specializations:</Label>
                     <div className="flex flex-wrap gap-1 mt-1">
                       {selectedRequest.required_specializations.map(spec => (
-                        <Badge key={spec} variant={"secondary" as any}>
+                        <Badge key={spec} variant="secondary">
                           {spec}
                         </Badge>
                       ))}
@@ -554,7 +554,7 @@ export function ReviewAssignmentQueue({
                             <div className="space-y-1">
                               <div className="flex items-center gap-2">
                                 <h4 className="font-medium">{match.reviewer.full_name}</h4>
-                                <Badge variant={"outline" as any} className="text-xs">
+                                <Badge variant="outline" className="text-xs">
                                   {match.matchScore}% match
                                 </Badge>
                                 <div className="flex items-center gap-1">
@@ -598,7 +598,7 @@ export function ReviewAssignmentQueue({
                             <Label className="text-sm font-medium">Match Reasons:</Label>
                             <div className="flex flex-wrap gap-1 mt-1">
                               {match.reasons.map((reason, idx) => (
-                                <Badge key={idx} variant={"outline" as any} className="text-xs">
+                                <Badge key={idx} variant="outline" className="text-xs">
                                   {reason}
                                 </Badge>
                               ))}

@@ -7,6 +7,13 @@ import { useUser } from '@clerk/clerk-react';
 import { useCallback, useEffect } from 'react';
 import { abTestingSystem } from '@/lib/ab-testing/ab-testing-system';
 
+// Google Analytics gtag types
+interface GtagWindow extends Window {
+  gtag?: (command: string, eventName: string, parameters?: Record<string, unknown>) => void;
+}
+
+declare const window: GtagWindow;
+
 /**
  * Hook for tracking onboarding flow metrics
  */
@@ -18,8 +25,8 @@ export function useOnboardingTracking() {
     abTestingSystem.trackOnboardingMetric(userId, 'start', 'started');
 
     // Track in analytics
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', 'onboarding_started', {
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'onboarding_started', {
         user_id: userId,
         timestamp: new Date().toISOString(),
       });
@@ -30,8 +37,8 @@ export function useOnboardingTracking() {
     abTestingSystem.trackOnboardingMetric(userId, step, action, timeSpent);
 
     // Track in analytics
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', `onboarding_step_${action}`, {
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', `onboarding_step_${action}`, {
         user_id: userId,
         step: step,
         time_spent: timeSpent,
@@ -44,8 +51,8 @@ export function useOnboardingTracking() {
     abTestingSystem.trackOnboardingMetric(userId, 'complete', 'completed', totalTime);
 
     // Track in analytics
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', 'onboarding_completed', {
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'onboarding_completed', {
         user_id: userId,
         total_time: totalTime,
         completed_steps: completedSteps,
@@ -75,8 +82,8 @@ export function useDocumentTracking() {
     });
 
     // Track in analytics
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', 'first_document_uploaded', {
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'first_document_uploaded', {
         user_id: userId,
         document_type: documentType,
         time_to_upload: timeToUpload,
@@ -92,8 +99,8 @@ export function useDocumentTracking() {
     });
 
     // Track in analytics
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', 'document_insights_viewed', {
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'document_insights_viewed', {
         user_id: userId,
         document_id: documentId,
         insight_type: insightType,
@@ -109,8 +116,8 @@ export function useDocumentTracking() {
     });
 
     // Track in analytics
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', 'quick_action_taken', {
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'quick_action_taken', {
         user_id: userId,
         action: action,
         time_spent: timeSpent,
@@ -137,8 +144,8 @@ export function useProfessionalReviewTracking() {
     abTestingSystem.trackProfessionalReviewConversion(userId, 'button_viewed', trustScore);
 
     // Track in analytics
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', 'professional_review_button_viewed', {
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'professional_review_button_viewed', {
         user_id: userId,
         trust_score: trustScore,
         location: location,
@@ -151,8 +158,8 @@ export function useProfessionalReviewTracking() {
     abTestingSystem.trackProfessionalReviewConversion(userId, 'button_clicked', trustScore);
 
     // Track in analytics
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', 'professional_review_button_clicked', {
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'professional_review_button_clicked', {
         user_id: userId,
         trust_score: trustScore,
         variant: variant,
@@ -165,8 +172,8 @@ export function useProfessionalReviewTracking() {
     abTestingSystem.trackProfessionalReviewConversion(userId, 'flow_started');
 
     // Track in analytics
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', 'professional_review_flow_started', {
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'professional_review_flow_started', {
         user_id: userId,
         review_type: reviewType,
         estimated_cost: estimatedCost,
@@ -179,8 +186,8 @@ export function useProfessionalReviewTracking() {
     abTestingSystem.trackProfessionalReviewConversion(userId, 'flow_completed');
 
     // Track in analytics
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', 'professional_review_flow_completed', {
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'professional_review_flow_completed', {
         user_id: userId,
         review_type: reviewType,
         final_cost: finalCost,
@@ -208,8 +215,8 @@ export function useTrustScoreTracking() {
     abTestingSystem.trackTrustScoreInteraction(userId, 'viewed', currentScore);
 
     // Track in analytics
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', 'trust_score_viewed', {
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'trust_score_viewed', {
         user_id: userId,
         current_score: currentScore,
         location: location,
@@ -222,8 +229,8 @@ export function useTrustScoreTracking() {
     abTestingSystem.trackTrustScoreInteraction(userId, 'clicked', currentScore);
 
     // Track in analytics
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', 'trust_score_clicked', {
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'trust_score_clicked', {
         user_id: userId,
         current_score: currentScore,
         display_type: displayType,
@@ -236,8 +243,8 @@ export function useTrustScoreTracking() {
     abTestingSystem.trackTrustScoreInteraction(userId, 'tooltip_opened', currentScore);
 
     // Track in analytics
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', 'trust_score_tooltip_opened', {
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'trust_score_tooltip_opened', {
         user_id: userId,
         current_score: currentScore,
         timestamp: new Date().toISOString(),
@@ -273,8 +280,8 @@ export function useMilestoneTracking() {
     });
 
     // Track in analytics
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', 'milestone_achieved', {
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'milestone_achieved', {
         user_id: userId,
         milestone_type: milestoneType,
         milestone_name: milestoneName,
@@ -295,8 +302,8 @@ export function useMilestoneTracking() {
     });
 
     // Track in analytics
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', `milestone_celebration_${action}`, {
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', `milestone_celebration_${action}`, {
         user_id: userId,
         milestone_type: milestoneType,
         timestamp: new Date().toISOString(),
@@ -362,8 +369,8 @@ export function useRetentionTracking() {
     });
 
     // Track in analytics
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', 'feature_engagement', {
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'feature_engagement', {
         user_id: userId,
         feature: feature,
         engagement_type: engagementType,

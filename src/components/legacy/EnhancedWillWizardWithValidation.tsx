@@ -384,7 +384,7 @@ export const EnhancedWillWizardWithValidation: React.FC<
                   />
                 )}
               </h3>
-              <Button onClick={addBeneficiary} variant={"outline" as any} size='sm'>
+              <Button onClick={addBeneficiary} variant="outline" size='sm'>
                 <Icon name={"add" as any} className='w-4 h-4 mr-2' />
                 Add Beneficiary
               </Button>
@@ -421,7 +421,7 @@ export const EnhancedWillWizardWithValidation: React.FC<
                   <Card key={beneficiary.id} className='p-4'>
                     <div className='flex items-center justify-between mb-4'>
                       <div className='flex items-center gap-2'>
-                        <Badge variant={"secondary" as any}>
+                        <Badge variant="secondary">
                           Beneficiary {index + 1}
                         </Badge>
                         {hasFieldError(`beneficiaries[${index}]`) && (
@@ -434,7 +434,7 @@ export const EnhancedWillWizardWithValidation: React.FC<
                       </div>
                       <Button
                         onClick={() => removeBeneficiary(beneficiary.id)}
-                        variant={"ghost" as any}
+                        variant="ghost"
                         size='sm'
                         className='text-red-600 hover:text-red-700'
                       >
@@ -641,7 +641,7 @@ export const EnhancedWillWizardWithValidation: React.FC<
                 <div className='flex items-center gap-4'>
                   <Button
                     onClick={onClose}
-                    variant={"ghost" as any}
+                    variant="ghost"
                     size='sm'
                     className='flex items-center gap-2'
                   >
@@ -663,13 +663,13 @@ export const EnhancedWillWizardWithValidation: React.FC<
                   {validationSummary.total > 0 && (
                     <div className='flex items-center gap-2 text-sm'>
                       {validationSummary.errors > 0 && (
-                        <Badge variant={"destructive" as any} className='text-xs'>
+                        <Badge variant="destructive" className='text-xs'>
                           {validationSummary.errors} error
                           {validationSummary.errors !== 1 ? 's' : ''}
                         </Badge>
                       )}
                       {validationSummary.warnings > 0 && (
-                        <Badge variant={"secondary" as any} className='text-xs'>
+                        <Badge variant="secondary" className='text-xs'>
                           {validationSummary.warnings} warning
                           {validationSummary.warnings !== 1 ? 's' : ''}
                         </Badge>
@@ -763,7 +763,7 @@ export const EnhancedWillWizardWithValidation: React.FC<
             <div className='flex justify-between items-center'>
               <Button
                 onClick={handleBack}
-                variant={"outline" as any}
+                variant="outline"
                 disabled={currentStep === 0 && !onBack}
               >
                 <Icon name={"arrow-left" as any} className='w-4 h-4 mr-2' />

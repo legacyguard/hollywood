@@ -14,7 +14,7 @@ export const loadTranslations = async () => {
     sk: {},
     de: {},
   };
-  
+
   // Set translations
   i18n.translations = translations;
 };
@@ -26,10 +26,10 @@ i18n.enableFallback = true;
 // Function to set the locale based on device settings
 export const initializeI18n = () => {
   const locales = Localization.getLocales();
-  
+
   if (locales.length > 0) {
     const deviceLanguage = locales[0].languageCode;
-    
+
     // Check if we support this language
     if (['en', 'cs', 'sk', 'de'].includes(deviceLanguage)) {
       i18n.locale = deviceLanguage;

@@ -1,6 +1,6 @@
-import rootConfig from '../../eslint.config.js';
+const rootConfig = require('../../eslint.config.cjs');
 
-export default [
+module.exports = [
   ...rootConfig,
   {
     ignores: ['dist/', 'node_modules/', '*.config.js']

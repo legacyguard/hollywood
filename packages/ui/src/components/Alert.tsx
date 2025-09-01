@@ -1,4 +1,5 @@
-import { type GetProps, styled, View, Text } from 'tamagui'
+import React from 'react'
+import { type GetProps, styled, Text } from 'tamagui'
 import { AlertCircle, CheckCircle, Info, XCircle, X } from '@tamagui/lucide-icons'
 import { Button } from './Button'
 import { YStack, XStack } from './Layout'
@@ -11,7 +12,7 @@ export const Alert = styled(YStack, {
   borderWidth: 1,
   borderColor: '$borderColor',
   backgroundColor: '$background',
-  
+
   variants: {
     variant: {
       info: {
@@ -47,7 +48,7 @@ export const Alert = styled(YStack, {
       },
     },
   } as const,
-  
+
   defaultVariants: {
     variant: 'default',
     size: 'medium',
@@ -63,10 +64,10 @@ export const AlertIcon = ({ variant = 'default', ...props }: { variant?: string 
     error: XCircle,
     default: Info,
   }
-  
+
   const Icon = icons[variant as keyof typeof icons] || icons.default
   const color = variant === 'default' ? '$gray6' : `$${variant}`
-  
+
   return <Icon size={20} color={color} {...props} />
 }
 
@@ -100,7 +101,7 @@ export const AlertCloseButton = ({ onPress, ...props }: any) => (
 )
 
 // Alert Component with composition
-export const AlertBox = ({ 
+export const AlertBox = ({
   variant = 'default',
   title,
   description,

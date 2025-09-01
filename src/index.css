@@ -96,7 +96,7 @@ IMPORTANT: All code changes and codebase must be in English language (except i18
 
 @layer base {
   * {
-    @apply border-border;
+    border-color: hsl(var(--border));
   }
 
   body {

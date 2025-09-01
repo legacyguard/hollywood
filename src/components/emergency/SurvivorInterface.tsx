@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { useSupabaseWithClerk } from '@/integrations/supabase/client';
 import { Card } from '@/components/ui/card';
@@ -61,9 +61,9 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
     if (currentToken || isPublicAccess) {
       loadSurvivorData();
     }
-  }, [currentToken, isPublicAccess]);
+  }, [currentToken, isPublicAccess, loadSurvivorData]);
 
-  const loadSurvivorData = async () => {
+  const loadSurvivorData = useCallback(async () => {
     try {
       setIsLoading(true);
       const supabase = await createSupabaseClient();
@@ -259,7 +259,7 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [currentToken, isPublicAccess]);
 
   const submitAccessRequest = async () => {
     if (

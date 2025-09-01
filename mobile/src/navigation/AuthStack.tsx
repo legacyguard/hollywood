@@ -1,23 +1,21 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Alert } from 'react-native';
-import { 
-  YStack, 
-  XStack, 
-  H1, 
-  Button, 
-  Input, 
+import {
+  YStack,
+  H1,
+  Button,
+  Input,
   Container,
   Spinner
 } from '@legacyguard/ui';
-import { useAuth } from '@/hooks/useAuth';
 import { AuthenticationService } from '@/services/AuthenticationService';
 import { useState } from 'react';
 
 // Navigation types
-type AuthStackParamList = {
-  Welcome: undefined;
-  Login: undefined;
-};
+// type AuthStackParamList = {
+//   Welcome: undefined;
+//   Login: undefined;
+// };
 
 type WelcomeScreenProps = {
   navigation: any; // Using 'any' for simplicity, can be properly typed with NavigationProp
@@ -28,8 +26,8 @@ const WelcomeScreen = ({ navigation }: WelcomeScreenProps) => (
   <Container size="small" padding="large">
     <YStack flex={1} justify="center" align="center" space="$4">
       <H1>Welcome to LegacyGuard</H1>
-      <Button 
-        variant="primary" 
+      <Button
+        variant="primary"
         size="large"
         onPress={() => navigation.navigate('Login')}
       >
@@ -93,8 +91,8 @@ const LoginScreen = () => {
             <Spinner size="large" color="$primaryBlue" />
           </YStack>
         ) : (
-          <Button 
-            variant="primary" 
+          <Button
+            variant="primary"
             size="large"
             onPress={handleLogin}
             marginTop="$4"

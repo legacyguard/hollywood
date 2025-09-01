@@ -1,7 +1,5 @@
-import type { SupabaseClient } from '@supabase/supabase-js';
-import { createClient } from '@supabase/supabase-js';
-import type { StorageItem } from './LocalDataAdapter';
-import { localDataAdapter, SyncMode } from './LocalDataAdapter';
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+import { localDataAdapter, type StorageItem } from './LocalDataAdapter';
 import { SecureEncryptionService } from '../encryption-v2';
 import { secureStorage } from '../security/secure-storage';
 
@@ -39,8 +37,8 @@ class CloudSyncAdapter {
   private constructor() {
     // Initialize Supabase client
     this.supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
     );
 
     this.encryption = SecureEncryptionService.getInstance();
@@ -361,7 +359,7 @@ class CloudSyncAdapter {
    */
   private async logSyncEvent(
     event: string,
-    details: Record<string, any>
+    details: Record<string, unknown>
   ): Promise<void> {
     await localDataAdapter.logAuditEvent('sync', event, details);
   }

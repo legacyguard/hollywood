@@ -117,21 +117,21 @@ export default function EnhancedDocumentList({
   const getStatusBadge = (doc: Document) => {
     if (doc.processing_status === 'completed' && doc.ocr_text) {
       return (
-        <Badge variant={"secondary" as any} className='text-xs'>
+        <Badge variant="secondary" className='text-xs'>
           AI Processed
         </Badge>
       );
     }
     if (doc.processing_status === 'processing') {
       return (
-        <Badge variant={"outline" as any} className='text-xs'>
+        <Badge variant="outline" className='text-xs'>
           Processing...
         </Badge>
       );
     }
     if (doc.processing_status === 'failed') {
       return (
-        <Badge variant={"destructive" as any} className='text-xs'>
+        <Badge variant="destructive" className='text-xs'>
           Processing Failed
         </Badge>
       );
@@ -393,19 +393,19 @@ function DocumentCard({
 
           <div className='flex items-center gap-2'>
             {document.is_important && (
-              <Badge variant={"destructive" as any} className='text-xs'>
+              <Badge variant="destructive" className='text-xs'>
                 Important
               </Badge>
             )}
             {document.expires_at && isExpired(document.expires_at) && (
-              <Badge variant={"destructive" as any} className='text-xs'>
+              <Badge variant="destructive" className='text-xs'>
                 Expired
               </Badge>
             )}
             {document.expires_at && !isExpired(document.expires_at) &&
               isExpiringSoon(document.expires_at) && (
                 <Badge
-                  variant={"outline" as any}
+                  variant="outline"
                   className='text-xs border-yellow-500 text-yellow-600'
                 >
                   Expires Soon
@@ -435,12 +435,12 @@ function DocumentCard({
         {document.tags && document.tags.length > 0 && (
           <div className='flex flex-wrap gap-1'>
             {document.tags.slice(0, 3).map(tag => (
-              <Badge key={tag} variant={"outline" as any} className='text-xs'>
+              <Badge key={tag} variant="outline" className='text-xs'>
                 {tag}
               </Badge>
             ))}
             {document.tags.length > 3 && (
-              <Badge variant={"outline" as any} className='text-xs'>
+              <Badge variant="outline" className='text-xs'>
                 +{document.tags.length - 3} more
               </Badge>
             )}
@@ -476,7 +476,7 @@ function DocumentCard({
       <div className='flex justify-end gap-2 mt-4 opacity-0 group-hover:opacity-100 transition-opacity'>
         <Button
           size='sm'
-          variant={"outline" as any}
+          variant="outline"
           onClick={e => {
             e.stopPropagation();
             onSelect();
@@ -486,7 +486,7 @@ function DocumentCard({
         </Button>
         <Button
           size='sm'
-          variant={"outline" as any}
+          variant="outline"
           onClick={e => {
             e.stopPropagation();
             onDelete();
@@ -549,19 +549,19 @@ function DocumentListItem({
               {document.title || document.file_name}
             </h3>
             {document.is_important && (
-              <Badge variant={"destructive" as any} className='text-xs'>
+              <Badge variant="destructive" className='text-xs'>
                 Important
               </Badge>
             )}
             {document.expires_at && isExpired(document.expires_at) && (
-              <Badge variant={"destructive" as any} className='text-xs'>
+              <Badge variant="destructive" className='text-xs'>
                 Expired
               </Badge>
             )}
             {document.expires_at && !isExpired(document.expires_at) &&
               isExpiringSoon(document.expires_at) && (
                 <Badge
-                  variant={"outline" as any}
+                  variant="outline"
                   className='text-xs border-yellow-500 text-yellow-600'
                 >
                   Expires Soon
@@ -593,7 +593,7 @@ function DocumentListItem({
         <div className='flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity'>
           <Button
             size='sm'
-            variant={"outline" as any}
+            variant="outline"
             onClick={e => {
               e.stopPropagation();
               onSelect();
@@ -603,7 +603,7 @@ function DocumentListItem({
           </Button>
           <Button
             size='sm'
-            variant={"outline" as any}
+            variant="outline"
             onClick={e => {
               e.stopPropagation();
               onDelete();

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Container,
   Stack,
@@ -19,7 +19,7 @@ import {
 } from '@legacyguard/ui';
 import { useUser } from '@clerk/clerk-expo';
 import { useNavigation } from '@react-navigation/native';
-import { RefreshControl, Dimensions } from 'react-native';
+import { RefreshControl } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 // Metrics Card Component
@@ -138,7 +138,7 @@ export function DashboardScreenV2() {
   const { user } = useUser();
   const navigation = useNavigation();
   const [refreshing, setRefreshing] = useState(false);
-  const [metrics, setMetrics] = useState([
+  const [metrics] = useState([
     {
       title: 'Documents Protected',
       value: '24',
@@ -205,8 +205,8 @@ export function DashboardScreenV2() {
     }, 2000);
   }, []);
 
-  const screenWidth = Dimensions.get('window').width;
-  const isTablet = screenWidth >= 768;
+  // const screenWidth = Dimensions.get('window').width;
+  // const isTablet = screenWidth >= 768;
 
   return (
     <ScrollContainer

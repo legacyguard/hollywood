@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { View, styled } from 'tamagui'
 import { motion, AnimatePresence, useAnimation } from 'framer-motion'
-import { LegacyGarden as LegacyGardenLogic, TreeState } from '@legacyguard/logic'
+import { LegacyGarden as LegacyGardenLogic, type TreeState } from '@legacyguard/logic'
 import { useEventBus, EVENTS } from '../utils/eventBus'
 
 const GardenContainer = styled(View, {
@@ -50,12 +50,12 @@ const LegacyGardenWeb: React.FC<LegacyGardenProps> = ({
   }, [milestonesUnlocked, documentsCreated, daysActive, gardenLogic])
 
   // Listen for milestone events
-  useEventBus(EVENTS.MILESTONE_UNLOCKED, (milestone) => {
+  useEventBus(EVENTS.MILESTONE_UNLOCKED, (_milestone) => {
     controls.start('celebrate')
   })
 
-  // Animation variants
-  const treeVariants = {
+  // Animation variants (unused but kept for future use)
+  const _treeVariants = {
     seed: {
       scale: 0.3,
       opacity: 0.8,
@@ -90,8 +90,8 @@ const LegacyGardenWeb: React.FC<LegacyGardenProps> = ({
   }
 
   const renderBranch = (index: number, x: number, y: number, angle: number) => {
-    const shouldShow = index < treeState?.branches!
-    
+    const shouldShow = treeState && index < treeState.branches
+
     return (
       <motion.g
         key={`branch-${index}`}
@@ -109,7 +109,7 @@ const LegacyGardenWeb: React.FC<LegacyGardenProps> = ({
           strokeLinecap="round"
         />
         {/* Leaves */}
-        {shouldShow && index < treeState?.leaves! / 3 && (
+        {shouldShow && treeState && index < treeState.leaves / 3 && (
           <>
             <motion.circle
               cx={x + Math.cos(angle) * 30}
@@ -132,7 +132,7 @@ const LegacyGardenWeb: React.FC<LegacyGardenProps> = ({
           </>
         )}
         {/* Fruits */}
-        {shouldShow && index < treeState?.fruits! && (
+        {shouldShow && treeState && index < treeState.fruits && (
           <motion.circle
             cx={x + Math.cos(angle) * 40}
             cy={y + Math.sin(angle) * 40}
@@ -261,7 +261,7 @@ const LegacyGardenWeb: React.FC<LegacyGardenProps> = ({
         <AnimatePresence>
           {gardenLogic.getMilestones().map((milestone, index) => {
             if (!milestone.achieved) return null
-            
+
             return (
               <motion.g
                 key={milestone.id}

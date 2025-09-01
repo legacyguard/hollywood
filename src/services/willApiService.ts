@@ -11,8 +11,7 @@ import type {
   LanguageCode,
   WillTemplateType
 } from '../types/will-templates';
-import type { Will} from '../types/will';
-import { WillData } from '../types/will';
+import { type Will } from '../types/will';
 import { willGenerationService } from './willGenerationService';
 import { willGuardianIntegration } from './willGuardianIntegration';
 

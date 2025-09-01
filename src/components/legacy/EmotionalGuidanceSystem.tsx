@@ -242,7 +242,7 @@ export const EmotionalGuidanceSystem: React.FC<
           <Card className='p-6 bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200'>
             <div className='flex items-start gap-4'>
               <div className='w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0'>
-                <Icon name={"heart" as any} className='w-6 h-6 text-blue-600' />
+                <Icon name="heart" className='w-6 h-6 text-blue-600' />
               </div>
               <div className='flex-1'>
                 <h4 className='font-semibold text-blue-900 mb-2'>
@@ -261,7 +261,7 @@ export const EmotionalGuidanceSystem: React.FC<
           <Card className='p-6 bg-gradient-to-br from-green-50 to-emerald-50 border-green-200'>
             <div className='flex items-start gap-4'>
               <div className='w-12 h-12 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0'>
-                <Icon name={"lightbulb" as any} className='w-6 h-6 text-green-600' />
+                <Icon name="lightbulb" className='w-6 h-6 text-green-600' />
               </div>
               <div className='flex-1'>
                 <h4 className='font-semibold text-green-900 mb-2'>
@@ -288,17 +288,17 @@ export const EmotionalGuidanceSystem: React.FC<
                   onClick={handleStartGuidanceSession}
                   className='bg-primary hover:bg-primary-hover'
                 >
-                  <Icon name={"heart" as any} className='w-4 h-4 mr-2' />
+                  <Icon name="heart" className='w-4 h-4 mr-2' />
                   Start Guided Reflection
                 </Button>
                 <Button
-                  variant={"outline" as any}
+                  variant="outline"
                   onClick={() => {
                     setSelectedRecipient(familyMembers[0]?.name || '');
                     setShowMessageComposer(true);
                   }}
                 >
-                  <Icon name={"edit" as any} className='w-4 h-4 mr-2' />
+                  <Icon name="edit" className='w-4 h-4 mr-2' />
                   Create Message Directly
                 </Button>
               </div>
@@ -353,7 +353,7 @@ export const EmotionalGuidanceSystem: React.FC<
             </div>
           ) : (
             <Card className='p-8 text-center'>
-              <Icon name={"heart" as any}
+              <Icon name="heart"
                 className='w-12 h-12 text-muted-foreground mx-auto mb-4'
               />
               <h4 className='font-semibold mb-2'>
@@ -377,10 +377,10 @@ export const EmotionalGuidanceSystem: React.FC<
             </h4>
             <Button
               onClick={() => setShowMessageComposer(true)}
-              variant={"outline" as any}
+              variant="outline"
               size='sm'
             >
-              <Icon name={"plus" as any} className='w-4 h-4 mr-2' />
+              <Icon name="plus" className='w-4 h-4 mr-2' />
               Create Message
             </Button>
           </div>
@@ -402,10 +402,10 @@ export const EmotionalGuidanceSystem: React.FC<
                         <span className='font-medium'>
                           {suggestion.recipient}
                         </span>
-                        <Badge variant={"outline" as any} className='text-xs'>
+                        <Badge variant="outline" className='text-xs'>
                           {suggestion.occasion.replace('_', ' ')}
                         </Badge>
-                        <Badge variant={"secondary" as any} className='text-xs'>
+                        <Badge variant="secondary" className='text-xs'>
                           {Math.round(suggestion?.confidence * 100)}% match
                         </Badge>
                       </div>
@@ -440,7 +440,7 @@ export const EmotionalGuidanceSystem: React.FC<
             </div>
           ) : (
             <Card className='p-8 text-center'>
-              <Icon name={"message-circle" as any}
+              <Icon name="message-circle"
                 className='w-12 h-12 text-muted-foreground mx-auto mb-4'
               />
               <h5 className='font-semibold mb-2'>No Messages Yet</h5>
@@ -459,7 +459,7 @@ export const EmotionalGuidanceSystem: React.FC<
           <Card className='p-6'>
             <div className='flex items-start gap-4'>
               <div className='w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0'>
-                <Icon name={"clock" as any} className='w-6 h-6 text-purple-600' />
+                <Icon name="clock" className='w-6 h-6 text-purple-600' />
               </div>
               <div className='flex-1'>
                 <h4 className='font-semibold mb-2'>Digital Time Capsule</h4>
@@ -602,14 +602,14 @@ const ReflectionPrompt: React.FC<ReflectionPromptProps> = ({
             <h5 className='font-semibold mb-2'>{prompt.question}</h5>
             <p className='text-sm text-muted-foreground'>{prompt.context}</p>
             <div className='flex items-center gap-2 mt-2'>
-              <Badge variant={"outline" as any} className='text-xs'>
+              <Badge variant="outline" className='text-xs'>
                 {prompt.category.replace('_', ' ')}
               </Badge>
-              <Badge variant={"outline" as any} className='text-xs'>
+              <Badge variant="outline" className='text-xs'>
                 ~{prompt.timeToReflect} min
               </Badge>
               <Badge
-                variant={"outline" as any}
+                variant="outline"
                 className={`text-xs ${
                   prompt.emotionalWeight === 'deep'
                     ? 'bg-red-100 text-red-700'
@@ -666,10 +666,10 @@ const LegacyMessageCard: React.FC<LegacyMessageCardProps> = ({ message }) => {
     <Card className='p-4 hover:shadow-md transition-shadow'>
       <div className='flex items-start justify-between mb-3'>
         <div className='flex items-center gap-2'>
-          <Icon name={"message-circle" as any} className='w-4 h-4 text-primary' />
+          <Icon name="message-circle" className='w-4 h-4 text-primary' />
           <span className='font-medium text-sm'>{message.recipientName}</span>
         </div>
-        <Badge variant={"outline" as any} className='text-xs'>
+        <Badge variant="outline" className='text-xs'>
           {message.occasion.replace('_', ' ')}
         </Badge>
       </div>
@@ -680,7 +680,7 @@ const LegacyMessageCard: React.FC<LegacyMessageCardProps> = ({ message }) => {
 
       <div className='flex items-center justify-between text-xs text-muted-foreground'>
         <div className='flex items-center gap-2'>
-          <Badge variant={"secondary" as any} className='text-xs'>
+          <Badge variant="secondary" className='text-xs'>
             {message.emotionalTone}
           </Badge>
           <span>{message.metadata.wordCount} words</span>
@@ -792,11 +792,11 @@ const MessageComposer: React.FC<MessageComposerProps> = ({
       </div>
 
       <div className='flex justify-end gap-2'>
-        <Button variant={"outline" as any} onClick={onCancel}>
+        <Button variant="outline" onClick={onCancel}>
           Cancel
         </Button>
         <Button onClick={handleCreate}>
-          <Icon name={"heart" as any} className='w-4 h-4 mr-2' />
+          <Icon name="heart" className='w-4 h-4 mr-2' />
           Create Message
         </Button>
       </div>

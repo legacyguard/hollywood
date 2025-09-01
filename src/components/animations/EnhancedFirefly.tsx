@@ -308,10 +308,12 @@ export const EnhancedFirefly: React.FC<EnhancedFireflyProps> = ({
   // Cleanup
   useEffect(() => {
     return () => {
-      if (idleTimeoutRef.current) clearTimeout(idleTimeoutRef.current);
-      if (trailCleanupRef.current) clearTimeout(trailCleanupRef.current);
+      const idleTimeout = idleTimeoutRef.current;
+      const trailCleanup = trailCleanupRef.current;
+      if (idleTimeout) clearTimeout(idleTimeout);
+      if (trailCleanup) clearTimeout(trailCleanup);
     };
-  }, [idleTimeoutRef, trailCleanupRef]);
+  }, []);
 
   if (!isVisible) return null;
 

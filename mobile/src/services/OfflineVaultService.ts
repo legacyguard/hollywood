@@ -1,6 +1,6 @@
 // src/services/OfflineVaultService.ts
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as Crypto from 'expo-crypto';
+// import * as Crypto from 'expo-crypto';
 
 interface OfflineDocument {
   id: string;
@@ -18,9 +18,9 @@ const VAULT_METADATA_KEY = '@legacyguard_vault_metadata';
 export const OfflineVaultService = {
   /**
    * Open (and create if needed) encrypted database
-   * @param encryptionKey - 64-byte encryption key
+   * Note: encryptionKey parameter reserved for future encryption implementation
    */
-  open: async (encryptionKey: Uint8Array): Promise<void> => {
+  open: async (): Promise<void> => {
     try {
       // Initialize vault if it doesn't exist
       const vault = await AsyncStorage.getItem(VAULT_KEY);
@@ -43,10 +43,10 @@ export const OfflineVaultService = {
       // Get existing vault
       const vaultData = await AsyncStorage.getItem(VAULT_KEY);
       const vault = vaultData ? JSON.parse(vaultData) : {};
-      
+
       // Encrypt content before storing
       const encryptedContent = await encryptContent(doc.content);
-      
+
       // Add document to vault
       vault[doc.id] = {
         _id: doc.id,
@@ -58,7 +58,7 @@ export const OfflineVaultService = {
         tags: doc.tags || [],
         lastAccessedAt: null,
       };
-      
+
       // Save updated vault
       await AsyncStorage.setItem(VAULT_KEY, JSON.stringify(vault));
       console.log(`Document ${doc.fileName} added to offline vault`);
@@ -75,19 +75,19 @@ export const OfflineVaultService = {
     try {
       const vaultData = await AsyncStorage.getItem(VAULT_KEY);
       if (!vaultData) return [];
-      
+
       const vault = JSON.parse(vaultData);
       const decryptedDocs: OfflineDocument[] = [];
-      
+
       for (const docId in vault) {
         const doc = vault[docId];
-        
+
         // Update last accessed time
         doc.lastAccessedAt = new Date();
-        
+
         // Decrypt content before returning
         const decryptedContent = await decryptContent(doc.encryptedContent);
-        
+
         decryptedDocs.push({
           id: doc._id,
           fileName: doc.fileName,
@@ -98,10 +98,10 @@ export const OfflineVaultService = {
           tags: doc.tags || [],
         });
       }
-      
+
       // Save updated vault with last accessed times
       await AsyncStorage.setItem(VAULT_KEY, JSON.stringify(vault));
-      
+
       return decryptedDocs;
     } catch (error) {
       console.error('Failed to get documents from vault:', error);
@@ -116,18 +116,18 @@ export const OfflineVaultService = {
     try {
       const vaultData = await AsyncStorage.getItem(VAULT_KEY);
       if (!vaultData) return null;
-      
+
       const vault = JSON.parse(vaultData);
       const doc = vault[id];
       if (!doc) return null;
-      
+
       // Update last accessed time
       doc.lastAccessedAt = new Date();
       await AsyncStorage.setItem(VAULT_KEY, JSON.stringify(vault));
-      
+
       // Decrypt content
       const decryptedContent = await decryptContent(doc.encryptedContent);
-      
+
       return {
         id: doc._id,
         fileName: doc.fileName,
@@ -150,13 +150,13 @@ export const OfflineVaultService = {
     try {
       const vaultData = await AsyncStorage.getItem(VAULT_KEY);
       if (!vaultData) return false;
-      
+
       const vault = JSON.parse(vaultData);
       if (!vault[id]) return false;
-      
+
       delete vault[id];
       await AsyncStorage.setItem(VAULT_KEY, JSON.stringify(vault));
-      
+
       console.log(`Document ${id} removed from offline vault`);
       return true;
     } catch (error) {
@@ -189,16 +189,16 @@ export const OfflineVaultService = {
     try {
       const vaultData = await AsyncStorage.getItem(VAULT_KEY);
       if (!vaultData) return { documentCount: 0, totalSize: 0 };
-      
+
       const vault = JSON.parse(vaultData);
       let totalSize = 0;
       let documentCount = 0;
-      
+
       for (const docId in vault) {
         documentCount++;
         totalSize += vault[docId].fileSize || 0;
       }
-      
+
       return {
         documentCount,
         totalSize,
@@ -238,8 +238,8 @@ async function encryptContent(content: string): Promise<string> {
   // For now, we'll use a simple base64 encoding as placeholder
   try {
     const encoder = new TextEncoder();
-    const data = encoder.encode(content);
-    const digest = await Crypto.digest(Crypto.CryptoDigestAlgorithm.SHA256, data);
+    const _data = encoder.encode(content);
+    // const digest = await Crypto.digest(Crypto.CryptoDigestAlgorithm.SHA256, data);
     return btoa(content); // Placeholder - use real encryption
   } catch {
     return btoa(content);

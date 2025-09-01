@@ -1,6 +1,7 @@
 // src/screens/main/ScannerScreen.tsx
 import React, { useState } from 'react';
-import { View, Text, Button, Image, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, // Button,
+  Image, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import { IntelligentDocumentScanner } from '@/components/scanner/IntelligentDocumentScanner';
 import { api, ApiError } from '@/api/apiClient';
 import * as FileSystem from 'expo-file-system';

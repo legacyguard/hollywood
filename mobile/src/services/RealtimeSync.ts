@@ -3,8 +3,7 @@
  * Manages real-time data sync between web and mobile applications
  */
 
-import type { SupabaseClient, RealtimeChannel } from '@supabase/supabase-js';
-import { createClient } from '@supabase/supabase-js';
+import { createClient, type SupabaseClient, type RealtimeChannel } from '@supabase/supabase-js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export interface Document {

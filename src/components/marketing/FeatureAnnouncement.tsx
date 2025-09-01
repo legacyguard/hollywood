@@ -400,7 +400,7 @@ export const FeatureAnnouncementTrigger: React.FC<FeatureAnnouncementTriggerProp
 
   const handleFeatureExplore = (featureId: string) => {
     // Navigate to specific feature
-    console.log(`Exploring feature: ${featureId}`);
+    // Exploring feature: ${featureId}
 
     // Mark as seen and close
     handleDismiss();

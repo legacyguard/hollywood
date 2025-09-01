@@ -45,7 +45,7 @@ export class PWAService {
   private installPrompt: PWAInstallPrompt | null = null;
   private serviceWorkerRegistration: ServiceWorkerRegistration | null = null;
   private pushSubscription: globalThis.PushSubscription | null = null;
-  private notificationPermission: NotificationPermission = 'default' as any;
+  private notificationPermission: NotificationPermission = 'default';
   private onlineListeners: Array<(online: boolean) => void> = [];
   private installListeners: Array<(canInstall: boolean) => void> = [];
 
@@ -128,7 +128,7 @@ export class PWAService {
    * Setup install prompt listener
    */
   private setupInstallPromptListener(): void {
-    window.addEventListener('beforeinstallprompt', (event: any) => {
+    window.addEventListener('beforeinstallprompt', (event: Event) => {
       event.preventDefault();
       this.installPrompt = event;
       this.notifyInstallListeners(true);
@@ -162,7 +162,7 @@ export class PWAService {
    */
   private checkNotificationPermission(): void {
     if ('Notification' in window) {
-      this.notificationPermission = Notification.permission as any;
+      this.notificationPermission = Notification.permission;
     }
   }
 
@@ -232,7 +232,7 @@ export class PWAService {
    */
   getCapabilities(): PWACapabilities {
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches ||
-                        (window.navigator as any).standalone === true;
+                        (window.navigator as { standalone?: boolean }).standalone === true;
 
     return {
       isSupported: 'serviceWorker' in navigator,
@@ -283,7 +283,7 @@ export class PWAService {
 
     try {
       const permission = await Notification.requestPermission();
-      this.notificationPermission = permission as any;
+      this.notificationPermission = permission;
       return permission === 'granted';
     } catch (error) {
       console.error('Notification permission request failed:', error);
@@ -388,7 +388,7 @@ export class PWAService {
   /**
    * Show local notification
    */
-  async showNotification(title: string, options?: Record<string, any>): Promise<void> {
+  async showNotification(title: string, options?: Record<string, unknown>): Promise<void> {
     if (!('Notification' in window)) {
       throw new Error('Notifications not supported');
     }
@@ -545,14 +545,16 @@ export class PWAService {
    */
   isRunningStandalone(): boolean {
     return window.matchMedia('(display-mode: standalone)').matches ||
-           (window.navigator as any).standalone === true;
+           (window.navigator as { standalone?: boolean }).standalone === true;
   }
 
   /**
    * Get network information
    */
   getNetworkInfo(): { type?: string; effectiveType?: string; downlink?: number; rtt?: number } {
-    const connection = (navigator as any).connection || (navigator as any).mozConnection || (navigator as any).webkitConnection;
+    const connection = (navigator as { connection?: { type?: string; effectiveType?: string; downlink?: number; rtt?: number } }).connection ||
+                      (navigator as { mozConnection?: { type?: string; effectiveType?: string; downlink?: number; rtt?: number } }).mozConnection ||
+                      (navigator as { webkitConnection?: { type?: string; effectiveType?: string; downlink?: number; rtt?: number } }).webkitConnection;
 
     if (!connection) {
       return {};

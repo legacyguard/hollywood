@@ -156,7 +156,7 @@ export function ProfessionalProfileDashboard({
 
               <Button
                 size="sm"
-                variant={"outline" as any}
+                variant="outline"
                 className="absolute bottom-0 right-0 rounded-full w-8 h-8 p-0 bg-white"
               >
                 <Camera className="h-4 w-4" />
@@ -383,7 +383,7 @@ export function ProfessionalProfileDashboard({
               <CardContent>
                 <div className="flex flex-wrap gap-2">
                   {reviewer.specializations?.map(spec => (
-                    <Badge key={spec.id} variant={"secondary" as any} className="text-sm">
+                    <Badge key={spec.id} variant="secondary" className="text-sm">
                       {spec.name}
                     </Badge>
                   ))}
@@ -427,7 +427,7 @@ export function ProfessionalProfileDashboard({
                 <Label className="text-base font-medium mb-3 block">Licensed States</Label>
                 <div className="flex flex-wrap gap-2">
                   {reviewer.licensed_states?.map(state => (
-                    <Badge key={state} variant={"outline" as any} className="text-sm">
+                    <Badge key={state} variant="outline" className="text-sm">
                       {state}
                     </Badge>
                   ))}
@@ -462,7 +462,7 @@ export function ProfessionalProfileDashboard({
                   {recentReviews.slice(0, 5).map(review => (
                     <div key={review.id} className="border rounded-lg p-4 space-y-2">
                       <div className="flex items-center justify-between">
-                        <Badge variant={"outline" as any}>
+                        <Badge variant="outline">
                           {review.review_type}
                         </Badge>
                         <Badge className={cn(

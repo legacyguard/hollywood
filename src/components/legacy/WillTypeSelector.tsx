@@ -56,7 +56,7 @@ export const WillTypeSelector: React.FC<WillTypeSelectorProps> = ({
     return (
       <div className='min-h-screen bg-background flex items-center justify-center'>
         <div className='text-center'>
-          <Icon name={"loader" as any}
+          <Icon name="loader"
             className='w-8 h-8 text-primary animate-spin mx-auto mb-4'
           />
           <p className='text-muted-foreground'>Loading legal information...</p>
@@ -72,7 +72,7 @@ export const WillTypeSelector: React.FC<WillTypeSelectorProps> = ({
       <div className='max-w-6xl mx-auto px-6 py-16'>
         <FadeIn duration={0.6}>
           <div className='text-center mb-12'>
-            <Icon name={"document-text" as any}
+            <Icon name="document-text"
               className='w-12 h-12 text-primary mx-auto mb-6'
             />
             <h1 className='text-3xl font-bold mb-4'>Choose Your Will Type</h1>
@@ -80,7 +80,7 @@ export const WillTypeSelector: React.FC<WillTypeSelectorProps> = ({
               <div className='bg-blue-50 dark:bg-blue-900/20 p-6 rounded-lg border border-blue-200 dark:border-blue-800'>
                 <div className='flex items-start gap-4'>
                   <div className='w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0'>
-                    <Icon name={"sparkles" as any} className='w-6 h-6 text-primary' />
+                    <Icon name="sparkles" className='w-6 h-6 text-primary' />
                   </div>
                   <div className='text-left'>
                     <h3 className='font-semibold text-blue-900 dark:text-blue-200 mb-2'>
@@ -113,7 +113,7 @@ export const WillTypeSelector: React.FC<WillTypeSelectorProps> = ({
                     <h3 className='text-xl font-semibold mb-2'>
                       {holographic.name}
                     </h3>
-                    <Badge variant={"outline" as any} className='text-xs'>
+                    <Badge variant="outline" className='text-xs'>
                       {holographic.legalBasis}
                     </Badge>
                   </div>
@@ -125,7 +125,7 @@ export const WillTypeSelector: React.FC<WillTypeSelectorProps> = ({
                     }`}
                   >
                     {selectedType === 'holographic' && (
-                      <Icon name={"check" as any} className='w-4 h-4 text-white' />
+                      <Icon name="check" className='w-4 h-4 text-white' />
                     )}
                   </div>
                 </div>
@@ -137,7 +137,7 @@ export const WillTypeSelector: React.FC<WillTypeSelectorProps> = ({
                 <div className='space-y-4'>
                   <div>
                     <h4 className='font-medium text-sm mb-2 flex items-center gap-2'>
-                      <Icon name={"check-circle" as any}
+                      <Icon name="check-circle"
                         className='w-4 h-4 text-green-600'
                       />
                       Advantages
@@ -156,7 +156,7 @@ export const WillTypeSelector: React.FC<WillTypeSelectorProps> = ({
 
                   <div>
                     <h4 className='font-medium text-sm mb-2 flex items-center gap-2'>
-                      <Icon name={"info" as any} className='w-4 h-4 text-blue-600' />
+                      <Icon name="info" className='w-4 h-4 text-blue-600' />
                       Key Requirements
                     </h4>
                     <ul className='text-sm text-muted-foreground space-y-1'>
@@ -182,10 +182,10 @@ export const WillTypeSelector: React.FC<WillTypeSelectorProps> = ({
                   </Button>
                   <Button
                     onClick={() => toggleDetails('holographic')}
-                    variant={"ghost" as any}
+                    variant="ghost"
                     size='sm'
                   >
-                    <Icon name={"info" as any} className='w-4 h-4' />
+                    <Icon name="info" className='w-4 h-4' />
                   </Button>
                 </div>
               </Card>
@@ -205,7 +205,7 @@ export const WillTypeSelector: React.FC<WillTypeSelectorProps> = ({
                     <h3 className='text-xl font-semibold mb-2'>
                       {witnessed.name}
                     </h3>
-                    <Badge variant={"outline" as any} className='text-xs'>
+                    <Badge variant="outline" className='text-xs'>
                       {witnessed.legalBasis}
                     </Badge>
                   </div>
@@ -217,7 +217,7 @@ export const WillTypeSelector: React.FC<WillTypeSelectorProps> = ({
                     }`}
                   >
                     {selectedType === 'witnessed' && (
-                      <Icon name={"check" as any} className='w-4 h-4 text-white' />
+                      <Icon name="check" className='w-4 h-4 text-white' />
                     )}
                   </div>
                 </div>
@@ -229,7 +229,7 @@ export const WillTypeSelector: React.FC<WillTypeSelectorProps> = ({
                 <div className='space-y-4'>
                   <div>
                     <h4 className='font-medium text-sm mb-2 flex items-center gap-2'>
-                      <Icon name={"check-circle" as any}
+                      <Icon name="check-circle"
                         className='w-4 h-4 text-green-600'
                       />
                       Advantages
@@ -248,7 +248,7 @@ export const WillTypeSelector: React.FC<WillTypeSelectorProps> = ({
 
                   <div>
                     <h4 className='font-medium text-sm mb-2 flex items-center gap-2'>
-                      <Icon name={"info" as any} className='w-4 h-4 text-blue-600' />
+                      <Icon name="info" className='w-4 h-4 text-blue-600' />
                       Key Requirements
                     </h4>
                     <ul className='text-sm text-muted-foreground space-y-1'>
@@ -274,10 +274,10 @@ export const WillTypeSelector: React.FC<WillTypeSelectorProps> = ({
                   </Button>
                   <Button
                     onClick={() => toggleDetails('witnessed')}
-                    variant={"ghost" as any}
+                    variant="ghost"
                     size='sm'
                   >
-                    <Icon name={"info" as any} className='w-4 h-4' />
+                    <Icon name="info" className='w-4 h-4' />
                   </Button>
                 </div>
               </Card>
@@ -295,7 +295,7 @@ export const WillTypeSelector: React.FC<WillTypeSelectorProps> = ({
                   </h3>
                   <Button
                     onClick={() => setShowDetails(null)}
-                    variant={"ghost" as any}
+                    variant="ghost"
                     size='sm'
                   >
                     <Icon name={"x" as any} className='w-4 h-4' />
@@ -324,7 +324,7 @@ export const WillTypeSelector: React.FC<WillTypeSelectorProps> = ({
 
                   <div>
                     <h4 className='font-medium mb-3 flex items-center gap-2'>
-                      <Icon name={"check-circle" as any}
+                      <Icon name="check-circle"
                         className='w-4 h-4 text-green-600'
                       />
                       Advantages
@@ -370,7 +370,7 @@ export const WillTypeSelector: React.FC<WillTypeSelectorProps> = ({
 
           {/* Navigation */}
           <div className='flex justify-between mt-8'>
-            <Button onClick={onBack} variant={"outline" as any}>
+            <Button onClick={onBack} variant="outline">
               <Icon name={"arrow-left" as any} className='w-4 h-4 mr-2' />
               Back
             </Button>

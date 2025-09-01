@@ -1,5 +1,4 @@
-import { Spinner as TamaguiSpinner } from 'tamagui'
-import type { GetProps } from 'tamagui'
+import { Spinner as TamaguiSpinner, type GetProps } from 'tamagui'
 
 // Simple wrapper around Tamagui Spinner
 export const Spinner = TamaguiSpinner

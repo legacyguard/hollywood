@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 // Define the props the component will accept
 interface MetaTagsProps {
@@ -44,7 +44,7 @@ export const MetaTags = ({
   const pageRobots = robots || DEFAULTS.ROBOTS;
 
   // Default structured data for LegacyGuard
-  const defaultStructuredData = {
+  const defaultStructuredData = useMemo(() => ({
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "LegacyGuard",
@@ -63,7 +63,7 @@ export const MetaTags = ({
       "ratingValue": "5.0",
       "ratingCount": "1"
     }
-  };
+  }), [pageDescription, pageUrl]);
 
   const finalStructuredData = structuredData || defaultStructuredData;
 
@@ -146,7 +146,7 @@ export const MetaTags = ({
       // If you want to reset to defaults when component unmounts, uncomment below:
       // document.title = DEFAULTS.TITLE;
     };
-  }, [pageTitle, pageDescription, pageImageUrl, pageUrl, pageKeywords, pageAuthor, pageRobots, finalStructuredData]);
+  }, [pageTitle, pageDescription, pageImageUrl, pageUrl, pageKeywords, pageAuthor, pageRobots, finalStructuredData, defaultStructuredData]);
 
   // This component doesn't render anything visible
   return null;

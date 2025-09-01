@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { Card } from '@/components/ui/card';
@@ -332,6 +332,11 @@ export default function GuardiansEnhanced() {
   const _handleDeleteCancel = () => {
     _setIsConfirmDialogOpen(false);
     setGuardianToDelete(null);
+  };
+
+  // Handle delete - using the delete confirmation flow
+  const handleDelete = (profile: ProfileData) => {
+    _handleDeleteClick(profile);
   };
 
   // Handle view details

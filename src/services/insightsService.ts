@@ -13,6 +13,28 @@ import type {
   InsightAnalytics
 } from '@/types/insights';
 
+// Document type for analysis
+interface DocumentForAnalysis {
+  id: string;
+  type: string;
+  name: string;
+  size?: number;
+  content?: string;
+  metadata?: Record<string, unknown>;
+  user_id: string;
+  created_at: string;
+  updated_at: string;
+}
+
+// Family member type for analysis
+interface FamilyMemberForAnalysis {
+  id: string;
+  name: string;
+  relationship: string;
+  birth_date?: string;
+  contact_info?: Record<string, unknown>;
+}
+
 export class InsightsService {
   private readonly INSIGHT_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
   private insightCache = new Map<string, { data: QuickInsight[]; timestamp: number }>();
@@ -74,7 +96,7 @@ export class InsightsService {
         .eq('user_id', userId);
 
       // Calculate protection gaps and levels
-      const protectionAnalysis = this.calculateProtectionLevel(documents || [], familyMembers || []);
+      const protectionAnalysis = this.calculateProtectionLevel(documents || []);
 
       // Generate impact scenarios
       const impactScenarios = this.generateImpactScenarios(familyMembers || [], documents || []);
@@ -89,7 +111,7 @@ export class InsightsService {
           impact: this.calculateMemberImpact(member, documents || []),
           riskLevel: this.calculateMemberRisk(member, protectionAnalysis)
         })),
-        protectionGaps: this.identifyProtectionGaps(documents || [], familyMembers || []),
+        protectionGaps: this.identifyProtectionGaps(documents || []),
         overallProtectionLevel: protectionAnalysis.percentage,
         estimatedTimeSaved: protectionAnalysis.timeSaved,
         emotionalBenefits: this.generateEmotionalBenefits(protectionAnalysis),
@@ -128,7 +150,7 @@ export class InsightsService {
         .eq('user_id', userId);
 
       const timeSaved = this.calculateTimeSaved(documents || []);
-      const protectionLevel = this.calculateProtectionLevel(documents || [], familyMembers || []);
+      const protectionLevel = this.calculateProtectionLevel(documents || []);
       const familyImpact = this.calculateFamilyImpactMetrics(familyMembers || [], documents || []);
       const urgencyScore = this.calculateUrgencyScore(documents || [], familyMembers || []);
 
@@ -257,7 +279,7 @@ export class InsightsService {
   }
 
   // Private helper methods
-  private async performDocumentAnalysis(document: any): Promise<DocumentAnalysis['extractedValue']> {
+  private async performDocumentAnalysis(document: DocumentForAnalysis): Promise<DocumentAnalysis['extractedValue']> {
     // This would integrate with AI service for document analysis
     // For now, providing structured analysis based on document type
 
@@ -271,7 +293,7 @@ export class InsightsService {
     };
   }
 
-  private extractKeyInformation(document: any): string[] {
+  private extractKeyInformation(document: DocumentForAnalysis): string[] {
     const info: string[] = [];
 
     if (document.type === 'will') {
@@ -285,7 +307,7 @@ export class InsightsService {
     return info;
   }
 
-  private identifyMissingInformation(document: any): string[] {
+  private identifyMissingInformation(document: DocumentForAnalysis): string[] {
     const missing: string[] = [];
 
     // Basic validation based on document type
@@ -299,7 +321,7 @@ export class InsightsService {
     return missing;
   }
 
-  private async generateDocumentInsights(document: any, analysis: DocumentAnalysis['extractedValue']): Promise<{immediate: QuickInsight[], potential: QuickInsight[]}> {
+  private async generateDocumentInsights(document: DocumentForAnalysis, analysis: DocumentAnalysis['extractedValue']): Promise<{immediate: QuickInsight[], potential: QuickInsight[]}> {
     const immediate: QuickInsight[] = [];
     const potential: QuickInsight[] = [];
 
@@ -331,7 +353,7 @@ export class InsightsService {
     return { immediate, potential };
   }
 
-  private generateRecommendations(analysis: DocumentAnalysis['extractedValue'], _document: any) {
+  private generateRecommendations(analysis: DocumentAnalysis['extractedValue'], _document: DocumentForAnalysis) {
     const recommendations = [];
 
     if (analysis.completenessPercentage < 90) {
@@ -346,7 +368,7 @@ export class InsightsService {
     return recommendations;
   }
 
-  private calculateTimeSaved(documents: any[]): InsightCalculation['timeSaved'] {
+  private calculateTimeSaved(documents: DocumentForAnalysis[]): InsightCalculation['timeSaved'] {
     const baseTimePerDoc = 2.5; // Average hours saved per document
     const totalHours = documents.length * baseTimePerDoc;
 
@@ -357,7 +379,7 @@ export class InsightsService {
     };
   }
 
-  private calculateProtectionLevel(documents: any[], familyMembers: any[]): InsightCalculation['protectionLevel'] {
+  private calculateProtectionLevel(documents: DocumentForAnalysis[]): InsightCalculation['protectionLevel'] {
     const essentialDocs = ['will', 'power_of_attorney', 'healthcare_directive', 'insurance_policy'];
     const hasEssential = essentialDocs.filter(type =>
       documents.some(doc => doc.type === type)
@@ -378,7 +400,7 @@ export class InsightsService {
     };
   }
 
-  private calculateFamilyImpactMetrics(familyMembers: any[], _documents: any[]): InsightCalculation['familyImpact'] {
+  private calculateFamilyImpactMetrics(familyMembers: FamilyMemberForAnalysis[], _documents: DocumentForAnalysis[]): InsightCalculation['familyImpact'] {
     return {
       members: familyMembers.length,
       scenarios: ['Sudden incapacity', 'Estate distribution', 'Healthcare decisions', 'Financial management'],
@@ -386,7 +408,7 @@ export class InsightsService {
     };
   }
 
-  private calculateUrgencyScore(documents: any[], familyMembers: any[]): InsightCalculation['urgencyScore'] {
+  private calculateUrgencyScore(documents: DocumentForAnalysis[], familyMembers: FamilyMemberForAnalysis[]): InsightCalculation['urgencyScore'] {
     let score = 0;
     const factors: string[] = [];
 
@@ -421,7 +443,7 @@ export class InsightsService {
     };
   }
 
-  private generateImpactDescription(protectionAnalysis: any, familyMembers: any[]): string {
+  private generateImpactDescription(protectionAnalysis: InsightCalculation['protectionLevel'], familyMembers: FamilyMemberForAnalysis[]): string {
     const level = protectionAnalysis.percentage;
 
     if (level > 80) {
@@ -433,13 +455,13 @@ export class InsightsService {
     }
   }
 
-  private generateImpactScenarios(familyMembers: any[], documents: any[]): { primary: string } {
+  private generateImpactScenarios(familyMembers: FamilyMemberForAnalysis[], documents: DocumentForAnalysis[]): { primary: string } {
     return {
       primary: `In case of unexpected events, your current documentation will guide ${familyMembers.length} family members through important decisions with ${documents.length} secure documents.`
     };
   }
 
-  private calculateMemberImpact(member: any, _documents: any[]): string {
+  private calculateMemberImpact(member: FamilyMemberForAnalysis, _documents: DocumentForAnalysis[]): string {
     if (member.role === 'spouse') {
       return 'Primary beneficiary with full access to estate planning decisions';
     } else if (member.role === 'child') {
@@ -449,7 +471,7 @@ export class InsightsService {
     }
   }
 
-  private calculateMemberRisk(member: any, protectionAnalysis: any): 'high' | 'medium' | 'low' {
+  private calculateMemberRisk(member: FamilyMemberForAnalysis, protectionAnalysis: InsightCalculation['protectionLevel']): 'high' | 'medium' | 'low' {
     const level = protectionAnalysis.percentage;
 
     if (member.role === 'spouse' && level < 60) return 'high';
@@ -459,7 +481,7 @@ export class InsightsService {
     return 'low';
   }
 
-  private identifyProtectionGaps(documents: any[], familyMembers: any[]): FamilyImpactStatement['protectionGaps'] {
+  private identifyProtectionGaps(documents: DocumentForAnalysis[]): FamilyImpactStatement['protectionGaps'] {
     const gaps: FamilyImpactStatement['protectionGaps'] = [];
 
     const essentialDocs = ['will', 'power_of_attorney', 'healthcare_directive'];
@@ -478,7 +500,7 @@ export class InsightsService {
     return gaps;
   }
 
-  private generateEmotionalBenefits(protectionAnalysis: any): string[] {
+  private generateEmotionalBenefits(protectionAnalysis: InsightCalculation['protectionLevel']): string[] {
     const benefits = [
       'Peace of mind knowing your family is protected',
       'Reduced stress during difficult times',
@@ -493,7 +515,7 @@ export class InsightsService {
     return benefits;
   }
 
-  private async generateDocumentSpecificInsights(document: any, userId: string): Promise<QuickInsight[]> {
+  private async generateDocumentSpecificInsights(document: DocumentForAnalysis, userId: string): Promise<QuickInsight[]> {
     const insights: QuickInsight[] = [];
 
     // Check document age and suggest updates
@@ -584,7 +606,7 @@ export class InsightsService {
     }
   }
 
-  private calculateInsightAnalytics(insights: any[], actions: any[]): InsightAnalytics {
+  private calculateInsightAnalytics(insights: QuickInsight[], actions: Array<{ type: string; timestamp: string; impact: string }>): InsightAnalytics {
     const totalInsights = insights.length;
     const actionableInsights = insights.filter(i => i.actionable).length;
     const completedActions = actions.filter(a => a.completed).length;
@@ -632,7 +654,7 @@ export class InsightsService {
     };
   }
 
-  private calculateAverageImpact(insights: any[]): string {
+  private calculateAverageImpact(insights: QuickInsight[]): string {
     if (insights.length === 0) return 'medium';
 
     const impactScores = insights.map(i => {
@@ -651,7 +673,7 @@ export class InsightsService {
     return 'low';
   }
 
-  private generateTrendData(insights: any[], actions: any[]): InsightAnalytics['trendData'] {
+  private generateTrendData(insights: QuickInsight[], actions: Array<{ type: string; timestamp: string; impact: string }>): InsightAnalytics['trendData'] {
     const last30Days = Array.from({ length: 30 }, (_, i) => {
       const date = new Date();
       date.setDate(date.getDate() - (29 - i));

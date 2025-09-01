@@ -1,12 +1,12 @@
 // ESLint configuration for the Hollywood project
-import js from "@eslint/js";
-import globals from "globals";
-import reactHooks from "eslint-plugin-react-hooks";
-import reactRefresh from "eslint-plugin-react-refresh";
-import tseslint from "@typescript-eslint/eslint-plugin";
-import tseslintParser from "@typescript-eslint/parser";
+const js = require("@eslint/js");
+const globals = require("globals");
+const reactHooks = require("eslint-plugin-react-hooks");
+const reactRefresh = require("eslint-plugin-react-refresh");
+const tseslint = require("@typescript-eslint/eslint-plugin");
+const tseslintParser = require("@typescript-eslint/parser");
 
-export default [
+module.exports = [
   { ignores: ["dist", "node_modules", "supabase/functions", "claude-code-history-viewer"] },
   {
     files: ["**/*.{ts,tsx}"],
@@ -71,6 +71,30 @@ export default [
       // React specific rules would require eslint-plugin-react
       // For now, using React Hooks plugin which covers the most important cases
     },
+  },
+  {
+    files: ["**/*.test.{js,ts,tsx}", "**/*.spec.{js,ts,tsx}", "src/test/**/*"],
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+        describe: "readonly",
+        it: "readonly",
+        expect: "readonly",
+        beforeEach: "readonly",
+        afterEach: "readonly",
+        beforeAll: "readonly",
+        afterAll: "readonly",
+        vi: "readonly",
+        vitest: "readonly",
+        jest: "readonly",
+        test: "readonly"
+      }
+    },
+    rules: {
+      "@typescript-eslint/no-unused-vars": "off",
+      "no-console": "off"
+    }
   },
   {
     files: ["**/*.config.{js,ts}", "vite.config.ts", "vitest.config.ts"],

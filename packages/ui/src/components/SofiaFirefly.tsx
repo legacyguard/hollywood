@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { View, styled } from 'tamagui'
 import { motion, useAnimation, AnimatePresence } from 'framer-motion'
-import { SofiaMode, TextManager } from '@legacyguard/logic'
+import { Sofia, type SofiaMode } from '@legacyguard/logic'
 import { useEventBus, EVENTS, eventBus } from '../utils/eventBus'
 
 const FireflyContainer = styled(View, {
@@ -32,33 +32,33 @@ const SofiaFireflyWeb: React.FC<SofiaFireflyProps> = ({
   const [currentMode, setCurrentMode] = useState<SofiaMode>(mode)
   const [showMessage, setShowMessage] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
-  const textManager = React.useMemo(() => new TextManager(mode), [mode])
+  const sofia = React.useMemo(() => new Sofia(mode), [mode])
 
   // Update mode when prop changes
   useEffect(() => {
     setCurrentMode(mode)
-    textManager.setMode(mode)
-  }, [mode, textManager])
+    sofia.setMode(mode)
+  }, [mode, sofia])
 
   // Listen for events
-  useEventBus(EVENTS.MILESTONE_UNLOCKED, async (milestone) => {
+  useEventBus(EVENTS.MILESTONE_UNLOCKED, async (_milestone) => {
     // Fly to tree location
     await controls.start({
       x: window.innerWidth / 2,
       y: window.innerHeight / 2,
       transition: { duration: 2, type: 'spring' },
     })
-    
+
     // Celebrate animation
     await controls.start('celebrate')
-    
+
     // Return to idle movement
     startIdleAnimation()
   })
 
   useEventBus(EVENTS.SOFIA_MODE_CHANGE, (newMode: SofiaMode) => {
     setCurrentMode(newMode)
-    textManager.setMode(newMode)
+    sofia.setMode(newMode)
   })
 
   // Movement patterns based on mode
@@ -142,6 +142,7 @@ const SofiaFireflyWeb: React.FC<SofiaFireflyProps> = ({
 
   useEffect(() => {
     startIdleAnimation()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isActive, currentMode])
 
   // Animation variants
@@ -210,8 +211,8 @@ const SofiaFireflyWeb: React.FC<SofiaFireflyProps> = ({
           setShowMessage(false)
         }}
         onClick={() => {
-          eventBus.emit(EVENTS.SOFIA_MODE_CHANGE, 
-            currentMode === 'empathetic' ? 'pragmatic' : 
+          eventBus.emit(EVENTS.SOFIA_MODE_CHANGE,
+            currentMode === 'empathetic' ? 'pragmatic' :
             currentMode === 'pragmatic' ? 'balanced' : 'empathetic'
           )
         }}
@@ -236,7 +237,7 @@ const SofiaFireflyWeb: React.FC<SofiaFireflyProps> = ({
             variants={glowVariants}
             animate={currentMode}
           />
-          
+
           {/* Body */}
           <ellipse
             cx="30"
@@ -245,7 +246,7 @@ const SofiaFireflyWeb: React.FC<SofiaFireflyProps> = ({
             ry="12"
             fill="#333"
           />
-          
+
           {/* Head */}
           <circle
             cx="30"
@@ -253,7 +254,7 @@ const SofiaFireflyWeb: React.FC<SofiaFireflyProps> = ({
             r="6"
             fill="#333"
           />
-          
+
           {/* Wings */}
           <motion.g
             animate={{
@@ -282,13 +283,13 @@ const SofiaFireflyWeb: React.FC<SofiaFireflyProps> = ({
               transform="rotate(20 40 30)"
             />
           </motion.g>
-          
+
           {/* Eyes */}
           <circle cx="27" cy="22" r="2" fill="white" />
           <circle cx="33" cy="22" r="2" fill="white" />
           <circle cx="27" cy="22" r="1" fill="black" />
           <circle cx="33" cy="22" r="1" fill="black" />
-          
+
           {/* Light */}
           <motion.circle
             cx="30"
@@ -355,6 +356,8 @@ const SofiaFireflyNative: React.FC<SofiaFireflyProps> = ({
   mode = 'balanced',
   isActive = true,
 }) => {
+  // isActive is not used in native version yet
+  const _isActive = isActive
   return (
     <FireflyContainer>
       <View

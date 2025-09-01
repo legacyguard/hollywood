@@ -397,7 +397,7 @@ Provide specific, actionable recommendations.`;
     return scoreMatch ? parseInt(scoreMatch[1]) : 75;
   }
 
-  private extractComplianceIssues(response: string): any[] {
+  private extractComplianceIssues(_response: string): unknown[] {
     // Simple extraction of issues from text response
     // In production, this would be more sophisticated
     return [];
@@ -421,7 +421,7 @@ Provide specific, actionable recommendations.`;
   /**
    * Fallback responses when AI is unavailable
    */
-  private getFallbackSuggestions(userData: WillUserData, jurisdiction: Jurisdiction): AISuggestion[] {
+  private getFallbackSuggestions(userData: WillUserData, _jurisdiction: Jurisdiction): AISuggestion[] {
     const suggestions: AISuggestion[] = [];
 
     if (!userData.executors || userData.executors.length === 0) {
@@ -456,7 +456,7 @@ Provide specific, actionable recommendations.`;
     return suggestions;
   }
 
-  private getFallbackBeneficiaryOptimizations(beneficiaries: BeneficiaryInfo[], assets: AssetInfo[]): AISuggestion[] {
+  private getFallbackBeneficiaryOptimizations(beneficiaries: BeneficiaryInfo[], _assets: AssetInfo[]): AISuggestion[] {
     const suggestions: AISuggestion[] = [];
 
     // Check for equal distribution

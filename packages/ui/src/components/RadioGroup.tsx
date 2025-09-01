@@ -1,5 +1,5 @@
 import React from 'react'
-import { styled, RadioGroup as TamaguiRadioGroup, Label, XStack, Stack, YStack } from 'tamagui'
+import { styled, RadioGroup as TamaguiRadioGroup, Label, YStack, XStack } from 'tamagui'
 
 // Base RadioGroup component with LegacyGuard styling
 const StyledRadioGroup = styled(TamaguiRadioGroup, {
@@ -17,7 +17,7 @@ const StyledRadioGroupItem = styled(TamaguiRadioGroup.Item, {
   alignItems: 'center',
   justifyContent: 'center',
   animation: 'quick',
-  
+
   variants: {
     size: {
       small: {
@@ -33,7 +33,7 @@ const StyledRadioGroupItem = styled(TamaguiRadioGroup.Item, {
         height: 26,
       },
     },
-    
+
     variant: {
       primary: {
         focusStyle: {
@@ -69,7 +69,7 @@ const StyledRadioGroupItem = styled(TamaguiRadioGroup.Item, {
         },
       },
     },
-    
+
     disabled: {
       true: {
         opacity: 0.5,
@@ -77,7 +77,7 @@ const StyledRadioGroupItem = styled(TamaguiRadioGroup.Item, {
       },
     },
   },
-  
+
   defaultVariants: {
     size: 'medium',
     variant: 'primary',
@@ -89,7 +89,7 @@ const StyledRadioGroupIndicator = styled(TamaguiRadioGroup.Indicator, {
   name: 'RadioGroupIndicator',
   borderRadius: 1000,
   animation: 'quick',
-  
+
   variants: {
     size: {
       small: {
@@ -105,7 +105,7 @@ const StyledRadioGroupIndicator = styled(TamaguiRadioGroup.Indicator, {
         height: 12,
       },
     },
-    
+
     variant: {
       primary: {
         backgroundColor: '$primaryBlue',
@@ -118,7 +118,7 @@ const StyledRadioGroupIndicator = styled(TamaguiRadioGroup.Indicator, {
       },
     },
   },
-  
+
   defaultVariants: {
     size: 'medium',
     variant: 'primary',
@@ -150,8 +150,8 @@ export interface RadioGroupProps {
 
 // RadioGroup component
 export const RadioGroup = React.forwardRef<HTMLDivElement, RadioGroupProps>(
-  ({ 
-    options, 
+  ({
+    options,
     value,
     defaultValue,
     onValueChange,
@@ -163,9 +163,9 @@ export const RadioGroup = React.forwardRef<HTMLDivElement, RadioGroupProps>(
     required,
     'aria-label': ariaLabel,
   }, ref) => {
-    
+
     const StackComponent = orientation === 'horizontal' ? XStack : YStack
-    
+
     return (
       <StyledRadioGroup
         ref={ref}
@@ -236,7 +236,7 @@ export interface RadioButtonProps {
 }
 
 export const RadioButton = React.forwardRef<HTMLButtonElement, RadioButtonProps>(
-  ({ 
+  ({
     value,
     label,
     checked = false,
@@ -246,7 +246,7 @@ export const RadioButton = React.forwardRef<HTMLButtonElement, RadioButtonProps>
     disabled = false,
     description,
   }, ref) => {
-    
+
     return (
       <XStack alignItems="center" gap="$3">
         <StyledRadioGroup value={checked ? value : ''}>

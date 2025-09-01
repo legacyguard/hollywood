@@ -282,7 +282,7 @@ export function ReviewStatusTracker({
 
                 <div className="flex flex-wrap gap-2 mb-4">
                   {reviewer.specializations.slice(0, 3).map(spec => (
-                    <Badge key={spec.id} variant={"secondary" as any} className="text-xs">
+                    <Badge key={spec.id} variant="secondary" className="text-xs">
                       {spec.name}
                     </Badge>
                   ))}
@@ -291,7 +291,7 @@ export function ReviewStatusTracker({
                 {onContactReviewer && review.status === 'in_progress' && (
                   <Button
                     size="sm"
-                    variant={"outline" as any}
+                    variant="outline"
                     onClick={onContactReviewer}
                     className="flex items-center gap-2"
                   >
@@ -426,7 +426,7 @@ export function ReviewStatusTracker({
                 )}
                 {onDownloadReport && (
                   <Button
-                    variant={"outline" as any}
+                    variant="outline"
                     onClick={onDownloadReport}
                     className="flex items-center gap-2"
                   >
@@ -452,7 +452,7 @@ export function ReviewStatusTracker({
             </div>
             <div className="flex gap-2">
               <Button
-                variant={"outline" as any}
+                variant="outline"
                 size="sm"
                 className="flex items-center gap-2"
               >
@@ -460,7 +460,7 @@ export function ReviewStatusTracker({
                 Refresh Status
               </Button>
               <Button
-                variant={"outline" as any}
+                variant="outline"
                 size="sm"
                 className="flex items-center gap-2"
               >

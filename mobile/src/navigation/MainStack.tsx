@@ -10,7 +10,7 @@ const Stack = createNativeStackNavigator()
 
 export const MainStack = () => {
   const theme = useTheme()
-  
+
   return (
     <Stack.Navigator
       screenOptions={{
@@ -25,23 +25,23 @@ export const MainStack = () => {
         headerShadowVisible: false,
       }}
     >
-      <Stack.Screen 
-        name="MainTabs" 
-        component={MainTabs} 
+      <Stack.Screen
+        name="MainTabs"
+        component={MainTabs}
         options={{ headerShown: false }}
       />
-      <Stack.Screen 
-        name="Documents" 
+      <Stack.Screen
+        name="Documents"
         component={DocumentsScreen}
         options={{ title: 'Documents' }}
       />
-      <Stack.Screen 
-        name="People" 
+      <Stack.Screen
+        name="People"
         component={PeopleScreen}
         options={{ title: 'Trusted Circle' }}
       />
-      <Stack.Screen 
-        name="Will" 
+      <Stack.Screen
+        name="Will"
         component={WillScreen}
         options={{ title: 'Will Generator' }}
       />

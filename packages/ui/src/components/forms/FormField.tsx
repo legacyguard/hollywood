@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import React, { type ReactNode } from 'react'
 import { Stack, Label, Paragraph, Input, TextArea, type InputProps, type TextAreaProps } from '../..'
 import { AlertCircle, CheckCircle } from 'lucide-react-native'
 import { View } from 'tamagui'
@@ -28,15 +28,15 @@ export const FormField: React.FC<FormFieldProps> = ({
           {required && <Paragraph color="danger" style={{ display: 'inline' }}> *</Paragraph>}
         </Label>
       )}
-      
+
       {children}
-      
+
       {hint && !error && !success && (
         <Paragraph size="small" color="muted">
           {hint}
         </Paragraph>
       )}
-      
+
       {error && (
         <View flexDirection="row" alignItems="center" gap="$1">
           <AlertCircle size={14} color="$error" />
@@ -45,7 +45,7 @@ export const FormField: React.FC<FormFieldProps> = ({
           </Paragraph>
         </View>
       )}
-      
+
       {success && !error && (
         <View flexDirection="row" alignItems="center" gap="$1">
           <CheckCircle size={14} color="$success" />

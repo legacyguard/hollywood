@@ -130,7 +130,7 @@ export const useProfessionalNetwork = () => {
           throw error;
         }
       },
-      [attorneyReviewMutation]
+      []
     );
 
     const submitForReview = useCallback(
@@ -144,7 +144,7 @@ export const useProfessionalNetwork = () => {
           throw error;
         }
       },
-      [submitReviewMutation]
+      []
     );
 
     return {
@@ -172,7 +172,7 @@ export const useProfessionalNetwork = () => {
           throw error;
         }
       },
-      [consultationOffersMutation]
+      []
     );
 
     return {
@@ -206,7 +206,7 @@ export const useProfessionalNetwork = () => {
           throw error;
         }
       },
-      [notarySearchMutation]
+      []
     );
 
     return {

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { Card } from '@/components/ui/card';
@@ -106,7 +106,7 @@ export default function SurvivorManualPage() {
 
   const [entries, setEntries] = useState<FamilyGuidanceEntry[]>([]);
   const [_guardians, _setGuardians] = useState<Guardian[]>([]);
-  const [_isLoading, _setIsLoading] = useState(true);
+  const [isLoading, _setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [editingEntry, setEditingEntry] = useState<FamilyGuidanceEntry | null>(

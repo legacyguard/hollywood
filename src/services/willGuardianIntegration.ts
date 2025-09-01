@@ -275,7 +275,7 @@ export class WillGuardianIntegrationService {
 
     if (willData.executors && willData.executors.length > 0) {
       content.push('## Executors');
-      willData.executors.forEach((executor, index) => {
+      willData.executors.forEach((executor) => {
         content.push(`**${executor.type === 'primary' ? 'Primary' : 'Alternate'} Executor:**`);
         content.push(`- Name: ${executor.name}`);
         content.push(`- Relationship: ${executor.relationship}`);
@@ -355,8 +355,7 @@ export class WillGuardianIntegrationService {
       const childGuardians = guardians.filter(g => g.is_child_guardian);
 
       // This would trigger the emergency notification system
-      // For now, we'll just log the action
-      console.log(`Will execution notification sent to ${willExecutors.length} executors and ${childGuardians.length} guardians`);
+      // Will execution notification sent to ${willExecutors.length} executors and ${childGuardians.length} guardians
 
       // In a full implementation, this would:
       // 1. Send notifications to all will-related guardians

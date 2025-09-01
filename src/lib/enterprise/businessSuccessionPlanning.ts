@@ -233,6 +233,322 @@ export interface ContingencyPlan {
   resources: ResourceRequirement[];
 }
 
+// Missing type definitions
+export interface BoardMember {
+  id: string;
+  name: string;
+  position: string;
+  startDate: string;
+  term: string;
+  compensation: number;
+}
+
+export interface Officer {
+  id: string;
+  name: string;
+  title: string;
+  department: string;
+  startDate: string;
+  compensation: number;
+}
+
+export interface Committee {
+  id: string;
+  name: string;
+  type: string;
+  members: string[];
+  charter: string;
+}
+
+export interface VotingAgreement {
+  id: string;
+  parties: string[];
+  terms: string;
+  expirationDate: string;
+}
+
+export interface OperatingAgreement {
+  id: string;
+  parties: string[];
+  terms: string;
+  effectiveDate: string;
+}
+
+export interface ByLaws {
+  version: string;
+  effectiveDate: string;
+  amendmentProcess: string;
+  provisions: string[];
+}
+
+export interface MeetingRequirement {
+  type: string;
+  frequency: string;
+  quorum: number;
+  noticeRequired: number;
+}
+
+export interface Encumbrance {
+  type: string;
+  description: string;
+  amount: number;
+  holder: string;
+}
+
+export interface PersonalGuarantee {
+  guarantor: string;
+  amount: number;
+  expirationDate?: string;
+  conditions: string[];
+}
+
+export interface KeyRelationship {
+  id: string;
+  type: string;
+  contact: string;
+  importance: string;
+}
+
+export interface CompensationPackage {
+  baseSalary: number;
+  bonuses: number;
+  equity: number;
+  benefits: string[];
+}
+
+export interface RetentionStrategy {
+  type: string;
+  description: string;
+  cost: number;
+  duration: string;
+}
+
+export interface SuccessorCandidate {
+  id: string;
+  name: string;
+  readiness: string;
+  developmentNeeds: string[];
+}
+
+export interface DocumentationStatus {
+  documented: boolean;
+  lastUpdated: string;
+  completeness: number;
+}
+
+export interface SuccessionTimeline {
+  phases: Array<{
+    name: string;
+    startDate: string;
+    endDate: string;
+    milestones: string[];
+  }>;
+  totalDuration: string;
+}
+
+export interface TaxStrategy {
+  strategies: string[];
+  estimatedSavings: number;
+  implementation: string[];
+}
+
+export interface FinancingStrategy {
+  sources: string[];
+  amount: number;
+  terms: string;
+  timeline: string;
+}
+
+export interface TransitionPlan {
+  phases: string[];
+  duration: string;
+  responsibilities: Record<string, string[]>;
+  milestones: string[];
+}
+
+export interface PlanAdvisor {
+  id: string;
+  name: string;
+  role: string;
+  firm: string;
+  contact: string;
+}
+
+export interface SuccessorDesignation {
+  successorId: string;
+  successorName: string;
+  role: string;
+  readiness: string;
+  conditions: string[];
+}
+
+export interface ActionItem {
+  id: string;
+  action: string;
+  responsible: string;
+  deadline: string;
+  status: string;
+}
+
+export interface RiskAssessment {
+  risk: string;
+  probability: number;
+  impact: string;
+  mitigation: string[];
+}
+
+export interface FinancialImpact {
+  revenue: number;
+  costs: number;
+  taxImplications: number;
+  netImpact: number;
+}
+
+export interface FilingRequirement {
+  type: string;
+  deadline: string;
+  agency: string;
+  status: string;
+}
+
+export interface RetentionPolicy {
+  duration: string;
+  storageLocation: string;
+  destructionMethod: string;
+}
+
+export interface DocumentVersion {
+  version: string;
+  date: string;
+  author: string;
+  changes: string[];
+}
+
+export interface AccelerationTrigger {
+  event: string;
+  percentageAccelerated: number;
+  conditions: string[];
+}
+
+export interface PaymentTerms {
+  structure: string;
+  duration: string;
+  interestRate?: number;
+  collateral?: string;
+}
+
+export interface ResourceRequirement {
+  type: string;
+  amount: number;
+  source: string;
+  availability: string;
+}
+
+export interface SuccessionPlanTemplate {
+  id: string;
+  name: string;
+  businessType: BusinessType;
+  sections: string[];
+  provisions: string[];
+}
+
+export interface BusinessValuation {
+  method: string;
+  amount: number;
+  date: string;
+  appraiser: string;
+  assumptions: string[];
+}
+
+export interface AssetValuation {
+  assetId: string;
+  method: string;
+  amount: number;
+  date: string;
+}
+
+export interface DiscountFactor {
+  type: string;
+  percentage: number;
+  justification: string;
+}
+
+export interface IndustryMultiple {
+  metric: string;
+  multiple: number;
+  source: string;
+  date: string;
+}
+
+export interface SensitivityAnalysis {
+  variable: string;
+  range: { min: number; max: number };
+  impact: Record<string, number>;
+}
+
+export interface ReadinessScore {
+  overall: number;
+  categories: Record<string, number>;
+  timestamp: string;
+}
+
+export interface GapAnalysis {
+  gaps: Array<{
+    area: string;
+    current: string;
+    target: string;
+    actions: string[];
+  }>;
+}
+
+export interface Recommendation {
+  id: string;
+  priority: string;
+  recommendation: string;
+  justification: string;
+  implementation: string[];
+}
+
+export interface ImplementationMilestone {
+  milestone: string;
+  date: string;
+  status: string;
+  dependencies: string[];
+}
+
+export interface FinancialProjection {
+  period: string;
+  revenue: number;
+  expenses: number;
+  profit: number;
+  assumptions: string[];
+}
+
+export interface ReviewSchedule {
+  frequency: string;
+  nextReview: string;
+  reviewers: string[];
+  scope: string[];
+}
+
+export interface SuccessionReport {
+  id: string;
+  planId: string;
+  businessId: string;
+  reportDate: string;
+  executiveSummary: string;
+  readinessScore: ReadinessScore;
+  gapAnalysis: GapAnalysis[];
+  recommendations: Recommendation[];
+  timeline: ImplementationMilestone[];
+  riskAssessment: RiskAssessment[];
+  financialProjections: FinancialProjection[];
+  actionItems: ActionItem[];
+  reviewSchedule: ReviewSchedule;
+}
+
+export type ActionStatus = 'pending' | 'in_progress' | 'completed' | 'blocked' | 'cancelled';
+
 export class BusinessSuccessionPlanningService {
   private businesses: Map<string, BusinessEntity> = new Map();
   private successionPlans: Map<string, SuccessionPlan> = new Map();
@@ -754,67 +1070,6 @@ export class BusinessSuccessionPlanningService {
     return Math.random().toString(36).substr(2, 9);
   }
 }
-
-// Additional interface definitions
-export interface BusinessValuation {
-  id: string;
-  businessId: string;
-  method: string;
-  appraiser?: string;
-  valuationDate: string;
-  enterpriseValue: number;
-  equityValue: number;
-  assetValues: AssetValuation[];
-  assumptions: string[];
-  discounts: DiscountFactor[];
-  multiples: IndustryMultiple[];
-  sensitivity: SensitivityAnalysis;
-  validity: string;
-  nextValuation: string;
-}
-
-export interface SuccessionReport {
-  id: string;
-  planId: string;
-  businessId: string;
-  reportDate: string;
-  executiveSummary: string;
-  readinessScore: ReadinessScore;
-  gapAnalysis: GapAnalysis[];
-  recommendations: Recommendation[];
-  timeline: ImplementationMilestone[];
-  riskAssessment: RiskAssessment[];
-  financialProjections: FinancialProjection[];
-  actionItems: ActionItem[];
-  reviewSchedule: ReviewSchedule;
-}
-
-export interface SuccessionPlanTemplate {
-  id: string;
-  name: string;
-  type: string;
-  scenarios: string[];
-  requirements: string[];
-}
-
-export interface ActionItem {
-  id: string;
-  title: string;
-  description: string;
-  category: string;
-  priority: 'low' | 'medium' | 'high' | 'critical';
-  assignee: string;
-  dueDate: string;
-  status: ActionStatus;
-  dependencies: string[];
-  estimatedEffort: string;
-  notes?: string;
-  completedDate?: string;
-  createdAt: string;
-  lastUpdated: string;
-}
-
-export type ActionStatus = 'pending' | 'in_progress' | 'completed' | 'blocked' | 'cancelled';
 
 // Export the service instance
 export const businessSuccessionPlanningService = new BusinessSuccessionPlanningService();

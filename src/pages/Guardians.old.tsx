@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { Card } from '@/components/ui/card';
@@ -26,8 +26,7 @@ import { FadeIn } from '@/components/motion/FadeIn';
 import { usePageTitle } from '@/hooks/usePageTitle';
 import { toast } from 'sonner';
 import { useSupabaseWithClerk } from '@/integrations/supabase/client';
-import type { Guardian, CreateGuardianRequest } from '@/types/guardian';
-import { GUARDIAN_RELATIONSHIPS } from '@/types/guardian';
+import { GUARDIAN_RELATIONSHIPS, type Guardian, type CreateGuardianRequest } from '@/types/guardian';
 
 export default function GuardiansPage() {
   usePageTitle('My Guardians');

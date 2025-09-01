@@ -223,23 +223,23 @@ export class EncryptionService {
   /**
    * Encrypt object fields
    */
-  public async encryptObject<T extends Record<string, any>>(
+  public async encryptObject<T extends Record<string, unknown>>(
     obj: T,
     fieldsToEncrypt: (keyof T)[]
-  ): Promise<T & { _encryption?: Record<string, any> }> {
+  ): Promise<T & { _encryption?: Record<string, unknown> }> {
     if (!this.enabled) {
       return obj;
     }
 
-    const encrypted = { ...obj } as T & { _encryption?: Record<string, any> };
-    const encryptionMetadata: Record<string, any> = {};
+    const encrypted = { ...obj } as T & { _encryption?: Record<string, unknown> };
+    const encryptionMetadata: Record<string, unknown> = {};
 
     for (const field of fieldsToEncrypt) {
       if (obj[field] !== undefined && obj[field] !== null) {
         const value = String(obj[field]);
         const { encrypted: encryptedValue, iv } = await this.encrypt(value, String(field));
 
-        encrypted[field] = encryptedValue as any;
+        encrypted[field] = encryptedValue as T[keyof T];
         encryptionMetadata[String(field)] = { iv, encrypted: true };
       }
     }
@@ -254,8 +254,8 @@ export class EncryptionService {
   /**
    * Decrypt object fields
    */
-  public async decryptObject<T extends Record<string, any>>(
-    obj: T & { _encryption?: Record<string, any> }
+  public async decryptObject<T extends Record<string, unknown>>(
+    obj: T & { _encryption?: Record<string, unknown> }
   ): Promise<T> {
     if (!this.enabled || !obj._encryption) {
       const { _encryption, ...data } = obj;
@@ -272,7 +272,7 @@ export class EncryptionService {
             decrypted[field],
             metadata.iv,
             field
-          ) as any;
+          ) as T[keyof T];
         } catch (error) {
           console.error(`Failed to decrypt field ${field}:`, error);
           // Leave field encrypted if decryption fails
@@ -350,7 +350,7 @@ export class SecureStorage {
   /**
    * Set encrypted item in storage
    */
-  async setItem(key: string, value: any): Promise<void> {
+  async setItem(key: string, value: unknown): Promise<void> {
     try {
       const serialized = JSON.stringify(value);
       const { encrypted, iv } = await encryptionService.encrypt(serialized, key);
@@ -454,10 +454,10 @@ export function useEncryptedState<T>(
  * Decorator for encrypting method parameters
  */
 export function EncryptParams(...paramIndices: number[]) {
-  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+  return function (target: unknown, propertyKey: string, descriptor: PropertyDescriptor) {
     const originalMethod = descriptor.value;
 
-    descriptor.value = async function (...args: any[]) {
+    descriptor.value = async function (...args: unknown[]) {
       const encryptedArgs = [...args];
 
       for (const index of paramIndices) {
@@ -479,10 +479,10 @@ export function EncryptParams(...paramIndices: number[]) {
 /**
  * Decorator for encrypting method return value
  */
-export function EncryptResult(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+export function EncryptResult(target: unknown, propertyKey: string, descriptor: PropertyDescriptor) {
   const originalMethod = descriptor.value;
 
-  descriptor.value = async function (...args: any[]) {
+  descriptor.value = async function (...args: unknown[]) {
     const result = await originalMethod.apply(this, args);
 
     if (result !== undefined) {

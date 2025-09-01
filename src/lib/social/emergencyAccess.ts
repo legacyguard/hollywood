@@ -74,7 +74,7 @@ export interface EmergencyVerification {
   max_attempts: number;
   expires_at: string;
   verified_at?: string;
-  verification_data: Record<string, any>;
+  verification_data: Record<string, unknown>;
   created_at: string;
 }
 
@@ -161,7 +161,7 @@ export interface VerificationAttempt {
   method: VerificationMethod;
   timestamp: string;
   success: boolean;
-  details: Record<string, any>;
+  details: Record<string, unknown>;
 }
 
 export interface AccessLogEntry {
@@ -382,7 +382,7 @@ export class EmergencyAccessService {
   async verifyEmergencyAccess(data: {
     emergencyId: string;
     method: VerificationMethod;
-    verificationData: Record<string, any>;
+    verificationData: Record<string, unknown>;
   }): Promise<boolean> {
     try {
       const verifierId = (await supabase.auth.getUser()).data.user?.id;
@@ -762,7 +762,7 @@ export class EmergencyAccessService {
     }
   }
 
-  private async processVerification(verification: EmergencyVerification, data: Record<string, any>): Promise<boolean> {
+  private async processVerification(verification: EmergencyVerification, data: Record<string, unknown>): Promise<boolean> {
     switch (verification.method) {
       case 'email_code':
         return data.code && data.code === verification.verification_data.expected_code;
@@ -777,12 +777,12 @@ export class EmergencyAccessService {
     }
   }
 
-  private verifyIdentityDocument(data: Record<string, any>): boolean {
+  private verifyIdentityDocument(data: Record<string, unknown>): boolean {
     // Implement identity document verification logic
     return data.documentType && data.documentNumber && data.documentImage;
   }
 
-  private async verifyMultipleContacts(emergencyId: string, data: Record<string, any>): Promise<boolean> {
+  private async verifyMultipleContacts(emergencyId: string, data: Record<string, unknown>): Promise<boolean> {
     // Check if required number of contacts have verified
     const requiredVerifications = 2;
     const verifications = data.verifications || [];

@@ -2,7 +2,6 @@
 // Provides curated templates and version comparison functionality
 
 import type { WillData } from '@/components/legacy/WillWizard';
-import type { WillType } from '@/components/legacy/WillTypeSelector';
 
 export interface WillTemplate {
   id: string;
@@ -84,8 +83,8 @@ export interface ChangeSet {
   section: keyof WillData;
   field: string;
   changeType: 'added' | 'removed' | 'modified';
-  oldValue?: any;
-  newValue?: any;
+  oldValue?: unknown;
+  newValue?: unknown;
   impact: 'low' | 'medium' | 'high' | 'critical';
   description: string;
   legalImplications?: string;
@@ -1006,7 +1005,7 @@ export class WillTemplateLibrary {
           changeType: !oldValue ? 'added' : !newValue ? 'removed' : 'modified',
           oldValue,
           newValue,
-          impact: this.determineImpact(sectionName, key, oldValue, newValue),
+          impact: this.determineImpact(sectionName, key),
           description: `${sectionName}.${key} ${!oldValue ? 'added' : !newValue ? 'removed' : 'modified'}`,
         });
       }
@@ -1072,9 +1071,7 @@ export class WillTemplateLibrary {
 
   private determineImpact(
     section: keyof WillData,
-    field: string,
-    oldValue: any,
-    newValue: any
+    field: string
   ): ChangeSet['impact'] {
     // Critical impact fields
     if (

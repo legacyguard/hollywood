@@ -3,7 +3,6 @@ import {
   Container,
   Stack,
   H1,
-  H2,
   Paragraph,
   Button,
   FormInput,
@@ -12,7 +11,7 @@ import {
   CardContent,
   Row,
   Divider,
-  useTheme,
+  // useTheme,
   CardAnimation,
 } from '@legacyguard/ui'
 import { useSignIn } from '@clerk/clerk-expo'
@@ -23,8 +22,8 @@ import { Mail, Lock, Eye, EyeOff } from 'lucide-react-native'
 export const SignInScreen = () => {
   const { signIn, setActive, isLoaded } = useSignIn()
   const navigation = useNavigation()
-  const theme = useTheme()
-  
+  // const theme = useTheme()
+
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -33,40 +32,40 @@ export const SignInScreen = () => {
     email?: string
     password?: string
   }>({})
-  
+
   const validateForm = () => {
     const newErrors: typeof errors = {}
-    
+
     if (!email) {
       newErrors.email = 'Email is required'
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       newErrors.email = 'Please enter a valid email'
     }
-    
+
     if (!password) {
       newErrors.password = 'Password is required'
     } else if (password.length < 6) {
       newErrors.password = 'Password must be at least 6 characters'
     }
-    
+
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
-  
+
   const handleSignIn = async () => {
     if (!validateForm()) return
-    
+
     if (!isLoaded) return
-    
+
     setIsLoading(true)
     try {
       const completeSignIn = await signIn.create({
         identifier: email,
         password,
       })
-      
+
       await setActive({ session: completeSignIn.createdSessionId })
-      
+
       // Navigate to main app
       navigation.navigate('MainTabs' as never)
     } catch (err: any) {
@@ -79,15 +78,15 @@ export const SignInScreen = () => {
       setIsLoading(false)
     }
   }
-  
+
   const handleForgotPassword = () => {
     navigation.navigate('ForgotPassword' as never)
   }
-  
+
   const handleSignUp = () => {
     navigation.navigate('SignUp' as never)
   }
-  
+
   return (
     <Container>
       <KeyboardAvoidingView
@@ -110,7 +109,7 @@ export const SignInScreen = () => {
               Sign in to your account
             </Paragraph>
           </Stack>
-          
+
           {/* Sign In Form */}
           <Card {...CardAnimation.default}>
             <CardContent>
@@ -127,7 +126,7 @@ export const SignInScreen = () => {
                   error={errors.email}
                   icon={Mail}
                 />
-                
+
                 <FormInput
                   testID="password-input"
                   label="Password"
@@ -148,7 +147,7 @@ export const SignInScreen = () => {
                     </Button>
                   }
                 />
-                
+
                 <Row justifyContent="flex-end">
                   <Button
                     variant="ghost"
@@ -158,7 +157,7 @@ export const SignInScreen = () => {
                     Forgot Password?
                   </Button>
                 </Row>
-                
+
                 <Button
                   testID="signin-button"
                   variant="primary"
@@ -173,14 +172,14 @@ export const SignInScreen = () => {
               </FormSection>
             </CardContent>
           </Card>
-          
+
           {/* Divider */}
           <Row alignItems="center" gap="$3">
             <Divider flex={1} />
             <Paragraph size="$3" color="$gray6">OR</Paragraph>
             <Divider flex={1} />
           </Row>
-          
+
           {/* Social Sign In */}
           <Stack gap="$3">
             <Button
@@ -191,7 +190,7 @@ export const SignInScreen = () => {
             >
               Continue with Google
             </Button>
-            
+
             <Button
               variant="secondary"
               size="large"
@@ -201,7 +200,7 @@ export const SignInScreen = () => {
               Continue with Apple
             </Button>
           </Stack>
-          
+
           {/* Sign Up Link */}
           <Row justifyContent="center" gap="$2">
             <Paragraph size="$4" color="$gray6">

@@ -5,17 +5,7 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { cn } from '@/lib/utils';
-
-// Breakpoint definitions matching Tailwind CSS
-export const breakpoints = {
-  sm: 640,
-  md: 768,
-  lg: 1024,
-  xl: 1280,
-  '2xl': 1536,
-} as const;
-
-export type Breakpoint = keyof typeof breakpoints;
+import { breakpoints, type Breakpoint, touchThresholds, performanceConfig } from './mobile-optimization-constants';
 
 // Hook for responsive breakpoint detection
 export function useBreakpoint(): {

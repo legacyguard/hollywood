@@ -23,7 +23,7 @@ export const IntelligentDocumentScanner = ({
     if (!hasPermission) {
       requestPermission();
     }
-  }, [hasPermission]);
+  }, [hasPermission, requestPermission]);
 
   const takePhoto = async () => {
     if (camera.current && !isProcessing) {

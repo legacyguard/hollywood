@@ -215,7 +215,7 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
           <div className='space-y-2'>
             <div className='flex items-center gap-2'>
               <span className='text-sm font-medium'>Extracted Text</span>
-              <Badge variant={"outline" as any} className='text-xs'>
+              <Badge variant="outline" className='text-xs'>
                 {(analysisResult?.confidence * 100).toFixed(0)}% confidence
               </Badge>
             </div>
@@ -356,7 +356,7 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
                         </span>
                         <span className='text-sm'>{item.value}</span>
                       </div>
-                      <Badge variant={"outline" as any} className='text-xs'>
+                      <Badge variant="outline" className='text-xs'>
                         {(item?.confidence * 100).toFixed(0)}%
                       </Badge>
                     </div>
@@ -371,7 +371,7 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
                 <h4 className='font-medium'>Suggested Tags</h4>
                 <div className='flex flex-wrap gap-2'>
                   {editableData.suggestedTags.map((tag, index) => (
-                    <Badge key={index} variant={"secondary" as any}>
+                    <Badge key={index} variant="secondary">
                       {tag}
                     </Badge>
                   ))}
@@ -427,10 +427,10 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
                             {version.fileName}
                           </span>
                           <div className='flex items-center gap-2'>
-                            <Badge variant={"outline" as any} className='text-xs'>
+                            <Badge variant="outline" className='text-xs'>
                               v{version.versionNumber}
                             </Badge>
-                            <Badge variant={"secondary" as any} className='text-xs'>
+                            <Badge variant="secondary" className='text-xs'>
                               {(version.similarityScore * 100).toFixed(0)}%
                               similar
                             </Badge>
@@ -480,7 +480,7 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
                           <span className='font-medium'>
                             Replace older version
                           </span>
-                          <Badge variant={"outline" as any} className='text-xs'>
+                          <Badge variant="outline" className='text-xs'>
                             Recommended
                           </Badge>
                         </div>
@@ -571,10 +571,10 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
                               <span className='font-medium'>
                                 {bundle.bundleName}
                               </span>
-                              <Badge variant={"outline" as any} className='text-xs'>
+                              <Badge variant="outline" className='text-xs'>
                                 {bundle.documentCount} documents
                               </Badge>
-                              <Badge variant={"secondary" as any} className='text-xs'>
+                              <Badge variant="secondary" className='text-xs'>
                                 {bundle.matchScore}% match
                               </Badge>
                             </div>
@@ -622,7 +622,7 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
                         <div className='flex items-center gap-2'>
                           <Icon name={"plus" as any} className='w-4 h-4 text-primary' />
                           <span className='font-medium'>Create new bundle</span>
-                          <Badge variant={"outline" as any} className='text-xs'>
+                          <Badge variant="outline" className='text-xs'>
                             {(
                               editableData.suggestedNewBundle?.confidence * 100
                             ).toFixed(0)}
@@ -673,7 +673,7 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
           <div className='flex gap-3 mt-6 pt-6 border-t'>
             <Button
               onClick={onCancel}
-              variant={"outline" as any}
+              variant="outline"
               disabled={isProcessing}
               className='flex-1'
             >

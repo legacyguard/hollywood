@@ -382,7 +382,7 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
         clearTimeout(idleTimeoutRef.current);
       }
     };
-  }, [targetElement, celebrateEvent, startIdleAnimation]);
+  }, [targetElement, celebrateEvent, startIdleAnimation, effectiveCelebrateEvent, effectiveTargetElement]);
 
   if (!effectiveIsVisible) return null;
 

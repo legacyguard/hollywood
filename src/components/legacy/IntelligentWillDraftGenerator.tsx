@@ -466,7 +466,7 @@ export const IntelligentWillDraftGenerator: React.FC<
 
             <Button
               onClick={onStartFromScratch}
-              variant={"outline" as any}
+              variant="outline"
               size='lg'
               className='px-8'
             >
@@ -531,10 +531,10 @@ export const IntelligentWillDraftGenerator: React.FC<
                           <span className='font-medium'>
                             {beneficiary.name}
                           </span>
-                          <Badge variant={"secondary" as any}>
+                          <Badge variant="secondary">
                             {beneficiary.relationship}
                           </Badge>
-                          <Badge variant={"outline" as any}>
+                          <Badge variant="outline">
                             {beneficiary.percentage}%
                           </Badge>
                         </div>
@@ -596,7 +596,7 @@ export const IntelligentWillDraftGenerator: React.FC<
                       <span className='font-medium'>
                         {analysis.suggestedExecutor.name}
                       </span>
-                      <Badge variant={"secondary" as any}>
+                      <Badge variant="secondary">
                         {analysis.suggestedExecutor.relationship}
                       </Badge>
                     </div>
@@ -619,10 +619,10 @@ export const IntelligentWillDraftGenerator: React.FC<
                         <div key={index}>
                           <div className='flex items-center gap-2'>
                             <span className='font-medium'>{guardian.name}</span>
-                            <Badge variant={"secondary" as any}>
+                            <Badge variant="secondary">
                               {guardian.relationship}
                             </Badge>
-                            <Badge variant={"outline" as any}>
+                            <Badge variant="outline">
                               {index === 0 ? 'Primary' : 'Backup'}
                             </Badge>
                           </div>
@@ -667,7 +667,7 @@ export const IntelligentWillDraftGenerator: React.FC<
 
               <Button
                 onClick={onStartFromScratch}
-                variant={"outline" as any}
+                variant="outline"
                 size='lg'
                 className='px-8'
               >

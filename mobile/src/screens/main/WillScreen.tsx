@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { 
-  Container, 
-  Stack, 
-  H2, 
+import {
+  Container,
+  Stack,
+  H2,
   H3,
-  Paragraph, 
-  Card, 
+  Paragraph,
+  Card,
   CardContent,
   Button,
   Row,
@@ -14,15 +14,15 @@ import {
   Divider,
   Input,
   RadioGroup,
-  CheckboxGroup,
+  // CheckboxGroup,
   TextArea,
   SegmentedProgress,
   PillarCard,
   Label,
   useMedia,
-  Grid
+  // Grid
 } from '@legacyguard/ui'
-import { 
+import {
   FileText,
   ChevronRight,
   ChevronLeft,
@@ -36,9 +36,9 @@ import {
   Lock,
   AlertCircle
 } from 'lucide-react-native'
-import { Alert, Platform } from 'react-native'
-import { useNavigation } from '@react-navigation/native'
-import { useAuth } from '@/hooks/useAuth'
+import { Alert } from 'react-native'
+// import { useNavigation } from '@react-navigation/native' // Uncomment when navigation is implemented
+// import { useAuth } from '@/hooks/useAuth' // Uncomment when user auth is needed
 
 // Will wizard steps
 const WILL_STEPS = [
@@ -88,38 +88,38 @@ interface WillData {
 }
 
 export const WillScreen = () => {
-  const navigation = useNavigation()
+  // const navigation = useNavigation() // Uncomment when navigation is implemented
   const theme = useTheme()
   const media = useMedia()
-  const { user } = useAuth()
-  
+  // const { user } = useAuth() // Uncomment when user data is needed
+
   const [currentStep, setCurrentStep] = useState(0)
   const [willData, setWillData] = useState<Partial<WillData>>({})
   const [isLoading, setIsLoading] = useState(false)
   const [isPremium, setIsPremium] = useState(false)
-  
+
   // Check premium status
   useEffect(() => {
     checkPremiumStatus()
   }, [])
-  
+
   const checkPremiumStatus = () => {
     // TODO: Check actual premium status from user metadata
     setIsPremium(false) // For now, assume free user
   }
-  
+
   const handleNext = () => {
     if (currentStep < WILL_STEPS.length - 1) {
       setCurrentStep(prev => prev + 1)
     }
   }
-  
+
   const handlePrev = () => {
     if (currentStep > 0) {
       setCurrentStep(prev => prev - 1)
     }
   }
-  
+
   const handleSaveProgress = async () => {
     try {
       // TODO: Save to localStorage or API
@@ -129,7 +129,7 @@ export const WillScreen = () => {
       Alert.alert('Error', 'Failed to save progress. Please try again.')
     }
   }
-  
+
   const handleGenerateWill = async () => {
     if (!isPremium) {
       Alert.alert(
@@ -137,8 +137,8 @@ export const WillScreen = () => {
         'Generating a complete will document is a premium feature. Upgrade to access this and other premium features.',
         [
           { text: 'Cancel', style: 'cancel' },
-          { 
-            text: 'Upgrade', 
+          {
+            text: 'Upgrade',
             onPress: () => {
               // Navigate to web for upgrade
               console.log('Navigate to upgrade page')
@@ -148,7 +148,7 @@ export const WillScreen = () => {
       )
       return
     }
-    
+
     setIsLoading(true)
     try {
       // TODO: Generate will document
@@ -160,10 +160,10 @@ export const WillScreen = () => {
       setIsLoading(false)
     }
   }
-  
+
   const renderStepContent = () => {
     const step = WILL_STEPS[currentStep]
-    
+
     switch (step.id) {
       case 'personal':
         return (
@@ -172,7 +172,7 @@ export const WillScreen = () => {
             <Paragraph color="$gray6">
               Let's start with your basic information
             </Paragraph>
-            
+
             <Input
               label="Full Legal Name"
               placeholder="Enter your full name"
@@ -182,7 +182,7 @@ export const WillScreen = () => {
                 personal: { ...prev.personal, fullName: text }
               }))}
             />
-            
+
             <Input
               label="Date of Birth"
               placeholder="DD/MM/YYYY"
@@ -192,7 +192,7 @@ export const WillScreen = () => {
                 personal: { ...prev.personal, dateOfBirth: text }
               }))}
             />
-            
+
             <TextArea
               label="Current Address"
               placeholder="Enter your full address"
@@ -203,7 +203,7 @@ export const WillScreen = () => {
               }))}
               numberOfLines={3}
             />
-            
+
             <RadioGroup
               options={[
                 { value: 'single', label: 'Single' },
@@ -220,7 +220,7 @@ export const WillScreen = () => {
             />
           </Stack>
         )
-      
+
       case 'executor':
         return (
           <Stack gap="$4">
@@ -228,7 +228,7 @@ export const WillScreen = () => {
             <Paragraph color="$gray6">
               Choose someone you trust to carry out your wishes
             </Paragraph>
-            
+
             <Input
               label="Executor's Name"
               placeholder="Enter executor's full name"
@@ -238,7 +238,7 @@ export const WillScreen = () => {
                 executor: { ...prev.executor, name: text }
               }))}
             />
-            
+
             <Input
               label="Relationship"
               placeholder="e.g., Spouse, Friend, Lawyer"
@@ -248,7 +248,7 @@ export const WillScreen = () => {
                 executor: { ...prev.executor, relationship: text }
               }))}
             />
-            
+
             <Input
               label="Email Address"
               placeholder="executor@example.com"
@@ -259,7 +259,7 @@ export const WillScreen = () => {
               }))}
               keyboardType="email-address"
             />
-            
+
             <Input
               label="Phone Number"
               placeholder="+421 900 000 000"
@@ -270,9 +270,9 @@ export const WillScreen = () => {
               }))}
               keyboardType="phone-pad"
             />
-            
+
             <Divider />
-            
+
             <Input
               label="Alternative Executor (Optional)"
               placeholder="Enter alternative executor's name"
@@ -284,7 +284,7 @@ export const WillScreen = () => {
             />
           </Stack>
         )
-      
+
       case 'review':
         return (
           <Stack gap="$4">
@@ -292,7 +292,7 @@ export const WillScreen = () => {
             <Paragraph color="$gray6">
               Please review all the information before generating your will
             </Paragraph>
-            
+
             {/* Summary Cards */}
             <Card>
               <CardContent>
@@ -303,7 +303,7 @@ export const WillScreen = () => {
                 </Paragraph>
               </CardContent>
             </Card>
-            
+
             <Card>
               <CardContent>
                 <Label marginBottom="$2">Executor</Label>
@@ -313,7 +313,7 @@ export const WillScreen = () => {
                 </Paragraph>
               </CardContent>
             </Card>
-            
+
             {!isPremium && (
               <Card backgroundColor="$accentGold" opacity={0.1}>
                 <CardContent>
@@ -331,7 +331,7 @@ export const WillScreen = () => {
             )}
           </Stack>
         )
-      
+
       default:
         return (
           <Stack alignItems="center" justifyContent="center" padding="$8">
@@ -343,12 +343,12 @@ export const WillScreen = () => {
         )
     }
   }
-  
+
   return (
     <Container>
       <ScrollContainer>
-        <Stack 
-          padding="$4" 
+        <Stack
+          padding="$4"
           gap="$4"
           maxWidth={media.gtMd ? 1200 : media.gtSm ? 800 : '100%'}
           marginHorizontal="auto"
@@ -365,14 +365,14 @@ export const WillScreen = () => {
               Save Progress
             </Button>
           </Row>
-          
+
           {/* Progress */}
           <SegmentedProgress
             segments={WILL_STEPS.length}
             currentSegment={currentStep + 1}
             labels={WILL_STEPS.map(s => s.label)}
           />
-          
+
           {/* Premium Banner for Free Users */}
           {!isPremium && (
             <PillarCard
@@ -386,17 +386,17 @@ export const WillScreen = () => {
               }}
             />
           )}
-          
+
           {/* Step Content */}
           <Card>
             <CardContent>
               {renderStepContent()}
             </CardContent>
           </Card>
-          
+
           {/* Navigation Buttons */}
-          <Row 
-            justifyContent="space-between" 
+          <Row
+            justifyContent="space-between"
             gap="$3"
             flexDirection={media.gtSm ? 'row' : 'column-reverse'}
           >
@@ -410,7 +410,7 @@ export const WillScreen = () => {
             >
               Previous
             </Button>
-            
+
             {currentStep === WILL_STEPS.length - 1 ? (
               <Button
                 variant={isPremium ? 'primary' : 'premium'}

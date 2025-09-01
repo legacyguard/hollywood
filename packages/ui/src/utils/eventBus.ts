@@ -3,24 +3,27 @@
  * Simple event emitter for global component communication
  */
 
-type EventCallback = (...args: any[]) => void
+type EventCallback = (...args: unknown[]) => void
 
 class EventBus {
   private events: Map<string, Set<EventCallback>> = new Map()
-  
+
   on(event: string, callback: EventCallback): () => void {
     if (!this.events.has(event)) {
       this.events.set(event, new Set())
     }
-    
-    this.events.get(event)!.add(callback)
-    
+
+    const callbacks = this.events.get(event)
+    if (callbacks) {
+      callbacks.add(callback)
+    }
+
     // Return unsubscribe function
     return () => {
       this.off(event, callback)
     }
   }
-  
+
   off(event: string, callback: EventCallback): void {
     const callbacks = this.events.get(event)
     if (callbacks) {
@@ -30,8 +33,8 @@ class EventBus {
       }
     }
   }
-  
-  emit(event: string, ...args: any[]): void {
+
+  emit(event: string, ...args: unknown[]): void {
     const callbacks = this.events.get(event)
     if (callbacks) {
       callbacks.forEach(callback => {
@@ -43,16 +46,16 @@ class EventBus {
       })
     }
   }
-  
+
   once(event: string, callback: EventCallback): () => void {
-    const onceCallback = (...args: any[]) => {
+    const onceCallback = (...args: unknown[]) => {
       callback(...args)
       this.off(event, onceCallback)
     }
-    
+
     return this.on(event, onceCallback)
   }
-  
+
   clear(): void {
     this.events.clear()
   }
@@ -74,22 +77,23 @@ export const EVENTS = {
 export type EventType = typeof EVENTS[keyof typeof EVENTS]
 
 // Helper hooks for React components
-import { useEffect } from 'react'
+import { useEffect, type DependencyList } from 'react'
 
 export function useEventBus(
   event: EventType | string,
   handler: EventCallback,
-  deps: any[] = []
+  deps: DependencyList = []
 ) {
   useEffect(() => {
     const unsubscribe = eventBus.on(event, handler)
     return unsubscribe
-  }, deps)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [event, handler, ...deps])
 }
 
 export function useEventEmitter() {
   return {
-    emit: (event: EventType | string, ...args: any[]) => eventBus.emit(event, ...args),
+    emit: (event: EventType | string, ...args: unknown[]) => eventBus.emit(event, ...args),
     on: (event: EventType | string, callback: EventCallback) => eventBus.on(event, callback),
     off: (event: EventType | string, callback: EventCallback) => eventBus.off(event, callback),
   }

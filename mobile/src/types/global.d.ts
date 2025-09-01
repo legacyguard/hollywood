@@ -10,9 +10,9 @@ declare module '@legacyguard/logic' {
     setUserStyle(userId: string, style: string): void;
     analyzeUserInput(input: string): void;
   }
-  
+
   export const textManager: TextManager;
-  
+
   export class TextAnalyzer {
     constructor();
     analyzeText(text: string): { detectedStyle: string };

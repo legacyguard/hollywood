@@ -59,8 +59,8 @@ export default defineConfig(({ mode }) => {
       reportCompressedSize: true,
       // Minification options
       minify: mode === 'production' ? 'terser' : false,
-      // Chunk size warning limit (in KB)
-      chunkSizeWarningLimit: 1000,
+      // Chunk size warning limit (in KB) - increased for large app
+      chunkSizeWarningLimit: 1500,
       // Target browsers
       target: 'esnext',
       // CSS code splitting
@@ -95,6 +95,16 @@ export default defineConfig(({ mode }) => {
             // UI component libraries
             if (id.includes('@radix-ui')) {
               return 'ui-vendor';
+            }
+            
+            // Charts and data visualization
+            if (id.includes('recharts') || id.includes('d3')) {
+              return 'charts-vendor';
+            }
+            
+            // Tanstack libraries
+            if (id.includes('@tanstack')) {
+              return 'tanstack-vendor';
             }
 
             // Utility libraries

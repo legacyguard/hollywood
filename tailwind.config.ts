@@ -9,6 +9,9 @@ export default {
 		"./app/**/*.{ts,tsx}",
 		"./src/**/*.{ts,tsx}",
 	],
+	safelist: [
+		'border-border'
+	],
 	prefix: "",
 	theme: {
 		container: {
@@ -136,5 +139,7 @@ export default {
 			}
 		}
 	},
-	plugins: [tailwindcssAnimate],
+	plugins: [
+		tailwindcssAnimate,
+	],
 } satisfies Config;

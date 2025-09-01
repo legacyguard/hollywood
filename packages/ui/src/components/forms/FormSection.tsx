@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import React, { type ReactNode } from 'react'
 import { Stack, H3, Paragraph, Divider, Card, CardContent } from '../..'
 import { View } from 'tamagui'
 
@@ -42,7 +42,7 @@ export const FormSection: React.FC<FormSectionProps> = ({
           <CardContent>{content}</CardContent>
         </Card>
       )
-    
+
     case 'bordered':
       return (
         <View
@@ -55,7 +55,7 @@ export const FormSection: React.FC<FormSectionProps> = ({
           {content}
         </View>
       )
-    
+
     default:
       return (
         <Stack width="100%">

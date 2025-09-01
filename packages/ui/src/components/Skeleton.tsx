@@ -1,3 +1,4 @@
+import React from 'react'
 import { type GetProps, styled, View } from 'tamagui'
 import { YStack, XStack } from './Layout'
 
@@ -8,20 +9,20 @@ export const Skeleton = styled(View, {
   borderRadius: '$1',
   overflow: 'hidden',
   position: 'relative',
-  
+
   // Add shimmer animation
   animation: 'lazy',
   animateOnly: ['opacity'],
   opacity: 0.7,
-  
+
   enterStyle: {
     opacity: 0.5,
   },
-  
+
   exitStyle: {
     opacity: 0.5,
   },
-  
+
   variants: {
     variant: {
       text: {
@@ -75,7 +76,7 @@ export const Skeleton = styled(View, {
 })
 
 // Skeleton Text - for loading text
-export const SkeletonText = ({ lines = 3, spacing = '$2', ...props }: { 
+export const SkeletonText = ({ lines = 3, spacing = '$2', ...props }: {
   lines?: number
   spacing?: any
 } & GetProps<typeof YStack>) => {
@@ -98,7 +99,7 @@ export const SkeletonAvatar = styled(Skeleton, {
   variant: 'avatar',
   width: '$10',
   height: '$10',
-  
+
   variants: {
     size: {
       small: {
@@ -119,14 +120,14 @@ export const SkeletonAvatar = styled(Skeleton, {
       },
     },
   } as const,
-  
+
   defaultVariants: {
     size: 'medium',
   },
 })
 
 // Skeleton Card
-export const SkeletonCard = ({ 
+export const SkeletonCard = ({
   showAvatar = true,
   showTitle = true,
   showDescription = true,
@@ -157,7 +158,7 @@ export const SkeletonCard = ({
 }
 
 // Skeleton List
-export const SkeletonList = ({ 
+export const SkeletonList = ({
   items = 3,
   spacing = '$3',
   renderItem,
@@ -182,7 +183,7 @@ export const SkeletonList = ({
 export const SkeletonButton = styled(Skeleton, {
   name: 'LGSkeletonButton',
   variant: 'button',
-  
+
   variants: {
     size: {
       small: {
@@ -204,7 +205,7 @@ export const SkeletonButton = styled(Skeleton, {
       },
     },
   } as const,
-  
+
   defaultVariants: {
     size: 'medium',
     fullWidth: false,
@@ -216,7 +217,7 @@ export const SkeletonImage = styled(Skeleton, {
   name: 'LGSkeletonImage',
   variant: 'image',
   width: '100%',
-  
+
   variants: {
     aspectRatio: {
       square: {
@@ -233,7 +234,7 @@ export const SkeletonImage = styled(Skeleton, {
       },
     },
   } as const,
-  
+
   defaultVariants: {
     aspectRatio: 'square',
   },

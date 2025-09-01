@@ -248,8 +248,8 @@ export const PerformanceDashboard: React.FC = () => {
                   size="sm"
                   onClick={() => {
                     // Open browser dev tools
-                    console.log('🚀 Performance Metrics:', metrics);
-                    console.log('💡 Performance Insights:', insights);
+                    // 🚀 Performance Metrics: ${JSON.stringify(metrics)}
+                    // 💡 Performance Insights: ${JSON.stringify(insights)}
                   }}
                   className="text-xs"
                 >

@@ -1,5 +1,5 @@
 import React from 'react'
-import { FormField, type FormFieldProps } from './FormField'
+import { FormField } from './FormField'
 import { Select, type SelectProps } from '../..'
 
 export interface FormSelectProps extends Omit<SelectProps, 'error' | 'label'> {
@@ -21,7 +21,7 @@ export const FormSelect: React.FC<FormSelectProps> = ({
   // Convert error to appropriate types for each component
   const hasError = Boolean(error)
   const errorMessage = typeof error === 'string' ? error : undefined
-  
+
   return (
     <FormField
       label={label}

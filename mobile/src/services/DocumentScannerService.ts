@@ -13,21 +13,22 @@ export const DocumentScannerService = {
     // - Document edge detection
     // - Perspective correction
     // - OCR processing
-    return imageUri;
+    return imageUri; // Currently returns unprocessed, will be enhanced
   },
 
   // Validate document quality
-  validateDocumentQuality: (imageUri: string) => {
-    // Check image quality, lighting, focus, etc.
-    return true;
+  validateDocumentQuality: () => {
+    // TODO: Implement image quality validation
+    // Will check: image quality, lighting, focus, etc.
+    return true; // Placeholder return
   },
 
   // Extract document metadata
-  extractMetadata: async (imageUri: string) => {
-    // OCR and AI-based document analysis
+  extractMetadata: async () => {
+    // TODO: Implement OCR and AI-based document analysis
     return {
-      type: 'document',
+      type: 'document' as const,
       confidence: 0.95,
-    };
+    }; // Placeholder return
   }
 };

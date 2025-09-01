@@ -59,7 +59,7 @@ const subscriptionService = {
     time_capsule_count: 0,
     scans_this_month: 0,
   }),
-  getPlanLimits: async (plan: string): Promise<SubscriptionLimits | null> => ({
+  getPlanLimits: async (_plan: string): Promise<SubscriptionLimits | null> => ({
     plan: 'free',
     max_documents: 10,
     max_storage_mb: 100,
@@ -81,7 +81,7 @@ const subscriptionService = {
 const stripeService = {
   getCustomerPortalUrl: async (): Promise<string | null> => null,
 };
-import { useAuth } from '../../hooks/useAuth';
+// import { useAuth } from '../../hooks/useAuth';
 
 interface UsageBarProps {
   label: string;
@@ -130,7 +130,7 @@ const UsageBar: React.FC<UsageBarProps> = ({ label, current, max, unit = '' }) =
 };
 
 export const SubscriptionStatus: React.FC = () => {
-  const { user } = useAuth();
+  // const { user } = useAuth();
   const [subscription, setSubscription] = useState<UserSubscription | null>(null);
   const [usage, setUsage] = useState<UserUsage | null>(null);
   const [limits, setLimits] = useState<SubscriptionLimits | null>(null);
@@ -191,10 +191,10 @@ export const SubscriptionStatus: React.FC = () => {
     // navigation.navigate('Pricing');
   };
 
-  const formatStorageSize = (mb: number) => {
-    if (mb < 1024) return `${mb.toFixed(1)} MB`;
-    return `${(mb / 1024).toFixed(1)} GB`;
-  };
+  // const formatStorageSize = (mb: number) => {
+  //   if (mb < 1024) return `${mb.toFixed(1)} MB`;
+  //   return `${(mb / 1024).toFixed(1)} GB`;
+  // };
 
   if (isLoading) {
     return (

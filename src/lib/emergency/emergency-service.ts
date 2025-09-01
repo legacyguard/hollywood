@@ -184,7 +184,7 @@ export class EmergencyService {
       if (result.success && response === 'confirmed') {
         // Additional activation logic could go here
         // e.g., unlock survivor resources, send additional notifications, etc.
-        console.log('Emergency activation confirmed by guardian');
+        // Emergency activation confirmed by guardian
       }
 
       return result;
@@ -446,12 +446,12 @@ export class EmergencyService {
    * Use this to validate the emergency system is working correctly
    */
   async runTests(): Promise<any[]> {
-    console.log('🧪 Running Emergency System Tests...');
+    // 🧪 Running Emergency System Tests...
     const results = await this.testingSystem.runTestSuite();
 
-    // Generate and log test report
+    // Generate test report
     const report = await this.testingSystem.generateTestReport(results);
-    console.log(report);
+    // Test report generated: ${report}
 
     return results;
   }

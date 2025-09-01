@@ -402,15 +402,15 @@ export const WillWizard: React.FC<WillWizardProps> = ({
           <div className='space-y-6'>
             <div className='flex items-center justify-between'>
               <h3 className='text-lg font-semibold'>Your Beneficiaries</h3>
-              <Button onClick={addBeneficiary} variant={"outline" as any} size='sm'>
-                <Icon name={"add" as any} className='w-4 h-4 mr-2' />
+              <Button onClick={addBeneficiary} variant="outline" size='sm'>
+                <Icon name="add" className='w-4 h-4 mr-2' />
                 Add Beneficiary
               </Button>
             </div>
 
             {willData.beneficiaries.length === 0 ? (
               <Card className='p-8 text-center'>
-                <Icon name={"users" as any}
+                <Icon name="users"
                   className='w-12 h-12 text-muted-foreground mx-auto mb-4'
                 />
                 <p className='text-muted-foreground'>
@@ -425,14 +425,14 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                 {willData.beneficiaries.map((beneficiary, index) => (
                   <Card key={beneficiary.id} className='p-4'>
                     <div className='flex items-center justify-between mb-4'>
-                      <Badge variant={"secondary" as any}>Beneficiary {index + 1}</Badge>
+                      <Badge variant="secondary">Beneficiary {index + 1}</Badge>
                       <Button
                         onClick={() => removeBeneficiary(beneficiary.id)}
-                        variant={"ghost" as any}
+                        variant="ghost"
                         size='sm'
                         className='text-red-600 hover:text-red-700'
                       >
-                        <Icon name={"trash" as any} className='w-4 h-4' />
+                        <Icon name="trash" className='w-4 h-4' />
                       </Button>
                     </div>
                     <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
@@ -529,7 +529,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
               </p>
               <Button
                 onClick={() => handleOpenVaultSelector('all')}
-                variant={"outline" as any}
+                variant="outline"
                 className='bg-primary/5 hover:bg-primary/10 border-primary/20 text-primary'
               >
                 <Icon name={"vault" as any} className='w-4 h-4 mr-2' />
@@ -547,7 +547,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                 <div className='flex items-center gap-2'>
                   <Button
                     onClick={() => handleOpenVaultSelector('realEstate')}
-                    variant={"ghost" as any}
+                    variant="ghost"
                     size='sm'
                     className='text-primary hover:text-primary-hover'
                   >
@@ -568,7 +568,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                         ],
                       });
                     }}
-                    variant={"outline" as any}
+                    variant="outline"
                     size='sm'
                   >
                     <Icon name={"add" as any} className='w-3 h-3 mr-1' />
@@ -628,11 +628,11 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                             );
                             updateWillData('assets', { realEstate: updated });
                           }}
-                          variant={"ghost" as any}
+                          variant="ghost"
                           size='sm'
                           className='text-red-600 hover:text-red-700'
                         >
-                          <Icon name={"trash" as any} className='w-3 h-3' />
+                          <Icon name="trash" className='w-3 h-3' />
                         </Button>
                       </div>
                     </div>
@@ -655,7 +655,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                 <div className='flex items-center gap-2'>
                   <Button
                     onClick={() => handleOpenVaultSelector('vehicles')}
-                    variant={"ghost" as any}
+                    variant="ghost"
                     size='sm'
                     className='text-primary hover:text-primary-hover'
                   >
@@ -677,7 +677,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                         ],
                       });
                     }}
-                    variant={"outline" as any}
+                    variant="outline"
                     size='sm'
                   >
                     <Icon name={"add" as any} className='w-3 h-3 mr-1' />
@@ -751,11 +751,11 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                             );
                             updateWillData('assets', { vehicles: updated });
                           }}
-                          variant={"ghost" as any}
+                          variant="ghost"
                           size='sm'
                           className='text-red-600 hover:text-red-700'
                         >
-                          <Icon name={"trash" as any} className='w-3 h-3' />
+                          <Icon name="trash" className='w-3 h-3' />
                         </Button>
                       </div>
                     </div>
@@ -778,7 +778,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                 <div className='flex items-center gap-2'>
                   <Button
                     onClick={() => handleOpenVaultSelector('bankAccounts')}
-                    variant={"ghost" as any}
+                    variant="ghost"
                     size='sm'
                     className='text-primary hover:text-primary-hover'
                   >
@@ -799,7 +799,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                         ],
                       });
                     }}
-                    variant={"outline" as any}
+                    variant="outline"
                     size='sm'
                   >
                     <Icon name={"add" as any} className='w-3 h-3 mr-1' />
@@ -870,11 +870,11 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                               );
                             updateWillData('assets', { bankAccounts: updated });
                           }}
-                          variant={"ghost" as any}
+                          variant="ghost"
                           size='sm'
                           className='text-red-600 hover:text-red-700'
                         >
-                          <Icon name={"trash" as any} className='w-3 h-3' />
+                          <Icon name="trash" className='w-3 h-3' />
                         </Button>
                       </div>
                     </div>
@@ -897,7 +897,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                 <div className='flex items-center gap-2'>
                   <Button
                     onClick={() => handleOpenVaultSelector('personalProperty')}
-                    variant={"ghost" as any}
+                    variant="ghost"
                     size='sm'
                     className='text-primary hover:text-primary-hover'
                   >
@@ -918,7 +918,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                         ],
                       });
                     }}
-                    variant={"outline" as any}
+                    variant="outline"
                     size='sm'
                   >
                     <Icon name={"add" as any} className='w-3 h-3 mr-1' />
@@ -993,11 +993,11 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                               personalProperty: updated,
                             });
                           }}
-                          variant={"ghost" as any}
+                          variant="ghost"
                           size='sm'
                           className='text-red-600 hover:text-red-700'
                         >
-                          <Icon name={"trash" as any} className='w-3 h-3' />
+                          <Icon name="trash" className='w-3 h-3' />
                         </Button>
                       </div>
                     </div>
@@ -1304,7 +1304,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                 <div className='flex items-center gap-4'>
                   <Button
                     onClick={onClose}
-                    variant={"ghost" as any}
+                    variant="ghost"
                     size='sm'
                     className='flex items-center gap-2'
                   >
@@ -1425,7 +1425,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
             <div className='flex justify-between items-center'>
               <Button
                 onClick={handleBack}
-                variant={"outline" as any}
+                variant="outline"
                 disabled={currentStep === 0 && !onBack}
               >
                 <Icon name={"arrow-left" as any} className='w-4 h-4 mr-2' />

@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react'
-import { 
-  Container, 
-  Stack, 
-  H2, 
-  Paragraph, 
-  Card, 
+import React, { useState, useEffect, useCallback } from 'react'
+import {
+  Container,
+  Stack,
+  H2,
+  Paragraph,
+  Card,
   CardContent,
   Button,
   Row,
@@ -17,18 +17,18 @@ import {
   useMedia,
   Grid
 } from '@legacyguard/ui'
-import { 
-  Search, 
-  Filter, 
-  FileText, 
-  Image, 
-  File, 
+import {
+  Search,
+  // Filter,
+  FileText,
+  Image,
+  File,
   Download,
   Share2,
   Trash2,
   Plus
 } from 'lucide-react-native'
-import { RefreshControl, Platform } from 'react-native'
+import { RefreshControl } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { useOfflineVault } from '@/hooks/useOfflineVault'
 
@@ -58,26 +58,16 @@ export const DocumentsScreen = () => {
   const navigation = useNavigation()
   const theme = useTheme()
   const media = useMedia()
-  const { offlineDocuments, addDocument, isAvailable } = useOfflineVault()
-  
+  const { addDocument, isAvailable } = useOfflineVault()
+
   const [documents, setDocuments] = useState<Document[]>([])
   const [filteredDocuments, setFilteredDocuments] = useState<Document[]>([])
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('list')
-  
-  // Load documents on mount
-  useEffect(() => {
-    loadDocuments()
-  }, [])
-  
-  // Filter documents when search or category changes
-  useEffect(() => {
-    filterDocuments()
-  }, [searchQuery, selectedCategory, documents])
-  
-  const loadDocuments = async () => {
+
+  const loadDocuments = useCallback(async () => {
     setIsRefreshing(true)
     try {
       // TODO: Load from API/Supabase
@@ -109,40 +99,50 @@ export const DocumentsScreen = () => {
           type: 'image'
         }
       ]
-      
+
       setDocuments(mockDocs)
     } catch (error) {
       console.error('Failed to load documents:', error)
     } finally {
       setIsRefreshing(false)
     }
-  }
-  
-  const filterDocuments = () => {
+  }, [])
+
+  const filterDocuments = useCallback(() => {
     let filtered = [...documents]
-    
+
     // Apply category filter
     if (selectedCategory !== 'all') {
       filtered = filtered.filter(doc => doc.category === selectedCategory)
     }
-    
+
     // Apply search filter
     if (searchQuery) {
-      filtered = filtered.filter(doc => 
+      filtered = filtered.filter(doc =>
         doc.name.toLowerCase().includes(searchQuery.toLowerCase())
       )
     }
-    
+
     setFilteredDocuments(filtered)
-  }
-  
+  }, [searchQuery, selectedCategory, documents])
+
+  // Load documents on mount
+  useEffect(() => {
+    loadDocuments()
+  }, [loadDocuments])
+
+  // Filter documents when search or category changes
+  useEffect(() => {
+    filterDocuments()
+  }, [filterDocuments])
+
   const formatFileSize = (bytes: number) => {
     const sizes = ['B', 'KB', 'MB', 'GB']
     if (bytes === 0) return '0 B'
     const i = Math.floor(Math.log(bytes) / Math.log(1024))
     return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i]
   }
-  
+
   const getDocumentIcon = (type: string) => {
     switch (type) {
       case 'pdf':
@@ -153,42 +153,43 @@ export const DocumentsScreen = () => {
         return File
     }
   }
-  
+
   const handleDocumentPress = (document: Document) => {
     // Navigate to document detail screen
     // navigation.navigate('DocumentDetail', { documentId: document.id })
+    console.log('Document pressed:', document.id) // Temporary placeholder
   }
-  
+
   const handleAddDocument = () => {
     navigation.navigate('Scan')
   }
-  
+
   const handleShareDocument = (document: Document) => {
     // TODO: Implement share functionality
     console.log('Share document:', document.name)
   }
-  
+
   const handleDeleteDocument = (document: Document) => {
     // TODO: Implement delete functionality
     console.log('Delete document:', document.name)
   }
-  
+
   const handleDownloadOffline = async (document: Document) => {
     if (isAvailable) {
       await addDocument(document)
       // Update document state to show it's offline
-      setDocuments(prev => 
-        prev.map(doc => 
+      setDocuments(prev =>
+        prev.map(doc =>
           doc.id === document.id ? { ...doc, isOffline: true } : doc
         )
       )
     }
   }
-  
+
   const renderDocumentCard = (document: Document) => {
     const Icon = getDocumentIcon(document.type)
     const isTablet = media.gtSm
-    
+
     return (
       <Card
         key={document.id}
@@ -229,7 +230,7 @@ export const DocumentsScreen = () => {
                 </Row>
               </Stack>
             </Row>
-            
+
             <Row gap="$2">
               {!document.isOffline && (
                 <IconButton
@@ -260,7 +261,7 @@ export const DocumentsScreen = () => {
       </Card>
     )
   }
-  
+
   return (
     <Container>
       <Stack padding="$4" gap="$4">
@@ -287,7 +288,7 @@ export const DocumentsScreen = () => {
             </Button>
           </Row>
         </Row>
-        
+
         {/* Search and Filter */}
         <Stack gap="$3">
           <Row gap="$3" flexDirection={media.gtSm ? 'row' : 'column'}>
@@ -312,9 +313,9 @@ export const DocumentsScreen = () => {
             </Stack>
           </Row>
         </Stack>
-        
+
         <Divider />
-        
+
         {/* Document List */}
         <ScrollContainer
           refreshControl={
@@ -329,7 +330,7 @@ export const DocumentsScreen = () => {
             <Stack alignItems="center" justifyContent="center" padding="$8">
               <FileText size={48} color={theme.gray5.val} />
               <Paragraph color="$gray6" marginTop="$3">
-                {searchQuery || selectedCategory !== 'all' 
+                {searchQuery || selectedCategory !== 'all'
                   ? 'No documents found matching your criteria'
                   : 'No documents uploaded yet'}
               </Paragraph>

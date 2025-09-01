@@ -21,12 +21,14 @@ export default function EmergencyConfirmation() {
 
   const state = location.state as LocationState;
 
-  if (!state) {
-    // Redirect to home if accessed directly without state
-    React.useEffect(() => {
+  React.useEffect(() => {
+    if (!state) {
+      // Redirect to home if accessed directly without state
       navigate('/');
-    }, [navigate]);
+    }
+  }, [navigate, state]);
 
+  if (!state) {
     return null;
   }
 

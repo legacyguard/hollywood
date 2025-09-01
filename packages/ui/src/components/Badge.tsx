@@ -1,3 +1,4 @@
+import React from 'react'
 import { type GetProps, styled, View, Text } from 'tamagui'
 
 // Badge Container
@@ -9,7 +10,7 @@ export const Badge = styled(View, {
   borderRadius: '$1',
   paddingHorizontal: '$2',
   paddingVertical: 2,
-  
+
   variants: {
     variant: {
       default: {
@@ -69,7 +70,7 @@ export const Badge = styled(View, {
       },
     },
   } as const,
-  
+
   defaultVariants: {
     variant: 'default',
     size: 'medium',
@@ -83,7 +84,7 @@ export const BadgeText = styled(Text, {
   fontSize: '$3',
   fontWeight: '500',
   lineHeight: 1,
-  
+
   variants: {
     variant: {
       default: {
@@ -123,7 +124,7 @@ export const BadgeText = styled(Text, {
       },
     },
   } as const,
-  
+
   defaultVariants: {
     variant: 'default',
     size: 'medium',
@@ -131,7 +132,7 @@ export const BadgeText = styled(Text, {
 })
 
 // Badge with Icon support
-export const BadgeWithIcon = ({ 
+export const BadgeWithIcon = ({
   children,
   icon,
   variant = 'default',
@@ -159,7 +160,7 @@ export const BadgeDot = styled(View, {
   width: 8,
   height: 8,
   borderRadius: 9999,
-  
+
   variants: {
     status: {
       online: {
@@ -181,7 +182,7 @@ export const BadgeDot = styled(View, {
       },
     },
   } as const,
-  
+
   defaultVariants: {
     status: 'offline',
     pulse: false,
@@ -194,7 +195,7 @@ export const BadgeGroup = styled(View, {
   flexDirection: 'row',
   flexWrap: 'wrap',
   gap: '$2',
-  
+
   variants: {
     size: {
       small: {
@@ -208,7 +209,7 @@ export const BadgeGroup = styled(View, {
       },
     },
   } as const,
-  
+
   defaultVariants: {
     size: 'medium',
   },

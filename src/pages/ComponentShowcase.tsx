@@ -15,8 +15,7 @@ import {
   LinearProgress,
   ProgressGroup,
 } from '@/components/enhanced/RadialProgress';
-import type { ProfileData } from '@/components/enhanced/ProfileCard';
-import { ProfileCard, ProfileGrid } from '@/components/enhanced/ProfileCard';
+import { ProfileCard, ProfileGrid, type ProfileData } from '@/components/enhanced/ProfileCard';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { FadeIn } from '@/components/motion/FadeIn';

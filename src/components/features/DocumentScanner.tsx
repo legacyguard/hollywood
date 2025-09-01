@@ -263,7 +263,7 @@ export default function DocumentScanner({
                       </div>
                     </div>
                     <Button
-                      variant={"outline" as any}
+                      variant="outline"
                       size='sm'
                       onClick={clearSelection}
                     >
@@ -306,7 +306,7 @@ export default function DocumentScanner({
                   </Button>
 
                   <Button
-                    variant={"outline" as any}
+                    variant="outline"
                     onClick={() => setShowAdvancedOptions(!showAdvancedOptions)}
                   >
                     <Icon name={"settings" as any} className='w-4 h-4 mr-2' />
@@ -491,7 +491,7 @@ export default function DocumentScanner({
                 </h3>
                 <div className='flex items-center gap-3'>
                   <Badge
-                    variant={"secondary" as any}
+                    variant="secondary"
                     className='bg-green-100 text-green-800'
                   >
                     {processedDocument.classification.type.replace('_', ' ')}
@@ -522,7 +522,7 @@ export default function DocumentScanner({
                         >
                           <div>
                             <Badge
-                              variant={"outline" as any}
+                              variant="outline"
                               className='mb-1 text-green-700 border-green-300'
                             >
                               {entity.type.replace('_', ' ')}
@@ -556,7 +556,7 @@ export default function DocumentScanner({
               </div>
 
               <div className='flex gap-3 justify-end pt-4 border-t'>
-                <Button variant={"outline" as any} onClick={() => setShowResults(false)}>
+                <Button variant="outline" onClick={() => setShowResults(false)}>
                   Review Later
                 </Button>
                 <Button
@@ -646,13 +646,13 @@ function DocumentResults({ document }: { document: ProcessedDocument }) {
               <div className='space-y-2'>
                 <div className='flex items-center justify-between'>
                   <span className='text-sm'>Type:</span>
-                  <Badge variant={"outline" as any}>
+                  <Badge variant="outline">
                     {document.classification.type.replace('_', ' ')}
                   </Badge>
                 </div>
                 <div className='flex items-center justify-between'>
                   <span className='text-sm'>Category:</span>
-                  <Badge variant={"secondary" as any}>
+                  <Badge variant="secondary">
                     {document.classification.category}
                   </Badge>
                 </div>
@@ -669,7 +669,7 @@ function DocumentResults({ document }: { document: ProcessedDocument }) {
                   <h5 className='font-medium mb-2'>Suggested Tags</h5>
                   <div className='flex flex-wrap gap-2'>
                     {document.classification.suggestedTags.map(tag => (
-                      <Badge key={tag} variant={"outline" as any} className='text-xs'>
+                      <Badge key={tag} variant="outline" className='text-xs'>
                         {tag}
                       </Badge>
                     ))}
@@ -731,7 +731,7 @@ function DocumentResults({ document }: { document: ProcessedDocument }) {
                       className='flex items-center justify-between p-3 bg-muted/20 rounded-lg'
                     >
                       <div>
-                        <Badge variant={"outline" as any} className='mb-1'>
+                        <Badge variant="outline" className='mb-1'>
                           {entity.type.replace('_', ' ')}
                         </Badge>
                         <p className='text-sm'>{entity.value}</p>

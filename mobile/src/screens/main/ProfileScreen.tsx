@@ -4,10 +4,10 @@ import {
   Stack,
   Row,
   Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
+  // CardHeader,
+  // CardTitle,
+  // CardDescription,
+  // CardContent,
   Button,
   H1,
   H2,
@@ -16,7 +16,7 @@ import {
   Divider,
   Box,
   ScrollContainer,
-  CircularProgress,
+  // CircularProgress,
 } from '@legacyguard/ui';
 import { useUser, useClerk } from '@clerk/clerk-expo';
 import { useNavigation } from '@react-navigation/native';

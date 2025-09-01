@@ -59,7 +59,7 @@ class RealInsightsService {
       };
     } catch (_error) {
       console.error('Document analysis failed:', _error);
-      throw error;
+      throw _error;
     }
   }
 
@@ -98,7 +98,7 @@ class RealInsightsService {
       return statement;
     } catch (_error) {
       console.error('Failed to generate family impact statement:', _error);
-      throw error;
+      throw _error;
     }
   }
 

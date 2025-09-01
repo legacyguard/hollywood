@@ -400,7 +400,7 @@ export function ProfessionalNetworkDirectory({
                     <span className="text-sm font-medium">{professional.rating}</span>
                     <span className="text-xs text-muted-foreground">({professional.reviewCount})</span>
                   </div>
-                  <Badge className={getAvailabilityColor(professional.availability)} variant={"outline" as any}>
+                  <Badge className={getAvailabilityColor(professional.availability)} variant="outline">
                     {professional.availability}
                   </Badge>
                 </div>
@@ -429,12 +429,12 @@ export function ProfessionalNetworkDirectory({
             <Label className="text-sm font-medium mb-2 block">Specializations</Label>
             <div className="flex flex-wrap gap-1">
               {professional.specializations.slice(0, 3).map(spec => (
-                <Badge key={spec.id} variant={"secondary" as any} className="text-xs">
+                <Badge key={spec.id} variant="secondary" className="text-xs">
                   {spec.name}
                 </Badge>
               ))}
               {professional.specializations.length > 3 && (
-                <Badge variant={"outline" as any} className="text-xs">
+                <Badge variant="outline" className="text-xs">
                   +{professional.specializations.length - 3} more
                 </Badge>
               )}
@@ -483,7 +483,7 @@ export function ProfessionalNetworkDirectory({
               </Button>
               <Button
                 size="sm"
-                variant={"outline" as any}
+                variant="outline"
                 onClick={(e) => {
                   e.stopPropagation();
                   onRequestReview(professional);
@@ -556,7 +556,7 @@ export function ProfessionalNetworkDirectory({
 
                   <div className="flex flex-wrap gap-1 mb-3">
                     {professional.specializations.map(spec => (
-                      <Badge key={spec.id} variant={"secondary" as any} className="text-xs">
+                      <Badge key={spec.id} variant="secondary" className="text-xs">
                         {spec.name}
                       </Badge>
                     ))}
@@ -565,7 +565,7 @@ export function ProfessionalNetworkDirectory({
                   {professional.achievements && professional.achievements.length > 0 && (
                     <div className="flex flex-wrap gap-1">
                       {professional.achievements.slice(0, 2).map(achievement => (
-                        <Badge key={achievement} variant={"outline" as any} className="text-xs">
+                        <Badge key={achievement} variant="outline" className="text-xs">
                           <Award className="h-2 w-2 mr-1" />
                           {achievement}
                         </Badge>
@@ -604,7 +604,7 @@ export function ProfessionalNetworkDirectory({
                     </Button>
                     <Button
                       size="sm"
-                      variant={"outline" as any}
+                      variant="outline"
                       onClick={(e) => {
                         e.stopPropagation();
                         onRequestReview(professional);
@@ -661,7 +661,7 @@ export function ProfessionalNetworkDirectory({
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <Button
-                  variant={"outline" as any}
+                  variant="outline"
                   onClick={() => setShowFilters(!showFilters)}
                   className="gap-2"
                 >
@@ -685,7 +685,7 @@ export function ProfessionalNetworkDirectory({
                   </Select>
 
                   <Button
-                    variant={"outline" as any}
+                    variant="outline"
                     size="sm"
                     onClick={() => setFilters(prev => ({
                       ...prev,
@@ -851,7 +851,7 @@ export function ProfessionalNetworkDirectory({
                       </div>
                       <div className="flex flex-wrap gap-1">
                         {filters.specializations.map(spec => (
-                          <Badge key={spec} variant={"secondary" as any} className="text-xs">
+                          <Badge key={spec} variant="secondary" className="text-xs">
                             {spec}
                             <Button
                               variant={"ghost" as any}
@@ -898,7 +898,7 @@ export function ProfessionalNetworkDirectory({
               <p className="text-muted-foreground mb-4">
                 Try adjusting your search criteria or filters to find more professionals.
               </p>
-              <Button variant={"outline" as any} onClick={resetFilters}>
+              <Button variant="outline" onClick={resetFilters}>
                 Reset Filters
               </Button>
             </CardContent>
@@ -970,11 +970,11 @@ export function ProfessionalNetworkDirectory({
                       <Calendar className="h-4 w-4 mr-2" />
                       Book Consultation
                     </Button>
-                    <Button variant={"outline" as any} onClick={() => onRequestReview(selectedProfessional)}>
+                    <Button variant="outline" onClick={() => onRequestReview(selectedProfessional)}>
                       <FileText className="h-4 w-4 mr-2" />
                       Request Review
                     </Button>
-                    <Button variant={"outline" as any}>
+                    <Button variant="outline">
                       <MessageSquare className="h-4 w-4 mr-2" />
                       Send Message
                     </Button>
@@ -1004,7 +1004,7 @@ export function ProfessionalNetworkDirectory({
                           <Label className="font-medium mb-2 block">Specializations</Label>
                           <div className="flex flex-wrap gap-2">
                             {selectedProfessional.specializations.map(spec => (
-                              <Badge key={spec.id} variant={"secondary" as any}>
+                              <Badge key={spec.id} variant="secondary">
                                 {spec.name}
                               </Badge>
                             ))}
@@ -1015,7 +1015,7 @@ export function ProfessionalNetworkDirectory({
                           <Label className="font-medium mb-2 block">Licensed States</Label>
                           <div className="flex flex-wrap gap-2">
                             {selectedProfessional.licensed_states.map(state => (
-                              <Badge key={state} variant={"outline" as any}>
+                              <Badge key={state} variant="outline">
                                 {state}
                               </Badge>
                             ))}
@@ -1027,7 +1027,7 @@ export function ProfessionalNetworkDirectory({
                             <Label className="font-medium mb-2 block">Languages</Label>
                             <div className="flex flex-wrap gap-2">
                               {selectedProfessional.languages.map(lang => (
-                                <Badge key={lang} variant={"outline" as any}>
+                                <Badge key={lang} variant="outline">
                                   {lang}
                                 </Badge>
                               ))}
@@ -1059,7 +1059,7 @@ export function ProfessionalNetworkDirectory({
                       <CardContent className="p-6">
                         <div className="flex items-start justify-between mb-3">
                           <div>
-                            <Badge variant={"outline" as any} className="mb-2 capitalize">
+                            <Badge variant="outline" className="mb-2 capitalize">
                               {service.type}
                             </Badge>
                             <h3 className="font-semibold">{service.description}</h3>

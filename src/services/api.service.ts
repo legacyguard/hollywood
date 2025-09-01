@@ -19,12 +19,12 @@ export class ApiError extends Error {
 // Generic fetch wrapper with error handling
 async function fetchApi<T = unknown>(
   endpoint: string,
-  options: RequestInit = {},
+  options: globalThis.RequestInit = {},
   token?: string | null
 ): Promise<T> {
   const url = `${API_BASE_URL}${endpoint}`;
 
-  const headers: HeadersInit = {
+  const headers: globalThis.HeadersInit = {
     'Content-Type': 'application/json',
     ...options.headers,
   };

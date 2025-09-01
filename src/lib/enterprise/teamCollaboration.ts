@@ -20,6 +20,321 @@ export type ActivityType =
   | 'approval_requested'
   | 'approval_granted';
 
+// Missing type definitions
+export interface WorkspaceIntegration {
+  id: string;
+  type: string;
+  name: string;
+  settings: Record<string, any>;
+  status: 'active' | 'inactive';
+}
+
+export interface WorkspaceTemplate {
+  id: string;
+  name: string;
+  type: string;
+  structure: Record<string, any>;
+}
+
+export interface UserInfo {
+  id: string;
+  name: string;
+  email: string;
+  avatar?: string;
+  title?: string;
+  organization?: string;
+}
+
+export interface AvailabilitySchedule {
+  timezone: string;
+  workingHours: Array<{
+    day: string;
+    start: string;
+    end: string;
+  }>;
+  unavailable?: Array<{
+    start: string;
+    end: string;
+    reason?: string;
+  }>;
+}
+
+export interface ContributionStats {
+  documentsCreated: number;
+  documentsReviewed: number;
+  tasksCompleted: number;
+  meetingsAttended: number;
+  commentsAdded: number;
+}
+
+export interface DocumentPermissions {
+  canRead: string[];
+  canWrite: string[];
+  canComment: string[];
+  canShare: string[];
+  canDelete: string[];
+}
+
+export interface DocumentCollaborator {
+  userId: string;
+  role: string;
+  permissions: string[];
+  joinedAt: string;
+}
+
+export interface DocumentVersion {
+  id: string;
+  version: string;
+  createdBy: string;
+  createdAt: string;
+  changes: string[];
+  size: number;
+}
+
+export interface DocumentComment {
+  id: string;
+  userId: string;
+  content: string;
+  parentId?: string;
+  resolved: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface DocumentApproval {
+  id: string;
+  approverId: string;
+  status: 'pending' | 'approved' | 'rejected';
+  comments?: string;
+  approvedAt?: string;
+}
+
+export interface TaskMilestone {
+  id: string;
+  name: string;
+  description: string;
+  dueDate: string;
+  status: 'pending' | 'completed';
+  completedAt?: string;
+}
+
+export interface TaskComment {
+  id: string;
+  userId: string;
+  content: string;
+  createdAt: string;
+}
+
+export interface TaskAttachment {
+  id: string;
+  name: string;
+  type: string;
+  size: number;
+  url: string;
+  uploadedBy: string;
+  uploadedAt: string;
+}
+
+export interface ChecklistItem {
+  id: string;
+  title: string;
+  completed: boolean;
+  completedBy?: string;
+  completedAt?: string;
+}
+
+export interface Reminder {
+  id: string;
+  type: 'email' | 'notification';
+  scheduledFor: string;
+  sent: boolean;
+  recipients: string[];
+}
+
+export interface MeetingParticipant {
+  userId: string;
+  role: 'organizer' | 'presenter' | 'participant';
+  status: 'invited' | 'accepted' | 'declined' | 'attended';
+  joinedAt?: string;
+  leftAt?: string;
+}
+
+export interface AgendaItem {
+  id: string;
+  title: string;
+  description: string;
+  duration: number;
+  presenter?: string;
+  order: number;
+}
+
+export interface MeetingRecording {
+  id: string;
+  url: string;
+  duration: number;
+  size: number;
+  createdAt: string;
+}
+
+export interface MeetingNote {
+  id: string;
+  content: string;
+  author: string;
+  timestamp: string;
+}
+
+export interface FollowUpAction {
+  id: string;
+  action: string;
+  assignedTo: string;
+  dueDate: string;
+  status: 'pending' | 'completed';
+}
+
+export interface DiscussionParticipant {
+  userId: string;
+  joinedAt: string;
+  lastViewedAt: string;
+  messageCount: number;
+}
+
+export interface DiscussionMessage {
+  id: string;
+  userId: string;
+  content: string;
+  parentId?: string;
+  attachments: string[];
+  reactions: Record<string, string[]>;
+  createdAt: string;
+  editedAt?: string;
+}
+
+export interface Poll {
+  id: string;
+  question: string;
+  options: Array<{
+    id: string;
+    text: string;
+    votes: string[];
+  }>;
+  createdBy: string;
+  createdAt: string;
+  closedAt?: string;
+}
+
+export interface Decision {
+  id: string;
+  title: string;
+  description: string;
+  madeBy: string[];
+  date: string;
+  rationale: string;
+  impact: string;
+}
+
+export interface ApprovalStep {
+  id: string;
+  order: number;
+  approvers: string[];
+  approvalType: 'any' | 'all' | 'majority';
+  status: 'pending' | 'approved' | 'rejected';
+  completedAt?: string;
+  comments?: string;
+}
+
+export interface ApprovalNotification {
+  id: string;
+  type: 'email' | 'in_app' | 'sms';
+  recipient: string;
+  sentAt: string;
+  status: 'sent' | 'failed';
+}
+
+export interface EscalationRule {
+  id: string;
+  condition: string;
+  escalateTo: string;
+  afterHours: number;
+  triggered: boolean;
+}
+
+export interface ApprovalAudit {
+  id: string;
+  action: string;
+  actorId: string;
+  timestamp: string;
+  details: Record<string, any>;
+}
+
+export interface NotificationSettings {
+  email: boolean;
+  push: boolean;
+  inApp: boolean;
+  frequency: 'real_time' | 'hourly' | 'daily' | 'weekly';
+}
+
+export interface WorkspaceSecuritySettings {
+  requireMFA: boolean;
+  sessionTimeout: number;
+  auditLogging: boolean;
+  encryptionRequired: boolean;
+}
+
+export interface IntegrationSettings {
+  calendarSync: boolean;
+  emailSync: boolean;
+  cloudStorage: boolean;
+}
+
+export interface WorkspaceBranding {
+  logo?: string;
+  primaryColor?: string;
+  secondaryColor?: string;
+  customDomain?: string;
+}
+
+export interface CollaborationMetrics {
+  averageResponseTime: number;
+  documentShares: number;
+  meetingAttendance: number;
+  taskCompletion: number;
+}
+
+export interface ProductivityMetrics {
+  tasksCompleted: number;
+  documentsReviewed: number;
+  meetingsHeld: number;
+  decisionsReached: number;
+}
+
+export interface EngagementMetrics {
+  activeMembers: number;
+  messagesSent: number;
+  commentsAdded: number;
+  hoursSpent: number;
+}
+
+export interface TimeRange {
+  start: string;
+  end: string;
+}
+
+export interface ReviewRecommendation {
+  id: string;
+  category: string;
+  recommendation: string;
+  priority: 'low' | 'medium' | 'high';
+}
+
+export interface CollaborationNotification {
+  id: string;
+  userId: string;
+  type: string;
+  message: string;
+  timestamp: string;
+  read: boolean;
+}
+
 export interface Workspace {
   id: string;
   name: string;

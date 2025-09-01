@@ -107,7 +107,6 @@ export const IntelligentDocumentTester: React.FC = () => {
     confirmedData: typeof mockAnalysisResult & { bundleSelection?: any }
   ) => {
     setIsProcessing(true);
-    console.log('Confirmed data:', confirmedData);
 
     // Simulate processing
     setTimeout(() => {

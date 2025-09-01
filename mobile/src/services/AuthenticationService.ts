@@ -1,7 +1,7 @@
 // src/services/AuthenticationService.ts
 
 import * as SecureStore from 'expo-secure-store';
-import { useSignIn, useSignUp, useAuth as useClerkAuth } from '@clerk/clerk-expo';
+// import { useSignIn, useSignUp, useAuth as useClerkAuth } from '@clerk/clerk-expo';
 
 // Key under which we store the token in secure storage
 const KEYCHAIN_TOKEN_KEY = 'legacyguard_clerk_token';
@@ -21,7 +21,8 @@ export const AuthenticationService = {
   loginWithEmail: async (email: string, password: string) => {
     // This is a placeholder - actual implementation needs to use useSignIn hook
     console.log('Login attempt with:', email);
-    // For now, we'll throw an error to indicate this needs proper implementation
+    // Password will be used in actual implementation
+    if (!password) throw new Error('Password is required');
     throw new Error('Please use Clerk SignIn components or hooks directly for authentication');
   },
 

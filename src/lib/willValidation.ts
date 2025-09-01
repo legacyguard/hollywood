@@ -13,7 +13,6 @@ import type {
   BeneficiaryInfo,
   AssetInfo
 } from '../types/will-templates';
-import { templateLibrary } from './templateLibrary';
 
 export class WillValidationService {
 
@@ -36,7 +35,7 @@ export class WillValidationService {
     missingRequired.push(...personalErrors.missing);
 
     // 2. Family Information Validation
-    const familyErrors = this.validateFamilyInformation(userData.family, jurisdictionConfig);
+    const familyErrors = this.validateFamilyInformation(userData.family);
     errors.push(...familyErrors.errors);
     warnings.push(...familyErrors.warnings);
 
@@ -51,12 +50,12 @@ export class WillValidationService {
     warnings.push(...assetErrors.warnings);
 
     // 5. Executor Validation
-    const executorErrors = this.validateExecutors(userData.executors, jurisdictionConfig);
+    const executorErrors = this.validateExecutors(userData.executors);
     errors.push(...executorErrors.errors);
     warnings.push(...executorErrors.warnings);
 
     // 6. Guardian Validation (for minor children)
-    const guardianErrors = this.validateGuardians(userData.guardians, userData.family, jurisdictionConfig);
+    const guardianErrors = this.validateGuardians(userData.guardians, userData.family);
     errors.push(...guardianErrors.errors);
     warnings.push(...guardianErrors.warnings);
 
@@ -176,7 +175,7 @@ export class WillValidationService {
   /**
    * Validate family information
    */
-  private validateFamilyInformation(family: any, config: WillJurisdictionConfig) {
+  private validateFamilyInformation(family: any) {
     const errors: ValidationError[] = [];
     const warnings: ValidationError[] = [];
 
@@ -427,7 +426,7 @@ export class WillValidationService {
   /**
    * Validate executors
    */
-  private validateExecutors(executors: any[], config: WillJurisdictionConfig) {
+  private validateExecutors(executors: any[]) {
     const errors: ValidationError[] = [];
     const warnings: ValidationError[] = [];
 
@@ -493,7 +492,7 @@ export class WillValidationService {
   /**
    * Validate guardians for minor children
    */
-  private validateGuardians(guardians: any[], family: any, config: WillJurisdictionConfig) {
+  private validateGuardians(guardians: any[], family: any) {
     const errors: ValidationError[] = [];
     const warnings: ValidationError[] = [];
 

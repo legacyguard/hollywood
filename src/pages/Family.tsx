@@ -34,8 +34,6 @@ export default function Family() {
   const [currentPlan, setCurrentPlan] = useState<'free' | 'family' | 'premium'>('free');
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
-  const [_showInviteFlow, _setShowInviteFlow] = useState(false);
-  const [_showPlanUpgrade, _setShowPlanUpgrade] = useState(false);
   const [documentsCount, setDocumentsCount] = useState(0);
 
   useEffect(() => {
@@ -82,7 +80,7 @@ export default function Family() {
   };
 
   const handleInviteFamily = () => {
-    setShowInviteFlow(true);
+    // Navigate to members tab where invite functionality is available
     setActiveTab('members');
   };
 

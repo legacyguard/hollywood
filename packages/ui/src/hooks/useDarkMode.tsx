@@ -8,23 +8,23 @@ import { useColorScheme } from 'react-native'
 export const useDarkMode = () => {
   const theme = useTheme()
   const systemColorScheme = useColorScheme()
-  
+
   // Check if we're in dark mode
-  const isDark = theme.background?.get() === theme.backgroundDark?.get() || 
+  const isDark = theme.background?.get() === theme.backgroundDark?.get() ||
                  systemColorScheme === 'dark'
-  
+
   // Helper functions for conditional styling
   const getColor = (lightColor: string, darkColor: string) => {
     return isDark ? darkColor : lightColor
   }
-  
+
   const getStyle = <T extends Record<string, any>>(
     lightStyle: T,
     darkStyle: T
   ): T => {
     return isDark ? darkStyle : lightStyle
   }
-  
+
   // Common color mappings for dark mode
   const colors = {
     text: {
@@ -55,7 +55,7 @@ export const useDarkMode = () => {
       elevation: isDark ? 8 : 4,
     },
   }
-  
+
   // Semantic color tokens
   const semantic = {
     cardBackground: colors.background.elevated,
@@ -71,7 +71,7 @@ export const useDarkMode = () => {
     linkColor: theme.primaryBlue?.val,
     overlayBackground: colors.background.overlay,
   }
-  
+
   return {
     isDark,
     colors,

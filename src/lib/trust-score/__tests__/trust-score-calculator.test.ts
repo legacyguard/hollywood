@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, test, expect } from 'vitest';
 /**
  * Trust Score Calculator Tests
  * Validates trust score calculation logic and accuracy

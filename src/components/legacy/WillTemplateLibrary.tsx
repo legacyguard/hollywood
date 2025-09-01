@@ -222,7 +222,7 @@ export const WillTemplateLibrary: React.FC<WillTemplateLibraryProps> = ({
                 We need more information about your situation to provide
                 personalized recommendations.
               </p>
-              <Button variant={"outline" as any} onClick={() => setActiveTab('all')}>
+              <Button variant="outline" onClick={() => setActiveTab('all')}>
                 Browse All Templates
               </Button>
             </Card>
@@ -253,7 +253,7 @@ export const WillTemplateLibrary: React.FC<WillTemplateLibraryProps> = ({
                 <h4 className='font-semibold capitalize'>
                   {category.replace('_', ' ')}
                 </h4>
-                <Badge variant={"secondary" as any} className='text-xs'>
+                <Badge variant="secondary" className='text-xs'>
                   {count} template{count !== 1 ? 's' : ''}
                 </Badge>
               </div>
@@ -334,7 +334,7 @@ export const WillTemplateLibrary: React.FC<WillTemplateLibraryProps> = ({
             </div>
             <div className='flex justify-end gap-2'>
               <Button
-                variant={"outline" as any}
+                variant="outline"
                 onClick={() => setShowComparison(false)}
               >
                 Cancel
@@ -397,7 +397,7 @@ const TemplateCard: React.FC<TemplateCardProps> = ({
           </div>
         </div>
         {isRecommended && (
-          <Badge variant={"default" as any} className='text-xs'>
+          <Badge variant="default" className='text-xs'>
             Recommended
           </Badge>
         )}
@@ -407,10 +407,10 @@ const TemplateCard: React.FC<TemplateCardProps> = ({
         <Badge className={`text-xs ${getComplexityColor(template.complexity)}`}>
           {template.complexity}
         </Badge>
-        <Badge variant={"outline" as any} className='text-xs'>
+        <Badge variant="outline" className='text-xs'>
           {template.estimatedCompletionTime}min
         </Badge>
-        <Badge variant={"outline" as any} className='text-xs'>
+        <Badge variant="outline" className='text-xs'>
           ⭐ {template.popularityScore}
         </Badge>
       </div>
@@ -425,7 +425,7 @@ const TemplateCard: React.FC<TemplateCardProps> = ({
               {template.preview.keyFeatures
                 .slice(0, 3)
                 .map((feature, index) => (
-                  <Badge key={index} variant={"secondary" as any} className='text-xs'>
+                  <Badge key={index} variant="secondary" className='text-xs'>
                     {feature}
                   </Badge>
                 ))}
@@ -442,7 +442,7 @@ const TemplateCard: React.FC<TemplateCardProps> = ({
 
       <div className='flex gap-2'>
         <Button
-          variant={"outline" as any}
+          variant="outline"
           size='sm'
           onClick={onPreview}
           className='flex-1'
@@ -480,10 +480,10 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({
           <Badge className={`${getComplexityColor(template.complexity)}`}>
             {template.complexity}
           </Badge>
-          <Badge variant={"outline" as any}>
+          <Badge variant="outline">
             {template.estimatedCompletionTime} minutes
           </Badge>
-          <Badge variant={"outline" as any}>⭐ {template.popularityScore}</Badge>
+          <Badge variant="outline">⭐ {template.popularityScore}</Badge>
         </div>
       </div>
 
@@ -534,7 +534,7 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({
             <h4 className='font-semibold mb-2'>Key Features</h4>
             <div className='flex flex-wrap gap-2'>
               {template.preview.keyFeatures.map((feature, index) => (
-                <Badge key={index} variant={"secondary" as any}>
+                <Badge key={index} variant="secondary">
                   {feature}
                 </Badge>
               ))}
@@ -548,7 +548,7 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({
             <div className='space-y-3 text-sm'>
               <div className='flex items-center justify-between p-2 bg-muted/50 rounded'>
                 <span>Beneficiaries</span>
-                <Badge variant={"outline" as any}>
+                <Badge variant="outline">
                   {template.preview.beneficiaryCount}
                 </Badge>
               </div>
@@ -556,7 +556,7 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({
                 <span>Asset Types</span>
                 <div className='flex gap-1'>
                   {template.preview.assetTypes.map((type, index) => (
-                    <Badge key={index} variant={"outline" as any} className='text-xs'>
+                    <Badge key={index} variant="outline" className='text-xs'>
                       {type.replace('_', ' ')}
                     </Badge>
                   ))}
@@ -625,7 +625,7 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({
       </Tabs>
 
       <div className='flex justify-end gap-2 pt-4 border-t'>
-        <Button variant={"outline" as any} onClick={onClose}>
+        <Button variant="outline" onClick={onClose}>
           Close
         </Button>
         <Button onClick={onApply}>

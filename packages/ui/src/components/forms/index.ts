@@ -46,22 +46,22 @@ export const validateField = (
   if (rules.required && !value.trim()) {
     return 'This field is required'
   }
-  
+
   if (rules.minLength && value.length < rules.minLength) {
     return `Must be at least ${rules.minLength} characters`
   }
-  
+
   if (rules.maxLength && value.length > rules.maxLength) {
     return `Must be no more than ${rules.maxLength} characters`
   }
-  
+
   if (rules.pattern && !rules.pattern.test(value)) {
     return 'Invalid format'
   }
-  
+
   if (rules.custom) {
     return rules.custom(value)
   }
-  
+
   return undefined
 }

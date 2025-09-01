@@ -56,6 +56,372 @@ export interface PartnerBranding {
   whiteLabeling: WhiteLabelingOptions;
 }
 
+// Missing type definitions
+export interface EmailBrandingTemplate {
+  id: string;
+  name: string;
+  subject: string;
+  content: string;
+  variables: string[];
+  type: string;
+}
+
+export interface DocumentBrandingTemplate {
+  id: string;
+  name: string;
+  content: string;
+  format: string;
+  variables: string[];
+}
+
+export interface WhiteLabelingOptions {
+  removeLegacyGuardBranding: boolean;
+  customFooter: string;
+  customHeaders: string;
+  customTerms: string;
+}
+
+export interface SSLConfiguration {
+  enabled: boolean;
+  certificate: string;
+  key: string;
+  ca?: string;
+}
+
+export interface DNSRecord {
+  type: string;
+  name: string;
+  value: string;
+  ttl: number;
+}
+
+export interface LayoutConfig {
+  name: string;
+  template: string;
+  responsive: boolean;
+  sections: string[];
+}
+
+export interface ComponentConfig {
+  type: string;
+  props: Record<string, unknown>;
+  visible: boolean;
+  order: number;
+}
+
+export interface CustomizationSettings {
+  uiTheme: string;
+  layouts: Record<string, LayoutConfig>;
+  components: Record<string, ComponentConfig>;
+}
+
+export interface IntegrationConfiguration {
+  apiVersion: string;
+  webhooks: string[];
+  endpoints: string[];
+}
+
+export interface SecurityConfiguration {
+  twoFactor: boolean;
+  sso: boolean;
+  ipWhitelisting: boolean;
+  encryption: string;
+}
+
+export interface ComplianceConfiguration {
+  standards: string[];
+  auditing: boolean;
+  dataRetention: number;
+}
+
+export interface LocalizationSettings {
+  defaultLanguage: string;
+  supportedLanguages: string[];
+  dateFormat: string;
+  currency: string;
+}
+
+export interface WorkflowStep {
+  id: string;
+  name: string;
+  type: string;
+  conditions: Record<string, unknown>;
+  actions: string[];
+}
+
+export interface AutomationRule {
+  id: string;
+  trigger: string;
+  conditions: Record<string, unknown>;
+  actions: string[];
+  enabled: boolean;
+}
+
+export interface WorkflowConfiguration {
+  customWorkflows: Record<string, WorkflowStep[]>;
+  automations: Record<string, AutomationRule>;
+}
+
+export interface IntegrationSettings {
+  apiEndpoint: string;
+  apiKey: string;
+  webhookUrl?: string;
+  syncFrequency?: string;
+}
+
+export interface SupportConfiguration {
+  level: string;
+  channels: string[];
+  responseTime: string;
+  dedicatedSupport: boolean;
+}
+
+export interface BillingConfiguration {
+  billingCycle: string;
+  paymentMethod: string;
+  invoiceSettings: Record<string, string | number | boolean>;
+}
+
+export interface ComplianceSettings {
+  standards: string[];
+  certifications: string[];
+  auditFrequency: string;
+}
+
+export interface FieldConfig {
+  type: string;
+  label: string;
+  required: boolean;
+  defaultValue?: unknown;
+  options?: string[];
+}
+
+export interface ReportConfig {
+  name: string;
+  query: string;
+  filters: Record<string, unknown>;
+  exportFormats: string[];
+}
+
+export interface CustomizationOptions {
+  customFields: Record<string, FieldConfig>;
+  customWorkflows: Record<string, WorkflowStep[]>;
+  customReports: Record<string, ReportConfig>;
+}
+
+export interface CustomFeature {
+  id: string;
+  name: string;
+  enabled: boolean;
+  configuration: Record<string, unknown>;
+}
+
+export interface LicenseTerms {
+  startDate: string;
+  endDate: string;
+  autoRenew: boolean;
+  terms: string[];
+}
+
+export interface LicenseRestrictions {
+  geographicRestrictions: string[];
+  industryRestrictions: string[];
+  usageRestrictions: string[];
+}
+
+export interface ComplianceRequirements {
+  requiredCertifications: string[];
+  auditRequirements: string[];
+  reportingRequirements: string[];
+}
+
+export interface AddOnService {
+  id: string;
+  name: string;
+  price: number;
+  description: string;
+}
+
+export interface PricingDiscount {
+  type: string;
+  value: number;
+  conditions: string[];
+}
+
+export interface OnboardingWorkflow {
+  id: string;
+  name: string;
+  steps: Array<{ id: string; name: string; required: boolean }>;
+}
+
+export interface DataField {
+  name: string;
+  type: string;
+  required: boolean;
+  validation: string;
+}
+
+export interface VerificationStep {
+  id: string;
+  name: string;
+  type: string;
+  required: boolean;
+}
+
+export interface CommunicationTemplate {
+  id: string;
+  name: string;
+  type: string;
+  content: string;
+}
+
+export interface StepConfiguration {
+  enabled: boolean;
+  parameters: Record<string, unknown>;
+  timeout?: number;
+  retries?: number;
+}
+
+export interface IntegrationStep {
+  id: string;
+  name: string;
+  type: string;
+  configuration: StepConfiguration;
+}
+
+export interface LifecycleStage {
+  id: string;
+  name: string;
+  duration: string;
+  actions: string[];
+}
+
+export interface LifecycleAutomation {
+  id: string;
+  name: string;
+  trigger: string;
+  actions: string[];
+}
+
+export interface LifecycleTrigger {
+  id: string;
+  name: string;
+  condition: string;
+  action: string;
+}
+
+export interface LifecycleTransition {
+  from: string;
+  to: string;
+  conditions: string[];
+}
+
+export interface ClientSegmentation {
+  segments: Array<{ id: string; name: string; criteria: string[] }>;
+  rules: Array<{ id: string; name: string; condition: string }>;
+}
+
+export interface CommunicationSettings {
+  channels: string[];
+  preferences: Record<string, string | boolean | number>;
+  templates: CommunicationTemplate[];
+}
+
+export interface ClientSupportConfiguration {
+  channels: string[];
+  hours: string;
+  sla: Record<string, number>;
+}
+
+export interface ReportWidget {
+  id: string;
+  type: string;
+  title: string;
+  config: Record<string, unknown>;
+  position: { x: number; y: number; width: number; height: number };
+}
+
+export interface Dashboard {
+  id: string;
+  name: string;
+  widgets: ReportWidget[];
+}
+
+export interface ClientReporting {
+  reports: Array<{ id: string; name: string; frequency: string }>;
+  dashboards: Dashboard[];
+  alerts: Array<{ id: string; name: string; condition: string }>;
+}
+
+export interface ClientMetrics {
+  totalClients: number;
+  activeClients: number;
+  churnRate: number;
+  acquisitionRate: number;
+  lifetimeValue: number;
+}
+
+export interface UsageMetrics {
+  apiCalls: number;
+  storageUsed: number;
+  bandwidthUsed: number;
+  activeUsers: number;
+  sessions: number;
+}
+
+export interface RevenueMetrics {
+  totalRevenue: number;
+  recurringRevenue: number;
+  averageRevenuePerClient: number;
+  revenueGrowth: number;
+}
+
+export interface PerformanceMetrics {
+  uptime: number;
+  responseTime: number;
+  errorRate: number;
+  successRate: number;
+}
+
+export interface CustomMetric {
+  id: string;
+  name: string;
+  value: number;
+  unit: string;
+}
+
+export interface WidgetConfig {
+  title?: string;
+  dataSource?: string;
+  refreshInterval?: number;
+  filters?: Record<string, unknown>;
+  visualization?: {
+    type: 'chart' | 'table' | 'metric' | 'gauge';
+    options?: Record<string, unknown>;
+  };
+  permissions?: string[];
+}
+
+export interface AnalyticsDashboard {
+  id: string;
+  name: string;
+  widgets: Array<{ id: string; type: string; config: WidgetConfig }>;
+}
+
+export interface AnalyticsReport {
+  id: string;
+  name: string;
+  schedule: string;
+  recipients: string[];
+}
+
+export interface AnalyticsAlert {
+  id: string;
+  name: string;
+  condition: string;
+  recipients: string[];
+}
+
 export interface BrandAsset {
   url: string;
   width: number;
@@ -199,48 +565,189 @@ export interface PartnerAnalytics {
   alerts: AnalyticsAlert[];
 }
 
-export interface ClientMetrics {
-  totalClients: number;
-  activeClients: number;
-  newClients: number;
-  churnRate: number;
-  averageClientValue: number;
-  clientSatisfaction: number;
-  retentionRate: number;
-}
-
-export interface UsageMetrics {
-  dailyActiveUsers: number;
-  monthlyActiveUsers: number;
-  documentsUploaded: number;
-  apiCalls: number;
-  storageUsed: number;
-  bandwidth: number;
-  featureUsage: Record<string, number>;
-}
-
-export interface WhiteLabelingOptions {
-  removeAttributions: boolean;
-  customTerminology: TerminologyMapping;
-  hideLegacyGuardBranding: boolean;
-  customAboutPage: boolean;
-  customPrivacyPolicy: boolean;
-  customTermsOfService: boolean;
-  customSupportLinks: boolean;
-}
+// These interfaces are defined earlier in the file
 
 export interface TerminologyMapping {
   [key: string]: string; // Map default terms to partner-specific terms
 }
 
-export interface IntegrationConfiguration {
-  sso: SSOConfiguration;
-  apis: APIConfiguration;
-  webhooks: WebhookConfiguration;
-  thirdPartyIntegrations: ThirdPartyIntegration[];
-  dataSync: DataSyncConfiguration;
-  customIntegrations: CustomIntegration[];
+// Additional missing type definitions for class methods
+export interface WebhookConfiguration {
+  enabled: boolean;
+  endpoints: string[];
+  authentication: Record<string, any>;
+  retryPolicy: Record<string, any>;
 }
+
+export interface ThirdPartyIntegration {
+  id: string;
+  name: string;
+  type: string;
+  configuration: Record<string, any>;
+}
+
+export interface DataSyncConfiguration {
+  enabled: boolean;
+  schedule: string;
+  mappings: Array<{ source: string; target: string }>;
+}
+
+export interface CustomIntegration {
+  id: string;
+  name: string;
+  configuration: Record<string, any>;
+}
+
+export interface UserMappingRule {
+  sourceField: string;
+  targetField: string;
+  transformation?: string;
+}
+
+export interface GroupMappingRule {
+  sourceGroup: string;
+  targetGroup: string;
+  permissions: string[];
+}
+
+export interface RateLimitingRule {
+  endpoint: string;
+  limit: number;
+  window: string;
+}
+
+export interface CustomEndpoint {
+  path: string;
+  method: string;
+  handler: string;
+}
+
+export interface PartnerTemplate {
+  id: string;
+  name: string;
+  organizationType: string;
+  tier: string;
+  features: Record<string, any>;
+}
+
+export interface Deployment {
+  id: string;
+  partnerId: string;
+  type: ImplementationType;
+  status: string;
+  environment: 'development' | 'staging' | 'production';
+  region: string;
+  configuration: Record<string, any>;
+  infrastructure: Record<string, any>;
+  endpoints: string[];
+  monitoring: Record<string, any>;
+  backup: Record<string, any>;
+  security: Record<string, any>;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface DeploymentConfiguration {
+  environment: 'development' | 'staging' | 'production';
+  region: string;
+  scaling?: Record<string, any>;
+  security?: Record<string, any>;
+}
+
+export interface CustomFeatureSpecification {
+  name: string;
+  description: string;
+  type: 'ui_component' | 'workflow' | 'integration' | 'report';
+  configuration: Record<string, any>;
+}
+
+export interface ClientOnboardingData {
+  clientName: string;
+  clientType: string;
+  requiredDocuments: string[];
+  contactInfo: Record<string, any>;
+}
+
+export interface OnboardingResult {
+  clientId: string;
+  partnerId: string;
+  status: string;
+  currentStep: number;
+  completedSteps: string[];
+  data: ClientOnboardingData;
+  startedAt: string;
+  estimatedCompletion: string;
+  completedAt?: string;
+}
+
+export interface PartnerReport {
+  id: string;
+  partnerId: string;
+  type: string;
+  period: { start: string; end: string };
+  generatedAt: string;
+  data: Record<string, any>;
+  visualizations: Record<string, any>;
+  insights: Record<string, any>;
+  recommendations: Record<string, any>;
+}
+
+export interface RevenueSharingSetup {
+  partnerId: string;
+  configuration: RevenueSharing;
+  payoutSchedule: {
+    frequency: 'monthly' | 'quarterly' | 'annually';
+    day: number;
+    minimumThreshold: number;
+    method: 'ach' | 'wire' | 'check';
+  };
+  trackingSystem: {
+    enabled: boolean;
+    granularity: 'transaction' | 'daily' | 'monthly';
+    retentionPeriod: number;
+  };
+  reportingSystem: {
+    enabled: boolean;
+    frequency: 'daily' | 'weekly' | 'monthly';
+    recipients: string[];
+    format: 'pdf' | 'csv' | 'json';
+  };
+  status: string;
+  createdAt: string;
+}
+
+export interface PartnerHealthCheck {
+  partnerId: string;
+  timestamp: string;
+  overall: 'healthy' | 'warning' | 'critical';
+  checks: {
+    infrastructure: { status: string; details?: { uptime?: number; latency?: number; errors?: number } };
+    performance: { status: string; details?: { responseTime?: number; throughput?: number; errorRate?: number } };
+    security: { status: string; details?: { lastScan?: string; vulnerabilities?: number; compliance?: boolean } };
+    compliance: { status: string; details?: { lastAudit?: string; violations?: number; certifications?: string[] } };
+    integration: { status: string; details?: { apiCalls?: number; failureRate?: number; lastSync?: string } };
+    clientSatisfaction: { status: string; details?: { rating?: number; feedback?: string; surveys?: number } };
+  };
+  metrics: PartnerAnalytics;
+  alerts: Array<{
+    id: string;
+    type: 'warning' | 'error' | 'info';
+    message: string;
+    timestamp: string;
+    acknowledged: boolean;
+  }>;
+  recommendations: Array<{
+    id: string;
+    category: 'performance' | 'security' | 'compliance' | 'integration';
+    title: string;
+    description: string;
+    priority: 'low' | 'medium' | 'high';
+    impact: string;
+    actionItems: string[];
+  }>;
+}
+
+// IntegrationConfiguration is defined earlier in the file
 
 export interface SSOConfiguration {
   enabled: boolean;
@@ -259,16 +766,7 @@ export interface APIConfiguration {
   customEndpoints: CustomEndpoint[];
 }
 
-export interface CustomFeature {
-  id: string;
-  name: string;
-  description: string;
-  type: 'ui_component' | 'workflow' | 'integration' | 'report';
-  configuration: Record<string, any>;
-  enabled: boolean;
-  developmentCost: number;
-  maintenanceCost: number;
-}
+// CustomFeature is defined earlier in the file
 
 export class WhiteLabelSolutionsService {
   private partners: Map<string, WhiteLabelPartner> = new Map();
@@ -803,20 +1301,20 @@ export class WhiteLabelSolutionsService {
   private createDefaultLocalization(): LocalizationSettings { return {} as LocalizationSettings; }
   private createDefaultWorkflow(): WorkflowConfiguration { return {} as WorkflowConfiguration; }
 
-  private async updateDeployment(_partnerId: string, _updates: any): Promise<void> {}
+  private async updateDeployment(_partnerId: string, _updates: Partial<WhiteLabelPartner>): Promise<void> {}
   private async setupIntegrations(_partnerId: string): Promise<void> {}
-  private generateDeploymentConfig(_partner: WhiteLabelPartner): any { return {}; }
+  private generateDeploymentConfig(_partner: WhiteLabelPartner): Record<string, unknown> { return {}; }
   private async provisionInfrastructure(_partner: WhiteLabelPartner): Promise<any> { return {}; }
-  private setupMonitoring(_partnerId: string): any { return {}; }
-  private setupBackup(_partnerId: string): any { return {}; }
-  private setupSecurity(_partner: WhiteLabelPartner): any { return {}; }
+  private setupMonitoring(_partnerId: string): { enabled: boolean; endpoints: string[]; alerts: boolean } { return { enabled: false, endpoints: [], alerts: false }; }
+  private setupBackup(_partnerId: string): { enabled: boolean; schedule: string; retention: number } { return { enabled: false, schedule: '', retention: 0 }; }
+  private setupSecurity(_partner: WhiteLabelPartner): { encryption: boolean; firewall: boolean; audit: boolean } { return { encryption: false, firewall: false, audit: false }; }
   private async executeDeployment(_deployment: Deployment): Promise<void> {}
   private async createDevelopmentTask(_partnerId: string, _feature: CustomFeature): Promise<void> {}
   private calculateOnboardingTime(_onboarding: OnboardingConfiguration): string { return ''; }
   private async executeOnboardingWorkflow(_partner: WhiteLabelPartner, _result: OnboardingResult): Promise<void> {}
-  private async collectReportData(_partner: WhiteLabelPartner, _type: string, _period: any): Promise<any> { return {}; }
+  private async collectReportData(_partner: WhiteLabelPartner, _type: string, _period: { start: string; end: string }): Promise<Record<string, unknown>> { return {}; }
   private async generateVisualizations(_partner: WhiteLabelPartner, _type: string): Promise<any> { return {}; }
-  private async generateInsights(_partner: WhiteLabelPartner, _type: string, _period: any): Promise<any> { return {}; }
+  private async generateInsights(_partner: WhiteLabelPartner, _type: string, _period: { start: string; end: string }): Promise<{ insights: string[]; metrics: Record<string, number> }> { return { insights: [], metrics: {} }; }
   private async generateRecommendations(_partner: WhiteLabelPartner, _type: string): Promise<any> { return {}; }
   private async createPayoutSchedule(_config: RevenueSharing): Promise<any> { return {}; }
   private async setupRevenueTracking(_partnerId: string): Promise<any> { return {}; }

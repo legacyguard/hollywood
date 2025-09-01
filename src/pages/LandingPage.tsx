@@ -3,7 +3,6 @@ import { motion, useMotionValue, useTransform } from 'framer-motion';
 import { MetaTags } from '@/components/common/MetaTags';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Icon } from '@/components/ui/icon-library';
 import { LegacyGuardLogo } from '@/components/LegacyGuardLogo';
 import { Link, useNavigate } from 'react-router-dom';
