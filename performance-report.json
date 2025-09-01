@@ -1,13 +1,16 @@
 {
-  "timestamp": "2025-09-01T18:49:58.904Z",
+  "timestamp": "2025-09-01T19:10:43.537Z",
   "stats": {
     "imagesOptimized": 1,
     "webpGenerated": 1,
     "avifGenerated": 1,
-    "bundlesAnalyzed": 0,
-    "performanceIssues": 0
+    "bundlesAnalyzed": 125,
+    "performanceIssues": 2
   },
-  "recommendations": [],
+  "recommendations": [
+    "Consider code splitting for large bundles",
+    "Implement dynamic imports for heavy components"
+  ],
   "nextSteps": [
     "Set up automated performance monitoring in CI/CD",
     "Implement image optimization in build pipeline",
