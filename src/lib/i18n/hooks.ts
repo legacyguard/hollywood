@@ -8,9 +8,9 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   getCurrentJurisdiction,
   getSupportedLanguages,
-  getDefaultLanguage,
+  _getDefaultLanguage,
   loadLegalTranslations,
-  getJurisdictionTranslation,
+  _getJurisdictionTranslation,
 } from './config';
 import { JURISDICTION_CONFIG } from './jurisdictions';
 import { LANGUAGE_CONFIG } from './languages';
@@ -38,7 +38,7 @@ export const useTranslation = (
   namespace?: TranslationNamespace | TranslationNamespace[]
 ): UseTranslationReturn => {
   const { t: i18nT, i18n } = useI18nTranslation(namespace);
-  const [jurisdiction, setJurisdiction] = useState<JurisdictionCode>(
+  const [jurisdiction, _setJurisdiction] = useState<JurisdictionCode>(
     getCurrentJurisdiction()
   );
 

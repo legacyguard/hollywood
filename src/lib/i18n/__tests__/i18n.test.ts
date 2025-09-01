@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll } from 'vitest';
+import { describe, it, expect, _beforeAll } from 'vitest';
 import fs from 'fs';
 import path from 'path';
 import { JURISDICTION_CONFIG } from '../jurisdictions';

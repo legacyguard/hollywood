@@ -3,7 +3,7 @@
  * Handles jurisdiction-specific legal terms and translations
  */
 
-import { JURISDICTION_CONFIG } from './jurisdictions';
+import { _JURISDICTION_CONFIG } from './jurisdictions';
 
 // Legal term categories
 export enum LegalTermCategory {
@@ -361,7 +361,7 @@ export const LEGAL_TERMS_DATABASE: LegalTerm[] = [
 export const getLegalTerm = (
   termKey: string,
   jurisdictionCode: string,
-  languageCode?: string
+  _languageCode?: string
 ): string => {
   const term = LEGAL_TERMS_DATABASE.find(t => t.key === termKey);
   if (!term) return termKey;

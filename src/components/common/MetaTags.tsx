@@ -1,4 +1,4 @@
-import { Helmet } from 'react-helmet-async';
+import { useEffect } from 'react';
 
 // Define the props the component will accept
 interface MetaTagsProps {

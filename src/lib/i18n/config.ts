@@ -8,7 +8,7 @@ import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import Backend from 'i18next-http-backend';
 import { JURISDICTION_CONFIG } from './jurisdictions';
-import { LANGUAGE_CONFIG } from './languages';
+import { _LANGUAGE_CONFIG } from './languages';
 
 // Get current domain/jurisdiction
 export const getCurrentJurisdiction = () => {

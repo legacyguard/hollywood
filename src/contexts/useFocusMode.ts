@@ -1,4 +1,4 @@
-import { useContext, type React } from 'react';
+import { useContext, type Context } from 'react';
 
 interface FocusModeContextType {
   isFocusMode: boolean;
@@ -7,7 +7,7 @@ interface FocusModeContextType {
 }
 
 // This context is defined in FocusModeContext.tsx
-declare const FocusModeContext: React.Context<FocusModeContextType | undefined>;
+declare const FocusModeContext: Context<FocusModeContextType | undefined>;
 
 export const useFocusMode = () => {
   const context = useContext(FocusModeContext);
