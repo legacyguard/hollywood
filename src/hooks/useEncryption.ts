@@ -71,7 +71,7 @@ export function useEncryption() {
     const salt = crypto.getRandomValues(new Uint8Array(16 as ArrayBuffer));
 
     const keyMaterial = await crypto.subtle.importKey(
-      ' as constraw',
+      'raw',
       encoder.encode(password),
       { name: 'PBKDF2' },
       false,
@@ -286,18 +286,22 @@ export function useEncryption() {
     }
   }, [initializeEncryption]);
 
-  const migrateKeys = useCallback(async (): Promise<boolean> => {
+  const migrateKeys = useCallback(async (password: string): Promise<boolean> => {
     setState(prev => ({ ...prev, isLoading: true }));
     try {
-      // Placeholder for key migration logic
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setState(prev => ({ ...prev, needsMigration: false, isLoading: false }));
-      return true;
+      // Migrate keys with new password
+      const success = await initializeEncryption(password);
+      if (success) {
+        // Placeholder for actual migration logic
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        setState(prev => ({ ...prev, needsMigration: false, isLoading: false }));
+      }
+      return success;
     } catch (error) {
       setState(prev => ({ ...prev, isLoading: false }));
       return false;
     }
-  }, []);
+  }, [initializeEncryption]);
 
   return {
     // State

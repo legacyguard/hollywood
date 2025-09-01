@@ -31,7 +31,7 @@ export interface PerformanceMetric {
 class MonitoringService {
   private sessionId: string;
   private performanceBuffer: PerformanceMetric[] = [];
-  private flushInterval: NodeJS.Timeout | null = null;
+  private flushInterval: ReturnType<typeof setInterval> | null = null;
 
   constructor() {
     this.sessionId = this.generateSessionId();
