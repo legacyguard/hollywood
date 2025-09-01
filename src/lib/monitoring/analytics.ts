@@ -16,7 +16,7 @@ interface AnalyticsConfig {
 interface AnalyticsEvent {
   type: 'page_view' | 'user_action' | 'feature_usage' | 'performance' | 'error';
   name: string;
-  properties?: Record<string, any>;
+  properties?: Record<string, unknown>;
   timestamp: number;
   sessionId: string;
   userId?: string;
@@ -170,7 +170,7 @@ export class AnalyticsService {
   /**
    * Track user action
    */
-  trackAction(action: string, properties?: Record<string, any>): void {
+  trackAction(action: string, properties?: Record<string, unknown>): void {
     if (!this.consentGiven || !this.session) return;
 
     const event: AnalyticsEvent = {
@@ -189,7 +189,7 @@ export class AnalyticsService {
   /**
    * Track feature usage
    */
-  trackFeature(feature: string, properties?: Record<string, any>): void {
+  trackFeature(feature: string, properties?: Record<string, unknown>): void {
     if (!this.consentGiven || !this.session) return;
 
     const event: AnalyticsEvent = {
@@ -208,7 +208,7 @@ export class AnalyticsService {
   /**
    * Track performance metrics
    */
-  trackPerformance(metric: string, value: number, properties?: Record<string, any>): void {
+  trackPerformance(metric: string, value: number, properties?: Record<string, unknown>): void {
     if (!this.consentGiven || !this.session) return;
 
     const event: AnalyticsEvent = {
@@ -231,7 +231,7 @@ export class AnalyticsService {
   /**
    * Track error events
    */
-  trackError(error: string, properties?: Record<string, any>): void {
+  trackError(error: string, properties?: Record<string, unknown>): void {
     if (!this.consentGiven || !this.session) return;
 
     const event: AnalyticsEvent = {
@@ -403,8 +403,8 @@ export class AnalyticsService {
    */
   private isDoNotTrackEnabled(): boolean {
     return navigator.doNotTrack === '1' ||
-           (window as any).doNotTrack === '1' ||
-           (navigator as any).msDoNotTrack === '1';
+           (window as { doNotTrack?: string }).doNotTrack === '1' ||
+           (navigator as { msDoNotTrack?: string }).msDoNotTrack === '1';
   }
 
   /**
@@ -434,10 +434,10 @@ export class AnalyticsService {
   /**
    * Sanitize properties to remove PII
    */
-  private sanitizeProperties(properties?: Record<string, any>): Record<string, any> {
+  private sanitizeProperties(properties?: Record<string, unknown>): Record<string, unknown> {
     if (!properties) return {};
 
-    const sanitized: Record<string, any> = {};
+    const sanitized: Record<string, unknown> = {};
     const piiKeys = ['email', 'phone', 'address', 'name', 'ssn', 'creditcard'];
 
     for (const [key, value] of Object.entries(properties)) {
@@ -467,9 +467,9 @@ export class AnalyticsService {
   /**
    * Throttle function calls
    */
-  private throttle(func: (...args: any[]) => void, wait: number): (...args: any[]) => void {
+  private throttle(func: (...args: unknown[]) => void, wait: number): (...args: unknown[]) => void {
     let timeout: number | null = null;
-    return (...args: any[]) => {
+    return (...args: unknown[]) => {
       if (timeout === null) {
         func(...args);
         timeout = window.setTimeout(() => {
@@ -499,11 +499,11 @@ export const trackPageView = (pathname?: string, title?: string) => {
   analyticsService.trackPageView(pathname, title);
 };
 
-export const trackAction = (action: string, properties?: Record<string, any>) => {
+export const trackAction = (action: string, properties?: Record<string, unknown>) => {
   analyticsService.trackAction(action, properties);
 };
 
-export const trackFeature = (feature: string, properties?: Record<string, any>) => {
+export const trackFeature = (feature: string, properties?: Record<string, unknown>) => {
   analyticsService.trackFeature(feature, properties);
 };
 

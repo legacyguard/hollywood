@@ -28,7 +28,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  NODE_VERSION: '18'
+  NODE_VERSION: '20.18.0'
 
 jobs:
   # Pre-deployment validation

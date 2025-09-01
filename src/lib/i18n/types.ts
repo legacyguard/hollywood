@@ -303,22 +303,22 @@ export interface TranslationKeys {
   };
 
   // Other namespaces...
-  documents: Record<string, any>;
-  guardians: Record<string, any>;
-  family: Record<string, any>;
-  vault: Record<string, any>;
-  notifications: Record<string, any>;
-  settings: Record<string, any>;
-  errors: Record<string, any>;
-  onboarding: Record<string, any>;
-  legacy: Record<string, any>;
-  emergency: Record<string, any>;
-  ai: Record<string, any>;
-  legalTerms: Record<string, any>;
-  legalDocuments: Record<string, any>;
-  legalProcedures: Record<string, any>;
-  taxTerms: Record<string, any>;
-  notaryTerms: Record<string, any>;
+  documents: Record<string, string>;
+  guardians: Record<string, string>;
+  family: Record<string, string>;
+  vault: Record<string, string>;
+  notifications: Record<string, string>;
+  settings: Record<string, string>;
+  errors: Record<string, string>;
+  onboarding: Record<string, string>;
+  legacy: Record<string, string>;
+  emergency: Record<string, string>;
+  ai: Record<string, string>;
+  legalTerms: Record<string, string>;
+  legalDocuments: Record<string, string>;
+  legalProcedures: Record<string, string>;
+  taxTerms: Record<string, string>;
+  notaryTerms: Record<string, string>;
 }
 
 // Translation function types

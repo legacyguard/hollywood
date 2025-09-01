@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 env:
-  NODE_VERSION: '18'
+  NODE_VERSION: '20.18.0'
 
 jobs:
   # Lint and type check
@@ -61,7 +61,7 @@ jobs:
           npm ci
       
       - name: Run web tests
-        run: npm run test --workspace=hollywood
+        run: npm run test
         continue-on-error: true
         env:
           CI: true
@@ -72,7 +72,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        app: [hollywood, mobile]
+        app: [web, mobile]
     steps:
       - uses: actions/checkout@v4
       
@@ -95,8 +95,8 @@ jobs:
       
       - name: Build ${{ matrix.app }}
         run: |
-          if [ "${{ matrix.app }}" = "hollywood" ]; then
-            cd hollywood && npm run build
+          if [ "${{ matrix.app }}" = "web" ]; then
+            npm run build
           elif [ "${{ matrix.app }}" = "mobile" ]; then
             cd mobile && npx expo export --platform web
           fi
@@ -111,8 +111,7 @@ jobs:
         with:
           name: ${{ matrix.app }}-build
           path: |
-            ${{ matrix.app }}/dist
-            ${{ matrix.app }}/build
+            ${{ matrix.app == 'web' && 'dist' || 'mobile/dist' }}
           retention-days: 7
 
   # Security audit
