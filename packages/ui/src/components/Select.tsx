@@ -6,6 +6,7 @@ import {
   Adapt,
   Sheet,
   YStack,
+  Label,
   getFontSize
 } from 'tamagui'
 import { ChevronDown, ChevronUp, Check } from 'lucide-react-native'
@@ -112,7 +113,6 @@ const StyledSelectContent = styled(TamaguiSelect.Content, {
   overflow: 'hidden',
   borderWidth: 1,
   borderColor: '$borderColor',
-  elevation: 5,
   shadowColor: '$shadowColor',
   shadowOffset: { width: 0, height: 2 },
   shadowOpacity: 0.25,
@@ -204,20 +204,19 @@ export const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
     return (
       <YStack gap="$2">
         {label && (
-          <styled.Label 
+          <Label 
             htmlFor={props.id}
             fontSize={size === 'small' ? '$3' : '$4'}
             color="$color"
           >
             {label}
-          </styled.Label>
+          </Label>
         )}
         
         <TamaguiSelect
           value={value}
           defaultValue={defaultValue}
           onValueChange={onValueChange}
-          disabled={disabled}
           {...props}
         >
           <StyledSelectTrigger
@@ -302,12 +301,12 @@ export const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
         </TamaguiSelect>
         
         {(helperText || errorText) && (
-          <styled.Label
+          <Label
             fontSize="$2"
             color={error ? '$error' : '$gray6'}
           >
             {error ? errorText : helperText}
-          </styled.Label>
+          </Label>
         )}
       </YStack>
     )
@@ -337,17 +336,17 @@ export const NativeSelect = React.forwardRef<HTMLSelectElement, SelectProps>(
     return (
       <YStack gap="$2">
         {label && (
-          <styled.Label 
+          <Label 
             htmlFor={props.id}
             fontSize={size === 'small' ? '$3' : '$4'}
             color="$color"
           >
             {label}
-          </styled.Label>
+          </Label>
         )}
         
-        <styled.select
-          ref={ref}
+        <select
+          ref={ref as any}
           value={value}
           defaultValue={defaultValue}
           onChange={(e) => onValueChange?.(e.target.value)}
@@ -380,15 +379,15 @@ export const NativeSelect = React.forwardRef<HTMLSelectElement, SelectProps>(
               {option.label}
             </option>
           ))}
-        </styled.select>
+        </select>
         
         {(helperText || errorText) && (
-          <styled.Label
+          <Label
             fontSize="$2"
             color={error ? '$error' : '$gray6'}
           >
             {error ? errorText : helperText}
-          </styled.Label>
+          </Label>
         )}
       </YStack>
     )
@@ -396,6 +395,3 @@ export const NativeSelect = React.forwardRef<HTMLSelectElement, SelectProps>(
 )
 
 NativeSelect.displayName = 'NativeSelect'
-
-// Export types
-export type { SelectProps, SelectOption }

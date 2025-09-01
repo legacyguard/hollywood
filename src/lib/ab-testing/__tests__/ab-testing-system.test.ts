@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 /**
  * A/B Testing System Tests
  * Validates core functionality of the A/B testing framework
@@ -14,7 +14,7 @@ describe('ABTestingSystem', () => {
   });
 
   describe('Variant Assignment', () => {
-    test('should assign consistent variants for the same user', () => {
+    it('should assign consistent variants for the same user', () => {
       const userId = 'test-user-123';
       const testName = 'onboarding_flow_v1';
 
@@ -24,7 +24,7 @@ describe('ABTestingSystem', () => {
       expect(variant1).toBe(variant2);
     });
 
-    test('should assign valid variants from configured tests', () => {
+    it('should assign valid variants from configured tests', () => {
       const userId = 'test-user-456';
       const testName = 'trust_score_display_v1';
 
@@ -34,7 +34,7 @@ describe('ABTestingSystem', () => {
       expect(validVariants).toContain(variant);
     });
 
-    test('should return control for inactive tests', () => {
+    it('should return control for inactive tests', () => {
       const userId = 'test-user-789';
       const testName = 'nonexistent_test';
 
@@ -45,7 +45,7 @@ describe('ABTestingSystem', () => {
   });
 
   describe('Conversion Tracking', () => {
-    test('should track conversions with correct metadata', () => {
+    it('should track conversions with correct metadata', () => {
       const userId = 'test-user-conversion';
       const testName = 'professional_review_cta_v1';
       const metric = 'button_clicked';
@@ -62,7 +62,7 @@ describe('ABTestingSystem', () => {
       expect(metrics[0].metadata).toEqual(metadata);
     });
 
-    test('should track multiple conversions for different users', () => {
+    it('should track multiple conversions for different users', () => {
       const testName = 'onboarding_flow_v1';
 
       abTestingSystem.trackConversion('user1', testName, 'started', 1);
@@ -81,7 +81,7 @@ describe('ABTestingSystem', () => {
   });
 
   describe('Conversion Rate Calculation', () => {
-    test('should calculate conversion rates correctly', () => {
+    it('should calculate conversion rates correctly', () => {
       const testName = 'test_conversion_rates';
 
       // Mock some test metrics
@@ -105,7 +105,7 @@ describe('ABTestingSystem', () => {
   });
 
   describe('Test Configuration', () => {
-    test('should return valid test configuration', () => {
+    it('should return valid test configuration', () => {
       const config = abTestingSystem.getTestConfig('onboarding_flow_v1');
 
       expect(config).toBeDefined();
@@ -115,7 +115,7 @@ describe('ABTestingSystem', () => {
       expect(Object.keys(config?.variants || {})).toContain('control');
     });
 
-    test('should return undefined for invalid test', () => {
+    it('should return undefined for invalid test', () => {
       const config = abTestingSystem.getTestConfig('invalid_test');
 
       expect(config).toBeUndefined();
@@ -123,7 +123,7 @@ describe('ABTestingSystem', () => {
   });
 
   describe('Onboarding Tracking', () => {
-    test('should track onboarding metrics correctly', () => {
+    it('should track onboarding metrics correctly', () => {
       const userId = 'onboarding-test-user';
 
       abTestingSystem.trackOnboardingMetric(userId, 'start', 'started');

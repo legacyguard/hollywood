@@ -3,8 +3,7 @@
  * Implements code splitting and progressive loading for large components
  */
 
-import type { ComponentType, ReactElement} from 'react';
-import { lazy, Suspense } from 'react';
+import React, { type ComponentType, type ReactElement, lazy, Suspense } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 
 // Generic loading skeleton component
@@ -91,7 +90,7 @@ export const ProfessionalReviewLoadingSkeleton = () => (
 export const createLazyComponent = <T extends ComponentType<any>>(
   importFn: () => Promise<{ default: T }>,
   fallback?: ReactElement,
-  errorFallback?: ReactElement
+  _errorFallback?: ReactElement
 ) => {
   const LazyComponent = lazy(importFn);
 

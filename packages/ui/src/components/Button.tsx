@@ -37,8 +37,8 @@ export const Button = styled(TamaguiButton, {
   },
   disabledStyle: {
     backgroundColor: '$gray4',
-    color: '$gray6',
     cursor: 'not-allowed',
+    opacity: 0.6,
   },
 
   // Variants

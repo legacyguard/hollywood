@@ -8,7 +8,7 @@ export const Badge = styled(View, {
   justifyContent: 'center',
   borderRadius: '$1',
   paddingHorizontal: '$2',
-  paddingVertical: '$0.5',
+  paddingVertical: 2,
   
   variants: {
     variant: {
@@ -48,19 +48,19 @@ export const Badge = styled(View, {
     },
     size: {
       small: {
-        paddingHorizontal: '$1.5',
-        paddingVertical: '$0.25',
-        borderRadius: '$0.5',
+        paddingHorizontal: 6,
+        paddingVertical: 1,
+        borderRadius: 4,
       },
       medium: {
         paddingHorizontal: '$2',
-        paddingVertical: '$0.5',
+        paddingVertical: 2,
         borderRadius: '$1',
       },
       large: {
         paddingHorizontal: '$3',
         paddingVertical: '$1',
-        borderRadius: '$1.5',
+        borderRadius: 6,
       },
     },
     rounded: {

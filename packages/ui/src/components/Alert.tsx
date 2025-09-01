@@ -120,9 +120,9 @@ export const AlertBox = ({
 } & GetProps<typeof Alert>) => {
   return (
     <Alert variant={variant} {...props}>
-      <XStack space="$2" alignItems="flex-start">
+      <XStack space="small" alignItems="flex-start">
         {showIcon && <AlertIcon variant={variant} />}
-        <YStack flex={1} space="$1">
+        <YStack flex={1} space="xs">
           {title && <AlertTitle>{title}</AlertTitle>}
           {description && <AlertDescription>{description}</AlertDescription>}
           {children}

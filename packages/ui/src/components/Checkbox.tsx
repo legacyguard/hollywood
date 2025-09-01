@@ -29,10 +29,6 @@ const StyledCheckbox = styled(TamaguiCheckbox, {
     
     variant: {
       primary: {
-        checked: {
-          backgroundColor: '$primaryBlue',
-          borderColor: '$primaryBlue',
-        },
         focusStyle: {
           borderColor: '$primaryBlueLight',
           outlineWidth: 2,
@@ -41,10 +37,6 @@ const StyledCheckbox = styled(TamaguiCheckbox, {
         },
       },
       success: {
-        checked: {
-          backgroundColor: '$primaryGreen',
-          borderColor: '$primaryGreen',
-        },
         focusStyle: {
           borderColor: '$primaryGreenLight',
           outlineWidth: 2,
@@ -53,16 +45,19 @@ const StyledCheckbox = styled(TamaguiCheckbox, {
         },
       },
       premium: {
-        checked: {
-          backgroundColor: '$accentGold',
-          borderColor: '$accentGold',
-        },
         focusStyle: {
           borderColor: '$accentGoldLight',
           outlineWidth: 2,
           outlineColor: '$accentGoldLight',
           outlineStyle: 'solid',
         },
+      },
+    },
+    
+    checked: {
+      true: {
+        backgroundColor: '$primaryBlue',
+        borderColor: '$primaryBlue',
       },
     },
     
@@ -75,8 +70,8 @@ const StyledCheckbox = styled(TamaguiCheckbox, {
   },
   
   defaultVariants: {
-    size: 'medium',
-    variant: 'primary',
+    size: 'medium' as const,
+    variant: 'primary' as const,
   },
 })
 
@@ -247,6 +242,3 @@ export const CheckboxGroup = React.forwardRef<HTMLDivElement, CheckboxGroupProps
 )
 
 CheckboxGroup.displayName = 'CheckboxGroup'
-
-// Export types
-export type { CheckboxProps, CheckboxGroupProps }

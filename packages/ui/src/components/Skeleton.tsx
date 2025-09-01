@@ -26,11 +26,11 @@ export const Skeleton = styled(View, {
     variant: {
       text: {
         height: '$4',
-        borderRadius: '$0.5',
+        borderRadius: 4,
       },
       title: {
         height: '$6',
-        borderRadius: '$0.5',
+        borderRadius: 4,
       },
       button: {
         height: '$10',
@@ -72,12 +72,6 @@ export const Skeleton = styled(View, {
       },
     },
   } as const,
-  
-  defaultVariants: {
-    variant: 'text',
-    width: 'full',
-    animated: true,
-  },
 })
 
 // Skeleton Text - for loading text
@@ -151,9 +145,9 @@ export const SkeletonCard = ({
       backgroundColor="$background"
       {...props}
     >
-      <XStack space="$3" alignItems="flex-start">
+      <XStack space="small" alignItems="flex-start">
         {showAvatar && <SkeletonAvatar />}
-        <YStack flex={1} space="$3">
+        <YStack flex={1} space="small">
           {showTitle && <Skeleton variant="title" width="large" />}
           {showDescription && <SkeletonText lines={2} />}
         </YStack>

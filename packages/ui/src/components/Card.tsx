@@ -14,7 +14,6 @@ export const Card = styled(View, {
   shadowOffset: { width: 0, height: 2 },
   shadowOpacity: 0.1,
   shadowRadius: 4,
-  elevation: 2, // For Android shadow
 
   // Animations
   animation: 'lazy',
@@ -32,7 +31,6 @@ export const Card = styled(View, {
     borderColor: '$gray4',
     shadowOpacity: 0.15,
     shadowRadius: 6,
-    elevation: 3,
   },
 
   // Variants
@@ -47,7 +45,6 @@ export const Card = styled(View, {
         borderColor: 'transparent',
         shadowOpacity: 0.15,
         shadowRadius: 8,
-        elevation: 4,
       },
       filled: {
         backgroundColor: '$gray2',
@@ -72,7 +69,6 @@ export const Card = styled(View, {
         backgroundColor: 'transparent',
         borderColor: 'transparent',
         shadowOpacity: 0,
-        elevation: 0,
       },
     },
 
@@ -202,11 +198,6 @@ export const CardFooter = styled(View, {
         justifyContent: 'space-between',
       },
     },
-  },
-
-  defaultVariants: {
-    noBorder: false,
-    justify: 'end',
   },
 })
 

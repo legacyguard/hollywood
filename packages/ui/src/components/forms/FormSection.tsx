@@ -25,7 +25,7 @@ export const FormSection: React.FC<FormSectionProps> = ({
         <Stack gap="$2">
           {title && <H3>{title}</H3>}
           {description && (
-            <Paragraph size="$3" color="$gray6">
+            <Paragraph size="small" color="muted">
               {description}
             </Paragraph>
           )}
@@ -80,12 +80,13 @@ export const FormRow: React.FC<FormRowProps> = ({
 }) => {
   return (
     <View
-      flexDirection={responsive ? { base: 'column', sm: 'row' } : 'row'}
+      flexDirection="row"
+      flexWrap={responsive ? "wrap" : "nowrap"}
       gap={gap}
       width="100%"
     >
       {React.Children.map(children, (child) => (
-        <View flex={1} minWidth={0}>
+        <View flex={1} minWidth={responsive ? 300 : 0}>
           {child}
         </View>
       ))}

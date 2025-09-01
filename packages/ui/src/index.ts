@@ -92,16 +92,6 @@ export {
   type ScrollContainerProps,
 } from './components/Layout'
 
-// Export PillarCard components
-export {
-  PillarCard,
-  PillarCardContainer,
-  IconContainer,
-  LockBadge,
-  ActiveGradient,
-  type PillarCardProps,
-} from './components/PillarCard'
-
 // Export ProgressBar components
 export {
   ProgressBar,
@@ -171,6 +161,12 @@ export {
   type BadgeWithIconProps,
 } from './components/Badge'
 
+// Export Spinner component
+export {
+  Spinner,
+  type SpinnerProps,
+} from './components/Spinner'
+
 // Export Skeleton components
 export {
   Skeleton,
@@ -197,8 +193,6 @@ export {
   FormSelect,
   FormSection,
   FormRow,
-  FormDatePicker,
-  FormDateInput,
   ValidationPatterns,
   validateField,
   type FormFieldProps,
@@ -207,7 +201,6 @@ export {
   type FormSelectProps,
   type FormSectionProps,
   type FormRowProps,
-  type FormDatePickerProps,
 } from './components/forms'
 
 // Export Animation constants

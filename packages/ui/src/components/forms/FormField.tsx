@@ -25,14 +25,14 @@ export const FormField: React.FC<FormFieldProps> = ({
       {label && (
         <Label>
           {label}
-          {required && <Paragraph size="$3" color="$error" display="inline"> *</Paragraph>}
+          {required && <Paragraph color="danger" style={{ display: 'inline' }}> *</Paragraph>}
         </Label>
       )}
       
       {children}
       
       {hint && !error && !success && (
-        <Paragraph size="$2" color="$gray6">
+        <Paragraph size="small" color="muted">
           {hint}
         </Paragraph>
       )}
@@ -40,7 +40,7 @@ export const FormField: React.FC<FormFieldProps> = ({
       {error && (
         <View flexDirection="row" alignItems="center" gap="$1">
           <AlertCircle size={14} color="$error" />
-          <Paragraph size="$2" color="$error">
+          <Paragraph size="small" color="danger">
             {error}
           </Paragraph>
         </View>
@@ -49,7 +49,7 @@ export const FormField: React.FC<FormFieldProps> = ({
       {success && !error && (
         <View flexDirection="row" alignItems="center" gap="$1">
           <CheckCircle size={14} color="$success" />
-          <Paragraph size="$2" color="$success">
+          <Paragraph size="small" color="success">
             {success}
           </Paragraph>
         </View>

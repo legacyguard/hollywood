@@ -2,7 +2,13 @@ import React from 'react'
 import { FormField, type FormFieldProps } from './FormField'
 import { Select, type SelectProps } from '../..'
 
-export interface FormSelectProps extends SelectProps, FormFieldProps {}
+export interface FormSelectProps extends Omit<SelectProps, 'error' | 'label'> {
+  label?: string
+  error?: string | boolean
+  success?: string
+  hint?: string
+  required?: boolean
+}
 
 export const FormSelect: React.FC<FormSelectProps> = ({
   label,
@@ -12,22 +18,22 @@ export const FormSelect: React.FC<FormSelectProps> = ({
   required,
   ...selectProps
 }) => {
+  // Convert error to appropriate types for each component
+  const hasError = Boolean(error)
+  const errorMessage = typeof error === 'string' ? error : undefined
+  
   return (
     <FormField
       label={label}
-      error={error}
+      error={errorMessage}
       success={success}
       hint={hint}
       required={required}
     >
       <Select
         {...selectProps}
-        // Add error styling if needed
-        style={{
-          ...(error && { borderColor: '$error' }),
-          ...(success && { borderColor: '$success' }),
-          ...selectProps.style
-        }}
+        error={hasError}
+        errorText={errorMessage}
       />
     </FormField>
   )

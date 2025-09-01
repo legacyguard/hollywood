@@ -294,6 +294,3 @@ export const RadioButton = React.forwardRef<HTMLButtonElement, RadioButtonProps>
 )
 
 RadioButton.displayName = 'RadioButton'
-
-// Export types
-export type { RadioGroupProps, RadioButtonProps, RadioOption }

@@ -51,12 +51,7 @@ const ProgressFill = styled(View, {
       },
     },
   },
-
-  defaultVariants: {
-    variant: 'primary',
-    animated: true,
-  },
-});
+})
 
 const ProgressLabel = styled(Stack, {
   name: 'ProgressLabel',
@@ -178,7 +173,7 @@ export function CircularProgress({
       <svg
         width={size}
         height={size}
-        style={{ position: 'absolute', transform: [{ rotate: '-90deg' }] }}
+        style={{ position: 'absolute', transform: 'rotate(-90deg)' } as any}
       >
         {/* Background circle */}
         <circle
@@ -247,7 +242,7 @@ const ProgressSegment = styled(View, {
         backgroundColor: '$primaryGreen',
       },
     },
-    position: {
+    segmentPosition: {
       first: {
         borderTopLeftRadius: '$10',
         borderBottomLeftRadius: '$10',
@@ -281,14 +276,14 @@ export function SegmentedProgress({
         {Array.from({ length: segments }, (_, index) => {
           const isCompleted = index < currentSegment;
           const isActive = index === currentSegment;
-          const position = index === 0 ? 'first' : index === segments - 1 ? 'last' : 'middle';
+          const segmentPosition = index === 0 ? 'first' : index === segments - 1 ? 'last' : 'middle';
 
           return (
             <ProgressSegment
               key={index}
               isCompleted={isCompleted}
               isActive={isActive}
-              position={position}
+              segmentPosition={segmentPosition}
               animation="medium"
             />
           );

@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { EncryptionService } from '../encryption-v2';
-import CryptoJS from 'crypto-js';
 
 describe('EncryptionService', () => {
   let encryptionService: EncryptionService;

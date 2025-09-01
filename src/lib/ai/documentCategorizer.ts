@@ -3,8 +3,7 @@
  * Phase 6: AI Intelligence & Document Analysis
  */
 
-import type { DocumentCategory, DocumentAnalysisResult } from './documentAnalyzer';
-import { documentAnalyzer } from './documentAnalyzer';
+import { type DocumentCategory, type DocumentAnalysisResult, documentAnalyzer } from './documentAnalyzer';
 
 export interface CategoryRule {
   id: string;

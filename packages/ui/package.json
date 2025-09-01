@@ -17,6 +17,7 @@
     "@tamagui/config": "^1.116.9",
     "@tamagui/core": "^1.116.9",
     "@tamagui/font-inter": "^1.116.9",
+    "@tamagui/lucide-icons": "^1.132.23",
     "@tamagui/react-native-media-driver": "^1.116.9",
     "@tamagui/shorthands": "^1.116.9",
     "@tamagui/themes": "^1.116.9",

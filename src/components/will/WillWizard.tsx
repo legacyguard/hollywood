@@ -15,14 +15,14 @@ import { Progress } from '../ui/progress';
 import { Alert, AlertDescription } from '../ui/alert';
 import { Badge } from '../ui/badge';
 import { Loader2, CheckCircle, AlertCircle, User, Users, Building, FileText, Scale, Eye } from 'lucide-react';
-import type {
-  WillUserData,
-  Jurisdiction,
-  LanguageCode,
-  WillTemplateType,
-  ValidationError
+import {
+  type WillUserData,
+  type Jurisdiction,
+  type LanguageCode,
+  type WillTemplateType,
+  type ValidationError,
+  CZ_SK_JURISDICTIONS
 } from '../../types/will-templates';
-import { CZ_SK_JURISDICTIONS } from '../../types/will-templates';
 import { willApiService } from '../../services/willApiService';
 import { templateLibrary } from '../../lib/templateLibrary';
 import { willValidationService } from '../../lib/willValidation';

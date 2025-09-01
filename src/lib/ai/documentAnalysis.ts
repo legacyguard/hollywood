@@ -614,7 +614,7 @@ class DocumentAnalysisService {
     // Extract emails and associate with nearby names
     const emails = content.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g) || [];
     for (const email of emails) {
-      const context = this.getContext(content, email);
+      const _context = this.getContext(content, email);
       const name = this.extractNameNearEmail(content, email);
 
       contacts.push({
@@ -628,7 +628,7 @@ class DocumentAnalysisService {
     return contacts;
   }
 
-  private async extractRelationships(content: string): Promise<EntityRelationship[]> {
+  private async extractRelationships(_content: string): Promise<EntityRelationship[]> {
     // This would use NLP to identify relationships between entities
     // For now, return empty array
     return [];
@@ -919,24 +919,24 @@ class DocumentAnalysisService {
   }
 
   // Placeholder implementations for recommendation patterns
-  private async checkUpdateRequirements(content: string): Promise<Recommendation[]> { return []; }
-  private async checkRenewalNeeds(content: string): Promise<Recommendation[]> { return []; }
-  private async checkBackupSuggestions(content: string, metadata: any): Promise<Recommendation[]> { return []; }
-  private async checkFamilySharingOpportunities(content: string): Promise<Recommendation[]> { return []; }
-  private async checkLegalReviewNeeds(content: string): Promise<Recommendation[]> { return []; }
-  private async checkOrganizationImprovements(content: string): Promise<Recommendation[]> { return []; }
-  private async checkSecurityImprovements(content: string, metadata: any): Promise<Recommendation[]> { return []; }
-  private async checkComplianceActions(content: string): Promise<Recommendation[]> { return []; }
+  private async checkUpdateRequirements(_content: string): Promise<Recommendation[]> { return []; }
+  private async checkRenewalNeeds(_content: string): Promise<Recommendation[]> { return []; }
+  private async checkBackupSuggestions(_content: string, _metadata: any): Promise<Recommendation[]> { return []; }
+  private async checkFamilySharingOpportunities(_content: string): Promise<Recommendation[]> { return []; }
+  private async checkLegalReviewNeeds(_content: string): Promise<Recommendation[]> { return []; }
+  private async checkOrganizationImprovements(_content: string): Promise<Recommendation[]> { return []; }
+  private async checkSecurityImprovements(_content: string, _metadata: any): Promise<Recommendation[]> { return []; }
+  private async checkComplianceActions(_content: string): Promise<Recommendation[]> { return []; }
 
   // Placeholder implementations for risk assessments
-  private async checkExpirationRisks(content: string): Promise<RiskAssessment[]> { return []; }
-  private async checkComplianceRisks(content: string): Promise<RiskAssessment[]> { return []; }
-  private async checkFinancialRisks(content: string): Promise<RiskAssessment[]> { return []; }
-  private async checkSecurityRisks(content: string, metadata: any): Promise<RiskAssessment[]> { return []; }
-  private async checkFamilyAccessRisks(content: string): Promise<RiskAssessment[]> { return []; }
-  private async checkTaxRisks(content: string): Promise<RiskAssessment[]> { return []; }
-  private async checkInsuranceRisks(content: string): Promise<RiskAssessment[]> { return []; }
-  private async checkAssetProtectionRisks(content: string): Promise<RiskAssessment[]> { return []; }
+  private async checkExpirationRisks(_content: string): Promise<RiskAssessment[]> { return []; }
+  private async checkComplianceRisks(_content: string): Promise<RiskAssessment[]> { return []; }
+  private async checkFinancialRisks(_content: string): Promise<RiskAssessment[]> { return []; }
+  private async checkSecurityRisks(_content: string, _metadata: any): Promise<RiskAssessment[]> { return []; }
+  private async checkFamilyAccessRisks(_content: string): Promise<RiskAssessment[]> { return []; }
+  private async checkTaxRisks(_content: string): Promise<RiskAssessment[]> { return []; }
+  private async checkInsuranceRisks(_content: string): Promise<RiskAssessment[]> { return []; }
+  private async checkAssetProtectionRisks(_content: string): Promise<RiskAssessment[]> { return []; }
 
   private async performComplianceCheck(content: string, framework: string): Promise<ComplianceCheck | null> {
     // Mock compliance check - in production would use specialized compliance engines
@@ -954,12 +954,12 @@ class DocumentAnalysisService {
     return null;
   }
 
-  private async extractTextFromPDF(buffer: ArrayBuffer): Promise<string> {
+  private async extractTextFromPDF(_buffer: ArrayBuffer): Promise<string> {
     // In production, would use PDF.js or similar library
     return 'PDF text extraction not implemented in demo';
   }
 
-  private async extractTextFromImage(buffer: ArrayBuffer): Promise<string> {
+  private async extractTextFromImage(_buffer: ArrayBuffer): Promise<string> {
     // In production, would use OCR service like Tesseract.js
     return 'OCR text extraction not implemented in demo';
   }

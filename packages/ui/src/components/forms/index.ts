@@ -22,13 +22,6 @@ export {
   type FormRowProps
 } from './FormSection'
 
-// Form Date Picker Components
-export {
-  FormDatePicker,
-  FormDateInput,
-  type FormDatePickerProps
-} from './FormDatePicker'
-
 // Re-export validation utilities if needed
 export const ValidationPatterns = {
   email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,

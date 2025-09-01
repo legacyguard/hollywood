@@ -3,12 +3,6 @@ import EmergencyDetectionEngine from './detection-engine';
 import GuardianNotificationService from './guardian-notifier';
 import EmergencyAccessControl from './access-control';
 import type { DetectionEngineConfig } from '@/types/emergency';
-import {
-  EmergencyTriggerType,
-  ActivityTracker,
-  EmergencyActivation,
-} from '@/types/emergency';
-import { Guardian, FamilyShieldSettings } from '@/types/guardian';
 
 interface TestScenario {
   id: string;

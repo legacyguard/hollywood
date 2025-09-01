@@ -26,29 +26,27 @@ const StyledSwitch = styled(TamaguiSwitch, {
     
     variant: {
       primary: {
-        checked: {
-          backgroundColor: '$primaryBlue',
-          borderColor: '$primaryBlue',
-        },
+        borderColor: '$gray4',
       },
       success: {
-        checked: {
-          backgroundColor: '$primaryGreen',
-          borderColor: '$primaryGreen',
-        },
+        borderColor: '$gray4',
       },
       premium: {
-        checked: {
-          backgroundColor: '$accentGold',
-          borderColor: '$accentGold',
-        },
+        borderColor: '$gray4',
+      },
+    },
+    
+    checked: {
+      true: {
+        backgroundColor: '$primaryBlue',
+        borderColor: '$primaryBlue',
       },
     },
   },
   
   defaultVariants: {
-    size: 'medium',
-    variant: 'primary',
+    size: 'medium' as const,
+    variant: 'primary' as const,
   },
 })
 
@@ -150,6 +148,3 @@ export const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
 )
 
 Switch.displayName = 'Switch'
-
-// Export types
-export type { SwitchProps }
