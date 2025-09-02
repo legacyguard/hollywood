@@ -1,166 +1,135 @@
 /**
- * React hooks for i18n system
+ * React hooks for new i18n architecture
  * Provides easy access to translations and jurisdiction-specific content
  */
 
 import { useTranslation as useI18nTranslation } from 'react-i18next';
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import {
-  getCurrentJurisdiction,
-  getSupportedLanguages,
-  _getDefaultLanguage,
-  loadLegalTranslations,
-  _getJurisdictionTranslation,
+  SUPPORTED_LANGUAGES,
+  SUPPORTED_JURISDICTIONS,
+  NAMESPACES,
+  NamespaceLoader,
+  getContentNamespace,
+  type SupportedLanguageCode,
+  type SupportedJurisdictionCode,
 } from './config';
-import { JURISDICTION_CONFIG } from './jurisdictions';
-import { LANGUAGE_CONFIG } from './languages';
-import {
-  getLegalTerm,
-  getLegalDefinition,
-  getLegalReference,
-  searchLegalTerms,
-  type LegalTermCategory,
-} from './legal-terminology';
-import type {
-  LanguageCode,
-  JurisdictionCode,
-  TranslationNamespace,
-  UseTranslationReturn,
-  UseJurisdictionReturn,
-  UseLegalTermReturn,
-  TFunction,
-} from './types';
+
+// Type definitions
+export interface UseTranslationReturn {
+  t: (key: string, options?: any) => string;
+  i18n: {
+    language: SupportedLanguageCode;
+    changeLanguage: (lng: SupportedLanguageCode) => Promise<void>;
+    isReady: boolean;
+    supportedLanguages: SupportedLanguageCode[];
+  };
+}
+
+export interface UseContentNamespaceReturn {
+  isLoading: boolean;
+  error: Error | null;
+  isLoaded: boolean;
+}
+
+export interface UseJurisdictionReturn {
+  jurisdiction: SupportedJurisdictionCode;
+  changeJurisdiction: (code: SupportedJurisdictionCode) => void;
+  supportedJurisdictions: SupportedJurisdictionCode[];
+}
 
 /**
- * Enhanced useTranslation hook with jurisdiction support
+ * Enhanced useTranslation hook for new architecture
  */
-export const useTranslation = (
-  namespace?: TranslationNamespace | TranslationNamespace[]
-): UseTranslationReturn => {
-  const { t: i18nT, i18n } = useI18nTranslation(namespace);
-  const [jurisdiction, _setJurisdiction] = useState<JurisdictionCode>(
-    getCurrentJurisdiction()
-  );
-
-  // Load legal translations when jurisdiction or language changes
-  useEffect(() => {
-    const loadTranslations = async () => {
-      if (i18n.language && jurisdiction) {
-        await loadLegalTranslations(jurisdiction, i18n.language);
-      }
-    };
-    loadTranslations();
-  }, [jurisdiction, i18n.language]);
-
-  // Enhanced translation function with jurisdiction support
-  const t: TFunction = useCallback(
-    (key: string, options?: any) => {
-      // Try jurisdiction-specific translation first
-      const jurisdictionKey = `${key}_${jurisdiction}`;
-      if (i18n.exists(jurisdictionKey)) {
-        return i18nT(jurisdictionKey, options);
-      }
-
-      // Fallback to general translation
-      return i18nT(key, options);
-    },
-    [i18nT, jurisdiction]
-  );
+export const useTranslation = (namespace?: string): UseTranslationReturn => {
+  const { t: i18nT, i18n } = useI18nTranslation(namespace || NAMESPACES.UI);
 
   return {
-    t,
+    t: i18nT,
     i18n: {
-      language: i18n.language as LanguageCode,
-      jurisdiction,
-      changeLanguage: async (lng: LanguageCode) => {
+      language: (i18n.language || 'en') as SupportedLanguageCode,
+      changeLanguage: async (lng: SupportedLanguageCode) => {
         await i18n.changeLanguage(lng);
       },
-      languages: i18n.languages as LanguageCode[],
-      supportedLanguages: getSupportedLanguages(jurisdiction) as LanguageCode[],
       isReady: i18n.isInitialized,
+      supportedLanguages: Object.keys(SUPPORTED_LANGUAGES) as SupportedLanguageCode[],
     },
   };
 };
 
 /**
- * Hook for jurisdiction-specific functionality
+ * Hook for loading and using content namespaces (wills, family-shield)
+ */
+export const useContentNamespace = (
+  contentType: keyof typeof NAMESPACES.CONTENT,
+  language: SupportedLanguageCode,
+  jurisdiction: SupportedJurisdictionCode
+): UseContentNamespaceReturn => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  const namespace = useMemo(() => 
+    getContentNamespace(contentType, language, jurisdiction), 
+    [contentType, language, jurisdiction]
+  );
+
+  useEffect(() => {
+    const loadNamespace = async () => {
+      if (NamespaceLoader.isLoaded(namespace)) {
+        setIsLoaded(true);
+        return;
+      }
+
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        await NamespaceLoader.loadContent(contentType, language, jurisdiction);
+        setIsLoaded(true);
+      } catch (err) {
+        setError(err as Error);
+        console.error(`Failed to load content namespace for ${String(contentType)}:`, err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadNamespace();
+  }, [contentType, language, jurisdiction, namespace]);
+
+  return { isLoading, error, isLoaded };
+};
+
+/**
+ * Hook for managing jurisdiction
  */
 export const useJurisdiction = (): UseJurisdictionReturn => {
-  const [jurisdictionCode, setJurisdictionCode] = useState<JurisdictionCode>(
-    getCurrentJurisdiction()
-  );
-  const jurisdiction = JURISDICTION_CONFIG[jurisdictionCode];
+  const [jurisdiction, setJurisdiction] = useState<SupportedJurisdictionCode>(() => {
+    // Try to get from localStorage or default to SK
+    const stored = localStorage.getItem('preferredJurisdiction') as SupportedJurisdictionCode;
+    return stored && Object.keys(SUPPORTED_JURISDICTIONS).includes(stored) ? stored : 'SK';
+  });
 
-  const changeJurisdiction = useCallback((code: JurisdictionCode) => {
-    setJurisdictionCode(code);
-    // Update URL or state management as needed
-    // This would typically be handled by routing in a real app
+  const changeJurisdiction = useCallback((code: SupportedJurisdictionCode) => {
+    setJurisdiction(code);
+    localStorage.setItem('preferredJurisdiction', code);
   }, []);
 
   return {
     jurisdiction,
     changeJurisdiction,
-    supportedLanguages: jurisdiction.supportedLanguages as LanguageCode[],
-    legalSystem: jurisdiction.legalSystem,
-    currency: jurisdiction.currency,
-    tier: jurisdiction.tier,
+    supportedJurisdictions: Object.keys(SUPPORTED_JURISDICTIONS) as SupportedJurisdictionCode[],
   };
 };
 
 /**
- * Hook for legal terminology
+ * Hook for language formatting utilities
  */
-export const useLegalTerm = (): UseLegalTermReturn => {
-  const { jurisdiction } = useJurisdiction();
+export const useLanguageFormatting = () => {
   const { i18n } = useTranslation();
-
-  const getTerm = useCallback(
-    (key: string) => {
-      return getLegalTerm(key, jurisdiction.code, i18n.language);
-    },
-    [jurisdiction.code, i18n.language]
-  );
-
-  const getDefinition = useCallback(
-    (key: string) => {
-      return getLegalDefinition(key, jurisdiction.code);
-    },
-    [jurisdiction.code]
-  );
-
-  const getReference = useCallback(
-    (key: string) => {
-      return getLegalReference(key, jurisdiction.code);
-    },
-    [jurisdiction.code]
-  );
-
-  const searchTerms = useCallback(
-    (query: string, category?: LegalTermCategory) => {
-      const results = searchLegalTerms(query, jurisdiction.code, category);
-      return results.map(term => ({
-        key: term.key,
-        term: term.jurisdictions[jurisdiction.code]?.term || term.key,
-        definition: term.jurisdictions[jurisdiction.code]?.definition,
-      }));
-    },
-    [jurisdiction.code]
-  );
-
-  return {
-    getTerm,
-    getDefinition,
-    getReference,
-    searchTerms,
-  };
-};
-
-/**
- * Hook for language-specific formatting
- */
-export const useLanguage = () => {
-  const { i18n } = useTranslation();
-  const languageConfig = LANGUAGE_CONFIG[i18n.language];
+  const currentLang = i18n.language;
+  const languageConfig = SUPPORTED_LANGUAGES[currentLang as SupportedLanguageCode];
 
   const formatDate = useCallback(
     (date: Date): string => {
@@ -178,137 +147,88 @@ export const useLanguage = () => {
     [languageConfig]
   );
 
-  const formatTime = useCallback(
-    (date: Date): string => {
-      if (!languageConfig) return date.toLocaleTimeString();
-
-      const hours = date.getHours();
-      const minutes = String(date.getMinutes()).padStart(2, '0');
-
-      if (languageConfig.timeFormat === 'HH:mm') {
-        return `${String(hours).padStart(2, '0')}:${minutes}`;
-      } else {
-        // 12-hour format
-        const period = hours >= 12 ? 'PM' : 'AM';
-        const displayHours = hours % 12 || 12;
-        return `${displayHours}:${minutes} ${period}`;
-      }
-    },
-    [languageConfig]
-  );
-
-  const formatNumber = useCallback(
-    (num: number, decimals: number = 2): string => {
-      if (!languageConfig) return num.toLocaleString();
-
-      const parts = num.toFixed(decimals).split('.');
-      const integerPart = parts[0].replace(
-        /\B(?=(\d{3})+(?!\d))/g,
-        languageConfig.thousandsSeparator
-      );
-      const decimalPart = parts[1];
-
-      if (decimals > 0 && decimalPart) {
-        return `${integerPart}${languageConfig.decimalSeparator}${decimalPart}`;
-      }
-      return integerPart;
-    },
-    [languageConfig]
-  );
-
   const formatCurrency = useCallback(
-    (amount: number, currency: string): string => {
-      if (!languageConfig) return `${currency} ${amount}`;
+    (amount: number): string => {
+      if (!languageConfig) return amount.toString();
 
-      const formattedAmount = formatNumber(amount, 2);
-
-      if (languageConfig.currencyPosition === 'before') {
-        return `${currency} ${formattedAmount}`;
-      } else {
-        return `${formattedAmount} ${currency}`;
-      }
+      return new Intl.NumberFormat(currentLang, {
+        style: 'currency',
+        currency: languageConfig.currency,
+      }).format(amount);
     },
-    [languageConfig, formatNumber]
+    [languageConfig, currentLang]
   );
 
   return {
-    language: i18n.language as LanguageCode,
-    direction: languageConfig?.direction || 'ltr',
-    script: languageConfig?.script || 'Latin',
     formatDate,
-    formatTime,
-    formatNumber,
     formatCurrency,
-    nativeName: languageConfig?.nativeName || i18n.language,
+    language: languageConfig,
+    isRTL: languageConfig?.rtl || false,
   };
 };
 
 /**
- * Hook for language switcher component
+ * Hook for wills-specific content
+ */
+export const useWillsContent = (
+  language: SupportedLanguageCode,
+  jurisdiction: SupportedJurisdictionCode
+) => {
+  const contentNamespace = useContentNamespace('wills', language, jurisdiction);
+  const { t } = useI18nTranslation(getContentNamespace('wills', language, jurisdiction));
+
+  return {
+    ...contentNamespace,
+    t: contentNamespace.isLoaded ? t : () => '',
+    namespace: getContentNamespace('wills', language, jurisdiction),
+  };
+};
+
+/**
+ * Hook for family shield content
+ */
+export const useFamilyShieldContent = (
+  language: SupportedLanguageCode,
+  jurisdiction: SupportedJurisdictionCode
+) => {
+  const contentNamespace = useContentNamespace('familyShield', language, jurisdiction);
+  const { t } = useI18nTranslation(getContentNamespace('familyShield', language, jurisdiction));
+
+  return {
+    ...contentNamespace,
+    t: contentNamespace.isLoaded ? t : () => '',
+    namespace: getContentNamespace('familyShield', language, jurisdiction),
+  };
+};
+
+/**
+ * Hook for language switcher functionality
  */
 export const useLanguageSwitcher = () => {
-  const { i18n, jurisdiction } = useTranslation();
-  const supportedLanguages = getSupportedLanguages(jurisdiction);
+  const { i18n } = useTranslation();
 
   const availableLanguages = useMemo(() => {
-    return supportedLanguages.map(code => ({
-      code: code as LanguageCode,
-      name: LANGUAGE_CONFIG[code]?.name || code,
-      nativeName: LANGUAGE_CONFIG[code]?.nativeName || code,
+    return Object.entries(SUPPORTED_LANGUAGES).map(([code, config]) => ({
+      code: code as SupportedLanguageCode,
+      name: config.name,
+      nativeName: config.nativeName,
+      flag: config.flag,
       isActive: i18n.language === code,
     }));
-  }, [supportedLanguages, i18n.language]);
+  }, [i18n.language]);
 
   const switchLanguage = useCallback(
-    async (code: LanguageCode) => {
+    async (code: SupportedLanguageCode) => {
       await i18n.changeLanguage(code);
-      // Store preference
-      localStorage.setItem('preferredLanguage', code);
+      localStorage.setItem('i18nextLng', code);
+      document.documentElement.lang = code;
     },
     [i18n]
   );
 
   return {
-    currentLanguage: i18n.language as LanguageCode,
+    currentLanguage: i18n.language as SupportedLanguageCode,
     availableLanguages,
     switchLanguage,
-  };
-};
-
-/**
- * Hook for jurisdiction switcher component
- */
-export const useJurisdictionSwitcher = () => {
-  const { jurisdiction, changeJurisdiction } = useJurisdiction();
-  const { tier } = jurisdiction;
-
-  const availableJurisdictions = useMemo(() => {
-    return Object.values(JURISDICTION_CONFIG)
-      .filter(j => j.tier === tier) // Only show same tier jurisdictions
-      .map(j => ({
-        code: j.code as JurisdictionCode,
-        name: j.name,
-        domain: j.domain,
-        isActive: j.code === jurisdiction.code,
-      }));
-  }, [jurisdiction.code, tier]);
-
-  const switchJurisdiction = useCallback(
-    (code: JurisdictionCode) => {
-      const newJurisdiction = JURISDICTION_CONFIG[code];
-      if (newJurisdiction) {
-        // In production, this would redirect to the new domain
-        changeJurisdiction(code);
-        // Store preference
-        localStorage.setItem('preferredJurisdiction', code);
-      }
-    },
-    [changeJurisdiction]
-  );
-
-  return {
-    currentJurisdiction: jurisdiction.code as JurisdictionCode,
-    availableJurisdictions,
-    switchJurisdiction,
   };
 };

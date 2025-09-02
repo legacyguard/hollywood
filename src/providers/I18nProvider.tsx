@@ -63,8 +63,12 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({
   return <I18nextProvider i18n={i18n}>{children}</I18nextProvider>;
 };
 
-// Hook for loading feature-specific namespaces
-export const useLoadNamespace = (feature: keyof typeof NAMESPACES.FEATURES) => {
+// Hook for loading content-specific namespaces with jurisdiction
+export const useLoadContentNamespace = (
+  contentType: keyof typeof NAMESPACES.CONTENT, 
+  language: keyof typeof SUPPORTED_LANGUAGES, 
+  jurisdiction: 'SK' | 'CZ'
+) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
@@ -74,17 +78,17 @@ export const useLoadNamespace = (feature: keyof typeof NAMESPACES.FEATURES) => {
       setError(null);
 
       try {
-        await NamespaceLoader.loadFeature(feature);
+        await NamespaceLoader.loadContent(contentType, language, jurisdiction);
       } catch (err) {
         setError(err as Error);
-        console.error(`Failed to load namespace for ${feature}:`, err);
+        console.error(`Failed to load content namespace for ${String(contentType)}:`, err);
       } finally {
         setIsLoading(false);
       }
     };
 
     load();
-  }, [feature]);
+  }, [contentType, language, jurisdiction]);
 
   return { isLoading, error };
 };
@@ -127,25 +131,25 @@ export const LanguageSwitcher: React.FC = () => {
   );
 };
 
-// Lazy loading wrapper for legal documents
-export const LegalDocumentLoader: React.FC<{
-  country: string;
-  type: 'holographic' | 'allographic';
+// Lazy loading wrapper for wills content
+export const WillsContentLoader: React.FC<{
+  language: keyof typeof SUPPORTED_LANGUAGES;
+  jurisdiction: 'SK' | 'CZ';
   children: React.ReactNode;
-}> = ({ country, type, children }) => {
+}> = ({ language, jurisdiction, children }) => {
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     const load = async () => {
-      await NamespaceLoader.loadLegalTemplate(country, type);
+      await NamespaceLoader.loadWills(language, jurisdiction);
       setIsLoaded(true);
     };
 
     load();
-  }, [country, type]);
+  }, [language, jurisdiction]);
 
   if (!isLoaded) {
-    return <div>Loading legal document...</div>;
+    return <div>Loading wills content...</div>;
   }
 
   return <>{children}</>;

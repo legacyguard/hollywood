@@ -116,7 +116,7 @@ export const i18nConfig = {
     order: ['localStorage', 'navigator', 'htmlTag'],
     caches: ['localStorage'],
     lookupLocalStorage: 'i18nextLng',
-    checkWhitelist: true
+    checkForSupportedLanguage: true
   },
 
   // Backend options for loading translations
