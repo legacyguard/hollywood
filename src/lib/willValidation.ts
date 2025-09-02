@@ -89,7 +89,7 @@ export class WillValidationService {
   /**
    * Validate personal information
    */
-  private validatePersonalInformation(personal: any, config: WillJurisdictionConfig) {
+  private validatePersonalInformation(personal: Record<string, unknown>, config: WillJurisdictionConfig) {
     const errors: ValidationError[] = [];
     const warnings: ValidationError[] = [];
     const missing: string[] = [];
@@ -175,7 +175,7 @@ export class WillValidationService {
   /**
    * Validate family information
    */
-  private validateFamilyInformation(family: any) {
+  private validateFamilyInformation(family: Record<string, unknown>) {
     const errors: ValidationError[] = [];
     const warnings: ValidationError[] = [];
 
@@ -193,7 +193,7 @@ export class WillValidationService {
 
     // Validate children information
     if (family.children && Array.isArray(family.children)) {
-      family.children.forEach((child: any, index: number) => {
+      family.children.forEach((child: Record<string, unknown>, index: number) => {
         if (!child.fullName?.trim()) {
           errors.push({
             field: `family.children[${index}].fullName`,
@@ -223,7 +223,7 @@ export class WillValidationService {
   /**
    * Validate beneficiaries
    */
-  private validateBeneficiaries(beneficiaries: BeneficiaryInfo[], family: any, config: WillJurisdictionConfig) {
+  private validateBeneficiaries(beneficiaries: BeneficiaryInfo[], family: Record<string, unknown>, config: WillJurisdictionConfig) {
     const errors: ValidationError[] = [];
     const warnings: ValidationError[] = [];
 
@@ -324,13 +324,13 @@ export class WillValidationService {
   /**
    * Validate forced heirship requirements
    */
-  private validateForcedHeirship(beneficiaries: BeneficiaryInfo[], family: any, config: WillJurisdictionConfig): ValidationError[] {
+  private validateForcedHeirship(beneficiaries: BeneficiaryInfo[], family: Record<string, unknown>, config: WillJurisdictionConfig): ValidationError[] {
     const errors: ValidationError[] = [];
 
     if (config.jurisdiction === 'CZ' || config.jurisdiction === 'SK') {
       const hasSpouse = family.spouse !== undefined;
       const hasChildren = family.children && family.children.length > 0;
-      const hasMinorChildren = family.children?.some((c: any) => c.isMinor);
+      const hasMinorChildren = family.children?.some((c: Record<string, unknown>) => c.isMinor);
 
       // Czech/Slovak forced heirship rules
       if (hasSpouse || hasChildren) {
@@ -426,7 +426,7 @@ export class WillValidationService {
   /**
    * Validate executors
    */
-  private validateExecutors(executors: any[]) {
+  private validateExecutors(executors: Record<string, unknown>[]) {
     const errors: ValidationError[] = [];
     const warnings: ValidationError[] = [];
 
@@ -492,11 +492,11 @@ export class WillValidationService {
   /**
    * Validate guardians for minor children
    */
-  private validateGuardians(guardians: any[], family: any) {
+  private validateGuardians(guardians: Record<string, unknown>[], family: Record<string, unknown>) {
     const errors: ValidationError[] = [];
     const warnings: ValidationError[] = [];
 
-    const hasMinorChildren = family.children?.some((child: any) => child.isMinor);
+    const hasMinorChildren = family.children?.some((child: Record<string, unknown>) => child.isMinor);
 
     if (hasMinorChildren && (!guardians || guardians.length === 0)) {
       errors.push({
@@ -620,7 +620,7 @@ export class WillValidationService {
     return age;
   }
 
-  private validateAddress(address: any): boolean {
+  private validateAddress(address: Record<string, unknown>): boolean {
     return address &&
            typeof address.street === 'string' && address.street.trim() &&
            typeof address.city === 'string' && address.city.trim() &&
@@ -641,13 +641,13 @@ export class WillValidationService {
     return true; // Other jurisdictions
   }
 
-  private isEmpty(value: any): boolean {
+  private isEmpty(value: unknown): boolean {
     return value === null || value === undefined || value === '' ||
            (Array.isArray(value) && value.length === 0) ||
            (typeof value === 'object' && Object.keys(value).length === 0);
   }
 
-  private getDataValue(data: WillUserData, key: string, source: string): any {
+  private getDataValue(data: WillUserData, key: string, source: string): unknown {
     switch (source) {
       case 'user':
         return this.getNestedValue(data.personal, key) ||
@@ -663,7 +663,7 @@ export class WillValidationService {
     }
   }
 
-  private getNestedValue(obj: any, path: string): any {
+  private getNestedValue(obj: Record<string, unknown>, path: string): unknown {
     if (!obj || !path) return null;
     return path.split('.').reduce((current, prop) => current?.[prop], obj);
   }

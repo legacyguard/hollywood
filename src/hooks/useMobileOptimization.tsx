@@ -3,9 +3,8 @@
  * Custom hooks for responsive design and mobile performance optimizations
  */
 
-import React, { useEffect, useState, useCallback } from 'react';
-import { cn } from '@/lib/utils';
-import { breakpoints, type Breakpoint, touchThresholds, performanceConfig } from '@/lib/performance/mobile-optimization-constants';
+import { type RefObject, useEffect, useState, useCallback } from 'react';
+import { breakpoints, type Breakpoint, touchThresholds } from '@/lib/performance/mobile-optimization-constants';
 
 // Hook for responsive breakpoint detection
 export function useBreakpoint(): {
@@ -58,7 +57,7 @@ export function useBreakpoint(): {
 }
 
 // Hook for touch gesture handling
-export function useTouchGestures(elementRef: React.RefObject<HTMLElement>) {
+export function useTouchGestures(elementRef: RefObject<HTMLElement>) {
   const [gesture, setGesture] = useState<{
     isActive: boolean;
     type: 'tap' | 'swipe' | 'pinch' | null;
@@ -84,7 +83,7 @@ export function useTouchGestures(elementRef: React.RefObject<HTMLElement>) {
         y: touch.clientY,
         time: Date.now(),
       };
-      
+
       setGesture(prev => ({
         ...prev,
         isActive: true,
@@ -99,7 +98,7 @@ export function useTouchGestures(elementRef: React.RefObject<HTMLElement>) {
       const deltaX = touch.clientX - touchStart.x;
       const deltaY = touch.clientY - touchStart.y;
       const deltaTime = Date.now() - touchStart.time;
-      
+
       const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
       const velocity = distance / deltaTime;
 
@@ -112,7 +111,7 @@ export function useTouchGestures(elementRef: React.RefObject<HTMLElement>) {
         } else {
           direction = deltaY > 0 ? 'down' : 'up';
         }
-        
+
         setGesture(prev => ({ ...prev, type: 'swipe', direction, isActive: false }));
       } else {
         setGesture(prev => ({ ...prev, isActive: false }));
@@ -136,10 +135,10 @@ export function useTouchGestures(elementRef: React.RefObject<HTMLElement>) {
 // Hook for responsive grid columns
 export function useResponsiveGrid(defaultCols: number = 1) {
   const { current, width } = useBreakpoint();
-  
+
   const getColumns = useCallback(() => {
     if (!current) return defaultCols;
-    
+
     const columnMap: Record<Breakpoint, number> = {
       'sm': Math.max(1, defaultCols),
       'md': Math.max(2, Math.floor(defaultCols * 1.5)),
@@ -147,7 +146,7 @@ export function useResponsiveGrid(defaultCols: number = 1) {
       'xl': Math.max(3, Math.floor(defaultCols * 2.5)),
       '2xl': Math.max(4, defaultCols * 3),
     };
-    
+
     return columnMap[current];
   }, [current, defaultCols]);
 
@@ -161,7 +160,7 @@ export function useResponsiveGrid(defaultCols: number = 1) {
 // Hook for viewport information
 export function useViewport() {
   const { width, height, current } = useBreakpoint();
-  
+
   return {
     width,
     height,

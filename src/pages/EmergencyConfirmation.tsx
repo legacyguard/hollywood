@@ -75,7 +75,7 @@ export default function EmergencyConfirmation() {
               {isConfirmed ? (
                 <ul className='text-sm text-muted-foreground space-y-2 text-left'>
                   <li className='flex items-start gap-2'>
-                    <Icon name={"check" as any}
+                    <Icon name={"check"}
                       className='w-4 h-4 mt-0.5 text-green-600'
                     />
                     <span>
@@ -83,7 +83,7 @@ export default function EmergencyConfirmation() {
                     </span>
                   </li>
                   <li className='flex items-start gap-2'>
-                    <Icon name={"check" as any}
+                    <Icon name={"check"}
                       className='w-4 h-4 mt-0.5 text-green-600'
                     />
                     <span>
@@ -92,7 +92,7 @@ export default function EmergencyConfirmation() {
                     </span>
                   </li>
                   <li className='flex items-start gap-2'>
-                    <Icon name={"check" as any}
+                    <Icon name={"check"}
                       className='w-4 h-4 mt-0.5 text-green-600'
                     />
                     <span>
@@ -100,7 +100,7 @@ export default function EmergencyConfirmation() {
                     </span>
                   </li>
                   <li className='flex items-start gap-2'>
-                    <Icon name={"check" as any}
+                    <Icon name={"check"}
                       className='w-4 h-4 mt-0.5 text-green-600'
                     />
                     <span>All access is logged and audited for security</span>
@@ -109,7 +109,7 @@ export default function EmergencyConfirmation() {
               ) : (
                 <ul className='text-sm text-muted-foreground space-y-2 text-left'>
                   <li className='flex items-start gap-2'>
-                    <Icon name={"info" as any}
+                    <Icon name={"info"}
                       className='w-4 h-4 mt-0.5 text-amber-600'
                     />
                     <span>
@@ -118,7 +118,7 @@ export default function EmergencyConfirmation() {
                     </span>
                   </li>
                   <li className='flex items-start gap-2'>
-                    <Icon name={"info" as any}
+                    <Icon name={"info"}
                       className='w-4 h-4 mt-0.5 text-amber-600'
                     />
                     <span>
@@ -126,7 +126,7 @@ export default function EmergencyConfirmation() {
                     </span>
                   </li>
                   <li className='flex items-start gap-2'>
-                    <Icon name={"info" as any}
+                    <Icon name={"info"}
                       className='w-4 h-4 mt-0.5 text-amber-600'
                     />
                     <span>Your response has been recorded and logged</span>
@@ -147,7 +147,7 @@ export default function EmergencyConfirmation() {
           </div>
 
           <div className='flex gap-3 justify-center'>
-            <Button onClick={() => navigate('/')} variant={"outline" as any}>
+            <Button onClick={() => navigate('/')} variant={"outline"}>
               Return Home
             </Button>
 
@@ -160,7 +160,7 @@ export default function EmergencyConfirmation() {
                 }
                 className='bg-green-600 hover:bg-green-700'
               >
-                <Icon name={"shield" as any} className='w-4 h-4 mr-2' />
+                <Icon name={"shield"} className='w-4 h-4 mr-2' />
                 View Emergency Resources
               </Button>
             )}

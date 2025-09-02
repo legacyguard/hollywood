@@ -3,6 +3,7 @@
  * Non-React utilities for mobile performance and optimization
  */
 
+import React from 'react';
 import { cn } from '@/lib/utils';
 
 // Mobile-optimized component props generator
@@ -57,7 +58,7 @@ export const mobileAnalytics = {
     const start = performance.now();
     fn();
     const end = performance.now();
-    
+
     if ('performance' in window && 'measure' in performance) {
       try {
         performance.mark(`${name}-start`);
@@ -67,7 +68,7 @@ export const mobileAnalytics = {
         // Fallback for unsupported browsers
       }
     }
-    
+
     return end - start;
   },
 
@@ -84,19 +85,20 @@ export const mobileAnalytics = {
 // Utility functions for mobile optimization
 export function renderMobileOptimized<T extends Record<string, unknown>>(
   Component: React.ComponentType<T>,
-  props: T & { 
+  props: T & {
     mobileClassName?: string;
     desktopClassName?: string;
     breakpoint?: number;
   }
 ) {
   const { mobileClassName, desktopClassName, breakpoint = 768, ...componentProps } = props;
-  
+
   const isMobile = typeof window !== 'undefined' && window.innerWidth < breakpoint;
   const optimizedClassName = isMobile ? mobileClassName : desktopClassName;
-  
+
   return React.createElement(Component, {
     ...componentProps as T,
     className: cn(componentProps.className as string, optimizedClassName),
   });
 }
+

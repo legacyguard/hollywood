@@ -394,7 +394,7 @@ export default function ComponentShowcase() {
                     </h3>
                     <ProfileGrid
                       profiles={mockProfiles}
-                      variant={"compact" as any}
+                      variant={"compact"}
                       columns={2}
                     />
                   </div>
@@ -412,7 +412,7 @@ export default function ComponentShowcase() {
                           Tasks: '5 pending',
                         },
                       }}
-                      variant={"detailed" as any}
+                      variant={"detailed"}
                     />
                   </div>
                 </CardContent>

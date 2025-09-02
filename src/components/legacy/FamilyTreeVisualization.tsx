@@ -114,12 +114,12 @@ export const FamilyTreeVisualization: React.FC<
 
   const handleDrop = useCallback((event: React.DragEvent) => {
     event.preventDefault();
-    const nodeData = JSON.parse(
+    const _nodeData = JSON.parse(
       event.dataTransfer.getData('application/json')
     ) as FamilyNode;
     const rect = event.currentTarget.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
+    const _x = event.clientX - rect.left;
+    const _y = event.clientY - rect.top;
 
     // Update node position (in a real implementation, you'd update the family tree state)
     // Moving ${nodeData.name} to position (${x}, ${y})

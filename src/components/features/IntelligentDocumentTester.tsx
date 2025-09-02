@@ -104,7 +104,7 @@ export const IntelligentDocumentTester: React.FC = () => {
   };
 
   const handleConfirm = (
-    confirmedData: typeof mockAnalysisResult & { bundleSelection?: any }
+    _confirmedData: typeof mockAnalysisResult & { bundleSelection?: any }
   ) => {
     setIsProcessing(true);
 

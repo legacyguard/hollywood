@@ -21,7 +21,7 @@ export interface LegacyGardenProps {
   daysActive?: number
   interactive?: boolean
   showLabels?: boolean
-  onMilestoneClick?: (milestone: any) => void
+  onMilestoneClick?: (milestone: { id: string; name: string; achieved: boolean }) => void
 }
 
 // Web/React version with Framer Motion

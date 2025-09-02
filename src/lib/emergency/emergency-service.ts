@@ -450,7 +450,7 @@ export class EmergencyService {
     const results = await this.testingSystem.runTestSuite();
 
     // Generate test report
-    const report = await this.testingSystem.generateTestReport(results);
+    const _report = await this.testingSystem.generateTestReport(results);
     // Test report generated: ${report}
 
     return results;

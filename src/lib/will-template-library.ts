@@ -958,8 +958,8 @@ export class WillTemplateLibrary {
   // Helper methods
   private compareSection(
     sectionName: keyof WillData,
-    oldSection: any,
-    newSection: any,
+    oldSection: unknown,
+    newSection: unknown,
     changes: ChangeSet[]
   ) {
     if (!oldSection && !newSection) return;

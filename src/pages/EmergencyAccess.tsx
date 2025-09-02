@@ -268,7 +268,7 @@ export default function FamilyShieldAccessPage() {
               Access Denied
             </h2>
             <p className='text-red-700 mb-6'>{error}</p>
-            <Button onClick={() => navigate('/')} variant={"outline" as any}>
+            <Button onClick={() => navigate('/')} variant={"outline"}>
               <Icon name="home" className='w-4 h-4 mr-2' />
               Return to Home
             </Button>
@@ -318,7 +318,7 @@ export default function FamilyShieldAccessPage() {
                   </>
                 ) : (
                   <>
-                    <Icon name={"check" as any} className='w-4 h-4 mr-2' />
+                    <Icon name={"check"} className='w-4 h-4 mr-2' />
                     Verify Access
                   </>
                 )}
@@ -335,7 +335,7 @@ export default function FamilyShieldAccessPage() {
       <div className='min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center'>
         <Card className='p-8 max-w-md w-full mx-4'>
           <div className='text-center'>
-            <Icon name={"alert-circle" as any}
+            <Icon name={"alert-circle"}
               className='w-12 h-12 text-gray-500 mx-auto mb-4'
             />
             <h2 className='text-xl font-semibold mb-2'>No Data Available</h2>
@@ -370,7 +370,7 @@ export default function FamilyShieldAccessPage() {
                   {accessData.user_name}'s emergency information
                 </p>
               </div>
-              <Badge variant={"destructive" as any} className='text-sm'>
+              <Badge variant={"destructive"} className='text-sm'>
                 Family Shield Active
               </Badge>
             </div>
@@ -383,7 +383,7 @@ export default function FamilyShieldAccessPage() {
           {/* Access Information */}
           <FadeIn duration={0.5} delay={0.4}>
             <Alert>
-              <Icon name={"info" as any} className='h-4 w-4' />
+              <Icon name={"info"} className='h-4 w-4' />
               <AlertDescription>
                 This emergency access was activated on{' '}
                 {new Date(accessData.activation_date).toLocaleDateString()}
@@ -398,31 +398,31 @@ export default function FamilyShieldAccessPage() {
           <FadeIn duration={0.5} delay={0.6}>
             <Card className='p-6'>
               <h3 className='text-xl font-semibold mb-4 flex items-center gap-2'>
-                <Icon name={"key" as any} className='w-5 h-5 text-primary' />
+                <Icon name={"key"} className='w-5 h-5 text-primary' />
                 Your Access Permissions
               </h3>
               <div className='grid grid-cols-2 md:grid-cols-4 gap-4'>
                 {accessData.guardian_permissions.can_access_health_docs && (
                   <div className='flex items-center gap-2 text-green-700'>
-                    <Icon name={"heart" as any} className='w-4 h-4' />
+                    <Icon name={"heart"} className='w-4 h-4' />
                     <span className='text-sm'>Health Information</span>
                   </div>
                 )}
                 {accessData.guardian_permissions.can_access_financial_docs && (
                   <div className='flex items-center gap-2 text-blue-700'>
-                    <Icon name={"credit-card" as any} className='w-4 h-4' />
+                    <Icon name={"credit-card"} className='w-4 h-4' />
                     <span className='text-sm'>Financial Information</span>
                   </div>
                 )}
                 {accessData.guardian_permissions.is_child_guardian && (
                   <div className='flex items-center gap-2 text-purple-700'>
-                    <Icon name={"baby" as any} className='w-4 h-4' />
+                    <Icon name={"baby"} className='w-4 h-4' />
                     <span className='text-sm'>Child Guardian</span>
                   </div>
                 )}
                 {accessData.guardian_permissions.is_will_executor && (
                   <div className='flex items-center gap-2 text-amber-700'>
-                    <Icon name={"scroll" as any} className='w-4 h-4' />
+                    <Icon name={"scroll"} className='w-4 h-4' />
                     <span className='text-sm'>Will Executor</span>
                   </div>
                 )}
@@ -435,10 +435,10 @@ export default function FamilyShieldAccessPage() {
             <Card className='p-6'>
               <div className='flex items-center justify-between mb-4'>
                 <h3 className='text-xl font-semibold flex items-center gap-2'>
-                  <Icon name={"book-open" as any} className='w-5 h-5 text-primary' />
+                  <Icon name={"book-open"} className='w-5 h-5 text-primary' />
                   Family Survivor's Manual
                 </h3>
-                <Badge variant={"secondary" as any}>
+                <Badge variant={"secondary"}>
                   {accessData.survivor_manual.entries_count} entries
                 </Badge>
               </div>
@@ -456,11 +456,11 @@ export default function FamilyShieldAccessPage() {
                   onClick={downloadSurvivorManual}
                   className='bg-primary hover:bg-primary-hover'
                 >
-                  <Icon name={"download" as any} className='w-4 h-4 mr-2' />
+                  <Icon name={"download"} className='w-4 h-4 mr-2' />
                   Download Complete Manual
                 </Button>
                 <Button
-                  variant={"outline" as any}
+                  variant={"outline"}
                   onClick={() => {
                     // Open manual in new tab for viewing
                     const newWindow = window.open();
@@ -472,7 +472,7 @@ export default function FamilyShieldAccessPage() {
                     }
                   }}
                 >
-                  <Icon name={"external-link" as any} className='w-4 h-4 mr-2' />
+                  <Icon name={"external-link"} className='w-4 h-4 mr-2' />
                   View Online
                 </Button>
               </div>
@@ -483,7 +483,7 @@ export default function FamilyShieldAccessPage() {
           <FadeIn duration={0.5} delay={1.0}>
             <Card className='p-6'>
               <h3 className='text-xl font-semibold mb-4 flex items-center gap-2'>
-                <Icon name={"phone" as any} className='w-5 h-5 text-primary' />
+                <Icon name={"phone"} className='w-5 h-5 text-primary' />
                 Important Contacts
               </h3>
               <div className='grid gap-4'>
@@ -503,14 +503,14 @@ export default function FamilyShieldAccessPage() {
                         {contact.phone && (
                           <Button size='sm' variant='outline' asChild>
                             <a href={`tel:${contact.phone}`}>
-                              <Icon name={"phone" as any} className='w-4 h-4 mr-1' />
+                              <Icon name={"phone"} className='w-4 h-4 mr-1' />
                               Call
                             </a>
                           </Button>
                         )}
                         <Button size='sm' variant='outline' asChild>
                           <a href={`mailto:${contact.email}`}>
-                            <Icon name={"mail" as any} className='w-4 h-4 mr-1' />
+                            <Icon name={"mail"} className='w-4 h-4 mr-1' />
                             Email
                           </a>
                         </Button>
@@ -534,7 +534,7 @@ export default function FamilyShieldAccessPage() {
           <FadeIn duration={0.5} delay={1.2}>
             <Card className='p-6'>
               <h3 className='text-xl font-semibold mb-4 flex items-center gap-2'>
-                <Icon name={"file-text" as any} className='w-5 h-5 text-primary' />
+                <Icon name={"file-text"} className='w-5 h-5 text-primary' />
                 Available Documents
               </h3>
               {accessData.documents.length > 0 ? (
@@ -545,7 +545,7 @@ export default function FamilyShieldAccessPage() {
                       className='flex items-center justify-between p-3 border border-gray-200 rounded-lg'
                     >
                       <div className='flex items-center gap-3'>
-                        <Icon name={"file-text" as any}
+                        <Icon name={"file-text"}
                           className='w-5 h-5 text-muted-foreground'
                         />
                         <div>
@@ -558,10 +558,10 @@ export default function FamilyShieldAccessPage() {
                       </div>
                       <Button
                         size='sm'
-                        variant={"outline" as any}
+                        variant={"outline"}
                         onClick={() => handleDocumentDownload(doc.id, doc.title)}
                       >
-                        <Icon name={"download" as any} className='w-4 h-4 mr-1' />
+                        <Icon name={"download"} className='w-4 h-4 mr-1' />
                         Access
                       </Button>
                     </div>
@@ -579,7 +579,7 @@ export default function FamilyShieldAccessPage() {
           <FadeIn duration={0.5} delay={1.4}>
             <Card className='p-6 bg-blue-50 border-blue-200'>
               <div className='flex items-start gap-3'>
-                <Icon name={"heart" as any}
+                <Icon name={"heart"}
                   className='w-6 h-6 text-blue-600 flex-shrink-0 mt-1'
                 />
                 <div>

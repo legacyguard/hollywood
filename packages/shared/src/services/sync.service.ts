@@ -10,7 +10,7 @@ export type SyncConflictResolution = 'local' | 'remote' | 'merge';
 export interface SyncItem {
   id: string;
   type: string;
-  data: any;
+  data: Record<string, unknown>;
   localVersion: number;
   remoteVersion?: number;
   lastSynced?: Date;
@@ -19,8 +19,8 @@ export interface SyncItem {
 
 export interface SyncConflict {
   itemId: string;
-  localData: any;
-  remoteData: any;
+  localData: Record<string, unknown>;
+  remoteData: Record<string, unknown>;
   localVersion: number;
   remoteVersion: number;
 }

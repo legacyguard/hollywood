@@ -89,7 +89,7 @@ export const AlertDescription = styled(Text, {
 })
 
 // Alert Close Button
-export const AlertCloseButton = ({ onPress, ...props }: any) => (
+export const AlertCloseButton = ({ onPress, ...props }: GetProps<typeof Button>) => (
   <Button
     size="small"
     variant="ghost"
