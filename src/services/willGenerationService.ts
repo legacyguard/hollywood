@@ -626,7 +626,7 @@ export class WillGenerationService {
            'This document is generated based on applicable law. Consult a qualified attorney for legal advice.';
   }
 
-  private async saveWillToDatabase(will: GeneratedWill): Promise<void> {
+  private async saveWillToDatabase(_will: GeneratedWill): Promise<void> {
     // Implementation would save to Supabase database
     // Saving will to database: ${will.id}
   }

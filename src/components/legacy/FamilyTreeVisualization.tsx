@@ -196,7 +196,7 @@ export const FamilyTreeVisualization: React.FC<
         <div className='flex items-center gap-2'>
           <Dialog open={showAddRelative} onOpenChange={setShowAddRelative}>
             <DialogTrigger asChild>
-              <Button variant={"outline" as any} size='sm'>
+              <Button variant="outline" size='sm'>
                 <Icon name={"add" as any} className='w-4 h-4 mr-2' />
                 Add Relative
               </Button>
@@ -257,7 +257,7 @@ export const FamilyTreeVisualization: React.FC<
                 </div>
                 <div className='flex justify-end gap-2'>
                   <Button
-                    variant={"outline" as any}
+                    variant="outline"
                     onClick={() => setShowAddRelative(false)}
                   >
                     Cancel
@@ -304,7 +304,7 @@ export const FamilyTreeVisualization: React.FC<
                 {suggestions.slice(0, 3).map((suggestion, index) => (
                   <div key={index} className='text-sm'>
                     <div className='flex items-center gap-2'>
-                      <Badge variant={"outline" as any} className='text-xs'>
+                      <Badge variant="outline" className='text-xs'>
                         {suggestion.priority}
                       </Badge>
                       <span className='font-medium'>
@@ -520,7 +520,7 @@ const FamilyTreeNode: React.FC<FamilyTreeNodeProps> = ({
         </div>
 
         {node.inheritanceShare && (
-          <Badge variant={"secondary" as any} className='text-xs'>
+          <Badge variant="secondary" className='text-xs'>
             {node.inheritanceShare}%
           </Badge>
         )}
@@ -528,7 +528,7 @@ const FamilyTreeNode: React.FC<FamilyTreeNodeProps> = ({
         <div className='flex gap-1 mt-2'>
           <Button
             size='sm'
-            variant={"ghost" as any}
+            variant="ghost"
             className='h-6 px-2 text-xs'
             onClick={e => {
               e.stopPropagation();
@@ -575,7 +575,7 @@ const FamilyTreeNode: React.FC<FamilyTreeNodeProps> = ({
             </div>
             <div className='flex justify-end gap-2'>
               <Button
-                variant={"outline" as any}
+                variant="outline"
                 onClick={() => setShowInheritanceDialog(false)}
               >
                 Cancel

@@ -351,8 +351,8 @@ export class WillGuardianIntegrationService {
   async notifyGuardiansOfWillExecution(userId: string): Promise<void> {
     try {
       const guardians = await guardianService.getGuardians(userId);
-      const willExecutors = guardians.filter(g => g.is_will_executor);
-      const childGuardians = guardians.filter(g => g.is_child_guardian);
+      const _willExecutors = guardians.filter(g => g.is_will_executor);
+      const _childGuardians = guardians.filter(g => g.is_child_guardian);
 
       // This would trigger the emergency notification system
       // Will execution notification sent to ${willExecutors.length} executors and ${childGuardians.length} guardians

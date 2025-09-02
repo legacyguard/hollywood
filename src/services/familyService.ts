@@ -103,7 +103,7 @@ export class FamilyService {
   ): Promise<FamilyMember> {
     try {
       // For now, return a mock family member since the database tables don't exist in types
-      console.warn('Using mock family member creation');
+      // Using mock family member creation
 
       const familyMember: FamilyMember = {
         id: `member_${Date.now()}`,

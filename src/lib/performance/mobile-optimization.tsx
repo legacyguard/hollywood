@@ -5,7 +5,7 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { cn } from '@/lib/utils';
-import { breakpoints, type Breakpoint, touchThresholds, performanceConfig } from './mobile-optimization-constants';
+import { breakpoints, type Breakpoint } from './mobile-optimization-constants';
 
 // Hook for responsive breakpoint detection
 export function useBreakpoint(): {

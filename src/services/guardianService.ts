@@ -11,7 +11,7 @@ export const guardianService = {
    */
   async getGuardians(): Promise<Guardian[]> {
     // Stub implementation - return empty array for now
-    console.warn('guardianService.getGuardians called with stub implementation');
+    // guardianService.getGuardians called with stub implementation
     return [];
   },
 
@@ -20,7 +20,7 @@ export const guardianService = {
    */
   async createGuardian(guardianRequest: CreateGuardianRequest, userId: string): Promise<Guardian> {
     // Stub implementation
-    console.warn('guardianService.createGuardian called with stub implementation');
+    // guardianService.createGuardian called with stub implementation
     return {
       id: 'stub-id',
       user_id: userId,
@@ -45,6 +45,6 @@ export const guardianService = {
    */
   async updateGuardian(): Promise<void> {
     // Stub implementation
-    console.warn('guardianService.updateGuardian called with stub implementation');
+    // guardianService.updateGuardian called with stub implementation
   }
 };

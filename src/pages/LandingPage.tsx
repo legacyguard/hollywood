@@ -146,7 +146,7 @@ export function LandingPage() {
               >
                 <Link to="/blog">
                   <Button
-                    variant={"ghost" as any}
+                    variant="ghost"
                     className='text-slate-200 hover:text-white hover:bg-slate-800/50 border-0 text-lg font-medium px-4 py-2'
                   >
                     Blog
@@ -158,7 +158,7 @@ export function LandingPage() {
                 whileTap={{  scale: 0.98  }}
               >
                 <Button
-                  variant={"ghost" as any}
+                  variant="ghost"
                   onClick={handleSignIn}
                   className='text-slate-200 hover:text-white hover:bg-slate-800/50 border-0 text-lg font-medium px-4 py-2'
                 >

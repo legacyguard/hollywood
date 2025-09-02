@@ -136,7 +136,7 @@ export default function Family() {
               currentMemberCount={familyMembers.length}
               onPlanSelect={handlePlanUpgrade}
               trigger={
-                <Button variant={"outline" as any} size="sm" className="gap-2">
+                <Button variant="outline" size="sm" className="gap-2">
                   <Sparkles className="h-4 w-4" />
                   Upgrade Plan
                 </Button>
@@ -162,7 +162,7 @@ export default function Family() {
               currentMemberCount={familyMembers.length}
               onPlanSelect={handlePlanUpgrade}
               trigger={
-                <Button variant={"outline" as any} size="sm" className="gap-2 ml-4">
+                <Button variant="outline" size="sm" className="gap-2 ml-4">
                   <Crown className="h-4 w-4" />
                   Upgrade Plan
                   <ArrowRight className="h-4 w-4" />
@@ -343,19 +343,19 @@ export default function Family() {
               </CardHeader>
               <CardContent>
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                  <Button variant={"outline" as any} className="h-auto p-4 flex-col gap-2" onClick={() => setActiveTab('members')}>
+                  <Button variant="outline" className="h-auto p-4 flex-col gap-2" onClick={() => setActiveTab('members')}>
                     <UserPlus className="h-6 w-6 text-green-600" />
                     <span>Invite Member</span>
                   </Button>
-                  <Button variant={"outline" as any} className="h-auto p-4 flex-col gap-2" onClick={() => setActiveTab('sharing')}>
+                  <Button variant="outline" className="h-auto p-4 flex-col gap-2" onClick={() => setActiveTab('sharing')}>
                     <Share2 className="h-6 w-6 text-blue-600" />
                     <span>Share Documents</span>
                   </Button>
-                  <Button variant={"outline" as any} className="h-auto p-4 flex-col gap-2" onClick={() => setActiveTab('calendar')}>
+                  <Button variant="outline" className="h-auto p-4 flex-col gap-2" onClick={() => setActiveTab('calendar')}>
                     <Calendar className="h-6 w-6 text-purple-600" />
                     <span>Add Event</span>
                   </Button>
-                  <Button variant={"outline" as any} className="h-auto p-4 flex-col gap-2">
+                  <Button variant="outline" className="h-auto p-4 flex-col gap-2">
                     <Shield className="h-6 w-6 text-red-600" />
                     <span>Emergency Setup</span>
                   </Button>
