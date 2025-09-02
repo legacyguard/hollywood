@@ -1,5 +1,6 @@
 import React from 'react';
 import { Icon, type IconName } from '@/components/ui/icon-library';
+import { useTranslation } from 'react-i18next';
 import {
   Card,
   CardContent,
@@ -34,6 +35,7 @@ export function PillarCard({
   children,
   actionButton,
 }: PillarCardProps) {
+  const { t } = useTranslation('ui/pillar-card');
   return (
     <Card
       padding="$8"
@@ -77,7 +79,7 @@ export function PillarCard({
           right="$4"
           zIndex={1}
         >
-          Coming Soon
+          {t('comingSoon')}
         </Badge>
       )}
 
