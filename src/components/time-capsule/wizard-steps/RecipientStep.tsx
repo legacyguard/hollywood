@@ -103,7 +103,7 @@ export function RecipientStep({
                 <div className='flex items-center gap-2'>
                   <span className='font-medium'>{selectedRecipient.name}</span>
                   {selectedRecipient.isGuardian && (
-                    <Badge variant={"secondary" as any} className='text-xs'>
+                    <Badge variant="secondary" className='text-xs'>
                       <Icon name={"shield" as any} className='w-3 h-3 mr-1' />
                       Guardian
                     </Badge>
@@ -122,7 +122,7 @@ export function RecipientStep({
               </div>
             </div>
             <Button
-              variant={"ghost" as any}
+              variant="ghost"
               size='sm'
               onClick={() => {
                 onRecipientChange(null);
@@ -201,7 +201,7 @@ export function RecipientStep({
               Network? Add their details below.
             </p>
             <Button
-              variant={"outline" as any}
+              variant="outline"
               onClick={() => setShowCustomForm(true)}
               className='w-full'
             >
@@ -270,7 +270,7 @@ export function RecipientStep({
                 <Icon name={"check" as any} className='w-4 h-4 mr-2' />
                 Save Recipient
               </Button>
-              <Button variant={"outline" as any} onClick={handleCustomRecipientCancel}>
+              <Button variant="outline" onClick={handleCustomRecipientCancel}>
                 Cancel
               </Button>
             </div>

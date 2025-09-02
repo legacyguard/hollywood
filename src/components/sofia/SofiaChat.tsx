@@ -280,7 +280,7 @@ const SofiaChat: React.FC<SofiaChatProps> = ({
 
         {onClose && (
           <Button
-            variant={"ghost" as any}
+            variant="ghost"
             size='sm'
             onClick={onClose}
             className='h-8 w-8 p-0'

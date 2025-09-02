@@ -185,6 +185,13 @@ export {
   type SkeletonImageProps,
 } from './components/Skeleton'
 
+// Export ErrorBoundary components
+export {
+  GlobalErrorBoundary,
+  type GlobalErrorBoundaryProps,
+  type FallbackProps,
+} from './components/ErrorBoundary'
+
 // Export Form components
 export {
   FormField,

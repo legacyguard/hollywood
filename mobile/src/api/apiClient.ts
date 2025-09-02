@@ -1,6 +1,6 @@
 // src/api/apiClient.ts
 
-import { AuthenticationService } from '@/services/AuthenticationService';
+import { AuthenticationService } from '../services/AuthenticationService';
 
 // Define response types
 interface _ApiResponse<T = any> {

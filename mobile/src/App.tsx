@@ -9,6 +9,7 @@ import { AuthenticationService } from '@/services/AuthenticationService';
 import { TamaguiProvider } from '@/providers/TamaguiProvider';
 import { StatusBar } from 'expo-status-bar';
 import * as SecureStore from 'expo-secure-store';
+import { GlobalErrorBoundary } from '@legacyguard/ui/dist/components/ErrorBoundary';
 
 // Helper for token management with Clerk
 const tokenCache = {
@@ -41,16 +42,18 @@ export default function App() {
   }, []);
 
   return (
-    <TamaguiProvider>
-      <ClerkProvider
-        tokenCache={tokenCache}
-        publishableKey={CLERK_PUBLISHABLE_KEY}
-      >
-        <AuthProvider>
-          <StatusBar style="auto" />
-          <AppNavigator />
-        </AuthProvider>
-      </ClerkProvider>
-    </TamaguiProvider>
+    <GlobalErrorBoundary>
+      <TamaguiProvider>
+        <ClerkProvider
+          tokenCache={tokenCache}
+          publishableKey={CLERK_PUBLISHABLE_KEY}
+        >
+          <AuthProvider>
+            <StatusBar style="auto" />
+            <AppNavigator />
+          </AuthProvider>
+        </ClerkProvider>
+      </TamaguiProvider>
+    </GlobalErrorBoundary>
   );
 }

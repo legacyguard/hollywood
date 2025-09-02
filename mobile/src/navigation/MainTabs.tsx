@@ -1,13 +1,39 @@
 // src/navigation/MainTabs.tsx
+import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { DashboardScreenV2 } from '@/screens/main/DashboardScreenV2';
-import { VaultScreenV2 } from '@/screens/main/VaultScreenV2';
-import { ScannerScreen } from '@/screens/main/ScannerScreen';
-import { ProfileScreen } from '@/screens/main/ProfileScreen';
 import { Camera, Home, Shield, User } from 'lucide-react-native';
-import { useTheme } from '@legacyguard/ui';
+import { useTheme, Spinner, YStack } from '@legacyguard/ui';
+
+// Dynamic imports with React.lazy() for better performance
+const DashboardScreenV2 = React.lazy(() => import('@/screens/main/DashboardScreenV2').then(module => ({ default: module.DashboardScreenV2 })));
+const VaultScreenV2 = React.lazy(() => import('@/screens/main/VaultScreenV2').then(module => ({ default: module.VaultScreenV2 })));
+const ScannerScreen = React.lazy(() => import('@/screens/main/ScannerScreen').then(module => ({ default: module.ScannerScreen })));
+const ProfileScreen = React.lazy(() => import('@/screens/main/ProfileScreen').then(module => ({ default: module.ProfileScreen })));
 
 const Tab = createBottomTabNavigator();
+
+// Loading fallback component
+const LoadingFallback = () => (
+  <YStack
+    flex={1}
+    justifyContent="center"
+    alignItems="center"
+    backgroundColor="$background"
+  >
+    <Spinner size="large" color="$blue9" />
+  </YStack>
+);
+
+// Higher-order component to wrap screens with Suspense
+const withSuspense = (Component: React.ComponentType<any>) => {
+  const SuspenseWrapper = (props: any) => (
+    <React.Suspense fallback={<LoadingFallback />}>
+      <Component {...props} />
+    </React.Suspense>
+  );
+  SuspenseWrapper.displayName = `withSuspense(${Component.displayName || Component.name})`;
+  return SuspenseWrapper;
+};
 
 export const MainTabs = () => {
   const theme = useTheme();
@@ -47,7 +73,7 @@ export const MainTabs = () => {
   >
     <Tab.Screen
       name="Dashboard"
-      component={DashboardScreenV2}
+      component={withSuspense(DashboardScreenV2)}
       options={{
         tabBarIcon: ({ color, size }) => <Home color={color} size={size} />,
         tabBarLabel: 'Home',
@@ -55,7 +81,7 @@ export const MainTabs = () => {
     />
     <Tab.Screen
       name="Scan"
-      component={ScannerScreen}
+      component={withSuspense(ScannerScreen)}
       options={{
         tabBarIcon: ({ color, size }) => <Camera color={color} size={size} />,
         tabBarLabel: 'Scan',
@@ -64,7 +90,7 @@ export const MainTabs = () => {
     />
     <Tab.Screen
       name="Vault"
-      component={VaultScreenV2}
+      component={withSuspense(VaultScreenV2)}
       options={{
         tabBarIcon: ({ color, size }) => <Shield color={color} size={size} />,
         tabBarLabel: 'Vault',
@@ -72,7 +98,7 @@ export const MainTabs = () => {
     />
     <Tab.Screen
       name="Profile"
-      component={ProfileScreen}
+      component={withSuspense(ProfileScreen)}
       options={{
         tabBarIcon: ({ color, size }) => <User color={color} size={size} />,
         tabBarLabel: 'Profile',

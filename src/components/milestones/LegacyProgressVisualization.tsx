@@ -130,7 +130,7 @@ export function LegacyProgressVisualization({
         {nextSuggestion && (
           <Button
             size="sm"
-            variant={"outline" as any}
+            variant="outline"
             onClick={() => onNextAction?.(nextSuggestion.suggestion)}
             className="text-xs"
           >
@@ -147,7 +147,7 @@ export function LegacyProgressVisualization({
         <CardContent className="p-4">
           <div className="flex items-center justify-between mb-3">
             <h3 className="font-semibold text-sm">Legacy Progress</h3>
-            <Badge variant={"outline" as any} className="text-xs">
+            <Badge variant="outline" className="text-xs">
               {progress.overall}%
             </Badge>
           </div>
@@ -161,7 +161,7 @@ export function LegacyProgressVisualization({
           {nextSuggestion && (
             <Button
               size="sm"
-              variant={"ghost" as any}
+              variant="ghost"
               onClick={() => onNextAction?.(nextSuggestion.suggestion)}
               className="w-full justify-between text-xs h-8"
             >

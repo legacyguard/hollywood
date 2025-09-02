@@ -258,7 +258,7 @@ export const ProfessionalReviewNetwork: React.FC<
 
               <div className='flex flex-wrap gap-1'>
                 {professional.specializations.slice(0, 3).map(spec => (
-                  <Badge key={spec} variant={"outline" as any} className='text-xs'>
+                  <Badge key={spec} variant="outline" className='text-xs'>
                     {spec.replace('_', ' ')}
                   </Badge>
                 ))}
@@ -273,7 +273,7 @@ export const ProfessionalReviewNetwork: React.FC<
                   €{professional.hourlyRate}/hour
                 </span>
                 {onSelect && (
-                  <Button onClick={onSelect} variant={"outline" as any} size='sm'>
+                  <Button onClick={onSelect} variant="outline" size='sm'>
                     Select Professional
                   </Button>
                 )}
@@ -328,7 +328,7 @@ export const ProfessionalReviewNetwork: React.FC<
 
             <div className='flex justify-between items-center'>
               <span className='font-medium'>Priority:</span>
-              <Badge variant={"outline" as any}>{reviewRequest.priority}</Badge>
+              <Badge variant="outline">{reviewRequest.priority}</Badge>
             </div>
 
             {reviewRequest.status === 'in_review' ||
@@ -676,7 +676,7 @@ export const ProfessionalReviewNetwork: React.FC<
                   <CardHeader>
                     <CardTitle className='flex justify-between items-start'>
                       <span>Estate Planning Proposal</span>
-                      <Badge variant={"outline" as any}>
+                      <Badge variant="outline">
                         {offer.willComplexityAssessment.complexity}
                       </Badge>
                     </CardTitle>
@@ -933,7 +933,7 @@ export const ProfessionalReviewNetwork: React.FC<
                                     {slot.type} • {slot.duration}min
                                   </div>
                                 </div>
-                                <Button size='sm' variant={"outline" as any}>
+                                <Button size='sm' variant="outline">
                                   Book
                                 </Button>
                               </div>

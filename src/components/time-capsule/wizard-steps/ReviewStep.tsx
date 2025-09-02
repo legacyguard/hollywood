@@ -49,7 +49,7 @@ export function ReviewStep({ formData, onEdit }: ReviewStepProps) {
             <Icon name={"user" as any} className='w-5 h-5 text-primary' />
             Recipient
           </CardTitle>
-          <Button variant={"ghost" as any} size='sm' onClick={() => onEdit(1)}>
+          <Button variant="ghost" size='sm' onClick={() => onEdit(1)}>
             <Icon name={"edit-2" as any} className='w-4 h-4 mr-2' />
             Edit
           </Button>
@@ -66,7 +66,7 @@ export function ReviewStep({ formData, onEdit }: ReviewStepProps) {
                 <div className='flex items-center gap-2'>
                   <span className='font-medium'>{formData.recipient.name}</span>
                   {formData.recipient.isGuardian && (
-                    <Badge variant={"secondary" as any} className='text-xs'>
+                    <Badge variant="secondary" className='text-xs'>
                       <Icon name={"shield" as any} className='w-3 h-3 mr-1' />
                       Guardian
                     </Badge>
@@ -97,7 +97,7 @@ export function ReviewStep({ formData, onEdit }: ReviewStepProps) {
             <Icon name={"calendar" as any} className='w-5 h-5 text-primary' />
             Delivery Details
           </CardTitle>
-          <Button variant={"ghost" as any} size='sm' onClick={() => onEdit(2)}>
+          <Button variant="ghost" size='sm' onClick={() => onEdit(2)}>
             <Icon name={"edit-2" as any} className='w-4 h-4 mr-2' />
             Edit
           </Button>
@@ -163,7 +163,7 @@ export function ReviewStep({ formData, onEdit }: ReviewStepProps) {
             <Icon name={"video" as any} className='w-5 h-5 text-primary' />
             Your Message
           </CardTitle>
-          <Button variant={"ghost" as any} size='sm' onClick={() => onEdit(3)}>
+          <Button variant="ghost" size='sm' onClick={() => onEdit(3)}>
             <Icon name={"edit-2" as any} className='w-4 h-4 mr-2' />
             Edit
           </Button>
@@ -204,7 +204,7 @@ export function ReviewStep({ formData, onEdit }: ReviewStepProps) {
                     Size: {formatFileSize(formData.recording.blob.size)}
                   </p>
                 </div>
-                <Badge variant={"secondary" as any} className='text-xs'>
+                <Badge variant="secondary" className='text-xs'>
                   Ready
                 </Badge>
               </div>

@@ -258,7 +258,7 @@ export function SecurityDashboard() {
               >
                 {securityScore.overall}%
               </div>
-              <Badge variant={"outline" as any} className='mt-1'>
+              <Badge variant="outline" className='mt-1'>
                 {getScoreLabel(securityScore.overall)}
               </Badge>
             </div>
@@ -395,7 +395,7 @@ export function SecurityDashboard() {
                     })}
                   </p>
                   {session.id === '1' && (
-                    <Badge variant={"outline" as any} className='mt-1'>
+                    <Badge variant="outline" className='mt-1'>
                       Current
                     </Badge>
                   )}
@@ -489,7 +489,7 @@ export function SecurityDashboard() {
                       Your encryption keys are over 90 days old. Consider
                       rotating them for enhanced security.
                     </p>
-                    <Button size='sm' variant={"outline" as any} className='mt-2'>
+                    <Button size='sm' variant="outline" className='mt-2'>
                       Rotate Keys Now
                     </Button>
                   </div>
@@ -508,7 +508,7 @@ export function SecurityDashboard() {
                     <p className='text-sm text-muted-foreground'>
                       Add an extra layer of security to your account with 2FA.
                     </p>
-                    <Button size='sm' variant={"outline" as any} className='mt-2'>
+                    <Button size='sm' variant="outline" className='mt-2'>
                       Setup 2FA
                     </Button>
                   </div>
@@ -526,7 +526,7 @@ export function SecurityDashboard() {
                       Your last backup is over a week old. Create a new backup
                       to protect your data.
                     </p>
-                    <Button size='sm' variant={"outline" as any} className='mt-2'>
+                    <Button size='sm' variant="outline" className='mt-2'>
                       Backup Now
                     </Button>
                   </div>

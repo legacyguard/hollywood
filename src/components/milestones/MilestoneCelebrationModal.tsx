@@ -124,7 +124,7 @@ export function MilestoneCelebrationModal({
 
           {/* Close Button */}
           <Button
-            variant={"ghost" as any}
+            variant="ghost"
             size="sm"
             onClick={onClose}
             className="absolute right-2 top-2 z-40 text-gray-600 hover:text-gray-800"
@@ -188,7 +188,7 @@ export function MilestoneCelebrationModal({
 
             {/* Rarity Badge */}
             <Badge
-              variant={"outline" as any}
+              variant="outline"
               className={cn(
                 'text-xs font-medium mb-4',
                 milestone.badge_data.rarity === 'legendary' && 'border-yellow-300 text-yellow-700 bg-yellow-50',
@@ -240,7 +240,7 @@ export function MilestoneCelebrationModal({
             <div className="flex gap-3 justify-center">
               {onShareMilestone && (
                 <Button
-                  variant={"outline" as any}
+                  variant="outline"
                   size="sm"
                   onClick={() => onShareMilestone(milestone)}
                   className="flex-1 max-w-32"

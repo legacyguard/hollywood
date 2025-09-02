@@ -1,3 +1,7 @@
+// Export all types
+export * from './api';
+export * from './supabase';
+
 /**
  * Shared TypeScript Types and Interfaces
  * Central type definitions for the entire LegacyGuard application

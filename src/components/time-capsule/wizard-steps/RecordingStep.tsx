@@ -398,7 +398,7 @@ export function RecordingStep({
                 />
 
                 <div className='flex justify-center space-x-2'>
-                  <Button onClick={pauseRecording} variant={"outline" as any}>
+                  <Button onClick={pauseRecording} variant="outline">
                     <Icon
                       name={recordingState === 'paused' ? 'play' : 'pause'}
                       className='w-4 h-4'
@@ -431,11 +431,11 @@ export function RecordingStep({
               </div>
 
               <div className='flex justify-center space-x-2'>
-                <Button variant={"outline" as any} onClick={deleteRecording}>
+                <Button variant="outline" onClick={deleteRecording}>
                   <Icon name={"trash-2" as any} className='w-4 h-4 mr-2' />
                   Record Again
                 </Button>
-                <Button variant={"outline" as any}>
+                <Button variant="outline">
                   <Icon name={"play" as any} className='w-4 h-4 mr-2' />
                   Preview
                 </Button>

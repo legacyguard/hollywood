@@ -260,7 +260,7 @@ export const VaultAssetSelector: React.FC<VaultAssetSelectorProps> = ({
               document vault
             </p>
           </div>
-          <Button onClick={onClose} variant={"ghost" as any} size='sm'>
+          <Button onClick={onClose} variant="ghost" size='sm'>
             <Icon name={"x" as any} className='w-4 h-4' />
           </Button>
         </div>
@@ -335,11 +335,11 @@ export const VaultAssetSelector: React.FC<VaultAssetSelectorProps> = ({
                       )}
 
                       <div className='flex items-center gap-2 mt-2'>
-                        <Badge variant={"secondary" as any} className='text-xs'>
+                        <Badge variant="secondary" className='text-xs'>
                           {asset.documentType}
                         </Badge>
                         {asset.bundle && (
-                          <Badge variant={"outline" as any} className='text-xs'>
+                          <Badge variant="outline" className='text-xs'>
                             {asset.bundle.name}
                           </Badge>
                         )}
@@ -366,7 +366,7 @@ export const VaultAssetSelector: React.FC<VaultAssetSelectorProps> = ({
               selected
             </p>
             <div className='flex items-center gap-2'>
-              <Button onClick={onClose} variant={"outline" as any}>
+              <Button onClick={onClose} variant="outline">
                 Cancel
               </Button>
               <Button

@@ -384,7 +384,7 @@ export function ProfessionalRecommendationEngine({
               Your Legal Needs
             </CardTitle>
             <Button
-              variant={"outline" as any}
+              variant="outline"
               size="sm"
               onClick={() => setShowFilters(!showFilters)}
             >
@@ -591,7 +591,7 @@ export function ProfessionalRecommendationEngine({
             <h3 className="text-xl font-semibold">
               {recommendations.length} Recommended Professionals
             </h3>
-            <Badge variant={"outline" as any} className="bg-green-50 text-green-700">
+            <Badge variant="outline" className="bg-green-50 text-green-700">
               <CheckCircle className="h-3 w-3 mr-1" />
               All Verified & Licensed
             </Badge>
@@ -666,7 +666,7 @@ export function ProfessionalRecommendationEngine({
                                 <Label className="text-sm font-medium mb-2 block">Specializations:</Label>
                                 <div className="flex flex-wrap gap-1">
                                   {professional.specializations?.map(spec => (
-                                    <Badge key={spec.id} variant={"secondary" as any} className="text-xs">
+                                    <Badge key={spec.id} variant="secondary" className="text-xs">
                                       {spec.name}
                                     </Badge>
                                   ))}
@@ -677,7 +677,7 @@ export function ProfessionalRecommendationEngine({
                                 <Label className="text-sm font-medium mb-2 block">Why This Match:</Label>
                                 <div className="flex flex-wrap gap-1">
                                   {recommendation.matchReasons.map((reason, idx) => (
-                                    <Badge key={idx} variant={"outline" as any} className="text-xs">
+                                    <Badge key={idx} variant="outline" className="text-xs">
                                       {reason}
                                     </Badge>
                                   ))}
@@ -715,7 +715,7 @@ export function ProfessionalRecommendationEngine({
                             {recommendation.suggestedServices.map((service, idx) => (
                               <div key={idx} className="border rounded-lg p-3 hover:border-blue-200 transition-colors">
                                 <div className="flex items-center justify-between mb-2">
-                                  <Badge variant={"outline" as any} className="text-xs">
+                                  <Badge variant="outline" className="text-xs">
                                     {service.type}
                                   </Badge>
                                   <span className="font-semibold">${service.estimatedCost}</span>
@@ -738,7 +738,7 @@ export function ProfessionalRecommendationEngine({
                               Book Consultation
                             </Button>
                             <Button
-                              variant={"outline" as any}
+                              variant="outline"
                               onClick={() => onSelectProfessional(professional, 'review')}
                               className="w-full"
                             >
@@ -749,7 +749,7 @@ export function ProfessionalRecommendationEngine({
 
                           <div className="text-center">
                             <Button
-                              variant={"ghost" as any}
+                              variant="ghost"
                               size="sm"
                               onClick={() => setSelectedRecommendation(recommendation)}
                             >
@@ -774,7 +774,7 @@ export function ProfessionalRecommendationEngine({
                                     ))}
                                   </div>
                                   {review.verified && (
-                                    <Badge variant={"outline" as any} className="text-xs">
+                                    <Badge variant="outline" className="text-xs">
                                       <Shield className="h-2 w-2 mr-1" />
                                       Verified
                                     </Badge>
@@ -809,7 +809,7 @@ export function ProfessionalRecommendationEngine({
             <p className="text-muted-foreground mb-4">
               Try adjusting your criteria or expanding your budget range to see more recommendations.
             </p>
-            <Button variant={"outline" as any} onClick={() => setShowFilters(true)}>
+            <Button variant="outline" onClick={() => setShowFilters(true)}>
               <Sliders className="h-4 w-4 mr-2" />
               Adjust Filters
             </Button>

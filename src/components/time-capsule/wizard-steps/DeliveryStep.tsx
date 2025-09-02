@@ -150,7 +150,7 @@ export function DeliveryStep({
                 <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
                   <PopoverTrigger asChild>
                     <Button
-                      variant={"outline" as any}
+                      variant="outline"
                       className={cn(
                         'w-[240px] justify-start text-left font-normal',
                         !deliveryDate && 'text-muted-foreground'
@@ -175,7 +175,7 @@ export function DeliveryStep({
 
                 {deliveryDate && (
                   <Button
-                    variant={"ghost" as any}
+                    variant="ghost"
                     size='sm'
                     onClick={() => handleDateSelect(undefined)}
                   >

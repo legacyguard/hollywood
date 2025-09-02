@@ -334,7 +334,7 @@ export function TimeCapsuleWizard({
         {/* Navigation Buttons */}
         <div className='flex justify-between pt-4 border-t'>
           <Button
-            variant={"outline" as any}
+            variant="outline"
             onClick={prevStep}
             disabled={currentStep === 1}
           >
@@ -343,7 +343,7 @@ export function TimeCapsuleWizard({
           </Button>
 
           <div className='flex gap-2'>
-            <Button variant={"ghost" as any} onClick={handleClose}>
+            <Button variant="ghost" onClick={handleClose}>
               Cancel
             </Button>
 

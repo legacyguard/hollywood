@@ -1,12 +1,37 @@
 import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { MainTabs } from './MainTabs'
-import { DocumentsScreen } from '@/screens/main/DocumentsScreen'
-import { PeopleScreen } from '@/screens/main/PeopleScreen'
-import { WillScreen } from '@/screens/main/WillScreen'
-import { useTheme } from '@legacyguard/ui'
+import { useTheme, YStack, Spinner } from '@legacyguard/ui'
+
+// Dynamic imports with React.lazy() for better performance
+const DocumentsScreen = React.lazy(() => import('@/screens/main/DocumentsScreen').then(module => ({ default: module.DocumentsScreen })))
+const PeopleScreen = React.lazy(() => import('@/screens/main/PeopleScreen').then(module => ({ default: module.PeopleScreen })))
+const WillScreen = React.lazy(() => import('@/screens/main/WillScreen').then(module => ({ default: module.WillScreen })))
 
 const Stack = createNativeStackNavigator()
+
+// Loading fallback component
+const LoadingFallback = () => (
+  <YStack
+    flex={1}
+    justifyContent="center"
+    alignItems="center"
+    backgroundColor="$background"
+  >
+    <Spinner size="large" color="$blue9" />
+  </YStack>
+)
+
+// Higher-order component to wrap screens with Suspense
+const withSuspense = (Component: React.ComponentType<any>) => {
+  const SuspenseWrapper = (props: any) => (
+    <React.Suspense fallback={<LoadingFallback />}>
+      <Component {...props} />
+    </React.Suspense>
+  )
+  SuspenseWrapper.displayName = `withSuspense(${Component.displayName || Component.name})`
+  return SuspenseWrapper
+}
 
 export const MainStack = () => {
   const theme = useTheme()
@@ -32,17 +57,17 @@ export const MainStack = () => {
       />
       <Stack.Screen
         name="Documents"
-        component={DocumentsScreen}
+        component={withSuspense(DocumentsScreen)}
         options={{ title: 'Documents' }}
       />
       <Stack.Screen
         name="People"
-        component={PeopleScreen}
+        component={withSuspense(PeopleScreen)}
         options={{ title: 'Trusted Circle' }}
       />
       <Stack.Screen
         name="Will"
-        component={WillScreen}
+        component={withSuspense(WillScreen)}
         options={{ title: 'Will Generator' }}
       />
     </Stack.Navigator>

@@ -24,7 +24,7 @@ export function ProfessionalReviewBadge({
   if (!review) {
     return (
       <Badge
-        variant={"outline" as any}
+        variant="outline"
         className={cn(
           'border-accent/20 bg-accent/5 text-accent gap-1.5',
            size === 'sm' && 'px-2 py-0.5 text-xs',
@@ -85,7 +85,7 @@ export function ProfessionalReviewBadge({
 
   return (
     <Badge
-      variant={"outline" as any}
+      variant="outline"
       className={cn(
         config.className,
         'gap-1.5 font-medium',

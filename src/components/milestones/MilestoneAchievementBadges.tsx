@@ -208,7 +208,7 @@ export function MilestoneAchievementBadges({
               {/* Rarity indicator */}
               <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2">
                 <Badge
-                  variant={"outline" as any}
+                  variant="outline"
                   className={cn(
                     'text-xs px-1 py-0 h-4',
                     data.rarity === 'legendary' && 'border-yellow-400 text-yellow-600 bg-yellow-50',
@@ -309,7 +309,7 @@ export function MilestoneAchievementBadges({
     <div className={cn('', className)}>
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold">Achievement Badges</h3>
-        <Badge variant={"outline" as any} className="text-xs">
+        <Badge variant="outline" className="text-xs">
           {achievedMilestones.length} / {badgeData.length}
         </Badge>
       </div>

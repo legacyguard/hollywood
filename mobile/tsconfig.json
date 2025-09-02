@@ -10,7 +10,11 @@
       "@legacyguard/logic": ["../packages/logic"],
       "@hollywood/shared": ["../packages/shared"]
     },
-    "noEmit": true
+    "noEmit": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "moduleResolution": "bundler"
   },
   "include": [
     "src/**/*",

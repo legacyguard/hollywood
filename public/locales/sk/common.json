@@ -1,0 +1,73 @@
+{
+  "app": {
+    "name": "LegacyGuard",
+    "tagline": "Digitálny strážca vašej rodiny",
+    "version": "Verzia {{version}}"
+  },
+  "actions": {
+    "save": "Uložiť",
+    "cancel": "Zrušiť",
+    "delete": "Odstrániť",
+    "edit": "Upraviť",
+    "create": "Vytvoriť",
+    "update": "Aktualizovať",
+    "confirm": "Potvrdiť",
+    "back": "Späť",
+    "next": "Ďalej",
+    "finish": "Dokončiť",
+    "close": "Zavrieť",
+    "search": "Hľadať",
+    "filter": "Filtrovať",
+    "sort": "Zoradiť",
+    "upload": "Nahrať",
+    "download": "Stiahnuť",
+    "print": "Tlačiť",
+    "share": "Zdieľať",
+    "copy": "Kopírovať",
+    "refresh": "Obnoviť"
+  },
+  "status": {
+    "loading": "Načítava sa...",
+    "success": "Úspech",
+    "error": "Chyba",
+    "warning": "Upozornenie",
+    "info": "Informácia",
+    "pending": "Čaká sa",
+    "completed": "Dokončené",
+    "archived": "Archivované",
+    "active": "Aktívne",
+    "inactive": "Neaktívne"
+  },
+  "errors": {
+    "global": {
+      "title": "Neočakávaná chyba",
+      "message": "Ospravedlňujeme sa, nastala neočakávaná chyba. Náš tím bol o nej informovaný. Skúste prosím obnoviť stránku.",
+      "refreshButton": "Obnoviť stránku"
+    }
+  },
+  "validation": {
+    "required": "Toto pole je povinné",
+    "invalid": "Neplatná hodnota",
+    "tooShort": "Príliš krátke",
+    "tooLong": "Príliš dlhé",
+    "invalidEmail": "Neplatná e-mailová adresa",
+    "invalidPhone": "Neplatné telefónne číslo",
+    "invalidDate": "Neplatný dátum",
+    "invalidFormat": "Neplatný formát"
+  },
+  "time": {
+    "today": "Dnes",
+    "yesterday": "Včera",
+    "tomorrow": "Zajtra",
+    "thisWeek": "Tento týždeň",
+    "lastWeek": "Minulý týždeň",
+    "nextWeek": "Budúci týždeň",
+    "thisMonth": "Tento mesiac",
+    "lastMonth": "Minulý mesiac",
+    "nextMonth": "Budúci mesiac",
+    "days": "dni",
+    "hours": "hodiny",
+    "minutes": "minúty",
+    "seconds": "sekundy"
+  }
+}

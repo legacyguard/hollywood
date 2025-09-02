@@ -23,7 +23,15 @@
     "download": "Download",
     "print": "Print",
     "share": "Share",
-    "copy": "Copy"
+    "copy": "Copy",
+    "refresh": "Refresh"
+  },
+  "errors": {
+    "global": {
+      "title": "Unexpected Error",
+      "message": "We apologize, an unexpected error has occurred. Our team has been notified. Please try refreshing the page.",
+      "refreshButton": "Refresh Page"
+    }
   },
   "status": {
     "loading": "Loading...",

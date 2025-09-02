@@ -232,7 +232,7 @@ export function TrustScoreDisplay({
                       <div key={index} className="flex items-center gap-2 text-xs">
                         <boost.icon className="h-3 w-3 text-blue-600" />
                         <span className="flex-1">{boost.action}</span>
-                        <Badge variant={"outline" as any} className="text-xs">
+                        <Badge variant="outline" className="text-xs">
                           +{boost.boost}
                         </Badge>
                       </div>
@@ -243,7 +243,7 @@ export function TrustScoreDisplay({
                 {showDetails && (
                   <Button
                     size="sm"
-                    variant={"outline" as any}
+                    variant="outline"
                     className="w-full mt-3"
                     onClick={handleClick}
                   >
@@ -348,7 +348,7 @@ export function TrustScoreBadge({
       <Tooltip>
         <TooltipTrigger asChild>
           <Button
-            variant={"ghost" as any}
+            variant="ghost"
             size="sm"
             onClick={handleClick}
             className={cn(

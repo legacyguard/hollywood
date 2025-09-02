@@ -802,7 +802,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
 
         {onClose && (
           <Button
-            variant={"ghost" as any}
+            variant="ghost"
             size='sm'
             onClick={onClose}
             className='h-8 w-8 p-0'
@@ -836,7 +836,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
             type='submit'
             disabled={!inputValue.trim() || isProcessing}
             size='sm'
-            variant={"outline" as any}
+            variant="outline"
           >
             {isProcessing ? (
               <Icon name={"loader-2" as any} className='w-4 h-4 animate-spin' />

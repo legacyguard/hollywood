@@ -301,7 +301,7 @@ export function FamilyBenefitNudges({
                   <h4 className="font-semibold text-sm leading-tight">{nudge.title}</h4>
                   {nudge.dismissible && (
                     <Button
-                      variant={"ghost" as any}
+                      variant="ghost"
                       size="sm"
                       onClick={() => handleDismiss(nudge.id)}
                       className="h-6 w-6 p-0 text-gray-400 hover:text-gray-600"
@@ -323,7 +323,7 @@ export function FamilyBenefitNudges({
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3 text-xs text-gray-500">
                     <span>{nudge.time_estimate}</span>
-                    <Badge variant={"outline" as any} className="text-xs px-1 py-0 h-4">
+                    <Badge variant="outline" className="text-xs px-1 py-0 h-4">
                       Impact: {nudge.family_impact_score}/100
                     </Badge>
                   </div>
@@ -369,7 +369,7 @@ export function FamilyBenefitNudges({
             <span className="text-xs">{primaryNudge.time_estimate}</span>
             <Button
               size="sm"
-              variant={"outline" as any}
+              variant="outline"
               onClick={() => handleAction(primaryNudge)}
               className="h-7 text-xs border-current/20 text-current hover:bg-current/10"
             >
@@ -377,7 +377,7 @@ export function FamilyBenefitNudges({
             </Button>
             {primaryNudge.dismissible && (
               <Button
-                variant={"ghost" as any}
+                variant="ghost"
                 size="sm"
                 onClick={() => handleDismiss(primaryNudge.id)}
                 className="h-7 w-7 p-0 text-current/60 hover:text-current"

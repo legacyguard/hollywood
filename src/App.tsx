@@ -8,6 +8,7 @@ import i18n from '@/lib/i18n/config';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { SkipLinks } from '@/components/accessibility/SkipLinks';
+import { GlobalErrorBoundary } from '@legacyguard/ui';
 
 // Public Pages
 import { LandingPage } from '@/pages/LandingPage';
@@ -54,12 +55,13 @@ if (!CLERK_PUBLISHABLE_KEY) {
 
 export default function App() {
   return (
-    <I18nextProvider i18n={i18n}>
-      <Suspense fallback={<div>Loading translations...</div>}>
-        <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY}>
-          <Router>
-            <SkipLinks />
-        <Routes>
+    <GlobalErrorBoundary>
+      <I18nextProvider i18n={i18n}>
+        <Suspense fallback={<div>Loading translations...</div>}>
+          <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY}>
+            <Router>
+              <SkipLinks />
+          <Routes>
             {/* Public Routes */}
             <Route path="/" element={<LandingPage />} />
             <Route path="/blog" element={<Blog />} />
@@ -276,5 +278,6 @@ export default function App() {
         </ClerkProvider>
       </Suspense>
     </I18nextProvider>
+    </GlobalErrorBoundary>
   );
 }

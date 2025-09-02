@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { View, styled } from 'tamagui'
 import { motion, useAnimation, AnimatePresence } from 'framer-motion'
-import { Sofia, type SofiaMode } from '@legacyguard/logic'
+import { TextManager, type SofiaMode } from '@legacyguard/logic'
 import { useEventBus, EVENTS, eventBus } from '../utils/eventBus'
 
 const FireflyContainer = styled(View, {
@@ -32,7 +32,7 @@ const SofiaFireflyWeb: React.FC<SofiaFireflyProps> = ({
   const [currentMode, setCurrentMode] = useState<SofiaMode>(mode)
   const [showMessage, setShowMessage] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
-  const sofia = React.useMemo(() => new Sofia(mode), [mode])
+  const sofia = React.useMemo(() => new TextManager(mode), [mode])
 
   // Update mode when prop changes
   useEffect(() => {

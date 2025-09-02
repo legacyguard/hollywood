@@ -271,7 +271,7 @@ export function ProfessionalOnboardingFlow({
                 {formData.licensed_states.length > 0 && (
                   <div className="mt-2 flex flex-wrap gap-2">
                     {formData.licensed_states.map(state => (
-                      <Badge key={state} variant={"secondary" as any} className="text-xs">
+                      <Badge key={state} variant="secondary" className="text-xs">
                         {state}
                       </Badge>
                     ))}
@@ -336,7 +336,7 @@ export function ProfessionalOnboardingFlow({
                     {formData.specializations.map(specId => {
                       const spec = SPECIALIZATIONS.find(s => s.id === specId);
                       return spec ? (
-                        <Badge key={spec.id} variant={"secondary" as any} className="text-xs">
+                        <Badge key={spec.id} variant="secondary" className="text-xs">
                           {spec.name}
                         </Badge>
                       ) : null;
@@ -501,7 +501,7 @@ export function ProfessionalOnboardingFlow({
             <div>
               {currentStep > 1 && (
                 <Button
-                  variant={"outline" as any}
+                  variant="outline"
                   onClick={handlePrevious}
                   className="flex items-center gap-2"
                 >
@@ -511,7 +511,7 @@ export function ProfessionalOnboardingFlow({
               )}
               {onCancel && currentStep === 1 && (
                 <Button
-                  variant={"outline" as any}
+                  variant="outline"
                   onClick={onCancel}
                   className="text-gray-600"
                 >

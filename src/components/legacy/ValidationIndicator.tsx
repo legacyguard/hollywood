@@ -74,7 +74,7 @@ export const ValidationIndicator: React.FC<ValidationIndicatorProps> = ({
       <Popover>
         <PopoverTrigger asChild>
           <Button
-            variant={"ghost" as any}
+            variant="ghost"
             size='sm'
             className={`p-1 h-6 w-6 ${className}`}
           >

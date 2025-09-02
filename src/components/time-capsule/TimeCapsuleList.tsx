@@ -298,7 +298,7 @@ function TimeCapsuleCard({
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant={"ghost" as any} size='sm'>
+              <Button variant="ghost" size='sm'>
                 <Icon name={"more-horizontal" as any} className='w-4 h-4' />
               </Button>
             </DropdownMenuTrigger>

@@ -117,7 +117,7 @@ export const CountrySelector: React.FC<CountrySelectorProps> = ({
             <div className='text-center mt-8'>
               <Button
                 onClick={() => setShowCountryList(false)}
-                variant={"outline" as any}
+                variant="outline"
               >
                 <Icon name={"arrow-left" as any} className='w-4 h-4 mr-2' />
                 Back
@@ -164,7 +164,7 @@ export const CountrySelector: React.FC<CountrySelectorProps> = ({
 
               <Button
                 onClick={() => setShowCountryList(true)}
-                variant={"outline" as any}
+                variant="outline"
                 size='lg'
                 className='px-8'
               >

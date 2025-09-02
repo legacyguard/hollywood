@@ -40,7 +40,7 @@ export const FocusModeWrapper: React.FC<FocusModeWrapperProps> = ({
             {currentStepTitle && (
               <div className='hidden sm:flex items-center gap-3'>
                 <div className='w-px h-6 bg-border' />
-                <Badge variant={"secondary" as any} className='font-medium'>
+                <Badge variant="secondary" className='font-medium'>
                   Step {currentStepIndex ? currentStepIndex + 1 : 1} of{' '}
                   {totalSteps || 8}
                 </Badge>
@@ -54,7 +54,7 @@ export const FocusModeWrapper: React.FC<FocusModeWrapperProps> = ({
           {/* Right side - Exit button */}
           <div className='flex items-center gap-2'>
             <Button
-              variant={"ghost" as any}
+              variant="ghost"
               size='sm'
               onClick={exitFocusMode}
               className='text-muted-foreground hover:text-foreground'
@@ -67,7 +67,7 @@ export const FocusModeWrapper: React.FC<FocusModeWrapperProps> = ({
               <>
                 <div className='w-px h-6 bg-border mx-2' />
                 <Button
-                  variant={"ghost" as any}
+                  variant="ghost"
                   size='sm'
                   onClick={onExitWizard}
                   className='text-muted-foreground hover:text-foreground'

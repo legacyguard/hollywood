@@ -366,7 +366,7 @@ export function ReviewRequestWorkflow({
                       </div>
                       <div className="mt-2 flex flex-wrap gap-1">
                         {reviewer.specializations.slice(0, 3).map(spec => (
-                          <Badge key={spec.id} variant={"secondary" as any} className="text-xs">
+                          <Badge key={spec.id} variant="secondary" className="text-xs">
                             {spec.name}
                           </Badge>
                         ))}
@@ -541,7 +541,7 @@ export function ReviewRequestWorkflow({
             <div>
               {currentStep > 1 && (
                 <Button
-                  variant={"outline" as any}
+                  variant="outline"
                   onClick={() => setCurrentStep(prev => prev - 1)}
                   className="flex items-center gap-2"
                 >
@@ -550,7 +550,7 @@ export function ReviewRequestWorkflow({
               )}
               {onCancel && currentStep === 1 && (
                 <Button
-                  variant={"outline" as any}
+                  variant="outline"
                   onClick={onCancel}
                   className="text-gray-600"
                 >
