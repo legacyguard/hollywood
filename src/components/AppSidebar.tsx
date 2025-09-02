@@ -36,7 +36,7 @@ export function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === 'collapsed';
   const { user } = useUser();
-  const { t } = useTranslation('common.navigation');
+  const { t } = useTranslation('ui/sidebar');
 
   const getNavClasses = ({ isActive }: { isActive: boolean }) =>
     `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 ${
@@ -71,7 +71,7 @@ export function AppSidebar() {
                   transition={{  duration: 0.3  }}
                 >
                   <span className='text-sidebar-text font-semibold text-lg font-heading'>
-                    LegacyGuard
+                    {t('brand')}
                   </span>
                 </motion.div>
               )}
@@ -162,7 +162,7 @@ export function AppSidebar() {
                   transition={{  duration: 0.3  }}
                 >
                   <p className='text-sm font-medium text-sidebar-text'>
-                    {user.firstName || user.username || 'User'}
+                    {user.firstName || user.username || t('user.fallback')}
                   </p>
                   <p className='text-xs text-sidebar-muted'>
                     {user.primaryEmailAddress?.emailAddress}
