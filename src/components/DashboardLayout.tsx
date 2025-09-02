@@ -10,6 +10,7 @@ import type { SofiaAction } from '@/lib/sofia-search-dictionary';
 import { useDocumentFilter } from '@/contexts/DocumentFilterContext';
 import SofiaChatV2 from '@/components/sofia/SofiaChatV2';
 import SofiaFloatingButton from '@/components/sofia/SofiaFloatingButton';
+import { useTranslation } from 'react-i18next';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -26,6 +27,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const navigate = useNavigate();
   const { userId } = useAuth();
   const { setFilter: setDocumentFilter } = useDocumentFilter();
+  const { t } = useTranslation('ui/dashboard-layout');
 
   // Enable keyboard shortcuts with search callback
   useKeyboardShortcuts(() => setIsSearchOpen(true));
@@ -74,8 +76,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       console.error('Error executing Sofia action:', error);
       setSofiaPendingAction({
         userMessage: action.text,
-        sofiaResponse:
-          'I apologize, but I encountered an issue processing your request. Please try again.',
+        sofiaResponse: t('sofia.errorFallback'),
       });
     }
   };
@@ -88,7 +89,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           {/* Mobile Header with Sidebar Trigger */}
           <header className='lg:hidden h-16 flex items-center px-4 border-b border-card-border bg-card'>
             <SidebarTrigger className='mr-4' />
-            <h1 className='font-semibold text-card-foreground'>LegacyGuard</h1>
+            <h1 className='font-semibold text-card-foreground'>{t('header.brand')}</h1>
           </header>
 
           {/* Main Content */}
