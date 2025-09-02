@@ -1,180 +1,191 @@
-# 🌍 i18n Documentation - LegacyGuard
+# 🌍 Internacionalizácia (i18n) - LegacyGuard
 
-## 📋 Table of Contents
-- [Overview](#overview)
-- [Directory Structure](#directory-structure)
-- [Naming Conventions](#naming-conventions)
-- [Usage Guide](#usage-guide)
-- [Adding Translations](#adding-translations)
-- [Best Practices](#best-practices)
-- [Tools & Scripts](#tools--scripts)
-- [Legal Documents](#legal-documents)
+Dokumentácia pre novú architektúru internacionalizácie v projekte LegacyGuard.
 
-## Overview
+## 📋 Obsah
 
-Our internationalization system is built with:
-- **i18next** - Core i18n framework
-- **react-i18next** - React integration
-- **Modular structure** - Optimized for large-scale applications
-- **Type safety** - Full TypeScript support
-- **Lazy loading** - Performance optimized
+- [Prehľad](#prehľad)
+- [Štruktúra priečinkov](#štruktúra-priečinkov)
+- [Podporované jazyky](#podporované-jazyky)
+- [Jurisdikcie](#jurisdikcie)
+- [Použitie](#použitie)
+- [Namespaces](#namespaces)
+- [Konfigurácia](#konfigurácia)
+- [Pridávanie prekladov](#pridávanie-prekladov)
+- [Najlepšie postupy](#najlepšie-postupy)
 
-### Supported Languages
-- 🇬🇧 English (en) - Default
-- 🇸🇰 Slovak (sk)
-- 🇨🇿 Czech (cs)
-- 🇩🇪 German (de)
-- 🇵🇱 Polish (pl)
+## Prehľad
 
-## Directory Structure
+Náš systém internacionalizácie je postavený na:
+
+- **i18next** - Základný i18n framework
+- **react-i18next** - Integrácia pre React
+- **Modulárna štruktúra** - Optimalizované pre rozsiahle aplikácie
+- **TypeScript podpora** - Plná typová bezpečnosť
+- **Lazy loading** - Optimalizované pre výkon
+- **Namespace systém** - Rozdelenie UI a obsahových textov
+- **Jurisdikčná podpora** - Rôzne texty pre rôzne krajiny
+
+### Podporované jazyky
+- 🇬🇧 **en** - Angličtina (predvolený jazyk)
+- 🇸🇰 **sk** - Slovenčina
+- 🇨🇿 **cs** - Čeština
+- 🇩🇪 **de** - Nemčina
+
+### Jurisdikcie
+- 🇸🇰 **SK** - Slovenská republika
+- 🇨🇿 **CZ** - Česká republika
+
+## Štruktúra priečinkov
 
 ```
 locales/
-├── _shared/                 # Shared between web and mobile
-│   ├── {lang}/
-│   │   ├── common/          # Common UI elements
-│   │   ├── auth/            # Authentication
-│   │   ├── features/        # Feature modules
-│   │   ├── errors/          # Error messages
-│   │   └── notifications/   # Notification texts
-│   └── _metadata.json       # Language metadata
-├── legal/                   # Legal documents
-│   └── {lang}/
-│       ├── terms/           # Terms & policies
-│       └── templates/       # Legal templates
-├── web/                     # Web-specific
-│   └── {lang}/
-│       ├── landing/         # Landing pages
-│       ├── onboarding/      # Onboarding flow
-│       └── seo/             # SEO metadata
-├── mobile/                  # Mobile-specific
-│   └── {lang}/
-│       ├── native/          # Native features
-│       └── compact/         # Compact versions
-└── config/                  # Configuration files
+├── ui/                     # UI texty (tlačidlá, menu, formuláre)
+│   ├── en.json            # Angličtina
+│   ├── sk.json            # Slovenčina  
+│   ├── cz.json            # Čeština
+│   └── de.json            # Nemčina
+├── content/               # Komplexné a právne texty
+│   ├── wills/            # Texty pre závety
+│   │   ├── sk_SK.json    # Slovensky pre SK jurisdikciu
+│   │   ├── en_SK.json    # Anglicky pre SK jurisdikciu
+│   │   ├── cz_SK.json    # Česky pre SK jurisdikciu
+│   │   ├── de_SK.json    # Nemecky pre SK jurisdikciu
+│   │   ├── cz_CS.json    # Česky pre CZ jurisdikciu
+│   │   ├── en_CS.json    # Anglicky pre CZ jurisdikciu
+│   │   ├── sk_CS.json    # Slovensky pre CZ jurisdikciu
+│   │   └── de_CS.json    # Nemecky pre CZ jurisdikciu
+│   └── family-shield/    # Texty pre Rodinný Štít
+│       ├── sk_SK.json
+│       ├── cs_SK.json
+│       ├── en_SK.json
+│       ├── de_SK.json
+│       ├── sk_CZ.json
+│       ├── cs_CZ.json
+│       ├── en_CZ.json
+│       └── de_CZ.json
+└── README.md             # Táto dokumentácia
 ```
 
-## Naming Conventions
+Jurisdikciya určuje, aké právne texty a formulácie sa použijú pre závety a iné právne dokumenty.
 
-### 🔑 Translation Keys
+## Použitie
 
-Follow this pattern: `category.subcategory.item.property`
-
-#### ✅ Good Examples
-```json
-{
-  "button.save": "Save",
-  "form.validation.required": "This field is required",
-  "vault.categories.financial": "Financial Documents",
-  "error.network.timeout": "Connection timed out"
-}
-```
-
-#### ❌ Bad Examples
-```json
-{
-  "save": "Save",                    // Too generic
-  "SaveButton": "Save",              // PascalCase
-  "save_button": "Save",             // snake_case
-  "btn-save": "Save"                 // kebab-case
-}
-```
-
-### 📁 File Names
-
-- Use **lowercase** with dots for namespaces
-- Max 700 lines per file
-- Logical grouping by feature
-
-```
-✅ common.ui.json
-✅ features.vault.categories.json
-✅ legal.templates.wills.SK.holographic.json
-
-❌ CommonUI.json
-❌ common_ui.json
-❌ common-ui.json
-```
-
-### 🌐 Language Codes
-
-Use ISO 639-1 codes:
-- `en` - English
-- `sk` - Slovak
-- `cs` - Czech
-- `de` - German
-- `pl` - Polish
-
-## Usage Guide
-
-### Basic Usage
+### Základné použitie UI textov
 
 ```tsx
 import { useTranslation } from 'react-i18next';
 
 function MyComponent() {
-  const { t } = useTranslation('common.ui');
+  // Načíta UI namespace (predvolený)
+  const { t } = useTranslation();
   
   return (
-    <button>{t('button.save')}</button>
+    <div>
+      <button>{t('common.save')}</button>
+      <h1>{t('navigation.wills')}</h1>
+    </div>
   );
 }
 ```
 
-### With Namespace Loading
+### Načítanie obsahových textov
 
 ```tsx
 import { useTranslation } from 'react-i18next';
-import { useLoadNamespace } from '@/providers/I18nProvider';
+import { NamespaceLoader } from '@/lib/i18n/config';
+import { useEffect } from 'react';
 
-function VaultPage() {
-  const { isLoading } = useLoadNamespace('vault');
-  const { t } = useTranslation('features.vault');
+function WillsComponent() {
+  const { t, ready } = useTranslation();
   
-  if (isLoading) return <div>Loading translations...</div>;
+  useEffect(() => {
+    // Načíta texty pre závety v slovenčine pre SK jurisdikciu
+    NamespaceLoader.loadWills('sk', 'SK');
+  }, []);
+  
+  if (!ready) return <div>Načítava...</div>;
   
   return (
-    <div>{t('categories.financial')}</div>
+    <div>
+      {/* UI text */}
+      <h1>{t('navigation.wills')}</h1>
+      
+      {/* Obsah pre závety */}
+      <h2>{t('types.holographic', { ns: 'wills_sk_SK' })}</h2>
+      <p>{t('sections.opening.declaration', { 
+        ns: 'wills_sk_SK',
+        testatorName: 'Ján Novák',
+        birthDate: '1.1.1980',
+        address: 'Bratislava'
+      })}</p>
+    </div>
   );
 }
 ```
 
-### Interpolation
+### Interpolácia
 
 ```tsx
 const { t } = useTranslation();
 
-// In translation file:
-// "welcome": "Welcome, {{name}}!"
-// "items": "You have {{count}} item",
-// "items_other": "You have {{count}} items"
+// V prekladovom súbore:
+// "welcome": "Vitaj, {{name}}!"
+// "itemCount": "Máš {{count}} položku",
+// "itemCount_other": "Máš {{count}} položiek"
 
-t('welcome', { name: 'John' }); // Welcome, John!
-t('items', { count: 1 });        // You have 1 item
-t('items', { count: 5 });        // You have 5 items
+t('welcome', { name: 'Ján' }); // Vitaj, Ján!
+t('itemCount', { count: 1 });  // Máš 1 položku
+t('itemCount', { count: 5 });  // Máš 5 položiek
 ```
 
-### Formatting
+## Namespaces
+
+### UI Namespace (predvolený)
+
+- **Názov**: `ui`
+- **Účel**: Všetky UI elementy (tlačidlá, menu, formuláre, chybové správy)
+- **Načítanie**: Automaticky pri štarte aplikácie
+- **Súbory**: `/locales/ui/{jazyk}.json`
+
+### Obsahové Namespaces
+
+#### Wills Namespace
+- **Názov**: `wills_{jazyk}_{jurisdikcia}`
+- **Účel**: Texty pre závety a právne dokumenty
+- **Načítanie**: Na požiadanie
+- **Súbory**: `/locales/content/wills/{jazyk}_{jurisdikcia}.json`
+
+#### Family Shield Namespace
+- **Názov**: `family-shield_{jazyk}_{jurisdikcia}`
+- **Účel**: Texty pre Rodinný Štít
+- **Načítanie**: Na požiadanie
+- **Súbory**: `/locales/content/family-shield/{jazyk}_{jurisdikcia}.json`
+
+## Konfigurácia
+
+### Načítanie obsahového namespace
 
 ```tsx
-import { TranslationHelper } from '@/lib/i18n/i18n.types';
+import { NamespaceLoader, getContentNamespace } from '@/lib/i18n/config';
 
-// Date formatting
-TranslationHelper.formatDate(new Date(), 'sk', { format: 'long' });
+// Pomocou pomocnej funkcie
+await NamespaceLoader.loadWills('sk', 'SK');
+await NamespaceLoader.loadFamilyShield('cs', 'CZ');
 
-// Number formatting
-TranslationHelper.formatNumber(1234.56, 'en', { style: 'currency' });
+// Alebo všeobecne
+await NamespaceLoader.loadContent('wills', 'en', 'SK');
 
-// Relative time
-TranslationHelper.formatDate(yesterday, 'en', { relative: true }); // "yesterday"
+// Získanie názvu namespace
+const namespace = getContentNamespace('wills', 'sk', 'SK'); // "wills_sk_SK"
 ```
 
-## Adding Translations
+## Pridávanie prekladov
 
-### Step 1: Add to English (default)
+### Krok 1: Pridanie do anglického súboru (predvolený)
 
 ```json
-// locales/_shared/en/features/vault.json
+// locales/ui/en.json
 {
   "newFeature": {
     "title": "New Feature",
@@ -183,10 +194,10 @@ TranslationHelper.formatDate(yesterday, 'en', { relative: true }); // "yesterday
 }
 ```
 
-### Step 2: Add to other languages
+### Krok 2: Pridanie do ostatných jazykov
 
 ```json
-// locales/_shared/sk/features/vault.json
+// locales/ui/sk.json
 {
   "newFeature": {
     "title": "Nová funkcia",
@@ -195,252 +206,168 @@ TranslationHelper.formatDate(yesterday, 'en', { relative: true }); // "yesterday
 }
 ```
 
-### Step 3: Update TypeScript types
+### Krok 3: Pre obsahové texty s jurisdikciou
 
-```typescript
-// src/lib/i18n/i18n.types.ts
-interface TranslationKeys {
-  'features.vault': {
-    newFeature: {
-      title: string;
-      description: string;
-    }
+```json
+// locales/content/wills/sk_SK.json
+{
+  "newClause": {
+    "title": "Nová klauzula",
+    "text": "Text klauzuly podľa slovenského práva"
+  }
+}
+
+// locales/content/wills/sk_CZ.json
+{
+  "newClause": {
+    "title": "Nová klauzula", 
+    "text": "Text klauzuly podľa českého práva"
   }
 }
 ```
 
-## Best Practices
+## Najlepšie postupy
 
-### ✅ DO's
+### ✅ Odporúčané
 
-1. **Keep keys semantic and hierarchical**
-   ```json
-   "user.profile.settings.notifications.email": "Email notifications"
-   ```
-
-2. **Use pluralization correctly**
+1. **Používaj semantické názvy kľúčov**
    ```json
    {
-     "items_zero": "No items",
-     "items_one": "{{count}} item",
-     "items_other": "{{count}} items"
+     "form.validation.required": "Toto pole je povinné",
+     "button.save.document": "Uložiť dokument"
    }
    ```
 
-3. **Include context in keys**
+2. **Hierarchická štruktúra**
    ```json
    {
-     "button.submit.form": "Submit",
-     "button.submit.comment": "Post comment"
-   }
-   ```
-
-4. **Use interpolation for dynamic content**
-   ```json
-   "greeting": "Hello, {{userName}}!"
-   ```
-
-5. **Group related translations**
-   ```json
-   {
-     "form": {
-       "labels": { ... },
-       "placeholders": { ... },
-       "validation": { ... }
+     "auth": {
+       "signIn": "Prihlásiť sa",
+       "signOut": "Odhlásiť sa"
      }
    }
    ```
 
-### ❌ DON'T's
-
-1. **Don't hardcode text in components**
-   ```tsx
-   // Bad
-   <button>Save</button>
-   
-   // Good
-   <button>{t('button.save')}</button>
-   ```
-
-2. **Don't use generic keys**
+3. **Používaj interpoláciu pre dynamický obsah**
    ```json
-   // Bad
-   "message": "Success"
-   
-   // Good
-   "payment.success.message": "Payment successful"
-   ```
-
-3. **Don't mix languages in one file**
-   ```json
-   // Bad
    {
-     "title": "Title",
-     "popis": "Description"  // Slovak in English file
+     "greeting": "Vitaj, {{userName}}!",
+     "itemCount": "Máš {{count}} položku",
+     "itemCount_other": "Máš {{count}} položiek"
    }
    ```
 
-4. **Don't exceed 700 lines per file**
-   - Use the optimizer script to check
-   - Split large files by subcategory
-
-## Tools & Scripts
-
-### 🔍 Extract Hardcoded Texts
-```bash
-npm run i18n:extract
-```
-Scans codebase for hardcoded strings that need translation.
-
-### 📊 Check File Sizes
-```bash
-npm run i18n:check
-```
-Analyzes translation files and reports any that exceed 700 lines.
-
-### ✂️ Auto-split Large Files
-```bash
-npm run i18n:split
-```
-Automatically splits oversized translation files.
-
-### 🔄 Validate Translations
-```bash
-npm run i18n:validate
-```
-Checks for missing translations across languages.
-
-## Legal Documents
-
-### Structure
-```
-legal/templates/wills/{country}/{type}/
-├── structure.json    # Document structure
-├── sections.json     # Section templates
-├── clauses.json      # Legal clauses
-└── glossary.json     # Legal terms
-```
-
-### Loading Legal Templates
-```tsx
-import { NamespaceLoader } from '@/lib/i18n/i18n.config';
-
-// Load will template for Slovakia
-await NamespaceLoader.loadLegalTemplate('SK', 'holographic');
-```
-
-### Country Codes
-Use ISO 3166-1 alpha-2 codes:
-- `SK` - Slovakia
-- `CZ` - Czech Republic
-- `AT` - Austria
-- `DE` - Germany
-- `PL` - Poland
-
-## Migration Guide
-
-### From Hardcoded Text
-
-1. Run extraction script:
-   ```bash
-   npm run i18n:extract
+4. **Načítavaj obsah lazy**
+   ```tsx
+   // Načítaj len keď potrebuješ
+   useEffect(() => {
+     if (showWills) {
+       NamespaceLoader.loadWills(language, jurisdiction);
+     }
+   }, [showWills, language, jurisdiction]);
    ```
 
-2. Review generated report in `locales/_extraction/`
+### ❌ Neodporúčané
 
-3. Add translations using suggested keys
+1. **Nepoužívaj všeobecné kľúče**
+   ```json
+   // Zlé
+   { "message": "Správa" }
+   
+   // Dobré  
+   { "auth.success.message": "Úspešné prihlásenie" }
+   ```
 
-4. Replace hardcoded text with `t()` calls
+2. **Nehárdkóduj texty v komponentoch**
+   ```tsx
+   // Zlé
+   <button>Uložiť</button>
+   
+   // Dobré
+   <button>{t('common.save')}</button>
+   ```
 
-### Example Migration
+3. **Nemiešaj jazyky v jednom súbore**
+   ```json
+   // Zlé
+   {
+     "title": "Title",
+     "popis": "Popis"  // Slovak v anglickom súbore
+   }
+   ```
 
-**Before:**
+## Použitie s jurisdikciami
+
+### Príklad: Načítanie právnych textov
+
 ```tsx
-function LoginForm() {
-  return (
-    <form>
-      <input placeholder="Enter your email" />
-      <button>Sign In</button>
-      {error && <span>Invalid credentials</span>}
-    </form>
-  );
-}
-```
-
-**After:**
-```tsx
-function LoginForm() {
-  const { t } = useTranslation('auth.login');
+function LegalDocumentComponent({ jurisdiction }: { jurisdiction: 'SK' | 'CZ' }) {
+  const { t, i18n } = useTranslation();
+  const currentLanguage = i18n.language as SupportedLanguageCode;
+  
+  useEffect(() => {
+    // Načítaj texty pre aktuálny jazyk a jurisdikciu
+    NamespaceLoader.loadWills(currentLanguage, jurisdiction);
+  }, [currentLanguage, jurisdiction]);
+  
+  const willsNamespace = getContentNamespace('wills', currentLanguage, jurisdiction);
   
   return (
-    <form>
-      <input placeholder={t('placeholder.email')} />
-      <button>{t('button.signIn')}</button>
-      {error && <span>{t('error.invalidCredentials')}</span>}
-    </form>
+    <div>
+      <h1>{t('types.holographic', { ns: willsNamespace })}</h1>
+      <p>{t('legal.requirements.holographic', { ns: willsNamespace })}</p>
+    </div>
   );
 }
 ```
 
-## Performance Tips
+## Vývojové nástroje
 
-### 1. Lazy Load Namespaces
+### Kontrola načítania namespace
+
 ```tsx
-// Load only when needed
-useEffect(() => {
-  if (showAdvancedFeatures) {
-    NamespaceLoader.loadFeature('advanced');
-  }
-}, [showAdvancedFeatures]);
+import { NamespaceLoader } from '@/lib/i18n/config';
+
+// Skontroluj, či je namespace načítaný
+const isLoaded = NamespaceLoader.isLoaded('wills_sk_SK');
+
+// Získaj všetky načítané namespaces
+const loaded = NamespaceLoader.getLoadedNamespaces();
+console.log('Načítané:', loaded);
 ```
 
-### 2. Use Suspense Boundaries
+### Reset cache
+
 ```tsx
-<Suspense fallback={<LoadingTranslations />}>
-  <I18nProvider>
-    <App />
-  </I18nProvider>
-</Suspense>
+// Vymaž cache (užitočné pri testovaní)
+NamespaceLoader.reset();
 ```
 
-### 3. Preload Critical Namespaces
-```tsx
-// In app initialization
-await i18n.loadNamespaces(['common.ui', 'auth.login']);
-```
+## Riešenie problémov
 
-## Troubleshooting
+### Chýbajúce preklady
+1. Skontroluj, či je správne načítaný namespace
+2. Overeď existenciu kľúča v súbore
+3. Skontroluj názov súboru a cestu
 
-### Missing Translations
-- Check namespace is loaded
-- Verify key exists in translation file
-- Check for typos in key name
+### Výkonnostné problémy
+1. Používaj lazy loading pre obsahové namespaces
+2. Nenačítavaj všetky jurisdikcie naraz
+3. Cache namespaces pre opakované použitie
 
-### Performance Issues
-- Enable namespace lazy loading
-- Split large translation files
-- Use production build
+### Jurisdikčné problémy
+1. Uisti sa, že máš správnu kombináciu jazyk_jurisdikcia
+2. Skontroluj, či existuje súbor pre danú kombináciu
+3. Používaj fallback na angličtinu ak je potrebné
 
-### Type Errors
-- Update `i18n.types.ts` with new keys
-- Run TypeScript check: `npm run typecheck`
+## Budúce rozšírenia
 
-## Contributing
-
-1. Always add English translations first
-2. Use the naming conventions
-3. Keep files under 700 lines
-4. Test with multiple languages
-5. Update TypeScript types
-
-## Support
-
-For questions or issues:
-- Check this documentation
-- Run diagnostic scripts
-- Contact the development team
+- Pridanie ďalších jazykov (poľština, maďarčina)
+- Rozšírenie jurisdikcií (Rakúsko, Nemecko) 
+- Automatické generovanie typov z JSON súborov
+- CLI nástroje pre správu prekladov
 
 ---
 
-*Last updated: 2024*
-*Version: 1.0.0*
+*Posledná aktualizácia: 2024*  
+*Verzia: 2.0.0*

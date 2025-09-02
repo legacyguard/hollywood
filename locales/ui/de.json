@@ -1,0 +1,49 @@
+{
+  "common": {
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "close": "Schließen",
+    "loading": "Lädt...",
+    "error": "Fehler",
+    "success": "Erfolg",
+    "confirm": "Bestätigen",
+    "back": "Zurück",
+    "next": "Weiter",
+    "finish": "Fertigstellen",
+    "continue": "Fortfahren"
+  },
+  "navigation": {
+    "home": "Startseite",
+    "vault": "Tresor",
+    "garden": "Garten",
+    "family": "Familie",
+    "wills": "Testamente",
+    "settings": "Einstellungen",
+    "help": "Hilfe"
+  },
+  "buttons": {
+    "create": "Erstellen",
+    "update": "Aktualisieren",
+    "submit": "Senden",
+    "reset": "Zurücksetzen",
+    "search": "Suchen",
+    "filter": "Filtern",
+    "sort": "Sortieren"
+  },
+  "forms": {
+    "required": "Dieses Feld ist erforderlich",
+    "invalid": "Ungültige Eingabe",
+    "tooShort": "Zu kurz",
+    "tooLong": "Zu lang",
+    "invalidEmail": "Ungültige E-Mail-Adresse"
+  },
+  "auth": {
+    "signIn": "Anmelden",
+    "signOut": "Abmelden",
+    "signUp": "Registrieren",
+    "forgotPassword": "Passwort vergessen?",
+    "resetPassword": "Passwort zurücksetzen"
+  }
+}

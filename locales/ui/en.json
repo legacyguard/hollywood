@@ -1,0 +1,49 @@
+{
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "finish": "Finish",
+    "continue": "Continue"
+  },
+  "navigation": {
+    "home": "Home",
+    "vault": "Vault",
+    "garden": "Garden",
+    "family": "Family",
+    "wills": "Wills",
+    "settings": "Settings",
+    "help": "Help"
+  },
+  "buttons": {
+    "create": "Create",
+    "update": "Update",
+    "submit": "Submit",
+    "reset": "Reset",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort"
+  },
+  "forms": {
+    "required": "This field is required",
+    "invalid": "Invalid input",
+    "tooShort": "Too short",
+    "tooLong": "Too long",
+    "invalidEmail": "Invalid email address"
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
+    "signUp": "Sign Up",
+    "forgotPassword": "Forgot Password?",
+    "resetPassword": "Reset Password"
+  }
+}

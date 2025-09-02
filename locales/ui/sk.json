@@ -1,0 +1,49 @@
+{
+  "common": {
+    "save": "Uložiť",
+    "cancel": "Zrušiť",
+    "delete": "Odstrániť",
+    "edit": "Upraviť",
+    "close": "Zavrieť",
+    "loading": "Načítava...",
+    "error": "Chyba",
+    "success": "Úspech",
+    "confirm": "Potvrdiť",
+    "back": "Späť",
+    "next": "Ďalej",
+    "finish": "Dokončiť",
+    "continue": "Pokračovať"
+  },
+  "navigation": {
+    "home": "Domov",
+    "vault": "Trezor",
+    "garden": "Záhrada",
+    "family": "Rodina",
+    "wills": "Závety",
+    "settings": "Nastavenia",
+    "help": "Pomoc"
+  },
+  "buttons": {
+    "create": "Vytvoriť",
+    "update": "Aktualizovať",
+    "submit": "Odoslať",
+    "reset": "Resetovať",
+    "search": "Hľadať",
+    "filter": "Filtrovať",
+    "sort": "Zoradiť"
+  },
+  "forms": {
+    "required": "Toto pole je povinné",
+    "invalid": "Neplatný vstup",
+    "tooShort": "Príliš krátke",
+    "tooLong": "Príliš dlhé",
+    "invalidEmail": "Neplatná emailová adresa"
+  },
+  "auth": {
+    "signIn": "Prihlásiť sa",
+    "signOut": "Odhlásiť sa",
+    "signUp": "Zaregistrovať sa",
+    "forgotPassword": "Zabudli ste heslo?",
+    "resetPassword": "Obnoviť heslo"
+  }
+}

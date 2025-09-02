@@ -1,0 +1,49 @@
+{
+  "common": {
+    "save": "Uložit",
+    "cancel": "Zrušit",
+    "delete": "Smazat",
+    "edit": "Upravit",
+    "close": "Zavřít",
+    "loading": "Načítá...",
+    "error": "Chyba",
+    "success": "Úspěch",
+    "confirm": "Potvrdit",
+    "back": "Zpět",
+    "next": "Další",
+    "finish": "Dokončit",
+    "continue": "Pokračovat"
+  },
+  "navigation": {
+    "home": "Domů",
+    "vault": "Trezor",
+    "garden": "Zahrada",
+    "family": "Rodina",
+    "wills": "Závěti",
+    "settings": "Nastavení",
+    "help": "Pomoc"
+  },
+  "buttons": {
+    "create": "Vytvořit",
+    "update": "Aktualizovat",
+    "submit": "Odeslat",
+    "reset": "Resetovat",
+    "search": "Hledat",
+    "filter": "Filtrovat",
+    "sort": "Seřadit"
+  },
+  "forms": {
+    "required": "Toto pole je povinné",
+    "invalid": "Neplatný vstup",
+    "tooShort": "Příliš krátké",
+    "tooLong": "Příliš dlouhé",
+    "invalidEmail": "Neplatná emailová adresa"
+  },
+  "auth": {
+    "signIn": "Přihlásit se",
+    "signOut": "Odhlásit se",
+    "signUp": "Zaregistrovat se",
+    "forgotPassword": "Zapomněli jste heslo?",
+    "resetPassword": "Obnovit heslo"
+  }
+}

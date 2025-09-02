@@ -21,6 +21,14 @@ export const detectPlatform = (): 'web' | 'mobile' => {
   return 'web';
 };
 
+// Supported jurisdictions
+export const SUPPORTED_JURISDICTIONS = {
+  SK: 'Slovakia',
+  CZ: 'Czech Republic'
+} as const;
+
+export type SupportedJurisdictionCode = keyof typeof SUPPORTED_JURISDICTIONS;
+
 // Supported languages
 export const SUPPORTED_LANGUAGES = {
   en: {
@@ -72,60 +80,22 @@ export const SUPPORTED_LANGUAGES = {
 
 export type SupportedLanguageCode = keyof typeof SUPPORTED_LANGUAGES;
 
-// Namespace configuration matching the locales structure
+// New namespace configuration matching the new locales structure
 export const NAMESPACES = {
-  // Core namespaces (always loaded)
-  CORE: [
-    'common.ui',
-    'common.navigation',
-    'auth.login',
-    'errors.client'
-  ],
-
-  // Feature namespaces (lazy loaded)
-  FEATURES: {
-    vault: [
-      'features.vault.categories',
-      'features.vault.actions',
-      'features.vault.sharing'
-    ],
-    garden: [
-      'features.garden.tree',
-      'features.garden.milestones',
-      'features.garden.prompts'
-    ],
-    family: [
-      'features.family.guardians',
-      'features.family.emergency'
-    ],
-    sofia: [
-      'features.sofia.personality',
-      'features.sofia.guidance'
-    ]
-  },
-
-  // Platform-specific namespaces
-  PLATFORM: {
-    web: [
-      'web.landing.hero',
-      'web.landing.features',
-      'web.onboarding.wizard',
-      'web.seo.metadata'
-    ],
-    mobile: [
-      'mobile.native.permissions',
-      'mobile.native.offline',
-      'mobile.compact.summaries'
-    ]
-  },
-
-  // Legal namespaces (loaded on demand)
-  LEGAL: {
-    terms: ['legal.terms.service', 'legal.terms.privacy'],
-    templates: (country: string, type: string) =>
-      `legal.templates.wills.${country}.${type}`
+  // UI namespace (default, always loaded)
+  UI: 'ui',
+  
+  // Content namespaces (loaded on demand)
+  CONTENT: {
+    wills: 'wills',
+    familyShield: 'family-shield'
   }
 } as const;
+
+// Helper function to get content namespace with jurisdiction
+export const getContentNamespace = (content: keyof typeof NAMESPACES.CONTENT, language: SupportedLanguageCode, jurisdiction: SupportedJurisdictionCode) => {
+  return `${content}_${language}_${jurisdiction}`;
+};
 
 // Configuration object
 export const i18nConfig = {
@@ -133,13 +103,13 @@ export const i18nConfig = {
   fallbackLng: 'en',
   debug: process.env.NODE_ENV === 'development',
 
-  // Resource loading
-  ns: NAMESPACES.CORE,
-  defaultNS: 'common.ui',
+  // Resource loading - UI namespace is default
+  ns: [NAMESPACES.UI],
+  defaultNS: NAMESPACES.UI,
 
   // Language settings
   supportedLngs: Object.keys(SUPPORTED_LANGUAGES),
-  load: 'languageOnly', // Ignore region codes
+  load: 'languageOnly' as const, // Ignore region codes
 
   // Detection options
   detection: {
@@ -151,46 +121,25 @@ export const i18nConfig = {
 
   // Backend options for loading translations
   backend: {
-    // Custom load path function to map namespaces to actual file structure
+    // Load path function for the new structure
     loadPath: (lngs: string[], namespaces: string[]) => {
       const lng = lngs[0];
       const namespace = namespaces[0];
 
-      // Map namespace to actual file path based on locales structure
-      const parts = namespace.split('.');
-      let basePath: string;
-      let filePath: string;
-
-      // Determine the base path based on namespace prefix
-      if (parts[0] === 'common' || parts[0] === 'auth' || parts[0] === 'features' || parts[0] === 'errors' || parts[0] === 'notifications') {
-        basePath = `/locales/_shared/${lng}`;
-        
-        if (parts[0] === 'common') {
-          // Map common.ui -> _shared/{lng}/common/ui.json
-          filePath = `${parts[0]}/${parts.slice(1).join('/')}.json`;
-        } else if (parts[0] === 'features') {
-          // Map features.vault.categories -> _shared/{lng}/features/vault/categories.json
-          filePath = `${parts[0]}/${parts.slice(1).join('/')}.json`;
-        } else {
-          // Map auth.login -> _shared/{lng}/auth/login.json
-          filePath = `${parts.join('/')}.json`;
-        }
-      } else if (parts[0] === 'legal') {
-        basePath = `/locales/legal/${lng}`;
-        filePath = `${parts.slice(1).join('/')}.json`;
-      } else if (parts[0] === 'web') {
-        basePath = `/locales/web/${lng}`;
-        filePath = `${parts.slice(1).join('/')}.json`;
-      } else if (parts[0] === 'mobile') {
-        basePath = `/locales/mobile/${lng}`;
-        filePath = `${parts.slice(1).join('/')}.json`;
-      } else {
-        // Fallback to _shared for unknown namespaces
-        basePath = `/locales/_shared/${lng}`;
-        filePath = `${parts.join('/')}.json`;
+      // Handle UI namespace
+      if (namespace === NAMESPACES.UI) {
+        return `/locales/ui/${lng}.json`;
       }
 
-      return `${basePath}/${filePath}`;
+      // Handle content namespaces with jurisdiction
+      // Format: wills_sk_SK, family-shield_en_CZ, etc.
+      if (namespace.includes('_')) {
+        const [contentType, language, jurisdiction] = namespace.split('_');
+        return `/locales/content/${contentType}/${language}_${jurisdiction}.json`;
+      }
+
+      // Default fallback
+      return `/locales/ui/${lng}.json`;
     },
 
     // Parse the loaded data
@@ -207,7 +156,7 @@ export const i18nConfig = {
   // Interpolation options
   interpolation: {
     escapeValue: false, // React already escapes values
-    format: (value: unknown, format?: string, lng?: string) => {
+    format: (value: unknown, format?: string, lng?: string): string => {
       if (typeof value === 'string') {
         if (format === 'uppercase') return value.toUpperCase();
         if (format === 'lowercase') return value.toLowerCase();
@@ -228,7 +177,7 @@ export const i18nConfig = {
         return new Intl.DateTimeFormat(lng).format(value);
       }
       
-      return value;
+      return String(value);
     }
   },
 
@@ -259,38 +208,52 @@ export const i18nConfig = {
   initImmediate: true
 };
 
-// Namespace loader utility
+// Namespace loader utility for the new architecture
 export class NamespaceLoader {
   private static loadedNamespaces = new Set<string>();
 
-  static async loadFeature(feature: keyof typeof NAMESPACES.FEATURES) {
-    const namespaces = NAMESPACES.FEATURES[feature];
-    const toLoad = namespaces.filter(ns => !this.loadedNamespaces.has(ns));
-
-    if (toLoad.length > 0) {
-      await i18n.loadNamespaces(toLoad);
-      toLoad.forEach(ns => this.loadedNamespaces.add(ns));
-    }
-  }
-
-  static async loadLegalTemplate(country: string, type: 'holographic' | 'allographic') {
-    const namespace = NAMESPACES.LEGAL.templates(country, type);
-
+  /**
+   * Load content namespace for specific language and jurisdiction
+   */
+  static async loadContent(
+    contentType: keyof typeof NAMESPACES.CONTENT, 
+    language: SupportedLanguageCode, 
+    jurisdiction: SupportedJurisdictionCode
+  ) {
+    const namespace = getContentNamespace(contentType, language, jurisdiction);
+    
     if (!this.loadedNamespaces.has(namespace)) {
-      await i18n.loadNamespaces([namespace]);
-      this.loadedNamespaces.add(namespace);
+      try {
+        await i18n.loadNamespaces([namespace]);
+        this.loadedNamespaces.add(namespace);
+      } catch (error) {
+        console.warn(`Failed to load namespace ${namespace}:`, error);
+        // Try fallback to English if available
+        if (language !== 'en') {
+          const fallbackNamespace = getContentNamespace(contentType, 'en', jurisdiction);
+          try {
+            await i18n.loadNamespaces([fallbackNamespace]);
+            this.loadedNamespaces.add(fallbackNamespace);
+          } catch (fallbackError) {
+            console.error(`Failed to load fallback namespace ${fallbackNamespace}:`, fallbackError);
+          }
+        }
+      }
     }
   }
 
-  static async loadPlatformSpecific() {
-    const platform = detectPlatform();
-    const namespaces = NAMESPACES.PLATFORM[platform];
-    const toLoad = namespaces.filter(ns => !this.loadedNamespaces.has(ns));
+  /**
+   * Load wills content for specific jurisdiction
+   */
+  static async loadWills(language: SupportedLanguageCode, jurisdiction: SupportedJurisdictionCode) {
+    await this.loadContent('wills', language, jurisdiction);
+  }
 
-    if (toLoad.length > 0) {
-      await i18n.loadNamespaces(toLoad);
-      toLoad.forEach(ns => this.loadedNamespaces.add(ns));
-    }
+  /**
+   * Load family shield content for specific jurisdiction
+   */
+  static async loadFamilyShield(language: SupportedLanguageCode, jurisdiction: SupportedJurisdictionCode) {
+    await this.loadContent('familyShield', language, jurisdiction);
   }
 
   static isLoaded(namespace: string): boolean {
@@ -300,32 +263,19 @@ export class NamespaceLoader {
   static getLoadedNamespaces(): string[] {
     return Array.from(this.loadedNamespaces);
   }
+
+  static reset() {
+    this.loadedNamespaces.clear();
+  }
 }
 
-// Route-based namespace mapping
+// Route-based namespace mapping (simplified for new structure)
 export const getNamespacesForRoute = (pathname: string): string[] => {
-  const namespaces: string[] = [...NAMESPACES.CORE];
+  // Always load UI namespace
+  const namespaces: string[] = [NAMESPACES.UI];
 
-  // Add feature-specific namespaces based on route
-  if (pathname.includes('/vault')) {
-    namespaces.push(...NAMESPACES.FEATURES.vault);
-  }
-  if (pathname.includes('/garden') || pathname.includes('/legacy')) {
-    namespaces.push(...NAMESPACES.FEATURES.garden);
-  }
-  if (pathname.includes('/family') || pathname.includes('/guardians')) {
-    namespaces.push(...NAMESPACES.FEATURES.family);
-  }
-  if (pathname.includes('/sofia') || pathname.includes('/assistant')) {
-    namespaces.push(...NAMESPACES.FEATURES.sofia);
-  }
-
-  // Add platform-specific namespaces
-  const platform = detectPlatform();
-  if (pathname === '/' && platform === 'web') {
-    namespaces.push(...NAMESPACES.PLATFORM.web);
-  }
-
+  // Content namespaces are loaded on-demand based on user's jurisdiction and language
+  // This function now returns just the UI namespace, content is loaded when needed
   return namespaces;
 };
 
@@ -336,9 +286,6 @@ export const initI18n = async () => {
     .use(LanguageDetector)
     .use(initReactI18next)
     .init(i18nConfig);
-
-  // Load platform-specific namespaces
-  await NamespaceLoader.loadPlatformSpecific();
 
   return i18n;
 };
