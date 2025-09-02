@@ -104,8 +104,8 @@ export const SignInScreen = () => {
         >
           {/* Header */}
           <Stack gap="$2" alignItems="center">
-            <H1 color="$primaryBlue">LegacyGuard</H1>
-            <Paragraph size="$5" color="$gray6">
+            <H1 color="primary">LegacyGuard</H1>
+            <Paragraph size="large" color="muted">
               Sign in to your account
             </Paragraph>
           </Stack>
@@ -116,27 +116,25 @@ export const SignInScreen = () => {
               <FormSection spacing="$4">
                 <FormInput
                   testID="email-input"
-                  label="Email"
                   placeholder="Enter your email"
                   value={email}
                   onChangeText={setEmail}
                   keyboardType="email-address"
                   autoCapitalize="none"
                   autoComplete="email"
-                  error={errors.email}
                   icon={Mail}
+                  field={{ label: 'Email', errorMessage: errors.email }}
                 />
 
                 <FormInput
                   testID="password-input"
-                  label="Password"
                   placeholder="Enter your password"
                   value={password}
                   onChangeText={setPassword}
                   secureTextEntry={!showPassword}
                   autoComplete="password"
-                  error={errors.password}
                   icon={Lock}
+                  field={{ label: 'Password', errorMessage: errors.password }}
                   rightIcon={
                     <Button
                       size="small"
@@ -174,9 +172,9 @@ export const SignInScreen = () => {
           </Card>
 
           {/* Divider */}
-          <Row alignItems="center" gap="$3">
+          <Row align="center" space="small">
             <Divider flex={1} />
-            <Paragraph size="$3" color="$gray6">OR</Paragraph>
+            <Paragraph size="small" color="muted">OR</Paragraph>
             <Divider flex={1} />
           </Row>
 
@@ -202,8 +200,8 @@ export const SignInScreen = () => {
           </Stack>
 
           {/* Sign Up Link */}
-          <Row justifyContent="center" gap="$2">
-            <Paragraph size="$4" color="$gray6">
+          <Row justify="center" space="small">
+            <Paragraph size="medium" color="muted">
               Don't have an account?
             </Paragraph>
             <Button

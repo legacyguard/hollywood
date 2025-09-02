@@ -203,7 +203,7 @@ export const DeadMansSwitchManager: React.FC<DeadMansSwitchProps> = ({
     if (!userId || emergencyRules.length > 0) return;
 
     try {
-      const supabase = await createSupabaseClient();
+      // const supabase = await createSupabaseClient(); // Not used
 
       // const { error } = await supabase.rpc('initialize_default_emergency_rules' as any, {
       //   target_user_id: userId

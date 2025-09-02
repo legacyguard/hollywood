@@ -5,8 +5,8 @@ import { View } from 'tamagui'
 
 export interface FormFieldProps {
   label?: string
-  error?: string
-  success?: string
+  errorMessage?: string
+  successMessage?: string
   hint?: string
   required?: boolean
   children?: ReactNode
@@ -14,8 +14,8 @@ export interface FormFieldProps {
 
 export const FormField: React.FC<FormFieldProps> = ({
   label,
-  error,
-  success,
+  errorMessage,
+  successMessage,
   hint,
   required,
   children
@@ -31,26 +31,26 @@ export const FormField: React.FC<FormFieldProps> = ({
 
       {children}
 
-      {hint && !error && !success && (
+      {hint && !errorMessage && !successMessage && (
         <Paragraph size="small" color="muted">
           {hint}
         </Paragraph>
       )}
 
-      {error && (
+      {errorMessage && (
         <View flexDirection="row" alignItems="center" gap="$1">
           <AlertCircle size={14} color="$error" />
           <Paragraph size="small" color="danger">
-            {error}
+            {errorMessage}
           </Paragraph>
         </View>
       )}
 
-      {success && !error && (
+      {successMessage && !errorMessage && (
         <View flexDirection="row" alignItems="center" gap="$1">
           <CheckCircle size={14} color="$success" />
           <Paragraph size="small" color="success">
-            {success}
+            {successMessage}
           </Paragraph>
         </View>
       )}
@@ -59,54 +59,42 @@ export const FormField: React.FC<FormFieldProps> = ({
 }
 
 // FormInput - Input with FormField wrapper
-export interface FormInputProps extends InputProps, FormFieldProps {}
+export type FormInputProps = InputProps & { field?: FormFieldProps }
 
-export const FormInput: React.FC<FormInputProps> = ({
-  label,
-  error,
-  success,
-  hint,
-  required,
-  ...inputProps
-}) => {
+export const FormInput: React.FC<FormInputProps> = ({ field, ...inputProps }) => {
+  const { label, errorMessage, successMessage, hint, required } = field || {}
   return (
     <FormField
       label={label}
-      error={error}
-      success={success}
+      errorMessage={errorMessage}
+      successMessage={successMessage}
       hint={hint}
       required={required}
     >
       <Input
         {...inputProps}
-        variant={error ? 'error' : success ? 'success' : inputProps.variant}
+        variant={errorMessage ? 'error' : successMessage ? 'success' : inputProps.variant}
       />
     </FormField>
   )
 }
 
 // FormTextArea - TextArea with FormField wrapper
-export interface FormTextAreaProps extends TextAreaProps, FormFieldProps {}
+export type FormTextAreaProps = TextAreaProps & { field?: FormFieldProps }
 
-export const FormTextArea: React.FC<FormTextAreaProps> = ({
-  label,
-  error,
-  success,
-  hint,
-  required,
-  ...textAreaProps
-}) => {
+export const FormTextArea: React.FC<FormTextAreaProps> = ({ field, ...textAreaProps }) => {
+  const { label, errorMessage, successMessage, hint, required } = field || {}
   return (
     <FormField
       label={label}
-      error={error}
-      success={success}
+      errorMessage={errorMessage}
+      successMessage={successMessage}
       hint={hint}
       required={required}
     >
       <TextArea
         {...textAreaProps}
-        variant={error ? 'error' : success ? 'success' : textAreaProps.variant}
+        variant={errorMessage ? 'error' : successMessage ? 'success' : textAreaProps.variant}
       />
     </FormField>
   )

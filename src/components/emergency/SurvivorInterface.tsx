@@ -57,12 +57,6 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
 
   const currentToken = accessToken || token;
 
-  useEffect(() => {
-    if (currentToken || isPublicAccess) {
-      loadSurvivorData();
-    }
-  }, [currentToken, isPublicAccess, loadSurvivorData]);
-
   const loadSurvivorData = useCallback(async () => {
     try {
       setIsLoading(true);
@@ -130,9 +124,9 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
         g => ({
           name: g.name,
           email: g.email,
-          phone: g.phone,
+          phone: g.phone || undefined,
           relationship: g.relationship || 'Guardian',
-          priority: g.emergency_contact_priority,
+          priority: g.emergency_contact_priority ?? 99,
           is_notified: true, // Assume notified in emergency scenario
         })
       );
@@ -149,7 +143,7 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
         (documents || []).forEach(doc => {
           availableResources.push({
             id: doc.id,
-            category: (doc.document_type.toLowerCase() as 'financial' | 'legal' | 'medical' | 'personal' | 'contacts' | 'instructions') || 'personal',
+            category: (doc.document_type?.toLowerCase() as 'financial' | 'legal' | 'medical' | 'personal' | 'contacts' | 'instructions') || 'personal',
             title: doc.file_name,
             description: `${doc.document_type} document - Last updated ${new Date(doc.updated_at).toLocaleDateString()}`,
             access_level: 'immediate',
@@ -195,9 +189,9 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
       ).map(tc => ({
         id: tc.id,
         message_title: tc.message_title,
-        message_preview: tc.message_preview,
+        message_preview: tc.message_preview || undefined,
         delivery_condition: tc.delivery_condition as 'ON_DATE' | 'ON_DEATH',
-        access_token: tc.access_token,
+        access_token: tc.access_token || '',
         is_available: true,
         created_at: tc.created_at,
       }));
@@ -227,8 +221,8 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
       const survivorData: SurvivorInterfaceData = {
         user_info: {
           name: profile.full_name || 'Unknown',
-          memorial_message: profile.memorial_message,
-          profile_photo_url: profile.avatar_url,
+          memorial_message: profile.memorial_message || undefined,
+          profile_photo_url: profile.avatar_url || undefined,
         },
         available_resources: availableResources,
         emergency_contacts: emergencyContacts,

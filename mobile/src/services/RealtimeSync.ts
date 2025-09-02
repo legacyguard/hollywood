@@ -4,7 +4,7 @@
  */
 
 /* global __DEV__ */
-import { createClient, type SupabaseClient, type RealtimeChannel } from '@supabase/supabase-js';
+import { createClient, type SupabaseClient, type RealtimeChannel, type RealtimePostgresChangesPayload } from '@supabase/supabase-js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export interface Document {
@@ -108,10 +108,12 @@ export class RealtimeSync {
   /**
    * Handle real-time database changes
    */
-  private handleRealtimeChange(payload: unknown) {
+  private handleRealtimeChange(payload: RealtimePostgresChangesPayload<Record<string, unknown>>) {
     const event: SyncEvent = {
       type: payload.eventType as 'INSERT' | 'UPDATE' | 'DELETE',
-      document: payload.new || payload.old,
+      // payload.new exists on INSERT/UPDATE, payload.old on DELETE
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      document: (payload.new || payload.old) as any,
       timestamp: new Date().toISOString(),
     };
 

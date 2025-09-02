@@ -12,7 +12,7 @@ import {
   LegacyItemService,
   AnalyticsService,
   type ApiClientInterface 
-} from '@packages/logic';
+} from '@legacyguard/logic';
 import { createClient } from '@supabase/supabase-js';
 
 // Environment configuration

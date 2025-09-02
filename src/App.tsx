@@ -10,7 +10,7 @@ import SignInPage from '@/pages/auth/SignIn';
 import SignUpPage from '@/pages/auth/SignUp';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { SkipLinks } from '@/components/accessibility/SkipLinks';
-import { GlobalErrorBoundary } from '@legacyguard/ui';
+import { ErrorBoundary } from 'react-error-boundary';
 
 // Public Pages
 import { LandingPage } from '@/pages/LandingPage';
@@ -53,9 +53,18 @@ import { OnboardingWrapper } from '@/components/onboarding/OnboardingWrapper';
 import TestNotifications from '@/pages/TestNotifications';
 
 
+function ErrorFallback({error}: {error: Error}) {
+  return (
+    <div role="alert">
+      <h2>Something went wrong:</h2>
+      <pre>{error.message}</pre>
+    </div>
+  )
+}
+
 export default function App() {
   return (
-    <GlobalErrorBoundary>
+    <ErrorBoundary FallbackComponent={ErrorFallback}>
       <I18nextProvider i18n={i18n}>
         <Suspense fallback={<div>Loading translations...</div>}>
           <ClerkProvider>
@@ -288,6 +297,6 @@ export default function App() {
         </ClerkProvider>
       </Suspense>
     </I18nextProvider>
-    </GlobalErrorBoundary>
+    </ErrorBoundary>
   );
 }

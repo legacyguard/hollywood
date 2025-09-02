@@ -179,6 +179,7 @@ export interface SelectProps extends Omit<TamaguiSelectProps, 'size' | 'children
   label?: string
   helperText?: string
   errorText?: string
+  testID?: string
 }
 
 // Main Select component

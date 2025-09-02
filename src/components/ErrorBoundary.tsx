@@ -5,7 +5,7 @@ import { Icon } from '@/components/ui/icon-library';
 import { toast } from 'sonner';
 import { withTranslation, WithTranslation, useTranslation } from 'react-i18next';
 
-interface Props {
+interface Props extends WithTranslation {
   children: ReactNode;
   fallback?: ReactNode;
 }
@@ -39,7 +39,7 @@ export class ErrorBoundary extends Component<Props, State> {
     });
 
     // Show user-friendly toast notification
-      toast.error(this.props.t ? this.props.t('toast') : "Something went wrong. We're working on fixing this issue.");
+      toast.error(this.props.t ? this.props.t('errorBoundary.toast', "Something went wrong. We're working on fixing this issue.") : "Something went wrong. We're working on fixing this issue.");
   }
 
   private handleReload = () => {
@@ -131,3 +131,5 @@ export class ErrorBoundary extends Component<Props, State> {
     return this.props.children;
   }
 }
+
+export default withTranslation()(ErrorBoundary);

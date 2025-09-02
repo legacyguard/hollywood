@@ -107,9 +107,9 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
         can_trigger_emergency: true, // Default to true for emergency access
         can_access_health_docs: true, // Default to true for emergency access
         can_access_financial_docs: true, // Default to true for emergency access
-        is_child_guardian: guardian?.relationship === 'parent' || guardian?.relationship === 'guardian',
-        is_will_executor: guardian?.relationship === 'executor' || guardian?.relationship === 'attorney',
-        emergency_contact_priority: guardian?.emergency_contact_priority || 1,
+        is_child_guardian: (guardian as any)?.relationship === 'parent' || (guardian as any)?.relationship === 'guardian',
+        is_will_executor: (guardian as any)?.relationship === 'executor' || (guardian as any)?.relationship === 'attorney',
+        emergency_contact_priority: (guardian as any)?.emergency_contact_priority || 1,
       };
 
       // Get user's accessible documents based on guardian permissions
@@ -178,9 +178,9 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
       ).map(tc => ({
         id: tc.id,
         message_title: tc.message_title,
-        message_preview: tc.message_preview,
+        message_preview: tc.message_preview || undefined,
         delivery_condition: tc.delivery_condition as 'ON_DATE' | 'ON_DEATH',
-        access_token: tc.access_token,
+        access_token: tc.access_token || '',
         is_available: true,
         created_at: tc.created_at,
       }));
@@ -298,7 +298,7 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
 
   const downloadDocument = async (_documentId: string, _fileName: string) => {
     try {
-      const _supabase = await createSupabaseClient();
+      // const _supabase = await createSupabaseClient(); // Not used
 
       // Get document download URL (would need to implement decryption)
       toast.info(

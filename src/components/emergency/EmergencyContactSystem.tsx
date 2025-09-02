@@ -287,7 +287,7 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
       console.error('Error saving contact:', err);
       toast.error('Failed to save emergency contact. Please try again.');
     }
-  }, [userId, createSupabaseClient, contactForm, editingContact, effectiveMode, _onContactAdded, _onContactUpdated]);
+  }, [userId, createSupabaseClient, contactForm, editingContact, effectiveMode]);
 
   // Send test notification
   const sendTestNotification = useCallback(async (contactId: string) => {

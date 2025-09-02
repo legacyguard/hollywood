@@ -38,7 +38,7 @@ import {
 } from 'lucide-react-native';
 
 interface SettingItemProps {
-  icon: React.ReactNode;
+  icon: React.ReactElement;
   title: string;
   description?: string;
   value?: string | React.ReactNode;
@@ -59,7 +59,6 @@ const SettingItem = ({
       variant="ghost"
       padding="medium"
       clickable={!!onPress}
-      onPress={onPress}
       fullWidth
     >
       <Row space="medium" align="center">
@@ -78,13 +77,11 @@ const SettingItem = ({
             <Paragraph size="small" color="muted">{description}</Paragraph>
           )}
         </Stack>
-        {value && (
-          typeof value === 'string' ? (
-            <Paragraph size="small" color="muted">{value}</Paragraph>
-          ) : (
-            value
-          )
-        )}
+        {value && (typeof value === 'string' ? (
+          <Paragraph size="small" color="muted">{value}</Paragraph>
+        ) : (
+          value
+        ))}
         {showArrow && onPress && (
           <ChevronRight size={20} color="#9ca3af" />
         )}
@@ -159,7 +156,7 @@ export function ProfileScreen() {
               </Box>
               <Stack space="xs" align="center">
                 <H2>{user?.fullName || 'User'}</H2>
-                <Paragraph color="muted">{user?.primaryEmailAddress?.emailAddress}</Paragraph>
+                <Paragraph color="muted">{user?.primaryEmailAddress?.emailAddress ?? ''}</Paragraph>
               </Stack>
 
               {/* Trust Score */}

@@ -32,7 +32,7 @@ export const SecurePasswordPrompt: React.FC<SecurePasswordPromptProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   const {
-    isLoading,
+    // isLoading, // Not used
     error,
     createKeys,
     unlockKeys,
@@ -113,11 +113,7 @@ export const SecurePasswordPrompt: React.FC<SecurePasswordPromptProps> = ({
         <Card className="relative overflow-hidden border-2 border-primary/20">
           {/* Sofia Firefly Animation */}
           <div className="absolute top-4 right-4 w-8 h-8">
-            <SofiaFirefly 
-              personality="empathetic"
-              mode="idle"
-              size="small"
-            />
+            <SofiaFirefly />
           </div>
 
           <CardHeader className="text-center pb-4">

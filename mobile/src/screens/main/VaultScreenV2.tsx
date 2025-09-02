@@ -43,13 +43,12 @@ const DocumentCard = ({ document, onPress, onDelete, categories }: DocumentCardP
   const category = categories.find(c => c.id === document.category) || categories[0];
 
   return (
-    <Card
-      variant="default"
-      padding="medium"
-      clickable
-      onPress={onPress}
-      fullWidth
-    >
+    <TouchableOpacity onPress={onPress} activeOpacity={0.9}>
+      <Card
+        variant="default"
+        padding="medium"
+        fullWidth
+      >
       <Row space="medium" align="center">
         <Box
           padding="small"
@@ -69,7 +68,7 @@ const DocumentCard = ({ document, onPress, onDelete, categories }: DocumentCardP
           <Paragraph weight="semibold">{document.name}</Paragraph>
           <Row space="small" align="center">
             <Paragraph size="small" color="muted">
-              {category.label}
+              {category.label ?? ''}
             </Paragraph>
             {document.fileSize && (
               <>
@@ -86,7 +85,8 @@ const DocumentCard = ({ document, onPress, onDelete, categories }: DocumentCardP
           <Ionicons name="trash-outline" size={20} color="#dc2626" />
         </TouchableOpacity>
       </Row>
-    </Card>
+      </Card>
+    </TouchableOpacity>
   );
 };
 
@@ -112,7 +112,7 @@ const CategoryFilter = ({ selected, onSelect, categories }: CategoryFilterProps)
             onPress={() => onSelect(category.id)}
           >
             <Card
-              variant={selected === category.id ? 'primary' : 'default'}
+              variant={selected === category.id ? 'filled' : 'default'}
               padding="small"
               style={{ minWidth: 80 }}
             >
@@ -128,7 +128,7 @@ const CategoryFilter = ({ selected, onSelect, categories }: CategoryFilterProps)
                     color: selected === category.id ? '#ffffff' : '#6b7280',
                   }}
                 >
-                  {category.label}
+                  {category.label ?? ''}
                 </Paragraph>
               </Stack>
             </Card>
@@ -236,11 +236,11 @@ export function VaultScreenV2() {
   };
 
   const handleDocumentPress = (document: Document) => {
-    navigation.navigate('DocumentDetail' as never, { document } as never);
+    (navigation as any).navigate('DocumentDetail', { document });
   };
 
   const handleAddDocument = () => {
-    navigation.navigate('Scanner' as never);
+    (navigation as any).navigate('Scanner');
   };
 
   return (

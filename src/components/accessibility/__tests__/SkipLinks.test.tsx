@@ -1,14 +1,15 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render } from '@testing-library/react';
+// import { screen, fireEvent } from '@testing-library/react'; // Not available in current version
 import { SkipLinks } from '../SkipLinks';
 
 describe('SkipLinks Component', () => {
   it('renders default skip links', () => {
-    render(<SkipLinks />);
+    const { container } = render(<SkipLinks />);
 
-    expect(screen.getByText('Skip to main content')).toBeInTheDocument();
-    expect(screen.getByText('Skip to navigation')).toBeInTheDocument();
-    expect(screen.getByText('Skip to search')).toBeInTheDocument();
+    expect(container.textContent).toContain('Skip to main content');
+    expect(container.textContent).toContain('Skip to navigation');
+    expect(container.textContent).toContain('Skip to search');
   });
 
   it('renders custom skip links', () => {
@@ -17,10 +18,10 @@ describe('SkipLinks Component', () => {
       { id: 'custom-2', label: 'Custom Link 2', href: '#custom-2' },
     ];
 
-    render(<SkipLinks links={customLinks} />);
+    const { container } = render(<SkipLinks links={customLinks} />);
 
-    expect(screen.getByText('Custom Link 1')).toBeInTheDocument();
-    expect(screen.getByText('Custom Link 2')).toBeInTheDocument();
+    expect(container.textContent).toContain('Custom Link 1');
+    expect(container.textContent).toContain('Custom Link 2');
   });
 
   it('handles click events correctly', () => {
@@ -43,10 +44,12 @@ describe('SkipLinks Component', () => {
       return originalQuerySelector.call(document, selector);
     });
 
-    render(<SkipLinks />);
+    const { container } = render(<SkipLinks />);
 
-    const mainContentLink = screen.getByText('Skip to main content');
-    fireEvent.click(mainContentLink);
+    const mainContentLink = container.querySelector('a[href="#main-content"]');
+    if (mainContentLink) {
+      mainContentLink.click();
+    }
 
     expect(focusMock).toHaveBeenCalled();
     expect(scrollIntoViewMock).toHaveBeenCalledWith({ behavior: 'smooth' });
@@ -57,21 +60,21 @@ describe('SkipLinks Component', () => {
   });
 
   it('applies correct accessibility attributes', () => {
-    render(<SkipLinks />);
+    const { container } = render(<SkipLinks />);
 
-    const nav = screen.getByRole('navigation', { name: 'Skip links' });
+    const nav = container.querySelector('nav[aria-label="Skip links"]');
     expect(nav).toBeInTheDocument();
     expect(nav).toHaveAttribute('aria-label', 'Skip links');
   });
 
   it('links are keyboard accessible', () => {
-    render(<SkipLinks />);
+    const { container } = render(<SkipLinks />);
 
-    const links = screen.getAllByRole('link');
-    links.forEach(link => {
+    const links = container.querySelectorAll('a');
+    links.forEach((link: Element) => {
       expect(link).toHaveAttribute('href');
       // Links should be focusable
-      expect(link.tabIndex).toBeGreaterThanOrEqual(-1);
+      expect((link as HTMLElement).tabIndex).toBeGreaterThanOrEqual(-1);
     });
   });
 });

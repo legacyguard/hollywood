@@ -25,8 +25,8 @@ export const FormSelect: React.FC<FormSelectProps> = ({
   return (
     <FormField
       label={label}
-      error={errorMessage}
-      success={success}
+      errorMessage={errorMessage}
+      successMessage={success}
       hint={hint}
       required={required}
     >

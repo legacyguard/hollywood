@@ -155,14 +155,14 @@ export const DocumentsScreen = () => {
     }
   }
 
-  const handleDocumentPress = (document: Document) => {
+  const _handleDocumentPress = (document: Document) => {
     // Navigate to document detail screen
     // navigation.navigate('DocumentDetail', { documentId: document.id })
     if (__DEV__) console.log('Document pressed:', document.id) // Temporary placeholder
   }
 
   const handleAddDocument = () => {
-    navigation.navigate('Scan')
+    navigation.navigate('Scan' as never)
   }
 
   const handleShareDocument = (document: Document) => {
@@ -177,7 +177,16 @@ export const DocumentsScreen = () => {
 
   const handleDownloadOffline = async (document: Document) => {
     if (isAvailable) {
-      await addDocument(document)
+      // Map to vault document shape
+      await addDocument({
+        id: document.id,
+        fileName: document.name,
+        documentType: document.type,
+        content: '',
+        uploadedAt: document.uploadedAt,
+        fileSize: document.size,
+        tags: [document.category],
+      })
       // Update document state to show it's offline
       setDocuments(prev =>
         prev.map(doc =>
@@ -196,34 +205,33 @@ export const DocumentsScreen = () => {
         key={document.id}
         animation="medium"
         pressStyle={{ scale: 0.98 }}
-        onPress={() => handleDocumentPress(document)}
         marginBottom="$3"
-        width={isTablet && viewMode === 'grid' ? '100%' : undefined}
+        {...(isTablet && viewMode === 'grid' ? { width: '100%' } : {})}
       >
         <CardContent>
-          <Row alignItems="center" justifyContent="space-between">
-            <Row alignItems="center" gap="$3" flex={1}>
+          <Row align="center" justify="between">
+            <Row align="center" space="small" flex={1}>
               <Icon size={24} color={theme.primaryBlue.val} />
               <Stack flex={1}>
                 <Paragraph fontWeight="600" numberOfLines={1}>
                   {document.name}
                 </Paragraph>
-                <Row gap="$2" alignItems="center">
-                  <Paragraph size="$2" color="$gray6">
+                <Row space="xs" align="center">
+                  <Paragraph size="small" color="muted">
                     {document.category}
                   </Paragraph>
-                  <Paragraph size="$2" color="$gray6">
+                  <Paragraph size="small" color="muted">
                     •
                   </Paragraph>
-                  <Paragraph size="$2" color="$gray6">
+                  <Paragraph size="small" color="muted">
                     {formatFileSize(document.size)}
                   </Paragraph>
                   {document.isOffline && (
                     <>
-                      <Paragraph size="$2" color="$gray6">
+                      <Paragraph size="small" color="muted">
                         •
                       </Paragraph>
-                      <Paragraph size="$2" color="$success">
+                      <Paragraph size="small" color="success">
                         Offline
                       </Paragraph>
                     </>
@@ -232,7 +240,7 @@ export const DocumentsScreen = () => {
               </Stack>
             </Row>
 
-            <Row gap="$2">
+            <Row space="xs">
               {!document.isOffline && (
                 <IconButton
                   size="small"
@@ -267,9 +275,9 @@ export const DocumentsScreen = () => {
     <Container>
       <Stack padding="$4" gap="$4">
         {/* Header */}
-        <Row justifyContent="space-between" alignItems="center">
+        <Row justify="between" align="center">
           <H2>Documents</H2>
-          <Row gap="$2">
+          <Row space="xs">
             {media.gtSm && (
               <Button
                 size="medium"
@@ -292,7 +300,7 @@ export const DocumentsScreen = () => {
 
         {/* Search and Filter */}
         <Stack gap="$3">
-          <Row gap="$3" flexDirection={media.gtSm ? 'row' : 'column'}>
+          <Row space="medium" flexDirection={media.gtSm ? 'row' : 'column'}>
             <Stack flex={media.gtSm ? 2 : 1}>
               <Input
                 testID="search-input"
@@ -304,10 +312,9 @@ export const DocumentsScreen = () => {
             </Stack>
             <Stack flex={1}>
               <Select
-                testID="category-filter"
                 options={DOCUMENT_CATEGORIES}
                 value={selectedCategory}
-                onValueChange={setSelectedCategory}
+                onValueChange={(val) => setSelectedCategory(val)}
                 placeholder="Filter by category"
                 size="medium"
               />
@@ -330,7 +337,7 @@ export const DocumentsScreen = () => {
           {filteredDocuments.length === 0 ? (
             <Stack alignItems="center" justifyContent="center" padding="$8">
               <FileText size={48} color={theme.gray5.val} />
-              <Paragraph color="$gray6" marginTop="$3">
+              <Paragraph color="muted" marginTop="$3">
                 {searchQuery || selectedCategory !== 'all'
                   ? 'No documents found matching your criteria'
                   : 'No documents uploaded yet'}
@@ -347,7 +354,7 @@ export const DocumentsScreen = () => {
             </Stack>
           ) : (
             media.gtSm && viewMode === 'grid' ? (
-              <Grid columns={media.gtMd ? 3 : 2} gap="$3">
+              <Grid columns={media.gtMd ? 3 : 2} gap="small">
                 {filteredDocuments.map(renderDocumentCard)}
               </Grid>
             ) : (

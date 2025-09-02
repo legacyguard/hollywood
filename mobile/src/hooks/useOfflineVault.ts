@@ -81,7 +81,7 @@ export const useOfflineVault = (): UseOfflineVaultReturn => {
       setError(null);
 
       try {
-        const encryptionKey = await getOrCreateEncryptionKey();
+        const _encryptionKey = await getOrCreateEncryptionKey();
         await OfflineVaultService.open();
         setIsVaultOpen(true);
 

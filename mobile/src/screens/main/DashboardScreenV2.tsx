@@ -56,7 +56,6 @@ const MetricCard = ({
       variant="elevated"
       padding="medium"
       clickable={!!onPress}
-      onPress={onPress}
       style={{ flex: 1, minHeight: 120 }}
     >
       <Stack space="small">
@@ -72,7 +71,7 @@ const MetricCard = ({
                 />
               )}
               <Paragraph size="small" color="muted">
-                {changeLabel || `${change > 0 ? '+' : ''}${change}%`}
+                {changeLabel ?? (typeof change === 'number' ? `${change > 0 ? '+' : ''}${change}%` : '')}
               </Paragraph>
             </Row>
           )}

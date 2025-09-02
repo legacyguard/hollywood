@@ -269,22 +269,11 @@ export default defineConfig(({ mode }) => {
         'react-dom',
         'react-router-dom',
         '@clerk/clerk-react',
-        '@tanstack/react-query',
         'framer-motion',
         '@supabase/supabase-js',
-        '@supabase/postgrest-js',
       ],
-      // Exclude these from pre-bundling
-      exclude: [],
       // Force optimization of these dependencies
-      force: false,
-      // Enable esbuild optimization
-      esbuildOptions: {
-        // Target modern browsers
-        target: 'es2022',
-        // Enable tree shaking
-        treeShaking: true,
-      },
+      force: true,
     },
 
     // Environment Variables

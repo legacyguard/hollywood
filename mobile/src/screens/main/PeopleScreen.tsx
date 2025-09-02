@@ -76,16 +76,6 @@ export const PeopleScreen = () => {
   // const [showAddModal, setShowAddModal] = useState(false)
   // const [editingPerson, setEditingPerson] = useState<Person | null>(null)
 
-  // Load people on mount
-  useEffect(() => {
-    loadPeople()
-  }, [loadPeople])
-
-  // Filter people when search or role changes
-  useEffect(() => {
-    filterPeople()
-  }, [filterPeople])
-
   const loadPeople = useCallback(async () => {
     setIsRefreshing(true)
     try {
@@ -153,6 +143,16 @@ export const PeopleScreen = () => {
     setFilteredPeople(filtered)
   }, [people, selectedRole, searchQuery])
 
+  // Load people on mount
+  useEffect(() => {
+    loadPeople()
+  }, [loadPeople])
+
+  // Filter people when search or role changes
+  useEffect(() => {
+    filterPeople()
+  }, [filterPeople])
+
   const getRoleIcon = (roleId: string) => {
     const role = PERSON_ROLES.find(r => r.id === roleId)
     return role?.icon || User
@@ -216,8 +216,8 @@ export const PeopleScreen = () => {
         <CardContent>
           <Stack gap="$3">
             {/* Header Row */}
-            <Row alignItems="center" justifyContent="space-between">
-              <Row alignItems="center" gap="$3" flex={1}>
+            <Row align="center" justify="between">
+              <Row align="center" space="small" flex={1}>
                 <Stack
                   width={48}
                   height={48}
@@ -230,7 +230,7 @@ export const PeopleScreen = () => {
                 </Stack>
 
                 <Stack flex={1}>
-                  <Row alignItems="center" gap="$2">
+                  <Row align="center" space="xs">
                     <Paragraph fontWeight="600" fontSize="$5">
                       {person.name}
                     </Paragraph>
@@ -238,13 +238,13 @@ export const PeopleScreen = () => {
                       <AlertCircle size={16} color={theme.error.val} />
                     )}
                   </Row>
-                  <Paragraph size="$3" color="$gray6">
+                  <Paragraph size="small" color="muted">
                     {person.relationship}
                   </Paragraph>
                 </Stack>
               </Row>
 
-              <Row gap="$2">
+              <Row space="xs">
                 <IconButton
                   size="small"
                   variant="ghost"
@@ -263,23 +263,20 @@ export const PeopleScreen = () => {
             </Row>
 
             {/* Roles */}
-            <Row gap="$2" flexWrap="wrap">
+            <Row space="xs" flexWrap="wrap">
               {person.roles.map(roleId => {
                 const role = PERSON_ROLES.find(r => r.id === roleId)
                 const Icon = getRoleIcon(roleId)
                 return (
                   <Row
                     key={roleId}
-                    backgroundColor="$gray2"
-                    paddingHorizontal="$2"
-                    paddingVertical="$1"
-                    borderRadius="$2"
-                    gap="$1"
-                    alignItems="center"
+                    space="xs"
+                    align="center"
+                    style={{ backgroundColor: '#f3f4f6', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 8 }}
                   >
                     <Icon size={14} color={theme[roleId === 'guardian' ? 'primaryBlue' : roleId === 'beneficiary' ? 'primaryGreen' : 'accentGold'].val} />
-                    <Paragraph size="$2">
-                      {role?.label}
+                    <Paragraph size="small">
+                      {role?.label ?? ''}
                     </Paragraph>
                   </Row>
                 )
@@ -287,27 +284,27 @@ export const PeopleScreen = () => {
             </Row>
 
             {/* Contact Info */}
-            <Stack gap="$2">
+            <Stack space="small">
               {person.email && (
                 <Row
-                  alignItems="center"
-                  gap="$2"
+                  align="center"
+                  space="xs"
                   onPress={() => handleContactPerson(person, 'email')}
                 >
                   <Mail size={16} color={theme.gray6.val} />
-                  <Paragraph size="$3" color="$primaryBlue">
+                  <Paragraph size="small" color="primary">
                     {person.email}
                   </Paragraph>
                 </Row>
               )}
               {person.phone && (
                 <Row
-                  alignItems="center"
-                  gap="$2"
+                  align="center"
+                  space="xs"
                   onPress={() => handleContactPerson(person, 'phone')}
                 >
                   <Phone size={16} color={theme.gray6.val} />
-                  <Paragraph size="$3" color="$primaryBlue">
+                  <Paragraph size="small" color="primary">
                     {person.phone}
                   </Paragraph>
                 </Row>
@@ -316,7 +313,7 @@ export const PeopleScreen = () => {
 
             {/* Notes */}
             {person.notes && (
-              <Paragraph size="$2" color="$gray6" fontStyle="italic">
+              <Paragraph size="small" color="muted" fontStyle="italic">
                 {person.notes}
               </Paragraph>
             )}
@@ -338,10 +335,10 @@ export const PeopleScreen = () => {
     <Container>
       <Stack padding="$4" gap="$4">
         {/* Header */}
-        <Row justifyContent="space-between" alignItems="center">
+        <Row justify="between" align="center">
           <Stack>
             <H2>Your Trusted Circle</H2>
-            <Paragraph size="$3" color="$gray6">
+            <Paragraph size="small" color="muted">
               {people.length} {people.length === 1 ? 'person' : 'people'} in your circle
             </Paragraph>
           </Stack>
@@ -389,14 +386,14 @@ export const PeopleScreen = () => {
           {filteredPeople.length === 0 ? (
             <Stack alignItems="center" justifyContent="center" padding="$8">
               <Shield size={48} color={theme.gray5.val} />
-              <Paragraph color="$gray6" marginTop="$3" textAlign="center">
+              <Paragraph color="muted" marginTop="$3" textAlign="center">
                 {searchQuery || selectedRole !== 'all'
                   ? 'No people found matching your criteria'
                   : 'Your trusted circle is empty'}
               </Paragraph>
               {!searchQuery && selectedRole === 'all' && (
                 <>
-                  <Paragraph size="$3" color="$gray6" marginTop="$2" textAlign="center">
+                  <Paragraph size="small" color="muted" marginTop="$2" textAlign="center">
                     Add guardians, beneficiaries, and executors to manage your legacy
                   </Paragraph>
                   <Button
@@ -415,7 +412,7 @@ export const PeopleScreen = () => {
               <Card marginBottom="$4">
                 <CardContent>
                   <H3 marginBottom="$3">Circle Overview</H3>
-                  <Row justifyContent="space-around">
+                  <Row justify="around">
                     {PERSON_ROLES.map(role => {
                       const count = people.filter(p => p.roles.includes(role.id)).length
                       const Icon = role.icon
@@ -425,7 +422,7 @@ export const PeopleScreen = () => {
                           <Paragraph fontWeight="600" fontSize="$5">
                             {count}
                           </Paragraph>
-                          <Paragraph size="$2" color="$gray6">
+                          <Paragraph size="small" color="muted">
                             {role.label}{count !== 1 ? 's' : ''}
                           </Paragraph>
                         </Stack>
@@ -437,7 +434,7 @@ export const PeopleScreen = () => {
 
               {/* People Cards */}
               {media.gtSm ? (
-                <Grid columns={media.gtMd ? 3 : 2} gap="$3">
+                <Grid columns={media.gtMd ? 3 : 2} gap="small">
                   {filteredPeople.map(renderPersonCard)}
                 </Grid>
               ) : (

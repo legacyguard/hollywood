@@ -42,8 +42,9 @@ export const initializeI18n = () => {
 // Initialize on import
 initializeI18n();
 
-// Listen for locale changes
-Localization.addEventListener('change', () => {
+// Listen for locale changes (types don't expose addEventListener in RN Localize)
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(Localization as any).addEventListener?.('change', () => {
   initializeI18n();
 });
 

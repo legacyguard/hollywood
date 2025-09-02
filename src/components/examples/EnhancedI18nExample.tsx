@@ -275,8 +275,14 @@ const EnhancedI18nExample: React.FC = () => {
         <section className="p-4 bg-gray-100 rounded-lg text-xs font-mono">
           <h3 className="font-bold mb-2">Debug Info:</h3>
           <p>Current Language: {i18n.language}</p>
-          <p>Fallback Language: {i18n.options.fallbackLng}</p>
-          <p>Loaded Namespaces: {i18n.options.ns?.join(', ')}</p>
+          <p>Fallback Language: {typeof i18n.options.fallbackLng === 'string' || typeof i18n.options.fallbackLng === 'boolean'
+            ? String(i18n.options.fallbackLng)
+            : Array.isArray(i18n.options.fallbackLng)
+              ? i18n.options.fallbackLng.join(', ')
+              : JSON.stringify(i18n.options.fallbackLng)}</p>
+          <p>Loaded Namespaces: {Array.isArray(i18n.options.ns)
+            ? (i18n.options.ns as string[]).join(', ')
+            : String(i18n.options.ns ?? '')}</p>
           <p>Plural Rule: {new Intl.PluralRules(i18n.language).select(documentCount)}</p>
         </section>
       )}

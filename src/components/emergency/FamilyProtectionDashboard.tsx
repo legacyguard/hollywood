@@ -89,9 +89,9 @@ export const FamilyProtectionDashboard: React.FC<FamilyProtectionDashboardProps>
   const animConfig = AnimationSystem.getConfig(effectiveMode);
 
   // Callback handlers to update status from child components
-  const _handleSwitchStatusChange = (status: ProtectionStatus['switchStatus']) => {
-    setProtectionStatus(prev => ({ ...prev, switchStatus: status }));
-  };
+  // const _handleSwitchStatusChange = (status: ProtectionStatus['switchStatus']) => { // Not used
+  //   setProtectionStatus(prev => ({ ...prev, switchStatus: status }));
+  // };
 
   const handleContactsUpdate = (total: number, primary: number) => {
     setProtectionStatus(prev => ({
@@ -248,7 +248,7 @@ export const FamilyProtectionDashboard: React.FC<FamilyProtectionDashboardProps>
         className={`bg-gradient-to-br ${personalityContent.bgGradient} rounded-xl border ${personalityContent.borderColor} shadow-lg mb-6`}
         initial={!shouldReduceMotion ? { opacity: 0, y: 20 } : undefined}
         animate={!shouldReduceMotion ? { opacity: 1, y: 0 } : undefined}
-        transition={!shouldReduceMotion ? { duration: animConfig.duration, ease: animConfig.ease } : undefined}
+        transition={!shouldReduceMotion ? { duration: animConfig.duration, ease: animConfig.ease as any } : undefined}
       >
         <div className="p-6">
           <div className="flex items-start justify-between mb-6">

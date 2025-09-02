@@ -1,27 +1,6 @@
 // Global type declarations for mobile app
-
-declare module '@legacyguard/ui' {
-  export * from 'tamagui';
-  export const tamaguiConfig: unknown;
-}
-
-declare module '@legacyguard/logic' {
-  export interface TextManager {
-    setUserStyle(userId: string, style: string): void;
-    analyzeUserInput(input: string): void;
-  }
-
-  export const textManager: TextManager;
-
-  export class TextAnalyzer {
-    constructor();
-    analyzeText(text: string): { detectedStyle: string };
-  }
-}
-
-declare module '@hollywood/shared' {
-  // Add shared module exports here
-}
+// NOTE: Do not declare modules for internal packages here.
+// It overrides real types from packages and breaks type-checking.
 
 // Expo module declarations
 declare module 'expo-web-browser' {

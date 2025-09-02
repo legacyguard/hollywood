@@ -173,7 +173,7 @@ function ActivityItemComponent({
           colorClasses[color]
         )}
       >
-        <Icon name={icon} className='w-5 h-5' />
+        <Icon name={icon as any} className='w-5 h-5' />
       </div>
 
       {/* Content */}

@@ -105,10 +105,6 @@ export function FamilyDocumentSharing({ userId, familyMembers }: FamilyDocumentS
   const [filter, setFilter] = useState<'all' | 'shared' | 'private' | 'emergency'>('all');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
-  useEffect(() => {
-    loadDocuments();
-  }, [userId, loadDocuments]);
-
   const loadDocuments = useCallback(async () => {
     try {
       setIsLoading(true);
@@ -175,6 +171,10 @@ export function FamilyDocumentSharing({ userId, familyMembers }: FamilyDocumentS
       setIsLoading(false);
     }
   }, [userId]);
+
+  useEffect(() => {
+    loadDocuments();
+  }, [userId, loadDocuments]);
 
   const handleShareDocuments = async () => {
     try {
@@ -346,7 +346,7 @@ export function FamilyDocumentSharing({ userId, familyMembers }: FamilyDocumentS
 
               <div className="space-y-2">
                 <Label>Access Level</Label>
-                <Select value={shareForm.accessLevel} onValueChange={(value: string) =>
+                <Select value={shareForm.accessLevel} onValueChange={(value: 'view' | 'edit' | 'emergency_only') =>
                   setShareForm(prev => ({ ...prev, accessLevel: value }))
                 }>
                   <SelectTrigger>
@@ -552,4 +552,3 @@ export function FamilyDocumentSharing({ userId, familyMembers }: FamilyDocumentS
     </div>
   );
 }
-

@@ -5,7 +5,13 @@
 
 import React, { useState, useEffect } from 'react';
 import { useApi, withApiErrorHandling } from '@/lib/api/apiAdapter';
-import type { Document } from '@packages/logic/src/types/supabase';
+// Using a minimal Supabase document shape for this example UI
+type SupabaseDocument = {
+  id: string;
+  file_name: string;
+  document_type: string;
+  created_at: string;
+};
 
 /**
  * BEFORE: Old way using direct fetch calls
@@ -69,7 +75,7 @@ const OldDocumentList = () => {
  */
 const MigratedDocumentList: React.FC = () => {
   const { documents: documentService } = useApi();
-  const [documents, setDocuments] = useState<Document[]>([]);
+  const [documents, setDocuments] = useState<SupabaseDocument[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -80,7 +86,7 @@ const MigratedDocumentList: React.FC = () => {
         const docs = await withApiErrorHandling(
           () => documentService.getAll({ limit: 50 }),
           'Failed to fetch documents'
-        );
+        ) as unknown as SupabaseDocument[];
         setDocuments(docs);
         setError(null);
       } catch (error) {
@@ -111,7 +117,7 @@ const MigratedDocumentList: React.FC = () => {
   const searchDocuments = async (query: string) => {
     // ✅ New way: Additional methods available
     try {
-      const results = await documentService.search(query);
+      const results = await documentService.search(query) as unknown as SupabaseDocument[];
       setDocuments(results);
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Search failed');
@@ -121,7 +127,7 @@ const MigratedDocumentList: React.FC = () => {
   const filterByCategory = async (category: string) => {
     // ✅ New way: Specialized methods for common operations
     try {
-      const filtered = await documentService.getByCategory(category);
+      const filtered = await documentService.getByCategory(category) as unknown as SupabaseDocument[];
       setDocuments(filtered);
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Filter failed');
