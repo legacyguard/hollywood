@@ -3,6 +3,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon-library';
 import { toast } from 'sonner';
+import { withTranslation, WithTranslation, useTranslation } from 'react-i18next';
 
 interface Props {
   children: ReactNode;
@@ -38,7 +39,7 @@ export class ErrorBoundary extends Component<Props, State> {
     });
 
     // Show user-friendly toast notification
-    toast.error("Something went wrong. We're working on fixing this issue.");
+      toast.error(this.props.t ? this.props.t('toast') : "Something went wrong. We're working on fixing this issue.");
   }
 
   private handleReload = () => {
@@ -58,7 +59,7 @@ export class ErrorBoundary extends Component<Props, State> {
       if (this.props.fallback) {
         return this.props.fallback;
       }
-
+      const t = this.props.t || ((key: string) => key);
       return (
         <div className='min-h-screen bg-background flex items-center justify-center p-6'>
           <Card className='max-w-md w-full p-8 text-center'>
@@ -67,13 +68,11 @@ export class ErrorBoundary extends Component<Props, State> {
             </div>
 
             <h2 className='text-2xl font-bold mb-4'>
-              Oops! Something went wrong
+              {t('title')}
             </h2>
 
             <p className='text-muted-foreground mb-6 leading-relaxed'>
-              We're sorry, but something unexpected happened. Your data is safe,
-              and we're working to fix this issue. Please try one of the options
-              below.
+              {t('description')}
             </p>
 
             <div className='space-y-3'>
@@ -83,7 +82,7 @@ export class ErrorBoundary extends Component<Props, State> {
                 variant="default"
               >
                 <Icon name="refresh-cw" className='w-4 h-4 mr-2' />
-                Try Again
+                {t('actions.tryAgain')}
               </Button>
 
               <Button
@@ -92,7 +91,7 @@ export class ErrorBoundary extends Component<Props, State> {
                 variant="outline"
               >
                 <Icon name="home" className='w-4 h-4 mr-2' />
-                Go Home
+                {t('actions.goHome')}
               </Button>
 
               <Button
@@ -101,14 +100,14 @@ export class ErrorBoundary extends Component<Props, State> {
                 variant="outline"
               >
                 <Icon name="rotate-ccw" className='w-4 h-4 mr-2' />
-                Reload Page
+                {t('actions.reloadPage')}
               </Button>
             </div>
 
             {process.env.NODE_ENV === 'development' && this.state.error && (
               <details className='mt-6 text-left'>
                 <summary className='cursor-pointer text-sm text-muted-foreground hover:text-foreground'>
-                  Technical Details (Development)
+                  {t('details.dev')}
                 </summary>
                 <div className='mt-3 p-3 bg-muted rounded text-xs font-mono text-left overflow-auto max-h-40'>
                   <div className='text-red-600 font-semibold mb-2'>
@@ -122,7 +121,7 @@ export class ErrorBoundary extends Component<Props, State> {
             )}
 
             <p className='text-xs text-muted-foreground mt-6'>
-              If this problem persists, please contact our support team.
+              {t('support.message')}
             </p>
           </Card>
         </div>
