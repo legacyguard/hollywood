@@ -1,6 +1,7 @@
 // Sofia Action Router - Handles actions from search without OpenAI
 import type { NavigateFunction } from 'react-router-dom';
 import { toast } from 'sonner';
+import i18n from '@/lib/i18n/config';
 import { faqResponses, type SofiaAction } from './sofia-search-dictionary';
 import type { DocumentFilter } from '../contexts/DocumentFilterContext';
 
@@ -250,11 +251,11 @@ export const executeSofiaAction = async (
       if (onSofiaMessage) {
         onSofiaMessage(
           action.text,
-          `🎉 Úžasné! Práve ste odomkli míľnik "${milestoneName}"! ${milestoneDescription} Toto je skutočne krásny moment na vašej Ceste Pokoja.`
+          `🎉 Amazing! You've just unlocked the milestone "${milestoneName}"! ${milestoneDescription} This is truly a beautiful moment on your Path of Serenity.`
         );
       }
 
-      toast.success(`🌟 Nový míľnik odomknutý: ${milestoneName}`);
+      toast.success(i18n.t('features.sofia.guidance:milestones.unlocked', { milestoneName }));
       break;
     }
 
@@ -270,11 +271,11 @@ export const executeSofiaAction = async (
       if (onSofiaMessage) {
         onSofiaMessage(
           action.text,
-          `Spustili sme výzvu "${challengeTitle}"! Budem vás viesť krok za krokom. Nepohľadiac na to, ako sa cítite, pamätajte - každý malý krok je pokrokom k väčšej istote pre vašu rodinu.`
+          `We've started the challenge "${challengeTitle}"! I'll guide you step by step. Regardless of how you feel, remember - every small step is progress toward greater certainty for your family.`
         );
       }
 
-      toast.success(`🚀 Výzva spustená: ${challengeTitle}`);
+      toast.success(i18n.t('features.sofia.guidance:challenges.started', { challengeTitle }));
       break;
     }
 
@@ -283,7 +284,7 @@ export const executeSofiaAction = async (
       if (onSofiaMessage) {
         onSofiaMessage(
           action.text,
-          'Cesta Pokoja nie je o percentách alebo číslach - je o tom, akú istotu a pokoj vytvárate pre svoju rodinu. Každý míľnik, ktorý odomknete, je dôkazom vašej lásky a starostlivosti. Nie je dôležité, ako rýchlo pokračujete, ale že pokračujete.'
+          'The Path of Serenity is not about percentages or numbers - it's about the certainty and peace you create for your family. Every milestone you unlock is proof of your love and care. It doesn't matter how quickly you progress, but that you continue.'
         );
       }
       break;

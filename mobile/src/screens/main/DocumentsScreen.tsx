@@ -1,3 +1,4 @@
+/* global __DEV__ */
 import React, { useState, useEffect, useCallback } from 'react'
 import {
   Container,
@@ -102,7 +103,7 @@ export const DocumentsScreen = () => {
 
       setDocuments(mockDocs)
     } catch (error) {
-      console.error('Failed to load documents:', error)
+      if (__DEV__) console.error('Failed to load documents:', error)
     } finally {
       setIsRefreshing(false)
     }
@@ -157,7 +158,7 @@ export const DocumentsScreen = () => {
   const handleDocumentPress = (document: Document) => {
     // Navigate to document detail screen
     // navigation.navigate('DocumentDetail', { documentId: document.id })
-    console.log('Document pressed:', document.id) // Temporary placeholder
+    if (__DEV__) console.log('Document pressed:', document.id) // Temporary placeholder
   }
 
   const handleAddDocument = () => {
@@ -166,12 +167,12 @@ export const DocumentsScreen = () => {
 
   const handleShareDocument = (document: Document) => {
     // TODO: Implement share functionality
-    console.log('Share document:', document.name)
+    if (__DEV__) console.log('Share document:', document.name)
   }
 
   const handleDeleteDocument = (document: Document) => {
     // TODO: Implement delete functionality
-    console.log('Delete document:', document.name)
+    if (__DEV__) console.log('Delete document:', document.name)
   }
 
   const handleDownloadOffline = async (document: Document) => {

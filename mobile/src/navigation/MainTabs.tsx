@@ -3,6 +3,7 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Camera, Home, Shield, User } from 'lucide-react-native';
 import { useTheme, Spinner, YStack } from '@legacyguard/ui';
+import { useTranslation } from 'react-i18next';
 
 // Dynamic imports with React.lazy() for better performance
 const DashboardScreenV2 = React.lazy(() => import('@/screens/main/DashboardScreenV2').then(module => ({ default: module.DashboardScreenV2 })));
@@ -37,6 +38,7 @@ const withSuspense = (Component: React.ComponentType<any>) => {
 
 export const MainTabs = () => {
   const theme = useTheme();
+  const { t } = useTranslation('mobile.native.screens');
 
   return (
     <Tab.Navigator
@@ -76,7 +78,7 @@ export const MainTabs = () => {
       component={withSuspense(DashboardScreenV2)}
       options={{
         tabBarIcon: ({ color, size }) => <Home color={color} size={size} />,
-        tabBarLabel: 'Home',
+        tabBarLabel: t('navigation.tabs.dashboard'),
       }}
     />
     <Tab.Screen
@@ -84,7 +86,7 @@ export const MainTabs = () => {
       component={withSuspense(ScannerScreen)}
       options={{
         tabBarIcon: ({ color, size }) => <Camera color={color} size={size} />,
-        tabBarLabel: 'Scan',
+        tabBarLabel: t('navigation.tabs.scan'),
         headerShown: false, // Hide header for full-screen scanner
       }}
     />
@@ -93,7 +95,7 @@ export const MainTabs = () => {
       component={withSuspense(VaultScreenV2)}
       options={{
         tabBarIcon: ({ color, size }) => <Shield color={color} size={size} />,
-        tabBarLabel: 'Vault',
+        tabBarLabel: t('navigation.tabs.vault'),
       }}
     />
     <Tab.Screen
@@ -101,7 +103,7 @@ export const MainTabs = () => {
       component={withSuspense(ProfileScreen)}
       options={{
         tabBarIcon: ({ color, size }) => <User color={color} size={size} />,
-        tabBarLabel: 'Profile',
+        tabBarLabel: t('navigation.tabs.profile'),
       }}
     />
     </Tab.Navigator>

@@ -1,0 +1,103 @@
+{
+  "scene1": {
+    "title": "Welcome to Your Journey",
+    "subtitle": "A place of calm in life's chaos",
+    "description": "Transform uncertainty into peace of mind with our gentle guidance.",
+    "cta": "Start writing my story",
+    "navigation": {
+      "next": "Continue",
+      "skip": "Skip for now"
+    }
+  },
+  "scene2": {
+    "title": "The Box of Certainty",
+    "subtitle": "What matters most to your family?",
+    "description": "Imagine a box where you can safely store everything important for your loved ones - documents, memories, guidance, and love.",
+    "prompt": "What would you put in this special box for your family?",
+    "placeholder": "Write anything: house keys, banking hint, letter for my daughter, grandpa's watch, photo from our wedding, recipe for mom's cookies...",
+    "examples": [
+      "Banking information and passwords",
+      "Letter to my children",
+      "Family recipes and traditions",
+      "Important documents location",
+      "Personal memories and stories"
+    ],
+    "validation": {
+      "required": "Please share what's important to your family",
+      "minLength": "Please tell us a bit more (at least 10 characters)"
+    },
+    "actions": {
+      "continue": "Continue",
+      "addMore": "Add more items"
+    }
+  },
+  "scene3": {
+    "title": "The Key of Trust",
+    "subtitle": "Who holds the key to your heart?",
+    "description": "This special key will be engraved with a name - someone you trust completely, who would care for what matters to you.",
+    "prompt": "Whose name should we engrave on your key?",
+    "placeholder": "e.g., Martina, John, Mom, Sarah...",
+    "examples": [
+      "Your spouse or partner",
+      "Your closest family member", 
+      "Your most trusted friend",
+      "Your chosen guardian"
+    ],
+    "keyPreview": {
+      "title": "Your Key",
+      "engraved": "For {{name}}",
+      "description": "This key symbolizes the trust and love you have for this person."
+    },
+    "validation": {
+      "required": "Please enter a name for your key",
+      "maxLength": "Name is too long (maximum 50 characters)"
+    },
+    "actions": {
+      "continue": "Create my key",
+      "back": "Go back"
+    }
+  },
+  "scene4": {
+    "title": "Preparing Your Path",
+    "subtitle": "Creating your personal sanctuary",
+    "description": "Sofia, your gentle guide, is lighting the way to your peaceful garden of memories and certainty.",
+    "firefly": {
+      "message": "I'm here to guide you every step of the way...",
+      "status": [
+        "Creating your personal space...",
+        "Preparing your garden of memories...", 
+        "Setting up your secure vault...",
+        "Almost ready..."
+      ]
+    },
+    "completion": {
+      "title": "Your sanctuary is ready",
+      "description": "Welcome to your Legacy Garden - a place of peace where your family's future grows brighter with every small step you take.",
+      "cta": "Enter my garden"
+    },
+    "error": {
+      "title": "Something went wrong",
+      "description": "We had trouble setting up your space. Let's try again.",
+      "retry": "Try again",
+      "support": "Get help"
+    }
+  },
+  "progress": {
+    "step": "Step {{current}} of {{total}}",
+    "complete": "Complete",
+    "back": "Back",
+    "next": "Next",
+    "finish": "Finish"
+  },
+  "navigation": {
+    "skipAll": "Skip onboarding",
+    "saveProgress": "Save my progress",
+    "continueToApp": "Continue to app"
+  },
+  "confirmSkip": {
+    "title": "Skip onboarding?",
+    "description": "You can always complete this setup later from your settings.",
+    "confirm": "Yes, skip for now",
+    "cancel": "No, continue setup"
+  }
+}

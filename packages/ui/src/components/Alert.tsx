@@ -56,7 +56,10 @@ export const Alert = styled(YStack, {
 })
 
 // Alert Icon
-export const AlertIcon = ({ variant = 'default', ...props }: { variant?: string } & any) => {
+export const AlertIcon = (
+  { variant = 'default', ...props }:
+  { variant?: 'info' | 'success' | 'warning' | 'error' | 'default' } & React.ComponentProps<typeof Info>
+) => {
   const icons = {
     info: Info,
     success: CheckCircle,

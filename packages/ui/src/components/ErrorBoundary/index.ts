@@ -1,4 +1,4 @@
-export { 
+export {
   GlobalErrorBoundary,
   type GlobalErrorBoundaryProps,
   type FallbackProps,

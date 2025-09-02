@@ -349,7 +349,7 @@ export const NativeSelect = React.forwardRef<HTMLSelectElement, SelectProps>(
         )}
 
         <select
-          ref={ref as any}
+          ref={ref as React.Ref<HTMLSelectElement>}
           value={value}
           defaultValue={defaultValue}
           onChange={(e) => onValueChange?.(e.target.value)}

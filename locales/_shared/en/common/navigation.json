@@ -1,0 +1,39 @@
+{
+  "items": {
+    "dashboard": "Dashboard",
+    "vault": "My Vault",
+    "documents": "Documents",
+    "intelligentOrganizer": "AI Organizer",
+    "analytics": "Analytics",
+    "collaboration": "Collaboration",
+    "family": "My Family",
+    "legacy": "Legacy",
+    "timeCapsule": "Time Capsule",
+    "timeline": "Timeline",
+    "wishes": "Wishes",
+    "familyProtection": "Family Shield",
+    "settings": "Settings"
+  },
+  "sections": {
+    "main": "Main",
+    "family": "Family",
+    "legacy": "Legacy",
+    "tools": "Tools",
+    "settings": "Settings"
+  },
+  "tooltips": {
+    "dashboard": "Go to dashboard",
+    "vault": "Access your secure vault",
+    "documents": "Manage documents",
+    "intelligentOrganizer": "AI-powered organization",
+    "analytics": "View analytics",
+    "collaboration": "Collaborate with others",
+    "family": "Manage family members",
+    "legacy": "Legacy planning",
+    "timeCapsule": "Create time capsules",
+    "timeline": "View timeline",
+    "wishes": "Record wishes",
+    "familyProtection": "Family protection features",
+    "settings": "Application settings"
+  }
+}

@@ -5,7 +5,7 @@
     "delete": "Delete",
     "edit": "Edit",
     "add": "Add",
-    "remove": "Remove", 
+    "remove": "Remove",
     "submit": "Submit",
     "back": "Back",
     "next": "Next",
@@ -99,6 +99,25 @@
     "unsavedChanges": "You have unsaved changes. Do you want to save them?",
     "areYouSure": "Are you sure?"
   },
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive",
+    "pending": "Pending",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "draft": "Draft",
+    "published": "Published",
+    "archived": "Archived",
+    "deleted": "Deleted",
+    "locked": "Locked",
+    "unlocked": "Unlocked",
+    "online": "Online",
+    "offline": "Offline",
+    "connected": "Connected",
+    "disconnected": "Disconnected",
+    "enabled": "Enabled",
+    "disabled": "Disabled"
+  },
   "time": {
     "now": "Now",
     "today": "Today",
@@ -168,24 +187,5 @@
     "entries": "entries",
     "perPage": "Per page",
     "total": "Total"
-  },
-  "status": {
-    "active": "Active",
-    "inactive": "Inactive",
-    "pending": "Pending",
-    "approved": "Approved",
-    "rejected": "Rejected",
-    "draft": "Draft",
-    "published": "Published",
-    "archived": "Archived",
-    "deleted": "Deleted",
-    "locked": "Locked",
-    "unlocked": "Unlocked",
-    "online": "Online",
-    "offline": "Offline",
-    "connected": "Connected",
-    "disconnected": "Disconnected",
-    "enabled": "Enabled",
-    "disabled": "Disabled"
   }
 }

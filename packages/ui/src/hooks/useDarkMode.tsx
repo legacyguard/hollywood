@@ -18,7 +18,7 @@ export const useDarkMode = () => {
     return isDark ? darkColor : lightColor
   }
 
-  const getStyle = <T extends Record<string, any>>(
+  const getStyle = <T extends Record<string, unknown>>(
     lightStyle: T,
     darkStyle: T
   ): T => {

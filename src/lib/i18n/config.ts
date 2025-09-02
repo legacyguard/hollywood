@@ -1,297 +1,353 @@
 /**
  * i18n Configuration for LegacyGuard
- * Supports 34+ languages and 40 jurisdictions
+ * Unified configuration supporting the locales structure
  */
 
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import Backend from 'i18next-http-backend';
-import { JURISDICTION_CONFIG } from './jurisdictions';
-import { _LANGUAGE_CONFIG } from './languages';
 
-// Get current domain/jurisdiction
-export const getCurrentJurisdiction = () => {
-  const hostname = window.location.hostname;
-  const domain = hostname.split('.').slice(-2).join('.');
-
-  // Map domain to jurisdiction code
-  const jurisdictionMap: Record<string, string> = {
-    'legacyguard.de': 'DE',
-    'legacyguard.fr': 'FR',
-    'legacyguard.es': 'ES',
-    'legacyguard.it': 'IT',
-    'legacyguard.nl': 'NL',
-    'legacyguard.be': 'BE',
-    'legacyguard.lu': 'LU',
-    'legacyguard.ch': 'CH',
-    'legacyguard.li': 'LI',
-    'legacyguard.at': 'AT',
-    'legacyguard.uk': 'UK',
-    'legacyguard.dk': 'DK',
-    'legacyguard.se': 'SE',
-    'legacyguard.fi': 'FI',
-    'legacyguard.cz': 'CZ',
-    'legacyguard.sk': 'SK',
-    'legacyguard.pl': 'PL',
-    'legacyguard.hu': 'HU',
-    'legacyguard.si': 'SI',
-    'legacyguard.ee': 'EE',
-    'legacyguard.lv': 'LV',
-    'legacyguard.lt': 'LT',
-    'legacyguard.pt': 'PT',
-    'legacyguard.gr': 'GR',
-    'legacyguard.mt': 'MT',
-    'legacyguard.cy': 'CY',
-    'legacyguard.ie': 'IE',
-    'legacyguard.no': 'NO',
-    'legacyguard.is': 'IS',
-    // Tier 2 markets
-    'legacyguard.ro': 'RO',
-    'legacyguard.bg': 'BG',
-    'legacyguard.hr': 'HR',
-    'legacyguard.rs': 'RS',
-    'legacyguard.al': 'AL',
-    'legacyguard.mk': 'MK',
-    'legacyguard.me': 'ME',
-    'legacyguard.md': 'MD',
-    'legacyguard.ua': 'UA',
-    'legacyguard.ba': 'BA',
-  };
-
-  // Default to Czech for development
-  return (
-    jurisdictionMap[domain] || process.env.VITE_DEFAULT_JURISDICTION || 'CZ'
-  );
+// Platform detection
+export const detectPlatform = (): 'web' | 'mobile' => {
+  // Check if we're in a React Native environment
+  if (typeof navigator !== 'undefined' && navigator.product === 'ReactNative') {
+    return 'mobile';
+  }
+  // Check for Expo
+  if (typeof window !== 'undefined' && (window as { expo?: unknown }).expo) {
+    return 'mobile';
+  }
+  return 'web';
 };
 
-// Get supported languages for current jurisdiction
-export const getSupportedLanguages = (jurisdiction?: string) => {
-  const currentJurisdiction = jurisdiction || getCurrentJurisdiction();
-  return JURISDICTION_CONFIG[currentJurisdiction]?.supportedLanguages || ['en'];
-};
-
-// Get default language for current jurisdiction
-export const getDefaultLanguage = (jurisdiction?: string) => {
-  const currentJurisdiction = jurisdiction || getCurrentJurisdiction();
-  return JURISDICTION_CONFIG[currentJurisdiction]?.defaultLanguage || 'en';
-};
-
-// Namespaces for modular translation organization
-export const NAMESPACES = {
-  common: 'common',
-  auth: 'auth',
-  dashboard: 'dashboard',
-  documents: 'documents',
-  legal: 'legal',
-  will: 'will',
-  guardians: 'guardians',
-  family: 'family',
-  vault: 'vault',
-  notifications: 'notifications',
-  settings: 'settings',
-  errors: 'errors',
-  onboarding: 'onboarding',
-  legacy: 'legacy',
-  emergency: 'emergency',
-  ai: 'ai',
-  // Legal terminology namespaces
-  legalTerms: 'legalTerms',
-  legalDocuments: 'legalDocuments',
-  legalProcedures: 'legalProcedures',
-  taxTerms: 'taxTerms',
-  notaryTerms: 'notaryTerms',
+// Supported languages
+export const SUPPORTED_LANGUAGES = {
+  en: {
+    code: 'en',
+    name: 'English',
+    nativeName: 'English',
+    flag: '🇬🇧',
+    dateFormat: 'MM/DD/YYYY',
+    currency: 'USD',
+    rtl: false
+  },
+  sk: {
+    code: 'sk',
+    name: 'Slovak',
+    nativeName: 'Slovenčina',
+    flag: '🇸🇰',
+    dateFormat: 'DD.MM.YYYY',
+    currency: 'EUR',
+    rtl: false
+  },
+  cs: {
+    code: 'cs',
+    name: 'Czech',
+    nativeName: 'Čeština',
+    flag: '🇨🇿',
+    dateFormat: 'DD.MM.YYYY',
+    currency: 'CZK',
+    rtl: false
+  },
+  de: {
+    code: 'de',
+    name: 'German',
+    nativeName: 'Deutsch',
+    flag: '🇩🇪',
+    dateFormat: 'DD.MM.YYYY',
+    currency: 'EUR',
+    rtl: false
+  },
+  pl: {
+    code: 'pl',
+    name: 'Polish',
+    nativeName: 'Polski',
+    flag: '🇵🇱',
+    dateFormat: 'DD.MM.YYYY',
+    currency: 'PLN',
+    rtl: false
+  }
 } as const;
 
-export type Namespace = keyof typeof NAMESPACES;
+export type SupportedLanguageCode = keyof typeof SUPPORTED_LANGUAGES;
 
-// i18n configuration
-const i18nConfig = {
-  // Fallback language
+// Namespace configuration matching the locales structure
+export const NAMESPACES = {
+  // Core namespaces (always loaded)
+  CORE: [
+    'common.ui',
+    'common.navigation',
+    'auth.login',
+    'errors.client'
+  ],
+
+  // Feature namespaces (lazy loaded)
+  FEATURES: {
+    vault: [
+      'features.vault.categories',
+      'features.vault.actions',
+      'features.vault.sharing'
+    ],
+    garden: [
+      'features.garden.tree',
+      'features.garden.milestones',
+      'features.garden.prompts'
+    ],
+    family: [
+      'features.family.guardians',
+      'features.family.emergency'
+    ],
+    sofia: [
+      'features.sofia.personality',
+      'features.sofia.guidance'
+    ]
+  },
+
+  // Platform-specific namespaces
+  PLATFORM: {
+    web: [
+      'web.landing.hero',
+      'web.landing.features',
+      'web.onboarding.wizard',
+      'web.seo.metadata'
+    ],
+    mobile: [
+      'mobile.native.permissions',
+      'mobile.native.offline',
+      'mobile.compact.summaries'
+    ]
+  },
+
+  // Legal namespaces (loaded on demand)
+  LEGAL: {
+    terms: ['legal.terms.service', 'legal.terms.privacy'],
+    templates: (country: string, type: string) =>
+      `legal.templates.wills.${country}.${type}`
+  }
+} as const;
+
+// Configuration object
+export const i18nConfig = {
+  // Default settings
   fallbackLng: 'en',
-
-  // Debug mode for development
   debug: process.env.NODE_ENV === 'development',
 
-  // Namespaces
-  ns: Object.values(NAMESPACES),
-  defaultNS: NAMESPACES.common,
+  // Resource loading
+  ns: NAMESPACES.CORE,
+  defaultNS: 'common.ui',
 
-  // Interpolation settings
+  // Language settings
+  supportedLngs: Object.keys(SUPPORTED_LANGUAGES),
+  load: 'languageOnly', // Ignore region codes
+
+  // Detection options
+  detection: {
+    order: ['localStorage', 'navigator', 'htmlTag'],
+    caches: ['localStorage'],
+    lookupLocalStorage: 'i18nextLng',
+    checkWhitelist: true
+  },
+
+  // Backend options for loading translations
+  backend: {
+    // Custom load path function to map namespaces to actual file structure
+    loadPath: (lngs: string[], namespaces: string[]) => {
+      const lng = lngs[0];
+      const namespace = namespaces[0];
+
+      // Map namespace to actual file path based on locales structure
+      const parts = namespace.split('.');
+      let basePath: string;
+      let filePath: string;
+
+      // Determine the base path based on namespace prefix
+      if (parts[0] === 'common' || parts[0] === 'auth' || parts[0] === 'features' || parts[0] === 'errors' || parts[0] === 'notifications') {
+        basePath = `/locales/_shared/${lng}`;
+        
+        if (parts[0] === 'common') {
+          // Map common.ui -> _shared/{lng}/common/ui.json
+          filePath = `${parts[0]}/${parts.slice(1).join('/')}.json`;
+        } else if (parts[0] === 'features') {
+          // Map features.vault.categories -> _shared/{lng}/features/vault/categories.json
+          filePath = `${parts[0]}/${parts.slice(1).join('/')}.json`;
+        } else {
+          // Map auth.login -> _shared/{lng}/auth/login.json
+          filePath = `${parts.join('/')}.json`;
+        }
+      } else if (parts[0] === 'legal') {
+        basePath = `/locales/legal/${lng}`;
+        filePath = `${parts.slice(1).join('/')}.json`;
+      } else if (parts[0] === 'web') {
+        basePath = `/locales/web/${lng}`;
+        filePath = `${parts.slice(1).join('/')}.json`;
+      } else if (parts[0] === 'mobile') {
+        basePath = `/locales/mobile/${lng}`;
+        filePath = `${parts.slice(1).join('/')}.json`;
+      } else {
+        // Fallback to _shared for unknown namespaces
+        basePath = `/locales/_shared/${lng}`;
+        filePath = `${parts.join('/')}.json`;
+      }
+
+      return `${basePath}/${filePath}`;
+    },
+
+    // Parse the loaded data
+    parse: (data: string) => {
+      try {
+        return JSON.parse(data);
+      } catch (error) {
+        console.error('Failed to parse translation data:', error);
+        return {};
+      }
+    }
+  },
+
+  // Interpolation options
   interpolation: {
     escapeValue: false, // React already escapes values
-    format: (value: any, format?: string, lng?: string) => {
-      // Date formatting
+    format: (value: unknown, format?: string, lng?: string) => {
+      if (typeof value === 'string') {
+        if (format === 'uppercase') return value.toUpperCase();
+        if (format === 'lowercase') return value.toLowerCase();
+        if (format === 'capitalize') {
+          return value.charAt(0).toUpperCase() + value.slice(1);
+        }
+      }
+      
+      if (format === 'currency' && typeof value === 'number' && lng) {
+        const language = SUPPORTED_LANGUAGES[lng as SupportedLanguageCode];
+        return new Intl.NumberFormat(lng, {
+          style: 'currency',
+          currency: language?.currency || 'EUR'
+        }).format(value);
+      }
+      
       if (format === 'date' && value instanceof Date) {
         return new Intl.DateTimeFormat(lng).format(value);
       }
-
-      // Currency formatting based on jurisdiction
-      if (format === 'currency' && typeof value === 'number') {
-        const jurisdiction = getCurrentJurisdiction();
-        const currency = JURISDICTION_CONFIG[jurisdiction]?.currency || 'EUR';
-        return new Intl.NumberFormat(lng, {
-          style: 'currency',
-          currency,
-        }).format(value);
-      }
-
-      // Legal date formatting (jurisdiction-specific)
-      if (format === 'legalDate' && value instanceof Date) {
-        const jurisdiction = getCurrentJurisdiction();
-        const locale = JURISDICTION_CONFIG[jurisdiction]?.dateLocale || lng;
-        return new Intl.DateTimeFormat(locale, {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-        }).format(value);
-      }
-
+      
       return value;
-    },
+    }
   },
 
-  // Detection settings
-  detection: {
-    // Order of detection methods
-    order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag'],
-
-    // Keys to look for
-    lookupQuerystring: 'lng',
-    lookupCookie: 'i18next',
-    lookupLocalStorage: 'i18nextLng',
-
-    // Cache user language
-    caches: ['localStorage', 'cookie'],
-
-    // Check if language is whitelisted for current jurisdiction
-    checkWhitelist: true,
-  },
-
-  // Backend settings for lazy loading
-  backend: {
-    // Path to translation files
-    loadPath: '/locales/{lng}/{ns}.json',
-
-    // Add jurisdiction-specific overrides
-    addPath: '/locales/{lng}/{ns}.missing.json',
-
-    // Allow cross-domain loading for different jurisdictions
-    crossDomain: true,
-
-    // Custom loader for jurisdiction-specific translations
-    request: async (options: any, url: string, payload: any, callback: any) => {
-      try {
-        const jurisdiction = getCurrentJurisdiction();
-
-        // Try to load jurisdiction-specific translation first
-        const jurisdictionUrl = url.replace(
-          '/locales/',
-          `/locales/${jurisdiction}/`
-        );
-
-        const response = await fetch(jurisdictionUrl);
-        if (response.ok) {
-          const data = await response.json();
-          callback(null, { status: 200, data });
-          return;
-        }
-
-        // Fallback to general translation
-        const generalResponse = await fetch(url);
-        if (generalResponse.ok) {
-          const data = await generalResponse.json();
-          callback(null, { status: 200, data });
-        } else {
-          callback(new Error(`Failed to load ${url}`), null);
-        }
-      } catch (error) {
-        callback(error, null);
-      }
-    },
-  },
-
-  // React specific settings
+  // React specific options
   react: {
-    useSuspense: true, // Use React Suspense for loading
+    useSuspense: false, // Disable suspense for better control
     bindI18n: 'languageChanged loaded',
     bindI18nStore: 'added removed',
-    transEmptyNodeValue: '', // How to handle empty trans nodes
-    transSupportBasicHtmlNodes: true, // Allow basic HTML in translations
-    transKeepBasicHtmlNodesFor: ['br', 'strong', 'i', 'b', 'u', 'em'],
+    transEmptyNodeValue: '',
+    transSupportBasicHtmlNodes: true,
+    transKeepBasicHtmlNodesFor: ['br', 'strong', 'i', 'p']
   },
 
-  // Custom options
+  // Missing key handling
   saveMissing: process.env.NODE_ENV === 'development',
   missingKeyHandler: (lng: string[], ns: string, key: string) => {
     if (process.env.NODE_ENV === 'development') {
-      console.warn(`Missing translation: [${lng.join(', ')}] ${ns}:${key}`);
+      console.warn(`Missing translation: ${lng.join(', ')} - ${ns}:${key}`);
     }
   },
 
-  // Jurisdiction-specific settings
-  contextSeparator: '_',
+  // Pluralization
   pluralSeparator: '_',
-  keySeparator: '.',
-  nsSeparator: ':',
+  contextSeparator: '_',
+
+  // Performance
+  maxParallelReads: 10,
+  initImmediate: true
+};
+
+// Namespace loader utility
+export class NamespaceLoader {
+  private static loadedNamespaces = new Set<string>();
+
+  static async loadFeature(feature: keyof typeof NAMESPACES.FEATURES) {
+    const namespaces = NAMESPACES.FEATURES[feature];
+    const toLoad = namespaces.filter(ns => !this.loadedNamespaces.has(ns));
+
+    if (toLoad.length > 0) {
+      await i18n.loadNamespaces(toLoad);
+      toLoad.forEach(ns => this.loadedNamespaces.add(ns));
+    }
+  }
+
+  static async loadLegalTemplate(country: string, type: 'holographic' | 'allographic') {
+    const namespace = NAMESPACES.LEGAL.templates(country, type);
+
+    if (!this.loadedNamespaces.has(namespace)) {
+      await i18n.loadNamespaces([namespace]);
+      this.loadedNamespaces.add(namespace);
+    }
+  }
+
+  static async loadPlatformSpecific() {
+    const platform = detectPlatform();
+    const namespaces = NAMESPACES.PLATFORM[platform];
+    const toLoad = namespaces.filter(ns => !this.loadedNamespaces.has(ns));
+
+    if (toLoad.length > 0) {
+      await i18n.loadNamespaces(toLoad);
+      toLoad.forEach(ns => this.loadedNamespaces.add(ns));
+    }
+  }
+
+  static isLoaded(namespace: string): boolean {
+    return this.loadedNamespaces.has(namespace);
+  }
+
+  static getLoadedNamespaces(): string[] {
+    return Array.from(this.loadedNamespaces);
+  }
+}
+
+// Route-based namespace mapping
+export const getNamespacesForRoute = (pathname: string): string[] => {
+  const namespaces: string[] = [...NAMESPACES.CORE];
+
+  // Add feature-specific namespaces based on route
+  if (pathname.includes('/vault')) {
+    namespaces.push(...NAMESPACES.FEATURES.vault);
+  }
+  if (pathname.includes('/garden') || pathname.includes('/legacy')) {
+    namespaces.push(...NAMESPACES.FEATURES.garden);
+  }
+  if (pathname.includes('/family') || pathname.includes('/guardians')) {
+    namespaces.push(...NAMESPACES.FEATURES.family);
+  }
+  if (pathname.includes('/sofia') || pathname.includes('/assistant')) {
+    namespaces.push(...NAMESPACES.FEATURES.sofia);
+  }
+
+  // Add platform-specific namespaces
+  const platform = detectPlatform();
+  if (pathname === '/' && platform === 'web') {
+    namespaces.push(...NAMESPACES.PLATFORM.web);
+  }
+
+  return namespaces;
 };
 
 // Initialize i18n
-i18n
-  .use(Backend)
-  .use(LanguageDetector)
-  .use(initReactI18next)
-  .init({
-    ...i18nConfig,
-    lng: getDefaultLanguage(),
-    whitelist: getSupportedLanguages(),
-    load: 'languageOnly', // Don't load region-specific variants by default
+export const initI18n = async () => {
+  await i18n
+    .use(Backend)
+    .use(LanguageDetector)
+    .use(initReactI18next)
+    .init(i18nConfig);
+
+  // Load platform-specific namespaces
+  await NamespaceLoader.loadPlatformSpecific();
+
+  return i18n;
+};
+
+// Auto-initialize for immediate use
+if (!i18n.isInitialized) {
+  initI18n().catch(error => {
+    console.error('Failed to initialize i18n:', error);
   });
+}
 
-// Function to load jurisdiction-specific legal translations
-export const loadLegalTranslations = async (
-  jurisdiction: string,
-  language: string
-) => {
-  const namespaces = [
-    NAMESPACES.legalTerms,
-    NAMESPACES.legalDocuments,
-    NAMESPACES.legalProcedures,
-    NAMESPACES.taxTerms,
-    NAMESPACES.notaryTerms,
-  ];
-
-  for (const ns of namespaces) {
-    try {
-      const response = await fetch(
-        `/locales/${jurisdiction}/${language}/${ns}.json`
-      );
-      if (response.ok) {
-        const translations = await response.json();
-        i18n.addResourceBundle(language, ns, translations, true, true);
-      }
-    } catch (error) {
-      console.error(
-        `Failed to load legal translations for ${jurisdiction}/${language}/${ns}:`,
-        error
-      );
-    }
-  }
-};
-
-// Helper function to get translation with jurisdiction context
-export const getJurisdictionTranslation = (key: string, options?: any) => {
-  const jurisdiction = getCurrentJurisdiction();
-  const jurisdictionKey = `${key}_${jurisdiction}`;
-
-  // Try jurisdiction-specific translation first
-  if (i18n.exists(jurisdictionKey)) {
-    return i18n.t(jurisdictionKey, options);
-  }
-
-  // Fallback to general translation
-  return i18n.t(key, options);
-};
-
-// Export configured i18n instance
 export default i18n;

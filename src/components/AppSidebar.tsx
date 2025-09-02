@@ -3,6 +3,7 @@ import { LegacyGuardLogo } from './LegacyGuardLogo';
 import { NavLink } from 'react-router-dom';
 import { UserButton, useUser } from '@clerk/clerk-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import {
   Sidebar,
   SidebarContent,
@@ -14,26 +15,28 @@ import {
 } from '@/components/ui/sidebar';
 import { useSidebar } from '@/components/ui/sidebar-hooks';
 
+// Navigation items with translation keys
 const navigationItems = [
-  { title: 'Dashboard', url: '/dashboard', icon: 'dashboard' },
-  { title: 'My Vault', url: '/vault', icon: 'vault' },
-  { title: 'Documents', url: '/documents', icon: 'documents' },
-  { title: 'AI Organizer', url: '/intelligent-organizer', icon: 'brain' },
-  { title: 'Analytics', url: '/analytics', icon: 'chart' },
-  { title: 'Collaboration', url: '/collaboration', icon: 'users' },
-  { title: 'My Family', url: '/family', icon: 'users' },
-  { title: 'Legacy', url: '/legacy', icon: 'legacy' },
-  { title: 'Time Capsule', url: '/time-capsule', icon: 'heart' },
-  { title: 'Timeline', url: '/timeline', icon: 'timeline' },
-  { title: 'Wishes', url: '/wishes', icon: 'wishes' },
-  { title: 'Family Shield', url: '/family-protection', icon: 'protection' },
-  { title: 'Settings', url: '/settings', icon: 'settings' },
+  { key: 'dashboard', url: '/dashboard', icon: 'dashboard' },
+  { key: 'vault', url: '/vault', icon: 'vault' },
+  { key: 'documents', url: '/documents', icon: 'documents' },
+  { key: 'intelligentOrganizer', url: '/intelligent-organizer', icon: 'brain' },
+  { key: 'analytics', url: '/analytics', icon: 'chart' },
+  { key: 'collaboration', url: '/collaboration', icon: 'users' },
+  { key: 'family', url: '/family', icon: 'users' },
+  { key: 'legacy', url: '/legacy', icon: 'legacy' },
+  { key: 'timeCapsule', url: '/time-capsule', icon: 'heart' },
+  { key: 'timeline', url: '/timeline', icon: 'timeline' },
+  { key: 'wishes', url: '/wishes', icon: 'wishes' },
+  { key: 'familyProtection', url: '/family-protection', icon: 'protection' },
+  { key: 'settings', url: '/settings', icon: 'settings' },
 ];
 
 export function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === 'collapsed';
   const { user } = useUser();
+  const { t } = useTranslation('common.navigation');
 
   const getNavClasses = ({ isActive }: { isActive: boolean }) =>
     `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 ${
@@ -82,14 +85,19 @@ export function AppSidebar() {
             <SidebarGroupContent>
               <SidebarMenu>
                 {navigationItems.map((item, index) => (
-                  <SidebarMenuItem key={item.title}>
+                  <SidebarMenuItem key={item.key}>
                     <SidebarMenuButton asChild className='p-0'>
                       <motion.div
                         initial={{  opacity: 0, x: -20  }}
                         animate={{  opacity: 1, x: 0  }}
                         transition={{  duration: 0.3, delay: index * 0.05  }}
                       >
-                        <NavLink to={item.url} end className={getNavClasses}>
+                        <NavLink 
+                          to={item.url} 
+                          end 
+                          className={getNavClasses}
+                          title={t(`tooltips.${item.key}`)}
+                        >
                           <motion.div
                             whileHover={{  scale: 1.1  }}
                             whileTap={{  scale: 0.95  }}
@@ -109,7 +117,7 @@ export function AppSidebar() {
                                 exit={{  opacity: 0, width: 0  }}
                                 transition={{  duration: 0.2  }}
                               >
-                                {item.title}
+                                {t(`items.${item.key}`)}
                               </motion.span>
                             )}
                           </AnimatePresence>

@@ -1,15 +1,10 @@
-import { 
+import type {
   ApiClientInterface,
-  ApiResponse,
   DocumentUploadRequest,
-  DocumentListResponse,
-  UserProfileResponse,
   WillData,
-  GuardianData,
   GetDocumentsParams,
   GetGuardiansParams,
-  CreateLegacyItemParams,
-  PaginatedResponse
+  CreateLegacyItemParams
 } from './types/api';
 
 import {
@@ -24,16 +19,13 @@ import {
 // Import Supabase types for strong typing
 import type {
   Document,
-  DocumentInsert,
   DocumentUpdate,
   Guardian,
   GuardianInsert,
   GuardianUpdate,
   Profile,
-  ProfileInsert,
   ProfileUpdate,
   LegacyItem,
-  LegacyItemInsert,
   LegacyItemUpdate,
   QuickInsight,
   LegacyMilestone
@@ -53,7 +45,7 @@ export class DocumentService {
       // Validate required fields
       validateRequired(request, ['file']);
       validateRequired(request.file, ['base64', 'mimeType', 'fileName']);
-      
+
       // Validate data types
       validateTypes(request.file, {
         base64: validators.isString,
@@ -72,7 +64,7 @@ export class DocumentService {
         1000,
         'document upload'
       );
-      
+
       if (!response.document) {
         throw new LegacyGuardApiError(500, 'Document upload succeeded but no document was returned');
       }
@@ -102,7 +94,7 @@ export class DocumentService {
 
       const endpoint = `/api/documents${queryParams.toString() ? '?' + queryParams.toString() : ''}`;
       const response = await this.apiClient.get<{ documents: Document[] }>(endpoint);
-      
+
       if (!response.documents || !Array.isArray(response.documents)) {
         throw new LegacyGuardApiError(500, 'Invalid response format - documents array expected');
       }
@@ -124,7 +116,7 @@ export class DocumentService {
       }
 
       const response = await this.apiClient.get<{ document: Document }>(`/api/documents/${id}`);
-      
+
       if (!response.document) {
         throw new LegacyGuardApiError(404, `Document with ID ${id} not found`);
       }
@@ -140,7 +132,7 @@ export class DocumentService {
     return withErrorHandling(async () => {
       validateRequired({ id }, ['id']);
       validateTypes({ id }, { id: validators.isString });
-      
+
       if (!validators.isUuid(id)) {
         throw new LegacyGuardApiError(400, 'Document ID must be a valid UUID');
       }
@@ -158,7 +150,7 @@ export class DocumentService {
       }
 
       const response = await this.apiClient.put<{ document: Document }>(`/api/documents/${id}`, data);
-      
+
       if (!response.document) {
         throw new LegacyGuardApiError(500, 'Document update succeeded but no document was returned');
       }
@@ -222,7 +214,7 @@ export class DocumentService {
       const response = await this.apiClient.get<{ documents: Document[] }>(
         `/api/documents/search?q=${encodeURIComponent(query)}`
       );
-      
+
       if (!response.documents || !Array.isArray(response.documents)) {
         throw new LegacyGuardApiError(500, 'Invalid search response format - documents array expected');
       }
@@ -331,14 +323,14 @@ export class ProfileService {
   /**
    * Update emergency contacts
    */
-  async updateEmergencyContacts(contacts: any[]): Promise<Profile> {
+  async updateEmergencyContacts(contacts: unknown[]): Promise<Profile> {
     return this.update({ emergency_contacts: contacts });
   }
 
   /**
    * Update preferences
    */
-  async updatePreferences(preferences: any): Promise<Profile> {
+  async updatePreferences(preferences: Record<string, unknown>): Promise<Profile> {
     return this.update({ preferences });
   }
 }
@@ -479,16 +471,16 @@ export class AnalyticsService {
   /**
    * Get protection score
    */
-  async getProtectionScore(): Promise<{ score: number; trends: any }> {
-    const response = await this.apiClient.get<{ score: number; trends: any }>('/api/analytics/protection-score');
+  async getProtectionScore(): Promise<{ score: number; trends: unknown }> {
+    const response = await this.apiClient.get<{ score: number; trends: unknown }>('/api/analytics/protection-score');
     return response;
   }
 
   /**
    * Get completion percentage
    */
-  async getCompletionPercentage(): Promise<{ percentage: number; breakdown: any }> {
-    const response = await this.apiClient.get<{ percentage: number; breakdown: any }>('/api/analytics/completion');
+  async getCompletionPercentage(): Promise<{ percentage: number; breakdown: unknown }> {
+    const response = await this.apiClient.get<{ percentage: number; breakdown: unknown }>('/api/analytics/completion');
     return response;
   }
 }

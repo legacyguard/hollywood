@@ -1,0 +1,61 @@
+{
+  "title": "Guardians",
+  "subtitle": "Trusted people who can help in emergencies",
+  "form": {
+    "labels": {
+      "fullName": "Full Name",
+      "email": "Email Address",
+      "phone": "Phone Number",
+      "relationship": "Relationship",
+      "instructions": "Special Instructions"
+    },
+    "placeholders": {
+      "fullName": "Enter full name",
+      "email": "guardian@example.com",
+      "phone": "+1 234 567 8900",
+      "relationship": "Select relationship",
+      "instructions": "Any special instructions or notes..."
+    },
+    "required": {
+      "fullName": "Full Name is required",
+      "email": "Email Address is required",
+      "relationship": "Relationship is required"
+    },
+    "validation": {
+      "emailInvalid": "Please enter a valid email address",
+      "phoneInvalid": "Please enter a valid phone number"
+    }
+  },
+  "relationships": {
+    "spouse": "Spouse",
+    "parent": "Parent", 
+    "sibling": "Sibling",
+    "child": "Child",
+    "friend": "Friend",
+    "attorney": "Attorney",
+    "financialAdvisor": "Financial Advisor",
+    "other": "Other"
+  },
+  "actions": {
+    "addGuardian": "Add Guardian",
+    "editGuardian": "Edit Guardian",
+    "deleteGuardian": "Delete Guardian",
+    "saveChanges": "Save Changes",
+    "cancel": "Cancel"
+  },
+  "messages": {
+    "noGuardians": "No guardians added yet",
+    "guardianAdded": "Guardian added successfully",
+    "guardianUpdated": "Guardian updated successfully",
+    "guardianDeleted": "Guardian deleted successfully",
+    "confirmDelete": "Are you sure you want to delete this guardian?",
+    "deleteWarning": "This action cannot be undone"
+  },
+  "emergencyAccess": {
+    "title": "Emergency Access",
+    "description": "This guardian can access your account in case of emergency",
+    "enabled": "Emergency access enabled",
+    "disabled": "Emergency access disabled",
+    "toggle": "Toggle emergency access"
+  }
+}

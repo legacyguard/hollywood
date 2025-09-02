@@ -1,0 +1,70 @@
+{
+  "title": "Welcome Back",
+  "subtitle": "Sign in to your LegacyGuard account",
+  "form": {
+    "email": {
+      "label": "Email Address",
+      "placeholder": "Enter your email"
+    },
+    "password": {
+      "label": "Password",
+      "placeholder": "Enter your password"
+    },
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot your password?",
+    "signIn": "Sign In"
+  },
+  "divider": {
+    "text": "or continue with"
+  },
+  "social": {
+    "google": "Continue with Google",
+    "facebook": "Continue with Facebook",
+    "apple": "Continue with Apple"
+  },
+  "signup": {
+    "noAccount": "Don't have an account?",
+    "createAccount": "Create account",
+    "signUp": "Sign Up"
+  },
+  "validation": {
+    "emailRequired": "Email is required",
+    "emailInvalid": "Please enter a valid email address",
+    "passwordRequired": "Password is required",
+    "passwordMinLength": "Password must be at least 8 characters"
+  },
+  "errors": {
+    "invalidCredentials": "Invalid email or password",
+    "userNotFound": "User not found",
+    "wrongPassword": "Incorrect password",
+    "tooManyAttempts": "Too many login attempts. Please try again later.",
+    "accountLocked": "Account is temporarily locked",
+    "emailNotVerified": "Please verify your email address",
+    "networkError": "Network error. Please check your connection.",
+    "accountDisabled": "This account has been disabled",
+    "sessionExpired": "Your session has expired. Please sign in again."
+  },
+  "success": {
+    "signInSuccess": "Successfully signed in",
+    "redirecting": "Redirecting to your dashboard..."
+  },
+  "loading": {
+    "signingIn": "Signing in...",
+    "authenticating": "Authenticating...",
+    "redirecting": "Redirecting..."
+  },
+  "passwordReset": {
+    "title": "Reset Password",
+    "description": "Enter your email address and we'll send you a link to reset your password.",
+    "emailSent": "Password reset email sent",
+    "backToLogin": "Back to login"
+  },
+  "twoFactor": {
+    "title": "Two-Factor Authentication",
+    "description": "Enter the verification code from your authenticator app",
+    "placeholder": "Enter 6-digit code",
+    "verify": "Verify",
+    "resendCode": "Resend code",
+    "useBackupCode": "Use backup code"
+  }
+}

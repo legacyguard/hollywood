@@ -173,7 +173,7 @@ export function CircularProgress({
       <svg
         width={size}
         height={size}
-        style={{ position: 'absolute', transform: 'rotate(-90deg)' } as any}
+        style={{ position: 'absolute', transform: 'rotate(-90deg)' } as React.CSSProperties}
       >
         {/* Background circle */}
         <circle

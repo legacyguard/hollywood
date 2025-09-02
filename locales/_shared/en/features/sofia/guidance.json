@@ -1,0 +1,48 @@
+{
+  "milestones": {
+    "unlocked": "🌟 New milestone unlocked: {{milestoneName}}",
+    "achievement": "🎉 Amazing! You've just unlocked the milestone \"{{milestoneName}}\"! {{milestoneDescription}} This is truly a beautiful moment on your Path of Serenity.",
+    "celebration": "Congratulations on reaching this important milestone!"
+  },
+  "challenges": {
+    "started": "🚀 Challenge started: {{challengeTitle}}",
+    "guidance": "We've started the challenge \"{{challengeTitle}}\"! I'll guide you step by step. Regardless of how you feel, remember - every small step is progress toward greater certainty for your family.",
+    "encouragement": "You're doing great! Every small action counts.",
+    "completion": "Challenge completed successfully!"
+  },
+  "pathOfSerenity": {
+    "philosophy": "The Path of Serenity is not about percentages or numbers - it's about the certainty and peace you create for your family. Every milestone you unlock is proof of your love and care. It doesn't matter how quickly you progress, but that you continue.",
+    "encouragement": "Your journey of care and preparation is admirable.",
+    "progress": "Every step forward brings more peace to your family."
+  },
+  "suggestions": {
+    "createWill": "Create your first will document",
+    "addEmergencyContacts": "Add emergency contacts",
+    "addHealthcareDirectives": "Add healthcare directives",
+    "documentDigitalAssets": "Document your digital assets",
+    "reviewDocuments": "Review and update existing documents",
+    "shareAccess": "Share access with trusted contacts",
+    "welcomeFamily": "Welcome to our family legacy"
+  },
+  "responses": {
+    "navigationSuccess": "Navigated to {{destination}}",
+    "categoryShown": "Showing {{categoryName}} documents",
+    "suggestionReady": "Ready to help with: {{suggestion}}",
+    "informationUnavailable": "Information not available at the moment",
+    "generalError": "I'm having trouble with that request right now"
+  },
+  "personality": {
+    "greeting": "Hello! I'm Sofia, your family's digital guardian.",
+    "farewell": "Take care! I'm always here when you need guidance.",
+    "supportive": "You're taking wonderful steps to protect your family.",
+    "encouraging": "Every small action you take makes a big difference.",
+    "reassuring": "You're on the right path to creating lasting security."
+  },
+  "actions": {
+    "getStarted": "Let's get started",
+    "continueJourney": "Continue your journey",
+    "exploreOptions": "Explore your options",
+    "learnMore": "Learn more",
+    "takeAction": "Take action now"
+  }
+}

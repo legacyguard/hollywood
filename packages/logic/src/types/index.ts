@@ -86,7 +86,7 @@ export type DocumentCategory =
 
 export interface DocumentContent {
   text?: string
-  fields?: Record<string, any>
+  fields?: Record<string, unknown>
   attachments?: Attachment[]
   version: number
 }
@@ -202,7 +202,7 @@ export interface UserActivity {
   action: ActivityAction
   resourceType: ResourceType
   resourceId: string
-  metadata?: Record<string, any>
+  metadata?: Record<string, unknown>
   timestamp: Date
   ipAddress?: string
   userAgent?: string
@@ -244,7 +244,7 @@ export interface Template {
 
 export interface TemplateContent {
   structure: TemplateField[]
-  defaultValues?: Record<string, any>
+  defaultValues?: Record<string, unknown>
   validationRules?: ValidationRule[]
 }
 
@@ -282,7 +282,7 @@ export interface FieldOption {
 
 export interface ValidationRule {
   type: 'required' | 'min' | 'max' | 'pattern' | 'custom'
-  value?: any
+  value?: unknown
   message?: string
 }
 
@@ -324,7 +324,7 @@ export interface Address {
 }
 
 // API Response Types
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   success: boolean
   data?: T
   error?: ApiError
@@ -334,7 +334,7 @@ export interface ApiResponse<T = any> {
 export interface ApiError {
   code: string
   message: string
-  details?: any
+  details?: unknown
   timestamp: Date
 }
 
@@ -346,7 +346,7 @@ export interface ResponseMetadata {
 }
 
 // Form Types
-export interface FormState<T = any> {
+export interface FormState<T = unknown> {
   values: T
   errors: Record<string, string>
   touched: Record<string, boolean>

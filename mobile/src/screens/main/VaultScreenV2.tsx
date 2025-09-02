@@ -18,16 +18,17 @@ import { useUser } from '@clerk/clerk-expo';
 import { useNavigation } from '@react-navigation/native';
 import { RefreshControl, Alert, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { DocumentService, type Document } from '@hollywood/shared/src/services/documentService';
 
-// Document Categories
-const CATEGORIES = [
-  { id: 'all', label: 'All', icon: 'folder', color: '#6b7280' },
-  { id: 'insurance', label: 'Insurance', icon: 'shield-checkmark', color: '#3b82f6' },
-  { id: 'financial', label: 'Financial', icon: 'wallet', color: '#16a34a' },
-  { id: 'personal', label: 'Personal', icon: 'person', color: '#f59e0b' },
-  { id: 'medical', label: 'Medical', icon: 'medical', color: '#dc2626' },
-  { id: 'legal', label: 'Legal', icon: 'document-text', color: '#8b5cf6' },
+// Document Categories (keys for translation)
+const CATEGORY_KEYS = [
+  { id: 'all', key: 'all', icon: 'folder', color: '#6b7280' },
+  { id: 'insurance', key: 'insurance', icon: 'shield-checkmark', color: '#3b82f6' },
+  { id: 'financial', key: 'financial', icon: 'wallet', color: '#16a34a' },
+  { id: 'personal', key: 'personal', icon: 'person', color: '#f59e0b' },
+  { id: 'medical', key: 'medical', icon: 'medical', color: '#dc2626' },
+  { id: 'legal', key: 'legal', icon: 'document-text', color: '#8b5cf6' },
 ];
 
 // Document Card Component
@@ -148,6 +149,7 @@ const formatFileSize = (bytes: number): string => {
 export function VaultScreenV2() {
   const { user } = useUser();
   const navigation = useNavigation();
+  const { t } = useTranslation('mobile.native.screens');
   const [refreshing, setRefreshing] = useState(false);
   const [documents, setDocuments] = useState<Document[]>([]);
   const [filteredDocuments, setFilteredDocuments] = useState<Document[]>([]);

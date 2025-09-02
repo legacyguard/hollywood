@@ -1,5 +1,5 @@
 // API Types for LegacyGuard centralized API layer
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   data?: T;
   error?: string;
   status: number;
@@ -8,7 +8,7 @@ export interface ApiResponse<T = any> {
 export interface ApiError {
   status: number;
   message: string;
-  details?: any;
+  details?: unknown;
 }
 
 export interface PaginatedResponse<T> {
@@ -20,15 +20,15 @@ export interface PaginatedResponse<T> {
 }
 
 export interface ApiClientInterface {
-  get<T = any>(endpoint: string): Promise<T>;
-  post<T = any>(endpoint: string, data?: any): Promise<T>;
-  put<T = any>(endpoint: string, data?: any): Promise<T>;
-  delete<T = any>(endpoint: string): Promise<T>;
+  get<T = unknown>(endpoint: string): Promise<T>;
+  post<T = unknown>(endpoint: string, data?: unknown): Promise<T>;
+  put<T = unknown>(endpoint: string, data?: unknown): Promise<T>;
+  delete<T = unknown>(endpoint: string): Promise<T>;
   uploadFile(endpoint: string, file: {
     base64: string;
     mimeType: string;
     fileName: string;
-  }): Promise<any>;
+  }): Promise<unknown>;
 }
 
 // Request/Response types for different endpoints
@@ -115,5 +115,5 @@ export interface CreateLegacyItemParams {
   priority?: 'low' | 'medium' | 'high' | 'urgent';
   due_date?: string;
   tags?: string[];
-  metadata?: any;
+  metadata?: Record<string, unknown>;
 }

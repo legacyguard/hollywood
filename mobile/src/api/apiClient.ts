@@ -2,8 +2,8 @@
 
 import { AuthenticationService } from '../services/AuthenticationService';
 
-// Define response types
-interface _ApiResponse<T = any> {
+// Define response types (kept for potential future use)
+interface _ApiResponse<T = unknown> {
   data?: T;
   error?: string;
   status: number;
@@ -65,7 +65,7 @@ class ApiClient {
   /**
    * Make authenticated GET request
    */
-  async get<T = any>(endpoint: string): Promise<T> {
+  async get<T = unknown>(endpoint: string): Promise<T> {
     const headers = await this.getAuthHeaders();
 
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
@@ -79,7 +79,7 @@ class ApiClient {
   /**
    * Make authenticated POST request
    */
-  async post<T = any>(endpoint: string, data?: any): Promise<T> {
+  async post<T = unknown>(endpoint: string, data?: unknown): Promise<T> {
     const headers = await this.getAuthHeaders();
 
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
@@ -94,7 +94,7 @@ class ApiClient {
   /**
    * Make authenticated PUT request
    */
-  async put<T = any>(endpoint: string, data?: any): Promise<T> {
+  async put<T = unknown>(endpoint: string, data?: unknown): Promise<T> {
     const headers = await this.getAuthHeaders();
 
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
@@ -109,7 +109,7 @@ class ApiClient {
   /**
    * Make authenticated DELETE request
    */
-  async delete<T = any>(endpoint: string): Promise<T> {
+  async delete<T = unknown>(endpoint: string): Promise<T> {
     const headers = await this.getAuthHeaders();
 
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
@@ -127,7 +127,7 @@ class ApiClient {
     base64: string;
     mimeType: string;
     fileName: string;
-  }): Promise<any> {
+  }): Promise<unknown> {
     const token = await AuthenticationService.getSupabaseToken();
 
     if (!token) {
@@ -172,15 +172,15 @@ export const api = {
   user: {
     getProfile: () => apiClient.get('/api/user/profile'),
 
-    updateProfile: (data: any) => apiClient.put('/api/user/profile', data),
+    updateProfile: (data: unknown) => apiClient.put('/api/user/profile', data),
   },
 
   // Will operations
   will: {
-    create: (data: any) => apiClient.post('/api/will', data),
+    create: (data: unknown) => apiClient.post('/api/will', data),
 
     get: () => apiClient.get('/api/will'),
 
-    update: (data: any) => apiClient.put('/api/will', data),
+    update: (data: unknown) => apiClient.put('/api/will', data),
   },
 };

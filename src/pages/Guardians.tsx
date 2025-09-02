@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '@clerk/clerk-react';
+import { useTranslation } from 'react-i18next';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -71,18 +72,20 @@ interface GuardianFormData {
 }
 
 const GUARDIAN_RELATIONSHIPS = [
-  'Spouse',
-  'Parent',
-  'Sibling',
-  'Child',
-  'Friend',
-  'Attorney',
-  'Financial Advisor',
-  'Other',
+  'spouse',
+  'parent',
+  'sibling',
+  'child',
+  'friend',
+  'attorney',
+  'financialAdvisor',
+  'other',
 ];
 
 export default function GuardiansEnhanced() {
-  usePageTitle('My Guardians');
+  const { t } = useTranslation('features.family.guardians');
+  const { t: tCommon } = useTranslation('common.ui');
+  usePageTitle(t('title'));
   const { userId: _userId } = useAuth();
 
   const [guardians, setGuardians] = useState<Guardian[]>([]);
@@ -430,7 +433,7 @@ export default function GuardiansEnhanced() {
                       size='lg'
                     >
                       <Icon name={"add" as any} className='w-5 h-5 mr-2' />
-                      Add Guardian
+                      {t('actions.addGuardian')}
                     </Button>
                   </DialogTrigger>
                   <DialogContent className='sm:max-w-[600px] max-h-[90vh] overflow-y-auto'>
@@ -442,19 +445,19 @@ export default function GuardiansEnhanced() {
                     <form onSubmit={handleSubmit} className='space-y-6'>
                       <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                         <div className='space-y-2'>
-                          <Label htmlFor='name'>Full Name *</Label>
+                          <Label htmlFor='name'>{t('form.labels.fullName')} *</Label>
                           <Input
                             id='name'
                             value={formData.name}
                             onChange={e =>
                               handleInputChange('name', e.target.value)
                             }
-                            placeholder='Enter full name'
+                            placeholder={t('form.placeholders.fullName')}
                             required
                           />
                         </div>
                         <div className='space-y-2'>
-                          <Label htmlFor='email'>Email Address *</Label>
+                          <Label htmlFor='email'>{t('form.labels.email')} *</Label>
                           <Input
                             id='email'
                             type='email'
@@ -462,7 +465,7 @@ export default function GuardiansEnhanced() {
                             onChange={e =>
                               handleInputChange('email', e.target.value)
                             }
-                            placeholder='guardian@example.com'
+                            placeholder={t('form.placeholders.email')}
                             required
                           />
                         </div>
@@ -470,7 +473,7 @@ export default function GuardiansEnhanced() {
 
                       <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                         <div className='space-y-2'>
-                          <Label htmlFor='phone'>Phone Number</Label>
+                          <Label htmlFor='phone'>{t('form.labels.phone')}</Label>
                           <Input
                             id='phone'
                             type='tel'
@@ -482,7 +485,7 @@ export default function GuardiansEnhanced() {
                           />
                         </div>
                         <div className='space-y-2'>
-                          <Label htmlFor='relationship'>Relationship</Label>
+                          <Label htmlFor='relationship'>{t('form.labels.relationship')}</Label>
                           <Select
                             value={formData.relationship}
                             onValueChange={value =>
@@ -490,12 +493,12 @@ export default function GuardiansEnhanced() {
                             }
                           >
                             <SelectTrigger>
-                              <SelectValue placeholder='Select relationship' />
+                              <SelectValue placeholder={t('form.placeholders.relationship')} />
                             </SelectTrigger>
                             <SelectContent>
                               {GUARDIAN_RELATIONSHIPS.map(rel => (
                                 <SelectItem key={rel} value={rel}>
-                                  {rel}
+                                  {t(`relationships.${rel}`)}
                                 </SelectItem>
                               ))}
                             </SelectContent>
@@ -511,7 +514,7 @@ export default function GuardiansEnhanced() {
                           onChange={e =>
                             handleInputChange('notes', e.target.value)
                           }
-                          placeholder='Any special instructions or notes...'
+                          placeholder={t('form.placeholders.instructions')}
                           rows={3}
                         />
                       </div>
@@ -636,14 +639,14 @@ export default function GuardiansEnhanced() {
                             setEditingGuardian(null);
                           }}
                         >
-                          Cancel
+                          {t('actions.cancel')}
                         </Button>
                         <Button type='submit' disabled={isSubmitting}>
                           {isSubmitting
-                            ? 'Saving...'
+                            ? tCommon('message.saving')
                             : editingGuardian
-                              ? 'Update Guardian'
-                              : 'Add Guardian'}
+                              ? t('actions.editGuardian')
+                              : t('actions.addGuardian')}
                         </Button>
                       </div>
                     </form>

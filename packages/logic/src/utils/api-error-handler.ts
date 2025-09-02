@@ -1,4 +1,4 @@
-import { ApiError } from '../types/api';
+import type { ApiError } from '../types/api';
 
 /**
  * Custom error class for API operations
@@ -7,7 +7,7 @@ export class LegacyGuardApiError extends Error {
   constructor(
     public status: number,
     message: string,
-    public details?: any,
+    public details?: unknown,
     public originalError?: Error
   ) {
     super(message);
@@ -58,12 +58,12 @@ export class LegacyGuardApiError extends Error {
  * Handle API responses and convert errors to LegacyGuardApiError
  */
 export function handleApiResponse<T>(
-  response: any,
+  response: unknown,
   operation: string,
   originalError?: Error
 ): T {
   // If response has an error field
-  if (response && typeof response === 'object' && response.error) {
+  if (response && typeof response === 'object' && (response as { error?: unknown }).error) {
     throw new LegacyGuardApiError(
       response.status || 500,
       response.error,
@@ -73,7 +73,7 @@ export function handleApiResponse<T>(
   }
 
   // If response is successful, return the data
-  return response;
+  return response as T;
 }
 
 /**
@@ -128,7 +128,7 @@ export async function withErrorHandling<T>(
  * Validate required parameters for API calls
  */
 export function validateRequired(
-  params: Record<string, any>,
+  params: Record<string, unknown>,
   requiredFields: string[]
 ): void {
   const missingFields = requiredFields.filter(field => {
@@ -149,8 +149,8 @@ export function validateRequired(
  * Validate data types for API parameters
  */
 export function validateTypes(
-  data: any,
-  validations: Record<string, (value: any) => boolean>
+  data: unknown,
+  validations: Record<string, (value: unknown) => boolean>
 ): void {
   const errors: string[] = [];
 
@@ -173,22 +173,22 @@ export function validateTypes(
  * Common validation functions
  */
 export const validators = {
-  isString: (value: any): boolean => typeof value === 'string',
-  isNumber: (value: any): boolean => typeof value === 'number' && !isNaN(value),
-  isBoolean: (value: any): boolean => typeof value === 'boolean',
-  isArray: (value: any): boolean => Array.isArray(value),
-  isObject: (value: any): boolean => typeof value === 'object' && value !== null && !Array.isArray(value),
-  isEmail: (value: any): boolean => {
+  isString: (value: unknown): boolean => typeof value === 'string',
+  isNumber: (value: unknown): boolean => typeof value === 'number' && !Number.isNaN(value),
+  isBoolean: (value: unknown): boolean => typeof value === 'boolean',
+  isArray: (value: unknown): boolean => Array.isArray(value),
+  isObject: (value: unknown): boolean => typeof value === 'object' && value !== null && !Array.isArray(value),
+  isEmail: (value: unknown): boolean => {
     if (typeof value !== 'string') return false;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(value);
   },
-  isUuid: (value: any): boolean => {
+  isUuid: (value: unknown): boolean => {
     if (typeof value !== 'string') return false;
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
     return uuidRegex.test(value);
   },
-  isUrl: (value: any): boolean => {
+  isUrl: (value: unknown): boolean => {
     if (typeof value !== 'string') return false;
     try {
       new URL(value);
@@ -197,7 +197,7 @@ export const validators = {
       return false;
     }
   },
-  isDateString: (value: any): boolean => {
+  isDateString: (value: unknown): boolean => {
     if (typeof value !== 'string') return false;
     const date = new Date(value);
     return !isNaN(date.getTime());
@@ -239,8 +239,8 @@ export async function withRetry<T>(
     try {
       return await operation();
     } catch (error) {
-      const apiError = error instanceof LegacyGuardApiError 
-        ? error 
+      const apiError = error instanceof LegacyGuardApiError
+        ? error
         : new LegacyGuardApiError(500, `${operationName} failed`, {}, error instanceof Error ? error : undefined);
 
       lastError = apiError;

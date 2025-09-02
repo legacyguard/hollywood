@@ -1,6 +1,6 @@
 import React from 'react';
-import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
-import { YStack, XStack, H2, Paragraph, Button, useTheme } from 'tamagui';
+import { ErrorBoundary, type FallbackProps } from 'react-error-boundary';
+import { YStack, XStack, H2, Paragraph, Button } from 'tamagui';
 import { AlertCircle, RefreshCw } from '@tamagui/lucide-icons';
 
 interface GlobalErrorBoundaryProps {
@@ -12,11 +12,10 @@ interface GlobalErrorBoundaryProps {
 
 // Default fallback component with LegacyGuard styling
 const DefaultErrorFallback: React.FC<FallbackProps> = ({ resetErrorBoundary }) => {
-
   const handleRefresh = () => {
     // Try to reset the error boundary first
     resetErrorBoundary?.();
-    
+
     // If we're in a web environment, reload the page
     if (typeof window !== 'undefined') {
       window.location.reload();
@@ -42,8 +41,8 @@ const DefaultErrorFallback: React.FC<FallbackProps> = ({ resetErrorBoundary }) =
         alignItems="center"
         marginBottom="$2"
       >
-        <AlertCircle 
-          size="$2" 
+        <AlertCircle
+          size="$2"
           color="$red9"
         />
       </XStack>
@@ -68,7 +67,7 @@ const DefaultErrorFallback: React.FC<FallbackProps> = ({ resetErrorBoundary }) =
         maxWidth={400}
         marginBottom="$4"
       >
-        We apologize, an unexpected error has occurred. Our team has been notified. 
+        We apologize, an unexpected error has occurred. Our team has been notified.
         Please try refreshing the page.
       </Paragraph>
 
@@ -148,7 +147,7 @@ export const GlobalErrorBoundary: React.FC<GlobalErrorBoundaryProps> = ({
   const handleError = (error: Error, errorInfo: React.ErrorInfo) => {
     // Log the error
     logError(error, errorInfo);
-    
+
     // Call custom error handler if provided
     onError?.(error, errorInfo);
   };

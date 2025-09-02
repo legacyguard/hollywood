@@ -78,7 +78,7 @@ export const Skeleton = styled(View, {
 // Skeleton Text - for loading text
 export const SkeletonText = ({ lines = 3, spacing = '$2', ...props }: {
   lines?: number
-  spacing?: any
+  spacing?: GetProps<typeof YStack>['space']
 } & GetProps<typeof YStack>) => {
   return (
     <YStack space={spacing} {...props}>
@@ -165,7 +165,7 @@ export const SkeletonList = ({
   ...props
 }: {
   items?: number
-  spacing?: any
+  spacing?: GetProps<typeof YStack>['space']
   renderItem?: (index: number) => React.ReactNode
 } & GetProps<typeof YStack>) => {
   return (

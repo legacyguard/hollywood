@@ -6,7 +6,7 @@
 import React, { useEffect, useState } from 'react';
 import { I18nextProvider } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
-import i18n, { initI18n, NamespaceLoader, getNamespacesForRoute, SUPPORTED_LANGUAGES, type NAMESPACES } from '@/lib/i18n/i18n.config';
+import i18n, { initI18n, NamespaceLoader, getNamespacesForRoute, SUPPORTED_LANGUAGES, NAMESPACES } from '@/lib/i18n/config';
 
 interface I18nProviderProps {
   children: React.ReactNode;

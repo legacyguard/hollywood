@@ -1,0 +1,43 @@
+{
+  "all": "All Documents",
+  "financial": "Financial Documents",
+  "medical": "Medical Records",
+  "personal": "Personal Documents",
+  "legal": "Legal Documents",
+  "passwords": "Passwords & Keys",
+  "notes": "Secure Notes",
+  "cards": "Cards & IDs",
+  "identities": "Identity Documents",
+  "custom": "Custom Categories",
+  "descriptions": {
+    "financial": "Bank statements, investment records, tax documents",
+    "medical": "Health records, prescriptions, insurance cards",
+    "personal": "Photos, letters, certificates, personal files",
+    "legal": "Wills, contracts, deeds, legal agreements",
+    "passwords": "Login credentials, security keys, access codes",
+    "notes": "Private notes, instructions, reminders",
+    "cards": "Credit cards, membership cards, licenses",
+    "identities": "Passports, ID cards, birth certificates",
+    "custom": "Your own document categories"
+  },
+  "counts": {
+    "single": "{{count}} document",
+    "multiple": "{{count}} documents",
+    "empty": "No documents"
+  },
+  "actions": {
+    "viewAll": "View All",
+    "addToCategory": "Add to {{category}}",
+    "createCategory": "Create New Category",
+    "editCategory": "Edit Category",
+    "deleteCategory": "Delete Category"
+  },
+  "filters": {
+    "recent": "Recently Added",
+    "alphabetical": "A-Z",
+    "byDate": "By Date",
+    "bySize": "By Size",
+    "shared": "Shared with Family",
+    "encrypted": "Encrypted"
+  }
+}

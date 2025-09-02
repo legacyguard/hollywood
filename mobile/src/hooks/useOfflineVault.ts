@@ -1,4 +1,5 @@
 // src/hooks/useOfflineVault.ts
+/* global __DEV__ */
 import { useEffect, useState, useCallback } from 'react';
 import { OfflineVaultService } from '@/services/OfflineVaultService';
 import * as SecureStore from 'expo-secure-store';
@@ -55,7 +56,7 @@ export const useOfflineVault = (): UseOfflineVaultReturn => {
           .join('');
 
         await SecureStore.setItemAsync(ENCRYPTION_KEY_NAME, keyHex);
-        console.log('New encryption key generated and stored');
+        if (__DEV__) console.log('New encryption key generated and stored');
       }
 
       // Convert hex string to Uint8Array
@@ -66,7 +67,7 @@ export const useOfflineVault = (): UseOfflineVaultReturn => {
 
       return keyBytes;
     } catch (error) {
-      console.error('Failed to get/create encryption key:', error);
+      if (__DEV__) console.error('Failed to get/create encryption key:', error);
       throw new Error('Failed to initialize encryption');
     }
   }, []);
@@ -94,7 +95,7 @@ export const useOfflineVault = (): UseOfflineVaultReturn => {
           totalSize: vaultStats.totalSize,
         });
       } catch (error) {
-        console.error('Failed to initialize vault:', error);
+        if (__DEV__) console.error('Failed to initialize vault:', error);
         setError(error instanceof Error ? error.message : 'Failed to open vault');
         setIsVaultOpen(false);
       } finally {
@@ -115,7 +116,7 @@ export const useOfflineVault = (): UseOfflineVaultReturn => {
    */
   const loadDocuments = useCallback(async () => {
     if (!isVaultOpen && !OfflineVaultService.isOpen()) {
-      console.warn('Vault is not open');
+      if (__DEV__) console.warn('Vault is not open');
       return;
     }
 
@@ -129,7 +130,7 @@ export const useOfflineVault = (): UseOfflineVaultReturn => {
         totalSize: vaultStats.totalSize,
       });
     } catch (error) {
-      console.error('Failed to load documents:', error);
+      if (__DEV__) console.error('Failed to load documents:', error);
       setError('Failed to load documents');
     }
   }, [isVaultOpen]);
@@ -145,9 +146,9 @@ export const useOfflineVault = (): UseOfflineVaultReturn => {
     try {
       await OfflineVaultService.addDocument(doc);
       await loadDocuments(); // Reload to update list
-      console.log(`Document ${doc.fileName} added successfully`);
+      if (__DEV__) console.log(`Document ${doc.fileName} added successfully`);
     } catch (error) {
-      console.error('Failed to add document:', error);
+      if (__DEV__) console.error('Failed to add document:', error);
       throw error;
     }
   }, [isVaultOpen, loadDocuments]);
@@ -164,10 +165,10 @@ export const useOfflineVault = (): UseOfflineVaultReturn => {
       const success = await OfflineVaultService.removeDocument(id);
       if (success) {
         await loadDocuments(); // Reload to update list
-        console.log(`Document ${id} removed successfully`);
+        if (__DEV__) console.log(`Document ${id} removed successfully`);
       }
     } catch (error) {
-      console.error('Failed to remove document:', error);
+      if (__DEV__) console.error('Failed to remove document:', error);
       throw error;
     }
   }, [isVaultOpen, loadDocuments]);
@@ -183,7 +184,7 @@ export const useOfflineVault = (): UseOfflineVaultReturn => {
     try {
       return await OfflineVaultService.getDocument(id);
     } catch (error) {
-      console.error('Failed to get document:', error);
+      if (__DEV__) console.error('Failed to get document:', error);
       throw error;
     }
   }, [isVaultOpen]);
@@ -199,9 +200,9 @@ export const useOfflineVault = (): UseOfflineVaultReturn => {
     try {
       await OfflineVaultService.clearAll();
       await loadDocuments(); // Reload to update list
-      console.log('Vault cleared successfully');
+      if (__DEV__) console.log('Vault cleared successfully');
     } catch (error) {
-      console.error('Failed to clear vault:', error);
+      if (__DEV__) console.error('Failed to clear vault:', error);
       throw error;
     }
   }, [isVaultOpen, loadDocuments]);
@@ -220,9 +221,9 @@ export const useOfflineVault = (): UseOfflineVaultReturn => {
       // 2. Compare with local documents
       // 3. Download new/updated documents
       // 4. Upload local-only documents
-      console.log('Cloud sync not yet implemented');
+      if (__DEV__) console.log('Cloud sync not yet implemented');
     } catch (error) {
-      console.error('Failed to sync with cloud:', error);
+      if (__DEV__) console.error('Failed to sync with cloud:', error);
       throw error;
     }
   }, [isVaultOpen]);

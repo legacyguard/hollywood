@@ -21,24 +21,24 @@ export const {
 
 /**
  * Usage Examples:
- * 
+ *
  * // Documents
  * const userDocuments = await documents.getAll({ limit: 10 });
  * const document = await documents.getById('doc-uuid');
  * const uploadedDoc = await documents.upload({ file: { base64, mimeType, fileName } });
- * 
+ *
  * // Guardians
  * const guardians = await guardians.getAll();
  * const newGuardian = await guardians.create({ name: 'John Doe', email: 'john@example.com' });
- * 
+ *
  * // Profile
  * const userProfile = await profile.get();
  * await profile.update({ full_name: 'Updated Name' });
- * 
+ *
  * // Will
  * const willData = await will.get();
  * await will.addBeneficiary({ name: 'Jane Doe', relationship: 'daughter', percentage: 50 });
- * 
+ *
  * // Analytics
  * const insights = await analytics.getInsights();
  * const milestones = await analytics.getMilestones();

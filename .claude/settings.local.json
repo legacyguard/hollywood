@@ -35,7 +35,10 @@
       "Bash(./node_modules/.bin/eslint:*)",
       "Bash(find:*)",
       "Bash(rg:*)",
-      "Bash(sed:*)"
+      "Bash(sed:*)",
+      "Bash(rm:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)"
     ],
     "deny": [],
     "additionalDirectories": [
