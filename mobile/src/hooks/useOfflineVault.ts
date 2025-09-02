@@ -56,7 +56,7 @@ export const useOfflineVault = (): UseOfflineVaultReturn => {
           .join('');
 
         await SecureStore.setItemAsync(ENCRYPTION_KEY_NAME, keyHex);
-        if (__DEV__) console.log('New encryption key generated and stored');
+        // New encryption key generated and stored
       }
 
       // Convert hex string to Uint8Array
@@ -67,7 +67,7 @@ export const useOfflineVault = (): UseOfflineVaultReturn => {
 
       return keyBytes;
     } catch (error) {
-      if (__DEV__) console.error('Failed to get/create encryption key:', error);
+      // Failed to get/create encryption key
       throw new Error('Failed to initialize encryption');
     }
   }, []);
@@ -82,7 +82,7 @@ export const useOfflineVault = (): UseOfflineVaultReturn => {
 
       try {
         const encryptionKey = await getOrCreateEncryptionKey();
-        await OfflineVaultService.open(encryptionKey);
+        await OfflineVaultService.open();
         setIsVaultOpen(true);
 
         // Load initial documents
@@ -95,7 +95,7 @@ export const useOfflineVault = (): UseOfflineVaultReturn => {
           totalSize: vaultStats.totalSize,
         });
       } catch (error) {
-        if (__DEV__) console.error('Failed to initialize vault:', error);
+        // Failed to initialize vault
         setError(error instanceof Error ? error.message : 'Failed to open vault');
         setIsVaultOpen(false);
       } finally {
@@ -116,7 +116,7 @@ export const useOfflineVault = (): UseOfflineVaultReturn => {
    */
   const loadDocuments = useCallback(async () => {
     if (!isVaultOpen && !OfflineVaultService.isOpen()) {
-      if (__DEV__) console.warn('Vault is not open');
+      // Vault is not open
       return;
     }
 

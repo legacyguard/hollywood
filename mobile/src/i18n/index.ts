@@ -48,4 +48,4 @@ Localization.addEventListener('change', () => {
 });
 
 export default i18n;
-export const t = (key: string, options?: any) => i18n.t(key, options);
+export const t = (key: string, options?: Record<string, unknown>) => i18n.t(key, options as any);

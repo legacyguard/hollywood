@@ -10,7 +10,7 @@ interface ThemeContextValue {
   setThemeMode: (mode: ThemeMode) => Promise<void>;
 }
 
-const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
+export const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
 const THEME_STORAGE_KEY = '@legacyguard/theme_mode';
 
@@ -67,12 +67,4 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       {children}
     </ThemeContext.Provider>
   );
-}
-
-export function useAppTheme() {
-  const context = useContext(ThemeContext);
-  if (!context) {
-    throw new Error('useAppTheme must be used within a ThemeProvider');
-  }
-  return context;
 }

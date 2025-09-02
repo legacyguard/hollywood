@@ -39,6 +39,37 @@
     "tooLong": "Too long",
     "invalidEmail": "Invalid email address"
   },
+  "dashboard": {
+    "header": {
+      "title": "Family Shield",
+      "titleWithName": "Family Shield, {{name}}",
+      "subtitle": {
+        "adaptive": "Overview of everything protecting your family",
+        "empathetic": "A loving overview of your family's protection and care",
+        "pragmatic": "System status and family protection metrics"
+      },
+      "actions": {
+        "secureNewInformation": "Secure New Information"
+      }
+    },
+    "metrics": {
+      "title": {
+        "adaptive": "Your Legacy at a Glance",
+        "empathetic": "💫 Your Family's Circle of Love",
+        "pragmatic": "📈 System Performance Metrics"
+      },
+      "subtitle": {
+        "empathetic": "Every number represents care and protection"
+      },
+      "documentsProtected": "Documents Protected",
+      "familyMembers": "Family Members",
+      "guardians": "Guardians",
+      "daysProtected": "Days Protected",
+      "labels": {
+        "active": "Active"
+      }
+    }
+  },
   "auth": {
     "signIn": "Sign In",
     "signOut": "Sign Out",

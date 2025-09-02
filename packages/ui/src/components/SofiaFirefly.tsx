@@ -3,6 +3,7 @@ import { View, styled } from 'tamagui'
 import { motion, useAnimation, AnimatePresence } from 'framer-motion'
 import { TextManager, type SofiaMode } from '@legacyguard/logic'
 import { useEventBus, EVENTS, eventBus } from '../utils/eventBus'
+import type { SofiaFireflyProps } from './SofiaFirefly.types'
 
 const FireflyContainer = styled(View, {
   name: 'LGFireflyContainer',
@@ -12,14 +13,6 @@ const FireflyContainer = styled(View, {
   pointerEvents: 'none',
   zIndex: 1000,
 })
-
-export interface SofiaFireflyProps {
-  mode?: SofiaMode
-  isActive?: boolean
-  message?: string
-  onInteraction?: () => void
-  startPosition?: { x: number; y: number }
-}
 
 // Web version with Framer Motion
 const SofiaFireflyWeb: React.FC<SofiaFireflyProps> = ({
@@ -374,5 +367,8 @@ const SofiaFireflyNative: React.FC<SofiaFireflyProps> = ({
   )
 }
 
-// Export appropriate version based on platform
-export const SofiaFirefly = typeof window !== 'undefined' ? SofiaFireflyWeb : SofiaFireflyNative
+// Export a component wrapper for fast-refresh compatibility
+export const SofiaFirefly: React.FC<SofiaFireflyProps> = (props) => {
+  const isWeb = typeof window !== 'undefined'
+  return isWeb ? <SofiaFireflyWeb {...props} /> : <SofiaFireflyNative {...props} />
+}

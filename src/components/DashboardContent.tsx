@@ -4,6 +4,7 @@ import { SidebarTrigger } from '@/components/ui/sidebar';
 import { FadeIn } from '@/components/motion/FadeIn';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '@clerk/clerk-react';
+import { useTranslation } from 'react-i18next';
 import { PathOfSerenity } from '@/components/dashboard/PathOfSerenity';
 import { AttentionSection } from '@/components/dashboard/AttentionSection';
 import { LegacyOverviewSection } from '@/components/dashboard/LegacyOverviewSection';
@@ -25,6 +26,7 @@ import { useState } from 'react';
 export function DashboardContent() {
   const { user } = useUser();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { needsSetup, isLoading } = useEncryptionReady();
   const mockActivities = useMockActivities();
   const personalityManager = usePersonalityManager();
@@ -61,9 +63,9 @@ export function DashboardContent() {
   };
 
   // Mock metrics data - in production, this would come from your API
-  const [metrics] = useState([
+  const metrics = [
     {
-      title: 'Documents Protected',
+      title: t('dashboard.metrics.documentsProtected'),
       value: '24',
       change: 12,
       trend: 'up' as const,
@@ -72,7 +74,7 @@ export function DashboardContent() {
       onClick: () => navigate('/vault'),
     },
     {
-      title: 'Family Members',
+      title: t('dashboard.metrics.familyMembers'),
       value: '8',
       change: 2,
       trend: 'up' as const,
@@ -81,20 +83,20 @@ export function DashboardContent() {
       onClick: () => navigate('/family'),
     },
     {
-      title: 'Guardians',
+      title: t('dashboard.metrics.guardians'),
       value: '3',
-      changeLabel: 'Active',
+      changeLabel: t('dashboard.metrics.labels.active'),
       icon: 'shield',
       color: 'warning' as const,
       onClick: () => navigate('/guardians'),
     },
     {
-      title: 'Days Protected',
+      title: t('dashboard.metrics.daysProtected'),
       value: '147',
       icon: 'calendar',
       color: 'info' as const,
     },
-  ]);
+  ];
 
   // Show encryption setup if needed
   if (!isLoading && needsSetup) {
@@ -120,14 +122,12 @@ export function DashboardContent() {
               <div>
                 <FadeIn duration={0.5} delay={0.2}>
                   <h1 className='text-3xl lg:text-4xl font-bold font-heading text-card-foreground mb-3'>
-                    Family Shield{user?.firstName ? `, ${user.firstName}` : ''}
+                    {user?.firstName ? t('dashboard.header.titleWithName', { name: user.firstName }) : t('dashboard.header.title')}
                   </h1>
                 </FadeIn>
                 <FadeIn duration={0.5} delay={0.4}>
                   <p className='text-lg leading-relaxed max-w-2xl text-muted-foreground'>
-                    {effectiveMode === 'empathetic' ? 'A loving overview of your family\'s protection and care' :
-                     effectiveMode === 'pragmatic' ? 'System status and family protection metrics' :
-                     'Overview of everything protecting your family'}
+                    {t(`dashboard.header.subtitle.${effectiveMode}`)}
                   </p>
                 </FadeIn>
               </div>
@@ -139,7 +139,7 @@ export function DashboardContent() {
                 size='lg'
               >
                 <Icon name="add" className='w-5 h-5 mr-2' />
-                Secure New Information
+                {t('dashboard.header.actions.secureNewInformation')}
               </Button>
             </FadeIn>
           </div>
@@ -153,13 +153,11 @@ export function DashboardContent() {
           <FadeIn duration={0.5} delay={0.8}>
             <div className='flex items-center justify-between mb-6'>
               <h2 className='text-xl font-semibold text-card-foreground'>
-                {effectiveMode === 'empathetic' ? '💫 Your Family\'s Circle of Love' :
-                 effectiveMode === 'pragmatic' ? '📈 System Performance Metrics' :
-                 'Your Legacy at a Glance'}
+                {t(`dashboard.metrics.title.${effectiveMode}`)}
               </h2>
               {effectiveMode === 'empathetic' && (
                 <span className='text-sm text-muted-foreground italic'>
-                  Every number represents care and protection
+                  {t('dashboard.metrics.subtitle.empathetic')}
                 </span>
               )}
             </div>

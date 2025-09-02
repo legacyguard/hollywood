@@ -36,10 +36,11 @@ interface DocumentCardProps {
   document: Document;
   onPress: () => void;
   onDelete: () => void;
+  categories: { id: string; key: string; icon: string; color: string; label?: string }[];
 }
 
-const DocumentCard = ({ document, onPress, onDelete }: DocumentCardProps) => {
-  const category = CATEGORIES.find(c => c.id === document.category) || CATEGORIES[0];
+const DocumentCard = ({ document, onPress, onDelete, categories }: DocumentCardProps) => {
+  const category = categories.find(c => c.id === document.category) || categories[0];
 
   return (
     <Card
@@ -58,7 +59,7 @@ const DocumentCard = ({ document, onPress, onDelete }: DocumentCardProps) => {
           }}
         >
           <Ionicons
-            name={category.icon as any}
+            name={category.icon as keyof typeof Ionicons.glyphMap}
             size={24}
             color={category.color}
           />
@@ -93,9 +94,10 @@ const DocumentCard = ({ document, onPress, onDelete }: DocumentCardProps) => {
 interface CategoryFilterProps {
   selected: string;
   onSelect: (category: string) => void;
+  categories: { id: string; key: string; icon: string; color: string; label?: string }[];
 }
 
-const CategoryFilter = ({ selected, onSelect }: CategoryFilterProps) => {
+const CategoryFilter = ({ selected, onSelect, categories }: CategoryFilterProps) => {
   return (
     <ScrollContainer
       horizontal
@@ -104,7 +106,7 @@ const CategoryFilter = ({ selected, onSelect }: CategoryFilterProps) => {
       style={{ maxHeight: 100 }}
     >
       <Row space="small">
-        {CATEGORIES.map((category) => (
+        {categories.map((category) => (
           <TouchableOpacity
             key={category.id}
             onPress={() => onSelect(category.id)}
@@ -116,7 +118,7 @@ const CategoryFilter = ({ selected, onSelect }: CategoryFilterProps) => {
             >
               <Stack space="xs" align="center">
                 <Ionicons
-                  name={category.icon as any}
+                  name={category.icon as keyof typeof Ionicons.glyphMap}
                   size={24}
                   color={selected === category.id ? '#ffffff' : category.color}
                 />
@@ -156,6 +158,10 @@ export function VaultScreenV2() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
+  const CATEGORIES = CATEGORY_KEYS.map((c) => ({
+    ...c,
+    label: t ? t(`vault.categories.${c.key}`) : c.key,
+  }));
 
   const loadDocuments = useCallback(async () => {
     if (!user?.id) return;
@@ -269,6 +275,7 @@ export function VaultScreenV2() {
           <CategoryFilter
             selected={selectedCategory}
             onSelect={setSelectedCategory}
+            categories={CATEGORIES}
           />
 
           <Divider />
@@ -301,6 +308,7 @@ export function VaultScreenV2() {
                   document={document}
                   onPress={() => handleDocumentPress(document)}
                   onDelete={() => handleDeleteDocument(document.id)}
+                  categories={CATEGORIES}
                 />
               ))}
             </Stack>

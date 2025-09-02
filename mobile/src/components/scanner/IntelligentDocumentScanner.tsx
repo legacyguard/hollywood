@@ -39,17 +39,17 @@ export const IntelligentDocumentScanner = ({
         const processedImageUri = await DocumentScannerService.processImage(photo.path);
 
         // Validate document quality
-        const isValid = DocumentScannerService.validateDocumentQuality(processedImageUri);
+        const isValid = DocumentScannerService.validateDocumentQuality();
 
         if (isValid) {
           setIsActive(false); // Stop the camera after taking a photo
           onScanComplete(processedImageUri);
         } else {
           // Show error message in real implementation
-          console.log('Document quality validation failed');
+          // Document quality validation failed - handle in UI
         }
       } catch (error) {
-        console.error('Error taking photo:', error);
+        // Error taking photo - handle in UI
       } finally {
         setIsProcessing(false);
       }

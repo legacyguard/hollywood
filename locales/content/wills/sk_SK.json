@@ -1,40 +1,21 @@
 {
-  "types": {
-    "holographic": "Holografický závet",
-    "allographic": "Alografický závet",
-    "notarial": "Notársky závet"
+  "title": "Will Creation Service",
+  "description": "Create your legal will with our guided process",
+  "steps": {
+    "personal_info": "Personal Information",
+    "beneficiaries": "Beneficiaries",
+    "assets": "Assets",
+    "guardians": "Guardians",
+    "review": "Review"
   },
-  "sections": {
-    "opening": {
-      "title": "Úvodná časť",
-      "declaration": "Ja, {{testatorName}}, narodený/-á {{birthDate}}, s bydliskom {{address}}, pri plnom vedomí a zdravom rozume týmto ustanovujem svoj posledný závet:"
-    },
-    "bequests": {
-      "title": "Odkazy a dedičstvo",
-      "introduction": "Svoj majetok odkazujem nasledovne:"
-    },
-    "executor": {
-      "title": "Vykonávateľ závetu",
-      "appointment": "Za vykonávateľa svojho závetu ustanovujem {{executorName}}, narodený/-á {{executorBirthDate}}, s bydliskom {{executorAddress}}."
-    },
-    "guardian": {
-      "title": "Opatrovníctvo maloletých detí",
-      "appointment": "V prípade, že po mojej smrti zostanú maloletí potomkovia, ustanovujem za ich opatrovníka {{guardianName}}."
-    },
-    "closing": {
-      "title": "Záverečné ustanovenia",
-      "revocation": "Týmto zrušujem všetky predchádzajúce závety a kodycily.",
-      "signature": "Závet som napísal/-a vlastnoručne a vlastnoručne podpisujem."
-    }
+  "forms": {
+    "full_name": "Full Name",
+    "date_of_birth": "Date of Birth",
+    "address": "Address",
+    "marital_status": "Marital Status"
   },
   "legal": {
-    "requirements": {
-      "holographic": "Závet musí byť napísaný vlastnoručne a vlastnoručne podpísaný testátorom.",
-      "witnesses": "Závet môže byť napísaný aj inak, ale musí byť podpísaný pred dvoma svedkami súčasne prítomnými."
-    },
-    "warnings": {
-      "capacity": "Testátor musí byť spôsobilý na právne úkony.",
-      "form": "Nedodržanie predpísanej formy môže mať za následok neplatnosť závetu."
-    }
+    "disclaimer": "This is a legal document template",
+    "requirements": "Please ensure all information is accurate"
   }
 }

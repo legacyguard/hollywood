@@ -12,4 +12,5 @@ export * from './types'
 // Utils
 export * from './utils/date'
 export * from './utils/api-error-handler'
+export * from './utils/api-versioning'
 

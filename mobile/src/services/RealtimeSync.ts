@@ -3,6 +3,7 @@
  * Manages real-time data sync between web and mobile applications
  */
 
+/* global __DEV__ */
 import { createClient, type SupabaseClient, type RealtimeChannel } from '@supabase/supabase-js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -61,7 +62,7 @@ export class RealtimeSync {
    */
   private async handleOnline() {
     this.isOnline = true;
-    console.log('RealtimeSync: Network online, processing sync queue');
+    if (__DEV__) console.log('RealtimeSync: Network online, processing sync queue');
     await this.processSyncQueue();
   }
 
@@ -70,7 +71,7 @@ export class RealtimeSync {
    */
   private handleOffline() {
     this.isOnline = false;
-    console.log('RealtimeSync: Network offline, queueing changes');
+    if (__DEV__) console.log('RealtimeSync: Network offline, queueing changes');
   }
 
   /**
@@ -100,14 +101,14 @@ export class RealtimeSync {
         }
       )
       .subscribe((status) => {
-        console.log(`RealtimeSync: Subscription status - ${status}`);
+        if (__DEV__) console.log(`RealtimeSync: Subscription status - ${status}`);
       });
   }
 
   /**
    * Handle real-time database changes
    */
-  private handleRealtimeChange(payload: any) {
+  private handleRealtimeChange(payload: unknown) {
     const event: SyncEvent = {
       type: payload.eventType as 'INSERT' | 'UPDATE' | 'DELETE',
       document: payload.new || payload.old,
@@ -201,7 +202,7 @@ export class RealtimeSync {
       .single();
 
     if (error) {
-      console.error('RealtimeSync: Upload error', error);
+      if (__DEV__) console.error('RealtimeSync: Upload error', error);
       return null;
     }
 
@@ -237,7 +238,7 @@ export class RealtimeSync {
             break;
         }
       } catch (error) {
-        console.error('RealtimeSync: Sync error', error);
+        if (__DEV__) console.error('RealtimeSync: Sync error', error);
         // Re-queue failed items
         this.syncQueue.push(event);
       }

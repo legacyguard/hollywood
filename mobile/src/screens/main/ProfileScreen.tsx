@@ -1,3 +1,4 @@
+/* global __DEV__ */
 import React from 'react';
 import {
   Container,
@@ -111,7 +112,7 @@ export function ProfileScreen() {
             try {
               await signOut();
             } catch (error) {
-              console.error('Sign out error:', error);
+              if (__DEV__) console.error('Sign out error:', error);
             }
           }
         },
@@ -240,7 +241,7 @@ export function ProfileScreen() {
                 value={
                   <Switch
                     value={true}
-                    onValueChange={(value) => console.log('Biometric:', value)}
+                    onValueChange={(value) => { if (__DEV__) console.log('Biometric:', value); }}
                   />
                 }
                 showArrow={false}
@@ -273,7 +274,7 @@ export function ProfileScreen() {
                 value={
                   <Switch
                     value={true}
-                    onValueChange={(value) => console.log('Push:', value)}
+                    onValueChange={(value) => { if (__DEV__) console.log('Push:', value); }}
                   />
                 }
                 showArrow={false}
@@ -285,7 +286,7 @@ export function ProfileScreen() {
                 value={
                   <Switch
                     value={true}
-                    onValueChange={(value) => console.log('Email:', value)}
+                    onValueChange={(value) => { if (__DEV__) console.log('Email:', value); }}
                   />
                 }
                 showArrow={false}

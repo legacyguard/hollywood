@@ -43,11 +43,15 @@ export class DocumentService {
   async upload(request: DocumentUploadRequest): Promise<Document> {
     return withErrorHandling(async () => {
       // Validate required fields
-      validateRequired(request, ['file']);
-      validateRequired(request.file, ['base64', 'mimeType', 'fileName']);
+      if (!request.file) {
+        throw new LegacyGuardApiError(400, 'File is required');
+      }
+      
+      const fileData = request.file as unknown as Record<string, unknown>;
+      validateRequired(fileData, ['base64', 'mimeType', 'fileName']);
 
       // Validate data types
-      validateTypes(request.file, {
+      validateTypes(fileData, {
         base64: validators.isString,
         mimeType: validators.isString,
         fileName: validators.isString
@@ -65,11 +69,12 @@ export class DocumentService {
         'document upload'
       );
 
-      if (!response.document) {
+      const responseData = response as { document?: Document };
+      if (!responseData.document) {
         throw new LegacyGuardApiError(500, 'Document upload succeeded but no document was returned');
       }
 
-      return response.document;
+      return responseData.document;
     }, 'Document upload');
   }
 
@@ -317,21 +322,22 @@ export class ProfileService {
    */
   async updateAvatar(file: { base64: string; mimeType: string; fileName: string }): Promise<Profile> {
     const response = await this.apiClient.uploadFile('/api/user/avatar', file);
-    return response.profile;
+    const responseData = response as { profile: Profile };
+    return responseData.profile;
   }
 
   /**
    * Update emergency contacts
    */
   async updateEmergencyContacts(contacts: unknown[]): Promise<Profile> {
-    return this.update({ emergency_contacts: contacts });
+    return this.update({ emergency_contacts: contacts as any });
   }
 
   /**
    * Update preferences
    */
   async updatePreferences(preferences: Record<string, unknown>): Promise<Profile> {
-    return this.update({ preferences });
+    return this.update({ preferences: preferences as any });
   }
 }
 

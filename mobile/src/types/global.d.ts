@@ -2,7 +2,7 @@
 
 declare module '@legacyguard/ui' {
   export * from 'tamagui';
-  export const tamaguiConfig: any;
+  export const tamaguiConfig: unknown;
 }
 
 declare module '@legacyguard/logic' {
@@ -25,7 +25,7 @@ declare module '@hollywood/shared' {
 
 // Expo module declarations
 declare module 'expo-web-browser' {
-  export function openBrowserAsync(url: string): Promise<any>;
+  export function openBrowserAsync(url: string): Promise<{ type: string } | void>;
   export function maybeCompleteAuthSession(): { type: string };
 }
 
@@ -33,7 +33,7 @@ declare module 'expo-web-browser' {
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      [elemName: string]: any;
+      [elemName: string]: unknown;
     }
   }
 }

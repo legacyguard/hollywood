@@ -1,4 +1,5 @@
 // src/screens/main/ScannerScreen.tsx
+/* global __DEV__ */
 import React, { useState } from 'react';
 import { View, Text, // Button,
   Image, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
@@ -12,7 +13,7 @@ export const ScannerScreen = () => {
   const [isUploading, setIsUploading] = useState(false);
 
   const handleScanComplete = (imageUri: string) => {
-    console.log('Scan complete, image at:', imageUri);
+    if (__DEV__) console.log('Scan complete, image at:', imageUri);
     setScannedImageUri(`file://${imageUri}`); // file:// prefix is important for local files
     setIsScanning(false);
   };
@@ -34,7 +35,7 @@ export const ScannerScreen = () => {
         fileName: `scan_${Date.now()}.jpg`,
       });
 
-      console.log('Upload successful:', result);
+      if (__DEV__) console.log('Upload successful:', result);
 
       // Show success message
       Alert.alert(
@@ -52,7 +53,7 @@ export const ScannerScreen = () => {
         ]
       );
     } catch (error) {
-      console.error('Upload error:', error);
+      if (__DEV__) console.error('Upload error:', error);
 
       let errorMessage = 'Failed to upload document. Please try again.';
 

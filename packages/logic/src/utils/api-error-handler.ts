@@ -63,10 +63,11 @@ export function handleApiResponse<T>(
   originalError?: Error
 ): T {
   // If response has an error field
-  if (response && typeof response === 'object' && (response as { error?: unknown }).error) {
+  if (response && typeof response === 'object' && 'error' in response) {
+    const errorResponse = response as { error?: string; status?: number };
     throw new LegacyGuardApiError(
-      response.status || 500,
-      response.error,
+      errorResponse.status || 500,
+      errorResponse.error || 'Unknown error',
       response,
       originalError
     );
@@ -153,9 +154,10 @@ export function validateTypes(
   validations: Record<string, (value: unknown) => boolean>
 ): void {
   const errors: string[] = [];
+  const dataObj = data as Record<string, unknown>;
 
   Object.entries(validations).forEach(([field, validator]) => {
-    if (data[field] !== undefined && !validator(data[field])) {
+    if (dataObj[field] !== undefined && !validator(dataObj[field])) {
       errors.push(field);
     }
   });

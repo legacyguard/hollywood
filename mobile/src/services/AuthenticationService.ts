@@ -1,4 +1,5 @@
 // src/services/AuthenticationService.ts
+/* global __DEV__ */
 
 import * as SecureStore from 'expo-secure-store';
 // import { useSignIn, useSignUp, useAuth as useClerkAuth } from '@clerk/clerk-expo';
@@ -13,14 +14,14 @@ export const AuthenticationService = {
   // Initialize on app startup
   initialize: async () => {
     // Initialization happens in ClerkProvider
-    console.log('AuthenticationService initialized');
+    if (__DEV__) console.log('AuthenticationService initialized');
   },
 
   // Login with email and password
   // Note: In real usage, this should be called from a component that has access to Clerk hooks
   loginWithEmail: async (email: string, password: string) => {
     // This is a placeholder - actual implementation needs to use useSignIn hook
-    console.log('Login attempt with:', email);
+    if (__DEV__) console.log('Login attempt with:', email);
     // Password will be used in actual implementation
     if (!password) throw new Error('Password is required');
     throw new Error('Please use Clerk SignIn components or hooks directly for authentication');
@@ -40,7 +41,7 @@ export const AuthenticationService = {
   logout: async () => {
     // This should be called from a component with access to useClerkAuth hook
     await SecureStore.deleteItemAsync(KEYCHAIN_TOKEN_KEY);
-    console.log('Logout called - use Clerk hooks for actual logout');
+    if (__DEV__) console.log('Logout called - use Clerk hooks for actual logout');
   },
 
   // Get current user

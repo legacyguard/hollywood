@@ -3,6 +3,7 @@ import { View, styled } from 'tamagui'
 import { motion, AnimatePresence, useAnimation } from 'framer-motion'
 import { LegacyGarden as LegacyGardenLogic, type TreeState } from '@legacyguard/logic'
 import { useEventBus, EVENTS } from '../utils/eventBus'
+import type { LegacyGardenProps } from './LegacyGarden.types'
 
 const GardenContainer = styled(View, {
   name: 'LGGardenContainer',
@@ -14,15 +15,6 @@ const GardenContainer = styled(View, {
   overflow: 'hidden',
   backgroundColor: 'transparent',
 })
-
-export interface LegacyGardenProps {
-  milestonesUnlocked: number
-  documentsCreated?: number
-  daysActive?: number
-  interactive?: boolean
-  showLabels?: boolean
-  onMilestoneClick?: (milestone: { id: string; name: string; achieved: boolean }) => void
-}
 
 // Web/React version with Framer Motion
 const LegacyGardenWeb: React.FC<LegacyGardenProps> = ({
@@ -346,5 +338,8 @@ const LegacyGardenNative: React.FC<LegacyGardenProps> = ({
   )
 }
 
-// Export appropriate version based on platform
-export const LegacyGarden = typeof window !== 'undefined' ? LegacyGardenWeb : LegacyGardenNative
+// Export a component wrapper for fast-refresh compatibility
+export const LegacyGarden: React.FC<LegacyGardenProps> = (props) => {
+  const isWeb = typeof window !== 'undefined'
+  return isWeb ? <LegacyGardenWeb {...props} /> : <LegacyGardenNative {...props} />
+}

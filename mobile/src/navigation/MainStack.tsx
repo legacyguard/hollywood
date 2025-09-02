@@ -23,8 +23,8 @@ const LoadingFallback = () => (
 )
 
 // Higher-order component to wrap screens with Suspense
-const withSuspense = (Component: React.ComponentType<any>) => {
-  const SuspenseWrapper = (props: any) => (
+const withSuspense = <P extends object>(Component: React.ComponentType<P>) => {
+  const SuspenseWrapper = (props: P) => (
     <React.Suspense fallback={<LoadingFallback />}>
       <Component {...props} />
     </React.Suspense>

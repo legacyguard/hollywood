@@ -1,4 +1,5 @@
 // src/services/OfflineVaultService.ts
+/* global __DEV__ */
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // import * as Crypto from 'expo-crypto';
 
@@ -28,9 +29,9 @@ export const OfflineVaultService = {
         await AsyncStorage.setItem(VAULT_KEY, JSON.stringify({}));
         await AsyncStorage.setItem(VAULT_METADATA_KEY, JSON.stringify({ initialized: new Date() }));
       }
-      console.log('Secure offline vault opened successfully.');
+      if (__DEV__) console.log('Secure offline vault opened successfully.');
     } catch (error) {
-      console.error('Failed to open offline vault:', error);
+      if (__DEV__) console.error('Failed to open offline vault:', error);
       throw new Error('Failed to open secure vault');
     }
   },
@@ -61,9 +62,9 @@ export const OfflineVaultService = {
 
       // Save updated vault
       await AsyncStorage.setItem(VAULT_KEY, JSON.stringify(vault));
-      console.log(`Document ${doc.fileName} added to offline vault`);
+      if (__DEV__) console.log(`Document ${doc.fileName} added to offline vault`);
     } catch (error) {
-      console.error('Failed to add document to vault:', error);
+      if (__DEV__) console.error('Failed to add document to vault:', error);
       throw error;
     }
   },
@@ -104,7 +105,7 @@ export const OfflineVaultService = {
 
       return decryptedDocs;
     } catch (error) {
-      console.error('Failed to get documents from vault:', error);
+      if (__DEV__) console.error('Failed to get documents from vault:', error);
       throw error;
     }
   },
@@ -138,7 +139,7 @@ export const OfflineVaultService = {
         tags: doc.tags || [],
       };
     } catch (error) {
-      console.error('Failed to get document from vault:', error);
+      if (__DEV__) console.error('Failed to get document from vault:', error);
       throw error;
     }
   },
@@ -157,10 +158,10 @@ export const OfflineVaultService = {
       delete vault[id];
       await AsyncStorage.setItem(VAULT_KEY, JSON.stringify(vault));
 
-      console.log(`Document ${id} removed from offline vault`);
+      if (__DEV__) console.log(`Document ${id} removed from offline vault`);
       return true;
     } catch (error) {
-      console.error('Failed to remove document from vault:', error);
+      if (__DEV__) console.error('Failed to remove document from vault:', error);
       throw error;
     }
   },
@@ -171,9 +172,9 @@ export const OfflineVaultService = {
   clearAll: async (): Promise<void> => {
     try {
       await AsyncStorage.setItem(VAULT_KEY, JSON.stringify({}));
-      console.log('All documents cleared from offline vault');
+      if (__DEV__) console.log('All documents cleared from offline vault');
     } catch (error) {
-      console.error('Failed to clear vault:', error);
+      if (__DEV__) console.error('Failed to clear vault:', error);
       throw error;
     }
   },
@@ -205,7 +206,7 @@ export const OfflineVaultService = {
         lastSync: undefined, // Can be implemented with sync functionality
       };
     } catch (error) {
-      console.error('Failed to get vault stats:', error);
+      if (__DEV__) console.error('Failed to get vault stats:', error);
       return { documentCount: 0, totalSize: 0 };
     }
   },
@@ -215,7 +216,7 @@ export const OfflineVaultService = {
    */
   close: (): void => {
     // No-op for AsyncStorage - it doesn't need to be closed
-    console.log('Offline vault closed');
+    if (__DEV__) console.log('Offline vault closed');
   },
 
   /**

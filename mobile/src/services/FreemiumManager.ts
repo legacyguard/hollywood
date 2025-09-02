@@ -136,29 +136,35 @@ export class FreemiumManager {
   /**
    * Calculate limits based on plan
    */
-  private calculateLimits(usage: any): UsageLimits {
+  private calculateLimits(usage: {
+    document_count?: number;
+    storage_used_mb?: number;
+    time_capsule_count?: number;
+    scans_this_month?: number;
+    offline_document_count?: number;
+  }): UsageLimits {
     const plan = this.userPlan?.plan || 'free';
     const planLimits = this.getPlanLimits(plan);
 
     return {
       documents: {
-        current: usage?.document_count || 0,
+        current: usage?.document_count ?? 0,
         limit: planLimits.documents,
       },
       storage: {
-        current: usage?.storage_used_mb || 0,
+        current: usage?.storage_used_mb ?? 0,
         limit: planLimits.storage,
       },
       timeCapsules: {
-        current: usage?.time_capsule_count || 0,
+        current: usage?.time_capsule_count ?? 0,
         limit: planLimits.timeCapsules,
       },
       scannerUsage: {
-        current: usage?.scans_this_month || 0,
+        current: usage?.scans_this_month ?? 0,
         limit: planLimits.scannerUsage,
       },
       offlineDocuments: {
-        current: usage?.offline_document_count || 0,
+        current: usage?.offline_document_count ?? 0,
         limit: planLimits.offlineDocuments,
       },
     };
@@ -167,39 +173,51 @@ export class FreemiumManager {
   /**
    * Get plan-specific limits
    */
-  private getPlanLimits(plan: string): any {
-    const limits: Record<string, any> = {
+  private getPlanLimits(plan: UserPlan['plan']): {
+    documents: number;
+    storage: number;
+    timeCapsules: number;
+    scannerUsage: number;
+    offlineDocuments: number;
+  } {
+    const limits: Record<UserPlan['plan'], {
+      documents: number;
+      storage: number;
+      timeCapsules: number;
+      scannerUsage: number;
+      offlineDocuments: number;
+    }> = {
       free: {
         documents: 10,
-        storage: 100, // MB
+        storage: 100,
         timeCapsules: 3,
         scannerUsage: 5,
         offlineDocuments: 5,
       },
       essential: {
         documents: 100,
-        storage: 1000, // 1GB
+        storage: 1000,
         timeCapsules: 10,
         scannerUsage: 50,
         offlineDocuments: 25,
       },
       family: {
         documents: 500,
-        storage: 5000, // 5GB
+        storage: 5000,
         timeCapsules: 50,
         scannerUsage: 200,
         offlineDocuments: 100,
       },
       premium: {
-        documents: Infinity,
-        storage: Infinity,
-        timeCapsules: Infinity,
-        scannerUsage: Infinity,
-        offlineDocuments: Infinity,
+        documents: Number.POSITIVE_INFINITY,
+        storage: Number.POSITIVE_INFINITY,
+        timeCapsules: Number.POSITIVE_INFINITY,
+        scannerUsage: Number.POSITIVE_INFINITY,
+        offlineDocuments: Number.POSITIVE_INFINITY,
       },
     };
 
-    return limits[plan] || limits.free;
+    return limits[plan] ?? limits.free;
   }
 
   /**

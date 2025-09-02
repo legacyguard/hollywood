@@ -21,61 +21,87 @@ export const detectPlatform = (): 'web' | 'mobile' => {
   return 'web';
 };
 
-// Supported jurisdictions
+// Supported jurisdictions (39 countries based on analysis.cjs)
 export const SUPPORTED_JURISDICTIONS = {
+  DE: 'Germany',
+  CZ: 'Czech Republic', 
   SK: 'Slovakia',
-  CZ: 'Czech Republic'
+  PL: 'Poland',
+  DK: 'Denmark',
+  AT: 'Austria',
+  FR: 'France',
+  CH: 'Switzerland',
+  IT: 'Italy',
+  HR: 'Croatia',
+  BE: 'Belgium',
+  LU: 'Luxembourg',
+  LI: 'Liechtenstein',
+  ES: 'Spain',
+  SE: 'Sweden',
+  FI: 'Finland',
+  PT: 'Portugal',
+  GR: 'Greece',
+  NL: 'Netherlands',
+  GB: 'United Kingdom',
+  LT: 'Lithuania',
+  LV: 'Latvia',
+  EE: 'Estonia',
+  HU: 'Hungary',
+  SI: 'Slovenia',
+  MT: 'Malta',
+  CY: 'Cyprus',
+  IE: 'Ireland',
+  NO: 'Norway',
+  IS: 'Iceland',
+  RO: 'Romania',
+  BG: 'Bulgaria',
+  RS: 'Serbia',
+  AL: 'Albania',
+  MK: 'North Macedonia',
+  ME: 'Montenegro',
+  MD: 'Moldova',
+  UA: 'Ukraine',
+  BA: 'Bosnia and Herzegovina'
 } as const;
 
 export type SupportedJurisdictionCode = keyof typeof SUPPORTED_JURISDICTIONS;
 
-// Supported languages
+// Supported languages (34 languages for 39 jurisdictions)
 export const SUPPORTED_LANGUAGES = {
-  en: {
-    code: 'en',
-    name: 'English',
-    nativeName: 'English',
-    flag: '🇬🇧',
-    dateFormat: 'MM/DD/YYYY',
-    currency: 'USD',
-    rtl: false
-  },
-  sk: {
-    code: 'sk',
-    name: 'Slovak',
-    nativeName: 'Slovenčina',
-    flag: '🇸🇰',
-    dateFormat: 'DD.MM.YYYY',
-    currency: 'EUR',
-    rtl: false
-  },
-  cs: {
-    code: 'cs',
-    name: 'Czech',
-    nativeName: 'Čeština',
-    flag: '🇨🇿',
-    dateFormat: 'DD.MM.YYYY',
-    currency: 'CZK',
-    rtl: false
-  },
-  de: {
-    code: 'de',
-    name: 'German',
-    nativeName: 'Deutsch',
-    flag: '🇩🇪',
-    dateFormat: 'DD.MM.YYYY',
-    currency: 'EUR',
-    rtl: false
-  },
-  pl: {
-    code: 'pl',
-    name: 'Polish',
-    nativeName: 'Polski',
-    flag: '🇵🇱',
-    dateFormat: 'DD.MM.YYYY',
-    currency: 'PLN',
-    rtl: false
-  }
+  sq: { code: 'sq', name: 'Albanian', nativeName: 'Shqip', flag: '🇦🇱', currency: 'EUR', dateFormat: 'DD.MM.YYYY', rtl: false },
+  bs: { code: 'bs', name: 'Bosnian', nativeName: 'Bosanski', flag: '🇧🇦', currency: 'BAM', dateFormat: 'DD.MM.YYYY', rtl: false },
+  bg: { code: 'bg', name: 'Bulgarian', nativeName: 'Български', flag: '🇧🇬', currency: 'BGN', dateFormat: 'DD.MM.YYYY', rtl: false },
+  hr: { code: 'hr', name: 'Croatian', nativeName: 'Hrvatski', flag: '🇭🇷', currency: 'EUR', dateFormat: 'DD.MM.YYYY', rtl: false },
+  cs: { code: 'cs', name: 'Czech', nativeName: 'Čeština', flag: '🇨🇿', currency: 'CZK', dateFormat: 'DD.MM.YYYY', rtl: false },
+  da: { code: 'da', name: 'Danish', nativeName: 'Dansk', flag: '🇩🇰', currency: 'DKK', dateFormat: 'DD.MM.YYYY', rtl: false },
+  nl: { code: 'nl', name: 'Dutch', nativeName: 'Nederlands', flag: '🇳🇱', currency: 'EUR', dateFormat: 'DD-MM-YYYY', rtl: false },
+  en: { code: 'en', name: 'English', nativeName: 'English', flag: '🇬🇧', currency: 'EUR', dateFormat: 'DD/MM/YYYY', rtl: false },
+  et: { code: 'et', name: 'Estonian', nativeName: 'Eesti', flag: '🇪🇪', currency: 'EUR', dateFormat: 'DD.MM.YYYY', rtl: false },
+  fi: { code: 'fi', name: 'Finnish', nativeName: 'Suomi', flag: '🇫🇮', currency: 'EUR', dateFormat: 'DD.MM.YYYY', rtl: false },
+  fr: { code: 'fr', name: 'French', nativeName: 'Français', flag: '🇫🇷', currency: 'EUR', dateFormat: 'DD/MM/YYYY', rtl: false },
+  de: { code: 'de', name: 'German', nativeName: 'Deutsch', flag: '🇩🇪', currency: 'EUR', dateFormat: 'DD.MM.YYYY', rtl: false },
+  el: { code: 'el', name: 'Greek', nativeName: 'Ελληνικά', flag: '🇬🇷', currency: 'EUR', dateFormat: 'DD/MM/YYYY', rtl: false },
+  hu: { code: 'hu', name: 'Hungarian', nativeName: 'Magyar', flag: '🇭🇺', currency: 'HUF', dateFormat: 'YYYY.MM.DD', rtl: false },
+  is: { code: 'is', name: 'Icelandic', nativeName: 'Íslenska', flag: '🇮🇸', currency: 'ISK', dateFormat: 'DD.MM.YYYY', rtl: false },
+  ga: { code: 'ga', name: 'Irish Gaelic', nativeName: 'Gaeilge', flag: '🇮🇪', currency: 'EUR', dateFormat: 'DD/MM/YYYY', rtl: false },
+  it: { code: 'it', name: 'Italian', nativeName: 'Italiano', flag: '🇮🇹', currency: 'EUR', dateFormat: 'DD/MM/YYYY', rtl: false },
+  lv: { code: 'lv', name: 'Latvian', nativeName: 'Latviešu', flag: '🇱🇻', currency: 'EUR', dateFormat: 'DD.MM.YYYY', rtl: false },
+  lt: { code: 'lt', name: 'Lithuanian', nativeName: 'Lietuvių', flag: '🇱🇹', currency: 'EUR', dateFormat: 'YYYY.MM.DD', rtl: false },
+  mk: { code: 'mk', name: 'Macedonian', nativeName: 'Македонски', flag: '🇲🇰', currency: 'MKD', dateFormat: 'DD.MM.YYYY', rtl: false },
+  mt: { code: 'mt', name: 'Maltese', nativeName: 'Malti', flag: '🇲🇹', currency: 'EUR', dateFormat: 'DD/MM/YYYY', rtl: false },
+  me: { code: 'me', name: 'Montenegrin', nativeName: 'Crnogorski', flag: '🇲🇪', currency: 'EUR', dateFormat: 'DD.MM.YYYY', rtl: false },
+  no: { code: 'no', name: 'Norwegian', nativeName: 'Norsk', flag: '🇳🇴', currency: 'NOK', dateFormat: 'DD.MM.YYYY', rtl: false },
+  pl: { code: 'pl', name: 'Polish', nativeName: 'Polski', flag: '🇵🇱', currency: 'PLN', dateFormat: 'DD.MM.YYYY', rtl: false },
+  pt: { code: 'pt', name: 'Portuguese', nativeName: 'Português', flag: '🇵🇹', currency: 'EUR', dateFormat: 'DD/MM/YYYY', rtl: false },
+  ro: { code: 'ro', name: 'Romanian', nativeName: 'Română', flag: '🇷🇴', currency: 'RON', dateFormat: 'DD.MM.YYYY', rtl: false },
+  ru: { code: 'ru', name: 'Russian', nativeName: 'Русский', flag: '🇷🇺', currency: 'EUR', dateFormat: 'DD.MM.YYYY', rtl: false },
+  sr: { code: 'sr', name: 'Serbian', nativeName: 'Српски', flag: '🇷🇸', currency: 'RSD', dateFormat: 'DD.MM.YYYY', rtl: false },
+  sk: { code: 'sk', name: 'Slovak', nativeName: 'Slovenčina', flag: '🇸🇰', currency: 'EUR', dateFormat: 'DD.MM.YYYY', rtl: false },
+  sl: { code: 'sl', name: 'Slovenian', nativeName: 'Slovenščina', flag: '🇸🇮', currency: 'EUR', dateFormat: 'DD.MM.YYYY', rtl: false },
+  es: { code: 'es', name: 'Spanish', nativeName: 'Español', flag: '🇪🇸', currency: 'EUR', dateFormat: 'DD/MM/YYYY', rtl: false },
+  sv: { code: 'sv', name: 'Swedish', nativeName: 'Svenska', flag: '🇸🇪', currency: 'SEK', dateFormat: 'YYYY-MM-DD', rtl: false },
+  tr: { code: 'tr', name: 'Turkish', nativeName: 'Türkçe', flag: '🇹🇷', currency: 'EUR', dateFormat: 'DD.MM.YYYY', rtl: false },
+  uk: { code: 'uk', name: 'Ukrainian', nativeName: 'Українська', flag: '🇺🇦', currency: 'EUR', dateFormat: 'DD.MM.YYYY', rtl: false }
 } as const;
 
 export type SupportedLanguageCode = keyof typeof SUPPORTED_LANGUAGES;
