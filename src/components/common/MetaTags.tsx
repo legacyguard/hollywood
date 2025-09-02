@@ -131,7 +131,7 @@ export const MetaTags = ({
     let scriptElement = document.querySelector('script[type="application/ld+json"]');
     if (!scriptElement) {
       scriptElement = document.createElement('script');
-      scriptElement.type = 'application/ld+json';
+      (scriptElement as any).type = 'application/ld+json';
       document.head.appendChild(scriptElement);
     }
     try {

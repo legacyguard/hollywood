@@ -21,7 +21,7 @@ import { calculateUserTrustScore } from '@/lib/trust-score/trust-score-calculato
 import { EmailImportButton } from '@/components/features/EmailImportButton';
 import { EnhancedGardenSection } from '@/components/dashboard/EnhancedGardenSection';
 import type { BulkImportResult } from '@/types/gmail';
-import { useState } from 'react';
+// import { useState } from 'react'; // Not currently used
 
 export function DashboardContent() {
   const { user } = useUser();
@@ -161,7 +161,7 @@ export function DashboardContent() {
                 </span>
               )}
             </div>
-            <MetricsGrid metrics={metrics} columns={4} />
+            <MetricsGrid metrics={metrics as any} columns={4} />
           </FadeIn>
         </section>
 

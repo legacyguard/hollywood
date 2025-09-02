@@ -85,7 +85,7 @@ export function showMilestoneRecognition(
 
   // Show toast notification
   toast.success(
-    `${personalityContent.celebrationText} ${milestone.title}`,
+    `${personalityContent.celebrationText} ${(milestone as any).title || 'Milestone'}`,
     {
       description: adaptiveCompletedDescription,
       duration: personalityContent.duration,

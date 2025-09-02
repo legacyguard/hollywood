@@ -1,26 +1,23 @@
 /**
- * Advanced Encryption Service
+ * Advanced Encryption Service (standardized on TweetNaCl)
  * Handles field-level encryption, key rotation, and secure storage
  */
-
+import React from 'react';
+import nacl from 'tweetnacl';
+import { encodeBase64, decodeBase64 } from 'tweetnacl-util';
 import { envConfig } from './env-config';
 
-// Encryption algorithms
-const ALGORITHM = 'AES-GCM';
-const KEY_LENGTH = 256;
-const IV_LENGTH = 12;
-const _TAG_LENGTH = 16;
-const _SALT_LENGTH = 32;
+// Encryption settings
+const ALGORITHM = 'nacl.secretbox';
+const KEY_LENGTH_BYTES = 32; // 256-bit symmetric
+const NONCE_LENGTH = nacl.secretbox.nonceLength; // 24 bytes
 const ITERATIONS = 100000;
 
-/**
- * Encryption Service for sensitive data protection
- */
 export class EncryptionService {
   private static instance: EncryptionService;
   private enabled: boolean;
-  private masterKey: CryptoKey | null = null;
-  private keyCache: Map<string, CryptoKey> = new Map();
+  private masterKey: Uint8Array | null = null;
+  private keyCache: Map<string, Uint8Array> = new Map();
 
   private constructor() {
     this.enabled = envConfig.getSecurityFeatures().enableEncryption;
@@ -29,9 +26,6 @@ export class EncryptionService {
     }
   }
 
-  /**
-   * Get singleton instance
-   */
   public static getInstance(): EncryptionService {
     if (!EncryptionService.instance) {
       EncryptionService.instance = new EncryptionService();
@@ -39,12 +33,8 @@ export class EncryptionService {
     return EncryptionService.instance;
   }
 
-  /**
-   * Initialize master key from environment or generate new one
-   */
   private async initializeMasterKey(): Promise<void> {
     try {
-      // In production, this should come from a secure key management service
       const keyMaterial = await this.getKeyMaterial();
       this.masterKey = await this.deriveKey(keyMaterial, 'master');
     } catch (error) {
@@ -53,37 +43,20 @@ export class EncryptionService {
     }
   }
 
-  /**
-   * Get key material (from env or secure storage)
-   */
   private async getKeyMaterial(): Promise<CryptoKey> {
-    // In production, retrieve from HSM, KMS, or secure environment variable
     const encoder = new TextEncoder();
     const keyData = encoder.encode(
-      // This should be a secure random key in production
       import.meta.env.VITE_ENCRYPTION_KEY || 'temporary-dev-key-replace-in-production'
     );
 
-    return await crypto.subtle.importKey(
-      'raw',
-      keyData,
-      'PBKDF2',
-      false,
-      ['deriveBits', 'deriveKey']
-    );
+    return await crypto.subtle.importKey('raw', keyData, 'PBKDF2', false, ['deriveBits']);
   }
 
-  /**
-   * Derive a key from master key
-   */
-  private async deriveKey(
-    keyMaterial: CryptoKey,
-    salt: string
-  ): Promise<CryptoKey> {
+  private async deriveKey(keyMaterial: CryptoKey, salt: string): Promise<Uint8Array> {
     const encoder = new TextEncoder();
     const saltData = encoder.encode(salt);
 
-    return await crypto.subtle.deriveKey(
+    const bits = await crypto.subtle.deriveBits(
       {
         name: 'PBKDF2',
         salt: saltData,
@@ -91,29 +64,22 @@ export class EncryptionService {
         hash: 'SHA-256',
       },
       keyMaterial,
-      { name: ALGORITHM, length: KEY_LENGTH },
-      false,
-      ['encrypt', 'decrypt']
+      KEY_LENGTH_BYTES * 8
     );
+
+    return new Uint8Array(bits as ArrayBuffer);
   }
 
-  /**
-   * Generate random bytes
-   */
   private generateRandomBytes(length: number): Uint8Array {
     return crypto.getRandomValues(new Uint8Array(length));
   }
 
-  /**
-   * Encrypt data
-   */
   public async encrypt(
     data: string,
     context?: string
-  ): Promise<{ encrypted: string; iv: string; tag?: string }> {
+  ): Promise<{ encrypted: string; iv: string }> {
     if (!this.enabled) {
-      // Return unencrypted in development if encryption is disabled
-      return { encrypted: data, iv: '', tag: '' };
+      return { encrypted: data, iv: '' };
     }
 
     if (!this.masterKey) {
@@ -123,49 +89,27 @@ export class EncryptionService {
     try {
       const encoder = new TextEncoder();
       const plaintext = encoder.encode(data);
+      const iv = this.generateRandomBytes(NONCE_LENGTH);
 
-      // Generate IV
-      const iv = this.generateRandomBytes(IV_LENGTH);
+      const key = context ? await this.getContextKey(context) : this.masterKey;
+      const ciphertext = nacl.secretbox(plaintext, iv, key);
 
-      // Get or derive context-specific key
-      const key = context
-        ? await this.getContextKey(context)
-        : this.masterKey;
+      const encrypted = encodeBase64(ciphertext);
+      const ivBase64 = encodeBase64(iv);
 
-      // Encrypt
-      const ciphertext = await crypto.subtle.encrypt(
-        {
-          name: ALGORITHM,
-          iv: iv,
-        },
-        key,
-        plaintext
-      );
-
-      // Convert to base64 for storage
-      const encrypted = btoa(String.fromCharCode(...new Uint8Array(ciphertext)));
-      const ivBase64 = btoa(String.fromCharCode(...iv));
-
-      return {
-        encrypted,
-        iv: ivBase64,
-      };
+      return { encrypted, iv: ivBase64 };
     } catch (error) {
       console.error('Encryption failed:', error);
       throw new Error('Failed to encrypt data');
     }
   }
 
-  /**
-   * Decrypt data
-   */
   public async decrypt(
     encryptedData: string,
     iv: string,
     context?: string
   ): Promise<string> {
     if (!this.enabled) {
-      // Return as-is if encryption is disabled
       return encryptedData;
     }
 
@@ -174,24 +118,14 @@ export class EncryptionService {
     }
 
     try {
-      // Convert from base64
-      const ciphertext = Uint8Array.from(atob(encryptedData), c => c.charCodeAt(0));
-      const ivData = Uint8Array.from(atob(iv), c => c.charCodeAt(0));
+      const ciphertext = decodeBase64(encryptedData);
+      const ivData = decodeBase64(iv);
 
-      // Get or derive context-specific key
-      const key = context
-        ? await this.getContextKey(context)
-        : this.masterKey;
-
-      // Decrypt
-      const decrypted = await crypto.subtle.decrypt(
-        {
-          name: ALGORITHM,
-          iv: ivData,
-        },
-        key,
-        ciphertext
-      );
+      const key = context ? await this.getContextKey(context) : this.masterKey;
+      const decrypted = nacl.secretbox.open(ciphertext, ivData, key);
+      if (!decrypted) {
+        throw new Error('Failed to decrypt data');
+      }
 
       const decoder = new TextDecoder();
       return decoder.decode(decrypted);
@@ -201,10 +135,7 @@ export class EncryptionService {
     }
   }
 
-  /**
-   * Get or create context-specific key
-   */
-  private async getContextKey(context: string): Promise<CryptoKey> {
+  private async getContextKey(context: string): Promise<Uint8Array> {
     if (this.keyCache.has(context)) {
       return this.keyCache.get(context)!;
     }
@@ -220,9 +151,6 @@ export class EncryptionService {
     return contextKey;
   }
 
-  /**
-   * Encrypt object fields
-   */
   public async encryptObject<T extends Record<string, unknown>>(
     obj: T,
     fieldsToEncrypt: (keyof T)[]
@@ -251,9 +179,6 @@ export class EncryptionService {
     return encrypted;
   }
 
-  /**
-   * Decrypt object fields
-   */
   public async decryptObject<T extends Record<string, unknown>>(
     obj: T & { _encryption?: Record<string, unknown> }
   ): Promise<T> {
@@ -266,16 +191,15 @@ export class EncryptionService {
     delete decrypted._encryption;
 
     for (const [field, metadata] of Object.entries(obj._encryption)) {
-      if (metadata.encrypted && decrypted[field]) {
+      if ((metadata as any).encrypted && (decrypted as any)[field]) {
         try {
-          decrypted[field] = await this.decrypt(
-            decrypted[field],
-            metadata.iv,
+          (decrypted as any)[field] = await this.decrypt(
+            (decrypted as any)[field],
+            (metadata as any).iv,
             field
           ) as T[keyof T];
         } catch (error) {
           console.error(`Failed to decrypt field ${field}:`, error);
-          // Leave field encrypted if decryption fails
         }
       }
     }
@@ -283,84 +207,47 @@ export class EncryptionService {
     return decrypted as T;
   }
 
-  /**
-   * Hash data (one-way)
-   */
   public async hash(data: string): Promise<string> {
     const encoder = new TextEncoder();
     const dataBuffer = encoder.encode(data);
-
     const hashBuffer = await crypto.subtle.digest('SHA-256', dataBuffer);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
-
     return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
   }
 
-  /**
-   * Generate secure token
-   */
   public generateSecureToken(length: number = 32): string {
     const bytes = this.generateRandomBytes(length);
-    return Array.from(bytes)
-      .map(b => b.toString(16).padStart(2, '0'))
-      .join('');
+    return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
   }
 
-  /**
-   * Rotate encryption keys
-   */
   public async rotateKeys(): Promise<void> {
     if (!this.enabled) return;
-
     console.log('Starting key rotation...');
-
-    // Clear key cache
     this.keyCache.clear();
-
-    // Re-initialize master key
     await this.initializeMasterKey();
-
     console.log('Key rotation completed');
   }
 
-  /**
-   * Securely compare two strings (timing-safe)
-   */
   public secureCompare(a: string, b: string): boolean {
     if (a.length !== b.length) return false;
-
     let result = 0;
     for (let i = 0; i < a.length; i++) {
       result |= a.charCodeAt(i) ^ b.charCodeAt(i);
     }
-
     return result === 0;
   }
 }
 
-// Export singleton instance
 export const encryptionService = EncryptionService.getInstance();
 
-/**
- * Secure storage wrapper with automatic encryption
- */
 export class SecureStorage {
   private prefix = 'secure_';
 
-  /**
-   * Set encrypted item in storage
-   */
   async setItem(key: string, value: unknown): Promise<void> {
     try {
       const serialized = JSON.stringify(value);
       const { encrypted, iv } = await encryptionService.encrypt(serialized, key);
-
-      const storageData = {
-        data: encrypted,
-        iv,
-        timestamp: Date.now(),
-      };
-
+      const storageData = { data: encrypted, iv, timestamp: Date.now() };
       localStorage.setItem(this.prefix + key, JSON.stringify(storageData));
     } catch (error) {
       console.error('Failed to store encrypted data:', error);
@@ -368,21 +255,12 @@ export class SecureStorage {
     }
   }
 
-  /**
-   * Get and decrypt item from storage
-   */
   async getItem<T>(key: string): Promise<T | null> {
     try {
       const stored = localStorage.getItem(this.prefix + key);
       if (!stored) return null;
-
       const storageData = JSON.parse(stored);
-      const decrypted = await encryptionService.decrypt(
-        storageData.data,
-        storageData.iv,
-        key
-      );
-
+      const decrypted = await encryptionService.decrypt(storageData.data, storageData.iv, key);
       return JSON.parse(decrypted) as T;
     } catch (error) {
       console.error('Failed to retrieve encrypted data:', error);
@@ -390,16 +268,10 @@ export class SecureStorage {
     }
   }
 
-  /**
-   * Remove item from storage
-   */
   removeItem(key: string): void {
     localStorage.removeItem(this.prefix + key);
   }
 
-  /**
-   * Clear all secure storage
-   */
   clear(): void {
     const keys = Object.keys(localStorage);
     keys.forEach(key => {
@@ -409,9 +281,6 @@ export class SecureStorage {
     });
   }
 
-  /**
-   * Get all keys in secure storage
-   */
   keys(): string[] {
     return Object.keys(localStorage)
       .filter(key => key.startsWith(this.prefix))
@@ -419,12 +288,8 @@ export class SecureStorage {
   }
 }
 
-// Export secure storage instance
 export const secureStorage = new SecureStorage();
 
-/**
- * React hook for encrypted state
- */
 export function useEncryptedState<T>(
   key: string,
   initialValue: T
@@ -433,7 +298,6 @@ export function useEncryptedState<T>(
   const [_loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
-    // Load encrypted state on mount
     secureStorage.getItem<T>(key).then(value => {
       if (value !== null) {
         setState(value);
@@ -450,16 +314,11 @@ export function useEncryptedState<T>(
   return [state, setEncryptedState];
 }
 
-/**
- * Decorator for encrypting method parameters
- */
 export function EncryptParams(...paramIndices: number[]) {
-  return function (target: unknown, propertyKey: string, descriptor: PropertyDescriptor) {
+  return function (target: unknown, _propertyKey: string, descriptor: PropertyDescriptor) {
     const originalMethod = descriptor.value;
-
     descriptor.value = async function (...args: unknown[]) {
       const encryptedArgs = [...args];
-
       for (const index of paramIndices) {
         if (args[index] !== undefined) {
           const { encrypted, iv } = await encryptionService.encrypt(
@@ -468,32 +327,20 @@ export function EncryptParams(...paramIndices: number[]) {
           encryptedArgs[index] = { encrypted, iv };
         }
       }
-
       return originalMethod.apply(this, encryptedArgs);
     };
-
     return descriptor;
   };
 }
 
-/**
- * Decorator for encrypting method return value
- */
-export function EncryptResult(target: unknown, propertyKey: string, descriptor: PropertyDescriptor) {
+export function EncryptResult(target: unknown, _propertyKey: string, descriptor: PropertyDescriptor) {
   const originalMethod = descriptor.value;
-
   descriptor.value = async function (...args: unknown[]) {
     const result = await originalMethod.apply(this, args);
-
     if (result !== undefined) {
       return await encryptionService.encrypt(JSON.stringify(result));
     }
-
     return result;
   };
-
   return descriptor;
 }
-
-// Import React for hooks
-import React from 'react';

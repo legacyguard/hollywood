@@ -213,12 +213,10 @@ export {
 // Export Garden and Firefly components
 export {
   LegacyGarden,
-  type LegacyGardenProps,
 } from './components/LegacyGarden'
 
 export {
   SofiaFirefly,
-  type SofiaFireflyProps,
 } from './components/SofiaFirefly'
 
 // Export Event Bus utilities

@@ -58,9 +58,9 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       // Execute the action and get the response
       await executeSofiaAction(action, {
         navigate,
-        userId,
+        userId: userId || undefined,
         setDocumentFilter,
-        onSofiaMessage: (user, sofia) => {
+        onSofiaMessage: (_user, sofia) => {
           sofiaResponse = sofia;
         },
       });

@@ -9,7 +9,7 @@ export const guardianService = {
   /**
    * Get guardians for a user
    */
-  async getGuardians(): Promise<Guardian[]> {
+  async getGuardians(userId?: string): Promise<Guardian[]> {
     // Stub implementation - return empty array for now
     // guardianService.getGuardians called with stub implementation
     return [];
@@ -43,7 +43,7 @@ export const guardianService = {
   /**
    * Update an existing guardian
    */
-  async updateGuardian(): Promise<void> {
+  async updateGuardian(guardianId: string, updates: Partial<Guardian>): Promise<void> {
     // Stub implementation
     // guardianService.updateGuardian called with stub implementation
   }

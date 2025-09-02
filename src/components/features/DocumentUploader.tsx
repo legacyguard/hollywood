@@ -9,7 +9,8 @@ import { Card } from '@/components/ui/card';
 import { Icon } from '@/components/ui/icon-library';
 import { FadeIn } from '@/components/motion/FadeIn';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useEncryption } from '@/hooks/useEncryption';
+import { useSecureEncryption } from '@/hooks/useSecureEncryption';
+import { SecurePasswordPrompt } from '@/components/encryption/SecurePasswordPrompt';
 import { toast } from 'sonner';
 import { textManager } from '@/lib/text-manager';
 import { defaultUserPreferences, type UserPreferences } from '@/types/user-preferences';
@@ -29,7 +30,8 @@ export const DocumentUploader = () => {
   const [analysisProgress, setAnalysisProgress] = useState(0);
   const { userId } = useAuth();
   const createSupabaseClient = useSupabaseWithClerk();
-  const { isUnlocked, encryptFile, showPasswordPrompt } = useEncryption();
+  const { isReady, encryptFile, isUnlocked } = useSecureEncryption();
+  const [showPasswordPrompt, setShowPasswordPrompt] = useState(false);
   const { celebrateUpload } = useFireflyCelebration();
   const personalityManager = usePersonalityManager();
 
@@ -73,9 +75,9 @@ export const DocumentUploader = () => {
       return;
     }
 
-    // Check if encryption is unlocked
-    if (!isUnlocked) {
-      showPasswordPrompt();
+    // Check if encryption is ready
+    if (!isReady) {
+      setShowPasswordPrompt(true);
       toast.info('Please unlock encryption to upload documents');
       return;
     }
@@ -473,6 +475,14 @@ export const DocumentUploader = () => {
           </div>
         </div>
       </Card>
+
+      {/* Secure Password Prompt */}
+      {showPasswordPrompt && (
+        <SecurePasswordPrompt
+          onSuccess={() => setShowPasswordPrompt(false)}
+          onCancel={() => setShowPasswordPrompt(false)}
+        />
+      )}
     </FadeIn>
   );
 };

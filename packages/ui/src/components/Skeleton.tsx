@@ -76,7 +76,7 @@ export const Skeleton = styled(View, {
 })
 
 // Skeleton Text - for loading text
-export const SkeletonText = ({ lines = 3, spacing = '$2', ...props }: {
+export const SkeletonText = ({ lines = 3, spacing = 'small' as any, ...props }: {
   lines?: number
   spacing?: GetProps<typeof YStack>['space']
 } & GetProps<typeof YStack>) => {
@@ -160,7 +160,7 @@ export const SkeletonCard = ({
 // Skeleton List
 export const SkeletonList = ({
   items = 3,
-  spacing = '$3',
+  spacing = 'medium' as any,
   renderItem,
   ...props
 }: {

@@ -3,7 +3,7 @@
  * Multi-step wizard for importing documents from Gmail
  */
 
-import React, { useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Mail,

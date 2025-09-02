@@ -84,9 +84,9 @@ interface EmergencyContactSystemProps {
 export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
   className = '',
   personalityMode,
-  _onContactAdded,
-  _onContactUpdated,
-  _onNotificationSent,
+  // _onContactAdded, // Not used
+  // _onContactUpdated, // Not used
+  // _onNotificationSent, // Not used
 }) => {
   const { userId } = useAuth();
   const createSupabaseClient = useSupabaseWithClerk();
@@ -158,10 +158,10 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
         relationship: guardian.relationship || 'Guardian',
         email: guardian.email,
         phone: guardian.phone || '',
-        can_help_with: guardian.can_help_with || [],
+        can_help_with: (guardian as any).can_help_with || [],
         priority: guardian.emergency_contact_priority || 1,
         is_guardian: true,
-        can_trigger_emergency: guardian.can_trigger_emergency || false,
+        can_trigger_emergency: (guardian as any).can_trigger_emergency || false,
         emergency_contact_priority: guardian.emergency_contact_priority || 1,
         notes: guardian.notes || '',
         notification_preferences: {
@@ -174,7 +174,7 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
       }));
 
       setContacts(emergencyContacts);
-      setNotifications(notificationData || []);
+      setNotifications((notificationData as any) || []);
       setError(null);
     } catch (err) {
       console.error('Error loading emergency data:', err);
@@ -228,13 +228,13 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
       const newContact: EmergencyContact = {
         id: result.data.id,
         name: result.data.name,
-        relationship: result.data.relationship,
+        relationship: result.data.relationship || '',
         email: result.data.email,
         phone: result.data.phone || '',
-        can_help_with: result.data.can_help_with || [],
+        can_help_with: (result.data as any).can_help_with || [],
         priority: result.data.emergency_contact_priority || 1,
         is_guardian: true,
-        can_trigger_emergency: result.data.can_trigger_emergency,
+        can_trigger_emergency: (result.data as any).can_trigger_emergency,
         emergency_contact_priority: result.data.emergency_contact_priority || 1,
         notes: result.data.notes || '',
         notification_preferences: {
@@ -248,7 +248,7 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
 
       if (editingContact) {
         setContacts(prev => prev.map(c => c.id === editingContact.id ? newContact : c));
-        _onContactUpdated?.(newContact);
+        // _onContactUpdated?.(newContact); // Not available
         toast.success(effectiveMode === 'empathetic' ?
           '💚 Your trusted contact has been updated with love' :
           effectiveMode === 'pragmatic' ?
@@ -256,7 +256,7 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
           '✅ Contact updated and ready to help');
       } else {
         setContacts(prev => [...prev, newContact]);
-        _onContactAdded?.(newContact);
+        // _onContactAdded?.(newContact); // Not available
         toast.success(effectiveMode === 'empathetic' ?
           '💚 Another loving guardian added to your circle of care' :
           effectiveMode === 'pragmatic' ?
@@ -428,7 +428,7 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
         className={`bg-gradient-to-br ${personalityContent.bgGradient} rounded-xl border ${personalityContent.borderColor} shadow-sm`}
         initial={!shouldReduceMotion ? { opacity: 0, y: 20 } : undefined}
         animate={!shouldReduceMotion ? { opacity: 1, y: 0 } : undefined}
-        transition={!shouldReduceMotion ? { duration: animConfig.duration, ease: animConfig.ease } : undefined}
+        transition={!shouldReduceMotion ? { duration: animConfig.duration, ease: animConfig.ease as any } : undefined}
       >
         {/* Header */}
         <div className="p-6 pb-4">

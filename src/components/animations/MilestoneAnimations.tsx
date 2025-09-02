@@ -2,7 +2,7 @@
 // Provides meaningful feedback for user accomplishments and progress milestones
 
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { usePersonalityManager } from '@/components/sofia/SofiaContextProvider';
 import { AnimationSystem } from '@/lib/animation-system';
 import {
@@ -137,7 +137,7 @@ export const MilestoneCelebration: React.FC<MilestoneCelebrationProps> = ({
   };
 
   // Animation variants
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: {
       opacity: 0,
       scale: shouldReduceMotion ? 1 : 0.8,
@@ -149,7 +149,7 @@ export const MilestoneCelebration: React.FC<MilestoneCelebrationProps> = ({
       y: 0,
       transition: {
         duration: shouldReduceMotion ? 0.1 : animConfig.duration * 1.5,
-        ease: animConfig.ease,
+        ease: animConfig.ease as any,
         staggerChildren: shouldReduceMotion ? 0 : 0.1,
       },
     },
@@ -159,7 +159,7 @@ export const MilestoneCelebration: React.FC<MilestoneCelebrationProps> = ({
       y: shouldReduceMotion ? 0 : -20,
       transition: {
         duration: shouldReduceMotion ? 0.1 : animConfig.duration,
-        ease: 'easeInOut',
+        ease: 'easeInOut' as any,
       },
     },
   };
@@ -220,7 +220,7 @@ export const MilestoneCelebration: React.FC<MilestoneCelebrationProps> = ({
             {/* Background decoration */}
             <motion.div
               className={`absolute inset-0 bg-gradient-to-br ${theme.secondary} opacity-20`}
-              variants={pulseVariants}
+              variants={pulseVariants as any}
               animate="animate"
             />
 
@@ -236,7 +236,7 @@ export const MilestoneCelebration: React.FC<MilestoneCelebrationProps> = ({
               {/* Icon with glow effect */}
               <motion.div
                 className={`inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br ${theme.primary} text-white shadow-2xl ${theme.glow} mb-6`}
-                variants={iconVariants}
+                variants={iconVariants as any}
               >
                 <IconComponent className="w-10 h-10" />
 
@@ -521,7 +521,7 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
         ${themeClasses[theme]}
         ${earned ? 'shadow-lg' : 'opacity-60'}
       `}
-      variants={badgeVariants}
+      variants={badgeVariants as any}
       initial="rest"
       whileHover="hover"
       whileTap="tap"

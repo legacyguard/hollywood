@@ -190,7 +190,7 @@ export const EnhancedGardenSection: React.FC<EnhancedGardenSectionProps> = ({
       animate={!shouldReduceMotion ? { opacity: 1, y: 0 } : undefined}
       transition={!shouldReduceMotion ? {
         duration: animConfig.duration,
-        ease: animConfig.ease
+        ease: animConfig.ease as any
       } : undefined}
     >
       {/* Header */}

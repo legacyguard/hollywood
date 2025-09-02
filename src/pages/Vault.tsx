@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { FadeIn } from '@/components/motion/FadeIn';
 import { Button } from '@/components/ui/button';
@@ -52,7 +53,8 @@ interface Document {
 }
 
 export default function VaultPage() {
-  usePageTitle('Vault');
+  const { t } = useTranslation('ui/vault');
+  usePageTitle(t('title'));
   const [showOcrInfo, setShowOcrInfo] = useState(true);
   const [documents, setDocuments] = useState<Document[]>([]);
   const [isLoading, setIsLoading] = useState(true);

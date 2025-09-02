@@ -1,18 +1,21 @@
 /**
- * Encryption Service
- * Handles data encryption and decryption
+ * Encryption Service (NaCl standardization)
+ * Unifies encryption across codebase using TweetNaCl secretbox (XSalsa20-Poly1305)
  */
+import nacl from 'tweetnacl';
+import { encodeBase64, decodeBase64 } from 'tweetnacl-util';
 
 export interface EncryptedData {
-  data: string;
-  iv: string;
-  salt: string;
-  algorithm: string;
+  data: string; // base64 ciphertext
+  iv: string; // base64 nonce (kept as 'iv' for backward compatibility)
+  salt?: string; // optional base64 salt when password-derived keys are used
+  algorithm: string; // e.g., 'nacl.secretbox'
 }
 
 export class EncryptionService {
   private static instance: EncryptionService;
-  private key: CryptoKey | null = null;
+  // Symmetric key used with nacl.secretbox (32 bytes)
+  private key: Uint8Array | null = null;
 
   private constructor() {}
 
@@ -23,74 +26,80 @@ export class EncryptionService {
     return EncryptionService.instance;
   }
 
-  async generateKey(password: string): Promise<CryptoKey> {
+  /**
+   * Initialize encryption with a password using PBKDF2->32 bytes.
+   * Returns the salt used (base64) so callers can persist it if desired.
+   */
+  async initializeWithPassword(password: string, saltB64?: string): Promise<{ saltB64: string }>{
     const encoder = new TextEncoder();
-    const salt = crypto.getRandomValues(new Uint8Array(16));
-    
+    const salt = saltB64 ? decodeBase64(saltB64) : nacl.randomBytes(16);
     const keyMaterial = await crypto.subtle.importKey(
       'raw',
       encoder.encode(password),
       { name: 'PBKDF2' },
       false,
-      ['deriveBits', 'deriveKey']
+      ['deriveBits']
     );
 
-    const key = await crypto.subtle.deriveKey(
+    const bits = await crypto.subtle.deriveBits(
       {
         name: 'PBKDF2',
-        salt,
+        salt: salt as any,
         iterations: 100000,
         hash: 'SHA-256'
       },
       keyMaterial,
-      { name: 'AES-GCM', length: 256 },
-      false,
-      ['encrypt', 'decrypt']
+      256
     );
-
-    this.key = key;
-    return key;
+    this.key = new Uint8Array(bits as ArrayBuffer);
+    return { saltB64: encodeBase64(salt) };
   }
 
+  /**
+   * Directly set a raw 32-byte key (Uint8Array)
+   */
+  setKey(rawKey: Uint8Array): void {
+    if (rawKey.length !== nacl.secretbox.keyLength) {
+      throw new Error('Invalid key length for nacl.secretbox');
+    }
+    this.key = new Uint8Array(rawKey);
+  }
+
+  /**
+   * Encrypt a UTF-8 string with the initialized key
+   */
   async encrypt(data: string): Promise<EncryptedData> {
     if (!this.key) {
       throw new Error('Encryption key not initialized');
     }
 
     const encoder = new TextEncoder();
-    const iv = crypto.getRandomValues(new Uint8Array(12));
-    const salt = crypto.getRandomValues(new Uint8Array(16));
-    
-    const encrypted = await crypto.subtle.encrypt(
-      { name: 'AES-GCM', iv },
-      this.key,
-      encoder.encode(data)
-    );
+    const nonce = nacl.randomBytes(nacl.secretbox.nonceLength);
+    const plaintext = encoder.encode(data);
+    const ciphertext = nacl.secretbox(plaintext, nonce, this.key);
 
     return {
-      data: btoa(String.fromCharCode(...new Uint8Array(encrypted))),
-      iv: btoa(String.fromCharCode(...iv)),
-      salt: btoa(String.fromCharCode(...salt)),
-      algorithm: 'AES-GCM'
+      data: encodeBase64(ciphertext),
+      iv: encodeBase64(nonce),
+      algorithm: 'nacl.secretbox'
     };
   }
 
-  async decrypt(encryptedData: EncryptedData): Promise<string> {
+  /**
+   * Decrypt to UTF-8 string with the initialized key
+   */
+  async decrypt(encrypted: EncryptedData): Promise<string> {
     if (!this.key) {
       throw new Error('Encryption key not initialized');
     }
-
-    const encryptedBuffer = Uint8Array.from(atob(encryptedData.data), c => c.charCodeAt(0));
-    const ivBuffer = Uint8Array.from(atob(encryptedData.iv), c => c.charCodeAt(0));
-    
-    const decrypted = await crypto.subtle.decrypt(
-      { name: 'AES-GCM', iv: ivBuffer },
-      this.key,
-      encryptedBuffer
-    );
-
+    const nonce = decodeBase64(encrypted.iv);
+    const ciphertext = decodeBase64(encrypted.data);
+    const plaintext = nacl.secretbox.open(ciphertext, nonce, this.key);
+    if (!plaintext) {
+      throw new Error('Decryption failed');
+    }
     const decoder = new TextDecoder();
-    return decoder.decode(decrypted);
+    return decoder.decode(plaintext);
   }
 
   isInitialized(): boolean {

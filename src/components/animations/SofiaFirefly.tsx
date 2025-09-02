@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, useAnimation, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@clerk/clerk-react';
-import type { Timeout } from 'node:timers';
+// import type { Timeout } from 'node:timers'; // Not available in browser
 import {
   defaultUserPreferences,
   type CommunicationStyle,
@@ -50,7 +50,7 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
   const [trailPoints, setTrailPoints] = useState<FireflyPosition[]>([]);
   const controls = useAnimation();
   const containerRef = useRef<HTMLDivElement>(null);
-  const idleTimeoutRef = useRef<Timeout>();
+  const idleTimeoutRef = useRef<number | undefined>(undefined);
 
   // Load user preferences to determine behavior mode
   useEffect(() => {
@@ -110,8 +110,8 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
     if (!container) return;
 
     const rect = container.getBoundingClientRect();
-    const _centerX = rect.width / 2;
-    const _centerY = rect.height / 2;
+    // const _centerX = rect.width / 2;
+    // const _centerY = rect.height / 2;
 
     if (activeMode === 'pragmatic') {
       // Pragmatic: Subtle, purposeful movement in corner

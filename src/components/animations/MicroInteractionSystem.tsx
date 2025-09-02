@@ -57,7 +57,7 @@ export const MicroAnimation: React.FC<MicroAnimationProps> = ({
   const getAnimationVariants = (): Variants => {
     const baseTransition = {
       duration: adjustedDuration,
-      ease: config.ease,
+      ease: config.ease as any,
       delay
     };
 
@@ -124,7 +124,7 @@ export const MicroAnimation: React.FC<MicroAnimationProps> = ({
             transition: {
               duration: adjustedDuration * 2,
               repeat: Infinity,
-              ease: config.ease
+              ease: config.ease as any
             }
           }
         };
@@ -295,7 +295,7 @@ export const AnimatedButton: React.FC<{
   disabled?: boolean;
 }> = ({
   children,
-  _variant = 'primary',
+  // _variant = 'primary', // Not used
   className = "",
   onClick,
   disabled = false
@@ -347,7 +347,7 @@ export const AnimatedInput: React.FC<{
 }> = ({
   children,
   className = "",
-  _focused = false,
+  // _focused = false, // Not used
   error = false
 }) => (
   <MicroAnimation

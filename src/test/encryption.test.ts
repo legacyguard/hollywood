@@ -24,7 +24,7 @@ describe('Encryption Service', () => {
     // Reset mock implementations
     mockEncryptionService.initializeKeys.mockResolvedValue({ success: true });
     mockEncryptionService.unlockKeys.mockResolvedValue({ success: true });
-    mockEncryptionService.lockKeys.mockResolvedValue();
+    mockEncryptionService.lockKeys.mockResolvedValue(undefined);
     mockEncryptionService.areKeysUnlocked.mockResolvedValue(false);
     mockEncryptionService.encryptFile.mockResolvedValue(null);
     mockEncryptionService.encryptText.mockResolvedValue(null);
@@ -101,8 +101,8 @@ describe('Encryption Service', () => {
       // Mock unlocked state and successful encryption
       mockEncryptionService.areKeysUnlocked.mockResolvedValue(true);
       mockEncryptionService.encryptFile.mockResolvedValue({
-        encryptedData: new Uint8Array([1, 2, 3] as ArrayBuffer),
-        nonce: new Uint8Array([4, 5, 6] as ArrayBuffer),
+        encryptedData: new Uint8Array([1, 2, 3]).buffer,
+        nonce: new Uint8Array([4, 5, 6]).buffer,
         metadata: { algorithm: 'nacl.secretbox' },
       });
 
@@ -136,8 +136,8 @@ describe('Encryption Service', () => {
       // Mock unlocked state and encryption
       mockEncryptionService.areKeysUnlocked.mockResolvedValue(true);
       const mockEncrypted = {
-        encrypted: new Uint8Array([7, 8, 9] as ArrayBuffer),
-        nonce: new Uint8Array([10, 11, 12] as ArrayBuffer),
+        encrypted: new Uint8Array([7, 8, 9]).buffer,
+        nonce: new Uint8Array([10, 11, 12]).buffer,
         metadata: { algorithm: 'nacl.secretbox' },
       };
       mockEncryptionService.encryptText.mockResolvedValue(mockEncrypted);

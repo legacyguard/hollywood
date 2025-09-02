@@ -112,7 +112,7 @@ export const RouteTransition: React.FC<RouteTransitionProps> = ({
     <AnimatePresence mode="wait" initial={false}>
       <motion.div
         key={transitionKey || location.pathname}
-        variants={getDirectionalVariants()}
+        variants={getDirectionalVariants() as any}
         initial="initial"
         animate="animate"
         exit="exit"
@@ -205,7 +205,7 @@ export const ModalTransition: React.FC<ModalTransitionProps> = ({
           {/* Modal */}
           <motion.div
             className={`relative bg-white rounded-xl shadow-xl w-full ${modalSizes[size]} max-h-[90vh] overflow-y-auto`}
-            variants={modalVariants}
+            variants={modalVariants as any}
             initial="hidden"
             animate="visible"
             exit="exit"
@@ -279,7 +279,7 @@ export const SlideTransition: React.FC<SlideTransitionProps> = ({
       {isVisible && (
         <motion.div
           className={className}
-          variants={getSlideVariants()}
+          variants={getSlideVariants() as any}
           initial="hidden"
           animate="visible"
           exit="hidden"
@@ -331,7 +331,7 @@ export const FadeTransition: React.FC<FadeTransitionProps> = ({
       {isVisible && (
         <motion.div
           className={className}
-          variants={fadeVariants}
+          variants={fadeVariants as any}
           initial="hidden"
           animate="visible"
           exit="hidden"
@@ -359,7 +359,7 @@ export const BreadcrumbTransition: React.FC<BreadcrumbTransitionProps> = ({
   const adaptedMode = personalityMode === 'balanced' ? 'adaptive' : personalityMode;
 
   const shouldReduceMotion = AnimationSystem.shouldReduceMotion();
-  const _animConfig = AnimationSystem.getConfig(adaptedMode);
+  // const _animConfig = AnimationSystem.getConfig(adaptedMode);
 
   const containerVariants = AnimationSystem.createStaggerContainer(adaptedMode);
   const itemVariants = AnimationSystem.createStaggerItem(adaptedMode);

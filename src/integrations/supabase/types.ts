@@ -727,6 +727,9 @@ export interface Database {
           reviewer_id: string | null;
           status: 'pending' | 'assigned' | 'in_progress' | 'completed' | 'cancelled';
           priority: 'low' | 'medium' | 'high' | 'urgent';
+          review_type: 'legal' | 'financial' | 'medical' | 'general';
+          urgency_level: 'low' | 'medium' | 'high' | 'urgent';
+          estimated_cost: number | null;
           requested_date: string;
           due_date: string | null;
           completion_date: string | null;
@@ -741,6 +744,9 @@ export interface Database {
           reviewer_id?: string | null;
           status?: 'pending' | 'assigned' | 'in_progress' | 'completed' | 'cancelled';
           priority?: 'low' | 'medium' | 'high' | 'urgent';
+          review_type?: 'legal' | 'financial' | 'medical' | 'general';
+          urgency_level?: 'low' | 'medium' | 'high' | 'urgent';
+          estimated_cost?: number | null;
           requested_date?: string;
           due_date?: string | null;
           completion_date?: string | null;
@@ -755,6 +761,9 @@ export interface Database {
           reviewer_id?: string | null;
           status?: 'pending' | 'assigned' | 'in_progress' | 'completed' | 'cancelled';
           priority?: 'low' | 'medium' | 'high' | 'urgent';
+          review_type?: 'legal' | 'financial' | 'medical' | 'general';
+          urgency_level?: 'low' | 'medium' | 'high' | 'urgent';
+          estimated_cost?: number | null;
           requested_date?: string;
           due_date?: string | null;
           completion_date?: string | null;
@@ -1095,7 +1104,7 @@ export interface Database {
           consultation_notes: string | null;
           follow_up_required: boolean;
           follow_up_date: string | null;
-          fee_charged: number | null;
+          cost: number | null;
           payment_status: 'pending' | 'paid' | 'refunded' | 'disputed';
           created_at: string;
           updated_at: string;
@@ -1111,7 +1120,7 @@ export interface Database {
           consultation_notes?: string | null;
           follow_up_required?: boolean;
           follow_up_date?: string | null;
-          fee_charged?: number | null;
+          cost?: number | null;
           payment_status?: 'pending' | 'paid' | 'refunded' | 'disputed';
           created_at?: string;
           updated_at?: string;
@@ -1127,7 +1136,7 @@ export interface Database {
           consultation_notes?: string | null;
           follow_up_required?: boolean;
           follow_up_date?: string | null;
-          fee_charged?: number | null;
+          cost?: number | null;
           payment_status?: 'pending' | 'paid' | 'refunded' | 'disputed';
           created_at?: string;
           updated_at?: string;
@@ -1568,6 +1577,132 @@ export interface Database {
         };
         Relationships: [];
       };
+      notifications: {
+        Row: {
+          id: string;
+          user_id: string;
+          type: string;
+          title: string;
+          message: string;
+          data: Json | null;
+          read: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          type: string;
+          title: string;
+          message: string;
+          data?: Json | null;
+          read?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          type?: string;
+          title?: string;
+          message?: string;
+          data?: Json | null;
+          read?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      wills: {
+        Row: {
+          id: string;
+          user_id: string;
+          will_type: string;
+          status: string;
+          version: number;
+          jurisdiction: string;
+          testator_data: Json;
+          beneficiaries: Json;
+          assets: Json;
+          executors: Json;
+          special_instructions: Json;
+          ai_suggestions: Json;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          will_type?: string;
+          status?: string;
+          version?: number;
+          jurisdiction?: string;
+          testator_data?: Json;
+          beneficiaries?: Json;
+          assets?: Json;
+          executors?: Json;
+          special_instructions?: Json;
+          ai_suggestions?: Json;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          will_type?: string;
+          status?: string;
+          version?: number;
+          jurisdiction?: string;
+          testator_data?: Json;
+          beneficiaries?: Json;
+          assets?: Json;
+          executors?: Json;
+          special_instructions?: Json;
+          ai_suggestions?: Json;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      user_subscriptions: {
+        Row: {
+          id: string;
+          user_id: string;
+          plan: string;
+          status: string;
+          stripe_subscription_id: string | null;
+          current_period_start: string | null;
+          current_period_end: string | null;
+          cancel_at_period_end: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          plan?: string;
+          status?: string;
+          stripe_subscription_id?: string | null;
+          current_period_start?: string | null;
+          current_period_end?: string | null;
+          cancel_at_period_end?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          plan?: string;
+          status?: string;
+          stripe_subscription_id?: string | null;
+          current_period_start?: string | null;
+          current_period_end?: string | null;
+          cancel_at_period_end?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -1652,6 +1787,18 @@ export type ProfessionalPartnershipUpdate = Database['public']['Tables']['profes
 export type Consultation = Database['public']['Tables']['consultations']['Row'];
 export type ConsultationInsert = Database['public']['Tables']['consultations']['Insert'];
 export type ConsultationUpdate = Database['public']['Tables']['consultations']['Update'];
+
+export type Notification = Database['public']['Tables']['notifications']['Row'];
+export type NotificationInsert = Database['public']['Tables']['notifications']['Insert'];
+export type NotificationUpdate = Database['public']['Tables']['notifications']['Update'];
+
+export type Will = Database['public']['Tables']['wills']['Row'];
+export type WillInsert = Database['public']['Tables']['wills']['Insert'];
+export type WillUpdate = Database['public']['Tables']['wills']['Update'];
+
+export type UserSubscription = Database['public']['Tables']['user_subscriptions']['Row'];
+export type UserSubscriptionInsert = Database['public']['Tables']['user_subscriptions']['Insert'];
+export type UserSubscriptionUpdate = Database['public']['Tables']['user_subscriptions']['Update'];
 
 // Category and status types for better type safety
 export type LegacyItemCategory = LegacyItem['category'];

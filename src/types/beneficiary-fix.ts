@@ -23,24 +23,28 @@ export interface Beneficiary extends OriginalBeneficiary {
 // Helper function to convert legacy Beneficiary to new format
 export const normalizeBeneficiary = (beneficiary: Record<string, unknown>): Beneficiary => {
   return {
-    id: beneficiary.id || '',
-    type: beneficiary.type || 'primary',
-    full_name: beneficiary.full_name || beneficiary.name || '',
-    relationship: beneficiary.relationship || '',
-    date_of_birth: beneficiary.date_of_birth || beneficiary.dateOfBirth || undefined,
-    share_percentage: beneficiary.share_percentage || beneficiary.percentage || undefined,
-    specific_bequests: beneficiary.specific_bequests || beneficiary.specificGifts || [],
-    conditions: beneficiary.conditions || '',
-    contact_info: beneficiary.contact_info || {
-      email: beneficiary.email || '',
-      phone: beneficiary.phone || '',
-      address: beneficiary.address || '',
+    id: (beneficiary.id as string) || '',
+    type: (beneficiary.type as 'primary' | 'secondary' | 'contingent' | 'charitable') || 'primary',
+    full_name: (beneficiary.full_name as string) || (beneficiary.name as string) || '',
+    relationship: (beneficiary.relationship as string) || '',
+    date_of_birth: (beneficiary.date_of_birth as string) || (beneficiary.dateOfBirth as string) || undefined,
+    share_percentage: (beneficiary.share_percentage as number) || (beneficiary.percentage as number) || undefined,
+    specific_bequests: (beneficiary.specific_bequests as string[]) || (beneficiary.specificGifts as string[]) || [],
+    conditions: (beneficiary.conditions as string) || '',
+    contact_info: beneficiary.contact_info as {
+      email?: string;
+      phone?: string;
+      address?: string;
+    } || {
+      email: (beneficiary.email as string) || '',
+      phone: (beneficiary.phone as string) || '',
+      address: (beneficiary.address as string) || '',
     },
     // Legacy compatibility
-    name: beneficiary.name || beneficiary.full_name || '',
-    dateOfBirth: beneficiary.date_of_birth || beneficiary.dateOfBirth || '',
-    percentage: beneficiary.share_percentage || beneficiary.percentage || 0,
-    specificGifts: beneficiary.specific_bequests || [],
+    name: (beneficiary.name as string) || (beneficiary.full_name as string) || '',
+    dateOfBirth: (beneficiary.date_of_birth as string) || (beneficiary.dateOfBirth as string) || '',
+    percentage: (beneficiary.share_percentage as number) || (beneficiary.percentage as number) || 0,
+    specificGifts: (beneficiary.specific_bequests as string[]) || [],
   };
 };
 
@@ -49,8 +53,8 @@ export const isValidBeneficiary = (obj: unknown): obj is Beneficiary => {
   return (
     typeof obj === 'object' &&
     obj !== null &&
-    typeof obj.id === 'string' &&
-    typeof obj.full_name === 'string' &&
-    typeof obj.relationship === 'string'
+    typeof (obj as any).id === 'string' &&
+    typeof (obj as any).full_name === 'string' &&
+    typeof (obj as any).relationship === 'string'
   );
 };

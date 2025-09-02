@@ -94,7 +94,7 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({
         const stats: UserStats = {
           documentsCount,
           guardiansCount,
-          categoriesWithDocuments,
+          categoriesWithDocuments: categoriesWithDocuments.filter(Boolean) as string[],
           hasExpiryTracking,
           legacyItemsCount,
         };
@@ -357,7 +357,7 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({
                 >
                   {milestone.isUnlocked ? (
                     <>
-                      <Icon name={milestone.icon}
+                      <Icon name={milestone.icon as any}
                         className='w-7 h-7 text-white'
                       />
                       <motion.div

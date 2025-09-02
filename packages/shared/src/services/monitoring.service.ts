@@ -84,7 +84,7 @@ class MonitoringService {
     // First Input Delay (FID)
     const fidObserver = new PerformanceObserver((list) => {
       const entries = list.getEntries();
-      entries.forEach((entry: PerformanceEntry) => {
+      entries.forEach((entry: any) => {
         this.recordPerformance('FID', entry.processingStart - entry.startTime, 'ms');
       });
     });
@@ -94,7 +94,7 @@ class MonitoringService {
     let clsValue = 0;
     const clsObserver = new PerformanceObserver((list) => {
       const entries = list.getEntries();
-      entries.forEach((entry: PerformanceEntry) => {
+      entries.forEach((entry: any) => {
         if (!entry.hadRecentInput) {
           clsValue += entry.value;
           this.recordPerformance('CLS', clsValue, 'count');
@@ -157,7 +157,7 @@ class MonitoringService {
         default:
           throw new Error(`Unknown service: ${service}`);
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       status = 'down';
       lastError = error.message;
       errorRate = 100;

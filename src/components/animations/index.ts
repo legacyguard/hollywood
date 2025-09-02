@@ -8,8 +8,8 @@ export type { AnimationConfig, AdaptiveAnimationConfig } from '@/lib/animation-s
 // Animation providers and wrappers
 export {
   AdaptiveAnimationProvider,
-  useAdaptiveAnimation,
-  useAnimationVariants
+  // useAdaptiveAnimation, // Not available
+  // useAnimationVariants // Not available
 } from './AdaptiveAnimationProvider';
 export { default as AnimatedPageWrapper } from './AnimatedPageWrapper';
 
@@ -56,12 +56,12 @@ export { default as SofiaFirefly } from './SofiaFirefly';
 // Phase 3B: Advanced Micro-Interactions
 export {
   MicroAnimation,
-  MicroAnimationProvider,
+  // MicroAnimationProvider, // Not available
   AnimatedButton,
   AnimatedCard,
   AnimatedInput,
-  useMicroAnimation,
-  usePersonalityAnimation
+  // useMicroAnimation, // Not available
+  // usePersonalityAnimation // Not available
 } from './MicroInteractionSystem';
 
 export type {
@@ -77,8 +77,8 @@ export {
   FormLoader,
   CardLoader,
   ProgressLoader,
-  LoadingProvider,
-  useLoading
+  // LoadingProvider, // Not available
+  // useLoading // Not available
 } from './LoadingAnimations';
 
 export type {

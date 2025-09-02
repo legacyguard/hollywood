@@ -1,9 +1,86 @@
 // Interactive Animations - User interaction feedback with Sofia's personality adaptation
 // Provides tactile feedback for buttons, cards, and interactive elements
 
-import React, { type ReactNode } from 'react';
+import React, { type ReactNode, createContext, useContext, useState, useEffect } from 'react';
 import { motion, type Variants } from 'framer-motion';
-import { useAdaptiveAnimation } from './AdaptiveAnimationProvider';
+
+// Types for personality modes
+export type PersonalityMode = 'adaptive' | 'pragmatic' | 'empathetic';
+
+// Context for adaptive animations
+interface AdaptiveAnimationContextType {
+  personalityMode: PersonalityMode;
+  shouldReduceMotion: boolean;
+  animationConfig: {
+    duration: number;
+    ease: string;
+  };
+  setPersonalityMode: (mode: PersonalityMode) => void;
+}
+
+const AdaptiveAnimationContext = createContext<AdaptiveAnimationContextType | null>(null);
+
+// Hook to use adaptive animation context
+export const useAdaptiveAnimation = (): AdaptiveAnimationContextType => {
+  const context = useContext(AdaptiveAnimationContext);
+  if (!context) {
+    // Fallback values when context is not available
+    return {
+      personalityMode: 'adaptive',
+      shouldReduceMotion: false,
+      animationConfig: { duration: 0.3, ease: 'easeOut' },
+      setPersonalityMode: () => {},
+    };
+  }
+  return context;
+};
+
+// Provider component for adaptive animations
+export const AdaptiveAnimationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [personalityMode, setPersonalityMode] = useState<PersonalityMode>('adaptive');
+  const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
+
+  useEffect(() => {
+    // Check for reduced motion preference
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setShouldReduceMotion(mediaQuery.matches);
+
+    const handleChange = (e: MediaQueryListEvent) => {
+      setShouldReduceMotion(e.matches);
+    };
+
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
+
+  // Auto-detect personality mode based on user behavior (mock implementation)
+  useEffect(() => {
+    // In a real implementation, this would analyze user interactions
+    // For now, we'll use a simple heuristic or allow manual setting
+    const savedMode = localStorage.getItem('personalityMode') as PersonalityMode;
+    if (savedMode && ['adaptive', 'pragmatic', 'empathetic'].includes(savedMode)) {
+      setPersonalityMode(savedMode);
+    }
+  }, []);
+
+  const animationConfig = {
+    duration: personalityMode === 'pragmatic' ? 0.2 : 0.3,
+    ease: personalityMode === 'pragmatic' ? 'easeOut' : 'easeInOut',
+  };
+
+  return (
+    <AdaptiveAnimationContext.Provider
+      value={{
+        personalityMode,
+        shouldReduceMotion,
+        animationConfig,
+        setPersonalityMode,
+      }}
+    >
+      {children}
+    </AdaptiveAnimationContext.Provider>
+  );
+};
 
 interface AnimatedButtonProps {
   children: ReactNode;
@@ -32,10 +109,11 @@ export const AdaptiveAnimatedButton: React.FC<AnimatedButtonProps> = ({
         : '0 1px 3px rgba(0, 0, 0, 0.1)',
     },
     hover: shouldReduceMotion ? {} : {
-      scale: personalityMode === 'pragmatic' ? 1.02 : 1.05,
-      boxShadow: variant === 'primary'
-        ? '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
-        : '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+      scale: personalityMode === "pragmatic" ? 1.02 : 1.05,
+      boxShadow:
+        variant === "primary"
+          ? "0 10px 15px -3px rgba(0, 0, 0, 0.1)"
+          : "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
       transition: {
         duration: personalityMode === 'pragmatic' ? 0.15 : 0.3,
         ease: personalityMode === 'pragmatic' ? 'easeOut' : [0.25, 0.46, 0.45, 0.94],
@@ -174,9 +252,9 @@ export const AdaptiveAnimatedListItem: React.FC<AnimatedListItemProps> = ({
       scale: 1,
       transition: {
         duration: animationConfig.duration,
-        ease: animationConfig.ease,
-        delay: index * (animationConfig.stagger || 0.1),
-      },
+        ease: animationConfig.ease as any,
+        delay: index * 0.1, // Fixed stagger value
+      } as any,
     },
   };
 
@@ -352,4 +430,6 @@ export default {
   AdaptivePulseAnimation,
   AdaptiveHoverScale,
   AdaptiveGlowEffect,
+  AdaptiveAnimationProvider,
+  useAdaptiveAnimation,
 };

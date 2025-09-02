@@ -451,7 +451,7 @@ class SecureEncryptionService {
       }
 
       // Parse old keys (validate format)
-      const _oldKeys = JSON.parse(oldKeysString);
+      // const _oldKeys = JSON.parse(oldKeysString); // Not currently used
 
       // Initialize new server-side keys
       const result = await this.initializeKeys(password);

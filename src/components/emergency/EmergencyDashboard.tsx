@@ -24,7 +24,7 @@ interface EmergencyDashboardProps {
 
 export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
   verificationToken,
-  _guardianAccess = false,
+  // _guardianAccess = false, // Not used
 }) => {
   const { token } = useParams<{ token: string }>();
   const navigate = useNavigate();
@@ -56,7 +56,7 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
           guardians!inner (*)
         `
         )
-        .eq('verification_token', currentToken)
+        .eq('verification_token', currentToken || '')
         .single();
 
       if (activationError || !activationData) {
@@ -237,7 +237,7 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
           confirmed_at: new Date().toISOString(),
           notes: responseNotes || null,
         })
-        .eq('verification_token', currentToken);
+        .eq('verification_token', currentToken || '');
 
       if (updateError) {
         throw updateError;
@@ -263,7 +263,7 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
       const { error: notificationError } = await supabase
         .from('guardian_notifications')
         .update(updateData)
-        .eq('verification_token', currentToken);
+        .eq('verification_token', currentToken || '');
 
       if (notificationError) {
         console.warn('Error updating notifications:', notificationError);

@@ -2,8 +2,8 @@
 // Provides visual feedback for user actions and milestones
 
 import React from 'react';
-import { motion } from 'framer-motion';
-import { useAdaptiveAnimation } from './AdaptiveAnimationProvider';
+import { motion, Variants } from 'framer-motion';
+import { useAdaptiveAnimation } from './InteractiveAnimations';
 import { CheckCircle, Circle, Star, Sparkles } from 'lucide-react';
 
 interface ProgressBarProps {
@@ -47,7 +47,7 @@ export const AdaptiveProgressBar: React.FC<ProgressBarProps> = ({
               ? 'bg-gradient-to-r from-blue-500 to-blue-600'
               : 'bg-gradient-to-r from-purple-400 to-purple-500'
           }`}
-          variants={animated ? barVariants : undefined}
+          variants={animated ? (barVariants as any) : undefined}
           initial={animated ? 'initial' : undefined}
           animate={animated ? 'animate' : undefined}
           style={!animated ? { transform: `scaleX(${progressValue / 100})` } : undefined}
@@ -116,15 +116,15 @@ export const AdaptiveMilestoneIndicator: React.FC<MilestoneIndicatorProps> = ({
 }) => {
   const { personalityMode, shouldReduceMotion, animationConfig } = useAdaptiveAnimation();
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     initial: { opacity: 0, y: 20 },
     animate: {
       opacity: 1,
       y: 0,
       transition: {
-        delay: index * (animationConfig.stagger || 0.1),
+        delay: index * 0.1,
         duration: animationConfig.duration,
-        ease: animationConfig.ease,
+        ease: animationConfig.ease as any,
       },
     },
   };
@@ -153,7 +153,7 @@ export const AdaptiveMilestoneIndicator: React.FC<MilestoneIndicatorProps> = ({
       {/* Icon */}
       <motion.div
         className="flex-shrink-0 relative"
-        variants={completed && !shouldReduceMotion ? celebrationVariants : undefined}
+        variants={completed && !shouldReduceMotion ? (celebrationVariants as any) : undefined}
         animate={completed && !shouldReduceMotion ? 'animate' : 'initial'}
       >
         {completed ? (

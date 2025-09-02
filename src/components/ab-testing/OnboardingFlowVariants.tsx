@@ -194,7 +194,7 @@ function getSteps(variant: string): OnboardingStep[] {
     },
   ];
 
-  return variant === 'variant_a' ? emotionFirstSteps : controlSteps;
+  return variant === 'variant_a' ? (emotionFirstSteps as any) : (controlSteps as any);
 }
 
 /**

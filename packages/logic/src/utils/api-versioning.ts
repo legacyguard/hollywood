@@ -27,7 +27,7 @@ export function parseVersion(versionString: string): ApiVersion {
   if (!match) {
     throw new Error(`Invalid version format: ${versionString}`);
   }
-  
+
   return {
     major: parseInt(match[1], 10),
     minor: parseInt(match[2], 10),
@@ -71,14 +71,14 @@ export function isVersionCompatible(
   if (minCompare < 0) {
     return false;
   }
-  
+
   if (maximum) {
     const maxCompare = compareVersions(version, maximum);
     if (maxCompare > 0) {
       return false;
     }
   }
-  
+
   return true;
 }
 
@@ -88,12 +88,12 @@ export function isVersionCompatible(
 export class VersionedApiClient {
   private version: ApiVersion;
   private acceptVersion: string;
-  
+
   constructor(version: ApiVersion = API_VERSIONS.current) {
     this.version = version;
     this.acceptVersion = `application/vnd.legacyguard.v${version.major}+json`;
   }
-  
+
   /**
    * Get versioned headers for API requests
    */
@@ -105,7 +105,7 @@ export class VersionedApiClient {
       'X-Min-Version': formatVersion(API_VERSIONS.minimum)
     };
   }
-  
+
   /**
    * Check if server version is compatible
    */
@@ -114,7 +114,7 @@ export class VersionedApiClient {
       console.warn('No server version header found, assuming compatibility');
       return true;
     }
-    
+
     try {
       const serverVersion = parseVersion(serverVersionHeader);
       return isVersionCompatible(serverVersion, API_VERSIONS.minimum);
@@ -123,7 +123,7 @@ export class VersionedApiClient {
       return false;
     }
   }
-  
+
   /**
    * Handle version mismatch
    */
@@ -133,7 +133,7 @@ export class VersionedApiClient {
     response: Response
   ): void {
     const serverVer = parseVersion(serverVersion);
-    
+
     if (compareVersions(clientVersion, serverVer) < 0) {
       console.warn(
         `Client version (${formatVersion(clientVersion)}) is older than server version (${serverVersion}). ` +
@@ -145,7 +145,7 @@ export class VersionedApiClient {
         'Some features may not be available.'
       );
     }
-    
+
     // Check if we need to downgrade the request
     if (response.status === 406) { // Not Acceptable
       throw new Error(
@@ -160,11 +160,11 @@ export class VersionedApiClient {
  */
 export class VersionNegotiator {
   private supportedVersions: ApiVersion[];
-  
+
   constructor(supportedVersions: ApiVersion[] = [API_VERSIONS.v1, API_VERSIONS.v2, API_VERSIONS.current]) {
     this.supportedVersions = supportedVersions;
   }
-  
+
   /**
    * Negotiate best version based on client request
    */
@@ -172,10 +172,10 @@ export class VersionNegotiator {
     if (!requestedVersion) {
       return API_VERSIONS.current;
     }
-    
+
     try {
       const requested = parseVersion(requestedVersion);
-      
+
       // Find exact match
       const exactMatch = this.supportedVersions.find(
         v => compareVersions(v, requested) === 0
@@ -183,16 +183,16 @@ export class VersionNegotiator {
       if (exactMatch) {
         return exactMatch;
       }
-      
+
       // Find best compatible version (same major, highest minor/patch)
       const compatible = this.supportedVersions
         .filter(v => v.major === requested.major)
         .sort((a, b) => compareVersions(b, a))[0];
-      
+
       if (compatible) {
         return compatible;
       }
-      
+
       // No compatible version found
       throw new Error(`No compatible version found for ${requestedVersion}`);
     } catch (error) {
@@ -200,14 +200,14 @@ export class VersionNegotiator {
       return API_VERSIONS.current;
     }
   }
-  
+
   /**
    * Get all supported version strings
    */
   getSupportedVersionStrings(): string[] {
     return this.supportedVersions.map(formatVersion);
   }
-  
+
   /**
    * Check if a version is supported
    */
@@ -232,11 +232,11 @@ export class DeprecationManager {
     message: string;
     alternative?: string;
   }>;
-  
+
   constructor() {
     this.deprecations = new Map();
   }
-  
+
   /**
    * Mark an API endpoint or feature as deprecated
    */
@@ -252,7 +252,7 @@ export class DeprecationManager {
       alternative
     });
   }
-  
+
   /**
    * Check if a feature is deprecated
    */
@@ -261,10 +261,10 @@ export class DeprecationManager {
     if (!deprecation) {
       return false;
     }
-    
+
     return compareVersions(currentVersion, deprecation.version) >= 0;
   }
-  
+
   /**
    * Get deprecation warning for a feature
    */
@@ -273,16 +273,16 @@ export class DeprecationManager {
     if (!deprecation) {
       return null;
     }
-    
+
     let warning = `[DEPRECATED] ${feature}: ${deprecation.message}`;
     if (deprecation.alternative) {
       warning += ` Use ${deprecation.alternative} instead.`;
     }
     warning += ` (Deprecated since v${formatVersion(deprecation.version)})`;
-    
+
     return warning;
   }
-  
+
   /**
    * Log deprecation warning
    */
@@ -310,11 +310,11 @@ export class VersionedResponseTransformer {
     if (compareVersions(clientVersion, serverVersion) < 0) {
       return this.backwardTransform(data, clientVersion, serverVersion);
     }
-    
+
     // If client is newer, response should be compatible
     return data;
   }
-  
+
   /**
    * Transform response for backward compatibility
    */
@@ -328,28 +328,28 @@ export class VersionedResponseTransformer {
       // Transform v2 response to v1 format
       return this.transformV2ToV1(data);
     }
-    
+
     return data;
   }
-  
+
   /**
    * Transform v2 response to v1 format
    */
   private static transformV2ToV1<T>(data: T): T {
     // Example transformations
     const transformed = { ...data } as any;
-    
+
     // Rename fields that changed between versions
     if ('userId' in transformed && !('user_id' in transformed)) {
       transformed.user_id = transformed.userId;
       delete transformed.userId;
     }
-    
+
     // Remove fields that don't exist in v1
     if ('newFeature' in transformed) {
       delete transformed.newFeature;
     }
-    
+
     // Transform nested objects recursively
     if (typeof transformed === 'object' && transformed !== null) {
       Object.keys(transformed).forEach(key => {
@@ -358,7 +358,7 @@ export class VersionedResponseTransformer {
         }
       });
     }
-    
+
     return transformed as T;
   }
 }
@@ -372,7 +372,7 @@ export function createVersionedClient(
 ): any {
   const versionClient = new VersionedApiClient(version);
   const deprecationManager = new DeprecationManager();
-  
+
   // Set up common deprecations
   deprecationManager.deprecate(
     '/api/v1/documents',
@@ -380,73 +380,67 @@ export function createVersionedClient(
     'This endpoint is deprecated',
     '/api/v2/documents'
   );
-  
+
   // Wrap the base client methods
   const wrappedClient = {
     ...baseClient,
-    
+
     async get(endpoint: string, options?: any) {
       // Check for deprecations
       deprecationManager.warn(endpoint);
-      
+
       // Add version headers
       const headers = {
         ...options?.headers,
         ...versionClient.getVersionHeaders()
       };
-      
+
       const response = await baseClient.get(endpoint, { ...options, headers });
-      
+
       // Check server version
       const serverVersion = response.headers?.['x-api-version'];
       if (serverVersion && !versionClient.checkServerVersion(serverVersion)) {
         versionClient.handleVersionMismatch(version, serverVersion, response);
       }
-      
+
       return response;
     },
-    
+
     async post(endpoint: string, data?: any, options?: any) {
       deprecationManager.warn(endpoint);
-      
+
       const headers = {
         ...options?.headers,
         ...versionClient.getVersionHeaders()
       };
-      
+
       return baseClient.post(endpoint, data, { ...options, headers });
     },
-    
+
     async put(endpoint: string, data?: any, options?: any) {
       deprecationManager.warn(endpoint);
-      
+
       const headers = {
         ...options?.headers,
         ...versionClient.getVersionHeaders()
       };
-      
+
       return baseClient.put(endpoint, data, { ...options, headers });
     },
-    
+
     async delete(endpoint: string, options?: any) {
       deprecationManager.warn(endpoint);
-      
+
       const headers = {
         ...options?.headers,
         ...versionClient.getVersionHeaders()
       };
-      
+
       return baseClient.delete(endpoint, { ...options, headers });
     }
   };
-  
+
   return wrappedClient;
 }
 
-// Export all utilities
-export {
-  VersionedApiClient,
-  VersionNegotiator,
-  DeprecationManager,
-  VersionedResponseTransformer
-};
+// Classes are already exported above, no need to re-export

@@ -1,4 +1,4 @@
-import React from 'react';
+// import React from 'react'; // Not needed in React 17+
 
 import { Button } from './Button';
 import './header.css';

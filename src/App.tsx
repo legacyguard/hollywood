@@ -1,11 +1,13 @@
 // src/App.tsx - Web Application Entry Point
 
-import React, { Suspense } from 'react';
+import { Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { ClerkProvider } from '@clerk/clerk-react';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '@/lib/i18n/config';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
+import { ClerkProvider } from '@/providers/ClerkProvider';
+import SignInPage from '@/pages/auth/SignIn';
+import SignUpPage from '@/pages/auth/SignUp';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { SkipLinks } from '@/components/accessibility/SkipLinks';
 import { GlobalErrorBoundary } from '@legacyguard/ui';
@@ -44,26 +46,26 @@ import ComponentShowcase from '@/pages/ComponentShowcase';
 import Performance from '@/pages/Performance';
 import { WillManagement } from '@/pages/WillManagement';
 
+// Onboarding Pages
+import { OnboardingWrapper } from '@/components/onboarding/OnboardingWrapper';
+
 // Test Pages
 import TestNotifications from '@/pages/TestNotifications';
 
-const CLERK_PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || '';
-
-if (!CLERK_PUBLISHABLE_KEY) {
-  console.warn('Missing VITE_CLERK_PUBLISHABLE_KEY in .env file. Authentication will not work.');
-}
 
 export default function App() {
   return (
     <GlobalErrorBoundary>
       <I18nextProvider i18n={i18n}>
         <Suspense fallback={<div>Loading translations...</div>}>
-          <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY}>
+          <ClerkProvider>
             <Router>
               <SkipLinks />
           <Routes>
             {/* Public Routes */}
             <Route path="/" element={<LandingPage />} />
+            <Route path="/sign-in/*" element={<SignInPage />} />
+            <Route path="/sign-up/*" element={<SignUpPage />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogArticle />} />
             <Route path="/terms" element={<Terms />} />
@@ -259,6 +261,14 @@ export default function App() {
                 <DashboardLayout>
                   <WillManagement />
                 </DashboardLayout>
+              </ProtectedRoute>
+            } />
+
+            <Route path="/onboarding" element={
+              <ProtectedRoute>
+                <OnboardingWrapper>
+                  <div>Onboarding content</div>
+                </OnboardingWrapper>
               </ProtectedRoute>
             } />
 

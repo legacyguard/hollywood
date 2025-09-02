@@ -59,7 +59,7 @@ export class LegacyGuardApiError extends Error {
  */
 export function handleApiResponse<T>(
   response: unknown,
-  operation: string,
+  _operation: string,
   originalError?: Error
 ): T {
   // If response has an error field

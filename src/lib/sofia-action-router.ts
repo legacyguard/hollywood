@@ -284,7 +284,7 @@ export const executeSofiaAction = async (
       if (onSofiaMessage) {
         onSofiaMessage(
           action.text,
-          'The Path of Serenity is not about percentages or numbers - it's about the certainty and peace you create for your family. Every milestone you unlock is proof of your love and care. It doesn't matter how quickly you progress, but that you continue.'
+          `The Path of Serenity is not about percentages or numbers - it's about the certainty and peace you create for your family. Every milestone you unlock is proof of your love and care. It doesn't matter how quickly you progress, but that you continue.`
         );
       }
       break;

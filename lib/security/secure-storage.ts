@@ -113,7 +113,7 @@ export class SecureStorage {
       const timer = setTimeout(() => {
         this.memoryStore.delete(key);
         this.expiryTimers.delete(key);
-      }, expiryMs);
+      }, expiryMs) as any;
       this.expiryTimers.set(key, timer);
     }
   }
@@ -123,7 +123,7 @@ export class SecureStorage {
    */
   public getMemory<T = unknown>(key: string): T | null {
     const item = this.memoryStore.get(key);
-    return item ? item.value : null;
+    return item ? (item as any).value : null;
   }
 
   /**

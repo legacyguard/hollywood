@@ -46,7 +46,7 @@ export class DocumentService {
       if (!request.file) {
         throw new LegacyGuardApiError(400, 'File is required');
       }
-      
+
       const fileData = request.file as unknown as Record<string, unknown>;
       validateRequired(fileData, ['base64', 'mimeType', 'fileName']);
 

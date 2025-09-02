@@ -4,6 +4,7 @@ import { NavLink } from 'react-router-dom';
 import { UserButton, useUser } from '@clerk/clerk-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import { LanguageSwitcher } from '@/components/ui/language-switcher';
 import {
   Sidebar,
   SidebarContent,
@@ -171,6 +172,21 @@ export function AppSidebar() {
               )}
             </AnimatePresence>
           </div>
+          
+          {/* Language Switcher */}
+          <AnimatePresence mode='wait'>
+            {!collapsed && (
+              <motion.div
+                className='mt-3'
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <LanguageSwitcher variant="sidebar" />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.div>
       </div>
     </Sidebar>

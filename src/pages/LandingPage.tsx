@@ -1,5 +1,6 @@
 import React, { useState, useRef, useCallback, useMemo } from 'react';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { MetaTags } from '@/components/common/MetaTags';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -12,6 +13,7 @@ import { PricingSection } from '@/components/landing/PricingSection';
 import { RedirectGuard } from '@/lib/utils/redirect-guard';
 
 export function LandingPage() {
+  const { t } = useTranslation('ui/landing-page');
   const navigate = useNavigate();
   const { isSignedIn, isLoaded } = useAuth();
   const [isFireflyOnButton, setIsFireflyOnButton] = useState(false);
@@ -119,9 +121,9 @@ export function LandingPage() {
   return (
     <div className='min-h-screen bg-slate-900'>
       <MetaTags
-        title="Secure Your Family's Future | Document Management & Legacy Planning"
-        description="Transform life's chaos into clarity with LegacyGuard. Securely organize documents, protect your family with AI-powered guidance, and create your lasting legacy. Start free today."
-        url="https://legacyguard.app"
+        title={t('meta.title')}
+        description={t('meta.description')}
+        url={t('meta.url')}
       />
 
       {/* Navigation Header - Semi-transparent overlay */}
@@ -149,7 +151,7 @@ export function LandingPage() {
                     variant="ghost"
                     className='text-slate-200 hover:text-white hover:bg-slate-800/50 border-0 text-lg font-medium px-4 py-2'
                   >
-                    Blog
+                    {t('navigation.blog')}
                   </Button>
                 </Link>
               </motion.div>
@@ -162,7 +164,7 @@ export function LandingPage() {
                   onClick={handleSignIn}
                   className='text-slate-200 hover:text-white hover:bg-slate-800/50 border-0 text-lg font-medium px-4 py-2'
                 >
-                  Sign In
+                  {t('navigation.signIn')}
                 </Button>
               </motion.div>
               <motion.div
@@ -313,7 +315,7 @@ export function LandingPage() {
           >
             Your Legacy is a Story.
             <br />
-            <span className='text-yellow-400'>Let's Make it a Legend.</span>
+            <span className='text-yellow-400'>{t('hero.subtitle')}</span>
           </motion.h1>
 
           <motion.p
@@ -344,7 +346,7 @@ export function LandingPage() {
                 whileHover={{  x: '0%'  }}
                 transition={{  duration: 0.3  }}
               />
-              <span className='relative z-10'>Start Your Journey</span>
+              <span className='relative z-10'>{t('hero.cta.main')}</span>
 
               {/* Firefly Landing Spot */}
               {isFireflyOnButton && (

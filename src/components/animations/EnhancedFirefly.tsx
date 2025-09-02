@@ -4,7 +4,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, useAnimation, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@clerk/clerk-react';
-import type { Timeout } from 'node:timers';
+// import type { Timeout } from 'node:timers'; // Not available in browser
 import { usePersonalityManager } from '@/components/sofia/SofiaContextProvider';
 import { AnimationSystem } from '@/lib/animation-system';
 import { Sparkles, Heart, Target } from 'lucide-react';
@@ -32,7 +32,7 @@ interface TrailPoint extends FireflyPosition {
 export const EnhancedFirefly: React.FC<EnhancedFireflyProps> = ({
   isVisible = true,
   onInteraction,
-  _targetElement,
+  // _targetElement, // Not currently used
   celebrateEvent,
   customMessage,
   size = 'medium',
@@ -55,8 +55,8 @@ export const EnhancedFirefly: React.FC<EnhancedFireflyProps> = ({
 
   const controls = useAnimation();
   const containerRef = useRef<HTMLDivElement>(null);
-  const idleTimeoutRef = useRef<Timeout>();
-  const trailCleanupRef = useRef<Timeout>();
+  const idleTimeoutRef = useRef<number | undefined>(undefined);
+  const trailCleanupRef = useRef<number | undefined>(undefined);
 
   // Check for reduced motion
   const shouldReduceMotion = AnimationSystem.shouldReduceMotion();
@@ -139,14 +139,14 @@ export const EnhancedFirefly: React.FC<EnhancedFireflyProps> = ({
       const baseX = rect.width - 80;
       const baseY = 60;
 
-      controls.start({
-        x: [baseX - 5, baseX + 5, baseX],
-        y: [baseY - 3, baseY + 3, baseY],
-        rotate: [0, 2, -2, 0],
-        transition: {
-          duration: 4,
-          repeat: Infinity,
-          ease: animConfig.ease,
+              controls.start({
+          x: [baseX - 5, baseX + 5, baseX],
+          y: [baseY - 3, baseY + 3, baseY],
+          rotate: [0, 2, -2, 0],
+          transition: {
+            duration: 4,
+            repeat: Infinity,
+            ease: animConfig.ease as any,
         },
       });
     } else if (adaptedMode === 'empathetic') {
@@ -178,14 +178,14 @@ export const EnhancedFirefly: React.FC<EnhancedFireflyProps> = ({
         transition: {
           duration: 15,
           repeat: Infinity,
-          ease: animConfig.ease,
+          ease: animConfig.ease as any,
           onUpdate: (latest: Record<string, unknown>) => {
             if (typeof latest.x === 'number' && typeof latest.y === 'number') {
               updateTrail({ x: latest.x, y: latest.y });
             }
           },
         },
-      });
+      } as any);
     } else {
       // Balanced movement
       const figure8Path = [];
@@ -203,9 +203,9 @@ export const EnhancedFirefly: React.FC<EnhancedFireflyProps> = ({
         transition: {
           duration: 10,
           repeat: Infinity,
-          ease: animConfig.ease,
+          ease: animConfig.ease as any,
         },
-      });
+      } as any);
     }
   }, [adaptedMode, controls, isVisible, shouldReduceMotion, updateTrail]);
 
@@ -243,9 +243,9 @@ export const EnhancedFirefly: React.FC<EnhancedFireflyProps> = ({
         filter: ['brightness(1)', 'brightness(1.5)', 'brightness(1)'],
         transition: {
           duration: animConfig.duration * 2,
-          ease: animConfig.ease,
+          ease: animConfig.ease as any,
         },
-      });
+      } as any);
     } else if (adaptedMode === 'empathetic') {
       // Joyful spiral celebration
       const container = containerRef.current;
@@ -275,14 +275,14 @@ export const EnhancedFirefly: React.FC<EnhancedFireflyProps> = ({
         filter: ['brightness(1)', 'brightness(1.8)', 'brightness(1)'],
         transition: {
           duration: animConfig.duration * 4,
-          ease: animConfig.ease,
+          ease: animConfig.ease as any,
           onUpdate: (latest: Record<string, unknown>) => {
             if (typeof latest.x === 'number' && typeof latest.y === 'number') {
               updateTrail({ x: latest.x, y: latest.y });
             }
           },
         },
-      });
+      } as any);
     }
 
     setTimeout(() => {

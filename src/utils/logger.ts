@@ -211,12 +211,12 @@ export class Logger {
   public createChildLogger(context: string): Logger {
     return new Proxy(this, {
       get(target, prop) {
-        if (['debug', 'info', 'warn', 'error', 'fatal'].includes(prop as string)) {
+        if (typeof prop === 'string' && ['debug', 'info', 'warn', 'error', 'fatal'].includes(prop)) {
           return (message: string, data?: Record<string, unknown>) => {
-            return (target as Record<string, unknown>)[prop](message, data, context);
+            return (target as any)[prop](message, data, context);
           };
         }
-        return (target as Record<string, unknown>)[prop];
+        return (target as any)[prop];
       },
     });
   }

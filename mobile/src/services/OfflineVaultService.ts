@@ -228,33 +228,57 @@ export const OfflineVaultService = {
   },
 };
 
-// Helper functions for encryption/decryption
-// In production, use a proper encryption library like react-native-crypto
+// Helper functions for encryption/decryption (TweetNaCl via per-device key)
+import * as SecureStore from 'expo-secure-store';
+import nacl from 'tweetnacl';
+import { encodeBase64, decodeBase64, encodeUTF8, decodeUTF8 } from 'tweetnacl-util';
 
-/**
- * Encrypt content (placeholder - use proper encryption in production)
- */
-async function encryptContent(content: string): Promise<string> {
-  // In production, implement proper AES encryption
-  // For now, we'll use a simple base64 encoding as placeholder
+const DEVICE_KEY_NAME = 'LEGACYGUARD_VAULT_DEVICE_KEY';
+
+async function getDeviceKey(): Promise<Uint8Array> {
   try {
-    const encoder = new TextEncoder();
-    const _data = encoder.encode(content);
-    // const digest = await Crypto.digest(Crypto.CryptoDigestAlgorithm.SHA256, data);
-    return btoa(content); // Placeholder - use real encryption
-  } catch {
-    return btoa(content);
+    const existing = await SecureStore.getItemAsync(DEVICE_KEY_NAME);
+    if (existing) {
+      return decodeBase64(existing);
+    }
+    // Generate new 32-byte key and persist securely
+    const newKey = nacl.randomBytes(nacl.secretbox.keyLength);
+    await SecureStore.setItemAsync(DEVICE_KEY_NAME, encodeBase64(newKey), {
+      keychainService: DEVICE_KEY_NAME,
+      accessible: SecureStore.WHEN_UNLOCKED,
+    } as any);
+    return newKey;
+  } catch (err) {
+    if (__DEV__) console.error('Failed to get device key, falling back to ephemeral key:', err);
+    // Fallback to ephemeral key (will break decryption after restart, but avoids crash)
+    return nacl.randomBytes(nacl.secretbox.keyLength);
   }
 }
 
 /**
- * Decrypt content (placeholder - use proper decryption in production)
+ * Encrypt content using per-device symmetric key (secretbox)
+ */
+async function encryptContent(content: string): Promise<string> {
+  const key = await getDeviceKey();
+  const nonce = nacl.randomBytes(nacl.secretbox.nonceLength);
+  const message = decodeUTF8(content);
+  const cipher = nacl.secretbox(message, nonce, key);
+  return `${encodeBase64(nonce)}:${encodeBase64(cipher)}`;
+}
+
+/**
+ * Decrypt content using per-device symmetric key
  */
 async function decryptContent(encryptedContent: string): Promise<string> {
-  // In production, implement proper AES decryption
-  // For now, we'll use simple base64 decoding as placeholder
   try {
-    return atob(encryptedContent); // Placeholder - use real decryption
+    const [nonceB64, dataB64] = encryptedContent.split(':');
+    if (!nonceB64 || !dataB64) return encryptedContent;
+    const key = await getDeviceKey();
+    const nonce = decodeBase64(nonceB64);
+    const cipher = decodeBase64(dataB64);
+    const plain = nacl.secretbox.open(cipher, nonce, key);
+    if (!plain) return encryptedContent;
+    return encodeUTF8(plain);
   } catch {
     return encryptedContent;
   }

@@ -3,7 +3,7 @@
  * Celebrates successful document imports with family protection messaging
  */
 
-import React from 'react';
+// import React from 'react'; // Not needed in React 17+
 import { motion } from 'framer-motion';
 import {
   Sparkles,

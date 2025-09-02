@@ -101,7 +101,7 @@ export const usePersonalityAnimation = () => {
               duration: config.duration,
               ease: config.ease
             }
-          };
+          } as any;
         } else {
           acc[key] = value;
         }

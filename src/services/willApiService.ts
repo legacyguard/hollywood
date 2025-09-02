@@ -125,7 +125,9 @@ export class WillApiService {
         // AI data
         ai_suggestions: generatedWill.aiSuggestions.map(suggestion => ({
           id: suggestion.id,
-          type: suggestion.type,
+          type: suggestion.type === 'optimization' ? 'improvement' : 
+                suggestion.type === 'legal_consideration' ? 'legal_requirement' : 
+                suggestion.type as 'improvement' | 'warning' | 'missing' | 'legal_requirement',
           category: suggestion.category,
           title: suggestion.title,
           description: suggestion.description,
@@ -378,7 +380,12 @@ export class WillApiService {
         })) || [],
         specialInstructions: will.special_instructions?.map(s => ({
           id: s.id,
-          type: s.category,
+          type: s.category === 'pets' ? 'pet_care' :
+                s.category === 'business' ? 'business_succession' :
+                s.category === 'debts' ? 'other' :
+                s.category === 'taxes' ? 'other' :
+                s.category === 'charity' ? 'charitable_giving' :
+                s.category === 'other' ? 'other' : 'other' as any,
           title: s.title,
           content: s.content,
           priority: s.priority

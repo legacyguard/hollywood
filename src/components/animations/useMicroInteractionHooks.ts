@@ -51,12 +51,15 @@ declare const MicroAnimationContext: {
   globalAnimationScale: number;
 };
 
-export const useMicroAnimation = () => useContext(MicroAnimationContext);
+export const useMicroAnimation = () => {
+  const context = useContext(MicroAnimationContext as any);
+  return context || { reduceMotion: false, globalAnimationScale: 1 };
+};
 
 // Utility hook for creating custom animated components
 export const usePersonalityAnimation = () => {
   const personalityManager = usePersonalityManager();
-  const { reduceMotion } = useMicroAnimation();
+  const { reduceMotion } = useMicroAnimation() as any;
 
   return {
     config: personalityManager ? PERSONALITY_CONFIGS[personalityManager.getPersonality().mode] : PERSONALITY_CONFIGS.adaptive,
@@ -76,7 +79,7 @@ export const usePersonalityAnimation = () => {
               duration: config.duration,
               ease: config.ease
             }
-          };
+          } as any;
         } else {
           acc[key] = value;
         }

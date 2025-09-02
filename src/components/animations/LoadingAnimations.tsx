@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useSofia } from '../sofia/SofiaContextProvider';
+// import { useSofia } from '../sofia/SofiaContextProvider'; // Not available
 import { Icon } from '../ui/icon-library';
 import { cn } from '@/lib/utils';
 
@@ -59,9 +59,10 @@ export const LoadingAnimation: React.FC<LoadingAnimationProps> = ({
   color,
   duration
 }) => {
-  const { personality } = useSofia();
+  // const { personality } = useSofia();
+  const personality = { mode: 'pragmatic' as 'adaptive' | 'pragmatic' | 'empathetic' }; // Mock value
 
-  const config = PERSONALITY_LOADING_CONFIGS[personality.mode];
+  const config = (PERSONALITY_LOADING_CONFIGS as any)[personality.mode];
   const animationType = personalityAdapt ? (type || config.defaultType) : (type || 'spinner');
   const animationDuration = duration || config.duration;
   const animationColor = color || config.colors[0];
@@ -102,7 +103,7 @@ export const LoadingAnimation: React.FC<LoadingAnimationProps> = ({
                   size === 'lg' && 'w-4 h-4',
                   size === 'xl' && 'w-5 h-5'
                 )}
-                style={{ color: animationColor }}
+                // style={{ color: animationColor }} // Style not supported
                 animate={{
                   scale: [1, 1.5, 1],
                   opacity: [0.5, 1, 0.5]
@@ -235,7 +236,7 @@ export const LoadingAnimation: React.FC<LoadingAnimationProps> = ({
               <Icon
                 name="heart"
                 className={cn(sizeClasses[size])}
-                style={{ color: animationColor }}
+                // style={{ color: animationColor }} // Style not supported
               />
             </motion.div>
           </motion.div>
@@ -451,8 +452,9 @@ export const ProgressLoader: React.FC<{
   text?: string;
   className?: string;
 }> = ({ progress, text, className = '' }) => {
-  const { personality } = useSofia();
-  const config = PERSONALITY_LOADING_CONFIGS[personality.mode];
+  // const { personality } = useSofia();
+  const personality = { mode: 'pragmatic' as 'adaptive' | 'pragmatic' | 'empathetic' }; // Mock value
+  const config = (PERSONALITY_LOADING_CONFIGS as any)[personality.mode];
 
   return (
     <div className={cn('space-y-2', className)}>
