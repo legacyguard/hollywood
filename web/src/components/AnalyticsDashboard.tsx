@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   LineChart,
   Line,
@@ -69,9 +69,9 @@ export const AnalyticsDashboard: React.FC = () => {
     loadAnalytics();
     const interval = setInterval(loadAnalytics, 60000); // Refresh every minute
     return () => clearInterval(interval);
-  }, [dateRange]);
+  }, [dateRange, loadAnalytics]);
 
-  const loadAnalytics = async () => {
+  const loadAnalytics = useCallback(async () => {
     try {
       // Load subscription metrics
       const daysAgo = dateRange === '7d' ? 7 : dateRange === '30d' ? 30 : 90;
@@ -112,7 +112,7 @@ export const AnalyticsDashboard: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [dateRange]);
 
   const calculateCurrentMetrics = (data: SubscriptionMetrics[]) => {
     if (data.length === 0) return;

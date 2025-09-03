@@ -3,8 +3,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon-library';
 import { toast } from 'sonner';
-import type { WithTranslation} from 'react-i18next';
-import { withTranslation, useTranslation } from 'react-i18next';
+import { withTranslation, type WithTranslation } from 'react-i18next';
 
 interface Props extends WithTranslation {
   children: ReactNode;

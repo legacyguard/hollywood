@@ -161,7 +161,7 @@ export function DashboardContent() {
                 </span>
               )}
             </div>
-            <MetricsGrid metrics={metrics as any} columns={4} />
+            <MetricsGrid metrics={metrics} columns={4} />
           </FadeIn>
         </section>
 

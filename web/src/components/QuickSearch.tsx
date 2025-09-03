@@ -101,7 +101,7 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({
         },
       },
     ],
-    [navigate, onClose]
+    [navigate, onClose, t]
   );
 
   const searchDocuments = useCallback(
@@ -178,7 +178,7 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({
         return [];
       }
     },
-    [userId, createSupabaseClient, navigate, onClose]
+    [userId, createSupabaseClient, navigate, onClose, t]
   );
 
   const performSearch = useCallback(
