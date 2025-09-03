@@ -38,7 +38,16 @@
       "Bash(sed:*)",
       "Bash(rm:*)",
       "Bash(ls:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(turbo run build:*)",
+      "Bash(npx turbo run build:*)",
+      "Bash(npx cypress open:*)",
+      "Bash(npx cypress run:*)",
+      "Bash(ln:*)",
+      "Bash(pkill:*)",
+      "Bash(true)",
+      "Bash(mkdir:*)",
+      "Bash(touch:*)"
     ],
     "deny": [],
     "additionalDirectories": [

@@ -1,6 +1,6 @@
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
+  "buildCommand": "npx turbo run build --filter=legacyguard-web",
+  "outputDirectory": "web/dist",
   "installCommand": "npm ci --legacy-peer-deps",
   "framework": "vite",
   "alias": [

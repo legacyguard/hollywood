@@ -275,16 +275,21 @@ Maintain consistency with the web app's:
 LegacyGuard is structured as a monorepo with shared packages:
 
 ```text
-/legacyguard-platform/
-├── apps/
-│   ├── web/              # Hollywood web application
-│   └── mobile/           # React Native mobile app  
-├── packages/
-│   ├── ui/               # Tamagui cross-platform components
-│   ├── shared/           # Shared services and utilities
-│   ├── locales/          # Centralized translations
-│   └── config/           # Shared configurations
-└── docs/                 # Project documentation
+LegacyGuard/
+├── web/                    # 🆕 Web application (formerly hollywood/)
+│   ├── src/               # React web app source
+│   ├── public/            # Web public assets  
+│   ├── cypress/           # E2E tests
+│   ├── dist/              # Web build output
+│   ├── package.json       # Web-specific dependencies
+│   └── vite.config.ts     # Web bundler config
+├── mobile/                # React Native mobile app
+├── packages/              # Shared packages
+│   ├── ui/               # Shared UI components
+│   ├── logic/            # Business logic
+│   └── shared/           # Utilities
+├── package.json          # Root monorepo config
+└── turbo.json           # Build orchestration
 ```
 
 ### Shared Packages
@@ -309,6 +314,39 @@ LegacyGuard is structured as a monorepo with shared packages:
    - Shared TypeScript configurations
    - ESLint and build configurations
    - Common development tooling
+
+### Monorepo Commands (Working ✅)
+
+```bash
+# Development servers
+npm run web:dev          # Start web development server
+npm run mobile:dev       # Start mobile development server
+
+# Building applications
+npm run web:build        # Build web application  
+npm run build:web        # Build web via Turbo (with dependency caching)
+npm run mobile:build     # Build mobile application
+npm run build:mobile     # Build mobile via Turbo
+
+# Comprehensive builds
+npm run build            # Build entire monorepo
+npm run build:all        # Build all workspaces
+npm run build:packages   # Build shared packages only
+
+# Testing
+npm run test:web         # Run web tests
+npm run test:mobile      # Run mobile tests
+npm run test             # Run all tests
+
+# Code quality
+npm run lint             # Lint all workspaces
+npm run type-check       # TypeScript validation across monorepo
+
+# Cleanup
+npm run clean:cache      # Clear build caches
+npm run clean:dist       # Remove build outputs
+npm run clean:all        # Full cleanup including node_modules
+```
 
 ## Development Workflow
 
