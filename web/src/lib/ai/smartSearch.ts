@@ -4,7 +4,7 @@
  */
 
 import type { DocumentAnalysisResult, DocumentCategory } from './documentAnalyzer';
-import { _CategorySuggestion } from './documentCategorizer';
+import type { CategorySuggestion } from './documentCategorizer';
 
 export interface SmartSearchQuery {
   query: string;
@@ -675,7 +675,7 @@ export class SmartSearchService {
     return true;
   }
 
-  private getDateFromEntry(indexEntry: SearchIndex, field: SearchFilters['dateRange']['field']): Date | null {
+  private getDateFromEntry(indexEntry: SearchIndex, field: 'created' | 'modified' | 'expiration' | 'effective'): Date | null {
     switch (field) {
       case 'created':
         return indexEntry.metadata.created ? new Date(indexEntry.metadata.created) : null;

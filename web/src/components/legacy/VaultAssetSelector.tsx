@@ -108,7 +108,7 @@ export const VaultAssetSelector: React.FC<VaultAssetSelectorProps> = ({
           )
         `
         )
-        .eq('user_id', userId)
+        .eq('user_id', userId!)
         .eq('is_archived', false)
         .order('created_at', { ascending: false });
 
@@ -121,16 +121,11 @@ export const VaultAssetSelector: React.FC<VaultAssetSelectorProps> = ({
       const transformedAssets: VaultAsset[] =
         documents?.map(
           (
-            doc: Document & {
-              bundle_documents?: Array<{
-                bundle_id: string;
-                bundles: { bundle_name: string; bundle_category: string };
-              }>;
-            }
+            doc: any
           ) => ({
             id: doc.id,
             title: doc.title || doc.file_name || 'Untitled Document',
-            description: doc.description,
+            description: doc.description || undefined,
             documentType: doc.document_type || 'General',
             category: doc.category || 'Other',
             tags: doc.tags || [],

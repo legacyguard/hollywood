@@ -37,6 +37,14 @@ export interface LegacyMilestone {
     celebrationIcon: string;
     celebrationColor: string;
   };
+  
+  // Family impact data
+  family_impact_message?: string;
+  familyImpact?: {
+    affectedMembers: string[];
+    riskReduction?: number;
+    emotionalBenefit?: string;
+  };
 
   // Rewards and benefits
   rewards: {

@@ -14,8 +14,8 @@ describe('SofiaProactiveService', () => {
     vi.clearAllMocks();
     mockCallback.mockClear();
 
-    // Initialize service
-    service = new SofiaProactiveService();
+    // Initialize service with userId
+    service = new SofiaProactiveService('test-user-id');
   });
 
   afterEach(() => {
@@ -46,8 +46,8 @@ describe('SofiaProactiveService', () => {
 
       const activity = service.getCurrentActivity();
       expect(activity.mouseMovements).toBe(1);
-      expect(activity.clicks).toBe(1);
-      expect(activity.scrolls).toBe(1);
+      expect(activity.clickEvents).toBe(1);
+      expect(activity.scrollEvents).toBe(1);
     });
 
     it('should stop previous monitoring when starting new one', () => {
@@ -195,9 +195,9 @@ describe('SofiaProactiveService', () => {
 
       expect(activity).toMatchObject({
         mouseMovements: 1,
-        clicks: 1,
-        scrolls: 0,
-        formInputs: 1,
+        clickEvents: 1,
+        scrollEvents: 0,
+        formInteractions: 1,
         timeOnPage: expect.any(Number),
         currentPage: '/dashboard'
       });
@@ -208,11 +208,11 @@ describe('SofiaProactiveService', () => {
 
       expect(activity).toMatchObject({
         mouseMovements: 0,
-        clicks: 0,
-        scrolls: 0,
-        formInputs: 0,
+        clickEvents: 0,
+        scrollEvents: 0,
+        formInteractions: 0,
         timeOnPage: 0,
-        currentPage: null
+        currentPage: ''
       });
     });
   });

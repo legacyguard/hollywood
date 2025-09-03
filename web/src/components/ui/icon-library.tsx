@@ -55,6 +55,7 @@ import {
   Sparkles,
   DollarSign,
   CreditCard,
+  Scale,
   PieChart,
   Mail,
   Phone,
@@ -83,6 +84,19 @@ import {
   RotateCcw,
   XCircle,
   ArrowLeft,
+  MessageCircle,
+  Maximize2,
+  FileText as DocumentText,
+  Briefcase,
+  FileText as Document,
+  Zap,
+  Mic,
+  Pause,
+  RotateCw,
+  Terminal,
+  Activity,
+  SearchX,
+  ExternalLink,
 } from 'lucide-react';
 
 // Export all icons for direct use
@@ -140,6 +154,7 @@ export {
   Sparkles,
   DollarSign,
   CreditCard,
+  Scale,
   PieChart,
   Mail,
   Phone,
@@ -157,6 +172,11 @@ export {
   RefreshCw,
   FilePlus,
   Card,
+  MessageCircle,
+  Maximize2,
+  FileText as DocumentText,
+  Briefcase,
+  FileText as Document,
 };
 
 // Icon mapping for semantic usage
@@ -240,6 +260,7 @@ export const IconMap = {
   financial: DollarSign,
   money: DollarSign,
   card: CreditCard,
+  scale: Scale,
   chart: PieChart,
 
   // Trends & Analytics
@@ -295,6 +316,23 @@ export const IconMap = {
   'eye-off': EyeOff,
   unlock: Unlock,
   'triangle-exclamation': AlertTriangle,
+  
+  // Additional missing icons
+  'message-circle': MessageCircle,
+  'maximize-2': Maximize2,
+  'document-text': DocumentText,
+  briefcase: Briefcase,
+  document: Document,
+  
+  // Missing icons from components
+  zap: Zap,
+  mic: Mic,
+  pause: Pause,
+  rotate: RotateCw,
+  terminal: Terminal,
+  activity: Activity,
+  'search-x': SearchX,
+  'external-link': ExternalLink,
 } as const;
 
 // Type for icon names

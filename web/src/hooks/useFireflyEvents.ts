@@ -1,4 +1,4 @@
-import { useEffect, type EventListener } from 'react';
+import { useEffect } from 'react';
 import { useFireflyCelebration } from '@/contexts/FireflyContext';
 import type { SerenityMilestone } from '@/lib/path-of-serenity';
 

@@ -415,7 +415,7 @@ export function LegacyGardenVisualization({
       transition={animated && !shouldReduceMotion ? {
         duration: animConfig.duration,
         delay: gardenElements.indexOf(element) * delayMultiplier,
-        ease: animConfig.ease,
+        ease: animConfig.ease as any,
         type: effectiveMode === 'pragmatic' ? 'tween' : 'spring'
       } : undefined}
       whileHover={interactive && !shouldReduceMotion ? {
@@ -439,7 +439,7 @@ export function LegacyGardenVisualization({
           transition={{
             duration: effectiveMode === 'empathetic' ? 5 + Math.random() * 3 : 4 + Math.random() * 2,
             repeat: Infinity,
-            ease: animConfig.ease
+            ease: animConfig.ease as any
           }}
           className="absolute inset-0"
         >

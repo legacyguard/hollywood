@@ -2,7 +2,8 @@
  * React hooks for accessibility features
  */
 
-import { useEffect, useRef, useState, useCallback, type React } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
+import type React from 'react';
 import {
   trapFocus,
   announceToScreenReader,

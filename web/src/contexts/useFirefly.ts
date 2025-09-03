@@ -1,15 +1,15 @@
-import { useContext, useState, useCallback, type React } from 'react';
+import { useContext, useState, useCallback } from 'react';
 import type { FireflyContextValue, FireflyEventType } from './fireflyTypes';
 
 // This context is defined in FireflyContext.tsx
-declare const FireflyContext: React.Context<FireflyContextValue | undefined>;
+declare const FireflyContext: any;
 
 export const useFirefly = (): FireflyContextValue => {
   const context = useContext(FireflyContext);
   if (!context) {
     throw new Error('useFirefly must be used within a FireflyProvider');
   }
-  return context;
+  return context as FireflyContextValue;
 };
 
 export const useFireflyGuidance = () => {

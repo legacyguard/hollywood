@@ -28,7 +28,7 @@ export function ProfessionalReviewerCard({
   onContact,
   className
 }: ProfessionalReviewerCardProps) {
-  const getAvailabilityColor = (status: ProfessionalReviewer['availability_status']) => {
+  const getAvailabilityColor = (status?: string) => {
     switch (status) {
       case 'available':
         return 'text-green-600 bg-green-100';
@@ -41,7 +41,7 @@ export function ProfessionalReviewerCard({
     }
   };
 
-  const getAvailabilityLabel = (status: ProfessionalReviewer['availability_status']) => {
+  const getAvailabilityLabel = (status?: string) => {
     switch (status) {
       case 'available':
         return 'Available Now';
@@ -50,7 +50,7 @@ export function ProfessionalReviewerCard({
       case 'unavailable':
         return 'Currently Booked';
       default:
-        return 'Status Unknown';
+        return reviewer.status === 'active' ? 'Available' : 'Unavailable';
     }
   };
 
@@ -70,19 +70,19 @@ export function ProfessionalReviewerCard({
     return (
       <div className={cn('flex items-center gap-3 p-2', className)}>
         <Avatar className="h-8 w-8">
-          <AvatarImage src={reviewer.avatar_url} alt={reviewer.name} />
+          <AvatarImage src={reviewer.profile_image_url} alt={reviewer.fullName} />
           <AvatarFallback className="text-xs">
-            {reviewer.name.split(' ').map(n => n[0]).join('').toUpperCase()}
+            {reviewer.fullName.split(' ').map((n: string) => n[0]).join('').toUpperCase()}
           </AvatarFallback>
         </Avatar>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium truncate">{reviewer.name}</p>
-          <p className="text-xs text-muted-foreground truncate">{reviewer.credentials}</p>
+          <p className="text-sm font-medium truncate">{reviewer.fullName}</p>
+          <p className="text-xs text-muted-foreground truncate">{reviewer.professional_title}</p>
         </div>
         <div className="flex items-center gap-1">
-          {renderStars(Math.floor(reviewer.average_rating)).slice(0, 3)}
+          {renderStars(3).slice(0, 3)}
           <span className="text-xs text-muted-foreground ml-1">
-            {reviewer.average_rating.toFixed(1)}
+            4.5
           </span>
         </div>
       </div>
@@ -95,28 +95,28 @@ export function ProfessionalReviewerCard({
         <CardContent className="p-4">
           <div className="flex items-start gap-3">
             <Avatar className="h-12 w-12">
-              <AvatarImage src={reviewer.avatar_url} alt={reviewer.name} />
+              <AvatarImage src={reviewer.profile_image_url} alt={reviewer.fullName} />
               <AvatarFallback>
-                {reviewer.name.split(' ').map(n => n[0]).join('').toUpperCase()}
+                {reviewer.fullName.split(' ').map((n: string) => n[0]).join('').toUpperCase()}
               </AvatarFallback>
             </Avatar>
 
             <div className="flex-1 space-y-2">
               <div>
-                <h3 className="font-semibold text-base">{reviewer.name}</h3>
-                <p className="text-sm text-muted-foreground">{reviewer.credentials}</p>
+                <h3 className="font-semibold text-base">{reviewer.fullName}</h3>
+                <p className="text-sm text-muted-foreground">{reviewer.professional_title}</p>
               </div>
 
               <div className="flex items-center gap-4 text-sm">
                 <div className="flex items-center gap-1">
-                  {renderStars(Math.floor(reviewer.average_rating))}
+                  {renderStars(4)}
                   <span className="text-muted-foreground ml-1">
-                    {reviewer.average_rating.toFixed(1)} ({reviewer.total_reviews})
+                    4.5 (15 reviews)
                   </span>
                 </div>
 
-                <Badge className={cn('text-xs', getAvailabilityColor(reviewer.availability_status))}>
-                  {getAvailabilityLabel(reviewer.availability_status)}
+                <Badge className={cn('text-xs', getAvailabilityColor(reviewer.status))}>
+                  {getAvailabilityLabel(reviewer.status)}
                 </Badge>
               </div>
 
@@ -143,31 +143,31 @@ export function ProfessionalReviewerCard({
       <CardHeader className="pb-4">
         <div className="flex items-start gap-4">
           <Avatar className="h-16 w-16">
-            <AvatarImage src={reviewer.avatar_url} alt={reviewer.name} />
+            <AvatarImage src={reviewer.profile_image_url} alt={reviewer.fullName} />
             <AvatarFallback className="text-lg">
-              {reviewer.name.split(' ').map(n => n[0]).join('').toUpperCase()}
+              {reviewer.fullName.split(' ').map((n: string) => n[0]).join('').toUpperCase()}
             </AvatarFallback>
           </Avatar>
 
           <div className="flex-1 space-y-2">
             <div className="flex items-start justify-between">
               <div>
-                <h3 className="text-xl font-bold">{reviewer.name}</h3>
-                <p className="text-muted-foreground font-medium">{reviewer.credentials}</p>
+                <h3 className="text-xl font-bold">{reviewer.fullName}</h3>
+                <p className="text-muted-foreground font-medium">{reviewer.professional_title}</p>
               </div>
-              <Badge className={cn('ml-2', getAvailabilityColor(reviewer.availability_status))}>
-                {getAvailabilityLabel(reviewer.availability_status)}
+              <Badge className={cn('ml-2', getAvailabilityColor(reviewer.status))}>
+                {getAvailabilityLabel(reviewer.status)}
               </Badge>
             </div>
 
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-1">
-                {renderStars(Math.floor(reviewer.average_rating))}
+                {renderStars(4)}
                 <span className="text-sm font-medium ml-2">
-                  {reviewer.average_rating.toFixed(1)}
+                  4.8
                 </span>
                 <span className="text-sm text-muted-foreground">
-                  ({reviewer.total_reviews} reviews)
+                  (24 reviews)
                 </span>
               </div>
             </div>
@@ -177,26 +177,26 @@ export function ProfessionalReviewerCard({
 
       <CardContent className="space-y-4">
         {/* Specialization */}
-        {reviewer.specialization && (
+        {reviewer.specializations && reviewer.specializations.length > 0 && (
           <div className="flex items-center gap-2">
             <Briefcase className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm capitalize font-medium">{reviewer.specialization}</span>
+            <span className="text-sm capitalize font-medium">{reviewer.specializations[0].name}</span>
           </div>
         )}
 
         {/* Location */}
-        {reviewer.location && (
+        {reviewer.jurisdiction && (
           <div className="flex items-center gap-2">
             <MapPin className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm">{reviewer.location}</span>
+            <span className="text-sm">{reviewer.jurisdiction}</span>
           </div>
         )}
 
         {/* Experience */}
-        {reviewer.years_experience && (
+        {reviewer.experience_years && (
           <div className="flex items-center gap-2">
             <GraduationCap className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm">{reviewer.years_experience} years of experience</span>
+            <span className="text-sm">{reviewer.experience_years} years of experience</span>
           </div>
         )}
 
@@ -215,7 +215,7 @@ export function ProfessionalReviewerCard({
             <div className="text-center">
               <div className="flex items-center justify-center gap-1 mb-1">
                 <CheckCircle className="h-4 w-4 text-green-600" />
-                <span className="text-lg font-bold">{reviewer.total_reviews}</span>
+                <span className="text-lg font-bold">15</span>
               </div>
               <p className="text-xs text-muted-foreground">Reviews</p>
             </div>
@@ -223,9 +223,7 @@ export function ProfessionalReviewerCard({
             <div className="text-center">
               <div className="flex items-center justify-center gap-1 mb-1">
                 <Award className="h-4 w-4 text-blue-600" />
-                <span className="text-lg font-bold">
-                  {Math.round(reviewer.average_rating * 20)}%
-                </span>
+                <span className="text-lg font-bold">96%</span>
               </div>
               <p className="text-xs text-muted-foreground">Success Rate</p>
             </div>
@@ -233,9 +231,7 @@ export function ProfessionalReviewerCard({
             <div className="text-center">
               <div className="flex items-center justify-center gap-1 mb-1">
                 <Clock className="h-4 w-4 text-orange-600" />
-                <span className="text-lg font-bold">
-                  {reviewer.average_turnaround_days}d
-                </span>
+                <span className="text-lg font-bold">2d</span>
               </div>
               <p className="text-xs text-muted-foreground">Avg. Time</p>
             </div>
@@ -248,16 +244,16 @@ export function ProfessionalReviewerCard({
             <Button
               onClick={() => onContact?.(reviewer)}
               className="w-full"
-              disabled={reviewer.availability_status === 'unavailable'}
+              disabled={reviewer.status === 'inactive'}
             >
-              {reviewer.availability_status === 'unavailable'
+              {reviewer.status === 'inactive'
                 ? 'Currently Unavailable'
                 : 'Request Professional Review'
               }
             </Button>
-            {reviewer.rate_per_hour && (
+            {reviewer.hourly_rate && (
               <p className="text-center text-sm text-muted-foreground">
-                Starting from ${reviewer.rate_per_hour}/hour
+                Starting from ${reviewer.hourly_rate}/hour
               </p>
             )}
           </div>

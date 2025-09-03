@@ -11,7 +11,7 @@ export const PersonalityCard = React.forwardRef<HTMLDivElement,
   <EnhancedCard
     ref={ref}
     personalityAdapt={true}
-    animationType="personality-adaptive"
+    animationType="lift"
     hoverEffect={true}
     clickEffect={true}
     {...props}
@@ -28,7 +28,7 @@ export const InteractiveCard = React.forwardRef<HTMLDivElement,
 >(({ children, ...props }, ref) => (
   <EnhancedCard
     ref={ref}
-    interactive={true}
+    // interactive={true}
     hoverEffect={true}
     clickEffect={true}
     animationType="lift"
@@ -46,9 +46,9 @@ export const ContentCard = React.forwardRef<HTMLDivElement,
 >(({ children, ...props }, ref) => (
   <EnhancedCard
     ref={ref}
-    variant="default"
-    size="default"
-    interactive={false}
+    // variant="default"
+    // size="default"
+    // interactive={false}
     hoverEffect={false}
     clickEffect={false}
     {...props}

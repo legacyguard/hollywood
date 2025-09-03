@@ -3,13 +3,12 @@
  * Comprehensive types for family member management and collaboration
  */
 
-export type FamilyRole = 'admin' | 'collaborator' | 'viewer' | 'emergency_contact';
+export type FamilyRole = 'owner' | 'co_owner' | 'collaborator' | 'viewer' | 'emergency_contact';
 
-export type FamilyMemberStatus = 'invited' | 'active' | 'inactive' | 'pending_verification';
+export type FamilyMemberStatus = 'invited' | 'active' | 'inactive' | 'pending' | 'pending_verification';
 
 export type RelationshipType =
   | 'spouse'
-  | 'partner'
   | 'child'
   | 'parent'
   | 'sibling'
@@ -18,8 +17,7 @@ export type RelationshipType =
   | 'aunt_uncle'
   | 'cousin'
   | 'friend'
-  | 'attorney'
-  | 'accountant'
+  | 'professional'
   | 'other';
 
 export interface FamilyMember {
@@ -30,14 +28,14 @@ export interface FamilyMember {
   relationship: RelationshipType;
   status: FamilyMemberStatus;
   avatar?: string;
-  phone?: string;
+  phone?: string | null;
   address?: {
     street: string;
     city: string;
-    state: string;
-    zipCode: string;
+    state?: string;
+    postalCode: string;
     country: string;
-  };
+  } | null;
   invitedAt: Date;
   joinedAt?: Date;
   lastActiveAt?: Date;
@@ -61,18 +59,20 @@ export interface FamilyPermissions {
 
 export interface FamilyInvitation {
   id: string;
+  senderId: string;
+  familyMemberId: string;
   email: string;
-  name: string;
+  token: string;
+  status: 'pending' | 'accepted' | 'declined' | 'expired';
+  message: string | null;
+  expiresAt: string;
+  acceptedAt: string | null;
   role: FamilyRole;
   relationship: RelationshipType;
-  message: string;
-  invitedBy: string;
-  invitedAt: Date;
-  expiresAt: Date;
-  status: 'pending' | 'accepted' | 'declined' | 'expired';
-  acceptedAt?: Date;
-  declinedAt?: Date;
-  token: string; // Secure invitation token
+  name?: string;
+  invitedBy?: string;
+  invitedAt?: Date;
+  declinedAt?: string | null;
 }
 
 export interface FamilyCalendarEvent {
@@ -116,12 +116,27 @@ export interface FamilyProtectionStatus {
   recommendations: string[];
 }
 
+export interface FamilyActivity {
+  id: string;
+  familyOwnerId: string;
+  actorId: string | null;
+  actorName: string | null;
+  actionType: string;
+  targetType: string | null;
+  targetId: string | null;
+  details: Record<string, any>;
+  createdAt: string;
+}
+
 export interface FamilyStats {
+  totalMembers: number;
+  activeMembers: number;
+  pendingInvitations: number;
   totalDocuments: number;
   sharedDocuments: number;
   memberContributions: Record<string, number>; // Member ID -> document count
   documentsByCategory: Record<string, number>;
-  recentActivity: FamilyTimeline[];
+  recentActivity: FamilyActivity[];
   upcomingEvents: FamilyCalendarEvent[];
   protectionScore: number;
 }
@@ -191,7 +206,18 @@ export interface FamilyMemberActivity {
 
 // Helper functions and constants
 export const FAMILY_ROLE_PERMISSIONS: Record<FamilyRole, FamilyPermissions> = {
-  admin: {
+  owner: {
+    canViewDocuments: true,
+    canEditDocuments: true,
+    canDeleteDocuments: true,
+    canInviteMembers: true,
+    canManageMembers: true,
+    canAccessEmergencyInfo: true,
+    canViewFinancials: true,
+    canReceiveNotifications: true,
+    documentCategories: ['*'] // All categories
+  },
+  co_owner: {
     canViewDocuments: true,
     canEditDocuments: true,
     canDeleteDocuments: true,

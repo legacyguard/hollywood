@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi, _afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { EmergencyAccessControl } from '../access-control';
 import { EmergencyDetectionEngine } from '../detection-engine';
 import { GuardianNotifier } from '../guardian-notifier';

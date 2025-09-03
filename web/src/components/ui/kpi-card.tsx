@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Icon } from '@/components/ui/icon-library';
+import { Icon, type IconName } from '@/components/ui/icon-library';
 import { cn } from '@/lib/utils';
 
 export type TrendType = 'up' | 'neutral' | 'down';
@@ -18,7 +18,7 @@ export interface KPICardProps {
   showTrend?: boolean;
 }
 
-const getTrendIcon = (trendType: TrendType): string => {
+const getTrendIcon = (trendType: TrendType): IconName => {
   switch (trendType) {
     case 'up':
       return 'trendingUp';

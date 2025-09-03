@@ -94,7 +94,7 @@ const SidebarProvider = React.forwardRef<
     // This makes it easier to style the sidebar with Tailwind classes.
     const state = open ? 'expanded' : 'collapsed';
 
-    const contextValue = React.useMemo<SidebarContext>(
+    const contextValue = React.useMemo(
       () => ({
         state,
         open,
@@ -108,7 +108,7 @@ const SidebarProvider = React.forwardRef<
     );
 
     return (
-      <SidebarContext.Provider value={contextValue}>
+      <SidebarContext.Provider value={contextValue as any}>
         <TooltipProvider delayDuration={0}>
           <div
             style={

@@ -187,23 +187,16 @@ export function TimeCapsuleWizard({
         }
       }
 
-      // Create the time capsule record
+      // Create the time capsule record (only include fields that exist in database schema)
       const capsuleData = {
         user_id: userId,
-        recipient_id: formData.recipient.id || null,
-        recipient_name: formData.recipient.name,
-        recipient_email: formData.recipient.email,
+        message_title: formData.messageTitle,
+        message_preview: formData.messagePreview || null,
+        message_content: `${formData.recording.fileType.toUpperCase()} Recording: ${formData.messageTitle}\n\nRecipient: ${formData.recipient.name} (${formData.recipient.email})\nDelivery: ${formData.deliveryCondition}${formData.deliveryDate ? ` on ${formData.deliveryDate.toLocaleDateString()}` : ' upon death'}\nFile: ${uploadData.path}\nDuration: ${Math.round(formData.recording.duration)}s\n${formData.messagePreview ? `\nPreview: ${formData.messagePreview}` : ''}`,
         delivery_condition: formData.deliveryCondition,
         delivery_date: formData.deliveryDate
           ? formData.deliveryDate.toISOString()
           : null,
-        message_title: formData.messageTitle,
-        message_preview: formData.messagePreview || null,
-        storage_path: uploadData.path,
-        file_type: formData.recording.fileType,
-        file_size_bytes: formData.recording.blob.size,
-        duration_seconds: Math.round(formData.recording.duration),
-        thumbnail_path: thumbnailPath,
       };
 
       const { data: capsule, error: insertError } = await supabase
@@ -216,8 +209,35 @@ export function TimeCapsuleWizard({
         throw insertError;
       }
 
-      // Success!
-      onCapsuleCreated(capsule);
+      // Success! Transform database result to match expected TimeCapsule type
+      const transformedCapsule: TimeCapsule = {
+        id: capsule.id,
+        user_id: capsule.user_id,
+        message_title: capsule.message_title,
+        message_preview: capsule.message_preview,
+
+        delivery_condition: capsule.delivery_condition as DeliveryCondition,
+        delivery_date: capsule.delivery_date,
+        created_at: capsule.created_at,
+        updated_at: capsule.updated_at,
+        recipient_id: formData.recipient.id || null,
+        recipient_name: formData.recipient.name,
+        recipient_email: formData.recipient.email,
+        storage_path: uploadData.path,
+        file_type: formData.recording.fileType,
+        file_size_bytes: formData.recording.blob.size,
+        duration_seconds: Math.round(formData.recording.duration),
+        thumbnail_path: thumbnailPath,
+        access_token: crypto.randomUUID(),
+        status: 'PENDING' as const,
+        is_delivered: false,
+        delivered_at: null,
+        delivery_attempts: 0,
+        last_delivery_attempt: null,
+        delivery_error: null,
+      };
+      
+      onCapsuleCreated(transformedCapsule);
       handleClose();
     } catch (error) {
       console.error('Error creating time capsule:', error);

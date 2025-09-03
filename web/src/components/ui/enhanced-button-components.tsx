@@ -29,7 +29,7 @@ export const PersonalityButton = React.forwardRef<HTMLButtonElement,
   <EnhancedButton
     ref={ref}
     personalityAdapt={true}
-    animationType="personality-adaptive"
+    animationType="hover-lift"
     rippleEffect={true}
     {...props}
   >
@@ -45,8 +45,8 @@ export const ActionButton = React.forwardRef<HTMLButtonElement,
 >(({ children, ...props }, ref) => (
   <EnhancedButton
     ref={ref}
-    variant="default"
-    size="default"
+
+
     rippleEffect={true}
     animationType="button-press"
     {...props}

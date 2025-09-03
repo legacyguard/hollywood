@@ -317,7 +317,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {CZ_SK_JURISDICTIONS[state.jurisdiction].supportedLanguages.map(lang => (
+              {CZ_SK_JURISDICTIONS[state.jurisdiction as keyof typeof CZ_SK_JURISDICTIONS].supportedLanguages.map(lang => (
                 <SelectItem key={lang} value={lang}>
                   {lang === 'cs' && 'Čeština'}
                   {lang === 'sk' && 'Slovenčina'}
@@ -490,7 +490,19 @@ export const WillWizard: React.FC<WillWizardProps> = ({
             onChange={(e) => updateUserData({
               family: {
                 ...state.userData.family,
-                spouse: { fullName: e.target.value }
+                spouse: { 
+                  fullName: e.target.value,
+                  dateOfBirth: '',
+                  placeOfBirth: '',
+                  citizenship: '',
+                  address: {
+                    street: '',
+                    city: '',
+                    postalCode: '',
+                    country: ''
+                  },
+                  maritalStatus: 'married'
+                }
               }
             })}
           />
@@ -556,7 +568,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
             updateUserData({
               family: {
                 ...state.userData.family,
-                children: [...(state.userData.family.children || []), newChild]
+                children: [...(state.userData.family.children || []), newChild as any]
               }
             });
           }}

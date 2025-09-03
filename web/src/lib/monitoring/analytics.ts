@@ -45,7 +45,7 @@ export const initAnalytics = () => {
     window.dataLayer.push(arguments);
   };
 
-  window.gtag('js', new Date());
+  window.gtag('js', new Date().toISOString());
   window.gtag('config', GA_ID, {
     page_title: document.title,
     page_location: window.location.href,

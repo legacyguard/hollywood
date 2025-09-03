@@ -176,39 +176,39 @@ export default function ComponentShowcase() {
       title: 'Total Documents',
       value: '156',
       change: 12,
-      trend: 'up',
-      icon: 'file-text',
-      color: 'primary',
+      trend: 'up' as const,
+      icon: 'file-text' as const,
+      color: 'primary' as const,
     },
     {
       title: 'Family Members',
       value: '12',
       change: 8,
-      trend: 'up',
-      icon: 'users',
-      color: 'success',
+      trend: 'up' as const,
+      icon: 'users' as const,
+      color: 'success' as const,
     },
     {
       title: 'Completion Rate',
       value: '87%',
       change: 5,
-      trend: 'up',
-      icon: 'trending-up',
-      color: 'warning',
+      trend: 'up' as const,
+      icon: 'trending-up' as const,
+      color: 'warning' as const,
     },
     {
       title: 'Days Active',
       value: '234',
-      icon: 'calendar',
-      color: 'info',
+      icon: 'calendar' as const,
+      color: 'info' as const,
     },
   ];
 
   const progressItems = [
-    { label: 'Documents', value: 85, color: 'primary' },
-    { label: 'Family Setup', value: 92, color: 'success' },
-    { label: 'Will Progress', value: 67, color: 'warning' },
-    { label: 'Security', value: 100, color: 'info' },
+    { label: 'Documents', value: 85, color: 'primary' as const },
+    { label: 'Family Setup', value: 92, color: 'success' as const },
+    { label: 'Will Progress', value: 67, color: 'warning' as const },
+    { label: 'Security', value: 100, color: 'info' as const },
   ];
 
   return (
@@ -263,7 +263,7 @@ export default function ComponentShowcase() {
                         value='$45,231'
                         change={23}
                         trend='up'
-                        icon='dollar-sign'
+                        icon='trending-up'
                         color='success'
                       />
                       <MetricCard

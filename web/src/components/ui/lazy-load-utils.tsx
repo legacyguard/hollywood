@@ -87,7 +87,7 @@ export function withLazyLoading<P extends object>(
 
     return (
       <div ref={containerRef}>
-        <WrappedComponent {...props} ref={ref} />
+        <WrappedComponent {...(props as any)} ref={ref} />
       </div>
     );
   });

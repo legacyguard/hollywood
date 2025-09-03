@@ -355,7 +355,9 @@ export const FamilyLegacyProjectManagement: React.FC<FamilyLegacyProjectManageme
         ...task,
         id: `task-${Date.now()}-${index}`,
         assigneeId: currentUserId,
-        assigneeName: currentUser.name
+        assigneeName: currentUser.name,
+        comments: [],
+        attachments: []
       })),
       milestones: template.milestones.map((milestone, index) => ({
         ...milestone,
@@ -426,7 +428,9 @@ export const FamilyLegacyProjectManagement: React.FC<FamilyLegacyProjectManageme
       dueDate: taskData.dueDate,
       estimatedHours: taskData.estimatedHours || 1,
       dependencies: [],
-      tags: taskData.tags || []
+      tags: taskData.tags || [],
+      comments: [],
+      attachments: []
     };
 
     const updatedProject = {
@@ -588,7 +592,7 @@ export const FamilyLegacyProjectManagement: React.FC<FamilyLegacyProjectManageme
                 </div>
               </div>
               <div className="flex gap-2">
-                <Select value={viewMode} onValueChange={(value: string) => setViewMode(value)}>
+                <Select value={viewMode} onValueChange={(value: 'kanban' | 'list' | 'calendar') => setViewMode(value)}>
                   <SelectTrigger className="w-32">
                     <SelectValue />
                   </SelectTrigger>

@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { Progress } from '../ui/progress';
 
-import { Vote, Users, Clock, CheckCircle, AlertCircle, MessageSquare, Calendar, Plus, Eye, Minus, Settings, Archive, Filter } from 'lucide-react';
+import { Vote as VoteIcon, Users, Clock, CheckCircle, AlertCircle, MessageSquare, Calendar, Plus, Eye, Minus, Settings, Archive, Filter } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface FamilyMember {
@@ -248,7 +248,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
     const filteredVotes = decision.votes.filter(v => v.userId !== currentUserId);
 
     // Add new vote
-    const newVote: Vote = {
+    const newVote: VoteRecord = {
       id: `vote-${Date.now()}`,
       userId: currentUserId,
       userName: currentUser.name,
@@ -338,7 +338,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
   const getStatusIcon = (status: FamilyDecision['status']) => {
     switch (status) {
       case 'draft': return <Settings className="h-4 w-4" />;
-      case 'voting': return <Vote className="h-4 w-4" />;
+      case 'voting': return <VoteIcon className="h-4 w-4" />;
       case 'decided': return <CheckCircle className="h-4 w-4" />;
       case 'implemented': return <CheckCircle className="h-4 w-4" />;
       case 'archived': return <Archive className="h-4 w-4" />;
@@ -686,7 +686,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
                             onClick={() => startVoting(decision.id)}
                             className="gap-2"
                           >
-                            <Vote className="h-3 w-3" />
+                            <VoteIcon className="h-3 w-3" />
                             Start Voting
                           </Button>
                         )}
@@ -829,7 +829,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
 
       {filteredDecisions.length === 0 && (
         <div className="text-center py-12">
-          <Vote className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+          <VoteIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">No Decisions Found</h3>
           <p className="text-gray-600 mb-4">
             {filterStatus !== 'all' || filterCategory !== 'all'

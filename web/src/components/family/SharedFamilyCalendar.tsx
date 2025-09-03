@@ -40,6 +40,10 @@ interface NewEventForm {
   relatedMemberId?: string;
   notifyMembers: string[];
   priority: FamilyCalendarEvent['priority'];
+  durationMinutes?: number;
+  location?: string;
+  meetingUrl?: string;
+  attendees?: any;
   recurring?: {
     frequency: 'yearly' | 'monthly' | 'weekly';
     endDate?: Date;
@@ -52,7 +56,11 @@ const defaultForm: NewEventForm = {
   date: new Date(),
   type: 'custom',
   notifyMembers: [],
-  priority: 'medium'
+  priority: 'medium',
+  durationMinutes: 60,
+  location: '',
+  meetingUrl: '',
+  attendees: {}
 };
 
 const eventTypeConfig = {
@@ -85,7 +93,7 @@ export function SharedFamilyCalendar({ userId, familyMembers }: SharedFamilyCale
       setIsLoading(true);
       const startDate = startOfMonth(selectedDate);
       const endDate = endOfMonth(selectedDate);
-      const calendarEvents = await familyService.getCalendarEvents(userId, startDate, endDate);
+      const calendarEvents = await familyService.getCalendarEvents(userId, startDate.toISOString(), endDate.toISOString());
       setEvents(calendarEvents);
     } catch (error) {
       console.error('Failed to load calendar events:', error);
@@ -102,8 +110,17 @@ export function SharedFamilyCalendar({ userId, familyMembers }: SharedFamilyCale
     setIsLoading(true);
     try {
       const event = await familyService.createCalendarEvent(userId, {
-        ...newEventForm,
-        createdBy: userId,
+        title: newEventForm.title,
+        description: newEventForm.description,
+        eventType: newEventForm.type as 'reminder' | 'review' | 'meeting' | 'deadline' | 'celebration',
+        scheduledAt: newEventForm.date.toISOString(),
+        durationMinutes: newEventForm.durationMinutes || 60,
+        location: newEventForm.location || '',
+        meetingUrl: newEventForm.meetingUrl || '',
+        attendees: newEventForm.attendees || [],
+        isRecurring: !!newEventForm.recurring,
+        recurrencePattern: newEventForm.recurring?.frequency,
+        recurrenceEndDate: newEventForm.recurring?.endDate?.toISOString(),
       });
 
       setEvents(prev => [...prev, event]);

@@ -223,7 +223,7 @@ export interface SpecialProvision {
 }
 
 // Legacy WillData interface for compatibility
-export interface WillData extends Will {
+export interface WillData {
   testatorInfo?: {
     fullName: string;
     dateOfBirth: string;
@@ -236,11 +236,11 @@ export interface WillData extends Will {
 
   // Additional testator_data property for component compatibility
   testator_data: {
-    fullName: string;
-    dateOfBirth: string;
-    address: string;
+    fullName?: string;
+    dateOfBirth?: string;
+    address?: string;
     citizenship?: string;
-    maritalStatus?: string;
+    maritalStatus?: 'single' | 'married' | 'divorced' | 'widowed';
   };
 
   // Assets structure for component compatibility
@@ -248,9 +248,81 @@ export interface WillData extends Will {
     realEstate?: RealEstateAsset[];
     vehicles?: VehicleAsset[];
     bankAccounts?: BankAccountAsset[];
+    investments?: Array<{
+      company: string;
+      accountType: string;
+      value?: number;
+    }>;
     personalProperty?: PersonalPropertyAsset[];
   };
 
+  // Beneficiaries structure for component compatibility
+  beneficiaries: Array<{
+    id: string;
+    name: string;
+    relationship: 'spouse' | 'child' | 'parent' | 'sibling' | 'grandchild' | 'friend' | 'charity' | 'other';
+    percentage: number;
+    specificGifts?: string[];
+    conditions?: string;
+  }>;
+
+  // Executor data structure
+  executor_data: {
+    primaryExecutor?: {
+      name: string;
+      relationship: string;
+      phone?: string;
+    };
+    backupExecutor?: {
+      name: string;
+      relationship: string;
+      phone?: string;
+    };
+    executorPowers?: string[];
+  };
+
+  // Guardianship data structure
+  guardianship_data: {
+    minorChildren?: Array<{
+      name: string;
+      dateOfBirth: string;
+    }>;
+    primaryGuardian?: {
+      name: string;
+      relationship: string;
+    };
+    backupGuardian?: {
+      name: string;
+      relationship: string;
+    };
+    guardianInstructions?: string;
+  };
+
+  // Special instructions structure
+  special_instructions: {
+    funeralWishes?: string;
+    organDonation?: boolean;
+    petCare?: string;
+    digitalAssets?: string;
+    personalMessages?: Array<{
+      recipient: string;
+      message: string;
+    }>;
+    charitableBequests?: Array<{
+      charity: string;
+      amount: number;
+    }>;
+  };
+
+  // Legal data structure
+  legal_data: {
+    jurisdiction?: string;
+    language?: string;
+    legalFramework?: string;
+    additionalClauses?: string[];
+  };
+
+  // Legacy compatibility properties
   executors?: ExecutorAppointment[];
   specificBequests?: AssetDistribution[];
   residuaryEstate?: {
@@ -283,6 +355,9 @@ export interface WillData extends Will {
   trust_score?: TrustScore;
   review_eligibility: boolean;
   family_protection_level: 'basic' | 'standard' | 'premium' | 'comprehensive';
+
+  // Additional properties for compatibility
+  completeness_score: number;
 }
 
 // Will Builder Types

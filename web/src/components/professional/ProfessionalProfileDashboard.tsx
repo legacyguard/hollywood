@@ -121,7 +121,7 @@ export function ProfessionalProfileDashboard({
       reviewer.full_name,
       reviewer.professional_title,
       reviewer.bar_number,
-      reviewer.licensed_states?.length > 0,
+      (reviewer.licensed_states?.length || 0) > 0,
       reviewer.specializations?.length > 0,
       reviewer.bio,
       reviewer.hourly_rate,

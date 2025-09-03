@@ -131,8 +131,8 @@ export const mobileOptimized = {
     ),
     style: {
       WebkitTapHighlightColor: 'transparent',
-      WebkitTouchCallout: 'none',
-      WebkitUserSelect: 'none',
+      WebkitTouchCallout: 'none' as any,
+      WebkitUserSelect: 'none' as any,
     }
   }),
 

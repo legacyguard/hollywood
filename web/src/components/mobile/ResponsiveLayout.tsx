@@ -95,7 +95,7 @@ export default function ResponsiveLayout({
 
   // Desktop layout with sidebar navigation
   return (
-    <DashboardLayout className={className}>
+    <DashboardLayout>
       {children}
 
       {/* Desktop PWA Install Prompt */}

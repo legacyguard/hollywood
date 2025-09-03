@@ -92,17 +92,17 @@ export const IntelligentWillDraftGenerator: React.FC<
         .select('*')
         .eq('user_id', userId);
 
-      // 2. Fetch Document Bundles with Documents
-      const { data: bundles } = await supabase
-        .from('bundles_with_active_documents')
+      // 2. Fetch Documents
+      const { data: documents } = await supabase
+        .from('documents')
         .select('*')
         .eq('user_id', userId);
 
       // 3. Analyze and Generate Suggestions
       const analysis = analyzeUserDataForWill(
-        guardians || [],
-        bundles || [],
-        currentUser
+        (guardians || []).filter(g => g.relationship !== null) as any,
+        (documents || []) as any,
+        { fullName: currentUser.name }
       );
 
       setAnalysis(analysis);
@@ -351,7 +351,7 @@ export const IntelligentWillDraftGenerator: React.FC<
   const convertAnalysisToWillData = (analysis: DraftAnalysis): WillData => {
     const willData: WillData = {
       testator_data: {
-        fullName: currentUser?.fullName || '',
+        fullName: currentUser?.name || '',
         citizenship: 'Slovak',
       },
       beneficiaries: analysis.suggestedBeneficiaries.map(b => ({

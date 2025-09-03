@@ -19,6 +19,7 @@ import {
 } from '@/lib/sofia-search-dictionary';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
+import type { QuickSearchResult } from '@/types/index';
 
 interface QuickSearchProps {
   isOpen: boolean;
@@ -26,7 +27,7 @@ interface QuickSearchProps {
   onSofiaAction?: (action: SofiaAction) => void;
 }
 
-interface SearchResult {
+interface LocalSearchResult {
   id: string;
   type: 'document' | 'guardian' | 'action';
   title: string;
@@ -42,17 +43,17 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({
 }) => {
   const { t } = useTranslation('ui/quick-search');
   const [query, setQuery] = useState('');
-  const [results, setResults] = useState<SearchResult[]>([]);
+  const [results, setResults] = useState<LocalSearchResult[]>([]);
   const [sofiaActions, setSofiaActions] = useState<SofiaAction[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [documents, setDocuments] = useState<SearchResult[]>([]);
+  const [documents, setDocuments] = useState<LocalSearchResult[]>([]);
   const { userId } = useAuth();
   const createSupabaseClient = useSupabaseWithClerk();
   const navigate = useNavigate();
 
   // Quick actions memoized to prevent unnecessary re-renders
-  const quickActions: SearchResult[] = useMemo(
+  const quickActions: LocalSearchResult[] = useMemo(
     () => [
       {
         id: 'upload-document',
@@ -197,7 +198,10 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({
           action =>
             action.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
             action.subtitle?.toLowerCase().includes(searchQuery.toLowerCase())
-        );
+        ).map(action => ({
+          ...action,
+          type: action.type as "document" | "action" | "guardian"
+        }));
 
         // Search documents and guardians
         const [documents, guardians] = await Promise.all([
@@ -235,8 +239,12 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({
           ),
         ].slice(0, 6); // Limit total suggestions
 
-        setDocuments(documents);
-        setResults([...filteredActions, ...documents, ...guardians]);
+        setDocuments(documents.map(doc => ({ ...doc, type: "document" as const })));
+        setResults([
+          ...filteredActions, 
+          ...documents.map(doc => ({ ...doc, type: "document" as const })),
+          ...guardians.map(guardian => ({ ...guardian, type: "guardian" as const }))
+        ]);
         setSofiaActions(allSuggestions);
       } catch (error) {
         console.error('Search error:', error);
@@ -313,7 +321,7 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({
                   className='w-full justify-start h-auto p-4 mx-4'
                   onClick={result.action}
                 >
-                  <Icon name={result.icon}
+                  <Icon name={result.icon as any}
                     className='w-5 h-5 mr-3 flex-shrink-0'
                   />
                   <div className='text-left'>
@@ -393,7 +401,7 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({
                           <div className='w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse' />
                         )}
                         <Icon
-                          name={action.icon || 'message-circle'}
+                          name={(action.icon || 'message-circle') as any}
                           className={`w-4 h-4 mr-3 flex-shrink-0 ${
                             isDynamic ? 'text-green-600' : 'text-primary'
                           }`}

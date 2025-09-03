@@ -76,7 +76,7 @@ export const EnhancedWillWizard: React.FC<EnhancedWillWizardProps> = ({
             isUnlocked: true,
             unlockedAt: new Date().toISOString(),
           },
-          userId
+          userId || undefined
         );
       }
     }, 1500); // Delay to show after success message

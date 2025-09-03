@@ -396,7 +396,7 @@ export function FamilyDocumentSharing({ userId, familyMembers }: FamilyDocumentS
 
       {/* Filters */}
       <div className="flex flex-wrap gap-2">
-        <Select value={filter} onValueChange={(v: string) => setFilter(v)}>
+        <Select value={filter} onValueChange={(v: 'all' | 'shared' | 'private' | 'emergency') => setFilter(v)}>
           <SelectTrigger className="w-40">
             <SelectValue placeholder="Filter by sharing" />
           </SelectTrigger>

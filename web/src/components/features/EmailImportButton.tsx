@@ -54,7 +54,7 @@ export function EmailImportButton({ onImportComplete, className }: EmailImportBu
   }
 
   // Floating button variant
-  if (isVariant('fab')) {
+  if (isVariant('variant_a')) {
     return (
       <>
         <motion.div

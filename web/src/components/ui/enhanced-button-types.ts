@@ -16,11 +16,11 @@ export interface EnhancedButtonProps
   successText?: string
   errorText?: string
   // Icon props
-  leftIcon?: keyof IconMap
-  rightIcon?: keyof IconMap
-  loadingIcon?: keyof IconMap
-  successIcon?: keyof IconMap
-  errorIcon?: keyof IconMap
+  leftIcon?: keyof typeof IconMap
+  rightIcon?: keyof typeof IconMap
+  loadingIcon?: keyof typeof IconMap
+  successIcon?: keyof typeof IconMap
+  errorIcon?: keyof typeof IconMap
   // Animation props
   staggerDelay?: number
   rippleEffect?: boolean

@@ -65,12 +65,6 @@ export const AnalyticsDashboard: React.FC = () => {
   const [dateRange, setDateRange] = useState<'7d' | '30d' | '90d'>('30d');
   const [currentMetrics, setCurrentMetrics] = useState<MetricCard[]>([]);
 
-  useEffect(() => {
-    loadAnalytics();
-    const interval = setInterval(loadAnalytics, 60000); // Refresh every minute
-    return () => clearInterval(interval);
-  }, [dateRange, loadAnalytics]);
-
   const loadAnalytics = useCallback(async () => {
     try {
       // Load subscription metrics
@@ -113,6 +107,12 @@ export const AnalyticsDashboard: React.FC = () => {
       setIsLoading(false);
     }
   }, [dateRange]);
+
+  useEffect(() => {
+    loadAnalytics();
+    const interval = setInterval(loadAnalytics, 60000); // Refresh every minute
+    return () => clearInterval(interval);
+  }, [dateRange, loadAnalytics]);
 
   const calculateCurrentMetrics = (data: SubscriptionMetrics[]) => {
     if (data.length === 0) return;

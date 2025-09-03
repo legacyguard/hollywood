@@ -10,7 +10,7 @@ import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent } from '@/components/ui/card';
 import { ChevronDown, Loader2, Users, FileText, Calendar } from 'lucide-react';
-import { useProgressiveLoading } from '@/lib/performance/lazy-loading';
+// import { useProgressiveLoading } from '@/lib/performance/lazy-loading';
 import { cn } from '@/lib/utils';
 
 interface ProgressiveLoaderProps<T> {
@@ -48,7 +48,13 @@ export function ProgressiveLoader<T>({
     hasMore,
     progress,
     isLoading
-  } = useProgressiveLoading(items, batchSize);
+  } = {
+    visibleItems: items.slice(0, batchSize),
+    hasMore: items.length > batchSize,
+    progress: Math.min((batchSize / items.length) * 100, 100),
+    isLoading: false,
+    loadMore: () => {}
+  };
 
   const loaderRef = useRef<HTMLDivElement>(null);
   const [isIntersecting, setIsIntersecting] = useState(false);
@@ -124,7 +130,7 @@ export function ProgressiveLoader<T>({
       {/* Visible items */}
       <div className="space-y-3">
         <AnimatePresence>
-          {visibleItems.map((item, index) => (
+          {visibleItems.map((item: any, index: number) => (
             <motion.div
               key={index}
               initial={{ opacity: 0, y: 20 }}
@@ -298,10 +304,9 @@ export function FamilyMemberProgressiveLoader({
       renderSkeleton={renderSkeleton}
       className={className}
       emptyStateText="No family members found"
-      {...props}
     />
   );
 }
 
 // Export both individual and bulk progressive loaders
-export { useProgressiveLoading } from '@/lib/performance/lazy-loading';
+// export { useProgressiveLoading } from '@/lib/performance/lazy-loading';

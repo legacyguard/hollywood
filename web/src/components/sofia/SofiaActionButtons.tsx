@@ -82,7 +82,7 @@ export const SofiaActionButtons: React.FC<SofiaActionButtonsProps> = ({
                 `}
                 >
                   <Icon
-                    name={action.icon as string}
+                    name={action.icon as any}
                     className={`w-4 h-4 ${
                       action.cost === 'premium' ? 'text-white' : 'text-primary'
                     }`}

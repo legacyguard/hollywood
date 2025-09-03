@@ -9,8 +9,8 @@ import {
 import { Button } from '@/components/ui/button';
 import type {
   ValidationResult,
-  getValidationColor,
 } from '@/lib/will-legal-validator';
+import { getValidationColor } from '@/lib/will-legal-validator';
 
 interface ValidationIndicatorProps {
   validation: ValidationResult;
@@ -79,7 +79,7 @@ export const ValidationIndicator: React.FC<ValidationIndicatorProps> = ({
             className={`p-1 h-6 w-6 ${className}`}
           >
             <Icon
-              name={getIconName(validation.level)}
+              name={getIconName(validation.level) as any}
               className={`w-4 h-4 ${getColorClass(validation.level)}`}
             />
           </Button>
@@ -88,7 +88,7 @@ export const ValidationIndicator: React.FC<ValidationIndicatorProps> = ({
           <div className='space-y-2'>
             <div className='flex items-center gap-2'>
               <Icon
-                name={getIconName(validation.level)}
+                name={getIconName(validation.level) as any}
                 className={`w-4 h-4 ${getColorClass(validation.level)}`}
               />
               <Badge variant={getBadgeVariant(validation.level)}>
@@ -115,7 +115,7 @@ export const ValidationIndicator: React.FC<ValidationIndicatorProps> = ({
     >
       <div className='flex items-start gap-3'>
         <Icon
-          name={getIconName(validation.level)}
+          name={getIconName(validation.level) as any}
           className={`w-5 h-5 ${getColorClass(validation.level)} flex-shrink-0 mt-0.5`}
         />
         <div className='flex-1 min-w-0'>

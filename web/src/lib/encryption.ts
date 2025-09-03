@@ -127,7 +127,7 @@ export const createEncryptedBlob = (
   nonce: Uint8Array
 ): Blob => {
   // Combine nonce and encrypted data
-  const combined = new Uint8Array(nonce.length + encryptedData.length as ArrayBuffer);
+  const combined = new Uint8Array(nonce.length + encryptedData.length);
   combined.set(nonce);
   combined.set(encryptedData, nonce.length);
 

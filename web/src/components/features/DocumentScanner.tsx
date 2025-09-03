@@ -624,14 +624,14 @@ function DocumentResults({ document }: { document: ProcessedDocument }) {
         ].map(tab => (
           <button
             key={tab.key}
-            onClick={() => setActiveTab(tab.key)}
+            onClick={() => setActiveTab(tab.key as 'metadata' | 'text' | 'overview' | 'entities')}
             className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
               activeTab === tab.key
                 ? 'bg-background shadow-sm text-foreground'
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
-            <Icon name={tab.icon} className='w-4 h-4' />
+            <Icon name={tab.icon as any} className='w-4 h-4' />
             {tab.label}
           </button>
         ))}

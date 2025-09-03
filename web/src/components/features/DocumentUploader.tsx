@@ -144,7 +144,7 @@ export const DocumentUploader = () => {
       // Save metadata to database
       // Pre development posielame user_id explicitne
       // Store nonce with document for decryption
-      const nonceBase64 = btoa(String.fromCharCode(...(metadata?.nonce || [])));
+      const nonceBase64 = btoa(String.fromCharCode(...(metadata?.iv ? new Uint8Array(metadata.iv.split(',').map(Number)) : [])));
 
       const { error: dbError } = await supabase.from('documents').insert({
         user_id: userId, // Explicitne posielame Clerk user ID

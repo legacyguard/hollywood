@@ -247,7 +247,7 @@ export const WillTemplateLibrary: React.FC<WillTemplateLibraryProps> = ({
             <div key={category} className='space-y-3'>
               <div className='flex items-center gap-3'>
                 <Icon
-                  name={getCategoryIcon(category)}
+                  name={getCategoryIcon(category) as any}
                   className='w-5 h-5 text-primary'
                 />
                 <h4 className='font-semibold capitalize'>
@@ -289,7 +289,7 @@ export const WillTemplateLibrary: React.FC<WillTemplateLibraryProps> = ({
               <DialogHeader>
                 <DialogTitle className='flex items-center gap-3'>
                   <Icon
-                    name={getCategoryIcon(selectedTemplate.category)}
+                    name={getCategoryIcon(selectedTemplate.category) as any}
                     className='w-6 h-6 text-primary'
                   />
                   {selectedTemplate.name}

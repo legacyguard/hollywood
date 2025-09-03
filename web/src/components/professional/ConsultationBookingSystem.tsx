@@ -171,10 +171,10 @@ export function ConsultationBookingSystem({
   }, [selectedDate]);
 
   const calculateTotalCost = () => {
-    if (!booking.consultationType || !booking.duration || !reviewer.hourly_rate) return 0;
+    if (!booking.consultationType || !booking.duration) return 0;
 
     const consultationType = CONSULTATION_TYPES.find(t => t.id === booking.consultationType);
-    const baseRate = reviewer.hourly_rate;
+    const baseRate = 150; // Default hourly rate
     const multiplier = consultationType?.priceMultiplier || 1;
     const hours = booking.duration / 60;
 
@@ -268,7 +268,7 @@ export function ConsultationBookingSystem({
             <RadioGroup
               value={booking.consultationType}
               onValueChange={(value: 'phone' | 'video' | 'in_person') =>
-                setBooking(prev => ({ ...prev, consultationType: value }))
+                setBooking(prev => ({ ...prev, consultationType: value } as Partial<ConsultationBooking>))
               }
               className="space-y-4"
             >
@@ -297,11 +297,9 @@ export function ConsultationBookingSystem({
                         <div className="flex-1">
                           <div className="flex items-center justify-between mb-2">
                             <h4 className="font-semibold">{type.name}</h4>
-                            {reviewer.hourly_rate && (
-                              <Badge variant="outline">
-                                ${Math.round(reviewer.hourly_rate * type.priceMultiplier)}/hour
-                              </Badge>
-                            )}
+                            <Badge variant="outline">
+                              ${Math.round(150 * type.priceMultiplier)}/hour
+                            </Badge>
                           </div>
 
                           <p className="text-muted-foreground mb-3">{type.description}</p>
@@ -355,7 +353,7 @@ export function ConsultationBookingSystem({
                             key={duration}
                             size="sm"
                             variant={booking.duration === duration ? 'default' : 'outline'}
-                            onClick={() => setBooking(prev => ({ ...prev, duration }))}
+                            onClick={() => setBooking(prev => ({ ...prev, duration } as Partial<ConsultationBooking>))}
                             className="text-xs h-7"
                           >
                             {duration}min
@@ -367,7 +365,7 @@ export function ConsultationBookingSystem({
                     <div>
                       <p className="text-sm text-muted-foreground">Hourly Rate</p>
                       <p className="font-semibold">
-                        ${Math.round((reviewer.hourly_rate || 0) * (CONSULTATION_TYPES.find(t => t.id === booking.consultationType)?.priceMultiplier || 1))}/hour
+                        ${Math.round(150 * (CONSULTATION_TYPES.find(t => t.id === booking.consultationType)?.priceMultiplier || 1))}/hour
                       </p>
                     </div>
 
@@ -392,7 +390,7 @@ export function ConsultationBookingSystem({
             <div className="text-center mb-8">
               <h3 className="text-xl font-semibold mb-2">Select Date & Time</h3>
               <p className="text-muted-foreground">
-                Choose a convenient time slot for your consultation with {reviewer.full_name}
+                Choose a convenient time slot for your consultation with {reviewer.fullName}
               </p>
             </div>
 
@@ -428,7 +426,7 @@ export function ConsultationBookingSystem({
                       key={slot.id}
                       variant={booking.time === slot.time ? 'default' : 'outline'}
                       disabled={!slot.available}
-                      onClick={() => setBooking(prev => ({ ...prev, time: slot.time, date: selectedDate }))}
+                      onClick={() => setBooking(prev => ({ ...prev, time: slot.time, date: selectedDate } as Partial<ConsultationBooking>))}
                       className="h-auto p-3 flex flex-col gap-1"
                     >
                       <span className="font-semibold">{slot.time}</span>
@@ -482,7 +480,7 @@ export function ConsultationBookingSystem({
                     onChange={(e) => setBooking(prev => ({
                       ...prev,
                       clientInfo: { ...prev.clientInfo, name: e.target.value }
-                    }))}
+                    } as Partial<ConsultationBooking>))}
                     placeholder="John Smith"
                   />
                 </div>
@@ -496,7 +494,7 @@ export function ConsultationBookingSystem({
                     onChange={(e) => setBooking(prev => ({
                       ...prev,
                       clientInfo: { ...prev.clientInfo, email: e.target.value }
-                    }))}
+                    } as Partial<ConsultationBooking>))}
                     placeholder="john@example.com"
                   />
                 </div>
@@ -510,7 +508,7 @@ export function ConsultationBookingSystem({
                     onChange={(e) => setBooking(prev => ({
                       ...prev,
                       clientInfo: { ...prev.clientInfo, phone: e.target.value }
-                    }))}
+                    } as Partial<ConsultationBooking>))}
                     placeholder="(555) 123-4567"
                   />
                 </div>
@@ -523,7 +521,7 @@ export function ConsultationBookingSystem({
                       setBooking(prev => ({
                         ...prev,
                         clientInfo: { ...prev.clientInfo, urgencyLevel: value }
-                      }))
+                      } as Partial<ConsultationBooking>))
                     }
                   >
                     <SelectTrigger>
@@ -547,7 +545,7 @@ export function ConsultationBookingSystem({
                     onChange={(e) => setBooking(prev => ({
                       ...prev,
                       clientInfo: { ...prev.clientInfo, consultationTopic: e.target.value }
-                    }))}
+                    } as Partial<ConsultationBooking>))}
                     placeholder="Brief description of what you'd like to discuss..."
                     rows={3}
                   />
@@ -561,7 +559,7 @@ export function ConsultationBookingSystem({
                     onChange={(e) => setBooking(prev => ({
                       ...prev,
                       clientInfo: { ...prev.clientInfo, backgroundInfo: e.target.value }
-                    }))}
+                    } as Partial<ConsultationBooking>))}
                     placeholder="Any additional context that would help prepare for our discussion..."
                     rows={4}
                   />
@@ -572,7 +570,7 @@ export function ConsultationBookingSystem({
                   <Textarea
                     id="requests"
                     value={booking.specialRequests || ''}
-                    onChange={(e) => setBooking(prev => ({ ...prev, specialRequests: e.target.value }))}
+                    onChange={(e) => setBooking(prev => ({ ...prev, specialRequests: e.target.value } as Partial<ConsultationBooking>))}
                     placeholder="Any special accommodations or requests..."
                     rows={2}
                   />
@@ -605,18 +603,16 @@ export function ConsultationBookingSystem({
                 <CardContent className="space-y-4">
                   <div className="flex items-center gap-4">
                     <Avatar className="w-16 h-16">
-                      <AvatarImage src={reviewer.profile_image_url} />
+                      <AvatarImage src={undefined} />
                       <AvatarFallback>
-                        {reviewer.full_name.split(' ').map(n => n[0]).join('')}
+                        {reviewer.fullName.split(' ').map((n: string) => n[0]).join('')}
                       </AvatarFallback>
                     </Avatar>
 
                     <div>
-                      <h4 className="font-semibold">{reviewer.full_name}</h4>
-                      <p className="text-muted-foreground">{reviewer.professional_title}</p>
-                      {reviewer.law_firm_name && (
-                        <p className="text-sm text-muted-foreground">{reviewer.law_firm_name}</p>
-                      )}
+                      <h4 className="font-semibold">{reviewer.fullName}</h4>
+                      <p className="text-muted-foreground">{reviewer.type}</p>
+                      <p className="text-sm text-muted-foreground">{reviewer.jurisdiction}</p>
                       <div className="flex items-center gap-1 mt-1">
                         <Star className="h-4 w-4 text-yellow-500 fill-current" />
                         <span className="text-sm">4.9 (127 reviews)</span>
@@ -627,11 +623,11 @@ export function ConsultationBookingSystem({
                   <div className="space-y-2 text-sm">
                     <div className="flex items-center gap-2">
                       <Award className="h-4 w-4 text-muted-foreground" />
-                      <span>{reviewer.experience_years} years experience</span>
+                      <span>{reviewer.experience} years experience</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Briefcase className="h-4 w-4 text-muted-foreground" />
-                      <span>{reviewer.specializations?.map(s => s.name).join(', ')}</span>
+                      <span>{reviewer.specializations?.join(', ')}</span>
                     </div>
                   </div>
                 </CardContent>
@@ -737,7 +733,7 @@ export function ConsultationBookingSystem({
             <div>
               <h3 className="text-2xl font-bold text-green-800 mb-2">Consultation Booked!</h3>
               <p className="text-muted-foreground">
-                Your consultation with {reviewer.full_name} has been confirmed.
+                Your consultation with {reviewer.fullName} has been confirmed.
               </p>
             </div>
 
@@ -815,7 +811,7 @@ export function ConsultationBookingSystem({
           <div className="flex items-center justify-between mb-4">
             <div>
               <CardTitle className="text-2xl font-bold">Book Legal Consultation</CardTitle>
-              <p className="text-muted-foreground">Schedule a consultation with {reviewer.full_name}</p>
+              <p className="text-muted-foreground">Schedule a consultation with {reviewer.fullName}</p>
             </div>
             <Badge variant="outline" className="bg-blue-50 text-blue-700">
               Step {currentStepIndex + 1} of {steps.length}

@@ -339,7 +339,7 @@ export const OnboardingTooltips: React.FC<OnboardingTooltipsProps> = ({
       </AnimatePresence>
 
       {/* Global styles for highlighting */}
-      <style jsx global>{`
+      <style>{`
         .onboarding-highlight {
           position: relative;
           z-index: 45;

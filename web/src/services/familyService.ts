@@ -8,13 +8,28 @@ import { familyDataCache } from '@/lib/performance/caching';
 import type {
   FamilyMember,
   FamilyInvitation,
-  FamilyRole,
-  RelationshipType,
-  FamilyPermissions,
-  FamilyProtectionStatus,
   FamilyStats,
-  EmergencyAccessRequest
-} from '@/types/family';
+  FamilyProtectionStatus,
+  EmergencyAccessRequest,
+  CreateFamilyMemberRequest,
+  UpdateFamilyMemberRequest,
+  CreateFamilyInvitationRequest,
+  FamilyActivity,
+  DbFamilyMember,
+  DbFamilyMemberInsert,
+  DbFamilyMemberUpdate,
+  DbFamilyInvitation,
+  DbFamilyInvitationInsert
+} from '@/integrations/supabase/database-aligned-types';
+import {
+  mapDbFamilyMemberToApplication,
+  mapApplicationToDbFamilyMember,
+  DEFAULT_PERMISSIONS,
+  isValidFamilyRole,
+  isValidRelationship,
+  isValidAccessLevel
+} from '@/integrations/supabase/database-aligned-types';
+import type { FamilyRole, RelationshipType, FamilyPermissions } from '@/types/family';
 
 export class FamilyService {
   private static instance: FamilyService;
@@ -35,51 +50,30 @@ export class FamilyService {
     const cacheKey = `family_members_${userId}`;
     const cached = familyDataCache.get(cacheKey);
 
-    if (cached) {
+    if (cached && Array.isArray(cached)) {
       return cached;
     }
 
     try {
-      // Use raw query since the tables aren't in Supabase types yet
-      const { data, error } = await supabase.rpc('get_family_members', {
-        p_user_id: userId
-      });
+      const { data, error } = await supabase
+        .from('family_members')
+        .select('*')
+        .eq('family_owner_id', userId)
+        .order('created_at', { ascending: true });
 
       if (error) {
-        // Fallback to direct SQL query if RPC doesn't exist
-        console.warn('Family members RPC not available, using fallback');
-        return this.getFamilyMembersFallback(userId);
+        console.error('Error fetching family members:', error);
+        return [];
       }
 
-      const familyMembers: FamilyMember[] = (data || []).map((member: any) => ({
-        id: member.id,
-        email: member.email,
-        name: member.name || 'Unknown',
-        role: member.role as FamilyRole,
-        relationship: member.relationship as RelationshipType,
-        permissions: member.permissions || this.getDefaultPermissions(member.role),
-        isActive: member.is_active || false,
-        joinedAt: member.created_at,
-        lastActive: member.last_active_at,
-        avatarUrl: member.avatar_url,
-        phone: member.phone,
-        address: member.address,
-        emergencyContact: member.emergency_contact || false,
-        dateOfBirth: member.date_of_birth,
-        preferences: member.preferences || {},
-        accessLevel: member.access_level || 'view',
-        trustedDevices: member.trusted_devices || [],
-        emergencyAccessEnabled: member.emergency_access_enabled || false,
-        // Required fields from FamilyMember interface
-        status: member.is_active ? 'active' : 'inactive',
-        invitedAt: new Date(member.created_at),
-        invitedBy: userId
-      }));
+      const familyMembers: FamilyMember[] = (data || []).map((member: DbFamilyMember) => 
+        mapDbFamilyMemberToApplication(member, userId)
+      );
 
       familyDataCache.set(cacheKey, familyMembers);
       return familyMembers;
-    } catch (_error) {
-      console.error('Failed to fetch family members:', _error);
+    } catch (error) {
+      console.error('Failed to fetch family members:', error);
       return [];
     }
   }
@@ -89,46 +83,80 @@ export class FamilyService {
    */
   async addFamilyMember(
     userId: string,
-    memberData: {
-      email: string;
-      name: string;
-      role: FamilyRole;
-      relationship: RelationshipType;
-      phone?: string;
-      dateOfBirth?: string;
-      address?: any;
-      emergencyContact?: boolean;
-      accessLevel?: 'view' | 'edit' | 'admin';
-    }
+    memberData: CreateFamilyMemberRequest
   ): Promise<FamilyMember> {
     try {
-      // For now, return a mock family member since the database tables don't exist in types
-      // Using mock family member creation
+      // Validate input data
+      if (!memberData.email || !memberData.name || !memberData.role || !memberData.relationship) {
+        throw new Error('Missing required family member data');
+      }
 
-      const familyMember: FamilyMember = {
-        id: `member_${Date.now()}`,
-        email: memberData.email,
-        name: memberData.name,
+      if (!isValidFamilyRole(memberData.role) || !isValidRelationship(memberData.relationship)) {
+        throw new Error('Invalid role or relationship type');
+      }
+
+      // Check if family member with this email already exists
+      const { data: existingMember } = await supabase
+        .from('family_members')
+        .select('email')
+        .eq('family_owner_id', userId)
+        .eq('email', memberData.email)
+        .single();
+
+      if (existingMember) {
+        throw new Error('Family member with this email already exists');
+      }
+
+      // Create family member record
+      const dbMemberData = mapApplicationToDbFamilyMember(memberData, userId);
+      
+      const { data: newMember, error } = await supabase
+        .from('family_members')
+        .insert(dbMemberData)
+        .select('*')
+        .single();
+
+      if (error) {
+        console.error('Error creating family member:', error);
+        throw new Error('Failed to create family member');
+      }
+
+      // Create invitation record
+      const invitationToken = crypto.randomUUID();
+      const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+      
+      const { error: invitationError } = await supabase
+        .from('family_invitations')
+        .insert({
+          sender_id: userId,
+          family_member_id: newMember.id,
+          email: memberData.email,
+          token: invitationToken,
+          status: 'pending',
+          message: `Welcome to our family legacy system!`,
+          expires_at: expiresAt.toISOString()
+        });
+
+      if (invitationError) {
+        console.error('Error creating invitation:', invitationError);
+        // Don't throw here, member was created successfully
+      }
+
+      // Log family activity
+      await this.logFamilyActivity(userId, userId, 'member_added', 'family_member', newMember.id, {
+        memberName: memberData.name,
+        memberEmail: memberData.email,
         role: memberData.role,
-        relationship: memberData.relationship,
-        permissions: this.getDefaultPermissions(memberData.role),
-        status: 'active',
-        invitedAt: new Date(),
-        joinedAt: new Date(),
-        lastActiveAt: new Date(),
-        invitedBy: userId,
-        phone: memberData.phone,
-        address: memberData.address,
-        emergencyPriority: memberData.emergencyContact ? 1 : undefined
-      };
+        relationship: memberData.relationship
+      });
 
       // Clear cache
       familyDataCache.invalidatePattern(new RegExp(`family_.*${userId}.*`));
 
-      return familyMember;
-    } catch (_error) {
-      console.error('Failed to add family member:', _error);
-      throw _error;
+      return mapDbFamilyMemberToApplication(newMember, userId);
+    } catch (error) {
+      console.error('Failed to add family member:', error);
+      throw error;
     }
   }
 
@@ -138,42 +166,73 @@ export class FamilyService {
   async updateFamilyMember(
     userId: string,
     memberId: string,
-    updates: Partial<{
-      name: string;
-      role: FamilyRole;
-      relationship: RelationshipType;
-      phone: string;
-      address: any;
-      emergencyContact: boolean;
-      accessLevel: 'view' | 'edit' | 'admin';
-      isActive: boolean;
-      preferences: any;
-    }>
+    updates: UpdateFamilyMemberRequest
   ): Promise<FamilyMember> {
     try {
-      console.warn('Using mock family member update');
+      // Validate that the member exists and belongs to this user
+      const { data: existingMember, error: fetchError } = await supabase
+        .from('family_members')
+        .select('*')
+        .eq('id', memberId)
+        .eq('family_owner_id', userId)
+        .single();
 
-      // Return updated mock member
-      const familyMember: FamilyMember = {
-        id: memberId,
-        email: 'updated@example.com',
-        name: updates.name || 'Updated Member',
-        role: updates.role || 'viewer',
-        relationship: updates.relationship || 'other',
-        permissions: updates.role ? this.getDefaultPermissions(updates.role) : this.getDefaultPermissions('viewer'),
-        status: 'active',
-        invitedAt: new Date(),
-        joinedAt: new Date(),
-        lastActiveAt: new Date(),
-        invitedBy: userId,
-        phone: updates.phone,
-        address: updates.address
-      };
+      if (fetchError || !existingMember) {
+        throw new Error('Family member not found or access denied');
+      }
+
+      // Validate role and relationship if provided
+      if (updates.role && !isValidFamilyRole(updates.role)) {
+        throw new Error('Invalid role type');
+      }
+      if (updates.relationship && !isValidRelationship(updates.relationship)) {
+        throw new Error('Invalid relationship type');
+      }
+      if (updates.accessLevel && !isValidAccessLevel(updates.accessLevel)) {
+        throw new Error('Invalid access level');
+      }
+
+      // Prepare update data
+      const updateData: DbFamilyMemberUpdate = {};
+      if (updates.name !== undefined) updateData.name = updates.name;
+      if (updates.role !== undefined) updateData.role = updates.role;
+      if (updates.relationship !== undefined) updateData.relationship = updates.relationship;
+      if (updates.permissions !== undefined) updateData.permissions = updates.permissions;
+      if (updates.phone !== undefined) updateData.phone = updates.phone;
+      if (updates.address !== undefined) updateData.address = updates.address;
+      if (updates.emergencyContact !== undefined) updateData.emergency_contact = updates.emergencyContact;
+      if (updates.accessLevel !== undefined) updateData.access_level = updates.accessLevel;
+      if (updates.isActive !== undefined) updateData.is_active = updates.isActive;
+      if (updates.preferences !== undefined) updateData.preferences = updates.preferences;
+      
+      updateData.updated_at = new Date().toISOString();
+
+      // Update the family member
+      const { data: updatedMember, error } = await supabase
+        .from('family_members')
+        .update(updateData)
+        .eq('id', memberId)
+        .eq('family_owner_id', userId)
+        .select('*')
+        .single();
+
+      if (error || !updatedMember) {
+        console.error('Error updating family member:', error);
+        throw new Error('Failed to update family member');
+      }
+
+      // Log family activity
+      await this.logFamilyActivity(userId, userId, 'member_updated', 'family_member', memberId, {
+        memberName: updatedMember.name,
+        updates: Object.keys(updates),
+        previousRole: existingMember.role,
+        newRole: updatedMember.role
+      });
 
       // Clear cache
       familyDataCache.invalidatePattern(new RegExp(`family_.*${userId}.*`));
 
-      return familyMember;
+      return mapDbFamilyMemberToApplication(updatedMember, userId);
     } catch (error) {
       console.error('Failed to update family member:', error);
       throw error;
@@ -183,15 +242,42 @@ export class FamilyService {
   /**
    * Remove family member
    */
-  async removeFamilyMember(userId: string, _memberId: string): Promise<void> {
+  async removeFamilyMember(userId: string, memberId: string): Promise<void> {
     try {
-      console.warn('Using mock family member removal');
+      // Validate that the member exists and belongs to this user
+      const { data: existingMember, error: fetchError } = await supabase
+        .from('family_members')
+        .select('name')
+        .eq('id', memberId)
+        .eq('family_owner_id', userId)
+        .single();
+
+      if (fetchError || !existingMember) {
+        throw new Error('Family member not found or access denied');
+      }
+
+      // Remove the family member (cascade should handle related records)
+      const { error } = await supabase
+        .from('family_members')
+        .delete()
+        .eq('id', memberId)
+        .eq('family_owner_id', userId);
+
+      if (error) {
+        console.error('Error removing family member:', error);
+        throw new Error('Failed to remove family member');
+      }
+
+      // Log family activity
+      await this.logFamilyActivity(userId, userId, 'member_removed', 'family_member', memberId, {
+        memberName: existingMember.name
+      });
 
       // Clear cache
       familyDataCache.invalidatePattern(new RegExp(`family_.*${userId}.*`));
-    } catch (_error) {
-      console.error('Failed to remove family member:', _error);
-      throw _error;
+    } catch (error) {
+      console.error('Failed to remove family member:', error);
+      throw error;
     }
   }
 
@@ -200,29 +286,65 @@ export class FamilyService {
   /**
    * Send family invitation
    */
-  async sendInvitation(email: string, name: string, role: FamilyRole, relationship: RelationshipType, message: string = ''): Promise<FamilyInvitation> {
+  async sendInvitation(familyOwnerId: string, invitationData: CreateFamilyInvitationRequest): Promise<FamilyInvitation> {
     try {
       const { data: user } = await supabase.auth.getUser();
       if (!user.user) throw new Error('Authentication required');
 
-      // Use fallback since tables don't exist in Supabase types
-      console.warn('Using fallback for family invitation');
+      // Validate input
+      if (!isValidFamilyRole(invitationData.role) || !isValidRelationship(invitationData.relationship)) {
+        throw new Error('Invalid role or relationship type');
+      }
 
-      const token = crypto.randomUUID();
-      const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+      // Check if invitation already exists for this email
+      const { data: existingInvitation } = await supabase
+        .from('family_invitations')
+        .select('status')
+        .eq('sender_id', familyOwnerId)
+        .eq('email', invitationData.email)
+        .eq('status', 'pending')
+        .single();
 
+      if (existingInvitation) {
+        throw new Error('Pending invitation already exists for this email');
+      }
+
+      // First create the family member record
+      const familyMember = await this.addFamilyMember(familyOwnerId, invitationData);
+      
+      // Get the newly created invitation (created by addFamilyMember)
+      const { data: invitation, error: fetchError } = await supabase
+        .from('family_invitations')
+        .select('*')
+        .eq('family_member_id', familyMember.id)
+        .eq('sender_id', familyOwnerId)
+        .single();
+
+      if (fetchError || !invitation) {
+        console.error('Error fetching created invitation:', fetchError);
+        throw new Error('Failed to retrieve invitation');
+      }
+
+      // Return mapped invitation
       return {
-        id: crypto.randomUUID(),
-        email,
-        name,
-        role,
-        relationship,
-        message,
-        invitedBy: user.user.id,
-        invitedAt: new Date(),
-        expiresAt,
-        status: 'pending',
-        token
+        id: invitation.id,
+        senderId: invitation.sender_id,
+        familyMemberId: invitation.family_member_id,
+        email: invitation.email,
+        token: invitation.token,
+        status: invitation.status,
+        message: invitation.message,
+        expiresAt: invitation.expires_at,
+        acceptedAt: invitation.accepted_at,
+        declinedAt: invitation.declined_at,
+        createdAt: invitation.created_at,
+        
+        // Computed fields from family member
+        name: invitationData.name,
+        role: invitationData.role,
+        relationship: invitationData.relationship,
+        invitedAt: new Date(invitation.created_at),
+        invitedBy: invitation.sender_id
       };
     } catch (error) {
       console.error('Failed to send invitation:', error);
@@ -235,24 +357,44 @@ export class FamilyService {
    */
   async getFamilyInvitations(userId: string): Promise<FamilyInvitation[]> {
     try {
-      console.warn('Using mock family invitations');
+      const { data: invitations, error } = await supabase
+        .from('family_invitations')
+        .select(`
+          *,
+          family_members:family_member_id (
+            name,
+            role,
+            relationship
+          )
+        `)
+        .eq('sender_id', userId)
+        .order('created_at', { ascending: false });
 
-      // Return mock invitations
-      return [
-        {
-          id: 'inv_1',
-          email: 'invited@example.com',
-          name: 'Invited Member',
-          role: 'viewer',
-          relationship: 'friend',
-          message: 'Welcome to our family legacy',
-          invitedBy: userId,
-          invitedAt: new Date(),
-          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-          status: 'pending',
-          token: 'mock_token_123'
-        }
-      ];
+      if (error) {
+        console.error('Error fetching family invitations:', error);
+        return [];
+      }
+
+      return (invitations || []).map((invitation: any) => ({
+        id: invitation.id,
+        senderId: invitation.sender_id,
+        familyMemberId: invitation.family_member_id,
+        email: invitation.email,
+        token: invitation.token,
+        status: invitation.status,
+        message: invitation.message,
+        expiresAt: invitation.expires_at,
+        acceptedAt: invitation.accepted_at,
+        declinedAt: invitation.declined_at,
+        createdAt: invitation.created_at,
+        
+        // From joined family_members table
+        name: invitation.family_members?.name || 'Unknown',
+        role: invitation.family_members?.role || 'viewer',
+        relationship: invitation.family_members?.relationship || 'other',
+        invitedAt: new Date(invitation.created_at),
+        invitedBy: invitation.sender_id
+      }));
     } catch (error) {
       console.error('Failed to fetch family invitations:', error);
       return [];
@@ -263,27 +405,88 @@ export class FamilyService {
   /**
    * Accept family invitation
    */
-  async acceptInvitation(_token: string): Promise<{ success: boolean; familyMember?: FamilyMember }> {
+  async acceptInvitation(token: string): Promise<{ success: boolean; familyMember?: FamilyMember }> {
     try {
-      // Use fallback since tables don't exist in Supabase types
-      console.warn('Using fallback for invitation acceptance');
+      const { data: user } = await supabase.auth.getUser();
+      if (!user.user) throw new Error('Authentication required');
 
-      const familyMember: FamilyMember = {
-        id: crypto.randomUUID(),
-        email: 'accepted@example.com',
-        name: 'Accepted Member',
-        role: 'collaborator',
-        relationship: 'other',
-        status: 'active',
-        invitedAt: new Date(),
-        joinedAt: new Date(),
-        invitedBy: 'mock_sender',
-        permissions: this.getDefaultPermissions('collaborator')
-      };
+      // Find the invitation
+      const { data: invitation, error: invitationError } = await supabase
+        .from('family_invitations')
+        .select(`
+          *,
+          family_members!family_invitations_family_member_id_fkey (
+            *
+          )
+        `)
+        .eq('token', token)
+        .eq('status', 'pending')
+        .single();
+
+      if (invitationError || !invitation) {
+        console.error('Invitation not found or expired:', invitationError);
+        return { success: false };
+      }
+
+      // Check if invitation has expired
+      if (new Date() > new Date(invitation.expires_at)) {
+        await supabase
+          .from('family_invitations')
+          .update({ status: 'expired' })
+          .eq('id', invitation.id);
+        return { success: false };
+      }
+
+      // Update invitation status
+      const { error: updateError } = await supabase
+        .from('family_invitations')
+        .update({ 
+          status: 'accepted',
+          accepted_at: new Date().toISOString()
+        })
+        .eq('id', invitation.id);
+
+      if (updateError) {
+        console.error('Error accepting invitation:', updateError);
+        return { success: false };
+      }
+
+      // Update family member with user ID and mark as active
+      const { data: updatedMember, error: memberUpdateError } = await supabase
+        .from('family_members')
+        .update({ 
+          user_id: user.user.id,
+          is_active: true,
+          last_active_at: new Date().toISOString()
+        })
+        .eq('id', invitation.family_member_id)
+        .select('*')
+        .single();
+
+      if (memberUpdateError || !updatedMember) {
+        console.error('Error updating family member:', memberUpdateError);
+        return { success: false };
+      }
+
+      // Log family activity
+      await this.logFamilyActivity(
+        updatedMember.family_owner_id, 
+        user.user.id, 
+        'invitation_accepted', 
+        'invitation', 
+        invitation.id, 
+        {
+          memberName: updatedMember.name,
+          memberEmail: updatedMember.email
+        }
+      );
+
+      // Clear cache
+      familyDataCache.invalidatePattern(new RegExp(`family_.*${updatedMember.family_owner_id}.*`));
 
       return {
         success: true,
-        familyMember
+        familyMember: mapDbFamilyMemberToApplication(updatedMember, updatedMember.family_owner_id)
       };
     } catch (error) {
       console.error('Failed to accept invitation:', error);
@@ -298,18 +501,39 @@ export class FamilyService {
    */
   async getFamilyStats(userId: string): Promise<FamilyStats> {
     try {
-      const [members, documents] = await Promise.all([
+      const [members, documents, invitations, activity, events] = await Promise.all([
         this.getFamilyMembers(userId),
-        this.getFamilyDocumentStats(userId)
+        this.getFamilyDocumentStats(userId),
+        this.getFamilyInvitations(userId),
+        this.getRecentFamilyActivity(userId),
+        this.getFamilyCalendarEvents(userId)
       ]);
 
+      // Calculate member contributions (placeholder - would need document sharing data)
+      const memberContributions: Record<string, number> = {};
+      members.forEach(member => {
+        memberContributions[member.id] = 0; // TODO: Calculate actual contributions
+      });
+
+      // Calculate documents by category (placeholder - would need document category data)
+      const documentsByCategory: Record<string, number> = {
+        'will': Math.floor(documents.total * 0.2),
+        'insurance': Math.floor(documents.total * 0.3),
+        'medical': Math.floor(documents.total * 0.2),
+        'financial': Math.floor(documents.total * 0.2),
+        'other': documents.total - Math.floor(documents.total * 0.9)
+      };
+
       return {
+        totalMembers: members.length,
+        activeMembers: members.filter(m => m.status === 'active').length,
+        pendingInvitations: invitations.filter(i => i.status === 'pending').length,
         totalDocuments: documents.total,
         sharedDocuments: documents.shared,
-        memberContributions: {},
-        documentsByCategory: {},
-        recentActivity: await this.getRecentFamilyActivity(userId),
-        upcomingEvents: [],
+        memberContributions,
+        documentsByCategory,
+        recentActivity: activity,
+        upcomingEvents: events,
         protectionScore: this.calculateFamilyProtectionLevel(members, documents)
       };
     } catch (error) {
@@ -353,23 +577,70 @@ export class FamilyService {
    */
   async requestEmergencyAccess(
     requesterId: string,
-    _ownerId: string,
+    ownerId: string,
     reason: string
   ): Promise<EmergencyAccessRequest> {
     try {
-      // Use fallback since tables don't exist in Supabase types
-      console.warn('Using fallback for emergency access request');
+      // Verify that the requester is a family member with emergency access enabled
+      const { data: familyMember, error: memberError } = await supabase
+        .from('family_members')
+        .select('emergency_access_enabled, name, relationship')
+        .eq('family_owner_id', ownerId)
+        .eq('user_id', requesterId)
+        .eq('is_active', true)
+        .single();
 
-      const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+      if (memberError || !familyMember || !familyMember.emergency_access_enabled) {
+        throw new Error('Emergency access not authorized for this user');
+      }
+
+      const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
+      // Create emergency access request
+      const { data: request, error } = await supabase
+        .from('emergency_access_requests')
+        .insert({
+          requester_id: requesterId,
+          owner_id: ownerId,
+          reason,
+          status: 'pending',
+          requested_at: new Date().toISOString(),
+          expires_at: expiresAt.toISOString(),
+          approver_name: familyMember.name,
+          approver_relation: familyMember.relationship
+        })
+        .select('*')
+        .single();
+
+      if (error || !request) {
+        console.error('Error creating emergency access request:', error);
+        throw new Error('Failed to create emergency access request');
+      }
+
+      // Log family activity
+      await this.logFamilyActivity(ownerId, requesterId, 'emergency_access_requested', 'emergency_request', request.id, {
+        requesterName: familyMember.name,
+        reason: reason,
+        emergencyLevel: 'medium'
+      });
 
       return {
-        id: crypto.randomUUID(),
-        requestedBy: requesterId,
-        requestedAt: new Date(),
-        reason,
-        status: 'pending',
-        expiresAt,
-        documentsRequested: [],
+        id: request.id,
+        requesterId: request.requester_id,
+        ownerId: request.owner_id,
+        reason: request.reason,
+        status: request.status,
+        requestedAt: request.requested_at,
+        expiresAt: request.expires_at,
+        respondedAt: request.responded_at,
+        approverName: request.approver_name,
+        approverRelation: request.approver_relation,
+        accessGrantedUntil: request.access_granted_until,
+        createdAt: request.created_at,
+        
+        // Computed fields
+        requestedBy: request.requester_id,
+        documentsRequested: [], // TODO: Add when document access tracking is implemented
         accessDuration: 24,
         verificationMethod: 'email',
         emergencyLevel: 'medium'
@@ -382,79 +653,107 @@ export class FamilyService {
 
   // Helper Methods
 
-  private async getFamilyMembersFallback(_userId: string): Promise<FamilyMember[]> {
-    // Return empty array for now since the tables don't exist in types
-    // In production, this would use a raw SQL query or proper database integration
-    console.warn('Using fallback for family members - returning empty array');
-    return [];
-  }
-
-  private getDefaultPermissions(role: FamilyRole): FamilyPermissions {
-    const permissionMap: Record<FamilyRole, FamilyPermissions> = {
-      'admin': {
-        canViewDocuments: true,
-        canEditDocuments: true,
-        canDeleteDocuments: true,
-        canInviteMembers: true,
-        canManageMembers: true,
-        canAccessEmergencyInfo: true,
-        canViewFinancials: true,
-        canReceiveNotifications: true,
-        documentCategories: ['all']
-      },
-      'collaborator': {
-        canViewDocuments: true,
-        canEditDocuments: true,
-        canDeleteDocuments: false,
-        canInviteMembers: false,
-        canManageMembers: false,
-        canAccessEmergencyInfo: false,
-        canViewFinancials: false,
-        canReceiveNotifications: true,
-        documentCategories: ['will', 'insurance', 'medical']
-      },
-      'viewer': {
-        canViewDocuments: true,
-        canEditDocuments: false,
-        canDeleteDocuments: false,
-        canInviteMembers: false,
-        canManageMembers: false,
-        canAccessEmergencyInfo: false,
-        canViewFinancials: false,
-        canReceiveNotifications: true,
-        documentCategories: ['will', 'medical']
-      },
-      'emergency_contact': {
-        canViewDocuments: false,
-        canEditDocuments: false,
-        canDeleteDocuments: false,
-        canInviteMembers: false,
-        canManageMembers: false,
-        canAccessEmergencyInfo: true,
-        canViewFinancials: false,
-        canReceiveNotifications: true,
-        documentCategories: ['emergency']
-      }
-    };
-
-    return permissionMap[role];
-  }
-
-
-  private async getFamilyDocumentStats(_userId: string): Promise<{ total: number; shared: number }> {
+  /**
+   * Log family activity for audit trail
+   */
+  private async logFamilyActivity(
+    familyOwnerId: string,
+    actorId: string,
+    actionType: DbFamilyActivityLog['action_type'],
+    targetType: DbFamilyActivityLog['target_type'],
+    targetId: string,
+    details: Record<string, any>
+  ): Promise<void> {
     try {
-      const { count: total } = await supabase
+      const { data: actor } = await supabase
+        .from('family_members')
+        .select('name')
+        .eq('id', actorId)
+        .single();
+
+      await supabase
+        .from('family_activity_log')
+        .insert({
+          family_owner_id: familyOwnerId,
+          actor_id: actorId,
+          actor_name: actor?.name || 'Unknown',
+          action_type: actionType,
+          target_type: targetType,
+          target_id: targetId,
+          details: details
+        });
+    } catch (error) {
+      console.error('Failed to log family activity:', error);
+      // Don't throw here, this is just for logging
+    }
+  }
+
+  /**
+   * Get recent family activity for the activity timeline
+   */
+  async getRecentFamilyActivity(userId: string): Promise<FamilyActivity[]> {
+    try {
+      const { data: activities, error } = await supabase
+        .from('family_activity_log')
+        .select('*')
+        .eq('family_owner_id', userId)
+        .order('created_at', { ascending: false })
+        .limit(20);
+
+      if (error) {
+        console.error('Error fetching family activity:', error);
+        return [];
+      }
+
+      return (activities || []).map(activity => ({
+        id: activity.id,
+        familyOwnerId: activity.family_owner_id,
+        actorId: activity.actor_id,
+        actorName: activity.actor_name,
+        actionType: activity.action_type,
+        targetType: activity.target_type,
+        targetId: activity.target_id,
+        details: activity.details as Record<string, any>,
+        createdAt: activity.created_at
+      }));
+    } catch (error) {
+      console.error('Failed to fetch family activity:', error);
+      return [];
+    }
+  }
+
+
+  private async getFamilyDocumentStats(userId: string): Promise<{ total: number; shared: number }> {
+    try {
+      // Get total documents for user
+      const { count: total, error: totalError } = await supabase
         .from('documents')
         .select('*', { count: 'exact', head: true })
-        .eq('user_id', _userId);
+        .eq('user_id', userId);
 
-      // Use fallback for document_shares since it's not in types
+      if (totalError) {
+        console.error('Error counting documents:', totalError);
+        return { total: 0, shared: 0 };
+      }
+
+      // Get shared documents count
+      const { count: shared, error: sharedError } = await supabase
+        .from('document_shares')
+        .select('*', { count: 'exact', head: true })
+        .eq('owner_id', userId)
+        .eq('is_active', true);
+
+      if (sharedError) {
+        console.error('Error counting shared documents:', sharedError);
+        return { total: total || 0, shared: 0 };
+      }
+
       return {
         total: total || 0,
-        shared: Math.floor((total || 0) * 0.3) // Mock 30% sharing rate
+        shared: shared || 0
       };
-    } catch (_error) {
-      console.warn('Error getting document stats, using fallback');
+    } catch (error) {
+      console.error('Error getting document stats:', error);
       return { total: 0, shared: 0 };
     }
   }
@@ -475,10 +774,29 @@ export class FamilyService {
     };
   }
 
-  private async getRecentFamilyActivity(_userId: string): Promise<any[]> {
-    // This would fetch recent activity from various tables
-    // For now, return empty array
-    return [];
+  /**
+   * Get family calendar events
+   */
+  async getFamilyCalendarEvents(userId: string): Promise<FamilyCalendarEvent[]> {
+    try {
+      const { data: events, error } = await supabase
+        .from('family_calendar_events')
+        .select('*')
+        .eq('family_owner_id', userId)
+        .gte('scheduled_at', new Date().toISOString())
+        .order('scheduled_at', { ascending: true })
+        .limit(10);
+
+      if (error) {
+        console.error('Error fetching calendar events:', error);
+        return [];
+      }
+
+      return events || [];
+    } catch (error) {
+      console.error('Failed to fetch calendar events:', error);
+      return [];
+    }
   }
 
   private calculateFamilyProtectionLevel(members: FamilyMember[], documents: { total: number; shared: number }): number {
@@ -529,6 +847,9 @@ export class FamilyService {
 
   private getDefaultFamilyStats(): FamilyStats {
     return {
+      totalMembers: 0,
+      activeMembers: 0,
+      pendingInvitations: 0,
       totalDocuments: 0,
       sharedDocuments: 0,
       memberContributions: {},
@@ -552,7 +873,99 @@ export class FamilyService {
     };
   }
 
+  /**
+   * Create a new family calendar event
+   */
+  async createCalendarEvent(
+    userId: string,
+    eventData: {
+      title: string;
+      description?: string;
+      eventType: 'reminder' | 'review' | 'meeting' | 'deadline' | 'celebration';
+      scheduledAt: string;
+      durationMinutes?: number;
+      location?: string;
+      meetingUrl?: string;
+      attendees?: any;
+      isRecurring?: boolean;
+      recurrencePattern?: string;
+      recurrenceEndDate?: string;
+    }
+  ): Promise<FamilyCalendarEvent> {
+    try {
+      const { data: event, error } = await supabase
+        .from('family_calendar_events')
+        .insert({
+          family_owner_id: userId,
+          created_by_id: userId,
+          title: eventData.title,
+          description: eventData.description || null,
+          event_type: eventData.eventType,
+          scheduled_at: eventData.scheduledAt,
+          duration_minutes: eventData.durationMinutes || 60,
+          location: eventData.location || null,
+          meeting_url: eventData.meetingUrl || null,
+          attendees: eventData.attendees || {},
+          is_recurring: eventData.isRecurring || false,
+          recurrence_pattern: eventData.recurrencePattern || null,
+          recurrence_end_date: eventData.recurrenceEndDate || null,
+          status: 'scheduled',
+          reminders: {},
+          metadata: {}
+        })
+        .select('*')
+        .single();
 
+      if (error || !event) {
+        console.error('Error creating calendar event:', error);
+        throw new Error('Failed to create calendar event');
+      }
+
+      // Clear cache
+      familyDataCache.invalidatePattern(new RegExp(`family_.*${userId}.*`));
+
+      return event;
+    } catch (error) {
+      console.error('Failed to create calendar event:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get calendar events for family
+   */
+  async getCalendarEvents(
+    userId: string,
+    startDate?: string,
+    endDate?: string
+  ): Promise<FamilyCalendarEvent[]> {
+    try {
+      let query = supabase
+        .from('family_calendar_events')
+        .select('*')
+        .eq('family_owner_id', userId);
+
+      if (startDate) {
+        query = query.gte('scheduled_at', startDate);
+      }
+      if (endDate) {
+        query = query.lte('scheduled_at', endDate);
+      }
+
+      const { data: events, error } = await query
+        .order('scheduled_at', { ascending: true });
+
+      if (error) {
+        console.error('Error fetching calendar events:', error);
+        return [];
+      }
+
+      return events || [];
+    } catch (error) {
+      console.error('Failed to fetch calendar events:', error);
+      return [];
+    }
+  }
 }
 
 export const familyService = FamilyService.getInstance();

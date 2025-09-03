@@ -141,7 +141,7 @@ export default function DocumentSharing({
 
     try {
       await collaborationService.shareDocument({
-        _documentId,
+        documentId: _documentId,
         ...shareData
       });
 
@@ -460,17 +460,17 @@ function SharedWithMeTab({
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
                     <h3 className="font-medium">
-                      {share.documents?.name || 'Document'}
+                      {share.document_id || 'Document'}
                     </h3>
                     <Badge variant="outline">
-                      {share.documents?.type || 'Unknown'}
+                      Document
                     </Badge>
                   </div>
 
                   <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
                     <div className="flex items-center gap-1">
                       <Users className="h-3 w-3" />
-                      Shared by {share.shared_by_user?.name}
+                      Shared by {share.shared_by}
                     </div>
                     <div className="flex items-center gap-1">
                       <Clock className="h-3 w-3" />
@@ -549,10 +549,10 @@ function SharedByMeTab({
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
                     <h3 className="font-medium">
-                      {share.documents?.name || 'Document'}
+                      {share.document_id || 'Document'}
                     </h3>
                     <Badge variant="outline">
-                      {share.documents?.type || 'Unknown'}
+                      Document
                     </Badge>
                     <Badge
                       variant={share.status === 'accepted' ? 'default' : 'secondary'}
@@ -565,7 +565,7 @@ function SharedByMeTab({
                   <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
                     <div className="flex items-center gap-1">
                       <Users className="h-3 w-3" />
-                      Shared with {share.shared_with_user?.name}
+                      Shared with {share.shared_with}
                     </div>
                     <div className="flex items-center gap-1">
                       <Clock className="h-3 w-3" />

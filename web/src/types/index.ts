@@ -155,6 +155,13 @@ export interface AllocationDetails {
   conditions?: string[];
 }
 
+// Professional specialization types
+export interface ProfessionalSpecialization {
+  id: string;
+  name: string;
+  category: string;
+}
+
 // Professional network types - Domain model for business logic
 export interface ProfessionalReviewerDTO {
   id: UUID;
@@ -164,12 +171,27 @@ export interface ProfessionalReviewerDTO {
   type: ProfessionalType;
   licenseNumber: string;
   jurisdiction: string;
-  specializations: string[];
+  specializations: ProfessionalSpecialization[];
   experience: number;
   verified: boolean;
   onboardingStatus: OnboardingStatus;
   createdAt: ISO8601Date;
   updatedAt: ISO8601Date;
+  // Extended properties for component compatibility
+  full_name: string; // Alias for fullName
+  professional_title?: string;
+  law_firm_name?: string;
+  bio?: string;
+  hourly_rate?: number;
+  experience_years: number; // Alias for experience
+  licensed_states?: string[];
+  profile_image_url?: string;
+  bar_number?: string; // Alias for licenseNumber
+  verification_status?: string;
+  status?: 'active' | 'inactive' | 'pending' | 'suspended';
+  created_at: ISO8601Date; // Alias for createdAt
+  user_id?: string; // Alias for userId
+  updated_at?: ISO8601Date; // Alias for updatedAt
 }
 
 export type ProfessionalType = 'attorney' | 'notary' | 'financial_advisor' | 'estate_planner' | 'tax_advisor';
@@ -186,20 +208,40 @@ export type OnboardingStatus =
 export function mapSupabaseToDomainReviewer(
   supabaseReviewer: ProfessionalReviewer
 ): ProfessionalReviewerDTO {
+  const experience = calculateExperience(supabaseReviewer.reviews_completed);
+  const fullName = supabaseReviewer.name;
+  
   return {
     id: supabaseReviewer.id,
     userId: supabaseReviewer.contact_email, // Map contact_email to userId for domain logic
     email: supabaseReviewer.contact_email, // Use contact_email as email
-    fullName: supabaseReviewer.name, // Use name as fullName
+    fullName,
     type: mapCredentialsToType(supabaseReviewer.credentials),
     licenseNumber: supabaseReviewer.bar_number || '',
     jurisdiction: supabaseReviewer.jurisdiction,
-    specializations: supabaseReviewer.specializations || [],
-    experience: calculateExperience(supabaseReviewer.reviews_completed),
+    specializations: (supabaseReviewer.specializations || []).map((spec, index) => ({
+      id: `${index}`,
+      name: spec,
+      category: mapSpecializationToCategory(spec)
+    })),
+    experience,
     verified: supabaseReviewer.profile_verified,
     onboardingStatus: mapVerificationToOnboardingStatus(supabaseReviewer.profile_verified),
     createdAt: supabaseReviewer.created_at,
     updatedAt: supabaseReviewer.updated_at,
+    // Extended properties for component compatibility
+    full_name: fullName,
+    professional_title: supabaseReviewer.credentials,
+    law_firm_name: undefined, // Not available in current schema
+    bio: undefined, // Not available in current schema
+    hourly_rate: undefined, // Not available in current schema
+    experience_years: experience,
+    licensed_states: [supabaseReviewer.jurisdiction], // Use jurisdiction as licensed state
+    profile_image_url: undefined, // Not available in current schema
+    bar_number: supabaseReviewer.bar_number,
+    verification_status: supabaseReviewer.profile_verified ? 'verified' : 'pending',
+    status: supabaseReviewer.profile_verified ? 'active' : 'inactive',
+    created_at: supabaseReviewer.created_at,
   };
 }
 
@@ -263,6 +305,22 @@ function mapVerificationToOnboardingStatus(verified: boolean): OnboardingStatus 
   return verified ? 'approved' : 'pending';
 }
 
+function mapSpecializationToCategory(specialization: string): string {
+  const spec = specialization.toLowerCase();
+  if (spec.includes('estate') || spec.includes('will') || spec.includes('trust')) {
+    return 'estate_planning';
+  } else if (spec.includes('tax')) {
+    return 'tax_law';
+  } else if (spec.includes('business') || spec.includes('corporate')) {
+    return 'business_law';
+  } else if (spec.includes('family') || spec.includes('divorce')) {
+    return 'family_law';
+  } else if (spec.includes('real estate') || spec.includes('property')) {
+    return 'real_estate';
+  }
+  return 'general';
+}
+
 export interface ReviewRequest {
   id: UUID;
   estatePlanId: UUID;
@@ -279,6 +337,40 @@ export interface ReviewRequest {
 export type ReviewType = 'legal' | 'financial' | 'medical' | 'technical' | 'compliance';
 export type ReviewStatus = 'pending' | 'in_progress' | 'completed' | 'rejected' | 'needs_revision';
 export type Priority = 'low' | 'medium' | 'high' | 'urgent';
+
+// Professional Profile - used by directory components
+export interface ProfessionalProfile extends ProfessionalReviewerDTO {
+  availability?: 'available' | 'busy' | 'unavailable';
+}
+
+// Professional Review types
+export type ProfessionalReview = Database['public']['Tables']['professional_reviews']['Row'];
+
+export interface DocumentShare {
+  id: string;
+  document_id: string;
+  shared_with: string;
+  permissions: SharePermissions;
+  expires_at?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface SharePermissions {
+  view: boolean;
+  edit: boolean;
+  download: boolean;
+}
+
+// Search result type for QuickSearch
+export interface QuickSearchResult {
+  id: string;
+  type: 'document' | 'action' | 'guardian';
+  title: string;
+  subtitle: string;
+  icon: string;
+  action: () => void;
+}
 
 // API response types
 export interface ApiResponse<T> {

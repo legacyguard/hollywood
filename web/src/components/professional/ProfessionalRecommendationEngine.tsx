@@ -113,23 +113,28 @@ const SAMPLE_PROFESSIONALS: ProfessionalRecommendation[] = [
   {
     professional: {
       id: '1',
-      user_id: 'user1',
+      userId: 'user1',
       email: 'sarah.johnson@law.com',
+      fullName: 'Sarah Johnson',
       full_name: 'Sarah Johnson',
       professional_title: 'Estate Planning Attorney',
       law_firm_name: 'Johnson & Associates',
       bar_number: '123456',
       licensed_states: ['California', 'Nevada'],
+      type: 'attorney',
+      licenseNumber: '123456',
+      jurisdiction: 'California',
       specializations: [
         { id: '1', name: 'Estate Planning', category: 'estate_planning' },
         { id: '2', name: 'Tax Law', category: 'tax_law' }
       ],
+      experience: 15,
       experience_years: 15,
-      status: 'active',
-      verification_status: 'verified',
-      hourly_rate: 350,
-      bio: 'Specializes in complex estate planning for high-net-worth families',
+      verified: true,
+      onboardingStatus: 'approved',
+      createdAt: '2024-01-01',
       created_at: '2024-01-01',
+      updatedAt: '2024-01-01',
       updated_at: '2024-01-01'
     },
     matchScore: 95,
@@ -180,23 +185,28 @@ const SAMPLE_PROFESSIONALS: ProfessionalRecommendation[] = [
   {
     professional: {
       id: '2',
-      user_id: 'user2',
+      userId: 'user2',
       email: 'michael.chen@legalgroup.com',
+      fullName: 'Michael Chen',
       full_name: 'Michael Chen',
       professional_title: 'Senior Partner',
       law_firm_name: 'Pacific Legal Group',
       bar_number: '789012',
       licensed_states: ['California', 'Washington', 'Oregon'],
+      type: 'attorney',
+      licenseNumber: '789012',
+      jurisdiction: 'California',
       specializations: [
         { id: '3', name: 'Business Law', category: 'business_law' },
         { id: '4', name: 'Asset Protection', category: 'estate_planning' }
       ],
+      experience: 22,
       experience_years: 22,
-      status: 'active',
-      verification_status: 'verified',
-      hourly_rate: 450,
-      bio: 'Leading expert in business succession planning and asset protection strategies',
+      verified: true,
+      onboardingStatus: 'approved',
+      createdAt: '2024-01-01',
       created_at: '2024-01-01',
+      updatedAt: '2024-01-01',
       updated_at: '2024-01-01'
     },
     matchScore: 88,
@@ -520,7 +530,7 @@ export function ProfessionalRecommendationEngine({
                       <div className="space-y-3">
                         <Slider
                           value={[criteria.budget.min, criteria.budget.max]}
-                          onValueChange={([min, max]) =>
+                          onValueChange={([min, max]: [number, number]) =>
                             setCriteria(prev => ({ ...prev, budget: { min, max } }))
                           }
                           max={5000}

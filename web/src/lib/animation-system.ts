@@ -1,7 +1,7 @@
 // Animation System Foundation for LegacyGuard
 // Provides centralized animation configurations and utilities for Sofia's adaptive animations
 
-import type { Variants, Transition } from 'framer-motion';
+import type { Variants, Transition, Easing } from 'framer-motion';
 import type { PersonalityMode } from './sofia-types';
 
 /**
@@ -10,7 +10,7 @@ import type { PersonalityMode } from './sofia-types';
 export interface AnimationConfig {
   duration: number;
   delay: number;
-  ease: string | number[];
+  ease: Easing;
   stagger?: number;
 }
 

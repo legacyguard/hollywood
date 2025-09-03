@@ -17,7 +17,7 @@ export function OnboardingWrapper({ children }: OnboardingWrapperProps) {
     }
 
     // Check if user has completed onboarding
-    const hasCompletedOnboarding = user.publicMetadata?.onboardingCompleted;
+    const hasCompletedOnboarding = user.unsafeMetadata?.onboardingCompleted;
 
     if (hasCompletedOnboarding) {
       setShowOnboarding(false);
@@ -26,7 +26,7 @@ export function OnboardingWrapper({ children }: OnboardingWrapperProps) {
     }
 
     // Check if this is a new user (created within the last 2 minutes)
-    const createdAt = new Date(user.createdAt);
+    const createdAt = new Date(user.createdAt || new Date());
     const now = new Date();
     const timeDifference = now.getTime() - createdAt.getTime();
     const isNewUser = timeDifference < 2 * 60 * 1000; // 2 minutes
@@ -44,8 +44,8 @@ export function OnboardingWrapper({ children }: OnboardingWrapperProps) {
     try {
       // Mark onboarding as completed in user metadata
       await user.update({
-        publicMetadata: {
-          ...user.publicMetadata,
+        unsafeMetadata: {
+          ...user.unsafeMetadata,
           onboardingCompleted: true,
           onboardingCompletedAt: new Date().toISOString(),
         },

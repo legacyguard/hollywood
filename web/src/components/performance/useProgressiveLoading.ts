@@ -1,1 +1,1 @@
-export { useProgressiveLoading } from '@/lib/performance/lazy-loading';
+// export { useProgressiveLoading } from '@/lib/performance/lazy-loading';

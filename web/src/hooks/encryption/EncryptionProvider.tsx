@@ -21,7 +21,7 @@ interface EncryptionContextValue {
   showPasswordPrompt: () => Promise<boolean>;
   hidePasswordPrompt: () => void;
   unlockKeys: (password: string) => Promise<boolean>;
-  migrateKeys: () => Promise<boolean>;
+  migrateKeys: (password: string) => Promise<boolean>;
 }
 
 const EncryptionContext = createContext<EncryptionContextValue | undefined>(undefined);

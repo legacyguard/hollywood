@@ -24,6 +24,7 @@ import type {
   DocumentCategory,
   DocumentType,
 } from '@/types/ocr';
+import { adaptDbDocumentToProcessedDocument } from '@/lib/type-adapters';
 
 interface EnhancedDocumentUploaderProps {
   onUploadComplete?: (document: ProcessedDocument) => void;
@@ -122,7 +123,7 @@ export default function EnhancedDocumentUploader({
       if (error) throw error;
 
       toast.success('Document saved successfully!');
-      onUploadComplete?.(data);
+      onUploadComplete?.(adaptDbDocumentToProcessedDocument(data));
 
       // Reset form
       setProcessedDocument(null);
@@ -167,7 +168,7 @@ export default function EnhancedDocumentUploader({
             onClick={() => setMode('scan')}
             className='flex items-center gap-2'
           >
-            <Icon name={"sparkles" as any} className='w-4 h-4' />
+            <Icon name="sparkles" className='w-4 h-4' />
             AI Scan Mode
           </Button>
           <Button
@@ -175,7 +176,7 @@ export default function EnhancedDocumentUploader({
             onClick={() => setMode('manual')}
             className='flex items-center gap-2'
           >
-            <Icon name={"edit" as any} className='w-4 h-4' />
+            <Icon name="edit" className='w-4 h-4' />
             Manual Entry
           </Button>
         </div>
@@ -201,8 +202,8 @@ export default function EnhancedDocumentUploader({
             <div className='flex items-center justify-between mb-6'>
               <h3 className='text-xl font-semibold'>Document Information</h3>
               {processedDocument && (
-                <Badge variant={"secondary" as any} className='flex items-center gap-2'>
-                  <Icon name={"sparkles" as any} className='w-3 h-3' />
+                <Badge variant="secondary" className='flex items-center gap-2'>
+                  <Icon name="sparkles" className='w-3 h-3' />
                   AI Enhanced
                 </Badge>
               )}
@@ -437,7 +438,7 @@ export default function EnhancedDocumentUploader({
                   <Switch
                     checked={manualFormData.isImportant}
                     onCheckedChange={checked =>
-                      handleFormChange('isImportant', checked)
+                      setManualFormData(prev => ({ ...prev, isImportant: checked }))
                     }
                   />
                 </div>
@@ -448,7 +449,7 @@ export default function EnhancedDocumentUploader({
             {processedDocument && (
               <div className='mt-6 p-4 bg-primary/5 border border-primary/20 rounded-lg'>
                 <h4 className='font-semibold mb-2 flex items-center gap-2'>
-                  <Icon name={"sparkles" as any} className='w-4 h-4 text-primary' />
+                  <Icon name="sparkles" className='w-4 h-4 text-primary' />
                   AI Analysis Results
                 </h4>
                 <div className='grid md:grid-cols-3 gap-4 text-sm'>
@@ -493,12 +494,12 @@ export default function EnhancedDocumentUploader({
               >
                 {isUploading ? (
                   <>
-                    <Icon name={"loader" as any} className='w-4 h-4 mr-2 animate-spin' />
+                    <Icon name="loader" className='w-4 h-4 mr-2 animate-spin' />
                     Saving...
                   </>
                 ) : (
                   <>
-                    <Icon name={"check" as any} className='w-4 h-4 mr-2' />
+                    <Icon name="check" className='w-4 h-4 mr-2' />
                     Save Document
                   </>
                 )}

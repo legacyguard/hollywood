@@ -28,6 +28,11 @@ export interface LegacyMilestone {
   triggers_next_milestone?: string;
   family_benefit_score: number;
   emotional_weight: 'low' | 'medium' | 'high' | 'epic';
+  familyImpact?: {
+    affectedMembers: string[];
+    riskReduction?: number;
+    emotionalBenefit?: string;
+  };
 }
 
 export interface MilestoneTriggerConditions {

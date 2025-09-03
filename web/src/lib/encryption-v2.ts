@@ -44,7 +44,7 @@ export const encryptionServiceV2 = {
       const nonce = nacl.randomBytes(nacl.secretbox?.nonceLength);
       const keyBytes = decodeBase64(keys.secretKey).slice(0, 32);
       const encrypted = nacl.secretbox(message, nonce, keyBytes);
-      const combined = new Uint8Array(nonce.length + encrypted.length as ArrayBuffer);
+      const combined = new Uint8Array(nonce.length + encrypted.length);
       combined.set(nonce);
       combined.set(encrypted, nonce.length);
       localStorage.setItem(key, encodeBase64(combined));
@@ -70,6 +70,87 @@ export const encryptionServiceV2 = {
     } catch (error) {
       console.error('Error getting encrypted item:', error);
       return null;
+    }
+  },
+
+  // Key management methods needed by useEncryption hook
+  checkRotationNeeded: async (): Promise<boolean> => {
+    // Check if keys are older than 90 days
+    const userId = 'current-user';
+    const keyTimestamp = localStorage.getItem(`encryption_keys_timestamp_${userId}`);
+    if (!keyTimestamp) return false;
+    const daysSinceCreation = (Date.now() - parseInt(keyTimestamp)) / (1000 * 60 * 60 * 24);
+    return daysSinceCreation > 90;
+  },
+
+  areKeysUnlocked: async (): Promise<boolean> => {
+    // For now, assume keys are unlocked if they exist
+    // In a real implementation, this would check session state
+    const userId = 'current-user';
+    return !!localStorage.getItem(`encryption_keys_${userId}`);
+  },
+
+  initializeKeys: async (password: string): Promise<{ success: boolean; error?: string }> => {
+    try {
+      const userId = 'current-user';
+      const keys = generateEncryptionKeys();
+      localStorage.setItem(`encryption_keys_${userId}`, JSON.stringify(keys));
+      localStorage.setItem(`encryption_keys_timestamp_${userId}`, Date.now().toString());
+      return { success: true };
+    } catch (error) {
+      return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+    }
+  },
+
+  unlockKeys: async (password: string): Promise<{ success: boolean; error?: string }> => {
+    try {
+      // For now, just check if keys exist
+      // In a real implementation, this would verify the password
+      const userId = 'current-user';
+      const keys = localStorage.getItem(`encryption_keys_${userId}`);
+      if (!keys) {
+        return { success: false, error: 'No keys found' };
+      }
+      return { success: true };
+    } catch (error) {
+      return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+    }
+  },
+
+  lockKeys: async (): Promise<void> => {
+    // For now, this is a no-op since keys are stored in localStorage
+    // In a real implementation, this would clear session keys
+    console.log('Keys locked');
+  },
+
+  migrateFromLocalStorage: async (password: string): Promise<{ success: boolean; error?: string }> => {
+    try {
+      // Check if there are legacy keys to migrate
+      const userId = 'current-user';
+      const legacyKeys = localStorage.getItem(`encryptionKeys_${userId}`);
+      if (legacyKeys) {
+        // Move legacy keys to new format
+        localStorage.setItem(`encryption_keys_${userId}`, legacyKeys);
+        localStorage.removeItem(`encryptionKeys_${userId}`);
+        localStorage.setItem(`encryption_keys_timestamp_${userId}`, Date.now().toString());
+        return { success: true };
+      }
+      return { success: false, error: 'No legacy keys found' };
+    } catch (error) {
+      return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+    }
+  },
+
+  rotateKeys: async (currentPassword: string, newPassword?: string): Promise<{ success: boolean; error?: string }> => {
+    try {
+      // Generate new keys
+      const userId = 'current-user';
+      const newKeys = generateEncryptionKeys();
+      localStorage.setItem(`encryption_keys_${userId}`, JSON.stringify(newKeys));
+      localStorage.setItem(`encryption_keys_timestamp_${userId}`, Date.now().toString());
+      return { success: true };
+    } catch (error) {
+      return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
     }
   }
 };

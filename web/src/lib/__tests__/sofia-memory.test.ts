@@ -9,13 +9,11 @@ describe('SofiaMemoryService', () => {
     userId: testUserId,
     userName: 'Test User',
     documentCount: 5,
-    hasSubscription: false,
-    familyCount: 2,
-    hasWill: true,
-    emergencyAccessEnabled: false,
-    lastActivity: new Date(),
-    userTier: 'free',
-    isFirstTime: false
+    guardianCount: 2,
+    completionPercentage: 75,
+    recentActivity: ['uploaded will'],
+    familyStatus: 'family',
+    language: 'en'
   };
 
   beforeEach(() => {

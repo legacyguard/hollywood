@@ -6,7 +6,7 @@
  * including usage patterns, security metrics, and actionable recommendations.
  */
 
-import { _supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/integrations/supabase/client';
 import type { DocumentAnalysisResult } from './documentAnalyzer';
 
 export interface DocumentMetrics {
@@ -237,7 +237,7 @@ export class DocumentInsightsService {
     filteredDocs.forEach(doc => {
       const analysis = doc.analysis_result as DocumentAnalysisResult;
 
-      if (analysis?.piiDetection?.hasPII) {
+      if (analysis?.piiDetected && analysis.piiDetected.length > 0) {
         documentsWithPII++;
       }
 
@@ -256,8 +256,9 @@ export class DocumentInsightsService {
         }
       }
 
-      if (analysis?.security?.vulnerabilities?.length) {
-        vulnerabilityCount += analysis.security.vulnerabilities.length;
+      // Check for vulnerability indicators in recommendations
+      if (analysis?.recommendations?.some(r => r.type === 'security')) {
+        vulnerabilityCount += analysis.recommendations.filter(r => r.type === 'security').length;
       }
     });
 
@@ -393,7 +394,7 @@ export class DocumentInsightsService {
 
       // Check for security concerns
       const analysis = doc.analysis_result as DocumentAnalysisResult;
-      if (analysis?.piiDetection?.hasPII && !doc.is_password_protected) {
+      if (analysis?.piiDetected && analysis.piiDetected.length > 0 && !doc.is_password_protected) {
         issues.push({
           id: `security_${doc.id}`,
           type: 'security_concern',
@@ -596,7 +597,7 @@ export class DocumentInsightsService {
       const analysis = doc.analysis_result as DocumentAnalysisResult;
 
       // Check for PII without protection
-      if (analysis?.piiDetection?.hasPII && !doc.is_password_protected) {
+      if (analysis?.piiDetected && analysis.piiDetected.length > 0 && !doc.is_password_protected) {
         issues++;
       }
 

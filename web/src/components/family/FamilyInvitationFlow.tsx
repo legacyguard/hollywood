@@ -103,9 +103,13 @@ export function FamilyInvitationFlow({
       }
       const invitation = await familyService.sendInvitation(
         userId,
-        invitationData.email,
-        invitationData.role as FamilyRole,
-        invitationData.relationship as RelationshipType
+        {
+          email: invitationData.email!,
+          name: invitationData.name || '',
+          role: invitationData.role as FamilyRole,
+          relationship: invitationData.relationship as RelationshipType,
+          message: invitationData.message
+        }
       );
       setCurrentStep('complete');
       onComplete(invitation);
@@ -130,7 +134,6 @@ export function FamilyInvitationFlow({
   const getRoleRecommendation = (relationship: RelationshipType): FamilyRole => {
     const recommendations: Record<RelationshipType, FamilyRole> = {
       spouse: 'collaborator',
-      partner: 'collaborator',
       child: 'viewer',
       parent: 'viewer',
       sibling: 'viewer',
@@ -139,8 +142,7 @@ export function FamilyInvitationFlow({
       aunt_uncle: 'viewer',
       cousin: 'viewer',
       friend: 'emergency_contact',
-      attorney: 'viewer',
-      accountant: 'viewer',
+      professional: 'viewer',
       other: 'viewer'
     };
     return recommendations[relationship];
@@ -149,7 +151,6 @@ export function FamilyInvitationFlow({
   const getEmotionalMessage = (relationship: RelationshipType): string => {
     const messages: Partial<Record<RelationshipType, string>> = {
       spouse: "You mean the world to me, and I want to make sure we're both prepared for whatever life brings. Having you as part of our family's protection plan gives me such peace of mind. 💕",
-      partner: "You mean the world to me, and I want to make sure we're both prepared for whatever life brings. Having you as part of our family's protection plan gives me such peace of mind. 💕",
       child: "Hey sweetheart! 👋 As your parent, one of my greatest joys is knowing you'll always be taken care of. I'd love for you to be part of our family's legacy protection plan - it's about keeping our family connected and secure, no matter what.",
       parent: "Hi Mom/Dad! 🌟 Your wisdom has always guided our family, and I'd love to have you involved in our family's protection planning. This isn't about anything scary - it's about keeping our family organized and prepared, just like you taught me.",
       sibling: "Hey! 👫 Remember how we always promised to look out for each other? I'm setting up a family protection plan and I'd really love to have you included. It's about keeping our family bond strong and making sure we're all prepared.",
@@ -157,8 +158,7 @@ export function FamilyInvitationFlow({
       grandchild: "Hey sweetheart! 👋 I want to make sure you have access to important family information when you need it. This is about keeping our family connected and secure.",
       aunt_uncle: "Hey! 👫 I'm setting up a family protection plan and I'd really love to have you included. It's about keeping our family bond strong and making sure we're all prepared.",
       cousin: "Hey! 👫 I'm setting up a family protection plan and I'd really love to have you included. It's about keeping our family bond strong and making sure we're all prepared.",
-      attorney: "I value your professional guidance and would appreciate having you connected to our family's document system for easier collaboration on our legal planning.",
-      accountant: "I value your professional guidance and would appreciate having you connected to our family's financial system for easier collaboration on our planning.",
+      professional: "I value your professional guidance and would appreciate having you connected to our family's system for easier collaboration on our planning.",
       friend: "You've always been like family to us. 🤗 I'd love to include you in our emergency contacts because I trust you completely and know you'd be there for us if we ever needed help.",
       other: "I'd love to invite you to be part of our family's protection plan. Your connection to our family is important, and this helps us all stay organized and prepared together."
     };

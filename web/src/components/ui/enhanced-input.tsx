@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 import { MicroAnimation } from "@/components/animations/MicroInteractionSystem"
-import { useSofia } from "@/components/sofia/SofiaContextProvider"
+// import { useSofia } from "@/components/sofia/SofiaContextProvider"
 import { Icon, type IconMap } from "@/components/ui/icon-library"
 
 const inputVariants = cva(
@@ -34,7 +34,7 @@ const inputVariants = cva(
 type FieldState = 'idle' | 'focused' | 'filled' | 'success' | 'error' | 'warning' | 'loading'
 
 export interface EnhancedInputProps
-  extends React.InputHTMLAttributes<HTMLInputElement>,
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'>,
     VariantProps<typeof inputVariants> {
   // Animation props
   personalityAdapt?: boolean
@@ -50,12 +50,12 @@ export interface EnhancedInputProps
   warning?: boolean | string
 
   // Icon props
-  leftIcon?: keyof IconMap
-  rightIcon?: keyof IconMap
-  loadingIcon?: keyof IconMap
-  successIcon?: keyof IconMap
-  errorIcon?: keyof IconMap
-  warningIcon?: keyof IconMap
+  leftIcon?: keyof typeof IconMap
+  rightIcon?: keyof typeof IconMap
+  loadingIcon?: keyof typeof IconMap
+  successIcon?: keyof typeof IconMap
+  errorIcon?: keyof typeof IconMap
+  warningIcon?: keyof typeof IconMap
 
   // Enhanced label and help text
   label?: string
@@ -111,7 +111,8 @@ const EnhancedInput = React.forwardRef<HTMLInputElement, EnhancedInputProps>(
     onChange,
     ...props
   }, ref) => {
-    const { personality } = useSofia()
+    // const { personality } = useSofia()
+    const personality = { mode: 'adaptive' as 'empathetic' | 'pragmatic' | 'adaptive' }
     const [isFocused, setIsFocused] = React.useState(false)
     const [hasValue, setHasValue] = React.useState(false)
     const [ripples, setRipples] = React.useState<Array<{ id: number, x: number, y: number }>>([])
@@ -315,7 +316,7 @@ const EnhancedInput = React.forwardRef<HTMLInputElement, EnhancedInputProps>(
               <input
                 type={type}
                 className={cn(
-                  inputVariants({ variant: currentVariant, size }),
+                  inputVariants({ variant: currentVariant, size: size as any }),
                   leftIcon && "pl-10",
                   (rightIcon || getCurrentStateIcon() || showCharacterCount) && "pr-10",
                   glowEffect && isFocused && "ring-2 ring-primary/20",
@@ -478,4 +479,4 @@ export const ValidatedInput = React.forwardRef<HTMLInputElement,
 ValidatedInput.displayName = "ValidatedInput"
 
 export { EnhancedInput, inputVariants }
-export type { EnhancedInputProps, FieldState }
+// export type { EnhancedInputProps, FieldState }

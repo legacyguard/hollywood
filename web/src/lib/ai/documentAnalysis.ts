@@ -318,9 +318,9 @@ class DocumentAnalysisService {
       category: classification.category || 'other',
       subcategory: classification.subcategory || 'general',
       documentType: classification.documentType || 'document',
-      importance: this.determineImportance(content, classification),
-      urgency: this.determineUrgency(content, classification),
-      sensitivity: this.determineSensitivity(content, classification),
+      importance: await this.determineImportance(content, classification),
+      urgency: await this.determineUrgency(content, classification),
+      sensitivity: await this.determineSensitivity(content, classification),
       tags: this.generateTags(content, classification),
       confidence: classification.confidence || 0.7,
     };

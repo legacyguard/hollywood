@@ -30,7 +30,7 @@ export interface EnhancedCardProps
   title?: string
   subtitle?: string
   description?: string
-  icon?: keyof IconMap
+  icon?: keyof typeof IconMap
   image?: string
 
   // State props

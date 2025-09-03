@@ -30,6 +30,7 @@ import {
 import { useFocusMode } from '@/contexts/FocusModeContext';
 import { useWillValidation } from '@/hooks/useWillValidation';
 import type { WillData } from './WillWizard';
+import { ValidationLevel } from '@/lib/will-legal-validator';
 
 interface EnhancedWillWizardWithValidationProps {
   onClose: () => void;
@@ -200,9 +201,9 @@ export const EnhancedWillWizardWithValidation: React.FC<
     const newBeneficiary = {
       id: crypto.randomUUID(),
       name: '',
-      relationship: 'child',
+      relationship: 'child' as const,
       percentage: 0,
-      specificGifts: [],
+      specificGifts: [] as string[],
       conditions: '',
     };
     setWillData(prev => ({
@@ -355,7 +356,7 @@ export const EnhancedWillWizardWithValidation: React.FC<
               <Select
                 value={willData.testator_data.maritalStatus}
                 onValueChange={value =>
-                  updateWillData('testator_data', { maritalStatus: value })
+                  updateWillData('testator_data', { maritalStatus: value as 'single' | 'married' | 'divorced' | 'widowed' })
                 }
               >
                 <SelectTrigger>
@@ -391,7 +392,7 @@ export const EnhancedWillWizardWithValidation: React.FC<
             </div>
 
             {/* Beneficiary percentage warning */}
-            {complianceReport?.forcedHeirsIssues.length > 0 && (
+            {complianceReport?.forcedHeirsIssues && complianceReport.forcedHeirsIssues.length > 0 && (
               <div className='space-y-2'>
                 {complianceReport.forcedHeirsIssues.map((issue, index) => (
                   <ValidationIndicator
@@ -557,7 +558,7 @@ export const EnhancedWillWizardWithValidation: React.FC<
 
             {/* Validation Messages */}
             <div className='space-y-4'>
-              {getValidationMessages('error').map((validation, index) => (
+              {getValidationMessages(ValidationLevel.ERROR).map((validation, index) => (
                 <ValidationIndicator
                   key={`error-${index}`}
                   validation={validation}
@@ -565,7 +566,7 @@ export const EnhancedWillWizardWithValidation: React.FC<
                 />
               ))}
 
-              {getValidationMessages('warning').map((validation, index) => (
+              {getValidationMessages(ValidationLevel.WARNING).map((validation, index) => (
                 <ValidationIndicator
                   key={`warning-${index}`}
                   validation={validation}
@@ -573,7 +574,7 @@ export const EnhancedWillWizardWithValidation: React.FC<
                 />
               ))}
 
-              {getValidationMessages('success').map((validation, index) => (
+              {getValidationMessages(ValidationLevel.SUCCESS).map((validation, index) => (
                 <ValidationIndicator
                   key={`success-${index}`}
                   validation={validation}
@@ -752,7 +753,6 @@ export const EnhancedWillWizardWithValidation: React.FC<
               willData={willData}
               willType={willType}
               currentStep={currentStepId}
-              validationResults={getValidationMessages()}
             />
           </div>
         </main>

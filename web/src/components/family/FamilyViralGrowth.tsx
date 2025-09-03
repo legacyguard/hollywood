@@ -147,11 +147,6 @@ export function FamilyViralGrowth({
   const [milestones, setMilestones] = useState(viralMilestones);
   const [showMilestones, setShowMilestones] = useState(false);
 
-  useEffect(() => {
-    updateMilestoneProgress();
-    checkForInvitationPrompts();
-  }, [currentMembers.length, documentsCount, protectionLevel, updateMilestoneProgress, checkForInvitationPrompts]);
-
   const updateMilestoneProgress = useCallback(() => {
     const memberCount = currentMembers.length;
     const updatedMilestones = milestones.map(milestone => ({
@@ -191,6 +186,11 @@ export function FamilyViralGrowth({
       setTimeout(() => setShowInvitePrompt(true), 2000);
     }
   }, [currentMembers.length, documentsCount, protectionLevel, showInvitePrompt]);
+
+  useEffect(() => {
+    updateMilestoneProgress();
+    checkForInvitationPrompts();
+  }, [currentMembers.length, documentsCount, protectionLevel, updateMilestoneProgress, checkForInvitationPrompts]);
 
   const handleInviteClick = () => {
     setShowInvitePrompt(false);

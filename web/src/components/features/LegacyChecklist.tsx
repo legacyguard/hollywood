@@ -152,7 +152,7 @@ export function LegacyChecklist({
             {/* Icon */}
             <div className='flex-shrink-0 w-10 h-10 rounded-lg border border-border flex items-center justify-center'>
               <Icon
-                name={item.icon}
+                name={item.icon as any}
                 className={cn('w-5 h-5', getPillarColor(item.pillar))}
               />
             </div>

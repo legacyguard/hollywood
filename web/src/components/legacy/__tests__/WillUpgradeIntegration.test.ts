@@ -9,6 +9,7 @@ import {
   professionalNetwork,
 } from '@/lib/professional-review-network';
 import type { WillData } from '@/types/will';
+import type { WillData as WillWizardData } from '@/components/legacy/WillWizard';
 
 // Mock will data for testing
 const mockWillData: WillData = {
@@ -52,17 +53,104 @@ const mockWillData: WillData = {
       phone: '+421123456789',
     },
   },
-  guardianship: {
-    guardianshipAppointments: [
-      {
-        name: 'Robert Doe',
+  guardianship: [
+    {
+      id: 'guardian-1',
+      child_name: 'John Doe Jr.',
+      child_date_of_birth: '2010-01-01',
+      primary_guardian: {
+        full_name: 'Robert Doe',
         relationship: 'brother',
-        address: '456 Oak St, Bratislava, Slovakia',
+        contact_info: {
+          address: '456 Oak St, Bratislava, Slovakia',
+        },
+      },
+    },
+  ],
+  special_instructions: {
+    funeralWishes: 'Funeral expenses to be reasonable and dignified',
+  },
+  legal_data: {
+    jurisdiction: 'Slovakia',
+  },
+  guardianship_data: {
+    minorChildren: [
+      {
+        name: 'John Doe Jr.',
+        dateOfBirth: '2010-01-01',
+      },
+    ],
+    primaryGuardian: {
+      name: 'Robert Doe',
+      relationship: 'brother',
+    },
+  },
+  review_eligibility: true,
+  family_protection_level: 'comprehensive',
+  completeness_score: 85,
+};
+
+// Mock data for WillWizard WillData interface
+const mockWillWizardData: WillWizardData = {
+  testator_data: {
+    fullName: 'John Doe',
+    dateOfBirth: '1980-01-01',
+    address: '123 Main St, Bratislava, Slovakia',
+    citizenship: 'Slovak',
+    maritalStatus: 'married',
+  },
+  beneficiaries: [
+    {
+      id: 'beneficiary-1',
+      name: 'Jane Doe',
+      relationship: 'spouse',
+      percentage: 50,
+    },
+    {
+      id: 'beneficiary-2',
+      name: 'John Doe Jr.',
+      relationship: 'child',
+      percentage: 50,
+    },
+  ],
+  assets: {
+    realEstate: [
+      {
+        description: 'Family home in Bratislava',
+        address: '123 Main St, Bratislava, Slovakia',
+        value: 250000,
+      },
+    ],
+    vehicles: [
+      {
+        make: 'Toyota',
+        model: 'Camry',
+        year: 2020,
+        vin: '1HGBH41JXMN109186',
       },
     ],
   },
+  executor_data: {
+    primaryExecutor: {
+      name: 'Jane Doe',
+      relationship: 'spouse',
+      phone: '+421123456789',
+    },
+  },
+  guardianship_data: {
+    minorChildren: [
+      {
+        name: 'John Doe Jr.',
+        dateOfBirth: '2010-01-01',
+      },
+    ],
+    primaryGuardian: {
+      name: 'Robert Doe',
+      relationship: 'brother',
+    },
+  },
   special_instructions: {
-    specialInstructions: 'Funeral expenses to be reasonable and dignified',
+    funeralWishes: 'Funeral expenses to be reasonable and dignified',
   },
   legal_data: {
     jurisdiction: 'Slovakia',
@@ -95,7 +183,7 @@ describe('Will Upgrade Integration Tests', () => {
 
     it('should detect forced heirs compliance issues', async () => {
       const complianceReport = validator.checkForcedHeirsCompliance(
-        mockWillData,
+        mockWillWizardData,
         'Slovakia'
       );
 
@@ -106,8 +194,8 @@ describe('Will Upgrade Integration Tests', () => {
 
     it('should identify legal conflicts in asset distribution', async () => {
       const conflicts = validator.detectLegalConflicts(
-        mockWillData.assets,
-        mockWillData.beneficiaries
+        mockWillWizardData.assets,
+        mockWillWizardData.beneficiaries
       );
 
       expect(conflicts).toHaveLength(0); // No conflicts in mock data
@@ -117,7 +205,7 @@ describe('Will Upgrade Integration Tests', () => {
       const fieldValidation = validator.validateField(
         'testator_data.fullName',
         mockWillData.testator_data.fullName,
-        'Slovakia'
+        mockWillWizardData
       );
 
       expect(fieldValidation.level).toBe('success');
@@ -128,7 +216,7 @@ describe('Will Upgrade Integration Tests', () => {
   describe('Multi-Language Document Generation', () => {
     it('should generate Slovak will document', async () => {
       const document = await multiLangGenerator.generateWill(
-        mockWillData,
+        mockWillWizardData,
         'sk',
         'Slovakia',
         'comprehensive'
@@ -142,7 +230,7 @@ describe('Will Upgrade Integration Tests', () => {
 
     it('should generate Czech will document', async () => {
       const document = await multiLangGenerator.generateWill(
-        mockWillData,
+        mockWillWizardData,
         'cs',
         'Czech-Republic',
         'comprehensive'
@@ -166,7 +254,7 @@ describe('Will Upgrade Integration Tests', () => {
 
     it('should handle complex asset descriptions in multiple languages', async () => {
       const document = await multiLangGenerator.generateWill(
-        mockWillData,
+        mockWillWizardData,
         'de',
         'Slovakia',
         'comprehensive'
@@ -193,11 +281,11 @@ describe('Will Upgrade Integration Tests', () => {
         return;
       }
       const comparison = await templateLibrary.compareWillVersions(
-        mockWillData,
-        template.structure
+        mockWillWizardData,
+        template as any
       );
 
-      expect(comparison.differences).toBeDefined();
+      expect(comparison.changes).toBeDefined();
       expect(comparison.recommendations).toHaveLength(0); // Mock data should be complete
       expect(comparison.impactAnalysis).toBeDefined();
     });
@@ -212,8 +300,7 @@ describe('Will Upgrade Integration Tests', () => {
   describe('Emotional Guidance & Legacy Messages', () => {
     it('should create memory prompts for family relationships', () => {
       const prompts = messageBuilder.generateMemoryPrompts(
-        mockWillData.beneficiaries,
-        'family_memories'
+        mockWillData.beneficiaries
       );
 
       expect(prompts.length).toBeGreaterThan(0);
@@ -226,8 +313,7 @@ describe('Will Upgrade Integration Tests', () => {
     it('should create legacy messages for different occasions', () => {
       // Skip test as method not yet implemented
       const prompts = messageBuilder.generateMemoryPrompts(
-        mockWillData.beneficiaries,
-        'family_memories'
+        mockWillData.beneficiaries
       );
       expect(prompts).toBeDefined();
     });
@@ -235,8 +321,7 @@ describe('Will Upgrade Integration Tests', () => {
     it('should create time capsules with scheduled delivery', () => {
       // Skip test as method not yet implemented
       const prompts = messageBuilder.generateMemoryPrompts(
-        mockWillData.beneficiaries,
-        'family_memories'
+        mockWillData.beneficiaries
       );
       expect(prompts).toBeDefined();
     });
@@ -321,7 +406,7 @@ describe('Will Upgrade Integration Tests', () => {
 
       // 2. Multi-language generation
       const slovakDoc = await multiLangGenerator.generateWill(
-        mockWillData,
+        mockWillWizardData,
         'sk',
         'Slovakia',
         'comprehensive'
@@ -334,15 +419,15 @@ describe('Will Upgrade Integration Tests', () => {
 
       // 4. Legacy messages
       const prompts = messageBuilder.generateMemoryPrompts(
-        mockWillData.beneficiaries,
-        'family_memories'
+        mockWillData.beneficiaries
       );
       expect(prompts).toBeDefined();
 
       // 5. Professional review
       const reviewRequest = await professionalNetwork.requestAttorneyReview(
         mockWillData,
-        'Slovakia'
+        'Slovakia',
+        {}
       );
       expect(reviewRequest.id).toBeDefined();
     });
@@ -359,7 +444,7 @@ describe('Will Upgrade Integration Tests', () => {
 
       // Other systems should handle gracefully
       const document = await multiLangGenerator.generateWill(
-        invalidWillData,
+        invalidWillData as any,
         'sk',
         'Slovakia',
         'basic'
@@ -374,8 +459,8 @@ describe('Will Upgrade Integration Tests', () => {
       const template = templateLibrary.getTemplate('comprehensive-family');
       if (template) {
         const updatedData = templateLibrary.applyTemplate(
-          workingWillData,
-          template.id
+          template.id,
+          workingWillData as any
         );
         expect(updatedData.beneficiaries.length).toBeGreaterThanOrEqual(
           workingWillData.beneficiaries.length
@@ -398,7 +483,7 @@ describe('Will Upgrade Integration Tests', () => {
       // Document generation should work with updated data
       try {
         const document = await multiLangGenerator.generateWill(
-          workingWillData,
+          workingWillData as any,
           'sk',
           'Slovakia',
           'comprehensive'
@@ -434,7 +519,7 @@ describe('Will Upgrade Integration Tests', () => {
       const documents = await Promise.all(
         languages.map(lang =>
           multiLangGenerator.generateWill(
-            mockWillData,
+            mockWillWizardData,
             lang,
             'Slovakia',
             'basic'

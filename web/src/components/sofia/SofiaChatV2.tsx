@@ -245,10 +245,10 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
         const welcomeMessage: SofiaMessage = {
           id: crypto.randomUUID(),
           role: 'assistant',
-          content: result.payload.message || getDefaultWelcome(),
+          content: (result.payload as { message?: string; actions?: any[] })?.message || getDefaultWelcome(),
           timestamp: new Date(),
           actions:
-            result.payload.actions || getContextualSuggestions(currentPage),
+            (result.payload as { message?: string; actions?: any[] })?.actions || getContextualSuggestions(currentPage),
           responseType: 'welcome',
           metadata: {
             cost: result.cost,
@@ -294,7 +294,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
         role: 'user',
         content: pendingAction.userMessage,
         timestamp: new Date(),
-        metadata: { cost: 'free', source: 'search_action' },
+        metadata: { cost: 'free', source: 'predefined' as any },
       };
 
       const sofiaMessage: SofiaMessage = {
@@ -302,8 +302,8 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
         role: 'assistant',
         content: pendingAction.sofiaResponse,
         timestamp: new Date(),
-        responseType: 'smart_suggestion',
-        metadata: { cost: 'free', source: 'search_integration' },
+        responseType: 'information' as any,
+        metadata: { cost: 'free', source: 'predefined' as any },
       };
 
       addMessage(userMessage);
@@ -421,7 +421,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
         id: crypto.randomUUID(),
         command: action.id,
         category: action.category,
-        parameters: action.payload,
+        parameters: (action.payload as Record<string, unknown>) || {},
         context,
         timestamp: new Date(),
       };
@@ -447,15 +447,15 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
     switch (result.type) {
       case 'navigation':
         // Navigate to route
-        if (result.payload.route) {
-          navigate(result.payload.route);
+        if ((result.payload as { route?: string })?.route) {
+          navigate((result.payload as { route: string }).route);
           if (onClose) onClose(); // Close chat on navigation
 
           // Add confirmation message
           const navMessage: SofiaMessage = {
             id: crypto.randomUUID(),
             role: 'assistant',
-            content: `Redirecting you to ${getRouteName(result.payload.route)}...`,
+            content: `Redirecting you to ${getRouteName((result.payload as { route: string }).route)}...`,
             timestamp: new Date(),
             responseType: 'confirmation',
             metadata: { cost: result.cost, source: 'predefined' },
@@ -466,7 +466,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
 
       case 'ui_action':
         // Handle UI actions
-        handleUIAction(result.payload);
+        handleUIAction(result.payload as { action: string; message?: string; data?: unknown });
         break;
 
       case 'response':
@@ -475,9 +475,9 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
           const responseMessage: SofiaMessage = {
             id: crypto.randomUUID(),
             role: 'assistant',
-            content: result.payload.message,
+            content: ((result.payload as any) as { message: string; actions?: any[] }).message,
             timestamp: new Date(),
-            actions: result.payload.actions,
+            actions: ((result.payload as any) as { message: string; actions?: any[] }).actions,
             responseType: 'information',
             metadata: { cost: result.cost, source: 'predefined' },
           };
@@ -486,7 +486,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
         break;
 
       case 'error':
-        handleError(result.payload.message);
+        handleError(((result.payload as any) as { message: string }).message);
         break;
 
       case 'text_response':
@@ -495,7 +495,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
           const responseMessage: SofiaMessage = {
             id: crypto.randomUUID(),
             role: 'assistant',
-            content: result.payload,
+            content: (result.payload as any) as string,
             timestamp: new Date(),
             actions: context ? getContextualActions(context) : [],
             responseType: 'information',
@@ -631,7 +631,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
     >
       {message.role === 'assistant' && (
         <div className='w-8 h-8 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center flex-shrink-0'>
-          <Icon name={"bot" as any} className='w-4 h-4 text-primary' />
+          <Icon name="bot" className='w-4 h-4 text-primary' />
         </div>
       )}
 
@@ -711,7 +711,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
 
       {message.role === 'user' && (
         <div className='w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0'>
-          <Icon name={"user" as any} className='w-4 h-4 text-primary' />
+          <Icon name="user" className='w-4 h-4 text-primary' />
         </div>
       )}
     </motion.div>
@@ -725,7 +725,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
       className='flex gap-3 mb-6'
     >
       <div className='w-8 h-8 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center flex-shrink-0'>
-        <Icon name={"bot" as any} className='w-4 h-4 text-primary' />
+        <Icon name="bot" className='w-4 h-4 text-primary' />
       </div>
       <div className='bg-muted p-4 rounded-lg'>
         <div className='flex gap-1'>
@@ -753,13 +753,13 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
       <AnimatePresence>
         {showProactiveIntervention && currentIntervention && (
           <motion.div
-            initial={{  opacity: 0, y: -20  }}
-            animate={{  opacity: 1, y: 0  }}
-            exit={{  opacity: 0, y: -20  }}
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
             className='bg-primary/10 border-b border-primary/20 p-3'
           >
             <div className='flex items-start gap-2'>
-              <Icon name={"sparkles" as any} className='w-4 h-4 text-primary mt-1 flex-shrink-0' />
+              <Icon name="sparkles" className='w-4 h-4 text-primary mt-1 flex-shrink-0' />
               <div className='flex-1'>
                 <p className='text-sm text-foreground mb-2'>{currentIntervention.message}</p>
                 {currentIntervention.actions && (
@@ -772,7 +772,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
                         onClick={() => handleProactiveAction(action.action)}
                         className='text-xs'
                       >
-                        {action.icon && <Icon name={action.icon as any} className='w-3 h-3 mr-1' />}
+                        {action.icon && <Icon name={action.icon as 'sparkles'} className='w-3 h-3 mr-1' />}
                         {action.text}
                       </Button>
                     ))}
@@ -788,12 +788,12 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
       <div className='flex items-center justify-between p-4 border-b'>
         <div className='flex items-center gap-3'>
           <div className='w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center'>
-            <Icon name={"bot" as any} className='w-5 h-5 text-primary' />
+            <Icon name="bot" className='w-5 h-5 text-primary' />
           </div>
           <div>
             <h3 className='font-semibold'>Sofia</h3>
             <p className='text-sm text-muted-foreground'>
-              {memoryServiceRef.current?.getConversationInsights().totalConversations > 0
+              {(memoryServiceRef.current?.getConversationInsights()?.totalConversations || 0) > 0
                 ? 'Welcome back! I remember you.'
                 : 'Your digital guide'}
             </p>
@@ -807,7 +807,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
             onClick={onClose}
             className='h-8 w-8 p-0'
           >
-            <Icon name={"x" as any} className='w-4 h-4' />
+            <Icon name="x" className='w-4 h-4' />
           </Button>
         )}
       </div>
@@ -839,9 +839,9 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
             variant="outline"
           >
             {isProcessing ? (
-              <Icon name={"loader-2" as any} className='w-4 h-4 animate-spin' />
+              <Icon name="loader-2" className='w-4 h-4 animate-spin' />
             ) : (
-              <Icon name={"send" as any} className='w-4 h-4' />
+              <Icon name="send" className='w-4 h-4' />
             )}
           </Button>
         </form>

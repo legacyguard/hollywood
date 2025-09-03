@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { DocumentConfirmation } from './DocumentConfirmation';
+import { DocumentConfirmation, type DocumentAnalysisResult } from './DocumentConfirmation';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Icon } from '@/components/ui/icon-library';
@@ -35,19 +35,19 @@ const mockAnalysisResult = {
       label: 'Account Number',
       value: '1234567890',
       confidence: 0.95,
-      type: 'account',
+      type: 'account' as const,
     },
     {
       label: 'Total Amount',
       value: '$97.70',
       confidence: 0.92,
-      type: 'amount',
+      type: 'amount' as const,
     },
     {
       label: 'Service Address',
       value: '123 Main St, Springfield, IL',
       confidence: 0.85,
-      type: 'contact',
+      type: 'contact' as const,
     },
   ],
   suggestedTags: ['utility', 'monthly', 'housing', 'expires'],
@@ -86,6 +86,25 @@ const mockAnalysisResult = {
 
   processingId: 'test_processing_12345',
   processingTime: 1250,
+  
+  // Versioning Intelligence (Phase 3) - Mock data
+  potentialVersions: [
+    {
+      documentId: 'doc_123',
+      fileName: 'electric-bill-february-2024.pdf',
+      versionNumber: 1,
+      versionDate: '2024-03-01',
+      similarityScore: 0.9,
+      matchReasons: ['Similar structure', 'Same utility company'],
+    },
+  ],
+  
+  versioningSuggestion: {
+    action: 'new_version' as const,
+    confidence: 0.8,
+    reasoning: 'This appears to be a new monthly utility bill',
+    suggestedArchiveReason: 'Previous month billing cycle',
+  },
 };
 
 // Mock file for testing
@@ -104,7 +123,27 @@ export const IntelligentDocumentTester: React.FC = () => {
   };
 
   const handleConfirm = (
-    _confirmedData: typeof mockAnalysisResult & { bundleSelection?: any }
+    _confirmedData: DocumentAnalysisResult & {
+      bundleSelection?: {
+        action: 'link' | 'none' | 'new';
+        bundleId: string | null;
+        newBundleName: string | null;
+        suggestedNewBundle: {
+          name: string;
+          category: string;
+          primaryEntity: string | null;
+          entityType: string | null;
+          keywords: string[];
+          confidence: number;
+          reasoning: string;
+        } | null;
+      };
+      versionSelection?: {
+        action: 'replace' | 'new_version' | 'separate' | 'none';
+        versionId: string | null;
+        archiveReason: string;
+      };
+    }
   ) => {
     setIsProcessing(true);
 

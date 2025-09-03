@@ -10,9 +10,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Icon } from '@/components/ui/icon-library';
+import { Icon, type IconName } from '@/components/ui/icon-library';
 import { FadeIn } from '@/components/motion/FadeIn';
 import type { Document } from '@/integrations/supabase/types';
+import { adaptDbDocumentToApp } from '@/lib/type-adapters';
 
 interface EnhancedDocumentListProps {
   documents: Document[];
@@ -36,7 +37,8 @@ export default function EnhancedDocumentList({
 
   // Filter and sort documents
   const filteredAndSortedDocuments = useMemo(() => {
-    const filtered = documents.filter(doc => {
+    const adaptedDocuments = documents.map(adaptDbDocumentToApp);
+    const filtered = adaptedDocuments.filter(doc => {
       const matchesSearch =
         !searchQuery ||
         doc.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -139,7 +141,7 @@ export default function EnhancedDocumentList({
     return null;
   };
 
-  const formatFileSize = (bytes: number | null): string => {
+  const formatFileSize = (bytes?: number): string => {
     if (!bytes) return '';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
@@ -147,7 +149,7 @@ export default function EnhancedDocumentList({
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
-  const isExpiringSoon = (expiresAt: string | null): boolean => {
+  const isExpiringSoon = (expiresAt: string | null | undefined): boolean => {
     if (!expiresAt) return false;
     const daysUntilExpiry = Math.floor(
       (new Date(expiresAt).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
@@ -155,7 +157,7 @@ export default function EnhancedDocumentList({
     return daysUntilExpiry <= 30 && daysUntilExpiry >= 0;
   };
 
-  const isExpired = (expiresAt: string | null): boolean => {
+  const isExpired = (expiresAt: string | null | undefined): boolean => {
     if (!expiresAt) return false;
     return new Date(expiresAt).getTime() < Date.now();
   };
@@ -167,7 +169,7 @@ export default function EnhancedDocumentList({
         <div className='flex flex-col md:flex-row gap-4'>
           <div className='flex-1'>
             <div className='relative'>
-              <Icon name={"search" as any}
+              <Icon name="search"
                 className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground'
               />
               <Input
@@ -224,7 +226,7 @@ export default function EnhancedDocumentList({
                 onClick={() => setViewMode('grid')}
                 className='border-0 rounded-r-none'
               >
-                <Icon name={"grid" as any} className='w-4 h-4' />
+                <Icon name="grid" className='w-4 h-4' />
               </Button>
               <Button
                 variant={viewMode === 'list' ? 'default' : 'ghost'}
@@ -232,7 +234,7 @@ export default function EnhancedDocumentList({
                 onClick={() => setViewMode('list')}
                 className='border-0 rounded-l-none'
               >
-                <Icon name={"list" as any} className='w-4 h-4' />
+                <Icon name="list" className='w-4 h-4' />
               </Button>
             </div>
           </div>
@@ -244,12 +246,12 @@ export default function EnhancedDocumentList({
           </p>
           {searchQuery && (
             <Button
-              variant={"ghost" as any}
+              variant="ghost"
               size='sm'
               onClick={() => setSearchQuery('')}
               className='text-xs'
             >
-              <Icon name={"x" as any} className='w-3 h-3 mr-1' />
+              <Icon name="x" className='w-3 h-3 mr-1' />
               Clear search
             </Button>
           )}
@@ -365,7 +367,7 @@ function DocumentCard({
               }`}
             >
               <Icon
-                name={getDocumentIcon(document) as any}
+                name={getDocumentIcon(document) as IconName}
                 className={`w-5 h-5 ${
                   document.category === 'legal'
                     ? 'text-blue-600'
@@ -482,7 +484,7 @@ function DocumentCard({
             onSelect();
           }}
         >
-          <Icon name={"eye" as any} className='w-4 h-4' />
+          <Icon name="eye" className='w-4 h-4' />
         </Button>
         <Button
           size='sm'
@@ -493,7 +495,7 @@ function DocumentCard({
           }}
           className='hover:bg-destructive/10 hover:text-destructive'
         >
-          <Icon name={"trash" as any} className='w-4 h-4' />
+          <Icon name="trash" className='w-4 h-4' />
         </Button>
       </div>
     </Card>
@@ -599,7 +601,7 @@ function DocumentListItem({
               onSelect();
             }}
           >
-            <Icon name={"eye" as any} className='w-4 h-4' />
+            <Icon name="eye" className='w-4 h-4' />
           </Button>
           <Button
             size='sm'
@@ -610,7 +612,7 @@ function DocumentListItem({
             }}
             className='hover:bg-destructive/10 hover:text-destructive'
           >
-            <Icon name={"trash" as any} className='w-4 h-4' />
+            <Icon name="trash" className='w-4 h-4' />
           </Button>
         </div>
       </div>

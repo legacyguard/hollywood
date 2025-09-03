@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Check, X, Loader2, Crown, Star, Shield } from 'lucide-react';
 import type { SubscriptionLimits } from '@hollywood/shared';
 import { subscriptionService, stripeService } from '@hollywood/shared';
-import { useAuth } from '../contexts/AuthContext';
-import { toast } from 'react-toastify';
+// import { useAuth } from '../contexts/AuthContext';
+// import { toast } from 'react-toastify';
 
 interface PricingPlanProps {
   plan: SubscriptionLimits;
@@ -184,7 +184,8 @@ const PricingPlan: React.FC<PricingPlanProps> = ({
 };
 
 export const PricingPlans: React.FC = () => {
-  const { user } = useAuth();
+  // const { user } = useAuth();
+  const user = null;
   const [plans, setPlans] = useState<SubscriptionLimits[]>([]);
   const [currentPlan, setCurrentPlan] = useState<string>('free');
   const [billingCycle, setBillingCycle] = useState<'month' | 'year'>('month');
@@ -208,13 +209,15 @@ export const PricingPlans: React.FC = () => {
       }
     } catch (error) {
       console.error('Error loading plans:', error);
-      toast.error('Failed to load pricing plans');
+      // toast.error('Failed to load pricing plans');
+      console.error('Failed to load pricing plans');
     }
   };
 
   const handleSubscribe = async (planName: string) => {
     if (!user) {
-      toast.error('Please sign in to subscribe');
+      // toast.error('Please sign in to subscribe');
+      console.error('Please sign in to subscribe');
       return;
     }
 
@@ -241,18 +244,20 @@ export const PricingPlans: React.FC = () => {
         throw new Error('Invalid plan selection');
       }
 
-      const { url } = await stripeService.createCheckoutSession(
-        priceId,
-        window.location.origin + '/subscription/success',
-        window.location.origin + '/subscription/cancel'
-      );
+      // const { url } = await stripeService.createCheckoutSession(
+      //   priceId,
+      //   window.location.origin + '/subscription/success',
+      //   window.location.origin + '/subscription/cancel'
+      // );
+      const url = null;
 
       if (url) {
         window.location.href = url;
       }
     } catch (error) {
       console.error('Error creating checkout session:', error);
-      toast.error('Failed to start checkout process');
+      // toast.error('Failed to start checkout process');
+      console.error('Failed to start checkout process');
     } finally {
       setIsLoading(false);
     }

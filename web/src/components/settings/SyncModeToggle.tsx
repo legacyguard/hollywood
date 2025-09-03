@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { type SyncMode, localDataAdapter } from '@/lib/storage/LocalDataAdapter';
 import { cloudSyncAdapter } from '@/lib/storage/CloudSyncAdapter';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from '@/lib/i18n';
 
 type CategorySyncInfo = {
   name: string;

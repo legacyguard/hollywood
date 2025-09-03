@@ -130,7 +130,7 @@ export const PerformanceDashboard: React.FC = () => {
               className="h-8 w-8 p-0"
             >
               <Icon
-                name={isExpanded ? 'chevron-up' : 'chevron-down'}
+                name={isExpanded ? 'chevronUp' : 'chevronDown'}
                 className="h-4 w-4"
               />
             </Button>
@@ -181,7 +181,7 @@ export const PerformanceDashboard: React.FC = () => {
                         className={getStatusColor(metric.status)}
                       >
                         <Icon
-                          name={getStatusIcon(metric.status)}
+                          name={getStatusIcon(metric.status) as any}
                           className="h-3 w-3 mr-1"
                         />
                         {metric.status.replace('-', ' ')}
@@ -240,7 +240,7 @@ export const PerformanceDashboard: React.FC = () => {
                   }}
                   className="text-xs"
                 >
-                  <Icon name="trash-2" className="h-3 w-3 mr-1" />
+                  <Icon name="trash" className="h-3 w-3 mr-1" />
                   Clear Metrics
                 </Button>
                 <Button

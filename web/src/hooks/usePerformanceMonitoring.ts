@@ -50,7 +50,7 @@ export const usePerformanceMonitoring = () => {
         const entries = list.getEntries();
         entries.forEach((entry) => {
           if (entry.entryType === 'first-input') {
-            setMetrics(prev => ({ ...prev, FID: entry.processingStart - entry.startTime }));
+            setMetrics(prev => ({ ...prev, FID: (entry as any).processingStart - entry.startTime }));
           }
         });
       });
@@ -66,7 +66,7 @@ export const usePerformanceMonitoring = () => {
       let clsValue = 0;
       const observer = new PerformanceObserver((list) => {
         for (const entry of list.getEntries()) {
-          if (!entry.hadRecentInput) {
+          if (!(entry as any).hadRecentInput) {
             clsValue += (entry as any).value;
           }
         }

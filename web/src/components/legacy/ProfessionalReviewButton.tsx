@@ -63,13 +63,13 @@ export function ProfessionalReviewButton({
     complex_assets: false,
     business_interests: false
   },
-  buttonVariant = 'button',
+  variant = 'button',
   size = 'md',
   showBenefits = false,
   onReviewRequested,
   className
 }: ProfessionalReviewButtonProps) {
-  const { variant, trackConversion } = useABTest('professional_review_cta_v1');
+  const { variant: abTestVariant, trackConversion } = useABTest('professional_review_cta_v1');
   const {
     trackReviewButtonViewed: _trackReviewButtonViewed,
     trackReviewButtonClicked,
@@ -119,7 +119,7 @@ export function ProfessionalReviewButton({
     setIsDialogOpen(true);
   };
 
-  if (buttonVariant === 'banner') {
+  if (variant === 'banner') {
     return (
       <motion.div
         initial={{  opacity: 0, y: 20  }}

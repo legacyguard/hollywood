@@ -223,7 +223,7 @@ export const MilestoneCelebration: React.FC<MilestoneCelebrationProps> = ({
     >
       <div className="text-center">
         <h3 className="text-xl font-bold text-gray-900 mb-2">Family Impact</h3>
-        <p className="text-gray-600">{milestone.celebration.familyImpactMessage}</p>
+        <p className="text-gray-600">{milestone.family_impact_message || 'Your family is now better protected.'}</p>
       </div>
 
       {/* Family Impact Metrics */}

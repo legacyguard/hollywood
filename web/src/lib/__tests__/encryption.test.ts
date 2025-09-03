@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { EncryptionService } from '../encryption-v2';
+import { encryptionService } from '../encryption-v2';
 
 describe('EncryptionService', () => {
   let encryptionService: EncryptionService;

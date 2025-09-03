@@ -107,8 +107,8 @@ export {
 } from '../ui/enhanced-input';
 
 export type {
-  EnhancedInputProps,
-  FieldState
+  EnhancedInputProps
+  // FieldState
 } from '../ui/enhanced-input';
 
 export {

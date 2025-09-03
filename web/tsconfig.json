@@ -18,13 +18,14 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
-    }
+    },
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true
   },
   "include": ["src"],
   "exclude": [
-    "src/stories/**",
-    "src/components/family/**",
-    "src/services/will*.ts"
+    "src/stories/**"
   ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

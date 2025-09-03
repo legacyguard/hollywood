@@ -151,7 +151,7 @@ export const MobileFamilyCollaboration: React.FC<MobileFamilyCollaborationProps>
           <div className="flex-1 min-w-0">
             <div className="flex items-center space-x-2 mb-1">
               <h3 className="font-medium text-gray-900 truncate">{member.name}</h3>
-              <Badge size="sm" className={getRoleColor(member.role)}>
+              <Badge className={`${getRoleColor(member.role)} text-xs`}>
                 {member.role}
               </Badge>
             </div>
@@ -328,7 +328,7 @@ export const MobileFamilyCollaboration: React.FC<MobileFamilyCollaborationProps>
                   </Avatar>
                   <div>
                     <div className="text-left">{selectedMember.name}</div>
-                    <Badge size="sm" className={getRoleColor(selectedMember.role)}>
+                    <Badge className={`${getRoleColor(selectedMember.role)} text-xs`}>
                       {selectedMember.role}
                     </Badge>
                   </div>
@@ -397,8 +397,8 @@ export const MobileFamilyCollaboration: React.FC<MobileFamilyCollaborationProps>
               <div className="space-y-2">
                 <Button
                   variant="outline"
-                  className="w-full justify-start"
                   {...mobileOptimized.button('lg')}
+                  className="w-full justify-start"
                   onClick={() => onNavigate?.('share', { memberId: selectedMember.id })}
                 >
                   <Share className="w-4 h-4 mr-3" />
@@ -406,8 +406,8 @@ export const MobileFamilyCollaboration: React.FC<MobileFamilyCollaborationProps>
                 </Button>
                 <Button
                   variant="outline"
-                  className="w-full justify-start"
                   {...mobileOptimized.button('lg')}
+                  className="w-full justify-start"
                   onClick={() => onNavigate?.('calendar', { memberId: selectedMember.id })}
                 >
                   <Calendar className="w-4 h-4 mr-3" />

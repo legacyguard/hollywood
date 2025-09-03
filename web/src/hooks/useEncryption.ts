@@ -43,32 +43,35 @@ export function useEncryption() {
     try {
       const storedKey = await secureStorage.getMemory('encryption_key');
       if (storedKey) {
-        setState({
+        setState(prev => ({
+          ...prev,
           isInitialized: true,
           isLocked: false,
           hasKey: true,
-        });
-        setEncryptionKey(storedKey);
+        }));
+        setEncryptionKey(storedKey as CryptoKey);
       } else {
-        setState({
+        setState(prev => ({
+          ...prev,
           isInitialized: true,
           isLocked: true,
           hasKey: false,
-        });
+        }));
       }
     } catch (error) {
       console.error('Error checking encryption status: ', error);
-      setState({
+      setState(prev => ({
+        ...prev,
         isInitialized: true,
         isLocked: true,
         hasKey: false,
-      });
+      }));
     }
   };
 
   const generateKey = async (password: string): Promise<CryptoKey> => {
     const encoder = new TextEncoder();
-    const salt = crypto.getRandomValues(new Uint8Array(16 as ArrayBuffer));
+    const salt = crypto.getRandomValues(new Uint8Array(16));
 
     const keyMaterial = await crypto.subtle.importKey(
       'raw',
@@ -145,8 +148,8 @@ export function useEncryption() {
       const encoder = new TextEncoder();
       const dataBuffer = typeof data === 'string' ? encoder.encode(data) : data;
 
-      const iv = crypto.getRandomValues(new Uint8Array(12 as ArrayBuffer));
-      const salt = crypto.getRandomValues(new Uint8Array(16 as ArrayBuffer));
+      const iv = crypto.getRandomValues(new Uint8Array(12));
+      const salt = crypto.getRandomValues(new Uint8Array(16));
 
       const encrypted = await crypto.subtle.encrypt(
         { name: 'AES-GCM', iv },
@@ -203,7 +206,7 @@ export function useEncryption() {
 
     try {
       const arrayBuffer = await file.arrayBuffer();
-      const encryptionResult = await encryptData(arrayBuffer, "", "");
+      const encryptionResult = await encryptData(arrayBuffer);
 
       if (!encryptionResult) {
         throw new Error('Failed to encrypt file');

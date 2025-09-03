@@ -70,13 +70,13 @@ export const AdaptiveLegacyTree: React.FC<AdaptiveLegacyTreeProps> = ({
   documentsCount = 0,
   guardiansCount = 0,
   familyMembersCount = 0,
-  _completedMilestones = 0,
-  _totalMilestones = 1,
+  completedMilestones = 0,
+  totalMilestones = 1,
   willProgress = 0,
   timeCapsules = 0,
   personalityMode,
   size = 'medium',
-  _variant = 'detailed',
+  variant = 'detailed',
   interactive = true,
   showProgress = true,
   showTooltips = true,
@@ -332,7 +332,7 @@ export const AdaptiveLegacyTree: React.FC<AdaptiveLegacyTreeProps> = ({
         transition={!shouldReduceMotion ? {
           duration: animConfig.duration * (branch.level + 1),
           delay: branch.level * animConfig.delay * 2,
-          ease: animConfig.ease
+          ease: animConfig.ease as any
         } : undefined}
         style={{ cursor: interactive ? 'pointer' : 'default' }}
         onClick={() => interactive && onBranchClick?.(branch)}
@@ -385,7 +385,7 @@ export const AdaptiveLegacyTree: React.FC<AdaptiveLegacyTreeProps> = ({
           transition={!shouldReduceMotion ? {
             duration: animConfig.duration,
             delay: Math.random() * 1.5 + 0.5,
-            ease: animConfig.ease
+            ease: animConfig.ease as any
           } : undefined}
           whileHover={interactive && !shouldReduceMotion ? { scale: 1.3 } : undefined}
           style={{ cursor: interactive ? 'pointer' : 'default' }}

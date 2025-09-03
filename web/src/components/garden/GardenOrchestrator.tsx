@@ -385,7 +385,7 @@ export const GardenOrchestrator: React.FC<GardenOrchestratorProps> = ({
           exit={!shouldReduceMotion ? { opacity: 0, scale: 1.05 } : undefined}
           transition={!shouldReduceMotion ? {
             duration: animConfig.duration,
-            ease: animConfig.ease
+            ease: animConfig.ease as any
           } : undefined}
         >
           {renderGardenView()}

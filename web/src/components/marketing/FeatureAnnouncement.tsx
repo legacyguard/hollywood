@@ -301,12 +301,12 @@ export const FeatureAnnouncement: React.FC<FeatureAnnouncementProps> = ({
                                   {feature.title}
                                 </h5>
                                 {feature.isNew && (
-                                  <Badge size="sm" className="bg-green-100 text-green-800">
+                                  <Badge className="bg-green-100 text-green-800 text-xs">
                                     New
                                   </Badge>
                                 )}
                                 {feature.isPremium && (
-                                  <Badge size="sm" className="bg-purple-100 text-purple-800">
+                                  <Badge className="bg-purple-100 text-purple-800 text-xs">
                                     Premium
                                   </Badge>
                                 )}

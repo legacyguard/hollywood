@@ -88,7 +88,7 @@ export const WillTypeSelector: React.FC<WillTypeSelectorProps> = ({
                     </h3>
                     <p className='text-blue-800 dark:text-blue-300'>
                       Excellent. Creating a will is an important act of care.
-                      Under {legalInfo.jurisdiction} law, you have two main
+                      Under Slovak law, you have two main
                       forms to choose from. I'll help you select the right one
                       for you.
                     </p>

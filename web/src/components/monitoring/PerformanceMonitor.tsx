@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react';
 import { getPerformanceMetrics } from '@/lib/monitoring/performance';
 import { runHealthCheck, getLastHealthStatus } from '@/lib/monitoring/healthCheck';
 import { captureError } from '@/lib/monitoring/sentry';
-import { trackPerformance, trackAction } from '@/lib/monitoring/analytics';
+// import { trackPerformance, trackAction } from '@/lib/monitoring/analytics';
 
 interface PerformanceData {
   webVitals: any;
@@ -41,7 +41,7 @@ export const PerformanceMonitor: React.FC = () => {
       try {
         // Initial health check
         await runHealthCheck();
-        trackAction('monitoring_started', { component: 'PerformanceMonitor' });
+        // trackAction('monitoring_started', { component: 'PerformanceMonitor' });
 
         // Periodic health checks
         healthCheckInterval = window.setInterval(async () => {
@@ -50,12 +50,12 @@ export const PerformanceMonitor: React.FC = () => {
 
             // Track health status changes
             if (health.overall !== 'healthy') {
-              trackPerformance('health_status', health.overall === 'degraded' ? 0.5 : 0, {
-                status: health.overall,
-                failedChecks: Object.entries(health.checks)
-                  .filter(([, result]) => result.status !== 'healthy')
-                  .map(([name]) => name)
-              });
+              // trackPerformance('health_status', health.overall === 'degraded' ? 0.5 : 0, {
+              //   status: health.overall,
+              //   failedChecks: Object.entries(health.checks)
+              //     .filter(([, result]) => result.status !== 'healthy')
+              //     .map(([name]) => name)
+              // });
             }
           } catch (error) {
             captureError(error instanceof Error ? error : new Error(String(error)), {
@@ -71,30 +71,30 @@ export const PerformanceMonitor: React.FC = () => {
 
             // Report key metrics to analytics
             if (metrics.webVitals.LCP) {
-              trackPerformance('lcp', metrics.webVitals.LCP.value, {
-                rating: metrics.webVitals.LCP.rating
-              });
+              // trackPerformance('lcp', metrics.webVitals.LCP.value, {
+              //   rating: metrics.webVitals.LCP.rating
+              // });
             }
 
             if (metrics.webVitals.FID) {
-              trackPerformance('fid', metrics.webVitals.FID.value, {
-                rating: metrics.webVitals.FID.rating
-              });
+              // trackPerformance('fid', metrics.webVitals.FID.value, {
+              //   rating: metrics.webVitals.FID.rating
+              // });
             }
 
             if (metrics.webVitals.CLS) {
-              trackPerformance('cls', metrics.webVitals.CLS.value, {
-                rating: metrics.webVitals.CLS.rating
-              });
+              // trackPerformance('cls', metrics.webVitals.CLS.value, {
+              //   rating: metrics.webVitals.CLS.rating
+              // });
             }
 
             // Report memory usage if available
             if (metrics.memory) {
               const memoryUsage = (metrics.memory.usedJSHeapSize / metrics.memory.jsHeapSizeLimit) * 100;
-              trackPerformance('memory_usage', memoryUsage, {
-                usedMB: Math.round(metrics.memory.usedJSHeapSize / 1024 / 1024),
-                totalMB: Math.round(metrics.memory.totalJSHeapSize / 1024 / 1024)
-              });
+              // trackPerformance('memory_usage', memoryUsage, {
+              //   usedMB: Math.round(metrics.memory.usedJSHeapSize / 1024 / 1024),
+              //   totalMB: Math.round(metrics.memory.totalJSHeapSize / 1024 / 1024)
+              // });
             }
 
           } catch (error) {
@@ -138,7 +138,7 @@ export const PerformanceDashboard: React.FC = () => {
         const performance = getPerformanceMetrics();
         const health = getLastHealthStatus();
 
-        setPerformanceData(performance);
+        setPerformanceData(performance as PerformanceData);
         setHealthData(health);
       } catch (error) {
         captureError(error instanceof Error ? error : new Error(String(error)), {

@@ -83,26 +83,29 @@ interface ProfessionalNetworkDirectoryProps {
 const SAMPLE_PROFESSIONALS: ProfessionalProfile[] = [
   {
     id: '1',
-    user_id: 'user1',
+    userId: 'user1',
     email: 'sarah.johnson@law.com',
     full_name: 'Sarah Johnson',
-    professional_title: 'Estate Planning Attorney',
+    fullName: 'Sarah Johnson',
+    professional_title: 'Senior Attorney',
     law_firm_name: 'Johnson & Associates',
     bar_number: '123456',
-    licensed_states: ['California', 'Nevada', 'Arizona'],
+    licensed_states: ['California', 'Nevada'],
+    type: 'attorney',
+    licenseNumber: '123456',
+    jurisdiction: 'California',
     specializations: [
       { id: '1', name: 'Estate Planning', category: 'estate_planning' },
       { id: '2', name: 'Tax Law', category: 'tax_law' },
       { id: '3', name: 'Asset Protection', category: 'estate_planning' }
     ],
+    experience: 15,
     experience_years: 15,
-    status: 'active',
-    verification_status: 'verified',
-    hourly_rate: 350,
-    bio: 'Specializing in comprehensive estate planning for high-net-worth families with complex asset structures.',
-    profile_image_url: 'https://images.unsplash.com/photo-1494790108755-2616b619e04c?w=150&h=150&fit=crop&crop=face',
+    verified: true,
+    onboardingStatus: 'approved',
+    createdAt: '2024-01-01',
     created_at: '2024-01-01',
-    updated_at: '2024-01-01',
+    updatedAt: '2024-01-01',
     rating: 4.9,
     reviewCount: 127,
     responseTime: '< 2 hours',
@@ -123,26 +126,29 @@ const SAMPLE_PROFESSIONALS: ProfessionalProfile[] = [
   },
   {
     id: '2',
-    user_id: 'user2',
+    userId: 'user2',
     email: 'michael.chen@legaleagle.com',
     full_name: 'Michael Chen',
+    fullName: 'Michael Chen',
     professional_title: 'Senior Partner',
     law_firm_name: 'LegalEagle Partners',
     bar_number: '789012',
     licensed_states: ['New York', 'New Jersey', 'Connecticut'],
+    type: 'attorney',
+    licenseNumber: '789012',
+    jurisdiction: 'New York',
     specializations: [
       { id: '4', name: 'Business Law', category: 'business_law' },
       { id: '5', name: 'Real Estate Law', category: 'real_estate' },
       { id: '6', name: 'Family Law', category: 'family_law' }
     ],
+    experience: 22,
     experience_years: 22,
-    status: 'active',
-    verification_status: 'verified',
-    hourly_rate: 450,
-    bio: 'Leading expert in business succession planning and multi-generational wealth transfer strategies.',
-    profile_image_url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
+    verified: true,
+    onboardingStatus: 'approved',
+    createdAt: '2024-01-01',
     created_at: '2024-01-01',
-    updated_at: '2024-01-01',
+    updatedAt: '2024-01-01',
     rating: 4.8,
     reviewCount: 89,
     responseTime: '< 4 hours',
@@ -163,26 +169,29 @@ const SAMPLE_PROFESSIONALS: ProfessionalProfile[] = [
   },
   {
     id: '3',
-    user_id: 'user3',
+    userId: 'user3',
     email: 'emily.rodriguez@elderlaw.com',
     full_name: 'Emily Rodriguez',
+    fullName: 'Emily Rodriguez',
     professional_title: 'Elder Law Attorney',
     law_firm_name: 'Rodriguez Elder Law',
     bar_number: '345678',
     licensed_states: ['Florida', 'Georgia'],
+    type: 'attorney',
+    licenseNumber: '345678',
+    jurisdiction: 'Florida',
     specializations: [
       { id: '7', name: 'Elder Law', category: 'estate_planning' },
       { id: '8', name: 'Probate Law', category: 'estate_planning' },
       { id: '9', name: 'Healthcare Directives', category: 'estate_planning' }
     ],
+    experience: 12,
     experience_years: 12,
-    status: 'active',
-    verification_status: 'verified',
-    hourly_rate: 275,
-    bio: 'Compassionate legal counsel specializing in senior care planning and protecting family assets.',
-    profile_image_url: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=150&h=150&fit=crop&crop=face',
+    verified: true,
+    onboardingStatus: 'approved',
+    createdAt: '2024-01-01',
     created_at: '2024-01-01',
-    updated_at: '2024-01-01',
+    updatedAt: '2024-01-01',
     rating: 4.9,
     reviewCount: 156,
     responseTime: '< 1 hour',
@@ -248,7 +257,7 @@ export function ProfessionalNetworkDirectory({
       if (filters.search) {
         const search = filters.search.toLowerCase();
         if (!prof.full_name.toLowerCase().includes(search) &&
-            !prof.professional_title.toLowerCase().includes(search) &&
+            !prof.professional_title?.toLowerCase().includes(search) &&
             !prof.law_firm_name?.toLowerCase().includes(search) &&
             !prof.specializations.some(s => s.name.toLowerCase().includes(search))) {
           return false;
@@ -265,7 +274,7 @@ export function ProfessionalNetworkDirectory({
 
       // State filter
       if (filters.states.length > 0) {
-        if (!filters.states.some(state => prof.licensed_states.includes(state))) {
+        if (!filters.states.some(state => prof.licensed_states?.includes(state))) {
           return false;
         }
       }
@@ -417,7 +426,7 @@ export function ProfessionalNetworkDirectory({
                 </span>
                 <span className="flex items-center gap-1">
                   <MapPin className="h-3 w-3" />
-                  {professional.licensed_states.length} state{professional.licensed_states.length !== 1 ? 's' : ''}
+                  {professional.licensed_states?.length || 0} state{(professional.licensed_states?.length || 0) !== 1 ? 's' : ''}
                 </span>
               </div>
             </div>
@@ -546,7 +555,7 @@ export function ProfessionalNetworkDirectory({
                     </span>
                     <span className="flex items-center gap-1">
                       <MapPin className="h-4 w-4" />
-                      {professional.licensed_states.join(', ')}
+                      {professional.licensed_states?.join(', ') || 'No states listed'}
                     </span>
                   </div>
 
@@ -768,7 +777,7 @@ export function ProfessionalNetworkDirectory({
                       <div className="px-2">
                         <Slider
                           value={filters.experienceRange}
-                          onValueChange={(value) => setFilters(prev => ({
+                          onValueChange={(value: number[]) => setFilters(prev => ({
                             ...prev,
                             experienceRange: value as [number, number]
                           }))}
@@ -789,7 +798,7 @@ export function ProfessionalNetworkDirectory({
                       <div className="px-2">
                         <Slider
                           value={filters.priceRange}
-                          onValueChange={(value) => setFilters(prev => ({
+                          onValueChange={(value: number[]) => setFilters(prev => ({
                             ...prev,
                             priceRange: value as [number, number]
                           }))}
@@ -958,7 +967,7 @@ export function ProfessionalNetworkDirectory({
                         <span className="text-xl font-bold">{selectedProfessional.rating}</span>
                         <span className="text-muted-foreground">({selectedProfessional.reviewCount} reviews)</span>
                       </div>
-                      <Badge className={getAvailabilityColor(selectedProfessional.availability)} className="mb-2">
+                      <Badge className={`${getAvailabilityColor(selectedProfessional.availability)} mb-2`}>
                         {selectedProfessional.availability}
                       </Badge>
                       <p className="text-lg font-bold">${selectedProfessional.hourly_rate}/hour</p>
@@ -1014,7 +1023,7 @@ export function ProfessionalNetworkDirectory({
                         <div>
                           <Label className="font-medium mb-2 block">Licensed States</Label>
                           <div className="flex flex-wrap gap-2">
-                            {selectedProfessional.licensed_states.map(state => (
+                            {selectedProfessional.licensed_states?.map(state => (
                               <Badge key={state} variant="outline">
                                 {state}
                               </Badge>

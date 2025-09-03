@@ -531,16 +531,16 @@ export const LegacyStoryCreation: React.FC<LegacyStoryCreationProps> = ({
                   <div>
                     <h3 className="font-medium text-gray-900 mb-3">Story Prompts</h3>
                     <div className="space-y-2">
-                      {selectedTemplate.prompts.map((prompt, index) => (
+                      {selectedTemplate.prompts.map((storyPrompt, index) => (
                         <div key={index} className="bg-blue-50 rounded-lg p-4">
-                          <p className="text-gray-700">{prompt}</p>
+                          <p className="text-gray-700">{storyPrompt}</p>
                           <Button
                             size="sm"
                             variant="link"
                             className="p-0 h-auto mt-2"
                             onClick={() => {
                               const response = prompt('Your response:');
-                              if (response) addTextContent(`Q: ${prompt}\nA: ${response}`);
+                              if (response) addTextContent(`Q: ${storyPrompt}\nA: ${response}`);
                             }}
                           >
                             Answer this prompt →

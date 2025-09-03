@@ -1,4 +1,5 @@
-import { useContext, type React } from 'react';
+import { useContext } from 'react';
+import type React from 'react';
 
 interface EncryptionContextValue {
   isInitialized: boolean;

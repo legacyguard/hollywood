@@ -373,7 +373,7 @@ function TimeCapsuleCard({
 
             <Badge className={`${getStatusColor(capsule.status)} shadow-sm`}>
               <Icon
-                name={getStatusIcon(capsule.status)}
+                name={getStatusIcon(capsule.status) as any}
                 className='w-3 h-3 mr-1'
               />
               {capsule.status === 'PENDING'

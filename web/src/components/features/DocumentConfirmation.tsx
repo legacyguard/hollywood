@@ -4,12 +4,12 @@ import React, { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Icon } from '@/components/ui/icon-library';
+import { Icon, type IconName } from '@/components/ui/icon-library';
 import { FadeIn } from '@/components/motion/FadeIn';
 import { cn } from '@/lib/utils';
 
 // Document analysis result interface matching our Supabase Edge Function
-interface DocumentAnalysisResult {
+export interface DocumentAnalysisResult {
   extractedText: string;
   confidence: number;
   suggestedCategory: {
@@ -171,7 +171,7 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
   const categories = [
     { id: 'personal', label: 'Personal', icon: 'user' },
     { id: 'housing', label: 'Housing', icon: 'home' },
-    { id: 'finances', label: 'Finances', icon: 'dollar-sign' },
+    { id: 'finances', label: 'Finances', icon: 'dollar' },
     { id: 'work', label: 'Work', icon: 'briefcase' },
     { id: 'health', label: 'Health', icon: 'heart' },
     { id: 'legal', label: 'Legal', icon: 'scale' },
@@ -187,7 +187,7 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
         <Card className='p-6 bg-card border-card-border'>
           <div className='flex items-center gap-3 mb-4'>
             <div className='p-2 bg-primary/10 rounded-lg'>
-              <Icon name={"documents" as any} className='w-5 h-5 text-primary' />
+              <Icon name="documents" className='w-5 h-5 text-primary' />
             </div>
             <div className='flex-1'>
               <h3 className='font-semibold text-lg'>Document Preview</h3>
@@ -232,7 +232,7 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
         <Card className='p-6 bg-card border-card-border'>
           <div className='flex items-center gap-3 mb-6'>
             <div className='p-2 bg-primary/10 rounded-lg'>
-              <Icon name={"brain" as any} className='w-5 h-5 text-primary' />
+              <Icon name="brain" className='w-5 h-5 text-primary' />
             </div>
             <div>
               <h3 className='font-semibold text-lg'>AI Analysis Results</h3>
@@ -273,7 +273,7 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
                     className='justify-start gap-2'
                   >
                     <Icon
-                      name={category.icon as string}
+                      name={category.icon as IconName}
                       className='w-4 h-4'
                     />
                     {category.label}
@@ -327,7 +327,7 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
                   />
                 </div>
                 <div className='flex items-center gap-2 p-2 bg-status-warning/10 rounded-md'>
-                  <Icon name={"calendar" as any}
+                  <Icon name="calendar"
                     className='w-4 h-4 text-status-warning'
                   />
                   <span className='text-sm'>
@@ -384,7 +384,7 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
               editableData.versioningSuggestion) && (
               <div className='space-y-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800'>
                 <div className='flex items-center gap-2'>
-                  <Icon name={"clock" as any}
+                  <Icon name="clock"
                     className='w-5 h-5 text-yellow-600 dark:text-yellow-400'
                   />
                   <h4 className='font-medium text-yellow-800 dark:text-yellow-200'>
@@ -474,7 +474,7 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
                       />
                       <div className='flex-1'>
                         <div className='flex items-center gap-2'>
-                          <Icon name={"refresh-cw" as any}
+                          <Icon name="refresh-cw"
                             className='w-4 h-4 text-yellow-600'
                           />
                           <span className='font-medium'>
@@ -518,7 +518,7 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
                       className='mt-0.5'
                     />
                     <div className='flex items-center gap-2'>
-                      <Icon name={"file-plus" as any}
+                      <Icon name="add"
                         className='w-4 h-4 text-blue-600'
                       />
                       <span className='font-medium'>
@@ -535,7 +535,7 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
               editableData.suggestedNewBundle) && (
               <div className='space-y-4 p-4 bg-primary/5 rounded-lg border'>
                 <div className='flex items-center gap-2'>
-                  <Icon name={"link" as any} className='w-5 h-5 text-primary' />
+                  <Icon name="link" className='w-5 h-5 text-primary' />
                   <h4 className='font-medium text-primary'>
                     Intelligent Document Linking
                   </h4>
@@ -620,7 +620,7 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
                       />
                       <div className='flex-1 space-y-2'>
                         <div className='flex items-center gap-2'>
-                          <Icon name={"plus" as any} className='w-4 h-4 text-primary' />
+                          <Icon name="add" className='w-4 h-4 text-primary' />
                           <span className='font-medium'>Create new bundle</span>
                           <Badge variant="outline" className='text-xs'>
                             {(
@@ -661,7 +661,7 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
                     }}
                   />
                   <div className='flex items-center gap-2'>
-                    <Icon name={"x" as any} className='w-4 h-4 text-muted-foreground' />
+                    <Icon name="x" className='w-4 h-4 text-muted-foreground' />
                     <span>Don't link to any bundle</span>
                   </div>
                 </label>
@@ -706,12 +706,12 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
             >
               {isProcessing ? (
                 <>
-                  <Icon name={"upload" as any} className='w-4 h-4 animate-pulse' />
+                  <Icon name="upload" className='w-4 h-4 animate-pulse' />
                   Saving...
                 </>
               ) : (
                 <>
-                  <Icon name={"check" as any} className='w-4 h-4' />
+                  <Icon name="check" className='w-4 h-4' />
                   Confirm & Save
                 </>
               )}

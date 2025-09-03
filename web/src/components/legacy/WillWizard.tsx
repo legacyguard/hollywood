@@ -265,7 +265,23 @@ export const WillWizard: React.FC<WillWizardProps> = ({
 
   const handleVaultAssetsSelected = (selectedAssets: string[]) => {
     // Add selected assets to the appropriate category
-    const currentAssets = willData.assets[vaultSelectorType] || [];
+    if (vaultSelectorType === 'all') {
+      // Distribute to a default category when 'all' is selected
+      const currentAssets = willData.assets.personalProperty || [];
+      const newAssets = selectedAssets.map(asset => ({
+        description: asset,
+        value: 0, // User can edit this later
+      }));
+      updateWillData('assets', {
+        personalProperty: [...currentAssets, ...newAssets],
+      });
+      setShowVaultSelector(false);
+      toast.success(
+        `Added ${selectedAssets.length} asset${selectedAssets.length > 1 ? 's' : ''} from your vault`
+      );
+      return;
+    }
+    const currentAssets = (willData.assets as any)[vaultSelectorType] || [];
     const newAssets = selectedAssets.map(asset => ({
       description: asset,
       value: 0, // User can edit this later
@@ -285,7 +301,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
     const newBeneficiary = {
       id: crypto.randomUUID(),
       name: '',
-      relationship: 'child',
+      relationship: 'child' as 'child',
       percentage: 0,
       specificGifts: [],
       conditions: '',
@@ -379,7 +395,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                 <Select
                   value={willData.testator_data.maritalStatus}
                   onValueChange={value =>
-                    updateWillData('testator_data', { maritalStatus: value })
+                    updateWillData('testator_data', { maritalStatus: value as 'single' | 'married' | 'divorced' | 'widowed' })
                   }
                 >
                   <SelectTrigger>
@@ -790,7 +806,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                       const newAccount = {
                         bank: '',
                         accountNumber: '',
-                        type: 'checking',
+                        type: 'checking' as 'checking' | 'savings' | 'investment',
                       };
                       updateWillData('assets', {
                         bankAccounts: [
@@ -1026,8 +1042,9 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                     onChange={e =>
                       updateWillData('executor_data', {
                         primaryExecutor: {
-                          ...willData.executor_data.primaryExecutor,
                           name: e.target.value,
+                          relationship: willData.executor_data.primaryExecutor?.relationship || '',
+                          phone: willData.executor_data.primaryExecutor?.phone || '',
                         },
                       })
                     }
@@ -1046,8 +1063,9 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                     onChange={e =>
                       updateWillData('executor_data', {
                         primaryExecutor: {
-                          ...willData.executor_data.primaryExecutor,
+                          name: willData.executor_data.primaryExecutor?.name || '',
                           relationship: e.target.value,
+                          phone: willData.executor_data.primaryExecutor?.phone || '',
                         },
                       })
                     }
@@ -1063,7 +1081,8 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                   onChange={e =>
                     updateWillData('executor_data', {
                       primaryExecutor: {
-                        ...willData.executor_data.primaryExecutor,
+                        name: willData.executor_data.primaryExecutor?.name || '',
+                        relationship: willData.executor_data.primaryExecutor?.relationship || '',
                         phone: e.target.value,
                       },
                     })
@@ -1086,8 +1105,9 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                     onChange={e =>
                       updateWillData('executor_data', {
                         backupExecutor: {
-                          ...willData.executor_data.backupExecutor,
                           name: e.target.value,
+                          relationship: willData.executor_data.backupExecutor?.relationship || '',
+                          phone: willData.executor_data.backupExecutor?.phone || '',
                         },
                       })
                     }
@@ -1106,8 +1126,9 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                     onChange={e =>
                       updateWillData('executor_data', {
                         backupExecutor: {
-                          ...willData.executor_data.backupExecutor,
+                          name: willData.executor_data.backupExecutor?.name || '',
                           relationship: e.target.value,
+                          phone: willData.executor_data.backupExecutor?.phone || '',
                         },
                       })
                     }

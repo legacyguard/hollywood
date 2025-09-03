@@ -106,6 +106,7 @@ export interface EmotionalGuidanceSession {
     recipient: string;
     occasion: MessageOccasion;
     suggestedContent: string;
+    confidence: number;
   }>;
   completedAt?: Date;
 }

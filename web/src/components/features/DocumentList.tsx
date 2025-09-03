@@ -7,6 +7,7 @@ import { Icon } from '@/components/ui/icon-library';
 import { FadeIn } from '@/components/motion/FadeIn';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
+import { adaptDbDocumentToApp } from '@/lib/type-adapters';
 
 interface Document {
   id: string;
@@ -67,7 +68,7 @@ export const DocumentList = () => {
         throw error;
       }
 
-      setDocuments(data || []);
+      setDocuments((data || []).map(adaptDbDocumentToApp));
     } catch (err: unknown) {
       console.error('Error fetching documents:', err);
       setError(err instanceof Error ? err.message : 'Unknown error occurred');

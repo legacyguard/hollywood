@@ -24,7 +24,7 @@ import type { WillData } from './WillWizard';
 export interface FamilyNode {
   id: string;
   name: string;
-  relationship: string;
+  relationship: 'spouse' | 'child' | 'parent' | 'sibling' | 'grandchild' | 'friend' | 'charity' | 'other';
   dateOfBirth?: string;
   isAlive: boolean;
   generation: number; // 0 = testator, -1 = parents, +1 = children, etc.
@@ -38,7 +38,7 @@ export interface FamilyNode {
 }
 
 export interface RelativeSuggestion {
-  relationship: string;
+  relationship: 'spouse' | 'child' | 'parent' | 'sibling' | 'grandchild' | 'friend' | 'charity' | 'other';
   reasoning: string;
   priority: 'high' | 'medium' | 'low';
 }
@@ -66,7 +66,7 @@ interface FamilyTreeVisualizationProps {
   guardians?: Array<{
     id: string;
     name: string;
-    relationship: string;
+    relationship: 'spouse' | 'child' | 'parent' | 'sibling' | 'grandchild' | 'friend' | 'charity' | 'other';
     contact_info?: any;
   }>;
   onUpdateWillData: (data: Partial<WillData>) => void;
@@ -150,6 +150,7 @@ export const FamilyTreeVisualization: React.FC<
           name: node.name,
           relationship: node.relationship,
           percentage,
+          specificGifts: [],
           conditions: '',
         };
         onUpdateWillData({
@@ -463,7 +464,7 @@ const FamilyTreeNode: React.FC<FamilyTreeNodeProps> = ({
     }
   };
 
-  const getRelationshipIcon = (relationship: string): string => {
+  const getRelationshipIcon = (relationship: string): 'heart' | 'users' | 'user' | 'home' | 'star' => {
     switch (relationship.toLowerCase()) {
       case 'spouse':
       case 'husband':
@@ -472,19 +473,19 @@ const FamilyTreeNode: React.FC<FamilyTreeNodeProps> = ({
       case 'child':
       case 'son':
       case 'daughter':
-        return 'baby';
+        return 'user';
       case 'parent':
       case 'father':
       case 'mother':
-        return 'user-check';
+        return 'user';
       case 'sibling':
       case 'brother':
       case 'sister':
         return 'users';
       case 'grandchild':
-        return 'smile';
+        return 'heart';
       case 'grandparent':
-        return 'user-plus';
+        return 'user';
       default:
         return 'user';
     }
@@ -605,7 +606,7 @@ function buildFamilyTree(willData: WillData, guardians: any[]): FamilyNode[] {
   nodes.push({
     id: 'testator',
     name: willData.testator_data.fullName || 'Testator',
-    relationship: 'self',
+    relationship: 'other',
     dateOfBirth: willData.testator_data.dateOfBirth,
     isAlive: true,
     generation: 0,

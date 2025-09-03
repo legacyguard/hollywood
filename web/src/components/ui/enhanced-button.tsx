@@ -4,8 +4,8 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { motion, AnimatePresence } from "framer-motion"
 import { cn } from "@/lib/utils"
 import { MicroAnimation } from "@/components/animations/MicroInteractionSystem"
-import { useSofia } from "@/components/sofia/SofiaContextProvider"
-import { Icon, type IconMap } from "@/components/ui/icon-library"
+// import { useSofia } from "@/components/sofia/SofiaContextProvider"
+import { Icon, type IconMap, type IconName } from "@/components/ui/icon-library"
 
 const buttonVariants = cva(
   "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
@@ -67,11 +67,11 @@ export interface EnhancedButtonProps
   successText?: string
   errorText?: string
   // Icon props
-  leftIcon?: keyof IconMap
-  rightIcon?: keyof IconMap
-  loadingIcon?: keyof IconMap
-  successIcon?: keyof IconMap
-  errorIcon?: keyof IconMap
+  leftIcon?: keyof typeof IconMap
+  rightIcon?: keyof typeof IconMap
+  loadingIcon?: keyof typeof IconMap
+  successIcon?: keyof typeof IconMap
+  errorIcon?: keyof typeof IconMap
   // Animation props
   staggerDelay?: number
   rippleEffect?: boolean
@@ -103,7 +103,8 @@ const EnhancedButton = React.forwardRef<HTMLButtonElement, EnhancedButtonProps>(
     onClick,
     ...props
   }, ref) => {
-    const { personality } = useSofia()
+    // const { personality } = useSofia() // Temporarily disabled
+    const personality = { mode: 'default' }
     const [ripples, setRipples] = React.useState<Array<{ id: number, x: number, y: number }>>([])
     const buttonRef = React.useRef<HTMLButtonElement>(null)
 
@@ -191,7 +192,7 @@ const EnhancedButton = React.forwardRef<HTMLButtonElement, EnhancedButtonProps>(
         className="inline-block"
       >
         <Comp
-          className={cn(buttonVariants({ variant: adaptedVariant, size, className }))}
+          className={cn(buttonVariants({ variant: adaptedVariant as any, size, className }))}
           ref={ref || buttonRef}
           disabled={isDisabled}
           onClick={handleRippleClick}
@@ -342,9 +343,9 @@ export const ActionButton = React.forwardRef<HTMLButtonElement,
     action?: 'save' | 'delete' | 'edit' | 'add' | 'cancel' | 'submit'
   }
 >(({ action, leftIcon, ...props }, ref) => {
-  const getActionIcon = (action?: string) => {
+  const getActionIcon = (action?: string): IconName | undefined => {
     switch (action) {
-      case 'save': return 'save'
+      case 'save': return 'check' // save icon not in IconMap, using check
       case 'delete': return 'trash'
       case 'edit': return 'pencil'
       case 'add': return 'plus'
@@ -357,7 +358,7 @@ export const ActionButton = React.forwardRef<HTMLButtonElement,
   return (
     <EnhancedButton
       ref={ref}
-      leftIcon={leftIcon || getActionIcon(action) as keyof IconMap}
+      leftIcon={leftIcon || getActionIcon(action)}
       personalityAdapt={true}
       rippleEffect={true}
       {...props}
@@ -368,4 +369,4 @@ export const ActionButton = React.forwardRef<HTMLButtonElement,
 ActionButton.displayName = "ActionButton"
 
 export { EnhancedButton, buttonVariants }
-export type { EnhancedButtonProps }
+// export type { EnhancedButtonProps }

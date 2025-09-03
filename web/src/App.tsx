@@ -64,7 +64,7 @@ function ErrorFallback({error}: {error: Error}) {
 
 export default function App() {
   return (
-    <ErrorBoundary FallbackComponent={ErrorFallback}>
+    <ErrorBoundary fallbackRender={ErrorFallback}>
       <I18nextProvider i18n={i18n}>
         <Suspense fallback={<div>Loading translations...</div>}>
           <ClerkProvider>

@@ -172,14 +172,14 @@ export function LegallyReviewedStamp({
         )}>
           {review.reviewer.credentials}
         </p>
-        {review.reviewer.specialization && (
+        {review.reviewer.specializations && review.reviewer.specializations.length > 0 && (
           <p className={cn(
             'text-muted-foreground capitalize',
             size === 'sm' && 'text-xs',
             size === 'md' && 'text-xs',
             size === 'lg' && 'text-sm'
           )}>
-            {review.reviewer.specialization}
+            {review.reviewer.specializations[0]}
           </p>
         )}
       </div>
@@ -192,8 +192,8 @@ export function LegallyReviewedStamp({
           size === 'md' && 'text-xs',
           size === 'lg' && 'text-sm'
         )}>
-           {(review.reviewed_at || review.updated_at)
-            ? new Date(review.reviewed_at || review.updated_at).toLocaleDateString()
+           {review.review_date
+            ? new Date(review.review_date).toLocaleDateString()
             : 'Date not available'}
         </p>
       </div>

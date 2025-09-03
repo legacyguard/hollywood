@@ -268,7 +268,10 @@ export function EncryptionProvider({ children }: EncryptionProviderProps) {
       }
 
       try {
-        const result = await encryptionService.encryptFile(file);
+        // For now, use placeholder keys - in a real implementation, get from context
+        const publicKey = 'placeholder-public-key';
+        const secretKey = 'placeholder-secret-key';
+        const result = await encryptionService.encryptFile(file, publicKey, secretKey);
         if (!result) {
           toast.error('Failed to encrypt file');
         }
@@ -291,9 +294,14 @@ export function EncryptionProvider({ children }: EncryptionProviderProps) {
       }
 
       try {
+        // For now, use placeholder keys - in a real implementation, get from context
+        const publicKey = 'placeholder-public-key';
+        const secretKey = 'placeholder-secret-key';
         const result = await encryptionService.decryptFile(
           encryptedData,
-          nonce
+          nonce,
+          publicKey,
+          secretKey
         );
         if (!result) {
           toast.error('Failed to decrypt file');

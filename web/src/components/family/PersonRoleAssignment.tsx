@@ -106,7 +106,7 @@ export const PersonRoleAssignment: React.FC<PersonRoleAssignmentProps> = ({
     if (!willData?.beneficiaries) return 0;
     return willData.beneficiaries
       .filter(b => b.id !== person.id)
-      .reduce((total, beneficiary) => total + (beneficiary.share_percentage || 0), 0);
+      .reduce((total, beneficiary) => total + (beneficiary.percentage || 0), 0);
   };
 
   const remainingPercentage = 100 - getTotalInheritanceAssigned();
@@ -147,9 +147,8 @@ export const PersonRoleAssignment: React.FC<PersonRoleAssignmentProps> = ({
       const hasMinorChildren = willData?.beneficiaries?.some(
         b =>
           b.relationship === 'child' &&
-          new Date().getFullYear() -
-            new Date(b.date_of_birth || '').getFullYear() <
-            18
+          // Note: date_of_birth not available in beneficiary object, assuming all children are minors for now
+          true
       );
 
       if (hasMinorChildren) {

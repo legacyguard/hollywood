@@ -30,6 +30,7 @@ import {
 import { AnimatePresence, motion } from 'framer-motion';
 import { type FamilyMember, type FamilyProtectionStatus, type FamilyStats, RELATIONSHIP_LABELS } from '@/types/family';
 import { familyService } from '@/services/familyService';
+import { adaptDbFamilyMemberToApp, adaptDbFamilyStatsToApp } from '@/lib/type-adapters';
 import { FamilyInvitationFlow } from './FamilyInvitationFlow';
 
 interface FamilyMemberDashboardProps {
@@ -51,10 +52,6 @@ export function FamilyMemberDashboard({ userId }: FamilyMemberDashboardProps) {
   const [actionInProgress, setActionInProgress] = useState<string | null>(null);
   const [filter, setFilter] = useState<'all' | 'active' | 'pending' | 'emergency'>('all');
 
-  useEffect(() => {
-    loadFamilyData();
-  }, [userId, loadFamilyData]);
-
   const loadFamilyData = useCallback(async () => {
     try {
       setIsLoading(true);
@@ -64,15 +61,19 @@ export function FamilyMemberDashboard({ userId }: FamilyMemberDashboardProps) {
         familyService.getFamilyStats(userId)
       ]);
 
-      setMembers(membersData);
+      setMembers(membersData.map(adaptDbFamilyMemberToApp));
       setProtectionStatus(protectionData);
-      setStats(statsData);
+      setStats(adaptDbFamilyStatsToApp(statsData));
     } catch (error) {
       console.error('Failed to load family data:', error);
     } finally {
       setIsLoading(false);
     }
   }, [userId]);
+
+  useEffect(() => {
+    loadFamilyData();
+  }, [userId, loadFamilyData]);
 
   const handleMemberAction = async (action: MemberAction) => {
     setActionInProgress(action.member.id);
@@ -84,7 +85,16 @@ export function FamilyMemberDashboard({ userId }: FamilyMemberDashboardProps) {
           break;
         case 'resend_invitation':
           if (action.member.status === 'invited') {
-            await familyService.resendInvitation(userId, action.member.id);
+            await familyService.sendInvitation(
+              userId,
+              {
+                email: action.member.email,
+                name: action.member.name,
+                role: action.member.role || 'viewer',
+                relationship: action.member.relationship || 'other',
+                message: 'Resending invitation to join your family legacy'
+              }
+            );
           }
           break;
         case 'edit':
@@ -122,7 +132,8 @@ export function FamilyMemberDashboard({ userId }: FamilyMemberDashboardProps) {
 
   const getRoleColor = (role: FamilyMember['role']) => {
     switch (role) {
-      case 'admin': return 'bg-purple-100 text-purple-800 border-purple-200';
+      case 'owner': return 'bg-purple-100 text-purple-800 border-purple-200';
+      case 'co_owner': return 'bg-purple-100 text-purple-800 border-purple-200';
       case 'collaborator': return 'bg-blue-100 text-blue-800 border-blue-200';
       case 'viewer': return 'bg-green-100 text-green-800 border-green-200';
       case 'emergency_contact': return 'bg-red-100 text-red-800 border-red-200';

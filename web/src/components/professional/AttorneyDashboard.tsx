@@ -155,15 +155,15 @@ export function AttorneyDashboard({
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">
-            Welcome back, {reviewer.full_name.split(' ')[0]}
+            Welcome back, {reviewer.fullName.split(' ')[0]}
           </h1>
           <p className="text-gray-600 mt-1">
-            {reviewer.law_firm_name ? `${reviewer.professional_title} at ${reviewer.law_firm_name}` : reviewer.professional_title}
+            {reviewer.type} - {reviewer.jurisdiction}
           </p>
         </div>
         <div className="flex items-center gap-3">
           <Badge className="bg-emerald-100 text-emerald-800 border-emerald-200">
-            {reviewer.status === 'active' ? 'Active' : reviewer.status}
+            {reviewer.verified ? 'Verified' : 'Pending Verification'}
           </Badge>
           <Badge variant="outline" className="flex items-center gap-1">
             <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />

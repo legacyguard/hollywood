@@ -11,7 +11,7 @@ import {
   SecureKeyError,
   type KeyPurpose
 } from '@/lib/encryption/secure-key-manager';
-import { toast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 
 interface SecureEncryptionState {
   isInitialized: boolean;
