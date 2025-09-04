@@ -35,11 +35,11 @@ export const AdaptiveProgressBar: React.FC<ProgressBarProps> = ({
             : 1.2,
         ease:
           personalityMode === 'pragmatic'
-            ? 'easeOut'
-            : [0.25, 0.46, 0.45, 0.94],
+            ? ('easeOut' as const)
+            : [0.25, 0.46, 0.45, 0.94] as const,
       },
     },
-  };
+  } as const;
 
   return (
     <div className={`relative w-full ${className}`}>
@@ -85,7 +85,7 @@ export const AdaptiveProgressBar: React.FC<ProgressBarProps> = ({
                   duration: 2,
                   repeat: Infinity,
                   delay: i * 0.3,
-                  ease: 'easeInOut',
+                  ease: 'easeInOut' as const,
                 }}
               >
                 <Sparkles className='w-2 h-2 text-white/80' />
@@ -150,8 +150,8 @@ export const AdaptiveMilestoneIndicator: React.FC<MilestoneIndicatorProps> = ({
         duration: personalityMode === 'pragmatic' ? 0.6 : 1.2,
         ease:
           personalityMode === 'pragmatic'
-            ? 'easeOut'
-            : [0.25, 0.46, 0.45, 0.94],
+            ? ('easeOut' as const)
+            : ([0.25, 0.46, 0.45, 0.94] as const),
       },
     },
   };
@@ -299,7 +299,7 @@ export const AdaptiveStepProgress: React.FC<StepProgressProps> = ({
                 transition={{
                   duration: personalityMode === 'pragmatic' ? 1.5 : 2,
                   repeat: Infinity,
-                  ease: 'easeInOut',
+                  ease: 'easeInOut' as const,
                 }}
               />
             )}

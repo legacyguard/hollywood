@@ -1,11 +1,10 @@
 import * as React from 'react';
 import type * as LabelPrimitive from '@radix-ui/react-label';
 import { Slot } from '@radix-ui/react-slot';
-// import { type ControllerProps, type FieldPath, type FieldValues, Controller, FormProvider } from 'react-hook-form';
 
 // Mock types for react-hook-form
 type FieldValues = any;
-type FieldPath<T> = string;
+type FieldPath<T> = T extends string ? string : string;
 type ControllerProps<
   TFieldValues extends FieldValues,
   TName extends FieldPath<TFieldValues>,
@@ -16,7 +15,7 @@ type ControllerProps<
   render?: (props: any) => React.ReactNode;
 };
 
-const Controller = ({ render, ...props }: ControllerProps<any, string>) => {
+const Controller = ({ render }: ControllerProps<any, string>) => {
   if (render) {
     return render({
       field: { value: '', onChange: () => {}, onBlur: () => {} },

@@ -32,7 +32,7 @@ import {
  * @size medium - 40px height (default)
  * @size large - 48px height
  */
-export const Input = styled(TamaguiInput, {
+export const Input = React.memo(styled(TamaguiInput, {
   name: 'LGInput',
 
   // Base styles
@@ -143,7 +143,7 @@ export const Input = styled(TamaguiInput, {
     size: 'medium',
     fullWidth: false,
   },
-});
+}));
 
 /**
  * TextArea component for LegacyGuard applications
@@ -167,7 +167,7 @@ export const Input = styled(TamaguiInput, {
  * @size medium - 100px min-height (default)
  * @size large - 120px min-height
  */
-export const TextArea = styled(TamaguiTextArea, {
+export const TextArea = React.memo(styled(TamaguiTextArea, {
   name: 'LGTextArea',
 
   // Inherit all Input styles
@@ -261,7 +261,7 @@ export const TextArea = styled(TamaguiTextArea, {
     variant: 'default',
     size: 'medium',
   },
-});
+}));
 
 /**
  * InputGroup component for grouping inputs with labels and error messages
@@ -276,11 +276,11 @@ export const TextArea = styled(TamaguiTextArea, {
  * </InputGroup>
  * ```
  */
-export const InputGroup = styled(View, {
+export const InputGroup = React.memo(styled(View, {
   name: 'LGInputGroup',
   width: '100%',
   gap: '$2',
-});
+}));
 
 /**
  * InputLabel component for input labels
@@ -291,14 +291,14 @@ export const InputGroup = styled(View, {
  * <InputLabel>Username</InputLabel>
  * ```
  */
-export const InputLabel = styled(Text, {
+export const InputLabel = React.memo(styled(Text, {
   name: 'LGInputLabel',
   fontSize: '$3',
   fontWeight: '$4',
   color: '$gray7',
   fontFamily: '$body',
   marginBottom: '$1',
-});
+}));
 
 /**
  * InputError component for input error messages
@@ -309,13 +309,13 @@ export const InputLabel = styled(Text, {
  * <InputError>This field is required</InputError>
  * ```
  */
-export const InputError = styled(Text, {
+export const InputError = React.memo(styled(Text, {
   name: 'LGInputError',
   fontSize: '$3',
   color: '$error',
   fontFamily: '$body',
   marginTop: '$1',
-});
+}));
 
 /**
  * InputHelper component for input helper text
@@ -326,13 +326,13 @@ export const InputError = styled(Text, {
  * <InputHelper>Helper text for the input</InputHelper>
  * ```
  */
-export const InputHelper = styled(Text, {
+export const InputHelper = React.memo(styled(Text, {
   name: 'LGInputHelper',
   fontSize: '$3',
   color: '$gray6',
   fontFamily: '$body',
   marginTop: '$1',
-});
+}));
 
 /**
  * Props for the Input component

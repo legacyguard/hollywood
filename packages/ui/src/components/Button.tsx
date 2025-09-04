@@ -25,7 +25,7 @@ import { type GetProps, styled, Button as TamaguiButton } from 'tamagui';
  * @size large - 48px height
  * @size xlarge - 56px height
  */
-export const Button = styled(TamaguiButton, {
+export const Button = React.memo(styled(TamaguiButton, {
   name: 'LGButton',
 
   // Base styles
@@ -182,7 +182,7 @@ export const Button = styled(TamaguiButton, {
     rounded: false,
     loading: false,
   },
-});
+}));
 
 /**
  * Props for the Button component
@@ -205,7 +205,7 @@ export type ButtonProps = GetProps<typeof Button>;
  * @size large - 48x48px
  * @size xlarge - 56x56px
  */
-export const IconButton = styled(Button, {
+export const IconButton = React.memo(styled(Button, {
   name: 'LGIconButton',
   paddingHorizontal: 0,
   aspectRatio: 1,
@@ -234,7 +234,7 @@ export const IconButton = styled(Button, {
   defaultVariants: {
     size: 'medium',
   },
-});
+}));
 
 /**
  * Props for the IconButton component

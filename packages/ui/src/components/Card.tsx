@@ -35,7 +35,7 @@ import { type GetProps, styled, Text, View } from 'tamagui';
  * @padding large - Large padding ($5)
  * @padding xlarge - Extra large padding ($6)
  */
-export const Card = styled(View, {
+export const Card = React.memo(styled(View, {
   name: 'LGCard',
 
   // Base styles
@@ -148,7 +148,7 @@ export const Card = styled(View, {
     clickable: false,
     fullWidth: false,
   },
-});
+}));
 
 /**
  * CardHeader component for Card headers
@@ -163,7 +163,7 @@ export const Card = styled(View, {
  *
  * @prop noBorder - Remove bottom border
  */
-export const CardHeader = styled(View, {
+export const CardHeader = React.memo(styled(View, {
   name: 'LGCardHeader',
   flexDirection: 'row',
   justifyContent: 'space-between',
@@ -185,7 +185,7 @@ export const CardHeader = styled(View, {
   defaultVariants: {
     noBorder: false,
   },
-});
+}));
 
 /**
  * CardTitle component for Card titles
@@ -196,13 +196,13 @@ export const CardHeader = styled(View, {
  * <CardTitle>Card Title</CardTitle>
  * ```
  */
-export const CardTitle = styled(Text, {
+export const CardTitle = React.memo(styled(Text, {
   name: 'LGCardTitle',
   fontSize: '$6',
   fontWeight: '$5',
   color: '$color',
   fontFamily: '$heading',
-});
+}));
 
 /**
  * CardDescription component for Card descriptions
@@ -213,13 +213,13 @@ export const CardTitle = styled(Text, {
  * <CardDescription>Card description text</CardDescription>
  * ```
  */
-export const CardDescription = styled(Text, {
+export const CardDescription = React.memo(styled(Text, {
   name: 'LGCardDescription',
   fontSize: '$4',
   color: '$gray6',
   fontFamily: '$body',
   marginTop: '$1',
-});
+}));
 
 /**
  * CardContent component for Card content
@@ -232,10 +232,10 @@ export const CardDescription = styled(Text, {
  * </CardContent>
  * ```
  */
-export const CardContent = styled(View, {
+export const CardContent = React.memo(styled(View, {
   name: 'LGCardContent',
   flex: 1,
-});
+}));
 
 /**
  * CardFooter component for Card footers
@@ -252,7 +252,7 @@ export const CardContent = styled(View, {
  * @prop noBorder - Remove top border
  * @prop justify - Justify content alignment
  */
-export const CardFooter = styled(View, {
+export const CardFooter = React.memo(styled(View, {
   name: 'LGCardFooter',
   flexDirection: 'row',
   justifyContent: 'flex-end',
@@ -285,7 +285,7 @@ export const CardFooter = styled(View, {
       },
     },
   },
-});
+}));
 
 /**
  * Props for the Card component

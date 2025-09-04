@@ -131,7 +131,7 @@ interface PlanCardProps {
   plan: SubscriptionLimits;
 }
 
-const PlanCard: React.FC<PlanCardProps> = ({
+const PlanCard = React.memo<PlanCardProps>(({
   plan,
   currentPlan,
   billingCycle,
@@ -253,9 +253,9 @@ const PlanCard: React.FC<PlanCardProps> = ({
       </TouchableOpacity>
     </View>
   );
-};
+});
 
-export const PricingPlans: React.FC = () => {
+export const PricingPlans = React.memo(() => {
   const { user } = useAuth();
   const [plans, setPlans] = useState<SubscriptionLimits[]>([]);
   const [currentPlan, setCurrentPlan] = useState<string>('free');
@@ -421,7 +421,7 @@ export const PricingPlans: React.FC = () => {
       </View>
     </ScrollView>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {

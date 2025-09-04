@@ -3,7 +3,7 @@
  * Shows results and insights after bulk document import
  */
 
-// import React from 'react'; // Not needed in React 17+
+import React from 'react';
 import { motion } from 'framer-motion';
 import {
   ArrowRight,
@@ -30,7 +30,12 @@ interface BulkImportSummaryProps {
   result: BulkImportResult;
 }
 
-export function BulkImportSummary({
+/**
+ * BulkImportSummary Component
+ * Shows results and insights after bulk document import
+ * Optimized with React.memo to prevent unnecessary re-renders
+ */
+export const BulkImportSummary = React.memo(function BulkImportSummary({
   result,
   onViewDocuments,
   onClose,
@@ -206,7 +211,7 @@ export function BulkImportSummary({
           <div className='grid grid-cols-3 gap-4'>
             <div className='text-center p-4 bg-red-50 rounded-lg'>
               <div className='text-2xl font-bold text-red-600 mb-1'>
-                {relevanceStats.high || 0}
+                {relevanceStats['high'] || 0}
               </div>
               <div className='text-sm text-red-700 font-medium'>
                 High Priority
@@ -217,7 +222,7 @@ export function BulkImportSummary({
             </div>
             <div className='text-center p-4 bg-yellow-50 rounded-lg'>
               <div className='text-2xl font-bold text-yellow-600 mb-1'>
-                {relevanceStats.medium || 0}
+                {relevanceStats['medium'] || 0}
               </div>
               <div className='text-sm text-yellow-700 font-medium'>
                 Medium Priority
@@ -228,7 +233,7 @@ export function BulkImportSummary({
             </div>
             <div className='text-center p-4 bg-gray-50 rounded-lg'>
               <div className='text-2xl font-bold text-gray-600 mb-1'>
-                {relevanceStats.low || 0}
+                {relevanceStats['low'] || 0}
               </div>
               <div className='text-sm text-gray-700 font-medium'>
                 Low Priority
@@ -251,7 +256,7 @@ export function BulkImportSummary({
         </CardHeader>
         <CardContent>
           <div className='space-y-4'>
-            {relevanceStats.high > 0 && (
+            {(relevanceStats['high'] || 0) > 0 && (
               <div className='flex items-start gap-3 p-3 bg-red-50 rounded-lg'>
                 <Shield className='h-5 w-5 text-red-600 mt-0.5' />
                 <div className='flex-1'>
@@ -259,7 +264,7 @@ export function BulkImportSummary({
                     Review High-Priority Documents
                   </h4>
                   <p className='text-sm text-red-700 mt-1'>
-                    {relevanceStats.high} critical documents need your
+                    {relevanceStats['high'] || 0} critical documents need your
                     attention. Consider professional legal review for estate
                     planning documents.
                   </p>
@@ -338,4 +343,7 @@ export function BulkImportSummary({
       </div>
     </motion.div>
   );
-}
+});
+
+// Display name for debugging
+BulkImportSummary.displayName = 'BulkImportSummary';

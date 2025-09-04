@@ -8,7 +8,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import { motion, type Variants } from 'framer-motion';
+import { motion, type Variants, type Easing } from 'framer-motion';
 
 // Types for personality modes
 export type PersonalityMode = 'adaptive' | 'empathetic' | 'pragmatic';
@@ -17,7 +17,7 @@ export type PersonalityMode = 'adaptive' | 'empathetic' | 'pragmatic';
 interface AdaptiveAnimationContextType {
   animationConfig: {
     duration: number;
-    ease: string;
+    ease: Easing;
   };
   personalityMode: PersonalityMode;
   setPersonalityMode: (mode: PersonalityMode) => void;
@@ -35,7 +35,7 @@ export const useAdaptiveAnimation = (): AdaptiveAnimationContextType => {
     return {
       personalityMode: 'adaptive',
       shouldReduceMotion: false,
-      animationConfig: { duration: 0.3, ease: 'easeOut' },
+      animationConfig: { duration: 0.3, ease: 'easeOut' as Easing },
       setPersonalityMode: () => {},
     };
   }
@@ -80,7 +80,7 @@ export const AdaptiveAnimationProvider: React.FC<{ children: ReactNode }> = ({
 
   const animationConfig = {
     duration: personalityMode === 'pragmatic' ? 0.2 : 0.3,
-    ease: personalityMode === 'pragmatic' ? 'easeOut' : 'easeInOut',
+    ease: (personalityMode === 'pragmatic' ? 'easeOut' : 'easeInOut') as Easing,
   };
 
   return (
@@ -285,7 +285,7 @@ export const AdaptiveAnimatedListItem: React.FC<AnimatedListItemProps> = ({
       scale: 1,
       transition: {
         duration: animationConfig.duration,
-        ease: animationConfig.ease as any,
+        ease: animationConfig.ease,
         delay: index * 0.1, // Fixed stagger value
       } as any,
     },

@@ -349,8 +349,6 @@ const SofiaFireflyNative: React.FC<SofiaFireflyProps> = ({
   mode = 'balanced',
   isActive = true,
 }) => {
-  // isActive is not used in native version yet
-  const _isActive = isActive;
   return (
     <FireflyContainer>
       <View

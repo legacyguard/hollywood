@@ -2,13 +2,13 @@ import React from 'react';
 import { type GetProps, Paragraph, Stack, styled, View } from 'tamagui';
 
 // Styled components for ProgressBar
-const ProgressBarContainer = styled(Stack, {
+const ProgressBarContainer = React.memo(styled(Stack, {
   name: 'ProgressBarContainer',
   width: '100%',
   space: '$2',
-});
+}));
 
-const ProgressTrack = styled(View, {
+const ProgressTrack = React.memo(styled(View, {
   name: 'ProgressTrack',
   width: '100%',
   height: 8,
@@ -16,9 +16,9 @@ const ProgressTrack = styled(View, {
   borderRadius: '$10',
   overflow: 'hidden',
   position: 'relative',
-});
+}));
 
-const ProgressFill = styled(View, {
+const ProgressFill = React.memo(styled(View, {
   name: 'ProgressFill',
   height: '100%',
   borderRadius: '$10',
@@ -52,15 +52,15 @@ const ProgressFill = styled(View, {
       },
     },
   },
-});
+}));
 
-const ProgressLabel = styled(Stack, {
+const ProgressLabel = React.memo(styled(Stack, {
   name: 'ProgressLabel',
   flexDirection: 'row',
   justifyContent: 'space-between',
   alignItems: 'center',
   width: '100%',
-});
+}));
 
 export interface ProgressBarProps
   extends GetProps<typeof ProgressBarContainer> {

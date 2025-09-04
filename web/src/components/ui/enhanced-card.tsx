@@ -8,7 +8,6 @@ import {
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 import { MicroAnimation } from '@/components/animations/MicroInteractionSystem';
-// import { useSofia } from "@/components/sofia/SofiaContextProvider"
 import { Icon, type IconMap } from '@/components/ui/icon-library';
 
 const cardVariants = cva(

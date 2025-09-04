@@ -180,45 +180,46 @@ export const Checkbox = React.memo(
         </StyledCheckbox>
       );
 
-    if (!label) {
-      return checkboxComponent;
-    }
+      if (!label) {
+        return checkboxComponent;
+      }
 
-    return (
-      <XStack
-        alignItems='center'
-        gap='$3'
-        opacity={disabled ? 0.5 : 1}
-        cursor={disabled ? 'not-allowed' : 'pointer'}
-        onPress={() => {
-          if (!disabled && onCheckedChange) {
-            onCheckedChange(!checked);
-          }
-        }}
-      >
-        {labelPosition === 'left' && (
-          <Label
-            htmlFor={props.id}
-            disabled={disabled}
-            cursor={disabled ? 'not-allowed' : 'pointer'}
-          >
-            {label}
-          </Label>
-        )}
-        {checkboxComponent}
-        {labelPosition === 'right' && (
-          <Label
-            htmlFor={props.id}
-            disabled={disabled}
-            cursor={disabled ? 'not-allowed' : 'pointer'}
-          >
-            {label}
-          </Label>
-        )}
-      </XStack>
-    );
-  }
-));
+      return (
+        <XStack
+          alignItems='center'
+          gap='$3'
+          opacity={disabled ? 0.5 : 1}
+          cursor={disabled ? 'not-allowed' : 'pointer'}
+          onPress={() => {
+            if (!disabled && onCheckedChange) {
+              onCheckedChange(!checked);
+            }
+          }}
+        >
+          {labelPosition === 'left' && (
+            <Label
+              htmlFor={props.id}
+              disabled={disabled}
+              cursor={disabled ? 'not-allowed' : 'pointer'}
+            >
+              {label}
+            </Label>
+          )}
+          {checkboxComponent}
+          {labelPosition === 'right' && (
+            <Label
+              htmlFor={props.id}
+              disabled={disabled}
+              cursor={disabled ? 'not-allowed' : 'pointer'}
+            >
+              {label}
+            </Label>
+          )}
+        </XStack>
+      );
+    }
+  )
+);
 
 Checkbox.displayName = 'Checkbox';
 

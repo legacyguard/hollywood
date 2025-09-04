@@ -45,7 +45,7 @@ export const FormField: React.FC<FormFieldProps> = ({
       {children}
 
       {hint && !errorMessage && !successMessage && (
-        <Paragraph {...({ size: 'small', color: 'muted' } as ParagraphProps)}>
+        <Paragraph {...({ size: 'sm', color: 'muted' } as ParagraphProps)}>
           {hint}
         </Paragraph>
       )}
@@ -54,7 +54,7 @@ export const FormField: React.FC<FormFieldProps> = ({
         <View flexDirection='row' alignItems='center' gap='$1'>
           <AlertCircle size={14} color='$error' />
           <Paragraph
-            {...({ size: 'small', color: 'danger' } as ParagraphProps)}
+            {...({ size: 'sm', color: 'danger' } as ParagraphProps)}
           >
             {errorMessage}
           </Paragraph>
@@ -65,7 +65,7 @@ export const FormField: React.FC<FormFieldProps> = ({
         <View flexDirection='row' alignItems='center' gap='$1'>
           <CheckCircle size={14} color='$success' />
           <Paragraph
-            {...({ size: 'small', color: 'success' } as ParagraphProps)}
+            {...({ size: 'sm', color: 'success' } as ParagraphProps)}
           >
             {successMessage}
           </Paragraph>

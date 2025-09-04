@@ -11,7 +11,7 @@ import { Button } from './Button';
 import { XStack, YStack } from './Layout';
 
 // Alert Container
-export const Alert = styled(YStack, {
+export const Alert = React.memo(styled(YStack, {
   name: 'LGAlert',
   borderRadius: '$2',
   padding: '$4',
@@ -59,7 +59,7 @@ export const Alert = styled(YStack, {
     variant: 'default',
     size: 'md',
   },
-});
+}));
 
 // Alert Icon
 export const AlertIcon = ({
@@ -83,21 +83,21 @@ export const AlertIcon = ({
 };
 
 // Alert Title
-export const AlertTitle = styled(Text, {
+export const AlertTitle = React.memo(styled(Text, {
   name: 'LGAlertTitle',
   fontSize: '$5',
   fontWeight: '600',
   color: '$color',
   marginBottom: '$1',
-});
+}));
 
 // Alert Description
-export const AlertDescription = styled(Text, {
+export const AlertDescription = React.memo(styled(Text, {
   name: 'LGAlertDescription',
   fontSize: '$4',
   color: '$gray6',
   lineHeight: 1.5,
-});
+}));
 
 // Alert Close Button
 export const AlertCloseButton = ({

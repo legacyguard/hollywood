@@ -8,6 +8,29 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { IconMap } from '@/components/ui/icon-library';
+
+// Icon mapping function to convert sofia dictionary icons to valid IconMap keys
+const mapSofiaIconToValidIcon = (sofiaIcon: string): keyof typeof IconMap => {
+  const iconMapping: Record<string, keyof typeof IconMap> = {
+    'scroll': 'file-text',
+    'landmark': 'financial',
+    'dollar-sign': 'financial',
+    'clipboard': 'file-text',
+    'help-circle': 'help',
+    'shield-check': 'shield-check',
+    'building': 'home',
+    'file': 'file',
+  };
+  
+  // Check if the icon exists in IconMap directly first
+  if (sofiaIcon in IconMap) {
+    return sofiaIcon as keyof typeof IconMap;
+  }
+  
+  // Use mapping for known problematic icons
+  return iconMapping[sofiaIcon] || 'file-text';
+};
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon-library';
 import { useSupabaseWithClerk } from '@/integrations/supabase/client';
@@ -28,7 +51,7 @@ interface QuickSearchProps {
 
 interface LocalSearchResult {
   action: () => void;
-  icon: string;
+  icon: keyof typeof IconMap;
   id: string;
   subtitle?: string;
   title: string;
@@ -243,14 +266,23 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({
         ].slice(0, 6); // Limit total suggestions
 
         setDocuments(
-          documents.map(doc => ({ ...doc, type: 'document' as const }))
+          documents.map(doc => ({ 
+            ...doc, 
+            type: 'document' as const,
+            icon: doc.icon as keyof typeof IconMap 
+          }))
         );
         setResults([
           ...filteredActions,
-          ...documents.map(doc => ({ ...doc, type: 'document' as const })),
+          ...documents.map(doc => ({ 
+            ...doc, 
+            type: 'document' as const,
+            icon: doc.icon as keyof typeof IconMap 
+          })),
           ...guardians.map(guardian => ({
             ...guardian,
             type: 'guardian' as const,
+            icon: guardian.icon as keyof typeof IconMap 
           })),
         ]);
         setSofiaActions(allSuggestions);
@@ -330,7 +362,7 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({
                   onClick={result.action}
                 >
                   <Icon
-                    name={result.icon}
+                    name={result.icon as keyof typeof IconMap}
                     className='w-5 h-5 mr-3 flex-shrink-0'
                   />
                   <div className='text-left'>
@@ -408,7 +440,7 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({
                           <div className='w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse' />
                         )}
                         <Icon
-                          name={action.icon || 'message-circle'}
+                          name={mapSofiaIconToValidIcon(action.icon || 'message-circle')}
                           className={`w-4 h-4 mr-3 flex-shrink-0 ${
                             isDynamic ? 'text-green-600' : 'text-primary'
                           }`}

@@ -243,7 +243,7 @@ export const useSecureEncryption = () => {
       }
 
       try {
-        return await keyManager.decryptData(encryptedData, iv, version);
+        return await keyManager.decryptData(encryptedData, iv);
       } catch (error) {
         const errorMessage =
           error instanceof SecureKeyError ? error.message : 'Decryption failed';
@@ -336,7 +336,7 @@ export const useSecureEncryption = () => {
         const iv = new Uint8Array(ivString.split(',').map(Number));
 
         // Decrypt the data
-        return await keyManager.decryptData(encryptedData, iv, version);
+        return await keyManager.decryptData(encryptedData, iv);
       } catch (error) {
         const errorMessage =
           error instanceof SecureKeyError

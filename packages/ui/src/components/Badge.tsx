@@ -2,7 +2,7 @@ import React from 'react';
 import { type GetProps, styled, Text, View } from 'tamagui';
 
 // Badge Container
-export const Badge = styled(View, {
+export const Badge = React.memo(styled(View, {
   name: 'LGBadge',
   display: 'inline-flex',
   alignItems: 'center',
@@ -76,10 +76,10 @@ export const Badge = styled(View, {
     size: 'md',
     rounded: false,
   },
-});
+}));
 
 // Badge Text
-export const BadgeText = styled(Text, {
+export const BadgeText = React.memo(styled(Text, {
   name: 'LGBadgeText',
   fontSize: '$3',
   fontWeight: '500',
@@ -129,7 +129,7 @@ export const BadgeText = styled(Text, {
     variant: 'default',
     size: 'md',
   },
-});
+}));
 
 // Badge with Icon support
 export const BadgeWithIcon = React.memo(({
@@ -157,7 +157,7 @@ export const BadgeWithIcon = React.memo(({
 BadgeWithIcon.displayName = 'BadgeWithIcon';
 
 // Badge Dot for status indicators
-export const BadgeDot = styled(View, {
+export const BadgeDot = React.memo(styled(View, {
   name: 'LGBadgeDot',
   width: 8,
   height: 8,
@@ -189,10 +189,10 @@ export const BadgeDot = styled(View, {
     status: 'offline',
     pulse: false,
   },
-});
+}));
 
 // Badge Group for multiple badges
-export const BadgeGroup = styled(View, {
+export const BadgeGroup = React.memo(styled(View, {
   name: 'LGBadgeGroup',
   flexDirection: 'row',
   flexWrap: 'wrap',
@@ -215,7 +215,7 @@ export const BadgeGroup = styled(View, {
   defaultVariants: {
     size: 'medium',
   },
-});
+}));
 
 // Export types
 export type BadgeProps = GetProps<typeof Badge>;

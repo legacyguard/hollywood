@@ -203,8 +203,6 @@ export const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
     },
     ref
   ) => {
-    // Icon size for future use
-    const _iconSize = size === 'sm' ? 16 : size === 'md' ? 20 : 24;
 
     return (
       <YStack gap='$2'>
@@ -339,8 +337,6 @@ export const NativeSelect = React.forwardRef<HTMLSelectElement, SelectProps>(
     },
     ref
   ) => {
-    // variant not used in native select yet
-    const _variant = variant;
 
     return (
       <YStack gap='$2'>

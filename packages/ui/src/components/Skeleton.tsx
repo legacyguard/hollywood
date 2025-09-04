@@ -3,7 +3,7 @@ import { type GetProps, styled, View } from 'tamagui';
 import { XStack, YStack } from './Layout';
 
 // Base Skeleton component with animation
-export const Skeleton = styled(View, {
+export const Skeleton = React.memo(styled(View, {
   name: 'LGSkeleton',
   backgroundColor: '$gray3',
   borderRadius: '$1',
@@ -73,7 +73,7 @@ export const Skeleton = styled(View, {
       },
     },
   },
-});
+}));
 
 // Skeleton Text - for loading text
 export const SkeletonText = ({
@@ -100,7 +100,7 @@ export const SkeletonText = ({
 };
 
 // Skeleton Avatar
-export const SkeletonAvatar = styled(Skeleton, {
+export const SkeletonAvatar = React.memo(styled(Skeleton, {
   name: 'LGSkeletonAvatar',
   width: 92,
   height: 92,
@@ -126,7 +126,7 @@ export const SkeletonAvatar = styled(Skeleton, {
       },
     },
   },
-});
+}));
 
 // Skeleton Card
 export const SkeletonCard = ({
@@ -182,7 +182,7 @@ export const SkeletonList = ({
 };
 
 // Skeleton Button
-export const SkeletonButton = styled(Skeleton, {
+export const SkeletonButton = React.memo(styled(Skeleton, {
   name: 'LGSkeletonButton',
   borderRadius: 8,
 
@@ -207,10 +207,10 @@ export const SkeletonButton = styled(Skeleton, {
       },
     },
   },
-});
+}));
 
 // Skeleton Image
-export const SkeletonImage = styled(Skeleton, {
+export const SkeletonImage = React.memo(styled(Skeleton, {
   name: 'LGSkeletonImage',
   width: '100%',
   borderRadius: 8,
@@ -231,7 +231,7 @@ export const SkeletonImage = styled(Skeleton, {
       },
     },
   },
-});
+}));
 
 // Export types
 export type SkeletonProps = GetProps<typeof Skeleton>;

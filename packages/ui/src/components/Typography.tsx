@@ -1,7 +1,8 @@
+import React from 'react';
 import { type GetProps, styled, Text } from 'tamagui';
 
 // Heading components
-export const H1 = styled(Text, {
+export const H1 = React.memo(styled(Text, {
   name: 'LGH1',
   tag: 'h1',
   fontFamily: '$heading',
@@ -21,7 +22,7 @@ export const H1 = styled(Text, {
       muted: { color: '$gray5' },
     },
   },
-});
+}));
 
 export const H2 = styled(Text, {
   name: 'LGH2',
@@ -134,7 +135,7 @@ export const H6 = styled(Text, {
 });
 
 // Paragraph
-export const Paragraph = styled(Text, {
+export const Paragraph = React.memo(styled(Text, {
   name: 'LGParagraph',
   tag: 'p',
   fontFamily: '$body',
@@ -178,7 +179,7 @@ export const Paragraph = styled(Text, {
     size: undefined,
     weight: undefined,
   },
-});
+}));
 
 // Span (inline text)
 export const Span = styled(Text, {

@@ -332,9 +332,9 @@ export class EmergencyAccessService {
         },
       };
 
-      const { data: emergency, error } = await supabase
+      const { data: emergency, error } = await (supabase as any)
         .from('emergency_access')
-        .insert([emergencyData] as any)
+        .insert([emergencyData])
         .select()
         .single();
 
@@ -344,10 +344,10 @@ export class EmergencyAccessService {
       await this.startNotificationSequence(emergency as any, protocol as any);
 
       // Cache active emergency
-      this.activeEmergencies.set(data.userId, emergency);
+      this.activeEmergencies.set(data.userId, emergency as any);
 
       // Notify listeners
-      this.notifyEmergencyListeners(emergency);
+      this.notifyEmergencyListeners(emergency as any);
 
       console.log('Emergency access triggered:', emergency.id);
       return emergency as any;
@@ -420,9 +420,9 @@ export class EmergencyAccessService {
         created_at: new Date().toISOString(),
       };
 
-      const { data: verification, error } = await supabase
+      const { data: verification, error } = await (supabase as any)
         .from('emergency_verifications')
-        .insert([verificationData] as any)
+        .insert([verificationData])
         .select()
         .single();
 
@@ -450,7 +450,7 @@ export class EmergencyAccessService {
         return true;
       } else {
         // Update verification status
-        await supabase
+        await (supabase as any)
           .from('emergency_verifications')
           .update({ status: 'failed' })
           .eq('id', verification.id);
@@ -468,14 +468,14 @@ export class EmergencyAccessService {
    */
   async getEmergencyContacts(userId: string): Promise<EmergencyContact[]> {
     try {
-      const { data: contacts, error } = await supabase
+      const { data: contacts, error } = await (supabase as any)
         .from('emergency_contacts')
         .select('*')
         .eq('user_id', userId)
         .order('priority_order', { ascending: true });
 
       if (error) throw error;
-      return contacts || [];
+      return (contacts as any) || [];
     } catch (error) {
       console.error('Failed to get emergency contacts:', error);
       return [];
@@ -489,7 +489,7 @@ export class EmergencyAccessService {
     userId: string
   ): Promise<EmergencyAccess | null> {
     try {
-      const { data: emergency, error } = await supabase
+      const { data: emergency, error } = await (supabase as any)
         .from('emergency_access')
         .select('*')
         .eq('user_id', userId)
@@ -499,7 +499,7 @@ export class EmergencyAccessService {
         .single();
 
       if (error && error.code !== 'PGRST116') throw error;
-      return emergency || null;
+      return (emergency as any) || null;
     } catch (error) {
       console.error('Failed to get emergency access status:', error);
       return null;
@@ -514,7 +514,7 @@ export class EmergencyAccessService {
     reason: string
   ): Promise<void> {
     try {
-      const { data: emergency, error } = await supabase
+      const { data: emergency, error } = await (supabase as any)
         .from('emergency_access')
         .update({
           status: 'resolved',
@@ -528,10 +528,10 @@ export class EmergencyAccessService {
       if (error) throw error;
 
       // Remove from active cache
-      this.activeEmergencies.delete(emergency.user_id);
+      this.activeEmergencies.delete((emergency as any).user_id);
 
       // Notify relevant parties
-      await this.notifyEmergencyResolution(emergency, reason);
+      await this.notifyEmergencyResolution(emergency as any, reason);
 
       console.log('Emergency access resolved:', emergencyId);
     } catch (error) {
@@ -544,7 +544,7 @@ export class EmergencyAccessService {
 
   private async loadActiveEmergencies(userId: string): Promise<void> {
     try {
-      const { data: emergencies, error } = await supabase
+      const { data: emergencies, error } = await (supabase as any)
         .from('emergency_access')
         .select('*')
         .eq('user_id', userId)
@@ -558,7 +558,7 @@ export class EmergencyAccessService {
       if (error) throw error;
 
       emergencies?.forEach(emergency => {
-        this.activeEmergencies.set(emergency.user_id, emergency);
+        this.activeEmergencies.set((emergency as any).user_id, emergency);
       });
     } catch (error) {
       console.error('Failed to load active emergencies:', error);
@@ -633,7 +633,7 @@ export class EmergencyAccessService {
     userId: string
   ): Promise<EmergencyProtocol | null> {
     try {
-      const { data: protocol, error } = await supabase
+      const { data: protocol, error } = await (supabase as any)
         .from('emergency_protocols')
         .select('*')
         .eq('user_id', userId)
@@ -642,7 +642,7 @@ export class EmergencyAccessService {
         .single();
 
       if (error && error.code !== 'PGRST116') throw error;
-      return protocol || null;
+      return (protocol as any) || null;
     } catch (error) {
       return null;
     }
@@ -842,7 +842,7 @@ export class EmergencyAccessService {
     contactUserId: string
   ): Promise<boolean> {
     try {
-      const { data: contact, error } = await supabase
+      const { data: contact, error } = await (supabase as any)
         .from('emergency_contacts')
         .select('*')
         .eq('user_id', userId)

@@ -3,7 +3,7 @@
  * Celebrates successful document imports with family protection messaging
  */
 
-// import React from 'react'; // Not needed in React 17+
+import React from 'react';
 import { motion } from 'framer-motion';
 import {
   ArrowRight,
@@ -27,7 +27,12 @@ interface ImportCelebrationProps {
   result: BulkImportResult;
 }
 
-export function ImportCelebration({
+/**
+ * ImportCelebration Component
+ * Celebrates successful document imports with family protection messaging
+ * Optimized with React.memo to prevent unnecessary re-renders
+ */
+export const ImportCelebration = React.memo(function ImportCelebration({
   result,
   onContinue,
   className,
@@ -253,4 +258,7 @@ export function ImportCelebration({
       </Card>
     </motion.div>
   );
-}
+});
+
+// Display name for debugging
+ImportCelebration.displayName = 'ImportCelebration';

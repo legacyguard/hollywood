@@ -49,40 +49,6 @@ const LegacyGardenWeb: React.FC<LegacyGardenProps> = ({
     controls.start('celebrate');
   });
 
-  // Animation variants (unused but kept for future use)
-  const _treeVariants = {
-    seed: {
-      scale: 0.3,
-      opacity: 0.8,
-    },
-    sprout: {
-      scale: 0.5,
-      opacity: 0.9,
-    },
-    sapling: {
-      scale: 0.7,
-      opacity: 1,
-    },
-    'young-tree': {
-      scale: 0.85,
-      opacity: 1,
-    },
-    'mature-tree': {
-      scale: 1,
-      opacity: 1,
-    },
-    'ancient-tree': {
-      scale: 1.1,
-      opacity: 1,
-    },
-    celebrate: {
-      scale: [1, 1.05, 1],
-      transition: {
-        duration: 0.5,
-        ease: 'easeInOut',
-      },
-    },
-  };
 
   const renderBranch = (index: number, x: number, y: number, angle: number) => {
     const shouldShow = treeState && index < treeState.branches;

@@ -25,7 +25,7 @@ import { type GetProps, ScrollView, styled, View } from 'tamagui';
  * @padding large - Large padding
  * @padding xlarge - Extra large padding
  */
-export const Container = styled(View, {
+export const Container = React.memo(styled(View, {
   name: 'LGContainer',
   width: '100%',
   maxWidth: 1280,
@@ -70,7 +70,7 @@ export const Container = styled(View, {
     size: 'xlarge',
     padding: 'medium',
   },
-});
+}));
 
 /**
  * Stack component for vertical layouts
@@ -103,7 +103,7 @@ export const Container = styled(View, {
  * @justify around - Space items around
  * @justify evenly - Space items evenly
  */
-export const Stack = styled(View, {
+export const Stack = React.memo(styled(View, {
   name: 'LGStack',
   flexDirection: 'column',
 
@@ -145,7 +145,7 @@ export const Stack = styled(View, {
     fullWidth: false,
     fullHeight: false,
   },
-});
+}));
 
 /**
  * Row component for horizontal layouts
@@ -179,7 +179,7 @@ export const Stack = styled(View, {
  * @justify around - Space items around
  * @justify evenly - Space items evenly
  */
-export const Row = styled(View, {
+export const Row = React.memo(styled(View, {
   name: 'LGRow',
   flexDirection: 'row',
 
@@ -223,7 +223,7 @@ export const Row = styled(View, {
     wrap: false,
     fullWidth: false,
   },
-});
+}));
 
 /**
  * Grid component for grid layouts
@@ -252,7 +252,7 @@ export const Row = styled(View, {
  * @gap large - Large gap
  * @gap xlarge - Extra large gap
  */
-export const Grid = styled(View, {
+export const Grid = React.memo(styled(View, {
   name: 'LGGrid',
   display: 'flex',
   flexDirection: 'row',
@@ -293,7 +293,7 @@ export const Grid = styled(View, {
     columns: 1,
     gap: 'medium',
   },
-});
+}));
 
 /**
  * Box component for basic containers
@@ -320,7 +320,7 @@ export const Grid = styled(View, {
  * @margin large - Large margin
  * @margin xlarge - Extra large margin
  */
-export const Box = styled(View, {
+export const Box = React.memo(styled(View, {
   name: 'LGBox',
 
   variants: {
@@ -358,7 +358,7 @@ export const Box = styled(View, {
     centered: false,
     flex: false,
   },
-});
+}));
 
 /**
  * Section component for page sections
@@ -383,7 +383,7 @@ export const Box = styled(View, {
  * @padding large - Large padding
  * @padding xlarge - Extra large padding
  */
-export const Section = styled(View, {
+export const Section = React.memo(styled(View, {
   name: 'LGSection',
   width: '100%',
   paddingVertical: '$8',
@@ -409,7 +409,7 @@ export const Section = styled(View, {
     background: 'default',
     padding: 'medium',
   },
-});
+}));
 
 /**
  * Divider component for visual separators
@@ -433,7 +433,7 @@ export const Section = styled(View, {
  * @color dark - Dark color
  * @color primary - Primary color
  */
-export const Divider = styled(View, {
+export const Divider = React.memo(styled(View, {
   name: 'LGDivider',
   backgroundColor: '$gray3',
 
@@ -473,7 +473,7 @@ export const Divider = styled(View, {
     spacing: 'medium',
     color: 'default',
   },
-});
+}));
 
 /**
  * Spacer component for flexible spacing
@@ -494,7 +494,7 @@ export const Divider = styled(View, {
  * @horizontal false - Vertical spacer (default)
  * @horizontal true - Horizontal spacer
  */
-export const Spacer = styled(View, {
+export const Spacer = React.memo(styled(View, {
   name: 'LGSpacer',
   flex: 1,
 
@@ -519,7 +519,7 @@ export const Spacer = styled(View, {
     size: 'flex',
     horizontal: false,
   },
-});
+}));
 
 /**
  * ScrollContainer component for scrollable content
@@ -540,7 +540,7 @@ export const Spacer = styled(View, {
  * @showsScrollIndicator false - Hide scroll indicators (default)
  * @showsScrollIndicator true - Show scroll indicators
  */
-export const ScrollContainer = styled(ScrollView, {
+export const ScrollContainer = React.memo(styled(ScrollView, {
   name: 'LGScrollContainer',
   flex: 1,
 
@@ -567,7 +567,7 @@ export const ScrollContainer = styled(ScrollView, {
     padding: 'none',
     showsScrollIndicator: false,
   },
-});
+}));
 
 // Aliases for better Tamagui compatibility
 export const YStack = Stack; // Vertical Stack

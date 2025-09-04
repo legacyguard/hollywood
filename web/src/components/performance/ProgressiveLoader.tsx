@@ -10,7 +10,6 @@ import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent } from '@/components/ui/card';
 import { Calendar, ChevronDown, FileText, Loader2, Users } from 'lucide-react';
-// import { useProgressiveLoading } from '@/lib/performance/lazy-loading';
 import { cn } from '@/lib/utils';
 
 interface ProgressiveLoaderProps<T> {
@@ -59,10 +58,12 @@ export function ProgressiveLoader<T>({
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        setIsIntersecting(entry.isIntersecting);
-        if (entry.isIntersecting && !isLoading) {
-          loadMore();
-          onLoadMore?.(visibleItems.length);
+        if (entry) {
+          setIsIntersecting(entry.isIntersecting);
+          if (entry.isIntersecting && !isLoading) {
+            loadMore();
+            onLoadMore?.(visibleItems.length);
+          }
         }
       },
       {
@@ -245,7 +246,6 @@ interface FamilyMember {
 export function FamilyMemberProgressiveLoader({
   members,
   className,
-  ...props
 }: Omit<
   ProgressiveLoaderProps<FamilyMember>,
   'renderItem' | 'renderSkeleton'
@@ -319,11 +319,10 @@ export function FamilyMemberProgressiveLoader({
       items={members}
       renderItem={renderMember}
       renderSkeleton={renderSkeleton}
-      className={className}
+      className={className || ''}
       emptyStateText='No family members found'
     />
   );
 }
 
 // Export both individual and bulk progressive loaders
-// export { useProgressiveLoading } from '@/lib/performance/lazy-loading';
