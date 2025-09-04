@@ -6,10 +6,10 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  formatCurrency,
-  formatDate,
-  formatFileSize,
-  formatRelativeTime,
+  // formatCurrency,
+  // formatDate,  
+  // formatFileSize,
+  // formatRelativeTime,
 } from '@/lib/i18n/enhanced-config';
 
 const EnhancedI18nExample: React.FC = () => {

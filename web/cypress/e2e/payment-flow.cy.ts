@@ -208,7 +208,7 @@ describe('Payment Flow E2E Tests', () => {
       cy.task('db:query', {
         query:
           "SELECT * FROM user_subscriptions WHERE user_id = 'test-user-id'",
-      }).then((result: any) => {
+      }).then((result: { status: string; stripe_subscription_id: string }[]) => {
         expect(result[0].status).to.equal('active');
         expect(result[0].stripe_subscription_id).to.equal('sub_test123');
       });

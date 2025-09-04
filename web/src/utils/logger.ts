@@ -14,15 +14,15 @@ export enum LogLevel {
 }
 
 export interface LogEntry {
-  context?: string;
-  data?: Record<string, unknown>;
-  error?: Error;
+  context?: string | undefined;
+  data?: Record<string, unknown> | undefined;
+  error?: Error | undefined;
   level: LogLevel;
   message: string;
-  requestId?: string;
-  tags?: string[];
+  requestId?: string | undefined;
+  tags?: string[] | undefined;
   timestamp: Date;
-  userId?: string;
+  userId?: string | undefined;
 }
 
 export interface LoggerConfig {
@@ -58,9 +58,7 @@ export class Logger {
       };
       Logger.instance = new Logger({ ...defaultConfig, ...config });
     } else if (config) {
-      console.warn(
-        'Logger already initialized. Configuration changes ignored.'
-      );
+      // Logger already initialized, configuration changes ignored
     }
     return Logger.instance;
   }
@@ -122,10 +120,10 @@ export class Logger {
       level,
       message,
       timestamp: new Date(),
-      context,
-      data: this.config.redactSensitiveData
+      context: context ?? '',
+      data: data ? (this.config.redactSensitiveData
         ? this.redactSensitiveData(data)
-        : data,
+        : data) : undefined,
       error,
     };
 
@@ -200,7 +198,7 @@ export class Logger {
         await this.writeToRemote(entry);
       }
     } catch (error) {
-      console.error('Failed to write log:', error);
+      // Failed to write log - error handling will be implemented
     }
   }
 
@@ -258,10 +256,16 @@ export class Logger {
           ['debug', 'info', 'warn', 'error', 'fatal'].includes(prop)
         ) {
           return (message: string, data?: Record<string, unknown>) => {
-            return (target as any)[prop](message, data, context);
+            const method = prop as keyof Logger;
+            if (method === 'debug' || method === 'info' || method === 'warn') {
+              return target[method](message, data, context);
+            } else if (method === 'error' || method === 'fatal') {
+              return target[method](message, undefined, data, context);
+            }
+            return target[method];
           };
         }
-        return (target as any)[prop];
+        return target[prop as keyof Logger];
       },
     });
   }

@@ -16,9 +16,9 @@ type SupabaseDocument = {
 /**
  * BEFORE: Old way using direct fetch calls
  */
-const OldDocumentList = () => {
-  const [documents, setDocuments] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+const _OldDocumentList = () => {
+  const [_documents, _setDocuments] = useState<any[]>([]);
+  const [_loading, _setLoading] = useState(true);
 
   useEffect(() => {
     // ❌ Old way: Direct fetch call
@@ -42,7 +42,7 @@ const OldDocumentList = () => {
     fetchDocuments();
   }, []);
 
-  const deleteDocument = async (id: string) => {
+  const _deleteDocument = async (id: string) => {
     // ❌ Old way: Manual error handling and fetch
     try {
       const response = await fetch(`/api/documents/${id}`, {

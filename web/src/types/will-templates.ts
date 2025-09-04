@@ -185,8 +185,8 @@ export interface TemplateSection {
 export interface ConditionalLogic {
   condition: string;
   dependencies: string[];
-  hideIf?: Record<string, any>;
-  showIf?: Record<string, any>;
+  hideIf?: Record<string, unknown>;
+  showIf?: Record<string, unknown>;
 }
 
 export interface TemplateVariable {

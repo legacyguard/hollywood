@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { useSupabaseWithClerk } from '@/integrations/supabase/client';
 import { Card } from '@/components/ui/card';
@@ -57,7 +57,7 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
 
   const currentToken = accessToken || token;
 
-  const loadSurvivorData = useCallback(async () => {
+  const _loadSurvivorData = useCallback(async () => {
     try {
       setIsLoading(true);
       const supabase = await createSupabaseClient();
