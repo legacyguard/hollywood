@@ -1,26 +1,45 @@
 /**
  * API Versioning Strategy
  * Implements semantic versioning with backward compatibility
+ *
+ * This module provides comprehensive API versioning support including:
+ * - Semantic version parsing and comparison
+ * - Backward compatibility transformations
+ * - Deprecation management
+ * - Version negotiation between client and server
  */
 
 export interface ApiVersion {
+  /** Major version number - breaking changes */
   major: number;
+  /** Minor version number - new features, backward compatible */
   minor: number;
+  /** Patch version number - bug fixes, backward compatible */
   patch: number;
 }
 
 /**
  * API Version Configuration
+ * Defines all supported API versions with their semantic version numbers
  */
 export const API_VERSIONS = {
+  /** Legacy version - maintained for backward compatibility */
   v1: { major: 1, minor: 0, patch: 0 },
+  /** Current stable version - recommended for new implementations */
   v2: { major: 2, minor: 0, patch: 0 },
+  /** Latest version - may include experimental features */
   current: { major: 2, minor: 1, patch: 0 },
+  /** Minimum supported version - clients below this will be rejected */
   minimum: { major: 1, minor: 0, patch: 0 },
 } as const;
 
 /**
  * Parse version string to ApiVersion object
+ * Supports both v1.2.3 and 1.2.3 formats
+ *
+ * @param versionString - Version string to parse
+ * @returns Parsed ApiVersion object
+ * @throws Error if version format is invalid
  */
 export function parseVersion(versionString: string): ApiVersion {
   const match = versionString.match(/^v?(\d+)\.(\d+)\.(\d+)$/);
@@ -28,15 +47,20 @@ export function parseVersion(versionString: string): ApiVersion {
     throw new Error(`Invalid version format: ${versionString}`);
   }
 
+  const [, major, minor, patch] = match;
   return {
-    major: parseInt(match[1]!, 10),
-    minor: parseInt(match[2]!, 10),
-    patch: parseInt(match[3]!, 10),
+    major: parseInt(major, 10),
+    minor: parseInt(minor, 10),
+    patch: parseInt(patch, 10),
   };
 }
 
 /**
  * Format ApiVersion to string
+ * Converts ApiVersion object to semantic version string
+ *
+ * @param version - ApiVersion object to format
+ * @returns Semantic version string (e.g., "2.1.0")
  */
 export function formatVersion(version: ApiVersion): string {
   return `${version.major}.${version.minor}.${version.patch}`;
@@ -44,7 +68,11 @@ export function formatVersion(version: ApiVersion): string {
 
 /**
  * Compare two versions
- * Returns: -1 if a < b, 0 if a === b, 1 if a > b
+ * Implements semantic version comparison following semver specification
+ *
+ * @param a - First version to compare
+ * @param b - Second version to compare
+ * @returns -1 if a < b, 0 if a === b, 1 if a > b
  */
 export function compareVersions(a: ApiVersion, b: ApiVersion): number {
   if (a.major !== b.major) {
@@ -61,6 +89,12 @@ export function compareVersions(a: ApiVersion, b: ApiVersion): number {
 
 /**
  * Check if a version is compatible with requirements
+ * Validates version compatibility against minimum and optional maximum version constraints
+ *
+ * @param version - Version to check
+ * @param minimum - Minimum required version (defaults to API_VERSIONS.minimum)
+ * @param maximum - Maximum allowed version (optional)
+ * @returns true if version is within the compatible range
  */
 export function isVersionCompatible(
   version: ApiVersion,
@@ -84,11 +118,17 @@ export function isVersionCompatible(
 
 /**
  * Version-aware API client wrapper
+ * Provides client-side API versioning support with automatic compatibility checking
  */
 export class VersionedApiClient {
   private version: ApiVersion;
   private acceptVersion: string;
 
+  /**
+   * Create a new versioned API client
+   *
+   * @param version - API version to use (defaults to current)
+   */
   constructor(version: ApiVersion = API_VERSIONS.current) {
     this.version = version;
     this.acceptVersion = `application/vnd.legacyguard.v${version.major}+json`;
@@ -96,6 +136,9 @@ export class VersionedApiClient {
 
   /**
    * Get versioned headers for API requests
+   * Includes all necessary headers for version negotiation
+   *
+   * @returns Object containing version-related headers
    */
   getVersionHeaders(): Record<string, string> {
     return {
@@ -108,6 +151,10 @@ export class VersionedApiClient {
 
   /**
    * Check if server version is compatible
+   * Validates server version against minimum requirements
+   *
+   * @param serverVersionHeader - Server version from response headers
+   * @returns true if server version is compatible
    */
   checkServerVersion(serverVersionHeader: null | string): boolean {
     if (!serverVersionHeader) {
@@ -126,6 +173,11 @@ export class VersionedApiClient {
 
   /**
    * Handle version mismatch
+   * Provides detailed warnings and error handling for version mismatches
+   *
+   * @param clientVersion - Client's API version
+   * @param serverVersion - Server's API version as string
+   * @param response - HTTP response object
    */
   handleVersionMismatch(
     clientVersion: ApiVersion,
@@ -158,10 +210,16 @@ export class VersionedApiClient {
 
 /**
  * Version negotiation middleware
+ * Handles server-side version negotiation and compatibility checking
  */
 export class VersionNegotiator {
   private supportedVersions: ApiVersion[];
 
+  /**
+   * Create a new version negotiator
+   *
+   * @param supportedVersions - List of supported API versions (defaults to v1, v2, current)
+   */
   constructor(
     supportedVersions: ApiVersion[] = [
       API_VERSIONS.v1,
@@ -174,6 +232,10 @@ export class VersionNegotiator {
 
   /**
    * Negotiate best version based on client request
+   * Implements intelligent version selection with fallback to current
+   *
+   * @param requestedVersion - Client requested version string
+   * @returns Best matching ApiVersion
    */
   negotiate(requestedVersion: null | string): ApiVersion {
     if (!requestedVersion) {
@@ -210,6 +272,8 @@ export class VersionNegotiator {
 
   /**
    * Get all supported version strings
+   *
+   * @returns Array of supported version strings
    */
   getSupportedVersionStrings(): string[] {
     return this.supportedVersions.map(formatVersion);
@@ -217,6 +281,9 @@ export class VersionNegotiator {
 
   /**
    * Check if a version is supported
+   *
+   * @param version - Version string to check
+   * @returns true if version is supported
    */
   isSupported(version: string): boolean {
     try {
@@ -230,13 +297,17 @@ export class VersionNegotiator {
 
 /**
  * Deprecation warning system
+ * Manages API deprecation lifecycle with warnings and migration guidance
  */
 export class DeprecationManager {
   private deprecations: Map<
     string,
     {
+      /** Alternative API or feature to use instead */
       alternative?: string;
+      /** Deprecation message explaining why it's deprecated */
       message: string;
+      /** Version when this feature was deprecated */
       version: ApiVersion;
     }
   >;
@@ -247,6 +318,11 @@ export class DeprecationManager {
 
   /**
    * Mark an API endpoint or feature as deprecated
+   *
+   * @param feature - Feature name or endpoint path
+   * @param deprecatedInVersion - Version when deprecation occurred
+   * @param message - Deprecation explanation message
+   * @param alternative - Optional alternative feature/endpoint to use
    */
   deprecate(
     feature: string,
@@ -263,6 +339,10 @@ export class DeprecationManager {
 
   /**
    * Check if a feature is deprecated
+   *
+   * @param feature - Feature name to check
+   * @param currentVersion - Current API version
+   * @returns true if feature is deprecated in current version
    */
   isDeprecated(feature: string, currentVersion: ApiVersion): boolean {
     const deprecation = this.deprecations.get(feature);
@@ -275,6 +355,9 @@ export class DeprecationManager {
 
   /**
    * Get deprecation warning for a feature
+   *
+   * @param feature - Feature name to get warning for
+   * @returns Formatted deprecation warning or null if not deprecated
    */
   getWarning(feature: string): null | string {
     const deprecation = this.deprecations.get(feature);
@@ -293,6 +376,8 @@ export class DeprecationManager {
 
   /**
    * Log deprecation warning
+   *
+   * @param feature - Feature name to warn about
    */
   warn(feature: string): void {
     const warning = this.getWarning(feature);
@@ -304,10 +389,17 @@ export class DeprecationManager {
 
 /**
  * Response transformer for version compatibility
+ * Handles automatic response transformation for backward compatibility
  */
 export class VersionedResponseTransformer {
   /**
    * Transform response based on client version
+   * Automatically applies backward compatibility transformations when needed
+   *
+   * @param data - Response data to transform
+   * @param clientVersion - Client's API version
+   * @param serverVersion - Server's API version
+   * @returns Transformed data compatible with client version
    */
   static transform<T>(
     data: T,
@@ -325,6 +417,12 @@ export class VersionedResponseTransformer {
 
   /**
    * Transform response for backward compatibility
+   * Applies version-specific transformations based on version differences
+   *
+   * @param data - Response data to transform
+   * @param clientVersion - Client's API version
+   * @param serverVersion - Server's API version
+   * @returns Transformed data
    */
   private static backwardTransform<T>(
     data: T,
@@ -342,6 +440,10 @@ export class VersionedResponseTransformer {
 
   /**
    * Transform v2 response to v1 format
+   * Handles field renaming and removal for v1 compatibility
+   *
+   * @param data - v2 response data
+   * @returns v1 compatible response data
    */
   private static transformV2ToV1<T>(data: T): T {
     // Example transformations
@@ -373,6 +475,11 @@ export class VersionedResponseTransformer {
 
 /**
  * Create a versioned API client instance
+ * Wraps a base HTTP client with version-aware functionality
+ *
+ * @param baseClient - Base HTTP client to wrap
+ * @param version - API version to use (defaults to current)
+ * @returns Versioned client with automatic version handling
  */
 export function createVersionedClient(
   baseClient: any,
@@ -393,6 +500,9 @@ export function createVersionedClient(
   const wrappedClient = {
     ...baseClient,
 
+    /**
+     * GET request with version headers and deprecation checking
+     */
     async get(endpoint: string, options?: any) {
       // Check for deprecations
       deprecationManager.warn(endpoint);
@@ -414,6 +524,9 @@ export function createVersionedClient(
       return response;
     },
 
+    /**
+     * POST request with version headers and deprecation checking
+     */
     async post(endpoint: string, data?: any, options?: any) {
       deprecationManager.warn(endpoint);
 
@@ -425,6 +538,9 @@ export function createVersionedClient(
       return baseClient.post(endpoint, data, { ...options, headers });
     },
 
+    /**
+     * PUT request with version headers and deprecation checking
+     */
     async put(endpoint: string, data?: any, options?: any) {
       deprecationManager.warn(endpoint);
 
@@ -436,6 +552,9 @@ export function createVersionedClient(
       return baseClient.put(endpoint, data, { ...options, headers });
     },
 
+    /**
+     * DELETE request with version headers and deprecation checking
+     */
     async delete(endpoint: string, options?: any) {
       deprecationManager.warn(endpoint);
 

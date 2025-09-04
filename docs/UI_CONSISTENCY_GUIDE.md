@@ -10,7 +10,7 @@ This guide documents the implementation of UI consistency between the web and mo
 
 The monorepo structure includes a shared UI package that exports cross-platform components:
 
-```
+```text
 packages/ui/
 ├── src/
 │   ├── components/
@@ -402,7 +402,7 @@ const StyledButton = styled(Button, {
    - `View` → `Stack`, `Row`, or `Box`
    - `Text` → `Paragraph`, `H1-H6`, or `Label`
    - `TouchableOpacity` → `Button` or clickable `Card`
-   
+
 2. **Update styles** to use theme tokens
 3. **Test interactions** on devices
 
@@ -411,16 +411,19 @@ const StyledButton = styled(Button, {
 ### Common Issues
 
 #### 1. Theme not updating
+
 - Ensure `TamaguiProvider` wraps your app
 - Check that theme context is properly initialized
 - Verify AsyncStorage permissions (mobile)
 
 #### 2. Components look different on platforms
+
 - Check if platform-specific styles are applied
 - Verify font loading on both platforms
 - Ensure consistent padding/margins using tokens
 
 #### 3. Animations not working
+
 - Import animations from Tamagui config
 - Check that animation prop is applied
 - Verify Reanimated is properly installed (mobile)

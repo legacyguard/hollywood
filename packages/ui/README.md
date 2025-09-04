@@ -4,13 +4,13 @@
 
 ## 📋 Obsah
 
-- [Inštalácia](#inštalácia)
-- [Základné použitie](#základné-použitie)
-- [Komponenty](#komponenty)
-- [Dizajnové tokeny](#dizajnové-tokeny)
-- [Princípy](#princípy)
+- [Inštalácia](#installation)
+- [Základné použitie](#basic-usage)
+- [Komponenty](#components)
+- [Dizajnové tokeny](#design-tokens)
+- [Princípy](#principles)
 
-## 🚀 Inštalácia
+## 🚀 Inštalácia {#installation}
 
 ```bash
 # Pre web aplikáciu
@@ -22,7 +22,7 @@ cd mobile
 npm install @legacyguard/ui
 ```
 
-## 💡 Základné použitie
+## 💡 Základné použitie {#basic-usage}
 
 ### Setup pre web
 
@@ -52,11 +52,12 @@ export default function App() {
 }
 ```
 
-## 🧩 Komponenty
+## 🧩 Komponenty {#components}
 
 ### Layout komponenty
 
 #### YStack & XStack
+
 Nahrádzajú `<div>` a `<View>` s flexbox layoutom:
 
 ```tsx
@@ -76,6 +77,7 @@ import { YStack, XStack } from '@legacyguard/ui'
 ```
 
 #### Container
+
 Wrapper pre hlavný obsah s responzívnym obmedzením šírky:
 
 ```tsx
@@ -161,6 +163,7 @@ import { Card, CardHeader, CardContent, CardFooter } from '@legacyguard/ui'
 ### Feedback komponenty
 
 #### Alert
+
 ```tsx
 import { AlertBox } from '@legacyguard/ui'
 
@@ -173,6 +176,7 @@ import { AlertBox } from '@legacyguard/ui'
 ```
 
 #### Badge
+
 ```tsx
 import { Badge, BadgeGroup } from '@legacyguard/ui'
 
@@ -184,7 +188,9 @@ import { Badge, BadgeGroup } from '@legacyguard/ui'
 ```
 
 #### Skeleton
+
 Pre loading states:
+
 ```tsx
 import { SkeletonCard, SkeletonText } from '@legacyguard/ui'
 
@@ -195,9 +201,10 @@ import { SkeletonCard, SkeletonText } from '@legacyguard/ui'
 )}
 ```
 
-## 🎨 Dizajnové tokeny
+## 🎨 Dizajnové tokeny {#design-tokens}
 
 ### Farby
+
 ```tsx
 // Hlavné farby
 $primaryBlue    // #1e40af - Dôveryhodnosť
@@ -212,6 +219,7 @@ $success, $warning, $error, $info
 ```
 
 ### Medzery (Space)
+
 ```tsx
 $space.1  // 4px
 $space.2  // 8px
@@ -222,6 +230,7 @@ $space.8  // 32px
 ```
 
 ### Zaoblenie (Radius)
+
 ```tsx
 $radius.1  // 4px - Malé prvky
 $radius.2  // 8px - Tlačidlá
@@ -230,6 +239,7 @@ $radius.4  // 16px - Modály
 ```
 
 ### Z-Index
+
 ```tsx
 $zIndex.dropdown  // 1000
 $zIndex.modal     // 1050
@@ -237,18 +247,23 @@ $zIndex.tooltip   // 1070
 $zIndex.toast     // 1080
 ```
 
-## 🏛️ Princípy "One Soul"
+## 🏛️ Princípy "One Soul" {#principles}
 
 ### 1. **Jednotná vizuálna identita**
+
 Všetky komponenty zdieľajú rovnaké dizajnové tokeny, animácie a správanie naprieč platformami.
 
 ### 2. **Sémantické názvy**
+
 Používame jasné, popisné názvy pre varianty a props:
-- ✅ `variant="success"` 
+
+- ✅ `variant="success"`
 - ❌ `type="green"`
 
 ### 3. **Kompozícia nad dedičnosťou**
+
 Komponenty sú navrhnuté tak, aby sa dali skladať:
+
 ```tsx
 <Card>
   <YStack space="$4">
@@ -262,7 +277,9 @@ Komponenty sú navrhnuté tak, aby sa dali skladať:
 ```
 
 ### 4. **Responzívny dizajn**
+
 Komponenty automaticky fungujú na všetkých veľkostiach obrazoviek:
+
 ```tsx
 <Grid columns={{ xs: 1, sm: 2, md: 3, lg: 4 }}>
   {/* Automaticky responzívny grid */}
@@ -270,7 +287,9 @@ Komponenty automaticky fungujú na všetkých veľkostiach obrazoviek:
 ```
 
 ### 5. **Prístupnosť (Accessibility)**
+
 Všetky komponenty majú zabudovanú podporu pre:
+
 - Klávesnicovú navigáciu
 - Screen readery
 - ARIA atribúty
@@ -279,6 +298,7 @@ Všetky komponenty majú zabudovanú podporu pre:
 ## 🔄 Migrácia z natívnych elementov
 
 ### Web (React)
+
 ```tsx
 // Pred
 <div className="flex flex-col gap-4 p-4">
@@ -298,6 +318,7 @@ Všetky komponenty majú zabudovanú podporu pre:
 ```
 
 ### Mobile (React Native)
+
 ```tsx
 // Pred
 <View style={styles.container}>
@@ -330,8 +351,8 @@ Všetky komponenty majú zabudovanú podporu pre:
 ## 📚 Ďalšie zdroje
 
 - [Tamagui dokumentácia](https://tamagui.dev)
-- [Figma dizajnový systém](#) (TODO: pridať link)
-- [Storybook](#) (TODO: nasadiť)
+- Figma dizajnový systém — TODO: pridať link
+- Storybook — TODO: nasadiť
 
 ## 🤝 Prispievanie
 

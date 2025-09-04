@@ -1,6 +1,7 @@
 /**
  * TextManager for Sofia AI Assistant
- * Manages personality modes and response generation
+ * Manages personality modes and response generation based on user context
+ * Supports three communication modes: balanced, empathetic, and pragmatic
  */
 
 export type SofiaMode = 'balanced' | 'empathetic' | 'pragmatic';

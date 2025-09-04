@@ -1,6 +1,7 @@
 /**
  * LegacyGarden Service
- * Manages the growth and milestones of the user's legacy tree
+ * Gamification system for document creation with tree growth simulation
+ * Tracks user activity and converts it into visual tree growth with milestones
  */
 
 export interface TreeState {

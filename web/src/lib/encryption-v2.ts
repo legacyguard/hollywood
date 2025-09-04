@@ -94,7 +94,7 @@ export const encryptionServiceV2 = {
   },
 
   initializeKeys: async (
-    password: string
+    _password: string
   ): Promise<{ error?: string; success: boolean }> => {
     try {
       const userId = 'current-user';
@@ -114,7 +114,7 @@ export const encryptionServiceV2 = {
   },
 
   unlockKeys: async (
-    password: string
+    _password: string
   ): Promise<{ error?: string; success: boolean }> => {
     try {
       // For now, just check if keys exist
@@ -140,7 +140,7 @@ export const encryptionServiceV2 = {
   },
 
   migrateFromLocalStorage: async (
-    password: string
+    _password: string
   ): Promise<{ error?: string; success: boolean }> => {
     try {
       // Check if there are legacy keys to migrate
@@ -166,8 +166,8 @@ export const encryptionServiceV2 = {
   },
 
   rotateKeys: async (
-    currentPassword: string,
-    newPassword?: string
+    _currentPassword: string,
+    _newPassword?: string
   ): Promise<{ error?: string; success: boolean }> => {
     try {
       // Generate new keys

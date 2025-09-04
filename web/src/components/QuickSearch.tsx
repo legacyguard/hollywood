@@ -330,7 +330,7 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({
                   onClick={result.action}
                 >
                   <Icon
-                    name={result.icon as any}
+                    name={result.icon}
                     className='w-5 h-5 mr-3 flex-shrink-0'
                   />
                   <div className='text-left'>
@@ -408,7 +408,7 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({
                           <div className='w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse' />
                         )}
                         <Icon
-                          name={(action.icon || 'message-circle') as any}
+                          name={action.icon || 'message-circle'}
                           className={`w-4 h-4 mr-3 flex-shrink-0 ${
                             isDynamic ? 'text-green-600' : 'text-primary'
                           }`}

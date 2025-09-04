@@ -500,9 +500,9 @@ export const i18nConfig = {
     lngs: readonly string[],
     ns: string,
     key: string,
-    fallbackValue: string,
-    updateMissing: boolean,
-    options: any
+    _fallbackValue: string,
+    _updateMissing: boolean,
+    _options: unknown
   ) => {
     if (process.env.NODE_ENV === 'development') {
       console.warn(`Missing translation: ${lngs.join(', ')} - ${ns}:${key}`);
@@ -593,7 +593,7 @@ export class NamespaceLoader {
 }
 
 // Route-based namespace mapping (simplified for new structure)
-export const getNamespacesForRoute = (pathname: string): string[] => {
+export const getNamespacesForRoute = (_pathname: string): string[] => {
   // Always load UI namespace
   const namespaces: string[] = [NAMESPACES.UI];
 
@@ -672,7 +672,8 @@ export const getJurisdictionTranslation = (
   key: string,
   language?: string
 ) => {
-  const lang = language || getDefaultLanguage();
+  // Ensure language is resolved even if not used directly for now
+  void (language || getDefaultLanguage());
   const config = JURISDICTION_CONFIG[jurisdiction];
   if (!config) return key;
 

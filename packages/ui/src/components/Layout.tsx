@@ -1,6 +1,30 @@
+import React from 'react';
 import { type GetProps, ScrollView, styled, View } from 'tamagui';
 
-// Container - Main content wrapper
+/**
+ * Container component for LegacyGuard applications
+ *
+ * @component
+ * @example
+ * ```tsx
+ * <Container size="medium" padding="large">
+ *   <Text>Content</Text>
+ * </Container>
+ * ```
+ *
+ * @size small - Max width 640px
+ * @size medium - Max width 768px
+ * @size large - Max width 1024px
+ * @size xlarge - Max width 1280px (default)
+ * @size full - Full width
+ *
+ * @padding none - No padding
+ * @padding xs - Extra small padding
+ * @padding small - Small padding
+ * @padding medium - Medium padding (default)
+ * @padding large - Large padding
+ * @padding xlarge - Extra large padding
+ */
 export const Container = styled(View, {
   name: 'LGContainer',
   width: '100%',
@@ -48,7 +72,37 @@ export const Container = styled(View, {
   },
 });
 
-// Stack - Vertical layout
+/**
+ * Stack component for vertical layouts
+ *
+ * @component
+ * @example
+ * ```tsx
+ * <Stack space="medium" align="center" justify="center">
+ *   <Text>Top</Text>
+ *   <Text>Bottom</Text>
+ * </Stack>
+ * ```
+ *
+ * @space none - No gap
+ * @space xs - Extra small gap
+ * @space small - Small gap
+ * @space medium - Medium gap (default)
+ * @space large - Large gap
+ * @space xlarge - Extra large gap
+ *
+ * @align start - Align items to start
+ * @align center - Center items
+ * @align end - Align items to end
+ * @align stretch - Stretch items (default)
+ *
+ * @justify start - Align items to start (default)
+ * @justify center - Center items
+ * @justify end - Align items to end
+ * @justify between - Space items evenly
+ * @justify around - Space items around
+ * @justify evenly - Space items evenly
+ */
 export const Stack = styled(View, {
   name: 'LGStack',
   flexDirection: 'column',
@@ -93,7 +147,38 @@ export const Stack = styled(View, {
   },
 });
 
-// Row - Horizontal layout
+/**
+ * Row component for horizontal layouts
+ *
+ * @component
+ * @example
+ * ```tsx
+ * <Row space="medium" align="center" justify="between">
+ *   <Text>Left</Text>
+ *   <Text>Right</Text>
+ * </Row>
+ * ```
+ *
+ * @space none - No gap
+ * @space xs - Extra small gap
+ * @space small - Small gap
+ * @space medium - Medium gap (default)
+ * @space large - Large gap
+ * @space xlarge - Extra large gap
+ *
+ * @align start - Align items to start
+ * @align center - Center items (default)
+ * @align end - Align items to end
+ * @align stretch - Stretch items
+ * @align baseline - Align items to baseline
+ *
+ * @justify start - Align items to start (default)
+ * @justify center - Center items
+ * @justify end - Align items to end
+ * @justify between - Space items evenly
+ * @justify around - Space items around
+ * @justify evenly - Space items evenly
+ */
 export const Row = styled(View, {
   name: 'LGRow',
   flexDirection: 'row',
@@ -140,7 +225,33 @@ export const Row = styled(View, {
   },
 });
 
-// Grid - Grid layout
+/**
+ * Grid component for grid layouts
+ *
+ * @component
+ * @example
+ * ```tsx
+ * <Grid columns={3} gap="medium">
+ *   <Box>Item 1</Box>
+ *   <Box>Item 2</Box>
+ *   <Box>Item 3</Box>
+ * </Grid>
+ * ```
+ *
+ * @columns 1 - Single column
+ * @columns 2 - Two columns
+ * @columns 3 - Three columns (default)
+ * @columns 4 - Four columns
+ * @columns 6 - Six columns
+ * @columns 12 - Twelve columns
+ *
+ * @gap none - No gap
+ * @gap xs - Extra small gap
+ * @gap small - Small gap
+ * @gap medium - Medium gap (default)
+ * @gap large - Large gap
+ * @gap xlarge - Extra large gap
+ */
 export const Grid = styled(View, {
   name: 'LGGrid',
   display: 'flex',
@@ -184,7 +295,31 @@ export const Grid = styled(View, {
   },
 });
 
-// Box - Basic container
+/**
+ * Box component for basic containers
+ *
+ * @component
+ * @example
+ * ```tsx
+ * <Box padding="medium" margin="small" centered>
+ *   <Text>Content</Text>
+ * </Box>
+ * ```
+ *
+ * @padding none - No padding (default)
+ * @padding xs - Extra small padding
+ * @padding small - Small padding
+ * @padding medium - Medium padding
+ * @padding large - Large padding
+ * @padding xlarge - Extra large padding
+ *
+ * @margin none - No margin (default)
+ * @margin xs - Extra small margin
+ * @margin small - Small margin
+ * @margin medium - Medium margin
+ * @margin large - Large margin
+ * @margin xlarge - Extra large margin
+ */
 export const Box = styled(View, {
   name: 'LGBox',
 
@@ -225,7 +360,29 @@ export const Box = styled(View, {
   },
 });
 
-// Section - Page section
+/**
+ * Section component for page sections
+ *
+ * @component
+ * @example
+ * ```tsx
+ * <Section background="secondary" padding="large">
+ *   <Text>Section content</Text>
+ * </Section>
+ * ```
+ *
+ * @background default - Default background (default)
+ * @background secondary - Secondary background
+ * @background tertiary - Tertiary background
+ * @background dark - Dark background
+ * @background transparent - Transparent background
+ *
+ * @padding none - No padding
+ * @padding small - Small padding
+ * @padding medium - Medium padding (default)
+ * @padding large - Large padding
+ * @padding xlarge - Extra large padding
+ */
 export const Section = styled(View, {
   name: 'LGSection',
   width: '100%',
@@ -254,7 +411,28 @@ export const Section = styled(View, {
   },
 });
 
-// Divider - Visual separator
+/**
+ * Divider component for visual separators
+ *
+ * @component
+ * @example
+ * ```tsx
+ * <Divider orientation="horizontal" spacing="medium" color="default" />
+ * ```
+ *
+ * @orientation horizontal - Horizontal divider (default)
+ * @orientation vertical - Vertical divider
+ *
+ * @spacing none - No spacing
+ * @spacing small - Small spacing
+ * @spacing medium - Medium spacing (default)
+ * @spacing large - Large spacing
+ *
+ * @color default - Default color (default)
+ * @color light - Light color
+ * @color dark - Dark color
+ * @color primary - Primary color
+ */
 export const Divider = styled(View, {
   name: 'LGDivider',
   backgroundColor: '$gray3',
@@ -297,7 +475,25 @@ export const Divider = styled(View, {
   },
 });
 
-// Spacer - Flexible space component
+/**
+ * Spacer component for flexible spacing
+ *
+ * @component
+ * @example
+ * ```tsx
+ * <Spacer size="medium" horizontal />
+ * ```
+ *
+ * @size xs - Extra small spacer
+ * @size small - Small spacer
+ * @size medium - Medium spacer
+ * @size large - Large spacer
+ * @size xlarge - Extra large spacer
+ * @size flex - Flexible spacer (default)
+ *
+ * @horizontal false - Vertical spacer (default)
+ * @horizontal true - Horizontal spacer
+ */
 export const Spacer = styled(View, {
   name: 'LGSpacer',
   flex: 1,
@@ -325,7 +521,25 @@ export const Spacer = styled(View, {
   },
 });
 
-// ScrollContainer - Scrollable container
+/**
+ * ScrollContainer component for scrollable content
+ *
+ * @component
+ * @example
+ * ```tsx
+ * <ScrollContainer padding="medium" showsScrollIndicator>
+ *   <Text>Scrollable content</Text>
+ * </ScrollContainer>
+ * ```
+ *
+ * @padding none - No padding (default)
+ * @padding small - Small padding
+ * @padding medium - Medium padding
+ * @padding large - Large padding
+ *
+ * @showsScrollIndicator false - Hide scroll indicators (default)
+ * @showsScrollIndicator true - Show scroll indicators
+ */
 export const ScrollContainer = styled(ScrollView, {
   name: 'LGScrollContainer',
   flex: 1,
@@ -359,15 +573,57 @@ export const ScrollContainer = styled(ScrollView, {
 export const YStack = Stack; // Vertical Stack
 export const XStack = Row; // Horizontal Stack
 
-// Export types
+/**
+ * Props for the Container component
+ */
 export type ContainerProps = GetProps<typeof Container>;
+
+/**
+ * Props for the Stack component
+ */
 export type StackProps = GetProps<typeof Stack>;
+
+/**
+ * Props for the YStack component (alias for Stack)
+ */
 export type YStackProps = StackProps;
+
+/**
+ * Props for the Row component
+ */
 export type RowProps = GetProps<typeof Row>;
+
+/**
+ * Props for the XStack component (alias for Row)
+ */
 export type XStackProps = RowProps;
+
+/**
+ * Props for the Grid component
+ */
 export type GridProps = GetProps<typeof Grid>;
+
+/**
+ * Props for the Box component
+ */
 export type BoxProps = GetProps<typeof Box>;
+
+/**
+ * Props for the Section component
+ */
 export type SectionProps = GetProps<typeof Section>;
+
+/**
+ * Props for the Divider component
+ */
 export type DividerProps = GetProps<typeof Divider>;
+
+/**
+ * Props for the Spacer component
+ */
 export type SpacerProps = GetProps<typeof Spacer>;
+
+/**
+ * Props for the ScrollContainer component
+ */
 export type ScrollContainerProps = GetProps<typeof ScrollContainer>;

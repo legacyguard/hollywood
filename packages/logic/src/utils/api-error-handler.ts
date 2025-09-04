@@ -2,6 +2,7 @@ import type { ApiError } from '../types/api';
 
 /**
  * Custom error class for API operations
+ * Provides structured error handling with retry logic and detailed error information
  */
 export class LegacyGuardApiError extends Error {
   constructor(

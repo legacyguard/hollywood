@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Check, Crown, Loader2, Shield, Star, X } from 'lucide-react';
-import { subscriptionService, type SubscriptionLimits } from '@hollywood/shared';
+import { type SubscriptionLimits, subscriptionService } from '@hollywood/shared';
 // import { useAuth } from '../contexts/AuthContext';
 // import { toast } from 'react-toastify';
 

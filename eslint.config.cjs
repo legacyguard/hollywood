@@ -11,6 +11,7 @@ module.exports = [
   {
     ignores: [
       'dist',
+      '**/dist/**',
       'node_modules',
       'supabase/functions',
       'claude-code-history-viewer',

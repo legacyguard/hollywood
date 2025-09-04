@@ -1,6 +1,30 @@
+import React from 'react';
 import { type GetProps, styled, Button as TamaguiButton } from 'tamagui';
 
-// Create styled Button with LegacyGuard variants
+/**
+ * Button component for LegacyGuard applications
+ *
+ * @component
+ * @example
+ * ```tsx
+ * <Button variant="primary" size="medium" onPress={handleClick}>
+ *   Click me
+ * </Button>
+ * ```
+ *
+ * @variant primary - Primary action button with blue background
+ * @variant secondary - Secondary action button with gray background
+ * @variant success - Success action button with green background
+ * @variant premium - Premium action button with gold background
+ * @variant danger - Danger action button with red background
+ * @variant ghost - Ghost button with transparent background
+ * @variant outline - Outline button with border
+ *
+ * @size small - 32px height
+ * @size medium - 40px height (default)
+ * @size large - 48px height
+ * @size xlarge - 56px height
+ */
 export const Button = styled(TamaguiButton, {
   name: 'LGButton',
 
@@ -77,7 +101,7 @@ export const Button = styled(TamaguiButton, {
         backgroundColor: '$error',
         color: 'white',
         hoverStyle: {
-          backgroundColor: '#b91c1c',
+          backgroundColor: '$errorDark',
         },
       },
       ghost: {
@@ -160,10 +184,27 @@ export const Button = styled(TamaguiButton, {
   },
 });
 
-// Export types
+/**
+ * Props for the Button component
+ */
 export type ButtonProps = GetProps<typeof Button>;
 
-// Icon Button variant
+/**
+ * IconButton component for LegacyGuard applications
+ *
+ * @component
+ * @example
+ * ```tsx
+ * <IconButton size="medium" onPress={handleClick}>
+ *   <Icon name="heart" />
+ * </IconButton>
+ * ```
+ *
+ * @size small - 32x32px
+ * @size medium - 40x40px (default)
+ * @size large - 48x48px
+ * @size xlarge - 56x56px
+ */
 export const IconButton = styled(Button, {
   name: 'LGIconButton',
   paddingHorizontal: 0,
@@ -195,4 +236,7 @@ export const IconButton = styled(Button, {
   },
 });
 
+/**
+ * Props for the IconButton component
+ */
 export type IconButtonProps = GetProps<typeof IconButton>;

@@ -133,6 +133,10 @@ const PRAGMATIC_KEYWORDS = [
 export class TextAnalyzer {
   /**
    * Analyzes user text to determine communication style preference
+   * Uses keyword matching and scoring algorithms to detect communication style
+   *
+   * @param text - The user's input text to analyze
+   * @returns Analysis result with scores, suggested mode, and confidence
    */
   analyzeUserText(text: string): TextAnalysisResult {
     if (!text || text.trim().length === 0) {
@@ -148,29 +152,31 @@ export class TextAnalyzer {
     const lowerText = text.toLowerCase();
     const words = lowerText.split(/\s+/);
 
-    // Find matching keywords
+    // Find matching keywords using fuzzy matching
     const foundEmpathetic = this.findKeywords(words, EMPATHETIC_KEYWORDS);
     const foundPragmatic = this.findKeywords(words, PRAGMATIC_KEYWORDS);
 
-    // Calculate scores (normalized to 0-100)
+    // Calculate normalized scores (0-100 scale)
+    // Using 500x multiplier to ensure meaningful scores even with few keywords
     const empatheticScore = Math.min(
       100,
-      (foundEmpathetic.length / words.length) * 500
+      (foundEmpathetic.length / Math.max(words.length, 1)) * 500
     );
     const pragmaticScore = Math.min(
       100,
-      (foundPragmatic.length / words.length) * 500
+      (foundPragmatic.length / Math.max(words.length, 1)) * 500
     );
 
-    // Determine suggested mode
+    // Determine suggested mode based on score differential
     const suggestedMode = this.determineSuggestedMode(
       empatheticScore,
       pragmaticScore
     );
 
     // Calculate confidence based on keyword density and score difference
+    // Higher confidence when more keywords are found and scores are clearly different
     const keywordDensity =
-      (foundEmpathetic.length + foundPragmatic.length) / words.length;
+      (foundEmpathetic.length + foundPragmatic.length) / Math.max(words.length, 1);
     const scoreDifference = Math.abs(empatheticScore - pragmaticScore);
     const confidence = Math.min(100, keywordDensity * 100 + scoreDifference);
 
@@ -236,14 +242,21 @@ export class TextAnalyzer {
   }
 
   /**
-   * Find keywords in word list
+   * Find keywords in word list using fuzzy matching
+   * Checks both word inclusion and substring matching for flexibility
+   *
+   * @param words - Array of words from user text
+   * @param keywords - Array of keywords to search for
+   * @returns Array of found keywords (unique)
    */
   private findKeywords(words: string[], keywords: string[]): string[] {
     const found: string[] = [];
 
     words.forEach(word => {
       keywords.forEach(keyword => {
-        if (word.includes(keyword) || keyword.includes(word)) {
+        // Check if word contains keyword or keyword contains word (case-insensitive)
+        if (word.toLowerCase().includes(keyword.toLowerCase()) ||
+            keyword.toLowerCase().includes(word.toLowerCase())) {
           if (!found.includes(keyword)) {
             found.push(keyword);
           }
@@ -255,13 +268,18 @@ export class TextAnalyzer {
   }
 
   /**
-   * Determine suggested mode based on scores
+   * Determine suggested communication mode based on score differential
+   * Uses a threshold-based approach to avoid frequent mode switching
+   *
+   * @param empatheticScore - Score for empathetic communication (0-100)
+   * @param pragmaticScore - Score for pragmatic communication (0-100)
+   * @returns Suggested mode based on score difference
    */
   private determineSuggestedMode(
     empatheticScore: number,
     pragmaticScore: number
   ): 'balanced' | 'empathetic' | 'pragmatic' {
-    const threshold = 15; // Minimum difference to suggest a specific mode
+    const threshold = 15; // Minimum score difference to suggest specific mode
 
     if (Math.abs(empatheticScore - pragmaticScore) < threshold) {
       return 'balanced';
@@ -271,23 +289,28 @@ export class TextAnalyzer {
   }
 
   /**
-   * Check if a mode change should be suggested
+   * Determines if a mode change should be suggested based on analysis
+   * Considers confidence, current mode, and score differentials
+   *
+   * @param currentMode - Current communication mode
+   * @param analysisResult - Text analysis result
+   * @returns True if mode change should be suggested
    */
   shouldSuggestModeChange(
     currentMode: 'balanced' | 'empathetic' | 'pragmatic',
     analysisResult: TextAnalysisResult
   ): boolean {
-    // Only suggest if confidence is high enough
+    // Only suggest if we have high confidence in our analysis
     if (analysisResult.confidence < 60) {
       return false;
     }
 
-    // Don't suggest if already in the suggested mode
+    // Don't suggest if already in the recommended mode
     if (currentMode === analysisResult.suggestedMode) {
       return false;
     }
 
-    // For balanced mode, only suggest if there's a strong preference
+    // For balanced mode, only suggest change if there's a strong preference
     if (currentMode === 'balanced') {
       const maxScore = Math.max(
         analysisResult.empatheticScore,
@@ -297,16 +320,18 @@ export class TextAnalyzer {
     }
 
     // For specific modes, suggest change if opposite score is significantly higher
+    const scoreDifference = 30; // Minimum difference to trigger change
+
     if (
       currentMode === 'empathetic' &&
-      analysisResult.pragmaticScore > analysisResult.empatheticScore + 30
+      analysisResult.pragmaticScore > analysisResult.empatheticScore + scoreDifference
     ) {
       return true;
     }
 
     if (
       currentMode === 'pragmatic' &&
-      analysisResult.empatheticScore > analysisResult.pragmaticScore + 30
+      analysisResult.empatheticScore > analysisResult.pragmaticScore + scoreDifference
     ) {
       return true;
     }

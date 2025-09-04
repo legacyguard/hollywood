@@ -6,11 +6,11 @@
 import React, { useEffect, useState } from 'react';
 import { I18nextProvider } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
-import type { NAMESPACES } from '@/lib/i18n/config';
 import i18n, {
   getNamespacesForRoute,
   initI18n,
   NamespaceLoader,
+  type NAMESPACES,
   SUPPORTED_LANGUAGES
 } from '@/lib/i18n/config';
 

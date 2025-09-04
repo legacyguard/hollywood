@@ -1,4 +1,5 @@
 # IMPLEMENTATION TO-DO CHECKLIST
+
 ## LegacyGuard Unified Ecosystem
 
 **Stav**: 🔄 ACTIVE  
@@ -9,6 +10,7 @@
 ## 🏗️ FÁZA 1: ZALOŽENIE SPOLOČNÝCH ZÁKLADOV
 
 ### 1.1 Monorepo Setup
+
 - [x] **Vytvorenie novej monorepo štruktúry** ✅
   - [x] Inicializácia Turborepo projektu
   - [x] Vytvorenie základnej folder štruktúry
@@ -430,18 +432,21 @@
 ## 🎯 KRITICKÉ MÍĽNIKY
 
 ### MVP Definícia (Minimum Viable Product)
+
 - [ ] ✅ Mobilná aplikácia s basic document scanning
 - [ ] ✅ Real-time sync medzi web a mobile
 - [ ] ✅ Freemium limits enforcement
 - [ ] ✅ Základná visual consistency medzi platformami
 
 ### Beta Release Kritéria
+
 - [ ] ✅ Všetky core features implementované
 - [ ] ✅ Testovanie dokončené bez critical bugs
 - [ ] ✅ Performance targets splnené
 - [ ] ✅ Beta user feedback incorporated
 
 ### Production Launch Kritéria
+
 - [ ] ✅ App Store approval získaná
 - [ ] ✅ All security audits passed
 - [ ] ✅ Legal compliance verified pre všetky trhy
@@ -452,6 +457,7 @@
 ## ⚠️ RISK MITIGATION TASKS
 
 ### High-Risk Items
+
 - [ ] **Cross-platform UI consistency**
   - [ ] Early prototype testing
   - [ ] Regular design review sessions
@@ -468,6 +474,7 @@
   - [ ] Backup submission strategy
 
 ### Medium-Risk Items
+
 - [ ] **Performance targets**
   - [ ] Early performance benchmarking
   - [ ] Continuous performance monitoring
@@ -483,15 +490,18 @@
 ## 📝 POZNÁMKY A AKTUALIZÁCIE
 
 ### Change Log
+
 - 2025-08-30: Initial TODO creation
 - [Future updates tu...]
 
 ### Dependencies Tracking
+
 - **Blocked Items**: [None currently]
 - **External Dependencies**: Tamagui stability, App Store policies
 - **Internal Dependencies**: Design system completion, legal reviews
 
 ### Resource Allocation
+
 - **Development**: [TBD based on team size]
 - **Design**: [TBD for visual consistency work]
 - **QA**: [TBD for comprehensive testing]
@@ -500,6 +510,7 @@
 ---
 
 **📋 USAGE INSTRUCTIONS:**
+
 1. Mark completed items with ✅
 2. Add dates k completed items
 3. Update progress weekly
@@ -507,11 +518,13 @@
 5. Document any scope changes
 
 **🔄 REVIEW SCHEDULE:**
+
 - Weekly progress review every Friday
 - Monthly milestone assessment
 - Quarterly roadmap adjustment
 
 **📞 ESCALATION PATH:**
+
 - Technical issues → Lead Developer
 - Business decisions → Product Owner  
 - Legal/Compliance → Legal Team

@@ -26,17 +26,17 @@ const StyledSelectTrigger = styled(TamaguiSelect.Trigger, {
 
   variants: {
     size: {
-      small: {
+      sm: {
         height: 36,
         paddingHorizontal: '$2',
         fontSize: '$3',
       },
-      medium: {
+      md: {
         height: 44,
         paddingHorizontal: '$3',
         fontSize: '$4',
       },
-      large: {
+      lg: {
         height: 52,
         paddingHorizontal: '$4',
         fontSize: '$5',
@@ -94,7 +94,7 @@ const StyledSelectTrigger = styled(TamaguiSelect.Trigger, {
   },
 
   defaultVariants: {
-    size: 'medium',
+    size: 'md',
     variant: 'primary',
   },
 });
@@ -178,7 +178,7 @@ export interface SelectProps
   label?: string;
   options: SelectOption[];
   placeholder?: string;
-  size?: 'large' | 'medium' | 'small';
+  size?: 'lg' | 'md' | 'sm';
   testID?: string;
   variant?: 'premium' | 'primary' | 'success';
 }
@@ -189,7 +189,7 @@ export const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
     {
       options,
       placeholder = 'Select an option',
-      size = 'medium',
+      size = 'md',
       variant = 'primary',
       disabled = false,
       error = false,
@@ -204,14 +204,14 @@ export const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
     ref
   ) => {
     // Icon size for future use
-    const _iconSize = size === 'small' ? 16 : size === 'medium' ? 20 : 24;
+    const _iconSize = size === 'sm' ? 16 : size === 'md' ? 20 : 24;
 
     return (
       <YStack gap='$2'>
         {label && (
           <Label
             htmlFor={props.id}
-            fontSize={size === 'small' ? '$3' : '$4'}
+            fontSize={size === 'sm' ? '$3' : '$4'}
             color='$color'
           >
             {label}

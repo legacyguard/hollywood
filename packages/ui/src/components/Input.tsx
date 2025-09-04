@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   type GetProps,
   styled,
@@ -7,7 +8,30 @@ import {
   View,
 } from 'tamagui';
 
-// Base Input component
+/**
+ * Input component for LegacyGuard applications
+ *
+ * @component
+ * @example
+ * ```tsx
+ * <Input
+ *   placeholder="Enter your name"
+ *   variant="default"
+ *   size="medium"
+ *   fullWidth
+ * />
+ * ```
+ *
+ * @variant default - Default input with border
+ * @variant filled - Filled input with gray background
+ * @variant ghost - Ghost input with bottom border only
+ * @variant error - Error input with red border
+ * @variant success - Success input with green border
+ *
+ * @size small - 32px height
+ * @size medium - 40px height (default)
+ * @size large - 48px height
+ */
 export const Input = styled(TamaguiInput, {
   name: 'LGInput',
 
@@ -70,14 +94,14 @@ export const Input = styled(TamaguiInput, {
         borderColor: '$error',
         focusStyle: {
           borderColor: '$error',
-          outlineColor: '#fca5a5',
+          outlineColor: '$errorLight',
         },
       },
       success: {
         borderColor: '$success',
         focusStyle: {
           borderColor: '$success',
-          outlineColor: '$primaryGreenLight',
+          outlineColor: '$successLight',
         },
       },
     },
@@ -117,11 +141,32 @@ export const Input = styled(TamaguiInput, {
   defaultVariants: {
     variant: 'default',
     size: 'medium',
-    fullWidth: true,
+    fullWidth: false,
   },
 });
 
-// TextArea component
+/**
+ * TextArea component for LegacyGuard applications
+ *
+ * @component
+ * @example
+ * ```tsx
+ * <TextArea
+ *   placeholder="Enter your message"
+ *   variant="default"
+ *   size="medium"
+ * />
+ * ```
+ *
+ * @variant default - Default textarea with border
+ * @variant filled - Filled textarea with gray background
+ * @variant error - Error textarea with red border
+ * @variant success - Success textarea with green border
+ *
+ * @size small - 80px min-height
+ * @size medium - 100px min-height (default)
+ * @size large - 120px min-height
+ */
 export const TextArea = styled(TamaguiTextArea, {
   name: 'LGTextArea',
 
@@ -177,14 +222,14 @@ export const TextArea = styled(TamaguiTextArea, {
         borderColor: '$error',
         focusStyle: {
           borderColor: '$error',
-          outlineColor: '#fca5a5',
+          outlineColor: '$errorLight',
         },
       },
       success: {
         borderColor: '$success',
         focusStyle: {
           borderColor: '$success',
-          outlineColor: '$primaryGreenLight',
+          outlineColor: '$successLight',
         },
       },
     },
@@ -218,14 +263,34 @@ export const TextArea = styled(TamaguiTextArea, {
   },
 });
 
-// Input Group for labels and error messages
+/**
+ * InputGroup component for grouping inputs with labels and error messages
+ *
+ * @component
+ * @example
+ * ```tsx
+ * <InputGroup>
+ *   <InputLabel>Email</InputLabel>
+ *   <Input placeholder="Enter email" />
+ *   <InputError>Email is required</InputError>
+ * </InputGroup>
+ * ```
+ */
 export const InputGroup = styled(View, {
   name: 'LGInputGroup',
   width: '100%',
   gap: '$2',
 });
 
-// Input Label
+/**
+ * InputLabel component for input labels
+ *
+ * @component
+ * @example
+ * ```tsx
+ * <InputLabel>Username</InputLabel>
+ * ```
+ */
 export const InputLabel = styled(Text, {
   name: 'LGInputLabel',
   fontSize: '$3',
@@ -235,7 +300,15 @@ export const InputLabel = styled(Text, {
   marginBottom: '$1',
 });
 
-// Input Error Message
+/**
+ * InputError component for input error messages
+ *
+ * @component
+ * @example
+ * ```tsx
+ * <InputError>This field is required</InputError>
+ * ```
+ */
 export const InputError = styled(Text, {
   name: 'LGInputError',
   fontSize: '$3',
@@ -244,7 +317,15 @@ export const InputError = styled(Text, {
   marginTop: '$1',
 });
 
-// Input Helper Text
+/**
+ * InputHelper component for input helper text
+ *
+ * @component
+ * @example
+ * ```tsx
+ * <InputHelper>Helper text for the input</InputHelper>
+ * ```
+ */
 export const InputHelper = styled(Text, {
   name: 'LGInputHelper',
   fontSize: '$3',
@@ -253,10 +334,32 @@ export const InputHelper = styled(Text, {
   marginTop: '$1',
 });
 
-// Export types
+/**
+ * Props for the Input component
+ */
 export type InputProps = GetProps<typeof Input>;
+
+/**
+ * Props for the TextArea component
+ */
 export type TextAreaProps = GetProps<typeof TextArea>;
+
+/**
+ * Props for the InputGroup component
+ */
 export type InputGroupProps = GetProps<typeof InputGroup>;
+
+/**
+ * Props for the InputLabel component
+ */
 export type InputLabelProps = GetProps<typeof InputLabel>;
+
+/**
+ * Props for the InputError component
+ */
 export type InputErrorProps = GetProps<typeof InputError>;
+
+/**
+ * Props for the InputHelper component
+ */
 export type InputHelperProps = GetProps<typeof InputHelper>;

@@ -64,18 +64,27 @@ const ProgressLabel = styled(Stack, {
 
 export interface ProgressBarProps
   extends GetProps<typeof ProgressBarContainer> {
+  /** Enable animation for smooth transitions */
   animated?: boolean;
+  /** Custom label formatting function */
   formatLabel?: (value: number, maxValue: number) => string;
+  /** Height of the progress bar in pixels */
   height?: number;
+  /** Label text to display above the progress bar */
   label?: string;
+  /** Maximum value for progress calculation */
   maxValue?: number;
+  /** Show/hide the label section */
   showLabel?: boolean;
+  /** Show/hide percentage in label */
   showPercentage?: boolean;
-  value: number; // 0-100
+  /** Current progress value (0-100) */
+  value: number;
+  /** Color variant for the progress bar */
   variant?: 'danger' | 'premium' | 'primary' | 'success' | 'warning';
 }
 
-export function ProgressBar({
+export const ProgressBar = React.memo(({
   value,
   maxValue = 100,
   label,
@@ -86,7 +95,7 @@ export function ProgressBar({
   showLabel = true,
   formatLabel,
   ...props
-}: ProgressBarProps) {
+}: ProgressBarProps) => {
   // Ensure value is between 0 and maxValue
   const normalizedValue = Math.min(Math.max(0, value), maxValue);
   const percentage = (normalizedValue / maxValue) * 100;
@@ -125,7 +134,9 @@ export function ProgressBar({
       </ProgressTrack>
     </ProgressBarContainer>
   );
-}
+});
+
+ProgressBar.displayName = 'ProgressBar';
 
 // Circular Progress variant
 const CircularProgressContainer = styled(View, {
@@ -135,7 +146,7 @@ const CircularProgressContainer = styled(View, {
   position: 'relative',
 });
 
-// Removed unused CircularProgressSVG component
+// Cleaned up unused component references
 
 const CircularProgressText = styled(View, {
   name: 'CircularProgressText',
@@ -152,14 +163,14 @@ export interface CircularProgressProps {
   variant?: 'danger' | 'premium' | 'primary' | 'success' | 'warning';
 }
 
-export function CircularProgress({
+export const CircularProgress = React.memo(({
   value,
   size = 120,
   strokeWidth = 8,
   variant = 'primary',
   showPercentage = true,
   label,
-}: CircularProgressProps) {
+}: CircularProgressProps) => {
   const radius = (size - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
   const strokeDashoffset = circumference - (value / 100) * circumference;
@@ -224,7 +235,9 @@ export function CircularProgress({
       </CircularProgressText>
     </CircularProgressContainer>
   );
-}
+});
+
+CircularProgress.displayName = 'CircularProgress';
 
 // Segmented Progress for multi-step processes
 const SegmentedProgressContainer = styled(Stack, {
@@ -273,13 +286,13 @@ export interface SegmentedProgressProps
   showLabels?: boolean;
 }
 
-export function SegmentedProgress({
+export const SegmentedProgress = React.memo(({
   segments,
   currentSegment,
   showLabels = false,
   labels = [],
   ...props
-}: SegmentedProgressProps) {
+}: SegmentedProgressProps) => {
   return (
     <Stack space='$2' width='100%'>
       <SegmentedProgressContainer {...props}>
@@ -319,7 +332,9 @@ export function SegmentedProgress({
       )}
     </Stack>
   );
-}
+});
+
+SegmentedProgress.displayName = 'SegmentedProgress';
 
 // Export all progress components
 export default ProgressBar;

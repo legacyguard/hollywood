@@ -9,7 +9,19 @@ import {
 } from 'tamagui';
 import { Check } from 'lucide-react-native';
 
-// Base Checkbox component with LegacyGuard styling
+/**
+ * Styled checkbox component with LegacyGuard design system
+ * @component
+ * @example
+ * ```tsx
+ * <Checkbox
+ *   size="md"
+ *   variant="primary"
+ *   label="Enable notifications"
+ *   onCheckedChange={(checked) => console.log(checked)}
+ * />
+ * ```
+ */
 const StyledCheckbox = styled(TamaguiCheckbox, {
   name: 'Checkbox',
   backgroundColor: '$background',
@@ -20,15 +32,15 @@ const StyledCheckbox = styled(TamaguiCheckbox, {
 
   variants: {
     size: {
-      small: {
+      sm: {
         width: 18,
         height: 18,
       },
-      medium: {
+      md: {
         width: 22,
         height: 22,
       },
-      large: {
+      lg: {
         width: 26,
         height: 26,
       },
@@ -77,12 +89,15 @@ const StyledCheckbox = styled(TamaguiCheckbox, {
   },
 
   defaultVariants: {
-    size: 'medium' as const,
+    size: 'md' as const,
     variant: 'primary' as const,
   },
 });
 
-// Checkbox indicator (checkmark)
+/**
+ * Checkbox indicator component for displaying checkmark or indeterminate state
+ * @component
+ */
 const StyledIndicator = styled(TamaguiCheckbox.Indicator, {
   name: 'CheckboxIndicator',
   alignItems: 'center',
@@ -91,66 +106,79 @@ const StyledIndicator = styled(TamaguiCheckbox.Indicator, {
   height: '100%',
 });
 
-// Extended Checkbox props
+/**
+ * Props for the Checkbox component
+ * @interface
+ */
 export interface CheckboxProps extends Omit<TamaguiCheckboxProps, 'size'> {
+  /** Controlled checked state */
   checked?: boolean;
+  /** Default checked state for uncontrolled usage */
   defaultChecked?: boolean;
+  /** Disable the checkbox */
   disabled?: boolean;
+  /** Show indeterminate state (horizontal line) */
   indeterminate?: boolean;
+  /** Label text to display alongside checkbox */
   label?: string;
+  /** Position of label relative to checkbox */
   labelPosition?: 'left' | 'right';
+  /** Callback when checked state changes */
   onCheckedChange?: (checked: boolean) => void;
-  size?: 'large' | 'medium' | 'small';
+  /** Size variant - sm: 18px, md: 22px, lg: 26px */
+  size?: 'lg' | 'md' | 'sm';
+  /** Color variant */
   variant?: 'premium' | 'primary' | 'success';
 }
 
 // Main Checkbox component
-export const Checkbox = React.forwardRef<HTMLButtonElement, CheckboxProps>(
-  (
-    {
-      size = 'medium',
-      variant = 'primary',
-      label,
-      labelPosition = 'right',
-      disabled = false,
-      checked,
-      defaultChecked,
-      onCheckedChange,
-      indeterminate = false,
-      ...props
-    },
-    ref
-  ) => {
-    // Calculate icon size based on checkbox size
-    const iconSize = size === 'small' ? 12 : size === 'medium' ? 16 : 20;
+export const Checkbox = React.memo(
+  React.forwardRef<HTMLButtonElement, CheckboxProps>(
+    (
+      {
+        size = 'md',
+        variant = 'primary',
+        label,
+        labelPosition = 'right',
+        disabled = false,
+        checked,
+        defaultChecked,
+        onCheckedChange,
+        indeterminate = false,
+        ...props
+      },
+      ref
+    ) => {
+      // Calculate icon size based on checkbox size
+      const iconSize = size === 'sm' ? 12 : size === 'md' ? 16 : 20;
 
-    const checkboxComponent = (
-      <StyledCheckbox
-        ref={ref}
-        size={size}
-        variant={variant}
-        disabled={disabled}
-        checked={checked}
-        defaultChecked={defaultChecked}
-        onCheckedChange={onCheckedChange}
-        {...props}
-      >
-        <StyledIndicator>
-          {indeterminate ? (
-            <Theme name={variant}>
-              <XStack
-                width={iconSize * 0.7}
-                height={2}
-                backgroundColor='white'
-                borderRadius='$1'
-              />
-            </Theme>
-          ) : (
-            <Check size={iconSize} color='white' strokeWidth={3} />
-          )}
-        </StyledIndicator>
-      </StyledCheckbox>
-    );
+      const checkboxComponent = (
+        <StyledCheckbox
+          ref={ref}
+          size={size}
+          variant={variant}
+          disabled={disabled}
+          checked={checked}
+          defaultChecked={defaultChecked}
+          onCheckedChange={onCheckedChange}
+          {...props}
+        >
+          <StyledIndicator>
+            {indeterminate ? (
+              <Theme name={variant}>
+                <XStack
+                  width={iconSize * 0.7}
+                  height={2}
+                  backgroundColor='$color12'
+                  borderRadius='$1'
+                />
+              </Theme>
+            ) : (
+              <Check size={iconSize} color='$color12' strokeWidth={3} />
+            )}
+          </StyledIndicator>
+        </StyledCheckbox>
+      );
 
     if (!label) {
       return checkboxComponent;
@@ -190,7 +218,7 @@ export const Checkbox = React.forwardRef<HTMLButtonElement, CheckboxProps>(
       </XStack>
     );
   }
-);
+));
 
 Checkbox.displayName = 'Checkbox';
 
@@ -204,7 +232,7 @@ export interface CheckboxGroupProps {
     value: string;
   }>;
   orientation?: 'horizontal' | 'vertical';
-  size?: 'large' | 'medium' | 'small';
+  size?: 'lg' | 'md' | 'sm';
   value: string[];
   variant?: 'premium' | 'primary' | 'success';
 }
@@ -219,7 +247,7 @@ export const CheckboxGroup = React.forwardRef<
       value = [],
       onValueChange,
       orientation = 'vertical',
-      size = 'medium',
+      size = 'md',
       variant = 'primary',
       disabled = false,
     },

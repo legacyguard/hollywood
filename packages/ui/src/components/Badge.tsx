@@ -48,17 +48,17 @@ export const Badge = styled(View, {
       },
     },
     size: {
-      small: {
+      sm: {
         paddingHorizontal: 6,
         paddingVertical: 1,
         borderRadius: 4,
       },
-      medium: {
+      md: {
         paddingHorizontal: '$2',
         paddingVertical: 2,
         borderRadius: '$1',
       },
-      large: {
+      lg: {
         paddingHorizontal: '$3',
         paddingVertical: '$1',
         borderRadius: 6,
@@ -73,7 +73,7 @@ export const Badge = styled(View, {
 
   defaultVariants: {
     variant: 'default',
-    size: 'medium',
+    size: 'md',
     rounded: false,
   },
 });
@@ -113,13 +113,13 @@ export const BadgeText = styled(Text, {
       },
     },
     size: {
-      small: {
+      sm: {
         fontSize: '$2',
       },
-      medium: {
+      md: {
         fontSize: '$3',
       },
-      large: {
+      lg: {
         fontSize: '$4',
       },
     },
@@ -127,16 +127,16 @@ export const BadgeText = styled(Text, {
 
   defaultVariants: {
     variant: 'default',
-    size: 'medium',
+    size: 'md',
   },
 });
 
 // Badge with Icon support
-export const BadgeWithIcon = ({
+export const BadgeWithIcon = React.memo(({
   children,
   icon,
   variant = 'default',
-  size = 'medium',
+  size = 'md',
   ...props
 }: {
   children: React.ReactNode;
@@ -152,7 +152,9 @@ export const BadgeWithIcon = ({
       </BadgeText>
     </Badge>
   );
-};
+});
+
+BadgeWithIcon.displayName = 'BadgeWithIcon';
 
 // Badge Dot for status indicators
 export const BadgeDot = styled(View, {

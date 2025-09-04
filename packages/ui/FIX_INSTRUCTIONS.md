@@ -5,12 +5,16 @@
 ### 1. Oprava TypeScript chýb
 
 #### a) Odstránenie konfliktných variantov
+
 V komponentoch ako `Checkbox`, `Switch`, `ProgressBar`:
-- Premenovať variant `checked` na `isChecked` 
+
+- Premenovať variant `checked` na `isChecked`
 - Použiť `@ts-ignore` pre problematické defaultVariants
 
 #### b) Oprava theme referencií
+
 V `tamagui.config.ts` (riadky 287, 297, 307):
+
 ```typescript
 // Namiesto:
 ...defaultThemes.blue,
@@ -21,6 +25,7 @@ V `tamagui.config.ts` (riadky 287, 297, 307):
 ### 2. Odstránenie problematických komponentov
 
 Pre rýchle riešenie odstráňte tieto súbory z buildov:
+
 - `src/components/forms/FormDatePicker.tsx` (chýba závislosť)
 - `src/components/Select.tsx` (problém so styled.Label)
 - `src/components/PillarCard.tsx` (problém s lucide importom)
@@ -28,6 +33,7 @@ Pre rýchle riešenie odstráňte tieto súbory z buildov:
 ### 3. Zjednodušenie typov
 
 V `tsconfig.json`:
+
 ```json
 {
   "compilerOptions": {
@@ -66,7 +72,7 @@ Namiesto komplexného refaktoringu:
    - YStack, XStack, Container
    - H1-H6, Paragraph
    - Button, Input
-   
+
 2. **Fáza 2**: Postupne pridávať komplexnejšie
    - Card komponenty
    - Form komponenty
@@ -78,9 +84,10 @@ Namiesto komplexného refaktoringu:
 
 ## Odporúčania
 
-### Pre rýchle spustenie:
+### Pre rýchle spustenie
 
 1. **Vytvorte minimálnu verziu**:
+
 ```typescript
 // packages/ui/src/minimal.ts
 export { YStack, XStack, Container } from './components/Layout'
@@ -90,12 +97,13 @@ export { Input } from './components/Input'
 export { tamaguiConfig } from './tamagui.config'
 ```
 
-2. **Použite v aplikáciách**:
+1. **Použite v aplikáciách**:
+
 ```typescript
 import { YStack, H1, Button } from '@legacyguard/ui/minimal'
 ```
 
-### Pre produkčné nasadenie:
+### Pre produkčné nasadenie
 
 1. **Vytvorte Storybook** pre testovanie komponentov
 2. **Napíšte unit testy** pre kritické komponenty
@@ -105,6 +113,7 @@ import { YStack, H1, Button } from '@legacyguard/ui/minimal'
 ## Kontakt na podporu
 
 Pri problémoch:
+
 1. Skontrolujte [Tamagui dokumentáciu](https://tamagui.dev)
 2. Pozrite sa na [príklady v GitHub](https://github.com/tamagui/tamagui)
 3. Použite Discord komunitu Tamagui

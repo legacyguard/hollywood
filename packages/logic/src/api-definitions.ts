@@ -33,6 +33,7 @@ import type {
 
 /**
  * Document Service - Handles all document-related API operations
+ * Provides comprehensive document management with validation and error handling
  */
 export class DocumentService {
   constructor(private apiClient: ApiClientInterface) {}

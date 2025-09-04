@@ -154,7 +154,7 @@ export const MilestoneCelebration: React.FC<MilestoneCelebrationProps> = ({
       y: 0,
       transition: {
         duration: shouldReduceMotion ? 0.1 : animConfig.duration * 1.5,
-        ease: animConfig.ease as any,
+        ease: animConfig.ease,
         staggerChildren: shouldReduceMotion ? 0 : 0.1,
       },
     },
@@ -164,7 +164,7 @@ export const MilestoneCelebration: React.FC<MilestoneCelebrationProps> = ({
       y: shouldReduceMotion ? 0 : -20,
       transition: {
         duration: shouldReduceMotion ? 0.1 : animConfig.duration,
-        ease: 'easeInOut' as any,
+        ease: 'easeInOut',
       },
     },
   };
@@ -227,7 +227,7 @@ export const MilestoneCelebration: React.FC<MilestoneCelebrationProps> = ({
             {/* Background decoration */}
             <motion.div
               className={`absolute inset-0 bg-gradient-to-br ${theme.secondary} opacity-20`}
-              variants={pulseVariants as any}
+              variants={pulseVariants}
               animate='animate'
             />
 
@@ -243,7 +243,7 @@ export const MilestoneCelebration: React.FC<MilestoneCelebrationProps> = ({
               {/* Icon with glow effect */}
               <motion.div
                 className={`inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br ${theme.primary} text-white shadow-2xl ${theme.glow} mb-6`}
-                variants={iconVariants as any}
+                variants={iconVariants}
               >
                 <IconComponent className='w-10 h-10' />
 
@@ -552,7 +552,7 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
         ${themeClasses[theme]}
         ${earned ? 'shadow-lg' : 'opacity-60'}
       `}
-      variants={badgeVariants as any}
+      variants={badgeVariants}
       initial='rest'
       whileHover='hover'
       whileTap='tap'

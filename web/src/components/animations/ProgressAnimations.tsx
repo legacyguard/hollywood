@@ -54,7 +54,7 @@ export const AdaptiveProgressBar: React.FC<ProgressBarProps> = ({
                 ? 'bg-gradient-to-r from-blue-500 to-blue-600'
                 : 'bg-gradient-to-r from-purple-400 to-purple-500'
           }`}
-          variants={animated ? (barVariants as any) : undefined}
+          variants={animated ? barVariants : undefined}
           initial={animated ? 'initial' : undefined}
           animate={animated ? 'animate' : undefined}
           style={
@@ -136,7 +136,7 @@ export const AdaptiveMilestoneIndicator: React.FC<MilestoneIndicatorProps> = ({
       transition: {
         delay: index * 0.1,
         duration: animationConfig.duration,
-        ease: animationConfig.ease as any,
+        ease: animationConfig.ease,
       },
     },
   };
@@ -170,7 +170,7 @@ export const AdaptiveMilestoneIndicator: React.FC<MilestoneIndicatorProps> = ({
         className='flex-shrink-0 relative'
         variants={
           completed && !shouldReduceMotion
-            ? (celebrationVariants as any)
+            ? celebrationVariants
             : undefined
         }
         animate={completed && !shouldReduceMotion ? 'animate' : 'initial'}

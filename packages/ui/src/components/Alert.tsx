@@ -43,13 +43,13 @@ export const Alert = styled(YStack, {
       },
     },
     size: {
-      small: {
+      sm: {
         padding: '$2',
       },
-      medium: {
+      md: {
         padding: '$4',
       },
-      large: {
+      lg: {
         padding: '$6',
       },
     },
@@ -57,7 +57,7 @@ export const Alert = styled(YStack, {
 
   defaultVariants: {
     variant: 'default',
-    size: 'medium',
+    size: 'md',
   },
 });
 
@@ -115,7 +115,7 @@ export const AlertCloseButton = ({
 );
 
 // Alert Component with composition
-export const AlertBox = ({
+export const AlertBox = React.memo(({
   variant = 'default',
   title,
   description,
@@ -146,7 +146,9 @@ export const AlertBox = ({
       </XStack>
     </Alert>
   );
-};
+});
+
+AlertBox.displayName = 'AlertBox';
 
 // Export types
 export type AlertProps = GetProps<typeof Alert>;

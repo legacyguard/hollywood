@@ -145,15 +145,15 @@ export const Paragraph = styled(Text, {
 
   variants: {
     size: {
-      small: {
+      sm: {
         fontSize: '$3', // 12px
         lineHeight: 1.5,
       },
-      medium: {
+      md: {
         fontSize: '$4', // 14px
         lineHeight: 1.6,
       },
-      large: {
+      lg: {
         fontSize: '$5', // 16px
         lineHeight: 1.7,
       },

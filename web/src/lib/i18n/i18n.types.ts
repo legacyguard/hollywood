@@ -4,8 +4,7 @@
  */
 
 import type { TFunction } from 'i18next';
-import { SUPPORTED_LANGUAGES } from './config';
-import type { NAMESPACES } from './config';
+import { type NAMESPACES, SUPPORTED_LANGUAGES } from './config';
 
 // Language codes
 export type LanguageCode = keyof typeof SUPPORTED_LANGUAGES;

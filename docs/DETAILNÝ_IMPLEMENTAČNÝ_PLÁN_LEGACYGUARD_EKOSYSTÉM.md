@@ -22,7 +22,8 @@ LegacyGuard predstavuje komplexný ekosystém pozostávajúci z webovej aplikác
 **Technológia**: Turborepo
 
 **Implementácia**:
-```
+
+```text
 /legacyguard-platform
 ├── apps/
 │   ├── web/              # Existujúca webová aplikácia (hollywood)
@@ -36,6 +37,7 @@ LegacyGuard predstavuje komplexný ekosystém pozostávajúci z webovej aplikác
 ```
 
 **Kroky implementácie**:
+
 1. Vytvorenie novej štruktúry monorepo
 2. Migrácia existujúcich projektov
 3. Nastavenie Turborepo konfigurácie
@@ -46,6 +48,7 @@ LegacyGuard predstavuje komplexný ekosystém pozostávajúci z webovej aplikác
 **Technológia**: Tamagui Framework
 
 **Prečo Tamagui**:
+
 - Umožňuje písať komponenty raz pre web aj mobile
 - Automatické rendrovanie ako `<div>` pre web, `<View>` pre React Native
 - 100% vizuálna zhoda medzi platformami
@@ -79,6 +82,7 @@ export const Button = styled(ButtonFrame, {
 ```
 
 **Dizajnové tokeny**:
+
 ```typescript
 // packages/ui/src/tokens/colors.ts
 export const colors = {
@@ -100,6 +104,7 @@ export const colors = {
 **Štruktúra**: `/packages/locales/`
 
 **Implementácia podľa Language Matrix**:
+
 - 39 krajín, 33+ jazykov
 - Doménovo-orientované načítavanie jazykov
 - Automatická detekcia jazyka podľa geolokácie
@@ -119,6 +124,7 @@ export const loadTranslations = async (domain: string, language: string) => {
 ```
 
 **Výsledky Fázy 1**:
+
 - ✅ Jednotná kódová základňa
 - ✅ Zdieľané UI komponenty
 - ✅ Centralizované preklady
@@ -202,6 +208,7 @@ export class IntelligentDocumentScanner {
 ```
 
 **Výhody lokálnej AI**:
+
 - ✅ Nulové náklady na OpenAI API
 - ✅ Maximálna bezpečnosť dát
 - ✅ Offline funkcionalita
@@ -503,11 +510,13 @@ export type { ButtonProps, CardProps } from './types'
 ### 5.2 Deployment Stratégia
 
 **Web aplikácia** (existujúca hollywood):
+
 - Vercel/Netlify deployment
 - Optimalizované pre všetky domény
 - CDN pre statické súbory
 
 **Mobilná aplikácia**:
+
 - Expo Application Services (EAS) Build
 - App Store a Google Play Store
 - Over-the-Air (OTA) updates pre rýchle opravy
@@ -542,31 +551,37 @@ export class LegacyGuardAnalytics {
 ## ČASOVÝ PLÁN IMPLEMENTÁCIE
 
 ### Základy
+
 - ✅ Monorepo setup
 - ✅ Tamagui implementácia
 - ✅ Základné zdieľané komponenty
 
 ### Mobilná Aplikácia
+
 - ✅ Inteligentný skener s lokálnou AI
 - ✅ Offline trezor
 - ✅ Časová schránka
 
 ### Prepojenie
+
 - ✅ Real-time synchronizácia
 - ✅ Freemium logika
 - ✅ Upgrade flow
 
 ### Internacionalizácia
+
 - ✅ 33+ jazykov implementácia
 - ✅ Kultúrna adaptácia
 - ✅ Doménová lokalizácia
 
 ### Optimalizácia a Testovanie
+
 - ✅ Výkonnostné optimalizácie
 - ✅ E2E testovanie
 - ✅ Security audit
 
 ### Launch
+
 - ✅ App Store submission
 - ✅ Marketing kampaň
 - ✅ User onboarding
@@ -578,6 +593,7 @@ export class LegacyGuardAnalytics {
 ### Súčasný Stav
 
 **Webová aplikácia** (hollywood/):
+
 - React 18 + TypeScript + Vite
 - Clerk autentifikácia
 - Supabase databáza s RLS
@@ -586,6 +602,7 @@ export class LegacyGuardAnalytics {
 - Komplexné prémiové funkcie
 
 **Mobilná aplikácia** (mobile/):
+
 - React Native + Expo
 - Clerk autentifikácia
 - Základné komponenty a navigácia
@@ -595,12 +612,14 @@ export class LegacyGuardAnalytics {
 ### Cieľový Stav
 
 **Zdieľané komponenty** (packages/ui/):
+
 - Tamagui framework
 - 100% vizuálna zhoda
 - Cross-platform komponenty
 - Design system tokens
 
 **Zdieľané služby** (packages/shared/):
+
 - Supabase client
 - Encryption utilities
 - Analytics service
@@ -613,11 +632,13 @@ export class LegacyGuardAnalytics {
 ### Šifrovanie Dát
 
 **Client-side encryption**:
+
 - TweetNaCl pre symetrické šifrovanie
 - Jedinečné kľúče pre každého používateľa
 - End-to-end encryption pre zdieľané dokumenty
 
 **Key Management**:
+
 ```typescript
 // packages/shared/src/security/KeyManager.ts
 export class KeyManager {
