@@ -41,7 +41,9 @@ export class AuthHelper {
     try {
       // Check for authenticated UI elements in addition to URL
       await this.page.waitForURL('**/dashboard', { timeout: 1000 });
-      const userMenuButton = this.page.locator('button[aria-label="User menu"]');
+      const userMenuButton = this.page.locator(
+        'button[aria-label="User menu"]'
+      );
       return await userMenuButton.isVisible();
     } catch {
       return false;

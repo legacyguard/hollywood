@@ -7,7 +7,7 @@ import { sofiaAI } from './sofia-ai';
 export { sofiaAI };
 
 // Export types for external use
-export type { SofiaMessage, SofiaContext } from './sofia-ai';
+export type { SofiaContext, SofiaMessage } from './sofia-ai';
 
 // Utility function for dynamic imports
 export async function getSofiaAI() {

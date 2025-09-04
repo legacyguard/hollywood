@@ -5,59 +5,61 @@
 
 export interface GoogleAuthUser {
   getAuthResponse(): GoogleAuthResponse;
-  getId(): string;
   getBasicProfile(): GoogleBasicProfile;
+  getId(): string;
 }
 
 export interface GoogleAuthResponse {
   access_token: string;
-  refresh_token?: string;
   expires_at: number;
-  token_type: string;
+  refresh_token?: string;
   scope: string;
+  token_type: string;
 }
 
 export interface GoogleBasicProfile {
-  getId(): string;
-  getName(): string;
-  getGivenName(): string;
-  getFamilyName(): string;
-  getImageUrl(): string;
   getEmail(): string;
+  getFamilyName(): string;
+  getGivenName(): string;
+  getId(): string;
+  getImageUrl(): string;
+  getName(): string;
 }
 
 export interface GoogleAuthInstance {
+  currentUser: {
+    get(): GoogleAuthUser;
+  };
   isSignedIn: {
     get(): boolean;
     listen(listener: (isSignedIn: boolean) => void): void;
-  };
-  currentUser: {
-    get(): GoogleAuthUser;
   };
   signIn(): Promise<GoogleAuthUser>;
   signOut(): Promise<void>;
 }
 
 export interface GoogleAPI {
-  load(api: string, callback: () => void): void;
   auth2: {
-    init(config: GoogleAuthInitConfig): Promise<void>;
     getAuthInstance(): GoogleAuthInstance;
+    init(config: GoogleAuthInitConfig): Promise<void>;
   };
   client: {
-    init(config: GoogleClientInitConfig): Promise<void>;
     gmail: {
       users: {
         messages: {
-          list(params: GmailListParams): Promise<GmailListResponse>;
-          get(params: GmailGetParams): Promise<GmailGetResponse>;
           attachments: {
-            get(params: GmailAttachmentParams): Promise<GmailAttachmentResponse>;
+            get(
+              params: GmailAttachmentParams
+            ): Promise<GmailAttachmentResponse>;
           };
+          get(params: GmailGetParams): Promise<GmailGetResponse>;
+          list(params: GmailListParams): Promise<GmailListResponse>;
         };
       };
     };
+    init(config: GoogleClientInitConfig): Promise<void>;
   };
+  load(api: string, callback: () => void): void;
 }
 
 export interface GoogleAuthInitConfig {
@@ -73,9 +75,9 @@ export interface GoogleClientInitConfig {
 }
 
 export interface GmailListParams {
-  userId: string;
-  q: string;
   maxResults: number;
+  q: string;
+  userId: string;
 }
 
 export interface GmailListResponse {
@@ -85,8 +87,8 @@ export interface GmailListResponse {
 }
 
 export interface GmailGetParams {
-  userId: string;
   id: string;
+  userId: string;
 }
 
 export interface GmailGetResponse {
@@ -94,9 +96,9 @@ export interface GmailGetResponse {
 }
 
 export interface GmailAttachmentParams {
-  userId: string;
-  messageId: string;
   id: string;
+  messageId: string;
+  userId: string;
 }
 
 export interface GmailAttachmentResponse {
@@ -106,22 +108,22 @@ export interface GmailAttachmentResponse {
 }
 
 export interface GmailMessage {
+  historyId: string;
   id: string;
-  threadId: string;
+  internalDate: string;
   labelIds: string[];
-  snippet: string;
   payload: GmailPayload;
   sizeEstimate: number;
-  historyId: string;
-  internalDate: string;
+  snippet: string;
+  threadId: string;
 }
 
 export interface GmailPayload {
-  partId: string;
-  mimeType: string;
+  body?: GmailBody;
   filename?: string;
   headers: GmailHeader[];
-  body?: GmailBody;
+  mimeType: string;
+  partId: string;
   parts?: GmailPayload[];
 }
 
@@ -132,8 +134,8 @@ export interface GmailHeader {
 
 export interface GmailBody {
   attachmentId?: string;
-  size: number;
   data?: string;
+  size: number;
 }
 
 // Extend the global Window interface

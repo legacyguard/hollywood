@@ -3,7 +3,7 @@
  * Displays security status, audit logs, and security settings
  */
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -16,30 +16,30 @@ import { createClient } from '@supabase/supabase-js';
 import { formatDistanceToNow } from 'date-fns';
 
 interface SecurityScore {
-  overall: number;
   factors: {
-    passwordStrength: number;
-    twoFactorEnabled: boolean;
-    encryptionEnabled: boolean;
     backupRecent: boolean;
+    encryptionEnabled: boolean;
+    passwordStrength: number;
     recoverySetup: boolean;
+    twoFactorEnabled: boolean;
   };
+  overall: number;
 }
 
 interface AuditLogEntry {
+  details?: string;
+  failure_reason?: string;
   id: string;
+  ip_address?: string;
   operation: string;
   success: boolean;
   timestamp: string;
-  ip_address?: string;
   user_agent?: string;
-  failure_reason?: string;
-  details?: string;
 }
 
 interface ActiveSession {
-  id: string;
   device: string;
+  id: string;
   ip_address: string;
   last_active: string;
   location?: string;
@@ -234,7 +234,10 @@ export function SecurityDashboard() {
     return (
       <Card className='p-8'>
         <div className='flex items-center justify-center'>
-          <Icon name={"upload" as any} className='w-8 h-8 animate-spin text-primary' />
+          <Icon
+            name={'upload' as any}
+            className='w-8 h-8 animate-spin text-primary'
+          />
         </div>
       </Card>
     );
@@ -258,7 +261,7 @@ export function SecurityDashboard() {
               >
                 {securityScore.overall}%
               </div>
-              <Badge variant="outline" className='mt-1'>
+              <Badge variant='outline' className='mt-1'>
                 {getScoreLabel(securityScore.overall)}
               </Badge>
             </div>
@@ -269,7 +272,10 @@ export function SecurityDashboard() {
           <div className='grid md:grid-cols-2 gap-4'>
             <div className='flex items-center justify-between p-3 bg-muted/20 rounded-lg'>
               <div className='flex items-center gap-3'>
-                <Icon name={"key" as any} className='w-5 h-5 text-muted-foreground' />
+                <Icon
+                  name={'key' as any}
+                  className='w-5 h-5 text-muted-foreground'
+                />
                 <span className='text-sm'>Password Strength</span>
               </div>
               <Badge
@@ -285,7 +291,8 @@ export function SecurityDashboard() {
 
             <div className='flex items-center justify-between p-3 bg-muted/20 rounded-lg'>
               <div className='flex items-center gap-3'>
-                <Icon name={"shield-check" as any}
+                <Icon
+                  name={'shield-check' as any}
                   className='w-5 h-5 text-muted-foreground'
                 />
                 <span className='text-sm'>Two-Factor Auth</span>
@@ -305,7 +312,10 @@ export function SecurityDashboard() {
 
             <div className='flex items-center justify-between p-3 bg-muted/20 rounded-lg'>
               <div className='flex items-center gap-3'>
-                <Icon name={"lock" as any} className='w-5 h-5 text-muted-foreground' />
+                <Icon
+                  name={'lock' as any}
+                  className='w-5 h-5 text-muted-foreground'
+                />
                 <span className='text-sm'>Encryption</span>
               </div>
               <Badge
@@ -323,7 +333,8 @@ export function SecurityDashboard() {
 
             <div className='flex items-center justify-between p-3 bg-muted/20 rounded-lg'>
               <div className='flex items-center gap-3'>
-                <Icon name={"database" as any}
+                <Icon
+                  name={'database' as any}
                   className='w-5 h-5 text-muted-foreground'
                 />
                 <span className='text-sm'>Recent Backup</span>
@@ -339,7 +350,8 @@ export function SecurityDashboard() {
 
             <div className='flex items-center justify-between p-3 bg-muted/20 rounded-lg'>
               <div className='flex items-center gap-3'>
-                <Icon name={"refresh" as any}
+                <Icon
+                  name={'refresh' as any}
                   className='w-5 h-5 text-muted-foreground'
                 />
                 <span className='text-sm'>Recovery Setup</span>
@@ -355,7 +367,10 @@ export function SecurityDashboard() {
 
             <div className='flex items-center justify-between p-3 bg-muted/20 rounded-lg'>
               <div className='flex items-center gap-3'>
-                <Icon name={"rotate" as any} className='w-5 h-5 text-muted-foreground' />
+                <Icon
+                  name={'rotate' as any}
+                  className='w-5 h-5 text-muted-foreground'
+                />
                 <span className='text-sm'>Key Rotation</span>
               </div>
               <Badge variant={keyRotationNeeded ? 'warning' : 'success'}>
@@ -377,7 +392,8 @@ export function SecurityDashboard() {
                 className='flex items-center justify-between p-4 bg-muted/20 rounded-lg'
               >
                 <div className='flex items-center gap-4'>
-                  <Icon name={"device-laptop" as any}
+                  <Icon
+                    name={'device-laptop' as any}
                     className='w-5 h-5 text-muted-foreground'
                   />
                   <div>
@@ -395,7 +411,7 @@ export function SecurityDashboard() {
                     })}
                   </p>
                   {session.id === '1' && (
-                    <Badge variant="outline" className='mt-1'>
+                    <Badge variant='outline' className='mt-1'>
                       Current
                     </Badge>
                   )}
@@ -474,13 +490,14 @@ export function SecurityDashboard() {
         <FadeIn duration={0.5} delay={0.4}>
           <Card className='p-6 border-yellow-200 dark:border-yellow-900 bg-yellow-50 dark:bg-yellow-950/20'>
             <h3 className='text-xl font-semibold mb-4 flex items-center gap-2'>
-              <Icon name={"info" as any} className='w-5 h-5 text-yellow-600' />
+              <Icon name={'info' as any} className='w-5 h-5 text-yellow-600' />
               Security Recommendations
             </h3>
             <div className='space-y-3'>
               {keyRotationNeeded && (
                 <div className='flex items-start gap-3'>
-                  <Icon name={"rotate" as any}
+                  <Icon
+                    name={'rotate' as any}
                     className='w-5 h-5 text-yellow-600 mt-0.5'
                   />
                   <div className='flex-1'>
@@ -489,7 +506,7 @@ export function SecurityDashboard() {
                       Your encryption keys are over 90 days old. Consider
                       rotating them for enhanced security.
                     </p>
-                    <Button size='sm' variant="outline" className='mt-2'>
+                    <Button size='sm' variant='outline' className='mt-2'>
                       Rotate Keys Now
                     </Button>
                   </div>
@@ -498,7 +515,8 @@ export function SecurityDashboard() {
 
               {!securityScore.factors.twoFactorEnabled && (
                 <div className='flex items-start gap-3'>
-                  <Icon name={"shield-check" as any}
+                  <Icon
+                    name={'shield-check' as any}
                     className='w-5 h-5 text-yellow-600 mt-0.5'
                   />
                   <div className='flex-1'>
@@ -508,7 +526,7 @@ export function SecurityDashboard() {
                     <p className='text-sm text-muted-foreground'>
                       Add an extra layer of security to your account with 2FA.
                     </p>
-                    <Button size='sm' variant="outline" className='mt-2'>
+                    <Button size='sm' variant='outline' className='mt-2'>
                       Setup 2FA
                     </Button>
                   </div>
@@ -517,7 +535,8 @@ export function SecurityDashboard() {
 
               {!securityScore.factors.backupRecent && (
                 <div className='flex items-start gap-3'>
-                  <Icon name={"database" as any}
+                  <Icon
+                    name={'database' as any}
                     className='w-5 h-5 text-yellow-600 mt-0.5'
                   />
                   <div className='flex-1'>
@@ -526,7 +545,7 @@ export function SecurityDashboard() {
                       Your last backup is over a week old. Create a new backup
                       to protect your data.
                     </p>
-                    <Button size='sm' variant="outline" className='mt-2'>
+                    <Button size='sm' variant='outline' className='mt-2'>
                       Backup Now
                     </Button>
                   </div>

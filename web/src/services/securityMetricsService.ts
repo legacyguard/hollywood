@@ -4,73 +4,73 @@
  */
 
 export interface SecurityEvent {
-  id: string;
-  type: string;
-  blocked: boolean;
-  threatType?: string;
-  severity?: string;
-  ipAddress?: string;
-  endpoint?: string;
-  description?: string;
-  sessionId?: string;
-  userId?: string;
   anomalyType?: string;
+  blocked: boolean;
   createdAt: Date;
+  description?: string;
+  endpoint?: string;
+  id: string;
+  ipAddress?: string;
+  sessionId?: string;
+  severity?: string;
+  threatType?: string;
+  type: string;
+  userId?: string;
 }
 
 export interface SecurityMetrics {
-  totalRequests: number;
-  blockedRequests: number;
-  threatDetections: number;
   activeSessions: number;
+  avgResponseTime: number;
+  blockedRequests: number;
+  encryptionOps: number;
   failedLogins: number;
   rateLimitHits: number;
-  encryptionOps: number;
-  avgResponseTime: number;
+  threatDetections: number;
+  totalRequests: number;
 }
 
 export interface ThreatInfo {
+  blocked: boolean;
+  description: string;
+  endpoint: string;
   id: string;
+  ip: string;
+  severity: string;
   timestamp: Date;
   type: string;
-  severity: string;
-  ip: string;
-  endpoint: string;
-  description: string;
-  blocked: boolean;
 }
 
 export interface SessionAnomaly {
-  sessionId: string;
-  userId: string;
-  type: string;
-  timestamp: Date;
   details: string;
+  sessionId: string;
+  timestamp: Date;
+  type: string;
+  userId: string;
 }
 
 export interface ChartData {
-  requestTrend: Array<{
-    time: string;
-    requests: number;
-    blocked: number;
-  }>;
-  threatTypes: Array<{
-    name: string;
-    value: number;
-    color: string;
-  }>;
   geoDistribution: Array<{
     country: string;
     requests: number;
     threats: number;
   }>;
+  requestTrend: Array<{
+    blocked: number;
+    requests: number;
+    time: string;
+  }>;
+  threatTypes: Array<{
+    color: string;
+    name: string;
+    value: number;
+  }>;
 }
 
 export interface SecurityMetricsResponse {
-  metrics: SecurityMetrics;
-  threats: ThreatInfo[];
   anomalies: SessionAnomaly[];
   charts: ChartData;
+  metrics: SecurityMetrics;
+  threats: ThreatInfo[];
 }
 
 /**
@@ -81,7 +81,9 @@ export class SecurityMetricsService {
   /**
    * Get security metrics for the dashboard
    */
-  static async getMetrics(range: string = '24h'): Promise<SecurityMetricsResponse> {
+  static async getMetrics(
+    range: string = '24h'
+  ): Promise<SecurityMetricsResponse> {
     try {
       // Calculate time range
       const now = new Date();
@@ -103,30 +105,30 @@ export class SecurityMetricsService {
       }
 
       // Fetch metrics from Supabase
-      const [
-        securityEvents,
-        sessions,
-        rateLimits,
-        encryptionOps
-      ] = await Promise.all([
-        // Security events - using a mock table structure
-        this.getSecurityEvents(startTime),
+      const [securityEvents, sessions, rateLimits, encryptionOps] =
+        await Promise.all([
+          // Security events - using a mock table structure
+          this.getSecurityEvents(startTime),
 
-        // Active sessions - using Supabase auth sessions
-        this.getActiveSessions(),
+          // Active sessions - using Supabase auth sessions
+          this.getActiveSessions(),
 
-        // Rate limit hits - mock data for now
-        this.getRateLimitHits(startTime),
+          // Rate limit hits - mock data for now
+          this.getRateLimitHits(startTime),
 
-        // Encryption operations - mock data for now
-        this.getEncryptionOperations(startTime)
-      ]);
+          // Encryption operations - mock data for now
+          this.getEncryptionOperations(startTime),
+        ]);
 
       // Process security events
       const totalRequests = securityEvents.length;
       const blockedRequests = securityEvents.filter(e => e.blocked).length;
-      const threatDetections = securityEvents.filter(e => e.type === 'threat').length;
-      const failedLogins = securityEvents.filter(e => e.type === 'failed_login').length;
+      const threatDetections = securityEvents.filter(
+        e => e.type === 'threat'
+      ).length;
+      const failedLogins = securityEvents.filter(
+        e => e.type === 'failed_login'
+      ).length;
 
       // Calculate average response time (mock for now)
       const avgResponseTime = Math.floor(Math.random() * 50) + 100;
@@ -143,7 +145,7 @@ export class SecurityMetricsService {
           ip: event.ipAddress || 'Unknown',
           endpoint: event.endpoint || '/',
           description: event.description || '',
-          blocked: event.blocked || false
+          blocked: event.blocked || false,
         }));
 
       // Process session anomalies
@@ -155,7 +157,7 @@ export class SecurityMetricsService {
           userId: event.userId || 'Unknown',
           type: event.anomalyType || 'Unknown',
           timestamp: event.createdAt,
-          details: event.description || ''
+          details: event.description || '',
         }));
 
       // Generate chart data
@@ -170,13 +172,12 @@ export class SecurityMetricsService {
           failedLogins,
           rateLimitHits: rateLimits,
           encryptionOps,
-          avgResponseTime
+          avgResponseTime,
         },
         threats: recentThreats,
         anomalies: sessionAnomalies,
-        charts: chartData
+        charts: chartData,
       };
-
     } catch (error) {
       console.error('Error fetching security metrics:', error);
       throw new Error('Failed to fetch security metrics');
@@ -187,7 +188,9 @@ export class SecurityMetricsService {
    * Get security events from database
    * Note: This is a mock implementation since the actual table structure may vary
    */
-  private static async getSecurityEvents(_startTime: Date): Promise<SecurityEvent[]> {
+  private static async getSecurityEvents(
+    _startTime: Date
+  ): Promise<SecurityEvent[]> {
     try {
       // For now, return mock data since we don't have a security_events table
       // In a real implementation, you would query your Supabase table:
@@ -208,7 +211,7 @@ export class SecurityMetricsService {
           ipAddress: '192.168.1.100',
           endpoint: '/api/documents',
           description: 'Attempted SQL injection in document query',
-          createdAt: new Date(Date.now() - 1000 * 60 * 30) // 30 minutes ago
+          createdAt: new Date(Date.now() - 1000 * 60 * 30), // 30 minutes ago
         },
         {
           id: '2',
@@ -217,7 +220,7 @@ export class SecurityMetricsService {
           ipAddress: '192.168.1.101',
           endpoint: '/auth/signin',
           description: 'Failed login attempt',
-          createdAt: new Date(Date.now() - 1000 * 60 * 45) // 45 minutes ago
+          createdAt: new Date(Date.now() - 1000 * 60 * 45), // 45 minutes ago
         },
         {
           id: '3',
@@ -227,8 +230,8 @@ export class SecurityMetricsService {
           userId: 'user_456',
           anomalyType: 'unusual_location',
           description: 'Login from new location',
-          createdAt: new Date(Date.now() - 1000 * 60 * 60) // 1 hour ago
-        }
+          createdAt: new Date(Date.now() - 1000 * 60 * 60), // 1 hour ago
+        },
       ];
     } catch (error) {
       console.error('Error fetching security events:', error);
@@ -266,7 +269,9 @@ export class SecurityMetricsService {
   /**
    * Get encryption operations count
    */
-  private static async getEncryptionOperations(_startTime: Date): Promise<number> {
+  private static async getEncryptionOperations(
+    _startTime: Date
+  ): Promise<number> {
     try {
       // Mock implementation
       return Math.floor(Math.random() * 100) + 50;
@@ -279,14 +284,18 @@ export class SecurityMetricsService {
   /**
    * Generate chart data for visualization
    */
-  private static generateChartData(_events: SecurityEvent[], range: string): ChartData {
+  private static generateChartData(
+    _events: SecurityEvent[],
+    range: string
+  ): ChartData {
     // Generate time-based trend data
     const trendData: Array<{
-      time: string;
-      requests: number;
       blocked: number;
+      requests: number;
+      time: string;
     }> = [];
-    const intervals = range === '1h' ? 6 : range === '24h' ? 6 : range === '7d' ? 7 : 30;
+    const intervals =
+      range === '1h' ? 6 : range === '24h' ? 6 : range === '7d' ? 7 : 30;
 
     for (let i = 0; i < intervals; i++) {
       const requests = Math.floor(Math.random() * 1000) + 200;
@@ -295,7 +304,7 @@ export class SecurityMetricsService {
       trendData.push({
         time: this.getTimeLabel(i, range),
         requests,
-        blocked
+        blocked,
       });
     }
 
@@ -320,7 +329,7 @@ export class SecurityMetricsService {
     return {
       requestTrend: trendData,
       threatTypes,
-      geoDistribution
+      geoDistribution,
     };
   }
 

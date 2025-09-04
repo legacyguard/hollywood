@@ -42,14 +42,18 @@ test.describe('Projects Management', () => {
     // Verify project exists before deletion
     const projectCard = page.locator('.project-card:first-child');
     await expect(projectCard).toBeVisible();
-    const projectName = await projectCard.locator('[data-testid="project-name"]').textContent();
+    const projectName = await projectCard
+      .locator('[data-testid="project-name"]')
+      .textContent();
 
     // Click on first project
     await projectCard.click();
     await page.click('text=Delete');
     await page.click('text=Confirm');
 
-    await expect(page.locator('text=Project deleted successfully')).toBeVisible();
+    await expect(
+      page.locator('text=Project deleted successfully')
+    ).toBeVisible();
 
     // Verify project is removed from the list
     await page.waitForURL('**/projects');

@@ -1,10 +1,12 @@
 import { createContext } from 'react';
 
 export interface AuthContextType {
-  user: unknown;
-  isLoggedIn: boolean;
   isLoading: boolean;
+  isLoggedIn: boolean;
   logout: () => Promise<void>;
+  user: unknown;
 }
 
-export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType | undefined>(
+  undefined
+);

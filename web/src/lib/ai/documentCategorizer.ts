@@ -3,64 +3,68 @@
  * Phase 6: AI Intelligence & Document Analysis
  */
 
-import { type DocumentCategory, type DocumentAnalysisResult, documentAnalyzer } from './documentAnalyzer';
+import {
+  type DocumentAnalysisResult,
+  documentAnalyzer,
+  type DocumentCategory,
+} from './documentAnalyzer';
 
 export interface CategoryRule {
+  confidence: number;
+  description: string;
+  enabled: boolean;
   id: string;
   name: string;
-  description: string;
-  primary: DocumentCategory['primary'];
-  secondary?: string;
   patterns: CategoryPattern[];
-  confidence: number;
+  primary: DocumentCategory['primary'];
   priority: number;
-  enabled: boolean;
+  secondary?: string;
 }
 
 export interface CategoryPattern {
-  type: 'keyword' | 'regex' | 'semantic' | 'structure' | 'metadata';
+  context?: 'anywhere' | 'content' | 'filename' | 'title';
   pattern: string;
-  weight: number;
   required?: boolean;
-  context?: 'title' | 'content' | 'filename' | 'anywhere';
+  type: 'keyword' | 'metadata' | 'regex' | 'semantic' | 'structure';
+  weight: number;
 }
 
 export interface CategorySuggestion {
-  category: DocumentCategory;
-  confidence: number;
-  reasoning: string[];
   alternativeCategories: Array<{
     category: DocumentCategory;
     confidence: number;
     reasoning: string;
   }>;
+  category: DocumentCategory;
+  confidence: number;
+  reasoning: string[];
 }
 
 export interface AutoTaggingResult {
-  suggestedTags: string[];
   confidence: number;
   generatedTags: Array<{
-    tag: string;
     confidence: number;
-    source: 'content' | 'category' | 'metadata' | 'pattern';
     reasoning: string;
+    source: 'category' | 'content' | 'metadata' | 'pattern';
+    tag: string;
   }>;
+  suggestedTags: string[];
 }
 
 export interface CategoryStatistics {
-  totalDocuments: number;
-  categoryDistribution: Record<string, number>;
   accuracyMetrics: {
-    overallAccuracy: number;
     categoryAccuracy: Record<string, number>;
-    falsePositives: number;
     falseNegatives: number;
+    falsePositives: number;
+    overallAccuracy: number;
   };
+  categoryDistribution: Record<string, number>;
   performanceMetrics: {
     averageProcessingTime: number;
-    throughput: number;
     errorRate: number;
+    throughput: number;
   };
+  totalDocuments: number;
 }
 
 export class DocumentCategorizer {
@@ -93,16 +97,25 @@ export class DocumentCategorizer {
       }
 
       // Get AI analysis if not provided
-      const analysis = existingAnalysis || await documentAnalyzer.analyzeDocument(content, filename);
+      const analysis =
+        existingAnalysis ||
+        (await documentAnalyzer.analyzeDocument(content, filename));
 
       // Apply rule-based categorization
-      const ruleBasedSuggestion = await this.applyRules(content, filename, analysis);
+      const ruleBasedSuggestion = await this.applyRules(
+        content,
+        filename,
+        analysis
+      );
 
       // Apply AI-based categorization
       const aiSuggestion = await this.applyAIClassification(analysis);
 
       // Combine suggestions using weighted voting
-      const finalSuggestion = this.combineSuggestions([ruleBasedSuggestion, aiSuggestion]);
+      const finalSuggestion = this.combineSuggestions([
+        ruleBasedSuggestion,
+        aiSuggestion,
+      ]);
 
       // Learn from the result
       if (this.learningEnabled) {
@@ -116,9 +129,10 @@ export class DocumentCategorizer {
       this.updateStatistics(performance.now() - startTime);
 
       return finalSuggestion;
-
     } catch (error) {
-      throw new Error(`Document categorization failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Document categorization failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -138,7 +152,7 @@ export class DocumentCategorizer {
         tag: category.primary,
         confidence: 0.95,
         source: 'category',
-        reasoning: 'Primary document category'
+        reasoning: 'Primary document category',
       });
 
       if (category.secondary) {
@@ -146,7 +160,7 @@ export class DocumentCategorizer {
           tag: category.secondary.toLowerCase().replace(/\s+/g, '-'),
           confidence: 0.85,
           source: 'category',
-          reasoning: 'Document subcategory'
+          reasoning: 'Document subcategory',
         });
       }
     }
@@ -176,7 +190,7 @@ export class DocumentCategorizer {
     return {
       suggestedTags,
       confidence: this.calculateTaggingConfidence(uniqueTags),
-      generatedTags: uniqueTags
+      generatedTags: uniqueTags,
     };
   }
 
@@ -226,8 +240,8 @@ export class DocumentCategorizer {
   async trainOnDataset(
     dataset: Array<{
       content: string;
-      filename?: string;
       expectedCategory: DocumentCategory;
+      filename?: string;
       tags?: string[];
     }>
   ): Promise<void> {
@@ -238,7 +252,10 @@ export class DocumentCategorizer {
 
     for (const sample of dataset) {
       try {
-        const suggestion = await this.categorizeDocument(sample.content, sample.filename);
+        const suggestion = await this.categorizeDocument(
+          sample.content,
+          sample.filename
+        );
 
         if (suggestion.category.primary === sample.expectedCategory.primary) {
           correctPredictions++;
@@ -249,7 +266,6 @@ export class DocumentCategorizer {
 
         // Update rules based on training feedback
         this.updateRulesFromFeedback(sample, suggestion);
-
       } catch (error) {
         console.warn(`Training error on document: ${error}`);
       }
@@ -274,14 +290,14 @@ export class DocumentCategorizer {
    * Export categorization configuration
    */
   exportConfiguration(): {
-    rules: CategoryRule[];
     customCategories: Record<string, DocumentCategory>;
+    rules: CategoryRule[];
     statistics: CategoryStatistics;
   } {
     return {
       rules: this.getRules(),
       customCategories: Object.fromEntries(this.customCategories),
-      statistics: this.getStatistics()
+      statistics: this.getStatistics(),
     };
   }
 
@@ -289,8 +305,8 @@ export class DocumentCategorizer {
    * Import categorization configuration
    */
   importConfiguration(config: {
-    rules?: CategoryRule[];
     customCategories?: Record<string, DocumentCategory>;
+    rules?: CategoryRule[];
   }): void {
     if (config.rules) {
       this.rules.clear();
@@ -317,13 +333,13 @@ export class DocumentCategorizer {
         overallAccuracy: 0,
         categoryAccuracy: {},
         falsePositives: 0,
-        falseNegatives: 0
+        falseNegatives: 0,
       },
       performanceMetrics: {
         averageProcessingTime: 0,
         throughput: 0,
-        errorRate: 0
-      }
+        errorRate: 0,
+      },
     };
   }
 
@@ -336,14 +352,34 @@ export class DocumentCategorizer {
       primary: 'legal',
       secondary: 'Contract',
       patterns: [
-        { type: 'keyword', pattern: 'contract|agreement|terms|conditions', weight: 3, context: 'content' },
-        { type: 'keyword', pattern: 'whereas|party|parties|obligations', weight: 2, context: 'content' },
-        { type: 'keyword', pattern: 'signature|witness|notary', weight: 2, context: 'content' },
-        { type: 'regex', pattern: '\\b(shall|agrees?\\s+to|is\\s+obligated)\\b', weight: 2, context: 'content' }
+        {
+          type: 'keyword',
+          pattern: 'contract|agreement|terms|conditions',
+          weight: 3,
+          context: 'content',
+        },
+        {
+          type: 'keyword',
+          pattern: 'whereas|party|parties|obligations',
+          weight: 2,
+          context: 'content',
+        },
+        {
+          type: 'keyword',
+          pattern: 'signature|witness|notary',
+          weight: 2,
+          context: 'content',
+        },
+        {
+          type: 'regex',
+          pattern: '\\b(shall|agrees?\\s+to|is\\s+obligated)\\b',
+          weight: 2,
+          context: 'content',
+        },
       ],
       confidence: 0.8,
       priority: 1,
-      enabled: true
+      enabled: true,
     });
 
     // Financial documents
@@ -354,14 +390,34 @@ export class DocumentCategorizer {
       primary: 'financial',
       secondary: 'Statement',
       patterns: [
-        { type: 'keyword', pattern: 'balance|statement|financial|account', weight: 3, context: 'content' },
-        { type: 'keyword', pattern: 'debit|credit|transaction|deposit|withdrawal', weight: 2, context: 'content' },
-        { type: 'regex', pattern: '\\$[\\d,]+\\.?\\d*', weight: 2, context: 'content' },
-        { type: 'keyword', pattern: 'bank|checking|savings|investment', weight: 1, context: 'content' }
+        {
+          type: 'keyword',
+          pattern: 'balance|statement|financial|account',
+          weight: 3,
+          context: 'content',
+        },
+        {
+          type: 'keyword',
+          pattern: 'debit|credit|transaction|deposit|withdrawal',
+          weight: 2,
+          context: 'content',
+        },
+        {
+          type: 'regex',
+          pattern: '\\$[\\d,]+\\.?\\d*',
+          weight: 2,
+          context: 'content',
+        },
+        {
+          type: 'keyword',
+          pattern: 'bank|checking|savings|investment',
+          weight: 1,
+          context: 'content',
+        },
       ],
       confidence: 0.85,
       priority: 1,
-      enabled: true
+      enabled: true,
     });
 
     // Tax documents
@@ -372,13 +428,28 @@ export class DocumentCategorizer {
       primary: 'financial',
       secondary: 'Tax Document',
       patterns: [
-        { type: 'keyword', pattern: 'tax|irs|1040|w2|1099', weight: 4, context: 'content' },
-        { type: 'keyword', pattern: 'deduction|exemption|refund|withholding', weight: 2, context: 'content' },
-        { type: 'keyword', pattern: 'taxpayer|federal|state tax', weight: 2, context: 'content' }
+        {
+          type: 'keyword',
+          pattern: 'tax|irs|1040|w2|1099',
+          weight: 4,
+          context: 'content',
+        },
+        {
+          type: 'keyword',
+          pattern: 'deduction|exemption|refund|withholding',
+          weight: 2,
+          context: 'content',
+        },
+        {
+          type: 'keyword',
+          pattern: 'taxpayer|federal|state tax',
+          weight: 2,
+          context: 'content',
+        },
       ],
       confidence: 0.9,
       priority: 1,
-      enabled: true
+      enabled: true,
     });
 
     // Medical documents
@@ -389,14 +460,34 @@ export class DocumentCategorizer {
       primary: 'medical',
       secondary: 'Medical Record',
       patterns: [
-        { type: 'keyword', pattern: 'medical|health|patient|doctor|physician', weight: 3, context: 'content' },
-        { type: 'keyword', pattern: 'diagnosis|treatment|medication|prescription', weight: 3, context: 'content' },
-        { type: 'keyword', pattern: 'hospital|clinic|healthcare|examination', weight: 2, context: 'content' },
-        { type: 'keyword', pattern: 'symptoms|condition|procedure|therapy', weight: 2, context: 'content' }
+        {
+          type: 'keyword',
+          pattern: 'medical|health|patient|doctor|physician',
+          weight: 3,
+          context: 'content',
+        },
+        {
+          type: 'keyword',
+          pattern: 'diagnosis|treatment|medication|prescription',
+          weight: 3,
+          context: 'content',
+        },
+        {
+          type: 'keyword',
+          pattern: 'hospital|clinic|healthcare|examination',
+          weight: 2,
+          context: 'content',
+        },
+        {
+          type: 'keyword',
+          pattern: 'symptoms|condition|procedure|therapy',
+          weight: 2,
+          context: 'content',
+        },
       ],
       confidence: 0.8,
       priority: 1,
-      enabled: true
+      enabled: true,
     });
 
     // Insurance documents
@@ -407,13 +498,28 @@ export class DocumentCategorizer {
       primary: 'insurance',
       secondary: 'Policy',
       patterns: [
-        { type: 'keyword', pattern: 'insurance|policy|coverage|claim', weight: 4, context: 'content' },
-        { type: 'keyword', pattern: 'premium|deductible|beneficiary|policyholder', weight: 3, context: 'content' },
-        { type: 'keyword', pattern: 'liability|accident|damage|protection', weight: 2, context: 'content' }
+        {
+          type: 'keyword',
+          pattern: 'insurance|policy|coverage|claim',
+          weight: 4,
+          context: 'content',
+        },
+        {
+          type: 'keyword',
+          pattern: 'premium|deductible|beneficiary|policyholder',
+          weight: 3,
+          context: 'content',
+        },
+        {
+          type: 'keyword',
+          pattern: 'liability|accident|damage|protection',
+          weight: 2,
+          context: 'content',
+        },
       ],
       confidence: 0.85,
       priority: 1,
-      enabled: true
+      enabled: true,
     });
 
     // Property documents
@@ -424,13 +530,28 @@ export class DocumentCategorizer {
       primary: 'property',
       secondary: 'Deed',
       patterns: [
-        { type: 'keyword', pattern: 'deed|title|property|real estate', weight: 4, context: 'content' },
-        { type: 'keyword', pattern: 'mortgage|lease|rental|landlord|tenant', weight: 3, context: 'content' },
-        { type: 'keyword', pattern: 'closing|appraisal|inspection|zoning', weight: 2, context: 'content' }
+        {
+          type: 'keyword',
+          pattern: 'deed|title|property|real estate',
+          weight: 4,
+          context: 'content',
+        },
+        {
+          type: 'keyword',
+          pattern: 'mortgage|lease|rental|landlord|tenant',
+          weight: 3,
+          context: 'content',
+        },
+        {
+          type: 'keyword',
+          pattern: 'closing|appraisal|inspection|zoning',
+          weight: 2,
+          context: 'content',
+        },
       ],
       confidence: 0.8,
       priority: 1,
-      enabled: true
+      enabled: true,
     });
   }
 
@@ -439,7 +560,7 @@ export class DocumentCategorizer {
     filename?: string,
     analysis?: DocumentAnalysisResult
   ): Promise<CategorySuggestion> {
-    const scores: Map<string, { score: number; reasons: string[] }> = new Map();
+    const scores: Map<string, { reasons: string[]; score: number }> = new Map();
 
     for (const rule of this.rules.values()) {
       if (!rule.enabled) continue;
@@ -448,10 +569,17 @@ export class DocumentCategorizer {
       const reasons: string[] = [];
 
       for (const pattern of rule.patterns) {
-        const patternScore = this.evaluatePattern(pattern, content, filename, analysis);
+        const patternScore = this.evaluatePattern(
+          pattern,
+          content,
+          filename,
+          analysis
+        );
         if (patternScore > 0) {
           ruleScore += patternScore * pattern.weight;
-          reasons.push(`Matched pattern: ${pattern.pattern} (score: ${patternScore})`);
+          reasons.push(
+            `Matched pattern: ${pattern.pattern} (score: ${patternScore})`
+          );
         }
       }
 
@@ -465,8 +593,9 @@ export class DocumentCategorizer {
     }
 
     // Find the best match
-    const sortedScores = Array.from(scores.entries())
-      .sort((a, b) => b[1].score - a[1].score);
+    const sortedScores = Array.from(scores.entries()).sort(
+      (a, b) => b[1].score - a[1].score
+    );
 
     if (sortedScores.length === 0) {
       // Fallback to AI classification
@@ -476,26 +605,28 @@ export class DocumentCategorizer {
     const [bestCategoryKey, bestScore] = sortedScores[0];
     const [primary, secondary] = bestCategoryKey.split(':');
 
-    const alternativeCategories = sortedScores.slice(1, 4).map(([categoryKey, scoreData]) => {
-      const [altPrimary, altSecondary] = categoryKey.split(':');
-      return {
-        category: {
-          primary: altPrimary as DocumentCategory['primary'],
-          secondary: altSecondary || undefined
-        },
-        confidence: Math.min(scoreData.score / 10, 1), // Normalize to 0-1
-        reasoning: `Rule-based classification (score: ${scoreData.score.toFixed(2)})`
-      };
-    });
+    const alternativeCategories = sortedScores
+      .slice(1, 4)
+      .map(([categoryKey, scoreData]) => {
+        const [altPrimary, altSecondary] = categoryKey.split(':');
+        return {
+          category: {
+            primary: altPrimary as DocumentCategory['primary'],
+            secondary: altSecondary || undefined,
+          },
+          confidence: Math.min(scoreData.score / 10, 1), // Normalize to 0-1
+          reasoning: `Rule-based classification (score: ${scoreData.score.toFixed(2)})`,
+        };
+      });
 
     return {
       category: {
         primary: primary as DocumentCategory['primary'],
-        secondary: secondary || undefined
+        secondary: secondary || undefined,
       },
       confidence: Math.min(bestScore.score / 10, 1), // Normalize to 0-1
       reasoning: bestScore.reasons,
-      alternativeCategories
+      alternativeCategories,
     };
   }
 
@@ -508,7 +639,7 @@ export class DocumentCategorizer {
         category: { primary: 'other' },
         confidence: 0.5,
         reasoning: ['No analysis available - using fallback classification'],
-        alternativeCategories: []
+        alternativeCategories: [],
       };
     }
 
@@ -516,22 +647,25 @@ export class DocumentCategorizer {
       category: analysis.category,
       confidence: analysis.confidence,
       reasoning: [`AI classification based on content analysis`],
-      alternativeCategories: []
+      alternativeCategories: [],
     };
   }
 
-  private combineSuggestions(suggestions: CategorySuggestion[]): CategorySuggestion {
+  private combineSuggestions(
+    suggestions: CategorySuggestion[]
+  ): CategorySuggestion {
     if (suggestions.length === 0) {
       return {
         category: { primary: 'other' },
         confidence: 0.5,
         reasoning: ['No classification suggestions available'],
-        alternativeCategories: []
+        alternativeCategories: [],
       };
     }
 
     // Weighted voting based on confidence
-    const categoryScores: Map<string, { score: number; reasons: string[] }> = new Map();
+    const categoryScores: Map<string, { reasons: string[]; score: number }> =
+      new Map();
 
     for (const suggestion of suggestions) {
       const key = `${suggestion.category.primary}:${suggestion.category.secondary || ''}`;
@@ -542,19 +676,23 @@ export class DocumentCategorizer {
     }
 
     // Find the winner
-    const winner = Array.from(categoryScores.entries())
-      .reduce((a, b) => a[1].score > b[1].score ? a : b);
+    const winner = Array.from(categoryScores.entries()).reduce((a, b) =>
+      a[1].score > b[1].score ? a : b
+    );
 
     const [primary, secondary] = winner[0].split(':');
 
     return {
       category: {
         primary: primary as DocumentCategory['primary'],
-        secondary: secondary || undefined
+        secondary: secondary || undefined,
       },
       confidence: Math.min(winner[1].score / suggestions.length, 1),
-      reasoning: [`Combined classification from ${suggestions.length} methods`, ...winner[1].reasons],
-      alternativeCategories: []
+      reasoning: [
+        `Combined classification from ${suggestions.length} methods`,
+        ...winner[1].reasons,
+      ],
+      alternativeCategories: [],
     };
   }
 
@@ -605,7 +743,10 @@ export class DocumentCategorizer {
     let matches = 0;
 
     for (const keyword of keywords) {
-      const regex = new RegExp(`\\b${keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'g');
+      const regex = new RegExp(
+        `\\b${keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`,
+        'g'
+      );
       const keywordMatches = text.match(regex);
       if (keywordMatches) {
         matches += keywordMatches.length;
@@ -628,7 +769,10 @@ export class DocumentCategorizer {
 
   private evaluateSemanticPattern(pattern: string, text: string): number {
     // Simplified semantic matching - in production would use embeddings/NLP
-    const semanticKeywords = pattern.toLowerCase().split(',').map(k => k.trim());
+    const semanticKeywords = pattern
+      .toLowerCase()
+      .split(',')
+      .map(k => k.trim());
     let score = 0;
 
     for (const keyword of semanticKeywords) {
@@ -640,7 +784,10 @@ export class DocumentCategorizer {
     return Math.min(score, 3);
   }
 
-  private evaluateStructurePattern(pattern: string, analysis?: DocumentAnalysisResult): number {
+  private evaluateStructurePattern(
+    pattern: string,
+    analysis?: DocumentAnalysisResult
+  ): number {
     if (!analysis) return 0;
 
     // Evaluate document structure patterns
@@ -658,7 +805,10 @@ export class DocumentCategorizer {
     }
   }
 
-  private evaluateMetadataPattern(pattern: string, analysis?: DocumentAnalysisResult): number {
+  private evaluateMetadataPattern(
+    pattern: string,
+    analysis?: DocumentAnalysisResult
+  ): number {
     if (!analysis?.metadata) return 0;
 
     const metadata = analysis.metadata;
@@ -690,20 +840,28 @@ export class DocumentCategorizer {
     return 0;
   }
 
-  private extractContentBasedTags(content: string): AutoTaggingResult['generatedTags'] {
+  private extractContentBasedTags(
+    content: string
+  ): AutoTaggingResult['generatedTags'] {
     const tags: AutoTaggingResult['generatedTags'] = [];
     const contentLower = content.toLowerCase();
 
     // Common document indicators
     const indicators = {
-      'confidential': { pattern: /confidential|private|sensitive/g, confidence: 0.9 },
-      'urgent': { pattern: /urgent|immediate|priority|asap/g, confidence: 0.8 },
-      'expires': { pattern: /expires?|expir(ation|y)|due date|deadline/g, confidence: 0.85 },
-      'signed': { pattern: /signed|signature|executed/g, confidence: 0.8 },
-      'annual': { pattern: /annual|yearly|year-end/g, confidence: 0.7 },
-      'monthly': { pattern: /monthly|month-end/g, confidence: 0.7 },
-      'draft': { pattern: /draft|preliminary|proposed/g, confidence: 0.75 },
-      'final': { pattern: /final|executed|completed/g, confidence: 0.8 }
+      confidential: {
+        pattern: /confidential|private|sensitive/g,
+        confidence: 0.9,
+      },
+      urgent: { pattern: /urgent|immediate|priority|asap/g, confidence: 0.8 },
+      expires: {
+        pattern: /expires?|expir(ation|y)|due date|deadline/g,
+        confidence: 0.85,
+      },
+      signed: { pattern: /signed|signature|executed/g, confidence: 0.8 },
+      annual: { pattern: /annual|yearly|year-end/g, confidence: 0.7 },
+      monthly: { pattern: /monthly|month-end/g, confidence: 0.7 },
+      draft: { pattern: /draft|preliminary|proposed/g, confidence: 0.75 },
+      final: { pattern: /final|executed|completed/g, confidence: 0.8 },
     };
 
     for (const [tag, { pattern, confidence }] of Object.entries(indicators)) {
@@ -713,7 +871,7 @@ export class DocumentCategorizer {
           tag,
           confidence,
           source: 'content',
-          reasoning: `Found ${matches.length} occurrences of "${tag}" indicators`
+          reasoning: `Found ${matches.length} occurrences of "${tag}" indicators`,
         });
       }
     }
@@ -721,7 +879,9 @@ export class DocumentCategorizer {
     return tags;
   }
 
-  private extractAnalysisBasedTags(analysis: DocumentAnalysisResult): AutoTaggingResult['generatedTags'] {
+  private extractAnalysisBasedTags(
+    analysis: DocumentAnalysisResult
+  ): AutoTaggingResult['generatedTags'] {
     const tags: AutoTaggingResult['generatedTags'] = [];
 
     // Importance level tags
@@ -729,7 +889,7 @@ export class DocumentCategorizer {
       tag: `importance-${analysis.importanceLevel}`,
       confidence: 0.9,
       source: 'metadata',
-      reasoning: `Document importance level determined by AI analysis`
+      reasoning: `Document importance level determined by AI analysis`,
     });
 
     // Sensitivity level tags
@@ -737,7 +897,7 @@ export class DocumentCategorizer {
       tag: `sensitivity-${analysis.sensitivityLevel}`,
       confidence: 0.85,
       source: 'metadata',
-      reasoning: `Document sensitivity level based on content analysis`
+      reasoning: `Document sensitivity level based on content analysis`,
     });
 
     // PII detection tags
@@ -746,7 +906,7 @@ export class DocumentCategorizer {
         tag: 'contains-pii',
         confidence: 0.95,
         source: 'metadata',
-        reasoning: `Document contains ${analysis.piiDetected.length} PII elements`
+        reasoning: `Document contains ${analysis.piiDetected.length} PII elements`,
       });
     }
 
@@ -756,7 +916,7 @@ export class DocumentCategorizer {
         tag: 'time-sensitive',
         confidence: 0.8,
         source: 'metadata',
-        reasoning: `Document contains ${analysis.keyInformation.importantDates.length} important dates`
+        reasoning: `Document contains ${analysis.keyInformation.importantDates.length} important dates`,
       });
     }
 
@@ -765,14 +925,17 @@ export class DocumentCategorizer {
         tag: 'financial-amounts',
         confidence: 0.85,
         source: 'metadata',
-        reasoning: `Document contains ${analysis.keyInformation.amounts.length} financial amounts`
+        reasoning: `Document contains ${analysis.keyInformation.amounts.length} financial amounts`,
       });
     }
 
     return tags;
   }
 
-  private extractMetadataBasedTags(content: string, analysis?: DocumentAnalysisResult): AutoTaggingResult['generatedTags'] {
+  private extractMetadataBasedTags(
+    content: string,
+    analysis?: DocumentAnalysisResult
+  ): AutoTaggingResult['generatedTags'] {
     const tags: AutoTaggingResult['generatedTags'] = [];
 
     if (analysis?.metadata) {
@@ -785,14 +948,14 @@ export class DocumentCategorizer {
             tag: 'single-page',
             confidence: 0.9,
             source: 'metadata',
-            reasoning: 'Document is a single page'
+            reasoning: 'Document is a single page',
           });
         } else if (metadata.pageCount > 10) {
           tags.push({
             tag: 'multi-page',
             confidence: 0.9,
             source: 'metadata',
-            reasoning: `Document has ${metadata.pageCount} pages`
+            reasoning: `Document has ${metadata.pageCount} pages`,
           });
         }
       }
@@ -803,7 +966,7 @@ export class DocumentCategorizer {
           tag: `language-${metadata.language}`,
           confidence: 0.95,
           source: 'metadata',
-          reasoning: `Document language detected as ${metadata.language}`
+          reasoning: `Document language detected as ${metadata.language}`,
         });
       }
     }
@@ -811,7 +974,9 @@ export class DocumentCategorizer {
     return tags;
   }
 
-  private deduplicateTags(tags: AutoTaggingResult['generatedTags']): AutoTaggingResult['generatedTags'] {
+  private deduplicateTags(
+    tags: AutoTaggingResult['generatedTags']
+  ): AutoTaggingResult['generatedTags'] {
     const tagMap = new Map<string, AutoTaggingResult['generatedTags'][0]>();
 
     for (const tag of tags) {
@@ -824,7 +989,9 @@ export class DocumentCategorizer {
     return Array.from(tagMap.values());
   }
 
-  private calculateTaggingConfidence(tags: AutoTaggingResult['generatedTags']): number {
+  private calculateTaggingConfidence(
+    tags: AutoTaggingResult['generatedTags']
+  ): number {
     if (tags.length === 0) return 0;
 
     const totalConfidence = tags.reduce((sum, tag) => sum + tag.confidence, 0);
@@ -837,13 +1004,16 @@ export class DocumentCategorizer {
     const str = content + (filename || '');
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32-bit integer
     }
     return hash.toString();
   }
 
-  private updateLearningModel(content: string, suggestion: CategorySuggestion): void {
+  private updateLearningModel(
+    content: string,
+    suggestion: CategorySuggestion
+  ): void {
     // Simple learning implementation - in production would use more sophisticated ML
     // For now, just update statistics
     this.statistics.totalDocuments++;
@@ -883,7 +1053,10 @@ export const categorizeDocument = (content: string, filename?: string) => {
   return documentCategorizer.categorizeDocument(content, filename);
 };
 
-export const generateDocumentTags = (content: string, category?: DocumentCategory) => {
+export const generateDocumentTags = (
+  content: string,
+  category?: DocumentCategory
+) => {
   return documentCategorizer.generateTags(content, category);
 };
 

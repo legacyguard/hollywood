@@ -4,9 +4,9 @@
  */
 
 interface StorageItem<T = any> {
-  value: T;
-  expiresAt?: number;
   encrypted?: boolean;
+  expiresAt?: number;
+  value: T;
 }
 
 class SecureStorage {
@@ -27,7 +27,7 @@ class SecureStorage {
   /**
    * Get data from memory storage
    */
-  async getMemory<T>(key: string): Promise<T | null> {
+  async getMemory<T>(key: string): Promise<null | T> {
     const item = this.memoryStorage.get(key);
 
     if (!item) {
@@ -70,7 +70,7 @@ class SecureStorage {
   /**
    * Get data from local storage
    */
-  async get<T>(key: string): Promise<T | null> {
+  async get<T>(key: string): Promise<null | T> {
     try {
       const storageKey = this.STORAGE_PREFIX + key;
       const stored = localStorage.getItem(storageKey);

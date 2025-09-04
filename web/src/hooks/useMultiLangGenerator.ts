@@ -3,25 +3,25 @@
  * Handles translation and generation of legal documents in multiple languages
  */
 
-import { useState, useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useSupabaseWithClerk } from '@/integrations/supabase/client';
 import { JURISDICTION_CONFIG } from '@/lib/i18n/jurisdictions';
 import { getLegalTerm } from '@/lib/i18n/legal-terminology';
 
 export interface TranslationResult {
-  language: string;
-  text: string;
   confidence: number;
   isLegallyValid: boolean;
+  language: string;
+  text: string;
 }
 
 export interface GenerationOptions {
-  sourceLanguage: string;
-  targetLanguages: string[];
-  documentType: 'will' | 'power_of_attorney' | 'advance_directive' | 'general';
+  documentType: 'advance_directive' | 'general' | 'power_of_attorney' | 'will';
+  includeGlossary: boolean;
   jurisdiction: string;
   preserveLegalTerms: boolean;
-  includeGlossary: boolean;
+  sourceLanguage: string;
+  targetLanguages: string[];
 }
 
 export function useMultiLangGenerator() {
@@ -29,132 +29,140 @@ export function useMultiLangGenerator() {
   const [translations, setTranslations] = useState<TranslationResult[]>([]);
   const createSupabaseClient = useSupabaseWithClerk();
 
-  const generateTranslations = useCallback(async (
-    content: string,
-    options: GenerationOptions
-  ): Promise<TranslationResult[]> => {
-    setIsGenerating(true);
-    const results: TranslationResult[] = [];
+  const generateTranslations = useCallback(
+    async (
+      content: string,
+      options: GenerationOptions
+    ): Promise<TranslationResult[]> => {
+      setIsGenerating(true);
+      const results: TranslationResult[] = [];
 
-    try {
-      await createSupabaseClient();
+      try {
+        await createSupabaseClient();
 
-      // For each target language
-      for (const targetLang of options.targetLanguages) {
-        // Skip if same as source
-        if (targetLang === options.sourceLanguage) {
-          results.push({
-            language: targetLang,
-            text: content,
-            confidence: 1.0,
-            isLegallyValid: true,
-          });
-          continue;
+        // For each target language
+        for (const targetLang of options.targetLanguages) {
+          // Skip if same as source
+          if (targetLang === options.sourceLanguage) {
+            results.push({
+              language: targetLang,
+              text: content,
+              confidence: 1.0,
+              isLegallyValid: true,
+            });
+            continue;
+          }
+
+          // Get jurisdiction-specific legal terms
+          const jurisdictionConfig = JURISDICTION_CONFIG[options.jurisdiction];
+          const legalContext = {
+            jurisdiction: options.jurisdiction,
+            legalSystem: jurisdictionConfig?.legalSystem,
+            requiredClauses: [], // This property doesn't exist in JurisdictionConfig
+          };
+
+          // Call AI translation service (would be actual API in production)
+          const translationResult = await translateLegalDocument(
+            content,
+            options.sourceLanguage,
+            targetLang,
+            options.documentType,
+            legalContext,
+            options.preserveLegalTerms
+          );
+
+          results.push(translationResult);
         }
 
-        // Get jurisdiction-specific legal terms
-        const jurisdictionConfig = JURISDICTION_CONFIG[options.jurisdiction];
-        const legalContext = {
-          jurisdiction: options.jurisdiction,
-          legalSystem: jurisdictionConfig?.legalSystem,
-          requiredClauses: [], // This property doesn't exist in JurisdictionConfig
-        };
-
-        // Call AI translation service (would be actual API in production)
-        const translationResult = await translateLegalDocument(
-          content,
-          options.sourceLanguage,
-          targetLang,
-          options.documentType,
-          legalContext,
-          options.preserveLegalTerms
-        );
-
-        results.push(translationResult);
+        setTranslations(results);
+        return results;
+      } catch (error) {
+        console.error('Error generating translations:', error);
+        throw error;
+      } finally {
+        setIsGenerating(false);
       }
+    },
+    [createSupabaseClient]
+  );
 
-      setTranslations(results);
-      return results;
-    } catch (error) {
-      console.error('Error generating translations:', error);
-      throw error;
-    } finally {
-      setIsGenerating(false);
-    }
-  }, [createSupabaseClient]);
+  const validateTranslation = useCallback(
+    async (
+      translation: string,
+      _language: string,
+      _documentType: string,
+      jurisdiction: string
+    ): Promise<boolean> => {
+      try {
+        // Check for required legal phrases based on jurisdiction
+        const requiredPhrases: string[] = []; // This property doesn't exist in JurisdictionConfig
 
-  const validateTranslation = useCallback(async (
-    translation: string,
-    _language: string,
-    _documentType: string,
-    jurisdiction: string
-  ): Promise<boolean> => {
-    try {
-      // Check for required legal phrases based on jurisdiction
-      const requiredPhrases: string[] = []; // This property doesn't exist in JurisdictionConfig
+        // Basic validation - check if required phrases exist
+        for (const phrase of requiredPhrases) {
+          const translatedTerm = getLegalTerm(phrase, jurisdiction, _language);
+          if (translatedTerm && !translation.includes(translatedTerm)) {
+            console.warn(`Missing required legal phrase: ${phrase}`);
+            return false;
+          }
+        }
 
-      // Basic validation - check if required phrases exist
-      for (const phrase of requiredPhrases) {
-        const translatedTerm = getLegalTerm(phrase, jurisdiction, _language);
-        if (translatedTerm && !translation.includes(translatedTerm)) {
-          console.warn(`Missing required legal phrase: ${phrase}`);
-          return false;
+        return true;
+      } catch (error) {
+        console.error('Error validating translation:', error);
+        return false;
+      }
+    },
+    []
+  );
+
+  const generateGlossary = useCallback(
+    (
+      documentType: string,
+      sourceLanguage: string,
+      targetLanguage: string,
+      jurisdiction: string
+    ): Record<string, string> => {
+      const glossary: Record<string, string> = {};
+
+      // Get common legal terms for the document type
+      const commonTerms = getCommonLegalTerms(documentType);
+
+      for (const term of commonTerms) {
+        const sourceTerm = getLegalTerm(term, jurisdiction, sourceLanguage);
+        const targetTerm = getLegalTerm(term, jurisdiction, targetLanguage);
+
+        if (sourceTerm && targetTerm) {
+          glossary[sourceTerm] = targetTerm;
         }
       }
 
-      return true;
-    } catch (error) {
-      console.error('Error validating translation:', error);
-      return false;
-    }
-  }, []);
+      return glossary;
+    },
+    []
+  );
 
-  const generateGlossary = useCallback((
-    documentType: string,
-    sourceLanguage: string,
-    targetLanguage: string,
-    jurisdiction: string
-  ): Record<string, string> => {
-    const glossary: Record<string, string> = {};
+  const formatForJurisdiction = useCallback(
+    (content: string, jurisdiction: string, _language: string): string => {
+      const config = JURISDICTION_CONFIG[jurisdiction];
+      if (!config) return content;
 
-    // Get common legal terms for the document type
-    const commonTerms = getCommonLegalTerms(documentType);
+      // Apply jurisdiction-specific formatting
+      let formatted = content;
 
-    for (const term of commonTerms) {
-      const sourceTerm = getLegalTerm(term, jurisdiction, sourceLanguage);
-      const targetTerm = getLegalTerm(term, jurisdiction, targetLanguage);
+      // Add jurisdiction header if required
+      const declaration = `This document is governed by the laws of ${config.name}.`;
+      formatted = declaration + '\n\n' + formatted;
 
-      if (sourceTerm && targetTerm) {
-        glossary[sourceTerm] = targetTerm;
-      }
-    }
+      // Format dates according to jurisdiction
+      formatted = formatDates(formatted, config.dateLocale);
 
-    return glossary;
-  }, []);
+      // Format currency
+      formatted = formatCurrency(formatted, config.currency);
 
-  const formatForJurisdiction = useCallback((
-    content: string,
-    jurisdiction: string,
-    _language: string
-  ): string => {
-    const config = JURISDICTION_CONFIG[jurisdiction];
-    if (!config) return content;
-
-    // Apply jurisdiction-specific formatting
-    let formatted = content;
-
-    // Add jurisdiction header if required
-    const declaration = `This document is governed by the laws of ${config.name}.`;
-    formatted = declaration + '\n\n' + formatted;
-
-    // Format dates according to jurisdiction
-    formatted = formatDates(formatted, config.dateLocale);
-
-    // Format currency
-    formatted = formatCurrency(formatted, config.currency);
-
-    return formatted;
-  }, []);
+      return formatted;
+    },
+    []
+  );
 
   return {
     isGenerating,
@@ -188,7 +196,13 @@ async function translateLegalDocument(
 function getCommonLegalTerms(documentType: string): string[] {
   const terms: Record<string, string[]> = {
     will: ['testator', 'beneficiary', 'executor', 'heir', 'bequest', 'estate'],
-    power_of_attorney: ['principal', 'agent', 'authority', 'capacity', 'revocation'],
+    power_of_attorney: [
+      'principal',
+      'agent',
+      'authority',
+      'capacity',
+      'revocation',
+    ],
     advance_directive: ['patient', 'healthcare_proxy', 'treatment', 'consent'],
     general: ['party', 'agreement', 'obligation', 'liability'],
   };
@@ -199,7 +213,7 @@ function getCommonLegalTerms(documentType: string): string[] {
 function formatDates(content: string, dateFormat: string): string {
   // Simple date formatting - would be more sophisticated
   const dateRegex = /\d{4}-\d{2}-\d{2}/g;
-  return content.replace(dateRegex, (match) => {
+  return content.replace(dateRegex, match => {
     const date = new Date(match);
     if (dateFormat === 'DD/MM/YYYY') {
       return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;

@@ -1,36 +1,36 @@
 export interface Guardian {
-  id: string;
-  user_id: string;
-  name: string;
-  email: string;
-  phone?: string | null;
-  relationship?: string | null;
-  notes?: string | null;
-  is_active: boolean;
+  can_access_financial_docs: boolean;
+  can_access_health_docs: boolean;
   // Family Shield permissions
   can_trigger_emergency: boolean;
-  can_access_health_docs: boolean;
-  can_access_financial_docs: boolean;
+  created_at: string;
+  email: string;
+  emergency_contact_priority: number;
+  id: string;
+  is_active: boolean;
   is_child_guardian: boolean;
   is_will_executor: boolean;
-  emergency_contact_priority: number;
-  created_at: string;
+  name: string;
+  notes?: null | string;
+  phone?: null | string;
+  relationship?: null | string;
   updated_at: string;
+  user_id: string;
 }
 
 export interface CreateGuardianRequest {
-  name: string;
-  email: string;
-  phone?: string;
-  relationship?: string;
-  notes?: string;
+  can_access_financial_docs?: boolean;
+  can_access_health_docs?: boolean;
   // Family Shield permissions
   can_trigger_emergency?: boolean;
-  can_access_health_docs?: boolean;
-  can_access_financial_docs?: boolean;
+  email: string;
+  emergency_contact_priority?: number;
   is_child_guardian?: boolean;
   is_will_executor?: boolean;
-  emergency_contact_priority?: number;
+  name: string;
+  notes?: string;
+  phone?: string;
+  relationship?: string;
 }
 
 export interface UpdateGuardianRequest extends Partial<CreateGuardianRequest> {
@@ -38,19 +38,19 @@ export interface UpdateGuardianRequest extends Partial<CreateGuardianRequest> {
 }
 
 export type GuardianRelationship =
-  | 'spouse'
-  | 'partner'
   | 'child'
-  | 'parent'
-  | 'sibling'
+  | 'financial_advisor'
   | 'friend'
   | 'lawyer'
-  | 'financial_advisor'
-  | 'other';
+  | 'other'
+  | 'parent'
+  | 'partner'
+  | 'sibling'
+  | 'spouse';
 
 export const GUARDIAN_RELATIONSHIPS: {
-  value: GuardianRelationship;
   label: string;
+  value: GuardianRelationship;
 }[] = [
   { value: 'spouse', label: 'Spouse' },
   { value: 'partner', label: 'Partner' },
@@ -65,77 +65,77 @@ export const GUARDIAN_RELATIONSHIPS: {
 
 // Family Shield types
 export interface FamilyShieldSettings {
+  created_at: string;
   id: string;
-  user_id: string;
   inactivity_period_months: number;
-  required_guardians_for_activation: number;
   is_shield_enabled: boolean;
   last_activity_check: string;
-  shield_status: 'inactive' | 'pending_verification' | 'active';
-  created_at: string;
+  required_guardians_for_activation: number;
+  shield_status: 'active' | 'inactive' | 'pending_verification';
   updated_at: string;
+  user_id: string;
 }
 
 export interface CreateFamilyShieldSettingsRequest {
   inactivity_period_months?: number;
-  required_guardians_for_activation?: number;
   is_shield_enabled?: boolean;
+  required_guardians_for_activation?: number;
 }
 
 export type FamilyShieldActivationType =
+  | 'admin_override'
   | 'inactivity_detected'
-  | 'manual_guardian'
-  | 'admin_override';
-export type ActivationStatus = 'pending' | 'confirmed' | 'rejected' | 'expired';
+  | 'manual_guardian';
+export type ActivationStatus = 'confirmed' | 'expired' | 'pending' | 'rejected';
 
 export interface FamilyShieldActivationLog {
-  id: string;
-  user_id: string;
-  guardian_id?: string | null;
   activation_type: FamilyShieldActivationType;
-  status: ActivationStatus;
-  verification_token: string;
-  token_expires_at: string;
-  guardian_email?: string | null;
-  guardian_name?: string | null;
-  notes?: string | null;
-  ip_address?: string | null;
-  user_agent?: string | null;
+  confirmed_at?: null | string;
   created_at: string;
-  confirmed_at?: string | null;
-  expired_at?: string | null;
+  expired_at?: null | string;
+  guardian_email?: null | string;
+  guardian_id?: null | string;
+  guardian_name?: null | string;
+  id: string;
+  ip_address?: null | string;
+  notes?: null | string;
+  status: ActivationStatus;
+  token_expires_at: string;
+  user_agent?: null | string;
+  user_id: string;
+  verification_token: string;
 }
 
 export type ManualEntryType =
-  | 'important_contacts'
-  | 'financial_access'
-  | 'property_management'
-  | 'funeral_wishes'
-  | 'document_locations'
+  | 'child_care_instructions'
   | 'custom_instruction'
+  | 'document_locations'
   | 'emergency_procedure'
-  | 'child_care_instructions';
+  | 'financial_access'
+  | 'funeral_wishes'
+  | 'important_contacts'
+  | 'property_management';
 
 export interface FamilyGuidanceEntry {
-  id: string;
-  user_id: string;
-  entry_type: ManualEntryType;
-  title: string;
   content: string;
+  created_at: string;
+  entry_type: ManualEntryType;
+  id: string;
+  is_auto_generated: boolean;
   is_completed: boolean;
   priority: number;
-  tags: string[];
   related_document_ids: string[];
-  is_auto_generated: boolean;
-  created_at: string;
+  tags: string[];
+  title: string;
   updated_at: string;
+  user_id: string;
 }
 
 export interface CreateGuidanceEntryRequest {
-  entry_type: ManualEntryType;
-  title: string;
   content: string;
+  entry_type: ManualEntryType;
   priority?: number;
-  tags?: string[];
   related_document_ids?: string[];
+  tags?: string[];
+  title: string;
 }

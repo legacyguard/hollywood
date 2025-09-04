@@ -4,293 +4,322 @@
  * professionals, and family members working together on estate planning.
  */
 
-export type WorkspaceType = 'family' | 'professional' | 'legal' | 'financial' | 'mixed';
-export type MemberRole = 'owner' | 'admin' | 'advisor' | 'contributor' | 'viewer';
-export type PermissionType = 'read' | 'write' | 'comment' | 'share' | 'admin';
-export type CollaborationType = 'synchronous' | 'asynchronous';
+export type WorkspaceType =
+  | 'family'
+  | 'financial'
+  | 'legal'
+  | 'mixed'
+  | 'professional';
+export type MemberRole =
+  | 'admin'
+  | 'advisor'
+  | 'contributor'
+  | 'owner'
+  | 'viewer';
+export type PermissionType = 'admin' | 'comment' | 'read' | 'share' | 'write';
+export type CollaborationType = 'asynchronous' | 'synchronous';
 export type ActivityType =
-  | 'document_created'
-  | 'document_updated'
+  | 'approval_granted'
+  | 'approval_requested'
   | 'comment_added'
+  | 'discussion_started'
+  | 'document_created'
+  | 'document_shared'
+  | 'document_updated'
+  | 'meeting_scheduled'
+  | 'member_added'
   | 'task_assigned'
   | 'task_completed'
-  | 'member_added'
-  | 'workspace_shared'
-  | 'meeting_scheduled'
-  | 'approval_requested'
-  | 'approval_granted';
+  | 'task_created'
+  | 'workspace_created'
+  | 'workspace_shared';
 
 // Missing type definitions
 export interface WorkspaceIntegration {
   id: string;
-  type: string;
   name: string;
   settings: Record<string, any>;
   status: 'active' | 'inactive';
+  type: string;
 }
 
 export interface WorkspaceTemplate {
   id: string;
   name: string;
-  type: string;
   structure: Record<string, any>;
+  type: string;
 }
 
 export interface UserInfo {
+  avatar?: string;
+  email: string;
   id: string;
   name: string;
-  email: string;
-  avatar?: string;
-  title?: string;
   organization?: string;
+  title?: string;
 }
 
 export interface AvailabilitySchedule {
-  timezone: string;
-  workingHours: Array<{
-    day: string;
-    start: string;
-    end: string;
-  }>;
-  unavailable?: Array<{
-    start: string;
+  breaks?: Array<{
     end: string;
     reason?: string;
+    start: string;
+  }>;
+  timezone: string;
+  unavailable?: Array<{
+    end: string;
+    reason?: string;
+    start: string;
+  }>;
+  vacations?: Array<{
+    end: string;
+    reason?: string;
+    start: string;
+  }>;
+  workingHours: Array<{
+    day: string;
+    end: string;
+    start: string;
   }>;
 }
 
 export interface ContributionStats {
-  documentsCreated: number;
-  documentsReviewed: number;
-  tasksCompleted: number;
-  meetingsAttended: number;
   commentsAdded: number;
+  documentsCreated?: number;
+  documentsReviewed?: number;
+  documentsShared?: number;
+  hoursContributed?: number;
+  lastContribution?: string;
+  meetingsAttended?: number;
+  meetingsOrganized?: number;
+  reviewsCompleted?: number;
+  tasksCompleted: number;
 }
 
 export interface DocumentPermissions {
-  canRead: string[];
-  canWrite: string[];
   canComment: string[];
-  canShare: string[];
   canDelete: string[];
+  canRead: string[];
+  canShare: string[];
+  canWrite: string[];
 }
 
 export interface DocumentCollaborator {
-  userId: string;
-  role: string;
-  permissions: string[];
   joinedAt: string;
+  permissions: string[];
+  role: string;
+  userId: string;
 }
 
 export interface DocumentVersion {
-  id: string;
-  version: string;
-  createdBy: string;
-  createdAt: string;
   changes: string[];
+  createdAt: string;
+  createdBy: string;
+  id: string;
   size: number;
+  version: string;
 }
 
 export interface DocumentComment {
-  id: string;
-  userId: string;
   content: string;
+  createdAt: string;
+  id: string;
   parentId?: string;
   resolved: boolean;
-  createdAt: string;
   updatedAt: string;
+  userId: string;
 }
 
 export interface DocumentApproval {
-  id: string;
-  approverId: string;
-  status: 'pending' | 'approved' | 'rejected';
-  comments?: string;
   approvedAt?: string;
+  approverId: string;
+  comments?: string;
+  id: string;
+  status: 'approved' | 'pending' | 'rejected';
 }
 
 export interface TaskMilestone {
-  id: string;
-  name: string;
+  completedAt?: string;
   description: string;
   dueDate: string;
-  status: 'pending' | 'completed';
-  completedAt?: string;
+  id: string;
+  name: string;
+  status: 'completed' | 'pending';
 }
 
 export interface TaskComment {
-  id: string;
-  userId: string;
   content: string;
   createdAt: string;
+  id: string;
+  userId: string;
 }
 
 export interface TaskAttachment {
   id: string;
   name: string;
-  type: string;
   size: number;
-  url: string;
-  uploadedBy: string;
+  type: string;
   uploadedAt: string;
+  uploadedBy: string;
+  url: string;
 }
 
 export interface ChecklistItem {
+  completed: boolean;
+  completedAt?: string;
+  completedBy?: string;
   id: string;
   title: string;
-  completed: boolean;
-  completedBy?: string;
-  completedAt?: string;
 }
 
 export interface Reminder {
   id: string;
-  type: 'email' | 'notification';
+  recipients: string[];
   scheduledFor: string;
   sent: boolean;
-  recipients: string[];
+  type: 'email' | 'notification';
 }
 
 export interface MeetingParticipant {
-  userId: string;
-  role: 'organizer' | 'presenter' | 'participant';
-  status: 'invited' | 'accepted' | 'declined' | 'attended';
   joinedAt?: string;
   leftAt?: string;
+  role: 'organizer' | 'participant' | 'presenter';
+  status: 'accepted' | 'attended' | 'declined' | 'invited';
+  userId: string;
 }
 
 export interface AgendaItem {
-  id: string;
-  title: string;
   description: string;
   duration: number;
-  presenter?: string;
+  id: string;
   order: number;
+  presenter?: string;
+  title: string;
 }
 
 export interface MeetingRecording {
-  id: string;
-  url: string;
-  duration: number;
-  size: number;
   createdAt: string;
+  duration: number;
+  id: string;
+  size: number;
+  url: string;
 }
 
 export interface MeetingNote {
-  id: string;
-  content: string;
   author: string;
+  content: string;
+  id: string;
   timestamp: string;
 }
 
 export interface FollowUpAction {
-  id: string;
   action: string;
   assignedTo: string;
   dueDate: string;
-  status: 'pending' | 'completed';
+  id: string;
+  status: 'completed' | 'pending';
 }
 
 export interface DiscussionParticipant {
-  userId: string;
   joinedAt: string;
   lastViewedAt: string;
   messageCount: number;
+  userId: string;
 }
 
 export interface DiscussionMessage {
-  id: string;
-  userId: string;
-  content: string;
-  parentId?: string;
   attachments: string[];
-  reactions: Record<string, string[]>;
+  content: string;
   createdAt: string;
   editedAt?: string;
+  id: string;
+  parentId?: string;
+  reactions: Record<string, string[]>;
+  userId: string;
 }
 
 export interface Poll {
+  closedAt?: string;
+  createdAt: string;
+  createdBy: string;
   id: string;
-  question: string;
   options: Array<{
     id: string;
     text: string;
     votes: string[];
   }>;
-  createdBy: string;
-  createdAt: string;
-  closedAt?: string;
+  question: string;
 }
 
 export interface Decision {
-  id: string;
-  title: string;
-  description: string;
-  madeBy: string[];
   date: string;
-  rationale: string;
+  description: string;
+  id: string;
   impact: string;
+  madeBy: string[];
+  rationale: string;
+  title: string;
 }
 
 export interface ApprovalStep {
+  approvalType: 'all' | 'any' | 'majority';
+  approvers: string[];
+  comments?: string;
+  completedAt?: string;
   id: string;
   order: number;
-  approvers: string[];
-  approvalType: 'any' | 'all' | 'majority';
-  status: 'pending' | 'approved' | 'rejected';
-  completedAt?: string;
-  comments?: string;
+  status: 'approved' | 'pending' | 'rejected';
 }
 
 export interface ApprovalNotification {
   id: string;
-  type: 'email' | 'in_app' | 'sms';
   recipient: string;
   sentAt: string;
-  status: 'sent' | 'failed';
+  status: 'failed' | 'sent';
+  type: 'email' | 'in_app' | 'sms';
 }
 
 export interface EscalationRule {
-  id: string;
+  afterHours: number;
   condition: string;
   escalateTo: string;
-  afterHours: number;
+  id: string;
   triggered: boolean;
 }
 
 export interface ApprovalAudit {
-  id: string;
   action: string;
   actorId: string;
-  timestamp: string;
   details: Record<string, any>;
+  id: string;
+  timestamp: string;
 }
 
 export interface NotificationSettings {
   email: boolean;
-  push: boolean;
+  frequency: 'daily' | 'hourly' | 'real_time' | 'weekly';
   inApp: boolean;
-  frequency: 'real_time' | 'hourly' | 'daily' | 'weekly';
+  push: boolean;
 }
 
 export interface WorkspaceSecuritySettings {
-  requireMFA: boolean;
-  sessionTimeout: number;
   auditLogging: boolean;
   encryptionRequired: boolean;
+  requireMFA: boolean;
+  sessionTimeout: number;
 }
 
 export interface IntegrationSettings {
   calendarSync: boolean;
-  emailSync: boolean;
   cloudStorage: boolean;
+  emailSync: boolean;
 }
 
 export interface WorkspaceBranding {
+  customDomain?: string;
   logo?: string;
   primaryColor?: string;
   secondaryColor?: string;
-  customDomain?: string;
 }
 
 export interface CollaborationMetrics {
@@ -301,274 +330,274 @@ export interface CollaborationMetrics {
 }
 
 export interface ProductivityMetrics {
-  tasksCompleted: number;
+  decisionsReached: number;
   documentsReviewed: number;
   meetingsHeld: number;
-  decisionsReached: number;
+  tasksCompleted: number;
 }
 
 export interface EngagementMetrics {
   activeMembers: number;
-  messagesSent: number;
   commentsAdded: number;
   hoursSpent: number;
+  messagesSent: number;
 }
 
 export interface TimeRange {
-  start: string;
   end: string;
+  start: string;
 }
 
 export interface ReviewRecommendation {
-  id: string;
   category: string;
+  id: string;
+  priority: 'high' | 'low' | 'medium';
   recommendation: string;
-  priority: 'low' | 'medium' | 'high';
 }
 
 export interface CollaborationNotification {
   id: string;
-  userId: string;
-  type: string;
   message: string;
-  timestamp: string;
   read: boolean;
+  timestamp: string;
+  type: string;
+  userId: string;
 }
 
 export interface Workspace {
-  id: string;
-  name: string;
-  description: string;
-  type: WorkspaceType;
-  ownerId: string;
-  organizationId?: string;
-  members: WorkspaceMember[];
-  documents: WorkspaceDocument[];
-  tasks: CollaborationTask[];
-  meetings: VirtualMeeting[];
-  discussions: Discussion[];
-  approvalWorkflows: ApprovalWorkflow[];
-  settings: WorkspaceSettings;
   analytics: WorkspaceAnalytics;
-  integrations: WorkspaceIntegration[];
-  templates: WorkspaceTemplate[];
-  status: 'active' | 'archived' | 'suspended';
+  approvalWorkflows: ApprovalWorkflow[];
   createdAt: string;
-  updatedAt: string;
+  description: string;
+  discussions: Discussion[];
+  documents: WorkspaceDocument[];
+  id: string;
+  integrations: WorkspaceIntegration[];
   lastActivity: string;
+  meetings: VirtualMeeting[];
+  members: WorkspaceMember[];
+  name: string;
+  organizationId?: string;
+  ownerId: string;
+  settings: WorkspaceSettings;
+  status: 'active' | 'archived' | 'suspended';
+  tasks: CollaborationTask[];
+  templates: WorkspaceTemplate[];
+  type: WorkspaceType;
+  updatedAt: string;
 }
 
 export interface WorkspaceMember {
-  id: string;
-  userId: string;
-  workspaceId: string;
-  userInfo: UserInfo;
-  role: MemberRole;
-  permissions: PermissionType[];
-  specializations: string[];
   availability: AvailabilitySchedule;
-  preferences: CollaborationPreferences;
   contributions: ContributionStats;
-  invitedBy: string;
+  id: string;
   invitedAt: string;
+  invitedBy: string;
   joinedAt?: string;
   lastActive: string;
-  status: 'invited' | 'active' | 'inactive' | 'removed';
+  permissions: PermissionType[];
+  preferences: CollaborationPreferences;
+  role: MemberRole;
+  specializations: string[];
+  status: 'active' | 'inactive' | 'invited' | 'removed';
+  userId: string;
+  userInfo: UserInfo;
+  workspaceId: string;
 }
 
 export interface WorkspaceDocument {
-  id: string;
+  approvals: DocumentApproval[];
+  category: string;
+  collaborators: DocumentCollaborator[];
+  comments: DocumentComment[];
   documentId: string;
-  workspaceId: string;
+  dueDate?: string;
+  id: string;
+  lastModified: string;
+  path: string;
+  permissions: DocumentPermissions;
+  priority: 'high' | 'low' | 'medium' | 'urgent';
+  reviews: DocumentReview[];
+  sharedAt: string;
+  sharedBy: string;
+  status: 'approved' | 'archived' | 'draft' | 'in_review';
+  tags: string[];
   title: string;
   type: string;
-  category: string;
-  path: string;
-  sharedBy: string;
-  permissions: DocumentPermissions;
-  collaborators: DocumentCollaborator[];
   versions: DocumentVersion[];
-  comments: DocumentComment[];
-  reviews: DocumentReview[];
-  approvals: DocumentApproval[];
-  status: 'draft' | 'in_review' | 'approved' | 'archived';
-  priority: 'low' | 'medium' | 'high' | 'urgent';
-  tags: string[];
-  dueDate?: string;
-  sharedAt: string;
-  lastModified: string;
+  workspaceId: string;
 }
 
 export interface CollaborationTask {
-  id: string;
-  workspaceId: string;
-  title: string;
-  description: string;
-  category: string;
-  priority: 'low' | 'medium' | 'high' | 'urgent';
-  status: 'pending' | 'in_progress' | 'review' | 'completed' | 'cancelled';
-  assignedTo: string[];
-  assignedBy: string;
-  dependencies: string[];
-  relatedDocuments: string[];
-  estimatedHours: number;
   actualHours?: number;
-  dueDate: string;
-  completedDate?: string;
-  milestones: TaskMilestone[];
-  comments: TaskComment[];
+  assignedBy: string;
+  assignedTo: string[];
   attachments: TaskAttachment[];
+  category: string;
   checklist: ChecklistItem[];
-  reminders: Reminder[];
+  comments: TaskComment[];
+  completedDate?: string;
   createdAt: string;
+  dependencies: string[];
+  description: string;
+  dueDate: string;
+  estimatedHours: number;
+  id: string;
+  milestones: TaskMilestone[];
+  priority: 'high' | 'low' | 'medium' | 'urgent';
+  relatedDocuments: string[];
+  reminders: Reminder[];
+  status: 'cancelled' | 'completed' | 'in_progress' | 'pending' | 'review';
+  title: string;
   updatedAt: string;
+  workspaceId: string;
 }
 
 export interface VirtualMeeting {
-  id: string;
-  workspaceId: string;
-  title: string;
+  agenda: AgendaItem[];
+  createdAt: string;
   description: string;
-  type: 'planning' | 'review' | 'consultation' | 'presentation' | 'training';
+  documents: string[];
+  followUps: FollowUpAction[];
+  id: string;
+  meetingLink?: string;
+  notes: MeetingNote[];
   organizer: string;
   participants: MeetingParticipant[];
-  scheduledStart: string;
-  scheduledEnd: string;
-  timezone: string;
-  meetingLink?: string;
   passcode?: string;
-  agenda: AgendaItem[];
-  documents: string[];
   recordings: MeetingRecording[];
-  notes: MeetingNote[];
-  followUps: FollowUpAction[];
-  status: 'scheduled' | 'in_progress' | 'completed' | 'cancelled';
-  createdAt: string;
+  scheduledEnd: string;
+  scheduledStart: string;
+  status: 'cancelled' | 'completed' | 'in_progress' | 'scheduled';
+  timezone: string;
+  title: string;
+  type: 'consultation' | 'planning' | 'presentation' | 'review' | 'training';
   updatedAt: string;
+  workspaceId: string;
 }
 
 export interface Discussion {
-  id: string;
-  workspaceId: string;
-  title: string;
-  description: string;
   category: string;
-  startedBy: string;
-  participants: DiscussionParticipant[];
+  createdAt: string;
+  decisions: Decision[];
+  description: string;
+  id: string;
+  lastMessage: string;
   messages: DiscussionMessage[];
-  relatedDocuments: string[];
-  relatedTasks: string[];
-  priority: 'low' | 'medium' | 'high';
-  status: 'open' | 'resolved' | 'closed';
-  tags: string[];
+  participants: DiscussionParticipant[];
   pinnedMessages: string[];
   pollsAndSurveys: Poll[];
-  decisions: Decision[];
-  createdAt: string;
+  priority: 'high' | 'low' | 'medium';
+  relatedDocuments: string[];
+  relatedTasks: string[];
+  startedBy: string;
+  status: 'closed' | 'open' | 'resolved';
+  tags: string[];
+  title: string;
   updatedAt: string;
-  lastMessage: string;
+  workspaceId: string;
 }
 
 export interface ApprovalWorkflow {
-  id: string;
-  workspaceId: string;
-  name: string;
+  auditTrail: ApprovalAudit[];
+  completedAt?: string;
+  currentStep: number;
   description: string;
   documentId: string;
-  steps: ApprovalStep[];
-  currentStep: number;
-  requestedBy: string;
-  requestedAt: string;
-  status: 'pending' | 'in_progress' | 'approved' | 'rejected' | 'cancelled';
-  priority: 'low' | 'medium' | 'high' | 'urgent';
   dueDate?: string;
-  completedAt?: string;
-  notifications: ApprovalNotification[];
   escalation: EscalationRule[];
-  auditTrail: ApprovalAudit[];
+  id: string;
+  name: string;
+  notifications: ApprovalNotification[];
+  priority: 'high' | 'low' | 'medium' | 'urgent';
+  requestedAt: string;
+  requestedBy: string;
+  status: 'approved' | 'cancelled' | 'in_progress' | 'pending' | 'rejected';
+  steps: ApprovalStep[];
+  workspaceId: string;
 }
 
 export interface WorkspaceSettings {
-  visibility: 'private' | 'organization' | 'public';
-  joinPolicy: 'invite_only' | 'request_to_join' | 'open';
+  branding?: WorkspaceBranding;
   defaultPermissions: PermissionType[];
   documentRetentionDays: number;
-  enableVersioning: boolean;
-  enableComments: boolean;
   enableApprovals: boolean;
+  enableComments: boolean;
   enableMeetings: boolean;
+  enableVersioning: boolean;
+  integrationSettings: IntegrationSettings;
+  joinPolicy: 'invite_only' | 'open' | 'request_to_join';
   notificationSettings: NotificationSettings;
   securitySettings: WorkspaceSecuritySettings;
-  integrationSettings: IntegrationSettings;
-  branding?: WorkspaceBranding;
+  visibility: 'organization' | 'private' | 'public';
 }
 
 export interface WorkspaceAnalytics {
-  memberCount: number;
-  documentCount: number;
-  taskCount: number;
-  meetingCount: number;
-  discussionCount: number;
   activityScore: number;
   collaborationMetrics: CollaborationMetrics;
-  productivityMetrics: ProductivityMetrics;
+  discussionCount: number;
+  documentCount: number;
   engagementMetrics: EngagementMetrics;
   lastUpdated: string;
+  meetingCount: number;
+  memberCount: number;
+  productivityMetrics: ProductivityMetrics;
+  taskCount: number;
 }
 
 export interface CollaborationPreferences {
-  communicationStyle: 'formal' | 'casual' | 'mixed';
-  notificationFrequency: 'real_time' | 'hourly' | 'daily' | 'weekly';
-  workingHours: TimeRange;
-  timezone: string;
-  preferredMeetingLength: number;
   collaborationTools: string[];
+  communicationStyle: 'casual' | 'formal' | 'mixed';
   documentFormats: string[];
-  reviewStyle: 'detailed' | 'summary' | 'highlights_only';
+  notificationFrequency: 'daily' | 'hourly' | 'real_time' | 'weekly';
+  preferredMeetingLength: number;
+  reviewStyle: 'detailed' | 'highlights_only' | 'summary';
+  timezone: string;
+  workingHours: TimeRange;
 }
 
 export interface DocumentReview {
-  id: string;
+  completedAt?: string;
   documentId: string;
+  feedback: ReviewFeedback[];
+  id: string;
+  overallRating: number;
+  recommendations: ReviewRecommendation[];
+  requestedAt: string;
   reviewerId: string;
   reviewerName: string;
-  reviewType: 'legal' | 'financial' | 'technical' | 'general';
-  status: 'pending' | 'in_progress' | 'completed';
-  feedback: ReviewFeedback[];
-  recommendations: ReviewRecommendation[];
-  overallRating: number;
+  reviewType: 'financial' | 'general' | 'legal' | 'technical';
+  status: 'completed' | 'in_progress' | 'pending';
   timeSpent: number;
-  requestedAt: string;
-  completedAt?: string;
 }
 
 export interface ReviewFeedback {
-  id: string;
-  section: string;
-  lineNumber?: number;
-  type: 'error' | 'warning' | 'suggestion' | 'question' | 'compliment';
-  severity: 'low' | 'medium' | 'high' | 'critical';
-  description: string;
-  suggestedChange?: string;
-  resolved: boolean;
-  resolvedBy?: string;
-  resolvedAt?: string;
   createdAt: string;
+  description: string;
+  id: string;
+  lineNumber?: number;
+  resolved: boolean;
+  resolvedAt?: string;
+  resolvedBy?: string;
+  section: string;
+  severity: 'critical' | 'high' | 'low' | 'medium';
+  suggestedChange?: string;
+  type: 'compliment' | 'error' | 'question' | 'suggestion' | 'warning';
 }
 
 export interface ActivityFeed {
-  id: string;
-  workspaceId: string;
-  type: ActivityType;
   actorId: string;
   actorName: string;
-  targetId: string;
-  targetType: string;
-  targetName: string;
   description: string;
+  id: string;
   metadata: Record<string, any>;
+  targetId: string;
+  targetName: string;
+  targetType: string;
   timestamp: string;
-  visibility: 'public' | 'members' | 'admins';
+  type: ActivityType;
+  visibility: 'admins' | 'members' | 'public';
+  workspaceId: string;
 }
 
 export class TeamCollaborationService {
@@ -601,7 +630,7 @@ export class TeamCollaborationService {
       status: 'active',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      lastActivity: new Date().toISOString()
+      lastActivity: new Date().toISOString(),
     };
 
     // Add owner as admin member
@@ -609,17 +638,22 @@ export class TeamCollaborationService {
       await this.addMember(workspace.id, {
         userId: workspace.ownerId,
         role: 'owner',
-        permissions: ['read', 'write', 'comment', 'share', 'admin']
+        permissions: ['read', 'write', 'comment', 'share', 'admin'],
       });
     }
 
     this.workspaces.set(workspace.id, workspace);
     this.activityFeed.set(workspace.id, []);
 
-    await this.logActivity(workspace.id, 'workspace_created', workspace.ownerId, {
-      workspaceId: workspace.id,
-      workspaceName: workspace.name
-    });
+    await this.logActivity(
+      workspace.id,
+      'workspace_created',
+      workspace.ownerId,
+      {
+        workspaceId: workspace.id,
+        workspaceName: workspace.name,
+      }
+    );
 
     return workspace;
   }
@@ -627,10 +661,10 @@ export class TeamCollaborationService {
   async addMember(
     workspaceId: string,
     memberData: {
-      userId: string;
-      role: MemberRole;
-      permissions: PermissionType[];
       invitedBy?: string;
+      permissions: PermissionType[];
+      role: MemberRole;
+      userId: string;
     }
   ): Promise<WorkspaceMember> {
     const workspace = this.workspaces.get(workspaceId);
@@ -652,24 +686,29 @@ export class TeamCollaborationService {
       invitedBy: memberData.invitedBy || workspace.ownerId,
       invitedAt: new Date().toISOString(),
       lastActive: new Date().toISOString(),
-      status: 'invited'
+      status: 'invited',
     };
 
     workspace.members.push(member);
     workspace.analytics.memberCount = workspace.members.length;
     workspace.updatedAt = new Date().toISOString();
 
-    await this.logActivity(workspaceId, 'member_added', memberData.invitedBy || workspace.ownerId, {
-      memberId: member.userId,
-      memberName: member.userInfo.name,
-      role: member.role
-    });
+    await this.logActivity(
+      workspaceId,
+      'member_added',
+      memberData.invitedBy || workspace.ownerId,
+      {
+        memberId: member.userId,
+        memberName: member.userInfo.name,
+        role: member.role,
+      }
+    );
 
     await this.sendNotification(member.userId, {
       type: 'workspace_invitation',
       workspaceId,
       workspaceName: workspace.name,
-      invitedBy: member.invitedBy
+      invitedBy: member.invitedBy,
     });
 
     return member;
@@ -687,7 +726,9 @@ export class TeamCollaborationService {
     }
 
     // Check if document already shared
-    const existingDoc = workspace.documents.find(doc => doc.documentId === documentId);
+    const existingDoc = workspace.documents.find(
+      doc => doc.documentId === documentId
+    );
     if (existingDoc) {
       throw new Error('Document already shared in this workspace');
     }
@@ -711,7 +752,7 @@ export class TeamCollaborationService {
       priority: 'medium',
       tags: [],
       sharedAt: new Date().toISOString(),
-      lastModified: new Date().toISOString()
+      lastModified: new Date().toISOString(),
     };
 
     workspace.documents.push(document);
@@ -720,7 +761,7 @@ export class TeamCollaborationService {
 
     await this.logActivity(workspaceId, 'document_shared', sharedBy, {
       documentId,
-      documentTitle: document.title
+      documentTitle: document.title,
     });
 
     return document;
@@ -748,14 +789,16 @@ export class TeamCollaborationService {
       dependencies: taskData.dependencies || [],
       relatedDocuments: taskData.relatedDocuments || [],
       estimatedHours: taskData.estimatedHours || 0,
-      dueDate: taskData.dueDate || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+      dueDate:
+        taskData.dueDate ||
+        new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
       milestones: [],
       comments: [],
       attachments: [],
       checklist: taskData.checklist || [],
       reminders: [],
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
     };
 
     workspace.tasks.push(task);
@@ -769,14 +812,14 @@ export class TeamCollaborationService {
         workspaceId,
         taskId: task.id,
         taskTitle: task.title,
-        assignedBy: task.assignedBy
+        assignedBy: task.assignedBy,
       });
     }
 
     await this.logActivity(workspaceId, 'task_created', task.assignedBy, {
       taskId: task.id,
       taskTitle: task.title,
-      assignedTo: task.assignedTo
+      assignedTo: task.assignedTo,
     });
 
     return task;
@@ -799,8 +842,12 @@ export class TeamCollaborationService {
       type: meetingData.type || 'planning',
       organizer: meetingData.organizer || '',
       participants: meetingData.participants || [],
-      scheduledStart: meetingData.scheduledStart || new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-      scheduledEnd: meetingData.scheduledEnd || new Date(Date.now() + 25 * 60 * 60 * 1000).toISOString(),
+      scheduledStart:
+        meetingData.scheduledStart ||
+        new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+      scheduledEnd:
+        meetingData.scheduledEnd ||
+        new Date(Date.now() + 25 * 60 * 60 * 1000).toISOString(),
       timezone: meetingData.timezone || 'UTC',
       meetingLink: this.generateMeetingLink(),
       passcode: this.generatePasscode(),
@@ -811,7 +858,7 @@ export class TeamCollaborationService {
       followUps: [],
       status: 'scheduled',
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
     };
 
     workspace.meetings.push(meeting);
@@ -823,11 +870,16 @@ export class TeamCollaborationService {
       await this.sendMeetingInvitation(participant.userId, meeting);
     }
 
-    await this.logActivity(workspaceId, 'meeting_scheduled', meeting.organizer, {
-      meetingId: meeting.id,
-      meetingTitle: meeting.title,
-      scheduledStart: meeting.scheduledStart
-    });
+    await this.logActivity(
+      workspaceId,
+      'meeting_scheduled',
+      meeting.organizer,
+      {
+        meetingId: meeting.id,
+        meetingTitle: meeting.title,
+        scheduledStart: meeting.scheduledStart,
+      }
+    );
 
     return meeting;
   }
@@ -860,17 +912,22 @@ export class TeamCollaborationService {
       decisions: [],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      lastMessage: new Date().toISOString()
+      lastMessage: new Date().toISOString(),
     };
 
     workspace.discussions.push(discussion);
     workspace.analytics.discussionCount = workspace.discussions.length;
     workspace.lastActivity = new Date().toISOString();
 
-    await this.logActivity(workspaceId, 'discussion_started', discussion.startedBy, {
-      discussionId: discussion.id,
-      discussionTitle: discussion.title
-    });
+    await this.logActivity(
+      workspaceId,
+      'discussion_started',
+      discussion.startedBy,
+      {
+        discussionId: discussion.id,
+        discussionTitle: discussion.title,
+      }
+    );
 
     return discussion;
   }
@@ -899,7 +956,7 @@ export class TeamCollaborationService {
       dueDate: approvalData.dueDate,
       notifications: [],
       escalation: [],
-      auditTrail: []
+      auditTrail: [],
     };
 
     workspace.approvalWorkflows.push(workflow);
@@ -910,15 +967,22 @@ export class TeamCollaborationService {
       await this.processApprovalStep(workspaceId, workflow.id, 0);
     }
 
-    await this.logActivity(workspaceId, 'approval_requested', workflow.requestedBy, {
-      workflowId: workflow.id,
-      documentId: workflow.documentId
-    });
+    await this.logActivity(
+      workspaceId,
+      'approval_requested',
+      workflow.requestedBy,
+      {
+        workflowId: workflow.id,
+        documentId: workflow.documentId,
+      }
+    );
 
     return workflow;
   }
 
-  async getWorkspaceAnalytics(workspaceId: string): Promise<WorkspaceAnalytics> {
+  async getWorkspaceAnalytics(
+    workspaceId: string
+  ): Promise<WorkspaceAnalytics> {
     const workspace = this.workspaces.get(workspaceId);
     if (!workspace) {
       throw new Error(`Workspace not found: ${workspaceId}`);
@@ -934,18 +998,24 @@ export class TeamCollaborationService {
       collaborationMetrics: this.calculateCollaborationMetrics(workspaceId),
       productivityMetrics: this.calculateProductivityMetrics(workspaceId),
       engagementMetrics: this.calculateEngagementMetrics(workspaceId),
-      lastUpdated: new Date().toISOString()
+      lastUpdated: new Date().toISOString(),
     };
 
     workspace.analytics = analytics;
     return analytics;
   }
 
-  async getActivityFeed(workspaceId: string, limit: number = 50): Promise<ActivityFeed[]> {
+  async getActivityFeed(
+    workspaceId: string,
+    limit: number = 50
+  ): Promise<ActivityFeed[]> {
     const activities = this.activityFeed.get(workspaceId) || [];
-    return activities.slice(0, limit).sort((a, b) =>
-      new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
-    );
+    return activities
+      .slice(0, limit)
+      .sort(
+        (a, b) =>
+          new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+      );
   }
 
   private initializeCollaborationTemplates(): void {
@@ -956,22 +1026,22 @@ export class TeamCollaborationService {
         name: 'Estate Planning Team',
         type: 'professional',
         defaultRoles: ['owner', 'advisor', 'contributor'],
-        requiredDocuments: ['will', 'trust', 'power_of_attorney']
+        requiredDocuments: ['will', 'trust', 'power_of_attorney'],
       },
       {
         id: 'family_coordination',
         name: 'Family Coordination',
         type: 'family',
         defaultRoles: ['owner', 'admin', 'contributor'],
-        communicationStyle: 'casual'
+        communicationStyle: 'casual',
       },
       {
         id: 'legal_review',
         name: 'Legal Review Workspace',
         type: 'legal',
         approvalRequired: true,
-        retentionPeriod: 2555 // 7 years in days
-      }
+        retentionPeriod: 2555, // 7 years in days
+      },
     ];
 
     // Initialize templates (implementation would be more comprehensive)
@@ -991,19 +1061,19 @@ export class TeamCollaborationService {
         email: true,
         push: true,
         inApp: true,
-        frequency: 'real_time'
+        frequency: 'real_time',
       },
       securitySettings: {
         requireMFA: false,
         sessionTimeout: 30,
         auditLogging: true,
-        encryptionRequired: true
+        encryptionRequired: true,
       },
       integrationSettings: {
         calendarSync: true,
         emailSync: false,
-        cloudStorage: true
-      }
+        cloudStorage: true,
+      },
     };
   }
 
@@ -1019,21 +1089,21 @@ export class TeamCollaborationService {
         averageResponseTime: 0,
         documentShares: 0,
         meetingAttendance: 0,
-        taskCompletion: 0
+        taskCompletion: 0,
       },
       productivityMetrics: {
         tasksCompleted: 0,
         documentsReviewed: 0,
         meetingsHeld: 0,
-        decisionsReached: 0
+        decisionsReached: 0,
       },
       engagementMetrics: {
         activeMembers: 0,
         messagesSent: 0,
         commentsAdded: 0,
-        hoursSpent: 0
+        hoursSpent: 0,
       },
-      lastUpdated: new Date().toISOString()
+      lastUpdated: new Date().toISOString(),
     };
   }
 
@@ -1045,7 +1115,7 @@ export class TeamCollaborationService {
       email: `user${userId.substring(0, 4)}@example.com`,
       avatar: '',
       title: 'Professional',
-      organization: ''
+      organization: '',
     };
   }
 
@@ -1057,10 +1127,10 @@ export class TeamCollaborationService {
         { day: 'tuesday', start: '09:00', end: '17:00' },
         { day: 'wednesday', start: '09:00', end: '17:00' },
         { day: 'thursday', start: '09:00', end: '17:00' },
-        { day: 'friday', start: '09:00', end: '17:00' }
+        { day: 'friday', start: '09:00', end: '17:00' },
       ],
       breaks: [],
-      vacations: []
+      vacations: [],
     };
   }
 
@@ -1073,7 +1143,7 @@ export class TeamCollaborationService {
       preferredMeetingLength: 60,
       collaborationTools: ['document_editor', 'video_calls', 'chat'],
       documentFormats: ['pdf', 'docx', 'txt'],
-      reviewStyle: 'detailed'
+      reviewStyle: 'detailed',
     };
   }
 
@@ -1085,7 +1155,7 @@ export class TeamCollaborationService {
       meetingsOrganized: 0,
       reviewsCompleted: 0,
       hoursContributed: 0,
-      lastContribution: new Date().toISOString()
+      lastContribution: new Date().toISOString(),
     };
   }
 
@@ -1107,7 +1177,7 @@ export class TeamCollaborationService {
       description: this.generateActivityDescription(type, metadata),
       metadata,
       timestamp: new Date().toISOString(),
-      visibility: 'members'
+      visibility: 'members',
     };
 
     const activities = this.activityFeed.get(workspaceId) || [];
@@ -1115,18 +1185,25 @@ export class TeamCollaborationService {
     this.activityFeed.set(workspaceId, activities.slice(0, 1000)); // Keep last 1000 activities
   }
 
-  private generateActivityDescription(type: ActivityType, metadata: Record<string, any>): string {
-    const descriptions = {
+  private generateActivityDescription(
+    type: ActivityType,
+    metadata: Record<string, any>
+  ): string {
+    const descriptions: Record<ActivityType, string> = {
       document_created: `created document "${metadata.documentTitle}"`,
       document_updated: `updated document "${metadata.documentTitle}"`,
+      document_shared: `shared document "${metadata.documentTitle}"`,
       comment_added: `added a comment to "${metadata.documentTitle}"`,
       task_assigned: `assigned task "${metadata.taskTitle}" to ${metadata.assignedTo?.join(', ')}`,
+      task_created: `created task "${metadata.taskTitle}"`,
       task_completed: `completed task "${metadata.taskTitle}"`,
       member_added: `added ${metadata.memberName} as ${metadata.role}`,
+      workspace_created: `created workspace "${metadata.workspaceName}"`,
       workspace_shared: `shared workspace with ${metadata.sharedWith}`,
       meeting_scheduled: `scheduled meeting "${metadata.meetingTitle}" for ${metadata.scheduledStart}`,
       approval_requested: `requested approval for document "${metadata.documentId}"`,
-      approval_granted: `approved document "${metadata.documentId}"`
+      approval_granted: `approved document "${metadata.documentId}"`,
+      discussion_started: `started discussion "${metadata.discussionTitle}"`,
     };
 
     return descriptions[type] || `performed ${type}`;
@@ -1144,42 +1221,80 @@ export class TeamCollaborationService {
   private calculateActivityScore(workspaceId: string): number {
     const activities = this.activityFeed.get(workspaceId) || [];
     const recentActivities = activities.filter(
-      activity => Date.now() - new Date(activity.timestamp).getTime() < 7 * 24 * 60 * 60 * 1000
+      activity =>
+        Date.now() - new Date(activity.timestamp).getTime() <
+        7 * 24 * 60 * 60 * 1000
     );
     return Math.min(100, recentActivities.length * 2);
   }
 
-  private calculateCollaborationMetrics(_workspaceId: string): CollaborationMetrics {
+  private calculateCollaborationMetrics(
+    _workspaceId: string
+  ): CollaborationMetrics {
     // Implementation for calculating collaboration metrics
     return {
       averageResponseTime: 120, // minutes
       documentShares: 25,
       meetingAttendance: 0.85,
-      taskCompletion: 0.78
+      taskCompletion: 0.78,
     };
   }
 
-  private calculateProductivityMetrics(_workspaceId: string): ProductivityMetrics {
+  private calculateProductivityMetrics(
+    _workspaceId: string
+  ): ProductivityMetrics {
     const workspace = this.workspaces.get(_workspaceId);
-    if (!workspace) return { tasksCompleted: 0, documentsReviewed: 0, meetingsHeld: 0, decisionsReached: 0 };
+    if (!workspace)
+      return {
+        tasksCompleted: 0,
+        documentsReviewed: 0,
+        meetingsHeld: 0,
+        decisionsReached: 0,
+      };
 
     return {
-      tasksCompleted: workspace.tasks.filter(task => task.status === 'completed').length,
-      documentsReviewed: workspace.documents.filter(doc => doc.reviews.length > 0).length,
-      meetingsHeld: workspace.meetings.filter(meeting => meeting.status === 'completed').length,
-      decisionsReached: workspace.discussions.reduce((sum, discussion) => sum + discussion.decisions.length, 0)
+      tasksCompleted: workspace.tasks.filter(
+        task => task.status === 'completed'
+      ).length,
+      documentsReviewed: workspace.documents.filter(
+        doc => doc.reviews.length > 0
+      ).length,
+      meetingsHeld: workspace.meetings.filter(
+        meeting => meeting.status === 'completed'
+      ).length,
+      decisionsReached: workspace.discussions.reduce(
+        (sum, discussion) => sum + discussion.decisions.length,
+        0
+      ),
     };
   }
 
   private calculateEngagementMetrics(_workspaceId: string): EngagementMetrics {
     const workspace = this.workspaces.get(_workspaceId);
-    if (!workspace) return { activeMembers: 0, messagesSent: 0, commentsAdded: 0, hoursSpent: 0 };
+    if (!workspace)
+      return {
+        activeMembers: 0,
+        messagesSent: 0,
+        commentsAdded: 0,
+        hoursSpent: 0,
+      };
 
     return {
-      activeMembers: workspace.members.filter(member => member.status === 'active').length,
-      messagesSent: workspace.discussions.reduce((sum, discussion) => sum + discussion.messages.length, 0),
-      commentsAdded: workspace.documents.reduce((sum, doc) => sum + doc.comments.length, 0),
-      hoursSpent: workspace.tasks.reduce((sum, task) => sum + (task.actualHours || 0), 0)
+      activeMembers: workspace.members.filter(
+        member => member.status === 'active'
+      ).length,
+      messagesSent: workspace.discussions.reduce(
+        (sum, discussion) => sum + discussion.messages.length,
+        0
+      ),
+      commentsAdded: workspace.documents.reduce(
+        (sum, doc) => sum + doc.comments.length,
+        0
+      ),
+      hoursSpent: workspace.tasks.reduce(
+        (sum, task) => sum + (task.actualHours || 0),
+        0
+      ),
     };
   }
 
@@ -1191,25 +1306,31 @@ export class TeamCollaborationService {
     return Math.random().toString(36).substring(2, 8).toUpperCase();
   }
 
-  private async sendNotification(userId: string, notification: any): Promise<void> {
+  private async sendNotification(
+    userId: string,
+    notification: any
+  ): Promise<void> {
     const userNotifications = this.notifications.get(userId) || [];
     userNotifications.push({
       id: this.generateId(),
       userId,
       ...notification,
       timestamp: new Date().toISOString(),
-      read: false
+      read: false,
     });
     this.notifications.set(userId, userNotifications);
   }
 
-  private async sendMeetingInvitation(userId: string, meeting: VirtualMeeting): Promise<void> {
+  private async sendMeetingInvitation(
+    userId: string,
+    meeting: VirtualMeeting
+  ): Promise<void> {
     await this.sendNotification(userId, {
       type: 'meeting_invitation',
       workspaceId: meeting.workspaceId,
       meetingId: meeting.id,
       meetingTitle: meeting.title,
-      scheduledStart: meeting.scheduledStart
+      scheduledStart: meeting.scheduledStart,
     });
   }
 

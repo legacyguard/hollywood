@@ -21,7 +21,7 @@ export class LegacyGuardApiError extends Error {
     return {
       status: this.status,
       message: this.message,
-      details: this.details
+      details: this.details,
     };
   }
 
@@ -115,7 +115,8 @@ export async function withErrorHandling<T>(
     }
 
     // Generic error handling
-    const message = error instanceof Error ? error.message : 'An unexpected error occurred';
+    const message =
+      error instanceof Error ? error.message : 'An unexpected error occurred';
     throw new LegacyGuardApiError(
       500,
       `${operationName} failed: ${message}`,
@@ -176,10 +177,12 @@ export function validateTypes(
  */
 export const validators = {
   isString: (value: unknown): boolean => typeof value === 'string',
-  isNumber: (value: unknown): boolean => typeof value === 'number' && !Number.isNaN(value),
+  isNumber: (value: unknown): boolean =>
+    typeof value === 'number' && !Number.isNaN(value),
   isBoolean: (value: unknown): boolean => typeof value === 'boolean',
   isArray: (value: unknown): boolean => Array.isArray(value),
-  isObject: (value: unknown): boolean => typeof value === 'object' && value !== null && !Array.isArray(value),
+  isObject: (value: unknown): boolean =>
+    typeof value === 'object' && value !== null && !Array.isArray(value),
   isEmail: (value: unknown): boolean => {
     if (typeof value !== 'string') return false;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -187,7 +190,8 @@ export const validators = {
   },
   isUuid: (value: unknown): boolean => {
     if (typeof value !== 'string') return false;
-    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    const uuidRegex =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
     return uuidRegex.test(value);
   },
   isUrl: (value: unknown): boolean => {
@@ -203,7 +207,7 @@ export const validators = {
     if (typeof value !== 'string') return false;
     const date = new Date(value);
     return !isNaN(date.getTime());
-  }
+  },
 };
 
 /**
@@ -241,9 +245,15 @@ export async function withRetry<T>(
     try {
       return await operation();
     } catch (error) {
-      const apiError = error instanceof LegacyGuardApiError
-        ? error
-        : new LegacyGuardApiError(500, `${operationName} failed`, {}, error instanceof Error ? error : undefined);
+      const apiError =
+        error instanceof LegacyGuardApiError
+          ? error
+          : new LegacyGuardApiError(
+              500,
+              `${operationName} failed`,
+              {},
+              error instanceof Error ? error : undefined
+            );
 
       lastError = apiError;
 
@@ -259,11 +269,19 @@ export async function withRetry<T>(
 
       // Wait before retrying (exponential backoff)
       const delay = delayMs * Math.pow(2, attempt - 1);
-      console.warn(`[API Retry] ${operationName} attempt ${attempt}/${maxRetries} failed, retrying in ${delay}ms...`);
+      console.warn(
+        `[API Retry] ${operationName} attempt ${attempt}/${maxRetries} failed, retrying in ${delay}ms...`
+      );
       await new Promise(resolve => setTimeout(resolve, delay));
     }
   }
 
   // This should never be reached, but just in case
-  throw lastError || new LegacyGuardApiError(500, `${operationName} failed after ${maxRetries} attempts`);
+  throw (
+    lastError ||
+    new LegacyGuardApiError(
+      500,
+      `${operationName} failed after ${maxRetries} attempts`
+    )
+  );
 }

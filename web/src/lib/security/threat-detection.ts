@@ -3,26 +3,32 @@
  * Real-time monitoring and anomaly detection for security threats
  */
 
-import { supabase } from '@/lib/supabase';
+import supabase from '../supabaseClient';
 
 interface ThreatSignal {
-  type: 'sql_injection' | 'xss' | 'path_traversal' | 'brute_force' | 'unusual_activity' | 'data_exfiltration';
-  severity: 'low' | 'medium' | 'high' | 'critical';
   confidence: number; // 0-100
   details: Record<string, unknown>;
+  severity: 'critical' | 'high' | 'low' | 'medium';
   timestamp: Date;
+  type:
+    | 'brute_force'
+    | 'data_exfiltration'
+    | 'path_traversal'
+    | 'sql_injection'
+    | 'unusual_activity'
+    | 'xss';
 }
 
 interface UserBehaviorProfile {
-  userId: string;
+  lastUpdated: Date;
   normalPatterns: {
+    avgDataVolumePerRequest: number;
     avgRequestsPerMinute: number;
     commonEndpoints: string[];
-    typicalActiveHours: number[];
-    avgDataVolumePerRequest: number;
     commonIpRanges: string[];
+    typicalActiveHours: number[];
   };
-  lastUpdated: Date;
+  userId: string;
 }
 
 export class ThreatDetectionSystem {
@@ -93,13 +99,13 @@ export class ThreatDetectionSystem {
    * Analyze request for threats
    */
   public async analyzeRequest(request: {
-    userId?: string;
-    ip: string;
-    endpoint: string;
-    method: string;
-    headers: Record<string, string>;
     body?: unknown;
+    endpoint: string;
+    headers: Record<string, string>;
+    ip: string;
+    method: string;
     query?: Record<string, string>;
+    userId?: string;
   }): Promise<ThreatSignal[]> {
     const threats: ThreatSignal[] = [];
 
@@ -129,7 +135,10 @@ export class ThreatDetectionSystem {
 
     // Check for unusual activity
     if (request.userId) {
-      const unusualActivityThreat = await this.detectUnusualActivity(request.userId, request);
+      const unusualActivityThreat = await this.detectUnusualActivity(
+        request.userId,
+        request
+      );
       if (unusualActivityThreat) threats.push(unusualActivityThreat);
     }
 
@@ -152,8 +161,9 @@ export class ThreatDetectionSystem {
   /**
    * Detect SQL injection attempts
    */
-  private detectSqlInjection(request: any): ThreatSignal | null {
-    const checkString = JSON.stringify(request.body) + JSON.stringify(request.query);
+  private detectSqlInjection(request: any): null | ThreatSignal {
+    const checkString =
+      JSON.stringify(request.body) + JSON.stringify(request.query);
     let confidence = 0;
     const matches: string[] = [];
 
@@ -168,7 +178,8 @@ export class ThreatDetectionSystem {
     if (confidence > 0) {
       return {
         type: 'sql_injection',
-        severity: confidence >= 75 ? 'critical' : confidence >= 50 ? 'high' : 'medium',
+        severity:
+          confidence >= 75 ? 'critical' : confidence >= 50 ? 'high' : 'medium',
         confidence,
         details: { matches, endpoint: request.endpoint },
         timestamp: new Date(),
@@ -181,8 +192,9 @@ export class ThreatDetectionSystem {
   /**
    * Detect XSS attempts
    */
-  private detectXss(request: any): ThreatSignal | null {
-    const checkString = JSON.stringify(request.body) + JSON.stringify(request.query);
+  private detectXss(request: any): null | ThreatSignal {
+    const checkString =
+      JSON.stringify(request.body) + JSON.stringify(request.query);
     let confidence = 0;
     const matches: string[] = [];
 
@@ -197,7 +209,8 @@ export class ThreatDetectionSystem {
     if (confidence > 0) {
       return {
         type: 'xss',
-        severity: confidence >= 75 ? 'high' : confidence >= 50 ? 'medium' : 'low',
+        severity:
+          confidence >= 75 ? 'high' : confidence >= 50 ? 'medium' : 'low',
         confidence,
         details: { matches, endpoint: request.endpoint },
         timestamp: new Date(),
@@ -210,7 +223,7 @@ export class ThreatDetectionSystem {
   /**
    * Detect path traversal attempts
    */
-  private detectPathTraversal(request: any): ThreatSignal | null {
+  private detectPathTraversal(request: any): null | ThreatSignal {
     const checkString = request.endpoint + JSON.stringify(request.query);
 
     for (const pattern of this.suspiciousPatterns.slice(8, 10)) {
@@ -232,13 +245,19 @@ export class ThreatDetectionSystem {
   /**
    * Detect unusual user activity
    */
-  private async detectUnusualActivity(userId: string, request: any): Promise<ThreatSignal | null> {
+  private async detectUnusualActivity(
+    userId: string,
+    request: any
+  ): Promise<null | ThreatSignal> {
     const profile = this.behaviorProfiles.get(userId);
     if (!profile) return null;
 
     const currentHour = new Date().getHours();
-    const isUnusualTime = !profile.normalPatterns.typicalActiveHours.includes(currentHour);
-    const isUnusualEndpoint = !profile.normalPatterns.commonEndpoints.includes(request.endpoint);
+    const isUnusualTime =
+      !profile.normalPatterns.typicalActiveHours.includes(currentHour);
+    const isUnusualEndpoint = !profile.normalPatterns.commonEndpoints.includes(
+      request.endpoint
+    );
 
     if (isUnusualTime && isUnusualEndpoint) {
       return {
@@ -260,11 +279,14 @@ export class ThreatDetectionSystem {
   /**
    * Detect potential data exfiltration
    */
-  private detectDataExfiltration(request: any): ThreatSignal | null {
+  private detectDataExfiltration(request: any): null | ThreatSignal {
     // Check for large response sizes or bulk data requests
     const suspiciousEndpoints = ['/api/export', '/api/download', '/api/backup'];
-    const isBulkRequest = request.query?.limit && parseInt(request.query.limit) > 1000;
-    const isSuspiciousEndpoint = suspiciousEndpoints.some(ep => request.endpoint.includes(ep));
+    const isBulkRequest =
+      request.query?.limit && parseInt(request.query.limit) > 1000;
+    const isSuspiciousEndpoint = suspiciousEndpoints.some(ep =>
+      request.endpoint.includes(ep)
+    );
 
     if (isBulkRequest || isSuspiciousEndpoint) {
       return {
@@ -333,15 +355,21 @@ export class ThreatDetectionSystem {
   /**
    * Notify security team of critical threats
    */
-  private async notifySecurityTeam(threats: ThreatSignal[], request: any): Promise<void> {
+  private async notifySecurityTeam(
+    threats: ThreatSignal[],
+    request: any
+  ): Promise<void> {
     try {
-      await supabase.from('security_alerts').insert({
-        threats: threats,
-        request_details: request,
-        created_at: new Date().toISOString(),
-        severity: 'critical',
-        auto_blocked: true,
-      });
+      const { error } = await (supabase as any).from('security_alerts').insert([
+        {
+          threats: threats,
+          request_details: request,
+          created_at: new Date().toISOString(),
+          severity: 'critical',
+          auto_blocked: true,
+        },
+      ]);
+      if (error) console.error('Security alert insert error:', error);
 
       // In production, also send email/SMS alerts
       console.error('SECURITY ALERT:', threats);
@@ -354,7 +382,9 @@ export class ThreatDetectionSystem {
    * Escalate threat based on patterns
    */
   private async escalateThreat(type: string, count: number): Promise<void> {
-    console.warn(`Escalating threat: ${type} detected ${count} times in 5 minutes`);
+    console.warn(
+      `Escalating threat: ${type} detected ${count} times in 5 minutes`
+    );
 
     // Increase monitoring sensitivity
     // Notify admins
@@ -364,12 +394,14 @@ export class ThreatDetectionSystem {
   /**
    * Get current threat level
    */
-  public getThreatLevel(): 'low' | 'medium' | 'high' | 'critical' {
+  public getThreatLevel(): 'critical' | 'high' | 'low' | 'medium' {
     const recentThreats = this.threatSignals.filter(
       t => t.timestamp > new Date(Date.now() - 300000)
     );
 
-    const criticalCount = recentThreats.filter(t => t.severity === 'critical').length;
+    const criticalCount = recentThreats.filter(
+      t => t.severity === 'critical'
+    ).length;
     const highCount = recentThreats.filter(t => t.severity === 'high').length;
 
     if (criticalCount > 0) return 'critical';
@@ -382,10 +414,10 @@ export class ThreatDetectionSystem {
    * Get security metrics
    */
   public getMetrics(): {
-    threatLevel: string;
     blockedIps: number;
     recentThreats: number;
-    topThreatTypes: Array<{ type: string; count: number }>;
+    threatLevel: string;
+    topThreatTypes: Array<{ count: number; type: string }>;
   } {
     const recentThreats = this.threatSignals.filter(
       t => t.timestamp > new Date(Date.now() - 3600000)

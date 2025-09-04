@@ -17,21 +17,25 @@ test.describe('🎭 Complete Guardian of Memories Journey', () => {
     const context = await browser.newContext({
       recordVideo: {
         dir: 'tests/videos/guardian-journey/',
-        size: { width: 1280, height: 720 }
-      }
+        size: { width: 1280, height: 720 },
+      },
     });
     page = await context.newPage();
 
     // Enable console logging for debugging
-    page.on('console', msg => { /* console.log('Browser:', msg.text()) */ });
-    page.on('pageerror', error => { /* console.error('Page Error:', error.message) */ });
+    page.on('console', msg => {
+      /* console.log('Browser:', msg.text()) */
+    });
+    page.on('pageerror', error => {
+      /* console.error('Page Error:', error.message) */
+    });
   });
 
   test.afterAll(async () => {
     await page?.close();
   });
 
-  test('Act 1: Landing & Authentication - Sofia\'s Welcome', async () => {
+  test("Act 1: Landing & Authentication - Sofia's Welcome", async () => {
     // console.log('🚀 Starting Guardian Journey with user:', testUser.email);
 
     // Navigate to landing page
@@ -41,21 +45,27 @@ test.describe('🎭 Complete Guardian of Memories Journey', () => {
     // Take screenshot of landing page
     await page.screenshot({
       path: 'tests/screenshots/guardian-01-landing.png',
-      fullPage: true
+      fullPage: true,
     });
 
     // Verify landing page elements
     await expect(page.locator('text=/Your Legacy is a Story/i')).toBeVisible();
-    await expect(page.locator('text=/Let\'s Make it a Legend/i')).toBeVisible();
+    await expect(page.locator("text=/Let's Make it a Legend/i")).toBeVisible();
 
     // Look for firefly animation (Sofia)
-    const fireflyElement = page.locator('.firefly, [class*="firefly"], [style*="yellow"]').first();
+    const fireflyElement = page
+      .locator('.firefly, [class*="firefly"], [style*="yellow"]')
+      .first();
     if (await fireflyElement.isVisible({ timeout: 3000 }).catch(() => false)) {
       // console.log('✅ Sofia firefly animation detected');
     }
 
     // Click "Start Your Journey" button
-    const startButton = page.locator('button:has-text("Start Your Journey"), button:has-text("Get Started")').first();
+    const startButton = page
+      .locator(
+        'button:has-text("Start Your Journey"), button:has-text("Get Started")'
+      )
+      .first();
     await expect(startButton).toBeVisible();
     await startButton.click();
 
@@ -63,7 +73,7 @@ test.describe('🎭 Complete Guardian of Memories Journey', () => {
     await page.waitForURL(/sign-up/, { timeout: 10000 });
     await waitForClerk(page);
 
-          // console.log('✅ Landing page and navigation to sign-up completed');
+    // console.log('✅ Landing page and navigation to sign-up completed');
   });
 
   test('Act 2: Registration - Beginning the Guardian Path', async () => {
@@ -72,36 +82,52 @@ test.describe('🎭 Complete Guardian of Memories Journey', () => {
 
     await page.screenshot({
       path: 'tests/screenshots/guardian-02-registration.png',
-      fullPage: true
+      fullPage: true,
     });
 
     // Fill registration form with more robust selectors
-    const emailInput = page.locator('input[type="email"], input[name="emailAddress"]').first();
+    const emailInput = page
+      .locator('input[type="email"], input[name="emailAddress"]')
+      .first();
     await expect(emailInput).toBeVisible({ timeout: 10000 });
     await emailInput.fill(testUser.email);
 
-    const passwordInput = page.locator('input[type="password"]:not([name*="confirm"])').first();
+    const passwordInput = page
+      .locator('input[type="password"]:not([name*="confirm"])')
+      .first();
     await passwordInput.fill(testUser.password);
 
     // Check for confirm password field
-    const confirmPasswordInput = page.locator('input[name*="confirm"], input[name*="password"]:not([name="password"])');
-    if (await confirmPasswordInput.isVisible({ timeout: 2000 }).catch(() => false)) {
+    const confirmPasswordInput = page.locator(
+      'input[name*="confirm"], input[name*="password"]:not([name="password"])'
+    );
+    if (
+      await confirmPasswordInput.isVisible({ timeout: 2000 }).catch(() => false)
+    ) {
       await confirmPasswordInput.fill(testUser.password);
     }
 
     // Check for name fields
-    const firstNameInput = page.locator('input[name="firstName"], input[name*="first"]');
+    const firstNameInput = page.locator(
+      'input[name="firstName"], input[name*="first"]'
+    );
     if (await firstNameInput.isVisible({ timeout: 2000 }).catch(() => false)) {
       await firstNameInput.fill('Guardian');
     }
 
-    const lastNameInput = page.locator('input[name="lastName"], input[name*="last"]');
+    const lastNameInput = page.locator(
+      'input[name="lastName"], input[name*="last"]'
+    );
     if (await lastNameInput.isVisible({ timeout: 2000 }).catch(() => false)) {
       await lastNameInput.fill('Test');
     }
 
     // Submit registration
-    const submitButton = page.locator('button[type="submit"], button:has-text("Sign up"), button:has-text("Create")').first();
+    const submitButton = page
+      .locator(
+        'button[type="submit"], button:has-text("Sign up"), button:has-text("Create")'
+      )
+      .first();
     await submitButton.click();
 
     // Wait for potential email verification or direct login
@@ -110,10 +136,10 @@ test.describe('🎭 Complete Guardian of Memories Journey', () => {
     // The flow should now redirect to dashboard, which triggers OnboardingWrapper
     await page.waitForURL(/dashboard|onboarding/, { timeout: 15000 });
 
-          // console.log('✅ Registration completed');
+    // console.log('✅ Registration completed');
   });
 
-  test('Scene 1: Promise of Calm - Sofia\'s Introduction', async () => {
+  test("Scene 1: Promise of Calm - Sofia's Introduction", async () => {
     // We should be redirected to onboarding due to new user (< 2 minutes)
     // If not on onboarding yet, navigate there
     if (!page.url().includes('onboarding')) {
@@ -127,33 +153,41 @@ test.describe('🎭 Complete Guardian of Memories Journey', () => {
     // const sceneContainer = page.locator('[data-testid="scene1"], .scene1, .onboarding-scene').first();
 
     // More flexible selectors for Scene 1 content
-    const promiseTitle = page.locator('text=/Promise of Calm/i, text=/Your story begins/i, h1, h2, [class*="title"]');
+    const promiseTitle = page.locator(
+      'text=/Promise of Calm/i, text=/Your story begins/i, h1, h2, [class*="title"]'
+    );
     await expect(promiseTitle.first()).toBeVisible({ timeout: 10000 });
 
     await page.screenshot({
       path: 'tests/screenshots/guardian-03-scene1-promise.png',
-      fullPage: true
+      fullPage: true,
     });
 
     // Look for firefly animation in onboarding
-    const onboardingFirefly = page.locator('.firefly, [class*="yellow"], [style*="animation"]');
-    if (await onboardingFirefly.isVisible({ timeout: 3000 }).catch(() => false)) {
+    const onboardingFirefly = page.locator(
+      '.firefly, [class*="yellow"], [style*="animation"]'
+    );
+    if (
+      await onboardingFirefly.isVisible({ timeout: 3000 }).catch(() => false)
+    ) {
       // console.log('✅ Onboarding firefly animation detected');
     }
 
     // Look for "Start writing my story" button or similar
-    const startStoryButton = page.locator(
-      'button:has-text("Start writing my story"), button:has-text("Start"), button:has-text("Begin"), button:has-text("Next")'
-    ).first();
+    const startStoryButton = page
+      .locator(
+        'button:has-text("Start writing my story"), button:has-text("Start"), button:has-text("Begin"), button:has-text("Next")'
+      )
+      .first();
 
     if (await startStoryButton.isVisible({ timeout: 5000 })) {
       await startStoryButton.click();
       // console.log('✅ Started onboarding story');
     } else {
-              // console.log('⚠️ Start button not found, continuing...');
+      // console.log('⚠️ Start button not found, continuing...');
     }
 
-          // console.log('✅ Scene 1: Promise of Calm completed');
+    // console.log('✅ Scene 1: Promise of Calm completed');
   });
 
   test('Scene 2: Box of Certainty - Emotional Connection', async () => {
@@ -161,9 +195,11 @@ test.describe('🎭 Complete Guardian of Memories Journey', () => {
     await page.waitForTimeout(1000); // Allow transition
 
     // Look for Box of Certainty elements
-    const boxPrompt = page.locator(
-      'textarea, input[type="text"], .emotional-prompt, [placeholder*="box"], [placeholder*="items"], [placeholder*="loved"]'
-    ).first();
+    const boxPrompt = page
+      .locator(
+        'textarea, input[type="text"], .emotional-prompt, [placeholder*="box"], [placeholder*="items"], [placeholder*="loved"]'
+      )
+      .first();
 
     // If we find the box prompt, fill it
     if (await boxPrompt.isVisible({ timeout: 5000 })) {
@@ -177,18 +213,20 @@ Contact information for trusted advisors`;
 
       await page.screenshot({
         path: 'tests/screenshots/guardian-04-scene2-box.png',
-        fullPage: true
+        fullPage: true,
       });
 
       // Look for continue button
-      const continueButton = page.locator('button:has-text("Continue"), button:has-text("Next")').first();
+      const continueButton = page
+        .locator('button:has-text("Continue"), button:has-text("Next")')
+        .first();
       if (await continueButton.isVisible()) {
         await continueButton.click();
       }
 
       // console.log('✅ Scene 2: Box of Certainty completed');
     } else {
-              // console.log('⚠️ Box of Certainty not found, might be different scene structure');
+      // console.log('⚠️ Box of Certainty not found, might be different scene structure');
     }
   });
 
@@ -196,9 +234,11 @@ Contact information for trusted advisors`;
     await page.waitForTimeout(1000);
 
     // Look for trusted person input
-    const trustedPersonInput = page.locator(
-      'input[placeholder*="trusted"], input[placeholder*="person"], input[placeholder*="name"], input[type="text"]'
-    ).first();
+    const trustedPersonInput = page
+      .locator(
+        'input[placeholder*="trusted"], input[placeholder*="person"], input[placeholder*="name"], input[type="text"]'
+      )
+      .first();
 
     if (await trustedPersonInput.isVisible({ timeout: 5000 })) {
       const trustedPersonName = 'Martina Svoboda';
@@ -206,24 +246,28 @@ Contact information for trusted advisors`;
 
       await page.screenshot({
         path: 'tests/screenshots/guardian-05-scene3-key.png',
-        fullPage: true
+        fullPage: true,
       });
 
       // Look for key visualization update
       const keyVisualization = page.locator('text=/For Martina/i, .key-visual');
-      if (await keyVisualization.isVisible({ timeout: 3000 }).catch(() => false)) {
+      if (
+        await keyVisualization.isVisible({ timeout: 3000 }).catch(() => false)
+      ) {
         // console.log('✅ Key personalization detected');
       }
 
       // Continue to next scene
-      const continueButton = page.locator('button:has-text("Continue"), button:has-text("Next")').first();
+      const continueButton = page
+        .locator('button:has-text("Continue"), button:has-text("Next")')
+        .first();
       if (await continueButton.isVisible()) {
         await continueButton.click();
       }
 
       // console.log('✅ Scene 3: Key of Trust completed');
     } else {
-              // console.log('⚠️ Trusted person input not found');
+      // console.log('⚠️ Trusted person input not found');
     }
   });
 
@@ -235,14 +279,18 @@ Contact information for trusted advisors`;
       'text=/Preparing/i, text=/Thank you/i, text=/Loading/i, .loading, .preparing'
     );
 
-    if (await preparingMessage.isVisible({ timeout: 5000 }).catch(() => false)) {
+    if (
+      await preparingMessage.isVisible({ timeout: 5000 }).catch(() => false)
+    ) {
       await page.screenshot({
         path: 'tests/screenshots/guardian-06-scene4-preparing.png',
-        fullPage: true
+        fullPage: true,
       });
 
       // Look for firefly trail animation
-      const fireflyTrail = page.locator('.firefly-trail, [class*="trail"], [class*="animation"]');
+      const fireflyTrail = page.locator(
+        '.firefly-trail, [class*="trail"], [class*="animation"]'
+      );
       if (await fireflyTrail.isVisible({ timeout: 3000 }).catch(() => false)) {
         // console.log('✅ Firefly trail animation detected');
       }
@@ -254,7 +302,7 @@ Contact information for trusted advisors`;
     // Verify we're on dashboard
     await expect(page).toHaveURL(/dashboard|home|\//);
 
-          // console.log('✅ Scene 4: Path prepared, redirected to dashboard');
+    // console.log('✅ Scene 4: Path prepared, redirected to dashboard');
   });
 
   test('Dashboard: First Guardian Experience', async () => {
@@ -263,7 +311,7 @@ Contact information for trusted advisors`;
 
     await page.screenshot({
       path: 'tests/screenshots/guardian-07-dashboard.png',
-      fullPage: true
+      fullPage: true,
     });
 
     // Look for dashboard elements - be flexible with selectors
@@ -275,12 +323,17 @@ Contact information for trusted advisors`;
       '.pillar-card',
       '.micro-task',
       'text=/Today/i',
-      'text=/Your progress/i'
+      'text=/Your progress/i',
     ];
 
     let dashboardFound = false;
     for (const selector of dashboardElements) {
-      if (await page.locator(selector).isVisible({ timeout: 2000 }).catch(() => false)) {
+      if (
+        await page
+          .locator(selector)
+          .isVisible({ timeout: 2000 })
+          .catch(() => false)
+      ) {
         // console.log(`✅ Dashboard element found: ${selector}`);
         dashboardFound = true;
         break;
@@ -296,26 +349,56 @@ Contact information for trusted advisors`;
       '[data-testid="micro-task"], .micro-task, .challenge, text=/5-minute/i, text=/task/i'
     );
 
-    if (await challengeSection.first().isVisible({ timeout: 5000 }).catch(() => false)) {
+    if (
+      await challengeSection
+        .first()
+        .isVisible({ timeout: 5000 })
+        .catch(() => false)
+    ) {
       // console.log('✅ Micro-task challenge section found');
 
       // Try to interact with first challenge
-      const startChallenge = page.locator('button:has-text("Start"), button:has-text("Begin")').first();
-      if (await startChallenge.isVisible({ timeout: 3000 }).catch(() => false)) {
+      const startChallenge = page
+        .locator('button:has-text("Start"), button:has-text("Begin")')
+        .first();
+      if (
+        await startChallenge.isVisible({ timeout: 3000 }).catch(() => false)
+      ) {
         await startChallenge.click();
         // console.log('✅ Started first challenge');
       }
     }
 
-          // console.log('✅ Dashboard experience verified');
+    // console.log('✅ Dashboard experience verified');
   });
 
   test('Navigation: Explore Core Features', async () => {
     // Test navigation to key sections
     const sections = [
-      { name: 'Vault/Documents', selectors: ['a[href*="vault"]', 'a:has-text("Vault")', 'a:has-text("Documents")'] },
-      { name: 'Guardians', selectors: ['a[href*="guardian"]', 'a:has-text("Guardian")', 'a:has-text("Family")'] },
-      { name: 'Legacy', selectors: ['a[href*="legacy"]', 'a:has-text("Legacy")', 'a:has-text("Will")'] }
+      {
+        name: 'Vault/Documents',
+        selectors: [
+          'a[href*="vault"]',
+          'a:has-text("Vault")',
+          'a:has-text("Documents")',
+        ],
+      },
+      {
+        name: 'Guardians',
+        selectors: [
+          'a[href*="guardian"]',
+          'a:has-text("Guardian")',
+          'a:has-text("Family")',
+        ],
+      },
+      {
+        name: 'Legacy',
+        selectors: [
+          'a[href*="legacy"]',
+          'a:has-text("Legacy")',
+          'a:has-text("Will")',
+        ],
+      },
     ];
 
     for (const section of sections) {
@@ -327,7 +410,7 @@ Contact information for trusted advisors`;
 
           await page.screenshot({
             path: `tests/screenshots/guardian-08-${section.name.toLowerCase().replace('/', '-')}.png`,
-            fullPage: true
+            fullPage: true,
           });
 
           // console.log(`✅ Navigated to ${section.name}`);
@@ -343,18 +426,22 @@ Contact information for trusted advisors`;
 
   test('Sign Out: Complete Journey Cycle', async () => {
     // Look for user menu/profile button
-    const userButton = page.locator(
-      '.cl-userButton-trigger, [data-testid="user-menu"], button[aria-label*="user"], .user-button'
-    ).first();
+    const userButton = page
+      .locator(
+        '.cl-userButton-trigger, [data-testid="user-menu"], button[aria-label*="user"], .user-button'
+      )
+      .first();
 
     if (await userButton.isVisible({ timeout: 5000 })) {
       await userButton.click();
       await page.waitForTimeout(500);
 
       // Look for sign out option
-      const signOutButton = page.locator(
-        'button:has-text("Sign out"), button:has-text("Log out"), a:has-text("Sign out")'
-      ).first();
+      const signOutButton = page
+        .locator(
+          'button:has-text("Sign out"), button:has-text("Log out"), a:has-text("Sign out")'
+        )
+        .first();
 
       if (await signOutButton.isVisible()) {
         await signOutButton.click();
@@ -364,13 +451,13 @@ Contact information for trusted advisors`;
 
         await page.screenshot({
           path: 'tests/screenshots/guardian-09-signed-out.png',
-          fullPage: true
+          fullPage: true,
         });
 
         // console.log('✅ Successfully signed out');
       }
     } else {
-              // console.log('⚠️ User menu not found, might need different approach');
+      // console.log('⚠️ User menu not found, might need different approach');
     }
 
     // console.log('🎉 Complete Guardian Journey finished!');

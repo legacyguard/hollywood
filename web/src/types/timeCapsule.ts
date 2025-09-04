@@ -1,44 +1,44 @@
 export type DeliveryCondition = 'ON_DATE' | 'ON_DEATH';
-export type CapsuleStatus = 'PENDING' | 'DELIVERED' | 'FAILED' | 'CANCELLED';
-export type CapsuleFileType = 'video' | 'audio';
+export type CapsuleStatus = 'CANCELLED' | 'DELIVERED' | 'FAILED' | 'PENDING';
+export type CapsuleFileType = 'audio' | 'video';
 
 export interface TimeCapsule {
-  id: string;
-  user_id: string;
-  recipient_id?: string | null;
-  recipient_name: string;
-  recipient_email: string;
-  delivery_condition: DeliveryCondition;
-  delivery_date?: string | null;
-  message_title: string;
-  message_preview?: string | null;
-  storage_path: string;
-  file_type: CapsuleFileType;
-  file_size_bytes?: number | null;
-  duration_seconds?: number | null;
-  thumbnail_path?: string | null;
   access_token: string;
-  status: CapsuleStatus;
-  is_delivered: boolean;
-  delivered_at?: string | null;
-  delivery_attempts: number;
-  last_delivery_attempt?: string | null;
-  delivery_error?: string | null;
   created_at: string;
+  delivered_at?: null | string;
+  delivery_attempts: number;
+  delivery_condition: DeliveryCondition;
+  delivery_date?: null | string;
+  delivery_error?: null | string;
+  duration_seconds?: null | number;
+  file_size_bytes?: null | number;
+  file_type: CapsuleFileType;
+  id: string;
+  is_delivered: boolean;
+  last_delivery_attempt?: null | string;
+  message_preview?: null | string;
+  message_title: string;
+  recipient_email: string;
+  recipient_id?: null | string;
+  recipient_name: string;
+  status: CapsuleStatus;
+  storage_path: string;
+  thumbnail_path?: null | string;
   updated_at: string;
+  user_id: string;
 }
 
 export interface CreateTimeCapsuleRequest {
-  recipient_id?: string;
-  recipient_name: string;
-  recipient_email: string;
   delivery_condition: DeliveryCondition;
   delivery_date?: string;
-  message_title: string;
-  message_preview?: string;
-  file_type: CapsuleFileType;
-  file_size_bytes?: number;
   duration_seconds?: number;
+  file_size_bytes?: number;
+  file_type: CapsuleFileType;
+  message_preview?: string;
+  message_title: string;
+  recipient_email: string;
+  recipient_id?: string;
+  recipient_name: string;
 }
 
 export interface UpdateTimeCapsuleRequest
@@ -54,51 +54,51 @@ export interface TimeCapsuleRecordingData {
 }
 
 export interface TimeCapsuleWizardStep {
-  id: number;
-  title: string;
   description: string;
-  isComplete: boolean;
+  id: number;
   isActive: boolean;
+  isComplete: boolean;
+  title: string;
 }
 
 export interface RecipientOption {
-  id?: string;
-  name: string;
   email: string;
-  relationship?: string;
+  id?: string;
   isGuardian: boolean;
+  name: string;
+  relationship?: string;
 }
 
 // For the secure viewing page
 export interface TimeCapsuleAccess {
   capsule: TimeCapsule;
-  user_name: string;
   signed_url: string; // Pre-signed URL for video/audio file
   thumbnail_url?: string; // Pre-signed URL for thumbnail if exists
+  user_name: string;
 }
 
 // For delivery system
 export interface TimeCapsuleDelivery {
-  capsule_id: string;
-  user_id: string;
-  recipient_name: string;
-  recipient_email: string;
-  message_title: string;
   access_token: string;
+  capsule_id: string;
   delivery_condition: DeliveryCondition;
+  message_title: string;
+  recipient_email: string;
+  recipient_name: string;
+  user_id: string;
 }
 
 // Recording constraints for MediaRecorder
 export interface RecordingConstraints {
-  video?: {
-    width: { ideal: number };
-    height: { ideal: number };
-    frameRate: { ideal: number };
-  };
   audio: {
     echoCancellation: boolean;
     noiseSuppression: boolean;
     sampleRate: number;
+  };
+  video?: {
+    frameRate: { ideal: number };
+    height: { ideal: number };
+    width: { ideal: number };
   };
 }
 
@@ -120,19 +120,19 @@ export const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB in bytes
 
 // Helper types for UI state management
 export interface TimeCapsuleFormData {
-  recipient: RecipientOption | null;
   deliveryCondition: DeliveryCondition;
   deliveryDate?: Date;
-  messageTitle: string;
   messagePreview: string;
+  messageTitle: string;
+  recipient: null | RecipientOption;
   recording?: TimeCapsuleRecordingData;
 }
 
 export interface TimeCapsuleStats {
-  total: number;
-  pending: number;
   delivered: number;
+  failed: number;
+  pending: number;
   scheduled_for_date: number;
   scheduled_on_death: number;
-  failed: number;
+  total: number;
 }

@@ -7,7 +7,9 @@ test.describe('Advanced Animations and Micro-Interactions', () => {
     await authHelper.signIn();
   });
 
-  test('should display enhanced buttons with personality-aware animations', async ({ page }) => {
+  test('should display enhanced buttons with personality-aware animations', async ({
+    page,
+  }) => {
     await page.click('[data-testid="dashboard-link"]');
 
     // Check for enhanced buttons
@@ -33,7 +35,9 @@ test.describe('Advanced Animations and Micro-Interactions', () => {
     }
   });
 
-  test('should show personality-adaptive button animations', async ({ page }) => {
+  test('should show personality-adaptive button animations', async ({
+    page,
+  }) => {
     const personalityModes = ['empathetic', 'pragmatic', 'adaptive'];
 
     for (const mode of personalityModes) {
@@ -45,7 +49,9 @@ test.describe('Advanced Animations and Micro-Interactions', () => {
       await page.click('[data-testid="dashboard-link"]');
 
       // Find personality buttons
-      const personalityButtons = page.locator('[data-testid*="personality-button"]');
+      const personalityButtons = page.locator(
+        '[data-testid*="personality-button"]'
+      );
       const buttonCount = await personalityButtons.count();
 
       if (buttonCount > 0) {
@@ -58,7 +64,7 @@ test.describe('Advanced Animations and Micro-Interactions', () => {
         // Test hover animation timing
         await button.hover();
 
-        const animationDuration = await button.evaluate((el) => {
+        const animationDuration = await button.evaluate(el => {
           const style = window.getComputedStyle(el);
           return style.transitionDuration || style.animationDuration;
         });
@@ -78,7 +84,9 @@ test.describe('Advanced Animations and Micro-Interactions', () => {
     }
   });
 
-  test('should display enhanced form inputs with validation animations', async ({ page }) => {
+  test('should display enhanced form inputs with validation animations', async ({
+    page,
+  }) => {
     // Navigate to a form page (settings or profile)
     await page.click('[data-testid="settings-link"]');
 
@@ -93,7 +101,7 @@ test.describe('Advanced Animations and Micro-Interactions', () => {
       await firstInput.focus();
 
       // Should show focus ring or highlight animation
-      const focusRing = await firstInput.evaluate((el) => {
+      const focusRing = await firstInput.evaluate(el => {
         const style = window.getComputedStyle(el);
         return style.boxShadow || style.borderColor || style.outline;
       });
@@ -125,7 +133,9 @@ test.describe('Advanced Animations and Micro-Interactions', () => {
     }
   });
 
-  test('should display enhanced cards with interactive animations', async ({ page }) => {
+  test('should display enhanced cards with interactive animations', async ({
+    page,
+  }) => {
     await page.click('[data-testid="dashboard-link"]');
 
     // Find enhanced cards
@@ -136,7 +146,7 @@ test.describe('Advanced Animations and Micro-Interactions', () => {
       const firstCard = enhancedCards.first();
 
       // Test hover lift effect
-      const initialTransform = await firstCard.evaluate((el) => {
+      const initialTransform = await firstCard.evaluate(el => {
         return window.getComputedStyle(el).transform;
       });
 
@@ -145,7 +155,7 @@ test.describe('Advanced Animations and Micro-Interactions', () => {
       // Wait for animation to complete
       await page.waitForTimeout(500);
 
-      const hoverTransform = await firstCard.evaluate((el) => {
+      const hoverTransform = await firstCard.evaluate(el => {
         return window.getComputedStyle(el).transform;
       });
 
@@ -157,14 +167,16 @@ test.describe('Advanced Animations and Micro-Interactions', () => {
       await firstCard.click();
 
       // Should show click/press animation
-      const pressedTransform = await firstCard.evaluate((el) => {
+      const pressedTransform = await firstCard.evaluate(el => {
         return window.getComputedStyle(el).transform;
       });
       expect(pressedTransform).toMatch(/scale|translate/);
     }
   });
 
-  test('should show personality-adaptive card interaction animations', async ({ page }) => {
+  test('should show personality-adaptive card interaction animations', async ({
+    page,
+  }) => {
     const personalityModes = ['empathetic', 'pragmatic', 'adaptive'];
 
     for (const mode of personalityModes) {
@@ -176,7 +188,9 @@ test.describe('Advanced Animations and Micro-Interactions', () => {
       await page.click('[data-testid="dashboard-link"]');
 
       // Find personality cards
-      const personalityCards = page.locator('[data-testid*="personality-card"]');
+      const personalityCards = page.locator(
+        '[data-testid*="personality-card"]'
+      );
       const cardCount = await personalityCards.count();
 
       if (cardCount > 0) {
@@ -197,12 +211,12 @@ test.describe('Advanced Animations and Micro-Interactions', () => {
         await card.hover();
 
         // Check for personality-specific hover effects
-        const hoverEffect = await card.evaluate((el) => {
+        const hoverEffect = await card.evaluate(el => {
           const style = window.getComputedStyle(el);
           return {
             transform: style.transform,
             boxShadow: style.boxShadow,
-            scale: style.scale
+            scale: style.scale,
           };
         });
 
@@ -211,7 +225,9 @@ test.describe('Advanced Animations and Micro-Interactions', () => {
     }
   });
 
-  test('should display loading animations with personality adaptation', async ({ page }) => {
+  test('should display loading animations with personality adaptation', async ({
+    page,
+  }) => {
     // Navigate to dashboard and look for loading states
     await page.click('[data-testid="dashboard-link"]');
 
@@ -224,7 +240,7 @@ test.describe('Advanced Animations and Micro-Interactions', () => {
       await expect(loadingElement).toBeVisible();
 
       // Check for loading animation
-      const animationName = await loadingElement.evaluate((el) => {
+      const animationName = await loadingElement.evaluate(el => {
         const style = window.getComputedStyle(el);
         return style.animationName;
       });
@@ -243,12 +259,16 @@ test.describe('Advanced Animations and Micro-Interactions', () => {
       await page.click('[data-testid="legacy-link"]');
 
       // Check for personality-specific loading animation
-      const personalityLoader = page.locator(`[data-testid*="loading-${mode}"]`);
+      const personalityLoader = page.locator(
+        `[data-testid*="loading-${mode}"]`
+      );
       if (await personalityLoader.isVisible()) {
         await expect(personalityLoader).toBeVisible();
 
         // Check animation type
-        const loaderType = await personalityLoader.getAttribute('data-animation-type');
+        const loaderType = await personalityLoader.getAttribute(
+          'data-animation-type'
+        );
 
         if (mode === 'empathetic') {
           expect(['heartbeat', 'firefly', 'pulse']).toContain(loaderType);
@@ -261,18 +281,31 @@ test.describe('Advanced Animations and Micro-Interactions', () => {
     }
   });
 
-  test('should show micro-interaction system with 12+ animation types', async ({ page }) => {
+  test('should show micro-interaction system with 12+ animation types', async ({
+    page,
+  }) => {
     await page.click('[data-testid="dashboard-link"]');
 
     // Test different micro-interaction types
     const microAnimationTypes = [
-      'hover-lift', 'hover-scale', 'hover-tilt', 'hover-glow',
-      'click-bounce', 'click-ripple', 'click-shake', 'focus-ring',
-      'slide-in', 'fade-in-up', 'fade-in-left', 'scale-in'
+      'hover-lift',
+      'hover-scale',
+      'hover-tilt',
+      'hover-glow',
+      'click-bounce',
+      'click-ripple',
+      'click-shake',
+      'focus-ring',
+      'slide-in',
+      'fade-in-up',
+      'fade-in-left',
+      'scale-in',
     ];
 
     for (const animationType of microAnimationTypes) {
-      const animatedElements = page.locator(`[data-animation="${animationType}"]`);
+      const animatedElements = page.locator(
+        `[data-animation="${animationType}"]`
+      );
       const elementCount = await animatedElements.count();
 
       if (elementCount > 0) {
@@ -283,11 +316,10 @@ test.describe('Advanced Animations and Micro-Interactions', () => {
           await element.hover();
           await page.waitForTimeout(200);
 
-          const transform = await element.evaluate((el) => {
+          const transform = await element.evaluate(el => {
             return window.getComputedStyle(el).transform;
           });
           expect(transform).not.toBe('none');
-
         } else if (animationType.includes('click')) {
           await element.click();
           await page.waitForTimeout(200);
@@ -295,12 +327,11 @@ test.describe('Advanced Animations and Micro-Interactions', () => {
           // Should have animation classes
           const classes = await element.getAttribute('class');
           expect(classes).toMatch(/animate|transition|transform/);
-
         } else if (animationType.includes('focus')) {
           if (await element.isEditable()) {
             await element.focus();
 
-            const outline = await element.evaluate((el) => {
+            const outline = await element.evaluate(el => {
               return window.getComputedStyle(el).outline;
             });
             expect(outline).not.toBe('none');
@@ -310,7 +341,10 @@ test.describe('Advanced Animations and Micro-Interactions', () => {
     }
   });
 
-  test('should respect reduced motion preferences', async ({ page, context }) => {
+  test('should respect reduced motion preferences', async ({
+    page,
+    context,
+  }) => {
     // Enable reduced motion preference
     await context.addInitScript(() => {
       Object.defineProperty(window, 'matchMedia', {
@@ -361,7 +395,7 @@ test.describe('Advanced Animations and Micro-Interactions', () => {
       // Test that hover effects are minimal
       await element.hover();
 
-      const animationDuration = await element.evaluate((el) => {
+      const animationDuration = await element.evaluate(el => {
         const style = window.getComputedStyle(el);
         return style.animationDuration || style.transitionDuration;
       });
@@ -388,7 +422,7 @@ test.describe('Advanced Animations and Micro-Interactions', () => {
         // Check for stagger delays
         for (let i = 0; i < Math.min(itemCount, 3); i++) {
           const item = listItems.nth(i);
-          const animationDelay = await item.evaluate((el) => {
+          const animationDelay = await item.evaluate(el => {
             return window.getComputedStyle(el).animationDelay;
           });
 
@@ -417,11 +451,11 @@ test.describe('Advanced Animations and Micro-Interactions', () => {
         // Check for page transition animation
         const pageContent = page.locator('[data-testid="page-content"]');
         if (await pageContent.isVisible()) {
-          const animationState = await pageContent.evaluate((el) => {
+          const animationState = await pageContent.evaluate(el => {
             const style = window.getComputedStyle(el);
             return {
               opacity: style.opacity,
-              transform: style.transform
+              transform: style.transform,
             };
           });
 
@@ -433,7 +467,9 @@ test.describe('Advanced Animations and Micro-Interactions', () => {
     }
   });
 
-  test('should show modal and sheet transition animations', async ({ page }) => {
+  test('should show modal and sheet transition animations', async ({
+    page,
+  }) => {
     await page.click('[data-testid="dashboard-link"]');
 
     // Test modal animations
@@ -447,12 +483,12 @@ test.describe('Advanced Animations and Micro-Interactions', () => {
       // Check for modal appearance animation
       const modal = page.locator('[data-testid="modal-content"]');
       if (await modal.isVisible()) {
-        const modalAnimation = await modal.evaluate((el) => {
+        const modalAnimation = await modal.evaluate(el => {
           const style = window.getComputedStyle(el);
           return {
             opacity: style.opacity,
             transform: style.transform,
-            animation: style.animation
+            animation: style.animation,
           };
         });
 
@@ -471,11 +507,15 @@ test.describe('Advanced Animations and Micro-Interactions', () => {
     }
   });
 
-  test('should show progress and milestone celebration animations', async ({ page }) => {
+  test('should show progress and milestone celebration animations', async ({
+    page,
+  }) => {
     await page.click('[data-testid="dashboard-link"]');
 
     // Look for progress animations
-    const progressElements = page.locator('[data-testid*="progress-animation"]');
+    const progressElements = page.locator(
+      '[data-testid*="progress-animation"]'
+    );
     const progressCount = await progressElements.count();
 
     if (progressCount > 0) {
@@ -485,7 +525,7 @@ test.describe('Advanced Animations and Micro-Interactions', () => {
       // Check for progress bar animation
       const progressBar = progress.locator('[data-testid="progress-bar"]');
       if (await progressBar.isVisible()) {
-        const width = await progressBar.evaluate((el) => {
+        const width = await progressBar.evaluate(el => {
           return window.getComputedStyle(el).width;
         });
         expect(width).not.toBe('0px');
@@ -493,7 +533,9 @@ test.describe('Advanced Animations and Micro-Interactions', () => {
     }
 
     // Test milestone celebration trigger
-    const celebrationTrigger = page.locator('[data-testid="trigger-celebration"]');
+    const celebrationTrigger = page.locator(
+      '[data-testid="trigger-celebration"]'
+    );
     if (await celebrationTrigger.isVisible()) {
       await celebrationTrigger.click();
 

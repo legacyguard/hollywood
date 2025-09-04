@@ -17,11 +17,12 @@
     "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["web/src/*"]
     }
   },
-  "include": ["src"],
+  "include": ["web/src", "packages/*/src"],
   "exclude": [
+    "mobile/**",
     "src/stories/**",
     "src/components/family/**",
     "src/services/will*.ts"

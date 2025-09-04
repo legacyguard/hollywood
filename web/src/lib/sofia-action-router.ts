@@ -7,16 +7,21 @@ import type { DocumentFilter } from '../contexts/DocumentFilterContext';
 
 export interface SofiaActionContext {
   navigate: NavigateFunction;
-  userId?: string;
-  setDocumentFilter?: (filter: DocumentFilter) => void;
   onSofiaMessage?: (userMessage: string, sofiaResponse: string) => void;
+  setDocumentFilter?: (filter: DocumentFilter) => void;
+  userId?: string;
 }
 
 export const executeSofiaAction = async (
   action: SofiaAction,
   context: SofiaActionContext
 ): Promise<void> => {
-  const { navigate, userId: _userId, setDocumentFilter, onSofiaMessage } = context;
+  const {
+    navigate,
+    userId: _userId,
+    setDocumentFilter,
+    onSofiaMessage,
+  } = context;
 
   switch (action.actionId) {
     case 'navigate':
@@ -167,9 +172,9 @@ export const executeSofiaAction = async (
       navigate('/vault');
 
       const { searchTerm, category, matchedCount } = action.payload as {
-        searchTerm: string;
         category: string;
         matchedCount: number;
+        searchTerm: string;
       };
 
       if (setDocumentFilter) {
@@ -217,9 +222,9 @@ export const executeSofiaAction = async (
       navigate('/vault');
 
       const { searchTerm, category, documentIds } = action.payload as {
-        searchTerm: string;
         category: string;
         documentIds: string[];
+        searchTerm: string;
       };
 
       // Apply the smart filter
@@ -244,8 +249,8 @@ export const executeSofiaAction = async (
     case 'celebrate_milestone': {
       // Celebrate milestone achievement
       const { milestoneName, milestoneDescription } = action.payload as {
-        milestoneName: string;
         milestoneDescription: string;
+        milestoneName: string;
       };
 
       if (onSofiaMessage) {
@@ -255,7 +260,9 @@ export const executeSofiaAction = async (
         );
       }
 
-      toast.success(i18n.t('features.sofia.guidance:milestones.unlocked', { milestoneName }));
+      toast.success(
+        i18n.t('features.sofia.guidance:milestones.unlocked', { milestoneName })
+      );
       break;
     }
 
@@ -275,7 +282,9 @@ export const executeSofiaAction = async (
         );
       }
 
-      toast.success(i18n.t('features.sofia.guidance:challenges.started', { challengeTitle }));
+      toast.success(
+        i18n.t('features.sofia.guidance:challenges.started', { challengeTitle })
+      );
       break;
     }
 

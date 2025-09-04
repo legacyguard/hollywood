@@ -5,11 +5,11 @@
  */
 
 interface CryptoKeyMetadata {
-  id: string;
   algorithm: string;
-  keyUsages: string[];
   createdAt: string;
   expiresAt?: string;
+  id: string;
+  keyUsages: string[];
 }
 
 class SecureCryptoStore {
@@ -220,7 +220,7 @@ class SecureCryptoStore {
 
       request.onsuccess = () => {
         const keyIds = request.result;
-        const promises = keyIds.map(id => this.removeKey(id));
+        const promises = keyIds.map(id => this.removeKey(id as string));
         Promise.all(promises).then(() => resolve());
       };
 

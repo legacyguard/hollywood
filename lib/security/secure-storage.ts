@@ -6,7 +6,10 @@
 import { nanoid } from 'nanoid';
 
 // Encryption key derivation
-async function deriveKey(password: string, salt: Uint8Array): Promise<CryptoKey> {
+async function deriveKey(
+  password: string,
+  salt: Uint8Array
+): Promise<CryptoKey> {
   const encoder = new TextEncoder();
   const passwordBuffer = encoder.encode(password);
   const keyMaterial = await crypto.subtle.importKey(
@@ -22,7 +25,7 @@ async function deriveKey(password: string, salt: Uint8Array): Promise<CryptoKey>
       name: 'PBKDF2',
       salt: salt as BufferSource,
       iterations: 100000,
-      hash: 'SHA-256'
+      hash: 'SHA-256',
     },
     keyMaterial,
     { name: 'AES-GCM', length: 256 },
@@ -32,7 +35,10 @@ async function deriveKey(password: string, salt: Uint8Array): Promise<CryptoKey>
 }
 
 // Encrypt data
-async function encryptData(data: string, password: string): Promise<{
+async function encryptData(
+  data: string,
+  password: string
+): Promise<{
   encrypted: ArrayBuffer;
   salt: Uint8Array;
   iv: Uint8Array;
@@ -106,7 +112,7 @@ export class SecureStorage {
 
     this.memoryStore.set(key, {
       value,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
 
     if (expiryMs) {
@@ -129,13 +135,17 @@ export class SecureStorage {
   /**
    * Store encrypted data in sessionStorage
    */
-  public async setSecureSession(key: string, value: unknown, expiryMinutes: number = 30): Promise<void> {
+  public async setSecureSession(
+    key: string,
+    value: unknown,
+    expiryMinutes: number = 30
+  ): Promise<void> {
     if (typeof window === 'undefined') return;
 
     try {
       const data = JSON.stringify({
         value,
-        expiry: Date.now() + (expiryMinutes * 60 * 1000)
+        expiry: Date.now() + expiryMinutes * 60 * 1000,
       });
 
       const { encrypted, salt, iv } = await encryptData(data, this.sessionKey);
@@ -143,7 +153,7 @@ export class SecureStorage {
       const storageData = {
         e: Array.from(new Uint8Array(encrypted)),
         s: Array.from(salt),
-        i: Array.from(iv)
+        i: Array.from(iv),
       };
 
       sessionStorage.setItem(`sec_${key}`, JSON.stringify(storageData));
@@ -186,14 +196,18 @@ export class SecureStorage {
   /**
    * Store data in IndexedDB with encryption
    */
-  public async setSecureLocal(key: string, value: unknown, expiryDays: number = 7): Promise<void> {
+  public async setSecureLocal(
+    key: string,
+    value: unknown,
+    expiryDays: number = 7
+  ): Promise<void> {
     if (typeof window === 'undefined') return;
 
     try {
       const db = await this.openIndexedDB();
       const data = JSON.stringify({
         value,
-        expiry: Date.now() + (expiryDays * 24 * 60 * 60 * 1000)
+        expiry: Date.now() + expiryDays * 24 * 60 * 60 * 1000,
       });
 
       const { encrypted, salt, iv } = await encryptData(data, this.sessionKey);
@@ -206,10 +220,10 @@ export class SecureStorage {
         encrypted: Array.from(new Uint8Array(encrypted)),
         salt: Array.from(salt),
         iv: Array.from(iv),
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
 
-      await new Promise((resolve) => {
+      await new Promise(resolve => {
         tx.oncomplete = () => resolve(undefined);
       });
     } catch (error) {
@@ -229,7 +243,11 @@ export class SecureStorage {
       const store = tx.objectStore('secure_store');
 
       const request = store.get(key);
-      const data = await new Promise<{ encrypted: number[]; salt: number[]; iv: number[] } | null>((resolve) => {
+      const data = await new Promise<{
+        encrypted: number[];
+        salt: number[];
+        iv: number[];
+      } | null>(resolve => {
         request.onsuccess = () => resolve(request.result);
         request.onerror = () => resolve(null);
       });
@@ -337,7 +355,7 @@ export class SecureStorage {
       request.onerror = () => reject(request.error);
       request.onsuccess = () => resolve(request.result);
 
-      request.onupgradeneeded = (event) => {
+      request.onupgradeneeded = event => {
         const db = (event.target as IDBOpenDBRequest).result;
         if (!db.objectStoreNames.contains('secure_store')) {
           db.createObjectStore('secure_store', { keyPath: 'key' });
@@ -352,7 +370,7 @@ export class SecureStorage {
       const tx = db.transaction(['secure_store'], 'readwrite');
       const store = tx.objectStore('secure_store');
       store.delete(key);
-      await new Promise((resolve) => {
+      await new Promise(resolve => {
         tx.oncomplete = () => resolve(undefined);
       });
     } catch (error) {
@@ -366,7 +384,7 @@ export class SecureStorage {
       const tx = db.transaction(['secure_store'], 'readwrite');
       const store = tx.objectStore('secure_store');
       store.clear();
-      await new Promise((resolve) => {
+      await new Promise(resolve => {
         tx.oncomplete = () => resolve(undefined);
       });
     } catch (error) {
@@ -397,14 +415,19 @@ export async function getAuthToken(): Promise<string | null> {
 /**
  * Store user session data
  */
-export async function storeUserSession(userData: Record<string, unknown>): Promise<void> {
+export async function storeUserSession(
+  userData: Record<string, unknown>
+): Promise<void> {
   await secureStorage.setSecureSession('user_session', userData, 120); // 2 hours expiry
 }
 
 /**
  * Get user session data
  */
-export async function getUserSession(): Promise<Record<string, unknown> | null> {
+export async function getUserSession(): Promise<Record<
+  string,
+  unknown
+> | null> {
   return secureStorage.getSecureSession('user_session');
 }
 

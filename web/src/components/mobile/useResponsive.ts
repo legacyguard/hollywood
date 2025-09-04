@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 /**
  * Hook for responsive utilities
@@ -9,7 +9,7 @@ export function useResponsive() {
     isTablet: false,
     isDesktop: false,
     width: 0,
-    height: 0
+    height: 0,
   });
 
   useEffect(() => {
@@ -22,7 +22,7 @@ export function useResponsive() {
         isTablet: width >= 768 && width < 1024,
         isDesktop: width >= 1024,
         width,
-        height
+        height,
       });
     };
 
@@ -51,14 +51,15 @@ export function useDeviceCapabilities() {
       type: 'unknown',
       effectiveType: 'unknown',
       downlink: 0,
-      rtt: 0
-    }
+      rtt: 0,
+    },
   });
 
   useEffect(() => {
     const updateCapabilities = () => {
       // Touch screen detection
-      const hasTouchScreen = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      const hasTouchScreen =
+        'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
       // Hover support detection
       const hasHoverSupport = window.matchMedia('(hover: hover)').matches;
@@ -70,24 +71,30 @@ export function useDeviceCapabilities() {
       const hasGeolocation = 'geolocation' in navigator;
 
       // Camera support
-      const hasCamera = 'mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices;
+      const hasCamera =
+        'mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices;
 
       // Notifications support
       const hasNotifications = 'Notification' in window;
 
       // Network connection info
-      const connection = (navigator as any).connection || (navigator as any).mozConnection || (navigator as any).webkitConnection;
-      const connectionInfo = connection ? {
-        type: connection.type || 'unknown',
-        effectiveType: connection.effectiveType || 'unknown',
-        downlink: connection.downlink || 0,
-        rtt: connection.rtt || 0
-      } : {
-        type: 'unknown',
-        effectiveType: 'unknown',
-        downlink: 0,
-        rtt: 0
-      };
+      const connection =
+        (navigator as any).connection ||
+        (navigator as any).mozConnection ||
+        (navigator as any).webkitConnection;
+      const connectionInfo = connection
+        ? {
+            type: connection.type || 'unknown',
+            effectiveType: connection.effectiveType || 'unknown',
+            downlink: connection.downlink || 0,
+            rtt: connection.rtt || 0,
+          }
+        : {
+            type: 'unknown',
+            effectiveType: 'unknown',
+            downlink: 0,
+            rtt: 0,
+          };
 
       setCapabilities({
         hasTouchScreen,
@@ -97,7 +104,7 @@ export function useDeviceCapabilities() {
         hasCamera,
         hasNotifications,
         isOnline: navigator.onLine,
-        connection: connectionInfo
+        connection: connectionInfo,
       });
     };
 
@@ -133,7 +140,7 @@ export function useSafeArea() {
     top: 0,
     right: 0,
     bottom: 0,
-    left: 0
+    left: 0,
   });
 
   useEffect(() => {
@@ -141,10 +148,18 @@ export function useSafeArea() {
       const computedStyle = getComputedStyle(document.documentElement);
 
       setSafeArea({
-        top: parseInt(computedStyle.getPropertyValue('--safe-area-inset-top') || '0'),
-        right: parseInt(computedStyle.getPropertyValue('--safe-area-inset-right') || '0'),
-        bottom: parseInt(computedStyle.getPropertyValue('--safe-area-inset-bottom') || '0'),
-        left: parseInt(computedStyle.getPropertyValue('--safe-area-inset-left') || '0')
+        top: parseInt(
+          computedStyle.getPropertyValue('--safe-area-inset-top') || '0'
+        ),
+        right: parseInt(
+          computedStyle.getPropertyValue('--safe-area-inset-right') || '0'
+        ),
+        bottom: parseInt(
+          computedStyle.getPropertyValue('--safe-area-inset-bottom') || '0'
+        ),
+        left: parseInt(
+          computedStyle.getPropertyValue('--safe-area-inset-left') || '0'
+        ),
       });
     };
 
@@ -168,18 +183,19 @@ export function useOrientation() {
   const [orientation, setOrientation] = useState({
     angle: 0,
     isPortrait: true,
-    isLandscape: false
+    isLandscape: false,
   });
 
   useEffect(() => {
     const updateOrientation = () => {
-      const angle = (screen as any).orientation?.angle || window.orientation || 0;
+      const angle =
+        (screen as any).orientation?.angle || window.orientation || 0;
       const isPortrait = window.innerHeight > window.innerWidth;
 
       setOrientation({
         angle,
         isPortrait,
-        isLandscape: !isPortrait
+        isLandscape: !isPortrait,
       });
     };
 

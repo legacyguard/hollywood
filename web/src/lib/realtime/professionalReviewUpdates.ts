@@ -8,36 +8,42 @@ import type { RealtimeChannel } from '@supabase/supabase-js';
 import { toast } from '@/hooks/use-toast';
 
 export interface ReviewUpdateData {
-  review_id: string;
-  document_id: string;
-  status: 'requested' | 'in_progress' | 'completed' | 'cancelled';
-  reviewer_name?: string;
-  progress_percentage?: number;
-  findings?: any[];
-  recommendations?: any[];
   completion_date?: string;
+  document_id: string;
+  findings?: any[];
+  progress_percentage?: number;
+  recommendations?: any[];
+  review_id: string;
+  reviewer_name?: string;
   score?: number;
+  status: 'cancelled' | 'completed' | 'in_progress' | 'requested';
 }
 
 export interface ReviewNotification {
-  id: string;
-  type: 'status_change' | 'progress_update' | 'completion' | 'new_finding';
-  title: string;
-  message: string;
   data: ReviewUpdateData;
-  timestamp: string;
+  id: string;
+  message: string;
   read: boolean;
+  timestamp: string;
+  title: string;
+  type: 'completion' | 'new_finding' | 'progress_update' | 'status_change';
 }
 
 class ProfessionalReviewRealtimeService {
-  private channel: RealtimeChannel | null = null;
+  private channel: null | RealtimeChannel = null;
   private callbacks: Map<string, (data: ReviewUpdateData) => void> = new Map();
-  private notificationCallbacks: Map<string, (notification: ReviewNotification) => void> = new Map();
+  private notificationCallbacks: Map<
+    string,
+    (notification: ReviewNotification) => void
+  > = new Map();
 
   /**
    * Subscribe to real-time review updates for a specific user
    */
-  async subscribeToUserReviews(userId: string, callback: (data: ReviewUpdateData) => void): Promise<void> {
+  async subscribeToUserReviews(
+    userId: string,
+    callback: (data: ReviewUpdateData) => void
+  ): Promise<void> {
     try {
       this.callbacks.set(userId, callback);
 
@@ -50,9 +56,9 @@ class ProfessionalReviewRealtimeService {
             event: '*',
             schema: 'public',
             table: 'documents',
-            filter: `user_id=eq.${userId}`
+            filter: `user_id=eq.${userId}`,
           },
-          (payload) => {
+          payload => {
             this.handleReviewUpdate(payload);
           }
         )
@@ -62,9 +68,9 @@ class ProfessionalReviewRealtimeService {
             event: '*',
             schema: 'public',
             table: 'professional_reviews',
-            filter: `user_id=eq.${userId}`
+            filter: `user_id=eq.${userId}`,
           },
-          (payload) => {
+          payload => {
             this.handleReviewTableUpdate(payload);
           }
         )
@@ -79,7 +85,10 @@ class ProfessionalReviewRealtimeService {
   /**
    * Subscribe to review notifications
    */
-  subscribeToNotifications(userId: string, callback: (notification: ReviewNotification) => void): void {
+  subscribeToNotifications(
+    userId: string,
+    callback: (notification: ReviewNotification) => void
+  ): void {
     this.notificationCallbacks.set(userId, callback);
   }
 
@@ -105,8 +114,10 @@ class ProfessionalReviewRealtimeService {
       if (eventType === 'UPDATE' && newRecord && oldRecord) {
         // Check if professional review fields changed
         const hasReviewChange =
-          newRecord.professional_review_status !== oldRecord.professional_review_status ||
-          newRecord.professional_review_score !== oldRecord.professional_review_score ||
+          newRecord.professional_review_status !==
+            oldRecord.professional_review_status ||
+          newRecord.professional_review_score !==
+            oldRecord.professional_review_score ||
           newRecord.review_findings !== oldRecord.review_findings;
 
         if (hasReviewChange) {
@@ -114,11 +125,13 @@ class ProfessionalReviewRealtimeService {
             review_id: newRecord.id,
             document_id: newRecord.id,
             status: newRecord.professional_review_status,
-            progress_percentage: this.calculateProgressFromStatus(newRecord.professional_review_status),
+            progress_percentage: this.calculateProgressFromStatus(
+              newRecord.professional_review_status
+            ),
             findings: newRecord.review_findings || [],
             recommendations: newRecord.review_recommendations || [],
             completion_date: newRecord.professional_review_date,
-            score: newRecord.professional_review_score
+            score: newRecord.professional_review_score,
           };
 
           // Notify subscribers
@@ -157,7 +170,7 @@ class ProfessionalReviewRealtimeService {
           findings: newRecord.findings || [],
           recommendations: newRecord.recommendations || [],
           completion_date: newRecord.completion_date,
-          score: newRecord.score
+          score: newRecord.score,
         };
 
         // Notify subscribers
@@ -177,12 +190,18 @@ class ProfessionalReviewRealtimeService {
    */
   private calculateProgressFromStatus(status: string): number {
     switch (status) {
-      case 'none': return 0;
-      case 'requested': return 25;
-      case 'in_progress': return 50;
-      case 'completed': return 100;
-      case 'cancelled': return 0;
-      default: return 0;
+      case 'none':
+        return 0;
+      case 'requested':
+        return 25;
+      case 'in_progress':
+        return 50;
+      case 'completed':
+        return 100;
+      case 'cancelled':
+        return 0;
+      default:
+        return 0;
     }
   }
 
@@ -191,24 +210,34 @@ class ProfessionalReviewRealtimeService {
    */
   private createNotification(newRecord: any, oldRecord: any): void {
     try {
-      let notification: ReviewNotification | null = null;
+      let notification: null | ReviewNotification = null;
 
-      if (oldRecord.professional_review_status !== newRecord.professional_review_status) {
+      if (
+        oldRecord.professional_review_status !==
+        newRecord.professional_review_status
+      ) {
         notification = {
           id: `review_${newRecord.id}_${Date.now()}`,
           type: 'status_change',
           title: 'Review Status Updated',
-          message: this.getStatusChangeMessage(newRecord.professional_review_status),
+          message: this.getStatusChangeMessage(
+            newRecord.professional_review_status
+          ),
           data: {
             review_id: newRecord.id,
             document_id: newRecord.id,
             status: newRecord.professional_review_status,
-            progress_percentage: this.calculateProgressFromStatus(newRecord.professional_review_status)
+            progress_percentage: this.calculateProgressFromStatus(
+              newRecord.professional_review_status
+            ),
           },
           timestamp: new Date().toISOString(),
-          read: false
+          read: false,
         };
-      } else if (newRecord.professional_review_score && !oldRecord.professional_review_score) {
+      } else if (
+        newRecord.professional_review_score &&
+        !oldRecord.professional_review_score
+      ) {
         notification = {
           id: `review_${newRecord.id}_completed_${Date.now()}`,
           type: 'completion',
@@ -219,10 +248,10 @@ class ProfessionalReviewRealtimeService {
             document_id: newRecord.id,
             status: newRecord.professional_review_status,
             score: newRecord.professional_review_score,
-            completion_date: newRecord.professional_review_date
+            completion_date: newRecord.professional_review_date,
           },
           timestamp: new Date().toISOString(),
-          read: false
+          read: false,
         };
       }
 
@@ -271,7 +300,8 @@ class ProfessionalReviewRealtimeService {
       switch (data.status) {
         case 'requested':
           title = '📋 Review Requested';
-          description = 'Your document has been submitted for professional review';
+          description =
+            'Your document has been submitted for professional review';
           break;
         case 'in_progress':
           title = '⚡ Review In Progress';
@@ -304,21 +334,22 @@ class ProfessionalReviewRealtimeService {
   /**
    * Store notification in database
    */
-  private async storeNotification(notification: ReviewNotification, userId: string): Promise<void> {
+  private async storeNotification(
+    notification: ReviewNotification,
+    userId: string
+  ): Promise<void> {
     try {
       // Check if notifications table exists and store notification
-      const { error } = await supabase
-        .from('notifications')
-        .insert({
-          id: notification.id,
-          user_id: userId,
-          type: notification.type,
-          title: notification.title,
-          message: notification.message,
-          data: notification.data,
-          read: false,
-          created_at: notification.timestamp
-        });
+      const { error } = await (supabase as any).from('notifications').insert({
+        id: notification.id,
+        user_id: userId,
+        type: notification.type,
+        title: notification.title,
+        message: notification.message,
+        data: notification.data as any,
+        read: false,
+        created_at: notification.timestamp,
+      });
 
       if (error && !error.message.includes('does not exist')) {
         console.error('Failed to store notification:', error);
@@ -332,15 +363,16 @@ class ProfessionalReviewRealtimeService {
   /**
    * Send real-time update to specific user
    */
-  async broadcastUpdateToUser(userId: string, data: ReviewUpdateData): Promise<void> {
+  async broadcastUpdateToUser(
+    userId: string,
+    data: ReviewUpdateData
+  ): Promise<void> {
     try {
-      await supabase
-        .channel(`professional_reviews_${userId}`)
-        .send({
-          type: 'broadcast',
-          event: 'review_update',
-          payload: data
-        });
+      await supabase.channel(`professional_reviews_${userId}`).send({
+        type: 'broadcast',
+        event: 'review_update',
+        payload: data,
+      });
     } catch (error) {
       console.error('Failed to broadcast update to user:', error);
     }
@@ -349,7 +381,11 @@ class ProfessionalReviewRealtimeService {
   /**
    * Update review progress
    */
-  async updateReviewProgress(documentId: string, progress: number, status?: string): Promise<void> {
+  async updateReviewProgress(
+    documentId: string,
+    progress: number,
+    status?: string
+  ): Promise<void> {
     try {
       const updates: any = {};
 
@@ -390,7 +426,7 @@ class ProfessionalReviewRealtimeService {
           professional_review_score: score,
           professional_review_date: new Date().toISOString(),
           review_findings: findings,
-          review_recommendations: recommendations
+          review_recommendations: recommendations,
         })
         .eq('id', documentId);
 
@@ -406,23 +442,31 @@ class ProfessionalReviewRealtimeService {
 }
 
 // Export singleton instance
-export const professionalReviewRealtimeService = new ProfessionalReviewRealtimeService();
+export const professionalReviewRealtimeService =
+  new ProfessionalReviewRealtimeService();
 
 // React hook for using the real-time service
 export function useProfessionalReviewUpdates(userId: string) {
-  const [notifications, setNotifications] = React.useState<ReviewNotification[]>([]);
-  const [reviewUpdates, setReviewUpdates] = React.useState<ReviewUpdateData[]>([]);
+  const [notifications, setNotifications] = React.useState<
+    ReviewNotification[]
+  >([]);
+  const [reviewUpdates, setReviewUpdates] = React.useState<ReviewUpdateData[]>(
+    []
+  );
 
   React.useEffect(() => {
     // Subscribe to review updates
-    professionalReviewRealtimeService.subscribeToUserReviews(userId, (data) => {
+    professionalReviewRealtimeService.subscribeToUserReviews(userId, data => {
       setReviewUpdates(prev => [data, ...prev.slice(0, 9)]); // Keep last 10 updates
     });
 
     // Subscribe to notifications
-    professionalReviewRealtimeService.subscribeToNotifications(userId, (notification) => {
-      setNotifications(prev => [notification, ...prev]);
-    });
+    professionalReviewRealtimeService.subscribeToNotifications(
+      userId,
+      notification => {
+        setNotifications(prev => [notification, ...prev]);
+      }
+    );
 
     return () => {
       professionalReviewRealtimeService.unsubscribe();
@@ -431,7 +475,7 @@ export function useProfessionalReviewUpdates(userId: string) {
 
   const markNotificationAsRead = (notificationId: string) => {
     setNotifications(prev =>
-      prev.map(n => n.id === notificationId ? { ...n, read: true } : n)
+      prev.map(n => (n.id === notificationId ? { ...n, read: true } : n))
     );
   };
 
@@ -444,7 +488,7 @@ export function useProfessionalReviewUpdates(userId: string) {
     reviewUpdates,
     markNotificationAsRead,
     clearNotifications,
-    unreadCount: notifications.filter(n => !n.read).length
+    unreadCount: notifications.filter(n => !n.read).length,
   };
 }
 

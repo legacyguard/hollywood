@@ -2,13 +2,13 @@
 
 /**
  * LegacyGuard Social Media Image Generator
- * 
+ *
  * This script generates a 1200x630px PNG image for social media sharing.
- * 
+ *
  * Requirements:
  * - Node.js with Canvas support
  * - Install: npm install canvas
- * 
+ *
  * Usage:
  * 1. Install canvas: npm install canvas
  * 2. Run: node scripts/generate-og-image.js
@@ -63,7 +63,12 @@ function drawRoundedRect(x, y, width, height, radius) {
 }
 
 // Helper function to add shadow
-function addShadow(color = 'rgba(0, 0, 0, 0.3)', blur = 8, offsetX = 0, offsetY = 4) {
+function addShadow(
+  color = 'rgba(0, 0, 0, 0.3)',
+  blur = 8,
+  offsetX = 0,
+  offsetY = 4
+) {
   ctx.shadowColor = color;
   ctx.shadowBlur = blur;
   ctx.shadowOffsetX = offsetX;
@@ -84,7 +89,7 @@ function drawImage() {
   const bgGradient = createGradient(0, 0, width, height, [
     '#0f172a',
     '#1e293b',
-    '#334155'
+    '#334155',
   ]);
   ctx.fillStyle = bgGradient;
   ctx.fillRect(0, 0, width, height);
@@ -92,7 +97,7 @@ function drawImage() {
   // Background pattern circles
   const circleGradient1 = createRadialGradient(240, 504, 0, 240, 504, 120, [
     'rgba(59, 130, 246, 0.1)',
-    'transparent'
+    'transparent',
   ]);
   ctx.fillStyle = circleGradient1;
   ctx.beginPath();
@@ -101,7 +106,7 @@ function drawImage() {
 
   const circleGradient2 = createRadialGradient(960, 126, 0, 960, 126, 100, [
     'rgba(16, 185, 129, 0.1)',
-    'transparent'
+    'transparent',
   ]);
   ctx.fillStyle = circleGradient2;
   ctx.beginPath();
@@ -110,7 +115,7 @@ function drawImage() {
 
   const circleGradient3 = createRadialGradient(480, 252, 0, 480, 252, 80, [
     'rgba(139, 92, 246, 0.05)',
-    'transparent'
+    'transparent',
   ]);
   ctx.fillStyle = circleGradient3;
   ctx.beginPath();
@@ -121,10 +126,10 @@ function drawImage() {
   ctx.font = '48px Arial';
   ctx.fillStyle = 'rgba(59, 130, 246, 0.1)';
   ctx.fillText('📄', 120, 189);
-  
+
   ctx.font = '40px Arial';
   ctx.fillText('🔒', 1080, 252);
-  
+
   ctx.font = '36px Arial';
   ctx.fillText('👨‍👩‍👧‍👦', 240, 504);
 
@@ -133,11 +138,14 @@ function drawImage() {
   const logoY = height / 2 - 40;
 
   // Logo icon background
-  const logoGradient = createGradient(logoX - 40, logoY - 40, logoX + 40, logoY + 40, [
-    '#3b82f6',
-    '#1d4ed8'
-  ]);
-  
+  const logoGradient = createGradient(
+    logoX - 40,
+    logoY - 40,
+    logoX + 40,
+    logoY + 40,
+    ['#3b82f6', '#1d4ed8']
+  );
+
   addShadow();
   ctx.fillStyle = logoGradient;
   drawRoundedRect(logoX - 40, logoY - 40, 80, 80, 20);
@@ -163,24 +171,32 @@ function drawImage() {
   ctx.fillStyle = '#e2e8f0';
   ctx.textAlign = 'center';
   addShadow();
-  ctx.fillText('Your Legacy, Secured. Your Family, Protected.', logoX, logoY + 105);
+  ctx.fillText(
+    'Your Legacy, Secured. Your Family, Protected.',
+    logoX,
+    logoY + 105
+  );
   removeShadow();
 
   // Features
-  const features = ['AI-Powered Security', 'Family Protection', 'Document Management'];
+  const features = [
+    'AI-Powered Security',
+    'Family Protection',
+    'Document Management',
+  ];
   const featureY = logoY + 165;
-  
+
   ctx.font = '18px Arial';
   ctx.textAlign = 'center';
-  
+
   features.forEach((feature, index) => {
     const x = logoX + (index - 1) * 200;
-    
+
     // Checkmark
     ctx.fillStyle = '#10b981';
     ctx.font = 'bold 18px Arial';
     ctx.fillText('✓', x - 10, featureY);
-    
+
     // Feature text
     ctx.fillStyle = '#cbd5e1';
     ctx.font = '18px Arial';
@@ -191,7 +207,7 @@ function drawImage() {
   const accentGradient = createGradient(0, height - 6, width, height - 6, [
     '#3b82f6',
     '#10b981',
-    '#8b5cf6'
+    '#8b5cf6',
   ]);
   ctx.fillStyle = accentGradient;
   ctx.fillRect(0, height - 6, width, 6);
@@ -199,7 +215,7 @@ function drawImage() {
   // Subtle grid pattern
   ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
   ctx.lineWidth = 1;
-  
+
   // Horizontal lines
   for (let i = 0; i <= 5; i++) {
     const y = (height / 5) * i;
@@ -208,7 +224,7 @@ function drawImage() {
     ctx.lineTo(width, y);
     ctx.stroke();
   }
-  
+
   // Vertical lines
   for (let i = 0; i <= 5; i++) {
     const x = (width / 5) * i;
@@ -222,28 +238,29 @@ function drawImage() {
 // Generate and save the image
 try {
   console.log('🎨 Generating LegacyGuard social media image...');
-  
+
   drawImage();
-  
+
   // Ensure public directory exists
   const publicDir = path.join(__dirname, '..', 'public');
   if (!fs.existsSync(publicDir)) {
     fs.mkdirSync(publicDir, { recursive: true });
   }
-  
+
   // Save as PNG
   const outputPath = path.join(publicDir, 'og-image.png');
   const buffer = canvas.toBuffer('image/png');
   fs.writeFileSync(outputPath, buffer);
-  
+
   console.log('✅ Image generated successfully!');
   console.log(`📁 Saved to: ${outputPath}`);
   console.log(`📏 Dimensions: ${width}x${height}px`);
   console.log(`💾 File size: ${(buffer.length / 1024).toFixed(1)}KB`);
   console.log('');
   console.log('🚀 Your social media image is ready!');
-  console.log('📱 Perfect for Facebook, LinkedIn, Twitter, and WhatsApp sharing');
-  
+  console.log(
+    '📱 Perfect for Facebook, LinkedIn, Twitter, and WhatsApp sharing'
+  );
 } catch (error) {
   console.error('❌ Error generating image:', error.message);
   console.log('');

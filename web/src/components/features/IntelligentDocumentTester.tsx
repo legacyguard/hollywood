@@ -1,7 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import { DocumentConfirmation, type DocumentAnalysisResult } from './DocumentConfirmation';
+import {
+  type DocumentAnalysisResult,
+  DocumentConfirmation,
+} from './DocumentConfirmation';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Icon } from '@/components/ui/icon-library';
@@ -86,7 +89,7 @@ const mockAnalysisResult = {
 
   processingId: 'test_processing_12345',
   processingTime: 1250,
-  
+
   // Versioning Intelligence (Phase 3) - Mock data
   potentialVersions: [
     {
@@ -98,7 +101,7 @@ const mockAnalysisResult = {
       matchReasons: ['Similar structure', 'Same utility company'],
     },
   ],
-  
+
   versioningSuggestion: {
     action: 'new_version' as const,
     confidence: 0.8,
@@ -125,23 +128,23 @@ export const IntelligentDocumentTester: React.FC = () => {
   const handleConfirm = (
     _confirmedData: DocumentAnalysisResult & {
       bundleSelection?: {
-        action: 'link' | 'none' | 'new';
-        bundleId: string | null;
-        newBundleName: string | null;
-        suggestedNewBundle: {
-          name: string;
+        action: 'link' | 'new' | 'none';
+        bundleId: null | string;
+        newBundleName: null | string;
+        suggestedNewBundle: null | {
           category: string;
-          primaryEntity: string | null;
-          entityType: string | null;
-          keywords: string[];
           confidence: number;
+          entityType: null | string;
+          keywords: string[];
+          name: string;
+          primaryEntity: null | string;
           reasoning: string;
-        } | null;
+        };
       };
       versionSelection?: {
-        action: 'replace' | 'new_version' | 'separate' | 'none';
-        versionId: string | null;
+        action: 'new_version' | 'none' | 'replace' | 'separate';
         archiveReason: string;
+        versionId: null | string;
       };
     }
   ) => {
@@ -176,7 +179,7 @@ export const IntelligentDocumentTester: React.FC = () => {
       <Card className='p-6 bg-card border-card-border max-w-2xl mx-auto'>
         <div className='flex items-center gap-3 mb-4'>
           <div className='p-2 bg-primary/10 rounded-lg'>
-            <Icon name={"play" as any} className='w-5 h-5 text-primary' />
+            <Icon name={'play' as any} className='w-5 h-5 text-primary' />
           </div>
           <div>
             <h3 className='font-semibold text-lg'>
@@ -202,14 +205,15 @@ export const IntelligentDocumentTester: React.FC = () => {
           </div>
 
           <Button onClick={handleStartTest} className='w-full gap-2'>
-            <Icon name={"play" as any} className='w-4 h-4' />
+            <Icon name={'play' as any} className='w-4 h-4' />
             Test Document Analysis Interface
           </Button>
         </div>
 
         <div className='mt-4 p-3 bg-primary/5 rounded-lg'>
           <div className='flex gap-2'>
-            <Icon name={"info" as any}
+            <Icon
+              name={'info' as any}
               className='w-4 h-4 text-primary flex-shrink-0 mt-0.5'
             />
             <div className='text-xs text-muted-foreground'>

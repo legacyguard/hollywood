@@ -3,60 +3,60 @@
 // Now uses secure server-side API to protect OpenAI API keys
 
 export interface SofiaMessage {
-  id: string;
-  role: 'user' | 'assistant';
-  content: string;
-  timestamp: Date;
-  context?: {
-    documentCount?: number;
-    guardianCount?: number;
-    completionPercentage?: number;
-    currentStep?: string;
-    userPreferences?: {
-      language?: string;
-      familyStatus?:
-        | 'single'
-        | 'partner'
-        | 'family'
-        | 'parent_care'
-        | 'business';
-    };
-  };
   // Enhanced properties for UI interactions
   actions?: ActionButton[];
-  route?: string;
+  content: string;
+  context?: {
+    completionPercentage?: number;
+    currentStep?: string;
+    documentCount?: number;
+    guardianCount?: number;
+    userPreferences?: {
+      familyStatus?:
+        | 'business'
+        | 'family'
+        | 'parent_care'
+        | 'partner'
+        | 'single';
+      language?: string;
+    };
+  };
+  id: string;
   message?: string; // Additional message content for complex responses
+  role: 'assistant' | 'user';
+  route?: string;
+  timestamp: Date;
 }
 
 // Action button interface for Sofia AI responses
 export interface ActionButton {
-  id: string;
-  text: string;
-  icon?: string;
-  category: 'navigation' | 'ui_action' | 'ai_query' | 'premium_feature';
+  category: 'ai_query' | 'navigation' | 'premium_feature' | 'ui_action';
   cost: 'free' | 'low_cost' | 'premium';
+  description?: string;
+  icon?: string;
+  id: string;
   payload?: any;
   requiresConfirmation?: boolean;
-  description?: string;
+  text: string;
 }
 
 export interface SofiaContext {
-  userId: string;
-  userName?: string;
-  documentCount: number;
-  guardianCount: number;
   completionPercentage: number;
-  recentActivity: string[];
-  familyStatus: 'single' | 'partner' | 'family' | 'parent_care' | 'business';
+  documentCount: number;
+  familyStatus: 'business' | 'family' | 'parent_care' | 'partner' | 'single';
+  guardianCount: number;
   language: string;
   // Path of Serenity milestone data
   milestoneProgress?: {
-    unlockedCount: number;
-    totalMilestones: number;
-    nextMilestone?: string;
-    hasExpiryTracking?: boolean;
     categoriesWithDocuments?: string[];
+    hasExpiryTracking?: boolean;
+    nextMilestone?: string;
+    totalMilestones: number;
+    unlockedCount: number;
   };
+  recentActivity: string[];
+  userId: string;
+  userName?: string;
 }
 
 class SofiaAI {
@@ -186,7 +186,7 @@ class SofiaAI {
   // Generate proactive suggestions based on user context
   async generateProactiveSuggestion(
     context: SofiaContext
-  ): Promise<string | null> {
+  ): Promise<null | string> {
     if (!this.initialized || !this.supabaseUrl) {
       return this.getMockProactiveSuggestion(context);
     }
@@ -219,7 +219,7 @@ class SofiaAI {
     }
   }
 
-  private getMockProactiveSuggestion(context: SofiaContext): string | null {
+  private getMockProactiveSuggestion(context: SofiaContext): null | string {
     const { documentCount, guardianCount, completionPercentage, familyStatus } =
       context;
 
@@ -339,7 +339,7 @@ export const sofiaAI = new SofiaAI();
 
 // Utility functions for managing Sofia conversations
 export function createSofiaMessage(
-  role: 'user' | 'assistant',
+  role: 'assistant' | 'user',
   content: string,
   context?: SofiaMessage['context']
 ): SofiaMessage {

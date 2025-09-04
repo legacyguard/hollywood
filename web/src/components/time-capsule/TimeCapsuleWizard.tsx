@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import {
   Dialog,
@@ -13,9 +13,9 @@ import { FadeIn } from '@/components/motion/FadeIn';
 import { toast } from 'sonner';
 import { useSupabaseWithClerk } from '@/integrations/supabase/client';
 import type {
+  DeliveryCondition,
   TimeCapsule,
   TimeCapsuleFormData,
-  DeliveryCondition,
 } from '@/types/timeCapsule';
 import type { Guardian } from '@/types/guardian';
 import { RecipientStep } from './wizard-steps/RecipientStep';
@@ -24,10 +24,10 @@ import { RecordingStep } from './wizard-steps/RecordingStep';
 import { ReviewStep } from './wizard-steps/ReviewStep';
 
 interface TimeCapsuleWizardProps {
-  isOpen: boolean;
-  onClose: () => void;
   guardians: Guardian[];
+  isOpen: boolean;
   onCapsuleCreated: (capsule: TimeCapsule) => void;
+  onClose: () => void;
 }
 
 const WIZARD_STEPS = [
@@ -236,7 +236,7 @@ export function TimeCapsuleWizard({
         last_delivery_attempt: null,
         delivery_error: null,
       };
-      
+
       onCapsuleCreated(transformedCapsule);
       handleClose();
     } catch (error) {
@@ -255,7 +255,7 @@ export function TimeCapsuleWizard({
         <DialogHeader>
           <DialogTitle className='flex items-center gap-3 text-xl'>
             <div className='w-8 h-8 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full flex items-center justify-center'>
-              <Icon name={"heart" as any} className='w-4 h-4 text-purple-600' />
+              <Icon name={'heart' as any} className='w-4 h-4 text-purple-600' />
             </div>
             Create Time Capsule
           </DialogTitle>
@@ -280,7 +280,7 @@ export function TimeCapsuleWizard({
                   }`}
                 >
                   {step.id < currentStep ? (
-                    <Icon name={"check" as any} className='w-4 h-4' />
+                    <Icon name={'check' as any} className='w-4 h-4' />
                   ) : (
                     step.id
                   )}
@@ -354,16 +354,16 @@ export function TimeCapsuleWizard({
         {/* Navigation Buttons */}
         <div className='flex justify-between pt-4 border-t'>
           <Button
-            variant="outline"
+            variant='outline'
             onClick={prevStep}
             disabled={currentStep === 1}
           >
-            <Icon name={"chevron-left" as any} className='w-4 h-4 mr-2' />
+            <Icon name={'chevron-left' as any} className='w-4 h-4 mr-2' />
             Previous
           </Button>
 
           <div className='flex gap-2'>
-            <Button variant="ghost" onClick={handleClose}>
+            <Button variant='ghost' onClick={handleClose}>
               Cancel
             </Button>
 
@@ -374,7 +374,7 @@ export function TimeCapsuleWizard({
                 className='bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white'
               >
                 Continue
-                <Icon name={"chevron-right" as any} className='w-4 h-4 ml-2' />
+                <Icon name={'chevron-right' as any} className='w-4 h-4 ml-2' />
               </Button>
             ) : (
               <Button
@@ -384,12 +384,15 @@ export function TimeCapsuleWizard({
               >
                 {isSubmitting ? (
                   <>
-                    <Icon name={"loader" as any} className='w-4 h-4 mr-2 animate-spin' />
+                    <Icon
+                      name={'loader' as any}
+                      className='w-4 h-4 mr-2 animate-spin'
+                    />
                     Sealing Capsule...
                   </>
                 ) : (
                   <>
-                    <Icon name={"archive" as any} className='w-4 h-4 mr-2' />
+                    <Icon name={'archive' as any} className='w-4 h-4 mr-2' />
                     Seal Time Capsule
                   </>
                 )}

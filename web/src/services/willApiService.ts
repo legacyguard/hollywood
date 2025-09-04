@@ -5,22 +5,26 @@
 
 import { supabase } from '../integrations/supabase/client';
 import type {
-  WillUserData,
   GeneratedWill,
   Jurisdiction,
   LanguageCode,
-  WillTemplateType
+  WillTemplateType,
+  WillUserData,
 } from '../types/will-templates';
 import { type Will } from '../types/will';
 import { willGenerationService } from './willGenerationService';
 import { willGuardianIntegration } from './willGuardianIntegration';
 
 export class WillApiService {
-
   /**
    * Create a new will in database
    */
-  async createWill(userData: WillUserData, jurisdiction: Jurisdiction, language: LanguageCode, willType: WillTemplateType): Promise<string> {
+  async createWill(
+    userData: WillUserData,
+    jurisdiction: Jurisdiction,
+    language: LanguageCode,
+    willType: WillTemplateType
+  ): Promise<string> {
     try {
       const userId = await this.getCurrentUserId();
 
@@ -36,12 +40,12 @@ export class WillApiService {
           detailLevel: 'detailed',
           languageStyle: 'formal',
           includeLegalExplanations: true,
-          generateMultipleLanguages: false
-        }
+          generateMultipleLanguages: false,
+        },
       });
 
       // Prepare will data for database
-      const willData: Partial<Will> = {
+      const willData = {
         user_id: userId,
         will_type: this.mapToDbWillType(willType),
         status: 'draft',
@@ -49,14 +53,16 @@ export class WillApiService {
         language,
         legal_framework: `${jurisdiction} Civil Code`,
 
-        // Personal information
-        testator_data: {
-          fullName: userData.personal.fullName,
-          dateOfBirth: userData.personal.dateOfBirth,
-          address: this.formatAddress(userData.personal.address),
-          citizenship: userData.personal.citizenship,
-          maritalStatus: userData.personal.maritalStatus
-        },
+        // Personal information stored in declarations
+        declarations: [
+          {
+            id: 'identity',
+            type: 'identity' as const,
+            content: `I, ${userData.personal.fullName}, born on ${userData.personal.dateOfBirth}, residing at ${this.formatAddress(userData.personal.address)}`,
+            is_mandatory: true,
+            order: 1,
+          },
+        ],
 
         // Beneficiaries
         beneficiaries: userData.beneficiaries.map(b => ({
@@ -66,85 +72,97 @@ export class WillApiService {
           relationship: b.relationship,
           date_of_birth: b.dateOfBirth,
           contact_info: b.contactInfo,
-          share_percentage: b.share.type === 'percentage' ? Number(b.share.value) : undefined,
-          conditions: b.conditions
+          share_percentage:
+            b.share.type === 'percentage' ? Number(b.share.value) : undefined,
+          conditions: b.conditions,
         })),
 
         // Assets
         asset_distributions: userData.assets.map(asset => ({
           id: asset.id,
-          asset_type: asset.type as any,
+          asset_type: asset.type,
           description: asset.description,
           estimated_value: asset.value,
           currency: asset.currency || 'EUR',
           location: asset.location,
           beneficiary_ids: [], // Will be populated based on beneficiary assignments
           distribution_type: 'equal' as const,
-          distribution_details: {}
+          distribution_details: {},
         })),
 
         // Executors
-        executor_appointments: userData.executors?.map(executor => ({
-          id: executor.id,
-          type: executor.type as any,
-          full_name: executor.name,
-          relationship: executor.relationship,
-          contact_info: executor.contactInfo,
-          professional: executor.isProfessional,
-          compensation: executor.compensation,
-          powers_granted: []
-        })) || [],
+        executor_appointments:
+          userData.executors?.map(executor => ({
+            id: executor.id,
+            type: executor.type,
+            full_name: executor.name,
+            relationship: executor.relationship,
+            contact_info: executor.contactInfo,
+            professional: executor.isProfessional,
+            compensation: executor.compensation,
+            powers_granted: [],
+          })) || [],
 
         // Guardianship
-        guardianship_appointments: userData.guardians?.map(guardianship => ({
-          id: guardianship.childId,
-          child_name: '',
-          child_date_of_birth: '',
-          primary_guardian: {
-            full_name: guardianship.primaryGuardian.name,
-            relationship: guardianship.primaryGuardian.relationship,
-            contact_info: guardianship.primaryGuardian.contactInfo
-          },
-          alternate_guardian: guardianship.alternateGuardian ? {
-            full_name: guardianship.alternateGuardian.name,
-            relationship: guardianship.alternateGuardian.relationship,
-            contact_info: guardianship.alternateGuardian.contactInfo
-          } : undefined,
-          special_instructions: guardianship.specialInstructions
-        })) || [],
+        guardianship_appointments:
+          userData.guardians?.map(guardianship => ({
+            id: guardianship.childId,
+            child_name: '',
+            child_date_of_birth: '',
+            primary_guardian: {
+              full_name: guardianship.primaryGuardian.name,
+              relationship: guardianship.primaryGuardian.relationship,
+              contact_info: guardianship.primaryGuardian.contactInfo,
+            },
+            alternate_guardian: guardianship.alternateGuardian
+              ? {
+                  full_name: guardianship.alternateGuardian.name,
+                  relationship: guardianship.alternateGuardian.relationship,
+                  contact_info: guardianship.alternateGuardian.contactInfo,
+                }
+              : undefined,
+            special_instructions: guardianship.specialInstructions,
+          })) || [],
 
         // Special instructions
         special_instructions: userData.specialInstructions.map(instruction => ({
           id: instruction.id,
-          category: instruction.type as any,
+          category: instruction.type,
           title: instruction.title,
           content: instruction.content,
-          priority: instruction.priority as any
+          priority: instruction.priority,
         })),
 
         // AI data
         ai_suggestions: generatedWill.aiSuggestions.map(suggestion => ({
           id: suggestion.id,
-          type: suggestion.type === 'optimization' ? 'improvement' :
-                suggestion.type === 'legal_consideration' ? 'legal_requirement' :
-                suggestion.type as 'improvement' | 'warning' | 'missing' | 'legal_requirement',
+          type:
+            suggestion.type === 'optimization'
+              ? 'improvement'
+              : suggestion.type === 'legal_consideration'
+                ? 'legal_requirement'
+                : (suggestion.type as
+                    | 'improvement'
+                    | 'legal_requirement'
+                    | 'missing'
+                    | 'warning'),
           category: suggestion.category,
           title: suggestion.title,
           description: suggestion.description,
           suggested_action: suggestion.suggestedAction,
           priority: suggestion.priority,
           jurisdiction_specific: suggestion.isJurisdictionSpecific,
-          created_at: new Date().toISOString()
+          created_at: new Date().toISOString(),
         })),
 
         validation_errors: generatedWill.validationResult.errors.map(error => ({
           field: error.field,
           message: error.message,
           severity: error.severity,
-          legal_reference: error.legalReference
+          legal_reference: error.legalReference,
         })),
 
-        completeness_score: generatedWill.validationResult.completenessScore
+        completeness_score: generatedWill.validationResult.completenessScore,
       };
 
       // Insert into database
@@ -163,12 +181,21 @@ export class WillApiService {
       await this.saveWillContent(data.id, generatedWill);
 
       // Sync with guardians
-      await willGuardianIntegration.syncBeneficiariesWithGuardians(userId, userData.beneficiaries);
+      await willGuardianIntegration.syncBeneficiariesWithGuardians(
+        userId,
+        userData.beneficiaries
+      );
       if (userData.executors) {
-        await willGuardianIntegration.syncExecutorsWithGuardians(userId, userData.executors);
+        await willGuardianIntegration.syncExecutorsWithGuardians(
+          userId,
+          userData.executors
+        );
       }
       if (userData.guardians) {
-        await willGuardianIntegration.syncChildGuardiansWithGuardians(userId, userData.guardians);
+        await willGuardianIntegration.syncChildGuardiansWithGuardians(
+          userId,
+          userData.guardians
+        );
       }
 
       // Create guidance entry
@@ -199,7 +226,7 @@ export class WillApiService {
         throw new Error(`Failed to fetch wills: ${error.message}`);
       }
 
-      return data || [];
+      return (data || []).map(will => this.convertDbWillToWill(will));
     } catch (error) {
       console.error('Error in getUserWills:', error);
       throw error;
@@ -209,7 +236,7 @@ export class WillApiService {
   /**
    * Get specific will by ID
    */
-  async getWill(willId: string): Promise<Will | null> {
+  async getWill(willId: string): Promise<null | Will> {
     try {
       const userId = await this.getCurrentUserId();
 
@@ -228,7 +255,7 @@ export class WillApiService {
         throw new Error(`Failed to fetch will: ${error.message}`);
       }
 
-      return data;
+      return data ? this.convertDbWillToWill(data) : null;
     } catch (error) {
       console.error('Error in getWill:', error);
       throw error;
@@ -246,7 +273,7 @@ export class WillApiService {
         .from('wills')
         .update({
           ...updates,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('id', willId)
         .eq('user_id', userId);
@@ -298,11 +325,26 @@ export class WillApiService {
       }
 
       // Convert database will back to userData format
+      const identityDeclaration = will.declarations?.find(
+        d => d.type === 'identity'
+      );
       const userData: WillUserData = {
-        personal: will.testator_data as any,
+        personal: {
+          fullName: 'Testator Name', // Extract from identity declaration if needed
+          dateOfBirth: '1970-01-01',
+          placeOfBirth: 'Unknown',
+          citizenship: 'Unknown',
+          address: {
+            street: '',
+            city: '',
+            postalCode: '',
+            country: '',
+          },
+          maritalStatus: 'single' as const,
+        },
         family: {
-          spouse: will.testator_data.maritalStatus !== 'single' ? { fullName: 'Spouse Name' } : undefined,
-          children: []
+          spouse: undefined,
+          children: [],
         },
         beneficiaries: will.beneficiaries.map(b => ({
           id: b.id,
@@ -311,85 +353,109 @@ export class WillApiService {
           dateOfBirth: b.date_of_birth,
           contactInfo: b.contact_info,
           share: {
-            type: b.share_percentage ? 'percentage' : 'equal',
-            value: b.share_percentage || 0
+            type: b.share_percentage ? 'percentage' : 'remainder',
+            value: b.share_percentage || 0,
           },
           conditions: b.conditions,
           address: {
             street: '',
             city: '',
             postalCode: '',
-            country: ''
-          }
-        })),
-        assets: will.asset_distributions.map(a => ({
-          id: a.id,
-          type: a.asset_type,
-          description: a.description,
-          value: a.estimated_value || 0,
-          currency: a.currency || 'EUR',
-          location: a.location,
-          ownershipPercentage: 100
-        })),
-        executors: will.executor_appointments.map(e => ({
-          id: e.id,
-          type: e.type,
-          name: e.full_name,
-          relationship: e.relationship,
-          address: {
-            street: '',
-            city: '',
-            postalCode: '',
-            country: ''
+            country: '',
           },
-          contactInfo: e.contact_info as any,
-          isProfessional: e.professional || false,
-          compensation: e.compensation
         })),
-        guardians: will.guardianship_appointments?.map(g => ({
-          childId: g.id,
-          primaryGuardian: {
-            id: 'primary',
-            type: 'primary' as const,
-            name: g.primary_guardian.full_name,
-            relationship: g.primary_guardian.relationship,
+        assets: will.asset_distributions.map(a => {
+          const assetTypeMap: Record<string, any> = {
+            personal: 'personal_property',
+            financial: 'bank_account',
+            digital: 'digital_asset',
+          };
+          return {
+            id: a.id,
+            type: assetTypeMap[a.asset_type] || a.asset_type,
+            description: a.description,
+            value: a.estimated_value || 0,
+            currency: a.currency || 'EUR',
+            location: a.location,
+            ownershipPercentage: 100,
+          };
+        }),
+        executors: will.executor_appointments.map(e => {
+          const executorTypeMap: Record<string, any> = {
+            'co-executor': 'co_executor',
+          };
+          return {
+            id: e.id,
+            type: executorTypeMap[e.type] || e.type,
+            name: e.full_name,
+            relationship: e.relationship,
             address: {
               street: '',
               city: '',
               postalCode: '',
-              country: ''
+              country: '',
             },
-            contactInfo: g.primary_guardian.contact_info as any,
-            isProfessional: false
-          },
-          alternateGuardian: g.alternate_guardian ? {
-            id: 'alternate',
-            type: 'alternate' as const,
-            name: g.alternate_guardian.full_name,
-            relationship: g.alternate_guardian.relationship,
-            address: {
-              street: '',
-              city: '',
-              postalCode: '',
-              country: ''
+            contactInfo: e.contact_info,
+            isProfessional: e.professional || false,
+            compensation: e.compensation,
+          };
+        }),
+        guardians:
+          will.guardianship_appointments?.map(g => ({
+            childId: g.id,
+            primaryGuardian: {
+              id: 'primary',
+              type: 'primary' as const,
+              name: g.primary_guardian.full_name,
+              relationship: g.primary_guardian.relationship,
+              address: {
+                street: '',
+                city: '',
+                postalCode: '',
+                country: '',
+              },
+              contactInfo: g.primary_guardian.contact_info,
+              isProfessional: false,
             },
-            contactInfo: g.alternate_guardian.contact_info as any,
-            isProfessional: false
-          } : undefined,
-          specialInstructions: g.special_instructions
-        })) || [],
-        specialInstructions: will.special_instructions?.map(s => ({
-          id: s.id,
-          type: s.category === 'pets' ? 'pet_care' :
-                s.category === 'business' ? 'business_succession' :
-                s.category === 'debts' ? 'other' :
-                s.category === 'taxes' ? 'other' :
-                s.category === 'charity' ? 'charitable_giving' :
-                s.category === 'other' ? 'other' : 'other' as any,
-          title: s.title,
-          content: s.content,
-          priority: s.priority
-        })) || []
+            alternateGuardian: g.alternate_guardian
+              ? {
+                  id: 'alternate',
+                  type: 'alternate' as const,
+                  name: g.alternate_guardian.full_name,
+                  relationship: g.alternate_guardian.relationship,
+                  address: {
+                    street: '',
+                    city: '',
+                    postalCode: '',
+                    country: '',
+                  },
+                  contactInfo: g.alternate_guardian.contact_info,
+                  isProfessional: false,
+                }
+              : undefined,
+            specialInstructions: g.special_instructions,
+          })) || [],
+        specialInstructions:
+          will.special_instructions?.map(s => ({
+            id: s.id,
+            type:
+              s.category === 'pets'
+                ? 'pet_care'
+                : s.category === 'business'
+                  ? 'business_succession'
+                  : s.category === 'debts'
+                    ? 'other'
+                    : s.category === 'taxes'
+                      ? 'other'
+                      : s.category === 'charity'
+                        ? 'charitable_giving'
+                        : s.category === 'other'
+                          ? 'other'
+                          : 'other',
+            title: s.title,
+            content: s.content,
+            priority: s.priority,
+          })) || [],
       };
 
       // Regenerate will
@@ -404,8 +470,8 @@ export class WillApiService {
           detailLevel: 'detailed',
           languageStyle: 'formal',
           includeLegalExplanations: true,
-          generateMultipleLanguages: false
-        }
+          generateMultipleLanguages: false,
+        },
       });
 
       // Update database with new validation results
@@ -414,20 +480,26 @@ export class WillApiService {
           field: error.field,
           message: error.message,
           severity: error.severity,
-          legal_reference: error.legalReference
+          legal_reference: error.legalReference,
         })),
         completeness_score: generatedWill.validationResult.completenessScore,
-        ai_suggestions: generatedWill.aiSuggestions.map(suggestion => ({
-          id: suggestion.id,
-          type: suggestion.type,
-          category: suggestion.category,
-          title: suggestion.title,
-          description: suggestion.description,
-          suggested_action: suggestion.suggestedAction,
-          priority: suggestion.priority,
-          jurisdiction_specific: suggestion.isJurisdictionSpecific,
-          created_at: new Date().toISOString()
-        }))
+        ai_suggestions: generatedWill.aiSuggestions.map(suggestion => {
+          const typeMap: Record<string, any> = {
+            optimization: 'improvement',
+            legal_consideration: 'legal_requirement',
+          };
+          return {
+            id: suggestion.id,
+            type: typeMap[suggestion.type] || suggestion.type,
+            category: suggestion.category,
+            title: suggestion.title,
+            description: suggestion.description,
+            suggested_action: suggestion.suggestedAction,
+            priority: suggestion.priority,
+            jurisdiction_specific: suggestion.isJurisdictionSpecific,
+            created_at: new Date().toISOString(),
+          };
+        }),
       });
 
       // Save new content
@@ -443,7 +515,9 @@ export class WillApiService {
   /**
    * Get will content (text, HTML, PDF)
    */
-  async getWillContent(willId: string): Promise<{ text: string; html: string; pdf?: ArrayBuffer }> {
+  async getWillContent(
+    willId: string
+  ): Promise<{ html: string; pdf?: ArrayBuffer; text: string }> {
     try {
       const { data, error } = await supabase.storage
         .from('user_documents')
@@ -466,20 +540,27 @@ export class WillApiService {
   /**
    * Save will content to storage
    */
-  private async saveWillContent(willId: string, generatedWill: GeneratedWill): Promise<void> {
+  private async saveWillContent(
+    willId: string,
+    generatedWill: GeneratedWill
+  ): Promise<void> {
     try {
       const content = {
         text: generatedWill.content.text,
         html: generatedWill.content.html,
-        metadata: generatedWill.metadata
+        metadata: generatedWill.metadata,
       };
 
       const { error } = await supabase.storage
         .from('user_documents')
-        .upload(`wills/${willId}/content.json`, JSON.stringify(content, null, 2), {
-          contentType: 'application/json',
-          upsert: true
-        });
+        .upload(
+          `wills/${willId}/content.json`,
+          JSON.stringify(content, null, 2),
+          {
+            contentType: 'application/json',
+            upsert: true,
+          }
+        );
 
       if (error) {
         console.error('Error saving will content:', error);
@@ -522,7 +603,7 @@ export class WillApiService {
   /**
    * Get current user (placeholder for Clerk integration)
    */
-  private async getCurrentUser(): Promise<{ id: string } | null> {
+  private async getCurrentUser(): Promise<null | { id: string }> {
     // This would integrate with your existing Clerk auth system
     // Return mock user for now
     return { id: 'user-123' };
@@ -531,27 +612,34 @@ export class WillApiService {
   /**
    * Utility methods for data mapping
    */
-  private mapToDbWillType(willType: WillTemplateType): 'simple' | 'detailed' | 'international' | 'trust' {
-    const mapping: Record<WillTemplateType, 'simple' | 'detailed' | 'international' | 'trust'> = {
-      'holographic': 'simple',
-      'allographic': 'detailed',
-      'witnessed': 'detailed',
-      'notarial': 'international'
+  private mapToDbWillType(
+    willType: WillTemplateType
+  ): 'detailed' | 'international' | 'simple' | 'trust' {
+    const mapping: Record<
+      WillTemplateType,
+      'detailed' | 'international' | 'simple' | 'trust'
+    > = {
+      holographic: 'simple',
+      allographic: 'detailed',
+      witnessed: 'detailed',
+      notarial: 'international',
     };
     return mapping[willType] || 'simple';
   }
 
   private mapFromDbWillType(dbType: string): WillTemplateType {
     const mapping: Record<string, WillTemplateType> = {
-      'simple': 'holographic',
-      'detailed': 'allographic',
-      'international': 'notarial',
-      'trust': 'notarial'
+      simple: 'holographic',
+      detailed: 'allographic',
+      international: 'notarial',
+      trust: 'notarial',
     };
     return mapping[dbType] || 'holographic';
   }
 
-  private mapBeneficiaryType(relationship: string): 'primary' | 'secondary' | 'contingent' | 'charitable' {
+  private mapBeneficiaryType(
+    relationship: string
+  ): 'charitable' | 'contingent' | 'primary' | 'secondary' {
     const familyRelationships = ['spouse', 'child', 'parent'];
     const otherRelationships = ['sibling', 'friend'];
 
@@ -567,7 +655,46 @@ export class WillApiService {
 
   private formatAddress(address: any): string {
     if (!address) return '';
-    return `${address.street || ''}, ${address.city || ''}, ${address.postalCode || ''}, ${address.country || ''}`.replace(/,\s*,/g, ',').trim();
+    return `${address.street || ''}, ${address.city || ''}, ${address.postalCode || ''}, ${address.country || ''}`
+      .replace(/,\s*,/g, ',')
+      .trim();
+  }
+
+  /**
+   * Convert database will record to Will interface
+   */
+  private convertDbWillToWill(dbWill: any): Will {
+    return {
+      id: dbWill.id,
+      user_id: dbWill.user_id,
+      will_type: dbWill.will_type,
+      status: dbWill.status,
+      version: dbWill.version || 1,
+      jurisdiction: dbWill.jurisdiction,
+      language: dbWill.language || 'en',
+      legal_framework: dbWill.legal_framework || '',
+      declarations: Array.isArray(dbWill.testator_data)
+        ? dbWill.testator_data
+        : [],
+      beneficiaries: Array.isArray(dbWill.beneficiaries)
+        ? dbWill.beneficiaries
+        : [],
+      asset_distributions: Array.isArray(dbWill.assets) ? dbWill.assets : [],
+      executor_appointments: Array.isArray(dbWill.executors)
+        ? dbWill.executors
+        : [],
+      guardianship_appointments: [],
+      special_instructions: Array.isArray(dbWill.special_instructions)
+        ? dbWill.special_instructions
+        : [],
+      validation_errors: [],
+      completeness_score: dbWill.completeness_score || 0,
+      ai_suggestions: Array.isArray(dbWill.ai_suggestions)
+        ? dbWill.ai_suggestions
+        : [],
+      created_at: dbWill.created_at,
+      updated_at: dbWill.updated_at,
+    };
   }
 }
 

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -20,15 +20,15 @@ import { toast } from 'sonner';
 import DocumentScanner from './DocumentScanner';
 import { useSupabaseWithClerk } from '@/integrations/supabase/client';
 import type {
-  ProcessedDocument,
   DocumentCategory,
   DocumentType,
+  ProcessedDocument,
 } from '@/types/ocr';
 import { adaptDbDocumentToProcessedDocument } from '@/lib/type-adapters';
 
 interface EnhancedDocumentUploaderProps {
-  onUploadComplete?: (document: ProcessedDocument) => void;
   className?: string;
+  onUploadComplete?: (document: ProcessedDocument) => void;
 }
 
 export default function EnhancedDocumentUploader({
@@ -41,14 +41,14 @@ export default function EnhancedDocumentUploader({
   const [mode, setMode] = useState<'manual' | 'scan'>('scan');
   const [isUploading, setIsUploading] = useState(false);
   const [processedDocument, setProcessedDocument] =
-    useState<ProcessedDocument | null>(null);
+    useState<null | ProcessedDocument>(null);
 
   // Manual form data
   const [manualFormData, setManualFormData] = useState({
     title: '',
     description: '',
-    category: '' as DocumentCategory | '',
-    documentType: '' as DocumentType | '',
+    category: '' as '' | DocumentCategory,
+    documentType: '' as '' | DocumentType,
     tags: '',
     expiresAt: '',
     isImportant: false,
@@ -101,16 +101,24 @@ export default function EnhancedDocumentUploader({
         // OCR-specific fields
         ocr_text: processedDocument?.ocrResult.text || null,
         ocr_confidence: processedDocument?.ocrResult?.confidence || null,
-        extracted_entities:
-          processedDocument?.ocrResult.metadata.extractedEntities
-            ? JSON.stringify(processedDocument.ocrResult.metadata.extractedEntities)
-            : null,
+        extracted_entities: processedDocument?.ocrResult.metadata
+          .extractedEntities
+          ? JSON.stringify(
+              processedDocument.ocrResult.metadata.extractedEntities
+            )
+          : null,
         classification_confidence:
           processedDocument?.classification?.confidence || null,
         extracted_metadata: processedDocument?.extractedMetadata
           ? JSON.stringify(processedDocument.extractedMetadata)
           : null,
-        processing_status: (processedDocument?.processingStatus as 'manual' | 'completed' | 'pending' | 'processing' | 'failed') || 'manual',
+        processing_status:
+          (processedDocument?.processingStatus as
+            | 'completed'
+            | 'failed'
+            | 'manual'
+            | 'pending'
+            | 'processing') || 'manual',
       };
 
       // Save to database
@@ -168,7 +176,7 @@ export default function EnhancedDocumentUploader({
             onClick={() => setMode('scan')}
             className='flex items-center gap-2'
           >
-            <Icon name="sparkles" className='w-4 h-4' />
+            <Icon name='sparkles' className='w-4 h-4' />
             AI Scan Mode
           </Button>
           <Button
@@ -176,7 +184,7 @@ export default function EnhancedDocumentUploader({
             onClick={() => setMode('manual')}
             className='flex items-center gap-2'
           >
-            <Icon name="edit" className='w-4 h-4' />
+            <Icon name='edit' className='w-4 h-4' />
             Manual Entry
           </Button>
         </div>
@@ -202,8 +210,8 @@ export default function EnhancedDocumentUploader({
             <div className='flex items-center justify-between mb-6'>
               <h3 className='text-xl font-semibold'>Document Information</h3>
               {processedDocument && (
-                <Badge variant="secondary" className='flex items-center gap-2'>
-                  <Icon name="sparkles" className='w-3 h-3' />
+                <Badge variant='secondary' className='flex items-center gap-2'>
+                  <Icon name='sparkles' className='w-3 h-3' />
                   AI Enhanced
                 </Badge>
               )}
@@ -438,7 +446,10 @@ export default function EnhancedDocumentUploader({
                   <Switch
                     checked={manualFormData.isImportant}
                     onCheckedChange={checked =>
-                      setManualFormData(prev => ({ ...prev, isImportant: checked }))
+                      setManualFormData(prev => ({
+                        ...prev,
+                        isImportant: checked,
+                      }))
                     }
                   />
                 </div>
@@ -449,7 +460,7 @@ export default function EnhancedDocumentUploader({
             {processedDocument && (
               <div className='mt-6 p-4 bg-primary/5 border border-primary/20 rounded-lg'>
                 <h4 className='font-semibold mb-2 flex items-center gap-2'>
-                  <Icon name="sparkles" className='w-4 h-4 text-primary' />
+                  <Icon name='sparkles' className='w-4 h-4 text-primary' />
                   AI Analysis Results
                 </h4>
                 <div className='grid md:grid-cols-3 gap-4 text-sm'>
@@ -466,7 +477,9 @@ export default function EnhancedDocumentUploader({
                   <div>
                     <span className='font-medium'>Text Quality:</span>
                     <p className='text-muted-foreground'>
-                      {Math.round(processedDocument.ocrResult?.confidence * 100)}
+                      {Math.round(
+                        processedDocument.ocrResult?.confidence * 100
+                      )}
                       % accuracy
                     </p>
                   </div>
@@ -494,12 +507,12 @@ export default function EnhancedDocumentUploader({
               >
                 {isUploading ? (
                   <>
-                    <Icon name="loader" className='w-4 h-4 mr-2 animate-spin' />
+                    <Icon name='loader' className='w-4 h-4 mr-2 animate-spin' />
                     Saving...
                   </>
                 ) : (
                   <>
-                    <Icon name="check" className='w-4 h-4 mr-2' />
+                    <Icon name='check' className='w-4 h-4 mr-2' />
                     Save Document
                   </>
                 )}

@@ -3,14 +3,14 @@
  * Shows how to migrate from direct API calls to using centralized services
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useApi, withApiErrorHandling } from '@/lib/api/apiAdapter';
 // Using a minimal Supabase document shape for this example UI
 type SupabaseDocument = {
-  id: string;
-  file_name: string;
-  document_type: string;
   created_at: string;
+  document_type: string;
+  file_name: string;
+  id: string;
 };
 
 /**
@@ -26,7 +26,7 @@ const OldDocumentList = () => {
       try {
         const response = await fetch('/api/documents', {
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
             'Content-Type': 'application/json',
           },
         });
@@ -48,7 +48,7 @@ const OldDocumentList = () => {
       const response = await fetch(`/api/documents/${id}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
 
@@ -63,11 +63,7 @@ const OldDocumentList = () => {
     }
   };
 
-  return (
-    <div>
-      {/* Component JSX */}
-    </div>
-  );
+  return <div>{/* Component JSX */}</div>;
 };
 
 /**
@@ -77,20 +73,22 @@ const MigratedDocumentList: React.FC = () => {
   const { documents: documentService } = useApi();
   const [documents, setDocuments] = useState<SupabaseDocument[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<null | string>(null);
 
   useEffect(() => {
     // ✅ New way: Using centralized service with built-in error handling
     const fetchDocuments = async () => {
       try {
-        const docs = await withApiErrorHandling(
+        const docs = (await withApiErrorHandling(
           () => documentService.getAll({ limit: 50 }),
           'Failed to fetch documents'
-        ) as unknown as SupabaseDocument[];
+        )) as unknown as SupabaseDocument[];
         setDocuments(docs);
         setError(null);
       } catch (error) {
-        setError(error instanceof Error ? error.message : 'Failed to load documents');
+        setError(
+          error instanceof Error ? error.message : 'Failed to load documents'
+        );
       } finally {
         setLoading(false);
       }
@@ -110,14 +108,18 @@ const MigratedDocumentList: React.FC = () => {
       // Update state after successful deletion
       setDocuments(prev => prev.filter(doc => doc.id !== id));
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'Failed to delete document');
+      setError(
+        error instanceof Error ? error.message : 'Failed to delete document'
+      );
     }
   };
 
   const searchDocuments = async (query: string) => {
     // ✅ New way: Additional methods available
     try {
-      const results = await documentService.search(query) as unknown as SupabaseDocument[];
+      const results = (await documentService.search(
+        query
+      )) as unknown as SupabaseDocument[];
       setDocuments(results);
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Search failed');
@@ -127,7 +129,9 @@ const MigratedDocumentList: React.FC = () => {
   const filterByCategory = async (category: string) => {
     // ✅ New way: Specialized methods for common operations
     try {
-      const filtered = await documentService.getByCategory(category) as unknown as SupabaseDocument[];
+      const filtered = (await documentService.getByCategory(
+        category
+      )) as unknown as SupabaseDocument[];
       setDocuments(filtered);
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Filter failed');
@@ -136,71 +140,71 @@ const MigratedDocumentList: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center p-8">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      <div className='flex justify-center items-center p-8'>
+        <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-primary'></div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-        <p className="font-bold">Error</p>
+      <div className='bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded'>
+        <p className='font-bold'>Error</p>
         <p>{error}</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold">Documents</h2>
-        <div className="flex gap-2">
+    <div className='space-y-4'>
+      <div className='flex justify-between items-center mb-4'>
+        <h2 className='text-2xl font-bold'>Documents</h2>
+        <div className='flex gap-2'>
           <input
-            type="text"
-            placeholder="Search documents..."
-            className="px-3 py-2 border rounded"
-            onChange={(e) => {
+            type='text'
+            placeholder='Search documents...'
+            className='px-3 py-2 border rounded'
+            onChange={e => {
               if (e.target.value.length > 2) {
                 searchDocuments(e.target.value);
               }
             }}
           />
           <select
-            className="px-3 py-2 border rounded"
-            onChange={(e) => filterByCategory(e.target.value)}
+            className='px-3 py-2 border rounded'
+            onChange={e => filterByCategory(e.target.value)}
           >
-            <option value="">All Categories</option>
-            <option value="personal">Personal</option>
-            <option value="financial">Financial</option>
-            <option value="legal">Legal</option>
-            <option value="medical">Medical</option>
+            <option value=''>All Categories</option>
+            <option value='personal'>Personal</option>
+            <option value='financial'>Financial</option>
+            <option value='legal'>Legal</option>
+            <option value='medical'>Medical</option>
           </select>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {documents.map((doc) => (
+      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
+        {documents.map(doc => (
           <div
             key={doc.id}
-            className="border rounded-lg p-4 hover:shadow-lg transition-shadow"
+            className='border rounded-lg p-4 hover:shadow-lg transition-shadow'
           >
-            <h3 className="font-semibold text-lg mb-2">{doc.file_name}</h3>
-            <p className="text-sm text-gray-600 mb-2">
+            <h3 className='font-semibold text-lg mb-2'>{doc.file_name}</h3>
+            <p className='text-sm text-gray-600 mb-2'>
               Type: {doc.document_type || 'Unknown'}
             </p>
-            <p className="text-sm text-gray-500">
+            <p className='text-sm text-gray-500'>
               Created: {new Date(doc.created_at).toLocaleDateString()}
             </p>
-            <div className="mt-4 flex justify-end gap-2">
+            <div className='mt-4 flex justify-end gap-2'>
               <button
-                className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                className='px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600'
                 onClick={() => window.open(`/documents/${doc.id}`, '_blank')}
               >
                 View
               </button>
               <button
-                className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                className='px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600'
                 onClick={() => deleteDocument(doc.id)}
               >
                 Delete
@@ -211,7 +215,7 @@ const MigratedDocumentList: React.FC = () => {
       </div>
 
       {documents.length === 0 && (
-        <div className="text-center py-8 text-gray-500">
+        <div className='text-center py-8 text-gray-500'>
           No documents found. Upload your first document to get started.
         </div>
       )}

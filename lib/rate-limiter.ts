@@ -4,29 +4,32 @@ import { NextResponse, type NextRequest } from 'next/server';
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
 
 // Clean up expired entries every 5 minutes
-setInterval(() => {
-  const now = Date.now();
-  for (const [key, value] of rateLimitStore.entries()) {
-    if (value.resetTime < now) {
-      rateLimitStore.delete(key);
+setInterval(
+  () => {
+    const now = Date.now();
+    for (const [key, value] of rateLimitStore.entries()) {
+      if (value.resetTime < now) {
+        rateLimitStore.delete(key);
+      }
     }
-  }
-}, 5 * 60 * 1000);
+  },
+  5 * 60 * 1000
+);
 
 export interface RateLimitConfig {
-  windowMs?: number;  // Time window in milliseconds
-  maxRequests?: number;  // Max requests per window
-  message?: string;  // Error message
-  keyGenerator?: (req: NextRequest) => string;  // Function to generate rate limit key
-  skipSuccessfulRequests?: boolean;  // Don't count successful requests
-  skipFailedRequests?: boolean;  // Don't count failed requests
+  windowMs?: number; // Time window in milliseconds
+  maxRequests?: number; // Max requests per window
+  message?: string; // Error message
+  keyGenerator?: (req: NextRequest) => string; // Function to generate rate limit key
+  skipSuccessfulRequests?: boolean; // Don't count successful requests
+  skipFailedRequests?: boolean; // Don't count failed requests
 }
 
 const defaultConfig: Required<RateLimitConfig> = {
   windowMs: 60 * 1000, // 1 minute
   maxRequests: 10,
   message: 'Too many requests, please try again later.',
-  keyGenerator: (req) => {
+  keyGenerator: req => {
     // Use IP address as default key
     const forwarded = req.headers.get('x-forwarded-for');
     const ip = forwarded ? forwarded.split(',')[0] : 'unknown';

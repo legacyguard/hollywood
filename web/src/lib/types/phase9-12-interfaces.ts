@@ -5,9 +5,9 @@
 
 // Common interfaces used across multiple services
 export interface ValidationRule {
-  rule: string;
   message: string;
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  rule: string;
+  severity: 'critical' | 'high' | 'low' | 'medium';
 }
 
 export interface FilingRequirement {
@@ -18,113 +18,113 @@ export interface FilingRequirement {
 }
 
 export interface RetentionPolicy {
-  period: string;
   action: 'archive' | 'delete' | 'review';
   legalBasis?: string;
+  period: string;
 }
 
 export interface DocumentVersion {
-  version: string;
+  changes: string[];
   createdAt: string;
   createdBy: string;
-  changes: string[];
+  version: string;
 }
 
 // Business succession planning interfaces
 export interface BusinessGovernance {
   boardOfDirectors: BoardMember[];
-  officers: Officer[];
-  committees: Committee[];
-  votingAgreements: VotingAgreement[];
-  operatingAgreements: OperatingAgreement[];
   bylaws: ByLaws;
+  committees: Committee[];
   meetingRequirements: MeetingRequirement[];
+  officers: Officer[];
+  operatingAgreements: OperatingAgreement[];
+  votingAgreements: VotingAgreement[];
 }
 
 export interface BoardMember {
   id: string;
   name: string;
   position: string;
-  term: string;
   responsibilities: string[];
+  term: string;
 }
 
 export interface Officer {
   id: string;
   name: string;
-  title: string;
   responsibilities: string[];
   signatureAuthority: boolean;
+  title: string;
 }
 
 export interface Committee {
+  charter: string;
   id: string;
+  members: string[];
   name: string;
   purpose: string;
-  members: string[];
-  charter: string;
 }
 
 export interface VotingAgreement {
+  effectiveDate: string;
   id: string;
   parties: string[];
-  terms: string[];
   restrictions: string[];
-  effectiveDate: string;
+  terms: string[];
 }
 
 export interface OperatingAgreement {
-  id: string;
-  type: string;
-  effectiveDate: string;
-  terms: string[];
   amendments: string[];
+  effectiveDate: string;
+  id: string;
+  terms: string[];
+  type: string;
 }
 
 export interface ByLaws {
+  amendments: string[];
   lastUpdated: string;
   sections: string[];
-  amendments: string[];
 }
 
 export interface MeetingRequirement {
-  type: 'annual' | 'quarterly' | 'special';
   frequency: string;
   notice: string;
   quorum: number;
+  type: 'annual' | 'quarterly' | 'special';
 }
 
 export interface Encumbrance {
-  type: string;
-  description: string;
   amount?: number;
   creditor?: string;
+  description: string;
+  type: string;
 }
 
 export interface PersonalGuarantee {
-  guarantor: string;
   amount: number;
+  guarantor: string;
   terms: string[];
 }
 
 export interface KeyRelationship {
-  type: string;
+  importance: 'critical' | 'high' | 'low' | 'medium';
   party: string;
-  importance: 'low' | 'medium' | 'high' | 'critical';
+  type: string;
 }
 
 export interface CompensationPackage {
   baseSalary: number;
+  benefits: string[];
   bonus: number;
   equity: number;
-  benefits: string[];
 }
 
 export interface RetentionStrategy {
-  type: string;
-  description: string;
   cost: number;
+  description: string;
   effectiveness: number;
+  type: string;
 }
 
 export interface SuccessorCandidate {
@@ -135,9 +135,9 @@ export interface SuccessorCandidate {
 }
 
 export interface DocumentationStatus {
-  processesDocumented: boolean;
-  knowledgeTransferred: boolean;
   contactsShared: boolean;
+  knowledgeTransferred: boolean;
+  processesDocumented: boolean;
   systemsAccess: boolean;
 }
 
@@ -149,52 +149,52 @@ export interface AccelerationTrigger {
 
 export interface PaymentTerms {
   amount: number;
-  schedule: string;
   interest?: number;
+  schedule: string;
 }
 
 export interface ResourceRequirement {
-  type: string;
-  description: string;
   cost?: number;
+  description: string;
+  type: string;
 }
 
 export interface SuccessionTimeline {
-  planningPhase: string;
-  implementationPhase: string;
-  transitionPhase: string;
-  milestones: string[];
   criticalDates: string[];
+  implementationPhase: string;
+  milestones: string[];
+  planningPhase: string;
+  transitionPhase: string;
 }
 
 export interface BusinessValuation {
-  id: string;
-  businessId: string;
-  method: string;
   appraiser?: string;
-  valuationDate: string;
-  enterpriseValue: number;
-  equityValue: number;
   assetValues: AssetValuation[];
   assumptions: string[];
+  businessId: string;
   discounts: DiscountFactor[];
+  enterpriseValue: number;
+  equityValue: number;
+  id: string;
+  method: string;
   multiples: IndustryMultiple[];
+  nextValuation: string;
   sensitivity: SensitivityAnalysis;
   validity: string;
-  nextValuation: string;
+  valuationDate: string;
 }
 
 export interface AssetValuation {
   assetId: string;
+  currency: string;
   method: string;
   value: number;
-  currency: string;
 }
 
 export interface DiscountFactor {
-  type: string;
   rate: number;
   reason: string;
+  type: string;
 }
 
 export interface IndustryMultiple {
@@ -203,105 +203,105 @@ export interface IndustryMultiple {
 }
 
 export interface SensitivityAnalysis {
-  variables: string[];
   scenarios: {
     name: string;
     probability: number;
     value: number;
   }[];
+  variables: string[];
 }
 
 export interface TaxStrategy {
-  objectives: string[];
-  structures: string[];
+  currency: string;
   elections: string[];
+  objectives: string[];
   planning: string[];
   projectedLiability: number;
-  currency: string;
+  structures: string[];
 }
 
 export interface FinancingStrategy {
+  contingencies: string[];
+  currency: string;
   fundingSources: string[];
   paymentStructure: string[];
-  contingencies: string[];
   totalFinancingNeeded: number;
-  currency: string;
 }
 
 export interface TransitionPlan {
-  phases: string[];
   keyActivities: string[];
+  phases: string[];
+  retentionStrategies: string[];
   stakeholderCommunication: string[];
   trainingPrograms: string[];
-  retentionStrategies: string[];
 }
 
 // API Ecosystem interfaces
 export interface JSONSchema {
-  type: string;
+  [key: string]: unknown;
   properties?: Record<string, unknown>;
   required?: string[];
-  [key: string]: unknown;
+  type: string;
 }
 
 export interface CachingConfiguration {
   enabled: boolean;
-  ttl: number;
-  strategy: string;
   headers: string[];
+  strategy: string;
+  ttl: number;
 }
 
 export interface EndpointMonitoring {
-  enabled: boolean;
-  metrics: string[];
   alerting: {
     enabled: boolean;
     thresholds: Record<string, number>;
   };
+  enabled: boolean;
   logging: {
-    level: string;
     includePayload: boolean;
+    level: string;
     retention: string;
   };
+  metrics: string[];
 }
 
 export interface EndpointDocumentation {
-  summary: string;
   description: string;
-  examples: unknown[];
   errors: unknown[];
+  examples: unknown[];
   notes: string[];
+  summary: string;
 }
 
 // Team Collaboration interfaces
 export interface UserInfo {
+  avatar: string;
+  email: string;
   id: string;
   name: string;
-  email: string;
-  avatar: string;
-  title: string;
   organization: string;
+  title: string;
 }
 
 export interface AvailabilitySchedule {
+  breaks: unknown[];
   timezone: string;
+  vacations: unknown[];
   workingHours: {
     day: string;
-    start: string;
     end: string;
+    start: string;
   }[];
-  breaks: unknown[];
-  vacations: unknown[];
 }
 
 export interface ContributionStats {
-  documentsShared: number;
   commentsAdded: number;
-  tasksCompleted: number;
-  meetingsOrganized: number;
-  reviewsCompleted: number;
+  documentsShared: number;
   hoursContributed: number;
   lastContribution: string;
+  meetingsOrganized: number;
+  reviewsCompleted: number;
+  tasksCompleted: number;
 }
 
 export interface CollaborationMetrics {
@@ -312,160 +312,160 @@ export interface CollaborationMetrics {
 }
 
 export interface ProductivityMetrics {
-  tasksCompleted: number;
+  decisionsReached: number;
   documentsReviewed: number;
   meetingsHeld: number;
-  decisionsReached: number;
+  tasksCompleted: number;
 }
 
 export interface EngagementMetrics {
   activeMembers: number;
-  messagesSent: number;
   commentsAdded: number;
   hoursSpent: number;
+  messagesSent: number;
 }
 
 // White Label Solution interfaces
 export interface CustomFeatureSpecification {
-  name: string;
-  description: string;
-  type: 'ui_component' | 'workflow' | 'integration' | 'report';
   configuration: Record<string, unknown>;
+  description: string;
+  name: string;
+  type: 'integration' | 'report' | 'ui_component' | 'workflow';
 }
 
 export interface DeploymentConfiguration {
-  environment: 'development' | 'staging' | 'production';
+  environment: 'development' | 'production' | 'staging';
   region: string;
 }
 
 export interface Deployment {
-  id: string;
-  partnerId: string;
-  type: string;
-  status: string;
-  environment: string;
-  region: string;
-  configuration: unknown;
-  infrastructure: unknown;
-  endpoints: string[];
-  monitoring: unknown;
   backup: unknown;
-  security: unknown;
+  configuration: unknown;
   createdAt: string;
+  endpoints: string[];
+  environment: string;
+  id: string;
+  infrastructure: unknown;
+  monitoring: unknown;
+  partnerId: string;
+  region: string;
+  security: unknown;
+  status: string;
+  type: string;
   updatedAt: string;
 }
 
 export interface RevenueSharingSetup {
-  partnerId: string;
   configuration: unknown;
+  createdAt: string;
+  partnerId: string;
   payoutSchedule: unknown;
-  trackingSystem: unknown;
   reportingSystem: unknown;
   status: string;
-  createdAt: string;
+  trackingSystem: unknown;
 }
 
 export interface IntegrationSettings {
-  sso: {
-    enabled: boolean;
-    provider: string;
-    configuration: Record<string, unknown>;
-    userMapping: unknown[];
-    groupMapping: unknown[];
-  };
   apis: {
-    enabled: boolean;
-    version: string;
-    authentication: string;
-    rateLimiting: unknown[];
     allowedEndpoints: string[];
+    authentication: string;
     customEndpoints: unknown[];
-  };
-  webhooks: {
     enabled: boolean;
-    endpoints: unknown[];
-    authentication: Record<string, unknown>;
-    retryPolicy: Record<string, unknown>;
-  };
-  thirdPartyIntegrations: unknown[];
-  dataSync: {
-    enabled: boolean;
-    schedule: string;
-    mappings: unknown[];
+    rateLimiting: unknown[];
+    version: string;
   };
   customIntegrations: unknown[];
+  dataSync: {
+    enabled: boolean;
+    mappings: unknown[];
+    schedule: string;
+  };
+  sso: {
+    configuration: Record<string, unknown>;
+    enabled: boolean;
+    groupMapping: unknown[];
+    provider: string;
+    userMapping: unknown[];
+  };
+  thirdPartyIntegrations: unknown[];
+  webhooks: {
+    authentication: Record<string, unknown>;
+    enabled: boolean;
+    endpoints: unknown[];
+    retryPolicy: Record<string, unknown>;
+  };
 }
 
 // Additional generic interfaces
 export interface TimeRange {
-  start: string;
   end: string;
+  start: string;
 }
 
 export interface ReadinessScore {
-  overall: number;
   categories: Record<string, number>;
+  overall: number;
 }
 
 export interface GapAnalysis {
   category: string;
   currentState: string;
   desiredState: string;
+  effort: string;
   gap: string;
   priority: string;
-  effort: string;
 }
 
 export interface Recommendation {
-  id: string;
   category: string;
-  title: string;
-  description: string;
-  priority: string;
-  timeline: string;
-  resources: string[];
-  estimatedCost: number;
   currency: string;
+  description: string;
+  estimatedCost: number;
+  id: string;
+  priority: string;
+  resources: string[];
+  timeline: string;
+  title: string;
 }
 
 export interface ImplementationMilestone {
+  dependencies: string[];
+  description: string;
   id: string;
   name: string;
-  description: string;
-  targetDate: string;
-  dependencies: string[];
   responsible: string;
   status: string;
+  targetDate: string;
 }
 
 export interface RiskAssessment {
-  id: string;
   category: string;
   description: string;
+  id: string;
   impact: string;
-  probability: string;
-  severity: string;
   mitigation: string[];
   owner: string;
+  probability: string;
   reviewDate: string;
+  severity: string;
 }
 
 export interface FinancialProjection {
-  scenario: string;
-  timeframe: string;
+  assumptions: string[];
   projections: {
-    revenue: number[];
     expenses: number[];
     netIncome: number[];
+    revenue: number[];
   };
-  assumptions: string[];
+  scenario: string;
+  timeframe: string;
 }
 
 export interface ReviewSchedule {
-  frequency: string;
-  participants: string[];
   agenda: string[];
+  frequency: string;
   nextReview: string;
+  participants: string[];
 }
 
 // Export all interfaces

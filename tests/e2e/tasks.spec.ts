@@ -54,21 +54,26 @@ test.describe('Tasks Management', () => {
     await page.getByRole('button', { name: 'Create Task' }).click();
     const todoTitle = `Todo ${Date.now()}`;
     await page.fill('input[name="title"]', todoTitle);
-    await page.fill('textarea[name="description"]', 'Ensure filter precondition');
-  test('should search tasks', async ({ page }) => {
-    await page.click('text=Tasks');
-    await page.waitForURL('**/tasks');
+    await page.fill(
+      'textarea[name="description"]',
+      'Ensure filter precondition'
+    );
+    test('should search tasks', async ({ page }) => {
+      await page.click('text=Tasks');
+      await page.waitForURL('**/tasks');
 
-    const query = `Searchable ${Date.now()}`;
-    await page.getByRole('button', { name: 'Create Task' }).click();
-    await page.fill('input[name="title"]', query);
-    await page.fill('textarea[name="description"]', 'Search precondition');
-    await page.selectOption('select[name="status"]', 'todo');
-    await page.click('button[type="submit"]');
-    await page.fill('input[placeholder="Search tasks..."]', query);
-    const filteredTasks = await page.locator('.task-card', { hasText: query }).count();
-    expect(filteredTasks).toBeGreaterThan(0);
-  });
+      const query = `Searchable ${Date.now()}`;
+      await page.getByRole('button', { name: 'Create Task' }).click();
+      await page.fill('input[name="title"]', query);
+      await page.fill('textarea[name="description"]', 'Search precondition');
+      await page.selectOption('select[name="status"]', 'todo');
+      await page.click('button[type="submit"]');
+      await page.fill('input[placeholder="Search tasks..."]', query);
+      const filteredTasks = await page
+        .locator('.task-card', { hasText: query })
+        .count();
+      expect(filteredTasks).toBeGreaterThan(0);
+    });
     await page.click('text=Tasks');
     await page.waitForURL('**/tasks');
 

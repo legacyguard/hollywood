@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext, useContext } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
 /**
  * Hook to check if mobile navigation should be displayed
@@ -24,13 +24,15 @@ export function useMobileNavigation() {
  * Mobile Navigation Provider for global state management
  */
 interface MobileNavContextType {
-  notificationCount: number;
-  setNotificationCount: (count: number) => void;
   hapticFeedback: boolean;
+  notificationCount: number;
   setHapticFeedback: (enabled: boolean) => void;
+  setNotificationCount: (count: number) => void;
 }
 
-const MobileNavContext = createContext<MobileNavContextType | undefined>(undefined);
+const MobileNavContext = createContext<MobileNavContextType | undefined>(
+  undefined
+);
 
 export function MobileNavProvider({ children }: { children: React.ReactNode }) {
   const [notificationCount, setNotificationCount] = useState(0);
@@ -40,7 +42,7 @@ export function MobileNavProvider({ children }: { children: React.ReactNode }) {
     notificationCount,
     setNotificationCount,
     hapticFeedback,
-    setHapticFeedback
+    setHapticFeedback,
   };
 
   return (
@@ -53,7 +55,9 @@ export function MobileNavProvider({ children }: { children: React.ReactNode }) {
 export function useMobileNavContext() {
   const context = useContext(MobileNavContext);
   if (context === undefined) {
-    throw new Error('useMobileNavContext must be used within a MobileNavProvider');
+    throw new Error(
+      'useMobileNavContext must be used within a MobileNavProvider'
+    );
   }
   return context;
 }

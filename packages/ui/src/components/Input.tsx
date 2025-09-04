@@ -1,4 +1,11 @@
-import { type GetProps, styled, Input as TamaguiInput, TextArea as TamaguiTextArea, View, Text } from 'tamagui'
+import {
+  type GetProps,
+  styled,
+  Input as TamaguiInput,
+  TextArea as TamaguiTextArea,
+  Text,
+  View,
+} from 'tamagui';
 
 // Base Input component
 export const Input = styled(TamaguiInput, {
@@ -112,7 +119,7 @@ export const Input = styled(TamaguiInput, {
     size: 'medium',
     fullWidth: true,
   },
-})
+});
 
 // TextArea component
 export const TextArea = styled(TamaguiTextArea, {
@@ -209,14 +216,14 @@ export const TextArea = styled(TamaguiTextArea, {
     variant: 'default',
     size: 'medium',
   },
-})
+});
 
 // Input Group for labels and error messages
 export const InputGroup = styled(View, {
   name: 'LGInputGroup',
   width: '100%',
   gap: '$2',
-})
+});
 
 // Input Label
 export const InputLabel = styled(Text, {
@@ -226,7 +233,7 @@ export const InputLabel = styled(Text, {
   color: '$gray7',
   fontFamily: '$body',
   marginBottom: '$1',
-})
+});
 
 // Input Error Message
 export const InputError = styled(Text, {
@@ -235,7 +242,7 @@ export const InputError = styled(Text, {
   color: '$error',
   fontFamily: '$body',
   marginTop: '$1',
-})
+});
 
 // Input Helper Text
 export const InputHelper = styled(Text, {
@@ -244,12 +251,12 @@ export const InputHelper = styled(Text, {
   color: '$gray6',
   fontFamily: '$body',
   marginTop: '$1',
-})
+});
 
 // Export types
-export type InputProps = GetProps<typeof Input>
-export type TextAreaProps = GetProps<typeof TextArea>
-export type InputGroupProps = GetProps<typeof InputGroup>
-export type InputLabelProps = GetProps<typeof InputLabel>
-export type InputErrorProps = GetProps<typeof InputError>
-export type InputHelperProps = GetProps<typeof InputHelper>
+export type InputProps = GetProps<typeof Input>;
+export type TextAreaProps = GetProps<typeof TextArea>;
+export type InputGroupProps = GetProps<typeof InputGroup>;
+export type InputLabelProps = GetProps<typeof InputLabel>;
+export type InputErrorProps = GetProps<typeof InputError>;
+export type InputHelperProps = GetProps<typeof InputHelper>;

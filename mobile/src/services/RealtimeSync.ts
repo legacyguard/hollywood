@@ -4,31 +4,36 @@
  */
 
 /* global __DEV__ */
-import { createClient, type SupabaseClient, type RealtimeChannel, type RealtimePostgresChangesPayload } from '@supabase/supabase-js';
+import {
+  createClient,
+  type RealtimeChannel,
+  type RealtimePostgresChangesPayload,
+  type SupabaseClient,
+} from '@supabase/supabase-js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export interface Document {
-  id: string;
-  user_id: string;
-  title: string;
   category: string;
   content?: string;
-  metadata?: Record<string, any>;
   created_at: string;
+  id: string;
+  metadata?: Record<string, any>;
+  sync_status: 'offline' | 'pending' | 'synced';
+  title: string;
   updated_at: string;
-  sync_status: 'synced' | 'pending' | 'offline';
+  user_id: string;
 }
 
 export interface SyncEvent {
-  type: 'INSERT' | 'UPDATE' | 'DELETE';
   document: Document;
   timestamp: string;
+  type: 'DELETE' | 'INSERT' | 'UPDATE';
 }
 
 export class RealtimeSync {
   private supabase: SupabaseClient;
-  private channel: RealtimeChannel | null = null;
-  private userId: string | null = null;
+  private channel: null | RealtimeChannel = null;
+  private userId: null | string = null;
   private syncQueue: SyncEvent[] = [];
   private isOnline: boolean = true;
   private listeners: Map<string, (event: SyncEvent) => void> = new Map();
@@ -62,7 +67,8 @@ export class RealtimeSync {
    */
   private async handleOnline() {
     this.isOnline = true;
-    if (__DEV__) console.log('RealtimeSync: Network online, processing sync queue');
+    if (__DEV__)
+      console.log('RealtimeSync: Network online, processing sync queue');
     await this.processSyncQueue();
   }
 
@@ -96,21 +102,24 @@ export class RealtimeSync {
           table: 'documents',
           filter: `user_id=eq.${userId}`,
         },
-        (payload) => {
+        payload => {
           this.handleRealtimeChange(payload);
         }
       )
-      .subscribe((status) => {
-        if (__DEV__) console.log(`RealtimeSync: Subscription status - ${status}`);
+      .subscribe(status => {
+        if (__DEV__)
+          console.log(`RealtimeSync: Subscription status - ${status}`);
       });
   }
 
   /**
    * Handle real-time database changes
    */
-  private handleRealtimeChange(payload: RealtimePostgresChangesPayload<Record<string, unknown>>) {
+  private handleRealtimeChange(
+    payload: RealtimePostgresChangesPayload<Record<string, unknown>>
+  ) {
     const event: SyncEvent = {
-      type: payload.eventType as 'INSERT' | 'UPDATE' | 'DELETE',
+      type: payload.eventType as 'DELETE' | 'INSERT' | 'UPDATE',
       // payload.new exists on INSERT/UPDATE, payload.old on DELETE
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       document: (payload.new || payload.old) as any,
@@ -118,7 +127,7 @@ export class RealtimeSync {
     };
 
     // Notify all listeners
-    this.listeners.forEach((listener) => {
+    this.listeners.forEach(listener => {
       listener(event);
     });
 
@@ -160,12 +169,12 @@ export class RealtimeSync {
         documents.push(event.document);
         break;
       case 'UPDATE':
-        documents = documents.map((doc) =>
+        documents = documents.map(doc =>
           doc.id === event.document.id ? event.document : doc
         );
         break;
       case 'DELETE':
-        documents = documents.filter((doc) => doc.id !== event.document.id);
+        documents = documents.filter(doc => doc.id !== event.document.id);
         break;
     }
 
@@ -175,7 +184,9 @@ export class RealtimeSync {
   /**
    * Upload document with sync support
    */
-  async uploadDocument(document: Omit<Document, 'id' | 'created_at' | 'updated_at'>): Promise<Document | null> {
+  async uploadDocument(
+    document: Omit<Document, 'created_at' | 'id' | 'updated_at'>
+  ): Promise<Document | null> {
     if (!this.isOnline) {
       // Queue for later sync
       const queuedDoc: Document = {

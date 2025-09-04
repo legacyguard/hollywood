@@ -2,24 +2,24 @@ import type { ReactNode } from 'react';
 
 // Animation type definitions
 export type MicroAnimationType =
-  | 'hover-lift'
-  | 'hover-glow'
-  | 'tap-bounce'
-  | 'focus-ring'
-  | 'loading-pulse'
-  | 'success-checkmark'
-  | 'error-shake'
-  | 'slide-reveal'
-  | 'fade-in-up'
-  | 'scale-in'
+  | 'button-press'
   | 'card-flip'
-  | 'button-press';
+  | 'error-shake'
+  | 'fade-in-up'
+  | 'focus-ring'
+  | 'hover-glow'
+  | 'hover-lift'
+  | 'loading-pulse'
+  | 'scale-in'
+  | 'slide-reveal'
+  | 'success-checkmark'
+  | 'tap-bounce';
 
 export interface MicroAnimationProps {
-  type: MicroAnimationType;
   children: ReactNode;
-  disabled?: boolean;
-  delay?: number;
   className?: string;
+  delay?: number;
+  disabled?: boolean;
   onAnimationComplete?: () => void;
+  type: MicroAnimationType;
 }

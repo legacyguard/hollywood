@@ -223,7 +223,9 @@ class AuditLogger {
     metadata?: Record<string, unknown>
   ): Promise<void> {
     const eventTypeMap = {
-      login: success ? AuditEventType.LOGIN_SUCCESS : AuditEventType.LOGIN_FAILED,
+      login: success
+        ? AuditEventType.LOGIN_SUCCESS
+        : AuditEventType.LOGIN_FAILED,
       logout: AuditEventType.LOGOUT,
       reset: AuditEventType.PASSWORD_RESET,
     };
@@ -295,7 +297,10 @@ class AuditLogger {
   /**
    * Get suspicious activity for a user
    */
-  public async getSuspiciousActivity(userId: string, days: number = 7): Promise<AuditEvent[]> {
+  public async getSuspiciousActivity(
+    userId: string,
+    days: number = 7
+  ): Promise<AuditEvent[]> {
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - days);
 
@@ -338,9 +343,7 @@ class AuditLogger {
 
     if (this.supabase) {
       try {
-        const { error } = await this.supabase
-          .from('audit_logs')
-          .insert(events);
+        const { error } = await this.supabase.from('audit_logs').insert(events);
 
         if (error) {
           console.error('Failed to flush audit logs:', error);
@@ -407,7 +410,6 @@ class AuditLogger {
     //   [AuditSeverity.ERROR]: 'color: red',
     //   [AuditSeverity.CRITICAL]: 'color: red; font-weight: bold',
     // }[event.severity];
-
     // console.log(
     //   `%c[AUDIT] ${event.severity}`,
     //   color,

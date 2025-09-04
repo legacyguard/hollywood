@@ -3,7 +3,7 @@
  * Handles jurisdiction-specific legal terms and translations
  */
 
-import { _JURISDICTION_CONFIG } from './jurisdictions';
+import { JURISDICTION_CONFIG } from './jurisdictions';
 
 // Legal term categories
 export enum LegalTermCategory {
@@ -19,16 +19,16 @@ export enum LegalTermCategory {
 
 // Legal term interface
 export interface LegalTerm {
-  key: string;
   category: LegalTermCategory;
   jurisdictions: {
     [jurisdictionCode: string]: {
-      term: string;
       definition?: string;
-      relatedTerms?: string[];
       legalReference?: string;
+      relatedTerms?: string[];
+      term: string;
     };
   };
+  key: string;
 }
 
 // Core legal terms database
@@ -439,7 +439,7 @@ export const searchLegalTerms = (
 export const getLegalTermsByCategory = (
   category: LegalTermCategory,
   jurisdictionCode: string
-): Array<{ key: string; term: string; definition?: string }> => {
+): Array<{ definition?: string; key: string; term: string }> => {
   return LEGAL_TERMS_DATABASE.filter(
     t => t.category === category && t.jurisdictions[jurisdictionCode]
   ).map(t => ({

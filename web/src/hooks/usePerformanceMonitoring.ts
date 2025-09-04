@@ -1,16 +1,16 @@
-import { useEffect, useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 interface PerformanceMetrics {
-  LCP: number | null; // Largest Contentful Paint
-  FID: number | null; // First Input Delay
-  CLS: number | null; // Cumulative Layout Shift
-  FCP: number | null; // First Contentful Paint
-  TTFB: number | null; // Time to First Byte
+  CLS: null | number; // Cumulative Layout Shift
+  FCP: null | number; // First Contentful Paint
+  FID: null | number; // First Input Delay
+  LCP: null | number; // Largest Contentful Paint
+  TTFB: null | number; // Time to First Byte
 }
 
 interface PerformanceInsights {
-  score: 'good' | 'needs-improvement' | 'poor';
   recommendations: string[];
+  score: 'good' | 'needs-improvement' | 'poor';
 }
 
 export const usePerformanceMonitoring = () => {
@@ -30,7 +30,7 @@ export const usePerformanceMonitoring = () => {
   // Measure LCP (Largest Contentful Paint)
   const measureLCP = useCallback(() => {
     if ('PerformanceObserver' in window) {
-      const observer = new PerformanceObserver((list) => {
+      const observer = new PerformanceObserver(list => {
         const entries = list.getEntries();
         const lastEntry = entries[entries.length - 1] as PerformanceEntry;
         if (lastEntry) {
@@ -46,11 +46,14 @@ export const usePerformanceMonitoring = () => {
   // Measure FID (First Input Delay)
   const measureFID = useCallback(() => {
     if ('PerformanceObserver' in window) {
-      const observer = new PerformanceObserver((list) => {
+      const observer = new PerformanceObserver(list => {
         const entries = list.getEntries();
-        entries.forEach((entry) => {
+        entries.forEach(entry => {
           if (entry.entryType === 'first-input') {
-            setMetrics(prev => ({ ...prev, FID: (entry as any).processingStart - entry.startTime }));
+            setMetrics(prev => ({
+              ...prev,
+              FID: (entry as any).processingStart - entry.startTime,
+            }));
           }
         });
       });
@@ -64,7 +67,7 @@ export const usePerformanceMonitoring = () => {
   const measureCLS = useCallback(() => {
     if ('PerformanceObserver' in window) {
       let clsValue = 0;
-      const observer = new PerformanceObserver((list) => {
+      const observer = new PerformanceObserver(list => {
         for (const entry of list.getEntries()) {
           if (!(entry as any).hadRecentInput) {
             clsValue += (entry as any).value;
@@ -81,7 +84,7 @@ export const usePerformanceMonitoring = () => {
   // Measure FCP (First Contentful Paint)
   const measureFCP = useCallback(() => {
     if ('PerformanceObserver' in window) {
-      const observer = new PerformanceObserver((list) => {
+      const observer = new PerformanceObserver(list => {
         const entries = list.getEntries();
         const firstEntry = entries[0];
         if (firstEntry) {
@@ -97,12 +100,15 @@ export const usePerformanceMonitoring = () => {
   // Measure TTFB (Time to First Byte)
   const measureTTFB = useCallback(() => {
     if ('PerformanceObserver' in window) {
-      const observer = new PerformanceObserver((list) => {
+      const observer = new PerformanceObserver(list => {
         const entries = list.getEntries();
-        entries.forEach((entry) => {
+        entries.forEach(entry => {
           if (entry.entryType === 'navigation') {
             const navEntry = entry as PerformanceNavigationTiming;
-            setMetrics(prev => ({ ...prev, TTFB: navEntry.responseStart - navEntry.requestStart }));
+            setMetrics(prev => ({
+              ...prev,
+              TTFB: navEntry.responseStart - navEntry.requestStart,
+            }));
           }
         });
       });
@@ -121,10 +127,14 @@ export const usePerformanceMonitoring = () => {
     if (currentMetrics.LCP !== null) {
       if (currentMetrics.LCP > 4000) {
         score = 'poor';
-        recommendations.push('LCP is too slow. Optimize hero images and critical content loading.');
+        recommendations.push(
+          'LCP is too slow. Optimize hero images and critical content loading.'
+        );
       } else if (currentMetrics.LCP > 2500) {
         score = score === 'good' ? 'needs-improvement' : score;
-        recommendations.push('LCP could be improved. Consider image optimization and preloading.');
+        recommendations.push(
+          'LCP could be improved. Consider image optimization and preloading.'
+        );
       }
     }
 
@@ -132,10 +142,14 @@ export const usePerformanceMonitoring = () => {
     if (currentMetrics.FID !== null) {
       if (currentMetrics.FID > 300) {
         score = 'poor';
-        recommendations.push('FID is too high. Reduce JavaScript execution time and optimize event handlers.');
+        recommendations.push(
+          'FID is too high. Reduce JavaScript execution time and optimize event handlers.'
+        );
       } else if (currentMetrics.FID > 100) {
         score = score === 'good' ? 'needs-improvement' : score;
-        recommendations.push('FID could be improved. Consider code splitting and lazy loading.');
+        recommendations.push(
+          'FID could be improved. Consider code splitting and lazy loading.'
+        );
       }
     }
 
@@ -143,10 +157,14 @@ export const usePerformanceMonitoring = () => {
     if (currentMetrics.CLS !== null) {
       if (currentMetrics.CLS > 0.25) {
         score = 'poor';
-        recommendations.push('CLS is too high. Fix layout shifts and reserve space for dynamic content.');
+        recommendations.push(
+          'CLS is too high. Fix layout shifts and reserve space for dynamic content.'
+        );
       } else if (currentMetrics.CLS > 0.1) {
         score = score === 'good' ? 'needs-improvement' : score;
-        recommendations.push('CLS could be improved. Ensure stable layouts and avoid content jumping.');
+        recommendations.push(
+          'CLS could be improved. Ensure stable layouts and avoid content jumping.'
+        );
       }
     }
 
@@ -154,10 +172,14 @@ export const usePerformanceMonitoring = () => {
     if (currentMetrics.FCP !== null) {
       if (currentMetrics.FCP > 3000) {
         score = 'poor';
-        recommendations.push('FCP is too slow. Optimize critical rendering path and reduce blocking resources.');
+        recommendations.push(
+          'FCP is too slow. Optimize critical rendering path and reduce blocking resources.'
+        );
       } else if (currentMetrics.FCP > 1800) {
         score = score === 'good' ? 'needs-improvement' : score;
-        recommendations.push('FCP could be improved. Minimize render-blocking resources.');
+        recommendations.push(
+          'FCP could be improved. Minimize render-blocking resources.'
+        );
       }
     }
 
@@ -165,10 +187,14 @@ export const usePerformanceMonitoring = () => {
     if (currentMetrics.TTFB !== null) {
       if (currentMetrics.TTFB > 800) {
         score = 'poor';
-        recommendations.push('TTFB is too slow. Optimize server response time and consider CDN.');
+        recommendations.push(
+          'TTFB is too slow. Optimize server response time and consider CDN.'
+        );
       } else if (currentMetrics.TTFB > 600) {
         score = score === 'good' ? 'needs-improvement' : score;
-        recommendations.push('TTFB could be improved. Optimize server-side performance.');
+        recommendations.push(
+          'TTFB could be improved. Optimize server-side performance.'
+        );
       }
     }
 
@@ -201,7 +227,10 @@ export const usePerformanceMonitoring = () => {
 
   // Log performance metrics to console in development
   useEffect(() => {
-    if (import.meta.env.DEV && Object.values(metrics).some(metric => metric !== null)) {
+    if (
+      import.meta.env.DEV &&
+      Object.values(metrics).some(metric => metric !== null)
+    ) {
       console.log('🚀 Performance Metrics:', metrics);
       console.log('💡 Performance Insights:', insights);
     }

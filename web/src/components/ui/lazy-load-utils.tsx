@@ -1,15 +1,15 @@
-import React, { type ComponentType, useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { type ComponentType, useEffect, useRef, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 
 // Higher-order component for lazy loading
 export function withLazyLoading<P extends object>(
   WrappedComponent: ComponentType<P>,
   options: {
-    threshold?: number;
-    rootMargin?: string;
-    fallback?: React.ReactNode;
     delay?: number;
-    priority?: 'low' | 'medium' | 'high';
+    fallback?: React.ReactNode;
+    priority?: 'high' | 'low' | 'medium';
+    rootMargin?: string;
+    threshold?: number;
   } = {}
 ) {
   return React.forwardRef<any, P>((props, ref) => {
@@ -22,11 +22,12 @@ export function withLazyLoading<P extends object>(
       if (!containerRef.current) return;
 
       const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
+        entries => {
+          entries.forEach(entry => {
             if (entry.isIntersecting) {
               setIsVisible(true);
-              const actualDelay = options.priority === 'high' ? 0 : (options.delay || 0);
+              const actualDelay =
+                options.priority === 'high' ? 0 : options.delay || 0;
               setTimeout(() => {
                 setIsLoaded(true);
               }, actualDelay);
@@ -48,7 +49,12 @@ export function withLazyLoading<P extends object>(
           observerRef.current.disconnect();
         }
       };
-    }, [options.threshold, options.rootMargin, options.delay, options.priority]);
+    }, [
+      options.threshold,
+      options.rootMargin,
+      options.delay,
+      options.priority,
+    ]);
 
     // Priority-based immediate loading
     useEffect(() => {
@@ -60,23 +66,25 @@ export function withLazyLoading<P extends object>(
 
     if (!isVisible) {
       return (
-        <div ref={containerRef} className="lazy-load-container">
-          {options.fallback || <div className="lazy-load-fallback">Loading...</div>}
+        <div ref={containerRef} className='lazy-load-container'>
+          {options.fallback || (
+            <div className='lazy-load-fallback'>Loading...</div>
+          )}
         </div>
       );
     }
 
     if (!isLoaded) {
       return (
-        <div className="lazy-load-container">
-          <AnimatePresence mode="wait">
+        <div className='lazy-load-container'>
+          <AnimatePresence mode='wait'>
             <motion.div
-              key="fallback"
+              key='fallback'
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className="lazy-load-fallback"
+              className='lazy-load-fallback'
             >
               {options.fallback || <div>Loading...</div>}
             </motion.div>
@@ -96,10 +104,10 @@ export function withLazyLoading<P extends object>(
 // Hook for lazy loading logic
 export const useLazyLoading = (
   options: {
-    threshold?: number;
-    rootMargin?: string;
     delay?: number;
-    priority?: 'low' | 'medium' | 'high';
+    priority?: 'high' | 'low' | 'medium';
+    rootMargin?: string;
+    threshold?: number;
   } = {}
 ) => {
   const [isVisible, setIsVisible] = useState(false);
@@ -111,11 +119,12 @@ export const useLazyLoading = (
     if (!containerRef.current) return;
 
     const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
+      entries => {
+        entries.forEach(entry => {
           if (entry.isIntersecting) {
             setIsVisible(true);
-            const actualDelay = options.priority === 'high' ? 0 : (options.delay || 0);
+            const actualDelay =
+              options.priority === 'high' ? 0 : options.delay || 0;
             setTimeout(() => {
               setIsLoaded(true);
             }, actualDelay);

@@ -6,100 +6,103 @@ export interface ApiResponse<T = unknown> {
 }
 
 export interface ApiError {
-  status: number;
-  message: string;
   details?: unknown;
+  message: string;
+  status: number;
 }
 
 export interface PaginatedResponse<T> {
-  data: T[];
   count: number;
+  data: T[];
   page: number;
   pageSize: number;
   totalPages: number;
 }
 
 export interface ApiClientInterface {
+  delete<T = unknown>(endpoint: string): Promise<T>;
   get<T = unknown>(endpoint: string): Promise<T>;
   post<T = unknown>(endpoint: string, data?: unknown): Promise<T>;
   put<T = unknown>(endpoint: string, data?: unknown): Promise<T>;
-  delete<T = unknown>(endpoint: string): Promise<T>;
-  uploadFile(endpoint: string, file: {
-    base64: string;
-    mimeType: string;
-    fileName: string;
-  }): Promise<unknown>;
+  uploadFile(
+    endpoint: string,
+    file: {
+      base64: string;
+      fileName: string;
+      mimeType: string;
+    }
+  ): Promise<unknown>;
 }
 
 // Request/Response types for different endpoints
 export interface DocumentUploadRequest {
+  category?: string;
+  documentType?: string;
   file: {
     base64: string;
-    mimeType: string;
     fileName: string;
+    mimeType: string;
   };
-  documentType?: string;
-  category?: string;
 }
 
 export interface DocumentListResponse {
   documents: Array<{
-    id: string;
+    created_at: string;
+    document_type: string;
     file_name: string;
     file_path: string;
-    file_type: string | null;
-    document_type: string;
-    created_at: string;
+    file_type: null | string;
+    id: string;
     updated_at: string;
   }>;
 }
 
 export interface UserProfileResponse {
   profile: {
-    id: string;
-    email: string | null;
-    full_name: string | null;
-    avatar_url: string | null;
-    phone: string | null;
+    avatar_url: null | string;
     created_at: string;
+    email: null | string;
+    full_name: null | string;
+    id: string;
+    phone: null | string;
     updated_at: string;
   };
 }
 
 export interface WillData {
-  beneficiaries?: Array<{
-    name: string;
-    relationship: string;
-    percentage: number;
-  }>;
-  executor?: {
-    name: string;
-    email: string;
-    phone?: string;
-  };
   assets?: Array<{
-    type: string;
     description: string;
+    type: string;
     value?: number;
   }>;
+  beneficiaries?: Array<{
+    name: string;
+    percentage: number;
+    relationship: string;
+  }>;
+  executor?: {
+    email: string;
+    name: string;
+    phone?: string;
+  };
   wishes?: string;
 }
 
 export interface GuardianData {
-  name: string;
   email: string;
-  phone?: string | null;
-  relationship?: string | null;
-  notes?: string | null;
   is_active?: boolean;
+  name: string;
+  notes?: null | string;
+  phone?: null | string;
+  relationship?: null | string;
 }
 
 // Service method parameter types
 export interface GetDocumentsParams {
+  category?: string;
+  documentType?: string;
   limit?: number;
   offset?: number;
-  documentType?: string;
-  category?: string;
 }
 
 export interface GetGuardiansParams {
@@ -109,11 +112,11 @@ export interface GetGuardiansParams {
 }
 
 export interface CreateLegacyItemParams {
-  title: string;
+  category: 'asset' | 'document' | 'instruction' | 'memory' | 'wish';
   description?: string;
-  category: 'document' | 'wish' | 'memory' | 'instruction' | 'asset';
-  priority?: 'low' | 'medium' | 'high' | 'urgent';
   due_date?: string;
-  tags?: string[];
   metadata?: Record<string, unknown>;
+  priority?: 'high' | 'low' | 'medium' | 'urgent';
+  tags?: string[];
+  title: string;
 }

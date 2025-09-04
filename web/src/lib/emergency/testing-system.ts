@@ -1,35 +1,35 @@
 import { createClient } from '@supabase/supabase-js';
 import EmergencyDetectionEngine from './detection-engine';
 import GuardianNotificationService from './guardian-notifier';
-import EmergencyAccessControl from './access-control';
+import EmergencyAccessControl, { type AccessContext } from './access-control';
 import type { DetectionEngineConfig } from '@/types/emergency';
 
 interface TestScenario {
+  cleanup?: TestCleanupStep[];
+  description: string;
+  execution: TestExecutionStep[];
   id: string;
   name: string;
-  description: string;
   setup: TestSetupStep[];
-  execution: TestExecutionStep[];
   validation: TestValidationStep[];
-  cleanup?: TestCleanupStep[];
 }
 
 interface TestSetupStep {
   action:
-    | 'create_user'
-    | 'create_guardian'
-    | 'set_shield_settings'
     | 'create_documents'
-    | 'set_activity';
+    | 'create_guardian'
+    | 'create_user'
+    | 'set_activity'
+    | 'set_shield_settings';
   data: Record<string, any>;
 }
 
 interface TestExecutionStep {
   action:
-    | 'trigger_detection'
-    | 'send_notification'
-    | 'verify_guardian'
     | 'access_resource'
+    | 'send_notification'
+    | 'trigger_detection'
+    | 'verify_guardian'
     | 'wait';
   data: Record<string, any>;
   expectedResult?: any;
@@ -37,39 +37,39 @@ interface TestExecutionStep {
 
 interface TestValidationStep {
   check:
-    | 'shield_status'
-    | 'notification_sent'
     | 'access_granted'
     | 'audit_logged'
-    | 'guardian_notified';
+    | 'guardian_notified'
+    | 'notification_sent'
+    | 'shield_status';
   expected: any;
   timeout?: number;
 }
 
 interface TestCleanupStep {
   action:
-    | 'delete_user'
+    | 'clear_notifications'
     | 'delete_guardian'
-    | 'reset_shield'
-    | 'clear_notifications';
+    | 'delete_user'
+    | 'reset_shield';
   data: Record<string, any>;
 }
 
 interface TestResult {
-  scenario: string;
-  passed: boolean;
   duration: number;
-  steps: StepResult[];
   error?: string;
+  passed: boolean;
+  scenario: string;
+  steps: StepResult[];
 }
 
 interface StepResult {
-  step: string;
-  passed: boolean;
+  actual?: any;
   duration: number;
   error?: string;
-  actual?: any;
   expected?: any;
+  passed: boolean;
+  step: string;
 }
 
 export class EmergencyTestingSystem {
@@ -401,8 +401,8 @@ export class EmergencyTestingSystem {
   private async runTestScenario(scenario: TestScenario): Promise<TestResult> {
     const startTime = Date.now();
     const stepResults: StepResult[] = [];
-    let testUserId: string | null = null;
-    let testGuardianId: string | null = null;
+    let testUserId: null | string = null;
+    let testGuardianId: null | string = null;
     let _testDocuments: string[] = [];
 
     try {
@@ -416,7 +416,9 @@ export class EmergencyTestingSystem {
           // Store created resources for cleanup
           if (setupStep.action === 'create_user') {
             testUserId = result.userId;
-            this.testUsers.add(testUserId);
+            if (testUserId) {
+              this.testUsers.add(testUserId);
+            }
           } else if (setupStep.action === 'create_guardian') {
             testGuardianId = result.guardianId;
           } else if (setupStep.action === 'create_documents') {
@@ -555,7 +557,7 @@ export class EmergencyTestingSystem {
         if (userError) throw userError;
 
         // Create profile
-        await supabase.from('profiles').insert({
+        await (supabase as any).from('profiles').insert({
           user_id: user.user.id,
           full_name: step.data.name,
           email: step.data.email,
@@ -588,7 +590,7 @@ export class EmergencyTestingSystem {
       }
 
       case 'set_shield_settings': {
-        await supabase.from('family_shield_settings').upsert({
+        await (supabase as any).from('family_shield_settings').upsert({
           user_id: step.data.userId,
           is_shield_enabled: step.data.is_shield_enabled || false,
           inactivity_period_months: step.data.inactivity_period_months || 6,
@@ -628,7 +630,7 @@ export class EmergencyTestingSystem {
         const oldDate = new Date();
         oldDate.setDate(oldDate.getDate() - daysAgo);
 
-        await supabase.from('user_health_checks').insert({
+        await (supabase as any).from('user_health_checks').insert({
           user_id: step.data.userId,
           check_type: 'login',
           status: 'responded',
@@ -647,7 +649,7 @@ export class EmergencyTestingSystem {
   private async executeExecutionStep(
     step: TestExecutionStep,
     userId: string,
-    guardianId?: string | null
+    guardianId?: null | string
   ): Promise<any> {
     switch (step.action) {
       case 'trigger_detection': {
@@ -693,9 +695,9 @@ export class EmergencyTestingSystem {
       }
 
       case 'access_resource': {
-        const context = {
+        const context: AccessContext = {
           accessorType: step.data.accessor_type,
-          accessorId: guardianId,
+          accessorId: guardianId || undefined,
           guardianPermissions: step.data.guardian_permissions,
         };
 
@@ -723,7 +725,7 @@ export class EmergencyTestingSystem {
   private async executeValidationStep(
     step: TestValidationStep,
     userId: string,
-    guardianId?: string | null
+    guardianId?: null | string
   ): Promise<any> {
     const supabase = this.getServiceClient();
 
@@ -778,7 +780,7 @@ export class EmergencyTestingSystem {
   private async executeCleanupStep(
     step: TestCleanupStep,
     userId: string,
-    _guardianId?: string | null
+    _guardianId?: null | string
   ): Promise<void> {
     const supabase = this.getServiceClient();
 
@@ -821,7 +823,7 @@ export class EmergencyTestingSystem {
             .from('guardian_notifications')
             .delete()
             .eq('user_id', userId),
-          supabase.from('user_health_checks').delete().eq('user_id', userId),
+          (supabase as any).from('user_health_checks').delete().eq('user_id', userId),
           supabase
             .from('emergency_access_audit')
             .delete()
@@ -834,9 +836,9 @@ export class EmergencyTestingSystem {
             .from('family_shield_settings')
             .delete()
             .eq('user_id', userId),
-          supabase.from('guardians').delete().eq('user_id', userId),
-          supabase.from('documents').delete().eq('user_id', userId),
-          supabase.from('profiles').delete().eq('user_id', userId),
+          (supabase as any).from('guardians').delete().eq('user_id', userId),
+          (supabase as any).from('documents').delete().eq('user_id', userId),
+          (supabase as any).from('profiles').delete().eq('user_id', userId),
         ]);
 
         // Delete user

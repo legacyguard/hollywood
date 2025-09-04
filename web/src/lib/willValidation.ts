@@ -4,18 +4,17 @@
  */
 
 import type {
-  WillUserData,
-  WillTemplate,
-  WillValidationResult,
-  ValidationError,
-  Jurisdiction,
-  WillJurisdictionConfig,
+  AssetInfo,
   BeneficiaryInfo,
-  AssetInfo
+  Jurisdiction,
+  ValidationError,
+  WillJurisdictionConfig,
+  WillTemplate,
+  WillUserData,
+  WillValidationResult,
 } from '../types/will-templates';
 
 export class WillValidationService {
-
   /**
    * Comprehensive will validation
    */
@@ -29,7 +28,10 @@ export class WillValidationService {
     const missingRequired: string[] = [];
 
     // 1. Personal Information Validation
-    const personalErrors = this.validatePersonalInformation(userData.personal, jurisdictionConfig);
+    const personalErrors = this.validatePersonalInformation(
+      userData.personal,
+      jurisdictionConfig
+    );
     errors.push(...personalErrors.errors);
     warnings.push(...personalErrors.warnings);
     missingRequired.push(...personalErrors.missing);
@@ -40,7 +42,11 @@ export class WillValidationService {
     warnings.push(...familyErrors.warnings);
 
     // 3. Beneficiary Validation
-    const beneficiaryErrors = this.validateBeneficiaries(userData.beneficiaries, userData.family, jurisdictionConfig);
+    const beneficiaryErrors = this.validateBeneficiaries(
+      userData.beneficiaries,
+      userData.family,
+      jurisdictionConfig
+    );
     errors.push(...beneficiaryErrors.errors);
     warnings.push(...beneficiaryErrors.warnings);
 
@@ -55,17 +61,26 @@ export class WillValidationService {
     warnings.push(...executorErrors.warnings);
 
     // 6. Guardian Validation (for minor children)
-    const guardianErrors = this.validateGuardians(userData.guardians, userData.family);
+    const guardianErrors = this.validateGuardians(
+      userData.guardians,
+      userData.family
+    );
     errors.push(...guardianErrors.errors);
     warnings.push(...guardianErrors.warnings);
 
     // 7. Legal Compliance Validation
-    const legalErrors = await this.validateLegalCompliance(userData, jurisdictionConfig);
+    const legalErrors = await this.validateLegalCompliance(
+      userData,
+      jurisdictionConfig
+    );
     errors.push(...legalErrors.errors);
     warnings.push(...legalErrors.warnings);
 
     // 8. Template-specific validation
-    const templateErrors = this.validateTemplateRequirements(userData, template);
+    const templateErrors = this.validateTemplateRequirements(
+      userData,
+      template
+    );
     errors.push(...templateErrors.errors);
     warnings.push(...templateErrors.warnings);
     missingRequired.push(...templateErrors.missing);
@@ -73,7 +88,10 @@ export class WillValidationService {
     // Calculate completeness score
     const totalRequiredFields = this.getTotalRequiredFields(template);
     const completedFields = totalRequiredFields - missingRequired.length;
-    const completenessScore = totalRequiredFields > 0 ? (completedFields / totalRequiredFields) * 100 : 100;
+    const completenessScore =
+      totalRequiredFields > 0
+        ? (completedFields / totalRequiredFields) * 100
+        : 100;
 
     return {
       isValid: errors.length === 0,
@@ -82,14 +100,21 @@ export class WillValidationService {
       warnings: this.deduplicateErrors(warnings),
       legalRequirementsMet: legalErrors.errors.length === 0,
       missingRequiredFields: [...new Set(missingRequired)],
-      suggestedImprovements: this.generateSuggestedImprovements(userData, errors, warnings)
+      suggestedImprovements: this.generateSuggestedImprovements(
+        userData,
+        errors,
+        warnings
+      ),
     };
   }
 
   /**
    * Validate personal information
    */
-  private validatePersonalInformation(personal: Record<string, unknown>, config: WillJurisdictionConfig) {
+  private validatePersonalInformation(
+    personal: Record<string, unknown>,
+    config: WillJurisdictionConfig
+  ) {
     const errors: ValidationError[] = [];
     const warnings: ValidationError[] = [];
     const missing: string[] = [];
@@ -101,7 +126,7 @@ export class WillValidationService {
         field: 'personal.fullName',
         code: 'REQUIRED_FIELD',
         message: 'Full name is required',
-        severity: 'error'
+        severity: 'error',
       });
     }
 
@@ -111,7 +136,7 @@ export class WillValidationService {
         field: 'personal.dateOfBirth',
         code: 'REQUIRED_FIELD',
         message: 'Date of birth is required',
-        severity: 'error'
+        severity: 'error',
       });
     } else {
       // Age validation
@@ -122,7 +147,7 @@ export class WillValidationService {
           code: 'LEGAL_AGE_REQUIREMENT',
           message: `Must be at least ${config.legalRequirements.minimumAge} years old to create a will`,
           severity: 'error',
-          legalReference: `Minimum age requirement for ${config.jurisdiction}`
+          legalReference: `Minimum age requirement for ${config.jurisdiction}`,
         });
       }
 
@@ -131,7 +156,7 @@ export class WillValidationService {
           field: 'personal.dateOfBirth',
           code: 'UNUSUAL_AGE',
           message: 'Please verify the date of birth is correct',
-          severity: 'warning'
+          severity: 'warning',
         });
       }
     }
@@ -142,7 +167,7 @@ export class WillValidationService {
         field: 'personal.address',
         code: 'REQUIRED_FIELD',
         message: 'Valid address is required',
-        severity: 'error'
+        severity: 'error',
       });
     }
 
@@ -152,19 +177,22 @@ export class WillValidationService {
         field: 'personal.citizenship',
         code: 'REQUIRED_FIELD',
         message: 'Citizenship is required',
-        severity: 'error'
+        severity: 'error',
       });
     }
 
     // Personal ID validation (jurisdiction specific)
     if (config.jurisdiction === 'CZ' || config.jurisdiction === 'SK') {
-      if (personal.personalId && !this.validatePersonalId(personal.personalId, config.jurisdiction)) {
+      if (
+        personal.personalId &&
+        !this.validatePersonalId(personal.personalId, config.jurisdiction)
+      ) {
         errors.push({
           field: 'personal.personalId',
           code: 'INVALID_FORMAT',
           message: `Invalid ${config.jurisdiction === 'CZ' ? 'rodné číslo' : 'rodné číslo'} format`,
           severity: 'error',
-          jurisdictionSpecific: true
+          jurisdictionSpecific: true,
         });
       }
     }
@@ -186,35 +214,37 @@ export class WillValidationService {
           field: 'family.spouse.fullName',
           code: 'REQUIRED_FIELD',
           message: 'Spouse name is required if spouse is specified',
-          severity: 'error'
+          severity: 'error',
         });
       }
     }
 
     // Validate children information
     if (family.children && Array.isArray(family.children)) {
-      family.children.forEach((child: Record<string, unknown>, index: number) => {
-        if (!child.fullName?.trim()) {
-          errors.push({
-            field: `family.children[${index}].fullName`,
-            code: 'REQUIRED_FIELD',
-            message: `Child ${index + 1} name is required`,
-            severity: 'error'
-          });
-        }
+      family.children.forEach(
+        (child: Record<string, unknown>, index: number) => {
+          if (!child.fullName?.trim()) {
+            errors.push({
+              field: `family.children[${index}].fullName`,
+              code: 'REQUIRED_FIELD',
+              message: `Child ${index + 1} name is required`,
+              severity: 'error',
+            });
+          }
 
-        if (!child.dateOfBirth) {
-          errors.push({
-            field: `family.children[${index}].dateOfBirth`,
-            code: 'REQUIRED_FIELD',
-            message: `Child ${index + 1} date of birth is required`,
-            severity: 'error'
-          });
-        } else {
-          const age = this.calculateAge(child.dateOfBirth);
-          child.isMinor = age < 18; // Set minor status
+          if (!child.dateOfBirth) {
+            errors.push({
+              field: `family.children[${index}].dateOfBirth`,
+              code: 'REQUIRED_FIELD',
+              message: `Child ${index + 1} date of birth is required`,
+              severity: 'error',
+            });
+          } else {
+            const age = this.calculateAge(child.dateOfBirth);
+            child.isMinor = age < 18; // Set minor status
+          }
         }
-      });
+      );
     }
 
     return { errors, warnings };
@@ -223,7 +253,11 @@ export class WillValidationService {
   /**
    * Validate beneficiaries
    */
-  private validateBeneficiaries(beneficiaries: BeneficiaryInfo[], family: Record<string, unknown>, config: WillJurisdictionConfig) {
+  private validateBeneficiaries(
+    beneficiaries: BeneficiaryInfo[],
+    family: Record<string, unknown>,
+    config: WillJurisdictionConfig
+  ) {
     const errors: ValidationError[] = [];
     const warnings: ValidationError[] = [];
 
@@ -232,13 +266,15 @@ export class WillValidationService {
         field: 'beneficiaries',
         code: 'REQUIRED_FIELD',
         message: 'At least one beneficiary must be specified',
-        severity: 'error'
+        severity: 'error',
       });
       return { errors, warnings };
     }
 
     let totalPercentage = 0;
-    const percentageBeneficiaries = beneficiaries.filter(b => b.share.type === 'percentage');
+    const percentageBeneficiaries = beneficiaries.filter(
+      b => b.share.type === 'percentage'
+    );
 
     beneficiaries.forEach((beneficiary, index) => {
       // Required fields
@@ -247,7 +283,7 @@ export class WillValidationService {
           field: `beneficiaries[${index}].name`,
           code: 'REQUIRED_FIELD',
           message: `Beneficiary ${index + 1} name is required`,
-          severity: 'error'
+          severity: 'error',
         });
       }
 
@@ -256,7 +292,7 @@ export class WillValidationService {
           field: `beneficiaries[${index}].relationship`,
           code: 'REQUIRED_FIELD',
           message: `Beneficiary ${index + 1} relationship is required`,
-          severity: 'error'
+          severity: 'error',
         });
       }
 
@@ -266,7 +302,7 @@ export class WillValidationService {
           field: `beneficiaries[${index}].share.type`,
           code: 'REQUIRED_FIELD',
           message: `Beneficiary ${index + 1} share type is required`,
-          severity: 'error'
+          severity: 'error',
         });
       }
 
@@ -277,7 +313,7 @@ export class WillValidationService {
             field: `beneficiaries[${index}].share.value`,
             code: 'INVALID_PERCENTAGE',
             message: `Beneficiary ${index + 1} percentage must be between 1 and 100`,
-            severity: 'error'
+            severity: 'error',
           });
         } else {
           totalPercentage += percentage;
@@ -285,12 +321,15 @@ export class WillValidationService {
       }
 
       // Contact information validation
-      if (beneficiary.contactInfo?.email && !this.validateEmail(beneficiary.contactInfo.email)) {
+      if (
+        beneficiary.contactInfo?.email &&
+        !this.validateEmail(beneficiary.contactInfo.email)
+      ) {
         errors.push({
           field: `beneficiaries[${index}].contactInfo.email`,
           code: 'INVALID_EMAIL',
           message: `Beneficiary ${index + 1} email format is invalid`,
-          severity: 'error'
+          severity: 'error',
         });
       }
     });
@@ -301,20 +340,24 @@ export class WillValidationService {
         field: 'beneficiaries',
         code: 'PERCENTAGE_OVERFLOW',
         message: `Total percentage (${totalPercentage}%) exceeds 100%`,
-        severity: 'error'
+        severity: 'error',
       });
     } else if (percentageBeneficiaries.length > 0 && totalPercentage < 100) {
       warnings.push({
         field: 'beneficiaries',
         code: 'PERCENTAGE_UNDERFLOW',
         message: `Total percentage (${totalPercentage}%) is less than 100%. Remaining will go to residuary estate.`,
-        severity: 'warning'
+        severity: 'warning',
       });
     }
 
     // Forced heirship validation
     if (config.legalRequirements.forcedHeirship) {
-      const forcedHeirshipErrors = this.validateForcedHeirship(beneficiaries, family, config);
+      const forcedHeirshipErrors = this.validateForcedHeirship(
+        beneficiaries,
+        family,
+        config
+      );
       errors.push(...forcedHeirshipErrors);
     }
 
@@ -324,27 +367,38 @@ export class WillValidationService {
   /**
    * Validate forced heirship requirements
    */
-  private validateForcedHeirship(beneficiaries: BeneficiaryInfo[], family: Record<string, unknown>, config: WillJurisdictionConfig): ValidationError[] {
+  private validateForcedHeirship(
+    beneficiaries: BeneficiaryInfo[],
+    family: Record<string, unknown>,
+    config: WillJurisdictionConfig
+  ): ValidationError[] {
     const errors: ValidationError[] = [];
 
     if (config.jurisdiction === 'CZ' || config.jurisdiction === 'SK') {
       const hasSpouse = family.spouse !== undefined;
       const hasChildren = family.children && family.children.length > 0;
-      const hasMinorChildren = family.children?.some((c: Record<string, unknown>) => c.isMinor);
+      const hasMinorChildren = family.children?.some(
+        (c: Record<string, unknown>) => c.isMinor
+      );
 
       // Czech/Slovak forced heirship rules
       if (hasSpouse || hasChildren) {
-        const spouseBeneficiary = beneficiaries.find(b => b.relationship === 'spouse');
-        const childrenBeneficiaries = beneficiaries.filter(b => b.relationship === 'child');
+        const spouseBeneficiary = beneficiaries.find(
+          b => b.relationship === 'spouse'
+        );
+        const childrenBeneficiaries = beneficiaries.filter(
+          b => b.relationship === 'child'
+        );
 
         if (hasSpouse && !spouseBeneficiary) {
           errors.push({
             field: 'beneficiaries',
             code: 'FORCED_HEIRSHIP_VIOLATION',
-            message: 'Spouse must be included as a beneficiary under forced heirship rules',
+            message:
+              'Spouse must be included as a beneficiary under forced heirship rules',
             severity: 'error',
             legalReference: 'Forced heirship provisions',
-            jurisdictionSpecific: true
+            jurisdictionSpecific: true,
           });
         }
 
@@ -352,10 +406,11 @@ export class WillValidationService {
           errors.push({
             field: 'beneficiaries',
             code: 'FORCED_HEIRSHIP_VIOLATION',
-            message: 'Minor children must be included as beneficiaries under forced heirship rules',
+            message:
+              'Minor children must be included as beneficiaries under forced heirship rules',
             severity: 'error',
             legalReference: 'Protection of minor heirs',
-            jurisdictionSpecific: true
+            jurisdictionSpecific: true,
           });
         }
       }
@@ -375,8 +430,9 @@ export class WillValidationService {
       warnings.push({
         field: 'assets',
         code: 'NO_ASSETS',
-        message: 'No assets specified. Consider adding asset information for comprehensive estate planning.',
-        severity: 'warning'
+        message:
+          'No assets specified. Consider adding asset information for comprehensive estate planning.',
+        severity: 'warning',
       });
       return { errors, warnings };
     }
@@ -387,7 +443,7 @@ export class WillValidationService {
           field: `assets[${index}].description`,
           code: 'REQUIRED_FIELD',
           message: `Asset ${index + 1} description is required`,
-          severity: 'error'
+          severity: 'error',
         });
       }
 
@@ -396,26 +452,33 @@ export class WillValidationService {
           field: `assets[${index}].type`,
           code: 'REQUIRED_FIELD',
           message: `Asset ${index + 1} type is required`,
-          severity: 'error'
+          severity: 'error',
         });
       }
 
-      if (asset.value !== undefined && (isNaN(asset.value) || asset.value < 0)) {
+      if (
+        asset.value !== undefined &&
+        (isNaN(asset.value) || asset.value < 0)
+      ) {
         errors.push({
           field: `assets[${index}].value`,
           code: 'INVALID_VALUE',
           message: `Asset ${index + 1} value must be a positive number`,
-          severity: 'error'
+          severity: 'error',
         });
       }
 
-      if (asset.ownershipPercentage !== undefined &&
-          (isNaN(asset.ownershipPercentage) || asset.ownershipPercentage <= 0 || asset.ownershipPercentage > 100)) {
+      if (
+        asset.ownershipPercentage !== undefined &&
+        (isNaN(asset.ownershipPercentage) ||
+          asset.ownershipPercentage <= 0 ||
+          asset.ownershipPercentage > 100)
+      ) {
         errors.push({
           field: `assets[${index}].ownershipPercentage`,
           code: 'INVALID_PERCENTAGE',
           message: `Asset ${index + 1} ownership percentage must be between 1 and 100`,
-          severity: 'error'
+          severity: 'error',
         });
       }
     });
@@ -435,7 +498,7 @@ export class WillValidationService {
         field: 'executors',
         code: 'NO_EXECUTOR',
         message: 'Consider appointing an executor to manage your estate',
-        severity: 'warning'
+        severity: 'warning',
       });
       return { errors, warnings };
     }
@@ -446,14 +509,15 @@ export class WillValidationService {
         field: 'executors',
         code: 'NO_PRIMARY_EXECUTOR',
         message: 'At least one primary executor must be appointed',
-        severity: 'error'
+        severity: 'error',
       });
     } else if (primaryExecutors.length > 1) {
       warnings.push({
         field: 'executors',
         code: 'MULTIPLE_PRIMARY_EXECUTORS',
-        message: 'Multiple primary executors may complicate estate administration',
-        severity: 'warning'
+        message:
+          'Multiple primary executors may complicate estate administration',
+        severity: 'warning',
       });
     }
 
@@ -463,7 +527,7 @@ export class WillValidationService {
           field: `executors[${index}].name`,
           code: 'REQUIRED_FIELD',
           message: `Executor ${index + 1} name is required`,
-          severity: 'error'
+          severity: 'error',
         });
       }
 
@@ -472,16 +536,19 @@ export class WillValidationService {
           field: `executors[${index}].contactInfo`,
           code: 'REQUIRED_CONTACT',
           message: `Executor ${index + 1} must have email or phone contact information`,
-          severity: 'error'
+          severity: 'error',
         });
       }
 
-      if (executor.contactInfo?.email && !this.validateEmail(executor.contactInfo.email)) {
+      if (
+        executor.contactInfo?.email &&
+        !this.validateEmail(executor.contactInfo.email)
+      ) {
         errors.push({
           field: `executors[${index}].contactInfo.email`,
           code: 'INVALID_EMAIL',
           message: `Executor ${index + 1} email format is invalid`,
-          severity: 'error'
+          severity: 'error',
         });
       }
     });
@@ -492,11 +559,16 @@ export class WillValidationService {
   /**
    * Validate guardians for minor children
    */
-  private validateGuardians(guardians: Record<string, unknown>[], family: Record<string, unknown>) {
+  private validateGuardians(
+    guardians: Record<string, unknown>[],
+    family: Record<string, unknown>
+  ) {
     const errors: ValidationError[] = [];
     const warnings: ValidationError[] = [];
 
-    const hasMinorChildren = family.children?.some((child: Record<string, unknown>) => child.isMinor);
+    const hasMinorChildren = family.children?.some(
+      (child: Record<string, unknown>) => child.isMinor
+    );
 
     if (hasMinorChildren && (!guardians || guardians.length === 0)) {
       errors.push({
@@ -504,7 +576,7 @@ export class WillValidationService {
         code: 'MINOR_CHILDREN_NO_GUARDIAN',
         message: 'Guardians must be appointed for minor children',
         severity: 'error',
-        legalReference: 'Guardian appointment for minors'
+        legalReference: 'Guardian appointment for minors',
       });
       return { errors, warnings };
     }
@@ -516,7 +588,7 @@ export class WillValidationService {
             field: `guardians[${index}].primaryGuardian`,
             code: 'REQUIRED_FIELD',
             message: `Primary guardian must be specified for guardianship ${index + 1}`,
-            severity: 'error'
+            severity: 'error',
           });
         } else {
           if (!guardianship.primaryGuardian.name?.trim()) {
@@ -524,7 +596,7 @@ export class WillValidationService {
               field: `guardians[${index}].primaryGuardian.name`,
               code: 'REQUIRED_FIELD',
               message: `Primary guardian name is required for guardianship ${index + 1}`,
-              severity: 'error'
+              severity: 'error',
             });
           }
         }
@@ -534,7 +606,7 @@ export class WillValidationService {
             field: `guardians[${index}].alternateGuardian`,
             code: 'NO_BACKUP_GUARDIAN',
             message: `Consider appointing an alternate guardian for guardianship ${index + 1}`,
-            severity: 'warning'
+            severity: 'warning',
           });
         }
       });
@@ -546,7 +618,10 @@ export class WillValidationService {
   /**
    * Validate legal compliance
    */
-  private async validateLegalCompliance(userData: WillUserData, config: WillJurisdictionConfig) {
+  private async validateLegalCompliance(
+    userData: WillUserData,
+    config: WillJurisdictionConfig
+  ) {
     const errors: ValidationError[] = [];
     const warnings: ValidationError[] = [];
 
@@ -559,7 +634,7 @@ export class WillValidationService {
       code: 'MENTAL_CAPACITY_REMINDER',
       message: 'Ensure you are of sound mind when signing the will',
       severity: 'info',
-      legalReference: 'Mental capacity requirement'
+      legalReference: 'Mental capacity requirement',
     });
 
     // Witness requirements (if applicable)
@@ -570,7 +645,7 @@ export class WillValidationService {
         message: `This jurisdiction requires ${config.legalRequirements.witnessRequirements.minimumCount} witnesses for will execution`,
         severity: 'warning',
         legalReference: 'Witness requirements',
-        jurisdictionSpecific: true
+        jurisdictionSpecific: true,
       });
     }
 
@@ -580,7 +655,10 @@ export class WillValidationService {
   /**
    * Validate template-specific requirements
    */
-  private validateTemplateRequirements(userData: WillUserData, template: WillTemplate) {
+  private validateTemplateRequirements(
+    userData: WillUserData,
+    template: WillTemplate
+  ) {
     const errors: ValidationError[] = [];
     const warnings: ValidationError[] = [];
     const missing: string[] = [];
@@ -588,14 +666,18 @@ export class WillValidationService {
     // Check all template variables
     template.variables.forEach(variable => {
       if (variable.required) {
-        const value = this.getDataValue(userData, variable.key, variable.dataSource);
+        const value = this.getDataValue(
+          userData,
+          variable.key,
+          variable.dataSource
+        );
         if (this.isEmpty(value)) {
           missing.push(variable.key);
           errors.push({
             field: variable.key,
             code: 'TEMPLATE_REQUIRED_FIELD',
             message: `${variable.label} is required for this template`,
-            severity: 'error'
+            severity: 'error',
           });
         }
       }
@@ -613,7 +695,10 @@ export class WillValidationService {
     let age = today.getFullYear() - birth.getFullYear();
     const monthDiff = today.getMonth() - birth.getMonth();
 
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < birth.getDate())
+    ) {
       age--;
     }
 
@@ -621,10 +706,15 @@ export class WillValidationService {
   }
 
   private validateAddress(address: Record<string, unknown>): boolean {
-    return address &&
-           typeof address.street === 'string' && address.street.trim() &&
-           typeof address.city === 'string' && address.city.trim() &&
-           typeof address.country === 'string' && address.country.trim();
+    return (
+      address &&
+      typeof address.street === 'string' &&
+      address.street.trim() &&
+      typeof address.city === 'string' &&
+      address.city.trim() &&
+      typeof address.country === 'string' &&
+      address.country.trim()
+    );
   }
 
   private validateEmail(email: string): boolean {
@@ -632,7 +722,10 @@ export class WillValidationService {
     return emailRegex.test(email);
   }
 
-  private validatePersonalId(personalId: string, jurisdiction: Jurisdiction): boolean {
+  private validatePersonalId(
+    personalId: string,
+    jurisdiction: Jurisdiction
+  ): boolean {
     if (jurisdiction === 'CZ' || jurisdiction === 'SK') {
       // Czech/Slovak rodné číslo format: RRMMDD/XXXX or RRMMDDD/XXX
       const regex = /^\d{6}\/\d{3,4}$/;
@@ -642,16 +735,26 @@ export class WillValidationService {
   }
 
   private isEmpty(value: unknown): boolean {
-    return value === null || value === undefined || value === '' ||
-           (Array.isArray(value) && value.length === 0) ||
-           (typeof value === 'object' && Object.keys(value).length === 0);
+    return (
+      value === null ||
+      value === undefined ||
+      value === '' ||
+      (Array.isArray(value) && value.length === 0) ||
+      (typeof value === 'object' && Object.keys(value).length === 0)
+    );
   }
 
-  private getDataValue(data: WillUserData, key: string, source: string): unknown {
+  private getDataValue(
+    data: WillUserData,
+    key: string,
+    source: string
+  ): unknown {
     switch (source) {
       case 'user':
-        return this.getNestedValue(data.personal, key) ||
-               this.getNestedValue(data.family, key);
+        return (
+          this.getNestedValue(data.personal, key) ||
+          this.getNestedValue(data.family, key)
+        );
       case 'beneficiary':
         return data.beneficiaries;
       case 'asset':
@@ -691,7 +794,9 @@ export class WillValidationService {
 
     // Based on common issues
     if (errors.some(e => e.field.includes('executor'))) {
-      suggestions.push('Ensure all executor information is complete and accurate');
+      suggestions.push(
+        'Ensure all executor information is complete and accurate'
+      );
     }
 
     if (warnings.some(w => w.code === 'NO_EXECUTOR')) {
@@ -703,7 +808,9 @@ export class WillValidationService {
     }
 
     if (errors.some(e => e.code === 'FORCED_HEIRSHIP_VIOLATION')) {
-      suggestions.push('Review beneficiary structure to comply with forced heirship laws');
+      suggestions.push(
+        'Review beneficiary structure to comply with forced heirship laws'
+      );
     }
 
     return suggestions;

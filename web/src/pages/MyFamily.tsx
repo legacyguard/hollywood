@@ -1,19 +1,19 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 // import { Separator } from '@/components/ui/separator';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
-  Users,
-  Shield,
-  Heart,
-  FileText,
-  UserPlus,
   // Settings,
   AlertCircle,
   CheckCircle,
   Crown,
+  FileText,
+  Heart,
+  Shield,
+  UserPlus,
+  Users,
 } from 'lucide-react';
 // import { FamilyTreeVisualization } from '@/components/family/FamilyTreeVisualization';
 import { PersonRoleAssignment } from '@/components/family/PersonRoleAssignment';
@@ -21,25 +21,25 @@ import { FamilyInsights } from '@/components/family/FamilyInsights';
 import type { WillData } from '@/types/will';
 
 interface FamilyMember {
+  dateOfBirth?: string;
   id: string;
   name: string;
-  relationship: string;
-  dateOfBirth?: string;
-  roles: {
-    isHeir?: boolean;
-    heirPercentage?: number;
-    isGuardian?: boolean;
-    isExecutor?: boolean;
-    hasLegacyMessages?: boolean;
-    isEmergencyContact?: boolean;
-  };
-  status: 'complete' | 'partial' | 'missing_info';
   profileImage?: string;
+  relationship: string;
+  roles: {
+    hasLegacyMessages?: boolean;
+    heirPercentage?: number;
+    isEmergencyContact?: boolean;
+    isExecutor?: boolean;
+    isGuardian?: boolean;
+    isHeir?: boolean;
+  };
+  status: 'complete' | 'missing_info' | 'partial';
 }
 
 interface MyFamilyPageProps {
-  willData?: WillData;
   onWillDataUpdate?: (updatedData: WillData) => void;
+  willData?: WillData;
 }
 
 export const MyFamilyPage: React.FC<MyFamilyPageProps> = ({
@@ -103,7 +103,8 @@ export const MyFamilyPage: React.FC<MyFamilyPageProps> = ({
     []
   );
 
-  const [familyMembers, setFamilyMembers] = useState<FamilyMember[]>(initialFamilyMembers);
+  const [familyMembers, setFamilyMembers] =
+    useState<FamilyMember[]>(initialFamilyMembers);
 
   const handlePersonClick = useCallback((person: FamilyMember) => {
     setSelectedPerson(person);
@@ -161,8 +162,7 @@ export const MyFamilyPage: React.FC<MyFamilyPageProps> = ({
     const insights = {
       totalMembers: familyMembers.length,
       heirsAssigned: familyMembers.filter(m => m.roles.isHeir).length,
-      guardiansAssigned: familyMembers.filter(m => m.roles.isGuardian)
-        .length,
+      guardiansAssigned: familyMembers.filter(m => m.roles.isGuardian).length,
       executorAssigned: familyMembers.some(m => m.roles.isExecutor),
       legacyMessages: familyMembers.filter(m => m.roles.hasLegacyMessages)
         .length,
@@ -226,24 +226,24 @@ export const MyFamilyPage: React.FC<MyFamilyPageProps> = ({
         <div className='space-y-2'>
           <div className='flex flex-wrap gap-1'>
             {member.roles.isHeir && (
-              <Badge variant="default" className='text-xs'>
+              <Badge variant='default' className='text-xs'>
                 Heir ({member.roles.heirPercentage}%)
               </Badge>
             )}
             {member.roles.isExecutor && (
-              <Badge variant="secondary" className='text-xs'>
+              <Badge variant='secondary' className='text-xs'>
                 <Crown className='h-3 w-3 mr-1' />
                 Executor
               </Badge>
             )}
             {member.roles.isGuardian && (
-              <Badge variant="outline" className='text-xs'>
+              <Badge variant='outline' className='text-xs'>
                 <Shield className='h-3 w-3 mr-1' />
                 Guardian
               </Badge>
             )}
             {member.roles.hasLegacyMessages && (
-              <Badge variant="outline" className='text-xs'>
+              <Badge variant='outline' className='text-xs'>
                 <Heart className='h-3 w-3 mr-1' />
                 Legacy
               </Badge>

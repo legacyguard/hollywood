@@ -5,24 +5,27 @@
 
 import React, { useEffect, useState } from 'react';
 import { getPerformanceMetrics } from '@/lib/monitoring/performance';
-import { runHealthCheck, getLastHealthStatus } from '@/lib/monitoring/healthCheck';
+import {
+  getLastHealthStatus,
+  runHealthCheck,
+} from '@/lib/monitoring/healthCheck';
 import { captureError } from '@/lib/monitoring/sentry';
 // import { trackPerformance, trackAction } from '@/lib/monitoring/analytics';
 
 interface PerformanceData {
-  webVitals: any;
+  connection: any;
+  memory: any;
   routes: any[];
   userTimings: any[];
-  memory: any;
-  connection: any;
+  webVitals: any;
 }
 
 interface HealthData {
-  overall: 'healthy' | 'degraded' | 'unhealthy';
   checks: Record<string, any>;
+  overall: 'degraded' | 'healthy' | 'unhealthy';
+  timestamp: number;
   uptime: number;
   version: string;
-  timestamp: number;
 }
 
 /**
@@ -58,9 +61,12 @@ export const PerformanceMonitor: React.FC = () => {
               // });
             }
           } catch (error) {
-            captureError(error instanceof Error ? error : new Error(String(error)), {
-              tags: { source: 'health_check' }
-            });
+            captureError(
+              error instanceof Error ? error : new Error(String(error)),
+              {
+                tags: { source: 'health_check' },
+              }
+            );
           }
         }, 60000); // Every minute
 
@@ -90,24 +96,31 @@ export const PerformanceMonitor: React.FC = () => {
 
             // Report memory usage if available
             if (metrics.memory) {
-              const memoryUsage = (metrics.memory.usedJSHeapSize / metrics.memory.jsHeapSizeLimit) * 100;
+              const memoryUsage =
+                (metrics.memory.usedJSHeapSize /
+                  metrics.memory.jsHeapSizeLimit) *
+                100;
               // trackPerformance('memory_usage', memoryUsage, {
               //   usedMB: Math.round(metrics.memory.usedJSHeapSize / 1024 / 1024),
               //   totalMB: Math.round(metrics.memory.totalJSHeapSize / 1024 / 1024)
               // });
             }
-
           } catch (error) {
-            captureError(error instanceof Error ? error : new Error(String(error)), {
-              tags: { source: 'performance_reporting' }
-            });
+            captureError(
+              error instanceof Error ? error : new Error(String(error)),
+              {
+                tags: { source: 'performance_reporting' },
+              }
+            );
           }
         }, 30000); // Every 30 seconds
-
       } catch (error) {
-        captureError(error instanceof Error ? error : new Error(String(error)), {
-          tags: { source: 'monitoring_startup' }
-        });
+        captureError(
+          error instanceof Error ? error : new Error(String(error)),
+          {
+            tags: { source: 'monitoring_startup' },
+          }
+        );
       }
     };
 
@@ -128,7 +141,8 @@ export const PerformanceMonitor: React.FC = () => {
  * Performance Dashboard Component (for development/admin use)
  */
 export const PerformanceDashboard: React.FC = () => {
-  const [performanceData, setPerformanceData] = useState<PerformanceData | null>(null);
+  const [performanceData, setPerformanceData] =
+    useState<null | PerformanceData>(null);
   const [healthData, setHealthData] = useState<HealthData | null>(null);
   const [refreshInterval, setRefreshInterval] = useState(5000);
 
@@ -141,9 +155,12 @@ export const PerformanceDashboard: React.FC = () => {
         setPerformanceData(performance as PerformanceData);
         setHealthData(health);
       } catch (error) {
-        captureError(error instanceof Error ? error : new Error(String(error)), {
-          tags: { source: 'performance_dashboard' }
-        });
+        captureError(
+          error instanceof Error ? error : new Error(String(error)),
+          {
+            tags: { source: 'performance_dashboard' },
+          }
+        );
       }
     };
 
@@ -159,13 +176,15 @@ export const PerformanceDashboard: React.FC = () => {
   }
 
   return (
-    <div className="fixed bottom-4 right-4 w-80 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-4 text-xs font-mono max-h-96 overflow-y-auto z-50">
-      <div className="flex items-center justify-between mb-2">
-        <h3 className="font-semibold text-gray-800 dark:text-gray-200">Performance Monitor</h3>
+    <div className='fixed bottom-4 right-4 w-80 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-4 text-xs font-mono max-h-96 overflow-y-auto z-50'>
+      <div className='flex items-center justify-between mb-2'>
+        <h3 className='font-semibold text-gray-800 dark:text-gray-200'>
+          Performance Monitor
+        </h3>
         <select
           value={refreshInterval}
-          onChange={(e) => setRefreshInterval(Number(e.target.value))}
-          className="text-xs bg-gray-100 dark:bg-gray-700 border rounded px-1"
+          onChange={e => setRefreshInterval(Number(e.target.value))}
+          className='text-xs bg-gray-100 dark:bg-gray-700 border rounded px-1'
         >
           <option value={1000}>1s</option>
           <option value={5000}>5s</option>
@@ -175,18 +194,22 @@ export const PerformanceDashboard: React.FC = () => {
 
       {/* Health Status */}
       {healthData && (
-        <div className="mb-4">
-          <div className="flex items-center justify-between">
-            <span className="text-gray-600 dark:text-gray-400">Health:</span>
-            <span className={`px-2 py-1 rounded text-xs font-semibold ${
-              healthData.overall === 'healthy' ? 'bg-green-100 text-green-800' :
-              healthData.overall === 'degraded' ? 'bg-yellow-100 text-yellow-800' :
-              'bg-red-100 text-red-800'
-            }`}>
+        <div className='mb-4'>
+          <div className='flex items-center justify-between'>
+            <span className='text-gray-600 dark:text-gray-400'>Health:</span>
+            <span
+              className={`px-2 py-1 rounded text-xs font-semibold ${
+                healthData.overall === 'healthy'
+                  ? 'bg-green-100 text-green-800'
+                  : healthData.overall === 'degraded'
+                    ? 'bg-yellow-100 text-yellow-800'
+                    : 'bg-red-100 text-red-800'
+              }`}
+            >
               {healthData.overall.toUpperCase()}
             </span>
           </div>
-          <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+          <div className='text-xs text-gray-500 dark:text-gray-400 mt-1'>
             Uptime: {Math.round(healthData.uptime / 1000 / 60)}min
           </div>
         </div>
@@ -194,49 +217,67 @@ export const PerformanceDashboard: React.FC = () => {
 
       {/* Web Vitals */}
       {performanceData?.webVitals && (
-        <div className="mb-4">
-          <h4 className="font-semibold text-gray-700 dark:text-gray-300 mb-2">Web Vitals</h4>
-          {Object.entries(performanceData.webVitals).map(([key, metric]: [string, any]) => (
-            <div key={key} className="flex justify-between items-center">
-              <span className="text-gray-600 dark:text-gray-400">{key}:</span>
-              <div className="flex items-center space-x-2">
-                <span>{Math.round(metric.value)}ms</span>
-                <span className={`w-2 h-2 rounded-full ${
-                  metric.rating === 'good' ? 'bg-green-400' :
-                  metric.rating === 'needs-improvement' ? 'bg-yellow-400' :
-                  'bg-red-400'
-                }`} />
+        <div className='mb-4'>
+          <h4 className='font-semibold text-gray-700 dark:text-gray-300 mb-2'>
+            Web Vitals
+          </h4>
+          {Object.entries(performanceData.webVitals).map(
+            ([key, metric]: [string, any]) => (
+              <div key={key} className='flex justify-between items-center'>
+                <span className='text-gray-600 dark:text-gray-400'>{key}:</span>
+                <div className='flex items-center space-x-2'>
+                  <span>{Math.round(metric.value)}ms</span>
+                  <span
+                    className={`w-2 h-2 rounded-full ${
+                      metric.rating === 'good'
+                        ? 'bg-green-400'
+                        : metric.rating === 'needs-improvement'
+                          ? 'bg-yellow-400'
+                          : 'bg-red-400'
+                    }`}
+                  />
+                </div>
               </div>
-            </div>
-          ))}
+            )
+          )}
         </div>
       )}
 
       {/* Memory Usage */}
       {performanceData?.memory && (
-        <div className="mb-4">
-          <h4 className="font-semibold text-gray-700 dark:text-gray-300 mb-2">Memory</h4>
-          <div className="flex justify-between">
-            <span className="text-gray-600 dark:text-gray-400">Used:</span>
-            <span>{Math.round(performanceData.memory.usedJSHeapSize / 1024 / 1024)}MB</span>
+        <div className='mb-4'>
+          <h4 className='font-semibold text-gray-700 dark:text-gray-300 mb-2'>
+            Memory
+          </h4>
+          <div className='flex justify-between'>
+            <span className='text-gray-600 dark:text-gray-400'>Used:</span>
+            <span>
+              {Math.round(performanceData.memory.usedJSHeapSize / 1024 / 1024)}
+              MB
+            </span>
           </div>
-          <div className="flex justify-between">
-            <span className="text-gray-600 dark:text-gray-400">Total:</span>
-            <span>{Math.round(performanceData.memory.totalJSHeapSize / 1024 / 1024)}MB</span>
+          <div className='flex justify-between'>
+            <span className='text-gray-600 dark:text-gray-400'>Total:</span>
+            <span>
+              {Math.round(performanceData.memory.totalJSHeapSize / 1024 / 1024)}
+              MB
+            </span>
           </div>
         </div>
       )}
 
       {/* Connection Info */}
       {performanceData?.connection && (
-        <div className="mb-4">
-          <h4 className="font-semibold text-gray-700 dark:text-gray-300 mb-2">Connection</h4>
-          <div className="flex justify-between">
-            <span className="text-gray-600 dark:text-gray-400">Type:</span>
+        <div className='mb-4'>
+          <h4 className='font-semibold text-gray-700 dark:text-gray-300 mb-2'>
+            Connection
+          </h4>
+          <div className='flex justify-between'>
+            <span className='text-gray-600 dark:text-gray-400'>Type:</span>
             <span>{performanceData.connection.effectiveType}</span>
           </div>
-          <div className="flex justify-between">
-            <span className="text-gray-600 dark:text-gray-400">Downlink:</span>
+          <div className='flex justify-between'>
+            <span className='text-gray-600 dark:text-gray-400'>Downlink:</span>
             <span>{performanceData.connection.downlink} Mbps</span>
           </div>
         </div>
@@ -245,10 +286,14 @@ export const PerformanceDashboard: React.FC = () => {
       {/* Recent Routes */}
       {performanceData?.routes && performanceData.routes.length > 0 && (
         <div>
-          <h4 className="font-semibold text-gray-700 dark:text-gray-300 mb-2">Recent Routes</h4>
+          <h4 className='font-semibold text-gray-700 dark:text-gray-300 mb-2'>
+            Recent Routes
+          </h4>
           {performanceData.routes.slice(-3).map((route: any, index: number) => (
-            <div key={index} className="flex justify-between text-xs">
-              <span className="text-gray-600 dark:text-gray-400 truncate">{route.route}</span>
+            <div key={index} className='flex justify-between text-xs'>
+              <span className='text-gray-600 dark:text-gray-400 truncate'>
+                {route.route}
+              </span>
               <span>{Math.round(route.loadTime)}ms</span>
             </div>
           ))}

@@ -24,15 +24,17 @@ async function globalSetup(config: FullConfig) {
     await page.waitForSelector('body', { timeout: 10000 });
 
     // Check if Clerk is loading properly
-    await page.waitForFunction(() => {
-      return document.readyState === 'complete';
-    }, { timeout: 15000 });
+    await page.waitForFunction(
+      () => {
+        return document.readyState === 'complete';
+      },
+      { timeout: 15000 }
+    );
 
-          // console.log('✅ Application is ready for testing');
+    // console.log('✅ Application is ready for testing');
 
     // Optional: Pre-warm any necessary services or caches
     // You could add API health checks here
-
   } catch (error) {
     // console.error('❌ Failed to prepare test environment:', error);
     throw error;

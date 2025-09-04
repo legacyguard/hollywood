@@ -13,7 +13,7 @@ interface EnhancedWillWizardProps {
   onComplete: (willData: WillData & { willType: WillType }) => void;
 }
 
-type WizardStep = 'country' | 'will_type' | 'draft_choice' | 'wizard';
+type WizardStep = 'country' | 'draft_choice' | 'will_type' | 'wizard';
 
 export const EnhancedWillWizard: React.FC<EnhancedWillWizardProps> = ({
   onClose,
@@ -21,10 +21,10 @@ export const EnhancedWillWizard: React.FC<EnhancedWillWizardProps> = ({
 }) => {
   const { userId } = useAuth();
   const [currentStep, setCurrentStep] = useState<WizardStep>('country');
-  const [selectedWillType, setSelectedWillType] = useState<WillType | null>(
+  const [selectedWillType, setSelectedWillType] = useState<null | WillType>(
     null
   );
-  const [draftData, setDraftData] = useState<WillData | null>(null);
+  const [draftData, setDraftData] = useState<null | WillData>(null);
 
   const handleCountryConfirmed = () => {
     setCurrentStep('will_type');

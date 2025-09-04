@@ -1,15 +1,15 @@
-export type CountryCode = 'sk' | 'cz' | 'en';
-export type LanguageCode = 'sk' | 'cs' | 'en';
+export type CountryCode = 'cz' | 'en' | 'sk';
+export type LanguageCode = 'cs' | 'en' | 'sk';
 
 export interface LocalizationState {
   countryCode: CountryCode;
-  languageCode: LanguageCode;
-  jurisdiction: string;
   currency: string;
+  jurisdiction: string;
+  languageCode: LanguageCode;
 }
 
 export interface LocalizationContextType extends LocalizationState {
+  isLoading: boolean;
   setCountryCode: (code: CountryCode) => void;
   setLanguageCode: (code: LanguageCode) => void;
-  isLoading: boolean;
 }

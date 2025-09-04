@@ -1,58 +1,65 @@
 import { supabase } from '../supabase/client';
 
-export type SubscriptionPlan = 'free' | 'essential' | 'family' | 'premium';
-export type SubscriptionStatus = 'active' | 'inactive' | 'past_due' | 'cancelled' | 'trialing';
+export type SubscriptionPlan = 'essential' | 'family' | 'free' | 'premium';
+export type SubscriptionStatus =
+  | 'active'
+  | 'cancelled'
+  | 'inactive'
+  | 'past_due'
+  | 'trialing';
 export type BillingCycle = 'month' | 'year';
 
 export interface UserSubscription {
-  id: string;
-  user_id: string;
-  stripe_customer_id?: string;
-  stripe_subscription_id?: string;
-  plan: SubscriptionPlan;
-  status: SubscriptionStatus;
   billing_cycle: BillingCycle;
-  started_at?: string;
-  expires_at?: string;
   cancelled_at?: string;
   created_at: string;
+  expires_at?: string;
+  id: string;
+  plan: SubscriptionPlan;
+  started_at?: string;
+  status: SubscriptionStatus;
+  stripe_customer_id?: string;
+  stripe_subscription_id?: string;
   updated_at: string;
+  user_id: string;
 }
 
 export interface UserUsage {
-  id: string;
-  user_id: string;
+  created_at: string;
   document_count: number;
+  id: string;
+  last_reset_date: string;
+  offline_document_count: number;
+  scans_this_month: number;
   storage_used_mb: number;
   time_capsule_count: number;
-  scans_this_month: number;
-  offline_document_count: number;
-  last_reset_date: string;
-  created_at: string;
   updated_at: string;
+  user_id: string;
 }
 
 export interface SubscriptionLimits {
-  plan: SubscriptionPlan;
-  max_documents: number | null;
-  max_storage_mb: number | null;
-  max_time_capsules: number | null;
-  max_scans_per_month: number | null;
-  max_family_members: number;
-  offline_access: boolean;
-  ai_features: boolean;
   advanced_search: boolean;
+  ai_features: boolean;
+  max_documents: null | number;
+  max_family_members: number;
+  max_scans_per_month: null | number;
+  max_storage_mb: null | number;
+  max_time_capsules: null | number;
+  offline_access: boolean;
+  plan: SubscriptionPlan;
   priority_support: boolean;
 }
 
-export type UsageType = 'documents' | 'storage' | 'time_capsules' | 'scans';
+export type UsageType = 'documents' | 'scans' | 'storage' | 'time_capsules';
 
 class SubscriptionService {
   /**
    * Get current user's subscription
    */
-  async getCurrentSubscription(): Promise<UserSubscription | null> {
-    const { data: { user } } = await supabase.auth.getUser();
+  async getCurrentSubscription(): Promise<null | UserSubscription> {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) return null;
 
     const { data, error } = await supabase
@@ -72,8 +79,10 @@ class SubscriptionService {
   /**
    * Get current user's usage statistics
    */
-  async getCurrentUsage(): Promise<UserUsage | null> {
-    const { data: { user } } = await supabase.auth.getUser();
+  async getCurrentUsage(): Promise<null | UserUsage> {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) return null;
 
     const { data, error } = await supabase
@@ -93,7 +102,9 @@ class SubscriptionService {
   /**
    * Get subscription limits for a specific plan
    */
-  async getPlanLimits(plan: SubscriptionPlan): Promise<SubscriptionLimits | null> {
+  async getPlanLimits(
+    plan: SubscriptionPlan
+  ): Promise<null | SubscriptionLimits> {
     const { data, error } = await supabase
       .from('subscription_limits')
       .select('*')
@@ -128,16 +139,20 @@ class SubscriptionService {
   /**
    * Check if user can perform an action based on their usage limits
    */
-  async checkUsageLimit(usageType: UsageType, increment: number = 1): Promise<boolean> {
-    const { data: { user } } = await supabase.auth.getUser();
+  async checkUsageLimit(
+    usageType: UsageType,
+    increment: number = 1
+  ): Promise<boolean> {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) return false;
 
-    const { data, error } = await supabase
-      .rpc('check_usage_limit', {
-        p_user_id: user.id,
-        p_limit_type: usageType,
-        p_increment: increment
-      });
+    const { data, error } = await supabase.rpc('check_usage_limit', {
+      p_user_id: user.id,
+      p_limit_type: usageType,
+      p_increment: increment,
+    });
 
     if (error) {
       console.error('Error checking usage limit:', error);
@@ -150,16 +165,20 @@ class SubscriptionService {
   /**
    * Increment usage counter
    */
-  async incrementUsage(usageType: UsageType, amount: number = 1): Promise<boolean> {
-    const { data: { user } } = await supabase.auth.getUser();
+  async incrementUsage(
+    usageType: UsageType,
+    amount: number = 1
+  ): Promise<boolean> {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) return false;
 
-    const { data, error } = await supabase
-      .rpc('increment_usage', {
-        p_user_id: user.id,
-        p_usage_type: usageType,
-        p_amount: amount
-      });
+    const { data, error } = await supabase.rpc('increment_usage', {
+      p_user_id: user.id,
+      p_usage_type: usageType,
+      p_amount: amount,
+    });
 
     if (error) {
       console.error('Error incrementing usage:', error);
@@ -188,7 +207,7 @@ class SubscriptionService {
   async getUsagePercentage(usageType: UsageType): Promise<number> {
     const [subscription, usage] = await Promise.all([
       this.getCurrentSubscription(),
-      this.getCurrentUsage()
+      this.getCurrentUsage(),
     ]);
 
     if (!subscription || !usage) return 0;
@@ -230,10 +249,10 @@ class SubscriptionService {
     if (!subscription) return true;
 
     const planHierarchy: Record<SubscriptionPlan, number> = {
-      'free': 0,
-      'essential': 1,
-      'family': 2,
-      'premium': 3
+      free: 0,
+      essential: 1,
+      family: 2,
+      premium: 3,
     };
 
     return planHierarchy[subscription.plan] < planHierarchy[requiredPlan];
@@ -252,7 +271,7 @@ class SubscriptionService {
   /**
    * Get days remaining in subscription
    */
-  async getDaysRemaining(): Promise<number | null> {
+  async getDaysRemaining(): Promise<null | number> {
     const subscription = await this.getCurrentSubscription();
     if (!subscription || !subscription.expires_at) return null;
 

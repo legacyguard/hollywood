@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Slot } from '@radix-ui/react-slot';
-import { type VariantProps, cva } from 'class-variance-authority';
+import { cva, type VariantProps } from 'class-variance-authority';
 import { PanelLeft } from 'lucide-react';
 
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -17,22 +17,22 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import {
-  useSidebar,
-  SidebarContext,
-  SIDEBAR_COOKIE_NAME,
   SIDEBAR_COOKIE_MAX_AGE,
-  SIDEBAR_WIDTH,
-  SIDEBAR_WIDTH_MOBILE,
-  SIDEBAR_WIDTH_ICON,
+  SIDEBAR_COOKIE_NAME,
   SIDEBAR_KEYBOARD_SHORTCUT,
+  SIDEBAR_WIDTH,
+  SIDEBAR_WIDTH_ICON,
+  SIDEBAR_WIDTH_MOBILE,
+  SidebarContext,
+  useSidebar,
 } from './sidebar-hooks';
 
 const SidebarProvider = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<'div'> & {
     defaultOpen?: boolean;
-    open?: boolean;
     onOpenChange?: (open: boolean) => void;
+    open?: boolean;
   }
 >(
   (
@@ -55,7 +55,7 @@ const SidebarProvider = React.forwardRef<
     const [_open, _setOpen] = React.useState(defaultOpen);
     const open = openProp ?? _open;
     const setOpen = React.useCallback(
-      (value: boolean | ((value: boolean) => boolean)) => {
+      (value: ((value: boolean) => boolean) | boolean) => {
         const openState = typeof value === 'function' ? value(open) : value;
         if (setOpenProp) {
           setOpenProp(openState);
@@ -137,9 +137,9 @@ SidebarProvider.displayName = 'SidebarProvider';
 const Sidebar = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<'div'> & {
+    collapsible?: 'icon' | 'none' | 'offcanvas';
     side?: 'left' | 'right';
-    variant?: 'sidebar' | 'floating' | 'inset';
-    collapsible?: 'offcanvas' | 'icon' | 'none';
+    variant?: 'floating' | 'inset' | 'sidebar';
   }
 >(
   (
@@ -247,7 +247,7 @@ const SidebarTrigger = React.forwardRef<
     <Button
       ref={ref}
       data-sidebar='trigger'
-      variant="ghost"
+      variant='ghost'
       size='icon'
       className={cn('h-7 w-7', className)}
       onClick={event => {
@@ -516,7 +516,7 @@ const SidebarMenuButton = React.forwardRef<
   React.ComponentProps<'button'> & {
     asChild?: boolean;
     isActive?: boolean;
-    tooltip?: string | React.ComponentProps<typeof TooltipContent>;
+    tooltip?: React.ComponentProps<typeof TooltipContent> | string;
   } & VariantProps<typeof sidebarMenuButtonVariants>
 >(
   (
@@ -687,8 +687,8 @@ const SidebarMenuSubButton = React.forwardRef<
   HTMLAnchorElement,
   React.ComponentProps<'a'> & {
     asChild?: boolean;
-    size?: 'sm' | 'md';
     isActive?: boolean;
+    size?: 'md' | 'sm';
   }
 >(({ asChild = false, size = 'md', isActive, className, ...props }, ref) => {
   const Comp = asChild ? Slot : 'a';

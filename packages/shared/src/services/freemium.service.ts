@@ -3,25 +3,25 @@
  * Manages freemium features and limitations
  */
 
-export type FreemiumFeature = 
+export type FreemiumFeature =
+  | 'advanced_encryption'
+  | 'ai_assistance'
   | 'basic_documents'
   | 'cloud_storage'
-  | 'ai_assistance'
   | 'premium_templates'
-  | 'advanced_encryption'
   | 'team_collaboration';
 
 export interface FreemiumPlan {
-  id: string;
-  name: string;
   features: FreemiumFeature[];
+  id: string;
   limits: FreemiumLimits;
+  name: string;
 }
 
 export interface FreemiumLimits {
+  maxAIRequestsPerMonth: number;
   maxDocuments: number;
   maxStorageMB: number;
-  maxAIRequestsPerMonth: number;
   maxTeamMembers: number;
   maxTemplates: number;
 }
@@ -52,8 +52,8 @@ export class FreemiumService {
         maxStorageMB: 100,
         maxAIRequestsPerMonth: 10,
         maxTeamMembers: 1,
-        maxTemplates: 3
-      }
+        maxTemplates: 3,
+      },
     };
   }
 
@@ -67,15 +67,15 @@ export class FreemiumService {
         'ai_assistance',
         'premium_templates',
         'advanced_encryption',
-        'team_collaboration'
+        'team_collaboration',
       ],
       limits: {
         maxDocuments: -1, // unlimited
         maxStorageMB: 10000,
         maxAIRequestsPerMonth: 1000,
         maxTeamMembers: 10,
-        maxTemplates: -1 // unlimited
-      }
+        maxTemplates: -1, // unlimited
+      },
     };
   }
 
@@ -92,7 +92,10 @@ export class FreemiumService {
     return limit === -1 || currentUsage < limit;
   }
 
-  getRemainingQuota(limitType: keyof FreemiumLimits, currentUsage: number): number {
+  getRemainingQuota(
+    limitType: keyof FreemiumLimits,
+    currentUsage: number
+  ): number {
     const limit = this.currentPlan.limits[limitType];
     if (limit === -1) return -1; // unlimited
     return Math.max(0, limit - currentUsage);

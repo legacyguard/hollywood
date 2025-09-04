@@ -1,17 +1,27 @@
 // src/components/scanner/IntelligentDocumentScanner.tsx
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { Camera, useCameraDevice, useCameraPermission } from 'react-native-vision-camera';
+import {
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import {
+  Camera,
+  useCameraDevice,
+  useCameraPermission,
+} from 'react-native-vision-camera';
 import { DocumentScannerService } from '@/services/DocumentScannerService';
 
 interface IntelligentDocumentScannerProps {
-  onScanComplete: (imageUri: string) => void;
   onCancel?: () => void;
+  onScanComplete: (imageUri: string) => void;
 }
 
 export const IntelligentDocumentScanner = ({
   onScanComplete,
-  onCancel
+  onCancel,
 }: IntelligentDocumentScannerProps) => {
   const { hasPermission, requestPermission } = useCameraPermission();
   const device = useCameraDevice('back');
@@ -36,7 +46,9 @@ export const IntelligentDocumentScanner = ({
         });
 
         // Process the image through our service
-        const processedImageUri = await DocumentScannerService.processImage(photo.path);
+        const processedImageUri = await DocumentScannerService.processImage(
+          photo.path
+        );
 
         // Validate document quality
         const isValid = DocumentScannerService.validateDocumentQuality();
@@ -114,12 +126,16 @@ export const IntelligentDocumentScanner = ({
         )}
 
         <TouchableOpacity
-          style={[styles.button, styles.captureButton, isProcessing && styles.disabledButton]}
+          style={[
+            styles.button,
+            styles.captureButton,
+            isProcessing && styles.disabledButton,
+          ]}
           onPress={takePhoto}
           disabled={isProcessing}
         >
           {isProcessing ? (
-            <ActivityIndicator color="#ffffff" />
+            <ActivityIndicator color='#ffffff' />
           ) : (
             <Text style={styles.buttonText}>Capture Document</Text>
           )}

@@ -1,231 +1,231 @@
 // OCR and Document Processing Types
 
 export interface OCRResult {
-  text: string;
-  confidence: number;
   boundingBoxes: BoundingBox[];
+  confidence: number;
   detectedLanguage: string;
   metadata: OCRMetadata;
+  text: string;
 }
 
 export interface BoundingBox {
+  height: number;
+  width: number;
   x: number;
   y: number;
-  width: number;
-  height: number;
 }
 
 export interface OCRMetadata {
-  processingTime: number;
-  imageSize: {
-    width: number;
-    height: number;
-  };
-  textBlocks: TextBlock[];
   extractedEntities: ExtractedEntity[];
+  imageSize: {
+    height: number;
+    width: number;
+  };
+  processingTime: number;
+  textBlocks: TextBlock[];
 }
 
 export interface TextBlock {
-  text: string;
-  confidence: number;
   boundingBox: BoundingBox;
-  type: 'paragraph' | 'line' | 'word';
+  confidence: number;
+  text: string;
+  type: 'line' | 'paragraph' | 'word';
 }
 
 export interface ExtractedEntity {
+  boundingBox?: BoundingBox;
+  confidence: number;
   type: EntityType;
   value: string;
-  confidence: number;
-  boundingBox?: BoundingBox;
 }
 
 export type EntityType =
-  | 'name'
-  | 'date'
-  | 'address'
-  | 'phone'
-  | 'email'
-  | 'ssn'
   | 'account_number'
-  | 'policy_number'
+  | 'address'
   | 'amount'
+  | 'date'
+  | 'email'
+  | 'name'
   | 'organization'
-  | 'signature';
+  | 'phone'
+  | 'policy_number'
+  | 'signature'
+  | 'ssn';
 
 // Document Categories based on LegacyGuard context
 export type DocumentCategory =
-  | 'legal'
-  | 'financial'
-  | 'medical'
-  | 'insurance'
-  | 'personal'
-  | 'property'
   | 'business'
+  | 'financial'
   | 'government'
-  | 'other';
+  | 'insurance'
+  | 'legal'
+  | 'medical'
+  | 'other'
+  | 'personal'
+  | 'property';
 
 export type DocumentType =
   // Legal Documents
-  | 'will'
-  | 'trust'
-  | 'power_of_attorney'
-  | 'living_will'
-  | 'marriage_certificate'
-  | 'divorce_decree'
   | 'adoption_papers'
+  | 'auto_insurance'
+  | 'bank_statement'
+  | 'birth_certificate'
+  | 'business_contract'
+  | 'business_license'
+  | 'business_tax'
   | 'contract'
 
   // Financial Documents
-  | 'bank_statement'
-  | 'investment_account'
-  | 'retirement_account'
-  | 'tax_return'
-  | 'loan_document'
-  | 'mortgage'
+  | 'correspondence'
   | 'credit_card_statement'
+  | 'disability_insurance'
+  | 'divorce_decree'
+  | 'drivers_license'
   | 'financial_statement'
+  | 'government_benefit'
+  | 'health_insurance'
 
   // Medical Documents
-  | 'medical_record'
-  | 'prescription'
-  | 'medical_directive'
   | 'health_insurance_card'
-  | 'vaccination_record'
+  | 'home_appraisal'
+  | 'home_insurance'
+  | 'investment_account'
+  | 'life_insurance'
 
   // Insurance Documents
-  | 'life_insurance'
-  | 'health_insurance'
-  | 'auto_insurance'
-  | 'home_insurance'
-  | 'disability_insurance'
+  | 'living_will'
+  | 'loan_document'
+  | 'manual'
+  | 'marriage_certificate'
+  | 'medical_directive'
 
   // Personal Documents
-  | 'birth_certificate'
-  | 'passport'
-  | 'drivers_license'
-  | 'social_security_card'
+  | 'medical_record'
   | 'military_records'
+  | 'mortgage'
+  | 'other'
+  | 'passport'
 
   // Property Documents
+  | 'power_of_attorney'
+  | 'prescription'
   | 'property_deed'
   | 'property_tax'
-  | 'home_appraisal'
-  | 'utility_bill'
 
   // Business Documents
-  | 'business_license'
-  | 'business_contract'
-  | 'business_tax'
+  | 'receipt'
+  | 'retirement_account'
+  | 'social_security_card'
 
   // Government Documents
   | 'tax_document'
-  | 'government_benefit'
-  | 'voter_registration'
+  | 'tax_return'
+  | 'trust'
 
   // Other
-  | 'receipt'
+  | 'utility_bill'
+  | 'vaccination_record'
+  | 'voter_registration'
   | 'warranty'
-  | 'manual'
-  | 'correspondence'
-  | 'other';
+  | 'will';
 
 export interface DocumentClassification {
   category: DocumentCategory;
-  type: DocumentType;
   confidence: number;
   reasons: string[];
   suggestedTags: string[];
+  type: DocumentType;
 }
 
 export interface ProcessedDocument {
-  id: string;
-  originalFileName: string;
-  ocrResult: OCRResult;
   classification: DocumentClassification;
-  extractedMetadata: DocumentMetadata;
-  processingStatus: 'pending' | 'processing' | 'completed' | 'failed';
-  processingError?: string;
   createdAt: string;
+  extractedMetadata: DocumentMetadata;
+  id: string;
+  ocrResult: OCRResult;
+  originalFileName: string;
+  processingError?: string;
+  processingStatus: 'completed' | 'failed' | 'pending' | 'processing';
   updatedAt: string;
 }
 
 export interface DocumentMetadata {
-  // Common metadata
-  title?: string;
-  date?: string;
-  issuer?: string;
-  recipient?: string;
-  amount?: string;
-
-  // Legal specific
-  legalEntity?: string;
-  jurisdiction?: string;
-  witnessRequired?: boolean;
-
   // Financial specific
   accountNumber?: string;
-  institutionName?: string;
-  balance?: string;
-  transactionDate?: string;
-
-  // Medical specific
-  patientName?: string;
-  doctorName?: string;
-  diagnosis?: string;
-  medicationList?: string[];
-
-  // Insurance specific
-  policyNumber?: string;
-  coverageAmount?: string;
-  deductible?: string;
-  expirationDate?: string;
-
-  // Personal identity
-  fullName?: string;
-  dateOfBirth?: string;
   address?: string;
-  idNumber?: string;
-
-  // Property specific
-  propertyAddress?: string;
-  ownerName?: string;
+  amount?: string;
   assessedValue?: string;
+  balance?: string;
 
+  coverageAmount?: string;
   // Custom fields
   customFields?: Record<string, string>;
+  date?: string;
+
+  dateOfBirth?: string;
+  deductible?: string;
+  diagnosis?: string;
+  doctorName?: string;
+
+  expirationDate?: string;
+  // Personal identity
+  fullName?: string;
+  idNumber?: string;
+  institutionName?: string;
+
+  issuer?: string;
+  jurisdiction?: string;
+  // Legal specific
+  legalEntity?: string;
+  medicationList?: string[];
+
+  ownerName?: string;
+  // Medical specific
+  patientName?: string;
+  // Insurance specific
+  policyNumber?: string;
+  // Property specific
+  propertyAddress?: string;
+
+  recipient?: string;
+  // Common metadata
+  title?: string;
+  transactionDate?: string;
+
+  witnessRequired?: boolean;
 }
 
 // Document processing configuration
 export interface OCRProcessingConfig {
-  enableEntityExtraction: boolean;
-  enableDocumentClassification: boolean;
-  enableMetadataExtraction: boolean;
   confidenceThreshold: number;
+  enableDocumentClassification: boolean;
+  enableEntityExtraction: boolean;
+  enableMetadataExtraction: boolean;
   languageHints?: string[];
-  processingMode: 'fast' | 'accurate';
+  processingMode: 'accurate' | 'fast';
 }
 
 // API request/response types
 export interface OCRProcessingRequest {
+  config: OCRProcessingConfig;
   fileData: string; // base64 encoded
   fileName: string;
-  config: OCRProcessingConfig;
 }
 
 export interface OCRProcessingResponse {
-  success: boolean;
-  processedDocument?: ProcessedDocument;
   error?: string;
+  processedDocument?: ProcessedDocument;
   processingId: string;
+  success: boolean;
 }
 
 // Document categorization patterns
 export const DOCUMENT_PATTERNS: Record<
   DocumentType,
   {
+    category: DocumentCategory;
     keywords: string[];
     patterns: RegExp[];
-    category: DocumentCategory;
     requiredEntities?: EntityType[];
   }
 > = {

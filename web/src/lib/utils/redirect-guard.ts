@@ -15,8 +15,13 @@ export class RedirectGuard {
     }
 
     // Check if we're redirecting to the same path repeatedly
-    if (toPath === this.lastRedirectPath && this.redirectCount >= this.MAX_REDIRECTS) {
-      console.warn(`Redirect loop detected: attempted to redirect to ${toPath} ${this.redirectCount} times`);
+    if (
+      toPath === this.lastRedirectPath &&
+      this.redirectCount >= this.MAX_REDIRECTS
+    ) {
+      console.warn(
+        `Redirect loop detected: attempted to redirect to ${toPath} ${this.redirectCount} times`
+      );
       return false;
     }
 

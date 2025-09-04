@@ -2,17 +2,20 @@ import * as React from 'react';
 import type { EnhancedButtonProps } from './enhanced-button-types';
 
 // This component is defined in enhanced-button.tsx
-declare const EnhancedButton: React.ForwardRefExoticComponent<EnhancedButtonProps & React.RefAttributes<HTMLButtonElement>>;
+declare const EnhancedButton: React.ForwardRefExoticComponent<
+  EnhancedButtonProps & React.RefAttributes<HTMLButtonElement>
+>;
 
 // Loading button variant
-export const LoadingButton = React.forwardRef<HTMLButtonElement,
-  Omit<EnhancedButtonProps, 'loading' | 'loadingText' | 'loadingIcon'>
+export const LoadingButton = React.forwardRef<
+  HTMLButtonElement,
+  Omit<EnhancedButtonProps, 'loading' | 'loadingIcon' | 'loadingText'>
 >(({ children, ...props }, ref) => (
   <EnhancedButton
     ref={ref}
     loading={true}
-    loadingText="Loading..."
-    loadingIcon="loader"
+    loadingText='Loading...'
+    loadingIcon='loader'
     disabled={true}
     {...props}
   >
@@ -20,16 +23,17 @@ export const LoadingButton = React.forwardRef<HTMLButtonElement,
   </EnhancedButton>
 ));
 
-LoadingButton.displayName = "LoadingButton";
+LoadingButton.displayName = 'LoadingButton';
 
 // Personality-adaptive button variant
-export const PersonalityButton = React.forwardRef<HTMLButtonElement,
-  Omit<EnhancedButtonProps, 'personalityAdapt' | 'animationType'>
+export const PersonalityButton = React.forwardRef<
+  HTMLButtonElement,
+  Omit<EnhancedButtonProps, 'animationType' | 'personalityAdapt'>
 >(({ children, ...props }, ref) => (
   <EnhancedButton
     ref={ref}
     personalityAdapt={true}
-    animationType="hover-lift"
+    animationType='hover-lift'
     rippleEffect={true}
     {...props}
   >
@@ -37,22 +41,21 @@ export const PersonalityButton = React.forwardRef<HTMLButtonElement,
   </EnhancedButton>
 ));
 
-PersonalityButton.displayName = "PersonalityButton";
+PersonalityButton.displayName = 'PersonalityButton';
 
 // Action button variant
-export const ActionButton = React.forwardRef<HTMLButtonElement,
-  Omit<EnhancedButtonProps, 'variant' | 'size' | 'rippleEffect'>
+export const ActionButton = React.forwardRef<
+  HTMLButtonElement,
+  Omit<EnhancedButtonProps, 'rippleEffect' | 'size' | 'variant'>
 >(({ children, ...props }, ref) => (
   <EnhancedButton
     ref={ref}
-
-
     rippleEffect={true}
-    animationType="button-press"
+    animationType='button-press'
     {...props}
   >
     {children}
   </EnhancedButton>
 ));
 
-ActionButton.displayName = "ActionButton";
+ActionButton.displayName = 'ActionButton';

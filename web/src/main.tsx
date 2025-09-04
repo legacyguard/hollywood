@@ -33,7 +33,7 @@ async function initializePWA() {
     await Promise.all([
       pwaService.initialize(),
       offlineStorageService.initialize(),
-      pushNotificationService.initialize()
+      pushNotificationService.initialize(),
     ]);
 
     console.log('✅ PWA services initialized successfully');
@@ -48,6 +48,4 @@ initializeMonitoring();
 // Initialize PWA services
 initializePWA();
 
-createRoot(document.getElementById('root')!).render(
-  <App />
-);
+createRoot(document.getElementById('root')!).render(<App />);

@@ -2,7 +2,8 @@ import * as React from 'react';
 import type { EnhancedInputProps } from './enhanced-input-types';
 
 // Specialized input components
-export const PersonalityInput = React.forwardRef<HTMLInputElement,
+export const PersonalityInput = React.forwardRef<
+  HTMLInputElement,
   Omit<EnhancedInputProps, 'personalityAdapt'>
 >((props, ref) => (
   <EnhancedInput
@@ -15,16 +16,17 @@ export const PersonalityInput = React.forwardRef<HTMLInputElement,
   />
 ));
 
-PersonalityInput.displayName = "PersonalityInput";
+PersonalityInput.displayName = 'PersonalityInput';
 
-export const ValidatedInput = React.forwardRef<HTMLInputElement,
+export const ValidatedInput = React.forwardRef<
+  HTMLInputElement,
   EnhancedInputProps & {
-    validation?: (value: string) => { valid: boolean, message?: string }
+    validation?: (value: string) => { message?: string; valid: boolean };
   }
 >(({ validation, onChange, ...props }, ref) => {
   const [validationState, setValidationState] = React.useState<{
-    valid: boolean
-    message?: string
+    message?: string;
+    valid: boolean;
   }>({ valid: true });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,7 +41,7 @@ export const ValidatedInput = React.forwardRef<HTMLInputElement,
   return (
     <EnhancedInput
       ref={ref}
-      error={!validationState.valid ? (validationState.message || true) : false}
+      error={!validationState.valid ? validationState.message || true : false}
       success={validationState.valid && Boolean(props.value)}
       onChange={handleChange}
       personalityAdapt={true}
@@ -48,7 +50,9 @@ export const ValidatedInput = React.forwardRef<HTMLInputElement,
   );
 });
 
-ValidatedInput.displayName = "ValidatedInput";
+ValidatedInput.displayName = 'ValidatedInput';
 
 // This component is defined in enhanced-input.tsx
-declare const EnhancedInput: React.ForwardRefExoticComponent<EnhancedInputProps & React.RefAttributes<HTMLInputElement>>;
+declare const EnhancedInput: React.ForwardRefExoticComponent<
+  EnhancedInputProps & React.RefAttributes<HTMLInputElement>
+>;

@@ -40,7 +40,10 @@ const SofiaContextProvider: React.FC<SofiaContextProviderProps> = ({
     if (!personalityManagerRef.current) {
       personalityManagerRef.current = new AdaptivePersonalityManager(userId);
       // Register personality manager with text manager for integrated text adaptation
-      textManager.registerPersonalityManager(userId, personalityManagerRef.current);
+      textManager.registerPersonalityManager(
+        userId,
+        personalityManagerRef.current
+      );
     }
   }, [userId]);
 
@@ -291,7 +294,10 @@ export const usePersonalityManager = (): AdaptivePersonalityManager | null => {
     if (!personalityManagerRef.current) {
       personalityManagerRef.current = new AdaptivePersonalityManager(userId);
       // Register personality manager with text manager for integrated text adaptation
-      textManager.registerPersonalityManager(userId, personalityManagerRef.current);
+      textManager.registerPersonalityManager(
+        userId,
+        personalityManagerRef.current
+      );
     }
   }, [userId]);
 

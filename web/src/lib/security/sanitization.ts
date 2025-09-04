@@ -6,10 +6,10 @@
 import DOMPurify from 'isomorphic-dompurify';
 
 export interface SanitizationOptions {
+  allowedAttributes?: string[];
+  allowedTags?: string[];
   allowHTML?: boolean;
   maxLength?: number;
-  allowedTags?: string[];
-  allowedAttributes?: string[];
   stripScripts?: boolean;
   stripStyles?: boolean;
 }
@@ -37,20 +37,31 @@ export function sanitizeString(
   } else {
     // Use DOMPurify for HTML sanitization
     const config: any = {
-      ALLOWED_TAGS: options.allowedTags || ['b', 'i', 'em', 'strong', 'a', 'p', 'br'],
+      ALLOWED_TAGS: options.allowedTags || [
+        'b',
+        'i',
+        'em',
+        'strong',
+        'a',
+        'p',
+        'br',
+      ],
       ALLOWED_ATTR: options.allowedAttributes || ['href', 'title'],
       FORBID_TAGS: stripScripts ? ['script', 'style'] : [],
       FORBID_ATTR: stripStyles ? ['style', 'onerror', 'onload', 'onclick'] : [],
     };
 
-    sanitized = DOMPurify.sanitize(sanitized, config);
+    sanitized = DOMPurify.sanitize(sanitized, config) as unknown as string;
   }
 
   // Remove null bytes
   sanitized = sanitized.replace(/\0/g, '');
 
   // Remove control characters except newlines and tabs
-  sanitized = sanitized.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, '');
+  sanitized = sanitized.replace(
+    /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g,
+    ''
+  );
 
   return sanitized;
 }
@@ -101,14 +112,14 @@ export function sanitizeSQL(input: string): string {
 
   // Escape special SQL characters
   return input
-    .replace(/'/g, "''")  // Escape single quotes
-    .replace(/"/g, '""')  // Escape double quotes
+    .replace(/'/g, "''") // Escape single quotes
+    .replace(/"/g, '""') // Escape double quotes
     .replace(/\\/g, '\\\\') // Escape backslashes
-    .replace(/\n/g, '\\n')  // Escape newlines
-    .replace(/\r/g, '\\r')  // Escape carriage returns
-    .replace(/\t/g, '\\t')  // Escape tabs
-    .replace(/\u0000/g, '')   // Remove null bytes
-    .replace(/\u001A/g, '');  // Remove SUB character
+    .replace(/\n/g, '\\n') // Escape newlines
+    .replace(/\r/g, '\\r') // Escape carriage returns
+    .replace(/\t/g, '\\t') // Escape tabs
+    .replace(/\u0000/g, '') // Remove null bytes
+    .replace(/\u001A/g, ''); // Remove SUB character
 }
 
 /**
@@ -119,10 +130,10 @@ export function sanitizeFilename(filename: string): string {
 
   // Remove path traversal attempts
   let sanitized = filename
-    .replace(/\.\./g, '')  // Remove ..
+    .replace(/\.\./g, '') // Remove ..
     .replace(/[/\\]/g, '') // Remove slashes
-    .replace(/^\./, '')    // Remove leading dots
-    .replace(/\0/g, '');   // Remove null bytes
+    .replace(/^\./, '') // Remove leading dots
+    .replace(/\0/g, ''); // Remove null bytes
 
   // Allow only safe characters
   sanitized = sanitized.replace(/[^a-zA-Z0-9._-]/g, '_');
@@ -140,7 +151,7 @@ export function sanitizeFilename(filename: string): string {
 /**
  * Sanitize URL to prevent XSS
  */
-export function sanitizeURL(url: string): string | null {
+export function sanitizeURL(url: string): null | string {
   if (!url) return null;
 
   try {
@@ -163,7 +174,7 @@ export function sanitizeURL(url: string): string | null {
 /**
  * Sanitize email address
  */
-export function sanitizeEmail(email: string): string | null {
+export function sanitizeEmail(email: string): null | string {
   if (!email) return null;
 
   // Basic email validation and sanitization
@@ -180,7 +191,7 @@ export function sanitizeEmail(email: string): string | null {
 /**
  * Sanitize phone number
  */
-export function sanitizePhone(phone: string): string | null {
+export function sanitizePhone(phone: string): null | string {
   if (!phone) return null;
 
   // Remove all non-numeric characters except + for international
@@ -226,7 +237,5 @@ export function sanitizeJSON(jsonString: string): any | null {
  * Rate limit key sanitization
  */
 export function sanitizeRateLimitKey(key: string): string {
-  return key
-    .replace(/[^a-zA-Z0-9:._-]/g, '_')
-    .slice(0, 100);
+  return key.replace(/[^a-zA-Z0-9:._-]/g, '_').slice(0, 100);
 }

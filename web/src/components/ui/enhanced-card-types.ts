@@ -1,61 +1,61 @@
-import type * as React from "react"
+import type * as React from 'react';
 
-import type { IconMap } from "@/components/ui/icon-library"
+import type { IconMap } from '@/components/ui/icon-library';
 
 // Re-export cardVariants for type usage
-export { cardVariants } from './enhanced-card-variants'
+export { cardVariants } from './enhanced-card-variants';
 
 // Card interaction types
 export type CardInteractionType =
-  | 'lift'
-  | 'tilt'
-  | 'glow'
-  | 'scale'
-  | 'flip'
-  | 'slide'
   | 'bounce'
-  | 'shake'
+  | 'flip'
+  | 'glow'
+  | 'lift'
+  | 'morphing'
   | 'pulse'
-  | 'morphing';
+  | 'scale'
+  | 'shake'
+  | 'slide'
+  | 'tilt';
 
 export interface EnhancedCardProps
   extends React.HTMLAttributes<HTMLDivElement> {
+  animationDuration?: number;
   // Animation props
-  animationType?: CardInteractionType
-  personalityAdapt?: boolean
-  hoverEffect?: boolean
-  clickEffect?: boolean
+  animationType?: CardInteractionType;
+  backgroundPattern?: boolean;
+  borderGradient?: boolean;
 
-  // Content props
-  title?: string
-  subtitle?: string
-  description?: string
-  icon?: keyof typeof IconMap
-  image?: string
+  clickEffect?: boolean;
+  collapsible?: boolean;
+  description?: string;
+  disabled?: boolean;
+  // Layout props
+  expandable?: boolean;
 
-  // State props
-  loading?: boolean
-  disabled?: boolean
-  selected?: boolean
-  highlighted?: boolean
+  expanded?: boolean;
+  // Visual props
+  glowColor?: string;
+  highlighted?: boolean;
+  hoverEffect?: boolean;
 
   // Interaction props
-  href?: string
-  onClick?: () => void
-  onDoubleClick?: () => void
-  onHover?: (isHovered: boolean) => void
+  href?: string;
+  icon?: keyof typeof IconMap;
+  image?: string;
+  // State props
+  loading?: boolean;
 
-  // Visual props
-  glowColor?: string
-  borderGradient?: boolean
-  backgroundPattern?: boolean
+  onClick?: () => void;
+  onDoubleClick?: () => void;
+  onHover?: (isHovered: boolean) => void;
 
-  // Layout props
-  expandable?: boolean
-  collapsible?: boolean
-  expanded?: boolean
-
+  personalityAdapt?: boolean;
+  selected?: boolean;
   // Animation timing
-  staggerDelay?: number
-  animationDuration?: number
+  staggerDelay?: number;
+
+  subtitle?: string;
+  // Content props
+  title?: string;
 }

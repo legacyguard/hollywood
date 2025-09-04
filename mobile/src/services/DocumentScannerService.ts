@@ -30,5 +30,5 @@ export const DocumentScannerService = {
       type: 'document' as const,
       confidence: 0.95,
     }; // Placeholder return
-  }
+  },
 };

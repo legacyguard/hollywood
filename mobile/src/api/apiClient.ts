@@ -10,11 +10,15 @@ interface _ApiResponse<T = unknown> {
 }
 
 // API configuration
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'https://api.legacyguard.com';
+const API_BASE_URL =
+  process.env.EXPO_PUBLIC_API_URL || 'https://api.legacyguard.com';
 
 // Custom error class for API errors
 export class ApiError extends Error {
-  constructor(public status: number, message: string) {
+  constructor(
+    public status: number,
+    message: string
+  ) {
     super(message);
     this.name = 'ApiError';
   }
@@ -123,11 +127,14 @@ class ApiClient {
   /**
    * Upload file with authentication
    */
-  async uploadFile(endpoint: string, file: {
-    base64: string;
-    mimeType: string;
-    fileName: string;
-  }): Promise<unknown> {
+  async uploadFile(
+    endpoint: string,
+    file: {
+      base64: string;
+      fileName: string;
+      mimeType: string;
+    }
+  ): Promise<unknown> {
     const token = await AuthenticationService.getSupabaseToken();
 
     if (!token) {
@@ -138,7 +145,7 @@ class ApiClient {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         image: file.base64,
@@ -158,7 +165,7 @@ export const apiClient = new ApiClient(API_BASE_URL);
 export const api = {
   // Document operations
   documents: {
-    upload: (file: { base64: string; mimeType: string; fileName: string }) =>
+    upload: (file: { base64: string; fileName: string; mimeType: string }) =>
       apiClient.uploadFile('/api/analyze-document', file),
 
     list: () => apiClient.get('/api/documents'),

@@ -73,7 +73,7 @@ export class SecurityMiddleware {
    */
   private static extractSecurityContext(request: NextRequest): SecurityContext {
     const headers = request.headers;
-    
+
     return {
       userId: headers.get('x-user-id') || undefined,
       sessionId: request.cookies.get('session')?.value,
@@ -118,7 +118,10 @@ export class SecurityMiddleware {
     if (endpoint.includes('/ai') || endpoint.includes('/sofia')) preset = 'ai';
     if (endpoint.includes('/generate-will')) preset = 'critical';
 
-    const config = rateLimiter.RATE_LIMIT_PRESETS[preset as keyof typeof rateLimiter.RATE_LIMIT_PRESETS];
+    const config =
+      rateLimiter.RATE_LIMIT_PRESETS[
+        preset as keyof typeof rateLimiter.RATE_LIMIT_PRESETS
+      ];
 
     return await rateLimiter.checkLimit(identifier, endpoint, config);
   }
@@ -181,7 +184,7 @@ export class SecurityMiddleware {
    */
   private static async sanitizeRequest(request: NextRequest): Promise<void> {
     const url = new URL(request.url);
-    
+
     // Sanitize query parameters
     for (const [key, value] of url.searchParams.entries()) {
       const sanitized = sanitizeObject({ [key]: value });
@@ -224,7 +227,7 @@ export class SecurityMiddleware {
    */
   private static createSecureResponse(): NextResponse {
     const response = NextResponse.next();
-    
+
     // Apply security headers
     for (const [key, value] of Object.entries(securityHeaders)) {
       response.headers.set(key, value);
@@ -236,9 +239,10 @@ export class SecurityMiddleware {
   /**
    * Create rate limit response
    */
-  private static createRateLimitResponse(
-    rateLimitResult: { remaining: number; resetTime: number }
-  ): NextResponse {
+  private static createRateLimitResponse(rateLimitResult: {
+    remaining: number;
+    resetTime: number;
+  }): NextResponse {
     const response = NextResponse.json(
       {
         error: 'Too many requests',
@@ -248,9 +252,18 @@ export class SecurityMiddleware {
       { status: 429 }
     );
 
-    response.headers.set('X-RateLimit-Remaining', rateLimitResult.remaining.toString());
-    response.headers.set('X-RateLimit-Reset', new Date(rateLimitResult.resetTime).toISOString());
-    response.headers.set('Retry-After', Math.ceil((rateLimitResult.resetTime - Date.now()) / 1000).toString());
+    response.headers.set(
+      'X-RateLimit-Remaining',
+      rateLimitResult.remaining.toString()
+    );
+    response.headers.set(
+      'X-RateLimit-Reset',
+      new Date(rateLimitResult.resetTime).toISOString()
+    );
+    response.headers.set(
+      'Retry-After',
+      Math.ceil((rateLimitResult.resetTime - Date.now()) / 1000).toString()
+    );
 
     return response;
   }
@@ -311,7 +324,8 @@ export async function middleware(request: NextRequest) {
   }
 
   // Apply security checks
-  const securityResponse = await SecurityMiddleware.applySecurityChecks(request);
+  const securityResponse =
+    await SecurityMiddleware.applySecurityChecks(request);
   if (securityResponse) {
     return securityResponse;
   }

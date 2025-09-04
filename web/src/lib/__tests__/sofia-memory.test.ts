@@ -1,6 +1,6 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { SofiaMemoryService } from '../sofia-memory';
-import type { SofiaMessage, SofiaContext } from '../sofia-types';
+import type { SofiaContext, SofiaMessage } from '../sofia-types';
 
 describe('SofiaMemoryService', () => {
   let service: SofiaMemoryService;
@@ -13,7 +13,7 @@ describe('SofiaMemoryService', () => {
     completionPercentage: 75,
     recentActivity: ['uploaded will'],
     familyStatus: 'family',
-    language: 'en'
+    language: 'en',
   };
 
   beforeEach(() => {
@@ -32,8 +32,18 @@ describe('SofiaMemoryService', () => {
   describe('rememberConversation', () => {
     it('should save a conversation to memory', () => {
       const messages: SofiaMessage[] = [
-        { role: 'user', content: 'Hello Sofia' },
-        { role: 'assistant', content: 'Hello! How can I help you today?' }
+        {
+          id: 'msg-1',
+          role: 'user',
+          content: 'Hello Sofia',
+          timestamp: new Date(),
+        },
+        {
+          id: 'msg-2',
+          role: 'assistant',
+          content: 'Hello! How can I help you today?',
+          timestamp: new Date(),
+        },
       ];
 
       service.rememberConversation(messages, 'greeting');
@@ -48,7 +58,12 @@ describe('SofiaMemoryService', () => {
       // Add 12 conversations
       for (let i = 0; i < 12; i++) {
         const messages: SofiaMessage[] = [
-          { role: 'user', content: `Message ${i}` }
+          {
+            id: `msg-${i}`,
+            role: 'user',
+            content: `Message ${i}`,
+            timestamp: new Date(),
+          },
         ];
         service.rememberConversation(messages, `topic ${i}`);
       }
@@ -60,7 +75,12 @@ describe('SofiaMemoryService', () => {
 
     it('should remember unfinished tasks', () => {
       const messages: SofiaMessage[] = [
-        { role: 'user', content: 'Help me with my will' }
+        {
+          id: 'msg-will',
+          role: 'user',
+          content: 'Help me with my will',
+          timestamp: new Date(),
+        },
       ];
       const unfinishedTasks = ['Complete beneficiary information', 'Upload ID'];
 
@@ -81,7 +101,12 @@ describe('SofiaMemoryService', () => {
     it('should return "Welcome back" for returning user within an hour', () => {
       // Save a conversation first
       const messages: SofiaMessage[] = [
-        { role: 'user', content: 'Hello' }
+        {
+          id: 'msg-hello',
+          role: 'user',
+          content: 'Hello',
+          timestamp: new Date(),
+        },
       ];
       service.rememberConversation(messages, 'greeting');
 
@@ -99,7 +124,12 @@ describe('SofiaMemoryService', () => {
     it('should return "Good to see you again" for returning same day', () => {
       // Save a conversation first
       const messages: SofiaMessage[] = [
-        { role: 'user', content: 'Help with will' }
+        {
+          id: 'msg-will-help',
+          role: 'user',
+          content: 'Help with will',
+          timestamp: new Date(),
+        },
       ];
       service.rememberConversation(messages, 'will assistance');
 
@@ -117,7 +147,12 @@ describe('SofiaMemoryService', () => {
     it('should mention days elapsed for week-old conversation', () => {
       // Save a conversation
       const messages: SofiaMessage[] = [
-        { role: 'user', content: 'Help me' }
+        {
+          id: 'msg-help',
+          role: 'user',
+          content: 'Help me',
+          timestamp: new Date(),
+        },
       ];
       service.rememberConversation(messages, 'general help');
 
@@ -174,7 +209,12 @@ describe('SofiaMemoryService', () => {
   describe('persistence', () => {
     it('should persist conversations to localStorage', () => {
       const messages: SofiaMessage[] = [
-        { role: 'user', content: 'Test message' }
+        {
+          id: 'msg-test',
+          role: 'user',
+          content: 'Test message',
+          timestamp: new Date(),
+        },
       ];
       service.rememberConversation(messages, 'test topic');
 

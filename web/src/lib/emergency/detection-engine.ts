@@ -1,14 +1,13 @@
 import { createClient } from '@supabase/supabase-js';
-import type {
-  ActivityTracker,
-  DetectionEngineConfig,
-  EmergencyActivation,
-  EmergencyTriggerType,
-  UserHealthCheck,
-  ShieldStatus,
-  DEFAULT_DETECTION_CONFIG
+import {
+  type ActivityTracker,
+  DEFAULT_DETECTION_CONFIG,
+  type DetectionEngineConfig,
+  type EmergencyActivation,
+  type EmergencyTriggerType,
+  type ShieldStatus,
+  type UserHealthCheck,
 } from '@/types/emergency';
-import { _FamilyShieldSettings } from '@/types/guardian';
 
 export class EmergencyDetectionEngine {
   private config: DetectionEngineConfig;
@@ -143,11 +142,11 @@ export class EmergencyDetectionEngine {
   }
 
   async evaluateEmergencyTriggers(userId: string): Promise<{
-    shouldTrigger: boolean;
-    triggerType: EmergencyTriggerType | null;
-    severity: 'low' | 'medium' | 'high' | 'critical';
     reasons: string[];
     recommendations: string[];
+    severity: 'critical' | 'high' | 'low' | 'medium';
+    shouldTrigger: boolean;
+    triggerType: EmergencyTriggerType | null;
   }> {
     const supabase = this.getServiceClient();
 
@@ -171,7 +170,7 @@ export class EmergencyDetectionEngine {
     const activityTracker = await this.checkUserActivity(userId);
     const reasons: string[] = [];
     const recommendations: string[] = [];
-    let severity: 'low' | 'medium' | 'high' | 'critical' = 'low';
+    let severity: 'critical' | 'high' | 'low' | 'medium' = 'low';
     let shouldTrigger = false;
     let triggerType: EmergencyTriggerType | null = null;
 
@@ -248,7 +247,7 @@ export class EmergencyDetectionEngine {
     triggerType: EmergencyTriggerType,
     guardianId?: string,
     notes?: string
-  ): Promise<{ success: boolean; activationId?: string; error?: string }> {
+  ): Promise<{ activationId?: string; error?: string; success: boolean }> {
     const supabase = this.getServiceClient();
 
     try {
@@ -364,7 +363,7 @@ export class EmergencyDetectionEngine {
     }));
 
     // Insert notification queue entries
-    await supabase.from('guardian_notifications').insert(notifications);
+    await (supabase as any).from('guardian_notifications').insert(notifications);
   }
 
   async processHealthCheck(
@@ -375,7 +374,7 @@ export class EmergencyDetectionEngine {
     const supabase = this.getServiceClient();
 
     // Record the health check
-    await supabase.from('user_health_checks').insert({
+    await (supabase as any).from('user_health_checks').insert({
       user_id: userId,
       check_type: checkType,
       status: responded ? 'responded' : 'missed',
@@ -409,11 +408,11 @@ export class EmergencyDetectionEngine {
   }
 
   async getActivationStatus(userId: string): Promise<{
-    hasActiveShield: boolean;
-    shieldStatus: ShieldStatus;
-    pendingActivations: EmergencyActivation[];
-    lastActivity: string;
     activityScore: number;
+    hasActiveShield: boolean;
+    lastActivity: string;
+    pendingActivations: EmergencyActivation[];
+    shieldStatus: ShieldStatus;
   }> {
     const supabase = this.getServiceClient();
 

@@ -3,23 +3,27 @@
  * Advanced AI-powered document analysis and categorization
  */
 
-import type { DocumentType, DocumentCategorizationResult, ExtractedDocument } from '@/types/gmail';
+import type {
+  DocumentCategorizationResult,
+  DocumentType,
+  ExtractedDocument,
+} from '@/types/gmail';
 
 export interface DocumentPattern {
-  keywords: string[];
-  filenamePatterns: RegExp[];
   contentPatterns: RegExp[];
+  filenamePatterns: RegExp[];
+  keywords: string[];
   weight: number;
 }
 
 export interface CategoryDefinition {
-  type: DocumentType;
-  name: string;
   description: string;
+  familyRelevance: 'high' | 'low' | 'medium';
+  name: string;
   patterns: DocumentPattern[];
-  familyRelevance: 'high' | 'medium' | 'low';
-  urgencyLevel: number; // 1-5, higher = more urgent
   suggestedActions: string[];
+  type: DocumentType;
+  urgencyLevel: number; // 1-5, higher = more urgent
 }
 
 export class DocumentCategorizationService {
@@ -32,7 +36,8 @@ export class DocumentCategorizationService {
 
   public static getInstance(): DocumentCategorizationService {
     if (!DocumentCategorizationService.instance) {
-      DocumentCategorizationService.instance = new DocumentCategorizationService();
+      DocumentCategorizationService.instance =
+        new DocumentCategorizationService();
     }
     return DocumentCategorizationService.instance;
   }
@@ -45,24 +50,37 @@ export class DocumentCategorizationService {
       {
         type: 'will',
         name: 'Will & Testament',
-        description: 'Legal documents specifying distribution of assets after death',
+        description:
+          'Legal documents specifying distribution of assets after death',
         patterns: [
           {
-            keywords: ['will', 'testament', 'last will', 'executor', 'beneficiary', 'bequest', 'inherit'],
+            keywords: [
+              'will',
+              'testament',
+              'last will',
+              'executor',
+              'beneficiary',
+              'bequest',
+              'inherit',
+            ],
             filenamePatterns: [/will/i, /testament/i, /last_will/i, /lwt/i],
             contentPatterns: [
               /last\s+will\s+and\s+testament/i,
               /being\s+of\s+sound\s+mind/i,
               /executor/i,
               /beneficiary/i,
-              /bequeath/i
+              /bequeath/i,
             ],
-            weight: 1.0
-          }
+            weight: 1.0,
+          },
         ],
         familyRelevance: 'high',
         urgencyLevel: 5,
-        suggestedActions: ['Schedule professional legal review', 'Verify executor contact information', 'Share with trusted family member']
+        suggestedActions: [
+          'Schedule professional legal review',
+          'Verify executor contact information',
+          'Share with trusted family member',
+        ],
       },
       {
         type: 'trust',
@@ -70,21 +88,32 @@ export class DocumentCategorizationService {
         description: 'Legal arrangements for managing assets',
         patterns: [
           {
-            keywords: ['trust', 'trustee', 'grantor', 'settlor', 'living trust', 'revocable trust'],
+            keywords: [
+              'trust',
+              'trustee',
+              'grantor',
+              'settlor',
+              'living trust',
+              'revocable trust',
+            ],
             filenamePatterns: [/trust/i, /living_trust/i, /revocable/i],
             contentPatterns: [
               /trust\s+agreement/i,
               /trustee/i,
               /grantor/i,
               /settlor/i,
-              /living\s+trust/i
+              /living\s+trust/i,
             ],
-            weight: 1.0
-          }
+            weight: 1.0,
+          },
         ],
         familyRelevance: 'high',
         urgencyLevel: 4,
-        suggestedActions: ['Review trust terms with attorney', 'Update trustee information', 'Verify asset transfer']
+        suggestedActions: [
+          'Review trust terms with attorney',
+          'Update trustee information',
+          'Verify asset transfer',
+        ],
       },
       {
         type: 'insurance',
@@ -92,21 +121,33 @@ export class DocumentCategorizationService {
         description: 'Insurance policies and coverage documents',
         patterns: [
           {
-            keywords: ['insurance', 'policy', 'premium', 'coverage', 'claim', 'deductible', 'beneficiary'],
+            keywords: [
+              'insurance',
+              'policy',
+              'premium',
+              'coverage',
+              'claim',
+              'deductible',
+              'beneficiary',
+            ],
             filenamePatterns: [/insurance/i, /policy/i, /coverage/i],
             contentPatterns: [
               /policy\s+number/i,
               /premium/i,
               /coverage/i,
               /deductible/i,
-              /insurance\s+company/i
+              /insurance\s+company/i,
             ],
-            weight: 0.9
-          }
+            weight: 0.9,
+          },
         ],
         familyRelevance: 'high',
         urgencyLevel: 3,
-        suggestedActions: ['Verify current coverage limits', 'Check beneficiary information', 'Review policy terms']
+        suggestedActions: [
+          'Verify current coverage limits',
+          'Check beneficiary information',
+          'Review policy terms',
+        ],
       },
       {
         type: 'property_deed',
@@ -114,43 +155,74 @@ export class DocumentCategorizationService {
         description: 'Real estate deeds, mortgages, and property records',
         patterns: [
           {
-            keywords: ['deed', 'property', 'real estate', 'mortgage', 'title', 'ownership'],
+            keywords: [
+              'deed',
+              'property',
+              'real estate',
+              'mortgage',
+              'title',
+              'ownership',
+            ],
             filenamePatterns: [/deed/i, /property/i, /mortgage/i, /title/i],
             contentPatterns: [
               /property\s+deed/i,
               /real\s+estate/i,
               /mortgage/i,
               /title/i,
-              /ownership/i
+              /ownership/i,
             ],
-            weight: 0.9
-          }
+            weight: 0.9,
+          },
         ],
         familyRelevance: 'high',
         urgencyLevel: 3,
-        suggestedActions: ['Verify property ownership', 'Check mortgage status', 'Update property insurance']
+        suggestedActions: [
+          'Verify property ownership',
+          'Check mortgage status',
+          'Update property insurance',
+        ],
       },
       {
         type: 'investment',
         name: 'Investment Records',
-        description: 'Investment accounts, portfolios, and financial statements',
+        description:
+          'Investment accounts, portfolios, and financial statements',
         patterns: [
           {
-            keywords: ['investment', 'portfolio', 'stocks', 'bonds', 'mutual fund', 'retirement', '401k', 'ira'],
-            filenamePatterns: [/investment/i, /portfolio/i, /401k/i, /ira/i, /retirement/i],
+            keywords: [
+              'investment',
+              'portfolio',
+              'stocks',
+              'bonds',
+              'mutual fund',
+              'retirement',
+              '401k',
+              'ira',
+            ],
+            filenamePatterns: [
+              /investment/i,
+              /portfolio/i,
+              /401k/i,
+              /ira/i,
+              /retirement/i,
+            ],
             contentPatterns: [
               /investment\s+account/i,
               /portfolio/i,
               /401\(k\)/i,
               /traditional\s+ira/i,
-              /roth\s+ira/i
+              /roth\s+ira/i,
             ],
-            weight: 0.8
-          }
+            weight: 0.8,
+          },
         ],
         familyRelevance: 'high',
         urgencyLevel: 2,
-        suggestedActions: ['Review account beneficiaries', 'Update investment allocations', 'Consider estate planning impact']
+        suggestedActions: [
+          'Review account beneficiaries',
+          'Update investment allocations',
+          'Consider estate planning impact',
+        ],
       },
       {
         type: 'bank_statement',
@@ -158,21 +230,33 @@ export class DocumentCategorizationService {
         description: 'Bank account statements and financial records',
         patterns: [
           {
-            keywords: ['statement', 'account', 'balance', 'transaction', 'deposit', 'withdrawal', 'bank'],
+            keywords: [
+              'statement',
+              'account',
+              'balance',
+              'transaction',
+              'deposit',
+              'withdrawal',
+              'bank',
+            ],
             filenamePatterns: [/statement/i, /account/i, /bank/i],
             contentPatterns: [
               /account\s+balance/i,
               /statement\s+period/i,
               /transaction/i,
               /deposit/i,
-              /withdrawal/i
+              /withdrawal/i,
             ],
-            weight: 0.7
-          }
+            weight: 0.7,
+          },
         ],
         familyRelevance: 'medium',
         urgencyLevel: 2,
-        suggestedActions: ['Review recent transactions', 'Verify account access', 'Check for automatic payments']
+        suggestedActions: [
+          'Review recent transactions',
+          'Verify account access',
+          'Check for automatic payments',
+        ],
       },
       {
         type: 'tax_document',
@@ -180,21 +264,34 @@ export class DocumentCategorizationService {
         description: 'Tax returns, W-2s, and tax-related documents',
         patterns: [
           {
-            keywords: ['tax', 'return', 'w2', 'w-2', '1040', 'refund', 'deduction', 'irs'],
+            keywords: [
+              'tax',
+              'return',
+              'w2',
+              'w-2',
+              '1040',
+              'refund',
+              'deduction',
+              'irs',
+            ],
             filenamePatterns: [/tax/i, /w2/i, /w-2/i, /1040/i],
             contentPatterns: [
               /tax\s+return/i,
               /form\s+1040/i,
               /w-2/i,
               /refund/i,
-              /deduction/i
+              /deduction/i,
             ],
-            weight: 0.8
-          }
+            weight: 0.8,
+          },
         ],
         familyRelevance: 'medium',
         urgencyLevel: 2,
-        suggestedActions: ['File for record keeping', 'Check for missing documents', 'Prepare for next tax season']
+        suggestedActions: [
+          'File for record keeping',
+          'Check for missing documents',
+          'Prepare for next tax season',
+        ],
       },
       {
         type: 'medical',
@@ -202,63 +299,107 @@ export class DocumentCategorizationService {
         description: 'Medical records, prescriptions, and health documents',
         patterns: [
           {
-            keywords: ['medical', 'health', 'prescription', 'doctor', 'hospital', 'diagnosis', 'treatment'],
-            filenamePatterns: [/medical/i, /health/i, /prescription/i, /doctor/i],
+            keywords: [
+              'medical',
+              'health',
+              'prescription',
+              'doctor',
+              'hospital',
+              'diagnosis',
+              'treatment',
+            ],
+            filenamePatterns: [
+              /medical/i,
+              /health/i,
+              /prescription/i,
+              /doctor/i,
+            ],
             contentPatterns: [
               /medical\s+record/i,
               /prescription/i,
               /diagnosis/i,
               /treatment/i,
-              /patient/i
+              /patient/i,
             ],
-            weight: 0.7
-          }
+            weight: 0.7,
+          },
         ],
         familyRelevance: 'medium',
         urgencyLevel: 3,
-        suggestedActions: ['Share with healthcare proxy', 'Update medical directives', 'Organize by priority']
+        suggestedActions: [
+          'Share with healthcare proxy',
+          'Update medical directives',
+          'Organize by priority',
+        ],
       },
       {
         type: 'identification',
         name: 'Identification Documents',
-        description: 'ID cards, passports, certificates, and official documents',
+        description:
+          'ID cards, passports, certificates, and official documents',
         patterns: [
           {
-            keywords: ['passport', 'license', 'certificate', 'birth', 'marriage', 'social security'],
-            filenamePatterns: [/passport/i, /license/i, /certificate/i, /birth/i, /marriage/i],
+            keywords: [
+              'passport',
+              'license',
+              'certificate',
+              'birth',
+              'marriage',
+              'social security',
+            ],
+            filenamePatterns: [
+              /passport/i,
+              /license/i,
+              /certificate/i,
+              /birth/i,
+              /marriage/i,
+            ],
             contentPatterns: [
               /passport/i,
               /driver.{0,10}license/i,
               /birth\s+certificate/i,
               /marriage\s+certificate/i,
-              /social\s+security/i
+              /social\s+security/i,
             ],
-            weight: 0.8
-          }
+            weight: 0.8,
+          },
         ],
         familyRelevance: 'medium',
         urgencyLevel: 2,
-        suggestedActions: ['Check expiration dates', 'Make secure copies', 'Store in safe location']
-      }
+        suggestedActions: [
+          'Check expiration dates',
+          'Make secure copies',
+          'Store in safe location',
+        ],
+      },
     ];
   }
 
   /**
    * Categorize a single document using advanced analysis
    */
-  public async categorizeDocument(document: ExtractedDocument): Promise<DocumentCategorizationResult> {
+  public async categorizeDocument(
+    document: ExtractedDocument
+  ): Promise<DocumentCategorizationResult> {
     try {
       // Extract text content if available
       const extractedText = await this.extractTextContent(document);
 
       // Analyze filename and content against all category patterns
-      const categoryScores = await this.calculateCategoryScores(document, extractedText);
+      const categoryScores = await this.calculateCategoryScores(
+        document,
+        extractedText
+      );
 
       // Determine best category match
       const bestMatch = this.getBestCategoryMatch(categoryScores);
 
       // Generate insights and suggestions
-      const insights = this.generateInsights(bestMatch.category, document, extractedText);
+      const insights = this.generateInsights(
+        bestMatch.category,
+        document,
+        extractedText
+      );
 
       return {
         type: bestMatch.category.type,
@@ -266,7 +407,7 @@ export class DocumentCategorizationService {
         suggestedName: this.generateSuggestedName(bestMatch.category, document),
         expiryDate: this.extractExpiryDate(extractedText),
         familyRelevance: bestMatch.category.familyRelevance,
-        insights: insights
+        insights: insights,
       };
     } catch (error) {
       console.error('Document categorization failed:', error);
@@ -277,7 +418,9 @@ export class DocumentCategorizationService {
   /**
    * Extract text content from document based on type
    */
-  private async extractTextContent(document: ExtractedDocument): Promise<string> {
+  private async extractTextContent(
+    document: ExtractedDocument
+  ): Promise<string> {
     if (document.extractedText) {
       return document.extractedText;
     }
@@ -300,7 +443,11 @@ export class DocumentCategorizationService {
       let totalWeight = 0;
 
       for (const pattern of category.patterns) {
-        const patternScore = this.calculatePatternScore(document, content, pattern);
+        const patternScore = this.calculatePatternScore(
+          document,
+          content,
+          pattern
+        );
         totalScore += patternScore * pattern.weight;
         totalWeight += pattern.weight;
       }
@@ -325,7 +472,9 @@ export class DocumentCategorizationService {
     const lowerContent = content.toLowerCase();
 
     // Filename pattern matching
-    const filenameMatches = pattern.filenamePatterns.filter(regex => regex.test(filename)).length;
+    const filenameMatches = pattern.filenamePatterns.filter(regex =>
+      regex.test(filename)
+    ).length;
     score += filenameMatches * 0.3;
 
     // Keyword matching in filename
@@ -359,7 +508,10 @@ export class DocumentCategorizationService {
   /**
    * Get MIME type relevance bonus
    */
-  private getMimeTypeBonus(mimeType: string, pattern: DocumentPattern): boolean {
+  private getMimeTypeBonus(
+    mimeType: string,
+    pattern: DocumentPattern
+  ): boolean {
     // PDF bonus for legal documents
     if (mimeType === 'application/pdf') {
       const legalKeywords = ['will', 'trust', 'insurance', 'deed', 'contract'];
@@ -368,8 +520,15 @@ export class DocumentCategorizationService {
 
     // Image bonus for scanned documents
     if (mimeType.startsWith('image/')) {
-      const scannedKeywords = ['certificate', 'license', 'passport', 'identification'];
-      return pattern.keywords.some(keyword => scannedKeywords.includes(keyword));
+      const scannedKeywords = [
+        'certificate',
+        'license',
+        'passport',
+        'identification',
+      ];
+      return pattern.keywords.some(keyword =>
+        scannedKeywords.includes(keyword)
+      );
     }
 
     return false;
@@ -393,7 +552,7 @@ export class DocumentCategorizationService {
         patterns: [],
         familyRelevance: 'low',
         urgencyLevel: 1,
-        suggestedActions: ['Review and categorize manually']
+        suggestedActions: ['Review and categorize manually'],
       };
       return { category: otherCategory, score: 0.1 };
     }
@@ -404,7 +563,10 @@ export class DocumentCategorizationService {
   /**
    * Generate suggested name for document
    */
-  private generateSuggestedName(category: CategoryDefinition, document: ExtractedDocument): string {
+  private generateSuggestedName(
+    category: CategoryDefinition,
+    document: ExtractedDocument
+  ): string {
     const date = new Date(document.metadata.date);
     const year = date.getFullYear();
     const month = date.toLocaleDateString('en-US', { month: 'short' });
@@ -423,11 +585,17 @@ export class DocumentCategorizationService {
       case 'trust':
         return `Trust Agreement - ${year}`;
       case 'insurance':
-        return organization ? `${organization} Insurance Policy - ${year}` : `Insurance Policy - ${year}`;
+        return organization
+          ? `${organization} Insurance Policy - ${year}`
+          : `Insurance Policy - ${year}`;
       case 'bank_statement':
-        return organization ? `${organization} Statement - ${month} ${year}` : `Bank Statement - ${month} ${year}`;
+        return organization
+          ? `${organization} Statement - ${month} ${year}`
+          : `Bank Statement - ${month} ${year}`;
       case 'investment':
-        return organization ? `${organization} Investment Statement - ${year}` : `Investment Statement - ${year}`;
+        return organization
+          ? `${organization} Investment Statement - ${year}`
+          : `Investment Statement - ${year}`;
       case 'tax_document':
         return `Tax Documents - ${year}`;
       case 'property_deed':
@@ -452,7 +620,7 @@ export class DocumentCategorizationService {
       /expir(?:es?|ation)\s*(?:date)?:?\s*(\d{1,2}[/-]\d{1,2}[/-]\d{4})/i,
       /valid\s+(?:until|through):?\s*(\d{1,2}[/-]\d{1,2}[/-]\d{4})/i,
       /renewal\s+date:?\s*(\d{1,2}[/-]\d{1,2}[/-]\d{4})/i,
-      /due\s+date:?\s*(\d{1,2}[/-]\d{1,2}[/-]\d{4})/i
+      /due\s+date:?\s*(\d{1,2}[/-]\d{1,2}[/-]\d{4})/i,
     ];
 
     for (const pattern of expiryPatterns) {
@@ -484,22 +652,32 @@ export class DocumentCategorizationService {
 
     // Add time-based insights
     const documentDate = new Date(document.metadata.date);
-    const monthsOld = (Date.now() - documentDate.getTime()) / (1000 * 60 * 60 * 24 * 30);
+    const monthsOld =
+      (Date.now() - documentDate.getTime()) / (1000 * 60 * 60 * 24 * 30);
 
     if (monthsOld > 12 && category.familyRelevance === 'high') {
-      insights.push('Document is over a year old - consider reviewing for updates');
+      insights.push(
+        'Document is over a year old - consider reviewing for updates'
+      );
     }
 
     // Add size-based insights
-    if (document.size > 5 * 1024 * 1024) { // > 5MB
-      insights.push('Large file - may contain detailed information worth reviewing');
+    if (document.size > 5 * 1024 * 1024) {
+      // > 5MB
+      insights.push(
+        'Large file - may contain detailed information worth reviewing'
+      );
     }
 
     // Add sender-based insights
-    if (document.metadata.fromEmail.includes('attorney') ||
-        document.metadata.fromEmail.includes('law') ||
-        document.metadata.fromEmail.includes('legal')) {
-      insights.push('Received from legal professional - likely important for estate planning');
+    if (
+      document.metadata.fromEmail.includes('attorney') ||
+      document.metadata.fromEmail.includes('law') ||
+      document.metadata.fromEmail.includes('legal')
+    ) {
+      insights.push(
+        'Received from legal professional - likely important for estate planning'
+      );
     }
 
     return insights.slice(0, 3); // Limit to top 3 insights
@@ -508,13 +686,18 @@ export class DocumentCategorizationService {
   /**
    * Create fallback categorization for failed analysis
    */
-  private createFallbackCategorization(document: ExtractedDocument): DocumentCategorizationResult {
+  private createFallbackCategorization(
+    document: ExtractedDocument
+  ): DocumentCategorizationResult {
     return {
       type: 'other',
       confidence: 0.1,
       suggestedName: document.filename,
       familyRelevance: 'medium',
-      insights: ['Document could not be automatically categorized', 'Manual review recommended']
+      insights: [
+        'Document could not be automatically categorized',
+        'Manual review recommended',
+      ],
     };
   }
 
@@ -548,4 +731,5 @@ export class DocumentCategorizationService {
   }
 }
 
-export const documentCategorizationService = DocumentCategorizationService.getInstance();
+export const documentCategorizationService =
+  DocumentCategorizationService.getInstance();

@@ -2,16 +2,19 @@ import * as React from 'react';
 import type { EnhancedCardProps } from './enhanced-card-types';
 
 // This component is defined in enhanced-card.tsx
-declare const EnhancedCard: React.ForwardRefExoticComponent<EnhancedCardProps & React.RefAttributes<HTMLDivElement>>;
+declare const EnhancedCard: React.ForwardRefExoticComponent<
+  EnhancedCardProps & React.RefAttributes<HTMLDivElement>
+>;
 
 // Personality-adaptive card variant
-export const PersonalityCard = React.forwardRef<HTMLDivElement,
-  Omit<EnhancedCardProps, 'personalityAdapt' | 'animationType'>
+export const PersonalityCard = React.forwardRef<
+  HTMLDivElement,
+  Omit<EnhancedCardProps, 'animationType' | 'personalityAdapt'>
 >(({ children, ...props }, ref) => (
   <EnhancedCard
     ref={ref}
     personalityAdapt={true}
-    animationType="lift"
+    animationType='lift'
     hoverEffect={true}
     clickEffect={true}
     {...props}
@@ -20,29 +23,31 @@ export const PersonalityCard = React.forwardRef<HTMLDivElement,
   </EnhancedCard>
 ));
 
-PersonalityCard.displayName = "PersonalityCard";
+PersonalityCard.displayName = 'PersonalityCard';
 
 // Interactive card variant
-export const InteractiveCard = React.forwardRef<HTMLDivElement,
-  Omit<EnhancedCardProps, 'interactive' | 'hoverEffect' | 'clickEffect'>
+export const InteractiveCard = React.forwardRef<
+  HTMLDivElement,
+  Omit<EnhancedCardProps, 'clickEffect' | 'hoverEffect' | 'interactive'>
 >(({ children, ...props }, ref) => (
   <EnhancedCard
     ref={ref}
     // interactive={true}
     hoverEffect={true}
     clickEffect={true}
-    animationType="lift"
+    animationType='lift'
     {...props}
   >
     {children}
   </EnhancedCard>
 ));
 
-InteractiveCard.displayName = "InteractiveCard";
+InteractiveCard.displayName = 'InteractiveCard';
 
 // Content-focused card variant
-export const ContentCard = React.forwardRef<HTMLDivElement,
-  Omit<EnhancedCardProps, 'variant' | 'size' | 'interactive'>
+export const ContentCard = React.forwardRef<
+  HTMLDivElement,
+  Omit<EnhancedCardProps, 'interactive' | 'size' | 'variant'>
 >(({ children, ...props }, ref) => (
   <EnhancedCard
     ref={ref}
@@ -57,4 +62,4 @@ export const ContentCard = React.forwardRef<HTMLDivElement,
   </EnhancedCard>
 ));
 
-ContentCard.displayName = "ContentCard";
+ContentCard.displayName = 'ContentCard';

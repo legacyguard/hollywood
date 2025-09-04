@@ -1,4 +1,4 @@
-module.exports = function(api) {
+module.exports = function (api) {
   api.cache(true);
   return {
     presets: ['babel-preset-expo'],
@@ -11,9 +11,9 @@ module.exports = function(api) {
             '@': './src',
             '@legacyguard/ui': '../packages/ui',
             '@legacyguard/logic': '../packages/logic',
-            '@hollywood/shared': '../packages/shared'
-          }
-        }
+            '@hollywood/shared': '../packages/shared',
+          },
+        },
       ],
       [
         '@tamagui/babel-plugin',
@@ -22,7 +22,7 @@ module.exports = function(api) {
           config: '../packages/ui/src/tamagui.config.ts',
         },
       ],
-      'react-native-reanimated/plugin'
-    ]
+      'react-native-reanimated/plugin',
+    ],
   };
 };

@@ -1,11 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { type SyncMode, localDataAdapter } from '@/lib/storage/LocalDataAdapter';
+import React, { useEffect, useState } from 'react';
+import {
+  localDataAdapter,
+  type SyncMode,
+} from '@/lib/storage/LocalDataAdapter';
 import { cloudSyncAdapter } from '@/lib/storage/CloudSyncAdapter';
 import { useTranslation } from '@/lib/i18n';
 
 type CategorySyncInfo = {
-  name: string;
   localCount: number;
+  name: string;
   syncedCount: number;
   syncEnabled: boolean;
 };

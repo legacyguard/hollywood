@@ -4,350 +4,350 @@
  */
 
 export interface EstatePlanningWorkflow {
-  id: string;
-  name: string;
-  description: string;
+  applicableJurisdictions: string[];
   category: WorkflowCategory;
   complexity: WorkflowComplexity;
+  description: string;
   estimatedDuration: string;
-  steps: WorkflowStep[];
-  prerequisites: Prerequisite[];
-  outcomes: ExpectedOutcome[];
-  legalRequirements: LegalRequirement[];
-  applicableJurisdictions: string[];
+  id: string;
   lastUpdated: string;
+  legalRequirements: LegalRequirement[];
+  name: string;
+  outcomes: ExpectedOutcome[];
+  prerequisites: Prerequisite[];
+  steps: WorkflowStep[];
   version: string;
 }
 
 export interface WorkflowStep {
-  id: string;
-  title: string;
-  description: string;
-  type: StepType;
-  required: boolean;
-  order: number;
-  estimatedTime: string;
-  instructions: StepInstruction[];
-  validations: StepValidation[];
   dependencies: string[]; // Other step IDs
+  description: string;
+  estimatedTime: string;
+  id: string;
+  instructions: StepInstruction[];
+  order: number;
   outputs: StepOutput[];
   professionalGuidance?: ProfessionalGuidance;
+  required: boolean;
   resources: Resource[];
   templates: DocumentTemplate[];
+  title: string;
+  type: StepType;
+  validations: StepValidation[];
 }
 
 export interface WorkflowSession {
-  id: string;
-  workflowId: string;
-  userId: string;
-  status: SessionStatus;
-  currentStep: number;
+  completedAt?: string;
   completedSteps: string[];
-  stepData: Record<string, any>;
+  consultationsScheduled: Consultation[];
+  currentStep: number;
   decisions: PlanningDecision[];
   generatedDocuments: string[];
-  consultationsScheduled: Consultation[];
-  startedAt: string;
+  id: string;
   lastActivityAt: string;
-  completedAt?: string;
   notes: SessionNote[];
+  startedAt: string;
+  status: SessionStatus;
+  stepData: Record<string, any>;
+  userId: string;
+  workflowId: string;
 }
 
 export interface PlanningDecision {
-  stepId: string;
-  question: string;
-  decision: string;
-  reasoning: string;
-  implications: string[];
   alternatives: string[];
   confidence: number;
-  reviewRequired: boolean;
   decidedAt: string;
+  decision: string;
+  implications: string[];
+  question: string;
+  reasoning: string;
+  reviewRequired: boolean;
+  stepId: string;
 }
 
 export interface StepInstruction {
-  type: InstructionType;
-  content: string;
   actionRequired: boolean;
-  order: number;
   conditions?: InstructionCondition[];
+  content: string;
+  order: number;
+  type: InstructionType;
 }
 
 export interface StepValidation {
-  rule: string;
-  message: string;
-  severity: 'error' | 'warning' | 'info';
   blocking: boolean;
+  message: string;
+  rule: string;
+  severity: 'error' | 'info' | 'warning';
 }
 
 export interface StepOutput {
-  type: OutputType;
-  name: string;
   description: string;
-  required: boolean;
   format: string;
+  name: string;
+  required: boolean;
   template?: string;
+  type: OutputType;
   validation?: string;
 }
 
 export interface ProfessionalGuidance {
-  recommended: boolean;
-  required: boolean;
   professionalType: ProfessionalType;
   reason: string;
-  urgency: 'immediate' | 'soon' | 'eventually';
+  recommended: boolean;
+  required: boolean;
   specializations?: string[];
+  urgency: 'eventually' | 'immediate' | 'soon';
 }
 
 export interface DocumentTemplate {
-  id: string;
-  name: string;
-  description: string;
-  jurisdiction: string;
   category: string;
-  template: string; // Template content with placeholders
-  placeholders: TemplatePlaceholder[];
+  description: string;
+  id: string;
+  jurisdiction: string;
   legalReview: boolean;
+  name: string;
   notarization: boolean;
+  placeholders: TemplatePlaceholder[];
+  template: string; // Template content with placeholders
   witnesses: number;
 }
 
 export interface TemplatePlaceholder {
+  defaultValue?: any;
+  description?: string;
   key: string;
   label: string;
-  type: 'text' | 'number' | 'date' | 'boolean' | 'list' | 'person' | 'address';
-  required: boolean;
-  validation?: string;
-  description?: string;
-  defaultValue?: any;
   options?: string[]; // For list types
+  required: boolean;
+  type: 'address' | 'boolean' | 'date' | 'list' | 'number' | 'person' | 'text';
+  validation?: string;
 }
 
 export interface Consultation {
-  id: string;
-  type: ConsultationType;
-  professionalType: ProfessionalType;
-  topic: string;
-  urgency: 'immediate' | 'soon' | 'eventually';
-  preferredDate?: string;
-  duration: string;
+  completedAt?: string;
   cost?: string;
+  duration: string;
+  followUp?: FollowUpAction[];
+  id: string;
+  notes?: string;
+  preferredDate?: string;
   preparation: string[];
+  professionalType: ProfessionalType;
   questions: string[];
   scheduledAt?: string;
-  completedAt?: string;
-  notes?: string;
-  followUp?: FollowUpAction[];
+  topic: string;
+  type: ConsultationType;
+  urgency: 'eventually' | 'immediate' | 'soon';
 }
 
 export interface FollowUpAction {
   action: string;
-  dueDate: string;
-  responsible: 'user' | 'professional' | 'system';
-  priority: 'high' | 'medium' | 'low';
   completed: boolean;
+  dueDate: string;
+  priority: 'high' | 'low' | 'medium';
+  responsible: 'professional' | 'system' | 'user';
 }
 
 export interface EstatePlan {
-  id: string;
-  userId: string;
-  name: string;
-  status: PlanStatus;
-  components: PlanComponent[];
-  beneficiaries: Beneficiary[];
   assets: Asset[];
-  liabilities: Liability[];
-  trustees: Trustee[];
+  beneficiaries: Beneficiary[];
+  components: PlanComponent[];
+  contingencies: Contingency[];
+  createdFromWorkflows: string[];
+  effectiveDate?: string;
   executors: Executor[];
   guardians: Guardian[];
+  id: string;
+  lastUpdated: string;
+  liabilities: Liability[];
+  name: string;
+  reviewSchedule: ReviewSchedule;
+  status: PlanStatus;
   strategies: PlanningStrategy[];
   taxConsiderations: TaxConsideration[];
-  contingencies: Contingency[];
-  reviewSchedule: ReviewSchedule;
-  lastUpdated: string;
-  effectiveDate?: string;
-  createdFromWorkflows: string[];
+  trustees: Trustee[];
+  userId: string;
 }
 
 export interface PlanComponent {
-  type: ComponentType;
-  name: string;
+  dependencies: string[];
   description: string;
   documents: string[];
-  status: ComponentStatus;
-  legalReview: LegalReviewStatus;
   executionSteps: ExecutionStep[];
-  dependencies: string[];
+  legalReview: LegalReviewStatus;
+  name: string;
+  status: ComponentStatus;
+  type: ComponentType;
 }
 
 export interface Asset {
-  id: string;
-  type: AssetType;
-  name: string;
-  description: string;
-  estimatedValue: number;
-  location: string;
-  ownership: OwnershipType;
   beneficiaryDesignations: BeneficiaryDesignation[];
-  transferMethod: TransferMethod;
-  taxImplications: string[];
+  description: string;
   documents: string[];
+  estimatedValue: number;
+  id: string;
+  location: string;
+  name: string;
+  ownership: OwnershipType;
+  taxImplications: string[];
+  transferMethod: TransferMethod;
+  type: AssetType;
 }
 
 export interface Beneficiary {
-  id: string;
-  type: 'person' | 'charity' | 'trust' | 'organization';
-  name: string;
-  relationship: string;
-  percentage?: number;
-  specificBequest?: string;
-  contingent: boolean;
   conditions?: BeneficiaryCondition[];
   contactInfo: ContactInfo;
+  contingent: boolean;
+  id: string;
+  name: string;
+  percentage?: number;
+  relationship: string;
+  specificBequest?: string;
+  type: 'charity' | 'organization' | 'person' | 'trust';
 }
 
 export type WorkflowCategory =
+  | 'asset_protection'
   | 'basic_will'
-  | 'trust_planning'
-  | 'tax_planning'
   | 'business_succession'
   | 'charitable_giving'
-  | 'healthcare_directives'
-  | 'financial_planning'
   | 'family_protection'
-  | 'asset_protection';
+  | 'financial_planning'
+  | 'healthcare_directives'
+  | 'tax_planning'
+  | 'trust_planning';
 
-export type WorkflowComplexity = 'simple' | 'moderate' | 'complex' | 'expert';
+export type WorkflowComplexity = 'complex' | 'expert' | 'moderate' | 'simple';
 
 export type StepType =
-  | 'information_gathering'
+  | 'consultation'
   | 'decision_making'
   | 'document_creation'
-  | 'review'
   | 'execution'
-  | 'consultation'
+  | 'information_gathering'
+  | 'review'
   | 'validation';
 
 export type SessionStatus =
-  | 'started'
+  | 'cancelled'
+  | 'completed'
   | 'in_progress'
   | 'paused'
-  | 'under_review'
-  | 'completed'
-  | 'cancelled';
+  | 'started'
+  | 'under_review';
 
 export type InstructionType =
-  | 'text'
-  | 'checklist'
-  | 'form'
   | 'calculation'
+  | 'checklist'
   | 'decision_tree'
+  | 'document_review'
   | 'external_link'
-  | 'video'
-  | 'document_review';
+  | 'form'
+  | 'text'
+  | 'video';
 
 export type OutputType =
-  | 'document'
+  | 'appointment'
+  | 'calculation'
   | 'data'
   | 'decision'
-  | 'calculation'
-  | 'recommendation'
-  | 'appointment';
+  | 'document'
+  | 'recommendation';
 
 export type ProfessionalType =
-  | 'attorney'
-  | 'financial_advisor'
-  | 'tax_advisor'
-  | 'insurance_agent'
-  | 'trust_officer'
   | 'accountant'
   | 'appraiser'
-  | 'notary';
+  | 'attorney'
+  | 'financial_advisor'
+  | 'insurance_agent'
+  | 'notary'
+  | 'tax_advisor'
+  | 'trust_officer';
 
 export type ConsultationType =
-  | 'initial_consultation'
-  | 'document_review'
-  | 'strategy_session'
-  | 'execution_assistance'
   | 'annual_review'
-  | 'emergency_consultation';
+  | 'document_review'
+  | 'emergency_consultation'
+  | 'execution_assistance'
+  | 'initial_consultation'
+  | 'strategy_session';
 
 export type PlanStatus =
-  | 'draft'
-  | 'under_review'
   | 'approved'
+  | 'draft'
   | 'executed'
+  | 'expired'
   | 'needs_update'
-  | 'expired';
+  | 'under_review';
 
 export type ComponentType =
-  | 'will'
-  | 'trust'
-  | 'power_of_attorney'
-  | 'healthcare_directive'
   | 'beneficiary_designation'
   | 'business_agreement'
+  | 'healthcare_directive'
   | 'insurance_policy'
-  | 'tax_strategy';
+  | 'power_of_attorney'
+  | 'tax_strategy'
+  | 'trust'
+  | 'will';
 
 export type ComponentStatus =
-  | 'planned'
-  | 'drafted'
-  | 'reviewed'
-  | 'executed'
   | 'active'
-  | 'expired';
+  | 'drafted'
+  | 'executed'
+  | 'expired'
+  | 'planned'
+  | 'reviewed';
 
 export type AssetType =
-  | 'real_estate'
   | 'bank_account'
-  | 'investment_account'
-  | 'retirement_account'
   | 'business_interest'
-  | 'personal_property'
+  | 'collectible'
   | 'intellectual_property'
+  | 'investment_account'
   | 'life_insurance'
-  | 'collectible';
+  | 'personal_property'
+  | 'real_estate'
+  | 'retirement_account';
 
 export type TransferMethod =
-  | 'will'
-  | 'trust'
   | 'beneficiary_designation'
-  | 'joint_ownership'
+  | 'charitable_donation'
   | 'gift'
+  | 'joint_ownership'
   | 'sale'
-  | 'charitable_donation';
+  | 'trust'
+  | 'will';
 
 interface Prerequisite {
-  type: 'document' | 'information' | 'decision' | 'consultation';
   description: string;
   required: boolean;
+  type: 'consultation' | 'decision' | 'document' | 'information';
 }
 
 interface ExpectedOutcome {
-  description: string;
-  type: 'document' | 'plan' | 'strategy' | 'protection';
   benefit: string;
+  description: string;
+  type: 'document' | 'plan' | 'protection' | 'strategy';
 }
 
 interface LegalRequirement {
   jurisdiction: string;
-  requirement: string;
   mandatory: boolean;
   penalty?: string;
+  requirement: string;
 }
 
 interface Resource {
-  type: 'article' | 'video' | 'calculator' | 'template' | 'external_link';
-  title: string;
-  url: string;
   description: string;
+  title: string;
+  type: 'article' | 'calculator' | 'external_link' | 'template' | 'video';
+  url: string;
 }
 
 interface SessionNote {
   content: string;
   createdAt: string;
-  type: 'user' | 'system' | 'professional';
+  type: 'professional' | 'system' | 'user';
 }
 
 interface InstructionCondition {
@@ -357,124 +357,124 @@ interface InstructionCondition {
 }
 
 interface LegalReviewStatus {
-  required: boolean;
   completed: boolean;
-  reviewedBy?: string;
-  reviewedAt?: string;
   recommendations?: string[];
+  required: boolean;
+  reviewedAt?: string;
+  reviewedBy?: string;
 }
 
 interface ExecutionStep {
-  description: string;
-  responsible: 'user' | 'professional' | 'system';
-  deadline?: string;
   completed: boolean;
   completedAt?: string;
+  deadline?: string;
+  description: string;
+  responsible: 'professional' | 'system' | 'user';
 }
 
 interface OwnershipType {
-  type: 'sole' | 'joint' | 'trust' | 'business' | 'other';
   details: string;
+  type: 'business' | 'joint' | 'other' | 'sole' | 'trust';
 }
 
 interface BeneficiaryDesignation {
   beneficiaryId: string;
-  percentage: number;
   contingent: boolean;
+  percentage: number;
 }
 
 interface BeneficiaryCondition {
   condition: string;
-  type: 'age' | 'milestone' | 'performance' | 'other';
   details: string;
+  type: 'age' | 'milestone' | 'other' | 'performance';
 }
 
 interface ContactInfo {
+  address?: string;
   email?: string;
   phone?: string;
-  address?: string;
 }
 
 interface Liability {
-  id: string;
-  type: string;
-  name: string;
   amount: number;
   creditor: string;
-  secured: boolean;
+  id: string;
+  name: string;
   payment: PaymentInfo;
+  secured: boolean;
+  type: string;
 }
 
 interface PaymentInfo {
-  frequency: string;
   amount: number;
+  frequency: string;
   remainingTerm: string;
   responsibleParty: string;
 }
 
 interface Trustee {
+  compensation?: string;
   id: string;
   name: string;
-  type: 'individual' | 'corporate';
-  role: string;
   responsibilities: string[];
-  compensation?: string;
+  role: string;
   successor?: string;
+  type: 'corporate' | 'individual';
 }
 
 interface Executor {
+  acceptanceConfirmed: boolean;
+  compensation?: string;
   id: string;
   name: string;
   relationship: string;
   responsibilities: string[];
-  compensation?: string;
   successor?: string;
-  acceptanceConfirmed: boolean;
 }
 
 interface Guardian {
+  acceptanceConfirmed: boolean;
+  forWhom: string[];
   id: string;
   name: string;
   relationship: string;
-  forWhom: string[];
-  type: 'person' | 'property' | 'both';
-  acceptanceConfirmed: boolean;
   successor?: string;
+  type: 'both' | 'person' | 'property';
 }
 
 interface PlanningStrategy {
-  id: string;
-  name: string;
-  description: string;
-  goals: string[];
-  methods: string[];
-  timeline: string;
-  expectedBenefits: string[];
-  risks: string[];
   costs: string[];
+  description: string;
+  expectedBenefits: string[];
+  goals: string[];
+  id: string;
+  methods: string[];
+  name: string;
+  risks: string[];
+  timeline: string;
 }
 
 interface TaxConsideration {
-  type: string;
   description: string;
-  impact: 'positive' | 'negative' | 'neutral';
-  strategy: string;
+  impact: 'negative' | 'neutral' | 'positive';
   professionalAdviceRequired: boolean;
+  strategy: string;
+  type: string;
 }
 
 interface Contingency {
-  scenario: string;
-  probability: 'low' | 'medium' | 'high';
-  impact: 'low' | 'medium' | 'high';
+  impact: 'high' | 'low' | 'medium';
   mitigation: string[];
+  probability: 'high' | 'low' | 'medium';
+  scenario: string;
   triggers: string[];
 }
 
 interface ReviewSchedule {
   frequency: 'annual' | 'biennial' | 'life_event' | 'regulatory_change';
   nextReviewDue: string;
-  triggers: string[];
   responsible: string;
+  triggers: string[];
 }
 
 class EstatePlanningWorkflowService {
@@ -543,10 +543,10 @@ class EstatePlanningWorkflowService {
     stepId: string,
     stepData: Record<string, any>
   ): Promise<{
-    success: boolean;
-    validationErrors: string[];
     nextStep?: WorkflowStep;
     recommendations?: string[];
+    success: boolean;
+    validationErrors: string[];
   }> {
     const session = this.sessions.get(sessionId);
     if (!session) {
@@ -594,12 +594,16 @@ class EstatePlanningWorkflowService {
 
     await this.saveSession(session);
 
-    const recommendations = await this.generateStepRecommendations(session, step, stepData);
+    const recommendations = await this.generateStepRecommendations(
+      session,
+      step,
+      stepData
+    );
 
     return {
       success: true,
       validationErrors: [],
-      nextStep,
+      nextStep: nextStep || undefined,
       recommendations,
     };
   }
@@ -611,8 +615,8 @@ class EstatePlanningWorkflowService {
     templateId: string,
     data: Record<string, any>
   ): Promise<{
-    documentId: string;
     content: string;
+    documentId: string;
     requiresLegalReview: boolean;
     requiresNotarization: boolean;
     witnessesRequired: number;
@@ -626,8 +630,14 @@ class EstatePlanningWorkflowService {
     let content = template.template;
     for (const placeholder of template.placeholders) {
       const value = data[placeholder.key] || placeholder.defaultValue || '';
-      const formattedValue = this.formatPlaceholderValue(value, placeholder.type);
-      content = content.replace(new RegExp(`{{${placeholder.key}}}`, 'g'), formattedValue);
+      const formattedValue = this.formatPlaceholderValue(
+        value,
+        placeholder.type
+      );
+      content = content.replace(
+        new RegExp(`{{${placeholder.key}}}`, 'g'),
+        formattedValue
+      );
     }
 
     const documentId = this.generateId();
@@ -673,13 +683,13 @@ class EstatePlanningWorkflowService {
    * Get workflow progress and recommendations
    */
   async getWorkflowProgress(sessionId: string): Promise<{
-    progress: number;
-    currentStep: WorkflowStep | null;
     completedSteps: WorkflowStep[];
-    remainingSteps: WorkflowStep[];
-    recommendations: string[];
-    nextActions: string[];
+    currentStep: null | WorkflowStep;
     estimatedTimeRemaining: string;
+    nextActions: string[];
+    progress: number;
+    recommendations: string[];
+    remainingSteps: WorkflowStep[];
   }> {
     const session = this.sessions.get(sessionId);
     if (!session) {
@@ -696,10 +706,17 @@ class EstatePlanningWorkflowService {
     const progress = completedCount / totalSteps;
 
     const currentStep = workflow.steps[session.currentStep] || null;
-    const completedSteps = workflow.steps.filter(s => session.completedSteps.includes(s.id));
-    const remainingSteps = workflow.steps.filter(s => !session.completedSteps.includes(s.id));
+    const completedSteps = workflow.steps.filter(s =>
+      session.completedSteps.includes(s.id)
+    );
+    const remainingSteps = workflow.steps.filter(
+      s => !session.completedSteps.includes(s.id)
+    );
 
-    const recommendations = await this.generateProgressRecommendations(session, workflow);
+    const recommendations = await this.generateProgressRecommendations(
+      session,
+      workflow
+    );
     const nextActions = await this.generateNextActions(session, workflow);
     const estimatedTimeRemaining = this.calculateRemainingTime(remainingSteps);
 
@@ -721,7 +738,8 @@ class EstatePlanningWorkflowService {
     const basicWillWorkflow: EstatePlanningWorkflow = {
       id: 'basic-will-workflow',
       name: 'Basic Will Creation',
-      description: 'Create a simple will for straightforward estate planning needs',
+      description:
+        'Create a simple will for straightforward estate planning needs',
       category: 'basic_will',
       complexity: 'simple',
       estimatedDuration: '2-3 hours',
@@ -737,10 +755,11 @@ class EstatePlanningWorkflowService {
           instructions: [
             {
               type: 'form',
-              content: 'Please provide your full legal name, address, and family details',
+              content:
+                'Please provide your full legal name, address, and family details',
               actionRequired: true,
               order: 1,
-            }
+            },
           ],
           validations: [
             {
@@ -748,7 +767,7 @@ class EstatePlanningWorkflowService {
               message: 'Full legal name is required',
               severity: 'error',
               blocking: true,
-            }
+            },
           ],
           dependencies: [],
           outputs: [
@@ -758,7 +777,7 @@ class EstatePlanningWorkflowService {
               description: 'Personal and family information',
               required: true,
               format: 'json',
-            }
+            },
           ],
           resources: [],
           templates: [],
@@ -766,7 +785,8 @@ class EstatePlanningWorkflowService {
         {
           id: 'identify-assets',
           title: 'Identify Assets and Liabilities',
-          description: 'List your assets and debts for proper distribution planning',
+          description:
+            'List your assets and debts for proper distribution planning',
           type: 'information_gathering',
           required: true,
           order: 2,
@@ -774,10 +794,11 @@ class EstatePlanningWorkflowService {
           instructions: [
             {
               type: 'checklist',
-              content: 'List all significant assets including real estate, accounts, and personal property',
+              content:
+                'List all significant assets including real estate, accounts, and personal property',
               actionRequired: true,
               order: 1,
-            }
+            },
           ],
           validations: [
             {
@@ -785,7 +806,7 @@ class EstatePlanningWorkflowService {
               message: 'At least one asset must be listed',
               severity: 'error',
               blocking: true,
-            }
+            },
           ],
           dependencies: ['gather-personal-info'],
           outputs: [
@@ -795,7 +816,7 @@ class EstatePlanningWorkflowService {
               description: 'Complete list of assets and liabilities',
               required: true,
               format: 'json',
-            }
+            },
           ],
           resources: [
             {
@@ -803,18 +824,19 @@ class EstatePlanningWorkflowService {
               title: 'Asset Inventory Checklist',
               url: '/resources/asset-inventory-checklist',
               description: 'Comprehensive guide to identifying assets',
-            }
+            },
           ],
           templates: [],
-        }
+        },
       ],
       prerequisites: [],
       outcomes: [
         {
           description: 'Legal will document ready for execution',
           type: 'document',
-          benefit: 'Ensures your assets are distributed according to your wishes',
-        }
+          benefit:
+            'Ensures your assets are distributed according to your wishes',
+        },
       ],
       legalRequirements: [
         {
@@ -822,7 +844,7 @@ class EstatePlanningWorkflowService {
           requirement: 'Two witnesses required for will execution',
           mandatory: true,
           penalty: 'Will may be invalidated',
-        }
+        },
       ],
       applicableJurisdictions: ['US', 'Canada'],
       lastUpdated: new Date().toISOString(),
@@ -872,7 +894,8 @@ Witness 2: _________________________ Date: _________
           label: 'Full Legal Name',
           type: 'text',
           required: true,
-          description: 'Your complete legal name as it appears on official documents',
+          description:
+            'Your complete legal name as it appears on official documents',
         },
         {
           key: 'ADDRESS',
@@ -894,7 +917,7 @@ Witness 2: _________________________ Date: _________
           type: 'person',
           required: true,
           description: 'The person who will manage your estate',
-        }
+        },
       ],
       legalReview: true,
       notarization: false,
@@ -905,7 +928,10 @@ Witness 2: _________________________ Date: _________
   }
 
   // Helper methods
-  private isWorkflowApplicable(workflow: EstatePlanningWorkflow, userProfile: Record<string, any>): boolean {
+  private isWorkflowApplicable(
+    workflow: EstatePlanningWorkflow,
+    userProfile: Record<string, any>
+  ): boolean {
     // Simple applicability check based on complexity and user experience
     if (workflow.complexity === 'expert' && !userProfile.hasLegalExperience) {
       return false;
@@ -914,7 +940,10 @@ Witness 2: _________________________ Date: _________
     return true;
   }
 
-  private async validateStepData(step: WorkflowStep, data: Record<string, any>): Promise<string[]> {
+  private async validateStepData(
+    step: WorkflowStep,
+    data: Record<string, any>
+  ): Promise<string[]> {
     const errors: string[] = [];
 
     for (const validation of step.validations) {
@@ -926,7 +955,10 @@ Witness 2: _________________________ Date: _________
     return errors;
   }
 
-  private checkValidationRule(rule: string, data: Record<string, any>): boolean {
+  private checkValidationRule(
+    rule: string,
+    data: Record<string, any>
+  ): boolean {
     switch (rule) {
       case 'name_required':
         return !!data.fullName;
@@ -951,9 +983,12 @@ Witness 2: _________________________ Date: _________
     }
   }
 
-  private getNextStep(workflow: EstatePlanningWorkflow, session: WorkflowSession): WorkflowStep | null {
-    const remainingSteps = workflow.steps.filter(step =>
-      !session.completedSteps.includes(step.id)
+  private getNextStep(
+    workflow: EstatePlanningWorkflow,
+    session: WorkflowSession
+  ): null | WorkflowStep {
+    const remainingSteps = workflow.steps.filter(
+      step => !session.completedSteps.includes(step.id)
     );
 
     if (remainingSteps.length === 0) return null;
@@ -972,7 +1007,9 @@ Witness 2: _________________________ Date: _________
     return remainingSteps[0]; // Fallback to first remaining step
   }
 
-  private async generateEstatePlan(session: WorkflowSession): Promise<EstatePlan> {
+  private async generateEstatePlan(
+    session: WorkflowSession
+  ): Promise<EstatePlan> {
     // Generate comprehensive estate plan from session data
     const plan: EstatePlan = {
       id: this.generateId(),
@@ -991,7 +1028,9 @@ Witness 2: _________________________ Date: _________
       contingencies: [],
       reviewSchedule: {
         frequency: 'annual',
-        nextReviewDue: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
+        nextReviewDue: new Date(
+          Date.now() + 365 * 24 * 60 * 60 * 1000
+        ).toISOString(),
         triggers: ['life_event', 'law_change'],
         responsible: session.userId,
       },
@@ -1002,7 +1041,10 @@ Witness 2: _________________________ Date: _________
     return plan;
   }
 
-  private formatPlaceholderValue(value: any, type: TemplatePlaceholder['type']): string {
+  private formatPlaceholderValue(
+    value: any,
+    type: TemplatePlaceholder['type']
+  ): string {
     switch (type) {
       case 'date':
         return new Date(value).toLocaleDateString();
@@ -1024,7 +1066,9 @@ Witness 2: _________________________ Date: _________
 
     // Generate context-specific recommendations
     if (step.professionalGuidance?.recommended) {
-      recommendations.push(`Consider consulting with a ${step.professionalGuidance.professionalType} for this step`);
+      recommendations.push(
+        `Consider consulting with a ${step.professionalGuidance.professionalType} for this step`
+      );
     }
 
     return recommendations;
@@ -1038,11 +1082,17 @@ Witness 2: _________________________ Date: _________
     const progressRatio = session.completedSteps.length / workflow.steps.length;
 
     if (progressRatio < 0.3) {
-      recommendations.push('You\'re just getting started. Take your time to gather accurate information.');
+      recommendations.push(
+        "You're just getting started. Take your time to gather accurate information."
+      );
     } else if (progressRatio < 0.7) {
-      recommendations.push('Great progress! Consider scheduling a legal review for your documents.');
+      recommendations.push(
+        'Great progress! Consider scheduling a legal review for your documents.'
+      );
     } else {
-      recommendations.push('You\'re almost done! Review your decisions and prepare for document execution.');
+      recommendations.push(
+        "You're almost done! Review your decisions and prepare for document execution."
+      );
     }
 
     return recommendations;
@@ -1059,7 +1109,9 @@ Witness 2: _________________________ Date: _________
       actions.push(`Complete: ${currentStep.title}`);
 
       if (currentStep.professionalGuidance?.required) {
-        actions.push(`Schedule consultation with ${currentStep.professionalGuidance.professionalType}`);
+        actions.push(
+          `Schedule consultation with ${currentStep.professionalGuidance.professionalType}`
+        );
       }
     }
 
@@ -1081,7 +1133,9 @@ Witness 2: _________________________ Date: _________
     }
   }
 
-  private async requestProfessionalConsultation(consultation: Consultation): Promise<void> {
+  private async requestProfessionalConsultation(
+    consultation: Consultation
+  ): Promise<void> {
     // Integration with professional network would happen here
     console.log('Professional consultation requested:', consultation.id);
   }

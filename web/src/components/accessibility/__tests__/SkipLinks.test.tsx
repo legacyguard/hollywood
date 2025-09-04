@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { render } from '@testing-library/react';
 // import { screen, fireEvent } from '@testing-library/react'; // Not available in current version
 import { SkipLinks } from '../SkipLinks';
@@ -37,7 +37,7 @@ describe('SkipLinks Component', () => {
 
     // Mock querySelector to return our element
     const originalQuerySelector = document.querySelector;
-    document.querySelector = vi.fn((selector) => {
+    document.querySelector = vi.fn(selector => {
       if (selector === '#main-content') {
         return mockElement;
       }
@@ -48,7 +48,7 @@ describe('SkipLinks Component', () => {
 
     const mainContentLink = container.querySelector('a[href="#main-content"]');
     if (mainContentLink) {
-      mainContentLink.click();
+      (mainContentLink as HTMLElement).click();
     }
 
     expect(focusMock).toHaveBeenCalled();

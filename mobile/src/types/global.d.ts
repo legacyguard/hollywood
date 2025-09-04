@@ -4,7 +4,9 @@
 
 // Expo module declarations
 declare module 'expo-web-browser' {
-  export function openBrowserAsync(url: string): Promise<{ type: string } | void>;
+  export function openBrowserAsync(
+    url: string
+  ): Promise<void | { type: string }>;
   export function maybeCompleteAuthSession(): { type: string };
 }
 

@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  StyleSheet,
   ActivityIndicator,
   Alert,
   Linking,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -15,20 +15,20 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 // Temporary placeholder types and services
 interface SubscriptionLimits {
-  plan: string;
-  max_documents: number;
-  max_storage_mb: number;
-  max_time_capsules: number;
-  max_scans_per_month: number;
-  offline_access: boolean;
-  ai_features: boolean;
   advanced_search: boolean;
+  ai_features: boolean;
   family_sharing: boolean;
   legal_tools: boolean;
-  priority_support: boolean;
+  max_documents: number;
   max_family_members: number;
+  max_scans_per_month: number;
+  max_storage_mb: number;
+  max_time_capsules: number;
+  offline_access: boolean;
+  plan: string;
   price_monthly: number;
   price_yearly: number;
+  priority_support: boolean;
 }
 
 const subscriptionService = {
@@ -100,28 +100,35 @@ const subscriptionService = {
       },
     ];
   },
-  getCurrentSubscription: async (): Promise<{ plan: string; billing_cycle: string } | null> => ({
+  getCurrentSubscription: async (): Promise<null | {
+    billing_cycle: string;
+    plan: string;
+  }> => ({
     plan: 'free',
     billing_cycle: 'month',
   }),
 };
 
 const stripeService = {
-  createCheckoutSession: async (_priceId: string, _successUrl: string, _cancelUrl: string) => ({ url: 'https://example.com' }),
+  createCheckoutSession: async (
+    _priceId: string,
+    _successUrl: string,
+    _cancelUrl: string
+  ) => ({ url: 'https://example.com' }),
 };
 import { useAuth } from '../../hooks/useAuth';
 
 interface PlanFeature {
-  name: string;
   included: boolean;
+  name: string;
 }
 
 interface PlanCardProps {
-  plan: SubscriptionLimits;
-  currentPlan?: string;
   billingCycle: 'month' | 'year';
-  onSubscribe: (plan: string) => void;
+  currentPlan?: string;
   isLoading?: boolean;
+  onSubscribe: (plan: string) => void;
+  plan: SubscriptionLimits;
 }
 
 const PlanCard: React.FC<PlanCardProps> = ({
@@ -144,11 +151,11 @@ const PlanCard: React.FC<PlanCardProps> = ({
     return prices[plan.plan]?.[billingCycle] || 0;
   };
 
-  const formatLimit = (limit: number | null) => {
+  const formatLimit = (limit: null | number) => {
     return limit === null ? 'Unlimited' : limit.toLocaleString();
   };
 
-  const formatStorage = (mb: number | null) => {
+  const formatStorage = (mb: null | number) => {
     if (mb === null) return 'Unlimited';
     if (mb < 1024) return `${mb} MB`;
     return `${(mb / 1024).toFixed(0)} GB`;
@@ -157,8 +164,14 @@ const PlanCard: React.FC<PlanCardProps> = ({
   const features: PlanFeature[] = [
     { name: `${formatLimit(plan.max_documents)} documents`, included: true },
     { name: `${formatStorage(plan.max_storage_mb)} storage`, included: true },
-    { name: `${formatLimit(plan.max_time_capsules)} time capsules`, included: true },
-    { name: `${formatLimit(plan.max_scans_per_month)} scans/month`, included: true },
+    {
+      name: `${formatLimit(plan.max_time_capsules)} time capsules`,
+      included: true,
+    },
+    {
+      name: `${formatLimit(plan.max_scans_per_month)} scans/month`,
+      included: true,
+    },
     { name: 'Offline access', included: plan.offline_access },
     { name: 'AI features', included: plan.ai_features },
     { name: 'Advanced search', included: plan.advanced_search },
@@ -227,14 +240,14 @@ const PlanCard: React.FC<PlanCardProps> = ({
         disabled={isCurrentPlan || isLoading || plan.plan === 'free'}
       >
         {isLoading ? (
-          <ActivityIndicator color="#fff" />
+          <ActivityIndicator color='#fff' />
         ) : (
           <Text style={styles.subscribeButtonText}>
             {isCurrentPlan
               ? 'Current Plan'
               : plan.plan === 'free'
-              ? 'Free Forever'
-              : `Upgrade to ${plan.plan}`}
+                ? 'Free Forever'
+                : `Upgrade to ${plan.plan}`}
           </Text>
         )}
       </TouchableOpacity>
@@ -329,7 +342,7 @@ export const PricingPlans: React.FC = () => {
   if (loadingPlans) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#667eea" />
+        <ActivityIndicator size='large' color='#667eea' />
       </View>
     );
   }
@@ -385,7 +398,7 @@ export const PricingPlans: React.FC = () => {
       </View>
 
       <View style={styles.plansContainer}>
-        {plans.map((plan) => (
+        {plans.map(plan => (
           <PlanCard
             key={plan.plan}
             plan={plan}
@@ -399,9 +412,12 @@ export const PricingPlans: React.FC = () => {
 
       <View style={styles.footer}>
         <Text style={styles.footerText}>
-          All plans include 256-bit encryption, automatic backups, and 24/7 support
+          All plans include 256-bit encryption, automatic backups, and 24/7
+          support
         </Text>
-        <Text style={styles.footerText}>Cancel or change your plan anytime</Text>
+        <Text style={styles.footerText}>
+          Cancel or change your plan anytime
+        </Text>
       </View>
     </ScrollView>
   );

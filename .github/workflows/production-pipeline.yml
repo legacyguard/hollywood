@@ -378,7 +378,7 @@ jobs:
             ## Changes in this release
             - Commit: ${{ github.sha }}
             - Build: ${{ github.run_number }}
-            
+
             ## Deployment info
             - Environment: Production
             - URL: https://legacyguard.com

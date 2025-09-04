@@ -5,7 +5,7 @@ import {
   decryptData,
   hashPassword,
   verifyPassword,
-  generateSecureToken
+  generateSecureToken,
 } from '@/lib/secure-storage';
 
 describe('Smoke Tests - Core Utilities', () => {
@@ -43,9 +43,7 @@ describe('Smoke Tests - Core Utilities', () => {
     it('should fail decryption with wrong password', async () => {
       const encrypted = await encryptData(testData, testPassword);
 
-      await expect(
-        decryptData(encrypted, 'wrong-password')
-      ).rejects.toThrow();
+      await expect(decryptData(encrypted, 'wrong-password')).rejects.toThrow();
     });
 
     it('should generate different encrypted outputs for same data', async () => {
@@ -131,7 +129,7 @@ describe('Smoke Tests - Core Utilities', () => {
       const validEmails = [
         'test@example.com',
         'user.name@company.co.uk',
-        'first+last@domain.org'
+        'first+last@domain.org',
       ];
 
       const invalidEmails = [
@@ -139,7 +137,7 @@ describe('Smoke Tests - Core Utilities', () => {
         '@missing-local.com',
         'missing-at-sign.com',
         'missing-domain@',
-        'spaces in@email.com'
+        'spaces in@email.com',
       ];
 
       // Basic regex for demonstration

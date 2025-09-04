@@ -5,26 +5,26 @@ import { motion, type Variants } from 'framer-motion';
 
 // Animation type definitions
 export type MicroAnimationType =
-  | 'hover-lift'
-  | 'hover-glow'
-  | 'tap-bounce'
-  | 'focus-ring'
-  | 'loading-pulse'
-  | 'success-checkmark'
-  | 'error-shake'
-  | 'slide-reveal'
-  | 'fade-in-up'
-  | 'scale-in'
+  | 'button-press'
   | 'card-flip'
-  | 'button-press';
+  | 'error-shake'
+  | 'fade-in-up'
+  | 'focus-ring'
+  | 'hover-glow'
+  | 'hover-lift'
+  | 'loading-pulse'
+  | 'scale-in'
+  | 'slide-reveal'
+  | 'success-checkmark'
+  | 'tap-bounce';
 
 export interface MicroAnimationProps {
-  type: MicroAnimationType;
   children: ReactNode;
-  disabled?: boolean;
-  delay?: number;
   className?: string;
+  delay?: number;
+  disabled?: boolean;
   onAnimationComplete?: () => void;
+  type: MicroAnimationType;
 }
 
 // Context and provider are now exported from useMicroInteraction.tsx
@@ -35,8 +35,8 @@ export const MicroAnimation: React.FC<MicroAnimationProps> = ({
   children,
   disabled = false,
   delay = 0,
-  className = "",
-  onAnimationComplete
+  className = '',
+  onAnimationComplete,
 }) => {
   // TODO: Implement proper personality-based animations
   // const { personality } = useSofia();
@@ -49,8 +49,8 @@ export const MicroAnimation: React.FC<MicroAnimationProps> = ({
   // Default animation config for now
   const config = {
     duration: 0.3,
-    ease: "easeOut",
-    scale: 1.05
+    ease: 'easeOut',
+    scale: 1.05,
   };
   const adjustedDuration = config.duration;
 
@@ -58,7 +58,7 @@ export const MicroAnimation: React.FC<MicroAnimationProps> = ({
     const baseTransition = {
       duration: adjustedDuration,
       ease: config.ease as any,
-      delay
+      delay,
     };
 
     switch (type) {
@@ -68,22 +68,22 @@ export const MicroAnimation: React.FC<MicroAnimationProps> = ({
           hover: {
             scale: config.scale,
             y: -2,
-            transition: baseTransition
+            transition: baseTransition,
           },
-          tap: { scale: 0.98 }
+          tap: { scale: 0.98 },
         };
 
       case 'hover-glow':
         return {
           initial: {
             scale: 1,
-            boxShadow: '0 0 0 rgba(var(--primary), 0)'
+            boxShadow: '0 0 0 rgba(var(--primary), 0)',
           },
           hover: {
             scale: config.scale,
             boxShadow: `0 0 20px rgba(var(--primary), 0.3)`,
-            transition: baseTransition
-          }
+            transition: baseTransition,
+          },
         };
 
       case 'tap-bounce':
@@ -93,26 +93,26 @@ export const MicroAnimation: React.FC<MicroAnimationProps> = ({
             scale: 0.95,
             transition: {
               ...baseTransition,
-              duration: adjustedDuration * 0.5
-            }
+              duration: adjustedDuration * 0.5,
+            },
           },
           hover: {
             scale: config.scale,
-            transition: baseTransition
-          }
+            transition: baseTransition,
+          },
         };
 
       case 'focus-ring':
         return {
           initial: {
             scale: 1,
-            boxShadow: '0 0 0 0 rgba(var(--primary), 0)'
+            boxShadow: '0 0 0 0 rgba(var(--primary), 0)',
           },
           focus: {
             scale: 1.02,
             boxShadow: '0 0 0 3px rgba(var(--primary), 0.3)',
-            transition: baseTransition
-          }
+            transition: baseTransition,
+          },
         };
 
       case 'loading-pulse':
@@ -124,9 +124,9 @@ export const MicroAnimation: React.FC<MicroAnimationProps> = ({
             transition: {
               duration: adjustedDuration * 2,
               repeat: Infinity,
-              ease: config.ease as any
-            }
-          }
+              ease: config.ease as any,
+            },
+          },
         };
 
       case 'success-checkmark':
@@ -137,9 +137,9 @@ export const MicroAnimation: React.FC<MicroAnimationProps> = ({
             rotate: 0,
             transition: {
               ...baseTransition,
-              duration: adjustedDuration * 1.5
-            }
-          }
+              duration: adjustedDuration * 1.5,
+            },
+          },
         };
 
       case 'error-shake':
@@ -149,9 +149,9 @@ export const MicroAnimation: React.FC<MicroAnimationProps> = ({
             x: [-10, 10, -10, 10, 0],
             transition: {
               duration: adjustedDuration * 1.5,
-              ease: "easeInOut"
-            }
-          }
+              ease: 'easeInOut',
+            },
+          },
         };
 
       case 'slide-reveal':
@@ -159,20 +159,20 @@ export const MicroAnimation: React.FC<MicroAnimationProps> = ({
           initial: {
             opacity: 0,
             x: -20,
-            scale: 0.95
+            scale: 0.95,
           },
           animate: {
             opacity: 1,
             x: 0,
             scale: 1,
-            transition: baseTransition
+            transition: baseTransition,
           },
           exit: {
             opacity: 0,
             x: 20,
             scale: 0.95,
-            transition: baseTransition
-          }
+            transition: baseTransition,
+          },
         };
 
       case 'fade-in-up':
@@ -180,43 +180,43 @@ export const MicroAnimation: React.FC<MicroAnimationProps> = ({
           initial: {
             opacity: 0,
             y: 20,
-            scale: 0.95
+            scale: 0.95,
           },
           animate: {
             opacity: 1,
             y: 0,
             scale: 1,
-            transition: baseTransition
+            transition: baseTransition,
           },
           exit: {
             opacity: 0,
             y: -10,
             scale: 0.95,
-            transition: baseTransition
-          }
+            transition: baseTransition,
+          },
         };
 
       case 'scale-in':
         return {
           initial: {
             scale: 0,
-            opacity: 0
+            opacity: 0,
           },
           animate: {
             scale: 1,
             opacity: 1,
             transition: {
               ...baseTransition,
-              type: "spring",
+              type: 'spring',
               damping: 15,
-              stiffness: 300
-            }
+              stiffness: 300,
+            },
           },
           exit: {
             scale: 0,
             opacity: 0,
-            transition: baseTransition
-          }
+            transition: baseTransition,
+          },
         };
 
       case 'card-flip':
@@ -225,39 +225,39 @@ export const MicroAnimation: React.FC<MicroAnimationProps> = ({
           hover: {
             rotateY: 5,
             scale: config.scale,
-            transition: baseTransition
+            transition: baseTransition,
           },
           tap: {
             rotateY: 10,
             scale: 0.98,
-            transition: { duration: adjustedDuration * 0.5 }
-          }
+            transition: { duration: adjustedDuration * 0.5 },
+          },
         };
 
       case 'button-press':
         return {
           initial: {
             scale: 1,
-            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
           },
           hover: {
             scale: config.scale,
             boxShadow: '0 6px 12px rgba(0, 0, 0, 0.15)',
             y: -1,
-            transition: baseTransition
+            transition: baseTransition,
           },
           tap: {
             scale: 0.98,
             boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
             y: 0,
-            transition: { duration: adjustedDuration * 0.5 }
-          }
+            transition: { duration: adjustedDuration * 0.5 },
+          },
         };
 
       default:
         return {
           initial: { scale: 1 },
-          hover: { scale: config.scale }
+          hover: { scale: config.scale },
         };
     }
   };
@@ -268,17 +268,17 @@ export const MicroAnimation: React.FC<MicroAnimationProps> = ({
     <motion.div
       className={className}
       variants={variants}
-      initial="initial"
-      animate="animate"
-      whileHover="hover"
-      whileTap="tap"
-      whileFocus="focus"
-      exit="exit"
+      initial='initial'
+      animate='animate'
+      whileHover='hover'
+      whileTap='tap'
+      whileFocus='focus'
+      exit='exit'
       onAnimationComplete={onAnimationComplete}
       style={{
         transformOrigin: 'center',
         backfaceVisibility: 'hidden', // Prevent flickering
-        WebkitBackfaceVisibility: 'hidden'
+        WebkitBackfaceVisibility: 'hidden',
       }}
     >
       {children}
@@ -289,22 +289,18 @@ export const MicroAnimation: React.FC<MicroAnimationProps> = ({
 // Specialized animation components for common use cases
 export const AnimatedButton: React.FC<{
   children: ReactNode;
-  variant?: 'primary' | 'secondary' | 'ghost';
   className?: string;
-  onClick?: () => void;
   disabled?: boolean;
+  onClick?: () => void;
+  variant?: 'ghost' | 'primary' | 'secondary';
 }> = ({
   children,
   // _variant = 'primary', // Not used
-  className = "",
+  className = '',
   onClick,
-  disabled = false
+  disabled = false,
 }) => (
-  <MicroAnimation
-    type="button-press"
-    disabled={disabled}
-    className={className}
-  >
+  <MicroAnimation type='button-press' disabled={disabled} className={className}>
     <button
       onClick={onClick}
       disabled={disabled}
@@ -318,16 +314,11 @@ export const AnimatedButton: React.FC<{
 export const AnimatedCard: React.FC<{
   children: ReactNode;
   className?: string;
-  onClick?: () => void;
   hoverable?: boolean;
-}> = ({
-  children,
-  className = "",
-  onClick,
-  hoverable = true
-}) => (
+  onClick?: () => void;
+}> = ({ children, className = '', onClick, hoverable = true }) => (
   <MicroAnimation
-    type={hoverable ? "card-flip" : "fade-in-up"}
+    type={hoverable ? 'card-flip' : 'fade-in-up'}
     className={className}
   >
     <div
@@ -342,16 +333,16 @@ export const AnimatedCard: React.FC<{
 export const AnimatedInput: React.FC<{
   children: ReactNode;
   className?: string;
-  focused?: boolean;
   error?: boolean;
+  focused?: boolean;
 }> = ({
   children,
-  className = "",
+  className = '',
   // _focused = false, // Not used
-  error = false
+  error = false,
 }) => (
   <MicroAnimation
-    type={error ? "error-shake" : "focus-ring"}
+    type={error ? 'error-shake' : 'focus-ring'}
     className={className}
   >
     {children}

@@ -7,59 +7,59 @@ import { Badge } from '@/components/ui/badge';
 import { useSupabaseWithClerk } from '@/integrations/supabase/client';
 import type { WillData } from './WillWizard';
 import type { WillType } from './WillTypeSelector';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 
 interface GuardianData {
+  contact_info?: {
+    email?: string;
+    phone?: string;
+  };
   id: string;
   name: string;
   relationship: string;
-  contact_info?: {
-    phone?: string;
-    email?: string;
-  };
 }
 
 interface DocumentBundle {
-  id: string;
-  bundle_name: string;
   bundle_category: string;
-  primary_entity?: string;
-  entity_type?: string;
+  bundle_name: string;
   documents: Array<{
+    category: string;
+    document_type: string;
     id: string;
     title: string;
-    document_type: string;
-    category: string;
   }>;
+  entity_type?: string;
+  id: string;
+  primary_entity?: string;
 }
 
 interface DraftAnalysis {
-  foundGuardians: GuardianData[];
+  confidence: 'high' | 'low' | 'medium';
   foundBundles: DocumentBundle[];
-  suggestedBeneficiaries: Array<{
-    name: string;
-    relationship: 'spouse' | 'child' | 'parent' | 'sibling';
-    percentage: number;
-    reasoning: string;
-  }>;
+  foundGuardians: GuardianData[];
+  missingInfo: string[];
   suggestedAssetDistribution: Array<{
     bundleId: string;
     bundleName: string;
-    suggestedRecipient: string;
     reasoning: string;
+    suggestedRecipient: string;
+  }>;
+  suggestedBeneficiaries: Array<{
+    name: string;
+    percentage: number;
+    reasoning: string;
+    relationship: 'child' | 'parent' | 'sibling' | 'spouse';
   }>;
   suggestedExecutor?: {
     name: string;
-    relationship: string;
     reasoning: string;
+    relationship: string;
   };
   suggestedGuardians?: Array<{
     name: string;
-    relationship: string;
     reasoning: string;
+    relationship: string;
   }>;
-  missingInfo: string[];
-  confidence: 'high' | 'medium' | 'low';
 }
 
 interface IntelligentWillDraftGeneratorProps {
@@ -117,7 +117,7 @@ export const IntelligentWillDraftGenerator: React.FC<
   const analyzeUserDataForWill = (
     guardians: GuardianData[],
     bundles: DocumentBundle[],
-    _user: { fullName?: string } | null
+    _user: null | { fullName?: string }
   ): DraftAnalysis => {
     const analysis: DraftAnalysis = {
       foundGuardians: guardians,
@@ -392,6 +392,9 @@ export const IntelligentWillDraftGenerator: React.FC<
       },
       special_instructions: {},
       legal_data: {},
+      review_eligibility: true,
+      family_protection_level: 'standard',
+      completeness_score: 0,
     };
 
     return willData;
@@ -409,13 +412,13 @@ export const IntelligentWillDraftGenerator: React.FC<
       {/* Initial Choice */}
       {!showAnalysis && (
         <motion.div
-          initial={{  opacity: 0, y: 20  }}
-          animate={{  opacity: 1, y: 0  }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
           className='text-center space-y-8'
         >
           <div className='space-y-4'>
             <div className='w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto'>
-              <Icon name={"sparkles" as any} className='w-8 h-8 text-primary' />
+              <Icon name={'sparkles' as any} className='w-8 h-8 text-primary' />
             </div>
             <h2 className='text-2xl font-semibold'>
               Sofia's Intelligent Will Assistant
@@ -430,7 +433,10 @@ export const IntelligentWillDraftGenerator: React.FC<
 
           <Card className='p-6 bg-gradient-to-r from-primary/5 to-blue/5 border-primary/20'>
             <div className='flex items-start gap-4'>
-              <Icon name={"magic-wand" as any} className='w-6 h-6 text-primary mt-1' />
+              <Icon
+                name={'magic-wand' as any}
+                className='w-6 h-6 text-primary mt-1'
+              />
               <div className='text-left'>
                 <h3 className='font-semibold mb-2'>What Sofia Will Analyze:</h3>
                 <ul className='text-sm text-muted-foreground space-y-1'>
@@ -453,12 +459,15 @@ export const IntelligentWillDraftGenerator: React.FC<
             >
               {isAnalyzing ? (
                 <>
-                  <Icon name={"loader" as any} className='w-5 h-5 mr-2 animate-spin' />
+                  <Icon
+                    name={'loader' as any}
+                    className='w-5 h-5 mr-2 animate-spin'
+                  />
                   Analyzing Your Data...
                 </>
               ) : (
                 <>
-                  <Icon name={"sparkles" as any} className='w-5 h-5 mr-2' />
+                  <Icon name={'sparkles' as any} className='w-5 h-5 mr-2' />
                   Yes, Create Intelligent Draft
                 </>
               )}
@@ -466,11 +475,11 @@ export const IntelligentWillDraftGenerator: React.FC<
 
             <Button
               onClick={onStartFromScratch}
-              variant="outline"
+              variant='outline'
               size='lg'
               className='px-8'
             >
-              <Icon name={"edit" as any} className='w-5 h-5 mr-2' />
+              <Icon name={'edit' as any} className='w-5 h-5 mr-2' />
               No Thanks, Start from Scratch
             </Button>
           </div>
@@ -481,14 +490,17 @@ export const IntelligentWillDraftGenerator: React.FC<
       <AnimatePresence>
         {showAnalysis && analysis && (
           <motion.div
-            initial={{  opacity: 0, y: 20  }}
-            animate={{  opacity: 1, y: 0  }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
             className='space-y-6'
           >
             {/* Header */}
             <div className='text-center space-y-4'>
               <div className='flex items-center justify-center gap-2'>
-                <Icon name={"check-circle" as any} className='w-6 h-6 text-green-600' />
+                <Icon
+                  name={'check-circle' as any}
+                  className='w-6 h-6 text-green-600'
+                />
                 <h2 className='text-xl font-semibold'>
                   Draft Analysis Complete
                 </h2>
@@ -517,7 +529,7 @@ export const IntelligentWillDraftGenerator: React.FC<
             {analysis.suggestedBeneficiaries.length > 0 && (
               <Card className='p-6'>
                 <h3 className='font-semibold mb-4 flex items-center gap-2'>
-                  <Icon name={"users" as any} className='w-5 h-5' />
+                  <Icon name={'users' as any} className='w-5 h-5' />
                   Suggested Beneficiaries
                 </h3>
                 <div className='space-y-3'>
@@ -531,10 +543,10 @@ export const IntelligentWillDraftGenerator: React.FC<
                           <span className='font-medium'>
                             {beneficiary.name}
                           </span>
-                          <Badge variant="secondary">
+                          <Badge variant='secondary'>
                             {beneficiary.relationship}
                           </Badge>
-                          <Badge variant="outline">
+                          <Badge variant='outline'>
                             {beneficiary.percentage}%
                           </Badge>
                         </div>
@@ -552,7 +564,7 @@ export const IntelligentWillDraftGenerator: React.FC<
             {analysis.suggestedAssetDistribution.length > 0 && (
               <Card className='p-6'>
                 <h3 className='font-semibold mb-4 flex items-center gap-2'>
-                  <Icon name={"building-office" as any} className='w-5 h-5' />
+                  <Icon name={'building-office' as any} className='w-5 h-5' />
                   Asset Distribution Suggestions
                 </h3>
                 <div className='space-y-3'>
@@ -566,7 +578,8 @@ export const IntelligentWillDraftGenerator: React.FC<
                           <span className='font-medium'>
                             {asset.bundleName}
                           </span>
-                          <Icon name={"arrow-right" as any}
+                          <Icon
+                            name={'arrow-right' as any}
                             className='w-3 h-3 text-muted-foreground'
                           />
                           <span className='text-primary'>
@@ -588,7 +601,7 @@ export const IntelligentWillDraftGenerator: React.FC<
               {analysis.suggestedExecutor && (
                 <Card className='p-4'>
                   <h4 className='font-semibold mb-2 flex items-center gap-2'>
-                    <Icon name={"shield-check" as any} className='w-4 h-4' />
+                    <Icon name={'shield-check' as any} className='w-4 h-4' />
                     Suggested Executor
                   </h4>
                   <div className='space-y-2'>
@@ -596,7 +609,7 @@ export const IntelligentWillDraftGenerator: React.FC<
                       <span className='font-medium'>
                         {analysis.suggestedExecutor.name}
                       </span>
-                      <Badge variant="secondary">
+                      <Badge variant='secondary'>
                         {analysis.suggestedExecutor.relationship}
                       </Badge>
                     </div>
@@ -611,7 +624,7 @@ export const IntelligentWillDraftGenerator: React.FC<
                 analysis.suggestedGuardians.length > 0 && (
                   <Card className='p-4'>
                     <h4 className='font-semibold mb-2 flex items-center gap-2'>
-                      <Icon name={"heart" as any} className='w-4 h-4' />
+                      <Icon name={'heart' as any} className='w-4 h-4' />
                       Suggested Guardians
                     </h4>
                     <div className='space-y-2'>
@@ -619,10 +632,10 @@ export const IntelligentWillDraftGenerator: React.FC<
                         <div key={index}>
                           <div className='flex items-center gap-2'>
                             <span className='font-medium'>{guardian.name}</span>
-                            <Badge variant="secondary">
+                            <Badge variant='secondary'>
                               {guardian.relationship}
                             </Badge>
-                            <Badge variant="outline">
+                            <Badge variant='outline'>
                               {index === 0 ? 'Primary' : 'Backup'}
                             </Badge>
                           </div>
@@ -640,7 +653,7 @@ export const IntelligentWillDraftGenerator: React.FC<
             {analysis.missingInfo.length > 0 && (
               <Card className='p-6 bg-amber-50 dark:bg-amber-900/20 border-amber-200'>
                 <h3 className='font-semibold mb-4 flex items-center gap-2 text-amber-800 dark:text-amber-200'>
-                  <Icon name={"alert-triangle" as any} className='w-5 h-5' />
+                  <Icon name={'alert-triangle' as any} className='w-5 h-5' />
                   Areas to Consider
                 </h3>
                 <ul className='space-y-2 text-sm text-amber-700 dark:text-amber-300'>
@@ -661,17 +674,17 @@ export const IntelligentWillDraftGenerator: React.FC<
                 size='lg'
                 className='bg-primary hover:bg-primary-hover text-primary-foreground px-8'
               >
-                <Icon name={"check" as any} className='w-5 h-5 mr-2' />
+                <Icon name={'check' as any} className='w-5 h-5 mr-2' />
                 Use This Draft as Starting Point
               </Button>
 
               <Button
                 onClick={onStartFromScratch}
-                variant="outline"
+                variant='outline'
                 size='lg'
                 className='px-8'
               >
-                <Icon name={"edit" as any} className='w-5 h-5 mr-2' />
+                <Icon name={'edit' as any} className='w-5 h-5 mr-2' />
                 Start from Scratch Instead
               </Button>
             </div>

@@ -1,6 +1,15 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Badge } from './badge';
-import { Check, X, AlertCircle, Info, Star, TrendingUp, Clock, Shield } from 'lucide-react';
+import {
+  AlertCircle,
+  Check,
+  Clock,
+  Info,
+  Shield,
+  Star,
+  TrendingUp,
+  X,
+} from 'lucide-react';
 
 const meta = {
   title: 'UI/Badge',
@@ -103,8 +112,8 @@ export const Outline: Story = {
 // Status Badges
 export const Success: Story = {
   render: () => (
-    <Badge className="bg-green-100 text-green-800 hover:bg-green-200">
-      <Check className="mr-1 h-3 w-3" />
+    <Badge className='bg-green-100 text-green-800 hover:bg-green-200'>
+      <Check className='mr-1 h-3 w-3' />
       Success
     </Badge>
   ),
@@ -112,8 +121,8 @@ export const Success: Story = {
 
 export const Warning: Story = {
   render: () => (
-    <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200">
-      <AlertCircle className="mr-1 h-3 w-3" />
+    <Badge className='bg-yellow-100 text-yellow-800 hover:bg-yellow-200'>
+      <AlertCircle className='mr-1 h-3 w-3' />
       Warning
     </Badge>
   ),
@@ -121,8 +130,8 @@ export const Warning: Story = {
 
 export const Error: Story = {
   render: () => (
-    <Badge variant="destructive">
-      <X className="mr-1 h-3 w-3" />
+    <Badge variant='destructive'>
+      <X className='mr-1 h-3 w-3' />
       Error
     </Badge>
   ),
@@ -130,8 +139,8 @@ export const Error: Story = {
 
 export const InfoBadge: Story = {
   render: () => (
-    <Badge variant="secondary">
-      <Info className="mr-1 h-3 w-3" />
+    <Badge variant='secondary'>
+      <Info className='mr-1 h-3 w-3' />
       Info
     </Badge>
   ),
@@ -140,15 +149,15 @@ export const InfoBadge: Story = {
 // Document Status Badges
 export const DocumentStatuses: Story = {
   render: () => (
-    <div className="flex flex-wrap gap-2">
-      <Badge variant="outline">Draft</Badge>
-      <Badge variant="secondary">In Review</Badge>
-      <Badge className="bg-blue-100 text-blue-800">Notarized</Badge>
-      <Badge className="bg-green-100 text-green-800">
-        <Check className="mr-1 h-3 w-3" />
+    <div className='flex flex-wrap gap-2'>
+      <Badge variant='outline'>Draft</Badge>
+      <Badge variant='secondary'>In Review</Badge>
+      <Badge className='bg-blue-100 text-blue-800'>Notarized</Badge>
+      <Badge className='bg-green-100 text-green-800'>
+        <Check className='mr-1 h-3 w-3' />
         Completed
       </Badge>
-      <Badge variant="destructive">Expired</Badge>
+      <Badge variant='destructive'>Expired</Badge>
     </div>
   ),
 };
@@ -156,15 +165,15 @@ export const DocumentStatuses: Story = {
 // Family Member Badges
 export const FamilyRoles: Story = {
   render: () => (
-    <div className="flex flex-wrap gap-2">
+    <div className='flex flex-wrap gap-2'>
       <Badge>
-        <Star className="mr-1 h-3 w-3" />
+        <Star className='mr-1 h-3 w-3' />
         Primary
       </Badge>
-      <Badge variant="secondary">Spouse</Badge>
-      <Badge variant="secondary">Child</Badge>
-      <Badge variant="secondary">Guardian</Badge>
-      <Badge variant="outline">Beneficiary</Badge>
+      <Badge variant='secondary'>Spouse</Badge>
+      <Badge variant='secondary'>Child</Badge>
+      <Badge variant='secondary'>Guardian</Badge>
+      <Badge variant='outline'>Beneficiary</Badge>
     </div>
   ),
 };
@@ -172,16 +181,19 @@ export const FamilyRoles: Story = {
 // Notification Badges
 export const NotificationCount: Story = {
   render: () => (
-    <div className="flex items-center gap-4">
-      <div className="relative">
+    <div className='flex items-center gap-4'>
+      <div className='relative'>
         <span>Messages</span>
-        <Badge className="absolute -top-2 -right-2 h-5 min-w-[20px] rounded-full px-1">
+        <Badge className='absolute -top-2 -right-2 h-5 min-w-[20px] rounded-full px-1'>
           3
         </Badge>
       </div>
-      <div className="relative">
+      <div className='relative'>
         <span>Alerts</span>
-        <Badge variant="destructive" className="absolute -top-2 -right-2 h-5 min-w-[20px] rounded-full px-1">
+        <Badge
+          variant='destructive'
+          className='absolute -top-2 -right-2 h-5 min-w-[20px] rounded-full px-1'
+        >
           1
         </Badge>
       </div>
@@ -192,17 +204,17 @@ export const NotificationCount: Story = {
 // Feature Badges
 export const Features: Story = {
   render: () => (
-    <div className="flex flex-wrap gap-2">
+    <div className='flex flex-wrap gap-2'>
       <Badge>
-        <Shield className="mr-1 h-3 w-3" />
+        <Shield className='mr-1 h-3 w-3' />
         Encrypted
       </Badge>
       <Badge>
-        <Clock className="mr-1 h-3 w-3" />
+        <Clock className='mr-1 h-3 w-3' />
         Auto-save
       </Badge>
       <Badge>
-        <TrendingUp className="mr-1 h-3 w-3" />
+        <TrendingUp className='mr-1 h-3 w-3' />
         Premium
       </Badge>
     </div>
@@ -212,11 +224,11 @@ export const Features: Story = {
 // Size Variations
 export const Sizes: Story = {
   render: () => (
-    <div className="flex items-center gap-2">
-      <Badge className="text-xs py-0 px-2 h-5">Extra Small</Badge>
-      <Badge className="text-sm">Small</Badge>
+    <div className='flex items-center gap-2'>
+      <Badge className='text-xs py-0 px-2 h-5'>Extra Small</Badge>
+      <Badge className='text-sm'>Small</Badge>
       <Badge>Default</Badge>
-      <Badge className="text-base px-3 py-1">Large</Badge>
+      <Badge className='text-base px-3 py-1'>Large</Badge>
     </div>
   ),
 };
@@ -224,11 +236,9 @@ export const Sizes: Story = {
 // Interactive Badge
 export const Interactive: Story = {
   render: () => (
-    <div className="flex gap-2">
-      <Badge className="cursor-pointer hover:bg-primary/80">
-        Clickable
-      </Badge>
-      <Badge variant="outline" className="cursor-pointer hover:bg-secondary">
+    <div className='flex gap-2'>
+      <Badge className='cursor-pointer hover:bg-primary/80'>Clickable</Badge>
+      <Badge variant='outline' className='cursor-pointer hover:bg-secondary'>
         Hoverable
       </Badge>
     </div>
@@ -238,33 +248,33 @@ export const Interactive: Story = {
 // Badge List Example
 export const BadgeList: Story = {
   render: () => (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between p-4 border rounded-lg">
+    <div className='space-y-4'>
+      <div className='flex items-center justify-between p-4 border rounded-lg'>
         <div>
-          <h3 className="font-medium">Last Will & Testament</h3>
-          <p className="text-sm text-muted-foreground">Updated 2 days ago</p>
+          <h3 className='font-medium'>Last Will & Testament</h3>
+          <p className='text-sm text-muted-foreground'>Updated 2 days ago</p>
         </div>
-        <div className="flex gap-2">
-          <Badge variant="secondary">Draft</Badge>
+        <div className='flex gap-2'>
+          <Badge variant='secondary'>Draft</Badge>
           <Badge>
-            <Shield className="mr-1 h-3 w-3" />
+            <Shield className='mr-1 h-3 w-3' />
             Secure
           </Badge>
         </div>
       </div>
 
-      <div className="flex items-center justify-between p-4 border rounded-lg">
+      <div className='flex items-center justify-between p-4 border rounded-lg'>
         <div>
-          <h3 className="font-medium">Power of Attorney</h3>
-          <p className="text-sm text-muted-foreground">Completed last month</p>
+          <h3 className='font-medium'>Power of Attorney</h3>
+          <p className='text-sm text-muted-foreground'>Completed last month</p>
         </div>
-        <div className="flex gap-2">
-          <Badge className="bg-green-100 text-green-800">
-            <Check className="mr-1 h-3 w-3" />
+        <div className='flex gap-2'>
+          <Badge className='bg-green-100 text-green-800'>
+            <Check className='mr-1 h-3 w-3' />
             Notarized
           </Badge>
           <Badge>
-            <Shield className="mr-1 h-3 w-3" />
+            <Shield className='mr-1 h-3 w-3' />
             Secure
           </Badge>
         </div>

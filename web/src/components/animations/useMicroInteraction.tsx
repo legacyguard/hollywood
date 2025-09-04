@@ -4,56 +4,56 @@ import type { Variants } from 'framer-motion';
 
 // Micro-interaction animation configurations based on personality
 interface PersonalityAnimationConfig {
-  empathetic: {
+  adaptive: {
+    bounce: number;
     duration: number;
     ease: string;
     scale: number;
+  };
+  empathetic: {
     bounce: number;
+    duration: number;
+    ease: string;
+    scale: number;
   };
   pragmatic: {
+    bounce: number;
     duration: number;
     ease: string;
     scale: number;
-    bounce: number;
-  };
-  adaptive: {
-    duration: number;
-    ease: string;
-    scale: number;
-    bounce: number;
   };
 }
 
 const PERSONALITY_CONFIGS: PersonalityAnimationConfig = {
   empathetic: {
     duration: 0.4,
-    ease: "easeOut",
+    ease: 'easeOut',
     scale: 1.05,
-    bounce: 0.3
+    bounce: 0.3,
   },
   pragmatic: {
     duration: 0.2,
-    ease: "easeInOut",
+    ease: 'easeInOut',
     scale: 1.02,
-    bounce: 0
+    bounce: 0,
   },
   adaptive: {
     duration: 0.3,
-    ease: "easeOut",
+    ease: 'easeOut',
     scale: 1.03,
-    bounce: 0.1
-  }
+    bounce: 0.1,
+  },
 };
 
 // Context for sharing animation state
 interface MicroAnimationContextType {
-  reduceMotion: boolean;
   globalAnimationScale: number;
+  reduceMotion: boolean;
 }
 
 const MicroAnimationContext = React.createContext<MicroAnimationContextType>({
   reduceMotion: false,
-  globalAnimationScale: 1
+  globalAnimationScale: 1,
 });
 
 export const useMicroAnimation = () => useContext(MicroAnimationContext);
@@ -61,17 +61,19 @@ export const useMicroAnimation = () => useContext(MicroAnimationContext);
 // Provider component for micro-animation system
 interface MicroAnimationProviderProps {
   children: React.ReactNode;
-  reduceMotion?: boolean;
   globalAnimationScale?: number;
+  reduceMotion?: boolean;
 }
 
 export const MicroAnimationProvider: React.FC<MicroAnimationProviderProps> = ({
   children,
   reduceMotion = false,
-  globalAnimationScale = 1
+  globalAnimationScale = 1,
 }) => {
   return (
-    <MicroAnimationContext.Provider value={{ reduceMotion, globalAnimationScale }}>
+    <MicroAnimationContext.Provider
+      value={{ reduceMotion, globalAnimationScale }}
+    >
       {children}
     </MicroAnimationContext.Provider>
   );
@@ -99,14 +101,14 @@ export const usePersonalityAnimation = () => {
             transition: {
               ...value.transition,
               duration: config.duration,
-              ease: config.ease
-            }
+              ease: config.ease,
+            },
           } as any;
         } else {
           acc[key] = value;
         }
         return acc;
       }, {} as Variants);
-    }
+    },
   };
 };

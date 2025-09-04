@@ -12,7 +12,13 @@
       "schema": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["testator", "heirs", "declarations", "execution", "notary"],
+        "required": [
+          "testator",
+          "heirs",
+          "declarations",
+          "execution",
+          "notary"
+        ],
         "properties": {
           "testator": {
             "type": "object",
@@ -20,7 +26,11 @@
             "required": ["fullName", "dateOfBirth", "address"],
             "properties": {
               "fullName": { "type": "string", "title": "Fulde navn" },
-              "dateOfBirth": { "type": "string", "format": "date", "title": "Fødselsdato" },
+              "dateOfBirth": {
+                "type": "string",
+                "format": "date",
+                "title": "Fødselsdato"
+              },
               "address": { "type": "string", "title": "Bopæl" }
             }
           },
@@ -34,7 +44,11 @@
               "properties": {
                 "relation": { "type": "string", "title": "Familierelation" },
                 "fullName": { "type": "string", "title": "Fulde navn" },
-                "dateOfBirth": { "type": "string", "format": "date", "title": "Fødselsdato" },
+                "dateOfBirth": {
+                  "type": "string",
+                  "format": "date",
+                  "title": "Fødselsdato"
+                },
                 "address": { "type": "string", "title": "Adresse" },
                 "share": {
                   "type": "number",
@@ -47,9 +61,16 @@
                   "type": "object",
                   "title": "Subsidiær arving (valgfrit)",
                   "properties": {
-                    "relation": { "type": "string", "title": "Familierelation" },
+                    "relation": {
+                      "type": "string",
+                      "title": "Familierelation"
+                    },
                     "fullName": { "type": "string", "title": "Fulde navn" },
-                    "dateOfBirth": { "type": "string", "format": "date", "title": "Fødselsdato" },
+                    "dateOfBirth": {
+                      "type": "string",
+                      "format": "date",
+                      "title": "Fødselsdato"
+                    },
                     "address": { "type": "string", "title": "Adresse" }
                   }
                 }
@@ -59,7 +80,11 @@
           "declarations": {
             "type": "object",
             "title": "Erklæringer",
-            "required": ["freeAndInformed", "revokePriorWills", "awareOfForcedShare"],
+            "required": [
+              "freeAndInformed",
+              "revokePriorWills",
+              "awareOfForcedShare"
+            ],
             "properties": {
               "freeAndInformed": {
                 "type": "boolean",
@@ -87,10 +112,21 @@
           "notary": {
             "type": "object",
             "title": "Notarialforretning",
-            "required": ["courtDistrict", "appointmentDate", "notaryAttestationPlanned"],
+            "required": [
+              "courtDistrict",
+              "appointmentDate",
+              "notaryAttestationPlanned"
+            ],
             "properties": {
-              "courtDistrict": { "type": "string", "title": "Byret/Notarialkontor" },
-              "appointmentDate": { "type": "string", "format": "date", "title": "Dato for fremmøde" },
+              "courtDistrict": {
+                "type": "string",
+                "title": "Byret/Notarialkontor"
+              },
+              "appointmentDate": {
+                "type": "string",
+                "format": "date",
+                "title": "Dato for fremmøde"
+              },
               "notaryAttestationPlanned": {
                 "type": "boolean",
                 "const": true,
@@ -152,7 +188,13 @@
       "schema": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["testator", "heirs", "declarations", "witnesses", "execution"],
+        "required": [
+          "testator",
+          "heirs",
+          "declarations",
+          "witnesses",
+          "execution"
+        ],
         "properties": {
           "testator": {
             "type": "object",
@@ -160,7 +202,11 @@
             "required": ["fullName", "dateOfBirth", "address"],
             "properties": {
               "fullName": { "type": "string", "title": "Fulde navn" },
-              "dateOfBirth": { "type": "string", "format": "date", "title": "Fødselsdato" },
+              "dateOfBirth": {
+                "type": "string",
+                "format": "date",
+                "title": "Fødselsdato"
+              },
               "address": { "type": "string", "title": "Bopæl" }
             }
           },
@@ -174,7 +220,11 @@
               "properties": {
                 "relation": { "type": "string", "title": "Familierelation" },
                 "fullName": { "type": "string", "title": "Fulde navn" },
-                "dateOfBirth": { "type": "string", "format": "date", "title": "Fødselsdato" },
+                "dateOfBirth": {
+                  "type": "string",
+                  "format": "date",
+                  "title": "Fødselsdato"
+                },
                 "address": { "type": "string", "title": "Adresse" },
                 "share": {
                   "type": "number",
@@ -187,9 +237,16 @@
                   "type": "object",
                   "title": "Subsidiær arving (valgfrit)",
                   "properties": {
-                    "relation": { "type": "string", "title": "Familierelation" },
+                    "relation": {
+                      "type": "string",
+                      "title": "Familierelation"
+                    },
                     "fullName": { "type": "string", "title": "Fulde navn" },
-                    "dateOfBirth": { "type": "string", "format": "date", "title": "Fødselsdato" },
+                    "dateOfBirth": {
+                      "type": "string",
+                      "format": "date",
+                      "title": "Fødselsdato"
+                    },
                     "address": { "type": "string", "title": "Adresse" }
                   }
                 }
@@ -199,7 +256,11 @@
           "declarations": {
             "type": "object",
             "title": "Erklæringer",
-            "required": ["freeAndInformed", "revokePriorWills", "awareOfForcedShare"],
+            "required": [
+              "freeAndInformed",
+              "revokePriorWills",
+              "awareOfForcedShare"
+            ],
             "properties": {
               "freeAndInformed": {
                 "type": "boolean",
@@ -234,7 +295,11 @@
               "required": ["fullName", "dateOfBirth", "address", "attestation"],
               "properties": {
                 "fullName": { "type": "string", "title": "Fulde navn" },
-                "dateOfBirth": { "type": "string", "format": "date", "title": "Fødselsdato" },
+                "dateOfBirth": {
+                  "type": "string",
+                  "format": "date",
+                  "title": "Fødselsdato"
+                },
                 "address": { "type": "string", "title": "Adresse" },
                 "attestation": {
                   "type": "boolean",
@@ -299,7 +364,13 @@
       "schema": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["testator", "heirs", "declarations", "emergency", "execution"],
+        "required": [
+          "testator",
+          "heirs",
+          "declarations",
+          "emergency",
+          "execution"
+        ],
         "properties": {
           "testator": {
             "type": "object",
@@ -307,7 +378,11 @@
             "required": ["fullName", "dateOfBirth", "address"],
             "properties": {
               "fullName": { "type": "string", "title": "Fulde navn" },
-              "dateOfBirth": { "type": "string", "format": "date", "title": "Fødselsdato" },
+              "dateOfBirth": {
+                "type": "string",
+                "format": "date",
+                "title": "Fødselsdato"
+              },
               "address": { "type": "string", "title": "Bopæl" }
             }
           },
@@ -321,7 +396,11 @@
               "properties": {
                 "relation": { "type": "string", "title": "Familierelation" },
                 "fullName": { "type": "string", "title": "Fulde navn" },
-                "dateOfBirth": { "type": "string", "format": "date", "title": "Fødselsdato" },
+                "dateOfBirth": {
+                  "type": "string",
+                  "format": "date",
+                  "title": "Fødselsdato"
+                },
                 "address": { "type": "string", "title": "Adresse" },
                 "share": {
                   "type": "number",
@@ -336,7 +415,11 @@
           "declarations": {
             "type": "object",
             "title": "Erklæringer",
-            "required": ["freeAndInformed", "awareOfForcedShare", "revokePriorWills"],
+            "required": [
+              "freeAndInformed",
+              "awareOfForcedShare",
+              "revokePriorWills"
+            ],
             "properties": {
               "freeAndInformed": {
                 "type": "boolean",
@@ -358,9 +441,16 @@
           "emergency": {
             "type": "object",
             "title": "Nødsituation",
-            "required": ["reason", "hindranceForFormalWill", "validityAwareness"],
+            "required": [
+              "reason",
+              "hindranceForFormalWill",
+              "validityAwareness"
+            ],
             "properties": {
-              "reason": { "type": "string", "title": "Kort beskrivelse af nødstilfældet (fx sygdom/ulykke)" },
+              "reason": {
+                "type": "string",
+                "title": "Kort beskrivelse af nødstilfældet (fx sygdom/ulykke)"
+              },
               "hindranceForFormalWill": {
                 "type": "boolean",
                 "const": true,
@@ -422,7 +512,11 @@
   "clientRules": [
     {
       "id": "shares_sum_100",
-      "appliesTo": ["will_notarial_dk", "will_witnessed_dk", "will_emergency_dk"],
+      "appliesTo": [
+        "will_notarial_dk",
+        "will_witnessed_dk",
+        "will_emergency_dk"
+      ],
       "type": "computedValidation",
       "messageDa": "Summen af andele skal være præcis 100 %.",
       "fn": "sum(heirs[*].share) === 100"

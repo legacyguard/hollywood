@@ -1,19 +1,25 @@
-import React, { type ReactNode, createContext, useContext, useState, useEffect } from 'react';
+import React, {
+  createContext,
+  type ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 
-export type CountryCode = 'sk' | 'cz' | 'en';
-export type LanguageCode = 'sk' | 'cs' | 'en';
+export type CountryCode = 'cz' | 'en' | 'sk';
+export type LanguageCode = 'cs' | 'en' | 'sk';
 
 interface LocalizationState {
   countryCode: CountryCode;
-  languageCode: LanguageCode;
-  jurisdiction: string;
   currency: string;
+  jurisdiction: string;
+  languageCode: LanguageCode;
 }
 
 interface LocalizationContextType extends LocalizationState {
+  isLoading: boolean;
   setCountryCode: (code: CountryCode) => void;
   setLanguageCode: (code: LanguageCode) => void;
-  isLoading: boolean;
 }
 
 const LocalizationContext = createContext<LocalizationContextType | undefined>(
@@ -170,90 +176,90 @@ export const useLocalization = (): LocalizationContextType => {
 
 // Hook for loading country-specific content
 export const useCountryContent = <T,>(
-  contentType: 'legal_info' | 'wizard_steps' | 'will_template'
+  contentType: 'legal_info' | 'will_template' | 'wizard_steps'
 ) => {
   const { countryCode } = useLocalization();
-  const [content, setContent] = useState<T | null>(null);
+  const [content, setContent] = useState<null | T>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<null | string>(null);
 
   const loadContent = async () => {
-      try {
-        setLoading(true);
-        setError(null);
+    try {
+      setLoading(true);
+      setError(null);
 
-        if (contentType === 'will_template') {
-          // For markdown templates, we'll need special handling
-          const response = await fetch(
-            `/src/content/legacy/${countryCode}/will_template.md`
-          );
-          if (!response.ok) {
-            throw new Error(`Failed to fetch template: ${response.status}`);
-          }
-          const text = await response.text();
-          setContent(text as T);
+      if (contentType === 'will_template') {
+        // For markdown templates, we'll need special handling
+        const response = await fetch(
+          `/src/content/legacy/${countryCode}/will_template.md`
+        );
+        if (!response.ok) {
+          throw new Error(`Failed to fetch template: ${response.status}`);
+        }
+        const text = await response.text();
+        setContent(text as T);
+      } else {
+        // For JSON files, use dynamic imports
+        let module;
+        if (countryCode === 'sk' && contentType === 'legal_info') {
+          module = await import('../content/legacy/sk/legal_info.json');
+        } else if (countryCode === 'sk' && contentType === 'wizard_steps') {
+          module = await import('../content/legacy/sk/wizard_steps.json');
+        } else if (countryCode === 'cz' && contentType === 'legal_info') {
+          module = await import('../content/legacy/cz/legal_info.json');
+        } else if (countryCode === 'cz' && contentType === 'wizard_steps') {
+          module = await import('../content/legacy/cz/wizard_steps.json');
+        } else if (countryCode === 'en' && contentType === 'legal_info') {
+          module = await import('../content/legacy/en/legal_info.json');
+        } else if (countryCode === 'en' && contentType === 'wizard_steps') {
+          module = await import('../content/legacy/en/wizard_steps.json');
         } else {
-          // For JSON files, use dynamic imports
-          let module;
-          if (countryCode === 'sk' && contentType === 'legal_info') {
-            module = await import('../content/legacy/sk/legal_info.json');
-          } else if (countryCode === 'sk' && contentType === 'wizard_steps') {
-            module = await import('../content/legacy/sk/wizard_steps.json');
-          } else if (countryCode === 'cz' && contentType === 'legal_info') {
-            module = await import('../content/legacy/cz/legal_info.json');
-          } else if (countryCode === 'cz' && contentType === 'wizard_steps') {
-            module = await import('../content/legacy/cz/wizard_steps.json');
-          } else if (countryCode === 'en' && contentType === 'legal_info') {
-            module = await import('../content/legacy/en/legal_info.json');
-          } else if (countryCode === 'en' && contentType === 'wizard_steps') {
-            module = await import('../content/legacy/en/wizard_steps.json');
-          } else {
-            throw new Error(
-              `Unsupported content type: ${contentType} for country: ${countryCode}`
-            );
-          }
-          setContent(module.default as T);
+          throw new Error(
+            `Unsupported content type: ${contentType} for country: ${countryCode}`
+          );
         }
-      } catch (err) {
-        console.error(`Failed to load ${contentType} for ${countryCode}:`, err);
-        setError(`Failed to load ${contentType}`);
-
-        // Fallback to English if country-specific content fails
-        if (countryCode !== 'en') {
-          try {
-            if (contentType === 'will_template') {
-              const response = await fetch(
-                `/src/content/legacy/en/will_template.md`
-              );
-              if (response.ok) {
-                const text = await response.text();
-                setContent(text as T);
-                setError(null);
-              }
-            } else {
-              let fallbackModule;
-              if (contentType === 'legal_info') {
-                fallbackModule = await import(
-                  '../content/legacy/en/legal_info.json'
-                );
-              } else if (contentType === 'wizard_steps') {
-                fallbackModule = await import(
-                  '../content/legacy/en/wizard_steps.json'
-                );
-              }
-              if (fallbackModule) {
-                setContent(fallbackModule.default as T);
-                setError(null);
-              }
-            }
-          } catch (fallbackErr) {
-            console.error(`Fallback also failed:`, fallbackErr);
-          }
-        }
-      } finally {
-        setLoading(false);
+        setContent(module.default as T);
       }
-    };
+    } catch (err) {
+      console.error(`Failed to load ${contentType} for ${countryCode}:`, err);
+      setError(`Failed to load ${contentType}`);
+
+      // Fallback to English if country-specific content fails
+      if (countryCode !== 'en') {
+        try {
+          if (contentType === 'will_template') {
+            const response = await fetch(
+              `/src/content/legacy/en/will_template.md`
+            );
+            if (response.ok) {
+              const text = await response.text();
+              setContent(text as T);
+              setError(null);
+            }
+          } else {
+            let fallbackModule;
+            if (contentType === 'legal_info') {
+              fallbackModule = await import(
+                '../content/legacy/en/legal_info.json'
+              );
+            } else if (contentType === 'wizard_steps') {
+              fallbackModule = await import(
+                '../content/legacy/en/wizard_steps.json'
+              );
+            }
+            if (fallbackModule) {
+              setContent(fallbackModule.default as T);
+              setError(null);
+            }
+          }
+        } catch (fallbackErr) {
+          console.error(`Fallback also failed:`, fallbackErr);
+        }
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     loadContent();

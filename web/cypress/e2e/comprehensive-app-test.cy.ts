@@ -3,7 +3,7 @@
 describe('LegacyGuard Comprehensive Application Test', () => {
   beforeEach(() => {
     // Handle uncaught exceptions from our app
-    cy.on('uncaught:exception', (err, runnable) => {
+    cy.on('uncaught:exception', (err) => {
       // Don't fail tests for expected development warnings/errors
       if (err.message.includes('ResizeObserver loop limit exceeded')) {
         return false;
@@ -25,10 +25,14 @@ describe('LegacyGuard Comprehensive Application Test', () => {
     cy.get('body').should('contain.text', 'LegacyGuard');
 
     // Check for navigation or header elements (adjust selectors as needed)
-    cy.get('nav, header, [role="navigation"], [role="banner"]', { timeout: 10000 }).should('exist');
+    cy.get('nav, header, [role="navigation"], [role="banner"]', {
+      timeout: 10000,
+    }).should('exist');
 
     // Landing page should have some call-to-action
-    cy.get('button, [role="button"], a[href*="sign"]', { timeout: 10000 }).should('exist');
+    cy.get('button, [role="button"], a[href*="sign"]', {
+      timeout: 10000,
+    }).should('exist');
   });
 
   it('can navigate to different public pages', () => {
@@ -52,11 +56,13 @@ describe('LegacyGuard Comprehensive Application Test', () => {
     cy.visit('/dashboard');
 
     // Should either redirect to auth or show auth form
-    cy.url({ timeout: 10000 }).should('satisfy', (url) => {
-      return url.includes('/sign-in') ||
-             url.includes('clerk.') ||
-             url.includes('auth') ||
-             url.includes('accounts.dev');
+    cy.url({ timeout: 10000 }).should('satisfy', url => {
+      return (
+        url.includes('/sign-in') ||
+        url.includes('clerk.') ||
+        url.includes('auth') ||
+        url.includes('accounts.dev')
+      );
     });
   });
 
@@ -64,8 +70,11 @@ describe('LegacyGuard Comprehensive Application Test', () => {
     cy.visit('/non-existent-page', { failOnStatusCode: false });
 
     // Should show 404 or redirect to home
-    cy.url({ timeout: 10000 }).should('satisfy', (url) => {
-      return url.includes('/non-existent-page') || url === Cypress.config().baseUrl + '/';
+    cy.url({ timeout: 10000 }).should('satisfy', url => {
+      return (
+        url.includes('/non-existent-page') ||
+        url === Cypress.config().baseUrl + '/'
+      );
     });
   });
 
@@ -104,9 +113,9 @@ describe('LegacyGuard Comprehensive Application Test', () => {
   it('handles JavaScript and loads without console errors', () => {
     const consoleErrors = [];
 
-    cy.window().then((win) => {
+    cy.window().then(win => {
       const originalConsoleError = win.console.error;
-      win.console.error = function(...args) {
+      win.console.error = function (...args) {
         consoleErrors.push(args.join(' '));
         originalConsoleError.apply(win.console, args);
       };
@@ -117,14 +126,18 @@ describe('LegacyGuard Comprehensive Application Test', () => {
 
     cy.then(() => {
       // Filter out expected development warnings
-      const criticalErrors = consoleErrors.filter(error =>
-        !error.includes('Warning:') &&
-        !error.includes('ResizeObserver') &&
-        !error.includes('Non-serializable') &&
-        !error.includes('DevTools')
+      const criticalErrors = consoleErrors.filter(
+        error =>
+          !error.includes('Warning:') &&
+          !error.includes('ResizeObserver') &&
+          !error.includes('Non-serializable') &&
+          !error.includes('DevTools')
       );
 
-      expect(criticalErrors).to.have.length(0, `Found console errors: ${criticalErrors.join(', ')}`);
+      expect(criticalErrors).to.have.length(
+        0,
+        `Found console errors: ${criticalErrors.join(', ')}`
+      );
     });
   });
 
@@ -132,22 +145,29 @@ describe('LegacyGuard Comprehensive Application Test', () => {
     cy.visit('/');
 
     // Try to find and interact with buttons
-    cy.get('button, [role="button"]').first().should('be.visible').then(($btn) => {
-      // Only click if it's not a navigation button that would change the page
-      if (!$btn.text().toLowerCase().includes('sign') &&
+    cy.get('button, [role="button"]')
+      .first()
+      .should('be.visible')
+      .then($btn => {
+        // Only click if it's not a navigation button that would change the page
+        if (
+          !$btn.text().toLowerCase().includes('sign') &&
           !$btn.text().toLowerCase().includes('login') &&
-          !$btn.text().toLowerCase().includes('start')) {
-        cy.wrap($btn).click();
-      }
-    });
+          !$btn.text().toLowerCase().includes('start')
+        ) {
+          cy.wrap($btn).click();
+        }
+      });
 
     // Try to find and interact with links
-    cy.get('a[href]:not([href*="mailto"]):not([href*="tel"])').first().then(($link) => {
-      const href = $link.attr('href');
-      // Only test internal links
-      if (href && (href.startsWith('/') || href.startsWith('#'))) {
-        cy.wrap($link).should('be.visible');
-      }
-    });
+    cy.get('a[href]:not([href*="mailto"]):not([href*="tel"])')
+      .first()
+      .then($link => {
+        const href = $link.attr('href');
+        // Only test internal links
+        if (href && (href.startsWith('/') || href.startsWith('#'))) {
+          cy.wrap($link).should('be.visible');
+        }
+      });
   });
-})
+});

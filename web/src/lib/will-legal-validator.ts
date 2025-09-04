@@ -8,37 +8,37 @@ export enum ValidationLevel {
   ERROR = 'error',
   WARNING = 'warning',
   INFO = 'info',
-  SUCCESS = 'success'
+  SUCCESS = 'success',
 }
 
 export interface ValidationResult {
+  autoSuggestion?: string;
+  field?: string;
   isValid: boolean;
   level: ValidationLevel;
   message: string;
   messageKey: string;
-  field?: string;
-  autoSuggestion?: string;
 }
 
 export interface ComplianceReport {
-  overall: 'compliant' | 'partial' | 'non-compliant';
-  isCompliant: boolean;
-  forcedHeirsProtected: string[];
-  validationResults: ValidationResult[];
   forcedHeirsIssues: ValidationResult[];
+  forcedHeirsProtected: string[];
+  isCompliant: boolean;
   legalConflicts: ValidationResult[];
+  overall: 'compliant' | 'non-compliant' | 'partial';
+  validationResults: ValidationResult[];
 }
 
 export interface ConflictAlert {
+  affectedFields: string[];
+  message: string;
+  severity: 'critical' | 'high' | 'low' | 'medium';
+  suggestion: string;
   type:
     | 'forced_heirs'
-    | 'witness_conflict'
+    | 'jurisdiction_conflict'
     | 'percentage_conflict'
-    | 'jurisdiction_conflict';
-  severity: 'critical' | 'high' | 'medium' | 'low';
-  message: string;
-  affectedFields: string[];
-  suggestion: string;
+    | 'witness_conflict';
 }
 
 // Jurisdiction-specific legal rules
@@ -475,10 +475,7 @@ export class LegalValidator {
       forcedHeirsIssues: forcedHeirsReport.forcedHeirsIssues,
       legalConflicts: legalConflicts.map(conflict => ({
         isValid: false,
-        level:
-          conflict.severity === 'critical'
-            ? ('error')
-            : ('warning'),
+        level: conflict.severity === 'critical' ? 'error' : 'warning',
         message: conflict.message,
         messageKey: `conflict_${conflict.type}`,
         field: conflict.affectedFields[0],
@@ -558,7 +555,7 @@ export const validateTestatorAge = (dateOfBirth: string): ValidationResult => {
       message: 'Testator must be at least 18 years old to create a valid will',
       messageKey: 'testator_age_invalid',
       field: 'testator_data.dateOfBirth',
-      autoSuggestion: 'Verify the date of birth is correct'
+      autoSuggestion: 'Verify the date of birth is correct',
     };
   }
 
@@ -566,19 +563,22 @@ export const validateTestatorAge = (dateOfBirth: string): ValidationResult => {
     isValid: true,
     level: ValidationLevel.SUCCESS,
     message: 'Testator age is valid',
-    messageKey: 'testator_age_valid'
+    messageKey: 'testator_age_valid',
   };
 };
 
 export const validateGuardianship = (guardianship: any): ValidationResult => {
-  if (!guardianship || (!guardianship.guardian && !guardianship.alternateGuardian)) {
+  if (
+    !guardianship ||
+    (!guardianship.guardian && !guardianship.alternateGuardian)
+  ) {
     return {
       isValid: false,
       level: ValidationLevel.WARNING,
       message: 'Consider appointing a guardian for any minor children',
       messageKey: 'guardianship_recommended',
       field: 'guardianship',
-      autoSuggestion: 'Add a trusted person as guardian'
+      autoSuggestion: 'Add a trusted person as guardian',
     };
   }
 
@@ -586,17 +586,19 @@ export const validateGuardianship = (guardianship: any): ValidationResult => {
     isValid: true,
     level: ValidationLevel.SUCCESS,
     message: 'Guardianship provisions are complete',
-    messageKey: 'guardianship_valid'
+    messageKey: 'guardianship_valid',
   };
 };
 
-export const validateSpecialProvisions = (specialProvisions: string[]): ValidationResult => {
+export const validateSpecialProvisions = (
+  specialProvisions: string[]
+): ValidationResult => {
   if (!specialProvisions || specialProvisions.length === 0) {
     return {
       isValid: true,
       level: ValidationLevel.INFO,
       message: 'No special provisions specified',
-      messageKey: 'special_provisions_none'
+      messageKey: 'special_provisions_none',
     };
   }
 
@@ -604,7 +606,7 @@ export const validateSpecialProvisions = (specialProvisions: string[]): Validati
     isValid: true,
     level: ValidationLevel.SUCCESS,
     message: `${specialProvisions.length} special provision(s) specified`,
-    messageKey: 'special_provisions_valid'
+    messageKey: 'special_provisions_valid',
   };
 };
 

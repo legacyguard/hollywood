@@ -7,17 +7,18 @@ import { loadStripe, type Stripe } from '@stripe/stripe-js';
 import { supabase } from '@/integrations/supabase/client';
 
 // Initialize Stripe
-const STRIPE_PUBLISHABLE_KEY = 'pk_test_51RxUMeFjl1oRWeU6A9rKrirRWWBPXBjASe0rmT36UdyZ63MsFbWe1WaWdIkQpaoLc1dkhywr4d1htlmvOnjKIsa300ZlWOPgvf';
-let stripePromise: Promise<Stripe | null>;
+const STRIPE_PUBLISHABLE_KEY =
+  'pk_test_51RxUMeFjl1oRWeU6A9rKrirRWWBPXBjASe0rmT36UdyZ63MsFbWe1WaWdIkQpaoLc1dkhywr4d1htlmvOnjKIsa300ZlWOPgvf';
+let stripePromise: Promise<null | Stripe>;
 
 export interface PricingPlan {
-  id: string;
-  name: 'free' | 'essential' | 'family' | 'premium';
-  price: number;
   currency: string;
-  interval: 'month' | 'year';
-  stripePriceId: string;
   features: string[];
+  id: string;
+  interval: 'month' | 'year';
+  name: 'essential' | 'family' | 'free' | 'premium';
+  price: number;
+  stripePriceId: string;
 }
 
 // Stripe Price IDs (you'll need to create these in Stripe Dashboard)
@@ -33,8 +34,8 @@ export const PRICING_PLANS: PricingPlan[] = [
       '10 documents',
       '100MB storage',
       '5 scans per month',
-      'Basic support'
-    ]
+      'Basic support',
+    ],
   },
   {
     id: 'essential_monthly',
@@ -48,8 +49,8 @@ export const PRICING_PLANS: PricingPlan[] = [
       '1GB storage',
       '50 scans per month',
       'Advanced OCR',
-      'Email support'
-    ]
+      'Email support',
+    ],
   },
   {
     id: 'essential_yearly',
@@ -64,8 +65,8 @@ export const PRICING_PLANS: PricingPlan[] = [
       '50 scans per month',
       'Advanced OCR',
       'Email support',
-      '2 months free'
-    ]
+      '2 months free',
+    ],
   },
   {
     id: 'family_monthly',
@@ -80,8 +81,8 @@ export const PRICING_PLANS: PricingPlan[] = [
       '200 scans per month',
       'Family sharing',
       'Will generator',
-      'Priority support'
-    ]
+      'Priority support',
+    ],
   },
   {
     id: 'family_yearly',
@@ -97,8 +98,8 @@ export const PRICING_PLANS: PricingPlan[] = [
       'Family sharing',
       'Will generator',
       'Priority support',
-      '2 months free'
-    ]
+      '2 months free',
+    ],
   },
   {
     id: 'premium_monthly',
@@ -113,8 +114,8 @@ export const PRICING_PLANS: PricingPlan[] = [
       'Unlimited scans',
       'API access',
       'White-label options',
-      'Dedicated support'
-    ]
+      'Dedicated support',
+    ],
   },
   {
     id: 'premium_yearly',
@@ -130,9 +131,9 @@ export const PRICING_PLANS: PricingPlan[] = [
       'API access',
       'White-label options',
       'Dedicated support',
-      '2 months free'
-    ]
-  }
+      '2 months free',
+    ],
+  },
 ];
 
 export class StripeService {
@@ -150,7 +151,7 @@ export class StripeService {
   /**
    * Get Stripe instance
    */
-  async getStripe(): Promise<Stripe | null> {
+  async getStripe(): Promise<null | Stripe> {
     if (!stripePromise) {
       stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY);
     }
@@ -166,20 +167,23 @@ export class StripeService {
     successUrl: string,
     cancelUrl: string,
     feature?: string
-  ): Promise<{ sessionId: string; url: string } | null> {
+  ): Promise<null | { sessionId: string; url: string }> {
     try {
-      const { data, error } = await supabase.functions.invoke('create-checkout-session', {
-        body: {
-          priceId,
-          userId,
-          successUrl,
-          cancelUrl,
-          metadata: {
+      const { data, error } = await supabase.functions.invoke(
+        'create-checkout-session',
+        {
+          body: {
+            priceId,
             userId,
-            feature: feature || 'general_upgrade'
-          }
+            successUrl,
+            cancelUrl,
+            metadata: {
+              userId,
+              feature: feature || 'general_upgrade',
+            },
+          },
         }
-      });
+      );
 
       if (error) {
         console.error('Error creating checkout session:', error);
@@ -212,10 +216,7 @@ export class StripeService {
   /**
    * Create subscription upgrade flow
    */
-  async upgradeSubscription(
-    planId: string,
-    feature?: string
-  ): Promise<void> {
+  async upgradeSubscription(planId: string, feature?: string): Promise<void> {
     const plan = PRICING_PLANS.find(p => p.id === planId);
     if (!plan || !plan.stripePriceId) {
       console.error('Invalid plan selected');
@@ -247,11 +248,14 @@ export class StripeService {
   /**
    * Create customer portal session
    */
-  async createPortalSession(returnUrl: string): Promise<string | null> {
+  async createPortalSession(returnUrl: string): Promise<null | string> {
     try {
-      const { data, error } = await supabase.functions.invoke('create-portal-session', {
-        body: { returnUrl }
-      });
+      const { data, error } = await supabase.functions.invoke(
+        'create-portal-session',
+        {
+          body: { returnUrl },
+        }
+      );
 
       if (error) {
         console.error('Error creating portal session:', error);
@@ -280,11 +284,11 @@ export class StripeService {
   /**
    * Get current user subscription status
    */
-  async getSubscriptionStatus(): Promise<{
+  async getSubscriptionStatus(): Promise<null | {
+    expiresAt?: string;
     plan: string;
     status: string;
-    expiresAt?: string;
-  } | null> {
+  }> {
     try {
       const user = await this.getCurrentUser();
       if (!user) return null;
@@ -302,7 +306,7 @@ export class StripeService {
       return {
         plan: data.plan,
         status: data.status || 'active',
-        expiresAt: data.expires_at
+        expiresAt: data.expires_at,
       };
     } catch (error) {
       console.error('Error fetching subscription status:', error);
@@ -315,9 +319,12 @@ export class StripeService {
    */
   async handlePaymentSuccess(sessionId: string): Promise<void> {
     // Verify the session with backend
-    const { data, error } = await supabase.functions.invoke('verify-checkout-session', {
-      body: { sessionId }
-    });
+    const { data, error } = await supabase.functions.invoke(
+      'verify-checkout-session',
+      {
+        body: { sessionId },
+      }
+    );
 
     if (error) {
       console.error('Error verifying session:', error);
@@ -327,9 +334,11 @@ export class StripeService {
     // Update local state
     if (data.success) {
       // Trigger UI update
-      window.dispatchEvent(new CustomEvent('subscription-updated', {
-        detail: { plan: data.plan }
-      }));
+      window.dispatchEvent(
+        new CustomEvent('subscription-updated', {
+          detail: { plan: data.plan },
+        })
+      );
 
       // Show success message
       this.showSuccessNotification(data.plan);
@@ -340,7 +349,9 @@ export class StripeService {
    * Get current user
    */
   private async getCurrentUser() {
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     return user;
   }
 
@@ -352,8 +363,8 @@ export class StripeService {
       detail: {
         message: `Congratulations! You've successfully upgraded to the ${plan} plan. All premium features are now unlocked!`,
         type: 'success',
-        personality: 'adaptive'
-      }
+        personality: 'adaptive',
+      },
     });
     window.dispatchEvent(event);
   }
@@ -366,11 +377,11 @@ export class StripeService {
     if (!subscription) return false;
 
     const featureRequirements: Record<string, string[]> = {
-      'advanced_ocr': ['essential', 'family', 'premium'],
-      'family_sharing': ['family', 'premium'],
-      'will_generator': ['family', 'premium'],
-      'unlimited_storage': ['premium'],
-      'api_access': ['premium']
+      advanced_ocr: ['essential', 'family', 'premium'],
+      family_sharing: ['family', 'premium'],
+      will_generator: ['family', 'premium'],
+      unlimited_storage: ['premium'],
+      api_access: ['premium'],
     };
 
     const requiredPlans = featureRequirements[feature];
@@ -382,21 +393,23 @@ export class StripeService {
   /**
    * Get recommended plan for a feature
    */
-  getRecommendedPlan(feature: string): PricingPlan | null {
+  getRecommendedPlan(feature: string): null | PricingPlan {
     const featureToPlans: Record<string, string> = {
-      'advanced_ocr': 'essential',
-      'family_sharing': 'family',
-      'will_generator': 'family',
-      'unlimited_storage': 'premium',
-      'api_access': 'premium'
+      advanced_ocr: 'essential',
+      family_sharing: 'family',
+      will_generator: 'family',
+      unlimited_storage: 'premium',
+      api_access: 'premium',
     };
 
     const recommendedPlanName = featureToPlans[feature];
     if (!recommendedPlanName) return null;
 
     // Return monthly plan by default
-    return PRICING_PLANS.find(p =>
-      p.name === recommendedPlanName && p.interval === 'month'
-    ) || null;
+    return (
+      PRICING_PLANS.find(
+        p => p.name === recommendedPlanName && p.interval === 'month'
+      ) || null
+    );
   }
 }

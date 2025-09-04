@@ -3,193 +3,201 @@
  * Manages personality modes and response generation
  */
 
-export type SofiaMode = 'empathetic' | 'pragmatic' | 'balanced'
+export type SofiaMode = 'balanced' | 'empathetic' | 'pragmatic';
 
 export interface SofiaResponse {
-  text: string
-  emotion: 'happy' | 'concerned' | 'encouraging' | 'neutral' | 'proud'
-  suggestions?: string[]
-  animation?: 'flutter' | 'glow' | 'dance' | 'still'
+  animation?: 'dance' | 'flutter' | 'glow' | 'still';
+  emotion: 'concerned' | 'encouraging' | 'happy' | 'neutral' | 'proud';
+  suggestions?: string[];
+  text: string;
 }
 
 export interface UserContext {
-  name?: string
-  documentsCreated?: number
-  lastActivity?: Date
-  milestones?: string[]
-  mood?: 'positive' | 'neutral' | 'stressed'
+  documentsCreated?: number;
+  lastActivity?: Date;
+  milestones?: string[];
+  mood?: 'neutral' | 'positive' | 'stressed';
+  name?: string;
 }
 
 export class TextManager {
-  private mode: SofiaMode = 'balanced'
-  private responseHistory: SofiaResponse[] = []
+  private mode: SofiaMode = 'balanced';
+  private responseHistory: SofiaResponse[] = [];
 
   constructor(initialMode?: SofiaMode) {
     if (initialMode) {
-      this.mode = initialMode
+      this.mode = initialMode;
     }
   }
 
   setMode(mode: SofiaMode): void {
-    this.mode = mode
+    this.mode = mode;
   }
 
   getMode(): SofiaMode {
-    return this.mode
+    return this.mode;
   }
 
   generateGreeting(context: UserContext): SofiaResponse {
-    const { name, documentsCreated = 0, lastActivity } = context
+    const { name, documentsCreated = 0, lastActivity } = context;
 
-    let text = ''
-    let emotion: SofiaResponse['emotion'] = 'happy'
-    let animation: SofiaResponse['animation'] = 'flutter'
+    let text = '';
+    let emotion: SofiaResponse['emotion'] = 'happy';
+    let animation: SofiaResponse['animation'] = 'flutter';
 
     const daysSinceLastActivity = lastActivity
-      ? Math.floor((Date.now() - lastActivity.getTime()) / (1000 * 60 * 60 * 24))
-      : null
+      ? Math.floor(
+          (Date.now() - lastActivity.getTime()) / (1000 * 60 * 60 * 24)
+        )
+      : null;
 
     switch (this.mode) {
       case 'empathetic':
         if (daysSinceLastActivity && daysSinceLastActivity > 7) {
-          text = `Welcome back, ${name || 'dear friend'}! I've missed you. Your legacy garden has been waiting patiently for your return. 🌱`
-          emotion = 'concerned'
-          animation = 'glow'
+          text = `Welcome back, ${name || 'dear friend'}! I've missed you. Your legacy garden has been waiting patiently for your return. 🌱`;
+          emotion = 'concerned';
+          animation = 'glow';
         } else {
-          text = `Hello ${name || 'there'}! It's wonderful to see you. How are you feeling today? Your legacy deserves your best energy. ✨`
-          emotion = 'happy'
-          animation = 'dance'
+          text = `Hello ${name || 'there'}! It's wonderful to see you. How are you feeling today? Your legacy deserves your best energy. ✨`;
+          emotion = 'happy';
+          animation = 'dance';
         }
-        break
+        break;
 
       case 'pragmatic':
-        text = `Welcome, ${name || 'User'}. You have ${documentsCreated} documents. Let's get to work on securing your legacy.`
-        emotion = 'neutral'
-        animation = 'still'
-        break
+        text = `Welcome, ${name || 'User'}. You have ${documentsCreated} documents. Let's get to work on securing your legacy.`;
+        emotion = 'neutral';
+        animation = 'still';
+        break;
 
       case 'balanced':
       default:
-        text = `Welcome back, ${name || 'friend'}! Your legacy garden has ${documentsCreated} documents growing. Ready to plant something new today? 🌿`
-        emotion = 'encouraging'
-        animation = 'flutter'
-        break
+        text = `Welcome back, ${name || 'friend'}! Your legacy garden has ${documentsCreated} documents growing. Ready to plant something new today? 🌿`;
+        emotion = 'encouraging';
+        animation = 'flutter';
+        break;
     }
 
     const response: SofiaResponse = {
       text,
       emotion,
       animation,
-      suggestions: this.generateSuggestions(context)
-    }
+      suggestions: this.generateSuggestions(context),
+    };
 
-    this.responseHistory.push(response)
-    return response
+    this.responseHistory.push(response);
+    return response;
   }
 
-  generateMilestoneMessage(milestone: string, context: UserContext): SofiaResponse {
-    let text = ''
-    let emotion: SofiaResponse['emotion'] = 'proud'
+  generateMilestoneMessage(
+    milestone: string,
+    context: UserContext
+  ): SofiaResponse {
+    let text = '';
+    let emotion: SofiaResponse['emotion'] = 'proud';
 
     switch (this.mode) {
       case 'empathetic':
-        text = `🎉 This is amazing, ${context.name || 'dear one'}! You've reached "${milestone}"! I'm so proud of how far you've come. Your loved ones will cherish this forever.`
-        break
+        text = `🎉 This is amazing, ${context.name || 'dear one'}! You've reached "${milestone}"! I'm so proud of how far you've come. Your loved ones will cherish this forever.`;
+        break;
 
       case 'pragmatic':
-        text = `Milestone achieved: "${milestone}". Excellent progress. Your legacy is ${Math.round(((context.documentsCreated || 0) / 10) * 100)}% more secure.`
-        emotion = 'neutral'
-        break
+        text = `Milestone achieved: "${milestone}". Excellent progress. Your legacy is ${Math.round(((context.documentsCreated || 0) / 10) * 100)}% more secure.`;
+        emotion = 'neutral';
+        break;
 
       case 'balanced':
       default:
-        text = `🌟 Congratulations on reaching "${milestone}"! This is a significant step in securing your legacy. Well done!`
-        break
+        text = `🌟 Congratulations on reaching "${milestone}"! This is a significant step in securing your legacy. Well done!`;
+        break;
     }
 
     return {
       text,
       emotion,
-      animation: 'dance'
-    }
+      animation: 'dance',
+    };
   }
 
   generateEncouragement(_context: UserContext): SofiaResponse {
     const encouragements = {
       empathetic: [
-        "Remember, every document you create is a gift of love to those who matter most. 💝",
-        "Your story is unique and precious. Take your time to tell it right. 🦋",
-        "I believe in you! Your legacy will bring comfort and guidance to many. 🌸"
+        'Remember, every document you create is a gift of love to those who matter most. 💝',
+        'Your story is unique and precious. Take your time to tell it right. 🦋',
+        'I believe in you! Your legacy will bring comfort and guidance to many. 🌸',
       ],
       pragmatic: [
-        "Consistent progress yields the best results. Consider setting a weekly goal.",
-        "Data shows that users who create 3+ documents are 80% more satisfied with their legacy planning.",
-        "Time invested now saves 10x the effort for your beneficiaries later."
+        'Consistent progress yields the best results. Consider setting a weekly goal.',
+        'Data shows that users who create 3+ documents are 80% more satisfied with their legacy planning.',
+        'Time invested now saves 10x the effort for your beneficiaries later.',
       ],
       balanced: [
         "You're making great progress! Every step counts toward a complete legacy. 🌱",
-        "Your dedication to this process is admirable. Keep going! ⭐",
-        "Small steps lead to big achievements. You're doing wonderfully! 🎯"
-      ]
-    }
+        'Your dedication to this process is admirable. Keep going! ⭐',
+        "Small steps lead to big achievements. You're doing wonderfully! 🎯",
+      ],
+    };
 
-    const modeEncouragements = encouragements[this.mode]
-    const text = modeEncouragements[Math.floor(Math.random() * modeEncouragements.length)]
+    const modeEncouragements = encouragements[this.mode];
+    const text =
+      modeEncouragements[Math.floor(Math.random() * modeEncouragements.length)] || '';
 
     return {
       text,
       emotion: 'encouraging',
-      animation: 'glow'
-    }
+      animation: 'glow',
+    };
   }
 
   generateError(errorType: string): SofiaResponse {
-    let text = ''
+    let text = '';
 
     switch (this.mode) {
       case 'empathetic':
-        text = "Oh dear, something went wrong. Don't worry, we'll figure this out together. 🤗"
-        break
+        text =
+          "Oh dear, something went wrong. Don't worry, we'll figure this out together. 🤗";
+        break;
       case 'pragmatic':
-        text = `Error: ${errorType}. Please try again or contact support if the issue persists.`
-        break
+        text = `Error: ${errorType}. Please try again or contact support if the issue persists.`;
+        break;
       case 'balanced':
       default:
-        text = "Oops! Something didn't work as expected. Let's try that again. 🔄"
-        break
+        text =
+          "Oops! Something didn't work as expected. Let's try that again. 🔄";
+        break;
     }
 
     return {
       text,
       emotion: 'concerned',
-      animation: 'still'
-    }
+      animation: 'still',
+    };
   }
 
   private generateSuggestions(context: UserContext): string[] {
-    const suggestions: string[] = []
+    const suggestions: string[] = [];
 
     if (!context.documentsCreated || context.documentsCreated === 0) {
-      suggestions.push("Create your first will document")
-      suggestions.push("Add emergency contacts")
+      suggestions.push('Create your first will document');
+      suggestions.push('Add emergency contacts');
     } else if (context.documentsCreated < 3) {
-      suggestions.push("Add healthcare directives")
-      suggestions.push("Document your digital assets")
+      suggestions.push('Add healthcare directives');
+      suggestions.push('Document your digital assets');
     } else {
-      suggestions.push("Review and update existing documents")
-      suggestions.push("Share access with trusted contacts")
+      suggestions.push('Review and update existing documents');
+      suggestions.push('Share access with trusted contacts');
     }
 
-    return suggestions
+    return suggestions;
   }
 
   getResponseHistory(): SofiaResponse[] {
-    return this.responseHistory
+    return this.responseHistory;
   }
 
   clearHistory(): void {
-    this.responseHistory = []
+    this.responseHistory = [];
   }
 }
 
-export const createTextManager = (mode?: SofiaMode) => new TextManager(mode)
+export const createTextManager = (mode?: SofiaMode) => new TextManager(mode);

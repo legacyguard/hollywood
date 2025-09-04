@@ -1,26 +1,23 @@
 // Form Field Components
 export {
   FormField,
-  FormInput,
-  FormTextArea,
   type FormFieldProps,
+  FormInput,
   type FormInputProps,
-  type FormTextAreaProps
-} from './FormField'
-
-// Form Select Component
-export {
-  FormSelect,
-  type FormSelectProps
-} from './FormSelect'
+  FormTextArea,
+  type FormTextAreaProps,
+} from './FormField';
 
 // Form Section Components
 export {
-  FormSection,
   FormRow,
+  type FormRowProps,
+  FormSection,
   type FormSectionProps,
-  type FormRowProps
-} from './FormSection'
+} from './FormSection';
+
+// Form Select Component
+export { FormSelect, type FormSelectProps } from './FormSelect';
 
 // Re-export validation utilities if needed
 export const ValidationPatterns = {
@@ -30,38 +27,38 @@ export const ValidationPatterns = {
   url: /^https?:\/\/.+\..+/,
   alphanumeric: /^[a-zA-Z0-9]+$/,
   numeric: /^\d+$/,
-}
+};
 
 // Helper function for form validation
 export const validateField = (
   value: string,
   rules: {
-    required?: boolean
-    minLength?: number
-    maxLength?: number
-    pattern?: RegExp
-    custom?: (value: string) => string | undefined
+    custom?: (value: string) => string | undefined;
+    maxLength?: number;
+    minLength?: number;
+    pattern?: RegExp;
+    required?: boolean;
   }
 ): string | undefined => {
   if (rules.required && !value.trim()) {
-    return 'This field is required'
+    return 'This field is required';
   }
 
   if (rules.minLength && value.length < rules.minLength) {
-    return `Must be at least ${rules.minLength} characters`
+    return `Must be at least ${rules.minLength} characters`;
   }
 
   if (rules.maxLength && value.length > rules.maxLength) {
-    return `Must be no more than ${rules.maxLength} characters`
+    return `Must be no more than ${rules.maxLength} characters`;
   }
 
   if (rules.pattern && !rules.pattern.test(value)) {
-    return 'Invalid format'
+    return 'Invalid format';
   }
 
   if (rules.custom) {
-    return rules.custom(value)
+    return rules.custom(value);
   }
 
-  return undefined
-}
+  return undefined;
+};

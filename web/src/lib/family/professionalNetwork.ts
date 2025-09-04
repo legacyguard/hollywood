@@ -4,596 +4,607 @@
  */
 
 export interface Professional {
-  id: string;
-  type: ProfessionalType;
-  name: string;
-  firm?: string;
+  availability: Availability;
+  contact: ProfessionalContact;
   credentials: Credential[];
-  specializations: Specialization[];
+  firm?: string;
+  id: string;
+  integrationLevel: IntegrationLevel;
+  joinedAt: string;
   jurisdictions: string[];
   languages: string[];
-  contact: ProfessionalContact;
-  profile: ProfessionalProfile;
-  availability: Availability;
-  pricing: PricingInfo;
-  ratings: Rating[];
-  verificationStatus: VerificationStatus;
-  preferences: ProfessionalPreferences;
-  integrationLevel: IntegrationLevel;
   lastActive: string;
-  joinedAt: string;
+  name: string;
+  preferences: ProfessionalPreferences;
+  pricing: PricingInfo;
+  profile: ProfessionalProfile;
+  ratings: Rating[];
+  specializations: Specialization[];
+  type: ProfessionalType;
+  verificationStatus: VerificationStatus;
 }
 
 export interface ProfessionalRequest {
-  id: string;
-  userId: string;
-  requestType: RequestType;
-  urgency: 'immediate' | 'within_week' | 'within_month' | 'flexible';
-  description: string;
-  serviceNeeded: ServiceType[];
-  preferredProfessionals: string[]; // Professional IDs
   budget?: BudgetRange;
-  timeline: string;
-  documents: string[]; // Relevant document IDs
-  location: RequestLocation;
   communicationPreferences: CommunicationPreference[];
-  status: RequestStatus;
-  responses: ProfessionalResponse[];
-  selectedProfessional?: string;
-  scheduledConsultation?: Consultation;
   createdAt: string;
+  description: string;
+  documents: string[]; // Relevant document IDs
+  id: string;
+  location: RequestLocation;
+  preferredProfessionals: string[]; // Professional IDs
+  requestType: RequestType;
+  responses: ProfessionalResponse[];
+  scheduledConsultation?: Consultation;
+  selectedProfessional?: string;
+  serviceNeeded: ServiceType[];
+  status: RequestStatus;
+  timeline: string;
   updatedAt: string;
+  urgency: 'flexible' | 'immediate' | 'within_month' | 'within_week';
+  userId: string;
 }
 
 export interface ProfessionalResponse {
+  approach: string;
+  attachments: string[];
+  available: boolean;
   id: string;
   professionalId: string;
-  requestId: string;
-  available: boolean;
-  proposedTimeline: string;
   proposedCost: CostProposal;
-  approach: string;
+  proposedTimeline: string;
   qualifications: string;
   questions: string[];
-  attachments: string[];
+  requestId: string;
   responseTime: string; // Time to respond
   submittedAt: string;
 }
 
 export interface Consultation {
-  id: string;
-  professionalId: string;
-  userId: string;
-  type: ConsultationType;
-  topic: string;
-  scheduledAt: string;
-  duration: number; // minutes
-  format: ConsultationFormat;
-  location?: ConsultationLocation;
   agenda: string[];
-  preparation: PreparationItem[];
   cost: number;
-  status: ConsultationStatus;
+  createdAt: string;
+  documents: string[];
+  duration: number; // minutes
+  followUp?: FollowUpItem[];
+  format: ConsultationFormat;
+  id: string;
+  location?: ConsultationLocation;
   notes?: ConsultationNotes;
   outcomes?: ConsultationOutcome[];
-  followUp?: FollowUpItem[];
+  preparation: PreparationItem[];
+  professionalId: string;
   recording?: RecordingInfo;
-  documents: string[];
-  createdAt: string;
+  scheduledAt: string;
+  status: ConsultationStatus;
+  topic: string;
+  type: ConsultationType;
+  userId: string;
 }
 
 export interface ConflictResolution {
-  id: string;
-  familyId: string;
-  type: ConflictType;
-  title: string;
-  description: string;
-  parties: ConflictParty[];
-  issues: ConflictIssue[];
-  status: ConflictStatus;
-  mediator?: MediatorInfo;
-  resolution: ResolutionProcess;
-  timeline: ConflictTimeline[];
-  documents: string[];
   agreements: Agreement[];
-  escalation?: EscalationPath;
   confidentiality: ConfidentialitySettings;
   createdAt: string;
+  description: string;
+  documents: string[];
+  escalation?: EscalationPath;
+  familyId: string;
+  id: string;
+  issues: ConflictIssue[];
+  mediator?: MediatorInfo;
+  parties: ConflictParty[];
+  resolution: ResolutionProcess;
   resolvedAt?: string;
+  status: ConflictStatus;
+  timeline: ConflictTimeline[];
+  title: string;
+  type: ConflictType;
 }
 
 export interface FamilyMediation {
-  id: string;
+  agreements: PartialAgreement[];
+  confidentiality: boolean;
   conflictId: string;
-  mediatorId: string;
-  participants: MediationParticipant[];
-  sessions: MediationSession[];
+  cost: MediationCost;
+  finalAgreement?: FinalAgreement;
   framework: MediationFramework;
   groundRules: GroundRule[];
+  id: string;
+  mediatorId: string;
+  participants: MediationParticipant[];
   progress: MediationProgress;
-  agreements: PartialAgreement[];
-  finalAgreement?: FinalAgreement;
-  cost: MediationCost;
-  confidentiality: boolean;
+  sessions: MediationSession[];
   status: MediationStatus;
 }
 
 export type ProfessionalType =
+  | 'appraiser'
+  | 'business_attorney'
+  | 'cpa'
+  | 'elder_law_attorney'
   | 'estate_attorney'
-  | 'tax_attorney'
+  | 'family_mediator'
+  | 'financial_advisor'
   | 'financial_planner'
   | 'insurance_agent'
-  | 'cpa'
-  | 'trust_officer'
-  | 'family_mediator'
-  | 'appraiser'
   | 'notary'
-  | 'financial_advisor'
-  | 'elder_law_attorney'
-  | 'business_attorney'
-  | 'real_estate_attorney';
+  | 'real_estate_attorney'
+  | 'tax_attorney'
+  | 'trust_officer';
 
 export type ServiceType =
-  | 'will_drafting'
-  | 'trust_creation'
-  | 'estate_planning'
-  | 'tax_planning'
-  | 'business_succession'
   | 'asset_protection'
+  | 'business_succession'
+  | 'consultation'
+  | 'document_review'
   | 'elder_care'
-  | 'probate'
+  | 'estate_planning'
   | 'guardianship'
   | 'mediation'
-  | 'document_review'
-  | 'consultation'
-  | 'ongoing_management';
+  | 'ongoing_management'
+  | 'probate'
+  | 'tax_planning'
+  | 'trust_creation'
+  | 'will_drafting';
 
 export type RequestType =
   | 'consultation'
   | 'document_preparation'
-  | 'review'
-  | 'ongoing_service'
   | 'emergency'
-  | 'second_opinion'
   | 'mediation'
-  | 'representation';
+  | 'ongoing_service'
+  | 'representation'
+  | 'review'
+  | 'second_opinion';
 
 export type ConsultationType =
-  | 'initial'
-  | 'follow_up'
-  | 'document_review'
-  | 'strategy_planning'
+  | 'annual_review'
   | 'crisis_management'
+  | 'document_review'
+  | 'follow_up'
+  | 'initial'
   | 'mediation'
-  | 'annual_review';
+  | 'strategy_planning';
 
 export type ConsultationFormat =
-  | 'in_person'
-  | 'video_call'
-  | 'phone_call'
   | 'document_review'
-  | 'email_consultation';
+  | 'email_consultation'
+  | 'in_person'
+  | 'phone_call'
+  | 'video_call';
 
 export type ConflictType =
-  | 'inheritance_dispute'
-  | 'executor_disagreement'
-  | 'guardianship_conflict'
-  | 'beneficiary_dispute'
   | 'asset_division'
+  | 'beneficiary_dispute'
   | 'care_decisions'
-  | 'financial_management'
+  | 'executor_disagreement'
   | 'family_business'
+  | 'financial_management'
+  | 'guardianship_conflict'
+  | 'inheritance_dispute'
   | 'trust_administration';
 
 export type ConflictStatus =
-  | 'reported'
-  | 'mediation_requested'
-  | 'in_mediation'
-  | 'mediation_failed'
-  | 'resolved'
   | 'escalated'
-  | 'legal_action';
+  | 'in_mediation'
+  | 'legal_action'
+  | 'mediation_failed'
+  | 'mediation_requested'
+  | 'reported'
+  | 'resolved';
 
 export type MediationStatus =
-  | 'scheduled'
-  | 'in_progress'
-  | 'completed'
-  | 'terminated'
+  | 'agreement_failed'
   | 'agreement_reached'
-  | 'agreement_failed';
+  | 'completed'
+  | 'in_progress'
+  | 'scheduled'
+  | 'terminated';
 
 export type RequestStatus =
-  | 'open'
-  | 'responses_received'
-  | 'professional_selected'
+  | 'cancelled'
+  | 'completed'
   | 'consultation_scheduled'
   | 'in_progress'
-  | 'completed'
-  | 'cancelled';
+  | 'open'
+  | 'professional_selected'
+  | 'responses_received';
 
 export type ConsultationStatus =
-  | 'scheduled'
+  | 'cancelled'
+  | 'completed'
   | 'confirmed'
   | 'in_progress'
-  | 'completed'
-  | 'cancelled'
-  | 'rescheduled';
+  | 'rescheduled'
+  | 'scheduled';
 
 export type VerificationStatus =
   | 'pending'
-  | 'verified'
   | 'premium_verified'
+  | 'revoked'
   | 'suspended'
-  | 'revoked';
+  | 'verified';
 
-export type IntegrationLevel =
-  | 'basic'
-  | 'standard'
-  | 'premium'
-  | 'enterprise';
+export type IntegrationLevel = 'basic' | 'enterprise' | 'premium' | 'standard';
 
 interface Credential {
-  type: 'license' | 'certification' | 'degree' | 'membership';
-  name: string;
-  issuingBody: string;
-  number?: string;
-  issuedDate: string;
   expiryDate?: string;
+  issuedDate: string;
+  issuingBody: string;
+  name: string;
+  number?: string;
+  type: 'certification' | 'degree' | 'license' | 'membership';
   verified: boolean;
 }
 
 interface Specialization {
   area: string;
-  yearsExperience: number;
   certifications: string[];
   notableExperience?: string[];
+  yearsExperience: number;
 }
 
 interface ProfessionalContact {
-  email: string;
-  phone: string;
-  website?: string;
-  office: OfficeLocation;
   alternateLocations?: OfficeLocation[];
+  email: string;
+  office: OfficeLocation;
+  phone: string;
   preferredContactMethod: 'email' | 'phone' | 'secure_message';
   responseTime: string;
+  website?: string;
 }
 
 interface OfficeLocation {
+  accessibility: boolean;
   address: string;
   city: string;
+  coordinates?: { lat: number; lng: number };
+  country: string;
+  parking: boolean;
   state: string;
   zipCode: string;
-  country: string;
-  coordinates?: { lat: number; lng: number };
-  accessibility: boolean;
-  parking: boolean;
 }
 
 interface ProfessionalProfile {
+  approachPhilosophy: string;
+  awards?: Award[];
   bio: string;
+  clientTypes: string[];
   education: Education[];
   experience: Experience[];
-  clientTypes: string[];
-  approachPhilosophy: string;
   languagesSpoken: string[];
-  awards?: Award[];
-  publications?: Publication[];
   mediaAppearances?: MediaAppearance[];
+  publications?: Publication[];
 }
 
 interface Education {
   degree: string;
-  institution: string;
   graduationYear: number;
   honors?: string;
+  institution: string;
 }
 
 interface Experience {
-  position: string;
-  organization: string;
-  startDate: string;
-  endDate?: string;
-  description: string;
   achievements: string[];
+  description: string;
+  endDate?: string;
+  organization: string;
+  position: string;
+  startDate: string;
 }
 
 interface Award {
-  name: string;
-  issuingOrganization: string;
-  year: number;
   description?: string;
+  issuingOrganization: string;
+  name: string;
+  year: number;
 }
 
 interface Publication {
-  title: string;
-  type: 'book' | 'article' | 'blog' | 'research';
-  publisher: string;
   publishDate: string;
+  publisher: string;
+  title: string;
+  type: 'article' | 'blog' | 'book' | 'research';
   url?: string;
 }
 
 interface MediaAppearance {
-  title: string;
-  outlet: string;
   date: string;
-  type: 'interview' | 'article' | 'podcast' | 'tv' | 'radio';
+  outlet: string;
+  title: string;
   topic: string;
+  type: 'article' | 'interview' | 'podcast' | 'radio' | 'tv';
 }
 
 interface Availability {
-  timezone: string;
-  businessHours: BusinessHours;
-  emergencyAvailable: boolean;
-  weekendsAvailable: boolean;
   advanceNoticeRequired: string;
-  maxCapacity: number;
+  businessHours: BusinessHours;
   currentLoad: number;
+  emergencyAvailable: boolean;
+  maxCapacity: number;
+  timezone: string;
+  weekendsAvailable: boolean;
 }
 
 interface BusinessHours {
-  monday?: { start: string; end: string };
-  tuesday?: { start: string; end: string };
-  wednesday?: { start: string; end: string };
-  thursday?: { start: string; end: string };
-  friday?: { start: string; end: string };
-  saturday?: { start: string; end: string };
-  sunday?: { start: string; end: string };
+  friday?: { end: string; start: string };
+  monday?: { end: string; start: string };
+  saturday?: { end: string; start: string };
+  sunday?: { end: string; start: string };
+  thursday?: { end: string; start: string };
+  tuesday?: { end: string; start: string };
+  wednesday?: { end: string; start: string };
 }
 
 interface PricingInfo {
-  consultationFee: number;
-  hourlyRate?: number;
-  flatFees?: FlatFeeService[];
-  retainerRequired?: RetainerInfo;
-  paymentMethods: string[];
   cancellationPolicy: string;
+  consultationFee: number;
   currency: string;
+  flatFees?: FlatFeeService[];
+  hourlyRate?: number;
+  paymentMethods: string[];
+  retainerRequired?: RetainerInfo;
 }
 
 interface FlatFeeService {
-  service: ServiceType;
-  price: number;
   description: string;
   includes: string[];
+  price: number;
+  service: ServiceType;
   timeline: string;
 }
 
 interface RetainerInfo {
   amount: number;
-  refundable: boolean;
   applies_to: ServiceType[];
+  refundable: boolean;
 }
 
 interface Rating {
-  userId: string;
+  consultationDate: string;
+  createdAt: string;
+  helpful: number; // Helpful votes
   rating: number; // 1-5
   review?: string;
   serviceType: ServiceType;
-  consultationDate: string;
+  userId: string;
   verified: boolean;
-  helpful: number; // Helpful votes
-  createdAt: string;
 }
 
 interface ProfessionalPreferences {
   caseTypes: ServiceType[];
-  communicationStyle: 'formal' | 'casual' | 'adaptive';
   clientCapacity: number;
-  travelWillingness: number; // miles
-  remoteConsultations: boolean;
+  communicationStyle: 'adaptive' | 'casual' | 'formal';
   emergencyAvailable: boolean;
+  remoteConsultations: boolean;
+  travelWillingness: number; // miles
 }
 
 interface BudgetRange {
-  min: number;
-  max: number;
   currency: string;
+  max: number;
+  min: number;
   negotiable: boolean;
 }
 
 interface RequestLocation {
-  type: 'in_person' | 'remote' | 'flexible';
   address?: string;
   maxDistance?: number; // miles
   preferredLocations?: string[];
+  type: 'flexible' | 'in_person' | 'remote';
 }
 
 interface CommunicationPreference {
-  method: 'email' | 'phone' | 'video' | 'in_person' | 'secure_message';
+  method: 'email' | 'in_person' | 'phone' | 'secure_message' | 'video';
   priority: number;
 }
 
 interface CostProposal {
+  billing: BillingStructure;
   consultationFee: number;
   estimatedTotal?: number;
-  hourlyRate?: number;
   flatFee?: number;
-  retainer?: number;
-  billing: BillingStructure;
+  hourlyRate?: number;
   paymentTerms: string;
+  retainer?: number;
 }
 
 interface BillingStructure {
-  method: 'hourly' | 'flat_fee' | 'retainer' | 'contingency' | 'hybrid';
   details: string;
+  method: 'contingency' | 'flat_fee' | 'hourly' | 'hybrid' | 'retainer';
   milestones?: BillingMilestone[];
 }
 
 interface BillingMilestone {
-  description: string;
   amount: number;
+  description: string;
   dueDate: string;
 }
 
 interface ConsultationLocation {
-  type: 'professional_office' | 'client_location' | 'neutral_location' | 'remote';
   address?: string;
   specialInstructions?: string;
+  type:
+    | 'client_location'
+    | 'neutral_location'
+    | 'professional_office'
+    | 'remote';
 }
 
 interface PreparationItem {
-  item: string;
-  required: boolean;
   description?: string;
   dueDate?: string;
+  item: string;
+  required: boolean;
 }
 
 interface ConsultationNotes {
-  professionalNotes: string;
+  actionItems: ActionItem[];
   clientNotes: string;
   keyPoints: string[];
-  actionItems: ActionItem[];
   nextSteps: string[];
+  professionalNotes: string;
 }
 
 interface ConsultationOutcome {
-  type: 'recommendation' | 'action_item' | 'follow_up' | 'referral';
   description: string;
-  priority: 'high' | 'medium' | 'low';
   dueDate?: string;
-  responsible: 'client' | 'professional' | 'both';
+  priority: 'high' | 'low' | 'medium';
+  responsible: 'both' | 'client' | 'professional';
+  type: 'action_item' | 'follow_up' | 'recommendation' | 'referral';
 }
 
 interface FollowUpItem {
-  description: string;
-  dueDate: string;
-  type: 'call' | 'email' | 'meeting' | 'document' | 'task';
   completed: boolean;
   completedAt?: string;
+  description: string;
+  dueDate: string;
+  type: 'call' | 'document' | 'email' | 'meeting' | 'task';
 }
 
 interface RecordingInfo {
   available: boolean;
   consent: boolean[];
-  url?: string;
   duration?: number;
   transcript?: string;
+  url?: string;
 }
 
 interface ActionItem {
-  description: string;
-  responsible: 'client' | 'professional';
-  dueDate?: string;
-  priority: 'high' | 'medium' | 'low';
   completed: boolean;
+  description: string;
+  dueDate?: string;
+  priority: 'high' | 'low' | 'medium';
+  responsible: 'client' | 'professional';
 }
 
 interface ConflictParty {
-  id: string;
-  name: string;
-  role: 'family_member' | 'beneficiary' | 'executor' | 'trustee' | 'guardian' | 'other';
-  relationship: string;
-  position: string;
-  represented: boolean;
   attorney?: string;
   contactInfo: ContactInfo;
+  id: string;
+  name: string;
+  position: string;
+  relationship: string;
+  represented: boolean;
+  role:
+    | 'beneficiary'
+    | 'executor'
+    | 'family_member'
+    | 'guardian'
+    | 'other'
+    | 'trustee';
 }
 
 interface ConflictIssue {
-  id: string;
-  type: string;
-  description: string;
-  priority: 'critical' | 'high' | 'medium' | 'low';
-  positions: PartyPosition[];
   assets?: string[];
+  description: string;
+  id: string;
   legalBasis?: string[];
+  positions: PartyPosition[];
   precedents?: string[];
+  priority: 'critical' | 'high' | 'low' | 'medium';
+  type: string;
 }
 
 interface PartyPosition {
+  evidence?: string[];
+  flexibility: 'rigid' | 'somewhat_flexible' | 'very_flexible';
   partyId: string;
   position: string;
   reasoning: string;
-  evidence?: string[];
-  flexibility: 'rigid' | 'somewhat_flexible' | 'very_flexible';
 }
 
 interface MediatorInfo {
-  id: string;
-  name: string;
-  credentials: Credential[];
-  specializations: string[];
   approach: string;
+  availability: string;
+  credentials: Credential[];
   experience: string;
   fee: number;
-  availability: string;
+  id: string;
+  name: string;
+  specializations: string[];
 }
 
 interface ResolutionProcess {
-  approach: 'direct_negotiation' | 'mediation' | 'arbitration' | 'collaborative' | 'litigation';
+  approach:
+    | 'arbitration'
+    | 'collaborative'
+    | 'direct_negotiation'
+    | 'litigation'
+    | 'mediation';
+  cost: ResolutionCost;
   currentStage: string;
   stages: ResolutionStage[];
   timeline: string;
-  cost: ResolutionCost;
 }
 
 interface ResolutionStage {
-  name: string;
+  completed: boolean;
   description: string;
   duration: string;
-  completed: boolean;
+  name: string;
   outcomes: string[];
 }
 
 interface ResolutionCost {
-  estimated: number;
   actual?: number;
   breakdown: CostBreakdown[];
+  estimated: number;
   paymentResponsibility: PaymentResponsibility[];
 }
 
 interface CostBreakdown {
-  category: string;
   amount: number;
+  category: string;
   description: string;
 }
 
 interface PaymentResponsibility {
+  amount: number;
   partyId: string;
   percentage: number;
-  amount: number;
 }
 
 interface ConflictTimeline {
   date: string;
-  event: string;
   description: string;
-  participants: string[];
-  outcome?: string;
+  event: string;
   nextSteps?: string[];
+  outcome?: string;
+  participants: string[];
 }
 
 interface Agreement {
-  type: 'partial' | 'final';
-  title: string;
-  terms: AgreementTerm[];
-  signatures: AgreementSignature[];
+  conditions?: string[];
   effectiveDate: string;
   enforceable: boolean;
-  conditions?: string[];
+  signatures: AgreementSignature[];
+  terms: AgreementTerm[];
+  title: string;
+  type: 'final' | 'partial';
 }
 
 interface AgreementTerm {
   category: string;
+  consequences?: string[];
+  deadline?: string;
   description: string;
   partyObligations: PartyObligation[];
-  deadline?: string;
-  consequences?: string[];
 }
 
 interface PartyObligation {
-  partyId: string;
-  obligation: string;
-  deadline?: string;
   completed: boolean;
+  deadline?: string;
+  obligation: string;
+  partyId: string;
 }
 
 interface AgreementSignature {
+  notarized: boolean;
   partyId: string;
   signedAt: string;
   witnessedBy?: string;
-  notarized: boolean;
 }
 
 interface EscalationPath {
@@ -603,158 +614,158 @@ interface EscalationPath {
 }
 
 interface EscalationLevel {
-  level: number;
-  process: 'mediation' | 'arbitration' | 'litigation';
-  description: string;
   cost: number;
+  description: string;
+  level: number;
+  process: 'arbitration' | 'litigation' | 'mediation';
   timeline: string;
 }
 
 interface EscalationTrigger {
-  condition: string;
   action: string;
+  condition: string;
   timeline: string;
 }
 
 interface ConfidentialitySettings {
-  level: 'open' | 'family_only' | 'parties_only' | 'professionals_only';
-  restrictions: string[];
-  exceptions: string[];
   duration: string;
+  exceptions: string[];
+  level: 'family_only' | 'open' | 'parties_only' | 'professionals_only';
+  restrictions: string[];
 }
 
 interface MediationParticipant {
-  partyId: string;
-  role: 'primary' | 'support' | 'observer' | 'advisor';
-  required: boolean;
   availability: string[];
+  partyId: string;
+  required: boolean;
+  role: 'advisor' | 'observer' | 'primary' | 'support';
 }
 
 interface MediationSession {
-  id: string;
-  number: number;
-  scheduledAt: string;
-  duration: number;
-  participants: string[];
   agenda: string[];
-  outcomes: SessionOutcome[];
   agreements: string[];
+  duration: number;
+  id: string;
   nextSession?: string;
   notes: string;
+  number: number;
+  outcomes: SessionOutcome[];
+  participants: string[];
   recording?: boolean;
+  scheduledAt: string;
 }
 
 interface SessionOutcome {
-  type: 'agreement' | 'compromise' | 'impasse' | 'progress' | 'escalation';
   description: string;
-  parties: string[];
   nextSteps: string[];
+  parties: string[];
+  type: 'agreement' | 'compromise' | 'escalation' | 'impasse' | 'progress';
 }
 
 interface MediationFramework {
-  model: 'facilitative' | 'evaluative' | 'transformative' | 'hybrid';
+  model: 'evaluative' | 'facilitative' | 'hybrid' | 'transformative';
   phases: MediationPhase[];
-  timeLimit: string;
   successMetrics: string[];
+  timeLimit: string;
 }
 
 interface MediationPhase {
-  name: string;
+  activities: string[];
   description: string;
   duration: string;
+  name: string;
   objectives: string[];
-  activities: string[];
 }
 
 interface GroundRule {
-  rule: string;
-  rationale: string;
-  enforcement: string;
   agreed: boolean;
+  enforcement: string;
+  rationale: string;
+  rule: string;
 }
 
 interface MediationProgress {
-  phase: string;
-  percentComplete: number;
-  issuesResolved: number;
-  issuesRemaining: number;
-  momentum: 'positive' | 'neutral' | 'negative';
   concerns: string[];
+  issuesRemaining: number;
+  issuesResolved: number;
+  momentum: 'negative' | 'neutral' | 'positive';
+  percentComplete: number;
+  phase: string;
 }
 
 interface PartialAgreement {
-  issue: string;
   agreement: string;
-  parties: string[];
   conditions?: string[];
+  issue: string;
+  parties: string[];
   temporary: boolean;
 }
 
 interface FinalAgreement {
-  title: string;
-  summary: string;
-  terms: AgreementTerm[];
-  signatures: AgreementSignature[];
   implementation: ImplementationPlan;
   monitoring: MonitoringPlan;
+  signatures: AgreementSignature[];
+  summary: string;
+  terms: AgreementTerm[];
+  title: string;
 }
 
 interface ImplementationPlan {
+  milestones: Milestone[];
+  responsible: string[];
   steps: ImplementationStep[];
   timeline: string;
-  responsible: string[];
-  milestones: Milestone[];
 }
 
 interface ImplementationStep {
-  description: string;
-  responsible: string;
+  completed: boolean;
   deadline: string;
   dependencies?: string[];
-  completed: boolean;
+  description: string;
+  responsible: string;
 }
 
 interface Milestone {
-  name: string;
-  date: string;
-  criteria: string[];
   achieved: boolean;
+  criteria: string[];
+  date: string;
+  name: string;
 }
 
 interface MonitoringPlan {
   frequency: string;
-  reviewers: string[];
   metrics: string[];
   reporting: ReportingRequirement[];
+  reviewers: string[];
 }
 
 interface ReportingRequirement {
+  format: string;
   what: string;
   when: string;
   who: string;
-  format: string;
 }
 
 interface MediationCost {
-  mediatorFee: number;
-  sessionFees: number[];
   administrativeFees: number;
-  total: number;
+  mediatorFee: number;
   paymentSplit: PaymentSplit[];
+  sessionFees: number[];
+  total: number;
 }
 
 interface PaymentSplit {
-  partyId: string;
-  percentage: number;
   amount: number;
   paid: boolean;
+  partyId: string;
+  percentage: number;
 }
 
 interface ContactInfo {
+  address?: string;
   email: string;
   phone: string;
-  address?: string;
-  preferredContact: 'email' | 'phone' | 'mail';
+  preferredContact: 'email' | 'mail' | 'phone';
 }
 
 class ProfessionalNetworkService {
@@ -768,24 +779,33 @@ class ProfessionalNetworkService {
    * Find professionals based on requirements
    */
   async findProfessionals(requirements: {
-    serviceType: ServiceType[];
-    location?: { lat: number; lng: number; radius: number };
-    budget?: BudgetRange;
-    specializations?: string[];
     availability?: string;
+    budget?: BudgetRange;
+    location?: { lat: number; lng: number; radius: number };
     rating?: number;
+    serviceType: ServiceType[];
+    specializations?: string[];
   }): Promise<Professional[]> {
     const allProfessionals = Array.from(this.professionals.values());
 
-    return allProfessionals.filter(professional =>
-      this.matchesCriteria(professional, requirements)
-    ).sort((a, b) => this.calculateRelevanceScore(b, requirements) - this.calculateRelevanceScore(a, requirements));
+    return allProfessionals
+      .filter(professional => this.matchesCriteria(professional, requirements))
+      .sort(
+        (a, b) =>
+          this.calculateRelevanceScore(b, requirements) -
+          this.calculateRelevanceScore(a, requirements)
+      );
   }
 
   /**
    * Submit professional service request
    */
-  async submitRequest(requestData: Omit<ProfessionalRequest, 'id' | 'status' | 'responses' | 'createdAt' | 'updatedAt'>): Promise<ProfessionalRequest> {
+  async submitRequest(
+    requestData: Omit<
+      ProfessionalRequest,
+      'createdAt' | 'id' | 'responses' | 'status' | 'updatedAt'
+    >
+  ): Promise<ProfessionalRequest> {
     const request: ProfessionalRequest = {
       id: this.generateId(),
       status: 'open',
@@ -806,7 +826,9 @@ class ProfessionalNetworkService {
   /**
    * Schedule consultation with professional
    */
-  async scheduleConsultation(consultationData: Omit<Consultation, 'id' | 'status' | 'createdAt'>): Promise<Consultation> {
+  async scheduleConsultation(
+    consultationData: Omit<Consultation, 'createdAt' | 'id' | 'status'>
+  ): Promise<Consultation> {
     const consultation: Consultation = {
       id: this.generateId(),
       status: 'scheduled',
@@ -825,16 +847,23 @@ class ProfessionalNetworkService {
   /**
    * Report family conflict for resolution
    */
-  async reportConflict(conflictData: Omit<ConflictResolution, 'id' | 'status' | 'timeline' | 'createdAt'>): Promise<ConflictResolution> {
+  async reportConflict(
+    conflictData: Omit<
+      ConflictResolution,
+      'createdAt' | 'id' | 'status' | 'timeline'
+    >
+  ): Promise<ConflictResolution> {
     const conflict: ConflictResolution = {
       id: this.generateId(),
       status: 'reported',
-      timeline: [{
-        date: new Date().toISOString(),
-        event: 'Conflict Reported',
-        description: 'Initial conflict report submitted',
-        participants: [conflictData.parties[0]?.id || ''],
-      }],
+      timeline: [
+        {
+          date: new Date().toISOString(),
+          event: 'Conflict Reported',
+          description: 'Initial conflict report submitted',
+          participants: [conflictData.parties[0]?.id || ''],
+        },
+      ],
       createdAt: new Date().toISOString(),
       ...conflictData,
     };
@@ -850,7 +879,10 @@ class ProfessionalNetworkService {
   /**
    * Start mediation process
    */
-  async startMediation(conflictId: string, mediatorId: string): Promise<FamilyMediation> {
+  async startMediation(
+    conflictId: string,
+    mediatorId: string
+  ): Promise<FamilyMediation> {
     const conflict = this.conflicts.get(conflictId);
     if (!conflict) {
       throw new Error('Conflict not found');
@@ -875,25 +907,41 @@ class ProfessionalNetworkService {
             description: 'Establish ground rules and objectives',
             duration: '1 session',
             objectives: ['Set expectations', 'Agree on process'],
-            activities: ['Introductions', 'Ground rules', 'Issue identification'],
+            activities: [
+              'Introductions',
+              'Ground rules',
+              'Issue identification',
+            ],
           },
           {
             name: 'Information Gathering',
             description: 'Collect facts and positions',
             duration: '1-2 sessions',
             objectives: ['Understand positions', 'Identify interests'],
-            activities: ['Position statements', 'Fact gathering', 'Interest exploration'],
+            activities: [
+              'Position statements',
+              'Fact gathering',
+              'Interest exploration',
+            ],
           },
           {
             name: 'Negotiation',
             description: 'Explore solutions and reach agreements',
             duration: '2-4 sessions',
             objectives: ['Generate options', 'Reach agreements'],
-            activities: ['Brainstorming', 'Option evaluation', 'Agreement drafting'],
-          }
+            activities: [
+              'Brainstorming',
+              'Option evaluation',
+              'Agreement drafting',
+            ],
+          },
         ],
         timeLimit: '90 days',
-        successMetrics: ['All issues addressed', 'Signed agreement', 'Relationship preservation'],
+        successMetrics: [
+          'All issues addressed',
+          'Signed agreement',
+          'Relationship preservation',
+        ],
       },
       groundRules: [
         {
@@ -907,7 +955,7 @@ class ProfessionalNetworkService {
           rationale: 'Maintain productive atmosphere',
           enforcement: 'Mediator intervention',
           agreed: false,
-        }
+        },
       ],
       progress: {
         phase: 'Opening',
@@ -955,22 +1003,31 @@ class ProfessionalNetworkService {
   /**
    * Private helper methods
    */
-  private matchesCriteria(professional: Professional, requirements: any): boolean {
+  private matchesCriteria(
+    professional: Professional,
+    requirements: any
+  ): boolean {
     // Service type match
-    const hasServiceType = requirements.serviceType.some((service: ServiceType) =>
-      professional.specializations.some(spec => spec.area.includes(service))
+    const hasServiceType = requirements.serviceType.some(
+      (service: ServiceType) =>
+        professional.specializations.some(spec => spec.area.includes(service))
     );
 
     if (!hasServiceType) return false;
 
     // Budget match
-    if (requirements.budget && professional.pricing.consultationFee > requirements.budget.max) {
+    if (
+      requirements.budget &&
+      professional.pricing.consultationFee > requirements.budget.max
+    ) {
       return false;
     }
 
     // Rating threshold
     if (requirements.rating) {
-      const avgRating = professional.ratings.reduce((sum, r) => sum + r.rating, 0) / professional.ratings.length;
+      const avgRating =
+        professional.ratings.reduce((sum, r) => sum + r.rating, 0) /
+        professional.ratings.length;
       if (avgRating < requirements.rating) return false;
     }
 
@@ -986,36 +1043,48 @@ class ProfessionalNetworkService {
     return true;
   }
 
-  private calculateRelevanceScore(professional: Professional, requirements: any): number {
+  private calculateRelevanceScore(
+    professional: Professional,
+    requirements: any
+  ): number {
     let score = 0;
 
     // Rating weight (30%)
-    const avgRating = professional.ratings.length > 0
-      ? professional.ratings.reduce((sum, r) => sum + r.rating, 0) / professional.ratings.length
-      : 3;
+    const avgRating =
+      professional.ratings.length > 0
+        ? professional.ratings.reduce((sum, r) => sum + r.rating, 0) /
+          professional.ratings.length
+        : 3;
     score += (avgRating / 5) * 30;
 
     // Specialization match weight (40%)
-    const specializationMatch = requirements.serviceType.filter((service: ServiceType) =>
-      professional.specializations.some(spec => spec.area.includes(service))
+    const specializationMatch = requirements.serviceType.filter(
+      (service: ServiceType) =>
+        professional.specializations.some(spec => spec.area.includes(service))
     ).length;
     score += (specializationMatch / requirements.serviceType.length) * 40;
 
     // Availability weight (20%)
-    const isAvailable = professional.availability.currentLoad < professional.availability.maxCapacity;
+    const isAvailable =
+      professional.availability.currentLoad <
+      professional.availability.maxCapacity;
     score += isAvailable ? 20 : 10;
 
     // Verification weight (10%)
-    const verificationBonus = professional.verificationStatus === 'premium_verified' ? 10 :
-                             professional.verificationStatus === 'verified' ? 5 : 0;
+    const verificationBonus =
+      professional.verificationStatus === 'premium_verified'
+        ? 10
+        : professional.verificationStatus === 'verified'
+          ? 5
+          : 0;
     score += verificationBonus;
 
     return score;
   }
 
   private calculateDistance(
-    point1: { lat: number; lng: number } | undefined,
-    point2: { lat: number; lng: number } | undefined
+    point1: undefined | { lat: number; lng: number },
+    point2: undefined | { lat: number; lng: number }
   ): number {
     if (!point1 || !point2) return 0;
 
@@ -1024,11 +1093,14 @@ class ProfessionalNetworkService {
     const dLat = this.degreesToRadians(point2.lat - point1.lat);
     const dLng = this.degreesToRadians(point2.lng - point1.lng);
 
-    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-              Math.cos(this.degreesToRadians(point1.lat)) * Math.cos(this.degreesToRadians(point2.lat)) *
-              Math.sin(dLng/2) * Math.sin(dLng/2);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(this.degreesToRadians(point1.lat)) *
+        Math.cos(this.degreesToRadians(point2.lat)) *
+        Math.sin(dLng / 2) *
+        Math.sin(dLng / 2);
 
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
     return R * c;
   }
@@ -1037,13 +1109,19 @@ class ProfessionalNetworkService {
     return degrees * (Math.PI / 180);
   }
 
-  private async notifyMatchingProfessionals(request: ProfessionalRequest): Promise<void> {
+  private async notifyMatchingProfessionals(
+    request: ProfessionalRequest
+  ): Promise<void> {
     // Find and notify professionals who match the request
-    const matchingProfessionals = Array.from(this.professionals.values()).filter(professional =>
+    const matchingProfessionals = Array.from(
+      this.professionals.values()
+    ).filter(professional =>
       this.matchesCriteria(professional, {
         serviceType: request.serviceNeeded,
-        location: request.location.type === 'in_person' ?
-          { lat: 0, lng: 0, radius: request.location.maxDistance || 50 } : undefined,
+        location:
+          request.location.type === 'in_person'
+            ? { lat: 0, lng: 0, radius: request.location.maxDistance || 50 }
+            : undefined,
       })
     );
 
@@ -1052,12 +1130,19 @@ class ProfessionalNetworkService {
     }
   }
 
-  private async sendProfessionalNotification(professionalId: string, request: ProfessionalRequest): Promise<void> {
+  private async sendProfessionalNotification(
+    professionalId: string,
+    request: ProfessionalRequest
+  ): Promise<void> {
     // Send notification to professional about new request
-    console.log(`Notifying professional ${professionalId} about request ${request.id}`);
+    console.log(
+      `Notifying professional ${professionalId} about request ${request.id}`
+    );
   }
 
-  private async sendConsultationNotifications(consultation: Consultation): Promise<void> {
+  private async sendConsultationNotifications(
+    consultation: Consultation
+  ): Promise<void> {
     // Send calendar invites and reminders
     console.log(`Sending consultation notifications for ${consultation.id}`);
   }
@@ -1075,7 +1160,9 @@ class ProfessionalNetworkService {
     }
   }
 
-  private assessConflictComplexity(conflict: ConflictResolution): 'low' | 'medium' | 'high' {
+  private assessConflictComplexity(
+    conflict: ConflictResolution
+  ): 'high' | 'low' | 'medium' {
     let complexityScore = 0;
 
     // Number of parties
@@ -1085,7 +1172,9 @@ class ProfessionalNetworkService {
     complexityScore += conflict.issues.length > 3 ? 2 : 1;
 
     // Issue severity
-    const hasCriticalIssues = conflict.issues.some(issue => issue.priority === 'critical');
+    const hasCriticalIssues = conflict.issues.some(
+      issue => issue.priority === 'critical'
+    );
     complexityScore += hasCriticalIssues ? 2 : 1;
 
     // Legal representation

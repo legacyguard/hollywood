@@ -7,7 +7,7 @@ test('Debug: Capture console errors and page content', async ({ page }) => {
   page.on('console', msg => {
     consoleMessages.push({
       type: msg.type(),
-      text: msg.text()
+      text: msg.text(),
     });
   });
 
@@ -15,7 +15,7 @@ test('Debug: Capture console errors and page content', async ({ page }) => {
   page.on('pageerror', error => {
     consoleMessages.push({
       type: 'pageerror',
-      text: error.message
+      text: error.message,
     });
   });
 
@@ -28,27 +28,30 @@ test('Debug: Capture console errors and page content', async ({ page }) => {
   // Get page content
   // const htmlContent = await page.content();
   const bodyContent = await page.locator('body').innerHTML();
-  const rootContent = await page.locator('#root').innerHTML().catch(() => 'Root element not found or empty');
+  const rootContent = await page
+    .locator('#root')
+    .innerHTML()
+    .catch(() => 'Root element not found or empty');
 
-      // Print all console messages
-    // console.log('\n=== CONSOLE MESSAGES ===');
-    consoleMessages.forEach(msg => {
-      // console.log(`[${msg.type}] ${msg.text}`);
-    });
+  // Print all console messages
+  // console.log('\n=== CONSOLE MESSAGES ===');
+  consoleMessages.forEach(msg => {
+    // console.log(`[${msg.type}] ${msg.text}`);
+  });
 
-      // console.log('\n=== PAGE DETAILS ===');
-    // console.log('URL:', page.url());
-    // console.log('Title:', await page.title());
-    // console.log('Body length:', bodyContent.length);
-    // console.log('Root content length:', rootContent.length);
+  // console.log('\n=== PAGE DETAILS ===');
+  // console.log('URL:', page.url());
+  // console.log('Title:', await page.title());
+  // console.log('Body length:', bodyContent.length);
+  // console.log('Root content length:', rootContent.length);
 
   if (rootContent.length < 50) {
     // console.log('Root HTML:', rootContent);
   }
 
   // Check for any error indicators
-  const hasErrors = consoleMessages.some(msg =>
-    msg.type === 'error' || msg.type === 'pageerror'
+  const hasErrors = consoleMessages.some(
+    msg => msg.type === 'error' || msg.type === 'pageerror'
   );
 
   if (hasErrors) {
@@ -57,12 +60,15 @@ test('Debug: Capture console errors and page content', async ({ page }) => {
 
   // Take a screenshot for visual inspection
   await page.screenshot({ path: 'debug-screenshot.png', fullPage: true });
-      // console.log('\n📸 Screenshot saved as debug-screenshot.png');
+  // console.log('\n📸 Screenshot saved as debug-screenshot.png');
 
   // Try to find any visible text
-  const visibleText = await page.locator('body').innerText().catch(() => '');
-      // console.log('\n=== VISIBLE TEXT ===');
-    // console.log(visibleText.substring(0, 500));
+  const visibleText = await page
+    .locator('body')
+    .innerText()
+    .catch(() => '');
+  // console.log('\n=== VISIBLE TEXT ===');
+  // console.log(visibleText.substring(0, 500));
 
   // Force test to pass so we can see the output
   expect(true).toBe(true);

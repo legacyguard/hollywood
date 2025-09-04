@@ -24,6 +24,6 @@ export function useEncryptionReady() {
   return {
     isReady: isInitialized && !isLoading,
     needsSetup: !isInitialized && !isLoading,
-    isLoading
+    isLoading,
   };
 }

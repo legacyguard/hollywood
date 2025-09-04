@@ -4,19 +4,19 @@
  */
 
 export interface User {
-  id: string;
-  email: string;
-  name?: string;
   avatarUrl?: string;
   createdAt: Date;
+  email: string;
+  id: string;
+  name?: string;
   updatedAt: Date;
 }
 
 export interface AuthSession {
-  user: User;
-  token: string;
-  refreshToken?: string;
   expiresAt: Date;
+  refreshToken?: string;
+  token: string;
+  user: User;
 }
 
 export interface AuthCredentials {
@@ -50,7 +50,7 @@ export class AuthService {
       token: 'mock-token',
       expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
     };
-    
+
     this.currentSession = mockSession;
     return mockSession;
   }
@@ -59,7 +59,9 @@ export class AuthService {
     this.currentSession = null;
   }
 
-  async signUp(credentials: AuthCredentials & { name?: string }): Promise<AuthSession> {
+  async signUp(
+    credentials: AuthCredentials & { name?: string }
+  ): Promise<AuthSession> {
     // Implementation would connect to actual auth backend
     return this.signIn(credentials);
   }
@@ -68,7 +70,7 @@ export class AuthService {
     if (!this.currentSession?.refreshToken) {
       return null;
     }
-    
+
     // Implementation would refresh the token
     return this.currentSession;
   }
@@ -86,7 +88,10 @@ export class AuthService {
     console.log('Password reset email sent to:', email);
   }
 
-  async updatePassword(_oldPassword: string, _newPassword: string): Promise<void> {
+  async updatePassword(
+    _oldPassword: string,
+    _newPassword: string
+  ): Promise<void> {
     if (!this.isAuthenticated()) {
       throw new Error('Not authenticated');
     }

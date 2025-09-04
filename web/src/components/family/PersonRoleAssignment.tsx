@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Switch } from '../ui/switch';
@@ -9,44 +9,44 @@ import { Badge } from '../ui/badge';
 import { Separator } from '../ui/separator';
 import { Alert, AlertDescription } from '../ui/alert';
 import {
-  X,
-  Crown,
-  Shield,
-  Heart,
-  FileText,
-  Phone,
-  Mail,
   AlertCircle,
   CheckCircle,
+  Crown,
+  FileText,
+  Heart,
+  Mail,
+  Phone,
   Save,
+  Shield,
+  X,
 } from 'lucide-react';
 import type { WillData } from '@/types/will';
 
 interface FamilyMember {
+  contactInfo?: {
+    address?: string;
+    email?: string;
+    phone?: string;
+  };
+  dateOfBirth?: string;
   id: string;
   name: string;
   relationship: string;
-  dateOfBirth?: string;
   roles: {
-    isHeir?: boolean;
-    heirPercentage?: number;
-    isGuardian?: boolean;
-    isExecutor?: boolean;
     hasLegacyMessages?: boolean;
+    heirPercentage?: number;
     isEmergencyContact?: boolean;
+    isExecutor?: boolean;
+    isGuardian?: boolean;
+    isHeir?: boolean;
   };
-  status: 'complete' | 'partial' | 'missing_info';
-  contactInfo?: {
-    email?: string;
-    phone?: string;
-    address?: string;
-  };
+  status: 'complete' | 'missing_info' | 'partial';
 }
 
 interface PersonRoleAssignmentProps {
-  person: FamilyMember | null;
   onClose: () => void;
   onRoleUpdate: (personId: string, newRoles: FamilyMember['roles']) => void;
+  person: FamilyMember | null;
   willData?: WillData;
 }
 
@@ -73,7 +73,7 @@ export const PersonRoleAssignment: React.FC<PersonRoleAssignmentProps> = ({
       setContactInfo({
         email: person.contactInfo?.email || '',
         phone: person.contactInfo?.phone || '',
-        address: person.contactInfo?.address || ''
+        address: person.contactInfo?.address || '',
       });
     }
   }, [person]);
@@ -173,7 +173,7 @@ export const PersonRoleAssignment: React.FC<PersonRoleAssignmentProps> = ({
             <CardTitle className='text-2xl'>{person.name}</CardTitle>
             <p className='text-gray-600 capitalize'>{person.relationship}</p>
           </div>
-          <Button variant="ghost" size='sm' onClick={onClose}>
+          <Button variant='ghost' size='sm' onClick={onClose}>
             <X className='h-4 w-4' />
           </Button>
         </CardHeader>
@@ -388,7 +388,7 @@ export const PersonRoleAssignment: React.FC<PersonRoleAssignmentProps> = ({
                         Create personal messages, time capsules, and memory
                         prompts for this person.
                       </p>
-                      <Button variant="outline" size='sm'>
+                      <Button variant='outline' size='sm'>
                         <Heart className='h-4 w-4 mr-2' />
                         Create Legacy Message
                       </Button>
@@ -491,11 +491,11 @@ export const PersonRoleAssignment: React.FC<PersonRoleAssignmentProps> = ({
 
           {/* Action Buttons */}
           <div className='flex justify-between'>
-            <Button variant="outline" onClick={onClose}>
+            <Button variant='outline' onClick={onClose}>
               Cancel
             </Button>
             <div className='space-x-2'>
-              <Button variant="outline">
+              <Button variant='outline'>
                 <Heart className='h-4 w-4 mr-2' />
                 Create Time Capsule
               </Button>

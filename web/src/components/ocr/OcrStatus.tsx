@@ -6,13 +6,13 @@ import { useEffect, useState } from 'react';
 interface OcrStatusProps {
   className?: string;
   showOnlyWhenUnavailable?: boolean;
-  variant?: 'inline' | 'alert';
+  variant?: 'alert' | 'inline';
 }
 
 export function OcrStatus({
   className,
   showOnlyWhenUnavailable = false,
-  variant = 'alert'
+  variant = 'alert',
 }: OcrStatusProps) {
   const { isAvailable, statusMessage } = useOcrService();
   const [isVisible, setIsVisible] = useState(false);
@@ -35,13 +35,13 @@ export function OcrStatus({
       <div className={`flex items-center gap-2 text-sm ${className}`}>
         {isAvailable ? (
           <>
-            <CheckCircle2 className="h-4 w-4 text-primary" />
-            <span className="text-muted-foreground">OCR available</span>
+            <CheckCircle2 className='h-4 w-4 text-primary' />
+            <span className='text-muted-foreground'>OCR available</span>
           </>
         ) : (
           <>
-            <Info className="h-4 w-4 text-accent" />
-            <span className="text-muted-foreground">Manual entry mode</span>
+            <Info className='h-4 w-4 text-accent' />
+            <span className='text-muted-foreground'>Manual entry mode</span>
           </>
         )}
       </div>
@@ -52,11 +52,9 @@ export function OcrStatus({
   if (!isAvailable) {
     return (
       <Alert className={className}>
-        <AlertCircle className="h-4 w-4" />
+        <AlertCircle className='h-4 w-4' />
         <AlertTitle>OCR Service Status</AlertTitle>
-        <AlertDescription>
-          {statusMessage}
-        </AlertDescription>
+        <AlertDescription>{statusMessage}</AlertDescription>
       </Alert>
     );
   }
@@ -73,7 +71,7 @@ export function OcrBadge({ className }: { className?: string }) {
       <span
         className={`inline-flex items-center gap-1 rounded-full bg-yellow-500/10 px-2 py-1 text-xs font-medium text-yellow-600 dark:text-yellow-400 ${className}`}
       >
-        <Info className="h-3 w-3" />
+        <Info className='h-3 w-3' />
         Manual Entry
       </span>
     );
@@ -83,7 +81,7 @@ export function OcrBadge({ className }: { className?: string }) {
     <span
       className={`inline-flex items-center gap-1 rounded-full bg-green-500/10 px-2 py-1 text-xs font-medium text-green-600 dark:text-green-400 ${className}`}
     >
-      <CheckCircle2 className="h-3 w-3" />
+      <CheckCircle2 className='h-3 w-3' />
       OCR Ready
     </span>
   );

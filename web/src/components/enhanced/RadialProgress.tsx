@@ -2,15 +2,15 @@ import { cn } from '@/lib/utils';
 import { FadeIn } from '@/components/motion/FadeIn';
 
 interface RadialProgressProps {
-  value: number; // 0-100
-  size?: 'sm' | 'md' | 'lg' | 'xl';
-  strokeWidth?: number;
-  label?: string;
-  showValue?: boolean;
-  color?: 'primary' | 'success' | 'warning' | 'danger' | 'info';
+  animate?: boolean;
   backgroundColor?: string;
   className?: string;
-  animate?: boolean;
+  color?: 'danger' | 'info' | 'primary' | 'success' | 'warning';
+  label?: string;
+  showValue?: boolean;
+  size?: 'lg' | 'md' | 'sm' | 'xl';
+  strokeWidth?: number;
+  value: number; // 0-100
 }
 
 export function RadialProgress({
@@ -105,9 +105,10 @@ export function RadialProgress({
                 colorClasses[color],
                 animate && 'transition-all duration-1000 ease-out'
               )}
-              style={{  strokeDasharray: circumference,
+              style={{
+                strokeDasharray: circumference,
                 strokeDashoffset: animate ? strokeDashoffset : circumference,
-               }}
+              }}
             />
           </svg>
 
@@ -142,13 +143,13 @@ export function RadialProgress({
 
 // Linear progress bar variant
 interface LinearProgressProps {
-  value: number;
-  label?: string;
-  showValue?: boolean;
-  color?: 'primary' | 'success' | 'warning' | 'danger' | 'info';
-  height?: 'sm' | 'md' | 'lg';
   animate?: boolean;
   className?: string;
+  color?: 'danger' | 'info' | 'primary' | 'success' | 'warning';
+  height?: 'lg' | 'md' | 'sm';
+  label?: string;
+  showValue?: boolean;
+  value: number;
 }
 
 export function LinearProgress({
@@ -206,7 +207,7 @@ export function LinearProgress({
               colorClasses[color]
             )}
             style={{
-              width: animate ? `${normalizedValue }}%` : '0%',
+              width: animate ? `${normalizedValue}}%` : '0%',
               transition: animate ? 'width 1s ease-out' : 'none',
             }}
           />
@@ -218,14 +219,14 @@ export function LinearProgress({
 
 // Progress group for multiple progress items
 interface ProgressGroupProps {
+  className?: string;
   items: Array<{
+    color?: 'danger' | 'info' | 'primary' | 'success' | 'warning';
     label: string;
     value: number;
-    color?: 'primary' | 'success' | 'warning' | 'danger' | 'info';
   }>;
-  type?: 'radial' | 'linear';
-  size?: 'sm' | 'md' | 'lg';
-  className?: string;
+  size?: 'lg' | 'md' | 'sm';
+  type?: 'linear' | 'radial';
 }
 
 export function ProgressGroup({
@@ -248,7 +249,7 @@ export function ProgressGroup({
             value={item.value}
             label={item.label}
             color={item.color}
-            size={size as 'sm' | 'md' | 'lg' | 'xl'}
+            size={size as 'lg' | 'md' | 'sm' | 'xl'}
           />
         ) : (
           <LinearProgress
@@ -256,7 +257,7 @@ export function ProgressGroup({
             value={item.value}
             label={item.label}
             color={item.color}
-            height={size as 'sm' | 'md' | 'lg'}
+            height={size as 'lg' | 'md' | 'sm'}
           />
         )
       )}

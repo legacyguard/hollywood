@@ -4,22 +4,22 @@
  * Remembers conversations, user preferences, and provides contextual continuity
  */
 
-import type { SofiaMessage, SofiaContext } from './sofia-types';
+import type { SofiaContext, SofiaMessage } from './sofia-types';
 
 export interface ConversationMemory {
-  lastConversationId: string;
-  lastConversationDate: Date;
-  lastTopic: string;
-  lastActions: string[];
-  unfinishedTasks: string[];
   importantContext: Record<string, any>;
+  lastActions: string[];
+  lastConversationDate: Date;
+  lastConversationId: string;
+  lastTopic: string;
+  unfinishedTasks: string[];
 }
 
 export interface SofiaMemoryState {
   conversations: ConversationMemory[];
-  userPreferences: Record<string, any>;
-  learningNotes: string[];
   lastInteractionDate: Date | null;
+  learningNotes: string[];
+  userPreferences: Record<string, any>;
 }
 
 export class SofiaMemoryService {
@@ -188,24 +188,29 @@ export class SofiaMemoryService {
    * Extract topic from messages
    */
   private extractTopic(messages: SofiaMessage[]): string {
-    const lastUserMessages = messages
-      .filter(m => m.role === 'user')
-      .slice(-3);
+    const lastUserMessages = messages.filter(m => m.role === 'user').slice(-3);
 
     if (lastUserMessages.length === 0) {
       return 'general assistance';
     }
 
-    const lastMessage = lastUserMessages[lastUserMessages.length - 1].content.toLowerCase();
+    const lastMessage =
+      lastUserMessages[lastUserMessages.length - 1].content.toLowerCase();
 
     // Topic detection based on keywords
     if (lastMessage.includes('document') || lastMessage.includes('upload')) {
       return 'document management';
-    } else if (lastMessage.includes('guardian') || lastMessage.includes('trust')) {
+    } else if (
+      lastMessage.includes('guardian') ||
+      lastMessage.includes('trust')
+    ) {
       return 'guardian setup';
     } else if (lastMessage.includes('will') || lastMessage.includes('legacy')) {
       return 'legacy planning';
-    } else if (lastMessage.includes('security') || lastMessage.includes('privacy')) {
+    } else if (
+      lastMessage.includes('security') ||
+      lastMessage.includes('privacy')
+    ) {
       return 'security and privacy';
     } else if (lastMessage.includes('help') || lastMessage.includes('how')) {
       return 'getting help';
@@ -219,9 +224,18 @@ export class SofiaMemoryService {
    */
   private extractDocumentReferences(messages: SofiaMessage[]): string[] {
     const documentKeywords = [
-      'passport', 'insurance', 'will', 'birth certificate',
-      'marriage certificate', 'bank', 'medical', 'property',
-      'tax', 'contract', 'deed', 'title',
+      'passport',
+      'insurance',
+      'will',
+      'birth certificate',
+      'marriage certificate',
+      'bank',
+      'medical',
+      'property',
+      'tax',
+      'contract',
+      'deed',
+      'title',
     ];
 
     const references: Set<string> = new Set();
@@ -242,28 +256,35 @@ export class SofiaMemoryService {
    * Get conversation insights
    */
   getConversationInsights(): {
-    totalConversations: number;
     commonTopics: string[];
-    lastInteraction: Date | null;
     frequentActions: string[];
+    lastInteraction: Date | null;
+    totalConversations: number;
   } {
     const topics = this.memoryState.conversations.map(c => c.lastTopic);
-    const topicCounts = topics.reduce((acc, topic) => {
-      acc[topic] = (acc[topic] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    const topicCounts = topics.reduce(
+      (acc, topic) => {
+        acc[topic] = (acc[topic] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
 
     const commonTopics = Object.entries(topicCounts)
       .sort(([, a], [, b]) => b - a)
       .slice(0, 3)
       .map(([topic]) => topic);
 
-    const allActions = this.memoryState.conversations
-      .flatMap(c => c.lastActions);
-    const actionCounts = allActions.reduce((acc, action) => {
-      acc[action] = (acc[action] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    const allActions = this.memoryState.conversations.flatMap(
+      c => c.lastActions
+    );
+    const actionCounts = allActions.reduce(
+      (acc, action) => {
+        acc[action] = (acc[action] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
 
     const frequentActions = Object.entries(actionCounts)
       .sort(([, a], [, b]) => b - a)

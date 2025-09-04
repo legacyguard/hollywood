@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
@@ -8,19 +8,22 @@ import { Icon } from '@/components/ui/icon-library';
 import { useSofiaStore } from '@/stores/sofiaStore';
 import { useAuth } from '@clerk/clerk-react';
 import ReactMarkdown from 'react-markdown';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { getSofiaMemory } from '@/lib/sofia-memory';
-import { getSofiaProactive, type ProactiveIntervention } from '@/lib/sofia-proactive';
+import {
+  getSofiaProactive,
+  type ProactiveIntervention,
+} from '@/lib/sofia-proactive';
 
 // New guided dialog imports
 import { sofiaRouter } from '@/lib/sofia-router';
 import {
-  type SofiaMessage,
   type ActionButton,
-  type SofiaCommand,
   type CommandResult,
-  getContextualActions
+  getContextualActions,
+  type SofiaCommand,
+  type SofiaMessage,
 } from '@/lib/sofia-types';
 import SofiaActionButtons from './SofiaActionButtons';
 
@@ -127,16 +130,17 @@ const getContextualSuggestions = (currentPage: string): ActionButton[] => {
     ],
   };
 
-  return suggestions[currentPage] || suggestions.dashboard;
+  const pageKey = currentPage in suggestions ? currentPage : 'dashboard';
+  return suggestions[pageKey] as ActionButton[];
 };
 
 interface SofiaChatV2Props {
+  className?: string;
+  currentPage?: string;
   isOpen?: boolean;
   onClose?: () => void;
-  className?: string;
-  variant?: 'floating' | 'embedded' | 'fullscreen';
-  currentPage?: string;
-  pendingAction?: { userMessage: string; sofiaResponse: string } | null;
+  pendingAction?: null | { sofiaResponse: string; userMessage: string };
+  variant?: 'embedded' | 'floating' | 'fullscreen';
 }
 
 const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
@@ -152,11 +156,17 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
   const location = useLocation();
   const [inputValue, setInputValue] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
-  const [showProactiveIntervention, setShowProactiveIntervention] = useState(false);
-  const [currentIntervention, setCurrentIntervention] = useState<ProactiveIntervention | null>(null);
+  const [showProactiveIntervention, setShowProactiveIntervention] =
+    useState(false);
+  const [currentIntervention, setCurrentIntervention] =
+    useState<null | ProactiveIntervention>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
-  const memoryServiceRef = useRef<ReturnType<typeof getSofiaMemory> | null>(null);
-  const proactiveServiceRef = useRef<ReturnType<typeof getSofiaProactive> | null>(null);
+  const memoryServiceRef = useRef<null | ReturnType<typeof getSofiaMemory>>(
+    null
+  );
+  const proactiveServiceRef = useRef<null | ReturnType<
+    typeof getSofiaProactive
+  >>(null);
 
   const { messages, isTyping, context, addMessage, updateMessages, setTyping } =
     useSofiaStore();
@@ -176,6 +186,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
         proactiveServiceRef.current?.stopMonitoring();
       };
     }
+    return undefined;
   }, [userId, location.pathname]);
 
   // Save conversation to memory when closing
@@ -192,7 +203,8 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
     if (isOpen && proactiveServiceRef.current && !currentIntervention) {
       const checkInterval = setInterval(() => {
         if (proactiveServiceRef.current?.hasPendingInterventions()) {
-          const intervention = proactiveServiceRef.current.getNextIntervention();
+          const intervention =
+            proactiveServiceRef.current.getNextIntervention();
           if (intervention) {
             setCurrentIntervention(intervention);
             setTimeout(() => {
@@ -204,6 +216,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
 
       return () => clearInterval(checkInterval);
     }
+    return undefined;
   }, [isOpen, currentIntervention]);
 
   // Move getDefaultWelcome to prevent dependency issues
@@ -212,7 +225,8 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
 
     // Check if we have conversation memory
     if (memoryServiceRef.current) {
-      const welcomeMessage = memoryServiceRef.current.getWelcomeBackMessage(context);
+      const welcomeMessage =
+        memoryServiceRef.current.getWelcomeBackMessage(context);
       return welcomeMessage;
     }
 
@@ -242,13 +256,21 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
 
       // Simulate typing delay
       setTimeout(() => {
+        const resolvedWelcomeActions: ActionButton[] =
+          ((result.payload as { actions?: ActionButton[]; message?: string })
+            ?.actions?.length ?? 0) > 0
+            ? (result.payload as { actions?: ActionButton[]; message?: string })
+                .actions!
+            : getContextualSuggestions(currentPage);
+
         const welcomeMessage: SofiaMessage = {
           id: crypto.randomUUID(),
           role: 'assistant',
-          content: (result.payload as { message?: string; actions?: any[] })?.message || getDefaultWelcome(),
+          content:
+            (result.payload as { actions?: any[]; message?: string })
+              ?.message || getDefaultWelcome(),
           timestamp: new Date(),
-          actions:
-            (result.payload as { message?: string; actions?: any[] })?.actions || getContextualSuggestions(currentPage),
+          actions: resolvedWelcomeActions,
           responseType: 'welcome',
           metadata: {
             cost: result.cost,
@@ -335,7 +357,8 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
     if (messages.length === 0 && context && isOpen) {
       // Check for return greeting first
       if (proactiveServiceRef.current && memoryServiceRef.current) {
-        const returnGreeting = proactiveServiceRef.current.createReturnGreeting(context);
+        const returnGreeting =
+          proactiveServiceRef.current.createReturnGreeting(context);
         if (returnGreeting) {
           setCurrentIntervention(returnGreeting);
           setTimeout(() => {
@@ -352,7 +375,10 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
     if (!currentIntervention || !proactiveServiceRef.current) return;
 
     // Mark intervention as completed
-    proactiveServiceRef.current.markInterventionCompleted(currentIntervention.id, action);
+    proactiveServiceRef.current.markInterventionCompleted(
+      currentIntervention.id,
+      action
+    );
 
     // Hide the intervention
     setShowProactiveIntervention(false);
@@ -366,7 +392,9 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
     // Process the action through the normal flow
     const actionButton: ActionButton = {
       id: action,
-      text: currentIntervention.actions?.find(a => a.action === action)?.text || action,
+      text:
+        currentIntervention.actions?.find(a => a.action === action)?.text ||
+        action,
       category: 'ui_action' as const,
       cost: 'free' as const,
     };
@@ -388,7 +416,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
 
     // **FIX: Remove actions from the previous message to prevent multiple clicks**
     updateMessages(prevMessages =>
-      prevMessages.map(msg => ({ ...msg, actions: undefined }))
+      prevMessages.map(({ actions: _omit, ...msg }) => ({ ...msg }))
     );
 
     // Add the user message
@@ -466,18 +494,39 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
 
       case 'ui_action':
         // Handle UI actions
-        handleUIAction(result.payload as { action: string; message?: string; data?: unknown });
+        handleUIAction(
+          result.payload as { action: string; data?: unknown; message?: string }
+        );
         break;
 
       case 'response':
         // Add Sofia's response
         setTimeout(() => {
+          const resolvedResponseActions: ActionButton[] =
+            ((
+              result.payload as any as {
+                actions?: ActionButton[];
+                message: string;
+              }
+            ).actions?.length ?? 0) > 0
+              ? ((
+                  result.payload as any as {
+                    actions?: ActionButton[];
+                    message: string;
+                  }
+                ).actions as ActionButton[])
+              : context
+                ? getContextualActions(context)
+                : [];
+
           const responseMessage: SofiaMessage = {
             id: crypto.randomUUID(),
             role: 'assistant',
-            content: ((result.payload as any) as { message: string; actions?: any[] }).message,
+            content: (
+              result.payload as any as { actions?: any[]; message: string }
+            ).message,
             timestamp: new Date(),
-            actions: ((result.payload as any) as { message: string; actions?: any[] }).actions,
+            actions: resolvedResponseActions,
             responseType: 'information',
             metadata: { cost: result.cost, source: 'predefined' },
           };
@@ -486,7 +535,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
         break;
 
       case 'error':
-        handleError(((result.payload as any) as { message: string }).message);
+        handleError((result.payload as any as { message: string }).message);
         break;
 
       case 'text_response':
@@ -495,7 +544,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
           const responseMessage: SofiaMessage = {
             id: crypto.randomUUID(),
             role: 'assistant',
-            content: (result.payload as any) as string,
+            content: result.payload as any as string,
             timestamp: new Date(),
             actions: context ? getContextualActions(context) : [],
             responseType: 'information',
@@ -512,8 +561,8 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
 
   const handleUIAction = (payload: {
     action: string;
-    message?: string;
     data?: unknown;
+    message?: string;
   }) => {
     switch (payload.action) {
       case 'open_uploader': {
@@ -624,14 +673,14 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
   const renderMessage = (message: SofiaMessage) => (
     <motion.div
       key={message.id}
-      initial={{  opacity: 0, y: 20  }}
-      animate={{  opacity: 1, y: 0  }}
-      transition={{  duration: 0.3  }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
       className={`flex gap-3 mb-6 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
     >
       {message.role === 'assistant' && (
         <div className='w-8 h-8 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center flex-shrink-0'>
-          <Icon name="bot" className='w-4 h-4 text-primary' />
+          <Icon name='bot' className='w-4 h-4 text-primary' />
         </div>
       )}
 
@@ -711,7 +760,7 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
 
       {message.role === 'user' && (
         <div className='w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0'>
-          <Icon name="user" className='w-4 h-4 text-primary' />
+          <Icon name='user' className='w-4 h-4 text-primary' />
         </div>
       )}
     </motion.div>
@@ -719,24 +768,24 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
 
   const renderTypingIndicator = () => (
     <motion.div
-      initial={{  opacity: 0, y: 20  }}
-      animate={{  opacity: 1, y: 0  }}
-      exit={{  opacity: 0, y: -10  }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
       className='flex gap-3 mb-6'
     >
       <div className='w-8 h-8 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center flex-shrink-0'>
-        <Icon name="bot" className='w-4 h-4 text-primary' />
+        <Icon name='bot' className='w-4 h-4 text-primary' />
       </div>
       <div className='bg-muted p-4 rounded-lg'>
         <div className='flex gap-1'>
           <div className='w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce' />
           <div
             className='w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce'
-            style={{  animationDelay: '0.1s'  }}
+            style={{ animationDelay: '0.1s' }}
           />
           <div
             className='w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce'
-            style={{  animationDelay: '0.2s'  }}
+            style={{ animationDelay: '0.2s' }}
           />
         </div>
       </div>
@@ -759,20 +808,32 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
             className='bg-primary/10 border-b border-primary/20 p-3'
           >
             <div className='flex items-start gap-2'>
-              <Icon name="sparkles" className='w-4 h-4 text-primary mt-1 flex-shrink-0' />
+              <Icon
+                name='sparkles'
+                className='w-4 h-4 text-primary mt-1 flex-shrink-0'
+              />
               <div className='flex-1'>
-                <p className='text-sm text-foreground mb-2'>{currentIntervention.message}</p>
+                <p className='text-sm text-foreground mb-2'>
+                  {currentIntervention.message}
+                </p>
                 {currentIntervention.actions && (
                   <div className='flex flex-wrap gap-2'>
-                    {currentIntervention.actions.map((action) => (
+                    {currentIntervention.actions.map(action => (
                       <Button
                         key={action.action}
                         size='sm'
-                        variant={action.action === 'dismiss' ? 'ghost' : 'secondary'}
+                        variant={
+                          action.action === 'dismiss' ? 'ghost' : 'secondary'
+                        }
                         onClick={() => handleProactiveAction(action.action)}
                         className='text-xs'
                       >
-                        {action.icon && <Icon name={action.icon as 'sparkles'} className='w-3 h-3 mr-1' />}
+                        {action.icon && (
+                          <Icon
+                            name={action.icon as 'sparkles'}
+                            className='w-3 h-3 mr-1'
+                          />
+                        )}
                         {action.text}
                       </Button>
                     ))}
@@ -788,12 +849,13 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
       <div className='flex items-center justify-between p-4 border-b'>
         <div className='flex items-center gap-3'>
           <div className='w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center'>
-            <Icon name="bot" className='w-5 h-5 text-primary' />
+            <Icon name='bot' className='w-5 h-5 text-primary' />
           </div>
           <div>
             <h3 className='font-semibold'>Sofia</h3>
             <p className='text-sm text-muted-foreground'>
-              {(memoryServiceRef.current?.getConversationInsights()?.totalConversations || 0) > 0
+              {(memoryServiceRef.current?.getConversationInsights()
+                ?.totalConversations || 0) > 0
                 ? 'Welcome back! I remember you.'
                 : 'Your digital guide'}
             </p>
@@ -802,12 +864,12 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
 
         {onClose && (
           <Button
-            variant="ghost"
+            variant='ghost'
             size='sm'
             onClick={onClose}
             className='h-8 w-8 p-0'
           >
-            <Icon name="x" className='w-4 h-4' />
+            <Icon name='x' className='w-4 h-4' />
           </Button>
         )}
       </div>
@@ -836,12 +898,12 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
             type='submit'
             disabled={!inputValue.trim() || isProcessing}
             size='sm'
-            variant="outline"
+            variant='outline'
           >
             {isProcessing ? (
-              <Icon name="loader-2" className='w-4 h-4 animate-spin' />
+              <Icon name='loader-2' className='w-4 h-4 animate-spin' />
             ) : (
-              <Icon name="send" className='w-4 h-4' />
+              <Icon name='send' className='w-4 h-4' />
             )}
           </Button>
         </form>
@@ -863,9 +925,9 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{  opacity: 0  }}
-            animate={{  opacity: 1  }}
-            exit={{  opacity: 0  }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             className='fixed inset-0 bg-background/80 backdrop-blur-sm z-50'
           >
             <div className='container mx-auto h-full max-w-4xl p-4'>
@@ -882,9 +944,9 @@ const SofiaChatV2: React.FC<SofiaChatV2Props> = ({
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          initial={{  opacity: 0, scale: 0.95, y: 20  }}
-          animate={{  opacity: 1, scale: 1, y: 0  }}
-          exit={{  opacity: 0, scale: 0.95, y: 20  }}
+          initial={{ opacity: 0, scale: 0.95, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: 20 }}
           className={`fixed bottom-4 right-4 w-96 h-[600px] z-50 ${className}`}
         >
           <Card className='h-full shadow-lg border-primary/20'>

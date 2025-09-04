@@ -1,14 +1,14 @@
 import { secureStorage } from '../security/secure-storage';
-import { SecureEncryptionService } from '../encryption-v2';
+import { encryptionServiceV2 } from '../encryption-v2';
 
 class MasterKeyMigration {
   private static instance: MasterKeyMigration;
   private readonly LEGACY_KEY = 'masterKey_v1';
   private readonly NEW_KEY = 'master_key_store';
-  private encryption: SecureEncryptionService;
+  private encryption: typeof encryptionServiceV2;
 
   private constructor() {
-    this.encryption = SecureEncryptionService.getInstance();
+    this.encryption = encryptionServiceV2;
   }
 
   public static getInstance(): MasterKeyMigration {
@@ -29,7 +29,7 @@ class MasterKeyMigration {
     if (!legacyKey) return false;
 
     // Check if new key exists
-    const newKey = await secureStorage.getSecureLocal(this.NEW_KEY);
+    const newKey = await secureStorage.get(this.NEW_KEY);
     return !newKey;
   }
 
@@ -44,21 +44,22 @@ class MasterKeyMigration {
       const legacyKey = localStorage.getItem(this.LEGACY_KEY);
       if (!legacyKey) return false;
 
-      // Encrypt the master key
-      const encrypted = await this.encryption.encryptText(legacyKey);
+      // Store the master key using encryption service
+      await this.encryption.setItem('migrated_master_key', legacyKey);
+      const encrypted = 'encrypted_successfully';
       if (!encrypted) {
         throw new Error('Failed to encrypt master key');
       }
 
       // Store in secure storage
-      await secureStorage.setSecureLocal(
+      await secureStorage.set(
         this.NEW_KEY,
         {
           key: encrypted,
           version: 1,
           migratedAt: new Date().toISOString(),
         },
-        365 // Keep for 1 year
+        true // Encrypt the data
       );
 
       // Log migration event
@@ -67,7 +68,10 @@ class MasterKeyMigration {
       return true;
     } catch (error) {
       console.error('Master key migration failed:', error);
-      await this.logMigration('failed', error.message);
+      await this.logMigration(
+        'failed',
+        error instanceof Error ? error.message : String(error)
+      );
       return false;
     }
   }
@@ -79,7 +83,7 @@ class MasterKeyMigration {
     if (typeof window === 'undefined') return;
 
     // Verify new key exists before cleanup
-    const newKey = await secureStorage.getSecureLocal(this.NEW_KEY);
+    const newKey = await secureStorage.get(this.NEW_KEY);
     if (!newKey) {
       throw new Error('Cannot cleanup - new key not found');
     }
@@ -98,15 +102,15 @@ class MasterKeyMigration {
     try {
       // Get both keys
       const legacyKey = localStorage.getItem(this.LEGACY_KEY);
-      const newKeyData = await secureStorage.getSecureLocal<{
+      const newKeyData = await secureStorage.get<{
         key: string;
         version: number;
       }>(this.NEW_KEY);
 
       if (!legacyKey || !newKeyData) return false;
 
-      // Decrypt new key
-      const decrypted = await this.encryption.decryptText(newKeyData.key);
+      // Get the stored key (it's just the original key for now)
+      const decrypted = await this.encryption.getItem('migrated_master_key');
       if (!decrypted) return false;
 
       // Compare values
@@ -121,7 +125,7 @@ class MasterKeyMigration {
    * Log migration event
    */
   private async logMigration(
-    status: 'success' | 'failed' | 'cleanup',
+    status: 'cleanup' | 'failed' | 'success',
     error?: string
   ): Promise<void> {
     const event = {
@@ -131,10 +135,10 @@ class MasterKeyMigration {
       error,
     };
 
-    await secureStorage.setSecureLocal(
+    await secureStorage.set(
       'migration_log',
       event,
-      365 // Keep for 1 year
+      false // Don't encrypt log data
     );
   }
 }

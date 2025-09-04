@@ -3,17 +3,17 @@
  * Handles client-side encryption of sensitive data
  */
 
-import { useState, useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { secureStorage } from '@/lib/security/secure-storage';
 import { nanoid } from 'nanoid';
 
 interface EncryptionState {
-  isInitialized: boolean;
-  isLocked: boolean;
   hasKey: boolean;
+  isInitialized: boolean;
   isLoading: boolean;
-  passwordPromptVisible: boolean;
+  isLocked: boolean;
   needsMigration: boolean;
+  passwordPromptVisible: boolean;
 }
 
 interface EncryptionResult {
@@ -86,7 +86,7 @@ export function useEncryption() {
         name: 'PBKDF2',
         salt,
         iterations: 100000,
-        hash: 'SHA-256'
+        hash: 'SHA-256',
       },
       keyMaterial,
       { name: 'AES-GCM', length: 256 },
@@ -117,17 +117,20 @@ export function useEncryption() {
     }
   }, []);
 
-  const initializeKeys = useCallback(async (password: string) => {
-    setState(prev => ({ ...prev, isLoading: true }));
-    try {
-      const success = await initializeEncryption(password);
-      setState(prev => ({ ...prev, isLoading: false }));
-      return success;
-    } catch (error) {
-      setState(prev => ({ ...prev, isLoading: false }));
-      return false;
-    }
-  }, [initializeEncryption]);
+  const initializeKeys = useCallback(
+    async (password: string) => {
+      setState(prev => ({ ...prev, isLoading: true }));
+      try {
+        const success = await initializeEncryption(password);
+        setState(prev => ({ ...prev, isLoading: false }));
+        return success;
+      } catch (error) {
+        setState(prev => ({ ...prev, isLoading: false }));
+        return false;
+      }
+    },
+    [initializeEncryption]
+  );
 
   const lockEncryption = useCallback(() => {
     setEncryptionKey(null);
@@ -138,125 +141,150 @@ export function useEncryption() {
     }));
   }, []);
 
-  const encryptData = useCallback(async (data: string | ArrayBuffer): Promise<EncryptionResult | null> => {
-    if (!encryptionKey) {
-      console.error('Encryption key not available');
-      return null;
-    }
-
-    try {
-      const encoder = new TextEncoder();
-      const dataBuffer = typeof data === 'string' ? encoder.encode(data) : data;
-
-      const iv = crypto.getRandomValues(new Uint8Array(12));
-      const salt = crypto.getRandomValues(new Uint8Array(16));
-
-      const encrypted = await crypto.subtle.encrypt(
-        { name: 'AES-GCM', iv },
-        encryptionKey,
-        dataBuffer
-      );
-
-      return {
-        encrypted: btoa(String.fromCharCode(...new Uint8Array(encrypted as ArrayBuffer))),
-        iv: btoa(String.fromCharCode(...iv)),
-        salt: btoa(String.fromCharCode(...salt)),
-      };
-    } catch (error) {
-      console.error('Encryption error:', error);
-      return null;
-    }
-  }, [encryptionKey]);
-
-  const decryptData = useCallback(async (
-    encryptedData: string,
-    iv: string,
-    _salt?: string
-  ): Promise<ArrayBuffer | null> => {
-    if (!encryptionKey) {
-      console.error('Encryption key not available');
-      return null;
-    }
-
-    try {
-      const encryptedBuffer = Uint8Array.from(atob(encryptedData), c => c.charCodeAt(0));
-      const ivBuffer = Uint8Array.from(atob(iv), c => c.charCodeAt(0));
-
-      const decrypted = await crypto.subtle.decrypt(
-        { name: 'AES-GCM', iv: ivBuffer },
-        encryptionKey,
-        encryptedBuffer
-      );
-
-      return decrypted;
-    } catch (error) {
-      console.error('Decryption error:', error);
-      return null;
-    }
-  }, [encryptionKey]);
-
-  const encryptFile = useCallback(async (file: File): Promise<{
-    encryptedFile: Blob;
-    metadata: EncryptionResult;
-  } | null> => {
-    if (!encryptionKey) {
-      console.error('Encryption key not available');
-      return null;
-    }
-
-    try {
-      const arrayBuffer = await file.arrayBuffer();
-      const encryptionResult = await encryptData(arrayBuffer);
-
-      if (!encryptionResult) {
-        throw new Error('Failed to encrypt file');
+  const encryptData = useCallback(
+    async (data: ArrayBuffer | string): Promise<EncryptionResult | null> => {
+      if (!encryptionKey) {
+        console.error('Encryption key not available');
+        return null;
       }
 
-      const encryptedBlob = new Blob(
-        [atob(encryptionResult.encrypted)],
-        { type: 'application/octet-stream' }
-      );
+      try {
+        const encoder = new TextEncoder();
+        const dataBuffer =
+          typeof data === 'string' ? encoder.encode(data) : data;
 
-      return {
-        encryptedFile: encryptedBlob,
-        metadata: encryptionResult,
-      };
-    } catch (error) {
-      console.error('File encryption error:', error);
-      return null;
-    }
-  }, [encryptionKey, encryptData]);
+        const iv = crypto.getRandomValues(new Uint8Array(12));
+        const salt = crypto.getRandomValues(new Uint8Array(16));
+
+        const encrypted = await crypto.subtle.encrypt(
+          { name: 'AES-GCM', iv },
+          encryptionKey,
+          dataBuffer
+        );
+
+        return {
+          encrypted: btoa(
+            String.fromCharCode(...new Uint8Array(encrypted as ArrayBuffer))
+          ),
+          iv: btoa(String.fromCharCode(...iv)),
+          salt: btoa(String.fromCharCode(...salt)),
+        };
+      } catch (error) {
+        console.error('Encryption error:', error);
+        return null;
+      }
+    },
+    [encryptionKey]
+  );
+
+  const decryptData = useCallback(
+    async (
+      encryptedData: string,
+      iv: string,
+      _salt?: string
+    ): Promise<ArrayBuffer | null> => {
+      if (!encryptionKey) {
+        console.error('Encryption key not available');
+        return null;
+      }
+
+      try {
+        const encryptedBuffer = Uint8Array.from(atob(encryptedData), c =>
+          c.charCodeAt(0)
+        );
+        const ivBuffer = Uint8Array.from(atob(iv), c => c.charCodeAt(0));
+
+        const decrypted = await crypto.subtle.decrypt(
+          { name: 'AES-GCM', iv: ivBuffer },
+          encryptionKey,
+          encryptedBuffer
+        );
+
+        return decrypted;
+      } catch (error) {
+        console.error('Decryption error:', error);
+        return null;
+      }
+    },
+    [encryptionKey]
+  );
+
+  const encryptFile = useCallback(
+    async (
+      file: File
+    ): Promise<null | {
+      encryptedFile: Blob;
+      metadata: EncryptionResult;
+    }> => {
+      if (!encryptionKey) {
+        console.error('Encryption key not available');
+        return null;
+      }
+
+      try {
+        const arrayBuffer = await file.arrayBuffer();
+        const encryptionResult = await encryptData(arrayBuffer);
+
+        if (!encryptionResult) {
+          throw new Error('Failed to encrypt file');
+        }
+
+        const encryptedBlob = new Blob([atob(encryptionResult.encrypted)], {
+          type: 'application/octet-stream',
+        });
+
+        return {
+          encryptedFile: encryptedBlob,
+          metadata: encryptionResult,
+        };
+      } catch (error) {
+        console.error('File encryption error:', error);
+        return null;
+      }
+    },
+    [encryptionKey, encryptData]
+  );
 
   const generateSecureToken = useCallback(() => {
     return nanoid(32);
   }, []);
 
-  const hashPassword = useCallback(async (password: string): Promise<string> => {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(password);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer as ArrayBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-  }, []);
+  const hashPassword = useCallback(
+    async (password: string): Promise<string> => {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(password);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer as ArrayBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    },
+    []
+  );
 
-  const decryptFile = useCallback(async (
-    encryptedFile: Blob,
-    iv: string,
-    salt?: string
-  ): Promise<File | null> => {
-    try {
-      const arrayBuffer = await encryptedFile.arrayBuffer();
-      const encryptedData = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer as ArrayBuffer)));
-      const decrypted = await decryptData(encryptedData, iv, salt);
+  const decryptFile = useCallback(
+    async (
+      encryptedFile: Blob,
+      iv: string,
+      salt?: string
+    ): Promise<File | null> => {
+      try {
+        const arrayBuffer = await encryptedFile.arrayBuffer();
+        const encryptedData = btoa(
+          String.fromCharCode(...new Uint8Array(arrayBuffer as ArrayBuffer))
+        );
+        const decrypted = await decryptData(encryptedData, iv, salt);
 
-      if (!decrypted) return null;
+        if (!decrypted) return null;
 
-      return new File([decrypted], 'decrypted-file', { type: 'application/octet-stream' });
-    } catch (error) {
-      console.error('File decryption error:', error);
-      return null;
-    }
-  }, [decryptData]);
+        return new File([decrypted], 'decrypted-file', {
+          type: 'application/octet-stream',
+        });
+      } catch (error) {
+        console.error('File decryption error:', error);
+        return null;
+      }
+    },
+    [decryptData]
+  );
 
   const generateSecurePassword = useCallback(() => {
     return generateSecureToken();
@@ -277,34 +305,44 @@ export function useEncryption() {
     setState(prev => ({ ...prev, passwordPromptVisible: false }));
   }, []);
 
-  const unlockKeys = useCallback(async (password: string): Promise<boolean> => {
-    setState(prev => ({ ...prev, isLoading: true }));
-    try {
-      const success = await initializeEncryption(password);
-      setState(prev => ({ ...prev, isLoading: false }));
-      return success;
-    } catch (error) {
-      setState(prev => ({ ...prev, isLoading: false }));
-      return false;
-    }
-  }, [initializeEncryption]);
-
-  const migrateKeys = useCallback(async (password: string): Promise<boolean> => {
-    setState(prev => ({ ...prev, isLoading: true }));
-    try {
-      // Migrate keys with new password
-      const success = await initializeEncryption(password);
-      if (success) {
-        // Placeholder for actual migration logic
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        setState(prev => ({ ...prev, needsMigration: false, isLoading: false }));
+  const unlockKeys = useCallback(
+    async (password: string): Promise<boolean> => {
+      setState(prev => ({ ...prev, isLoading: true }));
+      try {
+        const success = await initializeEncryption(password);
+        setState(prev => ({ ...prev, isLoading: false }));
+        return success;
+      } catch (error) {
+        setState(prev => ({ ...prev, isLoading: false }));
+        return false;
       }
-      return success;
-    } catch (error) {
-      setState(prev => ({ ...prev, isLoading: false }));
-      return false;
-    }
-  }, [initializeEncryption]);
+    },
+    [initializeEncryption]
+  );
+
+  const migrateKeys = useCallback(
+    async (password: string): Promise<boolean> => {
+      setState(prev => ({ ...prev, isLoading: true }));
+      try {
+        // Migrate keys with new password
+        const success = await initializeEncryption(password);
+        if (success) {
+          // Placeholder for actual migration logic
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          setState(prev => ({
+            ...prev,
+            needsMigration: false,
+            isLoading: false,
+          }));
+        }
+        return success;
+      } catch (error) {
+        setState(prev => ({ ...prev, isLoading: false }));
+        return false;
+      }
+    },
+    [initializeEncryption]
+  );
 
   return {
     // State

@@ -1,39 +1,39 @@
 // Multi-Language Document Generation System
 // Generates legally compliant wills in multiple languages with proper legal terminology
 
-import type { WillData } from '@/components/legacy/WillWizard';
+import type { WillData } from '../types/will';
 
-export type SupportedLanguage = 'sk' | 'cs' | 'en' | 'de';
+export type SupportedLanguage = 'cs' | 'de' | 'en' | 'sk';
 export type WillVariant =
-  | 'holographic'
   | 'alographic'
-  | 'notarial'
+  | 'basic'
   | 'comprehensive'
-  | 'basic';
+  | 'holographic'
+  | 'notarial';
 
 export interface LegalDocument {
-  id: string;
-  language: SupportedLanguage;
-  variant: WillVariant;
-  jurisdiction: string;
-  title: string;
   content: string;
-  legalNotices: string[];
-  signingInstructions: string;
-  witnessInstructions?: string;
-  templateVersion: string;
   generatedAt: Date;
+  id: string;
+  jurisdiction: string;
+  language: SupportedLanguage;
+  legalNotices: string[];
   legalTerminology: Record<string, string>;
+  signingInstructions: string;
+  templateVersion: string;
+  title: string;
+  variant: WillVariant;
+  witnessInstructions?: string;
 }
 
 export interface TranslatedTerm {
+  context: 'asset' | 'legal' | 'procedure' | 'relationship';
+  jurisdiction?: string;
+  language: SupportedLanguage;
+  legalContext?: string; // Additional property for test expectations
   original: string;
   translated: string;
   translatedTerm: string; // Alias for translated to match test expectations
-  language: SupportedLanguage;
-  context: 'legal' | 'relationship' | 'asset' | 'procedure';
-  jurisdiction?: string;
-  legalContext?: string; // Additional property for test expectations
 }
 
 // Legal terminology dictionary for different languages and jurisdictions
@@ -1021,7 +1021,7 @@ export class MultiLangGenerator {
 
     // Add translated relationship terms to executor
     if (processedData.executor_data?.primaryExecutor) {
-      processedData.executor_data.primaryExecutor = {
+      (processedData.executor_data as any).primaryExecutor = {
         ...processedData.executor_data.primaryExecutor,
         relationshipText: this.translateTerm(
           processedData.executor_data.primaryExecutor.relationship || '',
@@ -1033,7 +1033,7 @@ export class MultiLangGenerator {
 
     // Process guardianship data
     if (processedData.guardianship_data?.primaryGuardian) {
-      processedData.guardianship_data.primaryGuardian = {
+      (processedData.guardianship_data as any).primaryGuardian = {
         ...processedData.guardianship_data.primaryGuardian,
         relationshipText: this.translateTerm(
           processedData.guardianship_data.primaryGuardian.relationship || '',
@@ -1049,7 +1049,10 @@ export class MultiLangGenerator {
   /**
    * Simple template processor (replaces {variable} patterns)
    */
-  private processTemplate(template: string, data: Record<string, string>): string {
+  private processTemplate(
+    template: string,
+    data: Record<string, unknown>
+  ): string {
     let processed = template;
 
     // Handle simple variable substitution {variable}
@@ -1080,7 +1083,7 @@ export class MultiLangGenerator {
             // Replace {this.property} with item values
             itemContent = itemContent.replace(
               /\{\{this\.(\w+)\}\}/g,
-              (match, prop) => {
+              (match: string, prop: string) => {
                 return item[prop] !== undefined ? String(item[prop]) : match;
               }
             );
@@ -1099,7 +1102,13 @@ export class MultiLangGenerator {
    * Get nested object value by dot notation path
    */
   private getNestedValue(obj: Record<string, unknown>, path: string): unknown {
-    return path.split('.').reduce((current, key) => (current as Record<string, unknown>)?.[key], obj);
+    return path
+      .split('.')
+      .reduce(
+        (current: unknown, key: string) =>
+          (current as Record<string, unknown>)?.[key],
+        obj
+      );
   }
 
   /**
@@ -1123,7 +1132,10 @@ export class MultiLangGenerator {
     variant: WillVariant,
     _jurisdiction: string
   ): string[] {
-    const notices: Record<SupportedLanguage, Record<WillVariant, string[]>> = {
+    const notices: Record<
+      SupportedLanguage,
+      Partial<Record<WillVariant, string[]>>
+    > = {
       sk: {
         holographic: [
           'Tento závet musí byť napísaný celý vlastnou rukou poručiteľa.',
@@ -1141,6 +1153,14 @@ export class MultiLangGenerator {
           'Závet bude spísaný notárom vo forme notárskej zápisnice.',
           'Závet môže byť registrovaný v NCRza (Notárskom centrálnom registri závetov).',
           'Závet môže byť prijatý do notárskej úschovy.',
+          'Berúc na vedomie práva neopomenuteľných dedičov podľa § 479 OZ.',
+        ],
+        basic: [
+          'Základný závet obsahuje minimálne požadované prvky.',
+          'Berúc na vedomie práva neopomenuteľných dedičov podľa § 479 OZ.',
+        ],
+        comprehensive: [
+          'Komplexný závet obsahuje podrobné ustanovenia.',
           'Berúc na vedomie práva neopomenuteľných dedičov podľa § 479 OZ.',
         ],
       },
@@ -1162,6 +1182,14 @@ export class MultiLangGenerator {
           'Závěť poskytuje nejvyšší míru právní jistoty.',
           'Respektování práv nepominutelných dědiců dle § 1643 OZ.',
         ],
+        basic: [
+          'Základní závěť obsahuje minimální požadované prvky.',
+          'Respektování práv nepominutelných dědiců dle § 1643 OZ.',
+        ],
+        comprehensive: [
+          'Komplexní závěť obsahuje podrobná ustanovení.',
+          'Respektování práv nepominutelných dědiců dle § 1643 OZ.',
+        ],
       },
       en: {
         holographic: [
@@ -1180,6 +1208,14 @@ export class MultiLangGenerator {
           'The will is prepared by a notary for maximum legal certainty.',
           'Notarial wills are self-proving in most jurisdictions.',
           'Check local notarial requirements.',
+        ],
+        basic: [
+          'Basic will contains minimum required elements.',
+          'Check local inheritance laws.',
+        ],
+        comprehensive: [
+          'Comprehensive will contains detailed provisions.',
+          'Consider professional legal review.',
         ],
       },
       de: {
@@ -1200,6 +1236,14 @@ export class MultiLangGenerator {
           'Notarielle Testamente bieten höchste Rechtssicherheit.',
           'Pflichtteilsrechte sind zu beachten.',
         ],
+        basic: [
+          'Einfaches Testament enthält die Mindestanforderungen.',
+          'Pflichtteilsrechte sind zu beachten.',
+        ],
+        comprehensive: [
+          'Umfassendes Testament enthält detaillierte Bestimmungen.',
+          'Pflichtteilsrechte sind zu beachten.',
+        ],
       },
     };
 
@@ -1215,7 +1259,7 @@ export class MultiLangGenerator {
   ): string {
     const instructions: Record<
       SupportedLanguage,
-      Record<WillVariant, string>
+      Partial<Record<WillVariant, string>>
     > = {
       sk: {
         holographic:
@@ -1224,6 +1268,9 @@ export class MultiLangGenerator {
           'Podpíšte dokument za súčasnej prítomnosti dvoch svedkov, ktorí následne tiež podpíšu.',
         notarial:
           'Kontaktujte notára pre spísanie závetu vo forme notárskej zápisnice.',
+        basic: 'Podpíšte základný závet vlastnoručne s dátumom a miestom.',
+        comprehensive:
+          'Podpíšte komplexný závet podľa požiadaviek pre daný typ.',
       },
       cs: {
         holographic:
@@ -1232,6 +1279,9 @@ export class MultiLangGenerator {
           'Podepište dokument za současné přítomnosti dvou svědků, kteří následně také podepíší.',
         notarial:
           'Kontaktujte notáře pro sepsání závěti ve formě notářského spisu.',
+        basic: 'Podepište základní závěť vlastnoručně s datem a místem.',
+        comprehensive:
+          'Podepište komplexní závěť podle požadavků pro daný typ.',
       },
       en: {
         holographic:
@@ -1240,6 +1290,10 @@ export class MultiLangGenerator {
           'Sign the document in the simultaneous presence of two witnesses, who will then also sign.',
         notarial:
           'Contact a notary to prepare the will as a notarial document.',
+        basic:
+          'Sign the basic will in your own handwriting with date and place.',
+        comprehensive:
+          'Sign the comprehensive will according to requirements for the chosen type.',
       },
       de: {
         holographic:
@@ -1248,6 +1302,10 @@ export class MultiLangGenerator {
           'Unterschreiben Sie das Dokument in gleichzeitiger Anwesenheit von zwei Zeugen, die danach ebenfalls unterschreiben.',
         notarial:
           'Kontaktieren Sie einen Notar für die notarielle Beurkundung des Testaments.',
+        basic:
+          'Unterschreiben Sie das einfache Testament eigenhändig mit Datum und Ort.',
+        comprehensive:
+          'Unterschreiben Sie das umfassende Testament entsprechend den Anforderungen für den gewählten Typ.',
       },
     };
 

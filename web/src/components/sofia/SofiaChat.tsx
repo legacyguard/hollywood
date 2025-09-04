@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useEffect, useRef, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
@@ -8,15 +8,18 @@ import { Icon } from '@/components/ui/icon-library';
 import { useSofiaStore } from '@/stores/sofiaStore';
 import { useAuth } from '@clerk/clerk-react';
 import ReactMarkdown from 'react-markdown';
-import { type SofiaMessage, sofiaAI, createSofiaMessage } from '@/lib/sofia-ai';
-import { textManager, analyzeUserInput } from '@/lib/text-manager';
-import { type UserPreferences, defaultUserPreferences } from '@/types/user-preferences';
+import { createSofiaMessage, sofiaAI, type SofiaMessage } from '@/lib/sofia-ai';
+import { analyzeUserInput, textManager } from '@/lib/text-manager';
+import {
+  defaultUserPreferences,
+  type UserPreferences,
+} from '@/types/user-preferences';
 
 interface SofiaChatProps {
+  className?: string;
   isOpen?: boolean;
   onClose?: () => void;
-  className?: string;
-  variant?: 'floating' | 'embedded' | 'fullscreen';
+  variant?: 'embedded' | 'floating' | 'fullscreen';
 }
 
 const SofiaChat: React.FC<SofiaChatProps> = ({
@@ -160,14 +163,14 @@ const SofiaChat: React.FC<SofiaChatProps> = ({
   const renderMessage = (message: SofiaMessage) => (
     <motion.div
       key={message.id}
-      initial={{  opacity: 0, y: 20  }}
-      animate={{  opacity: 1, y: 0  }}
-      transition={{  duration: 0.3  }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
       className={`flex gap-3 mb-4 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
     >
       {message.role === 'assistant' && (
         <div className='w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0'>
-          <Icon name={"bot" as any} className='w-4 h-4 text-primary' />
+          <Icon name={'bot' as any} className='w-4 h-4 text-primary' />
         </div>
       )}
 
@@ -222,7 +225,10 @@ const SofiaChat: React.FC<SofiaChatProps> = ({
 
       {message.role === 'user' && (
         <div className='w-8 h-8 rounded-full bg-secondary flex items-center justify-center flex-shrink-0'>
-          <Icon name={"user" as any} className='w-4 h-4 text-secondary-foreground' />
+          <Icon
+            name={'user' as any}
+            className='w-4 h-4 text-secondary-foreground'
+          />
         </div>
       )}
     </motion.div>
@@ -230,24 +236,24 @@ const SofiaChat: React.FC<SofiaChatProps> = ({
 
   const renderTypingIndicator = () => (
     <motion.div
-      initial={{  opacity: 0, y: 20  }}
-      animate={{  opacity: 1, y: 0  }}
-      exit={{  opacity: 0, y: -10  }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
       className='flex gap-3 mb-4'
     >
       <div className='w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0'>
-        <Icon name={"bot" as any} className='w-4 h-4 text-primary' />
+        <Icon name={'bot' as any} className='w-4 h-4 text-primary' />
       </div>
       <div className='bg-muted p-3 rounded-lg'>
         <div className='flex gap-1'>
           <div className='w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce' />
           <div
             className='w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce'
-            style={{  animationDelay: '0.1s'  }}
+            style={{ animationDelay: '0.1s' }}
           />
           <div
             className='w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce'
-            style={{  animationDelay: '0.2s'  }}
+            style={{ animationDelay: '0.2s' }}
           />
         </div>
       </div>
@@ -264,7 +270,7 @@ const SofiaChat: React.FC<SofiaChatProps> = ({
       <div className='flex items-center justify-between p-4 border-b'>
         <div className='flex items-center gap-3'>
           <div className='w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center'>
-            <Icon name={"bot" as any} className='w-5 h-5 text-primary' />
+            <Icon name={'bot' as any} className='w-5 h-5 text-primary' />
           </div>
           <div>
             <h3 className='font-semibold'>Sofia</h3>
@@ -280,12 +286,12 @@ const SofiaChat: React.FC<SofiaChatProps> = ({
 
         {onClose && (
           <Button
-            variant="ghost"
+            variant='ghost'
             size='sm'
             onClick={onClose}
             className='h-8 w-8 p-0'
           >
-            <Icon name={"x" as any} className='w-4 h-4' />
+            <Icon name={'x' as any} className='w-4 h-4' />
           </Button>
         )}
       </div>
@@ -316,9 +322,9 @@ const SofiaChat: React.FC<SofiaChatProps> = ({
             size='sm'
           >
             {isSubmitting ? (
-              <Icon name={"loader-2" as any} className='w-4 h-4 animate-spin' />
+              <Icon name={'loader-2' as any} className='w-4 h-4 animate-spin' />
             ) : (
-              <Icon name={"send" as any} className='w-4 h-4' />
+              <Icon name={'send' as any} className='w-4 h-4' />
             )}
           </Button>
         </form>
@@ -336,9 +342,9 @@ const SofiaChat: React.FC<SofiaChatProps> = ({
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{  opacity: 0  }}
-            animate={{  opacity: 1  }}
-            exit={{  opacity: 0  }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             className='fixed inset-0 bg-background/80 backdrop-blur-sm z-50'
           >
             <div className='container mx-auto h-full max-w-4xl p-4'>
@@ -355,9 +361,9 @@ const SofiaChat: React.FC<SofiaChatProps> = ({
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          initial={{  opacity: 0, scale: 0.95, y: 20  }}
-          animate={{  opacity: 1, scale: 1, y: 0  }}
-          exit={{  opacity: 0, scale: 0.95, y: 20  }}
+          initial={{ opacity: 0, scale: 0.95, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: 20 }}
           className={`fixed bottom-4 right-4 w-96 h-[500px] z-50 ${className}`}
         >
           <Card className='h-full shadow-lg'>{chatContent}</Card>

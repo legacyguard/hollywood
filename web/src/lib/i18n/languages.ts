@@ -5,18 +5,18 @@
 
 export interface LanguageConfig {
   code: string;
+  currencyPosition: 'after' | 'before';
+  dateFormat: string;
+  decimalSeparator: string;
+  direction: 'ltr' | 'rtl';
   name: string;
   nativeName: string;
-  direction: 'ltr' | 'rtl';
-  script: 'Latin' | 'Cyrillic' | 'Greek' | 'Arabic';
-  dateFormat: string;
-  timeFormat: string;
-  decimalSeparator: string;
-  thousandsSeparator: string;
-  currencyPosition: 'before' | 'after';
   pluralRules?: (
     count: number
-  ) => 'zero' | 'one' | 'two' | 'few' | 'many' | 'other';
+  ) => 'few' | 'many' | 'one' | 'other' | 'two' | 'zero';
+  script: 'Arabic' | 'Cyrillic' | 'Greek' | 'Latin';
+  thousandsSeparator: string;
+  timeFormat: string;
 }
 
 export const LANGUAGE_CONFIG: Record<string, LanguageConfig> = {

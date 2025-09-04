@@ -3,25 +3,25 @@
  * Handles data synchronization across devices
  */
 
-export type SyncStatus = 'idle' | 'syncing' | 'synced' | 'error' | 'conflict';
+export type SyncStatus = 'conflict' | 'error' | 'idle' | 'synced' | 'syncing';
 
-export type SyncConflictResolution = 'local' | 'remote' | 'merge';
+export type SyncConflictResolution = 'local' | 'merge' | 'remote';
 
 export interface SyncItem {
-  id: string;
-  type: string;
   data: Record<string, unknown>;
+  id: string;
+  lastSynced?: Date;
   localVersion: number;
   remoteVersion?: number;
-  lastSynced?: Date;
   status: SyncStatus;
+  type: string;
 }
 
 export interface SyncConflict {
   itemId: string;
   localData: Record<string, unknown>;
-  remoteData: Record<string, unknown>;
   localVersion: number;
+  remoteData: Record<string, unknown>;
   remoteVersion: number;
 }
 
@@ -67,7 +67,7 @@ export class SyncService {
   addToSyncQueue(item: Omit<SyncItem, 'status'>): void {
     this.syncQueue.push({
       ...item,
-      status: 'idle'
+      status: 'idle',
     });
   }
 
@@ -76,7 +76,7 @@ export class SyncService {
     resolution: SyncConflictResolution
   ): Promise<void> {
     console.log('Resolving conflict:', conflict.itemId, 'with', resolution);
-    
+
     switch (resolution) {
       case 'local':
         // Keep local version

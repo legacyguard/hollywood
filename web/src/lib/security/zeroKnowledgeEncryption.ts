@@ -1,54 +1,54 @@
 import nacl from 'tweetnacl';
 import {
-  encodeBase64,
   decodeBase64,
-  encodeUTF8,
   decodeUTF8,
+  encodeBase64,
+  encodeUTF8,
 } from 'tweetnacl-util';
-import CryptoJS, { pbkdf2 } from 'crypto-js';
+import CryptoJS from 'crypto-js';
 
 export interface EncryptionKeyPair {
-  publicKey: string;
   encryptedPrivateKey: string; // Private key encrypted with master password
-  keyDerivationSalt: string;
   keyDerivationIterations: number;
+  keyDerivationSalt: string;
+  publicKey: string;
 }
 
 export interface ZeroKnowledgeSession {
-  sessionId: string;
-  publicKey: string;
-  ephemeralKeyPair: nacl.BoxKeyPair;
-  keyDerivationSalt: string;
-  isUnlocked: boolean;
-  unlockTimestamp?: number;
   autoLockTimeout?: number;
+  ephemeralKeyPair: nacl.BoxKeyPair;
+  isUnlocked: boolean;
+  keyDerivationSalt: string;
+  publicKey: string;
+  sessionId: string;
+  unlockTimestamp?: number;
 }
 
 export interface EncryptedDocument {
-  id: string;
+  createdAt: string;
+  documentSalt: string; // Unique salt for this document
   encryptedData: string; // Base64 encrypted file content
   encryptedMetadata: string; // Base64 encrypted metadata
-  documentSalt: string; // Unique salt for this document
+  id: string;
+  modifiedAt: string;
   nonce: string; // Base64 nonce for encryption
   version: number; // Encryption version for future migrations
-  createdAt: string;
-  modifiedAt: string;
 }
 
 export interface DocumentAccess {
-  documentId: string;
-  recipientPublicKey: string;
-  encryptedDocumentKey: string; // Document key encrypted with recipient's public key
-  permissions: AccessPermissions;
-  expiresAt?: string;
   createdAt: string;
+  documentId: string;
+  encryptedDocumentKey: string; // Document key encrypted with recipient's public key
+  expiresAt?: string;
+  permissions: AccessPermissions;
+  recipientPublicKey: string;
 }
 
 export interface AccessPermissions {
-  canView: boolean;
   canDownload: boolean;
-  canShare: boolean;
   canModify: boolean;
+  canShare: boolean;
+  canView: boolean;
   timeLimit?: number; // Minutes
   viewCount?: number; // Max views allowed
   watermark?: boolean;
@@ -58,13 +58,16 @@ class ZeroKnowledgeEncryptionService {
   private readonly ENCRYPTION_VERSION = 1;
   private readonly KEY_DERIVATION_ITERATIONS = 100000;
   private readonly SESSION_TIMEOUT = 30 * 60 * 1000; // 30 minutes
-  private currentSession: ZeroKnowledgeSession | null = null;
+  private currentSession: null | ZeroKnowledgeSession = null;
 
   /**
    * Initialize user encryption keys with master password
    * The server never sees the master password or private keys
    */
-  async initializeUserKeys(masterPassword: string, _userId: string): Promise<EncryptionKeyPair> {
+  async initializeUserKeys(
+    masterPassword: string,
+    _userId: string
+  ): Promise<EncryptionKeyPair> {
     // Generate salt for key derivation
     const keyDerivationSalt = encodeBase64(nacl.randomBytes(32));
 
@@ -72,7 +75,7 @@ class ZeroKnowledgeEncryptionService {
     const keyPair = nacl.box.keyPair();
 
     // Derive encryption key from master password
-    const derivedKey = pbkdf2(masterPassword, keyDerivationSalt, {
+    const derivedKey = CryptoJS.PBKDF2(masterPassword, keyDerivationSalt, {
       keySize: 32,
       iterations: this.KEY_DERIVATION_ITERATIONS,
     });
@@ -103,10 +106,14 @@ class ZeroKnowledgeEncryptionService {
     _userId: string
   ): Promise<ZeroKnowledgeSession> {
     // Derive decryption key from master password
-    const derivedKey = pbkdf2(masterPassword, userKeys.keyDerivationSalt, {
-      keySize: 32,
-      iterations: userKeys.keyDerivationIterations,
-    });
+    const derivedKey = CryptoJS.PBKDF2(
+      masterPassword,
+      userKeys.keyDerivationSalt,
+      {
+        keySize: 32,
+        iterations: userKeys.keyDerivationIterations,
+      }
+    );
 
     try {
       // Decrypt private key
@@ -197,7 +204,7 @@ class ZeroKnowledgeEncryptionService {
     // Encrypt metadata with document key
     const metadataNonce = nacl.randomBytes(nacl.secretbox.nonceLength);
     const encryptedMetadata = nacl.secretbox(
-      encodeUTF8(JSON.stringify(documentMetadata)),
+      new TextEncoder().encode(JSON.stringify(documentMetadata)),
       metadataNonce,
       documentKey
     );
@@ -205,7 +212,8 @@ class ZeroKnowledgeEncryptionService {
     const encryptedDoc: EncryptedDocument = {
       id: encodeBase64(nacl.randomBytes(16)),
       encryptedData: encodeBase64(encryptedFileData),
-      encryptedMetadata: encodeBase64(encryptedMetadata) + ':' + encodeBase64(metadataNonce),
+      encryptedMetadata:
+        encodeBase64(encryptedMetadata) + ':' + encodeBase64(metadataNonce),
       documentSalt,
       nonce: encodeBase64(nonce),
       version: this.ENCRYPTION_VERSION,
@@ -222,7 +230,10 @@ class ZeroKnowledgeEncryptionService {
   /**
    * Store document access key encrypted with user's public key
    */
-  private async storeDocumentAccess(documentId: string, documentKey: Uint8Array): Promise<void> {
+  private async storeDocumentAccess(
+    documentId: string,
+    documentKey: Uint8Array
+  ): Promise<void> {
     if (!this.currentSession?.isUnlocked) {
       throw new Error('Session not unlocked');
     }
@@ -239,7 +250,8 @@ class ZeroKnowledgeEncryptionService {
     const access: DocumentAccess = {
       documentId,
       recipientPublicKey: this.currentSession.publicKey,
-      encryptedDocumentKey: encodeBase64(encryptedDocumentKey) + ':' + encodeBase64(nonce),
+      encryptedDocumentKey:
+        encodeBase64(encryptedDocumentKey) + ':' + encodeBase64(nonce),
       permissions: {
         canView: true,
         canDownload: true,
@@ -273,23 +285,32 @@ class ZeroKnowledgeEncryptionService {
     // Decrypt file data
     const encryptedData = decodeBase64(encryptedDoc.encryptedData);
     const nonce = decodeBase64(encryptedDoc.nonce);
-    const decryptedFileData = nacl.secretbox.open(encryptedData, nonce, documentKey);
+    const decryptedFileData = nacl.secretbox.open(
+      encryptedData,
+      nonce,
+      documentKey
+    );
 
     if (!decryptedFileData) {
       throw new Error('Failed to decrypt document data');
     }
 
     // Decrypt metadata
-    const [encryptedMetadataBase64, metadataNonceBase64] = encryptedDoc.encryptedMetadata.split(':');
+    const [encryptedMetadataBase64, metadataNonceBase64] =
+      encryptedDoc.encryptedMetadata.split(':');
     const encryptedMetadata = decodeBase64(encryptedMetadataBase64);
     const metadataNonce = decodeBase64(metadataNonceBase64);
-    const decryptedMetadata = nacl.secretbox.open(encryptedMetadata, metadataNonce, documentKey);
+    const decryptedMetadata = nacl.secretbox.open(
+      encryptedMetadata,
+      metadataNonce,
+      documentKey
+    );
 
     if (!decryptedMetadata) {
       throw new Error('Failed to decrypt document metadata');
     }
 
-    const metadata = JSON.parse(decodeUTF8(decryptedMetadata));
+    const metadata = JSON.parse(new TextDecoder().decode(decryptedMetadata));
 
     return {
       fileData: decryptedFileData,
@@ -327,7 +348,8 @@ class ZeroKnowledgeEncryptionService {
     const access: DocumentAccess = {
       documentId,
       recipientPublicKey,
-      encryptedDocumentKey: encodeBase64(encryptedDocumentKey) + ':' + encodeBase64(nonce),
+      encryptedDocumentKey:
+        encodeBase64(encryptedDocumentKey) + ':' + encodeBase64(nonce),
       permissions,
       expiresAt: permissions.timeLimit
         ? new Date(Date.now() + permissions.timeLimit * 60000).toISOString()
@@ -344,13 +366,16 @@ class ZeroKnowledgeEncryptionService {
   /**
    * Get document key from storage
    */
-  private async getDocumentKey(documentId: string): Promise<Uint8Array | null> {
+  private async getDocumentKey(documentId: string): Promise<null | Uint8Array> {
     if (!this.currentSession?.isUnlocked) {
       return null;
     }
 
     try {
-      const access = await this.getFromIndexedDB('document_access', documentId) as DocumentAccess;
+      const access = (await this.getFromIndexedDB(
+        'document_access',
+        documentId
+      )) as DocumentAccess;
       if (!access) {
         return null;
       }
@@ -362,7 +387,8 @@ class ZeroKnowledgeEncryptionService {
       }
 
       // Decrypt document key
-      const [encryptedKeyBase64, nonceBase64] = access.encryptedDocumentKey.split(':');
+      const [encryptedKeyBase64, nonceBase64] =
+        access.encryptedDocumentKey.split(':');
       const encryptedKey = decodeBase64(encryptedKeyBase64);
       const nonce = decodeBase64(nonceBase64);
 
@@ -383,7 +409,10 @@ class ZeroKnowledgeEncryptionService {
   /**
    * IndexedDB operations for client-side key storage
    */
-  private async storeInIndexedDB(storeName: string, data: unknown): Promise<void> {
+  private async storeInIndexedDB(
+    storeName: string,
+    data: unknown
+  ): Promise<void> {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open('LegacyGuardSecure', 1);
 
@@ -394,7 +423,10 @@ class ZeroKnowledgeEncryptionService {
         const transaction = db.transaction([storeName], 'readwrite');
         const store = transaction.objectStore(storeName);
 
-        const putRequest = store.put(data, data.documentId || data.id);
+        const putRequest = store.put(
+          data,
+          (data as any).documentId || (data as any).id
+        );
         putRequest.onsuccess = () => resolve();
         putRequest.onerror = () => reject(putRequest.error);
       };
@@ -408,7 +440,10 @@ class ZeroKnowledgeEncryptionService {
     });
   }
 
-  private async getFromIndexedDB(storeName: string, key: string): Promise<unknown> {
+  private async getFromIndexedDB(
+    storeName: string,
+    key: string
+  ): Promise<unknown> {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open('LegacyGuardSecure', 1);
 
@@ -433,7 +468,10 @@ class ZeroKnowledgeEncryptionService {
     });
   }
 
-  private async removeFromIndexedDB(storeName: string, key: string): Promise<void> {
+  private async removeFromIndexedDB(
+    storeName: string,
+    key: string
+  ): Promise<void> {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open('LegacyGuardSecure', 1);
 
@@ -460,7 +498,8 @@ class ZeroKnowledgeEncryptionService {
     }
 
     const timeRemaining = this.currentSession.autoLockTimeout
-      ? this.currentSession.autoLockTimeout - (Date.now() - (this.currentSession.unlockTimestamp || 0))
+      ? this.currentSession.autoLockTimeout -
+        (Date.now() - (this.currentSession.unlockTimestamp || 0))
       : undefined;
 
     return {
@@ -472,10 +511,13 @@ class ZeroKnowledgeEncryptionService {
   /**
    * Export user keys for backup (encrypted)
    */
-  async exportUserKeys(masterPassword: string, userKeys: EncryptionKeyPair): Promise<string> {
+  async exportUserKeys(
+    masterPassword: string,
+    userKeys: EncryptionKeyPair
+  ): Promise<string> {
     // Re-encrypt keys with additional layer for backup
     const backupSalt = encodeBase64(nacl.randomBytes(32));
-    const backupKey = pbkdf2(masterPassword + backupSalt, backupSalt, {
+    const backupKey = CryptoJS.PBKDF2(masterPassword + backupSalt, backupSalt, {
       keySize: 32,
       iterations: this.KEY_DERIVATION_ITERATIONS * 2,
     });
@@ -498,10 +540,16 @@ class ZeroKnowledgeEncryptionService {
   /**
    * Import user keys from backup
    */
-  async importUserKeys(encryptedBackup: string, masterPassword: string): Promise<EncryptionKeyPair> {
+  async importUserKeys(
+    encryptedBackup: string,
+    masterPassword: string
+  ): Promise<EncryptionKeyPair> {
     try {
       // First, try to decrypt the backup
-      const decryptedData = CryptoJS.AES.decrypt(encryptedBackup, masterPassword).toString(CryptoJS.enc.Utf8);
+      const decryptedData = CryptoJS.AES.decrypt(
+        encryptedBackup,
+        masterPassword
+      ).toString(CryptoJS.enc.Utf8);
 
       if (!decryptedData) {
         throw new Error('Invalid backup or password');
@@ -510,7 +558,11 @@ class ZeroKnowledgeEncryptionService {
       const backupData = JSON.parse(decryptedData);
 
       // Verify the backup contains valid keys
-      if (!backupData.keys || !backupData.keys.publicKey || !backupData.keys.encryptedPrivateKey) {
+      if (
+        !backupData.keys ||
+        !backupData.keys.publicKey ||
+        !backupData.keys.encryptedPrivateKey
+      ) {
         throw new Error('Invalid backup format');
       }
 

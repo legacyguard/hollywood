@@ -4,18 +4,18 @@
 import type { SofiaContext, SofiaMessage } from './sofia-types';
 
 interface SofiaAPIRequest {
-  prompt: string;
   context: SofiaContext;
   conversationHistory?: SofiaMessage[];
-  requestType: 'simple_query' | 'knowledge_lookup' | 'premium_generation';
+  prompt: string;
+  requestType: 'knowledge_lookup' | 'premium_generation' | 'simple_query';
 }
 
 interface SofiaAPIResponse {
-  success: boolean;
-  response?: string;
-  error?: string;
-  tokensUsed?: number;
   cost: 'free' | 'low_cost' | 'premium';
+  error?: string;
+  response?: string;
+  success: boolean;
+  tokensUsed?: number;
 }
 
 class SofiaAPI {
@@ -150,7 +150,7 @@ class SofiaAPI {
    */
   private generateSystemPrompt(
     context: SofiaContext,
-    type: 'simple' | 'premium'
+    type: 'premium' | 'simple'
   ): string {
     const basePrompt = `You are Sofia, a warm, intelligent AI assistant for LegacyGuard - a secure family protection platform. You help users organize their digital lives, protect their families, and create meaningful legacies.
 

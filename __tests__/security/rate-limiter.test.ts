@@ -23,7 +23,11 @@ describe('RateLimiter', () => {
       const config = { windowMs: 60000, maxRequests: 5 };
 
       for (let i = 0; i < 5; i++) {
-        const result = await rateLimiter.checkLimit(identifier, endpoint, config);
+        const result = await rateLimiter.checkLimit(
+          identifier,
+          endpoint,
+          config
+        );
         expect(result.allowed).toBe(true);
         expect(result.remaining).toBe(4 - i);
       }
@@ -36,7 +40,11 @@ describe('RateLimiter', () => {
 
       // First 3 requests should pass
       for (let i = 0; i < 3; i++) {
-        const result = await rateLimiter.checkLimit(identifier, endpoint, config);
+        const result = await rateLimiter.checkLimit(
+          identifier,
+          endpoint,
+          config
+        );
         expect(result.allowed).toBe(true);
       }
 
@@ -48,7 +56,7 @@ describe('RateLimiter', () => {
 
     test('should reset after window expires', async () => {
       jest.useFakeTimers();
-      
+
       const identifier = 'user123';
       const endpoint = '/api/test';
       const config = { windowMs: 1000, maxRequests: 1 };
@@ -93,15 +101,27 @@ describe('RateLimiter', () => {
       const config = { windowMs: 60000, maxRequests: 1 };
 
       // Request to first endpoint
-      let result = await rateLimiter.checkLimit(identifier, '/api/endpoint1', config);
+      let result = await rateLimiter.checkLimit(
+        identifier,
+        '/api/endpoint1',
+        config
+      );
       expect(result.allowed).toBe(true);
 
       // Second request to first endpoint should fail
-      result = await rateLimiter.checkLimit(identifier, '/api/endpoint1', config);
+      result = await rateLimiter.checkLimit(
+        identifier,
+        '/api/endpoint1',
+        config
+      );
       expect(result.allowed).toBe(false);
 
       // Request to second endpoint should still pass
-      result = await rateLimiter.checkLimit(identifier, '/api/endpoint2', config);
+      result = await rateLimiter.checkLimit(
+        identifier,
+        '/api/endpoint2',
+        config
+      );
       expect(result.allowed).toBe(true);
     });
   });
@@ -114,7 +134,11 @@ describe('RateLimiter', () => {
 
       // Should allow up to maxRequests
       for (let i = 0; i < preset.maxRequests; i++) {
-        const result = await rateLimiter.checkLimit(identifier, endpoint, preset);
+        const result = await rateLimiter.checkLimit(
+          identifier,
+          endpoint,
+          preset
+        );
         expect(result.allowed).toBe(true);
       }
 
@@ -135,7 +159,11 @@ describe('RateLimiter', () => {
 
       // Test limit
       for (let i = 0; i < preset.maxRequests; i++) {
-        const result = await rateLimiter.checkLimit(identifier, endpoint, preset);
+        const result = await rateLimiter.checkLimit(
+          identifier,
+          endpoint,
+          preset
+        );
         expect(result.allowed).toBe(true);
       }
 
@@ -155,7 +183,11 @@ describe('RateLimiter', () => {
 
       // Test very strict limit
       for (let i = 0; i < preset.maxRequests; i++) {
-        const result = await rateLimiter.checkLimit(identifier, endpoint, preset);
+        const result = await rateLimiter.checkLimit(
+          identifier,
+          endpoint,
+          preset
+        );
         expect(result.allowed).toBe(true);
       }
 
@@ -183,11 +215,11 @@ describe('RateLimiter', () => {
     test('should track burst activity', async () => {
       const identifier = 'user123';
       const endpoint = '/api/test';
-      const config = { 
-        windowMs: 1000, 
+      const config = {
+        windowMs: 1000,
         maxRequests: 100,
         burstLimit: 10,
-        burstWindowMs: 100
+        burstWindowMs: 100,
       };
 
       // Rapid burst should be detected
@@ -198,7 +230,7 @@ describe('RateLimiter', () => {
 
       const results = await Promise.all(promises);
       const blocked = results.filter(r => !r.allowed).length;
-      
+
       // Some requests should be blocked due to burst limit
       expect(blocked).toBeGreaterThan(0);
     });
@@ -279,7 +311,7 @@ describe('RateLimiter', () => {
 
       const startTime = Date.now();
       await rateLimiter.checkLimit(identifier, endpoint, config);
-      
+
       const result = await rateLimiter.checkLimit(identifier, endpoint, config);
       expect(result.allowed).toBe(false);
       expect(result.resetTime).toBeGreaterThan(startTime);

@@ -17,17 +17,17 @@ test.describe('🎭 Working Guardian Journey', () => {
     const context = await browser.newContext({
       recordVideo: {
         dir: 'tests/videos/working-journey/',
-        size: { width: 1280, height: 720 }
-      }
+        size: { width: 1280, height: 720 },
+      },
     });
     page = await context.newPage();
 
-      // Basic console logging
-  page.on('console', msg => {
-    if (msg.type() === 'error') {
-      // console.log('Browser Error:', msg.text());
-    }
-  });
+    // Basic console logging
+    page.on('console', msg => {
+      if (msg.type() === 'error') {
+        // console.log('Browser Error:', msg.text());
+      }
+    });
   });
 
   test.afterAll(async () => {
@@ -43,7 +43,7 @@ test.describe('🎭 Working Guardian Journey', () => {
     // Take screenshot
     await page.screenshot({
       path: 'tests/screenshots/working-01-landing.png',
-      fullPage: true
+      fullPage: true,
     });
 
     // Verify basic page structure - be flexible with selectors
@@ -56,14 +56,16 @@ test.describe('🎭 Working Guardian Journey', () => {
 
     await expect(ctaButton.first()).toBeVisible({ timeout: 10000 });
 
-          // console.log('✅ Landing page basic elements verified');
+    // console.log('✅ Landing page basic elements verified');
   });
 
   test('Step 2: Navigate to Authentication', async () => {
     // Click the main CTA button
-    const ctaButton = page.locator(
-      'button:has-text("Start Your Journey"), button:has-text("Get Started"), button:has-text("Begin"), a:has-text("Get Started")'
-    ).first();
+    const ctaButton = page
+      .locator(
+        'button:has-text("Start Your Journey"), button:has-text("Get Started"), button:has-text("Begin"), a:has-text("Get Started")'
+      )
+      .first();
 
     await ctaButton.click();
 
@@ -73,7 +75,7 @@ test.describe('🎭 Working Guardian Journey', () => {
 
     await page.screenshot({
       path: 'tests/screenshots/working-02-auth-page.png',
-      fullPage: true
+      fullPage: true,
     });
 
     // Verify we're on an auth page
@@ -82,12 +84,17 @@ test.describe('🎭 Working Guardian Journey', () => {
       'input[name="emailAddress"]',
       'input[name="identifier"]',
       '.cl-component',
-      '[data-clerk-id]'
+      '[data-clerk-id]',
     ];
 
     let authFound = false;
     for (const selector of authElements) {
-      if (await page.locator(selector).isVisible({ timeout: 3000 }).catch(() => false)) {
+      if (
+        await page
+          .locator(selector)
+          .isVisible({ timeout: 3000 })
+          .catch(() => false)
+      ) {
         // console.log(`✅ Auth element found: ${selector}`);
         authFound = true;
         break;
@@ -106,7 +113,7 @@ test.describe('🎭 Working Guardian Journey', () => {
       }
     }
 
-          // console.log('✅ Navigation to authentication completed');
+    // console.log('✅ Navigation to authentication completed');
   });
 
   test('Step 3: Explore Main Navigation', async () => {
@@ -122,7 +129,7 @@ test.describe('🎭 Working Guardian Journey', () => {
       '.navigation',
       'a[href*="vault"]',
       'a[href*="guardian"]',
-      'a[href*="legacy"]'
+      'a[href*="legacy"]',
     ];
 
     let _navFound = false;
@@ -136,10 +143,10 @@ test.describe('🎭 Working Guardian Journey', () => {
 
     await page.screenshot({
       path: 'tests/screenshots/working-03-navigation.png',
-      fullPage: true
+      fullPage: true,
     });
 
-          // console.log(navFound ? '✅ Navigation exploration completed' : '⚠️ Navigation structure needs investigation');
+    // console.log(navFound ? '✅ Navigation exploration completed' : '⚠️ Navigation structure needs investigation');
   });
 
   test('Step 4: Test Responsive Design', async () => {
@@ -150,7 +157,7 @@ test.describe('🎭 Working Guardian Journey', () => {
 
     await page.screenshot({
       path: 'tests/screenshots/working-04-mobile.png',
-      fullPage: true
+      fullPage: true,
     });
 
     // Check if main elements are still visible on mobile
@@ -162,13 +169,13 @@ test.describe('🎭 Working Guardian Journey', () => {
 
     await page.screenshot({
       path: 'tests/screenshots/working-05-tablet.png',
-      fullPage: true
+      fullPage: true,
     });
 
     // Back to desktop
     await page.setViewportSize({ width: 1280, height: 720 });
 
-          // console.log('✅ Responsive design test completed');
+    // console.log('✅ Responsive design test completed');
   });
 
   test('Step 5: Performance and Accessibility Check', async () => {
@@ -180,7 +187,7 @@ test.describe('🎭 Working Guardian Journey', () => {
       page.locator('[alt]').count(), // Images with alt text
       page.locator('button[aria-label]').count(), // Buttons with aria-label
       page.locator('[role]').count(), // Elements with roles
-      page.locator('h1, h2, h3, h4, h5, h6').count() // Heading structure
+      page.locator('h1, h2, h3, h4, h5, h6').count(), // Heading structure
     ]);
 
     // console.log('Accessibility metrics:', {
@@ -192,10 +199,13 @@ test.describe('🎭 Working Guardian Journey', () => {
 
     // Basic performance check - page load time
     const performanceTiming = await page.evaluate(() => {
-      const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+      const navigation = performance.getEntriesByType(
+        'navigation'
+      )[0] as PerformanceNavigationTiming;
       return {
-        domContentLoaded: navigation.domContentLoadedEventEnd - navigation.fetchStart,
-        loadComplete: navigation.loadEventEnd - navigation.fetchStart
+        domContentLoaded:
+          navigation.domContentLoadedEventEnd - navigation.fetchStart,
+        loadComplete: navigation.loadEventEnd - navigation.fetchStart,
       };
     });
 
@@ -214,12 +224,15 @@ test.describe('🎭 Working Guardian Journey', () => {
 
     await page.screenshot({
       path: 'tests/screenshots/working-06-404.png',
-      fullPage: true
+      fullPage: true,
     });
 
     // Should show some kind of error page or redirect
-    const is404 = await page.locator('text=/404|not found|page not found/i').isVisible({ timeout: 3000 }).catch(() => false);
-    const hasContent = await page.locator('body *').count() > 5; // Has some content
+    const is404 = await page
+      .locator('text=/404|not found|page not found/i')
+      .isVisible({ timeout: 3000 })
+      .catch(() => false);
+    const hasContent = (await page.locator('body *').count()) > 5; // Has some content
 
     expect(is404 || hasContent).toBeTruthy();
 
@@ -231,7 +244,7 @@ test.describe('🎭 Working Guardian Journey', () => {
     const coreRoutes = [
       { path: '/showcase', name: 'Component Showcase' },
       { path: '/privacy', name: 'Privacy Page' },
-      { path: '/terms', name: 'Terms Page' }
+      { path: '/terms', name: 'Terms Page' },
     ];
 
     for (const route of coreRoutes) {
@@ -239,12 +252,12 @@ test.describe('🎭 Working Guardian Journey', () => {
         await page.goto(route.path);
         await page.waitForLoadState('networkidle');
 
-        const hasContent = await page.locator('body *').count() > 5;
+        const hasContent = (await page.locator('body *').count()) > 5;
 
         if (hasContent) {
           await page.screenshot({
             path: `tests/screenshots/working-07-${route.name.toLowerCase().replace(' ', '-')}.png`,
-            fullPage: true
+            fullPage: true,
           });
           // console.log(`✅ ${route.name} accessible`);
         } else {
@@ -264,17 +277,18 @@ test.describe('🎭 Working Guardian Journey', () => {
 
     await page.screenshot({
       path: 'tests/screenshots/working-08-final.png',
-      fullPage: true
+      fullPage: true,
     });
 
     // Get final page info
     const pageInfo = {
       url: page.url(),
       title: await page.title(),
-      hasClerk: await page.locator('.cl-component, [data-clerk-id]').count() > 0,
+      hasClerk:
+        (await page.locator('.cl-component, [data-clerk-id]').count()) > 0,
       buttonCount: await page.locator('button').count(),
       linkCount: await page.locator('a').count(),
-      imageCount: await page.locator('img').count()
+      imageCount: await page.locator('img').count(),
     };
 
     // console.log('🎉 Guardian Journey Test Complete!');

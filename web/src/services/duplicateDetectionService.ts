@@ -6,44 +6,44 @@
 import type { ExtractedDocument } from '@/types/gmail';
 
 export interface DuplicateMatch {
+  confidence: 'high' | 'low' | 'medium';
   document: ExtractedDocument;
   existingDocument: ExistingDocument;
-  similarity: number;
   matchReasons: DuplicateReason[];
-  confidence: 'high' | 'medium' | 'low';
-  recommendation: 'skip' | 'replace' | 'keep_both' | 'rename';
+  recommendation: 'keep_both' | 'rename' | 'replace' | 'skip';
+  similarity: number;
 }
 
 export interface ExistingDocument {
-  id: string;
-  filename: string;
-  size: number;
-  mimeType: string;
-  uploadDate: Date;
   checksum?: string;
+  filename: string;
+  id: string;
   metadata?: {
+    date?: string;
     fromEmail?: string;
     subject?: string;
-    date?: string;
   };
+  mimeType: string;
+  size: number;
+  uploadDate: Date;
 }
 
 export interface DuplicateReason {
-  type: 'filename' | 'size' | 'content_hash' | 'metadata' | 'semantic';
-  similarity: number;
   description: string;
+  similarity: number;
+  type: 'content_hash' | 'filename' | 'metadata' | 'semantic' | 'size';
 }
 
 export interface DuplicateDetectionResult {
-  duplicates: DuplicateMatch[];
-  uniqueDocuments: ExtractedDocument[];
-  totalProcessed: number;
   duplicateCount: number;
+  duplicates: DuplicateMatch[];
+  totalProcessed: number;
+  uniqueDocuments: ExtractedDocument[];
 }
 
 export interface DuplicateResolutionChoice {
+  action: 'keep_both' | 'rename' | 'replace' | 'skip';
   documentId: string;
-  action: 'skip' | 'replace' | 'keep_both' | 'rename';
   newFilename?: string;
 }
 
@@ -79,8 +79,8 @@ export class DuplicateDetectionService {
         metadata: {
           fromEmail: 'lawyer@example.com',
           subject: 'Your Will Template',
-          date: '2024-01-15'
-        }
+          date: '2024-01-15',
+        },
       },
       {
         id: 'doc_2',
@@ -92,8 +92,8 @@ export class DuplicateDetectionService {
         metadata: {
           fromEmail: 'insurance@company.com',
           subject: 'Policy Documents',
-          date: '2024-02-01'
-        }
+          date: '2024-02-01',
+        },
       },
       {
         id: 'doc_3',
@@ -104,9 +104,9 @@ export class DuplicateDetectionService {
         metadata: {
           fromEmail: 'statements@bank.com',
           subject: 'January 2024 Statement',
-          date: '2024-01-31'
-        }
-      }
+          date: '2024-01-31',
+        },
+      },
     ];
   }
 
@@ -126,7 +126,9 @@ export class DuplicateDetectionService {
 
       if (matches.length > 0) {
         // Get the best match
-        const bestMatch = matches.sort((a, b) => b.similarity - a.similarity)[0];
+        const bestMatch = matches.sort(
+          (a, b) => b.similarity - a.similarity
+        )[0];
         duplicates.push(bestMatch);
       } else {
         uniqueDocuments.push(document);
@@ -142,27 +144,33 @@ export class DuplicateDetectionService {
       duplicates,
       uniqueDocuments,
       totalProcessed: documents.length,
-      duplicateCount: duplicates.length
+      duplicateCount: duplicates.length,
     };
   }
 
   /**
    * Find potential duplicate matches for a single document
    */
-  private async findDuplicateMatches(document: ExtractedDocument): Promise<DuplicateMatch[]> {
+  private async findDuplicateMatches(
+    document: ExtractedDocument
+  ): Promise<DuplicateMatch[]> {
     const matches: DuplicateMatch[] = [];
 
     for (const existingDoc of this.existingDocuments) {
       const similarity = await this.calculateSimilarity(document, existingDoc);
 
-      if (similarity.overall > 0.3) { // 30% similarity threshold
+      if (similarity.overall > 0.3) {
+        // 30% similarity threshold
         const match: DuplicateMatch = {
           document,
           existingDocument: existingDoc,
           similarity: similarity.overall,
           matchReasons: similarity.reasons,
           confidence: this.getConfidenceLevel(similarity.overall),
-          recommendation: this.getRecommendation(similarity.overall, similarity.reasons)
+          recommendation: this.getRecommendation(
+            similarity.overall,
+            similarity.reasons
+          ),
         };
 
         matches.push(match);
@@ -184,7 +192,10 @@ export class DuplicateDetectionService {
     let totalWeight = 0;
 
     // 1. Exact filename match (highest weight)
-    const filenameMatch = this.calculateFilenameMatch(document.filename, existingDoc.filename);
+    const filenameMatch = this.calculateFilenameMatch(
+      document.filename,
+      existingDoc.filename
+    );
     if (filenameMatch.similarity > 0) {
       reasons.push(filenameMatch);
       totalScore += filenameMatch.similarity * 0.4;
@@ -204,7 +215,7 @@ export class DuplicateDetectionService {
       const mimeReason: DuplicateReason = {
         type: 'content_hash',
         similarity: 1.0,
-        description: 'Same file type'
+        description: 'Same file type',
       };
       reasons.push(mimeReason);
       totalScore += 1.0 * 0.1;
@@ -213,7 +224,10 @@ export class DuplicateDetectionService {
 
     // 4. Metadata similarity (email sender, subject, date)
     if (existingDoc.metadata && document.metadata) {
-      const metadataMatch = this.calculateMetadataMatch(document.metadata, existingDoc.metadata);
+      const metadataMatch = this.calculateMetadataMatch(
+        document.metadata,
+        existingDoc.metadata
+      );
       if (metadataMatch.similarity > 0) {
         reasons.push(metadataMatch);
         totalScore += metadataMatch.similarity * 0.2;
@@ -222,7 +236,10 @@ export class DuplicateDetectionService {
     }
 
     // 5. Semantic filename similarity (fuzzy matching)
-    const semanticMatch = this.calculateSemanticMatch(document.filename, existingDoc.filename);
+    const semanticMatch = this.calculateSemanticMatch(
+      document.filename,
+      existingDoc.filename
+    );
     if (semanticMatch.similarity > 0) {
       reasons.push(semanticMatch);
       totalScore += semanticMatch.similarity * 0.1;
@@ -237,7 +254,10 @@ export class DuplicateDetectionService {
   /**
    * Calculate filename similarity
    */
-  private calculateFilenameMatch(filename1: string, filename2: string): DuplicateReason {
+  private calculateFilenameMatch(
+    filename1: string,
+    filename2: string
+  ): DuplicateReason {
     const name1 = filename1.toLowerCase();
     const name2 = filename2.toLowerCase();
 
@@ -246,7 +266,7 @@ export class DuplicateDetectionService {
       return {
         type: 'filename',
         similarity: 1.0,
-        description: 'Identical filename'
+        description: 'Identical filename',
       };
     }
 
@@ -258,14 +278,14 @@ export class DuplicateDetectionService {
       return {
         type: 'filename',
         similarity: 0.9,
-        description: 'Same filename, different extension'
+        description: 'Same filename, different extension',
       };
     }
 
     return {
       type: 'filename',
       similarity: 0,
-      description: 'Different filename'
+      description: 'Different filename',
     };
   }
 
@@ -278,7 +298,7 @@ export class DuplicateDetectionService {
       return {
         type: 'size',
         similarity: 1.0,
-        description: 'Identical file size'
+        description: 'Identical file size',
       };
     }
 
@@ -291,7 +311,7 @@ export class DuplicateDetectionService {
       return {
         type: 'size',
         similarity: 0.8,
-        description: 'Very similar file size'
+        description: 'Very similar file size',
       };
     }
 
@@ -300,14 +320,14 @@ export class DuplicateDetectionService {
       return {
         type: 'size',
         similarity: 0.4,
-        description: 'Similar file size'
+        description: 'Similar file size',
       };
     }
 
     return {
       type: 'size',
       similarity: 0,
-      description: 'Different file size'
+      description: 'Different file size',
     };
   }
 
@@ -315,8 +335,8 @@ export class DuplicateDetectionService {
    * Calculate metadata similarity
    */
   private calculateMetadataMatch(
-    metadata1: { fromEmail: string; subject: string; date: string },
-    metadata2: { fromEmail?: string; subject?: string; date?: string }
+    metadata1: { date: string; fromEmail: string; subject: string },
+    metadata2: { date?: string; fromEmail?: string; subject?: string }
   ): DuplicateReason {
     let matches = 0;
     let total = 0;
@@ -324,7 +344,9 @@ export class DuplicateDetectionService {
     // Email sender match
     if (metadata2.fromEmail) {
       total++;
-      if (metadata1.fromEmail.toLowerCase() === metadata2.fromEmail.toLowerCase()) {
+      if (
+        metadata1.fromEmail.toLowerCase() === metadata2.fromEmail.toLowerCase()
+      ) {
         matches++;
       }
     }
@@ -335,7 +357,11 @@ export class DuplicateDetectionService {
       const subject1 = metadata1.subject.toLowerCase();
       const subject2 = metadata2.subject.toLowerCase();
 
-      if (subject1 === subject2 || subject1.includes(subject2) || subject2.includes(subject1)) {
+      if (
+        subject1 === subject2 ||
+        subject1.includes(subject2) ||
+        subject2.includes(subject1)
+      ) {
         matches++;
       }
     }
@@ -345,9 +371,11 @@ export class DuplicateDetectionService {
       total++;
       const date1 = new Date(metadata1.date);
       const date2 = new Date(metadata2.date);
-      const daysDifference = Math.abs(date1.getTime() - date2.getTime()) / (1000 * 60 * 60 * 24);
+      const daysDifference =
+        Math.abs(date1.getTime() - date2.getTime()) / (1000 * 60 * 60 * 24);
 
-      if (daysDifference <= 7) { // Within a week
+      if (daysDifference <= 7) {
+        // Within a week
         matches++;
       }
     }
@@ -357,40 +385,43 @@ export class DuplicateDetectionService {
     return {
       type: 'metadata',
       similarity,
-      description: `${matches}/${total} metadata fields match`
+      description: `${matches}/${total} metadata fields match`,
     };
   }
 
   /**
    * Calculate semantic similarity using simple string comparison
    */
-  private calculateSemanticMatch(filename1: string, filename2: string): DuplicateReason {
+  private calculateSemanticMatch(
+    filename1: string,
+    filename2: string
+  ): DuplicateReason {
     const name1 = filename1.toLowerCase().replace(/[_\-\s]/g, '');
     const name2 = filename2.toLowerCase().replace(/[_\-\s]/g, '');
 
     // Calculate Levenshtein distance
     const distance = this.levenshteinDistance(name1, name2);
     const maxLength = Math.max(name1.length, name2.length);
-    const similarity = maxLength > 0 ? 1 - (distance / maxLength) : 0;
+    const similarity = maxLength > 0 ? 1 - distance / maxLength : 0;
 
     if (similarity > 0.7) {
       return {
         type: 'semantic',
         similarity,
-        description: 'Very similar filename structure'
+        description: 'Very similar filename structure',
       };
     } else if (similarity > 0.4) {
       return {
         type: 'semantic',
         similarity,
-        description: 'Similar filename structure'
+        description: 'Similar filename structure',
       };
     }
 
     return {
       type: 'semantic',
       similarity: 0,
-      description: 'Different filename structure'
+      description: 'Different filename structure',
     };
   }
 
@@ -398,7 +429,9 @@ export class DuplicateDetectionService {
    * Calculate Levenshtein distance between two strings
    */
   private levenshteinDistance(str1: string, str2: string): number {
-    const matrix = Array(str2.length + 1).fill(null).map(() => Array(str1.length + 1).fill(null));
+    const matrix = Array(str2.length + 1)
+      .fill(null)
+      .map(() => Array(str1.length + 1).fill(null));
 
     for (let i = 0; i <= str1.length; i++) {
       matrix[0][i] = i;
@@ -412,8 +445,8 @@ export class DuplicateDetectionService {
       for (let i = 1; i <= str1.length; i++) {
         const indicator = str1[i - 1] === str2[j - 1] ? 0 : 1;
         matrix[j][i] = Math.min(
-          matrix[j][i - 1] + 1,     // deletion
-          matrix[j - 1][i] + 1,     // insertion
+          matrix[j][i - 1] + 1, // deletion
+          matrix[j - 1][i] + 1, // insertion
           matrix[j - 1][i - 1] + indicator // substitution
         );
       }
@@ -425,7 +458,7 @@ export class DuplicateDetectionService {
   /**
    * Get confidence level based on similarity score
    */
-  private getConfidenceLevel(similarity: number): 'high' | 'medium' | 'low' {
+  private getConfidenceLevel(similarity: number): 'high' | 'low' | 'medium' {
     if (similarity >= 0.8) return 'high';
     if (similarity >= 0.5) return 'medium';
     return 'low';
@@ -437,12 +470,16 @@ export class DuplicateDetectionService {
   private getRecommendation(
     similarity: number,
     reasons: DuplicateReason[]
-  ): 'skip' | 'replace' | 'keep_both' | 'rename' {
+  ): 'keep_both' | 'rename' | 'replace' | 'skip' {
     // High confidence duplicates
     if (similarity >= 0.9) {
       // Check if it's an exact match
-      const hasExactFilename = reasons.some(r => r.type === 'filename' && r.similarity === 1.0);
-      const hasExactSize = reasons.some(r => r.type === 'size' && r.similarity === 1.0);
+      const hasExactFilename = reasons.some(
+        r => r.type === 'filename' && r.similarity === 1.0
+      );
+      const hasExactSize = reasons.some(
+        r => r.type === 'size' && r.similarity === 1.0
+      );
 
       if (hasExactFilename && hasExactSize) {
         return 'skip'; // Definitely a duplicate
@@ -471,12 +508,16 @@ export class DuplicateDetectionService {
 
     switch (match.recommendation) {
       case 'skip':
-        suggestions.push('This appears to be an exact duplicate - skip importing');
+        suggestions.push(
+          'This appears to be an exact duplicate - skip importing'
+        );
         suggestions.push('The existing document is already in your vault');
         break;
 
       case 'replace':
-        suggestions.push('This might be a newer version of the existing document');
+        suggestions.push(
+          'This might be a newer version of the existing document'
+        );
         suggestions.push('Consider replacing the old version');
         suggestions.push('Check the dates to confirm which is more recent');
         break;
@@ -490,13 +531,19 @@ export class DuplicateDetectionService {
       case 'rename':
         suggestions.push('Similar documents detected');
         suggestions.push('Consider renaming one to avoid confusion');
-        suggestions.push('Both documents might have different content or versions');
+        suggestions.push(
+          'Both documents might have different content or versions'
+        );
         break;
     }
 
     // Add specific suggestions based on match reasons
-    const hasFilenameMatch = match.matchReasons.some(r => r.type === 'filename');
-    const hasMetadataMatch = match.matchReasons.some(r => r.type === 'metadata');
+    const hasFilenameMatch = match.matchReasons.some(
+      r => r.type === 'filename'
+    );
+    const hasMetadataMatch = match.matchReasons.some(
+      r => r.type === 'metadata'
+    );
 
     if (hasFilenameMatch && hasMetadataMatch) {
       suggestions.push('Strong indicators suggest this is the same document');
@@ -535,7 +582,7 @@ export class DuplicateDetectionService {
         if (choice.newFilename) {
           document = {
             ...document,
-            filename: choice.newFilename
+            filename: choice.newFilename,
           };
         }
 
@@ -545,7 +592,9 @@ export class DuplicateDetectionService {
       if (choice.action === 'rename') {
         const document = {
           ...duplicate.document,
-          filename: choice.newFilename || this.generateUniqueFilename(duplicate.document.filename)
+          filename:
+            choice.newFilename ||
+            this.generateUniqueFilename(duplicate.document.filename),
         };
 
         resolvedDocuments.push(document);
@@ -559,8 +608,13 @@ export class DuplicateDetectionService {
    * Generate a unique filename by adding a suffix
    */
   private generateUniqueFilename(originalFilename: string): string {
-    const extension = originalFilename.substring(originalFilename.lastIndexOf('.'));
-    const baseName = originalFilename.substring(0, originalFilename.lastIndexOf('.'));
+    const extension = originalFilename.substring(
+      originalFilename.lastIndexOf('.')
+    );
+    const baseName = originalFilename.substring(
+      0,
+      originalFilename.lastIndexOf('.')
+    );
     const timestamp = new Date().toISOString().slice(0, 10);
 
     return `${baseName}_imported_${timestamp}${extension}`;
@@ -570,22 +624,28 @@ export class DuplicateDetectionService {
    * Calculate space savings from skipping duplicates
    */
   public calculateSpaceSavings(duplicates: DuplicateMatch[]): {
-    totalSize: number;
     duplicateSize: number;
-    spaceSaved: number;
     percentSaved: number;
+    spaceSaved: number;
+    totalSize: number;
   } {
-    const duplicateSize = duplicates.reduce((total, match) => total + match.document.size, 0);
-    const totalSize = duplicates.reduce((total, match) => total + match.document.size, 0);
+    const duplicateSize = duplicates.reduce(
+      (total, match) => total + match.document.size,
+      0
+    );
+    const totalSize = duplicates.reduce(
+      (total, match) => total + match.document.size,
+      0
+    );
 
     return {
       totalSize,
       duplicateSize,
       spaceSaved: duplicateSize,
-      percentSaved: totalSize > 0 ? (duplicateSize / totalSize) * 100 : 0
+      percentSaved: totalSize > 0 ? (duplicateSize / totalSize) * 100 : 0,
     };
   }
 }
 
-export const duplicateDetectionService = DuplicateDetectionService.getInstance();
-
+export const duplicateDetectionService =
+  DuplicateDetectionService.getInstance();

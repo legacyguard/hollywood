@@ -7,61 +7,67 @@
  */
 
 import { pwaService } from './pwaService';
-import { captureError } from '@/lib/monitoring/sentry';
+// Note: Sentry monitoring would be imported here in production
+const captureError = (
+  error: Error,
+  context?: { tags?: Record<string, string> }
+) => {
+  console.error('Error captured:', error, context);
+};
 
 export interface NotificationConfig {
-  title: string;
-  body: string;
-  icon?: string;
-  badge?: string;
-  image?: string;
-  tag?: string;
-  data?: Record<string, unknown>;
   actions?: NotificationAction[];
+  badge?: string;
+  body: string;
+  data?: Record<string, unknown>;
+  icon?: string;
+  image?: string;
   requireInteraction?: boolean;
   silent?: boolean;
+  tag?: string;
   timestamp?: number;
+  title: string;
   vibrate?: number[];
 }
 
 export interface NotificationAction {
   action: string;
-  title: string;
   icon?: string;
+  title: string;
 }
 
 export interface NotificationSubscription {
   endpoint: string;
   keys: {
-    p256dh: string;
     auth: string;
+    p256dh: string;
   };
-  userId?: string;
   preferences?: NotificationPreferences;
+  userId?: string;
 }
 
 export interface NotificationPreferences {
-  enabled: boolean;
   documentUpdates: boolean;
-  securityAlerts: boolean;
+  enabled: boolean;
   familyUpdates: boolean;
-  systemMaintenance: boolean;
   quietHours?: {
     enabled: boolean;
+    endTime: string; // HH:mm format
     startTime: string; // HH:mm format
-    endTime: string;   // HH:mm format
   };
+  securityAlerts: boolean;
+  systemMaintenance: boolean;
 }
 
 export type NotificationType =
-  | 'document_uploaded'
-  | 'document_expired'
-  | 'security_alert'
-  | 'family_access_requested'
-  | 'system_update'
   | 'backup_completed'
+  | 'document_expired'
+  | 'document_uploaded'
+  | 'family_access_requested'
+  | 'maintenance_scheduled'
+  | 'security_alert'
   | 'share_received'
-  | 'maintenance_scheduled';
+  | 'system_update';
 
 export class PushNotificationService {
   private static instance: PushNotificationService;
@@ -75,8 +81,8 @@ export class PushNotificationService {
     quietHours: {
       enabled: false,
       startTime: '22:00',
-      endTime: '08:00'
-    }
+      endTime: '08:00',
+    },
   };
 
   static getInstance(): PushNotificationService {
@@ -101,7 +107,7 @@ export class PushNotificationService {
     } catch (error) {
       console.error('Push notification initialization failed:', error);
       captureError(error instanceof Error ? error : new Error(String(error)), {
-        tags: { source: 'push_notifications_init' }
+        tags: { source: 'push_notifications_init' },
       });
     }
   }
@@ -127,8 +133,33 @@ export class PushNotificationService {
       // Subscribe to push notifications
       const subscriptionData = await pwaService.subscribeToPushNotifications();
 
-      // Store subscription details
-      await this.storeSubscription(subscriptionData);
+      // Store subscription details - convert PushSubscription to serializable format
+      const subscriptionRecord = {
+        endpoint: subscriptionData.endpoint,
+        keys: {
+          p256dh: (subscriptionData as any).getKey
+            ? btoa(
+                String.fromCharCode(
+                  ...new Uint8Array(
+                    (subscriptionData as any).getKey('p256dh') ||
+                      new ArrayBuffer(0)
+                  )
+                )
+              )
+            : '',
+          auth: (subscriptionData as any).getKey
+            ? btoa(
+                String.fromCharCode(
+                  ...new Uint8Array(
+                    (subscriptionData as any).getKey('auth') ||
+                      new ArrayBuffer(0)
+                  )
+                )
+              )
+            : '',
+        },
+      };
+      await this.storeSubscription(subscriptionRecord);
 
       // Update preferences to enabled
       this.preferences.enabled = true;
@@ -136,11 +167,10 @@ export class PushNotificationService {
 
       console.log('Successfully subscribed to push notifications');
       return true;
-
     } catch (error) {
       console.error('Failed to subscribe to notifications:', error);
       captureError(error instanceof Error ? error : new Error(String(error)), {
-        tags: { source: 'push_notification_subscribe' }
+        tags: { source: 'push_notification_subscribe' },
       });
       return false;
     }
@@ -159,7 +189,6 @@ export class PushNotificationService {
 
       console.log('Successfully unsubscribed from push notifications');
       return true;
-
     } catch (error) {
       console.error('Failed to unsubscribe from notifications:', error);
       return false;
@@ -169,7 +198,9 @@ export class PushNotificationService {
   /**
    * Show local notification
    */
-  async showLocalNotification(config: NotificationConfig): Promise<Notification | null> {
+  async showLocalNotification(
+    config: NotificationConfig
+  ): Promise<Notification | null> {
     try {
       // Check permission
       if (Notification.permission !== 'granted') {
@@ -193,18 +224,15 @@ export class PushNotificationService {
         body: config.body,
         icon: config.icon || '/shield-icon.svg',
         badge: config.badge || '/shield-icon.svg',
-        image: config.image,
+        // Note: image property is not standard but supported by some browsers
         tag: config.tag || 'legacyguard',
         data: config.data || {},
-        actions: config.actions || [],
         requireInteraction: config.requireInteraction || false,
         silent: config.silent || false,
-        timestamp: config.timestamp || Date.now(),
-        vibrate: config.vibrate || [200, 100, 200]
       });
 
       // Handle notification click
-      notification.onclick = (event) => {
+      notification.onclick = event => {
         event.preventDefault();
         this.handleNotificationClick(notification);
       };
@@ -217,7 +245,6 @@ export class PushNotificationService {
       }
 
       return notification;
-
     } catch (error) {
       console.error('Failed to show local notification:', error);
       return null;
@@ -227,7 +254,10 @@ export class PushNotificationService {
   /**
    * Send targeted notification based on type
    */
-  async sendNotification(type: NotificationType, data: Record<string, unknown> = {}): Promise<boolean> {
+  async sendNotification(
+    type: NotificationType,
+    data: Record<string, unknown> = {}
+  ): Promise<boolean> {
     const configs = this.getNotificationConfigs();
     const config = configs[type];
 
@@ -254,7 +284,9 @@ export class PushNotificationService {
   /**
    * Update notification preferences
    */
-  async updatePreferences(preferences: Partial<NotificationPreferences>): Promise<void> {
+  async updatePreferences(
+    preferences: Partial<NotificationPreferences>
+  ): Promise<void> {
     this.preferences = { ...this.preferences, ...preferences };
     await this.savePreferences();
     console.log('Notification preferences updated');
@@ -317,28 +349,44 @@ export class PushNotificationService {
   /**
    * Handle notification click events
    */
-  private async handleNotificationClick(notification: Notification): Promise<void> {
+  private async handleNotificationClick(
+    notification: Notification
+  ): Promise<void> {
     notification.close();
 
-    // Focus or open app window
+    // Focus or open app window - only works in service worker context
     try {
-      const clients = await self.clients?.matchAll({ type: 'window', includeUncontrolled: true }) || [];
+      if (typeof self !== 'undefined' && 'ServiceWorkerGlobalScope' in self) {
+        // We're in a service worker context
+        const clients =
+          (await (self as any).clients?.matchAll({
+            type: 'window',
+            includeUncontrolled: true,
+          })) || [];
 
-      if (clients.length > 0) {
-        // Focus existing window
-        const client = clients[0];
-        if (client.focus) {
-          await client.focus();
-        }
+        if (clients.length > 0) {
+          // Focus existing window
+          const client = clients[0];
+          if (client.focus) {
+            await client.focus();
+          }
 
-        // Navigate if needed
-        if (notification.data?.url && client.navigate) {
-          await client.navigate(notification.data.url);
+          // Navigate if needed
+          if (notification.data?.url && client.navigate) {
+            await client.navigate(notification.data.url as string);
+          }
+        } else {
+          // Open new window
+          if ((self as any).clients?.openWindow) {
+            await (self as any).clients.openWindow(
+              notification.data?.url || '/dashboard'
+            );
+          }
         }
       } else {
-        // Open new window
-        if (self.clients?.openWindow) {
-          await self.clients.openWindow(notification.data?.url || '/dashboard');
+        // We're in main thread - just open URL
+        if (notification.data?.url) {
+          window.open(notification.data.url as string, '_blank');
         }
       }
     } catch (error) {
@@ -349,7 +397,10 @@ export class PushNotificationService {
   /**
    * Get predefined notification configurations
    */
-  private getNotificationConfigs(): Record<NotificationType, NotificationConfig> {
+  private getNotificationConfigs(): Record<
+    NotificationType,
+    NotificationConfig
+  > {
     return {
       document_uploaded: {
         title: 'Document Uploaded',
@@ -357,8 +408,8 @@ export class PushNotificationService {
         tag: 'document-upload',
         actions: [
           { action: 'view', title: 'View Document' },
-          { action: 'dismiss', title: 'Dismiss' }
-        ]
+          { action: 'dismiss', title: 'Dismiss' },
+        ],
       },
 
       document_expired: {
@@ -368,8 +419,8 @@ export class PushNotificationService {
         requireInteraction: true,
         actions: [
           { action: 'review', title: 'Review' },
-          { action: 'extend', title: 'Extend' }
-        ]
+          { action: 'extend', title: 'Extend' },
+        ],
       },
 
       security_alert: {
@@ -380,8 +431,8 @@ export class PushNotificationService {
         vibrate: [300, 100, 300, 100, 300],
         actions: [
           { action: 'review', title: 'Review Activity' },
-          { action: 'secure', title: 'Secure Account' }
-        ]
+          { action: 'secure', title: 'Secure Account' },
+        ],
       },
 
       family_access_requested: {
@@ -391,8 +442,8 @@ export class PushNotificationService {
         requireInteraction: true,
         actions: [
           { action: 'approve', title: 'Approve' },
-          { action: 'deny', title: 'Deny' }
-        ]
+          { action: 'deny', title: 'Deny' },
+        ],
       },
 
       system_update: {
@@ -401,14 +452,14 @@ export class PushNotificationService {
         tag: 'system-update',
         actions: [
           { action: 'update', title: 'Update Now' },
-          { action: 'later', title: 'Later' }
-        ]
+          { action: 'later', title: 'Later' },
+        ],
       },
 
       backup_completed: {
         title: 'Backup Completed',
         body: 'Your documents have been successfully backed up.',
-        tag: 'backup-complete'
+        tag: 'backup-complete',
       },
 
       share_received: {
@@ -417,36 +468,48 @@ export class PushNotificationService {
         tag: 'share-received',
         actions: [
           { action: 'view', title: 'View Document' },
-          { action: 'dismiss', title: 'Dismiss' }
-        ]
+          { action: 'dismiss', title: 'Dismiss' },
+        ],
       },
 
       maintenance_scheduled: {
         title: 'Scheduled Maintenance',
         body: 'LegacyGuard will be undergoing maintenance tonight at 2 AM UTC.',
         tag: 'maintenance',
-        timestamp: Date.now() + 24 * 60 * 60 * 1000 // Tomorrow
-      }
+        timestamp: Date.now() + 24 * 60 * 60 * 1000, // Tomorrow
+      },
     };
   }
 
   /**
    * Customize notification config with dynamic data
    */
-  private customizeNotificationConfig(config: NotificationConfig, data: Record<string, unknown>): NotificationConfig {
+  private customizeNotificationConfig(
+    config: NotificationConfig,
+    data: Record<string, unknown>
+  ): NotificationConfig {
     const customized = { ...config };
 
     // Replace placeholders in title and body
     if (data.documentName) {
-      customized.body = customized.body.replace('document', `"${data.documentName}"`);
+      customized.body = customized.body.replace(
+        'document',
+        `"${data.documentName}"`
+      );
     }
 
     if (data.familyMember) {
-      customized.body = customized.body.replace('family member', data.familyMember);
+      customized.body = customized.body.replace(
+        'family member',
+        String(data.familyMember)
+      );
     }
 
     if (data.count) {
-      customized.body = customized.body.replace('One of your', `${data.count} of your`);
+      customized.body = customized.body.replace(
+        'One of your',
+        `${data.count} of your`
+      );
     }
 
     // Add custom data
@@ -475,9 +538,14 @@ export class PushNotificationService {
   /**
    * Store subscription details
    */
-  private async storeSubscription(subscriptionData: Record<string, unknown>): Promise<void> {
+  private async storeSubscription(
+    subscriptionData: Record<string, unknown>
+  ): Promise<void> {
     try {
-      localStorage.setItem('pwa-push-subscription', JSON.stringify(subscriptionData));
+      localStorage.setItem(
+        'pwa-push-subscription',
+        JSON.stringify(subscriptionData)
+      );
     } catch (error) {
       console.error('Failed to store subscription:', error);
     }
@@ -502,7 +570,10 @@ export class PushNotificationService {
    */
   private async savePreferences(): Promise<void> {
     try {
-      localStorage.setItem('notification-preferences', JSON.stringify(this.preferences));
+      localStorage.setItem(
+        'notification-preferences',
+        JSON.stringify(this.preferences)
+      );
     } catch (error) {
       console.error('Failed to save notification preferences:', error);
     }
@@ -511,7 +582,7 @@ export class PushNotificationService {
   /**
    * Get notification permission status
    */
-  getPermissionStatus(): 'granted' | 'denied' | 'default' {
+  getPermissionStatus(): 'default' | 'denied' | 'granted' {
     if ('Notification' in window) {
       return Notification.permission;
     }
@@ -522,7 +593,11 @@ export class PushNotificationService {
    * Check if notifications are supported
    */
   isSupported(): boolean {
-    return 'Notification' in window && 'serviceWorker' in navigator && 'PushManager' in window;
+    return (
+      'Notification' in window &&
+      'serviceWorker' in navigator &&
+      'PushManager' in window
+    );
   }
 
   /**
@@ -533,7 +608,7 @@ export class PushNotificationService {
       title: 'Test Notification',
       body: 'This is a test notification from LegacyGuard',
       tag: 'test',
-      data: { test: true }
+      data: { test: true },
     });
   }
 }

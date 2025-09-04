@@ -5,21 +5,21 @@
 
 import nacl from 'tweetnacl';
 import {
-  decodeUTF8,
-  encodeUTF8,
-  encodeBase64,
   decodeBase64,
+  decodeUTF8,
+  encodeBase64,
+  encodeUTF8,
 } from 'tweetnacl-util';
 
 // Import from the actual encryption service
 import {
+  arrayBufferToBase64,
+  createEncryptedBlob,
+  decryptFile,
+  encryptFile,
+  fileToBase64,
   generateEncryptionKeys,
   getUserEncryptionKeys,
-  encryptFile,
-  decryptFile,
-  createEncryptedBlob,
-  fileToBase64,
-  arrayBufferToBase64
 } from './encryption';
 
 // Create the encryption service v2 wrapper
@@ -54,7 +54,7 @@ export const encryptionServiceV2 = {
     }
   },
 
-  getItem: async (key: string): Promise<string | null> => {
+  getItem: async (key: string): Promise<null | string> => {
     try {
       const userId = 'current-user';
       const keys = getUserEncryptionKeys(userId);
@@ -77,9 +77,12 @@ export const encryptionServiceV2 = {
   checkRotationNeeded: async (): Promise<boolean> => {
     // Check if keys are older than 90 days
     const userId = 'current-user';
-    const keyTimestamp = localStorage.getItem(`encryption_keys_timestamp_${userId}`);
+    const keyTimestamp = localStorage.getItem(
+      `encryption_keys_timestamp_${userId}`
+    );
     if (!keyTimestamp) return false;
-    const daysSinceCreation = (Date.now() - parseInt(keyTimestamp)) / (1000 * 60 * 60 * 24);
+    const daysSinceCreation =
+      (Date.now() - parseInt(keyTimestamp)) / (1000 * 60 * 60 * 24);
     return daysSinceCreation > 90;
   },
 
@@ -90,19 +93,29 @@ export const encryptionServiceV2 = {
     return !!localStorage.getItem(`encryption_keys_${userId}`);
   },
 
-  initializeKeys: async (password: string): Promise<{ success: boolean; error?: string }> => {
+  initializeKeys: async (
+    password: string
+  ): Promise<{ error?: string; success: boolean }> => {
     try {
       const userId = 'current-user';
       const keys = generateEncryptionKeys();
       localStorage.setItem(`encryption_keys_${userId}`, JSON.stringify(keys));
-      localStorage.setItem(`encryption_keys_timestamp_${userId}`, Date.now().toString());
+      localStorage.setItem(
+        `encryption_keys_timestamp_${userId}`,
+        Date.now().toString()
+      );
       return { success: true };
     } catch (error) {
-      return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      };
     }
   },
 
-  unlockKeys: async (password: string): Promise<{ success: boolean; error?: string }> => {
+  unlockKeys: async (
+    password: string
+  ): Promise<{ error?: string; success: boolean }> => {
     try {
       // For now, just check if keys exist
       // In a real implementation, this would verify the password
@@ -113,7 +126,10 @@ export const encryptionServiceV2 = {
       }
       return { success: true };
     } catch (error) {
-      return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      };
     }
   },
 
@@ -123,7 +139,9 @@ export const encryptionServiceV2 = {
     console.log('Keys locked');
   },
 
-  migrateFromLocalStorage: async (password: string): Promise<{ success: boolean; error?: string }> => {
+  migrateFromLocalStorage: async (
+    password: string
+  ): Promise<{ error?: string; success: boolean }> => {
     try {
       // Check if there are legacy keys to migrate
       const userId = 'current-user';
@@ -132,27 +150,45 @@ export const encryptionServiceV2 = {
         // Move legacy keys to new format
         localStorage.setItem(`encryption_keys_${userId}`, legacyKeys);
         localStorage.removeItem(`encryptionKeys_${userId}`);
-        localStorage.setItem(`encryption_keys_timestamp_${userId}`, Date.now().toString());
+        localStorage.setItem(
+          `encryption_keys_timestamp_${userId}`,
+          Date.now().toString()
+        );
         return { success: true };
       }
       return { success: false, error: 'No legacy keys found' };
     } catch (error) {
-      return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      };
     }
   },
 
-  rotateKeys: async (currentPassword: string, newPassword?: string): Promise<{ success: boolean; error?: string }> => {
+  rotateKeys: async (
+    currentPassword: string,
+    newPassword?: string
+  ): Promise<{ error?: string; success: boolean }> => {
     try {
       // Generate new keys
       const userId = 'current-user';
       const newKeys = generateEncryptionKeys();
-      localStorage.setItem(`encryption_keys_${userId}`, JSON.stringify(newKeys));
-      localStorage.setItem(`encryption_keys_timestamp_${userId}`, Date.now().toString());
+      localStorage.setItem(
+        `encryption_keys_${userId}`,
+        JSON.stringify(newKeys)
+      );
+      localStorage.setItem(
+        `encryption_keys_timestamp_${userId}`,
+        Date.now().toString()
+      );
       return { success: true };
     } catch (error) {
-      return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      };
     }
-  }
+  },
 };
 
 // Legacy compatibility exports
@@ -160,5 +196,5 @@ export const encryptionService = encryptionServiceV2;
 export const SecureEncryptionService = encryptionServiceV2;
 export const SecureStorage = {
   getSecureLocal: encryptionServiceV2.getItem,
-  setSecureLocal: encryptionServiceV2.setItem
+  setSecureLocal: encryptionServiceV2.setItem,
 };

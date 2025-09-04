@@ -8,11 +8,11 @@ const THEMES = { light: '', dark: '.dark' } as const;
 
 export type ChartConfig = {
   [k in string]: {
-    label?: React.ReactNode;
     icon?: React.ComponentType;
+    label?: React.ReactNode;
   } & (
-    | { color?: string; theme?: never }
     | { color?: never; theme: Record<keyof typeof THEMES, string> }
+    | { color?: string; theme?: never }
   );
 };
 
@@ -35,10 +35,10 @@ function useChart() {
 const ChartContainer = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<'div'> & {
-    config: ChartConfig;
     children: React.ComponentProps<
       typeof RechartsPrimitive.ResponsiveContainer
     >['children'];
+    config: ChartConfig;
   }
 >(({ id, className, children, config, ...props }, ref) => {
   const uniqueId = React.useId();
@@ -65,7 +65,7 @@ const ChartContainer = React.forwardRef<
 });
 ChartContainer.displayName = 'Chart';
 
-const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
+const ChartStyle = ({ id, config }: { config: ChartConfig; id: string }) => {
   const colorConfig = Object.entries(config).filter(
     ([_, config]) => config.theme || config.color
   );
@@ -102,17 +102,23 @@ const ChartTooltip = RechartsPrimitive.Tooltip;
 
 interface ChartTooltipContentProps extends React.ComponentProps<'div'> {
   active?: boolean;
-  payload?: any[];
-  label?: string;
-  labelFormatter?: (value: any, payload: any[]) => React.ReactNode;
-  labelClassName?: string;
-  formatter?: (value: any, name: string, props: any, index: number, payload: any) => React.ReactNode;
-  hideLabel?: boolean;
-  hideIndicator?: boolean;
-  indicator?: 'line' | 'dot' | 'dashed';
-  nameKey?: string;
-  labelKey?: string;
   color?: string;
+  formatter?: (
+    value: any,
+    name: string,
+    props: any,
+    index: number,
+    payload: any
+  ) => React.ReactNode;
+  hideIndicator?: boolean;
+  hideLabel?: boolean;
+  indicator?: 'dashed' | 'dot' | 'line';
+  label?: string;
+  labelClassName?: string;
+  labelFormatter?: (value: any, payload: any[]) => React.ReactNode;
+  labelKey?: string;
+  nameKey?: string;
+  payload?: any[];
 }
 
 const ChartTooltipContent = React.forwardRef<
@@ -265,10 +271,10 @@ ChartTooltipContent.displayName = 'ChartTooltip';
 const ChartLegend = RechartsPrimitive.Legend;
 
 interface ChartLegendContentProps extends React.ComponentProps<'div'> {
-  payload?: any[];
-  verticalAlign?: 'top' | 'bottom';
   hideIcon?: boolean;
   nameKey?: string;
+  payload?: any[];
+  verticalAlign?: 'bottom' | 'top';
 }
 
 const ChartLegendContent = React.forwardRef<
@@ -310,8 +316,7 @@ const ChartLegendContent = React.forwardRef<
               ) : (
                 <div
                   className='h-2 w-2 shrink-0 rounded-[2px]'
-                  style={{  backgroundColor: item.color,
-                   }}
+                  style={{ backgroundColor: item.color }}
                 />
               )}
               {itemConfig?.label}
@@ -365,9 +370,9 @@ function getPayloadConfigFromPayload(
 
 export {
   ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
   ChartLegend,
   ChartLegendContent,
   ChartStyle,
+  ChartTooltip,
+  ChartTooltipContent,
 };

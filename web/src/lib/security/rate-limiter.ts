@@ -6,12 +6,12 @@
 import { envConfig } from './env-config';
 
 interface RateLimitConfig {
-  windowMs: number; // Time window in milliseconds
-  maxRequests: number; // Maximum requests per window
-  skipSuccessfulRequests?: boolean; // Skip counting successful requests
-  skipFailedRequests?: boolean; // Skip counting failed requests
-  keyGenerator?: (context: unknown) => string; // Custom key generator
   handler?: (context: unknown) => void; // Custom handler when limit exceeded
+  keyGenerator?: (context: unknown) => string; // Custom key generator
+  maxRequests: number; // Maximum requests per window
+  skipFailedRequests?: boolean; // Skip counting failed requests
+  skipSuccessfulRequests?: boolean; // Skip counting successful requests
+  windowMs: number; // Time window in milliseconds
 }
 
 interface RateLimitStore {
@@ -62,7 +62,7 @@ export const RATE_LIMIT_PRESETS = {
 class RateLimiter {
   private static instance: RateLimiter;
   private store: Map<string, RateLimitStore> = new Map();
-  private cleanupInterval: number | null = null;
+  private cleanupInterval: null | number = null;
   private enabled: boolean;
 
   private constructor() {
@@ -114,8 +114,8 @@ class RateLimiter {
   private generateKey(
     identifier: string,
     endpoint: string,
-      customKeyGenerator?: (context: unknown) => string,
-  context?: unknown
+    customKeyGenerator?: (context: unknown) => string,
+    context?: unknown
   ): string {
     if (customKeyGenerator && context) {
       return customKeyGenerator(context);
@@ -184,9 +184,9 @@ class RateLimiter {
    * Get current stats for monitoring
    */
   public getStats(): {
-    totalKeys: number;
     memoryUsage: number;
     topOffenders: Array<{ key: string; requests: number }>;
+    totalKeys: number;
   } {
     const topOffenders = Array.from(this.store.entries())
       .map(([key, value]) => ({ key, requests: value.requests }))
@@ -217,11 +217,12 @@ export const rateLimiter = RateLimiter.getInstance();
 export function createRateLimitMiddleware(
   presetOrConfig: keyof typeof RATE_LIMIT_PRESETS | RateLimitConfig
 ) {
-  const config = typeof presetOrConfig === 'string'
-    ? RATE_LIMIT_PRESETS[presetOrConfig]
-    : presetOrConfig;
+  const config =
+    typeof presetOrConfig === 'string'
+      ? RATE_LIMIT_PRESETS[presetOrConfig]
+      : presetOrConfig;
 
-  return async (req: unknown, res: unknown, next: unknown) => {
+  return async (req: any, res: any, next: any) => {
     // Get identifier (user ID or IP address)
     const identifier = req.user?.id || req.ip || 'anonymous';
     const endpoint = req.path;
@@ -231,7 +232,10 @@ export function createRateLimitMiddleware(
     // Set rate limit headers
     res.setHeader('X-RateLimit-Limit', config.maxRequests);
     res.setHeader('X-RateLimit-Remaining', result.remaining);
-    res.setHeader('X-RateLimit-Reset', new Date(result.resetTime).toISOString());
+    res.setHeader(
+      'X-RateLimit-Reset',
+      new Date(result.resetTime).toISOString()
+    );
 
     if (!result.allowed) {
       // Rate limit exceeded
@@ -245,8 +249,8 @@ export function createRateLimitMiddleware(
       console.warn(`Rate limit exceeded for ${identifier} on ${endpoint}`);
 
       // Custom handler if provided
-      if (config.handler) {
-        config.handler({ req, res, identifier, endpoint });
+      if ((config as any).handler) {
+        (config as any).handler({ req, res, identifier, endpoint });
       }
 
       return;
@@ -272,7 +276,8 @@ export function useRateLimit(
 
   const checkLimit = React.useCallback(async () => {
     // Use session ID or generate a unique client ID
-    const identifier = sessionStorage.getItem('clientId') ||
+    const identifier =
+      sessionStorage.getItem('clientId') ||
       (() => {
         const id = crypto.randomUUID();
         sessionStorage.setItem('clientId', id);
@@ -293,22 +298,32 @@ export function useRateLimit(
 /**
  * Decorator for rate limiting class methods
  */
-export function RateLimit(presetOrConfig: keyof typeof RATE_LIMIT_PRESETS | RateLimitConfig) {
-  const config = typeof presetOrConfig === 'string'
-    ? RATE_LIMIT_PRESETS[presetOrConfig]
-    : presetOrConfig;
+export function RateLimit(
+  presetOrConfig: keyof typeof RATE_LIMIT_PRESETS | RateLimitConfig
+) {
+  const config =
+    typeof presetOrConfig === 'string'
+      ? RATE_LIMIT_PRESETS[presetOrConfig]
+      : presetOrConfig;
 
-  return function (target: unknown, propertyKey: string, descriptor: PropertyDescriptor) {
+  return function (
+    target: unknown,
+    propertyKey: string,
+    descriptor: PropertyDescriptor
+  ) {
     const originalMethod = descriptor.value;
 
     descriptor.value = async function (...args: unknown[]) {
-      const identifier = this.userId || this.sessionId || 'system';
-      const endpoint = `${target.constructor.name}.${propertyKey}`;
+      const identifier =
+        (this as any).userId || (this as any).sessionId || 'system';
+      const endpoint = `${(target as any).constructor.name}.${propertyKey}`;
 
       const result = await rateLimiter.checkLimit(identifier, endpoint, config);
 
       if (!result.allowed) {
-        throw new Error(`Rate limit exceeded. Try again in ${Math.ceil((result.resetTime - Date.now()) / 1000)} seconds.`);
+        throw new Error(
+          `Rate limit exceeded. Try again in ${Math.ceil((result.resetTime - Date.now()) / 1000)} seconds.`
+        );
       }
 
       return originalMethod.apply(this, args);
@@ -340,9 +355,12 @@ export class DDoSProtection {
 
   private startMonitoring(): void {
     // Reset suspicious IPs every hour
-    setInterval(() => {
-      this.suspiciousIPs.clear();
-    }, 60 * 60 * 1000);
+    setInterval(
+      () => {
+        this.suspiciousIPs.clear();
+      },
+      60 * 60 * 1000
+    );
   }
 
   public checkRequest(ip: string, userAgent: string): boolean {

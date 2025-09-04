@@ -9,7 +9,7 @@ interface LoadingContextType {
 
 const LoadingContext = React.createContext<LoadingContextType>({
   isLoading: false,
-  setLoading: () => {}
+  setLoading: () => {},
 });
 
 export const LoadingProvider: React.FC<{

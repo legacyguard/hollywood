@@ -4,49 +4,55 @@
  */
 
 export interface ComplianceRule {
-  id: string;
-  name: string;
-  description: string;
   category: ComplianceCategory;
-  jurisdiction: string;
-  regulation: string;
-  severity: 'critical' | 'high' | 'medium' | 'low';
-  requirements: ComplianceRequirement[];
-  keywords: string[];
-  patterns: RegExp[];
-  validationLogic: ValidationLogic;
+  description: string;
   exemptions?: ExemptionRule[];
+  id: string;
+  jurisdiction: string;
+  keywords: string[];
   lastUpdated: string;
+  name: string;
+  patterns: RegExp[];
+  regulation: string;
+  requirements: ComplianceRequirement[];
+  severity: 'critical' | 'high' | 'low' | 'medium';
+  validationLogic: ValidationLogic;
   version: string;
 }
 
 export interface ComplianceRequirement {
-  id: string;
-  description: string;
-  mandatory: boolean;
   deadline?: string;
+  description: string;
   documentation: string[];
+  id: string;
+  mandatory: boolean;
   validationCriteria: ValidationCriteria[];
 }
 
 export interface ValidationLogic {
-  type: 'keyword' | 'pattern' | 'ai' | 'custom';
-  rules: ValidationStep[];
   confidence: number;
+  rules: ValidationStep[];
+  type: 'ai' | 'custom' | 'keyword' | 'pattern';
 }
 
 export interface ValidationStep {
+  action: 'exempt' | 'flag' | 'recommend' | 'require';
   condition: string;
-  action: 'flag' | 'require' | 'recommend' | 'exempt';
   message: string;
   priority: number;
 }
 
 export interface ValidationCriteria {
   field: string;
-  operator: 'contains' | 'equals' | 'matches' | 'greater_than' | 'less_than' | 'between';
-  value: unknown;
+  operator:
+    | 'between'
+    | 'contains'
+    | 'equals'
+    | 'greater_than'
+    | 'less_than'
+    | 'matches';
   required: boolean;
+  value: unknown;
 }
 
 export interface ExemptionRule {
@@ -56,158 +62,163 @@ export interface ExemptionRule {
 }
 
 export interface ComplianceCheck {
-  id: string;
+  automated: boolean;
+  checkedAt: string;
   documentId: string;
+  exemptions: AppliedExemption[];
+  findings: ComplianceFinding[];
+  id: string;
+  nextCheckDue?: string;
+  recommendations: ComplianceRecommendation[];
+  reviewRequired: boolean;
   ruleId: string;
   ruleName: string;
+  severity: 'critical' | 'high' | 'low' | 'medium';
   status: ComplianceStatus;
-  severity: 'critical' | 'high' | 'medium' | 'low';
-  findings: ComplianceFinding[];
-  recommendations: ComplianceRecommendation[];
-  exemptions: AppliedExemption[];
-  checkedAt: string;
-  nextCheckDue?: string;
-  reviewRequired: boolean;
-  automated: boolean;
 }
 
 export interface ComplianceFinding {
-  id: string;
-  type: 'violation' | 'gap' | 'risk' | 'recommendation';
-  description: string;
-  location?: DocumentLocation;
-  severity: 'critical' | 'high' | 'medium' | 'low';
   confidence: number;
+  description: string;
   evidence: string[];
+  id: string;
   impact: string;
+  location?: DocumentLocation;
   remediation: RemediationStep[];
+  severity: 'critical' | 'high' | 'low' | 'medium';
+  type: 'gap' | 'recommendation' | 'risk' | 'violation';
 }
 
 export interface ComplianceRecommendation {
-  id: string;
-  title: string;
-  description: string;
-  priority: 'immediate' | 'high' | 'medium' | 'low';
-  category: 'legal' | 'regulatory' | 'best_practice' | 'security';
   actions: string[];
-  timeline: string;
-  cost?: 'low' | 'medium' | 'high';
+  category: 'best_practice' | 'legal' | 'regulatory' | 'security';
+  cost?: 'high' | 'low' | 'medium';
+  description: string;
+  id: string;
+  priority: 'high' | 'immediate' | 'low' | 'medium';
   riskReduction: number; // 0-1
+  timeline: string;
+  title: string;
 }
 
 export interface AppliedExemption {
-  ruleId: string;
-  reason: string;
   approvedBy: string;
-  validUntil?: string;
   conditions?: string[];
+  reason: string;
+  ruleId: string;
+  validUntil?: string;
 }
 
 export interface RemediationStep {
-  step: string;
-  description: string;
-  owner: 'user' | 'system' | 'professional';
-  deadline?: string;
   automated: boolean;
+  deadline?: string;
+  description: string;
+  owner: 'professional' | 'system' | 'user';
   resources?: string[];
+  step: string;
 }
 
 export interface DocumentLocation {
-  page?: number;
-  section?: string;
-  paragraph?: number;
+  coordinates?: { height: number; width: number; x: number; y: number };
   line?: number;
-  coordinates?: { x: number; y: number; width: number; height: number };
+  page?: number;
+  paragraph?: number;
+  section?: string;
 }
 
 export interface LegalReview {
-  id: string;
-  documentId: string;
-  reviewType: LegalReviewType;
-  urgency: 'immediate' | 'high' | 'normal' | 'low';
-  requiredBy?: string;
   assignedTo?: string;
+  completedAt?: string;
+  createdAt: string;
+  documentId: string;
+  dueDate?: string;
+  followUpRequired: boolean;
+  id: string;
   issues: LegalIssue[];
   recommendations: LegalRecommendation[];
+  requiredBy?: string;
+  reviewType: LegalReviewType;
   status: LegalReviewStatus;
-  createdAt: string;
-  dueDate?: string;
-  completedAt?: string;
-  followUpRequired: boolean;
+  urgency: 'high' | 'immediate' | 'low' | 'normal';
 }
 
 export interface LegalIssue {
-  id: string;
   category: LegalIssueCategory;
-  title: string;
   description: string;
-  severity: 'critical' | 'high' | 'medium' | 'low';
-  jurisdiction: string;
-  statute?: string;
-  precedent?: string[];
+  id: string;
   implications: string[];
+  jurisdiction: string;
+  precedent?: string[];
+  severity: 'critical' | 'high' | 'low' | 'medium';
+  statute?: string;
   timeframe?: string;
+  title: string;
 }
 
 export interface LegalRecommendation {
-  id: string;
-  title: string;
-  description: string;
   actions: string[];
-  priority: number;
-  professional: 'attorney' | 'tax_advisor' | 'financial_planner' | 'notary' | 'other';
+  description: string;
   estimatedCost?: string;
+  id: string;
+  priority: number;
+  professional:
+    | 'attorney'
+    | 'financial_planner'
+    | 'notary'
+    | 'other'
+    | 'tax_advisor';
   timeline: string;
+  title: string;
 }
 
 export type ComplianceCategory =
-  | 'privacy'
+  | 'corporate'
   | 'data_protection'
+  | 'employment'
+  | 'estate_planning'
   | 'financial'
   | 'healthcare'
-  | 'estate_planning'
-  | 'tax'
+  | 'industry_specific'
   | 'insurance'
-  | 'employment'
-  | 'corporate'
   | 'international'
-  | 'industry_specific';
+  | 'privacy'
+  | 'tax';
 
 export type ComplianceStatus =
   | 'compliant'
+  | 'exempt'
   | 'non_compliant'
   | 'partial'
   | 'under_review'
-  | 'exempt'
   | 'unknown';
 
 export type LegalReviewType =
-  | 'contract_review'
   | 'compliance_check'
-  | 'risk_assessment'
-  | 'estate_planning'
-  | 'tax_implications'
-  | 'regulatory_filing'
+  | 'contract_review'
   | 'dispute_prevention'
-  | 'general_counsel';
+  | 'estate_planning'
+  | 'general_counsel'
+  | 'regulatory_filing'
+  | 'risk_assessment'
+  | 'tax_implications';
 
 export type LegalReviewStatus =
-  | 'pending'
-  | 'in_progress'
   | 'completed'
-  | 'requires_followup'
-  | 'escalated';
+  | 'escalated'
+  | 'in_progress'
+  | 'pending'
+  | 'requires_followup';
 
 export type LegalIssueCategory =
-  | 'contract_terms'
-  | 'liability'
   | 'compliance_violation'
-  | 'regulatory_change'
-  | 'tax_implication'
+  | 'contract_terms'
+  | 'employment_law'
   | 'estate_law'
-  | 'privacy_law'
   | 'intellectual_property'
-  | 'employment_law';
+  | 'liability'
+  | 'privacy_law'
+  | 'regulatory_change'
+  | 'tax_implication';
 
 class ComplianceCheckerService {
   private readonly COMPLIANCE_VERSION = '1.0';
@@ -226,7 +237,8 @@ class ComplianceCheckerService {
       {
         id: 'gdpr-privacy',
         name: 'GDPR Privacy Compliance',
-        description: 'General Data Protection Regulation compliance for personal data',
+        description:
+          'General Data Protection Regulation compliance for personal data',
         category: 'privacy',
         jurisdiction: 'EU',
         regulation: 'GDPR',
@@ -243,9 +255,9 @@ class ComplianceCheckerService {
                 operator: 'contains',
                 value: 'consent',
                 required: true,
-              }
-            ]
-          }
+              },
+            ],
+          },
         ],
         keywords: ['personal data', 'privacy', 'consent', 'gdpr'],
         patterns: [/\b(personal\s+data|privacy\s+policy|consent)\b/i],
@@ -255,9 +267,10 @@ class ComplianceCheckerService {
             {
               condition: 'contains personal data',
               action: 'require',
-              message: 'Document contains personal data and requires GDPR compliance review',
+              message:
+                'Document contains personal data and requires GDPR compliance review',
               priority: 1,
-            }
+            },
           ],
           confidence: 0.8,
         },
@@ -267,7 +280,8 @@ class ComplianceCheckerService {
       {
         id: 'hipaa-healthcare',
         name: 'HIPAA Healthcare Privacy',
-        description: 'Health Insurance Portability and Accountability Act compliance',
+        description:
+          'Health Insurance Portability and Accountability Act compliance',
         category: 'healthcare',
         jurisdiction: 'US',
         regulation: 'HIPAA',
@@ -284,21 +298,24 @@ class ComplianceCheckerService {
                 operator: 'contains',
                 value: 'medical',
                 required: false,
-              }
-            ]
-          }
+              },
+            ],
+          },
         ],
         keywords: ['medical', 'health', 'patient', 'phi', 'hipaa'],
-        patterns: [/\b(medical\s+record|health\s+information|patient\s+data)\b/i],
+        patterns: [
+          /\b(medical\s+record|health\s+information|patient\s+data)\b/i,
+        ],
         validationLogic: {
           type: 'keyword',
           rules: [
             {
               condition: 'contains health information',
               action: 'flag',
-              message: 'Document may contain protected health information requiring HIPAA compliance',
+              message:
+                'Document may contain protected health information requiring HIPAA compliance',
               priority: 1,
-            }
+            },
           ],
           confidence: 0.7,
         },
@@ -325,11 +342,18 @@ class ComplianceCheckerService {
                 operator: 'greater_than',
                 value: 1,
                 required: true,
-              }
-            ]
-          }
+              },
+            ],
+          },
         ],
-        keywords: ['will', 'testament', 'estate', 'beneficiary', 'witness', 'notary'],
+        keywords: [
+          'will',
+          'testament',
+          'estate',
+          'beneficiary',
+          'witness',
+          'notary',
+        ],
         patterns: [/\b(last\s+will|testament|estate\s+plan)\b/i],
         validationLogic: {
           type: 'pattern',
@@ -337,15 +361,16 @@ class ComplianceCheckerService {
             {
               condition: 'is will document',
               action: 'require',
-              message: 'Will documents require proper legal execution and witnessing',
+              message:
+                'Will documents require proper legal execution and witnessing',
               priority: 1,
-            }
+            },
           ],
           confidence: 0.9,
         },
         lastUpdated: new Date().toISOString(),
         version: '1.0',
-      }
+      },
     ];
 
     defaultRules.forEach(rule => {
@@ -395,7 +420,11 @@ class ComplianceCheckerService {
     rule: ComplianceRule
   ): Promise<ComplianceCheck | null> {
     // Check if rule applies to this document
-    const applicability = await this.checkRuleApplicability(content, metadata, rule);
+    const applicability = await this.checkRuleApplicability(
+      content,
+      metadata,
+      rule
+    );
     if (!applicability.applies) {
       return null;
     }
@@ -423,7 +452,10 @@ class ComplianceCheckerService {
     }
 
     // Generate recommendations based on findings
-    const recommendations = await this.generateComplianceRecommendations(findings, rule);
+    const recommendations = await this.generateComplianceRecommendations(
+      findings,
+      rule
+    );
 
     // Check for exemptions
     const exemptions = await this.checkExemptions(rule, findings);
@@ -443,7 +475,9 @@ class ComplianceCheckerService {
       exemptions,
       checkedAt: new Date().toISOString(),
       nextCheckDue: this.calculateNextCheckDate(rule),
-      reviewRequired: findings.some(f => f.severity === 'critical' || f.severity === 'high'),
+      reviewRequired: findings.some(
+        f => f.severity === 'critical' || f.severity === 'high'
+      ),
       automated: true,
     };
   }
@@ -469,7 +503,9 @@ class ComplianceCheckerService {
     }
 
     // Check patterns
-    const patternMatches = rule.patterns.filter(pattern => pattern.test(content));
+    const patternMatches = rule.patterns.filter(pattern =>
+      pattern.test(content)
+    );
     if (patternMatches.length > 0) {
       confidence += 0.4;
       reasons.push(`Matches compliance patterns`);
@@ -499,7 +535,12 @@ class ComplianceCheckerService {
     const findings: ComplianceFinding[] = [];
 
     for (const step of rule.validationLogic.rules) {
-      const violation = await this.checkValidationStep(content, metadata, step, rule);
+      const violation = await this.checkValidationStep(
+        content,
+        metadata,
+        step,
+        rule
+      );
       if (violation) {
         findings.push(violation);
       }
@@ -565,8 +606,12 @@ class ComplianceCheckerService {
           id: this.generateId(),
           title: `Address ${rule.regulation} Compliance`,
           description: `Resolve compliance issue: ${finding.description}`,
-          priority: finding.severity === 'critical' ? 'immediate' :
-                   finding.severity === 'high' ? 'high' : 'medium',
+          priority:
+            finding.severity === 'critical'
+              ? 'immediate'
+              : finding.severity === 'high'
+                ? 'high'
+                : 'medium',
           category: 'regulatory',
           actions: finding.remediation.map(r => r.description),
           timeline: finding.severity === 'critical' ? 'Immediate' : '30 days',
@@ -617,7 +662,10 @@ class ComplianceCheckerService {
   ): Promise<LegalReview> {
     // Analyze document for legal issues
     const issues = await this.identifyLegalIssues(documentId, reviewType);
-    const recommendations = await this.generateLegalRecommendations(issues, reviewType);
+    const recommendations = await this.generateLegalRecommendations(
+      issues,
+      reviewType
+    );
 
     const review: LegalReview = {
       id: this.generateId(),
@@ -654,13 +702,13 @@ class ComplianceCheckerService {
     // Check for common legal issues based on review type
     switch (reviewType) {
       case 'contract_review':
-        issues.push(...await this.checkContractIssues(content));
+        issues.push(...(await this.checkContractIssues(content)));
         break;
       case 'estate_planning':
-        issues.push(...await this.checkEstatePlanningIssues(content));
+        issues.push(...(await this.checkEstatePlanningIssues(content)));
         break;
       case 'tax_implications':
-        issues.push(...await this.checkTaxIssues(content));
+        issues.push(...(await this.checkTaxIssues(content)));
         break;
       case 'compliance_check': {
         // Use existing compliance checks
@@ -688,8 +736,16 @@ class ComplianceCheckerService {
 
   private containsHealthInformation(content: string): boolean {
     const healthKeywords = [
-      'medical', 'health', 'patient', 'diagnosis', 'treatment',
-      'prescription', 'doctor', 'physician', 'hospital', 'clinic'
+      'medical',
+      'health',
+      'patient',
+      'diagnosis',
+      'treatment',
+      'prescription',
+      'doctor',
+      'physician',
+      'hospital',
+      'clinic',
     ];
 
     const lowerContent = content.toLowerCase();
@@ -708,8 +764,12 @@ class ComplianceCheckerService {
     return willPatterns.some(pattern => pattern.test(content));
   }
 
-  private mapStepSeverity(action: string, ruleSeverity: string): ComplianceFinding['severity'] {
-    if (action === 'require') return ruleSeverity as ComplianceFinding['severity'];
+  private mapStepSeverity(
+    action: string,
+    ruleSeverity: string
+  ): ComplianceFinding['severity'] {
+    if (action === 'require')
+      return ruleSeverity as ComplianceFinding['severity'];
     if (action === 'flag') return 'medium';
     return 'low';
   }
@@ -717,11 +777,17 @@ class ComplianceCheckerService {
   private extractEvidence(content: string, _condition: string): string[] {
     // Extract relevant text snippets as evidence
     const sentences = content.split('.').filter(s => s.trim().length > 10);
-    return sentences.filter(s => {
-      const lower = s.toLowerCase();
-      return lower.includes('personal') || lower.includes('health') ||
-             lower.includes('will') || lower.includes('testament');
-    }).slice(0, 3);
+    return sentences
+      .filter(s => {
+        const lower = s.toLowerCase();
+        return (
+          lower.includes('personal') ||
+          lower.includes('health') ||
+          lower.includes('will') ||
+          lower.includes('testament')
+        );
+      })
+      .slice(0, 3);
   }
 
   private describeImpact(action: string, rule: ComplianceRule): string {
@@ -771,7 +837,9 @@ class ComplianceCheckerService {
     const violations = findings.filter(f => f.type === 'violation');
     if (violations.length === 0) return 'compliant';
 
-    const criticalViolations = violations.filter(f => f.severity === 'critical');
+    const criticalViolations = violations.filter(
+      f => f.severity === 'critical'
+    );
     if (criticalViolations.length > 0) return 'non_compliant';
 
     return 'partial';
@@ -779,8 +847,8 @@ class ComplianceCheckerService {
 
   private calculateNextCheckDate(rule: ComplianceRule): string {
     // Calculate based on rule severity and type
-    const months = rule.severity === 'critical' ? 3 :
-                  rule.severity === 'high' ? 6 : 12;
+    const months =
+      rule.severity === 'critical' ? 3 : rule.severity === 'high' ? 6 : 12;
 
     const nextCheck = new Date();
     nextCheck.setMonth(nextCheck.getMonth() + months);
@@ -788,9 +856,14 @@ class ComplianceCheckerService {
   }
 
   private calculateReviewDueDate(urgency: LegalReview['urgency']): string {
-    const days = urgency === 'immediate' ? 1 :
-                 urgency === 'high' ? 3 :
-                 urgency === 'normal' ? 7 : 14;
+    const days =
+      urgency === 'immediate'
+        ? 1
+        : urgency === 'high'
+          ? 3
+          : urgency === 'normal'
+            ? 7
+            : 14;
 
     const dueDate = new Date();
     dueDate.setDate(dueDate.getDate() + days);
@@ -798,11 +871,21 @@ class ComplianceCheckerService {
   }
 
   // Placeholder implementations
-  private async checkContractIssues(_content: string): Promise<LegalIssue[]> { return []; }
-  private async checkEstatePlanningIssues(_content: string): Promise<LegalIssue[]> { return []; }
-  private async checkTaxIssues(_content: string): Promise<LegalIssue[]> { return []; }
+  private async checkContractIssues(_content: string): Promise<LegalIssue[]> {
+    return [];
+  }
+  private async checkEstatePlanningIssues(
+    _content: string
+  ): Promise<LegalIssue[]> {
+    return [];
+  }
+  private async checkTaxIssues(_content: string): Promise<LegalIssue[]> {
+    return [];
+  }
 
-  private convertComplianceToLegalIssues(checks: ComplianceCheck[]): LegalIssue[] {
+  private convertComplianceToLegalIssues(
+    checks: ComplianceCheck[]
+  ): LegalIssue[] {
     return checks.flatMap(check =>
       check.findings.map(finding => ({
         id: this.generateId(),
@@ -824,14 +907,20 @@ class ComplianceCheckerService {
       id: this.generateId(),
       title: `Address ${issue.category}`,
       description: `Resolve legal issue: ${issue.title}`,
-      actions: ['Consult with attorney', 'Review legal requirements', 'Update documentation'],
+      actions: [
+        'Consult with attorney',
+        'Review legal requirements',
+        'Update documentation',
+      ],
       priority: issue.severity === 'critical' ? 1 : 2,
       professional: 'attorney',
       timeline: issue.severity === 'critical' ? 'Immediate' : '2 weeks',
     }));
   }
 
-  private async getDocumentContent(_documentId: string): Promise<string | null> {
+  private async getDocumentContent(
+    _documentId: string
+  ): Promise<null | string> {
     // In production, would retrieve from document store
     return null;
   }

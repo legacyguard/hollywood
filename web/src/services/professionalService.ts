@@ -5,66 +5,75 @@
 
 import { supabase } from '@/integrations/supabase/client';
 import {
+  cacheInvalidation,
   professionalReviewCache,
-  cacheInvalidation
 } from '@/lib/performance/caching';
 import type { Database } from '@/integrations/supabase/types';
 
 // Type definitions from database schema
-type ProfessionalReviewer = Database['public']['Tables']['professional_reviewers']['Row'];
-type ProfessionalReviewerInsert = Database['public']['Tables']['professional_reviewers']['Insert'];
-type ProfessionalOnboarding = Database['public']['Tables']['professional_onboarding']['Row'];
-type ProfessionalOnboardingInsert = Database['public']['Tables']['professional_onboarding']['Insert'];
+type ProfessionalReviewer =
+  Database['public']['Tables']['professional_reviewers']['Row'];
+type ProfessionalReviewerInsert =
+  Database['public']['Tables']['professional_reviewers']['Insert'];
+type ProfessionalOnboarding =
+  Database['public']['Tables']['professional_onboarding']['Row'];
+type ProfessionalOnboardingInsert =
+  Database['public']['Tables']['professional_onboarding']['Insert'];
 type DocumentReview = Database['public']['Tables']['document_reviews']['Row'];
-type DocumentReviewInsert = Database['public']['Tables']['document_reviews']['Insert'];
+type DocumentReviewInsert =
+  Database['public']['Tables']['document_reviews']['Insert'];
 type ReviewRequest = Database['public']['Tables']['review_requests']['Row'];
-type ReviewRequestInsert = Database['public']['Tables']['review_requests']['Insert'];
+type ReviewRequestInsert =
+  Database['public']['Tables']['review_requests']['Insert'];
 type ReviewResult = Database['public']['Tables']['review_results']['Row'];
-type ReviewResultInsert = Database['public']['Tables']['review_results']['Insert'];
-type ProfessionalSpecialization = Database['public']['Tables']['professional_specializations']['Row'];
-type ProfessionalSpecializationInsert = Database['public']['Tables']['professional_specializations']['Insert'];
+type ReviewResultInsert =
+  Database['public']['Tables']['review_results']['Insert'];
+type ProfessionalSpecialization =
+  Database['public']['Tables']['professional_specializations']['Row'];
+type ProfessionalSpecializationInsert =
+  Database['public']['Tables']['professional_specializations']['Insert'];
 type Consultation = Database['public']['Tables']['consultations']['Row'];
 
 // Type for credentials JSON structure
 interface ProfessionalCredentials {
-  full_name?: string;
-  professional_title?: string;
   bar_number?: string;
-  licensed_states?: string[];
-  specializations?: string[];
   email?: string;
+  full_name?: string;
+  licensed_states?: string[];
+  professional_title?: string;
+  specializations?: string[];
 }
 
 // Type for email data structure
 interface EmailData {
+  [key: string]: null | string | string[] | undefined;
   applicantName?: string;
-  applicationId?: string;
-  professionalTitle?: string;
-  barNumber?: string;
-  licensedStates?: string[];
-  specializations?: string[];
   applicationDate?: string;
-  reviewUrl?: string;
-  status?: string;
-  statusDisplay?: string;
-  reviewNotes?: string;
-  nextSteps?: string;
-  supportEmail?: string;
+  applicationId?: string;
+  assignmentDate?: string;
+  barNumber?: string;
+  completionDate?: null | string;
   dashboardUrl?: string;
+  documentTitle?: string;
+  documentType?: string;
+  expectedCompletionDate?: string;
+  licensedStates?: string[];
+  nextSteps?: string;
+  professionalTitle?: string;
   reviewerName?: string;
   reviewId?: string;
-  documentType?: string;
-  documentTitle?: string;
-  reviewType?: string;
-  riskLevel?: string;
-  assignmentDate?: string;
-  expectedCompletionDate?: string;
+  reviewNotes?: string;
   reviewPortalUrl?: string;
-  userName?: string;
   reviewStatus?: string;
+  reviewType?: string;
+  reviewUrl?: string;
+  riskLevel?: string;
+  specializations?: string[];
+  status?: string;
+  statusDisplay?: string;
   statusMessage?: string;
-  completionDate?: string | null;
-  [key: string]: string | string[] | null | undefined;
+  supportEmail?: string;
+  userName?: string;
 }
 
 export class ProfessionalService {
@@ -78,13 +87,18 @@ export class ProfessionalService {
   }
 
   // Professional Applications
-  async submitApplication(application: Omit<ProfessionalOnboardingInsert, 'id' | 'created_at' | 'updated_at'>): Promise<ProfessionalOnboarding> {
+  async submitApplication(
+    application: Omit<
+      ProfessionalOnboardingInsert,
+      'created_at' | 'id' | 'updated_at'
+    >
+  ): Promise<ProfessionalOnboarding> {
     const { data, error } = await supabase
       .from('professional_onboarding')
       .insert({
         ...application,
         created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       })
       .select()
       .single();
@@ -99,7 +113,7 @@ export class ProfessionalService {
     return data;
   }
 
-  async getApplication(id: string): Promise<ProfessionalOnboarding | null> {
+  async getApplication(id: string): Promise<null | ProfessionalOnboarding> {
     const { data, error } = await supabase
       .from('professional_onboarding')
       .select('*')
@@ -110,7 +124,9 @@ export class ProfessionalService {
     return data;
   }
 
-  async getApplicationByUserId(userId: string): Promise<ProfessionalOnboarding | null> {
+  async getApplicationByUserId(
+    userId: string
+  ): Promise<null | ProfessionalOnboarding> {
     const { data, error } = await supabase
       .from('professional_onboarding')
       .select('*')
@@ -128,7 +144,7 @@ export class ProfessionalService {
   ): Promise<ProfessionalOnboarding> {
     const updates: Partial<ProfessionalOnboarding> = {
       verification_status: status,
-      updated_at: new Date().toISOString()
+      updated_at: new Date().toISOString(),
     };
 
     const { data, error } = await supabase
@@ -153,7 +169,10 @@ export class ProfessionalService {
   ): Promise<ProfessionalReviewer> {
     const credentials = onboarding.credentials as ProfessionalCredentials;
 
-    const reviewer: Omit<ProfessionalReviewerInsert, 'id' | 'created_at' | 'updated_at'> = {
+    const reviewer: Omit<
+      ProfessionalReviewerInsert,
+      'created_at' | 'id' | 'updated_at'
+    > = {
       name: credentials?.full_name || 'Unknown',
       credentials: credentials?.professional_title || 'Professional',
       bar_number: credentials?.bar_number || null,
@@ -163,7 +182,7 @@ export class ProfessionalService {
       reviews_completed: 0,
       average_turnaround_hours: 48,
       profile_verified: onboarding.verification_status === 'verified',
-      contact_email: credentials?.email || 'unknown@example.com'
+      contact_email: credentials?.email || 'unknown@example.com',
     };
 
     const { data, error } = await supabase
@@ -171,7 +190,7 @@ export class ProfessionalService {
       .insert({
         ...reviewer,
         created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       })
       .select()
       .single();
@@ -181,7 +200,7 @@ export class ProfessionalService {
     return data;
   }
 
-  async getReviewer(id: string): Promise<ProfessionalReviewer | null> {
+  async getReviewer(id: string): Promise<null | ProfessionalReviewer> {
     const { data, error } = await supabase
       .from('professional_reviewers')
       .select('*')
@@ -192,12 +211,15 @@ export class ProfessionalService {
     return data;
   }
 
-  async updateReviewer(id: string, updates: Partial<ProfessionalReviewer>): Promise<ProfessionalReviewer> {
+  async updateReviewer(
+    id: string,
+    updates: Partial<ProfessionalReviewer>
+  ): Promise<ProfessionalReviewer> {
     const { data, error } = await supabase
       .from('professional_reviewers')
       .update({
         ...updates,
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       })
       .eq('id', id)
       .select()
@@ -208,14 +230,12 @@ export class ProfessionalService {
   }
 
   async searchReviewers(filters: {
-    specializations?: string[];
     jurisdiction?: string;
     ratingMin?: number;
+    specializations?: string[];
     verified?: boolean;
   }): Promise<ProfessionalReviewer[]> {
-    let query = supabase
-      .from('professional_reviewers')
-      .select('*');
+    let query = supabase.from('professional_reviewers').select('*');
 
     if (filters.specializations?.length) {
       query = query.overlaps('specializations', filters.specializations);
@@ -240,13 +260,15 @@ export class ProfessionalService {
   }
 
   // Review Requests and Assignments
-  async createReviewRequest(request: Omit<ReviewRequestInsert, 'id' | 'created_at' | 'updated_at'>): Promise<ReviewRequest> {
+  async createReviewRequest(
+    request: Omit<ReviewRequestInsert, 'created_at' | 'id' | 'updated_at'>
+  ): Promise<ReviewRequest> {
     const { data, error } = await supabase
       .from('review_requests')
       .insert({
         ...request,
         created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       })
       .select()
       .single();
@@ -272,13 +294,16 @@ export class ProfessionalService {
     }
 
     // Create the document review record
-    const review: Omit<DocumentReviewInsert, 'id' | 'created_at' | 'updated_at'> = {
+    const review: Omit<
+      DocumentReviewInsert,
+      'created_at' | 'id' | 'updated_at'
+    > = {
       document_id: request.document_id,
       reviewer_id: reviewerId,
       review_type: 'general', // Default to general since review_requests doesn't have review_type
       status: 'pending',
       risk_level: request.priority === 'urgent' ? 'high' : 'medium',
-      review_date: new Date().toISOString()
+      review_date: new Date().toISOString(),
     };
 
     const { data, error } = await supabase
@@ -286,7 +311,7 @@ export class ProfessionalService {
       .insert({
         ...review,
         created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       })
       .select()
       .single();
@@ -299,7 +324,7 @@ export class ProfessionalService {
       .update({
         status: 'assigned',
         reviewer_id: reviewerId,
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       })
       .eq('id', requestId);
 
@@ -314,7 +339,7 @@ export class ProfessionalService {
   ): Promise<DocumentReview> {
     const updates: Partial<DocumentReview> = {
       status,
-      updated_at: new Date().toISOString()
+      updated_at: new Date().toISOString(),
     };
 
     if (status === 'completed') {
@@ -340,9 +365,9 @@ export class ProfessionalService {
 
   // Professional Network Directory
   async getNetworkDirectory(filters?: {
-    specialization?: string;
     jurisdiction?: string;
     rating?: number;
+    specialization?: string;
   }): Promise<ProfessionalReviewer[]> {
     let query = supabase
       .from('professional_reviewers')
@@ -370,13 +395,13 @@ export class ProfessionalService {
   // Pricing and Booking
   async getReviewPricing(): Promise<{
     basic: number;
-    comprehensive: number;
     certified: number;
+    comprehensive: number;
   }> {
     const pricing = {
       basic: 150,
       comprehensive: 350,
-      certified: 750
+      certified: 750,
     };
 
     return pricing;
@@ -399,7 +424,7 @@ export class ProfessionalService {
         duration_minutes: duration,
         status: 'scheduled',
         created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       })
       .select()
       .single();
@@ -420,13 +445,18 @@ export class ProfessionalService {
     return data || [];
   }
 
-  async createSpecialization(specialization: Omit<ProfessionalSpecializationInsert, 'id' | 'created_at' | 'updated_at'>): Promise<ProfessionalSpecialization> {
+  async createSpecialization(
+    specialization: Omit<
+      ProfessionalSpecializationInsert,
+      'created_at' | 'id' | 'updated_at'
+    >
+  ): Promise<ProfessionalSpecialization> {
     const { data, error } = await supabase
       .from('professional_specializations')
       .insert({
         ...specialization,
         created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       })
       .select()
       .single();
@@ -449,7 +479,7 @@ export class ProfessionalService {
       action_items: result.action_items || {},
       legal_references: result.legal_references || null,
       next_steps: result.next_steps || null,
-      validity_period: result.validity_period || null
+      validity_period: result.validity_period || null,
     };
 
     const { data, error } = await supabase
@@ -473,7 +503,8 @@ export class ProfessionalService {
 
     const { data, error } = await supabase
       .from('document_reviews')
-      .select(`
+      .select(
+        `
         *,
         professional_reviewers(
           id,
@@ -482,7 +513,8 @@ export class ProfessionalService {
           specializations
         ),
         review_results(*)
-      `)
+      `
+      )
       .eq('reviewer_id', userId)
       .order('created_at', { ascending: false });
 
@@ -496,13 +528,19 @@ export class ProfessionalService {
     const cacheKey = `document_review_${reviewId}`;
     const cached = professionalReviewCache.get(cacheKey);
 
-    if (cached && typeof cached === 'object' && cached !== null && 'id' in cached) {
+    if (
+      cached &&
+      typeof cached === 'object' &&
+      cached !== null &&
+      'id' in cached
+    ) {
       return cached as DocumentReview;
     }
 
     const { data, error } = await supabase
       .from('document_reviews')
-      .select(`
+      .select(
+        `
         *,
         professional_reviewers(
           id,
@@ -511,7 +549,8 @@ export class ProfessionalService {
           specializations
         ),
         review_results(*)
-      `)
+      `
+      )
       .eq('id', reviewId)
       .single();
 
@@ -534,10 +573,12 @@ export class ProfessionalService {
 
     const { data, error } = await supabase
       .from('professional_reviewers')
-      .select(`
+      .select(
+        `
         *,
         professional_specializations(*)
-      `)
+      `
+      )
       .eq('profile_verified', true)
       .order('rating', { ascending: false });
 
@@ -567,7 +608,9 @@ export class ProfessionalService {
   }
 
   // Email notification system with actual API integration
-  private async notifyAdminNewApplication(application: ProfessionalOnboarding): Promise<void> {
+  private async notifyAdminNewApplication(
+    application: ProfessionalOnboarding
+  ): Promise<void> {
     try {
       const credentials = application.credentials as ProfessionalCredentials;
 
@@ -582,14 +625,14 @@ export class ProfessionalService {
         licensedStates: credentials?.licensed_states || [],
         specializations: credentials?.specializations || [],
         applicationDate: new Date().toLocaleDateString(),
-        reviewUrl: `${window.location.origin}/admin/applications/${application.id}`
+        reviewUrl: `${window.location.origin}/admin/applications/${application.id}`,
       };
 
       await this.sendEmail({
         to: 'admin@legacyguard.app',
         subject: `New Professional Application - ${credentials?.full_name || 'Unknown'}`,
         template: 'admin_new_application',
-        data: emailData
+        data: emailData,
       });
 
       // Log notification in database for tracking
@@ -597,7 +640,7 @@ export class ProfessionalService {
         type: 'admin_application',
         recipient: 'admin@legacyguard.app',
         applicationId: application.id,
-        status: 'sent'
+        status: 'sent',
       });
     } catch (error) {
       console.error('Failed to send admin notification:', error);
@@ -606,7 +649,7 @@ export class ProfessionalService {
         recipient: 'admin@legacyguard.app',
         applicationId: application.id,
         status: 'failed',
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
     }
   }
@@ -619,30 +662,36 @@ export class ProfessionalService {
       const credentials = application.credentials as ProfessionalCredentials;
 
       const templateMap = {
-        'pending': 'application_received',
-        'under_review': 'application_under_review',
-        'verified': 'application_approved',
-        'rejected': 'application_rejected'
+        pending: 'application_received',
+        under_review: 'application_under_review',
+        verified: 'application_approved',
+        rejected: 'application_rejected',
       };
 
       const emailData: EmailData = {
         to: credentials?.email || 'unknown@example.com',
         subject: `Professional Application Update - ${application.verification_status}`,
-        template: templateMap[application.verification_status] || 'application_status_change',
+        template:
+          templateMap[application.verification_status] ||
+          'application_status_change',
         applicantName: credentials?.full_name || 'Unknown',
         status: application.verification_status,
-        statusDisplay: this.formatStatusForDisplay(application.verification_status),
+        statusDisplay: this.formatStatusForDisplay(
+          application.verification_status
+        ),
         reviewNotes: reviewNotes || 'No additional notes provided',
         nextSteps: this.getNextStepsForStatus(application.verification_status),
         supportEmail: 'support@legacyguard.app',
-        dashboardUrl: `${window.location.origin}/professional/dashboard`
+        dashboardUrl: `${window.location.origin}/professional/dashboard`,
       };
 
       await this.sendEmail({
         to: credentials?.email || 'unknown@example.com',
         subject: `Professional Application Update - ${application.verification_status}`,
-        template: templateMap[application.verification_status] || 'application_status_change',
-        data: emailData
+        template:
+          templateMap[application.verification_status] ||
+          'application_status_change',
+        data: emailData,
       });
 
       await this.logNotification({
@@ -650,7 +699,7 @@ export class ProfessionalService {
         recipient: credentials?.email || 'unknown@example.com',
         applicationId: application.id,
         status: 'sent',
-        metadata: { newStatus: application.verification_status }
+        metadata: { newStatus: application.verification_status },
       });
     } catch (error) {
       console.error('Failed to send applicant notification:', error);
@@ -659,7 +708,7 @@ export class ProfessionalService {
         recipient: 'unknown@example.com',
         applicationId: application.id,
         status: 'failed',
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
     }
   }
@@ -688,23 +737,25 @@ export class ProfessionalService {
         reviewType: review.review_type,
         riskLevel: review.risk_level,
         assignmentDate: new Date().toLocaleDateString(),
-        expectedCompletionDate: this.calculateExpectedCompletion(reviewer.average_turnaround_hours),
+        expectedCompletionDate: this.calculateExpectedCompletion(
+          reviewer.average_turnaround_hours
+        ),
         reviewPortalUrl: `${window.location.origin}/professional/review/${review.id}`,
-        supportEmail: 'support@legacyguard.app'
+        supportEmail: 'support@legacyguard.app',
       };
 
       await this.sendEmail({
         to: reviewer.contact_email,
         subject: `New Document Review Assignment - ${document?.document_type || 'Document'}`,
         template: 'reviewer_assignment',
-        data: emailData
+        data: emailData,
       });
 
       await this.logNotification({
         type: 'review_assignment',
         recipient: reviewer.contact_email,
         reviewId: review.id,
-        status: 'sent'
+        status: 'sent',
       });
     } catch (error) {
       console.error('Failed to send review assignment notification:', error);
@@ -713,12 +764,14 @@ export class ProfessionalService {
         recipient: 'unknown',
         reviewId: review.id,
         status: 'failed',
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
     }
   }
 
-  private async notifyReviewStatusChange(review: DocumentReview): Promise<void> {
+  private async notifyReviewStatusChange(
+    review: DocumentReview
+  ): Promise<void> {
     try {
       // Get document and user details
       const { data: document } = await supabase
@@ -739,10 +792,10 @@ export class ProfessionalService {
       if (!profile) return;
 
       const statusMessages = {
-        'pending': 'Your document review has been assigned and is pending',
-        'in_progress': 'Your document review is currently in progress',
-        'completed': 'Your document review has been completed',
-        'cancelled': 'Your document review has been cancelled'
+        pending: 'Your document review has been assigned and is pending',
+        in_progress: 'Your document review is currently in progress',
+        completed: 'Your document review has been completed',
+        cancelled: 'Your document review has been cancelled',
       };
 
       const emailData: EmailData = {
@@ -755,16 +808,18 @@ export class ProfessionalService {
         reviewStatus: review.status,
         statusMessage: statusMessages[review.status] || 'Status updated',
         reviewId: review.id,
-        completionDate: review.completion_date ? new Date(review.completion_date).toLocaleDateString() : null,
+        completionDate: review.completion_date
+          ? new Date(review.completion_date).toLocaleDateString()
+          : null,
         dashboardUrl: `${window.location.origin}/vault/${document.id}/reviews`,
-        supportEmail: 'support@legacyguard.app'
+        supportEmail: 'support@legacyguard.app',
       };
 
       await this.sendEmail({
         to: profile.email || 'unknown@example.com',
         subject: `Document Review Update - ${review.status}`,
         template: 'review_status_update',
-        data: emailData
+        data: emailData,
       });
 
       await this.logNotification({
@@ -772,7 +827,7 @@ export class ProfessionalService {
         recipient: profile.email || 'unknown@example.com',
         reviewId: review.id,
         status: 'sent',
-        metadata: { newStatus: review.status }
+        metadata: { newStatus: review.status },
       });
     } catch (error) {
       console.error('Failed to send review status notification:', error);
@@ -781,24 +836,24 @@ export class ProfessionalService {
         recipient: 'unknown',
         reviewId: review.id,
         status: 'failed',
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
     }
   }
 
   // Email service integration
   private async sendEmail(emailData: {
-    to: string;
+    data: EmailData;
     subject: string;
     template: string;
-    data: EmailData;
+    to: string;
   }): Promise<void> {
     // For now, we'll use Supabase Edge Functions for email sending
     // In production, this would integrate with SendGrid, AWS SES, or similar service
 
     try {
       const { error } = await supabase.functions.invoke('send-email', {
-        body: emailData
+        body: emailData,
       });
 
       if (error) throw error;
@@ -807,19 +862,22 @@ export class ProfessionalService {
     } catch (error) {
       console.error('Email sending failed:', error);
       // Fallback: log to database for manual processing
-      await this.logFailedEmail(emailData, error instanceof Error ? error.message : 'Unknown error');
+      await this.logFailedEmail(
+        emailData,
+        error instanceof Error ? error.message : 'Unknown error'
+      );
       throw error;
     }
   }
 
   private async logNotification(notification: {
-    type: string;
-    recipient: string;
     applicationId?: string;
-    reviewId?: string;
-    status: 'sent' | 'failed';
     error?: string;
-    metadata?: Record<string, string | number | boolean | null | undefined>;
+    metadata?: Record<string, boolean | null | number | string | undefined>;
+    recipient: string;
+    reviewId?: string;
+    status: 'failed' | 'sent';
+    type: string;
   }): Promise<void> {
     try {
       // Since notification_logs table doesn't exist, we'll use console logging for now
@@ -837,12 +895,15 @@ export class ProfessionalService {
     }
   }
 
-  private async logFailedEmail(emailData: {
-    to: string;
-    subject: string;
-    template: string;
-    data: EmailData;
-  }, error: string): Promise<void> {
+  private async logFailedEmail(
+    emailData: {
+      data: EmailData;
+      subject: string;
+      template: string;
+      to: string;
+    },
+    error: string
+  ): Promise<void> {
     try {
       // Since failed_emails table doesn't exist, we'll use console logging for now
       console.warn('Failed email logged:', { emailData, error });
@@ -867,22 +928,29 @@ export class ProfessionalService {
   // Helper methods
   private formatStatusForDisplay(status: string): string {
     const statusMap = {
-      'pending': 'Pending Review',
-      'under_review': 'Under Review',
-      'verified': 'Approved & Verified',
-      'rejected': 'Application Rejected'
+      pending: 'Pending Review',
+      under_review: 'Under Review',
+      verified: 'Approved & Verified',
+      rejected: 'Application Rejected',
     };
     return statusMap[status as keyof typeof statusMap] || status;
   }
 
   private getNextStepsForStatus(status: string): string {
     const nextStepsMap = {
-      'pending': 'Your application is in queue for review. You will be notified when the review begins.',
-      'under_review': 'Our team is currently reviewing your credentials. This typically takes 2-3 business days.',
-      'verified': 'Congratulations! You can now access the professional portal and start accepting review assignments.',
-      'rejected': 'Please review the feedback provided and feel free to reapply after addressing the noted concerns.'
+      pending:
+        'Your application is in queue for review. You will be notified when the review begins.',
+      under_review:
+        'Our team is currently reviewing your credentials. This typically takes 2-3 business days.',
+      verified:
+        'Congratulations! You can now access the professional portal and start accepting review assignments.',
+      rejected:
+        'Please review the feedback provided and feel free to reapply after addressing the noted concerns.',
     };
-    return nextStepsMap[status as keyof typeof nextStepsMap] || 'Please check your dashboard for updates.';
+    return (
+      nextStepsMap[status as keyof typeof nextStepsMap] ||
+      'Please check your dashboard for updates.'
+    );
   }
 
   private calculateExpectedCompletion(averageTurnaroundHours: number): string {

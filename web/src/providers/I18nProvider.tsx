@@ -6,8 +6,13 @@
 import React, { useEffect, useState } from 'react';
 import { I18nextProvider } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
-import i18n, { initI18n, NamespaceLoader, getNamespacesForRoute, SUPPORTED_LANGUAGES } from '@/lib/i18n/config';
 import type { NAMESPACES } from '@/lib/i18n/config';
+import i18n, {
+  getNamespacesForRoute,
+  initI18n,
+  NamespaceLoader,
+  SUPPORTED_LANGUAGES
+} from '@/lib/i18n/config';
 
 interface I18nProviderProps {
   children: React.ReactNode;
@@ -16,7 +21,7 @@ interface I18nProviderProps {
 
 export const I18nProvider: React.FC<I18nProviderProps> = ({
   children,
-  fallback = <div>Loading translations...</div>
+  fallback = <div>Loading translations...</div>,
 }) => {
   const [isReady, setIsReady] = useState(false);
   const location = useLocation();
@@ -43,7 +48,9 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({
 
     const loadNamespaces = async () => {
       const namespaces = getNamespacesForRoute(location.pathname);
-      const namespacesToLoad = namespaces.filter(ns => !i18n.hasResourceBundle(i18n.language, ns));
+      const namespacesToLoad = namespaces.filter(
+        ns => !i18n.hasResourceBundle(i18n.language, ns)
+      );
 
       if (namespacesToLoad.length > 0) {
         try {
@@ -68,7 +75,7 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({
 export const useLoadContentNamespace = (
   contentType: keyof typeof NAMESPACES.CONTENT,
   language: keyof typeof SUPPORTED_LANGUAGES,
-  jurisdiction: 'SK' | 'CZ'
+  jurisdiction: 'CZ' | 'SK'
 ) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -82,7 +89,10 @@ export const useLoadContentNamespace = (
         await NamespaceLoader.loadContent(contentType, language, jurisdiction);
       } catch (err) {
         setError(err as Error);
-        console.error(`Failed to load content namespace for ${String(contentType)}:`, err);
+        console.error(
+          `Failed to load content namespace for ${String(contentType)}:`,
+          err
+        );
       } finally {
         setIsLoading(false);
       }
@@ -120,8 +130,8 @@ export const LanguageSwitcher: React.FC = () => {
   return (
     <select
       value={currentLang}
-      onChange={(e) => handleLanguageChange(e.target.value)}
-      className="px-3 py-2 border rounded-md"
+      onChange={e => handleLanguageChange(e.target.value)}
+      className='px-3 py-2 border rounded-md'
     >
       {Object.entries(SUPPORTED_LANGUAGES).map(([code, lang]) => (
         <option key={code} value={code}>
@@ -134,9 +144,9 @@ export const LanguageSwitcher: React.FC = () => {
 
 // Lazy loading wrapper for wills content
 export const WillsContentLoader: React.FC<{
-  language: keyof typeof SUPPORTED_LANGUAGES;
-  jurisdiction: 'SK' | 'CZ';
   children: React.ReactNode;
+  jurisdiction: 'CZ' | 'SK';
+  language: keyof typeof SUPPORTED_LANGUAGES;
 }> = ({ language, jurisdiction, children }) => {
   const [isLoaded, setIsLoaded] = useState(false);
 

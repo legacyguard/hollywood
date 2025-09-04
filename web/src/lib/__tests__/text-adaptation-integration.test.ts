@@ -1,5 +1,5 @@
 // Text Adaptation Integration Tests
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { TextManager } from '../text-manager';
 import { AdaptivePersonalityManager } from '../sofia-personality';
 
@@ -34,10 +34,14 @@ describe('Text Adaptation Integration', () => {
       personalityManager.setManualOverride('empathetic');
 
       // Get text - should use personality manager's style
-      const result = textManager.getText('sofia_welcome', 'default', testUserId);
+      const result = textManager.getText(
+        'sofia_welcome',
+        'default',
+        testUserId
+      );
 
-      expect(result).toContain("gentle guide");
-      expect(result).toContain("meaningful journey");
+      expect(result).toContain('gentle guide');
+      expect(result).toContain('meaningful journey');
     });
 
     it('should use personality manager for pragmatic mode', () => {
@@ -45,28 +49,42 @@ describe('Text Adaptation Integration', () => {
       personalityManager.setManualOverride('pragmatic');
 
       // Get text - should use personality manager's style
-      const result = textManager.getText('sofia_welcome', 'default', testUserId);
+      const result = textManager.getText(
+        'sofia_welcome',
+        'default',
+        testUserId
+      );
 
-      expect(result).toContain("digital assistant");
-      expect(result).toContain("efficiently");
+      expect(result).toContain('digital assistant');
+      expect(result).toContain('efficiently');
     });
 
     it('should fall back to legacy system when no personality manager', () => {
       const otherUserId = 'other-user';
 
       // This user has no registered personality manager
-      const result = textManager.getText('sofia_welcome', 'empathetic', otherUserId);
+      const result = textManager.getText(
+        'sofia_welcome',
+        'empathetic',
+        otherUserId
+      );
 
-      expect(result).toContain("gentle guide");
+      expect(result).toContain('gentle guide');
     });
   });
 
   describe('Input Analysis Integration', () => {
     it('should record interactions in personality manager when available', () => {
-      const recordInteractionSpy = vi.spyOn(personalityManager, 'recordInteraction');
+      const recordInteractionSpy = vi.spyOn(
+        personalityManager,
+        'recordInteraction'
+      );
 
       // Analyze user input
-      textManager.analyzeUserInput('I love my family and want to protect them', testUserId);
+      textManager.analyzeUserInput(
+        'I love my family and want to protect them',
+        testUserId
+      );
 
       expect(recordInteractionSpy).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -91,22 +109,30 @@ describe('Text Adaptation Integration', () => {
       // Set empathetic mode
       personalityManager.setManualOverride('empathetic');
 
-      const result = textManager.getText('milestone_first_document_uploaded', 'default', testUserId);
+      const result = textManager.getText(
+        'milestone_first_document_uploaded',
+        'default',
+        testUserId
+      );
 
       // Should get empathetic variant
       expect(result).toContain("family's mosaic of certainty");
-      expect(result).toContain("care about protecting");
+      expect(result).toContain('care about protecting');
     });
 
     it('should provide pragmatic adaptation when needed', () => {
       // Set pragmatic mode
       personalityManager.setManualOverride('pragmatic');
 
-      const result = textManager.getText('milestone_first_document_uploaded', 'default', testUserId);
+      const result = textManager.getText(
+        'milestone_first_document_uploaded',
+        'default',
+        testUserId
+      );
 
       // Should get pragmatic variant
-      expect(result).toContain("encrypted and stored securely");
-      expect(result).toContain("digital legacy system");
+      expect(result).toContain('encrypted and stored securely');
+      expect(result).toContain('digital legacy system');
     });
   });
 
@@ -128,11 +154,15 @@ describe('Text Adaptation Integration', () => {
 
       // After learning, should prefer empathetic style
       const currentStyle = personalityManager.getCurrentStyle();
-      const result = textManager.getText('sofia_welcome', 'default', testUserId);
+      const result = textManager.getText(
+        'sofia_welcome',
+        'default',
+        testUserId
+      );
 
       // Should lean towards empathetic communication
       if (currentStyle === 'empathetic') {
-        expect(result).toContain("gentle guide");
+        expect(result).toContain('gentle guide');
       }
     });
   });
@@ -140,23 +170,39 @@ describe('Text Adaptation Integration', () => {
   describe('System Compatibility', () => {
     it('should maintain backward compatibility with direct style specification', () => {
       // Direct style should override personality manager
-      const empathetic = textManager.getText('sofia_welcome', 'empathetic', testUserId);
-      const pragmatic = textManager.getText('sofia_welcome', 'pragmatic', testUserId);
+      const empathetic = textManager.getText(
+        'sofia_welcome',
+        'empathetic',
+        testUserId
+      );
+      const pragmatic = textManager.getText(
+        'sofia_welcome',
+        'pragmatic',
+        testUserId
+      );
 
-      expect(empathetic).toContain("gentle guide");
-      expect(pragmatic).toContain("digital assistant");
+      expect(empathetic).toContain('gentle guide');
+      expect(pragmatic).toContain('digital assistant');
       expect(empathetic).not.toBe(pragmatic);
     });
 
     it('should handle missing text keys gracefully', () => {
-      const result = textManager.getText('nonexistent_key', 'default', testUserId);
+      const result = textManager.getText(
+        'nonexistent_key',
+        'default',
+        testUserId
+      );
       expect(result).toContain('[Missing text: nonexistent_key]');
     });
 
     it('should handle users without personality managers', () => {
       const unknownUserId = 'unknown-user';
 
-      const result = textManager.getText('sofia_welcome', 'default', unknownUserId);
+      const result = textManager.getText(
+        'sofia_welcome',
+        'default',
+        unknownUserId
+      );
 
       // Should still work, falling back to default behavior
       expect(result).toBeTruthy();

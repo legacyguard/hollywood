@@ -5,14 +5,14 @@ import { Icon, type IconName } from '@/components/ui/icon-library';
 import { FadeIn } from '@/components/motion/FadeIn';
 
 interface AttentionItem {
-  id: string;
-  type: 'expiration' | 'guardian' | 'sofia_suggestion' | 'task' | 'security';
-  title: string;
+  actionText: string;
   description: string;
   icon: IconName;
-  actionText: string;
+  id: string;
   onAction: () => void;
-  urgency: 'high' | 'medium' | 'low';
+  title: string;
+  type: 'expiration' | 'guardian' | 'security' | 'sofia_suggestion' | 'task';
+  urgency: 'high' | 'low' | 'medium';
 }
 
 interface AttentionSectionProps {
@@ -96,7 +96,7 @@ export const AttentionSection: React.FC<AttentionSectionProps> = ({
       <section className={className}>
         <div className='mb-6'>
           <div className='flex items-center gap-3 mb-2'>
-            <Icon name="alert-circle" className='w-6 h-6 text-primary' />
+            <Icon name='alert-circle' className='w-6 h-6 text-primary' />
             <h2 className='text-2xl font-bold font-heading text-card-foreground'>
               Current Challenges
             </h2>
@@ -129,7 +129,7 @@ export const AttentionSection: React.FC<AttentionSectionProps> = ({
                     </div>
                   </div>
                   <Button
-                    variant="outline"
+                    variant='outline'
                     size='sm'
                     onClick={item.onAction}
                     className='ml-4 shrink-0'

@@ -42,7 +42,7 @@
   "trust": {
     "partners": {
       "clerk": "Secured by Clerk",
-      "supabase": "Powered by Supabase", 
+      "supabase": "Powered by Supabase",
       "vercel": "Deployed on Vercel",
       "legal": "Legal Partnership",
       "gdpr": "GDPR Compliant"
@@ -57,7 +57,7 @@
   "footer": {
     "sections": {
       "product": "Product",
-      "support": "Support", 
+      "support": "Support",
       "legal": "Legal"
     },
     "copyright": "© {{year}} LegacyGuard. All rights reserved."

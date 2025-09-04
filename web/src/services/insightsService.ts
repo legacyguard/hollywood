@@ -5,44 +5,50 @@
 
 import { supabase } from '@/integrations/supabase/client';
 import type {
-  QuickInsight,
-  InsightCalculation,
   DocumentAnalysis,
   FamilyImpactStatement,
+  InsightAnalytics,
+  InsightCalculation,
   InsightFilters,
-  InsightAnalytics
+  QuickInsight,
 } from '@/types/insights';
 
 // Document type for analysis
 interface DocumentForAnalysis {
+  content?: string;
+  created_at: string;
   id: string;
-  type: string;
+  metadata?: Record<string, unknown>;
   name: string;
   size?: number;
-  content?: string;
-  metadata?: Record<string, unknown>;
-  user_id: string;
-  created_at: string;
+  type: string;
   updated_at: string;
+  user_id: string;
 }
 
 // Family member type for analysis
 interface FamilyMemberForAnalysis {
+  birth_date?: string;
+  contact_info?: Record<string, unknown>;
   id: string;
   name: string;
   relationship: string;
-  birth_date?: string;
-  contact_info?: Record<string, unknown>;
 }
 
 export class InsightsService {
   private readonly INSIGHT_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
-  private insightCache = new Map<string, { data: QuickInsight[]; timestamp: number }>();
+  private insightCache = new Map<
+    string,
+    { data: QuickInsight[]; timestamp: number }
+  >();
 
   /**
    * Generate insights for a specific document
    */
-  async analyzeDocument(documentId: string, userId: string): Promise<DocumentAnalysis> {
+  async analyzeDocument(
+    documentId: string,
+    userId: string
+  ): Promise<DocumentAnalysis> {
     try {
       // Fetch document details
       const { data: document, error: docError } = await supabase
@@ -70,7 +76,7 @@ export class InsightsService {
         documentType: document.type || 'unknown',
         extractedValue: analysis,
         insights,
-        recommendations: this.generateRecommendations(analysis, document)
+        recommendations: this.generateRecommendations(analysis, document),
       };
     } catch (error) {
       console.error('Document analysis failed:', error);
@@ -81,7 +87,9 @@ export class InsightsService {
   /**
    * Calculate comprehensive family impact statement
    */
-  async generateFamilyImpactStatement(userId: string): Promise<FamilyImpactStatement> {
+  async generateFamilyImpactStatement(
+    userId: string
+  ): Promise<FamilyImpactStatement> {
     try {
       // Fetch user's family members
       const { data: familyMembers } = await supabase
@@ -99,33 +107,37 @@ export class InsightsService {
       const protectionAnalysis = this.calculateProtectionLevel(documents || []);
 
       // Generate impact scenarios
-      const impactScenarios = this.generateImpactScenarios(familyMembers || [], documents || []);
+      const impactScenarios = this.generateImpactScenarios(
+        familyMembers || [],
+        documents || []
+      );
 
       const statement: FamilyImpactStatement = {
         userId,
         scenario: impactScenarios.primary,
-        impactDescription: this.generateImpactDescription(protectionAnalysis, familyMembers || []),
+        impactDescription: this.generateImpactDescription(
+          protectionAnalysis,
+          familyMembers || []
+        ),
         affectedMembers: (familyMembers || []).map(member => ({
           memberId: member.id,
           name: member.name,
           impact: this.calculateMemberImpact(member, documents || []),
-          riskLevel: this.calculateMemberRisk(member, protectionAnalysis)
+          riskLevel: this.calculateMemberRisk(member, protectionAnalysis),
         })),
         protectionGaps: this.identifyProtectionGaps(documents || []),
         overallProtectionLevel: protectionAnalysis.percentage,
         estimatedTimeSaved: protectionAnalysis.timeSaved,
         emotionalBenefits: this.generateEmotionalBenefits(protectionAnalysis),
-        generatedAt: new Date().toISOString()
+        generatedAt: new Date().toISOString(),
       };
 
       // Store the impact statement
-      await supabase
-        .from('family_impact_statements')
-        .upsert({
-          user_id: userId,
-          statement: statement,
-          created_at: new Date().toISOString()
-        });
+      await (supabase as any).from('family_impact_statements').upsert({
+        user_id: userId,
+        statement: statement,
+        created_at: new Date().toISOString(),
+      });
 
       return statement;
     } catch (error) {
@@ -151,14 +163,20 @@ export class InsightsService {
 
       const timeSaved = this.calculateTimeSaved(documents || []);
       const protectionLevel = this.calculateProtectionLevel(documents || []);
-      const familyImpact = this.calculateFamilyImpactMetrics(familyMembers || [], documents || []);
-      const urgencyScore = this.calculateUrgencyScore(documents || [], familyMembers || []);
+      const familyImpact = this.calculateFamilyImpactMetrics(
+        familyMembers || [],
+        documents || []
+      );
+      const urgencyScore = this.calculateUrgencyScore(
+        documents || [],
+        familyMembers || []
+      );
 
       return {
         timeSaved,
         protectionLevel,
         familyImpact,
-        urgencyScore
+        urgencyScore,
       };
     } catch (error) {
       console.error('Insight metrics calculation failed:', error);
@@ -169,7 +187,10 @@ export class InsightsService {
   /**
    * Get all insights for a user with filtering
    */
-  async getUserInsights(userId: string, filters?: InsightFilters): Promise<QuickInsight[]> {
+  async getUserInsights(
+    userId: string,
+    filters?: InsightFilters
+  ): Promise<QuickInsight[]> {
     const cacheKey = `insights_${userId}_${JSON.stringify(filters || {})}`;
     const cached = this.insightCache.get(cacheKey);
 
@@ -212,7 +233,10 @@ export class InsightsService {
       const insights = (data || []) as QuickInsight[];
 
       // Cache the results
-      this.insightCache.set(cacheKey, { data: insights, timestamp: Date.now() });
+      this.insightCache.set(cacheKey, {
+        data: insights,
+        timestamp: Date.now(),
+      });
 
       return insights;
     } catch (error) {
@@ -238,7 +262,10 @@ export class InsightsService {
 
       // Generate insights for each recent document
       for (const doc of recentDocs || []) {
-        const docInsights = await this.generateDocumentSpecificInsights(doc, userId);
+        const docInsights = await this.generateDocumentSpecificInsights(
+          doc,
+          userId
+        );
         insights.push(...docInsights);
       }
 
@@ -279,7 +306,9 @@ export class InsightsService {
   }
 
   // Private helper methods
-  private async performDocumentAnalysis(document: DocumentForAnalysis): Promise<DocumentAnalysis['extractedValue']> {
+  private async performDocumentAnalysis(
+    document: DocumentForAnalysis
+  ): Promise<DocumentAnalysis['extractedValue']> {
     // This would integrate with AI service for document analysis
     // For now, providing structured analysis based on document type
 
@@ -289,7 +318,7 @@ export class InsightsService {
       keyInfo: this.extractKeyInformation(document),
       missingInfo: this.identifyMissingInformation(document),
       qualityScore: baseScore,
-      completenessPercentage: Math.round(baseScore * 100)
+      completenessPercentage: Math.round(baseScore * 100),
     };
   }
 
@@ -297,11 +326,23 @@ export class InsightsService {
     const info: string[] = [];
 
     if (document.type === 'will') {
-      info.push('Beneficiaries identified', 'Asset distribution specified', 'Executor named');
+      info.push(
+        'Beneficiaries identified',
+        'Asset distribution specified',
+        'Executor named'
+      );
     } else if (document.type === 'insurance_policy') {
-      info.push('Coverage amount specified', 'Beneficiaries listed', 'Policy terms defined');
+      info.push(
+        'Coverage amount specified',
+        'Beneficiaries listed',
+        'Policy terms defined'
+      );
     } else if (document.type === 'property_deed') {
-      info.push('Property address confirmed', 'Ownership details clear', 'Transfer conditions set');
+      info.push(
+        'Property address confirmed',
+        'Ownership details clear',
+        'Transfer conditions set'
+      );
     }
 
     return info;
@@ -321,7 +362,10 @@ export class InsightsService {
     return missing;
   }
 
-  private async generateDocumentInsights(document: DocumentForAnalysis, analysis: DocumentAnalysis['extractedValue']): Promise<{immediate: QuickInsight[], potential: QuickInsight[]}> {
+  private async generateDocumentInsights(
+    document: DocumentForAnalysis,
+    analysis: DocumentAnalysis['extractedValue']
+  ): Promise<{ immediate: QuickInsight[]; potential: QuickInsight[] }> {
     const immediate: QuickInsight[] = [];
     const potential: QuickInsight[] = [];
 
@@ -343,17 +387,20 @@ export class InsightsService {
           calculatedAt: new Date().toISOString(),
           confidence: 0.9,
           category: 'document_quality',
-          tags: ['incomplete', 'action_required']
+          tags: ['incomplete', 'action_required'],
         },
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
       });
     }
 
     return { immediate, potential };
   }
 
-  private generateRecommendations(analysis: DocumentAnalysis['extractedValue'], _document: DocumentForAnalysis) {
+  private generateRecommendations(
+    analysis: DocumentAnalysis['extractedValue'],
+    _document: DocumentForAnalysis
+  ) {
     const recommendations = [];
 
     if (analysis.completenessPercentage < 90) {
@@ -361,26 +408,41 @@ export class InsightsService {
         priority: 'high' as const,
         action: 'Complete missing information',
         reason: 'Incomplete documents may not provide full legal protection',
-        impact: 'Ensures your wishes are clearly documented and legally enforceable'
+        impact:
+          'Ensures your wishes are clearly documented and legally enforceable',
       });
     }
 
     return recommendations;
   }
 
-  private calculateTimeSaved(documents: DocumentForAnalysis[]): InsightCalculation['timeSaved'] {
+  private calculateTimeSaved(
+    documents: DocumentForAnalysis[]
+  ): InsightCalculation['timeSaved'] {
     const baseTimePerDoc = 2.5; // Average hours saved per document
     const totalHours = documents.length * baseTimePerDoc;
 
     return {
       hours: Math.round(totalHours * 10) / 10,
-      tasks: ['Legal consultations', 'Document drafting', 'Research time', 'Administrative work'],
-      comparison: `Equivalent to ${Math.ceil(totalHours / 8)} full work days`
+      tasks: [
+        'Legal consultations',
+        'Document drafting',
+        'Research time',
+        'Administrative work',
+      ],
+      comparison: `Equivalent to ${Math.ceil(totalHours / 8)} full work days`,
     };
   }
 
-  private calculateProtectionLevel(documents: DocumentForAnalysis[]): InsightCalculation['protectionLevel'] {
-    const essentialDocs = ['will', 'power_of_attorney', 'healthcare_directive', 'insurance_policy'];
+  private calculateProtectionLevel(
+    documents: DocumentForAnalysis[]
+  ): InsightCalculation['protectionLevel'] {
+    const essentialDocs = [
+      'will',
+      'power_of_attorney',
+      'healthcare_directive',
+      'insurance_policy',
+    ];
     const hasEssential = essentialDocs.filter(type =>
       documents.some(doc => doc.type === type)
     );
@@ -389,26 +451,44 @@ export class InsightsService {
     const bonusPercentage = Math.min(30, documents.length * 5);
     const percentage = Math.min(100, basePercentage + bonusPercentage);
 
-    const gaps = essentialDocs.filter(type =>
-      !documents.some(doc => doc.type === type)
+    const gaps = essentialDocs.filter(
+      type => !documents.some(doc => doc.type === type)
     );
 
     return {
       percentage: Math.round(percentage),
       gaps: gaps.map(gap => `Missing ${gap.replace('_', ' ')}`),
-      strengths: hasEssential.map(strength => `${strength.replace('_', ' ')} documented`)
+      strengths: hasEssential.map(
+        strength => `${strength.replace('_', ' ')} documented`
+      ),
     };
   }
 
-  private calculateFamilyImpactMetrics(familyMembers: FamilyMemberForAnalysis[], _documents: DocumentForAnalysis[]): InsightCalculation['familyImpact'] {
+  private calculateFamilyImpactMetrics(
+    familyMembers: FamilyMemberForAnalysis[],
+    _documents: DocumentForAnalysis[]
+  ): InsightCalculation['familyImpact'] {
     return {
       members: familyMembers.length,
-      scenarios: ['Sudden incapacity', 'Estate distribution', 'Healthcare decisions', 'Financial management'],
-      benefits: ['Clear inheritance plan', 'Reduced family stress', 'Legal protection', 'Peace of mind']
+      scenarios: [
+        'Sudden incapacity',
+        'Estate distribution',
+        'Healthcare decisions',
+        'Financial management',
+      ],
+      benefits: [
+        'Clear inheritance plan',
+        'Reduced family stress',
+        'Legal protection',
+        'Peace of mind',
+      ],
     };
   }
 
-  private calculateUrgencyScore(documents: DocumentForAnalysis[], familyMembers: FamilyMemberForAnalysis[]): InsightCalculation['urgencyScore'] {
+  private calculateUrgencyScore(
+    documents: DocumentForAnalysis[],
+    familyMembers: FamilyMemberForAnalysis[]
+  ): InsightCalculation['urgencyScore'] {
     let score = 0;
     const factors: string[] = [];
 
@@ -420,8 +500,8 @@ export class InsightsService {
 
     // Missing essential documents
     const essentialDocs = ['will', 'power_of_attorney', 'healthcare_directive'];
-    const missingEssential = essentialDocs.filter(type =>
-      !documents.some(doc => doc.type === type)
+    const missingEssential = essentialDocs.filter(
+      type => !documents.some(doc => doc.type === type)
     );
 
     score += missingEssential.length * 20;
@@ -432,18 +512,24 @@ export class InsightsService {
     // Recent life events (placeholder - would be tracked in user profile)
     // score += recentEvents * 15;
 
-    const timeline = score > 70 ? 'Immediate action recommended' :
-                    score > 40 ? 'Action needed within 3 months' :
-                    'Plan to complete within 6 months';
+    const timeline =
+      score > 70
+        ? 'Immediate action recommended'
+        : score > 40
+          ? 'Action needed within 3 months'
+          : 'Plan to complete within 6 months';
 
     return {
       score: Math.min(100, score),
       factors,
-      timeline
+      timeline,
     };
   }
 
-  private generateImpactDescription(protectionAnalysis: InsightCalculation['protectionLevel'], familyMembers: FamilyMemberForAnalysis[]): string {
+  private generateImpactDescription(
+    protectionAnalysis: InsightCalculation['protectionLevel'],
+    familyMembers: FamilyMemberForAnalysis[]
+  ): string {
     const level = protectionAnalysis.percentage;
 
     if (level > 80) {
@@ -455,13 +541,19 @@ export class InsightsService {
     }
   }
 
-  private generateImpactScenarios(familyMembers: FamilyMemberForAnalysis[], documents: DocumentForAnalysis[]): { primary: string } {
+  private generateImpactScenarios(
+    familyMembers: FamilyMemberForAnalysis[],
+    documents: DocumentForAnalysis[]
+  ): { primary: string } {
     return {
-      primary: `In case of unexpected events, your current documentation will guide ${familyMembers.length} family members through important decisions with ${documents.length} secure documents.`
+      primary: `In case of unexpected events, your current documentation will guide ${familyMembers.length} family members through important decisions with ${documents.length} secure documents.`,
     };
   }
 
-  private calculateMemberImpact(member: FamilyMemberForAnalysis, _documents: DocumentForAnalysis[]): string {
+  private calculateMemberImpact(
+    member: FamilyMemberForAnalysis,
+    _documents: DocumentForAnalysis[]
+  ): string {
     if (member.role === 'spouse') {
       return 'Primary beneficiary with full access to estate planning decisions';
     } else if (member.role === 'child') {
@@ -471,7 +563,10 @@ export class InsightsService {
     }
   }
 
-  private calculateMemberRisk(member: FamilyMemberForAnalysis, protectionAnalysis: InsightCalculation['protectionLevel']): 'high' | 'medium' | 'low' {
+  private calculateMemberRisk(
+    member: FamilyMemberForAnalysis,
+    protectionAnalysis: InsightCalculation['protectionLevel']
+  ): 'high' | 'low' | 'medium' {
     const level = protectionAnalysis.percentage;
 
     if (member.role === 'spouse' && level < 60) return 'high';
@@ -481,7 +576,9 @@ export class InsightsService {
     return 'low';
   }
 
-  private identifyProtectionGaps(documents: DocumentForAnalysis[]): FamilyImpactStatement['protectionGaps'] {
+  private identifyProtectionGaps(
+    documents: DocumentForAnalysis[]
+  ): FamilyImpactStatement['protectionGaps'] {
     const gaps: FamilyImpactStatement['protectionGaps'] = [];
 
     const essentialDocs = ['will', 'power_of_attorney', 'healthcare_directive'];
@@ -489,10 +586,12 @@ export class InsightsService {
     essentialDocs.forEach(docType => {
       if (!documents.some(doc => doc.type === docType)) {
         gaps.push({
-          area: docType.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()),
+          area: docType
+            .replace('_', ' ')
+            .replace(/\b\w/g, l => l.toUpperCase()),
           risk: `Family decisions may be delayed or contested without clear ${docType.replace('_', ' ')} documentation`,
           recommendation: `Create a comprehensive ${docType.replace('_', ' ')} to protect your family`,
-          urgency: 'immediate' as const
+          urgency: 'immediate' as const,
         });
       }
     });
@@ -500,12 +599,14 @@ export class InsightsService {
     return gaps;
   }
 
-  private generateEmotionalBenefits(protectionAnalysis: InsightCalculation['protectionLevel']): string[] {
+  private generateEmotionalBenefits(
+    protectionAnalysis: InsightCalculation['protectionLevel']
+  ): string[] {
     const benefits = [
       'Peace of mind knowing your family is protected',
       'Reduced stress during difficult times',
       'Clear guidance for your loved ones',
-      'Confidence in your legacy planning'
+      'Confidence in your legacy planning',
     ];
 
     if (protectionAnalysis.percentage > 80) {
@@ -515,7 +616,10 @@ export class InsightsService {
     return benefits;
   }
 
-  private async generateDocumentSpecificInsights(document: DocumentForAnalysis, userId: string): Promise<QuickInsight[]> {
+  private async generateDocumentSpecificInsights(
+    document: DocumentForAnalysis,
+    userId: string
+  ): Promise<QuickInsight[]> {
     const insights: QuickInsight[] = [];
 
     // Check document age and suggest updates
@@ -529,7 +633,8 @@ export class InsightsService {
         documentId: document.id,
         type: 'urgent_action',
         title: 'Annual Will Review Due',
-        description: 'Your will is over a year old. An annual review ensures it reflects your current wishes and circumstances.',
+        description:
+          'Your will is over a year old. An annual review ensures it reflects your current wishes and circumstances.',
         impact: 'medium',
         priority: 'important',
         actionable: true,
@@ -539,17 +644,19 @@ export class InsightsService {
           calculatedAt: new Date().toISOString(),
           confidence: 0.8,
           category: 'document_maintenance',
-          tags: ['review_due', 'annual_check']
+          tags: ['review_due', 'annual_check'],
         },
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
       });
     }
 
     return insights;
   }
 
-  private async generateProgressInsights(userId: string): Promise<QuickInsight[]> {
+  private async generateProgressInsights(
+    userId: string
+  ): Promise<QuickInsight[]> {
     const insights: QuickInsight[] = [];
 
     const calculation = await this.calculateInsightMetrics(userId);
@@ -563,23 +670,30 @@ export class InsightsService {
       description: `Your family protection is at ${calculation.protectionLevel.percentage}%. ${calculation.protectionLevel.gaps.length === 0 ? 'Excellent coverage!' : 'A few steps will complete your protection.'}`,
       value: `${calculation.protectionLevel.percentage}%`,
       impact: calculation.protectionLevel.percentage > 80 ? 'low' : 'high',
-      priority: calculation.protectionLevel.percentage > 80 ? 'nice_to_have' : 'important',
+      priority:
+        calculation.protectionLevel.percentage > 80
+          ? 'nice_to_have'
+          : 'important',
       actionable: calculation.protectionLevel.gaps.length > 0,
-      actionText: calculation.protectionLevel.gaps.length > 0 ? 'Complete Protection' : undefined,
-      actionUrl: calculation.protectionLevel.gaps.length > 0 ? '/vault' : undefined,
+      actionText:
+        calculation.protectionLevel.gaps.length > 0
+          ? 'Complete Protection'
+          : undefined,
+      actionUrl:
+        calculation.protectionLevel.gaps.length > 0 ? '/vault' : undefined,
       metadata: {
         calculatedAt: new Date().toISOString(),
         confidence: 0.95,
         category: 'protection_status',
-        tags: ['protection_level', 'family_security']
+        tags: ['protection_level', 'family_security'],
       },
       familyImpact: {
         affectedMembers: [],
         riskReduction: calculation.protectionLevel.percentage,
-        emotionalBenefit: 'Enhanced family security and peace of mind'
+        emotionalBenefit: 'Enhanced family security and peace of mind',
       },
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
     });
 
     return insights;
@@ -597,7 +711,9 @@ export class InsightsService {
 
       // Clear cache for affected users
       insights.forEach(insight => {
-        const cacheKeys = Array.from(this.insightCache.keys()).filter(key => key.includes(insight.userId));
+        const cacheKeys = Array.from(this.insightCache.keys()).filter(key =>
+          key.includes(insight.userId)
+        );
         cacheKeys.forEach(key => this.insightCache.delete(key));
       });
     } catch (error) {
@@ -606,16 +722,25 @@ export class InsightsService {
     }
   }
 
-  private calculateInsightAnalytics(insights: QuickInsight[], actions: Array<{ type: string; timestamp: string; impact: string }>): InsightAnalytics {
+  private calculateInsightAnalytics(
+    insights: QuickInsight[],
+    actions: Array<{ impact: string; timestamp: string; type: string }>
+  ): InsightAnalytics {
     const totalInsights = insights.length;
     const actionableInsights = insights.filter(i => i.actionable).length;
     const completedActions = actions.filter(a => a.completed).length;
 
     // Calculate average protection level from recent insights
-    const protectionInsights = insights.filter(i => i.type === 'protection_level');
-    const averageProtectionLevel = protectionInsights.length > 0
-      ? protectionInsights.reduce((sum, i) => sum + parseInt(i.value || '0'), 0) / protectionInsights.length
-      : 0;
+    const protectionInsights = insights.filter(
+      i => i.type === 'protection_level'
+    );
+    const averageProtectionLevel =
+      protectionInsights.length > 0
+        ? protectionInsights.reduce(
+            (sum, i) => sum + parseInt(i.value || '0'),
+            0
+          ) / protectionInsights.length
+        : 0;
 
     // Calculate total time saved
     const timeSavedInsights = insights.filter(i => i.type === 'time_saved');
@@ -625,19 +750,24 @@ export class InsightsService {
     }, 0);
 
     // Calculate top categories
-    const categoryCount = insights.reduce((acc, i) => {
-      const category = i.metadata?.category || 'unknown';
-      acc[category] = (acc[category] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    const categoryCount = insights.reduce(
+      (acc, i) => {
+        const category = i.metadata?.category || 'unknown';
+        acc[category] = (acc[category] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
 
     const topCategories = Object.entries(categoryCount)
-      .sort(([,a], [,b]) => b - a)
+      .sort(([, a], [, b]) => b - a)
       .slice(0, 5)
       .map(([category, count]) => ({
         category,
         count,
-        averageImpact: this.calculateAverageImpact(insights.filter(i => i.metadata?.category === category))
+        averageImpact: this.calculateAverageImpact(
+          insights.filter(i => i.metadata?.category === category)
+        ),
       }));
 
     // Generate trend data (last 30 days)
@@ -650,7 +780,7 @@ export class InsightsService {
       averageProtectionLevel: Math.round(averageProtectionLevel),
       totalTimeSaved,
       topCategories,
-      trendData
+      trendData,
     };
   }
 
@@ -659,21 +789,29 @@ export class InsightsService {
 
     const impactScores = insights.map(i => {
       switch (i.impact) {
-        case 'high': return 3;
-        case 'medium': return 2;
-        case 'low': return 1;
-        default: return 2;
+        case 'high':
+          return 3;
+        case 'medium':
+          return 2;
+        case 'low':
+          return 1;
+        default:
+          return 2;
       }
     });
 
-    const average = impactScores.reduce((sum, score) => sum + score, 0) / impactScores.length;
+    const average =
+      impactScores.reduce((sum, score) => sum + score, 0) / impactScores.length;
 
     if (average > 2.5) return 'high';
     if (average > 1.5) return 'medium';
     return 'low';
   }
 
-  private generateTrendData(insights: QuickInsight[], actions: Array<{ type: string; timestamp: string; impact: string }>): InsightAnalytics['trendData'] {
+  private generateTrendData(
+    insights: QuickInsight[],
+    actions: Array<{ impact: string; timestamp: string; type: string }>
+  ): InsightAnalytics['trendData'] {
     const last30Days = Array.from({ length: 30 }, (_, i) => {
       const date = new Date();
       date.setDate(date.getDate() - (29 - i));
@@ -682,18 +820,26 @@ export class InsightsService {
 
     return last30Days.map(date => {
       const dayInsights = insights.filter(i => i.created_at?.startsWith(date));
-      const dayActions = actions.filter(a => a.created_at?.startsWith(date) && a.completed);
+      const dayActions = actions.filter(
+        a => a.created_at?.startsWith(date) && a.completed
+      );
 
-      const protectionInsights = dayInsights.filter(i => i.type === 'protection_level');
-      const avgProtection = protectionInsights.length > 0
-        ? protectionInsights.reduce((sum, i) => sum + parseInt(i.value || '0'), 0) / protectionInsights.length
-        : 0;
+      const protectionInsights = dayInsights.filter(
+        i => i.type === 'protection_level'
+      );
+      const avgProtection =
+        protectionInsights.length > 0
+          ? protectionInsights.reduce(
+              (sum, i) => sum + parseInt(i.value || '0'),
+              0
+            ) / protectionInsights.length
+          : 0;
 
       return {
         date,
         insightsGenerated: dayInsights.length,
         actionsCompleted: dayActions.length,
-        protectionLevel: Math.round(avgProtection)
+        protectionLevel: Math.round(avgProtection),
       };
     });
   }

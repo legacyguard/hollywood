@@ -38,13 +38,13 @@ export const createSortableHeader = (label: string) => {
     column,
   }: {
     column: {
+      getIsSorted: () => 'asc' | 'desc' | false;
       toggleSorting: (ascending: boolean) => void;
-      getIsSorted: () => false | 'asc' | 'desc';
     };
   }) => {
     return (
       <Button
-        variant="ghost"
+        variant='ghost'
         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         className='-ml-3 h-8 data-[state=open]:bg-accent'
       >
@@ -57,9 +57,9 @@ export const createSortableHeader = (label: string) => {
 
 export const createActionsColumn = <TData,>(
   actions: Array<{
+    icon?: React.ReactNode;
     label: string;
     onClick: (row: TData) => void;
-    icon?: React.ReactNode;
   }>
 ): ColumnDef<TData> => ({
   id: 'actions',
@@ -68,7 +68,7 @@ export const createActionsColumn = <TData,>(
     return (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className='h-8 w-8 p-0'>
+          <Button variant='ghost' className='h-8 w-8 p-0'>
             <span className='sr-only'>Open menu</span>
             <MoreHorizontal className='h-4 w-4' />
           </Button>

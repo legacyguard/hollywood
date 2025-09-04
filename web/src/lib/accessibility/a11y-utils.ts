@@ -59,7 +59,7 @@ export const prefersHighContrast = (): boolean => {
  */
 export const announceToScreenReader = (
   message: string,
-  priority: 'polite' | 'assertive' = 'polite'
+  priority: 'assertive' | 'polite' = 'polite'
 ): void => {
   if (typeof document === 'undefined') return;
 

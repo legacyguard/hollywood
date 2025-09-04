@@ -1,5 +1,5 @@
-import React from 'react'
-import { type GetProps, styled, View, Text } from 'tamagui'
+import React from 'react';
+import { type GetProps, styled, Text, View } from 'tamagui';
 
 // Badge Container
 export const Badge = styled(View, {
@@ -76,7 +76,7 @@ export const Badge = styled(View, {
     size: 'medium',
     rounded: false,
   },
-})
+});
 
 // Badge Text
 export const BadgeText = styled(Text, {
@@ -129,7 +129,7 @@ export const BadgeText = styled(Text, {
     variant: 'default',
     size: 'medium',
   },
-})
+});
 
 // Badge with Icon support
 export const BadgeWithIcon = ({
@@ -139,20 +139,20 @@ export const BadgeWithIcon = ({
   size = 'medium',
   ...props
 }: {
-  children: React.ReactNode
-  icon?: React.ReactNode
-  variant?: GetProps<typeof Badge>['variant']
-  size?: GetProps<typeof Badge>['size']
-} & Omit<GetProps<typeof Badge>, 'variant' | 'size'>) => {
+  children: React.ReactNode;
+  icon?: React.ReactNode;
+  size?: GetProps<typeof Badge>['size'];
+  variant?: GetProps<typeof Badge>['variant'];
+} & Omit<GetProps<typeof Badge>, 'size' | 'variant'>) => {
   return (
     <Badge variant={variant} size={size} {...props}>
-      {icon && <View marginRight="$1">{icon}</View>}
+      {icon && <View marginRight='$1'>{icon}</View>}
       <BadgeText variant={variant} size={size}>
         {children}
       </BadgeText>
     </Badge>
-  )
-}
+  );
+};
 
 // Badge Dot for status indicators
 export const BadgeDot = styled(View, {
@@ -187,7 +187,7 @@ export const BadgeDot = styled(View, {
     status: 'offline',
     pulse: false,
   },
-})
+});
 
 // Badge Group for multiple badges
 export const BadgeGroup = styled(View, {
@@ -213,11 +213,11 @@ export const BadgeGroup = styled(View, {
   defaultVariants: {
     size: 'medium',
   },
-})
+});
 
 // Export types
-export type BadgeProps = GetProps<typeof Badge>
-export type BadgeTextProps = GetProps<typeof BadgeText>
-export type BadgeDotProps = GetProps<typeof BadgeDot>
-export type BadgeGroupProps = GetProps<typeof BadgeGroup>
-export type BadgeWithIconProps = Parameters<typeof BadgeWithIcon>[0]
+export type BadgeProps = GetProps<typeof Badge>;
+export type BadgeTextProps = GetProps<typeof BadgeText>;
+export type BadgeDotProps = GetProps<typeof BadgeDot>;
+export type BadgeGroupProps = GetProps<typeof BadgeGroup>;
+export type BadgeWithIconProps = Parameters<typeof BadgeWithIcon>[0];

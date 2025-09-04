@@ -1,114 +1,114 @@
 // Emotional Guidance & Legacy Message System
 // Provides emotional support and legacy message creation during will preparation
 
-import type { _WillData } from '@/components/legacy/WillWizard';
+import type { WillData } from '@/components/legacy/WillWizard';
 
 export interface LegacyMessage {
-  id: string;
-  type: 'video' | 'audio' | 'text' | 'photo_album';
-  title: string;
-  recipientName: string;
-  recipientRelationship: string;
-  occasion: MessageOccasion;
   content: string;
-  mediaUrls?: string[];
-  scheduledDelivery?: {
-    triggerType: 'date' | 'age' | 'milestone' | 'anniversary';
-    triggerValue: string;
-    deliveryInstructions: string;
-  };
-  emotionalTone:
-    | 'loving'
-    | 'encouraging'
-    | 'wise'
-    | 'celebratory'
-    | 'reflective';
-  privacy: 'private' | 'family_shared' | 'public';
   createdAt: Date;
-  lastModified: Date;
+  emotionalTone:
+    | 'celebratory'
+    | 'encouraging'
+    | 'loving'
+    | 'reflective'
+    | 'wise';
+  id: string;
   isEncrypted: boolean;
+  lastModified: Date;
+  mediaUrls?: string[];
   metadata: {
+    attachmentCount: number;
     duration?: number; // for audio/video in seconds
     wordCount?: number; // for text messages
-    attachmentCount: number;
   };
+  occasion: MessageOccasion;
+  privacy: 'family_shared' | 'private' | 'public';
+  recipientName: string;
+  recipientRelationship: string;
+  scheduledDelivery?: {
+    deliveryInstructions: string;
+    triggerType: 'age' | 'anniversary' | 'date' | 'milestone';
+    triggerValue: string;
+  };
+  title: string;
+  type: 'audio' | 'photo_album' | 'text' | 'video';
 }
 
 export interface MemoryPrompt {
-  id: string;
   category:
-    | 'childhood'
     | 'achievements'
-    | 'relationships'
-    | 'values'
     | 'advice'
-    | 'family_history';
-  question: string;
+    | 'childhood'
+    | 'family_history'
+    | 'relationships'
+    | 'values';
   context: string;
-  suggestedRecipients: string[];
-  emotionalWeight: 'light' | 'medium' | 'deep';
-  timeToReflect: number; // estimated minutes
+  emotionalWeight: 'deep' | 'light' | 'medium';
+  id: string;
+  question: string;
   relationship?: string; // The relationship this prompt is about
+  suggestedRecipients: string[];
+  timeToReflect: number; // estimated minutes
 }
 
 export interface TimeCapsule {
-  id: string;
-  name: string;
-  description: string;
-  messages: string[]; // LegacyMessage IDs
-  recipients: string[];
-  releaseDate: Date;
-  releaseConditions: {
-    primaryCondition: 'date' | 'death' | 'milestone';
-    backupConditions?: string[];
-    executorInstructions: string;
-  };
   accessControls: {
-    requiresPassword: boolean;
     allowsEarlyAccess: boolean;
     familyViewingRules: string;
+    requiresPassword: boolean;
   };
-  status: 'draft' | 'sealed' | 'scheduled' | 'delivered';
   createdAt: Date;
+  description: string;
+  id: string;
   lastModified: Date;
+  messages: string[]; // LegacyMessage IDs
+  name: string;
+  recipients: string[];
+  releaseConditions: {
+    backupConditions?: string[];
+    executorInstructions: string;
+    primaryCondition: 'date' | 'death' | 'milestone';
+  };
+  releaseDate: Date;
+  status: 'delivered' | 'draft' | 'scheduled' | 'sealed';
 }
 
 export type MessageOccasion =
-  | 'birthday'
-  | 'wedding'
-  | 'graduation'
-  | 'first_child'
-  | 'milestone_birthday'
   | 'achievement'
-  | 'difficult_time'
   | 'anniversary'
-  | 'holiday'
+  | 'birthday'
+  | 'difficult_time'
+  | 'family_history'
+  | 'first_child'
   | 'general_love'
+  | 'graduation'
+  | 'holiday'
   | 'life_wisdom'
-  | 'family_history';
+  | 'milestone_birthday'
+  | 'wedding';
 
 export interface EmotionalGuidanceSession {
+  completedAt?: Date;
   id: string;
-  sessionType:
-    | 'reflection'
-    | 'memory_sharing'
-    | 'value_expression'
-    | 'future_visioning';
+  insights: string[];
   prompts: MemoryPrompt[];
+  recommendedMessages: Array<{
+    confidence: number;
+    occasion: MessageOccasion;
+    recipient: string;
+    suggestedContent: string;
+  }>;
   responses: Array<{
+    emotionalRating: number; // 1-10 scale
     promptId: string;
     response: string;
-    emotionalRating: number; // 1-10 scale
     timeSpent: number; // minutes
   }>;
-  insights: string[];
-  recommendedMessages: Array<{
-    recipient: string;
-    occasion: MessageOccasion;
-    suggestedContent: string;
-    confidence: number;
-  }>;
-  completedAt?: Date;
+  sessionType:
+    | 'future_visioning'
+    | 'memory_sharing'
+    | 'reflection'
+    | 'value_expression';
 }
 
 // Memory prompts for different categories and relationships
@@ -227,9 +227,9 @@ const MEMORY_PROMPTS: Record<string, MemoryPrompt[]> = {
 const MESSAGE_TEMPLATES: Record<
   MessageOccasion,
   Array<{
+    context: string;
     template: string;
     tone: LegacyMessage['emotionalTone'];
-    context: string;
   }>
 > = {
   birthday: [
@@ -306,6 +306,38 @@ const MESSAGE_TEMPLATES: Record<
         'I want to tell you about {family_member_or_event}, {name}. {historical_context} This is part of your heritage and helps explain {family_trait_or_value}. {connection_to_present}',
       tone: 'reflective',
       context: 'Sharing family history and heritage',
+    },
+  ],
+  anniversary: [
+    {
+      template:
+        'Happy anniversary, {name}! {anniversary_reflection} Your commitment to love continues to inspire me. {wishes_for_future}',
+      tone: 'celebratory',
+      context: 'Anniversary celebration and relationship appreciation',
+    },
+  ],
+  achievement: [
+    {
+      template:
+        'Congratulations, {name}! {achievement_details} I am so proud of your hard work and dedication. {encouragement_for_future}',
+      tone: 'encouraging',
+      context: 'Celebrating personal or professional achievements',
+    },
+  ],
+  milestone_birthday: [
+    {
+      template:
+        'My dear {name}, this milestone birthday marks {milestone_significance}. {reflection_on_journey} As you enter this new decade, {hopes_and_dreams}',
+      tone: 'reflective',
+      context: 'Special milestone birthdays (30th, 40th, 50th, etc.)',
+    },
+  ],
+  holiday: [
+    {
+      template:
+        'During this special {holiday_name}, {name}, I want you to know {holiday_sentiment}. {memory_or_tradition} May this season bring you {holiday_wishes}',
+      tone: 'loving',
+      context: 'Holiday greetings and seasonal messages',
     },
   ],
 };
@@ -452,16 +484,16 @@ export class LegacyMessageBuilder {
    * Generate message suggestions based on user responses
    */
   generateMessageSuggestions(session: EmotionalGuidanceSession): Array<{
-    recipient: string;
-    occasion: MessageOccasion;
-    suggestedContent: string;
     confidence: number;
+    occasion: MessageOccasion;
+    recipient: string;
+    suggestedContent: string;
   }> {
     const suggestions: Array<{
-      recipient: string;
-      occasion: MessageOccasion;
-      suggestedContent: string;
       confidence: number;
+      occasion: MessageOccasion;
+      recipient: string;
+      suggestedContent: string;
     }> = [];
 
     session.responses.forEach(response => {
@@ -621,12 +653,12 @@ export class LegacyMessageBuilder {
    * Provide emotional support during will creation
    */
   provideEmotionalSupport(stage: string):
+    | undefined
     | {
+        guidanceCards: Array<{ content: string; title: string; type: string }>;
         stage: string;
         supportMessage: string;
-        guidanceCards: Array<{ title: string; content: string; type: string }>;
-      }
-    | undefined {
+      } {
     return this.getEmotionalSupport(stage);
   }
 
@@ -634,12 +666,12 @@ export class LegacyMessageBuilder {
    * Get emotional support guidance based on will creation stage
    */
   getEmotionalSupport(stage: string):
+    | undefined
     | {
+        guidanceCards: Array<{ content: string; title: string; type: string }>;
         stage: string;
         supportMessage: string;
-        guidanceCards: Array<{ title: string; content: string; type: string }>;
-      }
-    | undefined {
+      } {
     const support = {
       starting: {
         stage: 'starting',

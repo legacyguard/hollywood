@@ -1,6 +1,6 @@
 // src/hooks/useOfflineVault.ts
 /* global __DEV__ */
-import { useEffect, useState, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { OfflineVaultService } from '@/services/OfflineVaultService';
 import * as SecureStore from 'expo-secure-store';
 import * as Crypto from 'expo-crypto';
@@ -8,69 +8,70 @@ import * as Crypto from 'expo-crypto';
 const ENCRYPTION_KEY_NAME = 'offline_vault_key';
 
 interface VaultDocument {
-  id: string;
-  fileName: string;
-  documentType: string;
   content: string;
-  uploadedAt?: Date;
+  documentType: string;
+  fileName: string;
   fileSize?: number;
+  id: string;
   tags?: string[];
+  uploadedAt?: Date;
 }
 
 interface UseOfflineVaultReturn {
-  isVaultOpen: boolean;
-  isLoading: boolean;
-  error: string | null;
-  documents: VaultDocument[];
-  offlineDocuments: VaultDocument[]; // Alias for compatibility
-  documentCount: number;
-  totalSize: number;
-  isAvailable: boolean; // Added for compatibility
-  loadDocuments: () => Promise<void>;
   addDocument: (doc: VaultDocument) => Promise<void>;
-  removeDocument: (id: string) => Promise<void>;
-  getDocument: (id: string) => Promise<VaultDocument | null>;
   clearVault: () => Promise<void>;
+  documentCount: number;
+  documents: VaultDocument[];
+  error: null | string;
+  getDocument: (id: string) => Promise<null | VaultDocument>;
+  isAvailable: boolean; // Added for compatibility
+  isLoading: boolean;
+  isVaultOpen: boolean;
+  loadDocuments: () => Promise<void>;
+  offlineDocuments: VaultDocument[]; // Alias for compatibility
+  removeDocument: (id: string) => Promise<void>;
   syncWithCloud: () => Promise<void>;
+  totalSize: number;
 }
 
 export const useOfflineVault = (): UseOfflineVaultReturn => {
   const [documents, setDocuments] = useState<VaultDocument[]>([]);
   const [isVaultOpen, setIsVaultOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<null | string>(null);
   const [stats, setStats] = useState({ documentCount: 0, totalSize: 0 });
 
   /**
    * Generate or retrieve encryption key
    */
-  const getOrCreateEncryptionKey = useCallback(async (): Promise<Uint8Array> => {
-    try {
-      let keyHex = await SecureStore.getItemAsync(ENCRYPTION_KEY_NAME);
+  const getOrCreateEncryptionKey =
+    useCallback(async (): Promise<Uint8Array> => {
+      try {
+        let keyHex = await SecureStore.getItemAsync(ENCRYPTION_KEY_NAME);
 
-      if (!keyHex) {
-        // Generate a new 64-byte key
-        const randomBytes = await Crypto.getRandomBytesAsync(64);
-        keyHex = Array.from(randomBytes)
-          .map((b: number) => b.toString(16).padStart(2, '0'))
-          .join('');
+        if (!keyHex) {
+          // Generate a new 64-byte key
+          const randomBytes = await Crypto.getRandomBytesAsync(64);
+          keyHex = Array.from(randomBytes)
+            .map((b: number) => b.toString(16).padStart(2, '0'))
+            .join('');
 
-        await SecureStore.setItemAsync(ENCRYPTION_KEY_NAME, keyHex);
-        // New encryption key generated and stored
+          await SecureStore.setItemAsync(ENCRYPTION_KEY_NAME, keyHex);
+          // New encryption key generated and stored
+        }
+
+        // Convert hex string to Uint8Array
+        const keyBytes = new Uint8Array(64);
+        for (let i = 0; i < 64; i++) {
+          keyBytes[i] = parseInt(keyHex.substr(i * 2, 2), 16);
+        }
+
+        return keyBytes;
+      } catch (error) {
+        // Failed to get/create encryption key
+        throw new Error('Failed to initialize encryption');
       }
-
-      // Convert hex string to Uint8Array
-      const keyBytes = new Uint8Array(64);
-      for (let i = 0; i < 64; i++) {
-        keyBytes[i] = parseInt(keyHex.substr(i * 2, 2), 16);
-      }
-
-      return keyBytes;
-    } catch (error) {
-      // Failed to get/create encryption key
-      throw new Error('Failed to initialize encryption');
-    }
-  }, []);
+    }, []);
 
   /**
    * Initialize vault on hook mount
@@ -96,7 +97,9 @@ export const useOfflineVault = (): UseOfflineVaultReturn => {
         });
       } catch (error) {
         // Failed to initialize vault
-        setError(error instanceof Error ? error.message : 'Failed to open vault');
+        setError(
+          error instanceof Error ? error.message : 'Failed to open vault'
+        );
         setIsVaultOpen(false);
       } finally {
         setIsLoading(false);
@@ -138,56 +141,65 @@ export const useOfflineVault = (): UseOfflineVaultReturn => {
   /**
    * Add document to vault
    */
-  const addDocument = useCallback(async (doc: VaultDocument) => {
-    if (!isVaultOpen) {
-      throw new Error('Vault is not open');
-    }
+  const addDocument = useCallback(
+    async (doc: VaultDocument) => {
+      if (!isVaultOpen) {
+        throw new Error('Vault is not open');
+      }
 
-    try {
-      await OfflineVaultService.addDocument(doc);
-      await loadDocuments(); // Reload to update list
-      if (__DEV__) console.log(`Document ${doc.fileName} added successfully`);
-    } catch (error) {
-      if (__DEV__) console.error('Failed to add document:', error);
-      throw error;
-    }
-  }, [isVaultOpen, loadDocuments]);
+      try {
+        await OfflineVaultService.addDocument(doc);
+        await loadDocuments(); // Reload to update list
+        if (__DEV__) console.log(`Document ${doc.fileName} added successfully`);
+      } catch (error) {
+        if (__DEV__) console.error('Failed to add document:', error);
+        throw error;
+      }
+    },
+    [isVaultOpen, loadDocuments]
+  );
 
   /**
    * Remove document from vault
    */
-  const removeDocument = useCallback(async (id: string) => {
-    if (!isVaultOpen) {
-      throw new Error('Vault is not open');
-    }
-
-    try {
-      const success = await OfflineVaultService.removeDocument(id);
-      if (success) {
-        await loadDocuments(); // Reload to update list
-        if (__DEV__) console.log(`Document ${id} removed successfully`);
+  const removeDocument = useCallback(
+    async (id: string) => {
+      if (!isVaultOpen) {
+        throw new Error('Vault is not open');
       }
-    } catch (error) {
-      if (__DEV__) console.error('Failed to remove document:', error);
-      throw error;
-    }
-  }, [isVaultOpen, loadDocuments]);
+
+      try {
+        const success = await OfflineVaultService.removeDocument(id);
+        if (success) {
+          await loadDocuments(); // Reload to update list
+          if (__DEV__) console.log(`Document ${id} removed successfully`);
+        }
+      } catch (error) {
+        if (__DEV__) console.error('Failed to remove document:', error);
+        throw error;
+      }
+    },
+    [isVaultOpen, loadDocuments]
+  );
 
   /**
    * Get single document by ID
    */
-  const getDocument = useCallback(async (id: string): Promise<VaultDocument | null> => {
-    if (!isVaultOpen) {
-      throw new Error('Vault is not open');
-    }
+  const getDocument = useCallback(
+    async (id: string): Promise<null | VaultDocument> => {
+      if (!isVaultOpen) {
+        throw new Error('Vault is not open');
+      }
 
-    try {
-      return await OfflineVaultService.getDocument(id);
-    } catch (error) {
-      if (__DEV__) console.error('Failed to get document:', error);
-      throw error;
-    }
-  }, [isVaultOpen]);
+      try {
+        return await OfflineVaultService.getDocument(id);
+      } catch (error) {
+        if (__DEV__) console.error('Failed to get document:', error);
+        throw error;
+      }
+    },
+    [isVaultOpen]
+  );
 
   /**
    * Clear all documents from vault

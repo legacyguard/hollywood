@@ -2,43 +2,43 @@ import type React from 'react';
 import type { CommunicationStyle } from '@/types/user-preferences';
 
 export type FireflyEventType =
-  | 'milestone'
-  | 'document_upload'
-  | 'guardian_added'
-  | 'will_completed'
-  | 'time_capsule_created'
-  | 'emergency_activated'
-  | 'challenge_started'
   | 'achievement_unlocked'
+  | 'challenge_started'
+  | 'document_upload'
+  | 'emergency_activated'
+  | 'guardian_added'
+  | 'milestone'
+  | 'time_capsule_created'
+  | 'will_completed'
   | null;
 
 export interface FireflyState {
+  celebrateEvent?: FireflyEventType;
+  interactionCount: number;
   isVisible: boolean;
   mode?: CommunicationStyle;
   targetElement?: string;
-  celebrateEvent?: FireflyEventType;
-  interactionCount: number;
 }
 
 export interface FireflyContextValue {
-  // State
-  state: FireflyState;
+  celebrate: (event: FireflyEventType, duration?: number) => void;
+
+  guideToElement: (selector: string, duration?: number) => void;
+  hideFirefly: () => void;
+  isCelebrating: boolean;
+  // Utilities
+  isGuidingToTarget: boolean;
+  onInteraction: () => void;
+  setMode: (mode: CommunicationStyle) => void;
 
   // Actions
   showFirefly: () => void;
-  hideFirefly: () => void;
-  setMode: (mode: CommunicationStyle) => void;
-  guideToElement: (selector: string, duration?: number) => void;
-  celebrate: (event: FireflyEventType, duration?: number) => void;
-  onInteraction: () => void;
-
-  // Utilities
-  isGuidingToTarget: boolean;
-  isCelebrating: boolean;
+  // State
+  state: FireflyState;
 }
 
 export interface FireflyProviderProps {
+  autoShow?: boolean;
   children: React.ReactNode;
   initialMode?: CommunicationStyle;
-  autoShow?: boolean;
 }

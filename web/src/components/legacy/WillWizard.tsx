@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useAuth, useUser } from '@clerk/clerk-react';
 import type { WillType } from './WillTypeSelector';
 import { Button } from '@/components/ui/button';
@@ -27,114 +27,121 @@ import { useFocusMode } from '@/contexts/FocusModeContext';
 
 // Types based on our database schema
 export interface WillData {
-  testator_data: {
-    fullName?: string;
-    dateOfBirth?: string;
-    address?: string;
-    citizenship?: string;
-    maritalStatus?: 'single' | 'married' | 'divorced' | 'widowed';
-  };
-  beneficiaries: Array<{
-    id: string;
-    name: string;
-    relationship:
-      | 'spouse'
-      | 'child'
-      | 'parent'
-      | 'sibling'
-      | 'grandchild'
-      | 'friend'
-      | 'charity'
-      | 'other';
-    percentage: number;
-    specificGifts?: string[];
-    conditions?: string;
-  }>;
   assets: {
-    realEstate?: Array<{
-      description: string;
-      address: string;
-      value?: number;
-    }>;
-    vehicles?: Array<{
-      make: string;
-      model: string;
-      year: number;
-      vin?: string;
-    }>;
     bankAccounts?: Array<{
-      bank: string;
       accountNumber: string;
-      type: 'checking' | 'savings' | 'investment';
+      bank: string;
+      type: 'checking' | 'investment' | 'savings';
     }>;
     investments?: Array<{
-      company: string;
       accountType: string;
+      company: string;
       value?: number;
     }>;
     personalProperty?: Array<{
       description: string;
-      value?: number;
       recipient?: string;
+      value?: number;
+    }>;
+    realEstate?: Array<{
+      address: string;
+      description: string;
+      value?: number;
+    }>;
+    vehicles?: Array<{
+      description: string;
+      make: string;
+      model: string;
+      value?: number;
+      vin?: string;
+      year: number;
     }>;
   };
+  beneficiaries: Array<{
+    conditions?: string;
+    id: string;
+    name: string;
+    percentage: number;
+    relationship:
+      | 'charity'
+      | 'child'
+      | 'friend'
+      | 'grandchild'
+      | 'other'
+      | 'parent'
+      | 'sibling'
+      | 'spouse';
+    specificGifts?: string[];
+  }>;
+  completeness_score: number;
   executor_data: {
-    primaryExecutor?: {
-      name: string;
-      relationship: string;
-      phone?: string;
-    };
     backupExecutor?: {
       name: string;
-      relationship: string;
       phone?: string;
+      relationship: string;
     };
     executorPowers?: string[];
-  };
-  guardianship_data: {
-    minorChildren?: Array<{
+    primaryExecutor?: {
       name: string;
-      dateOfBirth: string;
-    }>;
-    primaryGuardian?: {
-      name: string;
+      phone?: string;
       relationship: string;
     };
+  };
+  family_protection_level: 'basic' | 'comprehensive' | 'premium' | 'standard';
+  guardianship_data: {
     backupGuardian?: {
       name: string;
       relationship: string;
     };
     guardianInstructions?: string;
-  };
-  special_instructions: {
-    funeralWishes?: string;
-    organDonation?: boolean;
-    petCare?: string;
-    digitalAssets?: string;
-    personalMessages?: Array<{
-      recipient: string;
-      message: string;
+    minorChildren?: Array<{
+      dateOfBirth: string;
+      name: string;
     }>;
-    charitableBequests?: Array<{
-      charity: string;
-      amount: number;
-    }>;
+    primaryGuardian?: {
+      name: string;
+      relationship: string;
+    };
   };
   legal_data: {
     jurisdiction?: string;
-    witnessRequirements?: number;
     notarization?: boolean;
-    revocationClause?: boolean;
     previousWills?: string;
+    revocationClause?: boolean;
+    witnessRequirements?: number;
+  };
+
+  // Additional properties for compatibility with main WillData interface
+  review_eligibility: boolean;
+  special_instructions: {
+    charitableBequests?: Array<{
+      amount: number;
+      charity: string;
+    }>;
+    digitalAssets?: string;
+    funeralWishes?: string;
+    organDonation?: boolean;
+    personalMessages?: Array<{
+      message: string;
+      recipient: string;
+    }>;
+    petCare?: string;
+  };
+  testator_data: {
+    address?: string;
+    citizenship?: string;
+    dateOfBirth?: string;
+    fullName?: string;
+    maritalStatus?: 'divorced' | 'married' | 'single' | 'widowed';
   };
 }
 
 interface WillWizardProps {
+  initialData?: null | WillData;
+  onBack?: () => void;
   onClose: () => void;
   onComplete: (willData: WillData) => void;
-  onBack?: () => void;
   willType: WillType;
-  initialData?: WillData | null;
 }
 
 const STEPS = [
@@ -193,7 +200,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
   const [currentStep, setCurrentStep] = useState(0);
   const [showVaultSelector, setShowVaultSelector] = useState(false);
   const [vaultSelectorType, setVaultSelectorType] = useState<
-    'realEstate' | 'vehicles' | 'bankAccounts' | 'personalProperty' | 'all'
+    'all' | 'bankAccounts' | 'personalProperty' | 'realEstate' | 'vehicles'
   >('all');
 
   // Initialize with draft data if provided, otherwise use empty data
@@ -208,6 +215,9 @@ export const WillWizard: React.FC<WillWizardProps> = ({
       guardianship_data: {},
       special_instructions: {},
       legal_data: {},
+      review_eligibility: true,
+      family_protection_level: 'standard' as const,
+      completeness_score: 0,
     }
   );
 
@@ -218,7 +228,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
     (section: keyof WillData, data: Partial<WillData[keyof WillData]>) => {
       setWillData(prev => ({
         ...prev,
-        [section]: { ...prev[section], ...data },
+        [section]: { ...(prev[section] as any), ...(data as any) },
       }));
     },
     []
@@ -253,11 +263,11 @@ export const WillWizard: React.FC<WillWizardProps> = ({
 
   const handleOpenVaultSelector = (
     assetType:
-      | 'realEstate'
-      | 'vehicles'
+      | 'all'
       | 'bankAccounts'
       | 'personalProperty'
-      | 'all'
+      | 'realEstate'
+      | 'vehicles'
   ) => {
     setVaultSelectorType(assetType);
     setShowVaultSelector(true);
@@ -301,7 +311,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
     const newBeneficiary = {
       id: crypto.randomUUID(),
       name: '',
-      relationship: 'child' as 'child',
+      relationship: 'child' as const,
       percentage: 0,
       specificGifts: [],
       conditions: '',
@@ -313,7 +323,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
   }, []);
 
   const updateBeneficiary = useCallback(
-    (id: string, field: string, value: string | number | string[]) => {
+    (id: string, field: string, value: number | string | string[]) => {
       setWillData(prev => ({
         ...prev,
         beneficiaries: prev.beneficiaries.map(b =>
@@ -395,7 +405,13 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                 <Select
                   value={willData.testator_data.maritalStatus}
                   onValueChange={value =>
-                    updateWillData('testator_data', { maritalStatus: value as 'single' | 'married' | 'divorced' | 'widowed' })
+                    updateWillData('testator_data', {
+                      maritalStatus: value as
+                        | 'divorced'
+                        | 'married'
+                        | 'single'
+                        | 'widowed',
+                    })
                   }
                 >
                   <SelectTrigger>
@@ -418,15 +434,16 @@ export const WillWizard: React.FC<WillWizardProps> = ({
           <div className='space-y-6'>
             <div className='flex items-center justify-between'>
               <h3 className='text-lg font-semibold'>Your Beneficiaries</h3>
-              <Button onClick={addBeneficiary} variant="outline" size='sm'>
-                <Icon name="add" className='w-4 h-4 mr-2' />
+              <Button onClick={addBeneficiary} variant='outline' size='sm'>
+                <Icon name='add' className='w-4 h-4 mr-2' />
                 Add Beneficiary
               </Button>
             </div>
 
             {willData.beneficiaries.length === 0 ? (
               <Card className='p-8 text-center'>
-                <Icon name="users"
+                <Icon
+                  name='users'
                   className='w-12 h-12 text-muted-foreground mx-auto mb-4'
                 />
                 <p className='text-muted-foreground'>
@@ -441,14 +458,14 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                 {willData.beneficiaries.map((beneficiary, index) => (
                   <Card key={beneficiary.id} className='p-4'>
                     <div className='flex items-center justify-between mb-4'>
-                      <Badge variant="secondary">Beneficiary {index + 1}</Badge>
+                      <Badge variant='secondary'>Beneficiary {index + 1}</Badge>
                       <Button
                         onClick={() => removeBeneficiary(beneficiary.id)}
-                        variant="ghost"
+                        variant='ghost'
                         size='sm'
                         className='text-red-600 hover:text-red-700'
                       >
-                        <Icon name="trash" className='w-4 h-4' />
+                        <Icon name='trash' className='w-4 h-4' />
                       </Button>
                     </div>
                     <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
@@ -533,7 +550,8 @@ export const WillWizard: React.FC<WillWizardProps> = ({
         return (
           <div className='space-y-6'>
             <div className='text-center p-6'>
-              <Icon name={"building-office" as any}
+              <Icon
+                name={'building-office' as any}
                 className='w-12 h-12 text-primary mx-auto mb-4'
               />
               <h3 className='text-lg font-semibold mb-2'>
@@ -545,10 +563,10 @@ export const WillWizard: React.FC<WillWizardProps> = ({
               </p>
               <Button
                 onClick={() => handleOpenVaultSelector('all')}
-                variant="outline"
+                variant='outline'
                 className='bg-primary/5 hover:bg-primary/10 border-primary/20 text-primary'
               >
-                <Icon name={"vault" as any} className='w-4 h-4 mr-2' />
+                <Icon name={'vault' as any} className='w-4 h-4 mr-2' />
                 Import from My Vault
               </Button>
             </div>
@@ -557,17 +575,17 @@ export const WillWizard: React.FC<WillWizardProps> = ({
             <Card className='p-4'>
               <div className='flex items-center justify-between mb-4'>
                 <h4 className='font-semibold flex items-center gap-2'>
-                  <Icon name={"home" as any} className='w-4 h-4' />
+                  <Icon name={'home' as any} className='w-4 h-4' />
                   Real Estate
                 </h4>
                 <div className='flex items-center gap-2'>
                   <Button
                     onClick={() => handleOpenVaultSelector('realEstate')}
-                    variant="ghost"
+                    variant='ghost'
                     size='sm'
                     className='text-primary hover:text-primary-hover'
                   >
-                    <Icon name={"vault" as any} className='w-3 h-3 mr-1' />
+                    <Icon name={'vault' as any} className='w-3 h-3 mr-1' />
                     From Vault
                   </Button>
                   <Button
@@ -584,10 +602,10 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                         ],
                       });
                     }}
-                    variant="outline"
+                    variant='outline'
                     size='sm'
                   >
-                    <Icon name={"add" as any} className='w-3 h-3 mr-1' />
+                    <Icon name={'add' as any} className='w-3 h-3 mr-1' />
                     Add Property
                   </Button>
                 </div>
@@ -644,11 +662,11 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                             );
                             updateWillData('assets', { realEstate: updated });
                           }}
-                          variant="ghost"
+                          variant='ghost'
                           size='sm'
                           className='text-red-600 hover:text-red-700'
                         >
-                          <Icon name="trash" className='w-3 h-3' />
+                          <Icon name='trash' className='w-3 h-3' />
                         </Button>
                       </div>
                     </div>
@@ -665,25 +683,27 @@ export const WillWizard: React.FC<WillWizardProps> = ({
             <Card className='p-4'>
               <div className='flex items-center justify-between mb-4'>
                 <h4 className='font-semibold flex items-center gap-2'>
-                  <Icon name={"car" as any} className='w-4 h-4' />
+                  <Icon name={'car' as any} className='w-4 h-4' />
                   Vehicles
                 </h4>
                 <div className='flex items-center gap-2'>
                   <Button
                     onClick={() => handleOpenVaultSelector('vehicles')}
-                    variant="ghost"
+                    variant='ghost'
                     size='sm'
                     className='text-primary hover:text-primary-hover'
                   >
-                    <Icon name={"vault" as any} className='w-3 h-3 mr-1' />
+                    <Icon name={'vault' as any} className='w-3 h-3 mr-1' />
                     From Vault
                   </Button>
                   <Button
                     onClick={() => {
                       const newVehicle = {
+                        description: '',
                         make: '',
                         model: '',
                         year: new Date().getFullYear(),
+                        value: 0,
                         vin: '',
                       };
                       updateWillData('assets', {
@@ -693,10 +713,10 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                         ],
                       });
                     }}
-                    variant="outline"
+                    variant='outline'
                     size='sm'
                   >
-                    <Icon name={"add" as any} className='w-3 h-3 mr-1' />
+                    <Icon name={'add' as any} className='w-3 h-3 mr-1' />
                     Add Vehicle
                   </Button>
                 </div>
@@ -767,11 +787,11 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                             );
                             updateWillData('assets', { vehicles: updated });
                           }}
-                          variant="ghost"
+                          variant='ghost'
                           size='sm'
                           className='text-red-600 hover:text-red-700'
                         >
-                          <Icon name="trash" className='w-3 h-3' />
+                          <Icon name='trash' className='w-3 h-3' />
                         </Button>
                       </div>
                     </div>
@@ -788,17 +808,17 @@ export const WillWizard: React.FC<WillWizardProps> = ({
             <Card className='p-4'>
               <div className='flex items-center justify-between mb-4'>
                 <h4 className='font-semibold flex items-center gap-2'>
-                  <Icon name={"credit-card" as any} className='w-4 h-4' />
+                  <Icon name={'credit-card' as any} className='w-4 h-4' />
                   Bank Accounts & Investments
                 </h4>
                 <div className='flex items-center gap-2'>
                   <Button
                     onClick={() => handleOpenVaultSelector('bankAccounts')}
-                    variant="ghost"
+                    variant='ghost'
                     size='sm'
                     className='text-primary hover:text-primary-hover'
                   >
-                    <Icon name={"vault" as any} className='w-3 h-3 mr-1' />
+                    <Icon name={'vault' as any} className='w-3 h-3 mr-1' />
                     From Vault
                   </Button>
                   <Button
@@ -806,7 +826,10 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                       const newAccount = {
                         bank: '',
                         accountNumber: '',
-                        type: 'checking' as 'checking' | 'savings' | 'investment',
+                        type: 'checking' as
+                          | 'checking'
+                          | 'investment'
+                          | 'savings',
                       };
                       updateWillData('assets', {
                         bankAccounts: [
@@ -815,10 +838,10 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                         ],
                       });
                     }}
-                    variant="outline"
+                    variant='outline'
                     size='sm'
                   >
-                    <Icon name={"add" as any} className='w-3 h-3 mr-1' />
+                    <Icon name={'add' as any} className='w-3 h-3 mr-1' />
                     Add Account
                   </Button>
                 </div>
@@ -850,8 +873,8 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                             ...updated[index],
                             type: value as
                               | 'checking'
-                              | 'savings'
-                              | 'investment',
+                              | 'investment'
+                              | 'savings',
                           };
                           updateWillData('assets', { bankAccounts: updated });
                         }}
@@ -886,11 +909,11 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                               );
                             updateWillData('assets', { bankAccounts: updated });
                           }}
-                          variant="ghost"
+                          variant='ghost'
                           size='sm'
                           className='text-red-600 hover:text-red-700'
                         >
-                          <Icon name="trash" className='w-3 h-3' />
+                          <Icon name='trash' className='w-3 h-3' />
                         </Button>
                       </div>
                     </div>
@@ -907,17 +930,17 @@ export const WillWizard: React.FC<WillWizardProps> = ({
             <Card className='p-4'>
               <div className='flex items-center justify-between mb-4'>
                 <h4 className='font-semibold flex items-center gap-2'>
-                  <Icon name={"star" as any} className='w-4 h-4' />
+                  <Icon name={'star' as any} className='w-4 h-4' />
                   Personal Property
                 </h4>
                 <div className='flex items-center gap-2'>
                   <Button
                     onClick={() => handleOpenVaultSelector('personalProperty')}
-                    variant="ghost"
+                    variant='ghost'
                     size='sm'
                     className='text-primary hover:text-primary-hover'
                   >
-                    <Icon name={"vault" as any} className='w-3 h-3 mr-1' />
+                    <Icon name={'vault' as any} className='w-3 h-3 mr-1' />
                     From Vault
                   </Button>
                   <Button
@@ -934,10 +957,10 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                         ],
                       });
                     }}
-                    variant="outline"
+                    variant='outline'
                     size='sm'
                   >
-                    <Icon name={"add" as any} className='w-3 h-3 mr-1' />
+                    <Icon name={'add' as any} className='w-3 h-3 mr-1' />
                     Add Item
                   </Button>
                 </div>
@@ -1009,11 +1032,11 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                               personalProperty: updated,
                             });
                           }}
-                          variant="ghost"
+                          variant='ghost'
                           size='sm'
                           className='text-red-600 hover:text-red-700'
                         >
-                          <Icon name="trash" className='w-3 h-3' />
+                          <Icon name='trash' className='w-3 h-3' />
                         </Button>
                       </div>
                     </div>
@@ -1043,8 +1066,11 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                       updateWillData('executor_data', {
                         primaryExecutor: {
                           name: e.target.value,
-                          relationship: willData.executor_data.primaryExecutor?.relationship || '',
-                          phone: willData.executor_data.primaryExecutor?.phone || '',
+                          relationship:
+                            willData.executor_data.primaryExecutor
+                              ?.relationship || '',
+                          phone:
+                            willData.executor_data.primaryExecutor?.phone || '',
                         },
                       })
                     }
@@ -1063,9 +1089,11 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                     onChange={e =>
                       updateWillData('executor_data', {
                         primaryExecutor: {
-                          name: willData.executor_data.primaryExecutor?.name || '',
+                          name:
+                            willData.executor_data.primaryExecutor?.name || '',
                           relationship: e.target.value,
-                          phone: willData.executor_data.primaryExecutor?.phone || '',
+                          phone:
+                            willData.executor_data.primaryExecutor?.phone || '',
                         },
                       })
                     }
@@ -1081,8 +1109,11 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                   onChange={e =>
                     updateWillData('executor_data', {
                       primaryExecutor: {
-                        name: willData.executor_data.primaryExecutor?.name || '',
-                        relationship: willData.executor_data.primaryExecutor?.relationship || '',
+                        name:
+                          willData.executor_data.primaryExecutor?.name || '',
+                        relationship:
+                          willData.executor_data.primaryExecutor
+                            ?.relationship || '',
                         phone: e.target.value,
                       },
                     })
@@ -1106,8 +1137,11 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                       updateWillData('executor_data', {
                         backupExecutor: {
                           name: e.target.value,
-                          relationship: willData.executor_data.backupExecutor?.relationship || '',
-                          phone: willData.executor_data.backupExecutor?.phone || '',
+                          relationship:
+                            willData.executor_data.backupExecutor
+                              ?.relationship || '',
+                          phone:
+                            willData.executor_data.backupExecutor?.phone || '',
                         },
                       })
                     }
@@ -1126,9 +1160,11 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                     onChange={e =>
                       updateWillData('executor_data', {
                         backupExecutor: {
-                          name: willData.executor_data.backupExecutor?.name || '',
+                          name:
+                            willData.executor_data.backupExecutor?.name || '',
                           relationship: e.target.value,
-                          phone: willData.executor_data.backupExecutor?.phone || '',
+                          phone:
+                            willData.executor_data.backupExecutor?.phone || '',
                         },
                       })
                     }
@@ -1140,7 +1176,8 @@ export const WillWizard: React.FC<WillWizardProps> = ({
 
             <Card className='p-4 bg-amber-50 dark:bg-amber-900/20'>
               <div className='flex gap-3'>
-                <Icon name={"info" as any}
+                <Icon
+                  name={'info' as any}
                   className='w-5 h-5 text-amber-600 flex-shrink-0 mt-1'
                 />
                 <div>
@@ -1240,7 +1277,8 @@ export const WillWizard: React.FC<WillWizardProps> = ({
         return (
           <div className='space-y-6'>
             <div className='text-center mb-8'>
-              <Icon name={"documents" as any}
+              <Icon
+                name={'documents' as any}
                 className='w-12 h-12 text-primary mx-auto mb-4'
               />
               <h3 className='text-2xl font-semibold mb-2'>Review Your Will</h3>
@@ -1253,7 +1291,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
             <div className='grid gap-4'>
               <Card className='p-4'>
                 <h4 className='font-semibold mb-2 flex items-center gap-2'>
-                  <Icon name={"user" as any} className='w-4 h-4' />
+                  <Icon name={'user' as any} className='w-4 h-4' />
                   Personal Information
                 </h4>
                 <p className='text-sm text-muted-foreground'>
@@ -1264,7 +1302,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
 
               <Card className='p-4'>
                 <h4 className='font-semibold mb-2 flex items-center gap-2'>
-                  <Icon name={"users" as any} className='w-4 h-4' />
+                  <Icon name={'users' as any} className='w-4 h-4' />
                   Beneficiaries
                 </h4>
                 <p className='text-sm text-muted-foreground'>
@@ -1274,7 +1312,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
 
               <Card className='p-4'>
                 <h4 className='font-semibold mb-2 flex items-center gap-2'>
-                  <Icon name={"shield-check" as any} className='w-4 h-4' />
+                  <Icon name={'shield-check' as any} className='w-4 h-4' />
                   Executor
                 </h4>
                 <p className='text-sm text-muted-foreground'>
@@ -1286,7 +1324,8 @@ export const WillWizard: React.FC<WillWizardProps> = ({
 
             <Card className='p-4 bg-green-50 dark:bg-green-900/20'>
               <div className='flex gap-3'>
-                <Icon name={"shield-check" as any}
+                <Icon
+                  name={'shield-check' as any}
                   className='w-5 h-5 text-green-600 flex-shrink-0 mt-1'
                 />
                 <div>
@@ -1325,11 +1364,11 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                 <div className='flex items-center gap-4'>
                   <Button
                     onClick={onClose}
-                    variant="ghost"
+                    variant='ghost'
                     size='sm'
                     className='flex items-center gap-2'
                   >
-                    <Icon name={"arrow-left" as any} className='w-4 h-4' />
+                    <Icon name={'arrow-left' as any} className='w-4 h-4' />
                     Back to Legacy Planning
                   </Button>
                 </div>
@@ -1374,7 +1413,10 @@ export const WillWizard: React.FC<WillWizardProps> = ({
           <div className='bg-primary/5 border-b border-primary/20'>
             <div className='max-w-4xl mx-auto px-6 py-3'>
               <div className='flex items-center gap-3 text-sm'>
-                <Icon name={"sparkles" as any} className='w-4 h-4 text-primary' />
+                <Icon
+                  name={'sparkles' as any}
+                  className='w-4 h-4 text-primary'
+                />
                 <span className='text-primary font-medium'>
                   Sofia's Intelligent Draft Active
                 </span>
@@ -1446,10 +1488,10 @@ export const WillWizard: React.FC<WillWizardProps> = ({
             <div className='flex justify-between items-center'>
               <Button
                 onClick={handleBack}
-                variant="outline"
+                variant='outline'
                 disabled={currentStep === 0 && !onBack}
               >
-                <Icon name={"arrow-left" as any} className='w-4 h-4 mr-2' />
+                <Icon name={'arrow-left' as any} className='w-4 h-4 mr-2' />
                 {currentStep === 0 ? 'Change Will Type' : 'Back'}
               </Button>
 
@@ -1467,7 +1509,10 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                     ? 'Create Will'
                     : 'Continue'}
                   {currentStep !== STEPS.length - 1 && (
-                    <Icon name={"arrow-right" as any} className='w-4 h-4 ml-2' />
+                    <Icon
+                      name={'arrow-right' as any}
+                      className='w-4 h-4 ml-2'
+                    />
                   )}
                 </Button>
               </div>

@@ -1,8 +1,8 @@
-import { createTamagui, createTokens } from '@tamagui/core'
-import { createInterFont } from '@tamagui/font-inter'
-import { shorthands } from '@tamagui/shorthands'
-import { themes as defaultThemes } from '@tamagui/themes'
-import { createAnimations } from '@tamagui/animations-react-native'
+import { createTamagui, createTokens } from '@tamagui/core';
+import { createInterFont } from '@tamagui/font-inter';
+import { shorthands } from '@tamagui/shorthands';
+import { themes as defaultThemes } from '@tamagui/themes';
+import { createAnimations } from '@tamagui/animations-react-native';
 
 // LegacyGuard Brand Colors
 const legacyGuardColors = {
@@ -45,7 +45,7 @@ const legacyGuardColors = {
   backgroundTertiary: '#f3f4f6',
   backgroundDark: '#111827',
   backgroundDarkSecondary: '#1f2937',
-}
+};
 
 // Font configuration
 const interFont = createInterFont({
@@ -83,7 +83,7 @@ const interFont = createInterFont({
     4: -1.5,
     5: -2,
   },
-})
+});
 
 // Create tokens
 const tokens = createTokens({
@@ -201,7 +201,7 @@ const tokens = createTokens({
     tooltip: 1070,
     toast: 1080,
   },
-})
+});
 
 // Create animations
 const animations = createAnimations({
@@ -232,7 +232,7 @@ const animations = createAnimations({
     damping: 15,
     stiffness: 40,
   },
-})
+});
 
 // Custom LegacyGuard themes
 const legacyGuardThemes = {
@@ -342,7 +342,7 @@ const legacyGuardThemes = {
     placeholderColor: 'rgba(255, 255, 255, 0.5)',
     shadowColor: 'rgba(245, 158, 11, 0.2)',
   },
-}
+};
 
 // Create media queries
 const media = {
@@ -361,7 +361,7 @@ const media = {
   tall: { minHeight: 820 },
   hoverNone: { hover: 'none' },
   pointerCoarse: { pointer: 'coarse' },
-}
+};
 
 // Create and export the config
 export const config = createTamagui({
@@ -379,16 +379,16 @@ export const config = createTamagui({
   },
   tokens,
   media,
-})
+});
 
 // Also export as tamaguiConfig for compatibility
-export const tamaguiConfig = config
+export const tamaguiConfig = config;
 
 // Export types
-export type AppConfig = typeof config
+export type AppConfig = typeof config;
 
 declare module 'tamagui' {
   interface TamaguiCustomConfig extends AppConfig {}
 }
 
-export default config
+export default config;

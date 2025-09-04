@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { useSupabaseWithClerk } from '@/integrations/supabase/client';
 import { Card } from '@/components/ui/card';
@@ -10,39 +10,39 @@ import { toast } from 'sonner';
 import { adaptDbDocumentToApp } from '@/lib/type-adapters';
 
 interface Document {
-  id: string;
-  file_name: string;
-  file_type: string;
-  file_size: number;
-  file_path: string;
+  created_at: string;
   document_type: string;
   encrypted_at: string;
-  created_at: string;
   expires_at?: string;
+  file_name: string;
+  file_path: string;
+  file_size: number;
+  file_type: string;
+  id: string;
 }
 
 interface LocalStorageDocument {
-  id?: string | number;
-  fileName?: string;
-  file_name?: string;
-  fileType?: string;
-  file_type?: string;
-  fileSize?: number;
-  file_size?: number;
-  filePath?: string;
-  file_path?: string;
-  encryptedAt?: string;
-  encrypted_at?: string;
-  uploadedAt?: string;
   created_at?: string;
+  encrypted_at?: string;
+  encryptedAt?: string;
+  file_name?: string;
+  file_path?: string;
+  file_size?: number;
+  file_type?: string;
+  fileName?: string;
+  filePath?: string;
+  fileSize?: number;
+  fileType?: string;
+  id?: number | string;
+  uploadedAt?: string;
 }
 
 export const DocumentList = () => {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [downloadingId, setDownloadingId] = useState<string | null>(null);
-  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [error, setError] = useState<null | string>(null);
+  const [downloadingId, setDownloadingId] = useState<null | string>(null);
+  const [deletingId, setDeletingId] = useState<null | string>(null);
   const { userId } = useAuth();
   const createSupabaseClient = useSupabaseWithClerk();
 
@@ -184,7 +184,7 @@ export const DocumentList = () => {
         localStorage.getItem(documentsKey) || '[]'
       );
       const updatedDocs = existingDocs.filter(
-        (d: { id: string | number }) => String(d.id) !== String(doc.id)
+        (d: { id: number | string }) => String(d.id) !== String(doc.id)
       );
       localStorage.setItem(documentsKey, JSON.stringify(updatedDocs));
       localStorage.setItem(documentsKey, JSON.stringify(updatedDocs));
@@ -249,7 +249,8 @@ export const DocumentList = () => {
     return (
       <FadeIn duration={0.5} delay={0.5}>
         <Card className='p-12 text-center bg-card border-card-border'>
-          <Icon name={"upload" as any}
+          <Icon
+            name={'upload' as any}
             className='w-8 h-8 text-muted-foreground mx-auto mb-4 animate-pulse'
           />
           <p className='text-muted-foreground'>Loading documents...</p>
@@ -262,15 +263,16 @@ export const DocumentList = () => {
     return (
       <FadeIn duration={0.5} delay={0.5}>
         <Card className='p-12 text-center bg-card border-card-border border-status-error/20'>
-          <Icon name={"info" as any}
+          <Icon
+            name={'info' as any}
             className='w-8 h-8 text-status-error mx-auto mb-4'
           />
           <h3 className='text-lg font-semibold mb-2 text-status-error'>
             Error Loading Documents
           </h3>
           <p className='text-muted-foreground mb-4'>{error}</p>
-          <Button onClick={fetchDocuments} variant={"outline" as any} size='sm'>
-            <Icon name={"upload" as any} className='w-4 h-4 mr-2' />
+          <Button onClick={fetchDocuments} variant={'outline' as any} size='sm'>
+            <Icon name={'upload' as any} className='w-4 h-4 mr-2' />
             Retry
           </Button>
         </Card>
@@ -282,7 +284,8 @@ export const DocumentList = () => {
     return (
       <FadeIn duration={0.5} delay={0.5}>
         <Card className='p-12 text-center bg-card border-card-border'>
-          <Icon name={"documents" as any}
+          <Icon
+            name={'documents' as any}
             className='w-12 h-12 text-muted-foreground mx-auto mb-4'
           />
           <h3 className='text-lg font-semibold mb-2'>No Documents Yet</h3>
@@ -328,7 +331,7 @@ export const DocumentList = () => {
                       </span>
                       <span>•</span>
                       <span className='flex items-center gap-1'>
-                        <Icon name={"locked" as any} className='w-3 h-3' />
+                        <Icon name={'locked' as any} className='w-3 h-3' />
                         Secure
                       </span>
                     </div>
@@ -337,7 +340,7 @@ export const DocumentList = () => {
 
                 <div className='flex items-center gap-2'>
                   <Button
-                    variant={"ghost" as any}
+                    variant={'ghost' as any}
                     size='sm'
                     className='text-muted-foreground hover:text-primary'
                     onClick={() => handleDownload(doc)}
@@ -345,13 +348,16 @@ export const DocumentList = () => {
                     title='Download document'
                   >
                     {downloadingId === doc.id ? (
-                      <Icon name={"download" as any} className='w-4 h-4 animate-pulse' />
+                      <Icon
+                        name={'download' as any}
+                        className='w-4 h-4 animate-pulse'
+                      />
                     ) : (
-                      <Icon name={"download" as any} className='w-4 h-4' />
+                      <Icon name={'download' as any} className='w-4 h-4' />
                     )}
                   </Button>
                   <Button
-                    variant={"ghost" as any}
+                    variant={'ghost' as any}
                     size='sm'
                     className='text-muted-foreground hover:text-status-error'
                     onClick={() => handleDelete(doc)}
@@ -359,9 +365,12 @@ export const DocumentList = () => {
                     title='Delete document'
                   >
                     {deletingId === doc.id ? (
-                      <Icon name={"delete" as any} className='w-4 h-4 animate-pulse' />
+                      <Icon
+                        name={'delete' as any}
+                        className='w-4 h-4 animate-pulse'
+                      />
                     ) : (
-                      <Icon name={"delete" as any} className='w-4 h-4' />
+                      <Icon name={'delete' as any} className='w-4 h-4' />
                     )}
                   </Button>
                 </div>

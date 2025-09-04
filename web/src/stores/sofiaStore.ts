@@ -1,33 +1,33 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { SofiaMessage, SofiaContext } from '@/lib/sofia-types';
+import type { SofiaContext, SofiaMessage } from '@/lib/sofia-types';
 
 interface SofiaStore {
-  // Chat state
-  messages: SofiaMessage[];
-  isTyping: boolean;
-  isVisible: boolean;
-
-  // User context for Sofia
-  context: SofiaContext | null;
-
   // Actions
   addMessage: (message: SofiaMessage) => void;
-  setMessages: (messages: SofiaMessage[]) => void;
-  updateMessages: (
-    updateFn: (messages: SofiaMessage[]) => SofiaMessage[]
-  ) => void;
-  setTyping: (typing: boolean) => void;
-  toggleVisibility: () => void;
-  showSofia: () => void;
-  hideSofia: () => void;
-  updateContext: (context: Partial<SofiaContext>) => void;
-  setContext: (context: SofiaContext) => void;
   clearMessages: () => void;
+  // User context for Sofia
+  context: null | SofiaContext;
 
   // Helper getters
   getLastUserMessage: () => SofiaMessage | undefined;
+
   getMessageCount: () => number;
+  hideSofia: () => void;
+  isTyping: boolean;
+  isVisible: boolean;
+  // Chat state
+  messages: SofiaMessage[];
+  setContext: (context: SofiaContext) => void;
+  setMessages: (messages: SofiaMessage[]) => void;
+  setTyping: (typing: boolean) => void;
+  showSofia: () => void;
+  toggleVisibility: () => void;
+
+  updateContext: (context: Partial<SofiaContext>) => void;
+  updateMessages: (
+    updateFn: (messages: SofiaMessage[]) => SofiaMessage[]
+  ) => void;
 }
 
 export const useSofiaStore = create<SofiaStore>()(

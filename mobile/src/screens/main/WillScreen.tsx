@@ -1,41 +1,41 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react';
 import {
-  Container,
-  Stack,
-  H2,
-  H3,
-  Paragraph,
+  Button,
   Card,
   CardContent,
-  Button,
+  Container,
+  Divider,
+  H2,
+  H3,
+  Input,
+  Label,
+  Paragraph,
+  RadioGroup,
   Row,
   ScrollContainer,
-  useTheme,
-  Divider,
-  Input,
-  RadioGroup,
+  SegmentedProgress,
+  Stack,
   // CheckboxGroup,
   TextArea,
-  SegmentedProgress,
-  Label,
   useMedia,
+  useTheme,
   // Grid
-} from '@legacyguard/ui'
+} from '@legacyguard/ui';
 import {
-  FileText,
-  ChevronRight,
+  AlertCircle,
+  CheckCircle,
   ChevronLeft,
+  ChevronRight,
+  FileText,
+  Gift,
+  Heart,
+  Home,
+  Lock,
+  MessageSquare,
   User,
   Users,
-  Heart,
-  Gift,
-  Home,
-  MessageSquare,
-  CheckCircle,
-  Lock,
-  AlertCircle
-} from 'lucide-react-native'
-import { Alert } from 'react-native'
+} from 'lucide-react-native';
+import { Alert } from 'react-native';
 // import { useNavigation } from '@react-navigation/native' // Uncomment when navigation is implemented
 // import { useAuth } from '@/hooks/useAuth' // Uncomment when user auth is needed
 
@@ -47,91 +47,91 @@ const WILL_STEPS = [
   { id: 'gifts', label: 'Specific Gifts', icon: Gift },
   { id: 'residue', label: 'Residue', icon: Home },
   { id: 'wishes', label: 'Final Wishes', icon: MessageSquare },
-  { id: 'review', label: 'Review', icon: CheckCircle }
-]
+  { id: 'review', label: 'Review', icon: CheckCircle },
+];
 
 interface WillData {
-  personal: {
-    fullName: string
-    dateOfBirth: string
-    address: string
-    maritalStatus: string
-  }
   executor: {
-    name: string
-    relationship: string
-    email: string
-    phone: string
-    alternativeName?: string
-  }
-  guardians: Array<{
-    childName: string
-    guardianName: string
-    relationship: string
-  }>
+    alternativeName?: string;
+    email: string;
+    name: string;
+    phone: string;
+    relationship: string;
+  };
   gifts: Array<{
-    item: string
-    beneficiary: string
-    fallback?: string
-  }>
+    beneficiary: string;
+    fallback?: string;
+    item: string;
+  }>;
+  guardians: Array<{
+    childName: string;
+    guardianName: string;
+    relationship: string;
+  }>;
+  personal: {
+    address: string;
+    dateOfBirth: string;
+    fullName: string;
+    maritalStatus: string;
+  };
   residue: {
-    primaryBeneficiary: string
-    percentage: number
-    alternativeBeneficiary?: string
-  }
+    alternativeBeneficiary?: string;
+    percentage: number;
+    primaryBeneficiary: string;
+  };
   wishes: {
-    funeral: string
-    burial: string
-    specialRequests?: string
-  }
+    burial: string;
+    funeral: string;
+    specialRequests?: string;
+  };
 }
 
 type DeepPartial<T> = {
-  [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P]
-}
+  [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
+};
 
 export const WillScreen = () => {
   // const navigation = useNavigation() // Uncomment when navigation is implemented
-  const theme = useTheme()
-  const media = useMedia()
+  const theme = useTheme();
+  const media = useMedia();
   // const { user } = useAuth() // Uncomment when user data is needed
 
-  const [currentStep, setCurrentStep] = useState(0)
-  const [willData, setWillData] = useState<DeepPartial<WillData>>({})
-  const [isLoading, setIsLoading] = useState(false)
-  const [isPremium, setIsPremium] = useState(false)
+  const [currentStep, setCurrentStep] = useState(0);
+  const [willData, setWillData] = useState<DeepPartial<WillData>>({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [isPremium, setIsPremium] = useState(false);
 
   // Check premium status
   useEffect(() => {
-    checkPremiumStatus()
-  }, [])
+    checkPremiumStatus();
+  }, []);
 
   const checkPremiumStatus = () => {
     // TODO: Check actual premium status from user metadata
-    setIsPremium(false) // For now, assume free user
-  }
+    setIsPremium(false); // For now, assume free user
+  };
 
   const handleNext = () => {
     if (currentStep < WILL_STEPS.length - 1) {
-      setCurrentStep(prev => prev + 1)
+      setCurrentStep(prev => prev + 1);
     }
-  }
+  };
 
   const handlePrev = () => {
     if (currentStep > 0) {
-      setCurrentStep(prev => prev - 1)
+      setCurrentStep(prev => prev - 1);
     }
-  }
+  };
 
   const handleSaveProgress = async () => {
     try {
       // TODO: Save to localStorage or API
-      console.log('Saving will progress:', willData)
-      Alert.alert('Progress Saved', 'Your will progress has been saved.')
+      console.log('Saving will progress:', willData);
+      Alert.alert('Progress Saved', 'Your will progress has been saved.');
     } catch (error) {
-      Alert.alert('Error', 'Failed to save progress. Please try again.')
+      Alert.alert('Error', 'Failed to save progress. Please try again.');
     }
-  }
+  };
 
   const handleGenerateWill = async () => {
     if (!isPremium) {
@@ -144,66 +144,72 @@ export const WillScreen = () => {
             text: 'Upgrade',
             onPress: () => {
               // Navigate to web for upgrade
-              console.log('Navigate to upgrade page')
-            }
-          }
+              console.log('Navigate to upgrade page');
+            },
+          },
         ]
-      )
-      return
+      );
+      return;
     }
 
-    setIsLoading(true)
+    setIsLoading(true);
     try {
       // TODO: Generate will document
-      console.log('Generating will with data:', willData)
-      Alert.alert('Success', 'Your will has been generated successfully!')
+      console.log('Generating will with data:', willData);
+      Alert.alert('Success', 'Your will has been generated successfully!');
     } catch (error) {
-      Alert.alert('Error', 'Failed to generate will. Please try again.')
+      Alert.alert('Error', 'Failed to generate will. Please try again.');
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const renderStepContent = () => {
-    const step = WILL_STEPS[currentStep]
+    const step = WILL_STEPS[currentStep];
 
     switch (step.id) {
       case 'personal':
         return (
-          <Stack space="medium">
+          <Stack space='medium'>
             <H3>Personal Information</H3>
-            <Paragraph color="muted">
+            <Paragraph color='muted'>
               Let's start with your basic information
             </Paragraph>
 
             <Input
-              label="Full Legal Name"
-              placeholder="Enter your full name"
+              label='Full Legal Name'
+              placeholder='Enter your full name'
               value={willData.personal?.fullName || ''}
-              onChangeText={(text: string) => setWillData(prev => ({
-                ...prev,
-                personal: { ...prev.personal, fullName: text }
-              }))}
+              onChangeText={(text: string) =>
+                setWillData(prev => ({
+                  ...prev,
+                  personal: { ...prev.personal, fullName: text },
+                }))
+              }
             />
 
             <Input
-              label="Date of Birth"
-              placeholder="DD/MM/YYYY"
+              label='Date of Birth'
+              placeholder='DD/MM/YYYY'
               value={willData.personal?.dateOfBirth || ''}
-              onChangeText={(text: string) => setWillData(prev => ({
-                ...prev,
-                personal: { ...prev.personal, dateOfBirth: text }
-              }))}
+              onChangeText={(text: string) =>
+                setWillData(prev => ({
+                  ...prev,
+                  personal: { ...prev.personal, dateOfBirth: text },
+                }))
+              }
             />
 
             <TextArea
-              label="Current Address"
-              placeholder="Enter your full address"
+              label='Current Address'
+              placeholder='Enter your full address'
               value={willData.personal?.address || ''}
-              onChangeText={(text: string) => setWillData(prev => ({
-                ...prev,
-                personal: { ...prev.personal, address: text }
-              }))}
+              onChangeText={(text: string) =>
+                setWillData(prev => ({
+                  ...prev,
+                  personal: { ...prev.personal, address: text },
+                }))
+              }
               numberOfLines={3}
             />
 
@@ -212,23 +218,25 @@ export const WillScreen = () => {
                 { value: 'single', label: 'Single' },
                 { value: 'married', label: 'Married' },
                 { value: 'divorced', label: 'Divorced' },
-                { value: 'widowed', label: 'Widowed' }
+                { value: 'widowed', label: 'Widowed' },
               ]}
               value={willData.personal?.maritalStatus || ''}
-              onValueChange={(value) => setWillData(prev => ({
-                ...prev,
-                personal: { ...prev.personal, maritalStatus: value }
-              }))}
+              onValueChange={value =>
+                setWillData(prev => ({
+                  ...prev,
+                  personal: { ...prev.personal, maritalStatus: value },
+                }))
+              }
               orientation={media.gtSm ? 'horizontal' : 'vertical'}
             />
           </Stack>
-        )
+        );
 
       case 'executor':
         return (
-          <Stack space="medium">
+          <Stack space='medium'>
             <H3>Appoint Your Executor</H3>
-            <Paragraph color="muted">
+            <Paragraph color='muted'>
               Choose someone you trust to carry out your wishes
             </Paragraph>
 
@@ -236,63 +244,73 @@ export const WillScreen = () => {
               label="Executor's Name"
               placeholder="Enter executor's full name"
               value={willData.executor?.name || ''}
-              onChangeText={(text: string) => setWillData(prev => ({
-                ...prev,
-                executor: { ...prev.executor, name: text }
-              }))}
+              onChangeText={(text: string) =>
+                setWillData(prev => ({
+                  ...prev,
+                  executor: { ...prev.executor, name: text },
+                }))
+              }
             />
 
             <Input
-              label="Relationship"
-              placeholder="e.g., Spouse, Friend, Lawyer"
+              label='Relationship'
+              placeholder='e.g., Spouse, Friend, Lawyer'
               value={willData.executor?.relationship || ''}
-              onChangeText={(text: string) => setWillData(prev => ({
-                ...prev,
-                executor: { ...prev.executor, relationship: text }
-              }))}
+              onChangeText={(text: string) =>
+                setWillData(prev => ({
+                  ...prev,
+                  executor: { ...prev.executor, relationship: text },
+                }))
+              }
             />
 
             <Input
-              label="Email Address"
-              placeholder="executor@example.com"
+              label='Email Address'
+              placeholder='executor@example.com'
               value={willData.executor?.email || ''}
-              onChangeText={(text: string) => setWillData(prev => ({
-                ...prev,
-                executor: { ...prev.executor, email: text }
-              }))}
-              keyboardType="email-address"
+              onChangeText={(text: string) =>
+                setWillData(prev => ({
+                  ...prev,
+                  executor: { ...prev.executor, email: text },
+                }))
+              }
+              keyboardType='email-address'
             />
 
             <Input
-              label="Phone Number"
-              placeholder="+421 900 000 000"
+              label='Phone Number'
+              placeholder='+421 900 000 000'
               value={willData.executor?.phone || ''}
-              onChangeText={(text: string) => setWillData(prev => ({
-                ...prev,
-                executor: { ...prev.executor, phone: text }
-              }))}
-              keyboardType="phone-pad"
+              onChangeText={(text: string) =>
+                setWillData(prev => ({
+                  ...prev,
+                  executor: { ...prev.executor, phone: text },
+                }))
+              }
+              keyboardType='phone-pad'
             />
 
             <Divider />
 
             <Input
-              label="Alternative Executor (Optional)"
+              label='Alternative Executor (Optional)'
               placeholder="Enter alternative executor's name"
               value={willData.executor?.alternativeName || ''}
-              onChangeText={(text: string) => setWillData(prev => ({
-                ...prev,
-                executor: { ...prev.executor, alternativeName: text }
-              }))}
+              onChangeText={(text: string) =>
+                setWillData(prev => ({
+                  ...prev,
+                  executor: { ...prev.executor, alternativeName: text },
+                }))
+              }
             />
           </Stack>
-        )
+        );
 
       case 'review':
         return (
-          <Stack space="medium">
+          <Stack space='medium'>
             <H3>Review Your Will</H3>
-            <Paragraph color="muted">
+            <Paragraph color='muted'>
               Please review all the information before generating your will
             </Paragraph>
 
@@ -301,8 +319,9 @@ export const WillScreen = () => {
               <CardContent>
                 <Label style={{ marginBottom: 8 }}>Personal Information</Label>
                 <Paragraph>{willData.personal?.fullName ?? ''}</Paragraph>
-                <Paragraph size="small" color="muted">
-                  {willData.personal?.maritalStatus}, born {willData.personal?.dateOfBirth}
+                <Paragraph size='small' color='muted'>
+                  {willData.personal?.maritalStatus}, born{' '}
+                  {willData.personal?.dateOfBirth}
                 </Paragraph>
               </CardContent>
             </Card>
@@ -311,20 +330,22 @@ export const WillScreen = () => {
               <CardContent>
                 <Label style={{ marginBottom: 8 }}>Executor</Label>
                 <Paragraph>{willData.executor?.name ?? ''}</Paragraph>
-                <Paragraph size="small" color="muted">
+                <Paragraph size='small' color='muted'>
                   {willData.executor?.relationship ?? ''}
                 </Paragraph>
               </CardContent>
             </Card>
 
             {!isPremium && (
-              <Card variant="premium" padding="medium" style={{ opacity: 0.9 }}>
+              <Card variant='premium' padding='medium' style={{ opacity: 0.9 }}>
                 <CardContent>
-                  <Row align="center" space="small">
+                  <Row align='center' space='small'>
                     <Lock size={24} color={'#fff'} />
                     <Stack flex={1}>
-                      <Paragraph weight="bold" style={{ color: '#fff' }}>Premium Feature</Paragraph>
-                      <Paragraph size="small" style={{ color: '#fff' }}>
+                      <Paragraph weight='bold' style={{ color: '#fff' }}>
+                        Premium Feature
+                      </Paragraph>
+                      <Paragraph size='small' style={{ color: '#fff' }}>
                         Generate and download your complete will document
                       </Paragraph>
                     </Stack>
@@ -333,38 +354,38 @@ export const WillScreen = () => {
               </Card>
             )}
           </Stack>
-        )
+        );
 
       default:
         return (
-          <Stack alignItems="center" justifyContent="center" style={{ padding: 32 }}>
+          <Stack
+            alignItems='center'
+            justifyContent='center'
+            style={{ padding: 32 }}
+          >
             <AlertCircle size={48} color={theme.warning.val} />
             <Paragraph style={{ marginTop: 12 }}>
               This section is coming soon
             </Paragraph>
           </Stack>
-        )
+        );
     }
-  }
+  };
 
   return (
     <Container>
       <ScrollContainer>
         <Stack
-          space="medium"
+          space='medium'
           style={{ padding: 16 }}
           maxWidth={media.gtMd ? 1200 : media.gtSm ? 800 : '100%'}
-          marginHorizontal="auto"
-          width="100%"
+          marginHorizontal='auto'
+          width='100%'
         >
           {/* Header */}
-          <Row justifyContent="space-between" alignItems="center">
+          <Row justifyContent='space-between' alignItems='center'>
             <H2>Will Generator</H2>
-            <Button
-              size="small"
-              variant="ghost"
-              onPress={handleSaveProgress}
-            >
+            <Button size='small' variant='ghost' onPress={handleSaveProgress}>
               Save Progress
             </Button>
           </Row>
@@ -378,17 +399,22 @@ export const WillScreen = () => {
 
           {/* Premium Banner for Free Users */}
           {!isPremium && (
-            <Card variant="premium" padding="large">
+            <Card variant='premium' padding='large'>
               <CardContent>
-                <Row align="center" space="small">
+                <Row align='center' space='small'>
                   <FileText size={24} color={'#fff'} />
                   <Stack flex={1}>
-                    <H3 style={{ color: '#fff' }}>Unlock Full Will Generator</H3>
-                    <Paragraph size="small" style={{ color: '#fff' }}>
+                    <H3 style={{ color: '#fff' }}>
+                      Unlock Full Will Generator
+                    </H3>
+                    <Paragraph size='small' style={{ color: '#fff' }}>
                       Create a legally valid will document
                     </Paragraph>
                   </Stack>
-                  <Button variant="ghost" onPress={() => console.log('Navigate to upgrade')}>
+                  <Button
+                    variant='ghost'
+                    onPress={() => console.log('Navigate to upgrade')}
+                  >
                     Upgrade to Premium
                   </Button>
                 </Row>
@@ -398,19 +424,17 @@ export const WillScreen = () => {
 
           {/* Step Content */}
           <Card>
-            <CardContent>
-              {renderStepContent()}
-            </CardContent>
+            <CardContent>{renderStepContent()}</CardContent>
           </Card>
 
           {/* Navigation Buttons */}
           <Row
-            justify="between"
-            space="small"
+            justify='between'
+            space='small'
             flexDirection={media.gtSm ? 'row' : 'column-reverse'}
           >
             <Button
-              variant="secondary"
+              variant='secondary'
               icon={ChevronLeft}
               onPress={handlePrev}
               disabled={currentStep === 0}
@@ -433,7 +457,7 @@ export const WillScreen = () => {
               </Button>
             ) : (
               <Button
-                variant="primary"
+                variant='primary'
                 iconAfter={ChevronRight}
                 onPress={handleNext}
                 {...(media.gtSm ? { flex: 1 } : {})}
@@ -446,7 +470,7 @@ export const WillScreen = () => {
         </Stack>
       </ScrollContainer>
     </Container>
-  )
-}
+  );
+};
 
-export default WillScreen
+export default WillScreen;

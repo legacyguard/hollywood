@@ -6,24 +6,24 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
-  DollarSign,
-  Users,
-  Award,
-  ArrowUpRight,
+  AlertCircle,
   ArrowDownRight,
-  Download,
-  Search,
-  MoreVertical,
+  ArrowUpRight,
+  Award,
+  BarChart3,
   CheckCircle,
   Clock,
-  AlertCircle,
-  RefreshCw,
+  CreditCard,
+  DollarSign,
+  Download,
   Eye,
   FileText,
+  MoreVertical,
   Percent,
   PieChart,
-  BarChart3,
-  CreditCard
+  RefreshCw,
+  Search,
+  Users,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -32,51 +32,67 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Progress } from '@/components/ui/progress';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 
 interface CommissionRecord {
+  clientId: string;
+  clientName: string;
+  commissionAmount: number;
+  commissionRate: number;
+  createdAt: string;
   id: string;
+  paidAt?: string;
+  paymentMethod?: 'bank_transfer' | 'check' | 'paypal';
   referralId: string;
   reviewerId: string;
-  clientId: string;
-  serviceType: 'review' | 'consultation' | 'retainer';
-  serviceAmount: number;
-  commissionRate: number;
-  commissionAmount: number;
-  status: 'pending' | 'approved' | 'paid' | 'disputed';
-  createdAt: string;
-  paidAt?: string;
   reviewerName: string;
-  clientName: string;
+  serviceAmount: number;
   serviceDescription: string;
-  paymentMethod?: 'bank_transfer' | 'paypal' | 'check';
+  serviceType: 'consultation' | 'retainer' | 'review';
+  status: 'approved' | 'disputed' | 'paid' | 'pending';
 }
 
 interface CommissionSummary {
-  totalCommissions: number;
-  pendingCommissions: number;
-  paidCommissions: number;
-  thisMonthCommissions: number;
-  lastMonthCommissions: number;
-  averageCommissionRate: number;
-  totalReferrals: number;
   activeReviewers: number;
+  averageCommissionRate: number;
+  lastMonthCommissions: number;
+  paidCommissions: number;
+  pendingCommissions: number;
+  thisMonthCommissions: number;
   topPerformer: {
-    name: string;
     commissions: number;
+    name: string;
   };
+  totalCommissions: number;
+  totalReferrals: number;
 }
 
 interface CommissionTrackingDashboardProps {
+  className?: string;
   isAdmin?: boolean;
-  reviewerId?: string;
   onExportData?: () => void;
   onProcessPayment?: (commissionId: string) => void;
-  className?: string;
+  reviewerId?: string;
 }
 
 const SAMPLE_COMMISSION_DATA: CommissionRecord[] = [
@@ -95,7 +111,7 @@ const SAMPLE_COMMISSION_DATA: CommissionRecord[] = [
     reviewerName: 'Sarah Johnson',
     clientName: 'Michael Chen',
     serviceDescription: 'Comprehensive estate plan review',
-    paymentMethod: 'bank_transfer'
+    paymentMethod: 'bank_transfer',
   },
   {
     id: '2',
@@ -105,12 +121,12 @@ const SAMPLE_COMMISSION_DATA: CommissionRecord[] = [
     serviceType: 'consultation',
     serviceAmount: 450,
     commissionRate: 25,
-    commissionAmount: 112.50,
+    commissionAmount: 112.5,
     status: 'approved',
     createdAt: '2024-01-18T14:20:00Z',
     reviewerName: 'David Wilson',
     clientName: 'Lisa Rodriguez',
-    serviceDescription: '90-minute legal consultation'
+    serviceDescription: '90-minute legal consultation',
   },
   {
     id: '3',
@@ -125,8 +141,8 @@ const SAMPLE_COMMISSION_DATA: CommissionRecord[] = [
     createdAt: '2024-01-22T09:15:00Z',
     reviewerName: 'Sarah Johnson',
     clientName: 'Robert Kim',
-    serviceDescription: 'Monthly legal retainer services'
-  }
+    serviceDescription: 'Monthly legal retainer services',
+  },
 ];
 
 export function CommissionTrackingDashboard({
@@ -134,43 +150,53 @@ export function CommissionTrackingDashboard({
   reviewerId,
   onExportData,
   onProcessPayment,
-  className
+  className,
 }: CommissionTrackingDashboardProps) {
-  const [commissions, setCommissions] = useState<CommissionRecord[]>(SAMPLE_COMMISSION_DATA);
+  const [commissions, setCommissions] = useState<CommissionRecord[]>(
+    SAMPLE_COMMISSION_DATA
+  );
   const [summary] = useState<CommissionSummary>({
-    totalCommissions: 837.50,
+    totalCommissions: 837.5,
     pendingCommissions: 500,
-    paidCommissions: 337.50,
-    thisMonthCommissions: 837.50,
+    paidCommissions: 337.5,
+    thisMonthCommissions: 837.5,
     lastMonthCommissions: 1250,
     averageCommissionRate: 25,
     totalReferrals: 3,
     activeReviewers: 2,
     topPerformer: {
       name: 'Sarah Johnson',
-      commissions: 725
-    }
+      commissions: 725,
+    },
   });
 
   const [filters, setFilters] = useState({
     status: 'all',
     serviceType: 'all',
-    dateRange: 'this_month'
+    dateRange: 'this_month',
   });
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCommission, setSelectedCommission] = useState<CommissionRecord | null>(null);
+  const [selectedCommission, setSelectedCommission] =
+    useState<CommissionRecord | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const filteredCommissions = commissions.filter(commission => {
     if (reviewerId && commission.reviewerId !== reviewerId) return false;
-    if (filters.status !== 'all' && commission.status !== filters.status) return false;
-    if (filters.serviceType !== 'all' && commission.serviceType !== filters.serviceType) return false;
+    if (filters.status !== 'all' && commission.status !== filters.status)
+      return false;
+    if (
+      filters.serviceType !== 'all' &&
+      commission.serviceType !== filters.serviceType
+    )
+      return false;
 
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
-      return commission.reviewerName.toLowerCase().includes(query) ||
-             commission.clientName.toLowerCase().includes(query) ||
-             commission.referralId.toLowerCase().includes(query);
+      return (
+        commission.reviewerName.toLowerCase().includes(query) ||
+        commission.clientName.toLowerCase().includes(query) ||
+        commission.referralId.toLowerCase().includes(query)
+      );
     }
 
     return true;
@@ -194,15 +220,15 @@ export function CommissionTrackingDashboard({
   const getStatusIcon = (status: CommissionRecord['status']) => {
     switch (status) {
       case 'paid':
-        return <CheckCircle className="h-4 w-4" />;
+        return <CheckCircle className='h-4 w-4' />;
       case 'approved':
-        return <Clock className="h-4 w-4" />;
+        return <Clock className='h-4 w-4' />;
       case 'pending':
-        return <RefreshCw className="h-4 w-4" />;
+        return <RefreshCw className='h-4 w-4' />;
       case 'disputed':
-        return <AlertCircle className="h-4 w-4" />;
+        return <AlertCircle className='h-4 w-4' />;
       default:
-        return <Clock className="h-4 w-4" />;
+        return <Clock className='h-4 w-4' />;
     }
   };
 
@@ -212,11 +238,13 @@ export function CommissionTrackingDashboard({
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));
 
-    setCommissions(prev => prev.map(c =>
-      c.id === commissionId
-        ? { ...c, status: 'paid', paidAt: new Date().toISOString() }
-        : c
-    ));
+    setCommissions(prev =>
+      prev.map(c =>
+        c.id === commissionId
+          ? { ...c, status: 'paid', paidAt: new Date().toISOString() }
+          : c
+      )
+    );
 
     setIsLoading(false);
     onProcessPayment?.(commissionId);
@@ -224,34 +252,40 @@ export function CommissionTrackingDashboard({
 
   const calculateGrowthRate = () => {
     if (summary.lastMonthCommissions === 0) return 0;
-    return ((summary.thisMonthCommissions - summary.lastMonthCommissions) / summary.lastMonthCommissions) * 100;
+    return (
+      ((summary.thisMonthCommissions - summary.lastMonthCommissions) /
+        summary.lastMonthCommissions) *
+      100
+    );
   };
 
   const growthRate = calculateGrowthRate();
 
   return (
     <motion.div
-      initial={{  opacity: 0, y: 20  }}
-      animate={{  opacity: 1, y: 0  }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
       className={cn('space-y-6', className)}
     >
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className='flex items-center justify-between'>
         <div>
-          <h2 className="text-2xl font-bold">Commission Tracking</h2>
-          <p className="text-muted-foreground">
-            {isAdmin ? 'Manage and track all referral commissions' : 'Track your referral earnings'}
+          <h2 className='text-2xl font-bold'>Commission Tracking</h2>
+          <p className='text-muted-foreground'>
+            {isAdmin
+              ? 'Manage and track all referral commissions'
+              : 'Track your referral earnings'}
           </p>
         </div>
 
-        <div className="flex gap-3">
-          <Button variant="outline" onClick={onExportData}>
-            <Download className="h-4 w-4 mr-2" />
+        <div className='flex gap-3'>
+          <Button variant='outline' onClick={onExportData}>
+            <Download className='h-4 w-4 mr-2' />
             Export
           </Button>
           {isAdmin && (
             <Button>
-              <CreditCard className="h-4 w-4 mr-2" />
+              <CreditCard className='h-4 w-4 mr-2' />
               Process Payments
             </Button>
           )}
@@ -259,80 +293,97 @@ export function CommissionTrackingDashboard({
       </div>
 
       {/* Summary Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'>
         <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
+          <CardContent className='p-4'>
+            <div className='flex items-center justify-between'>
               <div>
-                <p className="text-sm text-muted-foreground">Total Commissions</p>
-                <p className="text-2xl font-bold">${summary.totalCommissions.toLocaleString()}</p>
-                <div className="flex items-center gap-1 mt-1">
+                <p className='text-sm text-muted-foreground'>
+                  Total Commissions
+                </p>
+                <p className='text-2xl font-bold'>
+                  ${summary.totalCommissions.toLocaleString()}
+                </p>
+                <div className='flex items-center gap-1 mt-1'>
                   {growthRate >= 0 ? (
-                    <ArrowUpRight className="h-4 w-4 text-green-600" />
+                    <ArrowUpRight className='h-4 w-4 text-green-600' />
                   ) : (
-                    <ArrowDownRight className="h-4 w-4 text-red-600" />
+                    <ArrowDownRight className='h-4 w-4 text-red-600' />
                   )}
-                  <span className={cn(
-                    'text-sm font-medium',
-                    growthRate >= 0 ? 'text-green-600' : 'text-red-600'
-                  )}>
+                  <span
+                    className={cn(
+                      'text-sm font-medium',
+                      growthRate >= 0 ? 'text-green-600' : 'text-red-600'
+                    )}
+                  >
                     {Math.abs(growthRate).toFixed(1)}% from last month
                   </span>
                 </div>
               </div>
-              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                <DollarSign className="h-6 w-6 text-green-600" />
+              <div className='w-12 h-12 bg-green-100 rounded-full flex items-center justify-center'>
+                <DollarSign className='h-6 w-6 text-green-600' />
               </div>
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
+          <CardContent className='p-4'>
+            <div className='flex items-center justify-between'>
               <div>
-                <p className="text-sm text-muted-foreground">Pending Payouts</p>
-                <p className="text-2xl font-bold">${summary.pendingCommissions.toLocaleString()}</p>
-                <p className="text-sm text-muted-foreground mt-1">
-                  {commissions.filter(c => c.status === 'pending' || c.status === 'approved').length} pending
+                <p className='text-sm text-muted-foreground'>Pending Payouts</p>
+                <p className='text-2xl font-bold'>
+                  ${summary.pendingCommissions.toLocaleString()}
+                </p>
+                <p className='text-sm text-muted-foreground mt-1'>
+                  {
+                    commissions.filter(
+                      c => c.status === 'pending' || c.status === 'approved'
+                    ).length
+                  }{' '}
+                  pending
                 </p>
               </div>
-              <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
-                <Clock className="h-6 w-6 text-yellow-600" />
+              <div className='w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center'>
+                <Clock className='h-6 w-6 text-yellow-600' />
               </div>
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
+          <CardContent className='p-4'>
+            <div className='flex items-center justify-between'>
               <div>
-                <p className="text-sm text-muted-foreground">Avg Commission Rate</p>
-                <p className="text-2xl font-bold">{summary.averageCommissionRate}%</p>
-                <p className="text-sm text-muted-foreground mt-1">
+                <p className='text-sm text-muted-foreground'>
+                  Avg Commission Rate
+                </p>
+                <p className='text-2xl font-bold'>
+                  {summary.averageCommissionRate}%
+                </p>
+                <p className='text-sm text-muted-foreground mt-1'>
                   Across all services
                 </p>
               </div>
-              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                <Percent className="h-6 w-6 text-blue-600" />
+              <div className='w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center'>
+                <Percent className='h-6 w-6 text-blue-600' />
               </div>
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
+          <CardContent className='p-4'>
+            <div className='flex items-center justify-between'>
               <div>
-                <p className="text-sm text-muted-foreground">Total Referrals</p>
-                <p className="text-2xl font-bold">{summary.totalReferrals}</p>
-                <p className="text-sm text-muted-foreground mt-1">
+                <p className='text-sm text-muted-foreground'>Total Referrals</p>
+                <p className='text-2xl font-bold'>{summary.totalReferrals}</p>
+                <p className='text-sm text-muted-foreground mt-1'>
                   {summary.activeReviewers} active reviewers
                 </p>
               </div>
-              <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
-                <Users className="h-6 w-6 text-purple-600" />
+              <div className='w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center'>
+                <Users className='h-6 w-6 text-purple-600' />
               </div>
             </div>
           </CardContent>
@@ -343,27 +394,29 @@ export function CommissionTrackingDashboard({
       {isAdmin && (
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Award className="h-5 w-5" />
+            <CardTitle className='flex items-center gap-2'>
+              <Award className='h-5 w-5' />
               Top Performer This Month
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center justify-between p-4 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg border">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
-                  <Award className="h-6 w-6 text-yellow-600" />
+            <div className='flex items-center justify-between p-4 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg border'>
+              <div className='flex items-center gap-4'>
+                <div className='w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center'>
+                  <Award className='h-6 w-6 text-yellow-600' />
                 </div>
                 <div>
-                  <h4 className="font-semibold">{summary.topPerformer.name}</h4>
-                  <p className="text-sm text-muted-foreground">Top referral partner</p>
+                  <h4 className='font-semibold'>{summary.topPerformer.name}</h4>
+                  <p className='text-sm text-muted-foreground'>
+                    Top referral partner
+                  </p>
                 </div>
               </div>
-              <div className="text-right">
-                <p className="text-2xl font-bold text-yellow-700">
+              <div className='text-right'>
+                <p className='text-2xl font-bold text-yellow-700'>
                   ${summary.topPerformer.commissions.toLocaleString()}
                 </p>
-                <p className="text-sm text-muted-foreground">in commissions</p>
+                <p className='text-sm text-muted-foreground'>in commissions</p>
               </div>
             </div>
           </CardContent>
@@ -371,74 +424,89 @@ export function CommissionTrackingDashboard({
       )}
 
       {/* Main Content */}
-      <Tabs defaultValue="commissions" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="commissions">Commission Records</TabsTrigger>
-          <TabsTrigger value="analytics">Analytics</TabsTrigger>
-          <TabsTrigger value="settings">Settings</TabsTrigger>
+      <Tabs defaultValue='commissions' className='space-y-6'>
+        <TabsList className='grid w-full grid-cols-3'>
+          <TabsTrigger value='commissions'>Commission Records</TabsTrigger>
+          <TabsTrigger value='analytics'>Analytics</TabsTrigger>
+          <TabsTrigger value='settings'>Settings</TabsTrigger>
         </TabsList>
 
         {/* Commission Records Tab */}
-        <TabsContent value="commissions" className="space-y-6">
+        <TabsContent value='commissions' className='space-y-6'>
           {/* Filters */}
           <Card>
-            <CardContent className="p-4">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="space-y-2">
+            <CardContent className='p-4'>
+              <div className='grid grid-cols-1 md:grid-cols-4 gap-4'>
+                <div className='space-y-2'>
                   <Label>Search</Label>
-                  <div className="relative">
-                    <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <div className='relative'>
+                    <Search className='absolute left-3 top-3 h-4 w-4 text-muted-foreground' />
                     <Input
-                      placeholder="Search commissions..."
+                      placeholder='Search commissions...'
                       value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="pl-10"
+                      onChange={e => setSearchQuery(e.target.value)}
+                      className='pl-10'
                     />
                   </div>
                 </div>
 
-                <div className="space-y-2">
+                <div className='space-y-2'>
                   <Label>Status</Label>
-                  <Select value={filters.status} onValueChange={(value) => setFilters(f => ({ ...f, status: value }))}>
+                  <Select
+                    value={filters.status}
+                    onValueChange={value =>
+                      setFilters(f => ({ ...f, status: value }))
+                    }
+                  >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">All Status</SelectItem>
-                      <SelectItem value="pending">Pending</SelectItem>
-                      <SelectItem value="approved">Approved</SelectItem>
-                      <SelectItem value="paid">Paid</SelectItem>
-                      <SelectItem value="disputed">Disputed</SelectItem>
+                      <SelectItem value='all'>All Status</SelectItem>
+                      <SelectItem value='pending'>Pending</SelectItem>
+                      <SelectItem value='approved'>Approved</SelectItem>
+                      <SelectItem value='paid'>Paid</SelectItem>
+                      <SelectItem value='disputed'>Disputed</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
-                <div className="space-y-2">
+                <div className='space-y-2'>
                   <Label>Service Type</Label>
-                  <Select value={filters.serviceType} onValueChange={(value) => setFilters(f => ({ ...f, serviceType: value }))}>
+                  <Select
+                    value={filters.serviceType}
+                    onValueChange={value =>
+                      setFilters(f => ({ ...f, serviceType: value }))
+                    }
+                  >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">All Types</SelectItem>
-                      <SelectItem value="review">Review</SelectItem>
-                      <SelectItem value="consultation">Consultation</SelectItem>
-                      <SelectItem value="retainer">Retainer</SelectItem>
+                      <SelectItem value='all'>All Types</SelectItem>
+                      <SelectItem value='review'>Review</SelectItem>
+                      <SelectItem value='consultation'>Consultation</SelectItem>
+                      <SelectItem value='retainer'>Retainer</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
-                <div className="space-y-2">
+                <div className='space-y-2'>
                   <Label>Date Range</Label>
-                  <Select value={filters.dateRange} onValueChange={(value) => setFilters(f => ({ ...f, dateRange: value }))}>
+                  <Select
+                    value={filters.dateRange}
+                    onValueChange={value =>
+                      setFilters(f => ({ ...f, dateRange: value }))
+                    }
+                  >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="this_month">This Month</SelectItem>
-                      <SelectItem value="last_month">Last Month</SelectItem>
-                      <SelectItem value="quarter">This Quarter</SelectItem>
-                      <SelectItem value="year">This Year</SelectItem>
+                      <SelectItem value='this_month'>This Month</SelectItem>
+                      <SelectItem value='last_month'>Last Month</SelectItem>
+                      <SelectItem value='quarter'>This Quarter</SelectItem>
+                      <SelectItem value='year'>This Year</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -449,90 +517,118 @@ export function CommissionTrackingDashboard({
           {/* Commission Records */}
           <Card>
             <CardHeader>
-              <CardTitle>Commission Records ({filteredCommissions.length})</CardTitle>
+              <CardTitle>
+                Commission Records ({filteredCommissions.length})
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
+              <div className='space-y-4'>
                 {filteredCommissions.map(commission => (
                   <motion.div
                     key={commission.id}
-                    initial={{  opacity: 0, y: 10  }}
-                    animate={{  opacity: 1, y: 0  }}
-                    className="border rounded-lg p-4 hover:border-blue-200 transition-colors"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className='border rounded-lg p-4 hover:border-blue-200 transition-colors'
                   >
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-3">
-                          <h4 className="font-medium">Referral #{commission.referralId}</h4>
+                    <div className='flex items-start justify-between mb-3'>
+                      <div className='space-y-1'>
+                        <div className='flex items-center gap-3'>
+                          <h4 className='font-medium'>
+                            Referral #{commission.referralId}
+                          </h4>
                           <Badge className={getStatusColor(commission.status)}>
-                            <div className="flex items-center gap-1">
+                            <div className='flex items-center gap-1'>
                               {getStatusIcon(commission.status)}
                               {commission.status}
                             </div>
                           </Badge>
-                          <Badge variant="outline" className="capitalize">
+                          <Badge variant='outline' className='capitalize'>
                             {commission.serviceType}
                           </Badge>
                         </div>
-                        <p className="text-sm text-muted-foreground">
+                        <p className='text-sm text-muted-foreground'>
                           {commission.serviceDescription}
                         </p>
                       </div>
 
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="sm">
-                            <MoreVertical className="h-4 w-4" />
+                          <Button variant='ghost' size='sm'>
+                            <MoreVertical className='h-4 w-4' />
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
-                          <DropdownMenuItem onClick={() => setSelectedCommission(commission)}>
-                            <Eye className="h-4 w-4 mr-2" />
+                          <DropdownMenuItem
+                            onClick={() => setSelectedCommission(commission)}
+                          >
+                            <Eye className='h-4 w-4 mr-2' />
                             View Details
                           </DropdownMenuItem>
                           {isAdmin && commission.status === 'approved' && (
-                            <DropdownMenuItem onClick={() => handleProcessPayment(commission.id)}>
-                              <CreditCard className="h-4 w-4 mr-2" />
+                            <DropdownMenuItem
+                              onClick={() =>
+                                handleProcessPayment(commission.id)
+                              }
+                            >
+                              <CreditCard className='h-4 w-4 mr-2' />
                               Process Payment
                             </DropdownMenuItem>
                           )}
                           <DropdownMenuItem>
-                            <Download className="h-4 w-4 mr-2" />
+                            <Download className='h-4 w-4 mr-2' />
                             Export Record
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
+                    <div className='grid grid-cols-1 md:grid-cols-4 gap-4 text-sm'>
                       <div>
-                        <Label className="text-xs text-muted-foreground">Reviewer</Label>
-                        <p className="font-medium">{commission.reviewerName}</p>
+                        <Label className='text-xs text-muted-foreground'>
+                          Reviewer
+                        </Label>
+                        <p className='font-medium'>{commission.reviewerName}</p>
                       </div>
 
                       <div>
-                        <Label className="text-xs text-muted-foreground">Client</Label>
-                        <p className="font-medium">{commission.clientName}</p>
+                        <Label className='text-xs text-muted-foreground'>
+                          Client
+                        </Label>
+                        <p className='font-medium'>{commission.clientName}</p>
                       </div>
 
                       <div>
-                        <Label className="text-xs text-muted-foreground">Service Amount</Label>
-                        <p className="font-medium">${commission.serviceAmount.toLocaleString()}</p>
+                        <Label className='text-xs text-muted-foreground'>
+                          Service Amount
+                        </Label>
+                        <p className='font-medium'>
+                          ${commission.serviceAmount.toLocaleString()}
+                        </p>
                       </div>
 
                       <div>
-                        <Label className="text-xs text-muted-foreground">Commission ({commission.commissionRate}%)</Label>
-                        <p className="font-bold text-green-600">${commission.commissionAmount.toLocaleString()}</p>
+                        <Label className='text-xs text-muted-foreground'>
+                          Commission ({commission.commissionRate}%)
+                        </Label>
+                        <p className='font-bold text-green-600'>
+                          ${commission.commissionAmount.toLocaleString()}
+                        </p>
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between mt-4 pt-3 border-t text-xs text-muted-foreground">
-                      <span>Created: {new Date(commission.createdAt).toLocaleDateString()}</span>
+                    <div className='flex items-center justify-between mt-4 pt-3 border-t text-xs text-muted-foreground'>
+                      <span>
+                        Created:{' '}
+                        {new Date(commission.createdAt).toLocaleDateString()}
+                      </span>
                       {commission.paidAt && (
-                        <span>Paid: {new Date(commission.paidAt).toLocaleDateString()}</span>
+                        <span>
+                          Paid:{' '}
+                          {new Date(commission.paidAt).toLocaleDateString()}
+                        </span>
                       )}
                       {commission.paymentMethod && (
-                        <Badge variant="outline" className="text-xs">
+                        <Badge variant='outline' className='text-xs'>
                           {commission.paymentMethod.replace('_', ' ')}
                         </Badge>
                       )}
@@ -541,8 +637,8 @@ export function CommissionTrackingDashboard({
                 ))}
 
                 {filteredCommissions.length === 0 && (
-                  <div className="text-center py-8 text-muted-foreground">
-                    <FileText className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <div className='text-center py-8 text-muted-foreground'>
+                    <FileText className='h-12 w-12 mx-auto mb-4 opacity-50' />
                     <p>No commission records match the current filters</p>
                   </div>
                 )}
@@ -552,31 +648,36 @@ export function CommissionTrackingDashboard({
         </TabsContent>
 
         {/* Analytics Tab */}
-        <TabsContent value="analytics" className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <TabsContent value='analytics' className='space-y-6'>
+          <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <BarChart3 className="h-5 w-5" />
+                <CardTitle className='flex items-center gap-2'>
+                  <BarChart3 className='h-5 w-5' />
                   Commission Trends
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm">January 2024</span>
-                    <span className="font-semibold">${summary.thisMonthCommissions}</span>
+                <div className='space-y-4'>
+                  <div className='flex items-center justify-between'>
+                    <span className='text-sm'>January 2024</span>
+                    <span className='font-semibold'>
+                      ${summary.thisMonthCommissions}
+                    </span>
                   </div>
-                  <Progress value={75} className="h-2" />
+                  <Progress value={75} className='h-2' />
 
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm">December 2023</span>
-                    <span className="font-semibold">${summary.lastMonthCommissions}</span>
+                  <div className='flex items-center justify-between'>
+                    <span className='text-sm'>December 2023</span>
+                    <span className='font-semibold'>
+                      ${summary.lastMonthCommissions}
+                    </span>
                   </div>
-                  <Progress value={90} className="h-2" />
+                  <Progress value={90} className='h-2' />
 
-                  <div className="text-sm text-muted-foreground">
-                    {growthRate >= 0 ? 'Growth' : 'Decline'} of {Math.abs(growthRate).toFixed(1)}% month-over-month
+                  <div className='text-sm text-muted-foreground'>
+                    {growthRate >= 0 ? 'Growth' : 'Decline'} of{' '}
+                    {Math.abs(growthRate).toFixed(1)}% month-over-month
                   </div>
                 </div>
               </CardContent>
@@ -584,35 +685,35 @@ export function CommissionTrackingDashboard({
 
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <PieChart className="h-5 w-5" />
+                <CardTitle className='flex items-center gap-2'>
+                  <PieChart className='h-5 w-5' />
                   Service Type Breakdown
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                      <span className="text-sm">Reviews</span>
+                <div className='space-y-4'>
+                  <div className='flex items-center justify-between'>
+                    <div className='flex items-center gap-2'>
+                      <div className='w-3 h-3 bg-blue-500 rounded-full'></div>
+                      <span className='text-sm'>Reviews</span>
                     </div>
-                    <span className="font-semibold">45%</span>
+                    <span className='font-semibold'>45%</span>
                   </div>
 
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                      <span className="text-sm">Consultations</span>
+                  <div className='flex items-center justify-between'>
+                    <div className='flex items-center gap-2'>
+                      <div className='w-3 h-3 bg-green-500 rounded-full'></div>
+                      <span className='text-sm'>Consultations</span>
                     </div>
-                    <span className="font-semibold">35%</span>
+                    <span className='font-semibold'>35%</span>
                   </div>
 
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
-                      <span className="text-sm">Retainers</span>
+                  <div className='flex items-center justify-between'>
+                    <div className='flex items-center gap-2'>
+                      <div className='w-3 h-3 bg-purple-500 rounded-full'></div>
+                      <span className='text-sm'>Retainers</span>
                     </div>
-                    <span className="font-semibold">20%</span>
+                    <span className='font-semibold'>20%</span>
                   </div>
                 </div>
               </CardContent>
@@ -621,50 +722,52 @@ export function CommissionTrackingDashboard({
         </TabsContent>
 
         {/* Settings Tab */}
-        <TabsContent value="settings" className="space-y-6">
+        <TabsContent value='settings' className='space-y-6'>
           {isAdmin && (
             <Card>
               <CardHeader>
                 <CardTitle>Commission Settings</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="space-y-2">
+              <CardContent className='space-y-6'>
+                <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+                  <div className='space-y-2'>
                     <Label>Default Review Commission (%)</Label>
-                    <Input type="number" placeholder="25" />
+                    <Input type='number' placeholder='25' />
                   </div>
 
-                  <div className="space-y-2">
+                  <div className='space-y-2'>
                     <Label>Default Consultation Commission (%)</Label>
-                    <Input type="number" placeholder="20" />
+                    <Input type='number' placeholder='20' />
                   </div>
 
-                  <div className="space-y-2">
+                  <div className='space-y-2'>
                     <Label>Default Retainer Commission (%)</Label>
-                    <Input type="number" placeholder="15" />
+                    <Input type='number' placeholder='15' />
                   </div>
                 </div>
 
                 <Separator />
 
-                <div className="space-y-4">
-                  <Label className="text-base font-medium">Payment Processing</Label>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
+                <div className='space-y-4'>
+                  <Label className='text-base font-medium'>
+                    Payment Processing
+                  </Label>
+                  <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                    <div className='space-y-2'>
                       <Label>Minimum Payout Amount</Label>
-                      <Input type="number" placeholder="50" />
+                      <Input type='number' placeholder='50' />
                     </div>
 
-                    <div className="space-y-2">
+                    <div className='space-y-2'>
                       <Label>Payment Schedule</Label>
-                      <Select defaultValue="monthly">
+                      <Select defaultValue='monthly'>
                         <SelectTrigger>
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="weekly">Weekly</SelectItem>
-                          <SelectItem value="biweekly">Bi-weekly</SelectItem>
-                          <SelectItem value="monthly">Monthly</SelectItem>
+                          <SelectItem value='weekly'>Weekly</SelectItem>
+                          <SelectItem value='biweekly'>Bi-weekly</SelectItem>
+                          <SelectItem value='monthly'>Monthly</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -679,102 +782,147 @@ export function CommissionTrackingDashboard({
       </Tabs>
 
       {/* Commission Detail Dialog */}
-      <Dialog open={!!selectedCommission} onOpenChange={() => setSelectedCommission(null)}>
-        <DialogContent className="max-w-2xl">
+      <Dialog
+        open={!!selectedCommission}
+        onOpenChange={() => setSelectedCommission(null)}
+      >
+        <DialogContent className='max-w-2xl'>
           <DialogHeader>
             <DialogTitle>Commission Details</DialogTitle>
           </DialogHeader>
 
           {selectedCommission && (
-            <div className="space-y-6">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-3">
+            <div className='space-y-6'>
+              <div className='grid grid-cols-2 gap-4'>
+                <div className='space-y-3'>
                   <div>
-                    <Label className="text-sm text-muted-foreground">Referral ID</Label>
-                    <p className="font-medium">{selectedCommission.referralId}</p>
+                    <Label className='text-sm text-muted-foreground'>
+                      Referral ID
+                    </Label>
+                    <p className='font-medium'>
+                      {selectedCommission.referralId}
+                    </p>
                   </div>
 
                   <div>
-                    <Label className="text-sm text-muted-foreground">Status</Label>
-                    <Badge className={getStatusColor(selectedCommission.status)}>
+                    <Label className='text-sm text-muted-foreground'>
+                      Status
+                    </Label>
+                    <Badge
+                      className={getStatusColor(selectedCommission.status)}
+                    >
                       {selectedCommission.status}
                     </Badge>
                   </div>
 
                   <div>
-                    <Label className="text-sm text-muted-foreground">Service Type</Label>
-                    <p className="font-medium capitalize">{selectedCommission.serviceType}</p>
+                    <Label className='text-sm text-muted-foreground'>
+                      Service Type
+                    </Label>
+                    <p className='font-medium capitalize'>
+                      {selectedCommission.serviceType}
+                    </p>
                   </div>
                 </div>
 
-                <div className="space-y-3">
+                <div className='space-y-3'>
                   <div>
-                    <Label className="text-sm text-muted-foreground">Service Amount</Label>
-                    <p className="font-medium">${selectedCommission.serviceAmount.toLocaleString()}</p>
+                    <Label className='text-sm text-muted-foreground'>
+                      Service Amount
+                    </Label>
+                    <p className='font-medium'>
+                      ${selectedCommission.serviceAmount.toLocaleString()}
+                    </p>
                   </div>
 
                   <div>
-                    <Label className="text-sm text-muted-foreground">Commission Rate</Label>
-                    <p className="font-medium">{selectedCommission.commissionRate}%</p>
+                    <Label className='text-sm text-muted-foreground'>
+                      Commission Rate
+                    </Label>
+                    <p className='font-medium'>
+                      {selectedCommission.commissionRate}%
+                    </p>
                   </div>
 
                   <div>
-                    <Label className="text-sm text-muted-foreground">Commission Amount</Label>
-                    <p className="font-bold text-green-600">${selectedCommission.commissionAmount.toLocaleString()}</p>
+                    <Label className='text-sm text-muted-foreground'>
+                      Commission Amount
+                    </Label>
+                    <p className='font-bold text-green-600'>
+                      ${selectedCommission.commissionAmount.toLocaleString()}
+                    </p>
                   </div>
                 </div>
               </div>
 
               <Separator />
 
-              <div className="space-y-3">
+              <div className='space-y-3'>
                 <div>
-                  <Label className="text-sm text-muted-foreground">Reviewer</Label>
-                  <p className="font-medium">{selectedCommission.reviewerName}</p>
+                  <Label className='text-sm text-muted-foreground'>
+                    Reviewer
+                  </Label>
+                  <p className='font-medium'>
+                    {selectedCommission.reviewerName}
+                  </p>
                 </div>
 
                 <div>
-                  <Label className="text-sm text-muted-foreground">Client</Label>
-                  <p className="font-medium">{selectedCommission.clientName}</p>
+                  <Label className='text-sm text-muted-foreground'>
+                    Client
+                  </Label>
+                  <p className='font-medium'>{selectedCommission.clientName}</p>
                 </div>
 
                 <div>
-                  <Label className="text-sm text-muted-foreground">Service Description</Label>
-                  <p className="font-medium">{selectedCommission.serviceDescription}</p>
+                  <Label className='text-sm text-muted-foreground'>
+                    Service Description
+                  </Label>
+                  <p className='font-medium'>
+                    {selectedCommission.serviceDescription}
+                  </p>
                 </div>
               </div>
 
               <Separator />
 
-              <div className="grid grid-cols-2 gap-4 text-sm">
+              <div className='grid grid-cols-2 gap-4 text-sm'>
                 <div>
-                  <Label className="text-xs text-muted-foreground">Created</Label>
-                  <p>{new Date(selectedCommission.createdAt).toLocaleString()}</p>
+                  <Label className='text-xs text-muted-foreground'>
+                    Created
+                  </Label>
+                  <p>
+                    {new Date(selectedCommission.createdAt).toLocaleString()}
+                  </p>
                 </div>
 
                 {selectedCommission.paidAt && (
                   <div>
-                    <Label className="text-xs text-muted-foreground">Paid</Label>
-                    <p>{new Date(selectedCommission.paidAt).toLocaleString()}</p>
+                    <Label className='text-xs text-muted-foreground'>
+                      Paid
+                    </Label>
+                    <p>
+                      {new Date(selectedCommission.paidAt).toLocaleString()}
+                    </p>
                   </div>
                 )}
               </div>
 
               {isAdmin && selectedCommission.status === 'approved' && (
-                <div className="flex gap-3 pt-4">
+                <div className='flex gap-3 pt-4'>
                   <Button
                     onClick={() => handleProcessPayment(selectedCommission.id)}
                     disabled={isLoading}
-                    className="flex-1"
+                    className='flex-1'
                   >
                     {isLoading ? (
                       <>
-                        <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                        <RefreshCw className='h-4 w-4 mr-2 animate-spin' />
                         Processing...
                       </>
                     ) : (
                       <>
-                        <CreditCard className="h-4 w-4 mr-2" />
+                        <CreditCard className='h-4 w-4 mr-2' />
                         Process Payment
                       </>
                     )}

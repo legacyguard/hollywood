@@ -24,7 +24,8 @@ export interface EncryptedData {
 
 class SecureEncryptionService {
   private static instance: SecureEncryptionService;
-  private keyCache: Map<string, { keys: EncryptionKeys; expiry: number }> = new Map();
+  private keyCache: Map<string, { keys: EncryptionKeys; expiry: number }> =
+    new Map();
   private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
   private constructor() {}
@@ -39,7 +40,9 @@ class SecureEncryptionService {
   /**
    * Initialize keys for a user (call on login)
    */
-  public async initializeKeys(password: string): Promise<{ success: boolean; error?: string }> {
+  public async initializeKeys(
+    password: string
+  ): Promise<{ success: boolean; error?: string }> {
     try {
       // Check if keys exist
       const publicKeyResponse = await fetch('/api/keys/retrieve', {
@@ -61,7 +64,10 @@ class SecureEncryptionService {
 
         if (!generateResponse.ok) {
           const error = await generateResponse.json();
-          return { success: false, error: error.error || 'Failed to generate keys' };
+          return {
+            success: false,
+            error: error.error || 'Failed to generate keys',
+          };
         }
 
         return { success: true };
@@ -91,7 +97,6 @@ class SecureEncryptionService {
       await this.cacheKeys({ privateKey, publicKey });
 
       return { success: true };
-
     } catch (error) {
       console.error('Key initialization error:', error);
       return { success: false, error: 'Failed to initialize encryption keys' };
@@ -112,12 +117,13 @@ class SecureEncryptionService {
     }
 
     // Check secure storage
-    const storedKeys = await secureStorage.getSecureSession<EncryptionKeys>('encryption_keys');
+    const storedKeys =
+      await secureStorage.getSecureSession<EncryptionKeys>('encryption_keys');
     if (storedKeys) {
       // Re-cache in memory
       this.keyCache.set(userId, {
         keys: storedKeys,
-        expiry: Date.now() + this.CACHE_DURATION
+        expiry: Date.now() + this.CACHE_DURATION,
       });
       return storedKeys;
     }
@@ -135,7 +141,7 @@ class SecureEncryptionService {
     // Store in memory cache
     this.keyCache.set(userId, {
       keys,
-      expiry: Date.now() + this.CACHE_DURATION
+      expiry: Date.now() + this.CACHE_DURATION,
     });
 
     // Store in secure session storage (encrypted)
@@ -163,11 +169,17 @@ class SecureEncryptionService {
   public async encryptFile(
     file: File,
     recipientPublicKey?: string
-  ): Promise<{ encryptedData: Uint8Array; nonce: Uint8Array; metadata: Record<string, unknown> } | null> {
+  ): Promise<{
+    encryptedData: Uint8Array;
+    nonce: Uint8Array;
+    metadata: Record<string, unknown>;
+  } | null> {
     try {
       const keys = await this.getKeys();
       if (!keys) {
-        throw new Error('Encryption keys not available. Please unlock with your password.');
+        throw new Error(
+          'Encryption keys not available. Please unlock with your password.'
+        );
       }
 
       const fileBuffer = await file.arrayBuffer();
@@ -195,15 +207,14 @@ class SecureEncryptionService {
         fileType: file.type,
         fileSize: file.size,
         encryptedAt: new Date().toISOString(),
-        algorithm: 'nacl.box'
+        algorithm: 'nacl.box',
       };
 
       return {
         encryptedData: encrypted,
         nonce,
-        metadata
+        metadata,
       };
-
     } catch (error) {
       console.error('File encryption error:', error);
       return null;
@@ -221,7 +232,9 @@ class SecureEncryptionService {
     try {
       const keys = await this.getKeys();
       if (!keys) {
-        throw new Error('Encryption keys not available. Please unlock with your password.');
+        throw new Error(
+          'Encryption keys not available. Please unlock with your password.'
+        );
       }
 
       // Use sender's public key if provided, otherwise use user's own
@@ -239,7 +252,6 @@ class SecureEncryptionService {
       }
 
       return decrypted;
-
     } catch (error) {
       console.error('File decryption error:', error);
       return null;
@@ -273,10 +285,9 @@ class SecureEncryptionService {
         nonce: encodeBase64(nonce),
         metadata: {
           encryptedAt: new Date().toISOString(),
-          algorithm: 'nacl.secretbox'
-        }
+          algorithm: 'nacl.secretbox',
+        },
       };
-
     } catch (error) {
       console.error('Text encryption error:', error);
       return null;
@@ -286,7 +297,9 @@ class SecureEncryptionService {
   /**
    * Decrypt text data
    */
-  public async decryptText(encryptedData: EncryptedData): Promise<string | null> {
+  public async decryptText(
+    encryptedData: EncryptedData
+  ): Promise<string | null> {
     try {
       const keys = await this.getKeys();
       if (!keys) {
@@ -305,7 +318,6 @@ class SecureEncryptionService {
 
       const decoder = new TextDecoder();
       return decoder.decode(decrypted);
-
     } catch (error) {
       console.error('Text decryption error:', error);
       return null;
@@ -328,7 +340,9 @@ class SecureEncryptionService {
   /**
    * Unlock keys with password
    */
-  public async unlockKeys(password: string): Promise<{ success: boolean; error?: string }> {
+  public async unlockKeys(
+    password: string
+  ): Promise<{ success: boolean; error?: string }> {
     try {
       const response = await fetch('/api/keys/retrieve', {
         method: 'POST',
@@ -340,7 +354,10 @@ class SecureEncryptionService {
 
       if (!response.ok) {
         const error = await response.json();
-        return { success: false, error: error.error || 'Failed to unlock keys' };
+        return {
+          success: false,
+          error: error.error || 'Failed to unlock keys',
+        };
       }
 
       const { privateKey, publicKey } = await response.json();
@@ -349,7 +366,6 @@ class SecureEncryptionService {
       await this.cacheKeys({ privateKey, publicKey });
 
       return { success: true };
-
     } catch (error) {
       console.error('Key unlock error:', error);
       return { success: false, error: 'Failed to unlock encryption keys' };
@@ -393,7 +409,10 @@ class SecureEncryptionService {
 
       if (!response.ok) {
         const error = await response.json();
-        return { success: false, error: error.error || 'Failed to rotate keys' };
+        return {
+          success: false,
+          error: error.error || 'Failed to rotate keys',
+        };
       }
 
       // Clear cached keys
@@ -402,7 +421,6 @@ class SecureEncryptionService {
       // Re-initialize with new password
       const password = newPassword || currentPassword;
       return await this.unlockKeys(password);
-
     } catch (error) {
       console.error('Key rotation error:', error);
       return { success: false, error: 'Failed to rotate encryption keys' };
@@ -427,7 +445,6 @@ class SecureEncryptionService {
 
       const { rotationNeeded } = await response.json();
       return rotationNeeded;
-
     } catch (error) {
       console.error('Rotation check error:', error);
       return false;
@@ -437,7 +454,9 @@ class SecureEncryptionService {
   /**
    * Migrate from old localStorage keys to server-side
    */
-  public async migrateFromLocalStorage(password: string): Promise<{ success: boolean; error?: string }> {
+  public async migrateFromLocalStorage(
+    password: string
+  ): Promise<{ success: boolean; error?: string }> {
     try {
       // Check if old keys exist in localStorage
       const userId = await this.getCurrentUserId();
@@ -463,7 +482,6 @@ class SecureEncryptionService {
       }
 
       return result;
-
     } catch (error) {
       console.error('Migration error:', error);
       return { success: false, error: 'Failed to migrate encryption keys' };
@@ -478,7 +496,11 @@ export const encryptionService = SecureEncryptionService.getInstance();
 export async function encryptFile(
   file: File,
   recipientPublicKey?: string
-): Promise<{ encryptedData: Uint8Array; nonce: Uint8Array; metadata: Record<string, unknown> } | null> {
+): Promise<{
+  encryptedData: Uint8Array;
+  nonce: Uint8Array;
+  metadata: Record<string, unknown>;
+} | null> {
   return encryptionService.encryptFile(file, recipientPublicKey);
 }
 
@@ -490,11 +512,15 @@ export async function decryptFile(
   return encryptionService.decryptFile(encryptedData, nonce, senderPublicKey);
 }
 
-export async function initializeEncryption(password: string): Promise<{ success: boolean; error?: string }> {
+export async function initializeEncryption(
+  password: string
+): Promise<{ success: boolean; error?: string }> {
   return encryptionService.initializeKeys(password);
 }
 
-export async function unlockEncryption(password: string): Promise<{ success: boolean; error?: string }> {
+export async function unlockEncryption(
+  password: string
+): Promise<{ success: boolean; error?: string }> {
   return encryptionService.unlockKeys(password);
 }
 

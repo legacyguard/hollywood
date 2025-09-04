@@ -14,8 +14,8 @@ console.log('🔐 Environment Variables Check:\n');
 
 const requiredEnvVars = [
   'VITE_CLERK_PUBLISHABLE_KEY',
-  'VITE_SUPABASE_URL', 
-  'VITE_SUPABASE_ANON_KEY'
+  'VITE_SUPABASE_URL',
+  'VITE_SUPABASE_ANON_KEY',
 ];
 
 let allPresent = true;

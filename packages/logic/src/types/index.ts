@@ -9,362 +9,355 @@ export * from './supabase';
 
 // User and Authentication Types
 export interface User {
-  id: string
-  email: string
-  name?: string
-  avatarUrl?: string
-  phoneNumber?: string
-  createdAt: Date
-  updatedAt: Date
-  lastLogin?: Date
-  preferences?: UserPreferences
-  subscription?: Subscription
+  avatarUrl?: string;
+  createdAt: Date;
+  email: string;
+  id: string;
+  lastLogin?: Date;
+  name?: string;
+  phoneNumber?: string;
+  preferences?: UserPreferences;
+  subscription?: Subscription;
+  updatedAt: Date;
 }
 
 export interface UserPreferences {
-  theme: 'light' | 'dark' | 'system'
-  language: string
-  notifications: NotificationSettings
-  sofiaMode: 'empathetic' | 'pragmatic' | 'balanced'
-  autoSave: boolean
-  privacyLevel: 'private' | 'shared' | 'public'
+  autoSave: boolean;
+  language: string;
+  notifications: NotificationSettings;
+  privacyLevel: 'private' | 'public' | 'shared';
+  sofiaMode: 'balanced' | 'empathetic' | 'pragmatic';
+  theme: 'dark' | 'light' | 'system';
 }
 
 export interface NotificationSettings {
-  email: boolean
-  push: boolean
-  sms: boolean
-  reminders: boolean
-  updates: boolean
-  marketing: boolean
+  email: boolean;
+  marketing: boolean;
+  push: boolean;
+  reminders: boolean;
+  sms: boolean;
+  updates: boolean;
 }
 
 // Document Types
 export interface Document {
-  id: string
-  userId: string
-  type: DocumentType
-  title: string
-  content: DocumentContent
-  status: DocumentStatus
-  category: DocumentCategory
-  tags: string[]
-  metadata: DocumentMetadata
-  encryption?: EncryptionInfo
-  sharing?: SharingSettings
-  createdAt: Date
-  updatedAt: Date
-  lastAccessedAt?: Date
+  category: DocumentCategory;
+  content: DocumentContent;
+  createdAt: Date;
+  encryption?: EncryptionInfo;
+  id: string;
+  lastAccessedAt?: Date;
+  metadata: DocumentMetadata;
+  sharing?: SharingSettings;
+  status: DocumentStatus;
+  tags: string[];
+  title: string;
+  type: DocumentType;
+  updatedAt: Date;
+  userId: string;
 }
 
 export type DocumentType =
-  | 'will'
-  | 'healthcare-directive'
-  | 'power-of-attorney'
   | 'digital-assets'
-  | 'insurance'
-  | 'financial'
-  | 'personal-letter'
   | 'emergency-contacts'
-  | 'funeral-wishes'
   | 'family-history'
+  | 'financial'
+  | 'funeral-wishes'
+  | 'healthcare-directive'
+  | 'insurance'
+  | 'personal-letter'
+  | 'power-of-attorney'
+  | 'will';
 
 export type DocumentStatus =
-  | 'draft'
-  | 'complete'
-  | 'reviewed'
-  | 'shared'
   | 'archived'
+  | 'complete'
+  | 'draft'
+  | 'reviewed'
+  | 'shared';
 
 export type DocumentCategory =
-  | 'legal'
-  | 'medical'
-  | 'financial'
-  | 'personal'
   | 'emergency'
   | 'family'
+  | 'financial'
+  | 'legal'
+  | 'medical'
+  | 'personal';
 
 export interface DocumentContent {
-  text?: string
-  fields?: Record<string, unknown>
-  attachments?: Attachment[]
-  version: number
+  attachments?: Attachment[];
+  fields?: Record<string, unknown>;
+  text?: string;
+  version: number;
 }
 
 export interface DocumentMetadata {
-  wordCount?: number
-  completionPercentage: number
-  lastReviewDate?: Date
-  nextReviewDate?: Date
-  importance: 'low' | 'medium' | 'high' | 'critical'
-  isTemplate: boolean
+  completionPercentage: number;
+  importance: 'critical' | 'high' | 'low' | 'medium';
+  isTemplate: boolean;
+  lastReviewDate?: Date;
+  nextReviewDate?: Date;
+  wordCount?: number;
 }
 
 export interface Attachment {
-  id: string
-  name: string
-  type: string
-  size: number
-  url: string
-  uploadedAt: Date
-  encrypted: boolean
+  encrypted: boolean;
+  id: string;
+  name: string;
+  size: number;
+  type: string;
+  uploadedAt: Date;
+  url: string;
 }
 
 // Encryption Types
 export interface EncryptionInfo {
-  algorithm: string
-  keyId: string
-  encryptedAt: Date
-  iv?: string
-  salt?: string
+  algorithm: string;
+  encryptedAt: Date;
+  iv?: string;
+  keyId: string;
+  salt?: string;
 }
 
 // Sharing Types
 export interface SharingSettings {
-  isShared: boolean
-  sharedWith: SharedUser[]
-  publicLink?: string
-  expiresAt?: Date
-  permissions: SharingPermission[]
+  expiresAt?: Date;
+  isShared: boolean;
+  permissions: SharingPermission[];
+  publicLink?: string;
+  sharedWith: SharedUser[];
 }
 
 export interface SharedUser {
-  userId?: string
-  email: string
-  name?: string
-  role: 'viewer' | 'editor' | 'admin'
-  sharedAt: Date
-  lastAccessed?: Date
+  email: string;
+  lastAccessed?: Date;
+  name?: string;
+  role: 'admin' | 'editor' | 'viewer';
+  sharedAt: Date;
+  userId?: string;
 }
 
 export type SharingPermission =
-  | 'view'
   | 'comment'
-  | 'edit'
-  | 'share'
   | 'download'
+  | 'edit'
   | 'print'
+  | 'share'
+  | 'view';
 
 // Subscription Types
 export interface Subscription {
-  id: string
-  userId: string
-  plan: SubscriptionPlan
-  status: SubscriptionStatus
-  startDate: Date
-  endDate?: Date
-  billingCycle: BillingCycle
-  paymentMethod?: PaymentMethod
-  usage: SubscriptionUsage
+  billingCycle: BillingCycle;
+  endDate?: Date;
+  id: string;
+  paymentMethod?: PaymentMethod;
+  plan: SubscriptionPlan;
+  startDate: Date;
+  status: SubscriptionStatus;
+  usage: SubscriptionUsage;
+  userId: string;
 }
 
-export type SubscriptionPlan =
-  | 'free'
-  | 'premium'
-  | 'family'
-  | 'enterprise'
+export type SubscriptionPlan = 'enterprise' | 'family' | 'free' | 'premium';
 
 export type SubscriptionStatus =
   | 'active'
-  | 'trialing'
-  | 'past_due'
   | 'canceled'
   | 'expired'
+  | 'past_due'
+  | 'trialing';
 
-export type BillingCycle =
-  | 'monthly'
-  | 'yearly'
-  | 'lifetime'
+export type BillingCycle = 'lifetime' | 'monthly' | 'yearly';
 
 export interface PaymentMethod {
-  id: string
-  type: 'card' | 'bank' | 'paypal'
-  last4?: string
-  brand?: string
-  expiryMonth?: number
-  expiryYear?: number
+  brand?: string;
+  expiryMonth?: number;
+  expiryYear?: number;
+  id: string;
+  last4?: string;
+  type: 'bank' | 'card' | 'paypal';
 }
 
 export interface SubscriptionUsage {
-  documentsCreated: number
-  documentsLimit: number
-  storageUsedMB: number
-  storageLimitMB: number
-  sharesUsed: number
-  sharesLimit: number
-  aiRequestsUsed: number
-  aiRequestsLimit: number
+  aiRequestsLimit: number;
+  aiRequestsUsed: number;
+  documentsCreated: number;
+  documentsLimit: number;
+  sharesLimit: number;
+  sharesUsed: number;
+  storageLimitMB: number;
+  storageUsedMB: number;
 }
 
 // Activity and Analytics Types
 export interface UserActivity {
-  userId: string
-  action: ActivityAction
-  resourceType: ResourceType
-  resourceId: string
-  metadata?: Record<string, unknown>
-  timestamp: Date
-  ipAddress?: string
-  userAgent?: string
+  action: ActivityAction;
+  ipAddress?: string;
+  metadata?: Record<string, unknown>;
+  resourceId: string;
+  resourceType: ResourceType;
+  timestamp: Date;
+  userAgent?: string;
+  userId: string;
 }
 
 export type ActivityAction =
+  | 'archive'
   | 'create'
-  | 'read'
-  | 'update'
   | 'delete'
-  | 'share'
   | 'download'
   | 'print'
-  | 'archive'
+  | 'read'
   | 'restore'
+  | 'share'
+  | 'update';
 
 export type ResourceType =
-  | 'document'
-  | 'template'
   | 'contact'
+  | 'document'
   | 'setting'
   | 'subscription'
+  | 'template';
 
 // Template Types
 export interface Template {
-  id: string
-  name: string
-  description: string
-  type: DocumentType
-  category: DocumentCategory
-  content: TemplateContent
-  thumbnail?: string
-  isPremium: boolean
-  usageCount: number
-  rating?: number
-  createdBy: string
-  tags: string[]
+  category: DocumentCategory;
+  content: TemplateContent;
+  createdBy: string;
+  description: string;
+  id: string;
+  isPremium: boolean;
+  name: string;
+  rating?: number;
+  tags: string[];
+  thumbnail?: string;
+  type: DocumentType;
+  usageCount: number;
 }
 
 export interface TemplateContent {
-  structure: TemplateField[]
-  defaultValues?: Record<string, unknown>
-  validationRules?: ValidationRule[]
+  defaultValues?: Record<string, unknown>;
+  structure: TemplateField[];
+  validationRules?: ValidationRule[];
 }
 
 export interface TemplateField {
-  id: string
-  name: string
-  label: string
-  type: FieldType
-  required: boolean
-  placeholder?: string
-  helpText?: string
-  options?: FieldOption[]
-  validation?: ValidationRule
+  helpText?: string;
+  id: string;
+  label: string;
+  name: string;
+  options?: FieldOption[];
+  placeholder?: string;
+  required: boolean;
+  type: FieldType;
+  validation?: ValidationRule;
 }
 
 export type FieldType =
-  | 'text'
-  | 'textarea'
-  | 'number'
+  | 'checkbox'
   | 'date'
   | 'email'
-  | 'phone'
-  | 'select'
-  | 'multiselect'
-  | 'checkbox'
-  | 'radio'
   | 'file'
+  | 'multiselect'
+  | 'number'
+  | 'phone'
+  | 'radio'
+  | 'select'
   | 'signature'
+  | 'text'
+  | 'textarea';
 
 export interface FieldOption {
-  value: string
-  label: string
-  disabled?: boolean
+  disabled?: boolean;
+  label: string;
+  value: string;
 }
 
 export interface ValidationRule {
-  type: 'required' | 'min' | 'max' | 'pattern' | 'custom'
-  value?: unknown
-  message?: string
+  message?: string;
+  type: 'custom' | 'max' | 'min' | 'pattern' | 'required';
+  value?: unknown;
 }
 
 // Contact Types
 export interface Contact {
-  id: string
-  userId: string
-  type: ContactType
-  name: string
-  email?: string
-  phone?: string
-  address?: Address
-  relationship?: string
-  isPrimary: boolean
-  isEmergency: boolean
-  notes?: string
-  permissions: SharingPermission[]
-  createdAt: Date
-  updatedAt: Date
+  address?: Address;
+  createdAt: Date;
+  email?: string;
+  id: string;
+  isEmergency: boolean;
+  isPrimary: boolean;
+  name: string;
+  notes?: string;
+  permissions: SharingPermission[];
+  phone?: string;
+  relationship?: string;
+  type: ContactType;
+  updatedAt: Date;
+  userId: string;
 }
 
 export type ContactType =
-  | 'beneficiary'
-  | 'executor'
-  | 'guardian'
   | 'attorney'
+  | 'beneficiary'
   | 'doctor'
   | 'emergency'
+  | 'executor'
   | 'family'
   | 'friend'
+  | 'guardian';
 
 export interface Address {
-  street1: string
-  street2?: string
-  city: string
-  state: string
-  country: string
-  postalCode: string
+  city: string;
+  country: string;
+  postalCode: string;
+  state: string;
+  street1: string;
+  street2?: string;
 }
 
 // API Response Types
 export interface ApiResponse<T = unknown> {
-  success: boolean
-  data?: T
-  error?: ApiError
-  metadata?: ResponseMetadata
+  data?: T;
+  error?: ApiError;
+  metadata?: ResponseMetadata;
+  success: boolean;
 }
 
 export interface ApiError {
-  code: string
-  message: string
-  details?: unknown
-  timestamp: Date
+  code: string;
+  details?: unknown;
+  message: string;
+  timestamp: Date;
 }
 
 export interface ResponseMetadata {
-  page?: number
-  limit?: number
-  total?: number
-  hasMore?: boolean
+  hasMore?: boolean;
+  limit?: number;
+  page?: number;
+  total?: number;
 }
 
 // Form Types
 export interface FormState<T = unknown> {
-  values: T
-  errors: Record<string, string>
-  touched: Record<string, boolean>
-  isSubmitting: boolean
-  isValid: boolean
+  errors: Record<string, string>;
+  isSubmitting: boolean;
+  isValid: boolean;
+  touched: Record<string, boolean>;
+  values: T;
 }
 
 // Navigation Types
 export interface NavigationItem {
-  id: string
-  label: string
-  icon?: string
-  path?: string
-  badge?: string | number
-  children?: NavigationItem[]
-  requiresAuth?: boolean
-  requiresPlan?: SubscriptionPlan[]
+  badge?: number | string;
+  children?: NavigationItem[];
+  icon?: string;
+  id: string;
+  label: string;
+  path?: string;
+  requiresAuth?: boolean;
+  requiresPlan?: SubscriptionPlan[];
 }
 
 // Export all types from this file
-export type { }
+export type {};

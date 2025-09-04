@@ -2,7 +2,9 @@ import { test, expect } from '@playwright/test';
 import { setupClerkTestingToken } from '@clerk/testing/playwright';
 
 test.describe('Clerk Testing Token Verification', () => {
-  test('should bypass Clerk bot protection with testing token', async ({ page }) => {
+  test('should bypass Clerk bot protection with testing token', async ({
+    page,
+  }) => {
     console.log('🔐 Testing Clerk with testing token...');
 
     // Setup the testing token for this page
@@ -20,7 +22,7 @@ test.describe('Clerk Testing Token Verification', () => {
     // Take a screenshot for verification
     await page.screenshot({
       path: 'tests/screenshots/clerk-test-token.png',
-      fullPage: true
+      fullPage: true,
     });
 
     // Check if Clerk is loaded
@@ -63,7 +65,11 @@ test.describe('Clerk Testing Token Verification', () => {
     await page.waitForLoadState('networkidle');
 
     // Look for email input field
-    const emailInput = page.locator('input[type="email"], input[name="identifier"], input[name="emailAddress"]').first();
+    const emailInput = page
+      .locator(
+        'input[type="email"], input[name="identifier"], input[name="emailAddress"]'
+      )
+      .first();
 
     if (await emailInput.isVisible({ timeout: 5000 })) {
       // We can interact with the form
@@ -73,15 +79,19 @@ test.describe('Clerk Testing Token Verification', () => {
       // Take a screenshot
       await page.screenshot({
         path: 'tests/screenshots/clerk-signin-form.png',
-        fullPage: true
+        fullPage: true,
       });
 
       // Check if we can proceed (look for continue button)
-      const continueButton = page.locator('button:has-text("Continue"), button[type="submit"]').first();
+      const continueButton = page
+        .locator('button:has-text("Continue"), button[type="submit"]')
+        .first();
       expect(await continueButton.isVisible()).toBe(true);
       console.log('✅ Sign-in form is interactive');
     } else {
-      console.log('ℹ️ No sign-in form visible - user might be already authenticated');
+      console.log(
+        'ℹ️ No sign-in form visible - user might be already authenticated'
+      );
     }
   });
 
@@ -93,7 +103,10 @@ test.describe('Clerk Testing Token Verification', () => {
     const hasSecretKey = !!process.env.CLERK_SECRET_KEY;
 
     console.log('Environment variables:');
-    console.log('- CLERK_PUBLISHABLE_KEY:', hasPublishableKey ? '✅ Set' : '❌ Missing');
+    console.log(
+      '- CLERK_PUBLISHABLE_KEY:',
+      hasPublishableKey ? '✅ Set' : '❌ Missing'
+    );
     console.log('- CLERK_SECRET_KEY:', hasSecretKey ? '✅ Set' : '❌ Missing');
 
     expect(hasPublishableKey).toBe(true);
@@ -112,7 +125,10 @@ test.describe('Clerk Testing Token Verification', () => {
       return !!token;
     });
 
-    console.log('Testing token in browser:', hasTestingToken ? '✅ Present' : '❌ Missing');
+    console.log(
+      'Testing token in browser:',
+      hasTestingToken ? '✅ Present' : '❌ Missing'
+    );
 
     // The testing token should be injected by setupClerkTestingToken
     expect(hasTestingToken).toBe(true);

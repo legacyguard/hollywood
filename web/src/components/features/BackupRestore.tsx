@@ -3,7 +3,7 @@
  * Provides export/import functionality with visual feedback
  */
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -32,7 +32,7 @@ export function BackupRestore() {
   const [isImporting, setIsImporting] = useState(false);
   const [backupSize, setBackupSize] = useState<string>('');
   const [showClearDialog, setShowClearDialog] = useState(false);
-  const [lastBackupDate, setLastBackupDate] = useState<string | null>(null);
+  const [lastBackupDate, setLastBackupDate] = useState<null | string>(null);
   const [encryptBackup, setEncryptBackup] = useState(true);
   const [exportPassword, setExportPassword] = useState('');
   const [importPassword, setImportPassword] = useState('');
@@ -187,7 +187,7 @@ export function BackupRestore() {
           <div className='flex items-start justify-between'>
             <div>
               <h2 className='text-2xl font-bold flex items-center gap-3'>
-                <Icon name="database" className='w-7 h-7 text-primary' />
+                <Icon name='database' className='w-7 h-7 text-primary' />
                 Backup & Restore
               </h2>
               <p className='text-muted-foreground mt-2'>
@@ -206,7 +206,7 @@ export function BackupRestore() {
           <div className='space-y-4 p-6 bg-muted/20 rounded-lg border border-muted/30'>
             <div className='flex items-start gap-4'>
               <div className='w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0'>
-                <Icon name="download" className='w-6 h-6 text-primary' />
+                <Icon name='download' className='w-6 h-6 text-primary' />
               </div>
               <div className='flex-1'>
                 <h3 className='font-semibold mb-2'>Export Your Data</h3>
@@ -282,14 +282,15 @@ export function BackupRestore() {
                 >
                   {isExporting ? (
                     <>
-                      <Icon name="upload"
+                      <Icon
+                        name='upload'
                         className='w-4 h-4 mr-2 animate-pulse'
                       />
                       Preparing Export...
                     </>
                   ) : (
                     <>
-                      <Icon name="download" className='w-4 h-4 mr-2' />
+                      <Icon name='download' className='w-4 h-4 mr-2' />
                       Export Data
                     </>
                   )}
@@ -302,7 +303,7 @@ export function BackupRestore() {
           <div className='space-y-4 p-6 bg-muted/20 rounded-lg border border-muted/30'>
             <div className='flex items-start gap-4'>
               <div className='w-12 h-12 bg-blue-500/10 rounded-full flex items-center justify-center flex-shrink-0'>
-                <Icon name="upload" className='w-6 h-6 text-blue-600' />
+                <Icon name='upload' className='w-6 h-6 text-blue-600' />
               </div>
               <div className='flex-1'>
                 <h3 className='font-semibold mb-2'>Restore From Backup</h3>
@@ -344,12 +345,12 @@ export function BackupRestore() {
                           }
                           disabled={!importPassword || isImporting}
                         >
-                          <Icon name="unlock" className='w-4 h-4 mr-2' />
+                          <Icon name='unlock' className='w-4 h-4 mr-2' />
                           Decrypt & Import
                         </Button>
                         <Button
                           size='sm'
-                          variant="outline"
+                          variant='outline'
                           onClick={() => {
                             setShowImportPassword(false);
                             setImportPassword('');
@@ -376,20 +377,21 @@ export function BackupRestore() {
                   <label htmlFor='backup-file-input'>
                     <Button
                       asChild
-                      variant="outline"
+                      variant='outline'
                       disabled={isExporting || isImporting}
                     >
                       <span>
                         {isImporting ? (
                           <>
-                            <Icon name="upload"
+                            <Icon
+                              name='upload'
                               className='w-4 h-4 mr-2 animate-pulse'
                             />
                             Importing...
                           </>
                         ) : (
                           <>
-                            <Icon name="upload" className='w-4 h-4 mr-2' />
+                            <Icon name='upload' className='w-4 h-4 mr-2' />
                             Choose Backup File
                           </>
                         )}
@@ -407,7 +409,8 @@ export function BackupRestore() {
           {/* Info Section */}
           <div className='bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900 rounded-lg p-4'>
             <div className='flex gap-3'>
-              <Icon name="info"
+              <Icon
+                name='info'
                 className='w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5'
               />
               <div className='text-sm space-y-2'>
@@ -448,7 +451,8 @@ export function BackupRestore() {
             </h3>
             <div className='p-4 border-2 border-status-error/20 rounded-lg bg-status-error/5'>
               <div className='flex items-start gap-4'>
-                <Icon name="triangle-exclamation"
+                <Icon
+                  name='triangle-exclamation'
                   className='w-6 h-6 text-status-error flex-shrink-0 mt-1'
                 />
                 <div className='flex-1'>
@@ -458,11 +462,11 @@ export function BackupRestore() {
                     be undone. Make sure you have a backup before proceeding.
                   </p>
                   <Button
-                    variant="destructive"
+                    variant='destructive'
                     onClick={() => setShowClearDialog(true)}
                     disabled={isExporting || isImporting}
                   >
-                    <Icon name="trash" className='w-4 h-4 mr-2' />
+                    <Icon name='trash' className='w-4 h-4 mr-2' />
                     Clear All Data
                   </Button>
                 </div>
@@ -476,7 +480,8 @@ export function BackupRestore() {
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle className='flex items-center gap-2'>
-                <Icon name="triangle-exclamation"
+                <Icon
+                  name='triangle-exclamation'
                   className='w-5 h-5 text-status-error'
                 />
                 Clear All Data?

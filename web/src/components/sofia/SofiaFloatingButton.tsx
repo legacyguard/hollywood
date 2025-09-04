@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useEffect, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon-library';
 import { useSofiaStore } from '@/stores/sofiaStore';
@@ -7,8 +7,8 @@ import { sofiaAI } from '@/lib/sofia-ai';
 import { toast } from 'sonner';
 
 interface SofiaFloatingButtonProps {
-  onToggleChat: () => void;
   isChatOpen: boolean;
+  onToggleChat: () => void;
 }
 
 const SofiaFloatingButton: React.FC<SofiaFloatingButtonProps> = ({
@@ -75,12 +75,12 @@ const SofiaFloatingButton: React.FC<SofiaFloatingButtonProps> = ({
     <div className='fixed bottom-6 right-6 z-40'>
       <motion.div
         initial={false}
-        animate={{  scale: hasNewSuggestion ? [1, 1.05, 1] : 1,
-         }}
-        transition={{  duration: 0.6,
+        animate={{ scale: hasNewSuggestion ? [1, 1.05, 1] : 1 }}
+        transition={{
+          duration: 0.6,
           repeat: hasNewSuggestion ? Infinity : 0,
           repeatDelay: 2,
-         }}
+        }}
       >
         <Button
           onClick={onToggleChat}
@@ -98,36 +98,36 @@ const SofiaFloatingButton: React.FC<SofiaFloatingButtonProps> = ({
             {isChatOpen ? (
               <motion.div
                 key='close'
-                initial={{  rotate: -90, opacity: 0  }}
-                animate={{  rotate: 0, opacity: 1  }}
-                exit={{  rotate: 90, opacity: 0  }}
-                transition={{  duration: 0.2  }}
+                initial={{ rotate: -90, opacity: 0 }}
+                animate={{ rotate: 0, opacity: 1 }}
+                exit={{ rotate: 90, opacity: 0 }}
+                transition={{ duration: 0.2 }}
               >
-                <Icon name={"close" as any} className='w-6 h-6' />
+                <Icon name={'close' as any} className='w-6 h-6' />
               </motion.div>
             ) : (
               <motion.div
                 key='sofia'
-                initial={{  rotate: 90, opacity: 0  }}
-                animate={{  rotate: 0, opacity: 1  }}
-                exit={{  rotate: -90, opacity: 0  }}
-                transition={{  duration: 0.2  }}
+                initial={{ rotate: 90, opacity: 0 }}
+                animate={{ rotate: 0, opacity: 1 }}
+                exit={{ rotate: -90, opacity: 0 }}
+                transition={{ duration: 0.2 }}
                 className='relative'
               >
-                <Icon name={"bot" as any} className='w-6 h-6' />
+                <Icon name={'bot' as any} className='w-6 h-6' />
 
                 {/* Notification indicator */}
                 <AnimatePresence>
                   {hasNewSuggestion && (
                     <motion.div
-                      initial={{  scale: 0, opacity: 0  }}
-                      animate={{  scale: 1, opacity: 1  }}
-                      exit={{  scale: 0, opacity: 0  }}
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ scale: 0, opacity: 0 }}
                       className='absolute -top-1 -right-1 w-4 h-4 bg-status-success rounded-full border-2 border-background'
                     >
                       <motion.div
-                        animate={{  scale: [1, 1.2, 1]  }}
-                        transition={{  duration: 1, repeat: Infinity  }}
+                        animate={{ scale: [1, 1.2, 1] }}
+                        transition={{ duration: 1, repeat: Infinity }}
                         className='w-full h-full bg-status-success rounded-full'
                       />
                     </motion.div>
@@ -143,14 +143,15 @@ const SofiaFloatingButton: React.FC<SofiaFloatingButtonProps> = ({
       <AnimatePresence>
         {!isChatOpen && getMessageCount() === 0 && context && (
           <motion.div
-            initial={{  opacity: 0, x: 20, y: 10  }}
-            animate={{  opacity: 1, x: 0, y: 0  }}
-            exit={{  opacity: 0, x: 20, y: 10  }}
-            transition={{  delay: 2  }}
+            initial={{ opacity: 0, x: 20, y: 10 }}
+            animate={{ opacity: 1, x: 0, y: 0 }}
+            exit={{ opacity: 0, x: 20, y: 10 }}
+            transition={{ delay: 2 }}
             className='absolute bottom-16 right-0 bg-card border border-border rounded-lg p-3 shadow-lg max-w-xs'
           >
             <div className='flex items-start gap-2'>
-              <Icon name={"sparkles" as any}
+              <Icon
+                name={'sparkles' as any}
                 className='w-4 h-4 text-primary flex-shrink-0 mt-0.5'
               />
               <div>

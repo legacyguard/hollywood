@@ -29,10 +29,13 @@ const tokenCache = {
   },
 };
 
-const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY || '';
+const CLERK_PUBLISHABLE_KEY =
+  process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY || '';
 
 if (!CLERK_PUBLISHABLE_KEY) {
-  console.warn('Missing EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY in .env file. Authentication will not work.');
+  console.warn(
+    'Missing EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY in .env file. Authentication will not work.'
+  );
 }
 
 export default function App() {
@@ -49,7 +52,7 @@ export default function App() {
           publishableKey={CLERK_PUBLISHABLE_KEY}
         >
           <AuthProvider>
-            <StatusBar style="auto" />
+            <StatusBar style='auto' />
             <AppNavigator />
           </AuthProvider>
         </ClerkProvider>

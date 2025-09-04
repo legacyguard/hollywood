@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon-library';
@@ -9,12 +9,12 @@ import { GardenSeed } from '@/components/animations/GardenSeed';
 import { useGardenProgress } from '@/hooks/useGardenProgress';
 import { useFirefly } from '@/contexts/FireflyContext';
 import {
-  SERENITY_MILESTONES,
   calculateUnlockedMilestones,
-  getNextChallenge,
-  generateSerenityMessage,
-  type SerenityMilestone,
   type FiveMinuteChallenge,
+  generateSerenityMessage,
+  getNextChallenge,
+  SERENITY_MILESTONES,
+  type SerenityMilestone,
 } from '@/lib/path-of-serenity';
 import { showMilestoneRecognition } from './milestoneUtils';
 import { useNavigate } from 'react-router-dom';
@@ -25,9 +25,9 @@ interface PathOfSerenityProps {
 }
 
 interface UserStats {
+  categoriesWithDocuments: string[];
   documentsCount: number;
   guardiansCount: number;
-  categoriesWithDocuments: string[];
   hasExpiryTracking: boolean;
   legacyItemsCount: number;
 }
@@ -42,7 +42,7 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({
   const [serenityMessage, setSerenityMessage] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
   const [selectedMilestone, setSelectedMilestone] =
-    useState<SerenityMilestone | null>(null);
+    useState<null | SerenityMilestone>(null);
   const [_userStats, setUserStats] = useState<UserStats>({
     documentsCount: 0,
     guardiansCount: 0,
@@ -94,7 +94,9 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({
         const stats: UserStats = {
           documentsCount,
           guardiansCount,
-          categoriesWithDocuments: categoriesWithDocuments.filter(Boolean) as string[],
+          categoriesWithDocuments: categoriesWithDocuments.filter(
+            Boolean
+          ) as string[],
           hasExpiryTracking,
           legacyItemsCount,
         };
@@ -157,7 +159,7 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({
       <Card className={`p-6 ${className}`}>
         <div className='flex items-center justify-center h-64'>
           <div className='flex items-center gap-3'>
-            <Icon name="loader" className='w-6 h-6 animate-spin text-primary' />
+            <Icon name='loader' className='w-6 h-6 animate-spin text-primary' />
             <span className='text-lg text-muted-foreground'>
               Growing your Garden of Legacy...
             </span>
@@ -176,18 +178,18 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({
         <CardContent className='p-6'>
           <div className='text-center space-y-3'>
             <div className='flex items-center justify-center gap-2'>
-              <Icon name="sparkles" className='w-6 h-6 text-green-600' />
+              <Icon name='sparkles' className='w-6 h-6 text-green-600' />
               <h2 className='text-2xl font-bold text-green-900 dark:text-green-100'>
                 Garden of Your Legacy
               </h2>
-              <Icon name="sparkles" className='w-6 h-6 text-green-600' />
+              <Icon name='sparkles' className='w-6 h-6 text-green-600' />
             </div>
             <p className='text-green-700 dark:text-green-200 text-lg leading-relaxed max-w-2xl mx-auto'>
               {serenityMessage}
             </p>
             {unlockedCount > 0 && (
               <div className='flex items-center justify-center gap-2 text-sm text-green-600'>
-                <Icon name="checkCircle" className='w-4 h-4' />
+                <Icon name='checkCircle' className='w-4 h-4' />
                 <span>
                   Milestones achieved: {unlockedCount} of {milestones.length}
                 </span>
@@ -224,19 +226,21 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({
                   key={i}
                   className='absolute w-2 h-2 bg-yellow-300 rounded-full'
                   style={{
-                    left: `${20 + Math.random() * 60 }}%`,
+                    left: `${20 + Math.random() * 60}}%`,
                     top: `${10 + Math.random() * 40}%`,
                   }}
-                  animate={{  y: [-10, 10, -10],
+                  animate={{
+                    y: [-10, 10, -10],
                     x: [-5, 5, -5],
                     opacity: [0.3, 0.8, 0.3],
                     scale: [0.8, 1.2, 0.8],
-                   }}
-                  transition={{  duration: 3 + Math.random() * 2,
+                  }}
+                  transition={{
+                    duration: 3 + Math.random() * 2,
                     repeat: Infinity,
                     delay: Math.random() * 2,
                     ease: 'easeInOut',
-                   }}
+                  }}
                 />
               ))}
             </div>
@@ -244,7 +248,7 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({
             {/* Main Tree Structure */}
             <svg
               className='absolute inset-0 w-full h-full'
-              style={{  zIndex: 1  }}
+              style={{ zIndex: 1 }}
             >
               <defs>
                 <linearGradient
@@ -273,9 +277,11 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({
                 height={`${Math.min(30, 10 + unlockedCount * 4)}%`}
                 fill='url(#trunkGradient)'
                 rx='2'
-                initial={{  height: '10%'  }}
-                animate={{  height: `${Math.min(30, 10 + unlockedCount * 4) }}%` }}
-                transition={{  duration: 2, ease: 'easeOut'  }}
+                initial={{ height: '10%' }}
+                animate={{
+                  height: `${Math.min(30, 10 + unlockedCount * 4)}}%`,
+                }}
+                transition={{ duration: 2, ease: 'easeOut' }}
               />
 
               {/* Tree branches - grow with progress */}
@@ -286,18 +292,18 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({
                     fill='none'
                     stroke='url(#trunkGradient)'
                     strokeWidth='6'
-                    initial={{  pathLength: 0  }}
-                    animate={{  pathLength: 1  }}
-                    transition={{  duration: 1.5, delay: 0.5  }}
+                    initial={{ pathLength: 0 }}
+                    animate={{ pathLength: 1 }}
+                    transition={{ duration: 1.5, delay: 0.5 }}
                   />
                   <motion.path
                     d='M 50% 75% Q 60% 65% 65% 55%'
                     fill='none'
                     stroke='url(#trunkGradient)'
                     strokeWidth='6'
-                    initial={{  pathLength: 0  }}
-                    animate={{  pathLength: 1  }}
-                    transition={{  duration: 1.5, delay: 0.7  }}
+                    initial={{ pathLength: 0 }}
+                    animate={{ pathLength: 1 }}
+                    transition={{ duration: 1.5, delay: 0.7 }}
                   />
                 </>
               )}
@@ -311,12 +317,12 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({
                   ry={`${Math.min(20, 6 + unlockedCount * 1.5)}%`}
                   fill='url(#leavesGradient)'
                   opacity='0.8'
-                  initial={{  rx: '5%', ry: '5%'  }}
+                  initial={{ rx: '5%', ry: '5%' }}
                   animate={{
-                    rx: `${Math.min(25, 8 + unlockedCount * 2) }}%`,
+                    rx: `${Math.min(25, 8 + unlockedCount * 2)}}%`,
                     ry: `${Math.min(20, 6 + unlockedCount * 1.5)}%`,
                   }}
-                  transition={{  duration: 2, ease: 'easeOut'  }}
+                  transition={{ duration: 2, ease: 'easeOut' }}
                 />
               )}
             </svg>
@@ -327,22 +333,22 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({
                 key={milestone.id}
                 className='absolute cursor-pointer transform -translate-x-1/2 -translate-y-1/2'
                 style={{
-                  left: `${milestone.visualPosition.x }}%`,
+                  left: `${milestone.visualPosition.x}}%`,
                   top: `${milestone.visualPosition.y}%`,
                   zIndex: 10,
                 }}
                 onClick={() => handleMilestoneClick(milestone)}
-                whileHover={{  scale: 1.1  }}
-                whileTap={{  scale: 0.95  }}
-                initial={{  opacity: 0, scale: 0  }}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                initial={{ opacity: 0, scale: 0 }}
                 animate={{
                   opacity: 1,
-                  scale: 1
+                  scale: 1,
                 }}
                 transition={{
                   delay: index * 0.2,
                   type: 'spring',
-                  stiffness: 200
+                  stiffness: 200,
                 }}
               >
                 <div
@@ -357,22 +363,25 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({
                 >
                   {milestone.isUnlocked ? (
                     <>
-                      <Icon name={milestone.icon as any}
+                      <Icon
+                        name={milestone.icon as any}
                         className='w-7 h-7 text-white'
                       />
                       <motion.div
                         className='absolute -inset-1 rounded-full bg-green-300 opacity-30'
-                        animate={{  scale: [1, 1.3, 1],
+                        animate={{
+                          scale: [1, 1.3, 1],
                           opacity: [0.3, 0.1, 0.3],
-                         }}
-                        transition={{  duration: 2,
+                        }}
+                        transition={{
+                          duration: 2,
                           repeat: Infinity,
                           ease: 'easeInOut',
-                         }}
+                        }}
                       />
                     </>
                   ) : (
-                    <Icon name="locked" className='w-7 h-7 text-slate-500' />
+                    <Icon name='locked' className='w-7 h-7 text-slate-500' />
                   )}
                 </div>
 
@@ -405,7 +414,7 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({
             <div className='flex items-start gap-4'>
               <div className='flex-shrink-0'>
                 <div className='w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center'>
-                  <Icon name="clock" className='w-6 h-6 text-amber-600' />
+                  <Icon name='clock' className='w-6 h-6 text-amber-600' />
                 </div>
               </div>
               <div className='flex-grow space-y-3'>
@@ -426,11 +435,11 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({
                     onClick={handleChallengeClick}
                     className='bg-amber-500 hover:bg-amber-600 text-white font-medium px-6 py-2 rounded-lg shadow-md'
                   >
-                    <Icon name="arrowRight" className='w-4 h-4 mr-2' />
+                    <Icon name='arrowRight' className='w-4 h-4 mr-2' />
                     Start {nextChallenge.estimatedTime}-minute challenge
                   </Button>
                   <div className='text-xs text-amber-600 dark:text-amber-300 flex items-center gap-1'>
-                    <Icon name="sparkles" className='w-3 h-3' />
+                    <Icon name='sparkles' className='w-3 h-3' />
                     Sofia will guide you step by step
                   </div>
                 </div>
@@ -445,16 +454,16 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({
         {selectedMilestone && (
           <motion.div
             className='fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50'
-            initial={{  opacity: 0  }}
-            animate={{  opacity: 1  }}
-            exit={{  opacity: 0  }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             onClick={() => setSelectedMilestone(null)}
           >
             <motion.div
               className='bg-white dark:bg-slate-800 rounded-lg p-6 max-w-md w-full shadow-xl'
-              initial={{  scale: 0.9, opacity: 0  }}
-              animate={{  scale: 1, opacity: 1  }}
-              exit={{  scale: 0.9, opacity: 0  }}
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
               onClick={e => e.stopPropagation()}
             >
               <div className='text-center space-y-4'>
@@ -514,7 +523,7 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({
 
                 <Button
                   onClick={() => setSelectedMilestone(null)}
-                  variant="outline"
+                  variant='outline'
                   className='mt-4'
                 >
                   Close

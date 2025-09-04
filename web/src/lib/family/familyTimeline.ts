@@ -4,367 +4,367 @@
  */
 
 export interface FamilyTimeline {
-  id: string;
-  familyId: string;
-  title: string;
+  createdAt: string;
   description: string;
-  timespan: TimeSpan;
-  events: TimelineEvent[];
-  milestones: FamilyMilestone[];
-  generations: FamilyGeneration[];
   documentAssociations: DocumentAssociation[];
+  events: TimelineEvent[];
+  familyId: string;
+  generations: FamilyGeneration[];
+  id: string;
+  lastUpdated: string;
+  milestones: FamilyMilestone[];
   privacy: TimelinePrivacy;
   sharing: TimelineSharing[];
-  createdAt: string;
-  lastUpdated: string;
+  timespan: TimeSpan;
+  title: string;
   version: number;
 }
 
 export interface TimelineEvent {
-  id: string;
-  type: EventType;
   category: EventCategory;
-  title: string;
-  description: string;
   date: string;
-  endDate?: string; // For events with duration
-  location?: EventLocation;
-  participants: EventParticipant[];
-  significance: EventSignificance;
+  description: string;
   documents: string[]; // Document IDs
+  endDate?: string; // For events with duration
+  id: string;
+  location?: EventLocation;
   media: MediaAttachment[];
-  tags: string[];
-  privacy: EventPrivacy;
-  verified: boolean;
-  source: EventSource;
   metadata: Record<string, any>;
+  participants: EventParticipant[];
+  privacy: EventPrivacy;
+  significance: EventSignificance;
+  source: EventSource;
+  tags: string[];
+  title: string;
+  type: EventType;
+  verified: boolean;
 }
 
 export interface FamilyMilestone {
-  id: string;
-  type: MilestoneType;
-  title: string;
-  description: string;
-  date: string;
   achievedBy: string[]; // Family member IDs
-  significance: 'generational' | 'family' | 'personal';
   celebration?: CelebrationDetails;
+  date: string;
+  description: string;
   documents: string[];
+  id: string;
   legacy: LegacyImpact;
+  significance: 'family' | 'generational' | 'personal';
+  title: string;
+  type: MilestoneType;
 }
 
 export interface FamilyGeneration {
-  id: string;
-  generationNumber: number;
-  name: string; // e.g., "The Founders", "Second Generation"
-  timeframe: TimeSpan;
-  keyMembers: GenerationMember[];
-  characteristics: string[];
   achievements: string[];
   challenges: string[];
-  legacy: GenerationLegacy;
+  characteristics: string[];
   documents: string[];
+  generationNumber: number;
+  id: string;
+  keyMembers: GenerationMember[];
+  legacy: GenerationLegacy;
+  name: string; // e.g., "The Founders", "Second Generation"
+  timeframe: TimeSpan;
 }
 
 export interface DocumentAssociation {
+  accessControls: DocumentAccessControl[];
+  associationType: AssociationType;
   documentId: string;
   documentTitle: string;
   documentType: string;
-  associationType: AssociationType;
+  importance: 'critical' | 'high' | 'low' | 'medium';
   relevantEvents: string[]; // Event IDs
   relevantPeople: string[]; // Family member IDs
-  importance: 'critical' | 'high' | 'medium' | 'low';
   timeRelevance: TimeRelevance;
-  accessControls: DocumentAccessControl[];
 }
 
 export interface EventParticipant {
   memberId: string;
   name: string;
-  role: ParticipantRole;
   relationship: string;
-  significance: 'primary' | 'secondary' | 'witness' | 'supporter';
+  role: ParticipantRole;
+  significance: 'primary' | 'secondary' | 'supporter' | 'witness';
 }
 
 export interface EventLocation {
-  name: string;
   address?: string;
   coordinates?: { lat: number; lng: number };
+  name: string;
   significance?: string;
   stillExists: boolean;
 }
 
 export interface MediaAttachment {
-  id: string;
-  type: 'photo' | 'video' | 'audio' | 'document';
-  title: string;
   description?: string;
-  url: string;
-  thumbnail?: string;
+  id: string;
   metadata: MediaMetadata;
+  thumbnail?: string;
+  title: string;
+  type: 'audio' | 'document' | 'photo' | 'video';
+  url: string;
 }
 
 export interface TimelineVisualization {
+  dateRange: TimeSpan;
+  displayOptions: VisualizationOptions;
+  filters: TimelineFilter[];
+  focusElements: string[]; // Event or person IDs to highlight
+  grouping: TimelineGrouping;
   id: string;
   viewType: ViewType;
-  filters: TimelineFilter[];
-  grouping: TimelineGrouping;
-  dateRange: TimeSpan;
-  focusElements: string[]; // Event or person IDs to highlight
-  displayOptions: VisualizationOptions;
 }
 
 export interface TimelineFilter {
-  type: FilterType;
-  field: string;
-  operator: 'equals' | 'contains' | 'greater_than' | 'less_than' | 'between';
-  value: any;
   enabled: boolean;
+  field: string;
+  operator: 'between' | 'contains' | 'equals' | 'greater_than' | 'less_than';
+  type: FilterType;
+  value: any;
 }
 
 export interface FamilyRelationshipMap {
-  relationships: FamilyRelationship[];
   connectionStrength: ConnectionMatrix;
-  influenceNetwork: InfluenceEdge[];
   generationalFlow: GenerationFlow[];
+  influenceNetwork: InfluenceEdge[];
+  relationships: FamilyRelationship[];
 }
 
 export type EventType =
-  | 'birth'
-  | 'death'
-  | 'marriage'
-  | 'divorce'
-  | 'graduation'
-  | 'career_milestone'
-  | 'relocation'
   | 'achievement'
+  | 'birth'
+  | 'career_milestone'
   | 'celebration'
   | 'crisis'
-  | 'legal_event'
+  | 'death'
+  | 'divorce'
+  | 'family_gathering'
   | 'financial_event'
+  | 'graduation'
   | 'health_event'
-  | 'family_gathering';
+  | 'legal_event'
+  | 'marriage'
+  | 'relocation';
 
 export type EventCategory =
-  | 'personal'
-  | 'professional'
+  | 'achievement'
   | 'family'
-  | 'legal'
   | 'financial'
   | 'health'
-  | 'social'
-  | 'achievement'
-  | 'milestone';
+  | 'legal'
+  | 'milestone'
+  | 'personal'
+  | 'professional'
+  | 'social';
 
 export type MilestoneType =
+  | 'business_success'
+  | 'community_impact'
+  | 'crisis_overcome'
+  | 'educational_achievement'
   | 'family_founding'
   | 'generational_achievement'
   | 'legacy_creation'
-  | 'tradition_establishment'
-  | 'crisis_overcome'
   | 'major_acquisition'
-  | 'educational_achievement'
-  | 'business_success'
-  | 'community_impact';
+  | 'tradition_establishment';
 
 export type AssociationType =
-  | 'created_during'
-  | 'relates_to'
-  | 'proves'
   | 'commemorates'
-  | 'legal_for'
+  | 'created_during'
   | 'financial_for'
   | 'inherited_from'
-  | 'prepared_for';
+  | 'legal_for'
+  | 'prepared_for'
+  | 'proves'
+  | 'relates_to';
 
 export type ViewType =
   | 'chronological'
-  | 'generational'
-  | 'relationship'
   | 'document_focused'
+  | 'generational'
   | 'milestone_focused'
   | 'person_focused'
+  | 'relationship'
   | 'theme_focused';
 
 export type FilterType =
   | 'date_range'
-  | 'person'
-  | 'event_type'
   | 'document_type'
+  | 'event_type'
   | 'location'
-  | 'significance'
-  | 'privacy_level';
+  | 'person'
+  | 'privacy_level'
+  | 'significance';
 
 export type ParticipantRole =
-  | 'subject'
-  | 'spouse'
-  | 'parent'
+  | 'beneficiary'
   | 'child'
-  | 'sibling'
-  | 'witness'
   | 'officiant'
+  | 'parent'
+  | 'sibling'
+  | 'spouse'
+  | 'subject'
   | 'supporter'
-  | 'beneficiary';
+  | 'witness';
 
 export type EventSignificance =
+  | 'commemorative'
   | 'life_changing'
   | 'major'
-  | 'moderate'
   | 'minor'
-  | 'commemorative';
+  | 'moderate';
 
 export type EventPrivacy =
-  | 'public'
   | 'family_only'
   | 'immediate_family'
   | 'private'
+  | 'public'
   | 'restricted';
 
 interface TimeSpan {
-  startDate: string;
+  description?: string;
   endDate: string;
   era?: string;
-  description?: string;
+  startDate: string;
 }
 
 interface EventSource {
-  type: 'document' | 'testimony' | 'record' | 'photo' | 'inference';
   reference: string;
-  reliability: 'verified' | 'probable' | 'possible' | 'speculative';
+  reliability: 'possible' | 'probable' | 'speculative' | 'verified';
+  type: 'document' | 'inference' | 'photo' | 'record' | 'testimony';
 }
 
 interface MediaMetadata {
-  size?: number;
-  dimensions?: { width: number; height: number };
+  dateCreated?: string;
+  dimensions?: { height: number; width: number };
   duration?: number;
   format: string;
-  quality: 'high' | 'medium' | 'low';
-  dateCreated?: string;
+  quality: 'high' | 'low' | 'medium';
+  size?: number;
 }
 
 interface GenerationMember {
-  memberId: string;
-  name: string;
   birthYear?: number;
   deathYear?: number;
-  primaryRole: string;
   keyContributions: string[];
+  memberId: string;
+  name: string;
+  primaryRole: string;
 }
 
 interface GenerationLegacy {
-  values: string[];
-  traditions: string[];
   achievements: string[];
-  lessons: string[];
   continuations: string[];
+  lessons: string[];
+  traditions: string[];
+  values: string[];
 }
 
 interface LegacyImpact {
-  description: string;
   beneficiaries: string[];
+  continuingEffects: string[];
+  description: string;
   traditions: string[];
   values: string[];
-  continuingEffects: string[];
 }
 
 interface CelebrationDetails {
-  type: string;
-  location: string;
   attendees: string[];
-  traditions: string[];
   documentation: string[];
+  location: string;
+  traditions: string[];
+  type: string;
 }
 
 interface TimeRelevance {
-  period: TimeSpan;
   context: string;
+  period: TimeSpan;
   significance: string;
 }
 
 interface DocumentAccessControl {
-  level: 'view' | 'edit' | 'share';
-  grantedTo: string[];
   conditions?: string[];
   expiry?: string;
+  grantedTo: string[];
+  level: 'edit' | 'share' | 'view';
 }
 
 interface TimelinePrivacy {
   defaultLevel: EventPrivacy;
-  inheritanceRules: PrivacyRule[];
   exceptions: PrivacyException[];
+  inheritanceRules: PrivacyRule[];
 }
 
 interface TimelineSharing {
-  sharedWith: string;
+  message?: string;
   permissions: string[];
   sharedAt: string;
-  message?: string;
+  sharedWith: string;
 }
 
 interface PrivacyRule {
-  condition: string;
   action: EventPrivacy;
+  condition: string;
   priority: number;
 }
 
 interface PrivacyException {
+  authorizedBy: string;
   eventId: string;
   overrideLevel: EventPrivacy;
   reason: string;
-  authorizedBy: string;
 }
 
 interface TimelineGrouping {
-  primaryBy: 'date' | 'person' | 'event_type' | 'generation' | 'theme';
-  secondaryBy?: 'date' | 'person' | 'event_type' | 'significance';
+  primaryBy: 'date' | 'event_type' | 'generation' | 'person' | 'theme';
+  secondaryBy?: 'date' | 'event_type' | 'person' | 'significance';
   showRelationships: boolean;
 }
 
 interface VisualizationOptions {
+  animations: boolean;
+  layout: 'horizontal' | 'network' | 'spiral' | 'vertical';
   showDocuments: boolean;
   showMedia: boolean;
   showRelationships: boolean;
   showTimescale: boolean;
-  theme: 'modern' | 'classic' | 'elegant' | 'minimal';
-  layout: 'vertical' | 'horizontal' | 'spiral' | 'network';
+  theme: 'classic' | 'elegant' | 'minimal' | 'modern';
   zoomLevel: number;
-  animations: boolean;
 }
 
 interface FamilyRelationship {
   fromMember: string;
-  toMember: string;
   relationshipType: string;
   strength: number;
-  verified: boolean;
   timeframe: TimeSpan;
+  toMember: string;
+  verified: boolean;
 }
 
 interface ConnectionMatrix {
   [memberId: string]: {
     [otherMemberId: string]: {
-      strength: number;
-      relationshipType: string;
       interactions: number;
+      relationshipType: string;
+      strength: number;
     };
   };
 }
 
 interface InfluenceEdge {
+  evidence: string[];
   fromMember: string;
-  toMember: string;
-  influenceType: 'mentor' | 'inspiration' | 'support' | 'guidance' | 'example';
+  influenceType: 'example' | 'guidance' | 'inspiration' | 'mentor' | 'support';
   strength: number;
   timeframe: TimeSpan;
-  evidence: string[];
+  toMember: string;
 }
 
 interface GenerationFlow {
-  fromGeneration: number;
-  toGeneration: number;
-  inheritanceType: 'values' | 'traditions' | 'assets' | 'responsibilities';
-  continuity: number; // 0-1 scale
   adaptations: string[];
+  continuity: number; // 0-1 scale
+  fromGeneration: number;
+  inheritanceType: 'assets' | 'responsibilities' | 'traditions' | 'values';
+  toGeneration: number;
 }
 
 class FamilyTimelineService {
@@ -411,7 +411,10 @@ class FamilyTimelineService {
   /**
    * Add event to timeline
    */
-  async addEvent(timelineId: string, eventData: Omit<TimelineEvent, 'id'>): Promise<TimelineEvent> {
+  async addEvent(
+    timelineId: string,
+    eventData: Omit<TimelineEvent, 'id'>
+  ): Promise<TimelineEvent> {
     const timeline = this.timelines.get(timelineId);
     if (!timeline) {
       throw new Error('Timeline not found');
@@ -510,7 +513,9 @@ class FamilyTimelineService {
   /**
    * Generate family relationship map
    */
-  async generateRelationshipMap(timelineId: string): Promise<FamilyRelationshipMap> {
+  async generateRelationshipMap(
+    timelineId: string
+  ): Promise<FamilyRelationshipMap> {
     const timeline = this.timelines.get(timelineId);
     if (!timeline) {
       throw new Error('Timeline not found');
@@ -520,13 +525,19 @@ class FamilyTimelineService {
     const relationships = await this.extractRelationships(timeline.events);
 
     // Calculate connection strengths
-    const connectionStrength = await this.calculateConnectionStrength(relationships);
+    const connectionStrength =
+      await this.calculateConnectionStrength(relationships);
 
     // Identify influence patterns
-    const influenceNetwork = await this.identifyInfluencePatterns(timeline.events, relationships);
+    const influenceNetwork = await this.identifyInfluencePatterns(
+      timeline.events,
+      relationships
+    );
 
     // Analyze generational flow
-    const generationalFlow = await this.analyzeGenerationalFlow(timeline.generations);
+    const generationalFlow = await this.analyzeGenerationalFlow(
+      timeline.generations
+    );
 
     return {
       relationships,
@@ -560,11 +571,11 @@ class FamilyTimelineService {
    * Generate family legacy report
    */
   async generateLegacyReport(timelineId: string): Promise<{
-    overview: string;
-    keyMilestones: FamilyMilestone[];
-    generationalThemes: string[];
     continuingTraditions: string[];
     documentHighlights: string[];
+    generationalThemes: string[];
+    keyMilestones: FamilyMilestone[];
+    overview: string;
     recommendations: string[];
   }> {
     const timeline = this.timelines.get(timelineId);
@@ -575,9 +586,15 @@ class FamilyTimelineService {
     // Analyze patterns and themes
     const overview = await this.generateLegacyOverview(timeline);
     const keyMilestones = this.identifyKeyMilestones(timeline.milestones);
-    const generationalThemes = await this.extractGenerationalThemes(timeline.generations);
-    const continuingTraditions = await this.identifyContinuingTraditions(timeline.events);
-    const documentHighlights = await this.identifyDocumentHighlights(timeline.documentAssociations);
+    const generationalThemes = await this.extractGenerationalThemes(
+      timeline.generations
+    );
+    const continuingTraditions = await this.identifyContinuingTraditions(
+      timeline.events
+    );
+    const documentHighlights = await this.identifyDocumentHighlights(
+      timeline.documentAssociations
+    );
     const recommendations = await this.generateLegacyRecommendations(timeline);
 
     return {
@@ -612,11 +629,15 @@ class FamilyTimelineService {
     }
   }
 
-  private async detectDocumentAssociations(event: TimelineEvent): Promise<DocumentAssociation[]> {
+  private async detectDocumentAssociations(
+    event: TimelineEvent
+  ): Promise<DocumentAssociation[]> {
     const associations: DocumentAssociation[] = [];
 
     // Check for document references in event description
-    const documentReferences = this.extractDocumentReferences(event.description);
+    const documentReferences = this.extractDocumentReferences(
+      event.description
+    );
 
     for (const reference of documentReferences) {
       associations.push({
@@ -628,7 +649,10 @@ class FamilyTimelineService {
         relevantPeople: event.participants.map(p => p.memberId),
         importance: this.assessDocumentImportance(event, reference),
         timeRelevance: {
-          period: { startDate: event.date, endDate: event.endDate || event.date },
+          period: {
+            startDate: event.date,
+            endDate: event.endDate || event.date,
+          },
           context: event.title,
           significance: event.significance,
         },
@@ -639,7 +663,10 @@ class FamilyTimelineService {
     return associations;
   }
 
-  private async updateRelationships(timeline: FamilyTimeline, event: TimelineEvent): Promise<void> {
+  private async updateRelationships(
+    timeline: FamilyTimeline,
+    event: TimelineEvent
+  ): Promise<void> {
     // Update family relationships based on event type
     if (event.type === 'marriage') {
       await this.recordMarriageRelationship(event);
@@ -650,7 +677,9 @@ class FamilyTimelineService {
     }
   }
 
-  private async extractRelationships(events: TimelineEvent[]): Promise<FamilyRelationship[]> {
+  private async extractRelationships(
+    events: TimelineEvent[]
+  ): Promise<FamilyRelationship[]> {
     const relationships: FamilyRelationship[] = [];
 
     for (const event of events) {
@@ -663,7 +692,9 @@ class FamilyTimelineService {
     return this.deduplicateRelationships(relationships);
   }
 
-  private async calculateConnectionStrength(relationships: FamilyRelationship[]): Promise<ConnectionMatrix> {
+  private async calculateConnectionStrength(
+    relationships: FamilyRelationship[]
+  ): Promise<ConnectionMatrix> {
     const matrix: ConnectionMatrix = {};
 
     for (const relationship of relationships) {
@@ -688,8 +719,8 @@ class FamilyTimelineService {
     const influences: InfluenceEdge[] = [];
 
     // Look for mentor-mentee patterns in events
-    const mentorshipEvents = events.filter(e =>
-      e.category === 'achievement' || e.category === 'professional'
+    const mentorshipEvents = events.filter(
+      e => e.category === 'achievement' || e.category === 'professional'
     );
 
     for (const event of mentorshipEvents) {
@@ -700,7 +731,9 @@ class FamilyTimelineService {
     return influences;
   }
 
-  private async analyzeGenerationalFlow(generations: FamilyGeneration[]): Promise<GenerationFlow[]> {
+  private async analyzeGenerationalFlow(
+    generations: FamilyGeneration[]
+  ): Promise<GenerationFlow[]> {
     const flows: GenerationFlow[] = [];
 
     for (let i = 0; i < generations.length - 1; i++) {
@@ -720,12 +753,16 @@ class FamilyTimelineService {
   }
 
   // Placeholder implementations for complex analysis methods
-  private async analyzeDocumentForEvents(_documentId: string): Promise<TimelineEvent[]> {
+  private async analyzeDocumentForEvents(
+    _documentId: string
+  ): Promise<TimelineEvent[]> {
     // Would analyze document content for dates, names, events
     return [];
   }
 
-  private async deduplicateEvents(events: TimelineEvent[]): Promise<TimelineEvent[]> {
+  private async deduplicateEvents(
+    events: TimelineEvent[]
+  ): Promise<TimelineEvent[]> {
     // Remove duplicate events based on date, title, participants
     const seen = new Set<string>();
     return events.filter(event => {
@@ -736,21 +773,31 @@ class FamilyTimelineService {
     });
   }
 
-  private async generateLegacyOverview(timeline: FamilyTimeline): Promise<string> {
+  private async generateLegacyOverview(
+    timeline: FamilyTimeline
+  ): Promise<string> {
     const totalEvents = timeline.events.length;
     const generations = timeline.generations.length;
-    const keyMilestones = timeline.milestones.filter(m => m.significance === 'generational').length;
+    const keyMilestones = timeline.milestones.filter(
+      m => m.significance === 'generational'
+    ).length;
 
     return `This family timeline spans ${generations} generations with ${totalEvents} documented events and ${keyMilestones} major milestones. The family's journey reflects themes of ${this.extractMainThemes(timeline).join(', ')}.`;
   }
 
-  private identifyKeyMilestones(milestones: FamilyMilestone[]): FamilyMilestone[] {
+  private identifyKeyMilestones(
+    milestones: FamilyMilestone[]
+  ): FamilyMilestone[] {
     return milestones
-      .filter(m => m.significance === 'generational' || m.significance === 'family')
+      .filter(
+        m => m.significance === 'generational' || m.significance === 'family'
+      )
       .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   }
 
-  private async extractGenerationalThemes(generations: FamilyGeneration[]): Promise<string[]> {
+  private async extractGenerationalThemes(
+    generations: FamilyGeneration[]
+  ): Promise<string[]> {
     const themes = new Set<string>();
 
     generations.forEach(gen => {
@@ -761,17 +808,23 @@ class FamilyTimelineService {
     return Array.from(themes);
   }
 
-  private async identifyContinuingTraditions(events: TimelineEvent[]): Promise<string[]> {
+  private async identifyContinuingTraditions(
+    events: TimelineEvent[]
+  ): Promise<string[]> {
     // Look for recurring event patterns that indicate traditions
     const traditions: string[] = [];
-    const eventTypes = events.reduce((acc, event) => {
-      const key = `${event.type}_${event.category}`;
-      acc[key] = (acc[key] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    const eventTypes = events.reduce(
+      (acc, event) => {
+        const key = `${event.type}_${event.category}`;
+        acc[key] = (acc[key] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
 
     Object.entries(eventTypes).forEach(([eventType, count]) => {
-      if (count >= 3) { // Recurring events might be traditions
+      if (count >= 3) {
+        // Recurring events might be traditions
         traditions.push(`Regular ${eventType.replace('_', ' ')} celebrations`);
       }
     });
@@ -779,27 +832,39 @@ class FamilyTimelineService {
     return traditions;
   }
 
-  private async identifyDocumentHighlights(associations: DocumentAssociation[]): Promise<string[]> {
+  private async identifyDocumentHighlights(
+    associations: DocumentAssociation[]
+  ): Promise<string[]> {
     return associations
-      .filter(assoc => assoc.importance === 'critical' || assoc.importance === 'high')
+      .filter(
+        assoc => assoc.importance === 'critical' || assoc.importance === 'high'
+      )
       .map(assoc => `${assoc.documentTitle} (${assoc.associationType})`)
       .slice(0, 10);
   }
 
-  private async generateLegacyRecommendations(timeline: FamilyTimeline): Promise<string[]> {
+  private async generateLegacyRecommendations(
+    timeline: FamilyTimeline
+  ): Promise<string[]> {
     const recommendations: string[] = [];
 
     // Check for gaps
     if (timeline.events.length < 10) {
-      recommendations.push('Consider adding more family events and milestones to create a richer timeline');
+      recommendations.push(
+        'Consider adding more family events and milestones to create a richer timeline'
+      );
     }
 
     if (timeline.documentAssociations.length === 0) {
-      recommendations.push('Link relevant documents to timeline events for better context');
+      recommendations.push(
+        'Link relevant documents to timeline events for better context'
+      );
     }
 
     if (timeline.generations.length === 0) {
-      recommendations.push('Define family generations to better understand legacy patterns');
+      recommendations.push(
+        'Define family generations to better understand legacy patterns'
+      );
     }
 
     return recommendations;
@@ -814,29 +879,41 @@ class FamilyTimelineService {
     return !isNaN(Date.parse(dateStr));
   }
 
-  private extractDocumentReferences(_text: string): Array<{id: string; title: string; type: string}> {
+  private extractDocumentReferences(
+    _text: string
+  ): Array<{ id: string; title: string; type: string }> {
     // Extract document references from text (placeholder)
     return [];
   }
 
-  private determineAssociationType(event: TimelineEvent, _reference: any): AssociationType {
+  private determineAssociationType(
+    event: TimelineEvent,
+    _reference: any
+  ): AssociationType {
     if (event.type === 'birth') return 'created_during';
     if (event.type === 'marriage') return 'legal_for';
     if (event.type === 'death') return 'relates_to';
     return 'relates_to';
   }
 
-  private assessDocumentImportance(event: TimelineEvent, _reference: any): DocumentAssociation['importance'] {
+  private assessDocumentImportance(
+    event: TimelineEvent,
+    _reference: any
+  ): DocumentAssociation['importance'] {
     if (event.significance === 'life_changing') return 'critical';
     if (event.significance === 'major') return 'high';
     return 'medium';
   }
 
-  private async recordMarriageRelationship(_event: TimelineEvent): Promise<void> {
+  private async recordMarriageRelationship(
+    _event: TimelineEvent
+  ): Promise<void> {
     // Record marriage relationship between participants
   }
 
-  private async recordParentChildRelationship(_event: TimelineEvent): Promise<void> {
+  private async recordParentChildRelationship(
+    _event: TimelineEvent
+  ): Promise<void> {
     // Record parent-child relationship from birth event
   }
 
@@ -844,7 +921,9 @@ class FamilyTimelineService {
     // Update family member death record
   }
 
-  private extractRelationshipsFromEvent(event: TimelineEvent): FamilyRelationship[] {
+  private extractRelationshipsFromEvent(
+    event: TimelineEvent
+  ): FamilyRelationship[] {
     const relationships: FamilyRelationship[] = [];
 
     // Extract relationships based on participant roles
@@ -856,8 +935,15 @@ class FamilyTimelineService {
         relationships.push({
           fromMember: participant1.memberId,
           toMember: participant2.memberId,
-          relationshipType: this.inferRelationshipType(participant1.role, participant2.role),
-          strength: this.calculateRelationshipStrength(event, participant1, participant2),
+          relationshipType: this.inferRelationshipType(
+            participant1.role,
+            participant2.role
+          ),
+          strength: this.calculateRelationshipStrength(
+            event,
+            participant1,
+            participant2
+          ),
           verified: event.verified,
           timeframe: {
             startDate: event.date,
@@ -870,7 +956,9 @@ class FamilyTimelineService {
     return relationships;
   }
 
-  private deduplicateRelationships(relationships: FamilyRelationship[]): FamilyRelationship[] {
+  private deduplicateRelationships(
+    relationships: FamilyRelationship[]
+  ): FamilyRelationship[] {
     const seen = new Set<string>();
     return relationships.filter(rel => {
       const key = `${rel.fromMember}_${rel.toMember}_${rel.relationshipType}`;
@@ -885,7 +973,10 @@ class FamilyTimelineService {
     return [];
   }
 
-  private calculateContinuity(currentGen: FamilyGeneration, nextGen: FamilyGeneration): number {
+  private calculateContinuity(
+    currentGen: FamilyGeneration,
+    nextGen: FamilyGeneration
+  ): number {
     // Calculate how much of current generation's values/traditions continue
     const currentValues = new Set(currentGen.legacy.values);
     const nextValues = new Set(nextGen.legacy.values);
@@ -894,7 +985,10 @@ class FamilyTimelineService {
     return overlap.size / currentValues.size;
   }
 
-  private identifyAdaptations(_currentGen: FamilyGeneration, _nextGen: FamilyGeneration): string[] {
+  private identifyAdaptations(
+    _currentGen: FamilyGeneration,
+    _nextGen: FamilyGeneration
+  ): string[] {
     // Identify how values/traditions were adapted between generations
     return ['Modern interpretations of traditional values'];
   }
@@ -910,7 +1004,10 @@ class FamilyTimelineService {
     return Array.from(themes).slice(0, 5);
   }
 
-  private inferRelationshipType(role1: ParticipantRole, role2: ParticipantRole): string {
+  private inferRelationshipType(
+    role1: ParticipantRole,
+    role2: ParticipantRole
+  ): string {
     if (role1 === 'spouse' && role2 === 'spouse') return 'married';
     if (role1 === 'parent' && role2 === 'child') return 'parent-child';
     if (role1 === 'sibling' && role2 === 'sibling') return 'siblings';
@@ -925,7 +1022,8 @@ class FamilyTimelineService {
     let strength = 0.5; // Base strength
 
     if (event.significance === 'life_changing') strength += 0.3;
-    if (p1.significance === 'primary' || p2.significance === 'primary') strength += 0.2;
+    if (p1.significance === 'primary' || p2.significance === 'primary')
+      strength += 0.2;
 
     return Math.min(1, strength);
   }

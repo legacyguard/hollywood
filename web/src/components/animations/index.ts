@@ -1,9 +1,39 @@
 // Advanced Animation System - Phase 3B: Micro-Interactions & Enhanced Animations
 // Provides centralized access to all animation components and utilities
 
-// Core animation system
-export { AnimationSystem, useAnimationConfig } from '@/lib/animation-system';
-export type { AnimationConfig, AdaptiveAnimationConfig } from '@/lib/animation-system';
+// Enhanced UI components with animations
+export {
+  ActionButton,
+  buttonVariants,
+  EnhancedButton,
+  LoadingButton,
+  PersonalityButton,
+} from '../ui/enhanced-button';
+export type { EnhancedButtonProps } from '../ui/enhanced-button';
+
+export {
+  cardVariants,
+  ContentCard,
+  EnhancedCard,
+  InteractiveCard,
+  PersonalityCard,
+} from '../ui/enhanced-card';
+export type {
+  CardInteractionType,
+  EnhancedCardProps,
+} from '../ui/enhanced-card';
+
+export {
+  EnhancedInput,
+  inputVariants,
+  PersonalityInput,
+  ValidatedInput,
+} from '../ui/enhanced-input';
+
+export type {
+  EnhancedInputProps,
+  // FieldState
+} from '../ui/enhanced-input';
 
 // Animation providers and wrappers
 export {
@@ -11,130 +41,101 @@ export {
   // useAdaptiveAnimation, // Not available
   // useAnimationVariants // Not available
 } from './AdaptiveAnimationProvider';
+
 export { default as AnimatedPageWrapper } from './AnimatedPageWrapper';
+
+// Enhanced firefly (builds on existing system)
+export { default as EnhancedFirefly } from './EnhancedFirefly';
 
 // Interactive animations
 export {
   AdaptiveAnimatedButton,
   AdaptiveAnimatedCard,
   AdaptiveAnimatedListItem,
-  AdaptivePulseAnimation,
-  AdaptiveHoverScale,
   AdaptiveGlowEffect,
+  AdaptiveHoverScale,
+  AdaptivePulseAnimation,
 } from './InteractiveAnimations';
-
-// Page transitions
-export {
-  PageTransition,
-  RouteTransition,
-  ModalTransition,
-  SlideTransition,
-  FadeTransition,
-  BreadcrumbTransition,
-} from './PageTransitions';
-
-// Progress animations
-export {
-  AdaptiveProgressBar,
-  AdaptiveMilestoneIndicator,
-  AdaptiveStepProgress,
-} from './ProgressAnimations';
-
-// Milestone celebrations
-export {
-  MilestoneCelebration,
-  AdaptiveProgressRing,
-  AchievementBadge,
-} from './MilestoneAnimations';
-
-// Enhanced firefly (builds on existing system)
-export { default as EnhancedFirefly } from './EnhancedFirefly';
-
-// Re-export existing firefly for backward compatibility
-export { default as SofiaFirefly } from './SofiaFirefly';
-
-// Phase 3B: Advanced Micro-Interactions
-export {
-  MicroAnimation,
-  // MicroAnimationProvider, // Not available
-  AnimatedButton,
-  AnimatedCard,
-  AnimatedInput,
-  // useMicroAnimation, // Not available
-  // usePersonalityAnimation // Not available
-} from './MicroInteractionSystem';
-
-export type {
-  MicroAnimationType,
-  MicroAnimationProps
-} from './MicroInteractionSystem';
 
 // Loading animations
 export {
+  ButtonLoader,
+  CardLoader,
+  FormLoader,
   LoadingAnimation,
   PageLoader,
-  ButtonLoader,
-  FormLoader,
-  CardLoader,
   ProgressLoader,
   // LoadingProvider, // Not available
   // useLoading // Not available
 } from './LoadingAnimations';
 
 export type {
+  LoadingAnimationProps,
   LoadingAnimationType,
-  LoadingAnimationProps
 } from './LoadingAnimations';
 
-// Enhanced UI components with animations
+// Phase 3B: Advanced Micro-Interactions
 export {
-  EnhancedButton,
-  LoadingButton,
-  PersonalityButton,
-  ActionButton,
-  buttonVariants
-} from '../ui/enhanced-button';
+  // MicroAnimationProvider, // Not available
+  AnimatedButton,
+  AnimatedCard,
+  AnimatedInput,
+  MicroAnimation,
+  // useMicroAnimation, // Not available
+  // usePersonalityAnimation // Not available
+} from './MicroInteractionSystem';
 
 export type {
-  EnhancedButtonProps
-} from '../ui/enhanced-button';
+  MicroAnimationProps,
+  MicroAnimationType,
+} from './MicroInteractionSystem';
 
+// Milestone celebrations
 export {
-  EnhancedInput,
-  PersonalityInput,
-  ValidatedInput,
-  inputVariants
-} from '../ui/enhanced-input';
+  AchievementBadge,
+  AdaptiveProgressRing,
+  MilestoneCelebration,
+} from './MilestoneAnimations';
 
-export type {
-  EnhancedInputProps
-  // FieldState
-} from '../ui/enhanced-input';
-
+// Page transitions
 export {
-  EnhancedCard,
-  PersonalityCard,
-  InteractiveCard,
-  ContentCard,
-  cardVariants
-} from '../ui/enhanced-card';
+  BreadcrumbTransition,
+  FadeTransition,
+  ModalTransition,
+  PageTransition,
+  RouteTransition,
+  SlideTransition,
+} from './PageTransitions';
 
-export type {
-  EnhancedCardProps,
-  CardInteractionType
-} from '../ui/enhanced-card';
-
-// Common animation presets
+// Progress animations
 export {
-  fadeInUp,
-  fadeInLeft,
-  scaleIn,
-  slideInRight,
-  ANIMATION_VARIANTS,
-} from '@/lib/animation-system';
+  AdaptiveMilestoneIndicator,
+  AdaptiveProgressBar,
+  AdaptiveStepProgress,
+} from './ProgressAnimations';
+
+// Re-export existing firefly for backward compatibility
+export { default as SofiaFirefly } from './SofiaFirefly';
 
 // Animation hooks and utilities
 export { default as useFireflyEvents } from '@/hooks/useFireflyEvents';
+
+// Core animation system
+export { AnimationSystem, useAnimationConfig } from '@/lib/animation-system';
+
+export type {
+  AdaptiveAnimationConfig,
+  AnimationConfig,
+} from '@/lib/animation-system';
+
+// Common animation presets
+export {
+  ANIMATION_VARIANTS,
+  fadeInLeft,
+  fadeInUp,
+  scaleIn,
+  slideInRight,
+} from '@/lib/animation-system';
 
 import type { ReactNode } from 'react';
 
@@ -142,7 +143,7 @@ import type { ReactNode } from 'react';
 export interface AnimationComponentProps {
   children?: ReactNode;
   className?: string;
-  personalityMode?: 'empathetic' | 'pragmatic' | 'adaptive';
+  personalityMode?: 'adaptive' | 'empathetic' | 'pragmatic';
   shouldReduceMotion?: boolean;
 }
 
@@ -171,13 +172,14 @@ export const PERSONALITY_ANIMATIONS = {
 // Quick access to common animation combinations
 export const COMMON_ANIMATIONS = {
   // Card hover effects
-  cardHover: (mode: 'empathetic' | 'pragmatic' | 'adaptive' = 'adaptive') => ({
+  cardHover: (mode: 'adaptive' | 'empathetic' | 'pragmatic' = 'adaptive') => ({
     whileHover: {
       scale: mode === 'empathetic' ? 1.03 : mode === 'pragmatic' ? 1.01 : 1.02,
       y: mode === 'empathetic' ? -8 : -4,
-      boxShadow: mode === 'empathetic'
-        ? '0 20px 25px -5px rgba(0, 0, 0, 0.1)'
-        : '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+      boxShadow:
+        mode === 'empathetic'
+          ? '0 20px 25px -5px rgba(0, 0, 0, 0.1)'
+          : '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
     },
     transition: {
       duration: mode === 'pragmatic' ? 0.2 : 0.3,
@@ -185,7 +187,9 @@ export const COMMON_ANIMATIONS = {
   }),
 
   // Button press effects
-  buttonPress: (mode: 'empathetic' | 'pragmatic' | 'adaptive' = 'adaptive') => ({
+  buttonPress: (
+    mode: 'adaptive' | 'empathetic' | 'pragmatic' = 'adaptive'
+  ) => ({
     whileTap: {
       scale: mode === 'empathetic' ? 0.95 : 0.98,
     },
@@ -195,7 +199,9 @@ export const COMMON_ANIMATIONS = {
   }),
 
   // List item stagger
-  listItemStagger: (mode: 'empathetic' | 'pragmatic' | 'adaptive' = 'adaptive') => ({
+  listItemStagger: (
+    mode: 'adaptive' | 'empathetic' | 'pragmatic' = 'adaptive'
+  ) => ({
     initial: { opacity: 0, y: mode === 'empathetic' ? 20 : 10 },
     animate: { opacity: 1, y: 0 },
     transition: {
@@ -233,7 +239,7 @@ export const MICRO_ANIMATION_CONFIG = {
     duration: 0.4,
     easing: 'easeOut',
     scale: 1.05,
-    bounce: 0.3
+    bounce: 0.3,
   },
   pragmatic: {
     defaultType: 'lift',
@@ -241,7 +247,7 @@ export const MICRO_ANIMATION_CONFIG = {
     duration: 0.2,
     easing: 'easeInOut',
     scale: 1.02,
-    bounce: 0
+    bounce: 0,
   },
   adaptive: {
     defaultType: 'tilt',
@@ -249,8 +255,8 @@ export const MICRO_ANIMATION_CONFIG = {
     duration: 0.3,
     easing: 'easeOut',
     scale: 1.03,
-    bounce: 0.1
-  }
+    bounce: 0.1,
+  },
 } as const;
 
 // Animation system status
@@ -304,7 +310,9 @@ export const ANIMATION_UTILS = {
   /**
    * Get personality-specific animation timing
    */
-  getPersonalityTiming: (personality: 'empathetic' | 'pragmatic' | 'adaptive') => {
+  getPersonalityTiming: (
+    personality: 'adaptive' | 'empathetic' | 'pragmatic'
+  ) => {
     return MICRO_ANIMATION_CONFIG[personality];
-  }
+  },
 };

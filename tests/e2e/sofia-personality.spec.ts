@@ -7,16 +7,24 @@ test.describe('Sofia Personality System', () => {
     await authHelper.signIn();
   });
 
-  test('should display personality mode selection in settings', async ({ page }) => {
+  test('should display personality mode selection in settings', async ({
+    page,
+  }) => {
     // Navigate to settings
     await page.click('[data-testid="settings-link"]');
     await page.waitForURL('**/settings');
 
     // Check if personality settings are visible
     await expect(page.locator('text=Sofia Personality')).toBeVisible();
-    await expect(page.locator('[data-testid="personality-empathetic"]')).toBeVisible();
-    await expect(page.locator('[data-testid="personality-pragmatic"]')).toBeVisible();
-    await expect(page.locator('[data-testid="personality-adaptive"]')).toBeVisible();
+    await expect(
+      page.locator('[data-testid="personality-empathetic"]')
+    ).toBeVisible();
+    await expect(
+      page.locator('[data-testid="personality-pragmatic"]')
+    ).toBeVisible();
+    await expect(
+      page.locator('[data-testid="personality-adaptive"]')
+    ).toBeVisible();
   });
 
   test('should switch between personality modes', async ({ page }) => {
@@ -31,14 +39,18 @@ test.describe('Sofia Personality System', () => {
     await page.click('[data-testid="dashboard-link"]');
 
     // Check for empathetic personality indicators
-    await expect(page.locator('[data-personality-mode="empathetic"]')).toBeVisible();
+    await expect(
+      page.locator('[data-personality-mode="empathetic"]')
+    ).toBeVisible();
 
     // Check for empathetic-specific colors/styling
     const dashboardElement = page.locator('[data-testid="dashboard-content"]');
     await expect(dashboardElement).toHaveClass(/empathetic/);
   });
 
-  test('should adapt UI colors and styling based on personality mode', async ({ page }) => {
+  test('should adapt UI colors and styling based on personality mode', async ({
+    page,
+  }) => {
     const personalityModes = ['empathetic', 'pragmatic', 'adaptive'];
 
     for (const mode of personalityModes) {
@@ -50,29 +62,42 @@ test.describe('Sofia Personality System', () => {
       await page.click('[data-testid="dashboard-link"]');
 
       // Check for mode-specific styling
-      const dashboardContent = page.locator('[data-testid="dashboard-content"]');
-      await expect(dashboardContent).toHaveAttribute('data-personality-mode', mode);
+      const dashboardContent = page.locator(
+        '[data-testid="dashboard-content"]'
+      );
+      await expect(dashboardContent).toHaveAttribute(
+        'data-personality-mode',
+        mode
+      );
 
       // Check for mode-specific color themes
-      const computedStyle = await dashboardContent.evaluate((el) => {
+      const computedStyle = await dashboardContent.evaluate(el => {
         return window.getComputedStyle(el);
       });
 
       // Verify personality-specific colors are applied
       if (mode === 'empathetic') {
         // Check for pink/purple color scheme
-        expect(computedStyle.getPropertyValue('--personality-primary')).toContain('pink');
+        expect(
+          computedStyle.getPropertyValue('--personality-primary')
+        ).toContain('pink');
       } else if (mode === 'pragmatic') {
         // Check for gray color scheme
-        expect(computedStyle.getPropertyValue('--personality-primary')).toContain('gray');
+        expect(
+          computedStyle.getPropertyValue('--personality-primary')
+        ).toContain('gray');
       } else if (mode === 'adaptive') {
         // Check for blue/green color scheme
-        expect(computedStyle.getPropertyValue('--personality-primary')).toContain('blue');
+        expect(
+          computedStyle.getPropertyValue('--personality-primary')
+        ).toContain('blue');
       }
     }
   });
 
-  test('should adapt text communication style based on personality mode', async ({ page }) => {
+  test('should adapt text communication style based on personality mode', async ({
+    page,
+  }) => {
     // Test empathetic mode communication
     await page.click('[data-testid="settings-link"]');
     await page.click('[data-testid="personality-empathetic"]');
@@ -98,10 +123,15 @@ test.describe('Sofia Personality System', () => {
 
     // Check for adaptive language patterns
     const adaptiveText = page.locator('[data-testid="welcome-message"]');
-    await expect(adaptiveText).toContainText(/balanced|flexible|smart|evolving/i);
+    await expect(adaptiveText).toContainText(
+      /balanced|flexible|smart|evolving/i
+    );
   });
 
-  test('should persist personality mode selection across sessions', async ({ page, context }) => {
+  test('should persist personality mode selection across sessions', async ({
+    page,
+    context,
+  }) => {
     // Set empathetic mode
     await page.click('[data-testid="settings-link"]');
     await page.click('[data-testid="personality-empathetic"]');
@@ -114,7 +144,9 @@ test.describe('Sofia Personality System', () => {
 
     // Navigate to dashboard and check if empathetic mode is still active
     await newPage.click('[data-testid="dashboard-link"]');
-    await expect(newPage.locator('[data-personality-mode="empathetic"]')).toBeVisible();
+    await expect(
+      newPage.locator('[data-personality-mode="empathetic"]')
+    ).toBeVisible();
   });
 
   test('should show personality-aware animations', async ({ page }) => {
@@ -148,20 +180,28 @@ test.describe('Sofia Personality System', () => {
     }
   });
 
-  test('should show personality mode in profile/about section', async ({ page }) => {
+  test('should show personality mode in profile/about section', async ({
+    page,
+  }) => {
     // Navigate to profile or about section
     await page.click('[data-testid="profile-link"]');
 
     // Check if current personality mode is displayed
-    const personalityDisplay = page.locator('[data-testid="current-personality"]');
+    const personalityDisplay = page.locator(
+      '[data-testid="current-personality"]'
+    );
     await expect(personalityDisplay).toBeVisible();
 
     // Verify it shows one of the valid modes
     const personalityText = await personalityDisplay.textContent();
-    expect(['Empathetic', 'Pragmatic', 'Adaptive']).toContain(personalityText?.trim());
+    expect(['Empathetic', 'Pragmatic', 'Adaptive']).toContain(
+      personalityText?.trim()
+    );
   });
 
-  test('should adapt legacy garden visualization to personality mode', async ({ page }) => {
+  test('should adapt legacy garden visualization to personality mode', async ({
+    page,
+  }) => {
     const personalityModes = ['empathetic', 'pragmatic', 'adaptive'];
 
     for (const mode of personalityModes) {
@@ -177,7 +217,10 @@ test.describe('Sofia Personality System', () => {
 
       // Check for personality-specific garden styling
       const gardenElement = page.locator('[data-testid="legacy-garden"]');
-      await expect(gardenElement).toHaveAttribute('data-personality-mode', mode);
+      await expect(gardenElement).toHaveAttribute(
+        'data-personality-mode',
+        mode
+      );
 
       // Check for personality-specific tree/plant elements
       const treeElements = page.locator('[data-testid*="tree-"]');
@@ -193,7 +236,9 @@ test.describe('Sofia Personality System', () => {
     }
   });
 
-  test('should show personality-aware milestone celebrations', async ({ page }) => {
+  test('should show personality-aware milestone celebrations', async ({
+    page,
+  }) => {
     // Navigate to dashboard where milestones are celebrated
     await page.click('[data-testid="dashboard-link"]');
 
@@ -203,15 +248,23 @@ test.describe('Sofia Personality System', () => {
       await milestoneButton.click();
 
       // Check for personality-aware celebration animation
-      const celebrationElement = page.locator('[data-testid="milestone-celebration"]');
+      const celebrationElement = page.locator(
+        '[data-testid="milestone-celebration"]'
+      );
       await expect(celebrationElement).toBeVisible();
 
       // Get current personality mode from data attribute
-      const personalityMode = await page.getAttribute('[data-testid="dashboard-content"]', 'data-personality-mode');
+      const personalityMode = await page.getAttribute(
+        '[data-testid="dashboard-content"]',
+        'data-personality-mode'
+      );
 
       // Check for personality-specific celebration styling
       if (personalityMode) {
-        await expect(celebrationElement).toHaveAttribute('data-celebration-style', personalityMode);
+        await expect(celebrationElement).toHaveAttribute(
+          'data-celebration-style',
+          personalityMode
+        );
       }
     }
   });

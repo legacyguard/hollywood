@@ -30,28 +30,30 @@ const envSchema = z.object({
     .url()
     .optional()
     .refine(
-      (val) => !val || val.startsWith('https://'),
+      val => !val || val.startsWith('https://'),
       'Sentry DSN must use HTTPS'
     ),
 
   // App Configuration
   VITE_APP_VERSION: z.string().default('1.0.0'),
-  VITE_APP_ENV: z.enum(['development', 'staging', 'production']).default('development'),
+  VITE_APP_ENV: z
+    .enum(['development', 'staging', 'production'])
+    .default('development'),
 
   // Feature Flags
   VITE_ENABLE_2FA: z
     .string()
-    .transform((val) => val === 'true')
+    .transform(val => val === 'true')
     .default('false'),
 
   VITE_ENABLE_RATE_LIMITING: z
     .string()
-    .transform((val) => val === 'true')
+    .transform(val => val === 'true')
     .default('true'),
 
   VITE_ENABLE_ENCRYPTION: z
     .string()
-    .transform((val) => val === 'true')
+    .transform(val => val === 'true')
     .default('true'),
 });
 
@@ -61,7 +63,7 @@ export type EnvConfig = z.infer<typeof envSchema>;
 class EnvironmentConfigManager {
   private static instance: EnvironmentConfigManager;
   private config: EnvConfig | null = null;
-  private validationErrors: z.ZodError | null = null;
+  private validationErrors: null | z.ZodError = null;
 
   private constructor() {
     this.validateAndLoadConfig();
@@ -102,7 +104,10 @@ class EnvironmentConfigManager {
     } catch (error) {
       if (error instanceof z.ZodError) {
         this.validationErrors = error;
-        console.error('❌ Environment configuration validation failed:', error.errors);
+        console.error(
+          '❌ Environment configuration validation failed:',
+          error.errors
+        );
 
         // In production, fail fast
         if (import.meta.env.PROD) {
@@ -122,19 +127,25 @@ class EnvironmentConfigManager {
     // Check for production keys in development
     if (this.config.VITE_APP_ENV === 'development') {
       if (this.config.VITE_CLERK_PUBLISHABLE_KEY.includes('pk_live')) {
-        console.warn('⚠️  Warning: Using production Clerk key in development environment');
+        console.warn(
+          '⚠️  Warning: Using production Clerk key in development environment'
+        );
       }
     }
 
     // Check for test keys in production
     if (this.config.VITE_APP_ENV === 'production') {
       if (this.config.VITE_CLERK_PUBLISHABLE_KEY.includes('pk_test')) {
-        throw new Error('❌ Critical: Test keys detected in production environment');
+        throw new Error(
+          '❌ Critical: Test keys detected in production environment'
+        );
       }
 
       // Ensure security features are enabled in production
       if (!this.config.VITE_ENABLE_RATE_LIMITING) {
-        console.error('❌ Critical: Rate limiting must be enabled in production');
+        console.error(
+          '❌ Critical: Rate limiting must be enabled in production'
+        );
       }
 
       if (!this.config.VITE_ENABLE_ENCRYPTION) {
@@ -145,7 +156,9 @@ class EnvironmentConfigManager {
     // Check for HTTPS in production URLs
     if (this.config.VITE_APP_ENV === 'production') {
       if (!this.config.VITE_SUPABASE_URL.startsWith('https://')) {
-        throw new Error('❌ Critical: Supabase URL must use HTTPS in production');
+        throw new Error(
+          '❌ Critical: Supabase URL must use HTTPS in production'
+        );
       }
     }
   }
@@ -223,7 +236,7 @@ class EnvironmentConfigManager {
   /**
    * Validate configuration for production readiness
    */
-  public validateForProduction(): { valid: boolean; errors: string[] } {
+  public validateForProduction(): { errors: string[]; valid: boolean } {
     const errors: string[] = [];
 
     if (!this.config) {
@@ -297,7 +310,7 @@ export const validateProductionConfig = () => {
   const result = envConfig.validateForProduction();
   if (!result.valid) {
     console.error('❌ Production configuration validation failed:');
-    result.errors.forEach((error) => console.error(`  - ${error}`));
+    result.errors.forEach(error => console.error(`  - ${error}`));
     return false;
   }
   console.log('✅ Production configuration validated successfully');

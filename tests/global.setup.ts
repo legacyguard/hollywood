@@ -20,7 +20,7 @@ async function globalSetup() {
     await clerkSetup();
     // console.log('✅ Clerk testing token obtained successfully');
   } catch (error) {
-          // console.error('❌ Failed to setup Clerk testing:', error);
+    // console.error('❌ Failed to setup Clerk testing:', error);
     throw error;
   }
 }

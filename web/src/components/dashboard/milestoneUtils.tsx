@@ -3,9 +3,7 @@ import {
   getAdaptiveMilestoneText,
   type SerenityMilestone,
 } from '@/lib/path-of-serenity';
-import {
-  defaultUserPreferences,
-} from '@/types/user-preferences';
+import { defaultUserPreferences } from '@/types/user-preferences';
 import type { PersonalityMode } from '@/lib/sofia-types';
 
 export function showMilestoneRecognition(
@@ -31,7 +29,8 @@ export function showMilestoneRecognition(
     switch (mode) {
       case 'empathetic':
         return {
-          bgGradient: 'from-green-50 to-emerald-50 dark:from-green-950/90 dark:to-emerald-950/90',
+          bgGradient:
+            'from-green-50 to-emerald-50 dark:from-green-950/90 dark:to-emerald-950/90',
           borderColor: 'border-green-200/50 dark:border-green-800/50',
           iconBg: 'from-green-400 to-emerald-500',
           textPrimary: 'text-green-900 dark:text-green-100',
@@ -42,7 +41,8 @@ export function showMilestoneRecognition(
         };
       case 'pragmatic':
         return {
-          bgGradient: 'from-blue-50 to-slate-50 dark:from-blue-950/90 dark:to-slate-950/90',
+          bgGradient:
+            'from-blue-50 to-slate-50 dark:from-blue-950/90 dark:to-slate-950/90',
           borderColor: 'border-blue-200/50 dark:border-blue-800/50',
           iconBg: 'from-blue-500 to-slate-600',
           textPrimary: 'text-blue-900 dark:text-blue-100',
@@ -53,7 +53,8 @@ export function showMilestoneRecognition(
         };
       default:
         return {
-          bgGradient: 'from-purple-50 to-pink-50 dark:from-purple-950/90 dark:to-pink-950/90',
+          bgGradient:
+            'from-purple-50 to-pink-50 dark:from-purple-950/90 dark:to-pink-950/90',
           borderColor: 'border-purple-200/50 dark:border-purple-800/50',
           iconBg: 'from-purple-500 to-pink-500',
           textPrimary: 'text-purple-900 dark:text-purple-100',
@@ -65,7 +66,9 @@ export function showMilestoneRecognition(
     }
   };
 
-  const personalityContent = getPersonalityContent(personalityMode || 'adaptive');
+  const personalityContent = getPersonalityContent(
+    personalityMode || 'adaptive'
+  );
 
   // Trigger firefly celebration
   // Note: This is called from outside React component, so we'll use a global event

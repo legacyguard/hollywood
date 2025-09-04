@@ -1,5 +1,5 @@
 // Sofia Adaptive Personality Manager Tests
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AdaptivePersonalityManager } from '../sofia-personality';
 import type { InteractionPattern } from '../sofia-types';
 
@@ -43,7 +43,9 @@ describe('AdaptivePersonalityManager', () => {
         },
       };
 
-      localStorageMock.getItem.mockReturnValue(JSON.stringify(storedPersonality));
+      localStorageMock.getItem.mockReturnValue(
+        JSON.stringify(storedPersonality)
+      );
       const newManager = new AdaptivePersonalityManager('test-user-2');
       const personality = newManager.getPersonality();
 
@@ -117,7 +119,9 @@ describe('AdaptivePersonalityManager', () => {
       expect(personality.userPreferences.lastInteractions).toHaveLength(50);
 
       // Should keep the most recent ones
-      expect(personality.userPreferences.lastInteractions[49].action).toBe('action_59');
+      expect(personality.userPreferences.lastInteractions[49].action).toBe(
+        'action_59'
+      );
     });
   });
 
@@ -139,7 +143,8 @@ describe('AdaptivePersonalityManager', () => {
 
     it('should adapt message for pragmatic style', () => {
       manager.setManualOverride('pragmatic');
-      const baseMessage = 'I think you might want to consider uploading your document when you\'re ready.';
+      const baseMessage =
+        "I think you might want to consider uploading your document when you're ready.";
       const result = manager.adaptMessage(baseMessage);
 
       expect(result).toBe('You should uploading your document .');
@@ -149,21 +154,21 @@ describe('AdaptivePersonalityManager', () => {
       manager.setManualOverride('empathetic');
       const messageConfig = {
         empathetic: {
-          greeting: 'Welcome back! It\'s wonderful to see you.',
-          guidance: 'I\'d love to help you with this next step.',
+          greeting: "Welcome back! It's wonderful to see you.",
+          guidance: "I'd love to help you with this next step.",
           celebration: 'This is such a meaningful achievement!',
-          support: 'I\'m here to support you through this.',
+          support: "I'm here to support you through this.",
         },
         pragmatic: {
           greeting: 'Welcome back.',
-          guidance: 'Here\'s what you need to do.',
+          guidance: "Here's what you need to do.",
           celebration: 'Task completed.',
           support: 'Next steps available.',
         },
       };
 
       const result = manager.adaptMessage('Base message', messageConfig);
-      expect(result).toBe('I\'d love to help you with this next step.');
+      expect(result).toBe("I'd love to help you with this next step.");
     });
   });
 
@@ -198,7 +203,7 @@ describe('AdaptivePersonalityManager', () => {
         userPreferences: {
           lastInteractions: interactions,
           adaptationEnabled: true,
-        }
+        },
       });
       expect(manager.shouldShowPersonalityHint()).toBe(true);
 
@@ -223,7 +228,7 @@ describe('AdaptivePersonalityManager', () => {
             helpSeekingBehavior: true,
           },
           lastAnalyzed: new Date(),
-        }
+        },
       });
 
       const newInsight = manager.getPersonalityInsight();

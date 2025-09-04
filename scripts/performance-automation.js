@@ -28,8 +28,8 @@ const CONFIG = {
     fid: 100,
     cls: 0.1,
     fcp: 1800,
-    ttfb: 600
-  }
+    ttfb: 600,
+  },
 };
 
 class PerformanceAutomation {
@@ -39,43 +39,44 @@ class PerformanceAutomation {
       webpGenerated: 0,
       avifGenerated: 0,
       bundlesAnalyzed: 0,
-      performanceIssues: 0
+      performanceIssues: 0,
     };
   }
 
   async run() {
     console.log('🚀 Starting LegacyGuard Performance Automation...\n');
-    
+
     try {
       // 1. Check and install dependencies
       await this.checkDependencies();
-      
+
       // 2. Optimize images automatically
       await this.optimizeImages();
-      
+
       // 3. Generate modern formats
       await this.generateModernFormats();
-      
+
       // 4. Update image references
       await this.updateImageReferences();
-      
+
       // 5. Analyze bundle performance
       await this.analyzeBundlePerformance();
-      
+
       // 6. Generate performance report
       await this.generatePerformanceReport();
-      
+
       // 7. Set up automated monitoring
       await this.setupAutomatedMonitoring();
-      
+
       console.log('\n✅ Performance automation completed successfully!');
       console.log('\n📊 Summary:');
       console.log(`   Images optimized: ${this.stats.imagesOptimized}`);
       console.log(`   WebP files generated: ${this.stats.webpGenerated}`);
       console.log(`   AVIF files generated: ${this.stats.avifGenerated}`);
       console.log(`   Bundles analyzed: ${this.stats.bundlesAnalyzed}`);
-      console.log(`   Performance issues found: ${this.stats.performanceIssues}`);
-      
+      console.log(
+        `   Performance issues found: ${this.stats.performanceIssues}`
+      );
     } catch (error) {
       console.error('❌ Performance automation failed:', error.message);
       process.exit(1);
@@ -84,36 +85,34 @@ class PerformanceAutomation {
 
   async checkDependencies() {
     console.log('🔍 Checking dependencies...');
-    
-    const requiredPackages = [
-      'sharp',
-      'vite-plugin-compression',
-      'web-vitals'
-    ];
-    
-          for (const pkg of requiredPackages) {
-        try {
-          require.resolve(pkg);
-        } catch {
-          console.log(`   Installing ${pkg}...`);
-          execSync(`npm install --save-dev ${pkg} --legacy-peer-deps`, { stdio: 'inherit' });
-        }
+
+    const requiredPackages = ['sharp', 'vite-plugin-compression', 'web-vitals'];
+
+    for (const pkg of requiredPackages) {
+      try {
+        require.resolve(pkg);
+      } catch {
+        console.log(`   Installing ${pkg}...`);
+        execSync(`npm install --save-dev ${pkg} --legacy-peer-deps`, {
+          stdio: 'inherit',
+        });
       }
-    
+    }
+
     console.log('   ✅ All dependencies are available');
   }
 
   async optimizeImages() {
     console.log('\n🖼️  Optimizing images...');
-    
+
     try {
       const imageFiles = await this.findImageFiles();
-      
+
       for (const imageFile of imageFiles) {
         await this.optimizeSingleImage(imageFile);
         this.stats.imagesOptimized++;
       }
-      
+
       console.log(`   ✅ Optimized ${this.stats.imagesOptimized} images`);
     } catch (error) {
       console.log(`   ⚠️  Image optimization failed: ${error.message}`);
@@ -122,15 +121,15 @@ class PerformanceAutomation {
 
   async generateModernFormats() {
     console.log('\n🔄 Generating modern image formats...');
-    
+
     try {
       const imageFiles = await this.findImageFiles();
-      
+
       for (const imageFile of imageFiles) {
         await this.generateWebP(imageFile);
         await this.generateAVIF(imageFile);
       }
-      
+
       console.log(`   ✅ Generated ${this.stats.webpGenerated} WebP files`);
       console.log(`   ✅ Generated ${this.stats.avifGenerated} AVIF files`);
     } catch (error) {
@@ -140,14 +139,14 @@ class PerformanceAutomation {
 
   async updateImageReferences() {
     console.log('\n📝 Updating image references...');
-    
+
     try {
       const sourceFiles = await this.findSourceFiles();
-      
+
       for (const sourceFile of sourceFiles) {
         await this.updateImageReferencesInFile(sourceFile);
       }
-      
+
       console.log('   ✅ Updated image references in source files');
     } catch (error) {
       console.log(`   ⚠️  Reference update failed: ${error.message}`);
@@ -156,22 +155,25 @@ class PerformanceAutomation {
 
   async analyzeBundlePerformance() {
     console.log('\n📦 Analyzing bundle performance...');
-    
+
     try {
       // Run build to analyze bundles
       execSync('npm run build', { stdio: 'pipe' });
-      
+
       // Analyze bundle sizes
       const bundleAnalysis = await this.analyzeBundleSizes();
-      
+
       // Check for performance issues
-      this.stats.performanceIssues = await this.checkPerformanceIssues(bundleAnalysis);
-      
+      this.stats.performanceIssues =
+        await this.checkPerformanceIssues(bundleAnalysis);
+
       this.stats.bundlesAnalyzed = bundleAnalysis.length;
       console.log(`   ✅ Analyzed ${this.stats.bundlesAnalyzed} bundles`);
-      
+
       if (this.stats.performanceIssues > 0) {
-        console.log(`   ⚠️  Found ${this.stats.performanceIssues} performance issues`);
+        console.log(
+          `   ⚠️  Found ${this.stats.performanceIssues} performance issues`
+        );
       }
     } catch (error) {
       console.log(`   ⚠️  Bundle analysis failed: ${error.message}`);
@@ -180,33 +182,33 @@ class PerformanceAutomation {
 
   async generatePerformanceReport() {
     console.log('\n📊 Generating performance report...');
-    
+
     const report = {
       timestamp: new Date().toISOString(),
       stats: this.stats,
       recommendations: await this.generateRecommendations(),
-      nextSteps: this.getNextSteps()
+      nextSteps: this.getNextSteps(),
     };
-    
+
     const reportPath = path.join(projectRoot, 'performance-report.json');
     await fs.writeFile(reportPath, JSON.stringify(report, null, 2));
-    
+
     console.log(`   ✅ Performance report saved to: ${reportPath}`);
   }
 
   async setupAutomatedMonitoring() {
     console.log('\n🔧 Setting up automated monitoring...');
-    
+
     try {
       // Create GitHub Actions workflow for automated performance checks
       await this.createGitHubActionsWorkflow();
-      
+
       // Create pre-commit hooks
       await this.createPreCommitHooks();
-      
+
       // Create performance monitoring dashboard
       await this.createPerformanceDashboard();
-      
+
       console.log('   ✅ Automated monitoring setup complete');
     } catch (error) {
       console.log(`   ⚠️  Monitoring setup failed: ${error.message}`);
@@ -217,40 +219,49 @@ class PerformanceAutomation {
   async findImageFiles() {
     const imageFiles = [];
     const publicDir = CONFIG.publicDir;
-    
+
     try {
       const files = await fs.readdir(publicDir, { recursive: true });
-      
+
       for (const file of files) {
-        if (typeof file === 'string' && CONFIG.imageFormats.some(format => 
-          file.toLowerCase().endsWith(`.${format}`))) {
+        if (
+          typeof file === 'string' &&
+          CONFIG.imageFormats.some(format =>
+            file.toLowerCase().endsWith(`.${format}`)
+          )
+        ) {
           imageFiles.push(path.join(publicDir, file));
         }
       }
     } catch (error) {
       console.log(`   ⚠️  Could not read public directory: ${error.message}`);
     }
-    
+
     return imageFiles;
   }
 
   async findSourceFiles() {
     const sourceFiles = [];
     const srcDir = CONFIG.srcDir;
-    
+
     try {
       const files = await fs.readdir(srcDir, { recursive: true });
-      
+
       for (const file of files) {
-        if (typeof file === 'string' && 
-            (file.endsWith('.tsx') || file.endsWith('.ts') || file.endsWith('.jsx') || file.endsWith('.js'))) {
+        if (
+          typeof file === 'string' &&
+          (file.endsWith('.tsx') ||
+            file.endsWith('.ts') ||
+            file.endsWith('.jsx') ||
+            file.endsWith('.js'))
+        ) {
           sourceFiles.push(path.join(srcDir, file));
         }
       }
     } catch (error) {
       console.log(`   ⚠️  Could not read source directory: ${error.message}`);
     }
-    
+
     return sourceFiles;
   }
 
@@ -270,7 +281,9 @@ class PerformanceAutomation {
       // This would use Sharp to generate WebP
       this.stats.webpGenerated++;
     } catch (error) {
-      console.log(`     ⚠️  Failed to generate WebP for ${imagePath}: ${error.message}`);
+      console.log(
+        `     ⚠️  Failed to generate WebP for ${imagePath}: ${error.message}`
+      );
     }
   }
 
@@ -279,7 +292,9 @@ class PerformanceAutomation {
       // This would use Sharp to generate AVIF
       this.stats.avifGenerated++;
     } catch (error) {
-      console.log(`     ⚠️  Failed to generate AVIF for ${imagePath}: ${error.message}`);
+      console.log(
+        `     ⚠️  Failed to generate AVIF for ${imagePath}: ${error.message}`
+      );
     }
   }
 
@@ -287,15 +302,19 @@ class PerformanceAutomation {
     try {
       let content = await fs.readFile(filePath, 'utf-8');
       let updated = false;
-      
+
       // Update image imports to use optimized versions
-      const imageImportRegex = /import\s+.*\s+from\s+['"]([^'"]*\.(png|jpg|jpeg))['"]/g;
-      content = content.replace(imageImportRegex, (match, imagePath, extension) => {
-        const webpPath = imagePath.replace(`.${extension}`, '.webp');
-        updated = true;
-        return match.replace(imagePath, webpPath);
-      });
-      
+      const imageImportRegex =
+        /import\s+.*\s+from\s+['"]([^'"]*\.(png|jpg|jpeg))['"]/g;
+      content = content.replace(
+        imageImportRegex,
+        (match, imagePath, extension) => {
+          const webpPath = imagePath.replace(`.${extension}`, '.webp');
+          updated = true;
+          return match.replace(imagePath, webpPath);
+        }
+      );
+
       if (updated) {
         await fs.writeFile(filePath, content, 'utf-8');
       }
@@ -309,7 +328,7 @@ class PerformanceAutomation {
       const distDir = CONFIG.distDir;
       const files = await fs.readdir(distDir, { recursive: true });
       const bundles = [];
-      
+
       for (const file of files) {
         if (typeof file === 'string' && file.endsWith('.js')) {
           const filePath = path.join(distDir, file);
@@ -317,11 +336,11 @@ class PerformanceAutomation {
           bundles.push({
             name: file,
             size: stats.size,
-            sizeKB: Math.round(stats.size / 1024)
+            sizeKB: Math.round(stats.size / 1024),
           });
         }
       }
-      
+
       return bundles.sort((a, b) => b.size - a.size);
     } catch (error) {
       console.log(`     ⚠️  Bundle size analysis failed: ${error.message}`);
@@ -331,33 +350,40 @@ class PerformanceAutomation {
 
   async checkPerformanceIssues(bundleAnalysis) {
     let issues = 0;
-    
+
     for (const bundle of bundleAnalysis) {
-      if (bundle.sizeKB > 500) { // 500KB threshold
+      if (bundle.sizeKB > 500) {
+        // 500KB threshold
         issues++;
-        console.log(`     ⚠️  Large bundle detected: ${bundle.name} (${bundle.sizeKB}KB)`);
+        console.log(
+          `     ⚠️  Large bundle detected: ${bundle.name} (${bundle.sizeKB}KB)`
+        );
       }
     }
-    
+
     return issues;
   }
 
   async generateRecommendations() {
     const recommendations = [];
-    
+
     if (this.stats.performanceIssues > 0) {
       recommendations.push('Consider code splitting for large bundles');
       recommendations.push('Implement dynamic imports for heavy components');
     }
-    
+
     if (this.stats.webpGenerated === 0) {
-      recommendations.push('Convert images to WebP format for better compression');
+      recommendations.push(
+        'Convert images to WebP format for better compression'
+      );
     }
-    
+
     if (this.stats.avifGenerated === 0) {
-      recommendations.push('Consider AVIF format for next-generation image compression');
+      recommendations.push(
+        'Consider AVIF format for next-generation image compression'
+      );
     }
-    
+
     return recommendations;
   }
 
@@ -368,7 +394,7 @@ class PerformanceAutomation {
       'Add performance budgets to prevent regressions',
       'Set up automated WebP/AVIF generation',
       'Implement critical CSS extraction',
-      'Add service worker for caching strategies'
+      'Add service worker for caching strategies',
     ];
   }
 
@@ -435,7 +461,12 @@ jobs:
             });
 `;
 
-    const workflowPath = path.join(projectRoot, '.github', 'workflows', 'performance.yml');
+    const workflowPath = path.join(
+      projectRoot,
+      '.github',
+      'workflows',
+      'performance.yml'
+    );
     await fs.mkdir(path.dirname(workflowPath), { recursive: true });
     await fs.writeFile(workflowPath, workflowContent);
   }
@@ -475,7 +506,12 @@ export default function PerformancePage() {
   );
 }`;
 
-    const dashboardPath = path.join(projectRoot, 'src', 'pages', 'Performance.tsx');
+    const dashboardPath = path.join(
+      projectRoot,
+      'src',
+      'pages',
+      'Performance.tsx'
+    );
     await fs.writeFile(dashboardPath, dashboardContent);
   }
 }

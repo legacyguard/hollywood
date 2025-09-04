@@ -1,10 +1,5 @@
 import nacl from 'tweetnacl';
-import {
-  _decodeUTF8,
-  _encodeUTF8,
-  encodeBase64,
-  decodeBase64,
-} from 'tweetnacl-util';
+import { decodeBase64, encodeBase64 } from 'tweetnacl-util';
 
 // For MVP, we'll use a derived key from user's Clerk ID
 // In production, this should be derived from a user password or master key
@@ -61,8 +56,8 @@ export const encryptFile = async (
   secretKey: string
 ): Promise<{
   encryptedData: Uint8Array;
+  metadata: Record<string, number | string>;
   nonce: Uint8Array;
-  metadata: Record<string, string | number>;
 }> => {
   // Read file as ArrayBuffer
   const arrayBuffer = await file.arrayBuffer();
@@ -105,7 +100,7 @@ export const decryptFile = (
   nonce: Uint8Array,
   publicKey: string,
   secretKey: string
-): Uint8Array | null => {
+): null | Uint8Array => {
   try {
     const decrypted = nacl.box.open(
       encryptedData,

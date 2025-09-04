@@ -1,4 +1,4 @@
-import { describe, it, expect, _beforeAll } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 import fs from 'fs';
 import path from 'path';
 import { JURISDICTION_CONFIG } from '../jurisdictions';
@@ -16,7 +16,7 @@ describe('i18n Translation System', () => {
         'common/actions.json',
         'common/validation.json',
         'auth/signin.json',
-        'documents/list.json'
+        'documents/list.json',
       ];
 
       for (const file of expectedFiles) {
@@ -34,9 +34,10 @@ describe('i18n Translation System', () => {
         if (!fs.existsSync(langDir)) continue;
 
         const files = getFilesRecursively(langDir);
-        namespaces.set(lang, new Set(files.map(f =>
-          path.relative(langDir, f).replace(/\\/g, '/')
-        )));
+        namespaces.set(
+          lang,
+          new Set(files.map(f => path.relative(langDir, f).replace(/\\/g, '/')))
+        );
       }
 
       // Check that core namespaces exist in all languages
@@ -68,7 +69,12 @@ describe('i18n Translation System', () => {
 
   describe('Legal Terms', () => {
     it('should have jurisdiction-specific legal terms for Czech Republic', () => {
-      const czLegalTermsPath = path.join(LOCALES_DIR, 'CZ', 'cs', 'legalTerms.json');
+      const czLegalTermsPath = path.join(
+        LOCALES_DIR,
+        'CZ',
+        'cs',
+        'legalTerms.json'
+      );
       expect(fs.existsSync(czLegalTermsPath)).toBe(true);
 
       const terms = JSON.parse(fs.readFileSync(czLegalTermsPath, 'utf-8'));
@@ -82,7 +88,12 @@ describe('i18n Translation System', () => {
     });
 
     it('should have legal term definitions and references', () => {
-      const czLegalTermsPath = path.join(LOCALES_DIR, 'CZ', 'cs', 'legalTerms.json');
+      const czLegalTermsPath = path.join(
+        LOCALES_DIR,
+        'CZ',
+        'cs',
+        'legalTerms.json'
+      );
       if (!fs.existsSync(czLegalTermsPath)) return;
 
       const terms = JSON.parse(fs.readFileSync(czLegalTermsPath, 'utf-8'));
@@ -95,12 +106,23 @@ describe('i18n Translation System', () => {
 
   describe('Jurisdiction Configuration', () => {
     it('should have configuration for all EU countries', () => {
-      const euCountries = ['CZ', 'SK', 'DE', 'FR', 'IT', 'ES', 'PL', 'NL', 'BE', 'AT'];
+      const euCountries = [
+        'CZ',
+        'SK',
+        'DE',
+        'FR',
+        'IT',
+        'ES',
+        'PL',
+        'NL',
+        'BE',
+        'AT',
+      ];
 
       for (const country of euCountries) {
         expect(JURISDICTION_CONFIG[country]).toBeDefined();
         expect(JURISDICTION_CONFIG[country].name).toBeDefined();
-        expect(JURISDICTION_CONFIG[country].languages).toBeDefined();
+        expect(JURISDICTION_CONFIG[country].supportedLanguages).toBeDefined();
         expect(JURISDICTION_CONFIG[country].legalSystem).toBeDefined();
       }
     });
@@ -118,17 +140,27 @@ describe('i18n Translation System', () => {
 
     it('should have notary requirements for each jurisdiction', () => {
       for (const [_code, config] of Object.entries(JURISDICTION_CONFIG)) {
-        expect(config.notary).toBeDefined();
-        expect(config.notary.required).toBeDefined();
-        expect(config.notary.documents).toBeDefined();
-        expect(Array.isArray(config.notary.documents)).toBe(true);
+        expect(config.notaryRequired).toBeDefined();
+        expect(typeof config.notaryRequired).toBe('boolean');
+        expect(config.documentTypes).toBeDefined();
+        expect(Array.isArray(config.documentTypes)).toBe(true);
       }
     });
   });
 
   describe('Language Configuration', () => {
     it('should support all required languages', () => {
-      const requiredLanguages = ['en', 'cs', 'sk', 'de', 'fr', 'es', 'it', 'pl', 'nl'];
+      const requiredLanguages = [
+        'en',
+        'cs',
+        'sk',
+        'de',
+        'fr',
+        'es',
+        'it',
+        'pl',
+        'nl',
+      ];
 
       for (const lang of requiredLanguages) {
         expect(LANGUAGE_CONFIG[lang]).toBeDefined();
@@ -141,8 +173,8 @@ describe('i18n Translation System', () => {
     it('should have RTL configuration for applicable languages', () => {
       // Check if RTL languages have proper configuration
       for (const [_code, config] of Object.entries(LANGUAGE_CONFIG)) {
-        if (config.rtl) {
-          expect(config.rtl).toBe(true);
+        if (config.direction === 'rtl') {
+          expect(config.direction).toBe('rtl');
         }
       }
     });
@@ -151,9 +183,8 @@ describe('i18n Translation System', () => {
       for (const [_code, config] of Object.entries(LANGUAGE_CONFIG)) {
         expect(config.dateFormat).toBeDefined();
         expect(config.timeFormat).toBeDefined();
-        expect(config.numberFormat).toBeDefined();
-        expect(config.numberFormat.decimal).toBeDefined();
-        expect(config.numberFormat.thousands).toBeDefined();
+        expect(config.decimalSeparator).toBeDefined();
+        expect(config.thousandsSeparator).toBeDefined();
       }
     });
   });
@@ -190,14 +221,20 @@ describe('i18n Translation System', () => {
 
   describe('Translation Coverage', () => {
     it('should have minimum coverage for core namespaces', () => {
-      const coreNamespaces = ['common/actions', 'common/validation', 'auth/signin'];
+      const coreNamespaces = [
+        'common/actions',
+        'common/validation',
+        'auth/signin',
+      ];
       const languages = ['en', 'cs', 'sk', 'de'];
 
       for (const namespace of coreNamespaces) {
         const enFile = path.join(LOCALES_DIR, 'en', `${namespace}.json`);
         if (!fs.existsSync(enFile)) continue;
 
-        const enKeys = extractAllKeys(JSON.parse(fs.readFileSync(enFile, 'utf-8')));
+        const enKeys = extractAllKeys(
+          JSON.parse(fs.readFileSync(enFile, 'utf-8'))
+        );
 
         for (const lang of languages) {
           if (lang === 'en') continue;
@@ -208,7 +245,9 @@ describe('i18n Translation System', () => {
             continue;
           }
 
-          const langKeys = extractAllKeys(JSON.parse(fs.readFileSync(langFile, 'utf-8')));
+          const langKeys = extractAllKeys(
+            JSON.parse(fs.readFileSync(langFile, 'utf-8'))
+          );
           const coverage = (langKeys.length / enKeys.length) * 100;
 
           // Expect at least 80% coverage for core namespaces

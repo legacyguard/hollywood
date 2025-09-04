@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -21,20 +21,20 @@ import {
 
 import { toast } from 'sonner';
 import {
-  willTemplateLibrary,
-  type WillTemplate,
-  type UserProfile,
-  type TemplateCategory,
   type ComparisonReport,
+  type TemplateCategory,
+  type UserProfile,
+  type WillTemplate,
+  willTemplateLibrary,
 } from '@/lib/will-template-library';
 import type { WillData } from './WillWizard';
 
 interface WillTemplateLibraryProps {
-  currentWillData?: WillData;
-  userProfile?: Partial<UserProfile>;
-  onTemplateSelect: (template: WillTemplate) => void;
-  onComparisonComplete?: (report: ComparisonReport) => void;
   className?: string;
+  currentWillData?: WillData;
+  onComparisonComplete?: (report: ComparisonReport) => void;
+  onTemplateSelect: (template: WillTemplate) => void;
+  userProfile?: Partial<UserProfile>;
 }
 
 export const WillTemplateLibrary: React.FC<WillTemplateLibraryProps> = ({
@@ -46,9 +46,9 @@ export const WillTemplateLibrary: React.FC<WillTemplateLibraryProps> = ({
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<
-    TemplateCategory | 'all'
+    'all' | TemplateCategory
   >('all');
-  const [selectedTemplate, setSelectedTemplate] = useState<WillTemplate | null>(
+  const [selectedTemplate, setSelectedTemplate] = useState<null | WillTemplate>(
     null
   );
   const [showComparison, setShowComparison] = useState(false);
@@ -170,7 +170,7 @@ export const WillTemplateLibrary: React.FC<WillTemplateLibraryProps> = ({
         <Select
           value={selectedCategory}
           onValueChange={value =>
-            setSelectedCategory(value as TemplateCategory | 'all')
+            setSelectedCategory(value as 'all' | TemplateCategory)
           }
         >
           <SelectTrigger className='w-48'>
@@ -178,11 +178,13 @@ export const WillTemplateLibrary: React.FC<WillTemplateLibraryProps> = ({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value='all'>All Categories</SelectItem>
-            {categories.map(({ category, count, description: _description }) => (
-              <SelectItem key={category} value={category}>
-                {category.replace('_', ' ')} ({count})
-              </SelectItem>
-            ))}
+            {categories.map(
+              ({ category, count, description: _description }) => (
+                <SelectItem key={category} value={category}>
+                  {category.replace('_', ' ')} ({count})
+                </SelectItem>
+              )
+            )}
           </SelectContent>
         </Select>
       </div>
@@ -214,7 +216,8 @@ export const WillTemplateLibrary: React.FC<WillTemplateLibraryProps> = ({
             </div>
           ) : (
             <Card className='p-8 text-center'>
-              <Icon name={"search" as any}
+              <Icon
+                name={'search' as any}
                 className='w-12 h-12 text-muted-foreground mx-auto mb-4'
               />
               <h4 className='font-semibold mb-2'>No Recommended Templates</h4>
@@ -222,7 +225,7 @@ export const WillTemplateLibrary: React.FC<WillTemplateLibraryProps> = ({
                 We need more information about your situation to provide
                 personalized recommendations.
               </p>
-              <Button variant="outline" onClick={() => setActiveTab('all')}>
+              <Button variant='outline' onClick={() => setActiveTab('all')}>
                 Browse All Templates
               </Button>
             </Card>
@@ -253,7 +256,7 @@ export const WillTemplateLibrary: React.FC<WillTemplateLibraryProps> = ({
                 <h4 className='font-semibold capitalize'>
                   {category.replace('_', ' ')}
                 </h4>
-                <Badge variant="secondary" className='text-xs'>
+                <Badge variant='secondary' className='text-xs'>
                   {count} template{count !== 1 ? 's' : ''}
                 </Badge>
               </div>
@@ -317,7 +320,8 @@ export const WillTemplateLibrary: React.FC<WillTemplateLibraryProps> = ({
           <div className='space-y-4'>
             <div className='p-4 border rounded-lg bg-yellow-50 border-yellow-200'>
               <div className='flex items-start gap-3'>
-                <Icon name={"alert-triangle" as any}
+                <Icon
+                  name={'alert-triangle' as any}
                   className='w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5'
                 />
                 <div>
@@ -334,7 +338,7 @@ export const WillTemplateLibrary: React.FC<WillTemplateLibraryProps> = ({
             </div>
             <div className='flex justify-end gap-2'>
               <Button
-                variant="outline"
+                variant='outline'
                 onClick={() => setShowComparison(false)}
               >
                 Cancel
@@ -359,11 +363,11 @@ export const WillTemplateLibrary: React.FC<WillTemplateLibraryProps> = ({
 
 // Template Card Component
 interface TemplateCardProps {
-  template: WillTemplate;
-  isRecommended?: boolean;
   compact?: boolean;
-  onPreview: () => void;
+  isRecommended?: boolean;
   onApply: () => void;
+  onPreview: () => void;
+  template: WillTemplate;
 }
 
 const TemplateCard: React.FC<TemplateCardProps> = ({
@@ -397,7 +401,7 @@ const TemplateCard: React.FC<TemplateCardProps> = ({
           </div>
         </div>
         {isRecommended && (
-          <Badge variant="default" className='text-xs'>
+          <Badge variant='default' className='text-xs'>
             Recommended
           </Badge>
         )}
@@ -407,10 +411,10 @@ const TemplateCard: React.FC<TemplateCardProps> = ({
         <Badge className={`text-xs ${getComplexityColor(template.complexity)}`}>
           {template.complexity}
         </Badge>
-        <Badge variant="outline" className='text-xs'>
+        <Badge variant='outline' className='text-xs'>
           {template.estimatedCompletionTime}min
         </Badge>
-        <Badge variant="outline" className='text-xs'>
+        <Badge variant='outline' className='text-xs'>
           ⭐ {template.popularityScore}
         </Badge>
       </div>
@@ -425,7 +429,7 @@ const TemplateCard: React.FC<TemplateCardProps> = ({
               {template.preview.keyFeatures
                 .slice(0, 3)
                 .map((feature, index) => (
-                  <Badge key={index} variant="secondary" className='text-xs'>
+                  <Badge key={index} variant='secondary' className='text-xs'>
                     {feature}
                   </Badge>
                 ))}
@@ -442,16 +446,16 @@ const TemplateCard: React.FC<TemplateCardProps> = ({
 
       <div className='flex gap-2'>
         <Button
-          variant="outline"
+          variant='outline'
           size='sm'
           onClick={onPreview}
           className='flex-1'
         >
-          <Icon name={"eye" as any} className='w-3 h-3 mr-2' />
+          <Icon name={'eye' as any} className='w-3 h-3 mr-2' />
           Preview
         </Button>
         <Button size='sm' onClick={onApply} className='flex-1'>
-          <Icon name={"check" as any} className='w-3 h-3 mr-2' />
+          <Icon name={'check' as any} className='w-3 h-3 mr-2' />
           Use Template
         </Button>
       </div>
@@ -461,9 +465,9 @@ const TemplateCard: React.FC<TemplateCardProps> = ({
 
 // Template Preview Component
 interface TemplatePreviewProps {
-  template: WillTemplate;
   onApply: () => void;
   onClose: () => void;
+  template: WillTemplate;
 }
 
 const TemplatePreview: React.FC<TemplatePreviewProps> = ({
@@ -480,10 +484,10 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({
           <Badge className={`${getComplexityColor(template.complexity)}`}>
             {template.complexity}
           </Badge>
-          <Badge variant="outline">
+          <Badge variant='outline'>
             {template.estimatedCompletionTime} minutes
           </Badge>
-          <Badge variant="outline">⭐ {template.popularityScore}</Badge>
+          <Badge variant='outline'>⭐ {template.popularityScore}</Badge>
         </div>
       </div>
 
@@ -534,7 +538,7 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({
             <h4 className='font-semibold mb-2'>Key Features</h4>
             <div className='flex flex-wrap gap-2'>
               {template.preview.keyFeatures.map((feature, index) => (
-                <Badge key={index} variant="secondary">
+                <Badge key={index} variant='secondary'>
                   {feature}
                 </Badge>
               ))}
@@ -548,7 +552,7 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({
             <div className='space-y-3 text-sm'>
               <div className='flex items-center justify-between p-2 bg-muted/50 rounded'>
                 <span>Beneficiaries</span>
-                <Badge variant="outline">
+                <Badge variant='outline'>
                   {template.preview.beneficiaryCount}
                 </Badge>
               </div>
@@ -556,7 +560,7 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({
                 <span>Asset Types</span>
                 <div className='flex gap-1'>
                   {template.preview.assetTypes.map((type, index) => (
-                    <Badge key={index} variant="outline" className='text-xs'>
+                    <Badge key={index} variant='outline' className='text-xs'>
                       {type.replace('_', ' ')}
                     </Badge>
                   ))}
@@ -585,7 +589,8 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({
             <div className='space-y-2'>
               {template.requiredFields.map((field, index) => (
                 <div key={index} className='flex items-center gap-2 text-sm'>
-                  <Icon name={"check-circle" as any}
+                  <Icon
+                    name={'check-circle' as any}
                     className='w-4 h-4 text-green-600'
                   />
                   <span>{field.replace('_', ' ').replace('.', ' → ')}</span>
@@ -599,7 +604,10 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({
             <div className='space-y-2'>
               {template.optionalEnhancements.map((enhancement, index) => (
                 <div key={index} className='flex items-center gap-2 text-sm'>
-                  <Icon name={"plus-circle" as any} className='w-4 h-4 text-blue-600' />
+                  <Icon
+                    name={'plus-circle' as any}
+                    className='w-4 h-4 text-blue-600'
+                  />
                   <span>{enhancement.replace('_', ' ')}</span>
                 </div>
               ))}
@@ -612,7 +620,8 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({
               <div className='space-y-2'>
                 {template.legalNotices.map((notice, index) => (
                   <div key={index} className='flex items-start gap-2 text-sm'>
-                    <Icon name={"info" as any}
+                    <Icon
+                      name={'info' as any}
                       className='w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5'
                     />
                     <span className='text-muted-foreground'>{notice}</span>
@@ -625,11 +634,11 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({
       </Tabs>
 
       <div className='flex justify-end gap-2 pt-4 border-t'>
-        <Button variant="outline" onClick={onClose}>
+        <Button variant='outline' onClick={onClose}>
           Close
         </Button>
         <Button onClick={onApply}>
-          <Icon name={"check" as any} className='w-4 h-4 mr-2' />
+          <Icon name={'check' as any} className='w-4 h-4 mr-2' />
           Use This Template
         </Button>
       </div>

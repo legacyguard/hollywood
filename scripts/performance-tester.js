@@ -20,7 +20,12 @@ class PerformanceTester {
       lighthouseConfig: {
         extends: 'lighthouse:default',
         settings: {
-          onlyCategories: ['performance', 'accessibility', 'best-practices', 'seo'],
+          onlyCategories: [
+            'performance',
+            'accessibility',
+            'best-practices',
+            'seo',
+          ],
           formFactor: 'desktop',
           throttling: {
             rttMs: 40,
@@ -28,9 +33,9 @@ class PerformanceTester {
             cpuSlowdownMultiplier: 1,
             requestLatencyMs: 0,
             downloadThroughputKbps: 0,
-            uploadThroughputKbps: 0
-          }
-        }
+            uploadThroughputKbps: 0,
+          },
+        },
       },
       thresholds: {
         performance: 90,
@@ -41,49 +46,50 @@ class PerformanceTester {
         fid: 100,
         cls: 0.1,
         fcp: 1800,
-        ttfb: 600
+        ttfb: 600,
       },
       outputDir: path.join(projectRoot, 'performance-reports'),
-      distDir: path.join(projectRoot, 'dist')
+      distDir: path.join(projectRoot, 'dist'),
     };
-    
+
     this.results = {
       tests: [],
       summary: {
         total: 0,
         passed: 0,
         failed: 0,
-        averageScore: 0
-      }
+        averageScore: 0,
+      },
     };
   }
 
   async run() {
     console.log('🧪 Starting LegacyGuard Performance Testing...\n');
-    
+
     try {
       // Check if build exists
       await this.checkBuild();
-      
+
       // Install dependencies if needed
       await this.checkDependencies();
-      
+
       // Run performance tests
       await this.runPerformanceTests();
-      
+
       // Generate test report
       await this.generateTestReport();
-      
+
       // Update package.json scripts
       await this.updatePackageScripts();
-      
+
       console.log('\n✅ Performance testing completed successfully!');
       console.log(`\n📊 Test Summary:`);
       console.log(`   Total tests: ${this.results.summary.total}`);
       console.log(`   Passed: ${this.results.summary.passed}`);
       console.log(`   Failed: ${this.results.summary.failed}`);
-      console.log(`   Average score: ${this.results.summary.averageScore.toFixed(1)}%`);
-      
+      console.log(
+        `   Average score: ${this.results.summary.averageScore.toFixed(1)}%`
+      );
     } catch (error) {
       console.error('❌ Performance testing failed:', error.message);
       process.exit(1);
@@ -102,33 +108,35 @@ class PerformanceTester {
 
   async checkDependencies() {
     const requiredPackages = ['lighthouse', 'puppeteer'];
-    
-          for (const pkg of requiredPackages) {
-        try {
-          require.resolve(pkg);
-        } catch {
-          console.log(`📦 Installing ${pkg}...`);
-          execSync(`npm install --save-dev ${pkg} --legacy-peer-deps`, { stdio: 'inherit' });
-        }
+
+    for (const pkg of requiredPackages) {
+      try {
+        require.resolve(pkg);
+      } catch {
+        console.log(`📦 Installing ${pkg}...`);
+        execSync(`npm install --save-dev ${pkg} --legacy-peer-deps`, {
+          stdio: 'inherit',
+        });
       }
-    
+    }
+
     console.log('✅ All dependencies are available');
   }
 
   async runPerformanceTests() {
     console.log('\n🧪 Running performance tests...');
-    
+
     // Create output directory
     await fs.mkdir(this.config.outputDir, { recursive: true });
-    
+
     // Test scenarios
     const testScenarios = [
       { name: 'Homepage', path: '/', priority: 'high' },
       { name: 'Legal Pages', path: '/terms-of-service', priority: 'medium' },
       { name: 'Privacy Policy', path: '/privacy-policy', priority: 'medium' },
-      { name: 'Security Policy', path: '/security-policy', priority: 'medium' }
+      { name: 'Security Policy', path: '/security-policy', priority: 'medium' },
     ];
-    
+
     for (const scenario of testScenarios) {
       await this.runLighthouseTest(scenario);
     }
@@ -137,44 +145,43 @@ class PerformanceTester {
   async runLighthouseTest(scenario) {
     try {
       console.log(`   Testing: ${scenario.name}`);
-      
+
       const lighthouse = await import('lighthouse');
       const puppeteer = await import('puppeteer');
-      
+
       // Launch browser
       const browser = await puppeteer.default.launch({ headless: true });
       const page = await browser.newPage();
-      
+
       // Navigate to page
       const url = `http://localhost:4173${scenario.path}`;
       await page.goto(url, { waitUntil: 'networkidle0' });
-      
+
       // Run Lighthouse
       const { lhr } = await lighthouse.default(page, {
-        port: (new URL(browser.wsEndpoint())).port,
+        port: new URL(browser.wsEndpoint()).port,
         output: 'json',
-        logLevel: 'info'
+        logLevel: 'info',
       });
-      
+
       // Process results
       const testResult = this.processLighthouseResult(scenario, lhr);
       this.results.tests.push(testResult);
-      
+
       // Save detailed report
       await this.saveDetailedReport(scenario, lhr);
-      
+
       await browser.close();
-      
+
       console.log(`     ✅ ${scenario.name}: ${testResult.score}%`);
-      
     } catch (error) {
       console.log(`     ❌ ${scenario.name}: ${error.message}`);
-      
+
       this.results.tests.push({
         name: scenario.name,
         score: 0,
         passed: false,
-        errors: [error.message]
+        errors: [error.message],
       });
     }
   }
@@ -182,7 +189,7 @@ class PerformanceTester {
   processLighthouseResult(scenario, lhr) {
     const score = Math.round(lhr.categories.performance.score * 100);
     const passed = score >= this.config.thresholds.performance;
-    
+
     // Check Core Web Vitals
     const audits = lhr.audits;
     const metrics = {
@@ -190,17 +197,17 @@ class PerformanceTester {
       fid: audits['max-potential-fid']?.numericValue || 0,
       cls: audits['cumulative-layout-shift']?.numericValue || 0,
       fcp: audits['first-contentful-paint']?.numericValue || 0,
-      ttfb: audits['server-response-time']?.numericValue || 0
+      ttfb: audits['server-response-time']?.numericValue || 0,
     };
-    
+
     const metricChecks = {
       lcp: metrics.lcp <= this.config.thresholds.lcp,
       fid: metrics.fid <= this.config.thresholds.fid,
       cls: metrics.cls <= this.config.thresholds.cls,
       fcp: metrics.fcp <= this.config.thresholds.fcp,
-      ttfb: metrics.ttfb <= this.config.thresholds.ttfb
+      ttfb: metrics.ttfb <= this.config.thresholds.ttfb,
     };
-    
+
     return {
       name: scenario.name,
       score,
@@ -208,7 +215,7 @@ class PerformanceTester {
       priority: scenario.priority,
       metrics,
       metricChecks,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
   }
 
@@ -217,70 +224,89 @@ class PerformanceTester {
       this.config.outputDir,
       `${scenario.name.toLowerCase().replace(/\s+/g, '-')}-lighthouse.json`
     );
-    
+
     await fs.writeFile(reportPath, JSON.stringify(lhr, null, 2));
   }
 
   async generateTestReport() {
     console.log('\n📊 Generating test report...');
-    
+
     // Calculate summary
     this.results.summary.total = this.results.tests.length;
-    this.results.summary.passed = this.results.tests.filter(t => t.passed).length;
-    this.results.summary.failed = this.results.summary.total - this.results.summary.passed;
-    
-    const totalScore = this.results.tests.reduce((sum, test) => sum + test.score, 0);
+    this.results.summary.passed = this.results.tests.filter(
+      t => t.passed
+    ).length;
+    this.results.summary.failed =
+      this.results.summary.total - this.results.summary.passed;
+
+    const totalScore = this.results.tests.reduce(
+      (sum, test) => sum + test.score,
+      0
+    );
     this.results.summary.averageScore = totalScore / this.results.summary.total;
-    
+
     // Generate recommendations
     const recommendations = this.generateRecommendations();
-    
+
     const report = {
       timestamp: new Date().toISOString(),
       summary: this.results.summary,
       tests: this.results.tests,
       recommendations,
-      nextSteps: this.getNextSteps()
+      nextSteps: this.getNextSteps(),
     };
-    
-    const reportPath = path.join(this.config.outputDir, 'performance-test-report.json');
+
+    const reportPath = path.join(
+      this.config.outputDir,
+      'performance-test-report.json'
+    );
     await fs.writeFile(reportPath, JSON.stringify(report, null, 2));
-    
+
     // Generate HTML report
     await this.generateHTMLReport(report);
-    
+
     console.log(`   ✅ Test report saved to: ${reportPath}`);
   }
 
   generateRecommendations() {
     const recommendations = [];
-    
+
     // Performance score recommendations
     if (this.results.summary.averageScore < 90) {
       recommendations.push('Overall performance score needs improvement');
     }
-    
+
     // Metric-specific recommendations
     const failedTests = this.results.tests.filter(t => !t.passed);
-    
+
     for (const test of failedTests) {
       if (!test.metricChecks.lcp) {
-        recommendations.push(`${test.name}: LCP is too slow - optimize hero images and critical content`);
+        recommendations.push(
+          `${test.name}: LCP is too slow - optimize hero images and critical content`
+        );
       }
       if (!test.metricChecks.fid) {
-        recommendations.push(`${test.name}: FID is too high - reduce JavaScript execution time`);
+        recommendations.push(
+          `${test.name}: FID is too high - reduce JavaScript execution time`
+        );
       }
       if (!test.metricChecks.cls) {
-        recommendations.push(`${test.name}: CLS is too high - fix layout shifts`);
+        recommendations.push(
+          `${test.name}: CLS is too high - fix layout shifts`
+        );
       }
       if (!test.metricChecks.fcp) {
-        recommendations.push(`${test.name}: FCP is too slow - optimize critical rendering path`);
+        recommendations.push(
+          `${test.name}: FCP is too slow - optimize critical rendering path`
+        );
       }
       if (!test.metricChecks.ttfb) {
-        recommendations.push(`${test.name}: TTFB is too slow - optimize server response`);
+        recommendations.push(
+          `${test.name}: TTFB is too slow - optimize server response`
+        );
       }
     }
-    
+
     return recommendations;
   }
 
@@ -290,14 +316,17 @@ class PerformanceTester {
       'Implement suggested optimizations',
       'Set up continuous performance monitoring',
       'Add performance budgets to CI/CD',
-      'Monitor Core Web Vitals in production'
+      'Monitor Core Web Vitals in production',
     ];
   }
 
   async generateHTMLReport(report) {
     const htmlContent = this.generateHTMLContent(report);
-    const htmlPath = path.join(this.config.outputDir, 'performance-report.html');
-    
+    const htmlPath = path.join(
+      this.config.outputDir,
+      'performance-report.html'
+    );
+
     await fs.writeFile(htmlPath, htmlContent);
     console.log(`   ✅ HTML report saved to: ${htmlPath}`);
   }
@@ -362,7 +391,9 @@ class PerformanceTester {
         
         <div class="tests">
             <h2>Test Results</h2>
-            ${report.tests.map(test => `
+            ${report.tests
+              .map(
+                test => `
                 <div class="test-card ${test.failed ? 'failed' : ''}">
                     <h4>${test.name}</h4>
                     <div style="margin-bottom: 15px;">
@@ -409,17 +440,23 @@ class PerformanceTester {
                         </div>
                     </div>
                 </div>
-            `).join('')}
+            `
+              )
+              .join('')}
         </div>
         
-        ${report.recommendations.length > 0 ? `
+        ${
+          report.recommendations.length > 0
+            ? `
             <div class="recommendations">
                 <h3>🔧 Recommendations</h3>
                 <ul>
                     ${report.recommendations.map(rec => `<li>${rec}</li>`).join('')}
                 </ul>
             </div>
-        ` : ''}
+        `
+            : ''
+        }
         
         <div style="margin-top: 30px; padding: 20px; background: #e9ecef; border-radius: 8px;">
             <h3>📋 Next Steps</h3>
@@ -437,15 +474,16 @@ class PerformanceTester {
       const packagePath = path.join(projectRoot, 'package.json');
       const packageContent = await fs.readFile(packagePath, 'utf-8');
       const packageJson = JSON.parse(packageContent);
-      
+
       // Add new scripts
       packageJson.scripts = packageJson.scripts || {};
-      packageJson.scripts['test:performance'] = 'node scripts/performance-tester.js';
-      packageJson.scripts['test:all'] = 'npm run test:performance && npm run test';
-      
+      packageJson.scripts['test:performance'] =
+        'node scripts/performance-tester.js';
+      packageJson.scripts['test:all'] =
+        'npm run test:performance && npm run test';
+
       await fs.writeFile(packagePath, JSON.stringify(packageJson, null, 2));
       console.log('✅ Updated package.json with testing scripts');
-      
     } catch (error) {
       console.log(`⚠️  Failed to update package.json: ${error.message}`);
     }

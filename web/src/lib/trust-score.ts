@@ -3,16 +3,21 @@
  * Calculates family protection level based on multiple factors
  */
 
-import type { WillData, TrustScore, TrustFactor, ProfessionalReview } from '@/types/will';
+import type {
+  ProfessionalReview,
+  TrustFactor,
+  TrustScore,
+  WillData,
+} from '@/types/will';
 import type { ValidationResult } from './will-legal-validator';
 
 interface TrustScoreInput {
-  willData: WillData;
-  validationResults: ValidationResult[];
-  professionalReview?: ProfessionalReview;
   documentsCount: number;
-  familyMembersCount: number;
   emergencyContactsCount: number;
+  familyMembersCount: number;
+  professionalReview?: ProfessionalReview;
+  validationResults: ValidationResult[];
+  willData: WillData;
 }
 
 /**
@@ -23,13 +28,19 @@ export function calculateTrustScore(input: TrustScoreInput): TrustScore {
   const factors: TrustFactor[] = [];
 
   // 1. Document Completeness (30% weight)
-  const completenessScore = calculateCompletenessScore(input.willData, input.documentsCount);
+  const completenessScore = calculateCompletenessScore(
+    input.willData,
+    input.documentsCount
+  );
   factors.push({
     name: 'Document Completeness',
     score: completenessScore,
     weight: 0.3,
     description: `You have ${input.documentsCount} important documents secured`,
-    improvement_suggestion: completenessScore < 80 ? 'Add more essential documents like insurance policies, property deeds' : undefined
+    improvement_suggestion:
+      completenessScore < 80
+        ? 'Add more essential documents like insurance policies, property deeds'
+        : undefined,
   });
 
   // 2. Legal Validation (25% weight)
@@ -38,28 +49,44 @@ export function calculateTrustScore(input: TrustScoreInput): TrustScore {
     name: 'Legal Validation',
     score: validationScore,
     weight: 0.25,
-    description: validationScore > 90 ? 'All legal requirements met' : 'Some validation issues detected',
-    improvement_suggestion: validationScore < 90 ? 'Review and fix validation warnings' : undefined
+    description:
+      validationScore > 90
+        ? 'All legal requirements met'
+        : 'Some validation issues detected',
+    improvement_suggestion:
+      validationScore < 90 ? 'Review and fix validation warnings' : undefined,
   });
 
   // 3. Professional Review (20% weight)
-  const professionalScore = calculateProfessionalScore(input.professionalReview);
+  const professionalScore = calculateProfessionalScore(
+    input.professionalReview
+  );
   factors.push({
     name: 'Professional Review',
     score: professionalScore,
     weight: 0.2,
-    description: input.professionalReview ? 'Professionally reviewed by legal expert' : 'No professional review yet',
-    improvement_suggestion: !input.professionalReview ? 'Get professional legal review for maximum confidence' : undefined
+    description: input.professionalReview
+      ? 'Professionally reviewed by legal expert'
+      : 'No professional review yet',
+    improvement_suggestion: !input.professionalReview
+      ? 'Get professional legal review for maximum confidence'
+      : undefined,
   });
 
   // 4. Family Protection Setup (15% weight)
-  const familyScore = calculateFamilyProtectionScore(input.familyMembersCount, input.emergencyContactsCount);
+  const familyScore = calculateFamilyProtectionScore(
+    input.familyMembersCount,
+    input.emergencyContactsCount
+  );
   factors.push({
     name: 'Family Protection',
     score: familyScore,
     weight: 0.15,
     description: `${input.familyMembersCount} family members and ${input.emergencyContactsCount} emergency contacts configured`,
-    improvement_suggestion: familyScore < 80 ? 'Add more emergency contacts and family member access' : undefined
+    improvement_suggestion:
+      familyScore < 80
+        ? 'Add more emergency contacts and family member access'
+        : undefined,
   });
 
   // 5. Will Specific Factors (10% weight)
@@ -69,12 +96,15 @@ export function calculateTrustScore(input: TrustScoreInput): TrustScore {
     score: willScore,
     weight: 0.1,
     description: 'Essential will components coverage',
-    improvement_suggestion: willScore < 90 ? 'Complete all will sections for full protection' : undefined
+    improvement_suggestion:
+      willScore < 90
+        ? 'Complete all will sections for full protection'
+        : undefined,
   });
 
   // Calculate weighted overall score
   const overallScore = Math.round(
-    factors.reduce((sum, factor) => sum + (factor.score * factor.weight), 0)
+    factors.reduce((sum, factor) => sum + factor.score * factor.weight, 0)
   );
 
   // Calculate individual component scores
@@ -90,14 +120,17 @@ export function calculateTrustScore(input: TrustScoreInput): TrustScore {
     completeness_score: completenessScore_component,
     family_protection_score: familyProtectionScore_component,
     last_updated: new Date().toISOString(),
-    factors
+    factors,
   };
 }
 
 /**
  * Calculate document completeness score (0-100)
  */
-function calculateCompletenessScore(willData: WillData, documentsCount: number): number {
+function calculateCompletenessScore(
+  willData: WillData,
+  documentsCount: number
+): number {
   let score = 0;
 
   // Base documents count (40 points max)
@@ -118,7 +151,9 @@ function calculateCompletenessScore(willData: WillData, documentsCount: number):
 /**
  * Calculate legal validation score (0-100)
  */
-function calculateValidationScore(validationResults: ValidationResult[]): number {
+function calculateValidationScore(
+  validationResults: ValidationResult[]
+): number {
   if (validationResults.length === 0) return 85; // Assume good if no validation run
 
   const errors = validationResults.filter(r => r.level === 'error').length;
@@ -134,7 +169,9 @@ function calculateValidationScore(validationResults: ValidationResult[]): number
 /**
  * Calculate professional review score (0-100)
  */
-function calculateProfessionalScore(professionalReview?: ProfessionalReview): number {
+function calculateProfessionalScore(
+  professionalReview?: ProfessionalReview
+): number {
   if (!professionalReview) return 0;
 
   switch (professionalReview.status) {
@@ -156,7 +193,10 @@ function calculateProfessionalScore(professionalReview?: ProfessionalReview): nu
 /**
  * Calculate family protection setup score (0-100)
  */
-function calculateFamilyProtectionScore(familyMembers: number, emergencyContacts: number): number {
+function calculateFamilyProtectionScore(
+  familyMembers: number,
+  emergencyContacts: number
+): number {
   let score = 0;
 
   // Family members (50 points max)
@@ -181,7 +221,8 @@ function calculateWillSpecificScore(willData: WillData): number {
   if (willData.assets && Object.keys(willData.assets).length > 0) score += 20;
   if (willData.executors && willData.executors.length > 0) score += 15;
   if (willData.guardianship && willData.guardianship.length > 0) score += 10;
-  if (willData.specialProvisions && willData.specialProvisions.length > 0) score += 10;
+  if (willData.specialProvisions && willData.specialProvisions.length > 0)
+    score += 10;
 
   return Math.min(maxScore, score);
 }
@@ -189,7 +230,9 @@ function calculateWillSpecificScore(willData: WillData): number {
 /**
  * Get family protection level based on trust score
  */
-export function getFamilyProtectionLevel(trustScore: number): 'basic' | 'standard' | 'premium' | 'comprehensive' {
+export function getFamilyProtectionLevel(
+  trustScore: number
+): 'basic' | 'comprehensive' | 'premium' | 'standard' {
   if (trustScore >= 90) return 'comprehensive';
   if (trustScore >= 75) return 'premium';
   if (trustScore >= 60) return 'standard';
@@ -200,9 +243,9 @@ export function getFamilyProtectionLevel(trustScore: number): 'basic' | 'standar
  * Get trust score color theme for UI
  */
 export function getTrustScoreTheme(score: number): {
-  color: string;
   bg: string;
   border: string;
+  color: string;
   text: string;
 } {
   if (score >= 90) {
@@ -210,28 +253,28 @@ export function getTrustScoreTheme(score: number): {
       color: 'emerald',
       bg: 'bg-emerald-50',
       border: 'border-emerald-200',
-      text: 'text-emerald-800'
+      text: 'text-emerald-800',
     };
   } else if (score >= 75) {
     return {
       color: 'green',
       bg: 'bg-green-50',
       border: 'border-green-200',
-      text: 'text-green-800'
+      text: 'text-green-800',
     };
   } else if (score >= 60) {
     return {
       color: 'yellow',
       bg: 'bg-yellow-50',
       border: 'border-yellow-200',
-      text: 'text-yellow-800'
+      text: 'text-yellow-800',
     };
   } else {
     return {
       color: 'orange',
       bg: 'bg-orange-50',
       border: 'border-orange-200',
-      text: 'text-orange-800'
+      text: 'text-orange-800',
     };
   }
 }
@@ -239,7 +282,10 @@ export function getTrustScoreTheme(score: number): {
 /**
  * Generate family impact message based on trust score
  */
-export function getFamilyImpactMessage(score: number, familyMembersCount: number): string {
+export function getFamilyImpactMessage(
+  score: number,
+  familyMembersCount: number
+): string {
   const members = familyMembersCount || 'Your family';
 
   if (score >= 90) {

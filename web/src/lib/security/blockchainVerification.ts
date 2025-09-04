@@ -5,26 +5,26 @@
 
 import { createHash, randomBytes } from 'crypto';
 import nacl from 'tweetnacl';
-import { encodeBase64, decodeBase64 } from 'tweetnacl-util';
+import { decodeBase64, encodeBase64 } from 'tweetnacl-util';
 
 export interface BlockchainEntry {
-  id: string;
-  timestamp: number;
-  documentId: string;
   action: BlockchainAction;
-  userId: string;
-  previousHash: string;
   currentHash: string;
+  documentId: string;
+  id: string;
   merkleRoot: string;
-  signature: string;
   metadata: Record<string, any>;
+  previousHash: string;
+  signature: string;
+  timestamp: number;
+  userId: string;
 }
 
 export interface DocumentFingerprint {
   documentId: string;
-  sha256Hash: string;
   fileSize: number;
   mimeType: string;
+  sha256Hash: string;
   timestamp: number;
   version: number;
 }
@@ -32,36 +32,36 @@ export interface DocumentFingerprint {
 export interface AuditTrail {
   documentId: string;
   entries: BlockchainEntry[];
-  verified: boolean;
-  integrity: 'intact' | 'compromised' | 'unknown';
+  integrity: 'compromised' | 'intact' | 'unknown';
   lastVerified: number;
+  verified: boolean;
 }
 
 export interface VerificationResult {
-  isValid: boolean;
   chainIntegrity: boolean;
   documentIntegrity: boolean;
-  signatureVerification: boolean;
   errors: string[];
+  isValid: boolean;
+  signatureVerification: boolean;
   warnings: string[];
 }
 
 export type BlockchainAction =
-  | 'CREATE'
-  | 'UPDATE'
-  | 'DELETE'
-  | 'SHARE'
   | 'ACCESS'
-  | 'ENCRYPT'
-  | 'DECRYPT'
   | 'BACKUP'
+  | 'CREATE'
+  | 'DECRYPT'
+  | 'DELETE'
+  | 'ENCRYPT'
+  | 'PERMISSION_CHANGE'
   | 'RESTORE'
-  | 'PERMISSION_CHANGE';
+  | 'SHARE'
+  | 'UPDATE';
 
 export interface MerkleTree {
-  root: string;
   leaves: string[];
   proofs: Record<string, string[]>;
+  root: string;
 }
 
 class BlockchainVerificationService {
@@ -80,7 +80,8 @@ class BlockchainVerificationService {
     privateKey?: string
   ): Promise<BlockchainEntry> {
     const timestamp = Date.now();
-    const previousHash = await this.getLastBlockHash(documentId) || '0'.repeat(64);
+    const previousHash =
+      (await this.getLastBlockHash(documentId)) || '0'.repeat(64);
 
     // Create document fingerprint if action involves document content
     let documentFingerprint: DocumentFingerprint | undefined;
@@ -143,7 +144,8 @@ class BlockchainVerificationService {
     fileData: ArrayBuffer | Uint8Array,
     mimeType: string
   ): Promise<DocumentFingerprint> {
-    const dataArray = fileData instanceof ArrayBuffer ? new Uint8Array(fileData) : fileData;
+    const dataArray =
+      fileData instanceof ArrayBuffer ? new Uint8Array(fileData) : fileData;
 
     // Calculate SHA-256 hash
     const hash = createHash(this.HASH_ALGORITHM);
@@ -190,7 +192,9 @@ class BlockchainVerificationService {
     }
 
     // Verify document fingerprint
-    const latestFingerprint = this.getLatestDocumentFingerprint(auditTrail.entries);
+    const latestFingerprint = this.getLatestDocumentFingerprint(
+      auditTrail.entries
+    );
     let documentIntegrity = false;
 
     if (latestFingerprint) {
@@ -200,10 +204,13 @@ class BlockchainVerificationService {
         latestFingerprint.mimeType
       );
 
-      documentIntegrity = latestFingerprint.sha256Hash === currentFingerprint.sha256Hash;
+      documentIntegrity =
+        latestFingerprint.sha256Hash === currentFingerprint.sha256Hash;
 
       if (!documentIntegrity) {
-        errors.push('Document content has been modified since last blockchain entry');
+        errors.push(
+          'Document content has been modified since last blockchain entry'
+        );
       }
 
       if (latestFingerprint.fileSize !== currentFingerprint.fileSize) {
@@ -214,7 +221,9 @@ class BlockchainVerificationService {
     }
 
     // Verify signatures
-    const signatureVerification = await this.verifyAllSignatures(auditTrail.entries);
+    const signatureVerification = await this.verifyAllSignatures(
+      auditTrail.entries
+    );
     if (!signatureVerification) {
       errors.push('One or more signatures in the audit trail are invalid');
     }
@@ -329,11 +338,15 @@ class BlockchainVerificationService {
   /**
    * Verify blockchain chain integrity
    */
-  private async verifyChainIntegrity(entries: BlockchainEntry[]): Promise<boolean> {
+  private async verifyChainIntegrity(
+    entries: BlockchainEntry[]
+  ): Promise<boolean> {
     if (entries.length === 0) return true;
 
     // Sort by timestamp
-    const sortedEntries = [...entries].sort((a, b) => a.timestamp - b.timestamp);
+    const sortedEntries = [...entries].sort(
+      (a, b) => a.timestamp - b.timestamp
+    );
 
     for (let i = 1; i < sortedEntries.length; i++) {
       const current = sortedEntries[i];
@@ -368,7 +381,9 @@ class BlockchainVerificationService {
   /**
    * Verify all signatures in audit trail
    */
-  private async verifyAllSignatures(entries: BlockchainEntry[]): Promise<boolean> {
+  private async verifyAllSignatures(
+    entries: BlockchainEntry[]
+  ): Promise<boolean> {
     for (const entry of entries) {
       const isValid = await this.verifyEntrySignature(entry);
       if (!isValid) {
@@ -447,9 +462,13 @@ class BlockchainVerificationService {
   /**
    * Get latest document fingerprint from audit trail
    */
-  private getLatestDocumentFingerprint(entries: BlockchainEntry[]): DocumentFingerprint | null {
+  private getLatestDocumentFingerprint(
+    entries: BlockchainEntry[]
+  ): DocumentFingerprint | null {
     // Sort by timestamp descending
-    const sortedEntries = [...entries].sort((a, b) => b.timestamp - a.timestamp);
+    const sortedEntries = [...entries].sort(
+      (a, b) => b.timestamp - a.timestamp
+    );
 
     for (const entry of sortedEntries) {
       if (entry.metadata?.documentFingerprint) {
@@ -481,13 +500,18 @@ class BlockchainVerificationService {
     // await this.storeInSupabase('blockchain_entries', entry);
   }
 
-  private async getBlockchainEntries(documentId: string): Promise<BlockchainEntry[]> {
+  private async getBlockchainEntries(
+    documentId: string
+  ): Promise<BlockchainEntry[]> {
     // Get from IndexedDB
-    const entries = await this.getFromIndexedDB('blockchain_entries', documentId);
+    const entries = await this.getFromIndexedDB(
+      'blockchain_entries',
+      documentId
+    );
     return Array.isArray(entries) ? entries : entries ? [entries] : [];
   }
 
-  private async getLastBlockHash(documentId: string): Promise<string | null> {
+  private async getLastBlockHash(documentId: string): Promise<null | string> {
     const entries = await this.getBlockchainEntries(documentId);
     if (entries.length === 0) return null;
 
@@ -524,7 +548,10 @@ class BlockchainVerificationService {
     });
   }
 
-  private async getFromIndexedDB(storeName: string, documentId: string): Promise<BlockchainEntry[]> {
+  private async getFromIndexedDB(
+    storeName: string,
+    documentId: string
+  ): Promise<BlockchainEntry[]> {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open('LegacyGuardBlockchain', 1);
 
@@ -538,7 +565,9 @@ class BlockchainVerificationService {
         const getAllRequest = store.getAll();
         getAllRequest.onsuccess = () => {
           const allEntries = getAllRequest.result as BlockchainEntry[];
-          const filteredEntries = allEntries.filter(entry => entry.documentId === documentId);
+          const filteredEntries = allEntries.filter(
+            entry => entry.documentId === documentId
+          );
           resolve(filteredEntries);
         };
         getAllRequest.onerror = () => reject(getAllRequest.error);
@@ -556,15 +585,15 @@ class BlockchainVerificationService {
   /**
    * Generate blockchain summary report
    */
-  async generateBlockchainReport(documentId: string): Promise<{
-    documentId: string;
-    totalEntries: number;
+  async generateBlockchainReport(documentId: string): Promise<null | {
     actions: Record<BlockchainAction, number>;
+    documentId: string;
     firstEntry: string;
-    lastEntry: string;
-    verified: boolean;
     integrityStatus: string;
-  } | null> {
+    lastEntry: string;
+    totalEntries: number;
+    verified: boolean;
+  }> {
     const auditTrail = await this.getAuditTrail(documentId);
 
     if (!auditTrail) {
@@ -572,17 +601,22 @@ class BlockchainVerificationService {
     }
 
     // Count actions
-    const actions = auditTrail.entries.reduce((acc, entry) => {
-      acc[entry.action] = (acc[entry.action] || 0) + 1;
-      return acc;
-    }, {} as Record<BlockchainAction, number>);
+    const actions = auditTrail.entries.reduce(
+      (acc, entry) => {
+        acc[entry.action] = (acc[entry.action] || 0) + 1;
+        return acc;
+      },
+      {} as Record<BlockchainAction, number>
+    );
 
     return {
       documentId,
       totalEntries: auditTrail.entries.length,
       actions,
       firstEntry: new Date(auditTrail.entries[0]?.timestamp || 0).toISOString(),
-      lastEntry: new Date(auditTrail.entries[auditTrail.entries.length - 1]?.timestamp || 0).toISOString(),
+      lastEntry: new Date(
+        auditTrail.entries[auditTrail.entries.length - 1]?.timestamp || 0
+      ).toISOString(),
       verified: auditTrail.verified,
       integrityStatus: auditTrail.integrity,
     };

@@ -5,549 +5,596 @@
  */
 
 export type BusinessType =
-  | 'sole_proprietorship'
-  | 'partnership'
-  | 'llc'
   | 'corporation'
+  | 'llc'
   | 'non_profit'
+  | 'partnership'
+  | 'sole_proprietorship'
   | 'trust';
 
 export type SuccessionTrigger =
   | 'death'
-  | 'disability'
-  | 'retirement'
   | 'departure'
-  | 'sale'
+  | 'disability'
+  | 'dissolution'
   | 'merger'
-  | 'dissolution';
+  | 'retirement'
+  | 'sale';
 
 export type StakeholderRole =
+  | 'advisor'
+  | 'board_member'
+  | 'key_employee'
   | 'owner'
   | 'partner'
   | 'shareholder'
-  | 'key_employee'
-  | 'board_member'
-  | 'advisor'
   | 'successor';
 
 export type BusinessAssetType =
-  | 'intellectual_property'
-  | 'real_estate'
-  | 'equipment'
-  | 'inventory'
   | 'accounts_receivable'
   | 'contracts'
+  | 'equipment'
+  | 'goodwill'
+  | 'intellectual_property'
+  | 'inventory'
   | 'licenses'
-  | 'goodwill';
+  | 'real_estate';
 
 export interface BusinessEntity {
-  id: string;
-  name: string;
-  type: BusinessType;
-  ein: string;
-  incorporationDate: string;
-  jurisdiction: string;
-  industry: string;
+  assets: BusinessAsset[];
+  createdAt: string;
   description: string;
+  documents: CorporateDocument[];
+  ein: string;
+  governance: BusinessGovernance;
+  id: string;
+  incorporationDate: string;
+  industry: string;
+  jurisdiction: string;
+  keyPersons: KeyPerson[];
+  liabilities: BusinessLiability[];
+  name: string;
+  ownership: BusinessOwnership[];
+  successionPlan?: SuccessionPlan;
+  type: BusinessType;
+  updatedAt: string;
   valuation: {
     amount: number;
-    currency: string;
-    valuationDate: string;
-    method: string;
     appraiser?: string;
+    currency: string;
+    method: string;
+    valuationDate: string;
   };
-  ownership: BusinessOwnership[];
-  governance: BusinessGovernance;
-  assets: BusinessAsset[];
-  liabilities: BusinessLiability[];
-  keyPersons: KeyPerson[];
-  documents: CorporateDocument[];
-  successionPlan?: SuccessionPlan;
-  createdAt: string;
-  updatedAt: string;
 }
 
 export interface BusinessOwnership {
-  id: string;
-  stakeholderId: string;
-  stakeholderName: string;
-  role: StakeholderRole;
-  ownershipPercentage: number;
-  equityType: string;
-  votingRights: boolean;
-  transferRestrictions: TransferRestriction[];
-  vestingSchedule?: VestingSchedule;
   buyoutProvisions: BuyoutProvision[];
   createdAt: string;
+  equityType: string;
+  id: string;
+  ownershipPercentage: number;
+  role: StakeholderRole;
+  stakeholderId: string;
+  stakeholderName: string;
+  transferRestrictions: TransferRestriction[];
+  vestingSchedule?: VestingSchedule;
+  votingRights: boolean;
 }
 
 export interface BusinessGovernance {
   boardOfDirectors: BoardMember[];
-  officers: Officer[];
-  committees: Committee[];
-  votingAgreements: VotingAgreement[];
-  operatingAgreements: OperatingAgreement[];
   bylaws: ByLaws;
+  committees: Committee[];
   meetingRequirements: MeetingRequirement[];
+  officers: Officer[];
+  operatingAgreements: OperatingAgreement[];
+  votingAgreements: VotingAgreement[];
 }
 
 export interface BusinessAsset {
+  criticalToOperations: boolean;
+  description: string;
+  encumbrances: Encumbrance[];
   id: string;
   name: string;
+  ownership: string;
+  successorDesignation?: string;
+  transferability: string;
   type: BusinessAssetType;
-  description: string;
   valuation: {
     amount: number;
     currency: string;
     valuationDate: string;
   };
-  ownership: string;
-  transferability: string;
-  criticalToOperations: boolean;
-  successorDesignation?: string;
-  encumbrances: Encumbrance[];
 }
 
 export interface BusinessLiability {
-  id: string;
-  description: string;
   amount: number;
-  currency: string;
   creditor: string;
+  currency: string;
+  description: string;
+  id: string;
   maturityDate?: string;
   personalGuarantees: PersonalGuarantee[];
   successorLiability: boolean;
 }
 
 export interface KeyPerson {
+  compensationPackage: CompensationPackage;
+  criticalKnowledge: string[];
+  department: string;
+  documentationStatus: DocumentationStatus;
   id: string;
   name: string;
-  role: string;
-  department: string;
-  criticalKnowledge: string[];
   relationships: KeyRelationship[];
-  compensationPackage: CompensationPackage;
   retentionStrategies: RetentionStrategy[];
+  role: string;
   successorCandidates: SuccessorCandidate[];
-  documentationStatus: DocumentationStatus;
 }
 
 export interface SuccessionPlan {
-  id: string;
+  advisors: PlanAdvisor[];
   businessId: string;
-  planName: string;
-  objectives: string[];
-  timeline: SuccessionTimeline;
-  triggers: SuccessionTrigger[];
-  scenarios: SuccessionScenario[];
-  valuation: BusinessValuation;
-  tax: TaxStrategy;
-  financing: FinancingStrategy;
-  transition: TransitionPlan;
   contingencies: ContingencyPlan[];
-  status: 'draft' | 'active' | 'under_review' | 'executed';
+  createdAt: string;
+  financing: FinancingStrategy;
+  id: string;
   lastReviewed: string;
   nextReview: string;
-  advisors: PlanAdvisor[];
-  createdAt: string;
+  objectives: string[];
+  planName: string;
+  scenarios: SuccessionScenario[];
+  status: 'active' | 'draft' | 'executed' | 'under_review';
+  tax: TaxStrategy;
+  timeline: SuccessionTimeline;
+  transition: TransitionPlan;
+  triggers: SuccessionTrigger[];
   updatedAt: string;
+  valuation: BusinessValuation;
 }
 
 export interface SuccessionScenario {
-  id: string;
-  name: string;
-  trigger: SuccessionTrigger;
-  probability: number;
-  impact: 'low' | 'medium' | 'high' | 'critical';
-  timeline: string;
-  successors: SuccessorDesignation[];
   actions: ActionItem[];
-  risks: RiskAssessment[];
   financialImplications: FinancialImpact;
+  id: string;
+  impact: 'critical' | 'high' | 'low' | 'medium';
+  name: string;
+  probability: number;
+  risks: RiskAssessment[];
+  successors: SuccessorDesignation[];
+  timeline: string;
+  trigger: SuccessionTrigger;
 }
 
 export interface CorporateDocument {
-  id: string;
-  name: string;
-  type: CorporateDocumentType;
+  accessLevel: 'confidential' | 'public' | 'restricted';
   category: string;
-  importance: 'critical' | 'important' | 'supporting';
-  status: 'current' | 'expired' | 'pending_renewal';
   expirationDate?: string;
   filingRequirements: FilingRequirement[];
-  accessLevel: 'public' | 'restricted' | 'confidential';
-  retention: RetentionPolicy;
-  versions: DocumentVersion[];
+  id: string;
+  importance: 'critical' | 'important' | 'supporting';
+  name: string;
   relatedDocuments: string[];
+  retention: RetentionPolicy;
+  status: 'current' | 'expired' | 'pending_renewal';
+  type: CorporateDocumentType;
+  versions: DocumentVersion[];
 }
 
 export type CorporateDocumentType =
   | 'articles_of_incorporation'
-  | 'operating_agreement'
-  | 'shareholder_agreement'
-  | 'employment_contract'
-  | 'non_disclosure_agreement'
-  | 'partnership_agreement'
-  | 'buy_sell_agreement'
-  | 'succession_plan'
   | 'business_plan'
-  | 'financial_statement'
-  | 'tax_return'
-  | 'license'
-  | 'permit'
+  | 'buy_sell_agreement'
   | 'contract'
-  | 'insurance_policy';
+  | 'employment_contract'
+  | 'financial_statement'
+  | 'insurance_policy'
+  | 'license'
+  | 'non_disclosure_agreement'
+  | 'operating_agreement'
+  | 'partnership_agreement'
+  | 'permit'
+  | 'shareholder_agreement'
+  | 'succession_plan'
+  | 'tax_return';
 
 export interface TransferRestriction {
-  type: string;
-  description: string;
-  exceptions: string[];
   approvalRequired: boolean;
+  description: string;
+  dragAlongRights: boolean;
+  exceptions: string[];
   rightOfFirstRefusal: boolean;
   tagAlongRights: boolean;
-  dragAlongRights: boolean;
+  type: string;
 }
 
 export interface VestingSchedule {
+  acceleration: AccelerationTrigger[];
+  cliffPeriod?: string;
   totalShares: number;
   vestingPeriod: string;
-  cliffPeriod?: string;
-  acceleration: AccelerationTrigger[];
 }
 
 export interface BuyoutProvision {
+  fundingMechanism: string;
+  paymentTerms: PaymentTerms;
+  timeframe: string;
   trigger: SuccessionTrigger;
   valuationMethod: string;
-  paymentTerms: PaymentTerms;
-  fundingMechanism: string;
-  timeframe: string;
 }
 
 export interface ContingencyPlan {
-  id: string;
-  scenario: string;
-  triggers: string[];
   actions: ActionItem[];
-  responsible: string[];
-  timeline: string;
+  id: string;
   resources: ResourceRequirement[];
+  responsible: string[];
+  scenario: string;
+  timeline: string;
+  triggers: string[];
 }
 
 // Missing type definitions
 export interface BoardMember {
+  compensation: number;
   id: string;
   name: string;
   position: string;
   startDate: string;
   term: string;
-  compensation: number;
 }
 
 export interface Officer {
+  compensation: number;
+  department: string;
   id: string;
   name: string;
-  title: string;
-  department: string;
   startDate: string;
-  compensation: number;
+  title: string;
 }
 
 export interface Committee {
+  charter: string;
   id: string;
+  members: string[];
   name: string;
   type: string;
-  members: string[];
-  charter: string;
 }
 
 export interface VotingAgreement {
+  expirationDate: string;
   id: string;
   parties: string[];
   terms: string;
-  expirationDate: string;
 }
 
 export interface OperatingAgreement {
+  effectiveDate: string;
   id: string;
   parties: string[];
   terms: string;
-  effectiveDate: string;
 }
 
 export interface ByLaws {
-  version: string;
-  effectiveDate: string;
   amendmentProcess: string;
+  effectiveDate: string;
   provisions: string[];
+  version: string;
 }
 
 export interface MeetingRequirement {
-  type: string;
   frequency: string;
-  quorum: number;
   noticeRequired: number;
+  quorum: number;
+  type: string;
 }
 
 export interface Encumbrance {
-  type: string;
-  description: string;
   amount: number;
+  description: string;
   holder: string;
+  type: string;
 }
 
 export interface PersonalGuarantee {
-  guarantor: string;
   amount: number;
-  expirationDate?: string;
   conditions: string[];
+  expirationDate?: string;
+  guarantor: string;
 }
 
 export interface KeyRelationship {
-  id: string;
-  type: string;
   contact: string;
+  id: string;
   importance: string;
+  type: string;
 }
 
 export interface CompensationPackage {
   baseSalary: number;
+  benefits: string[];
   bonuses: number;
   equity: number;
-  benefits: string[];
 }
 
 export interface RetentionStrategy {
-  type: string;
-  description: string;
   cost: number;
+  description: string;
   duration: string;
+  type: string;
 }
 
 export interface SuccessorCandidate {
+  developmentNeeds: string[];
   id: string;
   name: string;
   readiness: string;
-  developmentNeeds: string[];
 }
 
 export interface DocumentationStatus {
+  completeness: number;
   documented: boolean;
   lastUpdated: string;
-  completeness: number;
 }
 
 export interface SuccessionTimeline {
   phases: Array<{
-    name: string;
-    startDate: string;
     endDate: string;
     milestones: string[];
+    name: string;
+    startDate: string;
   }>;
   totalDuration: string;
 }
 
 export interface TaxStrategy {
-  strategies: string[];
   estimatedSavings: number;
   implementation: string[];
+  strategies: string[];
 }
 
 export interface FinancingStrategy {
-  sources: string[];
   amount: number;
+  sources: string[];
   terms: string;
   timeline: string;
 }
 
 export interface TransitionPlan {
-  phases: string[];
   duration: string;
-  responsibilities: Record<string, string[]>;
   milestones: string[];
+  phases: string[];
+  responsibilities: Record<string, string[]>;
 }
 
 export interface PlanAdvisor {
+  contact: string;
+  firm: string;
   id: string;
   name: string;
   role: string;
-  firm: string;
-  contact: string;
 }
 
 export interface SuccessorDesignation {
+  conditions: string[];
+  readiness: string;
+  role: string;
   successorId: string;
   successorName: string;
-  role: string;
-  readiness: string;
-  conditions: string[];
 }
 
 export interface ActionItem {
-  id: string;
   action: string;
-  responsible: string;
+  assignee?: string;
+  category?: string;
+  completedDate?: string;
+  createdAt?: string;
   deadline: string;
+  dependencies?: string[];
+  description?: string;
+  dueDate?: string;
+  estimatedEffort?: string;
+  id: string;
+  lastUpdated?: string;
+  notes?: string;
+  priority?: string;
+  responsible: string;
   status: string;
+  title?: string;
 }
 
 export interface RiskAssessment {
-  risk: string;
-  probability: number;
+  category?: string;
+  description?: string;
+  id?: string;
   impact: string;
   mitigation: string[];
+  owner?: string;
+  probability: number;
+  reviewDate?: string;
+  risk: string;
+  severity?: string;
 }
 
 export interface FinancialImpact {
-  revenue: number;
   costs: number;
-  taxImplications: number;
+  currency?: string;
+  estimatedCost?: number;
+  financingNeeded?: boolean;
   netImpact: number;
+  revenue: number;
+  taxImplications: number;
 }
 
 export interface FilingRequirement {
-  type: string;
-  deadline: string;
   agency: string;
+  deadline: string;
   status: string;
+  type: string;
 }
 
 export interface RetentionPolicy {
+  destructionMethod: string;
   duration: string;
   storageLocation: string;
-  destructionMethod: string;
 }
 
 export interface DocumentVersion {
-  version: string;
-  date: string;
   author: string;
   changes: string[];
+  date: string;
+  version: string;
 }
 
 export interface AccelerationTrigger {
+  conditions: string[];
   event: string;
   percentageAccelerated: number;
-  conditions: string[];
 }
 
 export interface PaymentTerms {
-  structure: string;
+  collateral?: string;
   duration: string;
   interestRate?: number;
-  collateral?: string;
+  structure: string;
 }
 
 export interface ResourceRequirement {
-  type: string;
   amount: number;
-  source: string;
   availability: string;
+  source: string;
+  type: string;
 }
 
 export interface SuccessionPlanTemplate {
+  businessType: BusinessType;
   id: string;
   name: string;
-  businessType: BusinessType;
-  sections: string[];
   provisions: string[];
+  sections: string[];
 }
 
 export interface BusinessValuation {
-  method: string;
-  amount: number;
-  date: string;
-  appraiser: string;
+  amount?: number;
+  appraiser?: string;
+  assetValues?: any[];
   assumptions: string[];
+  businessId?: string;
+  date?: string;
+  discounts?: DiscountFactor[];
+  enterpriseValue?: number;
+  equityValue?: number;
+  id?: string;
+  method: string;
+  multiples?: IndustryMultiple[];
+  nextValuation?: string;
+  sensitivity?: SensitivityAnalysis;
+  validity?: string;
+  valuationDate?: string;
 }
 
 export interface AssetValuation {
-  assetId: string;
-  method: string;
   amount: number;
+  assetId: string;
   date: string;
+  method: string;
 }
 
 export interface DiscountFactor {
-  type: string;
-  percentage: number;
   justification: string;
+  percentage: number;
+  type: string;
 }
 
 export interface IndustryMultiple {
+  date: string;
   metric: string;
   multiple: number;
   source: string;
-  date: string;
 }
 
 export interface SensitivityAnalysis {
-  variable: string;
-  range: { min: number; max: number };
   impact: Record<string, number>;
+  range: { max: number; min: number };
+  variable: string;
 }
 
 export interface ReadinessScore {
-  overall: number;
   categories: Record<string, number>;
+  overall: number;
   timestamp: string;
 }
 
 export interface GapAnalysis {
   gaps: Array<{
+    actions: string[];
     area: string;
     current: string;
     target: string;
-    actions: string[];
   }>;
 }
 
 export interface Recommendation {
   id: string;
+  implementation: string[];
+  justification: string;
   priority: string;
   recommendation: string;
-  justification: string;
-  implementation: string[];
 }
 
 export interface ImplementationMilestone {
-  milestone: string;
   date: string;
-  status: string;
   dependencies: string[];
+  description?: string;
+  id?: string;
+  milestone: string;
+  name?: string;
+  responsible?: string;
+  status: string;
+  targetDate?: string;
 }
 
 export interface FinancialProjection {
-  period: string;
-  revenue: number;
-  expenses: number;
-  profit: number;
   assumptions: string[];
+  expenses: number;
+  period: string;
+  profit: number;
+  projections?: any;
+  revenue: number;
+  scenario?: string;
+  timeframe?: string;
 }
 
 export interface ReviewSchedule {
+  agenda?: string[];
   frequency: string;
   nextReview: string;
+  participants?: string[];
   reviewers: string[];
   scope: string[];
 }
 
 export interface SuccessionReport {
+  actionItems: ActionItem[];
+  businessId: string;
+  executiveSummary: string;
+  financialProjections: FinancialProjection[];
+  gapAnalysis: GapAnalysis[];
   id: string;
   planId: string;
-  businessId: string;
-  reportDate: string;
-  executiveSummary: string;
   readinessScore: ReadinessScore;
-  gapAnalysis: GapAnalysis[];
   recommendations: Recommendation[];
-  timeline: ImplementationMilestone[];
-  riskAssessment: RiskAssessment[];
-  financialProjections: FinancialProjection[];
-  actionItems: ActionItem[];
+  reportDate: string;
   reviewSchedule: ReviewSchedule;
+  riskAssessment: RiskAssessment[];
+  timeline: ImplementationMilestone[];
 }
 
-export type ActionStatus = 'pending' | 'in_progress' | 'completed' | 'blocked' | 'cancelled';
+export type ActionStatus =
+  | 'blocked'
+  | 'cancelled'
+  | 'completed'
+  | 'in_progress'
+  | 'pending';
 
 export class BusinessSuccessionPlanningService {
   private businesses: Map<string, BusinessEntity> = new Map();
@@ -558,13 +605,16 @@ export class BusinessSuccessionPlanningService {
     this.initializeTemplates();
   }
 
-  async createBusiness(businessData: Partial<BusinessEntity>): Promise<BusinessEntity> {
+  async createBusiness(
+    businessData: Partial<BusinessEntity>
+  ): Promise<BusinessEntity> {
     const business: BusinessEntity = {
       id: this.generateId(),
       name: businessData.name || '',
       type: businessData.type || 'llc',
       ein: businessData.ein || '',
-      incorporationDate: businessData.incorporationDate || new Date().toISOString(),
+      incorporationDate:
+        businessData.incorporationDate || new Date().toISOString(),
       jurisdiction: businessData.jurisdiction || '',
       industry: businessData.industry || '',
       description: businessData.description || '',
@@ -572,7 +622,7 @@ export class BusinessSuccessionPlanningService {
         amount: 0,
         currency: 'USD',
         valuationDate: new Date().toISOString(),
-        method: 'book_value'
+        method: 'book_value',
       },
       ownership: businessData.ownership || [],
       governance: businessData.governance || this.createDefaultGovernance(),
@@ -581,7 +631,7 @@ export class BusinessSuccessionPlanningService {
       keyPersons: businessData.keyPersons || [],
       documents: businessData.documents || [],
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
     };
 
     this.businesses.set(business.id, business);
@@ -605,17 +655,20 @@ export class BusinessSuccessionPlanningService {
       timeline: planData.timeline || this.createDefaultTimeline(),
       triggers: planData.triggers || ['death', 'disability', 'retirement'],
       scenarios: planData.scenarios || [],
-      valuation: planData.valuation || await this.createBusinessValuation(businessId),
+      valuation:
+        planData.valuation || (await this.createBusinessValuation(businessId)),
       tax: planData.tax || this.createDefaultTaxStrategy(),
       financing: planData.financing || this.createDefaultFinancingStrategy(),
       transition: planData.transition || this.createDefaultTransitionPlan(),
       contingencies: planData.contingencies || [],
       status: 'draft',
       lastReviewed: new Date().toISOString(),
-      nextReview: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(), // 1 year
+      nextReview: new Date(
+        Date.now() + 365 * 24 * 60 * 60 * 1000
+      ).toISOString(), // 1 year
       advisors: planData.advisors || [],
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
     };
 
     this.successionPlans.set(plan.id, plan);
@@ -645,11 +698,14 @@ export class BusinessSuccessionPlanningService {
       actions: scenario.actions || [],
       risks: scenario.risks || [],
       financialImplications: scenario.financialImplications || {
+        revenue: 0,
+        costs: 0,
+        taxImplications: 0,
+        netImpact: 0,
         estimatedCost: 0,
         currency: 'USD',
-        taxImplications: [],
-        financingNeeded: false
-      }
+        financingNeeded: false,
+      },
     };
 
     plan.scenarios.push(newScenario);
@@ -680,14 +736,16 @@ export class BusinessSuccessionPlanningService {
         assetId: asset.id,
         method,
         value: asset.valuation.amount,
-        currency: asset.valuation.currency
+        currency: asset.valuation.currency,
       })),
       assumptions: this.getValuationAssumptions(method),
       discounts: this.calculateDiscounts(business),
       multiples: this.getIndustryMultiples(business.industry),
       sensitivity: this.performSensitivityAnalysis(business),
       validity: '12 months',
-      nextValuation: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString()
+      nextValuation: new Date(
+        Date.now() + 365 * 24 * 60 * 60 * 1000
+      ).toISOString(),
     };
 
     return valuation;
@@ -717,7 +775,7 @@ export class BusinessSuccessionPlanningService {
       riskAssessment: await this.assessRisks(plan),
       financialProjections: await this.createFinancialProjections(plan),
       actionItems: this.generateActionItems(plan),
-      reviewSchedule: this.createReviewSchedule(plan)
+      reviewSchedule: this.createReviewSchedule(plan),
     };
 
     return report;
@@ -755,32 +813,36 @@ export class BusinessSuccessionPlanningService {
 
   private initializeTemplates(): void {
     // Initialize succession plan templates
-    const templates = [
+    const templates: SuccessionPlanTemplate[] = [
       {
         id: 'family_business',
         name: 'Family Business Succession',
-        type: 'family_business',
-        scenarios: ['next_generation', 'sale_to_family', 'management_buyout'],
-        requirements: ['family_governance', 'training_program', 'fairness_assessment']
+        businessType: 'llc' as BusinessType,
+        sections: ['governance', 'valuation', 'succession'],
+        provisions: [
+          'family_governance',
+          'training_program',
+          'fairness_assessment',
+        ],
       },
       {
         id: 'management_buyout',
         name: 'Management Buyout Plan',
-        type: 'management_transition',
-        scenarios: ['internal_succession', 'key_employee_buyout'],
-        requirements: ['valuation', 'financing', 'earnout_structure']
+        businessType: 'corporation' as BusinessType,
+        sections: ['buyout', 'financing', 'transition'],
+        provisions: ['valuation', 'financing', 'earnout_structure'],
       },
       {
         id: 'strategic_sale',
         name: 'Strategic Sale Preparation',
-        type: 'external_exit',
-        scenarios: ['strategic_buyer', 'financial_buyer', 'public_offering'],
-        requirements: ['due_diligence', 'value_optimization', 'deal_structure']
-      }
+        businessType: 'corporation' as BusinessType,
+        sections: ['preparation', 'valuation', 'sale'],
+        provisions: ['due_diligence', 'value_optimization', 'deal_structure'],
+      },
     ];
 
     templates.forEach(template => {
-      this.templates.set(template.id, template as SuccessionPlanTemplate);
+      this.templates.set(template.id, template);
     });
   }
 
@@ -792,59 +854,62 @@ export class BusinessSuccessionPlanningService {
       votingAgreements: [],
       operatingAgreements: [],
       bylaws: {} as ByLaws,
-      meetingRequirements: []
+      meetingRequirements: [],
     };
   }
 
   private createDefaultTimeline(): SuccessionTimeline {
     return {
-      planningPhase: '6-12 months',
-      implementationPhase: '12-24 months',
-      transitionPhase: '6-18 months',
-      milestones: [],
-      criticalDates: []
+      phases: [],
+      totalDuration: '24 months',
     };
   }
 
-  private async createBusinessValuation(businessId: string): Promise<BusinessValuation> {
+  private async createBusinessValuation(
+    businessId: string
+  ): Promise<BusinessValuation> {
     return this.performValuation(businessId);
   }
 
   private createDefaultTaxStrategy(): TaxStrategy {
     return {
-      objectives: [],
-      structures: [],
-      elections: [],
-      planning: [],
-      projectedLiability: 0,
-      currency: 'USD'
+      strategies: [],
+      estimatedSavings: 0,
+      implementation: [],
     };
   }
 
   private createDefaultFinancingStrategy(): FinancingStrategy {
     return {
-      fundingSources: [],
-      paymentStructure: [],
-      contingencies: [],
-      totalFinancingNeeded: 0,
-      currency: 'USD'
+      sources: [],
+      amount: 0,
+      terms: '',
+      timeline: '',
     };
   }
 
   private createDefaultTransitionPlan(): TransitionPlan {
     return {
       phases: [],
-      keyActivities: [],
-      stakeholderCommunication: [],
-      trainingPrograms: [],
-      retentionStrategies: []
+      duration: '12 months',
+      responsibilities: {},
+      milestones: [],
     };
   }
 
-  private calculateEnterpriseValue(business: BusinessEntity, method: string): number {
+  private calculateEnterpriseValue(
+    business: BusinessEntity,
+    method: string
+  ): number {
     // Simplified valuation calculation
-    const assetValue = business.assets.reduce((sum, asset) => sum + asset.valuation.amount, 0);
-    const liabilityValue = business.liabilities.reduce((sum, liability) => sum + liability.amount, 0);
+    const assetValue = business.assets.reduce(
+      (sum, asset) => sum + asset.valuation.amount,
+      0
+    );
+    const liabilityValue = business.liabilities.reduce(
+      (sum, liability) => sum + liability.amount,
+      0
+    );
 
     switch (method) {
       case 'asset_based':
@@ -866,7 +931,7 @@ export class BusinessSuccessionPlanningService {
     const assumptions = {
       dcf: ['Discount rate: 10%', 'Growth rate: 3%', 'Terminal multiple: 10x'],
       market_multiple: ['Industry multiple: 1.5x', 'Revenue multiple: 2x'],
-      asset_based: ['Market value of assets', 'Book value of liabilities']
+      asset_based: ['Market value of assets', 'Book value of liabilities'],
     };
 
     return assumptions[method as keyof typeof assumptions] || [];
@@ -874,32 +939,61 @@ export class BusinessSuccessionPlanningService {
 
   private calculateDiscounts(_business: BusinessEntity): DiscountFactor[] {
     return [
-      { type: 'marketability', rate: 0.2, reason: 'Private company discount' },
-      { type: 'control', rate: 0.1, reason: 'Minority interest discount' }
+      {
+        type: 'marketability',
+        percentage: 0.2,
+        justification: 'Private company discount',
+      },
+      {
+        type: 'control',
+        percentage: 0.1,
+        justification: 'Minority interest discount',
+      },
     ];
   }
 
   private getIndustryMultiples(_industry: string): IndustryMultiple[] {
     // Industry-specific multiples (simplified)
     return [
-      { metric: 'revenue', multiple: 2.0 },
-      { metric: 'ebitda', multiple: 8.0 },
-      { metric: 'earnings', multiple: 12.0 }
+      {
+        metric: 'revenue',
+        multiple: 2.0,
+        source: 'Industry Analysis',
+        date: new Date().toISOString(),
+      },
+      {
+        metric: 'ebitda',
+        multiple: 8.0,
+        source: 'Industry Analysis',
+        date: new Date().toISOString(),
+      },
+      {
+        metric: 'earnings',
+        multiple: 12.0,
+        source: 'Industry Analysis',
+        date: new Date().toISOString(),
+      },
     ];
   }
 
-  private performSensitivityAnalysis(business: BusinessEntity): SensitivityAnalysis {
+  private performSensitivityAnalysis(
+    business: BusinessEntity
+  ): SensitivityAnalysis {
     return {
-      variables: ['revenue_growth', 'margin_improvement', 'discount_rate'],
-      scenarios: [
-        { name: 'Base Case', probability: 0.5, value: business.valuation.amount },
-        { name: 'Best Case', probability: 0.25, value: business.valuation.amount * 1.3 },
-        { name: 'Worst Case', probability: 0.25, value: business.valuation.amount * 0.7 }
-      ]
+      variable: 'revenue_growth',
+      range: { min: -0.1, max: 0.2 },
+      impact: {
+        base_case: business.valuation.amount,
+        best_case: business.valuation.amount * 1.3,
+        worst_case: business.valuation.amount * 0.7,
+      },
     };
   }
 
-  private generateExecutiveSummary(business: BusinessEntity, _plan: SuccessionPlan): string {
+  private generateExecutiveSummary(
+    business: BusinessEntity,
+    _plan: SuccessionPlan
+  ): string {
     return `This succession plan for ${business.name} outlines a comprehensive strategy for business continuity and ownership transition. The plan addresses ${_plan.triggers.length} potential succession triggers and includes ${_plan.scenarios.length} detailed scenarios.`;
   }
 
@@ -914,51 +1008,65 @@ export class BusinessSuccessionPlanningService {
         planning: Math.round(score * 0.9),
         documentation: Math.round(score * 1.1),
         implementation: Math.round(score * 0.8),
-        review: Math.round(score * 0.95)
-      }
+        review: Math.round(score * 0.95),
+      },
+      timestamp: new Date().toISOString(),
     };
   }
 
-  private async performGapAnalysis(_plan: SuccessionPlan): Promise<GapAnalysis[]> {
+  private async performGapAnalysis(
+    _plan: SuccessionPlan
+  ): Promise<GapAnalysis[]> {
     return [
       {
-        category: 'Documentation',
-        currentState: 'Basic documents in place',
-        desiredState: 'Complete legal documentation',
-        gap: 'Missing buy-sell agreement updates',
-        priority: 'high',
-        effort: 'medium'
-      }
+        gaps: [
+          {
+            area: 'Documentation',
+            current: 'Basic documents in place',
+            target: 'Complete legal documentation',
+            actions: ['Update buy-sell agreement', 'Review succession plan'],
+          },
+        ],
+      },
     ];
   }
 
-  private async generateRecommendations(_plan: SuccessionPlan): Promise<Recommendation[]> {
+  private async generateRecommendations(
+    _plan: SuccessionPlan
+  ): Promise<Recommendation[]> {
     return [
       {
         id: this.generateId(),
-        category: 'legal',
-        title: 'Update Buy-Sell Agreement',
-        description: 'Review and update buy-sell agreement to reflect current valuation methods',
         priority: 'high',
-        timeline: '30 days',
-        resources: ['attorney', 'valuation_expert'],
-        estimatedCost: 10000,
-        currency: 'USD'
-      }
+        recommendation: 'Update Buy-Sell Agreement',
+        justification:
+          'Review and update buy-sell agreement to reflect current valuation methods',
+        implementation: [
+          'Contact attorney',
+          'Schedule valuation',
+          'Review agreement terms',
+        ],
+      },
     ];
   }
 
-  private generateImplementationTimeline(_plan: SuccessionPlan): ImplementationMilestone[] {
+  private generateImplementationTimeline(
+    _plan: SuccessionPlan
+  ): ImplementationMilestone[] {
     return [
       {
         id: this.generateId(),
+        milestone: 'Plan Finalization',
         name: 'Plan Finalization',
         description: 'Complete succession plan documentation',
-        targetDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
+        date: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
+        targetDate: new Date(
+          Date.now() + 90 * 24 * 60 * 60 * 1000
+        ).toISOString(),
         dependencies: [],
         responsible: 'planning_committee',
-        status: 'pending'
-      }
+        status: 'pending',
+      },
     ];
   }
 
@@ -966,30 +1074,39 @@ export class BusinessSuccessionPlanningService {
     return [
       {
         id: this.generateId(),
+        risk: 'Key person dependency risk',
         category: 'operational',
         description: 'Key person dependency risk',
         impact: 'high',
-        probability: 'medium',
+        probability: 0.6,
         severity: 'high',
         mitigation: ['Cross-training program', 'Documentation of processes'],
         owner: 'management_team',
-        reviewDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString()
-      }
+        reviewDate: new Date(
+          Date.now() + 90 * 24 * 60 * 60 * 1000
+        ).toISOString(),
+      },
     ];
   }
 
-  private async createFinancialProjections(_plan: SuccessionPlan): Promise<FinancialProjection[]> {
+  private async createFinancialProjections(
+    _plan: SuccessionPlan
+  ): Promise<FinancialProjection[]> {
     return [
       {
+        period: '5_years',
         scenario: 'base_case',
         timeframe: '5_years',
         projections: {
           revenue: [1000000, 1100000, 1210000, 1331000, 1464100],
           expenses: [800000, 860000, 924400, 992924, 1066172],
-          netIncome: [200000, 240000, 285600, 338076, 397928]
+          netIncome: [200000, 240000, 285600, 338076, 397928],
         },
-        assumptions: ['3% annual growth', 'Stable margins']
-      }
+        revenue: 1000000,
+        expenses: 800000,
+        profit: 200000,
+        assumptions: ['3% annual growth', 'Stable margins'],
+      },
     ];
   }
 
@@ -997,18 +1114,22 @@ export class BusinessSuccessionPlanningService {
     return [
       {
         id: this.generateId(),
+        action: 'Complete valuation update',
         title: 'Complete valuation update',
-        description: 'Obtain current business valuation from qualified appraiser',
+        description:
+          'Obtain current business valuation from qualified appraiser',
         category: 'valuation',
         priority: 'high',
+        responsible: 'business_owner',
         assignee: 'business_owner',
+        deadline: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString(),
         dueDate: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString(),
         status: 'pending',
         dependencies: [],
         estimatedEffort: '20 hours',
         createdAt: new Date().toISOString(),
-        lastUpdated: new Date().toISOString()
-      }
+        lastUpdated: new Date().toISOString(),
+      },
     ];
   }
 
@@ -1017,11 +1138,16 @@ export class BusinessSuccessionPlanningService {
       frequency: 'quarterly',
       participants: ['owner', 'advisors', 'successors'],
       agenda: ['Progress review', 'Plan updates', 'Market conditions'],
-      nextReview: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString()
+      nextReview: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
+      reviewers: ['owner', 'advisors', 'successors'],
+      scope: ['progress_review', 'plan_updates', 'market_conditions'],
     };
   }
 
-  private findActionItem(plan: SuccessionPlan, actionId: string): ActionItem | undefined {
+  private findActionItem(
+    plan: SuccessionPlan,
+    actionId: string
+  ): ActionItem | undefined {
     // Search through all scenarios and contingencies for the action item
     for (const scenario of plan.scenarios) {
       const action = scenario.actions.find(a => a.id === actionId);
@@ -1050,18 +1176,24 @@ export class BusinessSuccessionPlanningService {
 
   private countTotalActionItems(plan: SuccessionPlan): number {
     let count = 0;
-    plan.scenarios.forEach(scenario => count += scenario.actions.length);
-    plan.contingencies.forEach(contingency => count += contingency.actions.length);
+    plan.scenarios.forEach(scenario => (count += scenario.actions.length));
+    plan.contingencies.forEach(
+      contingency => (count += contingency.actions.length)
+    );
     return count;
   }
 
   private countCompletedActionItems(plan: SuccessionPlan): number {
     let count = 0;
     plan.scenarios.forEach(scenario => {
-      count += scenario.actions.filter(action => action.status === 'completed').length;
+      count += scenario.actions.filter(
+        action => action.status === 'completed'
+      ).length;
     });
     plan.contingencies.forEach(contingency => {
-      count += contingency.actions.filter(action => action.status === 'completed').length;
+      count += contingency.actions.filter(
+        action => action.status === 'completed'
+      ).length;
     });
     return count;
   }
@@ -1072,4 +1204,5 @@ export class BusinessSuccessionPlanningService {
 }
 
 // Export the service instance
-export const businessSuccessionPlanningService = new BusinessSuccessionPlanningService();
+export const businessSuccessionPlanningService =
+  new BusinessSuccessionPlanningService();

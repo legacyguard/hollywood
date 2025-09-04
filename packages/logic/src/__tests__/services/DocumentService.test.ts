@@ -32,8 +32,8 @@ describe('DocumentService', () => {
       file: {
         base64: 'data:image/png;base64,iVBORw0KG...',
         mimeType: 'image/png',
-        fileName: 'test.png'
-      }
+        fileName: 'test.png',
+      },
     };
 
     const mockDocument: Document = {
@@ -45,13 +45,28 @@ describe('DocumentService', () => {
       file_size: 1024,
       document_type: 'personal',
       category: 'photo',
-      metadata: {},
-      is_archived: false,
+      extracted_metadata: null,
       is_important: false,
-      extracted_text: null,
-      analysis_result: null,
+      ocr_text: null,
+      ocr_confidence: null,
+      extracted_entities: null,
+      classification_confidence: null,
+      processing_status: 'completed',
+      completion_percentage: null,
+      expires_at: null,
+      encrypted_at: null,
+      last_notification_sent_at: null,
+      professional_review_status: null,
+      professional_review_score: null,
+      professional_review_date: null,
+      professional_reviewer_id: null,
+      review_findings: null,
+      review_recommendations: null,
+      title: null,
+      description: null,
+      tags: null,
       created_at: '2024-01-01T00:00:00Z',
-      updated_at: '2024-01-01T00:00:00Z'
+      updated_at: '2024-01-01T00:00:00Z',
     };
 
     it('should upload document successfully', async () => {
@@ -80,8 +95,8 @@ describe('DocumentService', () => {
         file: {
           base64: 'invalid-base64',
           mimeType: 'image/png',
-          fileName: 'test.png'
-        }
+          fileName: 'test.png',
+        },
       };
 
       await expect(service.upload(invalidRequest)).rejects.toThrow(
@@ -94,9 +109,9 @@ describe('DocumentService', () => {
       const invalidRequest = {
         file: {
           base64: 'data:image/png;base64,iVBORw0KG...',
-          mimeType: 'image/png'
+          mimeType: 'image/png',
           // fileName missing
-        }
+        },
       } as any;
 
       await expect(service.upload(invalidRequest)).rejects.toThrow();
@@ -135,13 +150,28 @@ describe('DocumentService', () => {
         file_size: 2048,
         document_type: 'legal',
         category: 'contract',
-        metadata: {},
-        is_archived: false,
+        extracted_metadata: null,
         is_important: true,
-        extracted_text: null,
-        analysis_result: null,
+        ocr_text: null,
+        ocr_confidence: null,
+        extracted_entities: null,
+        classification_confidence: null,
+        processing_status: 'completed',
+        completion_percentage: null,
+        expires_at: null,
+        encrypted_at: null,
+        last_notification_sent_at: null,
+        professional_review_status: null,
+        professional_review_score: null,
+        professional_review_date: null,
+        professional_reviewer_id: null,
+        review_findings: null,
+        review_recommendations: null,
+        title: null,
+        description: null,
+        tags: null,
         created_at: '2024-01-01T00:00:00Z',
-        updated_at: '2024-01-01T00:00:00Z'
+        updated_at: '2024-01-01T00:00:00Z',
       },
       {
         id: '2',
@@ -152,14 +182,29 @@ describe('DocumentService', () => {
         file_size: 4096,
         document_type: 'financial',
         category: 'invoice',
-        metadata: {},
-        is_archived: false,
+        extracted_metadata: null,
         is_important: false,
-        extracted_text: null,
-        analysis_result: null,
+        ocr_text: null,
+        ocr_confidence: null,
+        extracted_entities: null,
+        classification_confidence: null,
+        processing_status: 'completed',
+        completion_percentage: null,
+        expires_at: null,
+        encrypted_at: null,
+        last_notification_sent_at: null,
+        professional_review_status: null,
+        professional_review_score: null,
+        professional_review_date: null,
+        professional_reviewer_id: null,
+        review_findings: null,
+        review_recommendations: null,
+        title: null,
+        description: null,
+        tags: null,
         created_at: '2024-01-02T00:00:00Z',
-        updated_at: '2024-01-02T00:00:00Z'
-      }
+        updated_at: '2024-01-02T00:00:00Z',
+      },
     ];
 
     it('should fetch all documents successfully', async () => {
@@ -187,7 +232,7 @@ describe('DocumentService', () => {
 
       const result = await service.getAll({
         documentType: 'legal',
-        category: 'contract'
+        category: 'contract',
       });
 
       expect(result).toEqual([mockDocuments[0]]);
@@ -237,19 +282,36 @@ describe('DocumentService', () => {
       file_size: 1024,
       document_type: 'personal',
       category: 'document',
-      metadata: {},
-      is_archived: false,
+      extracted_metadata: null,
       is_important: false,
-      extracted_text: null,
-      analysis_result: null,
+      ocr_text: null,
+      ocr_confidence: null,
+      extracted_entities: null,
+      classification_confidence: null,
+      processing_status: 'completed',
+      completion_percentage: null,
+      expires_at: null,
+      encrypted_at: null,
+      last_notification_sent_at: null,
+      professional_review_status: null,
+      professional_review_score: null,
+      professional_review_date: null,
+      professional_reviewer_id: null,
+      review_findings: null,
+      review_recommendations: null,
+      title: null,
+      description: null,
+      tags: null,
       created_at: '2024-01-01T00:00:00Z',
-      updated_at: '2024-01-01T00:00:00Z'
+      updated_at: '2024-01-01T00:00:00Z',
     };
 
     it('should fetch document by ID successfully', async () => {
       mockClient.get.mockResolvedValue({ document: mockDocument });
 
-      const result = await service.getById('123e4567-e89b-12d3-a456-426614174000');
+      const result = await service.getById(
+        '123e4567-e89b-12d3-a456-426614174000'
+      );
 
       expect(result).toEqual(mockDocument);
       expect(mockClient.get).toHaveBeenCalledWith(
@@ -288,13 +350,28 @@ describe('DocumentService', () => {
       file_size: 1024,
       document_type: 'personal',
       category: 'document',
-      metadata: {},
-      is_archived: false,
+      extracted_metadata: null,
       is_important: true,
-      extracted_text: null,
-      analysis_result: null,
+      ocr_text: null,
+      ocr_confidence: null,
+      extracted_entities: null,
+      classification_confidence: null,
+      processing_status: 'completed',
+      completion_percentage: null,
+      expires_at: null,
+      encrypted_at: null,
+      last_notification_sent_at: null,
+      professional_review_status: null,
+      professional_review_score: null,
+      professional_review_date: null,
+      professional_reviewer_id: null,
+      review_findings: null,
+      review_recommendations: null,
+      title: null,
+      description: null,
+      tags: null,
       created_at: '2024-01-01T00:00:00Z',
-      updated_at: '2024-01-02T00:00:00Z'
+      updated_at: '2024-01-02T00:00:00Z',
     };
 
     it('should update document successfully', async () => {
@@ -322,7 +399,7 @@ describe('DocumentService', () => {
     it('should throw error for invalid field types', async () => {
       await expect(
         service.update('123e4567-e89b-12d3-a456-426614174000', {
-          file_name: 123 as any
+          file_name: 123 as any,
         })
       ).rejects.toThrow('File name must be a string');
       expect(mockClient.put).not.toHaveBeenCalled();
@@ -331,7 +408,7 @@ describe('DocumentService', () => {
     it('should throw error for invalid boolean field', async () => {
       await expect(
         service.update('123e4567-e89b-12d3-a456-426614174000', {
-          is_important: 'true' as any
+          is_important: 'true' as any,
         })
       ).rejects.toThrow('is_important must be a boolean');
       expect(mockClient.put).not.toHaveBeenCalled();

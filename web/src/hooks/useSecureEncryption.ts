@@ -3,21 +3,21 @@
  * Replaces localStorage-based key storage with secure WebCrypto + IndexedDB
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useUser } from '@clerk/clerk-react';
 import {
   getSecureKeyManager,
   initializeSecureKeys,
+  type KeyPurpose,
   SecureKeyError,
-  type KeyPurpose
 } from '@/lib/encryption/secure-key-manager';
 import { toast } from 'sonner';
 
 interface SecureEncryptionState {
+  error: null | string;
   isInitialized: boolean;
-  isUnlocked: boolean;
   isLoading: boolean;
-  error: string | null;
+  isUnlocked: boolean;
 }
 
 interface EncryptionResult {
@@ -30,8 +30,8 @@ interface FileEncryptionResult {
   encryptedData: ArrayBuffer;
   encryptedFileKey: ArrayBuffer;
   iv: Uint8Array;
-  keyIv: Uint8Array;
   keyId: string;
+  keyIv: Uint8Array;
   version: string;
 }
 
@@ -62,20 +62,21 @@ export const useSecureEncryption = () => {
       setState(prev => ({
         ...prev,
         isInitialized: true,
-        isLoading: false
+        isLoading: false,
       }));
 
       console.log('🔐 Secure encryption initialized');
       return true;
     } catch (error) {
-      const errorMessage = error instanceof SecureKeyError
-        ? error.message
-        : 'Failed to initialize encryption system';
+      const errorMessage =
+        error instanceof SecureKeyError
+          ? error.message
+          : 'Failed to initialize encryption system';
 
       setState(prev => ({
         ...prev,
         isLoading: false,
-        error: errorMessage
+        error: errorMessage,
       }));
 
       toast.error('Encryption initialization failed');
@@ -86,91 +87,106 @@ export const useSecureEncryption = () => {
   /**
    * Create new encryption keys for first-time users
    */
-  const createKeys = useCallback(async (password: string): Promise<boolean> => {
-    if (!state.isInitialized) {
-      setState(prev => ({ ...prev, error: 'Encryption system not initialized' }));
-      return false;
-    }
+  const createKeys = useCallback(
+    async (password: string): Promise<boolean> => {
+      if (!state.isInitialized) {
+        setState(prev => ({
+          ...prev,
+          error: 'Encryption system not initialized',
+        }));
+        return false;
+      }
 
-    setState(prev => ({ ...prev, isLoading: true, error: null }));
+      setState(prev => ({ ...prev, isLoading: true, error: null }));
 
-    try {
-      await keyManager.createUserKeys(password);
-      setState(prev => ({
-        ...prev,
-        isUnlocked: true,
-        isLoading: false
-      }));
+      try {
+        await keyManager.createUserKeys(password);
+        setState(prev => ({
+          ...prev,
+          isUnlocked: true,
+          isLoading: false,
+        }));
 
-      toast.success('Encryption keys created successfully', {
-        description: 'Your documents are now secured with end-to-end encryption'
-      });
+        toast.success('Encryption keys created successfully', {
+          description:
+            'Your documents are now secured with end-to-end encryption',
+        });
 
-      return true;
-    } catch (error) {
-      const errorMessage = error instanceof SecureKeyError
-        ? error.message
-        : 'Failed to create encryption keys';
+        return true;
+      } catch (error) {
+        const errorMessage =
+          error instanceof SecureKeyError
+            ? error.message
+            : 'Failed to create encryption keys';
 
-      setState(prev => ({
-        ...prev,
-        isLoading: false,
-        error: errorMessage
-      }));
+        setState(prev => ({
+          ...prev,
+          isLoading: false,
+          error: errorMessage,
+        }));
 
-      toast.error('Failed to create encryption keys');
-      return false;
-    }
-  }, [state.isInitialized, keyManager]);
+        toast.error('Failed to create encryption keys');
+        return false;
+      }
+    },
+    [state.isInitialized, keyManager]
+  );
 
   /**
    * Unlock existing encryption keys with password
    */
-  const unlockKeys = useCallback(async (password: string): Promise<boolean> => {
-    if (!state.isInitialized) {
-      setState(prev => ({ ...prev, error: 'Encryption system not initialized' }));
-      return false;
-    }
-
-    setState(prev => ({ ...prev, isLoading: true, error: null }));
-
-    try {
-      const success = await keyManager.unlockKeys(password);
-
-      if (success) {
+  const unlockKeys = useCallback(
+    async (password: string): Promise<boolean> => {
+      if (!state.isInitialized) {
         setState(prev => ({
           ...prev,
-          isUnlocked: true,
-          isLoading: false
+          error: 'Encryption system not initialized',
         }));
+        return false;
+      }
 
-        toast.success('Keys unlocked successfully');
-        return true;
-      } else {
+      setState(prev => ({ ...prev, isLoading: true, error: null }));
+
+      try {
+        const success = await keyManager.unlockKeys(password);
+
+        if (success) {
+          setState(prev => ({
+            ...prev,
+            isUnlocked: true,
+            isLoading: false,
+          }));
+
+          toast.success('Keys unlocked successfully');
+          return true;
+        } else {
+          setState(prev => ({
+            ...prev,
+            isLoading: false,
+            error: 'Invalid password',
+          }));
+
+          toast.error('Invalid password');
+          return false;
+        }
+      } catch (error) {
+        const errorMessage =
+          error instanceof SecureKeyError
+            ? error.message
+            : 'Failed to unlock keys';
+
         setState(prev => ({
           ...prev,
           isLoading: false,
-          error: 'Invalid password'
+          error: errorMessage,
         }));
 
-        toast.error('Invalid password');
+        toast.error('Failed to unlock encryption keys');
         return false;
       }
-    } catch (error) {
-      const errorMessage = error instanceof SecureKeyError
-        ? error.message
-        : 'Failed to unlock keys';
-
-      setState(prev => ({
-        ...prev,
-        isLoading: false,
-        error: errorMessage
-      }));
-
-      toast.error('Failed to unlock encryption keys');
-      return false;
-    }
-  }, [state.isInitialized, keyManager]);
+    },
+    [state.isInitialized, keyManager]
+  );
 
   /**
    * Lock encryption keys (remove from memory)
@@ -184,163 +200,196 @@ export const useSecureEncryption = () => {
   /**
    * Encrypt data using master key
    */
-  const encryptData = useCallback(async (data: ArrayBuffer | Uint8Array): Promise<EncryptionResult> => {
-    if (!state.isUnlocked) {
-      throw new SecureKeyError('Keys not unlocked', 'KEYS_LOCKED');
-    }
+  const encryptData = useCallback(
+    async (data: ArrayBuffer | Uint8Array): Promise<EncryptionResult> => {
+      if (!state.isUnlocked) {
+        throw new SecureKeyError('Keys not unlocked', 'KEYS_LOCKED');
+      }
 
-    try {
-      return await keyManager.encryptData(data);
-    } catch (error) {
-      const errorMessage = error instanceof SecureKeyError
-        ? error.message
-        : 'Encryption failed';
+      try {
+        // Convert Uint8Array to ArrayBuffer if needed for BufferSource compatibility
+        const bufferData =
+          data instanceof Uint8Array
+            ? (data.buffer.slice(
+                data.byteOffset,
+                data.byteOffset + data.byteLength
+              ) as ArrayBuffer)
+            : data instanceof SharedArrayBuffer
+              ? new ArrayBuffer((data as any).byteLength)
+              : (data as ArrayBuffer);
+        return await keyManager.encryptData(bufferData);
+      } catch (error) {
+        const errorMessage =
+          error instanceof SecureKeyError ? error.message : 'Encryption failed';
 
-      toast.error('Failed to encrypt data');
-      throw new SecureKeyError(errorMessage, 'ENCRYPTION_FAILED');
-    }
-  }, [state.isUnlocked, keyManager]);
+        toast.error('Failed to encrypt data');
+        throw new SecureKeyError(errorMessage, 'ENCRYPTION_FAILED');
+      }
+    },
+    [state.isUnlocked, keyManager]
+  );
 
   /**
    * Decrypt data using master key
    */
-  const decryptData = useCallback(async (
-    encryptedData: ArrayBuffer,
-    iv: Uint8Array,
-    version?: string
-  ): Promise<ArrayBuffer> => {
-    if (!state.isUnlocked) {
-      throw new SecureKeyError('Keys not unlocked', 'KEYS_LOCKED');
-    }
+  const decryptData = useCallback(
+    async (
+      encryptedData: ArrayBuffer,
+      iv: Uint8Array,
+      version?: string
+    ): Promise<ArrayBuffer> => {
+      if (!state.isUnlocked) {
+        throw new SecureKeyError('Keys not unlocked', 'KEYS_LOCKED');
+      }
 
-    try {
-      return await keyManager.decryptData(encryptedData, iv, version);
-    } catch (error) {
-      const errorMessage = error instanceof SecureKeyError
-        ? error.message
-        : 'Decryption failed';
+      try {
+        return await keyManager.decryptData(encryptedData, iv, version);
+      } catch (error) {
+        const errorMessage =
+          error instanceof SecureKeyError ? error.message : 'Decryption failed';
 
-      toast.error('Failed to decrypt data');
-      throw new SecureKeyError(errorMessage, 'DECRYPTION_FAILED');
-    }
-  }, [state.isUnlocked, keyManager]);
+        toast.error('Failed to decrypt data');
+        throw new SecureKeyError(errorMessage, 'DECRYPTION_FAILED');
+      }
+    },
+    [state.isUnlocked, keyManager]
+  );
 
   /**
    * Encrypt file with unique file key (compatible with DocumentUploader)
    */
-  const encryptFile = useCallback(async (file: File): Promise<{
-    encryptedFile: Blob;
-    metadata: {
-      originalName: string;
-      originalSize: number;
-      mimeType: string;
-      iv: string;
-      version: string;
-      timestamp: number;
-    };
-  }> => {
-    if (!state.isUnlocked) {
-      throw new SecureKeyError('Keys not unlocked', 'KEYS_LOCKED');
-    }
-
-    try {
-      // Read file as ArrayBuffer
-      const fileData = await file.arrayBuffer();
-
-      // Encrypt the file data
-      const encryptionResult = await keyManager.encryptData(fileData);
-
-      // Create encrypted blob
-      const encryptedFile = new Blob([encryptionResult.encryptedData], {
-        type: 'application/octet-stream'
-      });
-
-      // Create metadata
-      const metadata = {
-        originalName: file.name,
-        originalSize: file.size,
-        mimeType: file.type,
-        iv: Array.from(encryptionResult.iv).join(','), // Convert to string for storage
-        version: encryptionResult.version,
-        timestamp: Date.now(),
+  const encryptFile = useCallback(
+    async (
+      file: File
+    ): Promise<{
+      encryptedFile: Blob;
+      metadata: {
+        iv: string;
+        mimeType: string;
+        originalName: string;
+        originalSize: number;
+        timestamp: number;
+        version: string;
       };
+    }> => {
+      if (!state.isUnlocked) {
+        throw new SecureKeyError('Keys not unlocked', 'KEYS_LOCKED');
+      }
 
-      return {
-        encryptedFile,
-        metadata,
-      };
-    } catch (error) {
-      const errorMessage = error instanceof SecureKeyError
-        ? error.message
-        : 'File encryption failed';
+      try {
+        // Read file as ArrayBuffer
+        const fileData = await file.arrayBuffer();
 
-      toast.error('Failed to encrypt file');
-      throw new SecureKeyError(errorMessage, 'FILE_ENCRYPTION_FAILED');
-    }
-  }, [state.isUnlocked, keyManager]);
+        // Encrypt the file data
+        const encryptionResult = await keyManager.encryptData(fileData);
+
+        // Create encrypted blob
+        const encryptedFile = new Blob([encryptionResult.encryptedData], {
+          type: 'application/octet-stream',
+        });
+
+        // Create metadata
+        const metadata = {
+          originalName: file.name,
+          originalSize: file.size,
+          mimeType: file.type,
+          iv: Array.from(encryptionResult.iv).join(','), // Convert to string for storage
+          version: encryptionResult.version,
+          timestamp: Date.now(),
+        };
+
+        return {
+          encryptedFile,
+          metadata,
+        };
+      } catch (error) {
+        const errorMessage =
+          error instanceof SecureKeyError
+            ? error.message
+            : 'File encryption failed';
+
+        toast.error('Failed to encrypt file');
+        throw new SecureKeyError(errorMessage, 'FILE_ENCRYPTION_FAILED');
+      }
+    },
+    [state.isUnlocked, keyManager]
+  );
 
   /**
    * Decrypt file data
    */
-  const decryptFile = useCallback(async (
-    encryptedBlob: Blob,
-    ivString: string,
-    version?: string
-  ): Promise<ArrayBuffer> => {
-    if (!state.isUnlocked) {
-      throw new SecureKeyError('Keys not unlocked', 'KEYS_LOCKED');
-    }
+  const decryptFile = useCallback(
+    async (
+      encryptedBlob: Blob,
+      ivString: string,
+      version?: string
+    ): Promise<ArrayBuffer> => {
+      if (!state.isUnlocked) {
+        throw new SecureKeyError('Keys not unlocked', 'KEYS_LOCKED');
+      }
 
-    try {
-      // Convert blob to ArrayBuffer
-      const encryptedData = await encryptedBlob.arrayBuffer();
+      try {
+        // Convert blob to ArrayBuffer
+        const encryptedData = await encryptedBlob.arrayBuffer();
 
-      // Convert IV string back to Uint8Array
-      const iv = new Uint8Array(ivString.split(',').map(Number));
+        // Convert IV string back to Uint8Array
+        const iv = new Uint8Array(ivString.split(',').map(Number));
 
-      // Decrypt the data
-      return await keyManager.decryptData(encryptedData, iv, version);
-    } catch (error) {
-      const errorMessage = error instanceof SecureKeyError
-        ? error.message
-        : 'File decryption failed';
+        // Decrypt the data
+        return await keyManager.decryptData(encryptedData, iv, version);
+      } catch (error) {
+        const errorMessage =
+          error instanceof SecureKeyError
+            ? error.message
+            : 'File decryption failed';
 
-      toast.error('Failed to decrypt file');
-      throw new SecureKeyError(errorMessage, 'FILE_DECRYPTION_FAILED');
-    }
-  }, [state.isUnlocked, keyManager]);
+        toast.error('Failed to decrypt file');
+        throw new SecureKeyError(errorMessage, 'FILE_DECRYPTION_FAILED');
+      }
+    },
+    [state.isUnlocked, keyManager]
+  );
 
   /**
    * Change user password
    */
-  const changePassword = useCallback(async (oldPassword: string, newPassword: string): Promise<boolean> => {
-    if (!state.isInitialized) {
-      setState(prev => ({ ...prev, error: 'Encryption system not initialized' }));
-      return false;
-    }
-
-    setState(prev => ({ ...prev, isLoading: true }));
-
-    try {
-      const success = await keyManager.changePassword(oldPassword, newPassword);
-
-      setState(prev => ({ ...prev, isLoading: false }));
-
-      if (success) {
-        toast.success('Password changed successfully', {
-          description: 'Your encryption keys have been re-secured'
-        });
-        return true;
-      } else {
-        toast.error('Failed to change password');
+  const changePassword = useCallback(
+    async (oldPassword: string, newPassword: string): Promise<boolean> => {
+      if (!state.isInitialized) {
+        setState(prev => ({
+          ...prev,
+          error: 'Encryption system not initialized',
+        }));
         return false;
       }
-    } catch (error) {
-      setState(prev => ({ ...prev, isLoading: false }));
-      toast.error('Password change failed');
-      return false;
-    }
-  }, [state.isInitialized, keyManager]);
+
+      setState(prev => ({ ...prev, isLoading: true }));
+
+      try {
+        const success = await keyManager.changePassword(
+          oldPassword,
+          newPassword
+        );
+
+        setState(prev => ({ ...prev, isLoading: false }));
+
+        if (success) {
+          toast.success('Password changed successfully', {
+            description: 'Your encryption keys have been re-secured',
+          });
+          return true;
+        } else {
+          toast.error('Failed to change password');
+          return false;
+        }
+      } catch (error) {
+        setState(prev => ({ ...prev, isLoading: false }));
+        toast.error('Password change failed');
+        return false;
+      }
+    },
+    [state.isInitialized, keyManager]
+  );
 
   /**
    * Check if first-time setup is needed
@@ -368,9 +417,12 @@ export const useSecureEncryption = () => {
   useEffect(() => {
     if (!state.isUnlocked) return;
 
-    const timeout = setTimeout(() => {
-      lockKeys();
-    }, 30 * 60 * 1000); // 30 minutes
+    const timeout = setTimeout(
+      () => {
+        lockKeys();
+      },
+      30 * 60 * 1000
+    ); // 30 minutes
 
     return () => clearTimeout(timeout);
   }, [state.isUnlocked, lockKeys]);

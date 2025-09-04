@@ -3,66 +3,66 @@
  * Simple event emitter for global component communication
  */
 
-type EventCallback = (...args: unknown[]) => void
+type EventCallback = (...args: unknown[]) => void;
 
 class EventBus {
-  private events: Map<string, Set<EventCallback>> = new Map()
+  private events: Map<string, Set<EventCallback>> = new Map();
 
   on(event: string, callback: EventCallback): () => void {
     if (!this.events.has(event)) {
-      this.events.set(event, new Set())
+      this.events.set(event, new Set());
     }
 
-    const callbacks = this.events.get(event)
+    const callbacks = this.events.get(event);
     if (callbacks) {
-      callbacks.add(callback)
+      callbacks.add(callback);
     }
 
     // Return unsubscribe function
     return () => {
-      this.off(event, callback)
-    }
+      this.off(event, callback);
+    };
   }
 
   off(event: string, callback: EventCallback): void {
-    const callbacks = this.events.get(event)
+    const callbacks = this.events.get(event);
     if (callbacks) {
-      callbacks.delete(callback)
+      callbacks.delete(callback);
       if (callbacks.size === 0) {
-        this.events.delete(event)
+        this.events.delete(event);
       }
     }
   }
 
   emit(event: string, ...args: unknown[]): void {
-    const callbacks = this.events.get(event)
+    const callbacks = this.events.get(event);
     if (callbacks) {
       callbacks.forEach(callback => {
         try {
-          callback(...args)
+          callback(...args);
         } catch (error) {
-          console.error(`Error in event handler for ${event}:`, error)
+          console.error(`Error in event handler for ${event}:`, error);
         }
-      })
+      });
     }
   }
 
   once(event: string, callback: EventCallback): () => void {
     const onceCallback = (...args: unknown[]) => {
-      callback(...args)
-      this.off(event, onceCallback)
-    }
+      callback(...args);
+      this.off(event, onceCallback);
+    };
 
-    return this.on(event, onceCallback)
+    return this.on(event, onceCallback);
   }
 
   clear(): void {
-    this.events.clear()
+    this.events.clear();
   }
 }
 
 // Export singleton instance
-export const eventBus = new EventBus()
+export const eventBus = new EventBus();
 
 // Define event types
 export const EVENTS = {
@@ -72,12 +72,12 @@ export const EVENTS = {
   DOCUMENT_CREATED: 'document:created',
   DOCUMENT_SHARED: 'document:shared',
   ANIMATION_COMPLETE: 'animation:complete',
-} as const
+} as const;
 
-export type EventType = typeof EVENTS[keyof typeof EVENTS]
+export type EventType = (typeof EVENTS)[keyof typeof EVENTS];
 
 // Helper hooks for React components
-import { useEffect, type DependencyList } from 'react'
+import { type DependencyList, useEffect } from 'react';
 
 export function useEventBus(
   event: EventType | string,
@@ -85,16 +85,19 @@ export function useEventBus(
   deps: DependencyList = []
 ) {
   useEffect(() => {
-    const unsubscribe = eventBus.on(event, handler)
-    return unsubscribe
+    const unsubscribe = eventBus.on(event, handler);
+    return unsubscribe;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [event, handler, ...deps])
+  }, [event, handler, ...deps]);
 }
 
 export function useEventEmitter() {
   return {
-    emit: (event: EventType | string, ...args: unknown[]) => eventBus.emit(event, ...args),
-    on: (event: EventType | string, callback: EventCallback) => eventBus.on(event, callback),
-    off: (event: EventType | string, callback: EventCallback) => eventBus.off(event, callback),
-  }
+    emit: (event: EventType | string, ...args: unknown[]) =>
+      eventBus.emit(event, ...args),
+    on: (event: EventType | string, callback: EventCallback) =>
+      eventBus.on(event, callback),
+    off: (event: EventType | string, callback: EventCallback) =>
+      eventBus.off(event, callback),
+  };
 }

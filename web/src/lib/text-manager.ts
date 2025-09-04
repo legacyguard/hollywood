@@ -1,26 +1,26 @@
 // Adaptive Text Manager for Sofia's Empathetic/Pragmatic Communication
 // This system provides dual communication modes based on user preferences
 
-export type CommunicationStyle = 'empathetic' | 'pragmatic' | 'default';
+export type CommunicationStyle = 'default' | 'empathetic' | 'pragmatic';
 
 // Strong typing for text keys to prevent typos at compile time
 export type TextKey =
-  | 'sofia_welcome'
-  | 'sofia_greeting_returning_user'
-  | 'milestone_time_capsule_unlocked'
-  | 'milestone_first_document_uploaded'
-  | 'milestone_guardian_assigned'
-  | 'milestone_will_completed'
-  | 'progress_pillar_unlocked'
+  | 'backup_completed'
   | 'document_expiry_reminder'
   | 'document_upload_success'
-  | 'backup_completed'
-  | 'upload_error'
-  | 'system_maintenance'
+  | 'milestone_first_document_uploaded'
+  | 'milestone_guardian_assigned'
+  | 'milestone_time_capsule_unlocked'
+  | 'milestone_will_completed'
   | 'next_step_suggestions'
+  | 'progress_pillar_unlocked'
   | 'security_explanation'
+  | 'sofia_greeting_returning_user'
+  | 'sofia_welcome'
+  | 'system_maintenance'
   | 'time_capsule_creation_prompt'
-  | 'time_capsule_recording_complete';
+  | 'time_capsule_recording_complete'
+  | 'upload_error';
 
 export interface TextVariant {
   empathetic: string;
@@ -28,7 +28,7 @@ export interface TextVariant {
 }
 
 export interface TextConfig {
-  [key: string]: TextVariant | string;
+  [key: string]: string | TextVariant;
 }
 
 // Core text configurations with both empathetic and pragmatic variants
@@ -256,7 +256,8 @@ export class TextManager {
       const personalityManager = this.getPersonalityManager(userId);
       if (personalityManager) {
         const currentStyle = personalityManager.getCurrentStyle();
-        resolvedStyle = currentStyle === 'balanced' ? 'pragmatic' : currentStyle;
+        resolvedStyle =
+          currentStyle === 'balanced' ? 'pragmatic' : currentStyle;
       } else {
         // Fall back to legacy style detection
         resolvedStyle = this.getUserPreferredStyle(userId);

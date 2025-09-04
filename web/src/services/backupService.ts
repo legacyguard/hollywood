@@ -7,52 +7,52 @@
 import { toast } from 'sonner';
 import { createClient } from '@supabase/supabase-js';
 import * as nacl from 'tweetnacl';
-import { encodeBase64, decodeBase64 } from 'tweetnacl-util';
+import { decodeBase64, encodeBase64 } from 'tweetnacl-util';
 
 // Backup data structure
 export interface BackupData {
-  version: string;
   exportDate: string;
-  userId: string;
-  userData: {
-    profile?: any;
-    preferences?: any;
-  };
   localStorage: {
-    documents?: any[];
     assets?: any[];
-    people?: any[];
-    wills?: any[];
-    guardians?: any[];
-    settings?: any;
-  };
-  supabase: {
     documents?: any[];
     guardians?: any[];
-    onboardingResponses?: any[];
-    customData?: any;
+    people?: any[];
+    settings?: any;
+    wills?: any[];
   };
   metadata: {
     appVersion?: string;
-    exportedFrom?: string;
     checksum?: string;
     encrypted?: boolean;
     encryptionVersion?: string;
+    exportedFrom?: string;
   };
+  supabase: {
+    customData?: any;
+    documents?: any[];
+    guardians?: any[];
+    onboardingResponses?: any[];
+  };
+  userData: {
+    preferences?: any;
+    profile?: any;
+  };
+  userId: string;
+  version: string;
 }
 
 export interface EncryptedBackupData {
-  version: string;
+  data: string; // Base64 encoded encrypted data
   encrypted: true;
   encryptionVersion: string;
-  salt: string;
-  nonce: string;
-  data: string; // Base64 encoded encrypted data
   metadata: {
+    checksum?: string;
     exportDate: string;
     userId: string;
-    checksum?: string;
   };
+  nonce: string;
+  salt: string;
+  version: string;
 }
 
 export class BackupService {

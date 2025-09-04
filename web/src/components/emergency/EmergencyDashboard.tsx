@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useSupabaseWithClerk } from '@/integrations/supabase/client';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -9,17 +9,17 @@ import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { FadeIn } from '@/components/motion/FadeIn';
 import type {
-  EmergencyDashboardData,
   EmergencyActivation,
-  EmergencyDocument,
   EmergencyContact,
+  EmergencyDashboardData,
+  EmergencyDocument,
   EmergencyTimeCapsule,
   GuardianPermissions,
 } from '@/types/emergency';
 
 interface EmergencyDashboardProps {
-  verificationToken?: string;
   _guardianAccess?: boolean;
+  verificationToken?: string;
 }
 
 export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
@@ -36,9 +36,9 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
   const [isProcessing, setIsProcessing] = useState(false);
   const [responseNotes, setResponseNotes] = useState('');
   const [selectedTab, setSelectedTab] = useState<
-    'overview' | 'documents' | 'contacts' | 'capsules'
+    'capsules' | 'contacts' | 'documents' | 'overview'
   >('overview');
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<null | string>(null);
 
   const currentToken = verificationToken || token;
 
@@ -69,8 +69,10 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
         id: activationRecord.id,
         user_id: activationRecord.user_id,
         guardian_id: activationRecord.guardian_id,
-        trigger_type: (activationRecord.trigger_type || 'manual_guardian') as EmergencyActivation['trigger_type'],
-        status: (activationRecord.status || 'pending') as EmergencyActivation['status'],
+        trigger_type: (activationRecord.trigger_type ||
+          'manual_guardian') as EmergencyActivation['trigger_type'],
+        status: (activationRecord.status ||
+          'pending') as EmergencyActivation['status'],
         verification_token: activationRecord.verification_token || '',
         token_expires_at: activationRecord.token_expires_at || '',
         guardian_email: activationRecord.guardian_email,
@@ -107,9 +109,14 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
         can_trigger_emergency: true, // Default to true for emergency access
         can_access_health_docs: true, // Default to true for emergency access
         can_access_financial_docs: true, // Default to true for emergency access
-        is_child_guardian: (guardian as any)?.relationship === 'parent' || (guardian as any)?.relationship === 'guardian',
-        is_will_executor: (guardian as any)?.relationship === 'executor' || (guardian as any)?.relationship === 'attorney',
-        emergency_contact_priority: (guardian as any)?.emergency_contact_priority || 1,
+        is_child_guardian:
+          (guardian as any)?.relationship === 'parent' ||
+          (guardian as any)?.relationship === 'guardian',
+        is_will_executor:
+          (guardian as any)?.relationship === 'executor' ||
+          (guardian as any)?.relationship === 'attorney',
+        emergency_contact_priority:
+          (guardian as any)?.emergency_contact_priority || 1,
       };
 
       // Get user's accessible documents based on guardian permissions
@@ -122,7 +129,10 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
       // Filter documents based on guardian permissions
       const accessibleDocuments: EmergencyDocument[] = (documents || [])
         .filter(doc => {
-          if (guardianPermissions.can_access_health_docs && doc.document_type === 'Health')
+          if (
+            guardianPermissions.can_access_health_docs &&
+            doc.document_type === 'Health'
+          )
             return true;
           if (
             guardianPermissions.can_access_financial_docs &&
@@ -137,7 +147,8 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
           id: doc.id,
           file_name: doc.file_name,
           document_type: doc.document_type,
-          access_level: doc.document_type.toLowerCase() as EmergencyDocument['access_level'],
+          access_level:
+            doc.document_type.toLowerCase() as EmergencyDocument['access_level'],
           is_accessible: true,
           last_updated: doc.updated_at,
           description: `${doc.document_type} document (${doc.file_size ? (doc.file_size / 1024).toFixed(1) : '0'} KB)`,
@@ -146,14 +157,12 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
       // Get other guardians as emergency contacts
       const { data: otherGuardians } = await supabase
         .from('guardians')
-        .select(
-          'name, email, phone, relationship, is_active'
-        )
+        .select('name, email, phone, relationship, is_active')
         .eq('user_id', activation.user_id)
         .eq('is_active', true);
 
       const emergencyContacts: EmergencyContact[] = (otherGuardians || [])
-        .filter((g) => g && g.name && g.email)
+        .filter(g => g && g.name && g.email)
         .map((g, index: number) => ({
           name: g.name,
           email: g.email,
@@ -161,8 +170,7 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
           relationship: g.relationship || 'Guardian',
           priority: index + 1, // Priority based on order
           is_notified: false, // Would check notification status in real implementation
-        })
-      );
+        }));
 
       // Get available time capsules if guardian has access
       const { data: timeCapsules } = await supabase
@@ -320,7 +328,8 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
     return (
       <div className='min-h-screen bg-gradient-to-br from-red-50 to-orange-50 dark:from-red-950/20 dark:to-orange-950/20 p-4 flex items-center justify-center'>
         <Card className='p-8 text-center'>
-          <Icon name="loading"
+          <Icon
+            name='loading'
             className='w-8 h-8 animate-spin mx-auto mb-4 text-red-600'
           />
           <h2 className='text-xl font-semibold mb-2'>
@@ -338,14 +347,15 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
     return (
       <div className='min-h-screen bg-gradient-to-br from-red-50 to-orange-50 dark:from-red-950/20 dark:to-orange-950/20 p-4 flex items-center justify-center'>
         <Card className='p-8 text-center max-w-md'>
-          <Icon name="alert-triangle"
+          <Icon
+            name='alert-triangle'
             className='w-12 h-12 mx-auto mb-4 text-red-600'
           />
           <h2 className='text-xl font-semibold mb-2 text-red-900 dark:text-red-100'>
             Access Error
           </h2>
           <p className='text-muted-foreground mb-6'>{error}</p>
-          <Button onClick={() => navigate('/')} variant="outline">
+          <Button onClick={() => navigate('/')} variant='outline'>
             Return Home
           </Button>
         </Card>
@@ -370,7 +380,7 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
           <div className='mb-8'>
             <div className='flex items-center gap-4 mb-4'>
               <div className='p-3 bg-red-100 dark:bg-red-900/50 rounded-full'>
-                <Icon name="shield-alert" className='w-8 h-8 text-red-600' />
+                <Icon name='shield-alert' className='w-8 h-8 text-red-600' />
               </div>
               <div>
                 <h1 className='text-3xl font-bold text-red-900 dark:text-red-100'>
@@ -387,7 +397,7 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
             <Card className='p-4 bg-red-100 dark:bg-red-900/50 border-red-200 dark:border-red-800'>
               <div className='flex items-center justify-between'>
                 <div className='flex items-center gap-3'>
-                  <Badge variant="destructive" className='px-3 py-1'>
+                  <Badge variant='destructive' className='px-3 py-1'>
                     {activation_details.trigger_type
                       .replace('_', ' ')
                       .toUpperCase()}
@@ -447,16 +457,16 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
                       <h3 className='font-medium mb-2'>Your Permissions</h3>
                       <div className='flex flex-wrap gap-2'>
                         {access_permissions.can_access_health_docs && (
-                          <Badge variant="secondary">Health Documents</Badge>
+                          <Badge variant='secondary'>Health Documents</Badge>
                         )}
                         {access_permissions.can_access_financial_docs && (
-                          <Badge variant="secondary">Financial Documents</Badge>
+                          <Badge variant='secondary'>Financial Documents</Badge>
                         )}
                         {access_permissions.is_will_executor && (
-                          <Badge variant="secondary">Will Executor</Badge>
+                          <Badge variant='secondary'>Will Executor</Badge>
                         )}
                         {access_permissions.is_child_guardian && (
-                          <Badge variant="secondary">Child Guardian</Badge>
+                          <Badge variant='secondary'>Child Guardian</Badge>
                         )}
                       </div>
                     </div>
@@ -478,16 +488,17 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
                 <div className='flex gap-4 justify-center'>
                   <Button
                     onClick={() => handleActivationResponse('rejected')}
-                    variant="outline"
+                    variant='outline'
                     disabled={isProcessing}
                     className='min-w-[150px]'
                   >
                     {isProcessing ? (
-                      <Icon name="loading"
+                      <Icon
+                        name='loading'
                         className='w-4 h-4 mr-2 animate-spin'
                       />
                     ) : (
-                      <Icon name="x" className='w-4 h-4 mr-2' />
+                      <Icon name='x' className='w-4 h-4 mr-2' />
                     )}
                     Reject Activation
                   </Button>
@@ -498,11 +509,12 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
                     className='min-w-[150px] bg-red-600 hover:bg-red-700'
                   >
                     {isProcessing ? (
-                      <Icon name="loading"
+                      <Icon
+                        name='loading'
                         className='w-4 h-4 mr-2 animate-spin'
                       />
                     ) : (
-                      <Icon name="check" className='w-4 h-4 mr-2' />
+                      <Icon name='check' className='w-4 h-4 mr-2' />
                     )}
                     Confirm Activation
                   </Button>
@@ -521,14 +533,23 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
             ].map(tab => (
               <button
                 key={tab.id}
-                onClick={() => setSelectedTab(tab.id as 'overview' | 'documents' | 'contacts' | 'capsules')}
+                onClick={() =>
+                  setSelectedTab(
+                    tab.id as 'capsules' | 'contacts' | 'documents' | 'overview'
+                  )
+                }
                 className={`flex items-center gap-2 px-4 py-2 rounded-md font-medium transition-colors ${
                   selectedTab === tab.id
                     ? 'bg-red-100 dark:bg-red-900/50 text-red-900 dark:text-red-100'
                     : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
-                <Icon name={tab.icon as 'dashboard' | 'documents' | 'users' | 'clock'} className='w-4 h-4' />
+                <Icon
+                  name={
+                    tab.icon as 'clock' | 'dashboard' | 'documents' | 'users'
+                  }
+                  className='w-4 h-4'
+                />
                 {tab.label}
               </button>
             ))}
@@ -540,7 +561,7 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
               <div className='grid md:grid-cols-2 gap-6'>
                 <Card className='p-6'>
                   <h3 className='font-semibold mb-4 flex items-center gap-2'>
-                    <Icon name="user" className='w-5 h-5' />
+                    <Icon name='user' className='w-5 h-5' />
                     User Information
                   </h3>
                   <div className='space-y-3 text-sm'>
@@ -556,7 +577,7 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
                     </div>
                     <div>
                       <strong>Shield Status:</strong>
-                      <Badge className='ml-2' variant="secondary">
+                      <Badge className='ml-2' variant='secondary'>
                         {user_info.shield_status
                           .replace('_', ' ')
                           .toUpperCase()}
@@ -567,7 +588,7 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
 
                 <Card className='p-6'>
                   <h3 className='font-semibold mb-4 flex items-center gap-2'>
-                    <Icon name="info" className='w-5 h-5' />
+                    <Icon name='info' className='w-5 h-5' />
                     Quick Stats
                   </h3>
                   <div className='space-y-3 text-sm'>
@@ -594,7 +615,7 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
             {selectedTab === 'documents' && (
               <Card className='p-6'>
                 <h3 className='font-semibold mb-4 flex items-center gap-2'>
-                  <Icon name="documents" className='w-5 h-5' />
+                  <Icon name='documents' className='w-5 h-5' />
                   Accessible Documents ({available_documents.length})
                 </h3>
 
@@ -611,7 +632,7 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
                         className='flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800'
                       >
                         <div className='flex items-center gap-3'>
-                          <Icon name="file" className='w-5 h-5 text-gray-500' />
+                          <Icon name='file' className='w-5 h-5 text-gray-500' />
                           <div>
                             <div className='font-medium'>{doc.file_name}</div>
                             <div className='text-sm text-muted-foreground'>
@@ -634,12 +655,12 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
                           </Badge>
                           <Button
                             size='sm'
-                            variant="outline"
+                            variant='outline'
                             onClick={() =>
                               downloadDocument(doc.id, doc.file_name)
                             }
                           >
-                            <Icon name="download" className='w-4 h-4' />
+                            <Icon name='download' className='w-4 h-4' />
                           </Button>
                         </div>
                       </div>
@@ -652,7 +673,7 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
             {selectedTab === 'contacts' && (
               <Card className='p-6'>
                 <h3 className='font-semibold mb-4 flex items-center gap-2'>
-                  <Icon name="users" className='w-5 h-5' />
+                  <Icon name='users' className='w-5 h-5' />
                   Emergency Contacts ({contact_information.length})
                 </h3>
 
@@ -664,7 +685,7 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
                     >
                       <div className='flex items-center gap-3'>
                         <div className='w-10 h-10 bg-blue-100 dark:bg-blue-900/50 rounded-full flex items-center justify-center'>
-                          <Icon name="user" className='w-5 h-5 text-blue-600' />
+                          <Icon name='user' className='w-5 h-5 text-blue-600' />
                         </div>
                         <div>
                           <div className='font-medium'>{contact.name}</div>
@@ -683,7 +704,7 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
                       </div>
 
                       <div className='text-right'>
-                        <Badge variant="outline" className='mb-2'>
+                        <Badge variant='outline' className='mb-2'>
                           Priority {contact.priority}
                         </Badge>
                         <div className='text-xs text-muted-foreground'>
@@ -699,7 +720,7 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
             {selectedTab === 'capsules' && (
               <Card className='p-6'>
                 <h3 className='font-semibold mb-4 flex items-center gap-2'>
-                  <Icon name="clock" className='w-5 h-5' />
+                  <Icon name='clock' className='w-5 h-5' />
                   Available Time Capsules ({time_capsules.length})
                 </h3>
 
@@ -725,7 +746,7 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
                               </p>
                             )}
                           </div>
-                          <Badge variant="outline">
+                          <Badge variant='outline'>
                             {capsule.delivery_condition === 'ON_DEATH'
                               ? 'Emergency Access'
                               : 'Scheduled'}
@@ -742,7 +763,7 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
                             onClick={() => accessTimeCapsule(capsule)}
                             className='bg-amber-600 hover:bg-amber-700'
                           >
-                            <Icon name="play" className='w-4 h-4 mr-2' />
+                            <Icon name='play' className='w-4 h-4 mr-2' />
                             Access Message
                           </Button>
                         </div>

@@ -3,20 +3,25 @@
  * Handles email notifications for review requests, assignments, and completions
  */
 
-import type { ReviewRequest, DocumentReview, ProfessionalReviewer, ReviewResult } from '@/types/professional';
+import type {
+  DocumentReview,
+  ProfessionalReviewer,
+  ReviewRequest,
+  ReviewResult,
+} from '@/types/professional';
 
 export interface EmailTemplate {
-  subject: string;
   htmlBody: string;
+  subject: string;
   textBody: string;
 }
 
 export interface EmailNotification {
-  to: string[];
-  cc?: string[];
   bcc?: string[];
-  template: EmailTemplate;
+  cc?: string[];
   data: Record<string, any>;
+  template: EmailTemplate;
+  to: string[];
 }
 
 export class ProfessionalEmailNotificationService {
@@ -39,7 +44,11 @@ export class ProfessionalEmailNotificationService {
     request: ReviewRequest,
     documentName: string
   ): Promise<void> {
-    const template = this.generateNewRequestTemplate(reviewer, request, documentName);
+    const template = this.generateNewRequestTemplate(
+      reviewer,
+      request,
+      documentName
+    );
 
     const notification: EmailNotification = {
       to: [reviewer.email],
@@ -51,12 +60,21 @@ export class ProfessionalEmailNotificationService {
         documentName,
         reviewType: request.review_type,
         priority: request.priority,
-        priorityClass: request.priority === 'urgent' ? 'priority-urgent' : request.priority === 'high' ? 'priority-high' : '',
+        priorityClass:
+          request.priority === 'urgent'
+            ? 'priority-urgent'
+            : request.priority === 'high'
+              ? 'priority-high'
+              : '',
         estimatedFee: this.calculateEstimatedFee(request),
-        dueDate: request.deadline ? new Date(request.deadline).toLocaleDateString() : 'Flexible',
-        responseDeadline: new Date(Date.now() + 48 * 60 * 60 * 1000).toLocaleString(),
-        familyMembersCount: 'multiple'
-      }
+        dueDate: request.deadline
+          ? new Date(request.deadline).toLocaleDateString()
+          : 'Flexible',
+        responseDeadline: new Date(
+          Date.now() + 48 * 60 * 60 * 1000
+        ).toLocaleString(),
+        familyMembersCount: 'multiple',
+      },
     };
 
     await this.sendEmail(notification);
@@ -71,7 +89,11 @@ export class ProfessionalEmailNotificationService {
     request: ReviewRequest,
     documentName: string
   ): Promise<void> {
-    const template = this.generateClientConfirmationTemplate(clientName, request, documentName);
+    const template = this.generateClientConfirmationTemplate(
+      clientName,
+      request,
+      documentName
+    );
 
     const notification: EmailNotification = {
       to: [clientEmail],
@@ -83,8 +105,8 @@ export class ProfessionalEmailNotificationService {
         estimatedCost: this.calculateEstimatedFee(request),
         expectedTimeframe: this.getExpectedTimeframe(request.review_type),
         requestId: request.id,
-        supportEmail: 'support@legacyguard.com'
-      }
+        supportEmail: 'support@legacyguard.com',
+      },
     };
 
     await this.sendEmail(notification);
@@ -99,7 +121,12 @@ export class ProfessionalEmailNotificationService {
     documentName: string,
     clientName: string
   ): Promise<void> {
-    const template = this.generateAssignmentTemplate(reviewer, review, documentName, clientName);
+    const template = this.generateAssignmentTemplate(
+      reviewer,
+      review,
+      documentName,
+      clientName
+    );
 
     const notification: EmailNotification = {
       to: [reviewer.email],
@@ -110,12 +137,14 @@ export class ProfessionalEmailNotificationService {
         documentName,
         reviewType: review.review_type,
         priority: review.priority,
-        dueDate: review.due_date ? new Date(review.due_date).toLocaleDateString() : 'No specific deadline',
+        dueDate: review.due_date
+          ? new Date(review.due_date).toLocaleDateString()
+          : 'No specific deadline',
         reviewFee: review.review_fee || 0,
         reviewId: review.id,
         dashboardUrl: `${this.baseUrl}/professional/dashboard`,
-        documentUrl: `${this.baseUrl}/professional/review/${review.id}`
-      }
+        documentUrl: `${this.baseUrl}/professional/review/${review.id}`,
+      },
     };
 
     await this.sendEmail(notification);
@@ -132,7 +161,13 @@ export class ProfessionalEmailNotificationService {
     reviewerName: string,
     documentName: string
   ): Promise<void> {
-    const template = this.generateCompletionTemplate(clientName, review, result, reviewerName, documentName);
+    const template = this.generateCompletionTemplate(
+      clientName,
+      review,
+      result,
+      reviewerName,
+      documentName
+    );
 
     const notification: EmailNotification = {
       to: [clientEmail],
@@ -146,8 +181,8 @@ export class ProfessionalEmailNotificationService {
         recommendationsCount: result.recommendations.length,
         issuesCount: result.issues_found.length,
         reviewUrl: `${this.baseUrl}/reviews/${review.id}`,
-        dashboardUrl: `${this.baseUrl}/dashboard`
-      }
+        dashboardUrl: `${this.baseUrl}/dashboard`,
+      },
     };
 
     await this.sendEmail(notification);
@@ -162,7 +197,12 @@ export class ProfessionalEmailNotificationService {
     documentName: string,
     daysOverdue: number = 0
   ): Promise<void> {
-    const template = this.generateReminderTemplate(reviewer, review, documentName, daysOverdue);
+    const template = this.generateReminderTemplate(
+      reviewer,
+      review,
+      documentName,
+      daysOverdue
+    );
 
     const notification: EmailNotification = {
       to: [reviewer.email],
@@ -177,8 +217,8 @@ export class ProfessionalEmailNotificationService {
         daysOverdue,
         isOverdue: daysOverdue > 0,
         reviewId: review.id,
-        dashboardUrl: `${this.baseUrl}/professional/dashboard`
-      }
+        dashboardUrl: `${this.baseUrl}/professional/dashboard`,
+      },
     };
 
     await this.sendEmail(notification);
@@ -504,8 +544,12 @@ LegacyGuard Professional Review Network
   ): EmailTemplate {
     const subject = `Your Professional Review is Complete - ${documentName}`;
 
-    const statusEmoji = result.overall_status === 'approved' ? '✅' :
-                        result.overall_status === 'requires_revision' ? '⚠️' : '❌';
+    const statusEmoji =
+      result.overall_status === 'approved'
+        ? '✅'
+        : result.overall_status === 'requires_revision'
+          ? '⚠️'
+          : '❌';
 
     const htmlBody = `
       <!DOCTYPE html>
@@ -546,12 +590,16 @@ LegacyGuard Professional Review Network
               </ul>
             </div>
 
-            ${result.overall_status === 'requires_revision' ? `
+            ${
+              result.overall_status === 'requires_revision'
+                ? `
             <div class="warning-box">
               <h3>⚠️ Action Required</h3>
               <p>Your document needs some revisions. The reviewer has provided specific recommendations to strengthen your document.</p>
             </div>
-            ` : ''}
+            `
+                : ''
+            }
 
             <div style="text-align: center; margin: 30px 0;">
               <a href="{reviewUrl}" style="display: inline-block; background: #10B981; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600;">
@@ -588,8 +636,11 @@ Review Summary:
 - Recommendations: ${result.recommendations.length}
 - Issues Found: ${result.issues_found.length}
 
-${result.overall_status === 'requires_revision' ?
-'Your document needs some revisions. The reviewer has provided specific recommendations to strengthen your document.\n\n' : ''}
+${
+  result.overall_status === 'requires_revision'
+    ? 'Your document needs some revisions. The reviewer has provided specific recommendations to strengthen your document.\n\n'
+    : ''
+}
 
 View the full review at: ${this.baseUrl}/reviews/${review.id}
 
@@ -608,9 +659,10 @@ The LegacyGuard Team
     documentName: string,
     daysOverdue: number
   ): EmailTemplate {
-    const subject = daysOverdue > 0
-      ? `⚠️ Overdue Review Reminder - ${documentName}`
-      : `Reminder: Review Due Soon - ${documentName}`;
+    const subject =
+      daysOverdue > 0
+        ? `⚠️ Overdue Review Reminder - ${documentName}`
+        : `Reminder: Review Due Soon - ${documentName}`;
 
     const htmlBody = `
       <!DOCTYPE html>
@@ -637,9 +689,11 @@ The LegacyGuard Team
           <div class="content">
             <h2>Hello {reviewerName},</h2>
 
-            <p>${daysOverdue > 0
-              ? `This is a reminder that your review for {documentName} is now {daysOverdue} days overdue.`
-              : `This is a friendly reminder that you have a pending review for {documentName}.`}
+            <p>${
+              daysOverdue > 0
+                ? `This is a reminder that your review for {documentName} is now {daysOverdue} days overdue.`
+                : `This is a friendly reminder that you have a pending review for {documentName}.`
+            }
             </p>
 
             <div class="info-box">
@@ -658,9 +712,11 @@ The LegacyGuard Team
               </a>
             </div>
 
-            <p>${daysOverdue > 0
-              ? 'Please complete this review as soon as possible to avoid reassignment.'
-              : 'Please complete this review at your earliest convenience.'}</p>
+            <p>${
+              daysOverdue > 0
+                ? 'Please complete this review as soon as possible to avoid reassignment.'
+                : 'Please complete this review at your earliest convenience.'
+            }</p>
           </div>
 
           <div class="footer">
@@ -681,9 +737,11 @@ ${daysOverdue > 0 ? 'Overdue Review Reminder' : 'Review Reminder'} - ${documentN
 
 Hello ${reviewer.full_name},
 
-${daysOverdue > 0
-  ? `This is a reminder that your review for ${documentName} is now ${daysOverdue} days overdue.`
-  : `This is a friendly reminder that you have a pending review for ${documentName}.`}
+${
+  daysOverdue > 0
+    ? `This is a reminder that your review for ${documentName} is now ${daysOverdue} days overdue.`
+    : `This is a friendly reminder that you have a pending review for ${documentName}.`
+}
 
 Review Details:
 - Document: ${documentName}
@@ -692,9 +750,11 @@ Review Details:
 
 Complete your review at: ${this.baseUrl}/professional/dashboard
 
-${daysOverdue > 0
-  ? 'Please complete this review as soon as possible to avoid reassignment.'
-  : 'Please complete this review at your earliest convenience.'}
+${
+  daysOverdue > 0
+    ? 'Please complete this review as soon as possible to avoid reassignment.'
+    : 'Please complete this review at your earliest convenience.'
+}
 
 Best regards,
 LegacyGuard Professional Review Network
@@ -706,9 +766,9 @@ LegacyGuard Professional Review Network
   private calculateEstimatedFee(request: ReviewRequest): number {
     // Base fees by review type
     const baseFees: Record<string, number> = {
-      'basic': 150,
-      'comprehensive': 300,
-      'expert': 500
+      basic: 150,
+      comprehensive: 300,
+      expert: 500,
     };
 
     let fee = baseFees[request.review_type] ?? baseFees['basic'];
@@ -723,7 +783,8 @@ LegacyGuard Professional Review Network
     // Rush deadline multiplier
     if (request.deadline) {
       const daysUntilDeadline = Math.floor(
-        (new Date(request.deadline).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
+        (new Date(request.deadline).getTime() - Date.now()) /
+          (1000 * 60 * 60 * 24)
       );
 
       if (daysUntilDeadline <= 2) {
@@ -738,9 +799,9 @@ LegacyGuard Professional Review Network
 
   private getExpectedTimeframe(reviewType: string): string {
     const timeframes: Record<string, string> = {
-      'basic': '3-5 business days',
-      'comprehensive': '5-7 business days',
-      'expert': '7-10 business days'
+      basic: '3-5 business days',
+      comprehensive: '5-7 business days',
+      expert: '7-10 business days',
     };
 
     return timeframes[reviewType] || '5-7 business days';
@@ -754,10 +815,19 @@ LegacyGuard Professional Review Network
       to: notification.to,
       cc: notification.cc,
       bcc: notification.bcc,
-      subject: this.interpolateTemplate(notification.template.subject, notification.data),
-      htmlBody: this.interpolateTemplate(notification.template.htmlBody, notification.data),
-      textBody: this.interpolateTemplate(notification.template.textBody, notification.data),
-      data: notification.data
+      subject: this.interpolateTemplate(
+        notification.template.subject,
+        notification.data
+      ),
+      htmlBody: this.interpolateTemplate(
+        notification.template.htmlBody,
+        notification.data
+      ),
+      textBody: this.interpolateTemplate(
+        notification.template.textBody,
+        notification.data
+      ),
+      data: notification.data,
     });
 
     // Example integration with SendGrid:
@@ -779,7 +849,10 @@ LegacyGuard Professional Review Network
     */
   }
 
-  private interpolateTemplate(template: string, data: Record<string, any>): string {
+  private interpolateTemplate(
+    template: string,
+    data: Record<string, any>
+  ): string {
     let result = template;
 
     Object.keys(data).forEach(key => {

@@ -5,7 +5,7 @@
 
 export interface CSPConfig {
   directives: {
-    [key: string]: string[] | string;
+    [key: string]: string | string[];
   };
 }
 
@@ -21,8 +21,8 @@ export function getCSPConfig(isDevelopment: boolean = false): CSPConfig {
       // Script sources
       'script-src': [
         "'self'",
-        isDevelopment ? "'unsafe-inline'" : "", // Only in dev
-        isDevelopment ? "'unsafe-eval'" : "", // Only in dev
+        isDevelopment ? "'unsafe-inline'" : '', // Only in dev
+        isDevelopment ? "'unsafe-eval'" : '', // Only in dev
         'https://challenges.cloudflare.com',
         'https://clerk.com',
         'https://*.clerk.com',
@@ -37,11 +37,7 @@ export function getCSPConfig(isDevelopment: boolean = false): CSPConfig {
       ],
 
       // Font sources
-      'font-src': [
-        "'self'",
-        'data:',
-        'https://fonts.gstatic.com',
-      ],
+      'font-src': ["'self'", 'data:', 'https://fonts.gstatic.com'],
 
       // Image sources
       'img-src': [
@@ -55,11 +51,7 @@ export function getCSPConfig(isDevelopment: boolean = false): CSPConfig {
       ],
 
       // Media sources
-      'media-src': [
-        "'self'",
-        'blob:',
-        'https://*.supabase.co',
-      ],
+      'media-src': ["'self'", 'blob:', 'https://*.supabase.co'],
 
       // Connect sources (API calls, WebSockets)
       'connect-src': [
@@ -172,7 +164,7 @@ export async function reportCSPViolation(violation: any): Promise<void> {
 
 // Set up CSP violation listener
 if (typeof window !== 'undefined') {
-  window.addEventListener('securitypolicyviolation', (event) => {
+  window.addEventListener('securitypolicyviolation', event => {
     reportCSPViolation({
       blockedURI: event.blockedURI,
       columnNumber: event.columnNumber,

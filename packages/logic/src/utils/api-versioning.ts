@@ -16,7 +16,7 @@ export const API_VERSIONS = {
   v1: { major: 1, minor: 0, patch: 0 },
   v2: { major: 2, minor: 0, patch: 0 },
   current: { major: 2, minor: 1, patch: 0 },
-  minimum: { major: 1, minor: 0, patch: 0 }
+  minimum: { major: 1, minor: 0, patch: 0 },
 } as const;
 
 /**
@@ -29,9 +29,9 @@ export function parseVersion(versionString: string): ApiVersion {
   }
 
   return {
-    major: parseInt(match[1], 10),
-    minor: parseInt(match[2], 10),
-    patch: parseInt(match[3], 10)
+    major: parseInt(match[1]!, 10),
+    minor: parseInt(match[2]!, 10),
+    patch: parseInt(match[3]!, 10),
   };
 }
 
@@ -100,16 +100,16 @@ export class VersionedApiClient {
   getVersionHeaders(): Record<string, string> {
     return {
       'API-Version': formatVersion(this.version),
-      'Accept': this.acceptVersion,
+      Accept: this.acceptVersion,
       'X-API-Version': formatVersion(this.version),
-      'X-Min-Version': formatVersion(API_VERSIONS.minimum)
+      'X-Min-Version': formatVersion(API_VERSIONS.minimum),
     };
   }
 
   /**
    * Check if server version is compatible
    */
-  checkServerVersion(serverVersionHeader: string | null): boolean {
+  checkServerVersion(serverVersionHeader: null | string): boolean {
     if (!serverVersionHeader) {
       console.warn('No server version header found, assuming compatibility');
       return true;
@@ -137,17 +137,18 @@ export class VersionedApiClient {
     if (compareVersions(clientVersion, serverVer) < 0) {
       console.warn(
         `Client version (${formatVersion(clientVersion)}) is older than server version (${serverVersion}). ` +
-        'Consider updating the client.'
+          'Consider updating the client.'
       );
     } else {
       console.warn(
         `Client version (${formatVersion(clientVersion)}) is newer than server version (${serverVersion}). ` +
-        'Some features may not be available.'
+          'Some features may not be available.'
       );
     }
 
     // Check if we need to downgrade the request
-    if (response.status === 406) { // Not Acceptable
+    if (response.status === 406) {
+      // Not Acceptable
       throw new Error(
         `API version mismatch: Client ${formatVersion(clientVersion)} is not compatible with server ${serverVersion}`
       );
@@ -161,14 +162,20 @@ export class VersionedApiClient {
 export class VersionNegotiator {
   private supportedVersions: ApiVersion[];
 
-  constructor(supportedVersions: ApiVersion[] = [API_VERSIONS.v1, API_VERSIONS.v2, API_VERSIONS.current]) {
+  constructor(
+    supportedVersions: ApiVersion[] = [
+      API_VERSIONS.v1,
+      API_VERSIONS.v2,
+      API_VERSIONS.current,
+    ]
+  ) {
     this.supportedVersions = supportedVersions;
   }
 
   /**
    * Negotiate best version based on client request
    */
-  negotiate(requestedVersion: string | null): ApiVersion {
+  negotiate(requestedVersion: null | string): ApiVersion {
     if (!requestedVersion) {
       return API_VERSIONS.current;
     }
@@ -214,9 +221,7 @@ export class VersionNegotiator {
   isSupported(version: string): boolean {
     try {
       const ver = parseVersion(version);
-      return this.supportedVersions.some(
-        v => compareVersions(v, ver) === 0
-      );
+      return this.supportedVersions.some(v => compareVersions(v, ver) === 0);
     } catch {
       return false;
     }
@@ -227,11 +232,14 @@ export class VersionNegotiator {
  * Deprecation warning system
  */
 export class DeprecationManager {
-  private deprecations: Map<string, {
-    version: ApiVersion;
-    message: string;
-    alternative?: string;
-  }>;
+  private deprecations: Map<
+    string,
+    {
+      alternative?: string;
+      message: string;
+      version: ApiVersion;
+    }
+  >;
 
   constructor() {
     this.deprecations = new Map();
@@ -249,7 +257,7 @@ export class DeprecationManager {
     this.deprecations.set(feature, {
       version: deprecatedInVersion,
       message,
-      alternative
+      ...(alternative !== undefined && { alternative }),
     });
   }
 
@@ -268,7 +276,7 @@ export class DeprecationManager {
   /**
    * Get deprecation warning for a feature
    */
-  getWarning(feature: string): string | null {
+  getWarning(feature: string): null | string {
     const deprecation = this.deprecations.get(feature);
     if (!deprecation) {
       return null;
@@ -392,7 +400,7 @@ export function createVersionedClient(
       // Add version headers
       const headers = {
         ...options?.headers,
-        ...versionClient.getVersionHeaders()
+        ...versionClient.getVersionHeaders(),
       };
 
       const response = await baseClient.get(endpoint, { ...options, headers });
@@ -411,7 +419,7 @@ export function createVersionedClient(
 
       const headers = {
         ...options?.headers,
-        ...versionClient.getVersionHeaders()
+        ...versionClient.getVersionHeaders(),
       };
 
       return baseClient.post(endpoint, data, { ...options, headers });
@@ -422,7 +430,7 @@ export function createVersionedClient(
 
       const headers = {
         ...options?.headers,
-        ...versionClient.getVersionHeaders()
+        ...versionClient.getVersionHeaders(),
       };
 
       return baseClient.put(endpoint, data, { ...options, headers });
@@ -433,11 +441,11 @@ export function createVersionedClient(
 
       const headers = {
         ...options?.headers,
-        ...versionClient.getVersionHeaders()
+        ...versionClient.getVersionHeaders(),
       };
 
       return baseClient.delete(endpoint, { ...options, headers });
-    }
+    },
   };
 
   return wrappedClient;

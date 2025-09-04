@@ -3,477 +3,605 @@
  * Multi-jurisdiction, multi-language will generation system
  */
 
-export type Jurisdiction = 'CZ' | 'SK' | 'DE' | 'AT' | 'FR' | 'ES' | 'IT' | 'NL' | 'BE' | 'LU' |
-  'CH' | 'LI' | 'UK' | 'DK' | 'SE' | 'FI' | 'PL' | 'HU' | 'SI' | 'EE' | 'LV' | 'LT' |
-  'PT' | 'GR' | 'MT' | 'CY' | 'IE' | 'NO' | 'IS' | 'RO' | 'BG' | 'HR' | 'RS' | 'AL' |
-  'MK' | 'ME' | 'MD' | 'UA' | 'BA';
+export type Jurisdiction =
+  | 'AL'
+  | 'AT'
+  | 'BA'
+  | 'BE'
+  | 'BG'
+  | 'CH'
+  | 'CY'
+  | 'CZ'
+  | 'DE'
+  | 'DK'
+  | 'EE'
+  | 'ES'
+  | 'FI'
+  | 'FR'
+  | 'GR'
+  | 'HR'
+  | 'HU'
+  | 'IE'
+  | 'IS'
+  | 'IT'
+  | 'LI'
+  | 'LT'
+  | 'LU'
+  | 'LV'
+  | 'MD'
+  | 'ME'
+  | 'MK'
+  | 'MT'
+  | 'NL'
+  | 'NO'
+  | 'PL'
+  | 'PT'
+  | 'RO'
+  | 'RS'
+  | 'SE'
+  | 'SI'
+  | 'SK'
+  | 'UA'
+  | 'UK';
 
-export type WillTemplateType = 'holographic' | 'allographic' | 'notarial' | 'witnessed';
+export type WillTemplateType =
+  | 'allographic'
+  | 'holographic'
+  | 'notarial'
+  | 'witnessed';
 
-export type LanguageCode = 'cs' | 'sk' | 'en' | 'de' | 'fr' | 'es' | 'it' | 'nl' | 'da' |
-  'sv' | 'fi' | 'pl' | 'hu' | 'sl' | 'et' | 'lv' | 'lt' | 'pt' | 'el' | 'mt' | 'ga' |
-  'no' | 'is' | 'ro' | 'bg' | 'hr' | 'sr' | 'sq' | 'mk' | 'me' | 'ru' | 'uk' | 'bs';
+export type LanguageCode =
+  | 'bg'
+  | 'bs'
+  | 'cs'
+  | 'da'
+  | 'de'
+  | 'el'
+  | 'en'
+  | 'es'
+  | 'et'
+  | 'fi'
+  | 'fr'
+  | 'ga'
+  | 'hr'
+  | 'hu'
+  | 'is'
+  | 'it'
+  | 'lt'
+  | 'lv'
+  | 'me'
+  | 'mk'
+  | 'mt'
+  | 'nl'
+  | 'no'
+  | 'pl'
+  | 'pt'
+  | 'ro'
+  | 'ru'
+  | 'sk'
+  | 'sl'
+  | 'sq'
+  | 'sr'
+  | 'sv'
+  | 'uk';
 
 export interface WillJurisdictionConfig {
-  jurisdiction: Jurisdiction;
   countryName: {
     [key in LanguageCode]?: string;
   };
-  supportedLanguages: LanguageCode[];
-  primaryLanguage: LanguageCode;
-  supportedWillTypes: WillTemplateType[];
   defaultWillType: WillTemplateType;
+  jurisdiction: Jurisdiction;
   legalRequirements: JurisdictionRequirements;
-  taxInfo: TaxInfo;
   notaryRequirements?: NotaryRequirements;
+  primaryLanguage: LanguageCode;
+  supportedLanguages: LanguageCode[];
+  supportedWillTypes: WillTemplateType[];
+  taxInfo: TaxInfo;
 }
 
 export interface JurisdictionRequirements {
+  forcedHeirship: boolean;
+  formalRequirements: string[];
+  holographicAllowed: boolean;
   minimumAge: number;
-  witnessRequirements: {
+  notarization: {
+    circumstances?: string[];
+    optional: boolean;
     required: boolean;
+  };
+  revocationRules: string[];
+  witnessRequirements: {
     minimumCount: number;
+    required: boolean;
     witnessRestrictions: string[];
   };
-  notarization: {
-    required: boolean;
-    optional: boolean;
-    circumstances?: string[];
-  };
-  holographicAllowed: boolean;
-  forcedHeirship: boolean;
-  revocationRules: string[];
-  formalRequirements: string[];
 }
 
 export interface TaxInfo {
+  exemptions?: string[];
   inheritanceTax: boolean;
+  notes?: string;
   taxRates?: {
+    rate: number;
     relationship: string;
     threshold: number;
-    rate: number;
   }[];
-  exemptions?: string[];
-  notes?: string;
 }
 
 export interface NotaryRequirements {
+  estimatedFees?: {
+    currency: string;
+    max: number;
+    min: number;
+  };
   organization: string;
   searchUrl?: string;
   verificationRequired: boolean;
-  estimatedFees?: {
-    min: number;
-    max: number;
-    currency: string;
-  };
 }
 
 export interface WillTemplate {
   id: string;
   jurisdiction: Jurisdiction;
-  type: WillTemplateType;
   language: LanguageCode;
-  version: string;
-
+  legalClauses: LegalClause[];
   metadata: {
-    name: string;
     description: string;
     lastUpdated: string;
     legalReview: {
-      reviewedBy?: string;
-      reviewDate?: string;
       isApproved: boolean;
+      reviewDate?: string;
+      reviewedBy?: string;
     };
+    name: string;
   };
 
   structure: WillTemplateStructure;
-  variables: TemplateVariable[];
+
+  type: WillTemplateType;
   validationRules: ValidationRule[];
-  legalClauses: LegalClause[];
+  variables: TemplateVariable[];
+  version: string;
 }
 
 export interface WillTemplateStructure {
+  executionInstructions: ExecutionInstructions;
+  footer: TemplateSection;
   header: TemplateSection;
   sections: TemplateSection[];
-  footer: TemplateSection;
-  executionInstructions: ExecutionInstructions;
 }
 
 export interface TemplateSection {
-  id: string;
-  title: string;
+  conditionalLogic?: ConditionalLogic;
   content: string;
+  helpText?: string;
+  id: string;
+  legalReference?: string;
   order: number;
   required: boolean;
-  conditionalLogic?: ConditionalLogic;
+  title: string;
   variables?: string[];
-  helpText?: string;
-  legalReference?: string;
 }
 
 export interface ConditionalLogic {
   condition: string;
   dependencies: string[];
-  showIf?: Record<string, any>;
   hideIf?: Record<string, any>;
+  showIf?: Record<string, any>;
 }
 
 export interface TemplateVariable {
+  dataSource?: 'asset' | 'beneficiary' | 'guardian' | 'user';
+  defaultValue?: boolean | number | string | string[];
+  description?: string;
   key: string;
   label: string;
-  type: 'text' | 'number' | 'date' | 'select' | 'boolean' | 'array' | 'object';
-  required: boolean;
-  defaultValue?: any;
-  validation?: ValidationRule[];
   options?: SelectOption[];
-  description?: string;
   placeholder?: string;
-  dataSource?: 'user' | 'guardian' | 'asset' | 'beneficiary';
+  required: boolean;
+  type: 'array' | 'boolean' | 'date' | 'number' | 'object' | 'select' | 'text';
+  validation?: ValidationRule[];
 }
 
 export interface SelectOption {
-  value: string;
-  label: string;
   description?: string;
+  label: string;
+  value: string;
 }
 
 export interface ValidationRule {
-  type: 'required' | 'minLength' | 'maxLength' | 'pattern' | 'custom' | 'legal';
-  value?: any;
-  message: string;
-  severity: 'error' | 'warning' | 'info';
   jurisdictionSpecific?: boolean;
+  message: string;
+  severity: 'error' | 'info' | 'warning';
+  type: 'custom' | 'legal' | 'maxLength' | 'minLength' | 'pattern' | 'required';
+  value?: boolean | number | string;
 }
 
 export interface LegalClause {
-  id: string;
-  type: 'mandatory' | 'conditional' | 'optional';
-  jurisdiction: Jurisdiction;
-  content: string;
-  legalBasis: string;
   applicableWhenConditions?: Record<string, any>;
+  content: string;
+  id: string;
+  jurisdiction: Jurisdiction;
+  legalBasis: string;
+  type: 'conditional' | 'mandatory' | 'optional';
 }
 
 export interface ExecutionInstructions {
   holographic?: {
-    steps: string[];
     requirements: string[];
+    steps: string[];
+    warnings: string[];
+  };
+  notarial?: {
+    expectedCosts: string;
+    notaryRequirements: string[];
+    steps: string[];
     warnings: string[];
   };
   witnessed?: {
     steps: string[];
+    warnings: string[];
     witnessRequirements: string[];
-    warnings: string[];
-  };
-  notarial?: {
-    steps: string[];
-    notaryRequirements: string[];
-    expectedCosts: string;
-    warnings: string[];
   };
 }
 
 export interface WillGenerationRequest {
-  userId: string;
   jurisdiction: Jurisdiction;
   language: LanguageCode;
-  willType: WillTemplateType;
+  preferences: WillGenerationPreferences;
   templateId?: string;
   userData: WillUserData;
-  preferences: WillGenerationPreferences;
+  userId: string;
+  willType: WillTemplateType;
 }
 
 export interface WillUserData {
-  personal: PersonalInfo;
-  family: FamilyInfo;
   assets: AssetInfo[];
   beneficiaries: BeneficiaryInfo[];
   executors: ExecutorInfo[];
+  family: FamilyInfo;
   guardians?: GuardianshipInfo[];
+  personal: PersonalInfo;
   specialInstructions: SpecialInstruction[];
 }
 
 export interface PersonalInfo {
-  fullName: string;
-  dateOfBirth: string;
-  placeOfBirth: string;
-  personalId?: string;
-  citizenship: string;
   address: AddressInfo;
-  maritalStatus: 'single' | 'married' | 'divorced' | 'widowed' | 'partnership';
+  citizenship: string;
+  dateOfBirth: string;
+  fullName: string;
+  maritalStatus: 'divorced' | 'married' | 'partnership' | 'single' | 'widowed';
+  personalId?: string;
+  placeOfBirth: string;
   profession?: string;
 }
 
 export interface AddressInfo {
-  street: string;
   city: string;
-  postalCode: string;
   country: string;
+  postalCode: string;
   region?: string;
+  street: string;
 }
 
 export interface FamilyInfo {
-  spouse?: PersonalInfo;
   children: ChildInfo[];
   parents?: PersonalInfo[];
   siblings?: PersonalInfo[];
+  spouse?: PersonalInfo;
 }
 
 export interface ChildInfo extends PersonalInfo {
-  isMinor: boolean;
   guardianship?: {
     currentGuardian?: string;
     proposedGuardian?: string;
     specialNeeds?: string;
   };
+  isMinor: boolean;
 }
 
 export interface AssetInfo {
-  id: string;
-  type: 'real_estate' | 'bank_account' | 'investment' | 'vehicle' | 'business' | 'personal_property' | 'digital_asset' | 'other';
-  description: string;
-  value: number;
   currency: string;
+  description: string;
+  documentReference?: string;
+  encumbrances?: string;
+  id: string;
   location?: string;
   ownershipPercentage: number;
-  encumbrances?: string;
-  documentReference?: string;
+  type:
+    | 'bank_account'
+    | 'business'
+    | 'digital_asset'
+    | 'investment'
+    | 'other'
+    | 'personal_property'
+    | 'real_estate'
+    | 'vehicle';
+  value: number;
 }
 
 export interface BeneficiaryInfo {
-  id: string;
-  name: string;
-  relationship: string;
-  dateOfBirth?: string;
-  personalId?: string;
   address: AddressInfo;
+  alternativeBeneficiary?: string;
+  conditions?: string;
   contactInfo?: {
     email?: string;
     phone?: string;
   };
+  dateOfBirth?: string;
+  id: string;
+  name: string;
+  personalId?: string;
+  relationship: string;
   share: {
-    type: 'percentage' | 'specific_amount' | 'specific_assets' | 'remainder';
-    value: number | string;
     assets?: string[];
+    type: 'percentage' | 'remainder' | 'specific_amount' | 'specific_assets';
+    value: number | string;
   };
-  conditions?: string;
-  alternativeBeneficiary?: string;
 }
 
 export interface ExecutorInfo {
-  id: string;
-  type: 'primary' | 'alternate' | 'co_executor';
-  name: string;
-  relationship: string;
   address: AddressInfo;
+  compensation?: string;
   contactInfo: {
     email?: string;
     phone?: string;
   };
+  id: string;
   isProfessional: boolean;
-  specialization?: string;
-  compensation?: string;
+  name: string;
   powerLimitations?: string[];
+  relationship: string;
+  specialization?: string;
+  type: 'alternate' | 'co_executor' | 'primary';
 }
 
 export interface GuardianshipInfo {
-  childId: string;
-  primaryGuardian: ExecutorInfo;
   alternateGuardian?: ExecutorInfo;
-  specialInstructions?: string;
-  financialProvisions?: string;
+  childId: string;
   educationWishes?: string;
+  financialProvisions?: string;
+  primaryGuardian: ExecutorInfo;
+  specialInstructions?: string;
 }
 
 export interface SpecialInstruction {
-  id: string;
-  type: 'funeral' | 'burial' | 'organ_donation' | 'pet_care' | 'digital_assets' |
-        'business_succession' | 'charitable_giving' | 'personal_message' | 'other';
-  title: string;
   content: string;
-  priority: 'high' | 'medium' | 'low';
+  id: string;
+  priority: 'high' | 'low' | 'medium';
   recipient?: string;
+  title: string;
+  type:
+    | 'burial'
+    | 'business_succession'
+    | 'charitable_giving'
+    | 'digital_assets'
+    | 'funeral'
+    | 'organ_donation'
+    | 'other'
+    | 'personal_message'
+    | 'pet_care';
 }
 
 export interface WillGenerationPreferences {
-  includeOptionalClauses: boolean;
-  detailLevel: 'basic' | 'detailed' | 'comprehensive';
-  languageStyle: 'formal' | 'simplified' | 'traditional';
-  includeLegalExplanations: boolean;
+  detailLevel: 'basic' | 'comprehensive' | 'detailed';
   generateMultipleLanguages: boolean;
+  includeLegalExplanations: boolean;
+  includeOptionalClauses: boolean;
+  languageStyle: 'formal' | 'simplified' | 'traditional';
   targetLanguages?: LanguageCode[];
 }
 
 export interface GeneratedWill {
-  id: string;
-  templateId: string;
-  userId: string;
-  jurisdiction: Jurisdiction;
-  language: LanguageCode;
-  type: WillTemplateType;
-
+  aiSuggestions: AISuggestion[];
   content: {
-    text: string;
     html: string;
     pdf?: ArrayBuffer;
+    text: string;
   };
+  executionInstructions: ExecutionInstructions;
+  id: string;
+  jurisdiction: Jurisdiction;
+  language: LanguageCode;
+
+  legalDisclaimer: string;
 
   metadata: {
+    checksum: string;
     generationDate: string;
+    pageCount: number;
     version: string;
     wordCount: number;
-    pageCount: number;
-    checksum: string;
   };
 
-  validationResult: WillValidationResult;
-  aiSuggestions: AISuggestion[];
+  templateId: string;
+  type: WillTemplateType;
 
-  executionInstructions: ExecutionInstructions;
-  legalDisclaimer: string;
+  userId: string;
+  validationResult: WillValidationResult;
 }
 
 export interface WillValidationResult {
-  isValid: boolean;
   completenessScore: number;
   errors: ValidationError[];
-  warnings: ValidationError[];
+  isValid: boolean;
   legalRequirementsMet: boolean;
   missingRequiredFields: string[];
   suggestedImprovements: string[];
+  warnings: ValidationError[];
 }
 
 export interface AISuggestion {
-  id: string;
-  type: 'improvement' | 'warning' | 'optimization' | 'legal_consideration';
-  category: string;
-  title: string;
-  description: string;
-  suggestedAction: string;
-  priority: 'high' | 'medium' | 'low';
-  isJurisdictionSpecific: boolean;
   affectedSections: string[];
+  category: string;
+  description: string;
+  id: string;
+  isJurisdictionSpecific: boolean;
+  priority: 'high' | 'low' | 'medium';
+  suggestedAction: string;
+  title: string;
+  type: 'improvement' | 'legal_consideration' | 'optimization' | 'warning';
 }
 
 export interface ValidationError {
-  field: string;
   code: string;
-  message: string;
-  severity: 'error' | 'warning' | 'info';
+  field: string;
   legalReference?: string;
+  message: string;
+  severity: 'error' | 'info' | 'warning';
   suggestedFix?: string;
 }
 
 // Template Library System
 export interface TemplateLibrary {
-  getTemplate(jurisdiction: Jurisdiction, type: WillTemplateType, language: LanguageCode): Promise<WillTemplate>;
   getAllTemplates(): Promise<WillTemplate[]>;
-  getJurisdictionConfig(jurisdiction: Jurisdiction): Promise<WillJurisdictionConfig>;
+  getJurisdictionConfig(
+    jurisdiction: Jurisdiction
+  ): Promise<WillJurisdictionConfig>;
   getSupportedLanguages(jurisdiction: Jurisdiction): Promise<LanguageCode[]>;
-  validateWillData(data: WillUserData, template: WillTemplate): Promise<WillValidationResult>;
+  getTemplate(
+    jurisdiction: Jurisdiction,
+    type: WillTemplateType,
+    language: LanguageCode
+  ): Promise<WillTemplate>;
+  validateWillData(
+    data: WillUserData,
+    template: WillTemplate
+  ): Promise<WillValidationResult>;
 }
 
 // Sofia AI Integration
 export interface SofiaWillAssistant {
-  generateWillSuggestions(userData: WillUserData, jurisdiction: Jurisdiction): Promise<AISuggestion[]>;
+  explainLegalTerms(
+    content: string,
+    language: LanguageCode
+  ): Promise<Record<string, string>>;
+  generateWillSuggestions(
+    userData: WillUserData,
+    jurisdiction: Jurisdiction
+  ): Promise<AISuggestion[]>;
   optimizeWillContent(will: GeneratedWill): Promise<GeneratedWill>;
-  explainLegalTerms(content: string, language: LanguageCode): Promise<Record<string, string>>;
+  suggestBeneficiaryOptimizations(
+    beneficiaries: BeneficiaryInfo[],
+    assets: AssetInfo[]
+  ): Promise<AISuggestion[]>;
   validateCompliance(will: GeneratedWill): Promise<WillValidationResult>;
-  suggestBeneficiaryOptimizations(beneficiaries: BeneficiaryInfo[], assets: AssetInfo[]): Promise<AISuggestion[]>;
 }
 
 // Constants for Czech Republic and Slovakia
-export const CZ_SK_JURISDICTIONS: Record<'CZ' | 'SK', WillJurisdictionConfig> = {
-  CZ: {
-    jurisdiction: 'CZ',
-    countryName: {
-      cs: 'Česká republika',
-      sk: 'Česká republika',
-      en: 'Czech Republic',
-      de: 'Tschechische Republik',
-      uk: 'Чеська Республіка'
-    },
-    supportedLanguages: ['cs', 'sk', 'en', 'de', 'uk'],
-    primaryLanguage: 'cs',
-    supportedWillTypes: ['holographic', 'witnessed', 'notarial'],
-    defaultWillType: 'holographic',
-    legalRequirements: {
-      minimumAge: 18,
-      witnessRequirements: {
-        required: false,
-        minimumCount: 2,
-        witnessRestrictions: ['not_beneficiary', 'adult', 'mentally_capable']
+export const CZ_SK_JURISDICTIONS: Record<'CZ' | 'SK', WillJurisdictionConfig> =
+  {
+    CZ: {
+      jurisdiction: 'CZ',
+      countryName: {
+        cs: 'Česká republika',
+        sk: 'Česká republika',
+        en: 'Czech Republic',
+        de: 'Tschechische Republik',
+        uk: 'Чеська Республіка',
       },
-      notarization: {
-        required: false,
-        optional: true,
-        circumstances: ['complex_assets', 'international_assets', 'business_succession']
+      supportedLanguages: ['cs', 'sk', 'en', 'de', 'uk'],
+      primaryLanguage: 'cs',
+      supportedWillTypes: ['holographic', 'witnessed', 'notarial'],
+      defaultWillType: 'holographic',
+      legalRequirements: {
+        minimumAge: 18,
+        witnessRequirements: {
+          required: false,
+          minimumCount: 2,
+          witnessRestrictions: ['not_beneficiary', 'adult', 'mentally_capable'],
+        },
+        notarization: {
+          required: false,
+          optional: true,
+          circumstances: [
+            'complex_assets',
+            'international_assets',
+            'business_succession',
+          ],
+        },
+        holographicAllowed: true,
+        forcedHeirship: true,
+        revocationRules: [
+          'explicit_revocation',
+          'new_will_supersedes',
+          'marriage_revokes_partial',
+        ],
+        formalRequirements: ['handwritten', 'signed', 'dated'],
       },
-      holographicAllowed: true,
-      forcedHeirship: true,
-      revocationRules: ['explicit_revocation', 'new_will_supersedes', 'marriage_revokes_partial'],
-      formalRequirements: ['handwritten', 'signed', 'dated']
-    },
-    taxInfo: {
-      inheritanceTax: false,
-      exemptions: ['close_relatives'],
-      notes: 'No inheritance tax between spouses, children, and parents'
-    },
-    notaryRequirements: {
-      organization: 'Notářská komora České republiky',
-      searchUrl: 'https://www.nkcr.cz',
-      verificationRequired: false,
-      estimatedFees: {
-        min: 1000,
-        max: 5000,
-        currency: 'CZK'
-      }
-    }
-  },
-  SK: {
-    jurisdiction: 'SK',
-    countryName: {
-      sk: 'Slovenská republika',
-      cs: 'Slovenská republika',
-      en: 'Slovak Republic',
-      de: 'Slowakische Republik',
-      uk: 'Словацька Республіка'
-    },
-    supportedLanguages: ['sk', 'cs', 'en', 'de', 'uk'],
-    primaryLanguage: 'sk',
-    supportedWillTypes: ['holographic', 'witnessed', 'notarial'],
-    defaultWillType: 'holographic',
-    legalRequirements: {
-      minimumAge: 18,
-      witnessRequirements: {
-        required: false,
-        minimumCount: 2,
-        witnessRestrictions: ['not_beneficiary', 'adult', 'mentally_capable', 'simultaneous_presence']
+      taxInfo: {
+        inheritanceTax: false,
+        exemptions: ['close_relatives'],
+        notes: 'No inheritance tax between spouses, children, and parents',
       },
-      notarization: {
-        required: false,
-        optional: true,
-        circumstances: ['international_validity', 'complex_estate']
+      notaryRequirements: {
+        organization: 'Notářská komora České republiky',
+        searchUrl: 'https://www.nkcr.cz',
+        verificationRequired: false,
+        estimatedFees: {
+          min: 1000,
+          max: 5000,
+          currency: 'CZK',
+        },
       },
-      holographicAllowed: true,
-      forcedHeirship: true,
-      revocationRules: ['explicit_revocation', 'new_will_supersedes', 'material_change_in_circumstances'],
-      formalRequirements: ['handwritten', 'signed', 'dated', 'personal_handwriting_required']
     },
-    taxInfo: {
-      inheritanceTax: false,
-      exemptions: ['all_heirs'],
-      notes: 'No inheritance tax in Slovakia'
+    SK: {
+      jurisdiction: 'SK',
+      countryName: {
+        sk: 'Slovenská republika',
+        cs: 'Slovenská republika',
+        en: 'Slovak Republic',
+        de: 'Slowakische Republik',
+        uk: 'Словацька Республіка',
+      },
+      supportedLanguages: ['sk', 'cs', 'en', 'de', 'uk'],
+      primaryLanguage: 'sk',
+      supportedWillTypes: ['holographic', 'witnessed', 'notarial'],
+      defaultWillType: 'holographic',
+      legalRequirements: {
+        minimumAge: 18,
+        witnessRequirements: {
+          required: false,
+          minimumCount: 2,
+          witnessRestrictions: [
+            'not_beneficiary',
+            'adult',
+            'mentally_capable',
+            'simultaneous_presence',
+          ],
+        },
+        notarization: {
+          required: false,
+          optional: true,
+          circumstances: ['international_validity', 'complex_estate'],
+        },
+        holographicAllowed: true,
+        forcedHeirship: true,
+        revocationRules: [
+          'explicit_revocation',
+          'new_will_supersedes',
+          'material_change_in_circumstances',
+        ],
+        formalRequirements: [
+          'handwritten',
+          'signed',
+          'dated',
+          'personal_handwriting_required',
+        ],
+      },
+      taxInfo: {
+        inheritanceTax: false,
+        exemptions: ['all_heirs'],
+        notes: 'No inheritance tax in Slovakia',
+      },
+      notaryRequirements: {
+        organization: 'Notárska komora Slovenskej republiky',
+        searchUrl: 'https://www.notar.sk',
+        verificationRequired: false,
+        estimatedFees: {
+          min: 50,
+          max: 300,
+          currency: 'EUR',
+        },
+      },
     },
-    notaryRequirements: {
-      organization: 'Notárska komora Slovenskej republiky',
-      searchUrl: 'https://www.notar.sk',
-      verificationRequired: false,
-      estimatedFees: {
-        min: 50,
-        max: 300,
-        currency: 'EUR'
-      }
-    }
-  }
-};
+  };

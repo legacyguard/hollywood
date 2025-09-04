@@ -6,13 +6,13 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 interface ChecklistItem {
-  key: string;
-  icon: string;
-  title: string;
   description: string;
-  isCompleted?: boolean;
+  icon: string;
   isActive?: boolean;
-  pillar: 'today' | 'tomorrow' | 'forever';
+  isCompleted?: boolean;
+  key: string;
+  pillar: 'forever' | 'today' | 'tomorrow';
+  title: string;
 }
 
 interface LegacyChecklistProps {
@@ -119,7 +119,7 @@ export function LegacyChecklist({
       {/* Header with progress */}
       <div className='flex items-center gap-4 mb-6'>
         <div className='flex-shrink-0 w-14 h-14 rounded-full bg-gradient-to-br from-primary via-primary-foreground to-primary flex items-center justify-center'>
-          <Icon name={"sparkles" as any} className='w-7 h-7 text-white' />
+          <Icon name={'sparkles' as any} className='w-7 h-7 text-white' />
         </div>
         <div className='flex-1'>
           <div className='flex items-center justify-between mb-2'>
@@ -170,11 +170,13 @@ export function LegacyChecklist({
             {/* Status indicator */}
             <div className='flex-shrink-0'>
               {item.isCompleted ? (
-                <Icon name={"checkCircle" as any}
+                <Icon
+                  name={'checkCircle' as any}
                   className='w-7 h-7 text-status-success'
                 />
               ) : (
-                <Icon name={"arrowRight" as any}
+                <Icon
+                  name={'arrowRight' as any}
                   className='w-7 h-7 text-muted-foreground'
                 />
               )}
@@ -199,7 +201,7 @@ export function LegacyChecklist({
           }}
         >
           Continue Your Journey
-          <Icon name={"arrowRight" as any} className='w-4 h-4 ml-2' />
+          <Icon name={'arrowRight' as any} className='w-4 h-4 ml-2' />
         </Button>
       </div>
     </Card>

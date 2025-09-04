@@ -5,123 +5,129 @@
 
 import { createHash } from 'crypto';
 import _nacl from 'tweetnacl';
-import { encodeBase64, _decodeBase64 } from 'tweetnacl-util';
+import { decodeBase64, encodeBase64 } from 'tweetnacl-util';
 
 export interface SharePermissions {
-  canView: boolean;
-  canDownload: boolean;
-  canPrint: boolean;
-  canCopy: boolean;
-  canShare: boolean;
   canComment: boolean;
+  canCopy: boolean;
+  canDownload: boolean;
   canEdit: boolean;
-  requireAuth: boolean;
-  maxViews?: number;
-  maxDownloads?: number;
-  timeLimit?: number; // Minutes
-  ipWhitelist?: string[];
+  canPrint: boolean;
+  canShare: boolean;
+  canView: boolean;
   deviceRestrictions?: DeviceRestriction[];
-  watermark?: WatermarkConfig;
   geofencing?: GeofenceConfig;
+  ipWhitelist?: string[];
+  maxDownloads?: number;
+  maxViews?: number;
+  requireAuth: boolean;
+  timeLimit?: number; // Minutes
+  watermark?: WatermarkConfig;
 }
 
 export interface WatermarkConfig {
-  enabled: boolean;
-  type: 'text' | 'image' | 'both';
-  text?: string;
-  imageUrl?: string;
-  position: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'center' | 'tiled';
-  opacity: number; // 0-1
-  fontSize?: number;
   color?: string;
-  rotation?: number; // degrees
+  enabled: boolean;
+  fontSize?: number;
+  imageUrl?: string;
   includeMeta: boolean; // Include timestamp, user info
+  opacity: number; // 0-1
+  position:
+    | 'bottom-left'
+    | 'bottom-right'
+    | 'center'
+    | 'tiled'
+    | 'top-left'
+    | 'top-right';
+  rotation?: number; // degrees
+  text?: string;
+  type: 'both' | 'image' | 'text';
 }
 
 export interface DeviceRestriction {
-  type: 'allow' | 'block';
-  deviceType?: 'mobile' | 'tablet' | 'desktop';
-  os?: string[];
   browserType?: string[];
   deviceFingerprint?: string;
+  deviceType?: 'desktop' | 'mobile' | 'tablet';
+  os?: string[];
+  type: 'allow' | 'block';
 }
 
 export interface GeofenceConfig {
-  enabled: boolean;
   allowedRegions: GeoRegion[];
-  restrictedRegions: GeoRegion[];
+  enabled: boolean;
   requireGPSAccuracy?: number; // meters
+  restrictedRegions: GeoRegion[];
 }
 
 export interface GeoRegion {
-  name: string;
-  type: 'circle' | 'polygon';
   coordinates: number[][]; // [lat, lng] pairs
+  name: string;
   radius?: number; // meters for circle type
+  type: 'circle' | 'polygon';
 }
 
 export interface ShareLink {
-  id: string;
+  accessCount: number;
+  createdAt: string;
   documentId: string;
-  shareToken: string;
+  downloadCount: number;
   encryptedAccessKey: string;
+  expiresAt?: string;
+  id: string;
+  isActive: boolean;
+  lastAccessedAt?: string;
   permissions: SharePermissions;
+  restrictions: AccessRestriction[];
   sharedBy: string;
   sharedWith?: string; // Email or user ID
-  createdAt: string;
-  expiresAt?: string;
-  lastAccessedAt?: string;
-  accessCount: number;
-  downloadCount: number;
-  isActive: boolean;
-  restrictions: AccessRestriction[];
+  shareToken: string;
 }
 
 export interface AccessRestriction {
-  type: 'time' | 'usage' | 'ip' | 'device' | 'location';
-  value: any;
   enforced: boolean;
+  type: 'device' | 'ip' | 'location' | 'time' | 'usage';
+  value: any;
   violationCount: number;
 }
 
 export interface AccessAttempt {
-  shareId: string;
-  timestamp: number;
-  userAgent: string;
+  deviceFingerprint: string;
   ipAddress: string;
   location?: {
+    accuracy?: number;
     lat: number;
     lng: number;
-    accuracy?: number;
   };
-  deviceFingerprint: string;
-  success: boolean;
   reason?: string;
+  shareId: string;
+  success: boolean;
+  timestamp: number;
+  userAgent: string;
 }
 
 export interface ViewSession {
+  actions: ViewAction[];
+  ipAddress: string;
+  lastActivityAt: number;
+  restrictions: SessionRestriction[];
   sessionId: string;
   shareId: string;
-  userId?: string;
   startedAt: number;
-  lastActivityAt: number;
-  ipAddress: string;
   userAgent: string;
-  actions: ViewAction[];
-  restrictions: SessionRestriction[];
+  userId?: string;
 }
 
 export interface ViewAction {
-  type: 'view' | 'download' | 'print' | 'copy' | 'share' | 'comment';
-  timestamp: number;
   allowed: boolean;
-  reason?: string;
   metadata?: Record<string, any>;
+  reason?: string;
+  timestamp: number;
+  type: 'comment' | 'copy' | 'download' | 'print' | 'share' | 'view';
 }
 
 export interface SessionRestriction {
-  type: 'screenshot' | 'rightclick' | 'devtools' | 'print' | 'selection';
   enforced: boolean;
+  type: 'devtools' | 'print' | 'rightclick' | 'screenshot' | 'selection';
 }
 
 class AdvancedSharingControlsService {
@@ -148,7 +154,10 @@ class AdvancedSharingControlsService {
       throw new Error('Document access key not found');
     }
 
-    const encryptedAccessKey = await this.encryptAccessKey(documentAccessKey, shareToken);
+    const encryptedAccessKey = await this.encryptAccessKey(
+      documentAccessKey,
+      shareToken
+    );
 
     // Calculate expiration
     const expiresAt = permissions.timeLimit
@@ -187,12 +196,12 @@ class AdvancedSharingControlsService {
   async validateAccess(
     shareToken: string,
     accessRequest: {
-      userAgent: string;
       ipAddress: string;
-      location?: { lat: number; lng: number; accuracy?: number };
+      location?: { accuracy?: number; lat: number; lng: number };
+      userAgent: string;
       userId?: string;
     }
-  ): Promise<{ allowed: boolean; session?: ViewSession; reason?: string }> {
+  ): Promise<{ allowed: boolean; reason?: string; session?: ViewSession }> {
     const shareLink = await this.getShareLinkByToken(shareToken);
 
     if (!shareLink || !shareLink.isActive) {
@@ -206,12 +215,18 @@ class AdvancedSharingControlsService {
     }
 
     // Check usage limits
-    if (shareLink.permissions.maxViews && shareLink.accessCount >= shareLink.permissions.maxViews) {
+    if (
+      shareLink.permissions.maxViews &&
+      shareLink.accessCount >= shareLink.permissions.maxViews
+    ) {
       return { allowed: false, reason: 'Maximum view count exceeded' };
     }
 
     // Generate device fingerprint
-    const deviceFingerprint = this.generateDeviceFingerprint(accessRequest.userAgent, accessRequest.ipAddress);
+    const deviceFingerprint = this.generateDeviceFingerprint(
+      accessRequest.userAgent,
+      accessRequest.ipAddress
+    );
 
     // Validate restrictions
     const restrictionCheck = await this.validateRestrictions(shareLink, {
@@ -221,6 +236,7 @@ class AdvancedSharingControlsService {
 
     if (!restrictionCheck.allowed) {
       await this.logAccessAttempt(shareLink.id, {
+        shareId: shareLink.id,
         ...accessRequest,
         deviceFingerprint,
         timestamp: Date.now(),
@@ -231,13 +247,18 @@ class AdvancedSharingControlsService {
     }
 
     // Create view session
-    const session = await this.createViewSession(shareLink, accessRequest, deviceFingerprint);
+    const session = await this.createViewSession(
+      shareLink,
+      accessRequest,
+      deviceFingerprint
+    );
 
     // Update share link access count
     await this.incrementAccessCount(shareLink.id);
 
     // Log successful access
     await this.logAccessAttempt(shareLink.id, {
+      shareId: shareLink.id,
       ...accessRequest,
       deviceFingerprint,
       timestamp: Date.now(),
@@ -253,7 +274,7 @@ class AdvancedSharingControlsService {
   async applyWatermark(
     documentData: ArrayBuffer,
     watermarkConfig: WatermarkConfig,
-    userInfo: { name: string; email: string; timestamp: string }
+    userInfo: { email: string; name: string; timestamp: string }
   ): Promise<ArrayBuffer> {
     if (!watermarkConfig.enabled) {
       return documentData;
@@ -292,7 +313,7 @@ class AdvancedSharingControlsService {
    */
   async trackViewAction(
     sessionId: string,
-    action: Omit<ViewAction, 'timestamp' | 'allowed' | 'reason'>
+    action: Omit<ViewAction, 'allowed' | 'reason' | 'timestamp'>
   ): Promise<{ allowed: boolean; reason?: string }> {
     const session = this.activeSessions.get(sessionId);
     if (!session) {
@@ -305,7 +326,10 @@ class AdvancedSharingControlsService {
     }
 
     // Check action permissions
-    const actionAllowed = this.isActionAllowed(action.type, shareLink.permissions);
+    const actionAllowed = this.isActionAllowed(
+      action.type,
+      shareLink.permissions
+    );
     const reason = actionAllowed ? undefined : `${action.type} not permitted`;
 
     // Create action record
@@ -358,7 +382,7 @@ class AdvancedSharingControlsService {
    */
   private async validateLocationRestrictions(
     geofencing: GeofenceConfig,
-    location?: { lat: number; lng: number; accuracy?: number }
+    location?: { accuracy?: number; lat: number; lng: number }
   ): Promise<{ allowed: boolean; reason?: string }> {
     if (!geofencing.enabled) {
       return { allowed: true };
@@ -369,9 +393,11 @@ class AdvancedSharingControlsService {
     }
 
     // Check accuracy requirements
-    if (geofencing.requireGPSAccuracy &&
-        location.accuracy &&
-        location.accuracy > geofencing.requireGPSAccuracy) {
+    if (
+      geofencing.requireGPSAccuracy &&
+      location.accuracy &&
+      location.accuracy > geofencing.requireGPSAccuracy
+    ) {
       return { allowed: false, reason: 'GPS accuracy insufficient' };
     }
 
@@ -428,15 +454,21 @@ class AdvancedSharingControlsService {
   /**
    * Calculate distance between two points (Haversine formula)
    */
-  private calculateDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {
+  private calculateDistance(
+    lat1: number,
+    lng1: number,
+    lat2: number,
+    lng2: number
+  ): number {
     const R = 6371e3; // Earth's radius in meters
     const φ1 = (lat1 * Math.PI) / 180;
     const φ2 = (lat2 * Math.PI) / 180;
     const Δφ = ((lat2 - lat1) * Math.PI) / 180;
     const Δλ = ((lng2 - lng1) * Math.PI) / 180;
 
-    const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
-              Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+    const a =
+      Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+      Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
     return R * c;
@@ -445,7 +477,10 @@ class AdvancedSharingControlsService {
   /**
    * Point-in-polygon test using ray casting algorithm
    */
-  private isPointInPolygon(point: { lat: number; lng: number }, polygon: number[][]): boolean {
+  private isPointInPolygon(
+    point: { lat: number; lng: number },
+    polygon: number[][]
+  ): boolean {
     let inside = false;
     const x = point.lng;
     const y = point.lat;
@@ -456,7 +491,7 @@ class AdvancedSharingControlsService {
       const xj = polygon[j][1];
       const yj = polygon[j][0];
 
-      if (((yi > y) !== (yj > y)) && (x < ((xj - xi) * (y - yi)) / (yj - yi) + xi)) {
+      if (yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) {
         inside = !inside;
       }
     }
@@ -480,13 +515,18 @@ class AdvancedSharingControlsService {
     return crypto.randomUUID();
   }
 
-  private generateDeviceFingerprint(userAgent: string, ipAddress: string): string {
+  private generateDeviceFingerprint(
+    userAgent: string,
+    ipAddress: string
+  ): string {
     return createHash('sha256')
       .update(userAgent + ipAddress + Date.now().toString())
       .digest('hex');
   }
 
-  private createAccessRestrictions(permissions: SharePermissions): AccessRestriction[] {
+  private createAccessRestrictions(
+    permissions: SharePermissions
+  ): AccessRestriction[] {
     const restrictions: AccessRestriction[] = [];
 
     if (permissions.timeLimit) {
@@ -524,14 +564,22 @@ class AdvancedSharingControlsService {
     accessRequest: any
   ): Promise<{ allowed: boolean; reason?: string }> {
     // IP whitelist check
-    if (shareLink.permissions.ipWhitelist && shareLink.permissions.ipWhitelist.length > 0) {
-      if (!shareLink.permissions.ipWhitelist.includes(accessRequest.ipAddress)) {
+    if (
+      shareLink.permissions.ipWhitelist &&
+      shareLink.permissions.ipWhitelist.length > 0
+    ) {
+      if (
+        !shareLink.permissions.ipWhitelist.includes(accessRequest.ipAddress)
+      ) {
         return { allowed: false, reason: 'IP address not whitelisted' };
       }
     }
 
     // Device restrictions
-    if (shareLink.permissions.deviceRestrictions && shareLink.permissions.deviceRestrictions.length > 0) {
+    if (
+      shareLink.permissions.deviceRestrictions &&
+      shareLink.permissions.deviceRestrictions.length > 0
+    ) {
       const deviceValidation = this.validateDeviceRestrictions(
         shareLink.permissions.deviceRestrictions,
         accessRequest.userAgent
@@ -570,15 +618,25 @@ class AdvancedSharingControlsService {
     return { allowed: true };
   }
 
-  private isActionAllowed(actionType: ViewAction['type'], permissions: SharePermissions): boolean {
+  private isActionAllowed(
+    actionType: ViewAction['type'],
+    permissions: SharePermissions
+  ): boolean {
     switch (actionType) {
-      case 'view': return permissions.canView;
-      case 'download': return permissions.canDownload;
-      case 'print': return permissions.canPrint;
-      case 'copy': return permissions.canCopy;
-      case 'share': return permissions.canShare;
-      case 'comment': return permissions.canComment;
-      default: return false;
+      case 'view':
+        return permissions.canView;
+      case 'download':
+        return permissions.canDownload;
+      case 'print':
+        return permissions.canPrint;
+      case 'copy':
+        return permissions.canCopy;
+      case 'share':
+        return permissions.canShare;
+      case 'comment':
+        return permissions.canComment;
+      default:
+        return false;
     }
   }
 
@@ -614,22 +672,27 @@ class AdvancedSharingControlsService {
     // TODO: Store in database
   }
 
-  private async getShareLinkByToken(_token: string): Promise<ShareLink | null> {
+  private async getShareLinkByToken(_token: string): Promise<null | ShareLink> {
     // TODO: Retrieve from database
     return null;
   }
 
-  private async getShareLinkById(_id: string): Promise<ShareLink | null> {
+  private async getShareLinkById(_id: string): Promise<null | ShareLink> {
     // TODO: Retrieve from database
     return null;
   }
 
-  private async getDocumentAccessKey(_documentId: string): Promise<string | null> {
+  private async getDocumentAccessKey(
+    _documentId: string
+  ): Promise<null | string> {
     // TODO: Retrieve from secure storage
     return null;
   }
 
-  private async encryptAccessKey(accessKey: string, _shareToken: string): Promise<string> {
+  private async encryptAccessKey(
+    accessKey: string,
+    _shareToken: string
+  ): Promise<string> {
     // TODO: Encrypt access key with share token
     return encodeBase64(new TextEncoder().encode(accessKey));
   }
@@ -646,7 +709,10 @@ class AdvancedSharingControlsService {
     // TODO: Increment download count in database
   }
 
-  private async logAccessAttempt(_shareId: string, _attempt: AccessAttempt): Promise<void> {
+  private async logAccessAttempt(
+    _shareId: string,
+    _attempt: AccessAttempt
+  ): Promise<void> {
     // TODO: Log access attempt
   }
 

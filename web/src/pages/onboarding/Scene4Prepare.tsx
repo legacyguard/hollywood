@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { FadeIn } from '@/components/motion/FadeIn';
@@ -77,9 +77,9 @@ export default function Scene4Prepare({
             <Card className='w-full max-w-2xl text-center border-primary/20 shadow-xl bg-background/95 backdrop-blur'>
               <CardHeader>
                 <motion.div
-                  initial={{  opacity: 0, y: -20  }}
-                  animate={{  opacity: 1, y: 0  }}
-                  transition={{  delay: 0.2, duration: 0.8  }}
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2, duration: 0.8 }}
                 >
                   <CardTitle className='text-2xl font-heading bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent'>
                     Preparing Your Path
@@ -89,9 +89,9 @@ export default function Scene4Prepare({
               <CardContent>
                 <motion.p
                   className='text-muted-foreground mb-8 text-lg leading-relaxed'
-                  initial={{  opacity: 0  }}
-                  animate={{  opacity: 1  }}
-                  transition={{  delay: 0.4, duration: 0.8  }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.4, duration: 0.8 }}
                 >
                   Thank you. I understand what matters to you. I am preparing
                   your Path of Peace where your first milestone awaits - the
@@ -101,9 +101,9 @@ export default function Scene4Prepare({
                 {/* Enhanced firefly light trail animation */}
                 <motion.div
                   className='relative h-40 rounded-lg bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 border border-primary/30 mb-8 overflow-hidden'
-                  initial={{  opacity: 0, scale: 0.95  }}
-                  animate={{  opacity: 1, scale: 1  }}
-                  transition={{  delay: 0.6, duration: 0.8  }}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.6, duration: 0.8 }}
                 >
                   {/* Stars background */}
                   {[...Array(30)].map((_, i) => (
@@ -112,13 +112,13 @@ export default function Scene4Prepare({
                       className='absolute w-0.5 h-0.5 bg-white/60 rounded-full'
                       style={{
                         left: `${Math.random() * 100}%`,
-                        top: `${Math.random() * 100}%`
+                        top: `${Math.random() * 100}%`,
                       }}
                       animate={{ opacity: [0.3, 1, 0.3] }}
                       transition={{
                         duration: 2 + Math.random() * 3,
                         repeat: Infinity,
-                        delay: Math.random() * 2
+                        delay: Math.random() * 2,
                       }}
                     />
                   ))}
@@ -130,17 +130,18 @@ export default function Scene4Prepare({
                         <motion.div
                           className='absolute w-3 h-3 bg-yellow-300 rounded-full shadow-lg'
                           style={{
-                            boxShadow: '0 0 15px #fde047, 0 0 30px #facc15, 0 0 45px #eab308'
+                            boxShadow:
+                              '0 0 15px #fde047, 0 0 30px #facc15, 0 0 45px #eab308',
                           }}
-                          initial={{  x: 50, y: 120  }}
+                          initial={{ x: 50, y: 120 }}
                           animate={{
                             x: [50, 150, 280, 320, 280, 150, 100, 50],
-                            y: [120, 60, 40, 80, 140, 100, 80, 120]
+                            y: [120, 60, 40, 80, 140, 100, 80, 120],
                           }}
                           transition={{
                             duration: 8,
                             ease: 'easeInOut',
-                            times: [0, 0.15, 0.3, 0.45, 0.6, 0.75, 0.9, 1]
+                            times: [0, 0.15, 0.3, 0.45, 0.6, 0.75, 0.9, 1],
                           }}
                         />
 
@@ -152,11 +153,11 @@ export default function Scene4Prepare({
                             strokeWidth='2'
                             fill='none'
                             strokeLinecap='round'
-                            initial={{  pathLength: 0, opacity: 0  }}
-                            animate={{  pathLength: 1, opacity: 0.8  }}
+                            initial={{ pathLength: 0, opacity: 0 }}
+                            animate={{ pathLength: 1, opacity: 0.8 }}
                             transition={{
                               pathLength: { duration: 8, ease: 'easeInOut' },
-                              opacity: { duration: 1, delay: 0.5 }
+                              opacity: { duration: 1, delay: 0.5 },
                             }}
                           />
                           <defs>
@@ -195,17 +196,17 @@ export default function Scene4Prepare({
                               x: 50 + i * 30,
                               y: 120 - i * 8 + Math.sin(i) * 20,
                               opacity: 0,
-                              scale: 0
+                              scale: 0,
                             }}
                             animate={{
                               opacity: [0, 1, 0],
-                              scale: [0, 1, 0]
+                              scale: [0, 1, 0],
                             }}
                             transition={{
                               duration: 1,
                               delay: i * 0.3 + 1,
                               repeat: Infinity,
-                              repeatDelay: 3
+                              repeatDelay: 3,
                             }}
                           />
                         ))}
@@ -213,10 +214,10 @@ export default function Scene4Prepare({
                         {/* First milestone hint appears along the path */}
                         <motion.div
                           className='absolute'
-                          style={{  left: '15%', top: '75%'  }}
-                          initial={{  opacity: 0, scale: 0  }}
-                          animate={{  opacity: 1, scale: 1  }}
-                          transition={{  delay: 4, duration: 1  }}
+                          style={{ left: '15%', top: '75%' }}
+                          initial={{ opacity: 0, scale: 0 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: 4, duration: 1 }}
                         >
                           <div className='w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-500 rounded-full border-2 border-blue-300 flex items-center justify-center shadow-lg'>
                             <div className='text-white text-xs'>🗿</div>
@@ -229,10 +230,10 @@ export default function Scene4Prepare({
                         {/* Second milestone hint */}
                         <motion.div
                           className='absolute'
-                          style={{  left: '35%', top: '50%'  }}
-                          initial={{  opacity: 0, scale: 0  }}
-                          animate={{  opacity: 1, scale: 1  }}
-                          transition={{  delay: 5, duration: 1  }}
+                          style={{ left: '35%', top: '50%' }}
+                          initial={{ opacity: 0, scale: 0 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: 5, duration: 1 }}
                         >
                           <div className='w-8 h-8 bg-gradient-to-br from-green-400 to-green-500 rounded-full border-2 border-green-300 flex items-center justify-center shadow-lg'>
                             <div className='text-white text-xs'>🤝</div>
@@ -245,9 +246,9 @@ export default function Scene4Prepare({
                         {/* Completion message appears gradually */}
                         <motion.div
                           className='absolute inset-0 flex items-center justify-center'
-                          initial={{  opacity: 0  }}
-                          animate={{  opacity: 1  }}
-                          transition={{  delay: 6, duration: 2  }}
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ delay: 6, duration: 2 }}
                         >
                           <div className='text-center'>
                             <motion.div
@@ -255,7 +256,7 @@ export default function Scene4Prepare({
                               animate={{ scale: [1, 1.1, 1] }}
                               transition={{
                                 duration: 2,
-                                repeat: Infinity
+                                repeat: Infinity,
                               }}
                             >
                               ✨
@@ -273,9 +274,9 @@ export default function Scene4Prepare({
                 {/* Progress indicator */}
                 <motion.div
                   className='mb-6'
-                  initial={{  opacity: 0  }}
-                  animate={{  opacity: 1  }}
-                  transition={{  delay: 1, duration: 0.8  }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1, duration: 0.8 }}
                 >
                   <div className='flex items-center justify-center gap-3 mb-3'>
                     <div className='text-sm text-muted-foreground'>
@@ -289,19 +290,19 @@ export default function Scene4Prepare({
                     <motion.div
                       className='bg-gradient-to-r from-primary to-primary/70 h-2 rounded-full'
                       style={{ width: `${progress}%` }}
-                      transition={{  duration: 0.1  }}
+                      transition={{ duration: 0.1 }}
                     />
                   </div>
                 </motion.div>
 
                 <motion.div
                   className='flex gap-3 justify-between'
-                  initial={{  opacity: 0, y: 10  }}
-                  animate={{  opacity: 1, y: 0  }}
-                  transition={{  delay: 1.2, duration: 0.6  }}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 1.2, duration: 0.6 }}
                 >
                   <Button
-                    variant="outline"
+                    variant='outline'
                     onClick={onBack}
                     className='border-primary/20 hover:border-primary/40'
                     disabled={progress > 50}
@@ -317,7 +318,7 @@ export default function Scene4Prepare({
                       transition={{
                         duration: 2,
                         repeat: Infinity,
-                        ease: 'linear'
+                        ease: 'linear',
                       }}
                       className='w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2'
                     />
@@ -327,9 +328,9 @@ export default function Scene4Prepare({
 
                 <motion.p
                   className='text-xs text-muted-foreground/70 mt-4'
-                  initial={{  opacity: 0  }}
-                  animate={{  opacity: 1  }}
-                  transition={{  delay: 1.5, duration: 0.8  }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1.5, duration: 0.8 }}
                 >
                   Welcome to LegacyGuard • Your story is precious
                 </motion.p>

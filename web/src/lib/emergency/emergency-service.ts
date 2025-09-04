@@ -4,12 +4,12 @@ import GuardianNotificationService from './guardian-notifier';
 import EmergencyAccessControl from './access-control';
 import EmergencyTestingSystem from './testing-system';
 import type {
-  EmergencyTriggerType,
-  DetectionEngineConfig,
-  EmergencyDashboardData,
-  SurvivorInterface,
   ActivityTracker,
-  _EmergencyActivation
+  DetectionEngineConfig,
+  EmergencyActivation,
+  EmergencyDashboardData,
+  EmergencyTriggerType,
+  SurvivorInterface,
 } from '@/types/emergency';
 
 /**
@@ -78,7 +78,7 @@ export class EmergencyService {
    */
   async initializeForUser(
     userId: string
-  ): Promise<{ success: boolean; error?: string }> {
+  ): Promise<{ error?: string; success: boolean }> {
     try {
       const supabase = this.getServiceClient();
 
@@ -130,8 +130,8 @@ export class EmergencyService {
    */
   async monitorUserActivity(userId: string): Promise<{
     activityTracker: ActivityTracker;
-    triggerResult?: any;
     shouldAlert: boolean;
+    triggerResult?: any;
   }> {
     try {
       // Check current activity status
@@ -172,7 +172,7 @@ export class EmergencyService {
     guardianId: string,
     response: 'confirmed' | 'rejected',
     notes?: string
-  ): Promise<{ success: boolean; error?: string }> {
+  ): Promise<{ error?: string; success: boolean }> {
     try {
       const result = await this.notificationService.recordGuardianResponse(
         verificationToken,
@@ -346,22 +346,22 @@ export class EmergencyService {
         available_resources: [
           ...resources.documents.map(d => ({
             id: d.id,
-            category: d.access_level as any,
+            category: 'legal' as const,
             title: d.file_name,
             description: d.description || '',
-            access_level: 'immediate',
+            access_level: 'immediate' as const,
             is_available: d.is_accessible,
-            resource_type: 'document',
+            resource_type: 'document' as const,
             metadata: { document_id: d.id },
           })),
           ...resources.contacts.map((c, idx) => ({
             id: `contact-${idx}`,
-            category: 'contacts',
+            category: 'contacts' as const,
             title: c.name,
             description: `${c.relationship} - ${c.email}`,
-            access_level: 'immediate',
+            access_level: 'immediate' as const,
             is_available: true,
-            resource_type: 'contact',
+            resource_type: 'contact' as const,
             metadata: { contact: c },
           })),
         ],
@@ -401,7 +401,7 @@ export class EmergencyService {
     triggerType: EmergencyTriggerType,
     guardianId?: string,
     notes?: string
-  ): Promise<{ success: boolean; activationId?: string; error?: string }> {
+  ): Promise<{ activationId?: string; error?: string; success: boolean }> {
     return await this.detectionEngine.triggerEmergencyActivation(
       userId,
       triggerType,
@@ -422,7 +422,7 @@ export class EmergencyService {
    */
   async recordHealthCheck(
     userId: string,
-    checkType: 'login' | 'document_access' | 'api_ping' | 'manual_confirmation',
+    checkType: 'api_ping' | 'document_access' | 'login' | 'manual_confirmation',
     responded: boolean = true
   ): Promise<void> {
     await this.detectionEngine.processHealthCheck(userId, checkType, responded);
@@ -433,7 +433,7 @@ export class EmergencyService {
    */
   async sendReminderNotifications(
     activationId: string,
-    reminderType: 'first_reminder' | 'urgent_reminder' | 'final_warning'
+    reminderType: 'final_warning' | 'first_reminder' | 'urgent_reminder'
   ) {
     return await this.notificationService.sendReminderNotification(
       activationId,
@@ -506,11 +506,11 @@ export class EmergencyService {
    * Get comprehensive emergency system status
    */
   async getSystemStatus(): Promise<{
-    isHealthy: boolean;
     activeShields: number;
+    errors: string[];
+    isHealthy: boolean;
     pendingActivations: number;
     pendingNotifications: number;
-    errors: string[];
   }> {
     const supabase = this.getServiceClient();
     const errors: string[] = [];

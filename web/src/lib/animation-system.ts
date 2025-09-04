@@ -1,23 +1,23 @@
 // Animation System Foundation for LegacyGuard
 // Provides centralized animation configurations and utilities for Sofia's adaptive animations
 
-import type { Variants, Transition, Easing } from 'framer-motion';
+import type { Easing, Transition, Variants } from 'framer-motion';
 import type { PersonalityMode } from './sofia-types';
 
 /**
  * Animation configuration types
  */
 export interface AnimationConfig {
-  duration: number;
   delay: number;
+  duration: number;
   ease: Easing;
   stagger?: number;
 }
 
 export interface AdaptiveAnimationConfig {
+  balanced: AnimationConfig;
   empathetic: AnimationConfig;
   pragmatic: AnimationConfig;
-  balanced: AnimationConfig;
 }
 
 /**
@@ -127,7 +127,10 @@ export class AnimationSystem {
   /**
    * Create adaptive transition based on personality
    */
-  static createTransition(mode: PersonalityMode, overrides?: Partial<AnimationConfig>): Transition {
+  static createTransition(
+    mode: PersonalityMode,
+    overrides?: Partial<AnimationConfig>
+  ): Transition {
     const config = this.getConfig(mode);
     return {
       duration: overrides?.duration ?? config.duration,
@@ -154,7 +157,7 @@ export class AnimationSystem {
       exit: {
         opacity: 0,
         transition: {
-          staggerChildren: config.stagger * 0.5,
+          staggerChildren: (config.stagger || 0.1) * 0.5,
           staggerDirection: -1,
         },
       },
@@ -330,7 +333,10 @@ export class AnimationSystem {
   /**
    * Responsive animation scaling
    */
-  static getResponsiveConfig(mode: PersonalityMode, isMobile: boolean): AnimationConfig {
+  static getResponsiveConfig(
+    mode: PersonalityMode,
+    isMobile: boolean
+  ): AnimationConfig {
     const config = this.getConfig(mode);
 
     if (isMobile) {
@@ -338,7 +344,7 @@ export class AnimationSystem {
         ...config,
         duration: config.duration * 0.8,
         delay: config.delay * 0.7,
-        stagger: config.stagger * 0.8,
+        stagger: (config.stagger || 0.1) * 0.8,
       };
     }
 
@@ -368,7 +374,9 @@ export class AnimationSystem {
 /**
  * Hook for getting adaptive animation configuration
  */
-export function useAnimationConfig(mode: PersonalityMode = 'adaptive'): AnimationConfig {
+export function useAnimationConfig(
+  mode: PersonalityMode = 'adaptive'
+): AnimationConfig {
   const isMobile = window.innerWidth < 768;
   const shouldReduce = AnimationSystem.shouldReduceMotion();
 

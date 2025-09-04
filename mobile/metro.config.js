@@ -42,7 +42,10 @@ config.resolver.extraNodeModules = new Proxy(
 
 // Resolve from package root, not src folder
 config.resolver.resolveRequest = (context, moduleName, platform) => {
-  if (moduleName.startsWith('@legacyguard/') || moduleName.startsWith('@hollywood/')) {
+  if (
+    moduleName.startsWith('@legacyguard/') ||
+    moduleName.startsWith('@hollywood/')
+  ) {
     const packageName = moduleName.split('/').slice(0, 2).join('/');
     const packagePath = config.resolver.extraNodeModules[packageName];
     if (packagePath) {

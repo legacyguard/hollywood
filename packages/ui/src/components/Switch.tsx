@@ -1,5 +1,11 @@
-import React from 'react'
-import { styled, Switch as TamaguiSwitch, XStack, Label, type SwitchProps as TamaguiSwitchProps } from 'tamagui'
+import React from 'react';
+import {
+  Label,
+  styled,
+  Switch as TamaguiSwitch,
+  type SwitchProps as TamaguiSwitchProps,
+  XStack,
+} from 'tamagui';
 
 // Base Switch component with LegacyGuard styling
 const StyledSwitch = styled(TamaguiSwitch, {
@@ -48,7 +54,7 @@ const StyledSwitch = styled(TamaguiSwitch, {
     size: 'medium' as const,
     variant: 'primary' as const,
   },
-})
+});
 
 // Thumb styling
 const StyledThumb = styled(TamaguiSwitch.Thumb, {
@@ -76,29 +82,32 @@ const StyledThumb = styled(TamaguiSwitch.Thumb, {
   defaultVariants: {
     size: 'medium',
   },
-})
+});
 
 // Extended Switch props
 export interface SwitchProps extends Omit<TamaguiSwitchProps, 'size'> {
-  size?: 'small' | 'medium' | 'large'
-  variant?: 'primary' | 'success' | 'premium'
-  label?: string
-  labelPosition?: 'left' | 'right'
-  disabled?: boolean
-  onValueChange?: (value: boolean) => void
+  disabled?: boolean;
+  label?: string;
+  labelPosition?: 'left' | 'right';
+  onValueChange?: (value: boolean) => void;
+  size?: 'large' | 'medium' | 'small';
+  variant?: 'premium' | 'primary' | 'success';
 }
 
 // Main Switch component
 export const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
-  ({
-    size = 'medium',
-    variant = 'primary',
-    label,
-    labelPosition = 'right',
-    disabled = false,
-    onValueChange,
-    ...props
-  }, ref) => {
+  (
+    {
+      size = 'medium',
+      variant = 'primary',
+      label,
+      labelPosition = 'right',
+      disabled = false,
+      onValueChange,
+      ...props
+    },
+    ref
+  ) => {
     const switchComponent = (
       <StyledSwitch
         ref={ref}
@@ -109,20 +118,16 @@ export const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
         opacity={disabled ? 0.5 : 1}
         {...props}
       >
-        <StyledThumb size={size} animation="quick" />
+        <StyledThumb size={size} animation='quick' />
       </StyledSwitch>
-    )
+    );
 
     if (!label) {
-      return switchComponent
+      return switchComponent;
     }
 
     return (
-      <XStack
-        alignItems="center"
-        gap="$3"
-        opacity={disabled ? 0.5 : 1}
-      >
+      <XStack alignItems='center' gap='$3' opacity={disabled ? 0.5 : 1}>
         {labelPosition === 'left' && (
           <Label
             htmlFor={props.id}
@@ -143,8 +148,8 @@ export const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
           </Label>
         )}
       </XStack>
-    )
+    );
   }
-)
+);
 
-Switch.displayName = 'Switch'
+Switch.displayName = 'Switch';

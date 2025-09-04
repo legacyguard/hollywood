@@ -1,13 +1,13 @@
-import React from 'react'
-import { FormField } from './FormField'
-import { Select, type SelectProps } from '../..'
+import React from 'react';
+import { FormField } from './FormField';
+import { Select, type SelectProps } from '../..';
 
 export interface FormSelectProps extends Omit<SelectProps, 'error' | 'label'> {
-  label?: string
-  error?: string | boolean
-  success?: string
-  hint?: string
-  required?: boolean
+  error?: boolean | string;
+  hint?: string;
+  label?: string;
+  required?: boolean;
+  success?: string;
 }
 
 export const FormSelect: React.FC<FormSelectProps> = ({
@@ -19,8 +19,8 @@ export const FormSelect: React.FC<FormSelectProps> = ({
   ...selectProps
 }) => {
   // Convert error to appropriate types for each component
-  const hasError = Boolean(error)
-  const errorMessage = typeof error === 'string' ? error : undefined
+  const hasError = Boolean(error);
+  const errorMessage = typeof error === 'string' ? error : undefined;
 
   return (
     <FormField
@@ -30,11 +30,7 @@ export const FormSelect: React.FC<FormSelectProps> = ({
       hint={hint}
       required={required}
     >
-      <Select
-        {...selectProps}
-        error={hasError}
-        errorText={errorMessage}
-      />
+      <Select {...selectProps} error={hasError} errorText={errorMessage} />
     </FormField>
-  )
-}
+  );
+};

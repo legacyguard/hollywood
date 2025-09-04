@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { Card } from '@/components/ui/card';
@@ -165,7 +165,7 @@ export default function TimeCapsulePage() {
     return (
       <DashboardLayout>
         <div className='min-h-screen bg-background flex items-center justify-center'>
-                        <Icon name="loader" className='w-8 h-8 animate-spin text-primary' />
+          <Icon name='loader' className='w-8 h-8 animate-spin text-primary' />
           <span className='ml-3 text-muted-foreground'>
             Loading Time Capsule...
           </span>
@@ -185,7 +185,7 @@ export default function TimeCapsulePage() {
                 <div>
                   <div className='flex items-center gap-3 mb-3'>
                     <div className='w-12 h-12 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full flex items-center justify-center'>
-                      <Icon name="heart" className='w-6 h-6 text-purple-600' />
+                      <Icon name='heart' className='w-6 h-6 text-purple-600' />
                     </div>
                     <h1 className='text-3xl lg:text-4xl font-bold font-heading text-card-foreground'>
                       Time Capsule
@@ -193,7 +193,7 @@ export default function TimeCapsulePage() {
                   </div>
                   <p
                     className='text-lg leading-relaxed max-w-3xl'
-                    style={{  color: 'hsl(var(--muted-text))'  }}
+                    style={{ color: 'hsl(var(--muted-text))' }}
                   >
                     Create personal video or audio messages that will be
                     delivered to your loved ones at just the right moment.
@@ -206,7 +206,7 @@ export default function TimeCapsulePage() {
                   size='lg'
                   className='bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg'
                 >
-                  <Icon name="plus" className='w-5 h-5 mr-2' />
+                  <Icon name='plus' className='w-5 h-5 mr-2' />
                   Create Time Capsule
                 </Button>
               </div>
@@ -226,7 +226,8 @@ export default function TimeCapsulePage() {
                     </p>
                     <p className='text-2xl font-bold'>{stats.total}</p>
                   </div>
-                  <Icon name="archive"
+                  <Icon
+                    name='archive'
                     className='w-5 h-5 text-muted-foreground'
                   />
                 </div>
@@ -242,7 +243,7 @@ export default function TimeCapsulePage() {
                       {stats.pending}
                     </p>
                   </div>
-                  <Icon name="clock" className='w-5 h-5 text-orange-600' />
+                  <Icon name='clock' className='w-5 h-5 text-orange-600' />
                 </div>
               </Card>
 
@@ -256,7 +257,8 @@ export default function TimeCapsulePage() {
                       {stats.delivered}
                     </p>
                   </div>
-                  <Icon name="check-circle"
+                  <Icon
+                    name='check-circle'
                     className='w-5 h-5 text-green-600'
                   />
                 </div>
@@ -272,7 +274,7 @@ export default function TimeCapsulePage() {
                       {stats.scheduled_for_date}
                     </p>
                   </div>
-                  <Icon name="calendar" className='w-5 h-5 text-blue-600' />
+                  <Icon name='calendar' className='w-5 h-5 text-blue-600' />
                 </div>
               </Card>
 
@@ -286,7 +288,7 @@ export default function TimeCapsulePage() {
                       {stats.scheduled_on_death}
                     </p>
                   </div>
-                  <Icon name="shield" className='w-5 h-5 text-purple-600' />
+                  <Icon name='shield' className='w-5 h-5 text-purple-600' />
                 </div>
               </Card>
 
@@ -300,7 +302,7 @@ export default function TimeCapsulePage() {
                       {stats.failed}
                     </p>
                   </div>
-                  <Icon name="alert-circle" className='w-5 h-5 text-red-600' />
+                  <Icon name='alert-circle' className='w-5 h-5 text-red-600' />
                 </div>
               </Card>
             </div>
@@ -311,7 +313,7 @@ export default function TimeCapsulePage() {
             <FadeIn duration={0.5} delay={0.6}>
               <Card className='p-12 text-center'>
                 <div className='w-20 h-20 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full mx-auto mb-6 flex items-center justify-center'>
-                  <Icon name="heart" className='w-10 h-10 text-purple-600' />
+                  <Icon name='heart' className='w-10 h-10 text-purple-600' />
                 </div>
                 <h3 className='text-2xl font-bold mb-4'>
                   Your Time Capsule Awaits
@@ -329,11 +331,11 @@ export default function TimeCapsulePage() {
                     size='lg'
                     className='bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white'
                   >
-                    <Icon name="plus" className='w-5 h-5 mr-2' />
+                    <Icon name='plus' className='w-5 h-5 mr-2' />
                     Create Your First Time Capsule
                   </Button>
-                  <Button variant="outline" size='lg'>
-                    <Icon name="play-circle" className='w-5 h-5 mr-2' />
+                  <Button variant='outline' size='lg'>
+                    <Icon name='play-circle' className='w-5 h-5 mr-2' />
                     Watch Demo
                   </Button>
                 </div>

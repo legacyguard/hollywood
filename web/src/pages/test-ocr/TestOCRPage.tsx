@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
-  Upload,
+  AlertCircle,
+  CheckCircle,
   FileText,
   Loader2,
-  CheckCircle,
-  AlertCircle,
+  Upload,
 } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { OCRService } from '@/services/ocrService';
@@ -16,7 +16,7 @@ const TestOCRPage: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string>('');
   const [processing, setProcessing] = useState(false);
-  const [result, setResult] = useState<ProcessedDocument | null>(null);
+  const [result, setResult] = useState<null | ProcessedDocument>(null);
   const [error, setError] = useState<string>('');
 
   const ocrService = new OCRService();
@@ -220,7 +220,7 @@ const TestOCRPage: React.FC = () => {
               </Button>
 
               {error && (
-                <Alert variant="destructive">
+                <Alert variant='destructive'>
                   <AlertCircle className='h-4 w-4' />
                   <AlertDescription>{error}</AlertDescription>
                 </Alert>

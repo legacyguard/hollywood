@@ -43,14 +43,20 @@ export class ValidationError extends LegacyGuardError {
 }
 
 export class AuthenticationError extends LegacyGuardError {
-  constructor(message: string = 'Authentication required', details?: Record<string, unknown>) {
+  constructor(
+    message: string = 'Authentication required',
+    details?: Record<string, unknown>
+  ) {
     super(message, 'AUTHENTICATION_ERROR', 401, details);
     this.name = 'AuthenticationError';
   }
 }
 
 export class AuthorizationError extends LegacyGuardError {
-  constructor(message: string = 'Access denied', details?: Record<string, unknown>) {
+  constructor(
+    message: string = 'Access denied',
+    details?: Record<string, unknown>
+  ) {
     super(message, 'AUTHORIZATION_ERROR', 403, details);
     this.name = 'AuthorizationError';
   }
@@ -77,12 +83,7 @@ export class ConflictError extends LegacyGuardError {
 
 export class RateLimitError extends LegacyGuardError {
   constructor(retryAfter?: number) {
-    super(
-      'Too many requests',
-      'RATE_LIMIT',
-      429,
-      { retryAfter }
-    );
+    super('Too many requests', 'RATE_LIMIT', 429, { retryAfter });
     this.name = 'RateLimitError';
   }
 }
@@ -95,7 +96,11 @@ export class DatabaseError extends LegacyGuardError {
 }
 
 export class ExternalServiceError extends LegacyGuardError {
-  constructor(service: string, message: string, details?: Record<string, unknown>) {
+  constructor(
+    service: string,
+    message: string,
+    details?: Record<string, unknown>
+  ) {
     super(
       `External service ${service} error: ${message}`,
       'EXTERNAL_SERVICE_ERROR',
@@ -124,12 +129,9 @@ export function createErrorFromUnknown(error: unknown): LegacyGuardError {
   }
 
   if (error instanceof Error) {
-    return new LegacyGuardError(
-      error.message,
-      'UNKNOWN_ERROR',
-      500,
-      { originalError: error.name }
-    );
+    return new LegacyGuardError(error.message, 'UNKNOWN_ERROR', 500, {
+      originalError: error.name,
+    });
   }
 
   return new LegacyGuardError(
@@ -179,7 +181,7 @@ export const ErrorCodes = {
   NOTIFICATION_FAILED: 'NOTIFICATION_FAILED',
 } as const;
 
-export type ErrorCode = typeof ErrorCodes[keyof typeof ErrorCodes];
+export type ErrorCode = (typeof ErrorCodes)[keyof typeof ErrorCodes];
 
 // Error response formatter
 export function formatErrorResponse(error: LegacyGuardError) {
@@ -196,9 +198,9 @@ export function formatErrorResponse(error: LegacyGuardError) {
 
 // Retry configuration
 export interface RetryConfig {
-  maxAttempts: number;
+  backoff: 'exponential' | 'linear';
   delay: number;
-  backoff: 'linear' | 'exponential';
+  maxAttempts: number;
 }
 
 export const defaultRetryConfig: RetryConfig = {
@@ -209,12 +211,12 @@ export const defaultRetryConfig: RetryConfig = {
 
 // Error recovery strategies
 export interface ErrorRecoveryStrategy {
-  shouldRetry: (error: LegacyGuardError) => boolean;
   getRetryDelay: (attempt: number, config: RetryConfig) => number;
+  shouldRetry: (error: LegacyGuardError) => boolean;
 }
 
 export const defaultRecoveryStrategy: ErrorRecoveryStrategy = {
-  shouldRetry: (error) => {
+  shouldRetry: error => {
     return error.statusCode >= 500 || error.code === 'RATE_LIMIT';
   },
   getRetryDelay: (attempt, config) => {

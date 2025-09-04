@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Card,
   CardContent,
@@ -14,12 +14,12 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
 import {
   CheckCircle,
+  Eye,
+  Globe,
+  Heart,
+  Shield,
   Star,
   Users,
-  Globe,
-  Shield,
-  Heart,
-  Eye,
 } from 'lucide-react';
 import type { WillData } from '@/types/will';
 import { ValidationIndicator } from './ValidationIndicator';
@@ -34,11 +34,11 @@ import { useProfessionalReviewWorkflow } from '@/hooks/useProfessionalNetwork';
 import type { WillType } from './WillTypeSelector';
 
 interface WillUpgradeIntegrationProps {
+  jurisdiction: string;
+  onUpgradeComplete?: (upgradedWillData: WillData) => void;
+  onWillDataUpdate: (updatedWillData: WillData) => void;
   willData: WillData;
   willType: WillType;
-  jurisdiction: string;
-  onWillDataUpdate: (updatedWillData: WillData) => void;
-  onUpgradeComplete?: (upgradedWillData: WillData) => void;
 }
 
 export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
@@ -48,7 +48,7 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
   onWillDataUpdate,
   onUpgradeComplete,
 }) => {
-  const [activeUpgrade, setActiveUpgrade] = useState<string | null>(null);
+  const [activeUpgrade, setActiveUpgrade] = useState<null | string>(null);
   const [completedUpgrades, setCompletedUpgrades] = useState<Set<string>>(
     new Set()
   );
@@ -71,8 +71,7 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
   });
 
   // Multi-language generation
-  const { generateTranslations, isGenerating } =
-    useMultiLangGenerator();
+  const { generateTranslations, isGenerating } = useMultiLangGenerator();
 
   // Professional review integration
   const professionalReview = useProfessionalReviewWorkflow(
@@ -260,7 +259,7 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
                   </Badge>
 
                   <Button
-                    variant="ghost"
+                    variant='ghost'
                     size='sm'
                     className='text-blue-600 hover:text-blue-700'
                   >
@@ -297,7 +296,7 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
           <div className='space-y-6'>
             <div className='flex items-center justify-between'>
               <h3 className='text-2xl font-bold'>Real-Time Legal Validation</h3>
-              <Button variant="outline" onClick={() => setActiveUpgrade(null)}>
+              <Button variant='outline' onClick={() => setActiveUpgrade(null)}>
                 Back to Overview
               </Button>
             </div>
@@ -324,21 +323,25 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
             </div>
 
             <div className='space-y-4'>
-              {getValidationMessages(ValidationLevel.ERROR).map((validation, index) => (
-                <ValidationIndicator
-                  key={`error-${index}`}
-                  validation={validation}
-                  showDetails
-                />
-              ))}
+              {getValidationMessages(ValidationLevel.ERROR).map(
+                (validation, index) => (
+                  <ValidationIndicator
+                    key={`error-${index}`}
+                    validation={validation}
+                    showDetails
+                  />
+                )
+              )}
 
-              {getValidationMessages(ValidationLevel.WARNING).map((validation, index) => (
-                <ValidationIndicator
-                  key={`warning-${index}`}
-                  validation={validation}
-                  showDetails
-                />
-              ))}
+              {getValidationMessages(ValidationLevel.WARNING).map(
+                (validation, index) => (
+                  <ValidationIndicator
+                    key={`warning-${index}`}
+                    validation={validation}
+                    showDetails
+                  />
+                )
+              )}
             </div>
 
             {isWillValid && (
@@ -370,51 +373,75 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
               <h3 className='text-2xl font-bold'>
                 Multi-Language Document Generation
               </h3>
-              <Button variant="outline" onClick={() => setActiveUpgrade(null)}>
+              <Button variant='outline' onClick={() => setActiveUpgrade(null)}>
                 Back to Overview
               </Button>
             </div>
 
             <div className='grid grid-cols-2 md:grid-cols-4 gap-4'>
               {[
-                { code: 'sk', name: 'Slovak', flag: '🇸🇰', jurisdiction: 'Slovakia' },
-                { code: 'cs', name: 'Czech', flag: '🇨🇿', jurisdiction: 'Czech Republic' },
-                { code: 'en', name: 'English', flag: '🇺🇸', jurisdiction: 'International' },
-                { code: 'de', name: 'German', flag: '🇩🇪', jurisdiction: 'Germany' }
-              ].map((lang: { code: string; name: string; flag: string; jurisdiction: string }) => (
-                <Card
-                  key={lang.code}
-                  className='p-4 text-center cursor-pointer hover:bg-gray-50'
-                >
-                  <div className='text-2xl mb-2'>{lang.flag}</div>
-                  <div className='font-medium'>{lang.name}</div>
-                  <div className='text-sm text-gray-600'>
-                    {lang.jurisdiction}
-                  </div>
+                {
+                  code: 'sk',
+                  name: 'Slovak',
+                  flag: '🇸🇰',
+                  jurisdiction: 'Slovakia',
+                },
+                {
+                  code: 'cs',
+                  name: 'Czech',
+                  flag: '🇨🇿',
+                  jurisdiction: 'Czech Republic',
+                },
+                {
+                  code: 'en',
+                  name: 'English',
+                  flag: '🇺🇸',
+                  jurisdiction: 'International',
+                },
+                {
+                  code: 'de',
+                  name: 'German',
+                  flag: '🇩🇪',
+                  jurisdiction: 'Germany',
+                },
+              ].map(
+                (lang: {
+                  code: string;
+                  flag: string;
+                  jurisdiction: string;
+                  name: string;
+                }) => (
+                  <Card
+                    key={lang.code}
+                    className='p-4 text-center cursor-pointer hover:bg-gray-50'
+                  >
+                    <div className='text-2xl mb-2'>{lang.flag}</div>
+                    <div className='font-medium'>{lang.name}</div>
+                    <div className='text-sm text-gray-600'>
+                      {lang.jurisdiction}
+                    </div>
 
-                  <Button
-                    className='mt-3 w-full'
-                    variant="outline"
-                    size='sm'
-                    onClick={() =>
-                      generateTranslations(
-                        JSON.stringify(willData),
-                        {
+                    <Button
+                      className='mt-3 w-full'
+                      variant='outline'
+                      size='sm'
+                      onClick={() =>
+                        generateTranslations(JSON.stringify(willData), {
                           sourceLanguage: 'sk',
                           targetLanguages: [lang.code],
                           documentType: 'will',
                           jurisdiction,
                           includeGlossary: false,
                           preserveLegalTerms: true,
-                        }
-                      )
-                    }
-                    disabled={isGenerating}
-                  >
-                    {isGenerating ? 'Generating...' : 'Generate'}
-                  </Button>
-                </Card>
-              ))}
+                        })
+                      }
+                      disabled={isGenerating}
+                    >
+                      {isGenerating ? 'Generating...' : 'Generate'}
+                    </Button>
+                  </Card>
+                )
+              )}
             </div>
 
             <div className='flex justify-end'>
@@ -432,14 +459,14 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
               <h3 className='text-2xl font-bold'>
                 Family Tree & Inheritance Visualization
               </h3>
-              <Button variant="outline" onClick={() => setActiveUpgrade(null)}>
+              <Button variant='outline' onClick={() => setActiveUpgrade(null)}>
                 Back to Overview
               </Button>
             </div>
 
             <FamilyTreeVisualization
               willData={willData as any}
-              onUpdateWillData={(data) => onWillDataUpdate(data as any)}
+              onUpdateWillData={data => onWillDataUpdate(data as any)}
             />
           </div>
         );
@@ -451,7 +478,7 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
               <h3 className='text-2xl font-bold'>
                 Template Library & Will Comparison
               </h3>
-              <Button variant="outline" onClick={() => setActiveUpgrade(null)}>
+              <Button variant='outline' onClick={() => setActiveUpgrade(null)}>
                 Back to Overview
               </Button>
             </div>
@@ -461,7 +488,9 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
               onTemplateSelect={() => {
                 /* no-op for now; selection handled within library */
               }}
-              onComparisonComplete={() => handleUpgradeComplete('template-library')}
+              onComparisonComplete={() =>
+                handleUpgradeComplete('template-library')
+              }
             />
           </div>
         );
@@ -473,14 +502,14 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
               <h3 className='text-2xl font-bold'>
                 Emotional Guidance & Legacy Messages
               </h3>
-              <Button variant="outline" onClick={() => setActiveUpgrade(null)}>
+              <Button variant='outline' onClick={() => setActiveUpgrade(null)}>
                 Back to Overview
               </Button>
             </div>
 
             <EmotionalGuidanceSystem
               willData={willData as any}
-              currentStage="starting"
+              currentStage='starting'
               onMessagesCreated={() =>
                 handleUpgradeComplete('emotional-guidance')
               }
@@ -495,7 +524,7 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
               <h3 className='text-2xl font-bold'>
                 Professional Review Network
               </h3>
-              <Button variant="outline" onClick={() => setActiveUpgrade(null)}>
+              <Button variant='outline' onClick={() => setActiveUpgrade(null)}>
                 Back to Overview
               </Button>
             </div>
@@ -559,7 +588,7 @@ export const WillUpgradeIntegration: React.FC<WillUpgradeIntegrationProps> = ({
       </Tabs>
 
       <div className='flex justify-between items-center pt-6 border-t'>
-        <Button variant="outline" onClick={() => setIsUpgradeMode(false)}>
+        <Button variant='outline' onClick={() => setIsUpgradeMode(false)}>
           Exit Upgrade Mode
         </Button>
 

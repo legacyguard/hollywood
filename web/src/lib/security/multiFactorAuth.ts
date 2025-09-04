@@ -3,52 +3,55 @@
  * Supports FIDO2/WebAuthn, TOTP, SMS, and biometric authentication
  */
 
-import { startRegistration, startAuthentication } from '@simplewebauthn/browser';
+import {
+  startAuthentication,
+  startRegistration,
+} from '@simplewebauthn/browser';
 import type {
-  RegistrationResponseJSON,
   AuthenticationResponseJSON,
   PublicKeyCredentialCreationOptionsJSON,
   PublicKeyCredentialRequestOptionsJSON,
+  RegistrationResponseJSON,
 } from '@simplewebauthn/types';
 import * as OTPAuth from 'otpauth';
 import QRCode from 'qrcode';
 
 export interface MFADevice {
-  id: string;
-  name: string;
-  type: 'webauthn' | 'totp' | 'sms' | 'biometric';
+  createdAt: string;
   credentialId?: string; // For WebAuthn
+  id: string;
+  isActive: boolean;
+  isBackup: boolean;
+  lastUsedAt?: string;
+  name: string;
+  phoneNumber?: string; // For SMS
   publicKey?: string; // For WebAuthn
   secret?: string; // For TOTP (encrypted)
-  phoneNumber?: string; // For SMS
-  isBackup: boolean;
-  isActive: boolean;
-  createdAt: string;
-  lastUsedAt?: string;
+  type: 'biometric' | 'sms' | 'totp' | 'webauthn';
 }
 
 export interface MFAChallenge {
-  challengeId: string;
-  type: 'webauthn' | 'totp' | 'sms' | 'biometric';
-  challenge: string;
-  expiresAt: string;
   attempts: number;
+  challenge: string;
+  challengeId: string;
+  expiresAt: string;
   maxAttempts: number;
+  type: 'biometric' | 'sms' | 'totp' | 'webauthn';
 }
 
 export interface BiometricCapabilities {
-  isSupported: boolean;
   availableAuthenticators: string[];
+  isSupported: boolean;
   platformAuthenticator: boolean;
-  userVerification: 'required' | 'preferred' | 'discouraged';
+  userVerification: 'discouraged' | 'preferred' | 'required';
 }
 
 export interface MFAConfig {
-  requireMFA: boolean;
-  allowedMethods: ('webauthn' | 'totp' | 'sms' | 'biometric')[];
+  allowedMethods: ('biometric' | 'sms' | 'totp' | 'webauthn')[];
   backupCodesCount: number;
+  requireMFA: boolean;
+  smsProvider?: 'aws-sns' | 'twilio';
   totpIssuer: string;
-  smsProvider?: 'twilio' | 'aws-sns';
 }
 
 class MultiFactorAuthService {
@@ -86,11 +89,14 @@ class MultiFactorAuthService {
     }
 
     try {
-      const platformAuthenticator = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+      const platformAuthenticator =
+        await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
 
       return {
         isSupported: true,
-        availableAuthenticators: platformAuthenticator ? ['platform', 'cross-platform'] : ['cross-platform'],
+        availableAuthenticators: platformAuthenticator
+          ? ['platform', 'cross-platform']
+          : ['cross-platform'],
         platformAuthenticator,
         userVerification: platformAuthenticator ? 'required' : 'preferred',
       };
@@ -144,10 +150,15 @@ class MultiFactorAuthService {
     };
 
     try {
-      const registrationResponse = await startRegistration(options);
+      const registrationResponse = await startRegistration({
+        optionsJSON: options,
+      });
 
       // Verify registration on server
-      const verified = await this.verifyRegistration(registrationResponse, options);
+      const verified = await this.verifyRegistration(
+        registrationResponse,
+        options
+      );
 
       if (!verified) {
         throw new Error('Registration verification failed');
@@ -174,7 +185,9 @@ class MultiFactorAuthService {
   /**
    * Authenticate with WebAuthn/FIDO2 device
    */
-  async authenticateWebAuthn(allowedCredentials: string[] = []): Promise<boolean> {
+  async authenticateWebAuthn(
+    allowedCredentials: string[] = []
+  ): Promise<boolean> {
     if (!(await this.isWebAuthnSupported())) {
       throw new Error('WebAuthn not supported by this browser');
     }
@@ -192,7 +205,7 @@ class MultiFactorAuthService {
     };
 
     try {
-      const authResponse = await startAuthentication(options);
+      const authResponse = await startAuthentication({ optionsJSON: options });
 
       // Verify authentication on server
       const verified = await this.verifyAuthentication(authResponse, options);
@@ -207,13 +220,16 @@ class MultiFactorAuthService {
   /**
    * Setup TOTP authentication
    */
-  async setupTOTP(userId: string, serviceName: string = 'LegacyGuard'): Promise<{
-    secret: string;
-    qrCodeUrl: string;
+  async setupTOTP(
+    userId: string,
+    serviceName: string = 'LegacyGuard'
+  ): Promise<{
     backupCodes: string[];
+    qrCodeUrl: string;
+    secret: string;
   }> {
     // Generate a random secret
-    const secret = OTPAuth.Secret.random();
+    const secret = new OTPAuth.Secret();
 
     // Create TOTP instance
     const totp = new OTPAuth.TOTP({
@@ -255,7 +271,7 @@ class MultiFactorAuthService {
       const window = 1;
 
       for (let i = -window; i <= window; i++) {
-        const timeOffset = currentTime + (i * 30 * 1000);
+        const timeOffset = currentTime + i * 30 * 1000;
         if (totp.generate({ timestamp: timeOffset }) === token) {
           return true;
         }
@@ -319,7 +335,11 @@ class MultiFactorAuthService {
       throw new Error('Biometric authentication not supported on this device');
     }
 
-    return this.registerWebAuthnDevice(userId, 'Biometric Authentication', true);
+    return this.registerWebAuthnDevice(
+      userId,
+      'Biometric Authentication',
+      true
+    );
   }
 
   /**
@@ -345,7 +365,8 @@ class MultiFactorAuthService {
       // Generate 8-character alphanumeric code
       const code = Array.from(
         { length: 8 },
-        () => 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'[Math.floor(Math.random() * 36)]
+        () =>
+          'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'[Math.floor(Math.random() * 36)]
       ).join('');
 
       // Format as XXXX-XXXX
@@ -359,11 +380,14 @@ class MultiFactorAuthService {
   /**
    * Validate MFA setup completeness
    */
-  validateMFASetup(devices: MFADevice[], config: MFAConfig): {
+  async validateMFASetup(
+    devices: MFADevice[],
+    config: MFAConfig
+  ): Promise<{
     isValid: boolean;
     missingFactors: string[];
     recommendations: string[];
-  } {
+  }> {
     const activeDevices = devices.filter(d => d.isActive);
     const deviceTypes = new Set(activeDevices.map(d => d.type));
 
@@ -383,12 +407,17 @@ class MultiFactorAuthService {
 
     // Recommend hardware security keys
     if (!deviceTypes.has('webauthn') && !deviceTypes.has('biometric')) {
-      recommendations.push('Consider adding a hardware security key for enhanced security');
+      recommendations.push(
+        'Consider adding a hardware security key for enhanced security'
+      );
     }
 
     // Recommend biometric if available
     const biometricCapabilities = await this.getBiometricCapabilities();
-    if (biometricCapabilities.platformAuthenticator && !deviceTypes.has('biometric')) {
+    if (
+      biometricCapabilities.platformAuthenticator &&
+      !deviceTypes.has('biometric')
+    ) {
       recommendations.push('Enable biometric authentication for convenience');
     }
 

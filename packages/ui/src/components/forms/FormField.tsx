@@ -1,15 +1,23 @@
-import React, { type ReactNode } from 'react'
-import { Stack, Label, Paragraph, Input, TextArea, type InputProps, type TextAreaProps } from '../..'
-import { AlertCircle, CheckCircle } from 'lucide-react-native'
-import { View } from 'tamagui'
+import React, { type ReactNode } from 'react';
+import {
+  Input,
+  type InputProps,
+  Label,
+  Stack,
+  TextArea,
+  type TextAreaProps,
+} from '../..';
+import { Paragraph, type ParagraphProps } from '../Typography';
+import { AlertCircle, CheckCircle } from 'lucide-react-native';
+import { View } from 'tamagui';
 
 export interface FormFieldProps {
-  label?: string
-  errorMessage?: string
-  successMessage?: string
-  hint?: string
-  required?: boolean
-  children?: ReactNode
+  children?: ReactNode;
+  errorMessage?: string;
+  hint?: string;
+  label?: string;
+  required?: boolean;
+  successMessage?: string;
 }
 
 export const FormField: React.FC<FormFieldProps> = ({
@@ -18,51 +26,63 @@ export const FormField: React.FC<FormFieldProps> = ({
   successMessage,
   hint,
   required,
-  children
+  children,
 }) => {
   return (
-    <Stack gap="$2" width="100%">
+    <Stack gap='$2' width='100%'>
       {label && (
         <Label>
           {label}
-          {required && <Paragraph color="danger" style={{ display: 'inline' }}> *</Paragraph>}
+          {required && (
+            <Paragraph color='danger' style={{ display: 'inline' }}>
+              {' '}
+              *
+            </Paragraph>
+          )}
         </Label>
       )}
 
       {children}
 
       {hint && !errorMessage && !successMessage && (
-        <Paragraph size="small" color="muted">
+        <Paragraph {...({ size: 'small', color: 'muted' } as ParagraphProps)}>
           {hint}
         </Paragraph>
       )}
 
       {errorMessage && (
-        <View flexDirection="row" alignItems="center" gap="$1">
-          <AlertCircle size={14} color="$error" />
-          <Paragraph size="small" color="danger">
+        <View flexDirection='row' alignItems='center' gap='$1'>
+          <AlertCircle size={14} color='$error' />
+          <Paragraph
+            {...({ size: 'small', color: 'danger' } as ParagraphProps)}
+          >
             {errorMessage}
           </Paragraph>
         </View>
       )}
 
       {successMessage && !errorMessage && (
-        <View flexDirection="row" alignItems="center" gap="$1">
-          <CheckCircle size={14} color="$success" />
-          <Paragraph size="small" color="success">
+        <View flexDirection='row' alignItems='center' gap='$1'>
+          <CheckCircle size={14} color='$success' />
+          <Paragraph
+            {...({ size: 'small', color: 'success' } as ParagraphProps)}
+          >
             {successMessage}
           </Paragraph>
         </View>
       )}
     </Stack>
-  )
-}
+  );
+};
 
 // FormInput - Input with FormField wrapper
-export type FormInputProps = InputProps & { field?: FormFieldProps }
+export type FormInputProps = InputProps & { field?: FormFieldProps };
 
-export const FormInput: React.FC<FormInputProps> = ({ field, ...inputProps }) => {
-  const { label, errorMessage, successMessage, hint, required } = field || {}
+export const FormInput: React.FC<FormInputProps> = ({
+  field,
+  ...inputProps
+}) => {
+  const { label, errorMessage, successMessage, hint, required } = field || {};
   return (
     <FormField
       label={label}
@@ -73,17 +93,26 @@ export const FormInput: React.FC<FormInputProps> = ({ field, ...inputProps }) =>
     >
       <Input
         {...inputProps}
-        variant={errorMessage ? 'error' : successMessage ? 'success' : inputProps.variant}
+        variant={
+          errorMessage
+            ? 'error'
+            : successMessage
+              ? 'success'
+              : inputProps.variant
+        }
       />
     </FormField>
-  )
-}
+  );
+};
 
 // FormTextArea - TextArea with FormField wrapper
-export type FormTextAreaProps = TextAreaProps & { field?: FormFieldProps }
+export type FormTextAreaProps = TextAreaProps & { field?: FormFieldProps };
 
-export const FormTextArea: React.FC<FormTextAreaProps> = ({ field, ...textAreaProps }) => {
-  const { label, errorMessage, successMessage, hint, required } = field || {}
+export const FormTextArea: React.FC<FormTextAreaProps> = ({
+  field,
+  ...textAreaProps
+}) => {
+  const { label, errorMessage, successMessage, hint, required } = field || {};
   return (
     <FormField
       label={label}
@@ -94,8 +123,14 @@ export const FormTextArea: React.FC<FormTextAreaProps> = ({ field, ...textAreaPr
     >
       <TextArea
         {...textAreaProps}
-        variant={errorMessage ? 'error' : successMessage ? 'success' : textAreaProps.variant}
+        variant={
+          errorMessage
+            ? 'error'
+            : successMessage
+              ? 'success'
+              : textAreaProps.variant
+        }
       />
     </FormField>
-  )
-}
+  );
+};

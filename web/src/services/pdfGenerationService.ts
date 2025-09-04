@@ -3,14 +3,20 @@
  * Generates PDF documents from HTML will content
  */
 
-import type { GeneratedWill, Jurisdiction, LanguageCode } from '../types/will-templates';
+import type {
+  GeneratedWill,
+  Jurisdiction,
+  LanguageCode,
+} from '../types/will-templates';
 
 export class PDFGenerationService {
-
   /**
    * Generate PDF from HTML content
    */
-  async generateWillPDF(will: GeneratedWill, options?: PDFOptions): Promise<ArrayBuffer> {
+  async generateWillPDF(
+    will: GeneratedWill,
+    options?: PDFOptions
+  ): Promise<ArrayBuffer> {
     try {
       // In a real implementation, this would use a PDF generation library
       // Options: jsPDF, Puppeteer, or server-side PDF generation
@@ -31,7 +37,10 @@ export class PDFGenerationService {
   /**
    * Client-side PDF generation using browser print
    */
-  private async generateClientSidePDF(will: GeneratedWill, options?: PDFOptions): Promise<ArrayBuffer> {
+  private async generateClientSidePDF(
+    will: GeneratedWill,
+    options?: PDFOptions
+  ): Promise<ArrayBuffer> {
     return new Promise((resolve, reject) => {
       try {
         // Create a hidden iframe for PDF generation
@@ -42,7 +51,8 @@ export class PDFGenerationService {
         iframe.style.height = '297mm'; // A4 height
         document.body.appendChild(iframe);
 
-        const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
+        const iframeDoc =
+          iframe.contentDocument || iframe.contentWindow?.document;
         if (!iframeDoc) {
           reject(new Error('Cannot access iframe document'));
           return;
@@ -84,7 +94,10 @@ export class PDFGenerationService {
   /**
    * Server-side PDF generation (placeholder)
    */
-  private async generateServerSidePDF(will: GeneratedWill, options?: PDFOptions): Promise<ArrayBuffer> {
+  private async generateServerSidePDF(
+    will: GeneratedWill,
+    options?: PDFOptions
+  ): Promise<ArrayBuffer> {
     // This would integrate with a server-side PDF generation service
     // For example: Puppeteer, wkhtmltopdf, or a cloud service
 
@@ -95,8 +108,9 @@ export class PDFGenerationService {
       },
       body: JSON.stringify({
         html: will.content.html,
-        options: options || this.getDefaultOptions(will.jurisdiction, will.language)
-      })
+        options:
+          options || this.getDefaultOptions(will.jurisdiction, will.language),
+      }),
     });
 
     if (!response.ok) {
@@ -109,8 +123,14 @@ export class PDFGenerationService {
   /**
    * Generate styled HTML for PDF
    */
-  private generateStyledHTML(will: GeneratedWill, options?: PDFOptions): string {
-    const opts = { ...this.getDefaultOptions(will.jurisdiction, will.language), ...options };
+  private generateStyledHTML(
+    will: GeneratedWill,
+    options?: PDFOptions
+  ): string {
+    const opts = {
+      ...this.getDefaultOptions(will.jurisdiction, will.language),
+      ...options,
+    };
 
     return `
 <!DOCTYPE html>
@@ -362,7 +382,10 @@ export class PDFGenerationService {
   /**
    * Format execution instructions for PDF
    */
-  private formatExecutionInstructions(instructions: any, willType: string): string {
+  private formatExecutionInstructions(
+    instructions: any,
+    willType: string
+  ): string {
     if (!instructions || !instructions[willType]) {
       return '<p>No specific execution instructions available.</p>';
     }
@@ -378,7 +401,10 @@ export class PDFGenerationService {
       html += '</ol>';
     }
 
-    if (typeInstructions.requirements && typeInstructions.requirements.length > 0) {
+    if (
+      typeInstructions.requirements &&
+      typeInstructions.requirements.length > 0
+    ) {
       html += '<h5>Legal Requirements:</h5><ul>';
       typeInstructions.requirements.forEach((req: string) => {
         html += `<li>${req}</li>`;
@@ -400,7 +426,10 @@ export class PDFGenerationService {
   /**
    * Get default PDF options based on jurisdiction
    */
-  private getDefaultOptions(jurisdiction: Jurisdiction, language: LanguageCode): PDFOptions {
+  private getDefaultOptions(
+    jurisdiction: Jurisdiction,
+    language: LanguageCode
+  ): PDFOptions {
     return {
       pageSize: 'A4',
       margin: '20mm',
@@ -408,7 +437,7 @@ export class PDFGenerationService {
       fontFamily: this.getFontFamily(language),
       orientation: 'portrait',
       includeHeader: true,
-      includeFooter: true
+      includeFooter: true,
     };
   }
 
@@ -417,11 +446,11 @@ export class PDFGenerationService {
    */
   private getFontFamily(language: LanguageCode): string {
     const fontMappings: Record<string, string> = {
-      'cs': '"Times New Roman", serif',
-      'sk': '"Times New Roman", serif',
-      'de': '"Times New Roman", serif',
-      'en': '"Times New Roman", serif',
-      'uk': '"Times New Roman", serif'
+      cs: '"Times New Roman", serif',
+      sk: '"Times New Roman", serif',
+      de: '"Times New Roman", serif',
+      en: '"Times New Roman", serif',
+      uk: '"Times New Roman", serif',
     };
 
     return fontMappings[language] || '"Times New Roman", serif';
@@ -432,45 +461,45 @@ export class PDFGenerationService {
    */
   private getJurisdictionName(jurisdiction: Jurisdiction): string {
     const names: Record<Jurisdiction, string> = {
-      'CZ': 'Czech Republic',
-      'SK': 'Slovak Republic',
-      'DE': 'Germany',
-      'AT': 'Austria',
-      'FR': 'France',
-      'ES': 'Spain',
-      'IT': 'Italy',
-      'NL': 'Netherlands',
-      'BE': 'Belgium',
-      'LU': 'Luxembourg',
-      'CH': 'Switzerland',
-      'LI': 'Liechtenstein',
-      'UK': 'United Kingdom',
-      'DK': 'Denmark',
-      'SE': 'Sweden',
-      'FI': 'Finland',
-      'PL': 'Poland',
-      'HU': 'Hungary',
-      'SI': 'Slovenia',
-      'EE': 'Estonia',
-      'LV': 'Latvia',
-      'LT': 'Lithuania',
-      'PT': 'Portugal',
-      'GR': 'Greece',
-      'MT': 'Malta',
-      'CY': 'Cyprus',
-      'IE': 'Ireland',
-      'NO': 'Norway',
-      'IS': 'Iceland',
-      'RO': 'Romania',
-      'BG': 'Bulgaria',
-      'HR': 'Croatia',
-      'RS': 'Serbia',
-      'AL': 'Albania',
-      'MK': 'North Macedonia',
-      'ME': 'Montenegro',
-      'MD': 'Moldova',
-      'UA': 'Ukraine',
-      'BA': 'Bosnia and Herzegovina'
+      CZ: 'Czech Republic',
+      SK: 'Slovak Republic',
+      DE: 'Germany',
+      AT: 'Austria',
+      FR: 'France',
+      ES: 'Spain',
+      IT: 'Italy',
+      NL: 'Netherlands',
+      BE: 'Belgium',
+      LU: 'Luxembourg',
+      CH: 'Switzerland',
+      LI: 'Liechtenstein',
+      UK: 'United Kingdom',
+      DK: 'Denmark',
+      SE: 'Sweden',
+      FI: 'Finland',
+      PL: 'Poland',
+      HU: 'Hungary',
+      SI: 'Slovenia',
+      EE: 'Estonia',
+      LV: 'Latvia',
+      LT: 'Lithuania',
+      PT: 'Portugal',
+      GR: 'Greece',
+      MT: 'Malta',
+      CY: 'Cyprus',
+      IE: 'Ireland',
+      NO: 'Norway',
+      IS: 'Iceland',
+      RO: 'Romania',
+      BG: 'Bulgaria',
+      HR: 'Croatia',
+      RS: 'Serbia',
+      AL: 'Albania',
+      MK: 'North Macedonia',
+      ME: 'Montenegro',
+      MD: 'Moldova',
+      UA: 'Ukraine',
+      BA: 'Bosnia and Herzegovina',
     };
 
     return names[jurisdiction] || jurisdiction;
@@ -481,27 +510,27 @@ export class PDFGenerationService {
    */
   private getWillTypeName(type: string, language: LanguageCode): string {
     const names: Record<string, Record<LanguageCode, string>> = {
-      'holographic': {
-        'en': 'Holographic Will',
-        'cs': 'Holografická závěť',
-        'sk': 'Holografická závet',
-        'de': 'Eigenhändiges Testament',
-        'uk': 'Власноручний заповіт'
+      holographic: {
+        en: 'Holographic Will',
+        cs: 'Holografická závěť',
+        sk: 'Holografická závet',
+        de: 'Eigenhändiges Testament',
+        uk: 'Власноручний заповіт',
       } as any,
-      'witnessed': {
-        'en': 'Witnessed Will',
-        'cs': 'Závěť se svědky',
-        'sk': 'Závet so svedkami',
-        'de': 'Testament mit Zeugen',
-        'uk': 'Заповіт із свідками'
+      witnessed: {
+        en: 'Witnessed Will',
+        cs: 'Závěť se svědky',
+        sk: 'Závet so svedkami',
+        de: 'Testament mit Zeugen',
+        uk: 'Заповіт із свідками',
       } as any,
-      'notarial': {
-        'en': 'Notarial Will',
-        'cs': 'Notářská závěť',
-        'sk': 'Notárska závet',
-        'de': 'Notarielles Testament',
-        'uk': 'Нотаріальний заповіт'
-      } as any
+      notarial: {
+        en: 'Notarial Will',
+        cs: 'Notářská závěť',
+        sk: 'Notárska závet',
+        de: 'Notarielles Testament',
+        uk: 'Нотаріальний заповіт',
+      } as any,
     };
 
     return names[type]?.[language] || names[type]?.['en'] || type;
@@ -549,13 +578,13 @@ export class PDFGenerationService {
 }
 
 export interface PDFOptions {
-  pageSize?: string;
-  margin?: string;
-  fontSize?: string;
   fontFamily?: string;
-  orientation?: 'portrait' | 'landscape';
-  includeHeader?: boolean;
+  fontSize?: string;
   includeFooter?: boolean;
+  includeHeader?: boolean;
+  margin?: string;
+  orientation?: 'landscape' | 'portrait';
+  pageSize?: string;
 }
 
 // Export singleton instance

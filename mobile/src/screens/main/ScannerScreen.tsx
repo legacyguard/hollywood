@@ -1,14 +1,21 @@
 // src/screens/main/ScannerScreen.tsx
 /* global __DEV__ */
 import React, { useState } from 'react';
-import { View, Text, // Button,
-  Image, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import {
+  ActivityIndicator,
+  Alert,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { IntelligentDocumentScanner } from '@/components/scanner/IntelligentDocumentScanner';
 import { api, ApiError } from '@/api/apiClient';
 import * as FileSystem from 'expo-file-system';
 
 export const ScannerScreen = () => {
-  const [scannedImageUri, setScannedImageUri] = useState<string | null>(null);
+  const [scannedImageUri, setScannedImageUri] = useState<null | string>(null);
   const [isScanning, setIsScanning] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
 

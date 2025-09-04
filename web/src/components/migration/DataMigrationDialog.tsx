@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import { dataMigrationTool } from '@/lib/migration/DataMigrationTool';
 
 interface MigrationProgress {
-  total: number;
-  processed: number;
-  failed: number;
-  status: 'pending' | 'running' | 'completed' | 'failed';
   errors: Array<{
-    id: string;
     error: string;
+    id: string;
   }>;
+  failed: number;
+  processed: number;
+  status: 'completed' | 'failed' | 'pending' | 'running';
+  total: number;
 }
 
 export function DataMigrationDialog({
@@ -82,7 +82,7 @@ export function DataMigrationDialog({
                     ? 'bg-green-500'
                     : 'bg-blue-500'
               }`}
-              style={{  width: `${progressPercentage }}%` }}
+              style={{ width: `${progressPercentage}}%` }}
             />
           </div>
           <div className='flex justify-between mt-2 text-sm text-gray-500'>

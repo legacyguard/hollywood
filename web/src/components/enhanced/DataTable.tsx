@@ -2,22 +2,22 @@ import * as React from 'react';
 import {
   type ColumnDef,
   type ColumnFiltersState,
-  type SortingState,
-  type VisibilityState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
+  type SortingState,
   useReactTable,
+  type VisibilityState,
 } from '@tanstack/react-table';
 import {
   ArrowUpDown,
   ChevronDown,
-  MoreHorizontal,
-  Search,
   Download,
   Filter,
+  MoreHorizontal,
+  Search,
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -45,18 +45,18 @@ import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
 interface DataTableProps<TData, TValue> {
+  className?: string;
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  description?: string;
+  loading?: boolean;
+  onExport?: () => void;
+  pageSize?: number;
   searchKey?: string;
   searchPlaceholder?: string;
-  title?: string;
-  description?: string;
-  showViewOptions?: boolean;
   showExport?: boolean;
-  onExport?: () => void;
-  loading?: boolean;
-  pageSize?: number;
-  className?: string;
+  showViewOptions?: boolean;
+  title?: string;
 }
 
 export function DataTable<TData, TValue>({
@@ -138,7 +138,7 @@ export function DataTable<TData, TValue>({
             </div>
 
             {selectedRowsCount > 0 && (
-              <Badge variant="secondary" className='ml-2'>
+              <Badge variant='secondary' className='ml-2'>
                 {selectedRowsCount} selected
               </Badge>
             )}
@@ -147,7 +147,7 @@ export function DataTable<TData, TValue>({
           <div className='flex items-center space-x-2'>
             {showExport && (
               <Button
-                variant="outline"
+                variant='outline'
                 size='sm'
                 onClick={onExport}
                 disabled={loading}
@@ -160,7 +160,7 @@ export function DataTable<TData, TValue>({
             {showViewOptions && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size='sm'>
+                  <Button variant='outline' size='sm'>
                     <Filter className='mr-2 h-4 w-4' />
                     View
                     <ChevronDown className='ml-2 h-4 w-4' />
@@ -272,7 +272,7 @@ export function DataTable<TData, TValue>({
               {table.getPageCount()}
             </p>
             <Button
-              variant="outline"
+              variant='outline'
               size='sm'
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
@@ -280,7 +280,7 @@ export function DataTable<TData, TValue>({
               Previous
             </Button>
             <Button
-              variant="outline"
+              variant='outline'
               size='sm'
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
@@ -320,13 +320,13 @@ export const createSortableHeader = (label: string) => {
     column,
   }: {
     column: {
+      getIsSorted: () => 'asc' | 'desc' | false;
       toggleSorting: (ascending: boolean) => void;
-      getIsSorted: () => false | 'asc' | 'desc';
     };
   }) => {
     return (
       <Button
-        variant="ghost"
+        variant='ghost'
         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         className='-ml-3 h-8 data-[state=open]:bg-accent'
       >
@@ -339,9 +339,9 @@ export const createSortableHeader = (label: string) => {
 
 export const createActionsColumn = <TData,>(
   actions: Array<{
+    icon?: React.ReactNode;
     label: string;
     onClick: (row: TData) => void;
-    icon?: React.ReactNode;
   }>
 ): ColumnDef<TData> => ({
   id: 'actions',
@@ -350,7 +350,7 @@ export const createActionsColumn = <TData,>(
     return (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className='h-8 w-8 p-0'>
+          <Button variant='ghost' className='h-8 w-8 p-0'>
             <span className='sr-only'>Open menu</span>
             <MoreHorizontal className='h-4 w-4' />
           </Button>

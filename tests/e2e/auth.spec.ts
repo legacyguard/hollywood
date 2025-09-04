@@ -10,7 +10,9 @@ test.describe('Authentication Flow', () => {
     await expect(page.locator('text=Sign In')).toBeVisible();
   });
 
-  test('should allow user to sign in with email and password', async ({ page }) => {
+  test('should allow user to sign in with email and password', async ({
+    page,
+  }) => {
     await page.getByLabel(/email/i).fill('test@example.com');
     await page.getByLabel(/password/i).fill('password123');
     await page.getByRole('button', { name: /sign in|submit/i }).click();

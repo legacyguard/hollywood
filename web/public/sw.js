@@ -1,7 +1,7 @@
 /**
  * Service Worker for LegacyGuard PWA
  * Phase 7: Mobile & PWA Capabilities
- * 
+ *
  * Handles caching, offline functionality, push notifications,
  * and background sync for the Progressive Web App.
  */
@@ -19,7 +19,7 @@ const STATIC_CACHE_URLS = [
   '/offline.html',
   '/manifest.json',
   '/shield-icon.svg',
-  '/favicon-16x16.svg'
+  '/favicon-16x16.svg',
 ];
 
 // Resources to cache on first use
@@ -28,7 +28,7 @@ const RUNTIME_CACHE_URLS = [
   '/settings',
   '/family',
   '/legacy',
-  '/time-capsule'
+  '/time-capsule',
 ];
 
 // API endpoints that should be cached
@@ -36,7 +36,7 @@ const API_CACHE_PATTERNS = [
   /\/api\/documents/,
   /\/api\/analytics/,
   /\/api\/insights/,
-  /\/api\/health/
+  /\/api\/health/,
 ];
 
 // Resources that should always be fetched fresh
@@ -44,14 +44,15 @@ const BYPASS_CACHE_PATTERNS = [
   /\/api\/auth/,
   /\/api\/upload/,
   /\/api\/notifications/,
-  /\/api\/realtime/
+  /\/api\/realtime/,
 ];
 
 self.addEventListener('install', event => {
   console.log('Service Worker: Installing...');
-  
+
   event.waitUntil(
-    caches.open(CACHE_NAME)
+    caches
+      .open(CACHE_NAME)
       .then(cache => {
         console.log('Service Worker: Caching static resources');
         return cache.addAll(STATIC_CACHE_URLS);
@@ -68,21 +69,24 @@ self.addEventListener('install', event => {
 
 self.addEventListener('activate', event => {
   console.log('Service Worker: Activating...');
-  
+
   event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(cacheName => {
-          if (cacheName !== CACHE_NAME) {
-            console.log('Service Worker: Clearing old cache', cacheName);
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    }).then(() => {
-      console.log('Service Worker: Activation complete');
-      return self.clients.claim();
-    })
+    caches
+      .keys()
+      .then(cacheNames => {
+        return Promise.all(
+          cacheNames.map(cacheName => {
+            if (cacheName !== CACHE_NAME) {
+              console.log('Service Worker: Clearing old cache', cacheName);
+              return caches.delete(cacheName);
+            }
+          })
+        );
+      })
+      .then(() => {
+        console.log('Service Worker: Activation complete');
+        return self.clients.claim();
+      })
   );
 });
 
@@ -155,22 +159,24 @@ async function handleNavigationRequest(request) {
  * Handle API requests with network-first strategy and intelligent caching
  */
 async function handleApiRequest(request) {
-  const shouldCache = API_CACHE_PATTERNS.some(pattern => pattern.test(request.url));
+  const shouldCache = API_CACHE_PATTERNS.some(pattern =>
+    pattern.test(request.url)
+  );
 
   try {
     // Try network first for fresh data
     const networkResponse = await fetch(request);
-    
+
     if (networkResponse.ok && shouldCache) {
       // Cache successful API responses
       const cache = await caches.open(CACHE_NAME);
       cache.put(request, networkResponse.clone());
     }
-    
+
     return networkResponse;
   } catch (error) {
     console.error('Service Worker: API request failed', error);
-    
+
     if (shouldCache) {
       // Return cached version if available
       const cachedResponse = await caches.match(request);
@@ -184,15 +190,15 @@ async function handleApiRequest(request) {
 
     // Return error response
     return new Response(
-      JSON.stringify({ 
-        error: 'Network unavailable', 
+      JSON.stringify({
+        error: 'Network unavailable',
         message: 'Please check your internet connection and try again.',
-        cached: false 
+        cached: false,
       }),
       {
         status: 503,
         statusText: 'Service Unavailable',
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
       }
     );
   }
@@ -221,10 +227,13 @@ async function handleStaticRequest(request) {
     return networkResponse;
   } catch (error) {
     console.error('Service Worker: Static request failed', error);
-    
+
     // Return cached version if available
     const cachedResponse = await caches.match(request);
-    return cachedResponse || new Response('Resource not available offline', { status: 404 });
+    return (
+      cachedResponse ||
+      new Response('Resource not available offline', { status: 404 })
+    );
   }
 }
 
@@ -246,7 +255,7 @@ async function fetchAndUpdateCache(request) {
 // Handle push notifications
 self.addEventListener('push', event => {
   console.log('Service Worker: Push notification received');
-  
+
   if (!event.data) {
     return;
   }
@@ -262,33 +271,30 @@ self.addEventListener('push', event => {
       {
         action: 'view',
         title: 'View',
-        icon: '/shield-icon.svg'
+        icon: '/shield-icon.svg',
       },
       {
         action: 'dismiss',
-        title: 'Dismiss'
-      }
+        title: 'Dismiss',
+      },
     ],
     tag: data.tag || 'legacyguard-notification',
     renotify: true,
     requireInteraction: data.requireInteraction || false,
     silent: data.silent || false,
     timestamp: Date.now(),
-    vibrate: [200, 100, 200]
+    vibrate: [200, 100, 200],
   };
 
   event.waitUntil(
-    self.registration.showNotification(
-      data.title || 'LegacyGuard',
-      options
-    )
+    self.registration.showNotification(data.title || 'LegacyGuard', options)
   );
 });
 
 // Handle notification clicks
 self.addEventListener('notificationclick', event => {
   console.log('Service Worker: Notification clicked');
-  
+
   event.notification.close();
 
   if (event.action === 'dismiss') {
@@ -298,7 +304,8 @@ self.addEventListener('notificationclick', event => {
   const urlToOpen = event.notification.data?.url || '/dashboard';
 
   event.waitUntil(
-    clients.matchAll({ type: 'window', includeUncontrolled: true })
+    clients
+      .matchAll({ type: 'window', includeUncontrolled: true })
       .then(clientList => {
         // Check if app is already open
         for (const client of clientList) {
@@ -310,7 +317,7 @@ self.addEventListener('notificationclick', event => {
             return;
           }
         }
-        
+
         // Open new window if not already open
         if (clients.openWindow) {
           return clients.openWindow(urlToOpen);
@@ -322,11 +329,11 @@ self.addEventListener('notificationclick', event => {
 // Handle background sync
 self.addEventListener('sync', event => {
   console.log('Service Worker: Background sync triggered', event.tag);
-  
+
   if (event.tag === 'document-upload') {
     event.waitUntil(handleDocumentUploadSync());
   }
-  
+
   if (event.tag === 'analytics-sync') {
     event.waitUntil(handleAnalyticsSync());
   }
@@ -339,27 +346,31 @@ async function handleDocumentUploadSync() {
   try {
     // Get pending uploads from IndexedDB
     const pendingUploads = await getPendingUploads();
-    
+
     for (const upload of pendingUploads) {
       try {
         const response = await fetch('/api/documents/upload', {
           method: 'POST',
-          body: upload.formData
+          body: upload.formData,
         });
-        
+
         if (response.ok) {
           // Remove from pending uploads
           await removePendingUpload(upload.id);
-          
+
           // Notify user of successful upload
           await self.registration.showNotification('Upload Complete', {
             body: `Document "${upload.filename}" has been uploaded successfully`,
             icon: '/shield-icon.svg',
-            tag: 'upload-success'
+            tag: 'upload-success',
           });
         }
       } catch (error) {
-        console.error('Service Worker: Upload sync failed for', upload.filename, error);
+        console.error(
+          'Service Worker: Upload sync failed for',
+          upload.filename,
+          error
+        );
       }
     }
   } catch (error) {
@@ -374,14 +385,14 @@ async function handleAnalyticsSync() {
   try {
     // Sync cached analytics events
     const pendingEvents = await getPendingAnalyticsEvents();
-    
+
     if (pendingEvents.length > 0) {
       const response = await fetch('/api/analytics/batch', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ events: pendingEvents })
+        body: JSON.stringify({ events: pendingEvents }),
       });
-      
+
       if (response.ok) {
         await clearPendingAnalyticsEvents();
         console.log('Service Worker: Analytics sync completed');
@@ -400,23 +411,23 @@ self.addEventListener('message', event => {
     case 'SKIP_WAITING':
       self.skipWaiting();
       break;
-      
+
     case 'GET_VERSION':
       event.ports[0].postMessage({ version: CACHE_NAME });
       break;
-      
+
     case 'CLEAR_CACHE':
       clearAllCaches().then(() => {
         event.ports[0].postMessage({ success: true });
       });
       break;
-      
+
     case 'CACHE_URLS':
       cacheUrls(data.urls).then(() => {
         event.ports[0].postMessage({ success: true });
       });
       break;
-      
+
     default:
       console.log('Service Worker: Unknown message type', type);
   }

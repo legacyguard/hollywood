@@ -1,8 +1,12 @@
 export interface LegacyGardenProps {
-  milestonesUnlocked: number
-  documentsCreated?: number
-  daysActive?: number
-  interactive?: boolean
-  showLabels?: boolean
-  onMilestoneClick?: (milestone: { id: string; name: string; achieved: boolean }) => void
+  daysActive?: number;
+  documentsCreated?: number;
+  interactive?: boolean;
+  milestonesUnlocked: number;
+  onMilestoneClick?: (milestone: {
+    achieved: boolean;
+    id: string;
+    name: string;
+  }) => void;
+  showLabels?: boolean;
 }

@@ -74,7 +74,9 @@ describe('Payment Flow E2E Tests', () => {
         // Handle 3D Secure modal
         cy.get('iframe[name*="stripe"]').then($iframe => {
           const $body = $iframe.contents().find('body');
-          cy.wrap($body).find('button[data-test="complete-authentication"]').click();
+          cy.wrap($body)
+            .find('button[data-test="complete-authentication"]')
+            .click();
         });
       });
 
@@ -165,13 +167,18 @@ describe('Payment Flow E2E Tests', () => {
       // Upload documents to reach limit
       for (let i = 0; i < 10; i++) {
         cy.get('[data-cy=upload-button]').click();
-        cy.get('input[type="file"]').selectFile('cypress/fixtures/test-document.pdf');
+        cy.get('input[type="file"]').selectFile(
+          'cypress/fixtures/test-document.pdf'
+        );
         cy.wait(500);
       }
 
       // Should show usage warning
       cy.get('[data-cy=usage-warning]').should('be.visible');
-      cy.get('[data-cy=usage-warning]').should('contain', '90% of limit reached');
+      cy.get('[data-cy=usage-warning]').should(
+        'contain',
+        '90% of limit reached'
+      );
 
       // Try to upload another document
       cy.get('[data-cy=upload-button]').click();
@@ -189,9 +196,9 @@ describe('Payment Flow E2E Tests', () => {
           customer: 'cus_test123',
           subscription: 'sub_test123',
           metadata: {
-            user_id: 'test-user-id'
-          }
-        }
+            user_id: 'test-user-id',
+          },
+        },
       });
 
       // Wait for webhook processing
@@ -199,7 +206,8 @@ describe('Payment Flow E2E Tests', () => {
 
       // Check database state
       cy.task('db:query', {
-        query: "SELECT * FROM user_subscriptions WHERE user_id = 'test-user-id'"
+        query:
+          "SELECT * FROM user_subscriptions WHERE user_id = 'test-user-id'",
       }).then((result: any) => {
         expect(result[0].status).to.equal('active');
         expect(result[0].stripe_subscription_id).to.equal('sub_test123');
@@ -211,21 +219,22 @@ describe('Payment Flow E2E Tests', () => {
         type: 'invoice.payment_failed',
         data: {
           customer: 'cus_test123',
-          subscription: 'sub_test123'
-        }
+          subscription: 'sub_test123',
+        },
       });
 
       cy.wait(2000);
 
       cy.task('db:query', {
-        query: "SELECT * FROM user_subscriptions WHERE stripe_subscription_id = 'sub_test123'"
+        query:
+          "SELECT * FROM user_subscriptions WHERE stripe_subscription_id = 'sub_test123'",
       }).then((result: any) => {
         expect(result[0].status).to.equal('past_due');
       });
 
       // Check if email was queued
       cy.task('db:query', {
-        query: "SELECT * FROM email_logs WHERE subject LIKE '%Payment Failed%'"
+        query: "SELECT * FROM email_logs WHERE subject LIKE '%Payment Failed%'",
       }).then((result: any) => {
         expect(result).to.have.length.greaterThan(0);
       });
@@ -278,12 +287,18 @@ describe('Payment Flow E2E Tests', () => {
       // Try to access AI features
       cy.get('[data-cy=ai-analysis-button]').click();
       cy.get('[data-cy=premium-feature-modal]').should('be.visible');
-      cy.get('[data-cy=premium-feature-modal]').should('contain', 'Upgrade to access AI features');
+      cy.get('[data-cy=premium-feature-modal]').should(
+        'contain',
+        'Upgrade to access AI features'
+      );
 
       // Try to enable offline mode
       cy.visit('/settings');
       cy.get('[data-cy=offline-mode-toggle]').should('be.disabled');
-      cy.get('[data-cy=offline-mode-label]').should('contain', 'Premium feature');
+      cy.get('[data-cy=offline-mode-label]').should(
+        'contain',
+        'Premium feature'
+      );
     });
   });
 });

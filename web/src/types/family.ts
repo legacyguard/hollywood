@@ -3,204 +3,227 @@
  * Comprehensive types for family member management and collaboration
  */
 
-export type FamilyRole = 'owner' | 'co_owner' | 'collaborator' | 'viewer' | 'emergency_contact';
+export type FamilyRole =
+  | 'co_owner'
+  | 'collaborator'
+  | 'emergency_contact'
+  | 'owner'
+  | 'viewer';
 
-export type FamilyMemberStatus = 'invited' | 'active' | 'inactive' | 'pending' | 'pending_verification';
+export type FamilyMemberStatus =
+  | 'active'
+  | 'inactive'
+  | 'invited'
+  | 'pending'
+  | 'pending_verification';
 
 export type RelationshipType =
-  | 'spouse'
-  | 'child'
-  | 'parent'
-  | 'sibling'
-  | 'grandparent'
-  | 'grandchild'
   | 'aunt_uncle'
+  | 'child'
   | 'cousin'
   | 'friend'
+  | 'grandchild'
+  | 'grandparent'
+  | 'other'
+  | 'parent'
+  | 'partner'
   | 'professional'
-  | 'other';
+  | 'sibling'
+  | 'spouse';
 
 export interface FamilyMember {
-  id: string;
-  email: string;
-  name: string;
-  role: FamilyRole;
-  relationship: RelationshipType;
-  status: FamilyMemberStatus;
-  avatar?: string;
-  phone?: string | null;
-  address?: {
-    street: string;
+  address?: null | {
     city: string;
-    state?: string;
-    postalCode: string;
     country: string;
-  } | null;
+    postalCode: string;
+    state?: string;
+    street: string;
+  };
+  avatar?: string;
+  email: string;
+  emergencyPriority?: number; // For emergency contacts (1 = highest priority)
+  id: string;
   invitedAt: Date;
+  invitedBy: string; // User ID who sent the invitation
   joinedAt?: Date;
   lastActiveAt?: Date;
-  invitedBy: string; // User ID who sent the invitation
-  permissions: FamilyPermissions;
-  emergencyPriority?: number; // For emergency contacts (1 = highest priority)
+  name: string;
   notes?: string;
+  permissions: FamilyPermissions;
+  phone?: null | string;
+  relationship: RelationshipType;
+  role: FamilyRole;
+  status: FamilyMemberStatus;
 }
 
 export interface FamilyPermissions {
-  canViewDocuments: boolean;
-  canEditDocuments: boolean;
+  canAccessEmergencyInfo: boolean;
   canDeleteDocuments: boolean;
+  canEditDocuments: boolean;
   canInviteMembers: boolean;
   canManageMembers: boolean;
-  canAccessEmergencyInfo: boolean;
-  canViewFinancials: boolean;
   canReceiveNotifications: boolean;
+  canViewDocuments: boolean;
+  canViewFinancials: boolean;
   documentCategories: string[]; // Which document types they can access
 }
 
 export interface FamilyInvitation {
-  id: string;
-  senderId: string;
-  familyMemberId: string;
+  acceptedAt: null | string;
+  declinedAt?: null | string;
   email: string;
-  token: string;
-  status: 'pending' | 'accepted' | 'declined' | 'expired';
-  message: string | null;
   expiresAt: string;
-  acceptedAt: string | null;
-  role: FamilyRole;
-  relationship: RelationshipType;
-  name?: string;
-  invitedBy?: string;
+  familyMemberId: string;
+  id: string;
   invitedAt?: Date;
-  declinedAt?: string | null;
+  invitedBy?: string;
+  message: null | string;
+  name?: string;
+  relationship: RelationshipType;
+  role: FamilyRole;
+  senderId: string;
+  status: 'accepted' | 'declined' | 'expired' | 'pending';
+  token: string;
 }
 
 export interface FamilyCalendarEvent {
-  id: string;
-  title: string;
-  description?: string;
+  createdBy: string;
   date: Date;
-  type: 'birthday' | 'anniversary' | 'document_expiry' | 'appointment' | 'milestone' | 'custom';
+  description?: string;
+  id: string;
+  notifyMembers: string[]; // Array of member IDs to notify
+  priority: 'high' | 'low' | 'medium';
+  recurring?: {
+    endDate?: Date;
+    frequency: 'monthly' | 'weekly' | 'yearly';
+  };
   relatedDocumentId?: string;
   relatedMemberId?: string;
-  createdBy: string;
-  notifyMembers: string[]; // Array of member IDs to notify
-  recurring?: {
-    frequency: 'yearly' | 'monthly' | 'weekly';
-    endDate?: Date;
-  };
-  priority: 'high' | 'medium' | 'low';
+  title: string;
+  type:
+    | 'anniversary'
+    | 'appointment'
+    | 'birthday'
+    | 'custom'
+    | 'document_expiry'
+    | 'milestone';
 }
 
 export interface FamilyTimeline {
-  id: string;
-  type: 'document_added' | 'member_joined' | 'document_shared' | 'milestone_reached' | 'calendar_event' | 'emergency_access';
-  title: string;
-  description: string;
-  date: Date;
-  initiatedBy: string; // Member ID
   affectedMembers: string[]; // Array of member IDs
+  date: Date;
+  description: string;
+  id: string;
+  initiatedBy: string; // Member ID
+  metadata?: Record<string, unknown>;
   relatedDocumentId?: string;
   relatedEventId?: string;
-  metadata?: Record<string, unknown>;
+  title: string;
+  type:
+    | 'calendar_event'
+    | 'document_added'
+    | 'document_shared'
+    | 'emergency_access'
+    | 'member_joined'
+    | 'milestone_reached';
 }
 
 export interface FamilyProtectionStatus {
-  totalMembers: number;
   activeMembers: number;
-  protectionLevel: number; // 0-100 percentage
   documentsShared: number;
   emergencyContactsSet: boolean;
   lastUpdated: Date;
-  strengths: string[];
+  protectionLevel: number; // 0-100 percentage
   recommendations: string[];
+  strengths: string[];
+  totalMembers: number;
 }
 
 export interface FamilyActivity {
-  id: string;
-  familyOwnerId: string;
-  actorId: string | null;
-  actorName: string | null;
   actionType: string;
-  targetType: string | null;
-  targetId: string | null;
-  details: Record<string, any>;
+  actorId: null | string;
+  actorName: null | string;
   createdAt: string;
+  details: Record<string, any>;
+  familyOwnerId: string;
+  id: string;
+  targetId: null | string;
+  targetType: null | string;
 }
 
 export interface FamilyStats {
-  totalMembers: number;
   activeMembers: number;
-  pendingInvitations: number;
-  totalDocuments: number;
-  sharedDocuments: number;
-  memberContributions: Record<string, number>; // Member ID -> document count
   documentsByCategory: Record<string, number>;
-  recentActivity: FamilyActivity[];
-  upcomingEvents: FamilyCalendarEvent[];
+  memberContributions: Record<string, number>; // Member ID -> document count
+  pendingInvitations: number;
   protectionScore: number;
+  recentActivity: FamilyActivity[];
+  sharedDocuments: number;
+  totalDocuments: number;
+  totalMembers: number;
+  upcomingEvents: FamilyCalendarEvent[];
 }
 
 export interface FamilyNotificationSettings {
   emailNotifications: boolean;
-  smsNotifications: boolean;
-  pushNotifications: boolean;
   notificationTypes: {
-    newDocuments: boolean;
-    documentUpdates: boolean;
-    memberActivity: boolean;
     calendarReminders: boolean;
+    documentUpdates: boolean;
     emergencyAlerts: boolean;
+    memberActivity: boolean;
     milestoneAchievements: boolean;
+    newDocuments: boolean;
   };
+  pushNotifications: boolean;
   quietHours: {
     enabled: boolean;
+    endTime: string; // "07:00"
     startTime: string; // "22:00"
-    endTime: string;   // "07:00"
   };
+  smsNotifications: boolean;
 }
 
 export interface EmergencyAccessRequest {
-  id: string;
-  requestedBy: string; // Member ID
-  requestedAt: Date;
-  reason: string;
-  status: 'pending' | 'approved' | 'denied' | 'expired';
-  approvedBy?: string;
-  approvedAt?: Date;
-  expiresAt: Date;
-  documentsRequested: string[];
   accessDuration: number; // in hours
-  verificationMethod: 'sms' | 'email' | 'voice_call';
-  emergencyLevel: 'low' | 'medium' | 'high' | 'critical';
+  approvedAt?: Date;
+  approvedBy?: string;
+  documentsRequested: string[];
+  emergencyLevel: 'critical' | 'high' | 'low' | 'medium';
+  expiresAt: Date;
+  id: string;
+  reason: string;
+  requestedAt: Date;
+  requestedBy: string; // Member ID
+  status: 'approved' | 'denied' | 'expired' | 'pending';
+  verificationMethod: 'email' | 'sms' | 'voice_call';
 }
 
 export interface FamilyPlan {
-  type: 'free' | 'family' | 'premium';
-  maxMembers: number;
   features: {
-    unlimitedDocuments: boolean;
-    professionalReviews: boolean;
+    advancedSharing: boolean;
+    customBranding: boolean;
     emergencyAccess: boolean;
     familyCalendar: boolean;
-    advancedSharing: boolean;
     prioritySupport: boolean;
-    customBranding: boolean;
+    professionalReviews: boolean;
+    unlimitedDocuments: boolean;
   };
+  maxMembers: number;
   pricing: {
     monthly: number;
     yearly: number;
   };
   trialDays?: number;
+  type: 'family' | 'free' | 'premium';
 }
 
 export interface FamilyMemberActivity {
-  id: string;
-  memberId: string;
   action: string;
   details: string;
-  timestamp: Date;
+  id: string;
   ipAddress?: string;
+  memberId: string;
+  timestamp: Date;
   userAgent?: string;
 }
 
@@ -215,7 +238,7 @@ export const FAMILY_ROLE_PERMISSIONS: Record<FamilyRole, FamilyPermissions> = {
     canAccessEmergencyInfo: true,
     canViewFinancials: true,
     canReceiveNotifications: true,
-    documentCategories: ['*'] // All categories
+    documentCategories: ['*'], // All categories
   },
   co_owner: {
     canViewDocuments: true,
@@ -226,7 +249,7 @@ export const FAMILY_ROLE_PERMISSIONS: Record<FamilyRole, FamilyPermissions> = {
     canAccessEmergencyInfo: true,
     canViewFinancials: true,
     canReceiveNotifications: true,
-    documentCategories: ['*'] // All categories
+    documentCategories: ['*'], // All categories
   },
   collaborator: {
     canViewDocuments: true,
@@ -237,7 +260,13 @@ export const FAMILY_ROLE_PERMISSIONS: Record<FamilyRole, FamilyPermissions> = {
     canAccessEmergencyInfo: true,
     canViewFinancials: true,
     canReceiveNotifications: true,
-    documentCategories: ['will', 'trust', 'insurance', 'medical', 'identification']
+    documentCategories: [
+      'will',
+      'trust',
+      'insurance',
+      'medical',
+      'identification',
+    ],
   },
   viewer: {
     canViewDocuments: true,
@@ -248,7 +277,7 @@ export const FAMILY_ROLE_PERMISSIONS: Record<FamilyRole, FamilyPermissions> = {
     canAccessEmergencyInfo: false,
     canViewFinancials: false,
     canReceiveNotifications: true,
-    documentCategories: ['will', 'trust', 'medical']
+    documentCategories: ['will', 'trust', 'medical'],
   },
   emergency_contact: {
     canViewDocuments: false,
@@ -259,8 +288,8 @@ export const FAMILY_ROLE_PERMISSIONS: Record<FamilyRole, FamilyPermissions> = {
     canAccessEmergencyInfo: true,
     canViewFinancials: false,
     canReceiveNotifications: true,
-    documentCategories: ['medical', 'emergency']
-  }
+    documentCategories: ['medical', 'emergency'],
+  },
 };
 
 export const RELATIONSHIP_LABELS: Record<RelationshipType, string> = {
@@ -274,9 +303,8 @@ export const RELATIONSHIP_LABELS: Record<RelationshipType, string> = {
   aunt_uncle: 'Aunt/Uncle',
   cousin: 'Cousin',
   friend: 'Trusted Friend',
-  attorney: 'Attorney',
-  accountant: 'Accountant',
-  other: 'Other'
+  professional: 'Professional',
+  other: 'Other',
 };
 
 export const FAMILY_PLANS: Record<string, FamilyPlan> = {
@@ -290,9 +318,9 @@ export const FAMILY_PLANS: Record<string, FamilyPlan> = {
       familyCalendar: false,
       advancedSharing: false,
       prioritySupport: false,
-      customBranding: false
+      customBranding: false,
     },
-    pricing: { monthly: 0, yearly: 0 }
+    pricing: { monthly: 0, yearly: 0 },
   },
   family: {
     type: 'family',
@@ -304,10 +332,10 @@ export const FAMILY_PLANS: Record<string, FamilyPlan> = {
       familyCalendar: true,
       advancedSharing: true,
       prioritySupport: false,
-      customBranding: false
+      customBranding: false,
     },
     pricing: { monthly: 19.99, yearly: 199.99 },
-    trialDays: 14
+    trialDays: 14,
   },
   premium: {
     type: 'premium',
@@ -319,10 +347,9 @@ export const FAMILY_PLANS: Record<string, FamilyPlan> = {
       familyCalendar: true,
       advancedSharing: true,
       prioritySupport: true,
-      customBranding: true
+      customBranding: true,
     },
     pricing: { monthly: 39.99, yearly: 399.99 },
-    trialDays: 30
-  }
+    trialDays: 30,
+  },
 };
-

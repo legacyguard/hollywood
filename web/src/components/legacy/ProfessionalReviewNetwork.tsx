@@ -23,30 +23,45 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import {
   AlertCircle,
+  CheckCircle,
   Clock,
   MapPin,
+  RefreshCw,
   Star,
   Users,
-  CheckCircle,
   XCircle,
-  RefreshCw,
 } from 'lucide-react';
 import type { WillData } from '@/types/will';
-import { type ProfessionalProfile, type ReviewRequest, type ConsultationOffer, type NotaryMatch, type ReviewFeedback, type ReviewPriority, professionalNetwork } from '@/lib/professional-review-network';
+import {
+  type ConsultationOffer,
+  type NotaryMatch,
+  professionalNetwork,
+  type ProfessionalProfile,
+  type ReviewFeedback,
+  type ReviewPriority,
+  type ReviewRequest,
+} from '@/lib/professional-review-network';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
-import { type TrustSealLevel, type ProfessionalReview, EnhancedTrustSeal } from '@/components/trust/EnhancedTrustSeal';
-import { type TrustSealUpgrade, professionalTrustIntegration } from '@/lib/professional-trust-integration';
+import {
+  EnhancedTrustSeal,
+  type ProfessionalReview,
+  type TrustSealLevel,
+} from '@/components/trust/EnhancedTrustSeal';
+import {
+  professionalTrustIntegration,
+  type TrustSealUpgrade,
+} from '@/lib/professional-trust-integration';
 import { toast } from 'sonner';
 
 interface ProfessionalReviewNetworkProps {
-  willData: WillData;
+  currentTrustLevel?: TrustSealLevel;
   jurisdiction: string;
   onReviewComplete?: (feedback: ReviewFeedback) => void;
-  currentTrustLevel?: TrustSealLevel;
-  professionalReviews?: ProfessionalReview[];
   onTrustSealUpgrade?: (upgrade: TrustSealUpgrade) => void;
+  professionalReviews?: ProfessionalReview[];
   validationScore?: number;
+  willData: WillData;
 }
 
 export const ProfessionalReviewNetwork: React.FC<
@@ -61,7 +76,7 @@ export const ProfessionalReviewNetwork: React.FC<
   validationScore = 0,
 }) => {
   const [activeTab, setActiveTab] = useState('attorney');
-  const [reviewRequest, setReviewRequest] = useState<ReviewRequest | null>(
+  const [reviewRequest, setReviewRequest] = useState<null | ReviewRequest>(
     null
   );
   const [consultationOffers, setConsultationOffers] = useState<
@@ -69,9 +84,9 @@ export const ProfessionalReviewNetwork: React.FC<
   >([]);
   const [notaryMatches, setNotaryMatches] = useState<NotaryMatch[]>([]);
   const [_selectedProfessional, _setSelectedProfessional] =
-    useState<ProfessionalProfile | null>(null);
+    useState<null | ProfessionalProfile>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [reviewFeedback, setReviewFeedback] = useState<ReviewFeedback | null>(
+  const [reviewFeedback, setReviewFeedback] = useState<null | ReviewFeedback>(
     null
   );
 
@@ -258,7 +273,7 @@ export const ProfessionalReviewNetwork: React.FC<
 
               <div className='flex flex-wrap gap-1'>
                 {professional.specializations.slice(0, 3).map(spec => (
-                  <Badge key={spec} variant="outline" className='text-xs'>
+                  <Badge key={spec} variant='outline' className='text-xs'>
                     {spec.replace('_', ' ')}
                   </Badge>
                 ))}
@@ -273,7 +288,7 @@ export const ProfessionalReviewNetwork: React.FC<
                   €{professional.hourlyRate}/hour
                 </span>
                 {onSelect && (
-                  <Button onClick={onSelect} variant="outline" size='sm'>
+                  <Button onClick={onSelect} variant='outline' size='sm'>
                     Select Professional
                   </Button>
                 )}
@@ -328,7 +343,7 @@ export const ProfessionalReviewNetwork: React.FC<
 
             <div className='flex justify-between items-center'>
               <span className='font-medium'>Priority:</span>
-              <Badge variant="outline">{reviewRequest.priority}</Badge>
+              <Badge variant='outline'>{reviewRequest.priority}</Badge>
             </div>
 
             {reviewRequest.status === 'in_review' ||
@@ -676,7 +691,7 @@ export const ProfessionalReviewNetwork: React.FC<
                   <CardHeader>
                     <CardTitle className='flex justify-between items-start'>
                       <span>Estate Planning Proposal</span>
-                      <Badge variant="outline">
+                      <Badge variant='outline'>
                         {offer.willComplexityAssessment.complexity}
                       </Badge>
                     </CardTitle>
@@ -933,7 +948,7 @@ export const ProfessionalReviewNetwork: React.FC<
                                     {slot.type} • {slot.duration}min
                                   </div>
                                 </div>
-                                <Button size='sm' variant="outline">
+                                <Button size='sm' variant='outline'>
                                   Book
                                 </Button>
                               </div>

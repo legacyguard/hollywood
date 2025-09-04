@@ -3,13 +3,28 @@
  * This helps bridge the gap between Supabase database schema and application interfaces
  */
 
-import type { FamilyMember as DbFamilyMember, FamilyStats as DbFamilyStats, FamilyActivity as DbFamilyActivity, FamilyCalendarEvent as DbFamilyCalendarEvent } from '@/integrations/supabase/database-aligned-types';
-import type { FamilyMember, FamilyStats, FamilyActivity, FamilyCalendarEvent, FamilyMemberStatus, FamilyRole, RelationshipType } from '@/types/family';
+import type {
+  FamilyActivity as DbFamilyActivity,
+  FamilyCalendarEvent as DbFamilyCalendarEvent,
+  FamilyMember as DbFamilyMember,
+  FamilyStats as DbFamilyStats,
+} from '@/integrations/supabase/database-aligned-types';
+import type {
+  FamilyActivity,
+  FamilyCalendarEvent,
+  FamilyMember,
+  FamilyMemberStatus,
+  FamilyRole,
+  FamilyStats,
+  RelationshipType,
+} from '@/types/family';
 
 /**
  * Convert database FamilyMember to application FamilyMember
  */
-export function adaptDbFamilyMemberToApp(dbMember: DbFamilyMember): FamilyMember {
+export function adaptDbFamilyMemberToApp(
+  dbMember: DbFamilyMember
+): FamilyMember {
   return {
     id: dbMember.id,
     email: dbMember.email,
@@ -19,16 +34,22 @@ export function adaptDbFamilyMemberToApp(dbMember: DbFamilyMember): FamilyMember
     status: (dbMember.isActive ? 'active' : 'inactive') as FamilyMemberStatus,
     avatar: dbMember.avatarUrl || undefined,
     phone: dbMember.phone,
-    address: dbMember.address ? {
-      street: dbMember.address.street,
-      city: dbMember.address.city,
-      state: dbMember.address.state,
-      postalCode: dbMember.address.postalCode,
-      country: dbMember.address.country,
-    } : undefined,
+    address: dbMember.address
+      ? {
+          street: dbMember.address.street,
+          city: dbMember.address.city,
+          state: dbMember.address.state,
+          postalCode: dbMember.address.postalCode,
+          country: dbMember.address.country,
+        }
+      : undefined,
     invitedAt: new Date(dbMember.createdAt),
-    joinedAt: dbMember.lastActiveAt ? new Date(dbMember.lastActiveAt) : undefined,
-    lastActiveAt: dbMember.lastActiveAt ? new Date(dbMember.lastActiveAt) : undefined,
+    joinedAt: dbMember.lastActiveAt
+      ? new Date(dbMember.lastActiveAt)
+      : undefined,
+    lastActiveAt: dbMember.lastActiveAt
+      ? new Date(dbMember.lastActiveAt)
+      : undefined,
     invitedBy: dbMember.familyOwnerId, // Assuming family owner is the inviter
     permissions: {
       canViewDocuments: dbMember.permissions.canViewDocuments,
@@ -47,7 +68,9 @@ export function adaptDbFamilyMemberToApp(dbMember: DbFamilyMember): FamilyMember
 /**
  * Convert database FamilyActivity to application FamilyActivity
  */
-export function adaptDbFamilyActivityToApp(dbActivity: DbFamilyActivity): FamilyActivity {
+export function adaptDbFamilyActivityToApp(
+  dbActivity: DbFamilyActivity
+): FamilyActivity {
   return {
     id: dbActivity.id,
     familyOwnerId: dbActivity.familyOwnerId,
@@ -64,22 +87,36 @@ export function adaptDbFamilyActivityToApp(dbActivity: DbFamilyActivity): Family
 /**
  * Convert database FamilyCalendarEvent to application FamilyCalendarEvent
  */
-export function adaptDbFamilyCalendarEventToApp(dbEvent: DbFamilyCalendarEvent): FamilyCalendarEvent {
+export function adaptDbFamilyCalendarEventToApp(
+  dbEvent: DbFamilyCalendarEvent
+): FamilyCalendarEvent {
   return {
     id: dbEvent.id,
     title: dbEvent.title,
     description: dbEvent.description,
     date: new Date(dbEvent.scheduledAt),
-    type: dbEvent.eventType as 'birthday' | 'anniversary' | 'document_expiry' | 'appointment' | 'milestone' | 'custom',
+    type: dbEvent.eventType as
+      | 'anniversary'
+      | 'appointment'
+      | 'birthday'
+      | 'custom'
+      | 'document_expiry'
+      | 'milestone',
     relatedDocumentId: dbEvent.relatedDocumentId,
     relatedMemberId: dbEvent.relatedMemberId,
     createdBy: dbEvent.createdBy,
     notifyMembers: dbEvent.notifyMembers || [],
-    recurring: dbEvent.isRecurring ? {
-      frequency: (dbEvent.recurrencePattern as 'yearly' | 'monthly' | 'weekly') || 'yearly',
-      endDate: dbEvent.recurrenceEndDate ? new Date(dbEvent.recurrenceEndDate) : undefined,
-    } : undefined,
-    priority: (dbEvent.priority as 'high' | 'medium' | 'low') || 'medium',
+    recurring: dbEvent.isRecurring
+      ? {
+          frequency:
+            (dbEvent.recurrencePattern as 'monthly' | 'weekly' | 'yearly') ||
+            'yearly',
+          endDate: dbEvent.recurrenceEndDate
+            ? new Date(dbEvent.recurrenceEndDate)
+            : undefined,
+        }
+      : undefined,
+    priority: (dbEvent.priority as 'high' | 'low' | 'medium') || 'medium',
   };
 }
 
@@ -104,20 +141,24 @@ export function adaptDbFamilyStatsToApp(dbStats: DbFamilyStats): FamilyStats {
 /**
  * Convert application FamilyMember to database FamilyMember (for updates)
  */
-export function adaptAppFamilyMemberToDb(appMember: Partial<FamilyMember>): Partial<DbFamilyMember> {
+export function adaptAppFamilyMemberToDb(
+  appMember: Partial<FamilyMember>
+): Partial<DbFamilyMember> {
   return {
     name: appMember.name,
     role: appMember.role as any,
     relationship: appMember.relationship as any,
     isActive: appMember.status === 'active',
     phone: appMember.phone,
-    address: appMember.address ? {
-      street: appMember.address.street,
-      city: appMember.address.city,
-      state: appMember.address.state,
-      postalCode: appMember.address.postalCode,
-      country: appMember.address.country,
-    } : null,
+    address: appMember.address
+      ? {
+          street: appMember.address.street,
+          city: appMember.address.city,
+          state: appMember.address.state,
+          postalCode: appMember.address.postalCode,
+          country: appMember.address.country,
+        }
+      : null,
     emergencyContact: !!appMember.emergencyPriority,
   };
 }
@@ -125,7 +166,9 @@ export function adaptAppFamilyMemberToDb(appMember: Partial<FamilyMember>): Part
 /**
  * Convert application FamilyCalendarEvent to database FamilyCalendarEvent (for creation/updates)
  */
-export function adaptAppFamilyCalendarEventToDb(appEvent: Partial<FamilyCalendarEvent>): Partial<DbFamilyCalendarEvent> {
+export function adaptAppFamilyCalendarEventToDb(
+  appEvent: Partial<FamilyCalendarEvent>
+): Partial<DbFamilyCalendarEvent> {
   return {
     title: appEvent.title,
     description: appEvent.description,

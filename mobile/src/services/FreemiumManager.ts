@@ -9,17 +9,17 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export interface UsageLimits {
   documents: { current: number; limit: number };
+  offlineDocuments: { current: number; limit: number };
+  scannerUsage: { current: number; limit: number }; // Scans per month
   storage: { current: number; limit: number }; // MB
   timeCapsules: { current: number; limit: number };
-  scannerUsage: { current: number; limit: number }; // Scans per month
-  offlineDocuments: { current: number; limit: number };
 }
 
 export interface UserPlan {
-  plan: 'free' | 'essential' | 'family' | 'premium';
   billing_cycle?: 'monthly' | 'yearly';
-  started_at: string;
   expires_at?: string;
+  plan: 'essential' | 'family' | 'free' | 'premium';
+  started_at: string;
 }
 
 export interface FeatureAccess {
@@ -31,9 +31,9 @@ export interface FeatureAccess {
 
 export class FreemiumManager {
   private supabase: SupabaseClient;
-  private userId: string | null = null;
-  private userPlan: UserPlan | null = null;
-  private cachedLimits: UsageLimits | null = null;
+  private userId: null | string = null;
+  private userPlan: null | UserPlan = null;
+  private cachedLimits: null | UsageLimits = null;
   private lastLimitCheck: Date | null = null;
   private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
   private readonly WEB_BASE_URL = 'https://legacyguard.sk';
@@ -138,10 +138,10 @@ export class FreemiumManager {
    */
   private calculateLimits(usage: {
     document_count?: number;
+    offline_document_count?: number;
+    scans_this_month?: number;
     storage_used_mb?: number;
     time_capsule_count?: number;
-    scans_this_month?: number;
-    offline_document_count?: number;
   }): UsageLimits {
     const plan = this.userPlan?.plan || 'free';
     const planLimits = this.getPlanLimits(plan);
@@ -175,18 +175,21 @@ export class FreemiumManager {
    */
   private getPlanLimits(plan: UserPlan['plan']): {
     documents: number;
+    offlineDocuments: number;
+    scannerUsage: number;
     storage: number;
     timeCapsules: number;
-    scannerUsage: number;
-    offlineDocuments: number;
   } {
-    const limits: Record<UserPlan['plan'], {
-      documents: number;
-      storage: number;
-      timeCapsules: number;
-      scannerUsage: number;
-      offlineDocuments: number;
-    }> = {
+    const limits: Record<
+      UserPlan['plan'],
+      {
+        documents: number;
+        offlineDocuments: number;
+        scannerUsage: number;
+        storage: number;
+        timeCapsules: number;
+      }
+    > = {
       free: {
         documents: 10,
         storage: 100,
@@ -237,7 +240,13 @@ export class FreemiumManager {
   /**
    * Check if user can perform an action
    */
-  async canPerformAction(action: 'upload_document' | 'scan_document' | 'create_capsule' | 'offline_save'): Promise<boolean> {
+  async canPerformAction(
+    action:
+      | 'create_capsule'
+      | 'offline_save'
+      | 'scan_document'
+      | 'upload_document'
+  ): Promise<boolean> {
     const limits = await this.checkLimits();
 
     switch (action) {
@@ -261,18 +270,21 @@ export class FreemiumManager {
     const currentPlan = this.userPlan?.plan || 'free';
 
     const featureRequirements: Record<string, string> = {
-      'advanced_ocr': 'essential',
-      'family_sharing': 'family',
-      'unlimited_storage': 'premium',
-      'legal_templates': 'essential',
-      'will_generator': 'family',
-      'emergency_access': 'family',
-      'api_access': 'premium',
+      advanced_ocr: 'essential',
+      family_sharing: 'family',
+      unlimited_storage: 'premium',
+      legal_templates: 'essential',
+      will_generator: 'family',
+      emergency_access: 'family',
+      api_access: 'premium',
     };
 
     const requiredPlan = featureRequirements[feature];
 
-    if (!requiredPlan || this.isPlanSufficient(currentPlan, requiredPlan as any)) {
+    if (
+      !requiredPlan ||
+      this.isPlanSufficient(currentPlan, requiredPlan as any)
+    ) {
       return {
         feature,
         hasAccess: true,
@@ -300,7 +312,9 @@ export class FreemiumManager {
   /**
    * Increment usage counter
    */
-  async incrementUsage(type: 'documents' | 'scans' | 'capsules' | 'offline'): Promise<void> {
+  async incrementUsage(
+    type: 'capsules' | 'documents' | 'offline' | 'scans'
+  ): Promise<void> {
     if (!this.userId) return;
 
     const columnMap: Record<string, string> = {
@@ -407,7 +421,7 @@ export class FreemiumManager {
   /**
    * Get current plan details
    */
-  getCurrentPlan(): UserPlan | null {
+  getCurrentPlan(): null | UserPlan {
     return this.userPlan;
   }
 

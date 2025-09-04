@@ -1,24 +1,24 @@
 import { createClient } from '@supabase/supabase-js';
 import type {
-  GuardianNotification,
   EmergencyActivation,
   EmergencyPriority,
+  GuardianNotification,
 } from '@/types/emergency';
 import type { Guardian } from '@/types/guardian';
 
 interface EmailTemplateData {
+  activationReason: string;
+  emergencyInstructions: string[];
+  expiresAt: string;
   guardianName: string;
   userName: string;
-  activationReason: string;
   verificationUrl: string;
-  expiresAt: string;
-  emergencyInstructions: string[];
 }
 
 interface _NotificationChannel {
-  type: 'email' | 'sms' | 'push';
-  enabled: boolean;
   config?: Record<string, any>;
+  enabled: boolean;
+  type: 'email' | 'push' | 'sms';
 }
 
 export class GuardianNotificationService {
@@ -55,7 +55,7 @@ export class GuardianNotificationService {
     activation: EmergencyActivation,
     guardian: Guardian,
     userName: string
-  ): Promise<{ success: boolean; error?: string }> {
+  ): Promise<{ error?: string; success: boolean }> {
     const supabase = this.getServiceClient();
 
     try {
@@ -149,11 +149,11 @@ export class GuardianNotificationService {
 
   async sendReminderNotification(
     activationId: string,
-    reminderType: 'first_reminder' | 'urgent_reminder' | 'final_warning'
+    reminderType: 'final_warning' | 'first_reminder' | 'urgent_reminder'
   ): Promise<{
-    success: boolean;
-    notificationsSent: number;
     errors: string[];
+    notificationsSent: number;
+    success: boolean;
   }> {
     const supabase = this.getServiceClient();
     const errors: string[] = [];
@@ -246,7 +246,7 @@ export class GuardianNotificationService {
             notificationsSent++;
 
             // Create new notification record for the reminder
-            await supabase.from('guardian_notifications').insert({
+            await (supabase as any).from('guardian_notifications').insert({
               guardian_id: guardian.id,
               user_id: activation.user_id,
               notification_type: 'verification_needed',
@@ -292,7 +292,7 @@ export class GuardianNotificationService {
     templateData: EmailTemplateData,
     triggerType: string,
     reminderType?: string
-  ): Promise<{ success: boolean; error?: string }> {
+  ): Promise<{ error?: string; success: boolean }> {
     try {
       // This would integrate with your email service (SendGrid, AWS SES, etc.)
       // For now, this is a placeholder implementation
@@ -329,7 +329,7 @@ export class GuardianNotificationService {
   private async sendSMSNotification(
     phoneNumber: string,
     templateData: EmailTemplateData
-  ): Promise<{ success: boolean; error?: string }> {
+  ): Promise<{ error?: string; success: boolean }> {
     try {
       const message = `URGENT: Emergency activation request for ${templateData.userName}. Please check your email and respond within ${templateData.expiresAt}. Visit: ${templateData.verificationUrl}`;
 
@@ -446,7 +446,7 @@ export class GuardianNotificationService {
   }
 
   private getActivationReasonText(triggerType: string): string {
-    const reasons = {
+    const reasons: Record<string, string> = {
       inactivity_detected: 'Extended period of inactivity detected',
       manual_guardian: 'Manual activation requested by guardian',
       admin_override: 'Administrative emergency activation',
@@ -456,11 +456,11 @@ export class GuardianNotificationService {
   }
 
   private getPriorityFromTriggerType(triggerType: string): EmergencyPriority {
-    const priorityMap = {
-      inactivity_detected: 'high' as EmergencyPriority,
-      manual_guardian: 'urgent' as EmergencyPriority,
-      admin_override: 'urgent' as EmergencyPriority,
-      health_check_failure: 'medium' as EmergencyPriority,
+    const priorityMap: Record<string, EmergencyPriority> = {
+      inactivity_detected: 'high',
+      manual_guardian: 'urgent',
+      admin_override: 'urgent',
+      health_check_failure: 'medium',
     };
     return priorityMap[triggerType] || 'medium';
   }
@@ -501,7 +501,7 @@ export class GuardianNotificationService {
   async markNotificationAsRead(
     notificationId: string,
     guardianId: string
-  ): Promise<{ success: boolean; error?: string }> {
+  ): Promise<{ error?: string; success: boolean }> {
     const supabase = this.getServiceClient();
 
     try {
@@ -532,7 +532,7 @@ export class GuardianNotificationService {
     guardianId: string,
     response: 'confirmed' | 'rejected',
     notes?: string
-  ): Promise<{ success: boolean; error?: string }> {
+  ): Promise<{ error?: string; success: boolean }> {
     const supabase = this.getServiceClient();
 
     try {

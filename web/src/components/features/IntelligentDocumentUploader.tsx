@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useAuth, useUser } from '@clerk/clerk-react';
 import { useSupabaseWithClerk } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -14,76 +14,76 @@ import { toast } from 'sonner';
 
 // Document analysis result interface matching our Supabase Edge Function
 interface DocumentAnalysisResult {
-  extractedText: string;
   confidence: number;
+  expirationDate: {
+    confidence: number;
+    date: null | string;
+    originalText?: string;
+    reasoning: string;
+  };
+  extractedText: string;
+  keyData: Array<{
+    confidence: number;
+    label: string;
+    type: 'account' | 'amount' | 'contact' | 'other' | 'reference';
+    value: string;
+  }>;
+  // Bundle Intelligence (Phase 2)
+  potentialBundles: Array<{
+    bundleCategory: string;
+    bundleId: string;
+    bundleName: string;
+    documentCount: number;
+    matchReasons: string[];
+    matchScore: number;
+    primaryEntity: string;
+  }>;
+  // Document Versioning (Phase 3)
+  potentialVersions: Array<{
+    documentId: string;
+    fileName: string;
+    matchReasons: string[];
+    similarityScore: number;
+    versionDate: string;
+    versionNumber: number;
+  }>;
+  processingId: string;
+
+  processingTime: number;
+
   suggestedCategory: {
     category: string;
     confidence: number;
     icon: string;
     reasoning: string;
   };
-  suggestedTitle: {
-    title: string;
+
+  suggestedNewBundle: null | {
+    category: string;
     confidence: number;
+    entityType: null | string;
+    keywords: string[];
+    name: string;
+    primaryEntity: null | string;
     reasoning: string;
   };
-  expirationDate: {
-    date: string | null;
-    confidence: number;
-    originalText?: string;
-    reasoning: string;
-  };
-  keyData: Array<{
-    label: string;
-    value: string;
-    confidence: number;
-    type: 'amount' | 'account' | 'reference' | 'contact' | 'other';
-  }>;
+
   suggestedTags: string[];
 
-  // Bundle Intelligence (Phase 2)
-  potentialBundles: Array<{
-    bundleId: string;
-    bundleName: string;
-    bundleCategory: string;
-    primaryEntity: string;
-    documentCount: number;
-    matchScore: number;
-    matchReasons: string[];
-  }>;
-
-  suggestedNewBundle: {
-    name: string;
-    category: string;
-    primaryEntity: string | null;
-    entityType: string | null;
-    keywords: string[];
+  suggestedTitle: {
     confidence: number;
     reasoning: string;
-  } | null;
-
-  // Document Versioning (Phase 3)
-  potentialVersions: Array<{
-    documentId: string;
-    fileName: string;
-    versionNumber: number;
-    versionDate: string;
-    similarityScore: number;
-    matchReasons: string[];
-  }>;
-
-  versioningSuggestion: {
-    action: 'replace' | 'new_version' | 'separate';
+    title: string;
+  };
+  versioningSuggestion: null | {
+    action: 'new_version' | 'replace' | 'separate';
     confidence: number;
     reasoning: string;
     suggestedArchiveReason?: string;
-  } | null;
-
-  processingId: string;
-  processingTime: number;
+  };
 }
 
-type UploadPhase = 'select' | 'analyzing' | 'confirm' | 'saving';
+type UploadPhase = 'analyzing' | 'confirm' | 'saving' | 'select';
 
 export const IntelligentDocumentUploader = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -199,22 +199,22 @@ export const IntelligentDocumentUploader = () => {
     confirmedData: DocumentAnalysisResult & {
       bundleSelection?: {
         action: 'link' | 'new' | 'none';
-        bundleId: string | null;
-        newBundleName: string | null;
-        suggestedNewBundle: {
-          name: string;
+        bundleId: null | string;
+        newBundleName: null | string;
+        suggestedNewBundle: null | {
           category: string;
-          primaryEntity: string | null;
-          entityType: string | null;
-          keywords: string[];
           confidence: number;
+          entityType: null | string;
+          keywords: string[];
+          name: string;
+          primaryEntity: null | string;
           reasoning: string;
-        } | null;
+        };
       };
       versionSelection?: {
-        action: 'replace' | 'new_version' | 'separate' | 'none';
-        versionId: string | null;
+        action: 'new_version' | 'none' | 'replace' | 'separate';
         archiveReason: string;
+        versionId: null | string;
       };
     }
   ) => {
@@ -231,7 +231,11 @@ export const IntelligentDocumentUploader = () => {
 
       // Encrypt the file using secure service
       // Note: This would need proper key management in a real implementation
-      const encryptionResult = await encryptionService.encryptFile(file, 'public-key', 'secret-key');
+      const encryptionResult = await encryptionService.encryptFile(
+        file,
+        'public-key',
+        'secret-key'
+      );
 
       if (!encryptionResult) {
         throw new Error(
@@ -244,9 +248,12 @@ export const IntelligentDocumentUploader = () => {
       setUploadProgress(50);
 
       // Create encrypted blob
-      const encryptedBlob = new Blob([new Uint8Array(nonce), new Uint8Array(encryptedData)], {
-        type: 'application/octet-stream',
-      });
+      const encryptedBlob = new Blob(
+        [new Uint8Array(nonce), new Uint8Array(encryptedData)],
+        {
+          type: 'application/octet-stream',
+        }
+      );
 
       // Generate unique file name
       const timestamp = Date.now();
@@ -474,7 +481,7 @@ export const IntelligentDocumentUploader = () => {
       <Card className='p-6 bg-card border-card-border max-w-2xl mx-auto'>
         <div className='flex items-center gap-3 mb-4'>
           <div className='p-2 bg-primary/10 rounded-lg'>
-            <Icon name={"brain" as any} className='w-5 h-5 text-primary' />
+            <Icon name={'brain' as any} className='w-5 h-5 text-primary' />
           </div>
           <div>
             <h3 className='font-semibold text-lg'>
@@ -503,12 +510,15 @@ export const IntelligentDocumentUploader = () => {
             >
               {phase === 'analyzing' ? (
                 <>
-                  <Icon name={"brain" as any} className='w-4 h-4 mr-2 animate-pulse' />
+                  <Icon
+                    name={'brain' as any}
+                    className='w-4 h-4 mr-2 animate-pulse'
+                  />
                   Analyzing...
                 </>
               ) : (
                 <>
-                  <Icon name={"search" as any} className='w-4 h-4 mr-2' />
+                  <Icon name={'search' as any} className='w-4 h-4 mr-2' />
                   Analyze Document
                 </>
               )}
@@ -526,11 +536,14 @@ export const IntelligentDocumentUploader = () => {
               <div className='w-full bg-gray-700 rounded-full h-2'>
                 <div
                   className='bg-primary h-2 rounded-full transition-all duration-300'
-                  style={{  width: `${uploadProgress }}%` }}
+                  style={{ width: `${uploadProgress}}%` }}
                 />
               </div>
               <div className='flex items-center gap-2 text-sm text-muted-foreground'>
-                <Icon name={"search" as any} className='w-4 h-4 animate-pulse' />
+                <Icon
+                  name={'search' as any}
+                  className='w-4 h-4 animate-pulse'
+                />
                 <span>Extracting text and analyzing content...</span>
               </div>
             </div>
@@ -538,7 +551,10 @@ export const IntelligentDocumentUploader = () => {
 
           {file && phase === 'select' && (
             <div className='flex items-center gap-2 p-3 bg-primary/5 rounded-lg'>
-              <Icon name={"documents" as any} className='w-4 h-4 text-primary' />
+              <Icon
+                name={'documents' as any}
+                className='w-4 h-4 text-primary'
+              />
               <span className='text-sm font-medium'>{file.name}</span>
               <span className='text-xs text-muted-foreground'>
                 ({(file.size / 1024).toFixed(1)} KB)
@@ -549,7 +565,8 @@ export const IntelligentDocumentUploader = () => {
 
         <div className='mt-4 p-3 bg-primary/5 rounded-lg'>
           <div className='flex gap-2'>
-            <Icon name={"sparkles" as any}
+            <Icon
+              name={'sparkles' as any}
               className='w-4 h-4 text-primary flex-shrink-0 mt-0.5'
             />
             <div className='text-xs text-muted-foreground'>

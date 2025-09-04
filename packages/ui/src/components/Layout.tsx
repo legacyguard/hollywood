@@ -1,4 +1,4 @@
-import { type GetProps, styled, View, ScrollView } from 'tamagui'
+import { type GetProps, ScrollView, styled, View } from 'tamagui';
 
 // Container - Main content wrapper
 export const Container = styled(View, {
@@ -46,7 +46,7 @@ export const Container = styled(View, {
     size: 'xlarge',
     padding: 'medium',
   },
-})
+});
 
 // Stack - Vertical layout
 export const Stack = styled(View, {
@@ -91,7 +91,7 @@ export const Stack = styled(View, {
     fullWidth: false,
     fullHeight: false,
   },
-})
+});
 
 // Row - Horizontal layout
 export const Row = styled(View, {
@@ -138,7 +138,7 @@ export const Row = styled(View, {
     wrap: false,
     fullWidth: false,
   },
-})
+});
 
 // Grid - Grid layout
 export const Grid = styled(View, {
@@ -182,7 +182,7 @@ export const Grid = styled(View, {
     columns: 1,
     gap: 'medium',
   },
-})
+});
 
 // Box - Basic container
 export const Box = styled(View, {
@@ -223,7 +223,7 @@ export const Box = styled(View, {
     centered: false,
     flex: false,
   },
-})
+});
 
 // Section - Page section
 export const Section = styled(View, {
@@ -252,7 +252,7 @@ export const Section = styled(View, {
     background: 'default',
     padding: 'medium',
   },
-})
+});
 
 // Divider - Visual separator
 export const Divider = styled(View, {
@@ -295,7 +295,7 @@ export const Divider = styled(View, {
     spacing: 'medium',
     color: 'default',
   },
-})
+});
 
 // Spacer - Flexible space component
 export const Spacer = styled(View, {
@@ -323,7 +323,7 @@ export const Spacer = styled(View, {
     size: 'flex',
     horizontal: false,
   },
-})
+});
 
 // ScrollContainer - Scrollable container
 export const ScrollContainer = styled(ScrollView, {
@@ -353,21 +353,21 @@ export const ScrollContainer = styled(ScrollView, {
     padding: 'none',
     showsScrollIndicator: false,
   },
-})
+});
 
 // Aliases for better Tamagui compatibility
-export const YStack = Stack // Vertical Stack
-export const XStack = Row   // Horizontal Stack
+export const YStack = Stack; // Vertical Stack
+export const XStack = Row; // Horizontal Stack
 
 // Export types
-export type ContainerProps = GetProps<typeof Container>
-export type StackProps = GetProps<typeof Stack>
-export type YStackProps = StackProps
-export type RowProps = GetProps<typeof Row>
-export type XStackProps = RowProps
-export type GridProps = GetProps<typeof Grid>
-export type BoxProps = GetProps<typeof Box>
-export type SectionProps = GetProps<typeof Section>
-export type DividerProps = GetProps<typeof Divider>
-export type SpacerProps = GetProps<typeof Spacer>
-export type ScrollContainerProps = GetProps<typeof ScrollContainer>
+export type ContainerProps = GetProps<typeof Container>;
+export type StackProps = GetProps<typeof Stack>;
+export type YStackProps = StackProps;
+export type RowProps = GetProps<typeof Row>;
+export type XStackProps = RowProps;
+export type GridProps = GetProps<typeof Grid>;
+export type BoxProps = GetProps<typeof Box>;
+export type SectionProps = GetProps<typeof Section>;
+export type DividerProps = GetProps<typeof Divider>;
+export type SpacerProps = GetProps<typeof Spacer>;
+export type ScrollContainerProps = GetProps<typeof ScrollContainer>;

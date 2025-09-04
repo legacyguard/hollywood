@@ -80,7 +80,7 @@ paths:
                 code:
                   type: string
                   pattern: '^[0-9]{6}$'
-                  example: "123456"
+                  example: '123456'
               required:
                 - code
       responses:

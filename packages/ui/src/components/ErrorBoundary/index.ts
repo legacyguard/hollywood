@@ -1,5 +1,5 @@
 export {
+  type FallbackProps,
   GlobalErrorBoundary,
   type GlobalErrorBoundaryProps,
-  type FallbackProps,
 } from './GlobalErrorBoundary';

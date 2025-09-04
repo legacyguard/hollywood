@@ -11,7 +11,7 @@ import InsightsDashboard from '@/components/analytics/InsightsDashboard';
 export default function AnalyticsPage() {
   return (
     <DashboardLayout>
-      <div className="container mx-auto p-6">
+      <div className='container mx-auto p-6'>
         <InsightsDashboard />
       </div>
     </DashboardLayout>

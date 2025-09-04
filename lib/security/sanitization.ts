@@ -147,11 +147,14 @@ export function sanitizeSqlInput(input: string): string {
 /**
  * Validate and sanitize numeric input
  */
-export function sanitizeNumber(input: unknown, options: {
-  min?: number;
-  max?: number;
-  allowFloat?: boolean;
-} = {}): number | null {
+export function sanitizeNumber(
+  input: unknown,
+  options: {
+    min?: number;
+    max?: number;
+    allowFloat?: boolean;
+  } = {}
+): number | null {
   const num = options.allowFloat ? parseFloat(input) : parseInt(input, 10);
 
   if (isNaN(num)) return null;
@@ -209,22 +212,25 @@ export function generateCSPNonce(): string {
 /**
  * Validate file type and size
  */
-export function validateFile(file: File, options: {
-  maxSize?: number; // in bytes
-  allowedTypes?: string[];
-  allowedExtensions?: string[];
-} = {}): { valid: boolean; error?: string } {
+export function validateFile(
+  file: File,
+  options: {
+    maxSize?: number; // in bytes
+    allowedTypes?: string[];
+    allowedExtensions?: string[];
+  } = {}
+): { valid: boolean; error?: string } {
   const {
     maxSize = 10 * 1024 * 1024, // 10MB default
     allowedTypes = [],
-    allowedExtensions = []
+    allowedExtensions = [],
   } = options;
 
   // Check file size
   if (file.size > maxSize) {
     return {
       valid: false,
-      error: `File size exceeds maximum of ${maxSize / (1024 * 1024)}MB`
+      error: `File size exceeds maximum of ${maxSize / (1024 * 1024)}MB`,
     };
   }
 
@@ -232,7 +238,7 @@ export function validateFile(file: File, options: {
   if (allowedTypes.length > 0 && !allowedTypes.includes(file.type)) {
     return {
       valid: false,
-      error: `File type ${file.type} is not allowed`
+      error: `File type ${file.type} is not allowed`,
     };
   }
 
@@ -242,18 +248,27 @@ export function validateFile(file: File, options: {
     if (!extension || !allowedExtensions.includes(extension)) {
       return {
         valid: false,
-        error: `File extension .${extension} is not allowed`
+        error: `File extension .${extension} is not allowed`,
       };
     }
   }
 
   // Additional security check for disguised executables
-  const dangerousExtensions = ['exe', 'dll', 'scr', 'bat', 'cmd', 'com', 'pif', 'app'];
+  const dangerousExtensions = [
+    'exe',
+    'dll',
+    'scr',
+    'bat',
+    'cmd',
+    'com',
+    'pif',
+    'app',
+  ];
   const fileExt = file.name.split('.').pop()?.toLowerCase();
   if (fileExt && dangerousExtensions.includes(fileExt)) {
     return {
       valid: false,
-      error: 'Executable files are not allowed'
+      error: 'Executable files are not allowed',
     };
   }
 
@@ -263,7 +278,10 @@ export function validateFile(file: File, options: {
 /**
  * Rate limit key generator for user-specific operations
  */
-export function generateRateLimitKey(userId: string, operation: string): string {
+export function generateRateLimitKey(
+  userId: string,
+  operation: string
+): string {
   return `${sanitizeText(userId)}:${sanitizeText(operation)}:${Date.now()}`;
 }
 

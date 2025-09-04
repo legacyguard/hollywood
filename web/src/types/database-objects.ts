@@ -5,144 +5,144 @@
 
 // Review and Professional Network Object Types
 export interface ReviewFindings {
-  legal_issues: string[];
+  best_practices: string[];
   compliance_gaps: string[];
+  jurisdiction_specific_notes?: string[];
+  legal_issues: string[];
   recommendations: string[];
   risk_factors: string[];
-  best_practices: string[];
-  jurisdiction_specific_notes?: string[];
 }
 
 export interface ReviewRecommendations {
-  immediate_actions: Array<{
-    priority: 'critical' | 'high' | 'medium' | 'low';
-    description: string;
-    estimated_time: string;
-    cost_impact?: string;
-  }>;
-  improvements: Array<{
-    category: 'legal' | 'financial' | 'clarity' | 'completeness';
-    suggestion: string;
-    benefit: string;
-  }>;
   compliance_requirements: Array<{
+    deadline?: string;
     jurisdiction: string;
     requirement: string;
-    deadline?: string;
-    status: 'met' | 'partial' | 'missing';
+    status: 'met' | 'missing' | 'partial';
+  }>;
+  immediate_actions: Array<{
+    cost_impact?: string;
+    description: string;
+    estimated_time: string;
+    priority: 'critical' | 'high' | 'low' | 'medium';
+  }>;
+  improvements: Array<{
+    benefit: string;
+    category: 'clarity' | 'completeness' | 'financial' | 'legal';
+    suggestion: string;
   }>;
 }
 
 export interface ProfessionalCredentials {
-  license_number?: string;
   bar_number?: string;
   certification_body?: string;
-  years_experience?: number;
-  education?: Array<{
-    institution: string;
-    degree: string;
-    year: number;
-    field_of_study: string;
-  }>;
-  specializations?: string[];
-  languages?: string[];
-  jurisdictions?: string[];
   certifications?: Array<{
-    name: string;
-    issuer: string;
     date: string;
     expiry?: string;
+    issuer: string;
+    name: string;
   }>;
+  education?: Array<{
+    degree: string;
+    field_of_study: string;
+    institution: string;
+    year: number;
+  }>;
+  jurisdictions?: string[];
+  languages?: string[];
+  license_number?: string;
+  specializations?: string[];
+  years_experience?: number;
 }
 
 export interface PartnershipDetails {
-  agreement_type?: 'referral' | 'exclusive' | 'preferred' | 'network';
+  agreement_type?: 'exclusive' | 'network' | 'preferred' | 'referral';
   commission_rate?: number;
   exclusivity?: boolean;
-  territory?: string[];
-  services?: string[];
   minimum_volume?: number;
   payment_terms?: {
-    frequency: 'monthly' | 'quarterly' | 'per_transaction';
+    frequency: 'monthly' | 'per_transaction' | 'quarterly';
     net_days: number;
   };
   performance_metrics?: {
-    response_time_hours: number;
-    quality_score_minimum: number;
     completion_rate_minimum: number;
+    quality_score_minimum: number;
+    response_time_hours: number;
   };
+  services?: string[];
+  territory?: string[];
 }
 
 export interface CommissionStructure {
   base_rate: number;
-  tier_bonuses?: Array<{
-    threshold: number;
-    bonus_rate: number;
-  }>;
-  service_specific?: Record<string, number>;
-  payment_schedule: 'immediate' | 'monthly' | 'quarterly';
   minimum_payout: number;
+  payment_schedule: 'immediate' | 'monthly' | 'quarterly';
+  service_specific?: Record<string, number>;
+  tier_bonuses?: Array<{
+    bonus_rate: number;
+    threshold: number;
+  }>;
 }
 
 // Quick Insights and Analytics Object Types
 export interface QuickInsightMetadata {
-  calculation_method?: string;
-  data_sources?: string[];
-  confidence_score?: number;
-  last_updated?: string;
-  trend_direction?: 'up' | 'down' | 'stable';
-  comparison_period?: string;
   affected_documents?: string[];
+  calculation_method?: string;
+  comparison_period?: string;
+  confidence_score?: number;
+  data_sources?: string[];
+  last_updated?: string;
   recommended_timeline?: string;
+  trend_direction?: 'down' | 'stable' | 'up';
 }
 
 export interface FamilyImpactData {
   affected_members: Array<{
+    impact_level: 'high' | 'low' | 'medium';
     member_id: string;
     name: string;
     relationship: string;
-    impact_level: 'high' | 'medium' | 'low';
     specific_benefits?: string[];
   }>;
-  protection_increase: {
-    current_level: number;
-    projected_level: number;
-    confidence: number;
-  };
-  time_saved_hours: number;
   cost_savings?: {
     amount: number;
+    category: 'administrative' | 'legal' | 'opportunity_cost';
     currency: string;
-    category: 'legal' | 'administrative' | 'opportunity_cost';
   };
   emotional_benefits: string[];
   peace_of_mind_score: number; // 1-10
+  protection_increase: {
+    confidence: number;
+    current_level: number;
+    projected_level: number;
+  };
+  time_saved_hours: number;
 }
 
 // Milestone and Progress Object Types
 export interface MilestoneRewards {
-  points: number;
   badges?: string[];
-  unlocked_features?: string[];
+  celebration_message?: string;
   discount_codes?: Array<{
+    applicable_services: string[];
     code: string;
     discount_percent: number;
     expires_at: string;
-    applicable_services: string[];
   }>;
-  celebration_message?: string;
+  points: number;
+  unlocked_features?: string[];
 }
 
 export interface MilestoneTriggers {
   document_count?: number;
+  external_event?: string;
   family_members?: number;
   protection_percentage?: number;
   time_based?: {
-    frequency: 'daily' | 'weekly' | 'monthly' | 'yearly';
+    frequency: 'daily' | 'monthly' | 'weekly' | 'yearly';
     specific_date?: string;
   };
   user_action?: string;
-  external_event?: string;
 }
 
 export interface MilestoneMetadata {
@@ -152,240 +152,283 @@ export interface MilestoneMetadata {
     trigger: string;
     value: string;
   }>;
-  user_preferences?: {
-    celebration_style: 'minimal' | 'standard' | 'full';
-    notification_timing: 'immediate' | 'batch' | 'quiet_hours';
-  };
   related_milestones?: string[];
+  user_preferences?: {
+    celebration_style: 'full' | 'minimal' | 'standard';
+    notification_timing: 'batch' | 'immediate' | 'quiet_hours';
+  };
 }
 
 // Document and Asset Object Types
 export interface ExtractedEntities {
-  people: Array<{
-    name: string;
-    role?: string;
-    confidence: number;
-    context: string;
-  }>;
-  organizations: Array<{
-    name: string;
-    type?: string;
-    confidence: number;
-    context: string;
-  }>;
-  locations: Array<{
-    address: string;
-    type?: 'residence' | 'business' | 'property';
-    confidence: number;
-  }>;
   dates: Array<{
-    date: string;
-    type?: 'expiry' | 'effective' | 'created';
     confidence: number;
     context: string;
+    date: string;
+    type?: 'created' | 'effective' | 'expiry';
   }>;
   financial_amounts: Array<{
     amount: number;
-    currency: string;
-    type?: 'value' | 'premium' | 'benefit';
     confidence: number;
     context: string;
+    currency: string;
+    type?: 'benefit' | 'premium' | 'value';
   }>;
   legal_references: Array<{
-    statute: string;
-    section?: string;
-    jurisdiction: string;
     confidence: number;
+    jurisdiction: string;
+    section?: string;
+    statute: string;
+  }>;
+  locations: Array<{
+    address: string;
+    confidence: number;
+    type?: 'business' | 'property' | 'residence';
+  }>;
+  organizations: Array<{
+    confidence: number;
+    context: string;
+    name: string;
+    type?: string;
+  }>;
+  people: Array<{
+    confidence: number;
+    context: string;
+    name: string;
+    role?: string;
   }>;
 }
 
 export interface ExtractedMetadata {
   document_structure: {
-    total_pages: number;
+    has_notarization: boolean;
     has_signature_page: boolean;
     has_witness_section: boolean;
-    has_notarization: boolean;
     sections: Array<{
-      title: string;
-      page_start: number;
-      page_end: number;
       content_type: string;
+      page_end: number;
+      page_start: number;
+      title: string;
     }>;
-  };
-  legal_document_type?: {
-    primary_type: string;
-    sub_type?: string;
-    jurisdiction: string;
-    confidence: number;
+    total_pages: number;
   };
   expiry_information?: {
-    has_expiry: boolean;
     expiry_date?: string;
+    has_expiry: boolean;
     renewal_required?: boolean;
     warning_period_days?: number;
+  };
+  legal_document_type?: {
+    confidence: number;
+    jurisdiction: string;
+    primary_type: string;
+    sub_type?: string;
   };
   required_actions?: Array<{
     action: string;
     deadline?: string;
-    priority: 'critical' | 'high' | 'medium' | 'low';
+    priority: 'critical' | 'high' | 'low' | 'medium';
     responsible_party?: string;
   }>;
 }
 
 // Will and Estate Planning Object Types
 export interface TestatorData {
-  personal_info: {
-    full_name: string;
-    date_of_birth: string;
-    place_of_birth?: string;
-    citizenship: string;
-    marital_status: 'single' | 'married' | 'divorced' | 'widowed' | 'domestic_partnership';
-    spouse_name?: string;
-    children_count: number;
-    occupation?: string;
-  };
   contact_info: {
     address: {
-      street: string;
       city: string;
-      state: string;
-      postal_code: string;
       country: string;
+      postal_code: string;
+      state: string;
+      street: string;
     };
-    phone?: string;
     email?: string;
+    phone?: string;
   };
   identification: {
-    type: 'passport' | 'drivers_license' | 'national_id';
-    number: string;
-    issuing_authority: string;
     expiry_date?: string;
+    issuing_authority: string;
+    number: string;
+    type: 'drivers_license' | 'national_id' | 'passport';
+  };
+  personal_info: {
+    children_count: number;
+    citizenship: string;
+    date_of_birth: string;
+    full_name: string;
+    marital_status:
+      | 'divorced'
+      | 'domestic_partnership'
+      | 'married'
+      | 'single'
+      | 'widowed';
+    occupation?: string;
+    place_of_birth?: string;
+    spouse_name?: string;
   };
 }
 
 export interface BeneficiaryInfo {
-  id: string;
-  type: 'primary' | 'contingent' | 'residuary';
-  name: string;
-  relationship: string;
-  date_of_birth?: string;
-  contact_info?: {
-    address?: any;
-    phone?: string;
-    email?: string;
-  };
-  share_type: 'percentage' | 'specific_amount' | 'specific_assets' | 'remainder';
-  share_value: string; // Could be percentage, amount, or asset description
   conditions?: string[];
+  contact_info?: {
+    address?: {
+      city: string;
+      country: string;
+      postal_code: string;
+      state: string;
+      street: string;
+    };
+    email?: string;
+    phone?: string;
+  };
+  date_of_birth?: string;
   guardian_info?: {
+    contact_info: {
+      address?: {
+        city: string;
+        country: string;
+        postal_code: string;
+        state: string;
+        street: string;
+      };
+      email?: string;
+      phone?: string;
+    };
     guardian_name: string;
     relationship: string;
-    contact_info: any;
   };
+  id: string;
+  name: string;
+  relationship: string;
+  share_type:
+    | 'percentage'
+    | 'remainder'
+    | 'specific_amount'
+    | 'specific_assets';
+  share_value: string; // Could be percentage, amount, or asset description
+  type: 'contingent' | 'primary' | 'residuary';
 }
 
 export interface AssetInfo {
-  id: string;
-  type: 'real_estate' | 'bank_account' | 'investment' | 'personal_property' | 'business' | 'vehicle' | 'digital_asset' | 'other';
-  description: string;
-  value: number;
   currency: string;
+  description: string;
+  encumbrances?: string[];
+  id: string;
+  joint_owners?: string[];
   location?: string;
   ownershipPercentage: number;
-  joint_owners?: string[];
-  encumbrances?: string[];
   special_instructions?: string;
+  type:
+    | 'bank_account'
+    | 'business'
+    | 'digital_asset'
+    | 'investment'
+    | 'other'
+    | 'personal_property'
+    | 'real_estate'
+    | 'vehicle';
+  value: number;
 }
 
 export interface ExecutorInfo {
+  address: {
+    city: string;
+    country: string;
+    postalCode: string;
+    street: string;
+  };
+  compensation?: string;
+  contactInfo: {
+    address?: {
+      city: string;
+      country: string;
+      postal_code: string;
+      state: string;
+      street: string;
+    };
+    email?: string;
+    phone?: string;
+  };
   id: string;
-  type: 'primary' | 'alternate' | 'co_executor';
+  isProfessional: boolean;
+  limitations?: string[];
   name: string;
   relationship: string;
-  address: {
-    street: string;
-    city: string;
-    postalCode: string;
-    country: string;
-  };
-  contactInfo: any;
-  isProfessional: boolean;
-  compensation?: string;
   special_powers?: string[];
-  limitations?: string[];
+  type: 'alternate' | 'co_executor' | 'primary';
 }
 
 export interface SpecialInstructions {
-  funeral_preferences?: {
-    type: 'burial' | 'cremation' | 'donation';
-    location?: string;
-    specific_wishes?: string;
-    ceremony_preferences?: string;
+  business_succession?: {
+    business_name: string;
+    key_personnel?: string[];
+    succession_plan: string;
   };
   charitable_bequests?: Array<{
-    organization: string;
-    amount_type: 'percentage' | 'fixed_amount';
     amount: string;
+    amount_type: 'fixed_amount' | 'percentage';
+    organization: string;
     purpose?: string;
   }>;
+  digital_assets?: {
+    accounts: Array<{
+      instructions: string;
+      platform: string;
+      username?: string;
+    }>;
+    general_instructions: string;
+  };
+  funeral_preferences?: {
+    ceremony_preferences?: string;
+    location?: string;
+    specific_wishes?: string;
+    type: 'burial' | 'cremation' | 'donation';
+  };
   personal_effects_distribution?: Array<{
     item_description: string;
     recipient: string;
     sentimental_note?: string;
   }>;
-  business_succession?: {
-    business_name: string;
-    succession_plan: string;
-    key_personnel?: string[];
-  };
-  digital_assets?: {
-    accounts: Array<{
-      platform: string;
-      username?: string;
-      instructions: string;
-    }>;
-    general_instructions: string;
-  };
   pet_care?: Array<{
+    care_fund_amount?: number;
+    caregiver: string;
     pet_name: string;
     pet_type: string;
-    caregiver: string;
-    care_fund_amount?: number;
     special_instructions?: string;
   }>;
 }
 
 export interface AISuggestion {
-  id: string;
-  type: 'warning' | 'improvement' | 'optimization' | 'legal_consideration';
   category: string;
-  title: string;
+  created_at: string;
   description: string;
-  suggested_action: string;
-  priority: 'critical' | 'high' | 'medium' | 'low';
+  estimated_cost?: {
+    currency: string;
+    max: number;
+    min: number;
+  };
+  id: string;
+  implementation_timeline?: string;
   jurisdiction_specific: boolean;
   legal_references?: string[];
-  estimated_cost?: {
-    min: number;
-    max: number;
-    currency: string;
-  };
-  implementation_timeline?: string;
-  created_at: string;
+  priority: 'critical' | 'high' | 'low' | 'medium';
+  suggested_action: string;
+  title: string;
+  type: 'improvement' | 'legal_consideration' | 'optimization' | 'warning';
 }
 
 // Calendar and Event Object Types
 export interface CalendarAttendees {
-  family_members: string[]; // Array of family member IDs
   external_contacts: Array<{
-    name: string;
     email: string;
+    name: string;
     role?: string;
   }>;
+  family_members: string[]; // Array of family member IDs
   professionals: Array<{
     id: string;
     name: string;
-    type: 'attorney' | 'accountant' | 'financial_advisor';
+    type: 'accountant' | 'attorney' | 'financial_advisor';
   }>;
 }
 
@@ -394,11 +437,11 @@ export interface CalendarReminders {
     minutes_before: number;
     recipient_roles: string[];
   }>;
-  sms: Array<{
+  in_app: Array<{
     minutes_before: number;
     recipient_roles: string[];
   }>;
-  in_app: Array<{
+  sms: Array<{
     minutes_before: number;
     recipient_roles: string[];
   }>;
@@ -406,28 +449,28 @@ export interface CalendarReminders {
 
 export interface CalendarMetadata {
   created_by_name: string;
-  last_modified_by?: string;
-  recurrence_exceptions?: string[]; // Array of ISO date strings
-  related_documents?: string[];
-  meeting_preparation?: {
-    required_documents: string[];
-    agenda_items: string[];
-    pre_meeting_tasks: Array<{
-      task: string;
-      assignee: string;
-      deadline: string;
-    }>;
-  };
   follow_up_actions?: Array<{
     action: string;
     assignee: string;
-    deadline: string;
     completed: boolean;
+    deadline: string;
   }>;
+  last_modified_by?: string;
+  meeting_preparation?: {
+    agenda_items: string[];
+    pre_meeting_tasks: Array<{
+      assignee: string;
+      deadline: string;
+      task: string;
+    }>;
+    required_documents: string[];
+  };
+  recurrence_exceptions?: string[]; // Array of ISO date strings
+  related_documents?: string[];
 }
 
 // Type guards for runtime validation
-export function isValidExtractedEntities(obj: any): obj is ExtractedEntities {
+export function isValidExtractedEntities(obj: unknown): obj is ExtractedEntities {
   return (
     obj &&
     typeof obj === 'object' &&
@@ -440,7 +483,7 @@ export function isValidExtractedEntities(obj: any): obj is ExtractedEntities {
   );
 }
 
-export function isValidTestatorData(obj: any): obj is TestatorData {
+export function isValidTestatorData(obj: unknown): obj is TestatorData {
   return (
     obj &&
     typeof obj === 'object' &&
@@ -452,21 +495,23 @@ export function isValidTestatorData(obj: any): obj is TestatorData {
   );
 }
 
-export function isValidBeneficiaryInfo(obj: any): obj is BeneficiaryInfo {
+export function isValidBeneficiaryInfo(obj: unknown): obj is BeneficiaryInfo {
   return (
     obj &&
     typeof obj === 'object' &&
     typeof obj.id === 'string' &&
     typeof obj.name === 'string' &&
     ['primary', 'contingent', 'residuary'].includes(obj.type) &&
-    ['percentage', 'specific_amount', 'specific_assets', 'remainder'].includes(obj.share_type)
+    ['percentage', 'specific_amount', 'specific_assets', 'remainder'].includes(
+      obj.share_type
+    )
   );
 }
 
 // Utility functions for type conversion and validation
 export function sanitizeJsonField<T>(
-  field: any,
-  validator: (obj: any) => obj is T,
+  field: unknown,
+  validator: (obj: unknown) => obj is T,
   fallback: T
 ): T {
   try {
@@ -480,15 +525,15 @@ export function sanitizeJsonField<T>(
   }
 }
 
-export function ensureArray<T>(value: any): T[] {
+export function ensureArray<T>(value: unknown): T[] {
   if (Array.isArray(value)) {
     return value;
   }
   return [];
 }
 
-export function ensureObject<T extends Record<string, any>>(
-  value: any,
+export function ensureObject<T extends Record<string, unknown>>(
+  value: unknown,
   fallback: T
 ): T {
   if (value && typeof value === 'object' && !Array.isArray(value)) {

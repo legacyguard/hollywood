@@ -6,17 +6,20 @@
 import { supabase } from '@/integrations/supabase/client';
 import {
   DEFAULT_MILESTONE_TEMPLATES,
-  MILESTONE_LEVELS,
   type LegacyMilestone,
+  MILESTONE_LEVELS,
+  type MilestoneAnalytics,
+  type MilestoneLevel,
   type MilestoneProgress,
   type MilestoneTriggerEvent,
-  type MilestoneAnalytics,
-  type MilestoneLevel
 } from '@/types/milestones';
 
 export class MilestonesService {
   private readonly MILESTONE_CACHE_TTL = 10 * 60 * 1000; // 10 minutes
-  private milestoneCache = new Map<string, { data: LegacyMilestone[]; timestamp: number }>();
+  private milestoneCache = new Map<
+    string,
+    { data: LegacyMilestone[]; timestamp: number }
+  >();
 
   /**
    * Initialize milestones for a new user
@@ -42,7 +45,9 @@ export class MilestonesService {
   /**
    * Check and update milestones based on trigger events
    */
-  async checkMilestones(event: MilestoneTriggerEvent): Promise<LegacyMilestone[]> {
+  async checkMilestones(
+    event: MilestoneTriggerEvent
+  ): Promise<LegacyMilestone[]> {
     try {
       const milestones = await this.getUserMilestones(event.userId);
       const completedMilestones: LegacyMilestone[] = [];
@@ -51,9 +56,15 @@ export class MilestonesService {
         if (milestone.completedAt) continue; // Already completed
 
         if (await this.shouldCheckMilestone(milestone, event)) {
-          const updatedMilestone = await this.evaluateMilestone(milestone, event.userId);
+          const updatedMilestone = await this.evaluateMilestone(
+            milestone,
+            event.userId
+          );
 
-          if (updatedMilestone.criteria.isComplete && !milestone.criteria.isComplete) {
+          if (
+            updatedMilestone.criteria.isComplete &&
+            !milestone.criteria.isComplete
+          ) {
             // Milestone just completed!
             updatedMilestone.completedAt = new Date().toISOString();
             updatedMilestone.celebration.shouldShow = true;
@@ -63,7 +74,10 @@ export class MilestonesService {
 
             // Trigger celebration
             await this.triggerMilestoneCelebration(updatedMilestone);
-          } else if (updatedMilestone.progress.percentage !== milestone.progress.percentage) {
+          } else if (
+            updatedMilestone.progress.percentage !==
+            milestone.progress.percentage
+          ) {
             // Progress updated
             await this.saveMilestone(updatedMilestone);
           }
@@ -105,7 +119,10 @@ export class MilestonesService {
       const milestones = (data || []) as LegacyMilestone[];
 
       // Cache the results
-      this.milestoneCache.set(cacheKey, { data: milestones, timestamp: Date.now() });
+      this.milestoneCache.set(cacheKey, {
+        data: milestones,
+        timestamp: Date.now(),
+      });
 
       return milestones;
     } catch (error) {
@@ -122,13 +139,19 @@ export class MilestonesService {
       const milestones = await this.getUserMilestones(userId);
       const completedMilestones = milestones.filter(m => m.completedAt);
       const totalMilestones = milestones.length;
-      const overallProgress = totalMilestones > 0 ? (completedMilestones.length / totalMilestones) * 100 : 0;
+      const overallProgress =
+        totalMilestones > 0
+          ? (completedMilestones.length / totalMilestones) * 100
+          : 0;
 
       // Calculate category progress
       const categoryProgress = this.calculateCategoryProgress(milestones);
 
       // Determine current level
-      const currentLevel = this.determineUserLevel(overallProgress, completedMilestones);
+      const currentLevel = this.determineUserLevel(
+        overallProgress,
+        completedMilestones
+      );
       const nextLevel = this.getNextLevel(currentLevel);
 
       // Get recent achievements (last 7 days)
@@ -141,12 +164,15 @@ export class MilestonesService {
       });
 
       // Get pending celebrations
-      const pendingCelebrations = milestones.filter(m =>
-        m.completedAt && m.celebration.shouldShow
+      const pendingCelebrations = milestones.filter(
+        m => m.completedAt && m.celebration.shouldShow
       );
 
       // Generate recommendations
-      const recommendations = await this.generateRecommendations(milestones, userId);
+      const recommendations = await this.generateRecommendations(
+        milestones,
+        userId
+      );
 
       return {
         userId,
@@ -158,7 +184,7 @@ export class MilestonesService {
         categoryProgress,
         recentAchievements,
         pendingCelebrations,
-        recommendations
+        recommendations,
       };
     } catch (error) {
       console.error('Failed to calculate milestone progress:', error);
@@ -175,7 +201,10 @@ export class MilestonesService {
 
       for (const milestone of milestones) {
         if (!milestone.completedAt) {
-          const updatedMilestone = await this.evaluateMilestone(milestone, userId);
+          const updatedMilestone = await this.evaluateMilestone(
+            milestone,
+            userId
+          );
           await this.saveMilestone(updatedMilestone);
         }
       }
@@ -196,7 +225,7 @@ export class MilestonesService {
         .from('legacy_milestones')
         .update({
           celebration: { shouldShow: false },
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('id', milestoneId);
 
@@ -213,7 +242,10 @@ export class MilestonesService {
   /**
    * Get milestone analytics
    */
-  async getMilestoneAnalytics(userId: string, timeframe?: { start: string; end: string }): Promise<MilestoneAnalytics> {
+  async getMilestoneAnalytics(
+    userId: string,
+    timeframe?: { end: string; start: string }
+  ): Promise<MilestoneAnalytics> {
     try {
       const milestones = await this.getUserMilestones(userId);
 
@@ -222,11 +254,18 @@ export class MilestonesService {
         ? milestones.filter(m => {
             if (!m.completedAt) return false;
             const completedDate = new Date(m.completedAt);
-            return completedDate >= new Date(timeframe.start) && completedDate <= new Date(timeframe.end);
+            return (
+              completedDate >= new Date(timeframe.start) &&
+              completedDate <= new Date(timeframe.end)
+            );
           })
         : milestones;
 
-      return this.calculateMilestoneAnalytics(userId, filteredMilestones, timeframe);
+      return this.calculateMilestoneAnalytics(
+        userId,
+        filteredMilestones,
+        timeframe
+      );
     } catch (error) {
       console.error('Failed to calculate milestone analytics:', error);
       throw error;
@@ -235,7 +274,9 @@ export class MilestonesService {
 
   // Private helper methods
 
-  private async createMilestonesFromTemplates(userId: string): Promise<LegacyMilestone[]> {
+  private async createMilestonesFromTemplates(
+    userId: string
+  ): Promise<LegacyMilestone[]> {
     const milestones: LegacyMilestone[] = [];
     const now = new Date().toISOString();
 
@@ -250,21 +291,21 @@ export class MilestonesService {
         criteria: {
           ...template.criteria,
           currentValue: 0,
-          isComplete: false
+          isComplete: false,
         },
         progress: {
           percentage: 0,
           stepsCompleted: 0,
           totalSteps: 1,
           nextAction: this.getNextActionForMilestone(template.id),
-          nextActionUrl: this.getNextActionUrlForMilestone(template.id)
+          nextActionUrl: this.getNextActionUrlForMilestone(template.id),
         },
         celebration: template.celebration,
         rewards: template.rewards,
         triggers: template.triggers,
         metadata: template.metadata,
         createdAt: now,
-        updatedAt: now
+        updatedAt: now,
       };
 
       milestones.push(milestone);
@@ -276,7 +317,10 @@ export class MilestonesService {
     return milestones;
   }
 
-  private createAdditionalMilestones(userId: string, now: string): LegacyMilestone[] {
+  private createAdditionalMilestones(
+    userId: string,
+    now: string
+  ): LegacyMilestone[] {
     return [
       {
         id: `${userId}_protection_50`,
@@ -289,43 +333,46 @@ export class MilestonesService {
           type: 'protection_percentage',
           threshold: 50,
           currentValue: 0,
-          isComplete: false
+          isComplete: false,
         },
         progress: {
           percentage: 0,
           stepsCompleted: 0,
           totalSteps: 1,
           nextAction: 'Upload essential documents',
-          nextActionUrl: '/vault'
+          nextActionUrl: '/vault',
         },
         celebration: {
           shouldShow: true,
-          celebrationText: 'Your Family Shield is now active! 50% protection achieved!',
-          familyImpactMessage: 'Your family now has solid protection for essential scenarios',
-          emotionalFraming: 'Peace of mind grows stronger with each protective step',
+          celebrationText:
+            'Your Family Shield is now active! 50% protection achieved!',
+          familyImpactMessage:
+            'Your family now has solid protection for essential scenarios',
+          emotionalFraming:
+            'Peace of mind grows stronger with each protective step',
           celebrationIcon: '🛡️',
-          celebrationColor: 'blue'
+          celebrationColor: 'blue',
         },
         rewards: {
           protectionIncrease: 25,
           timeSaved: 5,
           features: ['family_insights', 'protection_analysis'],
-          badges: ['family_shield']
+          badges: ['family_shield'],
         },
         triggers: {
           conditions: ['document_uploaded', 'document_updated'],
           autoCheck: true,
-          checkFrequency: 'immediate'
+          checkFrequency: 'immediate',
         },
         metadata: {
           difficulty: 'medium',
           estimatedTime: '2 hours',
           priority: 'high',
           tags: ['protection', 'milestone'],
-          version: '1.0'
+          version: '1.0',
         },
         createdAt: now,
-        updatedAt: now
+        updatedAt: now,
       },
       {
         id: `${userId}_family_complete`,
@@ -338,48 +385,53 @@ export class MilestonesService {
           type: 'family_members',
           threshold: 3,
           currentValue: 0,
-          isComplete: false
+          isComplete: false,
         },
         progress: {
           percentage: 0,
           stepsCompleted: 0,
           totalSteps: 1,
           nextAction: 'Add family members',
-          nextActionUrl: '/family'
+          nextActionUrl: '/family',
         },
         celebration: {
           shouldShow: true,
-          celebrationText: 'Your Family Circle shines complete! Everyone you love is protected!',
-          familyImpactMessage: 'Your entire family now benefits from comprehensive legacy planning',
+          celebrationText:
+            'Your Family Circle shines complete! Everyone you love is protected!',
+          familyImpactMessage:
+            'Your entire family now benefits from comprehensive legacy planning',
           emotionalFraming: 'Love expressed through thoughtful preparation',
           celebrationIcon: '👨‍👩‍👧‍👦',
-          celebrationColor: 'pink'
+          celebrationColor: 'pink',
         },
         rewards: {
           protectionIncrease: 30,
           timeSaved: 8,
           features: ['family_collaboration', 'shared_insights'],
-          badges: ['family_guardian']
+          badges: ['family_guardian'],
         },
         triggers: {
           conditions: ['family_member_added'],
           autoCheck: true,
-          checkFrequency: 'immediate'
+          checkFrequency: 'immediate',
         },
         metadata: {
           difficulty: 'medium',
           estimatedTime: '1 hour',
           priority: 'medium',
           tags: ['family', 'collaboration'],
-          version: '1.0'
+          version: '1.0',
         },
         createdAt: now,
-        updatedAt: now
-      }
+        updatedAt: now,
+      },
     ];
   }
 
-  private async shouldCheckMilestone(milestone: LegacyMilestone, event: MilestoneTriggerEvent): Promise<boolean> {
+  private async shouldCheckMilestone(
+    milestone: LegacyMilestone,
+    event: MilestoneTriggerEvent
+  ): Promise<boolean> {
     if (!milestone.triggers.autoCheck) return false;
     if (milestone.completedAt) return false;
 
@@ -402,44 +454,66 @@ export class MilestonesService {
     return eventMatches;
   }
 
-  private async evaluateMilestone(milestone: LegacyMilestone, userId: string): Promise<LegacyMilestone> {
+  private async evaluateMilestone(
+    milestone: LegacyMilestone,
+    userId: string
+  ): Promise<LegacyMilestone> {
     const updatedMilestone = { ...milestone };
 
     switch (milestone.criteria.type) {
       case 'document_count': {
         const docCount = await this.getDocumentCount(userId);
         updatedMilestone.criteria.currentValue = docCount;
-        updatedMilestone.criteria.isComplete = docCount >= Number(milestone.criteria.threshold);
-        updatedMilestone.progress.percentage = Math.min(100, (docCount / Number(milestone.criteria.threshold)) * 100);
+        updatedMilestone.criteria.isComplete =
+          docCount >= Number(milestone.criteria.threshold);
+        updatedMilestone.progress.percentage = Math.min(
+          100,
+          (docCount / Number(milestone.criteria.threshold)) * 100
+        );
         break;
       }
 
       case 'protection_percentage': {
         const protectionLevel = await this.calculateProtectionLevel(userId);
         updatedMilestone.criteria.currentValue = protectionLevel;
-        updatedMilestone.criteria.isComplete = protectionLevel >= Number(milestone.criteria.threshold);
-        updatedMilestone.progress.percentage = Math.min(100, (protectionLevel / Number(milestone.criteria.threshold)) * 100);
+        updatedMilestone.criteria.isComplete =
+          protectionLevel >= Number(milestone.criteria.threshold);
+        updatedMilestone.progress.percentage = Math.min(
+          100,
+          (protectionLevel / Number(milestone.criteria.threshold)) * 100
+        );
         break;
       }
 
       case 'family_members': {
         const familyCount = await this.getFamilyMemberCount(userId);
         updatedMilestone.criteria.currentValue = familyCount;
-        updatedMilestone.criteria.isComplete = familyCount >= Number(milestone.criteria.threshold);
-        updatedMilestone.progress.percentage = Math.min(100, (familyCount / Number(milestone.criteria.threshold)) * 100);
+        updatedMilestone.criteria.isComplete =
+          familyCount >= Number(milestone.criteria.threshold);
+        updatedMilestone.progress.percentage = Math.min(
+          100,
+          (familyCount / Number(milestone.criteria.threshold)) * 100
+        );
         break;
       }
 
       case 'review_score': {
         const reviewScore = await this.getAverageReviewScore(userId);
         updatedMilestone.criteria.currentValue = reviewScore;
-        updatedMilestone.criteria.isComplete = reviewScore >= Number(milestone.criteria.threshold);
-        updatedMilestone.progress.percentage = Math.min(100, (reviewScore / Number(milestone.criteria.threshold)) * 100);
+        updatedMilestone.criteria.isComplete =
+          reviewScore >= Number(milestone.criteria.threshold);
+        updatedMilestone.progress.percentage = Math.min(
+          100,
+          (reviewScore / Number(milestone.criteria.threshold)) * 100
+        );
         break;
       }
     }
 
-    updatedMilestone.progress.stepsCompleted = updatedMilestone.criteria.isComplete ? 1 : 0;
+    updatedMilestone.progress.stepsCompleted = updatedMilestone.criteria
+      .isComplete
+      ? 1
+      : 0;
     updatedMilestone.lastCheckedAt = new Date().toISOString();
     updatedMilestone.updatedAt = new Date().toISOString();
 
@@ -469,7 +543,12 @@ export class MilestonesService {
 
       if (!documents) return 0;
 
-      const essentialDocs = ['will', 'power_of_attorney', 'healthcare_directive', 'insurance_policy'];
+      const essentialDocs = [
+        'will',
+        'power_of_attorney',
+        'healthcare_directive',
+        'insurance_policy',
+      ];
       const hasEssential = essentialDocs.filter(type =>
         documents.some(doc => doc.type === type)
       );
@@ -510,17 +589,17 @@ export class MilestonesService {
     return scores.reduce((sum, score) => sum + score, 0) / scores.length;
   }
 
-  private async triggerMilestoneCelebration(milestone: LegacyMilestone): Promise<void> {
+  private async triggerMilestoneCelebration(
+    milestone: LegacyMilestone
+  ): Promise<void> {
     // Store celebration event
     try {
-      await supabase
-        .from('milestone_celebrations')
-        .insert({
-          milestone_id: milestone.id,
-          user_id: milestone.userId,
-          celebration_data: milestone.celebration,
-          created_at: new Date().toISOString()
-        });
+      await (supabase as any).from('milestone_celebrations').insert({
+        milestone_id: milestone.id,
+        user_id: milestone.userId,
+        celebration_data: milestone.celebration,
+        created_at: new Date().toISOString(),
+      });
     } catch (error) {
       console.error('Failed to store celebration event:', error);
     }
@@ -541,56 +620,79 @@ export class MilestonesService {
     const progress = await this.getMilestoneProgress(userId);
 
     // Store or update progress record
-    await supabase
-      .from('milestone_progress')
-      .upsert({
+    await (supabase as any).from('milestone_progress').upsert(
+      {
         user_id: userId,
         progress_data: progress,
-        updated_at: new Date().toISOString()
-      }, { onConflict: 'user_id' });
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: 'user_id' }
+    );
   }
 
-  private calculateCategoryProgress(milestones: LegacyMilestone[]): MilestoneProgress['categoryProgress'] {
-    const categories = ['foundation', 'protection', 'family', 'professional', 'maintenance', 'mastery'] as const;
+  private calculateCategoryProgress(
+    milestones: LegacyMilestone[]
+  ): MilestoneProgress['categoryProgress'] {
+    const categories = [
+      'foundation',
+      'protection',
+      'family',
+      'professional',
+      'maintenance',
+      'mastery',
+    ] as const;
     const categoryProgress = {} as MilestoneProgress['categoryProgress'];
 
     for (const category of categories) {
-      const categoryMilestones = milestones.filter(m => m.category === category);
+      const categoryMilestones = milestones.filter(
+        m => m.category === category
+      );
       const completedCategory = categoryMilestones.filter(m => m.completedAt);
 
       categoryProgress[category] = {
         completed: completedCategory.length,
         total: categoryMilestones.length,
-        percentage: categoryMilestones.length > 0
-          ? Math.round((completedCategory.length / categoryMilestones.length) * 100)
-          : 0
+        percentage:
+          categoryMilestones.length > 0
+            ? Math.round(
+                (completedCategory.length / categoryMilestones.length) * 100
+              )
+            : 0,
       };
     }
 
     return categoryProgress;
   }
 
-  private determineUserLevel(overallProgress: number, completedMilestones: LegacyMilestone[]): MilestoneLevel {
+  private determineUserLevel(
+    overallProgress: number,
+    completedMilestones: LegacyMilestone[]
+  ): MilestoneLevel {
     // Find the highest level the user qualifies for
     for (let i = MILESTONE_LEVELS.length - 1; i >= 0; i--) {
       const level = MILESTONE_LEVELS[i];
 
       if (overallProgress >= level.progressThreshold) {
         // Check if they meet the requirements
-        if (completedMilestones.length >= level.requirements.milestonesRequired) {
+        if (
+          completedMilestones.length >= level.requirements.milestonesRequired
+        ) {
           // Check specific milestone requirements if any
           if (level.requirements.specificMilestones) {
-            const hasSpecific = level.requirements.specificMilestones.every(requiredId =>
-              completedMilestones.some(m => m.id.includes(requiredId))
+            const hasSpecific = level.requirements.specificMilestones.every(
+              requiredId =>
+                completedMilestones.some(m => m.id.includes(requiredId))
             );
             if (!hasSpecific) continue;
           }
 
           // Check category requirements if any
           if (level.requirements.categoriesRequired) {
-            const completedCategories = new Set(completedMilestones.map(m => m.category));
-            const hasCategories = level.requirements.categoriesRequired.every(cat =>
-              completedCategories.has(cat)
+            const completedCategories = new Set(
+              completedMilestones.map(m => m.category)
+            );
+            const hasCategories = level.requirements.categoriesRequired.every(
+              cat => completedCategories.has(cat)
             );
             if (!hasCategories) continue;
           }
@@ -604,17 +706,24 @@ export class MilestonesService {
   }
 
   private getNextLevel(currentLevel: MilestoneLevel): MilestoneLevel | null {
-    const currentIndex = MILESTONE_LEVELS.findIndex(l => l.level === currentLevel.level);
-    return currentIndex < MILESTONE_LEVELS.length - 1 ? MILESTONE_LEVELS[currentIndex + 1] : null;
+    const currentIndex = MILESTONE_LEVELS.findIndex(
+      l => l.level === currentLevel.level
+    );
+    return currentIndex < MILESTONE_LEVELS.length - 1
+      ? MILESTONE_LEVELS[currentIndex + 1]
+      : null;
   }
 
-  private async generateRecommendations(milestones: LegacyMilestone[], _userId: string): Promise<MilestoneProgress['recommendations']> {
+  private async generateRecommendations(
+    milestones: LegacyMilestone[],
+    _userId: string
+  ): Promise<MilestoneProgress['recommendations']> {
     const incompleteMilestones = milestones.filter(m => !m.completedAt);
     const recommendations: MilestoneProgress['recommendations'] = [];
 
     // Sort by priority and progress
     const sortedMilestones = incompleteMilestones.sort((a, b) => {
-      const priorityOrder = { 'critical': 4, 'high': 3, 'medium': 2, 'low': 1 };
+      const priorityOrder = { critical: 4, high: 3, medium: 2, low: 1 };
       const aPriority = priorityOrder[a.metadata.priority];
       const bPriority = priorityOrder[b.metadata.priority];
 
@@ -627,7 +736,7 @@ export class MilestonesService {
       recommendations.push({
         milestone,
         reason: this.generateRecommendationReason(milestone),
-        estimatedImpact: this.generateEstimatedImpact(milestone)
+        estimatedImpact: this.generateEstimatedImpact(milestone),
       });
     }
 
@@ -637,7 +746,10 @@ export class MilestonesService {
   private generateRecommendationReason(milestone: LegacyMilestone): string {
     if (milestone.progress.percentage > 50) {
       return `You're ${milestone.progress.percentage}% complete! Just a little more to achieve this milestone.`;
-    } else if (milestone.metadata.priority === 'critical' || milestone.metadata.priority === 'high') {
+    } else if (
+      milestone.metadata.priority === 'critical' ||
+      milestone.metadata.priority === 'high'
+    ) {
       return `This milestone significantly improves your family's protection level.`;
     } else {
       return `Completing this milestone unlocks valuable features and insights.`;
@@ -658,13 +770,15 @@ export class MilestonesService {
       impacts.push(`${rewards.features.length} new features unlocked`);
     }
 
-    return impacts.length > 0 ? impacts.join(', ') : 'Valuable progress toward legacy completion';
+    return impacts.length > 0
+      ? impacts.join(', ')
+      : 'Valuable progress toward legacy completion';
   }
 
   private calculateMilestoneAnalytics(
     userId: string,
     milestones: LegacyMilestone[],
-    timeframe?: { start: string; end: string }
+    timeframe?: { end: string; start: string }
   ): MilestoneAnalytics {
     const completedMilestones = milestones.filter(m => m.completedAt);
     const now = new Date();
@@ -676,47 +790,64 @@ export class MilestonesService {
       return (completed - created) / (1000 * 60 * 60); // hours
     });
 
-    const averageCompletionTime = completionTimes.length > 0
-      ? completionTimes.reduce((sum, time) => sum + time, 0) / completionTimes.length
-      : 0;
+    const averageCompletionTime =
+      completionTimes.length > 0
+        ? completionTimes.reduce((sum, time) => sum + time, 0) /
+          completionTimes.length
+        : 0;
 
-    const completionRate = milestones.length > 0
-      ? (completedMilestones.length / milestones.length) * 100
-      : 0;
+    const completionRate =
+      milestones.length > 0
+        ? (completedMilestones.length / milestones.length) * 100
+        : 0;
 
     // Calculate category and difficulty preferences
-    const categoryCount = completedMilestones.reduce((acc, m) => {
-      acc[m.category] = (acc[m.category] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    const categoryCount = completedMilestones.reduce(
+      (acc, m) => {
+        acc[m.category] = (acc[m.category] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
 
-    const mostActiveCategory = Object.entries(categoryCount)
-      .sort(([,a], [,b]) => b - a)[0]?.[0] as LegacyMilestone['category'] || 'foundation';
+    const mostActiveCategory =
+      (Object.entries(categoryCount).sort(
+        ([, a], [, b]) => b - a
+      )[0]?.[0] as LegacyMilestone['category']) || 'foundation';
 
-    const difficultyCount = completedMilestones.reduce((acc, m) => {
-      acc[m.metadata.difficulty] = (acc[m.metadata.difficulty] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    const difficultyCount = completedMilestones.reduce(
+      (acc, m) => {
+        acc[m.metadata.difficulty] = (acc[m.metadata.difficulty] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
 
-    const preferredDifficulty = Object.entries(difficultyCount)
-      .sort(([,a], [,b]) => b - a)[0]?.[0] as LegacyMilestone['metadata']['difficulty'] || 'easy';
+    const preferredDifficulty =
+      (Object.entries(difficultyCount).sort(
+        ([, a], [, b]) => b - a
+      )[0]?.[0] as LegacyMilestone['metadata']['difficulty']) || 'easy';
 
     // Calculate impact metrics
-    const totalProtectionIncrease = completedMilestones.reduce((sum, m) =>
-      sum + (m.rewards.protectionIncrease || 0), 0);
+    const totalProtectionIncrease = completedMilestones.reduce(
+      (sum, m) => sum + (m.rewards.protectionIncrease || 0),
+      0
+    );
 
-    const totalTimeSaved = completedMilestones.reduce((sum, m) =>
-      sum + (m.rewards.timeSaved || 0), 0);
+    const totalTimeSaved = completedMilestones.reduce(
+      (sum, m) => sum + (m.rewards.timeSaved || 0),
+      0
+    );
 
-    const featuresUnlocked = Array.from(new Set(
-      completedMilestones.flatMap(m => m.rewards.features || [])
-    ));
+    const featuresUnlocked = Array.from(
+      new Set(completedMilestones.flatMap(m => m.rewards.features || []))
+    );
 
     return {
       userId,
       timeframe: timeframe || {
         start: new Date(now.getFullYear(), 0, 1).toISOString(),
-        end: now.toISOString()
+        end: now.toISOString(),
       },
       milestonesCompleted: completedMilestones.length,
       averageCompletionTime: Math.round(averageCompletionTime * 10) / 10,
@@ -729,7 +860,7 @@ export class MilestonesService {
       featuresUnlocked,
       celebrationEngagement: 0.8, // Would track from user interactions
       recommendationFollowRate: 0.6, // Would track from user actions
-      averageGapBetweenMilestones: 7 // days, would calculate from completion dates
+      averageGapBetweenMilestones: 7, // days, would calculate from completion dates
     };
   }
 
@@ -759,8 +890,9 @@ export class MilestonesService {
   }
 
   private clearUserCache(userIdOrMilestoneId: string): void {
-    const keysToDelete = Array.from(this.milestoneCache.keys())
-      .filter(key => key.includes(userIdOrMilestoneId));
+    const keysToDelete = Array.from(this.milestoneCache.keys()).filter(key =>
+      key.includes(userIdOrMilestoneId)
+    );
 
     keysToDelete.forEach(key => this.milestoneCache.delete(key));
   }

@@ -39,7 +39,10 @@ export class KeyManagementService {
   private readonly SALT_LENGTH = 16; // 128 bits
 
   constructor(supabaseUrl?: string, supabaseServiceKey?: string) {
-    const url = supabaseUrl || process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const url =
+      supabaseUrl ||
+      process.env.SUPABASE_URL ||
+      process.env.NEXT_PUBLIC_SUPABASE_URL;
     const key = supabaseServiceKey || process.env.SUPABASE_SERVICE_ROLE_KEY;
 
     if (!url || !key) {
@@ -50,7 +53,7 @@ export class KeyManagementService {
       auth: {
         persistSession: false,
         autoRefreshToken: false,
-      }
+      },
     });
   }
 
@@ -72,7 +75,13 @@ export class KeyManagementService {
     password: string,
     salt: Buffer
   ): Promise<Buffer> {
-    return pbkdf2Async(password, salt, this.ITERATIONS, this.KEY_LENGTH, 'sha256');
+    return pbkdf2Async(
+      password,
+      salt,
+      this.ITERATIONS,
+      this.KEY_LENGTH,
+      'sha256'
+    );
   }
 
   /**
@@ -138,7 +147,7 @@ export class KeyManagementService {
       if (existing) {
         return {
           success: false,
-          error: 'User already has active encryption keys'
+          error: 'User already has active encryption keys',
         };
       }
 
@@ -185,15 +194,14 @@ export class KeyManagementService {
 
       return {
         success: true,
-        publicKey: data.public_key
+        publicKey: data.public_key,
       };
-
     } catch (error) {
       console.error('Key creation error:', error);
       await this.logKeyAccess(userId, 'generate', false, String(error));
       return {
         success: false,
-        error: 'Failed to create encryption keys'
+        error: 'Failed to create encryption keys',
       };
     }
   }
@@ -204,12 +212,19 @@ export class KeyManagementService {
   public async getUserPrivateKey(
     userId: string,
     password: string
-  ): Promise<{ success: boolean; privateKey?: string; publicKey?: string; error?: string }> {
+  ): Promise<{
+    success: boolean;
+    privateKey?: string;
+    publicKey?: string;
+    error?: string;
+  }> {
     try {
       // Get encrypted key data
       const { data, error } = await this.supabase
         .from('user_encryption_keys')
-        .select('encrypted_private_key, public_key, salt, nonce, iterations, locked_until')
+        .select(
+          'encrypted_private_key, public_key, salt, nonce, iterations, locked_until'
+        )
         .eq('user_id', userId)
         .eq('is_active', true)
         .eq('is_compromised', false)
@@ -227,7 +242,7 @@ export class KeyManagementService {
         );
         return {
           success: false,
-          error: `Account locked. Try again in ${minutesLeft} minutes`
+          error: `Account locked. Try again in ${minutesLeft} minutes`,
         };
       }
 
@@ -252,7 +267,7 @@ export class KeyManagementService {
         .from('user_encryption_keys')
         .update({
           failed_access_attempts: 0,
-          last_accessed_at: new Date().toISOString()
+          last_accessed_at: new Date().toISOString(),
         })
         .eq('user_id', userId)
         .eq('is_active', true);
@@ -263,15 +278,14 @@ export class KeyManagementService {
       return {
         success: true,
         privateKey,
-        publicKey: data.public_key
+        publicKey: data.public_key,
       };
-
     } catch (error) {
       console.error('Key retrieval error:', error);
       await this.handleFailedAccess(userId, String(error));
       return {
         success: false,
-        error: 'Failed to retrieve keys'
+        error: 'Failed to retrieve keys',
       };
     }
   }
@@ -281,11 +295,18 @@ export class KeyManagementService {
    */
   public async getUserPublicKey(
     userId: string
-  ): Promise<{ success: boolean; publicKey?: string; metadata?: KeyMetadata; error?: string }> {
+  ): Promise<{
+    success: boolean;
+    publicKey?: string;
+    metadata?: KeyMetadata;
+    error?: string;
+  }> {
     try {
       const { data, error } = await this.supabase
         .from('user_encryption_keys')
-        .select('public_key, key_version, algorithm, created_at, last_rotated_at, is_active')
+        .select(
+          'public_key, key_version, algorithm, created_at, last_rotated_at, is_active'
+        )
         .eq('user_id', userId)
         .eq('is_active', true)
         .eq('is_compromised', false)
@@ -303,15 +324,14 @@ export class KeyManagementService {
           algorithm: data.algorithm,
           createdAt: data.created_at,
           lastRotatedAt: data.last_rotated_at,
-          isActive: data.is_active
-        }
+          isActive: data.is_active,
+        },
       };
-
     } catch (error) {
       console.error('Public key retrieval error:', error);
       return {
         success: false,
-        error: 'Failed to retrieve public key'
+        error: 'Failed to retrieve public key',
       };
     }
   }
@@ -352,15 +372,14 @@ export class KeyManagementService {
       );
 
       // Call rotation function
-      const { error } = await this.supabase
-        .rpc('rotate_user_key', {
-          p_user_id: userId,
-          p_new_encrypted_private_key: encryptedPrivateKey,
-          p_new_public_key: newKeyPair.publicKey,
-          p_new_salt: salt.toString('base64'),
-          p_new_nonce: encodeBase64(nonce),
-          p_reason: newPassword ? 'Password change' : 'Manual rotation'
-        });
+      const { error } = await this.supabase.rpc('rotate_user_key', {
+        p_user_id: userId,
+        p_new_encrypted_private_key: encryptedPrivateKey,
+        p_new_public_key: newKeyPair.publicKey,
+        p_new_salt: salt.toString('base64'),
+        p_new_nonce: encodeBase64(nonce),
+        p_reason: newPassword ? 'Password change' : 'Manual rotation',
+      });
 
       if (error) {
         console.error('Key rotation error:', error);
@@ -369,14 +388,13 @@ export class KeyManagementService {
 
       return {
         success: true,
-        newPublicKey: newKeyPair.publicKey
+        newPublicKey: newKeyPair.publicKey,
       };
-
     } catch (error) {
       console.error('Key rotation error:', error);
       return {
         success: false,
-        error: 'Failed to rotate keys'
+        error: 'Failed to rotate keys',
       };
     }
   }
@@ -386,8 +404,9 @@ export class KeyManagementService {
    */
   public async checkRotationNeeded(userId: string): Promise<boolean> {
     try {
-      const { data } = await this.supabase
-        .rpc('check_key_rotation_needed', { p_user_id: userId });
+      const { data } = await this.supabase.rpc('check_key_rotation_needed', {
+        p_user_id: userId,
+      });
 
       return data || false;
     } catch (error) {
@@ -410,7 +429,7 @@ export class KeyManagementService {
         .from('user_encryption_keys')
         .update({
           recovery_enabled: true,
-          recovery_method: method
+          recovery_method: method,
         })
         .eq('user_id', userId)
         .eq('is_active', true);
@@ -425,7 +444,7 @@ export class KeyManagementService {
         .upsert({
           user_id: userId,
           ...recoveryData,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         });
 
       if (insertError) {
@@ -433,12 +452,11 @@ export class KeyManagementService {
       }
 
       return { success: true };
-
     } catch (error) {
       console.error('Recovery setup error:', error);
       return {
         success: false,
-        error: 'Failed to setup recovery'
+        error: 'Failed to setup recovery',
       };
     }
   }
@@ -455,7 +473,7 @@ export class KeyManagementService {
         .from('user_encryption_keys')
         .update({
           is_compromised: true,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('user_id', userId)
         .eq('is_active', true);
@@ -473,23 +491,25 @@ export class KeyManagementService {
       );
 
       return { success: true };
-
     } catch (error) {
       console.error('Compromise marking error:', error);
       return {
         success: false,
-        error: 'Failed to mark keys as compromised'
+        error: 'Failed to mark keys as compromised',
       };
     }
   }
 
   // Private helper methods
 
-  private async handleFailedAccess(userId: string, reason: string): Promise<void> {
+  private async handleFailedAccess(
+    userId: string,
+    reason: string
+  ): Promise<void> {
     try {
       await this.supabase.rpc('handle_failed_key_access', {
         p_user_id: userId,
-        p_reason: reason
+        p_reason: reason,
       });
     } catch (error) {
       console.error('Failed to handle failed access:', error);
@@ -503,15 +523,13 @@ export class KeyManagementService {
     failureReason?: string
   ): Promise<void> {
     try {
-      await this.supabase
-        .from('key_access_logs')
-        .insert({
-          user_id: userId,
-          access_type: accessType,
-          success,
-          failure_reason: failureReason,
-          accessed_at: new Date().toISOString()
-        });
+      await this.supabase.from('key_access_logs').insert({
+        user_id: userId,
+        access_type: accessType,
+        success,
+        failure_reason: failureReason,
+        accessed_at: new Date().toISOString(),
+      });
     } catch (error) {
       console.error('Failed to log key access:', error);
     }
@@ -548,7 +566,7 @@ export class KeyManagementService {
 
     return {
       isValid: errors.length === 0,
-      errors
+      errors,
     };
   }
 }

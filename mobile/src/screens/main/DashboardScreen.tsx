@@ -1,6 +1,6 @@
 // src/screens/main/DashboardScreen.tsx
 import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { Button, StyleSheet, Text, View } from 'react-native';
 import { useAuth } from '@/hooks/useAuth';
 
 export const DashboardScreen = () => {
@@ -11,7 +11,7 @@ export const DashboardScreen = () => {
       <Text style={styles.title}>Dashboard</Text>
       <Text style={styles.subtitle}>Welcome to LegacyGuard</Text>
       <View style={styles.buttonContainer}>
-        <Button title="Log Out" onPress={logout} color="#ff6b6b" />
+        <Button title='Log Out' onPress={logout} color='#ff6b6b' />
       </View>
     </View>
   );

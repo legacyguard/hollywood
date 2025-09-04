@@ -8,29 +8,29 @@ import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
 
 export interface ActivityItem {
-  id: string;
-  type: 'document' | 'family' | 'guardian' | 'will' | 'security' | 'system';
   action: string;
+  color?: 'danger' | 'info' | 'primary' | 'success' | 'warning';
   description: string;
-  timestamp: Date;
   icon?: string;
-  color?: 'primary' | 'success' | 'warning' | 'danger' | 'info';
+  id: string;
   metadata?: Record<string, unknown>;
+  timestamp: Date;
+  type: 'document' | 'family' | 'guardian' | 'security' | 'system' | 'will';
   user?: {
-    name: string;
     avatar?: string;
+    name: string;
   };
 }
 
 interface ActivityFeedProps {
   activities: ActivityItem[];
-  title?: string;
-  showViewAll?: boolean;
-  onViewAll?: () => void;
-  maxHeight?: string;
-  loading?: boolean;
-  emptyMessage?: string;
   className?: string;
+  emptyMessage?: string;
+  loading?: boolean;
+  maxHeight?: string;
+  onViewAll?: () => void;
+  showViewAll?: boolean;
+  title?: string;
 }
 
 export function ActivityFeed({
@@ -88,13 +88,13 @@ export function ActivityFeed({
           <CardTitle className='text-lg font-semibold'>{title}</CardTitle>
           {showViewAll && onViewAll && (
             <Button
-              variant="ghost"
+              variant='ghost'
               size='sm'
               onClick={onViewAll}
               className='text-primary hover:text-primary-hover'
             >
               View all
-              <Icon name="arrowRight" className='ml-2 h-4 w-4' />
+              <Icon name='arrowRight' className='ml-2 h-4 w-4' />
             </Button>
           )}
         </CardHeader>
@@ -113,7 +113,8 @@ export function ActivityFeed({
             </div>
           ) : activities.length === 0 ? (
             <div className='p-6 text-center text-muted-foreground'>
-              <Icon name="inbox"
+              <Icon
+                name='inbox'
                 className='w-12 h-12 mx-auto mb-3 opacity-50'
               />
               <p>{emptyMessage}</p>
@@ -140,14 +141,14 @@ export function ActivityFeed({
   );
 }
 
-type ColorClass = 'primary' | 'success' | 'warning' | 'danger' | 'info';
+type ColorClass = 'danger' | 'info' | 'primary' | 'success' | 'warning';
 
 interface ActivityItemProps {
-  item: ActivityItem;
-  icon: string;
   color: ColorClass;
   colorClasses: Record<ColorClass, string>;
+  icon: string;
   isLast: boolean;
+  item: ActivityItem;
 }
 
 function ActivityItemComponent({
@@ -193,7 +194,7 @@ function ActivityItemComponent({
                 {Object.entries(item.metadata)
                   .slice(0, 3)
                   .map(([key, value]) => (
-                    <Badge key={key} variant="secondary" className='text-xs'>
+                    <Badge key={key} variant='secondary' className='text-xs'>
                       {key}: {String(value)}
                     </Badge>
                   ))}
@@ -204,7 +205,7 @@ function ActivityItemComponent({
 
         {/* Timestamp and user */}
         <div className='flex items-center mt-2 text-xs text-muted-foreground'>
-          <Icon name="clock" className='w-3 h-3 mr-1' />
+          <Icon name='clock' className='w-3 h-3 mr-1' />
           <span>
             {formatDistanceToNow(item.timestamp, { addSuffix: true })}
           </span>

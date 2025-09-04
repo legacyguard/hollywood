@@ -3,35 +3,40 @@
  * Main interface for managing user's wills
  */
 
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import React, { useEffect, useState } from 'react';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import { Alert, AlertDescription } from '../components/ui/alert';
 import {
-  Plus,
-  FileText,
-  Download,
-  Trash2,
-  RefreshCw,
   AlertCircle,
   CheckCircle,
   Clock,
-  Scale
+  Download,
+  FileText,
+  Plus,
+  RefreshCw,
+  Scale,
+  Trash2,
 } from 'lucide-react';
 import { WillWizard } from '../components/will/WillWizard';
 import type { Will } from '../types/will';
 import { willApiService } from '../services/willApiService';
 import { pdfGenerationService } from '../services/pdfGenerationService';
 
-type ViewMode = 'list' | 'wizard' | 'preview';
+type ViewMode = 'list' | 'preview' | 'wizard';
 
 interface WillManagementState {
-  wills: Will[];
-  selectedWill: Will | null;
-  viewMode: ViewMode;
+  error: null | string;
   isLoading: boolean;
-  error: string | null;
+  selectedWill: null | Will;
+  viewMode: ViewMode;
+  wills: Will[];
 }
 
 export const WillManagement: React.FC = () => {
@@ -40,7 +45,7 @@ export const WillManagement: React.FC = () => {
     selectedWill: null,
     viewMode: 'list',
     isLoading: true,
-    error: null
+    error: null,
   });
 
   /**
@@ -54,14 +59,14 @@ export const WillManagement: React.FC = () => {
       setState(prev => ({
         ...prev,
         wills,
-        isLoading: false
+        isLoading: false,
       }));
     } catch (error) {
       console.error('Error loading wills:', error);
       setState(prev => ({
         ...prev,
         isLoading: false,
-        error: error instanceof Error ? error.message : 'Failed to load wills'
+        error: error instanceof Error ? error.message : 'Failed to load wills',
       }));
     }
   };
@@ -78,7 +83,11 @@ export const WillManagement: React.FC = () => {
    * Handle will deletion
    */
   const handleDeleteWill = async (willId: string) => {
-    if (!window.confirm('Are you sure you want to delete this will? This action cannot be undone.')) {
+    if (
+      !window.confirm(
+        'Are you sure you want to delete this will? This action cannot be undone.'
+      )
+    ) {
       return;
     }
 
@@ -89,7 +98,7 @@ export const WillManagement: React.FC = () => {
       console.error('Error deleting will:', error);
       setState(prev => ({
         ...prev,
-        error: error instanceof Error ? error.message : 'Failed to delete will'
+        error: error instanceof Error ? error.message : 'Failed to delete will',
       }));
     }
   };
@@ -108,7 +117,8 @@ export const WillManagement: React.FC = () => {
       setState(prev => ({
         ...prev,
         isLoading: false,
-        error: error instanceof Error ? error.message : 'Failed to regenerate will'
+        error:
+          error instanceof Error ? error.message : 'Failed to regenerate will',
       }));
     }
   };
@@ -127,14 +137,17 @@ export const WillManagement: React.FC = () => {
         userId: will.user_id,
         jurisdiction: will.jurisdiction as any,
         language: will.language as any,
-        type: will.will_type === 'simple' ? 'holographic' as const : 'witnessed' as const,
+        type:
+          will.will_type === 'simple'
+            ? ('holographic' as const)
+            : ('witnessed' as const),
         content,
         metadata: {
           generationDate: will.updated_at,
           version: '1.0',
           wordCount: content.text.split(' ').length,
           pageCount: 1,
-          checksum: 'checksum'
+          checksum: 'checksum',
         },
         validationResult: {
           isValid: will.validation_errors?.length === 0,
@@ -143,20 +156,33 @@ export const WillManagement: React.FC = () => {
           warnings: [],
           legalRequirementsMet: true,
           missingRequiredFields: [],
-          suggestedImprovements: []
+          suggestedImprovements: [],
         },
         aiSuggestions: will.ai_suggestions || [],
         executionInstructions: {
           holographic: {
-            steps: ['Write entire will by hand', 'Sign with full name', 'Date the document'],
-            requirements: ['Must be handwritten', 'Must be signed', 'Must be dated'],
-            warnings: ['Do not use typed text', 'Ensure handwriting is legible']
-          }
+            steps: [
+              'Write entire will by hand',
+              'Sign with full name',
+              'Date the document',
+            ],
+            requirements: [
+              'Must be handwritten',
+              'Must be signed',
+              'Must be dated',
+            ],
+            warnings: [
+              'Do not use typed text',
+              'Ensure handwriting is legible',
+            ],
+          },
         },
-        legalDisclaimer: 'This will was generated using AI assistance. Please consult with a qualified attorney for legal advice.'
+        legalDisclaimer:
+          'This will was generated using AI assistance. Please consult with a qualified attorney for legal advice.',
       };
 
-      const pdfBuffer = await pdfGenerationService.generateWillPDF(generatedWill);
+      const pdfBuffer =
+        await pdfGenerationService.generateWillPDF(generatedWill);
       const filename = `Will-${will.jurisdiction}-${new Date().toISOString().split('T')[0]}.pdf`;
 
       pdfGenerationService.downloadPDF(pdfBuffer, filename);
@@ -167,7 +193,8 @@ export const WillManagement: React.FC = () => {
       setState(prev => ({
         ...prev,
         isLoading: false,
-        error: error instanceof Error ? error.message : 'Failed to generate PDF'
+        error:
+          error instanceof Error ? error.message : 'Failed to generate PDF',
       }));
     }
   };
@@ -180,15 +207,15 @@ export const WillManagement: React.FC = () => {
       draft: { color: 'secondary', icon: Clock, text: 'Draft' },
       in_progress: { color: 'default', icon: RefreshCw, text: 'In Progress' },
       completed: { color: 'default', icon: CheckCircle, text: 'Completed' },
-      archived: { color: 'secondary', icon: FileText, text: 'Archived' }
+      archived: { color: 'secondary', icon: FileText, text: 'Archived' },
     };
 
     const config = statusConfig[will.status] || statusConfig.draft;
     const IconComponent = config.icon;
 
     return (
-      <Badge variant={config.color as any} className="flex items-center gap-1">
-        <IconComponent className="h-3 w-3" />
+      <Badge variant={config.color as any} className='flex items-center gap-1'>
+        <IconComponent className='h-3 w-3' />
         {config.text}
       </Badge>
     );
@@ -213,55 +240,58 @@ export const WillManagement: React.FC = () => {
    * Render will list view
    */
   const renderWillList = () => (
-    <div className="space-y-6">
+    <div className='space-y-6'>
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className='flex justify-between items-center'>
         <div>
-          <h1 className="text-3xl font-bold">My Wills</h1>
-          <p className="text-muted-foreground">
-            Create and manage your legal will documents with Sofia's AI assistance
+          <h1 className='text-3xl font-bold'>My Wills</h1>
+          <p className='text-muted-foreground'>
+            Create and manage your legal will documents with Sofia's AI
+            assistance
           </p>
         </div>
         <Button
           onClick={() => setState(prev => ({ ...prev, viewMode: 'wizard' }))}
-          className="flex items-center gap-2"
+          className='flex items-center gap-2'
         >
-          <Plus className="h-4 w-4" />
+          <Plus className='h-4 w-4' />
           Create New Will
         </Button>
       </div>
 
       {/* Error Alert */}
       {state.error && (
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
+        <Alert variant='destructive'>
+          <AlertCircle className='h-4 w-4' />
           <AlertDescription>{state.error}</AlertDescription>
         </Alert>
       )}
 
       {/* Loading State */}
       {state.isLoading && (
-        <div className="text-center py-8">
-          <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4" />
-          <p className="text-muted-foreground">Loading your wills...</p>
+        <div className='text-center py-8'>
+          <RefreshCw className='h-8 w-8 animate-spin mx-auto mb-4' />
+          <p className='text-muted-foreground'>Loading your wills...</p>
         </div>
       )}
 
       {/* Empty State */}
       {!state.isLoading && state.wills.length === 0 && (
         <Card>
-          <CardContent className="text-center py-12">
-            <FileText className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-            <h3 className="text-lg font-semibold mb-2">No wills created yet</h3>
-            <p className="text-muted-foreground mb-4">
-              Create your first will with Sofia's intelligent assistance.
-              The process takes about 15-30 minutes.
+          <CardContent className='text-center py-12'>
+            <FileText className='h-12 w-12 mx-auto mb-4 text-muted-foreground' />
+            <h3 className='text-lg font-semibold mb-2'>No wills created yet</h3>
+            <p className='text-muted-foreground mb-4'>
+              Create your first will with Sofia's intelligent assistance. The
+              process takes about 15-30 minutes.
             </p>
             <Button
-              onClick={() => setState(prev => ({ ...prev, viewMode: 'wizard' }))}
-              className="flex items-center gap-2"
+              onClick={() =>
+                setState(prev => ({ ...prev, viewMode: 'wizard' }))
+              }
+              className='flex items-center gap-2'
             >
-              <Plus className="h-4 w-4" />
+              <Plus className='h-4 w-4' />
               Create Your First Will
             </Button>
           </CardContent>
@@ -270,25 +300,27 @@ export const WillManagement: React.FC = () => {
 
       {/* Wills List */}
       {!state.isLoading && state.wills.length > 0 && (
-        <div className="grid gap-4">
-          {state.wills.map((will) => {
-            const completeness = getCompletenessIndicator(will.completeness_score || 0);
+        <div className='grid gap-4'>
+          {state.wills.map(will => {
+            const completeness = getCompletenessIndicator(
+              will.completeness_score || 0
+            );
 
             return (
-              <Card key={will.id} className="hover:shadow-md transition-shadow">
+              <Card key={will.id} className='hover:shadow-md transition-shadow'>
                 <CardHeader>
-                  <div className="flex justify-between items-start">
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2">
-                        <CardTitle className="text-lg">
+                  <div className='flex justify-between items-start'>
+                    <div className='space-y-2'>
+                      <div className='flex items-center gap-2'>
+                        <CardTitle className='text-lg'>
                           {will.testator_data?.fullName || 'Unnamed Will'}
                         </CardTitle>
                         {getStatusBadge(will)}
                       </div>
 
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                        <span className="flex items-center gap-1">
-                          <Scale className="h-3 w-3" />
+                      <div className='flex items-center gap-4 text-sm text-muted-foreground'>
+                        <span className='flex items-center gap-1'>
+                          <Scale className='h-3 w-3' />
                           {will.jurisdiction} • {will.will_type}
                         </span>
 
@@ -297,56 +329,62 @@ export const WillManagement: React.FC = () => {
                         </span>
 
                         <span>
-                          Updated: {new Date(will.updated_at).toLocaleDateString()}
+                          Updated:{' '}
+                          {new Date(will.updated_at).toLocaleDateString()}
                         </span>
                       </div>
                     </div>
 
-                    <div className="flex gap-2">
+                    <div className='flex gap-2'>
                       <Button
-                        variant="outline"
-                        size="sm"
+                        variant='outline'
+                        size='sm'
                         onClick={() => handleDownloadPDF(will)}
                         disabled={state.isLoading}
                       >
-                        <Download className="h-4 w-4" />
+                        <Download className='h-4 w-4' />
                       </Button>
 
                       <Button
-                        variant="outline"
-                        size="sm"
+                        variant='outline'
+                        size='sm'
                         onClick={() => handleRegenerateWill(will.id)}
                         disabled={state.isLoading}
                       >
-                        <RefreshCw className="h-4 w-4" />
+                        <RefreshCw className='h-4 w-4' />
                       </Button>
 
                       <Button
-                        variant="outline"
-                        size="sm"
+                        variant='outline'
+                        size='sm'
                         onClick={() => handleDeleteWill(will.id)}
                         disabled={state.isLoading}
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Trash2 className='h-4 w-4' />
                       </Button>
                     </div>
                   </div>
                 </CardHeader>
 
                 <CardContent>
-                  <div className="space-y-3">
+                  <div className='space-y-3'>
                     {/* Beneficiaries */}
                     {will.beneficiaries && will.beneficiaries.length > 0 && (
                       <div>
-                        <p className="text-sm font-medium mb-1">Beneficiaries:</p>
-                        <div className="flex flex-wrap gap-2">
-                          {will.beneficiaries.slice(0, 3).map((beneficiary, index) => (
-                            <Badge key={index} variant="outline">
-                              {beneficiary.full_name} ({beneficiary.relationship})
-                            </Badge>
-                          ))}
+                        <p className='text-sm font-medium mb-1'>
+                          Beneficiaries:
+                        </p>
+                        <div className='flex flex-wrap gap-2'>
+                          {will.beneficiaries
+                            .slice(0, 3)
+                            .map((beneficiary, index) => (
+                              <Badge key={index} variant='outline'>
+                                {beneficiary.full_name} (
+                                {beneficiary.relationship})
+                              </Badge>
+                            ))}
                           {will.beneficiaries.length > 3 && (
-                            <Badge variant="outline">
+                            <Badge variant='outline'>
                               +{will.beneficiaries.length - 3} more
                             </Badge>
                           )}
@@ -355,20 +393,24 @@ export const WillManagement: React.FC = () => {
                     )}
 
                     {/* Validation Issues */}
-                    {will.validation_errors && will.validation_errors.length > 0 && (
-                      <Alert>
-                        <AlertCircle className="h-4 w-4" />
-                        <AlertDescription>
-                          {will.validation_errors.length} validation issue{will.validation_errors.length !== 1 ? 's' : ''} found.
-                          Regenerate your will to fix these issues.
-                        </AlertDescription>
-                      </Alert>
-                    )}
+                    {will.validation_errors &&
+                      will.validation_errors.length > 0 && (
+                        <Alert>
+                          <AlertCircle className='h-4 w-4' />
+                          <AlertDescription>
+                            {will.validation_errors.length} validation issue
+                            {will.validation_errors.length !== 1 ? 's' : ''}{' '}
+                            found. Regenerate your will to fix these issues.
+                          </AlertDescription>
+                        </Alert>
+                      )}
 
                     {/* AI Suggestions */}
                     {will.ai_suggestions && will.ai_suggestions.length > 0 && (
-                      <div className="text-sm text-muted-foreground">
-                        Sofia has {will.ai_suggestions.length} suggestion{will.ai_suggestions.length !== 1 ? 's' : ''} to improve your will.
+                      <div className='text-sm text-muted-foreground'>
+                        Sofia has {will.ai_suggestions.length} suggestion
+                        {will.ai_suggestions.length !== 1 ? 's' : ''} to improve
+                        your will.
                       </div>
                     )}
                   </div>
@@ -382,26 +424,29 @@ export const WillManagement: React.FC = () => {
       {/* Help Section */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Need Help?</CardTitle>
+          <CardTitle className='text-lg'>Need Help?</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+          <div className='grid grid-cols-1 md:grid-cols-3 gap-4 text-sm'>
             <div>
-              <h4 className="font-medium mb-1">Creating Your Will</h4>
-              <p className="text-muted-foreground">
-                Sofia guides you through the process step-by-step with AI assistance.
+              <h4 className='font-medium mb-1'>Creating Your Will</h4>
+              <p className='text-muted-foreground'>
+                Sofia guides you through the process step-by-step with AI
+                assistance.
               </p>
             </div>
             <div>
-              <h4 className="font-medium mb-1">Legal Compliance</h4>
-              <p className="text-muted-foreground">
-                All templates are designed to comply with local inheritance laws.
+              <h4 className='font-medium mb-1'>Legal Compliance</h4>
+              <p className='text-muted-foreground'>
+                All templates are designed to comply with local inheritance
+                laws.
               </p>
             </div>
             <div>
-              <h4 className="font-medium mb-1">Professional Review</h4>
-              <p className="text-muted-foreground">
-                Consider having your will reviewed by a qualified attorney in your jurisdiction.
+              <h4 className='font-medium mb-1'>Professional Review</h4>
+              <p className='text-muted-foreground'>
+                Consider having your will reviewed by a qualified attorney in
+                your jurisdiction.
               </p>
             </div>
           </div>
@@ -431,9 +476,5 @@ export const WillManagement: React.FC = () => {
     }
   };
 
-  return (
-    <div className="container mx-auto p-6">
-      {renderContent()}
-    </div>
-  );
+  return <div className='container mx-auto p-6'>{renderContent()}</div>;
 };

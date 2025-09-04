@@ -2,64 +2,64 @@
 // Tracks user's journey toward family security and peace of mind
 
 import {
-  textManager,
   type CommunicationStyle,
   type TextKey,
+  textManager,
 } from './text-manager';
 
 export interface SerenityMilestone {
-  id: string;
-  name: string;
-  description: string;
+  category: 'foundation' | 'growth' | 'legacy' | 'mastery' | 'protection';
   completedDescription: string;
-  category: 'foundation' | 'protection' | 'growth' | 'legacy' | 'mastery';
+  description: string;
+  icon: string;
+  id: string;
+  isUnlocked: boolean;
+  name: string;
+  rewards?: {
+    description: string;
+    sofiaMessage?: string;
+    title: string;
+  };
+  // Text manager keys for adaptive messaging
+  textKeys?: {
+    completedDescription?: TextKey;
+    description?: TextKey;
+    name?: TextKey;
+    rewardDescription?: TextKey;
+    rewardTitle?: TextKey;
+  };
   unlockCondition: {
+    details?: Record<string, unknown>;
     type:
-      | 'documents_uploaded'
-      | 'guardians_added'
       | 'categories_filled'
+      | 'documents_uploaded'
       | 'expiry_tracking'
+      | 'guardians_added'
       | 'legacy_created';
     value: number | string[];
-    details?: Record<string, unknown>;
   };
+  unlockedAt?: string;
   visualPosition: {
     x: number; // 0-100 percentage on the serenity map
     y: number; // 0-100 percentage on the serenity map
   };
-  rewards?: {
-    title: string;
-    description: string;
-    sofiaMessage?: string;
-  };
-  isUnlocked: boolean;
-  unlockedAt?: string;
-  icon: string;
-  // Text manager keys for adaptive messaging
-  textKeys?: {
-    name?: TextKey;
-    description?: TextKey;
-    completedDescription?: TextKey;
-    rewardTitle?: TextKey;
-    rewardDescription?: TextKey;
-  };
 }
 
 export interface FiveMinuteChallenge {
-  id: string;
-  title: string;
-  description: string;
-  estimatedTime: number; // in minutes
   actionType:
-    | 'upload_document'
     | 'add_guardian'
+    | 'create_legacy'
     | 'organize_category'
     | 'set_reminders'
-    | 'create_legacy';
+    | 'upload_document';
+  completionMessage: string;
+  description: string;
+  estimatedTime: number; // in minutes
+  id: string;
   navigationTarget: string;
   prerequisites?: string[]; // milestone IDs that must be completed first
   sofiaGuidance: string;
-  completionMessage: string;
+  title: string;
 }
 
 // The Sacred Milestones of the Path of Serenity
@@ -306,7 +306,7 @@ export interface MilestoneCalculationResult {
  */
 export function getAdaptiveMilestoneText(
   milestone: SerenityMilestone,
-  field: 'name' | 'description' | 'completedDescription',
+  field: 'completedDescription' | 'description' | 'name',
   userId?: string,
   style?: CommunicationStyle
 ): string {
@@ -330,7 +330,7 @@ export function getAdaptiveMilestoneText(
  */
 export function getAdaptiveRewardText(
   milestone: SerenityMilestone,
-  field: 'title' | 'description',
+  field: 'description' | 'title',
   userId?: string,
   style?: CommunicationStyle
 ): string {
@@ -363,9 +363,9 @@ export function getAdaptiveRewardText(
  */
 export function calculateUnlockedMilestones(
   userStats: {
+    categoriesWithDocuments: string[];
     documentsCount: number;
     guardiansCount: number;
-    categoriesWithDocuments: string[];
     hasExpiryTracking: boolean;
     legacyItemsCount: number;
   },
@@ -436,9 +436,9 @@ export function calculateUnlockedMilestones(
 export function getNextChallenge(
   unlockedMilestones: SerenityMilestone[],
   userStats: {
+    categoriesWithDocuments: string[];
     documentsCount: number;
     guardiansCount: number;
-    categoriesWithDocuments: string[];
   }
 ): FiveMinuteChallenge | null {
   // If no documents yet, start with first document

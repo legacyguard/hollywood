@@ -5,8 +5,8 @@
 
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Globe, Check, ChevronDown } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Check, ChevronDown, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -30,8 +30,8 @@ const SUPPORTED_LANGUAGES = [
 ] as const;
 
 interface LanguageSwitcherProps {
-  variant?: 'default' | 'minimal' | 'sidebar';
   className?: string;
+  variant?: 'default' | 'minimal' | 'sidebar';
 }
 
 export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
@@ -41,9 +41,9 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
   const { i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
 
-  const currentLanguage = SUPPORTED_LANGUAGES.find(
-    lang => lang.code === i18n.language
-  ) || SUPPORTED_LANGUAGES[0];
+  const currentLanguage =
+    SUPPORTED_LANGUAGES.find(lang => lang.code === i18n.language) ||
+    SUPPORTED_LANGUAGES[0];
 
   const handleLanguageChange = async (languageCode: string) => {
     try {
@@ -66,24 +66,24 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
       <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
         <DropdownMenuTrigger asChild>
           <Button
-            variant="ghost"
-            size="sm"
+            variant='ghost'
+            size='sm'
             className={`h-8 w-8 p-0 hover:bg-sidebar-accent ${className}`}
           >
-            <Globe className="h-4 w-4" />
+            <Globe className='h-4 w-4' />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-48">
-          {SUPPORTED_LANGUAGES.map((language) => (
+        <DropdownMenuContent align='end' className='w-48'>
+          {SUPPORTED_LANGUAGES.map(language => (
             <DropdownMenuItem
               key={language.code}
               onClick={() => handleLanguageChange(language.code)}
-              className="flex items-center gap-2 cursor-pointer"
+              className='flex items-center gap-2 cursor-pointer'
             >
-              <span className="text-base">{language.flag}</span>
-              <span className="flex-1">{language.nativeName}</span>
+              <span className='text-base'>{language.flag}</span>
+              <span className='flex-1'>{language.nativeName}</span>
               {currentLanguage.code === language.code && (
-                <Check className="h-4 w-4 text-primary" />
+                <Check className='h-4 w-4 text-primary' />
               )}
             </DropdownMenuItem>
           ))}
@@ -99,25 +99,27 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
         <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
           <DropdownMenuTrigger asChild>
             <Button
-              variant="ghost"
-              className="w-full justify-start gap-2 h-10 px-2 text-sidebar-foreground hover:bg-sidebar-accent"
+              variant='ghost'
+              className='w-full justify-start gap-2 h-10 px-2 text-sidebar-foreground hover:bg-sidebar-accent'
             >
-              <Globe className="h-4 w-4" />
-              <span className="flex-1 text-left">{currentLanguage.nativeName}</span>
-              <ChevronDown className="h-4 w-4 opacity-50" />
+              <Globe className='h-4 w-4' />
+              <span className='flex-1 text-left'>
+                {currentLanguage.nativeName}
+              </span>
+              <ChevronDown className='h-4 w-4 opacity-50' />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent side="right" align="start" className="w-48">
-            {SUPPORTED_LANGUAGES.map((language) => (
+          <DropdownMenuContent side='right' align='start' className='w-48'>
+            {SUPPORTED_LANGUAGES.map(language => (
               <DropdownMenuItem
                 key={language.code}
                 onClick={() => handleLanguageChange(language.code)}
-                className="flex items-center gap-2 cursor-pointer"
+                className='flex items-center gap-2 cursor-pointer'
               >
-                <span className="text-base">{language.flag}</span>
-                <span className="flex-1">{language.nativeName}</span>
+                <span className='text-base'>{language.flag}</span>
+                <span className='flex-1'>{language.nativeName}</span>
                 {currentLanguage.code === language.code && (
-                  <Check className="h-4 w-4 text-primary" />
+                  <Check className='h-4 w-4 text-primary' />
                 )}
               </DropdownMenuItem>
             ))}
@@ -132,7 +134,7 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger asChild>
         <Button
-          variant="outline"
+          variant='outline'
           className={`flex items-center gap-2 min-w-[120px] ${className}`}
         >
           <motion.span
@@ -140,36 +142,38 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.2 }}
-            className="text-base"
+            className='text-base'
           >
             {currentLanguage.flag}
           </motion.span>
-          <span className="hidden sm:inline">{currentLanguage.nativeName}</span>
-          <ChevronDown className="h-4 w-4 opacity-50" />
+          <span className='hidden sm:inline'>{currentLanguage.nativeName}</span>
+          <ChevronDown className='h-4 w-4 opacity-50' />
         </Button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent align="end" className="w-56">
-        <div className="p-2">
-          <div className="text-xs font-medium text-muted-foreground mb-2">
+      <DropdownMenuContent align='end' className='w-56'>
+        <div className='p-2'>
+          <div className='text-xs font-medium text-muted-foreground mb-2'>
             Select Language
           </div>
-          {SUPPORTED_LANGUAGES.map((language) => (
+          {SUPPORTED_LANGUAGES.map(language => (
             <DropdownMenuItem
               key={language.code}
               onClick={() => handleLanguageChange(language.code)}
-              className="flex items-center gap-3 cursor-pointer rounded-md p-2 hover:bg-accent"
+              className='flex items-center gap-3 cursor-pointer rounded-md p-2 hover:bg-accent'
             >
               <motion.span
                 whileHover={{ scale: 1.2 }}
                 transition={{ duration: 0.1 }}
-                className="text-lg"
+                className='text-lg'
               >
                 {language.flag}
               </motion.span>
-              <div className="flex-1">
-                <div className="text-sm font-medium">{language.nativeName}</div>
-                <div className="text-xs text-muted-foreground">{language.name}</div>
+              <div className='flex-1'>
+                <div className='text-sm font-medium'>{language.nativeName}</div>
+                <div className='text-xs text-muted-foreground'>
+                  {language.name}
+                </div>
               </div>
               <AnimatePresence>
                 {currentLanguage.code === language.code && (
@@ -179,7 +183,7 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
                     exit={{ scale: 0, opacity: 0 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <Check className="h-4 w-4 text-primary" />
+                    <Check className='h-4 w-4 text-primary' />
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -197,9 +201,9 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
 export const useCurrentLanguage = () => {
   const { i18n } = useTranslation();
 
-  const currentLanguage = SUPPORTED_LANGUAGES.find(
-    lang => lang.code === i18n.language
-  ) || SUPPORTED_LANGUAGES[0];
+  const currentLanguage =
+    SUPPORTED_LANGUAGES.find(lang => lang.code === i18n.language) ||
+    SUPPORTED_LANGUAGES[0];
 
   return {
     current: currentLanguage,

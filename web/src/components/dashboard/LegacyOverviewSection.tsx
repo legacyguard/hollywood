@@ -7,19 +7,19 @@ import { useNavigate } from 'react-router-dom';
 import { useDocumentFilter } from '@/contexts/DocumentFilterContext';
 
 interface BundleCard {
-  id: string;
-  name: string;
   category:
-    | 'vehicle'
-    | 'property'
     | 'financial'
-    | 'legal'
     | 'health'
-    | 'personal';
-  primaryEntity: string;
+    | 'legal'
+    | 'personal'
+    | 'property'
+    | 'vehicle';
   documentCount: number;
-  lastUpdated: string;
+  id: string;
   isRecent?: boolean;
+  lastUpdated: string;
+  name: string;
+  primaryEntity: string;
 }
 
 interface LegacyOverviewSectionProps {
@@ -131,7 +131,7 @@ export const LegacyOverviewSection: React.FC<LegacyOverviewSectionProps> = ({
       <section className={className}>
         <div className='mb-6'>
           <div className='flex items-center gap-3 mb-2'>
-            <Icon name="folder" className='w-6 h-6 text-primary' />
+            <Icon name='folder' className='w-6 h-6 text-primary' />
             <h2 className='text-2xl font-bold font-heading text-card-foreground'>
               Your Shield Areas
             </h2>
@@ -158,7 +158,7 @@ export const LegacyOverviewSection: React.FC<LegacyOverviewSectionProps> = ({
                     />
                   </div>
                   {bundle.isRecent && (
-                    <Badge variant="secondary" className='text-xs'>
+                    <Badge variant='secondary' className='text-xs'>
                       New
                     </Badge>
                   )}

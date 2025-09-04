@@ -7,24 +7,24 @@ import type { CommunicationStyle } from '@/lib/text-manager';
 export type { CommunicationStyle } from '@/lib/text-manager';
 
 export interface UserPreferences {
+  // New communication preferences for Sofia's adaptive personality
+  communication: {
+    autoDetection: boolean; // Whether to automatically detect style from user input
+    lastDetectionUpdate: null | string; // ISO timestamp of last auto-detection
+    style: CommunicationStyle;
+  };
+  display: {
+    compactMode: boolean;
+    showTips: boolean;
+  };
   notifications: {
     email: boolean;
     push: boolean;
     reminders: boolean;
   };
   privacy: {
-    shareAnalytics: boolean;
     autoBackup: boolean;
-  };
-  display: {
-    compactMode: boolean;
-    showTips: boolean;
-  };
-  // New communication preferences for Sofia's adaptive personality
-  communication: {
-    style: CommunicationStyle;
-    autoDetection: boolean; // Whether to automatically detect style from user input
-    lastDetectionUpdate: string | null; // ISO timestamp of last auto-detection
+    shareAnalytics: boolean;
   };
 }
 
@@ -51,7 +51,7 @@ export const defaultUserPreferences: UserPreferences = {
 
 // For extending Clerk user metadata (when syncing to cloud)
 export interface ClerkUserMetadata {
-  communicationStyle?: CommunicationStyle;
   communicationAutoDetection?: boolean;
+  communicationStyle?: CommunicationStyle;
   preferences?: Partial<UserPreferences>;
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { KPICard, type KPICardProps } from '@/components/ui/kpi-card';
 import { useSupabaseWithClerk } from '@/integrations/supabase/client';
@@ -10,8 +10,8 @@ interface DashboardStatsProps {
 
 interface StatsData {
   documentsCount: number;
-  guardiansCount: number;
   expiringDocuments: number;
+  guardiansCount: number;
   recentUploads: number;
 }
 

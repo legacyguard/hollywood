@@ -1,16 +1,18 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useColorScheme } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-type ThemeMode = 'light' | 'dark' | 'system';
+type ThemeMode = 'dark' | 'light' | 'system';
 
 interface ThemeContextValue {
-  themeMode: ThemeMode;
-  actualTheme: 'light' | 'dark';
+  actualTheme: 'dark' | 'light';
   setThemeMode: (mode: ThemeMode) => Promise<void>;
+  themeMode: ThemeMode;
 }
 
-export const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
+export const ThemeContext = createContext<ThemeContextValue | undefined>(
+  undefined
+);
 
 const THEME_STORAGE_KEY = '@legacyguard/theme_mode';
 
@@ -47,9 +49,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const actualTheme = themeMode === 'system'
-    ? (systemColorScheme || 'light')
-    : themeMode;
+  const actualTheme =
+    themeMode === 'system' ? systemColorScheme || 'light' : themeMode;
 
   if (isLoading) {
     // Return null or a loading component while loading theme
@@ -70,7 +71,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 }
 
 export function useAppTheme(): ThemeContextValue {
-  const ctx = useContext(ThemeContext)
-  if (!ctx) throw new Error('useAppTheme must be used within ThemeProvider')
-  return ctx
+  const ctx = useContext(ThemeContext);
+  if (!ctx) throw new Error('useAppTheme must be used within ThemeProvider');
+  return ctx;
 }

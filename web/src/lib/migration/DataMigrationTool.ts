@@ -1,36 +1,36 @@
 import { localDataAdapter } from '../storage/LocalDataAdapter';
-import { SecureEncryptionService } from '../encryption-v2';
+import { encryptionServiceV2 } from '../encryption-v2';
 import { secureStorage } from '../security/secure-storage';
 
 interface MigrationProgress {
-  total: number;
-  processed: number;
-  failed: number;
-  status: 'pending' | 'running' | 'completed' | 'failed';
   errors: Array<{
-    id: string;
     error: string;
+    id: string;
   }>;
+  failed: number;
+  processed: number;
+  status: 'completed' | 'failed' | 'pending' | 'running';
+  total: number;
 }
 
 interface LegacyItem {
-  id: string;
   category: string;
-  data: any;
   createdAt: string;
+  data: any;
+  id: string;
   updatedAt: string;
 }
 
 class DataMigrationTool {
   private static instance: DataMigrationTool;
-  private encryption: SecureEncryptionService;
+  private encryption: typeof encryptionServiceV2;
   private progress: MigrationProgress;
   private onProgressCallback?: (progress: MigrationProgress) => void;
   private readonly LEGACY_STORAGE_PREFIX = 'legacy_';
   private readonly MIGRATION_FLAG = 'migration_completed_v1';
 
   private constructor() {
-    this.encryption = SecureEncryptionService.getInstance();
+    this.encryption = encryptionServiceV2;
     this.progress = {
       total: 0,
       processed: 0,
@@ -52,9 +52,7 @@ class DataMigrationTool {
    */
   public async isMigrationNeeded(): Promise<boolean> {
     // Check if migration was already completed
-    const migrationCompleted = await secureStorage.getSecureLocal(
-      this.MIGRATION_FLAG
-    );
+    const migrationCompleted = await secureStorage.get(this.MIGRATION_FLAG);
     if (migrationCompleted) return false;
 
     // Check if there's legacy data
@@ -104,7 +102,7 @@ class DataMigrationTool {
           this.progress.failed++;
           this.progress.errors.push({
             id: item.id,
-            error: error.message,
+            error: error instanceof Error ? error.message : String(error),
           });
         }
         this.updateProgress();
@@ -112,11 +110,9 @@ class DataMigrationTool {
 
       // Mark migration as completed
       if (this.progress.failed === 0) {
-        await secureStorage.setSecureLocal(
-          this.MIGRATION_FLAG,
-          { completedAt: new Date().toISOString() },
-          365 // Keep for 1 year
-        );
+        await secureStorage.set(this.MIGRATION_FLAG, {
+          completedAt: new Date().toISOString(),
+        });
       }
 
       this.progress.status =
@@ -128,7 +124,7 @@ class DataMigrationTool {
       this.progress.status = 'failed';
       this.progress.errors.push({
         id: 'general',
-        error: error.message,
+        error: error instanceof Error ? error.message : String(error),
       });
       this.updateProgress();
       throw error;
@@ -198,19 +194,14 @@ class DataMigrationTool {
    * Migrate single item
    */
   private async migrateItem(item: LegacyItem): Promise<void> {
-    // Encrypt the data
-    const encrypted = await this.encryption.encryptText(
-      JSON.stringify(item.data)
-    );
-
-    if (!encrypted) {
-      throw new Error('Failed to encrypt item data');
-    }
+    // Encrypt the data using available method
+    const dataString = JSON.stringify(item.data);
+    await this.encryption.setItem(`migrated_item_${item.id}`, dataString);
 
     // Create new storage item
     await localDataAdapter.store(item.category, {
       id: item.id, // Preserve original ID
-      data: encrypted,
+      data: dataString,
       metadata: {
         createdAt: item.createdAt,
         updatedAt: item.updatedAt,

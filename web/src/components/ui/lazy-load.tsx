@@ -1,26 +1,32 @@
-import React, { type ComponentType, useState, useEffect, useRef, Suspense } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, {
+  type ComponentType,
+  Suspense,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 interface LazyLoadProps {
   children: React.ReactNode;
-  threshold?: number; // Intersection threshold (0-1)
-  rootMargin?: string; // Root margin for intersection observer
-  fallback?: React.ReactNode;
   className?: string;
-  onLoad?: () => void;
   delay?: number; // Artificial delay for staggered loading
-  priority?: 'low' | 'medium' | 'high';
+  fallback?: React.ReactNode;
+  onLoad?: () => void;
+  priority?: 'high' | 'low' | 'medium';
+  rootMargin?: string; // Root margin for intersection observer
+  threshold?: number; // Intersection threshold (0-1)
 }
 
 interface LazyComponentProps {
   component: ComponentType<any>;
-  props?: Record<string, any>;
-  fallback?: React.ReactNode;
-  threshold?: number;
-  rootMargin?: string;
   delay?: number;
-  priority?: 'low' | 'medium' | 'high';
+  fallback?: React.ReactNode;
+  priority?: 'high' | 'low' | 'medium';
+  props?: Record<string, any>;
+  rootMargin?: string;
+  threshold?: number;
 }
 
 // Lazy loading wrapper for regular content
@@ -43,8 +49,8 @@ export const LazyLoad: React.FC<LazyLoadProps> = ({
     if (!containerRef.current) return;
 
     const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
+      entries => {
+        entries.forEach(entry => {
           if (entry.isIntersecting) {
             setIsVisible(true);
 
@@ -87,15 +93,15 @@ export const LazyLoad: React.FC<LazyLoadProps> = ({
 
   return (
     <div ref={containerRef} className={cn('lazy-load-container', className)}>
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode='wait'>
         {!isLoaded && fallback && (
           <motion.div
-            key="fallback"
+            key='fallback'
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="lazy-load-fallback"
+            className='lazy-load-fallback'
           >
             {fallback}
           </motion.div>
@@ -104,14 +110,14 @@ export const LazyLoad: React.FC<LazyLoadProps> = ({
 
       {isVisible && (
         <motion.div
-          key="content"
+          key='content'
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 20 }}
           transition={{
             duration: 0.5,
             delay: priority === 'high' ? 0 : 0.1,
           }}
-          className="lazy-load-content"
+          className='lazy-load-content'
         >
           {children}
         </motion.div>
@@ -138,8 +144,8 @@ export const LazyComponent: React.FC<LazyComponentProps> = ({
     if (priority === 'high' || !containerRef.current) return;
 
     const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
+      entries => {
+        entries.forEach(entry => {
           if (entry.isIntersecting) {
             setTimeout(() => {
               setShouldLoad(true);
@@ -165,7 +171,7 @@ export const LazyComponent: React.FC<LazyComponentProps> = ({
   }, [threshold, rootMargin, delay, priority]);
 
   return (
-    <div ref={containerRef} className="lazy-component-container">
+    <div ref={containerRef} className='lazy-component-container'>
       {shouldLoad ? (
         <Suspense fallback={fallback}>
           <Component {...props} />
@@ -181,19 +187,15 @@ export const LazyComponent: React.FC<LazyComponentProps> = ({
 export function withLazyLoading<P extends object>(
   Component: ComponentType<P>,
   options: {
-    threshold?: number;
-    rootMargin?: string;
-    fallback?: React.ReactNode;
     delay?: number;
-    priority?: 'low' | 'medium' | 'high';
+    fallback?: React.ReactNode;
+    priority?: 'high' | 'low' | 'medium';
+    rootMargin?: string;
+    threshold?: number;
   } = {}
 ) {
-  const WrappedComponent: React.FC<P> = (props) => (
-    <LazyComponent
-      component={Component}
-      props={props}
-      {...options}
-    />
+  const WrappedComponent: React.FC<P> = props => (
+    <LazyComponent component={Component} props={props} {...options} />
   );
 
   WrappedComponent.displayName = `withLazyLoading(${Component.displayName || Component.name})`;
@@ -204,7 +206,7 @@ export function withLazyLoading<P extends object>(
 export const useLazyLoading = (
   threshold = 0.1,
   rootMargin = '50px',
-  priority: 'low' | 'medium' | 'high' = 'medium'
+  priority: 'high' | 'low' | 'medium' = 'medium'
 ) => {
   const [isVisible, setIsVisible] = useState(priority === 'high');
   const [isLoaded, setIsLoaded] = useState(priority === 'high');
@@ -214,8 +216,8 @@ export const useLazyLoading = (
     if (priority === 'high' || !containerRef.current) return;
 
     const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
+      entries => {
+        entries.forEach(entry => {
           if (entry.isIntersecting) {
             setIsVisible(true);
             setTimeout(() => setIsLoaded(true), 100);
@@ -239,11 +241,11 @@ export const useLazyLoading = (
 
 // Export default fallback component
 export const DefaultLazyFallback: React.FC = () => (
-  <div className="flex items-center justify-center p-8">
-    <div className="animate-pulse space-y-3">
-      <div className="h-4 bg-muted rounded w-3/4"></div>
-      <div className="h-4 bg-muted rounded w-1/2"></div>
-      <div className="h-4 bg-muted rounded w-5/6"></div>
+  <div className='flex items-center justify-center p-8'>
+    <div className='animate-pulse space-y-3'>
+      <div className='h-4 bg-muted rounded w-3/4'></div>
+      <div className='h-4 bg-muted rounded w-1/2'></div>
+      <div className='h-4 bg-muted rounded w-5/6'></div>
     </div>
   </div>
 );

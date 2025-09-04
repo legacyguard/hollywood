@@ -11,190 +11,193 @@ import type { NAMESPACES } from './config';
 export type LanguageCode = keyof typeof SUPPORTED_LANGUAGES;
 
 // Namespace types
-export type CoreNamespace = typeof NAMESPACES.CORE[number];
+export type CoreNamespace = typeof NAMESPACES.UI;
 export type FeatureNamespace =
-  | typeof NAMESPACES.FEATURES.vault[number]
-  | typeof NAMESPACES.FEATURES.garden[number]
-  | typeof NAMESPACES.FEATURES.family[number]
-  | typeof NAMESPACES.FEATURES.sofia[number];
-export type WebNamespace = typeof NAMESPACES.PLATFORM.web[number];
-export type MobileNamespace = typeof NAMESPACES.PLATFORM.mobile[number];
-export type LegalNamespace = typeof NAMESPACES.LEGAL.terms[number] | string;
+  | typeof NAMESPACES.CONTENT.familyShield
+  | typeof NAMESPACES.CONTENT.wills;
+export type WebNamespace = string;
+export type MobileNamespace = string;
+export type LegalNamespace = string;
 
-export type AllNamespaces = CoreNamespace | FeatureNamespace | WebNamespace | MobileNamespace | LegalNamespace;
+export type AllNamespaces =
+  | CoreNamespace
+  | FeatureNamespace
+  | LegalNamespace
+  | MobileNamespace
+  | WebNamespace;
 
 // Translation key structure
 export interface TranslationKeys {
+  // Auth
+  'auth.login': {
+    apple: string;
+    continueWith: string;
+    createAccount: string;
+    email: string;
+    errors: {
+      accountLocked: string;
+      emailNotVerified: string;
+      invalidCredentials: string;
+      networkError: string;
+      tooManyAttempts: string;
+      userNotFound: string;
+      wrongPassword: string;
+    };
+    facebook: string;
+    forgotPassword: string;
+    google: string;
+    noAccount: string;
+    or: string;
+    password: string;
+    rememberMe: string;
+    signIn: string;
+    signUp: string;
+    subtitle: string;
+    title: string;
+  };
+
   // Common UI
   'common.ui': {
     button: {
-      save: string;
-      cancel: string;
-      delete: string;
-      edit: string;
       add: string;
-      remove: string;
-      submit: string;
       back: string;
-      next: string;
-      finish: string;
+      cancel: string;
       close: string;
-      confirm: string;
-      retry: string;
-      refresh: string;
-      download: string;
-      upload: string;
-      copy: string;
-      share: string;
-      search: string;
-      filter: string;
-      sort: string;
-      export: string;
-      import: string;
-      print: string;
-      select: string;
-      selectAll: string;
-      deselectAll: string;
-      expand: string;
       collapse: string;
-      more: string;
+      confirm: string;
+      copy: string;
+      delete: string;
+      deselectAll: string;
+      download: string;
+      edit: string;
+      expand: string;
+      export: string;
+      filter: string;
+      finish: string;
+      import: string;
       less: string;
       loading: string;
+      more: string;
+      next: string;
+      print: string;
+      refresh: string;
+      remove: string;
+      retry: string;
+      save: string;
+      search: string;
+      select: string;
+      selectAll: string;
+      share: string;
+      sort: string;
+      submit: string;
+      upload: string;
     };
     label: {
-      email: string;
-      password: string;
-      name: string;
-      firstName: string;
-      lastName: string;
-      phone: string;
+      account: string;
       address: string;
+      category: string;
       city: string;
       country: string;
-      zipCode: string;
       date: string;
-      time: string;
       description: string;
-      title: string;
-      status: string;
-      type: string;
-      category: string;
-      tags: string;
+      email: string;
+      filter: string;
+      firstName: string;
+      language: string;
+      lastName: string;
+      name: string;
       notes: string;
+      notifications: string;
       optional: string;
+      password: string;
+      phone: string;
+      preferences: string;
+      privacy: string;
+      profile: string;
       required: string;
       search: string;
-      filter: string;
-      sortBy: string;
-      language: string;
-      theme: string;
-      notifications: string;
-      privacy: string;
       security: string;
       settings: string;
-      profile: string;
-      account: string;
-      preferences: string;
+      sortBy: string;
+      status: string;
+      tags: string;
+      theme: string;
+      time: string;
+      title: string;
+      type: string;
+      zipCode: string;
     };
     message: {
-      loading: string;
-      saving: string;
-      saved: string;
-      deleting: string;
-      deleted: string;
-      updating: string;
-      updated: string;
-      creating: string;
-      created: string;
-      sending: string;
-      sent: string;
-      copying: string;
+      areYouSure: string;
+      confirmCancel: string;
+      confirmDelete: string;
       copied: string;
-      uploading: string;
-      uploaded: string;
-      downloading: string;
+      copying: string;
+      created: string;
+      creating: string;
+      deleted: string;
+      deleting: string;
       downloaded: string;
-      processing: string;
-      processed: string;
-      success: string;
+      downloading: string;
       error: string;
-      warning: string;
       info: string;
+      loading: string;
       noData: string;
       noResults: string;
-      confirmDelete: string;
-      confirmCancel: string;
+      processed: string;
+      processing: string;
+      saved: string;
+      saving: string;
+      sending: string;
+      sent: string;
+      success: string;
       unsavedChanges: string;
-      areYouSure: string;
+      updated: string;
+      updating: string;
+      uploaded: string;
+      uploading: string;
+      warning: string;
     };
     time: {
-      now: string;
-      today: string;
-      yesterday: string;
-      tomorrow: string;
-      thisWeek: string;
-      lastWeek: string;
-      nextWeek: string;
-      thisMonth: string;
-      lastMonth: string;
-      nextMonth: string;
-      thisYear: string;
-      lastYear: string;
-      nextYear: string;
-      seconds: string;
-      minutes: string;
-      hours: string;
-      days: string;
-      weeks: string;
-      months: string;
-      years: string;
       ago: string;
-      in: string;
-      remaining: string;
+      days: string;
       elapsed: string;
-    };
-  };
-
-  // Auth
-  'auth.login': {
-    title: string;
-    subtitle: string;
-    email: string;
-    password: string;
-    rememberMe: string;
-    forgotPassword: string;
-    signIn: string;
-    signUp: string;
-    or: string;
-    continueWith: string;
-    google: string;
-    facebook: string;
-    apple: string;
-    noAccount: string;
-    createAccount: string;
-    errors: {
-      invalidCredentials: string;
-      userNotFound: string;
-      wrongPassword: string;
-      tooManyAttempts: string;
-      accountLocked: string;
-      emailNotVerified: string;
-      networkError: string;
+      hours: string;
+      in: string;
+      lastMonth: string;
+      lastWeek: string;
+      lastYear: string;
+      minutes: string;
+      months: string;
+      nextMonth: string;
+      nextWeek: string;
+      nextYear: string;
+      now: string;
+      remaining: string;
+      seconds: string;
+      thisMonth: string;
+      thisWeek: string;
+      thisYear: string;
+      today: string;
+      tomorrow: string;
+      weeks: string;
+      years: string;
+      yesterday: string;
     };
   };
 
   // Features - Vault
   'features.vault.categories': {
     all: string;
+    cards: string;
+    custom: string;
     documents: string;
     financial: string;
-    medical: string;
-    personal: string;
-    passwords: string;
-    notes: string;
-    cards: string;
     identities: string;
-    custom: string;
+    medical: string;
+    notes: string;
+    passwords: string;
+    personal: string;
   };
 
   // Add more namespace definitions as needed...
@@ -202,49 +205,51 @@ export interface TranslationKeys {
 
 // Type-safe translation function
 export type TypedTFunction<NS extends AllNamespaces = AllNamespaces> =
-  NS extends keyof TranslationKeys ? TFunction<NS, TranslationKeys[NS]> : TFunction;
+  NS extends keyof TranslationKeys
+    ? TFunction<NS, TranslationKeys[NS]>
+    : TFunction;
 
 // Translation interpolation values
 export interface InterpolationValues {
-  [key: string]: string | number | boolean | Date | undefined | null;
+  [key: string]: boolean | Date | null | number | string | undefined;
 }
 
 // Pluralization rules
 export interface PluralizationRule {
-  zero?: string;
-  one: string;
-  two?: string;
   few?: string;
   many?: string;
+  one: string;
   other: string;
+  two?: string;
+  zero?: string;
 }
 
 // Date formatting options
 export interface DateFormatOptions {
-  format?: 'short' | 'medium' | 'long' | 'full';
-  timezone?: string;
+  format?: 'full' | 'long' | 'medium' | 'short';
   relative?: boolean;
+  timezone?: string;
 }
 
 // Number formatting options
 export interface NumberFormatOptions {
-  style?: 'decimal' | 'currency' | 'percent';
   currency?: string;
-  minimumFractionDigits?: number;
   maximumFractionDigits?: number;
+  minimumFractionDigits?: number;
+  style?: 'currency' | 'decimal' | 'percent';
   useGrouping?: boolean;
 }
 
 // Translation metadata
 export interface TranslationMetadata {
+  author?: string;
+  context?: string;
   key: string;
-  namespace: string;
   language: string;
   lastModified?: Date;
-  author?: string;
-  reviewed?: boolean;
-  context?: string;
   maxLength?: number;
+  namespace: string;
+  reviewed?: boolean;
   tags?: string[];
 }
 
@@ -273,7 +278,7 @@ export class TranslationHelper {
    * Format a date according to locale
    */
   static formatDate(
-    date: Date | string | number,
+    date: Date | number | string,
     language: LanguageCode,
     options?: DateFormatOptions
   ): string {
@@ -315,14 +320,15 @@ export class TranslationHelper {
     options?: NumberFormatOptions
   ): string {
     const locale = SUPPORTED_LANGUAGES[language].code;
-    const currency = options?.currency || SUPPORTED_LANGUAGES[language].currency;
+    const currency =
+      options?.currency || SUPPORTED_LANGUAGES[language].currency;
 
     const formatOptions: Intl.NumberFormatOptions = {
       style: options?.style || 'decimal',
       currency: options?.style === 'currency' ? currency : undefined,
       minimumFractionDigits: options?.minimumFractionDigits,
       maximumFractionDigits: options?.maximumFractionDigits,
-      useGrouping: options?.useGrouping ?? true
+      useGrouping: options?.useGrouping ?? true,
     };
 
     return new Intl.NumberFormat(locale, formatOptions).format(value);
@@ -338,9 +344,12 @@ export class TranslationHelper {
     const diffInHours = Math.floor(diffInMinutes / 60);
     const diffInDays = Math.floor(diffInHours / 24);
 
-    const rtf = new Intl.RelativeTimeFormat(SUPPORTED_LANGUAGES[language].code, {
-      numeric: 'auto'
-    });
+    const rtf = new Intl.RelativeTimeFormat(
+      SUPPORTED_LANGUAGES[language].code,
+      {
+        numeric: 'auto',
+      }
+    );
 
     if (Math.abs(diffInDays) >= 365) {
       return rtf.format(-Math.floor(diffInDays / 365), 'year');
@@ -367,7 +376,7 @@ export class TranslationHelper {
   /**
    * Validate translation completeness
    */
-  static validateTranslations(): { missing: string[]; incomplete: string[] } {
+  static validateTranslations(): { incomplete: string[]; missing: string[] } {
     const missing: string[] = [];
     const incomplete: string[] = [];
 
@@ -382,10 +391,10 @@ export class TranslationHelper {
    * Generate translation statistics
    */
   static getStatistics(): {
+    percentage: number;
     total: number;
     translated: number;
     untranslated: number;
-    percentage: number;
   } {
     // Implementation would analyze actual translation files
     // This is a placeholder
@@ -394,45 +403,47 @@ export class TranslationHelper {
       total: 100,
       translated: 85,
       untranslated: 15,
-      percentage: 85
+      percentage: 85,
     };
   }
 }
 
 // React hooks types
-export interface UseTranslationResponse<NS extends AllNamespaces = AllNamespaces> {
-  t: TypedTFunction<NS>;
+export interface UseTranslationResponse<
+  NS extends AllNamespaces = AllNamespaces,
+> {
   i18n: {
-    language: LanguageCode;
     changeLanguage: (lng: LanguageCode) => Promise<void>;
-    languages: LanguageCode[];
     isReady: boolean;
+    language: LanguageCode;
+    languages: LanguageCode[];
   };
   ready: boolean;
+  t: TypedTFunction<NS>;
 }
 
 // Custom hook return types
 export interface UseNamespaceLoadingState {
-  isLoading: boolean;
   error: Error | null;
   isLoaded: boolean;
+  isLoading: boolean;
 }
 
 // Translation validation rules
 export interface ValidationRule {
+  customValidator?: (value: string) => boolean | string;
   maxLength?: number;
   minLength?: number;
   pattern?: RegExp;
   required?: boolean;
-  customValidator?: (value: string) => boolean | string;
 }
 
 // Translation context for components
 export interface TranslationContext {
-  namespace: AllNamespaces;
-  language: LanguageCode;
   fallbackLanguage: LanguageCode;
+  language: LanguageCode;
   missingKeyHandler?: (key: string) => void;
+  namespace: AllNamespaces;
 }
 
 export default TranslationHelper;

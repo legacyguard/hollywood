@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { SofiaProactiveService } from '../sofia-proactive';
 
 // Mock timers for testing
@@ -98,7 +98,7 @@ describe('SofiaProactiveService', () => {
         expect.objectContaining({
           type: 'help_prompt',
           title: expect.stringContaining('Need help'),
-          page: '/will-generator'
+          page: '/will-generator',
         })
       );
     });
@@ -113,7 +113,7 @@ describe('SofiaProactiveService', () => {
         expect.objectContaining({
           type: 'idle_help',
           title: expect.stringContaining('organize'),
-          page: '/vault'
+          page: '/vault',
         })
       );
     });
@@ -128,7 +128,7 @@ describe('SofiaProactiveService', () => {
         expect.objectContaining({
           type: 'welcome',
           title: expect.stringContaining('Welcome'),
-          page: '/dashboard'
+          page: '/dashboard',
         })
       );
     });
@@ -199,7 +199,7 @@ describe('SofiaProactiveService', () => {
         scrollEvents: 0,
         formInteractions: 1,
         timeOnPage: expect.any(Number),
-        currentPage: '/dashboard'
+        currentPage: '/dashboard',
       });
     });
 
@@ -212,7 +212,7 @@ describe('SofiaProactiveService', () => {
         scrollEvents: 0,
         formInteractions: 0,
         timeOnPage: 0,
-        currentPage: ''
+        currentPage: '',
       });
     });
   });

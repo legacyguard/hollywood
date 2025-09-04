@@ -1,12 +1,14 @@
 // src/screens/main/VaultScreen.tsx
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 export const VaultScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Document Vault</Text>
-      <Text style={styles.subtitle}>Your secure documents will appear here</Text>
+      <Text style={styles.subtitle}>
+        Your secure documents will appear here
+      </Text>
     </View>
   );
 };

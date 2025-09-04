@@ -1,20 +1,25 @@
-import React, { type ReactNode, createContext, useContext, useState } from 'react';
+import React, {
+  createContext,
+  type ReactNode,
+  useContext,
+  useState,
+} from 'react';
 
 export interface DocumentFilter {
+  bundleId?: string;
+  bundleName?: string;
   category?: string;
   documentType?: string;
-  isExpiring?: boolean;
   expiringDays?: number;
+  isExpiring?: boolean;
   searchQuery?: string;
-  bundleName?: string;
-  bundleId?: string;
 }
 
 interface DocumentFilterContextType {
-  filter: DocumentFilter;
-  setFilter: (filter: DocumentFilter) => void;
   clearFilter: () => void;
+  filter: DocumentFilter;
   hasActiveFilter: boolean;
+  setFilter: (filter: DocumentFilter) => void;
 }
 
 const DocumentFilterContext = createContext<

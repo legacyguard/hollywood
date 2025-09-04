@@ -7,7 +7,9 @@ test.describe('Accessibility Compliance', () => {
     await authHelper.signIn();
   });
 
-  test('should have proper heading hierarchy on dashboard', async ({ page }) => {
+  test('should have proper heading hierarchy on dashboard', async ({
+    page,
+  }) => {
     await page.click('[data-testid="dashboard-link"]');
 
     // Check for proper heading hierarchy (h1 -> h2 -> h3)
@@ -80,7 +82,9 @@ test.describe('Accessibility Compliance', () => {
     await expect(focusedElement).toBeVisible();
 
     // Test navigation through multiple elements
-    const interactiveElements = page.locator('button, a, input, select, textarea, [tabindex="0"]');
+    const interactiveElements = page.locator(
+      'button, a, input, select, textarea, [tabindex="0"]'
+    );
     const elementCount = await interactiveElements.count();
 
     if (elementCount > 0) {
@@ -112,16 +116,16 @@ test.describe('Accessibility Compliance', () => {
     // Test primary text elements for contrast
     const textElements = page.locator('h1, h2, h3, p, span, button, a').first();
 
-    if (await textElements.count() > 0) {
+    if ((await textElements.count()) > 0) {
       const element = textElements.first();
 
       // Get computed styles
-      const styles = await element.evaluate((el) => {
+      const styles = await element.evaluate(el => {
         const computed = window.getComputedStyle(el);
         return {
           color: computed.color,
           backgroundColor: computed.backgroundColor,
-          fontSize: computed.fontSize
+          fontSize: computed.fontSize,
         };
       });
 
@@ -151,7 +155,7 @@ test.describe('Accessibility Compliance', () => {
       if (id) {
         // Check if there's a label with for attribute
         const associatedLabel = page.locator(`label[for="${id}"]`);
-        const labelExists = await associatedLabel.count() > 0;
+        const labelExists = (await associatedLabel.count()) > 0;
 
         // Should have label, aria-labelledby, or aria-label
         expect(labelExists || ariaLabelledBy || ariaLabel).toBeTruthy();
@@ -159,7 +163,9 @@ test.describe('Accessibility Compliance', () => {
     }
 
     // Check for error message accessibility
-    const errorElements = page.locator('[role="alert"], .error, [data-testid*="error"]');
+    const errorElements = page.locator(
+      '[role="alert"], .error, [data-testid*="error"]'
+    );
     const errorCount = await errorElements.count();
 
     for (let i = 0; i < errorCount; i++) {
@@ -169,7 +175,9 @@ test.describe('Accessibility Compliance', () => {
       const role = await error.getAttribute('role');
       const ariaLive = await error.getAttribute('aria-live');
 
-      expect(role === 'alert' || ariaLive === 'polite' || ariaLive === 'assertive').toBeTruthy();
+      expect(
+        role === 'alert' || ariaLive === 'polite' || ariaLive === 'assertive'
+      ).toBeTruthy();
     }
   });
 
@@ -177,7 +185,9 @@ test.describe('Accessibility Compliance', () => {
     await page.click('[data-testid="dashboard-link"]');
 
     // Look for modal triggers
-    const modalTriggers = page.locator('[data-testid*="modal"], [data-testid*="dialog"]');
+    const modalTriggers = page.locator(
+      '[data-testid*="modal"], [data-testid*="dialog"]'
+    );
     const triggerCount = await modalTriggers.count();
 
     if (triggerCount > 0) {
@@ -186,7 +196,7 @@ test.describe('Accessibility Compliance', () => {
 
       // Check if modal appeared
       const modal = page.locator('[role="dialog"], [role="alertdialog"]');
-      if (await modal.count() > 0) {
+      if ((await modal.count()) > 0) {
         // Modal should have proper ARIA attributes
         await expect(modal.first()).toHaveAttribute('role');
 
@@ -195,9 +205,12 @@ test.describe('Accessibility Compliance', () => {
         const focusedElement = page.locator(':focus');
 
         // Focus should be within the modal
-        const isWithinModal = await focusedElement.evaluate((el, modalEl) => {
-          return modalEl.contains(el);
-        }, await modal.first().elementHandle());
+        const isWithinModal = await focusedElement.evaluate(
+          (el, modalEl) => {
+            return modalEl.contains(el);
+          },
+          await modal.first().elementHandle()
+        );
 
         expect(isWithinModal).toBeTruthy();
 
@@ -215,7 +228,9 @@ test.describe('Accessibility Compliance', () => {
     await page.click('[data-testid="vault-link"]');
 
     // Check for loading indicators with proper accessibility
-    const loadingElements = page.locator('[data-testid*="loading"], [role="status"]');
+    const loadingElements = page.locator(
+      '[data-testid*="loading"], [role="status"]'
+    );
     const loadingCount = await loadingElements.count();
 
     if (loadingCount > 0) {
@@ -228,9 +243,9 @@ test.describe('Accessibility Compliance', () => {
 
       expect(
         role === 'status' ||
-        ariaLive === 'polite' ||
-        ariaLabel?.includes('loading') ||
-        ariaLabel?.includes('Loading')
+          ariaLive === 'polite' ||
+          ariaLabel?.includes('loading') ||
+          ariaLabel?.includes('Loading')
       ).toBeTruthy();
     }
   });
@@ -242,13 +257,15 @@ test.describe('Accessibility Compliance', () => {
     await page.click('[data-testid="dashboard-link"]');
 
     // Check that animations respect reduced motion
-    const animatedElements = page.locator('[data-testid*="animated"], [class*="animate"]');
+    const animatedElements = page.locator(
+      '[data-testid*="animated"], [class*="animate"]'
+    );
     const animatedCount = await animatedElements.count();
 
     for (let i = 0; i < Math.min(animatedCount, 3); i++) {
       const element = animatedElements.nth(i);
 
-      const animationDuration = await element.evaluate((el) => {
+      const animationDuration = await element.evaluate(el => {
         const style = window.getComputedStyle(el);
         return style.animationDuration || style.transitionDuration;
       });
@@ -288,14 +305,11 @@ test.describe('Accessibility Compliance', () => {
       const ariaLabel = await svg.getAttribute('aria-label');
       const role = await svg.getAttribute('role');
       const title = svg.locator('title');
-      const titleExists = await title.count() > 0;
+      const titleExists = (await title.count()) > 0;
 
       // SVG should either be hidden from screen readers or have accessible name
       expect(
-        ariaHidden === 'true' ||
-        ariaLabel ||
-        role === 'img' ||
-        titleExists
+        ariaHidden === 'true' || ariaLabel || role === 'img' || titleExists
       ).toBeTruthy();
     }
   });
@@ -304,32 +318,36 @@ test.describe('Accessibility Compliance', () => {
     await page.click('[data-testid="dashboard-link"]');
 
     // Test focus indicators are visible
-    const focusableElements = page.locator('button, a, input, select, textarea').first();
+    const focusableElements = page
+      .locator('button, a, input, select, textarea')
+      .first();
 
-    if (await focusableElements.count() > 0) {
+    if ((await focusableElements.count()) > 0) {
       await focusableElements.focus();
 
       // Should have visible focus indicator
-      const focusStyles = await focusableElements.evaluate((el) => {
+      const focusStyles = await focusableElements.evaluate(el => {
         const styles = window.getComputedStyle(el);
         return {
           outline: styles.outline,
           boxShadow: styles.boxShadow,
-          border: styles.border
+          border: styles.border,
         };
       });
 
       // Should have some kind of focus indicator
       expect(
         focusStyles.outline !== 'none' ||
-        focusStyles.boxShadow !== 'none' ||
-        focusStyles.boxShadow.includes('ring') ||
-        focusStyles.border.includes('blue')
+          focusStyles.boxShadow !== 'none' ||
+          focusStyles.boxShadow.includes('ring') ||
+          focusStyles.border.includes('blue')
       ).toBeTruthy();
     }
   });
 
-  test('should have accessible personality mode switching', async ({ page }) => {
+  test('should have accessible personality mode switching', async ({
+    page,
+  }) => {
     await page.click('[data-testid="settings-link"]');
 
     // Check personality mode controls
@@ -342,7 +360,9 @@ test.describe('Accessibility Compliance', () => {
 
         // Should be keyboard accessible
         await control.focus();
-        const isFocused = await control.evaluate(el => el === document.activeElement);
+        const isFocused = await control.evaluate(
+          el => el === document.activeElement
+        );
         expect(isFocused).toBeTruthy();
 
         // Should have proper labeling
@@ -366,7 +386,9 @@ test.describe('Accessibility Compliance', () => {
     await page.click('[data-testid="dashboard-link"]');
 
     // Look for dynamic content that changes (like notifications, status updates)
-    const liveRegions = page.locator('[aria-live], [role="status"], [role="alert"]');
+    const liveRegions = page.locator(
+      '[aria-live], [role="status"], [role="alert"]'
+    );
     const liveRegionCount = await liveRegions.count();
 
     if (liveRegionCount > 0) {
@@ -379,15 +401,17 @@ test.describe('Accessibility Compliance', () => {
         // Should have proper live region settings
         expect(
           ariaLive === 'polite' ||
-          ariaLive === 'assertive' ||
-          role === 'status' ||
-          role === 'alert'
+            ariaLive === 'assertive' ||
+            role === 'status' ||
+            role === 'alert'
         ).toBeTruthy();
       }
     }
 
     // Test if notifications are properly announced
-    const notificationTriggers = page.locator('[data-testid*="notification"], [data-testid*="toast"]');
+    const notificationTriggers = page.locator(
+      '[data-testid*="notification"], [data-testid*="toast"]'
+    );
     const notificationCount = await notificationTriggers.count();
 
     if (notificationCount > 0) {
@@ -395,8 +419,10 @@ test.describe('Accessibility Compliance', () => {
       await trigger.click();
 
       // Look for the notification that appears
-      const notification = page.locator('[role="alert"], [data-testid*="notification-content"]');
-      if (await notification.count() > 0) {
+      const notification = page.locator(
+        '[role="alert"], [data-testid*="notification-content"]'
+      );
+      if ((await notification.count()) > 0) {
         const role = await notification.first().getAttribute('role');
         const ariaLive = await notification.first().getAttribute('aria-live');
 
@@ -438,7 +464,9 @@ test.describe('Accessibility Compliance', () => {
       const onClick = await button.getAttribute('onclick');
 
       // Buttons should have type attribute or onclick handler
-      expect(type || onClick || await button.evaluate(el => el.onclick)).toBeTruthy();
+      expect(
+        type || onClick || (await button.evaluate(el => el.onclick))
+      ).toBeTruthy();
     }
   });
 });

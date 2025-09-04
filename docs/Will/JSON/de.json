@@ -20,8 +20,15 @@
             "required": ["fullName", "dateOfBirth", "address"],
             "properties": {
               "fullName": { "type": "string", "title": "Vor- und Nachname" },
-              "dateOfBirth": { "type": "string", "format": "date", "title": "Geburtsdatum" },
-              "address": { "type": "string", "title": "Anschrift (Hauptwohnsitz)" }
+              "dateOfBirth": {
+                "type": "string",
+                "format": "date",
+                "title": "Geburtsdatum"
+              },
+              "address": {
+                "type": "string",
+                "title": "Anschrift (Hauptwohnsitz)"
+              }
             }
           },
           "heirs": {
@@ -32,10 +39,20 @@
               "type": "object",
               "required": ["fullName", "relation", "share"],
               "properties": {
-                "relation": { "type": "string", "title": "Verwandtschafts-/Beziehungsgrad" },
+                "relation": {
+                  "type": "string",
+                  "title": "Verwandtschafts-/Beziehungsgrad"
+                },
                 "fullName": { "type": "string", "title": "Vor- und Nachname" },
-                "dateOfBirth": { "type": "string", "format": "date", "title": "Geburtsdatum (optional)" },
-                "address": { "type": "string", "title": "Anschrift (optional)" },
+                "dateOfBirth": {
+                  "type": "string",
+                  "format": "date",
+                  "title": "Geburtsdatum (optional)"
+                },
+                "address": {
+                  "type": "string",
+                  "title": "Anschrift (optional)"
+                },
                 "share": {
                   "type": "number",
                   "title": "Erbquote (%)",
@@ -48,9 +65,19 @@
                   "title": "Ersatzerbe (optional)",
                   "properties": {
                     "relation": { "type": "string", "title": "Beziehungsgrad" },
-                    "fullName": { "type": "string", "title": "Vor- und Nachname" },
-                    "dateOfBirth": { "type": "string", "format": "date", "title": "Geburtsdatum (optional)" },
-                    "address": { "type": "string", "title": "Anschrift (optional)" }
+                    "fullName": {
+                      "type": "string",
+                      "title": "Vor- und Nachname"
+                    },
+                    "dateOfBirth": {
+                      "type": "string",
+                      "format": "date",
+                      "title": "Geburtsdatum (optional)"
+                    },
+                    "address": {
+                      "type": "string",
+                      "title": "Anschrift (optional)"
+                    }
                   }
                 }
               }
@@ -59,7 +86,11 @@
           "declarations": {
             "type": "object",
             "title": "Erklärungen",
-            "required": ["awarenessOfPflichtteil", "revokePriorWills", "madeFreely"],
+            "required": [
+              "awarenessOfPflichtteil",
+              "revokePriorWills",
+              "madeFreely"
+            ],
             "properties": {
               "awarenessOfPflichtteil": {
                 "type": "boolean",
@@ -90,7 +121,11 @@
             "required": ["city", "date", "signatureConfirm"],
             "properties": {
               "city": { "type": "string", "title": "Ort der Errichtung" },
-              "date": { "type": "string", "format": "date", "title": "Datum der Errichtung" },
+              "date": {
+                "type": "string",
+                "format": "date",
+                "title": "Datum der Errichtung"
+              },
               "signatureConfirm": {
                 "type": "boolean",
                 "const": true,
@@ -137,7 +172,13 @@
       "schema": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["testator", "heirs", "declarations", "notary", "execution"],
+        "required": [
+          "testator",
+          "heirs",
+          "declarations",
+          "notary",
+          "execution"
+        ],
         "properties": {
           "testator": {
             "type": "object",
@@ -145,8 +186,15 @@
             "required": ["fullName", "dateOfBirth", "address"],
             "properties": {
               "fullName": { "type": "string", "title": "Vor- und Nachname" },
-              "dateOfBirth": { "type": "string", "format": "date", "title": "Geburtsdatum" },
-              "address": { "type": "string", "title": "Anschrift (Hauptwohnsitz)" }
+              "dateOfBirth": {
+                "type": "string",
+                "format": "date",
+                "title": "Geburtsdatum"
+              },
+              "address": {
+                "type": "string",
+                "title": "Anschrift (Hauptwohnsitz)"
+              }
             }
           },
           "heirs": {
@@ -159,8 +207,15 @@
               "properties": {
                 "relation": { "type": "string", "title": "Beziehungsgrad" },
                 "fullName": { "type": "string", "title": "Vor- und Nachname" },
-                "dateOfBirth": { "type": "string", "format": "date", "title": "Geburtsdatum (optional)" },
-                "address": { "type": "string", "title": "Anschrift (optional)" },
+                "dateOfBirth": {
+                  "type": "string",
+                  "format": "date",
+                  "title": "Geburtsdatum (optional)"
+                },
+                "address": {
+                  "type": "string",
+                  "title": "Anschrift (optional)"
+                },
                 "share": {
                   "type": "number",
                   "title": "Erbquote (%)",
@@ -173,9 +228,19 @@
                   "title": "Ersatzerbe (optional)",
                   "properties": {
                     "relation": { "type": "string", "title": "Beziehungsgrad" },
-                    "fullName": { "type": "string", "title": "Vor- und Nachname" },
-                    "dateOfBirth": { "type": "string", "format": "date", "title": "Geburtsdatum (optional)" },
-                    "address": { "type": "string", "title": "Anschrift (optional)" }
+                    "fullName": {
+                      "type": "string",
+                      "title": "Vor- und Nachname"
+                    },
+                    "dateOfBirth": {
+                      "type": "string",
+                      "format": "date",
+                      "title": "Geburtsdatum (optional)"
+                    },
+                    "address": {
+                      "type": "string",
+                      "title": "Anschrift (optional)"
+                    }
                   }
                 }
               }
@@ -184,7 +249,11 @@
           "declarations": {
             "type": "object",
             "title": "Erklärungen",
-            "required": ["awarenessOfPflichtteil", "revokePriorWills", "madeFreely"],
+            "required": [
+              "awarenessOfPflichtteil",
+              "revokePriorWills",
+              "madeFreely"
+            ],
             "properties": {
               "awarenessOfPflichtteil": {
                 "type": "boolean",
@@ -284,7 +353,11 @@
                 "required": ["fullName", "dateOfBirth", "address"],
                 "properties": {
                   "fullName": { "type": "string", "title": "Name Ehegatte A" },
-                  "dateOfBirth": { "type": "string", "format": "date", "title": "Geburtsdatum" },
+                  "dateOfBirth": {
+                    "type": "string",
+                    "format": "date",
+                    "title": "Geburtsdatum"
+                  },
                   "address": { "type": "string", "title": "Anschrift" }
                 }
               },
@@ -293,7 +366,11 @@
                 "required": ["fullName", "dateOfBirth", "address"],
                 "properties": {
                   "fullName": { "type": "string", "title": "Name Ehegatte B" },
-                  "dateOfBirth": { "type": "string", "format": "date", "title": "Geburtsdatum" },
+                  "dateOfBirth": {
+                    "type": "string",
+                    "format": "date",
+                    "title": "Geburtsdatum"
+                  },
                   "address": { "type": "string", "title": "Anschrift" }
                 }
               }
@@ -317,11 +394,30 @@
                   "type": "object",
                   "required": ["fullName", "relation", "share"],
                   "properties": {
-                    "relation": { "type": "string", "title": "Beziehungsgrad (z. B. Kind)" },
-                    "fullName": { "type": "string", "title": "Vor- und Nachname" },
-                    "dateOfBirth": { "type": "string", "format": "date", "title": "Geburtsdatum (optional)" },
-                    "address": { "type": "string", "title": "Anschrift (optional)" },
-                    "share": { "type": "number", "title": "Quote als Schlusserbe (%)", "minimum": 0, "maximum": 100, "multipleOf": 0.01 }
+                    "relation": {
+                      "type": "string",
+                      "title": "Beziehungsgrad (z. B. Kind)"
+                    },
+                    "fullName": {
+                      "type": "string",
+                      "title": "Vor- und Nachname"
+                    },
+                    "dateOfBirth": {
+                      "type": "string",
+                      "format": "date",
+                      "title": "Geburtsdatum (optional)"
+                    },
+                    "address": {
+                      "type": "string",
+                      "title": "Anschrift (optional)"
+                    },
+                    "share": {
+                      "type": "number",
+                      "title": "Quote als Schlusserbe (%)",
+                      "minimum": 0,
+                      "maximum": 100,
+                      "multipleOf": 0.01
+                    }
                   }
                 }
               }
@@ -358,9 +454,21 @@
             "required": ["city", "date", "signConfirmA", "signConfirmB"],
             "properties": {
               "city": { "type": "string", "title": "Ort der Errichtung" },
-              "date": { "type": "string", "format": "date", "title": "Datum der Errichtung" },
-              "signConfirmA": { "type": "boolean", "const": true, "title": "Eigenhändige Unterschrift Ehegatte A" },
-              "signConfirmB": { "type": "boolean", "const": true, "title": "Eigenhändige Unterschrift Ehegatte B" }
+              "date": {
+                "type": "string",
+                "format": "date",
+                "title": "Datum der Errichtung"
+              },
+              "signConfirmA": {
+                "type": "boolean",
+                "const": true,
+                "title": "Eigenhändige Unterschrift Ehegatte A"
+              },
+              "signConfirmB": {
+                "type": "boolean",
+                "const": true,
+                "title": "Eigenhändige Unterschrift Ehegatte B"
+              }
             }
           },
           "sumFinalHeirShares100": {
@@ -402,14 +510,24 @@
       "schema": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["testator", "emergencyGround", "witnesses", "statement", "execution"],
+        "required": [
+          "testator",
+          "emergencyGround",
+          "witnesses",
+          "statement",
+          "execution"
+        ],
         "properties": {
           "testator": {
             "type": "object",
             "required": ["fullName", "dateOfBirth", "address"],
             "properties": {
               "fullName": { "type": "string", "title": "Name des Erblassers" },
-              "dateOfBirth": { "type": "string", "format": "date", "title": "Geburtsdatum" },
+              "dateOfBirth": {
+                "type": "string",
+                "format": "date",
+                "title": "Geburtsdatum"
+              },
               "address": { "type": "string", "title": "Anschrift" }
             }
           },
@@ -427,7 +545,11 @@
               "required": ["fullName", "dateOfBirth", "address", "attestation"],
               "properties": {
                 "fullName": { "type": "string", "title": "Name" },
-                "dateOfBirth": { "type": "string", "format": "date", "title": "Geburtsdatum" },
+                "dateOfBirth": {
+                  "type": "string",
+                  "format": "date",
+                  "title": "Geburtsdatum"
+                },
                 "address": { "type": "string", "title": "Anschrift" },
                 "attestation": {
                   "type": "boolean",

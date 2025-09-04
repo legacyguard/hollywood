@@ -1,24 +1,31 @@
 // Interactive Animations - User interaction feedback with Sofia's personality adaptation
 // Provides tactile feedback for buttons, cards, and interactive elements
 
-import React, { type ReactNode, createContext, useContext, useState, useEffect } from 'react';
+import React, {
+  createContext,
+  type ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import { motion, type Variants } from 'framer-motion';
 
 // Types for personality modes
-export type PersonalityMode = 'adaptive' | 'pragmatic' | 'empathetic';
+export type PersonalityMode = 'adaptive' | 'empathetic' | 'pragmatic';
 
 // Context for adaptive animations
 interface AdaptiveAnimationContextType {
-  personalityMode: PersonalityMode;
-  shouldReduceMotion: boolean;
   animationConfig: {
     duration: number;
     ease: string;
   };
+  personalityMode: PersonalityMode;
   setPersonalityMode: (mode: PersonalityMode) => void;
+  shouldReduceMotion: boolean;
 }
 
-const AdaptiveAnimationContext = createContext<AdaptiveAnimationContextType | null>(null);
+const AdaptiveAnimationContext =
+  createContext<AdaptiveAnimationContextType | null>(null);
 
 // Hook to use adaptive animation context
 export const useAdaptiveAnimation = (): AdaptiveAnimationContextType => {
@@ -36,8 +43,11 @@ export const useAdaptiveAnimation = (): AdaptiveAnimationContextType => {
 };
 
 // Provider component for adaptive animations
-export const AdaptiveAnimationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [personalityMode, setPersonalityMode] = useState<PersonalityMode>('adaptive');
+export const AdaptiveAnimationProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
+  const [personalityMode, setPersonalityMode] =
+    useState<PersonalityMode>('adaptive');
   const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
 
   useEffect(() => {
@@ -57,8 +67,13 @@ export const AdaptiveAnimationProvider: React.FC<{ children: ReactNode }> = ({ c
   useEffect(() => {
     // In a real implementation, this would analyze user interactions
     // For now, we'll use a simple heuristic or allow manual setting
-    const savedMode = localStorage.getItem('personalityMode') as PersonalityMode;
-    if (savedMode && ['adaptive', 'pragmatic', 'empathetic'].includes(savedMode)) {
+    const savedMode = localStorage.getItem(
+      'personalityMode'
+    ) as PersonalityMode;
+    if (
+      savedMode &&
+      ['adaptive', 'pragmatic', 'empathetic'].includes(savedMode)
+    ) {
       setPersonalityMode(savedMode);
     }
   }, []);
@@ -84,11 +99,11 @@ export const AdaptiveAnimationProvider: React.FC<{ children: ReactNode }> = ({ c
 
 interface AnimatedButtonProps {
   children: ReactNode;
-  onClick?: () => void;
-  disabled?: boolean;
-  variant?: 'primary' | 'secondary' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
   className?: string;
+  disabled?: boolean;
+  onClick?: () => void;
+  size?: 'lg' | 'md' | 'sm';
+  variant?: 'ghost' | 'primary' | 'secondary';
 }
 
 export const AdaptiveAnimatedButton: React.FC<AnimatedButtonProps> = ({
@@ -104,28 +119,36 @@ export const AdaptiveAnimatedButton: React.FC<AnimatedButtonProps> = ({
   const buttonVariants: Variants = {
     rest: {
       scale: 1,
-      boxShadow: variant === 'primary'
-        ? '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-        : '0 1px 3px rgba(0, 0, 0, 0.1)',
-    },
-    hover: shouldReduceMotion ? {} : {
-      scale: personalityMode === "pragmatic" ? 1.02 : 1.05,
       boxShadow:
-        variant === "primary"
-          ? "0 10px 15px -3px rgba(0, 0, 0, 0.1)"
-          : "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-      transition: {
-        duration: personalityMode === 'pragmatic' ? 0.15 : 0.3,
-        ease: personalityMode === 'pragmatic' ? 'easeOut' : [0.25, 0.46, 0.45, 0.94],
-      },
+        variant === 'primary'
+          ? '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+          : '0 1px 3px rgba(0, 0, 0, 0.1)',
     },
-    tap: shouldReduceMotion ? {} : {
-      scale: personalityMode === 'pragmatic' ? 0.98 : 0.95,
-      transition: {
-        duration: 0.1,
-        ease: 'easeOut',
-      },
-    },
+    hover: shouldReduceMotion
+      ? {}
+      : {
+          scale: personalityMode === 'pragmatic' ? 1.02 : 1.05,
+          boxShadow:
+            variant === 'primary'
+              ? '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
+              : '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+          transition: {
+            duration: personalityMode === 'pragmatic' ? 0.15 : 0.3,
+            ease:
+              personalityMode === 'pragmatic'
+                ? 'easeOut'
+                : [0.25, 0.46, 0.45, 0.94],
+          },
+        },
+    tap: shouldReduceMotion
+      ? {}
+      : {
+          scale: personalityMode === 'pragmatic' ? 0.98 : 0.95,
+          transition: {
+            duration: 0.1,
+            ease: 'easeOut',
+          },
+        },
   };
 
   const baseClasses = {
@@ -135,11 +158,12 @@ export const AdaptiveAnimatedButton: React.FC<AnimatedButtonProps> = ({
   };
 
   const variantClasses = {
-    primary: personalityMode === 'empathetic'
-      ? 'bg-emerald-500 hover:bg-emerald-600 text-white'
-      : personalityMode === 'pragmatic'
-      ? 'bg-blue-600 hover:bg-blue-700 text-white'
-      : 'bg-purple-500 hover:bg-purple-600 text-white',
+    primary:
+      personalityMode === 'empathetic'
+        ? 'bg-emerald-500 hover:bg-emerald-600 text-white'
+        : personalityMode === 'pragmatic'
+          ? 'bg-blue-600 hover:bg-blue-700 text-white'
+          : 'bg-purple-500 hover:bg-purple-600 text-white',
     secondary: 'bg-gray-200 hover:bg-gray-300 text-gray-900',
     ghost: 'bg-transparent hover:bg-gray-100 text-gray-700',
   };
@@ -153,9 +177,9 @@ export const AdaptiveAnimatedButton: React.FC<AnimatedButtonProps> = ({
         ${className}
       `}
       variants={buttonVariants}
-      initial="rest"
-      whileHover={disabled ? "rest" : "hover"}
-      whileTap={disabled ? "rest" : "tap"}
+      initial='rest'
+      whileHover={disabled ? 'rest' : 'hover'}
+      whileTap={disabled ? 'rest' : 'tap'}
       onClick={disabled ? undefined : onClick}
       disabled={disabled}
     >
@@ -167,8 +191,8 @@ export const AdaptiveAnimatedButton: React.FC<AnimatedButtonProps> = ({
 interface AnimatedCardProps {
   children: ReactNode;
   className?: string;
-  hoverable?: boolean;
   clickable?: boolean;
+  hoverable?: boolean;
   onClick?: () => void;
 }
 
@@ -187,24 +211,32 @@ export const AdaptiveAnimatedCard: React.FC<AnimatedCardProps> = ({
       y: 0,
       boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
     },
-    hover: shouldReduceMotion ? {} : {
-      scale: personalityMode === 'pragmatic' ? 1.01 : 1.02,
-      y: personalityMode === 'empathetic' ? -5 : -2,
-      boxShadow: personalityMode === 'empathetic'
-        ? '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
-        : '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-      transition: {
-        duration: personalityMode === 'pragmatic' ? 0.2 : 0.4,
-        ease: personalityMode === 'pragmatic' ? 'easeOut' : [0.25, 0.46, 0.45, 0.94],
-      },
-    },
-    tap: shouldReduceMotion ? {} : {
-      scale: 0.98,
-      transition: {
-        duration: 0.1,
-        ease: 'easeOut',
-      },
-    },
+    hover: shouldReduceMotion
+      ? {}
+      : {
+          scale: personalityMode === 'pragmatic' ? 1.01 : 1.02,
+          y: personalityMode === 'empathetic' ? -5 : -2,
+          boxShadow:
+            personalityMode === 'empathetic'
+              ? '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
+              : '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+          transition: {
+            duration: personalityMode === 'pragmatic' ? 0.2 : 0.4,
+            ease:
+              personalityMode === 'pragmatic'
+                ? 'easeOut'
+                : [0.25, 0.46, 0.45, 0.94],
+          },
+        },
+    tap: shouldReduceMotion
+      ? {}
+      : {
+          scale: 0.98,
+          transition: {
+            duration: 0.1,
+            ease: 'easeOut',
+          },
+        },
   };
 
   return (
@@ -215,9 +247,9 @@ export const AdaptiveAnimatedCard: React.FC<AnimatedCardProps> = ({
         ${className}
       `}
       variants={hoverable || clickable ? cardVariants : undefined}
-      initial={hoverable || clickable ? "rest" : undefined}
-      whileHover={hoverable ? "hover" : "rest"}
-      whileTap={clickable ? "tap" : "rest"}
+      initial={hoverable || clickable ? 'rest' : undefined}
+      whileHover={hoverable ? 'hover' : 'rest'}
+      whileTap={clickable ? 'tap' : 'rest'}
       onClick={clickable ? onClick : undefined}
     >
       {children}
@@ -227,8 +259,8 @@ export const AdaptiveAnimatedCard: React.FC<AnimatedCardProps> = ({
 
 interface AnimatedListItemProps {
   children: ReactNode;
-  index: number;
   className?: string;
+  index: number;
 }
 
 export const AdaptiveAnimatedListItem: React.FC<AnimatedListItemProps> = ({
@@ -236,7 +268,8 @@ export const AdaptiveAnimatedListItem: React.FC<AnimatedListItemProps> = ({
   index,
   className = '',
 }) => {
-  const { personalityMode, shouldReduceMotion, animationConfig } = useAdaptiveAnimation();
+  const { personalityMode, shouldReduceMotion, animationConfig } =
+    useAdaptiveAnimation();
 
   const itemVariants: Variants = {
     hidden: {
@@ -266,10 +299,10 @@ export const AdaptiveAnimatedListItem: React.FC<AnimatedListItemProps> = ({
     <motion.div
       className={className}
       variants={itemVariants}
-      initial="hidden"
-      animate="visible"
-      whileInView="visible"
-      viewport={{ once: true, margin: "0px 0px -50px 0px" }}
+      initial='hidden'
+      animate='visible'
+      whileInView='visible'
+      viewport={{ once: true, margin: '0px 0px -50px 0px' }}
     >
       {children}
     </motion.div>
@@ -278,8 +311,8 @@ export const AdaptiveAnimatedListItem: React.FC<AnimatedListItemProps> = ({
 
 interface PulseAnimationProps {
   children: ReactNode;
-  isActive?: boolean;
   className?: string;
+  isActive?: boolean;
 }
 
 export const AdaptivePulseAnimation: React.FC<PulseAnimationProps> = ({
@@ -300,17 +333,16 @@ export const AdaptivePulseAnimation: React.FC<PulseAnimationProps> = ({
       transition: {
         duration: personalityMode === 'pragmatic' ? 1.5 : 2.5,
         repeat: Infinity,
-        ease: personalityMode === 'pragmatic' ? 'easeInOut' : [0.25, 0.46, 0.45, 0.94],
+        ease:
+          personalityMode === 'pragmatic'
+            ? 'easeInOut'
+            : [0.25, 0.46, 0.45, 0.94],
       },
     },
   };
 
   return (
-    <motion.div
-      className={className}
-      variants={pulseVariants}
-      animate="pulse"
-    >
+    <motion.div className={className} variants={pulseVariants} animate='pulse'>
       {children}
     </motion.div>
   );
@@ -318,8 +350,8 @@ export const AdaptivePulseAnimation: React.FC<PulseAnimationProps> = ({
 
 interface HoverScaleProps {
   children: ReactNode;
-  scale?: number;
   className?: string;
+  scale?: number;
 }
 
 export const AdaptiveHoverScale: React.FC<HoverScaleProps> = ({
@@ -329,27 +361,36 @@ export const AdaptiveHoverScale: React.FC<HoverScaleProps> = ({
 }) => {
   const { personalityMode, shouldReduceMotion } = useAdaptiveAnimation();
 
-  const defaultScale = personalityMode === 'pragmatic' ? 1.02 :
-                      personalityMode === 'empathetic' ? 1.08 : 1.05;
+  const defaultScale =
+    personalityMode === 'pragmatic'
+      ? 1.02
+      : personalityMode === 'empathetic'
+        ? 1.08
+        : 1.05;
   const scaleValue = scale || defaultScale;
 
   const hoverVariants: Variants = {
     rest: { scale: 1 },
-    hover: shouldReduceMotion ? {} : {
-      scale: scaleValue,
-      transition: {
-        duration: personalityMode === 'pragmatic' ? 0.15 : 0.3,
-        ease: personalityMode === 'pragmatic' ? 'easeOut' : [0.25, 0.46, 0.45, 0.94],
-      },
-    },
+    hover: shouldReduceMotion
+      ? {}
+      : {
+          scale: scaleValue,
+          transition: {
+            duration: personalityMode === 'pragmatic' ? 0.15 : 0.3,
+            ease:
+              personalityMode === 'pragmatic'
+                ? 'easeOut'
+                : [0.25, 0.46, 0.45, 0.94],
+          },
+        },
   };
 
   return (
     <motion.div
       className={className}
       variants={hoverVariants}
-      initial="rest"
-      whileHover="hover"
+      initial='rest'
+      whileHover='hover'
     >
       {children}
     </motion.div>
@@ -358,10 +399,10 @@ export const AdaptiveHoverScale: React.FC<HoverScaleProps> = ({
 
 interface GlowEffectProps {
   children: ReactNode;
-  isActive?: boolean;
-  color?: 'emerald' | 'blue' | 'purple' | 'yellow';
-  intensity?: 'low' | 'medium' | 'high';
   className?: string;
+  color?: 'blue' | 'emerald' | 'purple' | 'yellow';
+  intensity?: 'high' | 'low' | 'medium';
+  isActive?: boolean;
 }
 
 export const AdaptiveGlowEffect: React.FC<GlowEffectProps> = ({
@@ -374,10 +415,13 @@ export const AdaptiveGlowEffect: React.FC<GlowEffectProps> = ({
   const { personalityMode, shouldReduceMotion } = useAdaptiveAnimation();
 
   // Auto-select color based on personality if not provided
-  const glowColor = color || (
-    personalityMode === 'empathetic' ? 'emerald' :
-    personalityMode === 'pragmatic' ? 'blue' : 'purple'
-  );
+  const glowColor =
+    color ||
+    (personalityMode === 'empathetic'
+      ? 'emerald'
+      : personalityMode === 'pragmatic'
+        ? 'blue'
+        : 'purple');
 
   const glowIntensity = {
     low: '0.3',
@@ -396,20 +440,22 @@ export const AdaptiveGlowEffect: React.FC<GlowEffectProps> = ({
     inactive: {
       boxShadow: '0 0 0px rgba(0, 0, 0, 0)',
     },
-    active: shouldReduceMotion ? {
-      boxShadow: `0 0 20px ${glowColors[glowColor]}`,
-    } : {
-      boxShadow: [
-        `0 0 5px ${glowColors[glowColor]}`,
-        `0 0 20px ${glowColors[glowColor]}`,
-        `0 0 5px ${glowColors[glowColor]}`,
-      ],
-      transition: {
-        duration: personalityMode === 'pragmatic' ? 2 : 3,
-        repeat: Infinity,
-        ease: 'easeInOut',
-      },
-    },
+    active: shouldReduceMotion
+      ? {
+          boxShadow: `0 0 20px ${glowColors[glowColor]}`,
+        }
+      : {
+          boxShadow: [
+            `0 0 5px ${glowColors[glowColor]}`,
+            `0 0 20px ${glowColors[glowColor]}`,
+            `0 0 5px ${glowColors[glowColor]}`,
+          ],
+          transition: {
+            duration: personalityMode === 'pragmatic' ? 2 : 3,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          },
+        },
   };
 
   return (

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { useTranslation } from 'react-i18next';
 import { DashboardLayout } from '@/components/DashboardLayout';
@@ -34,41 +34,44 @@ import {
 import { Switch } from '@/components/ui/switch';
 import { Icon } from '@/components/ui/icon-library';
 import { FadeIn } from '@/components/motion/FadeIn';
-import { ProfileGrid, type ProfileData } from '@/components/enhanced/ProfileCard';
+import {
+  type ProfileData,
+  ProfileGrid,
+} from '@/components/enhanced/ProfileCard';
 import { MetricsGrid } from '@/components/enhanced/MetricCard';
 import { usePageTitle } from '@/hooks/usePageTitle';
 import { toast } from 'sonner';
 
 // Guardian interface (simplified for localStorage)
 interface Guardian {
-  id: string;
-  name: string;
-  email: string;
-  phone?: string;
-  relationship?: string;
-  notes?: string;
-  can_trigger_emergency: boolean;
-  can_access_health_docs: boolean;
   can_access_financial_docs: boolean;
+  can_access_health_docs: boolean;
+  can_trigger_emergency: boolean;
+  created_at: string;
+  email: string;
+  emergency_contact_priority: number;
+  id: string;
+  is_active: boolean;
   is_child_guardian: boolean;
   is_will_executor: boolean;
-  emergency_contact_priority: number;
-  is_active: boolean;
-  created_at: string;
+  name: string;
+  notes?: string;
+  phone?: string;
+  relationship?: string;
 }
 
 interface GuardianFormData {
-  name: string;
-  email: string;
-  phone: string;
-  relationship: string;
-  notes: string;
-  can_trigger_emergency: boolean;
-  can_access_health_docs: boolean;
   can_access_financial_docs: boolean;
+  can_access_health_docs: boolean;
+  can_trigger_emergency: boolean;
+  email: string;
+  emergency_contact_priority: number;
   is_child_guardian: boolean;
   is_will_executor: boolean;
-  emergency_contact_priority: number;
+  name: string;
+  notes: string;
+  phone: string;
+  relationship: string;
 }
 
 const GUARDIAN_RELATIONSHIPS = [
@@ -96,7 +99,7 @@ export default function GuardiansEnhanced() {
 
   // Confirmation dialog state
   const [_isConfirmDialogOpen, _setIsConfirmDialogOpen] = useState(false);
-  const [guardianToDelete, setGuardianToDelete] = useState<ProfileData | null>(
+  const [guardianToDelete, setGuardianToDelete] = useState<null | ProfileData>(
     null
   );
 
@@ -361,7 +364,7 @@ export default function GuardiansEnhanced() {
         value: guardians.length.toString(),
         icon: 'shield',
         color: 'primary',
-        trend: guardians.length > 0 ? ('up') : ('neutral'),
+        trend: guardians.length > 0 ? 'up' : 'neutral',
         onClick: () => {},
       },
       {
@@ -392,7 +395,7 @@ export default function GuardiansEnhanced() {
   // Handle form input changes
   const handleInputChange = (
     field: keyof GuardianFormData,
-    value: string | boolean | number
+    value: boolean | number | string
   ) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
@@ -413,7 +416,7 @@ export default function GuardiansEnhanced() {
                 <FadeIn duration={0.5} delay={0.4}>
                   <p
                     className='text-lg leading-relaxed max-w-2xl mb-4'
-                    style={{  color: 'hsl(var(--muted-text))'  }}
+                    style={{ color: 'hsl(var(--muted-text))' }}
                   >
                     Your Circle of Trust. These trusted people can help your
                     family access important information when needed.
@@ -432,7 +435,7 @@ export default function GuardiansEnhanced() {
                       className='bg-primary hover:bg-primary-hover text-primary-foreground shadow-md'
                       size='lg'
                     >
-                      <Icon name={"add" as any} className='w-5 h-5 mr-2' />
+                      <Icon name={'add' as any} className='w-5 h-5 mr-2' />
                       {t('actions.addGuardian')}
                     </Button>
                   </DialogTrigger>
@@ -445,7 +448,9 @@ export default function GuardiansEnhanced() {
                     <form onSubmit={handleSubmit} className='space-y-6'>
                       <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                         <div className='space-y-2'>
-                          <Label htmlFor='name'>{t('form.labels.fullName')} *</Label>
+                          <Label htmlFor='name'>
+                            {t('form.labels.fullName')} *
+                          </Label>
                           <Input
                             id='name'
                             value={formData.name}
@@ -457,7 +462,9 @@ export default function GuardiansEnhanced() {
                           />
                         </div>
                         <div className='space-y-2'>
-                          <Label htmlFor='email'>{t('form.labels.email')} *</Label>
+                          <Label htmlFor='email'>
+                            {t('form.labels.email')} *
+                          </Label>
                           <Input
                             id='email'
                             type='email'
@@ -473,7 +480,9 @@ export default function GuardiansEnhanced() {
 
                       <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                         <div className='space-y-2'>
-                          <Label htmlFor='phone'>{t('form.labels.phone')}</Label>
+                          <Label htmlFor='phone'>
+                            {t('form.labels.phone')}
+                          </Label>
                           <Input
                             id='phone'
                             type='tel'
@@ -485,7 +494,9 @@ export default function GuardiansEnhanced() {
                           />
                         </div>
                         <div className='space-y-2'>
-                          <Label htmlFor='relationship'>{t('form.labels.relationship')}</Label>
+                          <Label htmlFor='relationship'>
+                            {t('form.labels.relationship')}
+                          </Label>
                           <Select
                             value={formData.relationship}
                             onValueChange={value =>
@@ -493,7 +504,11 @@ export default function GuardiansEnhanced() {
                             }
                           >
                             <SelectTrigger>
-                              <SelectValue placeholder={t('form.placeholders.relationship')} />
+                              <SelectValue
+                                placeholder={t(
+                                  'form.placeholders.relationship'
+                                )}
+                              />
                             </SelectTrigger>
                             <SelectContent>
                               {GUARDIAN_RELATIONSHIPS.map(rel => (
@@ -633,7 +648,7 @@ export default function GuardiansEnhanced() {
                       <div className='flex justify-end space-x-2'>
                         <Button
                           type='button'
-                          variant={"outline" as any}
+                          variant={'outline' as any}
                           onClick={() => {
                             setIsDialogOpen(false);
                             setEditingGuardian(null);
@@ -669,7 +684,8 @@ export default function GuardiansEnhanced() {
               {isLoading ? (
                 <div className='flex items-center justify-center py-12'>
                   <div className='text-center'>
-                    <Icon name={"loader" as any}
+                    <Icon
+                      name={'loader' as any}
                       className='w-8 h-8 animate-spin mx-auto mb-4 text-primary'
                     />
                     <p className='text-muted-foreground'>
@@ -680,7 +696,8 @@ export default function GuardiansEnhanced() {
               ) : guardians.length === 0 ? (
                 <Card className='p-12'>
                   <div className='text-center'>
-                    <Icon name={"shield" as any}
+                    <Icon
+                      name={'shield' as any}
                       className='w-16 h-16 mx-auto mb-4 text-muted-foreground/50'
                     />
                     <h3 className='text-xl font-semibold mb-2'>
@@ -691,7 +708,7 @@ export default function GuardiansEnhanced() {
                       to important information when needed.
                     </p>
                     <Button size='lg' onClick={() => setIsDialogOpen(true)}>
-                      <Icon name={"add" as any} className='w-5 h-5 mr-2' />
+                      <Icon name={'add' as any} className='w-5 h-5 mr-2' />
                       Add Your First Guardian
                     </Button>
                   </div>
@@ -722,7 +739,8 @@ export default function GuardiansEnhanced() {
               <FadeIn duration={0.5} delay={1.2}>
                 <Card className='p-8 bg-primary/5 border-primary/20'>
                   <div className='flex items-start gap-4'>
-                    <Icon name={"info" as any}
+                    <Icon
+                      name={'info' as any}
                       className='w-6 h-6 text-primary flex-shrink-0 mt-1'
                     />
                     <div>

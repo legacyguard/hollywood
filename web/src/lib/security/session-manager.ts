@@ -3,20 +3,20 @@
  * Handles session timeouts, refresh tokens, and activity tracking
  */
 
-import { _useAuth } from '@clerk/clerk-react';
+import { useAuth } from '@clerk/clerk-react';
 
 export interface SessionConfig {
-  maxIdleTime: number; // milliseconds
-  warningTime: number; // milliseconds before timeout
-  refreshInterval: number; // milliseconds
   extendOnActivity: boolean;
+  maxIdleTime: number; // milliseconds
+  refreshInterval: number; // milliseconds
+  warningTime: number; // milliseconds before timeout
 }
 
 export interface SessionState {
-  lastActivity: number;
   isActive: boolean;
-  willExpireAt: number;
+  lastActivity: number;
   showWarning: boolean;
+  willExpireAt: number;
 }
 
 class SessionManager {
@@ -24,8 +24,8 @@ class SessionManager {
   private state: SessionState;
   private timers: {
     idle?: number;
-    warning?: number;
     refresh?: number;
+    warning?: number;
   } = {};
   private listeners: Set<(state: SessionState) => void> = new Set();
   private activityEvents = [
@@ -59,12 +59,15 @@ class SessionManager {
   private initialize(): void {
     // Set up activity listeners
     if (typeof window !== 'undefined') {
-      this.activityEvents.forEach((event) => {
+      this.activityEvents.forEach(event => {
         window.addEventListener(event, this.handleActivity, { passive: true });
       });
 
       // Set up visibility change listener
-      document.addEventListener('visibilitychange', this.handleVisibilityChange);
+      document.addEventListener(
+        'visibilitychange',
+        this.handleVisibilityChange
+      );
 
       // Start monitoring
       this.startMonitoring();
@@ -207,14 +210,17 @@ class SessionManager {
     if (timeSinceLastActivity > this.config.maxIdleTime) {
       // Session has expired while page was hidden
       this.expireSession();
-    } else if (timeSinceLastActivity > this.config.maxIdleTime - this.config.warningTime) {
+    } else if (
+      timeSinceLastActivity >
+      this.config.maxIdleTime - this.config.warningTime
+    ) {
       // Should show warning
       this.showSessionWarning();
     }
   }
 
   private notifyListeners(): void {
-    this.listeners.forEach((listener) => {
+    this.listeners.forEach(listener => {
       listener({ ...this.state });
     });
   }
@@ -245,10 +251,13 @@ class SessionManager {
   public destroy(): void {
     // Remove event listeners
     if (typeof window !== 'undefined') {
-      this.activityEvents.forEach((event) => {
+      this.activityEvents.forEach(event => {
         window.removeEventListener(event, this.handleActivity);
       });
-      document.removeEventListener('visibilitychange', this.handleVisibilityChange);
+      document.removeEventListener(
+        'visibilitychange',
+        this.handleVisibilityChange
+      );
     }
 
     // Clear timers
@@ -288,9 +297,11 @@ class SessionManager {
 }
 
 // Create singleton instance
-let sessionManagerInstance: SessionManager | null = null;
+let sessionManagerInstance: null | SessionManager = null;
 
-export function getSessionManager(config?: Partial<SessionConfig>): SessionManager {
+export function getSessionManager(
+  config?: Partial<SessionConfig>
+): SessionManager {
   if (!sessionManagerInstance) {
     sessionManagerInstance = new SessionManager(config);
   }

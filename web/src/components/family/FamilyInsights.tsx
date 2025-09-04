@@ -4,24 +4,24 @@ import { Progress } from '../ui/progress';
 import { Badge } from '../ui/badge';
 import { Alert, AlertDescription } from '../ui/alert';
 import {
-  TrendingUp,
   CheckCircle2,
-  Users,
-  Shield,
   Crown,
-  Heart,
   FileText,
+  Heart,
+  Shield,
+  TrendingUp,
+  Users,
 } from 'lucide-react';
 
 interface FamilyInsightsData {
-  totalMembers: number;
-  heirsAssigned: number;
-  guardiansAssigned: number;
+  completionRate: number;
   executorAssigned: boolean;
+  guardiansAssigned: number;
+  heirsAssigned: number;
   legacyMessages: number;
   missingRoles: number;
   partiallyConfigured: number;
-  completionRate: number;
+  totalMembers: number;
 }
 
 interface FamilyInsightsProps {
@@ -29,8 +29,6 @@ interface FamilyInsightsProps {
 }
 
 export const FamilyInsights: React.FC<FamilyInsightsProps> = ({ insights }) => {
-
-
   const getCompletionVariant = (rate: number) => {
     if (rate >= 90) return 'default';
     if (rate >= 70) return 'secondary';
@@ -128,7 +126,7 @@ export const FamilyInsights: React.FC<FamilyInsightsProps> = ({ insights }) => {
                 <FileText className='h-3 w-3 mr-1' />
                 Heirs
               </span>
-              <Badge variant="outline">
+              <Badge variant='outline'>
                 {insights.heirsAssigned}/{insights.totalMembers}
               </Badge>
             </div>
@@ -150,7 +148,7 @@ export const FamilyInsights: React.FC<FamilyInsightsProps> = ({ insights }) => {
                 <Shield className='h-3 w-3 mr-1' />
                 Guardians
               </span>
-              <Badge variant="outline">{insights.guardiansAssigned}</Badge>
+              <Badge variant='outline'>{insights.guardiansAssigned}</Badge>
             </div>
 
             <div className='flex justify-between'>
@@ -158,7 +156,7 @@ export const FamilyInsights: React.FC<FamilyInsightsProps> = ({ insights }) => {
                 <Heart className='h-3 w-3 mr-1' />
                 Legacy Msgs
               </span>
-              <Badge variant="outline">{insights.legacyMessages}</Badge>
+              <Badge variant='outline'>{insights.legacyMessages}</Badge>
             </div>
           </div>
         </div>
@@ -219,7 +217,7 @@ export const FamilyInsights: React.FC<FamilyInsightsProps> = ({ insights }) => {
 
         {/* Success Message */}
         {insights.completionRate === 100 && (
-          <Alert variant="default" className='border-green-200 bg-green-50'>
+          <Alert variant='default' className='border-green-200 bg-green-50'>
             <CheckCircle2 className='h-4 w-4 text-green-600' />
             <AlertDescription className='text-green-800'>
               Congratulations! Your family estate plan is complete. All family

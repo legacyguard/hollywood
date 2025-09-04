@@ -2,7 +2,7 @@ import { Icon, type IconMap } from '@/components/ui/icon-library';
 import { LegacyGuardLogo } from './LegacyGuardLogo';
 import { NavLink } from 'react-router-dom';
 import { UserButton, useUser } from '@clerk/clerk-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from '@/components/ui/language-switcher';
 import {
@@ -52,13 +52,13 @@ export function AppSidebar() {
         {/* Logo Section */}
         <motion.div
           className='p-6 border-b border-sidebar-accent/20'
-          whileHover={{  backgroundColor: 'rgba(var(--sidebar-accent), 0.05)'  }}
-          transition={{  duration: 0.2  }}
+          whileHover={{ backgroundColor: 'rgba(var(--sidebar-accent), 0.05)' }}
+          transition={{ duration: 0.2 }}
         >
           <div className='flex items-center gap-3'>
             <motion.div
-              whileHover={{  scale: 1.05, rotate: 5  }}
-              transition={{  duration: 0.3, ease: 'easeInOut'  }}
+              whileHover={{ scale: 1.05, rotate: 5 }}
+              transition={{ duration: 0.3, ease: 'easeInOut' }}
             >
               <LegacyGuardLogo />
             </motion.div>
@@ -66,10 +66,10 @@ export function AppSidebar() {
               {!collapsed && (
                 <motion.div
                   className='flex flex-col'
-                  initial={{  opacity: 0, width: 0  }}
-                  animate={{  opacity: 1, width: 'auto'  }}
-                  exit={{  opacity: 0, width: 0  }}
-                  transition={{  duration: 0.3  }}
+                  initial={{ opacity: 0, width: 0 }}
+                  animate={{ opacity: 1, width: 'auto' }}
+                  exit={{ opacity: 0, width: 0 }}
+                  transition={{ duration: 0.3 }}
                 >
                   <span className='text-sidebar-text font-semibold text-lg font-heading'>
                     {t('brand')}
@@ -89,9 +89,9 @@ export function AppSidebar() {
                   <SidebarMenuItem key={item.key}>
                     <SidebarMenuButton asChild className='p-0'>
                       <motion.div
-                        initial={{  opacity: 0, x: -20  }}
-                        animate={{  opacity: 1, x: 0  }}
-                        transition={{  duration: 0.3, delay: index * 0.05  }}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.3, delay: index * 0.05 }}
                       >
                         <NavLink
                           to={item.url}
@@ -100,9 +100,9 @@ export function AppSidebar() {
                           title={t(`tooltips.${item.key}`)}
                         >
                           <motion.div
-                            whileHover={{  scale: 1.1  }}
-                            whileTap={{  scale: 0.95  }}
-                            transition={{  duration: 0.2  }}
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.95 }}
+                            transition={{ duration: 0.2 }}
                           >
                             <Icon
                               name={item.icon as keyof typeof IconMap}
@@ -113,10 +113,10 @@ export function AppSidebar() {
                             {!collapsed && (
                               <motion.span
                                 className='text-sm font-medium'
-                                initial={{  opacity: 0, width: 0  }}
-                                animate={{  opacity: 1, width: 'auto'  }}
-                                exit={{  opacity: 0, width: 0  }}
-                                transition={{  duration: 0.2  }}
+                                initial={{ opacity: 0, width: 0 }}
+                                animate={{ opacity: 1, width: 'auto' }}
+                                exit={{ opacity: 0, width: 0 }}
+                                transition={{ duration: 0.2 }}
                               >
                                 {t(`items.${item.key}`)}
                               </motion.span>
@@ -135,13 +135,13 @@ export function AppSidebar() {
         {/* User Profile Section */}
         <motion.div
           className='p-4 mt-auto border-t border-sidebar-accent/20'
-          whileHover={{  backgroundColor: 'rgba(var(--sidebar-accent), 0.05)'  }}
-          transition={{  duration: 0.2  }}
+          whileHover={{ backgroundColor: 'rgba(var(--sidebar-accent), 0.05)' }}
+          transition={{ duration: 0.2 }}
         >
           <div className='flex items-center gap-3'>
             <motion.div
-              whileHover={{  scale: 1.05  }}
-              transition={{  duration: 0.2  }}
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.2 }}
             >
               <UserButton
                 afterSignOutUrl='/sign-in'
@@ -157,10 +157,10 @@ export function AppSidebar() {
               {!collapsed && user && (
                 <motion.div
                   className='flex-1'
-                  initial={{  opacity: 0, width: 0  }}
-                  animate={{  opacity: 1, width: 'auto'  }}
-                  exit={{  opacity: 0, width: 0  }}
-                  transition={{  duration: 0.3  }}
+                  initial={{ opacity: 0, width: 0 }}
+                  animate={{ opacity: 1, width: 'auto' }}
+                  exit={{ opacity: 0, width: 0 }}
+                  transition={{ duration: 0.3 }}
                 >
                   <p className='text-sm font-medium text-sidebar-text'>
                     {user.firstName || user.username || t('user.fallback')}
@@ -183,7 +183,7 @@ export function AppSidebar() {
                 exit={{ opacity: 0, height: 0 }}
                 transition={{ duration: 0.3 }}
               >
-                <LanguageSwitcher variant="sidebar" />
+                <LanguageSwitcher variant='sidebar' />
               </motion.div>
             )}
           </AnimatePresence>

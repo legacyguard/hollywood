@@ -10,111 +10,125 @@ import { supabase } from '@/integrations/supabase/client';
 import type { DocumentAnalysisResult } from './documentAnalyzer';
 
 export interface DocumentMetrics {
-  totalDocuments: number;
-  totalSize: number;
   averageSize: number;
+  categoryDistribution: Record<string, number>;
   documentsThisMonth: number;
   documentsThisWeek: number;
   growthRate: number;
-  categoryDistribution: Record<string, number>;
-  typeDistribution: Record<string, number>;
   securityLevels: Record<string, number>;
+  totalDocuments: number;
+  totalSize: number;
+  typeDistribution: Record<string, number>;
 }
 
 export interface SecurityInsights {
-  documentsWithPII: number;
-  documentsWithoutPasswords: number;
-  documentsNearingExpiry: number;
-  vulnerabilityCount: number;
   complianceScore: number;
+  documentsNearingExpiry: number;
+  documentsWithoutPasswords: number;
+  documentsWithPII: number;
   recommendations: SecurityRecommendation[];
+  vulnerabilityCount: number;
 }
 
 export interface SecurityRecommendation {
-  type: 'password_protection' | 'encryption_upgrade' | 'expiry_update' | 'pii_review' | 'access_control';
-  severity: 'low' | 'medium' | 'high' | 'critical';
-  title: string;
+  actionRequired: boolean;
   description: string;
   documentIds: string[];
-  actionRequired: boolean;
   estimatedTime: string;
+  severity: 'critical' | 'high' | 'low' | 'medium';
+  title: string;
+  type:
+    | 'access_control'
+    | 'encryption_upgrade'
+    | 'expiry_update'
+    | 'password_protection'
+    | 'pii_review';
 }
 
 export interface UsagePatterns {
-  mostActiveHours: number[];
-  mostActiveDays: string[];
   frequentlyAccessedCategories: string[];
+  mostActiveDays: string[];
+  mostActiveHours: number[];
   searchPatterns: string[];
   uploadTrends: {
     daily: number[];
-    weekly: number[];
     monthly: number[];
+    weekly: number[];
   };
   userBehavior: {
     averageSessionDuration: number;
     documentsPerSession: number;
-    searchesPerSession: number;
     mostCommonActions: string[];
+    searchesPerSession: number;
   };
 }
 
 export interface DocumentHealth {
+  duplicates: DuplicateGroup[];
   healthScore: number;
   issues: DocumentIssue[];
-  duplicates: DuplicateGroup[];
-  orphanedFiles: string[];
   largeSizeWarnings: string[];
   oldDocuments: string[];
+  orphanedFiles: string[];
 }
 
 export interface DocumentIssue {
-  id: string;
-  type: 'missing_metadata' | 'corrupted_file' | 'access_denied' | 'invalid_format' | 'security_concern';
-  severity: 'low' | 'medium' | 'high';
-  documentId: string;
-  description: string;
-  resolution: string;
   autoFixable: boolean;
+  description: string;
+  documentId: string;
+  id: string;
+  resolution: string;
+  severity: 'high' | 'low' | 'medium';
+  type:
+    | 'access_denied'
+    | 'corrupted_file'
+    | 'invalid_format'
+    | 'missing_metadata'
+    | 'security_concern';
 }
 
 export interface DuplicateGroup {
-  hash: string;
   documents: Array<{
     id: string;
     name: string;
     size: number;
     uploadedAt: string;
   }>;
+  hash: string;
+  recommendedAction: 'keep_largest' | 'keep_newest' | 'manual_review';
   similarity: number;
-  recommendedAction: 'keep_newest' | 'keep_largest' | 'manual_review';
 }
 
 export interface InsightsDashboardData {
-  overview: DocumentMetrics;
-  security: SecurityInsights;
-  usage: UsagePatterns;
   health: DocumentHealth;
-  trends: {
-    storageGrowth: Array<{ date: string; size: number; count: number }>;
-    categoryTrends: Array<{ category: string; trend: 'up' | 'down' | 'stable'; change: number }>;
-    securityTrends: Array<{ date: string; score: number; issues: number }>;
-  };
+  overview: DocumentMetrics;
   predictions: {
-    storageNeeded: number;
+    costProjection: number;
     documentsExpected: number;
     maintenanceRequired: string[];
-    costProjection: number;
+    storageNeeded: number;
   };
+  security: SecurityInsights;
+  trends: {
+    categoryTrends: Array<{
+      category: string;
+      change: number;
+      trend: 'down' | 'stable' | 'up';
+    }>;
+    securityTrends: Array<{ date: string; issues: number; score: number }>;
+    storageGrowth: Array<{ count: number; date: string; size: number }>;
+  };
+  usage: UsagePatterns;
 }
 
 export interface AnalyticsFilter {
-  dateRange?: {
-    start: Date;
-    end: Date;
-  };
   categories?: string[];
-  types?: string[];
+  dateRange?: {
+    end: Date;
+    start: Date;
+  };
   securityLevels?: string[];
+  types?: string[];
   userId?: string;
 }
 
@@ -134,20 +148,23 @@ export class DocumentInsightsService {
   /**
    * Get comprehensive dashboard data with all insights
    */
-  async getDashboardData(filter?: AnalyticsFilter): Promise<InsightsDashboardData> {
+  async getDashboardData(
+    filter?: AnalyticsFilter
+  ): Promise<InsightsDashboardData> {
     const cacheKey = `dashboard_${JSON.stringify(filter)}`;
     const cached = this.getFromCache(cacheKey);
     if (cached) return cached;
 
     try {
-      const [overview, security, usage, health, trends, predictions] = await Promise.all([
-        this.getDocumentMetrics(filter),
-        this.getSecurityInsights(filter),
-        this.getUsagePatterns(filter),
-        this.getDocumentHealth(filter),
-        this.getTrends(filter),
-        this.getPredictions(filter)
-      ]);
+      const [overview, security, usage, health, trends, predictions] =
+        await Promise.all([
+          this.getDocumentMetrics(filter),
+          this.getSecurityInsights(filter),
+          this.getUsagePatterns(filter),
+          this.getDocumentHealth(filter),
+          this.getTrends(filter),
+          this.getPredictions(filter),
+        ]);
 
       const dashboardData: InsightsDashboardData = {
         overview,
@@ -155,7 +172,7 @@ export class DocumentInsightsService {
         usage,
         health,
         trends,
-        predictions
+        predictions,
       };
 
       this.setCache(cacheKey, dashboardData);
@@ -178,48 +195,61 @@ export class DocumentInsightsService {
     const thisWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
     const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
 
-    const docsThisMonth = filteredDocs.filter(doc =>
-      new Date(doc.created_at) >= thisMonth
+    const docsThisMonth = filteredDocs.filter(
+      doc => new Date(doc.created_at) >= thisMonth
     );
-    const docsThisWeek = filteredDocs.filter(doc =>
-      new Date(doc.created_at) >= thisWeek
+    const docsThisWeek = filteredDocs.filter(
+      doc => new Date(doc.created_at) >= thisWeek
     );
     const docsLastMonth = filteredDocs.filter(doc => {
       const docDate = new Date(doc.created_at);
       return docDate >= lastMonth && docDate < thisMonth;
     });
 
-    const totalSize = filteredDocs.reduce((sum, doc) => sum + (doc.size || 0), 0);
+    const totalSize = filteredDocs.reduce(
+      (sum, doc) => sum + (doc.size || 0),
+      0
+    );
     const categoryDist = this.getDistribution(filteredDocs, 'category');
     const typeDist = this.getDistribution(filteredDocs, 'type');
     const securityDist = this.getDistribution(filteredDocs, 'security_level');
 
-    const growthRate = docsLastMonth.length > 0
-      ? ((docsThisMonth.length - docsLastMonth.length) / docsLastMonth.length) * 100
-      : docsThisMonth.length > 0 ? 100 : 0;
+    const growthRate =
+      docsLastMonth.length > 0
+        ? ((docsThisMonth.length - docsLastMonth.length) /
+            docsLastMonth.length) *
+          100
+        : docsThisMonth.length > 0
+          ? 100
+          : 0;
 
     return {
       totalDocuments: filteredDocs.length,
       totalSize,
-      averageSize: filteredDocs.length > 0 ? totalSize / filteredDocs.length : 0,
+      averageSize:
+        filteredDocs.length > 0 ? totalSize / filteredDocs.length : 0,
       documentsThisMonth: docsThisMonth.length,
       documentsThisWeek: docsThisWeek.length,
       growthRate,
       categoryDistribution: categoryDist,
       typeDistribution: typeDist,
-      securityLevels: securityDist
+      securityLevels: securityDist,
     };
   }
 
   /**
    * Get security insights and recommendations
    */
-  async getSecurityInsights(filter?: AnalyticsFilter): Promise<SecurityInsights> {
+  async getSecurityInsights(
+    filter?: AnalyticsFilter
+  ): Promise<SecurityInsights> {
     // Using mock data for now until Supabase table is set up
     const documents = this.generateMockDocuments();
     const filteredDocs = this.applyFilter(documents || [], filter);
     const now = new Date();
-    const thirtyDaysFromNow = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+    const thirtyDaysFromNow = new Date(
+      now.getTime() + 30 * 24 * 60 * 60 * 1000
+    );
 
     let documentsWithPII = 0;
     let documentsWithoutPasswords = 0;
@@ -243,7 +273,10 @@ export class DocumentInsightsService {
 
       if (!doc.is_password_protected) {
         documentsWithoutPasswords++;
-        if (analysis?.category === 'financial' || analysis?.category === 'legal') {
+        if (
+          (analysis?.category as any) === 'financial' ||
+          (analysis?.category as any) === 'legal'
+        ) {
           recommendations.push({
             type: 'password_protection',
             severity: 'high',
@@ -251,14 +284,16 @@ export class DocumentInsightsService {
             description: `${doc.name} contains sensitive information and should be password protected`,
             documentIds: [doc.id],
             actionRequired: true,
-            estimatedTime: '2 minutes'
+            estimatedTime: '2 minutes',
           });
         }
       }
 
       // Check for vulnerability indicators in recommendations
       if (analysis?.recommendations?.some(r => r.type === 'security')) {
-        vulnerabilityCount += analysis.recommendations.filter(r => r.type === 'security').length;
+        vulnerabilityCount += analysis.recommendations.filter(
+          r => r.type === 'security'
+        ).length;
       }
     });
 
@@ -270,10 +305,13 @@ export class DocumentInsightsService {
         title: 'Update Document Expiry Dates',
         description: `${documentsNearingExpiry} documents are expiring within 30 days`,
         documentIds: filteredDocs
-          .filter(doc => doc.expiry_date && new Date(doc.expiry_date) <= thirtyDaysFromNow)
+          .filter(
+            doc =>
+              doc.expiry_date && new Date(doc.expiry_date) <= thirtyDaysFromNow
+          )
           .map(doc => doc.id),
         actionRequired: false,
-        estimatedTime: '5 minutes'
+        estimatedTime: '5 minutes',
       });
     }
 
@@ -285,7 +323,7 @@ export class DocumentInsightsService {
       documentsNearingExpiry,
       vulnerabilityCount,
       complianceScore,
-      recommendations: recommendations.slice(0, 10) // Limit to top 10
+      recommendations: recommendations.slice(0, 10), // Limit to top 10
     };
   }
 
@@ -322,12 +360,12 @@ export class DocumentInsightsService {
       .map(item => item.hour);
 
     const mostActiveDays = Object.entries(dailyUploads)
-      .sort(([,a], [,b]) => b - a)
+      .sort(([, a], [, b]) => b - a)
       .slice(0, 3)
       .map(([day]) => day);
 
     const frequentlyAccessedCategories = Object.entries(categoryAccess)
-      .sort(([,a], [,b]) => b - a)
+      .sort(([, a], [, b]) => b - a)
       .slice(0, 5)
       .map(([category]) => category);
 
@@ -339,14 +377,14 @@ export class DocumentInsightsService {
       uploadTrends: {
         daily: this.generateTrendData(7),
         weekly: this.generateTrendData(4),
-        monthly: this.generateTrendData(12)
+        monthly: this.generateTrendData(12),
       },
       userBehavior: {
         averageSessionDuration: 12.5, // minutes
         documentsPerSession: 3.2,
         searchesPerSession: 1.8,
-        mostCommonActions: ['upload', 'view', 'search', 'organize']
-      }
+        mostCommonActions: ['upload', 'view', 'search', 'organize'],
+      },
     };
   }
 
@@ -378,7 +416,7 @@ export class DocumentInsightsService {
           documentId: doc.id,
           description: 'Document is missing category or type information',
           resolution: 'Update document metadata through the document editor',
-          autoFixable: false
+          autoFixable: false,
         });
       }
 
@@ -394,7 +432,11 @@ export class DocumentInsightsService {
 
       // Check for security concerns
       const analysis = doc.analysis_result as DocumentAnalysisResult;
-      if (analysis?.piiDetected && analysis.piiDetected.length > 0 && !doc.is_password_protected) {
+      if (
+        analysis?.piiDetected &&
+        analysis.piiDetected.length > 0 &&
+        !doc.is_password_protected
+      ) {
         issues.push({
           id: `security_${doc.id}`,
           type: 'security_concern',
@@ -402,7 +444,7 @@ export class DocumentInsightsService {
           documentId: doc.id,
           description: 'Document contains PII but is not password protected',
           resolution: 'Add password protection to this document',
-          autoFixable: false
+          autoFixable: false,
         });
       }
     });
@@ -417,10 +459,10 @@ export class DocumentInsightsService {
             id: doc.id,
             name: doc.name,
             size: doc.size || 0,
-            uploadedAt: doc.created_at
+            uploadedAt: doc.created_at,
           })),
           similarity: group.similarity,
-          recommendedAction: 'manual_review'
+          recommendedAction: 'manual_review',
         });
       }
     });
@@ -438,7 +480,7 @@ export class DocumentInsightsService {
       duplicates,
       orphanedFiles,
       largeSizeWarnings,
-      oldDocuments
+      oldDocuments,
     };
   }
 
@@ -451,26 +493,26 @@ export class DocumentInsightsService {
     const storageGrowth = dates.map(date => ({
       date: date.toISOString().split('T')[0],
       size: Math.floor(Math.random() * 1000000) + 5000000,
-      count: Math.floor(Math.random() * 50) + 100
+      count: Math.floor(Math.random() * 50) + 100,
     }));
 
     const categoryTrends = [
       { category: 'financial', trend: 'up' as const, change: 15.2 },
       { category: 'legal', trend: 'stable' as const, change: 2.1 },
       { category: 'personal', trend: 'up' as const, change: 8.7 },
-      { category: 'medical', trend: 'down' as const, change: -3.4 }
+      { category: 'medical', trend: 'down' as const, change: -3.4 },
     ];
 
     const securityTrends = dates.map(date => ({
       date: date.toISOString().split('T')[0],
       score: Math.floor(Math.random() * 20) + 80,
-      issues: Math.floor(Math.random() * 5)
+      issues: Math.floor(Math.random() * 5),
     }));
 
     return {
       storageGrowth,
       categoryTrends,
-      securityTrends
+      securityTrends,
     };
   }
 
@@ -485,18 +527,22 @@ export class DocumentInsightsService {
       maintenanceRequired: [
         'Review password protection for financial documents',
         'Update expiry dates for 12 documents',
-        'Organize uncategorized documents'
+        'Organize uncategorized documents',
       ],
-      costProjection: 29.99 // USD per month
+      costProjection: 29.99, // USD per month
     };
   }
 
   /**
    * Generate actionable recommendations based on insights
    */
-  async getRecommendations(filter?: AnalyticsFilter): Promise<SecurityRecommendation[]> {
+  async getRecommendations(
+    filter?: AnalyticsFilter
+  ): Promise<SecurityRecommendation[]> {
     const insights = await this.getDashboardData(filter);
-    const recommendations: SecurityRecommendation[] = [...insights.security.recommendations];
+    const recommendations: SecurityRecommendation[] = [
+      ...insights.security.recommendations,
+    ];
 
     // Add performance recommendations
     if (insights.health.largeSizeWarnings.length > 5) {
@@ -507,22 +553,26 @@ export class DocumentInsightsService {
         description: `${insights.health.largeSizeWarnings.length} files are larger than 10MB. Consider compression.`,
         documentIds: insights.health.largeSizeWarnings,
         actionRequired: false,
-        estimatedTime: '10 minutes'
+        estimatedTime: '10 minutes',
       });
     }
 
     // Add organization recommendations
-    if (insights.health.issues.filter(i => i.type === 'missing_metadata').length > 10) {
+    if (
+      insights.health.issues.filter(i => i.type === 'missing_metadata').length >
+      10
+    ) {
       recommendations.push({
         type: 'access_control',
         severity: 'low',
         title: 'Improve Document Organization',
-        description: 'Many documents are missing categories and tags. Better organization improves searchability.',
+        description:
+          'Many documents are missing categories and tags. Better organization improves searchability.',
         documentIds: insights.health.issues
           .filter(i => i.type === 'missing_metadata')
           .map(i => i.documentId),
         actionRequired: false,
-        estimatedTime: '15 minutes'
+        estimatedTime: '15 minutes',
       });
     }
 
@@ -535,7 +585,10 @@ export class DocumentInsightsService {
   /**
    * Export insights data for reporting
    */
-  async exportInsights(format: 'json' | 'csv' = 'json', filter?: AnalyticsFilter): Promise<string> {
+  async exportInsights(
+    format: 'csv' | 'json' = 'json',
+    filter?: AnalyticsFilter
+  ): Promise<string> {
     const data = await this.getDashboardData(filter);
 
     if (format === 'csv') {
@@ -553,7 +606,10 @@ export class DocumentInsightsService {
     return documents.filter(doc => {
       if (filter.dateRange) {
         const docDate = new Date(doc.created_at);
-        if (docDate < filter.dateRange.start || docDate > filter.dateRange.end) {
+        if (
+          docDate < filter.dateRange.start ||
+          docDate > filter.dateRange.end
+        ) {
           return false;
         }
       }
@@ -566,7 +622,10 @@ export class DocumentInsightsService {
         return false;
       }
 
-      if (filter.securityLevels && !filter.securityLevels.includes(doc.security_level)) {
+      if (
+        filter.securityLevels &&
+        !filter.securityLevels.includes(doc.security_level)
+      ) {
         return false;
       }
 
@@ -578,7 +637,10 @@ export class DocumentInsightsService {
     });
   }
 
-  private getDistribution(documents: any[], field: string): Record<string, number> {
+  private getDistribution(
+    documents: any[],
+    field: string
+  ): Record<string, number> {
     const distribution: Record<string, number> = {};
     documents.forEach(doc => {
       const value = doc[field] || 'unknown';
@@ -597,17 +659,28 @@ export class DocumentInsightsService {
       const analysis = doc.analysis_result as DocumentAnalysisResult;
 
       // Check for PII without protection
-      if (analysis?.piiDetected && analysis.piiDetected.length > 0 && !doc.is_password_protected) {
+      if (
+        analysis?.piiDetected &&
+        analysis.piiDetected.length > 0 &&
+        !doc.is_password_protected
+      ) {
         issues++;
       }
 
       // Check for missing expiry dates on important documents
-      if ((doc.category === 'financial' || doc.category === 'legal') && !doc.expiry_date) {
+      if (
+        (doc.category === 'financial' || doc.category === 'legal') &&
+        !doc.expiry_date
+      ) {
         issues++;
       }
 
       // Check for old analysis results
-      if (analysis && new Date(analysis.timestamp) < new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)) {
+      if (
+        analysis &&
+        new Date(analysis.timestamp) <
+          new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+      ) {
         issues++;
       }
     });
@@ -618,38 +691,64 @@ export class DocumentInsightsService {
     return Math.max(0, Math.round(score));
   }
 
-  private calculateHealthScore(totalDocs: number, issues: number, duplicates: number, orphaned: number): number {
+  private calculateHealthScore(
+    totalDocs: number,
+    issues: number,
+    duplicates: number,
+    orphaned: number
+  ): number {
     if (totalDocs === 0) return 100;
 
     const issueWeight = 0.6;
     const duplicateWeight = 0.3;
     const orphanedWeight = 0.1;
 
-    const issueScore = Math.max(0, 100 - (issues / totalDocs) * 100 * issueWeight);
-    const duplicateScore = Math.max(0, 100 - (duplicates / totalDocs) * 100 * duplicateWeight);
-    const orphanedScore = Math.max(0, 100 - (orphaned / totalDocs) * 100 * orphanedWeight);
+    const issueScore = Math.max(
+      0,
+      100 - (issues / totalDocs) * 100 * issueWeight
+    );
+    const duplicateScore = Math.max(
+      0,
+      100 - (duplicates / totalDocs) * 100 * duplicateWeight
+    );
+    const orphanedScore = Math.max(
+      0,
+      100 - (orphaned / totalDocs) * 100 * orphanedWeight
+    );
 
     return Math.round(issueScore + duplicateScore + orphanedScore);
   }
 
-  private groupSimilarFiles(documents: any[]): Array<{ hash: string; documents: any[]; similarity: number }> {
-    const groups: Array<{ hash: string; documents: any[]; similarity: number }> = [];
+  private groupSimilarFiles(
+    documents: any[]
+  ): Array<{ documents: any[]; hash: string; similarity: number }> {
+    const groups: Array<{
+      documents: any[];
+      hash: string;
+      similarity: number;
+    }> = [];
     const processed = new Set<string>();
 
     documents.forEach(doc => {
       if (processed.has(doc.id)) return;
 
-      const similar = documents.filter(other =>
-        other.id !== doc.id &&
-        !processed.has(other.id) &&
-        this.calculateFileSimilarity(doc.name, other.name) > 0.8
+      const similar = documents.filter(
+        other =>
+          other.id !== doc.id &&
+          !processed.has(other.id) &&
+          this.calculateFileSimilarity(doc.name, other.name) > 0.8
       );
 
       if (similar.length > 0) {
         const group = {
-          hash: this.generateHash([doc, ...similar].map(d => d.id).sort().join('')),
+          hash: this.generateHash(
+            [doc, ...similar]
+              .map(d => d.id)
+              .sort()
+              .join('')
+          ),
           documents: [doc, ...similar],
-          similarity: 0.8
+          similarity: 0.8,
         };
         groups.push(group);
 
@@ -661,7 +760,8 @@ export class DocumentInsightsService {
   }
 
   private calculateFileSimilarity(name1: string, name2: string): number {
-    const normalize = (str: string) => str.toLowerCase().replace(/[^a-z0-9]/g, '');
+    const normalize = (str: string) =>
+      str.toLowerCase().replace(/[^a-z0-9]/g, '');
     const n1 = normalize(name1);
     const n2 = normalize(name2);
 
@@ -684,14 +784,17 @@ export class DocumentInsightsService {
     let hash = 0;
     for (let i = 0; i < input.length; i++) {
       const char = input.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32-bit integer
     }
     return Math.abs(hash).toString(16);
   }
 
   private generateTrendData(periods: number): number[] {
-    return Array.from({ length: periods }, () => Math.floor(Math.random() * 50) + 10);
+    return Array.from(
+      { length: periods },
+      () => Math.floor(Math.random() * 50) + 10
+    );
   }
 
   private getLast30Days(): Date[] {
@@ -760,15 +863,15 @@ export class DocumentInsightsService {
   async getRealTimeMetrics(): Promise<{
     activeUsers: number;
     documentsProcessing: number;
-    systemLoad: number;
     storageUsed: number;
+    systemLoad: number;
   }> {
     // In a real implementation, this would connect to real-time monitoring
     return {
       activeUsers: Math.floor(Math.random() * 10) + 1,
       documentsProcessing: Math.floor(Math.random() * 5),
       systemLoad: Math.random() * 100,
-      storageUsed: Math.random() * 80 + 20
+      storageUsed: Math.random() * 80 + 20,
     };
   }
 
@@ -776,7 +879,13 @@ export class DocumentInsightsService {
    * Generate mock documents for testing
    */
   private generateMockDocuments(): any[] {
-    const categories = ['financial', 'legal', 'personal', 'medical', 'insurance'];
+    const categories = [
+      'financial',
+      'legal',
+      'personal',
+      'medical',
+      'insurance',
+    ];
     const types = ['pdf', 'docx', 'jpg', 'png', 'xlsx'];
     const securityLevels = ['public', 'private', 'confidential', 'restricted'];
     const now = new Date();
@@ -785,8 +894,11 @@ export class DocumentInsightsService {
     // Generate realistic mock documents
     for (let i = 0; i < 45; i++) {
       const daysAgo = Math.floor(Math.random() * 180); // Random date within last 6 months
-      const created_at = new Date(now.getTime() - daysAgo * 24 * 60 * 60 * 1000);
-      const category = categories[Math.floor(Math.random() * categories.length)];
+      const created_at = new Date(
+        now.getTime() - daysAgo * 24 * 60 * 60 * 1000
+      );
+      const category =
+        categories[Math.floor(Math.random() * categories.length)];
       const type = types[Math.floor(Math.random() * types.length)];
       const hasExpiry = Math.random() > 0.5;
       const expiryDays = Math.floor(Math.random() * 365) - 30; // -30 to +335 days from now
@@ -802,20 +914,30 @@ export class DocumentInsightsService {
         created_at: created_at.toISOString(),
         updated_at: created_at.toISOString(),
         user_id: 'user_1',
-        security_level: securityLevels[Math.floor(Math.random() * securityLevels.length)],
+        security_level:
+          securityLevels[Math.floor(Math.random() * securityLevels.length)],
         is_password_protected: isPasswordProtected,
-        expiry_date: hasExpiry ? new Date(now.getTime() + expiryDays * 24 * 60 * 60 * 1000).toISOString() : null,
+        expiry_date: hasExpiry
+          ? new Date(
+              now.getTime() + expiryDays * 24 * 60 * 60 * 1000
+            ).toISOString()
+          : null,
         analysis_result: {
           category,
           piiDetection: {
             hasPII,
-            types: hasPII ? ['ssn', 'email', 'phone'].slice(0, Math.floor(Math.random() * 3) + 1) : []
+            types: hasPII
+              ? ['ssn', 'email', 'phone'].slice(
+                  0,
+                  Math.floor(Math.random() * 3) + 1
+                )
+              : [],
           },
           security: {
-            vulnerabilities: Math.random() > 0.8 ? ['outdated_encryption'] : []
+            vulnerabilities: Math.random() > 0.8 ? ['outdated_encryption'] : [],
           },
-          timestamp: created_at.toISOString()
-        }
+          timestamp: created_at.toISOString(),
+        },
       });
     }
 

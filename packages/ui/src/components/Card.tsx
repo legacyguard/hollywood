@@ -1,4 +1,4 @@
-import { type GetProps, styled, View, Text } from 'tamagui'
+import { type GetProps, styled, Text, View } from 'tamagui';
 
 // Main Card container
 export const Card = styled(View, {
@@ -114,7 +114,7 @@ export const Card = styled(View, {
     clickable: false,
     fullWidth: false,
   },
-})
+});
 
 // Card Header
 export const CardHeader = styled(View, {
@@ -139,7 +139,7 @@ export const CardHeader = styled(View, {
   defaultVariants: {
     noBorder: false,
   },
-})
+});
 
 // Card Title
 export const CardTitle = styled(Text, {
@@ -148,7 +148,7 @@ export const CardTitle = styled(Text, {
   fontWeight: '$5',
   color: '$color',
   fontFamily: '$heading',
-})
+});
 
 // Card Description
 export const CardDescription = styled(Text, {
@@ -157,13 +157,13 @@ export const CardDescription = styled(Text, {
   color: '$gray6',
   fontFamily: '$body',
   marginTop: '$1',
-})
+});
 
 // Card Content
 export const CardContent = styled(View, {
   name: 'LGCardContent',
   flex: 1,
-})
+});
 
 // Card Footer
 export const CardFooter = styled(View, {
@@ -199,12 +199,12 @@ export const CardFooter = styled(View, {
       },
     },
   },
-})
+});
 
 // Export types
-export type CardProps = GetProps<typeof Card>
-export type CardHeaderProps = GetProps<typeof CardHeader>
-export type CardTitleProps = GetProps<typeof CardTitle>
-export type CardDescriptionProps = GetProps<typeof CardDescription>
-export type CardContentProps = GetProps<typeof CardContent>
-export type CardFooterProps = GetProps<typeof CardFooter>
+export type CardProps = GetProps<typeof Card>;
+export type CardHeaderProps = GetProps<typeof CardHeader>;
+export type CardTitleProps = GetProps<typeof CardTitle>;
+export type CardDescriptionProps = GetProps<typeof CardDescription>;
+export type CardContentProps = GetProps<typeof CardContent>;
+export type CardFooterProps = GetProps<typeof CardFooter>;

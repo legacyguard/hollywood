@@ -10,37 +10,40 @@
  * - Versioned encryption for future migrations
  */
 
-import type { DBSchema, IDBPDatabase } from 'idb';
-import { openDB } from 'idb';
+import { type DBSchema, type IDBPDatabase, openDB } from 'idb';
 
 // IndexedDB Schema
 interface KeyStoreDB extends DBSchema {
   keystore: {
+    indexes: {
+      lastUsed: number;
+      version: string;
+    };
     key: string;
     value: {
-      id: string;
-      wrappedKeyBundle: ArrayBuffer;
-      salt: Uint8Array;
-      iv: Uint8Array;
-      version: string;
       algorithm: string;
       createdAt: number;
+      id: string;
+      iv: Uint8Array;
       lastUsed: number;
+      salt: Uint8Array;
+      version: string;
+      wrappedKeyBundle: ArrayBuffer;
     };
   };
   metadata: {
     key: string;
     value: {
-      userId: string;
-      keyVersion: string;
-      securityLevel: 'standard' | 'premium';
       createdAt: number;
+      keyVersion: string;
+      securityLevel: 'premium' | 'standard';
+      userId: string;
     };
   };
 }
 
 // Key types for different purposes
-export type KeyPurpose = 'document' | 'sharing' | 'master' | 'backup';
+export type KeyPurpose = 'backup' | 'document' | 'master' | 'sharing';
 
 // Encryption algorithm configuration
 const ENCRYPTION_CONFIG = {
@@ -63,7 +66,10 @@ const ENCRYPTION_CONFIG = {
 
 // Error types
 export class SecureKeyError extends Error {
-  constructor(message: string, public code: string) {
+  constructor(
+    message: string,
+    public code: string
+  ) {
     super(message);
     this.name = 'SecureKeyError';
   }
@@ -72,7 +78,7 @@ export class SecureKeyError extends Error {
 export class SecureKeyManager {
   private db: IDBPDatabase<KeyStoreDB> | null = null;
   private activeKeys: Map<string, CryptoKey> = new Map();
-  private userId: string | null = null;
+  private userId: null | string = null;
 
   /**
    * Initialize the secure key manager
@@ -128,15 +134,15 @@ export class SecureKeyManager {
       // Derive wrapping key using PBKDF2
       const key = await crypto.subtle.deriveKey(
         {
-          name: ENCRYPTION_CONFIG.keyDerivation.name,
-          salt,
-          iterations: ENCRYPTION_CONFIG.keyDerivation.iterations,
-          hash: ENCRYPTION_CONFIG.keyDerivation.hash,
+          name: 'PBKDF2',
+          salt: salt as unknown as ArrayBuffer,
+          iterations: 100000,
+          hash: 'SHA-256',
         },
         keyMaterial,
         {
-          name: ENCRYPTION_CONFIG.wrapping.name,
-          length: ENCRYPTION_CONFIG.wrapping.length,
+          name: 'AES-KW',
+          length: 256,
         },
         false, // non-extractable
         ['wrapKey', 'unwrapKey']
@@ -179,18 +185,24 @@ export class SecureKeyManager {
    */
   async createUserKeys(password: string): Promise<void> {
     if (!this.db || !this.userId) {
-      throw new SecureKeyError('Key manager not initialized', 'NOT_INITIALIZED');
+      throw new SecureKeyError(
+        'Key manager not initialized',
+        'NOT_INITIALIZED'
+      );
     }
 
     try {
       // Derive wrapping key from password
-      const { key: wrappingKey, salt } = await this.deriveKeyFromPassword(password);
+      const { key: wrappingKey, salt } =
+        await this.deriveKeyFromPassword(password);
 
       // Generate master encryption key
       const masterKey = await this.generateEncryptionKey('master');
 
       // Generate IV for wrapping
-      const iv = crypto.getRandomValues(new Uint8Array(ENCRYPTION_CONFIG.encryption.ivLength));
+      const iv = crypto.getRandomValues(
+        new Uint8Array(ENCRYPTION_CONFIG.encryption.ivLength)
+      );
 
       // Wrap the master key with the password-derived key
       const wrappedKeyBundle = await crypto.subtle.wrapKey(
@@ -241,7 +253,10 @@ export class SecureKeyManager {
    */
   async unlockKeys(password: string): Promise<boolean> {
     if (!this.db || !this.userId) {
-      throw new SecureKeyError('Key manager not initialized', 'NOT_INITIALIZED');
+      throw new SecureKeyError(
+        'Key manager not initialized',
+        'NOT_INITIALIZED'
+      );
     }
 
     try {
@@ -291,18 +306,23 @@ export class SecureKeyManager {
   /**
    * Encrypt data with user's master key
    */
-  async encryptData(data: ArrayBuffer | Uint8Array): Promise<{
+  async encryptData(data: BufferSource): Promise<{
     encryptedData: ArrayBuffer;
     iv: Uint8Array;
     version: string;
   }> {
     const masterKey = this.activeKeys.get('master');
     if (!masterKey) {
-      throw new SecureKeyError('Master key not available - unlock first', 'KEY_LOCKED');
+      throw new SecureKeyError(
+        'Master key not available - unlock first',
+        'KEY_LOCKED'
+      );
     }
 
     try {
-      const iv = crypto.getRandomValues(new Uint8Array(ENCRYPTION_CONFIG.encryption.ivLength));
+      const iv = crypto.getRandomValues(
+        new Uint8Array(ENCRYPTION_CONFIG.encryption.ivLength)
+      );
 
       const encryptedData = await crypto.subtle.encrypt(
         {
@@ -328,19 +348,21 @@ export class SecureKeyManager {
    */
   async decryptData(
     encryptedData: ArrayBuffer,
-    iv: Uint8Array,
-    version?: string
+    iv: Uint8Array
   ): Promise<ArrayBuffer> {
     const masterKey = this.activeKeys.get('master');
     if (!masterKey) {
-      throw new SecureKeyError('Master key not available - unlock first', 'KEY_LOCKED');
+      throw new SecureKeyError(
+        'Master key not available - unlock first',
+        'KEY_LOCKED'
+      );
     }
 
     try {
       const decryptedData = await crypto.subtle.decrypt(
         {
           name: ENCRYPTION_CONFIG.encryption.name,
-          iv,
+          iv: iv as unknown as ArrayBuffer,
         },
         masterKey,
         encryptedData
@@ -382,7 +404,10 @@ export class SecureKeyManager {
         keyId,
       };
     } catch (error) {
-      throw new SecureKeyError('Failed to generate file key', 'FILE_KEY_GENERATION_FAILED');
+      throw new SecureKeyError(
+        'Failed to generate file key',
+        'FILE_KEY_GENERATION_FAILED'
+      );
     }
   }
 
@@ -407,13 +432,15 @@ export class SecureKeyManager {
   private async cleanupOldKeys(): Promise<void> {
     if (!this.db) return;
 
-    const oneWeekAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
+    const oneWeekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
 
     try {
       const tx = this.db.transaction('keystore', 'readwrite');
-      const index = tx.store.index('lastUsed');
+      const index = tx.store.index('lastUsed' as any);
 
-      for await (const cursor of index.iterate(IDBKeyRange.upperBound(oneWeekAgo))) {
+      for await (const cursor of index.iterate(
+        IDBKeyRange.upperBound(oneWeekAgo)
+      )) {
         if (cursor.value.id !== 'master') {
           await cursor.delete();
         }
@@ -428,9 +455,15 @@ export class SecureKeyManager {
   /**
    * Change user password (re-wrap keys)
    */
-  async changePassword(oldPassword: string, newPassword: string): Promise<boolean> {
+  async changePassword(
+    oldPassword: string,
+    newPassword: string
+  ): Promise<boolean> {
     if (!this.db || !this.userId) {
-      throw new SecureKeyError('Key manager not initialized', 'NOT_INITIALIZED');
+      throw new SecureKeyError(
+        'Key manager not initialized',
+        'NOT_INITIALIZED'
+      );
     }
 
     try {
@@ -446,10 +479,13 @@ export class SecureKeyManager {
       }
 
       // Derive new wrapping key from new password
-      const { key: newWrappingKey, salt: newSalt } = await this.deriveKeyFromPassword(newPassword);
+      const { key: newWrappingKey, salt: newSalt } =
+        await this.deriveKeyFromPassword(newPassword);
 
       // Re-wrap master key with new password
-      const newIv = crypto.getRandomValues(new Uint8Array(ENCRYPTION_CONFIG.encryption.ivLength));
+      const newIv = crypto.getRandomValues(
+        new Uint8Array(ENCRYPTION_CONFIG.encryption.ivLength)
+      );
       const newWrappedKeyBundle = await crypto.subtle.wrapKey(
         'raw',
         masterKey,
@@ -494,7 +530,10 @@ export class SecureKeyManager {
 
     // Implementation would create encrypted backup of key data
     // This is a security-critical feature for premium users
-    throw new SecureKeyError('Recovery export not yet implemented', 'NOT_IMPLEMENTED');
+    throw new SecureKeyError(
+      'Recovery export not yet implemented',
+      'NOT_IMPLEMENTED'
+    );
   }
 
   /**
@@ -509,7 +548,7 @@ export class SecureKeyManager {
 }
 
 // Singleton instance
-let secureKeyManager: SecureKeyManager | null = null;
+let secureKeyManager: null | SecureKeyManager = null;
 
 /**
  * Get the singleton secure key manager instance
@@ -524,7 +563,9 @@ export const getSecureKeyManager = (): SecureKeyManager => {
 /**
  * Initialize secure key manager for a user
  */
-export const initializeSecureKeys = async (userId: string): Promise<SecureKeyManager> => {
+export const initializeSecureKeys = async (
+  userId: string
+): Promise<SecureKeyManager> => {
   const manager = getSecureKeyManager();
   await manager.initialize(userId);
   return manager;

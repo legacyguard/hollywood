@@ -38,7 +38,10 @@ export class KeyManagementService {
   /**
    * Derive an encryption key from a password using PBKDF2
    */
-  async deriveKeyFromPassword(password: string, salt: Uint8Array): Promise<Uint8Array> {
+  async deriveKeyFromPassword(
+    password: string,
+    salt: Uint8Array
+  ): Promise<Uint8Array> {
     const encoder = new TextEncoder();
     const passwordData = encoder.encode(password);
 
@@ -99,7 +102,11 @@ export class KeyManagementService {
       const nonceBytes = decodeBase64(nonce);
       const encryptedBytes = decodeBase64(encryptedKey);
 
-      const decrypted = nacl.secretbox.open(encryptedBytes, nonceBytes, derivedKey);
+      const decrypted = nacl.secretbox.open(
+        encryptedBytes,
+        nonceBytes,
+        derivedKey
+      );
 
       if (!decrypted) {
         return null;
@@ -232,14 +239,12 @@ export class KeyManagementService {
 
       // Log rotation in history
       if (success) {
-        await this.supabase
-          .from('key_rotation_history')
-          .insert({
-            user_id: userId,
-            rotation_reason: 'Password change',
-            rotation_method: 'Manual',
-            rotated_at: new Date().toISOString(),
-          });
+        await this.supabase.from('key_rotation_history').insert({
+          user_id: userId,
+          rotation_reason: 'Password change',
+          rotation_method: 'Manual',
+          rotated_at: new Date().toISOString(),
+        });
       }
 
       return success;
@@ -259,22 +264,20 @@ export class KeyManagementService {
         .update({
           is_compromised: true,
           is_active: false,
-          compromised_at: new Date().toISOString()
+          compromised_at: new Date().toISOString(),
         })
         .eq('user_id', userId)
         .eq('is_active', true);
 
       if (!error) {
         // Log the compromise
-        await this.supabase
-          .from('key_access_logs')
-          .insert({
-            user_id: userId,
-            operation: 'compromise',
-            success: true,
-            timestamp: new Date().toISOString(),
-            details: 'Key marked as compromised by user',
-          });
+        await this.supabase.from('key_access_logs').insert({
+          user_id: userId,
+          operation: 'compromise',
+          success: true,
+          timestamp: new Date().toISOString(),
+          details: 'Key marked as compromised by user',
+        });
       }
 
       return !error;
@@ -308,7 +311,10 @@ export class KeyManagementService {
     return Math.min(score, 4);
   }
 
-  private getPasswordFeedback(password: string, score: number): PasswordStrength['feedback'] {
+  private getPasswordFeedback(
+    password: string,
+    score: number
+  ): PasswordStrength['feedback'] {
     const suggestions: string[] = [];
 
     if (password.length < 8) {
@@ -324,9 +330,10 @@ export class KeyManagementService {
       suggestions.push('Include at least one special character');
     }
 
-    const warning = score < this.MIN_PASSWORD_SCORE
-      ? 'Password is too weak. Please choose a stronger password.'
-      : undefined;
+    const warning =
+      score < this.MIN_PASSWORD_SCORE
+        ? 'Password is too weak. Please choose a stronger password.'
+        : undefined;
 
     return { warning, suggestions };
   }
@@ -338,12 +345,13 @@ export class KeyManagementService {
     const codes: string[] = [];
     for (let i = 0; i < count; i++) {
       const bytes = nacl.randomBytes(6);
-      const code = Array.from(bytes)
-        .map(b => b.toString(16).padStart(2, '0'))
-        .join('')
-        .toUpperCase()
-        .match(/.{4}/g)
-        ?.join('-') || '';
+      const code =
+        Array.from(bytes)
+          .map(b => b.toString(16).padStart(2, '0'))
+          .join('')
+          .toUpperCase()
+          .match(/.{4}/g)
+          ?.join('-') || '';
       codes.push(code);
     }
     return codes;
@@ -382,15 +390,13 @@ export class KeyManagementService {
   async handleFailedKeyAccess(userId: string, reason: string): Promise<void> {
     try {
       // Log the failed attempt
-      await this.supabase
-        .from('key_access_logs')
-        .insert({
-          user_id: userId,
-          operation: 'retrieve',
-          success: false,
-          timestamp: new Date().toISOString(),
-          failure_reason: reason,
-        });
+      await this.supabase.from('key_access_logs').insert({
+        user_id: userId,
+        operation: 'retrieve',
+        success: false,
+        timestamp: new Date().toISOString(),
+        failure_reason: reason,
+      });
 
       // Update failed attempts counter
       const { data } = await this.supabase

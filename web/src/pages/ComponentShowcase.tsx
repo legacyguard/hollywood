@@ -5,17 +5,21 @@ import {
   useMockActivities,
 } from '@/components/enhanced/ActivityFeed';
 import {
-  DataTable,
+  createActionsColumn,
   createSelectColumn,
   createSortableHeader,
-  createActionsColumn,
+  DataTable,
 } from '@/components/enhanced/DataTable';
 import {
-  RadialProgress,
   LinearProgress,
   ProgressGroup,
+  RadialProgress,
 } from '@/components/enhanced/RadialProgress';
-import { ProfileCard, ProfileGrid, type ProfileData } from '@/components/enhanced/ProfileCard';
+import {
+  ProfileCard,
+  type ProfileData,
+  ProfileGrid,
+} from '@/components/enhanced/ProfileCard';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { FadeIn } from '@/components/motion/FadeIn';
@@ -24,12 +28,12 @@ import type { ColumnDef } from '@tanstack/react-table';
 
 // Mock data for DataTable
 interface DocumentData {
+  category: string;
   id: string;
   name: string;
-  category: string;
   size: string;
+  status: 'pending' | 'processed' | 'processing';
   uploadedAt: string;
-  status: 'processed' | 'processing' | 'pending';
 }
 
 const mockDocuments: DocumentData[] = [
@@ -210,6 +214,20 @@ export default function ComponentShowcase() {
     { label: 'Will Progress', value: 67, color: 'warning' as const },
     { label: 'Security', value: 100, color: 'info' as const },
   ];
+
+  const baseProfile: ProfileData = mockProfiles[0] ?? {
+    id: 'sample-1',
+    name: 'Sample User',
+  };
+
+  const detailedProfile: ProfileData = {
+    ...baseProfile,
+    metadata: {
+      'Last Login': '2 hours ago',
+      Documents: '24',
+      Tasks: '5 pending',
+    },
+  };
 
   return (
     <DashboardLayout>
@@ -394,7 +412,7 @@ export default function ComponentShowcase() {
                     </h3>
                     <ProfileGrid
                       profiles={mockProfiles}
-                      variant={"compact"}
+                      variant={'compact'}
                       columns={2}
                     />
                   </div>
@@ -404,15 +422,8 @@ export default function ComponentShowcase() {
                       Detailed Variant
                     </h3>
                     <ProfileCard
-                      profile={{
-                        ...mockProfiles[0],
-                        metadata: {
-                          'Last Login': '2 hours ago',
-                          Documents: '24',
-                          Tasks: '5 pending',
-                        },
-                      }}
-                      variant={"detailed"}
+                      profile={detailedProfile}
+                      variant={'detailed'}
                     />
                   </div>
                 </CardContent>

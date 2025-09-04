@@ -1,16 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { Check, X, Loader2, Crown, Star, Shield } from 'lucide-react';
-import type { SubscriptionLimits } from '@hollywood/shared';
-import { subscriptionService, stripeService } from '@hollywood/shared';
+import React, { useEffect, useState } from 'react';
+import { Check, Crown, Loader2, Shield, Star, X } from 'lucide-react';
+import { subscriptionService, type SubscriptionLimits } from '@hollywood/shared';
 // import { useAuth } from '../contexts/AuthContext';
 // import { toast } from 'react-toastify';
 
 interface PricingPlanProps {
-  plan: SubscriptionLimits;
-  currentPlan?: string;
   billingCycle: 'month' | 'year';
-  onSubscribe: (plan: string) => void;
+  currentPlan?: string;
   isLoading?: boolean;
+  onSubscribe: (plan: string) => void;
+  plan: SubscriptionLimits;
 }
 
 const PricingPlan: React.FC<PricingPlanProps> = ({
@@ -18,7 +17,7 @@ const PricingPlan: React.FC<PricingPlanProps> = ({
   currentPlan,
   billingCycle,
   onSubscribe,
-  isLoading
+  isLoading,
 }) => {
   const isCurrentPlan = currentPlan === plan.plan;
   const isPremium = plan.plan === 'premium';
@@ -26,9 +25,9 @@ const PricingPlan: React.FC<PricingPlanProps> = ({
   const isEssential = plan.plan === 'essential';
 
   const getPlanIcon = () => {
-    if (isPremium) return <Crown className="w-6 h-6" />;
-    if (isFamily) return <Star className="w-6 h-6" />;
-    if (isEssential) return <Shield className="w-6 h-6" />;
+    if (isPremium) return <Crown className='w-6 h-6' />;
+    if (isFamily) return <Star className='w-6 h-6' />;
+    if (isEssential) return <Shield className='w-6 h-6' />;
     return null;
   };
 
@@ -37,115 +36,115 @@ const PricingPlan: React.FC<PricingPlanProps> = ({
       free: { month: 0, year: 0 },
       essential: { month: 9.99, year: 99.99 },
       family: { month: 19.99, year: 199.99 },
-      premium: { month: 39.99, year: 399.99 }
+      premium: { month: 39.99, year: 399.99 },
     };
     return prices[plan.plan]?.[billingCycle] || 0;
   };
 
-  const formatLimit = (limit: number | null) => {
+  const formatLimit = (limit: null | number) => {
     return limit === null ? 'Unlimited' : limit.toLocaleString();
   };
 
-  const formatStorage = (mb: number | null) => {
+  const formatStorage = (mb: null | number) => {
     if (mb === null) return 'Unlimited';
     if (mb < 1024) return `${mb} MB`;
     return `${(mb / 1024).toFixed(0)} GB`;
   };
 
   return (
-    <div className={`relative bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border-2 transition-all ${
-      isCurrentPlan
-        ? 'border-blue-500 scale-105'
-        : isPremium
-          ? 'border-purple-200 dark:border-purple-800'
-          : 'border-gray-200 dark:border-gray-700'
-    }`}>
+    <div
+      className={`relative bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border-2 transition-all ${
+        isCurrentPlan
+          ? 'border-blue-500 scale-105'
+          : isPremium
+            ? 'border-purple-200 dark:border-purple-800'
+            : 'border-gray-200 dark:border-gray-700'
+      }`}
+    >
       {isPremium && (
-        <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-          <span className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
+        <div className='absolute -top-4 left-1/2 transform -translate-x-1/2'>
+          <span className='bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-1 rounded-full text-sm font-semibold'>
             MOST POPULAR
           </span>
         </div>
       )}
 
-      <div className="flex items-center justify-between mb-4">
+      <div className='flex items-center justify-between mb-4'>
         <div>
-          <h3 className="text-2xl font-bold capitalize flex items-center gap-2">
+          <h3 className='text-2xl font-bold capitalize flex items-center gap-2'>
             {getPlanIcon()}
             {plan.plan}
           </h3>
           {isCurrentPlan && (
-            <span className="text-sm text-blue-600 dark:text-blue-400">Current Plan</span>
+            <span className='text-sm text-blue-600 dark:text-blue-400'>
+              Current Plan
+            </span>
           )}
         </div>
-        <div className="text-right">
-          <div className="text-3xl font-bold">
-            ${getPlanPrice()}
-          </div>
-          <div className="text-sm text-gray-500">
-            per {billingCycle}
-          </div>
+        <div className='text-right'>
+          <div className='text-3xl font-bold'>${getPlanPrice()}</div>
+          <div className='text-sm text-gray-500'>per {billingCycle}</div>
         </div>
       </div>
 
-      <div className="space-y-3 mb-6">
-        <div className="flex items-center gap-2">
-          <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+      <div className='space-y-3 mb-6'>
+        <div className='flex items-center gap-2'>
+          <Check className='w-5 h-5 text-green-500 flex-shrink-0' />
           <span>{formatLimit(plan.max_documents)} documents</span>
         </div>
-        <div className="flex items-center gap-2">
-          <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+        <div className='flex items-center gap-2'>
+          <Check className='w-5 h-5 text-green-500 flex-shrink-0' />
           <span>{formatStorage(plan.max_storage_mb)} storage</span>
         </div>
-        <div className="flex items-center gap-2">
-          <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+        <div className='flex items-center gap-2'>
+          <Check className='w-5 h-5 text-green-500 flex-shrink-0' />
           <span>{formatLimit(plan.max_time_capsules)} time capsules</span>
         </div>
-        <div className="flex items-center gap-2">
-          <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+        <div className='flex items-center gap-2'>
+          <Check className='w-5 h-5 text-green-500 flex-shrink-0' />
           <span>{formatLimit(plan.max_scans_per_month)} scans/month</span>
         </div>
         {plan.max_family_members > 1 && (
-          <div className="flex items-center gap-2">
-            <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+          <div className='flex items-center gap-2'>
+            <Check className='w-5 h-5 text-green-500 flex-shrink-0' />
             <span>Up to {plan.max_family_members} family members</span>
           </div>
         )}
-        <div className="flex items-center gap-2">
+        <div className='flex items-center gap-2'>
           {plan.offline_access ? (
-            <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+            <Check className='w-5 h-5 text-green-500 flex-shrink-0' />
           ) : (
-            <X className="w-5 h-5 text-gray-400 flex-shrink-0" />
+            <X className='w-5 h-5 text-gray-400 flex-shrink-0' />
           )}
           <span className={!plan.offline_access ? 'text-gray-400' : ''}>
             Offline access
           </span>
         </div>
-        <div className="flex items-center gap-2">
+        <div className='flex items-center gap-2'>
           {plan.ai_features ? (
-            <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+            <Check className='w-5 h-5 text-green-500 flex-shrink-0' />
           ) : (
-            <X className="w-5 h-5 text-gray-400 flex-shrink-0" />
+            <X className='w-5 h-5 text-gray-400 flex-shrink-0' />
           )}
           <span className={!plan.ai_features ? 'text-gray-400' : ''}>
             AI features
           </span>
         </div>
-        <div className="flex items-center gap-2">
+        <div className='flex items-center gap-2'>
           {plan.advanced_search ? (
-            <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+            <Check className='w-5 h-5 text-green-500 flex-shrink-0' />
           ) : (
-            <X className="w-5 h-5 text-gray-400 flex-shrink-0" />
+            <X className='w-5 h-5 text-gray-400 flex-shrink-0' />
           )}
           <span className={!plan.advanced_search ? 'text-gray-400' : ''}>
             Advanced search
           </span>
         </div>
-        <div className="flex items-center gap-2">
+        <div className='flex items-center gap-2'>
           {plan.priority_support ? (
-            <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+            <Check className='w-5 h-5 text-green-500 flex-shrink-0' />
           ) : (
-            <X className="w-5 h-5 text-gray-400 flex-shrink-0" />
+            <X className='w-5 h-5 text-gray-400 flex-shrink-0' />
           )}
           <span className={!plan.priority_support ? 'text-gray-400' : ''}>
             Priority support
@@ -168,7 +167,7 @@ const PricingPlan: React.FC<PricingPlanProps> = ({
       >
         {isLoading ? (
           <>
-            <Loader2 className="w-5 h-5 animate-spin" />
+            <Loader2 className='w-5 h-5 animate-spin' />
             Processing...
           </>
         ) : isCurrentPlan ? (
@@ -199,7 +198,7 @@ export const PricingPlans: React.FC = () => {
     try {
       const [allPlans, subscription] = await Promise.all([
         subscriptionService.getAllPlans(),
-        subscriptionService.getCurrentSubscription()
+        subscriptionService.getCurrentSubscription(),
       ]);
 
       setPlans(allPlans);
@@ -227,16 +226,16 @@ export const PricingPlans: React.FC = () => {
       const priceIds: Record<string, { month: string; year: string }> = {
         essential: {
           month: 'price_1S2AU9Fjl1oRWeU60ajoUhTz',
-          year: 'price_1S2AU9Fjl1oRWeU6Crewzj5D'
+          year: 'price_1S2AU9Fjl1oRWeU6Crewzj5D',
         },
         family: {
           month: 'price_1S2AUAFjl1oRWeU6RGjCZX6S',
-          year: 'price_1S2AUAFjl1oRWeU63cvXIf9o'
+          year: 'price_1S2AUAFjl1oRWeU63cvXIf9o',
         },
         premium: {
           month: 'price_1S2AUAFjl1oRWeU64RKuOu7B',
-          year: 'price_1S2AUBFjl1oRWeU6587z8bLh'
-        }
+          year: 'price_1S2AUBFjl1oRWeU6587z8bLh',
+        },
       };
 
       const priceId = priceIds[planName]?.[billingCycle];
@@ -264,14 +263,14 @@ export const PricingPlans: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-12">
-      <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold mb-4">Choose Your Plan</h2>
-        <p className="text-gray-600 dark:text-gray-400 mb-6">
+    <div className='max-w-7xl mx-auto px-4 py-12'>
+      <div className='text-center mb-8'>
+        <h2 className='text-3xl font-bold mb-4'>Choose Your Plan</h2>
+        <p className='text-gray-600 dark:text-gray-400 mb-6'>
           Secure your documents with the plan that fits your needs
         </p>
 
-        <div className="inline-flex items-center bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
+        <div className='inline-flex items-center bg-gray-100 dark:bg-gray-800 rounded-lg p-1'>
           <button
             onClick={() => setBillingCycle('month')}
             className={`px-6 py-2 rounded-md transition-colors ${
@@ -291,15 +290,15 @@ export const PricingPlans: React.FC = () => {
             }`}
           >
             Yearly
-            <span className="ml-2 text-xs bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 px-2 py-0.5 rounded-full">
+            <span className='ml-2 text-xs bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 px-2 py-0.5 rounded-full'>
               Save 17%
             </span>
           </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {plans.map((plan) => (
+      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'>
+        {plans.map(plan => (
           <PricingPlan
             key={plan.plan}
             plan={plan}
@@ -311,9 +310,12 @@ export const PricingPlans: React.FC = () => {
         ))}
       </div>
 
-      <div className="mt-12 text-center text-sm text-gray-600 dark:text-gray-400">
-        <p>All plans include 256-bit encryption, automatic backups, and 24/7 support</p>
-        <p className="mt-2">Cancel or change your plan anytime</p>
+      <div className='mt-12 text-center text-sm text-gray-600 dark:text-gray-400'>
+        <p>
+          All plans include 256-bit encryption, automatic backups, and 24/7
+          support
+        </p>
+        <p className='mt-2'>Cancel or change your plan anytime</p>
       </div>
     </div>
   );

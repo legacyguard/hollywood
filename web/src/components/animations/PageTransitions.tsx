@@ -2,7 +2,7 @@
 // Provides seamless navigation experience that adapts to user preferences
 
 import React, { type ReactNode } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
 import { usePersonalityManager } from '@/components/sofia/SofiaContextProvider';
 import { AnimationSystem } from '@/lib/animation-system';
@@ -10,7 +10,7 @@ import { AnimationSystem } from '@/lib/animation-system';
 interface PageTransitionProps {
   children: ReactNode;
   className?: string;
-  mode?: 'wait' | 'sync' | 'popLayout';
+  mode?: 'popLayout' | 'sync' | 'wait';
 }
 
 export const PageTransition: React.FC<PageTransitionProps> = ({
@@ -22,7 +22,8 @@ export const PageTransition: React.FC<PageTransitionProps> = ({
   const personalityManager = usePersonalityManager();
 
   const personalityMode = personalityManager?.getCurrentStyle() || 'adaptive';
-  const adaptedMode = personalityMode === 'balanced' ? 'adaptive' : personalityMode;
+  const adaptedMode =
+    personalityMode === 'balanced' ? 'adaptive' : personalityMode;
 
   const shouldReduceMotion = AnimationSystem.shouldReduceMotion();
 
@@ -38,9 +39,9 @@ export const PageTransition: React.FC<PageTransitionProps> = ({
         key={location.pathname}
         className={className}
         variants={pageVariants}
-        initial="initial"
-        animate="animate"
-        exit="exit"
+        initial='initial'
+        animate='animate'
+        exit='exit'
         {...AnimationSystem.getOptimizedProps()}
       >
         {children}
@@ -51,8 +52,8 @@ export const PageTransition: React.FC<PageTransitionProps> = ({
 
 interface RouteTransitionProps {
   children: ReactNode;
+  direction?: 'backward' | 'forward';
   transitionKey?: string;
-  direction?: 'forward' | 'backward';
 }
 
 export const RouteTransition: React.FC<RouteTransitionProps> = ({
@@ -64,7 +65,8 @@ export const RouteTransition: React.FC<RouteTransitionProps> = ({
   const personalityManager = usePersonalityManager();
 
   const personalityMode = personalityManager?.getCurrentStyle() || 'adaptive';
-  const adaptedMode = personalityMode === 'balanced' ? 'adaptive' : personalityMode;
+  const adaptedMode =
+    personalityMode === 'balanced' ? 'adaptive' : personalityMode;
 
   const shouldReduceMotion = AnimationSystem.shouldReduceMotion();
 
@@ -109,13 +111,13 @@ export const RouteTransition: React.FC<RouteTransitionProps> = ({
   };
 
   return (
-    <AnimatePresence mode="wait" initial={false}>
+    <AnimatePresence mode='wait' initial={false}>
       <motion.div
         key={transitionKey || location.pathname}
         variants={getDirectionalVariants() as any}
-        initial="initial"
-        animate="animate"
-        exit="exit"
+        initial='initial'
+        animate='animate'
+        exit='exit'
       >
         {children}
       </motion.div>
@@ -127,7 +129,7 @@ interface ModalTransitionProps {
   children: ReactNode;
   isOpen: boolean;
   onClose?: () => void;
-  size?: 'sm' | 'md' | 'lg' | 'xl';
+  size?: 'lg' | 'md' | 'sm' | 'xl';
 }
 
 export const ModalTransition: React.FC<ModalTransitionProps> = ({
@@ -139,7 +141,8 @@ export const ModalTransition: React.FC<ModalTransitionProps> = ({
   const personalityManager = usePersonalityManager();
 
   const personalityMode = personalityManager?.getCurrentStyle() || 'adaptive';
-  const adaptedMode = personalityMode === 'balanced' ? 'adaptive' : personalityMode;
+  const adaptedMode =
+    personalityMode === 'balanced' ? 'adaptive' : personalityMode;
 
   const shouldReduceMotion = AnimationSystem.shouldReduceMotion();
   const animConfig = AnimationSystem.getConfig(adaptedMode);
@@ -164,8 +167,12 @@ export const ModalTransition: React.FC<ModalTransitionProps> = ({
   const modalVariants = {
     hidden: {
       opacity: 0,
-      scale: shouldReduceMotion ? 1 : (adaptedMode === 'empathetic' ? 0.85 : 0.95),
-      y: shouldReduceMotion ? 0 : (adaptedMode === 'empathetic' ? 20 : 10),
+      scale: shouldReduceMotion
+        ? 1
+        : adaptedMode === 'empathetic'
+          ? 0.85
+          : 0.95,
+      y: shouldReduceMotion ? 0 : adaptedMode === 'empathetic' ? 20 : 10,
     },
     visible: {
       opacity: 1,
@@ -179,8 +186,12 @@ export const ModalTransition: React.FC<ModalTransitionProps> = ({
     },
     exit: {
       opacity: 0,
-      scale: shouldReduceMotion ? 1 : (adaptedMode === 'empathetic' ? 0.85 : 0.95),
-      y: shouldReduceMotion ? 0 : (adaptedMode === 'empathetic' ? -10 : 5),
+      scale: shouldReduceMotion
+        ? 1
+        : adaptedMode === 'empathetic'
+          ? 0.85
+          : 0.95,
+      y: shouldReduceMotion ? 0 : adaptedMode === 'empathetic' ? -10 : 5,
       transition: {
         duration: shouldReduceMotion ? 0.1 : animConfig.duration * 0.7,
         ease: animConfig.ease,
@@ -191,14 +202,14 @@ export const ModalTransition: React.FC<ModalTransitionProps> = ({
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className='fixed inset-0 z-50 flex items-center justify-center p-4'>
           {/* Backdrop */}
           <motion.div
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            className='absolute inset-0 bg-black/50 backdrop-blur-sm'
             variants={overlayVariants}
-            initial="hidden"
-            animate="visible"
-            exit="hidden"
+            initial='hidden'
+            animate='visible'
+            exit='hidden'
             onClick={onClose}
           />
 
@@ -206,10 +217,10 @@ export const ModalTransition: React.FC<ModalTransitionProps> = ({
           <motion.div
             className={`relative bg-white rounded-xl shadow-xl w-full ${modalSizes[size]} max-h-[90vh] overflow-y-auto`}
             variants={modalVariants as any}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            onClick={(e) => e.stopPropagation()}
+            initial='hidden'
+            animate='visible'
+            exit='exit'
+            onClick={e => e.stopPropagation()}
           >
             {children}
           </motion.div>
@@ -221,9 +232,9 @@ export const ModalTransition: React.FC<ModalTransitionProps> = ({
 
 interface SlideTransitionProps {
   children: ReactNode;
-  direction: 'up' | 'down' | 'left' | 'right';
-  isVisible: boolean;
   className?: string;
+  direction: 'down' | 'left' | 'right' | 'up';
+  isVisible: boolean;
 }
 
 export const SlideTransition: React.FC<SlideTransitionProps> = ({
@@ -235,7 +246,8 @@ export const SlideTransition: React.FC<SlideTransitionProps> = ({
   const personalityManager = usePersonalityManager();
 
   const personalityMode = personalityManager?.getCurrentStyle() || 'adaptive';
-  const adaptedMode = personalityMode === 'balanced' ? 'adaptive' : personalityMode;
+  const adaptedMode =
+    personalityMode === 'balanced' ? 'adaptive' : personalityMode;
 
   const shouldReduceMotion = AnimationSystem.shouldReduceMotion();
   const animConfig = AnimationSystem.getConfig(adaptedMode);
@@ -280,9 +292,9 @@ export const SlideTransition: React.FC<SlideTransitionProps> = ({
         <motion.div
           className={className}
           variants={getSlideVariants() as any}
-          initial="hidden"
-          animate="visible"
-          exit="hidden"
+          initial='hidden'
+          animate='visible'
+          exit='hidden'
         >
           {children}
         </motion.div>
@@ -293,10 +305,10 @@ export const SlideTransition: React.FC<SlideTransitionProps> = ({
 
 interface FadeTransitionProps {
   children: ReactNode;
-  isVisible: boolean;
-  duration?: number;
-  delay?: number;
   className?: string;
+  delay?: number;
+  duration?: number;
+  isVisible: boolean;
 }
 
 export const FadeTransition: React.FC<FadeTransitionProps> = ({
@@ -309,7 +321,8 @@ export const FadeTransition: React.FC<FadeTransitionProps> = ({
   const personalityManager = usePersonalityManager();
 
   const personalityMode = personalityManager?.getCurrentStyle() || 'adaptive';
-  const adaptedMode = personalityMode === 'balanced' ? 'adaptive' : personalityMode;
+  const adaptedMode =
+    personalityMode === 'balanced' ? 'adaptive' : personalityMode;
 
   const shouldReduceMotion = AnimationSystem.shouldReduceMotion();
   const animConfig = AnimationSystem.getConfig(adaptedMode);
@@ -319,8 +332,8 @@ export const FadeTransition: React.FC<FadeTransitionProps> = ({
     visible: {
       opacity: 1,
       transition: {
-        duration: shouldReduceMotion ? 0.1 : (duration || animConfig.duration),
-        delay: shouldReduceMotion ? 0 : (delay || animConfig.delay),
+        duration: shouldReduceMotion ? 0.1 : duration || animConfig.duration,
+        delay: shouldReduceMotion ? 0 : delay || animConfig.delay,
         ease: animConfig.ease,
       },
     },
@@ -332,9 +345,9 @@ export const FadeTransition: React.FC<FadeTransitionProps> = ({
         <motion.div
           className={className}
           variants={fadeVariants as any}
-          initial="hidden"
-          animate="visible"
-          exit="hidden"
+          initial='hidden'
+          animate='visible'
+          exit='hidden'
         >
           {children}
         </motion.div>
@@ -345,7 +358,7 @@ export const FadeTransition: React.FC<FadeTransitionProps> = ({
 
 // Navigation breadcrumb with transitions
 interface BreadcrumbTransitionProps {
-  items: Array<{ label: string; href?: string; active?: boolean }>;
+  items: Array<{ active?: boolean; href?: string; label: string }>;
   onItemClick?: (index: number) => void;
 }
 
@@ -356,7 +369,8 @@ export const BreadcrumbTransition: React.FC<BreadcrumbTransitionProps> = ({
   const personalityManager = usePersonalityManager();
 
   const personalityMode = personalityManager?.getCurrentStyle() || 'adaptive';
-  const adaptedMode = personalityMode === 'balanced' ? 'adaptive' : personalityMode;
+  const adaptedMode =
+    personalityMode === 'balanced' ? 'adaptive' : personalityMode;
 
   const shouldReduceMotion = AnimationSystem.shouldReduceMotion();
   // const _animConfig = AnimationSystem.getConfig(adaptedMode);
@@ -366,10 +380,10 @@ export const BreadcrumbTransition: React.FC<BreadcrumbTransitionProps> = ({
 
   return (
     <motion.nav
-      className="flex items-center space-x-2 text-sm"
+      className='flex items-center space-x-2 text-sm'
       variants={shouldReduceMotion ? undefined : containerVariants}
-      initial={shouldReduceMotion ? undefined : "initial"}
-      animate={shouldReduceMotion ? undefined : "animate"}
+      initial={shouldReduceMotion ? undefined : 'initial'}
+      animate={shouldReduceMotion ? undefined : 'animate'}
     >
       {items.map((item, index) => (
         <React.Fragment key={index}>
@@ -387,7 +401,7 @@ export const BreadcrumbTransition: React.FC<BreadcrumbTransitionProps> = ({
 
           {index < items.length - 1 && (
             <motion.span
-              className="text-gray-400"
+              className='text-gray-400'
               variants={shouldReduceMotion ? undefined : itemVariants}
             >
               /

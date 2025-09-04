@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock the entire encryption service
 const mockEncryptionService = {
@@ -154,7 +154,13 @@ describe('Encryption Service', () => {
       expect(encrypted?.metadata?.algorithm).toBe('nacl.secretbox');
 
       // Test decryption
-      const decrypted = await mockEncryptionService.decryptText(encrypted || { encrypted: new Uint8Array(), nonce: new Uint8Array(), metadata: { algorithm: 'nacl.secretbox' } });
+      const decrypted = await mockEncryptionService.decryptText(
+        encrypted || {
+          encrypted: new Uint8Array(),
+          nonce: new Uint8Array(),
+          metadata: { algorithm: 'nacl.secretbox' },
+        }
+      );
       expect(decrypted).toBe(testText);
     });
   });

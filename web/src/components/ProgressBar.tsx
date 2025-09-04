@@ -1,11 +1,11 @@
 import { cn } from '@/lib/utils';
 
 interface ProgressBarProps {
-  value: number;
-  max?: number;
-  label?: string;
   className?: string;
+  label?: string;
+  max?: number;
   showPercentage?: boolean;
+  value: number;
 }
 
 export function ProgressBar({
@@ -36,7 +36,7 @@ export function ProgressBar({
       <div className='w-full bg-progress-bg rounded-full h-2 overflow-hidden'>
         <div
           className='h-full bg-progress-fill transition-all duration-500 ease-out rounded-full'
-          style={{  width: `${percentage }}%` }}
+          style={{ width: `${percentage}}%` }}
         />
       </div>
     </div>

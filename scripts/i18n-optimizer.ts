@@ -16,13 +16,13 @@ const CONFIG = {
   LOCALES_DIR: './locales',
   BACKUP_DIR: './locales/_backups',
   REPORT_FILE: './locales/_health-report.json',
-  
+
   // Splitting strategies
   SPLIT_STRATEGIES: {
     BY_PREFIX: ['common', 'features', 'legal'],
     BY_DEPTH: 3, // Max nesting depth before splitting
-    BY_CATEGORY: true
-  }
+    BY_CATEGORY: true,
+  },
 };
 
 interface TranslationFile {
@@ -50,14 +50,16 @@ class I18nOptimizer {
 
   async analyze(): Promise<void> {
     console.log('🔍 Analyzing translation files...\n');
-    
+
     const pattern = path.join(CONFIG.LOCALES_DIR, '**/*.json');
-    const files = await glob(pattern, { ignore: ['**/node_modules/**', '**/_*'] });
-    
+    const files = await glob(pattern, {
+      ignore: ['**/node_modules/**', '**/_*'],
+    });
+
     for (const file of files) {
       await this.analyzeFile(file);
     }
-    
+
     this.generateReport();
   }
 
@@ -77,7 +79,7 @@ class I18nOptimizer {
         keys,
         size,
         depth,
-        namespace
+        namespace,
       };
 
       this.files.push(fileInfo);
@@ -109,7 +111,7 @@ class I18nOptimizer {
 
   private getMaxDepth(obj: any, currentDepth = 0): number {
     if (typeof obj !== 'object' || obj === null) return currentDepth;
-    
+
     let maxDepth = currentDepth;
     for (const key in obj) {
       const depth = this.getMaxDepth(obj[key], currentDepth + 1);
@@ -120,29 +122,36 @@ class I18nOptimizer {
 
   private extractNamespace(filePath: string): string {
     const relative = path.relative(CONFIG.LOCALES_DIR, filePath);
-    return relative.replace(/\\/g, '/').replace('.json', '').replace(/\//g, '.');
+    return relative
+      .replace(/\\/g, '/')
+      .replace('.json', '')
+      .replace(/\//g, '.');
   }
 
   private generateSplitSuggestion(file: TranslationFile, content: any): void {
     const suggestion: SplitSuggestion = {
       file: file.path,
       reason: `File exceeds ${CONFIG.MAX_LINES} lines (current: ${file.lines})`,
-      suggestedSplits: []
+      suggestedSplits: [],
     };
 
     // Strategy 1: Split by top-level keys
     const topLevelKeys = Object.keys(content);
     if (topLevelKeys.length > 1) {
-      const keysPerFile = Math.ceil(topLevelKeys.length / Math.ceil(file.lines / CONFIG.MAX_LINES));
-      
+      const keysPerFile = Math.ceil(
+        topLevelKeys.length / Math.ceil(file.lines / CONFIG.MAX_LINES)
+      );
+
       for (let i = 0; i < topLevelKeys.length; i += keysPerFile) {
         const keys = topLevelKeys.slice(i, i + keysPerFile);
-        const estimatedLines = Math.floor(file.lines * (keys.length / topLevelKeys.length));
-        
+        const estimatedLines = Math.floor(
+          file.lines * (keys.length / topLevelKeys.length)
+        );
+
         suggestion.suggestedSplits.push({
           newFile: this.generateNewFileName(file.path, keys[0]),
           keys,
-          estimatedLines
+          estimatedLines,
         });
       }
     }
@@ -156,7 +165,7 @@ class I18nOptimizer {
           suggestion.suggestedSplits.push({
             newFile: this.generateNewFileName(file.path, prefix),
             keys,
-            estimatedLines
+            estimatedLines,
           });
         }
       });
@@ -167,7 +176,7 @@ class I18nOptimizer {
 
   private groupByPrefix(obj: any): Map<string, string[]> {
     const groups = new Map<string, string[]>();
-    
+
     for (const key in obj) {
       const prefix = key.split(/[._-]/)[0];
       if (!groups.has(prefix)) {
@@ -175,19 +184,19 @@ class I18nOptimizer {
       }
       groups.get(prefix)!.push(key);
     }
-    
+
     return groups;
   }
 
   private estimateLines(fullContent: any, keys: string[]): number {
     let lineCount = 2; // For opening and closing braces
-    
+
     keys.forEach(key => {
       const value = fullContent[key];
       const stringified = JSON.stringify(value, null, 2);
       lineCount += stringified.split('\n').length;
     });
-    
+
     return lineCount;
   }
 
@@ -195,25 +204,27 @@ class I18nOptimizer {
     const dir = path.dirname(originalPath);
     const ext = path.extname(originalPath);
     const base = path.basename(originalPath, ext);
-    
+
     // Clean suffix to be filename-safe
     const safeSuffix = suffix.replace(/[^a-zA-Z0-9-_]/g, '-').toLowerCase();
-    
+
     return path.join(dir, `${base}-${safeSuffix}${ext}`);
   }
 
   async autoSplit(dryRun = true): Promise<void> {
     console.log(`\n🔄 ${dryRun ? 'Simulating' : 'Executing'} auto-split...\n`);
-    
+
     for (const issue of this.issues) {
       console.log(`Processing: ${issue.file}`);
-      
+
       if (!dryRun) {
         await this.executeSplit(issue);
       } else {
         console.log('  Suggested splits:');
         issue.suggestedSplits.forEach(split => {
-          console.log(`    - ${split.newFile} (~${split.estimatedLines} lines)`);
+          console.log(
+            `    - ${split.newFile} (~${split.estimatedLines} lines)`
+          );
           console.log(`      Keys: ${split.keys.join(', ')}`);
         });
       }
@@ -222,30 +233,38 @@ class I18nOptimizer {
 
   private async executeSplit(suggestion: SplitSuggestion): Promise<void> {
     // Backup original file
-    const backupPath = path.join(CONFIG.BACKUP_DIR, `${Date.now()}_${path.basename(suggestion.file)}`);
+    const backupPath = path.join(
+      CONFIG.BACKUP_DIR,
+      `${Date.now()}_${path.basename(suggestion.file)}`
+    );
     fs.mkdirSync(path.dirname(backupPath), { recursive: true });
     fs.copyFileSync(suggestion.file, backupPath);
-    
+
     // Read original content
-    const originalContent = JSON.parse(fs.readFileSync(suggestion.file, 'utf8'));
-    
+    const originalContent = JSON.parse(
+      fs.readFileSync(suggestion.file, 'utf8')
+    );
+
     // Create new files
     for (const split of suggestion.suggestedSplits) {
       const newContent: any = {};
-      
+
       split.keys.forEach(key => {
         newContent[key] = originalContent[key];
         delete originalContent[key]; // Remove from original
       });
-      
+
       // Write new file
       fs.writeFileSync(split.newFile, JSON.stringify(newContent, null, 2));
       console.log(`  ✅ Created: ${split.newFile}`);
     }
-    
+
     // Update original file with remaining content
     if (Object.keys(originalContent).length > 0) {
-      fs.writeFileSync(suggestion.file, JSON.stringify(originalContent, null, 2));
+      fs.writeFileSync(
+        suggestion.file,
+        JSON.stringify(originalContent, null, 2)
+      );
       console.log(`  ✅ Updated: ${suggestion.file}`);
     } else {
       // If nothing remains, delete the original
@@ -260,20 +279,24 @@ class I18nOptimizer {
       summary: {
         totalFiles: this.files.length,
         oversizedFiles: this.issues.length,
-        warningFiles: this.files.filter(f => f.lines > CONFIG.WARNING_THRESHOLD && f.lines <= CONFIG.MAX_LINES).length,
-        healthyFiles: this.files.filter(f => f.lines <= CONFIG.WARNING_THRESHOLD).length,
+        warningFiles: this.files.filter(
+          f => f.lines > CONFIG.WARNING_THRESHOLD && f.lines <= CONFIG.MAX_LINES
+        ).length,
+        healthyFiles: this.files.filter(
+          f => f.lines <= CONFIG.WARNING_THRESHOLD
+        ).length,
         totalLines: this.files.reduce((sum, f) => sum + f.lines, 0),
         totalKeys: this.files.reduce((sum, f) => sum + f.keys, 0),
-        totalSize: this.files.reduce((sum, f) => sum + f.size, 0)
+        totalSize: this.files.reduce((sum, f) => sum + f.size, 0),
       },
       files: this.files.sort((a, b) => b.lines - a.lines),
       issues: this.issues,
-      recommendations: this.generateRecommendations()
+      recommendations: this.generateRecommendations(),
     };
 
     fs.writeFileSync(CONFIG.REPORT_FILE, JSON.stringify(report, null, 2));
     console.log(`\n📊 Report saved to: ${CONFIG.REPORT_FILE}`);
-    
+
     // Print summary
     console.log('\n📈 Summary:');
     console.log(`  Total files: ${report.summary.totalFiles}`);
@@ -284,25 +307,35 @@ class I18nOptimizer {
 
   private generateRecommendations(): string[] {
     const recommendations: string[] = [];
-    
+
     // Check for very small files that could be merged
     const smallFiles = this.files.filter(f => f.lines < CONFIG.MIN_LINES);
     if (smallFiles.length > 1) {
-      recommendations.push(`Consider merging ${smallFiles.length} files with less than ${CONFIG.MIN_LINES} lines`);
+      recommendations.push(
+        `Consider merging ${smallFiles.length} files with less than ${CONFIG.MIN_LINES} lines`
+      );
     }
-    
+
     // Check for files approaching limit
-    const warningFiles = this.files.filter(f => f.lines > CONFIG.WARNING_THRESHOLD && f.lines <= CONFIG.MAX_LINES);
+    const warningFiles = this.files.filter(
+      f => f.lines > CONFIG.WARNING_THRESHOLD && f.lines <= CONFIG.MAX_LINES
+    );
     if (warningFiles.length > 0) {
-      recommendations.push(`${warningFiles.length} files are approaching the line limit and should be refactored soon`);
+      recommendations.push(
+        `${warningFiles.length} files are approaching the line limit and should be refactored soon`
+      );
     }
-    
+
     // Check for deep nesting
-    const deeplyNested = this.files.filter(f => f.depth > CONFIG.SPLIT_STRATEGIES.BY_DEPTH);
+    const deeplyNested = this.files.filter(
+      f => f.depth > CONFIG.SPLIT_STRATEGIES.BY_DEPTH
+    );
     if (deeplyNested.length > 0) {
-      recommendations.push(`${deeplyNested.length} files have deep nesting (>${CONFIG.SPLIT_STRATEGIES.BY_DEPTH} levels) and could benefit from flattening`);
+      recommendations.push(
+        `${deeplyNested.length} files have deep nesting (>${CONFIG.SPLIT_STRATEGIES.BY_DEPTH} levels) and could benefit from flattening`
+      );
     }
-    
+
     return recommendations;
   }
 }
@@ -311,19 +344,19 @@ class I18nOptimizer {
 async function main() {
   const args = process.argv.slice(2);
   const command = args[0];
-  
+
   const optimizer = new I18nOptimizer();
-  
+
   switch (command) {
     case 'analyze':
       await optimizer.analyze();
       break;
-    
+
     case 'split':
       await optimizer.analyze();
       await optimizer.autoSplit(false);
       break;
-    
+
     case 'dry-run':
     default:
       await optimizer.analyze();

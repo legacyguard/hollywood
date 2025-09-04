@@ -6,8 +6,14 @@
  * with device-specific instructions and fallback options.
  */
 
-import { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { useEffect, useState } from 'react';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -20,34 +26,36 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import {
-  Download,
-  Smartphone,
-  Monitor,
-  Wifi,
-  WifiOff,
-  Shield,
-  Zap,
   Bell,
   Camera,
-  X,
+  Download,
+  ExternalLink,
   Info,
-  ExternalLink
+  Monitor,
+  Shield,
+  Smartphone,
+  Wifi,
+  WifiOff,
+  X,
+  Zap,
 } from 'lucide-react';
 import { type PWACapabilities, pwaService } from '@/lib/pwa/pwaService';
 import { cn } from '@/lib/utils';
 
 interface PWAInstallPromptProps {
-  className?: string;
   autoShow?: boolean;
+  className?: string;
   showMinimal?: boolean;
 }
 
 export default function PWAInstallPrompt({
   className,
   autoShow = false,
-  showMinimal = false
+  showMinimal = false,
 }: PWAInstallPromptProps) {
-  const [capabilities, setCapabilities] = useState<PWACapabilities | null>(null);
+  const [capabilities, setCapabilities] = useState<null | PWACapabilities>(
+    null
+  );
   const [isVisible, setIsVisible] = useState(false);
   const [isInstalling, setIsInstalling] = useState(false);
   const [showInstructions, setShowInstructions] = useState(false);
@@ -115,81 +123,93 @@ export default function PWAInstallPrompt({
     if (isIOS && isSafari) {
       return {
         device: 'iOS Safari',
-        icon: <Smartphone className="h-5 w-5" />,
+        icon: <Smartphone className='h-5 w-5' />,
         steps: [
           'Tap the Share button (square with arrow) at the bottom',
           'Scroll down and tap "Add to Home Screen"',
-          'Tap "Add" to confirm installation'
-        ]
+          'Tap "Add" to confirm installation',
+        ],
       };
     }
 
     if (isAndroid && isChrome) {
       return {
         device: 'Android Chrome',
-        icon: <Smartphone className="h-5 w-5" />,
+        icon: <Smartphone className='h-5 w-5' />,
         steps: [
           'Tap the three-dot menu in the top right',
           'Tap "Add to Home screen"',
-          'Tap "Add" to confirm installation'
-        ]
+          'Tap "Add" to confirm installation',
+        ],
       };
     }
 
     if (isChrome) {
       return {
         device: 'Desktop Chrome',
-        icon: <Monitor className="h-5 w-5" />,
+        icon: <Monitor className='h-5 w-5' />,
         steps: [
           'Click the install icon in the address bar',
           'Or go to Chrome menu → "Install LegacyGuard"',
-          'Click "Install" to confirm'
-        ]
+          'Click "Install" to confirm',
+        ],
       };
     }
 
     return {
       device: 'Other Browser',
-      icon: <Monitor className="h-5 w-5" />,
+      icon: <Monitor className='h-5 w-5' />,
       steps: [
         'Look for an install prompt in your browser',
         'Check the address bar for an install icon',
-        'Or bookmark this page for quick access'
-      ]
+        'Or bookmark this page for quick access',
+      ],
     };
   };
 
   const features = [
-    { icon: <WifiOff className="h-4 w-4" />, text: 'Work offline' },
-    { icon: <Zap className="h-4 w-4" />, text: 'Faster loading' },
-    { icon: <Bell className="h-4 w-4" />, text: 'Push notifications' },
-    { icon: <Camera className="h-4 w-4" />, text: 'Camera access' },
-    { icon: <Shield className="h-4 w-4" />, text: 'Enhanced security' }
+    { icon: <WifiOff className='h-4 w-4' />, text: 'Work offline' },
+    { icon: <Zap className='h-4 w-4' />, text: 'Faster loading' },
+    { icon: <Bell className='h-4 w-4' />, text: 'Push notifications' },
+    { icon: <Camera className='h-4 w-4' />, text: 'Camera access' },
+    { icon: <Shield className='h-4 w-4' />, text: 'Enhanced security' },
   ];
 
-  if (!capabilities || capabilities.isInstalled || (!capabilities.canInstall && !autoShow)) {
+  if (
+    !capabilities ||
+    capabilities.isInstalled ||
+    (!capabilities.canInstall && !autoShow)
+  ) {
     return null;
   }
 
   if (showMinimal) {
     return (
       <div className={cn('fixed bottom-4 right-4 z-50', className)}>
-        <Card className="max-w-sm shadow-lg border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <Download className="h-4 w-4 text-blue-600" />
+        <Card className='max-w-sm shadow-lg border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50'>
+          <CardContent className='p-4'>
+            <div className='flex items-center gap-3'>
+              <div className='p-2 bg-blue-100 rounded-lg'>
+                <Download className='h-4 w-4 text-blue-600' />
               </div>
-              <div className="flex-1">
-                <p className="text-sm font-medium text-gray-900">Install LegacyGuard</p>
-                <p className="text-xs text-gray-600">Quick access & offline use</p>
+              <div className='flex-1'>
+                <p className='text-sm font-medium text-gray-900'>
+                  Install LegacyGuard
+                </p>
+                <p className='text-xs text-gray-600'>
+                  Quick access & offline use
+                </p>
               </div>
-              <div className="flex gap-1">
-                <Button size="sm" onClick={handleInstall} disabled={isInstalling}>
+              <div className='flex gap-1'>
+                <Button
+                  size='sm'
+                  onClick={handleInstall}
+                  disabled={isInstalling}
+                >
                   {isInstalling ? '...' : 'Install'}
                 </Button>
-                <Button size="sm" variant="ghost" onClick={handleDismiss}>
-                  <X className="h-3 w-3" />
+                <Button size='sm' variant='ghost' onClick={handleDismiss}>
+                  <X className='h-3 w-3' />
                 </Button>
               </div>
             </div>
@@ -202,12 +222,12 @@ export default function PWAInstallPrompt({
   if (!isVisible) {
     return (
       <Button
-        variant="outline"
-        size="sm"
+        variant='outline'
+        size='sm'
         onClick={() => setIsVisible(true)}
-        className="gap-2"
+        className='gap-2'
       >
-        <Download className="h-4 w-4" />
+        <Download className='h-4 w-4' />
         Install App
       </Button>
     );
@@ -217,28 +237,30 @@ export default function PWAInstallPrompt({
 
   return (
     <>
-      <Card className={cn('max-w-md mx-auto shadow-lg border-blue-200', className)}>
-        <CardHeader className="pb-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <Shield className="h-6 w-6 text-blue-600" />
+      <Card
+        className={cn('max-w-md mx-auto shadow-lg border-blue-200', className)}
+      >
+        <CardHeader className='pb-3'>
+          <div className='flex items-center justify-between'>
+            <div className='flex items-center gap-3'>
+              <div className='p-2 bg-blue-100 rounded-lg'>
+                <Shield className='h-6 w-6 text-blue-600' />
               </div>
               <div>
-                <CardTitle className="text-lg">Install LegacyGuard</CardTitle>
+                <CardTitle className='text-lg'>Install LegacyGuard</CardTitle>
                 <CardDescription>Get the full app experience</CardDescription>
               </div>
             </div>
-            <Button variant="ghost" size="sm" onClick={handleDismiss}>
-              <X className="h-4 w-4" />
+            <Button variant='ghost' size='sm' onClick={handleDismiss}>
+              <X className='h-4 w-4' />
             </Button>
           </div>
         </CardHeader>
 
-        <CardContent className="space-y-4">
-          <div className="flex flex-wrap gap-2">
+        <CardContent className='space-y-4'>
+          <div className='flex flex-wrap gap-2'>
             {features.map((feature, index) => (
-              <Badge key={index} variant="secondary" className="gap-1">
+              <Badge key={index} variant='secondary' className='gap-1'>
                 {feature.icon}
                 {feature.text}
               </Badge>
@@ -246,50 +268,51 @@ export default function PWAInstallPrompt({
           </div>
 
           <Alert>
-            <Info className="h-4 w-4" />
+            <Info className='h-4 w-4' />
             <AlertDescription>
-              Installing the app gives you faster access, offline functionality, and push notifications for important updates.
+              Installing the app gives you faster access, offline functionality,
+              and push notifications for important updates.
             </AlertDescription>
           </Alert>
 
-          <div className="grid grid-cols-2 gap-4 text-sm">
-            <div className="flex items-center gap-2">
+          <div className='grid grid-cols-2 gap-4 text-sm'>
+            <div className='flex items-center gap-2'>
               {capabilities?.isOnline ? (
-                <Wifi className="h-4 w-4 text-green-500" />
+                <Wifi className='h-4 w-4 text-green-500' />
               ) : (
-                <WifiOff className="h-4 w-4 text-gray-400" />
+                <WifiOff className='h-4 w-4 text-gray-400' />
               )}
               <span>{capabilities?.isOnline ? 'Online' : 'Offline'}</span>
             </div>
 
-            <div className="flex items-center gap-2">
-              <Shield className="h-4 w-4 text-blue-500" />
+            <div className='flex items-center gap-2'>
+              <Shield className='h-4 w-4 text-blue-500' />
               <span>Secure Context</span>
             </div>
           </div>
 
-          <div className="flex gap-2">
+          <div className='flex gap-2'>
             <Button
               onClick={handleInstall}
               disabled={isInstalling}
-              className="flex-1"
+              className='flex-1'
             >
               {isInstalling ? (
                 'Installing...'
               ) : capabilities?.canInstall ? (
                 <>
-                  <Download className="h-4 w-4 mr-2" />
+                  <Download className='h-4 w-4 mr-2' />
                   Install Now
                 </>
               ) : (
                 <>
-                  <Info className="h-4 w-4 mr-2" />
+                  <Info className='h-4 w-4 mr-2' />
                   Show Instructions
                 </>
               )}
             </Button>
 
-            <Button variant="outline" onClick={handleDismiss}>
+            <Button variant='outline' onClick={handleDismiss}>
               Later
             </Button>
           </div>
@@ -298,9 +321,9 @@ export default function PWAInstallPrompt({
 
       {/* Manual Installation Instructions Dialog */}
       <Dialog open={showInstructions} onOpenChange={setShowInstructions}>
-        <DialogContent className="max-w-md">
+        <DialogContent className='max-w-md'>
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
+            <DialogTitle className='flex items-center gap-2'>
               {instructions.icon}
               Install on {instructions.device}
             </DialogTitle>
@@ -309,28 +332,31 @@ export default function PWAInstallPrompt({
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4">
-            <div className="space-y-2">
+          <div className='space-y-4'>
+            <div className='space-y-2'>
               {instructions.steps.map((step, index) => (
-                <div key={index} className="flex gap-3">
-                  <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-sm font-medium text-blue-600 flex-shrink-0">
+                <div key={index} className='flex gap-3'>
+                  <div className='w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-sm font-medium text-blue-600 flex-shrink-0'>
                     {index + 1}
                   </div>
-                  <p className="text-sm text-gray-700">{step}</p>
+                  <p className='text-sm text-gray-700'>{step}</p>
                 </div>
               ))}
             </div>
 
             <Alert>
-              <Info className="h-4 w-4" />
+              <Info className='h-4 w-4' />
               <AlertDescription>
-                If you don't see install options, try refreshing the page or using a supported browser like Chrome or Safari.
+                If you don't see install options, try refreshing the page or
+                using a supported browser like Chrome or Safari.
               </AlertDescription>
             </Alert>
 
-            <div className="p-3 bg-gray-50 rounded-lg">
-              <h4 className="font-medium text-sm mb-2">Benefits of Installing:</h4>
-              <ul className="text-xs text-gray-600 space-y-1">
+            <div className='p-3 bg-gray-50 rounded-lg'>
+              <h4 className='font-medium text-sm mb-2'>
+                Benefits of Installing:
+              </h4>
+              <ul className='text-xs text-gray-600 space-y-1'>
                 <li>• Faster app startup and navigation</li>
                 <li>• Works offline for viewing documents</li>
                 <li>• Receive important security notifications</li>
@@ -341,13 +367,20 @@ export default function PWAInstallPrompt({
           </div>
 
           <DialogFooter>
-            <Button variant="outline" onClick={() => setShowInstructions(false)}>
+            <Button
+              variant='outline'
+              onClick={() => setShowInstructions(false)}
+            >
               Got it
             </Button>
             <Button asChild>
-              <a href="https://web.dev/install-criteria/" target="_blank" rel="noopener noreferrer">
+              <a
+                href='https://web.dev/install-criteria/'
+                target='_blank'
+                rel='noopener noreferrer'
+              >
                 Learn More
-                <ExternalLink className="h-3 w-3 ml-1" />
+                <ExternalLink className='h-3 w-3 ml-1' />
               </a>
             </Button>
           </DialogFooter>

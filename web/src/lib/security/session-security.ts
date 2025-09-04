@@ -3,43 +3,48 @@
  * Implements secure session handling with fingerprinting and anomaly detection
  */
 
-import { supabase } from '@/lib/supabase';
+import supabase from '../supabaseClient';
 import { encryptionService } from '@hollywood/shared';
 
 interface SessionFingerprint {
-  userAgent: string;
-  screenResolution: string;
-  timezone: string;
+  audioFingerprint: string;
+  canvasFingerprint: string;
+  colorDepth: number;
+  fontFingerprint: string;
+  hardwareConcurrency: number;
   language: string;
   platform: string;
-  hardwareConcurrency: number;
-  colorDepth: number;
+  screenResolution: string;
+  timezone: string;
   touchSupport: boolean;
+  userAgent: string;
   webGLFingerprint: string;
-  canvasFingerprint: string;
-  audioFingerprint: string;
-  fontFingerprint: string;
 }
 
 interface SecureSession {
-  id: string;
-  userId: string;
-  fingerprint: string;
-  ipAddress: string;
   createdAt: Date;
-  lastActivity: Date;
-  expiresAt: Date;
-  isActive: boolean;
-  trustScore: number;
   deviceTrusted: boolean;
-  mfaVerified: boolean;
   encryptedToken: string;
+  expiresAt: Date;
+  fingerprint: string;
+  id: string;
+  ipAddress: string;
+  isActive: boolean;
+  lastActivity: Date;
+  mfaVerified: boolean;
+  trustScore: number;
+  userId: string;
 }
 
 interface SessionAnomalySignal {
-  type: 'fingerprint_mismatch' | 'ip_change' | 'location_jump' | 'suspicious_timing' | 'concurrent_sessions';
-  severity: 'low' | 'medium' | 'high';
   details: Record<string, unknown>;
+  severity: 'high' | 'low' | 'medium';
+  type:
+    | 'concurrent_sessions'
+    | 'fingerprint_mismatch'
+    | 'ip_change'
+    | 'location_jump'
+    | 'suspicious_timing';
 }
 
 export class SessionSecurityManager {
@@ -89,14 +94,17 @@ export class SessionSecurityManager {
   private async getWebGLFingerprint(): Promise<string> {
     try {
       const canvas = document.createElement('canvas');
-      const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+      const gl =
+        canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
       if (!gl) return 'not-supported';
 
-      const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+      const debugInfo = (gl as any).getExtension('WEBGL_debug_renderer_info');
       if (!debugInfo) return 'no-debug-info';
 
-      const vendor = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL);
-      const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+      const vendor = (gl as any).getParameter(debugInfo.UNMASKED_VENDOR_WEBGL);
+      const renderer = (gl as any).getParameter(
+        debugInfo.UNMASKED_RENDERER_WEBGL
+      );
 
       return `${vendor}::${renderer}`;
     } catch {
@@ -129,7 +137,7 @@ export class SessionSecurityManager {
       const dataURL = canvas.toDataURL();
       let hash = 0;
       for (let i = 0; i < dataURL.length; i++) {
-        hash = ((hash << 5) - hash) + dataURL.charCodeAt(i);
+        hash = (hash << 5) - hash + dataURL.charCodeAt(i);
         hash = hash & hash;
       }
 
@@ -144,7 +152,8 @@ export class SessionSecurityManager {
    */
   private async getAudioFingerprint(): Promise<string> {
     try {
-      const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+      const AudioContext =
+        window.AudioContext || (window as any).webkitAudioContext;
       if (!AudioContext) return 'not-supported';
 
       const context = new AudioContext();
@@ -161,9 +170,10 @@ export class SessionSecurityManager {
 
       oscillator.start(0);
 
-      return new Promise((resolve) => {
-        scriptProcessor.onaudioprocess = (event) => {
-          const fingerprint = event.inputBuffer.getChannelData(0)
+      return new Promise(resolve => {
+        scriptProcessor.onaudioprocess = event => {
+          const fingerprint = event.inputBuffer
+            .getChannelData(0)
             .slice(0, 100)
             .reduce((acc, val) => acc + Math.abs(val), 0);
 
@@ -182,9 +192,18 @@ export class SessionSecurityManager {
    */
   private async getFontFingerprint(): Promise<string> {
     const testFonts = [
-      'Arial', 'Verdana', 'Times New Roman', 'Courier New',
-      'Georgia', 'Palatino', 'Garamond', 'Bookman',
-      'Comic Sans MS', 'Trebuchet MS', 'Arial Black', 'Impact'
+      'Arial',
+      'Verdana',
+      'Times New Roman',
+      'Courier New',
+      'Georgia',
+      'Palatino',
+      'Garamond',
+      'Bookman',
+      'Comic Sans MS',
+      'Trebuchet MS',
+      'Arial Black',
+      'Impact',
     ];
 
     const baseFonts = ['monospace', 'sans-serif', 'serif'];
@@ -219,13 +238,14 @@ export class SessionSecurityManager {
     const fingerprintHash = await this.hashFingerprint(fingerprint);
 
     // Check for concurrent sessions
-    const userSessions = Array.from(this.sessions.values())
-      .filter(s => s.userId === userId && s.isActive);
+    const userSessions = Array.from(this.sessions.values()).filter(
+      s => s.userId === userId && s.isActive
+    );
 
     if (userSessions.length >= this.maxConcurrentSessions) {
       // Invalidate oldest session
-      const oldestSession = userSessions.sort((a, b) =>
-        a.lastActivity.getTime() - b.lastActivity.getTime()
+      const oldestSession = userSessions.sort(
+        (a, b) => a.lastActivity.getTime() - b.lastActivity.getTime()
       )[0];
       await this.invalidateSession(oldestSession.id);
     }
@@ -268,7 +288,7 @@ export class SessionSecurityManager {
     sessionId: string,
     currentIp: string,
     currentFingerprint?: SessionFingerprint
-  ): Promise<{ valid: boolean; anomalies: SessionAnomalySignal[] }> {
+  ): Promise<{ anomalies: SessionAnomalySignal[]; valid: boolean }> {
     const session = this.sessions.get(sessionId);
     if (!session) {
       return { valid: false, anomalies: [] };
@@ -325,7 +345,8 @@ export class SessionSecurityManager {
 
     // Check for suspicious timing
     const timeSinceLastActivity = Date.now() - session.lastActivity.getTime();
-    if (timeSinceLastActivity < 100) { // Less than 100ms
+    if (timeSinceLastActivity < 100) {
+      // Less than 100ms
       anomalies.push({
         type: 'suspicious_timing',
         severity: 'low',
@@ -335,7 +356,10 @@ export class SessionSecurityManager {
 
     // Update trust score based on anomalies
     if (anomalies.length > 0) {
-      session.trustScore = Math.max(0, session.trustScore - anomalies.length * 10);
+      session.trustScore = Math.max(
+        0,
+        session.trustScore - anomalies.length * 10
+      );
     } else {
       session.trustScore = Math.min(100, session.trustScore + 1);
     }
@@ -360,7 +384,7 @@ export class SessionSecurityManager {
     previousIp: string,
     currentIp: string,
     lastActivity: Date
-  ): Promise<SessionAnomalySignal | null> {
+  ): Promise<null | SessionAnomalySignal> {
     // This would normally use a GeoIP service
     // For now, we'll use a simple heuristic
     const timeDiff = Date.now() - lastActivity.getTime();
@@ -415,7 +439,10 @@ export class SessionSecurityManager {
   /**
    * Trust device for future sessions
    */
-  public async trustDevice(userId: string, fingerprint: SessionFingerprint): Promise<void> {
+  public async trustDevice(
+    userId: string,
+    fingerprint: SessionFingerprint
+  ): Promise<void> {
     const fingerprintHash = await this.hashFingerprint(fingerprint);
     const userDevices = this.trustedDevices.get(userId) || [];
 
@@ -424,11 +451,14 @@ export class SessionSecurityManager {
       this.trustedDevices.set(userId, userDevices);
 
       // Persist to database
-      await supabase.from('trusted_devices').insert({
-        user_id: userId,
-        fingerprint_hash: fingerprintHash,
-        trusted_at: new Date().toISOString(),
-      });
+      const { error } = await (supabase as any).from('trusted_devices').insert([
+        {
+          user_id: userId,
+          fingerprint_hash: fingerprintHash,
+          trusted_at: new Date().toISOString(),
+        },
+      ]);
+      if (error) console.error('Database insert error:', error);
     }
   }
 
@@ -447,10 +477,11 @@ export class SessionSecurityManager {
     const session = this.sessions.get(sessionId);
     if (session) {
       session.isActive = false;
-      await supabase
+      const { error } = await (supabase as any)
         .from('sessions')
         .update({ is_active: false, invalidated_at: new Date().toISOString() })
         .eq('id', sessionId);
+      if (error) console.error('Database update error:', error);
 
       this.sessions.delete(sessionId);
       this.fingerprintCache.delete(sessionId);
@@ -461,8 +492,9 @@ export class SessionSecurityManager {
    * Invalidate all user sessions
    */
   public async invalidateUserSessions(userId: string): Promise<void> {
-    const userSessions = Array.from(this.sessions.values())
-      .filter(s => s.userId === userId);
+    const userSessions = Array.from(this.sessions.values()).filter(
+      s => s.userId === userId
+    );
 
     for (const session of userSessions) {
       await this.invalidateSession(session.id);
@@ -489,18 +521,21 @@ export class SessionSecurityManager {
    */
   private async persistSession(session: SecureSession): Promise<void> {
     try {
-      await supabase.from('sessions').insert({
-        id: session.id,
-        user_id: session.userId,
-        fingerprint_hash: session.fingerprint,
-        ip_address: session.ipAddress,
-        created_at: session.createdAt.toISOString(),
-        expires_at: session.expiresAt.toISOString(),
-        trust_score: session.trustScore,
-        device_trusted: session.deviceTrusted,
-        mfa_verified: session.mfaVerified,
-        encrypted_token: session.encryptedToken,
-      });
+      const { error } = await (supabase as any).from('sessions').insert([
+        {
+          id: session.id,
+          user_id: session.userId,
+          fingerprint_hash: session.fingerprint,
+          ip_address: session.ipAddress,
+          created_at: session.createdAt.toISOString(),
+          expires_at: session.expiresAt.toISOString(),
+          trust_score: session.trustScore,
+          device_trusted: session.deviceTrusted,
+          mfa_verified: session.mfaVerified,
+          encrypted_token: session.encryptedToken,
+        },
+      ]);
+      if (error) console.error('Database insert error:', error);
     } catch (error) {
       console.error('Failed to persist session:', error);
     }
@@ -512,7 +547,9 @@ export class SessionSecurityManager {
   private generateSessionId(): string {
     const array = new Uint8Array(32);
     crypto.getRandomValues(array);
-    return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+    return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join(
+      ''
+    );
   }
 
   /**
@@ -521,13 +558,17 @@ export class SessionSecurityManager {
   private generateSecureToken(): string {
     const array = new Uint8Array(64);
     crypto.getRandomValues(array);
-    return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+    return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join(
+      ''
+    );
   }
 
   /**
    * Hash fingerprint
    */
-  private async hashFingerprint(fingerprint: SessionFingerprint): Promise<string> {
+  private async hashFingerprint(
+    fingerprint: SessionFingerprint
+  ): Promise<string> {
     const str = JSON.stringify(fingerprint);
     const encoder = new TextEncoder();
     const data = encoder.encode(str);
@@ -550,18 +591,22 @@ export class SessionSecurityManager {
    */
   public getMetrics(): {
     activeSessions: number;
-    trustedDevices: number;
     averageTrustScore: number;
     sessionsWithAnomalies: number;
+    trustedDevices: number;
   } {
-    const activeSessions = Array.from(this.sessions.values())
-      .filter(s => s.isActive);
+    const activeSessions = Array.from(this.sessions.values()).filter(
+      s => s.isActive
+    );
 
-    const totalTrustScore = activeSessions
-      .reduce((sum, s) => sum + s.trustScore, 0);
+    const totalTrustScore = activeSessions.reduce(
+      (sum, s) => sum + s.trustScore,
+      0
+    );
 
-    const sessionsWithLowTrust = activeSessions
-      .filter(s => s.trustScore < 70).length;
+    const sessionsWithLowTrust = activeSessions.filter(
+      s => s.trustScore < 70
+    ).length;
 
     let totalTrustedDevices = 0;
     for (const devices of this.trustedDevices.values()) {
@@ -571,9 +616,10 @@ export class SessionSecurityManager {
     return {
       activeSessions: activeSessions.length,
       trustedDevices: totalTrustedDevices,
-      averageTrustScore: activeSessions.length > 0
-        ? totalTrustScore / activeSessions.length
-        : 100,
+      averageTrustScore:
+        activeSessions.length > 0
+          ? totalTrustScore / activeSessions.length
+          : 100,
       sessionsWithAnomalies: sessionsWithLowTrust,
     };
   }

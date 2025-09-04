@@ -1,4 +1,4 @@
-import { onCLS, onINP, onFCP, onLCP, onTTFB } from 'web-vitals';
+import { onCLS, onFCP, onINP, onLCP, onTTFB } from 'web-vitals';
 
 export function initWebVitals() {
   const sendToAnalytics = (metric: any) => {

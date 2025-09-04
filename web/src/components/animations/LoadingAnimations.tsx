@@ -1,30 +1,30 @@
 import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 // import { useSofia } from '../sofia/SofiaContextProvider'; // Not available
 import { Icon } from '../ui/icon-library';
 import { cn } from '@/lib/utils';
 
 // Loading animation type definitions
 export type LoadingAnimationType =
-  | 'spinner'
+  | 'bounce'
   | 'dots'
-  | 'pulse'
-  | 'skeleton'
-  | 'progress'
-  | 'typewriter'
   | 'firefly'
   | 'heartbeat'
-  | 'wave'
-  | 'bounce';
+  | 'progress'
+  | 'pulse'
+  | 'skeleton'
+  | 'spinner'
+  | 'typewriter'
+  | 'wave';
 
 export interface LoadingAnimationProps {
-  type?: LoadingAnimationType;
-  size?: 'sm' | 'md' | 'lg' | 'xl';
-  text?: string;
-  personalityAdapt?: boolean;
   className?: string;
   color?: string;
   duration?: number;
+  personalityAdapt?: boolean;
+  size?: 'lg' | 'md' | 'sm' | 'xl';
+  text?: string;
+  type?: LoadingAnimationType;
 }
 
 // Personality-specific loading configurations
@@ -33,20 +33,20 @@ const PERSONALITY_LOADING_CONFIGS = {
     defaultType: 'heartbeat' as LoadingAnimationType,
     colors: ['#ec4899', '#f97316', '#8b5cf6'],
     duration: 2.0,
-    easing: 'easeOut'
+    easing: 'easeOut',
   },
   pragmatic: {
     defaultType: 'spinner' as LoadingAnimationType,
     colors: ['#6b7280', '#374151', '#111827'],
     duration: 1.0,
-    easing: 'linear'
+    easing: 'linear',
   },
   adaptive: {
     defaultType: 'wave' as LoadingAnimationType,
     colors: ['#3b82f6', '#10b981', '#06b6d4'],
     duration: 1.5,
-    easing: 'easeInOut'
-  }
+    easing: 'easeInOut',
+  },
 };
 
 // Main loading animation component
@@ -57,13 +57,17 @@ export const LoadingAnimation: React.FC<LoadingAnimationProps> = ({
   personalityAdapt = true,
   className = '',
   color,
-  duration
+  duration,
 }) => {
   // const { personality } = useSofia();
-  const personality = { mode: 'pragmatic' as 'adaptive' | 'pragmatic' | 'empathetic' }; // Mock value
+  const personality = {
+    mode: 'pragmatic' as 'adaptive' | 'empathetic' | 'pragmatic',
+  }; // Mock value
 
   const config = (PERSONALITY_LOADING_CONFIGS as any)[personality.mode];
-  const animationType = personalityAdapt ? (type || config.defaultType) : (type || 'spinner');
+  const animationType = personalityAdapt
+    ? type || config.defaultType
+    : type || 'spinner';
   const animationDuration = duration || config.duration;
   const animationColor = color || config.colors[0];
 
@@ -71,7 +75,7 @@ export const LoadingAnimation: React.FC<LoadingAnimationProps> = ({
     sm: 'w-4 h-4',
     md: 'w-8 h-8',
     lg: 'w-12 h-12',
-    xl: 'w-16 h-16'
+    xl: 'w-16 h-16',
   };
 
   const renderLoadingAnimation = () => {
@@ -79,13 +83,17 @@ export const LoadingAnimation: React.FC<LoadingAnimationProps> = ({
       case 'spinner':
         return (
           <motion.div
-            className={cn(sizeClasses[size], 'border-2 border-gray-200 rounded-full', className)}
+            className={cn(
+              sizeClasses[size],
+              'border-2 border-gray-200 rounded-full',
+              className
+            )}
             style={{ borderTopColor: animationColor }}
             animate={{ rotate: 360 }}
             transition={{
               duration: animationDuration,
               repeat: Infinity,
-              ease: 'linear'
+              ease: 'linear',
             }}
           />
         );
@@ -93,7 +101,7 @@ export const LoadingAnimation: React.FC<LoadingAnimationProps> = ({
       case 'dots':
         return (
           <div className={cn('flex space-x-1', className)}>
-            {[0, 1, 2].map((index) => (
+            {[0, 1, 2].map(index => (
               <motion.div
                 key={index}
                 className={cn(
@@ -106,12 +114,12 @@ export const LoadingAnimation: React.FC<LoadingAnimationProps> = ({
                 // style={{ color: animationColor }} // Style not supported
                 animate={{
                   scale: [1, 1.5, 1],
-                  opacity: [0.5, 1, 0.5]
+                  opacity: [0.5, 1, 0.5],
                 }}
                 transition={{
                   duration: animationDuration,
                   repeat: Infinity,
-                  delay: index * 0.2
+                  delay: index * 0.2,
                 }}
               />
             ))}
@@ -125,12 +133,12 @@ export const LoadingAnimation: React.FC<LoadingAnimationProps> = ({
             style={{ backgroundColor: animationColor }}
             animate={{
               scale: [1, 1.2, 1],
-              opacity: [0.7, 1, 0.7]
+              opacity: [0.7, 1, 0.7],
             }}
             transition={{
               duration: animationDuration,
               repeat: Infinity,
-              ease: config.easing
+              ease: config.easing,
             }}
           />
         );
@@ -141,15 +149,15 @@ export const LoadingAnimation: React.FC<LoadingAnimationProps> = ({
             {[...Array(3)].map((_, index) => (
               <motion.div
                 key={index}
-                className="h-4 bg-gray-200 rounded"
+                className='h-4 bg-gray-200 rounded'
                 style={{ width: `${100 - index * 10}%` }}
                 animate={{
-                  opacity: [0.5, 1, 0.5]
+                  opacity: [0.5, 1, 0.5],
                 }}
                 transition={{
                   duration: animationDuration,
                   repeat: Infinity,
-                  delay: index * 0.1
+                  delay: index * 0.1,
                 }}
               />
             ))}
@@ -160,15 +168,15 @@ export const LoadingAnimation: React.FC<LoadingAnimationProps> = ({
         return (
           <div className={cn('w-full bg-gray-200 rounded-full h-2', className)}>
             <motion.div
-              className="h-full rounded-full"
+              className='h-full rounded-full'
               style={{ backgroundColor: animationColor }}
               animate={{
-                width: ['0%', '100%', '0%']
+                width: ['0%', '100%', '0%'],
               }}
               transition={{
                 duration: animationDuration * 2,
                 repeat: Infinity,
-                ease: 'easeInOut'
+                ease: 'easeInOut',
               }}
             />
           </div>
@@ -177,15 +185,13 @@ export const LoadingAnimation: React.FC<LoadingAnimationProps> = ({
       case 'typewriter':
         return (
           <div className={cn('flex items-center space-x-1', className)}>
-            <span style={{ color: animationColor }}>
-              {text || 'Loading'}
-            </span>
+            <span style={{ color: animationColor }}>{text || 'Loading'}</span>
             <motion.span
               style={{ color: animationColor }}
               animate={{ opacity: [0, 1, 0] }}
               transition={{
                 duration: 1,
-                repeat: Infinity
+                repeat: Infinity,
               }}
             >
               |
@@ -199,19 +205,21 @@ export const LoadingAnimation: React.FC<LoadingAnimationProps> = ({
             {[...Array(5)].map((_, index) => (
               <motion.div
                 key={index}
-                className="absolute w-1 h-1 rounded-full"
-                style={{ backgroundColor: config.colors[index % config.colors.length] }}
+                className='absolute w-1 h-1 rounded-full'
+                style={{
+                  backgroundColor: config.colors[index % config.colors.length],
+                }}
                 animate={{
                   x: [0, 20, -10, 15, 0],
                   y: [0, -15, 10, -5, 0],
                   opacity: [0.3, 1, 0.7, 1, 0.3],
-                  scale: [0.5, 1, 0.8, 1.2, 0.5]
+                  scale: [0.5, 1, 0.8, 1.2, 0.5],
                 }}
                 transition={{
                   duration: animationDuration * 2,
                   repeat: Infinity,
                   delay: index * 0.3,
-                  ease: 'easeInOut'
+                  ease: 'easeInOut',
                 }}
               />
             ))}
@@ -221,20 +229,24 @@ export const LoadingAnimation: React.FC<LoadingAnimationProps> = ({
       case 'heartbeat':
         return (
           <motion.div
-            className={cn(sizeClasses[size], 'flex items-center justify-center', className)}
+            className={cn(
+              sizeClasses[size],
+              'flex items-center justify-center',
+              className
+            )}
           >
             <motion.div
               animate={{
-                scale: [1, 1.3, 1, 1.3, 1]
+                scale: [1, 1.3, 1, 1.3, 1],
               }}
               transition={{
                 duration: animationDuration,
                 repeat: Infinity,
-                times: [0, 0.14, 0.28, 0.42, 1]
+                times: [0, 0.14, 0.28, 0.42, 1],
               }}
             >
               <Icon
-                name="heart"
+                name='heart'
                 className={cn(sizeClasses[size])}
                 // style={{ color: animationColor }} // Style not supported
               />
@@ -257,13 +269,13 @@ export const LoadingAnimation: React.FC<LoadingAnimationProps> = ({
                 )}
                 style={{ backgroundColor: animationColor }}
                 animate={{
-                  height: [10, 30, 10]
+                  height: [10, 30, 10],
                 }}
                 transition={{
                   duration: animationDuration,
                   repeat: Infinity,
                   delay: index * 0.1,
-                  ease: 'easeInOut'
+                  ease: 'easeInOut',
                 }}
               />
             ))}
@@ -277,12 +289,12 @@ export const LoadingAnimation: React.FC<LoadingAnimationProps> = ({
             style={{ backgroundColor: animationColor }}
             animate={{
               y: [0, -20, 0],
-              scale: [1, 0.9, 1]
+              scale: [1, 0.9, 1],
             }}
             transition={{
               duration: animationDuration,
               repeat: Infinity,
-              ease: 'easeOut'
+              ease: 'easeOut',
             }}
           />
         );
@@ -293,7 +305,7 @@ export const LoadingAnimation: React.FC<LoadingAnimationProps> = ({
   };
 
   return (
-    <div className="flex flex-col items-center justify-center space-y-3">
+    <div className='flex flex-col items-center justify-center space-y-3'>
       {renderLoadingAnimation()}
       <AnimatePresence>
         {text && (
@@ -306,7 +318,7 @@ export const LoadingAnimation: React.FC<LoadingAnimationProps> = ({
               personalityAdapt && {
                 'text-pink-600': personality.mode === 'empathetic',
                 'text-gray-600': personality.mode === 'pragmatic',
-                'text-blue-600': personality.mode === 'adaptive'
+                'text-blue-600': personality.mode === 'adaptive',
               }
             )}
             style={!personalityAdapt ? { color: animationColor } : {}}
@@ -321,23 +333,21 @@ export const LoadingAnimation: React.FC<LoadingAnimationProps> = ({
 
 // Specialized loading components
 export const PageLoader: React.FC<{
-  text?: string;
-  overlay?: boolean;
   className?: string;
-}> = ({
-  text = 'Loading...',
-  overlay = false,
-  className = ''
-}) => {
+  overlay?: boolean;
+  text?: string;
+}> = ({ text = 'Loading...', overlay = false, className = '' }) => {
   const content = (
-    <div className={cn(
-      'flex items-center justify-center',
-      overlay ? 'min-h-screen' : 'min-h-[200px]',
-      className
-    )}>
+    <div
+      className={cn(
+        'flex items-center justify-center',
+        overlay ? 'min-h-screen' : 'min-h-[200px]',
+        className
+      )}
+    >
       <LoadingAnimation
-        type="firefly"
-        size="lg"
+        type='firefly'
+        size='lg'
         text={text}
         personalityAdapt={true}
       />
@@ -350,7 +360,7 @@ export const PageLoader: React.FC<{
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50"
+        className='fixed inset-0 bg-background/80 backdrop-blur-sm z-50'
       >
         {content}
       </motion.div>
@@ -361,11 +371,11 @@ export const PageLoader: React.FC<{
 };
 
 export const ButtonLoader: React.FC<{
-  size?: 'sm' | 'md' | 'lg';
   color?: string;
+  size?: 'lg' | 'md' | 'sm';
 }> = ({ size = 'sm', color }) => (
   <LoadingAnimation
-    type="spinner"
+    type='spinner'
     size={size}
     color={color}
     personalityAdapt={false}
@@ -373,28 +383,28 @@ export const ButtonLoader: React.FC<{
 );
 
 export const FormLoader: React.FC<{
-  fields?: number;
   className?: string;
+  fields?: number;
 }> = ({ fields = 3, className = '' }) => (
   <div className={cn('space-y-4', className)}>
     {[...Array(fields)].map((_, index) => (
-      <div key={index} className="space-y-2">
+      <div key={index} className='space-y-2'>
         <motion.div
-          className="h-4 bg-gray-200 rounded w-1/4"
+          className='h-4 bg-gray-200 rounded w-1/4'
           animate={{ opacity: [0.5, 1, 0.5] }}
           transition={{
             duration: 1.5,
             repeat: Infinity,
-            delay: index * 0.1
+            delay: index * 0.1,
           }}
         />
         <motion.div
-          className="h-10 bg-gray-200 rounded"
+          className='h-10 bg-gray-200 rounded'
           animate={{ opacity: [0.5, 1, 0.5] }}
           transition={{
             duration: 1.5,
             repeat: Infinity,
-            delay: index * 0.1 + 0.05
+            delay: index * 0.1 + 0.05,
           }}
         />
       </div>
@@ -403,43 +413,43 @@ export const FormLoader: React.FC<{
 );
 
 export const CardLoader: React.FC<{
-  count?: number;
   className?: string;
+  count?: number;
 }> = ({ count = 1, className = '' }) => (
   <div className={cn('space-y-4', className)}>
     {[...Array(count)].map((_, index) => (
       <motion.div
         key={index}
-        className="border border-gray-200 rounded-lg p-4 space-y-3"
+        className='border border-gray-200 rounded-lg p-4 space-y-3'
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: index * 0.1 }}
       >
         <motion.div
-          className="h-6 bg-gray-200 rounded w-3/4"
+          className='h-6 bg-gray-200 rounded w-3/4'
           animate={{ opacity: [0.5, 1, 0.5] }}
           transition={{
             duration: 1.5,
             repeat: Infinity,
-            delay: index * 0.1
+            delay: index * 0.1,
           }}
         />
         <motion.div
-          className="h-4 bg-gray-200 rounded w-1/2"
+          className='h-4 bg-gray-200 rounded w-1/2'
           animate={{ opacity: [0.5, 1, 0.5] }}
           transition={{
             duration: 1.5,
             repeat: Infinity,
-            delay: index * 0.1 + 0.1
+            delay: index * 0.1 + 0.1,
           }}
         />
         <motion.div
-          className="h-20 bg-gray-200 rounded"
+          className='h-20 bg-gray-200 rounded'
           animate={{ opacity: [0.5, 1, 0.5] }}
           transition={{
             duration: 1.5,
             repeat: Infinity,
-            delay: index * 0.1 + 0.2
+            delay: index * 0.1 + 0.2,
           }}
         />
       </motion.div>
@@ -448,23 +458,25 @@ export const CardLoader: React.FC<{
 );
 
 export const ProgressLoader: React.FC<{
+  className?: string;
   progress: number;
   text?: string;
-  className?: string;
 }> = ({ progress, text, className = '' }) => {
   // const { personality } = useSofia();
-  const personality = { mode: 'pragmatic' as 'adaptive' | 'pragmatic' | 'empathetic' }; // Mock value
+  const personality = {
+    mode: 'pragmatic' as 'adaptive' | 'empathetic' | 'pragmatic',
+  }; // Mock value
   const config = (PERSONALITY_LOADING_CONFIGS as any)[personality.mode];
 
   return (
     <div className={cn('space-y-2', className)}>
-      <div className="flex justify-between text-sm">
+      <div className='flex justify-between text-sm'>
         <span>{text || 'Loading...'}</span>
         <span>{Math.round(progress)}%</span>
       </div>
-      <div className="w-full bg-gray-200 rounded-full h-2">
+      <div className='w-full bg-gray-200 rounded-full h-2'>
         <motion.div
-          className="h-full rounded-full"
+          className='h-full rounded-full'
           style={{ backgroundColor: config.colors[0] }}
           initial={{ width: 0 }}
           animate={{ width: `${progress}%` }}

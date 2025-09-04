@@ -1,8 +1,8 @@
-import { createTamagui } from 'tamagui'
-import { shorthands } from '@tamagui/shorthands'
-import { themes, tokens } from '@tamagui/themes'
-import { createInterFont } from '@tamagui/font-inter'
-import { createAnimations } from '@tamagui/animations-react-native'
+import { createTamagui } from 'tamagui';
+import { shorthands } from '@tamagui/shorthands';
+import { themes, tokens } from '@tamagui/themes';
+import { createInterFont } from '@tamagui/font-inter';
+import { createAnimations } from '@tamagui/animations-react-native';
 
 const animations = createAnimations({
   bouncy: {
@@ -22,7 +22,7 @@ const animations = createAnimations({
     mass: 1.2,
     stiffness: 250,
   },
-})
+});
 
 const headingFont = createInterFont({
   family: 'Inter',
@@ -50,7 +50,7 @@ const headingFont = createInterFont({
     2: -0.5,
     3: -1,
   },
-})
+});
 
 const bodyFont = createInterFont({
   family: 'Inter',
@@ -76,7 +76,7 @@ const bodyFont = createInterFont({
     1: 0,
     2: -0.5,
   },
-})
+});
 
 export const config = createTamagui({
   animations,
@@ -106,9 +106,9 @@ export const config = createTamagui({
     hoverNone: { hover: 'none' },
     pointerCoarse: { pointer: 'coarse' },
   },
-})
+});
 
-export type AppConfig = typeof config
+export type AppConfig = typeof config;
 
 declare module 'tamagui' {
   interface TamaguiCustomConfig extends AppConfig {}

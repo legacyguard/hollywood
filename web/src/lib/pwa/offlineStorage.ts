@@ -7,41 +7,41 @@
  */
 
 interface StoredDocument {
-  id: string;
-  name: string;
-  type: string;
   category: string;
-  size: number;
-  encryptedData: ArrayBuffer;
-  metadata: Record<string, any>;
-  lastModified: number;
-  syncStatus: 'synced' | 'pending' | 'failed';
   created_at: string;
+  encryptedData: ArrayBuffer;
+  id: string;
+  lastModified: number;
+  metadata: Record<string, any>;
+  name: string;
+  size: number;
+  syncStatus: 'failed' | 'pending' | 'synced';
+  type: string;
   updated_at: string;
 }
 
 interface AnalyticsEvent {
-  id: string;
-  type: string;
   data: Record<string, any>;
+  id: string;
+  syncStatus: 'failed' | 'pending' | 'synced';
   timestamp: number;
-  syncStatus: 'synced' | 'pending' | 'failed';
+  type: string;
 }
 
 interface UserPreference {
   key: string;
-  value: any;
   lastModified: number;
-  syncStatus: 'synced' | 'pending' | 'failed';
+  syncStatus: 'failed' | 'pending' | 'synced';
+  value: any;
 }
 
 interface OfflineQueueItem {
-  id: string;
-  type: 'upload' | 'update' | 'delete' | 'analytics';
   data: any;
-  timestamp: number;
-  retryCount: number;
+  id: string;
   maxRetries: number;
+  retryCount: number;
+  timestamp: number;
+  type: 'analytics' | 'delete' | 'update' | 'upload';
 }
 
 export class OfflineStorageService {
@@ -75,7 +75,7 @@ export class OfflineStorageService {
         resolve();
       };
 
-      request.onupgradeneeded = (event) => {
+      request.onupgradeneeded = event => {
         const db = (event.target as IDBOpenDBRequest).result;
         this.createObjectStores(db);
       };
@@ -88,16 +88,22 @@ export class OfflineStorageService {
   private createObjectStores(db: IDBDatabase): void {
     // Documents store
     if (!db.objectStoreNames.contains('documents')) {
-      const documentsStore = db.createObjectStore('documents', { keyPath: 'id' });
+      const documentsStore = db.createObjectStore('documents', {
+        keyPath: 'id',
+      });
       documentsStore.createIndex('category', 'category', { unique: false });
       documentsStore.createIndex('type', 'type', { unique: false });
       documentsStore.createIndex('syncStatus', 'syncStatus', { unique: false });
-      documentsStore.createIndex('lastModified', 'lastModified', { unique: false });
+      documentsStore.createIndex('lastModified', 'lastModified', {
+        unique: false,
+      });
     }
 
     // Analytics events store
     if (!db.objectStoreNames.contains('analytics')) {
-      const analyticsStore = db.createObjectStore('analytics', { keyPath: 'id' });
+      const analyticsStore = db.createObjectStore('analytics', {
+        keyPath: 'id',
+      });
       analyticsStore.createIndex('type', 'type', { unique: false });
       analyticsStore.createIndex('timestamp', 'timestamp', { unique: false });
       analyticsStore.createIndex('syncStatus', 'syncStatus', { unique: false });
@@ -105,21 +111,31 @@ export class OfflineStorageService {
 
     // User preferences store
     if (!db.objectStoreNames.contains('preferences')) {
-      const preferencesStore = db.createObjectStore('preferences', { keyPath: 'key' });
-      preferencesStore.createIndex('lastModified', 'lastModified', { unique: false });
-      preferencesStore.createIndex('syncStatus', 'syncStatus', { unique: false });
+      const preferencesStore = db.createObjectStore('preferences', {
+        keyPath: 'key',
+      });
+      preferencesStore.createIndex('lastModified', 'lastModified', {
+        unique: false,
+      });
+      preferencesStore.createIndex('syncStatus', 'syncStatus', {
+        unique: false,
+      });
     }
 
     // Offline queue store
     if (!db.objectStoreNames.contains('offlineQueue')) {
-      const queueStore = db.createObjectStore('offlineQueue', { keyPath: 'id' });
+      const queueStore = db.createObjectStore('offlineQueue', {
+        keyPath: 'id',
+      });
       queueStore.createIndex('type', 'type', { unique: false });
       queueStore.createIndex('timestamp', 'timestamp', { unique: false });
     }
 
     // Cache metadata store
     if (!db.objectStoreNames.contains('cacheMetadata')) {
-      const cacheStore = db.createObjectStore('cacheMetadata', { keyPath: 'key' });
+      const cacheStore = db.createObjectStore('cacheMetadata', {
+        keyPath: 'key',
+      });
       cacheStore.createIndex('expiry', 'expiry', { unique: false });
     }
   }
@@ -127,13 +143,15 @@ export class OfflineStorageService {
   /**
    * Store document offline
    */
-  async storeDocument(document: Omit<StoredDocument, 'syncStatus' | 'lastModified'>): Promise<void> {
+  async storeDocument(
+    document: Omit<StoredDocument, 'lastModified' | 'syncStatus'>
+  ): Promise<void> {
     if (!this.db) throw new Error('Database not initialized');
 
     const storedDoc: StoredDocument = {
       ...document,
       syncStatus: 'pending',
-      lastModified: Date.now()
+      lastModified: Date.now(),
     };
 
     const transaction = this.db.transaction(['documents'], 'readwrite');
@@ -151,7 +169,11 @@ export class OfflineStorageService {
   /**
    * Get documents from offline storage
    */
-  async getDocuments(filter?: { category?: string; type?: string; limit?: number }): Promise<StoredDocument[]> {
+  async getDocuments(filter?: {
+    category?: string;
+    limit?: number;
+    type?: string;
+  }): Promise<StoredDocument[]> {
     if (!this.db) throw new Error('Database not initialized');
 
     const transaction = this.db.transaction(['documents'], 'readonly');
@@ -190,13 +212,13 @@ export class OfflineStorageService {
   /**
    * Get single document by ID
    */
-  async getDocument(id: string): Promise<StoredDocument | null> {
+  async getDocument(id: string): Promise<null | StoredDocument> {
     if (!this.db) throw new Error('Database not initialized');
 
     const transaction = this.db.transaction(['documents'], 'readonly');
     const store = transaction.objectStore('documents');
 
-    return new Promise<StoredDocument | null>((resolve, reject) => {
+    return new Promise<null | StoredDocument>((resolve, reject) => {
       const request = store.get(id);
       request.onsuccess = () => resolve(request.result || null);
       request.onerror = () => reject(request.error);
@@ -206,7 +228,10 @@ export class OfflineStorageService {
   /**
    * Update document sync status
    */
-  async updateDocumentSyncStatus(id: string, status: 'synced' | 'pending' | 'failed'): Promise<void> {
+  async updateDocumentSyncStatus(
+    id: string,
+    status: 'failed' | 'pending' | 'synced'
+  ): Promise<void> {
     if (!this.db) throw new Error('Database not initialized');
 
     const transaction = this.db.transaction(['documents'], 'readwrite');
@@ -233,13 +258,15 @@ export class OfflineStorageService {
   /**
    * Store analytics event offline
    */
-  async storeAnalyticsEvent(event: Omit<AnalyticsEvent, 'id' | 'syncStatus'>): Promise<void> {
+  async storeAnalyticsEvent(
+    event: Omit<AnalyticsEvent, 'id' | 'syncStatus'>
+  ): Promise<void> {
     if (!this.db) throw new Error('Database not initialized');
 
     const storedEvent: AnalyticsEvent = {
       ...event,
       id: `${event.type}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      syncStatus: 'pending'
+      syncStatus: 'pending',
     };
 
     const transaction = this.db.transaction(['analytics'], 'readwrite');
@@ -282,7 +309,7 @@ export class OfflineStorageService {
     return new Promise<void>((resolve, reject) => {
       const request = index.openCursor(IDBKeyRange.only('synced'));
 
-      request.onsuccess = (event) => {
+      request.onsuccess = event => {
         const cursor = (event.target as IDBRequest).result;
         if (cursor) {
           cursor.delete();
@@ -306,7 +333,7 @@ export class OfflineStorageService {
       key,
       value,
       lastModified: Date.now(),
-      syncStatus: 'pending'
+      syncStatus: 'pending',
     };
 
     const transaction = this.db.transaction(['preferences'], 'readwrite');
@@ -341,13 +368,15 @@ export class OfflineStorageService {
   /**
    * Add item to offline queue
    */
-  async addToOfflineQueue(item: Omit<OfflineQueueItem, 'id' | 'retryCount'>): Promise<void> {
+  async addToOfflineQueue(
+    item: Omit<OfflineQueueItem, 'id' | 'retryCount'>
+  ): Promise<void> {
     if (!this.db) throw new Error('Database not initialized');
 
     const queueItem: OfflineQueueItem = {
       ...item,
       id: `${item.type}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      retryCount: 0
+      retryCount: 0,
     };
 
     const transaction = this.db.transaction(['offlineQueue'], 'readwrite');
@@ -428,14 +457,18 @@ export class OfflineStorageService {
   /**
    * Store cache data with expiry
    */
-  async storeCacheData(key: string, data: any, ttl: number = 3600000): Promise<void> {
+  async storeCacheData(
+    key: string,
+    data: any,
+    ttl: number = 3600000
+  ): Promise<void> {
     if (!this.db) throw new Error('Database not initialized');
 
     const cacheItem = {
       key,
       data,
       expiry: Date.now() + ttl,
-      stored: Date.now()
+      stored: Date.now(),
     };
 
     const transaction = this.db.transaction(['cacheMetadata'], 'readwrite');
@@ -510,7 +543,7 @@ export class OfflineStorageService {
       const now = Date.now();
       const request = index.openCursor(IDBKeyRange.upperBound(now));
 
-      request.onsuccess = (event) => {
+      request.onsuccess = event => {
         const cursor = (event.target as IDBRequest).result;
         if (cursor) {
           cursor.delete();
@@ -528,21 +561,27 @@ export class OfflineStorageService {
    * Get storage usage statistics
    */
   async getStorageStats(): Promise<{
-    documentsCount: number;
     analyticsCount: number;
+    cacheCount: number;
+    documentsCount: number;
     preferencesCount: number;
     queueCount: number;
-    cacheCount: number;
     totalSize: number;
   }> {
     if (!this.db) throw new Error('Database not initialized');
 
-    const [documentsCount, analyticsCount, preferencesCount, queueCount, cacheCount] = await Promise.all([
+    const [
+      documentsCount,
+      analyticsCount,
+      preferencesCount,
+      queueCount,
+      cacheCount,
+    ] = await Promise.all([
       this.getStoreCount('documents'),
       this.getStoreCount('analytics'),
       this.getStoreCount('preferences'),
       this.getStoreCount('offlineQueue'),
-      this.getStoreCount('cacheMetadata')
+      this.getStoreCount('cacheMetadata'),
     ]);
 
     // Get storage size estimate
@@ -562,7 +601,7 @@ export class OfflineStorageService {
       preferencesCount,
       queueCount,
       cacheCount,
-      totalSize
+      totalSize,
     };
   }
 
@@ -588,7 +627,13 @@ export class OfflineStorageService {
   async clearAllData(): Promise<void> {
     if (!this.db) throw new Error('Database not initialized');
 
-    const stores = ['documents', 'analytics', 'preferences', 'offlineQueue', 'cacheMetadata'];
+    const stores = [
+      'documents',
+      'analytics',
+      'preferences',
+      'offlineQueue',
+      'cacheMetadata',
+    ];
 
     for (const storeName of stores) {
       const transaction = this.db.transaction([storeName], 'readwrite');

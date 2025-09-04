@@ -21,26 +21,26 @@ import {
 } from '@/components/ui/select';
 import { toast } from 'sonner';
 import {
-  legacyMessageBuilder,
-  type LegacyMessage,
-  type MemoryPrompt,
-  type TimeCapsule,
   type EmotionalGuidanceSession,
+  type LegacyMessage,
+  legacyMessageBuilder,
+  type MemoryPrompt,
   type MessageOccasion,
+  type TimeCapsule,
 } from '@/lib/legacy-message-builder';
 import type { WillData } from './WillWizard';
 
 interface EmotionalGuidanceSystemProps {
-  willData: WillData;
+  className?: string;
   currentStage:
-    | 'starting'
-    | 'beneficiaries'
     | 'assets'
+    | 'beneficiaries'
+    | 'completing'
     | 'final_wishes'
-    | 'completing';
+    | 'starting';
   onMessagesCreated?: (messages: LegacyMessage[]) => void;
   onTimeCapsuleCreated?: (timeCapsule: TimeCapsule) => void;
-  className?: string;
+  willData: WillData;
 }
 
 export const EmotionalGuidanceSystem: React.FC<
@@ -66,7 +66,9 @@ export const EmotionalGuidanceSystem: React.FC<
 
   // Extract guidance content from the guidanceCards array
   const getGuidanceContent = (type: string): string => {
-    const card = emotionalSupport?.guidanceCards.find(card => card.type === type);
+    const card = emotionalSupport?.guidanceCards.find(
+      card => card.type === type
+    );
     return card?.content || '';
   };
 
@@ -242,7 +244,7 @@ export const EmotionalGuidanceSystem: React.FC<
           <Card className='p-6 bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200'>
             <div className='flex items-start gap-4'>
               <div className='w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0'>
-                <Icon name="heart" className='w-6 h-6 text-blue-600' />
+                <Icon name='heart' className='w-6 h-6 text-blue-600' />
               </div>
               <div className='flex-1'>
                 <h4 className='font-semibold text-blue-900 mb-2'>
@@ -261,7 +263,7 @@ export const EmotionalGuidanceSystem: React.FC<
           <Card className='p-6 bg-gradient-to-br from-green-50 to-emerald-50 border-green-200'>
             <div className='flex items-start gap-4'>
               <div className='w-12 h-12 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0'>
-                <Icon name="lightbulb" className='w-6 h-6 text-green-600' />
+                <Icon name='lightbulb' className='w-6 h-6 text-green-600' />
               </div>
               <div className='flex-1'>
                 <h4 className='font-semibold text-green-900 mb-2'>
@@ -288,17 +290,17 @@ export const EmotionalGuidanceSystem: React.FC<
                   onClick={handleStartGuidanceSession}
                   className='bg-primary hover:bg-primary-hover'
                 >
-                  <Icon name="heart" className='w-4 h-4 mr-2' />
+                  <Icon name='heart' className='w-4 h-4 mr-2' />
                   Start Guided Reflection
                 </Button>
                 <Button
-                  variant="outline"
+                  variant='outline'
                   onClick={() => {
                     setSelectedRecipient(familyMembers[0]?.name || '');
                     setShowMessageComposer(true);
                   }}
                 >
-                  <Icon name="edit" className='w-4 h-4 mr-2' />
+                  <Icon name='edit' className='w-4 h-4 mr-2' />
                   Create Message Directly
                 </Button>
               </div>
@@ -353,7 +355,8 @@ export const EmotionalGuidanceSystem: React.FC<
             </div>
           ) : (
             <Card className='p-8 text-center'>
-              <Icon name="heart"
+              <Icon
+                name='heart'
                 className='w-12 h-12 text-muted-foreground mx-auto mb-4'
               />
               <h4 className='font-semibold mb-2'>
@@ -377,10 +380,10 @@ export const EmotionalGuidanceSystem: React.FC<
             </h4>
             <Button
               onClick={() => setShowMessageComposer(true)}
-              variant="outline"
+              variant='outline'
               size='sm'
             >
-              <Icon name="plus" className='w-4 h-4 mr-2' />
+              <Icon name='plus' className='w-4 h-4 mr-2' />
               Create Message
             </Button>
           </div>
@@ -402,10 +405,10 @@ export const EmotionalGuidanceSystem: React.FC<
                         <span className='font-medium'>
                           {suggestion.recipient}
                         </span>
-                        <Badge variant="outline" className='text-xs'>
+                        <Badge variant='outline' className='text-xs'>
                           {suggestion.occasion.replace('_', ' ')}
                         </Badge>
-                        <Badge variant="secondary" className='text-xs'>
+                        <Badge variant='secondary' className='text-xs'>
                           {Math.round(suggestion?.confidence * 100)}% match
                         </Badge>
                       </div>
@@ -440,7 +443,8 @@ export const EmotionalGuidanceSystem: React.FC<
             </div>
           ) : (
             <Card className='p-8 text-center'>
-              <Icon name="message-circle"
+              <Icon
+                name='message-circle'
                 className='w-12 h-12 text-muted-foreground mx-auto mb-4'
               />
               <h5 className='font-semibold mb-2'>No Messages Yet</h5>
@@ -459,7 +463,7 @@ export const EmotionalGuidanceSystem: React.FC<
           <Card className='p-6'>
             <div className='flex items-start gap-4'>
               <div className='w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0'>
-                <Icon name="clock" className='w-6 h-6 text-purple-600' />
+                <Icon name='clock' className='w-6 h-6 text-purple-600' />
               </div>
               <div className='flex-1'>
                 <h4 className='font-semibold mb-2'>Digital Time Capsule</h4>
@@ -479,7 +483,7 @@ export const EmotionalGuidanceSystem: React.FC<
                       </span>
                     </div>
                     <Button onClick={handleCreateTimeCapsule}>
-                      <Icon name={"package" as any} className='w-4 h-4 mr-2' />
+                      <Icon name={'package' as any} className='w-4 h-4 mr-2' />
                       Create Time Capsule
                     </Button>
                   </div>
@@ -499,7 +503,8 @@ export const EmotionalGuidanceSystem: React.FC<
             </h4>
             <div className='space-y-3 text-sm'>
               <div className='flex items-start gap-2'>
-                <Icon name={"gift" as any}
+                <Icon
+                  name={'gift' as any}
                   className='w-4 h-4 text-purple-600 flex-shrink-0 mt-0.5'
                 />
                 <div>
@@ -510,7 +515,8 @@ export const EmotionalGuidanceSystem: React.FC<
                 </div>
               </div>
               <div className='flex items-start gap-2'>
-                <Icon name={"graduation-cap" as any}
+                <Icon
+                  name={'graduation-cap' as any}
                   className='w-4 h-4 text-purple-600 flex-shrink-0 mt-0.5'
                 />
                 <div>
@@ -521,7 +527,8 @@ export const EmotionalGuidanceSystem: React.FC<
                 </div>
               </div>
               <div className='flex items-start gap-2'>
-                <Icon name={"baby" as any}
+                <Icon
+                  name={'baby' as any}
                   className='w-4 h-4 text-purple-600 flex-shrink-0 mt-0.5'
                 />
                 <div>
@@ -556,10 +563,10 @@ export const EmotionalGuidanceSystem: React.FC<
 
 // Reflection Prompt Component
 interface ReflectionPromptProps {
-  prompt: MemoryPrompt;
   isActive: boolean;
-  response: string;
   onResponse: (response: string) => void;
+  prompt: MemoryPrompt;
+  response: string;
 }
 
 const ReflectionPrompt: React.FC<ReflectionPromptProps> = ({
@@ -584,7 +591,7 @@ const ReflectionPrompt: React.FC<ReflectionPromptProps> = ({
         <div className='flex-shrink-0'>
           {response ? (
             <div className='w-8 h-8 bg-green-500 rounded-full flex items-center justify-center'>
-              <Icon name={"check" as any} className='w-5 h-5 text-white' />
+              <Icon name={'check' as any} className='w-5 h-5 text-white' />
             </div>
           ) : isActive ? (
             <div className='w-8 h-8 bg-primary rounded-full flex items-center justify-center'>
@@ -602,14 +609,14 @@ const ReflectionPrompt: React.FC<ReflectionPromptProps> = ({
             <h5 className='font-semibold mb-2'>{prompt.question}</h5>
             <p className='text-sm text-muted-foreground'>{prompt.context}</p>
             <div className='flex items-center gap-2 mt-2'>
-              <Badge variant="outline" className='text-xs'>
+              <Badge variant='outline' className='text-xs'>
                 {prompt.category.replace('_', ' ')}
               </Badge>
-              <Badge variant="outline" className='text-xs'>
+              <Badge variant='outline' className='text-xs'>
                 ~{prompt.timeToReflect} min
               </Badge>
               <Badge
-                variant="outline"
+                variant='outline'
                 className={`text-xs ${
                   prompt.emotionalWeight === 'deep'
                     ? 'bg-red-100 text-red-700'
@@ -666,10 +673,10 @@ const LegacyMessageCard: React.FC<LegacyMessageCardProps> = ({ message }) => {
     <Card className='p-4 hover:shadow-md transition-shadow'>
       <div className='flex items-start justify-between mb-3'>
         <div className='flex items-center gap-2'>
-          <Icon name="message-circle" className='w-4 h-4 text-primary' />
+          <Icon name='message-circle' className='w-4 h-4 text-primary' />
           <span className='font-medium text-sm'>{message.recipientName}</span>
         </div>
-        <Badge variant="outline" className='text-xs'>
+        <Badge variant='outline' className='text-xs'>
           {message.occasion.replace('_', ' ')}
         </Badge>
       </div>
@@ -680,7 +687,7 @@ const LegacyMessageCard: React.FC<LegacyMessageCardProps> = ({ message }) => {
 
       <div className='flex items-center justify-between text-xs text-muted-foreground'>
         <div className='flex items-center gap-2'>
-          <Badge variant="secondary" className='text-xs'>
+          <Badge variant='secondary' className='text-xs'>
             {message.emotionalTone}
           </Badge>
           <span>{message.metadata.wordCount} words</span>
@@ -694,14 +701,14 @@ const LegacyMessageCard: React.FC<LegacyMessageCardProps> = ({ message }) => {
 // Message Composer Component
 interface MessageComposerProps {
   familyMembers: Array<{ name: string; relationship: string }>;
-  selectedRecipient: string;
+  onCancel: () => void;
   onMessageCreate: (
     recipient: string,
     occasion: MessageOccasion,
     content: string,
     type: LegacyMessage['type']
   ) => void;
-  onCancel: () => void;
+  selectedRecipient: string;
 }
 
 const MessageComposer: React.FC<MessageComposerProps> = ({
@@ -715,7 +722,7 @@ const MessageComposer: React.FC<MessageComposerProps> = ({
   const [content, setContent] = useState('');
   const [messageType] = useState<LegacyMessage['type']>('text');
 
-  const occasions: Array<{ value: MessageOccasion; label: string }> = [
+  const occasions: Array<{ label: string; value: MessageOccasion }> = [
     { value: 'general_love', label: 'General Love & Support' },
     { value: 'birthday', label: 'Birthday' },
     { value: 'wedding', label: 'Wedding Day' },
@@ -792,11 +799,11 @@ const MessageComposer: React.FC<MessageComposerProps> = ({
       </div>
 
       <div className='flex justify-end gap-2'>
-        <Button variant="outline" onClick={onCancel}>
+        <Button variant='outline' onClick={onCancel}>
           Cancel
         </Button>
         <Button onClick={handleCreate}>
-          <Icon name="heart" className='w-4 h-4 mr-2' />
+          <Icon name='heart' className='w-4 h-4 mr-2' />
           Create Message
         </Button>
       </div>

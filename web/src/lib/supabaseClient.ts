@@ -95,7 +95,7 @@ export function useSupabaseClient() {
             global: {
               headers: {
                 'x-application-name': 'legacyguard',
-                'Authorization': `Bearer ${token}`,
+                Authorization: `Bearer ${token}`,
               },
             },
           }
@@ -138,7 +138,10 @@ export function useSupabaseSession() {
       if (session) {
         // Store refresh token separately for better security
         if (session.refresh_token) {
-          localStorage.setItem(SUPABASE_REFRESH_TOKEN_KEY, session.refresh_token);
+          localStorage.setItem(
+            SUPABASE_REFRESH_TOKEN_KEY,
+            session.refresh_token
+          );
         }
       } else {
         // Clear stored tokens on logout

@@ -3,26 +3,30 @@
  * Google Analytics 4 + Web Vitals + Custom Metrics
  */
 
-import { onCLS, onINP, onFCP, onLCP, onTTFB } from 'web-vitals';
+import { onCLS, onFCP, onINP, onLCP, onTTFB } from 'web-vitals';
 
 // Google Analytics 4 Configuration
 interface GtagEvent {
+  [key: string]: unknown;
   event_category?: string;
   event_label?: string;
   value?: number;
-  [key: string]: unknown;
 }
 
 interface GtagConfig {
-  page_title?: string;
-  page_location?: string;
   [key: string]: unknown;
+  page_location?: string;
+  page_title?: string;
 }
 
 declare global {
   interface Window {
-    gtag: (command: string, targetId: string, config?: GtagConfig | GtagEvent) => void;
     dataLayer: unknown[];
+    gtag: (
+      command: string,
+      targetId: string,
+      config?: GtagConfig | GtagEvent
+    ) => void;
   }
 }
 
@@ -57,17 +61,23 @@ export const initAnalytics = () => {
 
 // Web Vitals Monitoring
 export const initWebVitals = () => {
-  const sendToAnalytics = (metric: { name: string; id: string; value: number }) => {
+  const sendToAnalytics = (metric: {
+    id: string;
+    name: string;
+    value: number;
+  }) => {
     window.gtag?.('event', metric.name, {
       event_category: 'Web Vitals',
       event_label: metric.id,
-      value: Math.round(metric.name === 'CLS' ? metric.value * 1000 : metric.value),
+      value: Math.round(
+        metric.name === 'CLS' ? metric.value * 1000 : metric.value
+      ),
       non_interaction: true,
       custom_map: {
         metric_id: 'dimension1',
         metric_value: 'dimension2',
-        metric_delta: 'dimension3'
-      }
+        metric_delta: 'dimension3',
+      },
     });
 
     // Send to performance API for monitoring
@@ -119,11 +129,11 @@ export const setUserProperties = (properties: Record<string, any>) => {
 
 // E-commerce Tracking
 interface PurchaseItem {
+  category: string;
   item_id: string;
   item_name: string;
-  category: string;
-  quantity: number;
   price: number;
+  quantity: number;
 }
 
 export const trackPurchase = (transactionId: string, items: PurchaseItem[]) => {
@@ -139,11 +149,14 @@ export const trackPurchase = (transactionId: string, items: PurchaseItem[]) => {
 export const trackUserJourney = {
   onboardingStart: () => trackEvent('onboarding_start', 'User Journey'),
   onboardingComplete: () => trackEvent('onboarding_complete', 'User Journey'),
-  documentUpload: (type: string) => trackEvent('document_upload', 'Documents', type),
-  willCreated: (jurisdiction: string) => trackEvent('will_created', 'Legal', jurisdiction),
+  documentUpload: (type: string) =>
+    trackEvent('document_upload', 'Documents', type),
+  willCreated: (jurisdiction: string) =>
+    trackEvent('will_created', 'Legal', jurisdiction),
   guardianAdded: () => trackEvent('guardian_added', 'Family'),
   emergencyAccess: () => trackEvent('emergency_access', 'Security'),
-  subscriptionUpgrade: (plan: string) => trackEvent('subscription_upgrade', 'Conversion', plan),
+  subscriptionUpgrade: (plan: string) =>
+    trackEvent('subscription_upgrade', 'Conversion', plan),
 };
 
 // Performance Monitoring
@@ -171,16 +184,31 @@ export class PerformanceMonitor {
     return null;
   }
 
-  static measureApiCall(url: string, method: string, duration: number, status: number) {
+  static measureApiCall(
+    url: string,
+    method: string,
+    duration: number,
+    status: number
+  ) {
     trackEvent('api_call', 'API', `${method} ${url}`, Math.round(duration));
 
     if (status >= 400) {
-      trackEvent('api_error', 'API Error', `${status} ${method} ${url}`, status);
+      trackEvent(
+        'api_error',
+        'API Error',
+        `${status} ${method} ${url}`,
+        status
+      );
     }
   }
 
   static measureComponentRender(componentName: string, renderTime: number) {
-    trackEvent('component_render', 'Performance', componentName, Math.round(renderTime));
+    trackEvent(
+      'component_render',
+      'Performance',
+      componentName,
+      Math.round(renderTime)
+    );
   }
 }
 

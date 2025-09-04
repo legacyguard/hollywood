@@ -3,72 +3,72 @@
  * Adds continuous subtle animations and celebration effects to make the Living Garden truly alive
  */
 
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useEffect, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { AnimationSystem } from '@/lib/animation-system';
 import type { PersonalityMode } from '@/lib/sofia-types';
 
 interface TreeLeafProps {
+  color?: string;
+  delay?: number;
+  personalityMode?: PersonalityMode;
+  size?: 'large' | 'medium' | 'small';
   x: number;
   y: number;
-  size?: 'small' | 'medium' | 'large';
-  color?: string;
-  personalityMode?: PersonalityMode;
-  delay?: number;
 }
 
 interface SofiaFireflyProps {
-  isActive?: boolean;
-  personalityMode?: PersonalityMode;
-  containerWidth?: number;
   containerHeight?: number;
+  containerWidth?: number;
+  isActive?: boolean;
   onFireflyClick?: () => void;
+  personalityMode?: PersonalityMode;
 }
 
 interface CelebrationFireflyProps {
-  x: number;
-  y: number;
   index: number;
   onComplete?: () => void;
+  x: number;
+  y: number;
 }
 
 interface MilestoneGlowProps {
-  elementId: string;
-  duration?: number;
   color?: string;
-  intensity?: 'subtle' | 'medium' | 'bright';
+  duration?: number;
+  elementId: string;
+  intensity?: 'bright' | 'medium' | 'subtle';
 }
 
 interface InteractiveGardenEnhancementsProps {
+  activeCelebrations?: string[];
+  className?: string;
+  containerHeight?: number;
+
+  containerWidth?: number;
+  // Milestone glow
+  glowingElements?: string[];
+
+  leafCount?: number;
+  onCelebrationComplete?: (celebrationId: string) => void;
+
+  // Event handlers
+  onFireflyClick?: () => void;
+
+  // General settings
+  personalityMode?: PersonalityMode;
+  reducedMotion?: boolean;
+  // Celebration effects
+  showCelebrations?: boolean;
   // Tree animations
   showLeafMovement?: boolean;
-  leafCount?: number;
-  treeElements?: Array<{ id: string; x: number; y: number }>;
 
   // Sofia firefly
   showSofiaFirefly?: boolean;
   sofiaFireflyActive?: boolean;
 
-  // Celebration effects
-  showCelebrations?: boolean;
-  activeCelebrations?: string[];
-
-  // Milestone glow
-  glowingElements?: string[];
-
-  // General settings
-  personalityMode?: PersonalityMode;
-  containerWidth?: number;
-  containerHeight?: number;
-  reducedMotion?: boolean;
-
-  // Event handlers
-  onFireflyClick?: () => void;
-  onCelebrationComplete?: (celebrationId: string) => void;
-
-  className?: string;
+  treeElements?: Array<{ id: string; x: number; y: number }>;
 }
 
 /**
@@ -81,7 +81,7 @@ export const TreeLeaf: React.FC<TreeLeafProps> = ({
   size = 'medium',
   color = 'text-green-500',
   personalityMode = 'adaptive',
-  delay = 0
+  delay = 0,
 }) => {
   const shouldReduceMotion = AnimationSystem.shouldReduceMotion();
 
@@ -93,21 +93,21 @@ export const TreeLeaf: React.FC<TreeLeafProps> = ({
           duration: 4 + Math.random() * 2,
           amplitude: { x: 8, y: 6 },
           rotation: 15,
-          opacity: [0.7, 1, 0.8, 1]
+          opacity: [0.7, 1, 0.8, 1],
         };
       case 'pragmatic':
         return {
           duration: 2.5 + Math.random() * 1,
           amplitude: { x: 4, y: 3 },
           rotation: 8,
-          opacity: [0.8, 1, 0.9, 1]
+          opacity: [0.8, 1, 0.9, 1],
         };
       default:
         return {
           duration: 3 + Math.random() * 1.5,
           amplitude: { x: 6, y: 4 },
           rotation: 12,
-          opacity: [0.75, 1, 0.85, 1]
+          opacity: [0.75, 1, 0.85, 1],
         };
     }
   };
@@ -115,7 +115,7 @@ export const TreeLeaf: React.FC<TreeLeafProps> = ({
   const sizeClasses = {
     small: 'w-2 h-2',
     medium: 'w-3 h-3',
-    large: 'w-4 h-4'
+    large: 'w-4 h-4',
   };
 
   const params = getAnimationParams();
@@ -136,16 +136,34 @@ export const TreeLeaf: React.FC<TreeLeafProps> = ({
       className={cn('absolute', sizeClasses[size], color)}
       style={{ left: `${x}%`, top: `${y}%` }}
       animate={{
-        x: [0, params.amplitude.x, -params.amplitude.x * 0.7, params.amplitude.x * 0.3, 0],
-        y: [0, -params.amplitude.y * 0.5, params.amplitude.y * 0.3, -params.amplitude.y * 0.2, 0],
-        rotate: [-params.rotation * 0.5, params.rotation, -params.rotation * 0.3, params.rotation * 0.7, -params.rotation * 0.5],
-        opacity: params.opacity
+        x: [
+          0,
+          params.amplitude.x,
+          -params.amplitude.x * 0.7,
+          params.amplitude.x * 0.3,
+          0,
+        ],
+        y: [
+          0,
+          -params.amplitude.y * 0.5,
+          params.amplitude.y * 0.3,
+          -params.amplitude.y * 0.2,
+          0,
+        ],
+        rotate: [
+          -params.rotation * 0.5,
+          params.rotation,
+          -params.rotation * 0.3,
+          params.rotation * 0.7,
+          -params.rotation * 0.5,
+        ],
+        opacity: params.opacity,
       }}
       transition={{
         duration: params.duration,
         repeat: Infinity,
-        ease: "easeInOut",
-        delay: delay
+        ease: 'easeInOut',
+        delay: delay,
       }}
     >
       🍃
@@ -162,7 +180,7 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
   personalityMode = 'adaptive',
   containerWidth: _containerWidth = 400,
   containerHeight: _containerHeight = 300,
-  onFireflyClick
+  onFireflyClick,
 }) => {
   const shouldReduceMotion = AnimationSystem.shouldReduceMotion();
   const [currentPath, setCurrentPath] = useState(0);
@@ -174,20 +192,20 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
         // Gentle, heart-like patterns
         { x: [20, 35, 50, 35, 20], y: [30, 20, 30, 40, 30] },
         { x: [60, 75, 80, 65, 60], y: [25, 15, 35, 45, 25] },
-        { x: [25, 40, 60, 80, 70, 50, 25], y: [50, 35, 30, 45, 65, 70, 50] }
+        { x: [25, 40, 60, 80, 70, 50, 25], y: [50, 35, 30, 45, 65, 70, 50] },
       ],
       pragmatic: [
         // Efficient, structured paths
         { x: [20, 80, 80, 20, 20], y: [20, 20, 60, 60, 20] },
         { x: [30, 70, 50, 30], y: [30, 30, 50, 30] },
-        { x: [40, 60, 60, 40, 40], y: [25, 25, 45, 45, 25] }
+        { x: [40, 60, 60, 40, 40], y: [25, 25, 45, 45, 25] },
       ],
       adaptive: [
         // Balanced, natural curves
         { x: [25, 50, 75, 60, 40, 25], y: [35, 20, 35, 55, 60, 35] },
         { x: [70, 50, 30, 45, 70], y: [25, 40, 30, 55, 25] },
-        { x: [30, 60, 80, 50, 20, 30], y: [45, 25, 50, 70, 55, 45] }
-      ]
+        { x: [30, 60, 80, 50, 20, 30], y: [45, 25, 50, 70, 55, 45] },
+      ],
     };
 
     return paths[personalityMode] || paths.adaptive;
@@ -199,9 +217,16 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
   useEffect(() => {
     if (!isActive) return;
 
-    const interval = setInterval(() => {
-      setCurrentPath((prev) => (prev + 1) % flightPaths.length);
-    }, personalityMode === 'empathetic' ? 12000 : personalityMode === 'pragmatic' ? 8000 : 10000);
+    const interval = setInterval(
+      () => {
+        setCurrentPath(prev => (prev + 1) % flightPaths.length);
+      },
+      personalityMode === 'empathetic'
+        ? 12000
+        : personalityMode === 'pragmatic'
+          ? 8000
+          : 10000
+    );
 
     return () => clearInterval(interval);
   }, [isActive, personalityMode, flightPaths.length]);
@@ -209,32 +234,35 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
   if (!isActive || shouldReduceMotion) {
     return (
       <div
-        className="absolute w-4 h-4 cursor-pointer hover:scale-110 transition-transform"
+        className='absolute w-4 h-4 cursor-pointer hover:scale-110 transition-transform'
         style={{ left: '75%', top: '25%' }}
         onClick={onFireflyClick}
       >
-        <Sparkles className="w-4 h-4 text-yellow-400" />
+        <Sparkles className='w-4 h-4 text-yellow-400' />
       </div>
     );
   }
 
   const currentFlightPath = flightPaths[currentPath];
-  const duration = personalityMode === 'empathetic' ? 8 + Math.random() * 4 :
-                  personalityMode === 'pragmatic' ? 4 + Math.random() * 2 :
-                  6 + Math.random() * 3;
+  const duration =
+    personalityMode === 'empathetic'
+      ? 8 + Math.random() * 4
+      : personalityMode === 'pragmatic'
+        ? 4 + Math.random() * 2
+        : 6 + Math.random() * 3;
 
   return (
     <motion.div
-      className="absolute w-4 h-4 cursor-pointer hover:scale-110 transition-transform z-10"
+      className='absolute w-4 h-4 cursor-pointer hover:scale-110 transition-transform z-10'
       animate={{
         x: currentFlightPath.x.map(x => `${x}%`),
-        y: currentFlightPath.y.map(y => `${y}%`)
+        y: currentFlightPath.y.map(y => `${y}%`),
       }}
       transition={{
         duration,
         repeat: Infinity,
-        ease: "easeInOut",
-        repeatType: "reverse"
+        ease: 'easeInOut',
+        repeatType: 'reverse',
       }}
       onClick={onFireflyClick}
       whileHover={{ scale: 1.2 }}
@@ -243,28 +271,28 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
       <motion.div
         animate={{
           opacity: [0.6, 1, 0.8, 1],
-          scale: [1, 1.2, 0.9, 1]
+          scale: [1, 1.2, 0.9, 1],
         }}
         transition={{
           duration: 2,
           repeat: Infinity,
-          ease: "easeInOut"
+          ease: 'easeInOut',
         }}
       >
-        <Sparkles className="w-4 h-4 text-yellow-400 drop-shadow-sm" />
+        <Sparkles className='w-4 h-4 text-yellow-400 drop-shadow-sm' />
       </motion.div>
 
       {/* Glow effect */}
       <motion.div
-        className="absolute inset-0 bg-yellow-300 rounded-full blur-sm opacity-30"
+        className='absolute inset-0 bg-yellow-300 rounded-full blur-sm opacity-30'
         animate={{
           scale: [1, 1.5, 1],
-          opacity: [0.3, 0.6, 0.3]
+          opacity: [0.3, 0.6, 0.3],
         }}
         transition={{
           duration: 1.5,
           repeat: Infinity,
-          ease: "easeInOut"
+          ease: 'easeInOut',
         }}
       />
     </motion.div>
@@ -279,45 +307,42 @@ export const CelebrationFirefly: React.FC<CelebrationFireflyProps> = ({
   x,
   y,
   index,
-  onComplete
+  onComplete,
 }) => {
   const shouldReduceMotion = AnimationSystem.shouldReduceMotion();
 
   if (shouldReduceMotion) {
     return (
-      <div
-        className="absolute w-3 h-3"
-        style={{ left: `${x}%`, top: `${y}%` }}
-      >
-        <Sparkles className="w-3 h-3 text-yellow-300" />
+      <div className='absolute w-3 h-3' style={{ left: `${x}%`, top: `${y}%` }}>
+        <Sparkles className='w-3 h-3 text-yellow-300' />
       </div>
     );
   }
 
   return (
     <motion.div
-      className="absolute w-3 h-3 pointer-events-none"
+      className='absolute w-3 h-3 pointer-events-none'
       initial={{
         x: `${x}%`,
         y: `${y}%`,
         scale: 0,
-        opacity: 0
+        opacity: 0,
       }}
       animate={{
         x: `${x + (Math.random() - 0.5) * 40}%`,
         y: `${y + (Math.random() - 0.5) * 30}%`,
         scale: [0, 1.2, 1, 0],
         opacity: [0, 1, 0.8, 0],
-        rotate: 360
+        rotate: 360,
       }}
       transition={{
         duration: 3 + Math.random() * 2,
         delay: index * 0.1,
-        ease: "easeOut"
+        ease: 'easeOut',
       }}
       onAnimationComplete={onComplete}
     >
-      <Sparkles className="w-3 h-3 text-yellow-300" />
+      <Sparkles className='w-3 h-3 text-yellow-300' />
     </motion.div>
   );
 };
@@ -330,21 +355,23 @@ export const MilestoneGlow: React.FC<MilestoneGlowProps> = ({
   elementId: _elementId,
   duration = 3000,
   color = 'text-yellow-400',
-  intensity = 'medium'
+  intensity = 'medium',
 }) => {
   const shouldReduceMotion = AnimationSystem.shouldReduceMotion();
 
   const intensityConfig = {
     subtle: { scale: [1, 1.1, 1], opacity: [1, 0.8, 1], blur: 'blur-sm' },
     medium: { scale: [1, 1.15, 1], opacity: [1, 0.7, 1], blur: 'blur-md' },
-    bright: { scale: [1, 1.25, 1], opacity: [1, 0.5, 1], blur: 'blur-lg' }
+    bright: { scale: [1, 1.25, 1], opacity: [1, 0.5, 1], blur: 'blur-lg' },
   };
 
   const config = intensityConfig[intensity];
 
   if (shouldReduceMotion) {
     return (
-      <div className={`absolute inset-0 ${color} opacity-20 rounded-full ${config.blur}`} />
+      <div
+        className={`absolute inset-0 ${color} opacity-20 rounded-full ${config.blur}`}
+      />
     );
   }
 
@@ -353,12 +380,12 @@ export const MilestoneGlow: React.FC<MilestoneGlowProps> = ({
       className={`absolute inset-0 ${color} rounded-full ${config.blur} pointer-events-none`}
       animate={{
         scale: config.scale,
-        opacity: config.opacity
+        opacity: config.opacity,
       }}
       transition={{
         duration: duration / 1000,
         repeat: 2,
-        ease: "easeInOut"
+        ease: 'easeInOut',
       }}
     />
   );
@@ -368,7 +395,9 @@ export const MilestoneGlow: React.FC<MilestoneGlowProps> = ({
  * Main Interactive Garden Enhancements Component
  * Orchestrates all the interactive elements
  */
-export const InteractiveGardenEnhancements: React.FC<InteractiveGardenEnhancementsProps> = ({
+export const InteractiveGardenEnhancements: React.FC<
+  InteractiveGardenEnhancementsProps
+> = ({
   showLeafMovement = true,
   leafCount = 12,
   treeElements = [],
@@ -383,22 +412,26 @@ export const InteractiveGardenEnhancements: React.FC<InteractiveGardenEnhancemen
   reducedMotion = false,
   onFireflyClick,
   onCelebrationComplete,
-  className
+  className,
 }) => {
-  const [celebrationFireflies, setCelebrationFireflies] = useState<Array<{ id: string; x: number; y: number }>>([]);
+  const [celebrationFireflies, setCelebrationFireflies] = useState<
+    Array<{ id: string; x: number; y: number }>
+  >([]);
 
   // Generate random leaf positions around tree elements
   const generateLeafPositions = () => {
-    const leaves: Array<{ x: number; y: number; delay: number }> = [];
+    const leaves: Array<{ delay: number; x: number; y: number }> = [];
 
     treeElements.forEach((tree, treeIndex) => {
-      const leavesPerTree = Math.ceil(leafCount / Math.max(treeElements.length, 1));
+      const leavesPerTree = Math.ceil(
+        leafCount / Math.max(treeElements.length, 1)
+      );
 
       for (let i = 0; i < leavesPerTree; i++) {
         leaves.push({
           x: tree.x + (Math.random() - 0.5) * 20, // Spread around tree
           y: tree.y + (Math.random() - 0.5) * 15,
-          delay: treeIndex * 0.5 + i * 0.2
+          delay: treeIndex * 0.5 + i * 0.2,
         });
       }
     });
@@ -409,7 +442,7 @@ export const InteractiveGardenEnhancements: React.FC<InteractiveGardenEnhancemen
         leaves.push({
           x: 20 + Math.random() * 60,
           y: 30 + Math.random() * 40,
-          delay: i * 0.3
+          delay: i * 0.3,
         });
       }
     }
@@ -424,16 +457,19 @@ export const InteractiveGardenEnhancements: React.FC<InteractiveGardenEnhancemen
     if (!showCelebrations || activeCelebrations.length === 0) return;
 
     // Generate celebration fireflies for each active celebration
-    const newFireflies = activeCelebrations.flatMap((celebrationId, celebrationIndex) => {
-      const centerX = 50 + (celebrationIndex - activeCelebrations.length / 2) * 20;
-      const centerY = 40;
+    const newFireflies = activeCelebrations.flatMap(
+      (celebrationId, celebrationIndex) => {
+        const centerX =
+          50 + (celebrationIndex - activeCelebrations.length / 2) * 20;
+        const centerY = 40;
 
-      return Array.from({ length: 8 }, (_, i) => ({
-        id: `${celebrationId}-${i}`,
-        x: centerX + (Math.random() - 0.5) * 30,
-        y: centerY + (Math.random() - 0.5) * 20
-      }));
-    });
+        return Array.from({ length: 8 }, (_, i) => ({
+          id: `${celebrationId}-${i}`,
+          x: centerX + (Math.random() - 0.5) * 30,
+          y: centerY + (Math.random() - 0.5) * 20,
+        }));
+      }
+    );
 
     setCelebrationFireflies(newFireflies);
 
@@ -449,19 +485,21 @@ export const InteractiveGardenEnhancements: React.FC<InteractiveGardenEnhancemen
   return (
     <div className={cn('absolute inset-0 pointer-events-none', className)}>
       {/* Continuous Leaf Movement */}
-      {showLeafMovement && !reducedMotion && leafPositions.map((leaf, index) => (
-        <TreeLeaf
-          key={`leaf-${index}`}
-          x={leaf.x}
-          y={leaf.y}
-          personalityMode={personalityMode}
-          delay={leaf.delay}
-        />
-      ))}
+      {showLeafMovement &&
+        !reducedMotion &&
+        leafPositions.map((leaf, index) => (
+          <TreeLeaf
+            key={`leaf-${index}`}
+            x={leaf.x}
+            y={leaf.y}
+            personalityMode={personalityMode}
+            delay={leaf.delay}
+          />
+        ))}
 
       {/* Sofia Firefly */}
       {showSofiaFirefly && (
-        <div className="pointer-events-auto">
+        <div className='pointer-events-auto'>
           <SofiaFirefly
             isActive={sofiaFireflyActive}
             personalityMode={personalityMode}
@@ -493,13 +531,18 @@ export const InteractiveGardenEnhancements: React.FC<InteractiveGardenEnhancemen
       {glowingElements.map(elementId => (
         <div
           key={`glow-${elementId}`}
-          className="absolute inset-0 pointer-events-none"
+          className='absolute inset-0 pointer-events-none'
         >
           <MilestoneGlow
             elementId={elementId}
             intensity={personalityMode === 'empathetic' ? 'bright' : 'medium'}
-            color={personalityMode === 'empathetic' ? 'text-pink-300' :
-                   personalityMode === 'pragmatic' ? 'text-blue-300' : 'text-purple-300'}
+            color={
+              personalityMode === 'empathetic'
+                ? 'text-pink-300'
+                : personalityMode === 'pragmatic'
+                  ? 'text-blue-300'
+                  : 'text-purple-300'
+            }
           />
         </div>
       ))}

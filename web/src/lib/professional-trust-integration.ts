@@ -9,13 +9,13 @@ import type {
 import type { WillData } from '@/types/will';
 
 export interface TrustSealUpgrade {
+  additionalBenefits: string[];
+  certificateUrl?: string;
   originalLevel: TrustSealLevel;
-  upgradedLevel: TrustSealLevel;
   professionalReview: ProfessionalReview;
   upgradeDate: Date;
-  certificateUrl?: string;
+  upgradedLevel: TrustSealLevel;
   upgradeReason: string;
-  additionalBenefits: string[];
 }
 
 export class ProfessionalTrustIntegration {
@@ -77,10 +77,10 @@ export class ProfessionalTrustIntegration {
     reviewRequest: ReviewRequest,
     reviewFeedback: ReviewFeedback,
     professionalInfo: {
-      name: string;
-      title: string;
       firmName: string;
       licenseNumber?: string;
+      name: string;
+      title: string;
     }
   ): ProfessionalReview {
     const reviewType =
@@ -123,7 +123,7 @@ export class ProfessionalTrustIntegration {
     reviewFeedback: ReviewFeedback,
     currentTrustLevel: TrustSealLevel,
     professionalReviews: ProfessionalReview[] = []
-  ): Promise<TrustSealUpgrade | null> {
+  ): Promise<null | TrustSealUpgrade> {
     // Don't upgrade if review requires revision
     if (reviewFeedback.requiresRevision) {
       return null;
@@ -179,20 +179,22 @@ export class ProfessionalTrustIntegration {
   /**
    * Gets professional information (mock implementation)
    */
-  private static async getProfessionalInfo(professionalId: string): Promise<{
-    name: string;
-    title: string;
+  private static async getProfessionalInfo(
+    professionalId: string
+  ): Promise<null | {
     firmName: string;
     licenseNumber?: string;
-  } | null> {
+    name: string;
+    title: string;
+  }> {
     // Mock implementation - in real app, would fetch from professional network
     const mockProfessionals: Record<
       string,
       {
-        name: string;
-        title: string;
         firmName: string;
         licenseNumber: string;
+        name: string;
+        title: string;
       }
     > = {
       'brno-law-001': {
@@ -326,9 +328,9 @@ export class ProfessionalTrustIntegration {
    * Creates upgrade notification message
    */
   static createUpgradeNotification(upgrade: TrustSealUpgrade): {
-    title: string;
     message: string;
-    type: 'success' | 'info';
+    title: string;
+    type: 'info' | 'success';
   } {
     return {
       title: `Trust Seal Upgraded to ${upgrade.upgradedLevel.charAt(0).toUpperCase() + upgrade.upgradedLevel.slice(1)}!`,

@@ -6,30 +6,30 @@
 import { supabase } from '@/integrations/supabase/client';
 import { familyDataCache } from '@/lib/performance/caching';
 import type {
-  FamilyMember,
-  FamilyInvitation,
-  FamilyStats,
-  FamilyProtectionStatus,
-  EmergencyAccessRequest,
-  CreateFamilyMemberRequest,
-  UpdateFamilyMemberRequest,
   CreateFamilyInvitationRequest,
-  FamilyActivity,
+  CreateFamilyMemberRequest,
+  DbFamilyInvitation,
+  DbFamilyInvitationInsert,
   DbFamilyMember,
   DbFamilyMemberInsert,
   DbFamilyMemberUpdate,
-  DbFamilyInvitation,
-  DbFamilyInvitationInsert
+  EmergencyAccessRequest,
+  FamilyActivity,
+  FamilyInvitation,
+  FamilyMember,
+  FamilyProtectionStatus,
+  FamilyStats,
+  UpdateFamilyMemberRequest,
 } from '@/integrations/supabase/database-aligned-types';
 import {
-  mapDbFamilyMemberToApplication,
-  mapApplicationToDbFamilyMember,
   DEFAULT_PERMISSIONS,
+  isValidAccessLevel,
   isValidFamilyRole,
   isValidRelationship,
-  isValidAccessLevel
+  mapApplicationToDbFamilyMember,
+  mapDbFamilyMemberToApplication,
 } from '@/integrations/supabase/database-aligned-types';
-import type { FamilyRole, RelationshipType, FamilyPermissions } from '@/types/family';
+import type { Json } from '@/integrations/supabase/types';
 
 export class FamilyService {
   private static instance: FamilyService;
@@ -66,8 +66,9 @@ export class FamilyService {
         return [];
       }
 
-      const familyMembers: FamilyMember[] = (data || []).map((member: DbFamilyMember) => 
-        mapDbFamilyMemberToApplication(member, userId)
+      const familyMembers: FamilyMember[] = (data || []).map(
+        (member: DbFamilyMember) =>
+          mapDbFamilyMemberToApplication(member, userId)
       );
 
       familyDataCache.set(cacheKey, familyMembers);
@@ -87,11 +88,19 @@ export class FamilyService {
   ): Promise<FamilyMember> {
     try {
       // Validate input data
-      if (!memberData.email || !memberData.name || !memberData.role || !memberData.relationship) {
+      if (
+        !memberData.email ||
+        !memberData.name ||
+        !memberData.role ||
+        !memberData.relationship
+      ) {
         throw new Error('Missing required family member data');
       }
 
-      if (!isValidFamilyRole(memberData.role) || !isValidRelationship(memberData.relationship)) {
+      if (
+        !isValidFamilyRole(memberData.role) ||
+        !isValidRelationship(memberData.relationship)
+      ) {
         throw new Error('Invalid role or relationship type');
       }
 
@@ -109,7 +118,7 @@ export class FamilyService {
 
       // Create family member record
       const dbMemberData = mapApplicationToDbFamilyMember(memberData, userId);
-      
+
       const { data: newMember, error } = await supabase
         .from('family_members')
         .insert(dbMemberData)
@@ -124,7 +133,7 @@ export class FamilyService {
       // Create invitation record
       const invitationToken = crypto.randomUUID();
       const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
-      
+
       const { error: invitationError } = await supabase
         .from('family_invitations')
         .insert({
@@ -134,7 +143,7 @@ export class FamilyService {
           token: invitationToken,
           status: 'pending',
           message: `Welcome to our family legacy system!`,
-          expires_at: expiresAt.toISOString()
+          expires_at: expiresAt.toISOString(),
         });
 
       if (invitationError) {
@@ -143,12 +152,19 @@ export class FamilyService {
       }
 
       // Log family activity
-      await this.logFamilyActivity(userId, userId, 'member_added', 'family_member', newMember.id, {
-        memberName: memberData.name,
-        memberEmail: memberData.email,
-        role: memberData.role,
-        relationship: memberData.relationship
-      });
+      await this.logFamilyActivity(
+        userId,
+        userId,
+        'member_added',
+        'family_member',
+        newMember.id,
+        {
+          memberName: memberData.name,
+          memberEmail: memberData.email,
+          role: memberData.role,
+          relationship: memberData.relationship,
+        }
+      );
 
       // Clear cache
       familyDataCache.invalidatePattern(new RegExp(`family_.*${userId}.*`));
@@ -196,15 +212,21 @@ export class FamilyService {
       const updateData: DbFamilyMemberUpdate = {};
       if (updates.name !== undefined) updateData.name = updates.name;
       if (updates.role !== undefined) updateData.role = updates.role;
-      if (updates.relationship !== undefined) updateData.relationship = updates.relationship;
-      if (updates.permissions !== undefined) updateData.permissions = updates.permissions;
+      if (updates.relationship !== undefined)
+        updateData.relationship = updates.relationship;
+      if (updates.permissions !== undefined)
+        updateData.permissions = updates.permissions as unknown as Json;
       if (updates.phone !== undefined) updateData.phone = updates.phone;
       if (updates.address !== undefined) updateData.address = updates.address;
-      if (updates.emergencyContact !== undefined) updateData.emergency_contact = updates.emergencyContact;
-      if (updates.accessLevel !== undefined) updateData.access_level = updates.accessLevel;
-      if (updates.isActive !== undefined) updateData.is_active = updates.isActive;
-      if (updates.preferences !== undefined) updateData.preferences = updates.preferences;
-      
+      if (updates.emergencyContact !== undefined)
+        updateData.emergency_contact = updates.emergencyContact;
+      if (updates.accessLevel !== undefined)
+        updateData.access_level = updates.accessLevel;
+      if (updates.isActive !== undefined)
+        updateData.is_active = updates.isActive;
+      if (updates.preferences !== undefined)
+        updateData.preferences = updates.preferences;
+
       updateData.updated_at = new Date().toISOString();
 
       // Update the family member
@@ -222,12 +244,19 @@ export class FamilyService {
       }
 
       // Log family activity
-      await this.logFamilyActivity(userId, userId, 'member_updated', 'family_member', memberId, {
-        memberName: updatedMember.name,
-        updates: Object.keys(updates),
-        previousRole: existingMember.role,
-        newRole: updatedMember.role
-      });
+      await this.logFamilyActivity(
+        userId,
+        userId,
+        'member_updated',
+        'family_member',
+        memberId,
+        {
+          memberName: updatedMember.name,
+          updates: Object.keys(updates),
+          previousRole: existingMember.role,
+          newRole: updatedMember.role,
+        }
+      );
 
       // Clear cache
       familyDataCache.invalidatePattern(new RegExp(`family_.*${userId}.*`));
@@ -269,9 +298,16 @@ export class FamilyService {
       }
 
       // Log family activity
-      await this.logFamilyActivity(userId, userId, 'member_removed', 'family_member', memberId, {
-        memberName: existingMember.name
-      });
+      await this.logFamilyActivity(
+        userId,
+        userId,
+        'member_removed',
+        'family_member',
+        memberId,
+        {
+          memberName: existingMember.name,
+        }
+      );
 
       // Clear cache
       familyDataCache.invalidatePattern(new RegExp(`family_.*${userId}.*`));
@@ -286,13 +322,19 @@ export class FamilyService {
   /**
    * Send family invitation
    */
-  async sendInvitation(familyOwnerId: string, invitationData: CreateFamilyInvitationRequest): Promise<FamilyInvitation> {
+  async sendInvitation(
+    familyOwnerId: string,
+    invitationData: CreateFamilyInvitationRequest
+  ): Promise<FamilyInvitation> {
     try {
       const { data: user } = await supabase.auth.getUser();
       if (!user.user) throw new Error('Authentication required');
 
       // Validate input
-      if (!isValidFamilyRole(invitationData.role) || !isValidRelationship(invitationData.relationship)) {
+      if (
+        !isValidFamilyRole(invitationData.role) ||
+        !isValidRelationship(invitationData.relationship)
+      ) {
         throw new Error('Invalid role or relationship type');
       }
 
@@ -310,8 +352,11 @@ export class FamilyService {
       }
 
       // First create the family member record
-      const familyMember = await this.addFamilyMember(familyOwnerId, invitationData);
-      
+      const familyMember = await this.addFamilyMember(
+        familyOwnerId,
+        invitationData
+      );
+
       // Get the newly created invitation (created by addFamilyMember)
       const { data: invitation, error: fetchError } = await supabase
         .from('family_invitations')
@@ -338,13 +383,13 @@ export class FamilyService {
         acceptedAt: invitation.accepted_at,
         declinedAt: invitation.declined_at,
         createdAt: invitation.created_at,
-        
+
         // Computed fields from family member
         name: invitationData.name,
         role: invitationData.role,
         relationship: invitationData.relationship,
         invitedAt: new Date(invitation.created_at),
-        invitedBy: invitation.sender_id
+        invitedBy: invitation.sender_id,
       };
     } catch (error) {
       console.error('Failed to send invitation:', error);
@@ -359,14 +404,16 @@ export class FamilyService {
     try {
       const { data: invitations, error } = await supabase
         .from('family_invitations')
-        .select(`
+        .select(
+          `
           *,
           family_members:family_member_id (
             name,
             role,
             relationship
           )
-        `)
+        `
+        )
         .eq('sender_id', userId)
         .order('created_at', { ascending: false });
 
@@ -387,13 +434,13 @@ export class FamilyService {
         acceptedAt: invitation.accepted_at,
         declinedAt: invitation.declined_at,
         createdAt: invitation.created_at,
-        
+
         // From joined family_members table
         name: invitation.family_members?.name || 'Unknown',
         role: invitation.family_members?.role || 'viewer',
         relationship: invitation.family_members?.relationship || 'other',
         invitedAt: new Date(invitation.created_at),
-        invitedBy: invitation.sender_id
+        invitedBy: invitation.sender_id,
       }));
     } catch (error) {
       console.error('Failed to fetch family invitations:', error);
@@ -401,11 +448,12 @@ export class FamilyService {
     }
   }
 
-
   /**
    * Accept family invitation
    */
-  async acceptInvitation(token: string): Promise<{ success: boolean; familyMember?: FamilyMember }> {
+  async acceptInvitation(
+    token: string
+  ): Promise<{ familyMember?: FamilyMember; success: boolean }> {
     try {
       const { data: user } = await supabase.auth.getUser();
       if (!user.user) throw new Error('Authentication required');
@@ -413,12 +461,14 @@ export class FamilyService {
       // Find the invitation
       const { data: invitation, error: invitationError } = await supabase
         .from('family_invitations')
-        .select(`
+        .select(
+          `
           *,
           family_members!family_invitations_family_member_id_fkey (
             *
           )
-        `)
+        `
+        )
         .eq('token', token)
         .eq('status', 'pending')
         .single();
@@ -440,9 +490,9 @@ export class FamilyService {
       // Update invitation status
       const { error: updateError } = await supabase
         .from('family_invitations')
-        .update({ 
+        .update({
           status: 'accepted',
-          accepted_at: new Date().toISOString()
+          accepted_at: new Date().toISOString(),
         })
         .eq('id', invitation.id);
 
@@ -454,10 +504,10 @@ export class FamilyService {
       // Update family member with user ID and mark as active
       const { data: updatedMember, error: memberUpdateError } = await supabase
         .from('family_members')
-        .update({ 
+        .update({
           user_id: user.user.id,
           is_active: true,
-          last_active_at: new Date().toISOString()
+          last_active_at: new Date().toISOString(),
         })
         .eq('id', invitation.family_member_id)
         .select('*')
@@ -470,23 +520,28 @@ export class FamilyService {
 
       // Log family activity
       await this.logFamilyActivity(
-        updatedMember.family_owner_id, 
-        user.user.id, 
-        'invitation_accepted', 
-        'invitation', 
-        invitation.id, 
+        updatedMember.family_owner_id,
+        user.user.id,
+        'invitation_accepted',
+        'invitation',
+        invitation.id,
         {
           memberName: updatedMember.name,
-          memberEmail: updatedMember.email
+          memberEmail: updatedMember.email,
         }
       );
 
       // Clear cache
-      familyDataCache.invalidatePattern(new RegExp(`family_.*${updatedMember.family_owner_id}.*`));
+      familyDataCache.invalidatePattern(
+        new RegExp(`family_.*${updatedMember.family_owner_id}.*`)
+      );
 
       return {
         success: true,
-        familyMember: mapDbFamilyMemberToApplication(updatedMember, updatedMember.family_owner_id)
+        familyMember: mapDbFamilyMemberToApplication(
+          updatedMember,
+          updatedMember.family_owner_id
+        ),
       };
     } catch (error) {
       console.error('Failed to accept invitation:', error);
@@ -501,13 +556,14 @@ export class FamilyService {
    */
   async getFamilyStats(userId: string): Promise<FamilyStats> {
     try {
-      const [members, documents, invitations, activity, events] = await Promise.all([
-        this.getFamilyMembers(userId),
-        this.getFamilyDocumentStats(userId),
-        this.getFamilyInvitations(userId),
-        this.getRecentFamilyActivity(userId),
-        this.getFamilyCalendarEvents(userId)
-      ]);
+      const [members, documents, invitations, activity, events] =
+        await Promise.all([
+          this.getFamilyMembers(userId),
+          this.getFamilyDocumentStats(userId),
+          this.getFamilyInvitations(userId),
+          this.getRecentFamilyActivity(userId),
+          this.getFamilyCalendarEvents(userId),
+        ]);
 
       // Calculate member contributions (placeholder - would need document sharing data)
       const memberContributions: Record<string, number> = {};
@@ -517,24 +573,28 @@ export class FamilyService {
 
       // Calculate documents by category (placeholder - would need document category data)
       const documentsByCategory: Record<string, number> = {
-        'will': Math.floor(documents.total * 0.2),
-        'insurance': Math.floor(documents.total * 0.3),
-        'medical': Math.floor(documents.total * 0.2),
-        'financial': Math.floor(documents.total * 0.2),
-        'other': documents.total - Math.floor(documents.total * 0.9)
+        will: Math.floor(documents.total * 0.2),
+        insurance: Math.floor(documents.total * 0.3),
+        medical: Math.floor(documents.total * 0.2),
+        financial: Math.floor(documents.total * 0.2),
+        other: documents.total - Math.floor(documents.total * 0.9),
       };
 
       return {
         totalMembers: members.length,
         activeMembers: members.filter(m => m.status === 'active').length,
-        pendingInvitations: invitations.filter(i => i.status === 'pending').length,
+        pendingInvitations: invitations.filter(i => i.status === 'pending')
+          .length,
         totalDocuments: documents.total,
         sharedDocuments: documents.shared,
         memberContributions,
         documentsByCategory,
         recentActivity: activity,
         upcomingEvents: events,
-        protectionScore: this.calculateFamilyProtectionLevel(members, documents)
+        protectionScore: this.calculateFamilyProtectionLevel(
+          members,
+          documents
+        ),
       };
     } catch (error) {
       console.error('Failed to calculate family stats:', error);
@@ -545,7 +605,9 @@ export class FamilyService {
   /**
    * Get family protection status
    */
-  async getFamilyProtectionStatus(userId: string): Promise<FamilyProtectionStatus> {
+  async getFamilyProtectionStatus(
+    userId: string
+  ): Promise<FamilyProtectionStatus> {
     try {
       const members = await this.getFamilyMembers(userId);
       const documents = await this.getFamilyDocumentStats(userId);
@@ -562,7 +624,7 @@ export class FamilyService {
         emergencyContactsSet: members.some(m => m.emergencyPriority),
         lastUpdated: new Date(),
         strengths: ['Documents secured', 'Family access configured'],
-        recommendations: recommendations.map(r => r.title)
+        recommendations: recommendations.map(r => r.title),
       };
     } catch (error) {
       console.error('Failed to get family protection status:', error);
@@ -590,7 +652,11 @@ export class FamilyService {
         .eq('is_active', true)
         .single();
 
-      if (memberError || !familyMember || !familyMember.emergency_access_enabled) {
+      if (
+        memberError ||
+        !familyMember ||
+        !familyMember.emergency_access_enabled
+      ) {
         throw new Error('Emergency access not authorized for this user');
       }
 
@@ -607,7 +673,7 @@ export class FamilyService {
           requested_at: new Date().toISOString(),
           expires_at: expiresAt.toISOString(),
           approver_name: familyMember.name,
-          approver_relation: familyMember.relationship
+          approver_relation: familyMember.relationship,
         })
         .select('*')
         .single();
@@ -618,11 +684,18 @@ export class FamilyService {
       }
 
       // Log family activity
-      await this.logFamilyActivity(ownerId, requesterId, 'emergency_access_requested', 'emergency_request', request.id, {
-        requesterName: familyMember.name,
-        reason: reason,
-        emergencyLevel: 'medium'
-      });
+      await this.logFamilyActivity(
+        ownerId,
+        requesterId,
+        'emergency_access_requested',
+        'emergency_request',
+        request.id,
+        {
+          requesterName: familyMember.name,
+          reason: reason,
+          emergencyLevel: 'medium',
+        }
+      );
 
       return {
         id: request.id,
@@ -637,13 +710,13 @@ export class FamilyService {
         approverRelation: request.approver_relation,
         accessGrantedUntil: request.access_granted_until,
         createdAt: request.created_at,
-        
+
         // Computed fields
         requestedBy: request.requester_id,
         documentsRequested: [], // TODO: Add when document access tracking is implemented
         accessDuration: 24,
         verificationMethod: 'email',
-        emergencyLevel: 'medium'
+        emergencyLevel: 'medium',
       };
     } catch (error) {
       console.error('Failed to request emergency access:', error);
@@ -671,17 +744,15 @@ export class FamilyService {
         .eq('id', actorId)
         .single();
 
-      await supabase
-        .from('family_activity_log')
-        .insert({
-          family_owner_id: familyOwnerId,
-          actor_id: actorId,
-          actor_name: actor?.name || 'Unknown',
-          action_type: actionType,
-          target_type: targetType,
-          target_id: targetId,
-          details: details
-        });
+      await (supabase as any).from('family_activity_log').insert({
+        family_owner_id: familyOwnerId,
+        actor_id: actorId,
+        actor_name: actor?.name || 'Unknown',
+        action_type: actionType,
+        target_type: targetType,
+        target_id: targetId,
+        details: details,
+      });
     } catch (error) {
       console.error('Failed to log family activity:', error);
       // Don't throw here, this is just for logging
@@ -714,7 +785,7 @@ export class FamilyService {
         targetType: activity.target_type,
         targetId: activity.target_id,
         details: activity.details as Record<string, any>,
-        createdAt: activity.created_at
+        createdAt: activity.created_at,
       }));
     } catch (error) {
       console.error('Failed to fetch family activity:', error);
@@ -722,8 +793,9 @@ export class FamilyService {
     }
   }
 
-
-  private async getFamilyDocumentStats(userId: string): Promise<{ total: number; shared: number }> {
+  private async getFamilyDocumentStats(
+    userId: string
+  ): Promise<{ shared: number; total: number }> {
     try {
       // Get total documents for user
       const { count: total, error: totalError } = await supabase
@@ -750,7 +822,7 @@ export class FamilyService {
 
       return {
         total: total || 0,
-        shared: shared || 0
+        shared: shared || 0,
       };
     } catch (error) {
       console.error('Error getting document stats:', error);
@@ -758,26 +830,32 @@ export class FamilyService {
     }
   }
 
-  private async getFamilyInsightStats(_userId: string): Promise<{ total: number; actionable: number }> {
+  private async getFamilyInsightStats(
+    _userId: string
+  ): Promise<{ actionable: number; total: number }> {
     // Mock data since quick_insights table isn't in types yet
     return {
       total: 5,
-      actionable: 2
+      actionable: 2,
     };
   }
 
-  private async getFamilyMilestoneStats(_userId: string): Promise<{ completed: number; total: number }> {
+  private async getFamilyMilestoneStats(
+    _userId: string
+  ): Promise<{ completed: number; total: number }> {
     // Mock data since legacy_milestones table isn't in types yet
     return {
       completed: 3,
-      total: 8
+      total: 8,
     };
   }
 
   /**
    * Get family calendar events
    */
-  async getFamilyCalendarEvents(userId: string): Promise<FamilyCalendarEvent[]> {
+  async getFamilyCalendarEvents(
+    userId: string
+  ): Promise<FamilyCalendarEvent[]> {
     try {
       const { data: events, error } = await supabase
         .from('family_calendar_events')
@@ -799,25 +877,43 @@ export class FamilyService {
     }
   }
 
-  private calculateFamilyProtectionLevel(members: FamilyMember[], documents: { total: number; shared: number }): number {
-    const memberScore = Math.min(100, (members.length * 20));
-    const documentScore = Math.min(100, (documents.total * 10));
-    const sharingScore = documents.total > 0 ? Math.min(100, (documents.shared / documents.total) * 100) : 0;
+  private calculateFamilyProtectionLevel(
+    members: FamilyMember[],
+    documents: { shared: number; total: number }
+  ): number {
+    const memberScore = Math.min(100, members.length * 20);
+    const documentScore = Math.min(100, documents.total * 10);
+    const sharingScore =
+      documents.total > 0
+        ? Math.min(100, (documents.shared / documents.total) * 100)
+        : 0;
 
     return Math.round((memberScore + documentScore + sharingScore) / 3);
   }
 
-  private calculateFamilyCoverage(members: FamilyMember[], documents: any): any {
+  private calculateFamilyCoverage(
+    members: FamilyMember[],
+    documents: any
+  ): any {
     return {
       overall: Math.min(100, members.length * 15 + documents.total * 5),
       documentation: Math.min(100, documents.total * 10),
       accessibility: Math.min(100, documents.shared * 15),
-      communication: Math.min(100, members.filter(m => m.status === 'active').length * 20),
-      emergency: Math.min(100, members.filter(m => m.emergencyPriority).length * 30)
+      communication: Math.min(
+        100,
+        members.filter(m => m.status === 'active').length * 20
+      ),
+      emergency: Math.min(
+        100,
+        members.filter(m => m.emergencyPriority).length * 30
+      ),
     };
   }
 
-  private identifyProtectionGaps(members: FamilyMember[], documents: any): string[] {
+  private identifyProtectionGaps(
+    members: FamilyMember[],
+    documents: any
+  ): string[] {
     const gaps: string[] = [];
 
     if (members.length === 0) {
@@ -836,14 +932,19 @@ export class FamilyService {
     return gaps;
   }
 
-  private generateProtectionRecommendations(gaps: string[]): Array<{ title: string; description: string; priority: 'high' | 'medium' | 'low' }> {
+  private generateProtectionRecommendations(
+    gaps: string[]
+  ): Array<{
+    description: string;
+    priority: 'high' | 'low' | 'medium';
+    title: string;
+  }> {
     return gaps.map(gap => ({
       title: `Address: ${gap}`,
       description: `Recommended action to improve family protection`,
-      priority: 'high' as const
+      priority: 'high' as const,
     }));
   }
-
 
   private getDefaultFamilyStats(): FamilyStats {
     return {
@@ -856,7 +957,7 @@ export class FamilyService {
       documentsByCategory: {},
       recentActivity: [],
       upcomingEvents: [],
-      protectionScore: 0
+      protectionScore: 0,
     };
   }
 
@@ -869,7 +970,7 @@ export class FamilyService {
       emergencyContactsSet: false,
       lastUpdated: new Date(),
       strengths: [],
-      recommendations: []
+      recommendations: [],
     };
   }
 
@@ -879,17 +980,17 @@ export class FamilyService {
   async createCalendarEvent(
     userId: string,
     eventData: {
-      title: string;
+      attendees?: any;
       description?: string;
-      eventType: 'reminder' | 'review' | 'meeting' | 'deadline' | 'celebration';
-      scheduledAt: string;
       durationMinutes?: number;
+      eventType: 'celebration' | 'deadline' | 'meeting' | 'reminder' | 'review';
+      isRecurring?: boolean;
       location?: string;
       meetingUrl?: string;
-      attendees?: any;
-      isRecurring?: boolean;
-      recurrencePattern?: string;
       recurrenceEndDate?: string;
+      recurrencePattern?: string;
+      scheduledAt: string;
+      title: string;
     }
   ): Promise<FamilyCalendarEvent> {
     try {
@@ -911,7 +1012,7 @@ export class FamilyService {
           recurrence_end_date: eventData.recurrenceEndDate || null,
           status: 'scheduled',
           reminders: {},
-          metadata: {}
+          metadata: {},
         })
         .select('*')
         .single();
@@ -952,8 +1053,9 @@ export class FamilyService {
         query = query.lte('scheduled_at', endDate);
       }
 
-      const { data: events, error } = await query
-        .order('scheduled_at', { ascending: true });
+      const { data: events, error } = await query.order('scheduled_at', {
+        ascending: true,
+      });
 
       if (error) {
         console.error('Error fetching calendar events:', error);

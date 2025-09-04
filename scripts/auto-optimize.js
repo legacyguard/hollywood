@@ -17,43 +17,54 @@ const projectRoot = path.resolve(__dirname, '..');
 class MasterAutomation {
   constructor() {
     this.steps = [
-      { name: 'Image Optimization', script: 'image-optimizer.js', required: true },
-      { name: 'Performance Automation', script: 'performance-automation.js', required: true },
-      { name: 'Performance Testing', script: 'performance-tester.js', required: false },
-      { name: 'Bundle Analysis', script: 'analyze-bundle.js', required: false }
+      {
+        name: 'Image Optimization',
+        script: 'image-optimizer.js',
+        required: true,
+      },
+      {
+        name: 'Performance Automation',
+        script: 'performance-automation.js',
+        required: true,
+      },
+      {
+        name: 'Performance Testing',
+        script: 'performance-tester.js',
+        required: false,
+      },
+      { name: 'Bundle Analysis', script: 'analyze-bundle.js', required: false },
     ];
-    
+
     this.results = {
       completed: [],
       failed: [],
       warnings: [],
       startTime: new Date(),
-      endTime: null
+      endTime: null,
     };
   }
 
   async run() {
     console.log('🚀 Starting LegacyGuard Master Performance Automation...\n');
     console.log('This will run all performance optimizations automatically.\n');
-    
+
     try {
       // Check prerequisites
       await this.checkPrerequisites();
-      
+
       // Run each optimization step
       for (const step of this.steps) {
         await this.runStep(step);
       }
-      
+
       // Generate master report
       await this.generateMasterReport();
-      
+
       // Update package.json with automation scripts
       await this.updatePackageScripts();
-      
+
       // Display final summary
       this.displaySummary();
-      
     } catch (error) {
       console.error('❌ Master automation failed:', error.message);
       process.exit(1);
@@ -62,39 +73,43 @@ class MasterAutomation {
 
   async checkPrerequisites() {
     console.log('🔍 Checking prerequisites...');
-    
+
     // Check if scripts directory exists
     const scriptsDir = path.join(projectRoot, 'scripts');
     try {
       await fs.access(scriptsDir);
     } catch {
-      throw new Error('Scripts directory not found. Please run this from the project root.');
+      throw new Error(
+        'Scripts directory not found. Please run this from the project root.'
+      );
     }
-    
+
     // Check if package.json exists
     const packagePath = path.join(projectRoot, 'package.json');
     try {
       await fs.access(packagePath);
     } catch {
-      throw new Error('package.json not found. Please run this from the project root.');
+      throw new Error(
+        'package.json not found. Please run this from the project root.'
+      );
     }
-    
+
     // Check Node.js version
     const nodeVersion = process.version;
     const majorVersion = parseInt(nodeVersion.slice(1).split('.')[0]);
     if (majorVersion < 16) {
       throw new Error(`Node.js 16+ required. Current version: ${nodeVersion}`);
     }
-    
+
     console.log('✅ All prerequisites met');
   }
 
   async runStep(step) {
     console.log(`\n🔄 Running: ${step.name}`);
-    
+
     try {
       const scriptPath = path.join(projectRoot, 'scripts', step.script);
-      
+
       // Check if script exists
       try {
         await fs.access(scriptPath);
@@ -107,31 +122,30 @@ class MasterAutomation {
           return;
         }
       }
-      
+
       // Run the script
       const startTime = Date.now();
-      execSync(`node ${scriptPath}`, { 
+      execSync(`node ${scriptPath}`, {
         stdio: 'inherit',
         cwd: projectRoot,
-        env: { ...process.env, NODE_ENV: 'production' }
+        env: { ...process.env, NODE_ENV: 'production' },
       });
       const duration = Date.now() - startTime;
-      
+
       console.log(`   ✅ ${step.name} completed in ${duration}ms`);
       this.results.completed.push({
         name: step.name,
         duration,
-        script: step.script
+        script: step.script,
       });
-      
     } catch (error) {
       console.log(`   ❌ ${step.name} failed: ${error.message}`);
-      
+
       if (step.required) {
         this.results.failed.push({
           name: step.name,
           error: error.message,
-          script: step.script
+          script: step.script,
         });
       } else {
         this.results.warnings.push(`${step.name}: ${error.message}`);
@@ -141,10 +155,10 @@ class MasterAutomation {
 
   async generateMasterReport() {
     console.log('\n📊 Generating master automation report...');
-    
+
     this.results.endTime = new Date();
     const totalDuration = this.results.endTime - this.results.startTime;
-    
+
     const report = {
       timestamp: new Date().toISOString(),
       summary: {
@@ -153,29 +167,32 @@ class MasterAutomation {
         failed: this.results.failed.length,
         warnings: this.results.warnings.length,
         totalDuration: totalDuration,
-        successRate: (this.results.completed.length / this.steps.length * 100).toFixed(1)
+        successRate: (
+          (this.results.completed.length / this.steps.length) *
+          100
+        ).toFixed(1),
       },
       steps: this.steps.map(step => ({
         name: step.name,
         script: step.script,
         required: step.required,
-        status: this.getStepStatus(step.name)
+        status: this.getStepStatus(step.name),
       })),
       results: {
         completed: this.results.completed,
         failed: this.results.failed,
-        warnings: this.results.warnings
+        warnings: this.results.warnings,
       },
       recommendations: this.generateRecommendations(),
-      nextSteps: this.getNextSteps()
+      nextSteps: this.getNextSteps(),
     };
-    
+
     const reportPath = path.join(projectRoot, 'master-automation-report.json');
     await fs.writeFile(reportPath, JSON.stringify(report, null, 2));
-    
+
     // Generate HTML report
     await this.generateHTMLReport(report);
-    
+
     console.log(`   ✅ Master report saved to: ${reportPath}`);
   }
 
@@ -191,19 +208,23 @@ class MasterAutomation {
 
   generateRecommendations() {
     const recommendations = [];
-    
+
     if (this.results.failed.length > 0) {
-      recommendations.push('Address failed optimization steps before deployment');
+      recommendations.push(
+        'Address failed optimization steps before deployment'
+      );
     }
-    
+
     if (this.results.warnings.length > 0) {
       recommendations.push('Review warnings and consider addressing them');
     }
-    
+
     if (this.results.completed.length === this.steps.length) {
-      recommendations.push('All optimizations completed successfully - ready for production');
+      recommendations.push(
+        'All optimizations completed successfully - ready for production'
+      );
     }
-    
+
     return recommendations;
   }
 
@@ -213,20 +234,20 @@ class MasterAutomation {
       'Test the optimized application thoroughly',
       'Deploy with confidence knowing performance is optimized',
       'Set up continuous performance monitoring',
-      'Schedule regular optimization runs'
+      'Schedule regular optimization runs',
     ];
-    
+
     if (this.results.failed.length > 0) {
       nextSteps.unshift('Fix failed optimization steps and re-run automation');
     }
-    
+
     return nextSteps;
   }
 
   async generateHTMLReport(report) {
     const htmlContent = this.generateHTMLContent(report);
     const htmlPath = path.join(projectRoot, 'master-automation-report.html');
-    
+
     await fs.writeFile(htmlPath, htmlContent);
     console.log(`   ✅ HTML report saved to: ${htmlPath}`);
   }
@@ -301,7 +322,9 @@ class MasterAutomation {
         
         <div class="steps">
             <h2>Optimization Steps</h2>
-            ${report.steps.map(step => `
+            ${report.steps
+              .map(
+                step => `
                 <div class="step-card ${step.status}">
                     <h4>${step.name}</h4>
                     <div style="margin-bottom: 10px;">
@@ -314,17 +337,23 @@ class MasterAutomation {
                         <span class="status ${step.status}">${step.status.toUpperCase()}</span>
                     </div>
                 </div>
-            `).join('')}
+            `
+              )
+              .join('')}
         </div>
         
-        ${report.recommendations.length > 0 ? `
+        ${
+          report.recommendations.length > 0
+            ? `
             <div class="recommendations">
                 <h3>🔧 Recommendations</h3>
                 <ul>
                     ${report.recommendations.map(rec => `<li>${rec}</li>`).join('')}
                 </ul>
             </div>
-        ` : ''}
+        `
+            : ''
+        }
         
         <div class="next-steps">
             <h3>📋 Next Steps</h3>
@@ -342,18 +371,19 @@ class MasterAutomation {
       const packagePath = path.join(projectRoot, 'package.json');
       const packageContent = await fs.readFile(packagePath, 'utf-8');
       const packageJson = JSON.parse(packageContent);
-      
+
       // Add new scripts
       packageJson.scripts = packageJson.scripts || {};
       packageJson.scripts['auto:optimize'] = 'node scripts/auto-optimize.js';
-      packageJson.scripts['auto:performance'] = 'node scripts/performance-automation.js';
+      packageJson.scripts['auto:performance'] =
+        'node scripts/performance-automation.js';
       packageJson.scripts['auto:images'] = 'node scripts/image-optimizer.js';
       packageJson.scripts['auto:test'] = 'node scripts/performance-tester.js';
-      packageJson.scripts['build:auto'] = 'npm run auto:optimize && npm run build';
-      
+      packageJson.scripts['build:auto'] =
+        'npm run auto:optimize && npm run build';
+
       await fs.writeFile(packagePath, JSON.stringify(packageJson, null, 2));
       console.log('✅ Updated package.json with automation scripts');
-      
     } catch (error) {
       console.log(`⚠️  Failed to update package.json: ${error.message}`);
     }
@@ -361,11 +391,14 @@ class MasterAutomation {
 
   displaySummary() {
     console.log('\n🎉 Master Performance Automation Complete!');
-    console.log('=' .repeat(50));
-    
+    console.log('='.repeat(50));
+
     const totalDuration = this.results.endTime - this.results.startTime;
-    const successRate = (this.results.completed.length / this.steps.length * 100).toFixed(1);
-    
+    const successRate = (
+      (this.results.completed.length / this.steps.length) *
+      100
+    ).toFixed(1);
+
     console.log(`📊 Summary:`);
     console.log(`   Total Steps: ${this.steps.length}`);
     console.log(`   Completed: ${this.results.completed.length}`);
@@ -373,29 +406,35 @@ class MasterAutomation {
     console.log(`   Warnings: ${this.results.warnings.length}`);
     console.log(`   Success Rate: ${successRate}%`);
     console.log(`   Total Duration: ${Math.round(totalDuration / 1000)}s`);
-    
+
     if (this.results.completed.length === this.steps.length) {
       console.log('\n🎯 All optimizations completed successfully!');
       console.log('Your application is now fully optimized for performance.');
     } else if (this.results.failed.length > 0) {
-      console.log('\n⚠️  Some optimizations failed. Please review the failed steps.');
+      console.log(
+        '\n⚠️  Some optimizations failed. Please review the failed steps.'
+      );
     }
-    
+
     console.log('\n📁 Reports generated:');
     console.log('   - master-automation-report.json');
     console.log('   - master-automation-report.html');
     console.log('   - performance-report.json (if performance automation ran)');
-    console.log('   - image-optimization-report.json (if image optimization ran)');
-    
+    console.log(
+      '   - image-optimization-report.json (if image optimization ran)'
+    );
+
     console.log('\n🚀 Next steps:');
     console.log('   - Review the generated reports');
     console.log('   - Test your optimized application');
     console.log('   - Deploy with confidence');
     console.log('   - Set up continuous monitoring');
-    
+
     console.log('\n💡 Automation scripts added to package.json:');
     console.log('   - npm run auto:optimize (runs all optimizations)');
-    console.log('   - npm run auto:performance (performance optimization only)');
+    console.log(
+      '   - npm run auto:performance (performance optimization only)'
+    );
     console.log('   - npm run auto:images (image optimization only)');
     console.log('   - npm run build:auto (optimize then build)');
   }

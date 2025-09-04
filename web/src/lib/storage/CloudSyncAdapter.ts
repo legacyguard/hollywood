@@ -4,25 +4,25 @@ import { SecureEncryptionService } from '../encryption-v2';
 import { secureStorage } from '../security/secure-storage';
 
 interface SyncQueueItem {
-  id: string;
-  operation: 'create' | 'update' | 'delete';
   category: string;
-  timestamp: string;
+  id: string;
+  operation: 'create' | 'delete' | 'update';
   retryCount: number;
+  timestamp: string;
 }
 
 interface SyncStats {
-  lastSync: string;
-  syncedItems: number;
-  failedItems: number;
   categories: Record<
     string,
     {
+      failed: number;
       pending: number;
       synced: number;
-      failed: number;
     }
   >;
+  failedItems: number;
+  lastSync: string;
+  syncedItems: number;
 }
 
 class CloudSyncAdapter {
@@ -62,7 +62,7 @@ class CloudSyncAdapter {
    */
   public async queueForSync(
     item: StorageItem,
-    operation: 'create' | 'update' | 'delete'
+    operation: 'create' | 'delete' | 'update'
   ): Promise<void> {
     const queueItem: SyncQueueItem = {
       id: item.id,
@@ -196,7 +196,7 @@ class CloudSyncAdapter {
     }
 
     // Store in Supabase encrypted_items table
-    const { error } = await this.supabase.from('encrypted_items').upsert({
+    const { error } = await (this.supabase as any).from('encrypted_items').upsert({
       id: item.id,
       category: item.category,
       encrypted_data: cloudEncrypted,
@@ -294,10 +294,10 @@ class CloudSyncAdapter {
    * Get sync status for category
    */
   public async getSyncStatus(category: string): Promise<{
-    total: number;
-    synced: number;
-    pending: number;
     failed: number;
+    pending: number;
+    synced: number;
+    total: number;
   }> {
     const items = await localDataAdapter.query({ category });
 
@@ -367,7 +367,7 @@ class CloudSyncAdapter {
   /**
    * Get current user ID
    */
-  private async getCurrentUserId(): Promise<string | null> {
+  private async getCurrentUserId(): Promise<null | string> {
     const session = await this.supabase.auth.getSession();
     return session?.data?.session?.user?.id || null;
   }

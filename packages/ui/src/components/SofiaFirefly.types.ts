@@ -1,9 +1,9 @@
-import type { SofiaMode } from '@legacyguard/logic'
+import type { SofiaMode } from '@legacyguard/logic';
 
 export interface SofiaFireflyProps {
-  mode?: SofiaMode
-  isActive?: boolean
-  message?: string
-  onInteraction?: () => void
-  startPosition?: { x: number; y: number }
+  isActive?: boolean;
+  message?: string;
+  mode?: SofiaMode;
+  onInteraction?: () => void;
+  startPosition?: { x: number; y: number };
 }

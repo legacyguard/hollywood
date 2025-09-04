@@ -3,19 +3,19 @@
  * Unifies encryption across codebase using TweetNaCl secretbox (XSalsa20-Poly1305)
  */
 import nacl from 'tweetnacl';
-import { encodeBase64, decodeBase64 } from 'tweetnacl-util';
+import { decodeBase64, encodeBase64 } from 'tweetnacl-util';
 
 export interface EncryptedData {
+  algorithm: string; // e.g., 'nacl.secretbox'
   data: string; // base64 ciphertext
   iv: string; // base64 nonce (kept as 'iv' for backward compatibility)
   salt?: string; // optional base64 salt when password-derived keys are used
-  algorithm: string; // e.g., 'nacl.secretbox'
 }
 
 export class EncryptionService {
   private static instance: EncryptionService;
   // Symmetric key used with nacl.secretbox (32 bytes)
-  private key: Uint8Array | null = null;
+  private key: null | Uint8Array = null;
 
   private constructor() {}
 
@@ -30,7 +30,10 @@ export class EncryptionService {
    * Initialize encryption with a password using PBKDF2->32 bytes.
    * Returns the salt used (base64) so callers can persist it if desired.
    */
-  async initializeWithPassword(password: string, saltB64?: string): Promise<{ saltB64: string }>{
+  async initializeWithPassword(
+    password: string,
+    saltB64?: string
+  ): Promise<{ saltB64: string }> {
     const encoder = new TextEncoder();
     const salt = saltB64 ? decodeBase64(saltB64) : nacl.randomBytes(16);
     const keyMaterial = await crypto.subtle.importKey(
@@ -46,7 +49,7 @@ export class EncryptionService {
         name: 'PBKDF2',
         salt: salt as any,
         iterations: 100000,
-        hash: 'SHA-256'
+        hash: 'SHA-256',
       },
       keyMaterial,
       256
@@ -81,7 +84,7 @@ export class EncryptionService {
     return {
       data: encodeBase64(ciphertext),
       iv: encodeBase64(nonce),
-      algorithm: 'nacl.secretbox'
+      algorithm: 'nacl.secretbox',
     };
   }
 

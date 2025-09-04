@@ -4,7 +4,7 @@
  */
 import React from 'react';
 import nacl from 'tweetnacl';
-import { encodeBase64, decodeBase64 } from 'tweetnacl-util';
+import { decodeBase64, encodeBase64 } from 'tweetnacl-util';
 import { envConfig } from './env-config';
 
 // Encryption settings
@@ -15,7 +15,7 @@ const ITERATIONS = 100000;
 export class EncryptionService {
   private static instance: EncryptionService;
   private enabled: boolean;
-  private masterKey: Uint8Array | null = null;
+  private masterKey: null | Uint8Array = null;
   private keyCache: Map<string, Uint8Array> = new Map();
 
   private constructor() {
@@ -45,13 +45,19 @@ export class EncryptionService {
   private async getKeyMaterial(): Promise<CryptoKey> {
     const encoder = new TextEncoder();
     const keyData = encoder.encode(
-      import.meta.env.VITE_ENCRYPTION_KEY || 'temporary-dev-key-replace-in-production'
+      import.meta.env.VITE_ENCRYPTION_KEY ||
+        'temporary-dev-key-replace-in-production'
     );
 
-    return await crypto.subtle.importKey('raw', keyData, 'PBKDF2', false, ['deriveBits']);
+    return await crypto.subtle.importKey('raw', keyData, 'PBKDF2', false, [
+      'deriveBits',
+    ]);
   }
 
-  private async deriveKey(keyMaterial: CryptoKey, salt: string): Promise<Uint8Array> {
+  private async deriveKey(
+    keyMaterial: CryptoKey,
+    salt: string
+  ): Promise<Uint8Array> {
     const encoder = new TextEncoder();
     const saltData = encoder.encode(salt);
 
@@ -158,13 +164,18 @@ export class EncryptionService {
       return obj;
     }
 
-    const encrypted = { ...obj } as T & { _encryption?: Record<string, unknown> };
+    const encrypted = { ...obj } as T & {
+      _encryption?: Record<string, unknown>;
+    };
     const encryptionMetadata: Record<string, unknown> = {};
 
     for (const field of fieldsToEncrypt) {
       if (obj[field] !== undefined && obj[field] !== null) {
         const value = String(obj[field]);
-        const { encrypted: encryptedValue, iv } = await this.encrypt(value, String(field));
+        const { encrypted: encryptedValue, iv } = await this.encrypt(
+          value,
+          String(field)
+        );
 
         encrypted[field] = encryptedValue as T[keyof T];
         encryptionMetadata[String(field)] = { iv, encrypted: true };
@@ -192,11 +203,11 @@ export class EncryptionService {
     for (const [field, metadata] of Object.entries(obj._encryption)) {
       if ((metadata as any).encrypted && (decrypted as any)[field]) {
         try {
-          (decrypted as any)[field] = await this.decrypt(
+          (decrypted as any)[field] = (await this.decrypt(
             (decrypted as any)[field],
             (metadata as any).iv,
             field
-          ) as T[keyof T];
+          )) as T[keyof T];
         } catch (error) {
           console.error(`Failed to decrypt field ${field}:`, error);
         }
@@ -216,7 +227,9 @@ export class EncryptionService {
 
   public generateSecureToken(length: number = 32): string {
     const bytes = this.generateRandomBytes(length);
-    return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
+    return Array.from(bytes)
+      .map(b => b.toString(16).padStart(2, '0'))
+      .join('');
   }
 
   public async rotateKeys(): Promise<void> {
@@ -245,7 +258,10 @@ export class SecureStorage {
   async setItem(key: string, value: unknown): Promise<void> {
     try {
       const serialized = JSON.stringify(value);
-      const { encrypted, iv } = await encryptionService.encrypt(serialized, key);
+      const { encrypted, iv } = await encryptionService.encrypt(
+        serialized,
+        key
+      );
       const storageData = { data: encrypted, iv, timestamp: Date.now() };
       localStorage.setItem(this.prefix + key, JSON.stringify(storageData));
     } catch (error) {
@@ -254,12 +270,16 @@ export class SecureStorage {
     }
   }
 
-  async getItem<T>(key: string): Promise<T | null> {
+  async getItem<T>(key: string): Promise<null | T> {
     try {
       const stored = localStorage.getItem(this.prefix + key);
       if (!stored) return null;
       const storageData = JSON.parse(stored);
-      const decrypted = await encryptionService.decrypt(storageData.data, storageData.iv, key);
+      const decrypted = await encryptionService.decrypt(
+        storageData.data,
+        storageData.iv,
+        key
+      );
       return JSON.parse(decrypted) as T;
     } catch (error) {
       console.error('Failed to retrieve encrypted data:', error);
@@ -305,16 +325,23 @@ export function useEncryptedState<T>(
     });
   }, [key]);
 
-  const setEncryptedState = React.useCallback(async (value: T) => {
-    setState(value);
-    await secureStorage.setItem(key, value);
-  }, [key]);
+  const setEncryptedState = React.useCallback(
+    async (value: T) => {
+      setState(value);
+      await secureStorage.setItem(key, value);
+    },
+    [key]
+  );
 
   return [state, setEncryptedState];
 }
 
 export function EncryptParams(...paramIndices: number[]) {
-  return function (target: unknown, _propertyKey: string, descriptor: PropertyDescriptor) {
+  return function (
+    target: unknown,
+    _propertyKey: string,
+    descriptor: PropertyDescriptor
+  ) {
     const originalMethod = descriptor.value;
     descriptor.value = async function (...args: unknown[]) {
       const encryptedArgs = [...args];
@@ -332,7 +359,11 @@ export function EncryptParams(...paramIndices: number[]) {
   };
 }
 
-export function EncryptResult(target: unknown, _propertyKey: string, descriptor: PropertyDescriptor) {
+export function EncryptResult(
+  target: unknown,
+  _propertyKey: string,
+  descriptor: PropertyDescriptor
+) {
   const originalMethod = descriptor.value;
   descriptor.value = async function (...args: unknown[]) {
     const result = await originalMethod.apply(this, args);

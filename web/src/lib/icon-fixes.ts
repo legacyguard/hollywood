@@ -7,76 +7,76 @@ import type { LucideIcon } from 'lucide-react';
 
 // Proper icon type mapping
 export type IconName =
-  | 'link'
-  | 'search'
-  | 'video'
-  | 'circle'
-  | 'filter'
-  | 'key'
-  | 'x'
-  | 'download'
-  | 'loading'
-  | 'list'
-  | 'send'
-  | 'grid'
-  | 'copy'
-  | 'card'
-  | 'warning'
-  | 'info'
-  | 'help'
-  | 'file'
-  | 'home'
-  | 'user'
-  | 'settings'
-  | 'mail'
-  | 'phone'
-  | 'map-pin'
-  | 'calendar'
-  | 'clock'
-  | 'heart'
-  | 'shield'
-  | 'crown'
-  | 'file-text'
   | 'alert-circle'
-  | 'check-circle'
-  | 'save'
-  | 'edit'
-  | 'trash'
-  | 'plus'
-  | 'minus'
-  | 'arrow-up'
+  | 'alertCircle'
+  | 'archive'
   | 'arrow-down'
   | 'arrow-left'
   | 'arrow-right'
-  | 'chevron-up'
+  | 'arrow-up'
+  | 'baby'
+  | 'book-open'
+  | 'calendar'
+  | 'card'
+  | 'check-circle'
+  | 'checkCircle'
   | 'chevron-down'
   | 'chevron-left'
   | 'chevron-right'
-  | 'menu'
+  | 'chevron-up'
+  | 'circle'
+  | 'clock'
   | 'close'
-  | 'maximize'
-  | 'minimize'
-  | 'refresh'
-  | 'play'
-  | 'pause'
-  | 'stop'
-  | 'volume'
-  | 'volume-x'
-  | 'volume-2'
-  | 'headphones'
-  | 'message-square'
+  | 'copy'
+  | 'crown'
+  | 'download'
+  | 'edit'
   | 'external-link'
-  | 'book-open'
-  | 'archive'
-  | 'baby'
-  | 'scroll'
-  | 'checkCircle'
-  | 'alertCircle'
-  | 'save'
-  | 'notifications'
-  | 'play-circle'
+  | 'file'
+  | 'file-text'
+  | 'filter'
+  | 'grid'
+  | 'headphones'
+  | 'heart'
+  | 'help'
+  | 'home'
+  | 'info'
+  | 'key'
+  | 'link'
+  | 'list'
+  | 'loading'
+  | 'mail'
+  | 'map-pin'
   | 'maximize'
-  | 'triangle-exclamation';
+  | 'maximize'
+  | 'menu'
+  | 'message-square'
+  | 'minimize'
+  | 'minus'
+  | 'notifications'
+  | 'pause'
+  | 'phone'
+  | 'play'
+  | 'play-circle'
+  | 'plus'
+  | 'refresh'
+  | 'save'
+  | 'save'
+  | 'scroll'
+  | 'search'
+  | 'send'
+  | 'settings'
+  | 'shield'
+  | 'stop'
+  | 'trash'
+  | 'triangle-exclamation'
+  | 'user'
+  | 'video'
+  | 'volume'
+  | 'volume-2'
+  | 'volume-x'
+  | 'warning'
+  | 'x';
 
 // Icon component type
 export type IconComponent = LucideIcon;
@@ -84,8 +84,8 @@ export type IconComponent = LucideIcon;
 // Props for icon components
 export interface IconProps {
   className?: string;
-  size?: number;
   color?: string;
+  size?: number;
   strokeWidth?: number;
 }
 
@@ -98,13 +98,13 @@ export const iconMap: Record<string, IconName> = {
   'book-open': 'book-open',
   'external-link': 'external-link',
   'message-square': 'message-square',
-  'headphones': 'headphones',
-  'volume': 'volume',
+  headphones: 'headphones',
+  volume: 'volume',
   'volume-x': 'volume-x',
   'volume-2': 'volume-2',
-  'archive': 'archive',
-  'baby': 'baby',
-  'scroll': 'scroll',
-  'notifications': 'notifications',
-  'maximize': 'maximize'
+  archive: 'archive',
+  baby: 'baby',
+  scroll: 'scroll',
+  notifications: 'notifications',
+  maximize: 'maximize',
 };

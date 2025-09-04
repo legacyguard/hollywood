@@ -1,32 +1,21 @@
 import type {
-  OCRResult,
+  BoundingBox,
+  DOCUMENT_PATTERNS,
   DocumentClassification,
-  ProcessedDocument,
   DocumentMetadata,
-  OCRProcessingConfig,
   DocumentType,
   ExtractedEntity,
+  OCRProcessingConfig,
+  OCRResult,
+  ProcessedDocument,
   TextBlock,
-  BoundingBox,
-  DOCUMENT_PATTERNS
 } from '@/types/ocr';
 
 // Google Cloud Vision AI client configuration
 interface GoogleCloudVisionResponse {
   responses: Array<{
-    textAnnotations: Array<{
-      locale?: string;
-      description: string;
-      boundingPoly: {
-        vertices: Array<{ x: number; y: number }>;
-      };
-    }>;
     fullTextAnnotation: {
-      text: string;
       pages: Array<{
-        confidence: number;
-        width: number;
-        height: number;
         blocks: Array<{
           boundingBox: {
             vertices: Array<{ x: number; y: number }>;
@@ -43,17 +32,28 @@ interface GoogleCloudVisionResponse {
               };
               confidence: number;
               symbols: Array<{
-                text: string;
                 boundingBox: {
                   vertices: Array<{ x: number; y: number }>;
                 };
                 confidence: number;
+                text: string;
               }>;
             }>;
           }>;
         }>;
+        confidence: number;
+        height: number;
+        width: number;
       }>;
+      text: string;
     };
+    textAnnotations: Array<{
+      boundingPoly: {
+        vertices: Array<{ x: number; y: number }>;
+      };
+      description: string;
+      locale?: string;
+    }>;
   }>;
 }
 
@@ -65,8 +65,11 @@ export class OCRService {
   constructor() {
     // These will be set from environment variables
     this.projectId =
-      (import.meta as Record<string, unknown>).env.VITE_GOOGLE_CLOUD_PROJECT_ID || '';
-    this.apiKey = (import.meta as Record<string, unknown>).env.VITE_GOOGLE_CLOUD_API_KEY || '';
+      (import.meta as Record<string, unknown>).env
+        .VITE_GOOGLE_CLOUD_PROJECT_ID || '';
+    this.apiKey =
+      (import.meta as Record<string, unknown>).env.VITE_GOOGLE_CLOUD_API_KEY ||
+      '';
     this.apiUrl = `https://vision.googleapis.com/v1/images:annotate?key=${this.apiKey}`;
   }
 

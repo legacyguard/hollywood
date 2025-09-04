@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
@@ -6,79 +6,83 @@ import { Progress } from '../ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { Alert, AlertDescription } from '../ui/alert';
 import {
-  Shield,
-  TrendingUp,
-  TrendingDown,
+  Activity,
   AlertTriangle,
+  ArrowDown,
+  ArrowUp,
+  BarChart3,
   CheckCircle,
   Clock,
-  Target,
-  BarChart3,
+  Lightbulb,
   PieChart,
-  Activity,
-  Zap,
+  Shield,
   Star,
-  ArrowUp,
-  ArrowDown,
-  Lightbulb
+  Target,
+  TrendingDown,
+  TrendingUp,
+  Zap,
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 
 interface FamilyMember {
+  age: number;
   id: string;
   name: string;
-  role: 'head' | 'spouse' | 'child' | 'guardian';
-  age: number;
-  vulnerabilityScore: number;
   protectionLevel: number;
+  role: 'child' | 'guardian' | 'head' | 'spouse';
+  vulnerabilityScore: number;
 }
 
 interface ProtectionArea {
-  id: string;
-  name: string;
-  category: 'financial' | 'legal' | 'healthcare' | 'family' | 'emergency';
+  category: 'emergency' | 'family' | 'financial' | 'healthcare' | 'legal';
   currentScore: number;
-  maxScore: number;
-  trend: 'improving' | 'declining' | 'stable';
-  trendValue: number;
-  risks: RiskFactor[];
-  recommendations: Recommendation[];
-  priority: 'low' | 'medium' | 'high' | 'critical';
+  id: string;
   lastUpdated: Date;
+  maxScore: number;
+  name: string;
+  priority: 'critical' | 'high' | 'low' | 'medium';
+  recommendations: Recommendation[];
+  risks: RiskFactor[];
+  trend: 'declining' | 'improving' | 'stable';
+  trendValue: number;
 }
 
 interface RiskFactor {
-  id: string;
-  type: 'missing-document' | 'outdated-info' | 'legal-gap' | 'family-vulnerability';
-  severity: 'low' | 'medium' | 'high' | 'critical';
-  description: string;
-  impact: string;
-  timeframe: 'immediate' | 'short-term' | 'long-term';
   affected: string[];
+  description: string;
+  id: string;
+  impact: string;
+  severity: 'critical' | 'high' | 'low' | 'medium';
+  timeframe: 'immediate' | 'long-term' | 'short-term';
+  type:
+    | 'family-vulnerability'
+    | 'legal-gap'
+    | 'missing-document'
+    | 'outdated-info';
 }
 
 interface Recommendation {
-  id: string;
-  title: string;
-  description: string;
-  priority: 'low' | 'medium' | 'high' | 'critical';
-  category: 'quick-fix' | 'planning' | 'professional-help';
-  estimatedTime: string;
-  impactScore: number;
   actionUrl?: string;
+  category: 'planning' | 'professional-help' | 'quick-fix';
   completed: boolean;
+  description: string;
+  estimatedTime: string;
+  id: string;
+  impactScore: number;
+  priority: 'critical' | 'high' | 'low' | 'medium';
+  title: string;
 }
 
 interface SecurityTrend {
+  categories: {
+    emergency: number;
+    family: number;
+    financial: number;
+    healthcare: number;
+    legal: number;
+  };
   date: Date;
   overallScore: number;
-  categories: {
-    financial: number;
-    legal: number;
-    healthcare: number;
-    family: number;
-    emergency: number;
-  };
 }
 
 interface FamilyProtectionAnalyticsProps {
@@ -87,15 +91,19 @@ interface FamilyProtectionAnalyticsProps {
   onRiskMitigation?: (riskId: string) => void;
 }
 
-export const FamilyProtectionAnalytics: React.FC<FamilyProtectionAnalyticsProps> = ({
+export const FamilyProtectionAnalytics: React.FC<
+  FamilyProtectionAnalyticsProps
+> = ({
   familyMembers: _familyMembers = [],
   onRecommendationAction,
-  onRiskMitigation
+  onRiskMitigation,
 }) => {
   const [protectionAreas, setProtectionAreas] = useState<ProtectionArea[]>([]);
   const [_securityTrends, _setSecurityTrends] = useState<SecurityTrend[]>([]);
   const [overallScore, setOverallScore] = useState(0);
-  const [selectedTimeframe, setSelectedTimeframe] = useState<'7d' | '30d' | '90d' | '1y'>('30d');
+  const [selectedTimeframe, setSelectedTimeframe] = useState<
+    '1y' | '7d' | '30d' | '90d'
+  >('30d');
   const [showDetailedAnalysis, setShowDetailedAnalysis] = useState(false);
 
   // Mock data generation for demonstration
@@ -116,24 +124,27 @@ export const FamilyProtectionAnalytics: React.FC<FamilyProtectionAnalyticsProps>
             id: 'missing-life-insurance',
             type: 'missing-document',
             severity: 'high',
-            description: 'Life insurance coverage may be insufficient for family needs',
-            impact: 'Family could face financial hardship without adequate income replacement',
+            description:
+              'Life insurance coverage may be insufficient for family needs',
+            impact:
+              'Family could face financial hardship without adequate income replacement',
             timeframe: 'immediate',
-            affected: ['spouse', 'children']
-          }
+            affected: ['spouse', 'children'],
+          },
         ],
         recommendations: [
           {
             id: 'review-insurance',
             title: 'Review Life Insurance Coverage',
-            description: 'Calculate optimal coverage based on family needs and debts',
+            description:
+              'Calculate optimal coverage based on family needs and debts',
             priority: 'high',
             category: 'planning',
             estimatedTime: '2-3 hours',
             impactScore: 85,
-            completed: false
-          }
-        ]
+            completed: false,
+          },
+        ],
       },
       {
         id: 'legal',
@@ -153,21 +164,22 @@ export const FamilyProtectionAnalytics: React.FC<FamilyProtectionAnalyticsProps>
             description: 'Will was last updated 3 years ago',
             impact: 'Current wishes may not be accurately reflected',
             timeframe: 'short-term',
-            affected: ['all-family']
-          }
+            affected: ['all-family'],
+          },
         ],
         recommendations: [
           {
             id: 'update-will',
             title: 'Update Will and Estate Plan',
-            description: 'Review and update will to reflect current family situation',
+            description:
+              'Review and update will to reflect current family situation',
             priority: 'critical',
             category: 'professional-help',
             estimatedTime: '4-6 hours',
             impactScore: 95,
-            completed: false
-          }
-        ]
+            completed: false,
+          },
+        ],
       },
       {
         id: 'healthcare',
@@ -185,10 +197,11 @@ export const FamilyProtectionAnalytics: React.FC<FamilyProtectionAnalyticsProps>
             type: 'legal-gap',
             severity: 'critical',
             description: 'No healthcare proxy or living will in place',
-            impact: 'Family may be unable to make medical decisions on your behalf',
+            impact:
+              'Family may be unable to make medical decisions on your behalf',
             timeframe: 'immediate',
-            affected: ['user', 'family']
-          }
+            affected: ['user', 'family'],
+          },
         ],
         recommendations: [
           {
@@ -199,10 +212,10 @@ export const FamilyProtectionAnalytics: React.FC<FamilyProtectionAnalyticsProps>
             category: 'quick-fix',
             estimatedTime: '1-2 hours',
             impactScore: 90,
-            completed: false
-          }
-        ]
-      }
+            completed: false,
+          },
+        ],
+      },
     ];
 
     // Generate mock trend data
@@ -218,18 +231,26 @@ export const FamilyProtectionAnalytics: React.FC<FamilyProtectionAnalyticsProps>
           legal: 55 + Math.random() * 20 + (30 - i) * 0.4,
           healthcare: 35 + Math.random() * 25 + (30 - i) * 0.2,
           family: 70 + Math.random() * 15 + (30 - i) * 0.3,
-          emergency: 50 + Math.random() * 20 + (30 - i) * 0.4
-        }
+          emergency: 50 + Math.random() * 20 + (30 - i) * 0.4,
+        },
       });
     }
 
     setProtectionAreas(mockProtectionAreas);
     _setSecurityTrends(mockTrends);
-    setOverallScore(Math.round(mockProtectionAreas.reduce((sum, area) => sum + (area.currentScore / area.maxScore) * 100, 0) / mockProtectionAreas.length));
+    setOverallScore(
+      Math.round(
+        mockProtectionAreas.reduce(
+          (sum, area) => sum + (area.currentScore / area.maxScore) * 100,
+          0
+        ) / mockProtectionAreas.length
+      )
+    );
   }, []);
 
   const criticalRisks = useMemo(() => {
-    return protectionAreas.flatMap(area => area.risks)
+    return protectionAreas
+      .flatMap(area => area.risks)
       .filter(risk => risk.severity === 'critical' || risk.severity === 'high')
       .sort((a, b) => {
         const severityOrder = { critical: 4, high: 3, medium: 2, low: 1 };
@@ -238,7 +259,8 @@ export const FamilyProtectionAnalytics: React.FC<FamilyProtectionAnalyticsProps>
   }, [protectionAreas]);
 
   const topRecommendations = useMemo(() => {
-    return protectionAreas.flatMap(area => area.recommendations)
+    return protectionAreas
+      .flatMap(area => area.recommendations)
       .filter(rec => !rec.completed)
       .sort((a, b) => {
         const priorityOrder = { critical: 4, high: 3, medium: 2, low: 1 };
@@ -265,46 +287,62 @@ export const FamilyProtectionAnalytics: React.FC<FamilyProtectionAnalyticsProps>
   };
 
   const getTrendIcon = (trend: string, _value: number) => {
-    if (trend === 'improving') return <TrendingUp className="h-4 w-4 text-green-600" />;
-    if (trend === 'declining') return <TrendingDown className="h-4 w-4 text-red-600" />;
-    return <Activity className="h-4 w-4 text-gray-600" />;
+    if (trend === 'improving')
+      return <TrendingUp className='h-4 w-4 text-green-600' />;
+    if (trend === 'declining')
+      return <TrendingDown className='h-4 w-4 text-red-600' />;
+    return <Activity className='h-4 w-4 text-gray-600' />;
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'critical': return 'bg-red-100 text-red-800';
-      case 'high': return 'bg-orange-100 text-orange-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      case 'low': return 'bg-green-100 text-green-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'critical':
+        return 'bg-red-100 text-red-800';
+      case 'high':
+        return 'bg-orange-100 text-orange-800';
+      case 'medium':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'low':
+        return 'bg-green-100 text-green-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
     }
   };
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'critical': return 'border-red-500 bg-red-50';
-      case 'high': return 'border-orange-500 bg-orange-50';
-      case 'medium': return 'border-yellow-500 bg-yellow-50';
-      case 'low': return 'border-green-500 bg-green-50';
-      default: return 'border-gray-500 bg-gray-50';
+      case 'critical':
+        return 'border-red-500 bg-red-50';
+      case 'high':
+        return 'border-orange-500 bg-orange-50';
+      case 'medium':
+        return 'border-yellow-500 bg-yellow-50';
+      case 'low':
+        return 'border-green-500 bg-green-50';
+      default:
+        return 'border-gray-500 bg-gray-50';
     }
   };
 
   return (
-    <div className="space-y-6">
+    <div className='space-y-6'>
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className='flex items-center justify-between'>
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Family Protection Analytics</h2>
-          <p className="text-gray-600">AI-powered insights into your family's protection status</p>
+          <h2 className='text-2xl font-bold text-gray-900'>
+            Family Protection Analytics
+          </h2>
+          <p className='text-gray-600'>
+            AI-powered insights into your family's protection status
+          </p>
         </div>
-        <div className="flex gap-2">
+        <div className='flex gap-2'>
           <Button
-            variant="outline"
+            variant='outline'
             onClick={() => setShowDetailedAnalysis(!showDetailedAnalysis)}
-            className="gap-2"
+            className='gap-2'
           >
-            <BarChart3 className="h-4 w-4" />
+            <BarChart3 className='h-4 w-4' />
             {showDetailedAnalysis ? 'Simple View' : 'Detailed Analysis'}
           </Button>
         </div>
@@ -313,42 +351,59 @@ export const FamilyProtectionAnalytics: React.FC<FamilyProtectionAnalyticsProps>
       {/* Overall Security Score */}
       <Card className={`border-2 ${getScoreBackground(overallScore)}`}>
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-white rounded-lg shadow-sm">
+          <div className='flex items-center justify-between'>
+            <div className='flex items-center gap-3'>
+              <div className='p-2 bg-white rounded-lg shadow-sm'>
                 <Shield className={`h-6 w-6 ${getScoreColor(overallScore)}`} />
               </div>
               <div>
-                <CardTitle className="text-xl">Family Security Score</CardTitle>
-                <p className="text-sm text-gray-600">Overall protection level for your family</p>
+                <CardTitle className='text-xl'>Family Security Score</CardTitle>
+                <p className='text-sm text-gray-600'>
+                  Overall protection level for your family
+                </p>
               </div>
             </div>
-            <div className="text-right">
-              <div className={`text-3xl font-bold ${getScoreColor(overallScore)}`}>
+            <div className='text-right'>
+              <div
+                className={`text-3xl font-bold ${getScoreColor(overallScore)}`}
+              >
                 {overallScore}
-                <span className="text-lg text-gray-500">/100</span>
+                <span className='text-lg text-gray-500'>/100</span>
               </div>
-              <div className="flex items-center gap-1 text-sm">
-                <TrendingUp className="h-3 w-3 text-green-600" />
-                <span className="text-green-600">+8 this month</span>
+              <div className='flex items-center gap-1 text-sm'>
+                <TrendingUp className='h-3 w-3 text-green-600' />
+                <span className='text-green-600'>+8 this month</span>
               </div>
             </div>
           </div>
         </CardHeader>
         <CardContent>
-          <Progress value={overallScore} className="h-2 mb-4" />
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-            <div className="flex items-center gap-2">
-              <CheckCircle className="h-4 w-4 text-green-600" />
-              <span>{protectionAreas.filter(area => area.currentScore >= 75).length} areas well protected</span>
+          <Progress value={overallScore} className='h-2 mb-4' />
+          <div className='grid grid-cols-1 md:grid-cols-3 gap-4 text-sm'>
+            <div className='flex items-center gap-2'>
+              <CheckCircle className='h-4 w-4 text-green-600' />
+              <span>
+                {protectionAreas.filter(area => area.currentScore >= 75).length}{' '}
+                areas well protected
+              </span>
             </div>
-            <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4 text-yellow-600" />
-              <span>{protectionAreas.filter(area => area.currentScore < 75 && area.currentScore >= 50).length} areas need attention</span>
+            <div className='flex items-center gap-2'>
+              <Clock className='h-4 w-4 text-yellow-600' />
+              <span>
+                {
+                  protectionAreas.filter(
+                    area => area.currentScore < 75 && area.currentScore >= 50
+                  ).length
+                }{' '}
+                areas need attention
+              </span>
             </div>
-            <div className="flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4 text-red-600" />
-              <span>{protectionAreas.filter(area => area.currentScore < 50).length} critical areas</span>
+            <div className='flex items-center gap-2'>
+              <AlertTriangle className='h-4 w-4 text-red-600' />
+              <span>
+                {protectionAreas.filter(area => area.currentScore < 50).length}{' '}
+                critical areas
+              </span>
             </div>
           </div>
         </CardContent>
@@ -356,14 +411,15 @@ export const FamilyProtectionAnalytics: React.FC<FamilyProtectionAnalyticsProps>
 
       {/* Critical Alerts */}
       {criticalRisks.length > 0 && (
-        <Alert className="border-red-200 bg-red-50">
-          <AlertTriangle className="h-4 w-4 text-red-600" />
+        <Alert className='border-red-200 bg-red-50'>
+          <AlertTriangle className='h-4 w-4 text-red-600' />
           <AlertDescription>
-            <div className="flex items-center justify-between">
-              <span className="font-medium text-red-800">
-                {criticalRisks.length} critical risk{criticalRisks.length > 1 ? 's' : ''} detected
+            <div className='flex items-center justify-between'>
+              <span className='font-medium text-red-800'>
+                {criticalRisks.length} critical risk
+                {criticalRisks.length > 1 ? 's' : ''} detected
               </span>
-              <Button size="sm" variant="destructive">
+              <Button size='sm' variant='destructive'>
                 Review Now
               </Button>
             </div>
@@ -371,31 +427,31 @@ export const FamilyProtectionAnalytics: React.FC<FamilyProtectionAnalyticsProps>
         </Alert>
       )}
 
-      <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="recommendations">AI Recommendations</TabsTrigger>
-          <TabsTrigger value="trends">Trends</TabsTrigger>
-          <TabsTrigger value="risks">Risk Analysis</TabsTrigger>
+      <Tabs defaultValue='overview' className='w-full'>
+        <TabsList className='grid w-full grid-cols-4'>
+          <TabsTrigger value='overview'>Overview</TabsTrigger>
+          <TabsTrigger value='recommendations'>AI Recommendations</TabsTrigger>
+          <TabsTrigger value='trends'>Trends</TabsTrigger>
+          <TabsTrigger value='risks'>Risk Analysis</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="overview" className="space-y-4">
+        <TabsContent value='overview' className='space-y-4'>
           {/* Protection Areas Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
             <AnimatePresence>
-              {protectionAreas.map((area) => (
+              {protectionAreas.map(area => (
                 <motion.div
                   key={area.id}
-                  initial={{  opacity: 0, y: 20  }}
-                  animate={{  opacity: 1, y: 0  }}
-                  exit={{  opacity: 0, y: -20  }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
                   layout
                 >
-                  <Card className="hover:shadow-lg transition-shadow">
-                    <CardHeader className="pb-2">
-                      <div className="flex items-center justify-between">
-                        <CardTitle className="text-base">{area.name}</CardTitle>
-                        <div className="flex items-center gap-1">
+                  <Card className='hover:shadow-lg transition-shadow'>
+                    <CardHeader className='pb-2'>
+                      <div className='flex items-center justify-between'>
+                        <CardTitle className='text-base'>{area.name}</CardTitle>
+                        <div className='flex items-center gap-1'>
                           {getTrendIcon(area.trend, area.trendValue)}
                           <Badge className={getPriorityColor(area.priority)}>
                             {area.priority}
@@ -404,38 +460,57 @@ export const FamilyProtectionAnalytics: React.FC<FamilyProtectionAnalyticsProps>
                       </div>
                     </CardHeader>
                     <CardContent>
-                      <div className="space-y-3">
+                      <div className='space-y-3'>
                         <div>
-                          <div className="flex items-center justify-between text-sm mb-1">
+                          <div className='flex items-center justify-between text-sm mb-1'>
                             <span>Protection Level</span>
                             <span className={getScoreColor(area.currentScore)}>
                               {area.currentScore}/{area.maxScore}
                             </span>
                           </div>
-                          <Progress value={(area.currentScore / area.maxScore) * 100} className="h-2" />
+                          <Progress
+                            value={(area.currentScore / area.maxScore) * 100}
+                            className='h-2'
+                          />
                         </div>
 
                         {area.trend !== 'stable' && (
-                          <div className="flex items-center gap-1 text-xs">
+                          <div className='flex items-center gap-1 text-xs'>
                             {area.trend === 'improving' ? (
-                              <ArrowUp className="h-3 w-3 text-green-600" />
+                              <ArrowUp className='h-3 w-3 text-green-600' />
                             ) : (
-                              <ArrowDown className="h-3 w-3 text-red-600" />
+                              <ArrowDown className='h-3 w-3 text-red-600' />
                             )}
-                            <span className={area.trend === 'improving' ? 'text-green-600' : 'text-red-600'}>
-                              {Math.abs(area.trendValue)}% {area.trend === 'improving' ? 'improvement' : 'decline'}
+                            <span
+                              className={
+                                area.trend === 'improving'
+                                  ? 'text-green-600'
+                                  : 'text-red-600'
+                              }
+                            >
+                              {Math.abs(area.trendValue)}%{' '}
+                              {area.trend === 'improving'
+                                ? 'improvement'
+                                : 'decline'}
                             </span>
                           </div>
                         )}
 
-                        <div className="space-y-1 text-xs text-gray-600">
-                          <div className="flex items-center justify-between">
+                        <div className='space-y-1 text-xs text-gray-600'>
+                          <div className='flex items-center justify-between'>
                             <span>Risks:</span>
-                            <span className="font-medium">{area.risks.length}</span>
+                            <span className='font-medium'>
+                              {area.risks.length}
+                            </span>
                           </div>
-                          <div className="flex items-center justify-between">
+                          <div className='flex items-center justify-between'>
                             <span>Recommendations:</span>
-                            <span className="font-medium">{area.recommendations.filter(r => !r.completed).length}</span>
+                            <span className='font-medium'>
+                              {
+                                area.recommendations.filter(r => !r.completed)
+                                  .length
+                              }
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -447,54 +522,63 @@ export const FamilyProtectionAnalytics: React.FC<FamilyProtectionAnalyticsProps>
           </div>
         </TabsContent>
 
-        <TabsContent value="recommendations" className="space-y-4">
-          <div className="flex items-center gap-2 mb-4">
-            <Lightbulb className="h-5 w-5 text-yellow-600" />
-            <h3 className="text-lg font-medium">AI-Generated Recommendations</h3>
-            <Badge variant="secondary">Powered by LegacyGuard AI</Badge>
+        <TabsContent value='recommendations' className='space-y-4'>
+          <div className='flex items-center gap-2 mb-4'>
+            <Lightbulb className='h-5 w-5 text-yellow-600' />
+            <h3 className='text-lg font-medium'>
+              AI-Generated Recommendations
+            </h3>
+            <Badge variant='secondary'>Powered by LegacyGuard AI</Badge>
           </div>
 
-          <div className="space-y-3">
+          <div className='space-y-3'>
             {topRecommendations.map((recommendation, index) => (
-              <Card key={recommendation.id} className="hover:shadow-md transition-shadow">
-                <CardContent className="p-4">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Badge className={getPriorityColor(recommendation.priority)}>
+              <Card
+                key={recommendation.id}
+                className='hover:shadow-md transition-shadow'
+              >
+                <CardContent className='p-4'>
+                  <div className='flex items-start justify-between'>
+                    <div className='flex-1'>
+                      <div className='flex items-center gap-2 mb-2'>
+                        <Badge
+                          className={getPriorityColor(recommendation.priority)}
+                        >
                           {recommendation.priority}
                         </Badge>
-                        <Badge variant="outline" className="text-xs">
+                        <Badge variant='outline' className='text-xs'>
                           {recommendation.category.replace('-', ' ')}
                         </Badge>
-                        <span className="text-xs text-gray-500">
+                        <span className='text-xs text-gray-500'>
                           ~{recommendation.estimatedTime}
                         </span>
                       </div>
-                      <h4 className="font-medium text-gray-900 mb-1">
+                      <h4 className='font-medium text-gray-900 mb-1'>
                         {recommendation.title}
                       </h4>
-                      <p className="text-sm text-gray-600 mb-3">
+                      <p className='text-sm text-gray-600 mb-3'>
                         {recommendation.description}
                       </p>
-                      <div className="flex items-center gap-4 text-xs text-gray-500">
-                        <div className="flex items-center gap-1">
-                          <Target className="h-3 w-3" />
+                      <div className='flex items-center gap-4 text-xs text-gray-500'>
+                        <div className='flex items-center gap-1'>
+                          <Target className='h-3 w-3' />
                           Impact Score: {recommendation.impactScore}/100
                         </div>
-                        <div className="flex items-center gap-1">
-                          <Star className="h-3 w-3 text-yellow-500" />
+                        <div className='flex items-center gap-1'>
+                          <Star className='h-3 w-3 text-yellow-500' />
                           Priority #{index + 1}
                         </div>
                       </div>
                     </div>
-                    <div className="flex gap-2">
+                    <div className='flex gap-2'>
                       <Button
-                        size="sm"
-                        onClick={() => onRecommendationAction?.(recommendation.id)}
-                        className="gap-2"
+                        size='sm'
+                        onClick={() =>
+                          onRecommendationAction?.(recommendation.id)
+                        }
+                        className='gap-2'
                       >
-                        <Zap className="h-3 w-3" />
+                        <Zap className='h-3 w-3' />
                         Take Action
                       </Button>
                     </div>
@@ -505,15 +589,17 @@ export const FamilyProtectionAnalytics: React.FC<FamilyProtectionAnalyticsProps>
           </div>
         </TabsContent>
 
-        <TabsContent value="trends" className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-medium">Protection Trends</h3>
-            <div className="flex gap-2">
-              {(['7d', '30d', '90d', '1y'] as const).map((timeframe) => (
+        <TabsContent value='trends' className='space-y-4'>
+          <div className='flex items-center justify-between'>
+            <h3 className='text-lg font-medium'>Protection Trends</h3>
+            <div className='flex gap-2'>
+              {(['7d', '30d', '90d', '1y'] as const).map(timeframe => (
                 <Button
                   key={timeframe}
-                  size="sm"
-                  variant={selectedTimeframe === timeframe ? "default" : "outline"}
+                  size='sm'
+                  variant={
+                    selectedTimeframe === timeframe ? 'default' : 'outline'
+                  }
                   onClick={() => setSelectedTimeframe(timeframe)}
                 >
                   {timeframe}
@@ -523,92 +609,97 @@ export const FamilyProtectionAnalytics: React.FC<FamilyProtectionAnalyticsProps>
           </div>
 
           <Card>
-            <CardContent className="p-6">
-              <div className="h-64 flex items-center justify-center text-gray-500">
-                <div className="text-center">
-                  <PieChart className="h-12 w-12 mx-auto mb-2 text-gray-300" />
+            <CardContent className='p-6'>
+              <div className='h-64 flex items-center justify-center text-gray-500'>
+                <div className='text-center'>
+                  <PieChart className='h-12 w-12 mx-auto mb-2 text-gray-300' />
                   <p>Trend visualization would be implemented here</p>
-                  <p className="text-sm">Shows protection score changes over {selectedTimeframe}</p>
+                  <p className='text-sm'>
+                    Shows protection score changes over {selectedTimeframe}
+                  </p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
           {/* Trend Summary Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
             <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <TrendingUp className="h-4 w-4 text-green-600" />
-                  <span className="text-sm font-medium">Improving Areas</span>
+              <CardContent className='p-4'>
+                <div className='flex items-center gap-2 mb-2'>
+                  <TrendingUp className='h-4 w-4 text-green-600' />
+                  <span className='text-sm font-medium'>Improving Areas</span>
                 </div>
-                <div className="text-2xl font-bold text-green-600">2</div>
-                <p className="text-xs text-gray-500">Financial + Family</p>
+                <div className='text-2xl font-bold text-green-600'>2</div>
+                <p className='text-xs text-gray-500'>Financial + Family</p>
               </CardContent>
             </Card>
 
             <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <Activity className="h-4 w-4 text-gray-600" />
-                  <span className="text-sm font-medium">Stable Areas</span>
+              <CardContent className='p-4'>
+                <div className='flex items-center gap-2 mb-2'>
+                  <Activity className='h-4 w-4 text-gray-600' />
+                  <span className='text-sm font-medium'>Stable Areas</span>
                 </div>
-                <div className="text-2xl font-bold text-gray-600">1</div>
-                <p className="text-xs text-gray-500">Legal</p>
+                <div className='text-2xl font-bold text-gray-600'>1</div>
+                <p className='text-xs text-gray-500'>Legal</p>
               </CardContent>
             </Card>
 
             <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <TrendingDown className="h-4 w-4 text-red-600" />
-                  <span className="text-sm font-medium">Declining Areas</span>
+              <CardContent className='p-4'>
+                <div className='flex items-center gap-2 mb-2'>
+                  <TrendingDown className='h-4 w-4 text-red-600' />
+                  <span className='text-sm font-medium'>Declining Areas</span>
                 </div>
-                <div className="text-2xl font-bold text-red-600">1</div>
-                <p className="text-xs text-gray-500">Healthcare</p>
+                <div className='text-2xl font-bold text-red-600'>1</div>
+                <p className='text-xs text-gray-500'>Healthcare</p>
               </CardContent>
             </Card>
           </div>
         </TabsContent>
 
-        <TabsContent value="risks" className="space-y-4">
-          <div className="flex items-center gap-2 mb-4">
-            <AlertTriangle className="h-5 w-5 text-red-600" />
-            <h3 className="text-lg font-medium">Risk Analysis</h3>
-            <Badge variant="destructive">{criticalRisks.length} Critical</Badge>
+        <TabsContent value='risks' className='space-y-4'>
+          <div className='flex items-center gap-2 mb-4'>
+            <AlertTriangle className='h-5 w-5 text-red-600' />
+            <h3 className='text-lg font-medium'>Risk Analysis</h3>
+            <Badge variant='destructive'>{criticalRisks.length} Critical</Badge>
           </div>
 
-          <div className="space-y-3">
-            {criticalRisks.map((risk) => (
-              <Card key={risk.id} className={`border-l-4 ${getSeverityColor(risk.severity)}`}>
-                <CardContent className="p-4">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
+          <div className='space-y-3'>
+            {criticalRisks.map(risk => (
+              <Card
+                key={risk.id}
+                className={`border-l-4 ${getSeverityColor(risk.severity)}`}
+              >
+                <CardContent className='p-4'>
+                  <div className='flex items-start justify-between'>
+                    <div className='flex-1'>
+                      <div className='flex items-center gap-2 mb-2'>
                         <Badge className={getPriorityColor(risk.severity)}>
                           {risk.severity}
                         </Badge>
-                        <Badge variant="outline" className="text-xs">
+                        <Badge variant='outline' className='text-xs'>
                           {risk.timeframe.replace('-', ' ')}
                         </Badge>
-                        <span className="text-xs text-gray-500">
+                        <span className='text-xs text-gray-500'>
                           Affects: {risk.affected.join(', ')}
                         </span>
                       </div>
-                      <h4 className="font-medium text-gray-900 mb-1">
+                      <h4 className='font-medium text-gray-900 mb-1'>
                         {risk.description}
                       </h4>
-                      <p className="text-sm text-gray-600 mb-2">
+                      <p className='text-sm text-gray-600 mb-2'>
                         <strong>Impact:</strong> {risk.impact}
                       </p>
                     </div>
                     <Button
-                      size="sm"
-                      variant="outline"
+                      size='sm'
+                      variant='outline'
                       onClick={() => onRiskMitigation?.(risk.id)}
-                      className="gap-2"
+                      className='gap-2'
                     >
-                      <Shield className="h-3 w-3" />
+                      <Shield className='h-3 w-3' />
                       Mitigate
                     </Button>
                   </div>

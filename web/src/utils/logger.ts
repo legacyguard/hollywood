@@ -14,24 +14,24 @@ export enum LogLevel {
 }
 
 export interface LogEntry {
-  level: LogLevel;
-  message: string;
-  timestamp: Date;
   context?: string;
   data?: Record<string, unknown>;
   error?: Error;
-  userId?: string;
+  level: LogLevel;
+  message: string;
   requestId?: string;
   tags?: string[];
+  timestamp: Date;
+  userId?: string;
 }
 
 export interface LoggerConfig {
-  level: LogLevel;
   enableConsole: boolean;
   enableFile: boolean;
   enableRemote: boolean;
-  maxFileSize: number;
+  level: LogLevel;
   maxFiles: number;
+  maxFileSize: number;
   redactSensitiveData: boolean;
 }
 
@@ -58,28 +58,52 @@ export class Logger {
       };
       Logger.instance = new Logger({ ...defaultConfig, ...config });
     } else if (config) {
-      console.warn('Logger already initialized. Configuration changes ignored.');
+      console.warn(
+        'Logger already initialized. Configuration changes ignored.'
+      );
     }
     return Logger.instance;
   }
 
-  public debug(message: string, data?: Record<string, unknown>, context?: string): void {
+  public debug(
+    message: string,
+    data?: Record<string, unknown>,
+    context?: string
+  ): void {
     this.log(LogLevel.DEBUG, message, data, context);
   }
 
-  public info(message: string, data?: Record<string, unknown>, context?: string): void {
+  public info(
+    message: string,
+    data?: Record<string, unknown>,
+    context?: string
+  ): void {
     this.log(LogLevel.INFO, message, data, context);
   }
 
-  public warn(message: string, data?: Record<string, unknown>, context?: string): void {
+  public warn(
+    message: string,
+    data?: Record<string, unknown>,
+    context?: string
+  ): void {
     this.log(LogLevel.WARN, message, data, context);
   }
 
-  public error(message: string, error?: Error, data?: Record<string, unknown>, context?: string): void {
+  public error(
+    message: string,
+    error?: Error,
+    data?: Record<string, unknown>,
+    context?: string
+  ): void {
     this.log(LogLevel.ERROR, message, data, context, error);
   }
 
-  public fatal(message: string, error?: Error, data?: Record<string, unknown>, context?: string): void {
+  public fatal(
+    message: string,
+    error?: Error,
+    data?: Record<string, unknown>,
+    context?: string
+  ): void {
     this.log(LogLevel.FATAL, message, data, context, error);
   }
 
@@ -99,7 +123,9 @@ export class Logger {
       message,
       timestamp: new Date(),
       context,
-      data: this.config.redactSensitiveData ? this.redactSensitiveData(data) : data,
+      data: this.config.redactSensitiveData
+        ? this.redactSensitiveData(data)
+        : data,
       error,
     };
 
@@ -107,21 +133,35 @@ export class Logger {
     this.processQueue();
   }
 
-  private redactSensitiveData(data?: Record<string, unknown>): Record<string, unknown> | undefined {
+  private redactSensitiveData(
+    data?: Record<string, unknown>
+  ): Record<string, unknown> | undefined {
     if (!data) return data;
 
     const sensitiveKeys = [
-      'password', 'token', 'secret', 'key', 'ssn', 'creditCard',
-      'bankAccount', 'routingNumber', 'pin', 'passphrase'
+      'password',
+      'token',
+      'secret',
+      'key',
+      'ssn',
+      'creditCard',
+      'bankAccount',
+      'routingNumber',
+      'pin',
+      'passphrase',
     ];
 
     const redacted = { ...data };
 
     for (const key in redacted) {
-      if (sensitiveKeys.some(sensitive => key.toLowerCase().includes(sensitive))) {
+      if (
+        sensitiveKeys.some(sensitive => key.toLowerCase().includes(sensitive))
+      ) {
         redacted[key] = '[REDACTED]';
       } else if (typeof redacted[key] === 'object' && redacted[key] !== null) {
-        redacted[key] = this.redactSensitiveData(redacted[key] as Record<string, unknown>);
+        redacted[key] = this.redactSensitiveData(
+          redacted[key] as Record<string, unknown>
+        );
       }
     }
 
@@ -175,7 +215,9 @@ export class Logger {
     }
   }
 
-  private getConsoleMethod(level: LogLevel): (message: string, ...args: unknown[]) => void {
+  private getConsoleMethod(
+    level: LogLevel
+  ): (message: string, ...args: unknown[]) => void {
     switch (level) {
       case LogLevel.DEBUG:
         return console.debug.bind(console);
@@ -211,7 +253,10 @@ export class Logger {
   public createChildLogger(context: string): Logger {
     return new Proxy(this, {
       get(target, prop) {
-        if (typeof prop === 'string' && ['debug', 'info', 'warn', 'error', 'fatal'].includes(prop)) {
+        if (
+          typeof prop === 'string' &&
+          ['debug', 'info', 'warn', 'error', 'fatal'].includes(prop)
+        ) {
           return (message: string, data?: Record<string, unknown>) => {
             return (target as any)[prop](message, data, context);
           };
@@ -233,7 +278,11 @@ export class PerformanceMonitor {
     this.marks.set(name, performance.now());
   }
 
-  public static measure(name: string, startMark: string, endMark?: string): number {
+  public static measure(
+    name: string,
+    startMark: string,
+    endMark?: string
+  ): number {
     const start = this.marks.get(startMark);
     if (!start) {
       throw new Error(`Mark ${startMark} not found`);
@@ -256,10 +305,10 @@ export class PerformanceMonitor {
 
 // Request context for logging
 export interface RequestContext {
-  requestId: string;
-  userId?: string;
   ip?: string;
+  requestId: string;
   userAgent?: string;
+  userId?: string;
 }
 
 export class RequestLogger {
@@ -307,9 +356,9 @@ export class RequestLogger {
 
 // Error boundary for React components
 export interface ErrorBoundaryState {
-  hasError: boolean;
   error: Error | null;
   errorInfo: ErrorInfo | null;
+  hasError: boolean;
 }
 
 export function logComponentError(

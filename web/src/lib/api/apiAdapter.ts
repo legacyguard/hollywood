@@ -4,15 +4,16 @@
  */
 
 import type {
+  AnalyticsService,
   DocumentService,
   GuardianService,
+  LegacyItemService,
   ProfileService,
   WillService,
-  LegacyItemService,
-  AnalyticsService} from '@legacyguard/logic';
+} from '@legacyguard/logic';
 import {
+  type ApiClientInterface,
   createLegacyGuardAPI,
-  type ApiClientInterface
 } from '@legacyguard/logic';
 import { createClient } from '@supabase/supabase-js';
 
@@ -38,8 +39,10 @@ class WebApiClient implements ApiClientInterface {
   /**
    * Get authentication token from Supabase
    */
-  private async getAuthToken(): Promise<string | null> {
-    const { data: { session } } = await supabase.auth.getSession();
+  private async getAuthToken(): Promise<null | string> {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
     return session?.access_token || null;
   }
 
@@ -133,11 +136,14 @@ class WebApiClient implements ApiClientInterface {
   /**
    * Upload file
    */
-  async uploadFile(endpoint: string, file: {
-    base64: string;
-    mimeType: string;
-    fileName: string;
-  }): Promise<unknown> {
+  async uploadFile(
+    endpoint: string,
+    file: {
+      base64: string;
+      fileName: string;
+      mimeType: string;
+    }
+  ): Promise<unknown> {
     const headers = await this.buildHeaders();
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
       method: 'POST',
@@ -173,54 +179,47 @@ export const analyticsService = api.analytics;
  */
 export const legacyApi = {
   // Document operations
-  uploadDocument: (file: { base64: string; mimeType: string; fileName: string }) =>
-    documentService.upload({ file }),
+  uploadDocument: (file: {
+    base64: string;
+    fileName: string;
+    mimeType: string;
+  }) => documentService.upload({ file }),
 
   getDocuments: (params?: { limit?: number; offset?: number }) =>
     documentService.getAll(params),
 
-  getDocument: (id: string) =>
-    documentService.getById(id),
+  getDocument: (id: string) => documentService.getById(id),
 
-  deleteDocument: (id: string) =>
-    documentService.delete(id),
+  deleteDocument: (id: string) => documentService.delete(id),
 
   // User operations
-  getUserProfile: () =>
-    profileService.get(),
+  getUserProfile: () => profileService.get(),
 
-  updateUserProfile: (data: any) =>
-    profileService.update(data),
+  updateUserProfile: (data: any) => profileService.update(data),
 
   // Will operations
-  getWill: () =>
-    willService.get(),
+  getWill: () => willService.get(),
 
-  updateWill: (data: any) =>
-    willService.createOrUpdate(data),
+  updateWill: (data: any) => willService.createOrUpdate(data),
 
   // Guardian operations
-  getGuardians: () =>
-    guardianService.getAll(),
+  getGuardians: () => guardianService.getAll(),
 
-  addGuardian: (data: any) =>
-    guardianService.create(data),
+  addGuardian: (data: any) => guardianService.create(data),
 
-  updateGuardian: (id: string, data: any) =>
-    guardianService.update(id, data),
+  updateGuardian: (id: string, data: any) => guardianService.update(id, data),
 
-  deleteGuardian: (id: string) =>
-    guardianService.delete(id),
+  deleteGuardian: (id: string) => guardianService.delete(id),
 };
 
 // Export types for use in components
 export type {
+  AnalyticsService,
   DocumentService,
   GuardianService,
+  LegacyItemService,
   ProfileService,
   WillService,
-  LegacyItemService,
-  AnalyticsService,
 };
 
 // Export a hook for React components

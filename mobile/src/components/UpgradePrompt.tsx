@@ -3,25 +3,33 @@
  * Displays upgrade prompts and handles upgrade flow
  */
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
+  ActivityIndicator,
+  Dimensions,
   Modal,
   ScrollView,
-  Dimensions,
-  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import type { FreemiumManager, UsageLimits, FeatureAccess } from '../services/FreemiumManager';
+import type {
+  FeatureAccess,
+  FreemiumManager,
+  UsageLimits,
+} from '../services/FreemiumManager';
 
 interface UpgradePromptProps {
-  freemiumManager: FreemiumManager;
+  action?:
+    | 'create_capsule'
+    | 'offline_save'
+    | 'scan_document'
+    | 'upload_document';
   feature?: string;
-  action?: 'upload_document' | 'scan_document' | 'create_capsule' | 'offline_save';
+  freemiumManager: FreemiumManager;
   onClose?: () => void;
   onUpgrade?: () => void;
 }
@@ -34,8 +42,10 @@ export const UpgradePrompt: React.FC<UpgradePromptProps> = ({
   onUpgrade,
 }) => {
   const [visible, setVisible] = useState(false);
-  const [limits, setLimits] = useState<UsageLimits | null>(null);
-  const [featureAccess, setFeatureAccess] = useState<FeatureAccess | null>(null);
+  const [limits, setLimits] = useState<null | UsageLimits>(null);
+  const [featureAccess, setFeatureAccess] = useState<FeatureAccess | null>(
+    null
+  );
   const [loading, setLoading] = useState(true);
   const [benefits, setBenefits] = useState<string[]>([]);
 
@@ -91,26 +101,30 @@ export const UpgradePrompt: React.FC<UpgradePromptProps> = ({
     if (!limits || !action) return '';
 
     const messages: Record<string, (limits: UsageLimits) => string> = {
-      upload_document: (l) => `You've reached your document limit (${l.documents.current}/${l.documents.limit})`,
-      scan_document: (l) => `You've used all your scans this month (${l.scannerUsage.current}/${l.scannerUsage.limit})`,
-      create_capsule: (l) => `You've reached your time capsule limit (${l.timeCapsules.current}/${l.timeCapsules.limit})`,
-      offline_save: (l) => `You've reached your offline document limit (${l.offlineDocuments.current}/${l.offlineDocuments.limit})`,
+      upload_document: l =>
+        `You've reached your document limit (${l.documents.current}/${l.documents.limit})`,
+      scan_document: l =>
+        `You've used all your scans this month (${l.scannerUsage.current}/${l.scannerUsage.limit})`,
+      create_capsule: l =>
+        `You've reached your time capsule limit (${l.timeCapsules.current}/${l.timeCapsules.limit})`,
+      offline_save: l =>
+        `You've reached your offline document limit (${l.offlineDocuments.current}/${l.offlineDocuments.limit})`,
     };
 
-    return messages[action]?.(limits) || 'You\'ve reached your limit';
+    return messages[action]?.(limits) || "You've reached your limit";
   };
 
   const getFeatureMessage = () => {
     if (!featureAccess) return '';
 
     const featureNames: Record<string, string> = {
-      'advanced_ocr': 'Advanced OCR Scanning',
-      'family_sharing': 'Family Sharing',
-      'unlimited_storage': 'Unlimited Storage',
-      'legal_templates': 'Legal Templates',
-      'will_generator': 'Will Generator',
-      'emergency_access': 'Emergency Access',
-      'api_access': 'API Access',
+      advanced_ocr: 'Advanced OCR Scanning',
+      family_sharing: 'Family Sharing',
+      unlimited_storage: 'Unlimited Storage',
+      legal_templates: 'Legal Templates',
+      will_generator: 'Will Generator',
+      emergency_access: 'Emergency Access',
+      api_access: 'API Access',
     };
 
     const featureName = featureNames[feature || ''] || feature;
@@ -128,10 +142,10 @@ export const UpgradePrompt: React.FC<UpgradePromptProps> = ({
 
   if (loading) {
     return (
-      <Modal visible={visible} transparent animationType="fade">
+      <Modal visible={visible} transparent animationType='fade'>
         <View style={styles.overlay}>
           <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#1e40af" />
+            <ActivityIndicator size='large' color='#1e40af' />
           </View>
         </View>
       </Modal>
@@ -139,18 +153,15 @@ export const UpgradePrompt: React.FC<UpgradePromptProps> = ({
   }
 
   return (
-    <Modal visible={visible} transparent animationType="slide">
+    <Modal visible={visible} transparent animationType='slide'>
       <View style={styles.overlay}>
         <View style={styles.container}>
-          <LinearGradient
-            colors={['#1e40af', '#1e3a8a']}
-            style={styles.header}
-          >
+          <LinearGradient colors={['#1e40af', '#1e3a8a']} style={styles.header}>
             <TouchableOpacity style={styles.closeButton} onPress={handleClose}>
-              <Ionicons name="close" size={24} color="white" />
+              <Ionicons name='close' size={24} color='white' />
             </TouchableOpacity>
 
-            <Ionicons name="lock-closed" size={48} color="white" />
+            <Ionicons name='lock-closed' size={48} color='white' />
 
             <Text style={styles.headerTitle}>
               {action ? 'Limit Reached' : 'Premium Feature'}
@@ -161,11 +172,15 @@ export const UpgradePrompt: React.FC<UpgradePromptProps> = ({
             </Text>
           </LinearGradient>
 
-          <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+          <ScrollView
+            style={styles.content}
+            showsVerticalScrollIndicator={false}
+          >
             {featureAccess && featureAccess.requiredPlan && (
               <View style={styles.requiredPlan}>
                 <Text style={styles.requiredPlanText}>
-                  Requires {getPlanName(featureAccess.requiredPlan)} Plan or higher
+                  Requires {getPlanName(featureAccess.requiredPlan)} Plan or
+                  higher
                 </Text>
               </View>
             )}
@@ -174,7 +189,7 @@ export const UpgradePrompt: React.FC<UpgradePromptProps> = ({
               <Text style={styles.benefitsTitle}>Unlock These Benefits</Text>
               {benefits.map((benefit, index) => (
                 <View key={index} style={styles.benefitItem}>
-                  <Ionicons name="checkmark-circle" size={20} color="#16a34a" />
+                  <Ionicons name='checkmark-circle' size={20} color='#16a34a' />
                   <Text style={styles.benefitText}>{benefit}</Text>
                 </View>
               ))}
@@ -182,27 +197,35 @@ export const UpgradePrompt: React.FC<UpgradePromptProps> = ({
 
             <View style={styles.featuresGrid}>
               <View style={styles.featureCard}>
-                <Ionicons name="document-text" size={32} color="#1e40af" />
+                <Ionicons name='document-text' size={32} color='#1e40af' />
                 <Text style={styles.featureTitle}>More Documents</Text>
-                <Text style={styles.featureDescription}>Store more documents securely</Text>
+                <Text style={styles.featureDescription}>
+                  Store more documents securely
+                </Text>
               </View>
 
               <View style={styles.featureCard}>
-                <Ionicons name="scan" size={32} color="#1e40af" />
+                <Ionicons name='scan' size={32} color='#1e40af' />
                 <Text style={styles.featureTitle}>Advanced Scanning</Text>
-                <Text style={styles.featureDescription}>AI-powered document analysis</Text>
+                <Text style={styles.featureDescription}>
+                  AI-powered document analysis
+                </Text>
               </View>
 
               <View style={styles.featureCard}>
-                <Ionicons name="people" size={32} color="#1e40af" />
+                <Ionicons name='people' size={32} color='#1e40af' />
                 <Text style={styles.featureTitle}>Family Sharing</Text>
-                <Text style={styles.featureDescription}>Share with loved ones</Text>
+                <Text style={styles.featureDescription}>
+                  Share with loved ones
+                </Text>
               </View>
 
               <View style={styles.featureCard}>
-                <Ionicons name="shield-checkmark" size={32} color="#1e40af" />
+                <Ionicons name='shield-checkmark' size={32} color='#1e40af' />
                 <Text style={styles.featureTitle}>Legal Tools</Text>
-                <Text style={styles.featureDescription}>Will generator & templates</Text>
+                <Text style={styles.featureDescription}>
+                  Will generator & templates
+                </Text>
               </View>
             </View>
 
@@ -211,18 +234,22 @@ export const UpgradePrompt: React.FC<UpgradePromptProps> = ({
                 Complete your legacy protection with full access to all features
               </Text>
 
-              <TouchableOpacity style={styles.upgradeButton} onPress={handleUpgrade}>
+              <TouchableOpacity
+                style={styles.upgradeButton}
+                onPress={handleUpgrade}
+              >
                 <LinearGradient
                   colors={['#f59e0b', '#d97706']}
                   style={styles.upgradeGradient}
                 >
                   <Text style={styles.upgradeButtonText}>Continue on Web</Text>
-                  <Ionicons name="arrow-forward" size={20} color="white" />
+                  <Ionicons name='arrow-forward' size={20} color='white' />
                 </LinearGradient>
               </TouchableOpacity>
 
               <Text style={styles.webNote}>
-                You'll be redirected to our secure web platform to complete your upgrade
+                You'll be redirected to our secure web platform to complete your
+                upgrade
               </Text>
             </View>
           </ScrollView>

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useAuth, useUser } from '@clerk/clerk-react';
 import type { WillType } from './WillTypeSelector';
 import { Button } from '@/components/ui/button';
@@ -23,9 +23,9 @@ import { FocusModeWrapper } from './FocusModeWrapper';
 import { FocusModeToggle } from './FocusModeToggle';
 import { VaultAssetSelector } from './VaultAssetSelector';
 import {
-  ValidationIndicator,
-  FieldValidation,
   ComplianceStatus,
+  FieldValidation,
+  ValidationIndicator,
 } from './ValidationIndicator';
 import { useFocusMode } from '@/contexts/FocusModeContext';
 import { useWillValidation } from '@/hooks/useWillValidation';
@@ -33,11 +33,11 @@ import type { WillData } from './WillWizard';
 import { ValidationLevel } from '@/lib/will-legal-validator';
 
 interface EnhancedWillWizardWithValidationProps {
+  initialData?: null | WillData;
+  onBack?: () => void;
   onClose: () => void;
   onComplete: (willData: WillData) => void;
-  onBack?: () => void;
   willType: WillType;
-  initialData?: WillData | null;
 }
 
 const STEPS = [
@@ -93,7 +93,7 @@ export const EnhancedWillWizardWithValidation: React.FC<
   const [currentStep, setCurrentStep] = useState(0);
   const [showVaultSelector, setShowVaultSelector] = useState(false);
   const [vaultSelectorType] = useState<
-    'realEstate' | 'vehicles' | 'bankAccounts' | 'personalProperty' | 'all'
+    'all' | 'bankAccounts' | 'personalProperty' | 'realEstate' | 'vehicles'
   >('all');
 
   // Initialize with draft data if provided, otherwise use empty data
@@ -110,6 +110,9 @@ export const EnhancedWillWizardWithValidation: React.FC<
       legal_data: {
         jurisdiction: 'Slovakia',
       },
+      review_eligibility: true,
+      family_protection_level: 'standard',
+      completeness_score: 0,
     }
   );
 
@@ -136,15 +139,12 @@ export const EnhancedWillWizardWithValidation: React.FC<
   const currentStepId = STEPS[currentStep].id;
   const progress = ((currentStep + 1) / STEPS.length) * 100;
 
-  const updateWillData = useCallback(
-    (section: keyof WillData, data: Partial<WillData[keyof WillData]>) => {
-      setWillData(prev => ({
-        ...prev,
-        [section]: { ...prev[section], ...data },
-      }));
-    },
-    []
-  );
+  const updateWillData = useCallback((section: keyof WillData, data: any) => {
+    setWillData(prev => ({
+      ...prev,
+      [section]: { ...(prev[section] as any), ...data },
+    }));
+  }, []);
 
   // Trigger validation when jurisdiction changes
   useEffect(() => {
@@ -213,7 +213,7 @@ export const EnhancedWillWizardWithValidation: React.FC<
   }, []);
 
   const updateBeneficiary = useCallback(
-    (id: string, field: string, value: string | number | string[]) => {
+    (id: string, field: string, value: number | string | string[]) => {
       setWillData(prev => ({
         ...prev,
         beneficiaries: prev.beneficiaries.map(b =>
@@ -356,7 +356,13 @@ export const EnhancedWillWizardWithValidation: React.FC<
               <Select
                 value={willData.testator_data.maritalStatus}
                 onValueChange={value =>
-                  updateWillData('testator_data', { maritalStatus: value as 'single' | 'married' | 'divorced' | 'widowed' })
+                  updateWillData('testator_data', {
+                    maritalStatus: value as
+                      | 'divorced'
+                      | 'married'
+                      | 'single'
+                      | 'widowed',
+                  })
                 }
               >
                 <SelectTrigger>
@@ -385,28 +391,30 @@ export const EnhancedWillWizardWithValidation: React.FC<
                   />
                 )}
               </h3>
-              <Button onClick={addBeneficiary} variant="outline" size='sm'>
-                <Icon name={"add" as any} className='w-4 h-4 mr-2' />
+              <Button onClick={addBeneficiary} variant='outline' size='sm'>
+                <Icon name={'add' as any} className='w-4 h-4 mr-2' />
                 Add Beneficiary
               </Button>
             </div>
 
             {/* Beneficiary percentage warning */}
-            {complianceReport?.forcedHeirsIssues && complianceReport.forcedHeirsIssues.length > 0 && (
-              <div className='space-y-2'>
-                {complianceReport.forcedHeirsIssues.map((issue, index) => (
-                  <ValidationIndicator
-                    key={index}
-                    validation={issue}
-                    showDetails
-                  />
-                ))}
-              </div>
-            )}
+            {complianceReport?.forcedHeirsIssues &&
+              complianceReport.forcedHeirsIssues.length > 0 && (
+                <div className='space-y-2'>
+                  {complianceReport.forcedHeirsIssues.map((issue, index) => (
+                    <ValidationIndicator
+                      key={index}
+                      validation={issue}
+                      showDetails
+                    />
+                  ))}
+                </div>
+              )}
 
             {willData.beneficiaries.length === 0 ? (
               <Card className='p-8 text-center'>
-                <Icon name={"users" as any}
+                <Icon
+                  name={'users' as any}
                   className='w-12 h-12 text-muted-foreground mx-auto mb-4'
                 />
                 <p className='text-muted-foreground'>
@@ -422,7 +430,7 @@ export const EnhancedWillWizardWithValidation: React.FC<
                   <Card key={beneficiary.id} className='p-4'>
                     <div className='flex items-center justify-between mb-4'>
                       <div className='flex items-center gap-2'>
-                        <Badge variant="secondary">
+                        <Badge variant='secondary'>
                           Beneficiary {index + 1}
                         </Badge>
                         {hasFieldError(`beneficiaries[${index}]`) && (
@@ -435,11 +443,11 @@ export const EnhancedWillWizardWithValidation: React.FC<
                       </div>
                       <Button
                         onClick={() => removeBeneficiary(beneficiary.id)}
-                        variant="ghost"
+                        variant='ghost'
                         size='sm'
                         className='text-red-600 hover:text-red-700'
                       >
-                        <Icon name={"trash" as any} className='w-4 h-4' />
+                        <Icon name={'trash' as any} className='w-4 h-4' />
                       </Button>
                     </div>
                     <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
@@ -521,7 +529,8 @@ export const EnhancedWillWizardWithValidation: React.FC<
             {/* Show jurisdiction-specific guidance */}
             <Card className='p-4 bg-blue-50 border-blue-200'>
               <div className='flex items-start gap-3'>
-                <Icon name={"info" as any}
+                <Icon
+                  name={'info' as any}
                   className='w-5 h-5 text-blue-600 flex-shrink-0 mt-1'
                 />
                 <div>
@@ -541,7 +550,8 @@ export const EnhancedWillWizardWithValidation: React.FC<
         return (
           <div className='space-y-6'>
             <div className='text-center mb-8'>
-              <Icon name={"shield-check" as any}
+              <Icon
+                name={'shield-check' as any}
                 className='w-12 h-12 text-primary mx-auto mb-4'
               />
               <h3 className='text-2xl font-semibold mb-2'>
@@ -558,35 +568,41 @@ export const EnhancedWillWizardWithValidation: React.FC<
 
             {/* Validation Messages */}
             <div className='space-y-4'>
-              {getValidationMessages(ValidationLevel.ERROR).map((validation, index) => (
-                <ValidationIndicator
-                  key={`error-${index}`}
-                  validation={validation}
-                  showDetails
-                />
-              ))}
+              {getValidationMessages(ValidationLevel.ERROR).map(
+                (validation, index) => (
+                  <ValidationIndicator
+                    key={`error-${index}`}
+                    validation={validation}
+                    showDetails
+                  />
+                )
+              )}
 
-              {getValidationMessages(ValidationLevel.WARNING).map((validation, index) => (
-                <ValidationIndicator
-                  key={`warning-${index}`}
-                  validation={validation}
-                  showDetails
-                />
-              ))}
+              {getValidationMessages(ValidationLevel.WARNING).map(
+                (validation, index) => (
+                  <ValidationIndicator
+                    key={`warning-${index}`}
+                    validation={validation}
+                    showDetails
+                  />
+                )
+              )}
 
-              {getValidationMessages(ValidationLevel.SUCCESS).map((validation, index) => (
-                <ValidationIndicator
-                  key={`success-${index}`}
-                  validation={validation}
-                  showDetails
-                />
-              ))}
+              {getValidationMessages(ValidationLevel.SUCCESS).map(
+                (validation, index) => (
+                  <ValidationIndicator
+                    key={`success-${index}`}
+                    validation={validation}
+                    showDetails
+                  />
+                )
+              )}
             </div>
 
             {/* Jurisdiction Guidance */}
             <Card className='p-6'>
               <h4 className='font-semibold mb-4 flex items-center gap-2'>
-                <Icon name={"book" as any} className='w-5 h-5' />
+                <Icon name={'book' as any} className='w-5 h-5' />
                 Legal Requirements for {willData.legal_data?.jurisdiction}
               </h4>
               <div className='grid grid-cols-1 md:grid-cols-2 gap-4 text-sm'>
@@ -642,11 +658,11 @@ export const EnhancedWillWizardWithValidation: React.FC<
                 <div className='flex items-center gap-4'>
                   <Button
                     onClick={onClose}
-                    variant="ghost"
+                    variant='ghost'
                     size='sm'
                     className='flex items-center gap-2'
                   >
-                    <Icon name={"arrow-left" as any} className='w-4 h-4' />
+                    <Icon name={'arrow-left' as any} className='w-4 h-4' />
                     Back to Legacy Planning
                   </Button>
                 </div>
@@ -664,19 +680,20 @@ export const EnhancedWillWizardWithValidation: React.FC<
                   {validationSummary.total > 0 && (
                     <div className='flex items-center gap-2 text-sm'>
                       {validationSummary.errors > 0 && (
-                        <Badge variant="destructive" className='text-xs'>
+                        <Badge variant='destructive' className='text-xs'>
                           {validationSummary.errors} error
                           {validationSummary.errors !== 1 ? 's' : ''}
                         </Badge>
                       )}
                       {validationSummary.warnings > 0 && (
-                        <Badge variant="secondary" className='text-xs'>
+                        <Badge variant='secondary' className='text-xs'>
                           {validationSummary.warnings} warning
                           {validationSummary.warnings !== 1 ? 's' : ''}
                         </Badge>
                       )}
                       {isValidating && (
-                        <Icon name={"loader" as any}
+                        <Icon
+                          name={'loader' as any}
                           className='w-4 h-4 animate-spin text-primary'
                         />
                       )}
@@ -715,7 +732,10 @@ export const EnhancedWillWizardWithValidation: React.FC<
           <div className='bg-primary/5 border-b border-primary/20'>
             <div className='max-w-4xl mx-auto px-6 py-3'>
               <div className='flex items-center gap-3 text-sm'>
-                <Icon name={"sparkles" as any} className='w-4 h-4 text-primary' />
+                <Icon
+                  name={'sparkles' as any}
+                  className='w-4 h-4 text-primary'
+                />
                 <span className='text-primary font-medium'>
                   Sofia's Intelligent Draft Active
                 </span>
@@ -763,10 +783,10 @@ export const EnhancedWillWizardWithValidation: React.FC<
             <div className='flex justify-between items-center'>
               <Button
                 onClick={handleBack}
-                variant="outline"
+                variant='outline'
                 disabled={currentStep === 0 && !onBack}
               >
-                <Icon name={"arrow-left" as any} className='w-4 h-4 mr-2' />
+                <Icon name={'arrow-left' as any} className='w-4 h-4 mr-2' />
                 {currentStep === 0 ? 'Change Will Type' : 'Back'}
               </Button>
 
@@ -788,7 +808,10 @@ export const EnhancedWillWizardWithValidation: React.FC<
                     ? 'Create Will'
                     : 'Continue'}
                   {currentStep !== STEPS.length - 1 && (
-                    <Icon name={"arrow-right" as any} className='w-4 h-4 ml-2' />
+                    <Icon
+                      name={'arrow-right' as any}
+                      className='w-4 h-4 ml-2'
+                    />
                   )}
                 </Button>
               </div>

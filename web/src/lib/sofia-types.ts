@@ -7,139 +7,139 @@ import type {
 } from './sofia-ai';
 
 export type ActionCategory =
-  | 'navigation'
-  | 'ui_action'
   | 'ai_query'
-  | 'premium_feature';
+  | 'navigation'
+  | 'premium_feature'
+  | 'ui_action';
 
 export type ActionCost = 'free' | 'low_cost' | 'premium';
 
 // Adaptive Personality System Types
-export type PersonalityMode = 'empathetic' | 'pragmatic' | 'adaptive';
+export type PersonalityMode = 'adaptive' | 'empathetic' | 'pragmatic';
 
-export type CommunicationStyle = 'empathetic' | 'pragmatic' | 'balanced';
+export type CommunicationStyle = 'balanced' | 'empathetic' | 'pragmatic';
 
 export interface InteractionPattern {
-  timestamp: Date;
   action: string;
-  duration: number;
   context: string;
+  duration: number;
   responseTime: number;
+  timestamp: Date;
 }
 
 export interface PersonalityAnalysis {
-  detectedStyle: CommunicationStyle;
-  confidence: number; // 0-100
   analysisFactors: {
-    responseSpeed: number; // Fast responses suggest pragmatic preference
     actionTypes: string[]; // Direct actions vs exploratory actions
-    sessionDuration: number; // Long sessions suggest empathetic preference
     helpSeekingBehavior: boolean; // Frequent help suggests empathetic preference
+    responseSpeed: number; // Fast responses suggest pragmatic preference
+    sessionDuration: number; // Long sessions suggest empathetic preference
   };
+  confidence: number; // 0-100
+  detectedStyle: CommunicationStyle;
   lastAnalyzed: Date;
 }
 
 export interface SofiaPersonality {
-  mode: PersonalityMode;
-  currentStyle: CommunicationStyle;
-  confidence: number; // How confident Sofia is in style selection
-  userPreferences: {
-    detectedStyle?: CommunicationStyle;
-    manualOverride?: CommunicationStyle;
-    lastInteractions: InteractionPattern[];
-    adaptationEnabled: boolean;
-  };
   analysis?: PersonalityAnalysis;
+  confidence: number; // How confident Sofia is in style selection
+  currentStyle: CommunicationStyle;
+  mode: PersonalityMode;
+  userPreferences: {
+    adaptationEnabled: boolean;
+    detectedStyle?: CommunicationStyle;
+    lastInteractions: InteractionPattern[];
+    manualOverride?: CommunicationStyle;
+  };
 }
 
 export interface AdaptiveMessageConfig {
   empathetic: {
+    celebration: string;
     greeting: string;
     guidance: string;
-    celebration: string;
     support: string;
   };
   pragmatic: {
+    celebration: string;
     greeting: string;
     guidance: string;
-    celebration: string;
     support: string;
   };
 }
 
 export interface ActionButton {
-  id: string;
-  text: string;
-  icon?: string;
   category: ActionCategory;
   cost: ActionCost;
+  description?: string;
+  icon?: string;
+  id: string;
   payload?: unknown;
   requiresConfirmation?: boolean;
-  description?: string;
+  text: string;
 }
 
 export interface SofiaResponse {
-  id: string;
-  content: string;
-  timestamp: Date;
   actions?: ActionButton[];
+  content: string;
+  cost: ActionCost;
+  id: string;
   responseType:
-    | 'welcome'
-    | 'information'
     | 'confirmation'
     | 'error'
-    | 'loading';
-  cost: ActionCost;
-  source: 'predefined' | 'knowledge_base' | 'ai_generated';
+    | 'information'
+    | 'loading'
+    | 'welcome';
+  source: 'ai_generated' | 'knowledge_base' | 'predefined';
+  timestamp: Date;
 }
 
 export interface SofiaCommand {
-  id: string;
-  command: string;
   category: ActionCategory;
-  parameters?: Record<string, unknown>;
+  command: string;
   context: SofiaContext;
+  id: string;
+  parameters?: Record<string, unknown>;
   timestamp: Date;
 }
 
 // Extended context for guided interactions
 export interface SofiaContext extends BaseSofiaContext {
+  conversationHistory?: SofiaMessage[];
   currentPage?: string;
   lastInteraction?: Date;
-  conversationHistory?: SofiaMessage[];
-  userPreferences?: {
-    preferredActions?: string[];
-    skipIntros?: boolean;
-    expertMode?: boolean;
-  };
   // Adaptive personality integration
   personality?: SofiaPersonality;
+  userPreferences?: {
+    expertMode?: boolean;
+    preferredActions?: string[];
+    skipIntros?: boolean;
+  };
 }
 
 // Enhanced message type with actions support
 export interface SofiaMessage extends BaseSofiaMessage {
   actions?: ActionButton[];
-  responseType?: SofiaResponse['responseType'];
-  metadata?: {
-    cost: ActionCost;
-    source: SofiaResponse['source'];
-    processingTime?: number;
-  };
-  // Adaptive personality context
-  personalityStyle?: CommunicationStyle;
   adaptedContent?: {
     empathetic?: string;
     pragmatic?: string;
   };
+  metadata?: {
+    cost: ActionCost;
+    processingTime?: number;
+    source: SofiaResponse['source'];
+  };
+  // Adaptive personality context
+  personalityStyle?: CommunicationStyle;
+  responseType?: SofiaResponse['responseType'];
 }
 
 // Command processing result
 export interface CommandResult {
-  type: 'response' | 'navigation' | 'ui_action' | 'error' | 'text_response';
-  payload: unknown;
   cost: ActionCost;
-  requiresFollowup?: boolean;
   followupActions?: ActionButton[];
+  payload: unknown;
+  requiresFollowup?: boolean;
+  type: 'error' | 'navigation' | 'response' | 'text_response' | 'ui_action';
 }
 
 // Predefined action templates
@@ -285,9 +285,11 @@ export function shouldUseEmpathetic(personality: SofiaPersonality): boolean {
   }
 
   // Adaptive mode: use detection or default to empathetic
-  return personality.userPreferences.detectedStyle === 'empathetic' ||
-         personality.currentStyle === 'empathetic' ||
-         (!personality.userPreferences.detectedStyle && personality.confidence < 70);
+  return (
+    personality.userPreferences.detectedStyle === 'empathetic' ||
+    personality.currentStyle === 'empathetic' ||
+    (!personality.userPreferences.detectedStyle && personality.confidence < 70)
+  );
 }
 
 export function shouldUsePragmatic(personality: SofiaPersonality): boolean {
@@ -304,8 +306,10 @@ export function shouldUsePragmatic(personality: SofiaPersonality): boolean {
   }
 
   // Adaptive mode: use detection
-  return personality.userPreferences.detectedStyle === 'pragmatic' ||
-         personality.currentStyle === 'pragmatic';
+  return (
+    personality.userPreferences.detectedStyle === 'pragmatic' ||
+    personality.currentStyle === 'pragmatic'
+  );
 }
 
 export function getPersonalityDisplayName(mode: PersonalityMode): string {

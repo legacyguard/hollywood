@@ -1,21 +1,21 @@
 import React, { useState } from 'react';
 import {
-  Container,
-  Stack,
-  Row,
+  Box,
+  Button,
   Card,
+  CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
-  CardDescription,
-  CardContent,
-  Button,
+  Container,
+  Divider,
   H1,
   H2,
   H3,
   Paragraph,
-  Divider,
-  Box,
+  Row,
   ScrollContainer,
+  Stack,
 } from '@legacyguard/ui';
 import { useUser } from '@clerk/clerk-expo';
 import { useNavigation } from '@react-navigation/native';
@@ -24,14 +24,14 @@ import { Ionicons } from '@expo/vector-icons';
 
 // Metrics Card Component
 interface MetricCardProps {
-  title: string;
-  value: string;
   change?: number;
   changeLabel?: string;
-  trend?: 'up' | 'down';
+  color: 'info' | 'primary' | 'success' | 'warning';
   icon: string;
-  color: 'primary' | 'success' | 'warning' | 'info';
   onPress?: () => void;
+  title: string;
+  trend?: 'down' | 'up';
+  value: string;
 }
 
 const MetricCard = ({
@@ -42,7 +42,7 @@ const MetricCard = ({
   trend,
   icon,
   color,
-  onPress
+  onPress,
 }: MetricCardProps) => {
   const iconColor = {
     primary: '#1e40af',
@@ -53,16 +53,16 @@ const MetricCard = ({
 
   return (
     <Card
-      variant="elevated"
-      padding="medium"
+      variant='elevated'
+      padding='medium'
       clickable={!!onPress}
       style={{ flex: 1, minHeight: 120 }}
     >
-      <Stack space="small">
-        <Row align="center" justify="between">
+      <Stack space='small'>
+        <Row align='center' justify='between'>
           <Ionicons name={icon as any} size={24} color={iconColor} />
           {(change || changeLabel) && (
-            <Row space="xs" align="center">
+            <Row space='xs' align='center'>
               {trend && (
                 <Ionicons
                   name={trend === 'up' ? 'trending-up' : 'trending-down'}
@@ -70,14 +70,19 @@ const MetricCard = ({
                   color={trend === 'up' ? '#16a34a' : '#dc2626'}
                 />
               )}
-              <Paragraph size="small" color="muted">
-                {changeLabel ?? (typeof change === 'number' ? `${change > 0 ? '+' : ''}${change}%` : '')}
+              <Paragraph size='small' color='muted'>
+                {changeLabel ??
+                  (typeof change === 'number'
+                    ? `${change > 0 ? '+' : ''}${change}%`
+                    : '')}
               </Paragraph>
             </Row>
           )}
         </Row>
         <H2>{value}</H2>
-        <Paragraph size="small" color="muted">{title}</Paragraph>
+        <Paragraph size='small' color='muted'>
+          {title}
+        </Paragraph>
       </Stack>
     </Card>
   );
@@ -85,11 +90,11 @@ const MetricCard = ({
 
 // Action Card Component
 interface ActionCardProps {
-  title: string;
   description: string;
   icon: string;
   onPress: () => void;
-  variant?: 'primary' | 'success' | 'premium';
+  title: string;
+  variant?: 'premium' | 'primary' | 'success';
 }
 
 const ActionCard = ({
@@ -97,37 +102,48 @@ const ActionCard = ({
   description,
   icon,
   onPress,
-  variant = 'primary'
+  variant = 'primary',
 }: ActionCardProps) => {
   return (
     <Card
-      variant="default"
-      padding="large"
+      variant='default'
+      padding='large'
       clickable
       onPress={onPress}
       fullWidth
     >
-      <Row space="medium" align="center">
+      <Row space='medium' align='center'>
         <Box
-          padding="small"
+          padding='small'
           style={{
-            backgroundColor: variant === 'primary' ? '#e0e7ff' :
-                           variant === 'success' ? '#dcfce7' : '#fef3c7',
+            backgroundColor:
+              variant === 'primary'
+                ? '#e0e7ff'
+                : variant === 'success'
+                  ? '#dcfce7'
+                  : '#fef3c7',
             borderRadius: 12,
           }}
         >
           <Ionicons
             name={icon as any}
             size={24}
-            color={variant === 'primary' ? '#1e40af' :
-                  variant === 'success' ? '#16a34a' : '#f59e0b'}
+            color={
+              variant === 'primary'
+                ? '#1e40af'
+                : variant === 'success'
+                  ? '#16a34a'
+                  : '#f59e0b'
+            }
           />
         </Box>
-        <Stack space="xs" style={{ flex: 1 }}>
+        <Stack space='xs' style={{ flex: 1 }}>
           <H3>{title}</H3>
-          <Paragraph size="small" color="muted">{description}</Paragraph>
+          <Paragraph size='small' color='muted'>
+            {description}
+          </Paragraph>
         </Stack>
-        <Ionicons name="chevron-forward" size={20} color="#9ca3af" />
+        <Ionicons name='chevron-forward' size={20} color='#9ca3af' />
       </Row>
     </Card>
   );
@@ -209,33 +225,33 @@ export function DashboardScreenV2() {
 
   return (
     <ScrollContainer
-      padding="none"
+      padding='none'
       showsScrollIndicator={false}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
-      <Container padding="medium">
-        <Stack space="large">
+      <Container padding='medium'>
+        <Stack space='large'>
           {/* Header */}
-          <Stack space="small">
-            <H1 color="primary">
+          <Stack space='small'>
+            <H1 color='primary'>
               Family Shield{user?.firstName ? `, ${user.firstName}` : ''}
             </H1>
-            <Paragraph size="large" color="muted">
+            <Paragraph size='large' color='muted'>
               Overview of everything protecting your family
             </Paragraph>
           </Stack>
 
           {/* Primary Action Button */}
           <Button
-            variant="primary"
-            size="large"
+            variant='primary'
+            size='large'
             fullWidth
             onPress={() => navigation.navigate('Vault' as never)}
           >
-            <Row space="small" align="center">
-              <Ionicons name="add-circle" size={20} color="white" />
+            <Row space='small' align='center'>
+              <Ionicons name='add-circle' size={20} color='white' />
               <Paragraph style={{ color: 'white', fontWeight: '600' }}>
                 Secure New Information
               </Paragraph>
@@ -245,14 +261,14 @@ export function DashboardScreenV2() {
           <Divider />
 
           {/* Metrics Grid */}
-          <Stack space="medium">
+          <Stack space='medium'>
             <H2>Your Legacy at a Glance</H2>
-            <Stack space="medium">
-              <Row space="small">
+            <Stack space='medium'>
+              <Row space='small'>
                 <MetricCard {...metrics[0]} />
                 <MetricCard {...metrics[1]} />
               </Row>
-              <Row space="small">
+              <Row space='small'>
                 <MetricCard {...metrics[2]} />
                 <MetricCard {...metrics[3]} />
               </Row>
@@ -262,9 +278,9 @@ export function DashboardScreenV2() {
           <Divider />
 
           {/* Quick Actions */}
-          <Stack space="medium">
+          <Stack space='medium'>
             <H2>Quick Actions</H2>
-            <Stack space="small">
+            <Stack space='small'>
               {quickActions.map((action, index) => (
                 <ActionCard key={index} {...action} />
               ))}
@@ -274,51 +290,51 @@ export function DashboardScreenV2() {
           <Divider />
 
           {/* Recent Activity */}
-          <Stack space="medium">
-            <Row justify="between" align="center">
+          <Stack space='medium'>
+            <Row justify='between' align='center'>
               <H2>Recent Activity</H2>
               <Button
-                variant="ghost"
-                size="small"
+                variant='ghost'
+                size='small'
                 onPress={() => navigation.navigate('Activity' as never)}
               >
                 View All
               </Button>
             </Row>
 
-            <Stack space="small">
-              <Card variant="default" padding="medium">
-                <Row space="small" align="center">
+            <Stack space='small'>
+              <Card variant='default' padding='medium'>
+                <Row space='small' align='center'>
                   <Box
                     style={{
                       width: 8,
                       height: 8,
                       borderRadius: 4,
-                      backgroundColor: '#16a34a'
+                      backgroundColor: '#16a34a',
                     }}
                   />
-                  <Stack space="xs" style={{ flex: 1 }}>
-                    <Paragraph weight="medium">Document added</Paragraph>
-                    <Paragraph size="small" color="muted">
+                  <Stack space='xs' style={{ flex: 1 }}>
+                    <Paragraph weight='medium'>Document added</Paragraph>
+                    <Paragraph size='small' color='muted'>
                       Insurance Policy - 2 hours ago
                     </Paragraph>
                   </Stack>
                 </Row>
               </Card>
 
-              <Card variant="default" padding="medium">
-                <Row space="small" align="center">
+              <Card variant='default' padding='medium'>
+                <Row space='small' align='center'>
                   <Box
                     style={{
                       width: 8,
                       height: 8,
                       borderRadius: 4,
-                      backgroundColor: '#3b82f6'
+                      backgroundColor: '#3b82f6',
                     }}
                   />
-                  <Stack space="xs" style={{ flex: 1 }}>
-                    <Paragraph weight="medium">Guardian invited</Paragraph>
-                    <Paragraph size="small" color="muted">
+                  <Stack space='xs' style={{ flex: 1 }}>
+                    <Paragraph weight='medium'>Guardian invited</Paragraph>
+                    <Paragraph size='small' color='muted'>
                       John Doe - Yesterday
                     </Paragraph>
                   </Stack>
@@ -328,7 +344,7 @@ export function DashboardScreenV2() {
           </Stack>
 
           {/* Trust Score */}
-          <Card variant="premium" padding="large">
+          <Card variant='premium' padding='large'>
             <CardHeader noBorder>
               <CardTitle>Your Trust Score</CardTitle>
               <CardDescription>
@@ -336,30 +352,30 @@ export function DashboardScreenV2() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Stack space="medium">
-                <Row justify="between" align="center">
-                  <H1 color="primary">78</H1>
-                  <Paragraph color="success">+5 this month</Paragraph>
+              <Stack space='medium'>
+                <Row justify='between' align='center'>
+                  <H1 color='primary'>78</H1>
+                  <Paragraph color='success'>+5 this month</Paragraph>
                 </Row>
                 <Box
                   style={{
                     height: 8,
                     backgroundColor: '#e5e7eb',
                     borderRadius: 4,
-                    overflow: 'hidden'
+                    overflow: 'hidden',
                   }}
                 >
                   <Box
                     style={{
                       width: '78%',
                       height: '100%',
-                      backgroundColor: '#f59e0b'
+                      backgroundColor: '#f59e0b',
                     }}
                   />
                 </Box>
                 <Button
-                  variant="premium"
-                  size="medium"
+                  variant='premium'
+                  size='medium'
                   fullWidth
                   onPress={() => navigation.navigate('Profile' as never)}
                 >

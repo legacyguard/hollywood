@@ -6,15 +6,15 @@ name: LegacyGuard Mobile Tests
 env:
   APP_ENV: test
   API_URL: http://localhost:3000
-  
+
 # Device configuration
 devices:
   - platform: iOS
-    osVersion: "17.0"
-    device: "iPhone 15"
+    osVersion: '17.0'
+    device: 'iPhone 15'
   - platform: Android
-    osVersion: "14"
-    device: "Pixel 7"
+    osVersion: '14'
+    device: 'Pixel 7'
 
 # Test output configuration
 output:

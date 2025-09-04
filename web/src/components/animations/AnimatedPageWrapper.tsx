@@ -2,7 +2,7 @@
 // Integrates with Sofia's personality system for adaptive animations
 
 import React, { type ReactNode } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
 import { usePersonalityManager } from '@/components/sofia/SofiaContextProvider';
 import { AnimationSystem } from '@/lib/animation-system';
@@ -23,7 +23,8 @@ export const AnimatedPageWrapper: React.FC<AnimatedPageWrapperProps> = ({
 
   // Get current personality mode for animations
   const personalityMode = personalityManager?.getCurrentStyle() || 'adaptive';
-  const adaptedMode = personalityMode === 'balanced' ? 'adaptive' : personalityMode;
+  const adaptedMode =
+    personalityMode === 'balanced' ? 'adaptive' : personalityMode;
 
   // Check for reduced motion preference
   const shouldReduceMotion = AnimationSystem.shouldReduceMotion();
@@ -35,14 +36,14 @@ export const AnimatedPageWrapper: React.FC<AnimatedPageWrapperProps> = ({
   const pageVariants = AnimationSystem.createPageTransition(adaptedMode);
 
   return (
-    <AnimatePresence mode="wait" initial={false}>
+    <AnimatePresence mode='wait' initial={false}>
       <motion.div
         key={location.pathname}
         className={className}
         variants={pageVariants}
-        initial="initial"
-        animate="animate"
-        exit="exit"
+        initial='initial'
+        animate='animate'
+        exit='exit'
         {...AnimationSystem.getOptimizedProps()}
       >
         {children}

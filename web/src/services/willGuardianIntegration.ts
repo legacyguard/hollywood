@@ -3,23 +3,35 @@
  * Bridges the will generation system with the existing Guardian system
  */
 
-import type { Guardian, CreateGuardianRequest } from '../types/guardian';
-import type { BeneficiaryInfo, ExecutorInfo, GuardianshipInfo, WillUserData } from '../types/will-templates';
+import type { CreateGuardianRequest, Guardian } from '../types/guardian';
+import type {
+  BeneficiaryInfo,
+  ExecutorInfo,
+  GuardianshipInfo,
+  WillUserData,
+} from '../types/will-templates';
 import { guardianService } from './guardianService';
 import { supabase } from '../integrations/supabase/client';
 
 export class WillGuardianIntegrationService {
-
   /**
    * Sync beneficiaries with guardians system
    */
-  async syncBeneficiariesWithGuardians(userId: string, beneficiaries: BeneficiaryInfo[]): Promise<void> {
+  async syncBeneficiariesWithGuardians(
+    userId: string,
+    beneficiaries: BeneficiaryInfo[]
+  ): Promise<void> {
     try {
       const existingGuardians = await guardianService.getGuardians(userId);
-      const existingGuardianEmails = new Set(existingGuardians.map(g => g.email));
+      const existingGuardianEmails = new Set(
+        existingGuardians.map(g => g.email)
+      );
 
       for (const beneficiary of beneficiaries) {
-        if (beneficiary.contactInfo?.email && !existingGuardianEmails.has(beneficiary.contactInfo.email)) {
+        if (
+          beneficiary.contactInfo?.email &&
+          !existingGuardianEmails.has(beneficiary.contactInfo.email)
+        ) {
           // Create guardian for beneficiary if they have contact info
           const guardianRequest: CreateGuardianRequest = {
             name: beneficiary.name,
@@ -32,7 +44,7 @@ export class WillGuardianIntegrationService {
             can_access_financial_docs: false,
             is_child_guardian: false,
             is_will_executor: false,
-            emergency_contact_priority: 999
+            emergency_contact_priority: 999,
           };
 
           await guardianService.createGuardian(guardianRequest, userId);
@@ -46,19 +58,24 @@ export class WillGuardianIntegrationService {
   /**
    * Sync executors with guardians system
    */
-  async syncExecutorsWithGuardians(userId: string, executors: ExecutorInfo[]): Promise<void> {
+  async syncExecutorsWithGuardians(
+    userId: string,
+    executors: ExecutorInfo[]
+  ): Promise<void> {
     try {
       const existingGuardians = await guardianService.getGuardians(userId);
 
       for (const executor of executors) {
-        const existingGuardian = existingGuardians.find(g => g.email === executor.contactInfo.email);
+        const existingGuardian = existingGuardians.find(
+          g => g.email === executor.contactInfo.email
+        );
 
         if (existingGuardian) {
           // Update existing guardian to mark as executor
           await guardianService.updateGuardian(existingGuardian.id, {
             is_will_executor: true,
             emergency_contact_priority: executor.type === 'primary' ? 1 : 2,
-            notes: `Will executor (${executor.type}) - ${executor.specialization || 'General'}`
+            notes: `Will executor (${executor.type}) - ${executor.specialization || 'General'}`,
           });
         } else if (executor.contactInfo.email) {
           // Create new guardian for executor
@@ -73,7 +90,7 @@ export class WillGuardianIntegrationService {
             can_access_financial_docs: true,
             is_child_guardian: false,
             is_will_executor: true,
-            emergency_contact_priority: executor.type === 'primary' ? 1 : 2
+            emergency_contact_priority: executor.type === 'primary' ? 1 : 2,
           };
 
           await guardianService.createGuardian(guardianRequest, userId);
@@ -87,7 +104,10 @@ export class WillGuardianIntegrationService {
   /**
    * Sync child guardians with guardians system
    */
-  async syncChildGuardiansWithGuardians(userId: string, guardianships: GuardianshipInfo[]): Promise<void> {
+  async syncChildGuardiansWithGuardians(
+    userId: string,
+    guardianships: GuardianshipInfo[]
+  ): Promise<void> {
     try {
       const existingGuardians = await guardianService.getGuardians(userId);
 
@@ -129,14 +149,16 @@ export class WillGuardianIntegrationService {
     isPrimary: boolean,
     specialInstructions?: string
   ): Promise<void> {
-    const existingGuardian = existingGuardians.find(g => g.email === guardian.contactInfo.email);
+    const existingGuardian = existingGuardians.find(
+      g => g.email === guardian.contactInfo.email
+    );
 
     if (existingGuardian) {
       // Update existing guardian
       await guardianService.updateGuardian(existingGuardian.id, {
         is_child_guardian: true,
         emergency_contact_priority: isPrimary ? 1 : 2,
-        notes: `Child guardian (${isPrimary ? 'primary' : 'alternate'}) - ${specialInstructions || ''}`
+        notes: `Child guardian (${isPrimary ? 'primary' : 'alternate'}) - ${specialInstructions || ''}`,
       });
     } else if (guardian.contactInfo.email) {
       // Create new guardian for child guardian
@@ -151,7 +173,7 @@ export class WillGuardianIntegrationService {
         can_access_financial_docs: isPrimary,
         is_child_guardian: true,
         is_will_executor: false,
-        emergency_contact_priority: isPrimary ? 1 : 2
+        emergency_contact_priority: isPrimary ? 1 : 2,
       };
 
       await guardianService.createGuardian(guardianRequest, userId);
@@ -162,30 +184,41 @@ export class WillGuardianIntegrationService {
    * Get guardians suitable for will roles
    */
   async getGuardiansForWillRoles(userId: string): Promise<{
-    potentialExecutors: Guardian[];
-    potentialChildGuardians: Guardian[];
     emergencyContacts: Guardian[];
+    potentialChildGuardians: Guardian[];
+    potentialExecutors: Guardian[];
   }> {
     try {
       const allGuardians = await guardianService.getGuardians(userId);
 
       return {
-        potentialExecutors: allGuardians.filter(g =>
-          g.is_active && (g.is_will_executor || g.relationship === 'lawyer' || g.relationship === 'financial_advisor')
+        potentialExecutors: allGuardians.filter(
+          g =>
+            g.is_active &&
+            (g.is_will_executor ||
+              g.relationship === 'lawyer' ||
+              g.relationship === 'financial_advisor')
         ),
-        potentialChildGuardians: allGuardians.filter(g =>
-          g.is_active && (g.is_child_guardian || g.relationship === 'sibling' || g.relationship === 'friend')
+        potentialChildGuardians: allGuardians.filter(
+          g =>
+            g.is_active &&
+            (g.is_child_guardian ||
+              g.relationship === 'sibling' ||
+              g.relationship === 'friend')
         ),
-        emergencyContacts: allGuardians.filter(g =>
-          g.is_active && g.can_trigger_emergency
-        ).sort((a, b) => a.emergency_contact_priority - b.emergency_contact_priority)
+        emergencyContacts: allGuardians
+          .filter(g => g.is_active && g.can_trigger_emergency)
+          .sort(
+            (a, b) =>
+              a.emergency_contact_priority - b.emergency_contact_priority
+          ),
       };
     } catch (error) {
       console.error('Error getting guardians for will roles:', error);
       return {
         potentialExecutors: [],
         potentialChildGuardians: [],
-        emergencyContacts: []
+        emergencyContacts: [],
       };
     }
   }
@@ -194,10 +227,10 @@ export class WillGuardianIntegrationService {
    * Suggest will roles based on existing guardians
    */
   async suggestWillRoles(userId: string): Promise<{
-    suggestedExecutor?: Guardian;
+    suggestedBackupChildGuardian?: Guardian;
     suggestedBackupExecutor?: Guardian;
     suggestedChildGuardian?: Guardian;
-    suggestedBackupChildGuardian?: Guardian;
+    suggestedExecutor?: Guardian;
   }> {
     try {
       const guardians = await this.getGuardiansForWillRoles(userId);
@@ -205,30 +238,40 @@ export class WillGuardianIntegrationService {
       // Sort executors by suitability
       const sortedExecutors = guardians.potentialExecutors.sort((a, b) => {
         // Prioritize existing will executors, then lawyers, then financial advisors
-        const aScore = (a.is_will_executor ? 3 : 0) +
-                      (a.relationship === 'lawyer' ? 2 : 0) +
-                      (a.relationship === 'financial_advisor' ? 1 : 0);
-        const bScore = (b.is_will_executor ? 3 : 0) +
-                      (b.relationship === 'lawyer' ? 2 : 0) +
-                      (b.relationship === 'financial_advisor' ? 1 : 0);
+        const aScore =
+          (a.is_will_executor ? 3 : 0) +
+          (a.relationship === 'lawyer' ? 2 : 0) +
+          (a.relationship === 'financial_advisor' ? 1 : 0);
+        const bScore =
+          (b.is_will_executor ? 3 : 0) +
+          (b.relationship === 'lawyer' ? 2 : 0) +
+          (b.relationship === 'financial_advisor' ? 1 : 0);
         return bScore - aScore;
       });
 
       // Sort child guardians by suitability
-      const sortedChildGuardians = guardians.potentialChildGuardians.sort((a, b) => {
-        // Prioritize existing child guardians, then family members
-        const aScore = (a.is_child_guardian ? 2 : 0) +
-                      (['spouse', 'sibling', 'parent'].includes(a.relationship || '') ? 1 : 0);
-        const bScore = (b.is_child_guardian ? 2 : 0) +
-                      (['spouse', 'sibling', 'parent'].includes(b.relationship || '') ? 1 : 0);
-        return bScore - aScore;
-      });
+      const sortedChildGuardians = guardians.potentialChildGuardians.sort(
+        (a, b) => {
+          // Prioritize existing child guardians, then family members
+          const aScore =
+            (a.is_child_guardian ? 2 : 0) +
+            (['spouse', 'sibling', 'parent'].includes(a.relationship || '')
+              ? 1
+              : 0);
+          const bScore =
+            (b.is_child_guardian ? 2 : 0) +
+            (['spouse', 'sibling', 'parent'].includes(b.relationship || '')
+              ? 1
+              : 0);
+          return bScore - aScore;
+        }
+      );
 
       return {
         suggestedExecutor: sortedExecutors[0],
         suggestedBackupExecutor: sortedExecutors[1],
         suggestedChildGuardian: sortedChildGuardians[0],
-        suggestedBackupChildGuardian: sortedChildGuardians[1]
+        suggestedBackupChildGuardian: sortedChildGuardians[1],
       };
     } catch (error) {
       console.error('Error suggesting will roles:', error);
@@ -239,24 +282,24 @@ export class WillGuardianIntegrationService {
   /**
    * Create will-related guardians entry for family guidance
    */
-  async createWillGuidanceEntry(userId: string, willData: WillUserData): Promise<void> {
+  async createWillGuidanceEntry(
+    userId: string,
+    willData: WillUserData
+  ): Promise<void> {
     try {
       // Create guidance entry for will-related information
       const guidanceContent = this.buildWillGuidanceContent(willData);
 
-      await supabase
-        .from('family_guidance_entries')
-        .insert({
-          user_id: userId,
-          entry_type: 'document_locations',
-          title: 'Last Will and Testament Information',
-          content: guidanceContent,
-          is_completed: true,
-          priority: 1,
-          tags: ['will', 'legal', 'inheritance'],
-          is_auto_generated: true
-        });
-
+      await supabase.from('family_guidance_entries').insert({
+        user_id: userId,
+        entry_type: 'document_locations',
+        title: 'Last Will and Testament Information',
+        content: guidanceContent,
+        is_completed: true,
+        priority: 1,
+        tags: ['will', 'legal', 'inheritance'],
+        is_auto_generated: true,
+      });
     } catch (error) {
       console.error('Error creating will guidance entry:', error);
     }
@@ -270,17 +313,25 @@ export class WillGuardianIntegrationService {
 
     content.push('# Will and Testament Information');
     content.push('');
-    content.push('This document contains important information about the will and testament.');
+    content.push(
+      'This document contains important information about the will and testament.'
+    );
     content.push('');
 
     if (willData.executors && willData.executors.length > 0) {
       content.push('## Executors');
-      willData.executors.forEach((executor) => {
-        content.push(`**${executor.type === 'primary' ? 'Primary' : 'Alternate'} Executor:**`);
+      willData.executors.forEach(executor => {
+        content.push(
+          `**${executor.type === 'primary' ? 'Primary' : 'Alternate'} Executor:**`
+        );
         content.push(`- Name: ${executor.name}`);
         content.push(`- Relationship: ${executor.relationship}`);
-        content.push(`- Email: ${executor.contactInfo.email || 'Not provided'}`);
-        content.push(`- Phone: ${executor.contactInfo.phone || 'Not provided'}`);
+        content.push(
+          `- Email: ${executor.contactInfo.email || 'Not provided'}`
+        );
+        content.push(
+          `- Phone: ${executor.contactInfo.phone || 'Not provided'}`
+        );
         if (executor.specialization) {
           content.push(`- Specialization: ${executor.specialization}`);
         }
@@ -294,18 +345,30 @@ export class WillGuardianIntegrationService {
         if (guardianship.primaryGuardian) {
           content.push('**Primary Guardian:**');
           content.push(`- Name: ${guardianship.primaryGuardian.name}`);
-          content.push(`- Relationship: ${guardianship.primaryGuardian.relationship}`);
-          content.push(`- Email: ${guardianship.primaryGuardian.contactInfo.email || 'Not provided'}`);
-          content.push(`- Phone: ${guardianship.primaryGuardian.contactInfo.phone || 'Not provided'}`);
+          content.push(
+            `- Relationship: ${guardianship.primaryGuardian.relationship}`
+          );
+          content.push(
+            `- Email: ${guardianship.primaryGuardian.contactInfo.email || 'Not provided'}`
+          );
+          content.push(
+            `- Phone: ${guardianship.primaryGuardian.contactInfo.phone || 'Not provided'}`
+          );
           content.push('');
         }
 
         if (guardianship.alternateGuardian) {
           content.push('**Alternate Guardian:**');
           content.push(`- Name: ${guardianship.alternateGuardian.name}`);
-          content.push(`- Relationship: ${guardianship.alternateGuardian.relationship}`);
-          content.push(`- Email: ${guardianship.alternateGuardian.contactInfo.email || 'Not provided'}`);
-          content.push(`- Phone: ${guardianship.alternateGuardian.contactInfo.phone || 'Not provided'}`);
+          content.push(
+            `- Relationship: ${guardianship.alternateGuardian.relationship}`
+          );
+          content.push(
+            `- Email: ${guardianship.alternateGuardian.contactInfo.email || 'Not provided'}`
+          );
+          content.push(
+            `- Phone: ${guardianship.alternateGuardian.contactInfo.phone || 'Not provided'}`
+          );
           content.push('');
         }
 
@@ -322,7 +385,9 @@ export class WillGuardianIntegrationService {
       willData.beneficiaries.forEach(beneficiary => {
         content.push(`**${beneficiary.name}**`);
         content.push(`- Relationship: ${beneficiary.relationship}`);
-        content.push(`- Share: ${beneficiary.share.type} - ${beneficiary.share.value}`);
+        content.push(
+          `- Share: ${beneficiary.share.type} - ${beneficiary.share.value}`
+        );
         if (beneficiary.contactInfo?.email) {
           content.push(`- Email: ${beneficiary.contactInfo.email}`);
         }
@@ -362,7 +427,6 @@ export class WillGuardianIntegrationService {
       // 2. Activate emergency protocols
       // 3. Provide access to necessary documents
       // 4. Begin dead-man switch procedures
-
     } catch (error) {
       console.error('Error notifying guardians of will execution:', error);
     }
@@ -371,9 +435,12 @@ export class WillGuardianIntegrationService {
   /**
    * Validate guardian compatibility with will requirements
    */
-  async validateGuardianWillCompatibility(userId: string, willData: WillUserData): Promise<{
-    isValid: boolean;
+  async validateGuardianWillCompatibility(
+    userId: string,
+    willData: WillUserData
+  ): Promise<{
     issues: string[];
+    isValid: boolean;
     recommendations: string[];
   }> {
     const issues: string[] = [];
@@ -385,43 +452,57 @@ export class WillGuardianIntegrationService {
       // Check executor availability
       if (willData.executors && willData.executors.length > 0) {
         for (const executor of willData.executors) {
-          const matchingGuardian = guardians.find(g => g.email === executor.contactInfo.email);
+          const matchingGuardian = guardians.find(
+            g => g.email === executor.contactInfo.email
+          );
           if (!matchingGuardian?.is_active) {
-            issues.push(`Executor ${executor.name} is not active in guardian system`);
+            issues.push(
+              `Executor ${executor.name} is not active in guardian system`
+            );
           }
         }
       }
 
       // Check child guardian availability
-      const hasMinorChildren = willData.family.children?.some(child => child.isMinor);
+      const hasMinorChildren = willData.family.children?.some(
+        child => child.isMinor
+      );
       if (hasMinorChildren) {
-        const activeChildGuardians = guardians.filter(g => g.is_active && g.is_child_guardian);
+        const activeChildGuardians = guardians.filter(
+          g => g.is_active && g.is_child_guardian
+        );
         if (activeChildGuardians.length === 0) {
           issues.push('No active guardians available for minor children');
           recommendations.push('Add at least one guardian for minor children');
         } else if (activeChildGuardians.length === 1) {
-          recommendations.push('Consider adding a backup guardian for minor children');
+          recommendations.push(
+            'Consider adding a backup guardian for minor children'
+          );
         }
       }
 
       // Check emergency contact coverage
-      const emergencyContacts = guardians.filter(g => g.is_active && g.can_trigger_emergency);
+      const emergencyContacts = guardians.filter(
+        g => g.is_active && g.can_trigger_emergency
+      );
       if (emergencyContacts.length === 0) {
         issues.push('No guardians can trigger emergency procedures');
-        recommendations.push('Designate at least one guardian to handle emergencies');
+        recommendations.push(
+          'Designate at least one guardian to handle emergencies'
+        );
       }
 
       return {
         isValid: issues.length === 0,
         issues,
-        recommendations
+        recommendations,
       };
     } catch (error) {
       console.error('Error validating guardian-will compatibility:', error);
       return {
         isValid: false,
         issues: ['Unable to validate guardian compatibility'],
-        recommendations: ['Please check guardian system connectivity']
+        recommendations: ['Please check guardian system connectivity'],
       };
     }
   }

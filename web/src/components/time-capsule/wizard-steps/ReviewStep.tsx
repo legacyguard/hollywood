@@ -46,11 +46,11 @@ export function ReviewStep({ formData, onEdit }: ReviewStepProps) {
       <Card>
         <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-4'>
           <CardTitle className='text-lg flex items-center gap-2'>
-            <Icon name={"user" as any} className='w-5 h-5 text-primary' />
+            <Icon name={'user' as any} className='w-5 h-5 text-primary' />
             Recipient
           </CardTitle>
-          <Button variant="ghost" size='sm' onClick={() => onEdit(1)}>
-            <Icon name={"edit-2" as any} className='w-4 h-4 mr-2' />
+          <Button variant='ghost' size='sm' onClick={() => onEdit(1)}>
+            <Icon name={'edit-2' as any} className='w-4 h-4 mr-2' />
             Edit
           </Button>
         </CardHeader>
@@ -66,14 +66,14 @@ export function ReviewStep({ formData, onEdit }: ReviewStepProps) {
                 <div className='flex items-center gap-2'>
                   <span className='font-medium'>{formData.recipient.name}</span>
                   {formData.recipient.isGuardian && (
-                    <Badge variant="secondary" className='text-xs'>
-                      <Icon name={"shield" as any} className='w-3 h-3 mr-1' />
+                    <Badge variant='secondary' className='text-xs'>
+                      <Icon name={'shield' as any} className='w-3 h-3 mr-1' />
                       Guardian
                     </Badge>
                   )}
                 </div>
                 <div className='text-sm text-muted-foreground flex items-center gap-2'>
-                  <Icon name={"mail" as any} className='w-3 h-3' />
+                  <Icon name={'mail' as any} className='w-3 h-3' />
                   {formData.recipient.email}
                   {formData.recipient.relationship && (
                     <>
@@ -94,11 +94,11 @@ export function ReviewStep({ formData, onEdit }: ReviewStepProps) {
       <Card>
         <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-4'>
           <CardTitle className='text-lg flex items-center gap-2'>
-            <Icon name={"calendar" as any} className='w-5 h-5 text-primary' />
+            <Icon name={'calendar' as any} className='w-5 h-5 text-primary' />
             Delivery Details
           </CardTitle>
-          <Button variant="ghost" size='sm' onClick={() => onEdit(2)}>
-            <Icon name={"edit-2" as any} className='w-4 h-4 mr-2' />
+          <Button variant='ghost' size='sm' onClick={() => onEdit(2)}>
+            <Icon name={'edit-2' as any} className='w-4 h-4 mr-2' />
             Edit
           </Button>
         </CardHeader>
@@ -140,7 +140,7 @@ export function ReviewStep({ formData, onEdit }: ReviewStepProps) {
               formData.deliveryDate && (
                 <div className='p-3 bg-blue-50 border border-blue-200 rounded-lg'>
                   <div className='flex items-center space-x-2 text-blue-800'>
-                    <Icon name={"calendar-check" as any} className='w-4 h-4' />
+                    <Icon name={'calendar-check' as any} className='w-4 h-4' />
                     <span className='text-sm font-medium'>
                       Delivery in{' '}
                       {Math.ceil(
@@ -160,11 +160,11 @@ export function ReviewStep({ formData, onEdit }: ReviewStepProps) {
       <Card>
         <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-4'>
           <CardTitle className='text-lg flex items-center gap-2'>
-            <Icon name={"video" as any} className='w-5 h-5 text-primary' />
+            <Icon name={'video' as any} className='w-5 h-5 text-primary' />
             Your Message
           </CardTitle>
-          <Button variant="ghost" size='sm' onClick={() => onEdit(3)}>
-            <Icon name={"edit-2" as any} className='w-4 h-4 mr-2' />
+          <Button variant='ghost' size='sm' onClick={() => onEdit(3)}>
+            <Icon name={'edit-2' as any} className='w-4 h-4 mr-2' />
             Edit
           </Button>
         </CardHeader>
@@ -204,14 +204,14 @@ export function ReviewStep({ formData, onEdit }: ReviewStepProps) {
                     Size: {formatFileSize(formData.recording.blob.size)}
                   </p>
                 </div>
-                <Badge variant="secondary" className='text-xs'>
+                <Badge variant='secondary' className='text-xs'>
                   Ready
                 </Badge>
               </div>
 
               <div className='p-3 bg-green-50 border border-green-200 rounded-lg'>
                 <div className='flex items-center space-x-2 text-green-800'>
-                  <Icon name={"check-circle" as any} className='w-4 h-4' />
+                  <Icon name={'check-circle' as any} className='w-4 h-4' />
                   <span className='text-sm font-medium'>
                     Recording Complete
                   </span>
@@ -231,7 +231,7 @@ export function ReviewStep({ formData, onEdit }: ReviewStepProps) {
         <CardContent className='p-6'>
           <div className='text-center space-y-4'>
             <div className='w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto'>
-              <Icon name={"heart" as any} className='w-8 h-8 text-white' />
+              <Icon name={'heart' as any} className='w-8 h-8 text-white' />
             </div>
 
             <div>
@@ -247,17 +247,22 @@ export function ReviewStep({ formData, onEdit }: ReviewStepProps) {
 
             <div className='grid grid-cols-3 gap-4 text-center'>
               <div className='space-y-1'>
-                <Icon name={"lock" as any} className='w-5 h-5 text-purple-600 mx-auto' />
+                <Icon
+                  name={'lock' as any}
+                  className='w-5 h-5 text-purple-600 mx-auto'
+                />
                 <p className='text-xs text-purple-700'>Securely Encrypted</p>
               </div>
               <div className='space-y-1'>
-                <Icon name={"clock" as any}
+                <Icon
+                  name={'clock' as any}
                   className='w-5 h-5 text-purple-600 mx-auto'
                 />
                 <p className='text-xs text-purple-700'>Precisely Timed</p>
               </div>
               <div className='space-y-1'>
-                <Icon name={"heart" as any}
+                <Icon
+                  name={'heart' as any}
                   className='w-5 h-5 text-purple-600 mx-auto'
                 />
                 <p className='text-xs text-purple-700'>Made with Love</p>
@@ -269,7 +274,8 @@ export function ReviewStep({ formData, onEdit }: ReviewStepProps) {
 
       {/* Important Notice */}
       <div className='text-center text-xs text-muted-foreground bg-yellow-50 p-3 rounded-lg border border-yellow-200'>
-        <Icon name={"alert-triangle" as any}
+        <Icon
+          name={'alert-triangle' as any}
           className='w-4 h-4 inline mr-2 text-yellow-600'
         />
         <strong>Important:</strong> Once sealed, your Time Capsule cannot be

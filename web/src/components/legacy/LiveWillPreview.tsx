@@ -8,9 +8,9 @@ import { useLocalization } from '@/contexts/LocalizationContext';
 import { SealOfTrust } from './SealOfTrust';
 
 interface LiveWillPreviewProps {
+  currentStep: string;
   willData: WillData;
   willType: WillType;
-  currentStep: string;
 }
 
 export const LiveWillPreview: React.FC<LiveWillPreviewProps> = ({
@@ -506,7 +506,7 @@ export const LiveWillPreview: React.FC<LiveWillPreviewProps> = ({
 
         {/* Seal of Trust - Legal Authority Indicator */}
         <div className='mt-8'>
-          <SealOfTrust variant="pdf" className='border-t-2 pt-6' />
+          <SealOfTrust variant='pdf' className='border-t-2 pt-6' />
         </div>
       </div>
     );
@@ -517,11 +517,14 @@ export const LiveWillPreview: React.FC<LiveWillPreviewProps> = ({
       {/* Header */}
       <div className='flex items-center justify-between p-4 border-b border-gray-200 bg-gray-50 dark:bg-gray-800'>
         <div className='flex items-center gap-3'>
-          <Icon name={"document-text" as any} className='w-5 h-5 text-primary' />
+          <Icon
+            name={'document-text' as any}
+            className='w-5 h-5 text-primary'
+          />
           <h3 className='font-semibold'>Live Preview</h3>
-          <SealOfTrust variant="compact" />
+          <SealOfTrust variant='compact' />
         </div>
-        <Badge variant="outline" className='text-xs'>
+        <Badge variant='outline' className='text-xs'>
           Updates in real-time
         </Badge>
       </div>

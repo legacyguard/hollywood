@@ -1,11 +1,11 @@
-import type { WillData } from '@/types/will';
+import type { WillData } from '../types/will';
 
-export type ReviewPriority = 'standard' | 'urgent' | 'express';
+export type ReviewPriority = 'express' | 'standard' | 'urgent';
 export type ReviewStatus =
-  | 'pending'
   | 'assigned'
-  | 'in_review'
   | 'completed'
+  | 'in_review'
+  | 'pending'
   | 'requires_revision';
 export type ProfessionalType =
   | 'attorney'
@@ -14,114 +14,114 @@ export type ProfessionalType =
   | 'tax_advisor';
 
 export interface ProfessionalProfile {
-  id: string;
-  name: string;
-  type: ProfessionalType;
-  title: string;
-  firm: string;
-  jurisdiction: string[];
-  languages: string[];
-  specializations: string[];
-  rating: number;
-  reviewCount: number;
-  hourlyRate: number;
-  availability: 'immediate' | 'within_24h' | 'within_week' | 'booked';
-  profileImage?: string;
+  availability: 'booked' | 'immediate' | 'within_24h' | 'within_week';
   bio: string;
-  credentials: string[];
-  location: {
-    city: string;
-    country: string;
-    address?: string;
-  };
   contactInfo: {
     email: string;
     phone: string;
     website?: string;
   };
+  credentials: string[];
+  firm: string;
+  hourlyRate: number;
+  id: string;
+  jurisdiction: string[];
+  languages: string[];
+  location: {
+    address?: string;
+    city: string;
+    country: string;
+  };
+  name: string;
+  profileImage?: string;
+  rating: number;
+  reviewCount: number;
+  specializations: string[];
+  title: string;
+  type: ProfessionalType;
 }
 
 export interface ReviewRequest {
+  budget: {
+    currency: string;
+    max: number;
+    min: number;
+  };
+  createdAt: Date;
+  estimatedCompletion?: Date;
   id: string;
-  willData: WillData;
-  requestedBy: string;
-  professionalId?: string;
-  type: ProfessionalType;
-  priority: ReviewPriority;
-  status: ReviewStatus;
   jurisdiction: string;
   language: string;
-  specificConcerns: string[];
-  budget: {
-    min: number;
-    max: number;
-    currency: string;
-  };
-  timeline: string;
-  createdAt: Date;
-  updatedAt: Date;
-  estimatedCompletion?: Date;
   notes?: string;
+  priority: ReviewPriority;
+  professionalId?: string;
+  requestedBy: string;
+  specificConcerns: string[];
+  status: ReviewStatus;
+  timeline: string;
+  type: ProfessionalType;
+  updatedAt: Date;
+  willData: WillData;
 }
 
 export interface ConsultationOffer {
   id: string;
+  nextSteps: string[];
   professionalId: string;
+  proposedTimeline: string;
+  recommendedServices: {
+    description: string;
+    estimatedCost: number;
+    priority: 'essential' | 'optional' | 'recommended';
+    service: string;
+  }[];
+  totalEstimate: {
+    currency: string;
+    max: number;
+    min: number;
+  };
+  validUntil: Date;
   willComplexityAssessment: {
-    complexity: 'simple' | 'moderate' | 'complex';
+    complexity: 'complex' | 'moderate' | 'simple';
     estimatedHours: number;
     keyIssues: string[];
   };
-  recommendedServices: {
-    service: string;
-    description: string;
-    estimatedCost: number;
-    priority: 'essential' | 'recommended' | 'optional';
-  }[];
-  totalEstimate: {
-    min: number;
-    max: number;
-    currency: string;
-  };
-  proposedTimeline: string;
-  nextSteps: string[];
-  validUntil: Date;
 }
 
 export interface NotaryMatch {
-  professional: ProfessionalProfile;
   availableSlots: {
     date: Date;
-    time: string;
     duration: number;
-    type: 'in_person' | 'video_call';
     location?: string;
-  }[];
-  services: {
-    service: string;
-    price: number;
-    duration: number;
+    time: string;
+    type: 'in_person' | 'video_call';
   }[];
   distanceFromUser?: number;
+  professional: ProfessionalProfile;
+  services: {
+    duration: number;
+    price: number;
+    service: string;
+  }[];
 }
 
 export interface ReviewFeedback {
+  nextSteps: string[];
   overall: {
-    legalCompliance: number;
     clarity: number;
     completeness: number;
+    legalCompliance: number;
     recommendations: number;
   };
+  requiresRevision: boolean;
   specificIssues: {
     category: string;
-    severity: 'low' | 'medium' | 'high' | 'critical';
     description: string;
-    recommendation: string;
     estimated_fix_time: string;
+    recommendation: string;
+    severity: 'critical' | 'high' | 'low' | 'medium';
   }[];
   summary: string;
-  nextSteps: string[];
-  requiresRevision: boolean;
 }
 
 export class ProfessionalReviewNetwork {
@@ -139,17 +139,17 @@ export class ProfessionalReviewNetwork {
     willData: WillData,
     jurisdiction: string,
     options: {
+      budget?: { currency: string; max: number; min: number };
+      preferredLanguage?: string;
       priority?: ReviewPriority;
       specificConcerns?: string[];
-      budget?: { min: number; max: number; currency: string };
       timeline?: string;
-      preferredLanguage?: string;
     } = {}
   ): Promise<ReviewRequest> {
     const reviewRequest: ReviewRequest = {
       id: this.generateId(),
       willData,
-      requestedBy: willData.testator_data.fullName,
+      requestedBy: willData.testator_data.fullName || 'Unknown',
       type: 'attorney',
       priority: options.priority || 'standard',
       status: 'pending',
@@ -188,32 +188,35 @@ export class ProfessionalReviewNetwork {
     const complexity = this.assessWillComplexity(willData);
     const suitablePlanners = await this.findSuitablePlanners(willData);
 
-    return suitablePlanners.map(planner => ({
-      id: this.generateId(),
-      professionalId: planner.id,
-      willComplexityAssessment: {
-        complexity: complexity.level,
-        estimatedHours: complexity.estimatedHours,
-        keyIssues: complexity.keyIssues,
-      },
-      recommendedServices: this.generateRecommendedServices(
-        willData,
-        complexity
-      ),
-      totalEstimate: {
-        min: complexity.estimatedHours * (planner.hourlyRate * 0.8),
-        max: complexity.estimatedHours * (planner.hourlyRate * 1.2),
-        currency: 'EUR',
-      },
-      proposedTimeline: this.calculateTimeline(complexity.level),
-      nextSteps: [
-        'Initial consultation call (30 minutes)',
-        'Document review and analysis',
-        'Preparation of recommendations',
-        'Implementation of suggested changes',
-      ],
-      validUntil: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
-    }));
+    return suitablePlanners.map(
+      planner =>
+        ({
+          id: this.generateId(),
+          professionalId: planner.id,
+          willComplexityAssessment: {
+            complexity: complexity.level,
+            estimatedHours: complexity.estimatedHours,
+            keyIssues: complexity.keyIssues,
+          },
+          recommendedServices: this.generateRecommendedServices(
+            willData,
+            complexity
+          ),
+          totalEstimate: {
+            min: complexity.estimatedHours * (planner.hourlyRate * 0.8),
+            max: complexity.estimatedHours * (planner.hourlyRate * 1.2),
+            currency: 'EUR',
+          },
+          proposedTimeline: this.calculateTimeline(complexity.level),
+          nextSteps: [
+            'Initial consultation call (30 minutes)',
+            'Document review and analysis',
+            'Preparation of recommendations',
+            'Implementation of suggested changes',
+          ],
+          validUntil: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+        }) as ConsultationOffer
+    );
   }
 
   /**
@@ -223,11 +226,11 @@ export class ProfessionalReviewNetwork {
     location: string,
     willData?: WillData,
     preferences: {
-      serviceType?:
-        | 'will_witnessing'
-        | 'document_certification'
-        | 'full_notarization';
       language?: string;
+      serviceType?:
+        | 'document_certification'
+        | 'full_notarization'
+        | 'will_witnessing';
       timeframe?: string;
     } = {}
   ): Promise<NotaryMatch[]> {
@@ -247,7 +250,10 @@ export class ProfessionalReviewNetwork {
       professional: notary,
       availableSlots: this.generateAvailableSlots(notary),
       services: this.getNotaryServices(notary, preferences.serviceType),
-      distanceFromUser: this.calculateDistance(location, notary.location.city),
+      distanceFromUser: this.calculateDistance(
+        location || 'Unknown',
+        notary.location.city
+      ),
     }));
   }
 
@@ -273,11 +279,11 @@ export class ProfessionalReviewNetwork {
   async searchProfessionals(
     type: ProfessionalType,
     filters: {
+      availability?: string;
       jurisdiction?: string;
       language?: string;
-      specialization?: string;
       maxRate?: number;
-      availability?: string;
+      specialization?: string;
     } = {}
   ): Promise<ProfessionalProfile[]> {
     const allProfessionals = await this.getAllProfessionals();
@@ -345,20 +351,31 @@ export class ProfessionalReviewNetwork {
     preferences: Record<string, unknown>
   ): Promise<ProfessionalProfile[]> {
     return this.searchProfessionals('notary', {
-      language: preferences.language,
+      language: preferences.language as string,
     });
   }
 
   private assessWillComplexity(willData: WillData): {
-    level: 'simple' | 'moderate' | 'complex';
     estimatedHours: number;
     keyIssues: string[];
+    level: 'complex' | 'moderate' | 'simple';
   } {
     let complexityScore = 0;
     const keyIssues: string[] = [];
 
-    // Asset complexity
-    if (willData.assets.length > 5) {
+    // Asset complexity - check all asset types
+    let assetCount = 0;
+    if (willData.assets.realEstate)
+      assetCount += willData.assets.realEstate.length;
+    if (willData.assets.vehicles) assetCount += willData.assets.vehicles.length;
+    if (willData.assets.bankAccounts)
+      assetCount += willData.assets.bankAccounts.length;
+    if (willData.assets.investments)
+      assetCount += willData.assets.investments.length;
+    if (willData.assets.personalProperty)
+      assetCount += willData.assets.personalProperty.length;
+
+    if (assetCount > 5) {
       complexityScore += 2;
       keyIssues.push('Multiple asset types requiring individual handling');
     }
@@ -383,7 +400,7 @@ export class ProfessionalReviewNetwork {
       keyIssues.push('Guardianship arrangements for minors');
     }
 
-    let level: 'simple' | 'moderate' | 'complex';
+    let level: 'complex' | 'moderate' | 'simple';
     let estimatedHours: number;
 
     if (complexityScore <= 2) {
@@ -400,18 +417,25 @@ export class ProfessionalReviewNetwork {
     return { level, estimatedHours, keyIssues };
   }
 
-  private generateRecommendedServices(willData: WillData, complexity: Record<string, unknown>) {
+  private generateRecommendedServices(
+    willData: WillData,
+    complexity: Record<string, unknown>
+  ) {
     const services = [
       {
         service: 'Will Review and Optimization',
         description:
           'Comprehensive review of will structure and legal compliance',
-        estimatedCost: complexity.estimatedHours * 150,
+        estimatedCost: (complexity.estimatedHours as number) * 150,
         priority: 'essential',
       },
     ];
 
-    if (willData.assets.some(asset => asset.type === 'business')) {
+    if (
+      willData.assets.personalProperty?.some(
+        asset => asset.category === 'business'
+      )
+    ) {
       services.push({
         service: 'Business Succession Planning',
         description: 'Specialized planning for business assets and succession',
@@ -420,7 +444,16 @@ export class ProfessionalReviewNetwork {
       });
     }
 
-    if (willData.assets.some(asset => asset.estimatedValue > 100000)) {
+    // Check for high-value assets across all categories
+    const hasHighValueAssets = [
+      ...(willData.assets.realEstate || []),
+      ...(willData.assets.vehicles || []),
+      ...(willData.assets.bankAccounts || []),
+      ...(willData.assets.investments || []),
+      ...(willData.assets.personalProperty || []),
+    ].some(asset => (asset.value || 0) > 100000);
+
+    if (hasHighValueAssets) {
       services.push({
         service: 'Tax Optimization Strategy',
         description: 'Minimize estate taxes and optimize inheritance structure',
@@ -507,15 +540,15 @@ export class ProfessionalReviewNetwork {
         date,
         time: '09:00',
         duration: 60,
-        type: 'in_person',
-        location: professional.location.address,
+        type: 'in_person' as const,
+        location: professional.location.address || undefined,
       });
 
       slots.push({
         date,
         time: '14:00',
         duration: 60,
-        type: 'video_call',
+        type: 'video_call' as const,
       });
     }
 
@@ -583,13 +616,19 @@ export class ProfessionalReviewNetwork {
   }
 
   private identifyPotentialIssues(willData: WillData, _jurisdiction: string) {
-    const issues = [];
+    const issues: Array<{
+      category: string;
+      description: string;
+      estimated_fix_time: string;
+      recommendation: string;
+      severity: 'critical' | 'high' | 'low' | 'medium';
+    }> = [];
 
     // Check for missing executor
-    if (!willData.executor) {
+    if (!willData.executor_data.primaryExecutor) {
       issues.push({
         category: 'Legal Compliance',
-        severity: 'high',
+        severity: 'high' as const,
         description: 'No executor appointed',
         recommendation:
           'Appoint a trusted person as executor to handle estate administration',
@@ -605,7 +644,7 @@ export class ProfessionalReviewNetwork {
       if (vagueAssets.length > 0) {
         issues.push({
           category: 'Clarity',
-          severity: 'medium',
+          severity: 'medium' as const,
           description: `${vagueAssets.length} assets have insufficient descriptions`,
           recommendation:
             'Provide more detailed descriptions including serial numbers, addresses, or account numbers where applicable',
@@ -616,7 +655,7 @@ export class ProfessionalReviewNetwork {
 
     // Check for beneficiary share issues
     const totalShares = willData.beneficiaries.reduce(
-      (sum, b) => sum + b.share,
+      (sum, b) => sum + b.percentage,
       0
     );
     if (Math.abs(totalShares - 100) > 0.01) {

@@ -1,13 +1,13 @@
 export interface StorageItem {
-  id: string;
   category: string;
   data: unknown;
+  id: string;
   metadata: {
     createdAt: string;
+    isEncrypted: boolean;
+    syncStatus?: 'local' | 'pending' | 'synced';
     updatedAt: string;
     version: number;
-    isEncrypted: boolean;
-    syncStatus?: 'local' | 'synced' | 'pending';
   };
 }
 
@@ -18,7 +18,7 @@ export interface StorageQuery {
   offset?: number;
 }
 
-export type SyncMode = 'local-only' | 'hybrid' | 'full-sync';
+export type SyncMode = 'full-sync' | 'hybrid' | 'local-only';
 
 class LocalDataAdapter {
   private static instance: LocalDataAdapter;
@@ -28,8 +28,8 @@ class LocalDataAdapter {
   private db: IDBDatabase | null = null;
   private syncMode: SyncMode = 'local-only';
   private lastActivity: number = Date.now();
-  private lockTimer: ReturnType<typeof setTimeout> | null = null;
-  private syncTimer: ReturnType<typeof setInterval> | null = null;
+  private lockTimer: null | ReturnType<typeof setTimeout> = null;
+  private syncTimer: null | ReturnType<typeof setInterval> = null;
 
   private constructor() {
     this.initializeDB().catch(console.error);
@@ -143,7 +143,7 @@ class LocalDataAdapter {
   /**
    * Retrieve item
    */
-  public async retrieve(id: string): Promise<StorageItem | null> {
+  public async retrieve(id: string): Promise<null | StorageItem> {
     if (!this.db) await this.initializeDB();
 
     return new Promise((resolve, reject) => {
@@ -197,7 +197,7 @@ class LocalDataAdapter {
   /**
    * Update item
    */
-  public async update(id: string, data: unknown): Promise<StorageItem | null> {
+  public async update(id: string, data: unknown): Promise<null | StorageItem> {
     if (!this.db) await this.initializeDB();
 
     // Get existing item
@@ -267,7 +267,7 @@ class LocalDataAdapter {
   /**
    * Export all data
    */
-  public async exportData(): Promise<string | null> {
+  public async exportData(): Promise<null | string> {
     if (!this.db) await this.initializeDB();
 
     return new Promise((resolve, reject) => {
@@ -285,7 +285,7 @@ class LocalDataAdapter {
   /**
    * Log audit event
    */
-  private async logAuditEvent(
+  public async logAuditEvent(
     category: string,
     action: string,
     details: Record<string, unknown>

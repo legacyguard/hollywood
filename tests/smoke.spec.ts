@@ -21,17 +21,23 @@ test.describe('Smoke Test - Landing Page', () => {
 
   test('should display hero section with CTA button', async ({ page }) => {
     // Check for hero section
-    const heroSection = page.locator('section').filter({
-      hasText: /protect|secure|family|legacy|guardian/i
-    }).first();
+    const heroSection = page
+      .locator('section')
+      .filter({
+        hasText: /protect|secure|family|legacy|guardian/i,
+      })
+      .first();
 
     // Verify hero section is visible
     await expect(heroSection).toBeVisible({ timeout: 10000 });
 
     // Find and verify CTA button
-    const ctaButton = page.locator('button, a').filter({
-      hasText: /get started|start|begin|sign up|try/i
-    }).first();
+    const ctaButton = page
+      .locator('button, a')
+      .filter({
+        hasText: /get started|start|begin|sign up|try/i,
+      })
+      .first();
 
     await expect(ctaButton).toBeVisible();
     await expect(ctaButton).toBeEnabled();
@@ -39,16 +45,19 @@ test.describe('Smoke Test - Landing Page', () => {
 
   test('should navigate to sign up when CTA is clicked', async ({ page }) => {
     // Find the main CTA button
-    const ctaButton = page.locator('button, a').filter({
-      hasText: /get started|start|begin|sign up/i
-    }).first();
+    const ctaButton = page
+      .locator('button, a')
+      .filter({
+        hasText: /get started|start|begin|sign up/i,
+      })
+      .first();
 
     // Click the CTA button
     await ctaButton.click();
 
     // Wait for navigation
     await page.waitForURL(/(sign-up|sign-in|auth|onboarding)/i, {
-      timeout: 10000
+      timeout: 10000,
     });
 
     // Verify we're on a sign-up or authentication page
@@ -56,7 +65,9 @@ test.describe('Smoke Test - Landing Page', () => {
     expect(url).toMatch(/(sign-up|sign-in|auth|onboarding)/i);
 
     // Check for authentication form elements
-    const emailInput = page.locator('input[type="email"], input[name*="email"]').first();
+    const emailInput = page
+      .locator('input[type="email"], input[name*="email"]')
+      .first();
     await expect(emailInput).toBeVisible({ timeout: 10000 });
   });
 
@@ -66,9 +77,12 @@ test.describe('Smoke Test - Landing Page', () => {
     await expect(nav).toBeVisible();
 
     // Test privacy policy link if exists
-    const privacyLink = page.locator('a').filter({
-      hasText: /privacy/i
-    }).first();
+    const privacyLink = page
+      .locator('a')
+      .filter({
+        hasText: /privacy/i,
+      })
+      .first();
 
     if (await privacyLink.isVisible()) {
       await privacyLink.click();
@@ -81,9 +95,12 @@ test.describe('Smoke Test - Landing Page', () => {
     }
 
     // Test terms link if exists
-    const termsLink = page.locator('a').filter({
-      hasText: /terms/i
-    }).first();
+    const termsLink = page
+      .locator('a')
+      .filter({
+        hasText: /terms/i,
+      })
+      .first();
 
     if (await termsLink.isVisible()) {
       await termsLink.click();
@@ -105,12 +122,15 @@ test.describe('Smoke Test - Landing Page', () => {
     await expect(mainContent).toBeVisible();
 
     // Check if mobile menu button exists (hamburger menu)
-    const mobileMenuButton = page.locator('button').filter({
-      has: page.locator('svg, [aria-label*="menu"]')
-    }).first();
+    const mobileMenuButton = page
+      .locator('button')
+      .filter({
+        has: page.locator('svg, [aria-label*="menu"]'),
+      })
+      .first();
 
     // If mobile menu exists, it should be visible
-    if (await mobileMenuButton.count() > 0) {
+    if ((await mobileMenuButton.count()) > 0) {
       await expect(mobileMenuButton).toBeVisible();
     }
   });
@@ -119,7 +139,7 @@ test.describe('Smoke Test - Landing Page', () => {
     // Collect console messages
     const consoleMessages: string[] = [];
 
-    page.on('console', (msg) => {
+    page.on('console', msg => {
       if (msg.type() === 'error') {
         consoleMessages.push(msg.text());
       }
@@ -130,11 +150,12 @@ test.describe('Smoke Test - Landing Page', () => {
     await page.waitForLoadState('networkidle');
 
     // Check for critical errors (ignoring common warnings)
-    const criticalErrors = consoleMessages.filter(msg =>
-      !msg.includes('DevTools') &&
-      !msg.includes('favicon') &&
-      !msg.includes('Third-party cookie') &&
-      !msg.includes('[vite]')
+    const criticalErrors = consoleMessages.filter(
+      msg =>
+        !msg.includes('DevTools') &&
+        !msg.includes('favicon') &&
+        !msg.includes('Third-party cookie') &&
+        !msg.includes('[vite]')
     );
 
     expect(criticalErrors).toHaveLength(0);
@@ -170,17 +191,21 @@ test.describe('Smoke Test - Landing Page', () => {
 
 // Additional smoke test for authenticated flow (if needed)
 test.describe('Smoke Test - Authentication Flow', () => {
-  test('should redirect to sign-in when accessing protected route', async ({ page }) => {
+  test('should redirect to sign-in when accessing protected route', async ({
+    page,
+  }) => {
     // Try to access a protected route
     await page.goto('/dashboard');
 
     // Should redirect to sign-in
     await page.waitForURL(/(sign-in|auth|login)/i, {
-      timeout: 10000
+      timeout: 10000,
     });
 
     // Verify we're on authentication page
-    const emailInput = page.locator('input[type="email"], input[name*="email"]').first();
+    const emailInput = page
+      .locator('input[type="email"], input[name*="email"]')
+      .first();
     await expect(emailInput).toBeVisible({ timeout: 10000 });
   });
 });

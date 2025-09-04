@@ -1,9 +1,9 @@
 import React, { createContext, useContext, useState } from 'react';
 
 interface FocusModeContextType {
-  isFocusMode: boolean;
   enterFocusMode: () => void;
   exitFocusMode: () => void;
+  isFocusMode: boolean;
 }
 
 const FocusModeContext = createContext<FocusModeContextType | undefined>(

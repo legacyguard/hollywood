@@ -1,49 +1,56 @@
-import type * as React from "react"
+import type * as React from 'react';
 
-import type { IconMap } from "@/components/ui/icon-library"
+import type { IconMap } from '@/components/ui/icon-library';
 
 // Re-export inputVariants for type usage
-export { inputVariants } from './enhanced-input-variants'
+export { inputVariants } from './enhanced-input-variants';
 
 // Field state types
-export type FieldState = 'idle' | 'focused' | 'filled' | 'success' | 'error' | 'warning' | 'loading'
+export type FieldState =
+  | 'error'
+  | 'filled'
+  | 'focused'
+  | 'idle'
+  | 'loading'
+  | 'success'
+  | 'warning';
 
 export interface EnhancedInputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
-  // Animation props
-  personalityAdapt?: boolean
-  animateOnFocus?: boolean
-  animateOnError?: boolean
-  animateLabel?: boolean
+  animateLabel?: boolean;
+  animateOnError?: boolean;
+  animateOnFocus?: boolean;
+  error?: boolean | string;
 
-  // Field state props
-  state?: FieldState
-  loading?: boolean
-  success?: boolean
-  error?: boolean | string
-  warning?: boolean | string
+  errorIcon?: keyof typeof IconMap;
+  errorText?: string;
+  glowEffect?: boolean;
+  helpText?: string;
+  // Enhanced label and help text
+  label?: string;
 
   // Icon props
-  leftIcon?: keyof typeof IconMap
-  rightIcon?: keyof typeof IconMap
-  loadingIcon?: keyof typeof IconMap
-  successIcon?: keyof typeof IconMap
-  errorIcon?: keyof typeof IconMap
-  warningIcon?: keyof typeof IconMap
+  leftIcon?: keyof typeof IconMap;
+  loading?: boolean;
+  loadingIcon?: keyof typeof IconMap;
+  maxLength?: number;
+  // Animation props
+  personalityAdapt?: boolean;
+  rightIcon?: keyof typeof IconMap;
 
-  // Enhanced label and help text
-  label?: string
-  helpText?: string
-  successText?: string
-  errorText?: string
-  warningText?: string
-
+  rippleEffect?: boolean;
   // Visual enhancements
-  showCharacterCount?: boolean
-  maxLength?: number
-  rippleEffect?: boolean
-  glowEffect?: boolean
-
+  showCharacterCount?: boolean;
   // Stagger animation delay
-  staggerDelay?: number
+  staggerDelay?: number;
+  // Field state props
+  state?: FieldState;
+  success?: boolean;
+
+  successIcon?: keyof typeof IconMap;
+  successText?: string;
+  warning?: boolean | string;
+  warningIcon?: keyof typeof IconMap;
+
+  warningText?: string;
 }

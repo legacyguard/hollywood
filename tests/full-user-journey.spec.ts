@@ -24,8 +24,8 @@ test.describe('🎭 Guardian of Memories - Complete User Journey', () => {
     const context = await browser.newContext({
       recordVideo: {
         dir: 'tests/videos/',
-        size: { width: 1280, height: 720 }
-      }
+        size: { width: 1280, height: 720 },
+      },
     });
     page = await context.newPage();
   });
@@ -46,37 +46,55 @@ test.describe('🎭 Guardian of Memories - Complete User Journey', () => {
     // Screenshot the registration page
     await page.screenshot({
       path: 'tests/screenshots/journey-01-registration.png',
-      fullPage: true
+      fullPage: true,
     });
 
     // Fill registration form
     // Email field
-    const emailInput = page.locator('input[name="emailAddress"], input[type="email"], [data-testid="email-input"]').first();
+    const emailInput = page
+      .locator(
+        'input[name="emailAddress"], input[type="email"], [data-testid="email-input"]'
+      )
+      .first();
     await expect(emailInput).toBeVisible({ timeout: 10000 });
     await emailInput.fill(testUser.email);
 
     // Password fields
-    const passwordInput = page.locator('input[name="password"], input[type="password"]:not([name="confirmPassword"]), [data-testid="password-input"]').first();
+    const passwordInput = page
+      .locator(
+        'input[name="password"], input[type="password"]:not([name="confirmPassword"]), [data-testid="password-input"]'
+      )
+      .first();
     await passwordInput.fill(testUser.password);
 
-    const confirmPasswordInput = page.locator('input[name="confirmPassword"], [data-testid="confirm-password-input"]');
+    const confirmPasswordInput = page.locator(
+      'input[name="confirmPassword"], [data-testid="confirm-password-input"]'
+    );
     if (await confirmPasswordInput.isVisible()) {
       await confirmPasswordInput.fill(testUser.password);
     }
 
     // First and Last name if present
-    const firstNameInput = page.locator('input[name="firstName"], [data-testid="first-name-input"]');
+    const firstNameInput = page.locator(
+      'input[name="firstName"], [data-testid="first-name-input"]'
+    );
     if (await firstNameInput.isVisible()) {
       await firstNameInput.fill(testUser.firstName || 'Guardian');
     }
 
-    const lastNameInput = page.locator('input[name="lastName"], [data-testid="last-name-input"]');
+    const lastNameInput = page.locator(
+      'input[name="lastName"], [data-testid="last-name-input"]'
+    );
     if (await lastNameInput.isVisible()) {
       await lastNameInput.fill(testUser.lastName || 'Test');
     }
 
     // Submit registration
-    const submitButton = page.locator('button[type="submit"], button:has-text("Sign up"), button:has-text("Create account"), [data-testid="submit-registration"]').first();
+    const submitButton = page
+      .locator(
+        'button[type="submit"], button:has-text("Sign up"), button:has-text("Create account"), [data-testid="submit-registration"]'
+      )
+      .first();
     await submitButton.click();
 
     // Wait for navigation after registration
@@ -84,27 +102,37 @@ test.describe('🎭 Guardian of Memories - Complete User Journey', () => {
     await page.waitForLoadState('networkidle');
 
     // Verify redirection to onboarding
-    await expect(page).toHaveURL(/\/onboarding|\/welcome|\/setup/, { timeout: 15000 });
+    await expect(page).toHaveURL(/\/onboarding|\/welcome|\/setup/, {
+      timeout: 15000,
+    });
 
-          // console.log('✅ Registration completed, proceeding to onboarding');
+    // console.log('✅ Registration completed, proceeding to onboarding');
   });
 
   test('Act 1, Scene 2: The Promise of Calm - Onboarding Introduction', async () => {
     // Verify we're on the onboarding page
-    const onboardingContainer = page.locator('[data-testid="onboarding-container"], .onboarding-wizard, .guardian-journey');
+    const onboardingContainer = page.locator(
+      '[data-testid="onboarding-container"], .onboarding-wizard, .guardian-journey'
+    );
     await expect(onboardingContainer).toBeVisible({ timeout: 10000 });
 
     // Look for the firefly animation or welcome message
-    const welcomeText = page.locator('text=/Every life is a story|Každý život je príbeh|Start writing my story/i');
+    const welcomeText = page.locator(
+      'text=/Every life is a story|Každý život je príbeh|Start writing my story/i'
+    );
     await expect(welcomeText.first()).toBeVisible();
 
     await page.screenshot({
       path: 'tests/screenshots/journey-02-promise-of-calm.png',
-      fullPage: true
+      fullPage: true,
     });
 
     // Click "Start writing my story" or similar CTA
-    const startButton = page.locator('button:has-text("Start writing my story"), button:has-text("Begin"), [data-testid="start-onboarding"]').first();
+    const startButton = page
+      .locator(
+        'button:has-text("Start writing my story"), button:has-text("Begin"), [data-testid="start-onboarding"]'
+      )
+      .first();
     if (await startButton.isVisible()) {
       await startButton.click();
     }
@@ -114,7 +142,11 @@ test.describe('🎭 Guardian of Memories - Complete User Journey', () => {
 
   test('Act 1, Scene 3: The Box of Certainty - Emotional Prompt', async () => {
     // Wait for the emotional prompt about the box
-    const boxPrompt = page.locator('[data-testid="box-of-certainty"], .emotional-prompt, textarea[placeholder*="box"], textarea[placeholder*="loved ones"]').first();
+    const boxPrompt = page
+      .locator(
+        '[data-testid="box-of-certainty"], .emotional-prompt, textarea[placeholder*="box"], textarea[placeholder*="loved ones"]'
+      )
+      .first();
     await expect(boxPrompt).toBeVisible({ timeout: 10000 });
 
     // Fill in the emotional response
@@ -127,25 +159,35 @@ Access to our financial accounts`;
 
     await page.screenshot({
       path: 'tests/screenshots/journey-03-box-of-certainty.png',
-      fullPage: true
+      fullPage: true,
     });
 
     // Submit the response
-    const continueButton = page.locator('button:has-text("Continue"), button:has-text("Next"), [data-testid="continue-box"]').first();
+    const continueButton = page
+      .locator(
+        'button:has-text("Continue"), button:has-text("Next"), [data-testid="continue-box"]'
+      )
+      .first();
     await continueButton.click();
 
     // Verify the items animate into the visual box (if implemented)
-    const visualBox = page.locator('[data-testid="visual-box"], .box-animation, .certainty-box');
+    const visualBox = page.locator(
+      '[data-testid="visual-box"], .box-animation, .certainty-box'
+    );
     if (await visualBox.isVisible({ timeout: 3000 }).catch(() => false)) {
       await page.waitForTimeout(2000); // Wait for animation
     }
 
-          // console.log('✅ Box of Certainty completed');
+    // console.log('✅ Box of Certainty completed');
   });
 
   test('Act 1, Scene 4: The Key of Trust - Trusted Person', async () => {
     // Wait for the trusted person prompt
-    const trustedPersonPrompt = page.locator('[data-testid="key-of-trust"], input[placeholder*="trusted"], input[placeholder*="person"], .trusted-person-input').first();
+    const trustedPersonPrompt = page
+      .locator(
+        '[data-testid="key-of-trust"], input[placeholder*="trusted"], input[placeholder*="person"], .trusted-person-input'
+      )
+      .first();
     await expect(trustedPersonPrompt).toBeVisible({ timeout: 10000 });
 
     // Enter trusted person's name
@@ -153,34 +195,48 @@ Access to our financial accounts`;
     await trustedPersonPrompt.fill(trustedPersonName);
 
     // Verify the key updates with the name
-    const keyVisualization = page.locator('[data-testid="key-visual"], .key-engraving, text=/For Martina/i');
-    if (await keyVisualization.isVisible({ timeout: 3000 }).catch(() => false)) {
+    const keyVisualization = page.locator(
+      '[data-testid="key-visual"], .key-engraving, text=/For Martina/i'
+    );
+    if (
+      await keyVisualization.isVisible({ timeout: 3000 }).catch(() => false)
+    ) {
       await expect(keyVisualization).toContainText(trustedPersonName);
     }
 
     await page.screenshot({
       path: 'tests/screenshots/journey-04-key-of-trust.png',
-      fullPage: true
+      fullPage: true,
     });
 
     // Continue to next step
-    const continueButton = page.locator('button:has-text("Continue"), button:has-text("Next"), [data-testid="continue-trust"]').first();
+    const continueButton = page
+      .locator(
+        'button:has-text("Continue"), button:has-text("Next"), [data-testid="continue-trust"]'
+      )
+      .first();
     await continueButton.click();
 
-          // console.log('✅ Key of Trust completed');
+    // console.log('✅ Key of Trust completed');
   });
 
   test('Act 1, Scene 5: Preparing the Path - Loading & Redirect', async () => {
     // Look for the thank you message and firefly animation
-    const thankYouMessage = page.locator('text=/Thank you|Preparing|Loading/i, [data-testid="preparing-path"]');
+    const thankYouMessage = page.locator(
+      'text=/Thank you|Preparing|Loading/i, [data-testid="preparing-path"]'
+    );
     await expect(thankYouMessage.first()).toBeVisible({ timeout: 5000 });
 
     // Look for firefly trail animation (if implemented)
-    const fireflyAnimation = page.locator('[data-testid="firefly-animation"], .firefly-trail, .loading-animation');
-    if (await fireflyAnimation.isVisible({ timeout: 3000 }).catch(() => false)) {
+    const fireflyAnimation = page.locator(
+      '[data-testid="firefly-animation"], .firefly-trail, .loading-animation'
+    );
+    if (
+      await fireflyAnimation.isVisible({ timeout: 3000 }).catch(() => false)
+    ) {
       await page.screenshot({
         path: 'tests/screenshots/journey-05-firefly-trail.png',
-        fullPage: true
+        fullPage: true,
       });
     }
 
@@ -201,7 +257,7 @@ Access to our financial accounts`;
       // console.log('✅ Onboarding metadata confirmed in Clerk');
     }
 
-          // console.log('✅ Path prepared, redirected to dashboard');
+    // console.log('✅ Path prepared, redirected to dashboard');
   });
 
   test('Act 2, Scene 1: First Dashboard Interaction - 5-Minute Challenge', async () => {
@@ -209,24 +265,34 @@ Access to our financial accounts`;
     await expect(page).toHaveURL(/\/dashboard|\/home|\/$/, { timeout: 10000 });
 
     // Look for the dashboard elements
-    const dashboardContainer = page.locator('[data-testid="dashboard"], .dashboard-container, .life-inventory');
+    const dashboardContainer = page.locator(
+      '[data-testid="dashboard"], .dashboard-container, .life-inventory'
+    );
     await expect(dashboardContainer).toBeVisible();
 
     // Look for the 5-minute challenge section
-    const challengeSection = page.locator('[data-testid="micro-task"], text=/5-minute|challenge|task/i, .micro-task-suggestion');
+    const challengeSection = page.locator(
+      '[data-testid="micro-task"], text=/5-minute|challenge|task/i, .micro-task-suggestion'
+    );
     await expect(challengeSection.first()).toBeVisible();
 
     // Verify the first challenge is about laying the foundation stone
-    const firstChallenge = page.locator('text=/foundation stone|Základný Kameň|first document/i');
+    const firstChallenge = page.locator(
+      'text=/foundation stone|Základný Kameň|first document/i'
+    );
     await expect(firstChallenge.first()).toBeVisible();
 
     await page.screenshot({
       path: 'tests/screenshots/journey-06-dashboard-challenge.png',
-      fullPage: true
+      fullPage: true,
     });
 
     // Click on the challenge
-    const challengeButton = page.locator('button:has-text("Start"), button:has-text("Begin"), [data-testid="start-challenge"]').first();
+    const challengeButton = page
+      .locator(
+        'button:has-text("Start"), button:has-text("Begin"), [data-testid="start-challenge"]'
+      )
+      .first();
     if (await challengeButton.isVisible()) {
       await challengeButton.click();
 
@@ -234,12 +300,15 @@ Access to our financial accounts`;
       await page.waitForURL(/\/vault|\/documents|\/papers/, { timeout: 10000 });
     }
 
-          // console.log('✅ First dashboard challenge accepted');
+    // console.log('✅ First dashboard challenge accepted');
   });
 
   test('Act 2, Scene 2: Document Upload - First Mosaic Stone', async () => {
     // Create a test file if it doesn't exist
-    const testFilePath = path.join(process.cwd(), 'tests/test-files/sample-invoice.pdf');
+    const testFilePath = path.join(
+      process.cwd(),
+      'tests/test-files/sample-invoice.pdf'
+    );
     if (!fs.existsSync(path.dirname(testFilePath))) {
       fs.mkdirSync(path.dirname(testFilePath), { recursive: true });
     }
@@ -249,28 +318,40 @@ Access to our financial accounts`;
     }
 
     // Look for upload button
-    const uploadButton = page.locator('button:has-text("Upload"), button:has-text("Add Document"), [data-testid="upload-document"]').first();
+    const uploadButton = page
+      .locator(
+        'button:has-text("Upload"), button:has-text("Add Document"), [data-testid="upload-document"]'
+      )
+      .first();
     await expect(uploadButton).toBeVisible();
     await uploadButton.click();
 
     // Handle file upload
-    const fileInput = page.locator('input[type="file"], [data-testid="file-input"]').first();
+    const fileInput = page
+      .locator('input[type="file"], [data-testid="file-input"]')
+      .first();
     await fileInput.setInputFiles(testFilePath);
 
     // Wait for analysis message
-    const analysisMessage = page.locator('text=/Analyzing|Processing|Scanning/i, [data-testid="analysis-status"]');
+    const analysisMessage = page.locator(
+      'text=/Analyzing|Processing|Scanning/i, [data-testid="analysis-status"]'
+    );
     await expect(analysisMessage.first()).toBeVisible({ timeout: 10000 });
 
     await page.screenshot({
       path: 'tests/screenshots/journey-07-document-analysis.png',
-      fullPage: true
+      fullPage: true,
     });
 
     // Wait for analysis results (may need longer timeout or mocking)
     await page.waitForTimeout(3000);
 
     // Look for category suggestion
-    const categoryField = page.locator('[data-testid="document-category"], select[name="category"], input[name="category"]').first();
+    const categoryField = page
+      .locator(
+        '[data-testid="document-category"], select[name="category"], input[name="category"]'
+      )
+      .first();
     if (await categoryField.isVisible()) {
       // Verify AI suggested a category
       const categoryValue = await categoryField.inputValue();
@@ -278,25 +359,35 @@ Access to our financial accounts`;
     }
 
     // Confirm and save document
-    const saveButton = page.locator('button:has-text("Save"), button:has-text("Confirm"), [data-testid="save-document"]').first();
+    const saveButton = page
+      .locator(
+        'button:has-text("Save"), button:has-text("Confirm"), [data-testid="save-document"]'
+      )
+      .first();
     await saveButton.click();
 
     // Verify document appears in list
     await page.waitForTimeout(2000);
-    const documentList = page.locator('[data-testid="document-list"], .document-row, table tbody tr');
+    const documentList = page.locator(
+      '[data-testid="document-list"], .document-row, table tbody tr'
+    );
     const documentCount = await documentList.count();
     expect(documentCount).toBeGreaterThan(0);
 
     // Look for success notification - "First stone in your family's mosaic"
-    const successNotification = page.locator('text=/mosaic|first stone|document saved/i, [data-testid="success-notification"]');
-    if (await successNotification.isVisible({ timeout: 3000 }).catch(() => false)) {
+    const successNotification = page.locator(
+      'text=/mosaic|first stone|document saved/i, [data-testid="success-notification"]'
+    );
+    if (
+      await successNotification.isVisible({ timeout: 3000 }).catch(() => false)
+    ) {
       await page.screenshot({
         path: 'tests/screenshots/journey-08-first-mosaic-stone.png',
-        fullPage: true
+        fullPage: true,
       });
     }
 
-          // console.log('✅ First document uploaded - mosaic stone placed');
+    // console.log('✅ First document uploaded - mosaic stone placed');
   });
 
   test('Act 2, Scene 3: Path of Peace - Milestone Unlocked', async () => {
@@ -305,24 +396,32 @@ Access to our financial accounts`;
     await page.waitForLoadState('networkidle');
 
     // Verify the foundation stone milestone is now active/unlocked
-    const foundationMilestone = page.locator('[data-testid="milestone-foundation"], .milestone-active, text=/foundation.*complete/i');
+    const foundationMilestone = page.locator(
+      '[data-testid="milestone-foundation"], .milestone-active, text=/foundation.*complete/i'
+    );
     await expect(foundationMilestone.first()).toBeVisible();
 
     // Verify the next challenge is available
-    const nextChallenge = page.locator('text=/Circle of Trust|Trusted Circle|Add Guardian/i, [data-testid="next-challenge"]');
+    const nextChallenge = page.locator(
+      'text=/Circle of Trust|Trusted Circle|Add Guardian/i, [data-testid="next-challenge"]'
+    );
     await expect(nextChallenge.first()).toBeVisible();
 
     await page.screenshot({
       path: 'tests/screenshots/journey-09-milestone-unlocked.png',
-      fullPage: true
+      fullPage: true,
     });
 
-          // console.log('✅ Foundation milestone unlocked, next challenge available');
+    // console.log('✅ Foundation milestone unlocked, next challenge available');
   });
 
   test('Act 2, Scene 4: Adding a Guardian - Circle of Trust', async () => {
     // Navigate to guardians/family shield section
-    const guardiansLink = page.locator('a[href*="guardian"], a[href*="family"], a:has-text("Guardians"), [data-testid="guardians-nav"]').first();
+    const guardiansLink = page
+      .locator(
+        'a[href*="guardian"], a[href*="family"], a:has-text("Guardians"), [data-testid="guardians-nav"]'
+      )
+      .first();
 
     if (await guardiansLink.isVisible()) {
       await guardiansLink.click();
@@ -333,7 +432,11 @@ Access to our financial accounts`;
     await page.waitForLoadState('networkidle');
 
     // Click Add Guardian button
-    const addGuardianButton = page.locator('button:has-text("Add Guardian"), button:has-text("Add Trusted Person"), [data-testid="add-guardian"]').first();
+    const addGuardianButton = page
+      .locator(
+        'button:has-text("Add Guardian"), button:has-text("Add Trusted Person"), [data-testid="add-guardian"]'
+      )
+      .first();
     await expect(addGuardianButton).toBeVisible();
     await addGuardianButton.click();
 
@@ -342,20 +445,32 @@ Access to our financial accounts`;
       name: 'John Smith',
       email: 'john.smith@example.com',
       relationship: 'Brother',
-      phone: '+421 900 123 456'
+      phone: '+421 900 123 456',
     };
 
     // Fill form fields
-    const nameInput = page.locator('input[name="name"], [data-testid="guardian-name"]').first();
+    const nameInput = page
+      .locator('input[name="name"], [data-testid="guardian-name"]')
+      .first();
     await nameInput.fill(guardianForm.name);
 
-    const emailInput = page.locator('input[name="email"], input[type="email"], [data-testid="guardian-email"]').first();
+    const emailInput = page
+      .locator(
+        'input[name="email"], input[type="email"], [data-testid="guardian-email"]'
+      )
+      .first();
     await emailInput.fill(guardianForm.email);
 
-    const relationshipInput = page.locator('input[name="relationship"], select[name="relationship"], [data-testid="guardian-relationship"]').first();
+    const relationshipInput = page
+      .locator(
+        'input[name="relationship"], select[name="relationship"], [data-testid="guardian-relationship"]'
+      )
+      .first();
     if (await relationshipInput.isVisible()) {
       // Check if it's a select element by trying to get the tagName
-      const tagName = await relationshipInput.evaluate((el) => el.tagName.toLowerCase());
+      const tagName = await relationshipInput.evaluate(el =>
+        el.tagName.toLowerCase()
+      );
       if (tagName === 'select') {
         await relationshipInput.selectOption(guardianForm.relationship);
       } else {
@@ -363,29 +478,39 @@ Access to our financial accounts`;
       }
     }
 
-    const phoneInput = page.locator('input[name="phone"], input[type="tel"], [data-testid="guardian-phone"]').first();
+    const phoneInput = page
+      .locator(
+        'input[name="phone"], input[type="tel"], [data-testid="guardian-phone"]'
+      )
+      .first();
     if (await phoneInput.isVisible()) {
       await phoneInput.fill(guardianForm.phone);
     }
 
     await page.screenshot({
       path: 'tests/screenshots/journey-10-add-guardian-form.png',
-      fullPage: true
+      fullPage: true,
     });
 
     // Save guardian
-    const saveGuardianButton = page.locator('button:has-text("Save"), button:has-text("Add"), button[type="submit"], [data-testid="save-guardian"]').first();
+    const saveGuardianButton = page
+      .locator(
+        'button:has-text("Save"), button:has-text("Add"), button[type="submit"], [data-testid="save-guardian"]'
+      )
+      .first();
     await saveGuardianButton.click();
 
     // Verify guardian appears in list
     await page.waitForTimeout(2000);
-    const guardiansList = page.locator('[data-testid="guardians-list"], .guardian-card, .person-card');
+    const guardiansList = page.locator(
+      '[data-testid="guardians-list"], .guardian-card, .person-card'
+    );
     const guardianItem = guardiansList.locator(`text="${guardianForm.name}"`);
     await expect(guardianItem).toBeVisible();
 
     await page.screenshot({
       path: 'tests/screenshots/journey-11-guardian-added.png',
-      fullPage: true
+      fullPage: true,
     });
 
     // console.log('✅ Guardian added to Circle of Trust');
@@ -393,7 +518,11 @@ Access to our financial accounts`;
 
   test('Act 3: Journey Complete - Sign Out', async () => {
     // Look for Clerk UserButton
-    const userButton = page.locator('.cl-userButton-trigger, [data-clerk-id="clerk-user-button"], [data-testid="user-menu"]').first();
+    const userButton = page
+      .locator(
+        '.cl-userButton-trigger, [data-clerk-id="clerk-user-button"], [data-testid="user-menu"]'
+      )
+      .first();
     await expect(userButton).toBeVisible();
 
     // Click user button to open menu
@@ -403,7 +532,11 @@ Access to our financial accounts`;
     await page.waitForTimeout(500);
 
     // Click Sign Out
-    const signOutButton = page.locator('button:has-text("Sign out"), button:has-text("Log out"), [data-testid="sign-out"]').first();
+    const signOutButton = page
+      .locator(
+        'button:has-text("Sign out"), button:has-text("Log out"), [data-testid="sign-out"]'
+      )
+      .first();
     await expect(signOutButton).toBeVisible();
     await signOutButton.click();
 
@@ -411,12 +544,14 @@ Access to our financial accounts`;
     await page.waitForURL(/\/sign-in|\/login|^\/$/, { timeout: 10000 });
 
     // Verify we're back at the authentication page
-    const authForm = page.locator('.cl-component, [data-testid="auth-form"], form[action*="sign"]').first();
+    const authForm = page
+      .locator('.cl-component, [data-testid="auth-form"], form[action*="sign"]')
+      .first();
     await expect(authForm).toBeVisible();
 
     await page.screenshot({
       path: 'tests/screenshots/journey-12-signed-out.png',
-      fullPage: true
+      fullPage: true,
     });
 
     // console.log('✅ User successfully signed out');
@@ -448,13 +583,17 @@ test.describe('🔄 Returning Guardian Experience', () => {
 
 // Performance and reliability checks
 test.describe('🏃 Performance Metrics', () => {
-  test('Critical user actions complete within acceptable time', async ({ page }) => {
+  test('Critical user actions complete within acceptable time', async ({
+    page,
+  }) => {
     const metrics: Array<{ action: string; time: number }> = [];
 
     // Measure page load time
     await page.goto('/');
     const loadTime = await page.evaluate(() => {
-      const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+      const navigation = performance.getEntriesByType(
+        'navigation'
+      )[0] as PerformanceNavigationTiming;
       return navigation.loadEventEnd - navigation.fetchStart;
     });
 

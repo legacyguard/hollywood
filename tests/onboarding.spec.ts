@@ -11,20 +11,31 @@ test.describe('Onboarding Flow', () => {
     // Check if Clerk sign-in elements are present
     // The exact selectors will depend on your Clerk configuration
     // These are common Clerk authentication UI elements
-    const clerkAuthContainer = page.locator('[data-clerk-id], .cl-component, .cl-auth-container, .cl-sign-in, .cl-sign-up').first();
+    const clerkAuthContainer = page
+      .locator(
+        '[data-clerk-id], .cl-component, .cl-auth-container, .cl-sign-in, .cl-sign-up'
+      )
+      .first();
 
     // Wait for Clerk to initialize and render
     await expect(clerkAuthContainer).toBeVisible({ timeout: 10000 });
 
     // Verify that we're on the authentication page
     // Check for common Clerk auth elements
-    const authElements = await page.locator('.cl-formButtonPrimary, .cl-formFieldInput, button:has-text("Sign in"), button:has-text("Sign up"), input[type="email"], input[type="password"]').count();
+    const authElements = await page
+      .locator(
+        '.cl-formButtonPrimary, .cl-formFieldInput, button:has-text("Sign in"), button:has-text("Sign up"), input[type="email"], input[type="password"]'
+      )
+      .count();
 
     // At least some authentication elements should be present
     expect(authElements).toBeGreaterThan(0);
 
     // Take a screenshot for debugging
-    await page.screenshot({ path: 'tests/screenshots/homepage-auth.png', fullPage: true });
+    await page.screenshot({
+      path: 'tests/screenshots/homepage-auth.png',
+      fullPage: true,
+    });
   });
 
   test('should navigate through complete user journey', async ({ page }) => {
@@ -60,13 +71,20 @@ test.describe('User Registration and Onboarding', () => {
     await page.waitForLoadState('networkidle');
 
     // Look for sign up option
-    const signUpButton = page.locator('button:has-text("Sign up"), a:has-text("Sign up"), [data-localization-key="signUp"]').first();
+    const signUpButton = page
+      .locator(
+        'button:has-text("Sign up"), a:has-text("Sign up"), [data-localization-key="signUp"]'
+      )
+      .first();
 
     if (await signUpButton.isVisible()) {
       await signUpButton.click();
 
       // Wait for sign up form to appear
-      await page.waitForSelector('input[type="email"], input[name="emailAddress"], .cl-formFieldInput', { timeout: 5000 });
+      await page.waitForSelector(
+        'input[type="email"], input[name="emailAddress"], .cl-formFieldInput',
+        { timeout: 5000 }
+      );
 
       // TODO: Complete the sign up flow
       // This would involve:

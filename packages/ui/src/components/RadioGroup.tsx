@@ -1,11 +1,17 @@
-import React from 'react'
-import { styled, RadioGroup as TamaguiRadioGroup, Label, YStack, XStack } from 'tamagui'
+import React from 'react';
+import {
+  Label,
+  styled,
+  RadioGroup as TamaguiRadioGroup,
+  XStack,
+  YStack,
+} from 'tamagui';
 
 // Base RadioGroup component with LegacyGuard styling
 const StyledRadioGroup = styled(TamaguiRadioGroup, {
   name: 'RadioGroup',
   gap: '$3',
-})
+});
 
 // Radio item container
 const StyledRadioGroupItem = styled(TamaguiRadioGroup.Item, {
@@ -82,7 +88,7 @@ const StyledRadioGroupItem = styled(TamaguiRadioGroup.Item, {
     size: 'medium',
     variant: 'primary',
   },
-})
+});
 
 // Radio indicator (inner circle)
 const StyledRadioGroupIndicator = styled(TamaguiRadioGroup.Indicator, {
@@ -123,48 +129,50 @@ const StyledRadioGroupIndicator = styled(TamaguiRadioGroup.Indicator, {
     size: 'medium',
     variant: 'primary',
   },
-})
+});
 
 // Radio option props
 export interface RadioOption {
-  value: string
-  label: string
-  disabled?: boolean
-  description?: string
+  description?: string;
+  disabled?: boolean;
+  label: string;
+  value: string;
 }
 
 // RadioGroup props
 export interface RadioGroupProps {
-  options: RadioOption[]
-  value?: string
-  defaultValue?: string
-  onValueChange?: (value: string) => void
-  orientation?: 'horizontal' | 'vertical'
-  size?: 'small' | 'medium' | 'large'
-  variant?: 'primary' | 'success' | 'premium'
-  disabled?: boolean
-  name?: string
-  required?: boolean
-  'aria-label'?: string
+  'aria-label'?: string;
+  defaultValue?: string;
+  disabled?: boolean;
+  name?: string;
+  onValueChange?: (value: string) => void;
+  options: RadioOption[];
+  orientation?: 'horizontal' | 'vertical';
+  required?: boolean;
+  size?: 'large' | 'medium' | 'small';
+  value?: string;
+  variant?: 'premium' | 'primary' | 'success';
 }
 
 // RadioGroup component
 export const RadioGroup = React.forwardRef<HTMLDivElement, RadioGroupProps>(
-  ({
-    options,
-    value,
-    defaultValue,
-    onValueChange,
-    orientation = 'vertical',
-    size = 'medium',
-    variant = 'primary',
-    disabled = false,
-    name,
-    required,
-    'aria-label': ariaLabel,
-  }, ref) => {
-
-    const StackComponent = orientation === 'horizontal' ? XStack : YStack
+  (
+    {
+      options,
+      value,
+      defaultValue,
+      onValueChange,
+      orientation = 'vertical',
+      size = 'medium',
+      variant = 'primary',
+      disabled = false,
+      name,
+      required,
+      'aria-label': ariaLabel,
+    },
+    ref
+  ) => {
+    const StackComponent = orientation === 'horizontal' ? XStack : YStack;
 
     return (
       <StyledRadioGroup
@@ -177,9 +185,12 @@ export const RadioGroup = React.forwardRef<HTMLDivElement, RadioGroupProps>(
         aria-label={ariaLabel}
         disabled={disabled}
       >
-        <StackComponent gap="$3" flexWrap={orientation === 'horizontal' ? 'wrap' : undefined}>
-          {options.map((option) => (
-            <XStack key={option.value} alignItems="center" gap="$3">
+        <StackComponent
+          gap='$3'
+          flexWrap={orientation === 'horizontal' ? 'wrap' : undefined}
+        >
+          {options.map(option => (
+            <XStack key={option.value} alignItems='center' gap='$3'>
               <StyledRadioGroupItem
                 value={option.value}
                 id={`${name}-${option.value}`}
@@ -193,10 +204,12 @@ export const RadioGroup = React.forwardRef<HTMLDivElement, RadioGroupProps>(
                 <Label
                   htmlFor={`${name}-${option.value}`}
                   disabled={disabled || option.disabled}
-                  cursor={disabled || option.disabled ? 'not-allowed' : 'pointer'}
+                  cursor={
+                    disabled || option.disabled ? 'not-allowed' : 'pointer'
+                  }
                   onPress={() => {
                     if (!disabled && !option.disabled && onValueChange) {
-                      onValueChange(option.value)
+                      onValueChange(option.value);
                     }
                   }}
                 >
@@ -204,9 +217,9 @@ export const RadioGroup = React.forwardRef<HTMLDivElement, RadioGroupProps>(
                 </Label>
                 {option.description && (
                   <Label
-                    size="$2"
-                    color="$gray6"
-                    marginTop="$1"
+                    size='$2'
+                    color='$gray6'
+                    marginTop='$1'
                     disabled={disabled || option.disabled}
                   >
                     {option.description}
@@ -217,38 +230,43 @@ export const RadioGroup = React.forwardRef<HTMLDivElement, RadioGroupProps>(
           ))}
         </StackComponent>
       </StyledRadioGroup>
-    )
+    );
   }
-)
+);
 
-RadioGroup.displayName = 'RadioGroup'
+RadioGroup.displayName = 'RadioGroup';
 
 // Standalone RadioButton component
 export interface RadioButtonProps {
-  value: string
-  label: string
-  checked?: boolean
-  onCheckedChange?: (checked: boolean) => void
-  size?: 'small' | 'medium' | 'large'
-  variant?: 'primary' | 'success' | 'premium'
-  disabled?: boolean
-  description?: string
+  checked?: boolean;
+  description?: string;
+  disabled?: boolean;
+  label: string;
+  onCheckedChange?: (checked: boolean) => void;
+  size?: 'large' | 'medium' | 'small';
+  value: string;
+  variant?: 'premium' | 'primary' | 'success';
 }
 
-export const RadioButton = React.forwardRef<HTMLButtonElement, RadioButtonProps>(
-  ({
-    value,
-    label,
-    checked = false,
-    onCheckedChange,
-    size = 'medium',
-    variant = 'primary',
-    disabled = false,
-    description,
-  }, ref) => {
-
+export const RadioButton = React.forwardRef<
+  HTMLButtonElement,
+  RadioButtonProps
+>(
+  (
+    {
+      value,
+      label,
+      checked = false,
+      onCheckedChange,
+      size = 'medium',
+      variant = 'primary',
+      disabled = false,
+      description,
+    },
+    ref
+  ) => {
     return (
-      <XStack alignItems="center" gap="$3">
+      <XStack alignItems='center' gap='$3'>
         <StyledRadioGroup value={checked ? value : ''}>
           <StyledRadioGroupItem
             ref={ref}
@@ -258,11 +276,13 @@ export const RadioButton = React.forwardRef<HTMLButtonElement, RadioButtonProps>
             disabled={disabled}
             onPress={() => {
               if (!disabled && onCheckedChange) {
-                onCheckedChange(!checked)
+                onCheckedChange(!checked);
               }
             }}
           >
-            {checked && <StyledRadioGroupIndicator size={size} variant={variant} />}
+            {checked && (
+              <StyledRadioGroupIndicator size={size} variant={variant} />
+            )}
           </StyledRadioGroupItem>
         </StyledRadioGroup>
         <YStack flex={1}>
@@ -271,26 +291,21 @@ export const RadioButton = React.forwardRef<HTMLButtonElement, RadioButtonProps>
             cursor={disabled ? 'not-allowed' : 'pointer'}
             onPress={() => {
               if (!disabled && onCheckedChange) {
-                onCheckedChange(!checked)
+                onCheckedChange(!checked);
               }
             }}
           >
             {label}
           </Label>
           {description && (
-            <Label
-              size="$2"
-              color="$gray6"
-              marginTop="$1"
-              disabled={disabled}
-            >
+            <Label size='$2' color='$gray6' marginTop='$1' disabled={disabled}>
               {description}
             </Label>
           )}
         </YStack>
       </XStack>
-    )
+    );
   }
-)
+);
 
-RadioButton.displayName = 'RadioButton'
+RadioButton.displayName = 'RadioButton';

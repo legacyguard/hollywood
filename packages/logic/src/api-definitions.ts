@@ -1,19 +1,19 @@
 import type {
   ApiClientInterface,
+  CreateLegacyItemParams,
   DocumentUploadRequest,
-  WillData,
   GetDocumentsParams,
   GetGuardiansParams,
-  CreateLegacyItemParams
+  WillData,
 } from './types/api';
 
 import {
-  withErrorHandling,
+  LegacyGuardApiError,
   validateRequired,
   validateTypes,
   validators,
+  withErrorHandling,
   withRetry,
-  LegacyGuardApiError
 } from './utils/api-error-handler';
 
 // Import Supabase types for strong typing
@@ -23,12 +23,12 @@ import type {
   Guardian,
   GuardianInsert,
   GuardianUpdate,
-  Profile,
-  ProfileUpdate,
   LegacyItem,
   LegacyItemUpdate,
+  LegacyMilestone,
+  Profile,
+  ProfileUpdate,
   QuickInsight,
-  LegacyMilestone
 } from './types/supabase';
 
 /**
@@ -54,12 +54,15 @@ export class DocumentService {
       validateTypes(fileData, {
         base64: validators.isString,
         mimeType: validators.isString,
-        fileName: validators.isString
+        fileName: validators.isString,
       });
 
       // Additional validation
       if (!request.file.base64.startsWith('data:')) {
-        throw new LegacyGuardApiError(400, 'Invalid base64 format - must include data URL prefix');
+        throw new LegacyGuardApiError(
+          400,
+          'Invalid base64 format - must include data URL prefix'
+        );
       }
 
       const response = await withRetry(
@@ -71,7 +74,10 @@ export class DocumentService {
 
       const responseData = response as { document?: Document };
       if (!responseData.document) {
-        throw new LegacyGuardApiError(500, 'Document upload succeeded but no document was returned');
+        throw new LegacyGuardApiError(
+          500,
+          'Document upload succeeded but no document was returned'
+        );
       }
 
       return responseData.document;
@@ -84,24 +90,39 @@ export class DocumentService {
   async getAll(params: GetDocumentsParams = {}): Promise<Document[]> {
     return withErrorHandling(async () => {
       // Validate parameters
-      if (params.limit !== undefined && (!validators.isNumber(params.limit) || params.limit <= 0)) {
+      if (
+        params.limit !== undefined &&
+        (!validators.isNumber(params.limit) || params.limit <= 0)
+      ) {
         throw new LegacyGuardApiError(400, 'Limit must be a positive number');
       }
-      if (params.offset !== undefined && (!validators.isNumber(params.offset) || params.offset < 0)) {
-        throw new LegacyGuardApiError(400, 'Offset must be a non-negative number');
+      if (
+        params.offset !== undefined &&
+        (!validators.isNumber(params.offset) || params.offset < 0)
+      ) {
+        throw new LegacyGuardApiError(
+          400,
+          'Offset must be a non-negative number'
+        );
       }
 
       const queryParams = new URLSearchParams();
       if (params.limit) queryParams.append('limit', params.limit.toString());
       if (params.offset) queryParams.append('offset', params.offset.toString());
-      if (params.documentType) queryParams.append('document_type', params.documentType);
+      if (params.documentType)
+        queryParams.append('document_type', params.documentType);
       if (params.category) queryParams.append('category', params.category);
 
       const endpoint = `/api/documents${queryParams.toString() ? '?' + queryParams.toString() : ''}`;
-      const response = await this.apiClient.get<{ documents: Document[] }>(endpoint);
+      const response = await this.apiClient.get<{ documents: Document[] }>(
+        endpoint
+      );
 
       if (!response.documents || !Array.isArray(response.documents)) {
-        throw new LegacyGuardApiError(500, 'Invalid response format - documents array expected');
+        throw new LegacyGuardApiError(
+          500,
+          'Invalid response format - documents array expected'
+        );
       }
 
       return response.documents;
@@ -120,7 +141,9 @@ export class DocumentService {
         throw new LegacyGuardApiError(400, 'Document ID must be a valid UUID');
       }
 
-      const response = await this.apiClient.get<{ document: Document }>(`/api/documents/${id}`);
+      const response = await this.apiClient.get<{ document: Document }>(
+        `/api/documents/${id}`
+      );
 
       if (!response.document) {
         throw new LegacyGuardApiError(404, `Document with ID ${id} not found`);
@@ -147,17 +170,29 @@ export class DocumentService {
       }
 
       // Validate specific fields if present
-      if (data.file_name !== undefined && !validators.isString(data.file_name)) {
+      if (
+        data.file_name !== undefined &&
+        !validators.isString(data.file_name)
+      ) {
         throw new LegacyGuardApiError(400, 'File name must be a string');
       }
-      if (data.is_important !== undefined && !validators.isBoolean(data.is_important)) {
+      if (
+        data.is_important !== undefined &&
+        !validators.isBoolean(data.is_important)
+      ) {
         throw new LegacyGuardApiError(400, 'is_important must be a boolean');
       }
 
-      const response = await this.apiClient.put<{ document: Document }>(`/api/documents/${id}`, data);
+      const response = await this.apiClient.put<{ document: Document }>(
+        `/api/documents/${id}`,
+        data
+      );
 
       if (!response.document) {
-        throw new LegacyGuardApiError(500, 'Document update succeeded but no document was returned');
+        throw new LegacyGuardApiError(
+          500,
+          'Document update succeeded but no document was returned'
+        );
       }
 
       return response.document;
@@ -213,7 +248,10 @@ export class DocumentService {
       validateTypes({ query }, { query: validators.isString });
 
       if (query.trim().length < 2) {
-        throw new LegacyGuardApiError(400, 'Search query must be at least 2 characters long');
+        throw new LegacyGuardApiError(
+          400,
+          'Search query must be at least 2 characters long'
+        );
       }
 
       const response = await this.apiClient.get<{ documents: Document[] }>(
@@ -221,7 +259,10 @@ export class DocumentService {
       );
 
       if (!response.documents || !Array.isArray(response.documents)) {
-        throw new LegacyGuardApiError(500, 'Invalid search response format - documents array expected');
+        throw new LegacyGuardApiError(
+          500,
+          'Invalid search response format - documents array expected'
+        );
       }
 
       return response.documents;
@@ -245,7 +286,9 @@ export class GuardianService {
     if (params.activeOnly) queryParams.append('active_only', 'true');
 
     const endpoint = `/api/guardians${queryParams.toString() ? '?' + queryParams.toString() : ''}`;
-    const response = await this.apiClient.get<{ guardians: Guardian[] }>(endpoint);
+    const response = await this.apiClient.get<{ guardians: Guardian[] }>(
+      endpoint
+    );
     return response.guardians;
   }
 
@@ -253,7 +296,10 @@ export class GuardianService {
    * Create a new guardian
    */
   async create(data: GuardianInsert): Promise<Guardian> {
-    const response = await this.apiClient.post<{ guardian: Guardian }>('/api/guardians', data);
+    const response = await this.apiClient.post<{ guardian: Guardian }>(
+      '/api/guardians',
+      data
+    );
     return response.guardian;
   }
 
@@ -261,7 +307,10 @@ export class GuardianService {
    * Update an existing guardian
    */
   async update(id: string, data: Partial<GuardianUpdate>): Promise<Guardian> {
-    const response = await this.apiClient.put<{ guardian: Guardian }>(`/api/guardians/${id}`, data);
+    const response = await this.apiClient.put<{ guardian: Guardian }>(
+      `/api/guardians/${id}`,
+      data
+    );
     return response.guardian;
   }
 
@@ -276,7 +325,9 @@ export class GuardianService {
    * Get guardian by ID
    */
   async getById(id: string): Promise<Guardian> {
-    const response = await this.apiClient.get<{ guardian: Guardian }>(`/api/guardians/${id}`);
+    const response = await this.apiClient.get<{ guardian: Guardian }>(
+      `/api/guardians/${id}`
+    );
     return response.guardian;
   }
 
@@ -305,7 +356,9 @@ export class ProfileService {
    * Get current user profile
    */
   async get(): Promise<Profile> {
-    const response = await this.apiClient.get<{ profile: Profile }>('/api/user/profile');
+    const response = await this.apiClient.get<{ profile: Profile }>(
+      '/api/user/profile'
+    );
     return response.profile;
   }
 
@@ -313,14 +366,21 @@ export class ProfileService {
    * Update user profile
    */
   async update(data: Partial<ProfileUpdate>): Promise<Profile> {
-    const response = await this.apiClient.put<{ profile: Profile }>('/api/user/profile', data);
+    const response = await this.apiClient.put<{ profile: Profile }>(
+      '/api/user/profile',
+      data
+    );
     return response.profile;
   }
 
   /**
    * Update avatar
    */
-  async updateAvatar(file: { base64: string; mimeType: string; fileName: string }): Promise<Profile> {
+  async updateAvatar(file: {
+    base64: string;
+    fileName: string;
+    mimeType: string;
+  }): Promise<Profile> {
     const response = await this.apiClient.uploadFile('/api/user/avatar', file);
     const responseData = response as { profile: Profile };
     return responseData.profile;
@@ -336,7 +396,9 @@ export class ProfileService {
   /**
    * Update preferences
    */
-  async updatePreferences(preferences: Record<string, unknown>): Promise<Profile> {
+  async updatePreferences(
+    preferences: Record<string, unknown>
+  ): Promise<Profile> {
     return this.update({ preferences: preferences as any });
   }
 }
@@ -359,14 +421,21 @@ export class WillService {
    * Create or update will
    */
   async createOrUpdate(data: WillData): Promise<WillData> {
-    const response = await this.apiClient.put<{ will: WillData }>('/api/will', data);
+    const response = await this.apiClient.put<{ will: WillData }>(
+      '/api/will',
+      data
+    );
     return response.will;
   }
 
   /**
    * Add beneficiary
    */
-  async addBeneficiary(beneficiary: { name: string; relationship: string; percentage: number }): Promise<WillData> {
+  async addBeneficiary(beneficiary: {
+    name: string;
+    percentage: number;
+    relationship: string;
+  }): Promise<WillData> {
     const currentWill = await this.get();
     const beneficiaries = currentWill.beneficiaries || [];
     beneficiaries.push(beneficiary);
@@ -378,14 +447,20 @@ export class WillService {
    */
   async removeBeneficiary(beneficiaryName: string): Promise<WillData> {
     const currentWill = await this.get();
-    const beneficiaries = (currentWill.beneficiaries || []).filter(b => b.name !== beneficiaryName);
+    const beneficiaries = (currentWill.beneficiaries || []).filter(
+      b => b.name !== beneficiaryName
+    );
     return this.createOrUpdate({ ...currentWill, beneficiaries });
   }
 
   /**
    * Set executor
    */
-  async setExecutor(executor: { name: string; email: string; phone?: string }): Promise<WillData> {
+  async setExecutor(executor: {
+    email: string;
+    name: string;
+    phone?: string;
+  }): Promise<WillData> {
     const currentWill = await this.get();
     return this.createOrUpdate({ ...currentWill, executor });
   }
@@ -401,7 +476,9 @@ export class LegacyItemService {
    * Get all legacy items
    */
   async getAll(): Promise<LegacyItem[]> {
-    const response = await this.apiClient.get<{ items: LegacyItem[] }>('/api/legacy-items');
+    const response = await this.apiClient.get<{ items: LegacyItem[] }>(
+      '/api/legacy-items'
+    );
     return response.items;
   }
 
@@ -409,15 +486,24 @@ export class LegacyItemService {
    * Create new legacy item
    */
   async create(data: CreateLegacyItemParams): Promise<LegacyItem> {
-    const response = await this.apiClient.post<{ item: LegacyItem }>('/api/legacy-items', data);
+    const response = await this.apiClient.post<{ item: LegacyItem }>(
+      '/api/legacy-items',
+      data
+    );
     return response.item;
   }
 
   /**
    * Update legacy item
    */
-  async update(id: string, data: Partial<LegacyItemUpdate>): Promise<LegacyItem> {
-    const response = await this.apiClient.put<{ item: LegacyItem }>(`/api/legacy-items/${id}`, data);
+  async update(
+    id: string,
+    data: Partial<LegacyItemUpdate>
+  ): Promise<LegacyItem> {
+    const response = await this.apiClient.put<{ item: LegacyItem }>(
+      `/api/legacy-items/${id}`,
+      data
+    );
     return response.item;
   }
 
@@ -432,7 +518,9 @@ export class LegacyItemService {
    * Get items by category
    */
   async getByCategory(category: LegacyItem['category']): Promise<LegacyItem[]> {
-    const response = await this.apiClient.get<{ items: LegacyItem[] }>(`/api/legacy-items?category=${category}`);
+    const response = await this.apiClient.get<{ items: LegacyItem[] }>(
+      `/api/legacy-items?category=${category}`
+    );
     return response.items;
   }
 
@@ -440,7 +528,9 @@ export class LegacyItemService {
    * Get items by status
    */
   async getByStatus(status: LegacyItem['status']): Promise<LegacyItem[]> {
-    const response = await this.apiClient.get<{ items: LegacyItem[] }>(`/api/legacy-items?status=${status}`);
+    const response = await this.apiClient.get<{ items: LegacyItem[] }>(
+      `/api/legacy-items?status=${status}`
+    );
     return response.items;
   }
 
@@ -462,7 +552,9 @@ export class AnalyticsService {
    * Get quick insights
    */
   async getInsights(): Promise<QuickInsight[]> {
-    const response = await this.apiClient.get<{ insights: QuickInsight[] }>('/api/analytics/insights');
+    const response = await this.apiClient.get<{ insights: QuickInsight[] }>(
+      '/api/analytics/insights'
+    );
     return response.insights;
   }
 
@@ -470,7 +562,9 @@ export class AnalyticsService {
    * Get legacy milestones
    */
   async getMilestones(): Promise<LegacyMilestone[]> {
-    const response = await this.apiClient.get<{ milestones: LegacyMilestone[] }>('/api/analytics/milestones');
+    const response = await this.apiClient.get<{
+      milestones: LegacyMilestone[];
+    }>('/api/analytics/milestones');
     return response.milestones;
   }
 
@@ -478,15 +572,24 @@ export class AnalyticsService {
    * Get protection score
    */
   async getProtectionScore(): Promise<{ score: number; trends: unknown }> {
-    const response = await this.apiClient.get<{ score: number; trends: unknown }>('/api/analytics/protection-score');
+    const response = await this.apiClient.get<{
+      score: number;
+      trends: unknown;
+    }>('/api/analytics/protection-score');
     return response;
   }
 
   /**
    * Get completion percentage
    */
-  async getCompletionPercentage(): Promise<{ percentage: number; breakdown: unknown }> {
-    const response = await this.apiClient.get<{ percentage: number; breakdown: unknown }>('/api/analytics/completion');
+  async getCompletionPercentage(): Promise<{
+    breakdown: unknown;
+    percentage: number;
+  }> {
+    const response = await this.apiClient.get<{
+      breakdown: unknown;
+      percentage: number;
+    }>('/api/analytics/completion');
     return response;
   }
 }
@@ -515,6 +618,8 @@ export class LegacyGuardAPI {
 /**
  * Factory function to create API instance with client
  */
-export function createLegacyGuardAPI(apiClient: ApiClientInterface): LegacyGuardAPI {
+export function createLegacyGuardAPI(
+  apiClient: ApiClientInterface
+): LegacyGuardAPI {
   return new LegacyGuardAPI(apiClient);
 }

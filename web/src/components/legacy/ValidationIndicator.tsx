@@ -7,15 +7,13 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
-import type {
-  ValidationResult,
-} from '@/lib/will-legal-validator';
+import type { ValidationResult } from '@/lib/will-legal-validator';
 import { getValidationColor } from '@/lib/will-legal-validator';
 
 interface ValidationIndicatorProps {
-  validation: ValidationResult;
-  showDetails?: boolean;
   className?: string;
+  showDetails?: boolean;
+  validation: ValidationResult;
 }
 
 export const ValidationIndicator: React.FC<ValidationIndicatorProps> = ({
@@ -74,7 +72,7 @@ export const ValidationIndicator: React.FC<ValidationIndicatorProps> = ({
       <Popover>
         <PopoverTrigger asChild>
           <Button
-            variant="ghost"
+            variant='ghost'
             size='sm'
             className={`p-1 h-6 w-6 ${className}`}
           >
@@ -149,9 +147,9 @@ export const ValidationIndicator: React.FC<ValidationIndicatorProps> = ({
 
 // Field-level validation indicator component
 interface FieldValidationProps {
+  children: React.ReactNode;
   fieldName: string;
   validation?: ValidationResult;
-  children: React.ReactNode;
 }
 
 export const FieldValidation: React.FC<FieldValidationProps> = ({
@@ -175,8 +173,8 @@ export const FieldValidation: React.FC<FieldValidationProps> = ({
 
 // Compliance status bar component
 interface ComplianceStatusProps {
-  validationResults: ValidationResult[];
   className?: string;
+  validationResults: ValidationResult[];
 }
 
 export const ComplianceStatus: React.FC<ComplianceStatusProps> = ({
@@ -219,7 +217,10 @@ export const ComplianceStatus: React.FC<ComplianceStatusProps> = ({
       <div className='flex items-center gap-4 text-xs text-muted-foreground'>
         {errors > 0 && (
           <div className='flex items-center gap-1'>
-            <Icon name={"alert-circle" as any} className='w-3 h-3 text-red-600' />
+            <Icon
+              name={'alert-circle' as any}
+              className='w-3 h-3 text-red-600'
+            />
             <span>
               {errors} error{errors !== 1 ? 's' : ''}
             </span>
@@ -227,7 +228,10 @@ export const ComplianceStatus: React.FC<ComplianceStatusProps> = ({
         )}
         {warnings > 0 && (
           <div className='flex items-center gap-1'>
-            <Icon name={"alert-triangle" as any} className='w-3 h-3 text-yellow-600' />
+            <Icon
+              name={'alert-triangle' as any}
+              className='w-3 h-3 text-yellow-600'
+            />
             <span>
               {warnings} warning{warnings !== 1 ? 's' : ''}
             </span>
@@ -235,7 +239,10 @@ export const ComplianceStatus: React.FC<ComplianceStatusProps> = ({
         )}
         {successes > 0 && (
           <div className='flex items-center gap-1'>
-            <Icon name={"check-circle" as any} className='w-3 h-3 text-green-600' />
+            <Icon
+              name={'check-circle' as any}
+              className='w-3 h-3 text-green-600'
+            />
             <span>{successes} valid</span>
           </div>
         )}

@@ -5,7 +5,7 @@ export default {
   plugins: {
     // Tailwind CSS - Utility-first CSS framework
     tailwindcss: {},
-    
+
     // Autoprefixer - Adds vendor prefixes automatically
     autoprefixer: {
       // Target modern browsers for better performance
@@ -13,7 +13,7 @@ export default {
         '> 1%',
         'last 2 versions',
         'not dead',
-        'not ie 11'
+        'not ie 11',
       ],
       // Enable CSS Grid support
       grid: 'autoplace',
@@ -25,4 +25,4 @@ export default {
       flexbox: true,
     },
   },
-}
+};

@@ -4,43 +4,43 @@
  */
 
 export interface TrustScoreFactors {
-  documentsUploaded: number;
-  professionalReviews: number;
-  emergencyContactsAdded: number;
-  guardiansAssigned: number;
-  willCompleted: boolean;
-  encryptionEnabled: boolean;
-  twoFactorAuth: boolean;
-  familyMembersInvited: number;
-  documentsShared: number;
-  lastActivityDays: number;
   accountAge: number; // days
+  documentsShared: number;
+  documentsUploaded: number;
+  emergencyContactsAdded: number;
+  encryptionEnabled: boolean;
+  familyMembersInvited: number;
+  guardiansAssigned: number;
+  lastActivityDays: number;
   legalCompliance: number; // 0-100 based on professional reviews
+  professionalReviews: number;
+  twoFactorAuth: boolean;
+  willCompleted: boolean;
 }
 
 export interface TrustScoreBreakdown {
-  totalScore: number;
-  maxPossibleScore: number;
-  percentage: number;
   factors: {
     [key: string]: {
-      score: number;
-      maxScore: number;
       description: string;
+      maxScore: number;
+      score: number;
       suggestions?: string[];
     };
   };
-  nextMilestone: {
-    score: number;
+  maxPossibleScore: number;
+  nextMilestone: null | {
     description: string;
+    score: number;
     suggestions: string[];
-  } | null;
+  };
+  percentage: number;
   riskAreas: {
     area: string;
-    risk: 'low' | 'medium' | 'high';
     description: string;
     improvements: string[];
+    risk: 'high' | 'low' | 'medium';
   }[];
+  totalScore: number;
 }
 
 export class TrustScoreCalculator {
@@ -48,12 +48,12 @@ export class TrustScoreCalculator {
 
   // Scoring weights for different factors
   private static readonly WEIGHTS = {
-    documents: 25,          // 25 points max - core document security
-    professional: 25,       // 25 points max - professional validation
-    emergency: 15,          // 15 points max - emergency preparedness
-    family: 15,            // 15 points max - family collaboration
-    security: 10,          // 10 points max - account security
-    engagement: 10,        // 10 points max - ongoing engagement
+    documents: 25, // 25 points max - core document security
+    professional: 25, // 25 points max - professional validation
+    emergency: 15, // 15 points max - emergency preparedness
+    family: 15, // 15 points max - family collaboration
+    security: 10, // 10 points max - account security
+    engagement: 10, // 10 points max - ongoing engagement
   };
 
   /**
@@ -69,11 +69,11 @@ export class TrustScoreCalculator {
 
     const totalScore = Math.min(
       documentScore.score +
-      professionalScore.score +
-      emergencyScore.score +
-      familyScore.score +
-      securityScore.score +
-      engagementScore.score,
+        professionalScore.score +
+        emergencyScore.score +
+        familyScore.score +
+        securityScore.score +
+        engagementScore.score,
       this.MAX_SCORE
     );
 
@@ -106,7 +106,9 @@ export class TrustScoreCalculator {
 
     // Basic document upload (0-15 points)
     if (factors.documentsUploaded === 0) {
-      suggestions.push('Upload your first document to start protecting your family');
+      suggestions.push(
+        'Upload your first document to start protecting your family'
+      );
     } else if (factors.documentsUploaded < 3) {
       score += Math.min(factors.documentsUploaded * 3, 9);
       suggestions.push('Upload more essential documents (ID, insurance, etc.)');
@@ -182,7 +184,9 @@ export class TrustScoreCalculator {
 
     // Emergency contacts (0-8 points)
     if (factors.emergencyContactsAdded === 0) {
-      suggestions.push('Add emergency contacts who can access your information');
+      suggestions.push(
+        'Add emergency contacts who can access your information'
+      );
     } else {
       score += Math.min(factors.emergencyContactsAdded * 4, 8);
       if (factors.emergencyContactsAdded < 3) {
@@ -215,7 +219,9 @@ export class TrustScoreCalculator {
 
     // Family members invited (0-10 points)
     if (factors.familyMembersInvited === 0) {
-      suggestions.push('Invite family members to collaborate on protection planning');
+      suggestions.push(
+        'Invite family members to collaborate on protection planning'
+      );
     } else {
       score += Math.min(factors.familyMembersInvited * 3, 10);
       if (factors.familyMembersInvited < 3) {
@@ -250,7 +256,9 @@ export class TrustScoreCalculator {
     if (factors.twoFactorAuth) {
       score += 5;
     } else {
-      suggestions.push('Enable two-factor authentication for enhanced security');
+      suggestions.push(
+        'Enable two-factor authentication for enhanced security'
+      );
     }
 
     return {
@@ -300,19 +308,37 @@ export class TrustScoreCalculator {
   /**
    * Calculate next milestone
    */
-  private static calculateNextMilestone(currentScore: number, factors: TrustScoreFactors) {
+  private static calculateNextMilestone(
+    currentScore: number,
+    factors: TrustScoreFactors
+  ) {
     const milestones = [
       { score: 25, description: 'Basic Protection Established', key: 'basic' },
-      { score: 50, description: 'Solid Foundation Complete', key: 'foundation' },
+      {
+        score: 50,
+        description: 'Solid Foundation Complete',
+        key: 'foundation',
+      },
       { score: 75, description: 'Advanced Protection Active', key: 'advanced' },
-      { score: 90, description: 'Exceptional Family Security', key: 'exceptional' },
-      { score: 100, description: 'Maximum Protection Achieved', key: 'maximum' },
+      {
+        score: 90,
+        description: 'Exceptional Family Security',
+        key: 'exceptional',
+      },
+      {
+        score: 100,
+        description: 'Maximum Protection Achieved',
+        key: 'maximum',
+      },
     ];
 
     const nextMilestone = milestones.find(m => m.score > currentScore);
     if (!nextMilestone) return null;
 
-    const suggestions = this.getMilestoneSuggestions(nextMilestone.key, factors);
+    const suggestions = this.getMilestoneSuggestions(
+      nextMilestone.key,
+      factors
+    );
 
     return {
       score: nextMilestone.score,
@@ -324,7 +350,10 @@ export class TrustScoreCalculator {
   /**
    * Get suggestions for reaching next milestone
    */
-  private static getMilestoneSuggestions(milestone: string, factors: TrustScoreFactors): string[] {
+  private static getMilestoneSuggestions(
+    milestone: string,
+    factors: TrustScoreFactors
+  ): string[] {
     const suggestions: string[] = [];
 
     switch (milestone) {
@@ -464,10 +493,11 @@ export class TrustScoreCalculator {
     });
 
     // Prioritize high-impact improvements
-    const prioritized = allSuggestions.filter(s =>
-      s.includes('professional') ||
-      s.includes('emergency') ||
-      s.includes('will')
+    const prioritized = allSuggestions.filter(
+      s =>
+        s.includes('professional') ||
+        s.includes('emergency') ||
+        s.includes('will')
     );
 
     const others = allSuggestions.filter(s => !prioritized.includes(s));

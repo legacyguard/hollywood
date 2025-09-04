@@ -8,7 +8,7 @@ export const AnimationSpeed = {
   fast: 'fast',
   medium: 'medium',
   slow: 'slow',
-} as const
+} as const;
 
 // Press animations for interactive elements
 export const PressAnimation = {
@@ -24,7 +24,7 @@ export const PressAnimation = {
     pressStyle: { scale: 0.99, opacity: 0.95 },
     animation: 'fast' as const,
   },
-} as const
+} as const;
 
 // Card animations
 export const CardAnimation = {
@@ -45,7 +45,7 @@ export const CardAnimation = {
     pressStyle: undefined,
     hoverStyle: undefined,
   },
-} as const
+} as const;
 
 // List item animations for staggered effects
 export const ListAnimation = {
@@ -62,7 +62,7 @@ export const ListAnimation = {
     animateOnly: ['opacity', 'transform'],
     delay: index * 50, // Stagger effect
   }),
-}
+};
 
 // Page transition animations
 export const PageAnimation = {
@@ -81,7 +81,7 @@ export const PageAnimation = {
     enterStyle: { opacity: 0, x: 20 },
     exitStyle: { opacity: 0, x: -20 },
   },
-}
+};
 
 // Modal animations
 export const ModalAnimation = {
@@ -95,7 +95,7 @@ export const ModalAnimation = {
     enterStyle: { opacity: 0, y: 100 },
     exitStyle: { opacity: 0, y: 100 },
   },
-}
+};
 
 // Button animations
 export const ButtonAnimation = {
@@ -108,7 +108,7 @@ export const ButtonAnimation = {
     animation: 'fast' as const,
     pressStyle: { opacity: 0.8 },
   },
-}
+};
 
 // Skeleton loading animations
 export const SkeletonAnimation = {
@@ -119,7 +119,7 @@ export const SkeletonAnimation = {
     animateOnly: ['opacity'],
     loop: true,
   },
-}
+};
 
 // Export a hook for using animations with proper typing
 export const useAnimations = () => ({
@@ -131,7 +131,7 @@ export const useAnimations = () => ({
   button: ButtonAnimation,
   skeleton: SkeletonAnimation,
   speed: AnimationSpeed,
-})
+});
 
 export default {
   CardAnimation,
@@ -142,4 +142,4 @@ export default {
   ButtonAnimation,
   SkeletonAnimation,
   AnimationSpeed,
-}
+};

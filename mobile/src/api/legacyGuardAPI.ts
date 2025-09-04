@@ -10,14 +10,8 @@ import { apiClient } from './apiClient';
 export const legacyGuardAPI: LegacyGuardAPI = createLegacyGuardAPI(apiClient);
 
 // Export convenient access to individual services
-export const {
-  documents,
-  guardians,
-  profile,
-  will,
-  legacyItems,
-  analytics
-} = legacyGuardAPI;
+export const { documents, guardians, profile, will, legacyItems, analytics } =
+  legacyGuardAPI;
 
 /**
  * Usage Examples:

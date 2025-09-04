@@ -1,13 +1,13 @@
 'use client';
 
-import { type Variants, motion } from 'framer-motion';
+import { motion, type Variants } from 'framer-motion';
 import React from 'react';
 
 interface FadeInProps {
   children: React.ReactNode;
-  duration?: number;
-  delay?: number;
   className?: string;
+  delay?: number;
+  duration?: number;
 }
 
 const fadeInAnimation: Variants = {
@@ -15,7 +15,7 @@ const fadeInAnimation: Variants = {
     opacity: 0,
     y: 10,
   },
-  animate: (custom: { duration: number; delay: number }) => ({
+  animate: (custom: { delay: number; duration: number }) => ({
     opacity: 1,
     y: 0,
     transition: {

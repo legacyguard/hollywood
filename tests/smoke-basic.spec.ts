@@ -27,9 +27,12 @@ test.describe('Basic Smoke Tests', () => {
     await expect(heading).toBeVisible({ timeout: 10000 });
 
     // Check for primary CTA button
-    const ctaButton = page.locator('button, a').filter({
-      hasText: /get started|sign up|sign in|start|begin|create/i
-    }).first();
+    const ctaButton = page
+      .locator('button, a')
+      .filter({
+        hasText: /get started|sign up|sign in|start|begin|create/i,
+      })
+      .first();
 
     // Verify CTA is visible
     await expect(ctaButton).toBeVisible({ timeout: 10000 });
@@ -57,9 +60,12 @@ test.describe('Basic Smoke Tests', () => {
     await page.waitForLoadState('networkidle');
 
     // Find the primary CTA
-    const ctaButton = page.locator('button, a').filter({
-      hasText: /get started|sign up|sign in|start|begin|create/i
-    }).first();
+    const ctaButton = page
+      .locator('button, a')
+      .filter({
+        hasText: /get started|sign up|sign in|start|begin|create/i,
+      })
+      .first();
 
     // Check if CTA exists
     const ctaCount = await ctaButton.count();
@@ -75,14 +81,19 @@ test.describe('Basic Smoke Tests', () => {
 
       // Check that something happened (URL change or modal opened)
       const newUrl = page.url();
-      const modalVisible = await page.locator('[role="dialog"], .modal, [data-state="open"]').isVisible().catch(() => false);
+      const modalVisible = await page
+        .locator('[role="dialog"], .modal, [data-state="open"]')
+        .isVisible()
+        .catch(() => false);
 
       // Either URL changed or a modal opened
       const actionOccurred = newUrl !== initialUrl || modalVisible;
       expect(actionOccurred).toBeTruthy();
     } else {
       // If no CTA found, at least check page rendered
-      const hasContent = await page.locator('body').evaluate(el => el.textContent?.length || 0);
+      const hasContent = await page
+        .locator('body')
+        .evaluate(el => el.textContent?.length || 0);
       expect(hasContent).toBeGreaterThan(0);
     }
   });
@@ -102,11 +113,12 @@ test.describe('Basic Smoke Tests', () => {
     await page.waitForLoadState('networkidle');
 
     // Check for critical errors (ignoring some common dev warnings)
-    const criticalErrors = errors.filter(error =>
-      !error.includes('favicon') &&
-      !error.includes('DevTools') &&
-      !error.includes('[vite]') &&
-      !error.includes('Download the React DevTools')
+    const criticalErrors = errors.filter(
+      error =>
+        !error.includes('favicon') &&
+        !error.includes('DevTools') &&
+        !error.includes('[vite]') &&
+        !error.includes('Download the React DevTools')
     );
 
     expect(criticalErrors).toHaveLength(0);

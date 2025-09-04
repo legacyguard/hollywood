@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@clerk/clerk-react';
 import {
@@ -19,7 +19,6 @@ import {
 } from '@/lib/sofia-search-dictionary';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
-import type { QuickSearchResult } from '@/types/index';
 
 interface QuickSearchProps {
   isOpen: boolean;
@@ -28,12 +27,12 @@ interface QuickSearchProps {
 }
 
 interface LocalSearchResult {
-  id: string;
-  type: 'document' | 'guardian' | 'action';
-  title: string;
-  subtitle?: string;
-  icon: string;
   action: () => void;
+  icon: string;
+  id: string;
+  subtitle?: string;
+  title: string;
+  type: 'action' | 'document' | 'guardian';
 }
 
 export const QuickSearch: React.FC<QuickSearchProps> = ({
@@ -132,7 +131,9 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({
           action: () => {
             navigate('/vault');
             onClose();
-        toast.success(t('toast.foundDocument', { title: doc.title || doc.file_name }));
+            toast.success(
+              t('toast.foundDocument', { title: doc.title || doc.file_name })
+            );
           },
         }));
       } catch (error) {
@@ -171,7 +172,7 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({
           action: () => {
             navigate('/guardians');
             onClose();
-        toast.success(t('toast.foundGuardian', { name: guardian.name }));
+            toast.success(t('toast.foundGuardian', { name: guardian.name }));
           },
         }));
       } catch (error) {
@@ -194,14 +195,16 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({
 
       try {
         // Filter quick actions
-        const filteredActions = quickActions.filter(
-          action =>
-            action.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            action.subtitle?.toLowerCase().includes(searchQuery.toLowerCase())
-        ).map(action => ({
-          ...action,
-          type: action.type as "document" | "action" | "guardian"
-        }));
+        const filteredActions = quickActions
+          .filter(
+            action =>
+              action.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              action.subtitle?.toLowerCase().includes(searchQuery.toLowerCase())
+          )
+          .map(action => ({
+            ...action,
+            type: action.type as 'action' | 'document' | 'guardian',
+          }));
 
         // Search documents and guardians
         const [documents, guardians] = await Promise.all([
@@ -239,11 +242,16 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({
           ),
         ].slice(0, 6); // Limit total suggestions
 
-        setDocuments(documents.map(doc => ({ ...doc, type: "document" as const })));
+        setDocuments(
+          documents.map(doc => ({ ...doc, type: 'document' as const }))
+        );
         setResults([
-          ...filteredActions, 
-          ...documents.map(doc => ({ ...doc, type: "document" as const })),
-          ...guardians.map(guardian => ({ ...guardian, type: "guardian" as const }))
+          ...filteredActions,
+          ...documents.map(doc => ({ ...doc, type: 'document' as const })),
+          ...guardians.map(guardian => ({
+            ...guardian,
+            type: 'guardian' as const,
+          })),
         ]);
         setSofiaActions(allSuggestions);
       } catch (error) {
@@ -290,7 +298,7 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({
       <DialogContent className='max-w-2xl p-0 gap-0'>
         <DialogHeader className='px-6 pt-6 pb-4'>
           <DialogTitle className='flex items-center gap-2'>
-            <Icon name="search" className='w-5 h-5' />
+            <Icon name='search' className='w-5 h-5' />
             {t('title')}
           </DialogTitle>
         </DialogHeader>
@@ -309,7 +317,7 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({
         <div className='max-h-80 overflow-y-auto'>
           {isSearching ? (
             <div className='flex items-center justify-center py-8 text-muted-foreground'>
-              <Icon name="loader" className='w-5 h-5 animate-spin mr-2' />
+              <Icon name='loader' className='w-5 h-5 animate-spin mr-2' />
               {t('loading')}
             </div>
           ) : results.length > 0 ? (
@@ -321,7 +329,8 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({
                   className='w-full justify-start h-auto p-4 mx-4'
                   onClick={result.action}
                 >
-                  <Icon name={result.icon as any}
+                  <Icon
+                    name={result.icon as any}
                     className='w-5 h-5 mr-3 flex-shrink-0'
                   />
                   <div className='text-left'>
@@ -337,11 +346,9 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({
             </div>
           ) : query.trim() ? (
             <div className='flex flex-col items-center justify-center py-8 text-muted-foreground'>
-              <Icon name="search-x" className='w-8 h-8 mb-2' />
+              <Icon name='search-x' className='w-8 h-8 mb-2' />
               <p>{t('noResults', { query })}</p>
-              <p className='text-sm mt-1'>
-                {t('trySearching')}
-              </p>
+              <p className='text-sm mt-1'>{t('trySearching')}</p>
             </div>
           ) : null}
         </div>
@@ -352,7 +359,7 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({
             <div className='px-6 py-4'>
               <div className='flex items-center gap-2 mb-3'>
                 <div className='w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center'>
-                  <Icon name="sparkles" className='w-3 h-3 text-primary' />
+                  <Icon name='sparkles' className='w-3 h-3 text-primary' />
                 </div>
                 <span className='text-sm font-medium text-primary'>
                   {hasDocumentBasedSuggestions(
@@ -383,7 +390,7 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({
                   return (
                     <Button
                       key={`sofia-${index}`}
-                      variant="outline"
+                      variant='outline'
                       className={`w-full justify-start h-auto p-3 ${
                         isDynamic
                           ? 'border-green-200 hover:bg-green-50 hover:border-green-300 bg-green-50/50'
@@ -433,11 +440,11 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({
                   }))
                 ) ? (
                   <>
-                    <Icon name="zap" className='w-3 h-3 inline mr-1' />
+                    <Icon name='zap' className='w-3 h-3 inline mr-1' />
                     {t('sofia.remembersPatterns')}
                   </>
                 ) : (
-t('sofia.willHelp')
+                  t('sofia.willHelp')
                 )}
               </p>
             </div>

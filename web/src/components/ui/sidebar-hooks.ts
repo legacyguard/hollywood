@@ -8,16 +8,16 @@ const SIDEBAR_WIDTH_ICON = '3rem';
 const SIDEBAR_KEYBOARD_SHORTCUT = 'b';
 
 type SidebarContextType = {
-  state: 'expanded' | 'collapsed';
-  open: boolean;
-  setOpen: (open: boolean) => void;
-  openMobile: boolean;
-  setOpenMobile: (open: boolean) => void;
   isMobile: boolean;
+  open: boolean;
+  openMobile: boolean;
+  setOpen: (open: boolean) => void;
+  setOpenMobile: (open: boolean) => void;
+  state: 'collapsed' | 'expanded';
   toggleSidebar: () => void;
 };
 
-const SidebarContext = React.createContext<SidebarContextType | null>(null);
+const SidebarContext = React.createContext<null | SidebarContextType>(null);
 
 export function useSidebar() {
   const context = React.useContext(SidebarContext);
@@ -29,11 +29,11 @@ export function useSidebar() {
 }
 
 export {
-  SidebarContext,
-  SIDEBAR_COOKIE_NAME,
   SIDEBAR_COOKIE_MAX_AGE,
-  SIDEBAR_WIDTH,
-  SIDEBAR_WIDTH_MOBILE,
-  SIDEBAR_WIDTH_ICON,
+  SIDEBAR_COOKIE_NAME,
   SIDEBAR_KEYBOARD_SHORTCUT,
+  SIDEBAR_WIDTH,
+  SIDEBAR_WIDTH_ICON,
+  SIDEBAR_WIDTH_MOBILE,
+  SidebarContext,
 };

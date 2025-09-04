@@ -1,5 +1,5 @@
 // Sofia Adaptive Personality System - End-to-End Integration Tests
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AdaptivePersonalityManager } from '@/lib/sofia-personality';
 import { textManager } from '@/lib/text-manager';
 import type { InteractionPattern } from '@/lib/sofia-types';
@@ -82,7 +82,9 @@ describe('Sofia Adaptive Personality System - E2E Integration', () => {
       const personality = personalityManager.getPersonality();
 
       // Should detect empathetic preference
-      expect(personality.userPreferences.lastInteractions.length).toBeGreaterThan(10);
+      expect(
+        personality.userPreferences.lastInteractions.length
+      ).toBeGreaterThan(10);
       expect(personality.analysis).toBeDefined();
 
       if (personality.analysis) {
@@ -132,7 +134,9 @@ describe('Sofia Adaptive Personality System - E2E Integration', () => {
       const personality = personalityManager.getPersonality();
 
       // Should detect pragmatic preference
-      expect(personality.userPreferences.lastInteractions.length).toBeGreaterThan(10);
+      expect(
+        personality.userPreferences.lastInteractions.length
+      ).toBeGreaterThan(10);
       expect(personality.analysis).toBeDefined();
 
       if (personality.analysis) {
@@ -147,7 +151,11 @@ describe('Sofia Adaptive Personality System - E2E Integration', () => {
       // Set empathetic preference
       personalityManager.setManualOverride('empathetic');
 
-      const welcomeMessage = textManager.getText('sofia_welcome', 'default', testUserId);
+      const welcomeMessage = textManager.getText(
+        'sofia_welcome',
+        'default',
+        testUserId
+      );
 
       expect(welcomeMessage).toContain('gentle guide');
       expect(welcomeMessage).toContain('meaningful journey');
@@ -158,7 +166,11 @@ describe('Sofia Adaptive Personality System - E2E Integration', () => {
       // Set pragmatic preference
       personalityManager.setManualOverride('pragmatic');
 
-      const milestoneMessage = textManager.getText('milestone_first_document_uploaded', 'default', testUserId);
+      const milestoneMessage = textManager.getText(
+        'milestone_first_document_uploaded',
+        'default',
+        testUserId
+      );
 
       expect(milestoneMessage).toContain('encrypted and stored securely');
       expect(milestoneMessage).toContain('digital legacy system');
@@ -170,8 +182,16 @@ describe('Sofia Adaptive Personality System - E2E Integration', () => {
       personalityManager.setMode('adaptive');
       personalityManager.setManualOverride(undefined);
 
-      const securityMessage = textManager.getText('security_explanation', 'default', testUserId);
-      const errorMessage = textManager.getText('upload_error', 'default', testUserId);
+      const securityMessage = textManager.getText(
+        'security_explanation',
+        'default',
+        testUserId
+      );
+      const errorMessage = textManager.getText(
+        'upload_error',
+        'default',
+        testUserId
+      );
 
       expect(securityMessage).toBeTruthy();
       expect(errorMessage).toBeTruthy();
@@ -198,7 +218,9 @@ describe('Sofia Adaptive Personality System - E2E Integration', () => {
       // Back to adaptive
       personalityManager.setMode('adaptive');
       expect(personalityManager.getPersonality().mode).toBe('adaptive');
-      expect(personalityManager.getPersonality().userPreferences.manualOverride).toBeUndefined();
+      expect(
+        personalityManager.getPersonality().userPreferences.manualOverride
+      ).toBeUndefined();
     });
 
     it('should handle manual overrides correctly', () => {
@@ -212,8 +234,14 @@ describe('Sofia Adaptive Personality System - E2E Integration', () => {
       // Clear manual override - should return to balanced/pragmatic default
       personalityManager.setManualOverride(undefined);
       const clearedStyle = personalityManager.getCurrentStyle();
-      expect(clearedStyle === 'balanced' || clearedStyle === 'pragmatic' || clearedStyle === 'empathetic').toBe(true);
-      expect(personalityManager.getPersonality().userPreferences.manualOverride).toBeUndefined();
+      expect(
+        clearedStyle === 'balanced' ||
+          clearedStyle === 'pragmatic' ||
+          clearedStyle === 'empathetic'
+      ).toBe(true);
+      expect(
+        personalityManager.getPersonality().userPreferences.manualOverride
+      ).toBeUndefined();
     });
 
     it('should provide accurate personality insights', () => {
@@ -299,13 +327,17 @@ describe('Sofia Adaptive Personality System - E2E Integration', () => {
   describe('Cross-System Integration', () => {
     it('should work correctly without text manager registration', () => {
       const standaloneUserId = 'standalone-user';
-      const standaloneManager = new AdaptivePersonalityManager(standaloneUserId);
+      const standaloneManager = new AdaptivePersonalityManager(
+        standaloneUserId
+      );
 
       // Should work independently
       standaloneManager.setMode('empathetic');
       expect(standaloneManager.getCurrentStyle()).toBe('empathetic');
 
-      const adaptedMessage = standaloneManager.adaptMessage('You need to upload your document.');
+      const adaptedMessage = standaloneManager.adaptMessage(
+        'You need to upload your document.'
+      );
       expect(adaptedMessage).toContain('You might want to upload');
     });
 
@@ -318,7 +350,11 @@ describe('Sofia Adaptive Personality System - E2E Integration', () => {
       expect(textStyle).toBe('pragmatic');
 
       // Text output should be consistent
-      const message = textManager.getText('sofia_welcome', 'default', testUserId);
+      const message = textManager.getText(
+        'sofia_welcome',
+        'default',
+        testUserId
+      );
       expect(message).toContain('digital assistant');
     });
 
@@ -356,7 +392,11 @@ describe('Sofia Adaptive Personality System - E2E Integration', () => {
     });
 
     it('should handle missing text keys appropriately', () => {
-      const result = textManager.getText('nonexistent_key', 'default', testUserId);
+      const result = textManager.getText(
+        'nonexistent_key',
+        'default',
+        testUserId
+      );
       expect(result).toContain('[Missing text: nonexistent_key]');
     });
 
@@ -364,7 +404,11 @@ describe('Sofia Adaptive Personality System - E2E Integration', () => {
       // Test with no personality manager
       textManager.registerPersonalityManager(testUserId, null as unknown);
 
-      const result = textManager.getText('sofia_welcome', 'default', testUserId);
+      const result = textManager.getText(
+        'sofia_welcome',
+        'default',
+        testUserId
+      );
       expect(result).toBeTruthy();
       expect(typeof result).toBe('string');
     });

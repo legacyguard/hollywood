@@ -1,6 +1,15 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from './button';
-import { Loader2, Mail, Plus, ChevronRight, Download, Heart, Settings, Trash } from 'lucide-react';
+import {
+  ChevronRight,
+  Download,
+  Heart,
+  Loader2,
+  Mail,
+  Plus,
+  Settings,
+  Trash,
+} from 'lucide-react';
 
 const meta = {
   title: 'UI/Button',
@@ -60,7 +69,14 @@ import { Button } from '@/components/ui/button';
   argTypes: {
     variant: {
       control: 'select',
-      options: ['default', 'destructive', 'outline', 'secondary', 'ghost', 'link'],
+      options: [
+        'default',
+        'destructive',
+        'outline',
+        'secondary',
+        'ghost',
+        'link',
+      ],
       description: 'The visual style variant of the button',
       table: {
         type: { summary: 'string' },
@@ -165,7 +181,7 @@ export const Large: Story = {
 export const Icon: Story = {
   args: {
     size: 'icon',
-    children: <Settings className="h-4 w-4" />,
+    children: <Settings className='h-4 w-4' />,
   },
 };
 
@@ -174,7 +190,7 @@ export const WithLeftIcon: Story = {
   args: {
     children: (
       <>
-        <Mail className="mr-2 h-4 w-4" />
+        <Mail className='mr-2 h-4 w-4' />
         Send Email
       </>
     ),
@@ -186,7 +202,7 @@ export const WithRightIcon: Story = {
     children: (
       <>
         Continue
-        <ChevronRight className="ml-2 h-4 w-4" />
+        <ChevronRight className='ml-2 h-4 w-4' />
       </>
     ),
   },
@@ -198,7 +214,7 @@ export const Loading: Story = {
     disabled: true,
     children: (
       <>
-        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+        <Loader2 className='mr-2 h-4 w-4 animate-spin' />
         Processing...
       </>
     ),
@@ -218,7 +234,7 @@ export const DownloadButton: Story = {
     variant: 'outline',
     children: (
       <>
-        <Download className="mr-2 h-4 w-4" />
+        <Download className='mr-2 h-4 w-4' />
         Download Report
       </>
     ),
@@ -231,7 +247,7 @@ export const DeleteButton: Story = {
     size: 'sm',
     children: (
       <>
-        <Trash className="mr-2 h-4 w-4" />
+        <Trash className='mr-2 h-4 w-4' />
         Delete
       </>
     ),
@@ -242,7 +258,7 @@ export const FavoriteButton: Story = {
   args: {
     variant: 'ghost',
     size: 'icon',
-    children: <Heart className="h-4 w-4" />,
+    children: <Heart className='h-4 w-4' />,
   },
 };
 
@@ -251,7 +267,7 @@ export const CreateButton: Story = {
     size: 'lg',
     children: (
       <>
-        <Plus className="mr-2 h-5 w-5" />
+        <Plus className='mr-2 h-5 w-5' />
         Create New Document
       </>
     ),
@@ -261,8 +277,8 @@ export const CreateButton: Story = {
 // Button Group Example
 export const ButtonGroup: Story = {
   render: () => (
-    <div className="flex gap-2">
-      <Button variant="outline">Cancel</Button>
+    <div className='flex gap-2'>
+      <Button variant='outline'>Cancel</Button>
       <Button>Save Changes</Button>
     </div>
   ),

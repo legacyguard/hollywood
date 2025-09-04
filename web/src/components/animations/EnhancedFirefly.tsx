@@ -1,22 +1,27 @@
 // Enhanced Firefly Animation - Advanced Sofia firefly with personality-aware animations
 // Builds upon existing firefly system with better integration and new behaviors
 
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { motion, useAnimation, AnimatePresence } from 'framer-motion';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { AnimatePresence, motion, useAnimation } from 'framer-motion';
 import { useAuth } from '@clerk/clerk-react';
 // import type { Timeout } from 'node:timers'; // Not available in browser
 import { usePersonalityManager } from '@/components/sofia/SofiaContextProvider';
 import { AnimationSystem } from '@/lib/animation-system';
-import { Sparkles, Heart, Target } from 'lucide-react';
+import { Heart, Sparkles, Target } from 'lucide-react';
 
 interface EnhancedFireflyProps {
+  celebrateEvent?:
+    | 'document_upload'
+    | 'garden_bloom'
+    | 'guardian_added'
+    | 'milestone'
+    | null;
+  customMessage?: string;
+  followMouse?: boolean;
   isVisible?: boolean;
   onInteraction?: () => void;
+  size?: 'large' | 'medium' | 'small';
   targetElement?: string;
-  celebrateEvent?: 'milestone' | 'document_upload' | 'guardian_added' | 'garden_bloom' | null;
-  customMessage?: string;
-  size?: 'small' | 'medium' | 'large';
-  followMouse?: boolean;
 }
 
 interface FireflyPosition {
@@ -43,14 +48,18 @@ export const EnhancedFirefly: React.FC<EnhancedFireflyProps> = ({
 
   // Get current personality mode
   const personalityMode = personalityManager?.getCurrentStyle() || 'adaptive';
-  const adaptedMode = personalityMode === 'balanced' ? 'adaptive' : personalityMode;
+  const adaptedMode =
+    personalityMode === 'balanced' ? 'adaptive' : personalityMode;
 
   // State management
   const [position, setPosition] = useState<FireflyPosition>({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
   const [isIdle, setIsIdle] = useState(true);
   const [trailPoints, setTrailPoints] = useState<TrailPoint[]>([]);
-  const [mousePosition, setMousePosition] = useState<FireflyPosition>({ x: 0, y: 0 });
+  const [mousePosition, setMousePosition] = useState<FireflyPosition>({
+    x: 0,
+    y: 0,
+  });
   const [showTooltip, setShowTooltip] = useState(false);
 
   const controls = useAnimation();
@@ -100,29 +109,34 @@ export const EnhancedFirefly: React.FC<EnhancedFireflyProps> = ({
   }, []);
 
   // Trail management
-  const updateTrail = useCallback((newPosition: FireflyPosition) => {
-    if (adaptedMode !== 'empathetic' || shouldReduceMotion) return;
+  const updateTrail = useCallback(
+    (newPosition: FireflyPosition) => {
+      if (adaptedMode !== 'empathetic' || shouldReduceMotion) return;
 
-    const trailPoint: TrailPoint = {
-      ...newPosition,
-      id: `trail-${Date.now()}-${Math.random()}`,
-      timestamp: Date.now(),
-    };
+      const trailPoint: TrailPoint = {
+        ...newPosition,
+        id: `trail-${Date.now()}-${Math.random()}`,
+        timestamp: Date.now(),
+      };
 
-    setTrailPoints(prev => {
-      const filtered = prev.filter(p => Date.now() - p.timestamp < 2000);
-      return [trailPoint, ...filtered].slice(0, 12);
-    });
+      setTrailPoints(prev => {
+        const filtered = prev.filter(p => Date.now() - p.timestamp < 2000);
+        return [trailPoint, ...filtered].slice(0, 12);
+      });
 
-    // Cleanup old trail points
-    if (trailCleanupRef.current) {
-      clearTimeout(trailCleanupRef.current);
-    }
+      // Cleanup old trail points
+      if (trailCleanupRef.current) {
+        clearTimeout(trailCleanupRef.current);
+      }
 
-    trailCleanupRef.current = setTimeout(() => {
-      setTrailPoints(prev => prev.filter(p => Date.now() - p.timestamp < 2000));
-    }, 2000);
-  }, [adaptedMode, shouldReduceMotion]);
+      trailCleanupRef.current = setTimeout(() => {
+        setTrailPoints(prev =>
+          prev.filter(p => Date.now() - p.timestamp < 2000)
+        );
+      }, 2000);
+    },
+    [adaptedMode, shouldReduceMotion]
+  );
 
   // Advanced idle animations
   const startIdleAnimation = useCallback(() => {
@@ -139,14 +153,14 @@ export const EnhancedFirefly: React.FC<EnhancedFireflyProps> = ({
       const baseX = rect.width - 80;
       const baseY = 60;
 
-              controls.start({
-          x: [baseX - 5, baseX + 5, baseX],
-          y: [baseY - 3, baseY + 3, baseY],
-          rotate: [0, 2, -2, 0],
-          transition: {
-            duration: 4,
-            repeat: Infinity,
-            ease: animConfig.ease as any,
+      controls.start({
+        x: [baseX - 5, baseX + 5, baseX],
+        y: [baseY - 3, baseY + 3, baseY],
+        rotate: [0, 2, -2, 0],
+        transition: {
+          duration: 4,
+          repeat: Infinity,
+          ease: animConfig.ease as any,
         },
       });
     } else if (adaptedMode === 'empathetic') {
@@ -169,7 +183,9 @@ export const EnhancedFirefly: React.FC<EnhancedFireflyProps> = ({
 
       const path = generateWanderingPath();
       const pathX = path.map(p => Math.max(20, Math.min(rect.width - 20, p.x)));
-      const pathY = path.map(p => Math.max(20, Math.min(rect.height - 20, p.y)));
+      const pathY = path.map(p =>
+        Math.max(20, Math.min(rect.height - 20, p.y))
+      );
 
       controls.start({
         x: pathX,
@@ -226,7 +242,14 @@ export const EnhancedFirefly: React.FC<EnhancedFireflyProps> = ({
         mass: 0.8,
       },
     });
-  }, [mousePosition, followMouse, controls, adaptedMode, currentSize, shouldReduceMotion]);
+  }, [
+    mousePosition,
+    followMouse,
+    controls,
+    adaptedMode,
+    currentSize,
+    shouldReduceMotion,
+  ]);
 
   // Enhanced celebration animations
   const celebrate = useCallback(async () => {
@@ -260,7 +283,12 @@ export const EnhancedFirefly: React.FC<EnhancedFireflyProps> = ({
       for (let i = 0; i < 20; i++) {
         const t = (i / 20) * Math.PI * 2;
         const x = 16 * Math.sin(t) ** 3;
-        const y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+        const y = -(
+          13 * Math.cos(t) -
+          5 * Math.cos(2 * t) -
+          2 * Math.cos(3 * t) -
+          Math.cos(4 * t)
+        );
         heartPath.push({
           x: centerX + x * 3,
           y: centerY + y * 3,
@@ -289,7 +317,15 @@ export const EnhancedFirefly: React.FC<EnhancedFireflyProps> = ({
       setIsIdle(true);
       startIdleAnimation();
     }, 1000);
-  }, [celebrateEvent, adaptedMode, controls, isVisible, shouldReduceMotion, updateTrail, startIdleAnimation]);
+  }, [
+    celebrateEvent,
+    adaptedMode,
+    controls,
+    isVisible,
+    shouldReduceMotion,
+    updateTrail,
+    startIdleAnimation,
+  ]);
 
   // Start animations
   useEffect(() => {
@@ -346,13 +382,14 @@ export const EnhancedFirefly: React.FC<EnhancedFireflyProps> = ({
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 pointer-events-none z-50"
+      className='fixed inset-0 pointer-events-none z-50'
       style={{ position: 'fixed' }}
     >
       {/* Enhanced trail points */}
       <AnimatePresence>
-        {adaptedMode === 'empathetic' && !shouldReduceMotion &&
-          trailPoints.map((point) => (
+        {adaptedMode === 'empathetic' &&
+          !shouldReduceMotion &&
+          trailPoints.map(point => (
             <motion.div
               key={point.id}
               className={`absolute w-2 h-2 ${colors.trail} rounded-full`}
@@ -365,7 +402,7 @@ export const EnhancedFirefly: React.FC<EnhancedFireflyProps> = ({
               exit={{ opacity: 0 }}
               transition={{ duration: 2 }}
             >
-              <div className="w-full h-full rounded-full blur-sm" />
+              <div className='w-full h-full rounded-full blur-sm' />
             </motion.div>
           ))}
       </AnimatePresence>
@@ -373,7 +410,7 @@ export const EnhancedFirefly: React.FC<EnhancedFireflyProps> = ({
       {/* Main firefly */}
       <motion.div
         animate={controls}
-        className="absolute pointer-events-auto cursor-pointer"
+        className='absolute pointer-events-auto cursor-pointer'
         style={{
           x: position.x,
           y: position.y,
@@ -393,14 +430,18 @@ export const EnhancedFirefly: React.FC<EnhancedFireflyProps> = ({
       >
         {/* Enhanced glow effect */}
         <motion.div
-          className="absolute inset-0 rounded-full pointer-events-none"
-          animate={shouldReduceMotion ? {} : {
-            boxShadow: [
-              `0 0 ${currentSize.glow}px ${colors.glow}`,
-              `0 0 ${currentSize.glow * 1.5}px ${colors.glow}`,
-              `0 0 ${currentSize.glow}px ${colors.glow}`,
-            ],
-          }}
+          className='absolute inset-0 rounded-full pointer-events-none'
+          animate={
+            shouldReduceMotion
+              ? {}
+              : {
+                  boxShadow: [
+                    `0 0 ${currentSize.glow}px ${colors.glow}`,
+                    `0 0 ${currentSize.glow * 1.5}px ${colors.glow}`,
+                    `0 0 ${currentSize.glow}px ${colors.glow}`,
+                  ],
+                }
+          }
           transition={{
             duration: adaptedMode === 'pragmatic' ? 2 : 3,
             repeat: Infinity,
@@ -413,11 +454,9 @@ export const EnhancedFirefly: React.FC<EnhancedFireflyProps> = ({
           className={`w-full h-full bg-gradient-to-br ${colors.primary} rounded-full shadow-lg flex items-center justify-center`}
           animate={{
             scale: isHovering ? 1.2 : 1,
-            filter: shouldReduceMotion ? undefined : [
-              'brightness(1)',
-              'brightness(1.3)',
-              'brightness(1)',
-            ],
+            filter: shouldReduceMotion
+              ? undefined
+              : ['brightness(1)', 'brightness(1.3)', 'brightness(1)'],
           }}
           transition={{
             scale: { duration: 0.2 },
@@ -429,13 +468,13 @@ export const EnhancedFirefly: React.FC<EnhancedFireflyProps> = ({
           }}
         >
           {adaptedMode === 'empathetic' && (
-            <Heart className="w-2 h-2 text-white/70" />
+            <Heart className='w-2 h-2 text-white/70' />
           )}
           {adaptedMode === 'pragmatic' && (
-            <Target className="w-2 h-2 text-white/70" />
+            <Target className='w-2 h-2 text-white/70' />
           )}
           {adaptedMode === 'adaptive' && (
-            <Sparkles className="w-2 h-2 text-white/70" />
+            <Sparkles className='w-2 h-2 text-white/70' />
           )}
         </motion.div>
 
@@ -443,20 +482,19 @@ export const EnhancedFirefly: React.FC<EnhancedFireflyProps> = ({
         <AnimatePresence>
           {showTooltip && (
             <motion.div
-              className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-black/90 text-white text-xs px-3 py-2 rounded-lg whitespace-nowrap backdrop-blur-sm"
+              className='absolute -top-12 left-1/2 transform -translate-x-1/2 bg-black/90 text-white text-xs px-3 py-2 rounded-lg whitespace-nowrap backdrop-blur-sm'
               initial={{ opacity: 0, scale: 0.8, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.8, y: 10 }}
               transition={{ duration: 0.2 }}
             >
-              {customMessage || (
-                adaptedMode === 'empathetic'
+              {customMessage ||
+                (adaptedMode === 'empathetic'
                   ? '✨ Sofia - Your caring guide'
                   : adaptedMode === 'pragmatic'
-                  ? '🎯 Sofia - Your efficient assistant'
-                  : '🌟 Sofia - Your adaptive companion'
-              )}
-              <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-black/90" />
+                    ? '🎯 Sofia - Your efficient assistant'
+                    : '🌟 Sofia - Your adaptive companion')}
+              <div className='absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-black/90' />
             </motion.div>
           )}
         </AnimatePresence>

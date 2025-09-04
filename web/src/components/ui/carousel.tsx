@@ -14,18 +14,18 @@ type CarouselPlugin = UseCarouselParameters[1];
 
 type CarouselProps = {
   opts?: CarouselOptions;
-  plugins?: CarouselPlugin;
   orientation?: 'horizontal' | 'vertical';
+  plugins?: CarouselPlugin;
   setApi?: (api: CarouselApi) => void;
 };
 
 type CarouselContextProps = {
-  carouselRef: ReturnType<typeof useEmblaCarousel>[0];
   api: ReturnType<typeof useEmblaCarousel>[1];
-  scrollPrev: () => void;
-  scrollNext: () => void;
-  canScrollPrev: boolean;
   canScrollNext: boolean;
+  canScrollPrev: boolean;
+  carouselRef: (node: HTMLElement | null) => void;
+  scrollNext: () => void;
+  scrollPrev: () => void;
 } & CarouselProps;
 
 const CarouselContext = React.createContext<CarouselContextProps | null>(null);
@@ -110,11 +110,11 @@ const Carousel = React.forwardRef<
       }
 
       onSelect(api);
-      api.on('reInit', onSelect);
-      api.on('select', onSelect);
+      api.on('reInit', () => onSelect(api));
+      api.on('select', () => onSelect(api));
 
       return () => {
-        api?.off('select', onSelect);
+        api?.off('select', () => onSelect(api));
       };
     }, [api, onSelect]);
 
@@ -251,10 +251,10 @@ const CarouselNext = React.forwardRef<
 CarouselNext.displayName = 'CarouselNext';
 
 export {
-  type CarouselApi,
   Carousel,
+  type CarouselApi,
   CarouselContent,
   CarouselItem,
-  CarouselPrevious,
   CarouselNext,
+  CarouselPrevious,
 };

@@ -1,61 +1,61 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
-  LineChart,
-  Line,
-  BarChart,
-  Bar,
-  PieChart,
-  Pie,
-  Cell,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
   Area,
   AreaChart,
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  Legend,
+  Line,
+  LineChart,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
 } from 'recharts';
 import {
-  TrendingUp,
-  TrendingDown,
-  Users,
-  DollarSign,
   Activity,
   AlertCircle,
   CheckCircle,
-  XCircle,
+  DollarSign,
   Loader2,
+  TrendingDown,
+  TrendingUp,
+  Users,
+  XCircle,
 } from 'lucide-react';
 import { supabase } from '@hollywood/shared';
 
 interface MetricCard {
-  title: string;
-  value: string | number;
   change: number;
-  icon: React.ReactNode;
   color: string;
+  icon: React.ReactNode;
+  title: string;
+  value: number | string;
 }
 
 interface SubscriptionMetrics {
+  arr: number;
+  cancellations: number;
+  churn_rate: number;
   date: string;
-  total_users: number;
-  free_users: number;
   essential_users: number;
   family_users: number;
-  premium_users: number;
-  new_subscriptions: number;
-  cancellations: number;
+  free_users: number;
   mrr: number;
-  arr: number;
-  churn_rate: number;
+  new_subscriptions: number;
+  premium_users: number;
+  total_users: number;
 }
 
 interface SystemHealth {
-  service_name: string;
-  status: 'healthy' | 'degraded' | 'down';
-  response_time_ms: number;
   error_rate: number;
+  response_time_ms: number;
+  service_name: string;
+  status: 'degraded' | 'down' | 'healthy';
 }
 
 export const AnalyticsDashboard: React.FC = () => {
@@ -117,36 +117,42 @@ export const AnalyticsDashboard: React.FC = () => {
   const calculateCurrentMetrics = (data: SubscriptionMetrics[]) => {
     if (data.length === 0) return;
 
-    const latest = data[data.length - 1];
+    const latest = data[data.length - 1] || null;
     const previous = data.length > 1 ? data[data.length - 2] : latest;
 
     const metrics: MetricCard[] = [
       {
         title: 'Total Users',
-        value: latest.total_users.toLocaleString(),
-        change: ((latest.total_users - previous.total_users) / (previous.total_users || 1)) * 100,
-        icon: <Users className="w-6 h-6" />,
+        value: (latest?.total_users || 0).toLocaleString(),
+        change:
+          (((latest?.total_users || 0) - (previous?.total_users || 0)) /
+            ((previous?.total_users || 1))) *
+          100,
+        icon: <Users className='w-6 h-6' />,
         color: '#667eea',
       },
       {
         title: 'MRR',
-        value: `$${latest.mrr.toLocaleString()}`,
-        change: ((latest.mrr - previous.mrr) / (previous.mrr || 1)) * 100,
-        icon: <DollarSign className="w-6 h-6" />,
+        value: `$${(latest?.mrr || 0).toLocaleString()}`,
+        change: (((latest?.mrr || 0) - (previous?.mrr || 0)) / ((previous?.mrr || 1))) * 100,
+        icon: <DollarSign className='w-6 h-6' />,
         color: '#48bb78',
       },
       {
         title: 'Churn Rate',
-        value: `${latest.churn_rate.toFixed(1)}%`,
-        change: latest.churn_rate - previous.churn_rate,
-        icon: <Activity className="w-6 h-6" />,
-        color: latest.churn_rate > 5 ? '#f56565' : '#48bb78',
+        value: `${(latest?.churn_rate || 0).toFixed(1)}%`,
+        change: (latest?.churn_rate || 0) - (previous?.churn_rate || 0),
+        icon: <Activity className='w-6 h-6' />,
+        color: (latest?.churn_rate || 0) > 5 ? '#f56565' : '#48bb78',
       },
       {
         title: 'New Subscriptions',
-        value: latest.new_subscriptions,
-        change: ((latest.new_subscriptions - previous.new_subscriptions) / (previous.new_subscriptions || 1)) * 100,
-        icon: <TrendingUp className="w-6 h-6" />,
+        value: latest?.new_subscriptions || 0,
+        change:
+          (((latest?.new_subscriptions || 0) - (previous?.new_subscriptions || 0)) /
+            ((previous?.new_subscriptions || 1))) *
+          100,
+        icon: <TrendingUp className='w-6 h-6' />,
         color: '#4299e1',
       },
     ];
@@ -159,21 +165,40 @@ export const AnalyticsDashboard: React.FC = () => {
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   };
 
-  const planDistribution = metrics.length > 0 ? [
-    { name: 'Free', value: metrics[metrics.length - 1].free_users, color: '#cbd5e0' },
-    { name: 'Essential', value: metrics[metrics.length - 1].essential_users, color: '#4299e1' },
-    { name: 'Family', value: metrics[metrics.length - 1].family_users, color: '#48bb78' },
-    { name: 'Premium', value: metrics[metrics.length - 1].premium_users, color: '#667eea' },
-  ] : [];
+  const planDistribution =
+    metrics.length > 0
+      ? [
+          {
+            name: 'Free',
+            value: metrics[metrics.length - 1].free_users,
+            color: '#cbd5e0',
+          },
+          {
+            name: 'Essential',
+            value: metrics[metrics.length - 1].essential_users,
+            color: '#4299e1',
+          },
+          {
+            name: 'Family',
+            value: metrics[metrics.length - 1].family_users,
+            color: '#48bb78',
+          },
+          {
+            name: 'Premium',
+            value: metrics[metrics.length - 1].premium_users,
+            color: '#667eea',
+          },
+        ]
+      : [];
 
   const getHealthIcon = (status: string) => {
     switch (status) {
       case 'healthy':
-        return <CheckCircle className="w-5 h-5 text-green-500" />;
+        return <CheckCircle className='w-5 h-5 text-green-500' />;
       case 'degraded':
-        return <AlertCircle className="w-5 h-5 text-yellow-500" />;
+        return <AlertCircle className='w-5 h-5 text-yellow-500' />;
       case 'down':
-        return <XCircle className="w-5 h-5 text-red-500" />;
+        return <XCircle className='w-5 h-5 text-red-500' />;
       default:
         return null;
     }
@@ -181,24 +206,28 @@ export const AnalyticsDashboard: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+      <div className='flex items-center justify-center h-screen'>
+        <Loader2 className='w-8 h-8 animate-spin text-blue-600' />
       </div>
     );
   }
 
   return (
-    <div className="p-6 bg-gray-50 dark:bg-gray-900 min-h-screen">
-      <div className="max-w-7xl mx-auto">
+    <div className='p-6 bg-gray-50 dark:bg-gray-900 min-h-screen'>
+      <div className='max-w-7xl mx-auto'>
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Analytics Dashboard</h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-2">Monitor your business metrics and system health</p>
+        <div className='mb-8'>
+          <h1 className='text-3xl font-bold text-gray-900 dark:text-white'>
+            Analytics Dashboard
+          </h1>
+          <p className='text-gray-600 dark:text-gray-400 mt-2'>
+            Monitor your business metrics and system health
+          </p>
         </div>
 
         {/* Date Range Selector */}
-        <div className="mb-6 flex gap-2">
-          {(['7d', '30d', '90d'] as const).map((range) => (
+        <div className='mb-6 flex gap-2'>
+          {(['7d', '30d', '90d'] as const).map(range => (
             <button
               key={range}
               onClick={() => setDateRange(range)}
@@ -208,85 +237,151 @@ export const AnalyticsDashboard: React.FC = () => {
                   : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
               }`}
             >
-              {range === '7d' ? '7 Days' : range === '30d' ? '30 Days' : '90 Days'}
+              {range === '7d'
+                ? '7 Days'
+                : range === '30d'
+                  ? '30 Days'
+                  : '90 Days'}
             </button>
           ))}
         </div>
 
         {/* Metric Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {currentMetrics.map((metric) => (
-            <div key={metric.title} className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
-              <div className="flex items-center justify-between mb-4">
-                <div className="p-2 rounded-lg" style={{ backgroundColor: `${metric.color}20` }}>
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8'>
+          {currentMetrics.map(metric => (
+            <div
+              key={metric.title}
+              className='bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm'
+            >
+              <div className='flex items-center justify-between mb-4'>
+                <div
+                  className='p-2 rounded-lg'
+                  style={{ backgroundColor: `${metric.color}20` }}
+                >
                   <div style={{ color: metric.color }}>{metric.icon}</div>
                 </div>
-                <div className={`flex items-center text-sm font-medium ${
-                  metric.change > 0 ? 'text-green-600' : 'text-red-600'
-                }`}>
-                  {metric.change > 0 ? <TrendingUp className="w-4 h-4 mr-1" /> : <TrendingDown className="w-4 h-4 mr-1" />}
+                <div
+                  className={`flex items-center text-sm font-medium ${
+                    metric.change > 0 ? 'text-green-600' : 'text-red-600'
+                  }`}
+                >
+                  {metric.change > 0 ? (
+                    <TrendingUp className='w-4 h-4 mr-1' />
+                  ) : (
+                    <TrendingDown className='w-4 h-4 mr-1' />
+                  )}
                   {Math.abs(metric.change).toFixed(1)}%
                 </div>
               </div>
-              <div className="text-2xl font-bold text-gray-900 dark:text-white">{metric.value}</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">{metric.title}</div>
+              <div className='text-2xl font-bold text-gray-900 dark:text-white'>
+                {metric.value}
+              </div>
+              <div className='text-sm text-gray-600 dark:text-gray-400 mt-1'>
+                {metric.title}
+              </div>
             </div>
           ))}
         </div>
 
         {/* Charts */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div className='grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8'>
           {/* Revenue Chart */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Revenue Trend</h3>
-            <ResponsiveContainer width="100%" height={300}>
+          <div className='bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm'>
+            <h3 className='text-lg font-semibold text-gray-900 dark:text-white mb-4'>
+              Revenue Trend
+            </h3>
+            <ResponsiveContainer width='100%' height={300}>
               <AreaChart data={metrics}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis dataKey="date" tickFormatter={formatDate} stroke="#9ca3af" />
-                <YAxis stroke="#9ca3af" />
+                <CartesianGrid strokeDasharray='3 3' stroke='#e5e7eb' />
+                <XAxis
+                  dataKey='date'
+                  tickFormatter={formatDate}
+                  stroke='#9ca3af'
+                />
+                <YAxis stroke='#9ca3af' />
                 <Tooltip
-                  contentStyle={{ backgroundColor: '#1f2937', border: 'none', borderRadius: '8px' }}
+                  contentStyle={{
+                    backgroundColor: '#1f2937',
+                    border: 'none',
+                    borderRadius: '8px',
+                  }}
                   labelStyle={{ color: '#f3f4f6' }}
                 />
-                <Area type="monotone" dataKey="mrr" stroke="#667eea" fill="#667eea" fillOpacity={0.3} />
+                <Area
+                  type='monotone'
+                  dataKey='mrr'
+                  stroke='#667eea'
+                  fill='#667eea'
+                  fillOpacity={0.3}
+                />
               </AreaChart>
             </ResponsiveContainer>
           </div>
 
           {/* User Growth Chart */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">User Growth</h3>
-            <ResponsiveContainer width="100%" height={300}>
+          <div className='bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm'>
+            <h3 className='text-lg font-semibold text-gray-900 dark:text-white mb-4'>
+              User Growth
+            </h3>
+            <ResponsiveContainer width='100%' height={300}>
               <LineChart data={metrics}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis dataKey="date" tickFormatter={formatDate} stroke="#9ca3af" />
-                <YAxis stroke="#9ca3af" />
+                <CartesianGrid strokeDasharray='3 3' stroke='#e5e7eb' />
+                <XAxis
+                  dataKey='date'
+                  tickFormatter={formatDate}
+                  stroke='#9ca3af'
+                />
+                <YAxis stroke='#9ca3af' />
                 <Tooltip
-                  contentStyle={{ backgroundColor: '#1f2937', border: 'none', borderRadius: '8px' }}
+                  contentStyle={{
+                    backgroundColor: '#1f2937',
+                    border: 'none',
+                    borderRadius: '8px',
+                  }}
                   labelStyle={{ color: '#f3f4f6' }}
                 />
-                <Line type="monotone" dataKey="total_users" stroke="#48bb78" strokeWidth={2} dot={false} />
-                <Line type="monotone" dataKey="new_subscriptions" stroke="#4299e1" strokeWidth={2} dot={false} />
-                <Line type="monotone" dataKey="cancellations" stroke="#f56565" strokeWidth={2} dot={false} />
+                <Line
+                  type='monotone'
+                  dataKey='total_users'
+                  stroke='#48bb78'
+                  strokeWidth={2}
+                  dot={false}
+                />
+                <Line
+                  type='monotone'
+                  dataKey='new_subscriptions'
+                  stroke='#4299e1'
+                  strokeWidth={2}
+                  dot={false}
+                />
+                <Line
+                  type='monotone'
+                  dataKey='cancellations'
+                  stroke='#f56565'
+                  strokeWidth={2}
+                  dot={false}
+                />
                 <Legend />
               </LineChart>
             </ResponsiveContainer>
           </div>
 
           {/* Plan Distribution */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Plan Distribution</h3>
-            <ResponsiveContainer width="100%" height={300}>
+          <div className='bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm'>
+            <h3 className='text-lg font-semibold text-gray-900 dark:text-white mb-4'>
+              Plan Distribution
+            </h3>
+            <ResponsiveContainer width='100%' height={300}>
               <PieChart>
                 <Pie
                   data={planDistribution}
-                  cx="50%"
-                  cy="50%"
+                  cx='50%'
+                  cy='50%'
                   labelLine={false}
-                  label={(entry) => `${entry.name}: ${entry.value}`}
+                  label={entry => `${entry.name}: ${entry.value}`}
                   outerRadius={100}
-                  fill="#8884d8"
-                  dataKey="value"
+                  fill='#8884d8'
+                  dataKey='value'
                 >
                   {planDistribution.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
@@ -298,38 +393,57 @@ export const AnalyticsDashboard: React.FC = () => {
           </div>
 
           {/* Churn Rate */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Churn Rate</h3>
-            <ResponsiveContainer width="100%" height={300}>
+          <div className='bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm'>
+            <h3 className='text-lg font-semibold text-gray-900 dark:text-white mb-4'>
+              Churn Rate
+            </h3>
+            <ResponsiveContainer width='100%' height={300}>
               <BarChart data={metrics}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis dataKey="date" tickFormatter={formatDate} stroke="#9ca3af" />
-                <YAxis stroke="#9ca3af" />
+                <CartesianGrid strokeDasharray='3 3' stroke='#e5e7eb' />
+                <XAxis
+                  dataKey='date'
+                  tickFormatter={formatDate}
+                  stroke='#9ca3af'
+                />
+                <YAxis stroke='#9ca3af' />
                 <Tooltip
-                  contentStyle={{ backgroundColor: '#1f2937', border: 'none', borderRadius: '8px' }}
+                  contentStyle={{
+                    backgroundColor: '#1f2937',
+                    border: 'none',
+                    borderRadius: '8px',
+                  }}
                   labelStyle={{ color: '#f3f4f6' }}
                 />
-                <Bar dataKey="churn_rate" fill="#f56565" radius={[8, 8, 0, 0]} />
+                <Bar
+                  dataKey='churn_rate'
+                  fill='#f56565'
+                  radius={[8, 8, 0, 0]}
+                />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
 
         {/* System Health */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">System Health</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {systemHealth.map((service) => (
+        <div className='bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm'>
+          <h3 className='text-lg font-semibold text-gray-900 dark:text-white mb-4'>
+            System Health
+          </h3>
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
+            {systemHealth.map(service => (
               <div
                 key={service.service_name}
-                className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg"
+                className='flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg'
               >
-                <div className="flex items-center gap-3">
+                <div className='flex items-center gap-3'>
                   {getHealthIcon(service.status)}
                   <div>
-                    <div className="font-medium text-gray-900 dark:text-white">{service.service_name}</div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">
-                      {service.response_time_ms}ms • {service.error_rate.toFixed(1)}% errors
+                    <div className='font-medium text-gray-900 dark:text-white'>
+                      {service.service_name}
+                    </div>
+                    <div className='text-sm text-gray-600 dark:text-gray-400'>
+                      {service.response_time_ms}ms •{' '}
+                      {service.error_rate.toFixed(1)}% errors
                     </div>
                   </div>
                 </div>

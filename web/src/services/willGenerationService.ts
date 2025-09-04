@@ -4,36 +4,36 @@
  */
 
 import type {
-  WillTemplate,
-  WillGenerationRequest,
+  BeneficiaryInfo,
+  ChildInfo,
+  ExecutorInfo,
   GeneratedWill,
-  WillUserData,
+  GuardianshipInfo,
   Jurisdiction,
   LanguageCode,
-  TemplateLibrary,
   SofiaWillAssistant,
-  ExecutorInfo,
-  ChildInfo,
-  GuardianshipInfo,
-  BeneficiaryInfo,
-  SpecialInstruction
+  SpecialInstruction,
+  TemplateLibrary,
+  WillGenerationRequest,
+  WillTemplate,
+  WillUserData,
 } from '../types/will-templates';
 import type { Guardian } from '../types/guardian';
 
 // Internal interfaces for will generation
 interface AddressData {
-  street?: string;
   city?: string;
-  postalCode?: string;
   country?: string;
+  postalCode?: string;
+  street?: string;
 }
 
 interface AssetData {
-  id: string;
-  type: string;
   description: string;
-  value?: number;
+  id: string;
   location?: string;
+  type: string;
+  value?: number;
 }
 import { templateLibrary } from '../lib/templateLibrary';
 import { sofiaAI } from '../lib/sofiaAI';
@@ -99,25 +99,30 @@ export class WillGenerationService {
           version: template.version,
           wordCount: this.countWords(willContent.text),
           pageCount: this.estimatePageCount(willContent.text),
-          checksum: this.generateChecksum(willContent.text)
+          checksum: this.generateChecksum(willContent.text),
         },
         validationResult,
         aiSuggestions,
         executionInstructions: template.structure.executionInstructions,
-        legalDisclaimer: this.generateLegalDisclaimer(request.jurisdiction, request.language)
+        legalDisclaimer: this.generateLegalDisclaimer(
+          request.jurisdiction,
+          request.language
+        ),
       };
 
       // 7. Final optimization with Sofia AI
-      const optimizedWill = await this.sofiaAssistant.optimizeWillContent(generatedWill);
+      const optimizedWill =
+        await this.sofiaAssistant.optimizeWillContent(generatedWill);
 
       // 8. Save to database if needed
       await this.saveWillToDatabase(optimizedWill);
 
       return optimizedWill;
-
     } catch (error) {
       console.error('Error generating will:', error);
-      throw new Error(`Will generation failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Will generation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -135,7 +140,10 @@ export class WillGenerationService {
       try {
         const userGuardians = await guardianService.getGuardians();
         enhanced.executors = this.mapGuardiansToExecutors(userGuardians);
-        enhanced.guardians = this.mapGuardiansToGuardianship(userGuardians, userData.family.children);
+        enhanced.guardians = this.mapGuardiansToGuardianship(
+          userGuardians,
+          userData.family.children
+        );
       } catch (error) {
         console.warn('Failed to load guardian data:', error);
       }
@@ -143,10 +151,11 @@ export class WillGenerationService {
 
     // AI-enhanced beneficiary optimization
     if (enhanced.beneficiaries.length > 0 && enhanced.assets.length > 0) {
-      const optimizations = await this.sofiaAssistant.suggestBeneficiaryOptimizations(
-        enhanced.beneficiaries,
-        enhanced.assets
-      );
+      const optimizations =
+        await this.sofiaAssistant.suggestBeneficiaryOptimizations(
+          enhanced.beneficiaries,
+          enhanced.assets
+        );
 
       // Apply non-breaking optimizations
       enhanced.beneficiaries = this.applyBeneficiaryOptimizations(
@@ -172,7 +181,7 @@ export class WillGenerationService {
     template: WillTemplate,
     userData: WillUserData,
     preferences: any
-  ): Promise<{ text: string; html: string; pdf?: ArrayBuffer }> {
+  ): Promise<{ html: string; pdf?: ArrayBuffer; text: string }> {
     // Load template content
     const templateContent = await this.loadTemplateContent(template);
 
@@ -194,7 +203,7 @@ export class WillGenerationService {
     return {
       text: processedText,
       html: htmlContent,
-      pdf: pdfContent
+      pdf: pdfContent,
     };
   }
 
@@ -219,7 +228,10 @@ export class WillGenerationService {
   /**
    * Prepare variables for template processing
    */
-  private prepareTemplateVariables(userData: WillUserData, template: WillTemplate): Record<string, any> {
+  private prepareTemplateVariables(
+    userData: WillUserData,
+    template: WillTemplate
+  ): Record<string, any> {
     const variables: Record<string, any> = {
       // Personal information
       testatorName: userData.personal.fullName,
@@ -243,29 +255,39 @@ export class WillGenerationService {
       realEstate: this.mapAssetsByType(userData.assets, 'real_estate'),
       bankAccounts: this.mapAssetsByType(userData.assets, 'bank_account'),
       vehicles: this.mapAssetsByType(userData.assets, 'vehicle'),
-      personalProperty: this.mapAssetsByType(userData.assets, 'personal_property'),
+      personalProperty: this.mapAssetsByType(
+        userData.assets,
+        'personal_property'
+      ),
 
       // Beneficiaries
       beneficiaries: userData.beneficiaries,
-      residuaryBeneficiary: this.getResiduaryBeneficiary(userData.beneficiaries),
+      residuaryBeneficiary: this.getResiduaryBeneficiary(
+        userData.beneficiaries
+      ),
 
       // Executors
       hasExecutor: userData.executors && userData.executors.length > 0,
       executorName: userData.executors?.[0]?.name || '',
-      executorAddress: userData.executors?.[0] ? this.formatAddress(userData.executors[0].address) : '',
+      executorAddress: userData.executors?.[0]
+        ? this.formatAddress(userData.executors[0].address)
+        : '',
       backupExecutor: userData.executors?.[1]?.name || '',
 
       // Guardianship
       primaryGuardian: userData.guardians?.[0]?.primaryGuardian,
       backupGuardian: userData.guardians?.[0]?.alternateGuardian,
-      guardianshipInstructions: userData.guardians?.[0]?.specialInstructions || '',
+      guardianshipInstructions:
+        userData.guardians?.[0]?.specialInstructions || '',
 
       // Special instructions
       funeralWishes: this.getFuneralWishes(userData.specialInstructions),
       organDonation: this.getOrganDonation(userData.specialInstructions),
       digitalAssets: this.getDigitalAssets(userData.specialInstructions),
       personalMessages: this.getPersonalMessages(userData.specialInstructions),
-      charitableBequests: this.getCharitableBequests(userData.specialInstructions),
+      charitableBequests: this.getCharitableBequests(
+        userData.specialInstructions
+      ),
 
       // System variables
       currentDate: this.formatDate(new Date().toISOString()),
@@ -274,9 +296,10 @@ export class WillGenerationService {
       // Template configuration
       willType: {
         holographic: template.type === 'holographic',
-        witnessed: template.type === 'witnessed' || template.type === 'allographic',
-        notarial: template.type === 'notarial'
-      }
+        witnessed:
+          template.type === 'witnessed' || template.type === 'allographic',
+        notarial: template.type === 'notarial',
+      },
     };
 
     return variables;
@@ -285,7 +308,10 @@ export class WillGenerationService {
   /**
    * Process template with variable substitution
    */
-  private processTemplate(template: string, variables: Record<string, any>): string {
+  private processTemplate(
+    template: string,
+    variables: Record<string, any>
+  ): string {
     let processed = template;
 
     // Simple variable substitution {{variable}}
@@ -306,7 +332,10 @@ export class WillGenerationService {
   /**
    * Process conditional template blocks
    */
-  private processConditionals(template: string, variables: Record<string, any>): string {
+  private processConditionals(
+    template: string,
+    variables: Record<string, any>
+  ): string {
     return template.replace(
       /\{\{#if\s+(\w+)\}\}([\s\S]*?)\{\{\/if\}\}/g,
       (_match, condition, content) => {
@@ -320,21 +349,31 @@ export class WillGenerationService {
   /**
    * Process array iteration blocks
    */
-  private processArrays(template: string, variables: Record<string, any>): string {
+  private processArrays(
+    template: string,
+    variables: Record<string, any>
+  ): string {
     return template.replace(
       /\{\{#each\s+(\w+)\}\}([\s\S]*?)\{\{\/each\}\}/g,
       (_match, arrayName, itemTemplate) => {
         const array = this.getNestedValue(variables, arrayName);
         if (!Array.isArray(array)) return '';
 
-        return array.map(item => {
-          let itemContent = itemTemplate;
-          // Replace {{property}} with item.property
-          itemContent = itemContent.replace(/\{\{(\w+)\}\}/g, (_match, prop) => {
-            return (item as any)[prop] !== undefined ? String((item as any)[prop]) : _match;
-          });
-          return itemContent;
-        }).join('');
+        return array
+          .map(item => {
+            let itemContent = itemTemplate;
+            // Replace {{property}} with item.property
+            itemContent = itemContent.replace(
+              /\{\{(\w+)\}\}/g,
+              (_match: string, prop: string) => {
+                return (item as any)[prop] !== undefined
+                  ? String((item as any)[prop])
+                  : _match;
+              }
+            );
+            return itemContent;
+          })
+          .join('');
       }
     );
   }
@@ -383,37 +422,44 @@ export class WillGenerationService {
       .filter(g => g.is_will_executor)
       .map((guardian, index) => ({
         id: guardian.id,
-        type: (index === 0 ? 'primary' : 'alternate') as 'primary' | 'alternate' | 'co_executor',
+        type: (index === 0 ? 'primary' : 'alternate') as
+          | 'alternate'
+          | 'co_executor'
+          | 'primary',
         name: guardian.name,
         relationship: guardian.relationship || 'guardian',
         address: {
           street: '',
           city: '',
           postalCode: '',
-          country: ''
+          country: '',
         },
         contactInfo: {
           email: guardian.email,
-          phone: guardian.phone || undefined
+          phone: guardian.phone || undefined,
         },
         isProfessional: false,
         compensation: undefined,
-        powerLimitations: []
+        powerLimitations: [],
       }));
   }
 
   /**
    * Map guardians to guardianship info
    */
-  private mapGuardiansToGuardianship(guardians: Guardian[], children: ChildInfo[]): GuardianshipInfo[] {
+  private mapGuardiansToGuardianship(
+    guardians: Guardian[],
+    children: ChildInfo[]
+  ): GuardianshipInfo[] {
     const childGuardians = guardians.filter(g => g.is_child_guardian);
     if (childGuardians.length === 0 || !children) return [];
 
     return children
       .filter(child => child.isMinor)
+      .filter(child => childGuardians.length > 0)
       .map(child => ({
-        childId: child.id || `child-${Math.random().toString(36).substr(2, 9)}`,
-        primaryGuardian: childGuardians[0] ? {
+        childId: `child-${Math.random().toString(36).substr(2, 9)}`,
+        primaryGuardian: {
           id: childGuardians[0].id,
           type: 'primary' as const,
           name: childGuardians[0].name,
@@ -422,34 +468,36 @@ export class WillGenerationService {
             street: '',
             city: '',
             postalCode: '',
-            country: ''
+            country: '',
           },
           contactInfo: {
             email: childGuardians[0].email,
-            phone: childGuardians[0].phone || undefined
+            phone: childGuardians[0].phone || undefined,
           },
           isProfessional: false,
-          powerLimitations: []
-        } : undefined,
-        alternateGuardian: childGuardians[1] ? {
-          id: childGuardians[1].id,
-          type: 'alternate' as const,
-          name: childGuardians[1].name,
-          relationship: childGuardians[1].relationship || 'guardian',
-          address: {
-            street: '',
-            city: '',
-            postalCode: '',
-            country: ''
-          },
-          contactInfo: {
-            email: childGuardians[1].email,
-            phone: childGuardians[1].phone || undefined
-          },
-          isProfessional: false,
-          powerLimitations: []
-        } : undefined,
-        specialInstructions: childGuardians[0]?.notes || undefined
+          powerLimitations: [],
+        },
+        alternateGuardian: childGuardians[1]
+          ? {
+              id: childGuardians[1].id,
+              type: 'alternate' as const,
+              name: childGuardians[1].name,
+              relationship: childGuardians[1].relationship || 'guardian',
+              address: {
+                street: '',
+                city: '',
+                postalCode: '',
+                country: '',
+              },
+              contactInfo: {
+                email: childGuardians[1].email,
+                phone: childGuardians[1].phone || undefined,
+              },
+              isProfessional: false,
+              powerLimitations: [],
+            }
+          : undefined,
+        specialInstructions: childGuardians[0]?.notes || undefined,
       }));
   }
 
@@ -490,7 +538,10 @@ export class WillGenerationService {
     let age = today.getFullYear() - birth.getFullYear();
     const monthDiff = today.getMonth() - birth.getMonth();
 
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < birth.getDate())
+    ) {
       age--;
     }
 
@@ -530,7 +581,8 @@ export class WillGenerationService {
     return {
       yes: organ.content.includes('yes') || organ.content.includes('donate'),
       no: organ.content.includes('no') || organ.content.includes('not donate'),
-      family_decides: organ.content.includes('family') || organ.content.includes('decide')
+      family_decides:
+        organ.content.includes('family') || organ.content.includes('decide'),
     };
   }
 
@@ -544,7 +596,7 @@ export class WillGenerationService {
       .filter(i => i.type === 'personal_message')
       .map(i => ({
         recipient: i.recipient || 'family',
-        message: i.content
+        message: i.content,
       }));
   }
 
@@ -553,27 +605,44 @@ export class WillGenerationService {
       .filter(i => i.type === 'charitable_giving')
       .map(i => ({
         organization: i.title,
-        amount: i.content.match(/\d+/) ? parseInt(i.content.match(/\d+/)?.[0] || '0') : 0,
-        purpose: i.content
+        amount: i.content.match(/\d+/)
+          ? parseInt(i.content.match(/\d+/)?.[0] || '0')
+          : 0,
+        purpose: i.content,
       }));
   }
 
-  private shouldShowForcedHeirsNotice(userData: WillUserData, template: WillTemplate): boolean {
+  private shouldShowForcedHeirsNotice(
+    userData: WillUserData,
+    template: WillTemplate
+  ): boolean {
     if (!this.hasForcedHeirship(template.jurisdiction)) return false;
 
     const hasSpouse = userData.family.spouse !== undefined;
-    const hasChildren = userData.family.children && userData.family.children.length > 0;
+    const hasChildren =
+      userData.family.children && userData.family.children.length > 0;
 
     return hasSpouse || hasChildren;
   }
 
   private hasForcedHeirship(jurisdiction: Jurisdiction): boolean {
-    const forcedHeirshipJurisdictions: Jurisdiction[] = ['CZ', 'SK', 'FR', 'ES', 'IT', 'DE', 'AT', 'PL'];
+    const forcedHeirshipJurisdictions: Jurisdiction[] = [
+      'CZ',
+      'SK',
+      'FR',
+      'ES',
+      'IT',
+      'DE',
+      'AT',
+      'PL',
+    ];
     return forcedHeirshipJurisdictions.includes(jurisdiction);
   }
 
   private getNestedValue(obj: Record<string, unknown>, path: string): unknown {
-    return path.split('.').reduce((current: any, prop: string) => current?.[prop], obj);
+    return path
+      .split('.')
+      .reduce((current: any, prop: string) => current?.[prop], obj);
   }
 
   private async ensureForcedHeirshipCompliance(
@@ -583,28 +652,38 @@ export class WillGenerationService {
     return beneficiaries;
   }
 
-  private applyBeneficiaryOptimizations(beneficiaries: BeneficiaryInfo[], optimizations?: Array<{ type: string; condition: string; adjustment: string }>): BeneficiaryInfo[] {
+  private applyBeneficiaryOptimizations(
+    beneficiaries: BeneficiaryInfo[],
+    optimizations?: any
+  ): BeneficiaryInfo[] {
     // Implementation would apply non-breaking AI optimization suggestions
     if (optimizations) {
       // Process optimizations here when needed
+      // For now, just return the beneficiaries as-is
     }
     return beneficiaries;
   }
 
-  private generateLegalDisclaimer(jurisdiction: Jurisdiction, language: LanguageCode): string {
+  private generateLegalDisclaimer(
+    jurisdiction: Jurisdiction,
+    language: LanguageCode
+  ): string {
     const disclaimers: Record<string, Record<string, string>> = {
       CZ: {
         cs: 'Tento dokument je generován na základě současného českého práva. Pro personalizované právní poradenstvo se obraťte na kvalifikovaného českého právníka.',
-        en: 'This document is generated based on current Czech law. For personalized legal advice, consult a qualified Czech attorney.'
+        en: 'This document is generated based on current Czech law. For personalized legal advice, consult a qualified Czech attorney.',
       },
       SK: {
         sk: 'Tento dokument je generovaný na základe súčasného slovenského práva. Pre personalizované právne poradenstvo sa obráťte na kvalifikovaného slovenského právnika.',
-        en: 'This document is generated based on current Slovak law. For personalized legal advice, consult a qualified Slovak attorney.'
-      }
+        en: 'This document is generated based on current Slovak law. For personalized legal advice, consult a qualified Slovak attorney.',
+      },
     };
 
-    return disclaimers[jurisdiction]?.[language] || disclaimers[jurisdiction]?.en ||
-           'This document is generated based on applicable law. Consult a qualified attorney for legal advice.';
+    return (
+      disclaimers[jurisdiction]?.[language] ||
+      disclaimers[jurisdiction]?.en ||
+      'This document is generated based on applicable law. Consult a qualified attorney for legal advice.'
+    );
   }
 
   private async saveWillToDatabase(_will: GeneratedWill): Promise<void> {

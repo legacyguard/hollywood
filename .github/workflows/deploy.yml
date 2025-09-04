@@ -2,7 +2,7 @@ name: 'Deploy Application'
 
 on:
   workflow_run:
-    workflows: ["CI Pipeline"]
+    workflows: ['CI Pipeline']
     types:
       - completed
     branches: [main, develop]
@@ -37,15 +37,15 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     if: github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch'
-    
+
     outputs:
       environment: ${{ steps.determine-env.outputs.environment }}
       should_deploy: ${{ steps.validate.outputs.should_deploy }}
-      
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Determine deployment environment
         id: determine-env
         run: |
@@ -58,30 +58,30 @@ jobs:
           else
             echo "environment=staging" >> $GITHUB_OUTPUT
           fi
-          
+
       - name: Validate deployment conditions
         id: validate
         run: |
           SHOULD_DEPLOY="false"
-          
+
           # Check if force deploy is enabled
           if [[ "${{ github.event.inputs.force_deploy }}" == "true" ]]; then
             echo "Force deployment requested"
             SHOULD_DEPLOY="true"
           fi
-          
+
           # Check if CI passed (for workflow_run trigger)
           if [[ "${{ github.event.workflow_run.conclusion }}" == "success" ]]; then
             echo "CI pipeline passed"
             SHOULD_DEPLOY="true"
           fi
-          
+
           # Check for manual dispatch
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             echo "Manual deployment triggered"
             SHOULD_DEPLOY="true"
           fi
-          
+
           echo "should_deploy=$SHOULD_DEPLOY" >> $GITHUB_OUTPUT
           echo "Deployment validation: $SHOULD_DEPLOY"
 
@@ -92,25 +92,25 @@ jobs:
     timeout-minutes: 15
     needs: validate
     if: needs.validate.outputs.should_deploy == 'true'
-    
+
     environment:
       name: ${{ needs.validate.outputs.environment }}
       url: ${{ steps.deploy.outputs.url }}
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
-          
+
       - name: Install dependencies
         run: |
           npm ci --prefer-offline --no-audit --no-fund
-          
+
       - name: Configure environment
         run: |
           # Create environment-specific configuration
@@ -119,34 +119,34 @@ jobs:
           echo "VITE_ENVIRONMENT=${{ needs.validate.outputs.environment }}" >> .env.production
           echo "VITE_COMMIT_SHA=${{ github.sha }}" >> .env.production
           echo "VITE_BRANCH=${{ github.ref_name }}" >> .env.production
-          
+
           # Add environment-specific variables (these would come from GitHub Secrets)
           # echo "VITE_SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env.production
           # echo "VITE_SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}" >> .env.production
           # echo "VITE_CLERK_PUBLISHABLE_KEY=${{ secrets.CLERK_PUBLISHABLE_KEY }}" >> .env.production
-          
+
       - name: Build application
         run: |
           npm run build
         env:
           NODE_ENV: production
-          
+
       - name: Optimize build
         run: |
           # Additional optimization steps
           echo "Build optimization completed"
-          
+
           # Show build stats
           echo "📦 Build Statistics:"
           du -sh dist/
           find dist/assets -name "*.js" -exec echo "JS: {}" \; -exec du -h {} \;
           find dist/assets -name "*.css" -exec echo "CSS: {}" \; -exec du -h {} \;
-          
+
       - name: Create deployment package
         run: |
           # Create deployment archive
           tar -czf deployment-${{ needs.validate.outputs.environment }}-${{ github.sha }}.tar.gz -C dist .
-          
+
       - name: Upload deployment package
         uses: actions/upload-artifact@v4
         with:
@@ -163,42 +163,42 @@ jobs:
     timeout-minutes: 10
     needs: [validate, build-deploy]
     if: needs.validate.outputs.environment == 'staging' && needs.validate.outputs.should_deploy == 'true'
-    
+
     environment:
       name: staging
       url: https://staging.legacyguard.app
-      
+
     steps:
       - name: Download deployment package
         uses: actions/download-artifact@v4
         with:
           name: deployment-${{ needs.validate.outputs.environment }}-${{ github.sha }}
-          
+
       - name: Deploy to staging environment
         id: deploy
         run: |
           echo "Deploying to staging environment..."
-          
+
           # This would typically deploy to your staging server
           # Examples:
           # - Deploy to Vercel/Netlify
           # - Upload to S3 + CloudFront
           # - Deploy to your own servers via SSH/SCP
           # - Use container deployment (Docker)
-          
+
           # Simulate deployment
           echo "✅ Staging deployment completed"
           echo "url=https://staging.legacyguard.app" >> $GITHUB_OUTPUT
-          
+
       - name: Run smoke tests
         run: |
           echo "Running staging smoke tests..."
-          
+
           # Basic health check
           # curl -f https://staging.legacyguard.app/monitoring || exit 1
-          
+
           echo "✅ Smoke tests passed"
-          
+
       - name: Update deployment status
         run: |
           echo "## Staging Deployment Complete 🎯" >> $GITHUB_STEP_SUMMARY
@@ -216,53 +216,53 @@ jobs:
     timeout-minutes: 15
     needs: [validate, build-deploy]
     if: needs.validate.outputs.environment == 'production' && needs.validate.outputs.should_deploy == 'true'
-    
+
     environment:
       name: production
       url: https://app.legacyguard.com
-      
+
     steps:
       - name: Download deployment package
         uses: actions/download-artifact@v4
         with:
           name: deployment-${{ needs.validate.outputs.environment }}-${{ github.sha }}
-          
+
       - name: Pre-deployment backup
         run: |
           echo "Creating production backup..."
           # This would backup current production deployment
           echo "✅ Backup completed"
-          
+
       - name: Deploy to production
         id: deploy
         run: |
           echo "Deploying to production environment..."
-          
+
           # Production deployment steps
           # This would typically include:
           # - Blue-green deployment
           # - Database migrations
           # - Cache warming
           # - CDN purging
-          
+
           echo "✅ Production deployment completed"
           echo "url=https://app.legacyguard.com" >> $GITHUB_OUTPUT
-          
+
       - name: Run production health checks
         run: |
           echo "Running production health checks..."
-          
+
           # Comprehensive health checks
           # curl -f https://app.legacyguard.com/monitoring || exit 1
-          
+
           echo "✅ Production health checks passed"
-          
+
       - name: Warm up caches
         run: |
           echo "Warming up caches..."
           # Cache warming logic
           echo "✅ Caches warmed"
-          
+
       - name: Update deployment status
         run: |
           echo "## Production Deployment Complete 🚀" >> $GITHUB_STEP_SUMMARY
@@ -280,29 +280,29 @@ jobs:
     timeout-minutes: 10
     needs: [validate, deploy-staging, deploy-production]
     if: always() && (needs.deploy-staging.result == 'success' || needs.deploy-production.result == 'success')
-    
+
     steps:
       - name: Monitor deployment health
         run: |
           echo "Monitoring deployment health for 5 minutes..."
-          
+
           ENVIRONMENT="${{ needs.validate.outputs.environment }}"
-          
+
           if [[ "$ENVIRONMENT" == "staging" ]]; then
             URL="https://staging.legacyguard.app"
           else
             URL="https://app.legacyguard.com"
           fi
-          
+
           # Monitor for 5 minutes
           for i in {1..10}; do
             echo "Health check $i/10..."
             # curl -f "$URL/monitoring" || echo "Warning: Health check failed"
             sleep 30
           done
-          
+
           echo "✅ Deployment monitoring completed"
-          
+
       - name: Setup alerts
         run: |
           echo "Setting up post-deployment alerts..."
@@ -316,21 +316,21 @@ jobs:
     timeout-minutes: 10
     needs: [validate, deploy-staging, deploy-production, post-deploy-monitoring]
     if: failure() && (needs.deploy-staging.result == 'failure' || needs.deploy-production.result == 'failure')
-    
+
     steps:
       - name: Execute rollback
         run: |
           echo "🚨 Deployment failed - executing rollback..."
-          
+
           ENVIRONMENT="${{ needs.validate.outputs.environment }}"
-          
+
           # Rollback logic would go here
           # - Restore previous deployment
           # - Revert database changes if needed
           # - Clear caches
-          
+
           echo "✅ Rollback completed for $ENVIRONMENT"
-          
+
       - name: Notify rollback
         run: |
           echo "## Deployment Rollback Executed 🔄" >> $GITHUB_STEP_SUMMARY

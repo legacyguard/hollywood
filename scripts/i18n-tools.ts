@@ -36,12 +36,12 @@ class TranslationOrganizer {
   private readonly MIN_LINES = 50;
   private readonly LOCALES_DIR = path.join(process.cwd(), 'public', 'locales');
 
-    async analyzeCurrentStructure(): Promise<TranslationReport> {
+  async analyzeCurrentStructure(): Promise<TranslationReport> {
     // 🔍 Analyzing translation structure...
 
     const files = await glob('**/*.json', {
       cwd: this.LOCALES_DIR,
-      ignore: ['**/node_modules/**']
+      ignore: ['**/node_modules/**'],
     });
 
     const report: TranslationReport = {
@@ -51,7 +51,7 @@ class TranslationOrganizer {
       languages: new Set<string>(),
       namespaces: new Set<string>(),
       issues: [],
-      suggestions: []
+      suggestions: [],
     };
 
     for (const file of files) {
@@ -61,7 +61,8 @@ class TranslationOrganizer {
 
       const parts = file.split('/');
       const language = parts[0];
-      const namespace = parts.slice(1, -1).join('/') || path.basename(file, '.json');
+      const namespace =
+        parts.slice(1, -1).join('/') || path.basename(file, '.json');
 
       const module: TranslationModule = {
         namespace,
@@ -69,7 +70,7 @@ class TranslationOrganizer {
         lineCount: content.split('\n').length,
         dependencies: this.findDependencies(json),
         language,
-        path: filePath
+        path: filePath,
       };
 
       this.modules.set(`${language}/${namespace}`, module);
@@ -86,9 +87,11 @@ class TranslationOrganizer {
           type: 'size',
           severity: 'warning',
           message: `File too large (${module.lineCount} lines)`,
-          file: file
+          file: file,
         });
-        report.suggestions.push(`Consider splitting ${file} into smaller modules`);
+        report.suggestions.push(
+          `Consider splitting ${file} into smaller modules`
+        );
       }
 
       if (module.lineCount < this.MIN_LINES && !file.includes('jurisdiction')) {
@@ -96,9 +99,11 @@ class TranslationOrganizer {
           type: 'size',
           severity: 'info',
           message: `File too small (${module.lineCount} lines)`,
-          file: file
+          file: file,
         });
-        report.suggestions.push(`Consider merging ${file} with related modules`);
+        report.suggestions.push(
+          `Consider merging ${file} with related modules`
+        );
       }
     }
 
@@ -166,7 +171,7 @@ class TranslationOrganizer {
             type: 'missing',
             severity: 'error',
             message: `Missing translation file for ${namespace}`,
-            file: `${language}/${namespace}.json`
+            file: `${language}/${namespace}.json`,
           });
         }
       }
@@ -207,7 +212,7 @@ class TranslationOrganizer {
               severity: 'warning',
               message: `Missing key "${key}" in ${module.language}`,
               file: `${module.language}/${namespace}`,
-              key
+              key,
             });
           }
         }
@@ -220,7 +225,7 @@ class TranslationOrganizer {
               severity: 'info',
               message: `Extra key "${key}" in ${module.language}`,
               file: `${module.language}/${namespace}`,
-              key
+              key,
             });
           }
         }
@@ -271,7 +276,11 @@ class TranslationOrganizer {
     }
 
     // Group keys into suggested files
-    const suggestions: Array<{ file: string; keys: string[]; estimatedLines: number }> = [];
+    const suggestions: Array<{
+      file: string;
+      keys: string[];
+      estimatedLines: number;
+    }> = [];
     let currentSuggestion = { file: '', keys: [], estimatedLines: 0 };
 
     for (const [key, count] of keyCounts) {
@@ -284,7 +293,7 @@ class TranslationOrganizer {
         currentSuggestion = {
           file: `${namespace}/${key}`,
           keys: [key],
-          estimatedLines
+          estimatedLines,
         };
       } else {
         currentSuggestion.keys.push(key);
@@ -299,11 +308,11 @@ class TranslationOrganizer {
       suggestions.push(currentSuggestion);
     }
 
-          for (const _suggestion of suggestions) {
-        // console.log(`  - ${_suggestion.file}.json`);
-        // console.log(`    Keys: ${_suggestion.keys.join(', ')}`);
-        // console.log(`    Estimated lines: ${_suggestion.estimatedLines}`);
-      }
+    for (const _suggestion of suggestions) {
+      // console.log(`  - ${_suggestion.file}.json`);
+      // console.log(`    Keys: ${_suggestion.keys.join(', ')}`);
+      // console.log(`    Estimated lines: ${_suggestion.estimatedLines}`);
+    }
   }
 
   async validate(): Promise<boolean> {
@@ -389,7 +398,9 @@ class TranslationOrganizer {
           if (baseModule) {
             const baseKeyCount = this.countKeys(baseModule.keys);
             const keyCount = this.countKeys(module.keys);
-            coverage[namespace][language] = Math.round((keyCount / baseKeyCount) * 100);
+            coverage[namespace][language] = Math.round(
+              (keyCount / baseKeyCount) * 100
+            );
           } else {
             coverage[namespace][language] = 100;
           }
@@ -409,11 +420,13 @@ class TranslationOrganizer {
 
     for (const [namespace, langCoverage] of Object.entries(coverage)) {
       const _row = namespace.padEnd(20);
-      const _values = languages.map(lang => {
-        const percent = langCoverage[lang];
-        const emoji = percent === 100 ? '✅' : percent >= 80 ? '🟡' : '❌';
-        return `${percent}% ${emoji}`.padEnd(10);
-      }).join('');
+      const _values = languages
+        .map(lang => {
+          const percent = langCoverage[lang];
+          const emoji = percent === 100 ? '✅' : percent >= 80 ? '🟡' : '❌';
+          return `${percent}% ${emoji}`.padEnd(10);
+        })
+        .join('');
       // console.log(_row + _values);
     }
 

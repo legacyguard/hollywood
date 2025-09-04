@@ -1,22 +1,22 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 interface OptimizedImageProps {
-  src: string;
   alt: string;
-  width?: number;
-  height?: number;
   className?: string;
-  priority?: boolean; // Whether to preload this image
+  decoding?: 'async' | 'auto' | 'sync';
+  fallbackSrc?: string;
+  height?: number;
+  loading?: 'eager' | 'lazy';
+  onError?: () => void;
+  onLoad?: () => void;
   placeholder?: 'blur' | 'color' | 'none';
   placeholderColor?: string;
+  priority?: boolean; // Whether to preload this image
   sizes?: string; // Responsive image sizes
-  onLoad?: () => void;
-  onError?: () => void;
-  fallbackSrc?: string;
-  loading?: 'lazy' | 'eager';
-  decoding?: 'async' | 'sync' | 'auto';
+  src: string;
+  width?: number;
 }
 
 export const OptimizedImage: React.FC<OptimizedImageProps> = ({
@@ -26,7 +26,7 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
   height,
   className,
   priority = false,
-      placeholder: _placeholder = 'color',
+  placeholder: _placeholder = 'color',
   placeholderColor = 'hsl(var(--muted))',
   sizes = '100vw',
   onLoad,
@@ -47,8 +47,8 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
     if (priority || !imgRef.current) return;
 
     const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
+      entries => {
+        entries.forEach(entry => {
           if (entry.isIntersecting) {
             setIsInView(true);
             observer.disconnect();
@@ -136,12 +136,16 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
 
           // Convert to WebP if possible
           try {
-            canvas.toBlob((blob) => {
-              if (blob) {
-                const webpUrl = URL.createObjectURL(blob);
-                setCurrentSrc(webpUrl);
-              }
-            }, 'image/webp', 0.8);
+            canvas.toBlob(
+              blob => {
+                if (blob) {
+                  const webpUrl = URL.createObjectURL(blob);
+                  setCurrentSrc(webpUrl);
+                }
+              },
+              'image/webp',
+              0.8
+            );
           } catch (error) {
             console.warn('WebP conversion failed:', error);
           }
@@ -170,7 +174,7 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
         )}
         style={{ width, height }}
       >
-        <span className="text-sm">Image failed to load</span>
+        <span className='text-sm'>Image failed to load</span>
       </div>
     );
   }
@@ -184,7 +188,7 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="absolute inset-0"
+            className='absolute inset-0'
             style={{
               backgroundColor: placeholderColor,
               width,
@@ -221,7 +225,7 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
       {/* Loading skeleton for non-priority images */}
       {!priority && !isLoaded && (
         <div
-          className="absolute inset-0 bg-gradient-to-r from-muted via-muted/50 to-muted animate-pulse"
+          className='absolute inset-0 bg-gradient-to-r from-muted via-muted/50 to-muted animate-pulse'
           style={{
             width,
             height,
@@ -233,11 +237,11 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
 };
 
 // Export a simpler version for basic use cases
-export const LazyImage: React.FC<Omit<OptimizedImageProps, 'priority' | 'placeholder'>> = (props) => (
-  <OptimizedImage {...props} priority={false} placeholder="color" />
-);
+export const LazyImage: React.FC<
+  Omit<OptimizedImageProps, 'placeholder' | 'priority'>
+> = props => <OptimizedImage {...props} priority={false} placeholder='color' />;
 
 // Export a priority version for above-the-fold images
-export const PriorityImage: React.FC<Omit<OptimizedImageProps, 'priority' | 'loading'>> = (props) => (
-  <OptimizedImage {...props} priority={true} loading="eager" />
-);
+export const PriorityImage: React.FC<
+  Omit<OptimizedImageProps, 'loading' | 'priority'>
+> = props => <OptimizedImage {...props} priority={true} loading='eager' />;

@@ -30,7 +30,7 @@ class SecurityMetricsService {
       trendData.push({
         time: this.getTimeLabel(i, range),
         requests: requests,
-        blocked: blocked
+        blocked: blocked,
       });
     }
 
@@ -40,14 +40,14 @@ class SecurityMetricsService {
       { type: 'XSS', count: 32 },
       { type: 'CSRF', count: 18 },
       { type: 'Brute Force', count: 25 },
-      { type: 'Other', count: 12 }
+      { type: 'Other', count: 12 },
     ];
 
     return {
       trendData,
       threatTypes,
       totalRequests: trendData.reduce((sum, item) => sum + item.requests, 0),
-      totalBlocked: trendData.reduce((sum, item) => sum + item.blocked, 0)
+      totalBlocked: trendData.reduce((sum, item) => sum + item.blocked, 0),
     };
   }
 }

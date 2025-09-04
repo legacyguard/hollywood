@@ -16,7 +16,9 @@ import { test, expect } from '@playwright/test';
 test.describe('Minimal Smoke Tests', () => {
   test.setTimeout(30000); // Set timeout for all tests in this suite
 
-  test('Application should be accessible and load landing page', async ({ page }) => {
+  test('Application should be accessible and load landing page', async ({
+    page,
+  }) => {
     // Navigate to the application
     await page.goto('/', { waitUntil: 'domcontentloaded' });
 
@@ -27,9 +29,9 @@ test.describe('Minimal Smoke Tests', () => {
     expect(bodyText).not.toContain('404');
 
     // Check that some content is rendered
-    const hasContent = await page.locator('body').evaluate(
-      el => el.innerHTML.length > 100
-    );
+    const hasContent = await page
+      .locator('body')
+      .evaluate(el => el.innerHTML.length > 100);
     expect(hasContent).toBeTruthy();
 
     // Verify no console errors (excluding warnings)
@@ -38,10 +40,12 @@ test.describe('Minimal Smoke Tests', () => {
       if (msg.type() === 'error') {
         // Ignore known React/development warnings
         const text = msg.text();
-        if (!text.includes('Warning:') &&
-            !text.includes('DevTools') &&
-            !text.includes('React Router Future Flag') &&
-            !text.includes('hydration')) {
+        if (
+          !text.includes('Warning:') &&
+          !text.includes('DevTools') &&
+          !text.includes('React Router Future Flag') &&
+          !text.includes('hydration')
+        ) {
           consoleErrors++;
           // console.log('Console error:', text);
         }
@@ -62,7 +66,9 @@ test.describe('Minimal Smoke Tests', () => {
     // Using flexible selectors to handle different possible states
 
     // Check for any header/navigation
-    const hasHeader = await page.locator('header, nav, [role="navigation"], .navbar, .header').count();
+    const hasHeader = await page
+      .locator('header, nav, [role="navigation"], .navbar, .header')
+      .count();
     expect(hasHeader).toBeGreaterThan(0);
 
     // Check for main content area
@@ -70,7 +76,9 @@ test.describe('Minimal Smoke Tests', () => {
     expect(hasMain).toBeGreaterThan(0);
 
     // Check for some interactive elements (buttons or links)
-    const interactiveElements = await page.locator('button:visible, a:visible').count();
+    const interactiveElements = await page
+      .locator('button:visible, a:visible')
+      .count();
     expect(interactiveElements).toBeGreaterThan(0);
 
     // Check page title exists
@@ -102,7 +110,7 @@ test.describe('Minimal Smoke Tests', () => {
       'input[type="email"]',
       'input[type="password"]',
       'input[placeholder*="email" i]',
-      'input[placeholder*="password" i]'
+      'input[placeholder*="password" i]',
     ];
 
     // Check if any authentication element is present
@@ -129,7 +137,7 @@ test.describe('Minimal Smoke Tests', () => {
       'button:has-text("Sign in")',
       'button:has-text("Log in")',
       'a:has-text("Sign in")',
-      'a:has-text("Log in")'
+      'a:has-text("Log in")',
     ];
 
     let navigationSuccessful = false;
@@ -142,13 +150,20 @@ test.describe('Minimal Smoke Tests', () => {
 
         // Check if we navigated to a sign-in page
         const url = page.url();
-        if (url.includes('sign-in') || url.includes('signin') || url.includes('login') || url.includes('auth')) {
+        if (
+          url.includes('sign-in') ||
+          url.includes('signin') ||
+          url.includes('login') ||
+          url.includes('auth')
+        ) {
           navigationSuccessful = true;
           break;
         }
 
         // Check if Clerk sign-in UI appeared
-        const hasClerkSignIn = await page.locator('.cl-sign-in, .cl-formContainer').count();
+        const hasClerkSignIn = await page
+          .locator('.cl-sign-in, .cl-formContainer')
+          .count();
         if (hasClerkSignIn > 0) {
           navigationSuccessful = true;
           break;
@@ -159,11 +174,15 @@ test.describe('Minimal Smoke Tests', () => {
     // If no explicit sign-in link, check if we're already on an auth page
     if (!navigationSuccessful) {
       const currentUrl = page.url();
-      const hasAuthUI = await page.locator(
-        '.cl-component, input[type="email"], input[type="password"]'
-      ).count();
+      const hasAuthUI = await page
+        .locator('.cl-component, input[type="email"], input[type="password"]')
+        .count();
 
-      if (hasAuthUI > 0 || currentUrl.includes('auth') || currentUrl.includes('sign')) {
+      if (
+        hasAuthUI > 0 ||
+        currentUrl.includes('auth') ||
+        currentUrl.includes('sign')
+      ) {
         navigationSuccessful = true;
       }
     }
@@ -171,7 +190,9 @@ test.describe('Minimal Smoke Tests', () => {
     expect(navigationSuccessful).toBeTruthy();
   });
 
-  test('Application should handle direct navigation to key routes', async ({ page }) => {
+  test('Application should handle direct navigation to key routes', async ({
+    page,
+  }) => {
     // Test that key routes don't crash the application
     const routes = [
       '/',
@@ -179,7 +200,7 @@ test.describe('Minimal Smoke Tests', () => {
       '/sign-up',
       '/dashboard',
       '/privacy',
-      '/terms'
+      '/terms',
     ];
 
     const errors: string[] = [];
@@ -188,24 +209,26 @@ test.describe('Minimal Smoke Tests', () => {
       try {
         const response = await page.goto(route, {
           waitUntil: 'domcontentloaded',
-          timeout: 10000
+          timeout: 10000,
         });
 
         // Check if the page loaded (even if redirected)
         if (response && response.status() >= 500) {
-          errors.push(`Route ${route} returned server error: ${response.status()}`);
+          errors.push(
+            `Route ${route} returned server error: ${response.status()}`
+          );
         }
 
         // Check for React error boundary or error messages
-        const hasErrorBoundary = await page.locator(
-          'text=/error|failed|something went wrong|crashed/i'
-        ).count();
+        const hasErrorBoundary = await page
+          .locator('text=/error|failed|something went wrong|crashed/i')
+          .count();
 
         if (hasErrorBoundary > 0) {
           // Check if it's an expected auth redirect rather than an error
-          const isAuthRedirect = await page.locator(
-            '.cl-component, [data-clerk-id], text=/sign in|log in/i'
-          ).count();
+          const isAuthRedirect = await page
+            .locator('.cl-component, [data-clerk-id], text=/sign in|log in/i')
+            .count();
 
           if (isAuthRedirect === 0) {
             errors.push(`Route ${route} shows error boundary`);
@@ -223,7 +246,7 @@ test.describe('Minimal Smoke Tests', () => {
     expect(errors.length).toBeLessThanOrEqual(2);
 
     if (errors.length > 0) {
-              // console.log('Route errors encountered (expected with legacy code):', errors);
+      // console.log('Route errors encountered (expected with legacy code):', errors);
     }
   });
 
@@ -251,7 +274,7 @@ test.describe('Minimal Smoke Tests', () => {
       '.mobile-menu',
       '.hamburger',
       '[data-testid*="mobile" i]',
-      'button svg' // Often mobile menus are icon buttons
+      'button svg', // Often mobile menus are icon buttons
     ];
 
     const _hasMobileElements = false;
@@ -275,13 +298,15 @@ test.describe('Minimal Smoke Tests', () => {
       if (response.status() >= 400 && response.status() < 600) {
         const url = response.url();
         // Ignore some expected 404s and external resources
-        if (!url.includes('favicon') &&
-            !url.includes('manifest') &&
-            !url.includes('robots.txt') &&
-            !url.includes('localhost:') &&
-            !url.includes('127.0.0.1:') &&
-            !url.includes('googleapis') &&
-            !url.includes('gstatic')) {
+        if (
+          !url.includes('favicon') &&
+          !url.includes('manifest') &&
+          !url.includes('robots.txt') &&
+          !url.includes('localhost:') &&
+          !url.includes('127.0.0.1:') &&
+          !url.includes('googleapis') &&
+          !url.includes('gstatic')
+        ) {
           failedRequests.push(`${response.status()} - ${url}`);
         }
       }
@@ -294,19 +319,23 @@ test.describe('Minimal Smoke Tests', () => {
       const body = document.body;
       const styles = window.getComputedStyle(body);
       // Check if any non-default styles are applied
-      return styles.fontFamily !== 'Times New Roman' ||
-             styles.margin !== '8px' ||
-             styles.backgroundColor !== 'rgba(0, 0, 0, 0)';
+      return (
+        styles.fontFamily !== 'Times New Roman' ||
+        styles.margin !== '8px' ||
+        styles.backgroundColor !== 'rgba(0, 0, 0, 0)'
+      );
     });
 
     expect(hasStyles).toBeTruthy();
 
     // Check if JavaScript is working (React should be loaded)
     const hasReact = await page.evaluate(() => {
-      return window.React !== undefined ||
-             document.querySelector('#root') !== null ||
-             document.querySelector('[data-reactroot]') !== null ||
-             document.querySelector('._app') !== null;
+      return (
+        window.React !== undefined ||
+        document.querySelector('#root') !== null ||
+        document.querySelector('[data-reactroot]') !== null ||
+        document.querySelector('._app') !== null
+      );
     });
 
     expect(hasReact).toBeTruthy();
@@ -315,7 +344,7 @@ test.describe('Minimal Smoke Tests', () => {
     expect(failedRequests.length).toBeLessThanOrEqual(5);
 
     if (failedRequests.length > 0) {
-              // console.log('Failed resource requests (may be expected):', failedRequests.slice(0, 3));
+      // console.log('Failed resource requests (may be expected):', failedRequests.slice(0, 3));
     }
   });
 });
@@ -326,19 +355,24 @@ test.describe('Critical User Paths', () => {
 
     // Check if we're on a sign-in page (might redirect)
     const url = page.url();
-    const isAuthPage = url.includes('sign') || url.includes('auth') || url.includes('login');
+    const isAuthPage =
+      url.includes('sign') || url.includes('auth') || url.includes('login');
 
     // Check for auth UI elements
-    const hasAuthUI = await page.locator(
-      'input[type="email"], input[type="password"], .cl-formFieldInput, button:has-text("Sign in")'
-    ).count();
+    const hasAuthUI = await page
+      .locator(
+        'input[type="email"], input[type="password"], .cl-formFieldInput, button:has-text("Sign in")'
+      )
+      .count();
 
     expect(isAuthPage || hasAuthUI > 0).toBeTruthy();
   });
 
   test('Privacy and Terms pages should be accessible', async ({ page }) => {
     // Test Privacy page
-    const privacyResponse = await page.goto('/privacy', { waitUntil: 'domcontentloaded' });
+    const privacyResponse = await page.goto('/privacy', {
+      waitUntil: 'domcontentloaded',
+    });
     expect(privacyResponse?.status()).toBeLessThan(500);
 
     const privacyContent = await page.textContent('body');
@@ -346,7 +380,9 @@ test.describe('Critical User Paths', () => {
     expect(privacyContent?.length).toBeGreaterThan(100);
 
     // Test Terms page
-    const termsResponse = await page.goto('/terms', { waitUntil: 'domcontentloaded' });
+    const termsResponse = await page.goto('/terms', {
+      waitUntil: 'domcontentloaded',
+    });
     expect(termsResponse?.status()).toBeLessThan(500);
 
     const termsContent = await page.textContent('body');

@@ -8,19 +8,19 @@ module.exports = {
     'src/**/*.ts',
     '!src/**/*.d.ts',
     '!src/types/**',
-    '!src/index.ts'
+    '!src/index.ts',
   ],
   coverageThreshold: {
     global: {
       branches: 80,
       functions: 80,
       lines: 80,
-      statements: 80
-    }
+      statements: 80,
+    },
   },
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/src/$1'
+    '^@/(.*)$': '<rootDir>/src/$1',
   },
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
-  verbose: true
+  verbose: true,
 };

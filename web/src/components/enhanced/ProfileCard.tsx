@@ -13,38 +13,32 @@ import {
 import { Icon } from '@/components/ui/icon-library';
 import { FadeIn } from '@/components/motion/FadeIn';
 import { cn } from '@/lib/utils';
-import {
-  MoreVertical,
-  Mail,
-  Phone,
-  Calendar,
-  MapPin,
-} from 'lucide-react';
+import { Calendar, Mail, MapPin, MoreVertical, Phone } from 'lucide-react';
 
 export interface ProfileData {
-  id: string;
-  name: string;
-  email?: string;
-  phone?: string;
-  avatar?: string;
-  relationship?: string;
-  dateOfBirth?: string;
   address?: string;
-  roles?: string[];
-  status?: 'active' | 'pending' | 'inactive';
+  avatar?: string;
   completionPercentage?: number;
+  dateOfBirth?: string;
+  email?: string;
+  id: string;
   metadata?: Record<string, unknown>;
+  name: string;
+  phone?: string;
+  relationship?: string;
+  roles?: string[];
+  status?: 'active' | 'inactive' | 'pending';
 }
 
 interface ProfileCardProps {
-  profile: ProfileData;
-  variant?: 'default' | 'compact' | 'detailed';
-  showActions?: boolean;
-  onEdit?: (profile: ProfileData) => void;
-  onDelete?: (profile: ProfileData) => void;
-  onViewDetails?: (profile: ProfileData) => void;
-  onMessage?: (profile: ProfileData) => void;
   className?: string;
+  onDelete?: (profile: ProfileData) => void;
+  onEdit?: (profile: ProfileData) => void;
+  onMessage?: (profile: ProfileData) => void;
+  onViewDetails?: (profile: ProfileData) => void;
+  profile: ProfileData;
+  showActions?: boolean;
+  variant?: 'compact' | 'default' | 'detailed';
 }
 
 export function ProfileCard({
@@ -81,10 +75,10 @@ export function ProfileCard({
 
   const getRoleBadgeVariant = (
     role: string
-  ): 'default' | 'secondary' | 'outline' | 'destructive' => {
+  ): 'default' | 'destructive' | 'outline' | 'secondary' => {
     const roleMap: Record<
       string,
-      'default' | 'secondary' | 'outline' | 'destructive'
+      'default' | 'destructive' | 'outline' | 'secondary'
     > = {
       executor: 'default',
       guardian: 'secondary',
@@ -171,7 +165,7 @@ export function ProfileCard({
             {showActions && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size='sm' className='h-8 w-8 p-0'>
+                  <Button variant='ghost' size='sm' className='h-8 w-8 p-0'>
                     <MoreVertical className='h-4 w-4' />
                   </Button>
                 </DropdownMenuTrigger>
@@ -180,7 +174,7 @@ export function ProfileCard({
                   <DropdownMenuSeparator />
                   {onViewDetails && (
                     <DropdownMenuItem onClick={() => onViewDetails(profile)}>
-                      <Icon name="eye" className='mr-2 h-4 w-4' />
+                      <Icon name='eye' className='mr-2 h-4 w-4' />
                       View Details
                     </DropdownMenuItem>
                   )}
@@ -192,7 +186,7 @@ export function ProfileCard({
                   )}
                   {onEdit && (
                     <DropdownMenuItem onClick={() => onEdit(profile)}>
-                      <Icon name="edit" className='mr-2 h-4 w-4' />
+                      <Icon name='edit' className='mr-2 h-4 w-4' />
                       Edit
                     </DropdownMenuItem>
                   )}
@@ -203,7 +197,7 @@ export function ProfileCard({
                         onClick={() => onDelete(profile)}
                         className='text-red-600'
                       >
-                        <Icon name="trash" className='mr-2 h-4 w-4' />
+                        <Icon name='trash' className='mr-2 h-4 w-4' />
                         Delete
                       </DropdownMenuItem>
                     </>
@@ -268,7 +262,7 @@ export function ProfileCard({
               <div className='w-full bg-muted rounded-full h-2'>
                 <div
                   className='bg-primary h-2 rounded-full transition-all duration-500'
-                  style={{  width: `${profile.completionPercentage }}%` }}
+                  style={{ width: `${profile.completionPercentage}}%` }}
                 />
               </div>
             </div>
@@ -295,15 +289,15 @@ export function ProfileCard({
 
 // Grid layout for multiple profile cards
 interface ProfileGridProps {
-  profiles: ProfileData[];
-  variant?: 'default' | 'compact' | 'detailed';
-  columns?: 1 | 2 | 3 | 4;
-  showActions?: boolean;
-  onEdit?: (profile: ProfileData) => void;
-  onDelete?: (profile: ProfileData) => void;
-  onViewDetails?: (profile: ProfileData) => void;
-  onMessage?: (profile: ProfileData) => void;
   className?: string;
+  columns?: 1 | 2 | 3 | 4;
+  onDelete?: (profile: ProfileData) => void;
+  onEdit?: (profile: ProfileData) => void;
+  onMessage?: (profile: ProfileData) => void;
+  onViewDetails?: (profile: ProfileData) => void;
+  profiles: ProfileData[];
+  showActions?: boolean;
+  variant?: 'compact' | 'default' | 'detailed';
 }
 
 export function ProfileGrid({

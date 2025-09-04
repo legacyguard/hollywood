@@ -1,20 +1,21 @@
-import { useContext, useState, useCallback } from 'react';
+import { useCallback, useContext, useState } from 'react';
+import type { Context } from 'react';
 import type { FireflyContextValue, FireflyEventType } from './fireflyTypes';
 
 // This context is defined in FireflyContext.tsx
-declare const FireflyContext: any;
+declare const FireflyContext: Context<FireflyContextValue | null>;
 
 export const useFirefly = (): FireflyContextValue => {
   const context = useContext(FireflyContext);
   if (!context) {
     throw new Error('useFirefly must be used within a FireflyProvider');
   }
-  return context as FireflyContextValue;
+  return context;
 };
 
 export const useFireflyGuidance = () => {
   const { guideToElement, isGuidingToTarget } = useFirefly();
-  const [currentTarget, setCurrentTarget] = useState<string | null>(null);
+  const [currentTarget, setCurrentTarget] = useState<null | string>(null);
 
   const guideToTarget = useCallback(
     (selector: string, duration: number = 3000) => {
@@ -33,7 +34,8 @@ export const useFireflyGuidance = () => {
 
 export const useFireflyCelebration = () => {
   const { celebrate, isCelebrating } = useFirefly();
-  const [lastCelebration, setLastCelebration] = useState<FireflyEventType | null>(null);
+  const [lastCelebration, setLastCelebration] =
+    useState<FireflyEventType | null>(null);
 
   const triggerCelebration = useCallback(
     (event: FireflyEventType, duration: number = 2000) => {

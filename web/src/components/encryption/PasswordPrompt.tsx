@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useEncryption } from '@/hooks/encryption/useEncryption';
 import {
   Dialog,
@@ -11,7 +11,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Lock, AlertCircle, Eye, EyeOff } from 'lucide-react';
+import { AlertCircle, Eye, EyeOff, Lock } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
 export function PasswordPrompt() {
@@ -120,7 +120,7 @@ export function PasswordPrompt() {
           </div>
 
           {error && (
-            <Alert variant="destructive">
+            <Alert variant='destructive'>
               <AlertCircle className='h-4 w-4' />
               <AlertDescription>{error}</AlertDescription>
             </Alert>
@@ -140,7 +140,7 @@ export function PasswordPrompt() {
           <DialogFooter>
             <Button
               type='button'
-              variant="outline"
+              variant='outline'
               onClick={handleCancel}
               disabled={isLoading}
             >

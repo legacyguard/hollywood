@@ -74,7 +74,7 @@ export function DeliveryStep({
                         : 'bg-blue-100 text-blue-600'
                     )}
                   >
-                    <Icon name={"calendar" as any} className='w-5 h-5' />
+                    <Icon name={'calendar' as any} className='w-5 h-5' />
                   </div>
                   <div>
                     <CardTitle className='text-lg'>
@@ -87,7 +87,10 @@ export function DeliveryStep({
                   </div>
                 </div>
                 {deliveryCondition === 'ON_DATE' && (
-                  <Icon name={"check-circle" as any} className='w-6 h-6 text-primary' />
+                  <Icon
+                    name={'check-circle' as any}
+                    className='w-6 h-6 text-primary'
+                  />
                 )}
               </div>
             </CardHeader>
@@ -114,7 +117,7 @@ export function DeliveryStep({
                         : 'bg-purple-100 text-purple-600'
                     )}
                   >
-                    <Icon name={"shield" as any} className='w-5 h-5' />
+                    <Icon name={'shield' as any} className='w-5 h-5' />
                   </div>
                   <div>
                     <CardTitle className='text-lg'>After My Passing</CardTitle>
@@ -125,7 +128,10 @@ export function DeliveryStep({
                   </div>
                 </div>
                 {deliveryCondition === 'ON_DEATH' && (
-                  <Icon name={"check-circle" as any} className='w-6 h-6 text-primary' />
+                  <Icon
+                    name={'check-circle' as any}
+                    className='w-6 h-6 text-primary'
+                  />
                 )}
               </div>
             </CardHeader>
@@ -150,13 +156,13 @@ export function DeliveryStep({
                 <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
                   <PopoverTrigger asChild>
                     <Button
-                      variant="outline"
+                      variant='outline'
                       className={cn(
                         'w-[240px] justify-start text-left font-normal',
                         !deliveryDate && 'text-muted-foreground'
                       )}
                     >
-                      <Icon name={"calendar" as any} className='mr-2 h-4 w-4' />
+                      <Icon name={'calendar' as any} className='mr-2 h-4 w-4' />
                       {deliveryDate
                         ? format(deliveryDate, 'PPP')
                         : 'Select date'}
@@ -175,11 +181,11 @@ export function DeliveryStep({
 
                 {deliveryDate && (
                   <Button
-                    variant="ghost"
+                    variant='ghost'
                     size='sm'
                     onClick={() => handleDateSelect(undefined)}
                   >
-                    <Icon name={"x" as any} className='w-4 h-4' />
+                    <Icon name={'x' as any} className='w-4 h-4' />
                   </Button>
                 )}
               </div>
@@ -187,7 +193,7 @@ export function DeliveryStep({
               {deliveryDate && (
                 <div className='p-3 bg-green-50 border border-green-200 rounded-lg'>
                   <div className='flex items-center space-x-2 text-green-800'>
-                    <Icon name={"calendar-check" as any} className='w-4 h-4' />
+                    <Icon name={'calendar-check' as any} className='w-4 h-4' />
                     <span className='text-sm font-medium'>
                       Scheduled for{' '}
                       {format(deliveryDate, 'EEEE, MMMM do, yyyy')}
@@ -219,7 +225,8 @@ export function DeliveryStep({
 
               <div className='space-y-3'>
                 <div className='flex items-start space-x-3 p-3 bg-purple-50 rounded-lg'>
-                  <Icon name={"shield" as any}
+                  <Icon
+                    name={'shield' as any}
                     className='w-5 h-5 text-purple-600 mt-0.5 flex-shrink-0'
                   />
                   <div>
@@ -234,7 +241,8 @@ export function DeliveryStep({
                 </div>
 
                 <div className='flex items-start space-x-3 p-3 bg-blue-50 rounded-lg'>
-                  <Icon name={"users" as any}
+                  <Icon
+                    name={'users' as any}
                     className='w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0'
                   />
                   <div>
@@ -249,7 +257,8 @@ export function DeliveryStep({
                 </div>
 
                 <div className='flex items-start space-x-3 p-3 bg-green-50 rounded-lg'>
-                  <Icon name={"heart" as any}
+                  <Icon
+                    name={'heart' as any}
                     className='w-5 h-5 text-green-600 mt-0.5 flex-shrink-0'
                   />
                   <div>
@@ -270,7 +279,7 @@ export function DeliveryStep({
 
       {/* Help Information */}
       <div className='text-center text-sm text-muted-foreground bg-gray-50 p-4 rounded-lg'>
-        <Icon name={"info" as any} className='w-4 h-4 inline mr-2' />
+        <Icon name={'info' as any} className='w-4 h-4 inline mr-2' />
         {deliveryCondition === 'ON_DATE'
           ? "Date-based Time Capsules are delivered via email at 9:00 AM in the recipient's timezone."
           : 'Family Shield Time Capsules are part of your legacy protection system and will be delivered with the highest care and dignity.'}

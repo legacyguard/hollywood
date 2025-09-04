@@ -25,7 +25,13 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey);
 interface QuickInsightSeed {
   user_id: string;
   document_id?: string;
-  type: 'document_analysis' | 'family_impact' | 'time_saved' | 'protection_level' | 'completion_gap' | 'urgent_action';
+  type:
+    | 'document_analysis'
+    | 'family_impact'
+    | 'time_saved'
+    | 'protection_level'
+    | 'completion_gap'
+    | 'urgent_action';
   title: string;
   description: string;
   value?: string;
@@ -40,11 +46,29 @@ interface QuickInsightSeed {
 
 interface LegacyMilestoneSeed {
   user_id: string;
-  type: 'first_document' | 'protection_threshold' | 'family_complete' | 'professional_review' | 'annual_update' | 'legacy_complete';
+  type:
+    | 'first_document'
+    | 'protection_threshold'
+    | 'family_complete'
+    | 'professional_review'
+    | 'annual_update'
+    | 'legacy_complete';
   title: string;
   description: string;
-  category: 'foundation' | 'protection' | 'family' | 'professional' | 'maintenance' | 'mastery';
-  criteria_type: 'document_count' | 'protection_percentage' | 'family_members' | 'time_based' | 'action_completed' | 'review_score';
+  category:
+    | 'foundation'
+    | 'protection'
+    | 'family'
+    | 'professional'
+    | 'maintenance'
+    | 'mastery';
+  criteria_type:
+    | 'document_count'
+    | 'protection_percentage'
+    | 'family_members'
+    | 'time_based'
+    | 'action_completed'
+    | 'review_score';
   criteria_threshold: string;
   criteria_current_value: string;
   criteria_is_complete: boolean;
@@ -67,7 +91,8 @@ async function seedQuickInsights(userId: string) {
       user_id: userId,
       type: 'urgent_action',
       title: 'Will Update Needed',
-      description: 'Your will hasn\'t been updated in 2 years. Family changes may require revisions.',
+      description:
+        "Your will hasn't been updated in 2 years. Family changes may require revisions.",
       value: '2 years',
       impact: 'high',
       priority: 'urgent',
@@ -76,12 +101,12 @@ async function seedQuickInsights(userId: string) {
       action_url: '/documents/will',
       metadata: {
         lastUpdate: '2022-01-15',
-        familyChanges: ['New child', 'Property purchase']
+        familyChanges: ['New child', 'Property purchase'],
       },
       family_impact: {
         affectedMembers: 3,
-        riskLevel: 'high'
-      }
+        riskLevel: 'high',
+      },
     },
     {
       user_id: userId,
@@ -94,33 +119,35 @@ async function seedQuickInsights(userId: string) {
       actionable: false,
       metadata: {
         trend: 'increasing',
-        completedItems: 3
+        completedItems: 3,
       },
       family_impact: {
         affectedMembers: 4,
-        improvement: true
-      }
+        improvement: true,
+      },
     },
     {
       user_id: userId,
       type: 'time_saved',
       title: 'Time Saved This Month',
-      description: 'Automated document management saved you 4 hours of administrative work.',
+      description:
+        'Automated document management saved you 4 hours of administrative work.',
       value: '4 hours',
       impact: 'low',
       priority: 'nice_to_have',
       actionable: false,
       metadata: {
         automatedTasks: 12,
-        documentsProcessed: 8
+        documentsProcessed: 8,
       },
-      family_impact: {}
+      family_impact: {},
     },
     {
       user_id: userId,
       type: 'family_impact',
       title: 'Family Access Improved',
-      description: '3 family members now have secure access to emergency documents.',
+      description:
+        '3 family members now have secure access to emergency documents.',
       value: '3 members',
       impact: 'high',
       priority: 'important',
@@ -129,18 +156,19 @@ async function seedQuickInsights(userId: string) {
       action_url: '/family',
       metadata: {
         recentlyAdded: ['Sarah (Spouse)', 'John (Son)'],
-        pendingInvites: 1
+        pendingInvites: 1,
       },
       family_impact: {
         newAccess: 3,
-        documentTypes: ['medical', 'insurance', 'will']
-      }
+        documentTypes: ['medical', 'insurance', 'will'],
+      },
     },
     {
       user_id: userId,
       type: 'completion_gap',
       title: 'Insurance Review Due',
-      description: 'Annual insurance review is due next month. Schedule with your advisor.',
+      description:
+        'Annual insurance review is due next month. Schedule with your advisor.',
       value: '30 days',
       impact: 'medium',
       priority: 'important',
@@ -149,18 +177,19 @@ async function seedQuickInsights(userId: string) {
       action_url: '/professional-network',
       metadata: {
         lastReview: '2023-03-01',
-        advisor: 'Jane Smith, CFP'
+        advisor: 'Jane Smith, CFP',
       },
       family_impact: {
         coverage: 'life insurance',
-        beneficiaries: 2
-      }
+        beneficiaries: 2,
+      },
     },
     {
       user_id: userId,
       type: 'document_analysis',
       title: 'Healthcare Proxy Missing',
-      description: 'You haven\'t designated a healthcare proxy. This is critical for medical emergencies.',
+      description:
+        "You haven't designated a healthcare proxy. This is critical for medical emergencies.",
       value: 'Missing',
       impact: 'high',
       priority: 'urgent',
@@ -169,13 +198,13 @@ async function seedQuickInsights(userId: string) {
       action_url: '/documents/healthcare-proxy',
       metadata: {
         documentType: 'healthcare',
-        legalRequirement: true
+        legalRequirement: true,
       },
       family_impact: {
         emergencyImpact: 'critical',
-        affectedMembers: 'all'
-      }
-    }
+        affectedMembers: 'all',
+      },
+    },
   ];
 
   const { error } = await supabase
@@ -198,7 +227,8 @@ async function seedLegacyMilestones(userId: string) {
       user_id: userId,
       type: 'first_document',
       title: 'First Document Uploaded',
-      description: 'Great start! You\'ve uploaded your first important document.',
+      description:
+        "Great start! You've uploaded your first important document.",
       category: 'foundation',
       criteria_type: 'document_count',
       criteria_threshold: '1',
@@ -208,14 +238,15 @@ async function seedLegacyMilestones(userId: string) {
       progress_steps_completed: 1,
       progress_total_steps: 1,
       celebration_should_show: false,
-      celebration_text: 'You\'re officially on your way to protecting your family\'s future!',
+      celebration_text:
+        "You're officially on your way to protecting your family's future!",
       rewards: {
         badge: 'starter',
-        points: 100
+        points: 100,
       },
       metadata: {
-        completedDate: '2024-01-15'
-      }
+        completedDate: '2024-01-15',
+      },
     },
     {
       user_id: userId,
@@ -234,17 +265,18 @@ async function seedLegacyMilestones(userId: string) {
       celebration_text: 'Your family is significantly more protected!',
       rewards: {
         badge: 'protector',
-        points: 250
+        points: 250,
       },
       metadata: {
-        protectionAreas: ['will', 'insurance', 'medical']
-      }
+        protectionAreas: ['will', 'insurance', 'medical'],
+      },
     },
     {
       user_id: userId,
       type: 'family_complete',
       title: 'Family Network Established',
-      description: 'You\'ve added at least 3 family members to your legacy network.',
+      description:
+        "You've added at least 3 family members to your legacy network.",
       category: 'family',
       criteria_type: 'family_members',
       criteria_threshold: '3',
@@ -258,11 +290,11 @@ async function seedLegacyMilestones(userId: string) {
       celebration_should_show: false,
       rewards: {
         badge: 'family_first',
-        points: 200
+        points: 200,
       },
       metadata: {
-        currentMembers: ['Sarah Johnson', 'John Doe']
-      }
+        currentMembers: ['Sarah Johnson', 'John Doe'],
+      },
     },
     {
       user_id: userId,
@@ -282,12 +314,12 @@ async function seedLegacyMilestones(userId: string) {
       celebration_should_show: false,
       rewards: {
         badge: 'verified',
-        points: 500
+        points: 500,
       },
       metadata: {
         reviewType: 'legal',
-        estimatedCost: 250
-      }
+        estimatedCost: 250,
+      },
     },
     {
       user_id: userId,
@@ -307,13 +339,13 @@ async function seedLegacyMilestones(userId: string) {
       celebration_should_show: false,
       rewards: {
         badge: 'consistent',
-        points: 150
+        points: 150,
       },
       metadata: {
         lastReview: '2024-01-01',
-        nextReview: '2025-01-01'
-      }
-    }
+        nextReview: '2025-01-01',
+      },
+    },
   ];
 
   const { error } = await supabase
@@ -348,18 +380,16 @@ async function seedInsightAnalytics(userId: string) {
       protection: 2,
       family: 2,
       documents: 1,
-      maintenance: 1
+      maintenance: 1,
     },
     trend_data: {
       protection_trend: 'increasing',
       activity_trend: 'stable',
-      engagement_trend: 'high'
-    }
+      engagement_trend: 'high',
+    },
   };
 
-  const { error } = await supabase
-    .from('insight_analytics')
-    .insert(analytics);
+  const { error } = await supabase.from('insight_analytics').insert(analytics);
 
   if (error) {
     // console.error('Error seeding insight analytics:', error);
@@ -390,10 +420,10 @@ async function seedMilestoneAnalytics(userId: string) {
     features_unlocked: {
       professional_network: true,
       family_sharing: true,
-      automated_reminders: true
+      automated_reminders: true,
     },
     celebration_engagement: 85,
-    recommendation_follow_rate: 70
+    recommendation_follow_rate: 70,
   };
 
   const { error } = await supabase

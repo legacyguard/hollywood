@@ -29,17 +29,18 @@ export enum ErrorCategory {
 
 // Custom error interface
 export interface AppError extends Error {
-  code: string;
   category: ErrorCategory;
-  severity: ErrorSeverity;
-  timestamp: Date;
+  code: string;
   context?: Record<string, any>;
-  userId?: string;
-  sessionId?: string;
   recoverable: boolean;
   retryable: boolean;
-  userMessage?: string;
+  sessionId?: string;
+  severity: ErrorSeverity;
+  statusCode?: number;
   technicalDetails?: string;
+  timestamp: Date;
+  userId?: string;
+  userMessage?: string;
 }
 
 /**
@@ -50,6 +51,7 @@ export class BaseError extends Error implements AppError {
   public category: ErrorCategory;
   public severity: ErrorSeverity;
   public timestamp: Date;
+  public statusCode?: number;
   public context?: Record<string, any>;
   public userId?: string;
   public sessionId?: string;
@@ -133,7 +135,12 @@ export class ValidationError extends BaseError {
   public validationErrors?: Record<string, string[]>;
 
   constructor(message: string, validationErrors?: Record<string, string[]>) {
-    super(message, 'VALIDATION_ERROR', ErrorCategory.VALIDATION, ErrorSeverity.LOW);
+    super(
+      message,
+      'VALIDATION_ERROR',
+      ErrorCategory.VALIDATION,
+      ErrorSeverity.LOW
+    );
     this.validationErrors = validationErrors;
     this.recoverable = true;
     this.retryable = false;
@@ -149,7 +156,8 @@ export class NetworkError extends BaseError {
     super(message, code, ErrorCategory.NETWORK, ErrorSeverity.MEDIUM);
     this.recoverable = true;
     this.retryable = true;
-    this.userMessage = 'Network error. Please check your connection and try again.';
+    this.userMessage =
+      'Network error. Please check your connection and try again.';
   }
 }
 
@@ -221,26 +229,30 @@ export class ErrorHandler {
   private setupGlobalHandlers(): void {
     // Handle unhandled promise rejections
     if (typeof window !== 'undefined') {
-      window.addEventListener('unhandledrejection', (event) => {
+      window.addEventListener('unhandledrejection', event => {
         console.error('Unhandled promise rejection:', event.reason);
-        this.handleError(new BaseError(
-          event.reason?.message || 'Unhandled promise rejection',
-          'UNHANDLED_REJECTION',
-          ErrorCategory.SYSTEM,
-          ErrorSeverity.HIGH
-        ));
+        this.handleError(
+          new BaseError(
+            event.reason?.message || 'Unhandled promise rejection',
+            'UNHANDLED_REJECTION',
+            ErrorCategory.SYSTEM,
+            ErrorSeverity.HIGH
+          )
+        );
         event.preventDefault();
       });
 
       // Handle global errors
-      window.addEventListener('error', (event) => {
+      window.addEventListener('error', event => {
         console.error('Global error:', event.error);
-        this.handleError(new BaseError(
-          event.error?.message || event.message || 'Unknown error',
-          'GLOBAL_ERROR',
-          ErrorCategory.SYSTEM,
-          ErrorSeverity.HIGH
-        ));
+        this.handleError(
+          new BaseError(
+            event.error?.message || event.message || 'Unknown error',
+            'GLOBAL_ERROR',
+            ErrorCategory.SYSTEM,
+            ErrorSeverity.HIGH
+          )
+        );
         event.preventDefault();
       });
     }
@@ -249,7 +261,7 @@ export class ErrorHandler {
   /**
    * Handle an error
    */
-  public handleError(error: Error | AppError): void {
+  public handleError(error: AppError | Error): void {
     const appError = this.normalizeError(error);
 
     // Add to queue
@@ -262,7 +274,10 @@ export class ErrorHandler {
     this.notifyListeners(appError);
 
     // Send to monitoring service
-    if (appError.severity === ErrorSeverity.HIGH || appError.severity === ErrorSeverity.CRITICAL) {
+    if (
+      appError.severity === ErrorSeverity.HIGH ||
+      appError.severity === ErrorSeverity.CRITICAL
+    ) {
       this.sendToMonitoring(appError);
     }
 
@@ -273,7 +288,7 @@ export class ErrorHandler {
   /**
    * Normalize error to AppError
    */
-  private normalizeError(error: Error | AppError): AppError {
+  private normalizeError(error: AppError | Error): AppError {
     if (this.isAppError(error)) {
       return error;
     }
@@ -294,10 +309,12 @@ export class ErrorHandler {
    * Check if error is AppError
    */
   private isAppError(error: any): error is AppError {
-    return error &&
-           typeof error.code === 'string' &&
-           typeof error.category === 'string' &&
-           typeof error.severity === 'string';
+    return (
+      error &&
+      typeof error.code === 'string' &&
+      typeof error.category === 'string' &&
+      typeof error.severity === 'string'
+    );
   }
 
   /**
@@ -317,7 +334,11 @@ export class ErrorHandler {
    */
   private logError(error: AppError): void {
     const logData = {
-      ...error.toJSON(),
+      message: error.message,
+      code: error.code,
+      statusCode: error.statusCode,
+      timestamp: error.timestamp,
+      context: error.context,
       environment: envConfig.get('VITE_APP_ENV'),
       version: envConfig.get('VITE_APP_VERSION'),
     };
@@ -486,10 +507,12 @@ export class ErrorHandler {
 
     this.errorQueue.forEach(error => {
       // Count by category
-      stats.byCategory[error.category] = (stats.byCategory[error.category] || 0) + 1;
+      stats.byCategory[error.category] =
+        (stats.byCategory[error.category] || 0) + 1;
 
       // Count by severity
-      stats.bySeverity[error.severity] = (stats.bySeverity[error.severity] || 0) + 1;
+      stats.bySeverity[error.severity] =
+        (stats.bySeverity[error.severity] || 0) + 1;
     });
 
     return stats;
@@ -505,8 +528,13 @@ export class ErrorHandler {
   /**
    * Create error boundary wrapper
    */
-  public createErrorBoundary(component: React.ComponentType): React.ComponentType {
-    return class ErrorBoundary extends React.Component<any, { hasError: boolean }> {
+  public createErrorBoundary(
+    component: React.ComponentType
+  ): React.ComponentType {
+    return class ErrorBoundary extends React.Component<
+      any,
+      { hasError: boolean }
+    > {
       constructor(props: any) {
         super(props);
         this.state = { hasError: false };
@@ -530,10 +558,15 @@ export class ErrorHandler {
       render() {
         if (this.state.hasError) {
           return (
-            <div className="error-boundary-fallback">
+            <div className='error-boundary-fallback'>
               <h2>Something went wrong</h2>
-              <p>We're sorry, but something went wrong. Please try refreshing the page.</p>
-              <button onClick={() => window.location.reload()}>Refresh Page</button>
+              <p>
+                We're sorry, but something went wrong. Please try refreshing the
+                page.
+              </p>
+              <button onClick={() => window.location.reload()}>
+                Refresh Page
+              </button>
             </div>
           );
         }
@@ -552,10 +585,10 @@ export const errorHandler = ErrorHandler.getInstance();
 export {
   AuthenticationError as AuthError,
   AuthorizationError as AuthzError,
-  ValidationError as ValidError,
-  NetworkError as NetError,
-  DatabaseError as DbError,
   EncryptionError as CryptoError,
+  DatabaseError as DbError,
+  NetworkError as NetError,
+  ValidationError as ValidError,
 };
 
 // React import moved to top of file

@@ -11,9 +11,9 @@ interface Props extends WithTranslation {
 }
 
 interface State {
-  hasError: boolean;
   error?: Error;
   errorInfo?: ErrorInfo;
+  hasError: boolean;
 }
 
 export class ErrorBoundary extends Component<Props, State> {
@@ -39,7 +39,14 @@ export class ErrorBoundary extends Component<Props, State> {
     });
 
     // Show user-friendly toast notification
-      toast.error(this.props.t ? this.props.t('errorBoundary.toast', "Something went wrong. We're working on fixing this issue.") : "Something went wrong. We're working on fixing this issue.");
+    toast.error(
+      this.props.t
+        ? this.props.t(
+            'errorBoundary.toast',
+            "Something went wrong. We're working on fixing this issue."
+          )
+        : "Something went wrong. We're working on fixing this issue."
+    );
   }
 
   private handleReload = () => {
@@ -64,12 +71,10 @@ export class ErrorBoundary extends Component<Props, State> {
         <div className='min-h-screen bg-background flex items-center justify-center p-6'>
           <Card className='max-w-md w-full p-8 text-center'>
             <div className='w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6'>
-              <Icon name="alert-triangle" className='w-8 h-8 text-red-600' />
+              <Icon name='alert-triangle' className='w-8 h-8 text-red-600' />
             </div>
 
-            <h2 className='text-2xl font-bold mb-4'>
-              {t('title')}
-            </h2>
+            <h2 className='text-2xl font-bold mb-4'>{t('title')}</h2>
 
             <p className='text-muted-foreground mb-6 leading-relaxed'>
               {t('description')}
@@ -79,27 +84,27 @@ export class ErrorBoundary extends Component<Props, State> {
               <Button
                 onClick={this.handleRetry}
                 className='w-full'
-                variant="default"
+                variant='default'
               >
-                <Icon name="refresh-cw" className='w-4 h-4 mr-2' />
+                <Icon name='refresh-cw' className='w-4 h-4 mr-2' />
                 {t('actions.tryAgain')}
               </Button>
 
               <Button
                 onClick={this.handleGoHome}
                 className='w-full'
-                variant="outline"
+                variant='outline'
               >
-                <Icon name="home" className='w-4 h-4 mr-2' />
+                <Icon name='home' className='w-4 h-4 mr-2' />
                 {t('actions.goHome')}
               </Button>
 
               <Button
                 onClick={this.handleReload}
                 className='w-full'
-                variant="outline"
+                variant='outline'
               >
-                <Icon name="rotate-ccw" className='w-4 h-4 mr-2' />
+                <Icon name='rotate-ccw' className='w-4 h-4 mr-2' />
                 {t('actions.reloadPage')}
               </Button>
             </div>

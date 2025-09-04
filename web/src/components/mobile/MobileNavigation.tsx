@@ -6,7 +6,7 @@
  * touch-friendly interface and haptic feedback support.
  */
 
-import React, { useState, useEffect, createContext, useContext } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -19,33 +19,33 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import {
-  Home,
-  FolderOpen,
-  Brain,
   BarChart3,
-  Users,
-  Heart,
-  Shield,
-  Settings,
-  Menu,
   Bell,
-  Plus
+  Brain,
+  FolderOpen,
+  Heart,
+  Home,
+  Menu,
+  Plus,
+  Settings,
+  Shield,
+  Users,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface NavigationItem {
+  badge?: number;
+  icon: React.ComponentType<{ className?: string }>;
+  isPrimary?: boolean;
   title: string;
   url: string;
-  icon: React.ComponentType<{ className?: string }>;
-  badge?: number;
-  isPrimary?: boolean;
 }
 
 interface MobileNavigationProps {
   className?: string;
+  hapticFeedback?: boolean;
   notificationCount?: number;
   showLabels?: boolean;
-  hapticFeedback?: boolean;
 }
 
 const primaryNavItems: NavigationItem[] = [
@@ -53,21 +53,21 @@ const primaryNavItems: NavigationItem[] = [
   { title: 'Vault', url: '/vault', icon: FolderOpen },
   { title: 'AI', url: '/intelligent-organizer', icon: Brain },
   { title: 'Analytics', url: '/analytics', icon: BarChart3 },
-  { title: 'Family', url: '/family', icon: Users }
+  { title: 'Family', url: '/family', icon: Users },
 ];
 
 const secondaryNavItems: NavigationItem[] = [
   { title: 'Legacy', url: '/legacy', icon: Heart },
   { title: 'Time Capsule', url: '/time-capsule', icon: Heart },
   { title: 'Family Shield', url: '/family-protection', icon: Shield },
-  { title: 'Settings', url: '/settings', icon: Settings }
+  { title: 'Settings', url: '/settings', icon: Settings },
 ];
 
 export default function MobileNavigation({
   className,
   notificationCount = 0,
   showLabels = true,
-  hapticFeedback = true
+  hapticFeedback = true,
 }: MobileNavigationProps) {
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -76,7 +76,9 @@ export default function MobileNavigation({
   useEffect(() => {
     const currentPath = location.pathname;
     const activeNav = [...primaryNavItems, ...secondaryNavItems].find(
-      item => item.url === currentPath || (currentPath.startsWith(item.url) && item.url !== '/')
+      item =>
+        item.url === currentPath ||
+        (currentPath.startsWith(item.url) && item.url !== '/')
     );
     setActiveItem(activeNav?.url || '');
   }, [location.pathname]);
@@ -100,10 +102,10 @@ export default function MobileNavigation({
   const NavButton = ({
     item,
     isActive,
-    showLabel = true
+    showLabel = true,
   }: {
-    item: NavigationItem;
     isActive: boolean;
+    item: NavigationItem;
     showLabel?: boolean;
   }) => (
     <NavLink
@@ -116,16 +118,18 @@ export default function MobileNavigation({
           : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50 active:bg-gray-100'
       )}
     >
-      <div className="relative">
-        <item.icon className={cn(
-          'w-5 h-5 transition-transform duration-200',
-          isActive && 'scale-110'
-        )} />
+      <div className='relative'>
+        <item.icon
+          className={cn(
+            'w-5 h-5 transition-transform duration-200',
+            isActive && 'scale-110'
+          )}
+        />
 
         {item.badge && item.badge > 0 && (
           <Badge
-            variant="destructive"
-            className="absolute -top-2 -right-2 w-4 h-4 p-0 flex items-center justify-center text-xs min-w-[16px]"
+            variant='destructive'
+            className='absolute -top-2 -right-2 w-4 h-4 p-0 flex items-center justify-center text-xs min-w-[16px]'
           >
             {item.badge > 99 ? '99+' : item.badge}
           </Badge>
@@ -133,15 +137,17 @@ export default function MobileNavigation({
 
         {/* Active indicator */}
         {isActive && (
-          <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-600 rounded-full" />
+          <div className='absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-600 rounded-full' />
         )}
       </div>
 
       {showLabel && showLabels && (
-        <span className={cn(
-          'text-xs mt-1 font-medium transition-colors duration-200',
-          isActive ? 'text-blue-600' : 'text-gray-500'
-        )}>
+        <span
+          className={cn(
+            'text-xs mt-1 font-medium transition-colors duration-200',
+            isActive ? 'text-blue-600' : 'text-gray-500'
+          )}
+        >
           {item.title}
         </span>
       )}
@@ -151,14 +157,16 @@ export default function MobileNavigation({
   return (
     <>
       {/* Bottom Navigation Bar */}
-      <div className={cn(
-        'fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 safe-area-pb md:hidden',
-        'backdrop-blur-md bg-white/95 supports-[backdrop-filter]:bg-white/80',
-        className
-      )}>
-        <div className="flex items-center justify-around px-2 py-1">
+      <div
+        className={cn(
+          'fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 safe-area-pb md:hidden',
+          'backdrop-blur-md bg-white/95 supports-[backdrop-filter]:bg-white/80',
+          className
+        )}
+      >
+        <div className='flex items-center justify-around px-2 py-1'>
           {/* Primary Navigation Items */}
-          {primaryNavItems.slice(0, 4).map((item) => (
+          {primaryNavItems.slice(0, 4).map(item => (
             <NavButton
               key={item.url}
               item={item}
@@ -170,18 +178,22 @@ export default function MobileNavigation({
           <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
             <SheetTrigger asChild>
               <Button
-                variant="ghost"
-                size="sm"
-                className="flex flex-col items-center justify-center px-2 py-2 rounded-lg min-h-[48px] relative"
+                variant='ghost'
+                size='sm'
+                className='flex flex-col items-center justify-center px-2 py-2 rounded-lg min-h-[48px] relative'
                 onClick={triggerHaptic}
               >
-                <Menu className="w-5 h-5" />
-                {showLabels && <span className="text-xs mt-1 font-medium text-gray-500">More</span>}
+                <Menu className='w-5 h-5' />
+                {showLabels && (
+                  <span className='text-xs mt-1 font-medium text-gray-500'>
+                    More
+                  </span>
+                )}
 
                 {notificationCount > 0 && (
                   <Badge
-                    variant="destructive"
-                    className="absolute top-1 right-1 w-4 h-4 p-0 flex items-center justify-center text-xs"
+                    variant='destructive'
+                    className='absolute top-1 right-1 w-4 h-4 p-0 flex items-center justify-center text-xs'
                   >
                     {notificationCount > 99 ? '99+' : notificationCount}
                   </Badge>
@@ -189,44 +201,46 @@ export default function MobileNavigation({
               </Button>
             </SheetTrigger>
 
-            <SheetContent side="bottom" className="rounded-t-xl">
-              <SheetHeader className="text-left">
+            <SheetContent side='bottom' className='rounded-t-xl'>
+              <SheetHeader className='text-left'>
                 <SheetTitle>Navigation Menu</SheetTitle>
                 <SheetDescription>
                   Access all LegacyGuard features
                 </SheetDescription>
               </SheetHeader>
 
-              <div className="mt-6 space-y-4">
+              <div className='mt-6 space-y-4'>
                 {/* Quick Actions */}
                 <div>
-                  <h3 className="text-sm font-medium text-gray-900 mb-3">Quick Actions</h3>
-                  <div className="grid grid-cols-2 gap-2">
+                  <h3 className='text-sm font-medium text-gray-900 mb-3'>
+                    Quick Actions
+                  </h3>
+                  <div className='grid grid-cols-2 gap-2'>
                     <Button
-                      variant="outline"
-                      size="sm"
-                      className="justify-start gap-2 h-12"
+                      variant='outline'
+                      size='sm'
+                      className='justify-start gap-2 h-12'
                       onClick={() => {
                         triggerHaptic();
                         handleNavClick('/vault?action=upload');
                       }}
                       asChild
                     >
-                      <NavLink to="/vault?action=upload">
-                        <Plus className="w-4 h-4" />
+                      <NavLink to='/vault?action=upload'>
+                        <Plus className='w-4 h-4' />
                         Upload Document
                       </NavLink>
                     </Button>
 
                     <Button
-                      variant="outline"
-                      size="sm"
-                      className="justify-start gap-2 h-12 relative"
+                      variant='outline'
+                      size='sm'
+                      className='justify-start gap-2 h-12 relative'
                     >
-                      <Bell className="w-4 h-4" />
+                      <Bell className='w-4 h-4' />
                       Notifications
                       {notificationCount > 0 && (
-                        <Badge variant="destructive" className="ml-auto">
+                        <Badge variant='destructive' className='ml-auto'>
                           {notificationCount}
                         </Badge>
                       )}
@@ -236,9 +250,11 @@ export default function MobileNavigation({
 
                 {/* All Navigation Items */}
                 <div>
-                  <h3 className="text-sm font-medium text-gray-900 mb-3">All Features</h3>
-                  <div className="grid grid-cols-2 gap-2">
-                    {[...primaryNavItems, ...secondaryNavItems].map((item) => (
+                  <h3 className='text-sm font-medium text-gray-900 mb-3'>
+                    All Features
+                  </h3>
+                  <div className='grid grid-cols-2 gap-2'>
+                    {[...primaryNavItems, ...secondaryNavItems].map(item => (
                       <NavButton
                         key={item.url}
                         item={item}
@@ -254,12 +270,12 @@ export default function MobileNavigation({
         </div>
 
         {/* Safe area padding for devices with home indicator */}
-        <div className="h-safe-area-inset-bottom" />
+        <div className='h-safe-area-inset-bottom' />
       </div>
 
       {/* Floating Action Button (Optional) */}
       <Button
-        size="lg"
+        size='lg'
         className={cn(
           'fixed bottom-20 right-4 z-40 w-14 h-14 rounded-full shadow-lg md:hidden',
           'bg-blue-600 hover:bg-blue-700 active:scale-95 transition-transform duration-200'
@@ -270,13 +286,13 @@ export default function MobileNavigation({
         }}
         asChild
       >
-        <NavLink to="/vault?action=upload">
-          <Plus className="w-6 h-6" />
+        <NavLink to='/vault?action=upload'>
+          <Plus className='w-6 h-6' />
         </NavLink>
       </Button>
 
       {/* Bottom safe area spacer for content */}
-      <div className="h-16 md:hidden" aria-hidden="true" />
+      <div className='h-16 md:hidden' aria-hidden='true' />
     </>
   );
 }
@@ -305,13 +321,15 @@ export function useMobileNavigation() {
  * Mobile Navigation Provider for global state management
  */
 interface MobileNavContextType {
-  notificationCount: number;
-  setNotificationCount: (count: number) => void;
   hapticFeedback: boolean;
+  notificationCount: number;
   setHapticFeedback: (enabled: boolean) => void;
+  setNotificationCount: (count: number) => void;
 }
 
-const MobileNavContext = createContext<MobileNavContextType | undefined>(undefined);
+const MobileNavContext = createContext<MobileNavContextType | undefined>(
+  undefined
+);
 
 export function MobileNavProvider({ children }: { children: React.ReactNode }) {
   const [notificationCount, setNotificationCount] = useState(0);
@@ -321,7 +339,7 @@ export function MobileNavProvider({ children }: { children: React.ReactNode }) {
     notificationCount,
     setNotificationCount,
     hapticFeedback,
-    setHapticFeedback
+    setHapticFeedback,
   };
 
   return (
@@ -334,7 +352,9 @@ export function MobileNavProvider({ children }: { children: React.ReactNode }) {
 export function useMobileNavContext() {
   const context = useContext(MobileNavContext);
   if (context === undefined) {
-    throw new Error('useMobileNavContext must be used within a MobileNavProvider');
+    throw new Error(
+      'useMobileNavContext must be used within a MobileNavProvider'
+    );
   }
   return context;
 }

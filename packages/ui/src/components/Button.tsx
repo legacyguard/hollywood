@@ -1,4 +1,4 @@
-import { type GetProps, styled, Button as TamaguiButton } from 'tamagui'
+import { type GetProps, styled, Button as TamaguiButton } from 'tamagui';
 
 // Create styled Button with LegacyGuard variants
 export const Button = styled(TamaguiButton, {
@@ -158,10 +158,10 @@ export const Button = styled(TamaguiButton, {
     rounded: false,
     loading: false,
   },
-})
+});
 
 // Export types
-export type ButtonProps = GetProps<typeof Button>
+export type ButtonProps = GetProps<typeof Button>;
 
 // Icon Button variant
 export const IconButton = styled(Button, {
@@ -193,6 +193,6 @@ export const IconButton = styled(Button, {
   defaultVariants: {
     size: 'medium',
   },
-})
+});
 
-export type IconButtonProps = GetProps<typeof IconButton>
+export type IconButtonProps = GetProps<typeof IconButton>;

@@ -5,67 +5,67 @@
 
 // Core exports
 export {
-  default as i18n,
-  NAMESPACES,
   getCurrentJurisdiction,
-  getSupportedLanguages,
   getDefaultLanguage,
-  loadLegalTranslations,
   getJurisdictionTranslation,
+  getSupportedLanguages,
+  default as i18n,
+  loadLegalTranslations,
+  NAMESPACES,
 } from './config';
+// Re-export hooks (will be created in separate file)
 export {
-  JURISDICTION_CONFIG,
-  getJurisdictionByDomain,
-  getJurisdictionsByTier,
-  getJurisdictionsByLanguage,
+  useJurisdiction,
+  useLanguage,
+  useLegalTerm,
+  useTranslation,
+} from './hooks';
+export {
   getAllJurisdictions,
+  getJurisdictionByDomain,
+  getJurisdictionsByLanguage,
+  getJurisdictionsByTier,
+  JURISDICTION_CONFIG,
 } from './jurisdictions';
+export type { JurisdictionConfig } from './jurisdictions';
+
 export {
-  LANGUAGE_CONFIG,
+  formatCurrency,
+  formatDate,
+  formatNumber,
   getLanguageConfig,
   getLanguagesByScript,
   getRTLLanguages,
-  formatDate,
-  formatNumber,
-  formatCurrency,
+  LANGUAGE_CONFIG,
 } from './languages';
+
+export type { LanguageConfig } from './languages';
 export {
-  LegalTermCategory,
-  LEGAL_TERMS_DATABASE,
-  getLegalTerm,
   getLegalDefinition,
   getLegalReference,
-  getRelatedLegalTerms,
-  searchLegalTerms,
+  getLegalTerm,
   getLegalTermsByCategory,
+  getRelatedLegalTerms,
+  LEGAL_TERMS_DATABASE,
+  LegalTermCategory,
+  searchLegalTerms,
 } from './legal-terminology';
+export type { LegalTerm } from './legal-terminology';
 
 // Type exports
 export type {
-  TranslationNamespace,
-  LanguageCode,
-  JurisdictionCode,
-  TranslationKeys,
-  TFunction,
-  TranslationOptions,
-  I18nConfig,
-  TranslationResource,
-  JurisdictionTranslationOverride,
-  ExtractNamespaceKeys,
   DeepPartial,
-  UseTranslationReturn,
+  ExtractNamespaceKeys,
+  I18nConfig,
+  JurisdictionCode,
+  JurisdictionTranslationOverride,
+  LanguageCode,
+  TFunction,
+  TranslationKeys,
+  TranslationNamespace,
+  TranslationOptions,
+  TranslationResource,
   UseJurisdictionReturn,
   UseLegalTermReturn,
+  UseTranslationReturn,
 } from './types';
-
-export type { JurisdictionConfig } from './jurisdictions';
-export type { LanguageConfig } from './languages';
-export type { LegalTerm } from './legal-terminology';
-
-// Re-export hooks (will be created in separate file)
-export {
-  useTranslation,
-  useJurisdiction,
-  useLegalTerm,
-  useLanguage,
-} from './hooks';

@@ -3,7 +3,6 @@ import { useAuth } from '@clerk/clerk-react';
 // Base API URL - in production this will be your Vercel deployment URL
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
-
 // Custom error class for API errors
 export class ApiError extends Error {
   constructor(
@@ -20,7 +19,7 @@ export class ApiError extends Error {
 async function fetchApi<T = unknown>(
   endpoint: string,
   options: globalThis.RequestInit = {},
-  token?: string | null
+  token?: null | string
 ): Promise<T> {
   const url = `${API_BASE_URL}${endpoint}`;
 
@@ -44,7 +43,10 @@ async function fetchApi<T = unknown>(
     const contentType = response.headers.get('content-type');
     if (!contentType?.includes('application/json')) {
       if (!response.ok) {
-        throw new ApiError(`HTTP error! status: ${response.status}`, response.status);
+        throw new ApiError(
+          `HTTP error! status: ${response.status}`,
+          response.status
+        );
       }
       return response.text() as unknown;
     }
@@ -78,39 +80,57 @@ async function fetchApi<T = unknown>(
 // Key Management Service
 export const keyManagementService = {
   // Generate new encryption keys
-  async generateKeys(password: string, token: string): Promise<{
-    success: boolean;
-    publicKey: string;
+  async generateKeys(
+    password: string,
+    token: string
+  ): Promise<{
     message: string;
+    publicKey: string;
+    success: boolean;
   }> {
-    return fetchApi('/keys-generate', {
-      method: 'POST',
-      body: JSON.stringify({ password }),
-    }, token);
+    return fetchApi(
+      '/keys-generate',
+      {
+        method: 'POST',
+        body: JSON.stringify({ password }),
+      },
+      token
+    );
   },
 
   // Retrieve encryption keys
-  async retrieveKeys(password: string, token: string): Promise<{
-    success: boolean;
+  async retrieveKeys(
+    password: string,
+    token: string
+  ): Promise<{
+    message: string;
     privateKey: string;
     publicKey: string;
-    message: string;
+    success: boolean;
   }> {
-    return fetchApi('/keys-retrieve', {
-      method: 'POST',
-      body: JSON.stringify({ password }),
-    }, token);
+    return fetchApi(
+      '/keys-retrieve',
+      {
+        method: 'POST',
+        body: JSON.stringify({ password }),
+      },
+      token
+    );
   },
 
   // Get public key only (no password required)
   async getPublicKey(token: string): Promise<{
-    success: boolean;
-    publicKey: string;
     metadata?: unknown;
+    publicKey: string;
+    success: boolean;
   }> {
-    return fetchApi('/keys-retrieve', {
-      method: 'GET',
-    }, token);
+    return fetchApi(
+      '/keys-retrieve',
+      {
+        method: 'GET',
+      },
+      token
+    );
   },
 
   // Rotate encryption keys
@@ -119,25 +139,33 @@ export const keyManagementService = {
     newPassword: string | undefined,
     token: string
   ): Promise<{
-    success: boolean;
-    newPublicKey: string;
     message: string;
+    newPublicKey: string;
+    success: boolean;
   }> {
-    return fetchApi('/keys-rotate', {
-      method: 'POST',
-      body: JSON.stringify({ currentPassword, newPassword }),
-    }, token);
+    return fetchApi(
+      '/keys-rotate',
+      {
+        method: 'POST',
+        body: JSON.stringify({ currentPassword, newPassword }),
+      },
+      token
+    );
   },
 
   // Check if key rotation is needed
   async checkRotationNeeded(token: string): Promise<{
-    success: boolean;
-    rotationNeeded: boolean;
     message: string;
+    rotationNeeded: boolean;
+    success: boolean;
   }> {
-    return fetchApi('/keys-rotate', {
-      method: 'GET',
-    }, token);
+    return fetchApi(
+      '/keys-rotate',
+      {
+        method: 'GET',
+      },
+      token
+    );
   },
 
   // Check key status
@@ -145,11 +173,15 @@ export const keyManagementService = {
     hasKeys: boolean;
     isCompromised?: boolean;
     isLocked?: boolean;
-    lockedUntil?: string | null;
+    lockedUntil?: null | string;
   }> {
-    return fetchApi('/keys-status', {
-      method: 'GET',
-    }, token);
+    return fetchApi(
+      '/keys-status',
+      {
+        method: 'GET',
+      },
+      token
+    );
   },
 };
 
@@ -184,21 +216,33 @@ export function useApiService() {
         callWithAuth(keyManagementService.generateKeys, password),
       retrieveKeys: (password: string) =>
         callWithAuth(keyManagementService.retrieveKeys, password),
-      getPublicKey: () =>
-        callWithAuth(keyManagementService.getPublicKey),
+      getPublicKey: () => callWithAuth(keyManagementService.getPublicKey),
       rotateKeys: (currentPassword: string, newPassword?: string) =>
-        callWithAuth(keyManagementService.rotateKeys, currentPassword, newPassword),
+        callWithAuth(
+          keyManagementService.rotateKeys,
+          currentPassword,
+          newPassword
+        ),
       checkRotationNeeded: () =>
         callWithAuth(keyManagementService.checkRotationNeeded),
-      checkKeyStatus: () =>
-        callWithAuth(keyManagementService.checkKeyStatus),
+      checkKeyStatus: () => callWithAuth(keyManagementService.checkKeyStatus),
     },
   };
 }
 
 // Export types for use in components
-export type KeyGenerationResponse = Awaited<ReturnType<typeof keyManagementService.generateKeys>>;
-export type KeyRetrievalResponse = Awaited<ReturnType<typeof keyManagementService.retrieveKeys>>;
-export type PublicKeyResponse = Awaited<ReturnType<typeof keyManagementService.getPublicKey>>;
-export type KeyRotationResponse = Awaited<ReturnType<typeof keyManagementService.rotateKeys>>;
-export type KeyStatusResponse = Awaited<ReturnType<typeof keyManagementService.checkKeyStatus>>;
+export type KeyGenerationResponse = Awaited<
+  ReturnType<typeof keyManagementService.generateKeys>
+>;
+export type KeyRetrievalResponse = Awaited<
+  ReturnType<typeof keyManagementService.retrieveKeys>
+>;
+export type PublicKeyResponse = Awaited<
+  ReturnType<typeof keyManagementService.getPublicKey>
+>;
+export type KeyRotationResponse = Awaited<
+  ReturnType<typeof keyManagementService.rotateKeys>
+>;
+export type KeyStatusResponse = Awaited<
+  ReturnType<typeof keyManagementService.checkKeyStatus>
+>;

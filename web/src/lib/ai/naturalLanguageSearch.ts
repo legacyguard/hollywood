@@ -4,64 +4,64 @@
  */
 
 export interface SearchQuery {
-  id: string;
-  originalQuery: string;
-  processedQuery: ProcessedQuery;
-  intent: QueryIntent;
   entities: QueryEntity[];
   filters: SearchFilter[];
+  id: string;
+  intent: QueryIntent;
+  originalQuery: string;
+  processedQuery: ProcessedQuery;
   timestamp: string;
 }
 
 export interface ProcessedQuery {
-  keywords: string[];
-  synonyms: string[];
   concepts: string[];
-  semanticEmbedding?: number[];
   confidence: number;
+  keywords: string[];
+  semanticEmbedding?: number[];
+  synonyms: string[];
 }
 
 export interface QueryIntent {
-  type: IntentType;
   action: QueryAction;
-  target: QueryTarget;
   confidence: number;
   parameters: Record<string, any>;
+  target: QueryTarget;
+  type: IntentType;
 }
 
 export interface QueryEntity {
-  type: EntityType;
-  value: string;
-  normalizedValue: string;
   confidence: number;
   context: string;
+  normalizedValue: string;
+  type: EntityType;
+  value: string;
 }
 
 export interface SearchFilter {
+  boost?: number;
   field: string;
   operator: FilterOperator;
   value: any;
-  boost?: number;
 }
 
 export interface SearchResult {
   documentId: string;
-  title: string;
-  snippet: string;
-  relevanceScore: number;
-  semanticScore: number;
+  highlights: Highlight[];
   matches: SearchMatch[];
   metadata: DocumentMetadata;
-  highlights: Highlight[];
+  relevanceScore: number;
+  semanticScore: number;
+  snippet: string;
+  title: string;
 }
 
 export interface SearchMatch {
-  type: 'keyword' | 'semantic' | 'entity' | 'concept';
-  field: string;
-  value: string;
-  score: number;
-  position: number;
   context: string;
+  field: string;
+  position: number;
+  score: number;
+  type: 'concept' | 'entity' | 'keyword' | 'semantic';
+  value: string;
 }
 
 export interface Highlight {
@@ -72,61 +72,61 @@ export interface Highlight {
 
 export interface DocumentMetadata {
   category: string;
-  type: string;
   createdAt: string;
-  modifiedAt: string;
-  tags: string[];
   importance: string;
+  modifiedAt: string;
   size: number;
+  tags: string[];
+  type: string;
 }
 
 export type IntentType =
-  | 'search'
+  | 'analyze'
+  | 'compare'
   | 'filter'
   | 'find'
   | 'list'
-  | 'compare'
-  | 'summarize'
-  | 'analyze'
-  | 'recommend';
+  | 'recommend'
+  | 'search'
+  | 'summarize';
 
 export type QueryAction =
-  | 'retrieve'
-  | 'count'
-  | 'group'
-  | 'sort'
   | 'aggregate'
-  | 'update'
-  | 'delete';
+  | 'count'
+  | 'delete'
+  | 'group'
+  | 'retrieve'
+  | 'sort'
+  | 'update';
 
 export type QueryTarget =
-  | 'documents'
   | 'categories'
+  | 'documents'
   | 'entities'
-  | 'relationships'
   | 'insights'
-  | 'metadata';
+  | 'metadata'
+  | 'relationships';
 
 export type EntityType =
-  | 'person'
-  | 'organization'
-  | 'date'
   | 'amount'
-  | 'location'
-  | 'document_type'
   | 'category'
-  | 'keyword';
+  | 'date'
+  | 'document_type'
+  | 'keyword'
+  | 'location'
+  | 'organization'
+  | 'person';
 
 export type FilterOperator =
-  | 'equals'
-  | 'contains'
-  | 'starts_with'
-  | 'ends_with'
-  | 'greater_than'
-  | 'less_than'
   | 'between'
+  | 'contains'
+  | 'ends_with'
+  | 'equals'
+  | 'exists'
+  | 'greater_than'
   | 'in'
-  | 'exists';
+  | 'less_than'
+  | 'starts_with';
 
 class NaturalLanguageSearchService {
   private readonly synonyms = new Map<string, string[]>();
@@ -140,11 +140,14 @@ class NaturalLanguageSearchService {
   /**
    * Process natural language query and return search results
    */
-  async search(query: string, options: { limit?: number; offset?: number } = {}): Promise<{
-    results: SearchResult[];
-    totalCount: number;
+  async search(
+    query: string,
+    options: { limit?: number; offset?: number } = {}
+  ): Promise<{
     query: SearchQuery;
+    results: SearchResult[];
     suggestions: string[];
+    totalCount: number;
   }> {
     // Parse and process the query
     const searchQuery = await this.processQuery(query);
@@ -196,7 +199,10 @@ class NaturalLanguageSearchService {
 
     if (lowerQuery.includes('show me') || lowerQuery.includes('find')) {
       type = 'search';
-    } else if (lowerQuery.includes('how many') || lowerQuery.includes('count')) {
+    } else if (
+      lowerQuery.includes('how many') ||
+      lowerQuery.includes('count')
+    ) {
       action = 'count';
     } else if (lowerQuery.includes('list') || lowerQuery.includes('all')) {
       type = 'list';
@@ -222,7 +228,8 @@ class NaturalLanguageSearchService {
     const entities: QueryEntity[] = [];
 
     // Extract dates
-    const datePattern = /\b\d{1,2}\/\d{1,2}\/\d{4}\b|\b\d{4}\b|\b(january|february|march|april|may|june|july|august|september|october|november|december)\s+\d{4}\b/gi;
+    const datePattern =
+      /\b\d{1,2}\/\d{1,2}\/\d{4}\b|\b\d{4}\b|\b(january|february|march|april|may|june|july|august|september|october|november|december)\s+\d{4}\b/gi;
     const dateMatches = query.match(datePattern) || [];
 
     for (const match of dateMatches) {
@@ -236,7 +243,8 @@ class NaturalLanguageSearchService {
     }
 
     // Extract amounts
-    const amountPattern = /\$[\d,]+\.?\d*|\b\d+\s*(dollars?|k|thousand|million)\b/gi;
+    const amountPattern =
+      /\$[\d,]+\.?\d*|\b\d+\s*(dollars?|k|thousand|million)\b/gi;
     const amountMatches = query.match(amountPattern) || [];
 
     for (const match of amountMatches) {
@@ -250,7 +258,8 @@ class NaturalLanguageSearchService {
     }
 
     // Extract document types
-    const docTypePattern = /\b(will|insurance|tax|contract|deed|policy|certificate|statement|report)\b/gi;
+    const docTypePattern =
+      /\b(will|insurance|tax|contract|deed|policy|certificate|statement|report)\b/gi;
     const docTypeMatches = query.match(docTypePattern) || [];
 
     for (const match of docTypeMatches) {
@@ -272,8 +281,8 @@ class NaturalLanguageSearchService {
   private async processQueryText(query: string): Promise<ProcessedQuery> {
     // Extract keywords
     const words = query.toLowerCase().match(/\b\w+\b/g) || [];
-    const keywords = words.filter(word =>
-      word.length > 2 && !this.isStopWord(word)
+    const keywords = words.filter(
+      word => word.length > 2 && !this.isStopWord(word)
     );
 
     // Expand with synonyms
@@ -301,7 +310,10 @@ class NaturalLanguageSearchService {
   /**
    * Generate search filters from intent and entities
    */
-  private async generateFilters(intent: QueryIntent, entities: QueryEntity[]): Promise<SearchFilter[]> {
+  private async generateFilters(
+    intent: QueryIntent,
+    entities: QueryEntity[]
+  ): Promise<SearchFilter[]> {
     const filters: SearchFilter[] = [];
 
     for (const entity of entities) {
@@ -350,7 +362,8 @@ class NaturalLanguageSearchService {
       {
         documentId: '1',
         title: 'Last Will and Testament',
-        snippet: 'I, John Doe, being of sound mind and body, hereby declare this to be my last will and testament...',
+        snippet:
+          'I, John Doe, being of sound mind and body, hereby declare this to be my last will and testament...',
         relevanceScore: 0.95,
         semanticScore: 0.88,
         matches: [
@@ -361,7 +374,7 @@ class NaturalLanguageSearchService {
             score: 0.9,
             position: 5,
             context: 'Last Will and Testament',
-          }
+          },
         ],
         metadata: {
           category: 'legal',
@@ -375,11 +388,14 @@ class NaturalLanguageSearchService {
         highlights: [
           {
             field: 'content',
-            fragments: ['<em>will</em> and testament', 'hereby declare this to be my last <em>will</em>'],
+            fragments: [
+              '<em>will</em> and testament',
+              'hereby declare this to be my last <em>will</em>',
+            ],
             maxScore: 0.9,
-          }
+          },
         ],
-      }
+      },
     ];
 
     return {
@@ -423,13 +439,13 @@ class NaturalLanguageSearchService {
    */
   private initializeSynonyms(): void {
     const synonymMappings = {
-      'will': ['testament', 'last will', 'estate plan'],
-      'insurance': ['policy', 'coverage', 'protection'],
-      'tax': ['taxes', 'irs', 'filing', 'return'],
-      'contract': ['agreement', 'deal', 'terms'],
-      'important': ['critical', 'essential', 'vital'],
-      'money': ['cash', 'funds', 'amount', 'dollars'],
-      'document': ['file', 'paper', 'record'],
+      will: ['testament', 'last will', 'estate plan'],
+      insurance: ['policy', 'coverage', 'protection'],
+      tax: ['taxes', 'irs', 'filing', 'return'],
+      contract: ['agreement', 'deal', 'terms'],
+      important: ['critical', 'essential', 'vital'],
+      money: ['cash', 'funds', 'amount', 'dollars'],
+      document: ['file', 'paper', 'record'],
     };
 
     for (const [key, values] of Object.entries(synonymMappings)) {
@@ -442,10 +458,10 @@ class NaturalLanguageSearchService {
    */
   private initializeConcepts(): void {
     const conceptMappings = {
-      'legal': ['will', 'contract', 'agreement', 'court', 'attorney'],
-      'financial': ['money', 'bank', 'account', 'investment', 'tax'],
-      'medical': ['health', 'doctor', 'hospital', 'prescription', 'insurance'],
-      'family': ['spouse', 'children', 'beneficiary', 'relative'],
+      legal: ['will', 'contract', 'agreement', 'court', 'attorney'],
+      financial: ['money', 'bank', 'account', 'investment', 'tax'],
+      medical: ['health', 'doctor', 'hospital', 'prescription', 'insurance'],
+      family: ['spouse', 'children', 'beneficiary', 'relative'],
     };
 
     for (const [concept, keywords] of Object.entries(conceptMappings)) {
@@ -477,7 +493,11 @@ class NaturalLanguageSearchService {
     return parseFloat(numStr).toString();
   }
 
-  private getContext(text: string, term: string, contextLength: number = 50): string {
+  private getContext(
+    text: string,
+    term: string,
+    contextLength: number = 50
+  ): string {
     const index = text.toLowerCase().indexOf(term.toLowerCase());
     if (index === -1) return '';
 
@@ -489,10 +509,52 @@ class NaturalLanguageSearchService {
 
   private isStopWord(word: string): boolean {
     const stopWords = [
-      'the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by',
-      'a', 'an', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had',
-      'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'must',
-      'i', 'you', 'he', 'she', 'it', 'we', 'they', 'me', 'him', 'her', 'us', 'them'
+      'the',
+      'and',
+      'or',
+      'but',
+      'in',
+      'on',
+      'at',
+      'to',
+      'for',
+      'of',
+      'with',
+      'by',
+      'a',
+      'an',
+      'is',
+      'are',
+      'was',
+      'were',
+      'be',
+      'been',
+      'being',
+      'have',
+      'has',
+      'had',
+      'do',
+      'does',
+      'did',
+      'will',
+      'would',
+      'could',
+      'should',
+      'may',
+      'might',
+      'must',
+      'i',
+      'you',
+      'he',
+      'she',
+      'it',
+      'we',
+      'they',
+      'me',
+      'him',
+      'her',
+      'us',
+      'them',
     ];
 
     return stopWords.includes(word.toLowerCase());
@@ -500,13 +562,18 @@ class NaturalLanguageSearchService {
 
   private getMostCommonCategory(results: SearchResult[]): string {
     const categories = results.map(r => r.metadata.category);
-    const counts = categories.reduce((acc, cat) => {
-      acc[cat] = (acc[cat] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    const counts = categories.reduce(
+      (acc, cat) => {
+        acc[cat] = (acc[cat] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
 
-    return Object.entries(counts)
-      .sort(([,a], [,b]) => b - a)[0]?.[0] || 'documents';
+    return (
+      Object.entries(counts).sort(([, a], [, b]) => b - a)[0]?.[0] ||
+      'documents'
+    );
   }
 
   private generateId(): string {

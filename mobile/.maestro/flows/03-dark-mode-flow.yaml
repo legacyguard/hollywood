@@ -5,85 +5,85 @@ appId: com.legacyguard.mobile
 
 # Navigate to Profile/Settings
 - tapOn:
-    text: "Profile"
-    
+    text: 'Profile'
+
 - scrollUntilVisible:
     element:
-      text: "Theme"
-      
+      text: 'Theme'
+
 # Take light mode screenshots
-- takeScreenshot: "01-profile-light"
+- takeScreenshot: '01-profile-light'
 
 # Switch to dark mode
 - tapOn:
-    text: "Theme"
-    
+    text: 'Theme'
+
 - tapOn:
-    text: "Dark"
-    
+    text: 'Dark'
+
 - waitForAnimationToEnd
 
-- takeScreenshot: "02-profile-dark"
+- takeScreenshot: '02-profile-dark'
 
 # Navigate through screens in dark mode
 - tapOn:
-    text: "Home"
-    
-- takeScreenshot: "03-dashboard-dark"
+    text: 'Home'
+
+- takeScreenshot: '03-dashboard-dark'
 
 # Check Documents screen
 - tapOn:
-    text: "Documents Protected"
-    
-- takeScreenshot: "04-documents-dark"
+    text: 'Documents Protected'
+
+- takeScreenshot: '04-documents-dark'
 
 # Check People screen
 - tapOn:
-    text: "Home"
-    
+    text: 'Home'
+
 - tapOn:
-    text: "Family Members"
-    
-- takeScreenshot: "05-people-dark"
+    text: 'Family Members'
+
+- takeScreenshot: '05-people-dark'
 
 # Check Will screen
 - tapOn:
-    text: "Home"
-    
+    text: 'Home'
+
 - tapOn:
-    text: "Create Will"
-    
-- takeScreenshot: "06-will-dark"
+    text: 'Create Will'
+
+- takeScreenshot: '06-will-dark'
 
 # Check Vault screen
 - tapOn:
-    text: "Vault"
-    
-- takeScreenshot: "07-vault-dark"
+    text: 'Vault'
+
+- takeScreenshot: '07-vault-dark'
 
 # Switch back to light mode
 - tapOn:
-    text: "Profile"
-    
+    text: 'Profile'
+
 - scrollUntilVisible:
     element:
-      text: "Theme"
-      
+      text: 'Theme'
+
 - tapOn:
-    text: "Theme"
-    
+    text: 'Theme'
+
 - tapOn:
-    text: "Light"
-    
+    text: 'Light'
+
 - waitForAnimationToEnd
 
-- takeScreenshot: "08-profile-light-restored"
+- takeScreenshot: '08-profile-light-restored'
 
 # Test system theme
 - tapOn:
-    text: "Theme"
-    
+    text: 'Theme'
+
 - tapOn:
-    text: "System"
-    
-- takeScreenshot: "09-profile-system-theme"
+    text: 'System'
+
+- takeScreenshot: '09-profile-system-theme'

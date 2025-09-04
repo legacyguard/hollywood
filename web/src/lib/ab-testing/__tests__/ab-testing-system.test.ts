@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 /**
  * A/B Testing System Tests
  * Validates core functionality of the A/B testing framework
@@ -52,7 +52,13 @@ describe('ABTestingSystem', () => {
       const value = 1;
       const metadata = { trustScore: 75 };
 
-      abTestingSystem.trackConversion(userId, testName, metric, value, metadata);
+      abTestingSystem.trackConversion(
+        userId,
+        testName,
+        metric,
+        value,
+        metadata
+      );
 
       const metrics = abTestingSystem.getTestMetrics(testName);
       expect(metrics).toHaveLength(1);
@@ -86,11 +92,46 @@ describe('ABTestingSystem', () => {
 
       // Mock some test metrics
       (abTestingSystem as any).metrics = [
-        { userId: 'user1', testName, variant: 'control', metric: 'started', value: 1, timestamp: new Date().toISOString() },
-        { userId: 'user1', testName, variant: 'control', metric: 'completed', value: 1, timestamp: new Date().toISOString() },
-        { userId: 'user2', testName, variant: 'control', metric: 'started', value: 1, timestamp: new Date().toISOString() },
-        { userId: 'user3', testName, variant: 'variant_a', metric: 'started', value: 1, timestamp: new Date().toISOString() },
-        { userId: 'user3', testName, variant: 'variant_a', metric: 'completed', value: 1, timestamp: new Date().toISOString() },
+        {
+          userId: 'user1',
+          testName,
+          variant: 'control',
+          metric: 'started',
+          value: 1,
+          timestamp: new Date().toISOString(),
+        },
+        {
+          userId: 'user1',
+          testName,
+          variant: 'control',
+          metric: 'completed',
+          value: 1,
+          timestamp: new Date().toISOString(),
+        },
+        {
+          userId: 'user2',
+          testName,
+          variant: 'control',
+          metric: 'started',
+          value: 1,
+          timestamp: new Date().toISOString(),
+        },
+        {
+          userId: 'user3',
+          testName,
+          variant: 'variant_a',
+          metric: 'started',
+          value: 1,
+          timestamp: new Date().toISOString(),
+        },
+        {
+          userId: 'user3',
+          testName,
+          variant: 'variant_a',
+          metric: 'completed',
+          value: 1,
+          timestamp: new Date().toISOString(),
+        },
       ];
 
       const rates = abTestingSystem.getConversionRates(testName);
@@ -127,15 +168,32 @@ describe('ABTestingSystem', () => {
       const userId = 'onboarding-test-user';
 
       abTestingSystem.trackOnboardingMetric(userId, 'start', 'started');
-      abTestingSystem.trackOnboardingMetric(userId, 'personal_info', 'completed', 5000);
-      abTestingSystem.trackOnboardingMetric(userId, 'family_info', 'completed', 3000);
-      abTestingSystem.trackOnboardingMetric(userId, 'complete', 'completed', 15000);
+      abTestingSystem.trackOnboardingMetric(
+        userId,
+        'personal_info',
+        'completed',
+        5000
+      );
+      abTestingSystem.trackOnboardingMetric(
+        userId,
+        'family_info',
+        'completed',
+        3000
+      );
+      abTestingSystem.trackOnboardingMetric(
+        userId,
+        'complete',
+        'completed',
+        15000
+      );
 
       const metrics = abTestingSystem.getTestMetrics('onboarding_flow_v1');
       const userMetrics = metrics.filter(m => m.userId === userId);
 
       expect(userMetrics).toHaveLength(4);
-      expect(userMetrics.find(m => m.metric === 'onboarding_complete_completed')).toBeDefined();
+      expect(
+        userMetrics.find(m => m.metric === 'onboarding_complete_completed')
+      ).toBeDefined();
     });
   });
 });

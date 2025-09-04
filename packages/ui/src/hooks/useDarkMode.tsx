@@ -1,29 +1,30 @@
-import React from 'react'
-import { useTheme } from 'tamagui'
-import { useColorScheme } from 'react-native'
+import React from 'react';
+import { useTheme } from 'tamagui';
+import { useColorScheme } from 'react-native';
 
 /**
  * Hook for dark mode aware colors and utilities
  */
 export const useDarkMode = () => {
-  const theme = useTheme()
-  const systemColorScheme = useColorScheme()
+  const theme = useTheme();
+  const systemColorScheme = useColorScheme();
 
   // Check if we're in dark mode
-  const isDark = theme.background?.get() === theme.backgroundDark?.get() ||
-                 systemColorScheme === 'dark'
+  const isDark =
+    theme.background?.get() === theme.backgroundDark?.get() ||
+    systemColorScheme === 'dark';
 
   // Helper functions for conditional styling
   const getColor = (lightColor: string, darkColor: string) => {
-    return isDark ? darkColor : lightColor
-  }
+    return isDark ? darkColor : lightColor;
+  };
 
   const getStyle = <T extends Record<string, unknown>>(
     lightStyle: T,
     darkStyle: T
   ): T => {
-    return isDark ? darkStyle : lightStyle
-  }
+    return isDark ? darkStyle : lightStyle;
+  };
 
   // Common color mappings for dark mode
   const colors = {
@@ -54,7 +55,7 @@ export const useDarkMode = () => {
       color: isDark ? 'rgba(0,0,0,0.8)' : 'rgba(0,0,0,0.1)',
       elevation: isDark ? 8 : 4,
     },
-  }
+  };
 
   // Semantic color tokens
   const semantic = {
@@ -70,7 +71,7 @@ export const useDarkMode = () => {
     iconColor: colors.text.secondary,
     linkColor: theme.primaryBlue?.val,
     overlayBackground: colors.background.overlay,
-  }
+  };
 
   return {
     isDark,
@@ -79,15 +80,15 @@ export const useDarkMode = () => {
     getColor,
     getStyle,
     theme,
-  }
-}
+  };
+};
 
 // Export helper HOC for dark mode aware components
 export const withDarkMode = <P extends object>(
   Component: React.ComponentType<P & { isDark: boolean }>
 ) => {
   return (props: P) => {
-    const { isDark } = useDarkMode()
-    return <Component {...props} isDark={isDark} />
-  }
-}
+    const { isDark } = useDarkMode();
+    return <Component {...props} isDark={isDark} />;
+  };
+};

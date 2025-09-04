@@ -1,13 +1,6 @@
 import React, { useState } from 'react';
 import { Alert } from 'react-native';
-import {
-  YStack,
-  H1,
-  Button,
-  Input,
-  Container,
-  Spinner
-} from '@legacyguard/ui';
+import { Button, Container, H1, Input, Spinner, YStack } from '@legacyguard/ui';
 import { AuthenticationService } from '@/services/AuthenticationService';
 
 export const LoginScreen = () => {
@@ -28,7 +21,9 @@ export const LoginScreen = () => {
     } catch (error) {
       Alert.alert(
         'Login Failed',
-        error instanceof Error ? error.message : 'An error occurred during login'
+        error instanceof Error
+          ? error.message
+          : 'An error occurred during login'
       );
     } finally {
       setIsLoading(false);
@@ -36,39 +31,41 @@ export const LoginScreen = () => {
   };
 
   return (
-    <Container size="small" padding="large">
-      <YStack flex={1} justifyContent="center" gap="$4">
-        <H1 textAlign="center" marginBottom="$6">Login</H1>
+    <Container size='small' padding='large'>
+      <YStack flex={1} justifyContent='center' gap='$4'>
+        <H1 textAlign='center' marginBottom='$6'>
+          Login
+        </H1>
 
         <Input
-          placeholder="Email"
+          placeholder='Email'
           value={email}
           onChangeText={setEmail}
-          keyboardType="email-address"
-          autoCapitalize="none"
+          keyboardType='email-address'
+          autoCapitalize='none'
           disabled={isLoading}
-          size="large"
+          size='large'
         />
 
         <Input
-          placeholder="Password"
+          placeholder='Password'
           value={password}
           onChangeText={setPassword}
           secureTextEntry
           disabled={isLoading}
-          size="large"
+          size='large'
         />
 
         {isLoading ? (
-          <YStack alignItems="center" marginTop="$4">
-            <Spinner size="large" color="$primaryBlue" />
+          <YStack alignItems='center' marginTop='$4'>
+            <Spinner size='large' color='$primaryBlue' />
           </YStack>
         ) : (
           <Button
-            variant="primary"
-            size="large"
+            variant='primary'
+            size='large'
             onPress={handleLogin}
-            marginTop="$4"
+            marginTop='$4'
           >
             Log In
           </Button>

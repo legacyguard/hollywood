@@ -4,16 +4,16 @@ import { FadeIn } from '@/components/motion/FadeIn';
 import { cn } from '@/lib/utils';
 
 interface MetricCardProps {
-  title: string;
-  value: string | number;
   change?: number;
   changeLabel?: string;
+  className?: string;
+  color?: 'danger' | 'info' | 'primary' | 'success' | 'warning';
   icon: IconName;
-  trend?: 'up' | 'down' | 'neutral';
-  color?: 'primary' | 'success' | 'warning' | 'danger' | 'info';
   loading?: boolean;
   onClick?: () => void;
-  className?: string;
+  title: string;
+  trend?: 'down' | 'neutral' | 'up';
+  value: number | string;
 }
 
 export function MetricCard({
@@ -133,9 +133,9 @@ export function MetricCard({
 
 // Composite component for a grid of metrics
 interface MetricsGridProps {
-  metrics: Array<MetricCardProps>;
-  columns?: 2 | 3 | 4;
   className?: string;
+  columns?: 2 | 3 | 4;
+  metrics: Array<MetricCardProps>;
 }
 
 export function MetricsGrid({

@@ -3,16 +3,20 @@
 // AFTER: Uses centralized, typed API with consistent error handling
 
 /* global __DEV__ */
-import React, { useState, useEffect } from 'react';
-import { View, ScrollView, Alert } from 'react-native';
-import { Text, Button } from '@legacyguard/ui';
+import React, { useEffect, useState } from 'react';
+import { Alert, ScrollView, View } from 'react-native';
+import { Button, Text } from '@legacyguard/ui';
 import { legacyGuardAPI } from '@/api/legacyGuardAPI';
-import { LegacyGuardApiError, type Guardian, type GuardianInsert } from '@legacyguard/logic';
+import {
+  type Guardian,
+  type GuardianInsert,
+  LegacyGuardApiError,
+} from '@legacyguard/logic';
 
 interface PeopleScreenState {
+  error: null | string;
   guardians: Guardian[];
   isLoading: boolean;
-  error: string | null;
   isSubmitting: boolean;
 }
 
@@ -21,7 +25,7 @@ export default function PeopleScreenRefactored() {
     guardians: [],
     isLoading: true,
     error: null,
-    isSubmitting: false
+    isSubmitting: false,
   });
 
   // Fetch guardians using centralized API
@@ -35,7 +39,7 @@ export default function PeopleScreenRefactored() {
       setState(prev => ({
         ...prev,
         guardians,
-        isLoading: false
+        isLoading: false,
       }));
     } catch (error) {
       // ✅ NEW: Consistent error handling
@@ -47,26 +51,26 @@ export default function PeopleScreenRefactored() {
           setState(prev => ({
             ...prev,
             error: 'Please sign in to view your guardians',
-            isLoading: false
+            isLoading: false,
           }));
         } else if (error.isNetworkError()) {
           setState(prev => ({
             ...prev,
             error: 'Network error. Please check your connection.',
-            isLoading: false
+            isLoading: false,
           }));
         } else {
           setState(prev => ({
             ...prev,
             error: error.message,
-            isLoading: false
+            isLoading: false,
           }));
         }
       } else {
         setState(prev => ({
           ...prev,
           error: 'An unexpected error occurred',
-          isLoading: false
+          isLoading: false,
         }));
       }
     }
@@ -84,10 +88,13 @@ export default function PeopleScreenRefactored() {
       setState(prev => ({
         ...prev,
         guardians: [newGuardian, ...prev.guardians],
-        isSubmitting: false
+        isSubmitting: false,
       }));
 
-      Alert.alert('Success', `${newGuardian.name} has been added as a guardian`);
+      Alert.alert(
+        'Success',
+        `${newGuardian.name} has been added as a guardian`
+      );
     } catch (error) {
       setState(prev => ({ ...prev, isSubmitting: false }));
 
@@ -96,7 +103,10 @@ export default function PeopleScreenRefactored() {
         if (error.status === 400) {
           Alert.alert('Validation Error', error.message);
         } else if (error.isAuthError()) {
-          Alert.alert('Authentication Error', 'Please sign in to add guardians');
+          Alert.alert(
+            'Authentication Error',
+            'Please sign in to add guardians'
+          );
         } else {
           Alert.alert('Error', error.message);
         }
@@ -110,13 +120,14 @@ export default function PeopleScreenRefactored() {
   const _updateGuardian = async (id: string, updates: Partial<Guardian>) => {
     try {
       // ✅ NEW: Type-safe update with validation
-      const updatedGuardian = await legacyGuardAPI.guardians.update(id, updates);
+      const updatedGuardian = await legacyGuardAPI.guardians.update(
+        id,
+        updates
+      );
 
       setState(prev => ({
         ...prev,
-        guardians: prev.guardians.map(g =>
-          g.id === id ? updatedGuardian : g
-        )
+        guardians: prev.guardians.map(g => (g.id === id ? updatedGuardian : g)),
       }));
 
       Alert.alert('Success', 'Guardian updated successfully');
@@ -150,7 +161,7 @@ export default function PeopleScreenRefactored() {
 
               setState(prev => ({
                 ...prev,
-                guardians: prev.guardians.filter(g => g.id !== id)
+                guardians: prev.guardians.filter(g => g.id !== id),
               }));
 
               Alert.alert('Success', `${name} has been removed`);
@@ -161,8 +172,8 @@ export default function PeopleScreenRefactored() {
                 Alert.alert('Error', 'Failed to delete guardian');
               }
             }
-          }
-        }
+          },
+        },
       ]
     );
   };
@@ -188,7 +199,10 @@ export default function PeopleScreenRefactored() {
       await fetchGuardians();
     } catch (error) {
       if (error instanceof LegacyGuardApiError) {
-        Alert.alert('Error', `Failed to ${currentStatus ? 'deactivate' : 'activate'} guardian: ${error.message}`);
+        Alert.alert(
+          'Error',
+          `Failed to ${currentStatus ? 'deactivate' : 'activate'} guardian: ${error.message}`
+        );
       }
     }
   };
@@ -209,11 +223,18 @@ export default function PeopleScreenRefactored() {
 
   if (error) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 }}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          padding: 20,
+        }}
+      >
         <Text style={{ color: 'red', textAlign: 'center', marginBottom: 16 }}>
           {error}
         </Text>
-        <Button onPress={fetchGuardians} title="Try Again" />
+        <Button onPress={fetchGuardians} title='Try Again' />
       </View>
     );
   }
@@ -229,11 +250,14 @@ export default function PeopleScreenRefactored() {
           <Text style={{ fontSize: 18, textAlign: 'center', marginBottom: 16 }}>
             You haven't added any guardians yet
           </Text>
-          <Text style={{ textAlign: 'center', color: 'gray', marginBottom: 20 }}>
-            Add trusted people who can help your family access important information when needed.
+          <Text
+            style={{ textAlign: 'center', color: 'gray', marginBottom: 20 }}
+          >
+            Add trusted people who can help your family access important
+            information when needed.
           </Text>
           <Button
-            title="Add First Guardian"
+            title='Add First Guardian'
             onPress={() => {
               // Example guardian data - in real app, this would come from a form
               const exampleGuardian: GuardianInsert = {
@@ -242,7 +266,7 @@ export default function PeopleScreenRefactored() {
                 email: 'john@example.com',
                 phone: '+1-555-0123',
                 relationship: 'Brother',
-                is_active: true
+                is_active: true,
               };
               addGuardian(exampleGuardian);
             }}
@@ -251,19 +275,28 @@ export default function PeopleScreenRefactored() {
         </View>
       ) : (
         <View>
-          {guardians.map((guardian) => (
-            <View key={guardian.id} style={{
-              backgroundColor: 'white',
-              padding: 16,
-              marginBottom: 12,
-              borderRadius: 8,
-              shadowColor: '#000',
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.1,
-              shadowRadius: 4,
-              elevation: 3
-            }}>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          {guardians.map(guardian => (
+            <View
+              key={guardian.id}
+              style={{
+                backgroundColor: 'white',
+                padding: 16,
+                marginBottom: 12,
+                borderRadius: 8,
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.1,
+                shadowRadius: 4,
+                elevation: 3,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'flex-start',
+                }}
+              >
                 <View style={{ flex: 1 }}>
                   <Text style={{ fontSize: 18, fontWeight: 'bold' }}>
                     {guardian.name}
@@ -273,16 +306,18 @@ export default function PeopleScreenRefactored() {
                       {guardian.relationship}
                     </Text>
                   )}
-                  <Text style={{ marginBottom: 4 }}>
-                    📧 {guardian.email}
-                  </Text>
+                  <Text style={{ marginBottom: 4 }}>📧 {guardian.email}</Text>
                   {guardian.phone && (
-                    <Text style={{ marginBottom: 4 }}>
-                      📱 {guardian.phone}
-                    </Text>
+                    <Text style={{ marginBottom: 4 }}>📱 {guardian.phone}</Text>
                   )}
                   {guardian.notes && (
-                    <Text style={{ fontStyle: 'italic', color: 'gray', marginTop: 8 }}>
+                    <Text
+                      style={{
+                        fontStyle: 'italic',
+                        color: 'gray',
+                        marginTop: 8,
+                      }}
+                    >
                       {guardian.notes}
                     </Text>
                   )}
@@ -290,21 +325,23 @@ export default function PeopleScreenRefactored() {
 
                 <View style={{ flexDirection: 'row', gap: 8 }}>
                   <Button
-                    title={guardian.is_active ? "Active" : "Inactive"}
-                    onPress={() => toggleGuardianStatus(guardian.id, guardian.is_active)}
+                    title={guardian.is_active ? 'Active' : 'Inactive'}
+                    onPress={() =>
+                      toggleGuardianStatus(guardian.id, guardian.is_active)
+                    }
                     style={{
                       backgroundColor: guardian.is_active ? 'green' : 'gray',
                       paddingHorizontal: 12,
-                      paddingVertical: 4
+                      paddingVertical: 4,
                     }}
                   />
                   <Button
-                    title="Delete"
+                    title='Delete'
                     onPress={() => deleteGuardian(guardian.id, guardian.name)}
                     style={{
                       backgroundColor: 'red',
                       paddingHorizontal: 12,
-                      paddingVertical: 4
+                      paddingVertical: 4,
                     }}
                   />
                 </View>
@@ -313,7 +350,7 @@ export default function PeopleScreenRefactored() {
           ))}
 
           <Button
-            title="Add Another Guardian"
+            title='Add Another Guardian'
             onPress={() => {
               // In a real app, this would open a form modal
               if (__DEV__) console.log('Open guardian form');

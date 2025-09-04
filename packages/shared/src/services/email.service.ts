@@ -1,50 +1,50 @@
 import { supabase } from '../supabase/client';
 
 export interface EmailTemplate {
-  to: string;
-  subject: string;
   html: string;
+  subject: string;
   text?: string;
+  to: string;
 }
 
 export interface EmailNotification {
-  subscription_welcome: {
-    userName: string;
-    planName: string;
-    billingCycle: string;
-    nextBillingDate: string;
-  };
-  payment_successful: {
-    userName: string;
-    amount: string;
-    planName: string;
-    invoiceUrl?: string;
-  };
   payment_failed: {
-    userName: string;
     planName: string;
     retryDate: string;
     updatePaymentUrl: string;
+    userName: string;
+  };
+  payment_successful: {
+    amount: string;
+    invoiceUrl?: string;
+    planName: string;
+    userName: string;
   };
   subscription_cancelled: {
-    userName: string;
-    planName: string;
     expiryDate: string;
-  };
-  usage_warning: {
+    planName: string;
     userName: string;
-    usageType: string;
-    percentage: number;
-    currentUsage: string;
-    limit: string;
-    upgradeUrl: string;
+  };
+  subscription_welcome: {
+    billingCycle: string;
+    nextBillingDate: string;
+    planName: string;
+    userName: string;
   };
   upgrade_suggestion: {
-    userName: string;
+    benefits: string[];
     currentPlan: string;
     suggestedPlan: string;
-    benefits: string[];
     upgradeUrl: string;
+    userName: string;
+  };
+  usage_warning: {
+    currentUsage: string;
+    limit: string;
+    percentage: number;
+    upgradeUrl: string;
+    usageType: string;
+    userName: string;
   };
 }
 
@@ -63,8 +63,8 @@ class EmailService {
           subject: template.subject,
           html: template.html,
           text: template.text,
-          from: this.fromEmail
-        }
+          from: this.fromEmail,
+        },
       });
 
       if (error) {
@@ -165,7 +165,7 @@ The ${this.appName} Team
       to: email,
       subject: `Welcome to ${this.appName} ${data.planName}! 🎉`,
       html,
-      text
+      text,
     });
   }
 
@@ -208,12 +208,16 @@ The ${this.appName} Team
                 </ul>
               </div>
               
-              ${data.invoiceUrl ? `
+              ${
+                data.invoiceUrl
+                  ? `
                 <p>You can download your invoice here:</p>
                 <center>
                   <a href="${data.invoiceUrl}" class="button">Download Invoice</a>
                 </center>
-              ` : ''}
+              `
+                  : ''
+              }
               
               <div class="footer">
                 <p>Thank you for your continued support!</p>
@@ -229,7 +233,7 @@ The ${this.appName} Team
       to: email,
       subject: `Payment Successful - ${this.appName}`,
       html,
-      text: `Payment successful for ${data.planName} plan. Amount: ${data.amount}`
+      text: `Payment successful for ${data.planName} plan. Amount: ${data.amount}`,
     });
   }
 
@@ -291,7 +295,7 @@ The ${this.appName} Team
       to: email,
       subject: `Action Required: Payment Failed - ${this.appName}`,
       html,
-      text: `Payment failed for ${data.planName} plan. Please update your payment method at: ${data.updatePaymentUrl}`
+      text: `Payment failed for ${data.planName} plan. Please update your payment method at: ${data.updatePaymentUrl}`,
     });
   }
 
@@ -359,7 +363,7 @@ The ${this.appName} Team
       to: email,
       subject: `Usage Warning: ${data.percentage}% of ${data.usageType} limit reached`,
       html,
-      text: `You've used ${data.percentage}% of your ${data.usageType} limit (${data.currentUsage} of ${data.limit}). Consider upgrading at: ${data.upgradeUrl}`
+      text: `You've used ${data.percentage}% of your ${data.usageType} limit (${data.currentUsage} of ${data.limit}). Consider upgrading at: ${data.upgradeUrl}`,
     });
   }
 
@@ -391,7 +395,8 @@ The ${this.appName} Team
 
     // Check document usage
     if (limits.data.max_documents) {
-      const percentage = (usage.data.document_count / limits.data.max_documents) * 100;
+      const percentage =
+        (usage.data.document_count / limits.data.max_documents) * 100;
       if (percentage >= 80 && percentage < 90) {
         // Send 80% warning
       } else if (percentage >= 90) {

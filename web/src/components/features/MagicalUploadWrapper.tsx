@@ -7,16 +7,14 @@
 
 import React, { useState } from 'react';
 import { DocumentUploader } from './DocumentUploader';
-import {
-  DocumentAnalysisAnimation
-} from './MagicalDocumentUpload';
+import { DocumentAnalysisAnimation } from './MagicalDocumentUpload';
 import { usePersonalityManager } from '@/components/sofia/usePersonalityManager';
 import type { PersonalityMode } from '@/lib/sofia-types';
 
 interface MagicalUploadWrapperProps {
+  className?: string;
   enableMagicalEnhancements?: boolean;
   personalityMode?: PersonalityMode;
-  className?: string;
 }
 
 /**
@@ -25,7 +23,7 @@ interface MagicalUploadWrapperProps {
 export const MagicalUploadWrapper: React.FC<MagicalUploadWrapperProps> = ({
   enableMagicalEnhancements = true,
   personalityMode: propPersonalityMode,
-  className = ''
+  className = '',
 }) => {
   const personalityManager = usePersonalityManager();
   const [isProcessing, setIsProcessing] = useState(false);
@@ -33,7 +31,9 @@ export const MagicalUploadWrapper: React.FC<MagicalUploadWrapperProps> = ({
 
   // Get effective personality mode
   const detectedMode = personalityManager?.getCurrentStyle() || 'adaptive';
-  const effectiveMode = propPersonalityMode || (detectedMode === 'balanced' ? 'adaptive' : detectedMode);
+  const effectiveMode =
+    propPersonalityMode ||
+    (detectedMode === 'balanced' ? 'adaptive' : detectedMode);
 
   // For now, just render the enhanced uploader with magical features
   // In a real implementation, this could wrap any uploader component

@@ -4,15 +4,15 @@
  */
 
 import type {
+  AISuggestion,
+  AssetInfo,
+  BeneficiaryInfo,
+  GeneratedWill,
+  Jurisdiction,
+  LanguageCode,
   SofiaWillAssistant,
   WillUserData,
-  Jurisdiction,
-  GeneratedWill,
   WillValidationResult,
-  AISuggestion,
-  BeneficiaryInfo,
-  AssetInfo,
-  LanguageCode
 } from '../types/will-templates';
 
 class SofiaAIImpl implements SofiaWillAssistant {
@@ -28,7 +28,10 @@ class SofiaAIImpl implements SofiaWillAssistant {
   /**
    * Generate AI-powered will suggestions
    */
-  async generateWillSuggestions(userData: WillUserData, jurisdiction: Jurisdiction): Promise<AISuggestion[]> {
+  async generateWillSuggestions(
+    userData: WillUserData,
+    jurisdiction: Jurisdiction
+  ): Promise<AISuggestion[]> {
     try {
       const prompt = this.buildSuggestionPrompt(userData, jurisdiction);
       const response = await this.callAI(prompt, 'will-suggestions');
@@ -46,19 +49,22 @@ class SofiaAIImpl implements SofiaWillAssistant {
   async optimizeWillContent(will: GeneratedWill): Promise<GeneratedWill> {
     try {
       const prompt = this.buildOptimizationPrompt(will);
-      const optimizedContent = await this.callAI(prompt, 'content-optimization');
+      const optimizedContent = await this.callAI(
+        prompt,
+        'content-optimization'
+      );
 
       return {
         ...will,
         content: {
           ...will.content,
           text: optimizedContent,
-          html: this.convertToHtml(optimizedContent)
+          html: this.convertToHtml(optimizedContent),
         },
         metadata: {
           ...will.metadata,
-          wordCount: this.countWords(optimizedContent)
-        }
+          wordCount: this.countWords(optimizedContent),
+        },
       };
     } catch (error) {
       console.error('Error optimizing will content:', error);
@@ -69,7 +75,10 @@ class SofiaAIImpl implements SofiaWillAssistant {
   /**
    * Explain legal terms in user's language
    */
-  async explainLegalTerms(content: string, language: LanguageCode): Promise<Record<string, string>> {
+  async explainLegalTerms(
+    content: string,
+    language: LanguageCode
+  ): Promise<Record<string, string>> {
     try {
       const legalTerms = this.extractLegalTerms(content);
       if (legalTerms.length === 0) return {};
@@ -107,7 +116,10 @@ class SofiaAIImpl implements SofiaWillAssistant {
     assets: AssetInfo[]
   ): Promise<AISuggestion[]> {
     try {
-      const prompt = this.buildBeneficiaryOptimizationPrompt(beneficiaries, assets);
+      const prompt = this.buildBeneficiaryOptimizationPrompt(
+        beneficiaries,
+        assets
+      );
       const suggestions = await this.callAI(prompt, 'beneficiary-optimization');
 
       return this.parseSuggestions(suggestions);
@@ -120,7 +132,10 @@ class SofiaAIImpl implements SofiaWillAssistant {
   /**
    * Build prompts for different AI tasks
    */
-  private buildSuggestionPrompt(userData: WillUserData, jurisdiction: Jurisdiction): string {
+  private buildSuggestionPrompt(
+    userData: WillUserData,
+    jurisdiction: Jurisdiction
+  ): string {
     return `You are Sofia, an AI legal assistant specializing in will and estate planning for ${jurisdiction}.
 
 Analyze the following user data and provide suggestions to improve their will:
@@ -174,14 +189,17 @@ Please optimize for:
 Return only the optimized text content, maintaining the same structure and all legal provisions.`;
   }
 
-  private buildLegalExplanationPrompt(terms: string[], language: LanguageCode): string {
+  private buildLegalExplanationPrompt(
+    terms: string[],
+    language: LanguageCode
+  ): string {
     const languageNames = {
       en: 'English',
       cs: 'Czech',
       sk: 'Slovak',
       de: 'German',
       fr: 'French',
-      es: 'Spanish'
+      es: 'Spanish',
     };
 
     return `You are Sofia, a legal assistant. Explain the following legal terms in simple ${languageNames[language] || 'English'} language:
@@ -210,7 +228,10 @@ Check for:
 Provide a structured analysis with compliance score (0-100) and specific issues found.`;
   }
 
-  private buildBeneficiaryOptimizationPrompt(beneficiaries: BeneficiaryInfo[], assets: AssetInfo[]): string {
+  private buildBeneficiaryOptimizationPrompt(
+    beneficiaries: BeneficiaryInfo[],
+    assets: AssetInfo[]
+  ): string {
     return `You are Sofia, an estate planning expert. Analyze this beneficiary structure and suggest optimizations:
 
 Assets:
@@ -242,24 +263,25 @@ Provide specific, actionable recommendations.`;
       const response = await fetch(`${this.baseUrl}/chat/completions`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${this.apiKey}`,
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${this.apiKey}`,
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           model: 'gpt-4',
           messages: [
             {
               role: 'system',
-              content: 'You are Sofia, an AI legal assistant specializing in will and estate planning. Provide professional, accurate advice while being accessible to non-lawyers.'
+              content:
+                'You are Sofia, an AI legal assistant specializing in will and estate planning. Provide professional, accurate advice while being accessible to non-lawyers.',
             },
             {
               role: 'user',
-              content: prompt
-            }
+              content: prompt,
+            },
           ],
           temperature: 0.3,
-          max_tokens: 2000
-        })
+          max_tokens: 2000,
+        }),
       });
 
       if (!response.ok) {
@@ -292,16 +314,23 @@ Provide specific, actionable recommendations.`;
       for (const line of lines) {
         const trimmed = line.trim();
         if (trimmed.startsWith('Priority:')) {
-          currentSuggestion.priority = trimmed.includes('High') ? 'high' :
-                                      trimmed.includes('Medium') ? 'medium' : 'low';
+          currentSuggestion.priority = trimmed.includes('High')
+            ? 'high'
+            : trimmed.includes('Medium')
+              ? 'medium'
+              : 'low';
         } else if (trimmed.startsWith('Category:')) {
           currentSuggestion.category = trimmed.replace('Category:', '').trim();
         } else if (trimmed.startsWith('Title:')) {
           currentSuggestion.title = trimmed.replace('Title:', '').trim();
         } else if (trimmed.startsWith('Description:')) {
-          currentSuggestion.description = trimmed.replace('Description:', '').trim();
+          currentSuggestion.description = trimmed
+            .replace('Description:', '')
+            .trim();
         } else if (trimmed.startsWith('Action:')) {
-          currentSuggestion.suggestedAction = trimmed.replace('Action:', '').trim();
+          currentSuggestion.suggestedAction = trimmed
+            .replace('Action:', '')
+            .trim();
 
           // Complete suggestion
           if (currentSuggestion.title && currentSuggestion.description) {
@@ -314,7 +343,7 @@ Provide specific, actionable recommendations.`;
               suggestedAction: currentSuggestion.suggestedAction || '',
               priority: currentSuggestion.priority || 'medium',
               isJurisdictionSpecific: true,
-              affectedSections: []
+              affectedSections: [],
             });
           }
 
@@ -351,7 +380,9 @@ Provide specific, actionable recommendations.`;
         warnings: issues.filter(i => i.severity === 'warning'),
         legalRequirementsMet: complianceScore >= 90,
         missingRequiredFields: [],
-        suggestedImprovements: issues.map(i => i.suggestedFix || i.message).filter(Boolean)
+        suggestedImprovements: issues
+          .map(i => i.suggestedFix || i.message)
+          .filter(Boolean),
       };
     } catch (error) {
       console.error('Error parsing compliance result:', error);
@@ -378,7 +409,7 @@ Provide specific, actionable recommendations.`;
     const legalTermPatterns = [
       /\b(testament|testator|executor|beneficiary|bequest|devise|codicil)\b/gi,
       /\b(probate|intestate|testate|per stirpes|per capita)\b/gi,
-      /\b(holographic|witnessed|notarized|attestation)\b/gi
+      /\b(holographic|witnessed|notarized|attestation)\b/gi,
     ];
 
     const terms = new Set<string>();
@@ -421,7 +452,10 @@ Provide specific, actionable recommendations.`;
   /**
    * Fallback responses when AI is unavailable
    */
-  private getFallbackSuggestions(userData: WillUserData, _jurisdiction: Jurisdiction): AISuggestion[] {
+  private getFallbackSuggestions(
+    userData: WillUserData,
+    _jurisdiction: Jurisdiction
+  ): AISuggestion[] {
     const suggestions: AISuggestion[] = [];
 
     if (!userData.executors || userData.executors.length === 0) {
@@ -430,16 +464,21 @@ Provide specific, actionable recommendations.`;
         type: 'improvement',
         category: 'executor',
         title: 'Appoint an Executor',
-        description: 'Your will should name an executor to manage your estate after death.',
-        suggestedAction: 'Choose a trusted person to serve as executor and add them to your will.',
+        description:
+          'Your will should name an executor to manage your estate after death.',
+        suggestedAction:
+          'Choose a trusted person to serve as executor and add them to your will.',
         priority: 'high',
         isJurisdictionSpecific: false,
-        affectedSections: ['executor']
+        affectedSections: ['executor'],
       });
     }
 
     const hasMinorChildren = userData.family.children?.some(c => c.isMinor);
-    if (hasMinorChildren && (!userData.guardians || userData.guardians.length === 0)) {
+    if (
+      hasMinorChildren &&
+      (!userData.guardians || userData.guardians.length === 0)
+    ) {
       suggestions.push({
         id: 'fallback-guardian',
         type: 'improvement',
@@ -449,45 +488,59 @@ Provide specific, actionable recommendations.`;
         suggestedAction: 'Name guardians to care for your minor children.',
         priority: 'high',
         isJurisdictionSpecific: true,
-        affectedSections: ['guardianship']
+        affectedSections: ['guardianship'],
       });
     }
 
     return suggestions;
   }
 
-  private getFallbackBeneficiaryOptimizations(beneficiaries: BeneficiaryInfo[], _assets: AssetInfo[]): AISuggestion[] {
+  private getFallbackBeneficiaryOptimizations(
+    beneficiaries: BeneficiaryInfo[],
+    _assets: AssetInfo[]
+  ): AISuggestion[] {
     const suggestions: AISuggestion[] = [];
 
     // Check for equal distribution
-    const equalShares = beneficiaries.every(b => b.share.type === 'percentage' && b.share.value === (100 / beneficiaries.length));
+    const equalShares = beneficiaries.every(
+      b =>
+        b.share.type === 'percentage' &&
+        b.share.value === 100 / beneficiaries.length
+    );
     if (!equalShares && beneficiaries.length > 1) {
       suggestions.push({
         id: 'fallback-equal-distribution',
         type: 'optimization',
         category: 'distribution',
         title: 'Consider Equal Distribution',
-        description: 'You may want to consider equal shares for similar beneficiaries.',
+        description:
+          'You may want to consider equal shares for similar beneficiaries.',
         suggestedAction: 'Review beneficiary percentages for fairness.',
         priority: 'medium',
         isJurisdictionSpecific: false,
-        affectedSections: ['beneficiaries']
+        affectedSections: ['beneficiaries'],
       });
     }
 
     return suggestions;
   }
 
-  private getFallbackExplanations(language: LanguageCode): Record<string, string> {
+  private getFallbackExplanations(
+    language: LanguageCode
+  ): Record<string, string> {
     const explanations: Record<string, string> = {};
 
     if (language === 'en') {
-      explanations['executor'] = 'The person responsible for carrying out the instructions in your will';
-      explanations['beneficiary'] = 'A person or organization that receives assets from your estate';
+      explanations['executor'] =
+        'The person responsible for carrying out the instructions in your will';
+      explanations['beneficiary'] =
+        'A person or organization that receives assets from your estate';
       explanations['testator'] = 'The person who makes the will';
     } else if (language === 'cs') {
-      explanations['vykonávatel'] = 'Osoba odpovědná za vykonání pokynů ve vaší závěti';
-      explanations['dědic'] = 'Osoba nebo organizace, která dostane majetek z vaší pozůstalosti';
+      explanations['vykonávatel'] =
+        'Osoba odpovědná za vykonání pokynů ve vaší závěti';
+      explanations['dědic'] =
+        'Osoba nebo organizace, která dostane majetek z vaší pozůstalosti';
     }
 
     return explanations;
@@ -501,7 +554,9 @@ Provide specific, actionable recommendations.`;
       warnings: [],
       legalRequirementsMet: true,
       missingRequiredFields: [],
-      suggestedImprovements: ['Consider having your will reviewed by a local attorney']
+      suggestedImprovements: [
+        'Consider having your will reviewed by a local attorney',
+      ],
     };
   }
 
@@ -520,9 +575,10 @@ Description: Ensure all asset values are current and accurate
 Action: Review and update asset valuations annually`,
 
       'content-optimization': 'Optimized will content would be returned here',
-      'legal-explanations': '{"executor": "Person who manages your estate", "beneficiary": "Person who receives inheritance"}',
+      'legal-explanations':
+        '{"executor": "Person who manages your estate", "beneficiary": "Person who receives inheritance"}',
       'compliance-validation': 'Compliance score: 90. No major issues found.',
-      'beneficiary-optimization': 'Consider equal distribution among children'
+      'beneficiary-optimization': 'Consider equal distribution among children',
     };
 
     return mockResponses[task] || 'AI assistance unavailable';

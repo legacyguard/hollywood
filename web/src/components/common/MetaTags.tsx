@@ -2,24 +2,26 @@ import { useEffect, useMemo } from 'react';
 
 // Define the props the component will accept
 interface MetaTagsProps {
-  title?: string;
+  author?: string;
   description?: string;
   imageUrl?: string;
-  url?: string;
-  structuredData?: object;
   keywords?: string;
-  author?: string;
   robots?: string;
+  structuredData?: object;
+  title?: string;
+  url?: string;
 }
 
 // Define default values for when no props are provided
 const DEFAULTS = {
   TITLE: 'LegacyGuard | Your Legacy, Secured. Your Family, Protected.',
-  DESCRIPTION: "The most caring and secure way to organize your life's journey and protect your family's future. AI-powered document management, family shield protocol, and will creation.",
+  DESCRIPTION:
+    "The most caring and secure way to organize your life's journey and protect your family's future. AI-powered document management, family shield protocol, and will creation.",
   // Social media image - 1200x630px for optimal sharing
   IMAGE_URL: 'https://legacyguard.app/og-image.png',
   URL: 'https://legacyguard.app',
-  KEYWORDS: 'legacy planning, document management, family protection, digital vault, will creation, emergency planning, secure storage, AI assistant',
+  KEYWORDS:
+    'legacy planning, document management, family protection, digital vault, will creation, emergency planning, secure storage, AI assistant',
   AUTHOR: 'LegacyGuard',
   ROBOTS: 'index, follow',
 };
@@ -32,8 +34,8 @@ export const MetaTags = ({
   structuredData,
   keywords,
   author,
-  robots
-}: MetaTagsProps ) => {
+  robots,
+}: MetaTagsProps) => {
   // Use provided props or fall back to the default values
   const pageTitle = title ? `${title} | LegacyGuard` : DEFAULTS.TITLE;
   const pageDescription = description || DEFAULTS.DESCRIPTION;
@@ -44,26 +46,29 @@ export const MetaTags = ({
   const pageRobots = robots || DEFAULTS.ROBOTS;
 
   // Default structured data for LegacyGuard
-  const defaultStructuredData = useMemo(() => ({
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "LegacyGuard",
-    "description": pageDescription,
-    "url": pageUrl,
-    "applicationCategory": "FinanceApplication",
-    "operatingSystem": "Web",
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "USD",
-      "category": "Free"
-    },
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "5.0",
-      "ratingCount": "1"
-    }
-  }), [pageDescription, pageUrl]);
+  const defaultStructuredData = useMemo(
+    () => ({
+      '@context': 'https://schema.org',
+      '@type': 'WebApplication',
+      name: 'LegacyGuard',
+      description: pageDescription,
+      url: pageUrl,
+      applicationCategory: 'FinanceApplication',
+      operatingSystem: 'Web',
+      offers: {
+        '@type': 'Offer',
+        price: '0',
+        priceCurrency: 'USD',
+        category: 'Free',
+      },
+      aggregateRating: {
+        '@type': 'AggregateRating',
+        ratingValue: '5.0',
+        ratingCount: '1',
+      },
+    }),
+    [pageDescription, pageUrl]
+  );
 
   const finalStructuredData = structuredData || defaultStructuredData;
 
@@ -95,7 +100,9 @@ export const MetaTags = ({
 
     // Helper function to update or create link tags
     const updateLinkTag = (rel: string, href: string) => {
-      let element = document.querySelector(`link[rel="${rel}"]`) as HTMLLinkElement;
+      let element = document.querySelector(
+        `link[rel="${rel}"]`
+      ) as HTMLLinkElement;
       if (!element) {
         element = document.createElement('link');
         element.rel = rel;
@@ -128,7 +135,9 @@ export const MetaTags = ({
     updateMetaTag('meta[name="twitter:image"]', pageImageUrl);
 
     // Update structured data
-    let scriptElement = document.querySelector('script[type="application/ld+json"]');
+    let scriptElement = document.querySelector(
+      'script[type="application/ld+json"]'
+    );
     if (!scriptElement) {
       scriptElement = document.createElement('script');
       (scriptElement as any).type = 'application/ld+json';
@@ -146,7 +155,17 @@ export const MetaTags = ({
       // If you want to reset to defaults when component unmounts, uncomment below:
       // document.title = DEFAULTS.TITLE;
     };
-  }, [pageTitle, pageDescription, pageImageUrl, pageUrl, pageKeywords, pageAuthor, pageRobots, finalStructuredData, defaultStructuredData]);
+  }, [
+    pageTitle,
+    pageDescription,
+    pageImageUrl,
+    pageUrl,
+    pageKeywords,
+    pageAuthor,
+    pageRobots,
+    finalStructuredData,
+    defaultStructuredData,
+  ]);
 
   // This component doesn't render anything visible
   return null;

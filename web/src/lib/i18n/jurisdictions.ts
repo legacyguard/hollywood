@@ -5,31 +5,31 @@
 
 export interface JurisdictionConfig {
   code: string;
-  name: string;
-  domain: string;
-  tier: 1 | 2;
-  defaultLanguage: string;
-  supportedLanguages: string[];
   currency: string;
   dateLocale: string;
-  legalSystem: string;
-  notaryRequired: boolean;
+  defaultLanguage: string;
+  documentTypes: string[];
+  domain: string;
+  emergencyProtocols: boolean;
+  features?: {
+    digitalNotary?: boolean;
+    forcedHeirship?: boolean;
+    multipleOfficialLanguages?: boolean;
+    regionalVariations?: boolean;
+  };
   inheritanceTax: {
     hasInheritanceTax: boolean;
     rates?: string;
   };
-  documentTypes: string[];
-  emergencyProtocols: boolean;
+  legalSystem: string;
+  name: string;
+  notaryRequired: boolean;
   pricing: {
-    monthly: number;
     currency: string;
+    monthly: number;
   };
-  features?: {
-    forcedHeirship?: boolean;
-    regionalVariations?: boolean;
-    digitalNotary?: boolean;
-    multipleOfficialLanguages?: boolean;
-  };
+  supportedLanguages: string[];
+  tier: 1 | 2;
 }
 
 export const JURISDICTION_CONFIG: Record<string, JurisdictionConfig> = {

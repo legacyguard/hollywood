@@ -1,7 +1,10 @@
 import http from 'k6/http';
 import { check, sleep, group } from 'k6';
 import { Rate, Trend, Counter, Gauge } from 'k6/metrics';
-import { randomString, randomItem } from 'https://jslib.k6.io/k6-utils/1.2.0/index.js';
+import {
+  randomString,
+  randomItem,
+} from 'https://jslib.k6.io/k6-utils/1.2.0/index.js';
 
 // Custom metrics
 const errorRate = new Rate('errors');
@@ -19,12 +22,12 @@ export const options = {
       executor: 'ramping-vus',
       startVUs: 0,
       stages: [
-        { duration: '5m', target: 1000 },   // Ramp up to 1,000 users over 5 minutes
-        { duration: '10m', target: 5000 },  // Ramp up to 5,000 users over 10 minutes
+        { duration: '5m', target: 1000 }, // Ramp up to 1,000 users over 5 minutes
+        { duration: '10m', target: 5000 }, // Ramp up to 5,000 users over 10 minutes
         { duration: '15m', target: 10000 }, // Ramp up to 10,000 users over 15 minutes
         { duration: '20m', target: 10000 }, // Stay at 10,000 users for 20 minutes
-        { duration: '10m', target: 5000 },  // Ramp down to 5,000 users
-        { duration: '5m', target: 0 },      // Ramp down to 0 users
+        { duration: '10m', target: 5000 }, // Ramp down to 5,000 users
+        { duration: '5m', target: 0 }, // Ramp down to 0 users
       ],
       gracefulRampDown: '30s',
     },
@@ -35,8 +38,8 @@ export const options = {
       stages: [
         { duration: '1m', target: 100 },
         { duration: '30s', target: 10000 }, // Sudden spike to 10,000 users
-        { duration: '3m', target: 10000 },  // Hold at 10,000 users
-        { duration: '30s', target: 100 },   // Quick drop
+        { duration: '3m', target: 10000 }, // Hold at 10,000 users
+        { duration: '30s', target: 100 }, // Quick drop
       ],
       startTime: '65m', // Start after load test
     },
@@ -48,20 +51,20 @@ export const options = {
       preAllocatedVUs: 2000,
       maxVUs: 15000,
       stages: [
-        { duration: '5m', target: 1000 },   // 1,000 requests per second
-        { duration: '5m', target: 5000 },   // 5,000 requests per second
-        { duration: '5m', target: 10000 },  // 10,000 requests per second
-        { duration: '5m', target: 15000 },  // 15,000 requests per second
+        { duration: '5m', target: 1000 }, // 1,000 requests per second
+        { duration: '5m', target: 5000 }, // 5,000 requests per second
+        { duration: '5m', target: 10000 }, // 10,000 requests per second
+        { duration: '5m', target: 15000 }, // 15,000 requests per second
       ],
       startTime: '85m', // Start after spike test
     },
   },
   thresholds: {
     http_req_duration: ['p(95)<500', 'p(99)<1000'], // 95% of requests under 500ms, 99% under 1s
-    http_req_failed: ['rate<0.05'],                  // Error rate under 5%
-    errors: ['rate<0.05'],                           // Custom error rate under 5%
-    login_duration: ['p(95)<2000'],                  // 95% of logins under 2s
-    document_upload_duration: ['p(95)<5000'],        // 95% of uploads under 5s
+    http_req_failed: ['rate<0.05'], // Error rate under 5%
+    errors: ['rate<0.05'], // Custom error rate under 5%
+    login_duration: ['p(95)<2000'], // 95% of logins under 2s
+    document_upload_duration: ['p(95)<5000'], // 95% of uploads under 5s
   },
 };
 
@@ -71,7 +74,13 @@ const API_URL = __ENV.API_URL || 'https://api.legacyguard.com/v1';
 
 // Test data
 const testUsers = generateTestUsers(100);
-const documentCategories = ['personal', 'legal', 'financial', 'medical', 'property'];
+const documentCategories = [
+  'personal',
+  'legal',
+  'financial',
+  'medical',
+  'property',
+];
 const documentSizes = [100000, 500000, 1000000, 5000000]; // 100KB to 5MB
 
 function generateTestUsers(count) {
@@ -90,15 +99,18 @@ function generateTestUsers(count) {
 // Helper function to handle API responses
 function handleResponse(response, requestName) {
   const success = check(response, {
-    [`${requestName}: status is 200-299`]: (r) => r.status >= 200 && r.status < 300,
-    [`${requestName}: response time < 1000ms`]: (r) => r.timings.duration < 1000,
+    [`${requestName}: status is 200-299`]: r =>
+      r.status >= 200 && r.status < 300,
+    [`${requestName}: response time < 1000ms`]: r => r.timings.duration < 1000,
   });
 
   if (success) {
     successfulRequests.add(1);
   } else {
     errorRate.add(1);
-    console.error(`${requestName} failed: ${response.status} - ${response.body}`);
+    console.error(
+      `${requestName} failed: ${response.status} - ${response.body}`
+    );
   }
 
   return success;
@@ -133,7 +145,7 @@ export default function () {
       }
     );
     loginDuration.add(Date.now() - loginStart);
-    
+
     if (!handleResponse(loginResponse, 'Login')) {
       return; // Exit if login fails
     }
@@ -141,7 +153,7 @@ export default function () {
     const authToken = JSON.parse(loginResponse.body).token;
     const authHeaders = {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${authToken}`,
+      Authorization: `Bearer ${authToken}`,
     };
 
     sleep(2);
@@ -159,7 +171,7 @@ export default function () {
     const authToken = 'mock-token'; // In real test, use token from login
     const authHeaders = {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${authToken}`,
+      Authorization: `Bearer ${authToken}`,
     };
 
     // 1. List documents
@@ -209,7 +221,7 @@ export default function () {
     const authToken = 'mock-token';
     const authHeaders = {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${authToken}`,
+      Authorization: `Bearer ${authToken}`,
     };
 
     // 1. List family members
@@ -244,7 +256,7 @@ export default function () {
     const authToken = 'mock-token';
     const authHeaders = {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${authToken}`,
+      Authorization: `Bearer ${authToken}`,
     };
 
     const questions = [
@@ -273,7 +285,7 @@ export default function () {
     const authToken = 'mock-token';
     const authHeaders = {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${authToken}`,
+      Authorization: `Bearer ${authToken}`,
     };
 
     // 1. List vault items
@@ -318,17 +330,19 @@ export function setup() {
   console.log(`📍 Target URL: ${BASE_URL}`);
   console.log(`🎯 Target: 10,000 concurrent users`);
   console.log('⏱️  Total duration: ~105 minutes');
-  
+
   // Verify the target is accessible
   const response = http.get(BASE_URL);
   check(response, {
-    'Target is accessible': (r) => r.status === 200,
+    'Target is accessible': r => r.status === 200,
   });
-  
+
   if (response.status !== 200) {
-    throw new Error(`Target ${BASE_URL} is not accessible. Status: ${response.status}`);
+    throw new Error(
+      `Target ${BASE_URL} is not accessible. Status: ${response.status}`
+    );
   }
-  
+
   return { startTime: Date.now() };
 }
 

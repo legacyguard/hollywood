@@ -2,11 +2,11 @@ import { toast } from 'sonner';
 
 // OCR configuration check
 interface OcrConfig {
-  isAvailable: boolean;
-  provider: 'google-vision' | 'tesseract' | 'none';
   apiKey?: string;
-  projectId?: string;
+  isAvailable: boolean;
   message?: string;
+  projectId?: string;
+  provider: 'google-vision' | 'none' | 'tesseract';
 }
 
 // Check OCR availability at runtime
@@ -34,22 +34,25 @@ export function checkOcrAvailability(): OcrConfig {
   // }
 
   // OCR not configured
-  console.warn('OCR service not configured. Please set up Google Vision API credentials.');
+  console.warn(
+    'OCR service not configured. Please set up Google Vision API credentials.'
+  );
 
   return {
     isAvailable: false,
     provider: 'none',
-    message: 'OCR service is temporarily unavailable. You can still upload documents manually.',
+    message:
+      'OCR service is temporarily unavailable. You can still upload documents manually.',
   };
 }
 
 // OCR result type
 export interface OcrResult {
-  success: boolean;
-  text?: string;
   confidence?: number;
   error?: string;
   provider?: string;
+  success: boolean;
+  text?: string;
 }
 
 // Main OCR service class with fallback handling
@@ -75,10 +78,10 @@ export class OcrService {
 
   // Perform OCR with graceful fallback
   public async performOcr(
-    file: File | Blob,
+    file: Blob | File,
     options?: {
-      language?: string;
       enhanceQuality?: boolean;
+      language?: string;
     }
   ): Promise<OcrResult> {
     // Check if OCR is available
@@ -121,10 +124,10 @@ export class OcrService {
 
   // Google Vision OCR implementation
   private async performGoogleVisionOcr(
-    file: File | Blob,
+    file: Blob | File,
     options?: {
-      language?: string;
       enhanceQuality?: boolean;
+      language?: string;
     }
   ): Promise<OcrResult> {
     try {
@@ -144,9 +147,11 @@ export class OcrService {
                 maxResults: 1,
               },
             ],
-            imageContext: options?.language ? {
-              languageHints: [options.language],
-            } : undefined,
+            imageContext: options?.language
+              ? {
+                  languageHints: [options.language],
+                }
+              : undefined,
           },
         ],
       };
@@ -166,7 +171,8 @@ export class OcrService {
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(
-          errorData.error?.message || `Google Vision API error: ${response.status}`
+          errorData.error?.message ||
+            `Google Vision API error: ${response.status}`
         );
       }
 
@@ -187,7 +193,6 @@ export class OcrService {
         confidence: this.calculateConfidence(fullTextAnnotation),
         provider: 'google-vision',
       };
-
     } catch (error) {
       console.error('Google Vision OCR error:', error);
       throw error;
@@ -195,12 +200,12 @@ export class OcrService {
   }
 
   // Convert file to base64
-  private fileToBase64(file: File | Blob): Promise<string> {
+  private fileToBase64(file: Blob | File): Promise<string> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => resolve(reader.result as string);
-      reader.onerror = (error) => reject(error);
+      reader.onerror = error => reject(error);
     });
   }
 
@@ -226,7 +231,7 @@ export class OcrService {
 }
 
 // Singleton instance
-let ocrServiceInstance: OcrService | null = null;
+let ocrServiceInstance: null | OcrService = null;
 
 // Get OCR service instance
 export function getOcrService(): OcrService {
@@ -241,10 +246,10 @@ export function useOcrService() {
   const service = getOcrService();
 
   const performOcrWithFeedback = async (
-    file: File | Blob,
+    file: Blob | File,
     options?: {
-      language?: string;
       enhanceQuality?: boolean;
+      language?: string;
       onProgress?: (message: string) => void;
     }
   ): Promise<OcrResult> => {

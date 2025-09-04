@@ -5,15 +5,15 @@
 
 import {
   CZ_SK_JURISDICTIONS,
-  type TemplateLibrary,
-  type WillTemplate,
-  type WillJurisdictionConfig,
-  type WillUserData,
-  type WillValidationResult,
   type Jurisdiction,
   type LanguageCode,
+  type TemplateLibrary,
+  type ValidationError,
+  type WillJurisdictionConfig,
+  type WillTemplate,
   type WillTemplateType,
-  type ValidationError
+  type WillUserData,
+  type WillValidationResult,
 } from '../types/will-templates';
 
 class TemplateLibraryImpl implements TemplateLibrary {
@@ -50,7 +50,11 @@ class TemplateLibraryImpl implements TemplateLibrary {
   /**
    * Load a specific template configuration
    */
-  private async loadTemplate(jurisdiction: Jurisdiction, type: WillTemplateType, language: LanguageCode) {
+  private async loadTemplate(
+    jurisdiction: Jurisdiction,
+    type: WillTemplateType,
+    language: LanguageCode
+  ) {
     try {
       const configPath = `/content/templates/${jurisdiction.toLowerCase()}/${type}/config.json`;
       const response = await fetch(configPath);
@@ -76,7 +80,7 @@ class TemplateLibraryImpl implements TemplateLibrary {
             title: 'Document Header',
             content: '',
             order: 0,
-            required: true
+            required: true,
           },
           sections: config.sections || [],
           footer: {
@@ -84,26 +88,33 @@ class TemplateLibraryImpl implements TemplateLibrary {
             title: 'Document Footer',
             content: '',
             order: 999,
-            required: true
+            required: true,
           },
-          executionInstructions: config.executionInstructions
+          executionInstructions: config.executionInstructions,
         },
         variables: config.variables,
         validationRules: config.validationRules,
-        legalClauses: config.legalClauses
+        legalClauses: config.legalClauses,
       };
 
       this.templates.set(templateId, template);
       console.log(`Loaded template: ${templateId}`);
     } catch (error) {
-      console.error(`Failed to load template ${jurisdiction}-${type}-${language}:`, error);
+      console.error(
+        `Failed to load template ${jurisdiction}-${type}-${language}:`,
+        error
+      );
     }
   }
 
   /**
    * Get a specific template
    */
-  async getTemplate(jurisdiction: Jurisdiction, type: WillTemplateType, language: LanguageCode): Promise<WillTemplate> {
+  async getTemplate(
+    jurisdiction: Jurisdiction,
+    type: WillTemplateType,
+    language: LanguageCode
+  ): Promise<WillTemplate> {
     const templateId = `${jurisdiction.toLowerCase()}-${type}-${language}`;
     let template = this.templates.get(templateId);
 
@@ -134,7 +145,9 @@ class TemplateLibraryImpl implements TemplateLibrary {
   /**
    * Get jurisdiction configuration
    */
-  async getJurisdictionConfig(jurisdiction: Jurisdiction): Promise<WillJurisdictionConfig> {
+  async getJurisdictionConfig(
+    jurisdiction: Jurisdiction
+  ): Promise<WillJurisdictionConfig> {
     const config = this.configs.get(jurisdiction);
     if (!config) {
       throw new Error(`Jurisdiction not supported: ${jurisdiction}`);
@@ -145,7 +158,9 @@ class TemplateLibraryImpl implements TemplateLibrary {
   /**
    * Get supported languages for a jurisdiction
    */
-  async getSupportedLanguages(jurisdiction: Jurisdiction): Promise<LanguageCode[]> {
+  async getSupportedLanguages(
+    jurisdiction: Jurisdiction
+  ): Promise<LanguageCode[]> {
     const config = await this.getJurisdictionConfig(jurisdiction);
     return config.supportedLanguages;
   }
@@ -153,7 +168,10 @@ class TemplateLibraryImpl implements TemplateLibrary {
   /**
    * Validate will data against template requirements
    */
-  async validateWillData(data: WillUserData, template: WillTemplate): Promise<WillValidationResult> {
+  async validateWillData(
+    data: WillUserData,
+    template: WillTemplate
+  ): Promise<WillValidationResult> {
     const errors: ValidationError[] = [];
     const warnings: ValidationError[] = [];
     const missingRequired: string[] = [];
@@ -161,7 +179,11 @@ class TemplateLibraryImpl implements TemplateLibrary {
     // Validate required variables
     for (const variable of template.variables) {
       if (variable.required) {
-        const value = this.getDataValue(data, variable.key, variable.dataSource);
+        const value = this.getDataValue(
+          data,
+          variable.key,
+          variable.dataSource
+        );
 
         if (this.isEmpty(value)) {
           missingRequired.push(variable.key);
@@ -169,7 +191,7 @@ class TemplateLibraryImpl implements TemplateLibrary {
             field: variable.key,
             code: 'REQUIRED_FIELD_MISSING',
             message: `${variable.label} is required`,
-            severity: 'error'
+            severity: 'error',
           });
         }
       }
@@ -190,14 +212,20 @@ class TemplateLibraryImpl implements TemplateLibrary {
     }
 
     // Legal compliance checks
-    const jurisdictionConfig = await this.getJurisdictionConfig(template.jurisdiction);
-    const legalErrors = await this.validateLegalCompliance(data, jurisdictionConfig);
+    const jurisdictionConfig = await this.getJurisdictionConfig(
+      template.jurisdiction
+    );
+    const legalErrors = await this.validateLegalCompliance(
+      data,
+      jurisdictionConfig
+    );
     errors.push(...legalErrors);
 
     // Calculate completeness score
     const totalRequired = template.variables.filter(v => v.required).length;
     const completedRequired = totalRequired - missingRequired.length;
-    const completenessScore = totalRequired > 0 ? (completedRequired / totalRequired) * 100 : 100;
+    const completenessScore =
+      totalRequired > 0 ? (completedRequired / totalRequired) * 100 : 100;
 
     return {
       isValid: errors.length === 0,
@@ -206,19 +234,25 @@ class TemplateLibraryImpl implements TemplateLibrary {
       warnings,
       legalRequirementsMet: legalErrors.length === 0,
       missingRequiredFields: missingRequired,
-      suggestedImprovements: this.generateSuggestedImprovements(data)
+      suggestedImprovements: this.generateSuggestedImprovements(data),
     };
   }
 
   /**
    * Get data value based on source and key
    */
-  private getDataValue(data: WillUserData, key: string, source: string): unknown {
+  private getDataValue(
+    data: WillUserData,
+    key: string,
+    source: string
+  ): unknown {
     switch (source) {
       case 'user':
-        return this.getNestedValue(data.personal, key) ||
-               this.getNestedValue(data.family, key) ||
-               this.getNestedValue(data.specialInstructions, key);
+        return (
+          this.getNestedValue(data.personal, key) ||
+          this.getNestedValue(data.family, key) ||
+          this.getNestedValue(data.specialInstructions, key)
+        );
       case 'beneficiary':
         return data.beneficiaries;
       case 'asset':
@@ -236,7 +270,10 @@ class TemplateLibraryImpl implements TemplateLibrary {
   /**
    * Apply validation rule to field value
    */
-  private applyValidationRule(rule: Record<string, unknown>, value: unknown): ValidationError | null {
+  private applyValidationRule(
+    rule: Record<string, unknown>,
+    value: unknown
+  ): null | ValidationError {
     switch (rule.type) {
       case 'required':
         if (this.isEmpty(value)) {
@@ -244,7 +281,7 @@ class TemplateLibraryImpl implements TemplateLibrary {
             field: rule.field,
             code: 'REQUIRED',
             message: rule.message,
-            severity: rule.severity || 'error'
+            severity: rule.severity || 'error',
           };
         }
         break;
@@ -255,7 +292,7 @@ class TemplateLibraryImpl implements TemplateLibrary {
             field: rule.field,
             code: 'MIN_LENGTH',
             message: rule.message,
-            severity: rule.severity || 'error'
+            severity: rule.severity || 'error',
           };
         }
         break;
@@ -266,19 +303,23 @@ class TemplateLibraryImpl implements TemplateLibrary {
             field: rule.field,
             code: 'PATTERN_MISMATCH',
             message: rule.message,
-            severity: rule.severity || 'error'
+            severity: rule.severity || 'error',
           };
         }
         break;
 
       case 'legal':
-        if (rule.field === 'age' && typeof value === 'number' && value < rule.value) {
+        if (
+          rule.field === 'age' &&
+          typeof value === 'number' &&
+          value < rule.value
+        ) {
           return {
             field: rule.field,
             code: 'LEGAL_REQUIREMENT',
             message: rule.message,
             severity: 'error',
-            legalReference: 'Minimum age requirement'
+            legalReference: 'Minimum age requirement',
           };
         }
         break;
@@ -291,7 +332,7 @@ class TemplateLibraryImpl implements TemplateLibrary {
               field: rule.field,
               code: 'CUSTOM_VALIDATION',
               message: rule.message,
-              severity: rule.severity || 'error'
+              severity: rule.severity || 'error',
             };
           }
         }
@@ -304,7 +345,10 @@ class TemplateLibraryImpl implements TemplateLibrary {
   /**
    * Validate legal compliance
    */
-  private async validateLegalCompliance(data: WillUserData, config: WillJurisdictionConfig): Promise<ValidationError[]> {
+  private async validateLegalCompliance(
+    data: WillUserData,
+    config: WillJurisdictionConfig
+  ): Promise<ValidationError[]> {
     const errors: ValidationError[] = [];
 
     // Age requirement
@@ -315,7 +359,7 @@ class TemplateLibraryImpl implements TemplateLibrary {
         code: 'LEGAL_AGE_REQUIREMENT',
         message: `Testator must be at least ${config.legalRequirements.minimumAge} years old`,
         severity: 'error',
-        legalReference: 'Minimum age for will creation'
+        legalReference: 'Minimum age for will creation',
       });
     }
 
@@ -341,7 +385,10 @@ class TemplateLibraryImpl implements TemplateLibrary {
     if (hasSpouse || hasChildren) {
       // Check if beneficiaries respect forced heirship
       const totalPercentage = data.beneficiaries.reduce((sum, b) => {
-        if (b.share.type === 'percentage' && typeof b.share.value === 'number') {
+        if (
+          b.share.type === 'percentage' &&
+          typeof b.share.value === 'number'
+        ) {
           return sum + b.share.value;
         }
         return sum;
@@ -351,10 +398,12 @@ class TemplateLibraryImpl implements TemplateLibrary {
         errors.push({
           field: 'beneficiaries',
           code: 'FORCED_HEIRSHIP_VIOLATION',
-          message: 'Distribution percentages exceed 100% - may violate forced heirship rules',
+          message:
+            'Distribution percentages exceed 100% - may violate forced heirship rules',
           severity: 'warning',
           legalReference: 'Forced heirship provisions',
-          suggestedFix: 'Review beneficiary percentages to ensure compliance with mandatory inheritance shares'
+          suggestedFix:
+            'Review beneficiary percentages to ensure compliance with mandatory inheritance shares',
         });
       }
     }
@@ -372,7 +421,9 @@ class TemplateLibraryImpl implements TemplateLibrary {
     if (!data.executors || data.executors.length === 0) {
       suggestions.push('Consider appointing an executor to manage your estate');
     } else if (data.executors.length === 1) {
-      suggestions.push('Consider appointing a backup executor in case the primary executor cannot serve');
+      suggestions.push(
+        'Consider appointing a backup executor in case the primary executor cannot serve'
+      );
     }
 
     // Check for guardianship
@@ -383,13 +434,19 @@ class TemplateLibraryImpl implements TemplateLibrary {
 
     // Check for assets documentation
     if (data.assets.length === 0) {
-      suggestions.push('Consider adding asset information to ensure comprehensive estate planning');
+      suggestions.push(
+        'Consider adding asset information to ensure comprehensive estate planning'
+      );
     }
 
     // Check for digital assets
-    const hasDigitalAssets = data.specialInstructions.some(i => i.type === 'digital_assets');
+    const hasDigitalAssets = data.specialInstructions.some(
+      i => i.type === 'digital_assets'
+    );
     if (!hasDigitalAssets) {
-      suggestions.push('Consider including instructions for digital assets and online accounts');
+      suggestions.push(
+        'Consider including instructions for digital assets and online accounts'
+      );
     }
 
     return suggestions;
@@ -399,9 +456,13 @@ class TemplateLibraryImpl implements TemplateLibrary {
    * Utility methods
    */
   private isEmpty(value: unknown): boolean {
-    return value === null || value === undefined || value === '' ||
-           (Array.isArray(value) && value.length === 0) ||
-           (typeof value === 'object' && Object.keys(value).length === 0);
+    return (
+      value === null ||
+      value === undefined ||
+      value === '' ||
+      (Array.isArray(value) && value.length === 0) ||
+      (typeof value === 'object' && Object.keys(value).length === 0)
+    );
   }
 
   private getNestedValue(obj: Record<string, unknown>, path: string): unknown {
@@ -415,7 +476,10 @@ class TemplateLibraryImpl implements TemplateLibrary {
     let age = today.getFullYear() - birth.getFullYear();
     const monthDiff = today.getMonth() - birth.getMonth();
 
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < birth.getDate())
+    ) {
       age--;
     }
 
@@ -440,7 +504,11 @@ class TemplateLibraryImpl implements TemplateLibrary {
   /**
    * Check if template exists
    */
-  hasTemplate(jurisdiction: Jurisdiction, type: WillTemplateType, language: LanguageCode): boolean {
+  hasTemplate(
+    jurisdiction: Jurisdiction,
+    type: WillTemplateType,
+    language: LanguageCode
+  ): boolean {
     const templateId = `${jurisdiction.toLowerCase()}-${type}-${language}`;
     return this.templates.has(templateId);
   }

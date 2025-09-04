@@ -33,7 +33,8 @@ export function DashboardContent() {
 
   // Get current personality mode for dashboard adaptation
   const personalityMode = personalityManager?.getCurrentStyle() || 'adaptive';
-  const effectiveMode = personalityMode === 'balanced' ? 'adaptive' : personalityMode;
+  const effectiveMode =
+    personalityMode === 'balanced' ? 'adaptive' : personalityMode;
 
   // Mock user stats for trust score calculation
   const mockUserStats = {
@@ -122,7 +123,11 @@ export function DashboardContent() {
               <div>
                 <FadeIn duration={0.5} delay={0.2}>
                   <h1 className='text-3xl lg:text-4xl font-bold font-heading text-card-foreground mb-3'>
-                    {user?.firstName ? t('dashboard.header.titleWithName', { name: user.firstName }) : t('dashboard.header.title')}
+                    {user?.firstName
+                      ? t('dashboard.header.titleWithName', {
+                          name: user.firstName,
+                        })
+                      : t('dashboard.header.title')}
                   </h1>
                 </FadeIn>
                 <FadeIn duration={0.5} delay={0.4}>
@@ -138,7 +143,7 @@ export function DashboardContent() {
                 className='bg-primary hover:bg-primary-hover text-primary-foreground shadow-md'
                 size='lg'
               >
-                <Icon name="add" className='w-5 h-5 mr-2' />
+                <Icon name='add' className='w-5 h-5 mr-2' />
                 {t('dashboard.header.actions.secureNewInformation')}
               </Button>
             </FadeIn>
@@ -211,16 +216,20 @@ export function DashboardContent() {
                 trustScore={trustScore.totalScore}
                 showDetails={true}
                 showBoosts={true}
-                userId={user?.id}
+                userId={user?.id ?? ''}
                 onImproveClick={() => {
                   // Navigate to improvement suggestions or professional review
-                  if (trustScore.nextMilestone?.suggestions.includes('professional')) {
+                  if (
+                    trustScore.nextMilestone?.suggestions.includes(
+                      'professional'
+                    )
+                  ) {
                     navigate('/legacy'); // Will wizard with professional review
                   } else {
                     navigate('/vault'); // Document upload area
                   }
                 }}
-                className="mb-6"
+                className='mb-6'
               />
             </FadeIn>
 

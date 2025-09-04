@@ -1,12 +1,12 @@
 import { createContext, useContext } from 'react';
 import type { PersonalityMode } from '@/lib/sofia-types';
-import { AnimationSystem, type AnimationConfig } from '@/lib/animation-system';
+import { type AnimationConfig, AnimationSystem } from '@/lib/animation-system';
 
 interface AnimationContextType {
-  personalityMode: PersonalityMode;
   animationConfig: AnimationConfig;
-  shouldReduceMotion: boolean;
   animationSystem: typeof AnimationSystem;
+  personalityMode: PersonalityMode;
+  shouldReduceMotion: boolean;
 }
 
 // Create the actual React context
@@ -23,7 +23,7 @@ export const useAdaptiveAnimation = (): AnimationContextType => {
       personalityMode: 'adaptive',
       animationConfig: { duration: 0.3, ease: 'easeOut', delay: 0 },
       shouldReduceMotion: false,
-      animationSystem: AnimationSystem
+      animationSystem: AnimationSystem,
     };
   }
   return context;
@@ -33,7 +33,8 @@ export const useAdaptiveAnimation = (): AnimationContextType => {
  * Hook for creating personality-aware animation variants
  */
 export const useAnimationVariants = () => {
-  const { personalityMode, shouldReduceMotion, animationSystem } = useAdaptiveAnimation();
+  const { personalityMode, shouldReduceMotion, animationSystem } =
+    useAdaptiveAnimation();
 
   if (shouldReduceMotion) {
     return {

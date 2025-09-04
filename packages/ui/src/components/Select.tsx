@@ -1,15 +1,15 @@
-import React from 'react'
+import React from 'react';
 import {
+  Adapt,
+  getFontSize,
+  Label,
+  Sheet,
   styled,
   Select as TamaguiSelect,
-  Adapt,
-  Sheet,
+  type SelectProps as TamaguiSelectProps,
   YStack,
-  Label,
-  getFontSize,
-  type SelectProps as TamaguiSelectProps
-} from 'tamagui'
-import { ChevronDown, ChevronUp, Check } from 'lucide-react-native'
+} from 'tamagui';
+import { Check, ChevronDown, ChevronUp } from 'lucide-react-native';
 
 // Select trigger styling
 const StyledSelectTrigger = styled(TamaguiSelect.Trigger, {
@@ -97,13 +97,13 @@ const StyledSelectTrigger = styled(TamaguiSelect.Trigger, {
     size: 'medium',
     variant: 'primary',
   },
-})
+});
 
 // Select value text
 const StyledSelectValue = styled(TamaguiSelect.Value, {
   name: 'SelectValue',
   color: '$color',
-})
+});
 
 // Select content container
 const StyledSelectContent = styled(TamaguiSelect.Content, {
@@ -117,13 +117,13 @@ const StyledSelectContent = styled(TamaguiSelect.Content, {
   shadowOffset: { width: 0, height: 2 },
   shadowOpacity: 0.25,
   shadowRadius: 3.84,
-})
+});
 
 // Select viewport
 const StyledSelectViewport = styled(TamaguiSelect.Viewport, {
   name: 'SelectViewport',
   padding: '$2',
-})
+});
 
 // Select item
 const StyledSelectItem = styled(TamaguiSelect.Item, {
@@ -159,57 +159,60 @@ const StyledSelectItem = styled(TamaguiSelect.Item, {
       },
     },
   },
-})
+});
 
 // Select option type
 export interface SelectOption {
-  value: string
-  label: string
-  disabled?: boolean
+  disabled?: boolean;
+  label: string;
+  value: string;
 }
 
 // Select props
-export interface SelectProps extends Omit<TamaguiSelectProps, 'size' | 'children'> {
-  options: SelectOption[]
-  placeholder?: string
-  size?: 'small' | 'medium' | 'large'
-  variant?: 'primary' | 'success' | 'premium'
-  disabled?: boolean
-  error?: boolean
-  label?: string
-  helperText?: string
-  errorText?: string
-  testID?: string
+export interface SelectProps
+  extends Omit<TamaguiSelectProps, 'children' | 'size'> {
+  disabled?: boolean;
+  error?: boolean;
+  errorText?: string;
+  helperText?: string;
+  label?: string;
+  options: SelectOption[];
+  placeholder?: string;
+  size?: 'large' | 'medium' | 'small';
+  testID?: string;
+  variant?: 'premium' | 'primary' | 'success';
 }
 
 // Main Select component
 export const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
-  ({
-    options,
-    placeholder = 'Select an option',
-    size = 'medium',
-    variant = 'primary',
-    disabled = false,
-    error = false,
-    label,
-    helperText,
-    errorText,
-    value,
-    defaultValue,
-    onValueChange,
-    ...props
-  }, ref) => {
-
+  (
+    {
+      options,
+      placeholder = 'Select an option',
+      size = 'medium',
+      variant = 'primary',
+      disabled = false,
+      error = false,
+      label,
+      helperText,
+      errorText,
+      value,
+      defaultValue,
+      onValueChange,
+      ...props
+    },
+    ref
+  ) => {
     // Icon size for future use
-    const _iconSize = size === 'small' ? 16 : size === 'medium' ? 20 : 24
+    const _iconSize = size === 'small' ? 16 : size === 'medium' ? 20 : 24;
 
     return (
-      <YStack gap="$2">
+      <YStack gap='$2'>
         {label && (
           <Label
             htmlFor={props.id}
             fontSize={size === 'small' ? '$3' : '$4'}
-            color="$color"
+            color='$color'
           >
             {label}
           </Label>
@@ -232,7 +235,7 @@ export const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
             <StyledSelectValue placeholder={placeholder} />
           </StyledSelectTrigger>
 
-          <Adapt when="sm" platform="touch">
+          <Adapt when='sm' platform='touch'>
             <Sheet
               native
               modal
@@ -250,7 +253,7 @@ export const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
                 </Sheet.ScrollView>
               </Sheet.Frame>
               <Sheet.Overlay
-                animation="lazy"
+                animation='lazy'
                 enterStyle={{ opacity: 0 }}
                 exitStyle={{ opacity: 0 }}
               />
@@ -259,11 +262,11 @@ export const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
 
           <StyledSelectContent zIndex={200000}>
             <TamaguiSelect.ScrollUpButton
-              alignItems="center"
-              justifyContent="center"
-              position="relative"
-              width="100%"
-              height="$3"
+              alignItems='center'
+              justifyContent='center'
+              position='relative'
+              width='100%'
+              height='$3'
             >
               <YStack zIndex={10}>
                 <ChevronUp size={20} />
@@ -279,8 +282,10 @@ export const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
                     value={option.value}
                     disabled={option.disabled}
                   >
-                    <TamaguiSelect.ItemText>{option.label}</TamaguiSelect.ItemText>
-                    <TamaguiSelect.ItemIndicator marginLeft="auto">
+                    <TamaguiSelect.ItemText>
+                      {option.label}
+                    </TamaguiSelect.ItemText>
+                    <TamaguiSelect.ItemIndicator marginLeft='auto'>
                       <Check size={16} />
                     </TamaguiSelect.ItemIndicator>
                   </StyledSelectItem>
@@ -289,11 +294,11 @@ export const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
             </StyledSelectViewport>
 
             <TamaguiSelect.ScrollDownButton
-              alignItems="center"
-              justifyContent="center"
-              position="relative"
-              width="100%"
-              height="$3"
+              alignItems='center'
+              justifyContent='center'
+              position='relative'
+              width='100%'
+              height='$3'
             >
               <YStack zIndex={10}>
                 <ChevronDown size={20} />
@@ -303,47 +308,47 @@ export const Select = React.forwardRef<HTMLButtonElement, SelectProps>(
         </TamaguiSelect>
 
         {(helperText || errorText) && (
-          <Label
-            fontSize="$2"
-            color={error ? '$error' : '$gray6'}
-          >
+          <Label fontSize='$2' color={error ? '$error' : '$gray6'}>
             {error ? errorText : helperText}
           </Label>
         )}
       </YStack>
-    )
+    );
   }
-)
+);
 
-Select.displayName = 'Select'
+Select.displayName = 'Select';
 
 // Native Select component (for better mobile UX)
 export const NativeSelect = React.forwardRef<HTMLSelectElement, SelectProps>(
-  ({
-    options,
-    placeholder,
-    size = 'medium',
-    variant = 'primary',
-    disabled = false,
-    error = false,
-    label,
-    helperText,
-    errorText,
-    value,
-    defaultValue,
-    onValueChange,
-    ...props
-  }, ref) => {
+  (
+    {
+      options,
+      placeholder,
+      size = 'medium',
+      variant = 'primary',
+      disabled = false,
+      error = false,
+      label,
+      helperText,
+      errorText,
+      value,
+      defaultValue,
+      onValueChange,
+      ...props
+    },
+    ref
+  ) => {
     // variant not used in native select yet
-    const _variant = variant
+    const _variant = variant;
 
     return (
-      <YStack gap="$2">
+      <YStack gap='$2'>
         {label && (
           <Label
             htmlFor={props.id}
             fontSize={size === 'small' ? '$3' : '$4'}
-            color="$color"
+            color='$color'
           >
             {label}
           </Label>
@@ -353,12 +358,14 @@ export const NativeSelect = React.forwardRef<HTMLSelectElement, SelectProps>(
           ref={ref as React.Ref<HTMLSelectElement>}
           value={value}
           defaultValue={defaultValue}
-          onChange={(e) => onValueChange?.(e.target.value)}
+          onChange={e => onValueChange?.(e.target.value)}
           disabled={disabled}
           style={{
             width: '100%',
             height: size === 'small' ? 36 : size === 'medium' ? 44 : 52,
-            fontSize: getFontSize(size === 'small' ? '$3' : size === 'medium' ? '$4' : '$5'),
+            fontSize: getFontSize(
+              size === 'small' ? '$3' : size === 'medium' ? '$4' : '$5'
+            ),
             padding: '0 12px',
             borderRadius: 8,
             border: `2px solid ${error ? 'var(--error)' : 'var(--gray4)'}`,
@@ -370,11 +377,11 @@ export const NativeSelect = React.forwardRef<HTMLSelectElement, SelectProps>(
           {...props}
         >
           {placeholder && (
-            <option value="" disabled>
+            <option value='' disabled>
               {placeholder}
             </option>
           )}
-          {options.map((option) => (
+          {options.map(option => (
             <option
               key={option.value}
               value={option.value}
@@ -386,16 +393,13 @@ export const NativeSelect = React.forwardRef<HTMLSelectElement, SelectProps>(
         </select>
 
         {(helperText || errorText) && (
-          <Label
-            fontSize="$2"
-            color={error ? '$error' : '$gray6'}
-          >
+          <Label fontSize='$2' color={error ? '$error' : '$gray6'}>
             {error ? errorText : helperText}
           </Label>
         )}
       </YStack>
-    )
+    );
   }
-)
+);
 
-NativeSelect.displayName = 'NativeSelect'
+NativeSelect.displayName = 'NativeSelect';

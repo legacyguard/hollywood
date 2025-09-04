@@ -1,30 +1,30 @@
-import type * as React from "react"
+import type * as React from 'react';
 
-import type { IconMap } from "@/components/ui/icon-library"
+import type { IconMap } from '@/components/ui/icon-library';
 
 export interface EnhancedButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  asChild?: boolean
   // Enhanced animation props
-  animationType?: 'hover-lift' | 'hover-glow' | 'tap-bounce' | 'button-press'
-  personalityAdapt?: boolean
-  // Loading and state props
-  loading?: boolean
-  success?: boolean
-  error?: boolean
-  loadingText?: string
-  successText?: string
-  errorText?: string
+  animationType?: 'button-press' | 'hover-glow' | 'hover-lift' | 'tap-bounce';
+  asChild?: boolean;
+  error?: boolean;
+  errorIcon?: keyof typeof IconMap;
+  errorText?: string;
   // Icon props
-  leftIcon?: keyof typeof IconMap
-  rightIcon?: keyof typeof IconMap
-  loadingIcon?: keyof typeof IconMap
-  successIcon?: keyof typeof IconMap
-  errorIcon?: keyof typeof IconMap
+  leftIcon?: keyof typeof IconMap;
+  // Loading and state props
+  loading?: boolean;
+  loadingIcon?: keyof typeof IconMap;
+  loadingText?: string;
+  personalityAdapt?: boolean;
+  rightIcon?: keyof typeof IconMap;
+  rippleEffect?: boolean;
   // Animation props
-  staggerDelay?: number
-  rippleEffect?: boolean
+  staggerDelay?: number;
+  success?: boolean;
+  successIcon?: keyof typeof IconMap;
+  successText?: string;
 }
 
 // Re-export buttonVariants for type usage
-export { buttonVariants } from './enhanced-button-variants'
+export { buttonVariants } from './enhanced-button-variants';

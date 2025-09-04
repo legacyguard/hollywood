@@ -2,9 +2,9 @@ name: Performance Automation
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main, develop ]
+    branches: [main, develop]
   schedule:
     - cron: '0 2 * * 1' # Every Monday at 2 AM
   workflow_dispatch: # Manual trigger
@@ -13,30 +13,30 @@ jobs:
   performance-optimization:
     runs-on: ubuntu-latest
     name: Performance Optimization & Testing
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
           cache: 'npm'
-          
+
       - name: Install dependencies
         run: npm ci
-        
+
       - name: Run Master Performance Automation
         run: node scripts/auto-optimize.js
-        
+
       - name: Build optimized application
         run: npm run build
-        
+
       - name: Run performance tests
         run: npm run test:performance
         continue-on-error: true
-        
+
       - name: Upload performance reports
         uses: actions/upload-artifact@v4
         with:
@@ -46,14 +46,14 @@ jobs:
             *.json
             *.html
           retention-days: 30
-          
+
       - name: Comment PR with performance insights
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v7
         with:
           script: |
             const fs = require('fs');
-            
+
             // Try to read the master automation report
             let report = null;
             try {
@@ -64,7 +64,7 @@ jobs:
             } catch (error) {
               console.log('Could not read master automation report:', error.message);
             }
-            
+
             // Try to read performance test report
             let testReport = null;
             try {
@@ -75,9 +75,9 @@ jobs:
             } catch (error) {
               console.log('Could not read performance test report:', error.message);
             }
-            
+
             let comment = '## 🚀 Performance Automation Results\n\n';
-            
+
             if (report) {
               comment += `**Master Automation Summary:**\n`;
               comment += `- Success Rate: ${report.summary.successRate}%\n`;
@@ -94,7 +94,7 @@ jobs:
                 comment += '\n';
               }
             }
-            
+
             if (testReport) {
               comment += `**Performance Test Results:**\n`;
               comment += `- Average Score: ${testReport.summary.averageScore.toFixed(1)}%\n`;
@@ -109,18 +109,18 @@ jobs:
                 comment += '\n';
               }
             }
-            
+
             comment += `**Reports:**\n`;
             comment += `- [Download Performance Reports](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})\n`;
             comment += `- Generated on: ${new Date().toISOString()}\n`;
-            
+
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: comment
             });
-            
+
       - name: Set performance status
         if: always()
         run: |
@@ -129,50 +129,50 @@ jobs:
           else
             echo "PERFORMANCE_STATUS=failed" >> $GITHUB_ENV
           fi
-          
+
       - name: Performance optimization status
         if: always()
         run: |
           echo "Performance automation ${{ env.PERFORMANCE_STATUS }}"
-          
+
   bundle-analysis:
     runs-on: ubuntu-latest
     name: Bundle Analysis
     needs: performance-optimization
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
           cache: 'npm'
-          
+
       - name: Install dependencies
         run: npm ci
-        
+
       - name: Build application
         run: npm run build
-        
+
       - name: Analyze bundle sizes
         run: node scripts/analyze-bundle.js
-        
+
       - name: Upload bundle analysis
         uses: actions/upload-artifact@v4
         with:
           name: bundle-analysis
           path: bundle-analysis.json
           retention-days: 30
-          
+
       - name: Comment PR with bundle insights
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v7
         with:
           script: |
             const fs = require('fs');
-            
+
             try {
               const bundlePath = 'bundle-analysis.json';
               if (fs.existsSync(bundlePath)) {
@@ -201,45 +201,45 @@ jobs:
             } catch (error) {
               console.log('Could not analyze bundle:', error.message);
             }
-            
+
   performance-monitoring:
     runs-on: ubuntu-latest
     name: Performance Monitoring
     needs: performance-optimization
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
           cache: 'npm'
-          
+
       - name: Install dependencies
         run: npm ci
-        
+
       - name: Build and start application
         run: |
           npm run build
           npm run preview &
           sleep 10
-          
+
       - name: Run Lighthouse CI
         run: |
           npm install -g @lhci/cli
           lhci autorun
         continue-on-error: true
-        
+
       - name: Upload Lighthouse results
         uses: actions/upload-artifact@v4
         with:
           name: lighthouse-results
           path: .lighthouseci/
           retention-days: 30
-          
+
       - name: Performance regression check
         run: |
           echo "Checking for performance regressions..."

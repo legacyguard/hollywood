@@ -1,15 +1,19 @@
-import { COMMON_ACTIONS, type ActionButton, type SofiaContext } from './sofia-types';
+import {
+  type ActionButton,
+  COMMON_ACTIONS,
+  type SofiaContext,
+} from './sofia-types';
 
 // Sofia Knowledge Base - Fast, cost-effective answers to common questions
 // Uses pre-written responses instead of AI for 80% of queries
 
 interface KnowledgeEntry {
+  content: string;
+  contextConditions?: (context: SofiaContext) => boolean;
+  followupActions?: ActionButton[];
   id: string;
   question: string;
-  content: string;
   tags: string[];
-  followupActions?: ActionButton[];
-  contextConditions?: (context: SofiaContext) => boolean;
 }
 
 class SofiaKnowledgeBase {

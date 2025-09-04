@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -16,10 +16,10 @@ import type { Document } from '@/integrations/supabase/types';
 import { adaptDbDocumentToApp } from '@/lib/type-adapters';
 
 interface EnhancedDocumentListProps {
-  documents: Document[];
-  onDocumentSelect?: (document: Document) => void;
-  onDocumentDelete?: (document: Document) => void;
   className?: string;
+  documents: Document[];
+  onDocumentDelete?: (document: Document) => void;
+  onDocumentSelect?: (document: Document) => void;
 }
 
 export default function EnhancedDocumentList({
@@ -31,7 +31,7 @@ export default function EnhancedDocumentList({
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [sortBy, setSortBy] = useState<
-    'date' | 'importance' | 'name' | 'confidence'
+    'confidence' | 'date' | 'importance' | 'name'
   >('date');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
@@ -119,21 +119,21 @@ export default function EnhancedDocumentList({
   const getStatusBadge = (doc: Document) => {
     if (doc.processing_status === 'completed' && doc.ocr_text) {
       return (
-        <Badge variant="secondary" className='text-xs'>
+        <Badge variant='secondary' className='text-xs'>
           AI Processed
         </Badge>
       );
     }
     if (doc.processing_status === 'processing') {
       return (
-        <Badge variant="outline" className='text-xs'>
+        <Badge variant='outline' className='text-xs'>
           Processing...
         </Badge>
       );
     }
     if (doc.processing_status === 'failed') {
       return (
-        <Badge variant="destructive" className='text-xs'>
+        <Badge variant='destructive' className='text-xs'>
           Processing Failed
         </Badge>
       );
@@ -149,7 +149,7 @@ export default function EnhancedDocumentList({
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
-  const isExpiringSoon = (expiresAt: string | null | undefined): boolean => {
+  const isExpiringSoon = (expiresAt: null | string | undefined): boolean => {
     if (!expiresAt) return false;
     const daysUntilExpiry = Math.floor(
       (new Date(expiresAt).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
@@ -157,7 +157,7 @@ export default function EnhancedDocumentList({
     return daysUntilExpiry <= 30 && daysUntilExpiry >= 0;
   };
 
-  const isExpired = (expiresAt: string | null | undefined): boolean => {
+  const isExpired = (expiresAt: null | string | undefined): boolean => {
     if (!expiresAt) return false;
     return new Date(expiresAt).getTime() < Date.now();
   };
@@ -169,7 +169,8 @@ export default function EnhancedDocumentList({
         <div className='flex flex-col md:flex-row gap-4'>
           <div className='flex-1'>
             <div className='relative'>
-              <Icon name="search"
+              <Icon
+                name='search'
                 className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground'
               />
               <Input
@@ -204,7 +205,7 @@ export default function EnhancedDocumentList({
               value={sortBy}
               onValueChange={value =>
                 setSortBy(
-                  value as 'date' | 'name' | 'importance' | 'confidence'
+                  value as 'confidence' | 'date' | 'importance' | 'name'
                 )
               }
             >
@@ -226,7 +227,7 @@ export default function EnhancedDocumentList({
                 onClick={() => setViewMode('grid')}
                 className='border-0 rounded-r-none'
               >
-                <Icon name="grid" className='w-4 h-4' />
+                <Icon name='grid' className='w-4 h-4' />
               </Button>
               <Button
                 variant={viewMode === 'list' ? 'default' : 'ghost'}
@@ -234,7 +235,7 @@ export default function EnhancedDocumentList({
                 onClick={() => setViewMode('list')}
                 className='border-0 rounded-l-none'
               >
-                <Icon name="list" className='w-4 h-4' />
+                <Icon name='list' className='w-4 h-4' />
               </Button>
             </div>
           </div>
@@ -246,12 +247,12 @@ export default function EnhancedDocumentList({
           </p>
           {searchQuery && (
             <Button
-              variant="ghost"
+              variant='ghost'
               size='sm'
               onClick={() => setSearchQuery('')}
               className='text-xs'
             >
-              <Icon name="x" className='w-3 h-3 mr-1' />
+              <Icon name='x' className='w-3 h-3 mr-1' />
               Clear search
             </Button>
           )}
@@ -261,7 +262,8 @@ export default function EnhancedDocumentList({
       {/* Document Grid/List */}
       {filteredAndSortedDocuments.length === 0 ? (
         <Card className='p-12 text-center'>
-          <Icon name={"search" as any}
+          <Icon
+            name={'search' as any}
             className='w-16 h-16 text-muted-foreground mx-auto mb-6'
           />
           <h3 className='text-xl font-semibold mb-4'>No Documents Found</h3>
@@ -315,26 +317,26 @@ export default function EnhancedDocumentList({
 // Document Card Component (Grid View)
 interface DocumentCardProps {
   document: {
-    id: string;
-    title?: string;
+    category?: string;
+    created_at: string;
+    description?: string;
+    expires_at?: string;
     file_name: string;
     file_size?: number;
-    created_at: string;
-    expires_at?: string;
-    category?: string;
-    tags?: string[];
     file_url?: string;
-    ocr_confidence?: number;
+    id: string;
     is_important?: boolean;
-    description?: string;
+    ocr_confidence?: number;
+    tags?: string[];
+    title?: string;
   };
-  onSelect: () => void;
-  onDelete: () => void;
+  formatFileSize: (size?: number) => string;
   getDocumentIcon: (doc: any) => string;
   getStatusBadge: (doc: any) => React.ReactNode;
-  formatFileSize: (size?: number) => string;
-  isExpiringSoon: (expiresAt: string | null | undefined) => boolean;
-  isExpired: (expiresAt: string | null | undefined) => boolean;
+  isExpired: (expiresAt: null | string | undefined) => boolean;
+  isExpiringSoon: (expiresAt: null | string | undefined) => boolean;
+  onDelete: () => void;
+  onSelect: () => void;
 }
 
 function DocumentCard({
@@ -395,19 +397,20 @@ function DocumentCard({
 
           <div className='flex items-center gap-2'>
             {document.is_important && (
-              <Badge variant="destructive" className='text-xs'>
+              <Badge variant='destructive' className='text-xs'>
                 Important
               </Badge>
             )}
             {document.expires_at && isExpired(document.expires_at) && (
-              <Badge variant="destructive" className='text-xs'>
+              <Badge variant='destructive' className='text-xs'>
                 Expired
               </Badge>
             )}
-            {document.expires_at && !isExpired(document.expires_at) &&
+            {document.expires_at &&
+              !isExpired(document.expires_at) &&
               isExpiringSoon(document.expires_at) && (
                 <Badge
-                  variant="outline"
+                  variant='outline'
                   className='text-xs border-yellow-500 text-yellow-600'
                 >
                   Expires Soon
@@ -437,12 +440,12 @@ function DocumentCard({
         {document.tags && document.tags.length > 0 && (
           <div className='flex flex-wrap gap-1'>
             {document.tags.slice(0, 3).map(tag => (
-              <Badge key={tag} variant="outline" className='text-xs'>
+              <Badge key={tag} variant='outline' className='text-xs'>
                 {tag}
               </Badge>
             ))}
             {document.tags.length > 3 && (
-              <Badge variant="outline" className='text-xs'>
+              <Badge variant='outline' className='text-xs'>
                 +{document.tags.length - 3} more
               </Badge>
             )}
@@ -478,24 +481,24 @@ function DocumentCard({
       <div className='flex justify-end gap-2 mt-4 opacity-0 group-hover:opacity-100 transition-opacity'>
         <Button
           size='sm'
-          variant="outline"
+          variant='outline'
           onClick={e => {
             e.stopPropagation();
             onSelect();
           }}
         >
-          <Icon name="eye" className='w-4 h-4' />
+          <Icon name='eye' className='w-4 h-4' />
         </Button>
         <Button
           size='sm'
-          variant="outline"
+          variant='outline'
           onClick={e => {
             e.stopPropagation();
             onDelete();
           }}
           className='hover:bg-destructive/10 hover:text-destructive'
         >
-          <Icon name="trash" className='w-4 h-4' />
+          <Icon name='trash' className='w-4 h-4' />
         </Button>
       </div>
     </Card>
@@ -551,19 +554,20 @@ function DocumentListItem({
               {document.title || document.file_name}
             </h3>
             {document.is_important && (
-              <Badge variant="destructive" className='text-xs'>
+              <Badge variant='destructive' className='text-xs'>
                 Important
               </Badge>
             )}
             {document.expires_at && isExpired(document.expires_at) && (
-              <Badge variant="destructive" className='text-xs'>
+              <Badge variant='destructive' className='text-xs'>
                 Expired
               </Badge>
             )}
-            {document.expires_at && !isExpired(document.expires_at) &&
+            {document.expires_at &&
+              !isExpired(document.expires_at) &&
               isExpiringSoon(document.expires_at) && (
                 <Badge
-                  variant="outline"
+                  variant='outline'
                   className='text-xs border-yellow-500 text-yellow-600'
                 >
                   Expires Soon
@@ -595,24 +599,24 @@ function DocumentListItem({
         <div className='flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity'>
           <Button
             size='sm'
-            variant="outline"
+            variant='outline'
             onClick={e => {
               e.stopPropagation();
               onSelect();
             }}
           >
-            <Icon name="eye" className='w-4 h-4' />
+            <Icon name='eye' className='w-4 h-4' />
           </Button>
           <Button
             size='sm'
-            variant="outline"
+            variant='outline'
             onClick={e => {
               e.stopPropagation();
               onDelete();
             }}
             className='hover:bg-destructive/10 hover:text-destructive'
           >
-            <Icon name="trash" className='w-4 h-4' />
+            <Icon name='trash' className='w-4 h-4' />
           </Button>
         </div>
       </div>

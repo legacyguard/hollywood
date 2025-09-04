@@ -2,42 +2,42 @@ import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import {
-  Shield,
-  CheckCircle,
-  Star,
-  Calendar,
-  MapPin,
-  FileText,
   Award,
+  Calendar,
+  CheckCircle,
+  FileText,
+  MapPin,
+  Shield,
+  Star,
   Verified,
 } from 'lucide-react';
 
-export type TrustSealLevel = 'basic' | 'verified' | 'professional' | 'premium';
+export type TrustSealLevel = 'basic' | 'premium' | 'professional' | 'verified';
 
 export interface ProfessionalReview {
-  id: string;
-  professionalName: string;
-  professionalTitle: string;
+  certificateUrl?: string;
+  complianceScore: number;
   firmName: string;
-  reviewDate: Date;
+  id: string;
   jurisdiction: string;
   licenseNumber?: string;
+  professionalName: string;
+  professionalTitle: string;
+  reviewDate: Date;
   reviewType:
     | 'attorney_review'
-    | 'notary_certification'
-    | 'comprehensive_audit';
-  complianceScore: number;
+    | 'comprehensive_audit'
+    | 'notary_certification';
   verified: boolean;
-  certificateUrl?: string;
 }
 
 interface EnhancedTrustSealProps {
-  level: TrustSealLevel;
+  className?: string;
   jurisdiction: string;
   lastUpdated: Date;
+  level: TrustSealLevel;
   professionalReviews?: ProfessionalReview[];
   validationScore?: number;
-  className?: string;
 }
 
 export const EnhancedTrustSeal: React.FC<EnhancedTrustSealProps> = ({
@@ -169,7 +169,7 @@ export const EnhancedTrustSeal: React.FC<EnhancedTrustSealProps> = ({
                 <Shield className='h-3 w-3 mr-2' />
                 Attorney Reviews
               </span>
-              <Badge variant="secondary" className='text-xs'>
+              <Badge variant='secondary' className='text-xs'>
                 {attorneyReviews.length} Review
                 {attorneyReviews.length > 1 ? 's' : ''}
               </Badge>
@@ -182,7 +182,7 @@ export const EnhancedTrustSeal: React.FC<EnhancedTrustSealProps> = ({
                 <FileText className='h-3 w-3 mr-2' />
                 Notary Certifications
               </span>
-              <Badge variant="secondary" className='text-xs'>
+              <Badge variant='secondary' className='text-xs'>
                 {notaryReviews.length} Certification
                 {notaryReviews.length > 1 ? 's' : ''}
               </Badge>
@@ -195,7 +195,7 @@ export const EnhancedTrustSeal: React.FC<EnhancedTrustSealProps> = ({
                 <Award className='h-3 w-3 mr-2' />
                 Comprehensive Audits
               </span>
-              <Badge variant="secondary" className='text-xs'>
+              <Badge variant='secondary' className='text-xs'>
                 {comprehensiveReviews.length} Audit
                 {comprehensiveReviews.length > 1 ? 's' : ''}
               </Badge>
@@ -279,7 +279,7 @@ export const EnhancedTrustSeal: React.FC<EnhancedTrustSealProps> = ({
             <div className='mt-2 bg-white bg-opacity-20 rounded-full h-2'>
               <div
                 className='bg-white rounded-full h-2 transition-all duration-500'
-                style={{  width: `${validationScore }}%` }}
+                style={{ width: `${validationScore}}%` }}
               />
             </div>
           </div>

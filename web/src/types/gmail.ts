@@ -11,28 +11,28 @@ export interface GmailAuthConfig {
 
 export interface GmailTokens {
   accessToken: string;
-  refreshToken?: string;
   expiryDate?: number;
+  refreshToken?: string;
   tokenType: string;
 }
 
 export interface GmailMessage {
+  historyId: string;
   id: string;
-  threadId: string;
+  internalDate: string;
   labelIds: string[];
-  snippet: string;
   payload: GmailPayload;
   sizeEstimate: number;
-  historyId: string;
-  internalDate: string;
+  snippet: string;
+  threadId: string;
 }
 
 export interface GmailPayload {
-  partId: string;
-  mimeType: string;
+  body?: GmailBody;
   filename?: string;
   headers: GmailHeader[];
-  body?: GmailBody;
+  mimeType: string;
+  partId: string;
   parts?: GmailPayload[];
 }
 
@@ -43,65 +43,65 @@ export interface GmailHeader {
 
 export interface GmailBody {
   attachmentId?: string;
-  size: number;
   data?: string;
+  size: number;
 }
 
 export interface GmailAttachment {
-  partId: string;
+  data?: string; // Base64 encoded
   filename: string;
   mimeType: string;
+  partId: string;
   size: number;
-  data?: string; // Base64 encoded
 }
 
 export interface ExtractedDocument {
-  id: string;
+  confidence?: number;
+  content: ArrayBuffer;
+  documentType?: DocumentType;
+  extractedText?: string;
   filename: string;
+  id: string;
+  metadata: {
+    date: string;
+    fromEmail: string;
+    messageId: string;
+    subject: string;
+  };
   mimeType: string;
   size: number;
-  content: ArrayBuffer;
-  extractedText?: string;
-  documentType?: DocumentType;
-  confidence?: number;
-  metadata: {
-    fromEmail: string;
-    subject: string;
-    date: string;
-    messageId: string;
-  };
 }
 
 export type DocumentType =
-  | 'will'
-  | 'trust'
-  | 'insurance'
   | 'bank_statement'
+  | 'identification'
+  | 'insurance'
   | 'investment'
+  | 'medical'
+  | 'other'
   | 'property_deed'
   | 'tax_document'
-  | 'medical'
-  | 'identification'
-  | 'other';
+  | 'trust'
+  | 'will';
 
 export interface DocumentCategorizationResult {
-  type: DocumentType;
   confidence: number;
-  suggestedName: string;
   expiryDate?: Date;
-  familyRelevance: 'high' | 'medium' | 'low';
+  familyRelevance: 'high' | 'low' | 'medium';
   insights: string[];
+  suggestedName: string;
+  type: DocumentType;
 }
 
 export interface EmailImportSession {
-  id: string;
-  status: 'scanning' | 'processing' | 'completed' | 'failed';
-  totalEmails: number;
-  processedEmails: number;
-  foundDocuments: ExtractedDocument[];
-  errors: string[];
-  startedAt: Date;
   completedAt?: Date;
+  errors: string[];
+  foundDocuments: ExtractedDocument[];
+  id: string;
+  processedEmails: number;
+  startedAt: Date;
+  status: 'completed' | 'failed' | 'processing' | 'scanning';
+  totalEmails: number;
 }
 
 export interface EmailImportConfig {
@@ -115,10 +115,10 @@ export interface EmailImportConfig {
 }
 
 export interface BulkImportResult {
-  session: EmailImportSession;
-  documents: ExtractedDocument[];
   categorizations: DocumentCategorizationResult[];
+  documents: ExtractedDocument[];
   duplicates: number;
-  timeSaved: number; // estimated time saved in minutes
   protectionIncrease: number; // percentage increase in family protection
+  session: EmailImportSession;
+  timeSaved: number; // estimated time saved in minutes
 }

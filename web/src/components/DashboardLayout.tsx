@@ -19,10 +19,10 @@ interface DashboardLayoutProps {
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   const [isSofiaOpen, setIsSofiaOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [sofiaPendingAction, setSofiaPendingAction] = useState<{
-    userMessage: string;
+  const [sofiaPendingAction, setSofiaPendingAction] = useState<null | {
     sofiaResponse: string;
-  } | null>(null);
+    userMessage: string;
+  }>(null);
   const location = useLocation();
   const navigate = useNavigate();
   const { userId } = useAuth();
@@ -89,7 +89,9 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           {/* Mobile Header with Sidebar Trigger */}
           <header className='lg:hidden h-16 flex items-center px-4 border-b border-card-border bg-card'>
             <SidebarTrigger className='mr-4' />
-            <h1 className='font-semibold text-card-foreground'>{t('header.brand')}</h1>
+            <h1 className='font-semibold text-card-foreground'>
+              {t('header.brand')}
+            </h1>
           </header>
 
           {/* Main Content */}
@@ -108,7 +110,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             // Clear pending action when Sofia is closed
             setSofiaPendingAction(null);
           }}
-          variant="floating"
+          variant='floating'
           currentPage={getCurrentPage()}
           pendingAction={sofiaPendingAction}
         />

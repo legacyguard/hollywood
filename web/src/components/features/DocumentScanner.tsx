@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -25,17 +25,17 @@ import {
 import { FadeIn } from '@/components/motion/FadeIn';
 import { toast } from 'sonner';
 import type {
-  ProcessedDocument,
   OCRProcessingConfig,
   OCRProcessingResponse,
+  ProcessedDocument,
 } from '@/types/ocr';
 import { useAuth } from '@clerk/clerk-react';
 
 interface DocumentScannerProps {
-  onDocumentProcessed?: (processedDoc: ProcessedDocument) => void;
-  onScanStart?: () => void;
-  onScanComplete?: () => void;
   className?: string;
+  onDocumentProcessed?: (processedDoc: ProcessedDocument) => void;
+  onScanComplete?: () => void;
+  onScanStart?: () => void;
 }
 
 export default function DocumentScanner({
@@ -46,14 +46,14 @@ export default function DocumentScanner({
 }: DocumentScannerProps) {
   const { getToken } = useAuth();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<null | string>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [processingProgress, setProcessingProgress] = useState(0);
   const [processedDocument, setProcessedDocument] =
-    useState<ProcessedDocument | null>(null);
+    useState<null | ProcessedDocument>(null);
   const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
   const [_processingStage, setProcessingStage] = useState<
-    'upload' | 'analyzing' | 'completed'
+    'analyzing' | 'completed' | 'upload'
   >('upload');
   const [showResults, setShowResults] = useState(false);
 
@@ -202,7 +202,10 @@ export default function DocumentScanner({
         <div className='text-center space-y-4'>
           <FadeIn duration={0.5}>
             <div className='w-16 h-16 mx-auto mb-4 bg-primary/10 rounded-full flex items-center justify-center'>
-              <Icon name={"documents" as any} className='w-8 h-8 text-primary' />
+              <Icon
+                name={'documents' as any}
+                className='w-8 h-8 text-primary'
+              />
             </div>
             <h3 className='text-xl font-semibold'>Scan & Analyze Document</h3>
             <p className='text-muted-foreground'>
@@ -222,7 +225,8 @@ export default function DocumentScanner({
                 }`}
               >
                 <input {...getInputProps()} />
-                <Icon name={"upload" as any}
+                <Icon
+                  name={'upload' as any}
                   className='w-12 h-12 text-muted-foreground mx-auto mb-4'
                 />
                 <p className='text-lg font-medium mb-2'>
@@ -234,7 +238,7 @@ export default function DocumentScanner({
                   Supports images (PNG, JPG, GIF, WebP) and PDFs up to 10MB
                 </p>
                 <Button onClick={handleManualFileSelect} type='button'>
-                  <Icon name={"documents" as any} className='w-4 h-4 mr-2' />
+                  <Icon name={'documents' as any} className='w-4 h-4 mr-2' />
                   Choose File
                 </Button>
                 <input
@@ -253,7 +257,10 @@ export default function DocumentScanner({
                 <div className='border rounded-lg p-4 bg-muted/5'>
                   <div className='flex items-center justify-between mb-4'>
                     <div className='flex items-center gap-3'>
-                      <Icon name={"documents" as any} className='w-5 h-5 text-primary' />
+                      <Icon
+                        name={'documents' as any}
+                        className='w-5 h-5 text-primary'
+                      />
                       <div className='text-left'>
                         <p className='font-medium'>{selectedFile.name}</p>
                         <p className='text-sm text-muted-foreground'>
@@ -263,11 +270,11 @@ export default function DocumentScanner({
                       </div>
                     </div>
                     <Button
-                      variant="outline"
+                      variant='outline'
                       size='sm'
                       onClick={clearSelection}
                     >
-                      <Icon name={"x" as any} className='w-4 h-4' />
+                      <Icon name={'x' as any} className='w-4 h-4' />
                     </Button>
                   </div>
 
@@ -292,24 +299,28 @@ export default function DocumentScanner({
                   >
                     {isProcessing ? (
                       <>
-                        <Icon name={"loader" as any}
+                        <Icon
+                          name={'loader' as any}
                           className='w-4 h-4 mr-2 animate-spin'
                         />
                         Processing...
                       </>
                     ) : (
                       <>
-                        <Icon name={"sparkles" as any} className='w-4 h-4 mr-2' />
+                        <Icon
+                          name={'sparkles' as any}
+                          className='w-4 h-4 mr-2'
+                        />
                         Scan Document
                       </>
                     )}
                   </Button>
 
                   <Button
-                    variant="outline"
+                    variant='outline'
                     onClick={() => setShowAdvancedOptions(!showAdvancedOptions)}
                   >
-                    <Icon name={"settings" as any} className='w-4 h-4 mr-2' />
+                    <Icon name={'settings' as any} className='w-4 h-4 mr-2' />
                     Options
                   </Button>
                 </div>
@@ -415,7 +426,7 @@ export default function DocumentScanner({
                   <Label htmlFor='processing-mode'>Processing Mode</Label>
                   <Select
                     value={config.processingMode}
-                    onValueChange={(value: 'fast' | 'accurate') =>
+                    onValueChange={(value: 'accurate' | 'fast') =>
                       setConfig(prev => ({ ...prev, processingMode: value }))
                     }
                   >
@@ -491,7 +502,7 @@ export default function DocumentScanner({
                 </h3>
                 <div className='flex items-center gap-3'>
                   <Badge
-                    variant="secondary"
+                    variant='secondary'
                     className='bg-green-100 text-green-800'
                   >
                     {processedDocument.classification.type.replace('_', ' ')}
@@ -522,7 +533,7 @@ export default function DocumentScanner({
                         >
                           <div>
                             <Badge
-                              variant="outline"
+                              variant='outline'
                               className='mb-1 text-green-700 border-green-300'
                             >
                               {entity.type.replace('_', ' ')}
@@ -556,7 +567,7 @@ export default function DocumentScanner({
               </div>
 
               <div className='flex gap-3 justify-end pt-4 border-t'>
-                <Button variant="outline" onClick={() => setShowResults(false)}>
+                <Button variant='outline' onClick={() => setShowResults(false)}>
                   Review Later
                 </Button>
                 <Button
@@ -582,7 +593,7 @@ export default function DocumentScanner({
 // Document Results Component
 function DocumentResults({ document }: { document: ProcessedDocument }) {
   const [activeTab, setActiveTab] = useState<
-    'overview' | 'text' | 'entities' | 'metadata'
+    'entities' | 'metadata' | 'overview' | 'text'
   >('overview');
 
   return (
@@ -624,7 +635,11 @@ function DocumentResults({ document }: { document: ProcessedDocument }) {
         ].map(tab => (
           <button
             key={tab.key}
-            onClick={() => setActiveTab(tab.key as 'metadata' | 'text' | 'overview' | 'entities')}
+            onClick={() =>
+              setActiveTab(
+                tab.key as 'entities' | 'metadata' | 'overview' | 'text'
+              )
+            }
             className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
               activeTab === tab.key
                 ? 'bg-background shadow-sm text-foreground'
@@ -646,13 +661,13 @@ function DocumentResults({ document }: { document: ProcessedDocument }) {
               <div className='space-y-2'>
                 <div className='flex items-center justify-between'>
                   <span className='text-sm'>Type:</span>
-                  <Badge variant="outline">
+                  <Badge variant='outline'>
                     {document.classification.type.replace('_', ' ')}
                   </Badge>
                 </div>
                 <div className='flex items-center justify-between'>
                   <span className='text-sm'>Category:</span>
-                  <Badge variant="secondary">
+                  <Badge variant='secondary'>
                     {document.classification.category}
                   </Badge>
                 </div>
@@ -669,7 +684,7 @@ function DocumentResults({ document }: { document: ProcessedDocument }) {
                   <h5 className='font-medium mb-2'>Suggested Tags</h5>
                   <div className='flex flex-wrap gap-2'>
                     {document.classification.suggestedTags.map(tag => (
-                      <Badge key={tag} variant="outline" className='text-xs'>
+                      <Badge key={tag} variant='outline' className='text-xs'>
                         {tag}
                       </Badge>
                     ))}
@@ -731,7 +746,7 @@ function DocumentResults({ document }: { document: ProcessedDocument }) {
                       className='flex items-center justify-between p-3 bg-muted/20 rounded-lg'
                     >
                       <div>
-                        <Badge variant="outline" className='mb-1'>
+                        <Badge variant='outline' className='mb-1'>
                           {entity.type.replace('_', ' ')}
                         </Badge>
                         <p className='text-sm'>{entity.value}</p>

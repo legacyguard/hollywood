@@ -1,37 +1,37 @@
 import { supabase } from '../supabase/client';
 
 export interface SystemHealthCheck {
-  service: string;
-  status: 'healthy' | 'degraded' | 'down';
-  responseTime?: number;
   errorRate?: number;
   lastError?: string;
   metadata?: Record<string, any>;
+  responseTime?: number;
+  service: string;
+  status: 'degraded' | 'down' | 'healthy';
 }
 
 export interface AnalyticsEvent {
-  eventType: string;
-  eventData?: Record<string, any>;
-  sessionId?: string;
   deviceInfo?: {
-    platform?: string;
     browser?: string;
-    version?: string;
     isMobile?: boolean;
+    platform?: string;
+    version?: string;
   };
+  eventData?: Record<string, any>;
+  eventType: string;
+  sessionId?: string;
 }
 
 export interface PerformanceMetric {
   name: string;
-  value: number;
-  unit: 'ms' | 'bytes' | 'count' | 'percentage';
   timestamp: Date;
+  unit: 'bytes' | 'count' | 'ms' | 'percentage';
+  value: number;
 }
 
 class MonitoringService {
   private sessionId: string;
   private performanceBuffer: PerformanceMetric[] = [];
-  private flushInterval: ReturnType<typeof setInterval> | null = null;
+  private flushInterval: null | ReturnType<typeof setInterval> = null;
 
   constructor() {
     this.sessionId = this.generateSessionId();
@@ -68,13 +68,15 @@ class MonitoringService {
 
     // First Contentful Paint (FCP)
     const paintEntries = performance.getEntriesByType('paint');
-    const fcp = paintEntries.find(entry => entry.name === 'first-contentful-paint');
+    const fcp = paintEntries.find(
+      entry => entry.name === 'first-contentful-paint'
+    );
     if (fcp) {
       this.recordPerformance('FCP', fcp.startTime, 'ms');
     }
 
     // Largest Contentful Paint (LCP)
-    const observer = new PerformanceObserver((list) => {
+    const observer = new PerformanceObserver(list => {
       const entries = list.getEntries();
       const lastEntry = entries[entries.length - 1];
       this.recordPerformance('LCP', lastEntry.startTime, 'ms');
@@ -82,17 +84,21 @@ class MonitoringService {
     observer.observe({ entryTypes: ['largest-contentful-paint'] });
 
     // First Input Delay (FID)
-    const fidObserver = new PerformanceObserver((list) => {
+    const fidObserver = new PerformanceObserver(list => {
       const entries = list.getEntries();
       entries.forEach((entry: any) => {
-        this.recordPerformance('FID', entry.processingStart - entry.startTime, 'ms');
+        this.recordPerformance(
+          'FID',
+          entry.processingStart - entry.startTime,
+          'ms'
+        );
       });
     });
     fidObserver.observe({ entryTypes: ['first-input'] });
 
     // Cumulative Layout Shift (CLS)
     let clsValue = 0;
-    const clsObserver = new PerformanceObserver((list) => {
+    const clsObserver = new PerformanceObserver(list => {
       const entries = list.getEntries();
       entries.forEach((entry: any) => {
         if (!entry.hadRecentInput) {
@@ -112,19 +118,19 @@ class MonitoringService {
     eventData?: Record<string, any>
   ): Promise<void> {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
       const deviceInfo = this.getDeviceInfo();
-      
-      await supabase
-        .from('analytics_events')
-        .insert({
-          user_id: user?.id,
-          event_type: eventType,
-          event_data: eventData,
-          session_id: this.sessionId,
-          device_info: deviceInfo,
-        });
+
+      await supabase.from('analytics_events').insert({
+        user_id: user?.id,
+        event_type: eventType,
+        event_data: eventData,
+        session_id: this.sessionId,
+        device_info: deviceInfo,
+      });
     } catch (error) {
       console.error('Error tracking event:', error);
     }
@@ -135,7 +141,7 @@ class MonitoringService {
    */
   async checkHealth(service: string): Promise<SystemHealthCheck> {
     const startTime = Date.now();
-    let status: 'healthy' | 'degraded' | 'down' = 'healthy';
+    let status: 'degraded' | 'down' | 'healthy' = 'healthy';
     let lastError: string | undefined;
     let errorRate = 0;
 
@@ -196,7 +202,7 @@ class MonitoringService {
       .from('system_health')
       .select('id')
       .limit(1);
-    
+
     if (error) throw error;
   }
 
@@ -207,7 +213,7 @@ class MonitoringService {
     const { error } = await supabase.storage
       .from('documents')
       .list('', { limit: 1 });
-    
+
     if (error) throw error;
   }
 
@@ -228,7 +234,7 @@ class MonitoringService {
     const response = await fetch('https://api.stripe.com/v1/health', {
       method: 'GET',
     });
-    
+
     if (!response.ok) {
       throw new Error('Stripe API is not responding');
     }
@@ -239,16 +245,14 @@ class MonitoringService {
    */
   private async logHealthCheck(check: SystemHealthCheck): Promise<void> {
     try {
-      await supabase
-        .from('system_health')
-        .insert({
-          service_name: check.service,
-          status: check.status,
-          response_time_ms: check.responseTime,
-          error_rate: check.errorRate,
-          last_error: check.lastError,
-          metadata: check.metadata,
-        });
+      await supabase.from('system_health').insert({
+        service_name: check.service,
+        status: check.status,
+        response_time_ms: check.responseTime,
+        error_rate: check.errorRate,
+        last_error: check.lastError,
+        metadata: check.metadata,
+      });
     } catch (error) {
       console.error('Error logging health check:', error);
     }
@@ -260,7 +264,7 @@ class MonitoringService {
   recordPerformance(
     name: string,
     value: number,
-    unit: 'ms' | 'bytes' | 'count' | 'percentage'
+    unit: 'bytes' | 'count' | 'ms' | 'percentage'
   ): void {
     this.performanceBuffer.push({
       name,
@@ -285,32 +289,38 @@ class MonitoringService {
     this.performanceBuffer = [];
 
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
       // Group metrics by type
-      const metricsData = metrics.reduce((acc, metric) => {
-        if (!acc[metric.name]) {
-          acc[metric.name] = [];
-        }
-        acc[metric.name].push(metric.value);
-        return acc;
-      }, {} as Record<string, number[]>);
+      const metricsData = metrics.reduce(
+        (acc, metric) => {
+          if (!acc[metric.name]) {
+            acc[metric.name] = [];
+          }
+          acc[metric.name].push(metric.value);
+          return acc;
+        },
+        {} as Record<string, number[]>
+      );
 
       // Calculate averages
-      const averages = Object.entries(metricsData).reduce((acc, [name, values]) => {
-        acc[name] = values.reduce((sum, val) => sum + val, 0) / values.length;
-        return acc;
-      }, {} as Record<string, number>);
+      const averages = Object.entries(metricsData).reduce(
+        (acc, [name, values]) => {
+          acc[name] = values.reduce((sum, val) => sum + val, 0) / values.length;
+          return acc;
+        },
+        {} as Record<string, number>
+      );
 
-      await supabase
-        .from('analytics_events')
-        .insert({
-          user_id: user?.id,
-          event_type: 'performance_metrics',
-          event_data: averages,
-          session_id: this.sessionId,
-          device_info: this.getDeviceInfo(),
-        });
+      await supabase.from('analytics_events').insert({
+        user_id: user?.id,
+        event_type: 'performance_metrics',
+        event_data: averages,
+        session_id: this.sessionId,
+        device_info: this.getDeviceInfo(),
+      });
     } catch (error) {
       console.error('Error flushing performance buffer:', error);
     }
@@ -331,7 +341,7 @@ class MonitoringService {
     // Parse browser info
     let browser = 'Unknown';
     let browserVersion = 'Unknown';
-    
+
     if (userAgent.indexOf('Chrome') > -1) {
       browser = 'Chrome';
       browserVersion = userAgent.match(/Chrome\/(\d+)/)?.[1] || 'Unknown';
@@ -362,10 +372,7 @@ class MonitoringService {
   /**
    * Track error
    */
-  async trackError(
-    error: Error,
-    context?: Record<string, any>
-  ): Promise<void> {
+  async trackError(error: Error, context?: Record<string, any>): Promise<void> {
     await this.trackEvent('error', {
       message: error.message,
       stack: error.stack,
@@ -376,10 +383,7 @@ class MonitoringService {
   /**
    * Track page view
    */
-  async trackPageView(
-    path: string,
-    title?: string
-  ): Promise<void> {
+  async trackPageView(path: string, title?: string): Promise<void> {
     await this.trackEvent('page_view', {
       path,
       title,
@@ -437,11 +441,13 @@ class MonitoringService {
 
     data.forEach(event => {
       // Count event types
-      summary.eventTypes[event.event_type] = (summary.eventTypes[event.event_type] || 0) + 1;
+      summary.eventTypes[event.event_type] =
+        (summary.eventTypes[event.event_type] || 0) + 1;
 
       // Count page views
       if (event.event_type === 'page_view' && event.event_data?.path) {
-        summary.topPages[event.event_data.path] = (summary.topPages[event.event_data.path] || 0) + 1;
+        summary.topPages[event.event_data.path] =
+          (summary.topPages[event.event_data.path] || 0) + 1;
       }
 
       // Count devices
@@ -453,7 +459,8 @@ class MonitoringService {
 
       // Count browsers
       if (event.device_info?.browser) {
-        summary.browsers[event.device_info.browser] = (summary.browsers[event.device_info.browser] || 0) + 1;
+        summary.browsers[event.device_info.browser] =
+          (summary.browsers[event.device_info.browser] || 0) + 1;
       }
     });
 

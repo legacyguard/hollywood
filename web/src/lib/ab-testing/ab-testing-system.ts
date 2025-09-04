@@ -6,36 +6,36 @@
 export type ABTestVariant = 'control' | 'variant_a' | 'variant_b' | 'variant_c';
 
 export interface ABTestConfig {
+  endDate?: string;
+  isActive: boolean;
+  startDate: string;
   testName: string;
   variants: {
     [key in ABTestVariant]?: {
-      name: string;
       description: string;
-      weight: number;
       enabled: boolean;
+      name: string;
+      weight: number;
     };
   };
-  isActive: boolean;
-  startDate: string;
-  endDate?: string;
 }
 
 export interface ConversionMetric {
-  userId: string;
+  metadata?: Record<string, any>;
+  metric: string;
   sessionId: string;
   testName: string;
-  variant: ABTestVariant;
-  metric: string;
-  value: number | string;
   timestamp: string;
-  metadata?: Record<string, any>;
+  userId: string;
+  value: number | string;
+  variant: ABTestVariant;
 }
 
 export interface UserTestAssignment {
-  userId: string;
-  sessionId: string;
   assignments: Record<string, ABTestVariant>;
   createdAt: string;
+  sessionId: string;
+  userId: string;
 }
 
 class ABTestingSystem {
@@ -176,7 +176,10 @@ class ABTestingSystem {
     }
 
     // Weighted random selection
-    const totalWeight = variants.reduce((sum, [_, variant]) => sum + (variant?.weight || 0), 0);
+    const totalWeight = variants.reduce(
+      (sum, [_, variant]) => sum + (variant?.weight || 0),
+      0
+    );
     const random = Math.random() * totalWeight;
 
     let currentWeight = 0;
@@ -234,14 +237,20 @@ class ABTestingSystem {
   trackOnboardingMetric(
     userId: string,
     step: string,
-    action: 'started' | 'completed' | 'abandoned',
+    action: 'abandoned' | 'completed' | 'started',
     timeSpent?: number
   ): void {
-    this.trackConversion(userId, 'onboarding_flow_v1', `onboarding_${step}_${action}`, 1, {
-      step,
-      action,
-      timeSpent,
-    });
+    this.trackConversion(
+      userId,
+      'onboarding_flow_v1',
+      `onboarding_${step}_${action}`,
+      1,
+      {
+        step,
+        action,
+        timeSpent,
+      }
+    );
   }
 
   /**
@@ -249,13 +258,19 @@ class ABTestingSystem {
    */
   trackTrustScoreInteraction(
     userId: string,
-    interaction: 'viewed' | 'clicked' | 'tooltip_opened',
+    interaction: 'clicked' | 'tooltip_opened' | 'viewed',
     currentScore: number
   ): void {
-    this.trackConversion(userId, 'trust_score_display_v1', `trust_score_${interaction}`, 1, {
-      interaction,
-      currentScore,
-    });
+    this.trackConversion(
+      userId,
+      'trust_score_display_v1',
+      `trust_score_${interaction}`,
+      1,
+      {
+        interaction,
+        currentScore,
+      }
+    );
   }
 
   /**
@@ -263,13 +278,23 @@ class ABTestingSystem {
    */
   trackProfessionalReviewConversion(
     userId: string,
-    action: 'button_viewed' | 'button_clicked' | 'flow_started' | 'flow_completed',
+    action:
+      | 'button_clicked'
+      | 'button_viewed'
+      | 'flow_completed'
+      | 'flow_started',
     trustScore?: number
   ): void {
-    this.trackConversion(userId, 'professional_review_cta_v1', `professional_review_${action}`, 1, {
-      action,
-      trustScore,
-    });
+    this.trackConversion(
+      userId,
+      'professional_review_cta_v1',
+      `professional_review_${action}`,
+      1,
+      {
+        action,
+        trustScore,
+      }
+    );
   }
 
   /**
@@ -309,21 +334,25 @@ class ABTestingSystem {
     const results: Record<string, any> = {};
 
     // Group by variant
-    const variantMetrics = testMetrics.reduce((acc, metric) => {
-      if (!acc[metric.variant]) {
-        acc[metric.variant] = [];
-      }
-      acc[metric.variant].push(metric);
-      return acc;
-    }, {} as Record<ABTestVariant, ConversionMetric[]>);
+    const variantMetrics = testMetrics.reduce(
+      (acc, metric) => {
+        if (!acc[metric.variant]) {
+          acc[metric.variant] = [];
+        }
+        acc[metric.variant].push(metric);
+        return acc;
+      },
+      {} as Record<ABTestVariant, ConversionMetric[]>
+    );
 
     // Calculate rates for each variant
     Object.entries(variantMetrics).forEach(([variant, metrics]) => {
       const uniqueUsers = new Set(metrics.map(m => m.userId)).size;
-      const conversions = metrics.filter(m =>
-        m.metric.includes('completed') ||
-        m.metric.includes('flow_completed') ||
-        m.metric.includes('button_clicked')
+      const conversions = metrics.filter(
+        m =>
+          m.metric.includes('completed') ||
+          m.metric.includes('flow_completed') ||
+          m.metric.includes('button_clicked')
       ).length;
 
       results[variant] = {
@@ -340,20 +369,25 @@ class ABTestingSystem {
   /**
    * Check if variant is winning (simple statistical significance approximation)
    */
-  getWinningVariant(testName: string): { variant: ABTestVariant; confidence: number } | null {
+  getWinningVariant(
+    testName: string
+  ): null | { confidence: number; variant: ABTestVariant } {
     const rates = this.getConversionRates(testName);
     const variants = Object.entries(rates);
 
     if (variants.length < 2) return null;
 
     // Simple winner detection based on conversion rate and sample size
-    const sortedVariants = variants.sort(([,a], [,b]) => b.conversionRate - a.conversionRate);
+    const sortedVariants = variants.sort(
+      ([, a], [, b]) => b.conversionRate - a.conversionRate
+    );
     const [winnerKey, winner] = sortedVariants[0];
     const [_runnerUpKey, runnerUp] = sortedVariants[1];
 
     // Basic confidence calculation (simplified)
     const sampleSizeThreshold = 100;
-    const conversionDifference = winner.conversionRate - runnerUp.conversionRate;
+    const conversionDifference =
+      winner.conversionRate - runnerUp.conversionRate;
 
     if (winner.users < sampleSizeThreshold) {
       return { variant: winnerKey as ABTestVariant, confidence: 0 };
@@ -372,8 +406,18 @@ export const abTestingSystem = new ABTestingSystem();
 export function useABTest(testName: string, userId?: string) {
   const variant = abTestingSystem.getVariant(userId || 'anonymous', testName);
 
-  const trackConversion = (metric: string, value: number | string, metadata?: Record<string, any>) => {
-    abTestingSystem.trackConversion(userId || 'anonymous', testName, metric, value, metadata);
+  const trackConversion = (
+    metric: string,
+    value: number | string,
+    metadata?: Record<string, any>
+  ) => {
+    abTestingSystem.trackConversion(
+      userId || 'anonymous',
+      testName,
+      metric,
+      value,
+      metadata
+    );
   };
 
   return {

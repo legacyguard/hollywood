@@ -1,19 +1,19 @@
 import { supabase } from '../supabase/client';
 
 export interface Document {
-  id: string;
-  name: string;
   category: string;
+  createdAt: string;
   filePath?: string;
   fileSize?: number;
-  mimeType?: string;
-  notes?: string;
-  tags?: string[];
-  createdAt: string;
-  updatedAt: string;
-  userId: string;
+  id: string;
   isEncrypted?: boolean;
   metadata?: Record<string, any>;
+  mimeType?: string;
+  name: string;
+  notes?: string;
+  tags?: string[];
+  updatedAt: string;
+  userId: string;
 }
 
 export class DocumentService {
@@ -112,7 +112,7 @@ export class DocumentService {
    * Upload a document file
    */
   static async uploadFile(
-    file: File | Blob,
+    file: Blob | File,
     path: string
   ): Promise<{ path: string; url: string }> {
     const { data, error } = await supabase.storage

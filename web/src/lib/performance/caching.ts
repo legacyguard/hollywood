@@ -8,22 +8,22 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 // Cache entry interface
 interface CacheEntry<T> {
   data: T;
-  timestamp: number;
   expiresAt: number;
+  timestamp: number;
 }
 
 // Cache configuration
 interface CacheConfig {
-  ttl?: number; // Time to live in milliseconds
   maxSize?: number; // Maximum number of entries
   persistent?: boolean; // Use localStorage for persistence
+  ttl?: number; // Time to live in milliseconds
 }
 
 // Default cache configurations
 const defaultCacheConfig: Required<CacheConfig> = {
   ttl: 5 * 60 * 1000, // 5 minutes
   maxSize: 100,
-  persistent: false
+  persistent: false,
 };
 
 // In-memory cache implementation
@@ -42,13 +42,15 @@ class MemoryCache<T> {
     if (this.cache.size >= this.config.maxSize) {
       // Remove oldest entry
       const oldestKey = this.cache.keys().next().value;
-      this.cache.delete(oldestKey);
+      if (oldestKey) {
+        this.cache.delete(oldestKey);
+      }
     }
 
     const entry: CacheEntry<T> = {
       data,
       timestamp: Date.now(),
-      expiresAt: Date.now() + this.config.ttl
+      expiresAt: Date.now() + this.config.ttl,
     };
 
     this.cache.set(key, entry);
@@ -63,7 +65,7 @@ class MemoryCache<T> {
     }
   }
 
-  get(key: string): T | null {
+  get(key: string): null | T {
     let entry = this.cache.get(key);
 
     // Try loading from localStorage if not in memory and persistence is enabled
@@ -118,7 +120,9 @@ class MemoryCache<T> {
     this.cache.clear();
     if (this.config.persistent) {
       // Clear all cache entries from localStorage
-      const keys = Object.keys(localStorage).filter(key => key.startsWith('cache_'));
+      const keys = Object.keys(localStorage).filter(key =>
+        key.startsWith('cache_')
+      );
       keys.forEach(key => localStorage.removeItem(key));
     }
   }
@@ -136,11 +140,11 @@ class MemoryCache<T> {
     expiredKeys.forEach(key => this.invalidate(key));
   }
 
-  getStats(): { size: number; hitRate: number; memoryUsage: string } {
+  getStats(): { hitRate: number; memoryUsage: string; size: number } {
     return {
       size: this.cache.size,
       hitRate: 0, // Would need to track hits/misses for this
-      memoryUsage: `${JSON.stringify([...this.cache.entries()]).length} bytes`
+      memoryUsage: `${JSON.stringify([...this.cache.entries()]).length} bytes`,
     };
   }
 }
@@ -149,41 +153,41 @@ class MemoryCache<T> {
 export const professionalReviewCache = new MemoryCache({
   ttl: 15 * 60 * 1000, // 15 minutes for professional reviews
   maxSize: 50,
-  persistent: true
+  persistent: true,
 });
 
 export const analyticsCache = new MemoryCache({
   ttl: 5 * 60 * 1000, // 5 minutes for analytics data
   maxSize: 30,
-  persistent: false
+  persistent: false,
 });
 
 export const familyDataCache = new MemoryCache({
   ttl: 10 * 60 * 1000, // 10 minutes for family data
   maxSize: 100,
-  persistent: true
+  persistent: true,
 });
 
 export const documentMetadataCache = new MemoryCache({
   ttl: 30 * 60 * 1000, // 30 minutes for document metadata
   maxSize: 200,
-  persistent: true
+  persistent: true,
 });
 
 // React hook for cached data fetching
 export function useCachedData<T>(
   cacheKey: string,
   fetchFn: () => Promise<T>,
-  cache: MemoryCache<T> = analyticsCache,
+  cache: MemoryCache<unknown> = analyticsCache,
   dependencies: any[] = []
 ): {
-  data: T | null;
-  loading: boolean;
+  data: null | T;
   error: Error | null;
-  refresh: () => void;
   invalidate: () => void;
+  loading: boolean;
+  refresh: () => void;
 } {
-  const [data, setData] = useState<T | null>(null);
+  const [data, setData] = useState<null | T>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const fetchFnRef = useRef(fetchFn);
@@ -193,30 +197,33 @@ export function useCachedData<T>(
     fetchFnRef.current = fetchFn;
   }, [fetchFn]);
 
-  const fetchData = useCallback(async (useCache: boolean = true) => {
-    // Try cache first if enabled
-    if (useCache) {
-      const cached = cache.get(cacheKey);
-      if (cached !== null) {
-        setData(cached);
-        return;
+  const fetchData = useCallback(
+    async (useCache: boolean = true) => {
+      // Try cache first if enabled
+      if (useCache) {
+        const cached = cache.get(cacheKey);
+        if (cached !== null && cached !== undefined) {
+          setData(cached as T);
+          return;
+        }
       }
-    }
 
-    setLoading(true);
-    setError(null);
+      setLoading(true);
+      setError(null);
 
-    try {
-      const result = await fetchFnRef.current();
-      cache.set(cacheKey, result);
-      setData(result);
-    } catch (err) {
-      setError(err instanceof Error ? err : new Error('Unknown error'));
-      setData(null);
-    } finally {
-      setLoading(false);
-    }
-  }, [cacheKey, cache]);
+      try {
+        const result = await fetchFnRef.current();
+        cache.set(cacheKey, result);
+        setData(result);
+      } catch (err) {
+        setError(err instanceof Error ? err : new Error('Unknown error'));
+        setData(null);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [cacheKey, cache]
+  );
 
   const refresh = useCallback(() => {
     fetchData(false); // Bypass cache on refresh
@@ -237,7 +244,7 @@ export function useCachedData<T>(
     loading,
     error,
     refresh,
-    invalidate
+    invalidate,
   };
 }
 
@@ -247,7 +254,9 @@ export function useCachedProfessionalReviews(userId: string) {
     `professional_reviews_${userId}`,
     async () => {
       // This would be replaced with actual API call
-      const response = await fetch(`/api/professional-reviews?userId=${userId}`);
+      const response = await fetch(
+        `/api/professional-reviews?userId=${userId}`
+      );
       if (!response.ok) throw new Error('Failed to fetch professional reviews');
       return response.json();
     },
@@ -262,7 +271,9 @@ export function useCachedAnalytics(userId: string, timeframe: string = '30d') {
     `analytics_${userId}_${timeframe}`,
     async () => {
       // This would be replaced with actual analytics API call
-      const response = await fetch(`/api/analytics?userId=${userId}&timeframe=${timeframe}`);
+      const response = await fetch(
+        `/api/analytics?userId=${userId}&timeframe=${timeframe}`
+      );
       if (!response.ok) throw new Error('Failed to fetch analytics');
       return response.json();
     },
@@ -316,7 +327,7 @@ export const cacheInvalidation = {
     familyDataCache.clear();
     professionalReviewCache.clear();
     documentMetadataCache.clear();
-  }
+  },
 };
 
 // Cache warming utility
@@ -344,5 +355,5 @@ export const warmCache = {
     } catch (error) {
       console.warn('Cache warming failed:', error);
     }
-  }
+  },
 };

@@ -13,7 +13,8 @@ export const DocumentCategory = {
   OTHER: 'other',
 } as const;
 
-export type DocumentCategoryType = typeof DocumentCategory[keyof typeof DocumentCategory];
+export type DocumentCategoryType =
+  (typeof DocumentCategory)[keyof typeof DocumentCategory];
 
 // File validation
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
@@ -34,10 +35,9 @@ export const documentUploadSchema = z.object({
     .min(1, 'Document name is required')
     .max(255, 'Document name must be less than 255 characters'),
 
-  category: z.enum(
-    Object.values(DocumentCategory) as [string, ...string[]],
-    { errorMap: () => ({ message: 'Please select a category' }) }
-  ),
+  category: z.enum(Object.values(DocumentCategory) as [string, ...string[]], {
+    errorMap: () => ({ message: 'Please select a category' }),
+  }),
 
   description: z
     .string()
@@ -47,11 +47,11 @@ export const documentUploadSchema = z.object({
   file: z
     .instanceof(File, { message: 'Please select a file' })
     .refine(
-      (file) => file.size <= MAX_FILE_SIZE,
+      file => file.size <= MAX_FILE_SIZE,
       `File size must be less than ${MAX_FILE_SIZE / 1024 / 1024}MB`
     )
     .refine(
-      (file) => ACCEPTED_FILE_TYPES.includes(file.type),
+      file => ACCEPTED_FILE_TYPES.includes(file.type),
       'File type not supported. Please upload PDF, Word, or image files.'
     ),
 
@@ -59,7 +59,7 @@ export const documentUploadSchema = z.object({
     .string()
     .optional()
     .refine(
-      (date) => !date || new Date(date) > new Date(),
+      date => !date || new Date(date) > new Date(),
       'Expiry date must be in the future'
     ),
 
@@ -78,10 +78,9 @@ export const documentUpdateSchema = z.object({
     .min(1, 'Document name is required')
     .max(255, 'Document name must be less than 255 characters'),
 
-  category: z.enum(
-    Object.values(DocumentCategory) as [string, ...string[]],
-    { errorMap: () => ({ message: 'Please select a category' }) }
-  ),
+  category: z.enum(Object.values(DocumentCategory) as [string, ...string[]], {
+    errorMap: () => ({ message: 'Please select a category' }),
+  }),
 
   description: z
     .string()
@@ -92,7 +91,7 @@ export const documentUpdateSchema = z.object({
     .string()
     .optional()
     .refine(
-      (date) => !date || new Date(date) > new Date(),
+      date => !date || new Date(date) > new Date(),
       'Expiry date must be in the future'
     ),
 
@@ -105,43 +104,42 @@ export const documentUpdateSchema = z.object({
 });
 
 // Document search schema
-export const documentSearchSchema = z.object({
-  query: z
-    .string()
-    .max(100, 'Search query must be less than 100 characters')
-    .optional(),
+export const documentSearchSchema = z
+  .object({
+    query: z
+      .string()
+      .max(100, 'Search query must be less than 100 characters')
+      .optional(),
 
-  category: z
-    .enum(Object.values(DocumentCategory) as [string, ...string[]])
-    .optional(),
+    category: z
+      .enum(Object.values(DocumentCategory) as [string, ...string[]])
+      .optional(),
 
-  dateFrom: z.string().optional(),
-  dateTo: z.string().optional(),
+    dateFrom: z.string().optional(),
+    dateTo: z.string().optional(),
 
-  tags: z.array(z.string()).optional(),
+    tags: z.array(z.string()).optional(),
 
-  includeExpired: z.boolean().optional().default(false),
-  includeConfidential: z.boolean().optional().default(true),
-}).refine(
-  (data) => {
-    if (data.dateFrom && data.dateTo) {
-      return new Date(data.dateFrom) <= new Date(data.dateTo);
+    includeExpired: z.boolean().optional().default(false),
+    includeConfidential: z.boolean().optional().default(true),
+  })
+  .refine(
+    data => {
+      if (data.dateFrom && data.dateTo) {
+        return new Date(data.dateFrom) <= new Date(data.dateTo);
+      }
+      return true;
+    },
+    {
+      message: 'Date from must be before date to',
+      path: ['dateTo'],
     }
-    return true;
-  },
-  {
-    message: 'Date from must be before date to',
-    path: ['dateTo'],
-  }
-);
+  );
 
 // OCR request schema
 export const ocrRequestSchema = z.object({
   documentId: z.string().uuid('Invalid document ID'),
-  language: z
-    .enum(['en', 'cs', 'sk', 'de'])
-    .optional()
-    .default('en'),
+  language: z.enum(['en', 'cs', 'sk', 'de']).optional().default('en'),
   enhanceQuality: z.boolean().optional().default(true),
 });
 

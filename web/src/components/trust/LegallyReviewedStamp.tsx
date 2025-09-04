@@ -3,28 +3,30 @@
  * Shows official legal review completion stamp for documents
  */
 
-import { CheckCircle, Shield, Award, Sparkles } from 'lucide-react';
+import { Award, CheckCircle, Shield, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { ProfessionalReview } from '@/types/will';
 
 interface LegallyReviewedStampProps {
-  review: ProfessionalReview;
-  variant?: 'badge' | 'stamp' | 'watermark';
-  size?: 'sm' | 'md' | 'lg';
   className?: string;
+  review: ProfessionalReview;
+  size?: 'lg' | 'md' | 'sm';
+  variant?: 'badge' | 'stamp' | 'watermark';
 }
 
 export function LegallyReviewedStamp({
   review,
   variant = 'stamp',
   size = 'md',
-  className
+  className,
 }: LegallyReviewedStampProps) {
   if (review.status !== 'approved') {
     return null;
   }
 
-  const getCertificationConfig = (level: ProfessionalReview['certification_level']) => {
+  const getCertificationConfig = (
+    level: ProfessionalReview['certification_level']
+  ) => {
     switch (level) {
       case 'legal_certified':
         return {
@@ -77,10 +79,10 @@ export function LegallyReviewedStamp({
           className
         )}
       >
-        <IconComponent className="h-3 w-3" />
+        <IconComponent className='h-3 w-3' />
         {config.label}
         {review.certification_level === 'legal_certified' && (
-          <Sparkles className="h-3 w-3 animate-pulse" />
+          <Sparkles className='h-3 w-3 animate-pulse' />
         )}
       </div>
     );
@@ -104,12 +106,14 @@ export function LegallyReviewedStamp({
             size === 'lg' && 'p-6 text-base'
           )}
         >
-          <IconComponent className={cn(
-            size === 'sm' && 'h-4 w-4',
-            size === 'md' && 'h-6 w-6',
-            size === 'lg' && 'h-8 w-8'
-          )} />
-          <span className="font-bold mt-1">REVIEWED</span>
+          <IconComponent
+            className={cn(
+              size === 'sm' && 'h-4 w-4',
+              size === 'md' && 'h-6 w-6',
+              size === 'lg' && 'h-8 w-8'
+            )}
+          />
+          <span className='font-bold mt-1'>REVIEWED</span>
         </div>
       </div>
     );
@@ -130,86 +134,107 @@ export function LegallyReviewedStamp({
       )}
     >
       {/* Official stamp design */}
-      <div className="flex items-center gap-2 mb-2">
-        <IconComponent className={cn(
-          size === 'sm' && 'h-4 w-4',
-          size === 'md' && 'h-5 w-5',
-          size === 'lg' && 'h-6 w-6'
-        )} />
-        <span className={cn(
-          'font-bold uppercase tracking-wider',
-          size === 'sm' && 'text-xs',
-          size === 'md' && 'text-sm',
-          size === 'lg' && 'text-base'
-        )}>
+      <div className='flex items-center gap-2 mb-2'>
+        <IconComponent
+          className={cn(
+            size === 'sm' && 'h-4 w-4',
+            size === 'md' && 'h-5 w-5',
+            size === 'lg' && 'h-6 w-6'
+          )}
+        />
+        <span
+          className={cn(
+            'font-bold uppercase tracking-wider',
+            size === 'sm' && 'text-xs',
+            size === 'md' && 'text-sm',
+            size === 'lg' && 'text-base'
+          )}
+        >
           {config.label}
         </span>
         {review.certification_level === 'legal_certified' && (
-          <Sparkles className={cn(
-             'animate-pulse text-accent',
-            size === 'sm' && 'h-3 w-3',
-            size === 'md' && 'h-4 w-4',
-            size === 'lg' && 'h-5 w-5'
-          )} />
+          <Sparkles
+            className={cn(
+              'animate-pulse text-accent',
+              size === 'sm' && 'h-3 w-3',
+              size === 'md' && 'h-4 w-4',
+              size === 'lg' && 'h-5 w-5'
+            )}
+          />
         )}
       </div>
 
       {/* Reviewer info */}
-      <div className="text-center">
-        <p className={cn(
-          'font-semibold',
-          size === 'sm' && 'text-xs',
-          size === 'md' && 'text-sm',
-          size === 'lg' && 'text-base'
-        )}>
+      <div className='text-center'>
+        <p
+          className={cn(
+            'font-semibold',
+            size === 'sm' && 'text-xs',
+            size === 'md' && 'text-sm',
+            size === 'lg' && 'text-base'
+          )}
+        >
           {review.reviewer.name}
         </p>
-        <p className={cn(
-          'text-muted-foreground',
-          size === 'sm' && 'text-xs',
-          size === 'md' && 'text-xs',
-          size === 'lg' && 'text-sm'
-        )}>
-          {review.reviewer.credentials}
-        </p>
-        {review.reviewer.specializations && review.reviewer.specializations.length > 0 && (
-          <p className={cn(
-            'text-muted-foreground capitalize',
+        <p
+          className={cn(
+            'text-muted-foreground',
             size === 'sm' && 'text-xs',
             size === 'md' && 'text-xs',
             size === 'lg' && 'text-sm'
-          )}>
-            {review.reviewer.specializations[0]}
-          </p>
-        )}
+          )}
+        >
+          {review.reviewer.credentials}
+        </p>
+        {review.reviewer.specializations &&
+          review.reviewer.specializations.length > 0 && (
+            <p
+              className={cn(
+                'text-muted-foreground capitalize',
+                size === 'sm' && 'text-xs',
+                size === 'md' && 'text-xs',
+                size === 'lg' && 'text-sm'
+              )}
+            >
+              {review.reviewer.specializations[0]}
+            </p>
+          )}
       </div>
 
       {/* Review date */}
-      <div className="mt-2 pt-2 border-t border-dashed border-current">
-        <p className={cn(
-          'text-center text-muted-foreground',
-          size === 'sm' && 'text-xs',
-          size === 'md' && 'text-xs',
-          size === 'lg' && 'text-sm'
-        )}>
-           {review.review_date
+      <div className='mt-2 pt-2 border-t border-dashed border-current'>
+        <p
+          className={cn(
+            'text-center text-muted-foreground',
+            size === 'sm' && 'text-xs',
+            size === 'md' && 'text-xs',
+            size === 'lg' && 'text-sm'
+          )}
+        >
+          {review.review_date
             ? new Date(review.review_date).toLocaleDateString()
             : 'Date not available'}
         </p>
       </div>
 
       {/* Compliance scores */}
-      {(review.legal_compliance_score >= 90 || review.family_protection_score >= 90) && (
-        <div className="absolute -top-2 -right-2">
-          <div className={cn(
-            'flex items-center justify-center rounded-full text-white font-bold',
-            `bg-gradient-to-br ${config.gradient}`,
-            'shadow-lg',
-            size === 'sm' && 'h-6 w-6 text-xs',
-            size === 'md' && 'h-8 w-8 text-sm',
-            size === 'lg' && 'h-10 w-10 text-base'
-          )}>
-            {Math.max(review.legal_compliance_score, review.family_protection_score)}
+      {(review.legal_compliance_score >= 90 ||
+        review.family_protection_score >= 90) && (
+        <div className='absolute -top-2 -right-2'>
+          <div
+            className={cn(
+              'flex items-center justify-center rounded-full text-white font-bold',
+              `bg-gradient-to-br ${config.gradient}`,
+              'shadow-lg',
+              size === 'sm' && 'h-6 w-6 text-xs',
+              size === 'md' && 'h-8 w-8 text-sm',
+              size === 'lg' && 'h-10 w-10 text-base'
+            )}
+          >
+            {Math.max(
+              review.legal_compliance_score,
+              review.family_protection_score
+            )}
           </div>
         </div>
       )}

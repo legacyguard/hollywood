@@ -1,25 +1,25 @@
 export interface ActivityItem {
-  id: string;
-  type: 'document' | 'family' | 'guardian' | 'will' | 'security' | 'system';
   action: string;
+  color?: 'danger' | 'info' | 'primary' | 'success' | 'warning';
   description: string;
-  timestamp: Date;
   icon?: string;
-  color?: 'primary' | 'success' | 'warning' | 'danger' | 'info';
+  id: string;
   metadata?: Record<string, unknown>;
+  timestamp: Date;
+  type: 'document' | 'family' | 'guardian' | 'security' | 'system' | 'will';
   user?: {
-    name: string;
     avatar?: string;
+    name: string;
   };
 }
 
 export interface ActivityFeedProps {
   activities: ActivityItem[];
-  title?: string;
-  showViewAll?: boolean;
-  onViewAll?: () => void;
-  maxHeight?: string;
-  loading?: boolean;
-  emptyMessage?: string;
   className?: string;
+  emptyMessage?: string;
+  loading?: boolean;
+  maxHeight?: string;
+  onViewAll?: () => void;
+  showViewAll?: boolean;
+  title?: string;
 }

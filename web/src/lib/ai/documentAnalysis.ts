@@ -4,250 +4,250 @@
  */
 
 export interface DocumentAnalysis {
-  id: string;
-  documentId: string;
-  analysisType: AnalysisType[];
-  results: AnalysisResult;
-  confidence: number; // 0-1
   analysisDate: string;
+  analysisType: AnalysisType[];
+  confidence: number; // 0-1
+  documentId: string;
+  id: string;
   lastUpdated: string;
+  results: AnalysisResult;
   version: number;
 }
 
 export interface AnalysisResult {
   classification: DocumentClassification;
+  compliance: ComplianceCheck[];
   extraction: DataExtraction;
   insights: DocumentInsights;
   recommendations: Recommendation[];
   risks: RiskAssessment[];
-  compliance: ComplianceCheck[];
 }
 
 export interface DocumentClassification {
   category: DocumentCategory;
-  subcategory: string;
-  documentType: string;
-  importance: 'critical' | 'high' | 'medium' | 'low';
-  urgency: 'immediate' | 'soon' | 'moderate' | 'low';
-  sensitivity: 'public' | 'internal' | 'confidential' | 'restricted';
-  tags: string[];
   confidence: number;
+  documentType: string;
+  importance: 'critical' | 'high' | 'low' | 'medium';
+  sensitivity: 'confidential' | 'internal' | 'public' | 'restricted';
+  subcategory: string;
+  tags: string[];
+  urgency: 'immediate' | 'low' | 'moderate' | 'soon';
 }
 
 export interface DataExtraction {
-  entities: ExtractedEntity[];
-  dates: ImportantDate[];
-  amounts: MonetaryAmount[];
   addresses: Address[];
+  amounts: MonetaryAmount[];
   contacts: ContactInfo[];
-  relationships: EntityRelationship[];
+  dates: ImportantDate[];
+  entities: ExtractedEntity[];
   keyTerms: KeyTerm[];
+  relationships: EntityRelationship[];
 }
 
 export interface DocumentInsights {
-  summary: string;
-  keyPoints: string[];
   actionItems: ActionItem[];
+  estimatedValue?: number;
   expirationWarnings: ExpirationWarning[];
+  keyPoints: string[];
+  legalImplications?: string[];
   missingInfo: string[];
   relatedDocuments: string[];
-  estimatedValue?: number;
-  legalImplications?: string[];
+  summary: string;
 }
 
 export interface Recommendation {
-  id: string;
-  type: RecommendationType;
-  priority: 'high' | 'medium' | 'low';
-  title: string;
-  description: string;
   actionRequired: boolean;
-  suggestedActions: SuggestedAction[];
+  category: 'family' | 'financial' | 'legal' | 'organization' | 'security';
   deadline?: string;
-  impact: 'high' | 'medium' | 'low';
-  category: 'security' | 'legal' | 'financial' | 'organization' | 'family';
+  description: string;
+  id: string;
+  impact: 'high' | 'low' | 'medium';
+  priority: 'high' | 'low' | 'medium';
+  suggestedActions: SuggestedAction[];
+  title: string;
+  type: RecommendationType;
 }
 
 export interface RiskAssessment {
+  deadline?: string;
   id: string;
-  riskType: RiskType;
-  severity: 'critical' | 'high' | 'medium' | 'low';
-  probability: number; // 0-1
   impact: string;
   mitigation: string[];
-  deadline?: string;
-  status: 'active' | 'mitigated' | 'accepted';
+  probability: number; // 0-1
+  riskType: RiskType;
+  severity: 'critical' | 'high' | 'low' | 'medium';
+  status: 'accepted' | 'active' | 'mitigated';
 }
 
 export interface ComplianceCheck {
-  id: string;
-  regulation: string;
-  jurisdiction: string;
-  status: 'compliant' | 'non-compliant' | 'unknown' | 'pending';
-  requirements: string[];
-  gaps: string[];
-  recommendedActions: string[];
   deadline?: string;
+  gaps: string[];
+  id: string;
+  jurisdiction: string;
+  recommendedActions: string[];
+  regulation: string;
+  requirements: string[];
+  status: 'compliant' | 'non-compliant' | 'pending' | 'unknown';
 }
 
 export type AnalysisType =
   | 'classification'
+  | 'compliance'
   | 'extraction'
   | 'insights'
-  | 'compliance'
-  | 'risk'
-  | 'recommendations';
+  | 'recommendations'
+  | 'risk';
 
 export type DocumentCategory =
-  | 'legal'
-  | 'financial'
-  | 'insurance'
-  | 'medical'
-  | 'property'
-  | 'personal'
   | 'business'
-  | 'tax'
+  | 'education'
   | 'estate'
   | 'family'
+  | 'financial'
   | 'government'
-  | 'education'
-  | 'other';
+  | 'insurance'
+  | 'legal'
+  | 'medical'
+  | 'other'
+  | 'personal'
+  | 'property'
+  | 'tax';
 
 export type RecommendationType =
-  | 'update_required'
-  | 'renewal_needed'
   | 'backup_suggested'
-  | 'share_with_family'
+  | 'compliance_action'
   | 'legal_review'
   | 'organization'
+  | 'renewal_needed'
   | 'security_improvement'
-  | 'compliance_action';
+  | 'share_with_family'
+  | 'update_required';
 
 export type RiskType =
+  | 'asset_protection'
   | 'expiration'
-  | 'legal_compliance'
-  | 'financial_loss'
-  | 'security_breach'
   | 'family_access'
-  | 'tax_implications'
+  | 'financial_loss'
   | 'insurance_gap'
-  | 'asset_protection';
+  | 'legal_compliance'
+  | 'security_breach'
+  | 'tax_implications';
 
 export interface ExtractedEntity {
-  type: EntityType;
-  value: string;
   confidence: number;
   context: string;
   normalizedValue?: string;
+  type: EntityType;
+  value: string;
 }
 
 export interface ImportantDate {
-  type: DateType;
   date: string;
   description: string;
-  importance: 'critical' | 'high' | 'medium' | 'low';
+  importance: 'critical' | 'high' | 'low' | 'medium';
   reminderSet: boolean;
+  type: DateType;
 }
 
 export interface MonetaryAmount {
   amount: number;
-  currency: string;
-  type: 'value' | 'premium' | 'benefit' | 'debt' | 'income' | 'expense';
-  description: string;
   confidence: number;
+  currency: string;
+  description: string;
+  type: 'benefit' | 'debt' | 'expense' | 'income' | 'premium' | 'value';
 }
 
 export interface Address {
-  type: 'home' | 'business' | 'property' | 'mailing' | 'other';
-  fullAddress: string;
   components: {
-    street?: string;
     city?: string;
-    state?: string;
-    zipCode?: string;
     country?: string;
+    state?: string;
+    street?: string;
+    zipCode?: string;
   };
   confidence: number;
+  fullAddress: string;
+  type: 'business' | 'home' | 'mailing' | 'other' | 'property';
 }
 
 export interface ContactInfo {
-  type: 'person' | 'organization' | 'professional';
-  name: string;
-  role?: string;
-  email?: string;
-  phone?: string;
   address?: string;
-  relationship?: string;
   confidence: number;
+  email?: string;
+  name: string;
+  phone?: string;
+  relationship?: string;
+  role?: string;
+  type: 'organization' | 'person' | 'professional';
 }
 
 export interface EntityRelationship {
+  confidence: number;
+  context: string;
   entity1: string;
   entity2: string;
   relationshipType: string;
-  confidence: number;
-  context: string;
 }
 
 export interface KeyTerm {
-  term: string;
-  importance: number;
   category: string;
   definition?: string;
   frequency: number;
+  importance: number;
+  term: string;
 }
 
 export interface ActionItem {
-  id: string;
-  description: string;
-  priority: 'high' | 'medium' | 'low';
-  category: string;
-  deadline?: string;
   assignedTo?: string;
+  category: string;
   completed: boolean;
+  deadline?: string;
+  description: string;
+  id: string;
+  priority: 'high' | 'low' | 'medium';
 }
 
 export interface ExpirationWarning {
-  type: string;
-  item: string;
-  expirationDate: string;
   daysUntilExpiration: number;
-  severity: 'critical' | 'warning' | 'info';
+  expirationDate: string;
+  item: string;
   renewalProcess?: string[];
+  severity: 'critical' | 'info' | 'warning';
+  type: string;
 }
 
 export interface SuggestedAction {
   action: string;
   description: string;
-  priority: number;
   estimatedTime?: string;
+  priority: number;
   resources?: string[];
 }
 
 export type EntityType =
-  | 'person'
-  | 'organization'
-  | 'location'
-  | 'date'
-  | 'money'
-  | 'policy_number'
   | 'account_number'
-  | 'social_security'
-  | 'tax_id'
+  | 'date'
   | 'license'
-  | 'property_id';
+  | 'location'
+  | 'money'
+  | 'organization'
+  | 'person'
+  | 'policy_number'
+  | 'property_id'
+  | 'social_security'
+  | 'tax_id';
 
 export type DateType =
-  | 'expiration'
-  | 'renewal'
+  | 'anniversary'
   | 'birth'
-  | 'death'
-  | 'marriage'
-  | 'effective'
   | 'created'
-  | 'modified'
   | 'deadline'
-  | 'anniversary';
+  | 'death'
+  | 'effective'
+  | 'expiration'
+  | 'marriage'
+  | 'modified'
+  | 'renewal';
 
 class DocumentAnalysisService {
   private readonly API_ENDPOINT = '/api/ai/analyze';
@@ -259,16 +259,24 @@ class DocumentAnalysisService {
    */
   async analyzeDocument(
     documentId: string,
-    content: string | ArrayBuffer,
+    content: ArrayBuffer | string,
     metadata: Record<string, any> = {},
-    analysisTypes: AnalysisType[] = ['classification', 'extraction', 'insights', 'recommendations']
+    analysisTypes: AnalysisType[] = [
+      'classification',
+      'extraction',
+      'insights',
+      'recommendations',
+    ]
   ): Promise<DocumentAnalysis> {
     try {
       // Prepare content for analysis
       let textContent: string;
 
       if (content instanceof ArrayBuffer) {
-        textContent = await this.extractTextFromBuffer(content, metadata.mimeType);
+        textContent = await this.extractTextFromBuffer(
+          content,
+          metadata.mimeType
+        );
       } else {
         textContent = content;
       }
@@ -278,7 +286,10 @@ class DocumentAnalysisService {
         classification: await this.classifyDocument(textContent, metadata),
         extraction: await this.extractData(textContent),
         insights: await this.generateInsights(textContent, metadata),
-        recommendations: await this.generateRecommendations(textContent, metadata),
+        recommendations: await this.generateRecommendations(
+          textContent,
+          metadata
+        ),
         risks: await this.assessRisks(textContent, metadata),
         compliance: await this.checkCompliance(textContent, metadata),
       };
@@ -310,19 +321,22 @@ class DocumentAnalysisService {
   /**
    * Classify document into categories
    */
-  private async classifyDocument(content: string, metadata: Record<string, any>): Promise<DocumentClassification> {
+  private async classifyDocument(
+    content: string,
+    metadata: Record<string, any>
+  ): Promise<DocumentClassification> {
     // AI-powered classification logic
     const classification = await this.performClassification(content, metadata);
 
     return {
-      category: classification.category || 'other',
-      subcategory: classification.subcategory || 'general',
-      documentType: classification.documentType || 'document',
+      category: (classification as any).category || 'other',
+      subcategory: (classification as any).subcategory || 'general',
+      documentType: (classification as any).documentType || 'document',
       importance: await this.determineImportance(content, classification),
       urgency: await this.determineUrgency(content, classification),
       sensitivity: await this.determineSensitivity(content, classification),
       tags: this.generateTags(content, classification),
-      confidence: classification.confidence || 0.7,
+      confidence: (classification as any).confidence || 0.7,
     };
   }
 
@@ -346,7 +360,10 @@ class DocumentAnalysisService {
   /**
    * Generate document insights
    */
-  private async generateInsights(content: string, metadata: Record<string, any>): Promise<DocumentInsights> {
+  private async generateInsights(
+    content: string,
+    metadata: Record<string, any>
+  ): Promise<DocumentInsights> {
     const summary = await this.generateSummary(content);
     const keyPoints = await this.extractKeyPoints(content);
     const actionItems = await this.identifyActionItems(content);
@@ -369,7 +386,10 @@ class DocumentAnalysisService {
   /**
    * Generate recommendations for document management
    */
-  private async generateRecommendations(content: string, metadata: Record<string, any>): Promise<Recommendation[]> {
+  private async generateRecommendations(
+    content: string,
+    metadata: Record<string, any>
+  ): Promise<Recommendation[]> {
     const recommendations: Recommendation[] = [];
 
     // Check for common recommendation patterns
@@ -401,7 +421,10 @@ class DocumentAnalysisService {
   /**
    * Assess document-related risks
    */
-  private async assessRisks(content: string, metadata: Record<string, any>): Promise<RiskAssessment[]> {
+  private async assessRisks(
+    content: string,
+    metadata: Record<string, any>
+  ): Promise<RiskAssessment[]> {
     const risks: RiskAssessment[] = [];
 
     // Check various risk types
@@ -427,13 +450,22 @@ class DocumentAnalysisService {
   /**
    * Check compliance with regulations
    */
-  private async checkCompliance(content: string, _metadata: Record<string, unknown>): Promise<ComplianceCheck[]> {
+  private async checkCompliance(
+    content: string,
+    _metadata: Record<string, unknown>
+  ): Promise<ComplianceCheck[]> {
     const checks: ComplianceCheck[] = [];
 
     // Common compliance frameworks
     const frameworks = [
-      'GDPR', 'CCPA', 'HIPAA', 'SOX', 'PCI-DSS',
-      'Estate Planning Laws', 'Tax Regulations', 'Insurance Requirements'
+      'GDPR',
+      'CCPA',
+      'HIPAA',
+      'SOX',
+      'PCI-DSS',
+      'Estate Planning Laws',
+      'Tax Regulations',
+      'Insurance Requirements',
     ];
 
     for (const framework of frameworks) {
@@ -449,7 +481,10 @@ class DocumentAnalysisService {
   /**
    * Extract text content from various file formats
    */
-  private async extractTextFromBuffer(buffer: ArrayBuffer, mimeType?: string): Promise<string> {
+  private async extractTextFromBuffer(
+    buffer: ArrayBuffer,
+    mimeType?: string
+  ): Promise<string> {
     // This would integrate with OCR and document parsing libraries
     // For now, return a placeholder implementation
 
@@ -479,11 +514,18 @@ class DocumentAnalysisService {
   /**
    * Mock AI analysis methods (in production, these would call actual AI services)
    */
-  private async performClassification(content: string, _metadata: Record<string, unknown>): Promise<unknown> {
+  private async performClassification(
+    content: string,
+    _metadata: Record<string, unknown>
+  ): Promise<unknown> {
     // Mock classification based on keywords and patterns
     const keywords = content.toLowerCase();
 
-    if (keywords.includes('will') || keywords.includes('testament') || keywords.includes('estate')) {
+    if (
+      keywords.includes('will') ||
+      keywords.includes('testament') ||
+      keywords.includes('estate')
+    ) {
       return {
         category: 'legal',
         subcategory: 'estate_planning',
@@ -492,7 +534,11 @@ class DocumentAnalysisService {
       };
     }
 
-    if (keywords.includes('insurance') || keywords.includes('policy') || keywords.includes('premium')) {
+    if (
+      keywords.includes('insurance') ||
+      keywords.includes('policy') ||
+      keywords.includes('premium')
+    ) {
       return {
         category: 'insurance',
         subcategory: 'policy',
@@ -501,7 +547,11 @@ class DocumentAnalysisService {
       };
     }
 
-    if (keywords.includes('tax') || keywords.includes('1040') || keywords.includes('irs')) {
+    if (
+      keywords.includes('tax') ||
+      keywords.includes('1040') ||
+      keywords.includes('irs')
+    ) {
       return {
         category: 'tax',
         subcategory: 'filing',
@@ -612,7 +662,8 @@ class DocumentAnalysisService {
     const contacts: ContactInfo[] = [];
 
     // Extract emails and associate with nearby names
-    const emails = content.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g) || [];
+    const emails =
+      content.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g) || [];
     for (const email of emails) {
       const _context = this.getContext(content, email);
       const name = this.extractNameNearEmail(content, email);
@@ -628,7 +679,9 @@ class DocumentAnalysisService {
     return contacts;
   }
 
-  private async extractRelationships(_content: string): Promise<EntityRelationship[]> {
+  private async extractRelationships(
+    _content: string
+  ): Promise<EntityRelationship[]> {
     // This would use NLP to identify relationships between entities
     // For now, return empty array
     return [];
@@ -666,12 +719,19 @@ class DocumentAnalysisService {
     return crypto.randomUUID();
   }
 
-  private getContext(content: string, term: string, contextLength = 100): string {
+  private getContext(
+    content: string,
+    term: string,
+    contextLength = 100
+  ): string {
     const index = content.indexOf(term);
     if (index === -1) return '';
 
     const start = Math.max(0, index - contextLength / 2);
-    const end = Math.min(content.length, index + term.length + contextLength / 2);
+    const end = Math.min(
+      content.length,
+      index + term.length + contextLength / 2
+    );
 
     return content.substring(start, end);
   }
@@ -690,7 +750,8 @@ class DocumentAnalysisService {
   private determineDateType(context: string): DateType {
     const lowerContext = context.toLowerCase();
 
-    if (lowerContext.includes('expire') || lowerContext.includes('expiry')) return 'expiration';
+    if (lowerContext.includes('expire') || lowerContext.includes('expiry'))
+      return 'expiration';
     if (lowerContext.includes('renew')) return 'renewal';
     if (lowerContext.includes('birth')) return 'birth';
     if (lowerContext.includes('death')) return 'death';
@@ -700,7 +761,10 @@ class DocumentAnalysisService {
     return 'other' as DateType;
   }
 
-  private determineDateImportance(type: DateType, _context: string): 'critical' | 'high' | 'medium' | 'low' {
+  private determineDateImportance(
+    type: DateType,
+    _context: string
+  ): 'critical' | 'high' | 'low' | 'medium' {
     switch (type) {
       case 'expiration':
       case 'deadline':
@@ -739,25 +803,47 @@ class DocumentAnalysisService {
     };
   }
 
-  private extractNameNearEmail(content: string, email: string): string | null {
+  private extractNameNearEmail(content: string, email: string): null | string {
     const emailIndex = content.indexOf(email);
-    const beforeEmail = content.substring(Math.max(0, emailIndex - 50), emailIndex);
+    const beforeEmail = content.substring(
+      Math.max(0, emailIndex - 50),
+      emailIndex
+    );
     const nameMatch = beforeEmail.match(/\b[A-Z][a-z]+ [A-Z][a-z]+\b$/);
 
     return nameMatch ? nameMatch[0] : null;
   }
 
   private isStopWord(word: string): boolean {
-    const stopWords = ['the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by'];
+    const stopWords = [
+      'the',
+      'and',
+      'or',
+      'but',
+      'in',
+      'on',
+      'at',
+      'to',
+      'for',
+      'of',
+      'with',
+      'by',
+    ];
     return stopWords.includes(word);
   }
 
   private categorizeKeyTerm(term: string): string {
     // Simple term categorization based on common patterns
-    if (['insurance', 'policy', 'premium', 'coverage'].some(w => term.includes(w))) return 'insurance';
-    if (['legal', 'law', 'attorney', 'court'].some(w => term.includes(w))) return 'legal';
-    if (['financial', 'money', 'account', 'bank'].some(w => term.includes(w))) return 'financial';
-    if (['medical', 'health', 'doctor', 'hospital'].some(w => term.includes(w))) return 'medical';
+    if (
+      ['insurance', 'policy', 'premium', 'coverage'].some(w => term.includes(w))
+    )
+      return 'insurance';
+    if (['legal', 'law', 'attorney', 'court'].some(w => term.includes(w)))
+      return 'legal';
+    if (['financial', 'money', 'account', 'bank'].some(w => term.includes(w)))
+      return 'financial';
+    if (['medical', 'health', 'doctor', 'hospital'].some(w => term.includes(w)))
+      return 'medical';
 
     return 'general';
   }
@@ -765,7 +851,8 @@ class DocumentAnalysisService {
   private calculateOverallConfidence(results: AnalysisResult): number {
     const confidences = [
       results.classification.confidence,
-      results.extraction.entities.reduce((sum, e) => sum + e.confidence, 0) / Math.max(results.extraction.entities.length, 1),
+      results.extraction.entities.reduce((sum, e) => sum + e.confidence, 0) /
+        Math.max(results.extraction.entities.length, 1),
       0.8, // Default confidence for insights
       0.7, // Default confidence for recommendations
     ];
@@ -774,21 +861,36 @@ class DocumentAnalysisService {
   }
 
   // Placeholder methods for various AI operations
-  private async determineImportance(content: string, classification: any): Promise<'critical' | 'high' | 'medium' | 'low'> {
-    if (classification.category === 'legal' && content.includes('will')) return 'critical';
+  private async determineImportance(
+    content: string,
+    classification: any
+  ): Promise<'critical' | 'high' | 'low' | 'medium'> {
+    if (classification.category === 'legal' && content.includes('will'))
+      return 'critical';
     if (classification.category === 'insurance') return 'high';
     if (classification.category === 'financial') return 'high';
     return 'medium';
   }
 
-  private async determineUrgency(content: string, classification: any): Promise<'immediate' | 'soon' | 'moderate' | 'low'> {
-    if (content.includes('expire') && content.includes('days')) return 'immediate';
+  private async determineUrgency(
+    content: string,
+    classification: any
+  ): Promise<'immediate' | 'low' | 'moderate' | 'soon'> {
+    if (content.includes('expire') && content.includes('days'))
+      return 'immediate';
     if (classification.category === 'legal') return 'moderate';
     return 'low';
   }
 
-  private async determineSensitivity(content: string, classification: any): Promise<'public' | 'internal' | 'confidential' | 'restricted'> {
-    if (classification.category === 'legal' || classification.category === 'financial') return 'confidential';
+  private async determineSensitivity(
+    content: string,
+    classification: any
+  ): Promise<'confidential' | 'internal' | 'public' | 'restricted'> {
+    if (
+      classification.category === 'legal' ||
+      classification.category === 'financial'
+    )
+      return 'confidential';
     if (classification.category === 'medical') return 'restricted';
     if (classification.category === 'personal') return 'internal';
     return 'public';
@@ -816,9 +918,14 @@ class DocumentAnalysisService {
     const sentences = content.split('.').filter(s => s.trim().length > 10);
     const keyPoints = sentences.filter(s => {
       const lower = s.toLowerCase();
-      return lower.includes('important') || lower.includes('amount') ||
-             lower.includes('date') || lower.includes('expires') ||
-             lower.includes('beneficiary') || lower.includes('coverage');
+      return (
+        lower.includes('important') ||
+        lower.includes('amount') ||
+        lower.includes('date') ||
+        lower.includes('expires') ||
+        lower.includes('beneficiary') ||
+        lower.includes('coverage')
+      );
     });
 
     return keyPoints.slice(0, 5).map(s => s.trim());
@@ -826,7 +933,14 @@ class DocumentAnalysisService {
 
   private async identifyActionItems(content: string): Promise<ActionItem[]> {
     const actionItems: ActionItem[] = [];
-    const actionWords = ['renew', 'update', 'contact', 'review', 'sign', 'submit'];
+    const actionWords = [
+      'renew',
+      'update',
+      'contact',
+      'review',
+      'sign',
+      'submit',
+    ];
     const sentences = content.split('.').filter(s => s.trim().length > 10);
 
     for (const sentence of sentences) {
@@ -844,7 +958,9 @@ class DocumentAnalysisService {
     return actionItems.slice(0, 5);
   }
 
-  private async checkExpirations(content: string): Promise<ExpirationWarning[]> {
+  private async checkExpirations(
+    content: string
+  ): Promise<ExpirationWarning[]> {
     const warnings: ExpirationWarning[] = [];
     const datePattern = /\d{1,2}\/\d{1,2}\/\d{4}/g;
     const dates = content.match(datePattern) || [];
@@ -854,7 +970,9 @@ class DocumentAnalysisService {
       if (context.toLowerCase().includes('expire')) {
         const expirationDate = new Date(date);
         const today = new Date();
-        const daysUntil = Math.floor((expirationDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+        const daysUntil = Math.floor(
+          (expirationDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
+        );
 
         if (daysUntil >= 0 && daysUntil <= 90) {
           warnings.push({
@@ -862,7 +980,12 @@ class DocumentAnalysisService {
             item: context.substring(0, 50),
             expirationDate: date,
             daysUntilExpiration: daysUntil,
-            severity: daysUntil <= 30 ? 'critical' : daysUntil <= 60 ? 'warning' : 'info',
+            severity:
+              daysUntil <= 30
+                ? 'critical'
+                : daysUntil <= 60
+                  ? 'warning'
+                  : 'info',
           });
         }
       }
@@ -871,7 +994,10 @@ class DocumentAnalysisService {
     return warnings;
   }
 
-  private async identifyMissingInfo(content: string, _metadata: Record<string, unknown>): Promise<string[]> {
+  private async identifyMissingInfo(
+    content: string,
+    _metadata: Record<string, unknown>
+  ): Promise<string[]> {
     const missing: string[] = [];
 
     // Check for common missing information patterns
@@ -890,28 +1016,44 @@ class DocumentAnalysisService {
     return missing;
   }
 
-  private async findRelatedDocuments(_content: string, _metadata: Record<string, unknown>): Promise<string[]> {
+  private async findRelatedDocuments(
+    _content: string,
+    _metadata: Record<string, unknown>
+  ): Promise<string[]> {
     // This would search for documents with similar content or keywords
     // For now, return empty array
     return [];
   }
 
-  private async estimateDocumentValue(content: string): Promise<number | undefined> {
+  private async estimateDocumentValue(
+    content: string
+  ): Promise<number | undefined> {
     const amounts = content.match(/\$[\d,]+\.?\d*/g) || [];
     if (amounts.length === 0) return undefined;
 
     // Find the largest monetary amount as estimated value
-    const values = amounts.map(amount => parseFloat(amount.replace(/[$,]/g, '')));
+    const values = amounts.map(amount =>
+      parseFloat(amount.replace(/[$,]/g, ''))
+    );
     return Math.max(...values);
   }
 
   private async identifyLegalImplications(content: string): Promise<string[]> {
     const implications: string[] = [];
-    const legalKeywords = ['contract', 'agreement', 'obligation', 'liability', 'rights', 'terms'];
+    const legalKeywords = [
+      'contract',
+      'agreement',
+      'obligation',
+      'liability',
+      'rights',
+      'terms',
+    ];
 
     for (const keyword of legalKeywords) {
       if (content.toLowerCase().includes(keyword)) {
-        implications.push(`Document contains ${keyword} that may have legal implications`);
+        implications.push(
+          `Document contains ${keyword} that may have legal implications`
+        );
       }
     }
 
@@ -919,26 +1061,92 @@ class DocumentAnalysisService {
   }
 
   // Placeholder implementations for recommendation patterns
-  private async checkUpdateRequirements(_content: string): Promise<Recommendation[]> { return []; }
-  private async checkRenewalNeeds(_content: string): Promise<Recommendation[]> { return []; }
-  private async checkBackupSuggestions(_content: string, _metadata: any): Promise<Recommendation[]> { return []; }
-  private async checkFamilySharingOpportunities(_content: string): Promise<Recommendation[]> { return []; }
-  private async checkLegalReviewNeeds(_content: string): Promise<Recommendation[]> { return []; }
-  private async checkOrganizationImprovements(_content: string): Promise<Recommendation[]> { return []; }
-  private async checkSecurityImprovements(_content: string, _metadata: any): Promise<Recommendation[]> { return []; }
-  private async checkComplianceActions(_content: string): Promise<Recommendation[]> { return []; }
+  private async checkUpdateRequirements(
+    _content: string
+  ): Promise<Recommendation[]> {
+    return [];
+  }
+  private async checkRenewalNeeds(_content: string): Promise<Recommendation[]> {
+    return [];
+  }
+  private async checkBackupSuggestions(
+    _content: string,
+    _metadata: any
+  ): Promise<Recommendation[]> {
+    return [];
+  }
+  private async checkFamilySharingOpportunities(
+    _content: string
+  ): Promise<Recommendation[]> {
+    return [];
+  }
+  private async checkLegalReviewNeeds(
+    _content: string
+  ): Promise<Recommendation[]> {
+    return [];
+  }
+  private async checkOrganizationImprovements(
+    _content: string
+  ): Promise<Recommendation[]> {
+    return [];
+  }
+  private async checkSecurityImprovements(
+    _content: string,
+    _metadata: any
+  ): Promise<Recommendation[]> {
+    return [];
+  }
+  private async checkComplianceActions(
+    _content: string
+  ): Promise<Recommendation[]> {
+    return [];
+  }
 
   // Placeholder implementations for risk assessments
-  private async checkExpirationRisks(_content: string): Promise<RiskAssessment[]> { return []; }
-  private async checkComplianceRisks(_content: string): Promise<RiskAssessment[]> { return []; }
-  private async checkFinancialRisks(_content: string): Promise<RiskAssessment[]> { return []; }
-  private async checkSecurityRisks(_content: string, _metadata: any): Promise<RiskAssessment[]> { return []; }
-  private async checkFamilyAccessRisks(_content: string): Promise<RiskAssessment[]> { return []; }
-  private async checkTaxRisks(_content: string): Promise<RiskAssessment[]> { return []; }
-  private async checkInsuranceRisks(_content: string): Promise<RiskAssessment[]> { return []; }
-  private async checkAssetProtectionRisks(_content: string): Promise<RiskAssessment[]> { return []; }
+  private async checkExpirationRisks(
+    _content: string
+  ): Promise<RiskAssessment[]> {
+    return [];
+  }
+  private async checkComplianceRisks(
+    _content: string
+  ): Promise<RiskAssessment[]> {
+    return [];
+  }
+  private async checkFinancialRisks(
+    _content: string
+  ): Promise<RiskAssessment[]> {
+    return [];
+  }
+  private async checkSecurityRisks(
+    _content: string,
+    _metadata: any
+  ): Promise<RiskAssessment[]> {
+    return [];
+  }
+  private async checkFamilyAccessRisks(
+    _content: string
+  ): Promise<RiskAssessment[]> {
+    return [];
+  }
+  private async checkTaxRisks(_content: string): Promise<RiskAssessment[]> {
+    return [];
+  }
+  private async checkInsuranceRisks(
+    _content: string
+  ): Promise<RiskAssessment[]> {
+    return [];
+  }
+  private async checkAssetProtectionRisks(
+    _content: string
+  ): Promise<RiskAssessment[]> {
+    return [];
+  }
 
-  private async performComplianceCheck(content: string, framework: string): Promise<ComplianceCheck | null> {
+  private async performComplianceCheck(
+    content: string,
+    framework: string
+  ): Promise<ComplianceCheck | null> {
     // Mock compliance check - in production would use specialized compliance engines
     if (content.toLowerCase().includes(framework.toLowerCase())) {
       return {

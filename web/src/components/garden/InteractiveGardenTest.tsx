@@ -6,7 +6,13 @@
 import React, { useState } from 'react';
 import { LegacyGardenVisualization } from './LegacyGardenVisualization';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
 interface InteractiveGardenTestProps {
@@ -14,7 +20,7 @@ interface InteractiveGardenTestProps {
 }
 
 export const InteractiveGardenTest: React.FC<InteractiveGardenTestProps> = ({
-  className = ''
+  className = '',
 }) => {
   // Test state
   const [documentsCount, setDocumentsCount] = useState(2);
@@ -22,9 +28,15 @@ export const InteractiveGardenTest: React.FC<InteractiveGardenTestProps> = ({
   const [emergencyContactsCount, setEmergencyContactsCount] = useState(1);
   const [willCompleted, setWillCompleted] = useState(false);
   const [trustScore, setTrustScore] = useState(45);
-  const [achievedMilestones, setAchievedMilestones] = useState<string[]>(['first_document', 'family_added']);
-  const [recentlyCompletedMilestones, setRecentlyCompletedMilestones] = useState<string[]>([]);
-  const [personalityMode, setPersonalityMode] = useState<'empathetic' | 'pragmatic' | 'adaptive'>('adaptive');
+  const [achievedMilestones, setAchievedMilestones] = useState<string[]>([
+    'first_document',
+    'family_added',
+  ]);
+  const [recentlyCompletedMilestones, setRecentlyCompletedMilestones] =
+    useState<string[]>([]);
+  const [personalityMode, setPersonalityMode] = useState<
+    'adaptive' | 'empathetic' | 'pragmatic'
+  >('adaptive');
 
   // Test actions
   const addDocument = () => {
@@ -86,33 +98,38 @@ export const InteractiveGardenTest: React.FC<InteractiveGardenTestProps> = ({
         </CardHeader>
         <CardContent>
           {/* Controls */}
-          <div className="space-y-4 mb-6">
-            <div className="flex flex-wrap gap-2">
-              <Button onClick={addDocument} variant="outline" size="sm">
+          <div className='space-y-4 mb-6'>
+            <div className='flex flex-wrap gap-2'>
+              <Button onClick={addDocument} variant='outline' size='sm'>
                 Add Document ({documentsCount})
               </Button>
-              <Button onClick={addFamilyMember} variant="outline" size="sm">
+              <Button onClick={addFamilyMember} variant='outline' size='sm'>
                 Add Family Member ({familyMembersCount})
               </Button>
-              <Button onClick={completeWill} variant="outline" size="sm" disabled={willCompleted}>
+              <Button
+                onClick={completeWill}
+                variant='outline'
+                size='sm'
+                disabled={willCompleted}
+              >
                 {willCompleted ? 'Will Completed ✓' : 'Complete Will'}
               </Button>
-              <Button onClick={triggerCelebration} variant="outline" size="sm">
+              <Button onClick={triggerCelebration} variant='outline' size='sm'>
                 Test Celebration
               </Button>
-              <Button onClick={resetGarden} variant="destructive" size="sm">
+              <Button onClick={resetGarden} variant='destructive' size='sm'>
                 Reset Garden
               </Button>
             </div>
 
             {/* Personality Mode Toggle */}
-            <div className="flex gap-2 items-center">
-              <span className="text-sm font-medium">Personality:</span>
+            <div className='flex gap-2 items-center'>
+              <span className='text-sm font-medium'>Personality:</span>
               {(['empathetic', 'pragmatic', 'adaptive'] as const).map(mode => (
                 <Badge
                   key={mode}
                   variant={personalityMode === mode ? 'default' : 'secondary'}
-                  className="cursor-pointer hover:bg-opacity-80 transition-colors"
+                  className='cursor-pointer hover:bg-opacity-80 transition-colors'
                   onClick={() => setPersonalityMode(mode)}
                 >
                   {mode}
@@ -121,11 +138,14 @@ export const InteractiveGardenTest: React.FC<InteractiveGardenTestProps> = ({
             </div>
 
             {/* Status Display */}
-            <div className="text-sm text-gray-600 space-y-1">
-              <p>Documents: {documentsCount} | Family: {familyMembersCount} | Trust Score: {trustScore}</p>
+            <div className='text-sm text-gray-600 space-y-1'>
+              <p>
+                Documents: {documentsCount} | Family: {familyMembersCount} |
+                Trust Score: {trustScore}
+              </p>
               <p>Milestones: {achievedMilestones.length} achieved</p>
               {recentlyCompletedMilestones.length > 0 && (
-                <p className="text-green-600 font-medium">
+                <p className='text-green-600 font-medium'>
                   🎉 Recent: {recentlyCompletedMilestones.join(', ')}
                 </p>
               )}
@@ -133,7 +153,7 @@ export const InteractiveGardenTest: React.FC<InteractiveGardenTestProps> = ({
           </div>
 
           {/* Interactive Garden */}
-          <div className="border rounded-lg bg-gradient-to-b from-sky-50 to-green-50 p-4">
+          <div className='border rounded-lg bg-gradient-to-b from-sky-50 to-green-50 p-4'>
             <LegacyGardenVisualization
               documentsCount={documentsCount}
               familyMembersCount={familyMembersCount}
@@ -142,14 +162,14 @@ export const InteractiveGardenTest: React.FC<InteractiveGardenTestProps> = ({
               trustScore={trustScore}
               protectionDays={30}
               achievedMilestones={achievedMilestones}
-              variant="full"
+              variant='full'
               animated={true}
               interactive={true}
               showWeather={true}
               personalityMode={personalityMode}
               showInteractiveEnhancements={true}
               recentlyCompletedMilestones={recentlyCompletedMilestones}
-              onElementClick={(element) => {
+              onElementClick={element => {
                 // Garden element clicked - could trigger detailed view
                 if (element.milestone) {
                   console.warn('Garden element clicked:', element.milestone);
@@ -159,19 +179,23 @@ export const InteractiveGardenTest: React.FC<InteractiveGardenTestProps> = ({
                 console.warn('Sofia firefly clicked! ✨');
                 // Could show a message or trigger some action
               }}
-              className="min-h-[400px]"
+              className='min-h-[400px]'
             />
           </div>
 
           {/* Instructions */}
-          <div className="mt-4 text-sm text-gray-500 space-y-2">
-            <p><strong>Test Features:</strong></p>
-            <ul className="list-disc list-inside space-y-1 ml-4">
+          <div className='mt-4 text-sm text-gray-500 space-y-2'>
+            <p>
+              <strong>Test Features:</strong>
+            </p>
+            <ul className='list-disc list-inside space-y-1 ml-4'>
               <li>Watch for subtle leaf movements on trees and sprouts</li>
               <li>Look for Sofia's firefly floating around the garden</li>
               <li>Click "Test Celebration" to see firefly swarm celebration</li>
               <li>Add elements to trigger milestone celebrations</li>
-              <li>Try different personality modes to see animation variations</li>
+              <li>
+                Try different personality modes to see animation variations
+              </li>
               <li>Click Sofia's firefly for a small interaction surprise</li>
             </ul>
           </div>

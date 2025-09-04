@@ -1,88 +1,111 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import {
-  Camera,
-  Mic,
-  Video,
-  FileText,
-  MapPin,
-  Book,
   Archive,
-  Square,
+  Book,
+  Calendar,
+  Camera,
   Edit3,
-  Trash2,
-  Share2,
+  FileText,
   Image as ImageIcon,
+  MapPin,
+  Mic,
   Music,
+  Share2,
   Sparkles,
-  Calendar
+  Square,
+  Trash2,
+  Video,
 } from 'lucide-react';
 import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
 import { Label } from '../ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../ui/select';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '../ui/dialog';
 import { motion } from 'framer-motion';
 
 export interface HistoryItem {
-  id: string;
-  type: 'story' | 'photo' | 'video' | 'audio' | 'document' | 'timeline_event';
-  title: string;
-  description?: string;
-  content?: string;
-  mediaUrl?: string;
-  thumbnailUrl?: string;
   author: string;
+  category:
+    | 'achievements'
+    | 'career'
+    | 'challenges'
+    | 'childhood'
+    | 'education'
+    | 'family'
+    | 'other'
+    | 'traditions'
+    | 'travel';
+  content?: string;
   createdAt: string;
-  updatedAt: string;
-  tags: string[];
-  location?: {
-    name: string;
-    coordinates?: { lat: number; lng: number };
-  };
   dateOfEvent?: string;
-  relatedPeople: string[];
-  category: 'childhood' | 'education' | 'career' | 'family' | 'travel' | 'traditions' | 'achievements' | 'challenges' | 'other';
-  importance: 'low' | 'medium' | 'high' | 'milestone';
+  description?: string;
+  id: string;
+  importance: 'high' | 'low' | 'medium' | 'milestone';
   isPrivate: boolean;
+  location?: {
+    coordinates?: { lat: number; lng: number };
+    name: string;
+  };
+  mediaUrl?: string;
   metadata?: {
     duration?: number; // for audio/video
-    resolution?: string; // for video/photo
     fileSize?: number;
+    resolution?: string; // for video/photo
     transcription?: string; // for audio/video
   };
+  relatedPeople: string[];
+  tags: string[];
+  thumbnailUrl?: string;
+  title: string;
+  type: 'audio' | 'document' | 'photo' | 'story' | 'timeline_event' | 'video';
+  updatedAt: string;
 }
 
 export interface FamilyTimeline {
-  id: string;
-  name: string;
+  collaborators: string[];
   description: string;
-  startYear: number;
   endYear?: number;
   events: HistoryItem[];
-  collaborators: string[];
+  id: string;
   isPublic: boolean;
-  theme: 'classic' | 'modern' | 'vintage' | 'elegant';
+  name: string;
+  startYear: number;
+  theme: 'classic' | 'elegant' | 'modern' | 'vintage';
 }
 
 interface FamilyHistoryPreservationProps {
-  historyItems: HistoryItem[];
-  timelines: FamilyTimeline[];
-  familyMembers: Array<{ id: string; name: string; relationship: string }>;
   currentUserId: string;
-  onSaveHistoryItem?: (item: Omit<HistoryItem, 'id'>) => void;
-  onUpdateHistoryItem?: (item: HistoryItem) => void;
-  onDeleteHistoryItem?: (itemId: string) => void;
+  familyMembers: Array<{ id: string; name: string; relationship: string }>;
+  historyItems: HistoryItem[];
   onCreateTimeline?: (timeline: Omit<FamilyTimeline, 'id'>) => void;
+  onDeleteHistoryItem?: (itemId: string) => void;
   onRecordAudio?: (audioBlob: Blob, metadata: Record<string, unknown>) => void;
   onRecordVideo?: (videoBlob: Blob, metadata: Record<string, unknown>) => void;
+  onSaveHistoryItem?: (item: Omit<HistoryItem, 'id'>) => void;
+  onUpdateHistoryItem?: (item: HistoryItem) => void;
   onUploadPhoto?: (file: File, metadata: Record<string, unknown>) => void;
+  timelines: FamilyTimeline[];
 }
 
-export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps> = ({
+export const FamilyHistoryPreservation: React.FC<
+  FamilyHistoryPreservationProps
+> = ({
   historyItems,
   timelines,
   familyMembers,
@@ -93,11 +116,13 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
   onCreateTimeline,
   onRecordAudio,
   onRecordVideo,
-  onUploadPhoto
+  onUploadPhoto,
 }) => {
   const [activeTab, setActiveTab] = useState('overview');
   const [_selectedItem, _setSelectedItem] = useState<HistoryItem | null>(null);
-  const [isRecording, setIsRecording] = useState<'audio' | 'video' | null>(null);
+  const [isRecording, setIsRecording] = useState<'audio' | 'video' | null>(
+    null
+  );
   const [recordingTime, setRecordingTime] = useState(0);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showTimelineDialog, setShowTimelineDialog] = useState(false);
@@ -106,7 +131,7 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
   // Recording state
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
-  const recordingIntervalRef = useRef<number | null>(null);
+  const recordingIntervalRef = useRef<null | number>(null);
   const videoPreviewRef = useRef<HTMLVideoElement>(null);
 
   // New item state
@@ -119,7 +144,7 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
     relatedPeople: [],
     category: 'family',
     importance: 'medium',
-    isPrivate: false
+    isPrivate: false,
   });
 
   // New timeline state
@@ -129,15 +154,14 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
     startYear: new Date().getFullYear(),
     theme: 'classic',
     isPublic: false,
-    collaborators: []
+    collaborators: [],
   });
 
   // Start recording
   const startRecording = async (type: 'audio' | 'video') => {
     try {
-      const constraints = type === 'video'
-        ? { video: true, audio: true }
-        : { audio: true };
+      const constraints =
+        type === 'video' ? { video: true, audio: true } : { audio: true };
 
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       streamRef.current = stream;
@@ -151,7 +175,7 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
       mediaRecorderRef.current = mediaRecorder;
 
       const chunks: Blob[] = [];
-      mediaRecorder.ondataavailable = (event) => {
+      mediaRecorder.ondataavailable = event => {
         if (event.data.size > 0) {
           chunks.push(event.data);
         }
@@ -159,13 +183,13 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
 
       mediaRecorder.onstop = () => {
         const blob = new Blob(chunks, {
-          type: type === 'video' ? 'video/webm' : 'audio/webm'
+          type: type === 'video' ? 'video/webm' : 'audio/webm',
         });
 
         const metadata = {
           duration: recordingTime,
           type: type,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         };
 
         if (type === 'video') {
@@ -187,7 +211,6 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
       recordingIntervalRef.current = setInterval(() => {
         setRecordingTime(prev => prev + 1);
       }, 1000);
-
     } catch (error) {
       console.error('Error starting recording:', error);
       alert('Unable to access camera/microphone. Please check permissions.');
@@ -196,7 +219,10 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
 
   // Stop recording
   const stopRecording = () => {
-    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+    if (
+      mediaRecorderRef.current &&
+      mediaRecorderRef.current.state !== 'inactive'
+    ) {
       mediaRecorderRef.current.stop();
     }
 
@@ -221,7 +247,10 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
   };
 
   // Handle file upload
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>, type: 'photo' | 'document') => {
+  const handleFileUpload = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    type: 'document' | 'photo'
+  ) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
@@ -230,7 +259,7 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
         originalName: file.name,
         size: file.size,
         type: file.type,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
       onUploadPhoto?.(file, metadata);
     }
@@ -253,7 +282,7 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
       category: newItem.category as HistoryItem['category'],
       importance: newItem.importance as HistoryItem['importance'],
       isPrivate: newItem.isPrivate || false,
-      dateOfEvent: newItem.dateOfEvent
+      dateOfEvent: newItem.dateOfEvent,
     };
 
     onSaveHistoryItem?.(item);
@@ -268,7 +297,7 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
       relatedPeople: [],
       category: 'family',
       importance: 'medium',
-      isPrivate: false
+      isPrivate: false,
     });
     setShowCreateDialog(false);
   };
@@ -284,7 +313,7 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
       events: [],
       collaborators: newTimeline.collaborators || [],
       isPublic: newTimeline.isPublic || false,
-      theme: newTimeline.theme as FamilyTimeline['theme']
+      theme: newTimeline.theme as FamilyTimeline['theme'],
     };
 
     onCreateTimeline?.(timeline);
@@ -296,7 +325,7 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
       startYear: new Date().getFullYear(),
       theme: 'classic',
       isPublic: false,
-      collaborators: []
+      collaborators: [],
     });
     setShowTimelineDialog(false);
   };
@@ -309,7 +338,7 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
         video: Video,
         audio: Music,
         document: FileText,
-        timeline_event: Calendar
+        timeline_event: Calendar,
       };
       return icons[type as keyof typeof icons] || BookIcon;
     };
@@ -318,81 +347,93 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
 
     return (
       <motion.div
-        initial={{  opacity: 0, y: 20  }}
-        animate={{  opacity: 1, y: 0  }}
-        className="group"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className='group'
       >
-        <Card className="cursor-pointer transition-all duration-200 hover:shadow-lg hover:scale-102">
-          <CardHeader className="pb-3">
-            <div className="flex items-start justify-between">
-              <div className="flex items-center gap-3">
-                <div className={`p-2 rounded-full ${
-                  item.importance === 'milestone' ? 'bg-yellow-100' :
-                  item.importance === 'high' ? 'bg-red-100' :
-                  item.importance === 'medium' ? 'bg-blue-100' : 'bg-gray-100'
-                }`}>
-                  <TypeIcon className="h-5 w-5" />
+        <Card className='cursor-pointer transition-all duration-200 hover:shadow-lg hover:scale-102'>
+          <CardHeader className='pb-3'>
+            <div className='flex items-start justify-between'>
+              <div className='flex items-center gap-3'>
+                <div
+                  className={`p-2 rounded-full ${
+                    item.importance === 'milestone'
+                      ? 'bg-yellow-100'
+                      : item.importance === 'high'
+                        ? 'bg-red-100'
+                        : item.importance === 'medium'
+                          ? 'bg-blue-100'
+                          : 'bg-gray-100'
+                  }`}
+                >
+                  <TypeIcon className='h-5 w-5' />
                 </div>
                 <div>
-                  <CardTitle className="text-base font-medium line-clamp-1">
+                  <CardTitle className='text-base font-medium line-clamp-1'>
                     {item.title}
                   </CardTitle>
-                  <p className="text-sm text-gray-500">
+                  <p className='text-sm text-gray-500'>
                     {new Date(item.createdAt).toLocaleDateString()}
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className='flex items-center gap-2'>
                 <Badge
-                  variant={item.importance === 'milestone' ? 'default' : 'secondary'}
-                  className="text-xs"
+                  variant={
+                    item.importance === 'milestone' ? 'default' : 'secondary'
+                  }
+                  className='text-xs'
                 >
                   {item.importance}
                 </Badge>
-                {item.isPrivate && <Badge variant="outline" className="text-xs">Private</Badge>}
+                {item.isPrivate && (
+                  <Badge variant='outline' className='text-xs'>
+                    Private
+                  </Badge>
+                )}
               </div>
             </div>
           </CardHeader>
 
-          <CardContent className="pt-0">
-            <div className="space-y-3">
+          <CardContent className='pt-0'>
+            <div className='space-y-3'>
               {item.description && (
-                <p className="text-sm text-gray-600 line-clamp-2">
+                <p className='text-sm text-gray-600 line-clamp-2'>
                   {item.description}
                 </p>
               )}
 
               {item.location && (
-                <div className="flex items-center gap-2 text-xs text-gray-500">
-                  <MapPin className="h-3 w-3" />
+                <div className='flex items-center gap-2 text-xs text-gray-500'>
+                  <MapPin className='h-3 w-3' />
                   {item.location.name}
                 </div>
               )}
 
               {item.tags.length > 0 && (
-                <div className="flex flex-wrap gap-1">
+                <div className='flex flex-wrap gap-1'>
                   {item.tags.slice(0, 3).map(tag => (
-                    <Badge key={tag} variant="outline" className="text-xs px-1">
+                    <Badge key={tag} variant='outline' className='text-xs px-1'>
                       #{tag}
                     </Badge>
                   ))}
                   {item.tags.length > 3 && (
-                    <Badge variant="outline" className="text-xs px-1">
+                    <Badge variant='outline' className='text-xs px-1'>
                       +{item.tags.length - 3}
                     </Badge>
                   )}
                 </div>
               )}
 
-              <div className="flex items-center gap-2">
-                <div className="flex -space-x-1">
+              <div className='flex items-center gap-2'>
+                <div className='flex -space-x-1'>
                   {item.relatedPeople.slice(0, 3).map(personId => {
                     const person = familyMembers.find(m => m.id === personId);
                     return person ? (
                       <div
                         key={personId}
-                        className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center text-xs font-medium border-2 border-white"
+                        className='w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center text-xs font-medium border-2 border-white'
                         title={person.name}
                       >
                         {person.name.charAt(0)}
@@ -400,35 +441,31 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
                     ) : null;
                   })}
                   {item.relatedPeople.length > 3 && (
-                    <div className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-xs font-medium border-2 border-white">
+                    <div className='w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-xs font-medium border-2 border-white'>
                       +{item.relatedPeople.length - 3}
                     </div>
                   )}
                 </div>
 
-                <div className="flex gap-1 ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className='flex gap-1 ml-auto opacity-0 group-hover:opacity-100 transition-opacity'>
                   <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-8 w-8 p-0"
+                    variant='ghost'
+                    size='sm'
+                    className='h-8 w-8 p-0'
                     onClick={() => setEditingItem(item)}
                   >
-                    <Edit3 className="h-4 w-4" />
+                    <Edit3 className='h-4 w-4' />
                   </Button>
                   <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-8 w-8 p-0"
+                    variant='ghost'
+                    size='sm'
+                    className='h-8 w-8 p-0'
                     onClick={() => onDeleteHistoryItem?.(item.id)}
                   >
-                    <Trash2 className="h-4 w-4" />
+                    <Trash2 className='h-4 w-4' />
                   </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-8 w-8 p-0"
-                  >
-                    <Share2 className="h-4 w-4" />
+                  <Button variant='ghost' size='sm' className='h-8 w-8 p-0'>
+                    <Share2 className='h-4 w-4' />
                   </Button>
                 </div>
               </div>
@@ -444,42 +481,40 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
 
     return (
       <motion.div
-        initial={{  opacity: 0, y: 50  }}
-        animate={{  opacity: 1, y: 0  }}
-        className="fixed bottom-4 right-4 bg-white rounded-lg shadow-xl p-6 z-50 border"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        className='fixed bottom-4 right-4 bg-white rounded-lg shadow-xl p-6 z-50 border'
       >
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-4 h-4 bg-red-500 rounded-full animate-pulse"></div>
-              <span className="font-medium">
+        <div className='space-y-4'>
+          <div className='flex items-center justify-between'>
+            <div className='flex items-center gap-3'>
+              <div className='w-4 h-4 bg-red-500 rounded-full animate-pulse'></div>
+              <span className='font-medium'>
                 Recording {isRecording === 'video' ? 'Video' : 'Audio'}
               </span>
             </div>
-            <div className="text-lg font-mono">
-              {formatTime(recordingTime)}
-            </div>
+            <div className='text-lg font-mono'>{formatTime(recordingTime)}</div>
           </div>
 
           {isRecording === 'video' && (
             <video
               ref={videoPreviewRef}
-              className="w-64 h-48 bg-black rounded-lg"
+              className='w-64 h-48 bg-black rounded-lg'
               muted
               autoPlay
             />
           )}
 
           {isRecording === 'audio' && (
-            <div className="w-64 h-32 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
-              <div className="flex space-x-1">
+            <div className='w-64 h-32 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center'>
+              <div className='flex space-x-1'>
                 {Array.from({ length: 5 }, (_, i) => (
                   <div
                     key={i}
-                    className="w-2 bg-white rounded-full animate-pulse"
+                    className='w-2 bg-white rounded-full animate-pulse'
                     style={{
-                      height: `${Math.random() * 40 + 20 }}px`,
-                      animationDelay: `${i * 0.1}s`
+                      height: `${Math.random() * 40 + 20}}px`,
+                      animationDelay: `${i * 0.1}s`,
                     }}
                   />
                 ))}
@@ -487,13 +522,13 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
             </div>
           )}
 
-          <div className="flex gap-2">
+          <div className='flex gap-2'>
             <Button
-              variant="destructive"
+              variant='destructive'
               onClick={stopRecording}
-              className="flex-1"
+              className='flex-1'
             >
-              <Square className="h-4 w-4 mr-2" />
+              <Square className='h-4 w-4 mr-2' />
               Stop Recording
             </Button>
           </div>
@@ -503,78 +538,88 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
   };
 
   return (
-    <div className="w-full space-y-6">
+    <div className='w-full space-y-6'>
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className='flex items-center justify-between'>
         <div>
-          <h2 className="text-2xl font-semibold flex items-center gap-2">
-            <Archive className="h-6 w-6" />
+          <h2 className='text-2xl font-semibold flex items-center gap-2'>
+            <Archive className='h-6 w-6' />
             Family History Preservation
           </h2>
-          <p className="text-gray-600">
+          <p className='text-gray-600'>
             Capture, preserve, and share your family's stories and memories
           </p>
         </div>
 
-        <div className="flex gap-2">
+        <div className='flex gap-2'>
           <Button
-            variant="outline"
+            variant='outline'
             onClick={() => startRecording('audio')}
             disabled={!!isRecording}
           >
-            <Mic className="h-4 w-4 mr-2" />
+            <Mic className='h-4 w-4 mr-2' />
             Record Audio
           </Button>
 
           <Button
-            variant="outline"
+            variant='outline'
             onClick={() => startRecording('video')}
             disabled={!!isRecording}
           >
-            <Video className="h-4 w-4 mr-2" />
+            <Video className='h-4 w-4 mr-2' />
             Record Video
           </Button>
 
           <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => handleFileUpload(e, 'photo')}
-            className="hidden"
-            id="photo-upload"
+            type='file'
+            accept='image/*'
+            onChange={e => handleFileUpload(e, 'photo')}
+            className='hidden'
+            id='photo-upload'
           />
-          <Button variant="outline" onClick={() => document.getElementById('photo-upload')?.click()}>
-            <Camera className="h-4 w-4 mr-2" />
+          <Button
+            variant='outline'
+            onClick={() => document.getElementById('photo-upload')?.click()}
+          >
+            <Camera className='h-4 w-4 mr-2' />
             Upload Photo
           </Button>
 
           <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
             <DialogTrigger asChild>
               <Button>
-                <FileText className="h-4 w-4 mr-2" />
+                <FileText className='h-4 w-4 mr-2' />
                 Add Story
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-2xl">
+            <DialogContent className='max-w-2xl'>
               <DialogHeader>
                 <DialogTitle>Create New History Item</DialogTitle>
               </DialogHeader>
 
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+              <div className='space-y-4'>
+                <div className='grid grid-cols-2 gap-4'>
                   <div>
                     <Label>Type</Label>
                     <Select
                       value={newItem.type}
-                      onValueChange={(value) => setNewItem(prev => ({ ...prev, type: value as HistoryItem['type'] }))}
+                      onValueChange={value =>
+                        setNewItem(prev => ({
+                          ...prev,
+                          type: value as HistoryItem['type'],
+                        }))
+                      }
                     >
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="story">Story</SelectItem>
-                        <SelectItem value="photo">Photo</SelectItem>
-                        <SelectItem value="document">Document</SelectItem>
-                        <SelectItem value="timeline_event">Timeline Event</SelectItem>
+                        <SelectItem value='story'>Story</SelectItem>
+                        <SelectItem value='photo'>Photo</SelectItem>
+                        <SelectItem value='document'>Document</SelectItem>
+                        <SelectItem value='timeline_event'>
+                          Timeline Event
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -583,21 +628,28 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
                     <Label>Category</Label>
                     <Select
                       value={newItem.category}
-                      onValueChange={(value) => setNewItem(prev => ({ ...prev, category: value as HistoryItem['category'] }))}
+                      onValueChange={value =>
+                        setNewItem(prev => ({
+                          ...prev,
+                          category: value as HistoryItem['category'],
+                        }))
+                      }
                     >
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="childhood">Childhood</SelectItem>
-                        <SelectItem value="education">Education</SelectItem>
-                        <SelectItem value="career">Career</SelectItem>
-                        <SelectItem value="family">Family</SelectItem>
-                        <SelectItem value="travel">Travel</SelectItem>
-                        <SelectItem value="traditions">Traditions</SelectItem>
-                        <SelectItem value="achievements">Achievements</SelectItem>
-                        <SelectItem value="challenges">Challenges</SelectItem>
-                        <SelectItem value="other">Other</SelectItem>
+                        <SelectItem value='childhood'>Childhood</SelectItem>
+                        <SelectItem value='education'>Education</SelectItem>
+                        <SelectItem value='career'>Career</SelectItem>
+                        <SelectItem value='family'>Family</SelectItem>
+                        <SelectItem value='travel'>Travel</SelectItem>
+                        <SelectItem value='traditions'>Traditions</SelectItem>
+                        <SelectItem value='achievements'>
+                          Achievements
+                        </SelectItem>
+                        <SelectItem value='challenges'>Challenges</SelectItem>
+                        <SelectItem value='other'>Other</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -607,8 +659,10 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
                   <Label>Title</Label>
                   <Input
                     value={newItem.title || ''}
-                    onChange={(e) => setNewItem(prev => ({ ...prev, title: e.target.value }))}
-                    placeholder="Enter a memorable title"
+                    onChange={e =>
+                      setNewItem(prev => ({ ...prev, title: e.target.value }))
+                    }
+                    placeholder='Enter a memorable title'
                   />
                 </div>
 
@@ -616,8 +670,13 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
                   <Label>Description</Label>
                   <Textarea
                     value={newItem.description || ''}
-                    onChange={(e) => setNewItem(prev => ({ ...prev, description: e.target.value }))}
-                    placeholder="Brief description"
+                    onChange={e =>
+                      setNewItem(prev => ({
+                        ...prev,
+                        description: e.target.value,
+                      }))
+                    }
+                    placeholder='Brief description'
                     rows={2}
                   />
                 </div>
@@ -627,28 +686,38 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
                     <Label>Story Content</Label>
                     <Textarea
                       value={newItem.content || ''}
-                      onChange={(e) => setNewItem(prev => ({ ...prev, content: e.target.value }))}
-                      placeholder="Tell your story..."
+                      onChange={e =>
+                        setNewItem(prev => ({
+                          ...prev,
+                          content: e.target.value,
+                        }))
+                      }
+                      placeholder='Tell your story...'
                       rows={6}
                     />
                   </div>
                 )}
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className='grid grid-cols-2 gap-4'>
                   <div>
                     <Label>Importance</Label>
                     <Select
                       value={newItem.importance}
-                      onValueChange={(value) => setNewItem(prev => ({ ...prev, importance: value as HistoryItem['importance'] }))}
+                      onValueChange={value =>
+                        setNewItem(prev => ({
+                          ...prev,
+                          importance: value as HistoryItem['importance'],
+                        }))
+                      }
                     >
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="low">Low</SelectItem>
-                        <SelectItem value="medium">Medium</SelectItem>
-                        <SelectItem value="high">High</SelectItem>
-                        <SelectItem value="milestone">Milestone</SelectItem>
+                        <SelectItem value='low'>Low</SelectItem>
+                        <SelectItem value='medium'>Medium</SelectItem>
+                        <SelectItem value='high'>High</SelectItem>
+                        <SelectItem value='milestone'>Milestone</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -656,20 +725,26 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
                   <div>
                     <Label>Date of Event (Optional)</Label>
                     <Input
-                      type="date"
+                      type='date'
                       value={newItem.dateOfEvent || ''}
-                      onChange={(e) => setNewItem(prev => ({ ...prev, dateOfEvent: e.target.value }))}
+                      onChange={e =>
+                        setNewItem(prev => ({
+                          ...prev,
+                          dateOfEvent: e.target.value,
+                        }))
+                      }
                     />
                   </div>
                 </div>
 
-                <div className="flex justify-end gap-2">
-                  <Button variant="outline" onClick={() => setShowCreateDialog(false)}>
+                <div className='flex justify-end gap-2'>
+                  <Button
+                    variant='outline'
+                    onClick={() => setShowCreateDialog(false)}
+                  >
                     Cancel
                   </Button>
-                  <Button onClick={handleSaveItem}>
-                    Save History Item
-                  </Button>
+                  <Button onClick={handleSaveItem}>Save History Item</Button>
                 </div>
               </div>
             </DialogContent>
@@ -679,75 +754,88 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
 
       {/* Content Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="stories">Stories</TabsTrigger>
-          <TabsTrigger value="media">Media</TabsTrigger>
-          <TabsTrigger value="timelines">Timelines</TabsTrigger>
+        <TabsList className='grid w-full grid-cols-4'>
+          <TabsTrigger value='overview'>Overview</TabsTrigger>
+          <TabsTrigger value='stories'>Stories</TabsTrigger>
+          <TabsTrigger value='media'>Media</TabsTrigger>
+          <TabsTrigger value='timelines'>Timelines</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="overview" className="space-y-6">
+        <TabsContent value='overview' className='space-y-6'>
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'>
             <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-blue-100 rounded-full">
-                    <BookIcon className="h-5 w-5 text-blue-600" />
+              <CardContent className='p-4'>
+                <div className='flex items-center gap-3'>
+                  <div className='p-2 bg-blue-100 rounded-full'>
+                    <BookIcon className='h-5 w-5 text-blue-600' />
                   </div>
                   <div>
-                    <p className="text-2xl font-semibold">
-                      {historyItems.filter(item => item.type === 'story').length}
+                    <p className='text-2xl font-semibold'>
+                      {
+                        historyItems.filter(item => item.type === 'story')
+                          .length
+                      }
                     </p>
-                    <p className="text-sm text-gray-600">Stories</p>
+                    <p className='text-sm text-gray-600'>Stories</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
             <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-green-100 rounded-full">
-                    <ImageIcon className="h-5 w-5 text-green-600" />
+              <CardContent className='p-4'>
+                <div className='flex items-center gap-3'>
+                  <div className='p-2 bg-green-100 rounded-full'>
+                    <ImageIcon className='h-5 w-5 text-green-600' />
                   </div>
                   <div>
-                    <p className="text-2xl font-semibold">
-                      {historyItems.filter(item => item.type === 'photo').length}
+                    <p className='text-2xl font-semibold'>
+                      {
+                        historyItems.filter(item => item.type === 'photo')
+                          .length
+                      }
                     </p>
-                    <p className="text-sm text-gray-600">Photos</p>
+                    <p className='text-sm text-gray-600'>Photos</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
             <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-purple-100 rounded-full">
-                    <Video className="h-5 w-5 text-purple-600" />
+              <CardContent className='p-4'>
+                <div className='flex items-center gap-3'>
+                  <div className='p-2 bg-purple-100 rounded-full'>
+                    <Video className='h-5 w-5 text-purple-600' />
                   </div>
                   <div>
-                    <p className="text-2xl font-semibold">
-                      {historyItems.filter(item => item.type === 'video').length}
+                    <p className='text-2xl font-semibold'>
+                      {
+                        historyItems.filter(item => item.type === 'video')
+                          .length
+                      }
                     </p>
-                    <p className="text-sm text-gray-600">Videos</p>
+                    <p className='text-sm text-gray-600'>Videos</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
             <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-yellow-100 rounded-full">
-                    <Sparkles className="h-5 w-5 text-yellow-600" />
+              <CardContent className='p-4'>
+                <div className='flex items-center gap-3'>
+                  <div className='p-2 bg-yellow-100 rounded-full'>
+                    <Sparkles className='h-5 w-5 text-yellow-600' />
                   </div>
                   <div>
-                    <p className="text-2xl font-semibold">
-                      {historyItems.filter(item => item.importance === 'milestone').length}
+                    <p className='text-2xl font-semibold'>
+                      {
+                        historyItems.filter(
+                          item => item.importance === 'milestone'
+                        ).length
+                      }
                     </p>
-                    <p className="text-sm text-gray-600">Milestones</p>
+                    <p className='text-sm text-gray-600'>Milestones</p>
                   </div>
                 </div>
               </CardContent>
@@ -760,9 +848,13 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
               <CardTitle>Recent History Items</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
                 {historyItems
-                  .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                  .sort(
+                    (a, b) =>
+                      new Date(b.createdAt).getTime() -
+                      new Date(a.createdAt).getTime()
+                  )
                   .slice(0, 6)
                   .map(item => (
                     <HistoryItemCard key={item.id} item={item} />
@@ -772,8 +864,8 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
           </Card>
         </TabsContent>
 
-        <TabsContent value="stories">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <TabsContent value='stories'>
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
             {historyItems
               .filter(item => item.type === 'story')
               .map(item => (
@@ -782,8 +874,8 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
           </div>
         </TabsContent>
 
-        <TabsContent value="media">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <TabsContent value='media'>
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'>
             {historyItems
               .filter(item => ['photo', 'video', 'audio'].includes(item.type))
               .map(item => (
@@ -792,11 +884,14 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
           </div>
         </TabsContent>
 
-        <TabsContent value="timelines">
-          <div className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold">Family Timelines</h3>
-              <Dialog open={showTimelineDialog} onOpenChange={setShowTimelineDialog}>
+        <TabsContent value='timelines'>
+          <div className='space-y-6'>
+            <div className='flex justify-between items-center'>
+              <h3 className='text-lg font-semibold'>Family Timelines</h3>
+              <Dialog
+                open={showTimelineDialog}
+                onOpenChange={setShowTimelineDialog}
+              >
                 <DialogTrigger asChild>
                   <Button>Create Timeline</Button>
                 </DialogTrigger>
@@ -805,13 +900,18 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
                     <DialogTitle>Create New Timeline</DialogTitle>
                   </DialogHeader>
 
-                  <div className="space-y-4">
+                  <div className='space-y-4'>
                     <div>
                       <Label>Timeline Name</Label>
                       <Input
                         value={newTimeline.name || ''}
-                        onChange={(e) => setNewTimeline(prev => ({ ...prev, name: e.target.value }))}
-                        placeholder="e.g., Smith Family Journey"
+                        onChange={e =>
+                          setNewTimeline(prev => ({
+                            ...prev,
+                            name: e.target.value,
+                          }))
+                        }
+                        placeholder='e.g., Smith Family Journey'
                       />
                     </div>
 
@@ -819,19 +919,29 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
                       <Label>Description</Label>
                       <Textarea
                         value={newTimeline.description || ''}
-                        onChange={(e) => setNewTimeline(prev => ({ ...prev, description: e.target.value }))}
-                        placeholder="Describe this timeline..."
+                        onChange={e =>
+                          setNewTimeline(prev => ({
+                            ...prev,
+                            description: e.target.value,
+                          }))
+                        }
+                        placeholder='Describe this timeline...'
                         rows={3}
                       />
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className='grid grid-cols-2 gap-4'>
                       <div>
                         <Label>Start Year</Label>
                         <Input
-                          type="number"
+                          type='number'
                           value={newTimeline.startYear || ''}
-                          onChange={(e) => setNewTimeline(prev => ({ ...prev, startYear: parseInt(e.target.value) }))}
+                          onChange={e =>
+                            setNewTimeline(prev => ({
+                              ...prev,
+                              startYear: parseInt(e.target.value),
+                            }))
+                          }
                         />
                       </div>
 
@@ -839,23 +949,31 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
                         <Label>Theme</Label>
                         <Select
                           value={newTimeline.theme}
-                          onValueChange={(value) => setNewTimeline(prev => ({ ...prev, theme: value as FamilyTimeline['theme'] }))}
+                          onValueChange={value =>
+                            setNewTimeline(prev => ({
+                              ...prev,
+                              theme: value as FamilyTimeline['theme'],
+                            }))
+                          }
                         >
                           <SelectTrigger>
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="classic">Classic</SelectItem>
-                            <SelectItem value="modern">Modern</SelectItem>
-                            <SelectItem value="vintage">Vintage</SelectItem>
-                            <SelectItem value="elegant">Elegant</SelectItem>
+                            <SelectItem value='classic'>Classic</SelectItem>
+                            <SelectItem value='modern'>Modern</SelectItem>
+                            <SelectItem value='vintage'>Vintage</SelectItem>
+                            <SelectItem value='elegant'>Elegant</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
                     </div>
 
-                    <div className="flex justify-end gap-2">
-                      <Button variant="outline" onClick={() => setShowTimelineDialog(false)}>
+                    <div className='flex justify-end gap-2'>
+                      <Button
+                        variant='outline'
+                        onClick={() => setShowTimelineDialog(false)}
+                      >
                         Cancel
                       </Button>
                       <Button onClick={handleCreateTimeline}>
@@ -867,34 +985,42 @@ export const FamilyHistoryPreservation: React.FC<FamilyHistoryPreservationProps>
               </Dialog>
             </div>
 
-            <div className="grid gap-4">
+            <div className='grid gap-4'>
               {timelines.map(timeline => (
                 <Card key={timeline.id}>
                   <CardHeader>
-                    <div className="flex items-start justify-between">
+                    <div className='flex items-start justify-between'>
                       <div>
                         <CardTitle>{timeline.name}</CardTitle>
-                        <p className="text-sm text-gray-600">{timeline.description}</p>
+                        <p className='text-sm text-gray-600'>
+                          {timeline.description}
+                        </p>
                       </div>
-                      <Badge variant={timeline.isPublic ? 'default' : 'secondary'}>
+                      <Badge
+                        variant={timeline.isPublic ? 'default' : 'secondary'}
+                      >
                         {timeline.isPublic ? 'Public' : 'Private'}
                       </Badge>
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4 text-sm text-gray-600">
-                        <span>{timeline.startYear} - {timeline.endYear || 'Present'}</span>
+                    <div className='flex items-center justify-between'>
+                      <div className='flex items-center gap-4 text-sm text-gray-600'>
+                        <span>
+                          {timeline.startYear} - {timeline.endYear || 'Present'}
+                        </span>
                         <span>{timeline.events.length} events</span>
-                        <span>{timeline.collaborators.length} collaborators</span>
+                        <span>
+                          {timeline.collaborators.length} collaborators
+                        </span>
                       </div>
 
-                      <div className="flex gap-2">
-                        <Button variant="outline" size="sm">
-                          <Edit3 className="h-4 w-4" />
+                      <div className='flex gap-2'>
+                        <Button variant='outline' size='sm'>
+                          <Edit3 className='h-4 w-4' />
                         </Button>
-                        <Button variant="outline" size="sm">
-                          <Share2 className="h-4 w-4" />
+                        <Button variant='outline' size='sm'>
+                          <Share2 className='h-4 w-4' />
                         </Button>
                       </div>
                     </div>

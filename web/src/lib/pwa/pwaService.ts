@@ -14,38 +14,42 @@ export interface PWAInstallPrompt {
 }
 
 export interface NotificationPermission {
-  granted: boolean;
-  denied: boolean;
   default: boolean;
+  denied: boolean;
+  granted: boolean;
 }
 
 export interface PushSubscription {
   endpoint: string;
   keys: {
-    p256dh: string;
     auth: string;
+    p256dh: string;
   };
 }
 
 export interface PWACapabilities {
-  isSupported: boolean;
-  isInstalled: boolean;
-  isStandalone: boolean;
   canInstall: boolean;
-  hasServiceWorker: boolean;
-  hasNotifications: boolean;
   hasCamera: boolean;
   hasGeolocation: boolean;
+  hasNotifications: boolean;
+  hasServiceWorker: boolean;
+  isInstalled: boolean;
   isOnline: boolean;
   isSecureContext: boolean;
+  isStandalone: boolean;
+  isSupported: boolean;
 }
 
 export class PWAService {
   private static instance: PWAService;
-  private installPrompt: PWAInstallPrompt | null = null;
-  private serviceWorkerRegistration: ServiceWorkerRegistration | null = null;
+  private installPrompt: null | PWAInstallPrompt = null;
+  private serviceWorkerRegistration: null | ServiceWorkerRegistration = null;
   private pushSubscription: globalThis.PushSubscription | null = null;
-  private notificationPermission: NotificationPermission = 'default';
+  private notificationPermission: NotificationPermission = {
+    granted: false,
+    denied: false,
+    default: true,
+  };
   private onlineListeners: Array<(online: boolean) => void> = [];
   private installListeners: Array<(canInstall: boolean) => void> = [];
 
@@ -82,7 +86,7 @@ export class PWAService {
     } catch (error) {
       console.error('PWA Service initialization failed:', error);
       captureError(error instanceof Error ? error : new Error(String(error)), {
-        tags: { source: 'pwa_service_init' }
+        tags: { source: 'pwa_service_init' },
       });
     }
   }
@@ -97,9 +101,12 @@ export class PWAService {
     }
 
     try {
-      this.serviceWorkerRegistration = await navigator.serviceWorker.register('/sw.js', {
-        scope: '/'
-      });
+      this.serviceWorkerRegistration = await navigator.serviceWorker.register(
+        '/sw.js',
+        {
+          scope: '/',
+        }
+      );
 
       console.log('Service Worker registered successfully');
 
@@ -108,7 +115,10 @@ export class PWAService {
         const newWorker = this.serviceWorkerRegistration?.installing;
         if (newWorker) {
           newWorker.addEventListener('statechange', () => {
-            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            if (
+              newWorker.state === 'installed' &&
+              navigator.serviceWorker.controller
+            ) {
               this.showUpdateAvailableNotification();
             }
           });
@@ -116,8 +126,10 @@ export class PWAService {
       });
 
       // Listen for messages from service worker
-      navigator.serviceWorker.addEventListener('message', this.handleServiceWorkerMessage.bind(this));
-
+      navigator.serviceWorker.addEventListener(
+        'message',
+        this.handleServiceWorkerMessage.bind(this)
+      );
     } catch (error) {
       console.error('Service Worker registration failed:', error);
       throw error;
@@ -130,7 +142,7 @@ export class PWAService {
   private setupInstallPromptListener(): void {
     window.addEventListener('beforeinstallprompt', (event: Event) => {
       event.preventDefault();
-      this.installPrompt = event;
+      this.installPrompt = event as unknown as PWAInstallPrompt;
       this.notifyInstallListeners(true);
       console.log('PWA install prompt available');
     });
@@ -162,7 +174,12 @@ export class PWAService {
    */
   private checkNotificationPermission(): void {
     if ('Notification' in window) {
-      this.notificationPermission = Notification.permission;
+      const permission = Notification.permission;
+      this.notificationPermission = {
+        granted: permission === 'granted',
+        denied: permission === 'denied',
+        default: permission === 'default',
+      };
     }
   }
 
@@ -177,7 +194,8 @@ export class PWAService {
 
     try {
       // Check for existing subscription
-      this.pushSubscription = await this.serviceWorkerRegistration.pushManager.getSubscription();
+      this.pushSubscription =
+        await this.serviceWorkerRegistration.pushManager.getSubscription();
 
       if (this.pushSubscription) {
         console.log('Existing push subscription found');
@@ -219,10 +237,6 @@ export class PWAService {
         body: 'A new version of LegacyGuard is available. Refresh to update.',
         icon: '/shield-icon.svg',
         tag: 'app-update',
-        actions: [
-          { action: 'update', title: 'Update Now' },
-          { action: 'dismiss', title: 'Later' }
-        ]
       });
     }
   }
@@ -231,8 +245,9 @@ export class PWAService {
    * Get PWA capabilities
    */
   getCapabilities(): PWACapabilities {
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches ||
-                        (window.navigator as { standalone?: boolean }).standalone === true;
+    const isStandalone =
+      window.matchMedia('(display-mode: standalone)').matches ||
+      (window.navigator as { standalone?: boolean }).standalone === true;
 
     return {
       isSupported: 'serviceWorker' in navigator,
@@ -241,10 +256,11 @@ export class PWAService {
       canInstall: !!this.installPrompt,
       hasServiceWorker: !!this.serviceWorkerRegistration,
       hasNotifications: 'Notification' in window,
-      hasCamera: 'mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices,
+      hasCamera:
+        'mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices,
       hasGeolocation: 'geolocation' in navigator,
       isOnline: navigator.onLine,
-      isSecureContext: window.isSecureContext
+      isSecureContext: window.isSecureContext,
     };
   }
 
@@ -283,7 +299,11 @@ export class PWAService {
 
     try {
       const permission = await Notification.requestPermission();
-      this.notificationPermission = permission;
+      this.notificationPermission = {
+        granted: permission === 'granted',
+        denied: permission === 'denied',
+        default: permission === 'default',
+      };
       return permission === 'granted';
     } catch (error) {
       console.error('Notification permission request failed:', error);
@@ -299,7 +319,7 @@ export class PWAService {
       throw new Error('Service Worker not available');
     }
 
-    if (this.notificationPermission !== 'granted') {
+    if (!this.notificationPermission.granted) {
       const granted = await this.requestNotificationPermission();
       if (!granted) {
         throw new Error('Notification permission denied');
@@ -308,12 +328,15 @@ export class PWAService {
 
     try {
       // Generate VAPID keys (in production, these should be from your server)
-      const vapidPublicKey = 'BEl62iUYgUivxIkv69yViEuiBIa40HI46fkfLx-tGSoHJNFG4K2wSh6GK8rSkZn1JzJFkEO1Y5bN5VGpLPAJlMc';
+      const vapidPublicKey =
+        'BEl62iUYgUivxIkv69yViEuiBIa40HI46fkfLx-tGSoHJNFG4K2wSh6GK8rSkZn1JzJFkEO1Y5bN5VGpLPAJlMc';
 
-      const subscription = await this.serviceWorkerRegistration.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: this.urlBase64ToUint8Array(vapidPublicKey)
-      });
+      const vapidKey = this.urlBase64ToUint8Array(vapidPublicKey);
+      const subscription =
+        await this.serviceWorkerRegistration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: vapidKey as BufferSource,
+        });
 
       this.pushSubscription = subscription;
 
@@ -323,9 +346,13 @@ export class PWAService {
       return {
         endpoint: subscription.endpoint,
         keys: {
-          p256dh: this.arrayBufferToBase64(subscription.getKey('p256dh')!),
-          auth: this.arrayBufferToBase64(subscription.getKey('auth')!)
-        }
+          p256dh: this.arrayBufferToBase64(
+            subscription.getKey('p256dh') as ArrayBuffer
+          ),
+          auth: this.arrayBufferToBase64(
+            subscription.getKey('auth') as ArrayBuffer
+          ),
+        },
       };
     } catch (error) {
       console.error('Push subscription failed:', error);
@@ -336,7 +363,9 @@ export class PWAService {
   /**
    * Send subscription to server
    */
-  private async sendSubscriptionToServer(subscription: globalThis.PushSubscription): Promise<void> {
+  private async sendSubscriptionToServer(
+    subscription: globalThis.PushSubscription
+  ): Promise<void> {
     try {
       const response = await fetch('/api/notifications/subscribe', {
         method: 'POST',
@@ -344,10 +373,14 @@ export class PWAService {
         body: JSON.stringify({
           endpoint: subscription.endpoint,
           keys: {
-            p256dh: this.arrayBufferToBase64(subscription.getKey('p256dh')!),
-            auth: this.arrayBufferToBase64(subscription.getKey('auth')!)
-          }
-        })
+            p256dh: this.arrayBufferToBase64(
+              subscription.getKey('p256dh') as ArrayBuffer
+            ),
+            auth: this.arrayBufferToBase64(
+              subscription.getKey('auth') as ArrayBuffer
+            ),
+          },
+        }),
       });
 
       if (!response.ok) {
@@ -375,7 +408,7 @@ export class PWAService {
       // Notify server about unsubscription
       await fetch('/api/notifications/unsubscribe', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
       });
 
       console.log('Unsubscribed from push notifications');
@@ -388,12 +421,15 @@ export class PWAService {
   /**
    * Show local notification
    */
-  async showNotification(title: string, options?: Record<string, unknown>): Promise<void> {
+  async showNotification(
+    title: string,
+    options?: Record<string, unknown>
+  ): Promise<void> {
     if (!('Notification' in window)) {
       throw new Error('Notifications not supported');
     }
 
-    if (this.notificationPermission !== 'granted') {
+    if (!this.notificationPermission.granted) {
       const granted = await this.requestNotificationPermission();
       if (!granted) {
         throw new Error('Notification permission denied');
@@ -403,10 +439,10 @@ export class PWAService {
     const notification = new Notification(title, {
       icon: '/shield-icon.svg',
       badge: '/shield-icon.svg',
-      ...options
+      ...options,
     });
 
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       notification.onshow = () => resolve();
       notification.onerror = () => resolve();
     });
@@ -423,7 +459,7 @@ export class PWAService {
     return new Promise((resolve, reject) => {
       const messageChannel = new MessageChannel();
 
-      messageChannel.port1.onmessage = (event) => {
+      messageChannel.port1.onmessage = event => {
         if (event.data.success) {
           resolve();
         } else {
@@ -449,7 +485,9 @@ export class PWAService {
     await this.serviceWorkerRegistration.update();
 
     if (this.serviceWorkerRegistration.waiting) {
-      this.serviceWorkerRegistration.waiting.postMessage({ type: 'SKIP_WAITING' });
+      this.serviceWorkerRegistration.waiting.postMessage({
+        type: 'SKIP_WAITING',
+      });
       window.location.reload();
     }
   }
@@ -517,7 +555,7 @@ export class PWAService {
   // Utility methods
 
   private urlBase64ToUint8Array(base64String: string): Uint8Array {
-    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
     const base64 = (base64String + padding)
       .replace(/-/g, '+')
       .replace(/_/g, '/');
@@ -534,8 +572,12 @@ export class PWAService {
   private arrayBufferToBase64(buffer: ArrayBuffer): string {
     const bytes = new Uint8Array(buffer);
     let binary = '';
-    for (let i = 0; i < bytes.byteLength; i++) {
-      binary += String.fromCharCode(bytes[i]);
+    for (let i = 0; i < bytes.length; i++) {
+      const byte = bytes[i];
+      // Ensure byte is defined and is a number
+      if (typeof byte === 'number') {
+        binary += String.fromCharCode(byte);
+      }
     }
     return window.btoa(binary);
   }
@@ -544,28 +586,76 @@ export class PWAService {
    * Check if running in standalone mode
    */
   isRunningStandalone(): boolean {
-    return window.matchMedia('(display-mode: standalone)').matches ||
-           (window.navigator as { standalone?: boolean }).standalone === true;
+    return (
+      window.matchMedia('(display-mode: standalone)').matches ||
+      (window.navigator as { standalone?: boolean }).standalone === true
+    );
   }
 
   /**
    * Get network information
    */
-  getNetworkInfo(): { type?: string; effectiveType?: string; downlink?: number; rtt?: number } {
-    const connection = (navigator as { connection?: { type?: string; effectiveType?: string; downlink?: number; rtt?: number } }).connection ||
-                      (navigator as { mozConnection?: { type?: string; effectiveType?: string; downlink?: number; rtt?: number } }).mozConnection ||
-                      (navigator as { webkitConnection?: { type?: string; effectiveType?: string; downlink?: number; rtt?: number } }).webkitConnection;
+  getNetworkInfo(): {
+    downlink?: number;
+    effectiveType?: string;
+    rtt?: number;
+    type?: string;
+  } {
+    const connection =
+      (
+        navigator as {
+          connection?: {
+            downlink?: number;
+            effectiveType?: string;
+            rtt?: number;
+            type?: string;
+          };
+        }
+      ).connection ||
+      (
+        navigator as {
+          mozConnection?: {
+            downlink?: number;
+            effectiveType?: string;
+            rtt?: number;
+            type?: string;
+          };
+        }
+      ).mozConnection ||
+      (
+        navigator as {
+          webkitConnection?: {
+            downlink?: number;
+            effectiveType?: string;
+            rtt?: number;
+            type?: string;
+          };
+        }
+      ).webkitConnection;
 
     if (!connection) {
       return {};
     }
 
-    return {
-      type: connection.type,
-      effectiveType: connection.effectiveType,
-      downlink: connection.downlink,
-      rtt: connection.rtt
-    };
+    const info: {
+      downlink?: number;
+      effectiveType?: string;
+      rtt?: number;
+      type?: string;
+    } = {};
+    if (typeof connection.type === 'string') {
+      info.type = connection.type;
+    }
+    if (typeof connection.effectiveType === 'string') {
+      info.effectiveType = connection.effectiveType;
+    }
+    if (typeof (connection as { downlink?: number }).downlink === 'number') {
+      info.downlink = (connection as { downlink?: number }).downlink as number;
+    }
+    if (typeof (connection as { rtt?: number }).rtt === 'number') {
+      info.rtt = (connection as { rtt?: number }).rtt as number;
+    }
+    return info;
   }
 
   /**

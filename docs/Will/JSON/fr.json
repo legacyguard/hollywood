@@ -28,7 +28,9 @@
     "guardianship_minors": ["Code civil arts. 403 à 408-1"],
     "digital_directives": ["Loi 78-17 (Informatique et Libertés), art. 85"],
     "eu_succession": ["Règlement (UE) n°650/2012, art. 21 et 22"],
-    "reserve_conflicts_2021": ["Loi n°2021-1109 du 24/08/2021 (prélèvement compensatoire)"],
+    "reserve_conflicts_2021": [
+      "Loi n°2021-1109 du 24/08/2021 (prélèvement compensatoire)"
+    ],
     "fcddv": ["Décret n°78-262 et pratique notariale — FCDDV"]
   },
   "placeholders": {
@@ -196,25 +198,91 @@
         "key": "identite",
         "title": "Identité du testateur",
         "fields": [
-          {"key": "TESTATOR.FULL_NAME", "label": "Nom et prénom", "type": "text", "required": true},
-          {"key": "TESTATOR.BIRTH_DATE", "label": "Date de naissance", "type": "date", "required": true},
-          {"key": "TESTATOR.BIRTH_PLACE", "label": "Lieu de naissance", "type": "text", "required": true},
-          {"key": "TESTATOR.NATIONALITY", "label": "Nationalité", "type": "text", "required": true},
-          {"key": "TESTATOR.ADDRESS", "label": "Adresse", "type": "textarea", "required": true},
-          {"key": "TESTATOR.MARITAL_STATUS", "label": "État civil", "type": "select", "options": ["célibataire","marié(e)","pacsé(e)","divorcé(e)","veuf/veuve"]},
-          {"key": "TESTATOR.MATRIMONIAL_REGIME", "label": "Régime matrimonial (le cas échéant)", "type": "select", "options": ["communauté réduite aux acquêts","séparation de biens","participation aux acquêts","communauté universelle","autre/étranger"]}
+          {
+            "key": "TESTATOR.FULL_NAME",
+            "label": "Nom et prénom",
+            "type": "text",
+            "required": true
+          },
+          {
+            "key": "TESTATOR.BIRTH_DATE",
+            "label": "Date de naissance",
+            "type": "date",
+            "required": true
+          },
+          {
+            "key": "TESTATOR.BIRTH_PLACE",
+            "label": "Lieu de naissance",
+            "type": "text",
+            "required": true
+          },
+          {
+            "key": "TESTATOR.NATIONALITY",
+            "label": "Nationalité",
+            "type": "text",
+            "required": true
+          },
+          {
+            "key": "TESTATOR.ADDRESS",
+            "label": "Adresse",
+            "type": "textarea",
+            "required": true
+          },
+          {
+            "key": "TESTATOR.MARITAL_STATUS",
+            "label": "État civil",
+            "type": "select",
+            "options": [
+              "célibataire",
+              "marié(e)",
+              "pacsé(e)",
+              "divorcé(e)",
+              "veuf/veuve"
+            ]
+          },
+          {
+            "key": "TESTATOR.MATRIMONIAL_REGIME",
+            "label": "Régime matrimonial (le cas échéant)",
+            "type": "select",
+            "options": [
+              "communauté réduite aux acquêts",
+              "séparation de biens",
+              "participation aux acquêts",
+              "communauté universelle",
+              "autre/étranger"
+            ]
+          }
         ]
       },
       {
         "key": "heritiers",
         "title": "Héritiers et réserve",
         "fields": [
-          {"key": "HEIRS.CHILDREN_COUNT", "label": "Nombre d’enfants", "type": "number", "min": 0, "required": true},
-          {"key": "HEIRS.SPOUSE_EXISTS", "label": "Conjoint survivant potentiel", "type": "boolean"},
-          {"key": "HEIRS.RESERVED_HEIRS", "label": "Héritiers réservataires identifiés", "type": "chips", "help": "Enfants (ou à défaut, conjoint dans certains cas)."}
+          {
+            "key": "HEIRS.CHILDREN_COUNT",
+            "label": "Nombre d’enfants",
+            "type": "number",
+            "min": 0,
+            "required": true
+          },
+          {
+            "key": "HEIRS.SPOUSE_EXISTS",
+            "label": "Conjoint survivant potentiel",
+            "type": "boolean"
+          },
+          {
+            "key": "HEIRS.RESERVED_HEIRS",
+            "label": "Héritiers réservataires identifiés",
+            "type": "chips",
+            "help": "Enfants (ou à défaut, conjoint dans certains cas)."
+          }
         ],
         "computed": [
-          {"key": "QUOTITE_DISPONIBLE", "formula": "if(CHILDREN_COUNT==0, 1.0, if(CHILDREN_COUNT==1, 0.5, if(CHILDREN_COUNT==2, 1/3, 0.25)))", "label": "Quotité disponible (ordinaire) — approximation pédagogique"}
+          {
+            "key": "QUOTITE_DISPONIBLE",
+            "formula": "if(CHILDREN_COUNT==0, 1.0, if(CHILDREN_COUNT==1, 0.5, if(CHILDREN_COUNT==2, 1/3, 0.25)))",
+            "label": "Quotité disponible (ordinaire) — approximation pédagogique"
+          }
         ],
         "warnings_fr": [
           "Le respect de la réserve héréditaire (art. 912 et s.) est obligatoire ; toute libéralité excédentaire est sujette à réduction.",
@@ -225,28 +293,79 @@
         "key": "dispositions",
         "title": "Dispositions (legs)",
         "fields": [
-          {"key": "LEGACIES", "label": "Liste des dispositions", "type": "repeater", "item_schema": {
-            "type_select": {"type": "select", "options": ["universel","à titre universel","particulier","usufruit"]},
-            "beneficiary": {"type": "person"},
-            "asset_description": {"type": "textarea"},
-            "amount": {"type": "money"},
-            "share": {"type": "percent_or_fraction"}
-          }},
-          {"key": "EXECUTOR", "label": "Exécuteur testamentaire", "type": "person"},
-          {"key": "DIGITAL_INSTRUCTIONS", "label": "Directives numériques (comptes, données)", "type": "textarea"},
-          {"key": "DIGITAL_AGENT", "label": "Personne chargée d’exécuter les directives numériques", "type": "person"},
-          {"key": "HAS_MINORS", "label": "Enfants mineurs", "type": "boolean"},
-          {"key": "TUTOR", "label": "Tuteur pressenti", "type": "person", "visible_if": "HAS_MINORS==true"},
-          {"key": "FUNERAL_TYPE", "label": "Souhaits funéraires (ex.: inhumation, crémation)", "type": "text"},
-          {"key": "FUNERAL_WISHES", "label": "Précisions funéraires", "type": "textarea"}
+          {
+            "key": "LEGACIES",
+            "label": "Liste des dispositions",
+            "type": "repeater",
+            "item_schema": {
+              "type_select": {
+                "type": "select",
+                "options": [
+                  "universel",
+                  "à titre universel",
+                  "particulier",
+                  "usufruit"
+                ]
+              },
+              "beneficiary": { "type": "person" },
+              "asset_description": { "type": "textarea" },
+              "amount": { "type": "money" },
+              "share": { "type": "percent_or_fraction" }
+            }
+          },
+          {
+            "key": "EXECUTOR",
+            "label": "Exécuteur testamentaire",
+            "type": "person"
+          },
+          {
+            "key": "DIGITAL_INSTRUCTIONS",
+            "label": "Directives numériques (comptes, données)",
+            "type": "textarea"
+          },
+          {
+            "key": "DIGITAL_AGENT",
+            "label": "Personne chargée d’exécuter les directives numériques",
+            "type": "person"
+          },
+          {
+            "key": "HAS_MINORS",
+            "label": "Enfants mineurs",
+            "type": "boolean"
+          },
+          {
+            "key": "TUTOR",
+            "label": "Tuteur pressenti",
+            "type": "person",
+            "visible_if": "HAS_MINORS==true"
+          },
+          {
+            "key": "FUNERAL_TYPE",
+            "label": "Souhaits funéraires (ex.: inhumation, crémation)",
+            "type": "text"
+          },
+          {
+            "key": "FUNERAL_WISHES",
+            "label": "Précisions funéraires",
+            "type": "textarea"
+          }
         ]
       },
       {
         "key": "choix_de_loi",
         "title": "Choix de loi (UE 650/2012)",
         "fields": [
-          {"key": "CHOICE_OF_LAW_ENABLE", "label": "Insérer une professio juris", "type": "boolean"},
-          {"key": "CHOICE_OF_LAW_VALUE", "label": "Loi choisie (nationalité du testateur)", "type": "text", "visible_if": "CHOICE_OF_LAW_ENABLE==true"}
+          {
+            "key": "CHOICE_OF_LAW_ENABLE",
+            "label": "Insérer une professio juris",
+            "type": "boolean"
+          },
+          {
+            "key": "CHOICE_OF_LAW_VALUE",
+            "label": "Loi choisie (nationalité du testateur)",
+            "type": "text",
+            "visible_if": "CHOICE_OF_LAW_ENABLE==true"
+          }
         ],
         "notes_fr": [
           "Par défaut, la loi de la dernière résidence habituelle s’applique (art. 21).",
@@ -257,9 +376,13 @@
         "key": "signature",
         "title": "Signature et finalisation",
         "fields": [
-          {"key": "SIGNING.PLACE", "label": "Lieu", "type": "text"},
-          {"key": "SIGNING.DATE", "label": "Date", "type": "date"},
-          {"key": "SIGNING.SIGNATURE_LINE", "label": "Signature (ligne)", "type": "text"}
+          { "key": "SIGNING.PLACE", "label": "Lieu", "type": "text" },
+          { "key": "SIGNING.DATE", "label": "Date", "type": "date" },
+          {
+            "key": "SIGNING.SIGNATURE_LINE",
+            "label": "Signature (ligne)",
+            "type": "text"
+          }
         ],
         "holograph_alert_fr": "Pour la forme olographe : recopiez intégralement à la main avant de signer. La version imprimée n’a pas de valeur."
       }
@@ -268,10 +391,22 @@
   "rendering": {
     "engine": "mustache",
     "mappings": [
-      {"type": "olographe", "template_key": "types.olographe.body_template_fr"},
-      {"type": "authentique", "template_key": "types.authentique.dispositive_clauses_fr"},
-      {"type": "mystique", "template_key": "types.mystique.inner_text_template_fr"},
-      {"type": "international", "template_key": "types.international.dispositive_clauses_fr"}
+      {
+        "type": "olographe",
+        "template_key": "types.olographe.body_template_fr"
+      },
+      {
+        "type": "authentique",
+        "template_key": "types.authentique.dispositive_clauses_fr"
+      },
+      {
+        "type": "mystique",
+        "template_key": "types.mystique.inner_text_template_fr"
+      },
+      {
+        "type": "international",
+        "template_key": "types.international.dispositive_clauses_fr"
+      }
     ],
     "common_alias": {
       "common.revocation": "commonClauses_fr.revocation",
@@ -319,6 +454,10 @@
       "Legs particulier de mon appartement sis {{ASSET_DESCRIPTION}} à {{BENEFICIARY.full_name}}.",
       "Legs de {{AMOUNT}} € à {{BENEFICIARY.full_name}}."
     ],
-    "usufruct_scopes": ["la totalité de ma succession", "ma résidence principale située à {{ADDRESS}}", "mon portefeuille-titres n° {{ACCOUNT_REF}}"]
+    "usufruct_scopes": [
+      "la totalité de ma succession",
+      "ma résidence principale située à {{ADDRESS}}",
+      "mon portefeuille-titres n° {{ACCOUNT_REF}}"
+    ]
   }
 }

@@ -4,117 +4,117 @@
 import type { WillData } from '@/components/legacy/WillWizard';
 
 export interface WillTemplate {
-  id: string;
-  name: string;
-  description: string;
   category: TemplateCategory;
-  jurisdiction: string;
-  targetProfile: UserProfile;
-  complexity: 'simple' | 'moderate' | 'complex';
+  complexity: 'complex' | 'moderate' | 'simple';
+  description: string;
   estimatedCompletionTime: number; // in minutes
-  popularityScore: number;
+  id: string;
+  jurisdiction: string;
   lastUpdated: Date;
-  legalReviewDate?: Date;
-  tags: string[];
-  templateData: Partial<WillData>;
-  placeholders: Record<string, string>;
-  requiredFields: string[];
-  optionalEnhancements: string[];
   legalNotices: string[];
+  legalReviewDate?: Date;
+  name: string;
+  optionalEnhancements: string[];
+  placeholders: Record<string, string>;
+  popularityScore: number;
   preview: {
-    summaryText: string;
-    keyFeatures: string[];
-    beneficiaryCount: number;
     assetTypes: string[];
+    beneficiaryCount: number;
+    keyFeatures: string[];
+    summaryText: string;
   };
+  requiredFields: string[];
+  tags: string[];
+  targetProfile: UserProfile;
+  templateData: Partial<WillData>;
 }
 
 export interface UserProfile {
-  maritalStatus: 'single' | 'married' | 'divorced' | 'widowed' | 'unknown';
-  hasChildren: boolean;
-  hasMinorChildren: boolean;
   ageRange: '18-30' | '31-45' | '46-60' | '61-75' | '75+';
-  estimatedNetWorth: 'low' | 'medium' | 'high' | 'very_high';
-  hasBusinessInterests: boolean;
-  hasInternationalAssets: boolean;
   complexFamilySituation: boolean; // blended families, etc.
+  estimatedNetWorth: 'high' | 'low' | 'medium' | 'very_high';
+  hasBusinessInterests: boolean;
+  hasChildren: boolean;
+  hasInternationalAssets: boolean;
+  hasMinorChildren: boolean;
+  maritalStatus: 'divorced' | 'married' | 'single' | 'unknown' | 'widowed';
   specialConsiderations: string[]; // disabilities, pets, charities, etc.
 }
 
 export type TemplateCategory =
-  | 'young_professional'
-  | 'new_parent'
-  | 'established_family'
   | 'blended_family'
   | 'business_owner'
+  | 'charitable_focused'
+  | 'childless_couple'
+  | 'established_family'
+  | 'international'
+  | 'new_parent'
   | 'retiree'
   | 'single_parent'
-  | 'childless_couple'
-  | 'charitable_focused'
-  | 'international'
-  | 'special_needs';
+  | 'special_needs'
+  | 'young_professional';
 
 export interface ComparisonReport {
-  id: string;
-  comparedAt: Date;
-  oldVersion: WillVersionSnapshot;
-  newVersion: WillVersionSnapshot;
   changes: ChangeSet[];
+  comparedAt: Date;
+  id: string;
   impactAnalysis: ImpactAnalysis;
+  newVersion: WillVersionSnapshot;
+  oldVersion: WillVersionSnapshot;
   recommendations: string[];
   requiresLegalReview: boolean;
 }
 
 export interface WillVersionSnapshot {
-  id: string;
-  version: string;
   createdAt: Date;
   data: WillData;
+  id: string;
   metadata: {
-    templateUsed?: string;
-    jurisdiction: string;
-    totalBeneficiaries: number;
-    totalAssetCategories: number;
     completionPercentage: number;
+    jurisdiction: string;
+    templateUsed?: string;
+    totalAssetCategories: number;
+    totalBeneficiaries: number;
   };
+  version: string;
 }
 
 export interface ChangeSet {
-  section: keyof WillData;
-  field: string;
-  changeType: 'added' | 'removed' | 'modified';
-  oldValue?: unknown;
-  newValue?: unknown;
-  impact: 'low' | 'medium' | 'high' | 'critical';
+  changeType: 'added' | 'modified' | 'removed';
   description: string;
+  field: string;
+  impact: 'critical' | 'high' | 'low' | 'medium';
   legalImplications?: string;
+  newValue?: unknown;
+  oldValue?: unknown;
+  section: keyof WillData;
 }
 
 export interface ImpactAnalysis {
-  overallImpact: 'minimal' | 'moderate' | 'significant' | 'major';
   affectedBeneficiaries: string[];
   changedInheritanceAmounts: Array<{
     beneficiary: string;
-    oldPercentage: number;
-    newPercentage: number;
     difference: number;
+    newPercentage: number;
+    oldPercentage: number;
   }>;
   newLegalRequirements: string[];
+  overallImpact: 'major' | 'minimal' | 'moderate' | 'significant';
   potentialConflicts: string[];
 }
 
 export interface Modification {
+  description: string;
+  estimatedImplementationTime: number; // minutes
   id: string;
+  priority: 'high' | 'low' | 'medium';
+  rationale: string;
   templateId: string;
   type:
-    | 'field_change'
-    | 'beneficiary_adjustment'
     | 'asset_addition'
-    | 'custom_clause';
-  description: string;
-  rationale: string;
-  priority: 'low' | 'medium' | 'high';
-  estimatedImplementationTime: number; // minutes
+    | 'beneficiary_adjustment'
+    | 'custom_clause'
+    | 'field_change';
 }
 
 // Curated will templates
@@ -718,7 +718,7 @@ export class WillTemplateLibrary {
   /**
    * Get a specific template by ID
    */
-  getTemplate(templateId: string): WillTemplate | null {
+  getTemplate(templateId: string): null | WillTemplate {
     return WILL_TEMPLATES.find(t => t.id === templateId) || null;
   }
 

@@ -2,7 +2,6 @@ import { test, expect } from '@playwright/test';
 import { AuthHelper } from './helpers/auth-helper';
 
 test.describe('Responsive Design and UI/UX Polish', () => {
-
   test('should be responsive on mobile devices (375px)', async ({ page }) => {
     // Set mobile viewport
     await page.setViewportSize({ width: 375, height: 667 });
@@ -14,8 +13,10 @@ test.describe('Responsive Design and UI/UX Polish', () => {
     await page.click('[data-testid="dashboard-link"]');
 
     // Navigation should be mobile-friendly (hamburger menu or drawer)
-    const mobileNav = page.locator('[data-testid="mobile-navigation"], [data-testid="hamburger-menu"]');
-    if (await mobileNav.count() > 0) {
+    const mobileNav = page.locator(
+      '[data-testid="mobile-navigation"], [data-testid="hamburger-menu"]'
+    );
+    if ((await mobileNav.count()) > 0) {
       await expect(mobileNav).toBeVisible();
     }
 
@@ -41,7 +42,9 @@ test.describe('Responsive Design and UI/UX Polish', () => {
 
       if (firstCardBox && secondCardBox) {
         // Second card should be below first card (stacked)
-        expect(secondCardBox.y).toBeGreaterThan(firstCardBox.y + firstCardBox.height - 20);
+        expect(secondCardBox.y).toBeGreaterThan(
+          firstCardBox.y + firstCardBox.height - 20
+        );
       }
     }
   });
@@ -56,8 +59,10 @@ test.describe('Responsive Design and UI/UX Polish', () => {
     await page.click('[data-testid="dashboard-link"]');
 
     // Sidebar should be visible or collapsible on tablet
-    const sidebar = page.locator('[data-testid="sidebar"], [data-testid="app-sidebar"]');
-    if (await sidebar.count() > 0) {
+    const sidebar = page.locator(
+      '[data-testid="sidebar"], [data-testid="app-sidebar"]'
+    );
+    if ((await sidebar.count()) > 0) {
       await expect(sidebar).toBeVisible();
 
       // Should have appropriate width for tablet
@@ -77,7 +82,7 @@ test.describe('Responsive Design and UI/UX Polish', () => {
     // Test Legacy Garden responsiveness
     await page.click('[data-testid="legacy-link"]');
     const gardenVisualization = page.locator('[data-testid="legacy-garden"]');
-    if (await gardenVisualization.count() > 0) {
+    if ((await gardenVisualization.count()) > 0) {
       const gardenBox = await gardenVisualization.boundingBox();
       if (gardenBox) {
         expect(gardenBox.width).toBeLessThanOrEqual(768);
@@ -96,8 +101,10 @@ test.describe('Responsive Design and UI/UX Polish', () => {
     await page.click('[data-testid="dashboard-link"]');
 
     // Sidebar should be fully expanded on desktop
-    const sidebar = page.locator('[data-testid="sidebar"], [data-testid="app-sidebar"]');
-    if (await sidebar.count() > 0) {
+    const sidebar = page.locator(
+      '[data-testid="sidebar"], [data-testid="app-sidebar"]'
+    );
+    if ((await sidebar.count()) > 0) {
       await expect(sidebar).toBeVisible();
 
       const sidebarBox = await sidebar.boundingBox();
@@ -155,8 +162,10 @@ test.describe('Responsive Design and UI/UX Polish', () => {
     }
 
     // Test swipe gestures if implemented
-    const swipeableElements = page.locator('[data-testid*="swipeable"], [data-testid*="carousel"]');
-    if (await swipeableElements.count() > 0) {
+    const swipeableElements = page.locator(
+      '[data-testid*="swipeable"], [data-testid*="carousel"]'
+    );
+    if ((await swipeableElements.count()) > 0) {
       const element = swipeableElements.first();
 
       // Simulate swipe
@@ -183,7 +192,7 @@ test.describe('Responsive Design and UI/UX Polish', () => {
     if (headingCount > 1) {
       for (let i = 0; i < Math.min(headingCount, 3); i++) {
         const heading = headings.nth(i);
-        const fontSize = await heading.evaluate((el) => {
+        const fontSize = await heading.evaluate(el => {
           return window.getComputedStyle(el).fontSize;
         });
 
@@ -195,18 +204,20 @@ test.describe('Responsive Design and UI/UX Polish', () => {
     }
 
     // Test consistent spacing between elements
-    const containers = page.locator('[data-testid*="container"], [data-testid*="section"]');
+    const containers = page.locator(
+      '[data-testid*="container"], [data-testid*="section"]'
+    );
     const containerCount = await containers.count();
 
     if (containerCount > 0) {
       for (let i = 0; i < Math.min(containerCount, 3); i++) {
         const container = containers.nth(i);
-        const styles = await container.evaluate((el) => {
+        const styles = await container.evaluate(el => {
           const computed = window.getComputedStyle(el);
           return {
             padding: computed.padding,
             margin: computed.margin,
-            gap: computed.gap
+            gap: computed.gap,
           };
         });
 
@@ -221,23 +232,27 @@ test.describe('Responsive Design and UI/UX Polish', () => {
     await authHelper.signIn();
 
     // Test dark mode toggle if available
-    const darkModeToggle = page.locator('[data-testid="dark-mode-toggle"], [data-testid="theme-toggle"]');
-    if (await darkModeToggle.count() > 0) {
+    const darkModeToggle = page.locator(
+      '[data-testid="dark-mode-toggle"], [data-testid="theme-toggle"]'
+    );
+    if ((await darkModeToggle.count()) > 0) {
       // Toggle dark mode
       await darkModeToggle.click();
 
       // Check if dark mode is applied
       const bodyElement = page.locator('body, html, [data-theme]');
-      const isDarkMode = await bodyElement.evaluate((el) => {
+      const isDarkMode = await bodyElement.evaluate(el => {
         const style = window.getComputedStyle(el);
         const bgColor = style.backgroundColor;
         const classNames = el.className;
 
         // Check for dark background or dark class
-        return bgColor.includes('rgb(0') ||
-               bgColor.includes('rgb(17') ||
-               classNames.includes('dark') ||
-               el.getAttribute('data-theme') === 'dark';
+        return (
+          bgColor.includes('rgb(0') ||
+          bgColor.includes('rgb(17') ||
+          classNames.includes('dark') ||
+          el.getAttribute('data-theme') === 'dark'
+        );
       });
 
       expect(isDarkMode).toBeTruthy();
@@ -245,15 +260,17 @@ test.describe('Responsive Design and UI/UX Polish', () => {
       // Toggle back to light mode
       await darkModeToggle.click();
 
-      const isLightMode = await bodyElement.evaluate((el) => {
+      const isLightMode = await bodyElement.evaluate(el => {
         const style = window.getComputedStyle(el);
         const bgColor = style.backgroundColor;
         const classNames = el.className;
 
-        return bgColor.includes('rgb(255') ||
-               bgColor.includes('white') ||
-               !classNames.includes('dark') ||
-               el.getAttribute('data-theme') === 'light';
+        return (
+          bgColor.includes('rgb(255') ||
+          bgColor.includes('white') ||
+          !classNames.includes('dark') ||
+          el.getAttribute('data-theme') === 'light'
+        );
       });
 
       expect(isLightMode).toBeTruthy();
@@ -267,14 +284,16 @@ test.describe('Responsive Design and UI/UX Polish', () => {
     await page.click('[data-testid="dashboard-link"]');
 
     // Test scrolling behavior
-    const scrollableElements = page.locator('[data-testid*="scroll"], .overflow-auto, .overflow-y-auto');
+    const scrollableElements = page.locator(
+      '[data-testid*="scroll"], .overflow-auto, .overflow-y-auto'
+    );
     const scrollCount = await scrollableElements.count();
 
     if (scrollCount > 0) {
       const scrollable = scrollableElements.first();
 
       // Test smooth scrolling if implemented
-      await scrollable.evaluate((el) => {
+      await scrollable.evaluate(el => {
         el.scrollTo({ top: 100, behavior: 'smooth' });
       });
 
@@ -286,7 +305,9 @@ test.describe('Responsive Design and UI/UX Polish', () => {
     }
 
     // Test sticky elements don't overlap content
-    const stickyElements = page.locator('[data-testid*="sticky"], .sticky, [style*="position: sticky"]');
+    const stickyElements = page.locator(
+      '[data-testid*="sticky"], .sticky, [style*="position: sticky"]'
+    );
     const stickyCount = await stickyElements.count();
 
     if (stickyCount > 0) {
@@ -308,17 +329,19 @@ test.describe('Responsive Design and UI/UX Polish', () => {
     const pages = [
       { link: '[data-testid="vault-link"]', url: '**/vault' },
       { link: '[data-testid="legacy-link"]', url: '**/legacy' },
-      { link: '[data-testid="settings-link"]', url: '**/settings' }
+      { link: '[data-testid="settings-link"]', url: '**/settings' },
     ];
 
     for (const pageInfo of pages) {
-      if (await page.locator(pageInfo.link).count() > 0) {
+      if ((await page.locator(pageInfo.link).count()) > 0) {
         await page.click(pageInfo.link);
         await page.waitForURL(pageInfo.url);
 
         // Check for loading indicators
-        const loadingStates = page.locator('[data-testid*="loading"], [data-testid*="skeleton"]');
-        if (await loadingStates.count() > 0) {
+        const loadingStates = page.locator(
+          '[data-testid*="loading"], [data-testid*="skeleton"]'
+        );
+        if ((await loadingStates.count()) > 0) {
           // Loading states should be visible initially
           await expect(loadingStates.first()).toBeVisible();
         }
@@ -327,7 +350,9 @@ test.describe('Responsive Design and UI/UX Polish', () => {
         await page.waitForLoadState('networkidle');
 
         // Loading states should be hidden after content loads
-        const persistentLoading = page.locator('[data-testid*="loading"]:visible');
+        const persistentLoading = page.locator(
+          '[data-testid*="loading"]:visible'
+        );
         const loadingCount = await persistentLoading.count();
 
         // Should have minimal or no persistent loading indicators
@@ -336,7 +361,9 @@ test.describe('Responsive Design and UI/UX Polish', () => {
     }
   });
 
-  test('should have proper focus management and visual feedback', async ({ page }) => {
+  test('should have proper focus management and visual feedback', async ({
+    page,
+  }) => {
     const authHelper = new AuthHelper(page);
     await authHelper.signIn();
 
@@ -352,13 +379,13 @@ test.describe('Responsive Design and UI/UX Polish', () => {
       // Test hover state
       await element.hover();
 
-      const hoverStyles = await element.evaluate((el) => {
+      const hoverStyles = await element.evaluate(el => {
         const styles = window.getComputedStyle(el);
         return {
           cursor: styles.cursor,
           transform: styles.transform,
           backgroundColor: styles.backgroundColor,
-          borderColor: styles.borderColor
+          borderColor: styles.borderColor,
         };
       });
 
@@ -368,34 +395,36 @@ test.describe('Responsive Design and UI/UX Polish', () => {
       // Should have some visual change on hover
       expect(
         hoverStyles.transform !== 'none' ||
-        hoverStyles.backgroundColor !== 'rgba(0, 0, 0, 0)' ||
-        hoverStyles.borderColor !== 'rgba(0, 0, 0, 0)'
+          hoverStyles.backgroundColor !== 'rgba(0, 0, 0, 0)' ||
+          hoverStyles.borderColor !== 'rgba(0, 0, 0, 0)'
       ).toBeTruthy();
     }
 
     // Test focus indicators
-    const focusableElements = page.locator('input, button, a, select, textarea');
+    const focusableElements = page.locator(
+      'input, button, a, select, textarea'
+    );
     const focusableCount = await focusableElements.count();
 
     if (focusableCount > 0) {
       const element = focusableElements.first();
       await element.focus();
 
-      const focusStyles = await element.evaluate((el) => {
+      const focusStyles = await element.evaluate(el => {
         const styles = window.getComputedStyle(el);
         return {
           outline: styles.outline,
           boxShadow: styles.boxShadow,
-          borderColor: styles.borderColor
+          borderColor: styles.borderColor,
         };
       });
 
       // Should have visible focus indicator
       expect(
         focusStyles.outline !== 'none' ||
-        focusStyles.boxShadow.includes('ring') ||
-        focusStyles.boxShadow.includes('focus') ||
-        focusStyles.borderColor.includes('blue')
+          focusStyles.boxShadow.includes('ring') ||
+          focusStyles.boxShadow.includes('focus') ||
+          focusStyles.borderColor.includes('blue')
       ).toBeTruthy();
     }
   });
@@ -415,7 +444,7 @@ test.describe('Responsive Design and UI/UX Polish', () => {
       const input = formInputs.first();
 
       // Enter invalid data to trigger error
-      if (await input.getAttribute('type') === 'email') {
+      if ((await input.getAttribute('type')) === 'email') {
         await input.fill('invalid-email');
       } else {
         await input.clear();
@@ -424,17 +453,19 @@ test.describe('Responsive Design and UI/UX Polish', () => {
       await input.blur();
 
       // Look for error messages
-      const errorMessages = page.locator('[data-testid*="error"], .error, [role="alert"]');
-      if (await errorMessages.count() > 0) {
+      const errorMessages = page.locator(
+        '[data-testid*="error"], .error, [role="alert"]'
+      );
+      if ((await errorMessages.count()) > 0) {
         const errorMessage = errorMessages.first();
         await expect(errorMessage).toBeVisible();
 
         // Error should have proper styling
-        const errorStyles = await errorMessage.evaluate((el) => {
+        const errorStyles = await errorMessage.evaluate(el => {
           const styles = window.getComputedStyle(el);
           return {
             color: styles.color,
-            fontSize: styles.fontSize
+            fontSize: styles.fontSize,
           };
         });
 
@@ -448,13 +479,17 @@ test.describe('Responsive Design and UI/UX Polish', () => {
     await page.goto('/non-existent-page');
 
     // Should show proper 404 page
-    const errorPage = page.locator('[data-testid="404-page"], [data-testid="not-found"]');
-    if (await errorPage.count() > 0) {
+    const errorPage = page.locator(
+      '[data-testid="404-page"], [data-testid="not-found"]'
+    );
+    if ((await errorPage.count()) > 0) {
       await expect(errorPage).toBeVisible();
 
       // Should have navigation back to app
-      const homeLink = page.locator('[data-testid="home-link"], [data-testid="back-to-app"]');
-      if (await homeLink.count() > 0) {
+      const homeLink = page.locator(
+        '[data-testid="home-link"], [data-testid="back-to-app"]'
+      );
+      if ((await homeLink.count()) > 0) {
         await expect(homeLink).toBeVisible();
       }
     }
@@ -483,7 +518,9 @@ test.describe('Responsive Design and UI/UX Polish', () => {
       await page.waitForLoadState('domcontentloaded');
 
       // Check for layout stability
-      const mainContent = page.locator('[data-testid="dashboard-content"], main');
+      const mainContent = page.locator(
+        '[data-testid="dashboard-content"], main'
+      );
       const initialHeight = await mainContent.evaluate(el => el.offsetHeight);
 
       // Wait a bit for any animations to complete
@@ -492,25 +529,34 @@ test.describe('Responsive Design and UI/UX Polish', () => {
       const finalHeight = await mainContent.evaluate(el => el.offsetHeight);
 
       // Height changes should be minimal (within 10% for layout shifts)
-      const heightChange = Math.abs(finalHeight - initialHeight) / initialHeight;
+      const heightChange =
+        Math.abs(finalHeight - initialHeight) / initialHeight;
       expect(heightChange).toBeLessThan(0.1);
     }
 
     // Test dynamic list updates (if any)
-    const dynamicLists = page.locator('[data-testid*="list"], [data-testid*="feed"]');
-    if (await dynamicLists.count() > 0) {
+    const dynamicLists = page.locator(
+      '[data-testid*="list"], [data-testid*="feed"]'
+    );
+    if ((await dynamicLists.count()) > 0) {
       const list = dynamicLists.first();
-      const initialItemCount = await list.locator('[data-testid*="item"]').count();
+      const initialItemCount = await list
+        .locator('[data-testid*="item"]')
+        .count();
 
       // Trigger update if there's an add button
-      const addButton = page.locator('[data-testid*="add"], [data-testid*="create"]');
-      if (await addButton.count() > 0) {
+      const addButton = page.locator(
+        '[data-testid*="add"], [data-testid*="create"]'
+      );
+      if ((await addButton.count()) > 0) {
         await addButton.first().click();
 
         // Should handle the update smoothly
         await page.waitForTimeout(300);
 
-        const finalItemCount = await list.locator('[data-testid*="item"]').count();
+        const finalItemCount = await list
+          .locator('[data-testid*="item"]')
+          .count();
         expect(finalItemCount).toBeGreaterThanOrEqual(initialItemCount);
       }
     }

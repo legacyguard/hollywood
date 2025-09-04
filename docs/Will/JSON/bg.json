@@ -12,12 +12,7 @@
       "schema": {
         "type": "object",
         "additionalProperties": false,
-        "required": [
-          "testator",
-          "heirs",
-          "declarations",
-          "execution"
-        ],
+        "required": ["testator", "heirs", "declarations", "execution"],
         "properties": {
           "testator": {
             "type": "object",
@@ -25,7 +20,11 @@
             "required": ["fullName", "dateOfBirth", "address"],
             "properties": {
               "fullName": { "type": "string", "title": "Трите имена" },
-              "dateOfBirth": { "type": "string", "format": "date", "title": "Дата на раждане" },
+              "dateOfBirth": {
+                "type": "string",
+                "format": "date",
+                "title": "Дата на раждане"
+              },
               "address": { "type": "string", "title": "Постоянен адрес" }
             }
           },
@@ -39,7 +38,11 @@
               "properties": {
                 "relation": { "type": "string", "title": "Родствена връзка" },
                 "fullName": { "type": "string", "title": "Трите имена" },
-                "dateOfBirth": { "type": "string", "format": "date", "title": "Дата на раждане" },
+                "dateOfBirth": {
+                  "type": "string",
+                  "format": "date",
+                  "title": "Дата на раждане"
+                },
                 "address": { "type": "string", "title": "Постоянен адрес" },
                 "share": {
                   "type": "number",
@@ -52,9 +55,16 @@
                   "type": "object",
                   "title": "Заместник‑наследник (по избор)",
                   "properties": {
-                    "relation": { "type": "string", "title": "Родствена връзка" },
+                    "relation": {
+                      "type": "string",
+                      "title": "Родствена връзка"
+                    },
                     "fullName": { "type": "string", "title": "Трите имена" },
-                    "dateOfBirth": { "type": "string", "format": "date", "title": "Дата на раждане" },
+                    "dateOfBirth": {
+                      "type": "string",
+                      "format": "date",
+                      "title": "Дата на раждане"
+                    },
                     "address": { "type": "string", "title": "Постоянен адрес" }
                   }
                 }
@@ -155,7 +165,11 @@
             "required": ["fullName", "dateOfBirth", "address"],
             "properties": {
               "fullName": { "type": "string", "title": "Трите имена" },
-              "dateOfBirth": { "type": "string", "format": "date", "title": "Дата на раждане" },
+              "dateOfBirth": {
+                "type": "string",
+                "format": "date",
+                "title": "Дата на раждане"
+              },
               "address": { "type": "string", "title": "Постоянен адрес" }
             }
           },
@@ -169,7 +183,11 @@
               "properties": {
                 "relation": { "type": "string", "title": "Родствена връзка" },
                 "fullName": { "type": "string", "title": "Трите имена" },
-                "dateOfBirth": { "type": "string", "format": "date", "title": "Дата на раждане" },
+                "dateOfBirth": {
+                  "type": "string",
+                  "format": "date",
+                  "title": "Дата на раждане"
+                },
                 "address": { "type": "string", "title": "Постоянен адрес" },
                 "share": {
                   "type": "number",
@@ -182,9 +200,16 @@
                   "type": "object",
                   "title": "Заместник‑наследник (по избор)",
                   "properties": {
-                    "relation": { "type": "string", "title": "Родствена връзка" },
+                    "relation": {
+                      "type": "string",
+                      "title": "Родствена връзка"
+                    },
                     "fullName": { "type": "string", "title": "Трите имена" },
-                    "dateOfBirth": { "type": "string", "format": "date", "title": "Дата на раждане" },
+                    "dateOfBirth": {
+                      "type": "string",
+                      "format": "date",
+                      "title": "Дата на раждане"
+                    },
                     "address": { "type": "string", "title": "Постоянен адрес" }
                   }
                 }
@@ -229,7 +254,11 @@
               "required": ["fullName", "dateOfBirth", "address", "attestation"],
               "properties": {
                 "fullName": { "type": "string", "title": "Трите имена" },
-                "dateOfBirth": { "type": "string", "format": "date", "title": "Дата на раждане" },
+                "dateOfBirth": {
+                  "type": "string",
+                  "format": "date",
+                  "title": "Дата на раждане"
+                },
                 "address": { "type": "string", "title": "Постоянен адрес" },
                 "attestation": {
                   "type": "boolean",

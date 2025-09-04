@@ -19,15 +19,16 @@ async function globalTeardown(_config: FullConfig) {
     // Create screenshots directory summary
     const screenshotsDir = 'tests/screenshots';
     if (fs.existsSync(screenshotsDir)) {
-      const screenshots = fs.readdirSync(screenshotsDir)
+      const screenshots = fs
+        .readdirSync(screenshotsDir)
         .filter(file => file.startsWith('guardian-'))
         .sort();
 
       if (screenshots.length > 0) {
-            // console.log('📸 Screenshots captured:');
-    screenshots.forEach(screenshot => {
-      // console.log(`  - ${screenshot}`);
-    });
+        // console.log('📸 Screenshots captured:');
+        screenshots.forEach(screenshot => {
+          // console.log(`  - ${screenshot}`);
+        });
 
         // Create an index of screenshots
         const screenshotIndex = {
@@ -35,8 +36,8 @@ async function globalTeardown(_config: FullConfig) {
           screenshots: screenshots.map(filename => ({
             filename,
             step: filename.replace('guardian-', '').replace('.png', ''),
-            path: path.join(screenshotsDir, filename)
-          }))
+            path: path.join(screenshotsDir, filename),
+          })),
         };
 
         fs.writeFileSync(
@@ -51,7 +52,9 @@ async function globalTeardown(_config: FullConfig) {
     // Create videos directory summary
     const videosDir = 'tests/videos/guardian-journey';
     if (fs.existsSync(videosDir)) {
-      const videos = fs.readdirSync(videosDir).filter(file => file.endsWith('.webm'));
+      const videos = fs
+        .readdirSync(videosDir)
+        .filter(file => file.endsWith('.webm'));
 
       if (videos.length > 0) {
         // console.log('🎥 Videos recorded:');
@@ -65,7 +68,6 @@ async function globalTeardown(_config: FullConfig) {
 
     // Optional: Clean up temporary test data
     // You could add cleanup of test users, uploaded files, etc.
-
   } catch (error) {
     // console.error('⚠️ Error during cleanup:', error);
     // Don't throw - cleanup failures shouldn't fail the entire test run

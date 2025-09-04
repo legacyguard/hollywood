@@ -19,37 +19,37 @@ import {
 } from '@/components/ui/alert-dialog';
 import EnhancedDocumentUploader from '@/components/features/EnhancedDocumentUploader';
 import {
-  DataTable,
+  createActionsColumn,
   createSelectColumn,
   createSortableHeader,
-  createActionsColumn,
+  DataTable,
 } from '@/components/enhanced/DataTable';
 import { MetricsGrid } from '@/components/enhanced/MetricCard';
 import { usePageTitle } from '@/hooks/usePageTitle';
-import { useState, useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import type { ColumnDef } from '@tanstack/react-table';
 import {
+  CheckCircle,
+  Clock,
   Download,
   Eye,
-  Trash2,
   Shield,
-  Clock,
-  CheckCircle,
+  Trash2,
 } from 'lucide-react';
 
 // Document interface
 interface Document {
-  id: string;
-  name: string;
   category: string;
-  size: string;
-  uploadedAt: Date;
   expiresAt?: Date;
-  status: 'processed' | 'processing' | 'pending' | 'encrypted';
-  ocrStatus?: 'complete' | 'processing' | 'failed' | 'none';
-  tags?: string[];
+  id: string;
   isEncrypted: boolean;
+  name: string;
+  ocrStatus?: 'complete' | 'failed' | 'none' | 'processing';
+  size: string;
+  status: 'encrypted' | 'pending' | 'processed' | 'processing';
+  tags?: string[];
+  uploadedAt: Date;
 }
 
 export default function VaultPage() {
@@ -225,7 +225,7 @@ export default function VaultPage() {
         accessorKey: 'category',
         header: createSortableHeader('Category'),
         cell: ({ row }) => (
-                          <Badge variant="outline" className='text-xs'>
+          <Badge variant='outline' className='text-xs'>
             {row.getValue('category')}
           </Badge>
         ),
@@ -322,12 +322,12 @@ export default function VaultPage() {
           return (
             <div className='flex flex-wrap gap-1'>
               {tags.slice(0, 2).map((tag, i) => (
-                <Badge key={i} variant="secondary" className='text-xs'>
+                <Badge key={i} variant='secondary' className='text-xs'>
                   {tag}
                 </Badge>
               ))}
               {tags.length > 2 && (
-                <Badge variant="secondary" className='text-xs'>
+                <Badge variant='secondary' className='text-xs'>
                   +{tags.length - 2}
                 </Badge>
               )}
@@ -411,126 +411,126 @@ export default function VaultPage() {
   return (
     <>
       <MetaTags
-        title="Document Vault"
-        description="Securely store and automatically analyze your important documents with AI-powered OCR technology. Your digital vault for all important documents."
-        keywords="document vault, secure storage, AI OCR, document analysis, encrypted documents"
+        title='Document Vault'
+        description='Securely store and automatically analyze your important documents with AI-powered OCR technology. Your digital vault for all important documents.'
+        keywords='document vault, secure storage, AI OCR, document analysis, encrypted documents'
       />
       <DashboardLayout>
         <div className='min-h-screen bg-background'>
-        <header className='bg-card border-b border-card-border'>
-          <div className='max-w-7xl mx-auto px-6 lg:px-8 py-8'>
-            <FadeIn duration={0.5} delay={0.2}>
-              <h1 className='text-3xl lg:text-4xl font-bold font-heading text-card-foreground mb-3'>
-                My Vault
-              </h1>
-            </FadeIn>
-            <FadeIn duration={0.5} delay={0.4}>
-              <p
-                className='text-lg leading-relaxed max-w-2xl'
-                style={{  color: 'hsl(var(--muted-text))'  }}
-              >
-                Securely store and automatically analyze your important
-                documents with AI-powered OCR technology.
-              </p>
-            </FadeIn>
-          </div>
-        </header>
-
-        <main className='max-w-7xl mx-auto px-6 lg:px-8 py-12'>
-          <div className='space-y-8'>
-            {/* Metrics Overview */}
-            <FadeIn duration={0.5} delay={0.6}>
-              <MetricsGrid metrics={metrics} columns={4} />
-            </FadeIn>
-
-            {/* OCR Feature Information */}
-            {showOcrInfo && (
-              <FadeIn duration={0.5} delay={0.8}>
-                <Alert className='bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200'>
-                  <Icon name="sparkles" className='h-4 w-4 text-blue-600' />
-                  <AlertDescription className='flex items-center justify-between'>
-                    <div>
-                      <strong className='text-blue-900'>
-                        ✨ AI-Powered Document Analysis Now Available!
-                      </strong>
-                      <p className='text-blue-700 mt-1'>
-                        Upload any document and our AI will automatically
-                        extract text, classify document types, identify
-                        important information like dates and amounts, and make
-                        your documents searchable.
-                      </p>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size='sm'
-                      onClick={() => setShowOcrInfo(false)}
-                      className='text-blue-600 hover:text-blue-800 ml-4'
-                    >
-                      <Icon name="x" className='h-4 w-4' />
-                    </Button>
-                  </AlertDescription>
-                </Alert>
+          <header className='bg-card border-b border-card-border'>
+            <div className='max-w-7xl mx-auto px-6 lg:px-8 py-8'>
+              <FadeIn duration={0.5} delay={0.2}>
+                <h1 className='text-3xl lg:text-4xl font-bold font-heading text-card-foreground mb-3'>
+                  My Vault
+                </h1>
               </FadeIn>
-            )}
-
-            {/* Enhanced Upload Section with OCR */}
-            <div>
-              <EnhancedDocumentUploader />
-              <Button
-                onClick={() => setRefreshTrigger(prev => prev + 1)}
-                variant="outline"
-                size='sm'
-                className='mt-4'
-              >
-                <Icon name="refresh-cw" className='h-4 w-4 mr-2' />
-                Refresh Documents
-              </Button>
+              <FadeIn duration={0.5} delay={0.4}>
+                <p
+                  className='text-lg leading-relaxed max-w-2xl'
+                  style={{ color: 'hsl(var(--muted-text))' }}
+                >
+                  Securely store and automatically analyze your important
+                  documents with AI-powered OCR technology.
+                </p>
+              </FadeIn>
             </div>
+          </header>
 
-            {/* Enhanced Documents Table */}
-            <FadeIn duration={0.5} delay={1}>
-              <DataTable
-                columns={columns}
-                data={documents}
-                title='Document Vault'
-                description='All your protected documents in one secure place'
-                searchPlaceholder='Search documents by name, category, or tags...'
-                loading={isLoading}
-                onExport={handleExport}
-                pageSize={10}
-              />
-            </FadeIn>
-          </div>
-        </main>
-      </div>
+          <main className='max-w-7xl mx-auto px-6 lg:px-8 py-12'>
+            <div className='space-y-8'>
+              {/* Metrics Overview */}
+              <FadeIn duration={0.5} delay={0.6}>
+                <MetricsGrid metrics={metrics} columns={4} />
+              </FadeIn>
 
-      {/* Delete Confirmation Dialog */}
-      <AlertDialog
-        open={isConfirmDialogOpen}
-        onOpenChange={setIsConfirmDialogOpen}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete Document</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete "{documentToDelete?.name}"? This
-              action cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel onClick={handleDeleteCancel}>
-              Cancel
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleDeleteConfirm}
-              className='bg-destructive text-destructive-foreground hover:bg-destructive/90'
-            >
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-        </DashboardLayout>
-      </>
-    );
+              {/* OCR Feature Information */}
+              {showOcrInfo && (
+                <FadeIn duration={0.5} delay={0.8}>
+                  <Alert className='bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200'>
+                    <Icon name='sparkles' className='h-4 w-4 text-blue-600' />
+                    <AlertDescription className='flex items-center justify-between'>
+                      <div>
+                        <strong className='text-blue-900'>
+                          ✨ AI-Powered Document Analysis Now Available!
+                        </strong>
+                        <p className='text-blue-700 mt-1'>
+                          Upload any document and our AI will automatically
+                          extract text, classify document types, identify
+                          important information like dates and amounts, and make
+                          your documents searchable.
+                        </p>
+                      </div>
+                      <Button
+                        variant='ghost'
+                        size='sm'
+                        onClick={() => setShowOcrInfo(false)}
+                        className='text-blue-600 hover:text-blue-800 ml-4'
+                      >
+                        <Icon name='x' className='h-4 w-4' />
+                      </Button>
+                    </AlertDescription>
+                  </Alert>
+                </FadeIn>
+              )}
+
+              {/* Enhanced Upload Section with OCR */}
+              <div>
+                <EnhancedDocumentUploader />
+                <Button
+                  onClick={() => setRefreshTrigger(prev => prev + 1)}
+                  variant='outline'
+                  size='sm'
+                  className='mt-4'
+                >
+                  <Icon name='refresh-cw' className='h-4 w-4 mr-2' />
+                  Refresh Documents
+                </Button>
+              </div>
+
+              {/* Enhanced Documents Table */}
+              <FadeIn duration={0.5} delay={1}>
+                <DataTable
+                  columns={columns}
+                  data={documents}
+                  title='Document Vault'
+                  description='All your protected documents in one secure place'
+                  searchPlaceholder='Search documents by name, category, or tags...'
+                  loading={isLoading}
+                  onExport={handleExport}
+                  pageSize={10}
+                />
+              </FadeIn>
+            </div>
+          </main>
+        </div>
+
+        {/* Delete Confirmation Dialog */}
+        <AlertDialog
+          open={isConfirmDialogOpen}
+          onOpenChange={setIsConfirmDialogOpen}
+        >
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete Document</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to delete "{documentToDelete?.name}"? This
+                action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={handleDeleteCancel}>
+                Cancel
+              </AlertDialogCancel>
+              <AlertDialogAction
+                onClick={handleDeleteConfirm}
+                className='bg-destructive text-destructive-foreground hover:bg-destructive/90'
+              >
+                Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </DashboardLayout>
+    </>
+  );
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { useSupabaseWithClerk } from '@/integrations/supabase/client';
 import { Card } from '@/components/ui/card';
@@ -10,12 +10,12 @@ import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { FadeIn } from '@/components/motion/FadeIn';
 import type {
-  SurvivorInterface as SurvivorInterfaceData,
-  SurvivorAccessRequest,
-  SurvivorResource,
-  SurvivorGuidanceEntry,
   EmergencyContact,
   EmergencyTimeCapsule,
+  SurvivorAccessRequest,
+  SurvivorGuidanceEntry,
+  SurvivorInterface as SurvivorInterfaceData,
+  SurvivorResource,
 } from '@/types/emergency';
 
 interface SurvivorInterfaceProps {
@@ -32,17 +32,17 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
   const createSupabaseClient = useSupabaseWithClerk();
 
   const [survivorData, setSurvivorData] =
-    useState<SurvivorInterfaceData | null>(null);
+    useState<null | SurvivorInterfaceData>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<null | string>(null);
   const [selectedCategory, setSelectedCategory] = useState<
     | 'all'
+    | 'contacts'
     | 'financial'
+    | 'instructions'
     | 'legal'
     | 'medical'
     | 'personal'
-    | 'contacts'
-    | 'instructions'
   >('all');
   const [accessRequest, setAccessRequest] = useState<
     Partial<SurvivorAccessRequest>
@@ -143,7 +143,14 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
         (documents || []).forEach(doc => {
           availableResources.push({
             id: doc.id,
-            category: (doc.document_type?.toLowerCase() as 'financial' | 'legal' | 'medical' | 'personal' | 'contacts' | 'instructions') || 'personal',
+            category:
+              (doc.document_type?.toLowerCase() as
+                | 'contacts'
+                | 'financial'
+                | 'instructions'
+                | 'legal'
+                | 'medical'
+                | 'personal') || 'personal',
             title: doc.file_name,
             description: `${doc.document_type} document - Last updated ${new Date(doc.updated_at).toLocaleDateString()}`,
             access_level: 'immediate',
@@ -164,7 +171,14 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
         (guidanceEntries || []).forEach(entry => {
           availableResources.push({
             id: entry.id,
-            category: (entry.entry_type as 'financial' | 'legal' | 'medical' | 'personal' | 'contacts' | 'instructions') || 'personal',
+            category:
+              (entry.entry_type as
+                | 'contacts'
+                | 'financial'
+                | 'instructions'
+                | 'legal'
+                | 'medical'
+                | 'personal') || 'personal',
             title: entry.title,
             description: entry.content.substring(0, 150) + '...',
             access_level: 'immediate',
@@ -232,7 +246,13 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
             id: r.id,
             file_name: r.title,
             document_type: r.category,
-            access_level: (r.category as 'health' | 'financial' | 'legal' | 'personal' | 'general') || 'general',
+            access_level:
+              (r.category as
+                | 'financial'
+                | 'general'
+                | 'health'
+                | 'legal'
+                | 'personal') || 'general',
             is_accessible: r.is_available,
             last_updated: new Date().toISOString(), // Would be actual date
             description: r.description,
@@ -315,7 +335,8 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
     return (
       <div className='min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-blue-950/20 dark:via-indigo-950/20 dark:to-purple-950/20 p-4 flex items-center justify-center'>
         <Card className='p-8 text-center'>
-          <Icon name="loading"
+          <Icon
+            name='loading'
             className='w-8 h-8 animate-spin mx-auto mb-4 text-indigo-600'
           />
           <h2 className='text-xl font-semibold mb-2'>
@@ -333,7 +354,8 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
     return (
       <div className='min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-blue-950/20 dark:via-indigo-950/20 dark:to-purple-950/20 p-4 flex items-center justify-center'>
         <Card className='p-8 text-center max-w-md'>
-          <Icon name="alert-triangle"
+          <Icon
+            name='alert-triangle'
             className='w-12 h-12 mx-auto mb-4 text-amber-600'
           />
           <h2 className='text-xl font-semibold mb-2'>Access Restricted</h2>
@@ -342,7 +364,7 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
             Request Access
           </Button>
           <Button
-            variant="outline"
+            variant='outline'
             onClick={() => (window.location.href = '/')}
           >
             Return Home
@@ -380,7 +402,7 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
                 />
               ) : (
                 <div className='w-24 h-24 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-full mx-auto flex items-center justify-center border-4 border-white dark:border-gray-800 shadow-lg'>
-                  <Icon name="user" className='w-12 h-12 text-white' />
+                  <Icon name='user' className='w-12 h-12 text-white' />
                 </div>
               )}
             </div>
@@ -485,7 +507,7 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
                     Submit Request
                   </Button>
                   <Button
-                    variant="outline"
+                    variant='outline'
                     onClick={() => setShowAccessRequest(false)}
                   >
                     Cancel
@@ -498,7 +520,8 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
           {/* Quick Actions */}
           <div className='grid md:grid-cols-3 gap-6 mb-8'>
             <Card className='p-6 text-center hover:shadow-lg transition-shadow'>
-              <Icon name="users"
+              <Icon
+                name='users'
                 className='w-8 h-8 mx-auto mb-3 text-indigo-600'
               />
               <h3 className='font-semibold mb-2'>Emergency Contacts</h3>
@@ -506,7 +529,7 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
                 {emergency_contacts.length} contacts available
               </p>
               <Button
-                variant="outline"
+                variant='outline'
                 size='sm'
                 onClick={() => setSelectedCategory('contacts')}
               >
@@ -515,7 +538,8 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
             </Card>
 
             <Card className='p-6 text-center hover:shadow-lg transition-shadow'>
-              <Icon name="clock"
+              <Icon
+                name='clock'
                 className='w-8 h-8 mx-auto mb-3 text-purple-600'
               />
               <h3 className='font-semibold mb-2'>Time Capsules</h3>
@@ -523,7 +547,7 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
                 {time_capsules.length} messages available
               </p>
               <Button
-                variant="outline"
+                variant='outline'
                 size='sm'
                 onClick={() => setSelectedCategory('personal')}
               >
@@ -532,7 +556,8 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
             </Card>
 
             <Card className='p-6 text-center hover:shadow-lg transition-shadow'>
-              <Icon name="documents"
+              <Icon
+                name='documents'
                 className='w-8 h-8 mx-auto mb-3 text-green-600'
               />
               <h3 className='font-semibold mb-2'>Important Resources</h3>
@@ -540,7 +565,7 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
                 {available_resources.length} items available
               </p>
               <Button
-                variant="outline"
+                variant='outline'
                 size='sm'
                 onClick={() => setSelectedCategory('all')}
               >
@@ -598,7 +623,18 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
               .map(category => (
                 <button
                   key={category.id}
-                  onClick={() => setSelectedCategory(category.id as 'all' | 'contacts' | 'financial' | 'legal' | 'medical' | 'personal' | 'instructions')}
+                  onClick={() =>
+                    setSelectedCategory(
+                      category.id as
+                        | 'all'
+                        | 'contacts'
+                        | 'financial'
+                        | 'instructions'
+                        | 'legal'
+                        | 'medical'
+                        | 'personal'
+                    )
+                  }
                   className={`px-4 py-2 rounded-md font-medium transition-colors ${
                     selectedCategory === category.id
                       ? 'bg-indigo-100 dark:bg-indigo-900/50 text-indigo-900 dark:text-indigo-100'
@@ -615,7 +651,7 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
             {selectedCategory === 'contacts' ? (
               <Card className='p-6'>
                 <h3 className='font-semibold mb-6 flex items-center gap-2'>
-                  <Icon name="users" className='w-5 h-5' />
+                  <Icon name='users' className='w-5 h-5' />
                   Emergency Contacts
                 </h3>
 
@@ -627,7 +663,8 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
                     >
                       <div className='flex items-center gap-3 mb-3'>
                         <div className='w-12 h-12 bg-indigo-100 dark:bg-indigo-900/50 rounded-full flex items-center justify-center'>
-                          <Icon name="user"
+                          <Icon
+                            name='user'
                             className='w-6 h-6 text-indigo-600'
                           />
                         </div>
@@ -641,7 +678,7 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
 
                       <div className='space-y-2 text-sm'>
                         <div className='flex items-center gap-2'>
-                          <Icon name="mail" className='w-4 h-4 text-gray-500' />
+                          <Icon name='mail' className='w-4 h-4 text-gray-500' />
                           <a
                             href={`mailto:${contact.email}`}
                             className='text-indigo-600 hover:underline'
@@ -651,7 +688,8 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
                         </div>
                         {contact.phone && (
                           <div className='flex items-center gap-2'>
-                            <Icon name="phone"
+                            <Icon
+                              name='phone'
                               className='w-4 h-4 text-gray-500'
                             />
                             <a
@@ -663,7 +701,7 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
                           </div>
                         )}
                         <div className='flex items-center gap-2 mt-2'>
-                          <Badge variant="outline" className='text-xs'>
+                          <Badge variant='outline' className='text-xs'>
                             Priority {contact.priority}
                           </Badge>
                         </div>
@@ -679,7 +717,7 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
                     <div className='flex items-start justify-between mb-4'>
                       <div>
                         <h3 className='font-semibold'>{entry.title}</h3>
-                        <Badge variant="outline" className='mt-2'>
+                        <Badge variant='outline' className='mt-2'>
                           {entry.category.replace('_', ' ').toUpperCase()}
                         </Badge>
                       </div>
@@ -704,7 +742,7 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
                           {entry.related_documents.map((docId, idx) => (
                             <Badge
                               key={idx}
-                              variant="outline"
+                              variant='outline'
                               className='text-xs'
                             >
                               Document #{docId.slice(-6)}
@@ -718,7 +756,8 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
 
                 {guidance_entries.length === 0 && (
                   <Card className='p-8 text-center'>
-                    <Icon name="info"
+                    <Icon
+                      name='info'
                       className='w-12 h-12 mx-auto mb-4 text-gray-400'
                     />
                     <p className='text-muted-foreground'>
@@ -746,7 +785,7 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
                             className='w-5 h-5 text-gray-500'
                           />
                           <h3 className='font-medium'>{resource.title}</h3>
-                          <Badge variant="outline" className='text-xs'>
+                          <Badge variant='outline' className='text-xs'>
                             {resource.category.toUpperCase()}
                           </Badge>
                         </div>
@@ -778,7 +817,7 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
                         {resource.is_available && (
                           <Button
                             size='sm'
-                            variant="outline"
+                            variant='outline'
                             onClick={() => downloadResource(resource)}
                           >
                             <Icon
@@ -805,7 +844,7 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
                     <>
                       <div className='mt-8 mb-4'>
                         <h3 className='text-lg font-semibold flex items-center gap-2'>
-                          <Icon name="clock" className='w-5 h-5' />
+                          <Icon name='clock' className='w-5 h-5' />
                           Personal Messages
                         </h3>
                       </div>
@@ -837,7 +876,7 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
                               onClick={() => accessTimeCapsule(capsule)}
                               className='bg-amber-600 hover:bg-amber-700 ml-4'
                             >
-                              <Icon name="play" className='w-4 h-4 mr-2' />
+                              <Icon name='play' className='w-4 h-4 mr-2' />
                               Play Message
                             </Button>
                           </div>
@@ -849,7 +888,8 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
                 {filteredResources.length === 0 &&
                   selectedCategory !== 'personal' && (
                     <Card className='p-8 text-center'>
-                      <Icon name="search"
+                      <Icon
+                        name='search'
                         className='w-12 h-12 mx-auto mb-4 text-gray-400'
                       />
                       <p className='text-muted-foreground'>
@@ -858,7 +898,7 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
                       {!showAccessRequest && (
                         <Button
                           className='mt-4'
-                          variant="outline"
+                          variant='outline'
                           onClick={() => setShowAccessRequest(true)}
                         >
                           Request Additional Access

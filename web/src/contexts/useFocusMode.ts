@@ -1,9 +1,9 @@
-import { useContext, type Context } from 'react';
+import { type Context, useContext } from 'react';
 
-interface FocusModeContextType {
-  isFocusMode: boolean;
+export interface FocusModeContextType {
   enterFocusMode: () => void;
   exitFocusMode: () => void;
+  isFocusMode: boolean;
 }
 
 // This context is defined in FocusModeContext.tsx

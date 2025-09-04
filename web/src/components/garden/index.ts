@@ -8,54 +8,57 @@ import { GardenOrchestrator } from './GardenOrchestrator';
 
 // Interactive enhancements
 import {
-  InteractiveGardenEnhancements,
-  TreeLeaf,
-  SofiaFirefly,
   CelebrationFirefly,
-  MilestoneGlow
+  InteractiveGardenEnhancements,
+  MilestoneGlow,
+  SofiaFirefly,
+  TreeLeaf,
 } from './InteractiveGardenEnhancements';
 
 // Garden hooks and utilities
-import { useGardenProgress, type GardenProgressData } from '@/hooks/useGardenProgress';
+import {
+  type GardenProgressData,
+  useGardenProgress,
+} from '@/hooks/useGardenProgress';
 
 // Re-export garden seed from animations
 import { GardenSeed } from '@/components/animations/GardenSeed';
 
 // Garden system types and interfaces
 export interface GardenTheme {
-  mode: 'empathetic' | 'pragmatic' | 'adaptive';
-  colorScheme: {
-    primary: string;
-    secondary: string;
-    accent: string;
-    background: string;
-  };
   animations: {
     duration: number;
     intensity: number;
     reducedMotion: boolean;
   };
+  colorScheme: {
+    accent: string;
+    background: string;
+    primary: string;
+    secondary: string;
+  };
+  mode: 'adaptive' | 'empathetic' | 'pragmatic';
 }
 
 export interface GardenMilestone {
-  id: string;
-  title: string;
-  description: string;
-  category: 'foundation' | 'family' | 'protection' | 'legacy';
+  category: 'family' | 'foundation' | 'legacy' | 'protection';
   completed: boolean;
   completedAt?: Date;
+  description: string;
+  id: string;
   personalityReward?: {
+    adaptive: string;
     empathetic: string;
     pragmatic: string;
-    adaptive: string;
   };
+  title: string;
 }
 
 export interface GardenInteraction {
-  type: 'branch_click' | 'leaf_click' | 'element_hover' | 'milestone_complete';
-  elementId: string;
   data?: Record<string, unknown>;
+  elementId: string;
   timestamp: Date;
+  type: 'branch_click' | 'element_hover' | 'leaf_click' | 'milestone_complete';
 }
 
 // Garden configuration presets
@@ -121,7 +124,9 @@ export const GardenUtils = {
   /**
    * Calculate garden health based on user progress
    */
-  calculateGardenHealth: (progress: GardenProgressData): 'dormant' | 'growing' | 'thriving' | 'flourishing' => {
+  calculateGardenHealth: (
+    progress: GardenProgressData
+  ): 'dormant' | 'flourishing' | 'growing' | 'thriving' => {
     if (progress.overallProgress >= 80) return 'flourishing';
     if (progress.overallProgress >= 50) return 'thriving';
     if (progress.overallProgress >= 20) return 'growing';
@@ -132,15 +137,15 @@ export const GardenUtils = {
    * Get personality-specific messages
    */
   getPersonalityMessage: (
-    mode: 'empathetic' | 'pragmatic' | 'adaptive',
-    context: 'welcome' | 'milestone' | 'encouragement' | 'completion'
+    mode: 'adaptive' | 'empathetic' | 'pragmatic',
+    context: 'completion' | 'encouragement' | 'milestone' | 'welcome'
   ): string => {
     const messages = {
       empathetic: {
         welcome: 'Welcome to your garden of love and protection 💚',
         milestone: 'Beautiful! Another loving step for your family',
         encouragement: 'Your caring heart is creating something wonderful',
-        completion: 'Your legacy garden blooms with the love you\'ve planted',
+        completion: "Your legacy garden blooms with the love you've planted",
       },
       pragmatic: {
         welcome: 'Protection system initialized. Begin data input.',
@@ -151,7 +156,7 @@ export const GardenUtils = {
       adaptive: {
         welcome: 'Your legacy journey begins here',
         milestone: 'Excellent progress! Another milestone reached',
-        encouragement: 'You\'re building something meaningful',
+        encouragement: "You're building something meaningful",
         completion: 'Your comprehensive legacy system is complete',
       },
     };
@@ -171,8 +176,8 @@ export const GardenUtils = {
         mode === 'empathetic'
           ? 'Add more cherished documents to nurture your garden'
           : mode === 'pragmatic'
-          ? 'Upload additional documents for system redundancy'
-          : 'Continue adding important documents'
+            ? 'Upload additional documents for system redundancy'
+            : 'Continue adding important documents'
       );
     }
 
@@ -181,8 +186,8 @@ export const GardenUtils = {
         mode === 'empathetic'
           ? 'Invite another trusted friend to help protect your family'
           : mode === 'pragmatic'
-          ? 'Assign backup guardian for failure redundancy'
-          : 'Add another guardian to strengthen your network'
+            ? 'Assign backup guardian for failure redundancy'
+            : 'Add another guardian to strengthen your network'
       );
     }
 
@@ -191,8 +196,8 @@ export const GardenUtils = {
         mode === 'empathetic'
           ? 'Continue writing your will - a loving gift to your family'
           : mode === 'pragmatic'
-          ? 'Complete will documentation for legal compliance'
-          : 'Make progress on your will to complete your legacy'
+            ? 'Complete will documentation for legal compliance'
+            : 'Make progress on your will to complete your legacy'
       );
     }
 
@@ -202,14 +207,17 @@ export const GardenUtils = {
   /**
    * Get garden element colors based on personality mode
    */
-  getElementColors: (mode: 'empathetic' | 'pragmatic' | 'adaptive') => {
+  getElementColors: (mode: 'adaptive' | 'empathetic' | 'pragmatic') => {
     return GARDEN_PRESETS[mode].colorScheme;
   },
 
   /**
    * Check if garden should show celebration
    */
-  shouldCelebrate: (progress: GardenProgressData, lastCelebration?: number): boolean => {
+  shouldCelebrate: (
+    progress: GardenProgressData,
+    lastCelebration?: number
+  ): boolean => {
     const currentMilestones = progress.completedMilestones;
     const lastCount = lastCelebration || 0;
     return currentMilestones > lastCount && currentMilestones > 0;
@@ -221,7 +229,8 @@ export const GARDEN_SYSTEM_INFO = {
   version: '2.1.0',
   phase: '2B',
   name: 'Interactive Living Garden',
-  description: 'Advanced tree visualization system with continuous animations and Sofia personality adaptation',
+  description:
+    'Advanced tree visualization system with continuous animations and Sofia personality adaptation',
   features: [
     'Adaptive Legacy Tree visualization',
     'Personality-aware garden elements',
@@ -253,17 +262,17 @@ export const GARDEN_SYSTEM_INFO = {
 } as const;
 
 export {
-  LegacyGardenVisualization,
   AdaptiveLegacyTree,
-  GardenOrchestrator,
-  GardenSeed,
-  useGardenProgress,
-  InteractiveGardenEnhancements,
-  TreeLeaf,
-  SofiaFirefly,
   CelebrationFirefly,
+  GardenOrchestrator,
+  type GardenProgressData,
+  GardenSeed,
+  InteractiveGardenEnhancements,
+  LegacyGardenVisualization,
   MilestoneGlow,
-  type GardenProgressData
+  SofiaFirefly,
+  TreeLeaf,
+  useGardenProgress,
 };
 
 export default {

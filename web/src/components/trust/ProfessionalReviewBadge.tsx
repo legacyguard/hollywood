@@ -3,37 +3,37 @@
  * Shows professional review status with trust indicators
  */
 
-import { CheckCircle, Shield, Clock, AlertTriangle } from 'lucide-react';
+import { AlertTriangle, CheckCircle, Clock, Shield } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import type { ProfessionalReview } from '@/types/will';
 
 interface ProfessionalReviewBadgeProps {
-  review?: ProfessionalReview;
-  size?: 'sm' | 'md' | 'lg';
-  showIcon?: boolean;
   className?: string;
+  review?: ProfessionalReview;
+  showIcon?: boolean;
+  size?: 'lg' | 'md' | 'sm';
 }
 
 export function ProfessionalReviewBadge({
   review,
   size = 'md',
   showIcon = true,
-  className
+  className,
 }: ProfessionalReviewBadgeProps) {
   if (!review) {
     return (
       <Badge
-        variant="outline"
+        variant='outline'
         className={cn(
           'border-accent/20 bg-accent/5 text-accent gap-1.5',
-           size === 'sm' && 'px-2 py-0.5 text-xs',
-           size === 'md' && 'px-2.5 py-1 text-sm',
-           size === 'lg' && 'px-3 py-1.5 text-base',
-           className
-         )}
+          size === 'sm' && 'px-2 py-0.5 text-xs',
+          size === 'md' && 'px-2.5 py-1 text-sm',
+          size === 'lg' && 'px-3 py-1.5 text-base',
+          className
+        )}
       >
-        {showIcon && <AlertTriangle className="h-3 w-3" />}
+        {showIcon && <AlertTriangle className='h-3 w-3' />}
         Not Reviewed
       </Badge>
     );
@@ -85,7 +85,7 @@ export function ProfessionalReviewBadge({
 
   return (
     <Badge
-      variant="outline"
+      variant='outline'
       className={cn(
         config.className,
         'gap-1.5 font-medium',
@@ -95,9 +95,9 @@ export function ProfessionalReviewBadge({
         className
       )}
     >
-      {showIcon && <IconComponent className="h-3 w-3" />}
+      {showIcon && <IconComponent className='h-3 w-3' />}
       {review.certification_level === 'legal_certified' && (
-        <Shield className="h-3 w-3 text-primary" />
+        <Shield className='h-3 w-3 text-primary' />
       )}
     </Badge>
   );

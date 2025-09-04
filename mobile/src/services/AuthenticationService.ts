@@ -24,7 +24,9 @@ export const AuthenticationService = {
     if (__DEV__) console.log('Login attempt with:', email);
     // Password will be used in actual implementation
     if (!password) throw new Error('Password is required');
-    throw new Error('Please use Clerk SignIn components or hooks directly for authentication');
+    throw new Error(
+      'Please use Clerk SignIn components or hooks directly for authentication'
+    );
   },
 
   // Login with biometrics
@@ -41,7 +43,8 @@ export const AuthenticationService = {
   logout: async () => {
     // This should be called from a component with access to useClerkAuth hook
     await SecureStore.deleteItemAsync(KEYCHAIN_TOKEN_KEY);
-    if (__DEV__) console.log('Logout called - use Clerk hooks for actual logout');
+    if (__DEV__)
+      console.log('Logout called - use Clerk hooks for actual logout');
   },
 
   // Get current user

@@ -4,36 +4,40 @@
  */
 
 export interface StripeProduct {
-  id: string;
-  name: string;
-  description: string;
-  priceId: string;
-  price: number;
   currency: string;
+  description: string;
+  id: string;
   interval?: 'month' | 'year';
+  name: string;
+  price: number;
+  priceId: string;
 }
 
 export interface StripeCustomer {
-  id: string;
   email: string;
+  id: string;
   name?: string;
   paymentMethods: PaymentMethod[];
 }
 
 export interface PaymentMethod {
-  id: string;
-  type: 'card' | 'bank_account';
-  last4: string;
   brand?: string;
+  id: string;
   isDefault: boolean;
+  last4: string;
+  type: 'bank_account' | 'card';
 }
 
 export interface PaymentIntent {
-  id: string;
   amount: number;
-  currency: string;
-  status: 'requires_payment_method' | 'requires_confirmation' | 'succeeded' | 'canceled';
   clientSecret?: string;
+  currency: string;
+  id: string;
+  status:
+    | 'canceled'
+    | 'requires_confirmation'
+    | 'requires_payment_method'
+    | 'succeeded';
 }
 
 export class StripeService {
@@ -58,8 +62,8 @@ export class StripeService {
     return {
       id: `cus_${Date.now()}`,
       email,
-      name,
-      paymentMethods: []
+      ...(name !== undefined && { name }),
+      paymentMethods: [],
     };
   }
 
@@ -73,7 +77,7 @@ export class StripeService {
       amount,
       currency,
       status: 'requires_payment_method',
-      clientSecret: `pi_${Date.now()}_secret`
+      clientSecret: `pi_${Date.now()}_secret`,
     };
   }
 
@@ -87,7 +91,7 @@ export class StripeService {
       type: 'card',
       last4: '4242',
       brand: 'visa',
-      isDefault: true
+      isDefault: true,
     };
   }
 
@@ -98,7 +102,7 @@ export class StripeService {
     // Mock implementation
     return {
       id: `sub_${Date.now()}`,
-      status: 'active'
+      status: 'active',
     };
   }
 
@@ -122,7 +126,7 @@ export class StripeService {
         description: 'Basic features',
         priceId: 'price_free',
         price: 0,
-        currency: 'usd'
+        currency: 'usd',
       },
       {
         id: 'prod_premium',
@@ -131,8 +135,8 @@ export class StripeService {
         priceId: 'price_premium',
         price: 999,
         currency: 'usd',
-        interval: 'month'
-      }
+        interval: 'month',
+      },
     ];
   }
 
@@ -142,7 +146,7 @@ export class StripeService {
       id: paymentIntentId,
       amount: 999,
       currency: 'usd',
-      status: 'succeeded'
+      status: 'succeeded',
     };
   }
 }

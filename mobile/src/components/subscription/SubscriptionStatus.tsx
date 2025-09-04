@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
   ActivityIndicator,
   Alert,
-  ScrollView,
   Linking,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -21,45 +21,45 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 // Temporary placeholder types and services
 interface SubscriptionLimits {
-  plan: string;
-  max_documents: number;
-  max_storage_mb: number;
-  max_time_capsules: number;
-  max_scans_per_month: number;
-  offline_access: boolean;
-  ai_features: boolean;
   advanced_search: boolean;
+  ai_features: boolean;
   family_sharing: boolean;
   legal_tools: boolean;
-  priority_support: boolean;
+  max_documents: number;
   max_family_members: number;
+  max_scans_per_month: number;
+  max_storage_mb: number;
+  max_time_capsules: number;
+  offline_access: boolean;
+  plan: string;
   price_monthly: number;
   price_yearly: number;
+  priority_support: boolean;
 }
 
 interface UserSubscription {
-  plan: string;
-  status: string;
   billing_cycle: string;
   expires_at?: string;
+  plan: string;
+  status: string;
 }
 
 interface UserUsage {
   document_count: number;
+  scans_this_month: number;
   storage_used_mb: number;
   time_capsule_count: number;
-  scans_this_month: number;
 }
 
 const subscriptionService = {
-  getCurrentSubscription: async (): Promise<UserSubscription | null> => null,
-  getCurrentUsage: async (): Promise<UserUsage | null> => ({
+  getCurrentSubscription: async (): Promise<null | UserSubscription> => null,
+  getCurrentUsage: async (): Promise<null | UserUsage> => ({
     document_count: 0,
     storage_used_mb: 0,
     time_capsule_count: 0,
     scans_this_month: 0,
   }),
-  getPlanLimits: async (_plan: string): Promise<SubscriptionLimits | null> => ({
+  getPlanLimits: async (_plan: string): Promise<null | SubscriptionLimits> => ({
     plan: 'free',
     max_documents: 10,
     max_storage_mb: 100,
@@ -79,18 +79,23 @@ const subscriptionService = {
 };
 
 const stripeService = {
-  getCustomerPortalUrl: async (): Promise<string | null> => null,
+  getCustomerPortalUrl: async (): Promise<null | string> => null,
 };
 // import { useAuth } from '../../hooks/useAuth';
 
 interface UsageBarProps {
-  label: string;
   current: number;
-  max: number | null;
+  label: string;
+  max: null | number;
   unit?: string;
 }
 
-const UsageBar: React.FC<UsageBarProps> = ({ label, current, max, unit = '' }) => {
+const UsageBar: React.FC<UsageBarProps> = ({
+  label,
+  current,
+  max,
+  unit = '',
+}) => {
   const percentage = max ? Math.min((current / max) * 100, 100) : 0;
   const isUnlimited = max === null;
 
@@ -110,7 +115,9 @@ const UsageBar: React.FC<UsageBarProps> = ({ label, current, max, unit = '' }) =
             <Text style={styles.unlimitedText}>Unlimited</Text>
           ) : (
             <>
-              {current.toLocaleString()}{unit} / {max.toLocaleString()}{unit}
+              {current.toLocaleString()}
+              {unit} / {max.toLocaleString()}
+              {unit}
             </>
           )}
         </Text>
@@ -131,11 +138,13 @@ const UsageBar: React.FC<UsageBarProps> = ({ label, current, max, unit = '' }) =
 
 export const SubscriptionStatus: React.FC = () => {
   // const { user } = useAuth();
-  const [subscription, setSubscription] = useState<UserSubscription | null>(null);
-  const [usage, setUsage] = useState<UserUsage | null>(null);
-  const [limits, setLimits] = useState<SubscriptionLimits | null>(null);
+  const [subscription, setSubscription] = useState<null | UserSubscription>(
+    null
+  );
+  const [usage, setUsage] = useState<null | UserUsage>(null);
+  const [limits, setLimits] = useState<null | SubscriptionLimits>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [daysRemaining, setDaysRemaining] = useState<number | null>(null);
+  const [daysRemaining, setDaysRemaining] = useState<null | number>(null);
 
   useEffect(() => {
     loadSubscriptionData();
@@ -199,7 +208,7 @@ export const SubscriptionStatus: React.FC = () => {
   if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#667eea" />
+        <ActivityIndicator size='large' color='#667eea' />
       </View>
     );
   }
@@ -235,7 +244,8 @@ export const SubscriptionStatus: React.FC = () => {
 
         {subscription?.billing_cycle && (
           <Text style={styles.billingCycle}>
-            Billed {subscription.billing_cycle === 'month' ? 'Monthly' : 'Yearly'}
+            Billed{' '}
+            {subscription.billing_cycle === 'month' ? 'Monthly' : 'Yearly'}
           </Text>
         )}
 
@@ -255,26 +265,26 @@ export const SubscriptionStatus: React.FC = () => {
         {usage && limits && (
           <>
             <UsageBar
-              label="Documents"
+              label='Documents'
               current={usage.document_count}
               max={limits.max_documents}
             />
 
             <UsageBar
-              label="Storage"
+              label='Storage'
               current={Number(usage.storage_used_mb)}
               max={limits.max_storage_mb}
-              unit=" MB"
+              unit=' MB'
             />
 
             <UsageBar
-              label="Time Capsules"
+              label='Time Capsules'
               current={usage.time_capsule_count}
               max={limits.max_time_capsules}
             />
 
             <UsageBar
-              label="Scans this month"
+              label='Scans this month'
               current={usage.scans_this_month}
               max={limits.max_scans_per_month}
             />
@@ -290,7 +300,9 @@ export const SubscriptionStatus: React.FC = () => {
           <View style={styles.featuresList}>
             <View style={styles.featureRow}>
               <Ionicons
-                name={limits.offline_access ? 'checkmark-circle' : 'close-circle'}
+                name={
+                  limits.offline_access ? 'checkmark-circle' : 'close-circle'
+                }
                 size={24}
                 color={limits.offline_access ? '#48bb78' : '#cbd5e0'}
               />
@@ -308,7 +320,9 @@ export const SubscriptionStatus: React.FC = () => {
 
             <View style={styles.featureRow}>
               <Ionicons
-                name={limits.advanced_search ? 'checkmark-circle' : 'close-circle'}
+                name={
+                  limits.advanced_search ? 'checkmark-circle' : 'close-circle'
+                }
                 size={24}
                 color={limits.advanced_search ? '#48bb78' : '#cbd5e0'}
               />
@@ -317,7 +331,9 @@ export const SubscriptionStatus: React.FC = () => {
 
             <View style={styles.featureRow}>
               <Ionicons
-                name={limits.priority_support ? 'checkmark-circle' : 'close-circle'}
+                name={
+                  limits.priority_support ? 'checkmark-circle' : 'close-circle'
+                }
                 size={24}
                 color={limits.priority_support ? '#48bb78' : '#cbd5e0'}
               />
@@ -326,7 +342,7 @@ export const SubscriptionStatus: React.FC = () => {
 
             {limits.max_family_members > 1 && (
               <View style={styles.featureRow}>
-                <Ionicons name="people" size={24} color="#667eea" />
+                <Ionicons name='people' size={24} color='#667eea' />
                 <Text style={styles.featureText}>
                   {limits.max_family_members} Family Members
                 </Text>
@@ -339,7 +355,10 @@ export const SubscriptionStatus: React.FC = () => {
       {/* Action Buttons */}
       <View style={styles.actions}>
         {subscription?.plan === 'free' ? (
-          <TouchableOpacity style={styles.upgradeButton} onPress={handleUpgrade}>
+          <TouchableOpacity
+            style={styles.upgradeButton}
+            onPress={handleUpgrade}
+          >
             <Text style={styles.upgradeButtonText}>Upgrade Plan</Text>
           </TouchableOpacity>
         ) : (
@@ -356,7 +375,9 @@ export const SubscriptionStatus: React.FC = () => {
                 style={styles.upgradeButtonOutline}
                 onPress={handleUpgrade}
               >
-                <Text style={styles.upgradeButtonOutlineText}>Upgrade Plan</Text>
+                <Text style={styles.upgradeButtonOutlineText}>
+                  Upgrade Plan
+                </Text>
               </TouchableOpacity>
             )}
           </>

@@ -1,4 +1,4 @@
-import { type GetProps, styled, Text } from 'tamagui'
+import { type GetProps, styled, Text } from 'tamagui';
 
 // Heading components
 export const H1 = styled(Text, {
@@ -21,7 +21,7 @@ export const H1 = styled(Text, {
       muted: { color: '$gray5' },
     },
   },
-})
+});
 
 export const H2 = styled(Text, {
   name: 'LGH2',
@@ -43,7 +43,7 @@ export const H2 = styled(Text, {
       muted: { color: '$gray5' },
     },
   },
-})
+});
 
 export const H3 = styled(Text, {
   name: 'LGH3',
@@ -65,7 +65,7 @@ export const H3 = styled(Text, {
       muted: { color: '$gray5' },
     },
   },
-})
+});
 
 export const H4 = styled(Text, {
   name: 'LGH4',
@@ -87,7 +87,7 @@ export const H4 = styled(Text, {
       muted: { color: '$gray5' },
     },
   },
-})
+});
 
 export const H5 = styled(Text, {
   name: 'LGH5',
@@ -109,7 +109,7 @@ export const H5 = styled(Text, {
       muted: { color: '$gray5' },
     },
   },
-})
+});
 
 export const H6 = styled(Text, {
   name: 'LGH6',
@@ -131,7 +131,7 @@ export const H6 = styled(Text, {
       muted: { color: '$gray5' },
     },
   },
-})
+});
 
 // Paragraph
 export const Paragraph = styled(Text, {
@@ -175,20 +175,16 @@ export const Paragraph = styled(Text, {
   },
 
   defaultVariants: {
-    size: 'medium',
-    weight: 'normal',
+    size: undefined,
+    weight: undefined,
   },
-})
+});
 
 // Span (inline text)
 export const Span = styled(Text, {
   name: 'LGSpan',
   tag: 'span',
   fontFamily: '$body',
-  fontSize: 'inherit',
-  fontWeight: 'inherit',
-  lineHeight: 'inherit',
-  color: 'inherit',
 
   variants: {
     color: {
@@ -211,7 +207,7 @@ export const Span = styled(Text, {
       lineThrough: { textDecorationLine: 'line-through' },
     },
   },
-})
+});
 
 // Label
 export const Label = styled(Text, {
@@ -251,9 +247,9 @@ export const Label = styled(Text, {
   },
 
   defaultVariants: {
-    size: 'medium',
+    size: undefined,
   },
-})
+});
 
 // Caption (small text)
 export const Caption = styled(Text, {
@@ -274,16 +270,16 @@ export const Caption = styled(Text, {
       muted: { color: '$gray5' },
     },
   },
-})
+});
 
 // Export types
-export type H1Props = GetProps<typeof H1>
-export type H2Props = GetProps<typeof H2>
-export type H3Props = GetProps<typeof H3>
-export type H4Props = GetProps<typeof H4>
-export type H5Props = GetProps<typeof H5>
-export type H6Props = GetProps<typeof H6>
-export type ParagraphProps = GetProps<typeof Paragraph>
-export type SpanProps = GetProps<typeof Span>
-export type LabelProps = GetProps<typeof Label>
-export type CaptionProps = GetProps<typeof Caption>
+export type H1Props = GetProps<typeof H1>;
+export type H2Props = GetProps<typeof H2>;
+export type H3Props = GetProps<typeof H3>;
+export type H4Props = GetProps<typeof H4>;
+export type H5Props = GetProps<typeof H5>;
+export type H6Props = GetProps<typeof H6>;
+export type ParagraphProps = GetProps<typeof Paragraph>;
+export type SpanProps = GetProps<typeof Span>;
+export type LabelProps = GetProps<typeof Label>;
+export type CaptionProps = GetProps<typeof Caption>;

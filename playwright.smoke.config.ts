@@ -64,8 +64,8 @@ export default defineConfig({
         ...devices['Desktop Chrome'],
         // Disable GPU to avoid issues in CI
         launchOptions: {
-          args: ['--disable-gpu', '--no-sandbox', '--disable-setuid-sandbox']
-        }
+          args: ['--disable-gpu', '--no-sandbox', '--disable-setuid-sandbox'],
+        },
       },
     },
   ],

@@ -8,44 +8,44 @@ import { professionalService } from '@/services/professionalService';
 import { insightsService } from '@/services/insightsService';
 import { milestonesService } from '@/services/milestonesService';
 import type {
-  ProfessionalOnboarding,
+  Consultation,
   DocumentReview,
-  ReviewRequest,
+  ProfessionalOnboarding,
   ProfessionalReviewer,
-  Consultation
+  ReviewRequest,
 } from '@/integrations/supabase/types';
 
 // Professional Application Endpoints
 export const professionalApplicationApi = {
   // POST /api/professional/applications
   async create(applicationData: {
-    credentials: {
-      full_name: string;
-      professional_title: string;
-      bar_number?: string;
-      email: string;
-      phone?: string;
-      licensed_states: string[];
-      specializations: string[];
-      years_experience: number;
-      law_firm?: string;
-      website?: string;
-    };
-    portfolio: {
-      sample_reviews?: string[];
-      certifications?: string[];
-      references?: Array<{
-        name: string;
-        relationship: string;
-        contact: string;
-      }>;
-    };
     availability: {
       hours_per_week: number;
       preferred_schedule: string[];
       timezone: string;
     };
-  }): Promise<{ success: boolean; applicationId: string; message: string }> {
+    credentials: {
+      bar_number?: string;
+      email: string;
+      full_name: string;
+      law_firm?: string;
+      licensed_states: string[];
+      phone?: string;
+      professional_title: string;
+      specializations: string[];
+      website?: string;
+      years_experience: number;
+    };
+    portfolio: {
+      certifications?: string[];
+      references?: Array<{
+        contact: string;
+        name: string;
+        relationship: string;
+      }>;
+      sample_reviews?: string[];
+    };
+  }): Promise<{ applicationId: string; message: string; success: boolean }> {
     try {
       const { data: user } = await supabase.auth.getUser();
       if (!user.user) throw new Error('Authentication required');
@@ -55,36 +55,43 @@ export const professionalApplicationApi = {
         professional_type: 'attorney' as const, // Default type, can be determined from credentials
         credentials: applicationData.credentials,
         // Note: portfolio and availability data can be stored in credentials or handled separately
-        verification_status: 'pending'
+        verification_status: 'pending',
       });
 
       return {
         success: true,
         applicationId: application.id,
-        message: 'Professional application submitted successfully'
+        message: 'Professional application submitted successfully',
       };
     } catch (error) {
-      throw new Error(`Application submission failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Application submission failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   },
 
   // GET /api/professional/applications/:id
   async get(applicationId: string): Promise<ProfessionalOnboarding> {
     try {
-      const application = await professionalService.getApplication(applicationId);
+      const application =
+        await professionalService.getApplication(applicationId);
       if (!application) throw new Error('Application not found');
       return application;
     } catch (error) {
-      throw new Error(`Failed to retrieve application: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to retrieve application: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   },
 
   // GET /api/professional/applications/user/:userId
-  async getByUserId(userId: string): Promise<ProfessionalOnboarding | null> {
+  async getByUserId(userId: string): Promise<null | ProfessionalOnboarding> {
     try {
       return await professionalService.getApplicationByUserId(userId);
     } catch (error) {
-      throw new Error(`Failed to retrieve user application: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to retrieve user application: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   },
 
@@ -93,18 +100,24 @@ export const professionalApplicationApi = {
     applicationId: string,
     status: ProfessionalOnboarding['verification_status'],
     reviewNotes?: string
-  ): Promise<{ success: boolean; message: string }> {
+  ): Promise<{ message: string; success: boolean }> {
     try {
-      await professionalService.updateApplicationStatus(applicationId, status, reviewNotes);
+      await professionalService.updateApplicationStatus(
+        applicationId,
+        status,
+        reviewNotes
+      );
 
       return {
         success: true,
-        message: `Application status updated to ${status}`
+        message: `Application status updated to ${status}`,
       };
     } catch (error) {
-      throw new Error(`Status update failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Status update failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
-  }
+  },
 };
 
 // Document Review Request Endpoints
@@ -112,11 +125,11 @@ export const reviewRequestApi = {
   // POST /api/reviews/request
   async create(requestData: {
     documentId: string;
-    reviewType: 'basic' | 'comprehensive' | 'certified';
-    urgency: 'standard' | 'priority' | 'urgent';
-    specialization?: string;
     notes?: string;
-  }): Promise<{ success: boolean; requestId: string; estimatedCost: number }> {
+    reviewType: 'basic' | 'certified' | 'comprehensive';
+    specialization?: string;
+    urgency: 'priority' | 'standard' | 'urgent';
+  }): Promise<{ estimatedCost: number; requestId: string; success: boolean }> {
     try {
       const { data: user } = await supabase.auth.getUser();
       if (!user.user) throw new Error('Authentication required');
@@ -129,13 +142,23 @@ export const reviewRequestApi = {
       const request = await professionalService.createReviewRequest({
         user_id: user.user.id,
         document_id: requestData.documentId,
-        review_type: requestData.reviewType as 'financial' | 'legal' | 'medical' | 'general',
-        urgency_level: requestData.urgency as 'low' | 'medium' | 'high' | 'urgent',
+        review_type: requestData.reviewType as
+          | 'financial'
+          | 'general'
+          | 'legal'
+          | 'medical',
+        urgency_level: requestData.urgency as
+          | 'high'
+          | 'low'
+          | 'medium'
+          | 'urgent',
         status: 'pending',
         estimated_cost: estimatedCost,
         // Store additional notes in metadata or separate field
         ...(requestData.notes && { notes: requestData.notes }),
-        ...(requestData.specialization && { specialization: requestData.specialization })
+        ...(requestData.specialization && {
+          specialization: requestData.specialization,
+        }),
       });
 
       // Trigger milestone check
@@ -143,30 +166,40 @@ export const reviewRequestApi = {
         type: 'review_completed',
         userId: user.user.id,
         reviewId: request.id,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
 
       return {
         success: true,
         requestId: request.id,
-        estimatedCost
+        estimatedCost,
       };
     } catch (error) {
-      throw new Error(`Review request failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Review request failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   },
 
   // POST /api/reviews/:requestId/assign
-  async assign(requestId: string, reviewerId: string): Promise<{ success: boolean; reviewId: string }> {
+  async assign(
+    requestId: string,
+    reviewerId: string
+  ): Promise<{ reviewId: string; success: boolean }> {
     try {
-      const review = await professionalService.assignReviewRequest(requestId, reviewerId);
+      const review = await professionalService.assignReviewRequest(
+        requestId,
+        reviewerId
+      );
 
       return {
         success: true,
-        reviewId: review.id
+        reviewId: review.id,
       };
     } catch (error) {
-      throw new Error(`Review assignment failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Review assignment failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   },
 
@@ -175,20 +208,24 @@ export const reviewRequestApi = {
     try {
       const { data, error } = await supabase
         .from('review_requests')
-        .select(`
+        .select(
+          `
           *,
           documents(title, type),
           professional_reviewers(name, credentials)
-        `)
+        `
+        )
         .eq('user_id', userId)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
       return data || [];
     } catch (error) {
-      throw new Error(`Failed to fetch review requests: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to fetch review requests: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
-  }
+  },
 };
 
 // Document Review Management Endpoints
@@ -198,27 +235,27 @@ export const documentReviewApi = {
     reviewId: string,
     status: DocumentReview['status'],
     result?: {
-      score?: number;
+      completenessScore: number;
       findings: Array<{
-        type: 'error' | 'warning' | 'suggestion' | 'compliment';
         category: string;
         description: string;
-        severity: 'low' | 'medium' | 'high';
         recommendation?: string;
+        severity: 'high' | 'low' | 'medium';
+        type: 'compliment' | 'error' | 'suggestion' | 'warning';
       }>;
-      summary: string;
+      legalCompliance: {
+        issues: string[];
+        score: number;
+      };
       recommendations: string[];
       riskAssessment: {
-        overall: 'low' | 'medium' | 'high';
-        categories: Record<string, 'low' | 'medium' | 'high'>;
+        categories: Record<string, 'high' | 'low' | 'medium'>;
+        overall: 'high' | 'low' | 'medium';
       };
-      completenessScore: number;
-      legalCompliance: {
-        score: number;
-        issues: string[];
-      };
+      score?: number;
+      summary: string;
     }
-  ): Promise<{ success: boolean; message: string }> {
+  ): Promise<{ message: string; success: boolean }> {
     try {
       // Update the review status directly via Supabase
       const { data: review, error } = await supabase
@@ -226,7 +263,9 @@ export const documentReviewApi = {
         .update({
           status,
           updated_at: new Date().toISOString(),
-          ...(status === 'completed' && { completion_date: new Date().toISOString() })
+          ...(status === 'completed' && {
+            completion_date: new Date().toISOString(),
+          }),
         })
         .eq('id', reviewId)
         .select()
@@ -243,16 +282,21 @@ export const documentReviewApi = {
           .single();
 
         if (documentData) {
-          await insightsService.analyzeDocument(review.document_id, documentData.user_id);
+          await insightsService.analyzeDocument(
+            review.document_id,
+            documentData.user_id
+          );
         }
       }
 
       return {
         success: true,
-        message: `Review status updated to ${status}`
+        message: `Review status updated to ${status}`,
       };
     } catch (error) {
-      throw new Error(`Review status update failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Review status update failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   },
 
@@ -263,7 +307,9 @@ export const documentReviewApi = {
       if (!review) throw new Error('Review not found');
       return review;
     } catch (error) {
-      throw new Error(`Failed to fetch review: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to fetch review: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   },
 
@@ -272,7 +318,9 @@ export const documentReviewApi = {
     try {
       return await professionalService.getCachedReviews(userId);
     } catch (error) {
-      throw new Error(`Failed to fetch user reviews: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to fetch user reviews: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   },
 
@@ -281,78 +329,91 @@ export const documentReviewApi = {
     try {
       const { data, error } = await supabase
         .from('document_reviews')
-        .select(`
+        .select(
+          `
           *,
           documents(title, type, user_id),
           review_results(*)
-        `)
+        `
+        )
         .eq('reviewer_id', reviewerId)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
       return data || [];
     } catch (error) {
-      throw new Error(`Failed to fetch reviewer reviews: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to fetch reviewer reviews: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
-  }
+  },
 };
 
 // Professional Directory Endpoints
 export const professionalDirectoryApi = {
   // GET /api/professionals
   async search(filters: {
-    specialization?: string;
+    availability?: boolean;
     jurisdiction?: string;
     rating?: number;
-    availability?: boolean;
+    specialization?: string;
   }): Promise<ProfessionalReviewer[]> {
     try {
       return await professionalService.searchReviewers({
-        specializations: filters.specialization ? [filters.specialization] : undefined,
+        specializations: filters.specialization
+          ? [filters.specialization]
+          : undefined,
         jurisdiction: filters.jurisdiction,
         ratingMin: filters.rating,
-        verified: true
+        verified: true,
       });
     } catch (error) {
-      throw new Error(`Professional search failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Professional search failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   },
 
   // GET /api/professionals/:id
   async get(professionalId: string): Promise<ProfessionalReviewer> {
     try {
-      const professional = await professionalService.getReviewer(professionalId);
+      const professional =
+        await professionalService.getReviewer(professionalId);
       if (!professional) throw new Error('Professional not found');
       return professional;
     } catch (error) {
-      throw new Error(`Failed to fetch professional: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to fetch professional: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   },
 
   // GET /api/professionals/directory
   async getDirectory(filters?: {
-    specialization?: string;
     jurisdiction?: string;
     rating?: number;
+    specialization?: string;
   }): Promise<ProfessionalReviewer[]> {
     try {
       return await professionalService.getNetworkDirectory(filters);
     } catch (error) {
-      throw new Error(`Failed to fetch directory: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to fetch directory: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
-  }
+  },
 };
 
 // Consultation Booking Endpoints
 export const consultationApi = {
   // POST /api/consultations/book
   async book(bookingData: {
-    professionalId: string;
     consultationType: Consultation['consultation_type'];
-    scheduledTime: string;
     duration?: number;
     notes?: string;
-  }): Promise<{ success: boolean; consultationId: string; cost: number }> {
+    professionalId: string;
+    scheduledTime: string;
+  }): Promise<{ consultationId: string; cost: number; success: boolean }> {
     try {
       const { data: user } = await supabase.auth.getUser();
       if (!user.user) throw new Error('Authentication required');
@@ -367,10 +428,10 @@ export const consultationApi = {
 
       // Calculate cost based on consultation type and duration
       const hourlyRates: Record<Consultation['consultation_type'], number> = {
-        'initial': 200,
-        'urgent': 300,
-        'follow_up': 150,
-        'document_review': 300
+        initial: 200,
+        urgent: 300,
+        follow_up: 150,
+        document_review: 300,
       };
 
       const hourlyRate = hourlyRates[bookingData.consultationType] || 250;
@@ -379,10 +440,12 @@ export const consultationApi = {
       return {
         success: true,
         consultationId: consultation.id,
-        cost
+        cost,
       };
     } catch (error) {
-      throw new Error(`Consultation booking failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Consultation booking failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   },
 
@@ -391,28 +454,35 @@ export const consultationApi = {
     try {
       const { data, error } = await supabase
         .from('consultations')
-        .select(`
+        .select(
+          `
           *,
           professional_reviewers(name, credentials, specializations)
-        `)
+        `
+        )
         .eq('user_id', userId)
         .order('scheduled_time', { ascending: true });
 
       if (error) throw error;
       return data || [];
     } catch (error) {
-      throw new Error(`Failed to fetch consultations: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to fetch consultations: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   },
 
   // PUT /api/consultations/:id/status
-  async updateStatus(consultationId: string, status: Consultation['status']): Promise<{ success: boolean }> {
+  async updateStatus(
+    consultationId: string,
+    status: Consultation['status']
+  ): Promise<{ success: boolean }> {
     try {
       const { error } = await supabase
         .from('consultations')
         .update({
           status,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('id', consultationId);
 
@@ -420,34 +490,38 @@ export const consultationApi = {
 
       return { success: true };
     } catch (error) {
-      throw new Error(`Failed to update consultation status: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to update consultation status: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
-  }
+  },
 };
 
 // Analytics and Reporting Endpoints
 export const professionalAnalyticsApi = {
   // GET /api/professional/analytics/:reviewerId
   async getReviewerStats(reviewerId: string): Promise<{
-    totalReviews: number;
     averageRating: number;
     averageTurnaround: number;
     completionRate: number;
-    specializations: Array<{ name: string; count: number }>;
     monthlyStats: Array<{
+      averageRating: number;
       month: string;
       reviewsCompleted: number;
-      averageRating: number;
     }>;
+    specializations: Array<{ count: number; name: string }>;
+    totalReviews: number;
   }> {
     try {
       // Get reviewer statistics
       const { data: reviews, error } = await supabase
         .from('document_reviews')
-        .select(`
+        .select(
+          `
           *,
           review_results(score)
-        `)
+        `
+        )
         .eq('reviewer_id', reviewerId)
         .eq('status', 'completed');
 
@@ -455,28 +529,36 @@ export const professionalAnalyticsApi = {
 
       const totalReviews = reviews?.length || 0;
       // Calculate average rating from review results
-      const averageRating = reviews?.length && reviews.length > 0
-        ? reviews.reduce((sum, r) => {
-            // Handle review_results which might be an array or single object
-            const result = Array.isArray(r.review_results) ? r.review_results[0] : r.review_results;
-            // Use score property from review_results, with fallback
-            const rating = (result && typeof result === 'object' && 'score' in result) ? result.score : 4.0;
-            return sum + (typeof rating === 'number' ? rating : 4.0);
-          }, 0) / reviews.length
-        : 0;
+      const averageRating =
+        reviews?.length && reviews.length > 0
+          ? reviews.reduce((sum, r) => {
+              // Handle review_results which might be an array or single object
+              const result = Array.isArray(r.review_results)
+                ? r.review_results[0]
+                : r.review_results;
+              // Use score property from review_results, with fallback
+              const rating =
+                result && typeof result === 'object' && 'score' in result
+                  ? (result as any).score
+                  : 4.0;
+              return sum + (typeof rating === 'number' ? rating : 4.0);
+            }, 0) / reviews.length
+          : 0;
 
       // Calculate turnaround times
-      const turnaroundTimes = reviews?.map(r => {
-        if (r.created_at && r.completion_date) {
-          const created = new Date(r.created_at).getTime();
-          const completed = new Date(r.completion_date).getTime();
-          return (completed - created) / (1000 * 60 * 60); // hours
-        }
-        return 0;
-      }) || [];
+      const turnaroundTimes =
+        reviews?.map(r => {
+          if (r.created_at && r.completion_date) {
+            const created = new Date(r.created_at).getTime();
+            const completed = new Date(r.completion_date).getTime();
+            return (completed - created) / (1000 * 60 * 60); // hours
+          }
+          return 0;
+        }) || [];
 
       const averageTurnaround = turnaroundTimes.length
-        ? turnaroundTimes.reduce((sum, time) => sum + time, 0) / turnaroundTimes.length
+        ? turnaroundTimes.reduce((sum, time) => sum + time, 0) /
+          turnaroundTimes.length
         : 0;
 
       return {
@@ -485,25 +567,27 @@ export const professionalAnalyticsApi = {
         averageTurnaround: Math.round(averageTurnaround),
         completionRate: 95, // Would calculate from actual data
         specializations: [], // Would aggregate from reviews
-        monthlyStats: [] // Would calculate from review dates
+        monthlyStats: [], // Would calculate from review dates
       };
     } catch (error) {
-      throw new Error(`Failed to fetch reviewer analytics: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to fetch reviewer analytics: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   },
 
   // GET /api/professional/network/stats
   async getNetworkStats(): Promise<{
-    totalProfessionals: number;
-    totalReviews: number;
     averageRating: number;
-    specializations: Array<{ name: string; count: number }>;
+    specializations: Array<{ count: number; name: string }>;
     topPerformers: Array<{
       id: string;
       name: string;
       rating: number;
       reviewsCompleted: number;
     }>;
+    totalProfessionals: number;
+    totalReviews: number;
   }> {
     try {
       const { data: professionals, error: profError } = await supabase
@@ -523,12 +607,14 @@ export const professionalAnalyticsApi = {
         totalReviews: reviews?.length || 0,
         averageRating: 4.8, // Would calculate from actual ratings
         specializations: [], // Would aggregate from professional data
-        topPerformers: [] // Would calculate from review performance
+        topPerformers: [], // Would calculate from review performance
       };
     } catch (error) {
-      throw new Error(`Failed to fetch network stats: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to fetch network stats: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
-  }
+  },
 };
 
 // Export all API collections
@@ -538,5 +624,5 @@ export const professionalApi = {
   reviews: documentReviewApi,
   directory: professionalDirectoryApi,
   consultations: consultationApi,
-  analytics: professionalAnalyticsApi
+  analytics: professionalAnalyticsApi,
 };

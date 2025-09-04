@@ -7,11 +7,15 @@ import { Link } from 'react-router-dom';
 
 interface LegalPageLayoutProps {
   children: React.ReactNode;
-  title: string;
   description: string;
+  title: string;
 }
 
-export const LegalPageLayout = ({ children, title, description }: LegalPageLayoutProps) => {
+export const LegalPageLayout = ({
+  children,
+  title,
+  description,
+}: LegalPageLayoutProps) => {
   return (
     <div className='min-h-screen bg-background text-foreground font-sans'>
       <MetaTags title={title} description={description} />
@@ -20,14 +24,20 @@ export const LegalPageLayout = ({ children, title, description }: LegalPageLayou
       <header className='sticky top-0 z-50 bg-content-background/90 backdrop-blur-lg border-b border-card-border'>
         <div className='container mx-auto px-4 py-4'>
           <div className='flex items-center justify-between'>
-            <Link to='/' className='flex items-center gap-3 hover:opacity-80 transition-opacity'>
+            <Link
+              to='/'
+              className='flex items-center gap-3 hover:opacity-80 transition-opacity'
+            >
               <LegacyGuardLogo />
               <span className='text-2xl font-bold text-foreground font-heading'>
                 LegacyGuard
               </span>
             </Link>
             <Link to='/'>
-              <Button variant="ghost" className='text-muted-foreground hover:text-foreground'>
+              <Button
+                variant='ghost'
+                className='text-muted-foreground hover:text-foreground'
+              >
                 Back to Home
               </Button>
             </Link>
@@ -46,7 +56,12 @@ export const LegalPageLayout = ({ children, title, description }: LegalPageLayou
             {title}
           </h1>
           <p className='text-xl text-muted-foreground mb-8'>
-            Last updated: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+            Last updated:{' '}
+            {new Date().toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            })}
           </p>
 
           {/* Legal content with consistent styling */}

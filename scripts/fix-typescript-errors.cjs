@@ -17,13 +17,13 @@ const fixes = {
         /<Icon\s+name=['"]([^'"]+)['"]/g,
         '<Icon name={"$1" as any}'
       );
-      
+
       // Also fix when used with variables
       const fixed2 = fixed.replace(
         /<Icon\s+name=\{([^}]+)\s+as\s+never\}/g,
         '<Icon name={$1 as any}'
       );
-      
+
       return fixed2;
     }
     return content;
@@ -34,13 +34,16 @@ const fixes = {
     // Fix test files with incorrect property names
     if (filePath.includes('__tests__') || filePath.includes('.test.')) {
       // Fix 'name' property that should be 'fullName' in Beneficiary
-      content = content.replace(/(\{[^}]*)\bname:\s*['"][^'"]+['"]([^}]*\})/g, (match) => {
-        if (match.includes('Beneficiary') || match.includes('beneficiary')) {
-          return match.replace(/\bname:/g, 'fullName:');
+      content = content.replace(
+        /(\{[^}]*)\bname:\s*['"][^'"]+['"]([^}]*\})/g,
+        match => {
+          if (match.includes('Beneficiary') || match.includes('beneficiary')) {
+            return match.replace(/\bname:/g, 'fullName:');
+          }
+          return match;
         }
-        return match;
-      });
-      
+      );
+
       // Fix incorrect property names in test objects
       content = content.replace(/funeralWishes:/g, 'specialInstructions:');
       content = content.replace(/guardians:/g, 'guardianshipAppointments:');
@@ -57,11 +60,11 @@ const fixes = {
       { from: /(\w+)\.confidence(?!\?)/g, to: '$1?.confidence' },
       { from: /(\w+)\.originalText(?!\?)/g, to: '$1?.originalText' },
     ];
-    
+
     patterns.forEach(pattern => {
       content = content.replace(pattern.from, pattern.to);
     });
-    
+
     return content;
   },
 
@@ -71,7 +74,7 @@ const fixes = {
     if (content.includes("'fab'") && content.includes('ABTestVariant')) {
       content = content.replace(/'fab'/g, "'fab' as ABTestVariant");
     }
-    
+
     // Fix celebrate function calls
     if (content.includes('celebrate(')) {
       content = content.replace(
@@ -79,7 +82,7 @@ const fixes = {
         "celebrate('$1')"
       );
     }
-    
+
     // Fix ArrayBuffer type issues
     if (content.includes('Uint8Array')) {
       content = content.replace(
@@ -87,14 +90,17 @@ const fixes = {
         'new Uint8Array($1 as ArrayBuffer)'
       );
     }
-    
+
     return content;
   },
 
   // Fix function argument count mismatches - TS2554
   fixArgumentCounts: (content, filePath) => {
     // Fix encryption function calls that need additional arguments
-    if (content.includes('encryptDocument') || content.includes('encryptData')) {
+    if (
+      content.includes('encryptDocument') ||
+      content.includes('encryptData')
+    ) {
       // Add missing arguments with defaults
       content = content.replace(
         /encryptDocument\(([^,)]+)\)(?!,)/g,
@@ -113,20 +119,24 @@ const fixes = {
     // Remove duplicate Camera import if it exists
     if (filePath.includes('FamilyHistoryPreservation')) {
       const lines = content.split('\n');
-      const cameraImports = lines.filter(line => line.includes("import") && line.includes("Camera"));
+      const cameraImports = lines.filter(
+        line => line.includes('import') && line.includes('Camera')
+      );
       if (cameraImports.length > 1) {
         // Keep only the first Camera import
         let foundFirst = false;
-        content = lines.filter(line => {
-          if (line.includes("import") && line.includes("Camera")) {
-            if (!foundFirst) {
-              foundFirst = true;
-              return true;
+        content = lines
+          .filter(line => {
+            if (line.includes('import') && line.includes('Camera')) {
+              if (!foundFirst) {
+                foundFirst = true;
+                return true;
+              }
+              return false;
             }
-            return false;
-          }
-          return true;
-        }).join('\n');
+            return true;
+          })
+          .join('\n');
       }
     }
     return content;
@@ -151,13 +161,13 @@ const fixes = {
       /status:\s*(['"])([^'"]+)\1(?!\s+as)/g,
       "status: '$2' as const"
     );
-    
+
     // Fix variant prop issues
     content = content.replace(
       /variant=["']([^"']+)["'](?!\s+as)/g,
       'variant={"$1" as any}'
     );
-    
+
     return content;
   },
 
@@ -165,15 +175,15 @@ const fixes = {
   cleanup: (content, filePath) => {
     // Remove double 'as any' casts
     content = content.replace(/as\s+any\s+as\s+any/g, 'as any');
-    
+
     // Fix any broken JSX from previous fixes
     content = content.replace(/\{\{([^}]+)\}\}/g, '{$1}');
-    
+
     // Remove trailing commas in function parameters (causes issues in some cases)
     content = content.replace(/,(\s*\))/g, '$1');
-    
+
     return content;
-  }
+  },
 };
 
 // Process a single file
@@ -211,12 +221,15 @@ function walkDir(dir, callback) {
   fs.readdirSync(dir).forEach(file => {
     const filePath = path.join(dir, file);
     const stat = fs.statSync(filePath);
-    
+
     if (stat.isDirectory()) {
       if (!file.startsWith('.') && file !== 'node_modules' && file !== 'dist') {
         walkDir(filePath, callback);
       }
-    } else if (stat.isFile() && (file.endsWith('.tsx') || file.endsWith('.ts'))) {
+    } else if (
+      stat.isFile() &&
+      (file.endsWith('.tsx') || file.endsWith('.ts'))
+    ) {
       totalErrors++;
       callback(filePath);
     }
@@ -229,7 +242,7 @@ console.log('🔧 Fixing TypeScript errors systematically...\n');
 const srcDir = path.join(process.cwd(), 'src');
 let filesFixed = 0;
 
-walkDir(srcDir, (filePath) => {
+walkDir(srcDir, filePath => {
   if (processFile(filePath)) {
     filesFixed++;
   }

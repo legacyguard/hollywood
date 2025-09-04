@@ -1,10 +1,14 @@
-import { describe, test, expect } from 'vitest';
+import { describe, expect, test } from 'vitest';
 /**
  * Trust Score Calculator Tests
  * Validates trust score calculation logic and accuracy
  */
 
-import { TrustScoreCalculator, calculateUserTrustScore, type TrustScoreFactors } from '../trust-score-calculator';
+import {
+  calculateUserTrustScore,
+  TrustScoreCalculator,
+  type TrustScoreFactors,
+} from '../trust-score-calculator';
 
 describe('TrustScoreCalculator', () => {
   describe('Basic Score Calculation', () => {
@@ -95,10 +99,13 @@ describe('TrustScoreCalculator', () => {
       const withDocuments = { ...baseFactors, documentsUploaded: 5 };
 
       const baseResult = TrustScoreCalculator.calculateTrustScore(baseFactors);
-      const docsResult = TrustScoreCalculator.calculateTrustScore(withDocuments);
+      const docsResult =
+        TrustScoreCalculator.calculateTrustScore(withDocuments);
 
       expect(docsResult.totalScore).toBeGreaterThan(baseResult.totalScore);
-      expect(docsResult.factors.documents.score).toBeGreaterThan(baseResult.factors.documents.score);
+      expect(docsResult.factors.documents.score).toBeGreaterThan(
+        baseResult.factors.documents.score
+      );
     });
 
     test('should reward professional reviews significantly', () => {
@@ -117,13 +124,19 @@ describe('TrustScoreCalculator', () => {
         legalCompliance: 0,
       };
 
-      const withReview = { ...baseFactors, professionalReviews: 1, legalCompliance: 85 };
+      const withReview = {
+        ...baseFactors,
+        professionalReviews: 1,
+        legalCompliance: 85,
+      };
 
       const baseResult = TrustScoreCalculator.calculateTrustScore(baseFactors);
       const reviewResult = TrustScoreCalculator.calculateTrustScore(withReview);
 
       expect(reviewResult.totalScore).toBeGreaterThan(baseResult.totalScore);
-      expect(reviewResult.factors.professional.score).toBeGreaterThan(baseResult.factors.professional.score);
+      expect(reviewResult.factors.professional.score).toBeGreaterThan(
+        baseResult.factors.professional.score
+      );
     });
 
     test('should reward emergency preparedness', () => {
@@ -145,11 +158,12 @@ describe('TrustScoreCalculator', () => {
       const withEmergency = {
         ...baseFactors,
         emergencyContactsAdded: 2,
-        guardiansAssigned: 1
+        guardiansAssigned: 1,
       };
 
       const baseResult = TrustScoreCalculator.calculateTrustScore(baseFactors);
-      const emergencyResult = TrustScoreCalculator.calculateTrustScore(withEmergency);
+      const emergencyResult =
+        TrustScoreCalculator.calculateTrustScore(withEmergency);
 
       expect(emergencyResult.totalScore).toBeGreaterThan(baseResult.totalScore);
       expect(emergencyResult.factors.emergency.score).toBeGreaterThan(0);
@@ -271,15 +285,24 @@ describe('TrustScoreCalculator', () => {
         legalCompliance: 0,
       };
 
-      const improvements = TrustScoreCalculator.getQuickImprovements(factors, 5);
+      const improvements = TrustScoreCalculator.getQuickImprovements(
+        factors,
+        5
+      );
 
       expect(improvements).toBeDefined();
       expect(improvements.length).toBeGreaterThan(0);
       expect(improvements.length).toBeLessThanOrEqual(5);
 
       // Should prioritize high-impact improvements
-      expect(improvements.some(i => i.includes('professional') || i.includes('emergency') || i.includes('will')))
-        .toBe(true);
+      expect(
+        improvements.some(
+          i =>
+            i.includes('professional') ||
+            i.includes('emergency') ||
+            i.includes('will')
+        )
+      ).toBe(true);
     });
   });
 

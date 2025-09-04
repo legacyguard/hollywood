@@ -1,13 +1,12 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { LegalValidator } from '@/lib/will-legal-validator';
 import {
-  LegalValidator,
-} from '@/lib/will-legal-validator';
-import { type SupportedLanguage, MultiLangGenerator } from '@/lib/multi-language-generator';
+  MultiLangGenerator,
+  type SupportedLanguage,
+} from '@/lib/multi-language-generator';
 import { WillTemplateLibrary } from '@/lib/will-template-library';
 import { LegacyMessageBuilder } from '@/lib/legacy-message-builder';
-import {
-  professionalNetwork,
-} from '@/lib/professional-review-network';
+import { professionalNetwork } from '@/lib/professional-review-network';
 import type { WillData } from '@/types/will';
 import type { WillData as WillWizardData } from '@/components/legacy/WillWizard';
 
@@ -123,10 +122,12 @@ const mockWillWizardData: WillWizardData = {
     ],
     vehicles: [
       {
+        description: '2020 Toyota Camry',
         make: 'Toyota',
         model: 'Camry',
         year: 2020,
         vin: '1HGBH41JXMN109186',
+        value: 25000,
       },
     ],
   },
@@ -155,6 +156,9 @@ const mockWillWizardData: WillWizardData = {
   legal_data: {
     jurisdiction: 'Slovakia',
   },
+  review_eligibility: true,
+  family_protection_level: 'standard',
+  completeness_score: 85,
 };
 
 describe('Will Upgrade Integration Tests', () => {
@@ -216,7 +220,7 @@ describe('Will Upgrade Integration Tests', () => {
   describe('Multi-Language Document Generation', () => {
     it('should generate Slovak will document', async () => {
       const document = await multiLangGenerator.generateWill(
-        mockWillWizardData,
+        mockWillWizardData as any,
         'sk',
         'Slovakia',
         'comprehensive'
@@ -230,7 +234,7 @@ describe('Will Upgrade Integration Tests', () => {
 
     it('should generate Czech will document', async () => {
       const document = await multiLangGenerator.generateWill(
-        mockWillWizardData,
+        mockWillWizardData as any,
         'cs',
         'Czech-Republic',
         'comprehensive'
@@ -254,7 +258,7 @@ describe('Will Upgrade Integration Tests', () => {
 
     it('should handle complex asset descriptions in multiple languages', async () => {
       const document = await multiLangGenerator.generateWill(
-        mockWillWizardData,
+        mockWillWizardData as any,
         'de',
         'Slovakia',
         'comprehensive'
@@ -281,7 +285,7 @@ describe('Will Upgrade Integration Tests', () => {
         return;
       }
       const comparison = await templateLibrary.compareWillVersions(
-        mockWillWizardData,
+        mockWillWizardData as any,
         template as any
       );
 
@@ -406,7 +410,7 @@ describe('Will Upgrade Integration Tests', () => {
 
       // 2. Multi-language generation
       const slovakDoc = await multiLangGenerator.generateWill(
-        mockWillWizardData,
+        mockWillWizardData as any,
         'sk',
         'Slovakia',
         'comprehensive'
@@ -519,7 +523,7 @@ describe('Will Upgrade Integration Tests', () => {
       const documents = await Promise.all(
         languages.map(lang =>
           multiLangGenerator.generateWill(
-            mockWillWizardData,
+            mockWillWizardData as any,
             lang,
             'Slovakia',
             'basic'

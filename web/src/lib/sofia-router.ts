@@ -1,12 +1,12 @@
 import {
+  type ActionButton,
+  type CommandResult,
+  getContextualActions,
   type SofiaCommand,
   type SofiaContext,
-  type CommandResult,
-  type ActionButton,
-  getContextualActions,
 } from './sofia-types';
 import { sofiaKnowledgeBase } from './sofia-knowledge-base';
-import { sofiaAPI, createSofiaAPIRequest } from './sofia-api';
+import { createSofiaAPIRequest, sofiaAPI } from './sofia-api';
 
 // Sofia Command Router - The Brain of Sofia
 // Decides how to handle each user command without expensive AI calls when possible
@@ -453,8 +453,12 @@ export class SofiaRouter {
    * Generate personalized welcome message
    */
   private generateWelcomeMessage(context: SofiaContext): string {
-    const { userName, completionPercentage, documentCount, guardianCount: _guardianCount } =
-      context;
+    const {
+      userName,
+      completionPercentage,
+      documentCount,
+      guardianCount: _guardianCount,
+    } = context;
     const greeting = this.getTimeBasedGreeting();
     const name = userName || 'tam';
 

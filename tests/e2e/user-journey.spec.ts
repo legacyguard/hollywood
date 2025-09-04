@@ -1,7 +1,9 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Complete User Journey', () => {
-  test('should complete full user journey from signup to project completion', async ({ page }) => {
+  test('should complete full user journey from signup to project completion', async ({
+    page,
+  }) => {
     // Generate unique email for this test run to ensure idempotency
     const uniqueEmail = `alice.johnson.${Date.now()}@example.com`;
 
@@ -20,7 +22,10 @@ test.describe('Complete User Journey', () => {
 
     await page.click('text=Create Project');
     await page.fill('input[name="name"]', 'Website Redesign');
-    await page.fill('textarea[name="description"]', 'Complete redesign of company website with modern UI/UX');
+    await page.fill(
+      'textarea[name="description"]',
+      'Complete redesign of company website with modern UI/UX'
+    );
     await page.selectOption('select[name="status"]', 'active');
     await page.click('button[type="submit"]');
 
@@ -33,7 +38,10 @@ test.describe('Complete User Journey', () => {
     // Create homepage task
     await page.click('text=Create Task');
     await page.fill('input[name="title"]', 'Design homepage mockup');
-    await page.fill('textarea[name="description"]', 'Create modern homepage design with hero section');
+    await page.fill(
+      'textarea[name="description"]',
+      'Create modern homepage design with hero section'
+    );
     await page.selectOption('select[name="priority"]', 'high');
     await page.selectOption('select[name="status"]', 'todo');
     await page.click('button[type="submit"]');
@@ -41,7 +49,10 @@ test.describe('Complete User Journey', () => {
     // Create about page task
     await page.click('text=Create Task');
     await page.fill('input[name="title"]', 'Develop about page');
-    await page.fill('textarea[name="description"]', 'Create engaging about page with team photos');
+    await page.fill(
+      'textarea[name="description"]',
+      'Create engaging about page with team photos'
+    );
     await page.selectOption('select[name="priority"]', 'medium');
     await page.selectOption('select[name="status"]', 'todo');
     await page.click('button[type="submit"]');

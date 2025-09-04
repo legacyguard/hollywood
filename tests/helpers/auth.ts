@@ -29,7 +29,7 @@ export function generateTestUser(): TestUser {
     email: generateTestEmail(),
     password: 'TestPassword123!',
     firstName: 'Test',
-    lastName: 'User'
+    lastName: 'User',
   };
 }
 
@@ -49,10 +49,15 @@ export async function waitForClerk(page: Page): Promise<void> {
   await setupClerkTestingToken({ page });
 
   // Wait for Clerk to be available on window
-  await page.waitForFunction(() => {
-    return typeof window !== 'undefined' &&
-           (window as Record<string, unknown>).Clerk !== undefined;
-  }, { timeout: 10000 });
+  await page.waitForFunction(
+    () => {
+      return (
+        typeof window !== 'undefined' &&
+        (window as Record<string, unknown>).Clerk !== undefined
+      );
+    },
+    { timeout: 10000 }
+  );
 
   // Additional wait for Clerk UI to render
   await page.waitForLoadState('networkidle');
@@ -65,43 +70,59 @@ export async function signUpUser(page: Page, user: TestUser): Promise<void> {
   await waitForClerk(page);
 
   // Click on sign up link/button
-  const signUpButton = page.locator('a:has-text("Sign up"), button:has-text("Sign up"), [data-localization-key="signUp.start.actionLink"]').first();
+  const signUpButton = page
+    .locator(
+      'a:has-text("Sign up"), button:has-text("Sign up"), [data-localization-key="signUp.start.actionLink"]'
+    )
+    .first();
 
   if (await signUpButton.isVisible()) {
     await signUpButton.click();
   }
 
   // Fill in email
-  await page.fill('input[name="emailAddress"], input[type="email"]', user.email);
+  await page.fill(
+    'input[name="emailAddress"], input[type="email"]',
+    user.email
+  );
 
   // Continue to password step (Clerk often has multi-step forms)
-  const continueButton = page.locator('button:has-text("Continue"), button[data-localization-key="formButtonPrimary"]');
+  const continueButton = page.locator(
+    'button:has-text("Continue"), button[data-localization-key="formButtonPrimary"]'
+  );
   if (await continueButton.isVisible()) {
     await continueButton.click();
   }
 
   // Fill in password fields
-  await page.fill('input[name="password"], input[type="password"]:not([name="confirmPassword"])', user.password);
+  await page.fill(
+    'input[name="password"], input[type="password"]:not([name="confirmPassword"])',
+    user.password
+  );
 
   // Fill in confirm password if present
-  const confirmPasswordField = page.locator('input[name="confirmPassword"], input[type="password"][name="confirmPassword"]');
+  const confirmPasswordField = page.locator(
+    'input[name="confirmPassword"], input[type="password"][name="confirmPassword"]'
+  );
   if (await confirmPasswordField.isVisible()) {
     await confirmPasswordField.fill(user.password);
   }
 
   // Fill in first and last name if present
   const firstNameField = page.locator('input[name="firstName"]');
-  if (await firstNameField.isVisible() && user.firstName) {
+  if ((await firstNameField.isVisible()) && user.firstName) {
     await firstNameField.fill(user.firstName);
   }
 
   const lastNameField = page.locator('input[name="lastName"]');
-  if (await lastNameField.isVisible() && user.lastName) {
+  if ((await lastNameField.isVisible()) && user.lastName) {
     await lastNameField.fill(user.lastName);
   }
 
   // Submit the form
-  await page.click('button[type="submit"], button:has-text("Sign up"), button:has-text("Create account")');
+  await page.click(
+    'button[type="submit"], button:has-text("Sign up"), button:has-text("Create account")'
+  );
 
   // Handle email verification if needed
   // Note: In test mode, you might need to handle OTP or email verification differently
@@ -114,20 +135,30 @@ export async function signInUser(page: Page, user: TestUser): Promise<void> {
   await waitForClerk(page);
 
   // Fill in email
-  await page.fill('input[name="identifier"], input[name="emailAddress"], input[type="email"]', user.email);
+  await page.fill(
+    'input[name="identifier"], input[name="emailAddress"], input[type="email"]',
+    user.email
+  );
 
   // Continue to password step if needed
-  const continueButton = page.locator('button:has-text("Continue"), button[data-localization-key="formButtonPrimary"]');
+  const continueButton = page.locator(
+    'button:has-text("Continue"), button[data-localization-key="formButtonPrimary"]'
+  );
   if (await continueButton.isVisible()) {
     await continueButton.click();
     await page.waitForTimeout(500); // Small delay for form transition
   }
 
   // Fill in password
-  await page.fill('input[name="password"], input[type="password"]', user.password);
+  await page.fill(
+    'input[name="password"], input[type="password"]',
+    user.password
+  );
 
   // Submit
-  await page.click('button[type="submit"], button:has-text("Sign in"), button:has-text("Continue")');
+  await page.click(
+    'button[type="submit"], button:has-text("Sign in"), button:has-text("Continue")'
+  );
 
   // Wait for redirect
   await page.waitForLoadState('networkidle');
@@ -138,13 +169,17 @@ export async function signInUser(page: Page, user: TestUser): Promise<void> {
  */
 export async function signOutUser(page: Page): Promise<void> {
   // Look for Clerk UserButton and click it
-  const userButton = page.locator('.cl-userButton-trigger, [data-clerk-id="clerk-user-button"]').first();
+  const userButton = page
+    .locator('.cl-userButton-trigger, [data-clerk-id="clerk-user-button"]')
+    .first();
 
   if (await userButton.isVisible()) {
     await userButton.click();
 
     // Click sign out in the dropdown
-    const signOutButton = page.locator('button:has-text("Sign out"), [data-localization-key="userButton.action__signOut"]');
+    const signOutButton = page.locator(
+      'button:has-text("Sign out"), [data-localization-key="userButton.action__signOut"]'
+    );
     await signOutButton.click();
 
     // Wait for sign out to complete
@@ -159,7 +194,9 @@ export async function isSignedIn(page: Page): Promise<boolean> {
   await waitForClerk(page);
 
   // Check if user button is visible (indicates signed in state)
-  const userButton = page.locator('.cl-userButton-trigger, [data-clerk-id="clerk-user-button"]').first();
+  const userButton = page
+    .locator('.cl-userButton-trigger, [data-clerk-id="clerk-user-button"]')
+    .first();
   return await userButton.isVisible();
 }
 
@@ -174,7 +211,7 @@ export async function mockClerkAuth(page: Page, user: TestUser): Promise<void> {
 
   // For now, this is a placeholder
   // You would need to inject test tokens or use Clerk's test mode
-  await page.evaluate((testUser) => {
+  await page.evaluate(testUser => {
     // Mock the Clerk session
     localStorage.setItem('__clerk_test_user', JSON.stringify(testUser));
   }, user);

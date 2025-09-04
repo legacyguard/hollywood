@@ -1,7 +1,7 @@
 // src/App.tsx - Web Application Entry Point
 
 import { Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '@/lib/i18n/config';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
@@ -52,14 +52,13 @@ import { OnboardingWrapper } from '@/components/onboarding/OnboardingWrapper';
 // Test Pages
 import TestNotifications from '@/pages/TestNotifications';
 
-
-function ErrorFallback({error}: {error: Error}) {
+function ErrorFallback({ error }: { error: Error }) {
   return (
-    <div role="alert">
+    <div role='alert'>
       <h2>Something went wrong:</h2>
       <pre>{error.message}</pre>
     </div>
-  )
+  );
 }
 
 export default function App() {
@@ -70,233 +69,311 @@ export default function App() {
           <ClerkProvider>
             <Router>
               <SkipLinks />
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/sign-in/*" element={<SignInPage />} />
-            <Route path="/sign-up/*" element={<SignUpPage />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/blog/:slug" element={<BlogArticle />} />
-            <Route path="/terms" element={<Terms />} />
-            <Route path="/privacy" element={<Privacy />} />
+              <Routes>
+                {/* Public Routes */}
+                <Route path='/' element={<LandingPage />} />
+                <Route path='/sign-in/*' element={<SignInPage />} />
+                <Route path='/sign-up/*' element={<SignUpPage />} />
+                <Route path='/blog' element={<Blog />} />
+                <Route path='/blog/:slug' element={<BlogArticle />} />
+                <Route path='/terms' element={<Terms />} />
+                <Route path='/privacy' element={<Privacy />} />
 
-            {/* Protected Routes with Dashboard Layout */}
-            <Route path="/dashboard" element={
-              <ProtectedRoute>
-                <DashboardLayout>
-                  <Index />
-                </DashboardLayout>
-              </ProtectedRoute>
-            } />
+                {/* Protected Routes with Dashboard Layout */}
+                <Route
+                  path='/dashboard'
+                  element={
+                    <ProtectedRoute>
+                      <DashboardLayout>
+                        <Index />
+                      </DashboardLayout>
+                    </ProtectedRoute>
+                  }
+                />
 
-            <Route path="/vault" element={
-              <ProtectedRoute>
-                <DashboardLayout>
-                  <Vault />
-                </DashboardLayout>
-              </ProtectedRoute>
-            } />
+                <Route
+                  path='/vault'
+                  element={
+                    <ProtectedRoute>
+                      <DashboardLayout>
+                        <Vault />
+                      </DashboardLayout>
+                    </ProtectedRoute>
+                  }
+                />
 
-            <Route path="/guardians" element={
-              <ProtectedRoute>
-                <DashboardLayout>
-                  <Guardians />
-                </DashboardLayout>
-              </ProtectedRoute>
-            } />
+                <Route
+                  path='/guardians'
+                  element={
+                    <ProtectedRoute>
+                      <DashboardLayout>
+                        <Guardians />
+                      </DashboardLayout>
+                    </ProtectedRoute>
+                  }
+                />
 
-            <Route path="/legacy" element={
-              <ProtectedRoute>
-                <DashboardLayout>
-                  <Legacy />
-                </DashboardLayout>
-              </ProtectedRoute>
-            } />
+                <Route
+                  path='/legacy'
+                  element={
+                    <ProtectedRoute>
+                      <DashboardLayout>
+                        <Legacy />
+                      </DashboardLayout>
+                    </ProtectedRoute>
+                  }
+                />
 
-            <Route path="/time-capsule" element={
-              <ProtectedRoute>
-                <DashboardLayout>
-                  <TimeCapsule />
-                </DashboardLayout>
-              </ProtectedRoute>
-            } />
+                <Route
+                  path='/time-capsule'
+                  element={
+                    <ProtectedRoute>
+                      <DashboardLayout>
+                        <TimeCapsule />
+                      </DashboardLayout>
+                    </ProtectedRoute>
+                  }
+                />
 
-            <Route path="/time-capsule/:id" element={
-              <ProtectedRoute>
-                <DashboardLayout>
-                  <TimeCapsuleView />
-                </DashboardLayout>
-              </ProtectedRoute>
-            } />
+                <Route
+                  path='/time-capsule/:id'
+                  element={
+                    <ProtectedRoute>
+                      <DashboardLayout>
+                        <TimeCapsuleView />
+                      </DashboardLayout>
+                    </ProtectedRoute>
+                  }
+                />
 
-            <Route path="/settings" element={
-              <ProtectedRoute>
-                <DashboardLayout>
-                  <Settings />
-                </DashboardLayout>
-              </ProtectedRoute>
-            } />
+                <Route
+                  path='/settings'
+                  element={
+                    <ProtectedRoute>
+                      <DashboardLayout>
+                        <Settings />
+                      </DashboardLayout>
+                    </ProtectedRoute>
+                  }
+                />
 
-            <Route path="/protocol-settings" element={
-              <ProtectedRoute>
-                <DashboardLayout>
-                  <ProtocolSettings />
-                </DashboardLayout>
-              </ProtectedRoute>
-            } />
+                <Route
+                  path='/protocol-settings'
+                  element={
+                    <ProtectedRoute>
+                      <DashboardLayout>
+                        <ProtocolSettings />
+                      </DashboardLayout>
+                    </ProtectedRoute>
+                  }
+                />
 
-            <Route path="/my-family" element={
-              <ProtectedRoute>
-                <DashboardLayout>
-                  <MyFamily />
-                </DashboardLayout>
-              </ProtectedRoute>
-            } />
+                <Route
+                  path='/my-family'
+                  element={
+                    <ProtectedRoute>
+                      <DashboardLayout>
+                        <MyFamily />
+                      </DashboardLayout>
+                    </ProtectedRoute>
+                  }
+                />
 
-            <Route path="/family" element={
-              <ProtectedRoute>
-                <DashboardLayout>
-                  <Family />
-                </DashboardLayout>
-              </ProtectedRoute>
-            } />
+                <Route
+                  path='/family'
+                  element={
+                    <ProtectedRoute>
+                      <DashboardLayout>
+                        <Family />
+                      </DashboardLayout>
+                    </ProtectedRoute>
+                  }
+                />
 
-            <Route path="/family-protection" element={
-              <ProtectedRoute>
-                <DashboardLayout>
-                  <FamilyProtection />
-                </DashboardLayout>
-              </ProtectedRoute>
-            } />
+                <Route
+                  path='/family-protection'
+                  element={
+                    <ProtectedRoute>
+                      <DashboardLayout>
+                        <FamilyProtection />
+                      </DashboardLayout>
+                    </ProtectedRoute>
+                  }
+                />
 
-            <Route path="/emergency-access" element={
-              <ProtectedRoute>
-                <DashboardLayout>
-                  <EmergencyAccess />
-                </DashboardLayout>
-              </ProtectedRoute>
-            } />
+                <Route
+                  path='/emergency-access'
+                  element={
+                    <ProtectedRoute>
+                      <DashboardLayout>
+                        <EmergencyAccess />
+                      </DashboardLayout>
+                    </ProtectedRoute>
+                  }
+                />
 
-            <Route path="/emergency-verification" element={
-              <ProtectedRoute>
-                <DashboardLayout>
-                  <EmergencyVerification />
-                </DashboardLayout>
-              </ProtectedRoute>
-            } />
+                <Route
+                  path='/emergency-verification'
+                  element={
+                    <ProtectedRoute>
+                      <DashboardLayout>
+                        <EmergencyVerification />
+                      </DashboardLayout>
+                    </ProtectedRoute>
+                  }
+                />
 
-            <Route path="/emergency-confirmation" element={
-              <ProtectedRoute>
-                <DashboardLayout>
-                  <EmergencyConfirmation />
-                </DashboardLayout>
-              </ProtectedRoute>
-            } />
+                <Route
+                  path='/emergency-confirmation'
+                  element={
+                    <ProtectedRoute>
+                      <DashboardLayout>
+                        <EmergencyConfirmation />
+                      </DashboardLayout>
+                    </ProtectedRoute>
+                  }
+                />
 
-            <Route path="/survivor-access" element={
-              <ProtectedRoute>
-                <DashboardLayout>
-                  <SurvivorAccess />
-                </DashboardLayout>
-              </ProtectedRoute>
-            } />
+                <Route
+                  path='/survivor-access'
+                  element={
+                    <ProtectedRoute>
+                      <DashboardLayout>
+                        <SurvivorAccess />
+                      </DashboardLayout>
+                    </ProtectedRoute>
+                  }
+                />
 
-            <Route path="/survivor-manual" element={
-              <ProtectedRoute>
-                <DashboardLayout>
-                  <SurvivorManual />
-                </DashboardLayout>
-              </ProtectedRoute>
-            } />
+                <Route
+                  path='/survivor-manual'
+                  element={
+                    <ProtectedRoute>
+                      <DashboardLayout>
+                        <SurvivorManual />
+                      </DashboardLayout>
+                    </ProtectedRoute>
+                  }
+                />
 
-            <Route path="/social-collaboration" element={
-              <ProtectedRoute>
-                <DashboardLayout>
-                  <SocialCollaborationPage />
-                </DashboardLayout>
-              </ProtectedRoute>
-            } />
+                <Route
+                  path='/social-collaboration'
+                  element={
+                    <ProtectedRoute>
+                      <DashboardLayout>
+                        <SocialCollaborationPage />
+                      </DashboardLayout>
+                    </ProtectedRoute>
+                  }
+                />
 
-            <Route path="/security-deep-dive" element={
-              <ProtectedRoute>
-                <DashboardLayout>
-                  <SecurityDeepDivePage />
-                </DashboardLayout>
-              </ProtectedRoute>
-            } />
+                <Route
+                  path='/security-deep-dive'
+                  element={
+                    <ProtectedRoute>
+                      <DashboardLayout>
+                        <SecurityDeepDivePage />
+                      </DashboardLayout>
+                    </ProtectedRoute>
+                  }
+                />
 
-            <Route path="/monitoring" element={
-              <ProtectedRoute>
-                <DashboardLayout>
-                  <MonitoringPage />
-                </DashboardLayout>
-              </ProtectedRoute>
-            } />
+                <Route
+                  path='/monitoring'
+                  element={
+                    <ProtectedRoute>
+                      <DashboardLayout>
+                        <MonitoringPage />
+                      </DashboardLayout>
+                    </ProtectedRoute>
+                  }
+                />
 
-            <Route path="/analytics" element={
-              <ProtectedRoute>
-                <DashboardLayout>
-                  <AnalyticsPage />
-                </DashboardLayout>
-              </ProtectedRoute>
-            } />
+                <Route
+                  path='/analytics'
+                  element={
+                    <ProtectedRoute>
+                      <DashboardLayout>
+                        <AnalyticsPage />
+                      </DashboardLayout>
+                    </ProtectedRoute>
+                  }
+                />
 
-            <Route path="/intelligent-organizer" element={
-              <ProtectedRoute>
-                <DashboardLayout>
-                  <IntelligentOrganizer />
-                </DashboardLayout>
-              </ProtectedRoute>
-            } />
+                <Route
+                  path='/intelligent-organizer'
+                  element={
+                    <ProtectedRoute>
+                      <DashboardLayout>
+                        <IntelligentOrganizer />
+                      </DashboardLayout>
+                    </ProtectedRoute>
+                  }
+                />
 
-            <Route path="/component-showcase" element={
-              <ProtectedRoute>
-                <DashboardLayout>
-                  <ComponentShowcase />
-                </DashboardLayout>
-              </ProtectedRoute>
-            } />
+                <Route
+                  path='/component-showcase'
+                  element={
+                    <ProtectedRoute>
+                      <DashboardLayout>
+                        <ComponentShowcase />
+                      </DashboardLayout>
+                    </ProtectedRoute>
+                  }
+                />
 
-            <Route path="/performance" element={
-              <ProtectedRoute>
-                <DashboardLayout>
-                  <Performance />
-                </DashboardLayout>
-              </ProtectedRoute>
-            } />
+                <Route
+                  path='/performance'
+                  element={
+                    <ProtectedRoute>
+                      <DashboardLayout>
+                        <Performance />
+                      </DashboardLayout>
+                    </ProtectedRoute>
+                  }
+                />
 
-            <Route path="/will-management" element={
-              <ProtectedRoute>
-                <DashboardLayout>
-                  <WillManagement />
-                </DashboardLayout>
-              </ProtectedRoute>
-            } />
+                <Route
+                  path='/will-management'
+                  element={
+                    <ProtectedRoute>
+                      <DashboardLayout>
+                        <WillManagement />
+                      </DashboardLayout>
+                    </ProtectedRoute>
+                  }
+                />
 
-            <Route path="/onboarding" element={
-              <ProtectedRoute>
-                <OnboardingWrapper>
-                  <div>Onboarding content</div>
-                </OnboardingWrapper>
-              </ProtectedRoute>
-            } />
+                <Route
+                  path='/onboarding'
+                  element={
+                    <ProtectedRoute>
+                      <OnboardingWrapper>
+                        <div>Onboarding content</div>
+                      </OnboardingWrapper>
+                    </ProtectedRoute>
+                  }
+                />
 
-            {/* Test Routes */}
-            <Route path="/test-notifications" element={
-              <ProtectedRoute>
-                <DashboardLayout>
-                  <TestNotifications />
-                </DashboardLayout>
-              </ProtectedRoute>
-            } />
+                {/* Test Routes */}
+                <Route
+                  path='/test-notifications'
+                  element={
+                    <ProtectedRoute>
+                      <DashboardLayout>
+                        <TestNotifications />
+                      </DashboardLayout>
+                    </ProtectedRoute>
+                  }
+                />
 
-            {/* 404 Route */}
-            <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Router>
-        </ClerkProvider>
-      </Suspense>
-    </I18nextProvider>
+                {/* 404 Route */}
+                <Route path='*' element={<NotFound />} />
+              </Routes>
+            </Router>
+          </ClerkProvider>
+        </Suspense>
+      </I18nextProvider>
     </ErrorBoundary>
   );
 }

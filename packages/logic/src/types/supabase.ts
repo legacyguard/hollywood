@@ -1,370 +1,433 @@
 // Supabase types for LegacyGuard - copied from main project types
 export type Json =
-  | string
-  | number
   | boolean
+  | Json[]
   | null
-  | { [key: string]: Json | undefined }
-  | Json[];
+  | number
+  | string
+  | { [key: string]: Json | undefined };
 
 // Main database interface structure
 export interface Database {
   public: {
     Tables: {
-      profiles: {
-        Row: {
-          id: string;
-          email: string | null;
-          full_name: string | null;
-          avatar_url: string | null;
-          phone: string | null;
-          date_of_birth: string | null;
-          emergency_contacts: Json | null;
-          preferences: Json | null;
-          memorial_message: string | null;
-          user_id: string | null;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id: string;
-          email?: string | null;
-          full_name?: string | null;
-          avatar_url?: string | null;
-          phone?: string | null;
-          date_of_birth?: string | null;
-          emergency_contacts?: Json | null;
-          preferences?: Json | null;
-          memorial_message?: string | null;
-          user_id?: string | null;
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: {
-          id?: string;
-          email?: string | null;
-          full_name?: string | null;
-          avatar_url?: string | null;
-          phone?: string | null;
-          date_of_birth?: string | null;
-          emergency_contacts?: Json | null;
-          preferences?: Json | null;
-          memorial_message?: string | null;
-          user_id?: string | null;
-          created_at?: string;
-          updated_at?: string;
-        };
-      };
       documents: {
-        Row: {
-          id: string;
-          user_id: string;
+        Insert: {
+          category?: null | string;
+          classification_confidence?: null | number;
+          completion_percentage?: null | number;
+          created_at?: string;
+          description?: null | string;
+          document_type?: string;
+          encrypted_at?: null | string;
+          expires_at?: null | string;
+          extracted_entities?: Json | null;
+          extracted_metadata?: Json | null;
           file_name: string;
           file_path: string;
-          file_type: string | null;
-          file_size: number | null;
+          file_size?: null | number;
+          file_type?: null | string;
+          id?: string;
+          is_important?: boolean;
+          last_notification_sent_at?: null | string;
+          ocr_confidence?: null | number;
+          ocr_text?: null | string;
+          processing_status?:
+            | 'completed'
+            | 'failed'
+            | 'manual'
+            | 'pending'
+            | 'processing';
+          professional_review_date?: null | string;
+          professional_review_score?: null | number;
+          professional_review_status?:
+            | 'cancelled'
+            | 'completed'
+            | 'in_progress'
+            | 'none'
+            | 'requested'
+            | null;
+          professional_reviewer_id?: null | string;
+          review_findings?: Json | null;
+          review_recommendations?: Json | null;
+          tags?: null | string[];
+          title?: null | string;
+          updated_at?: string;
+          user_id: string;
+        };
+        Row: {
+          // OCR and AI fields
+          category: null | string;
+          classification_confidence: null | number;
+          completion_percentage: null | number;
+          created_at: string;
+          description: null | string;
           document_type: string;
-          expires_at: string | null;
-          encrypted_at: string | null;
-          last_notification_sent_at: string | null;
+          encrypted_at: null | string;
+          expires_at: null | string;
+          extracted_entities: Json | null;
+          extracted_metadata: Json | null;
+          file_name: string;
+          file_path: string;
+          file_size: null | number;
+          file_type: null | string;
+          id: string;
+          is_important: boolean;
+          last_notification_sent_at: null | string;
+          ocr_confidence: null | number;
+          ocr_text: null | string;
+          processing_status:
+            | 'completed'
+            | 'failed'
+            | 'manual'
+            | 'pending'
+            | 'processing';
+          professional_review_date: null | string;
+          professional_review_score: null | number;
           // Professional review fields
-          professional_review_status: 'none' | 'requested' | 'in_progress' | 'completed' | 'cancelled' | null;
-          professional_review_score: number | null;
-          professional_review_date: string | null;
-          professional_reviewer_id: string | null;
+          professional_review_status:
+            | 'cancelled'
+            | 'completed'
+            | 'in_progress'
+            | 'none'
+            | 'requested'
+            | null;
+          professional_reviewer_id: null | string;
           review_findings: Json | null;
           review_recommendations: Json | null;
-          // OCR and AI fields
-          category: string | null;
-          title: string | null;
-          description: string | null;
-          tags: string[] | null;
-          is_important: boolean;
-          ocr_text: string | null;
-          ocr_confidence: number | null;
-          extracted_entities: Json | null;
-          classification_confidence: number | null;
-          extracted_metadata: Json | null;
-          processing_status: 'pending' | 'processing' | 'completed' | 'failed' | 'manual';
-          completion_percentage: number | null;
-          created_at: string;
+          tags: null | string[];
+          title: null | string;
           updated_at: string;
-        };
-        Insert: {
-          id?: string;
           user_id: string;
-          file_name: string;
-          file_path: string;
-          file_type?: string | null;
-          file_size?: number | null;
-          document_type?: string;
-          expires_at?: string | null;
-          encrypted_at?: string | null;
-          last_notification_sent_at?: string | null;
-          professional_review_status?: 'none' | 'requested' | 'in_progress' | 'completed' | 'cancelled' | null;
-          professional_review_score?: number | null;
-          professional_review_date?: string | null;
-          professional_reviewer_id?: string | null;
-          review_findings?: Json | null;
-          review_recommendations?: Json | null;
-          category?: string | null;
-          title?: string | null;
-          description?: string | null;
-          tags?: string[] | null;
-          is_important?: boolean;
-          ocr_text?: string | null;
-          ocr_confidence?: number | null;
-          extracted_entities?: Json | null;
-          classification_confidence?: number | null;
-          extracted_metadata?: Json | null;
-          processing_status?: 'pending' | 'processing' | 'completed' | 'failed' | 'manual';
-          completion_percentage?: number | null;
-          created_at?: string;
-          updated_at?: string;
         };
         Update: {
-          id?: string;
-          user_id?: string;
+          category?: null | string;
+          classification_confidence?: null | number;
+          completion_percentage?: null | number;
+          created_at?: string;
+          description?: null | string;
+          document_type?: string;
+          encrypted_at?: null | string;
+          expires_at?: null | string;
+          extracted_entities?: Json | null;
+          extracted_metadata?: Json | null;
           file_name?: string;
           file_path?: string;
-          file_type?: string | null;
-          file_size?: number | null;
-          document_type?: string;
-          expires_at?: string | null;
-          encrypted_at?: string | null;
-          last_notification_sent_at?: string | null;
-          professional_review_status?: 'none' | 'requested' | 'in_progress' | 'completed' | 'cancelled' | null;
-          professional_review_score?: number | null;
-          professional_review_date?: string | null;
-          professional_reviewer_id?: string | null;
+          file_size?: null | number;
+          file_type?: null | string;
+          id?: string;
+          is_important?: boolean;
+          last_notification_sent_at?: null | string;
+          ocr_confidence?: null | number;
+          ocr_text?: null | string;
+          processing_status?:
+            | 'completed'
+            | 'failed'
+            | 'manual'
+            | 'pending'
+            | 'processing';
+          professional_review_date?: null | string;
+          professional_review_score?: null | number;
+          professional_review_status?:
+            | 'cancelled'
+            | 'completed'
+            | 'in_progress'
+            | 'none'
+            | 'requested'
+            | null;
+          professional_reviewer_id?: null | string;
           review_findings?: Json | null;
           review_recommendations?: Json | null;
-          category?: string | null;
-          title?: string | null;
-          description?: string | null;
-          tags?: string[] | null;
-          is_important?: boolean;
-          ocr_text?: string | null;
-          ocr_confidence?: number | null;
-          extracted_entities?: Json | null;
-          classification_confidence?: number | null;
-          extracted_metadata?: Json | null;
-          processing_status?: 'pending' | 'processing' | 'completed' | 'failed' | 'manual';
-          completion_percentage?: number | null;
-          created_at?: string;
+          tags?: null | string[];
+          title?: null | string;
           updated_at?: string;
+          user_id?: string;
         };
       };
       guardians: {
-        Row: {
-          id: string;
-          user_id: string;
-          name: string;
-          email: string;
-          phone: string | null;
-          relationship: string | null;
-          notes: string | null;
-          is_active: boolean;
-          emergency_contact_priority?: number | null;
-          memorial_message?: string | null;
-          created_at: string;
-          updated_at: string;
-        };
         Insert: {
-          id?: string;
-          user_id: string;
-          name: string;
-          email: string;
-          phone?: string | null;
-          relationship?: string | null;
-          notes?: string | null;
-          is_active?: boolean;
-          emergency_contact_priority?: number | null;
-          memorial_message?: string | null;
           created_at?: string;
+          email: string;
+          emergency_contact_priority?: null | number;
+          id?: string;
+          is_active?: boolean;
+          memorial_message?: null | string;
+          name: string;
+          notes?: null | string;
+          phone?: null | string;
+          relationship?: null | string;
           updated_at?: string;
+          user_id: string;
+        };
+        Row: {
+          created_at: string;
+          email: string;
+          emergency_contact_priority?: null | number;
+          id: string;
+          is_active: boolean;
+          memorial_message?: null | string;
+          name: string;
+          notes: null | string;
+          phone: null | string;
+          relationship: null | string;
+          updated_at: string;
+          user_id: string;
         };
         Update: {
-          id?: string;
-          user_id?: string;
-          name?: string;
-          email?: string;
-          phone?: string | null;
-          relationship?: string | null;
-          notes?: string | null;
-          is_active?: boolean;
-          emergency_contact_priority?: number | null;
-          memorial_message?: string | null;
           created_at?: string;
+          email?: string;
+          emergency_contact_priority?: null | number;
+          id?: string;
+          is_active?: boolean;
+          memorial_message?: null | string;
+          name?: string;
+          notes?: null | string;
+          phone?: null | string;
+          relationship?: null | string;
           updated_at?: string;
+          user_id?: string;
         };
       };
       legacy_items: {
-        Row: {
-          id: string;
-          user_id: string;
+        Insert: {
+          category: 'asset' | 'document' | 'instruction' | 'memory' | 'wish';
+          created_at?: string;
+          description?: null | string;
+          due_date?: null | string;
+          file_urls?: null | string[];
+          id?: string;
+          is_public?: boolean;
+          metadata?: Json | null;
+          priority?: 'high' | 'low' | 'medium' | 'urgent';
+          status?: 'archived' | 'completed' | 'draft' | 'in_progress';
+          tags?: null | string[];
           title: string;
-          description: string | null;
-          category: 'document' | 'wish' | 'memory' | 'instruction' | 'asset';
-          status: 'draft' | 'in_progress' | 'completed' | 'archived';
-          priority: 'low' | 'medium' | 'high' | 'urgent';
-          due_date: string | null;
-          tags: string[] | null;
-          metadata: Json | null;
-          file_urls: string[] | null;
+          updated_at?: string;
+          user_id: string;
+        };
+        Row: {
+          category: 'asset' | 'document' | 'instruction' | 'memory' | 'wish';
+          created_at: string;
+          description: null | string;
+          due_date: null | string;
+          file_urls: null | string[];
+          id: string;
           is_public: boolean;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id?: string;
-          user_id: string;
-          title: string;
-          description?: string | null;
-          category: 'document' | 'wish' | 'memory' | 'instruction' | 'asset';
-          status?: 'draft' | 'in_progress' | 'completed' | 'archived';
-          priority?: 'low' | 'medium' | 'high' | 'urgent';
-          due_date?: string | null;
-          tags?: string[] | null;
-          metadata?: Json | null;
-          file_urls?: string[] | null;
-          is_public?: boolean;
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: {
-          id?: string;
-          user_id?: string;
-          title?: string;
-          description?: string | null;
-          category?: 'document' | 'wish' | 'memory' | 'instruction' | 'asset';
-          status?: 'draft' | 'in_progress' | 'completed' | 'archived';
-          priority?: 'low' | 'medium' | 'high' | 'urgent';
-          due_date?: string | null;
-          tags?: string[] | null;
-          metadata?: Json | null;
-          file_urls?: string[] | null;
-          is_public?: boolean;
-          created_at?: string;
-          updated_at?: string;
-        };
-      };
-      quick_insights: {
-        Row: {
-          id: string;
-          user_id: string;
-          type: 'tip' | 'warning' | 'achievement' | 'reminder' | 'insight';
-          title: string;
-          message: string;
-          priority: 'low' | 'medium' | 'high' | 'urgent';
-          category: string | null;
-          action_required: boolean;
-          action_url: string | null;
-          dismissed_at: string | null;
-          expires_at: string | null;
           metadata: Json | null;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id?: string;
-          user_id: string;
-          type: 'tip' | 'warning' | 'achievement' | 'reminder' | 'insight';
+          priority: 'high' | 'low' | 'medium' | 'urgent';
+          status: 'archived' | 'completed' | 'draft' | 'in_progress';
+          tags: null | string[];
           title: string;
-          message: string;
-          priority?: 'low' | 'medium' | 'high' | 'urgent';
-          category?: string | null;
-          action_required?: boolean;
-          action_url?: string | null;
-          dismissed_at?: string | null;
-          expires_at?: string | null;
-          metadata?: Json | null;
-          created_at?: string;
-          updated_at?: string;
+          updated_at: string;
+          user_id: string;
         };
         Update: {
-          id?: string;
-          user_id?: string;
-          type?: 'tip' | 'warning' | 'achievement' | 'reminder' | 'insight';
-          title?: string;
-          message?: string;
-          priority?: 'low' | 'medium' | 'high' | 'urgent';
-          category?: string | null;
-          action_required?: boolean;
-          action_url?: string | null;
-          dismissed_at?: string | null;
-          expires_at?: string | null;
-          metadata?: Json | null;
+          category?: 'asset' | 'document' | 'instruction' | 'memory' | 'wish';
           created_at?: string;
+          description?: null | string;
+          due_date?: null | string;
+          file_urls?: null | string[];
+          id?: string;
+          is_public?: boolean;
+          metadata?: Json | null;
+          priority?: 'high' | 'low' | 'medium' | 'urgent';
+          status?: 'archived' | 'completed' | 'draft' | 'in_progress';
+          tags?: null | string[];
+          title?: string;
           updated_at?: string;
+          user_id?: string;
         };
       };
       legacy_milestones: {
-        Row: {
-          id: string;
-          user_id: string;
-          milestone_type: 'essential_documents' | 'will_creation' | 'guardian_setup' | 'asset_inventory' | 'digital_estate' | 'healthcare_directives' | 'financial_planning' | 'legacy_messages' | 'emergency_contacts' | 'document_review';
-          title: string;
-          description: string;
+        Insert: {
           category: string;
+          completed_at?: null | string;
+          completion_percentage?: number;
+          created_at?: string;
+          criteria_completed?: number;
+          criteria_is_complete?: boolean;
           criteria_total: number;
+          description: string;
+          due_date?: null | string;
+          estimated_time_minutes?: null | number;
+          id?: string;
+          milestone_type:
+            | 'asset_inventory'
+            | 'digital_estate'
+            | 'document_review'
+            | 'emergency_contacts'
+            | 'essential_documents'
+            | 'financial_planning'
+            | 'guardian_setup'
+            | 'healthcare_directives'
+            | 'legacy_messages'
+            | 'will_creation';
+          next_steps?: null | string[];
+          priority?: 'critical' | 'high' | 'low' | 'medium';
+          related_documents?: null | string[];
+          reward_points?: null | number;
+          title: string;
+          unlock_criteria?: Json | null;
+          updated_at?: string;
+          user_id: string;
+        };
+        Row: {
+          category: string;
+          completed_at: null | string;
+          completion_percentage: number;
+          created_at: string;
           criteria_completed: number;
           criteria_is_complete: boolean;
-          completion_percentage: number;
-          priority: 'low' | 'medium' | 'high' | 'critical';
-          estimated_time_minutes: number | null;
-          reward_points: number | null;
-          unlock_criteria: Json | null;
-          next_steps: string[] | null;
-          related_documents: string[] | null;
-          completed_at: string | null;
-          due_date: string | null;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id?: string;
-          user_id: string;
-          milestone_type: 'essential_documents' | 'will_creation' | 'guardian_setup' | 'asset_inventory' | 'digital_estate' | 'healthcare_directives' | 'financial_planning' | 'legacy_messages' | 'emergency_contacts' | 'document_review';
-          title: string;
-          description: string;
-          category: string;
           criteria_total: number;
-          criteria_completed?: number;
-          criteria_is_complete?: boolean;
-          completion_percentage?: number;
-          priority?: 'low' | 'medium' | 'high' | 'critical';
-          estimated_time_minutes?: number | null;
-          reward_points?: number | null;
-          unlock_criteria?: Json | null;
-          next_steps?: string[] | null;
-          related_documents?: string[] | null;
-          completed_at?: string | null;
-          due_date?: string | null;
-          created_at?: string;
-          updated_at?: string;
+          description: string;
+          due_date: null | string;
+          estimated_time_minutes: null | number;
+          id: string;
+          milestone_type:
+            | 'asset_inventory'
+            | 'digital_estate'
+            | 'document_review'
+            | 'emergency_contacts'
+            | 'essential_documents'
+            | 'financial_planning'
+            | 'guardian_setup'
+            | 'healthcare_directives'
+            | 'legacy_messages'
+            | 'will_creation';
+          next_steps: null | string[];
+          priority: 'critical' | 'high' | 'low' | 'medium';
+          related_documents: null | string[];
+          reward_points: null | number;
+          title: string;
+          unlock_criteria: Json | null;
+          updated_at: string;
+          user_id: string;
         };
         Update: {
-          id?: string;
-          user_id?: string;
-          milestone_type?: 'essential_documents' | 'will_creation' | 'guardian_setup' | 'asset_inventory' | 'digital_estate' | 'healthcare_directives' | 'financial_planning' | 'legacy_messages' | 'emergency_contacts' | 'document_review';
-          title?: string;
-          description?: string;
           category?: string;
-          criteria_total?: number;
+          completed_at?: null | string;
+          completion_percentage?: number;
+          created_at?: string;
           criteria_completed?: number;
           criteria_is_complete?: boolean;
-          completion_percentage?: number;
-          priority?: 'low' | 'medium' | 'high' | 'critical';
-          estimated_time_minutes?: number | null;
-          reward_points?: number | null;
+          criteria_total?: number;
+          description?: string;
+          due_date?: null | string;
+          estimated_time_minutes?: null | number;
+          id?: string;
+          milestone_type?:
+            | 'asset_inventory'
+            | 'digital_estate'
+            | 'document_review'
+            | 'emergency_contacts'
+            | 'essential_documents'
+            | 'financial_planning'
+            | 'guardian_setup'
+            | 'healthcare_directives'
+            | 'legacy_messages'
+            | 'will_creation';
+          next_steps?: null | string[];
+          priority?: 'critical' | 'high' | 'low' | 'medium';
+          related_documents?: null | string[];
+          reward_points?: null | number;
+          title?: string;
           unlock_criteria?: Json | null;
-          next_steps?: string[] | null;
-          related_documents?: string[] | null;
-          completed_at?: string | null;
-          due_date?: string | null;
-          created_at?: string;
           updated_at?: string;
+          user_id?: string;
+        };
+      };
+      profiles: {
+        Insert: {
+          avatar_url?: null | string;
+          created_at?: string;
+          date_of_birth?: null | string;
+          email?: null | string;
+          emergency_contacts?: Json | null;
+          full_name?: null | string;
+          id: string;
+          memorial_message?: null | string;
+          phone?: null | string;
+          preferences?: Json | null;
+          updated_at?: string;
+          user_id?: null | string;
+        };
+        Row: {
+          avatar_url: null | string;
+          created_at: string;
+          date_of_birth: null | string;
+          email: null | string;
+          emergency_contacts: Json | null;
+          full_name: null | string;
+          id: string;
+          memorial_message: null | string;
+          phone: null | string;
+          preferences: Json | null;
+          updated_at: string;
+          user_id: null | string;
+        };
+        Update: {
+          avatar_url?: null | string;
+          created_at?: string;
+          date_of_birth?: null | string;
+          email?: null | string;
+          emergency_contacts?: Json | null;
+          full_name?: null | string;
+          id?: string;
+          memorial_message?: null | string;
+          phone?: null | string;
+          preferences?: Json | null;
+          updated_at?: string;
+          user_id?: null | string;
+        };
+      };
+      quick_insights: {
+        Insert: {
+          action_required?: boolean;
+          action_url?: null | string;
+          category?: null | string;
+          created_at?: string;
+          dismissed_at?: null | string;
+          expires_at?: null | string;
+          id?: string;
+          message: string;
+          metadata?: Json | null;
+          priority?: 'high' | 'low' | 'medium' | 'urgent';
+          title: string;
+          type: 'achievement' | 'insight' | 'reminder' | 'tip' | 'warning';
+          updated_at?: string;
+          user_id: string;
+        };
+        Row: {
+          action_required: boolean;
+          action_url: null | string;
+          category: null | string;
+          created_at: string;
+          dismissed_at: null | string;
+          expires_at: null | string;
+          id: string;
+          message: string;
+          metadata: Json | null;
+          priority: 'high' | 'low' | 'medium' | 'urgent';
+          title: string;
+          type: 'achievement' | 'insight' | 'reminder' | 'tip' | 'warning';
+          updated_at: string;
+          user_id: string;
+        };
+        Update: {
+          action_required?: boolean;
+          action_url?: null | string;
+          category?: null | string;
+          created_at?: string;
+          dismissed_at?: null | string;
+          expires_at?: null | string;
+          id?: string;
+          message?: string;
+          metadata?: Json | null;
+          priority?: 'high' | 'low' | 'medium' | 'urgent';
+          title?: string;
+          type?: 'achievement' | 'insight' | 'reminder' | 'tip' | 'warning';
+          updated_at?: string;
+          user_id?: string;
         };
       };
     };
@@ -377,24 +440,36 @@ export type ProfileInsert = Database['public']['Tables']['profiles']['Insert'];
 export type ProfileUpdate = Database['public']['Tables']['profiles']['Update'];
 
 export type Document = Database['public']['Tables']['documents']['Row'];
-export type DocumentInsert = Database['public']['Tables']['documents']['Insert'];
-export type DocumentUpdate = Database['public']['Tables']['documents']['Update'];
+export type DocumentInsert =
+  Database['public']['Tables']['documents']['Insert'];
+export type DocumentUpdate =
+  Database['public']['Tables']['documents']['Update'];
 
 export type Guardian = Database['public']['Tables']['guardians']['Row'];
-export type GuardianInsert = Database['public']['Tables']['guardians']['Insert'];
-export type GuardianUpdate = Database['public']['Tables']['guardians']['Update'];
+export type GuardianInsert =
+  Database['public']['Tables']['guardians']['Insert'];
+export type GuardianUpdate =
+  Database['public']['Tables']['guardians']['Update'];
 
 export type LegacyItem = Database['public']['Tables']['legacy_items']['Row'];
-export type LegacyItemInsert = Database['public']['Tables']['legacy_items']['Insert'];
-export type LegacyItemUpdate = Database['public']['Tables']['legacy_items']['Update'];
+export type LegacyItemInsert =
+  Database['public']['Tables']['legacy_items']['Insert'];
+export type LegacyItemUpdate =
+  Database['public']['Tables']['legacy_items']['Update'];
 
-export type QuickInsight = Database['public']['Tables']['quick_insights']['Row'];
-export type QuickInsightInsert = Database['public']['Tables']['quick_insights']['Insert'];
-export type QuickInsightUpdate = Database['public']['Tables']['quick_insights']['Update'];
+export type QuickInsight =
+  Database['public']['Tables']['quick_insights']['Row'];
+export type QuickInsightInsert =
+  Database['public']['Tables']['quick_insights']['Insert'];
+export type QuickInsightUpdate =
+  Database['public']['Tables']['quick_insights']['Update'];
 
-export type LegacyMilestone = Database['public']['Tables']['legacy_milestones']['Row'];
-export type LegacyMilestoneInsert = Database['public']['Tables']['legacy_milestones']['Insert'];
-export type LegacyMilestoneUpdate = Database['public']['Tables']['legacy_milestones']['Update'];
+export type LegacyMilestone =
+  Database['public']['Tables']['legacy_milestones']['Row'];
+export type LegacyMilestoneInsert =
+  Database['public']['Tables']['legacy_milestones']['Insert'];
+export type LegacyMilestoneUpdate =
+  Database['public']['Tables']['legacy_milestones']['Update'];
 
 // Category and status types for better type safety
 export type LegacyItemCategory = LegacyItem['category'];
@@ -403,38 +478,38 @@ export type LegacyItemPriority = LegacyItem['priority'];
 
 // Emergency contact type
 export interface EmergencyContact {
-  name: string;
-  relationship: string;
-  phone: string;
-  email?: string;
   address?: string;
+  email?: string;
+  name: string;
+  phone: string;
+  relationship: string;
 }
 
 // User preferences type
 export interface UserPreferences {
-  theme: 'light' | 'dark' | 'auto';
-  notifications: boolean;
-  language: string;
-  timezone?: string;
   currency?: string;
+  language: string;
+  notifications: boolean;
+  theme: 'auto' | 'dark' | 'light';
+  timezone?: string;
 }
 
 // Legacy item metadata type
 export interface LegacyItemMetadata {
-  location?: string;
-  backup_status?: string;
-  estimated_size?: string;
-  lawyer_contact?: string;
-  review_frequency?: string;
-  next_review?: string;
-  property_address?: string;
-  insurance_info?: string;
-  maintenance_schedule?: string;
-  healthcare_proxy?: string;
-  dni_status?: boolean;
-  organ_donation?: boolean;
-  total_recipes?: number;
-  completed_recipes?: number;
-  format?: string;
   [key: string]: unknown;
+  backup_status?: string;
+  completed_recipes?: number;
+  dni_status?: boolean;
+  estimated_size?: string;
+  format?: string;
+  healthcare_proxy?: string;
+  insurance_info?: string;
+  lawyer_contact?: string;
+  location?: string;
+  maintenance_schedule?: string;
+  next_review?: string;
+  organ_donation?: boolean;
+  property_address?: string;
+  review_frequency?: string;
+  total_recipes?: number;
 }

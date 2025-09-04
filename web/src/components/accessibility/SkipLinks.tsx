@@ -6,9 +6,9 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 
 interface SkipLink {
+  href: string;
   id: string;
   label: string;
-  href: string;
 }
 
 const defaultLinks: SkipLink[] = [
@@ -18,8 +18,8 @@ const defaultLinks: SkipLink[] = [
 ];
 
 interface SkipLinksProps {
-  links?: SkipLink[];
   className?: string;
+  links?: SkipLink[];
 }
 
 export const SkipLinks: React.FC<SkipLinksProps> = ({
@@ -28,15 +28,15 @@ export const SkipLinks: React.FC<SkipLinksProps> = ({
 }) => {
   return (
     <nav
-      aria-label="Skip links"
+      aria-label='Skip links'
       className={cn(
         'skip-links',
         'fixed top-0 left-0 z-[100] bg-background',
         className
       )}
     >
-      <ul className="list-none p-0 m-0">
-        {links.map((link) => (
+      <ul className='list-none p-0 m-0'>
+        {links.map(link => (
           <li key={link.id}>
             <a
               href={link.href}
@@ -48,7 +48,7 @@ export const SkipLinks: React.FC<SkipLinksProps> = ({
                 'focus:left-4 focus:top-4 focus:z-[101]',
                 'transition-all duration-200'
               )}
-              onClick={(e) => {
+              onClick={e => {
                 e.preventDefault();
                 const target = document.querySelector(link.href);
                 if (target) {

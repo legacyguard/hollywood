@@ -1,37 +1,36 @@
 // Milestone Animations - Celebration and achievement animations with personality adaptation
 // Provides meaningful feedback for user accomplishments and progress milestones
 
-import React, { useState, useEffect } from 'react';
-import type { Variants } from 'framer-motion';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useEffect, useState } from 'react';
+import { AnimatePresence, motion, type Variants } from 'framer-motion';
 import { usePersonalityManager } from '@/components/sofia/SofiaContextProvider';
 import { AnimationSystem } from '@/lib/animation-system';
 import {
-  Trophy,
-  Star,
+  Award,
+  CheckCircle,
+  Crown,
+  Gift,
   Heart,
   Shield,
-  CheckCircle,
-  Gift,
-  Crown,
-  Award
+  Star,
+  Trophy,
 } from 'lucide-react';
 
 interface MilestoneData {
-  id: string;
-  title: string;
+  category: 'completion' | 'document' | 'family' | 'guardian' | 'security';
   description: string;
-  icon: 'trophy' | 'star' | 'heart' | 'shield' | 'crown' | 'gift' | 'award';
-  category: 'document' | 'guardian' | 'security' | 'family' | 'completion';
-  significance: 'minor' | 'major' | 'ultimate';
+  icon: 'award' | 'crown' | 'gift' | 'heart' | 'shield' | 'star' | 'trophy';
+  id: string;
+  significance: 'major' | 'minor' | 'ultimate';
+  title: string;
 }
 
 interface MilestoneCelebrationProps {
-  milestone: MilestoneData;
-  isVisible: boolean;
-  onComplete?: () => void;
   autoHide?: boolean;
   duration?: number;
+  isVisible: boolean;
+  milestone: MilestoneData;
+  onComplete?: () => void;
 }
 
 const iconComponents = {
@@ -55,7 +54,8 @@ export const MilestoneCelebration: React.FC<MilestoneCelebrationProps> = ({
   const [isCompleted, setIsCompleted] = useState(false);
 
   const personalityMode = personalityManager?.getCurrentStyle() || 'adaptive';
-  const adaptedMode = personalityMode === 'balanced' ? 'adaptive' : personalityMode;
+  const adaptedMode =
+    personalityMode === 'balanced' ? 'adaptive' : personalityMode;
 
   const shouldReduceMotion = AnimationSystem.shouldReduceMotion();
   const animConfig = AnimationSystem.getConfig(adaptedMode);
@@ -106,7 +106,11 @@ export const MilestoneCelebration: React.FC<MilestoneCelebrationProps> = ({
   // Create celebration particles
   const createParticles = () => {
     const particles = [];
-    const particleCount = shouldReduceMotion ? 0 : (adaptedMode === 'empathetic' ? 20 : 12);
+    const particleCount = shouldReduceMotion
+      ? 0
+      : adaptedMode === 'empathetic'
+        ? 20
+        : 12;
 
     for (let i = 0; i < particleCount; i++) {
       particles.push(
@@ -183,24 +187,26 @@ export const MilestoneCelebration: React.FC<MilestoneCelebrationProps> = ({
   };
 
   const pulseVariants = {
-    animate: shouldReduceMotion ? {} : {
-      scale: [1, 1.05, 1],
-      opacity: [0.5, 0.8, 0.5],
-      transition: {
-        duration: 2,
-        repeat: Infinity,
-        ease: 'easeInOut',
-      },
-    },
+    animate: shouldReduceMotion
+      ? {}
+      : {
+          scale: [1, 1.05, 1],
+          opacity: [0.5, 0.8, 0.5],
+          transition: {
+            duration: 2,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          },
+        },
   };
 
   return (
     <AnimatePresence>
       {isVisible && !isCompleted && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className='fixed inset-0 z-50 flex items-center justify-center p-4'>
           {/* Backdrop */}
           <motion.div
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            className='absolute inset-0 bg-black/60 backdrop-blur-sm'
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -212,34 +218,34 @@ export const MilestoneCelebration: React.FC<MilestoneCelebrationProps> = ({
 
           {/* Main celebration container */}
           <motion.div
-            className="relative bg-white rounded-2xl shadow-2xl p-8 max-w-md mx-4 text-center overflow-hidden"
+            className='relative bg-white rounded-2xl shadow-2xl p-8 max-w-md mx-4 text-center overflow-hidden'
             variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
+            initial='hidden'
+            animate='visible'
+            exit='exit'
           >
             {/* Background decoration */}
             <motion.div
               className={`absolute inset-0 bg-gradient-to-br ${theme.secondary} opacity-20`}
               variants={pulseVariants as any}
-              animate="animate"
+              animate='animate'
             />
 
             {/* Celebration particles */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+            <div className='absolute inset-0 overflow-hidden pointer-events-none'>
+              <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
                 {createParticles()}
               </div>
             </div>
 
             {/* Main content */}
-            <div className="relative z-10">
+            <div className='relative z-10'>
               {/* Icon with glow effect */}
               <motion.div
                 className={`inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br ${theme.primary} text-white shadow-2xl ${theme.glow} mb-6`}
                 variants={iconVariants as any}
               >
-                <IconComponent className="w-10 h-10" />
+                <IconComponent className='w-10 h-10' />
 
                 {/* Glow rings */}
                 {!shouldReduceMotion && (
@@ -285,30 +291,29 @@ export const MilestoneCelebration: React.FC<MilestoneCelebrationProps> = ({
                   {adaptedMode === 'empathetic' && ' 🎉'}
                 </h2>
 
-                <h3 className="text-xl font-semibold text-gray-800 mb-3">
+                <h3 className='text-xl font-semibold text-gray-800 mb-3'>
                   {milestone.title}
                 </h3>
 
-                <p className="text-gray-600 leading-relaxed mb-6">
+                <p className='text-gray-600 leading-relaxed mb-6'>
                   {milestone.description}
                 </p>
               </motion.div>
 
               {/* Progress indicator */}
               <motion.div
-                className="flex items-center justify-center space-x-2 mb-6"
+                className='flex items-center justify-center space-x-2 mb-6'
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.5, duration: animConfig.duration }}
               >
                 <CheckCircle className={`w-5 h-5 ${theme.accent}`} />
-                <span className="text-sm text-gray-600 font-medium">
+                <span className='text-sm text-gray-600 font-medium'>
                   {adaptedMode === 'empathetic'
                     ? 'Another step closer to peace of mind'
                     : adaptedMode === 'pragmatic'
-                    ? 'System security enhanced'
-                    : 'Progress updated successfully'
-                  }
+                      ? 'System security enhanced'
+                      : 'Progress updated successfully'}
                 </span>
               </motion.div>
 
@@ -325,7 +330,9 @@ export const MilestoneCelebration: React.FC<MilestoneCelebrationProps> = ({
                   setTimeout(() => onComplete?.(), 500);
                 }}
               >
-                {adaptedMode === 'empathetic' ? 'Continue the Journey' : 'Continue'}
+                {adaptedMode === 'empathetic'
+                  ? 'Continue the Journey'
+                  : 'Continue'}
               </motion.button>
             </div>
           </motion.div>
@@ -336,12 +343,12 @@ export const MilestoneCelebration: React.FC<MilestoneCelebrationProps> = ({
 };
 
 interface ProgressRingProps {
-  progress: number;
-  size?: 'sm' | 'md' | 'lg';
-  strokeWidth?: number;
-  showPercentage?: boolean;
   animated?: boolean;
   className?: string;
+  progress: number;
+  showPercentage?: boolean;
+  size?: 'lg' | 'md' | 'sm';
+  strokeWidth?: number;
 }
 
 export const AdaptiveProgressRing: React.FC<ProgressRingProps> = ({
@@ -355,7 +362,8 @@ export const AdaptiveProgressRing: React.FC<ProgressRingProps> = ({
   const personalityManager = usePersonalityManager();
 
   const personalityMode = personalityManager?.getCurrentStyle() || 'adaptive';
-  const adaptedMode = personalityMode === 'balanced' ? 'adaptive' : personalityMode;
+  const adaptedMode =
+    personalityMode === 'balanced' ? 'adaptive' : personalityMode;
 
   const shouldReduceMotion = AnimationSystem.shouldReduceMotion();
 
@@ -383,21 +391,23 @@ export const AdaptiveProgressRing: React.FC<ProgressRingProps> = ({
   };
 
   return (
-    <div className={`relative inline-flex items-center justify-center ${className}`}>
+    <div
+      className={`relative inline-flex items-center justify-center ${className}`}
+    >
       <svg
         width={config.diameter}
         height={config.diameter}
-        className="transform -rotate-90"
+        className='transform -rotate-90'
       >
         {/* Background circle */}
         <circle
           cx={config.diameter / 2}
           cy={config.diameter / 2}
           r={radius}
-          stroke="currentColor"
+          stroke='currentColor'
           strokeWidth={strokeWidth || config.stroke}
-          fill="none"
-          className="text-gray-200"
+          fill='none'
+          className='text-gray-200'
         />
 
         {/* Progress circle */}
@@ -405,18 +415,25 @@ export const AdaptiveProgressRing: React.FC<ProgressRingProps> = ({
           cx={config.diameter / 2}
           cy={config.diameter / 2}
           r={radius}
-          stroke="currentColor"
+          stroke='currentColor'
           strokeWidth={strokeWidth || config.stroke}
-          fill="none"
-          strokeLinecap="round"
+          fill='none'
+          strokeLinecap='round'
           className={getStrokeColor()}
           initial={animated ? { strokeDashoffset: circumference } : undefined}
           animate={animated ? { strokeDashoffset } : undefined}
-          transition={animated && !shouldReduceMotion ? {
-            duration: adaptedMode === 'pragmatic' ? 1 : 2,
-            ease: adaptedMode === 'pragmatic' ? 'easeOut' : [0.25, 0.46, 0.45, 0.94],
-            delay: 0.2,
-          } : undefined}
+          transition={
+            animated && !shouldReduceMotion
+              ? {
+                  duration: adaptedMode === 'pragmatic' ? 1 : 2,
+                  ease:
+                    adaptedMode === 'pragmatic'
+                      ? 'easeOut'
+                      : [0.25, 0.46, 0.45, 0.94],
+                  delay: 0.2,
+                }
+              : undefined
+          }
           style={{
             strokeDasharray,
             strokeDashoffset: animated ? undefined : strokeDashoffset,
@@ -426,16 +443,23 @@ export const AdaptiveProgressRing: React.FC<ProgressRingProps> = ({
 
       {/* Center content */}
       {showPercentage && (
-        <div className="absolute inset-0 flex items-center justify-center">
+        <div className='absolute inset-0 flex items-center justify-center'>
           <motion.span
-            className="text-gray-700 font-semibold"
-            style={{ fontSize: size === 'sm' ? '12px' : size === 'md' ? '16px' : '20px' }}
+            className='text-gray-700 font-semibold'
+            style={{
+              fontSize:
+                size === 'sm' ? '12px' : size === 'md' ? '16px' : '20px',
+            }}
             initial={animated ? { opacity: 0, scale: 0.5 } : undefined}
             animate={animated ? { opacity: 1, scale: 1 } : undefined}
-            transition={animated && !shouldReduceMotion ? {
-              delay: 0.5,
-              duration: 0.5,
-            } : undefined}
+            transition={
+              animated && !shouldReduceMotion
+                ? {
+                    delay: 0.5,
+                    duration: 0.5,
+                  }
+                : undefined
+            }
           >
             {Math.round(progress)}%
           </motion.span>
@@ -446,12 +470,12 @@ export const AdaptiveProgressRing: React.FC<ProgressRingProps> = ({
 };
 
 interface AchievementBadgeProps {
-  title: string;
-  icon: keyof typeof iconComponents;
-  earned: boolean;
   date?: Date;
   description?: string;
+  earned: boolean;
+  icon: keyof typeof iconComponents;
   onClick?: () => void;
+  title: string;
 }
 
 export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
@@ -465,7 +489,8 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
   const personalityManager = usePersonalityManager();
 
   const personalityMode = personalityManager?.getCurrentStyle() || 'adaptive';
-  const adaptedMode = personalityMode === 'balanced' ? 'adaptive' : personalityMode;
+  const adaptedMode =
+    personalityMode === 'balanced' ? 'adaptive' : personalityMode;
 
   const shouldReduceMotion = AnimationSystem.shouldReduceMotion();
 
@@ -476,21 +501,25 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
       scale: 1,
       y: 0,
     },
-    hover: shouldReduceMotion ? {} : {
-      scale: 1.05,
-      y: -2,
-      transition: {
-        duration: 0.2,
-        ease: 'easeOut',
-      },
-    },
-    tap: shouldReduceMotion ? {} : {
-      scale: 0.95,
-      transition: {
-        duration: 0.1,
-        ease: 'easeOut',
-      },
-    },
+    hover: shouldReduceMotion
+      ? {}
+      : {
+          scale: 1.05,
+          y: -2,
+          transition: {
+            duration: 0.2,
+            ease: 'easeOut',
+          },
+        },
+    tap: shouldReduceMotion
+      ? {}
+      : {
+          scale: 0.95,
+          transition: {
+            duration: 0.1,
+            ease: 'easeOut',
+          },
+        },
   };
 
   const getTheme = () => {
@@ -510,7 +539,8 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
 
   const themeClasses = {
     grayscale: 'bg-gray-100 text-gray-400 border-gray-200',
-    emerald: 'bg-emerald-50 text-emerald-600 border-emerald-200 shadow-emerald-100',
+    emerald:
+      'bg-emerald-50 text-emerald-600 border-emerald-200 shadow-emerald-100',
     blue: 'bg-blue-50 text-blue-600 border-blue-200 shadow-blue-100',
     purple: 'bg-purple-50 text-purple-600 border-purple-200 shadow-purple-100',
   };
@@ -523,56 +553,62 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
         ${earned ? 'shadow-lg' : 'opacity-60'}
       `}
       variants={badgeVariants as any}
-      initial="rest"
-      whileHover="hover"
-      whileTap="tap"
+      initial='rest'
+      whileHover='hover'
+      whileTap='tap'
       onClick={onClick}
     >
       {/* Achievement icon */}
-      <div className="flex items-center justify-center mb-3">
-        <div className={`
+      <div className='flex items-center justify-center mb-3'>
+        <div
+          className={`
           p-3 rounded-full
-          ${earned
-            ? theme === 'emerald' ? 'bg-emerald-500 text-white'
-              : theme === 'blue' ? 'bg-blue-600 text-white'
-              : theme === 'purple' ? 'bg-purple-500 text-white'
+          ${
+            earned
+              ? theme === 'emerald'
+                ? 'bg-emerald-500 text-white'
+                : theme === 'blue'
+                  ? 'bg-blue-600 text-white'
+                  : theme === 'purple'
+                    ? 'bg-purple-500 text-white'
+                    : 'bg-gray-300 text-gray-500'
               : 'bg-gray-300 text-gray-500'
-            : 'bg-gray-300 text-gray-500'
           }
-        `}>
-          <IconComponent className="w-6 h-6" />
+        `}
+        >
+          <IconComponent className='w-6 h-6' />
         </div>
 
         {/* Earned indicator */}
         {earned && (
           <motion.div
-            className="absolute -top-1 -right-1 bg-yellow-400 text-yellow-900 rounded-full p-1"
+            className='absolute -top-1 -right-1 bg-yellow-400 text-yellow-900 rounded-full p-1'
             initial={shouldReduceMotion ? {} : { scale: 0, rotate: -180 }}
             animate={shouldReduceMotion ? {} : { scale: 1, rotate: 0 }}
-            transition={shouldReduceMotion ? {} : {
-              type: 'spring',
-              stiffness: 200,
-              damping: 15,
-              delay: 0.2,
-            }}
+            transition={
+              shouldReduceMotion
+                ? {}
+                : {
+                    type: 'spring',
+                    stiffness: 200,
+                    damping: 15,
+                    delay: 0.2,
+                  }
+            }
           >
-            <CheckCircle className="w-4 h-4" />
+            <CheckCircle className='w-4 h-4' />
           </motion.div>
         )}
       </div>
 
       {/* Badge content */}
-      <div className="text-center">
-        <h4 className="font-semibold text-sm mb-1">{title}</h4>
+      <div className='text-center'>
+        <h4 className='font-semibold text-sm mb-1'>{title}</h4>
         {earned && date && (
-          <p className="text-xs opacity-75">
-            {date.toLocaleDateString()}
-          </p>
+          <p className='text-xs opacity-75'>{date.toLocaleDateString()}</p>
         )}
         {description && (
-          <p className="text-xs opacity-75 mt-2 line-clamp-2">
-            {description}
-          </p>
+          <p className='text-xs opacity-75 mt-2 line-clamp-2'>{description}</p>
         )}
       </div>
     </motion.div>

@@ -5,8 +5,8 @@ import { Card } from '@/components/ui/card';
 import { useFocusMode } from '@/contexts/FocusModeContext';
 
 interface FocusModeToggleProps {
-  variant?: 'inline' | 'card';
   className?: string;
+  variant?: 'card' | 'inline';
 }
 
 export const FocusModeToggle: React.FC<FocusModeToggleProps> = ({
@@ -22,7 +22,7 @@ export const FocusModeToggle: React.FC<FocusModeToggleProps> = ({
   const ToggleButton = () => (
     <Button
       onClick={enterFocusMode}
-      variant="outline"
+      variant='outline'
       className={`group transition-all duration-200 hover:bg-primary/5 hover:border-primary/20 ${className}`}
     >
       <Icon

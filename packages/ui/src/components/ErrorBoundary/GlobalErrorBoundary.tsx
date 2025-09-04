@@ -1,6 +1,6 @@
 import React from 'react';
 import { ErrorBoundary, type FallbackProps } from 'react-error-boundary';
-import { YStack, XStack, H2, Paragraph, Button } from 'tamagui';
+import { Button, H2, Paragraph, XStack, YStack } from 'tamagui';
 import { AlertCircle, RefreshCw } from '@tamagui/lucide-icons';
 
 interface GlobalErrorBoundaryProps {
@@ -11,7 +11,9 @@ interface GlobalErrorBoundaryProps {
 }
 
 // Default fallback component with LegacyGuard styling
-const DefaultErrorFallback: React.FC<FallbackProps> = ({ resetErrorBoundary }) => {
+const DefaultErrorFallback: React.FC<FallbackProps> = ({
+  resetErrorBoundary,
+}) => {
   const handleRefresh = () => {
     // Try to reset the error boundary first
     resetErrorBoundary?.();
@@ -25,62 +27,59 @@ const DefaultErrorFallback: React.FC<FallbackProps> = ({ resetErrorBoundary }) =
   return (
     <YStack
       flex={1}
-      justifyContent="center"
-      alignItems="center"
-      padding="$6"
-      backgroundColor="$background"
-      gap="$4"
+      justifyContent='center'
+      alignItems='center'
+      padding='$6'
+      backgroundColor='$background'
+      gap='$4'
     >
       {/* Error Icon */}
       <XStack
-        width="$8"
-        height="$8"
+        width='$8'
+        height='$8'
         borderRadius={40}
-        backgroundColor="$red1"
-        justifyContent="center"
-        alignItems="center"
-        marginBottom="$2"
+        backgroundColor='$red1'
+        justifyContent='center'
+        alignItems='center'
+        marginBottom='$2'
       >
-        <AlertCircle
-          size="$2"
-          color="$red9"
-        />
+        <AlertCircle size='$2' color='$red9' />
       </XStack>
 
       {/* Error Title */}
       <H2
-        textAlign="center"
-        color="$gray12"
-        fontFamily="$heading"
-        fontWeight="600"
-        marginBottom="$2"
+        textAlign='center'
+        color='$gray12'
+        fontFamily='$heading'
+        fontWeight='600'
+        marginBottom='$2'
       >
         Unexpected Error
       </H2>
 
       {/* Error Message */}
       <Paragraph
-        textAlign="center"
-        color="$gray11"
-        fontSize="$4"
-        lineHeight="$2"
+        textAlign='center'
+        color='$gray11'
+        fontSize='$4'
+        lineHeight='$2'
         maxWidth={400}
-        marginBottom="$4"
+        marginBottom='$4'
       >
-        We apologize, an unexpected error has occurred. Our team has been notified.
-        Please try refreshing the page.
+        We apologize, an unexpected error has occurred. Our team has been
+        notified. Please try refreshing the page.
       </Paragraph>
 
       {/* Refresh Button */}
       <Button
         onPress={handleRefresh}
-        backgroundColor="$blue9"
-        color="white"
-        borderRadius="$4"
-        paddingHorizontal="$6"
-        paddingVertical="$3"
-        fontSize="$4"
-        fontWeight="500"
+        backgroundColor='$blue9'
+        color='white'
+        borderRadius='$4'
+        paddingHorizontal='$6'
+        paddingVertical='$3'
+        fontSize='$4'
+        fontWeight='500'
         pressStyle={{
           backgroundColor: '$blue10',
           scale: 0.98,
@@ -88,27 +87,27 @@ const DefaultErrorFallback: React.FC<FallbackProps> = ({ resetErrorBoundary }) =
         hoverStyle={{
           backgroundColor: '$blue10',
         }}
-        iconAfter={<RefreshCw size="$1" />}
+        iconAfter={<RefreshCw size='$1' />}
       >
         Refresh Page
       </Button>
 
       {/* Subtle decoration for premium feel */}
       <YStack
-        position="absolute"
-        top="$10"
-        right="$10"
+        position='absolute'
+        top='$10'
+        right='$10'
         opacity={0.05}
-        pointerEvents="none"
+        pointerEvents='none'
       >
-        <XStack gap="$2">
+        <XStack gap='$2'>
           {Array.from({ length: 3 }, (_, i) => (
             <YStack
               key={i}
-              width="$1"
-              height="$1"
+              width='$1'
+              height='$1'
               borderRadius={20}
-              backgroundColor="$gray8"
+              backgroundColor='$gray8'
             />
           ))}
         </XStack>
@@ -169,4 +168,4 @@ export const GlobalErrorBoundary: React.FC<GlobalErrorBoundaryProps> = ({
   );
 };
 
-export type { GlobalErrorBoundaryProps, FallbackProps };
+export type { FallbackProps, GlobalErrorBoundaryProps };

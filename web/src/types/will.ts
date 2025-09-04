@@ -3,191 +3,212 @@
  * Handles will creation, validation, and management
  */
 
-export type WillStatus = 'draft' | 'review' | 'completed' | 'witnessed' | 'notarized' | 'archived';
-export type WillType = 'simple' | 'detailed' | 'international' | 'trust';
-export type BeneficiaryType = 'primary' | 'secondary' | 'contingent' | 'charitable';
+export type WillStatus =
+  | 'archived'
+  | 'completed'
+  | 'draft'
+  | 'notarized'
+  | 'review'
+  | 'witnessed';
+export type WillType = 'detailed' | 'international' | 'simple' | 'trust';
+export type BeneficiaryType =
+  | 'charitable'
+  | 'contingent'
+  | 'primary'
+  | 'secondary';
 
 export interface Will {
-  id: string;
-  user_id: string;
-  will_type: WillType;
-  status: WillStatus;
-  version: number;
+  // AI Assistance
+  ai_suggestions?: AISuggestion[];
+  asset_distributions: AssetDistribution[];
+  beneficiaries: Beneficiary[];
+  completeness_score: number;
+  // Metadata
+  created_at: string;
 
+  declarations: WillDeclaration[];
+  executor_appointments: ExecutorAppointment[];
+  funeral_wishes?: FuneralWishes;
+
+  guardianship_appointments?: GuardianshipAppointment[];
+  id: string;
   // Legal Information
   jurisdiction: string;
   language: string;
   legal_framework: string;
-
+  notarized_at?: string;
+  notary?: NotaryDetails;
   // Content
   preamble?: string;
-  declarations: WillDeclaration[];
-  beneficiaries: Beneficiary[];
-  asset_distributions: AssetDistribution[];
-  guardianship_appointments?: GuardianshipAppointment[];
-  executor_appointments: ExecutorAppointment[];
+
+  signed_at?: string;
   special_instructions?: SpecialInstruction[];
-  funeral_wishes?: FuneralWishes;
+  status: WillStatus;
 
   // Signatures & Witnesses
   testator_signature?: Signature;
-  witnesses?: WitnessSignature[];
-  notary?: NotaryDetails;
-
-  // Metadata
-  created_at: string;
   updated_at: string;
-  signed_at?: string;
-  witnessed_at?: string;
-  notarized_at?: string;
-
-  // AI Assistance
-  ai_suggestions?: AISuggestion[];
+  user_id: string;
   validation_errors?: ValidationError[];
-  completeness_score: number;
+  version: number;
+
+  will_type: WillType;
+  witnessed_at?: string;
+  witnesses?: WitnessSignature[];
 }
 
 export interface WillDeclaration {
-  id: string;
-  type: 'identity' | 'mental_capacity' | 'revocation' | 'family_status' | 'custom';
   content: string;
+  id: string;
   is_mandatory: boolean;
   order: number;
+  type:
+    | 'custom'
+    | 'family_status'
+    | 'identity'
+    | 'mental_capacity'
+    | 'revocation';
 }
 
 export interface Beneficiary {
-  id: string;
-  type: BeneficiaryType;
-  full_name: string;
-  relationship: string;
-  date_of_birth?: string;
-  identification?: string;
+  alternate_beneficiary_id?: string;
+  conditions?: string;
   contact_info?: {
+    address?: string;
     email?: string;
     phone?: string;
-    address?: string;
   };
+  date_of_birth?: string;
+  full_name: string;
+  id: string;
+  identification?: string;
+  relationship: string;
   share_percentage?: number;
   specific_bequests?: string[];
-  conditions?: string;
-  alternate_beneficiary_id?: string;
+  type: BeneficiaryType;
 }
 
 export interface AssetDistribution {
-  id: string;
-  asset_type: 'real_estate' | 'financial' | 'personal' | 'business' | 'digital' | 'other';
-  description: string;
-  estimated_value?: number;
-  currency?: string;
-  location?: string;
+  asset_type:
+    | 'business'
+    | 'digital'
+    | 'financial'
+    | 'other'
+    | 'personal'
+    | 'real_estate';
   beneficiary_ids: string[];
-  distribution_type: 'equal' | 'percentage' | 'specific';
+  currency?: string;
+  description: string;
   distribution_details: {
     [beneficiary_id: string]: {
+      conditions?: string;
       percentage?: number;
       specific_amount?: number;
-      conditions?: string;
     };
   };
+  distribution_type: 'equal' | 'percentage' | 'specific';
+  estimated_value?: number;
+  id: string;
+  location?: string;
   special_instructions?: string;
 }
 
 export interface GuardianshipAppointment {
-  id: string;
-  child_name: string;
-  child_date_of_birth: string;
-  primary_guardian: {
-    full_name: string;
-    relationship: string;
-    contact_info: Record<string, unknown>;
-  };
   alternate_guardian?: {
+    contact_info: Record<string, unknown>;
     full_name: string;
     relationship: string;
+  };
+  child_date_of_birth: string;
+  child_name: string;
+  id: string;
+  primary_guardian: {
     contact_info: Record<string, unknown>;
+    full_name: string;
+    relationship: string;
   };
   special_instructions?: string;
 }
 
 export interface ExecutorAppointment {
-  id: string;
-  type: 'primary' | 'alternate' | 'co-executor';
-  full_name: string;
-  relationship: string;
-  contact_info: Record<string, unknown>;
-  professional?: boolean;
   compensation?: string;
+  contact_info: Record<string, unknown>;
+  full_name: string;
+  id: string;
   powers_granted: string[];
+  professional?: boolean;
+  relationship: string;
   restrictions?: string[];
+  type: 'alternate' | 'co-executor' | 'primary';
 }
 
 export interface SpecialInstruction {
-  id: string;
-  category: 'pets' | 'business' | 'debts' | 'taxes' | 'charity' | 'other';
-  title: string;
+  category: 'business' | 'charity' | 'debts' | 'other' | 'pets' | 'taxes';
   content: string;
-  priority: 'high' | 'medium' | 'low';
+  id: string;
+  priority: 'high' | 'low' | 'medium';
+  title: string;
 }
 
 export interface FuneralWishes {
-  type: 'burial' | 'cremation' | 'other';
   location?: string;
-  specific_instructions?: string;
+  memorial_preferences?: string;
   prepaid_arrangements?: boolean;
   provider_details?: string;
-  memorial_preferences?: string;
+  specific_instructions?: string;
+  type: 'burial' | 'cremation' | 'other';
 }
 
 export interface Signature {
-  signatory_name: string;
-  signed_at: string;
-  signature_data?: string; // Base64 encoded signature image
   ip_address?: string;
   location?: string;
+  signatory_name: string;
+  signature_data?: string; // Base64 encoded signature image
+  signed_at: string;
 }
 
 export interface WitnessSignature extends Signature {
-  witness_number: number;
   address: string;
-  occupation?: string;
   declaration: string;
+  occupation?: string;
+  witness_number: number;
 }
 
 export interface NotaryDetails {
-  name: string;
-  registration_number: string;
+  currency?: string;
+  fee?: number;
   jurisdiction: string;
-  office_address: string;
-  seal_number?: string;
+  name: string;
   notarization_date: string;
   notarization_location: string;
-  fee?: number;
-  currency?: string;
+  office_address: string;
+  registration_number: string;
+  seal_number?: string;
 }
 
 export interface AISuggestion {
-  id: string;
-  type: 'improvement' | 'warning' | 'missing' | 'legal_requirement';
   category: string;
-  title: string;
-  description: string;
-  suggested_action?: string;
-  priority: 'high' | 'medium' | 'low';
-  jurisdiction_specific: boolean;
   created_at: string;
+  description: string;
+  id: string;
+  jurisdiction_specific: boolean;
+  priority: 'high' | 'low' | 'medium';
+  suggested_action?: string;
+  title: string;
+  type: 'improvement' | 'legal_requirement' | 'missing' | 'warning';
 }
 
 export interface ValidationError {
   field: string;
-  message: string;
-  severity: 'error' | 'warning' | 'info';
   legal_reference?: string;
+  message: string;
+  severity: 'error' | 'info' | 'warning';
 }
 
 // Asset type interfaces for legacy compatibility
 export interface RealEstateAsset {
-  description: string;
   address: string;
+  description: string;
   value?: number;
 }
 
@@ -195,291 +216,299 @@ export interface VehicleAsset {
   description: string;
   make?: string;
   model?: string;
-  year?: number;
   value?: number;
+  year?: number;
 }
 
 export interface BankAccountAsset {
-  description: string;
-  bank?: string;
   accountNumber?: string;
+  bank?: string;
+  description: string;
   value?: number;
 }
 
 export interface PersonalPropertyAsset {
-  description: string;
   category?: string;
+  description: string;
   value?: number;
 }
 
 // Special provisions interface
 export interface SpecialProvision {
-  id: string;
-  type: 'trust' | 'charity' | 'condition' | 'instruction';
-  title: string;
-  description: string;
-  conditions?: string;
   beneficiaryIds?: string[];
+  conditions?: string;
+  description: string;
+  id: string;
+  title: string;
+  type: 'charity' | 'condition' | 'instruction' | 'trust';
 }
 
 // Legacy WillData interface for compatibility
 export interface WillData {
-  testatorInfo?: {
-    fullName: string;
-    dateOfBirth: string;
-    address: string;
-    city: string;
-    state?: string;
-    country: string;
-    postalCode: string;
-  };
-
-  // Additional testator_data property for component compatibility
-  testator_data: {
-    fullName?: string;
-    dateOfBirth?: string;
-    address?: string;
-    citizenship?: string;
-    maritalStatus?: 'single' | 'married' | 'divorced' | 'widowed';
-  };
+  additionalClauses?: string[];
 
   // Assets structure for component compatibility
   assets: {
-    realEstate?: RealEstateAsset[];
-    vehicles?: VehicleAsset[];
     bankAccounts?: BankAccountAsset[];
     investments?: Array<{
-      company: string;
       accountType: string;
+      company: string;
       value?: number;
     }>;
     personalProperty?: PersonalPropertyAsset[];
+    realEstate?: RealEstateAsset[];
+    vehicles?: VehicleAsset[];
   };
 
   // Beneficiaries structure for component compatibility
   beneficiaries: Array<{
+    conditions?: string;
     id: string;
     name: string;
-    relationship: 'spouse' | 'child' | 'parent' | 'sibling' | 'grandchild' | 'friend' | 'charity' | 'other';
     percentage: number;
+    relationship:
+      | 'charity'
+      | 'child'
+      | 'friend'
+      | 'grandchild'
+      | 'other'
+      | 'parent'
+      | 'sibling'
+      | 'spouse';
     specificGifts?: string[];
-    conditions?: string;
   }>;
+
+  // Additional properties for compatibility
+  completeness_score: number;
+
+  digitalAssets?: {
+    accessInfo?: string;
+    included: boolean;
+    instructions?: string;
+  };
 
   // Executor data structure
   executor_data: {
-    primaryExecutor?: {
-      name: string;
-      relationship: string;
-      phone?: string;
-    };
     backupExecutor?: {
       name: string;
-      relationship: string;
       phone?: string;
+      relationship: string;
     };
     executorPowers?: string[];
-  };
-
-  // Guardianship data structure
-  guardianship_data: {
-    minorChildren?: Array<{
+    primaryExecutor?: {
       name: string;
-      dateOfBirth: string;
-    }>;
-    primaryGuardian?: {
-      name: string;
+      phone?: string;
       relationship: string;
     };
+  };
+
+  // Legacy compatibility properties
+  executors?: ExecutorAppointment[];
+
+  family_protection_level: 'basic' | 'comprehensive' | 'premium' | 'standard';
+
+  funeralInstructions?: FuneralWishes;
+  // Guardianship appointments for minor children
+  guardianship?: GuardianshipAppointment[];
+  // Guardianship data structure
+  guardianship_data: {
     backupGuardian?: {
       name: string;
       relationship: string;
     };
     guardianInstructions?: string;
-  };
-
-  // Special instructions structure
-  special_instructions: {
-    funeralWishes?: string;
-    organDonation?: boolean;
-    petCare?: string;
-    digitalAssets?: string;
-    personalMessages?: Array<{
-      recipient: string;
-      message: string;
+    minorChildren?: Array<{
+      dateOfBirth: string;
+      name: string;
     }>;
-    charitableBequests?: Array<{
-      charity: string;
-      amount: number;
-    }>;
+    primaryGuardian?: {
+      name: string;
+      relationship: string;
+    };
   };
-
   // Legal data structure
   legal_data: {
+    additionalClauses?: string[];
     jurisdiction?: string;
     language?: string;
     legalFramework?: string;
-    additionalClauses?: string[];
   };
-
-  // Legacy compatibility properties
-  executors?: ExecutorAppointment[];
-  specificBequests?: AssetDistribution[];
+  legalValidation?: {
+    errors: ValidationError[];
+    isValid: boolean;
+    warnings: ValidationError[];
+  };
+  notarization?: NotaryDetails;
+  // Professional Review System Integration
+  professional_review?: ProfessionalReview;
   residuaryEstate?: {
     beneficiaries: Beneficiary[];
     distribution: string;
   };
-  digitalAssets?: {
-    included: boolean;
-    instructions?: string;
-    accessInfo?: string;
-  };
-  funeralInstructions?: FuneralWishes;
-  additionalClauses?: string[];
-  witnesses?: WitnessSignature[];
-  notarization?: NotaryDetails;
-  legalValidation?: {
-    isValid: boolean;
-    errors: ValidationError[];
-    warnings: ValidationError[];
+  review_eligibility: boolean;
+
+  // Special instructions structure
+  special_instructions: {
+    charitableBequests?: Array<{
+      amount: number;
+      charity: string;
+    }>;
+    digitalAssets?: string;
+    funeralWishes?: string;
+    organDonation?: boolean;
+    personalMessages?: Array<{
+      message: string;
+      recipient: string;
+    }>;
+    petCare?: string;
   };
 
   // Special provisions for advanced will features
   specialProvisions?: SpecialProvision[];
 
-  // Guardianship appointments for minor children
-  guardianship?: GuardianshipAppointment[];
-
-  // Professional Review System Integration
-  professional_review?: ProfessionalReview;
+  specificBequests?: AssetDistribution[];
+  // Additional testator_data property for component compatibility
+  testator_data: {
+    address?: string;
+    citizenship?: string;
+    dateOfBirth?: string;
+    fullName?: string;
+    maritalStatus?: 'divorced' | 'married' | 'single' | 'widowed';
+  };
+  testatorInfo?: {
+    address: string;
+    city: string;
+    country: string;
+    dateOfBirth: string;
+    fullName: string;
+    postalCode: string;
+    state?: string;
+  };
   trust_score?: TrustScore;
-  review_eligibility: boolean;
-  family_protection_level: 'basic' | 'standard' | 'premium' | 'comprehensive';
 
-  // Additional properties for compatibility
-  completeness_score: number;
+  witnesses?: WitnessSignature[];
 }
 
 // Will Builder Types
 export interface WillBuilderState {
-  currentStep: number;
-  totalSteps: number;
   completedSteps: number[];
   currentSection: WillSection;
-  will: Partial<Will>;
+  currentStep: number;
+  totalSteps: number;
   validationStatus: ValidationStatus;
+  will: Partial<Will>;
 }
 
 export type WillSection =
-  | 'personal_info'
-  | 'beneficiaries'
   | 'assets'
-  | 'guardianship'
+  | 'beneficiaries'
   | 'executors'
-  | 'special_instructions'
   | 'funeral_wishes'
+  | 'guardianship'
+  | 'personal_info'
   | 'review'
-  | 'signatures';
+  | 'signatures'
+  | 'special_instructions';
 
 export interface ValidationStatus {
-  isValid: boolean;
-  errors: ValidationError[];
-  warnings: ValidationError[];
   completeness: number;
+  errors: ValidationError[];
+  isValid: boolean;
   missingRequired: string[];
+  warnings: ValidationError[];
 }
 
 // Professional Network Integration
 export interface WillReview {
-  id: string;
-  will_id: string;
-  reviewer_id: string;
-  reviewer_type: 'lawyer' | 'notary' | 'financial_advisor';
-  status: 'pending' | 'in_progress' | 'completed' | 'rejected';
-  review_notes?: string;
-  recommendations?: string[];
-  fee?: number;
   currency?: string;
+  fee?: number;
+  id: string;
+  recommendations?: string[];
+  review_notes?: string;
   reviewed_at?: string;
+  reviewer_id: string;
+  reviewer_type: 'financial_advisor' | 'lawyer' | 'notary';
+  status: 'completed' | 'in_progress' | 'pending' | 'rejected';
+  will_id: string;
 }
 
 export interface WillTemplate {
-  id: string;
-  name: string;
   description: string;
+  id: string;
+  is_active: boolean;
   jurisdiction: string;
   language: string;
-  will_type: WillType;
+  name: string;
   sections: WillTemplateSection[];
   variables: TemplateVariable[];
-  is_active: boolean;
+  will_type: WillType;
 }
 
 export interface WillTemplateSection {
-  id: string;
-  title: string;
-  content: string;
-  order: number;
-  is_mandatory: boolean;
   conditions?: string;
+  content: string;
   help_text?: string;
+  id: string;
+  is_mandatory: boolean;
+  order: number;
+  title: string;
 }
 
 export interface TemplateVariable {
+  default_value?: boolean | number | string;
   key: string;
   label: string;
-  type: 'text' | 'number' | 'date' | 'select' | 'boolean';
+  options?: { label: string; value: string }[];
   required: boolean;
-  default_value?: string | number | boolean;
-  options?: { value: string; label: string }[];
+  type: 'boolean' | 'date' | 'number' | 'select' | 'text';
   validation_rules?: Record<string, unknown>;
 }
 
 // Professional Review System Types
 export interface ProfessionalReviewer {
-  id: string;
-  name: string;
-  credentials: string;
+  average_turnaround_hours: number;
   bar_number?: string;
+  credentials: string;
+  id: string;
   jurisdiction: string;
-  specializations: string[];
+  name: string;
+  profile_verified: boolean;
   rating: number; // 1-5 star rating
   reviews_completed: number;
-  average_turnaround_hours: number;
-  profile_verified: boolean;
+  specializations: string[];
 }
 
 export interface ProfessionalReview {
-  id: string;
-  document_id: string;
-  reviewer: ProfessionalReviewer;
-  status: 'pending' | 'in_review' | 'approved' | 'needs_revision' | 'rejected';
-  review_date: string;
+  certification_level: 'basic' | 'legal_certified' | 'premium';
   completion_date?: string;
-  certification_level: 'basic' | 'premium' | 'legal_certified';
-  review_notes?: string;
-  recommended_changes?: string[];
-  legal_compliance_score: number; // 0-100
+  document_id: string;
   family_protection_score: number; // 0-100
+  id: string;
+  legal_compliance_score: number; // 0-100
+  recommended_changes?: string[];
+  review_date: string;
   review_fee?: number;
+  review_notes?: string;
+  reviewer: ProfessionalReviewer;
+  status: 'approved' | 'in_review' | 'needs_revision' | 'pending' | 'rejected';
 }
 
 export interface TrustScore {
-  overall_score: number; // 0-100
-  validation_score: number; // Technical validation
-  professional_score: number; // Professional review score
   completeness_score: number; // Document completeness
+  factors: TrustFactor[];
   family_protection_score: number; // How well it protects family
   last_updated: string;
-  factors: TrustFactor[];
+  overall_score: number; // 0-100
+  professional_score: number; // Professional review score
+  validation_score: number; // Technical validation
 }
 
 export interface TrustFactor {
+  description: string;
+  improvement_suggestion?: string;
   name: string;
   score: number;
   weight: number;
-  description: string;
-  improvement_suggestion?: string;
 }
 
 // Export functions for will management

@@ -9,15 +9,15 @@
  */
 
 import type {
+  DocumentCategorizationResult,
+  DocumentType,
+  EmailImportConfig,
+  ExtractedDocument,
+  GmailAttachment,
   // GmailAuthConfig,
   // GmailTokens,
   GmailMessage,
-  GmailAttachment,
   GmailPayload,
-  ExtractedDocument,
-  EmailImportConfig,
-  DocumentType,
-  DocumentCategorizationResult
 } from '@/types/gmail';
 
 export class GmailService {
@@ -57,13 +57,16 @@ export class GmailService {
       const token = await this.getAuthToken();
 
       // Get OAuth2 authorization URL from server
-      const authUrlResponse = await fetch(`${this.apiEndpoint}?action=auth-url`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+      const authUrlResponse = await fetch(
+        `${this.apiEndpoint}?action=auth-url`,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
         }
-      });
+      );
 
       if (!authUrlResponse.ok) {
         throw new Error('Failed to get authorization URL');
@@ -72,7 +75,11 @@ export class GmailService {
       const { authUrl } = await authUrlResponse.json();
 
       // Open OAuth2 consent window
-      const authWindow = window.open(authUrl, 'gmail-auth', 'width=500,height=600');
+      const authWindow = window.open(
+        authUrl,
+        'gmail-auth',
+        'width=500,height=600'
+      );
 
       return new Promise((resolve, reject) => {
         // Listen for OAuth callback
@@ -81,10 +88,12 @@ export class GmailService {
             if (authWindow?.closed) {
               clearInterval(checkInterval);
               // Check if authorization was successful
-              this.checkAuthStatus().then(authorized => {
-                this.isAuthorized = authorized;
-                resolve(authorized);
-              }).catch(reject);
+              this.checkAuthStatus()
+                .then(authorized => {
+                  this.isAuthorized = authorized;
+                  resolve(authorized);
+                })
+                .catch(reject);
             }
           } catch (error) {
             // Window closed or error
@@ -108,8 +117,8 @@ export class GmailService {
       const response = await fetch(`${this.apiEndpoint}?action=status`, {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       if (response.ok) {
@@ -125,7 +134,9 @@ export class GmailService {
   /**
    * Search for emails with potential documents through secure server endpoint
    */
-  public async searchEmails(config: EmailImportConfig): Promise<GmailMessage[]> {
+  public async searchEmails(
+    config: EmailImportConfig
+  ): Promise<GmailMessage[]> {
     if (!this.isAuthorized) {
       throw new Error('Not authenticated. Please call authenticate() first.');
     }
@@ -137,19 +148,21 @@ export class GmailService {
       const response = await fetch(`${this.apiEndpoint}?action=search`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           query,
-          maxResults: Math.min(config.maxDocuments, 100)
-        })
+          maxResults: Math.min(config.maxDocuments, 100),
+        }),
       });
 
       if (!response.ok) {
         if (response.status === 401) {
           this.isAuthorized = false;
-          throw new Error('Gmail authorization expired. Please re-authenticate.');
+          throw new Error(
+            'Gmail authorization expired. Please re-authenticate.'
+          );
         }
         throw new Error('Failed to search emails');
       }
@@ -169,8 +182,14 @@ export class GmailService {
     const queries: string[] = [];
 
     // Date range
-    const fromDate = config.dateRange.from.toISOString().split('T')[0].replace(/-/g, '/');
-    const toDate = config.dateRange.to.toISOString().split('T')[0].replace(/-/g, '/');
+    const fromDate = config.dateRange.from
+      .toISOString()
+      .split('T')[0]
+      .replace(/-/g, '/');
+    const toDate = config.dateRange.to
+      .toISOString()
+      .split('T')[0]
+      .replace(/-/g, '/');
     queries.push(`after:${fromDate}`);
     queries.push(`before:${toDate}`);
 
@@ -178,10 +197,10 @@ export class GmailService {
     queries.push('has:attachment');
 
     // File type filters
-    const fileExtensions = [
-      'pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png', 'tiff'
-    ];
-    const extensionQuery = fileExtensions.map(ext => `filename:${ext}`).join(' OR ');
+    const fileExtensions = ['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png', 'tiff'];
+    const extensionQuery = fileExtensions
+      .map(ext => `filename:${ext}`)
+      .join(' OR ');
     queries.push(`(${extensionQuery})`);
 
     return queries.join(' ');
@@ -190,7 +209,9 @@ export class GmailService {
   /**
    * Extract attachments from Gmail messages
    */
-  public async extractAttachments(messages: GmailMessage[]): Promise<ExtractedDocument[]> {
+  public async extractAttachments(
+    messages: GmailMessage[]
+  ): Promise<ExtractedDocument[]> {
     const documents: ExtractedDocument[] = [];
 
     for (const message of messages) {
@@ -199,12 +220,18 @@ export class GmailService {
 
         for (const attachment of attachments) {
           if (this.isDocumentAttachment(attachment)) {
-            const extractedDoc = await this.downloadAttachment(message, attachment);
+            const extractedDoc = await this.downloadAttachment(
+              message,
+              attachment
+            );
             documents.push(extractedDoc);
           }
         }
       } catch (error) {
-        console.warn(`Failed to extract attachments from message ${message.id}:`, error);
+        console.warn(
+          `Failed to extract attachments from message ${message.id}:`,
+          error
+        );
       }
     }
 
@@ -214,13 +241,16 @@ export class GmailService {
   /**
    * Recursively find attachments in message payload
    */
-  private findAttachments(payload: GmailPayload, attachments: GmailAttachment[] = []): GmailAttachment[] {
+  private findAttachments(
+    payload: GmailPayload,
+    attachments: GmailAttachment[] = []
+  ): GmailAttachment[] {
     if (payload.body && payload.body.attachmentId && payload.filename) {
       attachments.push({
         partId: payload.partId,
         filename: payload.filename,
         mimeType: payload.mimeType,
-        size: payload.body.size
+        size: payload.body.size,
       });
     }
 
@@ -243,33 +273,41 @@ export class GmailService {
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
       'image/jpeg',
       'image/png',
-      'image/tiff'
+      'image/tiff',
     ];
 
-    return supportedTypes.includes(attachment.mimeType) && attachment.size < 10 * 1024 * 1024; // 10MB limit
+    return (
+      supportedTypes.includes(attachment.mimeType) &&
+      attachment.size < 10 * 1024 * 1024
+    ); // 10MB limit
   }
 
   /**
    * Download attachment content through secure server endpoint
    */
-  private async downloadAttachment(message: GmailMessage, attachment: GmailAttachment): Promise<ExtractedDocument> {
+  private async downloadAttachment(
+    message: GmailMessage,
+    attachment: GmailAttachment
+  ): Promise<ExtractedDocument> {
     try {
       const token = await this.getAuthToken();
 
       const response = await fetch(`${this.apiEndpoint}?action=attachment`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           messageId: message.id,
-          attachmentId: attachment.partId
-        })
+          attachmentId: attachment.partId,
+        }),
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to download attachment: ${response.statusText}`);
+        throw new Error(
+          `Failed to download attachment: ${response.statusText}`
+        );
       }
 
       const { data, size } = await response.json();
@@ -277,7 +315,8 @@ export class GmailService {
       // Decode base64 data
       const base64Data = data.replace(/-/g, '+').replace(/_/g, '/');
       // Ensure proper padding
-      const paddedData = base64Data + '=='.slice(0, (4 - base64Data.length % 4) % 4);
+      const paddedData =
+        base64Data + '=='.slice(0, (4 - (base64Data.length % 4)) % 4);
       const binaryString = atob(paddedData);
       const bytes = new Uint8Array(binaryString.length as ArrayBuffer);
       for (let i = 0; i < binaryString.length; i++) {
@@ -286,7 +325,9 @@ export class GmailService {
 
       // Extract metadata from message headers
       const fromHeader = message.payload.headers.find(h => h.name === 'From');
-      const subjectHeader = message.payload.headers.find(h => h.name === 'Subject');
+      const subjectHeader = message.payload.headers.find(
+        h => h.name === 'Subject'
+      );
       const dateHeader = message.payload.headers.find(h => h.name === 'Date');
 
       return {
@@ -299,11 +340,14 @@ export class GmailService {
           fromEmail: fromHeader?.value || '',
           subject: subjectHeader?.value || '',
           date: dateHeader?.value || message.internalDate,
-          messageId: message.id
-        }
+          messageId: message.id,
+        },
       };
     } catch (error) {
-      console.error(`Failed to download attachment ${attachment.filename}:`, error);
+      console.error(
+        `Failed to download attachment ${attachment.filename}:`,
+        error
+      );
       throw error;
     }
   }
@@ -311,7 +355,9 @@ export class GmailService {
   /**
    * Categorize documents using AI-powered analysis
    */
-  public async categorizeDocuments(documents: ExtractedDocument[]): Promise<DocumentCategorizationResult[]> {
+  public async categorizeDocuments(
+    documents: ExtractedDocument[]
+  ): Promise<DocumentCategorizationResult[]> {
     const results: DocumentCategorizationResult[] = [];
 
     for (const document of documents) {
@@ -319,14 +365,17 @@ export class GmailService {
         const categorization = await this.analyzeDocument(document);
         results.push(categorization);
       } catch (error) {
-        console.warn(`Failed to categorize document ${document.filename}:`, error);
+        console.warn(
+          `Failed to categorize document ${document.filename}:`,
+          error
+        );
         // Provide fallback categorization
         results.push({
           type: 'other',
           confidence: 0.1,
           suggestedName: document.filename,
           familyRelevance: 'medium',
-          insights: ['Unable to analyze document automatically']
+          insights: ['Unable to analyze document automatically'],
         });
       }
     }
@@ -337,7 +386,9 @@ export class GmailService {
   /**
    * Analyze document content for categorization
    */
-  private async analyzeDocument(document: ExtractedDocument): Promise<DocumentCategorizationResult> {
+  private async analyzeDocument(
+    document: ExtractedDocument
+  ): Promise<DocumentCategorizationResult> {
     // Extract text content if possible
     let extractedText = '';
     if (document.mimeType === 'application/pdf') {
@@ -348,15 +399,23 @@ export class GmailService {
 
     // Analyze filename and content
     const type = this.categorizeByContent(document.filename, extractedText);
-    const confidence = this.calculateConfidence(type, document.filename, extractedText);
-    const suggestedName = this.generateSuggestedName(type, document.filename, document.metadata);
+    const confidence = this.calculateConfidence(
+      type,
+      document.filename,
+      extractedText
+    );
+    const suggestedName = this.generateSuggestedName(
+      type,
+      document.filename,
+      document.metadata
+    );
 
     return {
       type,
       confidence,
       suggestedName,
       familyRelevance: this.assessFamilyRelevance(type, extractedText),
-      insights: this.generateInsights(type, extractedText, document.metadata)
+      insights: this.generateInsights(type, extractedText, document.metadata),
     };
   }
 
@@ -432,7 +491,11 @@ export class GmailService {
   /**
    * Calculate confidence score for categorization
    */
-  private calculateConfidence(type: DocumentType, filename: string, content: string): number {
+  private calculateConfidence(
+    type: DocumentType,
+    filename: string,
+    content: string
+  ): number {
     let confidence = 0.3; // Base confidence
 
     if (type !== 'other') {
@@ -465,13 +528,19 @@ export class GmailService {
       will: ['will', 'testament', 'executor', 'beneficiary', 'bequest'],
       trust: ['trust', 'trustee', 'grantor', 'beneficiary'],
       insurance: ['insurance', 'policy', 'premium', 'coverage', 'claim'],
-      bank_statement: ['statement', 'balance', 'transaction', 'deposit', 'withdrawal'],
+      bank_statement: [
+        'statement',
+        'balance',
+        'transaction',
+        'deposit',
+        'withdrawal',
+      ],
       investment: ['investment', 'portfolio', 'stocks', 'bonds', 'mutual fund'],
       property_deed: ['deed', 'property', 'real estate', 'mortgage', 'title'],
       tax_document: ['tax', '1040', 'w2', 'deduction', 'refund'],
       medical: ['medical', 'health', 'doctor', 'prescription', 'diagnosis'],
       identification: ['id', 'passport', 'license', 'certificate', 'birth'],
-      other: []
+      other: [],
     };
 
     return keywords[type] || [];
@@ -480,7 +549,11 @@ export class GmailService {
   /**
    * Generate suggested name for document
    */
-  private generateSuggestedName(type: DocumentType, originalName: string, metadata: { date: string }): string {
+  private generateSuggestedName(
+    type: DocumentType,
+    originalName: string,
+    metadata: { date: string }
+  ): string {
     const date = new Date(metadata.date);
     const year = date.getFullYear();
 
@@ -494,7 +567,7 @@ export class GmailService {
       tax_document: `Tax Return ${year}`,
       medical: `Medical Document ${year}`,
       identification: `ID Document ${year}`,
-      other: originalName
+      other: originalName,
     };
 
     return typeNames[type];
@@ -503,9 +576,21 @@ export class GmailService {
   /**
    * Assess family relevance of document
    */
-  private assessFamilyRelevance(type: DocumentType, content: string): 'high' | 'medium' | 'low' {
-    const highRelevanceTypes: DocumentType[] = ['will', 'trust', 'insurance', 'property_deed'];
-    const mediumRelevanceTypes: DocumentType[] = ['investment', 'tax_document', 'medical'];
+  private assessFamilyRelevance(
+    type: DocumentType,
+    content: string
+  ): 'high' | 'low' | 'medium' {
+    const highRelevanceTypes: DocumentType[] = [
+      'will',
+      'trust',
+      'insurance',
+      'property_deed',
+    ];
+    const mediumRelevanceTypes: DocumentType[] = [
+      'investment',
+      'tax_document',
+      'medical',
+    ];
 
     if (highRelevanceTypes.includes(type)) {
       return 'high';
@@ -516,9 +601,11 @@ export class GmailService {
     }
 
     // Check content for family references
-    if (content.toLowerCase().includes('family') ||
-        content.toLowerCase().includes('spouse') ||
-        content.toLowerCase().includes('children')) {
+    if (
+      content.toLowerCase().includes('family') ||
+      content.toLowerCase().includes('spouse') ||
+      content.toLowerCase().includes('children')
+    ) {
       return 'high';
     }
 
@@ -528,7 +615,11 @@ export class GmailService {
   /**
    * Generate insights about the document
    */
-  private generateInsights(type: DocumentType, content: string, metadata: { date: string }): string[] {
+  private generateInsights(
+    type: DocumentType,
+    content: string,
+    metadata: { date: string }
+  ): string[] {
     const insights: string[] = [];
 
     switch (type) {
@@ -554,7 +645,8 @@ export class GmailService {
 
     // Add time-based insights
     const documentDate = new Date(metadata.date);
-    const monthsOld = (Date.now() - documentDate.getTime()) / (1000 * 60 * 60 * 24 * 30);
+    const monthsOld =
+      (Date.now() - documentDate.getTime()) / (1000 * 60 * 60 * 24 * 30);
 
     if (monthsOld > 12) {
       insights.push('Document is over a year old - consider updating');
@@ -591,9 +683,9 @@ export class GmailService {
       await fetch(`${this.apiEndpoint}?action=revoke`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
       });
 
       this.isAuthorized = false;

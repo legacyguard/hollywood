@@ -4,13 +4,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // import * as Crypto from 'expo-crypto';
 
 interface OfflineDocument {
-  id: string;
-  fileName: string;
-  documentType: string;
   content: string;
-  uploadedAt?: Date;
+  documentType: string;
+  fileName: string;
   fileSize?: number;
+  id: string;
   tags?: string[];
+  uploadedAt?: Date;
 }
 
 const VAULT_KEY = '@legacyguard_vault';
@@ -27,7 +27,10 @@ export const OfflineVaultService = {
       const vault = await AsyncStorage.getItem(VAULT_KEY);
       if (!vault) {
         await AsyncStorage.setItem(VAULT_KEY, JSON.stringify({}));
-        await AsyncStorage.setItem(VAULT_METADATA_KEY, JSON.stringify({ initialized: new Date() }));
+        await AsyncStorage.setItem(
+          VAULT_METADATA_KEY,
+          JSON.stringify({ initialized: new Date() })
+        );
       }
       if (__DEV__) console.log('Secure offline vault opened successfully.');
     } catch (error) {
@@ -62,7 +65,8 @@ export const OfflineVaultService = {
 
       // Save updated vault
       await AsyncStorage.setItem(VAULT_KEY, JSON.stringify(vault));
-      if (__DEV__) console.log(`Document ${doc.fileName} added to offline vault`);
+      if (__DEV__)
+        console.log(`Document ${doc.fileName} added to offline vault`);
     } catch (error) {
       if (__DEV__) console.error('Failed to add document to vault:', error);
       throw error;
@@ -113,7 +117,7 @@ export const OfflineVaultService = {
   /**
    * Get single document by ID
    */
-  getDocument: async (id: string): Promise<OfflineDocument | null> => {
+  getDocument: async (id: string): Promise<null | OfflineDocument> => {
     try {
       const vaultData = await AsyncStorage.getItem(VAULT_KEY);
       if (!vaultData) return null;
@@ -161,7 +165,8 @@ export const OfflineVaultService = {
       if (__DEV__) console.log(`Document ${id} removed from offline vault`);
       return true;
     } catch (error) {
-      if (__DEV__) console.error('Failed to remove document from vault:', error);
+      if (__DEV__)
+        console.error('Failed to remove document from vault:', error);
       throw error;
     }
   },
@@ -184,8 +189,8 @@ export const OfflineVaultService = {
    */
   getStats: async (): Promise<{
     documentCount: number;
-    totalSize: number;
     lastSync?: Date;
+    totalSize: number;
   }> => {
     try {
       const vaultData = await AsyncStorage.getItem(VAULT_KEY);
@@ -231,7 +236,12 @@ export const OfflineVaultService = {
 // Helper functions for encryption/decryption (TweetNaCl via per-device key)
 import * as SecureStore from 'expo-secure-store';
 import nacl from 'tweetnacl';
-import { encodeBase64, decodeBase64, encodeUTF8, decodeUTF8 } from 'tweetnacl-util';
+import {
+  decodeBase64,
+  decodeUTF8,
+  encodeBase64,
+  encodeUTF8,
+} from 'tweetnacl-util';
 
 const DEVICE_KEY_NAME = 'LEGACYGUARD_VAULT_DEVICE_KEY';
 
@@ -249,7 +259,11 @@ async function getDeviceKey(): Promise<Uint8Array> {
     } as any);
     return newKey;
   } catch (err) {
-    if (__DEV__) console.error('Failed to get device key, falling back to ephemeral key:', err);
+    if (__DEV__)
+      console.error(
+        'Failed to get device key, falling back to ephemeral key:',
+        err
+      );
     // Fallback to ephemeral key (will break decryption after restart, but avoids crash)
     return nacl.randomBytes(nacl.secretbox.keyLength);
   }

@@ -1,16 +1,16 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
+  type ComplianceReport,
   legalValidator,
   type ValidationResult,
-  type ComplianceReport,
 } from '@/lib/will-legal-validator';
 import type { WillData } from '@/components/legacy/WillWizard';
 
 interface UseWillValidationProps {
+  enableRealTime?: boolean;
+  jurisdiction?: string;
   willData: WillData;
   willType: string;
-  jurisdiction?: string;
-  enableRealTime?: boolean;
 }
 
 export const useWillValidation = ({
@@ -101,14 +101,14 @@ export const useWillValidation = ({
   // Get validation for specific field
   const getFieldValidation = (
     fieldName: string
-  ): ValidationResult | undefined => {
+  ): undefined | ValidationResult => {
     return fieldValidations.get(fieldName);
   };
 
   // Get validation for beneficiary by index
   const getBeneficiaryValidation = (
     index: number
-  ): ValidationResult | undefined => {
+  ): undefined | ValidationResult => {
     return fieldValidations.get(`beneficiaries[${index}]`);
   };
 

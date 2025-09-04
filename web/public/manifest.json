@@ -107,7 +107,9 @@
         "application/pdf": [".pdf"],
         "image/*": [".jpg", ".jpeg", ".png", ".gif", ".webp"],
         "application/msword": [".doc"],
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"],
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [
+          ".docx"
+        ],
         "text/plain": [".txt"]
       }
     }

@@ -5,7 +5,7 @@
 
 import type { NAMESPACES } from './config';
 import type { JurisdictionConfig } from './jurisdictions';
-import { _LanguageConfig } from './languages';
+import { LanguageConfig } from './languages';
 import type { LegalTermCategory } from './legal-terminology';
 
 // Namespace types
@@ -13,335 +13,358 @@ export type TranslationNamespace = (typeof NAMESPACES)[keyof typeof NAMESPACES];
 
 // Language codes (ISO 639-1)
 export type LanguageCode =
-  | 'sq' // Albanian
-  | 'bs' // Bosnian
   | 'bg' // Bulgarian
-  | 'hr' // Croatian
+  | 'bs' // Bosnian
   | 'cs' // Czech
   | 'da' // Danish
-  | 'nl' // Dutch
+  | 'de' // German
+  | 'el' // Greek
   | 'en' // English
+  | 'es' // Spanish
   | 'et' // Estonian
   | 'fi' // Finnish
   | 'fr' // French
-  | 'de' // German
-  | 'el' // Greek
+  | 'ga' // Irish Gaelic
+  | 'hr' // Croatian
   | 'hu' // Hungarian
   | 'is' // Icelandic
-  | 'ga' // Irish Gaelic
   | 'it' // Italian
-  | 'lv' // Latvian
   | 'lt' // Lithuanian
+  | 'lv' // Latvian
+  | 'me' // Montenegrin
   | 'mk' // Macedonian
   | 'mt' // Maltese
-  | 'me' // Montenegrin
+  | 'nl' // Dutch
   | 'no' // Norwegian
   | 'pl' // Polish
   | 'pt' // Portuguese
   | 'ro' // Romanian
   | 'ru' // Russian
-  | 'sr' // Serbian
   | 'sk' // Slovak
   | 'sl' // Slovenian
-  | 'es' // Spanish
+  | 'sq' // Albanian
+  | 'sr' // Serbian
   | 'sv' // Swedish
   | 'tr' // Turkish
   | 'uk'; // Ukrainian
 
 // Jurisdiction codes (ISO 3166-1 alpha-2)
 export type JurisdictionCode =
-  | 'DE'
-  | 'CZ'
-  | 'SK'
-  | 'FR'
-  | 'ES'
-  | 'IT'
-  | 'NL'
-  | 'BE'
-  | 'LU'
-  | 'CH'
-  | 'LI'
-  | 'AT'
-  | 'UK'
-  | 'DK'
-  | 'SE'
-  | 'FI'
-  | 'PT'
-  | 'GR'
-  | 'PL'
-  | 'HU'
-  | 'SI'
-  | 'EE'
-  | 'LV'
-  | 'LT'
-  | 'MT'
-  | 'CY'
-  | 'IE'
-  | 'NO'
-  | 'IS'
-  | 'RO'
-  | 'BG'
-  | 'HR'
-  | 'RS'
   | 'AL'
-  | 'MK'
-  | 'ME'
+  | 'AT'
+  | 'BA'
+  | 'BE'
+  | 'BG'
+  | 'CH'
+  | 'CY'
+  | 'CZ'
+  | 'DE'
+  | 'DK'
+  | 'EE'
+  | 'ES'
+  | 'FI'
+  | 'FR'
+  | 'GR'
+  | 'HR'
+  | 'HU'
+  | 'IE'
+  | 'IS'
+  | 'IT'
+  | 'LI'
+  | 'LT'
+  | 'LU'
+  | 'LV'
   | 'MD'
+  | 'ME'
+  | 'MK'
+  | 'MT'
+  | 'NL'
+  | 'NO'
+  | 'PL'
+  | 'PT'
+  | 'RO'
+  | 'RS'
+  | 'SE'
+  | 'SI'
+  | 'SK'
   | 'UA'
-  | 'BA';
+  | 'UK';
 
 // Translation key structure
 export interface TranslationKeys {
+  ai: Record<string, string>;
+
+  // Auth namespace
+  auth: {
+    errors: {
+      emailInUse: string;
+      invalidCredentials: string;
+      networkError: string;
+      tooManyRequests: string;
+      userNotFound: string;
+      weakPassword: string;
+    };
+    signIn: {
+      continueWith: string;
+      email: string;
+      forgotPassword: string;
+      noAccount: string;
+      or: string;
+      password: string;
+      signUp: string;
+      submit: string;
+      title: string;
+    };
+    signOut: {
+      confirm: string;
+      message: string;
+      title: string;
+    };
+    signUp: {
+      confirmPassword: string;
+      email: string;
+      firstName: string;
+      hasAccount: string;
+      lastName: string;
+      password: string;
+      privacy: string;
+      signIn: string;
+      submit: string;
+      terms: string;
+      title: string;
+    };
+  };
+
   // Common namespace
   common: {
+    actions: {
+      back: string;
+      cancel: string;
+      close: string;
+      confirm: string;
+      copy: string;
+      create: string;
+      delete: string;
+      download: string;
+      edit: string;
+      filter: string;
+      finish: string;
+      next: string;
+      print: string;
+      save: string;
+      search: string;
+      share: string;
+      sort: string;
+      update: string;
+      upload: string;
+    };
     app: {
       name: string;
       tagline: string;
       version: string;
     };
-    actions: {
-      save: string;
-      cancel: string;
-      delete: string;
-      edit: string;
-      create: string;
-      update: string;
-      confirm: string;
-      back: string;
-      next: string;
-      finish: string;
-      close: string;
-      search: string;
-      filter: string;
-      sort: string;
-      upload: string;
-      download: string;
-      print: string;
-      share: string;
-      copy: string;
-    };
     status: {
-      loading: string;
-      success: string;
-      error: string;
-      warning: string;
-      info: string;
-      pending: string;
-      completed: string;
-      archived: string;
       active: string;
+      archived: string;
+      completed: string;
+      error: string;
       inactive: string;
-    };
-    validation: {
-      required: string;
-      invalid: string;
-      tooShort: string;
-      tooLong: string;
-      invalidEmail: string;
-      invalidPhone: string;
-      invalidDate: string;
-      invalidFormat: string;
+      info: string;
+      loading: string;
+      pending: string;
+      success: string;
+      warning: string;
     };
     time: {
-      today: string;
-      yesterday: string;
-      tomorrow: string;
-      thisWeek: string;
-      lastWeek: string;
-      nextWeek: string;
-      thisMonth: string;
-      lastMonth: string;
-      nextMonth: string;
       days: string;
       hours: string;
+      lastMonth: string;
+      lastWeek: string;
       minutes: string;
+      nextMonth: string;
+      nextWeek: string;
       seconds: string;
+      thisMonth: string;
+      thisWeek: string;
+      today: string;
+      tomorrow: string;
+      yesterday: string;
     };
-  };
-
-  // Auth namespace
-  auth: {
-    signIn: {
-      title: string;
-      email: string;
-      password: string;
-      submit: string;
-      forgotPassword: string;
-      noAccount: string;
-      signUp: string;
-      or: string;
-      continueWith: string;
-    };
-    signUp: {
-      title: string;
-      firstName: string;
-      lastName: string;
-      email: string;
-      password: string;
-      confirmPassword: string;
-      submit: string;
-      hasAccount: string;
-      signIn: string;
-      terms: string;
-      privacy: string;
-    };
-    signOut: {
-      title: string;
-      message: string;
-      confirm: string;
-    };
-    errors: {
-      invalidCredentials: string;
-      userNotFound: string;
-      emailInUse: string;
-      weakPassword: string;
-      tooManyRequests: string;
-      networkError: string;
+    validation: {
+      invalid: string;
+      invalidDate: string;
+      invalidEmail: string;
+      invalidFormat: string;
+      invalidPhone: string;
+      required: string;
+      tooLong: string;
+      tooShort: string;
     };
   };
 
   // Dashboard namespace
   dashboard: {
-    title: string;
-    welcome: string;
-    overview: {
+    alerts: {
+      actionRequired: string;
+      expiringSoon: string;
+      noAlerts: string;
       title: string;
+      updateAvailable: string;
+    };
+    overview: {
+      completionRate: string;
+      daysProtected: string;
       documentsProtected: string;
       familyMembers: string;
       guardians: string;
-      daysProtected: string;
-      completionRate: string;
+      title: string;
     };
     quickActions: {
-      title: string;
-      uploadDocument: string;
       addFamilyMember: string;
       createWill: string;
       setupGuardian: string;
+      title: string;
+      uploadDocument: string;
     };
     recentActivity: {
-      title: string;
       noActivity: string;
+      title: string;
       viewAll: string;
     };
-    alerts: {
-      title: string;
-      noAlerts: string;
-      expiringSoon: string;
-      actionRequired: string;
-      updateAvailable: string;
-    };
+    title: string;
+    welcome: string;
   };
 
+  // Other namespaces...
+  documents: Record<string, string>;
+
+  emergency: Record<string, string>;
+  errors: Record<string, string>;
+  family: Record<string, string>;
+  guardians: Record<string, string>;
+  legacy: Record<string, string>;
   // Legal namespace with jurisdiction-specific terms
   legal: {
-    terms: {
-      [K in keyof typeof LegalTermCategory]: string;
-    };
     documents: {
-      will: string;
-      powerOfAttorney: string;
       advanceDirective: string;
-      trustDocument: string;
       beneficiaryDesignation: string;
+      powerOfAttorney: string;
+      trustDocument: string;
+      will: string;
     };
     procedures: {
-      probate: string;
-      notarization: string;
-      witnessing: string;
-      registration: string;
       certification: string;
+      notarization: string;
+      probate: string;
+      registration: string;
+      witnessing: string;
+    };
+    terms: {
+      [K in keyof LegalTermCategory]: string;
     };
   };
-
+  legalDocuments: Record<string, string>;
+  legalProcedures: Record<string, string>;
+  legalTerms: Record<string, string>;
+  notaryTerms: Record<string, string>;
+  notifications: Record<string, string>;
+  onboarding: Record<string, string>;
+  settings: Record<string, string>;
+  taxTerms: Record<string, string>;
+  vault: Record<string, string>;
   // Will namespace
   will: {
     create: {
-      title: string;
-      intro: string;
-      personal: {
-        title: string;
-        fullName: string;
-        dateOfBirth: string;
-        nationality: string;
-        address: string;
-        maritalStatus: string;
-      };
       beneficiaries: {
-        title: string;
         add: string;
         name: string;
         relationship: string;
         share: string;
         specific: string;
+        title: string;
       };
       executor: {
-        title: string;
+        alternativeExecutor: string;
         name: string;
         relationship: string;
-        alternativeExecutor: string;
-      };
-      witnesses: {
         title: string;
-        requirements: string;
-        witness1: string;
-        witness2: string;
+      };
+      intro: string;
+      personal: {
+        address: string;
+        dateOfBirth: string;
+        fullName: string;
+        maritalStatus: string;
+        nationality: string;
+        title: string;
       };
       review: {
-        title: string;
         checkInfo: string;
-        sign: string;
         download: string;
+        sign: string;
+        title: string;
+      };
+      title: string;
+      witnesses: {
+        requirements: string;
+        title: string;
+        witness1: string;
+        witness2: string;
       };
     };
     validation: {
       ageRequirement: string;
       capacityRequirement: string;
-      witnessRequirement: string;
       notaryRequirement: string;
+      witnessRequirement: string;
     };
   };
-
-  // Other namespaces...
-  documents: Record<string, string>;
-  guardians: Record<string, string>;
-  family: Record<string, string>;
-  vault: Record<string, string>;
-  notifications: Record<string, string>;
-  settings: Record<string, string>;
-  errors: Record<string, string>;
-  onboarding: Record<string, string>;
-  legacy: Record<string, string>;
-  emergency: Record<string, string>;
-  ai: Record<string, string>;
-  legalTerms: Record<string, string>;
-  legalDocuments: Record<string, string>;
-  legalProcedures: Record<string, string>;
-  taxTerms: Record<string, string>;
-  notaryTerms: Record<string, string>;
 }
 
-// Translation function types
-export type TFunction = (key: string, options?: TranslationOptions) => string;
+// Translation function types with enhanced type safety
+export type TFunction = <
+  NS extends TranslationNamespace = TranslationNamespace,
+>(
+  key: ValidTranslationKey<NS>,
+  options?: TranslationOptions & { ns?: NS }
+) => string;
+
+// Overloaded TFunction for different use cases
+export interface TFunctionOverloads {
+  // Basic usage
+  (key: string, options?: TranslationOptions): string;
+
+  // Type-safe namespace usage
+  <NS extends TranslationNamespace>(
+    key: ValidTranslationKey<NS>,
+    options: TranslationOptions & { ns: NS }
+  ): string;
+
+  // Return objects
+  <NS extends TranslationNamespace, T = string>(
+    key: ValidTranslationKey<NS>,
+    options: TranslationOptions & { ns: NS; returnObjects: true }
+  ): T;
+}
 
 export interface TranslationOptions {
-  ns?: TranslationNamespace;
-  lng?: LanguageCode;
-  jurisdiction?: JurisdictionCode;
-  count?: number;
   context?: string;
+  count?: number;
   defaultValue?: string;
-  replace?: Record<string, string | number>;
+  jurisdiction?: JurisdictionCode;
+  lng?: LanguageCode;
+  ns?: TranslationNamespace;
+  replace?: Record<string, number | string>;
   returnObjects?: boolean;
 }
 
 // i18n configuration types
 export interface I18nConfig {
+  fallbackLanguage: LanguageCode;
   jurisdiction: JurisdictionCode;
   language: LanguageCode;
-  supportedLanguages: LanguageCode[];
   namespaces: TranslationNamespace[];
-  fallbackLanguage: LanguageCode;
+  supportedLanguages: LanguageCode[];
 }
 
 // Translation resource structure
@@ -359,46 +382,75 @@ export interface JurisdictionTranslationOverride {
   overrides: Partial<TranslationKeys[keyof TranslationKeys]>;
 }
 
-// Export helper types
+// Export helper types with improved conditional types
 export type ExtractNamespaceKeys<T extends TranslationNamespace> =
   T extends keyof TranslationKeys ? TranslationKeys[T] : never;
 
-export type DeepPartial<T> = {
-  [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
-};
+// Advanced type for extracting nested keys with dot notation
+export type NestedKeys<T, D extends number = 4> = [D] extends [never]
+  ? never
+  : T extends object
+    ? {
+        [K in keyof T & (number | string)]: K extends string
+          ? T[K] extends object
+            ? D extends 1
+              ? K
+              : `${K}.${NestedKeys<T[K], [-1, 0, 1, 2, 3][D]>}` | `${K}`
+            : K
+          : never;
+      }[keyof T & (number | string)]
+    : never;
+
+// Conditional type for translation key validation
+export type ValidTranslationKey<NS extends TranslationNamespace> =
+  NS extends keyof TranslationKeys ? NestedKeys<TranslationKeys[NS]> : string;
+
+// Type-safe translation path resolution
+export type ResolvePath<T, Path extends string> = Path extends keyof T
+  ? T[Path]
+  : Path extends `${infer K}.${infer Rest}`
+    ? K extends keyof T
+      ? T[K] extends object
+        ? ResolvePath<T[K], Rest>
+        : never
+      : never
+    : never;
+
+// Use the enhanced DeepPartial from global types
+export type { DeepPartial } from '@/types';
 
 // Hook return types
 export interface UseTranslationReturn {
-  t: TFunction;
   i18n: {
-    language: LanguageCode;
-    jurisdiction: JurisdictionCode;
     changeLanguage: (lng: LanguageCode) => Promise<void>;
+    isReady: boolean;
+    jurisdiction: JurisdictionCode;
+    language: LanguageCode;
     languages: LanguageCode[];
     supportedLanguages: LanguageCode[];
-    isReady: boolean;
   };
+  t: TFunction;
 }
 
 export interface UseJurisdictionReturn {
-  jurisdiction: JurisdictionConfig;
   changeJurisdiction: (code: JurisdictionCode) => void;
-  supportedLanguages: LanguageCode[];
-  legalSystem: string;
   currency: string;
+  jurisdiction: JurisdictionConfig;
+  legalSystem: string;
+  supportedLanguages: LanguageCode[];
   tier: 1 | 2;
 }
 
 export interface UseLegalTermReturn {
-  getTerm: (key: string) => string;
   getDefinition: (key: string) => string | undefined;
   getReference: (key: string) => string | undefined;
+  getTerm: (key: string) => string;
   searchTerms: (
     query: string,
     category?: LegalTermCategory
   ) => Array<{
+    definition?: string;
     key: string;
     term: string;
-    definition?: string;
   }>;
 }

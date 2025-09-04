@@ -1,5 +1,5 @@
 import React from 'react';
-import { type GetProps, View, Stack, Paragraph, styled } from 'tamagui';
+import { type GetProps, Paragraph, Stack, styled, View } from 'tamagui';
 
 // Styled components for ProgressBar
 const ProgressBarContainer = styled(Stack, {
@@ -42,7 +42,8 @@ const ProgressFill = styled(View, {
       },
       premium: {
         backgroundColor: '$accentGold',
-        backgroundImage: 'linear-gradient(90deg, $accentGold 0%, $accentGoldLight 50%, $accentGold 100%)',
+        backgroundImage:
+          'linear-gradient(90deg, $accentGold 0%, $accentGoldLight 50%, $accentGold 100%)',
       },
     },
     animated: {
@@ -51,7 +52,7 @@ const ProgressFill = styled(View, {
       },
     },
   },
-})
+});
 
 const ProgressLabel = styled(Stack, {
   name: 'ProgressLabel',
@@ -61,16 +62,17 @@ const ProgressLabel = styled(Stack, {
   width: '100%',
 });
 
-export interface ProgressBarProps extends GetProps<typeof ProgressBarContainer> {
-  value: number; // 0-100
-  maxValue?: number;
-  label?: string;
-  showPercentage?: boolean;
-  variant?: 'primary' | 'success' | 'warning' | 'danger' | 'premium';
+export interface ProgressBarProps
+  extends GetProps<typeof ProgressBarContainer> {
   animated?: boolean;
-  height?: number;
-  showLabel?: boolean;
   formatLabel?: (value: number, maxValue: number) => string;
+  height?: number;
+  label?: string;
+  maxValue?: number;
+  showLabel?: boolean;
+  showPercentage?: boolean;
+  value: number; // 0-100
+  variant?: 'danger' | 'premium' | 'primary' | 'success' | 'warning';
 }
 
 export function ProgressBar({
@@ -100,11 +102,11 @@ export function ProgressBar({
       {showLabel && (label || showPercentage) && (
         <ProgressLabel>
           {label && (
-            <Paragraph size="$3" color="$gray8" fontWeight="500">
+            <Paragraph size='$3' color='$gray8' fontWeight='500'>
               {label}
             </Paragraph>
           )}
-          <Paragraph size="$2" color="$gray6">
+          <Paragraph size='$2' color='$gray6'>
             {displayLabel}
           </Paragraph>
         </ProgressLabel>
@@ -112,11 +114,13 @@ export function ProgressBar({
 
       <ProgressTrack height={height}>
         <ProgressFill
-          variant={variant}
-          animated={animated}
-          width={`${percentage}%`}
-          animation={animated ? 'medium' : undefined}
-          enterStyle={animated ? { width: 0 } : undefined}
+          {...({
+            variant,
+            animated,
+            width: `${percentage}%`,
+            animation: animated ? 'medium' : undefined,
+            enterStyle: animated ? { width: 0 } : undefined,
+          } as any)}
         />
       </ProgressTrack>
     </ProgressBarContainer>
@@ -140,12 +144,12 @@ const CircularProgressText = styled(View, {
 });
 
 export interface CircularProgressProps {
-  value: number;
+  label?: string;
+  showPercentage?: boolean;
   size?: number;
   strokeWidth?: number;
-  variant?: 'primary' | 'success' | 'warning' | 'danger' | 'premium';
-  showPercentage?: boolean;
-  label?: string;
+  value: number;
+  variant?: 'danger' | 'premium' | 'primary' | 'success' | 'warning';
 }
 
 export function CircularProgress({
@@ -173,16 +177,21 @@ export function CircularProgress({
       <svg
         width={size}
         height={size}
-        style={{ position: 'absolute', transform: 'rotate(-90deg)' } as React.CSSProperties}
+        style={
+          {
+            position: 'absolute',
+            transform: 'rotate(-90deg)',
+          } as React.CSSProperties
+        }
       >
         {/* Background circle */}
         <circle
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          stroke="#e5e7eb"
+          stroke='#e5e7eb'
           strokeWidth={strokeWidth}
-          fill="none"
+          fill='none'
         />
         {/* Progress circle */}
         <circle
@@ -191,10 +200,10 @@ export function CircularProgress({
           r={radius}
           stroke={colors[variant]}
           strokeWidth={strokeWidth}
-          fill="none"
+          fill='none'
           strokeDasharray={circumference}
           strokeDashoffset={strokeDashoffset}
-          strokeLinecap="round"
+          strokeLinecap='round'
           style={{
             transition: 'stroke-dashoffset 0.5s ease',
           }}
@@ -203,12 +212,12 @@ export function CircularProgress({
 
       <CircularProgressText>
         {showPercentage && (
-          <Paragraph size="$6" fontWeight="700" color="$color">
+          <Paragraph size='$6' fontWeight='700' color='$color'>
             {Math.round(value)}%
           </Paragraph>
         )}
         {label && (
-          <Paragraph size="$2" color="$gray6" marginTop="$1">
+          <Paragraph size='$2' color='$gray6' marginTop='$1'>
             {label}
           </Paragraph>
         )}
@@ -256,11 +265,12 @@ const ProgressSegment = styled(View, {
   },
 });
 
-export interface SegmentedProgressProps extends GetProps<typeof SegmentedProgressContainer> {
-  segments: number;
+export interface SegmentedProgressProps
+  extends GetProps<typeof SegmentedProgressContainer> {
   currentSegment: number;
-  showLabels?: boolean;
   labels?: string[];
+  segments: number;
+  showLabels?: boolean;
 }
 
 export function SegmentedProgress({
@@ -271,31 +281,34 @@ export function SegmentedProgress({
   ...props
 }: SegmentedProgressProps) {
   return (
-    <Stack space="$2" width="100%">
+    <Stack space='$2' width='100%'>
       <SegmentedProgressContainer {...props}>
         {Array.from({ length: segments }, (_, index) => {
           const isCompleted = index < currentSegment;
           const isActive = index === currentSegment;
-          const segmentPosition = index === 0 ? 'first' : index === segments - 1 ? 'last' : 'middle';
+          const segmentPosition =
+            index === 0 ? 'first' : index === segments - 1 ? 'last' : 'middle';
 
           return (
             <ProgressSegment
               key={index}
-              isCompleted={isCompleted}
-              isActive={isActive}
-              segmentPosition={segmentPosition}
-              animation="medium"
+              {...({
+                isCompleted,
+                isActive,
+                segmentPosition,
+                animation: 'medium',
+              } as any)}
             />
           );
         })}
       </SegmentedProgressContainer>
 
       {showLabels && labels.length > 0 && (
-        <Stack flexDirection="row" justifyContent="space-between">
+        <Stack flexDirection='row' justifyContent='space-between'>
           {labels.map((label, index) => (
             <Paragraph
               key={index}
-              size="$1"
+              size='$1'
               color={index <= currentSegment ? '$primaryBlue' : '$gray5'}
               fontWeight={index === currentSegment ? '600' : '400'}
             >
@@ -310,4 +323,4 @@ export function SegmentedProgress({
 
 // Export all progress components
 export default ProgressBar;
-export { ProgressBarContainer, ProgressTrack, ProgressFill };
+export { ProgressBarContainer, ProgressFill, ProgressTrack };

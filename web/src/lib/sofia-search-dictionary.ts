@@ -1,14 +1,14 @@
 // Sofia Search Dictionary - Intelligent keyword-to-action mapping without AI
 export interface SofiaAction {
-  text: string;
   actionId: string;
-  payload: string | Record<string, unknown>;
   icon?: string;
+  payload: Record<string, unknown> | string;
+  text: string;
 }
 
 export interface DictionaryEntry {
-  category?: string;
   actions: SofiaAction[];
+  category?: string;
 }
 
 export const searchDictionary: Record<string, DictionaryEntry> = {
@@ -509,13 +509,13 @@ export const faqResponses: Record<string, string> = {
 
 // Document interface for dynamic learning (simplified)
 interface UserDocument {
-  id: string;
-  file_name: string;
-  title?: string;
   category?: string;
-  document_type?: string;
-  tags?: string[];
   created_at: string;
+  document_type?: string;
+  file_name: string;
+  id: string;
+  tags?: string[];
+  title?: string;
 }
 
 /**

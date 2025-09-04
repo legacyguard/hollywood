@@ -6,8 +6,8 @@ import type { ActionButton } from '@/lib/sofia-types';
 
 interface SofiaActionButtonsProps {
   actions: ActionButton[];
-  onActionClick: (action: ActionButton) => void;
   isDisabled?: boolean;
+  onActionClick: (action: ActionButton) => void;
 }
 
 export const SofiaActionButtons: React.FC<SofiaActionButtonsProps> = ({
@@ -45,17 +45,17 @@ export const SofiaActionButtons: React.FC<SofiaActionButtonsProps> = ({
 
   return (
     <motion.div
-      initial={{  opacity: 0, y: 10  }}
-      animate={{  opacity: 1, y: 0  }}
-      transition={{  duration: 0.3, delay: 0.2  }}
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, delay: 0.2 }}
       className='flex flex-col gap-2 mt-4'
     >
       {actions.map((action, index) => (
         <motion.div
           key={action.id}
-          initial={{  opacity: 0, x: -20  }}
-          animate={{  opacity: 1, x: 0  }}
-          transition={{  duration: 0.2, delay: index * 0.1  }}
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.2, delay: index * 0.1 }}
         >
           <Button
             variant={action.cost === 'premium' ? 'default' : 'outline'}
@@ -142,12 +142,15 @@ export const SofiaActionButtons: React.FC<SofiaActionButtonsProps> = ({
       {/* Helper text for premium features */}
       {actions.some(action => action.cost === 'premium') && (
         <motion.div
-          initial={{  opacity: 0  }}
-          animate={{  opacity: 1  }}
-          transition={{  delay: 0.5  }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
           className='flex items-center gap-2 mt-2 px-3'
         >
-          <Icon name={"info" as any} className='w-3 h-3 text-muted-foreground' />
+          <Icon
+            name={'info' as any}
+            className='w-3 h-3 text-muted-foreground'
+          />
           <span className='text-xs text-muted-foreground'>
             Premium features require an active subscription
           </span>

@@ -7,102 +7,106 @@ import { supabase } from '@/integrations/supabase/client';
 import { professionalReviewRealtimeService } from '@/lib/realtime/professionalReviewUpdates';
 
 export interface ProfessionalReviewer {
-  id: string;
-  user_id: string;
-  name: string;
-  email: string;
+  availability_status: 'available' | 'busy' | 'unavailable';
+  created_at: string;
   credentials: {
     bar_number?: string;
+    certifications?: string[];
+    law_firm?: string;
     licensed_states: string[];
     specializations: string[];
     years_experience: number;
-    law_firm?: string;
-    certifications?: string[];
   };
+  email: string;
+  hourly_rate: number;
+  id: string;
+  name: string;
   profile: {
     bio: string;
     education: string[];
-    practice_areas: string[];
     languages: string[];
+    practice_areas: string[];
     timezone: string;
   };
-  verification_status: 'pending' | 'verified' | 'rejected';
   profile_verified: boolean;
   rating: number;
   reviews_count: number;
-  hourly_rate: number;
-  availability_status: 'available' | 'busy' | 'unavailable';
-  created_at: string;
   updated_at: string;
+  user_id: string;
+  verification_status: 'pending' | 'rejected' | 'verified';
 }
 
 export interface DocumentReview {
-  id: string;
-  user_id: string;
-  document_id: string;
-  reviewer_id: string;
-  status: 'requested' | 'in_progress' | 'completed' | 'cancelled';
-  review_type: 'basic' | 'comprehensive' | 'certified';
-  urgency_level: 'standard' | 'priority' | 'urgent';
-  estimated_cost: number;
   actual_cost?: number;
-  findings: ReviewFinding[];
-  recommendations: ReviewRecommendation[];
-  score: number;
   completion_date?: string;
   created_at: string;
+  document_id: string;
+  estimated_cost: number;
+  findings: ReviewFinding[];
+  id: string;
+  recommendations: ReviewRecommendation[];
+  review_type: 'basic' | 'certified' | 'comprehensive';
+  reviewer_id: string;
+  score: number;
+  status: 'cancelled' | 'completed' | 'in_progress' | 'requested';
   updated_at: string;
+  urgency_level: 'priority' | 'standard' | 'urgent';
+  user_id: string;
 }
 
 export interface ReviewFinding {
-  id: string;
-  type: 'error' | 'warning' | 'suggestion' | 'compliment';
   category: string;
   description: string;
-  severity: 'low' | 'medium' | 'high';
+  id: string;
   line_reference?: string;
   recommendation?: string;
+  severity: 'high' | 'low' | 'medium';
+  type: 'compliment' | 'error' | 'suggestion' | 'warning';
 }
 
 export interface ReviewRecommendation {
-  id: string;
-  priority: 'high' | 'medium' | 'low';
-  category: string;
-  title: string;
-  description: string;
   action_required: boolean;
+  category: string;
+  description: string;
   estimated_time: string;
+  id: string;
   impact: string;
+  priority: 'high' | 'low' | 'medium';
+  title: string;
 }
 
 export interface ReviewRequest {
-  id: string;
-  user_id: string;
-  document_id: string;
-  review_type: 'basic' | 'comprehensive' | 'certified';
-  urgency_level: 'standard' | 'priority' | 'urgent';
-  specialization_required?: string;
-  request_notes?: string;
-  status: 'pending' | 'assigned' | 'completed' | 'cancelled';
   assigned_reviewer_id?: string;
-  estimated_cost: number;
   created_at: string;
+  document_id: string;
+  estimated_cost: number;
+  id: string;
+  request_notes?: string;
+  review_type: 'basic' | 'certified' | 'comprehensive';
+  specialization_required?: string;
+  status: 'assigned' | 'cancelled' | 'completed' | 'pending';
   updated_at: string;
+  urgency_level: 'priority' | 'standard' | 'urgent';
+  user_id: string;
 }
 
 export interface Consultation {
-  id: string;
-  user_id: string;
-  professional_id: string;
-  consultation_type: 'initial_consultation' | 'document_review' | 'estate_planning' | 'family_planning';
-  scheduled_time: string;
-  duration_minutes: number;
-  status: 'scheduled' | 'completed' | 'cancelled' | 'rescheduled';
-  meeting_url?: string;
-  notes?: string;
+  consultation_type:
+    | 'document_review'
+    | 'estate_planning'
+    | 'family_planning'
+    | 'initial_consultation';
   cost: number;
   created_at: string;
+  duration_minutes: number;
+  id: string;
+  meeting_url?: string;
+  notes?: string;
+  professional_id: string;
+  scheduled_time: string;
+  status: 'cancelled' | 'completed' | 'rescheduled' | 'scheduled';
   updated_at: string;
+  user_id: string;
 }
 
 class RealProfessionalService {
@@ -117,10 +121,10 @@ class RealProfessionalService {
 
   // Professional Directory - Real Attorney Network
   async getVerifiedAttorneys(filters?: {
-    specializations?: string[];
+    availableOnly?: boolean;
     jurisdiction?: string;
     ratingMin?: number;
-    availableOnly?: boolean;
+    specializations?: string[];
   }): Promise<ProfessionalReviewer[]> {
     try {
       let query = supabase
@@ -154,7 +158,9 @@ class RealProfessionalService {
 
       if (filters?.jurisdiction) {
         filteredData = filteredData.filter(attorney =>
-          attorney.credentials?.licensed_states?.includes(filters.jurisdiction || '')
+          attorney.credentials?.licensed_states?.includes(
+            filters.jurisdiction || ''
+          )
         );
       }
 
@@ -165,7 +171,7 @@ class RealProfessionalService {
     }
   }
 
-  async getAttorneyById(id: string): Promise<ProfessionalReviewer | null> {
+  async getAttorneyById(id: string): Promise<null | ProfessionalReviewer> {
     try {
       const { data, error } = await supabase
         .from('professional_reviewers')
@@ -183,13 +189,13 @@ class RealProfessionalService {
 
   // Review Request System - Real Database Operations
   async createReviewRequest(requestData: {
-    user_id: string;
     document_id: string;
-    review_type: 'basic' | 'comprehensive' | 'certified';
-    urgency_level: 'standard' | 'priority' | 'urgent';
-    specialization_required?: string;
-    request_notes?: string;
     estimated_cost: number;
+    request_notes?: string;
+    review_type: 'basic' | 'certified' | 'comprehensive';
+    specialization_required?: string;
+    urgency_level: 'priority' | 'standard' | 'urgent';
+    user_id: string;
   }): Promise<ReviewRequest> {
     try {
       const { data, error } = await supabase
@@ -198,7 +204,7 @@ class RealProfessionalService {
           ...requestData,
           status: 'pending',
           created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .select()
         .single();
@@ -206,7 +212,10 @@ class RealProfessionalService {
       if (error) throw error;
 
       // Update document status to reflect review request
-      await this.updateDocumentReviewStatus(requestData.document_id, 'requested');
+      await this.updateDocumentReviewStatus(
+        requestData.document_id,
+        'requested'
+      );
 
       // Notify available reviewers
       await this.notifyAvailableReviewers(data);
@@ -218,7 +227,10 @@ class RealProfessionalService {
     }
   }
 
-  async assignReviewRequest(requestId: string, reviewerId: string): Promise<DocumentReview> {
+  async assignReviewRequest(
+    requestId: string,
+    reviewerId: string
+  ): Promise<DocumentReview> {
     try {
       // Get the review request
       const { data: request, error: requestError } = await supabase
@@ -244,7 +256,7 @@ class RealProfessionalService {
           recommendations: [],
           score: 0,
           created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .select()
         .single();
@@ -257,7 +269,7 @@ class RealProfessionalService {
         .update({
           status: 'assigned',
           assigned_reviewer_id: reviewerId,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('id', requestId);
 
@@ -265,12 +277,15 @@ class RealProfessionalService {
       await this.updateDocumentReviewStatus(request.document_id, 'in_progress');
 
       // Send real-time update
-      await professionalReviewRealtimeService.broadcastUpdateToUser(request.user_id, {
-        review_id: review.id,
-        document_id: request.document_id,
-        status: 'in_progress',
-        progress_percentage: 25
-      });
+      await professionalReviewRealtimeService.broadcastUpdateToUser(
+        request.user_id,
+        {
+          review_id: review.id,
+          document_id: request.document_id,
+          status: 'in_progress',
+          progress_percentage: 25,
+        }
+      );
 
       // Notify user
       await this.notifyUserReviewAssigned(review);
@@ -297,7 +312,7 @@ class RealProfessionalService {
           recommendations,
           score,
           completion_date: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('id', reviewId)
         .select('*, documents(*)')
@@ -314,16 +329,19 @@ class RealProfessionalService {
       );
 
       // Send real-time update
-      await professionalReviewRealtimeService.broadcastUpdateToUser(review.user_id, {
-        review_id: reviewId,
-        document_id: review.document_id,
-        status: 'completed',
-        progress_percentage: 100,
-        score,
-        findings,
-        recommendations,
-        completion_date: review.completion_date
-      });
+      await professionalReviewRealtimeService.broadcastUpdateToUser(
+        review.user_id,
+        {
+          review_id: reviewId,
+          document_id: review.document_id,
+          status: 'completed',
+          progress_percentage: 100,
+          score,
+          findings,
+          recommendations,
+          completion_date: review.completion_date,
+        }
+      );
 
       // Send completion notification
       await this.notifyUserReviewCompleted(review);
@@ -351,7 +369,9 @@ class RealProfessionalService {
         .eq('id', professionalId)
         .single();
 
-      const cost = professional ? (professional.hourly_rate * durationMinutes / 60) : 0;
+      const cost = professional
+        ? (professional.hourly_rate * durationMinutes) / 60
+        : 0;
 
       const { data, error } = await supabase
         .from('consultations')
@@ -364,7 +384,7 @@ class RealProfessionalService {
           status: 'scheduled',
           cost,
           created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .select()
         .single();
@@ -386,21 +406,21 @@ class RealProfessionalService {
     return {
       basic: 199,
       comprehensive: 399,
-      certified: 699
+      certified: 699,
     };
   }
 
   // Real Database Helper Methods
   private async updateDocumentReviewStatus(
     documentId: string,
-    status: 'none' | 'requested' | 'in_progress' | 'completed' | 'cancelled'
+    status: 'cancelled' | 'completed' | 'in_progress' | 'none' | 'requested'
   ): Promise<void> {
     try {
       const { error } = await supabase
         .from('documents')
         .update({
           professional_review_status: status,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('id', documentId);
 
@@ -410,7 +430,9 @@ class RealProfessionalService {
     }
   }
 
-  private async notifyAvailableReviewers(request: ReviewRequest): Promise<void> {
+  private async notifyAvailableReviewers(
+    request: ReviewRequest
+  ): Promise<void> {
     try {
       // Get reviewers who match the specialization
       const { data: reviewers } = await supabase
@@ -422,9 +444,12 @@ class RealProfessionalService {
       if (reviewers?.length) {
         // Send notifications to matching reviewers
         const notifications = reviewers
-          .filter(reviewer =>
-            !request.specialization_required ||
-            reviewer.credentials?.specializations?.includes(request.specialization_required)
+          .filter(
+            reviewer =>
+              !request.specialization_required ||
+              reviewer.credentials?.specializations?.includes(
+                request.specialization_required
+              )
           )
           .map(reviewer => ({
             user_id: reviewer.user_id,
@@ -432,11 +457,11 @@ class RealProfessionalService {
             title: 'New Review Request Available',
             message: `A ${request.review_type} review is available for ${request.urgency_level} completion`,
             data: { request_id: request.id, document_id: request.document_id },
-            created_at: new Date().toISOString()
+            created_at: new Date().toISOString(),
           }));
 
         if (notifications.length > 0) {
-          await supabase.from('notifications').insert(notifications);
+          await (supabase as any).from('notifications').insert(notifications);
         }
       }
     } catch (error) {
@@ -444,15 +469,17 @@ class RealProfessionalService {
     }
   }
 
-  private async notifyUserReviewAssigned(review: DocumentReview): Promise<void> {
+  private async notifyUserReviewAssigned(
+    review: DocumentReview
+  ): Promise<void> {
     try {
-      await supabase.from('notifications').insert({
+      await (supabase as any).from('notifications').insert({
         user_id: review.user_id,
         type: 'review_assigned',
         title: 'Document Review Assigned',
         message: 'A professional has been assigned to review your document',
         data: { review_id: review.id, document_id: review.document_id },
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
       });
 
       // Send email notification
@@ -463,17 +490,19 @@ class RealProfessionalService {
         data: {
           reviewId: review.id,
           documentId: review.document_id,
-          reviewType: review.review_type
-        }
+          reviewType: review.review_type,
+        },
       });
     } catch (error) {
       console.error('Failed to notify user of review assignment:', error);
     }
   }
 
-  private async notifyUserReviewCompleted(review: DocumentReview): Promise<void> {
+  private async notifyUserReviewCompleted(
+    review: DocumentReview
+  ): Promise<void> {
     try {
-      await supabase.from('notifications').insert({
+      await (supabase as any).from('notifications').insert({
         user_id: review.user_id,
         type: 'review_completed',
         title: 'Document Review Completed',
@@ -483,9 +512,9 @@ class RealProfessionalService {
           document_id: review.document_id,
           score: review.score,
           findings_count: review.findings.length,
-          recommendations_count: review.recommendations.length
+          recommendations_count: review.recommendations.length,
         },
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
       });
 
       // Send email notification
@@ -497,15 +526,17 @@ class RealProfessionalService {
           reviewId: review.id,
           score: review.score,
           findingsCount: review.findings.length,
-          recommendationsCount: review.recommendations.length
-        }
+          recommendationsCount: review.recommendations.length,
+        },
       });
     } catch (error) {
       console.error('Failed to notify user of review completion:', error);
     }
   }
 
-  private async sendConsultationConfirmation(consultation: Consultation): Promise<void> {
+  private async sendConsultationConfirmation(
+    consultation: Consultation
+  ): Promise<void> {
     try {
       // Send to user
       await this.sendEmail({
@@ -516,8 +547,8 @@ class RealProfessionalService {
           consultationType: consultation.consultation_type,
           scheduledTime: consultation.scheduled_time,
           duration: consultation.duration_minutes,
-          cost: consultation.cost
-        }
+          cost: consultation.cost,
+        },
       });
 
       // Send to professional
@@ -528,8 +559,8 @@ class RealProfessionalService {
         data: {
           consultationType: consultation.consultation_type,
           scheduledTime: consultation.scheduled_time,
-          duration: consultation.duration_minutes
-        }
+          duration: consultation.duration_minutes,
+        },
       });
     } catch (error) {
       console.error('Failed to send consultation confirmations:', error);
@@ -537,14 +568,14 @@ class RealProfessionalService {
   }
 
   private async sendEmail(emailData: {
-    to: string;
+    data: Record<string, unknown>;
     subject: string;
     template: string;
-    data: Record<string, unknown>;
+    to: string;
   }): Promise<void> {
     try {
       await supabase.functions.invoke('send-email', {
-        body: emailData
+        body: emailData,
       });
     } catch (error) {
       console.error('Failed to send email:', error);
@@ -556,11 +587,13 @@ class RealProfessionalService {
     try {
       const { data, error } = await supabase
         .from('document_reviews')
-        .select(`
+        .select(
+          `
           *,
           documents(title, type),
           professional_reviewers(name, credentials)
-        `)
+        `
+        )
         .eq('user_id', userId)
         .order('created_at', { ascending: false });
 
@@ -576,11 +609,13 @@ class RealProfessionalService {
     try {
       const { data, error } = await supabase
         .from('review_requests')
-        .select(`
+        .select(
+          `
           *,
           documents(title, type),
           professional_reviewers(name, credentials)
-        `)
+        `
+        )
         .eq('user_id', userId)
         .order('created_at', { ascending: false });
 
@@ -596,10 +631,12 @@ class RealProfessionalService {
     try {
       const { data, error } = await supabase
         .from('consultations')
-        .select(`
+        .select(
+          `
           *,
           professional_reviewers(name, credentials, profile)
-        `)
+        `
+        )
         .eq('user_id', userId)
         .order('scheduled_time', { ascending: true });
 

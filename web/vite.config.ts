@@ -1,7 +1,7 @@
-import { defineConfig, loadEnv } from "vite";
-import react from "@vitejs/plugin-react";
-import path from "path";
-import { fileURLToPath } from "url";
+import { defineConfig, loadEnv } from 'vite';
+import react from '@vitejs/plugin-react';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 // Get __dirname equivalent for ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -17,7 +17,7 @@ export default defineConfig(({ mode }) => {
     // Server Configuration
     server: {
       // Use IPv6 host to listen on all network interfaces
-      host: "::",
+      host: '::',
       // Default port (will auto-increment if busy)
       port: 8080,
       // Automatically open browser on server start
@@ -71,9 +71,13 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         output: {
           // Manual chunking for better caching and performance
-          manualChunks: (id) => {
+          manualChunks: id => {
             // Core React libraries
-            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
+            if (
+              id.includes('react') ||
+              id.includes('react-dom') ||
+              id.includes('react-router')
+            ) {
               return 'react-vendor';
             }
 
@@ -108,38 +112,61 @@ export default defineConfig(({ mode }) => {
             }
 
             // Utility libraries
-            if (id.includes('clsx') || id.includes('tailwind-merge') || id.includes('date-fns') ||
-                id.includes('class-variance-authority') || id.includes('lucide-react')) {
+            if (
+              id.includes('clsx') ||
+              id.includes('tailwind-merge') ||
+              id.includes('date-fns') ||
+              id.includes('class-variance-authority') ||
+              id.includes('lucide-react')
+            ) {
               return 'utils-vendor';
             }
 
             // Sofia personality system
-            if (id.includes('src/components/sofia') || id.includes('src/lib/sofia') ||
-                id.includes('src/hooks/use') && id.includes('sofia')) {
+            if (
+              id.includes('src/components/sofia') ||
+              id.includes('src/lib/sofia') ||
+              (id.includes('src/hooks/use') && id.includes('sofia'))
+            ) {
               return 'sofia-system';
             }
 
             // Animation and micro-interaction system
-            if (id.includes('src/components/animations') || id.includes('src/lib/animation') ||
-                id.includes('enhanced-button') || id.includes('enhanced-card') || id.includes('enhanced-input')) {
+            if (
+              id.includes('src/components/animations') ||
+              id.includes('src/lib/animation') ||
+              id.includes('enhanced-button') ||
+              id.includes('enhanced-card') ||
+              id.includes('enhanced-input')
+            ) {
               return 'animation-system';
             }
 
             // Emergency and family shield system
-            if (id.includes('src/components/emergency') || id.includes('FamilyProtection') ||
-                id.includes('family-shield') || id.includes('emergency-access')) {
+            if (
+              id.includes('src/components/emergency') ||
+              id.includes('FamilyProtection') ||
+              id.includes('family-shield') ||
+              id.includes('emergency-access')
+            ) {
               return 'family-shield';
             }
 
             // Legacy garden system
-            if (id.includes('src/components/garden') || id.includes('Legacy') ||
-                id.includes('garden') && !id.includes('node_modules')) {
+            if (
+              id.includes('src/components/garden') ||
+              id.includes('Legacy') ||
+              (id.includes('garden') && !id.includes('node_modules'))
+            ) {
               return 'legacy-garden';
             }
 
             // Dashboard and layout components
-            if (id.includes('DashboardLayout') || id.includes('AppSidebar') ||
-                id.includes('src/components/layout')) {
+            if (
+              id.includes('DashboardLayout') ||
+              id.includes('AppSidebar') ||
+              id.includes('src/components/layout')
+            ) {
               return 'dashboard-layout';
             }
 
@@ -150,19 +177,29 @@ export default defineConfig(({ mode }) => {
             if (id.includes('src/pages/settings') || id.includes('Settings')) {
               return 'settings-page';
             }
-            if (id.includes('src/pages/onboarding') || id.includes('Onboarding')) {
+            if (
+              id.includes('src/pages/onboarding') ||
+              id.includes('Onboarding')
+            ) {
               return 'onboarding-page';
             }
 
             // Legal pages
-            if (id.includes('src/pages/legal') || id.includes('TermsOfService') ||
-                id.includes('PrivacyPolicy') || id.includes('SecurityPolicy')) {
+            if (
+              id.includes('src/pages/legal') ||
+              id.includes('TermsOfService') ||
+              id.includes('PrivacyPolicy') ||
+              id.includes('SecurityPolicy')
+            ) {
               return 'legal-pages';
             }
 
             // Landing page and marketing
-            if (id.includes('src/pages/LandingPage') || id.includes('Blog') ||
-                id.includes('ComponentShowcase')) {
+            if (
+              id.includes('src/pages/LandingPage') ||
+              id.includes('Blog') ||
+              id.includes('ComponentShowcase')
+            ) {
               return 'marketing-pages';
             }
 
@@ -172,7 +209,12 @@ export default defineConfig(({ mode }) => {
               const packageName = chunks.split('/')[0];
 
               // Group small packages together
-              const smallPackages = ['crypto-js', 'tweetnacl', 'buffer', 'process'];
+              const smallPackages = [
+                'crypto-js',
+                'tweetnacl',
+                'buffer',
+                'process',
+              ];
               if (smallPackages.includes(packageName)) {
                 return 'crypto-vendor';
               }
@@ -181,7 +223,7 @@ export default defineConfig(({ mode }) => {
             }
           },
           // Asset file naming
-          assetFileNames: (assetInfo) => {
+          assetFileNames: assetInfo => {
             const info = assetInfo.name?.split('.');
             const ext = info?.[info.length - 1];
             if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(ext || '')) {
@@ -206,7 +248,10 @@ export default defineConfig(({ mode }) => {
                 // Log bundle sizes
                 const sizes = Object.entries(bundle).map(([name, asset]) => ({
                   name,
-                  size: asset.type === 'chunk' ? asset.code?.length || 0 : asset.source?.length || 0,
+                  size:
+                    asset.type === 'chunk'
+                      ? asset.code?.length || 0
+                      : asset.source?.length || 0,
                 }));
                 console.log('📦 Bundle Analysis:', sizes);
               },
@@ -221,29 +266,32 @@ export default defineConfig(({ mode }) => {
       // React plugin with SWC for fast compilation
       react(),
       // Sentry plugin for error reporting and source maps
-      mode === 'production' && env.VITE_SENTRY_DSN && {
-        name: 'sentry-upload',
-        writeBundle() {
-          // Sentry source map upload will be handled by CI/CD
-          console.log('📊 Build completed - ready for Sentry source map upload');
-        }
-      },
+      mode === 'production' &&
+        env.VITE_SENTRY_DSN && {
+          name: 'sentry-upload',
+          writeBundle() {
+            // Sentry source map upload will be handled by CI/CD
+            console.log(
+              '📊 Build completed - ready for Sentry source map upload'
+            );
+          },
+        },
     ].filter(Boolean),
 
     // Module Resolution
     resolve: {
       // Aliases for cleaner imports
       alias: {
-        "@": path.resolve(__dirname, "./src"),
-        "@components": path.resolve(__dirname, "./src/components"),
-        "@hooks": path.resolve(__dirname, "./src/hooks"),
-        "@lib": path.resolve(__dirname, "./src/lib"),
-        "@features": path.resolve(__dirname, "./src/features"),
-        "@pages": path.resolve(__dirname, "./src/pages"),
-        "@types": path.resolve(__dirname, "./src/types"),
-        "@utils": path.resolve(__dirname, "./src/lib/utils"),
-        "@config": path.resolve(__dirname, "./src/config"),
-        "@integrations": path.resolve(__dirname, "./src/integrations"),
+        '@': path.resolve(__dirname, './src'),
+        '@components': path.resolve(__dirname, './src/components'),
+        '@hooks': path.resolve(__dirname, './src/hooks'),
+        '@lib': path.resolve(__dirname, './src/lib'),
+        '@features': path.resolve(__dirname, './src/features'),
+        '@pages': path.resolve(__dirname, './src/pages'),
+        '@types': path.resolve(__dirname, './src/types'),
+        '@utils': path.resolve(__dirname, './src/lib/utils'),
+        '@config': path.resolve(__dirname, './src/config'),
+        '@integrations': path.resolve(__dirname, './src/integrations'),
       },
       // Extensions to resolve
       extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json'],
@@ -256,9 +304,10 @@ export default defineConfig(({ mode }) => {
         // Local scope by default for CSS modules
         localsConvention: 'camelCaseOnly',
         // Generate scoped class names
-        generateScopedName: mode === 'production'
-          ? '[hash:base64:8]'
-          : '[name]__[local]__[hash:base64:5]',
+        generateScopedName:
+          mode === 'production'
+            ? '[hash:base64:8]'
+            : '[name]__[local]__[hash:base64:5]',
       },
       // PostCSS is configured separately in postcss.config.js
       // Preprocessor options if using SCSS/Less/Stylus

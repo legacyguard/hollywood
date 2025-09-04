@@ -6,9 +6,12 @@
 // Import Supabase types for database operations
 import type { Database } from '../integrations/supabase/types';
 
-export type ProfessionalReviewer = Database['public']['Tables']['professional_reviewers']['Row'];
-export type ProfessionalReviewerInsert = Database['public']['Tables']['professional_reviewers']['Insert'];
-export type ProfessionalReviewerUpdate = Database['public']['Tables']['professional_reviewers']['Update'];
+export type ProfessionalReviewer =
+  Database['public']['Tables']['professional_reviewers']['Row'];
+export type ProfessionalReviewerInsert =
+  Database['public']['Tables']['professional_reviewers']['Insert'];
+export type ProfessionalReviewerUpdate =
+  Database['public']['Tables']['professional_reviewers']['Update'];
 
 // Base types
 export type UUID = string;
@@ -17,114 +20,114 @@ export type Currency = string;
 
 // User types
 export interface User {
-  id: UUID;
-  email: string;
-  firstName: string;
-  lastName: string;
   avatar?: string;
   createdAt: ISO8601Date;
-  updatedAt: ISO8601Date;
+  email: string;
+  firstName: string;
+  id: UUID;
+  lastName: string;
   preferences: UserPreferences;
+  updatedAt: ISO8601Date;
 }
 
 export interface UserPreferences {
   language: string;
-  timezone: string;
   notifications: NotificationPreferences;
   privacy: PrivacySettings;
+  timezone: string;
 }
 
 export interface NotificationPreferences {
   email: boolean;
+  frequency: 'daily' | 'immediate' | 'weekly';
   push: boolean;
   sms: boolean;
-  frequency: 'immediate' | 'daily' | 'weekly';
 }
 
 export interface PrivacySettings {
+  dataRetention: number;
   shareWithFamily: boolean;
   shareWithProfessionals: boolean;
-  dataRetention: number;
 }
 
 // Estate planning types
 export interface EstatePlan {
-  id: UUID;
-  userId: UUID;
-  name: string;
-  description?: string;
-  status: 'draft' | 'active' | 'archived';
-  createdAt: ISO8601Date;
-  updatedAt: ISO8601Date;
-  documents: Document[];
-  beneficiaries: Beneficiary[];
   assets: Asset[];
+  beneficiaries: Beneficiary[];
+  createdAt: ISO8601Date;
+  description?: string;
+  documents: Document[];
+  id: UUID;
+  name: string;
+  status: 'active' | 'archived' | 'draft';
+  updatedAt: ISO8601Date;
+  userId: UUID;
 }
 
 export interface Document {
-  id: UUID;
-  estatePlanId: UUID;
-  type: DocumentType;
-  name: string;
-  fileUrl?: string;
   content?: string;
-  status: 'draft' | 'reviewed' | 'signed' | 'archived';
   createdAt: ISO8601Date;
-  updatedAt: ISO8601Date;
+  estatePlanId: UUID;
+  fileUrl?: string;
+  id: UUID;
   metadata: DocumentMetadata;
+  name: string;
+  status: 'archived' | 'draft' | 'reviewed' | 'signed';
+  type: DocumentType;
+  updatedAt: ISO8601Date;
 }
 
 export type DocumentType =
-  | 'will'
-  | 'power_of_attorney'
-  | 'living_will'
-  | 'trust'
-  | 'insurance_policy'
-  | 'property_deed'
   | 'bank_statement'
+  | 'insurance_policy'
   | 'investment_statement'
-  | 'other';
+  | 'living_will'
+  | 'other'
+  | 'power_of_attorney'
+  | 'property_deed'
+  | 'trust'
+  | 'will';
 
 export interface DocumentMetadata {
-  fileSize?: number;
-  mimeType?: string;
-  encryptionKey?: string;
   checksum?: string;
-  version: number;
+  encryptionKey?: string;
+  fileSize?: number;
   lastModifiedBy?: UUID;
+  mimeType?: string;
+  version: number;
 }
 
 // Asset types
 export interface Asset {
-  id: UUID;
-  estatePlanId: UUID;
-  type: AssetType;
-  name: string;
-  description?: string;
-  value: number;
-  currency: Currency;
-  location?: string;
-  ownership: OwnershipDetails;
   createdAt: ISO8601Date;
+  currency: Currency;
+  description?: string;
+  estatePlanId: UUID;
+  id: UUID;
+  location?: string;
+  name: string;
+  ownership: OwnershipDetails;
+  type: AssetType;
   updatedAt: ISO8601Date;
+  value: number;
 }
 
 export type AssetType =
-  | 'real_estate'
-  | 'bank_account'
-  | 'investment'
-  | 'vehicle'
-  | 'jewelry'
   | 'art'
-  | 'cryptocurrency'
+  | 'bank_account'
   | 'business'
+  | 'cryptocurrency'
   | 'insurance'
-  | 'other';
+  | 'investment'
+  | 'jewelry'
+  | 'other'
+  | 'real_estate'
+  | 'vehicle';
 
 export interface OwnershipDetails {
+  coOwners?: CoOwner[];
   owner: string;
   percentage: number;
-  coOwners?: CoOwner[];
 }
 
 export interface CoOwner {
@@ -134,75 +137,80 @@ export interface CoOwner {
 
 // Beneficiary types
 export interface Beneficiary {
-  id: UUID;
-  estatePlanId: UUID;
-  type: BeneficiaryType;
-  name: string;
-  email?: string;
-  phone?: string;
-  relationship: string;
   allocation: AllocationDetails;
   createdAt: ISO8601Date;
+  email?: string;
+  estatePlanId: UUID;
+  id: UUID;
+  name: string;
+  phone?: string;
+  relationship: string;
+  type: BeneficiaryType;
   updatedAt: ISO8601Date;
 }
 
 export type BeneficiaryType = 'individual' | 'organization' | 'trust';
 
 export interface AllocationDetails {
-  type: 'percentage' | 'fixed_amount' | 'specific_asset';
-  value: number;
   assetId?: UUID;
   conditions?: string[];
+  type: 'fixed_amount' | 'percentage' | 'specific_asset';
+  value: number;
 }
 
 // Professional specialization types
 export interface ProfessionalSpecialization {
+  category: string;
   id: string;
   name: string;
-  category: string;
 }
 
 // Professional network types - Domain model for business logic
 export interface ProfessionalReviewerDTO {
-  id: UUID;
-  userId: UUID;
-  email: string; // Email address for notifications
-  fullName: string; // Full name for display and notifications
-  type: ProfessionalType;
-  licenseNumber: string;
-  jurisdiction: string;
-  specializations: ProfessionalSpecialization[];
-  experience: number;
-  verified: boolean;
-  onboardingStatus: OnboardingStatus;
+  bar_number?: string; // Alias for licenseNumber
+  bio?: string;
+  created_at: ISO8601Date; // Alias for createdAt
   createdAt: ISO8601Date;
-  updatedAt: ISO8601Date;
+  email: string; // Email address for notifications
+  experience: number;
+  experience_years: number; // Alias for experience
   // Extended properties for component compatibility
   full_name: string; // Alias for fullName
-  professional_title?: string;
-  law_firm_name?: string;
-  bio?: string;
+  fullName: string; // Full name for display and notifications
   hourly_rate?: number;
-  experience_years: number; // Alias for experience
+  id: UUID;
+  jurisdiction: string;
+  law_firm_name?: string;
   licensed_states?: string[];
+  licenseNumber: string;
+  onboardingStatus: OnboardingStatus;
+  professional_title?: string;
   profile_image_url?: string;
-  bar_number?: string; // Alias for licenseNumber
-  verification_status?: string;
+  specializations: ProfessionalSpecialization[];
   status?: 'active' | 'inactive' | 'pending' | 'suspended';
-  created_at: ISO8601Date; // Alias for createdAt
-  user_id?: string; // Alias for userId
+  type: ProfessionalType;
   updated_at?: ISO8601Date; // Alias for updatedAt
+  updatedAt: ISO8601Date;
+  user_id?: string; // Alias for userId
+  userId: UUID;
+  verification_status?: string;
+  verified: boolean;
 }
 
-export type ProfessionalType = 'attorney' | 'notary' | 'financial_advisor' | 'estate_planner' | 'tax_advisor';
+export type ProfessionalType =
+  | 'attorney'
+  | 'estate_planner'
+  | 'financial_advisor'
+  | 'notary'
+  | 'tax_advisor';
 
 export type OnboardingStatus =
-  | 'pending'
-  | 'documents_submitted'
-  | 'under_review'
   | 'approved'
+  | 'documents_submitted'
+  | 'pending'
   | 'rejected'
-  | 'suspended';
+  | 'suspended'
+  | 'under_review';
 
 // Mapper function to convert Supabase type to domain type
 export function mapSupabaseToDomainReviewer(
@@ -210,7 +218,7 @@ export function mapSupabaseToDomainReviewer(
 ): ProfessionalReviewerDTO {
   const experience = calculateExperience(supabaseReviewer.reviews_completed);
   const fullName = supabaseReviewer.name;
-  
+
   return {
     id: supabaseReviewer.id,
     userId: supabaseReviewer.contact_email, // Map contact_email to userId for domain logic
@@ -219,14 +227,18 @@ export function mapSupabaseToDomainReviewer(
     type: mapCredentialsToType(supabaseReviewer.credentials),
     licenseNumber: supabaseReviewer.bar_number || '',
     jurisdiction: supabaseReviewer.jurisdiction,
-    specializations: (supabaseReviewer.specializations || []).map((spec, index) => ({
-      id: `${index}`,
-      name: spec,
-      category: mapSpecializationToCategory(spec)
-    })),
+    specializations: (supabaseReviewer.specializations || []).map(
+      (spec, index) => ({
+        id: `${index}`,
+        name: spec,
+        category: mapSpecializationToCategory(spec),
+      })
+    ),
     experience,
     verified: supabaseReviewer.profile_verified,
-    onboardingStatus: mapVerificationToOnboardingStatus(supabaseReviewer.profile_verified),
+    onboardingStatus: mapVerificationToOnboardingStatus(
+      supabaseReviewer.profile_verified
+    ),
     createdAt: supabaseReviewer.created_at,
     updatedAt: supabaseReviewer.updated_at,
     // Extended properties for component compatibility
@@ -238,8 +250,10 @@ export function mapSupabaseToDomainReviewer(
     experience_years: experience,
     licensed_states: [supabaseReviewer.jurisdiction], // Use jurisdiction as licensed state
     profile_image_url: undefined, // Not available in current schema
-    bar_number: supabaseReviewer.bar_number,
-    verification_status: supabaseReviewer.profile_verified ? 'verified' : 'pending',
+    bar_number: supabaseReviewer.bar_number || undefined,
+    verification_status: supabaseReviewer.profile_verified
+      ? 'verified'
+      : 'pending',
     status: supabaseReviewer.profile_verified ? 'active' : 'inactive',
     created_at: supabaseReviewer.created_at,
   };
@@ -248,13 +262,13 @@ export function mapSupabaseToDomainReviewer(
 // Mapper function to convert domain type to Supabase type
 export function mapDomainToSupabaseReviewer(
   domainReviewer: ProfessionalReviewerDTO
-): Omit<ProfessionalReviewerInsert, 'id' | 'created_at' | 'updated_at'> {
+): Omit<ProfessionalReviewerInsert, 'created_at' | 'id' | 'updated_at'> {
   return {
     name: `${domainReviewer.userId}`, // Map userId to name field
     credentials: mapTypeToCredentials(domainReviewer.type),
     bar_number: domainReviewer.licenseNumber,
     jurisdiction: domainReviewer.jurisdiction,
-    specializations: domainReviewer.specializations,
+    specializations: domainReviewer.specializations.map(spec => spec.name),
     rating: 0, // Default value
     reviews_completed: 0, // Default value
     average_turnaround_hours: 24, // Default value
@@ -265,13 +279,22 @@ export function mapDomainToSupabaseReviewer(
 
 // Helper functions for mapping
 function mapCredentialsToType(credentials: string): ProfessionalType {
-  if (credentials.toLowerCase().includes('attorney') || credentials.toLowerCase().includes('lawyer')) {
+  if (
+    credentials.toLowerCase().includes('attorney') ||
+    credentials.toLowerCase().includes('lawyer')
+  ) {
     return 'attorney';
   } else if (credentials.toLowerCase().includes('notary')) {
     return 'notary';
-  } else if (credentials.toLowerCase().includes('financial') || credentials.toLowerCase().includes('advisor')) {
+  } else if (
+    credentials.toLowerCase().includes('financial') ||
+    credentials.toLowerCase().includes('advisor')
+  ) {
     return 'financial_advisor';
-  } else if (credentials.toLowerCase().includes('estate') || credentials.toLowerCase().includes('planner')) {
+  } else if (
+    credentials.toLowerCase().includes('estate') ||
+    credentials.toLowerCase().includes('planner')
+  ) {
     return 'estate_planner';
   } else if (credentials.toLowerCase().includes('tax')) {
     return 'tax_advisor';
@@ -301,13 +324,19 @@ function calculateExperience(reviewsCompleted: number): number {
   return Math.max(1, Math.floor(reviewsCompleted / 10));
 }
 
-function mapVerificationToOnboardingStatus(verified: boolean): OnboardingStatus {
+function mapVerificationToOnboardingStatus(
+  verified: boolean
+): OnboardingStatus {
   return verified ? 'approved' : 'pending';
 }
 
 function mapSpecializationToCategory(specialization: string): string {
   const spec = specialization.toLowerCase();
-  if (spec.includes('estate') || spec.includes('will') || spec.includes('trust')) {
+  if (
+    spec.includes('estate') ||
+    spec.includes('will') ||
+    spec.includes('trust')
+  ) {
     return 'estate_planning';
   } else if (spec.includes('tax')) {
     return 'tax_law';
@@ -322,21 +351,31 @@ function mapSpecializationToCategory(specialization: string): string {
 }
 
 export interface ReviewRequest {
-  id: UUID;
-  estatePlanId: UUID;
-  reviewerId: UUID;
-  type: ReviewType;
-  status: ReviewStatus;
-  priority: Priority;
-  documents: UUID[];
-  notes?: string;
-  deadline?: ISO8601Date;
   createdAt: ISO8601Date;
+  deadline?: ISO8601Date;
+  documents: UUID[];
+  estatePlanId: UUID;
+  id: UUID;
+  notes?: string;
+  priority: Priority;
+  reviewerId: UUID;
+  status: ReviewStatus;
+  type: ReviewType;
 }
 
-export type ReviewType = 'legal' | 'financial' | 'medical' | 'technical' | 'compliance';
-export type ReviewStatus = 'pending' | 'in_progress' | 'completed' | 'rejected' | 'needs_revision';
-export type Priority = 'low' | 'medium' | 'high' | 'urgent';
+export type ReviewType =
+  | 'compliance'
+  | 'financial'
+  | 'legal'
+  | 'medical'
+  | 'technical';
+export type ReviewStatus =
+  | 'completed'
+  | 'in_progress'
+  | 'needs_revision'
+  | 'pending'
+  | 'rejected';
+export type Priority = 'high' | 'low' | 'medium' | 'urgent';
 
 // Professional Profile - used by directory components
 export interface ProfessionalProfile extends ProfessionalReviewerDTO {
@@ -344,46 +383,47 @@ export interface ProfessionalProfile extends ProfessionalReviewerDTO {
 }
 
 // Professional Review types
-export type ProfessionalReview = Database['public']['Tables']['professional_reviews']['Row'];
+export type ProfessionalReview =
+  Database['public']['Tables']['professional_reviews']['Row'];
 
 export interface DocumentShare {
-  id: string;
-  document_id: string;
-  shared_with: string;
-  permissions: SharePermissions;
-  expires_at?: string;
   created_at: string;
+  document_id: string;
+  expires_at?: string;
+  id: string;
+  permissions: SharePermissions;
+  shared_with: string;
   updated_at: string;
 }
 
 export interface SharePermissions {
-  view: boolean;
-  edit: boolean;
   download: boolean;
+  edit: boolean;
+  view: boolean;
 }
 
 // Search result type for QuickSearch
 export interface QuickSearchResult {
-  id: string;
-  type: 'document' | 'action' | 'guardian';
-  title: string;
-  subtitle: string;
-  icon: string;
   action: () => void;
+  icon: string;
+  id: string;
+  subtitle: string;
+  title: string;
+  type: 'action' | 'document' | 'guardian';
 }
 
 // API response types
 export interface ApiResponse<T> {
-  success: boolean;
   data?: T;
   error?: ApiError;
   metadata?: ResponseMetadata;
+  success: boolean;
 }
 
 export interface ApiError {
   code: string;
-  message: string;
   details?: Record<string, unknown>;
+  message: string;
   timestamp: ISO8601Date;
 }
 
@@ -395,22 +435,22 @@ export interface ResponseMetadata {
 
 // Pagination types
 export interface PaginationParams {
-  page: number;
+  filters?: Record<string, unknown>;
   limit: number;
+  page: number;
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
-  filters?: Record<string, unknown>;
 }
 
 export interface PaginatedResponse<T> {
   data: T[];
   pagination: {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
     hasNext: boolean;
     hasPrev: boolean;
+    limit: number;
+    page: number;
+    total: number;
+    totalPages: number;
   };
 }
 
@@ -418,28 +458,68 @@ export interface PaginatedResponse<T> {
 export interface FormValidationError {
   field: string;
   message: string;
-  type: 'required' | 'invalid' | 'custom';
+  type: 'custom' | 'invalid' | 'required';
 }
 
 export interface FormState<T> {
   data: T;
   errors: FormValidationError[];
-  isValid: boolean;
   isSubmitting: boolean;
+  isValid: boolean;
 }
 
 // Utility types
-export type Nullable<T> = T | null;
+export type Nullable<T> = null | T;
 export type Optional<T> = T | undefined;
-export type DeepPartial<T> = {
-  [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
+
+// Enhanced DeepPartial with proper type constraints for complex objects
+export type DeepPartial<T> = T extends (infer U)[]
+  ? DeepPartial<U>[]
+  : T extends Record<string, any>
+    ? {
+        [P in keyof T]?: T[P] extends (infer U)[]
+          ? DeepPartial<U>[]
+          : T[P] extends object
+            ? DeepPartial<T[P]>
+            : T[P];
+      }
+    : T;
+
+// Additional utility types for advanced type operations
+export type DeepRequired<T> = {
+  [P in keyof T]-?: T[P] extends object ? DeepRequired<T[P]> : T[P];
 };
+
+export type DeepReadonly<T> = {
+  readonly [P in keyof T]: T[P] extends object ? DeepReadonly<T[P]> : T[P];
+};
+
+// Type-safe object key extraction
+export type KeysOfType<T, U> = {
+  [K in keyof T]: T[K] extends U ? K : never;
+}[keyof T];
+
+// Conditional type for extracting function parameters
+export type ExtractParameters<T> = T extends (...args: infer P) => any
+  ? P
+  : never;
+
+// Advanced utility for creating type-safe pick operations
+export type DeepPick<T, K extends string> = K extends keyof T
+  ? T[K]
+  : K extends `${infer Key}.${infer Rest}`
+    ? Key extends keyof T
+      ? T[Key] extends object
+        ? DeepPick<T[Key], Rest>
+        : never
+      : never
+    : never;
 
 // Event types
 export interface AppEvent {
-  type: string;
   payload: Record<string, unknown>;
   timestamp: ISO8601Date;
+  type: string;
   userId?: UUID;
 }
 
@@ -447,45 +527,45 @@ export interface AppEvent {
 export interface AppConfig {
   api: {
     baseUrl: string;
-    timeout: number;
     retryAttempts: number;
+    timeout: number;
   };
   auth: {
-    sessionTimeout: number;
     refreshTokenInterval: number;
-  };
-  storage: {
-    encryptionKey: string;
-    maxFileSize: number;
-    allowedMimeTypes: string[];
+    sessionTimeout: number;
   };
   features: {
+    enableOfflineMode: boolean;
     enableProfessionalNetwork: boolean;
     enableRealTimeUpdates: boolean;
-    enableOfflineMode: boolean;
+  };
+  storage: {
+    allowedMimeTypes: string[];
+    encryptionKey: string;
+    maxFileSize: number;
   };
 }
 
 // Webhook types
 export interface WebhookPayload {
-  event: string;
   data: Record<string, unknown>;
-  timestamp: ISO8601Date;
+  event: string;
   signature: string;
+  timestamp: ISO8601Date;
 }
 
 // Search types
 export interface SearchFilters {
-  query?: string;
-  type?: string[];
-  status?: string[];
   dateFrom?: ISO8601Date;
   dateTo?: ISO8601Date;
+  query?: string;
+  status?: string[];
   tags?: string[];
+  type?: string[];
 }
 
 export interface SearchResult<T> {
+  highlights: Record<string, string[]>;
   item: T;
   score: number;
-  highlights: Record<string, string[]>;
 }

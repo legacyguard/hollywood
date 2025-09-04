@@ -7,44 +7,64 @@ import type { Document } from '@/integrations/supabase/types';
 import type { WillData } from '@/types/will';
 
 export interface QuickInsight {
-  id: string;
-  type: 'family_impact' | 'time_saved' | 'protection_level' | 'next_action' | 'risk_mitigation';
-  title: string;
-  description: string;
-  value: string | number;
-  valueType: 'time' | 'money' | 'people' | 'percentage' | 'count' | 'text';
-  impact: 'high' | 'medium' | 'low';
-  emotional_message: string;
   action_suggestion?: {
+    action:
+      | 'add_beneficiary'
+      | 'complete_will'
+      | 'request_review'
+      | 'set_emergency_contact'
+      | 'upload_document';
     text: string;
-    action: 'upload_document' | 'add_beneficiary' | 'set_emergency_contact' | 'request_review' | 'complete_will';
     urgent: boolean;
   };
   celebration?: boolean;
+  description: string;
+  emotional_message: string;
+  id: string;
+  impact: 'high' | 'low' | 'medium';
+  title: string;
+  type:
+    | 'family_impact'
+    | 'next_action'
+    | 'protection_level'
+    | 'risk_mitigation'
+    | 'time_saved';
+  value: number | string;
+  valueType: 'count' | 'money' | 'people' | 'percentage' | 'text' | 'time';
 }
 
 export interface QuickInsightInput {
   documents: Document[];
-  willData?: WillData;
-  familyMembersCount?: number;
   emergencyContactsCount?: number;
+  familyMembersCount?: number;
   isFirstDocument?: boolean;
+  willData?: WillData;
 }
 
 /**
  * Generate immediate insights after document upload or profile completion
  */
-export function generateQuickInsights(input: QuickInsightInput): QuickInsight[] {
+export function generateQuickInsights(
+  input: QuickInsightInput
+): QuickInsight[] {
   const insights: QuickInsight[] = [];
-  const { documents, willData, familyMembersCount = 0, emergencyContactsCount = 0, isFirstDocument } = input;
+  const {
+    documents,
+    willData,
+    familyMembersCount = 0,
+    emergencyContactsCount = 0,
+    isFirstDocument,
+  } = input;
 
   // First document celebration
   if (isFirstDocument && documents.length === 1) {
     insights.push({
       id: 'first-document-milestone',
       type: 'family_impact',
-      title: 'Great! You\'ve placed the first stone in your family\'s mosaic of certainty',
-      description: 'Your first document is now securely protected with military-grade encryption.',
+      title:
+        "Great! You've placed the first stone in your family's mosaic of certainty",
+      description:
+        'Your first document is now securely protected with military-grade encryption.',
       value: '1 document protected',
       valueType: 'text',
       impact: 'high',
@@ -53,8 +73,8 @@ export function generateQuickInsights(input: QuickInsightInput): QuickInsight[] 
       action_suggestion: {
         text: 'Add emergency contact (30 seconds)',
         action: 'set_emergency_contact',
-        urgent: false
-      }
+        urgent: false,
+      },
     });
   }
 
@@ -65,34 +85,52 @@ export function generateQuickInsights(input: QuickInsightInput): QuickInsight[] 
       id: 'time-saved',
       type: 'time_saved',
       title: 'Time Saved for Your Family',
-      description: 'By organizing these documents, you\'ve saved your loved ones countless hours of searching during stressful times.',
+      description:
+        "By organizing these documents, you've saved your loved ones countless hours of searching during stressful times.",
       value: timeSavedHours,
       valueType: 'time',
       impact: 'high',
-      emotional_message: `Instead of hunting through boxes and files, your family will find everything they need in minutes.`
+      emotional_message: `Instead of hunting through boxes and files, your family will find everything they need in minutes.`,
     });
   }
 
   // Protection level insight
-  const protectionLevel = calculateProtectionLevel(documents, willData, familyMembersCount);
+  const protectionLevel = calculateProtectionLevel(
+    documents,
+    familyMembersCount,
+    willData
+  );
   insights.push({
     id: 'protection-level',
     type: 'protection_level',
     title: 'Family Protection Level',
-    description: 'Your current level of family preparedness and document security.',
+    description:
+      'Your current level of family preparedness and document security.',
     value: protectionLevel.percentage,
     valueType: 'percentage',
-    impact: protectionLevel.percentage > 70 ? 'high' : protectionLevel.percentage > 40 ? 'medium' : 'low',
+    impact:
+      protectionLevel.percentage > 70
+        ? 'high'
+        : protectionLevel.percentage > 40
+          ? 'medium'
+          : 'low',
     emotional_message: protectionLevel.message,
-    action_suggestion: protectionLevel.percentage < 80 ? {
-      text: protectionLevel.nextAction,
-      action: protectionLevel.actionType,
-      urgent: protectionLevel.percentage < 40
-    } : undefined
+    action_suggestion:
+      protectionLevel.percentage < 80
+        ? {
+            text: protectionLevel.nextAction,
+            action: protectionLevel.actionType,
+            urgent: protectionLevel.percentage < 40,
+          }
+        : undefined,
   });
 
   // Family impact statement
-  const familyImpact = generateFamilyImpactStatement(documents.length, familyMembersCount, emergencyContactsCount);
+  const familyImpact = generateFamilyImpactStatement(
+    documents.length,
+    familyMembersCount,
+    emergencyContactsCount
+  );
   if (familyImpact) {
     insights.push(familyImpact);
   }
@@ -102,7 +140,12 @@ export function generateQuickInsights(input: QuickInsightInput): QuickInsight[] 
   insights.push(...docInsights);
 
   // Next action recommendations
-  const nextActionInsights = generateNextActionInsights(documents, willData, familyMembersCount, emergencyContactsCount);
+  const nextActionInsights = generateNextActionInsights(
+    documents,
+    familyMembersCount,
+    emergencyContactsCount,
+    willData
+  );
   insights.push(...nextActionInsights);
 
   return insights.sort((a, b) => {
@@ -114,7 +157,10 @@ export function generateQuickInsights(input: QuickInsightInput): QuickInsight[] 
 /**
  * Calculate time saved by having organized documents
  */
-function calculateTimeSaved(documents: Document[], willData?: WillData): number {
+function calculateTimeSaved(
+  documents: Document[],
+  willData?: WillData
+): number {
   let hours = 0;
 
   // Base time saved per document type
@@ -126,7 +172,7 @@ function calculateTimeSaved(documents: Document[], willData?: WillData): number 
     property: 3,
     personal: 1,
     will: 8,
-    power_of_attorney: 6
+    power_of_attorney: 6,
   };
 
   documents.forEach(doc => {
@@ -137,7 +183,11 @@ function calculateTimeSaved(documents: Document[], willData?: WillData): number 
   // Additional time saved for will completion
   if (willData) {
     if (willData.beneficiaries && willData.beneficiaries.length > 0) hours += 4;
-    if (willData.executors && willData.executors.length > 0) hours += 2;
+    if (
+      willData.executor_data &&
+      Object.keys(willData.executor_data).length > 0
+    )
+      hours += 2;
     if (willData.assets && Object.keys(willData.assets).length > 0) hours += 6;
   }
 
@@ -147,7 +197,11 @@ function calculateTimeSaved(documents: Document[], willData?: WillData): number 
 /**
  * Calculate overall family protection level
  */
-function calculateProtectionLevel(documents: Document[], willData?: WillData, familyMembers: number) {
+function calculateProtectionLevel(
+  documents: Document[],
+  familyMembers: number,
+  willData?: WillData
+) {
   let score = 0;
   const _maxScore = 100;
 
@@ -157,9 +211,14 @@ function calculateProtectionLevel(documents: Document[], willData?: WillData, fa
 
   // Will completeness (30 points)
   if (willData) {
-    if (willData.testatorInfo?.fullName) score += 5;
-    if (willData.beneficiaries && willData.beneficiaries.length > 0) score += 10;
-    if (willData.executors && willData.executors.length > 0) score += 8;
+    if (willData.testator_data?.fullName) score += 5;
+    if (willData.beneficiaries && willData.beneficiaries.length > 0)
+      score += 10;
+    if (
+      willData.executor_data &&
+      Object.keys(willData.executor_data).length > 0
+    )
+      score += 8;
     if (willData.assets && Object.keys(willData.assets).length > 0) score += 7;
   }
 
@@ -176,7 +235,12 @@ function calculateProtectionLevel(documents: Document[], willData?: WillData, fa
 
   let message: string;
   let nextAction: string;
-  let actionType: QuickInsight['action_suggestion']['action'];
+  let actionType:
+    | 'add_beneficiary'
+    | 'complete_will'
+    | 'request_review'
+    | 'set_emergency_contact'
+    | 'upload_document';
 
   if (percentage >= 80) {
     message = `${familyMembers ? `${familyMembers} family members` : 'Your family'} are excellently protected.`;
@@ -202,7 +266,11 @@ function calculateProtectionLevel(documents: Document[], willData?: WillData, fa
 /**
  * Generate family-focused impact statement
  */
-function generateFamilyImpactStatement(documentCount: number, familyMembers: number, emergencyContacts: number): QuickInsight | null {
+function generateFamilyImpactStatement(
+  documentCount: number,
+  familyMembers: number,
+  emergencyContacts: number
+): null | QuickInsight {
   if (documentCount === 0) return null;
 
   const protectedPeople = familyMembers + emergencyContacts;
@@ -211,32 +279,42 @@ function generateFamilyImpactStatement(documentCount: number, familyMembers: num
     id: 'family-impact',
     type: 'family_impact',
     title: `${protectedPeople > 0 ? protectedPeople : 'Your'} ${protectedPeople === 1 ? 'Person' : 'People'} Protected`,
-    description: 'Your organized documents create a safety net that extends beyond you.',
+    description:
+      'Your organized documents create a safety net that extends beyond you.',
     value: protectedPeople || 'Family',
     valueType: protectedPeople > 0 ? 'people' : 'text',
     impact: 'high',
-    emotional_message: protectedPeople > 0
-      ? `${protectedPeople} people now have secure access to your important information when they need it most.`
-      : 'Your thoughtful preparation creates security for everyone who depends on you.',
-    action_suggestion: protectedPeople === 0 ? {
-      text: 'Add family member access',
-      action: 'add_beneficiary',
-      urgent: false
-    } : undefined
+    emotional_message:
+      protectedPeople > 0
+        ? `${protectedPeople} people now have secure access to your important information when they need it most.`
+        : 'Your thoughtful preparation creates security for everyone who depends on you.',
+    action_suggestion:
+      protectedPeople === 0
+        ? {
+            text: 'Add family member access',
+            action: 'add_beneficiary',
+            urgent: false,
+          }
+        : undefined,
   };
 }
 
 /**
  * Generate insights based on specific document types
  */
-function generateDocumentSpecificInsights(documents: Document[]): QuickInsight[] {
+function generateDocumentSpecificInsights(
+  documents: Document[]
+): QuickInsight[] {
   const insights: QuickInsight[] = [];
 
-  const categories = documents.reduce((acc, doc) => {
-    const category = doc.category || 'personal';
-    acc[category] = (acc[category] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
+  const categories = documents.reduce(
+    (acc, doc) => {
+      const category = doc.category || 'personal';
+      acc[category] = (acc[category] || 0) + 1;
+      return acc;
+    },
+    {} as Record<string, number>
+  );
 
   // Insurance coverage insight
   if (categories.insurance && categories.insurance >= 2) {
@@ -244,11 +322,13 @@ function generateDocumentSpecificInsights(documents: Document[]): QuickInsight[]
       id: 'insurance-coverage',
       type: 'risk_mitigation',
       title: 'Strong Insurance Foundation',
-      description: 'Multiple insurance policies secured - your family is well protected against financial risks.',
+      description:
+        'Multiple insurance policies secured - your family is well protected against financial risks.',
       value: categories.insurance,
       valueType: 'count',
       impact: 'high',
-      emotional_message: 'Your family won\'t face financial hardship during difficult times.',
+      emotional_message:
+        "Your family won't face financial hardship during difficult times.",
     });
   }
 
@@ -258,11 +338,13 @@ function generateDocumentSpecificInsights(documents: Document[]): QuickInsight[]
       id: 'legal-preparedness',
       type: 'protection_level',
       title: 'Legal Documents Secured',
-      description: 'Important legal documents are organized and accessible when needed.',
+      description:
+        'Important legal documents are organized and accessible when needed.',
       value: categories.legal,
       valueType: 'count',
       impact: 'medium',
-      emotional_message: 'Legal processes will be smoother for your loved ones.',
+      emotional_message:
+        'Legal processes will be smoother for your loved ones.',
     });
   }
 
@@ -272,25 +354,36 @@ function generateDocumentSpecificInsights(documents: Document[]): QuickInsight[]
 /**
  * Generate next action recommendations
  */
-function generateNextActionInsights(documents: Document[], willData?: WillData, familyMembers: number, emergencyContacts: number): QuickInsight[] {
+function generateNextActionInsights(
+  documents: Document[],
+  familyMembers: number,
+  emergencyContacts: number,
+  willData?: WillData
+): QuickInsight[] {
   const insights: QuickInsight[] = [];
 
   // Missing will insight
-  if (!willData || !willData.beneficiaries || willData.beneficiaries.length === 0) {
+  if (
+    !willData ||
+    !willData.beneficiaries ||
+    willData.beneficiaries.length === 0
+  ) {
     insights.push({
       id: 'missing-will',
       type: 'next_action',
       title: 'Complete Your Will',
-      description: 'A will is the cornerstone of family protection - it ensures your wishes are honored.',
+      description:
+        'A will is the cornerstone of family protection - it ensures your wishes are honored.',
       value: '15 minutes',
       valueType: 'time',
       impact: 'high',
-      emotional_message: 'Give your family clarity and peace of mind about your wishes.',
+      emotional_message:
+        'Give your family clarity and peace of mind about your wishes.',
       action_suggestion: {
         text: 'Start will creation wizard',
         action: 'complete_will',
-        urgent: true
-      }
+        urgent: true,
+      },
     });
   }
 
@@ -300,7 +393,8 @@ function generateNextActionInsights(documents: Document[], willData?: WillData, 
       id: 'add-emergency-contact',
       type: 'next_action',
       title: 'Add Emergency Contact',
-      description: 'Emergency contacts can access your documents immediately when you can\'t.',
+      description:
+        "Emergency contacts can access your documents immediately when you can't.",
       value: '30 seconds',
       valueType: 'time',
       impact: 'medium',
@@ -308,8 +402,8 @@ function generateNextActionInsights(documents: Document[], willData?: WillData, 
       action_suggestion: {
         text: 'Add emergency contact',
         action: 'set_emergency_contact',
-        urgent: false
-      }
+        urgent: false,
+      },
     });
   }
 
@@ -322,16 +416,18 @@ function generateNextActionInsights(documents: Document[], willData?: WillData, 
       id: 'missing-insurance',
       type: 'next_action',
       title: 'Add Insurance Documents',
-      description: 'Insurance policies are crucial for your family\'s financial security.',
+      description:
+        "Insurance policies are crucial for your family's financial security.",
       value: 'High priority',
       valueType: 'text',
       impact: 'medium',
-      emotional_message: 'Protect your family from unexpected financial burdens.',
+      emotional_message:
+        'Protect your family from unexpected financial burdens.',
       action_suggestion: {
         text: 'Upload insurance documents',
         action: 'upload_document',
-        urgent: false
-      }
+        urgent: false,
+      },
     });
   }
 

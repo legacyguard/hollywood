@@ -10,103 +10,103 @@ import { cn } from '@/lib/utils';
 
 // Document analysis result interface matching our Supabase Edge Function
 export interface DocumentAnalysisResult {
-  extractedText: string;
   confidence: number;
+  expirationDate: {
+    confidence: number;
+    date: null | string;
+    originalText?: string;
+    reasoning: string;
+  };
+  extractedText: string;
+  keyData: Array<{
+    confidence: number;
+    label: string;
+    type: 'account' | 'amount' | 'contact' | 'other' | 'reference';
+    value: string;
+  }>;
+  // Bundle Intelligence (Phase 2)
+  potentialBundles: Array<{
+    bundleCategory: string;
+    bundleId: string;
+    bundleName: string;
+    documentCount: number;
+    matchReasons: string[];
+    matchScore: number;
+    primaryEntity: string;
+  }>;
+  // Document Versioning (Phase 3)
+  potentialVersions: Array<{
+    documentId: string;
+    fileName: string;
+    matchReasons: string[];
+    similarityScore: number;
+    versionDate: string;
+    versionNumber: number;
+  }>;
+  processingId: string;
+
+  processingTime: number;
+
   suggestedCategory: {
     category: string;
     confidence: number;
     icon: string;
     reasoning: string;
   };
-  suggestedTitle: {
-    title: string;
+
+  suggestedNewBundle: null | {
+    category: string;
     confidence: number;
+    entityType: null | string;
+    keywords: string[];
+    name: string;
+    primaryEntity: null | string;
     reasoning: string;
   };
-  expirationDate: {
-    date: string | null;
-    confidence: number;
-    originalText?: string;
-    reasoning: string;
-  };
-  keyData: Array<{
-    label: string;
-    value: string;
-    confidence: number;
-    type: 'amount' | 'account' | 'reference' | 'contact' | 'other';
-  }>;
+
   suggestedTags: string[];
 
-  // Bundle Intelligence (Phase 2)
-  potentialBundles: Array<{
-    bundleId: string;
-    bundleName: string;
-    bundleCategory: string;
-    primaryEntity: string;
-    documentCount: number;
-    matchScore: number;
-    matchReasons: string[];
-  }>;
-
-  suggestedNewBundle: {
-    name: string;
-    category: string;
-    primaryEntity: string | null;
-    entityType: string | null;
-    keywords: string[];
+  suggestedTitle: {
     confidence: number;
     reasoning: string;
-  } | null;
-
-  // Document Versioning (Phase 3)
-  potentialVersions: Array<{
-    documentId: string;
-    fileName: string;
-    versionNumber: number;
-    versionDate: string;
-    similarityScore: number;
-    matchReasons: string[];
-  }>;
-
-  versioningSuggestion: {
-    action: 'replace' | 'new_version' | 'separate';
+    title: string;
+  };
+  versioningSuggestion: null | {
+    action: 'new_version' | 'replace' | 'separate';
     confidence: number;
     reasoning: string;
     suggestedArchiveReason?: string;
-  } | null;
-
-  processingId: string;
-  processingTime: number;
+  };
 }
 
 interface DocumentConfirmationProps {
-  file: File;
   analysisResult: DocumentAnalysisResult;
+  file: File;
+  isProcessing?: boolean;
+  onCancel: () => void;
   onConfirm: (
     confirmedData: DocumentAnalysisResult & {
       bundleSelection?: {
         action: 'link' | 'new' | 'none';
-        bundleId: string | null;
-        newBundleName: string | null;
-        suggestedNewBundle: {
-          name: string;
+        bundleId: null | string;
+        newBundleName: null | string;
+        suggestedNewBundle: null | {
           category: string;
-          primaryEntity: string | null;
-          entityType: string | null;
-          keywords: string[];
           confidence: number;
+          entityType: null | string;
+          keywords: string[];
+          name: string;
+          primaryEntity: null | string;
           reasoning: string;
-        } | null;
+        };
       };
       versionSelection?: {
-        action: 'replace' | 'new_version' | 'separate' | 'none';
-        versionId: string | null;
+        action: 'new_version' | 'none' | 'replace' | 'separate';
         archiveReason: string;
+        versionId: null | string;
       };
     }
   ) => void;
-  onCancel: () => void;
-  isProcessing?: boolean;
 }
 
 export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
@@ -120,16 +120,16 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
   const [selectedBundleAction, setSelectedBundleAction] = useState<
     'link' | 'new' | 'none'
   >('none');
-  const [selectedBundleId, setSelectedBundleId] = useState<string | null>(null);
+  const [selectedBundleId, setSelectedBundleId] = useState<null | string>(null);
   const [newBundleName, setNewBundleName] = useState(
     analysisResult.suggestedNewBundle?.name || ''
   );
 
   // Phase 3: Document versioning state
   const [selectedVersionAction, setSelectedVersionAction] = useState<
-    'replace' | 'new_version' | 'separate' | 'none'
+    'new_version' | 'none' | 'replace' | 'separate'
   >(analysisResult.versioningSuggestion?.action || 'none');
-  const [selectedVersionId, setSelectedVersionId] = useState<string | null>(
+  const [selectedVersionId, setSelectedVersionId] = useState<null | string>(
     null
   );
   const [customArchiveReason, setCustomArchiveReason] = useState(
@@ -187,7 +187,7 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
         <Card className='p-6 bg-card border-card-border'>
           <div className='flex items-center gap-3 mb-4'>
             <div className='p-2 bg-primary/10 rounded-lg'>
-              <Icon name="documents" className='w-5 h-5 text-primary' />
+              <Icon name='documents' className='w-5 h-5 text-primary' />
             </div>
             <div className='flex-1'>
               <h3 className='font-semibold text-lg'>Document Preview</h3>
@@ -215,7 +215,7 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
           <div className='space-y-2'>
             <div className='flex items-center gap-2'>
               <span className='text-sm font-medium'>Extracted Text</span>
-              <Badge variant="outline" className='text-xs'>
+              <Badge variant='outline' className='text-xs'>
                 {(analysisResult?.confidence * 100).toFixed(0)}% confidence
               </Badge>
             </div>
@@ -232,7 +232,7 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
         <Card className='p-6 bg-card border-card-border'>
           <div className='flex items-center gap-3 mb-6'>
             <div className='p-2 bg-primary/10 rounded-lg'>
-              <Icon name="brain" className='w-5 h-5 text-primary' />
+              <Icon name='brain' className='w-5 h-5 text-primary' />
             </div>
             <div>
               <h3 className='font-semibold text-lg'>AI Analysis Results</h3>
@@ -322,12 +322,15 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
                     )}
                     className={cn(
                       'w-4 h-4',
-                      getConfidenceColor(editableData.expirationDate?.confidence)
+                      getConfidenceColor(
+                        editableData.expirationDate?.confidence
+                      )
                     )}
                   />
                 </div>
                 <div className='flex items-center gap-2 p-2 bg-status-warning/10 rounded-md'>
-                  <Icon name="calendar"
+                  <Icon
+                    name='calendar'
                     className='w-4 h-4 text-status-warning'
                   />
                   <span className='text-sm'>
@@ -356,7 +359,7 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
                         </span>
                         <span className='text-sm'>{item.value}</span>
                       </div>
-                      <Badge variant="outline" className='text-xs'>
+                      <Badge variant='outline' className='text-xs'>
                         {(item?.confidence * 100).toFixed(0)}%
                       </Badge>
                     </div>
@@ -371,7 +374,7 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
                 <h4 className='font-medium'>Suggested Tags</h4>
                 <div className='flex flex-wrap gap-2'>
                   {editableData.suggestedTags.map((tag, index) => (
-                    <Badge key={index} variant="secondary">
+                    <Badge key={index} variant='secondary'>
                       {tag}
                     </Badge>
                   ))}
@@ -384,7 +387,8 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
               editableData.versioningSuggestion) && (
               <div className='space-y-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800'>
                 <div className='flex items-center gap-2'>
-                  <Icon name="clock"
+                  <Icon
+                    name='clock'
                     className='w-5 h-5 text-yellow-600 dark:text-yellow-400'
                   />
                   <h4 className='font-medium text-yellow-800 dark:text-yellow-200'>
@@ -427,10 +431,10 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
                             {version.fileName}
                           </span>
                           <div className='flex items-center gap-2'>
-                            <Badge variant="outline" className='text-xs'>
+                            <Badge variant='outline' className='text-xs'>
                               v{version.versionNumber}
                             </Badge>
-                            <Badge variant="secondary" className='text-xs'>
+                            <Badge variant='secondary' className='text-xs'>
                               {(version.similarityScore * 100).toFixed(0)}%
                               similar
                             </Badge>
@@ -474,13 +478,14 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
                       />
                       <div className='flex-1'>
                         <div className='flex items-center gap-2'>
-                          <Icon name="refresh-cw"
+                          <Icon
+                            name='refresh-cw'
                             className='w-4 h-4 text-yellow-600'
                           />
                           <span className='font-medium'>
                             Replace older version
                           </span>
-                          <Badge variant="outline" className='text-xs'>
+                          <Badge variant='outline' className='text-xs'>
                             Recommended
                           </Badge>
                         </div>
@@ -518,9 +523,7 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
                       className='mt-0.5'
                     />
                     <div className='flex items-center gap-2'>
-                      <Icon name="add"
-                        className='w-4 h-4 text-blue-600'
-                      />
+                      <Icon name='add' className='w-4 h-4 text-blue-600' />
                       <span className='font-medium'>
                         Keep as separate document
                       </span>
@@ -535,7 +538,7 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
               editableData.suggestedNewBundle) && (
               <div className='space-y-4 p-4 bg-primary/5 rounded-lg border'>
                 <div className='flex items-center gap-2'>
-                  <Icon name="link" className='w-5 h-5 text-primary' />
+                  <Icon name='link' className='w-5 h-5 text-primary' />
                   <h4 className='font-medium text-primary'>
                     Intelligent Document Linking
                   </h4>
@@ -571,10 +574,10 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
                               <span className='font-medium'>
                                 {bundle.bundleName}
                               </span>
-                              <Badge variant="outline" className='text-xs'>
+                              <Badge variant='outline' className='text-xs'>
                                 {bundle.documentCount} documents
                               </Badge>
-                              <Badge variant="secondary" className='text-xs'>
+                              <Badge variant='secondary' className='text-xs'>
                                 {bundle.matchScore}% match
                               </Badge>
                             </div>
@@ -620,9 +623,9 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
                       />
                       <div className='flex-1 space-y-2'>
                         <div className='flex items-center gap-2'>
-                          <Icon name="add" className='w-4 h-4 text-primary' />
+                          <Icon name='add' className='w-4 h-4 text-primary' />
                           <span className='font-medium'>Create new bundle</span>
-                          <Badge variant="outline" className='text-xs'>
+                          <Badge variant='outline' className='text-xs'>
                             {(
                               editableData.suggestedNewBundle?.confidence * 100
                             ).toFixed(0)}
@@ -661,7 +664,7 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
                     }}
                   />
                   <div className='flex items-center gap-2'>
-                    <Icon name="x" className='w-4 h-4 text-muted-foreground' />
+                    <Icon name='x' className='w-4 h-4 text-muted-foreground' />
                     <span>Don't link to any bundle</span>
                   </div>
                 </label>
@@ -673,7 +676,7 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
           <div className='flex gap-3 mt-6 pt-6 border-t'>
             <Button
               onClick={onCancel}
-              variant="outline"
+              variant='outline'
               disabled={isProcessing}
               className='flex-1'
             >
@@ -706,12 +709,12 @@ export const DocumentConfirmation: React.FC<DocumentConfirmationProps> = ({
             >
               {isProcessing ? (
                 <>
-                  <Icon name="upload" className='w-4 h-4 animate-pulse' />
+                  <Icon name='upload' className='w-4 h-4 animate-pulse' />
                   Saving...
                 </>
               ) : (
                 <>
-                  <Icon name="check" className='w-4 h-4' />
+                  <Icon name='check' className='w-4 h-4' />
                   Confirm & Save
                 </>
               )}

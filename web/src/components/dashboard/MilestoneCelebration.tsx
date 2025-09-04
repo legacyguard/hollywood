@@ -4,8 +4,8 @@ import type { SerenityMilestone } from '@/lib/path-of-serenity';
 // Legacy component interface for backward compatibility
 // Now implemented using toast system - no longer renders UI
 interface MilestoneCelebrationProps {
-  milestone: SerenityMilestone | null;
   isOpen: boolean;
+  milestone: null | SerenityMilestone;
   onClose: () => void;
 }
 

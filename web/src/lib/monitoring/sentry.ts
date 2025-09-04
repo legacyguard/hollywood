@@ -14,12 +14,6 @@ export const initSentry = () => {
     integrations: [
       Sentry.browserTracingIntegration({
         // Set tracing origins to track performance of API calls
-        tracePropagationTargets: [
-          'localhost',
-          /^https:\/\/.*\.supabase\.co/,
-          /^https:\/\/.*\.clerk\.com/,
-          /^https:\/\/.*\.legacyguard\.(cz|eu|com)/,
-        ],
       }),
     ],
 
@@ -27,7 +21,7 @@ export const initSentry = () => {
     tracesSampleRate: import.meta.env.PROD ? 0.1 : 1.0,
 
     // Session tracking
-    autoSessionTracking: true,
+    // autoSessionTracking: true, // Not available in current Sentry version
 
     // Release tracking
     release: import.meta.env.VITE_APP_VERSION || 'unknown',
@@ -35,10 +29,14 @@ export const initSentry = () => {
     // Error filtering
     beforeSend(event) {
       // Filter out known non-critical errors
-      if (event.exception?.values?.[0]?.value?.includes('ResizeObserver loop')) {
+      if (
+        event.exception?.values?.[0]?.value?.includes('ResizeObserver loop')
+      ) {
         return null;
       }
-      if (event.exception?.values?.[0]?.value?.includes('Non-serializable values')) {
+      if (
+        event.exception?.values?.[0]?.value?.includes('Non-serializable values')
+      ) {
         return null;
       }
       if (event.exception?.values?.[0]?.value?.includes('ChunkLoadError')) {
@@ -59,7 +57,7 @@ export const initSentry = () => {
     debug: import.meta.env.DEV,
 
     // Enable user feedback dialog
-    showReportDialog: false,
+    // showReportDialog: false, // Not available in current Sentry version
   });
 };
 
@@ -67,7 +65,11 @@ export const initSentry = () => {
 export const SentryErrorBoundary = Sentry.withErrorBoundary;
 
 // Performance monitoring helpers
-export const addBreadcrumb = (message: string, category = 'user-action', level = 'info') => {
+export const addBreadcrumb = (
+  message: string,
+  category = 'user-action',
+  level = 'info'
+) => {
   Sentry.addBreadcrumb({
     message,
     category,
@@ -76,12 +78,19 @@ export const addBreadcrumb = (message: string, category = 'user-action', level =
   });
 };
 
-export const setUserContext = (user: { id?: string; email?: string; username?: string }) => {
+export const setUserContext = (user: {
+  email?: string;
+  id?: string;
+  username?: string;
+}) => {
   Sentry.setUser(user);
 };
 
-export const captureException = (error: Error, context?: Record<string, any>) => {
-  Sentry.withScope((scope) => {
+export const captureException = (
+  error: Error,
+  context?: Record<string, any>
+) => {
+  Sentry.withScope(scope => {
     if (context) {
       Object.entries(context).forEach(([key, value]) => {
         scope.setContext(key, value);
@@ -94,7 +103,10 @@ export const captureException = (error: Error, context?: Record<string, any>) =>
 // Alias for backward compatibility
 export const captureError = captureException;
 
-export const captureMessage = (message: string, level: 'info' | 'warning' | 'error' = 'info') => {
+export const captureMessage = (
+  message: string,
+  level: 'error' | 'info' | 'warning' = 'info'
+) => {
   Sentry.captureMessage(message, level);
 };
 

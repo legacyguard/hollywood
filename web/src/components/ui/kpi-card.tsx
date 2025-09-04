@@ -4,18 +4,18 @@ import { Badge } from '@/components/ui/badge';
 import { Icon, type IconName } from '@/components/ui/icon-library';
 import { cn } from '@/lib/utils';
 
-export type TrendType = 'up' | 'neutral' | 'down';
-export type ChangeType = 'positive' | 'neutral' | 'negative';
+export type TrendType = 'down' | 'neutral' | 'up';
+export type ChangeType = 'negative' | 'neutral' | 'positive';
 
 export interface KPICardProps {
-  title: string;
-  value: string;
   change?: string;
   changeType?: ChangeType;
-  trendType?: TrendType;
-  trendPosition?: 'top' | 'bottom';
   className?: string;
   showTrend?: boolean;
+  title: string;
+  trendPosition?: 'bottom' | 'top';
+  trendType?: TrendType;
+  value: string;
 }
 
 const getTrendIcon = (trendType: TrendType): IconName => {
@@ -61,7 +61,7 @@ export function KPICard({
 
       {showTrend && change && (
         <Badge
-          variant="secondary"
+          variant='secondary'
           className={cn(
             'absolute right-4 text-xs font-medium',
             getChangeColor(changeType),

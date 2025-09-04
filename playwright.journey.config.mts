@@ -15,8 +15,10 @@ if (process.env.NODE_ENV === 'test') {
 }
 
 // Map VITE_ prefixed variables to standard Clerk variables for testing
-process.env.CLERK_PUBLISHABLE_KEY = process.env.VITE_CLERK_PUBLISHABLE_KEY || process.env.CLERK_PUBLISHABLE_KEY;
-process.env.CLERK_SECRET_KEY = process.env.VITE_CLERK_SECRET_KEY || process.env.CLERK_SECRET_KEY;
+process.env.CLERK_PUBLISHABLE_KEY =
+  process.env.VITE_CLERK_PUBLISHABLE_KEY || process.env.CLERK_PUBLISHABLE_KEY;
+process.env.CLERK_SECRET_KEY =
+  process.env.VITE_CLERK_SECRET_KEY || process.env.CLERK_SECRET_KEY;
 
 /**
  * Playwright configuration specifically for the full user journey tests
@@ -35,7 +37,7 @@ export default defineConfig({
   /* Longer timeouts for complete journey */
   timeout: 180000, // 3 minutes per test
   expect: {
-    timeout: 15000 // 15 seconds for assertions
+    timeout: 15000, // 15 seconds for assertions
   },
 
   /* Reporter configuration */
@@ -43,7 +45,7 @@ export default defineConfig({
     ['html', { outputFolder: 'playwright-report/journey' }],
     ['json', { outputFile: 'test-results/journey-results.json' }],
     ['list'],
-    ['junit', { outputFile: 'test-results/journey-junit.xml' }]
+    ['junit', { outputFile: 'test-results/journey-junit.xml' }],
   ],
 
   /* Shared settings for all the projects below */
@@ -57,13 +59,13 @@ export default defineConfig({
     /* Capture video for all tests */
     video: {
       mode: 'on',
-      size: { width: 1280, height: 720 }
+      size: { width: 1280, height: 720 },
     },
 
     /* Screenshot on every action */
     screenshot: {
       mode: 'only-on-failure',
-      fullPage: true
+      fullPage: true,
     },
 
     /* Viewport size */
@@ -72,7 +74,7 @@ export default defineConfig({
     /* Additional headers for API mocking if needed */
     extraHTTPHeaders: {
       'X-E2E-Test': 'journey',
-      'X-Test-User': 'guardian-journey'
+      'X-Test-User': 'guardian-journey',
     },
 
     /* Action timeout */
@@ -119,5 +121,3 @@ export default defineConfig({
   /* Output folder for test artifacts */
   outputDir: './test-results/journey',
 });
-
-

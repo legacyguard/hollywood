@@ -2,15 +2,15 @@
  * React hooks for accessibility features
  */
 
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type React from 'react';
 import {
-  trapFocus,
   announceToScreenReader,
-  prefersReducedMotion,
-  prefersHighContrast,
-  KEYBOARD_KEYS,
   generateAriaId,
+  KEYBOARD_KEYS,
+  prefersHighContrast,
+  prefersReducedMotion,
+  trapFocus,
 } from '@/lib/accessibility/a11y-utils';
 
 /**
@@ -38,7 +38,7 @@ export const useFocusTrap = (isActive: boolean = true) => {
  */
 export const useAnnouncement = () => {
   const announce = useCallback(
-    (message: string, priority: 'polite' | 'assertive' = 'polite') => {
+    (message: string, priority: 'assertive' | 'polite' = 'polite') => {
       announceToScreenReader(message, priority);
     },
     []
@@ -53,9 +53,9 @@ export const useAnnouncement = () => {
 export const useKeyboardNavigation = (
   items: unknown[],
   options: {
-    orientation?: 'horizontal' | 'vertical' | 'both';
     loop?: boolean;
     onSelect?: (item: unknown, index: number) => void;
+    orientation?: 'both' | 'horizontal' | 'vertical';
   } = {}
 ) => {
   const { orientation = 'vertical', loop = true, onSelect } = options;
@@ -186,7 +186,10 @@ export const useAriaId = (prefix: string = 'aria') => {
 /**
  * Hook for roving tabindex pattern
  */
-export const useRovingTabIndex = (items: unknown[], activeIndex: number = 0) => {
+export const useRovingTabIndex = (
+  items: unknown[],
+  activeIndex: number = 0
+) => {
   const [currentIndex, setCurrentIndex] = useState(activeIndex);
 
   const getRovingProps = useCallback(
@@ -208,7 +211,7 @@ export const useRovingTabIndex = (items: unknown[], activeIndex: number = 0) => 
  * Hook for live region announcements
  */
 export const useLiveRegion = (
-  ariaLive: 'polite' | 'assertive' | 'off' = 'polite'
+  ariaLive: 'assertive' | 'off' | 'polite' = 'polite'
 ) => {
   const [message, setMessage] = useState('');
   const regionRef = useRef<HTMLDivElement>(null);

@@ -3,20 +3,20 @@
  * Responsive design helpers, touch optimizations, and mobile-specific performance enhancements
  */
 
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
-import { breakpoints, type Breakpoint } from './mobile-optimization-constants';
+import { type Breakpoint, breakpoints } from './mobile-optimization-constants';
 
 // Hook for responsive breakpoint detection
 export function useBreakpoint(): {
   current: Breakpoint | null;
-  isSmall: boolean;
-  isMedium: boolean;
-  isLarge: boolean;
-  isXLarge: boolean;
-  is2XLarge: boolean;
-  width: number;
   height: number;
+  is2XLarge: boolean;
+  isLarge: boolean;
+  isMedium: boolean;
+  isSmall: boolean;
+  isXLarge: boolean;
+  width: number;
 } {
   const [windowSize, setWindowSize] = useState({
     width: typeof window !== 'undefined' ? window.innerWidth : 1024,
@@ -50,9 +50,13 @@ export function useBreakpoint(): {
   return {
     current,
     isSmall: windowSize.width < breakpoints.md,
-    isMedium: windowSize.width >= breakpoints.md && windowSize.width < breakpoints.lg,
-    isLarge: windowSize.width >= breakpoints.lg && windowSize.width < breakpoints.xl,
-    isXLarge: windowSize.width >= breakpoints.xl && windowSize.width < breakpoints['2xl'],
+    isMedium:
+      windowSize.width >= breakpoints.md && windowSize.width < breakpoints.lg,
+    isLarge:
+      windowSize.width >= breakpoints.lg && windowSize.width < breakpoints.xl,
+    isXLarge:
+      windowSize.width >= breakpoints.xl &&
+      windowSize.width < breakpoints['2xl'],
     is2XLarge: windowSize.width >= breakpoints['2xl'],
     width: windowSize.width,
     height: windowSize.height,
@@ -62,16 +66,16 @@ export function useBreakpoint(): {
 // Touch gesture detection
 export function useTouchGestures(elementRef: React.RefObject<HTMLElement>) {
   const [gesture, setGesture] = useState<{
-    type: 'tap' | 'swipe' | 'pinch' | null;
-    direction?: 'left' | 'right' | 'up' | 'down';
+    direction?: 'down' | 'left' | 'right' | 'up';
     distance?: number;
+    type: 'pinch' | 'swipe' | 'tap' | null;
   }>({ type: null });
 
   useEffect(() => {
     const element = elementRef.current;
     if (!element) return;
 
-    let startTouch: Touch | null = null;
+    let startTouch: null | Touch = null;
     let startTime = 0;
 
     const handleTouchStart = (e: TouchEvent) => {
@@ -94,7 +98,7 @@ export function useTouchGestures(elementRef: React.RefObject<HTMLElement>) {
       if (duration < 300 && distance < 10) {
         setGesture({ type: 'tap' });
       } else if (distance > 50) {
-        let direction: 'left' | 'right' | 'up' | 'down';
+        let direction: 'down' | 'left' | 'right' | 'up';
         if (Math.abs(deltaX) > Math.abs(deltaY)) {
           direction = deltaX > 0 ? 'right' : 'left';
         } else {
@@ -122,7 +126,7 @@ export function useTouchGestures(elementRef: React.RefObject<HTMLElement>) {
 // Mobile-optimized component props generator
 export const mobileOptimized = {
   // Button optimization for touch
-  button: (size: 'sm' | 'md' | 'lg' = 'md') => ({
+  button: (size: 'lg' | 'md' | 'sm' = 'md') => ({
     className: cn(
       'touch-manipulation select-none',
       size === 'sm' && 'min-h-[36px] min-w-[36px]',
@@ -133,7 +137,7 @@ export const mobileOptimized = {
       WebkitTapHighlightColor: 'transparent',
       WebkitTouchCallout: 'none' as any,
       WebkitUserSelect: 'none' as any,
-    }
+    },
   }),
 
   // Input optimization for mobile
@@ -148,11 +152,14 @@ export const mobileOptimized = {
   // Card optimization for mobile interactions
   card: (interactive: boolean = false) => ({
     className: cn(
-      interactive && 'touch-manipulation cursor-pointer active:scale-[0.98] transition-transform'
+      interactive &&
+        'touch-manipulation cursor-pointer active:scale-[0.98] transition-transform'
     ),
-    style: interactive ? {
-      WebkitTapHighlightColor: 'rgba(0,0,0,0.1)',
-    } : undefined,
+    style: interactive
+      ? {
+          WebkitTapHighlightColor: 'rgba(0,0,0,0.1)',
+        }
+      : undefined,
   }),
 
   // List optimization for mobile scrolling
@@ -160,7 +167,7 @@ export const mobileOptimized = {
     className: 'overscroll-y-contain',
     style: {
       WebkitOverflowScrolling: 'touch',
-    }
+    },
   }),
 };
 
@@ -192,7 +199,8 @@ export function useViewport() {
   const [viewport, setViewport] = useState({
     width: typeof window !== 'undefined' ? window.innerWidth : 1024,
     height: typeof window !== 'undefined' ? window.innerHeight : 768,
-    orientation: typeof screen !== 'undefined' ? (screen.orientation?.angle || 0) : 0,
+    orientation:
+      typeof screen !== 'undefined' ? screen.orientation?.angle || 0 : 0,
   });
 
   useEffect(() => {
@@ -232,10 +240,11 @@ export function useMobilePerformance() {
   useEffect(() => {
     // Performance monitoring
     if ('performance' in window) {
-      const observer = new PerformanceObserver((list) => {
+      const observer = new PerformanceObserver(list => {
         const entries = list.getEntries();
-        const renderTime = entries.reduce((max, entry) =>
-          Math.max(max, entry.duration), 0
+        const renderTime = entries.reduce(
+          (max, entry) => Math.max(max, entry.duration),
+          0
         );
         setPerformance(prev => ({ ...prev, renderTime }));
       });
@@ -247,21 +256,27 @@ export function useMobilePerformance() {
 
     // Memory usage monitoring (if available)
     if ('memory' in performance) {
-      const memoryInfo = (performance as { memory?: { usedJSHeapSize: number; jsHeapSizeLimit: number } }).memory;
+      const memoryInfo = (
+        performance as {
+          memory?: { jsHeapSizeLimit: number; usedJSHeapSize: number };
+        }
+      ).memory;
       if (memoryInfo) {
         setPerformance(prev => ({
           ...prev,
-          memoryUsage: memoryInfo.usedJSHeapSize / memoryInfo.jsHeapSizeLimit
+          memoryUsage: memoryInfo.usedJSHeapSize / memoryInfo.jsHeapSizeLimit,
         }));
       }
     }
 
     // Connection type detection
     if ('connection' in navigator) {
-      const connection = (navigator as { connection?: { effectiveType?: string } }).connection;
+      const connection = (
+        navigator as { connection?: { effectiveType?: string } }
+      ).connection;
       setPerformance(prev => ({
         ...prev,
-        connectionType: connection.effectiveType || 'unknown'
+        connectionType: connection?.effectiveType || 'unknown',
       }));
     }
   }, []);
@@ -274,8 +289,11 @@ export function useAdaptiveLoading() {
   const performance = useMobilePerformance();
   const { isSmall } = useBreakpoint();
 
-  const shouldReduceAnimations = performance.renderTime > 100 || performance.memoryUsage > 0.8;
-  const shouldLazyLoad = performance.connectionType === '2g' || performance.connectionType === 'slow-2g';
+  const shouldReduceAnimations =
+    performance.renderTime > 100 || performance.memoryUsage > 0.8;
+  const shouldLazyLoad =
+    performance.connectionType === '2g' ||
+    performance.connectionType === 'slow-2g';
   const shouldReduceImages = isSmall && shouldLazyLoad;
 
   return {
@@ -294,7 +312,7 @@ export const mobileAnalytics = {
     console.log(`Mobile Touch: ${element} - ${gesture}`);
   },
 
-  trackScreenOrientation: (orientation: 'portrait' | 'landscape') => {
+  trackScreenOrientation: (orientation: 'landscape' | 'portrait') => {
     console.log(`Screen Orientation: ${orientation}`);
   },
 
@@ -309,14 +327,16 @@ export function MobileOptimizedComponent<T extends Record<string, any>>({
   DesktopComponent,
   ...props
 }: {
-  MobileComponent: React.ComponentType<T>;
   DesktopComponent: React.ComponentType<T>;
+  MobileComponent: React.ComponentType<T>;
 } & T) {
   const { isSmall } = useBreakpoint();
 
-  return isSmall ?
-    <MobileComponent {...(props as unknown as T)} /> :
-    <DesktopComponent {...(props as unknown as T)} />;
+  return isSmall ? (
+    <MobileComponent {...(props as unknown as T)} />
+  ) : (
+    <DesktopComponent {...(props as unknown as T)} />
+  );
 }
 
 // Backward compatibility wrapper
@@ -337,7 +357,13 @@ export function renderMobileOptimized<T extends Record<string, any>>(
 ) {
   console.warn(
     'renderMobileOptimized is deprecated. Use MobileOptimizedComponent instead. ' +
-    'See the function documentation for migration details.'
+      'See the function documentation for migration details.'
   );
-  return <MobileOptimizedComponent MobileComponent={MobileComponent} DesktopComponent={DesktopComponent} {...props} />;
+  return (
+    <MobileOptimizedComponent
+      MobileComponent={MobileComponent}
+      DesktopComponent={DesktopComponent}
+      {...props}
+    />
+  );
 }

@@ -1,30 +1,38 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
-  Container,
-  Stack,
-  Row,
-  Card,
+  Box,
   Button,
-  Input,
-  InputGroup,
+  Card,
+  Container,
+  Divider,
   H1,
   H2,
+  Input,
+  InputGroup,
   Paragraph,
-  Divider,
-  Box,
+  Row,
   ScrollContainer,
+  Stack,
 } from '@legacyguard/ui';
 import { useUser } from '@clerk/clerk-expo';
 import { useNavigation } from '@react-navigation/native';
-import { RefreshControl, Alert, TouchableOpacity } from 'react-native';
+import { Alert, RefreshControl, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
-import { DocumentService, type Document } from '@hollywood/shared/src/services/documentService';
+import {
+  type Document,
+  DocumentService,
+} from '@hollywood/shared/src/services/documentService';
 
 // Document Categories (keys for translation)
 const CATEGORY_KEYS = [
   { id: 'all', key: 'all', icon: 'folder', color: '#6b7280' },
-  { id: 'insurance', key: 'insurance', icon: 'shield-checkmark', color: '#3b82f6' },
+  {
+    id: 'insurance',
+    key: 'insurance',
+    icon: 'shield-checkmark',
+    color: '#3b82f6',
+  },
   { id: 'financial', key: 'financial', icon: 'wallet', color: '#16a34a' },
   { id: 'personal', key: 'personal', icon: 'person', color: '#f59e0b' },
   { id: 'medical', key: 'medical', icon: 'medical', color: '#dc2626' },
@@ -33,58 +41,68 @@ const CATEGORY_KEYS = [
 
 // Document Card Component
 interface DocumentCardProps {
+  categories: {
+    color: string;
+    icon: string;
+    id: string;
+    key: string;
+    label?: string;
+  }[];
   document: Document;
-  onPress: () => void;
   onDelete: () => void;
-  categories: { id: string; key: string; icon: string; color: string; label?: string }[];
+  onPress: () => void;
 }
 
-const DocumentCard = ({ document, onPress, onDelete, categories }: DocumentCardProps) => {
-  const category = categories.find(c => c.id === document.category) || categories[0];
+const DocumentCard = ({
+  document,
+  onPress,
+  onDelete,
+  categories,
+}: DocumentCardProps) => {
+  const category =
+    categories.find(c => c.id === document.category) || categories[0];
 
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.9}>
-      <Card
-        variant="default"
-        padding="medium"
-        fullWidth
-      >
-      <Row space="medium" align="center">
-        <Box
-          padding="small"
-          style={{
-            backgroundColor: `${category.color}20`,
-            borderRadius: 12,
-          }}
-        >
-          <Ionicons
-            name={category.icon as keyof typeof Ionicons.glyphMap}
-            size={24}
-            color={category.color}
-          />
-        </Box>
+      <Card variant='default' padding='medium' fullWidth>
+        <Row space='medium' align='center'>
+          <Box
+            padding='small'
+            style={{
+              backgroundColor: `${category.color}20`,
+              borderRadius: 12,
+            }}
+          >
+            <Ionicons
+              name={category.icon as keyof typeof Ionicons.glyphMap}
+              size={24}
+              color={category.color}
+            />
+          </Box>
 
-        <Stack space="xs" style={{ flex: 1 }}>
-          <Paragraph weight="semibold">{document.name}</Paragraph>
-          <Row space="small" align="center">
-            <Paragraph size="small" color="muted">
-              {category.label ?? ''}
-            </Paragraph>
-            {document.fileSize && (
-              <>
-                <Paragraph size="small" color="muted">•</Paragraph>
-                <Paragraph size="small" color="muted">
-                  {formatFileSize(document.fileSize)}
-                </Paragraph>
-              </>
-            )}
-          </Row>
-        </Stack>
+          <Stack space='xs' style={{ flex: 1 }}>
+            <Paragraph weight='semibold'>{document.name}</Paragraph>
+            <Row space='small' align='center'>
+              <Paragraph size='small' color='muted'>
+                {category.label ?? ''}
+              </Paragraph>
+              {document.fileSize && (
+                <>
+                  <Paragraph size='small' color='muted'>
+                    •
+                  </Paragraph>
+                  <Paragraph size='small' color='muted'>
+                    {formatFileSize(document.fileSize)}
+                  </Paragraph>
+                </>
+              )}
+            </Row>
+          </Stack>
 
-        <TouchableOpacity onPress={onDelete}>
-          <Ionicons name="trash-outline" size={20} color="#dc2626" />
-        </TouchableOpacity>
-      </Row>
+          <TouchableOpacity onPress={onDelete}>
+            <Ionicons name='trash-outline' size={20} color='#dc2626' />
+          </TouchableOpacity>
+        </Row>
       </Card>
     </TouchableOpacity>
   );
@@ -92,38 +110,48 @@ const DocumentCard = ({ document, onPress, onDelete, categories }: DocumentCardP
 
 // Category Filter Component
 interface CategoryFilterProps {
-  selected: string;
+  categories: {
+    color: string;
+    icon: string;
+    id: string;
+    key: string;
+    label?: string;
+  }[];
   onSelect: (category: string) => void;
-  categories: { id: string; key: string; icon: string; color: string; label?: string }[];
+  selected: string;
 }
 
-const CategoryFilter = ({ selected, onSelect, categories }: CategoryFilterProps) => {
+const CategoryFilter = ({
+  selected,
+  onSelect,
+  categories,
+}: CategoryFilterProps) => {
   return (
     <ScrollContainer
       horizontal
       showsScrollIndicator={false}
-      padding="none"
+      padding='none'
       style={{ maxHeight: 100 }}
     >
-      <Row space="small">
-        {categories.map((category) => (
+      <Row space='small'>
+        {categories.map(category => (
           <TouchableOpacity
             key={category.id}
             onPress={() => onSelect(category.id)}
           >
             <Card
               variant={selected === category.id ? 'filled' : 'default'}
-              padding="small"
+              padding='small'
               style={{ minWidth: 80 }}
             >
-              <Stack space="xs" align="center">
+              <Stack space='xs' align='center'>
                 <Ionicons
                   name={category.icon as keyof typeof Ionicons.glyphMap}
                   size={24}
                   color={selected === category.id ? '#ffffff' : category.color}
                 />
                 <Paragraph
-                  size="small"
+                  size='small'
                   style={{
                     color: selected === category.id ? '#ffffff' : '#6b7280',
                   }}
@@ -145,7 +173,7 @@ const formatFileSize = (bytes: number): string => {
   const k = 1024;
   const sizes = ['Bytes', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+  return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
 };
 
 export function VaultScreenV2() {
@@ -158,7 +186,7 @@ export function VaultScreenV2() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
-  const CATEGORIES = CATEGORY_KEYS.map((c) => ({
+  const CATEGORIES = CATEGORY_KEYS.map(c => ({
     ...c,
     label: t ? t(`vault.categories.${c.key}`) : c.key,
   }));
@@ -189,9 +217,10 @@ export function VaultScreenV2() {
 
     // Filter by search query
     if (searchQuery) {
-      filtered = filtered.filter(doc =>
-        doc.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        doc.notes?.toLowerCase().includes(searchQuery.toLowerCase())
+      filtered = filtered.filter(
+        doc =>
+          doc.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          doc.notes?.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
@@ -245,18 +274,18 @@ export function VaultScreenV2() {
 
   return (
     <ScrollContainer
-      padding="none"
+      padding='none'
       showsScrollIndicator={false}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
-      <Container padding="medium">
-        <Stack space="large">
+      <Container padding='medium'>
+        <Stack space='large'>
           {/* Header */}
-          <Stack space="small">
+          <Stack space='small'>
             <H1>Document Vault</H1>
-            <Paragraph color="muted">
+            <Paragraph color='muted'>
               {documents.length} documents secured
             </Paragraph>
           </Stack>
@@ -264,10 +293,10 @@ export function VaultScreenV2() {
           {/* Search Bar */}
           <InputGroup>
             <Input
-              placeholder="Search documents..."
+              placeholder='Search documents...'
               value={searchQuery}
               onChangeText={setSearchQuery}
-              variant="default"
+              variant='default'
             />
           </InputGroup>
 
@@ -282,27 +311,31 @@ export function VaultScreenV2() {
 
           {/* Documents List */}
           {loading ? (
-            <Stack space="medium" align="center">
-              <Paragraph color="muted">Loading documents...</Paragraph>
+            <Stack space='medium' align='center'>
+              <Paragraph color='muted'>Loading documents...</Paragraph>
             </Stack>
           ) : filteredDocuments.length === 0 ? (
-            <Card variant="default" padding="xlarge">
-              <Stack space="medium" align="center">
-                <Ionicons name="folder-open-outline" size={48} color="#9ca3af" />
+            <Card variant='default' padding='xlarge'>
+              <Stack space='medium' align='center'>
+                <Ionicons
+                  name='folder-open-outline'
+                  size={48}
+                  color='#9ca3af'
+                />
                 <H2>No documents found</H2>
-                <Paragraph color="muted" style={{ textAlign: 'center' }}>
+                <Paragraph color='muted' style={{ textAlign: 'center' }}>
                   {searchQuery || selectedCategory !== 'all'
                     ? 'Try adjusting your filters'
                     : 'Start by adding your first document'}
                 </Paragraph>
-                <Button variant="primary" onPress={handleAddDocument}>
+                <Button variant='primary' onPress={handleAddDocument}>
                   Add Document
                 </Button>
               </Stack>
             </Card>
           ) : (
-            <Stack space="small">
-              {filteredDocuments.map((document) => (
+            <Stack space='small'>
+              {filteredDocuments.map(document => (
                 <DocumentCard
                   key={document.id}
                   document={document}
@@ -315,11 +348,11 @@ export function VaultScreenV2() {
           )}
 
           {/* Storage Info */}
-          <Card variant="filled" padding="medium">
-            <Row justify="between" align="center">
-              <Stack space="xs">
-                <Paragraph weight="semibold">Storage Used</Paragraph>
-                <Paragraph size="small" color="muted">
+          <Card variant='filled' padding='medium'>
+            <Row justify='between' align='center'>
+              <Stack space='xs'>
+                <Paragraph weight='semibold'>Storage Used</Paragraph>
+                <Paragraph size='small' color='muted'>
                   2.4 GB of 5 GB
                 </Paragraph>
               </Stack>
@@ -357,8 +390,8 @@ export function VaultScreenV2() {
         }}
       >
         <Button
-          variant="primary"
-          size="large"
+          variant='primary'
+          size='large'
           rounded
           onPress={handleAddDocument}
           style={{
@@ -371,7 +404,7 @@ export function VaultScreenV2() {
             elevation: 5,
           }}
         >
-          <Ionicons name="add" size={24} color="white" />
+          <Ionicons name='add' size={24} color='white' />
         </Button>
       </Box>
     </ScrollContainer>

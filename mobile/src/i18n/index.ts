@@ -49,4 +49,5 @@ initializeI18n();
 });
 
 export default i18n;
-export const t = (key: string, options?: Record<string, unknown>) => i18n.t(key, options as any);
+export const t = (key: string, options?: Record<string, unknown>) =>
+  i18n.t(key, options as any);
