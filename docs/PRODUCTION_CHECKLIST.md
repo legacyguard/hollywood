@@ -3,6 +3,7 @@
 ## 🚨 CRITICAL - Must Fix Before Production
 
 ### 1. Remove All Console Logs
+
 ```bash
 # Find all console statements
 grep -r "console\." src/ --include="*.ts" --include="*.tsx" | wc -l
@@ -12,6 +13,7 @@ find src -type f \( -name "*.ts" -o -name "*.tsx" \) -exec sed -i '' '/console\.
 ```
 
 ### 2. Fix TypeScript Any Types
+
 ```bash
 # Find all 'any' types
 grep -r ":\s*any" src/ --include="*.ts" --include="*.tsx"
@@ -23,6 +25,7 @@ grep -r ":\s*any" src/ --include="*.ts" --include="*.tsx"
 ```
 
 ### 3. Environment Variables
+
 - [ ] Copy `.env.example` to `.env.local`
 - [ ] Fill in all production values:
   - [ ] VITE_CLERK_PUBLISHABLE_KEY
@@ -35,35 +38,45 @@ grep -r ":\s*any" src/ --include="*.ts" --include="*.tsx"
 ## 🟡 IMPORTANT - Should Complete
 
 ### 4. Testing
+
 - [ ] Run new Sofia tests:
+
 ```bash
 npm test src/lib/__tests__/sofia-memory.test.ts
 npm test src/lib/__tests__/sofia-proactive.test.ts
 ```
+
 - [ ] Run all tests: `npm test`
 - [ ] Check coverage: `npm run test:coverage`
 
 ### 5. Performance Optimization
+
 - [ ] Enable code splitting for large components
 - [ ] Add lazy loading for routes
 - [ ] Optimize bundle size:
+
 ```bash
 npm run build
 npm run analyze  # Check bundle sizes
 ```
 
 ### 6. Security Audit
+
 - [ ] Run security audit:
+
 ```bash
 npm audit
 npm audit fix
 ```
+
 - [ ] Check for exposed secrets:
+
 ```bash
 git secrets --scan
 ```
 
 ### 7. Error Monitoring Setup
+
 - [ ] Configure Sentry in production
 - [ ] Add Error Boundaries to main components
 - [ ] Test error reporting
@@ -71,6 +84,7 @@ git secrets --scan
 ## 🟢 NICE TO HAVE - Can Do After Launch
 
 ### 8. Documentation
+
 - [ ] Update README with:
   - Sofia AI features
   - Environment setup
@@ -78,19 +92,22 @@ git secrets --scan
 - [ ] Add JSDoc comments to new services
 
 ### 9. Update Dependencies
+
 ```bash
 npm outdated  # Check outdated packages
 npm update    # Update minor versions
 ```
 
 ### 10. Monitoring & Analytics
+
 - [ ] Setup performance monitoring
 - [ ] Configure user analytics
 - [ ] Setup uptime monitoring
 
 ## 📦 Final Build & Deploy
 
-### Pre-deployment:
+### Pre-deployment
+
 ```bash
 # 1. Clean install
 rm -rf node_modules package-lock.json
@@ -109,7 +126,8 @@ npm run build
 npm run preview
 ```
 
-### Deployment:
+### Deployment
+
 ```bash
 # Deploy to production (adjust for your platform)
 npm run deploy:production

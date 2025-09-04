@@ -324,7 +324,6 @@ export const NativeSelect = React.forwardRef<HTMLSelectElement, SelectProps>(
       options,
       placeholder,
       size = 'medium',
-      variant = 'primary',
       disabled = false,
       error = false,
       label,

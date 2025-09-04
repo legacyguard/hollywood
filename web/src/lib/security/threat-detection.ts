@@ -57,7 +57,7 @@ export class ThreatDetectionSystem {
     this.suspiciousPatterns = [
       // SQL Injection patterns
       /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|EXECUTE|UNION|FROM|WHERE)\b.*\b(FROM|WHERE|AND|OR)\b)/gi,
-      /('|"|;|--|\||\\x00|\\n|\\r|\\t)/g,
+      /('|"|;|--|\||\u0000|\n|\r|\t)/g,
       /(\bOR\b\s*\d+\s*=\s*\d+)/gi,
       /(\bOR\b\s*'[^']*'\s*=\s*'[^']*')/gi,
 

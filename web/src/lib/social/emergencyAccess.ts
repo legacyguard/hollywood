@@ -557,8 +557,8 @@ export class EmergencyAccessService {
 
       if (error) throw error;
 
-      emergencies?.forEach(emergency => {
-        this.activeEmergencies.set((emergency as any).user_id, emergency);
+      emergencies?.forEach((emergency: any) => {
+        this.activeEmergencies.set(emergency.user_id, emergency);
       });
     } catch (error) {
       console.error('Failed to load active emergencies:', error);
@@ -831,9 +831,9 @@ export class EmergencyAccessService {
     emergency.metadata.contact_attempts.push(attempt);
 
     // Update emergency record
-    await supabase
+    await (supabase as any)
       .from('emergency_access')
-      .update({ metadata: emergency.metadata })
+      .update({ metadata: emergency.metadata as any })
       .eq('id', emergency.id);
   }
 
@@ -864,13 +864,13 @@ export class EmergencyAccessService {
       case 'email_code':
         return (
           data.code &&
-          data.code === verification.verification_data.expected_code
-        );
+          data.code === (verification.verification_data as any).expected_code
+        ) as boolean;
       case 'sms_code':
         return (
           data.code &&
-          data.code === verification.verification_data.expected_code
-        );
+          data.code === (verification.verification_data as any).expected_code
+        ) as boolean;
       case 'identity_document':
         return this.verifyIdentityDocument(data);
       case 'multiple_contacts':
@@ -885,7 +885,7 @@ export class EmergencyAccessService {
 
   private verifyIdentityDocument(data: Record<string, unknown>): boolean {
     // Implement identity document verification logic
-    return data.documentType && data.documentNumber && data.documentImage;
+    return (data.documentType && data.documentNumber && data.documentImage) as boolean;
   }
 
   private async verifyMultipleContacts(
@@ -894,12 +894,12 @@ export class EmergencyAccessService {
   ): Promise<boolean> {
     // Check if required number of contacts have verified
     const requiredVerifications = 2;
-    const verifications = data.verifications || [];
+    const verifications = (data.verifications as any[]) || [];
     return verifications.length >= requiredVerifications;
   }
 
   private async activateEmergencyAccess(emergencyId: string): Promise<void> {
-    const { data: emergency, error } = await supabase
+    const { data: emergency, error } = await (supabase as any)
       .from('emergency_access')
       .update({
         status: 'active',
@@ -913,10 +913,10 @@ export class EmergencyAccessService {
     if (error) throw error;
 
     // Update cache
-    this.activeEmergencies.set(emergency.user_id, emergency);
+    this.activeEmergencies.set((emergency as any).user_id, emergency);
 
     // Notify listeners
-    this.notifyEmergencyListeners(emergency);
+    this.notifyEmergencyListeners(emergency as any);
 
     console.log('Emergency access activated:', emergencyId);
   }
@@ -992,20 +992,20 @@ export class EmergencyAccessService {
   async testEmergencyProtocol(protocolId: string): Promise<boolean> {
     try {
       // Update last tested timestamp
-      await supabase
+      await (supabase as any)
         .from('emergency_protocols')
-        .update({ last_tested: new Date().toISOString() })
+        .update({ last_tested: new Date().toISOString() } as any)
         .eq('id', protocolId);
 
       // Send test notifications to emergency contacts
-      const protocol = await supabase
+      const protocol = await (supabase as any)
         .from('emergency_protocols')
         .select('*')
         .eq('id', protocolId)
         .single();
 
       if (protocol.data) {
-        const contacts = await this.getEmergencyContacts(protocol.data.user_id);
+        const contacts = await this.getEmergencyContacts((protocol.data as any).user_id);
 
         for (const _contact of contacts) {
           await pushNotificationService.sendNotification('system_update', {

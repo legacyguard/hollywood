@@ -19,6 +19,24 @@ export interface ApiVersion {
 }
 
 /**
+ * HTTP Client interface for API requests
+ */
+export interface HttpClient {
+  delete(endpoint: string, options?: RequestOptions): Promise<unknown>;
+  get(endpoint: string, options?: RequestOptions): Promise<unknown>;
+  post(endpoint: string, data?: unknown, options?: RequestOptions): Promise<unknown>;
+  put(endpoint: string, data?: unknown, options?: RequestOptions): Promise<unknown>;
+}
+
+/**
+ * Request options interface
+ */
+export interface RequestOptions {
+  [key: string]: unknown;
+  headers?: Record<string, string>;
+}
+
+/**
  * API Version Configuration
  * Defines all supported API versions with their semantic version numbers
  */
@@ -447,7 +465,7 @@ export class VersionedResponseTransformer {
    */
   private static transformV2ToV1<T>(data: T): T {
     // Example transformations
-    const transformed = { ...data } as any;
+    const transformed = { ...data } as Record<string, unknown>;
 
     // Rename fields that changed between versions
     if ('userId' in transformed && !('user_id' in transformed)) {
@@ -482,9 +500,9 @@ export class VersionedResponseTransformer {
  * @returns Versioned client with automatic version handling
  */
 export function createVersionedClient(
-  baseClient: any,
+  baseClient: HttpClient,
   version: ApiVersion = API_VERSIONS.current
-): any {
+): HttpClient {
   const versionClient = new VersionedApiClient(version);
   const deprecationManager = new DeprecationManager();
 
@@ -503,7 +521,7 @@ export function createVersionedClient(
     /**
      * GET request with version headers and deprecation checking
      */
-    async get(endpoint: string, options?: any) {
+    async get(endpoint: string, options?: RequestOptions) {
       // Check for deprecations
       deprecationManager.warn(endpoint);
 
@@ -527,7 +545,7 @@ export function createVersionedClient(
     /**
      * POST request with version headers and deprecation checking
      */
-    async post(endpoint: string, data?: any, options?: any) {
+    async post(endpoint: string, data?: unknown, options?: RequestOptions) {
       deprecationManager.warn(endpoint);
 
       const headers = {
@@ -541,7 +559,7 @@ export function createVersionedClient(
     /**
      * PUT request with version headers and deprecation checking
      */
-    async put(endpoint: string, data?: any, options?: any) {
+    async put(endpoint: string, data?: unknown, options?: RequestOptions) {
       deprecationManager.warn(endpoint);
 
       const headers = {
@@ -555,7 +573,7 @@ export function createVersionedClient(
     /**
      * DELETE request with version headers and deprecation checking
      */
-    async delete(endpoint: string, options?: any) {
+    async delete(endpoint: string, options?: RequestOptions) {
       deprecationManager.warn(endpoint);
 
       const headers = {

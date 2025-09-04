@@ -123,13 +123,11 @@ export const ProgressBar = React.memo(({
 
       <ProgressTrack height={height}>
         <ProgressFill
-          {...({
-            variant,
-            animated,
-            width: `${percentage}%`,
-            animation: animated ? 'medium' : undefined,
-            enterStyle: animated ? { width: 0 } : undefined,
-          } as any)}
+          variant={variant}
+          animated={animated}
+          width={`${percentage}%`}
+          animation={animated ? 'medium' : undefined}
+          enterStyle={animated ? { width: 0 } : undefined}
         />
       </ProgressTrack>
     </ProgressBarContainer>
@@ -305,12 +303,10 @@ export const SegmentedProgress = React.memo(({
           return (
             <ProgressSegment
               key={index}
-              {...({
-                isCompleted,
-                isActive,
-                segmentPosition,
-                animation: 'medium',
-              } as any)}
+              isCompleted={isCompleted}
+              isActive={isActive}
+              segmentPosition={segmentPosition}
+              animation="medium"
             />
           );
         })}

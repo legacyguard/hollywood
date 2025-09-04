@@ -8,7 +8,17 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { IconMap } from '@/components/ui/icon-library';
+import { Button } from '@/components/ui/button';
+import { Icon, IconMap } from '@/components/ui/icon-library';
+import { useSupabaseWithClerk } from '@/integrations/supabase/client';
+import {
+  findSofiaActions,
+  generateDynamicSuggestions,
+  hasDocumentBasedSuggestions,
+  type SofiaAction,
+} from '@/lib/sofia-search-dictionary';
+import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 
 // Icon mapping function to convert sofia dictionary icons to valid IconMap keys
 const mapSofiaIconToValidIcon = (sofiaIcon: string): keyof typeof IconMap => {
@@ -22,26 +32,15 @@ const mapSofiaIconToValidIcon = (sofiaIcon: string): keyof typeof IconMap => {
     'building': 'home',
     'file': 'file',
   };
-  
+
   // Check if the icon exists in IconMap directly first
   if (sofiaIcon in IconMap) {
     return sofiaIcon as keyof typeof IconMap;
   }
-  
+
   // Use mapping for known problematic icons
   return iconMapping[sofiaIcon] || 'file-text';
 };
-import { Button } from '@/components/ui/button';
-import { Icon } from '@/components/ui/icon-library';
-import { useSupabaseWithClerk } from '@/integrations/supabase/client';
-import {
-  findSofiaActions,
-  generateDynamicSuggestions,
-  hasDocumentBasedSuggestions,
-  type SofiaAction,
-} from '@/lib/sofia-search-dictionary';
-import { toast } from 'sonner';
-import { useTranslation } from 'react-i18next';
 
 interface QuickSearchProps {
   isOpen: boolean;
@@ -239,15 +238,20 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({
         const staticSuggestions = findSofiaActions(searchQuery);
 
         // Generate dynamic suggestions based on user's document library
-        const userDocuments = documents.map(doc => ({
-          id: doc.id,
-          file_name: doc.title || '',
-          title: doc.title,
-          category: doc.subtitle?.replace('Document • ', ''),
-          document_type: doc.subtitle?.replace('Document • ', ''),
-          tags: [],
-          created_at: new Date().toISOString(),
-        }));
+        const userDocuments = documents.map(doc => {
+          const categoryValue = doc.subtitle?.replace('Document • ', '');
+          const documentTypeValue = doc.subtitle?.replace('Document • ', '');
+
+          return {
+            id: doc.id,
+            file_name: doc.title || '',
+            title: doc.title,
+            ...(categoryValue && { category: categoryValue }),
+            ...(documentTypeValue && { document_type: documentTypeValue }),
+            tags: [],
+            created_at: new Date().toISOString(),
+          };
+        });
 
         const dynamicSuggestions = generateDynamicSuggestions(
           searchQuery,
@@ -266,23 +270,23 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({
         ].slice(0, 6); // Limit total suggestions
 
         setDocuments(
-          documents.map(doc => ({ 
-            ...doc, 
+          documents.map(doc => ({
+            ...doc,
             type: 'document' as const,
-            icon: doc.icon as keyof typeof IconMap 
+            icon: doc.icon as keyof typeof IconMap
           }))
         );
         setResults([
           ...filteredActions,
-          ...documents.map(doc => ({ 
-            ...doc, 
+          ...documents.map(doc => ({
+            ...doc,
             type: 'document' as const,
-            icon: doc.icon as keyof typeof IconMap 
+            icon: doc.icon as keyof typeof IconMap
           })),
           ...guardians.map(guardian => ({
             ...guardian,
             type: 'guardian' as const,
-            icon: guardian.icon as keyof typeof IconMap 
+            icon: guardian.icon as keyof typeof IconMap
           })),
         ]);
         setSofiaActions(allSuggestions);
@@ -396,15 +400,20 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({
                 <span className='text-sm font-medium text-primary'>
                   {hasDocumentBasedSuggestions(
                     query,
-                    documents.map(d => ({
-                      id: d.id,
-                      file_name: d.title || '',
-                      title: d.title,
-                      category: d.subtitle?.replace('Document • ', ''),
-                      document_type: d.subtitle?.replace('Document • ', ''),
-                      tags: [],
-                      created_at: new Date().toISOString(),
-                    }))
+                    documents.map(d => {
+                      const categoryValue = d.subtitle?.replace('Document • ', '');
+                      const documentTypeValue = d.subtitle?.replace('Document • ', '');
+
+                      return {
+                        id: d.id,
+                        file_name: d.title || '',
+                        title: d.title,
+                        ...(categoryValue && { category: categoryValue }),
+                        ...(documentTypeValue && { document_type: documentTypeValue }),
+                        tags: [],
+                        created_at: new Date().toISOString(),
+                      };
+                    })
                   )
                     ? t('sofia.learnedFromDocuments')
                     : t('sofia.askAssistant')}
@@ -461,15 +470,20 @@ export const QuickSearch: React.FC<QuickSearchProps> = ({
               <p className='text-xs text-muted-foreground mt-3 text-center'>
                 {hasDocumentBasedSuggestions(
                   query,
-                  documents.map(d => ({
-                    id: d.id,
-                    file_name: d.title || '',
-                    title: d.title,
-                    category: d.subtitle?.replace('Document • ', ''),
-                    document_type: d.subtitle?.replace('Document • ', ''),
-                    tags: [],
-                    created_at: new Date().toISOString(),
-                  }))
+                  documents.map(d => {
+                    const categoryValue = d.subtitle?.replace('Document • ', '');
+                    const documentTypeValue = d.subtitle?.replace('Document • ', '');
+
+                    return {
+                      id: d.id,
+                      file_name: d.title || '',
+                      title: d.title,
+                      ...(categoryValue && { category: categoryValue }),
+                      ...(documentTypeValue && { document_type: documentTypeValue }),
+                      tags: [],
+                      created_at: new Date().toISOString(),
+                    };
+                  })
                 ) ? (
                   <>
                     <Icon name='zap' className='w-3 h-3 inline mr-1' />

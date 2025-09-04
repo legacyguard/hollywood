@@ -3,7 +3,7 @@
  * Handles jurisdiction-specific legal terms and translations
  */
 
-import { JURISDICTION_CONFIG } from './jurisdictions';
+// import { JURISDICTION_CONFIG } from './jurisdictions';
 
 // Legal term categories
 export enum LegalTermCategory {

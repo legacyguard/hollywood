@@ -391,7 +391,7 @@ export class ProfileService {
    * Update emergency contacts
    */
   async updateEmergencyContacts(contacts: unknown[]): Promise<Profile> {
-    return this.update({ emergency_contacts: contacts as any });
+    return this.update({ emergency_contacts: contacts });
   }
 
   /**
@@ -400,7 +400,7 @@ export class ProfileService {
   async updatePreferences(
     preferences: Record<string, unknown>
   ): Promise<Profile> {
-    return this.update({ preferences: preferences as any });
+    return this.update({ preferences });
   }
 }
 

@@ -6,7 +6,6 @@ import EmergencyTestingSystem from './testing-system';
 import type {
   ActivityTracker,
   DetectionEngineConfig,
-  EmergencyActivation,
   EmergencyDashboardData,
   EmergencyTriggerType,
   SurvivorInterface,

@@ -1,7 +1,8 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 
-function Skeleton({
+// Optimized with React.memo to prevent unnecessary re-renders
+const Skeleton = React.memo(function Skeleton({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
@@ -11,6 +12,6 @@ function Skeleton({
       {...props}
     />
   );
-}
+});
 
 export { Skeleton };

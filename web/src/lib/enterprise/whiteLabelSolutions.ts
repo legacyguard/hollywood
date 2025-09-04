@@ -603,44 +603,7 @@ export interface ClientLifecycleManagement {
   triggers: LifecycleTrigger[];
 }
 
-export interface ClientMetrics {
-  activeClients: number;
-  averageClientValue?: number;
-  churnRate: number;
-  lifetimeValue: number;
-  newClients: number;
-  totalClients: number;
-}
-
-export interface UsageMetrics {
-  activeUsers: number;
-  apiCalls: number;
-  documentsCreated: number;
-  monthlyActiveUsers?: number;
-  sessionDuration: number;
-  storageUsed: number;
-}
-
-export interface RevenueMetrics {
-  averageRevenue: number;
-  growthRate: number;
-  recurringRevenue: number;
-  totalRevenue: number;
-}
-
-export interface PerformanceMetrics {
-  errorRate: number;
-  responseTime: number;
-  throughput: number;
-  uptime: number;
-}
-
-export interface CustomMetric {
-  id: string;
-  name: string;
-  unit: string;
-  value: number;
-}
+// Duplicate interfaces removed - already defined above
 
 export interface PartnerAnalytics {
   alerts: AnalyticsAlert[];

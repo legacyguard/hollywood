@@ -10,7 +10,6 @@ import Backend from 'i18next-http-backend';
 import {
   format as dateFnsFormat,
   formatDistance,
-  formatRelative,
   parseISO,
 } from 'date-fns';
 import { cs, de, enUS, es, fr, it, pl, sk } from 'date-fns/locale';
@@ -657,8 +656,8 @@ export const i18nConfig = {
     ns: string,
     key: string,
     fallbackValue: string,
-    updateMissing: boolean,
-    options: any
+      _updateMissing: boolean,
+  _options: any
   ) => {
     if (process.env.NODE_ENV === 'development') {
       console.warn(`⚠️ Missing translation: [${lngs.join(', ')}] ${ns}:${key}`);

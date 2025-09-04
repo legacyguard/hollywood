@@ -5,7 +5,7 @@
 
 import type { NAMESPACES } from './config';
 import type { JurisdictionConfig } from './jurisdictions';
-import { LanguageConfig } from './languages';
+// import { LanguageConfig } from './languages';
 import type { LegalTermCategory } from './legal-terminology';
 
 // Namespace types

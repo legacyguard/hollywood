@@ -16,6 +16,10 @@ import { Label } from '@/components/ui/label';
 import { Lock, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
+/**
+ * Password prompt dialog for unlocking encryption keys
+ * Handles both regular unlock and migration scenarios
+ */
 export function PasswordPrompt() {
   const {
     passwordPromptVisible,

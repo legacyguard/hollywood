@@ -1,9 +1,7 @@
 import nacl from 'tweetnacl';
 import {
   decodeBase64,
-  decodeUTF8,
   encodeBase64,
-  encodeUTF8,
 } from 'tweetnacl-util';
 import CryptoJS from 'crypto-js';
 

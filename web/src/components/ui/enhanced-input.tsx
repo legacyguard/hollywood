@@ -122,9 +122,10 @@ const EnhancedInput = React.forwardRef<HTMLInputElement, EnhancedInputProps>(
     },
     ref
   ) => {
+    // TODO: Re-enable when Sofia personality system is available
     // const { personality } = useSofia()
     const personality = {
-      mode: 'adaptive' as 'adaptive' | 'empathetic' | 'pragmatic',
+      mode: 'adaptive' as 'adaptive' | 'default' | 'empathetic' | 'pragmatic',
     };
     const [isFocused, setIsFocused] = React.useState(false);
     const [hasValue, setHasValue] = React.useState(false);
@@ -511,4 +512,4 @@ export const ValidatedInput = React.forwardRef<
 ValidatedInput.displayName = 'ValidatedInput';
 
 export { EnhancedInput, inputVariants };
-// export type { EnhancedInputProps, FieldState }
+export type { EnhancedInputProps, FieldState };

@@ -19,8 +19,8 @@ declare module 'embla-carousel-react' {
   ];
 
   export default function useEmblaCarousel<T = HTMLElement>(
-    options?: Record<string, any>,
-    plugins?: any[]
+    options?: Record<string, unknown>,
+    plugins?: unknown[]
   ): UseEmblaCarouselType<T>;
 }
 
@@ -81,7 +81,6 @@ declare module 'cmdk' {
 }
 
 declare module 'vaul' {
-  import type * as React from 'react';
 
   export interface DrawerRootProps {
     children: React.ReactNode;

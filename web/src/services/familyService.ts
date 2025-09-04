@@ -8,10 +8,7 @@ import { familyDataCache } from '@/lib/performance/caching';
 import type {
   CreateFamilyInvitationRequest,
   CreateFamilyMemberRequest,
-  DbFamilyInvitation,
-  DbFamilyInvitationInsert,
   DbFamilyMember,
-  DbFamilyMemberInsert,
   DbFamilyMemberUpdate,
   EmergencyAccessRequest,
   FamilyActivity,
@@ -19,15 +16,12 @@ import type {
   FamilyMember,
   FamilyProtectionStatus,
   FamilyStats,
-  UpdateFamilyMemberRequest,
-} from '@/integrations/supabase/database-aligned-types';
-import {
-  DEFAULT_PERMISSIONS,
   isValidAccessLevel,
   isValidFamilyRole,
   isValidRelationship,
   mapApplicationToDbFamilyMember,
   mapDbFamilyMemberToApplication,
+  UpdateFamilyMemberRequest,
 } from '@/integrations/supabase/database-aligned-types';
 import type { Json } from '@/integrations/supabase/types';
 

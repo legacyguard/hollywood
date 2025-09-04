@@ -5,17 +5,23 @@ import { type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 import { toggleVariants } from './toggle-variants';
 
-const Toggle = React.forwardRef<
-  React.ElementRef<typeof TogglePrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof TogglePrimitive.Root> &
-    VariantProps<typeof toggleVariants>
->(({ className, variant, size, ...props }, ref) => (
-  <TogglePrimitive.Root
-    ref={ref}
-    className={cn(toggleVariants({ variant, size, className }))}
-    {...props}
-  />
-));
+/**
+ * Memoized Toggle component optimized with React.memo
+ * Prevents unnecessary re-renders when props haven't changed
+ */
+const Toggle = React.memo(
+  React.forwardRef<
+    React.ElementRef<typeof TogglePrimitive.Root>,
+    React.ComponentPropsWithoutRef<typeof TogglePrimitive.Root> &
+      VariantProps<typeof toggleVariants>
+  >(({ className, variant, size, ...props }, ref) => (
+    <TogglePrimitive.Root
+      ref={ref}
+      className={cn(toggleVariants({ variant, size, className }))}
+      {...props}
+    />
+  ))
+);
 
 Toggle.displayName = TogglePrimitive.Root.displayName;
 

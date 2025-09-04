@@ -5,7 +5,7 @@
 
 import { createHash } from 'crypto';
 import _nacl from 'tweetnacl';
-import { decodeBase64, encodeBase64 } from 'tweetnacl-util';
+import { encodeBase64 } from 'tweetnacl-util';
 
 export interface SharePermissions {
   canComment: boolean;

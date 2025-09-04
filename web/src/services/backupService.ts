@@ -9,16 +9,96 @@ import { createClient } from '@supabase/supabase-js';
 import * as nacl from 'tweetnacl';
 import { decodeBase64, encodeBase64 } from 'tweetnacl-util';
 
+// Type definitions for backup data
+interface Document {
+  [key: string]: unknown;
+  file_name?: string;
+  file_size?: number;
+  file_type?: string;
+  id?: string;
+  upload_date?: string;
+  user_id?: string;
+}
+
+interface Guardian {
+  [key: string]: unknown;
+  email?: string;
+  full_name?: string;
+  id?: string;
+  phone?: string;
+  relationship?: string;
+  user_id?: string;
+}
+
+interface Asset {
+  [key: string]: unknown;
+  id?: string;
+  name?: string;
+  type?: string;
+  user_id?: string;
+  value?: number;
+}
+
+interface Person {
+  [key: string]: unknown;
+  email?: string;
+  full_name?: string;
+  id?: string;
+  phone?: string;
+  relationship?: string;
+  user_id?: string;
+}
+
+interface Will {
+  [key: string]: unknown;
+  content?: string;
+  created_at?: string;
+  id?: string;
+  title?: string;
+  updated_at?: string;
+  user_id?: string;
+}
+
+interface Settings {
+  [key: string]: unknown;
+  language?: string;
+  notifications?: boolean;
+  theme?: string;
+}
+
+interface OnboardingResponse {
+  [key: string]: unknown;
+  id?: string;
+  question_id?: string;
+  response?: string;
+  user_id?: string;
+}
+
+interface UserPreferences {
+  [key: string]: unknown;
+  language?: string;
+  notifications?: boolean;
+  theme?: string;
+}
+
+interface UserProfile {
+  [key: string]: unknown;
+  created_at?: string;
+  email?: string;
+  full_name?: string;
+  id?: string;
+}
+
 // Backup data structure
 export interface BackupData {
   exportDate: string;
   localStorage: {
-    assets?: any[];
-    documents?: any[];
-    guardians?: any[];
-    people?: any[];
-    settings?: any;
-    wills?: any[];
+    assets?: Asset[];
+    documents?: Document[];
+    guardians?: Guardian[];
+    people?: Person[];
+    settings?: Settings;
+    wills?: Will[];
   };
   metadata: {
     appVersion?: string;
@@ -28,14 +108,14 @@ export interface BackupData {
     exportedFrom?: string;
   };
   supabase: {
-    customData?: any;
-    documents?: any[];
-    guardians?: any[];
-    onboardingResponses?: any[];
+    customData?: Record<string, unknown>;
+    documents?: Document[];
+    guardians?: Guardian[];
+    onboardingResponses?: OnboardingResponse[];
   };
   userData: {
-    preferences?: any;
-    profile?: any;
+    preferences?: UserPreferences;
+    profile?: UserProfile;
   };
   userId: string;
   version: string;
@@ -123,7 +203,6 @@ export class BackupService {
       metadata: {
         exportDate: data.exportDate,
         userId: data.userId,
-        version: '1.0',
       },
     };
   }
@@ -274,8 +353,14 @@ export class BackupService {
   /**
    * Export user profile and preferences
    */
-  private async exportUserData(userId: string): Promise<any> {
-    const userData: any = {};
+  private async exportUserData(userId: string): Promise<{
+    preferences?: UserPreferences;
+    profile?: UserProfile;
+  }> {
+    const userData: {
+      preferences?: UserPreferences;
+      profile?: UserProfile;
+    } = {};
 
     // Get Clerk user metadata if available
     try {
@@ -283,7 +368,7 @@ export class BackupService {
       // For now, we'll collect basic data from localStorage
       const preferences = localStorage.getItem(`preferences_${userId}`);
       if (preferences) {
-        userData.preferences = JSON.parse(preferences);
+        userData.preferences = JSON.parse(preferences) as UserPreferences;
       }
     } catch (error) {
       console.warn('Could not export user preferences:', error);
@@ -295,8 +380,24 @@ export class BackupService {
   /**
    * Export all localStorage data for the user
    */
-  private async exportLocalStorageData(userId: string): Promise<any> {
-    const localData: any = {};
+  private async exportLocalStorageData(userId: string): Promise<{
+    assets?: Asset[];
+    documents?: Document[];
+    guardians?: Guardian[];
+    people?: Person[];
+    settings?: Settings;
+    taskProgress?: Record<string, unknown>;
+    wills?: Will[];
+  }> {
+    const localData: {
+      assets?: Asset[];
+      documents?: Document[];
+      guardians?: Guardian[];
+      people?: Person[];
+      settings?: Settings;
+      taskProgress?: Record<string, unknown>;
+      wills?: Will[];
+    } = {};
 
     // Define keys to export
     const keysToExport = [
@@ -313,7 +414,7 @@ export class BackupService {
       const data = localStorage.getItem(key);
       if (data) {
         try {
-          const keyName = key.replace(`_${userId}`, '');
+          const keyName = key.replace(`_${userId}`, '') as keyof typeof localData;
           localData[keyName] = JSON.parse(data);
         } catch (error) {
           console.warn(`Could not parse localStorage key ${key}:`, error);
@@ -327,8 +428,18 @@ export class BackupService {
   /**
    * Export Supabase data
    */
-  private async exportSupabaseData(userId: string): Promise<any> {
-    const supabaseData: any = {};
+  private async exportSupabaseData(userId: string): Promise<{
+    customData?: Record<string, unknown>;
+    documents?: Document[];
+    guardians?: Guardian[];
+    onboardingResponses?: OnboardingResponse[];
+  }> {
+    const supabaseData: {
+      customData?: Record<string, unknown>;
+      documents?: Document[];
+      guardians?: Guardian[];
+      onboardingResponses?: OnboardingResponse[];
+    } = {};
 
     try {
       // Export documents
@@ -370,7 +481,13 @@ export class BackupService {
   /**
    * Import user data
    */
-  private async importUserData(userData: any, userId: string): Promise<void> {
+  private async importUserData(
+    userData: {
+      preferences?: UserPreferences;
+      profile?: UserProfile;
+    },
+    userId: string
+  ): Promise<void> {
     if (!userData) return;
 
     try {
@@ -389,7 +506,15 @@ export class BackupService {
    * Import localStorage data
    */
   private async importLocalStorageData(
-    localData: any,
+    localData: {
+      assets?: Asset[];
+      documents?: Document[];
+      guardians?: Guardian[];
+      people?: Person[];
+      settings?: Settings;
+      taskProgress?: Record<string, unknown>;
+      wills?: Will[];
+    },
     userId: string
   ): Promise<void> {
     if (!localData) return;
@@ -407,7 +532,12 @@ export class BackupService {
    * Import Supabase data
    */
   private async importSupabaseData(
-    supabaseData: any,
+    supabaseData: {
+      customData?: Record<string, unknown>;
+      documents?: Document[];
+      guardians?: Guardian[];
+      onboardingResponses?: OnboardingResponse[];
+    },
     userId: string
   ): Promise<void> {
     if (!supabaseData) return;

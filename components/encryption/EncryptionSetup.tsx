@@ -27,12 +27,20 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
+/**
+ * Password strength analysis result
+ */
 interface PasswordStrength {
   score: number;
   feedback: string[];
   warning?: string;
 }
 
+/**
+ * Analyzes password strength and provides feedback
+ * @param password - The password to analyze
+ * @returns Password strength analysis with score and feedback
+ */
 function getPasswordStrength(password: string): PasswordStrength {
   const feedback: string[] = [];
   let score = 0;
@@ -75,6 +83,10 @@ function getPasswordStrength(password: string): PasswordStrength {
   return { score, feedback };
 }
 
+/**
+ * Encryption setup component with multi-step wizard
+ * Guides users through setting up end-to-end encryption for their documents
+ */
 export function EncryptionSetup() {
   const { initializeKeys, isLoading } = useEncryption();
   const [step, setStep] = useState(1);

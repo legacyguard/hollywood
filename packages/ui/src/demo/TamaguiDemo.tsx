@@ -31,7 +31,7 @@ export function TamaguiDemo() {
         {/* Typography Demo */}
         <Stack space='small'>
           <H1 color='primary'>LegacyGuard Design System</H1>
-          <Paragraph {...({ size: 'large', color: 'muted' } as any)}>
+          <Paragraph size="large" color="muted">
             Tamagui-based cross-platform komponenty pre web a mobile
           </Paragraph>
         </Stack>

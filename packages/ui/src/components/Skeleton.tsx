@@ -78,7 +78,7 @@ export const Skeleton = React.memo(styled(View, {
 // Skeleton Text - for loading text
 export const SkeletonText = ({
   lines = 3,
-  spacing = 'small' as any,
+  spacing = 'small',
   ...props
 }: {
   lines?: number;
@@ -89,10 +89,8 @@ export const SkeletonText = ({
       {Array.from({ length: lines }).map((_, i) => (
         <Skeleton
           key={i}
-          {...({
-            variant: 'text',
-            width: i === lines - 1 ? 'large' : 'full',
-          } as any)}
+          variant="text"
+          width={i === lines - 1 ? 'large' : 'full'}
         />
       ))}
     </YStack>
@@ -152,7 +150,7 @@ export const SkeletonCard = ({
         {showAvatar && <SkeletonAvatar />}
         <YStack flex={1} space='small'>
           {showTitle && (
-            <Skeleton {...({ variant: 'title', width: 'large' } as any)} />
+            <Skeleton variant="title" width="large" />
           )}
           {showDescription && <SkeletonText lines={2} />}
         </YStack>
@@ -164,7 +162,7 @@ export const SkeletonCard = ({
 // Skeleton List
 export const SkeletonList = ({
   items = 3,
-  spacing = 'medium' as any,
+  spacing = 'medium',
   renderItem,
   ...props
 }: {

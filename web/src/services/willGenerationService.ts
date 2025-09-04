@@ -455,9 +455,9 @@ export class WillGenerationService {
     if (childGuardians.length === 0 || !children) return [];
 
     return children
-      .filter(child => child.isMinor)
-      .filter(child => childGuardians.length > 0)
-      .map(child => ({
+      .filter(_child => _child.isMinor)
+      .filter(_child => childGuardians.length > 0)
+      .map(_child => ({
         childId: `child-${Math.random().toString(36).substr(2, 9)}`,
         primaryGuardian: {
           id: childGuardians[0].id,

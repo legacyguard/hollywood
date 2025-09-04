@@ -26,7 +26,7 @@ export const FormSection: React.FC<FormSectionProps> = ({
         <Stack gap='$2'>
           {title && <H3>{title}</H3>}
           {description && (
-            <Paragraph {...({ size: 'small', color: 'muted' } as any)}>
+            <Paragraph size="small" color="muted">
               {description}
             </Paragraph>
           )}

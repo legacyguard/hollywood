@@ -218,7 +218,7 @@ export function escapeHTML(str: string): string {
     '/': '&#x2F;',
   };
 
-  return str.replace(/[&<>"'/]/g, char => entities[char]);
+  return str.replace(/[&<>"'/]/g, char => entities[char] ?? char);
 }
 
 /**

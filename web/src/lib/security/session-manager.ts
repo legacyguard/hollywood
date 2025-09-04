@@ -3,7 +3,7 @@
  * Handles session timeouts, refresh tokens, and activity tracking
  */
 
-import { useAuth } from '@clerk/clerk-react';
+// import { useAuth } from '@clerk/clerk-react';
 
 export interface SessionConfig {
   extendOnActivity: boolean;

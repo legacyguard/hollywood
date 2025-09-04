@@ -325,9 +325,9 @@ export class WillApiService {
       }
 
       // Convert database will back to userData format
-      const identityDeclaration = will.declarations?.find(
-        d => d.type === 'identity'
-      );
+      // const identityDeclaration = will.declarations?.find(
+      //   d => d.type === 'identity'
+      // );
       const userData: WillUserData = {
         personal: {
           fullName: 'Testator Name', // Extract from identity declaration if needed
@@ -369,24 +369,31 @@ export class WillApiService {
             personal: 'personal_property',
             financial: 'bank_account',
             digital: 'digital_asset',
+            real_estate: 'real_estate',
+            business: 'business',
+            vehicle: 'vehicle',
+            investment: 'investment',
+            other: 'other',
           };
           return {
             id: a.id,
-            type: assetTypeMap[a.asset_type] || a.asset_type,
+            type: assetTypeMap[a.asset_type as string] || 'other',
             description: a.description,
             value: a.estimated_value || 0,
             currency: a.currency || 'EUR',
-            location: a.location,
+            location: a.location || '',
             ownershipPercentage: 100,
-          };
+          } as any;
         }),
         executors: will.executor_appointments.map(e => {
           const executorTypeMap: Record<string, any> = {
             'co-executor': 'co_executor',
+            'primary': 'primary',
+            'alternate': 'alternate',
           };
           return {
             id: e.id,
-            type: executorTypeMap[e.type] || e.type,
+            type: executorTypeMap[e.type as string] || 'primary',
             name: e.full_name,
             relationship: e.relationship,
             address: {
@@ -397,8 +404,8 @@ export class WillApiService {
             },
             contactInfo: e.contact_info,
             isProfessional: e.professional || false,
-            compensation: e.compensation,
-          };
+            compensation: e.compensation || '',
+          } as any;
         }),
         guardians:
           will.guardianship_appointments?.map(g => ({
@@ -432,9 +439,9 @@ export class WillApiService {
                   contactInfo: g.alternate_guardian.contact_info,
                   isProfessional: false,
                 }
-              : undefined,
-            specialInstructions: g.special_instructions,
-          })) || [],
+              : null,
+            specialInstructions: g.special_instructions || '',
+          })) || [] as any,
         specialInstructions:
           will.special_instructions?.map(s => ({
             id: s.id,
@@ -480,17 +487,19 @@ export class WillApiService {
           field: error.field,
           message: error.message,
           severity: error.severity,
-          legal_reference: error.legalReference,
+          legal_reference: error.legalReference || '',
         })),
         completeness_score: generatedWill.validationResult.completenessScore,
         ai_suggestions: generatedWill.aiSuggestions.map(suggestion => {
-          const typeMap: Record<string, any> = {
-            optimization: 'improvement',
+          const typeMap: Record<string, 'improvement' | 'legal_requirement' | 'missing' | 'warning'> = {
             legal_consideration: 'legal_requirement',
+            missing: 'missing',
+            optimization: 'improvement',
+            warning: 'warning',
           };
           return {
             id: suggestion.id,
-            type: typeMap[suggestion.type] || suggestion.type,
+            type: typeMap[suggestion.type] || 'improvement',
             category: suggestion.category,
             title: suggestion.title,
             description: suggestion.description,

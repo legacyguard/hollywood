@@ -8,7 +8,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import { motion, type Variants, type Easing } from 'framer-motion';
+import { type Easing, motion, type Variants } from 'framer-motion';
 
 // Types for personality modes
 export type PersonalityMode = 'adaptive' | 'empathetic' | 'pragmatic';

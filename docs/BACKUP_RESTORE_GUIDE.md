@@ -7,6 +7,7 @@ The LegacyGuard application includes comprehensive backup and restore functional
 ## Features
 
 ### Data Export
+
 - **Complete Data Export**: Export all your data including:
   - Documents metadata
   - Personal information (assets, people, wills)
@@ -20,12 +21,14 @@ The LegacyGuard application includes comprehensive backup and restore functional
 - **Secure Format**: Data is exported as a JSON file with structured format
 
 ### Data Import
+
 - **Smart Merge**: Import process intelligently merges data to avoid duplicates
 - **Validation**: Comprehensive validation ensures backup file integrity
 - **Version Compatibility**: Checks backup version compatibility before import
 - **Conflict Resolution**: Handles existing data gracefully
 
 ### Security Features
+
 - **Local Processing**: All backup/restore operations happen locally
 - **User Verification**: Confirms user identity before sensitive operations
 - **Data Validation**: Checksums ensure data hasn't been tampered with
@@ -62,17 +65,20 @@ The LegacyGuard application includes comprehensive backup and restore functional
 ## Best Practices
 
 ### Regular Backups
+
 - Create backups before major changes
 - Export data weekly or monthly
 - Keep multiple backup versions
 
 ### Secure Storage
+
 - Store backups in secure locations
 - Never share backup files publicly
 - Consider encrypting backup files separately
 - Use cloud storage with 2FA enabled
 
 ### Version Management
+
 - Label backups with dates
 - Keep recent 3-5 backup versions
 - Delete very old backups securely
@@ -133,45 +139,55 @@ The backup service collects data from:
 ### Export Issues
 
 **Problem**: Export button doesn't work
+
 - **Solution**: Ensure you're logged in and have a stable connection
 
 **Problem**: Backup file is empty or corrupted
+
 - **Solution**: Try exporting again, check browser console for errors
 
 ### Import Issues
 
 **Problem**: "Invalid backup file format" error
+
 - **Solution**: Ensure you're selecting a valid `.json` backup file
 
 **Problem**: "Backup file appears to be corrupted" error
+
 - **Solution**: The file may have been modified. Try an older backup
 
 **Problem**: Data doesn't appear after import
+
 - **Solution**: Refresh the page manually. Check if data was partially imported
 
 ### General Issues
 
 **Problem**: Backup file is too large
+
 - **Solution**: Maximum file size is 10MB. Contact support if legitimate backup exceeds this
 
 **Problem**: Some data is missing from backup
+
 - **Solution**: Ensure all data was saved before creating backup
 
 ## Security Considerations
 
 ### What's Included
+
 - Document metadata (not actual files)
 - Personal information and preferences
 - Application settings
 - Task progress and states
 
 ### What's NOT Included
+
 - Actual document files (stored separately in Supabase)
 - Authentication credentials
 - Payment information
 - Encrypted file contents
 
 ### Privacy Notes
+
 - Backups contain sensitive personal information
 - Never upload backups to public services
 - Consider additional encryption for cloud storage
@@ -180,6 +196,7 @@ The backup service collects data from:
 ## Future Enhancements
 
 ### Planned Features
+
 - Automatic scheduled backups
 - Cloud backup integration
 - Encrypted backup files
@@ -188,6 +205,7 @@ The backup service collects data from:
 - Cross-platform sync
 
 ### Coming Soon
+
 - Integration with Google Drive/Dropbox
 - End-to-end encryption for backups
 - Incremental backups
@@ -236,6 +254,7 @@ import { BackupRestore } from '@/components/features/BackupRestore';
 ## Changelog
 
 ### Version 1.0.0
+
 - Initial release
 - Basic export/import functionality
 - LocalStorage and Supabase integration

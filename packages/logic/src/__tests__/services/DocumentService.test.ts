@@ -82,7 +82,7 @@ describe('DocumentService', () => {
     });
 
     it('should throw error if file is missing', async () => {
-      const invalidRequest = { file: null } as any;
+      const invalidRequest = { file: null } as unknown;
 
       await expect(service.upload(invalidRequest)).rejects.toThrow(
         'File is required'
@@ -112,7 +112,7 @@ describe('DocumentService', () => {
           mimeType: 'image/png',
           // fileName missing
         },
-      } as any;
+      } as unknown;
 
       await expect(service.upload(invalidRequest)).rejects.toThrow();
       expect(mockClient.uploadFile).not.toHaveBeenCalled();
@@ -399,7 +399,7 @@ describe('DocumentService', () => {
     it('should throw error for invalid field types', async () => {
       await expect(
         service.update('123e4567-e89b-12d3-a456-426614174000', {
-          file_name: 123 as any,
+          file_name: 123 as unknown,
         })
       ).rejects.toThrow('File name must be a string');
       expect(mockClient.put).not.toHaveBeenCalled();
@@ -408,7 +408,7 @@ describe('DocumentService', () => {
     it('should throw error for invalid boolean field', async () => {
       await expect(
         service.update('123e4567-e89b-12d3-a456-426614174000', {
-          is_important: 'true' as any,
+          is_important: 'true' as unknown,
         })
       ).rejects.toThrow('is_important must be a boolean');
       expect(mockClient.put).not.toHaveBeenCalled();

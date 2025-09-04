@@ -138,12 +138,12 @@ const EnhancedCard = React.forwardRef<HTMLDivElement, EnhancedCardProps>(
     },
     ref
   ) => {
+    // TODO: Re-enable when Sofia personality system is available
     // const { personality } = useSofia()
     const personality = {
-      mode: 'adaptive' as 'adaptive' | 'empathetic' | 'pragmatic',
+      mode: 'adaptive' as 'adaptive' | 'default' | 'empathetic' | 'pragmatic',
     };
-    const [isHovered, setIsHovered] = React.useState(false);
-    const [_isPressed, setIsPressed] = React.useState(false);
+  const [isHovered, setIsHovered] = React.useState(false);
     const cardRef = React.useRef<HTMLDivElement>(null);
 
     // Motion values for advanced interactions
@@ -348,8 +348,7 @@ const EnhancedCard = React.forwardRef<HTMLDivElement, EnhancedCardProps>(
           onMouseMove={handleMouseMove as any}
           onHoverStart={() => handleHover(true)}
           onHoverEnd={() => handleHover(false)}
-          onTapStart={() => setIsPressed(true)}
-          // onTapEnd={() => setIsPressed(false)}
+          // Note: onTapStart removed as it was unused
           onClick={!disabled ? onClick : undefined}
           onDoubleClick={!disabled ? onDoubleClick : undefined}
           style={{
@@ -513,10 +512,8 @@ PersonalityCard.displayName = 'PersonalityCard';
 
 export const InteractiveCard = React.forwardRef<
   HTMLDivElement,
-  EnhancedCardProps & {
-    rippleEffect?: boolean;
-  }
->(({ rippleEffect: _rippleEffect = true, ...props }, ref) => (
+  EnhancedCardProps
+>((props, ref) => (
   <EnhancedCard
     ref={ref}
     animationType='lift'
@@ -548,4 +545,4 @@ export const ContentCard = React.forwardRef<
 ContentCard.displayName = 'ContentCard';
 
 export { cardVariants, EnhancedCard };
-// export type { EnhancedCardProps, CardInteractionType }
+// export type { EnhancedCardProps, CardInteractionType };

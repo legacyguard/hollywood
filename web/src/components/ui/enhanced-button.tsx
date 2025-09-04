@@ -121,8 +121,9 @@ const EnhancedButton = React.memo(
       },
       ref
     ) => {
-      // const { personality } = useSofia() // Temporarily disabled
-      const personality = { mode: 'default' };
+      // TODO: Re-enable when Sofia personality system is available
+      // const { personality } = useSofia()
+      const personality = { mode: 'default' as 'adaptive' | 'default' | 'empathetic' | 'pragmatic' };
       const [ripples, setRipples] = React.useState<
         Array<{ id: number; x: number; y: number }>
       >([]);
