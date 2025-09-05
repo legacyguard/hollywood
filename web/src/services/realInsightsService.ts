@@ -59,7 +59,7 @@ class RealInsightsService {
 
       return {
         documentId,
-        documentType: document.type,
+        documentType: document.document_type,
         extractedValue,
         insights: {
           immediate: storedInsights.filter(i =>
@@ -176,8 +176,27 @@ class RealInsightsService {
 
       if (error) throw error;
 
+      // Map database results to QuickInsight interface
+      const mappedData = (data || []).map(insight => ({
+        ...insight,
+        createdAt: insight.created_at,
+        updatedAt: insight.updated_at,
+        userId: insight.user_id,
+        documentId: insight.document_id || undefined,
+        actionText: insight.action_text || undefined,
+        actionUrl: insight.action_url || undefined,
+        value: insight.value || undefined,
+        metadata: insight.metadata as any || {
+          calculatedAt: new Date().toISOString(),
+          category: 'general',
+          confidence: 0.8,
+          tags: [],
+        },
+        familyImpact: insight.family_impact as any || undefined,
+      }));
+
       return {
-        data: data || [],
+        data: mappedData,
         total: count || 0,
       };
     } catch (error) {
@@ -193,7 +212,7 @@ class RealInsightsService {
       const { data, error } = await supabase
         .from('quick_insights')
         .insert({
-          user_id: insight.user_id,
+          user_id: insight.userId,
           document_id: insight.documentId,
           type: insight.type,
           title: insight.title,
@@ -217,18 +236,23 @@ class RealInsightsService {
       return {
         id: data.id,
         userId: data.user_id,
-        documentId: data.document_id,
+        documentId: data.document_id || undefined,
         type: data.type,
         title: data.title,
         description: data.description,
-        value: data.value,
+        value: data.value || undefined,
         impact: data.impact,
         priority: data.priority,
         actionable: data.actionable,
-        actionText: data.action_text,
-        actionUrl: data.action_url,
-        metadata: data.metadata,
-        familyImpact: data.family_impact,
+        actionText: data.action_text || undefined,
+        actionUrl: data.action_url || undefined,
+        metadata: data.metadata as any || {
+          calculatedAt: new Date().toISOString(),
+          category: 'general',
+          confidence: 0.8,
+          tags: [],
+        },
+        familyImpact: data.family_impact as any || undefined,
         createdAt: data.created_at,
         updatedAt: data.updated_at,
       };
@@ -243,7 +267,7 @@ class RealInsightsService {
   ): Promise<QuickInsight[]> {
     try {
       const insightData = insights.map(insight => ({
-        user_id: insight.user_id,
+        user_id: insight.userId,
         document_id: insight.documentId,
         type: insight.type,
         title: insight.title,
@@ -270,18 +294,23 @@ class RealInsightsService {
       return (data || []).map(item => ({
         id: item.id,
         userId: item.user_id,
-        documentId: item.document_id,
+        documentId: item.document_id || undefined,
         type: item.type,
         title: item.title,
         description: item.description,
-        value: item.value,
+        value: item.value || undefined,
         impact: item.impact,
         priority: item.priority,
         actionable: item.actionable,
-        actionText: item.action_text,
-        actionUrl: item.action_url,
-        metadata: item.metadata,
-        familyImpact: item.family_impact,
+        actionText: item.action_text || undefined,
+        actionUrl: item.action_url || undefined,
+        metadata: item.metadata as any || {
+          calculatedAt: new Date().toISOString(),
+          category: 'general',
+          confidence: 0.8,
+          tags: [],
+        },
+        familyImpact: item.family_impact as any || undefined,
         createdAt: item.created_at,
         updatedAt: item.updated_at,
       }));
@@ -324,18 +353,23 @@ class RealInsightsService {
       return {
         id: data.id,
         userId: data.user_id,
-        documentId: data.document_id,
+        documentId: data.document_id || undefined,
         type: data.type,
         title: data.title,
         description: data.description,
-        value: data.value,
+        value: data.value || undefined,
         impact: data.impact,
         priority: data.priority,
         actionable: data.actionable,
-        actionText: data.action_text,
-        actionUrl: data.action_url,
-        metadata: data.metadata,
-        familyImpact: data.family_impact,
+        actionText: data.action_text || undefined,
+        actionUrl: data.action_url || undefined,
+        metadata: data.metadata as any || {
+          calculatedAt: new Date().toISOString(),
+          category: 'general',
+          confidence: 0.8,
+          tags: [],
+        },
+        familyImpact: data.family_impact as any || undefined,
         createdAt: data.created_at,
         updatedAt: data.updated_at,
       };
@@ -391,7 +425,7 @@ class RealInsightsService {
       // Group insights by category
       const categoryMap = new Map<string, number>();
       allInsights.forEach(insight => {
-        const category = insight.metadata?.category || 'General';
+        const category = (insight.metadata as any)?.category || 'General';
         categoryMap.set(category, (categoryMap.get(category) || 0) + 1);
       });
 
@@ -402,7 +436,7 @@ class RealInsightsService {
           category,
           count,
           averageImpact: this.calculateAverageImpact(
-            allInsights.filter(i => i.metadata?.category === category)
+            allInsights.filter(i => (i.metadata as any)?.category === category)
           ),
         }));
 
@@ -602,7 +636,7 @@ class RealInsightsService {
   private calculateAverageImpact(insights: any[]): string {
     if (insights.length === 0) return 'none';
 
-    const impactScores = insights.map(i => {
+    const impactScores = insights.map((i): number => {
       switch (i.impact) {
         case 'high':
           return 3;
@@ -661,7 +695,7 @@ class RealInsightsService {
     try {
       // Store in a generic insights record since we don't have a specific table
       await this.storeInsight({
-        userId: statement.user_id,
+        userId: statement.userId,
         type: 'family_impact',
         title: 'Family Impact Analysis',
         description: statement.impactDescription,
@@ -682,11 +716,7 @@ class RealInsightsService {
           calculatedAt: statement.generatedAt,
           confidence: 0.85,
           category: 'family-protection',
-          tags: ['family', 'protection', 'analysis'],
-          scenario: statement.scenario,
-          affectedMembersCount: statement.affectedMembers.length,
-          protectionGapsCount: statement.protectionGaps.length,
-          timeSaved: statement.estimatedTimeSaved,
+          tags: ['family', 'protection', 'analysis', statement.scenario],
         },
         familyImpact: {
           affectedMembers: statement.affectedMembers.map(m => m.memberId),

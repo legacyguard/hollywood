@@ -362,8 +362,8 @@ export const GardenOrchestrator: React.FC<GardenOrchestratorProps> = ({
                       : 'hover:bg-gray-100 text-gray-600'
                   }`}
                   onClick={() => handleViewChange(view.id)}
-                  whileHover={!shouldReduceMotion ? { scale: 1.05 } : undefined}
-                  whileTap={!shouldReduceMotion ? { scale: 0.95 } : undefined}
+                  whileHover={!shouldReduceMotion ? { scale: 1.05 } : false}
+                  whileTap={!shouldReduceMotion ? { scale: 0.95 } : false}
                   title={view.description}
                   disabled={isTransitioning}
                 >
@@ -377,8 +377,8 @@ export const GardenOrchestrator: React.FC<GardenOrchestratorProps> = ({
           <motion.button
             className='p-2 rounded-md hover:bg-gray-100 text-gray-600'
             onClick={() => setShowControls(!showControls_)}
-            whileHover={!shouldReduceMotion ? { scale: 1.05 } : undefined}
-            whileTap={!shouldReduceMotion ? { scale: 0.95 } : undefined}
+            whileHover={!shouldReduceMotion ? { scale: 1.05 } : false}
+            whileTap={!shouldReduceMotion ? { scale: 0.95 } : false}
             title='Toggle controls'
           >
             {showControls_ ? (
@@ -416,10 +416,10 @@ export const GardenOrchestrator: React.FC<GardenOrchestratorProps> = ({
           key={currentView}
           className='w-full h-full'
           initial={
-            !shouldReduceMotion ? { opacity: 0, scale: 0.95 } : undefined
+            !shouldReduceMotion ? { opacity: 0, scale: 0.95 } : false
           }
-          animate={!shouldReduceMotion ? { opacity: 1, scale: 1 } : undefined}
-          exit={!shouldReduceMotion ? { opacity: 0, scale: 1.05 } : undefined}
+          animate={!shouldReduceMotion ? { opacity: 1, scale: 1 } : false}
+          exit={!shouldReduceMotion ? { opacity: 0, scale: 1.05 } : false}
           transition={
             !shouldReduceMotion
               ? {

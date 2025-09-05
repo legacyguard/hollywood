@@ -797,6 +797,7 @@ export class ProfessionalService {
         in_progress: 'Your document review is currently in progress',
         completed: 'Your document review has been completed',
         cancelled: 'Your document review has been cancelled',
+        needs_revision: 'Your document needs revision based on professional feedback',
       };
 
       const emailData: EmailData = {

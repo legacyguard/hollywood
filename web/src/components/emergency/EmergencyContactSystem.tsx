@@ -905,13 +905,11 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
       {notifications.length > 0 && (
         <motion.div
           className='mt-6 bg-white/90 backdrop-blur-sm rounded-xl border border-gray-200 shadow-sm'
-          initial={!shouldReduceMotion ? { opacity: 0, y: 20 } : undefined}
-          animate={!shouldReduceMotion ? { opacity: 1, y: 0 } : undefined}
-          transition={
-            !shouldReduceMotion
-              ? { duration: animConfig.duration, delay: 0.2 }
-              : undefined
-          }
+          {...(!shouldReduceMotion && {
+            initial: { opacity: 0, y: 20 },
+            animate: { opacity: 1, y: 0 },
+            transition: { duration: animConfig.duration, delay: 0.2 }
+          })}
         >
           <div className='p-4'>
             <h4 className='text-sm font-medium text-gray-700 mb-3'>

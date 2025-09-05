@@ -256,8 +256,8 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
     <motion.div
       className='absolute w-4 h-4 cursor-pointer hover:scale-110 transition-transform z-10'
       animate={{
-        x: currentFlightPath.x.map(x => `${x}%`),
-        y: currentFlightPath.y.map(y => `${y}%`),
+        x: currentFlightPath?.x.map(x => `${x}%`) || ['0%'],
+        y: currentFlightPath?.y.map(y => `${y}%`) || ['0%'],
       }}
       transition={{
         duration,
@@ -341,7 +341,7 @@ export const CelebrationFirefly: React.FC<CelebrationFireflyProps> = ({
         delay: index * 0.1,
         ease: 'easeOut',
       }}
-      onAnimationComplete={onComplete}
+      onAnimationComplete={onComplete || (() => {})}
     >
       <Sparkles className='w-3 h-3 text-yellow-300' />
     </motion.div>
@@ -506,7 +506,7 @@ export const InteractiveGardenEnhancements: React.FC<
             personalityMode={personalityMode}
             containerWidth={containerWidth}
             containerHeight={containerHeight}
-            onFireflyClick={onFireflyClick}
+            onFireflyClick={onFireflyClick || (() => {})}
           />
         </div>
       )}

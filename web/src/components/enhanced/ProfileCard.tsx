@@ -327,10 +327,10 @@ export function ProfileGrid({
           profile={profile}
           variant={variant}
           showActions={showActions}
-          onEdit={onEdit}
-          onDelete={onDelete}
-          onViewDetails={onViewDetails}
-          onMessage={onMessage}
+          onEdit={onEdit || (() => {})}
+          onDelete={onDelete || (() => {})}
+          onViewDetails={onViewDetails || (() => {})}
+          onMessage={onMessage || (() => {})}
         />
       ))}
     </div>

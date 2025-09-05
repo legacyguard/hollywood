@@ -167,7 +167,7 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
         .map((g, index: number) => ({
           name: g.name,
           email: g.email,
-          phone: g.phone || undefined,
+          phone: g.phone || '',
           relationship: g.relationship || 'Guardian',
           priority: index + 1, // Priority based on order
           is_notified: false, // Would check notification status in real implementation
@@ -187,7 +187,7 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
       ).map(tc => ({
         id: tc.id,
         message_title: tc.message_title,
-        message_preview: tc.message_preview || undefined,
+        message_preview: tc.message_preview || '',
         delivery_condition: tc.delivery_condition as 'ON_DATE' | 'ON_DEATH',
         access_token: tc.access_token || '',
         is_available: true,

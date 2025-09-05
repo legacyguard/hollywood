@@ -249,7 +249,7 @@ export function ProgressGroup({
             key={index}
             value={item.value}
             label={item.label}
-            color={item.color}
+            color={item.color || 'primary'}
             size={size as 'lg' | 'md' | 'sm' | 'xl'}
           />
         ) : (
@@ -257,7 +257,7 @@ export function ProgressGroup({
             key={index}
             value={item.value}
             label={item.label}
-            color={item.color}
+            color={item.color || 'primary'}
             height={size as 'lg' | 'md' | 'sm'}
           />
         )

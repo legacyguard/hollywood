@@ -206,7 +206,7 @@ export const FamilyCommunicationCenter: React.FC<
       ];
 
       setChannels(defaultChannels);
-      setActiveChannel(defaultChannels[0]);
+      setActiveChannel(defaultChannels[0] || null);
     }
   }, [allMembers, currentUserId, channels.length]);
 
@@ -222,7 +222,7 @@ export const FamilyCommunicationCenter: React.FC<
       id: `msg-${Date.now()}`,
       senderId: currentUserId,
       senderName: currentUser.name,
-      senderAvatar: currentUser.avatar,
+      senderAvatar: currentUser.avatar || '',
       content,
       type,
       timestamp: new Date(),

@@ -48,7 +48,7 @@ class RealMilestonesService {
       const { data, error } = await supabase
         .from('legacy_milestones')
         .insert({
-          user_id: milestone.user_id,
+          user_id: milestone.userId,
           type: milestone.type,
           title: milestone.title,
           description: milestone.description,
@@ -166,7 +166,7 @@ class RealMilestonesService {
     try {
       // console.log(`Checking milestones for event: ${event.type} for user: ${event.user_id}`);
 
-      const milestones = await this.getUserMilestones(event.user_id);
+      const milestones = await this.getUserMilestones(event.userId);
       const completedMilestones: LegacyMilestone[] = [];
 
       for (const milestone of milestones) {
@@ -394,8 +394,8 @@ class RealMilestonesService {
       // Calculate completion times
       const completionTimes = completed
         .map(m => {
-          if (m.completedAt && m.created_at) {
-            const created = new Date(m.created_at).getTime();
+          if (m.completedAt && m.createdAt) {
+            const created = new Date(m.createdAt).getTime();
             const completedTime = new Date(m.completedAt).getTime();
             return (completedTime - created) / (1000 * 60 * 60); // hours
           }
@@ -442,8 +442,8 @@ class RealMilestonesService {
           milestones.length > 0
             ? (completed.length / milestones.length) * 100
             : 0,
-        mostActiveCategory: mostActiveCategory as string,
-        preferredDifficulty: preferredDifficulty as string,
+        mostActiveCategory: (mostActiveCategory as any) || 'foundation',
+        preferredDifficulty: (preferredDifficulty as any) || 'medium',
         completionTrend: this.calculateCompletionTrend(completed),
         totalProtectionIncrease: completed.reduce(
           (sum, m) => sum + (m.rewards.protectionIncrease || 0),
@@ -559,7 +559,7 @@ class RealMilestonesService {
     switch (milestone.criteria.type) {
       case 'document_count':
         if (event.type === 'document_uploaded') {
-          const currentCount = await this.getUserDocumentCount(event.user_id);
+          const currentCount = await this.getUserDocumentCount(event.userId);
           updatedMilestone.criteria.currentValue = currentCount;
           updatedMilestone.progress.percentage = Math.min(
             100,
@@ -573,7 +573,7 @@ class RealMilestonesService {
       case 'family_members':
         if (event.type === 'family_member_added') {
           const currentCount = await this.getUserFamilyMemberCount(
-            event.user_id
+            event.userId
           );
           updatedMilestone.criteria.currentValue = currentCount;
           updatedMilestone.progress.percentage = Math.min(
@@ -626,7 +626,7 @@ class RealMilestonesService {
 
       // Store celebration notification
       await (supabase as any).from('notifications').insert({
-        user_id: milestone.user_id,
+        user_id: milestone.userId,
         type: 'milestone_completed',
         title: 'Milestone Achieved!',
         message: milestone.celebration.celebrationText,
@@ -652,7 +652,7 @@ class RealMilestonesService {
     try {
       await supabase.functions.invoke('send-email', {
         body: {
-          to: milestone.user_id,
+          to: milestone.userId,
           subject: `🎉 Milestone Achieved: ${milestone.title}`,
           template: 'milestone_celebration',
           data: {

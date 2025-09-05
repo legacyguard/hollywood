@@ -65,13 +65,10 @@ export const AdaptiveLegacyTree: React.FC<AdaptiveLegacyTreeProps> = ({
   documentsCount = 0,
   guardiansCount = 0,
   familyMembersCount = 0,
-  completedMilestones = 0,
-  totalMilestones = 1,
   willProgress = 0,
   timeCapsules = 0,
   personalityMode,
   size = 'medium',
-  variant = 'detailed',
   interactive = true,
   showProgress = true,
   showTooltips = true,
@@ -382,10 +379,10 @@ export const AdaptiveLegacyTree: React.FC<AdaptiveLegacyTreeProps> = ({
         strokeLinecap='round'
         fill='none'
         initial={
-          !shouldReduceMotion ? { pathLength: 0, opacity: 0 } : undefined
+          !shouldReduceMotion ? { pathLength: 0, opacity: 0 } : false
         }
         animate={
-          !shouldReduceMotion ? { pathLength: 1, opacity: 1 } : undefined
+          !shouldReduceMotion ? { pathLength: 1, opacity: 1 } : false
         }
         transition={
           !shouldReduceMotion
@@ -432,8 +429,8 @@ export const AdaptiveLegacyTree: React.FC<AdaptiveLegacyTreeProps> = ({
     // Calculate leaf position based on branch end
     const branchPath = getBranchPath(branch);
     const pathParts = branchPath.split(' ');
-    const endX = parseFloat(pathParts[pathParts.length - 2]);
-    const endY = parseFloat(pathParts[pathParts.length - 1]);
+    const endX = parseFloat(pathParts[pathParts.length - 2] || '0');
+    const endY = parseFloat(pathParts[pathParts.length - 1] || '0');
 
     const leafX = endX + leaf.x;
     const leafY = endY + leaf.y;
@@ -448,8 +445,8 @@ export const AdaptiveLegacyTree: React.FC<AdaptiveLegacyTreeProps> = ({
           y={leafY - 8}
           width={16}
           height={16}
-          initial={!shouldReduceMotion ? { scale: 0, opacity: 0 } : undefined}
-          animate={!shouldReduceMotion ? { scale: 1, opacity: 1 } : undefined}
+          initial={!shouldReduceMotion ? { scale: 0, opacity: 0 } : false}
+          animate={!shouldReduceMotion ? { scale: 1, opacity: 1 } : false}
           transition={
             !shouldReduceMotion
               ? {

@@ -266,20 +266,20 @@ export const FamilyProtectionDashboard: React.FC<
       {/* Header */}
       <motion.div
         className={`bg-gradient-to-br ${personalityContent.bgGradient} rounded-xl border ${personalityContent.borderColor} shadow-lg mb-6`}
-        initial={!shouldReduceMotion ? { opacity: 0, y: 20 } : undefined}
-        animate={!shouldReduceMotion ? { opacity: 1, y: 0 } : undefined}
-        transition={
-          !shouldReduceMotion
-            ? { duration: animConfig.duration, ease: animConfig.ease as any }
-            : undefined
-        }
+        {...(!shouldReduceMotion && {
+          initial: { opacity: 0, y: 20 },
+          animate: { opacity: 1, y: 0 },
+          transition: { duration: animConfig.duration, ease: animConfig.ease as any }
+        })}
       >
         <div className='p-6'>
           <div className='flex items-start justify-between mb-6'>
             <div className='flex items-start gap-4'>
               <motion.div
                 className={`p-3 rounded-xl bg-white/80 backdrop-blur-sm ${personalityContent.accentColor}`}
-                whileHover={!shouldReduceMotion ? { scale: 1.05 } : undefined}
+                {...(!shouldReduceMotion && {
+                  whileHover: { scale: 1.05 }
+                })}
               >
                 <IconComponent className='w-8 h-8' />
               </motion.div>
@@ -416,13 +416,11 @@ export const FamilyProtectionDashboard: React.FC<
 
       {/* Tabs Interface */}
       <motion.div
-        initial={!shouldReduceMotion ? { opacity: 0, y: 20 } : undefined}
-        animate={!shouldReduceMotion ? { opacity: 1, y: 0 } : undefined}
-        transition={
-          !shouldReduceMotion
-            ? { duration: animConfig.duration, delay: 0.1 }
-            : undefined
-        }
+        {...(!shouldReduceMotion && {
+          initial: { opacity: 0, y: 20 },
+          animate: { opacity: 1, y: 0 },
+          transition: { duration: animConfig.duration, delay: 0.1 }
+        })}
       >
         <Tabs
           value={activeTab}
@@ -480,11 +478,11 @@ export const FamilyProtectionDashboard: React.FC<
               {/* Quick Actions */}
               <motion.div
                 className='bg-white/90 backdrop-blur-sm rounded-xl border border-gray-200 shadow-sm p-6'
-                initial={
-                  !shouldReduceMotion ? { opacity: 0, x: 20 } : undefined
-                }
-                animate={!shouldReduceMotion ? { opacity: 1, x: 0 } : undefined}
-                transition={!shouldReduceMotion ? { delay: 0.2 } : undefined}
+                {...(!shouldReduceMotion && {
+                  initial: { opacity: 0, x: 20 },
+                  animate: { opacity: 1, x: 0 },
+                  transition: { delay: 0.2 }
+                })}
               >
                 <h3 className='text-lg font-semibold text-gray-800 mb-4'>
                   {effectiveMode === 'empathetic'

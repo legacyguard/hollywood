@@ -139,12 +139,12 @@ export const FamilyTreeVisualization: React.FC<
 
   const handleDrop = useCallback((event: React.DragEvent) => {
     event.preventDefault();
-    const _nodeData = JSON.parse(
-      event.dataTransfer.getData('application/json')
-    ) as FamilyNode;
+    // Parse node data from drag event
+    JSON.parse(event.dataTransfer.getData('application/json')) as FamilyNode;
     const rect = event.currentTarget.getBoundingClientRect();
-    const _x = event.clientX - rect.left;
-    const _y = event.clientY - rect.top;
+    // Calculate drop position
+    event.clientX - rect.left;
+    event.clientY - rect.top;
 
     // Update node position (in a real implementation, you'd update the family tree state)
     // Moving ${nodeData.name} to position (${x}, ${y})
@@ -165,6 +165,9 @@ export const FamilyTreeVisualization: React.FC<
         const updatedBeneficiaries = [...willData.beneficiaries];
         updatedBeneficiaries[existingBeneficiaryIndex] = {
           ...updatedBeneficiaries[existingBeneficiaryIndex],
+          id: updatedBeneficiaries[existingBeneficiaryIndex].id,
+          name: updatedBeneficiaries[existingBeneficiaryIndex].name,
+          relationship: updatedBeneficiaries[existingBeneficiaryIndex].relationship,
           percentage,
         };
         onUpdateWillData({ beneficiaries: updatedBeneficiaries });
@@ -638,7 +641,7 @@ function buildFamilyTree(willData: WillData, guardians: any[]): FamilyNode[] {
     id: 'testator',
     name: willData.testator_data.fullName || 'Testator',
     relationship: 'other',
-    dateOfBirth: willData.testator_data.dateOfBirth,
+    dateOfBirth: willData.testator_data.dateOfBirth || '',
     isAlive: true,
     generation: 0,
     position: { x: 200, y: 150 }, // Center position
@@ -694,7 +697,7 @@ function getPositionForGeneration(
 }
 
 function visualizeInheritanceFlow(
-  familyTree: FamilyNode[],
+  _familyTree: FamilyNode[],
   willData: WillData
 ): InheritanceMap {
   const distributions = willData.beneficiaries.map(beneficiary => ({

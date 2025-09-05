@@ -1,7 +1,6 @@
 
 import type {
   BoundingBox,
-  DOCUMENT_PATTERNS,
   DocumentClassification,
   DocumentMetadata,
   DocumentType,
@@ -11,6 +10,7 @@ import type {
   ProcessedDocument,
   TextBlock,
 } from '@/types/ocr';
+import { DOCUMENT_PATTERNS } from '@/types/ocr';
 
 // Google Cloud Vision AI client configuration
 interface GoogleCloudVisionResponse {

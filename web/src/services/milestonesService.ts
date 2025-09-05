@@ -167,13 +167,29 @@ export class MilestonesService {
           percentage: (dbMilestone.criteria_is_complete || false) ? 100 : 0,
           completedSteps: (dbMilestone.criteria_is_complete || false) ? 1 : 0,
           totalSteps: 1,
+          stepsCompleted: (dbMilestone.criteria_is_complete || false) ? 1 : 0,
         },
         completedAt: dbMilestone.completed_at || undefined,
         createdAt: dbMilestone.created_at || new Date().toISOString(),
         updatedAt: dbMilestone.updated_at || new Date().toISOString(),
-        metadata: {},
-        rewards: {},
-        triggers: {},
+        metadata: {
+          difficulty: 'medium' as const,
+          estimatedTime: '5 minutes',
+          priority: 'medium' as const,
+          tags: [],
+          version: '1.0',
+        },
+        rewards: {
+          points: 0,
+          badges: [],
+          emotionalReward: '',
+          familyImpactBoost: 0,
+        },
+        triggers: {
+          events: [],
+          conditions: [],
+          autoCheck: false,
+        },
       }));
 
       // Cache the results
@@ -608,7 +624,7 @@ export class MilestonesService {
         'insurance_policy',
       ];
       const hasEssential = essentialDocs.filter(type =>
-        documents.some(doc => doc.type === type)
+        documents.some(doc => (doc as any).type === type || (doc as any).document_type === type)
       );
 
       const basePercentage = (hasEssential.length / essentialDocs.length) * 70;
@@ -643,7 +659,7 @@ export class MilestonesService {
 
     if (error || !data || data.length === 0) return 0;
 
-    const scores = data.map(review => review.score || 0);
+    const scores = data.map(review => (review as any).score || (review as any).rating || 0);
     return scores.reduce((sum, score) => sum + score, 0) / scores.length;
   }
 
@@ -654,7 +670,7 @@ export class MilestonesService {
     try {
       await (supabase as any).from('milestone_celebrations').insert({
         milestone_id: milestone.id,
-        user_id: milestone.user_id,
+        user_id: milestone.userId,
         celebration_data: milestone.celebration,
         created_at: new Date().toISOString(),
       });
@@ -664,14 +680,38 @@ export class MilestonesService {
   }
 
   private async saveMilestone(milestone: LegacyMilestone): Promise<void> {
+    // Map LegacyMilestone to database schema
+    const dbMilestone = {
+      id: milestone.id,
+      user_id: milestone.userId,
+      category: milestone.category,
+      title: milestone.title,
+      description: milestone.description,
+      type: milestone.type as any,
+      criteria_type: milestone.criteria.type,
+      criteria_threshold: String(milestone.criteria.threshold),
+      criteria_current_value: String(milestone.criteria.currentValue),
+      criteria_is_complete: milestone.criteria.isComplete,
+      completed_at: milestone.completedAt || null,
+      celebration_text: milestone.celebration.celebrationText,
+      celebration_family_impact_message: milestone.celebration.familyImpactMessage,
+      celebration_color: milestone.celebration.celebrationColor,
+      celebration_emotional_framing: milestone.celebration.emotionalFraming,
+      celebration_icon: milestone.celebration.celebrationIcon,
+      celebration_should_show: milestone.celebration.shouldShow,
+      level: 'foundation' as const,
+      created_at: milestone.createdAt,
+      updated_at: milestone.updatedAt,
+    };
+
     const { error } = await supabase
       .from('legacy_milestones')
-      .upsert(milestone, { onConflict: 'id' });
+      .upsert(dbMilestone, { onConflict: 'id' });
 
     if (error) throw error;
 
     // Clear cache for this user
-    this.clearUserCache(milestone.user_id);
+    this.clearUserCache(milestone.userId);
   }
 
   private async updateMilestoneProgress(userId: string): Promise<void> {
@@ -843,7 +883,7 @@ export class MilestonesService {
 
     // Calculate completion times
     const completionTimes = completedMilestones.map(m => {
-      const created = new Date(m.created_at).getTime();
+      const created = new Date(m.createdAt).getTime();
       const completed = new Date(m.completedAt || '').getTime();
       return (completed - created) / (1000 * 60 * 60); // hours
     });

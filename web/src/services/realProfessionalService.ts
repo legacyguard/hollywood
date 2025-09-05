@@ -266,7 +266,7 @@ class RealProfessionalService {
           document_id: requestData.document_id,
           estimated_cost: requestData.estimated_cost,
           request_notes: requestData.request_notes,
-          review_type: requestData.review_type,
+          review_type: this.mapReviewType(requestData.review_type),
           specialization_required: requestData.specialization_required,
           user_id: requestData.user_id,
           status: 'pending',

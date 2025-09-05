@@ -128,7 +128,8 @@ export function LegacyGardenVisualization({
   // Generate garden elements based on progress and personality
   useEffect(() => {
     const elements: GardenElement[] = [];
-    const _animConfig = AnimationSystem.getConfig(effectiveMode);
+    // Animation configuration for the effective mode
+    AnimationSystem.getConfig(effectiveMode);
 
     // Seeds for first documents (up to 5) - personality-aware positioning
     const seedSpacing =
@@ -198,7 +199,7 @@ export function LegacyGardenVisualization({
               ? 'text-purple-600'
               : 'text-pink-500',
         emoji:
-          familyEmojis[effectiveMode][i % familyEmojis[effectiveMode].length],
+          familyEmojis[effectiveMode][i % familyEmojis[effectiveMode].length] || '👤',
         unlocked: true,
         milestone: `Family member ${i + 1} protected`,
       });
@@ -213,7 +214,7 @@ export function LegacyGardenVisualization({
         y: 20 + Math.random() * 20,
         size: 'small',
         color: 'text-blue-500',
-        emoji: ['🦋', '🐝', '🐛'][i % 3],
+        emoji: ['🦋', '🐝', '🐛'][i % 3] || '🦋',
         unlocked: true,
         milestone: `Emergency contact ${i + 1} added`,
       });
@@ -244,7 +245,7 @@ export function LegacyGardenVisualization({
         y: 10 + Math.random() * 20,
         size: 'small',
         color: 'text-yellow-600',
-        emoji: ['🐦', '🕊️', '🦅', '🦜'][i % 4],
+        emoji: ['🐦', '🕊️', '🦅', '🦜'][i % 4] || '🐦',
         unlocked: true,
         milestone: `Trust score milestone: ${(i + 1) * 25} points`,
       });
@@ -516,7 +517,7 @@ export function LegacyGardenVisualization({
         initial={
           animated && !shouldReduceMotion
             ? { scale: 0, opacity: 0, y: 20 }
-            : undefined
+            : false
         }
         animate={
           animated && !shouldReduceMotion
@@ -525,7 +526,7 @@ export function LegacyGardenVisualization({
                 opacity: element.unlocked ? 1 : 0.3,
                 y: 0,
               }
-            : undefined
+            : false
         }
         transition={
           animated && !shouldReduceMotion

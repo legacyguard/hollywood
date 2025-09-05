@@ -516,12 +516,10 @@ export const GuardianNotificationCenter: React.FC<
       >
         <div className='flex items-center justify-center h-32'>
           <motion.div
-            animate={!shouldReduceMotion ? { rotate: 360 } : undefined}
-            transition={
-              !shouldReduceMotion
-                ? { duration: 2, repeat: Infinity, ease: 'linear' }
-                : undefined
-            }
+            {...(!shouldReduceMotion && {
+              animate: { rotate: 360 },
+              transition: { duration: 2, repeat: Infinity, ease: 'linear' }
+            })}
           >
             <Bell className='w-8 h-8 text-gray-400' />
           </motion.div>
@@ -533,13 +531,11 @@ export const GuardianNotificationCenter: React.FC<
   return (
     <motion.div
       className={`bg-gradient-to-br ${personalityContent.bgGradient} rounded-xl border ${personalityContent.borderColor} shadow-sm ${className}`}
-      initial={!shouldReduceMotion ? { opacity: 0, y: 20 } : undefined}
-      animate={!shouldReduceMotion ? { opacity: 1, y: 0 } : undefined}
-      transition={
-        !shouldReduceMotion
-          ? { duration: animConfig.duration, ease: animConfig.ease as any }
-          : undefined
-      }
+      {...(!shouldReduceMotion && {
+        initial: { opacity: 0, y: 20 },
+        animate: { opacity: 1, y: 0 },
+        transition: { duration: animConfig.duration, ease: animConfig.ease as any }
+      })}
     >
       {/* Header */}
       <div className='p-6 pb-4'>
@@ -547,7 +543,9 @@ export const GuardianNotificationCenter: React.FC<
           <div className='flex items-start gap-3'>
             <motion.div
               className={`p-2 rounded-lg bg-white/80 backdrop-blur-sm ${personalityContent.accentColor}`}
-              whileHover={!shouldReduceMotion ? { scale: 1.05 } : undefined}
+              {...(!shouldReduceMotion && {
+                whileHover: { scale: 1.05 }
+              })}
             >
               <IconComponent className='w-6 h-6' />
             </motion.div>
@@ -768,13 +766,11 @@ export const GuardianNotificationCenter: React.FC<
                         ? 'border-blue-500'
                         : 'border-gray-300'
                 } ${!notification.read_at ? 'bg-blue-50/80' : ''}`}
-                initial={
-                  !shouldReduceMotion ? { opacity: 0, y: 10 } : undefined
-                }
-                animate={!shouldReduceMotion ? { opacity: 1, y: 0 } : undefined}
-                transition={
-                  !shouldReduceMotion ? { delay: index * 0.05 } : undefined
-                }
+                {...(!shouldReduceMotion && {
+                  initial: { opacity: 0, y: 10 },
+                  animate: { opacity: 1, y: 0 },
+                  transition: { delay: index * 0.05 }
+                })}
               >
                 <div className='flex items-start justify-between'>
                   <div className='flex-1'>
