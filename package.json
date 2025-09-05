@@ -38,7 +38,10 @@
     "type-check:strict": "tsc --noEmit --strict",
     "build:force": "npm run build || true",
     "fix:types": "node scripts/nuclear-ts-fix.cjs",
-    "lint:staged": "lint-staged"
+    "lint:staged": "lint-staged",
+    "format:check": "prettier --check .",
+    "test:coverage": "turbo run test -- --coverage",
+    "test:e2e": "cd web && npm run test:e2e"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
