@@ -183,7 +183,7 @@ function EmailImportDialog({
   onImportComplete,
 }: EmailImportDialogProps) {
   const { t } = useTranslation('ui/email-import');
-  
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className='max-w-5xl max-h-[90vh] overflow-y-auto p-0'>
@@ -225,7 +225,7 @@ function ImportSummaryDialog({
   onClose,
 }: ImportSummaryDialogProps) {
   const { t } = useTranslation('ui/email-import');
-  
+
   if (!result) return null;
 
   return (

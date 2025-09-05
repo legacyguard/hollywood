@@ -9,12 +9,12 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 interface ExtractedString {
-  value: string;
+  category: 'action' | 'content' | 'error' | 'label' | 'ui';
+  context: string;
   file: string;
   line: number;
-  context: string;
   suggestedKey: string;
-  category: 'ui' | 'content' | 'error' | 'action' | 'label';
+  value: string;
 }
 
 class HardcodedStringExtractor {
@@ -91,7 +91,6 @@ class HardcodedStringExtractor {
   private generateTranslationKey(str: string, category: string, file: string): string {
     // Get component/page name from file path
     const fileName = path.basename(file, '.tsx').toLowerCase();
-    
     // Clean and convert string to key format
     const cleanStr = str
       .toLowerCase()
@@ -120,7 +119,6 @@ class HardcodedStringExtractor {
   private extractStringsFromFile(filePath: string): void {
     try {
       const content = fs.readFileSync(filePath, 'utf8');
-      const lines = content.split('\n');
 
       // Regex patterns for different string contexts
       const patterns = [
@@ -155,7 +153,6 @@ class HardcodedStringExtractor {
         let match;
         while ((match = pattern.regex.exec(content)) !== null) {
           const stringValue = pattern.context === 'object_property' ? match[2] : match[2];
-          
           if (this.isHardcodedString(stringValue)) {
             const lineNumber = content.substring(0, match.index).split('\n').length;
             const category = this.categorizeString(stringValue, pattern.context);

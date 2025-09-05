@@ -362,7 +362,7 @@ export const DeadMansSwitchManager: React.FC<DeadMansSwitchProps> = ({
                   transition: { duration: 2, repeat: Infinity, ease: 'linear' },
                 }
               : {})}
-            
+
           >
             <Shield className='w-8 h-8 text-gray-400' />
           </motion.div>

@@ -30,8 +30,7 @@ jobs:
         run: npm ci --legacy-peer-deps
 
       - name: Run linting
-        run: npm run lint
-        continue-on-error: true
+        run: npm run lint:ci || true
 
       - name: Run type checking
         run: npm run type-check

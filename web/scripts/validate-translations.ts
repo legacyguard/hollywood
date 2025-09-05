@@ -11,12 +11,12 @@ import * as path from 'path';
 interface ValidationResult {
   file: string;
   hardcodedStrings: Array<{
-    line: number;
     content: string;
+    line: number;
     suggestion?: string;
   }>;
-  unusedKeys: string[];
   missingKeys: string[];
+  unusedKeys: string[];
 }
 
 class TranslationValidator {
@@ -59,7 +59,7 @@ class TranslationValidator {
   private extractKeys(obj: any, prefix: string): void {
     Object.keys(obj).forEach(key => {
       const fullKey = prefix ? `${prefix}.${key}` : key;
-      
+
       if (typeof obj[key] === 'object' && obj[key] !== null) {
         this.extractKeys(obj[key], fullKey);
       } else {
@@ -103,10 +103,10 @@ class TranslationValidator {
       // Find potential hardcoded strings
       const stringRegex = /(['"`])([^'"`\n]{3,})\1/g;
       let stringMatch;
-      
+
       while ((stringMatch = stringRegex.exec(line)) !== null) {
         const stringValue = stringMatch[2];
-        
+
         // Skip if it's a translation function call
         if (line.includes(`t('${stringValue}')`) || line.includes(`t("${stringValue}")`)) {
           continue;
@@ -154,7 +154,7 @@ class TranslationValidator {
       .replace(/[^a-z0-9\s]/g, '')
       .replace(/\s+/g, '.')
       .substring(0, 40);
-    
+
     return `common.${cleanText}`;
   }
 
@@ -186,7 +186,7 @@ class TranslationValidator {
 
   private findUnusedKeys(): string[] {
     const unusedKeys: string[] = [];
-    
+
     this.translationKeys.forEach(key => {
       if (!this.usedKeys.has(key)) {
         unusedKeys.push(key);
@@ -240,7 +240,7 @@ class TranslationValidator {
     console.log(`   📚 Translation keys available: ${report.summary.translationKeysTotal}`);
     console.log(`   ✅ Translation keys in use: ${report.summary.keysInUse}`);
     console.log(`   🗑️  Unused translation keys: ${report.summary.unusedKeys}`);
-    
+
     if (report.topFiles.length > 0) {
       console.log('\n🔥 Top files needing attention:');
       report.topFiles.forEach(file => {

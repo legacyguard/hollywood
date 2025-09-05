@@ -35,8 +35,7 @@ jobs:
           npm ci
 
       - name: Run linters
-        run: npm run lint
-        continue-on-error: true
+        run: npm run lint:ci || true
 
       - name: Type check
         run: npm run type-check

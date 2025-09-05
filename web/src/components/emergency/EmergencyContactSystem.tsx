@@ -474,7 +474,7 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
                   transition: { duration: 2, repeat: Infinity, ease: 'linear' },
                 }
               : {})}
-            
+
           >
             <Users className='w-8 h-8 text-gray-400' />
           </motion.div>

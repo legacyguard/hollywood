@@ -1,5 +1,3 @@
-
-import { Database, Tables, Json, DocumentUploadRequest, AISuggestions } from '@shared/types/database';
 /**
  * Example: Migrated Document List Component
  * Shows how to migrate from direct API calls to using centralized services
@@ -18,8 +16,9 @@ type SupabaseDocument = {
 /**
  * BEFORE: Old way using direct fetch calls
  */
-const _OldDocumentList = () => {
-  const [_documents, _setDocuments] = useState<any[]>([]);
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const OldDocumentList = () => {
+  const [_documents, _setDocuments] = useState<SupabaseDocument[]>([]);
   const [_loading, _setLoading] = useState(true);
 
   useEffect(() => {
@@ -33,11 +32,11 @@ const _OldDocumentList = () => {
           },
         });
         const data = await response.json();
-        setDocuments(data.documents);
+        _setDocuments(data.documents);
       } catch (error) {
         console.error('Failed to fetch documents', error);
       } finally {
-        setLoading(false);
+        _setLoading(false);
       }
     };
 
@@ -59,7 +58,7 @@ const _OldDocumentList = () => {
       }
 
       // Manually update state
-      setDocuments(docs => docs.filter(doc => doc.id !== id));
+      _setDocuments(docs => docs.filter(doc => doc.id !== id));
     } catch (error) {
       console.error('Delete failed', error);
     }

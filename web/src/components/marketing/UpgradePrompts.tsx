@@ -512,7 +512,7 @@ export const FeatureUpgradePrompt: React.FC<FeatureUpgradePromptProps> = ({
   onUpgrade,
 }) => {
   const { t } = useTranslation('ui/upgrade-prompts');
-  
+
   const getFeatureInfo = () => {
     switch (feature) {
       case 'professional-review':

@@ -9,10 +9,10 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 interface TestResult {
-  test: string;
-  status: 'PASS' | 'FAIL' | 'WARNING';
-  message: string;
   details?: string;
+  message: string;
+  status: 'FAIL' | 'PASS' | 'WARNING';
+  test: string;
 }
 
 class TranslationTester {
@@ -84,21 +84,21 @@ class TranslationTester {
       test: 'Translation File Structure',
       status: existingFiles === expectedFiles.length ? 'PASS' : 'WARNING',
       message: `${existingFiles}/${expectedFiles.length} expected translation files exist`,
-      details: existingFiles < expectedFiles.length ? 
+      details: existingFiles < expectedFiles.length ?
         `Missing: ${expectedFiles.filter(f => !this.translationFiles[f]).join(', ')}` : undefined
     });
   }
 
   private testI18nConfiguration(): void {
     const configPath = '/Users/luborfedak/Documents/Github/hollywood/web/src/lib/i18n/config.ts';
-    
+
     if (fs.existsSync(configPath)) {
       const content = fs.readFileSync(configPath, 'utf8');
-      
+
       // Test if configuration supports our languages
       const hasEnglish = content.includes("'en'") || content.includes('"en"');
       const hasSlovak = content.includes("'sk'") || content.includes('"sk"');
-      
+
       if (hasEnglish && hasSlovak) {
         this.results.push({
           test: 'i18n Configuration',
@@ -168,17 +168,17 @@ class TranslationTester {
 
   private extractKeys(obj: any, prefix = ''): string[] {
     const keys: string[] = [];
-    
+
     for (const [key, value] of Object.entries(obj)) {
       const fullKey = prefix ? `${prefix}.${key}` : key;
-      
+
       if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
         keys.push(...this.extractKeys(value, fullKey));
       } else {
         keys.push(fullKey);
       }
     }
-    
+
     return keys;
   }
 
@@ -208,7 +208,7 @@ class TranslationTester {
 
     componentsToTest.forEach(({ file, expectedNamespace, expectedKeys }) => {
       const fullPath = path.join('/Users/luborfedak/Documents/Github/hollywood/web', file);
-      
+
       if (!fs.existsSync(fullPath)) {
         this.results.push({
           test: 'Component Integration',
@@ -219,13 +219,13 @@ class TranslationTester {
       }
 
       const content = fs.readFileSync(fullPath, 'utf8');
-      
+
       // Check if component uses useTranslation with correct namespace
       const hasUseTranslation = content.includes('useTranslation');
       const hasCorrectNamespace = content.includes(`'${expectedNamespace}'`) || content.includes(`"${expectedNamespace}"`);
-      
+
       // Check if component uses expected translation keys
-      const usedKeys = expectedKeys.filter(key => 
+      const usedKeys = expectedKeys.filter(key =>
         content.includes(`t('${key}'`) || content.includes(`t("${key}"`)
       );
 
@@ -250,13 +250,13 @@ class TranslationTester {
   private testFallbackMechanism(): void {
     // Test if main i18n config has proper fallback
     const configPath = '/Users/luborfedak/Documents/Github/hollywood/web/src/lib/i18n/config.ts';
-    
+
     if (fs.existsSync(configPath)) {
       const content = fs.readFileSync(configPath, 'utf8');
-      
+
       const hasFallbackLng = content.includes('fallbackLng') || content.includes('fallbackLanguage');
       const fallsBackToEn = content.includes("fallbackLng: 'en'") || content.includes('fallbackLng:"en"');
-      
+
       if (hasFallbackLng && fallsBackToEn) {
         this.results.push({
           test: 'Fallback Mechanism',

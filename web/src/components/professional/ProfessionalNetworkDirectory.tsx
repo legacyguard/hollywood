@@ -561,7 +561,7 @@ export function ProfessionalNetworkDirectory({
                 </span>
                 <span className='flex items-center gap-1'>
                   <MapPin className='h-3 w-3' />
-                  {(professional.licensed_states?.length || 0) !== 1 
+                  {(professional.licensed_states?.length || 0) !== 1
                     ? t('professionalCard.statesCountPlural', { count: professional.licensed_states?.length || 0 })
                     : t('professionalCard.statesCount', { count: professional.licensed_states?.length || 0 })
                   }
@@ -1451,8 +1451,8 @@ export function ProfessionalNetworkDirectory({
                             {t('modal.credentials.yearsInPractice', { count: selectedProfessional.experience_years })}
                           </p>
                           <p className='text-muted-foreground'>
-                            {t('modal.credentials.memberSince', { 
-                              year: new Date(selectedProfessional.created_at).getFullYear() 
+                            {t('modal.credentials.memberSince', {
+                              year: new Date(selectedProfessional.created_at).getFullYear()
                             })}
                           </p>
                         </div>

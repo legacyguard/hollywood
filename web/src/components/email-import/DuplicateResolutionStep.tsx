@@ -73,8 +73,8 @@ export function DuplicateResolutionStep({
       [documentId]: {
         documentId,
         action,
-        ...(action === 'rename' && customFilenames[documentId] 
-          ? { newFilename: customFilenames[documentId] } 
+        ...(action === 'rename' && customFilenames[documentId]
+          ? { newFilename: customFilenames[documentId] }
           : {}),
       },
     }));

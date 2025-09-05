@@ -25,11 +25,11 @@ export const LoadingProvider: React.FC<{
   };
 
   return (
-    <LoadingContext.Provider 
-      value={{ 
-        isLoading, 
-        ...(loadingText ? { loadingText } : {}), 
-        setLoading 
+    <LoadingContext.Provider
+      value={{
+        isLoading,
+        ...(loadingText ? { loadingText } : {}),
+        setLoading
       }}
     >
       {children}
