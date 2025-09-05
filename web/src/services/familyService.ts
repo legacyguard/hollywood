@@ -1,3 +1,4 @@
+
 /**
  * Family Service
  * Real database integration for family member management, invitations, and collaboration
@@ -12,16 +13,19 @@ import type {
   DbFamilyMemberUpdate,
   EmergencyAccessRequest,
   FamilyActivity,
+  FamilyCalendarEvent,
   FamilyInvitation,
   FamilyMember,
   FamilyProtectionStatus,
   FamilyStats,
+  UpdateFamilyMemberRequest,
+} from '@/integrations/supabase/database-aligned-types';
+import {
   isValidAccessLevel,
   isValidFamilyRole,
   isValidRelationship,
   mapApplicationToDbFamilyMember,
   mapDbFamilyMemberToApplication,
-  UpdateFamilyMemberRequest,
 } from '@/integrations/supabase/database-aligned-types';
 import type { Json } from '@/integrations/supabase/types';
 
@@ -211,7 +215,7 @@ export class FamilyService {
       if (updates.permissions !== undefined)
         updateData.permissions = updates.permissions as unknown as Json;
       if (updates.phone !== undefined) updateData.phone = updates.phone;
-      if (updates.address !== undefined) updateData.address = updates.address;
+      if (updates.address !== undefined) updateData.address = updates.address as unknown as Json;
       if (updates.emergencyContact !== undefined)
         updateData.emergency_contact = updates.emergencyContact;
       if (updates.accessLevel !== undefined)
@@ -219,7 +223,7 @@ export class FamilyService {
       if (updates.isActive !== undefined)
         updateData.is_active = updates.isActive;
       if (updates.preferences !== undefined)
-        updateData.preferences = updates.preferences;
+        updateData.preferences = updates.preferences as unknown as Json;
 
       updateData.updated_at = new Date().toISOString();
 
@@ -726,8 +730,8 @@ export class FamilyService {
   private async logFamilyActivity(
     familyOwnerId: string,
     actorId: string,
-    actionType: DbFamilyActivityLog['action_type'],
-    targetType: DbFamilyActivityLog['target_type'],
+    actionType: FamilyActivity['actionType'],
+    targetType: FamilyActivity['targetType'],
     targetId: string,
     details: Record<string, any>
   ): Promise<void> {
@@ -864,7 +868,15 @@ export class FamilyService {
         return [];
       }
 
-      return events || [];
+      const mappedEvents = (events || []).map((event: any) => ({
+        ...event,
+        createdBy: event.created_by_id || '',
+        date: new Date(event.scheduled_at),
+        notifyMembers: Array.isArray(event.attendees) ? event.attendees : [],
+        priority: event.priority || 'medium',
+      }));
+      
+      return mappedEvents as FamilyCalendarEvent[];
     } catch (error) {
       console.error('Failed to fetch calendar events:', error);
       return [];
@@ -1019,7 +1031,15 @@ export class FamilyService {
       // Clear cache
       familyDataCache.invalidatePattern(new RegExp(`family_.*${userId}.*`));
 
-      return event;
+      const mappedEvent = {
+        ...event,
+        createdBy: event.created_by_id || '',
+        date: new Date(event.scheduled_at),
+        notifyMembers: Array.isArray(event.attendees) ? event.attendees : [],
+        priority: (event as any).priority || 'medium',
+      };
+
+      return mappedEvent as unknown as FamilyCalendarEvent;
     } catch (error) {
       console.error('Failed to create calendar event:', error);
       throw error;
@@ -1056,7 +1076,15 @@ export class FamilyService {
         return [];
       }
 
-      return events || [];
+      const mappedEvents = (events || []).map((event: any) => ({
+        ...event,
+        createdBy: event.created_by_id || '',
+        date: new Date(event.scheduled_at),
+        notifyMembers: Array.isArray(event.attendees) ? event.attendees : [],
+        priority: event.priority || 'medium',
+      }));
+      
+      return mappedEvents as FamilyCalendarEvent[];
     } catch (error) {
       console.error('Failed to fetch calendar events:', error);
       return [];

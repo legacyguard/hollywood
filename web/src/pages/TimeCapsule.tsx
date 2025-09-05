@@ -1,3 +1,4 @@
+
 import { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { DashboardLayout } from '@/components/DashboardLayout';
@@ -57,22 +58,42 @@ export default function TimeCapsulePage() {
 
       if (guardiansError) throw guardiansError;
 
-      setTimeCapsules(capsulesData || []);
-      setGuardians(guardiansData || []);
+      // Map database results to application types
+      const mappedCapsules = (capsulesData || []).map(capsule => ({
+        ...capsule,
+        delivery_attempts: (capsule as any).delivery_attempts || 0,
+        file_type: ((capsule as any).file_type || 'video') as 'audio' | 'video',
+        recipient_email: (capsule as any).recipient_email || '',
+        recipient_name: (capsule as any).recipient_name || '',
+        status: (capsule.is_delivered ? 'DELIVERED' : 'PENDING') as 'PENDING' | 'DELIVERED' | 'CANCELLED' | 'FAILED',
+        storage_path: (capsule as any).storage_path || '',
+      }));
+      
+      const mappedGuardians = (guardiansData || []).map(guardian => ({
+        ...guardian,
+        can_access_financial_docs: (guardian as any).can_access_financial_docs ?? false,
+        can_access_health_docs: (guardian as any).can_access_health_docs ?? false,
+        can_trigger_emergency: (guardian as any).can_trigger_emergency ?? false,
+        is_child_guardian: (guardian as any).is_child_guardian ?? false,
+        is_will_executor: (guardian as any).is_will_executor ?? false,
+        emergency_contact_priority: guardian.emergency_contact_priority ?? 1,
+      }));
+      
+      setTimeCapsules(mappedCapsules as TimeCapsule[]);
+      setGuardians(mappedGuardians as Guardian[]);
 
       // Calculate stats
-      const capsules = capsulesData || [];
       const newStats: TimeCapsuleStats = {
-        total: capsules.length,
-        pending: capsules.filter(c => c.status === 'PENDING').length,
-        delivered: capsules.filter(c => c.is_delivered).length,
-        scheduled_for_date: capsules.filter(
+        total: mappedCapsules.length,
+        pending: mappedCapsules.filter(c => c.status === 'PENDING').length,
+        delivered: mappedCapsules.filter(c => c.is_delivered).length,
+        scheduled_for_date: mappedCapsules.filter(
           c => c.delivery_condition === 'ON_DATE' && !c.is_delivered
         ).length,
-        scheduled_on_death: capsules.filter(
+        scheduled_on_death: mappedCapsules.filter(
           c => c.delivery_condition === 'ON_DEATH' && !c.is_delivered
         ).length,
-        failed: capsules.filter(c => c.status === 'FAILED').length,
+        failed: mappedCapsules.filter(c => c.status === 'FAILED').length,
       };
       setStats(newStats);
     } catch (error) {
@@ -140,6 +161,8 @@ export default function TimeCapsulePage() {
 
   // Handle capsule deletion
   const handleDeleteCapsule = async (capsuleId: string) => {
+    if (!userId) return;
+    
     try {
       const supabase = await createSupabaseClient();
 
@@ -227,7 +250,7 @@ export default function TimeCapsulePage() {
                     <p className='text-2xl font-bold'>{stats.total}</p>
                   </div>
                   <Icon
-                    name='archive'
+                    name='folder'
                     className='w-5 h-5 text-muted-foreground'
                   />
                 </div>
@@ -335,7 +358,7 @@ export default function TimeCapsulePage() {
                     Create Your First Time Capsule
                   </Button>
                   <Button variant='outline' size='lg'>
-                    <Icon name='play-circle' className='w-5 h-5 mr-2' />
+                    <Icon name='play' className='w-5 h-5 mr-2' />
                     Watch Demo
                   </Button>
                 </div>

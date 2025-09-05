@@ -1,3 +1,4 @@
+
 import { createClient } from '@supabase/supabase-js';
 import EmergencyDetectionEngine from './detection-engine';
 import GuardianNotificationService from './guardian-notifier';

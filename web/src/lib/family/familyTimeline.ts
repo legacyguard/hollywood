@@ -1,3 +1,4 @@
+
 /**
  * Interactive Family Timeline Visualization for LegacyGuard
  * Provides comprehensive family history and document association visualization

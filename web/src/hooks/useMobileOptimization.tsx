@@ -1,3 +1,4 @@
+
 /**
  * Mobile Optimization React Hooks
  * Custom hooks for responsive design and mobile performance optimizations

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import {
   Label,
@@ -16,7 +17,7 @@ import { Check } from 'lucide-react-native';
  * ```tsx
  * <Checkbox
  *   size="md"
- *   variant="primary"
+ *   theme="primary"
  *   label="Enable notifications"
  *   onCheckedChange={(checked) => console.log(checked)}
  * />

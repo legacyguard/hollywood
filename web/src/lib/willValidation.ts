@@ -1,3 +1,4 @@
+
 /**
  * Will Validation System
  * Comprehensive validation for will generation and legal compliance
@@ -62,7 +63,7 @@ export class WillValidationService {
 
     // 6. Guardian Validation (for minor children)
     const guardianErrors = this.validateGuardians(
-      userData.guardians,
+      userData.guardians || [],
       userData.family
     );
     errors.push(...guardianErrors.errors);
@@ -112,7 +113,7 @@ export class WillValidationService {
    * Validate personal information
    */
   private validatePersonalInformation(
-    personal: Record<string, unknown>,
+    personal: Record<string, any>,
     config: WillJurisdictionConfig
   ) {
     const errors: ValidationError[] = [];
@@ -192,7 +193,7 @@ export class WillValidationService {
           code: 'INVALID_FORMAT',
           message: `Invalid ${config.jurisdiction === 'CZ' ? 'rodné číslo' : 'rodné číslo'} format`,
           severity: 'error',
-          jurisdictionSpecific: true,
+          // jurisdictionSpecific: true, // Property not available in ValidationError
         });
       }
     }
@@ -203,7 +204,7 @@ export class WillValidationService {
   /**
    * Validate family information
    */
-  private validateFamilyInformation(family: Record<string, unknown>) {
+  private validateFamilyInformation(family: Record<string, any>) {
     const errors: ValidationError[] = [];
     const warnings: ValidationError[] = [];
 
@@ -222,7 +223,7 @@ export class WillValidationService {
     // Validate children information
     if (family.children && Array.isArray(family.children)) {
       family.children.forEach(
-        (child: Record<string, unknown>, index: number) => {
+        (child: Record<string, any>, index: number) => {
           if (!child.fullName?.trim()) {
             errors.push({
               field: `family.children[${index}].fullName`,
@@ -255,7 +256,7 @@ export class WillValidationService {
    */
   private validateBeneficiaries(
     beneficiaries: BeneficiaryInfo[],
-    family: Record<string, unknown>,
+    family: Record<string, any>,
     config: WillJurisdictionConfig
   ) {
     const errors: ValidationError[] = [];
@@ -369,7 +370,7 @@ export class WillValidationService {
    */
   private validateForcedHeirship(
     beneficiaries: BeneficiaryInfo[],
-    family: Record<string, unknown>,
+    family: Record<string, any>,
     config: WillJurisdictionConfig
   ): ValidationError[] {
     const errors: ValidationError[] = [];
@@ -378,7 +379,7 @@ export class WillValidationService {
       const hasSpouse = family.spouse !== undefined;
       const hasChildren = family.children && family.children.length > 0;
       const hasMinorChildren = family.children?.some(
-        (c: Record<string, unknown>) => c.isMinor
+        (c: Record<string, any>) => c.isMinor
       );
 
       // Czech/Slovak forced heirship rules
@@ -398,7 +399,7 @@ export class WillValidationService {
               'Spouse must be included as a beneficiary under forced heirship rules',
             severity: 'error',
             legalReference: 'Forced heirship provisions',
-            jurisdictionSpecific: true,
+            // jurisdictionSpecific: true, // Property not available in ValidationError
           });
         }
 
@@ -410,7 +411,7 @@ export class WillValidationService {
               'Minor children must be included as beneficiaries under forced heirship rules',
             severity: 'error',
             legalReference: 'Protection of minor heirs',
-            jurisdictionSpecific: true,
+            // jurisdictionSpecific: true, // Property not available in ValidationError
           });
         }
       }
@@ -489,7 +490,7 @@ export class WillValidationService {
   /**
    * Validate executors
    */
-  private validateExecutors(executors: Record<string, unknown>[]) {
+  private validateExecutors(executors: Record<string, any>[]) {
     const errors: ValidationError[] = [];
     const warnings: ValidationError[] = [];
 
@@ -560,14 +561,14 @@ export class WillValidationService {
    * Validate guardians for minor children
    */
   private validateGuardians(
-    guardians: Record<string, unknown>[],
-    family: Record<string, unknown>
+    guardians: Record<string, any>[],
+    family: Record<string, any>
   ) {
     const errors: ValidationError[] = [];
     const warnings: ValidationError[] = [];
 
     const hasMinorChildren = family.children?.some(
-      (child: Record<string, unknown>) => child.isMinor
+      (child: Record<string, any>) => child.isMinor
     );
 
     if (hasMinorChildren && (!guardians || guardians.length === 0)) {
@@ -645,7 +646,7 @@ export class WillValidationService {
         message: `This jurisdiction requires ${config.legalRequirements.witnessRequirements.minimumCount} witnesses for will execution`,
         severity: 'warning',
         legalReference: 'Witness requirements',
-        jurisdictionSpecific: true,
+        // jurisdictionSpecific: true, // Property not available in ValidationError
       });
     }
 
@@ -669,7 +670,7 @@ export class WillValidationService {
         const value = this.getDataValue(
           userData,
           variable.key,
-          variable.dataSource
+          variable.dataSource || 'user'
         );
         if (this.isEmpty(value)) {
           missing.push(variable.key);
@@ -705,8 +706,8 @@ export class WillValidationService {
     return age;
   }
 
-  private validateAddress(address: Record<string, unknown>): boolean {
-    return (
+  private validateAddress(address: Record<string, any>): boolean {
+    return !!(
       address &&
       typeof address.street === 'string' &&
       address.street.trim() &&
@@ -734,7 +735,7 @@ export class WillValidationService {
     return true; // Other jurisdictions
   }
 
-  private isEmpty(value: unknown): boolean {
+  private isEmpty(value: any): boolean {
     return (
       value === null ||
       value === undefined ||
@@ -766,7 +767,7 @@ export class WillValidationService {
     }
   }
 
-  private getNestedValue(obj: Record<string, unknown>, path: string): unknown {
+  private getNestedValue(obj: Record<string, any>, path: string): unknown {
     if (!obj || !path) return null;
     return path.split('.').reduce((current, prop) => current?.[prop], obj);
   }

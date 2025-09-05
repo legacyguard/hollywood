@@ -1,3 +1,4 @@
+
 /**
  * Milestone Celebration Component
  * Handles milestone completion celebrations with family impact messaging

@@ -1,3 +1,4 @@
+
 import React, { type ReactNode } from 'react';
 import { motion, type Variants } from 'framer-motion';
 
@@ -274,7 +275,7 @@ export const MicroAnimation: React.FC<MicroAnimationProps> = ({
       whileTap='tap'
       whileFocus='focus'
       exit='exit'
-      onAnimationComplete={onAnimationComplete}
+      {...(onAnimationComplete ? { onAnimationComplete } : {})}
       style={{
         transformOrigin: 'center',
         backfaceVisibility: 'hidden', // Prevent flickering

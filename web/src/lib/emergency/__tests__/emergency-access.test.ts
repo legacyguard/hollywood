@@ -1,3 +1,4 @@
+
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { EmergencyAccessControl } from '../access-control';
 import { EmergencyDetectionEngine } from '../detection-engine';

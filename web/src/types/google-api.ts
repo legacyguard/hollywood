@@ -1,3 +1,4 @@
+
 /**
  * Google API Type Definitions
  * TypeScript interfaces for Google APIs used in the application

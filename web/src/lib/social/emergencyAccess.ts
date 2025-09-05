@@ -1,3 +1,4 @@
+
 /**
  * Emergency Access Service
  * Phase 8: Social Collaboration & Family Features

@@ -1,3 +1,4 @@
+
 /**
  * Quick Insights Engine
  * Provides immediate value demonstration after document upload

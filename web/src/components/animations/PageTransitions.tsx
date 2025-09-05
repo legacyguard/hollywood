@@ -1,3 +1,4 @@
+
 // Page Transitions - Advanced page transition system with Sofia's personality adaptation
 // Provides seamless navigation experience that adapts to user preferences
 
@@ -381,9 +382,13 @@ export const BreadcrumbTransition: React.FC<BreadcrumbTransitionProps> = ({
   return (
     <motion.nav
       className='flex items-center space-x-2 text-sm'
-      variants={shouldReduceMotion ? undefined : containerVariants}
-      initial={shouldReduceMotion ? undefined : 'initial'}
-      animate={shouldReduceMotion ? undefined : 'animate'}
+      {...(shouldReduceMotion
+        ? {}
+        : {
+            variants: containerVariants,
+            initial: 'initial',
+            animate: 'animate',
+          })}
     >
       {items.map((item, index) => (
         <React.Fragment key={index}>
@@ -393,8 +398,8 @@ export const BreadcrumbTransition: React.FC<BreadcrumbTransitionProps> = ({
                 ? 'text-gray-900 font-medium'
                 : 'text-gray-500 hover:text-gray-700 cursor-pointer'
             } transition-colors`}
-            variants={shouldReduceMotion ? undefined : itemVariants}
-            onClick={() => onItemClick?.(index)}
+            {...(shouldReduceMotion ? {} : { variants: itemVariants })}
+            {...(onItemClick ? { onClick: () => onItemClick(index) } : {})}
           >
             {item.label}
           </motion.span>
@@ -402,7 +407,7 @@ export const BreadcrumbTransition: React.FC<BreadcrumbTransitionProps> = ({
           {index < items.length - 1 && (
             <motion.span
               className='text-gray-400'
-              variants={shouldReduceMotion ? undefined : itemVariants}
+              {...(shouldReduceMotion ? {} : { variants: itemVariants })}
             >
               /
             </motion.span>

@@ -1,3 +1,4 @@
+
 import { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { DashboardLayout } from '@/components/DashboardLayout';
@@ -54,12 +55,21 @@ export default function ProtocolSettingsPage() {
       }
 
       if (settingsData) {
-        setSettings(settingsData);
+        // Map database fields to application interface
+        const mappedSettings = {
+          ...settingsData,
+          inactivity_period_months: settingsData.inactivity_threshold || 6,
+          is_shield_enabled: settingsData.is_enabled || false,
+          last_activity_check: settingsData.updated_at,
+          required_guardians_for_activation: 2, // Default value
+          shield_status: (settingsData.is_enabled ? 'active' : 'inactive') as 'active' | 'inactive' | 'pending_verification',
+        } as FamilyShieldSettings;
+        
+        setSettings(mappedSettings);
         setFormData({
-          inactivity_period_months: settingsData.inactivity_period_months,
-          required_guardians_for_activation:
-            settingsData.required_guardians_for_activation,
-          is_shield_enabled: settingsData.is_shield_enabled,
+          inactivity_period_months: mappedSettings.inactivity_period_months,
+          required_guardians_for_activation: mappedSettings.required_guardians_for_activation,
+          is_shield_enabled: mappedSettings.is_shield_enabled,
         });
       }
 
@@ -73,7 +83,16 @@ export default function ProtocolSettingsPage() {
 
       if (guardiansError) throw guardiansError;
 
-      setGuardians(guardiansData || []);
+      const mappedGuardians = (guardiansData || []).map(guardian => ({
+        ...guardian,
+        can_access_financial_docs: (guardian as any).can_access_financial_docs ?? false,
+        can_access_health_docs: (guardian as any).can_access_health_docs ?? false,
+        can_trigger_emergency: (guardian as any).can_trigger_emergency ?? false,
+        is_child_guardian: (guardian as any).is_child_guardian ?? false,
+        is_will_executor: (guardian as any).is_will_executor ?? false,
+        emergency_contact_priority: guardian.emergency_contact_priority ?? 1,
+      }));
+      setGuardians(mappedGuardians as Guardian[]);
     } catch (error) {
       console.error('Error fetching data:', error);
       toast.error('Failed to load settings');
@@ -144,7 +163,16 @@ export default function ProtocolSettingsPage() {
 
       if (result.error) throw result.error;
 
-      setSettings(result.data);
+      // Map database result to application interface
+      const mappedResult = {
+        ...result.data,
+        inactivity_period_months: result.data.inactivity_threshold || 6,
+        is_shield_enabled: result.data.is_enabled || false,
+        last_activity_check: result.data.updated_at,
+        required_guardians_for_activation: 2,
+        shield_status: (result.data.is_enabled ? 'active' : 'inactive') as 'active' | 'inactive' | 'pending_verification',
+      } as FamilyShieldSettings;
+      setSettings(mappedResult);
       toast.success('Family Shield settings saved successfully!');
     } catch (error) {
       console.error('Error saving settings:', error);
@@ -472,7 +500,7 @@ export default function ProtocolSettingsPage() {
                     </>
                   ) : (
                     <>
-                      <Icon name='save' className='w-4 h-4 mr-2' />
+                      <Icon name='check' className='w-4 h-4 mr-2' />
                       Save Family Shield Settings
                     </>
                   )}

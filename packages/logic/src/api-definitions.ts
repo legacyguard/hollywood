@@ -23,6 +23,7 @@ import type {
   Guardian,
   GuardianInsert,
   GuardianUpdate,
+  Json,
   LegacyItem,
   LegacyItemUpdate,
   LegacyMilestone,
@@ -391,16 +392,14 @@ export class ProfileService {
    * Update emergency contacts
    */
   async updateEmergencyContacts(contacts: unknown[]): Promise<Profile> {
-    return this.update({ emergency_contacts: contacts });
+    return this.update({ emergency_contacts: contacts as unknown as Json });
   }
 
   /**
    * Update preferences
    */
-  async updatePreferences(
-    preferences: Record<string, unknown>
-  ): Promise<Profile> {
-    return this.update({ preferences });
+  async updatePreferences(preferences: Record<string, unknown>): Promise<Profile> {
+    return this.update({ preferences: preferences as unknown as Json });
   }
 }
 

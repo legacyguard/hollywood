@@ -1,3 +1,4 @@
+
 /**
  * LegacyGuard White-Label Solutions Service
  * Comprehensive white-label platform for financial institutions,
@@ -1395,14 +1396,11 @@ export class WhiteLabelSolutionsService {
       },
       usageMetrics: {
         dailyActiveUsers: 0,
-        monthlyActiveUsers: 0,
         apiCalls: 0,
         storageUsed: 0,
         bandwidthUsed: 0,
         activeUsers: 0,
         sessions: 0,
-        documentsCreated: 0,
-        sessionDuration: 0,
         featureUsage: {},
       },
       revenueMetrics: {} as RevenueMetrics,

@@ -1,3 +1,4 @@
+
 // Garden System - Complete legacy garden visualization system
 // Phase 2A: Legacy Garden Core - Advanced tree visualization with personality adaptation
 

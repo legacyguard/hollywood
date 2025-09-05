@@ -1,3 +1,4 @@
+
 /**
  * Advanced Threat Detection System
  * Real-time monitoring and anomaly detection for security threats
@@ -57,7 +58,8 @@ export class ThreatDetectionSystem {
     this.suspiciousPatterns = [
       // SQL Injection patterns
       /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|EXECUTE|UNION|FROM|WHERE)\b.*\b(FROM|WHERE|AND|OR)\b)/gi,
-      /('|"|;|--|\||\u0000|\n|\r|\t)/g,
+      // eslint-disable-next-line no-control-regex
+      /('|"|;|--|\||\x00|\n|\r|\t)/g,
       /(\bOR\b\s*\d+\s*=\s*\d+)/gi,
       /(\bOR\b\s*'[^']*'\s*=\s*'[^']*')/gi,
 
@@ -161,7 +163,11 @@ export class ThreatDetectionSystem {
   /**
    * Detect SQL injection attempts
    */
-  private detectSqlInjection(request: any): null | ThreatSignal {
+  private detectSqlInjection(request: {
+    body?: unknown;
+    endpoint: string;
+    query?: Record<string, string>;
+  }): null | ThreatSignal {
     const checkString =
       JSON.stringify(request.body) + JSON.stringify(request.query);
     let confidence = 0;
@@ -192,7 +198,11 @@ export class ThreatDetectionSystem {
   /**
    * Detect XSS attempts
    */
-  private detectXss(request: any): null | ThreatSignal {
+  private detectXss(request: {
+    body?: unknown;
+    endpoint: string;
+    query?: Record<string, string>;
+  }): null | ThreatSignal {
     const checkString =
       JSON.stringify(request.body) + JSON.stringify(request.query);
     let confidence = 0;
@@ -223,7 +233,10 @@ export class ThreatDetectionSystem {
   /**
    * Detect path traversal attempts
    */
-  private detectPathTraversal(request: any): null | ThreatSignal {
+  private detectPathTraversal(request: {
+    endpoint: string;
+    query?: Record<string, string>;
+  }): null | ThreatSignal {
     const checkString = request.endpoint + JSON.stringify(request.query);
 
     for (const pattern of this.suspiciousPatterns.slice(8, 10)) {
@@ -247,7 +260,10 @@ export class ThreatDetectionSystem {
    */
   private async detectUnusualActivity(
     userId: string,
-    request: any
+    request: {
+      endpoint: string;
+      method: string;
+    }
   ): Promise<null | ThreatSignal> {
     const profile = this.behaviorProfiles.get(userId);
     if (!profile) return null;
@@ -279,11 +295,14 @@ export class ThreatDetectionSystem {
   /**
    * Detect potential data exfiltration
    */
-  private detectDataExfiltration(request: any): null | ThreatSignal {
+  private detectDataExfiltration(request: {
+    endpoint: string;
+    query?: Record<string, string>;
+  }): null | ThreatSignal {
     // Check for large response sizes or bulk data requests
     const suspiciousEndpoints = ['/api/export', '/api/download', '/api/backup'];
     const isBulkRequest =
-      request.query?.limit && parseInt(request.query.limit) > 1000;
+      request.query?.['limit'] && parseInt(request.query['limit']) > 1000;
     const isSuspiciousEndpoint = suspiciousEndpoints.some(ep =>
       request.endpoint.includes(ep)
     );
@@ -295,7 +314,7 @@ export class ThreatDetectionSystem {
         confidence: 70,
         details: {
           endpoint: request.endpoint,
-          limit: request.query?.limit,
+          limit: request.query?.['limit'],
         },
         timestamp: new Date(),
       };

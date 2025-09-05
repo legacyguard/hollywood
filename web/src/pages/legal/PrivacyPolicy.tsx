@@ -1,3 +1,4 @@
+
 import { LegalPageLayout } from '@/components/layout/LegalPageLayout';
 
 export function PrivacyPolicy() {

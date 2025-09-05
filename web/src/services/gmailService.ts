@@ -1,3 +1,4 @@
+
 /**
  * Gmail API Service
  * Secure client-side service that communicates with server-side Gmail API
@@ -42,7 +43,7 @@ export class GmailService {
    */
   private async getAuthToken(): Promise<string> {
     // Get auth token from Clerk - this would need to be passed from a component context
-    const token = await window.Clerk?.session?.getToken();
+    const token = await (window.Clerk as any)?.user?.getToken();
     if (!token) {
       throw new Error('Authentication required');
     }
@@ -318,7 +319,7 @@ export class GmailService {
       const paddedData =
         base64Data + '=='.slice(0, (4 - (base64Data.length % 4)) % 4);
       const binaryString = atob(paddedData);
-      const bytes = new Uint8Array(binaryString.length as ArrayBuffer);
+      const bytes = new Uint8Array(binaryString.length);
       for (let i = 0; i < binaryString.length; i++) {
         bytes[i] = binaryString.charCodeAt(i);
       }

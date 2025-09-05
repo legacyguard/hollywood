@@ -1,3 +1,4 @@
+
 /**
  * Security Dashboard Component
  * Displays security status, audit logs, and security settings

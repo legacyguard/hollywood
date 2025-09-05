@@ -1,3 +1,4 @@
+
 import { createTamagui, createTokens } from '@tamagui/core';
 import { createInterFont } from '@tamagui/font-inter';
 import { shorthands } from '@tamagui/shorthands';
@@ -392,3 +393,12 @@ declare module 'tamagui' {
 }
 
 export default config;
+
+// Type augmentation for Tamagui
+declare module "@tamagui/core" {
+  interface TamaguiCustomConfig extends AppConfig {}
+}
+
+declare module "tamagui" {
+  interface TamaguiCustomConfig extends AppConfig {}
+}

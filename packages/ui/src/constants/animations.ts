@@ -1,3 +1,4 @@
+
 /**
  * Animation Constants
  * Centralized animation configurations for consistent UI interactions

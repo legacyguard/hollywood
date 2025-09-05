@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useUser } from '@clerk/clerk-react';
 import Onboarding from '@/pages/onboarding/Onboarding';

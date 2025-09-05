@@ -1,3 +1,4 @@
+
 /**
  * Will Generation Service
  * Core service for automated will generation with Sofia AI integration
@@ -639,7 +640,7 @@ export class WillGenerationService {
     return forcedHeirshipJurisdictions.includes(jurisdiction);
   }
 
-  private getNestedValue(obj: Record<string, unknown>, path: string): unknown {
+  private getNestedValue(obj: Record<string, any>, path: string): unknown {
     return path
       .split('.')
       .reduce((current: any, prop: string) => current?.[prop], obj);

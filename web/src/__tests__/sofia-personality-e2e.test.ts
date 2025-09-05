@@ -1,3 +1,4 @@
+
 // Sofia Adaptive Personality System - End-to-End Integration Tests
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AdaptivePersonalityManager } from '@/lib/sofia-personality';

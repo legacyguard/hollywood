@@ -1,3 +1,4 @@
+
 // User Preferences and Communication Style Types
 // Extends the existing user preference system with Sofia's adaptive personality
 

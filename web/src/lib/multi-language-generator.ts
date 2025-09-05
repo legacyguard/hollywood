@@ -1,3 +1,4 @@
+
 // Multi-Language Document Generation System
 // Generates legally compliant wills in multiple languages with proper legal terminology
 
@@ -1051,7 +1052,7 @@ export class MultiLangGenerator {
    */
   private processTemplate(
     template: string,
-    data: Record<string, unknown>
+    data: Record<string, any>
   ): string {
     let processed = template;
 
@@ -1101,12 +1102,12 @@ export class MultiLangGenerator {
   /**
    * Get nested object value by dot notation path
    */
-  private getNestedValue(obj: Record<string, unknown>, path: string): unknown {
+  private getNestedValue(obj: Record<string, any>, path: string): unknown {
     return path
       .split('.')
       .reduce(
         (current: unknown, key: string) =>
-          (current as Record<string, unknown>)?.[key],
+          (current as Record<string, any>)?.[key],
         obj
       );
   }

@@ -1,3 +1,4 @@
+
 // Interactive Animations - User interaction feedback with Sofia's personality adaptation
 // Provides tactile feedback for buttons, cards, and interactive elements
 
@@ -246,11 +247,18 @@ export const AdaptiveAnimatedCard: React.FC<AnimatedCardProps> = ({
         ${clickable ? 'cursor-pointer' : ''}
         ${className}
       `}
-      variants={hoverable || clickable ? cardVariants : undefined}
-      initial={hoverable || clickable ? 'rest' : undefined}
-      whileHover={hoverable ? 'hover' : 'rest'}
-      whileTap={clickable ? 'tap' : 'rest'}
-      onClick={clickable ? onClick : undefined}
+      {...(hoverable || clickable
+        ? {
+            variants: cardVariants,
+            initial: 'rest',
+            whileHover: hoverable ? 'hover' : 'rest',
+            whileTap: clickable ? 'tap' : 'rest',
+            ...(clickable && onClick ? { onClick } : {}),
+          }
+        : {
+            whileHover: 'rest',
+            whileTap: 'rest',
+          })}
     >
       {children}
     </motion.div>

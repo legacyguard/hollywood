@@ -1,3 +1,4 @@
+
 /**
  * Will API Service
  * Handles all database operations and API calls for will management
@@ -70,11 +71,11 @@ export class WillApiService {
           type: this.mapBeneficiaryType(b.relationship),
           full_name: b.name,
           relationship: b.relationship,
-          date_of_birth: b.dateOfBirth,
+          date_of_birth: b.dateOfBirth || '',
           contact_info: b.contactInfo,
           share_percentage:
             b.share.type === 'percentage' ? Number(b.share.value) : undefined,
-          conditions: b.conditions,
+          conditions: b.conditions || '',
         })),
 
         // Assets
@@ -274,7 +275,7 @@ export class WillApiService {
         .update({
           ...updates,
           updated_at: new Date().toISOString(),
-        })
+        } as Record<string, any>)
         .eq('id', willId)
         .eq('user_id', userId);
 
@@ -343,27 +344,37 @@ export class WillApiService {
           maritalStatus: 'single' as const,
         },
         family: {
-          spouse: undefined,
           children: [],
         },
-        beneficiaries: will.beneficiaries.map(b => ({
-          id: b.id,
-          name: b.full_name,
-          relationship: b.relationship,
-          dateOfBirth: b.date_of_birth,
-          contactInfo: b.contact_info,
-          share: {
-            type: b.share_percentage ? 'percentage' : 'remainder',
-            value: b.share_percentage || 0,
-          },
-          conditions: b.conditions,
-          address: {
-            street: '',
-            city: '',
-            postalCode: '',
-            country: '',
-          },
-        })),
+        beneficiaries: will.beneficiaries.map(b => {
+          const beneficiary: any = {
+            id: b.id,
+            name: b.full_name,
+            relationship: b.relationship,
+            dateOfBirth: b.date_of_birth,
+            share: {
+              type: b.share_percentage ? 'percentage' : 'remainder',
+              value: b.share_percentage || 0,
+            },
+            conditions: b.conditions || '',
+            address: {
+              street: '',
+              city: '',
+              postalCode: '',
+              country: '',
+            },
+          };
+
+          // Only add contactInfo if it exists and has valid data
+          if (b.contact_info && (b.contact_info.email || b.contact_info.phone)) {
+            beneficiary.contactInfo = {
+              email: b.contact_info.email,
+              phone: b.contact_info.phone,
+            };
+          }
+
+          return beneficiary;
+        }),
         assets: will.asset_distributions.map(a => {
           const assetTypeMap: Record<string, any> = {
             personal: 'personal_property',
@@ -709,3 +720,4 @@ export class WillApiService {
 
 // Export singleton instance
 export const willApiService = new WillApiService();
+          // Removed maritalStatus and family fields as they are not used or needed here.

@@ -1,3 +1,4 @@
+
 /**
  * React hooks for accessibility features
  */
@@ -51,7 +52,7 @@ export const useAnnouncement = () => {
  * Hook for keyboard navigation
  */
 export const useKeyboardNavigation = (
-  items: unknown[],
+  items: any[],
   options: {
     loop?: boolean;
     onSelect?: (item: unknown, index: number) => void;
@@ -187,7 +188,7 @@ export const useAriaId = (prefix: string = 'aria') => {
  * Hook for roving tabindex pattern
  */
 export const useRovingTabIndex = (
-  items: unknown[],
+  items: any[],
   activeIndex: number = 0
 ) => {
   const [currentIndex, setCurrentIndex] = useState(activeIndex);

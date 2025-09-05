@@ -1,3 +1,4 @@
+
 // OCR and Document Processing Types
 
 export interface OCRResult {

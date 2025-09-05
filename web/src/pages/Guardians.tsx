@@ -1,3 +1,4 @@
+
 import React, { useEffect, useMemo, useState } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { useTranslation } from 'react-i18next';
@@ -362,30 +363,30 @@ export default function GuardiansEnhanced() {
       {
         title: 'Total Guardians',
         value: guardians.length.toString(),
-        icon: 'shield',
-        color: 'primary',
-        trend: guardians.length > 0 ? 'up' : 'neutral',
+        icon: 'shield' as const,
+        color: 'primary' as const,
+        trend: guardians.length > 0 ? 'up' as const : 'neutral' as const,
         onClick: () => {},
       },
       {
         title: 'Executors',
         value: guardians.filter(g => g.is_will_executor).length.toString(),
-        icon: 'user-check',
-        color: 'success',
+        icon: 'user' as const,
+        color: 'success' as const,
         changeLabel: 'Appointed',
       },
       {
         title: 'Child Guardians',
         value: guardians.filter(g => g.is_child_guardian).length.toString(),
-        icon: 'users',
-        color: 'info',
+        icon: 'users' as const,
+        color: 'info' as const,
         changeLabel: 'Designated',
       },
       {
         title: 'Emergency Contacts',
         value: guardians.filter(g => g.can_trigger_emergency).length.toString(),
-        icon: 'alert-circle',
-        color: 'warning',
+        icon: 'alert-circle' as const,
+        color: 'warning' as const,
         changeLabel: 'Ready',
       },
     ],

@@ -1,3 +1,4 @@
+
 import React, { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { DashboardLayout } from '@/components/DashboardLayout';
@@ -74,7 +75,16 @@ export default function GuardiansPage() {
 
       if (error) throw error;
 
-      setGuardians(data || []);
+      const mappedGuardians = (data || []).map(guardian => ({
+        ...guardian,
+        can_access_financial_docs: (guardian as any).can_access_financial_docs ?? false,
+        can_access_health_docs: (guardian as any).can_access_health_docs ?? false,
+        can_trigger_emergency: (guardian as any).can_trigger_emergency ?? false,
+        is_child_guardian: (guardian as any).is_child_guardian ?? false,
+        is_will_executor: (guardian as any).is_will_executor ?? false,
+        emergency_contact_priority: guardian.emergency_contact_priority ?? 1,
+      }));
+      setGuardians(mappedGuardians as Guardian[]);
     } catch (error) {
       console.error('Error fetching guardians:', error);
       toast.error('Failed to load guardians');
@@ -127,7 +137,16 @@ export default function GuardiansPage() {
       if (error) throw error;
 
       // Add to local state
-      setGuardians(prev => [data, ...prev]);
+      const newGuardian = {
+        ...data,
+        can_access_financial_docs: (data as any).can_access_financial_docs ?? false,
+        can_access_health_docs: (data as any).can_access_health_docs ?? false,
+        can_trigger_emergency: (data as any).can_trigger_emergency ?? false,
+        is_child_guardian: (data as any).is_child_guardian ?? false,
+        is_will_executor: (data as any).is_will_executor ?? false,
+        emergency_contact_priority: data.emergency_contact_priority ?? 1,
+      } as Guardian;
+      setGuardians(prev => [newGuardian, ...prev]);
 
       // Reset form
       setFormData({

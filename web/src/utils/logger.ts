@@ -1,3 +1,4 @@
+
 import type { ErrorInfo } from 'react';
 
 /**
@@ -15,7 +16,7 @@ export enum LogLevel {
 
 export interface LogEntry {
   context?: string | undefined;
-  data?: Record<string, unknown> | undefined;
+  data?: Record<string, any> | undefined;
   error?: Error | undefined;
   level: LogLevel;
   message: string;
@@ -65,7 +66,7 @@ export class Logger {
 
   public debug(
     message: string,
-    data?: Record<string, unknown>,
+    data?: Record<string, any>,
     context?: string
   ): void {
     this.log(LogLevel.DEBUG, message, data, context);
@@ -73,7 +74,7 @@ export class Logger {
 
   public info(
     message: string,
-    data?: Record<string, unknown>,
+    data?: Record<string, any>,
     context?: string
   ): void {
     this.log(LogLevel.INFO, message, data, context);
@@ -81,7 +82,7 @@ export class Logger {
 
   public warn(
     message: string,
-    data?: Record<string, unknown>,
+    data?: Record<string, any>,
     context?: string
   ): void {
     this.log(LogLevel.WARN, message, data, context);
@@ -90,7 +91,7 @@ export class Logger {
   public error(
     message: string,
     error?: Error,
-    data?: Record<string, unknown>,
+    data?: Record<string, any>,
     context?: string
   ): void {
     this.log(LogLevel.ERROR, message, data, context, error);
@@ -99,7 +100,7 @@ export class Logger {
   public fatal(
     message: string,
     error?: Error,
-    data?: Record<string, unknown>,
+    data?: Record<string, any>,
     context?: string
   ): void {
     this.log(LogLevel.FATAL, message, data, context, error);
@@ -108,7 +109,7 @@ export class Logger {
   private log(
     level: LogLevel,
     message: string,
-    data?: Record<string, unknown>,
+    data?: Record<string, any>,
     context?: string,
     error?: Error
   ): void {
@@ -132,8 +133,8 @@ export class Logger {
   }
 
   private redactSensitiveData(
-    data?: Record<string, unknown>
-  ): Record<string, unknown> | undefined {
+    data?: Record<string, any>
+  ): Record<string, any> | undefined {
     if (!data) return data;
 
     const sensitiveKeys = [
@@ -158,7 +159,7 @@ export class Logger {
         redacted[key] = '[REDACTED]';
       } else if (typeof redacted[key] === 'object' && redacted[key] !== null) {
         redacted[key] = this.redactSensitiveData(
-          redacted[key] as Record<string, unknown>
+          redacted[key] as Record<string, any>
         );
       }
     }
@@ -215,7 +216,7 @@ export class Logger {
 
   private getConsoleMethod(
     level: LogLevel
-  ): (message: string, ...args: unknown[]) => void {
+  ): (message: string, ...args: any[]) => void {
     switch (level) {
       case LogLevel.DEBUG:
         return console.debug.bind(console);
@@ -255,7 +256,7 @@ export class Logger {
           typeof prop === 'string' &&
           ['debug', 'info', 'warn', 'error', 'fatal'].includes(prop)
         ) {
-          return (message: string, data?: Record<string, unknown>) => {
+          return (message: string, data?: Record<string, any>) => {
             const method = prop as keyof Logger;
             if (method === 'debug' || method === 'info' || method === 'warn') {
               return target[method](message, data, context);
@@ -333,7 +334,7 @@ export class RequestLogger {
   public static logWithContext(
     level: LogLevel,
     message: string,
-    data?: Record<string, unknown>,
+    data?: Record<string, any>,
     requestId?: string
   ): void {
     const context = requestId ? this.getContext(requestId) : undefined;

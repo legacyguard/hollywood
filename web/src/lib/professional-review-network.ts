@@ -1,3 +1,4 @@
+
 import type { WillData } from '../types/will';
 
 export type ReviewPriority = 'express' | 'standard' | 'urgent';
@@ -348,7 +349,7 @@ export class ProfessionalReviewNetwork {
 
   private async findNotaries(
     location: string,
-    preferences: Record<string, unknown>
+    preferences: Record<string, any>
   ): Promise<ProfessionalProfile[]> {
     return this.searchProfessionals('notary', {
       language: preferences.language as string,
@@ -419,7 +420,7 @@ export class ProfessionalReviewNetwork {
 
   private generateRecommendedServices(
     willData: WillData,
-    complexity: Record<string, unknown>
+    complexity: Record<string, any>
   ) {
     const services = [
       {

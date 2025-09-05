@@ -1,3 +1,4 @@
+
 /**
  * Event Bus System
  * Simple event emitter for global component communication

@@ -1,3 +1,4 @@
+
 import { useContext } from 'react';
 import type { Variants } from 'framer-motion';
 import { usePersonalityManager } from '../sofia/SofiaContextProvider';

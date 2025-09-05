@@ -1,3 +1,4 @@
+
 /**
  * Real Professional Network Service
  * Complete database integration without mock data
@@ -150,7 +151,7 @@ class RealProfessionalService {
 
       if (filters?.specializations?.length) {
         filteredData = filteredData.filter(attorney =>
-          attorney.credentials?.specializations?.some((spec: string) =>
+          (attorney as any).specializations?.some((spec: string) =>
             filters.specializations?.includes(spec)
           )
         );
@@ -158,13 +159,41 @@ class RealProfessionalService {
 
       if (filters?.jurisdiction) {
         filteredData = filteredData.filter(attorney =>
-          attorney.credentials?.licensed_states?.includes(
-            filters.jurisdiction || ''
-          )
+          attorney.jurisdiction === filters.jurisdiction
         );
       }
 
-      return filteredData;
+      const mappedData = filteredData.map((attorney: any) => ({
+        id: attorney.id,
+        name: attorney.name,
+        email: attorney.contact_email,
+        created_at: attorney.created_at,
+        updated_at: attorney.updated_at,
+        user_id: attorney.user_id || '',
+        availability_status: 'available' as const,
+        credentials: {
+          bar_number: attorney.bar_number,
+          certifications: [],
+          law_firm: '',
+          licensed_states: [attorney.jurisdiction],
+          specializations: attorney.specializations || [],
+          years_experience: 0,
+        },
+        profile: {
+          bio: '',
+          education: [],
+          languages: [],
+          practice_areas: attorney.specializations || [],
+          timezone: '',
+        },
+        profile_verified: attorney.profile_verified || false,
+        rating: attorney.rating || 0,
+        reviews_count: attorney.reviews_completed || 0,
+        hourly_rate: 0,
+        verification_status: 'verified' as const,
+      }));
+      
+      return mappedData as ProfessionalReviewer[];
     } catch (error) {
       console.error('Failed to fetch verified attorneys:', error);
       return [];
@@ -180,7 +209,40 @@ class RealProfessionalService {
         .single();
 
       if (error && error.code !== 'PGRST116') throw error;
-      return data;
+      
+      if (!data) return null;
+      
+      const mappedData = {
+        id: data.id,
+        name: data.name,
+        email: data.contact_email,
+        created_at: data.created_at,
+        updated_at: data.updated_at,
+        user_id: (data as any).user_id || '',
+        availability_status: 'available' as const,
+        credentials: {
+          bar_number: data.bar_number,
+          certifications: [],
+          law_firm: '',
+          licensed_states: [data.jurisdiction],
+          specializations: (data as any).specializations || [],
+          years_experience: 0,
+        },
+        profile: {
+          bio: '',
+          education: [],
+          languages: [],
+          practice_areas: (data as any).specializations || [],
+          timezone: '',
+        },
+        profile_verified: data.profile_verified || false,
+        rating: data.rating || 0,
+        reviews_count: (data as any).reviews_completed || 0,
+        hourly_rate: 0,
+        verification_status: 'verified' as const,
+      };
+      
+      return mappedData as ProfessionalReviewer;
     } catch (error) {
       console.error('Failed to fetch attorney by ID:', error);
       return null;
@@ -201,7 +263,12 @@ class RealProfessionalService {
       const { data, error } = await supabase
         .from('review_requests')
         .insert({
-          ...requestData,
+          document_id: requestData.document_id,
+          estimated_cost: requestData.estimated_cost,
+          request_notes: requestData.request_notes,
+          review_type: requestData.review_type,
+          specialization_required: requestData.specialization_required,
+          user_id: requestData.user_id,
           status: 'pending',
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
@@ -217,10 +284,17 @@ class RealProfessionalService {
         'requested'
       );
 
-      // Notify available reviewers
-      await this.notifyAvailableReviewers(data);
+      const mappedRequest = {
+        ...data,
+        estimated_cost: data.estimated_cost || 0,
+        request_notes: data.notes,
+        status: data.status || 'pending',
+      } as unknown as ReviewRequest;
 
-      return data;
+      // Notify available reviewers  
+      await this.notifyAvailableReviewers(mappedRequest);
+      
+      return mappedRequest;
     } catch (error) {
       console.error('Failed to create review request:', error);
       throw error;
@@ -568,7 +642,7 @@ class RealProfessionalService {
   }
 
   private async sendEmail(emailData: {
-    data: Record<string, unknown>;
+    data: Record<string, any>;
     subject: string;
     template: string;
     to: string;

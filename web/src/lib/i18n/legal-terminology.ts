@@ -1,3 +1,4 @@
+
 /**
  * Legal Terminology System for LegacyGuard
  * Handles jurisdiction-specific legal terms and translations

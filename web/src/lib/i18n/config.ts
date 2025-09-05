@@ -1,3 +1,4 @@
+
 /**
  * i18n Configuration for LegacyGuard
  * Unified configuration supporting the locales structure

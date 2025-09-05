@@ -1,3 +1,4 @@
+
 /**
  * LegacyGuard Business Succession Planning Service
  * Comprehensive business succession planning and corporate document management

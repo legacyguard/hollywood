@@ -1,3 +1,4 @@
+
 // src/components/landing/SecurityPromiseSection.tsx
 
 import { BadgeCheck, KeyRound, ShieldCheck, Timer } from 'lucide-react';

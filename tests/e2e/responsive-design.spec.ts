@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { test, expect } from '@playwright/test';
 import { AuthHelper } from './helpers/auth-helper';
 

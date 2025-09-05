@@ -1,9 +1,11 @@
 # API Versioning Strategy
 
 ## Overview
+
 The LegacyGuard API implements semantic versioning with full backward compatibility support. This ensures that existing clients continue to work as the API evolves.
 
 ## Version Format
+
 We follow Semantic Versioning (SemVer): `MAJOR.MINOR.PATCH`
 
 - **MAJOR**: Breaking changes that are not backward compatible
@@ -11,9 +13,10 @@ We follow Semantic Versioning (SemVer): `MAJOR.MINOR.PATCH`
 - **PATCH**: Bug fixes and minor improvements
 
 ## Current Versions
+
 - **Current Version**: 2.1.0
 - **Minimum Supported**: 1.0.0
-- **Available Versions**: 
+- **Available Versions**:
   - v1.0.0 (Legacy)
   - v2.0.0 (Stable)
   - v2.1.0 (Current)
@@ -23,6 +26,7 @@ We follow Semantic Versioning (SemVer): `MAJOR.MINOR.PATCH`
 ### Client-Side Usage
 
 #### Basic Usage
+
 ```typescript
 import { createVersionedClient, API_VERSIONS } from '@packages/logic';
 
@@ -34,8 +38,10 @@ const v1Client = createVersionedClient(baseClient, API_VERSIONS.v1);
 ```
 
 #### Version Headers
+
 All API requests include version headers:
-```
+
+```http
 API-Version: 2.1.0
 Accept: application/vnd.legacyguard.v2+json
 X-API-Version: 2.1.0
@@ -43,6 +49,7 @@ X-Min-Version: 1.0.0
 ```
 
 ### Version Negotiation
+
 The API automatically negotiates the best compatible version:
 
 ```typescript
@@ -53,6 +60,7 @@ const bestVersion = negotiator.negotiate('2.0.0');
 ```
 
 ### Deprecation Management
+
 Track and warn about deprecated features:
 
 ```typescript
@@ -74,6 +82,7 @@ deprecations.warn('/api/v1/documents');
 ```
 
 ### Response Transformation
+
 Automatic transformation for backward compatibility:
 
 ```typescript
@@ -92,6 +101,7 @@ const transformedData = VersionedResponseTransformer.transform(
 ### Migrating from v1 to v2
 
 #### 1. Update Client Initialization
+
 ```typescript
 // Old (v1)
 const client = new ApiClient();
@@ -102,7 +112,9 @@ const client = createVersionedClient(baseClient, API_VERSIONS.v2);
 ```
 
 #### 2. Handle Field Changes
+
 **v1 Format:**
+
 ```json
 {
   "user_id": "123",
@@ -111,6 +123,7 @@ const client = createVersionedClient(baseClient, API_VERSIONS.v2);
 ```
 
 **v2 Format:**
+
 ```json
 {
   "userId": "123",
@@ -120,6 +133,7 @@ const client = createVersionedClient(baseClient, API_VERSIONS.v2);
 ```
 
 #### 3. Update Endpoint Paths
+
 - v1: `/api/documents` → v2: `/api/v2/documents`
 - v1: `/api/users` → v2: `/api/v2/users`
 - v1: `/api/will` → v2: `/api/v2/will`
@@ -127,12 +141,15 @@ const client = createVersionedClient(baseClient, API_VERSIONS.v2);
 ## Backward Compatibility
 
 ### Automatic Field Mapping
+
 The system automatically maps fields between versions:
+
 - `userId` ↔ `user_id`
 - `documentId` ↔ `document_id`
 - `createdAt` ↔ `created_at`
 
 ### Feature Detection
+
 Check if features are available:
 
 ```typescript
@@ -148,11 +165,13 @@ if (version.major >= 2) {
 ## Version Lifecycle
 
 ### Version Support Timeline
+
 - **v1.0.0**: Legacy (Deprecated, supported until 2025-01-01)
 - **v2.0.0**: Stable (Long-term support)
 - **v2.1.0**: Current (Active development)
 
 ### Deprecation Policy
+
 1. Features are marked deprecated with at least 6 months notice
 2. Deprecated features continue to work but log warnings
 3. Major version changes require migration guide
@@ -161,6 +180,7 @@ if (version.major >= 2) {
 ## Testing
 
 ### Version Compatibility Tests
+
 ```typescript
 describe('API Version Compatibility', () => {
   it('should handle v1 client with v2 server', async () => {
@@ -180,11 +200,13 @@ describe('API Version Compatibility', () => {
 ## Best Practices
 
 1. **Always specify version in production**
+
    ```typescript
    const client = createVersionedClient(baseClient, API_VERSIONS.v2);
    ```
 
 2. **Handle version mismatch errors**
+
    ```typescript
    try {
      const data = await api.getData();
@@ -196,6 +218,7 @@ describe('API Version Compatibility', () => {
    ```
 
 3. **Monitor deprecation warnings**
+
    ```typescript
    // Set up deprecation monitoring
    console.warn = (message) => {
@@ -207,6 +230,7 @@ describe('API Version Compatibility', () => {
    ```
 
 4. **Test with multiple versions**
+
    ```typescript
    const versions = [API_VERSIONS.v1, API_VERSIONS.v2, API_VERSIONS.current];
    versions.forEach(version => {
@@ -220,6 +244,7 @@ describe('API Version Compatibility', () => {
 ## Server-Side Implementation
 
 ### Express Middleware Example
+
 ```typescript
 app.use((req, res, next) => {
   const requestedVersion = req.headers['api-version'] || req.headers['x-api-version'];
@@ -236,6 +261,7 @@ app.use((req, res, next) => {
 ```
 
 ### Version-Specific Routes
+
 ```typescript
 // v1 routes
 app.use('/api/v1', requireVersion('1.0.0'), v1Routes);
@@ -250,7 +276,9 @@ app.use('/api', versionNegotiationMiddleware, currentRoutes);
 ## Monitoring
 
 ### Version Usage Metrics
+
 Track which versions are being used:
+
 ```typescript
 const versionMetrics = {
   'v1.0.0': 0,
@@ -263,7 +291,9 @@ versionMetrics[formatVersion(req.apiVersion)]++;
 ```
 
 ### Deprecation Tracking
+
 Monitor deprecated feature usage:
+
 ```typescript
 const deprecationUsage = new Map();
 

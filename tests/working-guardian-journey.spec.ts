@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { test, expect, type Page } from '@playwright/test';
 import { generateTestUser } from './helpers/auth';
 

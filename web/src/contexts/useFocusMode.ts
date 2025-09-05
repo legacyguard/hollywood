@@ -1,3 +1,4 @@
+
 import { type Context, useContext } from 'react';
 
 export interface FocusModeContextType {

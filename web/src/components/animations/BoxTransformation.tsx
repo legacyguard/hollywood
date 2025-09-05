@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { GardenSeed } from './GardenSeed';
@@ -31,7 +32,7 @@ export const BoxTransformation: React.FC<BoxTransformationProps> = ({
     ];
 
     const timeouts = stageTransitions.map(({ stage, delay }) =>
-      setTimeout(() => setStage(stage as any), delay)
+      setTimeout(() => setStage(stage as 'box' | 'complete' | 'opening' | 'revealing' | 'transforming'), delay)
     );
 
     // Show seed during revealing stage

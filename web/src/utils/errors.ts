@@ -1,3 +1,4 @@
+
 /**
  * Custom Error Classes for LegacyGuard
  * Provides structured error handling across the application
@@ -6,14 +7,14 @@
 export class LegacyGuardError extends Error {
   public readonly code: string;
   public readonly statusCode: number;
-  public readonly details?: Record<string, unknown>;
+  public readonly details?: Record<string, any>;
   public readonly timestamp: Date;
 
   constructor(
     message: string,
     code: string,
     statusCode: number = 500,
-    details?: Record<string, unknown>
+    details?: Record<string, any>
   ) {
     super(message);
     this.name = 'LegacyGuardError';
@@ -36,7 +37,7 @@ export class LegacyGuardError extends Error {
 }
 
 export class ValidationError extends LegacyGuardError {
-  constructor(message: string, details?: Record<string, unknown>) {
+  constructor(message: string, details?: Record<string, any>) {
     super(message, 'VALIDATION_ERROR', 400, details);
     this.name = 'ValidationError';
   }
@@ -45,7 +46,7 @@ export class ValidationError extends LegacyGuardError {
 export class AuthenticationError extends LegacyGuardError {
   constructor(
     message: string = 'Authentication required',
-    details?: Record<string, unknown>
+    details?: Record<string, any>
   ) {
     super(message, 'AUTHENTICATION_ERROR', 401, details);
     this.name = 'AuthenticationError';
@@ -55,7 +56,7 @@ export class AuthenticationError extends LegacyGuardError {
 export class AuthorizationError extends LegacyGuardError {
   constructor(
     message: string = 'Access denied',
-    details?: Record<string, unknown>
+    details?: Record<string, any>
   ) {
     super(message, 'AUTHORIZATION_ERROR', 403, details);
     this.name = 'AuthorizationError';
@@ -75,7 +76,7 @@ export class NotFoundError extends LegacyGuardError {
 }
 
 export class ConflictError extends LegacyGuardError {
-  constructor(message: string, details?: Record<string, unknown>) {
+  constructor(message: string, details?: Record<string, any>) {
     super(message, 'CONFLICT', 409, details);
     this.name = 'ConflictError';
   }
@@ -89,7 +90,7 @@ export class RateLimitError extends LegacyGuardError {
 }
 
 export class DatabaseError extends LegacyGuardError {
-  constructor(message: string, details?: Record<string, unknown>) {
+  constructor(message: string, details?: Record<string, any>) {
     super(message, 'DATABASE_ERROR', 500, details);
     this.name = 'DatabaseError';
   }
@@ -99,7 +100,7 @@ export class ExternalServiceError extends LegacyGuardError {
   constructor(
     service: string,
     message: string,
-    details?: Record<string, unknown>
+    details?: Record<string, any>
   ) {
     super(
       `External service ${service} error: ${message}`,
@@ -112,18 +113,18 @@ export class ExternalServiceError extends LegacyGuardError {
 }
 
 export class EncryptionError extends LegacyGuardError {
-  constructor(message: string, details?: Record<string, unknown>) {
+  constructor(message: string, details?: Record<string, any>) {
     super(message, 'ENCRYPTION_ERROR', 500, details);
     this.name = 'EncryptionError';
   }
 }
 
 // Error handling utilities
-export function isLegacyGuardError(error: unknown): error is LegacyGuardError {
+export function isLegacyGuardError(error: any): error is LegacyGuardError {
   return error instanceof LegacyGuardError;
 }
 
-export function createErrorFromUnknown(error: unknown): LegacyGuardError {
+export function createErrorFromUnknown(error: any): LegacyGuardError {
   if (error instanceof LegacyGuardError) {
     return error;
   }

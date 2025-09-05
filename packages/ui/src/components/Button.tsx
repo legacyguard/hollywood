@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { type GetProps, styled, Button as TamaguiButton } from 'tamagui';
 
@@ -7,7 +8,7 @@ import { type GetProps, styled, Button as TamaguiButton } from 'tamagui';
  * @component
  * @example
  * ```tsx
- * <Button variant="primary" size="medium" onPress={handleClick}>
+ * <Button theme="primary" size="medium" onPress={handleClick}>
  *   Click me
  * </Button>
  * ```

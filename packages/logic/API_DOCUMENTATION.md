@@ -31,7 +31,7 @@ const { documents, guardians, profile, will, legacyItems, analytics } = legacyGu
 
 Handles all document-related operations with comprehensive validation and error handling.
 
-#### Methods
+#### Document Service Methods
 
 | Method | Description | Parameters | Returns |
 |--------|-------------|------------|---------|
@@ -44,7 +44,7 @@ Handles all document-related operations with comprehensive validation and error 
 | `getByType(documentType)` | Get documents by type | `string` | `Document[]` |
 | `search(query)` | Search documents | `string` (min 2 chars) | `Document[]` |
 
-#### Usage Examples
+#### Document Service Usage Examples
 
 ```typescript
 // Upload a document
@@ -82,7 +82,7 @@ const searchResults = await documents.search('insurance policy');
 const legalDocuments = await documents.getByCategory('legal');
 ```
 
-#### Error Handling
+#### Document Service Error Handling
 
 The Document Service includes comprehensive error handling:
 
@@ -114,7 +114,7 @@ try {
 
 Manages trusted circle members and guardians.
 
-#### Methods
+#### Guardian Service Methods
 
 | Method | Description | Parameters | Returns |
 |--------|-------------|------------|---------|
@@ -126,7 +126,7 @@ Manages trusted circle members and guardians.
 | `setActive(id, isActive)` | Activate/deactivate guardian | `string`, `boolean` | `Guardian` |
 | `getActive()` | Get only active guardians | none | `Guardian[]` |
 
-#### Usage Examples
+#### Guardian Service Usage Examples
 
 ```typescript
 // Create a new guardian
@@ -156,7 +156,7 @@ await guardians.setActive(guardianId, false);
 
 Handles user profile and preferences management.
 
-#### Methods
+#### Profile Service Methods
 
 | Method | Description | Parameters | Returns |
 |--------|-------------|------------|---------|
@@ -166,7 +166,7 @@ Handles user profile and preferences management.
 | `updateEmergencyContacts(contacts)` | Update emergency contacts | `any[]` | `Profile` |
 | `updatePreferences(preferences)` | Update user preferences | `any` | `Profile` |
 
-#### Usage Examples
+#### Profile Service Usage Examples
 
 ```typescript
 // Get current user profile
@@ -201,7 +201,7 @@ await profile.updatePreferences({
 
 Manages will and testament data.
 
-#### Methods
+#### Will Service Methods
 
 | Method | Description | Parameters | Returns |
 |--------|-------------|------------|---------|
@@ -211,7 +211,7 @@ Manages will and testament data.
 | `removeBeneficiary(name)` | Remove beneficiary | `string` | `WillData` |
 | `setExecutor(executor)` | Set will executor | `ExecutorData` | `WillData` |
 
-#### Usage Examples
+#### Will Service Usage Examples
 
 ```typescript
 // Get current will
@@ -249,7 +249,7 @@ const updatedWill = await will.createOrUpdate({
 
 Manages legacy planning tasks and items.
 
-#### Methods
+#### Legacy Items Service Methods
 
 | Method | Description | Parameters | Returns |
 |--------|-------------|------------|---------|
@@ -261,7 +261,7 @@ Manages legacy planning tasks and items.
 | `getByStatus(status)` | Get items by status | `LegacyItemStatus` | `LegacyItem[]` |
 | `markCompleted(id)` | Mark item as completed | `string` | `LegacyItem` |
 
-#### Usage Examples
+#### Legacy Items Service Usage Examples
 
 ```typescript
 // Create a new legacy item
@@ -289,7 +289,7 @@ const documentItems = await legacyItems.getByCategory('document');
 
 Provides insights and analytics data.
 
-#### Methods
+#### Analytics Service Methods
 
 | Method | Description | Parameters | Returns |
 |--------|-------------|------------|---------|
@@ -298,7 +298,7 @@ Provides insights and analytics data.
 | `getProtectionScore()` | Get protection score | none | `{ score: number; trends: any }` |
 | `getCompletionPercentage()` | Get completion percentage | none | `{ percentage: number; breakdown: any }` |
 
-#### Usage Examples
+#### Analytics Service Usage Examples
 
 ```typescript
 // Get AI insights

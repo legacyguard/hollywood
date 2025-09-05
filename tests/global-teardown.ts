@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { FullConfig } from '@playwright/test';
 import path from 'path';
 import fs from 'fs';

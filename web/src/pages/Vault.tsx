@@ -1,3 +1,4 @@
+
 import { useTranslation } from 'react-i18next';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { FadeIn } from '@/components/motion/FadeIn';
@@ -74,7 +75,7 @@ export default function VaultPage() {
       if (storedDocs) {
         const parsed = JSON.parse(storedDocs);
         // Convert date strings back to Date objects
-        const docs = parsed.map((doc: Record<string, unknown>) => ({
+        const docs = parsed.map((doc: Record<string, any>) => ({
           ...doc,
           uploadedAt: new Date(doc.uploadedAt),
           expiresAt: doc.expiresAt ? new Date(doc.expiresAt) : undefined,
@@ -164,16 +165,16 @@ export default function VaultPage() {
       {
         title: 'Total Documents',
         value: documents.length.toString(),
-        icon: 'file-text',
-        color: 'primary',
+        icon: 'file-text' as const,
+        color: 'primary' as const,
         change: 12,
-        trend: 'up',
+        trend: 'up' as const,
       },
       {
         title: 'Encrypted',
         value: documents.filter(d => d.isEncrypted).length.toString(),
-        icon: 'lock',
-        color: 'success',
+        icon: 'shield' as const,
+        color: 'success' as const,
         changeLabel: 'Secured',
       },
       {
@@ -181,8 +182,8 @@ export default function VaultPage() {
         value: documents
           .filter(d => d.ocrStatus === 'complete')
           .length.toString(),
-        icon: 'scan',
-        color: 'info',
+        icon: 'search' as const,
+        color: 'info' as const,
         changeLabel: 'Searchable',
       },
       {
@@ -196,8 +197,8 @@ export default function VaultPage() {
             return daysUntilExpiry <= 90;
           })
           .length.toString(),
-        icon: 'alert-circle',
-        color: 'warning',
+        icon: 'alert-circle' as const,
+        color: 'warning' as const,
         changeLabel: 'Within 90 days',
       },
     ],

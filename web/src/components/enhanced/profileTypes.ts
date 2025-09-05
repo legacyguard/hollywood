@@ -1,3 +1,4 @@
+
 export interface ProfileData {
   address?: string;
   avatar?: string;

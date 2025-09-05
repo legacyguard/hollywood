@@ -1,3 +1,4 @@
+
 describe('Payment Flow E2E Tests', () => {
   beforeEach(() => {
     // Reset database state
@@ -228,15 +229,15 @@ describe('Payment Flow E2E Tests', () => {
       cy.task('db:query', {
         query:
           "SELECT * FROM user_subscriptions WHERE stripe_subscription_id = 'sub_test123'",
-      }).then((result: any) => {
-        expect(result[0].status).to.equal('past_due');
+      }).then((result: unknown) => {
+        expect((result as Array<{ status: string }>)[0].status).to.equal('past_due');
       });
 
       // Check if email was queued
       cy.task('db:query', {
         query: "SELECT * FROM email_logs WHERE subject LIKE '%Payment Failed%'",
-      }).then((result: any) => {
-        expect(result).to.have.length.greaterThan(0);
+      }).then((result: unknown) => {
+        expect((result as unknown[]).length).to.be.greaterThan(0);
       });
     });
   });

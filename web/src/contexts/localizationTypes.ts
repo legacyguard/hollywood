@@ -1,3 +1,4 @@
+
 export type CountryCode = 'cz' | 'en' | 'sk';
 export type LanguageCode = 'cs' | 'en' | 'sk';
 

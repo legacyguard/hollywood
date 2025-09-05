@@ -1,3 +1,4 @@
+
 /**
  * Enhanced i18n Configuration for LegacyGuard
  * Includes plurals support, date-fns integration, and fallback mechanism

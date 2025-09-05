@@ -68,7 +68,7 @@ export const SignInScreen = () => {
 
       // Navigate to main app
       navigation.navigate('MainTabs' as never);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Sign in error:', err);
       Alert.alert(
         'Sign In Failed',

@@ -1,3 +1,4 @@
+
 /**
  * Professional Review Badge Component
  * Shows professional review status with trust indicators

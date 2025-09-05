@@ -1,3 +1,4 @@
+
 // Will Template Library & Comparison System
 // Provides curated templates and version comparison functionality
 
@@ -85,8 +86,8 @@ export interface ChangeSet {
   field: string;
   impact: 'critical' | 'high' | 'low' | 'medium';
   legalImplications?: string;
-  newValue?: unknown;
-  oldValue?: unknown;
+  newValue?: any;
+  oldValue?: any;
   section: keyof WillData;
 }
 
@@ -787,6 +788,10 @@ export class WillTemplateLibrary {
         ...template.templateData.legal_data,
         ...currentData?.legal_data,
       },
+      // Add required properties with defaults
+      completeness_score: currentData?.completeness_score ?? 0,
+      family_protection_level: currentData?.family_protection_level ?? 'standard',
+      review_eligibility: currentData?.review_eligibility ?? true,
     };
 
     return mergedData;
@@ -880,7 +885,7 @@ export class WillTemplateLibrary {
 
     // Check for business interests
     if (
-      userData.assets.businessInterests &&
+      (userData.assets as any).businessInterests &&
       !template.targetProfile.hasBusinessInterests
     ) {
       modifications.push({
@@ -958,8 +963,8 @@ export class WillTemplateLibrary {
   // Helper methods
   private compareSection(
     sectionName: keyof WillData,
-    oldSection: unknown,
-    newSection: unknown,
+    oldSection: any,
+    newSection: any,
     changes: ChangeSet[]
   ) {
     if (!oldSection && !newSection) return;

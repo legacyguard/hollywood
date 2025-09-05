@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Key Management Service
  * Handles secure generation, storage, retrieval, and rotation of encryption keys

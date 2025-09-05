@@ -1,3 +1,4 @@
+
 import * as React from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { cva, type VariantProps } from 'class-variance-authority';
@@ -512,4 +513,4 @@ export const ValidatedInput = React.forwardRef<
 ValidatedInput.displayName = 'ValidatedInput';
 
 export { EnhancedInput, inputVariants };
-export type { EnhancedInputProps, FieldState };
+export type { FieldState };

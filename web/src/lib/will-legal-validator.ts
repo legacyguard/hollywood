@@ -1,3 +1,4 @@
+
 // Real-Time Legal Validation Engine for Will Creation
 // Provides live legal compliance checking as users type
 
@@ -119,7 +120,7 @@ export class LegalValidator {
     if (totalShares !== 100) {
       return {
         isValid: false,
-        level: 'error',
+        level: ValidationLevel.ERROR,
         message: `Beneficiary shares must total exactly 100%. Current total: ${totalShares}%`,
         messageKey: 'shares_total_invalid',
         field: 'beneficiaries',
@@ -132,7 +133,7 @@ export class LegalValidator {
 
     return {
       isValid: true,
-      level: 'success',
+      level: ValidationLevel.SUCCESS,
       message: 'Beneficiary shares are correctly distributed',
       messageKey: 'shares_valid',
     };
@@ -167,12 +168,12 @@ export class LegalValidator {
         (sum, child) => sum + child.percentage,
         0
       );
-      const requiredMinimum = this.rules.forcedHeirsMinimum.minorChildren * 100; // Assuming minor for safety
+      const requiredMinimum = ('minorChildren' in this.rules.forcedHeirsMinimum ? this.rules.forcedHeirsMinimum.minorChildren : 0) * 100;
 
       if (childrenTotalShare < requiredMinimum) {
         forcedHeirsIssues.push({
           isValid: false,
-          level: 'error',
+          level: ValidationLevel.ERROR,
           message: `${jurisdiction} law requires children to receive minimum ${requiredMinimum}% share. Currently: ${childrenTotalShare}%`,
           messageKey: 'forced_heirs_children_violation',
           field: 'beneficiaries',
@@ -181,7 +182,7 @@ export class LegalValidator {
       } else {
         results.push({
           isValid: true,
-          level: 'success',
+          level: ValidationLevel.SUCCESS,
           message: "Children's forced heir rights are respected",
           messageKey: 'forced_heirs_children_compliant',
         });
@@ -194,7 +195,7 @@ export class LegalValidator {
       if (spouse.percentage < requiredMinimum) {
         forcedHeirsIssues.push({
           isValid: false,
-          level: 'error',
+          level: ValidationLevel.ERROR,
           message: `${jurisdiction} law requires spouse to receive minimum ${requiredMinimum}% share. Currently: ${spouse.percentage}%`,
           messageKey: 'forced_heirs_spouse_violation',
           field: 'beneficiaries',
@@ -297,7 +298,7 @@ export class LegalValidator {
     if (!executorData.primaryExecutor?.name) {
       results.push({
         isValid: false,
-        level: 'warning',
+        level: ValidationLevel.WARNING,
         message: 'Consider appointing an executor to manage your estate',
         messageKey: 'executor_missing',
         field: 'executor_data',
@@ -315,7 +316,7 @@ export class LegalValidator {
       if (executorIsBeneficiary) {
         results.push({
           isValid: true,
-          level: 'warning',
+          level: ValidationLevel.WARNING,
           message:
             'Your executor is also a major beneficiary. Consider appointing a neutral executor or backup executor',
           messageKey: 'executor_beneficiary_conflict',
@@ -325,7 +326,7 @@ export class LegalValidator {
       } else {
         results.push({
           isValid: true,
-          level: 'success',
+          level: ValidationLevel.SUCCESS,
           message: 'Executor appointment looks good',
           messageKey: 'executor_valid',
         });
@@ -350,7 +351,7 @@ export class LegalValidator {
     if (requiredWitnesses === undefined) {
       return {
         isValid: false,
-        level: 'warning',
+        level: ValidationLevel.WARNING,
         message: `Unknown will type: ${willType}`,
         messageKey: 'unknown_will_type',
         field: 'will_type',
@@ -360,7 +361,7 @@ export class LegalValidator {
     if (requiredWitnesses === 0) {
       return {
         isValid: true,
-        level: 'success',
+        level: ValidationLevel.SUCCESS,
         message: 'No witnesses required for this will type',
         messageKey: 'witnesses_not_required',
       };
@@ -371,7 +372,7 @@ export class LegalValidator {
     if (actualWitnesses < requiredWitnesses) {
       return {
         isValid: false,
-        level: 'error',
+        level: ValidationLevel.ERROR,
         message: `${this.jurisdiction} law requires ${requiredWitnesses} witnesses for ${willType} wills. You have ${actualWitnesses}`,
         messageKey: 'witnesses_insufficient',
         field: 'witnesses',
@@ -382,7 +383,7 @@ export class LegalValidator {
     if (actualWitnesses > requiredWitnesses) {
       return {
         isValid: true,
-        level: 'warning',
+        level: ValidationLevel.WARNING,
         message: `You have more witnesses than required (${actualWitnesses} vs ${requiredWitnesses}). This is allowed but not necessary`,
         messageKey: 'witnesses_excess',
         field: 'witnesses',
@@ -391,7 +392,7 @@ export class LegalValidator {
 
     return {
       isValid: true,
-      level: 'success',
+      level: ValidationLevel.SUCCESS,
       message: 'Witness requirements satisfied',
       messageKey: 'witnesses_valid',
     };
@@ -424,7 +425,7 @@ export class LegalValidator {
     if (!willData.testator_data.fullName) {
       allResults.push({
         isValid: false,
-        level: 'error',
+        level: ValidationLevel.ERROR,
         message: 'Full name is required',
         messageKey: 'testator_name_required',
         field: 'testator_data.fullName',
@@ -434,7 +435,7 @@ export class LegalValidator {
     if (!willData.testator_data.dateOfBirth) {
       allResults.push({
         isValid: false,
-        level: 'error',
+        level: ValidationLevel.ERROR,
         message: 'Date of birth is required',
         messageKey: 'testator_dob_required',
         field: 'testator_data.dateOfBirth',
@@ -444,7 +445,7 @@ export class LegalValidator {
     if (!willData.testator_data.address) {
       allResults.push({
         isValid: false,
-        level: 'error',
+        level: ValidationLevel.ERROR,
         message: 'Address is required',
         messageKey: 'testator_address_required',
         field: 'testator_data.address',
@@ -473,9 +474,11 @@ export class LegalValidator {
           : 'compliant',
       validationResults: combinedResults,
       forcedHeirsIssues: forcedHeirsReport.forcedHeirsIssues,
+      forcedHeirsProtected: forcedHeirsReport.forcedHeirsProtected || [],
+      isCompliant: !hasErrors,
       legalConflicts: legalConflicts.map(conflict => ({
         isValid: false,
-        level: conflict.severity === 'critical' ? 'error' : 'warning',
+        level: conflict.severity === 'critical' ? ValidationLevel.ERROR : ValidationLevel.WARNING,
         message: conflict.message,
         messageKey: `conflict_${conflict.type}`,
         field: conflict.affectedFields[0],
@@ -500,7 +503,7 @@ export class LegalValidator {
       case 'testator_data.fullName':
         return {
           isValid: !!value && value.length > 0,
-          level: value && value.length > 0 ? 'success' : 'error',
+          level: value && value.length > 0 ? ValidationLevel.SUCCESS : ValidationLevel.ERROR,
           message:
             value && value.length > 0 ? 'Valid name' : 'Full name is required',
           messageKey:
@@ -512,7 +515,7 @@ export class LegalValidator {
         if (!value) {
           return {
             isValid: false,
-            level: 'warning',
+            level: ValidationLevel.WARNING,
             message: 'Consider appointing an executor',
             messageKey: 'executor_recommended',
             field: fieldName,
@@ -521,7 +524,7 @@ export class LegalValidator {
         }
         return {
           isValid: true,
-          level: 'success',
+          level: ValidationLevel.SUCCESS,
           message: 'Executor appointed',
           messageKey: 'executor_valid',
           field: fieldName,
@@ -530,7 +533,7 @@ export class LegalValidator {
       default:
         return {
           isValid: true,
-          level: 'info',
+          level: ValidationLevel.INFO,
           message: 'Field validation not implemented',
           messageKey: 'validation_not_implemented',
           field: fieldName,

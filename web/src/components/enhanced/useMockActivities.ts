@@ -1,3 +1,4 @@
+
 import type { ActivityItem } from './activityFeedTypes';
 
 export function useMockActivities(): ActivityItem[] {

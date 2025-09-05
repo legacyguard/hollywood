@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@clerk/clerk-react';
@@ -58,7 +59,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       // Execute the action and get the response
       await executeSofiaAction(action, {
         navigate,
-        userId: userId || undefined,
+        ...(userId ? { userId } : {}),
         setDocumentFilter,
         onSofiaMessage: (_user, sofia) => {
           sofiaResponse = sofia;

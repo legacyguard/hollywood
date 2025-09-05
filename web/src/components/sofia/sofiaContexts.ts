@@ -1,3 +1,4 @@
+
 import React from 'react';
 import type { AdaptivePersonalityManager } from '@/lib/sofia-personality';
 

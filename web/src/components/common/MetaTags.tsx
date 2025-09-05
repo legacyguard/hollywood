@@ -1,3 +1,4 @@
+
 import { useEffect, useMemo } from 'react';
 
 // Define the props the component will accept
@@ -85,9 +86,9 @@ export const MetaTags = ({
         const propertyMatch = selector.match(/\[property="([^"]+)"\]/);
         const nameMatch = selector.match(/\[name="([^"]+)"\]/);
 
-        if (propertyMatch) {
+        if (propertyMatch && propertyMatch[1]) {
           element.setAttribute('property', propertyMatch[1]);
-        } else if (nameMatch) {
+        } else if (nameMatch && nameMatch[1]) {
           element.setAttribute('name', nameMatch[1]);
         } else {
           console.warn(`Unable to parse meta tag selector: ${selector}`);

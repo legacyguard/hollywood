@@ -1,3 +1,4 @@
+
 import React, { useContext } from 'react';
 import type { Variants } from 'framer-motion';
 // useSofia import removed as unused

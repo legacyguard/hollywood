@@ -1,3 +1,4 @@
+
 /**
  * Will Management Page
  * Main interface for managing user's wills
@@ -152,13 +153,22 @@ export const WillManagement: React.FC = () => {
         validationResult: {
           isValid: will.validation_errors?.length === 0,
           completenessScore: will.completeness_score || 0,
-          errors: will.validation_errors || [],
+          errors: (will.validation_errors || []).map(error => ({
+            ...error,
+            code: error.field || 'unknown',
+            legalReference: error.legal_reference,
+          })),
           warnings: [],
           legalRequirementsMet: true,
           missingRequiredFields: [],
           suggestedImprovements: [],
         },
-        aiSuggestions: will.ai_suggestions || [],
+        aiSuggestions: (will.ai_suggestions || []).map(suggestion => ({
+          ...suggestion,
+          affectedSections: [], // Default value
+          isJurisdictionSpecific: suggestion.jurisdiction_specific,
+          suggestedAction: suggestion.suggested_action || suggestion.description,
+        })) as import('@/types/will-templates').AISuggestion[],
         executionInstructions: {
           holographic: {
             steps: [
@@ -206,7 +216,10 @@ export const WillManagement: React.FC = () => {
     const statusConfig = {
       draft: { color: 'secondary', icon: Clock, text: 'Draft' },
       in_progress: { color: 'default', icon: RefreshCw, text: 'In Progress' },
+      review: { color: 'default', icon: FileText, text: 'Under Review' },
       completed: { color: 'default', icon: CheckCircle, text: 'Completed' },
+      notarized: { color: 'default', icon: CheckCircle, text: 'Notarized' },
+      witnessed: { color: 'default', icon: FileText, text: 'Witnessed' },
       archived: { color: 'secondary', icon: FileText, text: 'Archived' },
     };
 
@@ -313,7 +326,7 @@ export const WillManagement: React.FC = () => {
                     <div className='space-y-2'>
                       <div className='flex items-center gap-2'>
                         <CardTitle className='text-lg'>
-                          {will.testator_data?.fullName || 'Unnamed Will'}
+                          {(will as any).testatorInfo?.fullName || (will as any).testator_data?.fullName || 'Unnamed Will'}
                         </CardTitle>
                         {getStatusBadge(will)}
                       </div>

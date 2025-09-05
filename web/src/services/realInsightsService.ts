@@ -1,3 +1,4 @@
+
 /**
  * Real Insights Service
  * Complete database integration for insights generation and management
@@ -192,7 +193,7 @@ class RealInsightsService {
       const { data, error } = await supabase
         .from('quick_insights')
         .insert({
-          user_id: insight.userId,
+          user_id: insight.user_id,
           document_id: insight.documentId,
           type: insight.type,
           title: insight.title,
@@ -242,7 +243,7 @@ class RealInsightsService {
   ): Promise<QuickInsight[]> {
     try {
       const insightData = insights.map(insight => ({
-        user_id: insight.userId,
+        user_id: insight.user_id,
         document_id: insight.documentId,
         type: insight.type,
         title: insight.title,
@@ -660,7 +661,7 @@ class RealInsightsService {
     try {
       // Store in a generic insights record since we don't have a specific table
       await this.storeInsight({
-        userId: statement.userId,
+        userId: statement.user_id,
         type: 'family_impact',
         title: 'Family Impact Analysis',
         description: statement.impactDescription,

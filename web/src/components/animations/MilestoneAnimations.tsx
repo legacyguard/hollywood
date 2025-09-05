@@ -1,3 +1,4 @@
+
 // Milestone Animations - Celebration and achievement animations with personality adaptation
 // Provides meaningful feedback for user accomplishments and progress milestones
 
@@ -72,6 +73,7 @@ export const MilestoneCelebration: React.FC<MilestoneCelebrationProps> = ({
 
       return () => clearTimeout(timer);
     }
+    return undefined;
   }, [isVisible, autoHide, duration, onComplete]);
 
   // Get personality-specific styling
@@ -420,20 +422,24 @@ export const AdaptiveProgressRing: React.FC<ProgressRingProps> = ({
           fill='none'
           strokeLinecap='round'
           className={getStrokeColor()}
-          initial={animated ? { strokeDashoffset: circumference } : undefined}
-          animate={animated ? { strokeDashoffset } : undefined}
-          transition={
-            animated && !shouldReduceMotion
-              ? {
-                  duration: adaptedMode === 'pragmatic' ? 1 : 2,
-                  ease:
-                    adaptedMode === 'pragmatic'
-                      ? 'easeOut'
-                      : [0.25, 0.46, 0.45, 0.94],
-                  delay: 0.2,
-                }
-              : undefined
-          }
+          {...(animated
+            ? {
+                initial: { strokeDashoffset: circumference },
+                animate: { strokeDashoffset },
+                ...(shouldReduceMotion
+                  ? {}
+                  : {
+                      transition: {
+                        duration: adaptedMode === 'pragmatic' ? 1 : 2,
+                        ease:
+                          adaptedMode === 'pragmatic'
+                            ? 'easeOut'
+                            : [0.25, 0.46, 0.45, 0.94],
+                        delay: 0.2,
+                      },
+                    }),
+              }
+            : {})}
           style={{
             strokeDasharray,
             strokeDashoffset: animated ? undefined : strokeDashoffset,
@@ -450,16 +456,20 @@ export const AdaptiveProgressRing: React.FC<ProgressRingProps> = ({
               fontSize:
                 size === 'sm' ? '12px' : size === 'md' ? '16px' : '20px',
             }}
-            initial={animated ? { opacity: 0, scale: 0.5 } : undefined}
-            animate={animated ? { opacity: 1, scale: 1 } : undefined}
-            transition={
-              animated && !shouldReduceMotion
-                ? {
-                    delay: 0.5,
-                    duration: 0.5,
-                  }
-                : undefined
-            }
+            {...(animated
+              ? {
+                  initial: { opacity: 0, scale: 0.5 },
+                  animate: { opacity: 1, scale: 1 },
+                  ...(shouldReduceMotion
+                    ? {}
+                    : {
+                        transition: {
+                          delay: 0.5,
+                          duration: 0.5,
+                        },
+                      }),
+                }
+              : {})}
           >
             {Math.round(progress)}%
           </motion.span>

@@ -1,8 +1,9 @@
+
 // Sofia Search Dictionary - Intelligent keyword-to-action mapping without AI
 export interface SofiaAction {
   actionId: string;
   icon?: string;
-  payload: Record<string, unknown> | string;
+  payload: Record<string, any> | string;
   text: string;
 }
 

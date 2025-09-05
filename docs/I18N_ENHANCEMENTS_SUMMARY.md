@@ -5,15 +5,18 @@
 ## 🎯 Prehľad Vyriešených Problémov
 
 ### ✅ 1. Podpora pre Plurály
+
 **Problém:** Nesprávne zobrazovanie počtu položiek v rôznych jazykoch (napr. "Máte 5 dokument" namiesto "Máte 5 dokumentov")
 
 **Riešenie:**
+
 - Implementovaná plná podpora pre pluralizáciu podľa pravidiel jednotlivých jazykov
 - Slovenčina: one (1), few (2-4), many (0.x, 5+), other
 - Čeština: one (1), few (2-4), many (0.x), other
 - Angličtina: one (1), other (všetko ostatné)
 
 **Príklad použitia:**
+
 ```javascript
 // V komponente
 t('vault.documentCount', { count: 5 })
@@ -25,9 +28,11 @@ t('vault.documentCount', { count: 5 })
 ```
 
 ### ✅ 2. Formátovanie Dátumov a Čísel
+
 **Problém:** Nekonzistentné zobrazenie dátumov a čísel naprieč jazykmi
 
 **Riešenie:**
+
 - Integrácia knižnice `date-fns` s lokalizovanými formátmi
 - Vlastné formátovacie funkcie pre:
   - Dátumy (krátke, dlhé, relatívne)
@@ -36,6 +41,7 @@ t('vault.documentCount', { count: 5 })
   - Veľkosti súborov (B, KB, MB, GB)
 
 **Príklad použitia:**
+
 ```javascript
 // Dátumy
 t('common.date', { date: new Date() }) // 02.09.2024 (SK)
@@ -49,14 +55,17 @@ t('common.fileSize', { size: 2048576 }) // 2 MB
 ```
 
 ### ✅ 3. Fallback Mechanizmus
+
 **Problém:** Zobrazovanie technických kľúčov pri chýbajúcich prekladoch
 
 **Riešenie:**
+
 - Nastavený `fallbackLng: 'en'` v konfigurácii
 - Automatický fallback na angličtinu pri chýbajúcom preklade
 - Logovanie chýbajúcich prekladov vo vývojovom prostredí
 
 **Príklad:**
+
 ```javascript
 // Ak chýba slovenský preklad
 t('new.feature.title') 
@@ -64,15 +73,18 @@ t('new.feature.title')
 ```
 
 ### ✅ 4. Štruktúra pre Právne Šablóny
+
 **Problém:** Správa prekladov pre právne dokumenty špecifické pre jurisdikcie
 
 **Riešenie:**
+
 - Vytvorená štruktúra namespace pre právne dokumenty
 - Podpora pre 39 jurisdikcií a 34 jazykov
 - Lazy loading pre obsahové namespace
 
 **Štruktúra:**
-```
+
+```text
 locales/
 ├── ui/                    # UI preklady
 │   ├── en.json
@@ -90,19 +102,23 @@ locales/
 ## 📁 Vytvorené Súbory
 
 ### Konfigurácia
+
 - `/src/lib/i18n/enhanced-config.ts` - Vylepšená i18n konfigurácia
 - `/locales/ui/en-enhanced.json` - Anglické preklady s plurálmi
 - `/locales/ui/sk-enhanced.json` - Slovenské preklady s plurálmi
 
 ### Príklady
+
 - `/src/components/examples/EnhancedI18nExample.tsx` - Ukážkový komponent
 
 ### Dokumentácia
+
 - `/I18N_ENHANCEMENTS_SUMMARY.md` - Tento súbor
 
 ## 🚀 Implementované Funkcie
 
 ### 1. Pluralizácia
+
 ```typescript
 // Slovenčina - 4 tvary
 "documentCount_one": "{{count}} dokument",      // 1
@@ -112,6 +128,7 @@ locales/
 ```
 
 ### 2. Formátovacie Funkcie
+
 ```typescript
 // Dátumy
 formatDate(date, 'sk')           // 02.09.2024
@@ -124,6 +141,7 @@ formatFileSize(2048576, 'sk')    // 2 MB
 ```
 
 ### 3. Namespace Loader
+
 ```typescript
 // Načítanie právnych dokumentov pre konkrétnu jurisdikciu
 await NamespaceLoader.loadWills('sk', 'SK');
@@ -133,6 +151,7 @@ await NamespaceLoader.loadFamilyShield('cs', 'CZ');
 ## 💡 Použitie v Komponentoch
 
 ### Základné Použitie
+
 ```tsx
 import { useTranslation } from 'react-i18next';
 
@@ -158,6 +177,7 @@ const MyComponent = () => {
 ```
 
 ### Zmena Jazyka
+
 ```tsx
 const changeLanguage = (lng: string) => {
   i18n.changeLanguage(lng);
@@ -171,18 +191,21 @@ const changeLanguage = (lng: string) => {
 ## 📊 Prínosy Implementácie
 
 ### Pre Používateľov
+
 - ✅ **Gramaticky správne texty** vo všetkých jazykoch
 - ✅ **Lokalizované formáty** dátumov a čísel
 - ✅ **Nikdy neuvidia technické kľúče** vďaka fallback mechanizmu
 - ✅ **Profesionálny dojem** z aplikácie
 
 ### Pre Vývojárov
+
 - ✅ **Jednotný systém** pre všetky preklady
 - ✅ **Automatické formátovanie** bez manuálnej práce
 - ✅ **Jednoduchá údržba** prekladov
 - ✅ **TypeScript podpora** pre type-safe preklady
 
 ### Pre Biznis
+
 - ✅ **Pripravené pre expanziu** do 39 krajín
 - ✅ **Znížené náklady** na lokalizáciu
 - ✅ **Profesionálna prezentácia** vo všetkých trhoch
@@ -191,17 +214,20 @@ const changeLanguage = (lng: string) => {
 ## 🔧 Inštalácia a Spustenie
 
 ### 1. Inštalácia závislostí
+
 ```bash
 npm install date-fns
 ```
 
 ### 2. Aktualizácia konfigurácie
+
 ```typescript
 // Nahradiť starú konfiguráciu novou
 import i18n from '@/lib/i18n/enhanced-config';
 ```
 
 ### 3. Test implementácie
+
 ```tsx
 // Pridať ukážkový komponent do aplikácie
 import EnhancedI18nExample from '@/components/examples/EnhancedI18nExample';
@@ -210,17 +236,20 @@ import EnhancedI18nExample from '@/components/examples/EnhancedI18nExample';
 ## 📝 Migračný Plán
 
 ### Fáza 1: Testovanie (Okamžite)
+
 - [ ] Otestovať enhanced-config.ts v development prostredí
 - [ ] Overiť správnosť plurálov pre SK/CS
 - [ ] Skontrolovať formátovanie dátumov
 
 ### Fáza 2: Postupná Migrácia (1-2 týždne)
+
 - [ ] Migrovať Dashboard komponenty
 - [ ] Migrovať Vault komponenty  
 - [ ] Migrovať Guardian komponenty
 - [ ] Migrovať Will komponenty
 
 ### Fáza 3: Produkcia (2-3 týždne)
+
 - [ ] Nahradiť všetky staré preklady
 - [ ] Nasadiť do staging prostredia
 - [ ] Finálne testovanie
@@ -229,6 +258,7 @@ import EnhancedI18nExample from '@/components/examples/EnhancedI18nExample';
 ## 🎯 Ďalšie Odporúčania
 
 ### Krátkodobé (1 mesiac)
+
 1. **Integrácia TMS** (Translation Management System)
    - Lokalise alebo Crowdin pre správu prekladov
    - Automatická synchronizácia s GitHub
@@ -238,6 +268,7 @@ import EnhancedI18nExample from '@/components/examples/EnhancedI18nExample';
    - Meranie konverzií podľa jazykov
 
 ### Dlhodobé (3-6 mesiacov)
+
 1. **Automatické Preklady**
    - AI-assisted preklady pre nové texty
    - Review proces pre kvalitu

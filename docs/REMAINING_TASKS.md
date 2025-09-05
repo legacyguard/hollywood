@@ -1,6 +1,7 @@
 # 📋 Remaining Production Tasks
 
 ## ✅ Already Completed
+
 - Build compiles successfully
 - All import/export errors fixed  
 - Console statements removed (629 total)
@@ -14,6 +15,7 @@
 ## 🔴 Critical - Must Do Before Production
 
 ### 1. Sentry Error Tracking Setup
+
 ```typescript
 // Add to src/main.tsx
 import * as Sentry from "@sentry/react";
@@ -34,16 +36,19 @@ if (import.meta.env.PROD && import.meta.env.VITE_SENTRY_DSN) {
 ```
 
 ### 2. TypeScript 'any' Types (~90 occurrences)
+
 - As you mentioned, handling separately
 - Priority for type safety
 
 ### 3. Vercel Environment Variables
+
 - Add all production variables to Vercel Dashboard
 - Never commit real credentials
 
 ## 🟡 Important - Should Do Soon
 
 ### 4. Performance Optimizations
+
 ```bash
 # Check bundle analysis
 npm run build
@@ -51,11 +56,13 @@ npm run build
 ```
 
 Current largest bundles:
+
 - react-vendor: 612KB (normal for React)
 - legacy-garden: 296KB (could be optimized)
 - marketing-pages: 222KB
 
 ### 5. Add Web Vitals Monitoring
+
 ```typescript
 // Add to src/main.tsx
 import { onCLS, onFID, onFCP, onLCP, onTTFB } from 'web-vitals';
@@ -80,6 +87,7 @@ onTTFB(sendToAnalytics);
 ```
 
 ### 6. Add Rate Limiting Headers
+
 ```typescript
 // vercel.json
 {
@@ -99,19 +107,23 @@ onTTFB(sendToAnalytics);
 ## 🟢 Nice to Have - Can Do After Launch
 
 ### 7. Progressive Web App (PWA) Features
+
 - Service worker for offline support
 - App manifest for installability
 - Push notifications
 
 ### 8. Internationalization (i18n)
+
 - Already has basic setup in `/src/lib/i18n/`
 - Add more languages based on user demand
 
 ### 9. A/B Testing Framework
+
 - For testing new features
 - Integration with analytics
 
 ### 10. Advanced Monitoring
+
 - User session recording (Hotjar/FullStory)
 - Performance monitoring (DataDog/New Relic)
 - Uptime monitoring (UptimeRobot/Pingdom)
@@ -119,6 +131,7 @@ onTTFB(sendToAnalytics);
 ## 📊 Performance Targets
 
 Current Status vs Targets:
+
 - [ ] First Contentful Paint: Target < 1.8s
 - [ ] Time to Interactive: Target < 3.9s  
 - [ ] Cumulative Layout Shift: Target < 0.1
@@ -127,6 +140,7 @@ Current Status vs Targets:
 ## 🚀 Pre-Launch Checklist
 
 Before going live:
+
 1. [ ] Install Sentry package: `npm install @sentry/react`
 2. [ ] Set VITE_SENTRY_DSN in Vercel
 3. [ ] Test error tracking works
@@ -139,6 +153,7 @@ Before going live:
 ## 📝 Testing Checklist
 
 Critical user flows to test:
+
 - [ ] Sign up / Sign in
 - [ ] Document upload & encryption
 - [ ] Will creation wizard
@@ -159,6 +174,7 @@ Critical user flows to test:
 ---
 
 **Priority Order:**
+
 1. Sentry setup (30 min)
 2. TypeScript types (you're handling)
 3. Vercel env vars (15 min)

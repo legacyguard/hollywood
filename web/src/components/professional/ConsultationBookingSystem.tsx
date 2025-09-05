@@ -1,3 +1,4 @@
+
 /**
  * Legal Consultation Booking System
  * Professional consultation scheduling with premium UX

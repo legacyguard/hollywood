@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { type GetProps, styled, View } from 'tamagui';
 import { XStack, YStack } from './Layout';
@@ -89,8 +90,8 @@ export const SkeletonText = ({
       {Array.from({ length: lines }).map((_, i) => (
         <Skeleton
           key={i}
-          variant="text"
-          width={i === lines - 1 ? 'large' : 'full'}
+          height={16}
+          width={i === lines - 1 ? '75%' : '100%'}
         />
       ))}
     </YStack>
@@ -150,7 +151,7 @@ export const SkeletonCard = ({
         {showAvatar && <SkeletonAvatar />}
         <YStack flex={1} space='small'>
           {showTitle && (
-            <Skeleton variant="title" width="large" />
+            <Skeleton height={24} width="100%" />
           )}
           {showDescription && <SkeletonText lines={2} />}
         </YStack>

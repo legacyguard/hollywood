@@ -1,3 +1,4 @@
+
 /**
  * Multi-Factor Authentication Service for LegacyGuard
  * Supports FIDO2/WebAuthn, TOTP, SMS, and biometric authentication

@@ -1,3 +1,4 @@
+
 /**
  * Duplicate Resolution Step Component
  * UI for resolving duplicate documents during email import
@@ -72,8 +73,9 @@ export function DuplicateResolutionStep({
       [documentId]: {
         documentId,
         action,
-        newFilename:
-          action === 'rename' ? customFilenames[documentId] : undefined,
+        ...(action === 'rename' && customFilenames[documentId] 
+          ? { newFilename: customFilenames[documentId] } 
+          : {}),
       },
     }));
   };
@@ -88,7 +90,8 @@ export function DuplicateResolutionStep({
       setChoices(prev => ({
         ...prev,
         [documentId]: {
-          ...prev[documentId],
+          documentId,
+          action: 'rename',
           newFilename,
         },
       }));

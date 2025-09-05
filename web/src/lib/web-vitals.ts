@@ -1,3 +1,4 @@
+
 import { onCLS, onFCP, onINP, onLCP, onTTFB } from 'web-vitals';
 
 export function initWebVitals() {

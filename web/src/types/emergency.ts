@@ -1,3 +1,4 @@
+
 export type EmergencyTriggerType =
   | 'admin_override'
   | 'health_check_failure'
@@ -36,7 +37,7 @@ export interface EmergencyTriggerCondition {
     | 'greater_than'
     | 'less_than'
     | 'not_equal_to';
-  metadata?: Record<string, unknown>;
+  metadata?: Record<string, any>;
   threshold_unit: 'attempts' | 'days' | 'guardians' | 'months' | 'weeks';
   threshold_value: number;
   type: 'activity_based' | 'document_based' | 'guardian_based' | 'time_based';
@@ -45,7 +46,7 @@ export interface EmergencyTriggerCondition {
 export interface EmergencyResponseAction {
   delay_minutes: number;
   message_template?: string;
-  metadata?: Record<string, unknown>;
+  metadata?: Record<string, any>;
   priority: number;
   target_guardians?: string[]; // Guardian IDs
   type:
@@ -207,7 +208,7 @@ export interface SurvivorResource {
   description: string;
   id: string;
   is_available: boolean;
-  metadata?: Record<string, unknown>;
+  metadata?: Record<string, any>;
   resource_type: 'contact' | 'document' | 'instruction' | 'time_capsule';
   title: string;
 }
@@ -251,7 +252,7 @@ export interface EmergencyActivationResponse {
 // Health Check System
 export interface UserHealthCheck {
   check_type: 'api_ping' | 'document_access' | 'login' | 'manual_confirmation';
-  metadata?: Record<string, unknown>;
+  metadata?: Record<string, any>;
   responded_at?: string;
   response_method?: string;
   scheduled_at: string;

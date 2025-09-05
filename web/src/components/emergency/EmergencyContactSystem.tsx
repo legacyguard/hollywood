@@ -1,3 +1,4 @@
+
 // Emergency Contact System - Personality-aware emergency contact management
 // Phase 3A: Family Shield System - Enhanced emergency contact and guardian notification system
 
@@ -467,12 +468,13 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
       >
         <div className='flex items-center justify-center h-32'>
           <motion.div
-            animate={!shouldReduceMotion ? { rotate: 360 } : undefined}
-            transition={
-              !shouldReduceMotion
-                ? { duration: 2, repeat: Infinity, ease: 'linear' }
-                : undefined
-            }
+            {...(!shouldReduceMotion
+              ? {
+                  animate: { rotate: 360 },
+                  transition: { duration: 2, repeat: Infinity, ease: 'linear' },
+                }
+              : {})}
+            
           >
             <Users className='w-8 h-8 text-gray-400' />
           </motion.div>
@@ -486,13 +488,13 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
       {/* Main Contact System */}
       <motion.div
         className={`bg-gradient-to-br ${personalityContent.bgGradient} rounded-xl border ${personalityContent.borderColor} shadow-sm`}
-        initial={!shouldReduceMotion ? { opacity: 0, y: 20 } : undefined}
-        animate={!shouldReduceMotion ? { opacity: 1, y: 0 } : undefined}
-        transition={
-          !shouldReduceMotion
-            ? { duration: animConfig.duration, ease: animConfig.ease as any }
-            : undefined
-        }
+        {...(!shouldReduceMotion
+          ? {
+              initial: { opacity: 0, y: 20 },
+              animate: { opacity: 1, y: 0 },
+              transition: { duration: animConfig.duration, ease: animConfig.ease as any },
+            }
+          : {})}
       >
         {/* Header */}
         <div className='p-6 pb-4'>
@@ -500,7 +502,7 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
             <div className='flex items-start gap-3'>
               <motion.div
                 className={`p-2 rounded-lg bg-white/80 backdrop-blur-sm ${personalityContent.accentColor}`}
-                whileHover={!shouldReduceMotion ? { scale: 1.05 } : undefined}
+                {...(!shouldReduceMotion ? { whileHover: { scale: 1.05 } } : {})}
               >
                 <IconComponent className='w-6 h-6' />
               </motion.div>
@@ -743,19 +745,13 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
                       <motion.div
                         key={contact.id}
                         className='bg-white/80 backdrop-blur-sm rounded-lg p-4'
-                        initial={
-                          !shouldReduceMotion
-                            ? { opacity: 0, y: 10 }
-                            : undefined
-                        }
-                        animate={
-                          !shouldReduceMotion ? { opacity: 1, y: 0 } : undefined
-                        }
-                        transition={
-                          !shouldReduceMotion
-                            ? { delay: index * 0.1 }
-                            : undefined
-                        }
+                        {...(!shouldReduceMotion
+                          ? {
+                              initial: { opacity: 0, y: 10 },
+                              animate: { opacity: 1, y: 0 },
+                              transition: { delay: index * 0.1 },
+                            }
+                          : {})}
                       >
                         <div className='flex items-start justify-between'>
                           <div className='flex items-start gap-3'>
@@ -864,19 +860,13 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
                       <motion.div
                         key={contact.id}
                         className='bg-white/60 backdrop-blur-sm rounded-lg p-3 flex items-center justify-between'
-                        initial={
-                          !shouldReduceMotion
-                            ? { opacity: 0, x: -10 }
-                            : undefined
-                        }
-                        animate={
-                          !shouldReduceMotion ? { opacity: 1, x: 0 } : undefined
-                        }
-                        transition={
-                          !shouldReduceMotion
-                            ? { delay: index * 0.05 }
-                            : undefined
-                        }
+                        {...(!shouldReduceMotion
+                          ? {
+                              initial: { opacity: 0, x: -10 },
+                              animate: { opacity: 1, x: 0 },
+                              transition: { delay: index * 0.05 },
+                            }
+                          : {})}
                       >
                         <div className='flex items-center gap-3'>
                           <div className='w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 text-sm font-medium'>

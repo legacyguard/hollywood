@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import { styled, View } from 'tamagui';
 import { AnimatePresence, motion, useAnimation } from 'framer-motion';

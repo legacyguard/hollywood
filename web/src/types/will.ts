@@ -1,3 +1,4 @@
+
 /**
  * Will and Testament Types for LegacyGuard
  * Handles will creation, validation, and management
@@ -115,7 +116,7 @@ export interface AssetDistribution {
 
 export interface GuardianshipAppointment {
   alternate_guardian?: {
-    contact_info: Record<string, unknown>;
+    contact_info: Record<string, any>;
     full_name: string;
     relationship: string;
   };
@@ -123,7 +124,7 @@ export interface GuardianshipAppointment {
   child_name: string;
   id: string;
   primary_guardian: {
-    contact_info: Record<string, unknown>;
+    contact_info: Record<string, any>;
     full_name: string;
     relationship: string;
   };
@@ -132,7 +133,7 @@ export interface GuardianshipAppointment {
 
 export interface ExecutorAppointment {
   compensation?: string;
-  contact_info: Record<string, unknown>;
+  contact_info: Record<string, any>;
   full_name: string;
   id: string;
   powers_granted: string[];
@@ -461,7 +462,7 @@ export interface TemplateVariable {
   options?: { label: string; value: string }[];
   required: boolean;
   type: 'boolean' | 'date' | 'number' | 'select' | 'text';
-  validation_rules?: Record<string, unknown>;
+  validation_rules?: Record<string, any>;
 }
 
 // Professional Review System Types

@@ -1,3 +1,4 @@
+
 /**
  * Legally Reviewed Stamp Component
  * Shows official legal review completion stamp for documents

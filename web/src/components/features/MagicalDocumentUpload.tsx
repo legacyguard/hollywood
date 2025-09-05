@@ -1,3 +1,4 @@
+
 /**
  * Magical Document Upload Enhancements
  * Adds delightful animations to make document uploading a magical experience

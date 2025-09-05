@@ -1,3 +1,4 @@
+
 // Adaptive Text Manager for Sofia's Empathetic/Pragmatic Communication
 // This system provides dual communication modes based on user preferences
 

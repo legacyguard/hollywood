@@ -1,3 +1,4 @@
+
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createClient } from '@supabase/supabase-js';
 
@@ -18,7 +19,7 @@ describe('RLS Policies & Database Security', () => {
         select: vi.fn(() => Promise.resolve({ data: null, error: null })),
       })),
       update: vi.fn(() => {
-        const updateBuilder: Record<string, unknown> = {
+        const updateBuilder: Record<string, any> = {
           select: vi.fn(() => Promise.resolve({ data: null, error: null })),
         };
         updateBuilder.eq = vi.fn().mockReturnValue(updateBuilder);

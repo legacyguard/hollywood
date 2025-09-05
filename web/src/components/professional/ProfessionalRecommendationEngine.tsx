@@ -1,3 +1,4 @@
+
 /**
  * Professional Service Recommendation Engine
  * AI-powered matching system for legal services
@@ -600,10 +601,10 @@ export function ProfessionalRecommendationEngine({
                       <div className='space-y-3'>
                         <Slider
                           value={[criteria.budget.min, criteria.budget.max]}
-                          onValueChange={([min, max]: [number, number]) =>
+                          onValueChange={(value: number[]) =>
                             setCriteria(prev => ({
                               ...prev,
-                              budget: { min, max },
+                              budget: { min: value[0], max: value[1] },
                             }))
                           }
                           max={5000}

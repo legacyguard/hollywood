@@ -1,3 +1,4 @@
+
 /**
  * Advanced Sharing Controls for LegacyGuard
  * Provides sophisticated access control, time-limited sharing, view-only modes, and watermarking

@@ -1,3 +1,4 @@
+
 import { useCallback, useEffect, useState } from 'react';
 import {
   Card,
@@ -154,7 +155,12 @@ export function SharedFamilyCalendar({
         startDate.toISOString(),
         endDate.toISOString()
       );
-      setEvents(calendarEvents);
+      // Map database results to application interface
+      const mappedEvents = calendarEvents.map(event => ({
+        ...event,
+        description: event.description || undefined, // Convert null to undefined
+      }));
+      setEvents(mappedEvents as any);
     } catch (error) {
       console.error('Failed to load calendar events:', error);
     } finally {
@@ -206,18 +212,18 @@ export function SharedFamilyCalendar({
         | { endDate?: Date; frequency: 'monthly' | 'weekly' | 'yearly' } =
         undefined;
 
-      if (event.is_recurring && event.recurrence_pattern) {
+      if ((event as any).is_recurring && (event as any).recurrence_pattern) {
         const r: {
           endDate?: Date;
           frequency: 'monthly' | 'weekly' | 'yearly';
         } = {
-          frequency: event.recurrence_pattern as
+          frequency: (event as any).recurrence_pattern as
             | 'monthly'
             | 'weekly'
             | 'yearly',
         };
-        if (event.recurrence_end_date) {
-          r.endDate = new Date(event.recurrence_end_date);
+        if ((event as any).recurrence_end_date) {
+          r.endDate = new Date((event as any).recurrence_end_date);
         }
         recurring = r;
       }
@@ -227,7 +233,7 @@ export function SharedFamilyCalendar({
         title: event.title,
         description: event.description || '',
         type: newEventForm.type, // Use original frontend type
-        date: new Date(event.scheduled_at),
+        date: new Date((event as any).scheduled_at),
         priority: 'medium', // Default priority
         createdBy: userId, // Set to current user
         notifyMembers: [], // Default empty array

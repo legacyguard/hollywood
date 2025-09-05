@@ -1,3 +1,4 @@
+
 // Enhanced Garden Section - Dashboard integration component for legacy garden
 // Phase 2B: Dashboard Integration - Smart garden display with personality adaptation
 
@@ -220,16 +221,16 @@ export const EnhancedGardenSection: React.FC<EnhancedGardenSectionProps> = ({
   return (
     <motion.div
       className={`bg-gradient-to-br ${personalityContent.bgGradient} rounded-xl border ${personalityContent.borderColor} shadow-sm overflow-hidden ${className}`}
-      initial={!shouldReduceMotion ? { opacity: 0, y: 20 } : undefined}
-      animate={!shouldReduceMotion ? { opacity: 1, y: 0 } : undefined}
-      transition={
-        !shouldReduceMotion
-          ? {
+      {...(!shouldReduceMotion
+        ? {
+            initial: { opacity: 0, y: 20 },
+            animate: { opacity: 1, y: 0 },
+            transition: {
               duration: animConfig.duration,
               ease: animConfig.ease as any,
-            }
-          : undefined
-      }
+            },
+          }
+        : {})}
     >
       {/* Header */}
       {showHeader && (
@@ -238,7 +239,7 @@ export const EnhancedGardenSection: React.FC<EnhancedGardenSectionProps> = ({
             <div className='flex items-start gap-3'>
               <motion.div
                 className={`p-2 rounded-lg bg-white/80 backdrop-blur-sm ${personalityContent.accentColor}`}
-                whileHover={!shouldReduceMotion ? { scale: 1.05 } : undefined}
+                {...(!shouldReduceMotion ? { whileHover: { scale: 1.05 } } : {})}
               >
                 <IconComponent className='w-5 h-5' />
               </motion.div>
@@ -256,8 +257,12 @@ export const EnhancedGardenSection: React.FC<EnhancedGardenSectionProps> = ({
             <motion.button
               onClick={() => navigate('/legacy')}
               className='flex items-center gap-1 text-xs px-3 py-1 bg-white/80 backdrop-blur-sm text-gray-700 rounded-full hover:bg-white/90 transition-colors'
-              whileHover={!shouldReduceMotion ? { scale: 1.05 } : undefined}
-              whileTap={!shouldReduceMotion ? { scale: 0.95 } : undefined}
+              {...(!shouldReduceMotion
+                ? {
+                    whileHover: { scale: 1.05 },
+                    whileTap: { scale: 0.95 },
+                  }
+                : {})}
             >
               View Details
               <ExternalLink className='w-3 h-3' />
@@ -288,20 +293,15 @@ export const EnhancedGardenSection: React.FC<EnhancedGardenSectionProps> = ({
                       ? 'bg-blue-600'
                       : 'bg-purple-500'
                 }`}
-                initial={!shouldReduceMotion ? { width: 0 } : undefined}
-                animate={
-                  !shouldReduceMotion
-                    ? { width: `${gardenProgress.overallProgress}%` }
-                    : undefined
-                }
-                transition={
-                  !shouldReduceMotion ? { duration: 1, delay: 0.5 } : undefined
-                }
-                style={
-                  shouldReduceMotion
-                    ? { width: `${gardenProgress.overallProgress}%` }
-                    : undefined
-                }
+                {...(shouldReduceMotion
+                  ? {
+                      style: { width: `${gardenProgress.overallProgress}%` },
+                    }
+                  : {
+                      initial: { width: 0 },
+                      animate: { width: `${gardenProgress.overallProgress}%` },
+                      transition: { duration: 1, delay: 0.5 },
+                    })}
               />
             </div>
 
@@ -347,12 +347,12 @@ export const EnhancedGardenSection: React.FC<EnhancedGardenSectionProps> = ({
         ) : (
           <div className='flex items-center justify-center h-48 bg-white/40 backdrop-blur-sm rounded-lg'>
             <motion.div
-              animate={!shouldReduceMotion ? { rotate: 360 } : undefined}
-              transition={
-                !shouldReduceMotion
-                  ? { duration: 2, repeat: Infinity, ease: 'linear' }
-                  : undefined
-              }
+              {...(!shouldReduceMotion
+                ? {
+                    animate: { rotate: 360 },
+                    transition: { duration: 2, repeat: Infinity, ease: 'linear' },
+                  }
+                : {})}
             >
               <TreePine className='w-8 h-8 text-gray-500' />
             </motion.div>
@@ -378,21 +378,15 @@ export const EnhancedGardenSection: React.FC<EnhancedGardenSectionProps> = ({
                   key={action.label}
                   onClick={action.onClick}
                   className='w-full flex items-center gap-3 p-3 bg-white/80 rounded-lg hover:bg-white/90 transition-colors text-left'
-                  whileHover={
-                    !shouldReduceMotion ? { scale: 1.02, x: 4 } : undefined
-                  }
-                  whileTap={!shouldReduceMotion ? { scale: 0.98 } : undefined}
-                  initial={
-                    !shouldReduceMotion ? { opacity: 0, x: -10 } : undefined
-                  }
-                  animate={
-                    !shouldReduceMotion ? { opacity: 1, x: 0 } : undefined
-                  }
-                  transition={
-                    !shouldReduceMotion
-                      ? { delay: index * 0.1 + 0.3 }
-                      : undefined
-                  }
+                  {...(!shouldReduceMotion
+                    ? {
+                        whileHover: { scale: 1.02, x: 4 },
+                        whileTap: { scale: 0.98 },
+                        initial: { opacity: 0, x: -10 },
+                        animate: { opacity: 1, x: 0 },
+                        transition: { delay: index * 0.1 + 0.3 },
+                      }
+                    : {})}
                 >
                   <action.icon
                     className={`w-4 h-4 ${action.color} flex-shrink-0`}

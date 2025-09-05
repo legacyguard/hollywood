@@ -1,3 +1,4 @@
+
 /**
  * Settings Page - Application settings and preferences
  * Includes backup/restore functionality
@@ -125,9 +126,10 @@ export default function SettingsPage() {
 
       // Update Clerk user metadata with communication style
       try {
+        // Use unsafeMetadata instead of publicMetadata for user preferences
         await user.update({
-          publicMetadata: {
-            ...user.publicMetadata,
+          unsafeMetadata: {
+            ...user.unsafeMetadata,
             communicationStyle: preferences.communication.style,
             sofiaAdaptationEnabled: preferences.communication.autoDetection,
             sofiaLastStyleUpdate: new Date().toISOString(),

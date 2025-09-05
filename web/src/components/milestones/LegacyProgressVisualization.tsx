@@ -1,3 +1,4 @@
+
 /**
  * Legacy Progress Visualization Component
  * Shows family protection progress with emotional framing and garden growth metaphor

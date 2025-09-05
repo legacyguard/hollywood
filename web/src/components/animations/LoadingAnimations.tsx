@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 // import { useSofia } from '../sofia/SofiaContextProvider'; // Not available
@@ -377,7 +378,7 @@ export const ButtonLoader: React.FC<{
   <LoadingAnimation
     type='spinner'
     size={size}
-    color={color}
+    {...(color ? { color } : {})}
     personalityAdapt={false}
   />
 );

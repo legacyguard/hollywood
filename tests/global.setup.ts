@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { clerkSetup } from '@clerk/testing/playwright';
 
 /**

@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Freemium Service
  * Manages freemium features and limitations

@@ -1,3 +1,4 @@
+
 /**
  * AI-Powered Document Analysis Service for LegacyGuard
  * Provides intelligent document insights, categorization, and recommendations

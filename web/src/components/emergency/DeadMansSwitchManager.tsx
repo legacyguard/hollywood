@@ -1,3 +1,4 @@
+
 // Dead Man's Switch Manager - Core emergency detection system with Sofia personality integration
 // Phase 3A: Family Shield System - Advanced inactivity detection and emergency protocols
 
@@ -355,12 +356,13 @@ export const DeadMansSwitchManager: React.FC<DeadMansSwitchProps> = ({
       >
         <div className='flex items-center justify-center h-32'>
           <motion.div
-            animate={!shouldReduceMotion ? { rotate: 360 } : undefined}
-            transition={
-              !shouldReduceMotion
-                ? { duration: 2, repeat: Infinity, ease: 'linear' }
-                : undefined
-            }
+            {...(!shouldReduceMotion
+              ? {
+                  animate: { rotate: 360 },
+                  transition: { duration: 2, repeat: Infinity, ease: 'linear' },
+                }
+              : {})}
+            
           >
             <Shield className='w-8 h-8 text-gray-400' />
           </motion.div>
@@ -394,13 +396,13 @@ export const DeadMansSwitchManager: React.FC<DeadMansSwitchProps> = ({
   return (
     <motion.div
       className={`bg-gradient-to-br ${personalityContent.bgGradient} rounded-xl border ${personalityContent.borderColor} shadow-sm ${className}`}
-      initial={!shouldReduceMotion ? { opacity: 0, y: 20 } : undefined}
-      animate={!shouldReduceMotion ? { opacity: 1, y: 0 } : undefined}
-      transition={
-        !shouldReduceMotion
-          ? { duration: animConfig.duration, ease: animConfig.ease as any }
-          : undefined
-      }
+      {...(!shouldReduceMotion
+        ? {
+            initial: { opacity: 0, y: 20 },
+            animate: { opacity: 1, y: 0 },
+            transition: { duration: animConfig.duration, ease: animConfig.ease as any },
+          }
+        : {})}
     >
       {/* Header */}
       <div className='p-6 pb-4'>
@@ -408,7 +410,7 @@ export const DeadMansSwitchManager: React.FC<DeadMansSwitchProps> = ({
           <div className='flex items-start gap-3'>
             <motion.div
               className={`p-2 rounded-lg bg-white/80 backdrop-blur-sm ${personalityContent.accentColor}`}
-              whileHover={!shouldReduceMotion ? { scale: 1.05 } : undefined}
+              {...(!shouldReduceMotion ? { whileHover: { scale: 1.05 } } : {})}
             >
               <IconComponent className='w-6 h-6' />
             </motion.div>
@@ -449,8 +451,12 @@ export const DeadMansSwitchManager: React.FC<DeadMansSwitchProps> = ({
         <motion.button
           onClick={() => recordActivity()}
           className={`w-full bg-white/90 backdrop-blur-sm border border-white/20 text-gray-700 px-4 py-3 rounded-lg hover:bg-white transition-colors text-sm font-medium`}
-          whileHover={!shouldReduceMotion ? { scale: 1.02 } : undefined}
-          whileTap={!shouldReduceMotion ? { scale: 0.98 } : undefined}
+          {...(!shouldReduceMotion
+            ? {
+                whileHover: { scale: 1.02 },
+                whileTap: { scale: 0.98 },
+              }
+            : {})}
         >
           <Activity className='w-4 h-4 inline mr-2' />
           {personalityContent.activityButton}
@@ -479,10 +485,12 @@ export const DeadMansSwitchManager: React.FC<DeadMansSwitchProps> = ({
               <motion.div
                 key={rule.id}
                 className='flex items-center justify-between p-2 bg-white/80 rounded-lg'
-                initial={
-                  !shouldReduceMotion ? { opacity: 0, x: -10 } : undefined
-                }
-                animate={!shouldReduceMotion ? { opacity: 1, x: 0 } : undefined}
+                {...(!shouldReduceMotion
+                  ? {
+                      initial: { opacity: 0, x: -10 },
+                      animate: { opacity: 1, x: 0 },
+                    }
+                  : {})}
               >
                 <div className='flex items-center gap-2'>
                   <div

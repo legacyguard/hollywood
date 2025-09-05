@@ -1,3 +1,4 @@
+
 /**
  * Will Template System Types
  * Multi-jurisdiction, multi-language will generation system
@@ -185,8 +186,8 @@ export interface TemplateSection {
 export interface ConditionalLogic {
   condition: string;
   dependencies: string[];
-  hideIf?: Record<string, unknown>;
-  showIf?: Record<string, unknown>;
+  hideIf?: Record<string, any>;
+  showIf?: Record<string, any>;
 }
 
 export interface TemplateVariable {
@@ -209,6 +210,7 @@ export interface SelectOption {
 }
 
 export interface ValidationRule {
+  field?: string;
   jurisdictionSpecific?: boolean;
   message: string;
   severity: 'error' | 'info' | 'warning';

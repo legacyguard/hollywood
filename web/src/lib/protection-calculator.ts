@@ -1,3 +1,4 @@
+
 /**
  * Protection Level Calculator
  * Calculates time saved and protection metrics for family impact

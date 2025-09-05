@@ -1,3 +1,4 @@
+
 /**
  * Professional Partnership Agreement Template
  * Template for attorney partnership agreements with LegacyGuard

@@ -1,3 +1,4 @@
+
 /**
  * TypeScript types for i18n system
  * Provides strong typing for translations and jurisdictions

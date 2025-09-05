@@ -1,3 +1,4 @@
+
 /**
  * Legacy Garden Visualization Component
  * Interactive garden that grows with user progress and family protection milestones

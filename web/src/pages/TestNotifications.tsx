@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -230,7 +231,7 @@ export function TestNotifications() {
           >
             <div className='flex items-center gap-3 mb-4'>
               <Icon
-                name={testResult.success ? 'checkCircle' : 'alertCircle'}
+                name={testResult.success ? 'check-circle' : 'alert-circle'}
                 className={`w-6 h-6 ${testResult.success ? 'text-green-600' : 'text-red-600'}`}
               />
               <h3

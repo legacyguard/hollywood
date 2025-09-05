@@ -1,3 +1,4 @@
+
 // Animated Page Wrapper - Provides consistent page transitions with Sofia's personality
 // Integrates with Sofia's personality system for adaptive animations
 

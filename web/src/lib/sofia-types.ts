@@ -1,3 +1,4 @@
+
 // Enhanced Sofia AI Types for Guided Dialog System
 // Extends the existing sofia-ai.ts with action-based interaction types
 
@@ -98,7 +99,7 @@ export interface SofiaCommand {
   command: string;
   context: SofiaContext;
   id: string;
-  parameters?: Record<string, unknown>;
+  parameters?: Record<string, any>;
   timestamp: Date;
 }
 

@@ -1,3 +1,4 @@
+
 /**
  * LegacyGuard API Ecosystem Service
  * Comprehensive API platform for third-party integrations,

@@ -1,3 +1,4 @@
+
 // src/App.tsx - Web Application Entry Point
 
 import { Suspense } from 'react';

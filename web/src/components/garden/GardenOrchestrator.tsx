@@ -1,3 +1,4 @@
+
 // Garden Orchestrator - Central management system for legacy garden components
 // Coordinates all garden elements with Sofia's personality system
 

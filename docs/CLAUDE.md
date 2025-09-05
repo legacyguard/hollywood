@@ -126,8 +126,9 @@ Located in `supabase/migrations/`:
 The application follows a cohesive garden metaphor with three distinct areas:
 
 #### 1. Dashboard = "The Living Garden" (Záhrada Vášho Odkazu)
+
 - **What it is**: The interactive heart of the application featuring the central visual element (growing tree/plant) that replaces static milestone lists
-- **Purpose**: 
+- **Purpose**:
   - Visually represent progress: Users literally see their legacy "grow" and "bloom" with each important action
   - Serve as emotional center: A place users return to see the beauty and peace they've created
   - Provide interactivity: Where "magical" moments happen - Sofia firefly arrives to "light up" new branches, new leaves appear after document uploads
@@ -135,6 +136,7 @@ The application follows a cohesive garden metaphor with three distinct areas:
 - **Component**: `LegacyGarden` component
 
 #### 2. Landing Page = "The Garden's Antechamber" (Predsieň Záhrady)
+
 - **What it is**: Public introduction page serving as the "shop window"
 - **Purpose**:
   - Provide a taste: Uses themes and visual elements from "The Garden" (flying firefly animation, growing tree imagery)
@@ -143,6 +145,7 @@ The application follows a cohesive garden metaphor with three distinct areas:
 - **Component**: Landing page components
 
 #### 3. Onboarding = "The Journey to the Seed" (Cesta k Semienku)
+
 - **What it is**: Introductory, story-driven process for new users
 - **Purpose**:
   - Create the seed: At onboarding end, a symbolic "seed" is created in the "Box of Certainty"
@@ -151,6 +154,7 @@ The application follows a cohesive garden metaphor with three distinct areas:
 - **Component**: Onboarding scene components
 
 **Simple Metaphor Summary**:
+
 - Landing Page = Beautiful, inviting gate to your garden
 - Onboarding = Path from gate to where you plant the first seed  
 - Dashboard = The Garden itself, cultivated and watched growing throughout life
@@ -210,6 +214,7 @@ The application follows a cohesive garden metaphor with three distinct areas:
 After every file creation/modification:
 
 #### Error Checking
+
 - [ ] Syntax validation of all modified files
 - [ ] TypeScript type checking
 - [ ] ESLint validation
@@ -217,6 +222,7 @@ After every file creation/modification:
 - [ ] Dependencies compatibility check
 
 #### Impact Analysis
+
 - [ ] Analysis of effects on other files
 - [ ] Breaking changes detection
 - [ ] Cross-platform compatibility verification
@@ -224,6 +230,7 @@ After every file creation/modification:
 - [ ] Security implications review
 
 #### Testing
+
 - [ ] Unit tests run for affected components
 - [ ] Integration tests where relevant
 - [ ] Build verification for affected packages
@@ -232,6 +239,7 @@ After every file creation/modification:
 ### Git Workflow
 
 After completing each development phase:
+
 - [ ] Stage all changes: `git add .`
 - [ ] Commit with descriptive message: `git commit -m "feat: implement [feature description]"`
 - [ ] Push to GitHub: `git push origin main`
@@ -240,6 +248,7 @@ After completing each development phase:
 ### Error Handling Protocol
 
 When errors occur:
+
 1. **Immediate Fix**: Fix error before continuing
 2. **Root Cause Analysis**: Identify the cause
 3. **Prevention**: Implement preventive measures

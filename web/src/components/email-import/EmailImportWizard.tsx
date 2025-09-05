@@ -1,3 +1,4 @@
+
 /**
  * Email Import Wizard Component
  * Multi-step wizard for importing documents from Gmail
@@ -303,7 +304,7 @@ export function EmailImportWizard({
         state.selectedDocuments.has(doc.id)
       );
       const selectedCategorizations = state.categorizations.filter((_, index) =>
-        state.selectedDocuments.has(state.documents[index].id)
+        state.documents[index] ? state.selectedDocuments.has(state.documents[index].id) : false
       );
 
       // Calculate metrics
@@ -864,7 +865,7 @@ function ReviewStep({
                             {document.filename}
                           </h4>
                           <Badge variant='secondary' className='text-xs'>
-                            {document.mimeType.split('/')[1].toUpperCase()}
+                            {document.mimeType?.split('/')[1]?.toUpperCase() || 'FILE'}
                           </Badge>
                           {categorization && (
                             <Badge

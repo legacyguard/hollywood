@@ -1,3 +1,4 @@
+
 import React from 'react';
 import {
   Label,
@@ -133,7 +134,7 @@ export interface SwitchProps extends Omit<TamaguiSwitchProps, 'size'> {
  *   label="Enable notifications"
  *   labelPosition="left"
  *   size="lg"
- *   variant="success"
+ *   theme="success"
  * />
  *
  * // Disabled switch

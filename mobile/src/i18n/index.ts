@@ -50,4 +50,4 @@ initializeI18n();
 
 export default i18n;
 export const t = (key: string, options?: Record<string, unknown>) =>
-  i18n.t(key, options as any);
+  i18n.t(key, options as Record<string, unknown>);

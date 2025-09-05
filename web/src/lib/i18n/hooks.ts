@@ -1,3 +1,4 @@
+
 /**
  * React hooks for new i18n architecture
  * Provides easy access to translations and jurisdiction-specific content

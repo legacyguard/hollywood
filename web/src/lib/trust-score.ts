@@ -1,3 +1,4 @@
+
 /**
  * Trust Score Calculation System for LegacyGuard
  * Calculates family protection level based on multiple factors

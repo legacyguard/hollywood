@@ -1,3 +1,4 @@
+
 /**
  * Family Collaboration System Types
  * Comprehensive types for family member management and collaboration
@@ -115,7 +116,7 @@ export interface FamilyTimeline {
   description: string;
   id: string;
   initiatedBy: string; // Member ID
-  metadata?: Record<string, unknown>;
+  metadata?: Record<string, any>;
   relatedDocumentId?: string;
   relatedEventId?: string;
   title: string;

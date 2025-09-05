@@ -1,7 +1,21 @@
+
 /**
  * Type adapters to convert between database types and application types
  * This helps bridge the gap between Supabase database schema and application interfaces
  */
+
+// Event type mapping helpers
+function mapEventTypeToDb(appType: 'anniversary' | 'appointment' | 'birthday' | 'custom' | 'document_expiry' | 'milestone'): 'celebration' | 'deadline' | 'meeting' | 'reminder' | 'review' {
+  const mapping = {
+    anniversary: 'celebration' as const,
+    birthday: 'celebration' as const,
+    appointment: 'meeting' as const,
+    custom: 'reminder' as const,
+    document_expiry: 'deadline' as const,
+    milestone: 'review' as const,
+  };
+  return mapping[appType];
+}
 
 import type {
   FamilyActivity as DbFamilyActivity,
@@ -60,6 +74,7 @@ export function adaptDbFamilyMemberToApp(
       canAccessEmergencyInfo: dbMember.permissions.canAccessEmergencyInfo,
       canViewFinancials: dbMember.permissions.canViewFinancials,
       canReceiveNotifications: dbMember.permissions.canReceiveNotifications,
+      documentCategories: dbMember.permissions.documentCategories || ['*'],
     },
     emergencyPriority: dbMember.emergencyContact ? 1 : undefined,
   };
@@ -93,7 +108,7 @@ export function adaptDbFamilyCalendarEventToApp(
   return {
     id: dbEvent.id,
     title: dbEvent.title,
-    description: dbEvent.description,
+    description: dbEvent.description || undefined,
     date: new Date(dbEvent.scheduledAt),
     type: dbEvent.eventType as
       | 'anniversary'
@@ -102,17 +117,17 @@ export function adaptDbFamilyCalendarEventToApp(
       | 'custom'
       | 'document_expiry'
       | 'milestone',
-    relatedDocumentId: dbEvent.relatedDocumentId,
-    relatedMemberId: dbEvent.relatedMemberId,
+    relatedDocumentId: (dbEvent as any).relatedDocumentId || undefined,
+    relatedMemberId: (dbEvent as any).relatedMemberId || undefined,
     createdBy: dbEvent.createdBy,
     notifyMembers: dbEvent.notifyMembers || [],
-    recurring: dbEvent.isRecurring
+    recurring: (dbEvent as any).isRecurring
       ? {
           frequency:
-            (dbEvent.recurrencePattern as 'monthly' | 'weekly' | 'yearly') ||
+            ((dbEvent as any).recurrencePattern as 'monthly' | 'weekly' | 'yearly') ||
             'yearly',
-          endDate: dbEvent.recurrenceEndDate
-            ? new Date(dbEvent.recurrenceEndDate)
+          endDate: (dbEvent as any).recurrenceEndDate
+            ? new Date((dbEvent as any).recurrenceEndDate)
             : undefined,
         }
       : undefined,
@@ -132,9 +147,9 @@ export function adaptDbFamilyStatsToApp(dbStats: DbFamilyStats): FamilyStats {
     sharedDocuments: dbStats.sharedDocuments,
     recentActivity: dbStats.recentActivity.map(adaptDbFamilyActivityToApp),
     upcomingEvents: dbStats.upcomingEvents.map(adaptDbFamilyCalendarEventToApp),
-    lastUpdated: new Date(dbStats.lastUpdated),
-    strengths: dbStats.strengths,
-    recommendations: dbStats.recommendations,
+    protectionScore: (dbStats as any).protectionScore || 0,
+    documentsByCategory: (dbStats as any).documentsByCategory || {},
+    memberContributions: (dbStats as any).memberContributions || {},
   };
 }
 
@@ -172,15 +187,15 @@ export function adaptAppFamilyCalendarEventToDb(
   return {
     title: appEvent.title,
     description: appEvent.description,
-    eventType: appEvent.eventType,
-    scheduledAt: appEvent.scheduledAt?.toISOString(),
-    durationMinutes: appEvent.durationMinutes,
-    location: appEvent.location,
-    meetingUrl: appEvent.meetingUrl,
-    attendees: appEvent.attendees,
-    isRecurring: appEvent.isRecurring,
-    recurrencePattern: appEvent.recurrencePattern,
-    recurrenceEndDate: appEvent.recurrenceEndDate?.toISOString(),
+    eventType: appEvent.type ? mapEventTypeToDb(appEvent.type) : undefined,
+    scheduledAt: appEvent.date?.toISOString(), // Mapped from 'date' to 'scheduledAt'
+    durationMinutes: (appEvent as any).durationMinutes,
+    location: (appEvent as any).location,
+    meetingUrl: (appEvent as any).meetingUrl,
+    attendees: (appEvent as any).attendees,
+    isRecurring: !!appEvent.recurring, // Map from recurring object to boolean
+    recurrencePattern: appEvent.recurring?.frequency,
+    recurrenceEndDate: appEvent.recurring?.endDate?.toISOString(),
     notifyMembers: appEvent.notifyMembers,
     priority: appEvent.priority,
   };

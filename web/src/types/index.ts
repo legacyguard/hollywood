@@ -1,3 +1,4 @@
+
 /**
  * LegacyGuard Type Definitions
  * Centralized type definitions for the entire application
@@ -422,7 +423,7 @@ export interface ApiResponse<T> {
 
 export interface ApiError {
   code: string;
-  details?: Record<string, unknown>;
+  details?: Record<string, any>;
   message: string;
   timestamp: ISO8601Date;
 }
@@ -435,7 +436,7 @@ export interface ResponseMetadata {
 
 // Pagination types
 export interface PaginationParams {
-  filters?: Record<string, unknown>;
+  filters?: Record<string, any>;
   limit: number;
   page: number;
   sortBy?: string;
@@ -517,7 +518,7 @@ export type DeepPick<T, K extends string> = K extends keyof T
 
 // Event types
 export interface AppEvent {
-  payload: Record<string, unknown>;
+  payload: Record<string, any>;
   timestamp: ISO8601Date;
   type: string;
   userId?: UUID;
@@ -548,7 +549,7 @@ export interface AppConfig {
 
 // Webhook types
 export interface WebhookPayload {
-  data: Record<string, unknown>;
+  data: Record<string, any>;
   event: string;
   signature: string;
   timestamp: ISO8601Date;

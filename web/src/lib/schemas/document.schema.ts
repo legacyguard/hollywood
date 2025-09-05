@@ -1,3 +1,4 @@
+
 import { z } from 'zod';
 
 // Document categories enum

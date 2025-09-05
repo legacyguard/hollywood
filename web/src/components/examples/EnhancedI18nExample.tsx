@@ -1,3 +1,4 @@
+
 /**
  * Enhanced I18n Example Component
  * Demonstrates plurals, date formatting, and fallback mechanism
@@ -5,12 +6,7 @@
 
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  // formatCurrency,
-  // formatDate,  
-  // formatFileSize,
-  // formatRelativeTime,
-} from '@/lib/i18n/enhanced-config';
+import '@/lib/i18n/enhanced-config';
 
 const EnhancedI18nExample: React.FC = () => {
   const { t, i18n } = useTranslation();
@@ -327,7 +323,7 @@ const EnhancedI18nExample: React.FC = () => {
       </section>
 
       {/* Debug Info */}
-      {process.env.NODE_ENV === 'development' && (
+      {process.env['NODE_ENV'] === 'development' && (
         <section className='p-4 bg-gray-100 rounded-lg text-xs font-mono'>
           <h3 className='font-bold mb-2'>Debug Info:</h3>
           <p>Current Language: {i18n.language}</p>

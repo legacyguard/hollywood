@@ -1,3 +1,4 @@
+
 import React, { useCallback, useMemo, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -138,7 +139,7 @@ export const MyFamilyPage: React.FC<MyFamilyPageProps> = ({
                 {
                   id: personId,
                   name: person.name,
-                  relationship: person.relationship,
+                  relationship: (person.relationship as 'spouse' | 'child' | 'parent' | 'sibling' | 'grandchild' | 'friend' | 'charity' | 'other') || 'other',
                   percentage: newRoles.heirPercentage || 0,
                   specificGifts: [],
                   conditions: '',

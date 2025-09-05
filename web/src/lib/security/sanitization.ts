@@ -1,3 +1,4 @@
+
 /**
  * Input Sanitization Utilities
  * Provides functions to sanitize user input and prevent injection attacks
@@ -36,20 +37,20 @@ export function sanitizeString(
     sanitized = sanitized.replace(/<[^>]*>/g, '');
   } else {
     // Use DOMPurify for HTML sanitization
-    const config: any = {
-      ALLOWED_TAGS: options.allowedTags || [
-        'b',
-        'i',
-        'em',
-        'strong',
-        'a',
-        'p',
-        'br',
-      ],
-      ALLOWED_ATTR: options.allowedAttributes || ['href', 'title'],
-      FORBID_TAGS: stripScripts ? ['script', 'style'] : [],
-      FORBID_ATTR: stripStyles ? ['style', 'onerror', 'onload', 'onclick'] : [],
-    };
+      const config = {
+        ALLOWED_TAGS: options.allowedTags || [
+          'b',
+          'i',
+          'em',
+          'strong',
+          'a',
+          'p',
+          'br',
+        ],
+        ALLOWED_ATTR: options.allowedAttributes || ['href', 'title'],
+        FORBID_TAGS: stripScripts ? ['script', 'style'] : [],
+        FORBID_ATTR: stripStyles ? ['style', 'onerror', 'onload', 'onclick'] : [],
+      };
 
     sanitized = DOMPurify.sanitize(sanitized, config) as unknown as string;
   }
@@ -59,7 +60,8 @@ export function sanitizeString(
 
   // Remove control characters except newlines and tabs
   sanitized = sanitized.replace(
-    /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g,
+    // eslint-disable-next-line no-control-regex
+    /[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g,
     ''
   );
 
@@ -69,16 +71,16 @@ export function sanitizeString(
 /**
  * Sanitize object recursively
  */
-export function sanitizeObject(
-  obj: any,
+export function sanitizeObject<T>(
+  obj: T,
   options: SanitizationOptions = {}
-): any {
+): T {
   if (obj === null || obj === undefined) {
     return obj;
   }
 
   if (typeof obj === 'string') {
-    return sanitizeString(obj, options);
+    return sanitizeString(obj, options) as T;
   }
 
   if (typeof obj === 'number' || typeof obj === 'boolean') {
@@ -86,18 +88,18 @@ export function sanitizeObject(
   }
 
   if (Array.isArray(obj)) {
-    return obj.map(item => sanitizeObject(item, options));
+    return obj.map(item => sanitizeObject(item, options)) as T;
   }
 
   if (typeof obj === 'object') {
-    const sanitized: any = {};
+    const sanitized: Record<string, unknown> = {};
     for (const [key, value] of Object.entries(obj)) {
       // Sanitize key
       const sanitizedKey = sanitizeString(key, { maxLength: 100 });
       // Sanitize value
       sanitized[sanitizedKey] = sanitizeObject(value, options);
     }
-    return sanitized;
+    return sanitized as T;
   }
 
   // For other types, return as is
@@ -118,8 +120,10 @@ export function sanitizeSQL(input: string): string {
     .replace(/\n/g, '\\n') // Escape newlines
     .replace(/\r/g, '\\r') // Escape carriage returns
     .replace(/\t/g, '\\t') // Escape tabs
-    .replace(/\u0000/g, '') // Remove null bytes
-    .replace(/\u001A/g, ''); // Remove SUB character
+    // eslint-disable-next-line no-control-regex
+    .replace(/\x00/g, '') // Remove null bytes
+    // eslint-disable-next-line no-control-regex
+    .replace(/\x1A/g, ''); // Remove SUB character
 }
 
 /**

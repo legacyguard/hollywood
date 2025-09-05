@@ -5,6 +5,7 @@
 **Závažnosť:** KRITICKÁ - všetky tajné kľúče sú kompromitované
 
 ## 📋 OBSAH
+
 1. [Okamžité kroky](#okamžité-kroky)
 2. [Analýza kompromitovaných kľúčov](#analýza-kompromitovaných-kľúčov)
 3. [Príprava infraštruktúry](#príprava-infraštruktúry)
@@ -19,6 +20,7 @@
 ## OKAMŽITÉ KROKY
 
 ### 1️⃣ Zastav všetky deploymenty (HNEĎ!)
+
 ```bash
 # Zastav Vercel auto-deploy
 vercel env pull
@@ -32,6 +34,7 @@ echo "⚠️ SECURITY: Deployments paused for key rotation" | your-notification-
 ```
 
 ### 2️⃣ Prihlás sa do nástrojov
+
 ```bash
 # Vercel
 vercel login
@@ -47,6 +50,7 @@ echo "✓ GitHub: $(gh api user -q .login)"
 ```
 
 ### 3️⃣ Zálohuj repozitár
+
 ```bash
 # Kompletná záloha pred čistením
 git clone --mirror https://github.com/legacyguard/hollywood.git ~/hollywood-backup-$(date +%Y%m%d-%H%M%S)
@@ -58,6 +62,7 @@ echo "✓ Backup created at ~/hollywood-backup-$(date +%Y%m%d-%H%M%S)"
 ## ANALÝZA KOMPROMITOVANÝCH KĽÚČOV
 
 ### 🔴 KRITICKÉ (rotuj OKAMŽITE)
+
 | Kľúč | Provider | Dashboard |
 |------|----------|-----------|
 | `SUPABASE_SERVICE_ROLE_KEY` | Supabase | [Settings → API](https://app.supabase.com/project/YOUR_PROJECT/settings/api) |
@@ -70,6 +75,7 @@ echo "✓ Backup created at ~/hollywood-backup-$(date +%Y%m%d-%H%M%S)"
 | `STRIPE_WEBHOOK_SECRET` | Stripe | [Webhooks](https://dashboard.stripe.com/webhooks) |
 
 ### 🟢 VEREJNÉ (OK)
+
 - `VITE_SUPABASE_URL`
 - `VITE_SUPABASE_ANON_KEY`
 - `VITE_CLERK_PUBLISHABLE_KEY`
@@ -80,6 +86,7 @@ echo "✓ Backup created at ~/hollywood-backup-$(date +%Y%m%d-%H%M%S)"
 ## PRÍPRAVA INFRAŠTRUKTÚRY
 
 ### Vytvor .env.template
+
 ```bash
 cat > .env.template << 'EOF'
 # ============================================
@@ -133,6 +140,7 @@ echo "✓ Created .env.template"
 ```
 
 ### Vytvor lokálny .env.local (ignorovaný gitom)
+
 ```bash
 cp .env.template .env.local
 echo "✓ Created .env.local - ADD YOUR KEYS HERE"
@@ -143,6 +151,7 @@ echo "✓ Created .env.local - ADD YOUR KEYS HERE"
 ## ROTAČNÉ SKRIPTY
 
 ### Hlavný rotačný skript
+
 ```bash
 mkdir -p scripts
 cat > scripts/rotate-keys.sh << 'EOF'
@@ -511,6 +520,7 @@ echo "✓ Created scripts/rotate-keys.sh"
 ## ROTÁCIA PO PROVIDEROCH
 
 ### 🔑 SUPABASE
+
 ```bash
 # 1. Otvor: https://app.supabase.com/project/YOUR_PROJECT/settings/api
 # 2. Generate new Service Role Key
@@ -522,6 +532,7 @@ echo "✓ Created scripts/rotate-keys.sh"
 ```
 
 ### 🔑 CLERK
+
 ```bash
 # 1. Otvor: https://dashboard.clerk.com
 # 2. Apps → Your App → API Keys → Create new secret key
@@ -532,6 +543,7 @@ echo "✓ Created scripts/rotate-keys.sh"
 ```
 
 ### 🔑 OPENAI
+
 ```bash
 # 1. Otvor: https://platform.openai.com/api-keys
 # 2. Create new secret key
@@ -540,6 +552,7 @@ echo "✓ Created scripts/rotate-keys.sh"
 ```
 
 ### 🔑 GOOGLE
+
 ```bash
 # 1. Otvor: https://console.cloud.google.com/apis/credentials
 # 2. OAuth 2.0 Client IDs → Your Client → Create new secret
@@ -548,6 +561,7 @@ echo "✓ Created scripts/rotate-keys.sh"
 ```
 
 ### 🔑 RESEND
+
 ```bash
 # 1. Otvor: https://resend.com/api-keys
 # 2. Create API Key
@@ -556,6 +570,7 @@ echo "✓ Created scripts/rotate-keys.sh"
 ```
 
 ### 🔑 STRIPE
+
 ```bash
 # 1. Otvor: https://dashboard.stripe.com/apikeys
 # 2. Create secret key / Roll key
@@ -569,7 +584,8 @@ echo "✓ Created scripts/rotate-keys.sh"
 
 ## ČISTENIE GIT HISTÓRIE
 
-### ⚠️ POZOR: Toto prepíše históriu!
+### ⚠️ POZOR: Toto prepíše históriu
+
 ```bash
 # 1. Inštaluj git-filter-repo
 pip3 install git-filter-repo
@@ -609,6 +625,7 @@ EOF
 ## AUTOMATIZÁCIA A MONITORING
 
 ### GitHub Action pre pripomienky
+
 ```yaml
 # .github/workflows/key-rotation-reminder.yml
 name: Key Rotation Reminder
@@ -668,6 +685,7 @@ jobs:
 ```
 
 ### Package.json skripty
+
 ```json
 {
   "scripts": {
@@ -680,6 +698,7 @@ jobs:
 ```
 
 ### Warp Workflows (.warp/workflows.yaml)
+
 ```yaml
 workflows:
   - name: security:rotate-key
@@ -726,6 +745,7 @@ workflows:
 | **Google** | 90 dní | Manuálna | STREDNÁ | [console.cloud.google.com](https://console.cloud.google.com) |
 
 ### 📅 Rotačný kalendár
+
 - **1. každého mesiaca**: OpenAI, Stripe
 - **1. každého druhého mesiaca**: + Clerk, Resend
 - **1. každého tretieho mesiaca**: + Supabase, Google
@@ -735,12 +755,14 @@ workflows:
 ## CHECKLIST PRE OKAMŽITÚ AKCIU
 
 ### Fáza 1: Zastavenie škôd (0-15 min)
+
 - [ ] Zastav Vercel deploye
 - [ ] Vypni GitHub Actions
 - [ ] Zálohuj repo
 - [ ] Vytvor .env.template a .env.local
 
 ### Fáza 2: Rotácia kľúčov (15-60 min)
+
 - [ ] OpenAI - nový API key → NEXT → ACTIVE
 - [ ] Stripe - nový Secret key → NEXT → ACTIVE
 - [ ] Clerk - nový Secret + Webhook → NEXT → ACTIVE
@@ -749,6 +771,7 @@ workflows:
 - [ ] Google - nový Client Secret → NEXT → ACTIVE
 
 ### Fáza 3: Deploy a test (60-90 min)
+
 - [ ] Sync do Vercel (preview + production)
 - [ ] Sync do GitHub Secrets
 - [ ] Redeploy aplikácie
@@ -756,6 +779,7 @@ workflows:
 - [ ] Revoke staré kľúče
 
 ### Fáza 4: Čistenie (90-120 min)
+
 - [ ] Vyčisti Git históriu
 - [ ] Force push
 - [ ] Informuj tím
@@ -767,6 +791,7 @@ workflows:
 ## V PRÍPADE PROBLÉMOV
 
 ### Rollback kľúčov
+
 ```bash
 # Ak nové kľúče nefungujú, vráť sa na NEXT
 ./scripts/rotate-keys.sh
@@ -774,15 +799,18 @@ workflows:
 ```
 
 ### Kontakty na podporu
-- **Supabase**: support@supabase.com
-- **Clerk**: support@clerk.com / [Discord](https://discord.com/invite/b5rXHjAg7A)
+
+- **Supabase**: <support@supabase.com>
+- **Clerk**: <support@clerk.com> / [Discord](https://discord.com/invite/b5rXHjAg7A)
 - **OpenAI**: [help.openai.com](https://help.openai.com)
 - **Stripe**: [support.stripe.com](https://support.stripe.com)
-- **Resend**: support@resend.com
+- **Resend**: <support@resend.com>
 - **Google Cloud**: [cloud.google.com/support](https://cloud.google.com/support)
 
 ### Audit log
+
 Po každej rotácii vytvor záznam:
+
 ```bash
 cat >> SECURITY_AUDIT.log << EOF
 $(date): Rotated keys for [PROVIDER]

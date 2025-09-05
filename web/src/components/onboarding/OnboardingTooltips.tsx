@@ -1,3 +1,4 @@
+
 /**
  * Onboarding Tooltips System
  * Interactive guided tour for new features with smart positioning and progressive disclosure

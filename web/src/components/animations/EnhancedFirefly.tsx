@@ -1,3 +1,4 @@
+
 // Enhanced Firefly Animation - Advanced Sofia firefly with personality-aware animations
 // Builds upon existing firefly system with better integration and new behaviors
 
@@ -146,7 +147,8 @@ export const EnhancedFirefly: React.FC<EnhancedFireflyProps> = ({
     if (!container) return;
 
     const rect = container.getBoundingClientRect();
-    const animConfig = AnimationSystem.getConfig(adaptedMode);
+    // Configuration for animation system
+    // const _animConfig = AnimationSystem.getConfig(adaptedMode);
 
     if (adaptedMode === 'pragmatic') {
       // Efficient, minimal movement
@@ -160,7 +162,7 @@ export const EnhancedFirefly: React.FC<EnhancedFireflyProps> = ({
         transition: {
           duration: 4,
           repeat: Infinity,
-          ease: animConfig.ease as any,
+          ease: "easeInOut",
         },
       });
     } else if (adaptedMode === 'empathetic') {
@@ -194,10 +196,10 @@ export const EnhancedFirefly: React.FC<EnhancedFireflyProps> = ({
         transition: {
           duration: 15,
           repeat: Infinity,
-          ease: animConfig.ease as any,
+          ease: "easeInOut",
           onUpdate: (latest: Record<string, unknown>) => {
-            if (typeof latest.x === 'number' && typeof latest.y === 'number') {
-              updateTrail({ x: latest.x, y: latest.y });
+            if (typeof latest['x'] === 'number' && typeof latest['y'] === 'number') {
+              updateTrail({ x: latest['x'], y: latest['y'] });
             }
           },
         },
@@ -219,7 +221,7 @@ export const EnhancedFirefly: React.FC<EnhancedFireflyProps> = ({
         transition: {
           duration: 10,
           repeat: Infinity,
-          ease: animConfig.ease as any,
+          ease: "easeInOut",
         },
       } as any);
     }
@@ -266,7 +268,7 @@ export const EnhancedFirefly: React.FC<EnhancedFireflyProps> = ({
         filter: ['brightness(1)', 'brightness(1.5)', 'brightness(1)'],
         transition: {
           duration: animConfig.duration * 2,
-          ease: animConfig.ease as any,
+          ease: "easeInOut",
         },
       } as any);
     } else if (adaptedMode === 'empathetic') {
@@ -303,10 +305,10 @@ export const EnhancedFirefly: React.FC<EnhancedFireflyProps> = ({
         filter: ['brightness(1)', 'brightness(1.8)', 'brightness(1)'],
         transition: {
           duration: animConfig.duration * 4,
-          ease: animConfig.ease as any,
+          ease: "easeInOut",
           onUpdate: (latest: Record<string, unknown>) => {
-            if (typeof latest.x === 'number' && typeof latest.y === 'number') {
-              updateTrail({ x: latest.x, y: latest.y });
+            if (typeof latest['x'] === 'number' && typeof latest['y'] === 'number') {
+              updateTrail({ x: latest['x'], y: latest['y'] });
             }
           },
         },
@@ -339,6 +341,7 @@ export const EnhancedFirefly: React.FC<EnhancedFireflyProps> = ({
       const timeout = setTimeout(startIdleAnimation, 200);
       return () => clearTimeout(timeout);
     }
+    return undefined;
   }, [isVisible, isIdle, followMouse, startIdleAnimation]);
 
   // Cleanup
@@ -452,12 +455,14 @@ export const EnhancedFirefly: React.FC<EnhancedFireflyProps> = ({
         {/* Firefly body with personality icon */}
         <motion.div
           className={`w-full h-full bg-gradient-to-br ${colors.primary} rounded-full shadow-lg flex items-center justify-center`}
-          animate={{
-            scale: isHovering ? 1.2 : 1,
-            filter: shouldReduceMotion
-              ? undefined
-              : ['brightness(1)', 'brightness(1.3)', 'brightness(1)'],
-          }}
+          animate={
+            shouldReduceMotion
+              ? { scale: isHovering ? 1.2 : 1 }
+              : {
+                  scale: isHovering ? 1.2 : 1,
+                  filter: ['brightness(1)', 'brightness(1.3)', 'brightness(1)'],
+                }
+          }
           transition={{
             scale: { duration: 0.2 },
             filter: {

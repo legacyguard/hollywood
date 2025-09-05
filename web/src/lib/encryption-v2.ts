@@ -1,3 +1,4 @@
+
 /**
  * Encryption Service V2 - LegacyGuard
  * Provides secure encryption/decryption functionality for the application
@@ -188,6 +189,32 @@ export const encryptionServiceV2 = {
         error: error instanceof Error ? error.message : 'Unknown error',
       };
     }
+  },
+
+  // Text encryption methods (aliases for backward compatibility)
+  encryptText: async (text: string): Promise<string> => {
+    const userId = 'current-user';
+    const keys = getUserEncryptionKeys(userId);
+    const message = decodeUTF8(text);
+    const nonce = nacl.randomBytes(nacl.secretbox.nonceLength);
+    const keyBytes = decodeBase64(keys.secretKey).slice(0, 32);
+    const encrypted = nacl.secretbox(message, nonce, keyBytes);
+    const combined = new Uint8Array(nonce.length + encrypted.length);
+    combined.set(nonce);
+    combined.set(encrypted, nonce.length);
+    return encodeBase64(combined);
+  },
+
+  decryptText: async (encryptedText: string): Promise<string> => {
+    const userId = 'current-user';
+    const keys = getUserEncryptionKeys(userId);
+    const combined = decodeBase64(encryptedText);
+    const nonce = combined.slice(0, nacl.secretbox.nonceLength);
+    const encrypted = combined.slice(nacl.secretbox.nonceLength);
+    const keyBytes = decodeBase64(keys.secretKey).slice(0, 32);
+    const decrypted = nacl.secretbox.open(encrypted, nonce, keyBytes);
+    if (!decrypted) throw new Error('Failed to decrypt text');
+    return encodeUTF8(decrypted);
   },
 };
 

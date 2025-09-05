@@ -1,3 +1,5 @@
+
+import { Database, Tables, Json, DocumentUploadRequest, AISuggestions } from '@shared/types/database';
 /**
  * Example: Migrated Document List Component
  * Shows how to migrate from direct API calls to using centralized services

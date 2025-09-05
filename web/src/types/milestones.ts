@@ -1,3 +1,4 @@
+
 /**
  * Legacy Milestone System Types
  * Interfaces for tracking legacy planning progress and celebrating achievements
@@ -148,7 +149,7 @@ export interface MilestoneTriggerEvent {
   actionType?: string;
   documentId?: string;
   familyMemberId?: string;
-  metadata?: Record<string, unknown>;
+  metadata?: Record<string, any>;
   reviewId?: string;
   timestamp: string;
   type:

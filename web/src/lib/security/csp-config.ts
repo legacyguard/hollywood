@@ -1,3 +1,4 @@
+
 /**
  * Content Security Policy Configuration
  * Provides comprehensive XSS protection and content control

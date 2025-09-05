@@ -1,3 +1,4 @@
+
 /**
  * Upgrade Prompts and Messaging System
  * Smart upgrade prompts that trigger at optimal moments with compelling value propositions

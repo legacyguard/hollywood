@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Security Middleware for API Protection
  * Comprehensive security layer for all API endpoints

@@ -1,3 +1,4 @@
+
 /**
  * Quick Insights Panel Component
  * Shows immediate value after document upload with family impact messaging

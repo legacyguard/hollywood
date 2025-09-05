@@ -1,3 +1,4 @@
+
 /**
  * Encryption Hook for LegacyGuard
  * Handles client-side encryption of sensitive data

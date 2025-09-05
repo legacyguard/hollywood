@@ -1,3 +1,4 @@
+
 /**
  * API Adapter for Web Components
  * Provides a bridge between legacy API calls and the new centralized API services

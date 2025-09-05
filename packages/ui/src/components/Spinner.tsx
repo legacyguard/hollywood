@@ -1,3 +1,4 @@
+
 import { type GetProps, Spinner as TamaguiSpinner } from 'tamagui';
 
 // Simple wrapper around Tamagui Spinner

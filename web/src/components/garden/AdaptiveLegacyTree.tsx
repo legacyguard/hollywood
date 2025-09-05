@@ -1,3 +1,4 @@
+
 // Adaptive Legacy Tree - Advanced tree visualization with Sofia's personality adaptation
 // A sophisticated tree that grows and changes based on user progress and personality mode
 

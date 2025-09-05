@@ -1,3 +1,4 @@
+
 /**
  * BackupService - Comprehensive data backup and restore functionality
  * Handles export/import of all user data including localStorage, Supabase, and Clerk metadata
@@ -108,7 +109,7 @@ export interface BackupData {
     exportedFrom?: string;
   };
   supabase: {
-    customData?: Record<string, unknown>;
+    customData?: Record<string, any>;
     documents?: Document[];
     guardians?: Guardian[];
     onboardingResponses?: OnboardingResponse[];
@@ -167,7 +168,7 @@ export class BackupService {
     const key = await crypto.subtle.deriveBits(
       {
         name: 'PBKDF2',
-        salt: salt,
+        salt: salt as BufferSource,
         iterations: this.PBKDF2_ITERATIONS,
         hash: 'SHA-256',
       },
@@ -386,7 +387,7 @@ export class BackupService {
     guardians?: Guardian[];
     people?: Person[];
     settings?: Settings;
-    taskProgress?: Record<string, unknown>;
+    taskProgress?: Record<string, any>;
     wills?: Will[];
   }> {
     const localData: {
@@ -395,7 +396,7 @@ export class BackupService {
       guardians?: Guardian[];
       people?: Person[];
       settings?: Settings;
-      taskProgress?: Record<string, unknown>;
+      taskProgress?: Record<string, any>;
       wills?: Will[];
     } = {};
 
@@ -429,13 +430,13 @@ export class BackupService {
    * Export Supabase data
    */
   private async exportSupabaseData(userId: string): Promise<{
-    customData?: Record<string, unknown>;
+    customData?: Record<string, any>;
     documents?: Document[];
     guardians?: Guardian[];
     onboardingResponses?: OnboardingResponse[];
   }> {
     const supabaseData: {
-      customData?: Record<string, unknown>;
+      customData?: Record<string, any>;
       documents?: Document[];
       guardians?: Guardian[];
       onboardingResponses?: OnboardingResponse[];
@@ -512,7 +513,7 @@ export class BackupService {
       guardians?: Guardian[];
       people?: Person[];
       settings?: Settings;
-      taskProgress?: Record<string, unknown>;
+      taskProgress?: Record<string, any>;
       wills?: Will[];
     },
     userId: string
@@ -533,7 +534,7 @@ export class BackupService {
    */
   private async importSupabaseData(
     supabaseData: {
-      customData?: Record<string, unknown>;
+      customData?: Record<string, any>;
       documents?: Document[];
       guardians?: Guardian[];
       onboardingResponses?: OnboardingResponse[];

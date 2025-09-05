@@ -1,3 +1,4 @@
+
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { localDataAdapter, type StorageItem } from './LocalDataAdapter';
 import { SecureEncryptionService } from '../encryption-v2';
@@ -28,7 +29,7 @@ interface SyncStats {
 class CloudSyncAdapter {
   private static instance: CloudSyncAdapter;
   private supabase: SupabaseClient;
-  private encryption: SecureEncryptionService;
+  private encryption: typeof SecureEncryptionService;
   private syncQueue: Map<string, SyncQueueItem>;
   private isSyncing: boolean = false;
   private readonly RETRY_LIMIT = 3;
@@ -41,7 +42,7 @@ class CloudSyncAdapter {
       import.meta.env.VITE_SUPABASE_ANON_KEY || ''
     );
 
-    this.encryption = SecureEncryptionService.getInstance();
+    this.encryption = SecureEncryptionService;
     this.syncQueue = new Map();
 
     // Start processing queue periodically
@@ -153,7 +154,7 @@ class CloudSyncAdapter {
             await this.logSyncEvent('error', {
               item: queueItem.id,
               operation: queueItem.operation,
-              error: error.message,
+              error: error instanceof Error ? error.message : String(error),
             });
           }
         }
@@ -282,7 +283,7 @@ class CloudSyncAdapter {
         console.error('Error processing cloud item:', item.id, error);
         await this.logSyncEvent('pull_error', {
           item: item.id,
-          error: error.message,
+          error: error instanceof Error ? error.message : String(error),
         });
       }
     }
@@ -332,7 +333,7 @@ class CloudSyncAdapter {
    * Get last sync timestamp
    */
   private async getLastSyncTimestamp(): Promise<string> {
-    const timestamp = await secureStorage.getSecureLocal<string>('last_sync');
+    const timestamp = await secureStorage.get<string>('last_sync');
     return timestamp || new Date(0).toISOString();
   }
 
@@ -340,10 +341,10 @@ class CloudSyncAdapter {
    * Update last sync timestamp
    */
   private async updateLastSyncTimestamp(): Promise<void> {
-    await secureStorage.setSecureLocal(
+    await secureStorage.set(
       'last_sync',
       new Date().toISOString(),
-      7 // Keep for 7 days
+      false // No need to encrypt timestamps
     );
   }
 
@@ -351,7 +352,7 @@ class CloudSyncAdapter {
    * Update sync statistics
    */
   private async updateSyncStats(stats: SyncStats): Promise<void> {
-    await secureStorage.setSecureLocal('sync_stats', stats, 30); // Keep for 30 days
+    await secureStorage.set('sync_stats', stats, false); // No need to encrypt stats
   }
 
   /**

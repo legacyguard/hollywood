@@ -1,3 +1,4 @@
+
 /**
  * Secure Encryption Hook for LegacyGuard
  * Replaces localStorage-based key storage with secure WebCrypto + IndexedDB

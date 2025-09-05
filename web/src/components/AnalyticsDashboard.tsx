@@ -1,3 +1,4 @@
+
 import React, { useCallback, useEffect, useState } from 'react';
 import {
   Area,
@@ -170,22 +171,22 @@ export const AnalyticsDashboard: React.FC = () => {
       ? [
           {
             name: 'Free',
-            value: metrics[metrics.length - 1].free_users,
+            value: metrics[metrics.length - 1]?.free_users || 0,
             color: '#cbd5e0',
           },
           {
             name: 'Essential',
-            value: metrics[metrics.length - 1].essential_users,
+            value: metrics[metrics.length - 1]?.essential_users || 0,
             color: '#4299e1',
           },
           {
             name: 'Family',
-            value: metrics[metrics.length - 1].family_users,
+            value: metrics[metrics.length - 1]?.family_users || 0,
             color: '#48bb78',
           },
           {
             name: 'Premium',
-            value: metrics[metrics.length - 1].premium_users,
+            value: metrics[metrics.length - 1]?.premium_users || 0,
             color: '#667eea',
           },
         ]

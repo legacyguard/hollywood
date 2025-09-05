@@ -1,3 +1,4 @@
+
 // Text Adaptation Integration Tests
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { TextManager } from '../text-manager';

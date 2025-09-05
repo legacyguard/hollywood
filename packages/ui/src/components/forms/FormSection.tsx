@@ -1,3 +1,4 @@
+
 import React, { type ReactNode } from 'react';
 import { Card, CardContent, Divider, H3, Stack } from '../..';
 import { Paragraph } from '../Typography';
@@ -26,7 +27,7 @@ export const FormSection: React.FC<FormSectionProps> = ({
         <Stack gap='$2'>
           {title && <H3>{title}</H3>}
           {description && (
-            <Paragraph size="small" color="muted">
+            <Paragraph fontSize="$2" color="$gray10">
               {description}
             </Paragraph>
           )}

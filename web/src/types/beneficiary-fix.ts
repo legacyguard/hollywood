@@ -1,3 +1,4 @@
+
 /**
  * Beneficiary Interface Fixes and Extensions
  * This file provides compatibility fixes for the Beneficiary interface
@@ -22,7 +23,7 @@ export interface Beneficiary extends OriginalBeneficiary {
 
 // Helper function to convert legacy Beneficiary to new format
 export const normalizeBeneficiary = (
-  beneficiary: Record<string, unknown>
+  beneficiary: Record<string, any>
 ): Beneficiary => {
   return {
     id: (beneficiary.id as string) || '',
@@ -73,7 +74,7 @@ export const normalizeBeneficiary = (
 };
 
 // Type guard for Beneficiary
-export const isValidBeneficiary = (obj: unknown): obj is Beneficiary => {
+export const isValidBeneficiary = (obj: any): obj is Beneficiary => {
   return (
     typeof obj === 'object' &&
     obj !== null &&

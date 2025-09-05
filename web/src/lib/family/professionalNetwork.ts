@@ -1,3 +1,4 @@
+
 /**
  * Professional Network Integration for LegacyGuard
  * Connects users with qualified legal, financial, and estate planning professionals

@@ -1,3 +1,4 @@
+
 // Loading animation type definitions
 export type LoadingAnimationType =
   | 'bounce'

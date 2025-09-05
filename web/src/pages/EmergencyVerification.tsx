@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import EmergencyDashboard from '@/components/emergency/EmergencyDashboard';
@@ -11,7 +12,7 @@ export default function EmergencyVerification() {
 
   return (
     <div className='min-h-screen'>
-      <EmergencyDashboard verificationToken={token} guardianAccess={true} />
+      <EmergencyDashboard verificationToken={token} _guardianAccess={true} />
     </div>
   );
 }

@@ -1,3 +1,4 @@
+
 /**
  * Secure Password Prompt Component
  * Handles secure key unlocking and first-time setup

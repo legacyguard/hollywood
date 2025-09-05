@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { ErrorBoundary, type FallbackProps } from 'react-error-boundary';
 import { Button, H2, Paragraph, XStack, YStack } from 'tamagui';

@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 // Context for managing loading states
@@ -24,7 +25,13 @@ export const LoadingProvider: React.FC<{
   };
 
   return (
-    <LoadingContext.Provider value={{ isLoading, loadingText, setLoading }}>
+    <LoadingContext.Provider 
+      value={{ 
+        isLoading, 
+        ...(loadingText ? { loadingText } : {}), 
+        setLoading 
+      }}
+    >
       {children}
     </LoadingContext.Provider>
   );

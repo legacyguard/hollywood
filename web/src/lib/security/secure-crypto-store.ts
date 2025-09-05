@@ -1,3 +1,4 @@
+
 /**
  * Secure Crypto Store - Stores non-extractable CryptoKey objects in IndexedDB
  * This provides better security than localStorage by preventing key extraction

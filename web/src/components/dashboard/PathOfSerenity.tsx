@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
@@ -112,7 +113,9 @@ export const PathOfSerenity: React.FC<PathOfSerenityProps> = ({
         if (result.newlyUnlocked.length > 0) {
           // Show recognition for the first newly unlocked milestone
           const milestoneToRecognize = result.newlyUnlocked[0];
-          showMilestoneRecognition(milestoneToRecognize, userId);
+          if (milestoneToRecognize) {
+            showMilestoneRecognition(milestoneToRecognize, userId);
+          }
 
           // Additional quiet notifications for multiple milestones
           if (result.newlyUnlocked.length > 1) {

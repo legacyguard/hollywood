@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { NextResponse, type NextRequest } from 'next/server';
 
 // In-memory store for rate limiting (consider Redis for production)

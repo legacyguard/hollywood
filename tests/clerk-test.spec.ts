@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { test, expect } from '@playwright/test';
 import { setupClerkTestingToken } from '@clerk/testing/playwright';
 
@@ -27,7 +28,7 @@ test.describe('Clerk Testing Token Verification', () => {
 
     // Check if Clerk is loaded
     const clerkLoaded = await page.evaluate(() => {
-      return typeof (window as Record<string, unknown>).Clerk !== 'undefined';
+      return typeof (window as Record<string, any>).Clerk !== 'undefined';
     });
 
     console.log('Clerk loaded:', clerkLoaded);

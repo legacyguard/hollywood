@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { type GetProps, Paragraph, Stack, styled, View } from 'tamagui';
 
@@ -123,8 +124,13 @@ export const ProgressBar = React.memo(({
 
       <ProgressTrack height={height}>
         <ProgressFill
-          variant={variant}
-          animated={animated}
+          backgroundColor={
+            variant === 'primary' ? '$primaryBlue' :
+            variant === 'success' ? '$primaryGreen' :
+            variant === 'warning' ? '$accentGold' :
+            variant === 'danger' ? '$error' :
+            variant === 'premium' ? '$accentGold' : '$primaryBlue'
+          }
           width={`${percentage}%`}
           animation={animated ? 'medium' : undefined}
           enterStyle={animated ? { width: 0 } : undefined}
@@ -303,9 +309,9 @@ export const SegmentedProgress = React.memo(({
           return (
             <ProgressSegment
               key={index}
-              isCompleted={isCompleted}
-              isActive={isActive}
-              segmentPosition={segmentPosition}
+              data-completed={isCompleted}
+              data-active={isActive}
+              data-position={segmentPosition}
               animation="medium"
             />
           );

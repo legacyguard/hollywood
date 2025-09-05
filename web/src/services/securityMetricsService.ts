@@ -1,3 +1,4 @@
+
 /**
  * Security Metrics Service
  * Provides real-time security metrics for the dashboard

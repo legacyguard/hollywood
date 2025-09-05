@@ -1,3 +1,4 @@
+
 /**
  * Magical Upload Wrapper
  * Enhances the existing DocumentUploader with magical animations

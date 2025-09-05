@@ -1,3 +1,4 @@
+
 import React, { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { DashboardLayout } from '@/components/DashboardLayout';
@@ -125,7 +126,7 @@ export default function SurvivorManualPage() {
 
   // Generate initial entries based on user's guardians and documents
   const generateInitialEntries = useCallback(
-    async (supabase: unknown, userGuardians: Guardian[]) => {
+    async (supabase: any, userGuardians: Guardian[]) => {
       const initialEntries: Omit<
         FamilyGuidanceEntry,
         'created_at' | 'id' | 'updated_at'
@@ -188,7 +189,13 @@ export default function SurvivorManualPage() {
 
         if (error) throw error;
 
-        setEntries(data || []);
+        const mappedEntries = (data || []).map((entry: any) => ({
+          ...entry,
+          is_auto_generated: (entry as any).is_auto_generated ?? true,
+          tags: (entry as any).tags || [],
+          related_document_ids: entry.related_document_ids || [],
+        }));
+        setEntries(mappedEntries as FamilyGuidanceEntry[]);
         toast.success(
           'Initial Family Guidance Manual created! Please review and customize the entries.'
         );
@@ -241,8 +248,13 @@ export default function SurvivorManualPage() {
 
         if (error) throw error;
 
+        const mappedData = {
+          ...data,
+          is_auto_generated: (data as any).is_auto_generated ?? false,
+          tags: (data as any).tags || [],
+        } as FamilyGuidanceEntry;
         setEntries(prev =>
-          prev.map(entry => (entry.id === editingEntry.id ? data : entry))
+          prev.map(entry => (entry.id === editingEntry.id ? mappedData : entry))
         );
         toast.success('Manual entry updated successfully!');
       } else {
@@ -263,8 +275,13 @@ export default function SurvivorManualPage() {
 
         if (error) throw error;
 
+        const mappedNewEntry = {
+          ...data,
+          is_auto_generated: (data as any).is_auto_generated ?? false,
+          tags: (data as any).tags || [],
+        } as FamilyGuidanceEntry;
         setEntries(prev =>
-          [...prev, data].sort((a, b) => a.priority - b.priority)
+          [...prev, mappedNewEntry].sort((a, b) => a.priority - b.priority)
         );
         toast.success('Manual entry added successfully!');
       }
@@ -320,7 +337,12 @@ export default function SurvivorManualPage() {
 
       if (error) throw error;
 
-      setEntries(prev => prev.map(e => (e.id === entry.id ? data : e)));
+      const mappedData = {
+        ...data,
+        is_auto_generated: (data as any).is_auto_generated ?? false,
+        tags: (data as any).tags || [],
+      } as FamilyGuidanceEntry;
+      setEntries(prev => prev.map(e => (e.id === entry.id ? mappedData : e)));
       toast.success(
         `Entry marked as ${data.is_completed ? 'completed' : 'incomplete'}`
       );
@@ -333,7 +355,7 @@ export default function SurvivorManualPage() {
   // Handle form input changes
   const handleInputChange = (
     field: keyof CreateGuidanceEntryRequest,
-    value: unknown
+    value: any
   ) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
@@ -385,7 +407,7 @@ export default function SurvivorManualPage() {
                 <FadeIn duration={0.5} delay={0.2}>
                   <div className='flex items-center gap-3 mb-3'>
                     <div className='w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center'>
-                      <Icon name='book-open' className='w-6 h-6 text-primary' />
+                      <Icon name='file-text' className='w-6 h-6 text-primary' />
                     </div>
                     <h1 className='text-3xl lg:text-4xl font-bold font-heading text-card-foreground'>
                       Family Guidance Manual
@@ -462,7 +484,7 @@ export default function SurvivorManualPage() {
                                 <SelectItem key={type.value} value={type.value}>
                                   <div className='flex items-center gap-2'>
                                     <Icon
-                                      name={type.icon}
+                                      name={type.icon as any}
                                       className='w-4 h-4'
                                     />
                                     {type.label}
@@ -538,7 +560,7 @@ export default function SurvivorManualPage() {
                             </>
                           ) : (
                             <>
-                              <Icon name='save' className='w-4 h-4 mr-2' />
+                              <Icon name='check' className='w-4 h-4 mr-2' />
                               {editingEntry ? 'Update Entry' : 'Add Entry'}
                             </>
                           )}
@@ -558,7 +580,7 @@ export default function SurvivorManualPage() {
             <FadeIn duration={0.5} delay={0.8}>
               <Card className='p-12 text-center'>
                 <div className='w-16 h-16 bg-primary/10 rounded-full mx-auto mb-6 flex items-center justify-center'>
-                  <Icon name='book-open' className='w-8 h-8 text-primary' />
+                  <Icon name='file-text' className='w-8 h-8 text-primary' />
                 </div>
                 <h3 className='text-2xl font-bold mb-4'>
                   Creating Your Family Guidance Manual
@@ -616,7 +638,7 @@ export default function SurvivorManualPage() {
                           className={`w-10 h-10 bg-${typeConfig.color}-100 rounded-lg flex items-center justify-center`}
                         >
                           <Icon
-                            name={typeConfig.icon}
+                            name={typeConfig.icon as any}
                             className={`w-5 h-5 text-${typeConfig.color}-600`}
                           />
                         </div>

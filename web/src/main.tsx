@@ -1,5 +1,6 @@
+
 import { createRoot } from 'react-dom/client';
-import App from './App.tsx';
+import App from './App';
 import './index.css';
 import './lib/i18n/config'; // Initialize i18n
 import { pwaService } from './lib/pwa/pwaService';

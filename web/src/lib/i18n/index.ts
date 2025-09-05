@@ -1,3 +1,4 @@
+
 /**
  * i18n System for LegacyGuard
  * Main export file for internationalization

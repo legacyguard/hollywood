@@ -1,3 +1,4 @@
+
 /**
  * Legacy Milestone System Service
  * Handles milestone tracking, celebrations, and progress monitoring
@@ -28,9 +29,33 @@ export class MilestonesService {
     try {
       const milestones = await this.createMilestonesFromTemplates(userId);
 
+      // Map LegacyMilestone to database schema  
+      const dbMilestones = milestones.map(milestone => ({
+        id: milestone.id,
+        user_id: userId,
+        category: milestone.category || 'foundation',
+        title: milestone.title,
+        description: milestone.description,
+        type: 'first_document' as const, // Use valid enum value
+        criteria_type: 'action_completed' as const,
+        criteria_threshold: '1',
+        criteria_current_value: '0',
+        criteria_is_complete: false,
+        completed_at: null,
+        celebration_text: milestone.celebration?.celebrationText || null,
+        celebration_family_impact_message: milestone.celebration?.familyImpactMessage || null,
+        celebration_color: milestone.celebration?.celebrationColor || null,
+        celebration_emotional_framing: milestone.celebration?.emotionalFraming || null,
+        celebration_icon: milestone.celebration?.celebrationIcon || null,
+        celebration_should_show: false,
+        level: 'foundation' as const,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      }));
+
       const { error } = await supabase
         .from('legacy_milestones')
-        .insert(milestones);
+        .insert(dbMilestones);
 
       if (error) throw error;
 
@@ -116,15 +141,48 @@ export class MilestonesService {
 
       if (error) throw error;
 
-      const milestones = (data || []) as LegacyMilestone[];
+      // Map database results to LegacyMilestone interface using the LegacyMilestone database type
+      const mappedMilestones = (data || []).map((dbMilestone: any) => ({
+        id: dbMilestone.id,
+        userId: dbMilestone.user_id,
+        title: dbMilestone.title,
+        description: dbMilestone.description,
+        category: dbMilestone.category,
+        type: dbMilestone.type,
+        criteria: {
+          type: dbMilestone.criteria_type,
+          threshold: dbMilestone.criteria_threshold,
+          currentValue: dbMilestone.criteria_current_value,
+          isComplete: dbMilestone.criteria_is_complete || false,
+        },
+        celebration: {
+          shouldShow: dbMilestone.celebration_should_show || false,
+          celebrationText: dbMilestone.celebration_text || 'Milestone Completed!',
+          celebrationIcon: dbMilestone.celebration_icon || '🎉',
+          celebrationColor: dbMilestone.celebration_color || '#10B981',
+          emotionalFraming: dbMilestone.celebration_emotional_framing || 'Great progress!',
+          familyImpactMessage: dbMilestone.celebration_family_impact_message || 'This milestone strengthens your family\'s protection.',
+        },
+        progress: {
+          percentage: (dbMilestone.criteria_is_complete || false) ? 100 : 0,
+          completedSteps: (dbMilestone.criteria_is_complete || false) ? 1 : 0,
+          totalSteps: 1,
+        },
+        completedAt: dbMilestone.completed_at || undefined,
+        createdAt: dbMilestone.created_at || new Date().toISOString(),
+        updatedAt: dbMilestone.updated_at || new Date().toISOString(),
+        metadata: {},
+        rewards: {},
+        triggers: {},
+      }));
 
       // Cache the results
       this.milestoneCache.set(cacheKey, {
-        data: milestones,
+        data: mappedMilestones,
         timestamp: Date.now(),
       });
 
-      return milestones;
+      return mappedMilestones;
     } catch (error) {
       console.error('Failed to fetch user milestones:', error);
       throw error;
@@ -596,7 +654,7 @@ export class MilestonesService {
     try {
       await (supabase as any).from('milestone_celebrations').insert({
         milestone_id: milestone.id,
-        user_id: milestone.userId,
+        user_id: milestone.user_id,
         celebration_data: milestone.celebration,
         created_at: new Date().toISOString(),
       });
@@ -613,7 +671,7 @@ export class MilestonesService {
     if (error) throw error;
 
     // Clear cache for this user
-    this.clearUserCache(milestone.userId);
+    this.clearUserCache(milestone.user_id);
   }
 
   private async updateMilestoneProgress(userId: string): Promise<void> {
@@ -785,7 +843,7 @@ export class MilestonesService {
 
     // Calculate completion times
     const completionTimes = completedMilestones.map(m => {
-      const created = new Date(m.createdAt).getTime();
+      const created = new Date(m.created_at).getTime();
       const completed = new Date(m.completedAt || '').getTime();
       return (completed - created) / (1000 * 60 * 60); // hours
     });

@@ -1,3 +1,4 @@
+
 export interface LegacyGardenProps {
   daysActive?: number;
   documentsCreated?: number;

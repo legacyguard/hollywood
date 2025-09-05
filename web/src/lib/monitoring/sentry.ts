@@ -1,3 +1,4 @@
+
 /**
  * Sentry Error Reporting Configuration
  * Centralized error monitoring and performance tracking

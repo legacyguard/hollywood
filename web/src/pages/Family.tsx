@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import {
   Card,
@@ -66,7 +67,10 @@ export default function Family() {
         familyService.getFamilyStats(user.id),
       ]);
 
-      setFamilyMembers(members);
+      setFamilyMembers(members.map(member => ({
+        ...member,
+        lastActiveAt: member.lastActiveAt || undefined
+      })));
       setProtectionStatus(protection);
       setDocumentsCount(stats.totalDocuments);
 

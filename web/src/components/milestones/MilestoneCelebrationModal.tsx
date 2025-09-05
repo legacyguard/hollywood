@@ -1,3 +1,4 @@
+
 /**
  * Milestone Celebration Modal Component
  * Celebrates user achievements with family-focused emotional messaging

@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
@@ -152,7 +153,7 @@ export default function FamilyShieldAccessPage() {
           `Welcome, ${mockData.guardian_name}. Family Shield access granted.`
         );
       }
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.error('Error verifying token:', err);
       setError(
         'Failed to verify access token. Please try again or contact support.'
@@ -238,7 +239,7 @@ export default function FamilyShieldAccessPage() {
       window.open(data.data.download_url, '_blank');
 
       toast.success(`Accessing ${documentTitle}...`);
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.error('Error downloading document:', err);
       toast.error(`Failed to access ${documentTitle}. Please try again.`);
     }
@@ -428,13 +429,13 @@ export default function FamilyShieldAccessPage() {
                 )}
                 {accessData.guardian_permissions.is_child_guardian && (
                   <div className='flex items-center gap-2 text-purple-700'>
-                    <Icon name={'baby'} className='w-4 h-4' />
+                    <Icon name={'user'} className='w-4 h-4' />
                     <span className='text-sm'>Child Guardian</span>
                   </div>
                 )}
                 {accessData.guardian_permissions.is_will_executor && (
                   <div className='flex items-center gap-2 text-amber-700'>
-                    <Icon name={'scroll'} className='w-4 h-4' />
+                    <Icon name={'file-text'} className='w-4 h-4' />
                     <span className='text-sm'>Will Executor</span>
                   </div>
                 )}
@@ -447,7 +448,7 @@ export default function FamilyShieldAccessPage() {
             <Card className='p-6'>
               <div className='flex items-center justify-between mb-4'>
                 <h3 className='text-xl font-semibold flex items-center gap-2'>
-                  <Icon name={'book-open'} className='w-5 h-5 text-primary' />
+                  <Icon name={'file-text'} className='w-5 h-5 text-primary' />
                   Family Survivor's Manual
                 </h3>
                 <Badge variant={'secondary'}>

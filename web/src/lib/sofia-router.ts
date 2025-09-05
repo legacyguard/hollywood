@@ -1,5 +1,7 @@
+
 import {
   type ActionButton,
+  type ActionCategory,
   type CommandResult,
   getContextualActions,
   type SofiaCommand,
@@ -210,8 +212,8 @@ export class SofiaRouter {
       id: suggestion.actionId,
       text: suggestion.title,
       icon: suggestion.icon,
-      category: suggestion.category,
-      cost: 'free',
+      category: suggestion.category as ActionCategory,
+      cost: 'free' as const,
       payload: suggestion.payload,
     }));
 

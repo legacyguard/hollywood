@@ -1,3 +1,4 @@
+
 /**
  * Language Configuration for LegacyGuard
  * Defines settings for 34+ languages across all jurisdictions

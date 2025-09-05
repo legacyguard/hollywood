@@ -3,6 +3,7 @@
 ## 📋 Session Quality Gates
 
 ### Before Starting Any Implementation
+
 - [ ] Previous session tasks are 100% complete
 - [ ] Git status is clean (no uncommitted changes)
 - [ ] Current codebase compiles without errors
@@ -10,6 +11,7 @@
 - [ ] Dependencies are up to date
 
 ### During Implementation (Per File/Component)
+
 - [ ] TypeScript types are complete and strict
 - [ ] ESLint rules pass without warnings
 - [ ] Prettier formatting applied
@@ -19,6 +21,7 @@
 - [ ] Loading states are handled
 
 ### After Implementation (Per Feature)
+
 - [ ] Unit tests written and passing
 - [ ] Integration with existing code verified
 - [ ] UI/UX consistency maintained
@@ -28,6 +31,7 @@
 - [ ] Memory leaks checked (for complex components)
 
 ### Before Session End
+
 - [ ] All code changes committed with descriptive messages
 - [ ] TRANSFORMATION_PROGRESS.md updated
 - [ ] Next session prompt prepared
@@ -38,6 +42,7 @@
 ## 🧪 Testing Protocols
 
 ### Level 1: Technical Validation
+
 ```bash
 # TypeScript compilation
 npm run build
@@ -53,6 +58,7 @@ npm run test:components
 ```
 
 ### Level 2: Integration Testing
+
 ```bash
 # E2E tests
 npm run test:e2e
@@ -65,6 +71,7 @@ npm run test:a11y
 ```
 
 ### Level 3: User Experience Testing
+
 - [ ] Manual testing of user flows
 - [ ] Sofia personality responses appropriate
 - [ ] Animations smooth and purposeful
@@ -77,24 +84,28 @@ npm run test:a11y
 ## 📊 Code Quality Standards
 
 ### TypeScript
+
 - Strict mode enabled
 - No `any` types (use proper interfaces)
 - Complete JSDoc for public APIs
 - Error handling with proper types
 
 ### React Components
+
 - Functional components with hooks
 - Proper dependency arrays
 - Memoization where appropriate
 - Clean component hierarchy
 
 ### Styling
+
 - Tailwind CSS classes
 - Consistent design system usage
 - Responsive design patterns
 - Dark mode compatibility
 
 ### State Management
+
 - TanStack Query for server state
 - Local state with useState/useReducer
 - Context only for global app state
@@ -105,6 +116,7 @@ npm run test:a11y
 ## 🚨 Red Flags (Auto-Fail Conditions)
 
 ### Code Red Flags
+
 - [ ] Compilation errors
 - [ ] ESLint errors (warnings OK in development)
 - [ ] Failed tests
@@ -113,6 +125,7 @@ npm run test:a11y
 - [ ] Memory leaks in DevTools
 
 ### UX Red Flags  
+
 - [ ] Components don't render on mobile
 - [ ] Accessibility violations (critical)
 - [ ] Performance regression > 20%
@@ -120,6 +133,7 @@ npm run test:a11y
 - [ ] Sofia responses feel robotic/inappropriate
 
 ### Security Red Flags
+
 - [ ] API keys exposed in client code
 - [ ] User data logged in console
 - [ ] Insecure data transmission
@@ -131,23 +145,27 @@ npm run test:a11y
 ## ✅ Review Checklist Template
 
 ### Feature: [Feature Name]
+
 **Session**: [Session Number]  
 **Date**: [Date]  
 **Files Changed**: [List of files]
 
 #### Technical Quality
+
 - [ ] TypeScript compilation: ✅ PASS / ❌ FAIL
 - [ ] ESLint validation: ✅ PASS / ❌ FAIL  
 - [ ] Unit tests: ✅ PASS / ❌ FAIL
 - [ ] Component rendering: ✅ PASS / ❌ FAIL
 
 #### Integration Quality
+
 - [ ] Feature integration: ✅ PASS / ❌ FAIL
 - [ ] Existing functionality: ✅ PASS / ❌ FAIL
 - [ ] UI consistency: ✅ PASS / ❌ FAIL
 - [ ] Performance impact: ✅ PASS / ❌ FAIL
 
 #### User Experience
+
 - [ ] User flow complete: ✅ PASS / ❌ FAIL
 - [ ] Sofia communication: ✅ PASS / ❌ FAIL
 - [ ] Mobile experience: ✅ PASS / ❌ FAIL

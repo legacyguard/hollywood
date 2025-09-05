@@ -1,3 +1,4 @@
+
 /**
  * Trust Score Visualization Component
  * Shows family protection level with animated progress ring

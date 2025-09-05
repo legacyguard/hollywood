@@ -1,3 +1,4 @@
+
 /**
  * Milestone Achievement Badges Component
  * Displays earned badges and achievement progress with family impact focus

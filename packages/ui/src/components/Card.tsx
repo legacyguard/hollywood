@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { type GetProps, styled, Text, View } from 'tamagui';
 
@@ -7,7 +8,7 @@ import { type GetProps, styled, Text, View } from 'tamagui';
  * @component
  * @example
  * ```tsx
- * <Card variant="elevated" padding="medium">
+ * <Card theme="elevated" padding="medium">
  *   <CardHeader>
  *     <CardTitle>Card Title</CardTitle>
  *     <CardDescription>Card description</CardDescription>
@@ -245,7 +246,7 @@ export const CardContent = React.memo(styled(View, {
  * ```tsx
  * <CardFooter justify="between" noBorder>
  *   <Button>Cancel</Button>
- *   <Button variant="primary">Save</Button>
+ *   <Button theme="primary">Save</Button>
  * </CardFooter>
  * ```
  *

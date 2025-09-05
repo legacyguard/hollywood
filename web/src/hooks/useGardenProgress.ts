@@ -1,3 +1,4 @@
+
 import { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { useSupabaseWithClerk } from '@/integrations/supabase/client';
@@ -106,7 +107,7 @@ export const useGardenProgress = () => {
       const willProgress =
         wills && wills.length > 0
           ? Math.min(
-              (((wills[0] as Record<string, unknown>)
+              (((wills[0] as Record<string, any>)
                 .completion_percentage as number) || 0) * 100,
               100
             )
@@ -297,10 +298,10 @@ export const useGardenProgress = () => {
   const checkMilestoneActive = (
     milestone: SerenityMilestone,
     data: {
-      documents: Record<string, unknown>[];
-      guardians: Record<string, unknown>[];
-      timeCapsules: Record<string, unknown>[];
-      wills: Record<string, unknown>[];
+      documents: Record<string, any>[];
+      guardians: Record<string, any>[];
+      timeCapsules: Record<string, any>[];
+      wills: Record<string, any>[];
     }
   ): boolean => {
     switch (milestone.id) {
@@ -313,7 +314,7 @@ export const useGardenProgress = () => {
       case 'will_creation':
         return (
           data.wills.length >= 1 &&
-          (((data.wills[0] as Record<string, unknown>)
+          (((data.wills[0] as Record<string, any>)
             .completion_percentage as number) || 0) >= 0.8
         );
       case 'guardian_network':
@@ -324,7 +325,7 @@ export const useGardenProgress = () => {
         return data.timeCapsules.length >= 3;
       case 'family_shield':
         return data.guardians.some(
-          (g: Record<string, unknown>) => g.can_trigger_emergency
+          (g: Record<string, any>) => g.can_trigger_emergency
         );
       default:
         return false;

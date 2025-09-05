@@ -1,3 +1,4 @@
+
 // Sofia Action Router - Handles actions from search without OpenAI
 import type { NavigateFunction } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -26,13 +27,14 @@ export const executeSofiaAction = async (
   switch (action.actionId) {
     case 'navigate':
       // Simple navigation
-      navigate(action.payload);
-      toast.success(`Navigated to ${action.payload}`);
+      const path = typeof action.payload === 'string' ? action.payload : '/';
+      navigate(path);
+      toast.success(`Navigated to ${path}`);
 
       if (onSofiaMessage) {
         onSofiaMessage(
           action.text,
-          `Perfect! I've taken you to ${action.payload}. What would you like to do here?`
+          `Perfect! I've taken you to ${path}. What would you like to do here?`
         );
       }
       break;
@@ -41,7 +43,7 @@ export const executeSofiaAction = async (
       // Filter documents by category
       navigate('/vault');
 
-      const category = action.payload;
+      const category = typeof action.payload === 'string' ? action.payload : 'all';
       const categoryDisplayName =
         category.charAt(0).toUpperCase() + category.slice(1);
 
@@ -77,7 +79,7 @@ export const executeSofiaAction = async (
       // Filter documents by specific type
       navigate('/vault');
 
-      const docType = action.payload;
+      const docType = typeof action.payload === 'string' ? action.payload : 'document';
       const typeDisplayName = docType
         .replace('_', ' ')
         .replace(/\b\w/g, (l: string) => l.toUpperCase());
@@ -108,7 +110,8 @@ export const executeSofiaAction = async (
       // Show documents expiring soon
       navigate('/vault');
 
-      const days = action.payload.days;
+      const payload = typeof action.payload === 'object' ? action.payload : {};
+      const days = payload.days || 30;
 
       // Apply expiring filter
       if (setDocumentFilter) {
@@ -128,8 +131,13 @@ export const executeSofiaAction = async (
 
     case 'navigate_and_suggest': {
       // Navigate and provide contextual suggestion
-      const { url, suggestion, category: _suggestedCategory } = action.payload;
-      navigate(url);
+      const payload = typeof action.payload === 'object' ? action.payload : {};
+      const { url, suggestion, category: _suggestedCategory } = payload as {
+        url: string;
+        suggestion: string;
+        category?: string;
+      };
+      navigate(url || '/');
 
       if (onSofiaMessage) {
         let suggestionText = '';
@@ -156,7 +164,7 @@ export const executeSofiaAction = async (
 
     case 'show_faq': {
       // Display FAQ response
-      const faqKey = action.payload;
+      const faqKey = typeof action.payload === 'string' ? action.payload : 'general';
       const response = faqResponses[faqKey];
 
       if (response && onSofiaMessage) {
@@ -171,7 +179,8 @@ export const executeSofiaAction = async (
       // Filter by category learned from user's documents
       navigate('/vault');
 
-      const { searchTerm, category, matchedCount } = action.payload as {
+      const payload = typeof action.payload === 'object' ? action.payload : {};
+      const { searchTerm, category, matchedCount } = payload as {
         category: string;
         matchedCount: number;
         searchTerm: string;
@@ -198,7 +207,8 @@ export const executeSofiaAction = async (
       // Navigate to vault and highlight specific document
       navigate('/vault');
 
-      const { documentId: _documentId, documentTitle } = action.payload as {
+      const payload = typeof action.payload === 'object' ? action.payload : {};
+      const { documentId: _documentId, documentTitle } = payload as {
         documentId: string;
         documentTitle: string;
       };
@@ -221,7 +231,8 @@ export const executeSofiaAction = async (
       // Create a smart filter based on learned patterns
       navigate('/vault');
 
-      const { searchTerm, category, documentIds } = action.payload as {
+      const payload = typeof action.payload === 'object' ? action.payload : {};
+      const { searchTerm, category, documentIds } = payload as {
         category: string;
         documentIds: string[];
         searchTerm: string;
@@ -248,7 +259,8 @@ export const executeSofiaAction = async (
 
     case 'celebrate_milestone': {
       // Celebrate milestone achievement
-      const { milestoneName, milestoneDescription } = action.payload as {
+      const payload = typeof action.payload === 'object' ? action.payload : {};
+      const { milestoneName, milestoneDescription } = payload as {
         milestoneDescription: string;
         milestoneName: string;
       };
@@ -268,7 +280,8 @@ export const executeSofiaAction = async (
 
     case 'start_challenge': {
       // Start a 5-minute challenge
-      const { challengeTitle, navigationTarget } = action.payload as {
+      const payload = typeof action.payload === 'object' ? action.payload : {};
+      const { challengeTitle, navigationTarget } = payload as {
         challengeTitle: string;
         navigationTarget: string;
       };
@@ -303,7 +316,8 @@ export const executeSofiaAction = async (
       // Filter documents by bundle
       navigate('/vault');
 
-      const { bundleName, primaryEntity } = action.payload as {
+      const payload = typeof action.payload === 'object' ? action.payload : {};
+      const { bundleName, primaryEntity } = payload as {
         bundleName: string;
         primaryEntity?: string;
       };

@@ -1,3 +1,4 @@
+import type { AISuggestions, Database, DocumentUploadRequest, Json, Tables } from '@shared/types/database';
 /**
  * Unit tests for DocumentService
  * Tests all methods with success cases, error cases, and edge cases

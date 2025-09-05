@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -72,7 +73,7 @@ const TestOCRPage: React.FC = () => {
         enableMetadataExtraction: true,
         confidenceThreshold: 0.7,
         languageHints: ['en'],
-        processingMode: 'accurate',
+        processingMode: 'accurate' as const,
       };
       const ocrResult = await ocrService.processDocument(
         base64,

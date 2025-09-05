@@ -1,3 +1,4 @@
+
 /**
  * Trust Score Display Component
  * Shows user's trust score with different variants for A/B testing

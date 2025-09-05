@@ -1,3 +1,4 @@
+
 // Sofia Context Provider Integration Tests
 import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';

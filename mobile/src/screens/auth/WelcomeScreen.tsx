@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Container, H1, YStack } from '@legacyguard/ui';
 
 interface WelcomeScreenProps {
-  navigation: any; // Using 'any' for simplicity, can be properly typed with NavigationProp
+  navigation: unknown; // Using 'unknown' for simplicity, can be properly typed with NavigationProp
 }
 
 export const WelcomeScreen = ({ navigation }: WelcomeScreenProps) => (

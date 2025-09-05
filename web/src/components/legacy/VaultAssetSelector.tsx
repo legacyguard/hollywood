@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { Button } from '@/components/ui/button';
@@ -6,13 +7,12 @@ import { Icon } from '@/components/ui/icon-library';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { supabase } from '@/integrations/supabase/client';
-import type { Document } from '@/integrations/supabase/types';
 
 interface VaultAsset {
   bundle?: {
     category: string;
     name: string;
-  };
+  } | undefined;
   category: string;
   createdAt: string;
   description?: string;

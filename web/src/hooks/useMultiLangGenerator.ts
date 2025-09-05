@@ -1,3 +1,4 @@
+
 /**
  * Multi-Language Generator Hook
  * Handles translation and generation of legal documents in multiple languages

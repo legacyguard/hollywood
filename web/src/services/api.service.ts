@@ -1,3 +1,4 @@
+
 import { useAuth } from '@clerk/clerk-react';
 
 // Base API URL - in production this will be your Vercel deployment URL
@@ -8,7 +9,7 @@ export class ApiError extends Error {
   constructor(
     message: string,
     public status?: number,
-    public data?: unknown
+    public data?: any
   ) {
     super(message);
     this.name = 'ApiError';
@@ -30,7 +31,7 @@ async function fetchApi<T = unknown>(
 
   // Add auth token if provided
   if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+    (headers as Record<string, string>)['Authorization'] = `Bearer ${token}`;
   }
 
   try {
@@ -48,7 +49,7 @@ async function fetchApi<T = unknown>(
           response.status
         );
       }
-      return response.text() as unknown;
+      return response.text() as any;
     }
 
     const data = await response.json();
@@ -120,7 +121,7 @@ export const keyManagementService = {
 
   // Get public key only (no password required)
   async getPublicKey(token: string): Promise<{
-    metadata?: unknown;
+    metadata?: any;
     publicKey: string;
     success: boolean;
   }> {
@@ -190,7 +191,7 @@ export function useApiService() {
   const { getToken } = useAuth();
 
   // Wrapper to get token and call service
-  const callWithAuth = async <T extends unknown[], R>(
+  const callWithAuth = async <T extends any[], R>(
     serviceFn: (...args: [...T, string]) => Promise<R>,
     ...args: T
   ): Promise<R> => {

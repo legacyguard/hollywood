@@ -1,3 +1,4 @@
+
 /**
  * Progressive Loading Component
  * Handles progressive loading with smooth animations and loading states

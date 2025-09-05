@@ -1,3 +1,4 @@
+
 /**
  * Jurisdiction Configuration for LegacyGuard
  * Defines legal frameworks, languages, and regional settings for 40 countries

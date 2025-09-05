@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { type GetProps, styled, Text, View } from 'tamagui';
 

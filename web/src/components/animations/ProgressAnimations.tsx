@@ -1,3 +1,4 @@
+
 // Progress Animations - Adaptive progress indicators based on Sofia's personality
 // Provides visual feedback for user actions and milestones
 
@@ -54,14 +55,15 @@ export const AdaptiveProgressBar: React.FC<ProgressBarProps> = ({
                 ? 'bg-gradient-to-r from-blue-500 to-blue-600'
                 : 'bg-gradient-to-r from-purple-400 to-purple-500'
           }`}
-          variants={animated ? barVariants : undefined}
-          initial={animated ? 'initial' : undefined}
-          animate={animated ? 'animate' : undefined}
-          style={
-            !animated
-              ? { transform: `scaleX(${progressValue / 100})` }
-              : undefined
-          }
+          {...(animated
+            ? {
+                variants: barVariants,
+                initial: 'initial',
+                animate: 'animate',
+              }
+            : {
+                style: { transform: `scaleX(${progressValue / 100})` },
+              })}
         />
 
         {/* Animated sparkles for empathetic mode */}
@@ -161,19 +163,25 @@ export const AdaptiveMilestoneIndicator: React.FC<MilestoneIndicatorProps> = ({
       className={`flex items-start space-x-4 p-4 rounded-lg transition-colors ${
         isActive ? 'bg-blue-50' : 'bg-transparent'
       }`}
-      variants={shouldReduceMotion ? undefined : containerVariants}
-      initial={shouldReduceMotion ? undefined : 'initial'}
-      animate={shouldReduceMotion ? undefined : 'animate'}
+      {...(shouldReduceMotion
+        ? {}
+        : {
+            variants: containerVariants,
+            initial: 'initial',
+            animate: 'animate',
+          })}
     >
       {/* Icon */}
       <motion.div
         className='flex-shrink-0 relative'
-        variants={
-          completed && !shouldReduceMotion
-            ? celebrationVariants
-            : undefined
-        }
-        animate={completed && !shouldReduceMotion ? 'animate' : 'initial'}
+        {...(completed && !shouldReduceMotion
+          ? {
+              variants: celebrationVariants,
+              animate: 'animate',
+            }
+          : {
+              animate: 'initial',
+            })}
       >
         {completed ? (
           <div
@@ -206,22 +214,26 @@ export const AdaptiveMilestoneIndicator: React.FC<MilestoneIndicatorProps> = ({
       <div className='flex-1 min-w-0'>
         <motion.h4
           className={`font-medium ${completed ? 'text-gray-900' : 'text-gray-500'}`}
-          initial={shouldReduceMotion ? undefined : { opacity: 0 }}
-          animate={shouldReduceMotion ? undefined : { opacity: 1 }}
-          transition={
-            shouldReduceMotion ? undefined : { delay: index * 0.1 + 0.2 }
-          }
+          {...(shouldReduceMotion
+            ? {}
+            : {
+                initial: { opacity: 0 },
+                animate: { opacity: 1 },
+                transition: { delay: index * 0.1 + 0.2 },
+              })}
         >
           {title}
         </motion.h4>
         {description && (
           <motion.p
             className='text-sm text-gray-600 mt-1'
-            initial={shouldReduceMotion ? undefined : { opacity: 0 }}
-            animate={shouldReduceMotion ? undefined : { opacity: 1 }}
-            transition={
-              shouldReduceMotion ? undefined : { delay: index * 0.1 + 0.3 }
-            }
+            {...(shouldReduceMotion
+              ? {}
+              : {
+                  initial: { opacity: 0 },
+                  animate: { opacity: 1 },
+                  transition: { delay: index * 0.1 + 0.3 },
+                })}
           >
             {description}
           </motion.p>
@@ -263,18 +275,17 @@ export const AdaptiveStepProgress: React.FC<StepProgressProps> = ({
                       : 'border-purple-500 text-purple-500'
                   : 'border-gray-300 text-gray-400'
             }`}
-            initial={shouldReduceMotion ? undefined : { scale: 0, opacity: 0 }}
-            animate={shouldReduceMotion ? undefined : { scale: 1, opacity: 1 }}
-            transition={
-              shouldReduceMotion
-                ? undefined
-                : {
+            {...(shouldReduceMotion
+              ? {}
+              : {
+                  initial: { scale: 0, opacity: 0 },
+                  animate: { scale: 1, opacity: 1 },
+                  transition: {
                     delay: index * 0.1,
                     type: personalityMode === 'pragmatic' ? 'tween' : 'spring',
-                    stiffness:
-                      personalityMode === 'pragmatic' ? undefined : 200,
-                  }
-            }
+                    ...(personalityMode !== 'pragmatic' && { stiffness: 200 }),
+                  },
+                })}
           >
             {step.completed ? (
               <CheckCircle className='w-4 h-4' />
@@ -309,7 +320,7 @@ export const AdaptiveStepProgress: React.FC<StepProgressProps> = ({
           {index < steps.length - 1 && (
             <motion.div
               className={`flex-1 h-0.5 ${
-                steps[index + 1].completed || step.completed
+                steps[index + 1]?.completed || step.completed
                   ? personalityMode === 'empathetic'
                     ? 'bg-emerald-500'
                     : personalityMode === 'pragmatic'
@@ -317,16 +328,16 @@ export const AdaptiveStepProgress: React.FC<StepProgressProps> = ({
                       : 'bg-purple-500'
                   : 'bg-gray-300'
               }`}
-              initial={shouldReduceMotion ? undefined : { scaleX: 0 }}
-              animate={shouldReduceMotion ? undefined : { scaleX: 1 }}
-              transition={
-                shouldReduceMotion
-                  ? undefined
-                  : {
+              {...(shouldReduceMotion
+                ? {}
+                : {
+                    initial: { scaleX: 0 },
+                    animate: { scaleX: 1 },
+                    transition: {
                       delay: index * 0.1 + 0.2,
                       duration: personalityMode === 'pragmatic' ? 0.3 : 0.8,
-                    }
-              }
+                    },
+                  })}
               style={{ transformOrigin: 'left' }}
             />
           )}

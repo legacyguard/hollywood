@@ -1,3 +1,4 @@
+
 /**
  * Blockchain Verification Service for LegacyGuard
  * Provides immutable audit trails and document integrity verification

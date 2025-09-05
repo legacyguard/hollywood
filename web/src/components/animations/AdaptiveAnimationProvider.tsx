@@ -1,3 +1,4 @@
+
 // Adaptive Animation Provider - Provides animation context based on Sofia's personality
 // Centralizes animation behavior and adapts to user preferences
 

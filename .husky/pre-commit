@@ -1,6 +1,19 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
+# TypeScript type checking
+echo "🔍 Running TypeScript type check..."
+npm run type-check
+if [ $? -ne 0 ]; then
+  echo ""
+  echo "❌ TypeScript errors detected!"
+  echo ""
+  echo "Run 'npm run type-check' to see details"
+  echo "or use 'npm run fix:types' for automatic fixes"
+  echo ""
+  exit 1
+fi
+
 # Check translation file sizes before commit
 echo "🔍 Checking translation file sizes..."
 

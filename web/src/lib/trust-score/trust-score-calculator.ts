@@ -1,3 +1,4 @@
+
 /**
  * Trust Score Calculation System
  * Calculates family protection score based on user actions and document security
@@ -408,7 +409,7 @@ export class TrustScoreCalculator {
     if (factors.documentsUploaded < 3) {
       risks.push({
         area: 'Essential Documents Missing',
-        risk: 'high',
+        risk: 'high' as const,
         description: 'Your family lacks access to critical information',
         improvements: [
           'Upload ID documents and insurance policies',
@@ -422,7 +423,7 @@ export class TrustScoreCalculator {
     if (factors.professionalReviews === 0 && factors.willCompleted) {
       risks.push({
         area: 'Legal Validation Needed',
-        risk: 'medium',
+        risk: 'medium' as const,
         description: 'Documents may not meet legal requirements',
         improvements: [
           'Request professional review of your will',
@@ -436,7 +437,7 @@ export class TrustScoreCalculator {
     if (factors.emergencyContactsAdded === 0) {
       risks.push({
         area: 'Emergency Access Gap',
-        risk: 'high',
+        risk: 'high' as const,
         description: 'No one can access your information in emergency',
         improvements: [
           'Add trusted family members as emergency contacts',
@@ -450,7 +451,7 @@ export class TrustScoreCalculator {
     if (!factors.twoFactorAuth) {
       risks.push({
         area: 'Account Security Risk',
-        risk: 'medium',
+        risk: 'medium' as const,
         description: 'Account could be compromised without 2FA',
         improvements: [
           'Enable two-factor authentication',
@@ -464,7 +465,7 @@ export class TrustScoreCalculator {
     if (factors.lastActivityDays > 90) {
       risks.push({
         area: 'Outdated Information Risk',
-        risk: 'low',
+        risk: 'low' as const,
         description: 'Information may become stale without regular updates',
         improvements: [
           'Schedule regular review reminders',
@@ -481,7 +482,7 @@ export class TrustScoreCalculator {
    * Get quick improvement suggestions
    */
   static getQuickImprovements(factors: TrustScoreFactors, limit = 3) {
-    const allSuggestions = [];
+    const allSuggestions: string[] = [];
     const breakdown = this.calculateTrustScore(factors);
 
     Object.values(breakdown.factors).forEach(factor => {

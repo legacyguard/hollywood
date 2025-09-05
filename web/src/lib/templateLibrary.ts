@@ -1,3 +1,4 @@
+
 /**
  * Template Library
  * Manages will templates for different jurisdictions and languages
@@ -182,7 +183,7 @@ class TemplateLibraryImpl implements TemplateLibrary {
         const value = this.getDataValue(
           data,
           variable.key,
-          variable.dataSource
+          variable.dataSource || 'user'
         );
 
         if (this.isEmpty(value)) {
@@ -199,6 +200,7 @@ class TemplateLibraryImpl implements TemplateLibrary {
 
     // Apply validation rules
     for (const rule of template.validationRules) {
+      if (!rule.field) continue; // Skip rules without field specified
       const fieldValue = this.getDataValue(data, rule.field, 'user');
       const validationError = this.applyValidationRule(rule, fieldValue);
 
@@ -271,7 +273,7 @@ class TemplateLibraryImpl implements TemplateLibrary {
    * Apply validation rule to field value
    */
   private applyValidationRule(
-    rule: Record<string, unknown>,
+    rule: Record<string, any>,
     value: unknown
   ): null | ValidationError {
     switch (rule.type) {
@@ -455,7 +457,7 @@ class TemplateLibraryImpl implements TemplateLibrary {
   /**
    * Utility methods
    */
-  private isEmpty(value: unknown): boolean {
+  private isEmpty(value: any): boolean {
     return (
       value === null ||
       value === undefined ||
@@ -465,7 +467,7 @@ class TemplateLibraryImpl implements TemplateLibrary {
     );
   }
 
-  private getNestedValue(obj: Record<string, unknown>, path: string): unknown {
+  private getNestedValue(obj: Record<string, any>, path: string): unknown {
     if (!obj || !path) return null;
     return path.split('.').reduce((current, prop) => current?.[prop], obj);
   }

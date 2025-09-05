@@ -1,3 +1,4 @@
+
 /**
  * React hooks for conversion tracking and key metrics
  * Integrates with A/B testing system and analytics
@@ -12,7 +13,7 @@ interface GtagWindow {
   gtag?: (
     command: string,
     eventName: string,
-    parameters?: Record<string, unknown>
+    parameters?: Record<string, any>
   ) => void;
 }
 

@@ -1,4 +1,5 @@
-import React, { useCallback, useState } from 'react';
+
+import React, { useCallback, useEffect, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { useSupabaseWithClerk } from '@/integrations/supabase/client';
 import { Card } from '@/components/ui/card';
@@ -57,7 +58,7 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
 
   const currentToken = accessToken || token;
 
-  const _loadSurvivorData = useCallback(async () => {
+  const loadSurvivorData = useCallback(async () => {
     try {
       setIsLoading(true);
       const supabase = await createSupabaseClient();
@@ -124,7 +125,7 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
         g => ({
           name: g.name,
           email: g.email,
-          phone: g.phone || undefined,
+          phone: g.phone || '',
           relationship: g.relationship || 'Guardian',
           priority: g.emergency_contact_priority ?? 99,
           is_notified: true, // Assume notified in emergency scenario
@@ -200,15 +201,23 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
 
       const availableTimeCapsules: EmergencyTimeCapsule[] = (
         timeCapsules || []
-      ).map(tc => ({
-        id: tc.id,
-        message_title: tc.message_title,
-        message_preview: tc.message_preview || undefined,
-        delivery_condition: tc.delivery_condition as 'ON_DATE' | 'ON_DEATH',
-        access_token: tc.access_token || '',
-        is_available: true,
-        created_at: tc.created_at,
-      }));
+      ).map(tc => {
+        const capsule: EmergencyTimeCapsule = {
+          id: tc.id,
+          message_title: tc.message_title,
+          delivery_condition: tc.delivery_condition as 'ON_DATE' | 'ON_DEATH',
+          access_token: tc.access_token || '',
+          is_available: true,
+          created_at: tc.created_at,
+        };
+
+        // Only add message_preview if it exists
+        if (tc.message_preview) {
+          capsule.message_preview = tc.message_preview;
+        }
+
+        return capsule;
+      });
 
       // Get guidance entries for survivor interface
       const { data: allGuidance } = await supabase
@@ -235,8 +244,8 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
       const survivorData: SurvivorInterfaceData = {
         user_info: {
           name: profile.full_name || 'Unknown',
-          memorial_message: profile.memorial_message || undefined,
-          profile_photo_url: profile.avatar_url || undefined,
+          ...(profile.memorial_message && { memorial_message: profile.memorial_message }),
+          ...(profile.avatar_url && { profile_photo_url: profile.avatar_url }),
         },
         available_resources: availableResources,
         emergency_contacts: emergencyContacts,
@@ -273,7 +282,11 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
     } finally {
       setIsLoading(false);
     }
-  }, [currentToken, isPublicAccess]);
+  }, [currentToken, isPublicAccess, createSupabaseClient]);
+
+  useEffect(() => {
+    loadSurvivorData();
+  }, [loadSurvivorData]);
 
   const submitAccessRequest = async () => {
     if (

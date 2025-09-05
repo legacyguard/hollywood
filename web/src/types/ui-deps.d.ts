@@ -1,3 +1,4 @@
+
 // Type declarations for missing UI dependencies
 
 declare module 'embla-carousel-react' {
@@ -19,8 +20,8 @@ declare module 'embla-carousel-react' {
   ];
 
   export default function useEmblaCarousel<T = HTMLElement>(
-    options?: Record<string, unknown>,
-    plugins?: unknown[]
+    options?: Record<string, any>,
+    plugins?: any[]
   ): UseEmblaCarouselType<T>;
 }
 

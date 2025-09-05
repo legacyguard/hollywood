@@ -67,9 +67,9 @@ export function parseVersion(versionString: string): ApiVersion {
 
   const [, major, minor, patch] = match;
   return {
-    major: parseInt(major, 10),
-    minor: parseInt(minor, 10),
-    patch: parseInt(patch, 10),
+    major: parseInt(major || '0', 10),
+    minor: parseInt(minor || '0', 10),
+    patch: parseInt(patch || '0', 10),
   };
 }
 
@@ -469,13 +469,13 @@ export class VersionedResponseTransformer {
 
     // Rename fields that changed between versions
     if ('userId' in transformed && !('user_id' in transformed)) {
-      transformed.user_id = transformed.userId;
-      delete transformed.userId;
+      transformed['user_id'] = transformed['userId'];
+      delete transformed['userId'];
     }
 
     // Remove fields that don't exist in v1
     if ('newFeature' in transformed) {
-      delete transformed.newFeature;
+      delete transformed['newFeature'];
     }
 
     // Transform nested objects recursively
@@ -534,9 +534,10 @@ export function createVersionedClient(
       const response = await baseClient.get(endpoint, { ...options, headers });
 
       // Check server version
-      const serverVersion = response.headers?.['x-api-version'];
+      const responseWithHeaders = response as { headers?: Record<string, string> };
+      const serverVersion = responseWithHeaders.headers?.['x-api-version'];
       if (serverVersion && !versionClient.checkServerVersion(serverVersion)) {
-        versionClient.handleVersionMismatch(version, serverVersion, response);
+        versionClient.handleVersionMismatch(version, serverVersion, response as Response);
       }
 
       return response;

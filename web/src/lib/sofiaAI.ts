@@ -1,3 +1,4 @@
+
 /**
  * Sofia AI Assistant
  * AI-powered will generation and optimization assistant
@@ -193,13 +194,14 @@ Return only the optimized text content, maintaining the same structure and all l
     terms: string[],
     language: LanguageCode
   ): string {
-    const languageNames = {
+    const languageNames: Partial<Record<LanguageCode, string>> = {
       en: 'English',
       cs: 'Czech',
       sk: 'Slovak',
       de: 'German',
       fr: 'French',
       es: 'Spanish',
+      pl: 'Polish',
     };
 
     return `You are Sofia, a legal assistant. Explain the following legal terms in simple ${languageNames[language] || 'English'} language:
@@ -428,7 +430,7 @@ Provide specific, actionable recommendations.`;
     return scoreMatch ? parseInt(scoreMatch[1]) : 75;
   }
 
-  private extractComplianceIssues(_response: string): unknown[] {
+  private extractComplianceIssues(_response: string): any[] {
     // Simple extraction of issues from text response
     // In production, this would be more sophisticated
     return [];

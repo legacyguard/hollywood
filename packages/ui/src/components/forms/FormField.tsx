@@ -1,3 +1,4 @@
+
 import React, { type ReactNode } from 'react';
 import {
   Input,
@@ -7,7 +8,7 @@ import {
   TextArea,
   type TextAreaProps,
 } from '../..';
-import { Paragraph, type ParagraphProps } from '../Typography';
+import { Paragraph } from '../Typography';
 import { AlertCircle, CheckCircle } from 'lucide-react-native';
 import { View } from 'tamagui';
 
@@ -45,7 +46,7 @@ export const FormField: React.FC<FormFieldProps> = ({
       {children}
 
       {hint && !errorMessage && !successMessage && (
-        <Paragraph {...({ size: 'sm', color: 'muted' } as ParagraphProps)}>
+        <Paragraph fontSize="$3" color="muted">
           {hint}
         </Paragraph>
       )}
@@ -53,9 +54,7 @@ export const FormField: React.FC<FormFieldProps> = ({
       {errorMessage && (
         <View flexDirection='row' alignItems='center' gap='$1'>
           <AlertCircle size={14} color='$error' />
-          <Paragraph
-            {...({ size: 'sm', color: 'danger' } as ParagraphProps)}
-          >
+          <Paragraph fontSize="$3" color="danger">
             {errorMessage}
           </Paragraph>
         </View>
@@ -64,9 +63,7 @@ export const FormField: React.FC<FormFieldProps> = ({
       {successMessage && !errorMessage && (
         <View flexDirection='row' alignItems='center' gap='$1'>
           <CheckCircle size={14} color='$success' />
-          <Paragraph
-            {...({ size: 'sm', color: 'success' } as ParagraphProps)}
-          >
+          <Paragraph fontSize="$3" color="success">
             {successMessage}
           </Paragraph>
         </View>

@@ -1,3 +1,4 @@
+
 export type DeliveryCondition = 'ON_DATE' | 'ON_DEATH';
 export type CapsuleStatus = 'CANCELLED' | 'DELIVERED' | 'FAILED' | 'PENDING';
 export type CapsuleFileType = 'audio' | 'video';

@@ -1,3 +1,4 @@
+
 /**
  * A/B Testing Onboarding Flow Variants
  * Tests different onboarding approaches for conversion optimization
@@ -31,7 +32,7 @@ interface OnboardingFlowProps {
 }
 
 interface OnboardingStep {
-  component: React.ComponentType<Record<string, unknown>>;
+  component: React.ComponentType<any>;
   description: string;
   id: string;
   title: string;
@@ -203,9 +204,7 @@ function getSteps(variant: string): OnboardingStep[] {
     },
   ];
 
-  return variant === 'variant_a'
-    ? (emotionFirstSteps as any)
-    : (controlSteps as any);
+  return variant === 'variant_a' ? emotionFirstSteps : controlSteps;
 }
 
 /**

@@ -1,3 +1,4 @@
+
 /**
  * Family Impact Statement Generator
  * Creates emotional, family-focused messaging for user actions

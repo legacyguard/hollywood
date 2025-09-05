@@ -1,3 +1,4 @@
+
 /**
  * Automated Compliance Checker and Legal Review System for LegacyGuard
  * Provides intelligent compliance monitoring and legal requirement validation

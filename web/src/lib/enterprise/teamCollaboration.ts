@@ -1,3 +1,4 @@
+
 /**
  * LegacyGuard Team Collaboration Service
  * Comprehensive team collaboration and shared workspaces for advisors,

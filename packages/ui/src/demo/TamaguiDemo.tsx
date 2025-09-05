@@ -1,3 +1,4 @@
+
 import React from 'react';
 import {
   Box,
@@ -31,7 +32,7 @@ export function TamaguiDemo() {
         {/* Typography Demo */}
         <Stack space='small'>
           <H1 color='primary'>LegacyGuard Design System</H1>
-          <Paragraph size="large" color="muted">
+          <Paragraph fontSize="$4" color="$gray10">
             Tamagui-based cross-platform komponenty pre web a mobile
           </Paragraph>
         </Stack>

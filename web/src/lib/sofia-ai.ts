@@ -1,3 +1,4 @@
+
 // Sofia AI Assistant - The heart of LegacyGuard
 // Provides intelligent, contextual guidance for users
 // Now uses secure server-side API to protect OpenAI API keys

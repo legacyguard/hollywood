@@ -1,3 +1,4 @@
+
 export interface StorageItem {
   category: string;
   data: unknown;

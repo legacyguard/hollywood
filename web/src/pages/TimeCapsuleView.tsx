@@ -1,3 +1,4 @@
+
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -62,21 +63,21 @@ export default function TimeCapsuleViewPage() {
         // Get signed URL for the media file
         const { data: signedUrlData } = await supabase.storage
           .from('time-capsules')
-          .createSignedUrl(capsule.storage_path, 3600); // 1 hour expiry
+          .createSignedUrl((capsule as any).storage_path || 'unknown', 3600); // 1 hour expiry
 
         let thumbnailUrl = null;
-        if (capsule.thumbnail_path) {
+        if ((capsule as any).thumbnail_path) {
           const { data: thumbnailData } = await supabase.storage
             .from('time-capsules')
-            .createSignedUrl(capsule.thumbnail_path, 3600);
+            .createSignedUrl((capsule as any).thumbnail_path, 3600);
           thumbnailUrl = thumbnailData?.signedUrl || null;
         }
 
         const accessData: TimeCapsuleAccess = {
-          capsule,
+          capsule: capsule as any,
           user_name: 'Anonymous', // We don't expose user names for privacy
           signed_url: signedUrlData?.signedUrl || '',
-          thumbnail_url: thumbnailUrl,
+          thumbnail_url: thumbnailUrl || undefined,
         };
 
         setAccessData(accessData);
@@ -312,7 +313,7 @@ export default function TimeCapsuleViewPage() {
                             onClick={handleFullscreen}
                             className='text-white hover:bg-white/20'
                           >
-                            <Icon name='maximize' className='w-4 h-4' />
+                            <Icon name='maximize-2' className='w-4 h-4' />
                           </Button>
                         </div>
                       </div>
@@ -322,7 +323,7 @@ export default function TimeCapsuleViewPage() {
                   <div className='bg-gradient-to-br from-purple-600 to-pink-600 p-12'>
                     <div className='text-center text-white'>
                       <div className='w-24 h-24 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6'>
-                        <Icon name='headphones' className='w-12 h-12' />
+                        <Icon name='mic' className='w-12 h-12' />
                       </div>
                       <h3 className='text-xl font-semibold mb-2'>
                         Audio Message
@@ -382,7 +383,7 @@ export default function TimeCapsuleViewPage() {
             <Card className='mt-6'>
               <CardHeader>
                 <CardTitle className='flex items-center gap-2'>
-                  <Icon name='message-square' className='w-5 h-5' />
+                  <Icon name='message-circle' className='w-5 h-5' />
                   Message
                 </CardTitle>
               </CardHeader>

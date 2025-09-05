@@ -3,19 +3,22 @@
 ## 🎯 Hlavné princípy
 
 ### 1. Domain-Driven Translation Structure
+
 Rozdelenie prekladov podľa funkčných domén aplikácie, nie podľa technických komponentov.
 
 ### 2. Optimálna veľkosť súborov
+
 - **Target: 100-500 riadkov** na JSON súbor
 - Maximálne 800 riadkov pre komplexné moduly
 - Minimálne 50 riadkov pre samostatné moduly
 
 ### 3. Hierarchická organizácia
+
 Trojúrovňová štruktúra: `domain.feature.element`
 
 ## 📁 Navrhovaná štruktúra súborov
 
-```
+```text
 public/locales/
 ├── {lang}/                         # Jazyk (en, cs, sk, de, ...)
 │   ├── common/                     # Zdieľané preklady
@@ -161,13 +164,15 @@ class TranslationOrganizer {
 
 ## 📊 Metriky a pravidlá
 
-### Kedy rozdeliť súbor:
+### Kedy rozdeliť súbor
+
 1. **Viac ako 500 riadkov**
 2. **Viac ako 3 úrovne vnorenia**
 3. **Nezávislé funkčné celky**
 4. **Rôzne loading stratégie**
 
-### Kedy zlúčiť súbory:
+### Kedy zlúčiť súbory
+
 1. **Menej ako 50 riadkov**
 2. **Silná funkčná súvislosť**
 3. **Vždy sa loadujú spolu**
@@ -176,6 +181,7 @@ class TranslationOrganizer {
 ## 🚀 Migračný plán
 
 ### Fáza 1: Analýza (1-2 dni)
+
 ```bash
 # Skript na analýzu existujúcich textov
 npm run i18n:analyze
@@ -188,6 +194,7 @@ npm run i18n:analyze
 ```
 
 ### Fáza 2: Extrahovanie (3-5 dní)
+
 ```bash
 # Automatické extrahovanie textov
 npm run i18n:extract --domain=dashboard
@@ -199,6 +206,7 @@ npm run i18n:review
 ```
 
 ### Fáza 3: Optimalizácia (2-3 dni)
+
 ```bash
 # Automatická reorganizácia
 npm run i18n:optimize
@@ -208,6 +216,7 @@ npm run i18n:validate
 ```
 
 ### Fáza 4: Implementácia (5-7 dní)
+
 ```typescript
 // Postupná náhrada v komponentoch
 // Before:
@@ -220,6 +229,7 @@ npm run i18n:validate
 ## 🛠️ Utility funkcie
 
 ### 1. Smart Namespace Loader
+
 ```typescript
 import { useSmartTranslation } from '@/lib/i18n/smart';
 
@@ -235,6 +245,7 @@ function DocumentsPage() {
 ```
 
 ### 2. Translation Scanner
+
 ```typescript
 // CLI nástroj na skenovanie chýbajúcich prekladov
 npx i18n-scan src/**/*.tsx
@@ -246,6 +257,7 @@ npx i18n-scan src/**/*.tsx
 ```
 
 ### 3. Auto-splitter
+
 ```typescript
 // Automatické rozdelenie veľkých súborov
 npx i18n-split public/locales/en/documents.json --max-size=500
@@ -259,6 +271,7 @@ npx i18n-split public/locales/en/documents.json --max-size=500
 ## 📈 Monitoring a údržba
 
 ### 1. Translation Coverage Dashboard
+
 ```typescript
 // Webový dashboard pre monitoring
 interface TranslationStats {
@@ -271,6 +284,7 @@ interface TranslationStats {
 ```
 
 ### 2. Automated Tests
+
 ```typescript
 describe('Translation Consistency', () => {
   it('should have same keys in all languages', () => {
@@ -304,6 +318,7 @@ describe('Translation Consistency', () => {
 ```
 
 ### 3. Version Control Strategy
+
 ```json
 // translations-version.json
 {
@@ -373,6 +388,7 @@ jobs:
 ## 📚 Príklady použitia
 
 ### Komponent s viacerými namespacami
+
 ```typescript
 function DocumentUpload() {
   const { t } = useTranslation([
@@ -397,6 +413,7 @@ function DocumentUpload() {
 ```
 
 ### Dynamické načítanie
+
 ```typescript
 function DocumentViewer({ type }: { type: string }) {
   const { t, loadNamespace } = useTranslation('documents/viewer');
@@ -412,6 +429,7 @@ function DocumentViewer({ type }: { type: string }) {
 ```
 
 Táto stratégia zabezpečí:
+
 - **Optimálnu veľkosť súborov** (100-500 riadkov)
 - **Logickú organizáciu** podľa domén
 - **Efektívne načítanie** (lazy loading)

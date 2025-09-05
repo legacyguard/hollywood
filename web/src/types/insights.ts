@@ -1,3 +1,4 @@
+
 /**
  * Quick Insights Engine Types
  * Interfaces for document analysis and value extraction

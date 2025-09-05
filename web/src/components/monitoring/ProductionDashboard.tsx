@@ -1,3 +1,4 @@
+
 /**
  * Production Monitoring Dashboard
  * Real-time application health and performance monitoring
@@ -13,16 +14,13 @@ import {
   AlertTriangle,
   CheckCircle,
   Clock,
-  Database,
   Globe,
   Server,
   Shield,
   TrendingUp,
-  Users,
-  Wifi,
   Zap,
 } from 'lucide-react';
-import { PerformanceMonitor } from '@/lib/monitoring/analytics';
+// Performance monitoring imports would go here
 
 interface HealthMetric {
   description: string;

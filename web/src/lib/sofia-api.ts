@@ -1,3 +1,4 @@
+
 // Sofia API Handler - Secure OpenAI Communication via Supabase Edge Function
 // This uses the secure server-side Edge Function to protect API keys
 
@@ -213,6 +214,10 @@ PREMIUM MODE:
       premium_generation: [
         'Unfortunately, premium features require connection to AI services. Please try again later.',
         'To generate personal messages, we need to configure AI services. For now, you can write your own messages.',
+      ],
+      knowledge_lookup: [
+        'Looking up information based on your query. Here are some relevant insights.',
+        'Based on the knowledge base, I found some relevant information for your situation.',
       ],
     };
 

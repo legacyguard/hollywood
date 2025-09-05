@@ -1,3 +1,4 @@
+
 /**
  * Family Protection Header Component
  * Enhanced dashboard header with family protection messaging and protection days counter
@@ -73,6 +74,7 @@ export function FamilyProtectionHeader({
 
       return () => clearInterval(timer);
     }
+    return undefined;
   }, [documents]);
 
   // Set time of day greeting

@@ -1,3 +1,4 @@
+
 import { toast } from 'sonner';
 
 // OCR configuration check
@@ -210,15 +211,15 @@ export class OcrService {
   }
 
   // Calculate confidence score from OCR response
-  private calculateConfidence(annotation: Record<string, unknown>): number {
+  private calculateConfidence(annotation: Record<string, any>): number {
     // Simple confidence calculation based on detected blocks
     if (!annotation.pages?.length) return 0;
 
     let totalConfidence = 0;
     let blockCount = 0;
 
-    annotation.pages.forEach((page: Record<string, unknown>) => {
-      page.blocks?.forEach((block: Record<string, unknown>) => {
+    annotation.pages.forEach((page: Record<string, any>) => {
+      page.blocks?.forEach((block: Record<string, any>) => {
         if (block?.confidence) {
           totalConfidence += (block.confidence as number) || 0;
           blockCount++;

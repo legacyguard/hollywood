@@ -1,3 +1,4 @@
+
 /**
  * Guardian Service Stub
  * Basic service to provide guardian functionality for will generation
@@ -41,6 +42,7 @@ export const guardianService = {
       is_will_executor: guardianRequest.is_will_executor || false,
       emergency_contact_priority:
         guardianRequest.emergency_contact_priority || 999,
+      is_active: true,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     };

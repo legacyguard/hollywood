@@ -1,3 +1,4 @@
+
 // Emotional Guidance & Legacy Message System
 // Provides emotional support and legacy message creation during will preparation
 

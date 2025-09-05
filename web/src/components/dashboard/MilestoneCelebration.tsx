@@ -1,3 +1,4 @@
+
 import type React from 'react';
 import type { SerenityMilestone } from '@/lib/path-of-serenity';
 

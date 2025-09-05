@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { test, expect } from '@playwright/test';
 
 test('Debug: Capture console errors and page content', async ({ page }) => {

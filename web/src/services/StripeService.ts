@@ -1,3 +1,4 @@
+
 /**
  * Stripe Payment Service for Web Application
  * Handles subscription management and payment processing

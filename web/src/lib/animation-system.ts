@@ -1,3 +1,4 @@
+
 // Animation System Foundation for LegacyGuard
 // Provides centralized animation configurations and utilities for Sofia's adaptive animations
 
@@ -320,7 +321,6 @@ export class AnimationSystem {
   static getOptimizedProps() {
     return {
       // Optimize for smooth animations
-      layoutId: undefined,
       style: {
         willChange: 'transform, opacity',
       },

@@ -1,3 +1,4 @@
+
 /**
  * Secure Key Manager for LegacyGuard
  * Implements WebCrypto with IndexedDB storage and proper key wrapping

@@ -1,3 +1,4 @@
+
 import type { SofiaMode } from '@legacyguard/logic';
 
 export interface SofiaFireflyProps {

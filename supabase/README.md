@@ -1,13 +1,16 @@
 # Supabase Setup Guide
 
 ## Prerequisites
+
 1. Create a Supabase account at [supabase.com](https://supabase.com)
 2. Create a new project
 3. Get your project URL and anon key from the project settings
 
 ## Environment Variables
+
 Add these to your `.env.local` file:
-```
+
+```bash
 VITE_SUPABASE_URL=your_project_url
 VITE_SUPABASE_ANON_KEY=your_anon_key
 ```
@@ -15,11 +18,13 @@ VITE_SUPABASE_ANON_KEY=your_anon_key
 ## Database Setup
 
 ### 1. Create Documents Table
+
 Run the SQL migration in `/supabase/migrations/001_create_documents_table.sql` in your Supabase SQL Editor:
 
 This creates:
+
 - `documents` table for storing document metadata
-- `user_id` field automatically populated via `auth.uid()` 
+- `user_id` field automatically populated via `auth.uid()`
 - Foreign key relationship to `auth.users` table
 - Row Level Security (RLS) policies for user data isolation
 - Indexes for performance
@@ -28,7 +33,9 @@ This creates:
 **Important**: The `user_id` is automatically set from the authenticated user's session. No need to pass it from the frontend.
 
 ### 2. Create Storage Bucket
+
 In Supabase Dashboard:
+
 1. Go to Storage section
 2. Create a new bucket called `user_documents`
 3. Set it as a **private** bucket (not public)
@@ -51,12 +58,14 @@ CREATE POLICY "Users can delete own files" ON storage.objects
 ## Features Implemented
 
 ### Document Upload
+
 - Files are encrypted client-side before upload
 - Encrypted files stored in Supabase Storage
 - Metadata saved to `documents` table
 - Automatic refresh of document list after upload
 
 ### Document List
+
 - Fetches documents from database
 - Falls back to localStorage if database unavailable
 - Real-time updates when new documents are uploaded
@@ -80,14 +89,17 @@ CREATE POLICY "Users can delete own files" ON storage.objects
 ## Troubleshooting
 
 ### "Storage bucket not configured"
+
 - Make sure you've created the `user_documents` bucket in Supabase Storage
 
 ### "Failed to save document metadata"
+
 - Check that the `documents` table exists
 - Verify RLS policies are enabled
 - Ensure user is authenticated
 
 ### Documents not showing
+
 - Check browser console for errors
 - Verify Supabase environment variables are set
 - Check network tab for API responses

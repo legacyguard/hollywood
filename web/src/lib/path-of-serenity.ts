@@ -1,3 +1,4 @@
+
 // Path of Serenity - Milestone System
 // Tracks user's journey toward family security and peace of mind
 
@@ -29,7 +30,7 @@ export interface SerenityMilestone {
     rewardTitle?: TextKey;
   };
   unlockCondition: {
-    details?: Record<string, unknown>;
+    details?: Record<string, any>;
     type:
       | 'categories_filled'
       | 'documents_uploaded'

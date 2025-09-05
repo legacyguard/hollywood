@@ -1,3 +1,4 @@
+
 /**
  * Database-Aligned Types
  * TypeScript interfaces that exactly match Supabase database schemas

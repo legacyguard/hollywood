@@ -1,3 +1,4 @@
+
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useAnimation } from 'framer-motion';
 import { useAuth } from '@clerk/clerk-react';
@@ -346,6 +347,7 @@ export const SofiaFirefly: React.FC<SofiaFireflyProps> = ({
       const timeout = setTimeout(startIdleAnimation, 100);
       return () => clearTimeout(timeout);
     }
+    return undefined;
   }, [effectiveIsVisible, isIdle, startIdleAnimation]);
 
   // Reset idle timer on user interaction

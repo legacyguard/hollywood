@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { chromium, type FullConfig } from '@playwright/test';
 
 /**

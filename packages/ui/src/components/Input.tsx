@@ -1,3 +1,4 @@
+
 import React from 'react';
 import {
   type GetProps,
@@ -16,7 +17,7 @@ import {
  * ```tsx
  * <Input
  *   placeholder="Enter your name"
- *   variant="default"
+ *   theme="default"
  *   size="medium"
  *   fullWidth
  * />
@@ -153,7 +154,7 @@ export const Input = React.memo(styled(TamaguiInput, {
  * ```tsx
  * <TextArea
  *   placeholder="Enter your message"
- *   variant="default"
+ *   theme="default"
  *   size="medium"
  * />
  * ```

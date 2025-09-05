@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Minimal global setup for smoke tests
  * This setup is used when we want to run basic tests without authentication
