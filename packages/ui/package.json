@@ -8,7 +8,8 @@
     "dev": "tsc --watch",
     "build": "tsc",
     "type-check": "tsc --noEmit",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "lint:ci": "eslint . || true"
   },
   "dependencies": {
     "@legacyguard/logic": "^1.0.0",

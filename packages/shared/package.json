@@ -7,7 +7,8 @@
   "scripts": {
     "dev": "tsc --watch",
     "build": "tsc",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "lint:ci": "echo 'No linting configured for shared package'"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.39.3",

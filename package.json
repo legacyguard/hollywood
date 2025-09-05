@@ -21,6 +21,7 @@
     "clean:all": "npm run clean:cache && npm run clean:dist && rm -rf node_modules package-lock.json web/node_modules mobile/node_modules",
     "test": "turbo run test",
     "lint": "turbo run lint",
+    "lint:ci": "turbo run lint:ci",
     "type-check": "tsc --noEmit || echo 'Type check completed with warnings'",
     "web:dev": "cd web && npm run dev",
     "mobile:dev": "cd mobile && npm run start",

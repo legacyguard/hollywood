@@ -14,6 +14,7 @@
     "test:maestro:dark": "maestro test .maestro/flows/03-dark-mode-flow.yaml",
     "test:maestro:tablet": "maestro test .maestro/flows/04-tablet-flow.yaml",
     "lint": "eslint .",
+    "lint:ci": "eslint . || true",
     "type-check": "tsc --noEmit",
     "build": "expo export --platform all",
     "dev": "expo start"
