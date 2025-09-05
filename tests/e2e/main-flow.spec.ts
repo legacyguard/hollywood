@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Main User Flow', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('http://localhost:5173');
+    await page.goto('http://localhost:8083');
   });
 
   test('landing page loads correctly', async ({ page }) => {
@@ -128,7 +128,7 @@ test.describe('Protected Routes', () => {
 
 test.describe('i18n Support', () => {
   test('language switcher is available', async ({ page }) => {
-    await page.goto('http://localhost:5173');
+    await page.goto('http://localhost:8083');
 
     // Look for language switcher (if implemented in UI)
     // This would need to be adjusted based on actual implementation
