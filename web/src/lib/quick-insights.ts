@@ -204,7 +204,7 @@ function calculateProtectionLevel(
   willData?: WillData
 ) {
   let score = 0;
-  const _maxScore = 100;
+  // const __maxScore = 100; // Unused
 
   // Document coverage (40 points)
   const docScore = Math.min(40, (documents.length / 10) * 40);
@@ -357,7 +357,7 @@ function generateDocumentSpecificInsights(
  */
 function generateNextActionInsights(
   documents: Document[],
-  familyMembers: number,
+  _familyMembers: number,
   emergencyContacts: number,
   willData?: WillData
 ): QuickInsight[] {
@@ -410,7 +410,7 @@ function generateNextActionInsights(
 
   // Document gaps
   const hasInsurance = documents.some(d => d.category === 'insurance');
-  const _hasMedical = documents.some(d => d.category === 'medical');
+  // const __hasMedical = documents.some(d => d.category === 'medical'); // Unused
 
   if (!hasInsurance && documents.length >= 3) {
     insights.push({

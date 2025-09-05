@@ -64,7 +64,7 @@ export type EnvConfig = z.infer<typeof envSchema>;
 class EnvironmentConfigManager {
   private static instance: EnvironmentConfigManager;
   private config: EnvConfig | null = null;
-  private validationErrors: null | z.ZodError = null;
+  private ___validationErrors: null | z.ZodError = null;
 
   private constructor() {
     this.validateAndLoadConfig();
@@ -104,7 +104,7 @@ class EnvironmentConfigManager {
       this.performSecurityChecks();
     } catch (error) {
       if (error instanceof z.ZodError) {
-        this.validationErrors = error;
+        this.___validationErrors = error;
         console.error(
           '❌ Environment configuration validation failed:',
           error.errors

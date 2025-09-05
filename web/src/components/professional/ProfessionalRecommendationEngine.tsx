@@ -4,7 +4,7 @@
  * AI-powered matching system for legal services
  */
 
-import React, { useEffect, useState } from 'react';
+import _React, { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   ArrowRight,

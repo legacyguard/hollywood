@@ -7,12 +7,12 @@ import type React from 'react';
 
 // Mock types for react-hook-form and zod
 type FieldValues = any;
-type UseFormProps<T> = any;
-type UseFormReturn<T> = any;
-type ZodSchema<T, D, O> = any;
+type UseFormProps<_T> = any;
+type UseFormReturn<_T> = any;
+type ZodSchema<_T, _D, _O> = any;
 type ZodTypeDef = any;
 
-const useForm = <T>(options: any): UseFormReturn<T> => ({
+const useForm = <T>(_options: any): UseFormReturn<T> => ({
   handleSubmit: (fn: any) => (e?: any) => {
     if (e) {
       e.preventDefault();
@@ -45,7 +45,7 @@ const useForm = <T>(options: any): UseFormReturn<T> => ({
   }),
 });
 
-const zodResolver = (schema: any) => (values: any) => ({
+const zodResolver = (_schema: any) => (values: any) => ({
   values,
   errors: {},
 });
@@ -60,7 +60,7 @@ interface UseZodFormOptions<TSchema extends ZodSchema<any, ZodTypeDef, any>>
 }
 
 // Enhanced form return type
-interface EnhancedFormReturn<TSchema extends ZodSchema<any, ZodTypeDef, any>>
+interface EnhancedFormReturn<_TSchema extends ZodSchema<any, ZodTypeDef, any>>
   extends UseFormReturn<any> {
   errors: UseFormReturn<any>['formState']['errors'];
   isDirty: boolean;

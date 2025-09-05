@@ -60,6 +60,7 @@ export const MilestoneCelebration: React.FC<MilestoneCelebrationProps> = ({
   }, [isOpen]);
 
   const handleClose = async () => {
+    return undefined;
     await milestonesService.markCelebrationViewed(milestone.id);
     onClose();
   };

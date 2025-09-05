@@ -386,7 +386,7 @@ export class DDoSProtection {
     return true;
   }
 
-  private isSuspicious(ip: string, userAgent: string): boolean {
+  private isSuspicious(_ip: string, userAgent: string): boolean {
     // Check for common bot patterns
     const botPatterns = [
       /bot/i,

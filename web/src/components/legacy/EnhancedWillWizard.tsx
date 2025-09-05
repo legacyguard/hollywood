@@ -50,9 +50,9 @@ export const EnhancedWillWizard: React.FC<EnhancedWillWizardProps> = ({
     setCurrentStep('country');
   };
 
-  const _handleBackToWillType = () => {
-    setCurrentStep('will_type');
-  };
+  // const __handleBackToWillType = () => { // Unused
+  // setCurrentStep('will_type');
+  // }; // Unused
 
   const handleBackToDraftChoice = () => {
     setCurrentStep('draft_choice');

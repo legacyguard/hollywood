@@ -100,7 +100,7 @@ export default function GuardiansEnhanced() {
 
   // Confirmation dialog state
   const [_isConfirmDialogOpen, _setIsConfirmDialogOpen] = useState(false);
-  const [guardianToDelete, setGuardianToDelete] = useState<null | ProfileData>(
+  const [_guardianToDelete, setGuardianToDelete] = useState<null | ProfileData>(
     null
   );
 
@@ -324,22 +324,22 @@ export default function GuardiansEnhanced() {
   };
 
   // Handle delete after confirmation
-  const _handleDeleteConfirm = async () => {
-    if (!guardianToDelete) return;
-
-    setGuardians(prev => prev.filter(g => g.id !== guardianToDelete.id));
-    toast.success(`${guardianToDelete.name} has been removed as a guardian`);
-
+  // const __handleDeleteConfirm = async () => { // Unused
+  // if (!guardianToDelete) return;
+  // 
+  // setGuardians(prev => prev.filter(g => g.id !== guardianToDelete.id));
+  // toast.success(`${guardianToDelete.name} has been removed as a guardian`);
+  // 
     // Close dialog and reset state
-    _setIsConfirmDialogOpen(false);
-    setGuardianToDelete(null);
-  };
+  // _setIsConfirmDialogOpen(false);
+  // setGuardianToDelete(null);
+  // }; // Unused
 
   // Handle delete cancellation
-  const _handleDeleteCancel = () => {
-    _setIsConfirmDialogOpen(false);
-    setGuardianToDelete(null);
-  };
+  // const __handleDeleteCancel = () => { // Unused
+  // _setIsConfirmDialogOpen(false);
+  // setGuardianToDelete(null);
+  // }; // Unused
 
   // Handle delete - using the delete confirmation flow
   const handleDelete = (profile: ProfileData) => {

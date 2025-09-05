@@ -78,6 +78,7 @@ export function EncryptionProvider({ children }: EncryptionProviderProps) {
             'Your encryption keys are due for rotation. Please rotate them soon for security.'
           );
         }
+    return undefined;
       };
 
       checkRotation();
@@ -375,6 +376,7 @@ export function useAutoUnlock() {
 
       return () => clearTimeout(timer);
     }
+    return undefined;
   }, [isInitialized, isUnlocked, showPasswordPrompt]);
 }
 

@@ -354,7 +354,7 @@ interface FamilyLegacyProjectManagementProps {
 
 export const FamilyLegacyProjectManagement: React.FC<
   FamilyLegacyProjectManagementProps
-> = ({ familyMembers = [], onProjectCreated, existingProjects = [] }) => {
+> = ({ familyMembers: _familyMembers = [], onProjectCreated, existingProjects = [] }) => {
   const [projects, setProjects] = useState<LegacyProject[]>(existingProjects);
   const [activeProject, setActiveProject] = useState<LegacyProject | null>(
     null
@@ -380,7 +380,7 @@ export const FamilyLegacyProjectManagement: React.FC<
     availability: 'full-time',
   };
 
-  const _allMembers = [currentUser, ...familyMembers];
+  // const __allMembers = [currentUser, ...familyMembers]; // Unused
 
   const createProjectFromTemplate = (template: ProjectTemplate) => {
     const newProject: LegacyProject = {

@@ -428,7 +428,7 @@ export class PDFGenerationService {
    * Get default PDF options based on jurisdiction
    */
   private getDefaultOptions(
-    jurisdiction: Jurisdiction,
+    _jurisdiction: Jurisdiction,
     language: LanguageCode
   ): PDFOptions {
     return {

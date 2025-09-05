@@ -234,10 +234,10 @@ export class WillGuardianIntegrationService {
     suggestedExecutor?: Guardian;
   }> {
     try {
-      const guardians = await this.getGuardiansForWillRoles(userId);
+      const _guardians = await this.getGuardiansForWillRoles(userId);
 
       // Sort executors by suitability
-      const sortedExecutors = guardians.potentialExecutors.sort((a, b) => {
+      const sortedExecutors = _guardians.potentialExecutors.sort((a: any, b: any) => {
         // Prioritize existing will executors, then lawyers, then financial advisors
         const aScore =
           (a.is_will_executor ? 3 : 0) +
@@ -251,8 +251,8 @@ export class WillGuardianIntegrationService {
       });
 
       // Sort child guardians by suitability
-      const sortedChildGuardians = guardians.potentialChildGuardians.sort(
-        (a, b) => {
+      const sortedChildGuardians = _guardians.potentialChildGuardians.sort(
+        (a: any, b: any) => {
           // Prioritize existing child guardians, then family members
           const aScore =
             (a.is_child_guardian ? 2 : 0) +
@@ -416,9 +416,9 @@ export class WillGuardianIntegrationService {
    */
   async notifyGuardiansOfWillExecution(userId: string): Promise<void> {
     try {
-      const guardians = await guardianService.getGuardians(userId);
-      const _willExecutors = guardians.filter(g => g.is_will_executor);
-      const _childGuardians = guardians.filter(g => g.is_child_guardian);
+  // Unused: const guardians = await guardianService.getGuardians(userId);
+  // const __willExecutors = guardians.filter(g => g.is_will_executor); // Unused
+  // const __childGuardians = guardians.filter(g => g.is_child_guardian); // Unused
 
       // This would trigger the emergency notification system
       // Will execution notification sent to ${willExecutors.length} executors and ${childGuardians.length} guardians

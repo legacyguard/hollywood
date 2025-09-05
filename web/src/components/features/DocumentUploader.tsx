@@ -37,7 +37,7 @@ export const DocumentUploader = () => {
   const [analysisProgress, setAnalysisProgress] = useState(0);
   const { userId } = useAuth();
   const createSupabaseClient = useSupabaseWithClerk();
-  const { isReady, encryptFile, isUnlocked } = useSecureEncryption();
+  const { isReady, encryptFile } = useSecureEncryption();
   const [showPasswordPrompt, setShowPasswordPrompt] = useState(false);
   const { celebrateUpload } = useFireflyCelebration();
   const personalityManager = usePersonalityManager();

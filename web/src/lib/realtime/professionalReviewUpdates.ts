@@ -384,7 +384,7 @@ class ProfessionalReviewRealtimeService {
    */
   async updateReviewProgress(
     documentId: string,
-    progress: number,
+    _progress: number,
     status?: string
   ): Promise<void> {
     try {

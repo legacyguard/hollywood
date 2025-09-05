@@ -808,7 +808,7 @@ export class APIEcosystemService {
   private webhooks: Map<string, WebhookEndpoint> = new Map();
   private clients: Map<string, APIClient> = new Map();
   private marketplace: IntegrationMarketplace | null = null;
-  private developerPortal: DeveloperPortal | null = null;
+  private ___developerPortal: DeveloperPortal | null = null;
 
   constructor() {
     this.initializeAPIEndpoints();
@@ -1191,7 +1191,7 @@ export class APIEcosystemService {
   }
 
   private setupDeveloperPortal(): void {
-    this.developerPortal = {
+    this.___developerPortal = {
       id: this.generateId(),
       name: 'LegacyGuard Developer Portal',
       domain: 'developers.legacyguard.com',

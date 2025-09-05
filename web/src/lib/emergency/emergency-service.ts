@@ -24,8 +24,8 @@ export class EmergencyService {
 
   private supabaseUrl: string;
   private supabaseServiceKey: string;
-  private baseUrl: string;
-  private isInitialized: boolean = false;
+  private ___baseUrl: string;
+  private ___isInitialized: boolean = false;
 
   constructor(
     supabaseUrl: string,
@@ -35,7 +35,7 @@ export class EmergencyService {
   ) {
     this.supabaseUrl = supabaseUrl;
     this.supabaseServiceKey = supabaseServiceKey;
-    this.baseUrl = baseUrl;
+    this.___baseUrl = baseUrl;
 
     // Initialize all service components
     this.detectionEngine = new EmergencyDetectionEngine(
@@ -113,7 +113,7 @@ export class EmergencyService {
         target_user_id: userId,
       });
 
-      this.isInitialized = true;
+      this.___isInitialized = true;
       return { success: true };
     } catch (error) {
       console.error('Error initializing emergency system:', error);
@@ -450,7 +450,7 @@ export class EmergencyService {
     const results = await this.testingSystem.runTestSuite();
 
     // Generate test report
-    const _report = await this.testingSystem.generateTestReport(results);
+  // const __report = await this.testingSystem.generateTestReport(results); // Unused
     // Test report generated: ${report}
 
     return results;

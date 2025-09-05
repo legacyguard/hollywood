@@ -99,63 +99,64 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
       document.head.appendChild(link);
 
       return () => {
+    return undefined;
         document.head.removeChild(link);
       };
     }
   }, [priority, src]);
 
   // Generate responsive srcSet for modern formats
-  const _generateSrcSet = useCallback((imageSrc: string) => {
-    if (!imageSrc.includes('.webp') && !imageSrc.includes('.avif')) {
-      return undefined; // Only generate srcSet for modern formats
-    }
-
-    const baseUrl = imageSrc.split('.')[0];
-    const extension = imageSrc.split('.').pop();
-
-    return [
-      `${baseUrl}-300w.${extension} 300w`,
-      `${baseUrl}-600w.${extension} 600w`,
-      `${baseUrl}-900w.${extension} 900w`,
-      `${baseUrl}-1200w.${extension} 1200w`,
-    ].join(', ');
-  }, []);
+  // const __generateSrcSet = useCallback((imageSrc: string) => { // Unused
+  // if (!imageSrc.includes('.webp') && !imageSrc.includes('.avif')) {
+  // return undefined; // Only generate srcSet for modern formats
+  // }
+  // 
+  // const baseUrl = imageSrc.split('.')[0];
+  // const extension = imageSrc.split('.').pop();
+  // 
+  // return [
+  // `${baseUrl}-300w.${extension} 300w`,
+  // `${baseUrl}-600w.${extension} 600w`,
+  // `${baseUrl}-900w.${extension} 900w`,
+  // `${baseUrl}-1200w.${extension} 1200w`,
+  // ].join(', ');
+  // }, []); // Unused
 
   // Convert image to WebP if supported
-  const _getOptimizedSrc = useCallback((imageSrc: string) => {
-    if (typeof window !== 'undefined' && 'createImageBitmap' in window) {
+  // const __getOptimizedSrc = useCallback((imageSrc: string) => { // Unused
+  // if (typeof window !== 'undefined' && 'createImageBitmap' in window) {
       // Check if WebP is supported
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      if (ctx) {
+  // const canvas = document.createElement('canvas');
+  // const ctx = canvas.getContext('2d');
+  // if (ctx) {
         // Try to create a WebP image
-        const img = new Image();
-        img.onload = () => {
-          canvas.width = img.width;
-          canvas.height = img.height;
-          ctx.drawImage(img, 0, 0);
-
+  // const img = new Image();
+  // img.onload = () => {
+  // canvas.width = img.width;
+  // canvas.height = img.height;
+  // ctx.drawImage(img, 0, 0);
+  // 
           // Convert to WebP if possible
-          try {
-            canvas.toBlob(
-              blob => {
-                if (blob) {
-                  const webpUrl = URL.createObjectURL(blob);
-                  setCurrentSrc(webpUrl);
-                }
-              },
-              'image/webp',
-              0.8
-            );
-          } catch (error) {
-            console.warn('WebP conversion failed:', error);
-          }
-        };
-        img.src = imageSrc;
-      }
-    }
-    return imageSrc;
-  }, []);
+  // try {
+  // canvas.toBlob(
+  // blob => {
+  // if (blob) {
+  // const webpUrl = URL.createObjectURL(blob);
+  // setCurrentSrc(webpUrl);
+  // }
+  // },
+  // 'image/webp',
+  // 0.8
+  // );
+  // } catch (error) {
+  // console.warn('WebP conversion failed:', error);
+  // }
+  // };
+  // img.src = imageSrc;
+  // }
+  // }
+  // return imageSrc;
+  // }, []); // Unused
 
   // Cleanup object URLs
   useEffect(() => {

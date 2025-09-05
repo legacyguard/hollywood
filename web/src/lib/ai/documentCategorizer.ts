@@ -934,7 +934,7 @@ export class DocumentCategorizer {
   }
 
   private extractMetadataBasedTags(
-    content: string,
+    _content: string,
     analysis?: DocumentAnalysisResult
   ): AutoTaggingResult['generatedTags'] {
     const tags: AutoTaggingResult['generatedTags'] = [];
@@ -1012,7 +1012,7 @@ export class DocumentCategorizer {
   }
 
   private updateLearningModel(
-    content: string,
+    _content: string,
     suggestion: CategorySuggestion
   ): void {
     // Simple learning implementation - in production would use more sophisticated ML

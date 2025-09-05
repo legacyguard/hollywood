@@ -1021,29 +1021,29 @@ export class TeamCollaborationService {
 
   private initializeCollaborationTemplates(): void {
     // Initialize workspace and document templates
-    const _templates = [
-      {
-        id: 'estate_planning_team',
-        name: 'Estate Planning Team',
-        type: 'professional',
-        defaultRoles: ['owner', 'advisor', 'contributor'],
-        requiredDocuments: ['will', 'trust', 'power_of_attorney'],
-      },
-      {
-        id: 'family_coordination',
-        name: 'Family Coordination',
-        type: 'family',
-        defaultRoles: ['owner', 'admin', 'contributor'],
-        communicationStyle: 'casual',
-      },
-      {
-        id: 'legal_review',
-        name: 'Legal Review Workspace',
-        type: 'legal',
-        approvalRequired: true,
-        retentionPeriod: 2555, // 7 years in days
-      },
-    ];
+  // const __templates = [ // Unused
+    // {
+    // id: 'estate_planning_team',
+    // name: 'Estate Planning Team',
+    // type: 'professional',
+    // defaultRoles: ['owner', 'advisor', 'contributor'],
+    // requiredDocuments: ['will', 'trust', 'power_of_attorney'],
+    // },
+    // {
+    // id: 'family_coordination',
+    // name: 'Family Coordination',
+    // type: 'family',
+    // defaultRoles: ['owner', 'admin', 'contributor'],
+    // communicationStyle: 'casual',
+    // },
+    // {
+    // id: 'legal_review',
+    // name: 'Legal Review Workspace',
+    // type: 'legal',
+    // approvalRequired: true,
+    // retentionPeriod: 2555, // 7 years in days
+    // },
+    // ]; // Unused
 
     // Initialize templates (implementation would be more comprehensive)
   }

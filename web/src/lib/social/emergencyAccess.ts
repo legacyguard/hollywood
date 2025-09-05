@@ -890,7 +890,7 @@ export class EmergencyAccessService {
   }
 
   private async verifyMultipleContacts(
-    emergencyId: string,
+    _emergencyId: string,
     data: Record<string, unknown>
   ): Promise<boolean> {
     // Check if required number of contacts have verified

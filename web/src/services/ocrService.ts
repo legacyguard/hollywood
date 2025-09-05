@@ -60,12 +60,12 @@ interface GoogleCloudVisionResponse {
 
 export class OCRService {
   private apiKey: string;
-  private projectId: string;
+  private ___projectId: string;
   private apiUrl: string;
 
   constructor() {
     // These will be set from environment variables
-    this.projectId =
+    this.___projectId =
       (import.meta as Record<string, any>).env
         .VITE_GOOGLE_CLOUD_PROJECT_ID || '';
     this.apiKey =

@@ -126,11 +126,11 @@ export interface ReviewFeedback {
 }
 
 export class ProfessionalReviewNetwork {
-  private apiKey: string;
-  private baseUrl: string = 'https://api.legacyguard.com/professional-network';
+  private ___apiKey: string;
+  private ___baseUrl: string = 'https://api.legacyguard.com/professional-network';
 
   constructor(apiKey: string) {
-    this.apiKey = apiKey;
+    this.___apiKey = apiKey;
   }
 
   /**
@@ -225,7 +225,7 @@ export class ProfessionalReviewNetwork {
    */
   async connectWithNotary(
     location: string,
-    willData?: WillData,
+    _willData?: WillData,
     preferences: {
       language?: string;
       serviceType?:
@@ -348,7 +348,7 @@ export class ProfessionalReviewNetwork {
   }
 
   private async findNotaries(
-    location: string,
+    _location: string,
     preferences: Record<string, any>
   ): Promise<ProfessionalProfile[]> {
     return this.searchProfessionals('notary', {

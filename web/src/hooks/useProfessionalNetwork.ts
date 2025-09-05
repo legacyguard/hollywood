@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react';
 // import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 // Mock react-query hooks
-const useQuery = ({ queryKey, queryFn, staleTime }: any) => ({
+const useQuery = ({ queryKey: _queryKey, queryFn: _queryFn, staleTime: _staleTime }: any) => ({
   data: null,
   isLoading: false,
   error: null,
@@ -21,9 +21,9 @@ const useMutation = ({ mutationFn, onSuccess }: any) => ({
 });
 
 const useQueryClient = () => ({
-  setQueryData: (key: any, data: any) => {},
-  getQueryData: (key: any) => null,
-  invalidateQueries: (key: any) => Promise.resolve(),
+  setQueryData: (_key: any, _data: any) => {},
+  getQueryData: (_key: any) => null,
+  invalidateQueries: (_key: any) => Promise.resolve(),
 });
 import type { WillData } from '@/types/will';
 import {

@@ -307,7 +307,7 @@ export class StripeService {
       return {
         plan: data.plan,
         status: data.status || 'active',
-        expiresAt: data.expires_at,
+        expiresAt: (data as any).expires_at || data.current_period_end,
       };
     } catch (error) {
       console.error('Error fetching subscription status:', error);

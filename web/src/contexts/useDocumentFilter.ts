@@ -1,6 +1,5 @@
 
 import { useContext } from 'react';
-import type { DocumentFilterContextType } from './documentFilterTypes';
 
 // This context is defined in DocumentFilterContext.tsx
 declare const DocumentFilterContext: any;

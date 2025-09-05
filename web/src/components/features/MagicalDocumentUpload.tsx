@@ -489,6 +489,7 @@ export const MagicalDropZone: React.FC<MagicalDropZoneProps> = ({
       const timeout = setTimeout(() => setShowFirefly(false), 300);
       return () => clearTimeout(timeout);
     }
+    return undefined;
   }, [isDragOver]);
 
   const getPersonalityStyles = () => {

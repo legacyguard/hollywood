@@ -30,7 +30,6 @@ import {
 import { runHealthCheck } from '@/lib/monitoring/healthCheck';
 import { getPerformanceMetrics } from '@/lib/monitoring/performance';
 import { captureError } from '@/lib/monitoring/sentry';
-import { analyticsService } from '@/lib/monitoring/analytics';
 
 interface SystemHealth {
   checks: Record<string, any>;

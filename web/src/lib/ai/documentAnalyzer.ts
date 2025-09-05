@@ -292,7 +292,7 @@ export class DocumentAnalyzer {
    * Generate insights about the document
    */
   async generateInsights(
-    content: string,
+    _content: string,
     keyInfo: KeyInformation,
     category: DocumentCategory
   ): Promise<DocumentInsight[]> {
@@ -757,7 +757,7 @@ export class DocumentAnalyzer {
     );
   }
 
-  private inferDocumentType(content: string, filename?: string): string {
+  private inferDocumentType(_content: string, filename?: string): string {
     if (filename) {
       const ext = filename.split('.').pop()?.toLowerCase();
       if (ext) {

@@ -267,7 +267,7 @@ const REVIEW_TIERS: ReviewTier[] = [
 export function ProfessionalReviewPricing({
   onSelectTier,
   selectedTier,
-  documentType = 'will',
+  documentType: _documentType = 'will',
   familyContext,
   className,
 }: ProfessionalReviewPricingProps) {

@@ -337,7 +337,7 @@ export const IntelligentDocumentUploader = () => {
             bundleSelection.newBundleName
           ) {
             // Create new bundle and link document
-            const newBundle = bundleSelection.suggestedNewBundle;
+  // const _newBundle = bundleSelection.suggestedNewBundle; // Unused
             // TODO: Implement bundle creation RPC function
             // const { error: createError } = await supabase.rpc('create_bundle_and_link_document', ...)
             const createError = null; // Placeholder

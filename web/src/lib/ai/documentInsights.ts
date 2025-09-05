@@ -7,7 +7,6 @@
  * including usage patterns, security metrics, and actionable recommendations.
  */
 
-import { supabase } from '@/integrations/supabase/client';
 import type { DocumentAnalysisResult } from './documentAnalyzer';
 
 export interface DocumentMetrics {

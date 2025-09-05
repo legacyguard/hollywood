@@ -828,7 +828,7 @@ export class FamilyService {
     }
   }
 
-  private async getFamilyInsightStats(
+  private async ___getFamilyInsightStats(
     _userId: string
   ): Promise<{ actionable: number; total: number }> {
     // Mock data since quick_insights table isn't in types yet
@@ -838,7 +838,7 @@ export class FamilyService {
     };
   }
 
-  private async getFamilyMilestoneStats(
+  private async ___getFamilyMilestoneStats(
     _userId: string
   ): Promise<{ completed: number; total: number }> {
     // Mock data since legacy_milestones table isn't in types yet
@@ -875,7 +875,7 @@ export class FamilyService {
         notifyMembers: Array.isArray(event.attendees) ? event.attendees : [],
         priority: event.priority || 'medium',
       }));
-      
+
       return mappedEvents as FamilyCalendarEvent[];
     } catch (error) {
       console.error('Failed to fetch calendar events:', error);
@@ -1083,7 +1083,7 @@ export class FamilyService {
         notifyMembers: Array.isArray(event.attendees) ? event.attendees : [],
         priority: event.priority || 'medium',
       }));
-      
+
       return mappedEvents as FamilyCalendarEvent[];
     } catch (error) {
       console.error('Failed to fetch calendar events:', error);

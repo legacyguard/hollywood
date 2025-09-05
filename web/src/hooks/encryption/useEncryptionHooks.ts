@@ -1,5 +1,5 @@
 
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useEncryptionContext } from './EncryptionProvider';
 
 // Re-export the hook from the provider for convenience

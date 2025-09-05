@@ -188,7 +188,7 @@ export const useAriaId = (prefix: string = 'aria') => {
  * Hook for roving tabindex pattern
  */
 export const useRovingTabIndex = (
-  items: any[],
+  _items: any[],
   activeIndex: number = 0
 ) => {
   const [currentIndex, setCurrentIndex] = useState(activeIndex);

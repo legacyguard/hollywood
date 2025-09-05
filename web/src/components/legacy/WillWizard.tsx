@@ -164,18 +164,18 @@ const STEPS = [
   { id: 'review', title: 'Final Review', description: 'Confirm and generate' },
 ];
 
-const _JURISDICTIONS = [
-  { value: 'US-General', label: 'United States (General)' },
-  { value: 'US-California', label: 'California, USA' },
-  { value: 'US-Texas', label: 'Texas, USA' },
-  { value: 'US-Florida', label: 'Florida, USA' },
-  { value: 'US-NewYork', label: 'New York, USA' },
-  { value: 'Slovakia', label: 'Slovakia' },
-  { value: 'Czech-Republic', label: 'Czech Republic' },
-  { value: 'UK', label: 'United Kingdom' },
-  { value: 'Canada', label: 'Canada' },
-  { value: 'Australia', label: 'Australia' },
-];
+  // const __JURISDICTIONS = [ // Unused
+//   { value: 'US-General', label: 'United States (General)' },
+//   { value: 'US-California', label: 'California, USA' },
+//   { value: 'US-Texas', label: 'Texas, USA' },
+//   { value: 'US-Florida', label: 'Florida, USA' },
+//   { value: 'US-NewYork', label: 'New York, USA' },
+//   { value: 'Slovakia', label: 'Slovakia' },
+//   { value: 'Czech-Republic', label: 'Czech Republic' },
+//   { value: 'UK', label: 'United Kingdom' },
+//   { value: 'Canada', label: 'Canada' },
+//   { value: 'Australia', label: 'Australia' },
+// ];
 
 const RELATIONSHIPS = [
   { value: 'spouse', label: 'Spouse/Partner' },

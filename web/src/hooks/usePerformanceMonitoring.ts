@@ -42,6 +42,7 @@ export const usePerformanceMonitoring = () => {
       observer.observe({ entryTypes: ['largest-contentful-paint'] });
       return () => observer.disconnect();
     }
+    return undefined;
   }, []);
 
   // Measure FID (First Input Delay)
@@ -62,6 +63,7 @@ export const usePerformanceMonitoring = () => {
       observer.observe({ entryTypes: ['first-input'] });
       return () => observer.disconnect();
     }
+    return undefined;
   }, []);
 
   // Measure CLS (Cumulative Layout Shift)
@@ -80,6 +82,7 @@ export const usePerformanceMonitoring = () => {
       observer.observe({ entryTypes: ['layout-shift'] });
       return () => observer.disconnect();
     }
+    return undefined;
   }, []);
 
   // Measure FCP (First Contentful Paint)
@@ -96,6 +99,7 @@ export const usePerformanceMonitoring = () => {
       observer.observe({ entryTypes: ['paint'] });
       return () => observer.disconnect();
     }
+    return undefined;
   }, []);
 
   // Measure TTFB (Time to First Byte)
@@ -117,6 +121,7 @@ export const usePerformanceMonitoring = () => {
       observer.observe({ entryTypes: ['navigation'] });
       return () => observer.disconnect();
     }
+    return undefined;
   }, []);
 
   // Generate performance insights and recommendations

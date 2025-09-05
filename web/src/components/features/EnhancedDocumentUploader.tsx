@@ -1,5 +1,5 @@
 
-import React, { useCallback, useState } from 'react';
+import _React, { useCallback, useState } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';

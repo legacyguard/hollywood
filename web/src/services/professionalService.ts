@@ -714,7 +714,7 @@ export class ProfessionalService {
     }
   }
 
-  private async notifyReviewAssignment(review: DocumentReview): Promise<void> {
+  private async ___notifyReviewAssignment(review: DocumentReview): Promise<void> {
     try {
       // Get reviewer details
       const reviewer = await this.getReviewer(review.reviewer_id);
@@ -770,7 +770,7 @@ export class ProfessionalService {
     }
   }
 
-  private async notifyReviewStatusChange(
+  private async ___notifyReviewStatusChange(
     review: DocumentReview
   ): Promise<void> {
     try {

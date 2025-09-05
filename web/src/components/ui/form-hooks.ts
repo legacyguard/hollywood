@@ -8,9 +8,9 @@ import * as React from 'react';
 
 // Mock types for react-hook-form
 type FieldValues = any;
-type FieldPath<T> = string;
+type FieldPath<_T> = string;
 const useFormContext = () => ({
-  getFieldState: (name: string, formState: any) => ({
+  getFieldState: (_name: string, _formState: any) => ({
     invalid: false,
     isDirty: false,
     isTouched: false,

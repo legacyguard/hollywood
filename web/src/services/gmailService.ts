@@ -618,7 +618,7 @@ export class GmailService {
    */
   private generateInsights(
     type: DocumentType,
-    content: string,
+    _content: string,
     metadata: { date: string }
   ): string[] {
     const insights: string[] = [];

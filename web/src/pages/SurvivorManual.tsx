@@ -380,8 +380,8 @@ export default function SurvivorManualPage() {
     {} as Record<ManualEntryType, FamilyGuidanceEntry[]>
   );
 
-  const _getTypeConfig = (type: ManualEntryType) =>
-    ENTRY_TYPES.find(t => t.value === type) || ENTRY_TYPES[0];
+  // const __getTypeConfig = (type: ManualEntryType) => // Unused
+    ENTRY_TYPES[0];
 
   if (isLoading) {
     return (

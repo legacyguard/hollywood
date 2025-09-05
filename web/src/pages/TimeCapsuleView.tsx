@@ -21,7 +21,7 @@ export default function TimeCapsuleViewPage() {
   const [hasStarted, setHasStarted] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [_volume, setVolume] = useState(1);
+  const [_volume, _setVolume] = useState(1);
   const [showControls, setShowControls] = useState(true);
 
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -111,20 +111,20 @@ export default function TimeCapsuleViewPage() {
     }
   };
 
-  const _handleSeek = (time: number) => {
-    const media = videoRef.current || audioRef.current;
-    if (media) {
-      media.currentTime = time;
-    }
-  };
+  // const __handleSeek = (time: number) => { // Unused
+  // const media = videoRef.current || audioRef.current;
+  // if (media) {
+  // media.currentTime = time;
+  // }
+  // }; // Unused
 
-  const _handleVolumeChange = (newVolume: number) => {
-    setVolume(newVolume);
-    const media = videoRef.current || audioRef.current;
-    if (media) {
-      media.volume = newVolume;
-    }
-  };
+  // const __handleVolumeChange = (newVolume: number) => { // Unused
+  // setVolume(newVolume);
+  // const media = videoRef.current || audioRef.current;
+  // if (media) {
+  // media.volume = newVolume;
+  // }
+  // }; // Unused
 
   const togglePlayPause = () => {
     const media = videoRef.current || audioRef.current;

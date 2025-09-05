@@ -552,7 +552,7 @@ class FamilyTimelineService {
    * Auto-detect significant events from documents
    */
   async detectEventsFromDocuments(
-    timelineId: string,
+    _timelineId: string,
     documentIds: string[]
   ): Promise<TimelineEvent[]> {
     const detectedEvents: TimelineEvent[] = [];
@@ -665,7 +665,7 @@ class FamilyTimelineService {
   }
 
   private async updateRelationships(
-    timeline: FamilyTimeline,
+    _timeline: FamilyTimeline,
     event: TimelineEvent
   ): Promise<void> {
     // Update family relationships based on event type

@@ -571,7 +571,7 @@ class RealInsightsService {
     return { immediate, potential };
   }
 
-  private async generateRecommendations(document: any, extractedValue: any) {
+  private async generateRecommendations(_document: any, extractedValue: any) {
     const recommendations = [];
 
     if (extractedValue.missingInfo.length > 0) {

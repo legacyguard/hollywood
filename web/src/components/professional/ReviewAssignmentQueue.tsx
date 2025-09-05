@@ -4,7 +4,7 @@
  * Smart assignment of legal reviews to professional reviewers
  */
 
-import React, { useEffect, useState } from 'react';
+import _React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   AlertTriangle,

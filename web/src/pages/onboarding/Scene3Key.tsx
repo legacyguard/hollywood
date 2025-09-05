@@ -30,6 +30,7 @@ export default function Scene3Key({
       const timer = setTimeout(() => setIsEngraving(false), 800);
       return () => clearTimeout(timer);
     }
+    return undefined;
   }, [name]);
 
   return (

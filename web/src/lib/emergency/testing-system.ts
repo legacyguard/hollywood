@@ -404,7 +404,7 @@ export class EmergencyTestingSystem {
     const stepResults: StepResult[] = [];
     let testUserId: null | string = null;
     let testGuardianId: null | string = null;
-    let _testDocuments: string[] = [];
+  // let __testDocuments: string[] = []; // Unused
 
     try {
       // Setup phase
@@ -423,7 +423,7 @@ export class EmergencyTestingSystem {
           } else if (setupStep.action === 'create_guardian') {
             testGuardianId = result.guardianId;
           } else if (setupStep.action === 'create_documents') {
-            _testDocuments = result.documentIds || [];
+            // __testDocuments = result.documentIds || [];
           }
 
           stepResults.push({

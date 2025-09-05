@@ -4,7 +4,7 @@
  * Real-time tracking of referral commissions for professional network
  */
 
-import React, { useState } from 'react';
+import _React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   AlertCircle,

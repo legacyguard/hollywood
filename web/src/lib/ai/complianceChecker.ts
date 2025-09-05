@@ -222,7 +222,7 @@ export type LegalIssueCategory =
   | 'tax_implication';
 
 class ComplianceCheckerService {
-  private readonly COMPLIANCE_VERSION = '1.0';
+  private readonly ___COMPLIANCE_VERSION = '1.0';
   private complianceRules: Map<string, ComplianceRule> = new Map();
   private activeChecks: Map<string, ComplianceCheck[]> = new Map();
 
@@ -555,7 +555,7 @@ class ComplianceCheckerService {
    */
   private async checkValidationStep(
     content: string,
-    metadata: Record<string, unknown>,
+    _metadata: Record<string, unknown>,
     step: ValidationStep,
     rule: ComplianceRule
   ): Promise<ComplianceFinding | null> {
@@ -803,7 +803,7 @@ class ComplianceCheckerService {
   }
 
   private async generateRemediationSteps(
-    step: ValidationStep,
+    _step: ValidationStep,
     rule: ComplianceRule
   ): Promise<RemediationStep[]> {
     return [

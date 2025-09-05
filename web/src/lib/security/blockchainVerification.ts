@@ -68,7 +68,7 @@ export interface MerkleTree {
 class BlockchainVerificationService {
   private readonly BLOCKCHAIN_VERSION = 1;
   private readonly HASH_ALGORITHM = 'sha256';
-  private readonly DIFFICULTY = 4; // Number of leading zeros for proof of work
+  private readonly ___DIFFICULTY = 4; // Number of leading zeros for proof of work
 
   /**
    * Create a new blockchain entry
@@ -322,7 +322,7 @@ class BlockchainVerificationService {
   /**
    * Verify Merkle proof
    */
-  private verifyMerkleProof(
+  private ___verifyMerkleProof(
     leaf: string,
     proof: string[],
     root: string

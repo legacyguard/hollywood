@@ -1,5 +1,4 @@
 
-import React from 'react';
 import { PerformanceDashboard } from '@/components/performance/PerformanceDashboard';
 
 export default function PerformancePage() {

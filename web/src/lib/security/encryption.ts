@@ -339,7 +339,7 @@ export function useEncryptedState<T>(
 
 export function EncryptParams(...paramIndices: number[]) {
   return function (
-    target: unknown,
+    _target: unknown,
     _propertyKey: string,
     descriptor: PropertyDescriptor
   ) {
@@ -361,7 +361,7 @@ export function EncryptParams(...paramIndices: number[]) {
 }
 
 export function EncryptResult(
-  target: unknown,
+  _target: unknown,
   _propertyKey: string,
   descriptor: PropertyDescriptor
 ) {

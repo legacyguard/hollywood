@@ -160,6 +160,7 @@ export const FeatureAnnouncement: React.FC<FeatureAnnouncementProps> = ({
       return () => clearInterval(timer);
     }
   }, [hasInteracted, newFeatures.length]);
+    return undefined;
 
   const currentFeature = newFeatures[currentSlide];
 

@@ -164,7 +164,7 @@ class RealMilestonesService {
     event: MilestoneTriggerEvent
   ): Promise<LegacyMilestone[]> {
     try {
-      // console.log(`Checking milestones for event: ${event.type} for user: ${event.user_id}`);
+      // console.log(`Checking milestones for event: ${event.type} for user: ${event.userId}`);
 
       const milestones = await this.getUserMilestones(event.userId);
       const completedMilestones: LegacyMilestone[] = [];
@@ -587,7 +587,7 @@ class RealMilestonesService {
 
       case 'protection_percentage': {
         const protectionLevel = await this.calculateUserProtectionLevel(
-          event.user_id
+          event.userId
         );
         updatedMilestone.criteria.currentValue = protectionLevel;
         updatedMilestone.progress.percentage = Math.min(
@@ -835,7 +835,7 @@ class RealMilestonesService {
   }
 
   private async generateRecommendations(
-    userId: string,
+    _userId: string,
     milestones: LegacyMilestone[]
   ) {
     const incompleteMillestones = milestones.filter(

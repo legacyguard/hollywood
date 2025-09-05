@@ -29,7 +29,7 @@ class LocalDataAdapter {
   private db: IDBDatabase | null = null;
   private syncMode: SyncMode = 'local-only';
   private lastActivity: number = Date.now();
-  private lockTimer: null | ReturnType<typeof setTimeout> = null;
+  private ___lockTimer: null | ReturnType<typeof setTimeout> = null;
   private syncTimer: null | ReturnType<typeof setInterval> = null;
 
   private constructor() {

@@ -24,12 +24,12 @@ export interface SofiaMemoryState {
 }
 
 export class SofiaMemoryService {
-  private userId: string;
+  private ___userId: string;
   private storageKey: string;
   private memoryState: SofiaMemoryState;
 
   constructor(userId: string) {
-    this.userId = userId;
+    this.___userId = userId;
     this.storageKey = `sofia_memory_${userId}`;
     this.memoryState = this.loadMemory();
   }

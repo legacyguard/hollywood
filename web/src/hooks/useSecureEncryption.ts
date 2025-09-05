@@ -27,7 +27,8 @@ interface EncryptionResult {
   version: string;
 }
 
-interface FileEncryptionResult {
+// @ts-ignore - Unused interface
+interface _FileEncryptionResult {
   encryptedData: ArrayBuffer;
   encryptedFileKey: ArrayBuffer;
   iv: Uint8Array;
@@ -237,7 +238,7 @@ export const useSecureEncryption = () => {
     async (
       encryptedData: ArrayBuffer,
       iv: Uint8Array,
-      version?: string
+      _version?: string // @ts-ignore
     ): Promise<ArrayBuffer> => {
       if (!state.isUnlocked) {
         throw new SecureKeyError('Keys not unlocked', 'KEYS_LOCKED');
@@ -323,7 +324,7 @@ export const useSecureEncryption = () => {
     async (
       encryptedBlob: Blob,
       ivString: string,
-      version?: string
+      _version?: string
     ): Promise<ArrayBuffer> => {
       if (!state.isUnlocked) {
         throw new SecureKeyError('Keys not unlocked', 'KEYS_LOCKED');

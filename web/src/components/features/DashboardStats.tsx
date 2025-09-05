@@ -1,5 +1,5 @@
 
-import React, { useCallback, useEffect, useState } from 'react';
+import _React, { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { KPICard, type KPICardProps } from '@/components/ui/kpi-card';
 import { useSupabaseWithClerk } from '@/integrations/supabase/client';

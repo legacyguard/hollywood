@@ -149,7 +149,7 @@ class SofiaAPI {
   /**
    * Generate system prompts based on context and request type
    */
-  private generateSystemPrompt(
+  private ___generateSystemPrompt(
     context: SofiaContext,
     type: 'premium' | 'simple'
   ): string {

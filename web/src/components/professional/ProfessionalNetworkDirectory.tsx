@@ -4,7 +4,7 @@
  * Comprehensive directory of verified legal professionals
  */
 
-import React, { useState } from 'react';
+import _React, { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   Award,
@@ -287,48 +287,48 @@ const SPECIALIZATIONS = [
   'Healthcare Directives',
 ];
 
-const _STATES = [
-  'California',
-  'New York',
-  'Texas',
-  'Florida',
-  'Illinois',
-  'Pennsylvania',
-  'Ohio',
-  'Georgia',
-  'North Carolina',
-  'Michigan',
-  'New Jersey',
-  'Virginia',
-  'Washington',
-  'Arizona',
-  'Massachusetts',
-  'Tennessee',
-  'Indiana',
-  'Missouri',
-  'Maryland',
-  'Wisconsin',
-  'Colorado',
-  'Minnesota',
-  'South Carolina',
-  'Alabama',
-  'Louisiana',
-  'Kentucky',
-  'Oregon',
-  'Oklahoma',
-  'Connecticut',
-  'Utah',
-];
+  // const __STATES = [ // Unused
+//   'California',
+//   'New York',
+//   'Texas',
+//   'Florida',
+//   'Illinois',
+//   'Pennsylvania',
+//   'Ohio',
+//   'Georgia',
+//   'North Carolina',
+//   'Michigan',
+//   'New Jersey',
+//   'Virginia',
+//   'Washington',
+//   'Arizona',
+//   'Massachusetts',
+//   'Tennessee',
+//   'Indiana',
+//   'Missouri',
+//   'Maryland',
+//   'Wisconsin',
+//   'Colorado',
+//   'Minnesota',
+//   'South Carolina',
+//   'Alabama',
+//   'Louisiana',
+//   'Kentucky',
+//   'Oregon',
+//   'Oklahoma',
+//   'Connecticut',
+//   'Utah',
+// ];
 
-const _LANGUAGES = [
-  'English',
-  'Spanish',
-  'Mandarin',
-  'French',
-  'German',
-  'Portuguese',
-  'Italian',
-];
+  // const __LANGUAGES = [ // Unused
+//   'English',
+//   'Spanish',
+//   'Mandarin',
+//   'French',
+//   'German',
+//   'Portuguese',
+//   'Italian',
+// ];
 
 export function ProfessionalNetworkDirectory({
   onSelectProfessional: _onSelectProfessional,

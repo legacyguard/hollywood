@@ -246,7 +246,7 @@ export class ProfessionalTrustIntegration {
    * Gets reason for trust seal upgrade
    */
   private static getUpgradeReason(
-    fromLevel: TrustSealLevel,
+    _fromLevel: TrustSealLevel,
     toLevel: TrustSealLevel,
     review: ProfessionalReview
   ): string {

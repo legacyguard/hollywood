@@ -620,7 +620,7 @@ export class WillValidationService {
    * Validate legal compliance
    */
   private async validateLegalCompliance(
-    userData: WillUserData,
+    _userData: WillUserData,
     config: WillJurisdictionConfig
   ) {
     const errors: ValidationError[] = [];
@@ -787,7 +787,7 @@ export class WillValidationService {
   }
 
   private generateSuggestedImprovements(
-    userData: WillUserData,
+    _userData: WillUserData,
     errors: ValidationError[],
     warnings: ValidationError[]
   ): string[] {

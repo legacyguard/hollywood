@@ -33,6 +33,7 @@ export function useBreakpoint(): {
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
+    return undefined;
   }, []);
 
   const getCurrentBreakpoint = (): Breakpoint | null => {
@@ -246,6 +247,7 @@ export function useMobilePerformance() {
           (max, entry) => Math.max(max, entry.duration),
           0
         );
+    return undefined;
         setPerformance(prev => ({ ...prev, renderTime }));
       });
 

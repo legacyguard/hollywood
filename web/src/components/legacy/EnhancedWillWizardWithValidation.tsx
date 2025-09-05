@@ -191,12 +191,12 @@ export const EnhancedWillWizardWithValidation: React.FC<
     }
   }, [currentStep, onBack]);
 
-  const _goToStep = useCallback((stepId: string) => {
-    const stepIndex = STEPS.findIndex(step => step.id === stepId);
-    if (stepIndex !== -1) {
-      setCurrentStep(stepIndex);
-    }
-  }, []);
+  // const __goToStep = useCallback((stepId: string) => { // Unused
+  // const stepIndex = STEPS.findIndex(step => step.id === stepId);
+  // if (stepIndex !== -1) {
+  // setCurrentStep(stepIndex);
+  // }
+  // }, []);
 
   const addBeneficiary = useCallback(() => {
     const newBeneficiary = {

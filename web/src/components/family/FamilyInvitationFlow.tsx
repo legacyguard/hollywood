@@ -4,7 +4,7 @@
  * Multi-step flow for inviting family members with emotional messaging
  */
 
-import React, { useState } from 'react';
+import _React, { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   AlertCircle,

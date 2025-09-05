@@ -1,5 +1,5 @@
 
-import React, { useCallback, useEffect, useState } from 'react';
+import _React, { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { useSupabaseWithClerk } from '@/integrations/supabase/client';
 import { Card } from '@/components/ui/card';

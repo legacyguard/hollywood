@@ -1065,7 +1065,7 @@ export class MultiLangGenerator {
     // Handle conditional blocks {#if condition}...{/if}
     processed = processed.replace(
       /\{\{#if\s+(\w+(?:\.\w+)*)\}\}([\s\S]*?)\{\{\/if\}\}/g,
-      (match, path, content) => {
+      (_match, path, content) => {
         const value = this.getNestedValue(data, path);
         return value ? content : '';
       }
@@ -1074,7 +1074,7 @@ export class MultiLangGenerator {
     // Handle each blocks {#each array}...{/each} (simplified)
     processed = processed.replace(
       /\{\{#each\s+(\w+)\}\}([\s\S]*?)\{\{\/each\}\}/g,
-      (match, arrayPath, itemTemplate) => {
+      (_match, arrayPath, itemTemplate) => {
         const array = this.getNestedValue(data, arrayPath);
         if (!Array.isArray(array)) return '';
 

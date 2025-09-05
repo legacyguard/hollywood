@@ -1087,9 +1087,9 @@ export class WhiteLabelSolutionsService {
       throw new Error(`Partner not found: ${partnerId}`);
     }
 
-    const _deployment = Array.from(this.deployments.values()).find(
-      d => d.partnerId === partnerId
-    );
+  // const __deployment = Array.from(this.deployments.values()).find( // Unused
+    // d => d.partnerId === partnerId
+    // ); // Unused
 
     const healthCheck: PartnerHealthCheck = {
       partnerId,

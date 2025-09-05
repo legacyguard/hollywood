@@ -45,7 +45,7 @@ export class SofiaProactiveService {
   private shownInterventions: Set<string> = new Set();
   private idleTimer: null | number = null;
   private activityTrackers: Map<string, () => void> = new Map();
-  private interventionCallback?: (intervention: ProactiveIntervention) => void;
+  private ___interventionCallback?: (intervention: ProactiveIntervention) => void;
 
   constructor(userId: string) {
     this.userId = userId;
@@ -76,7 +76,7 @@ export class SofiaProactiveService {
   ): void {
     this.stopMonitoring(); // Clean up any existing monitoring
 
-    this.interventionCallback = callback;
+    this.___interventionCallback = callback;
     this.activityState = {
       ...this.initializeActivityState(),
       currentPage: page,

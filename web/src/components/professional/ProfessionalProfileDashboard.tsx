@@ -4,7 +4,7 @@
  * Attorney credential verification and profile management
  */
 
-import React, { useEffect, useState } from 'react';
+import _React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   AlertCircle,

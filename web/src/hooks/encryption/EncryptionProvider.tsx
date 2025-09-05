@@ -1,5 +1,5 @@
 
-import React, { createContext, type ReactNode, useContext } from 'react';
+import _React, { createContext, type ReactNode, useContext } from 'react';
 import { useEncryption } from '../useEncryption';
 
 interface EncryptionContextValue {

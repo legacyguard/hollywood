@@ -16,18 +16,18 @@ interface EmailTemplateData {
   verificationUrl: string;
 }
 
-interface _NotificationChannel {
-  config?: Record<string, any>;
-  enabled: boolean;
-  type: 'email' | 'push' | 'sms';
-}
+// Unused: interface _NotificationChannel {
+//   config?: Record<string, any>;
+//   enabled: boolean;
+//   type: 'email' | 'push' | 'sms';
+// }
 
 export class GuardianNotificationService {
   private supabaseUrl: string;
   private supabaseServiceKey: string;
   private baseUrl: string;
-  private emailService: any; // This would be configured based on your email provider
-  private smsService: any; // This would be configured based on your SMS provider
+  private ___emailService: any; // This would be configured based on your email provider
+  private ___smsService: any; // This would be configured based on your SMS provider
 
   constructor(
     supabaseUrl: string,
@@ -39,8 +39,8 @@ export class GuardianNotificationService {
     this.supabaseUrl = supabaseUrl;
     this.supabaseServiceKey = supabaseServiceKey;
     this.baseUrl = baseUrl;
-    this.emailService = emailConfig;
-    this.smsService = smsConfig;
+    this.___emailService = emailConfig;
+    this.___smsService = smsConfig;
   }
 
   private getServiceClient() {
@@ -291,7 +291,7 @@ export class GuardianNotificationService {
   private async sendEmailNotification(
     email: string,
     templateData: EmailTemplateData,
-    triggerType: string,
+    _triggerType: string,
     reminderType?: string
   ): Promise<{ error?: string; success: boolean }> {
     try {
@@ -302,14 +302,14 @@ export class GuardianNotificationService {
         ? `REMINDER: Emergency Activation Request - ${templateData.userName}`
         : `Emergency Activation Request - ${templateData.userName}`;
 
-      const _emailBody = this.generateEmailTemplate(
-        templateData,
-        triggerType,
-        reminderType
-      );
+  // const __emailBody = this.generateEmailTemplate( // Unused
+      // templateData,
+      // triggerType,
+      // reminderType
+      // ); // Unused
 
       // Placeholder for actual email sending
-      // await this.emailService.send({
+      // await this._emailService.send({
       //   to: email,
       //   subject,
       //   html: emailBody,
@@ -335,7 +335,7 @@ export class GuardianNotificationService {
       const message = `URGENT: Emergency activation request for ${templateData.userName}. Please check your email and respond within ${templateData.expiresAt}. Visit: ${templateData.verificationUrl}`;
 
       // Placeholder for actual SMS sending
-      // await this.smsService.send({
+      // await this._smsService.send({
       //   to: phoneNumber,
       //   message,
       // });
@@ -352,9 +352,9 @@ export class GuardianNotificationService {
     }
   }
 
-  private generateEmailTemplate(
+  private __generateEmailTemplate(
     data: EmailTemplateData,
-    triggerType: string,
+    _triggerType: string,
     reminderType?: string
   ): string {
     const reminderText = reminderType

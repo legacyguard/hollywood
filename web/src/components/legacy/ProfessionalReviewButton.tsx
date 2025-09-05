@@ -80,7 +80,7 @@ export function ProfessionalReviewButton({
   onReviewRequested,
   className,
 }: ProfessionalReviewButtonProps) {
-  const { variant: abTestVariant, trackConversion } = useABTest(
+  const { variant: _abTestVariant, trackConversion } = useABTest(
     'professional_review_cta_v1'
   );
   const {

@@ -97,7 +97,7 @@ export const PerformanceMonitor: React.FC = () => {
 
             // Report memory usage if available
             if (metrics.memory) {
-              const memoryUsage =
+  // const _memoryUsage = // Unused
                 (metrics.memory.usedJSHeapSize /
                   metrics.memory.jsHeapSizeLimit) *
                 100;

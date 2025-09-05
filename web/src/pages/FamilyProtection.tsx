@@ -2,7 +2,6 @@
 // Family Protection Page - Main interface for Phase 3A Family Shield System
 // Comprehensive family emergency protection management with Sofia personality integration
 
-import React from 'react';
 import { usePageTitle } from '@/hooks/usePageTitle';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { FamilyProtectionDashboard } from '@/components/emergency/FamilyProtectionDashboard';

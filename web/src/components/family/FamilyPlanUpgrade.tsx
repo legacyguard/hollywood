@@ -38,11 +38,11 @@ const planColors = {
   premium: 'border-purple-200 bg-purple-50 ring-2 ring-purple-200',
 };
 
-const _planBadgeColors = {
-  free: 'bg-gray-100 text-gray-800',
-  family: 'bg-blue-100 text-blue-800',
-  premium: 'bg-purple-100 text-purple-800',
-};
+// const __planBadgeColors = { // Unused
+//   free: 'bg-gray-100 text-gray-800',
+//   family: 'bg-blue-100 text-blue-800',
+//   premium: 'bg-purple-100 text-purple-800',
+// };
 
 const featureIcons = {
   unlimitedDocuments: FileText,

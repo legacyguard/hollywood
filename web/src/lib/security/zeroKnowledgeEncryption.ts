@@ -125,8 +125,8 @@ class ZeroKnowledgeEncryptionService {
         throw new Error('Invalid master password');
       }
 
-      const _privateKey = decodeBase64(decryptedPrivateKeyBase64);
-      const _publicKey = decodeBase64(userKeys.publicKey);
+  // const __privateKey = decodeBase64(decryptedPrivateKeyBase64); // Unused
+  // const __publicKey = decodeBase64(userKeys.publicKey); // Unused
 
       // Create ephemeral key pair for this session
       const ephemeralKeyPair = nacl.box.keyPair();

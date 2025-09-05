@@ -8,7 +8,6 @@ import type {
   DocumentAnalysisResult,
   DocumentCategory,
 } from './documentAnalyzer';
-import type { CategorySuggestion } from './documentCategorizer';
 
 export interface SmartSearchQuery {
   filters?: SearchFilters;
@@ -125,7 +124,7 @@ export interface QuerySuggestion {
 export class SmartSearchService {
   private searchIndex: Map<string, SearchIndex> = new Map();
   private queryHistory: string[] = [];
-  private userPreferences: SearchPreferences = {};
+  private ___userPreferences: SearchPreferences = {};
   private searchAnalytics: SearchAnalytics = {
     totalQueries: 0,
     topQueries: {},
@@ -301,7 +300,7 @@ export class SmartSearchService {
       limit = 10,
       threshold = 0.7,
       categories,
-      includeAnalysis = false,
+      includeAnalysis: _includeAnalysis = false,
     } = options || {};
     const targetDoc = this.searchIndex.get(documentId);
     if (!targetDoc) {
@@ -337,8 +336,8 @@ export class SmartSearchService {
    * Get document recommendations based on user behavior
    */
   async getRecommendations(
-    userId?: string,
-    context?: 'expiring' | 'important' | 'recent' | 'related',
+    _userId?: string,
+    _context?: 'expiring' | 'important' | 'recent' | 'related',
     limit = 10
   ): Promise<DocumentRecommendation[]> {
     const recommendations: DocumentRecommendation[] = [];
@@ -1188,7 +1187,7 @@ export class SmartSearchService {
 
   private findRelatedTerms(query: string): string[] {
     // Extract related terms from content
-    const _relatedTerms: string[] = [];
+  // const __relatedTerms: string[] = []; // Unused
     const queryTerms = this.extractSearchTerms(query);
 
     // Simple co-occurrence analysis

@@ -48,7 +48,7 @@ export class PerformanceMonitor {
   private metrics: Map<string, WebVitalsMetric> = new Map();
   private routePerformance: RoutePerformance[] = [];
   private userTimings: UserTimingMark[] = [];
-  private observer?: PerformanceObserver;
+  private ___observer?: PerformanceObserver;
 
   constructor(config: PerformanceConfig) {
     this.config = config;

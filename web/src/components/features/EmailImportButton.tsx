@@ -4,7 +4,7 @@
  * Floating action button to trigger email import wizard
  */
 
-import React, { useState } from 'react';
+import _React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, Sparkles, Upload, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';

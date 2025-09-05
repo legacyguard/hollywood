@@ -26,14 +26,14 @@ export interface EmailNotification {
 }
 
 export class ProfessionalEmailNotificationService {
-  private apiKey: string;
+  private ___apiKey: string;
   private baseUrl: string;
 
   constructor(apiKey: string, baseUrl: string = 'https://api.legacyguard.com') {
     if (!apiKey || apiKey.trim().length === 0) {
       throw new Error('API key is required for EmailNotificationService');
     }
-    this.apiKey = apiKey;
+    this.___apiKey = apiKey;
     this.baseUrl = baseUrl;
   }
 
@@ -834,7 +834,7 @@ LegacyGuard Professional Review Network
     // Example integration with SendGrid:
     /*
     const sgMail = require('@sendgrid/mail');
-    sgMail.setApiKey(this.apiKey);
+    sgMail.setApiKey(this._apiKey);
 
     const msg = {
       to: notification.to,

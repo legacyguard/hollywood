@@ -312,7 +312,7 @@ class NaturalLanguageSearchService {
    * Generate search filters from intent and entities
    */
   private async generateFilters(
-    intent: QueryIntent,
+    _intent: QueryIntent,
     entities: QueryEntity[]
   ): Promise<SearchFilter[]> {
     const filters: SearchFilter[] = [];
@@ -409,7 +409,7 @@ class NaturalLanguageSearchService {
    * Generate search suggestions
    */
   private async generateSuggestions(
-    query: SearchQuery,
+    _query: SearchQuery,
     results: { results: SearchResult[]; totalCount: number }
   ): Promise<string[]> {
     const suggestions: string[] = [];

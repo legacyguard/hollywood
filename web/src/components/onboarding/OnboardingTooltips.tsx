@@ -155,20 +155,23 @@ export const OnboardingTooltips: React.FC<OnboardingTooltipsProps> = ({
           targetElement.classList.add('onboarding-highlight');
         }
 
+    return undefined;
         // Calculate position after a brief delay to ensure DOM is ready
         setTimeout(() => {
-          const position = calculatePosition(
-            targetElement,
-            currentStep.position
-          );
-          setTooltipPosition(position);
+          if (targetElement) {
+            const position = calculatePosition(
+              targetElement,
+              currentStep?.position || 'auto'
+            );
+            setTooltipPosition(position);
+          }
         }, 100);
 
         // Scroll target into view
-        targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        targetElement?.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
         return () => {
-          targetElement.classList.remove('onboarding-highlight');
+          targetElement?.classList.remove('onboarding-highlight');
         };
       }
     }

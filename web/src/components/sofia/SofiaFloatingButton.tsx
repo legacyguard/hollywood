@@ -16,7 +16,7 @@ const SofiaFloatingButton: React.FC<SofiaFloatingButtonProps> = ({
   onToggleChat,
   isChatOpen,
 }) => {
-  const { context, messages, getMessageCount } = useSofiaStore();
+  const { context, messages: _messages, getMessageCount } = useSofiaStore();
   const [hasNewSuggestion, setHasNewSuggestion] = useState(false);
   const [lastSuggestionTime, setLastSuggestionTime] = useState<number>(0);
 
@@ -66,11 +66,11 @@ const SofiaFloatingButton: React.FC<SofiaFloatingButtonProps> = ({
     }
   }, [isChatOpen, hasNewSuggestion]);
 
-  const _unreadCount = messages.filter(
-    msg =>
-      msg.role === 'assistant' &&
-      msg.timestamp.getTime() > (lastSuggestionTime || 0)
-  ).length;
+  // const __unreadCount = messages.filter( // Unused
+  // msg =>
+  // msg.role === 'assistant' &&
+  // msg.timestamp.getTime() > (lastSuggestionTime || 0)
+  // ).length; // Unused
 
   return (
     <div className='fixed bottom-6 right-6 z-40'>

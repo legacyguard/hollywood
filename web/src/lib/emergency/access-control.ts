@@ -7,7 +7,6 @@ import type {
   GuardianPermissions,
   SurvivorAccessRequest,
 } from '@/types/emergency';
-import type { Guardian } from '@/types/guardian';
 
 export type AccessLevel =
   | 'emergency_activated'

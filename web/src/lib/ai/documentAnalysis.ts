@@ -251,9 +251,9 @@ export type DateType =
   | 'renewal';
 
 class DocumentAnalysisService {
-  private readonly API_ENDPOINT = '/api/ai/analyze';
+  private readonly ___API_ENDPOINT = '/api/ai/analyze';
   private readonly ANALYSIS_VERSION = 1;
-  private readonly BATCH_SIZE = 10;
+  private readonly ___BATCH_SIZE = 10;
 
   /**
    * Analyze a single document
@@ -666,7 +666,7 @@ class DocumentAnalysisService {
     const emails =
       content.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g) || [];
     for (const email of emails) {
-      const _context = this.getContext(content, email);
+  // const __context = this.getContext(content, email); // Unused
       const name = this.extractNameNearEmail(content, email);
 
       contacts.push({
@@ -884,7 +884,7 @@ class DocumentAnalysisService {
   }
 
   private async determineSensitivity(
-    content: string,
+    _content: string,
     classification: any
   ): Promise<'confidential' | 'internal' | 'public' | 'restricted'> {
     if (

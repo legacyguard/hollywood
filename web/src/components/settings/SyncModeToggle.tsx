@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import _React, { useEffect, useState } from 'react';
 import {
   localDataAdapter,
   type SyncMode,
