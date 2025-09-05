@@ -17,6 +17,7 @@ import type { BulkImportResult } from '@/types/gmail';
 import { useABTest } from '@/lib/ab-testing/ab-testing-system';
 import { useUser } from '@clerk/clerk-react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 interface EmailImportButtonProps {
   className?: string;
@@ -30,6 +31,7 @@ export function EmailImportButton({
   const navigate = useNavigate();
   const { user } = useUser();
   const { isVariant } = useABTest('email_import_cta_v1', user?.id);
+  const { t } = useTranslation('ui/email-import');
 
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const [importResult, setImportResult] = useState<BulkImportResult | null>(
@@ -83,7 +85,7 @@ export function EmailImportButton({
 
           {/* Tooltip */}
           <div className='absolute bottom-16 right-0 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 hover:opacity-100 transition-opacity'>
-            Import from Gmail
+            {t('tooltip.gmail')}
           </div>
         </motion.div>
 
@@ -125,19 +127,18 @@ export function EmailImportButton({
               <div>
                 <div className='flex items-center gap-2 mb-1'>
                   <h3 className='font-semibold text-gray-900'>
-                    Import from Gmail
+                    {t('title')}
                   </h3>
                   <Badge
                     variant={'secondary' as any}
                     className='text-xs bg-yellow-100 text-yellow-800'
                   >
                     <Sparkles className='h-3 w-3 mr-1' />
-                    New
+                    {t('badge.new')}
                   </Badge>
                 </div>
                 <p className='text-sm text-gray-600'>
-                  Automatically find and organize important documents from your
-                  email attachments
+                  {t('description')}
                 </p>
               </div>
             </div>
@@ -147,7 +148,7 @@ export function EmailImportButton({
               className='bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-2 shadow-md hover:shadow-lg transition-all'
             >
               <Upload className='h-4 w-4 mr-2' />
-              Start Import
+              {t('button.start')}
             </Button>
           </div>
         </div>
@@ -181,6 +182,8 @@ function EmailImportDialog({
   onClose,
   onImportComplete,
 }: EmailImportDialogProps) {
+  const { t } = useTranslation('ui/email-import');
+  
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className='max-w-5xl max-h-[90vh] overflow-y-auto p-0'>
@@ -190,6 +193,7 @@ function EmailImportDialog({
             size='sm'
             onClick={onClose}
             className='absolute top-4 right-4 z-10 rounded-full'
+            title={t('dialog.close')}
           >
             <X className='h-4 w-4' />
           </Button>
@@ -220,6 +224,8 @@ function ImportSummaryDialog({
   onViewDocuments,
   onClose,
 }: ImportSummaryDialogProps) {
+  const { t } = useTranslation('ui/email-import');
+  
   if (!result) return null;
 
   return (
@@ -231,6 +237,7 @@ function ImportSummaryDialog({
             size='sm'
             onClick={onClose}
             className='absolute top-4 right-4 z-10 rounded-full'
+            title={t('dialog.close')}
           >
             <X className='h-4 w-4' />
           </Button>

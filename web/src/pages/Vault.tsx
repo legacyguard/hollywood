@@ -146,7 +146,7 @@ export default function VaultPage() {
       }
     } catch (error) {
       console.error('Error loading documents:', error);
-      toast.error('Failed to load documents');
+      toast.error(t('messages.loadError'));
     } finally {
       setIsLoading(false);
     }
@@ -163,7 +163,7 @@ export default function VaultPage() {
   const metrics = useMemo(
     () => [
       {
-        title: 'Total Documents',
+        title: t('metrics.totalDocuments'),
         value: documents.length.toString(),
         icon: 'file-text' as const,
         color: 'primary' as const,
@@ -171,23 +171,23 @@ export default function VaultPage() {
         trend: 'up' as const,
       },
       {
-        title: 'Encrypted',
+        title: t('metrics.encrypted'),
         value: documents.filter(d => d.isEncrypted).length.toString(),
         icon: 'shield' as const,
         color: 'success' as const,
-        changeLabel: 'Secured',
+        changeLabel: t('metrics.labels.secured'),
       },
       {
-        title: 'OCR Processed',
+        title: t('metrics.ocrProcessed'),
         value: documents
           .filter(d => d.ocrStatus === 'complete')
           .length.toString(),
         icon: 'search' as const,
         color: 'info' as const,
-        changeLabel: 'Searchable',
+        changeLabel: t('metrics.labels.searchable'),
       },
       {
-        title: 'Expiring Soon',
+        title: t('metrics.expiringSoon'),
         value: documents
           .filter(d => {
             if (!d.expiresAt) return false;
@@ -199,7 +199,7 @@ export default function VaultPage() {
           .length.toString(),
         icon: 'alert-circle' as const,
         color: 'warning' as const,
-        changeLabel: 'Within 90 days',
+        changeLabel: t('metrics.labels.within90Days'),
       },
     ],
     [documents]
@@ -211,7 +211,7 @@ export default function VaultPage() {
       createSelectColumn<Document>(),
       {
         accessorKey: 'name',
-        header: createSortableHeader('Document Name'),
+        header: createSortableHeader(t('table.headers.documentName')),
         cell: ({ row }) => {
           const doc = row.original;
           return (
@@ -224,7 +224,7 @@ export default function VaultPage() {
       },
       {
         accessorKey: 'category',
-        header: createSortableHeader('Category'),
+        header: createSortableHeader(t('table.headers.category')),
         cell: ({ row }) => (
           <Badge variant='outline' className='text-xs'>
             {row.getValue('category')}
@@ -233,11 +233,11 @@ export default function VaultPage() {
       },
       {
         accessorKey: 'size',
-        header: 'Size',
+        header: t('table.headers.size'),
       },
       {
         accessorKey: 'uploadedAt',
-        header: createSortableHeader('Uploaded'),
+        header: createSortableHeader(t('table.headers.uploaded')),
         cell: ({ row }) => {
           const date = row.getValue('uploadedAt') as Date;
           return new Intl.DateTimeFormat('en-US', {
@@ -249,7 +249,7 @@ export default function VaultPage() {
       },
       {
         accessorKey: 'expiresAt',
-        header: 'Expires',
+        header: t('table.headers.expires'),
         cell: ({ row }) => {
           const date = row.getValue('expiresAt') as Date | undefined;
           if (!date) return <span className='text-muted-foreground'>-</span>;
@@ -277,7 +277,7 @@ export default function VaultPage() {
       },
       {
         accessorKey: 'ocrStatus',
-        header: 'OCR Status',
+        header: t('table.headers.ocrStatus'),
         cell: ({ row }) => {
           const status = row.getValue('ocrStatus') as string | undefined;
           if (!status || status === 'none')
@@ -287,17 +287,17 @@ export default function VaultPage() {
             complete: {
               color: 'bg-green-100 text-green-800',
               icon: CheckCircle,
-              label: 'Complete',
+              label: t('table.ocrStatus.complete'),
             },
             processing: {
               color: 'bg-yellow-100 text-yellow-800',
               icon: Clock,
-              label: 'Processing',
+              label: t('table.ocrStatus.processing'),
             },
             failed: {
               color: 'bg-red-100 text-red-800',
               icon: null,
-              label: 'Failed',
+              label: t('table.ocrStatus.failed'),
             },
           };
 
@@ -316,7 +316,7 @@ export default function VaultPage() {
       },
       {
         accessorKey: 'tags',
-        header: 'Tags',
+        header: t('table.headers.tags'),
         cell: ({ row }) => {
           const tags = row.getValue('tags') as string[] | undefined;
           if (!tags || tags.length === 0) return null;
@@ -338,23 +338,23 @@ export default function VaultPage() {
       },
       createActionsColumn<Document>([
         {
-          label: 'View',
+          label: t('table.actions.view'),
           icon: <Eye className='h-4 w-4 mr-2' />,
           onClick: doc => {
-            toast.info(`Opening ${doc.name}`);
+            toast.info(t('messages.openingDocument', { name: doc.name }));
             // In production, this would open the document viewer
           },
         },
         {
-          label: 'Download',
+          label: t('table.actions.download'),
           icon: <Download className='h-4 w-4 mr-2' />,
           onClick: doc => {
-            toast.success(`Downloading ${doc.name}`);
+            toast.success(t('messages.downloadingDocument', { name: doc.name }));
             // In production, this would trigger the download
           },
         },
         {
-          label: 'Delete',
+          label: t('table.actions.delete'),
           icon: <Trash2 className='h-4 w-4 mr-2' />,
           onClick: doc => {
             setDocumentToDelete(doc);
@@ -371,7 +371,7 @@ export default function VaultPage() {
     if (!documentToDelete) return;
 
     setDocuments(prev => prev.filter(d => d.id !== documentToDelete.id));
-    toast.success(`Deleted ${documentToDelete.name}`);
+    toast.success(t('messages.deleteSuccess', { name: documentToDelete.name }));
 
     // Close dialog and reset state
     setIsConfirmDialogOpen(false);
@@ -406,15 +406,15 @@ export default function VaultPage() {
     a.download = `vault-documents-${new Date().toISOString().split('T')[0]}.csv`;
     a.click();
     window.URL.revokeObjectURL(url);
-    toast.success('Documents exported successfully');
+    toast.success(t('messages.documentsExported'));
   };
 
   return (
     <>
       <MetaTags
-        title='Document Vault'
-        description='Securely store and automatically analyze your important documents with AI-powered OCR technology. Your digital vault for all important documents.'
-        keywords='document vault, secure storage, AI OCR, document analysis, encrypted documents'
+        title={t('meta.title')}
+        description={t('meta.description')}
+        keywords={t('meta.keywords')}
       />
       <DashboardLayout>
         <div className='min-h-screen bg-background'>
@@ -422,7 +422,7 @@ export default function VaultPage() {
             <div className='max-w-7xl mx-auto px-6 lg:px-8 py-8'>
               <FadeIn duration={0.5} delay={0.2}>
                 <h1 className='text-3xl lg:text-4xl font-bold font-heading text-card-foreground mb-3'>
-                  My Vault
+                  {t('header.title')}
                 </h1>
               </FadeIn>
               <FadeIn duration={0.5} delay={0.4}>
@@ -430,8 +430,7 @@ export default function VaultPage() {
                   className='text-lg leading-relaxed max-w-2xl'
                   style={{ color: 'hsl(var(--muted-text))' }}
                 >
-                  Securely store and automatically analyze your important
-                  documents with AI-powered OCR technology.
+                  {t('header.subtitle')}
                 </p>
               </FadeIn>
             </div>
@@ -452,13 +451,10 @@ export default function VaultPage() {
                     <AlertDescription className='flex items-center justify-between'>
                       <div>
                         <strong className='text-blue-900'>
-                          ✨ AI-Powered Document Analysis Now Available!
+                          {t('notifications.ocrInfo.title')}
                         </strong>
                         <p className='text-blue-700 mt-1'>
-                          Upload any document and our AI will automatically
-                          extract text, classify document types, identify
-                          important information like dates and amounts, and make
-                          your documents searchable.
+                          {t('notifications.ocrInfo.description')}
                         </p>
                       </div>
                       <Button
@@ -484,7 +480,7 @@ export default function VaultPage() {
                   className='mt-4'
                 >
                   <Icon name='refresh-cw' className='h-4 w-4 mr-2' />
-                  Refresh Documents
+                  {t('actions.refreshDocuments')}
                 </Button>
               </div>
 
@@ -493,9 +489,9 @@ export default function VaultPage() {
                 <DataTable
                   columns={columns}
                   data={documents}
-                  title='Document Vault'
-                  description='All your protected documents in one secure place'
-                  searchPlaceholder='Search documents by name, category, or tags...'
+                  title={t('table.title')}
+                  description={t('table.description')}
+                  searchPlaceholder={t('table.searchPlaceholder')}
                   loading={isLoading}
                   onExport={handleExport}
                   pageSize={10}
@@ -512,21 +508,20 @@ export default function VaultPage() {
         >
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Delete Document</AlertDialogTitle>
+              <AlertDialogTitle>{t('dialogs.delete.title')}</AlertDialogTitle>
               <AlertDialogDescription>
-                Are you sure you want to delete "{documentToDelete?.name}"? This
-                action cannot be undone.
+                {t('dialogs.delete.description', { name: documentToDelete?.name })}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel onClick={handleDeleteCancel}>
-                Cancel
+                {t('dialogs.delete.cancel')}
               </AlertDialogCancel>
               <AlertDialogAction
                 onClick={handleDeleteConfirm}
                 className='bg-destructive text-destructive-foreground hover:bg-destructive/90'
               >
-                Delete
+                {t('dialogs.delete.confirm')}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>

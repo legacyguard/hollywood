@@ -27,7 +27,7 @@ import type { BulkImportResult } from '@/types/gmail';
 export function DashboardContent() {
   const { user } = useUser();
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t } = useTranslation('ui/dashboard');
   const { needsSetup, isLoading } = useEncryptionReady();
   const mockActivities = useMockActivities();
   const personalityManager = usePersonalityManager();
@@ -67,7 +67,7 @@ export function DashboardContent() {
   // Mock metrics data - in production, this would come from your API
   const metrics = [
     {
-      title: t('dashboard.metrics.documentsProtected'),
+      title: t('metrics.documentsProtected'),
       value: '24',
       change: 12,
       trend: 'up' as const,
@@ -76,7 +76,7 @@ export function DashboardContent() {
       onClick: () => navigate('/vault'),
     },
     {
-      title: t('dashboard.metrics.familyMembers'),
+      title: t('metrics.familyMembers'),
       value: '8',
       change: 2,
       trend: 'up' as const,
@@ -85,15 +85,15 @@ export function DashboardContent() {
       onClick: () => navigate('/family'),
     },
     {
-      title: t('dashboard.metrics.guardians'),
+      title: t('metrics.guardians'),
       value: '3',
-      changeLabel: t('dashboard.metrics.labels.active'),
+      changeLabel: t('metrics.labels.active'),
       icon: 'shield' as const,
       color: 'warning' as const,
       onClick: () => navigate('/guardians'),
     },
     {
-      title: t('dashboard.metrics.daysProtected'),
+      title: t('metrics.daysProtected'),
       value: '147',
       icon: 'calendar' as const,
       color: 'info' as const,
@@ -125,15 +125,15 @@ export function DashboardContent() {
                 <FadeIn duration={0.5} delay={0.2}>
                   <h1 className='text-3xl lg:text-4xl font-bold font-heading text-card-foreground mb-3'>
                     {user?.firstName
-                      ? t('dashboard.header.titleWithName', {
+                      ? t('header.titleWithName', {
                           name: user.firstName,
                         })
-                      : t('dashboard.header.title')}
+                      : t('header.title')}
                   </h1>
                 </FadeIn>
                 <FadeIn duration={0.5} delay={0.4}>
                   <p className='text-lg leading-relaxed max-w-2xl text-muted-foreground'>
-                    {t(`dashboard.header.subtitle.${effectiveMode}`)}
+                    {t(`header.subtitle.${effectiveMode}`)}
                   </p>
                 </FadeIn>
               </div>
@@ -145,7 +145,7 @@ export function DashboardContent() {
                 size='lg'
               >
                 <Icon name='add' className='w-5 h-5 mr-2' />
-                {t('dashboard.header.actions.secureNewInformation')}
+                {t('header.actions.secureNewInformation')}
               </Button>
             </FadeIn>
           </div>
@@ -159,11 +159,11 @@ export function DashboardContent() {
           <FadeIn duration={0.5} delay={0.8}>
             <div className='flex items-center justify-between mb-6'>
               <h2 className='text-xl font-semibold text-card-foreground'>
-                {t(`dashboard.metrics.title.${effectiveMode}`)}
+                {t(`metrics.title.${effectiveMode}`)}
               </h2>
               {effectiveMode === 'empathetic' && (
                 <span className='text-sm text-muted-foreground italic'>
-                  {t('dashboard.metrics.subtitle.empathetic')}
+                  {t('metrics.subtitle.empathetic')}
                 </span>
               )}
             </div>
@@ -237,7 +237,7 @@ export function DashboardContent() {
             {/* Activity Feed */}
             <ActivityFeed
               activities={mockActivities}
-              title='Recent Activity'
+              title={t('activity.title')}
               maxHeight='500px'
               onViewAll={() => navigate('/activity')}
             />

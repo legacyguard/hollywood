@@ -6,6 +6,7 @@
 
 import _React, { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import {
   Award,
   Calendar,
@@ -275,17 +276,7 @@ const SAMPLE_PROFESSIONALS: ProfessionalProfile[] = [
   },
 ];
 
-const SPECIALIZATIONS = [
-  'Estate Planning',
-  'Tax Law',
-  'Business Law',
-  'Real Estate Law',
-  'Family Law',
-  'Elder Law',
-  'Asset Protection',
-  'Probate Law',
-  'Healthcare Directives',
-];
+// SPECIALIZATIONS will be retrieved from translations
 
   // const __STATES = [ // Unused
 //   'California',
@@ -336,6 +327,8 @@ export function ProfessionalNetworkDirectory({
   onRequestReview,
   className,
 }: ProfessionalNetworkDirectoryProps) {
+  const { t } = useTranslation('ui/professional-network');
+  const SPECIALIZATIONS = t('specializations', { returnObjects: true }) as string[];
   const [professionals, _setProfessionals] =
     useState<ProfessionalProfile[]>(SAMPLE_PROFESSIONALS);
   const [filters, setFilters] = useState<DirectoryFilters>({
@@ -552,7 +545,7 @@ export function ProfessionalNetworkDirectory({
                     className={getAvailabilityColor(professional.availability)}
                     variant='outline'
                   >
-                    {professional.availability}
+                    {t(`availability.${professional.availability}`)}
                   </Badge>
                 </div>
               </div>
@@ -560,7 +553,7 @@ export function ProfessionalNetworkDirectory({
               <div className='flex items-center gap-3 text-xs text-muted-foreground mb-3'>
                 <span className='flex items-center gap-1'>
                   <Award className='h-3 w-3' />
-                  {professional.experience_years} yrs
+                  {professional.experience_years} {t('professionalCard.yearsAbbr')}
                 </span>
                 <span className='flex items-center gap-1'>
                   <Clock className='h-3 w-3' />
@@ -568,8 +561,10 @@ export function ProfessionalNetworkDirectory({
                 </span>
                 <span className='flex items-center gap-1'>
                   <MapPin className='h-3 w-3' />
-                  {professional.licensed_states?.length || 0} state
-                  {(professional.licensed_states?.length || 0) !== 1 ? 's' : ''}
+                  {(professional.licensed_states?.length || 0) !== 1 
+                    ? t('professionalCard.statesCountPlural', { count: professional.licensed_states?.length || 0 })
+                    : t('professionalCard.statesCount', { count: professional.licensed_states?.length || 0 })
+                  }
                 </span>
               </div>
             </div>
@@ -579,7 +574,7 @@ export function ProfessionalNetworkDirectory({
         <CardContent className='space-y-4'>
           <div>
             <Label className='text-sm font-medium mb-2 block'>
-              Specializations
+              {t('professionalCard.specializations')}
             </Label>
             <div className='flex flex-wrap gap-1'>
               {professional.specializations.slice(0, 3).map(spec => (
@@ -589,7 +584,7 @@ export function ProfessionalNetworkDirectory({
               ))}
               {professional.specializations.length > 3 && (
                 <Badge variant='outline' className='text-xs'>
-                  +{professional.specializations.length - 3} more
+                  {t('professionalCard.more', { count: professional.specializations.length - 3 })}
                 </Badge>
               )}
             </div>
@@ -624,9 +619,9 @@ export function ProfessionalNetworkDirectory({
 
           <div className='space-y-2'>
             <div className='flex items-center justify-between text-sm'>
-              <span className='text-muted-foreground'>Starting from:</span>
+              <span className='text-muted-foreground'>{t('professionalCard.startingFrom')}</span>
               <span className='font-semibold'>
-                ${professional.hourly_rate}/hour
+                ${professional.hourly_rate}{t('professionalCard.perHour')}
               </span>
             </div>
 
@@ -640,7 +635,7 @@ export function ProfessionalNetworkDirectory({
                 className='text-xs'
               >
                 <Calendar className='h-3 w-3 mr-1' />
-                Book Call
+                {t('professionalCard.bookCall')}
               </Button>
               <Button
                 size='sm'
@@ -652,7 +647,7 @@ export function ProfessionalNetworkDirectory({
                 className='text-xs'
               >
                 <FileText className='h-3 w-3 mr-1' />
-                Review
+                {t('professionalCard.review')}
               </Button>
             </div>
           </div>
@@ -715,16 +710,16 @@ export function ProfessionalNetworkDirectory({
                   <div className='flex items-center gap-4 text-sm text-muted-foreground mb-3'>
                     <span className='flex items-center gap-1'>
                       <Award className='h-4 w-4' />
-                      {professional.experience_years} years experience
+                      {t('listView.yearsExperience', { count: professional.experience_years })}
                     </span>
                     <span className='flex items-center gap-1'>
                       <Clock className='h-4 w-4' />
-                      Responds in {professional.responseTime}
+                      {t('listView.respondsIn', { time: professional.responseTime })}
                     </span>
                     <span className='flex items-center gap-1'>
                       <MapPin className='h-4 w-4' />
                       {professional.licensed_states?.join(', ') ||
-                        'No states listed'}
+                        t('listView.noStatesListed')}
                     </span>
                   </div>
 
@@ -781,16 +776,16 @@ export function ProfessionalNetworkDirectory({
                         professional.availability
                       )}
                     >
-                      {professional.availability}
+                      {t(`availability.${professional.availability}`)}
                     </Badge>
                   </div>
 
                   <div className='text-right'>
                     <p className='text-sm text-muted-foreground'>
-                      Starting from
+                      {t('professionalCard.startingFrom')}
                     </p>
                     <p className='text-xl font-bold'>
-                      ${professional.hourly_rate}/hour
+                      ${professional.hourly_rate}{t('professionalCard.perHour')}
                     </p>
                   </div>
 
@@ -803,7 +798,7 @@ export function ProfessionalNetworkDirectory({
                       }}
                     >
                       <Calendar className='h-4 w-4 mr-2' />
-                      Book Consultation
+                      {t('professionalCard.bookConsultation')}
                     </Button>
                     <Button
                       size='sm'
@@ -814,7 +809,7 @@ export function ProfessionalNetworkDirectory({
                       }}
                     >
                       <FileText className='h-4 w-4 mr-2' />
-                      Request Review
+                      {t('professionalCard.requestReview')}
                     </Button>
                   </div>
                 </div>
@@ -836,13 +831,11 @@ export function ProfessionalNetworkDirectory({
       <div className='text-center space-y-4'>
         <div className='inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 rounded-full text-sm font-medium'>
           <Shield className='h-4 w-4' />
-          Verified Professional Network
+          {t('header.badge')}
         </div>
-        <h2 className='text-3xl font-bold'>Find Your Legal Professional</h2>
+        <h2 className='text-3xl font-bold'>{t('header.title')}</h2>
         <p className='text-muted-foreground max-w-2xl mx-auto'>
-          Connect with verified, licensed attorneys who specialize in estate
-          planning, family law, and business counsel. All professionals are
-          vetted and client-reviewed.
+          {t('header.description')}
         </p>
       </div>
 
@@ -854,7 +847,7 @@ export function ProfessionalNetworkDirectory({
             <div className='relative'>
               <Search className='absolute left-4 top-3 h-5 w-5 text-muted-foreground' />
               <Input
-                placeholder='Search by name, specialization, or location...'
+                placeholder={t('search.placeholder')}
                 value={filters.search}
                 onChange={e =>
                   setFilters(prev => ({ ...prev, search: e.target.value }))
@@ -872,7 +865,7 @@ export function ProfessionalNetworkDirectory({
                   className='gap-2'
                 >
                   <Filter className='h-4 w-4' />
-                  Advanced Filters
+                  {t('search.advancedFilters')}
                   <ChevronDown
                     className={cn(
                       'h-4 w-4 transition-transform',
@@ -882,7 +875,7 @@ export function ProfessionalNetworkDirectory({
                 </Button>
 
                 <div className='flex items-center gap-2'>
-                  <Label className='text-sm'>Sort by:</Label>
+                  <Label className='text-sm'>{t('sorting.label')}</Label>
                   <Select
                     value={filters.sortBy}
                     onValueChange={(value: any) =>
@@ -893,10 +886,10 @@ export function ProfessionalNetworkDirectory({
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value='rating'>Rating</SelectItem>
-                      <SelectItem value='experience'>Experience</SelectItem>
-                      <SelectItem value='price'>Price</SelectItem>
-                      <SelectItem value='reviews'>Reviews</SelectItem>
+                      <SelectItem value='rating'>{t('sorting.options.rating')}</SelectItem>
+                      <SelectItem value='experience'>{t('sorting.options.experience')}</SelectItem>
+                      <SelectItem value='price'>{t('sorting.options.price')}</SelectItem>
+                      <SelectItem value='reviews'>{t('sorting.options.reviews')}</SelectItem>
                     </SelectContent>
                   </Select>
 
@@ -921,7 +914,7 @@ export function ProfessionalNetworkDirectory({
 
               <div className='flex items-center gap-2'>
                 <span className='text-sm text-muted-foreground'>
-                  {filteredAndSortedProfessionals.length} results
+                  {t('search.results', { count: filteredAndSortedProfessionals.length })}
                 </span>
 
                 <Separator orientation='vertical' className='h-6' />
@@ -958,7 +951,7 @@ export function ProfessionalNetworkDirectory({
                 >
                   <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
                     <div className='space-y-3'>
-                      <Label className='font-medium'>Specializations</Label>
+                      <Label className='font-medium'>{t('filters.specializations')}</Label>
                       <div className='space-y-2 max-h-32 overflow-y-auto'>
                         {SPECIALIZATIONS.map(spec => (
                           <div
@@ -997,7 +990,7 @@ export function ProfessionalNetworkDirectory({
                     </div>
 
                     <div className='space-y-3'>
-                      <Label className='font-medium'>Experience Range</Label>
+                      <Label className='font-medium'>{t('filters.experienceRange')}</Label>
                       <div className='px-2'>
                         <Slider
                           value={filters.experienceRange}
@@ -1013,14 +1006,14 @@ export function ProfessionalNetworkDirectory({
                           className='w-full'
                         />
                         <div className='flex justify-between text-sm text-muted-foreground mt-1'>
-                          <span>{filters.experienceRange[0]} years</span>
-                          <span>{filters.experienceRange[1]} years</span>
+                          <span>{t('filters.experienceYears', { count: filters.experienceRange[0] })}</span>
+                          <span>{t('filters.experienceYears', { count: filters.experienceRange[1] })}</span>
                         </div>
                       </div>
                     </div>
 
                     <div className='space-y-3'>
-                      <Label className='font-medium'>Hourly Rate Range</Label>
+                      <Label className='font-medium'>{t('filters.hourlyRateRange')}</Label>
                       <div className='px-2'>
                         <Slider
                           value={filters.priceRange}
@@ -1043,7 +1036,7 @@ export function ProfessionalNetworkDirectory({
                     </div>
 
                     <div className='space-y-3'>
-                      <Label className='font-medium'>Minimum Rating</Label>
+                      <Label className='font-medium'>{t('filters.minimumRating')}</Label>
                       <Select
                         value={filters.ratingMin.toString()}
                         onValueChange={value =>
@@ -1057,16 +1050,16 @@ export function ProfessionalNetworkDirectory({
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value='0'>Any Rating</SelectItem>
-                          <SelectItem value='4'>4+ Stars</SelectItem>
-                          <SelectItem value='4.5'>4.5+ Stars</SelectItem>
-                          <SelectItem value='4.8'>4.8+ Stars</SelectItem>
+                          <SelectItem value='0'>{t('filters.rating.anyRating')}</SelectItem>
+                          <SelectItem value='4'>{t('filters.rating.fourPlus')}</SelectItem>
+                          <SelectItem value='4.5'>{t('filters.rating.fourFivePlus')}</SelectItem>
+                          <SelectItem value='4.8'>{t('filters.rating.fourEightPlus')}</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
 
                     <div className='space-y-3'>
-                      <Label className='font-medium'>Availability</Label>
+                      <Label className='font-medium'>{t('filters.availability')}</Label>
                       <Select
                         value={filters.availability}
                         onValueChange={value =>
@@ -1077,12 +1070,12 @@ export function ProfessionalNetworkDirectory({
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value='all'>All</SelectItem>
+                          <SelectItem value='all'>{t('filters.availability.all')}</SelectItem>
                           <SelectItem value='available'>
-                            Available Now
+                            {t('filters.availability.available')}
                           </SelectItem>
                           <SelectItem value='busy'>
-                            Busy but Taking Clients
+                            {t('filters.availability.busy')}
                           </SelectItem>
                         </SelectContent>
                       </Select>
@@ -1090,7 +1083,7 @@ export function ProfessionalNetworkDirectory({
 
                     <div className='space-y-3'>
                       <div className='flex items-center justify-between'>
-                        <Label className='font-medium'>Active Filters</Label>
+                        <Label className='font-medium'>{t('filters.activeFilters')}</Label>
                         {(filters.specializations.length > 0 ||
                           filters.states.length > 0 ||
                           filters.languages.length > 0) && (
@@ -1099,7 +1092,7 @@ export function ProfessionalNetworkDirectory({
                             size='sm'
                             onClick={resetFilters}
                           >
-                            Clear All
+                            {t('filters.clearAll')}
                           </Button>
                         )}
                       </div>
@@ -1157,14 +1150,13 @@ export function ProfessionalNetworkDirectory({
                 <Search className='h-8 w-8 text-gray-400' />
               </div>
               <h3 className='text-lg font-semibold mb-2'>
-                No Professionals Found
+                {t('noResults.title')}
               </h3>
               <p className='text-muted-foreground mb-4'>
-                Try adjusting your search criteria or filters to find more
-                professionals.
+                {t('noResults.description')}
               </p>
               <Button variant='outline' onClick={resetFilters}>
-                Reset Filters
+                {t('noResults.resetButton')}
               </Button>
             </CardContent>
           </Card>
@@ -1180,7 +1172,7 @@ export function ProfessionalNetworkDirectory({
           <DialogHeader>
             <DialogTitle className='flex items-center gap-2'>
               <Eye className='h-5 w-5' />
-              Professional Profile
+              {t('modal.title')}
             </DialogTitle>
           </DialogHeader>
 
@@ -1216,16 +1208,15 @@ export function ProfessionalNetworkDirectory({
                       <div className='flex items-center gap-4 text-sm text-muted-foreground'>
                         <span className='flex items-center gap-1'>
                           <Award className='h-4 w-4' />
-                          {selectedProfessional.experience_years} years
-                          experience
+                          {t('modal.header.yearsExperience', { count: selectedProfessional.experience_years })}
                         </span>
                         <span className='flex items-center gap-1'>
                           <Clock className='h-4 w-4' />
-                          Responds in {selectedProfessional.responseTime}
+                          {t('modal.header.respondsIn', { time: selectedProfessional.responseTime })}
                         </span>
                         <span className='flex items-center gap-1'>
                           <Shield className='h-4 w-4' />
-                          Verified Attorney
+                          {t('modal.header.verifiedAttorney')}
                         </span>
                       </div>
                     </div>
@@ -1237,16 +1228,16 @@ export function ProfessionalNetworkDirectory({
                           {selectedProfessional.rating}
                         </span>
                         <span className='text-muted-foreground'>
-                          ({selectedProfessional.reviewCount} reviews)
+                          ({t('modal.header.reviews', { count: selectedProfessional.reviewCount })})
                         </span>
                       </div>
                       <Badge
                         className={`${getAvailabilityColor(selectedProfessional.availability)} mb-2`}
                       >
-                        {selectedProfessional.availability}
+                        {t(`availability.${selectedProfessional.availability}`)}
                       </Badge>
                       <p className='text-lg font-bold'>
-                        ${selectedProfessional.hourly_rate}/hour
+                        ${selectedProfessional.hourly_rate}{t('professionalCard.perHour')}
                       </p>
                     </div>
                   </div>
@@ -1256,18 +1247,18 @@ export function ProfessionalNetworkDirectory({
                       onClick={() => onBookConsultation(selectedProfessional)}
                     >
                       <Calendar className='h-4 w-4 mr-2' />
-                      Book Consultation
+                      {t('modal.buttons.bookConsultation')}
                     </Button>
                     <Button
                       variant='outline'
                       onClick={() => onRequestReview(selectedProfessional)}
                     >
                       <FileText className='h-4 w-4 mr-2' />
-                      Request Review
+                      {t('modal.buttons.requestReview')}
                     </Button>
                     <Button variant='outline'>
                       <MessageSquare className='h-4 w-4 mr-2' />
-                      Send Message
+                      {t('modal.buttons.sendMessage')}
                     </Button>
                   </div>
                 </div>
@@ -1276,17 +1267,17 @@ export function ProfessionalNetworkDirectory({
               {/* Professional Details */}
               <Tabs defaultValue='overview' className='w-full'>
                 <TabsList className='grid w-full grid-cols-4'>
-                  <TabsTrigger value='overview'>Overview</TabsTrigger>
-                  <TabsTrigger value='services'>Services</TabsTrigger>
-                  <TabsTrigger value='reviews'>Reviews</TabsTrigger>
-                  <TabsTrigger value='credentials'>Credentials</TabsTrigger>
+                  <TabsTrigger value='overview'>{t('modal.tabs.overview')}</TabsTrigger>
+                  <TabsTrigger value='services'>{t('modal.tabs.services')}</TabsTrigger>
+                  <TabsTrigger value='reviews'>{t('modal.tabs.reviews')}</TabsTrigger>
+                  <TabsTrigger value='credentials'>{t('modal.tabs.credentials')}</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value='overview' className='space-y-6'>
                   <Card>
                     <CardHeader>
                       <CardTitle>
-                        About {selectedProfessional.full_name}
+                        {t('modal.overview.aboutTitle', { name: selectedProfessional.full_name })}
                       </CardTitle>
                     </CardHeader>
                     <CardContent className='space-y-4'>
@@ -1297,7 +1288,7 @@ export function ProfessionalNetworkDirectory({
                       <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
                         <div>
                           <Label className='font-medium mb-2 block'>
-                            Specializations
+                            {t('modal.overview.specializations')}
                           </Label>
                           <div className='flex flex-wrap gap-2'>
                             {selectedProfessional.specializations.map(spec => (
@@ -1310,7 +1301,7 @@ export function ProfessionalNetworkDirectory({
 
                         <div>
                           <Label className='font-medium mb-2 block'>
-                            Licensed States
+                            {t('modal.overview.licensedStates')}
                           </Label>
                           <div className='flex flex-wrap gap-2'>
                             {selectedProfessional.licensed_states?.map(
@@ -1326,7 +1317,7 @@ export function ProfessionalNetworkDirectory({
                         {selectedProfessional.languages && (
                           <div>
                             <Label className='font-medium mb-2 block'>
-                              Languages
+                              {t('modal.overview.languages')}
                             </Label>
                             <div className='flex flex-wrap gap-2'>
                               {selectedProfessional.languages.map(lang => (
@@ -1341,7 +1332,7 @@ export function ProfessionalNetworkDirectory({
                         {selectedProfessional.achievements && (
                           <div>
                             <Label className='font-medium mb-2 block'>
-                              Achievements
+                              {t('modal.overview.achievements')}
                             </Label>
                             <div className='space-y-1'>
                               {selectedProfessional.achievements.map(
@@ -1375,7 +1366,7 @@ export function ProfessionalNetworkDirectory({
                               variant='outline'
                               className='mb-2 capitalize'
                             >
-                              {service.type}
+                              {t(`serviceTypes.${service.type}`)}
                             </Badge>
                             <h3 className='font-semibold'>
                               {service.description}
@@ -1386,11 +1377,11 @@ export function ProfessionalNetworkDirectory({
                               ${service.startingPrice}
                             </p>
                             <p className='text-sm text-muted-foreground'>
-                              Starting from
+                              {t('modal.services.startingFrom')}
                             </p>
                           </div>
                         </div>
-                        <Button size='sm'>Select Service</Button>
+                        <Button size='sm'>{t('modal.services.selectService')}</Button>
                       </CardContent>
                     </Card>
                   ))}
@@ -1432,7 +1423,7 @@ export function ProfessionalNetworkDirectory({
 
                   <div className='text-center py-8 text-muted-foreground'>
                     <MessageSquare className='h-12 w-12 mx-auto mb-4 opacity-50' />
-                    <p>More reviews available after initial consultation</p>
+                    <p>{t('modal.reviews.moreReviewsNote')}</p>
                   </div>
                 </TabsContent>
 
@@ -1442,29 +1433,27 @@ export function ProfessionalNetworkDirectory({
                       <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
                         <div>
                           <Label className='font-medium mb-2 block'>
-                            Bar Information
+                            {t('modal.credentials.barInformation')}
                           </Label>
                           <p className='text-muted-foreground'>
-                            Bar Number: {selectedProfessional.bar_number}
+                            {t('modal.credentials.barNumber', { number: selectedProfessional.bar_number })}
                           </p>
                           <p className='text-muted-foreground'>
-                            Status: {selectedProfessional.verification_status}
+                            {t('modal.credentials.status', { status: selectedProfessional.verification_status })}
                           </p>
                         </div>
 
                         <div>
                           <Label className='font-medium mb-2 block'>
-                            Experience
+                            {t('modal.credentials.experience')}
                           </Label>
                           <p className='text-muted-foreground'>
-                            {selectedProfessional.experience_years} years in
-                            practice
+                            {t('modal.credentials.yearsInPractice', { count: selectedProfessional.experience_years })}
                           </p>
                           <p className='text-muted-foreground'>
-                            Member since{' '}
-                            {new Date(
-                              selectedProfessional.created_at
-                            ).getFullYear()}
+                            {t('modal.credentials.memberSince', { 
+                              year: new Date(selectedProfessional.created_at).getFullYear() 
+                            })}
                           </p>
                         </div>
                       </div>
@@ -1473,12 +1462,11 @@ export function ProfessionalNetworkDirectory({
                         <div className='flex items-center gap-2 text-green-800'>
                           <CheckCircle className='h-5 w-5' />
                           <span className='font-medium'>
-                            Verified Professional
+                            {t('modal.credentials.verifiedProfessional')}
                           </span>
                         </div>
                         <p className='text-sm text-green-700 mt-1'>
-                          This attorney's credentials have been verified and
-                          they maintain professional liability insurance.
+                          {t('modal.credentials.verificationNote')}
                         </p>
                       </div>
                     </CardContent>
@@ -1494,11 +1482,10 @@ export function ProfessionalNetworkDirectory({
       <div className='bg-gray-50 rounded-lg p-8'>
         <div className='text-center mb-6'>
           <h3 className='text-xl font-semibold mb-2'>
-            Why Choose Our Network?
+            {t('trustFooter.title')}
           </h3>
           <p className='text-muted-foreground'>
-            Every attorney in our network is personally vetted and
-            client-verified
+            {t('trustFooter.description')}
           </p>
         </div>
 
@@ -1507,9 +1494,9 @@ export function ProfessionalNetworkDirectory({
             <div className='w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto'>
               <Shield className='h-6 w-6 text-blue-600' />
             </div>
-            <h4 className='font-semibold'>100% Verified</h4>
+            <h4 className='font-semibold'>{t('trustFooter.features.verified.title')}</h4>
             <p className='text-sm text-muted-foreground'>
-              All attorneys are licensed, insured, and background-checked
+              {t('trustFooter.features.verified.description')}
             </p>
           </div>
 
@@ -1517,9 +1504,9 @@ export function ProfessionalNetworkDirectory({
             <div className='w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto'>
               <Star className='h-6 w-6 text-green-600' />
             </div>
-            <h4 className='font-semibold'>Client-Reviewed</h4>
+            <h4 className='font-semibold'>{t('trustFooter.features.reviewed.title')}</h4>
             <p className='text-sm text-muted-foreground'>
-              Real reviews from real clients, with satisfaction guarantee
+              {t('trustFooter.features.reviewed.description')}
             </p>
           </div>
 
@@ -1527,10 +1514,9 @@ export function ProfessionalNetworkDirectory({
             <div className='w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto'>
               <Target className='h-6 w-6 text-purple-600' />
             </div>
-            <h4 className='font-semibold'>Perfect Matches</h4>
+            <h4 className='font-semibold'>{t('trustFooter.features.matched.title')}</h4>
             <p className='text-sm text-muted-foreground'>
-              Advanced matching ensures you find the right attorney for your
-              needs
+              {t('trustFooter.features.matched.description')}
             </p>
           </div>
         </div>

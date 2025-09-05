@@ -149,7 +149,7 @@ jobs:
           CI: true
 
       - name: Upload coverage
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           file: ./coverage/coverage-final.json
           flags: unittests-shard-${{ matrix.shard }}
@@ -313,7 +313,7 @@ jobs:
             --environment tests/postman/staging-env.json
 
       - name: Notify deployment
-        uses: 8398a7/action-slack@v3
+        uses: 8398a7/action-slack@v3.14.0
         with:
           status: ${{ job.status }}
           text: 'Staging deployment completed'
@@ -386,7 +386,7 @@ jobs:
           prerelease: false
 
       - name: Notify deployment
-        uses: 8398a7/action-slack@v3
+        uses: 8398a7/action-slack@v3.14.0
         with:
           status: ${{ job.status }}
           text: 'Production deployment completed - v${{ github.run_number }}'
@@ -411,7 +411,7 @@ jobs:
           echo "Rolling back to previous deployment..."
 
       - name: Notify rollback
-        uses: 8398a7/action-slack@v3
+        uses: 8398a7/action-slack@v3.14.0
         with:
           status: ${{ job.status }}
           text: 'Production rollback initiated'

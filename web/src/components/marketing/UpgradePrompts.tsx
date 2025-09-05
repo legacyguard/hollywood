@@ -29,6 +29,7 @@ import {
   X,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useTranslation } from 'react-i18next';
 
 interface UpgradePromptProps {
   currentPlan: 'family' | 'free' | 'premium' | 'professional';
@@ -67,6 +68,7 @@ export const UpgradePrompts: React.FC<UpgradePromptProps> = ({
   onUpgrade,
   onDismiss,
 }) => {
+  const { t } = useTranslation('ui/upgrade-prompts');
   const [isVisible, setIsVisible] = useState(true);
   const [selectedPlan, setSelectedPlan] = useState<null | string>(null);
 
@@ -74,90 +76,59 @@ export const UpgradePrompts: React.FC<UpgradePromptProps> = ({
     switch (trigger) {
       case 'family-limit':
         return {
-          title: 'Family Plan Needed',
-          subtitle: "You've reached your 2 family member limit",
-          description:
-            'Add unlimited family members and unlock collaborative features with our Family Plan.',
+          title: t('triggers.familyLimit.title'),
+          subtitle: t('triggers.familyLimit.subtitle'),
+          description: t('triggers.familyLimit.description'),
           icon: Users,
           urgency: 'high',
-          benefits: [
-            'Unlimited family member invitations',
-            'Advanced collaboration tools',
-            'Shared family calendar and timeline',
-            'Family decision voting system',
-          ],
+          benefits: t('triggers.familyLimit.benefits', { returnObjects: true }) as string[],
         };
 
       case 'professional-review':
         return {
-          title: 'Get Professional Review',
-          subtitle: 'Ensure your documents are legally sound',
-          description:
-            'Connect with verified attorneys for professional document review and legal guidance.',
+          title: t('triggers.professionalReview.title'),
+          subtitle: t('triggers.professionalReview.subtitle'),
+          description: t('triggers.professionalReview.description'),
           icon: Shield,
           urgency: 'medium',
-          benefits: [
-            'Access to verified legal professionals',
-            'Professional document reviews',
-            'Legal compliance checking',
-            'Direct consultation booking',
-          ],
+          benefits: t('triggers.professionalReview.benefits', { returnObjects: true }) as string[],
         };
 
       case 'analytics-limit':
         return {
-          title: 'Unlock Advanced Analytics',
-          subtitle: "Get deeper insights into your family's protection",
-          description:
-            'Premium analytics provide AI-powered recommendations and comprehensive risk assessment.',
+          title: t('triggers.analyticsLimit.title'),
+          subtitle: t('triggers.analyticsLimit.subtitle'),
+          description: t('triggers.analyticsLimit.description'),
           icon: TrendingUp,
           urgency: 'low',
-          benefits: [
-            'AI-powered family risk assessment',
-            'Personalized improvement recommendations',
-            'Advanced progress tracking',
-            'Historical trend analysis',
-          ],
+          benefits: t('triggers.analyticsLimit.benefits', { returnObjects: true }) as string[],
         };
 
       case 'time-capsule':
         return {
-          title: 'Create Time Capsules',
-          subtitle: 'Preserve memories for future generations',
-          description:
-            'Premium Time Capsule feature lets you create scheduled messages and memory preservation.',
+          title: t('triggers.timeCapsule.title'),
+          subtitle: t('triggers.timeCapsule.subtitle'),
+          description: t('triggers.timeCapsule.description'),
           icon: Clock,
           urgency: 'medium',
-          benefits: [
-            'Unlimited time capsule creation',
-            'Video and audio messages',
-            'Scheduled delivery system',
-            'Multi-generational sharing',
-          ],
+          benefits: t('triggers.timeCapsule.benefits', { returnObjects: true }) as string[],
         };
 
       case 'priority-support':
         return {
-          title: 'Need Priority Support?',
-          subtitle: 'Get faster help when you need it most',
-          description:
-            'Premium users get priority support with dedicated assistance for urgent family matters.',
+          title: t('triggers.prioritySupport.title'),
+          subtitle: t('triggers.prioritySupport.subtitle'),
+          description: t('triggers.prioritySupport.description'),
           icon: Crown,
           urgency: 'low',
-          benefits: [
-            'Priority customer support',
-            'Dedicated account manager',
-            '24/7 urgent assistance',
-            'Phone and video support',
-          ],
+          benefits: t('triggers.prioritySupport.benefits', { returnObjects: true }) as string[],
         };
 
       default:
         return {
-          title: 'Upgrade to Premium',
-          subtitle: 'Unlock all features',
-          description:
-            'Get access to all premium features and enhanced family protection.',
+          title: t('triggers.default.title'),
+          subtitle: t('triggers.default.subtitle'),
+          description: t('triggers.default.description'),
           icon: Star,
           urgency: 'low',
           benefits: [],
@@ -168,67 +139,42 @@ export const UpgradePrompts: React.FC<UpgradePromptProps> = ({
   const plans: UpgradePlan[] = [
     {
       id: 'premium',
-      name: 'Premium',
-      price: '$9.99',
-      period: 'month',
-      description: 'Perfect for individuals and small families',
-      features: [
-        { name: 'Up to 5 family members', included: true },
-        {
-          name: 'Professional document reviews',
-          included: true,
-          highlight: true,
-        },
-        { name: 'Advanced analytics & insights', included: true },
-        { name: 'Priority support', included: true },
-        { name: 'Time capsule creation', included: true },
-        { name: 'Unlimited document storage', included: true },
-      ],
+      name: t('plans.premium.name'),
+      price: t('plans.premium.price'),
+      period: t('plans.premium.period'),
+      description: t('plans.premium.description'),
+      features: (t('plans.premium.features', { returnObjects: true }) as string[]).map((feature, index) => ({
+        name: feature,
+        included: true,
+        highlight: index === 1, // Professional document reviews
+      })),
     },
     {
       id: 'family',
-      name: 'Family Plan',
-      price: '$19.99',
-      period: 'month',
-      description: 'Best for larger families with collaboration needs',
+      name: t('plans.family.name'),
+      price: t('plans.family.price'),
+      period: t('plans.family.period'),
+      description: t('plans.family.description'),
       popular: true,
       recommended: trigger === 'family-limit',
-      features: [
-        { name: 'Unlimited family members', included: true, highlight: true },
-        {
-          name: 'Advanced collaboration tools',
-          included: true,
-          highlight: true,
-        },
-        { name: 'Family decision voting', included: true },
-        { name: 'Shared family timeline', included: true },
-        { name: 'Multi-generational features', included: true },
-        { name: 'Everything in Premium', included: true },
-      ],
+      features: (t('plans.family.features', { returnObjects: true }) as string[]).map((feature, index) => ({
+        name: feature,
+        included: true,
+        highlight: index === 0 || index === 1, // Unlimited family members and Advanced collaboration tools
+      })),
     },
     {
       id: 'professional',
-      name: 'Professional',
-      price: '$39.99',
-      period: 'month',
-      description: 'For those who need comprehensive legal support',
+      name: t('plans.professional.name'),
+      price: t('plans.professional.price'),
+      period: t('plans.professional.period'),
+      description: t('plans.professional.description'),
       recommended: trigger === 'professional-review',
-      features: [
-        {
-          name: 'Unlimited attorney consultations',
-          included: true,
-          highlight: true,
-        },
-        {
-          name: 'Legal compliance monitoring',
-          included: true,
-          highlight: true,
-        },
-        { name: 'Dedicated legal advisor', included: true },
-        { name: 'Advanced estate planning tools', included: true },
-        { name: 'White-glove setup service', included: true },
-        { name: 'Everything in Family Plan', included: true },
-      ],
+      features: (t('plans.professional.features', { returnObjects: true }) as string[]).map((feature, index) => ({
+        name: feature,
+        included: true,
+        highlight: index === 0 || index === 1, // Unlimited attorney consultations and Legal compliance monitoring
+      })),
     },
   ];
 
@@ -312,7 +258,7 @@ export const UpgradePrompts: React.FC<UpgradePromptProps> = ({
               <CardContent className='p-4'>
                 <h3 className='font-semibold text-gray-900 mb-3 flex items-center'>
                   <Sparkles className='h-4 w-4 mr-2 text-yellow-500' />
-                  What you'll get:
+                  {t('benefits.title')}
                 </h3>
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-2'>
                   {promptContent.benefits.map((benefit, index) => (
@@ -336,10 +282,10 @@ export const UpgradePrompts: React.FC<UpgradePromptProps> = ({
           <div className='p-6 bg-white'>
             <div className='text-center mb-6'>
               <h3 className='text-xl font-bold text-gray-900 mb-2'>
-                Choose Your Plan
+                {t('plans.header.title')}
               </h3>
               <p className='text-gray-600'>
-                All plans include a 14-day free trial
+                {t('plans.header.subtitle')}
               </p>
             </div>
 
@@ -371,7 +317,7 @@ export const UpgradePrompts: React.FC<UpgradePromptProps> = ({
                       <div className='absolute -top-3 left-1/2 transform -translate-x-1/2'>
                         <Badge className='bg-gradient-to-r from-purple-500 to-blue-500 text-white'>
                           <Crown className='h-3 w-3 mr-1' />
-                          {plan.popular ? 'Most Popular' : 'Recommended'}
+                          {plan.popular ? t('plans.badges.mostPopular') : t('plans.badges.recommended')}
                         </Badge>
                       </div>
                     )}
@@ -426,14 +372,14 @@ export const UpgradePrompts: React.FC<UpgradePromptProps> = ({
                         onClick={() => handleUpgrade(plan.id)}
                       >
                         {currentPlan === 'free'
-                          ? 'Start Free Trial'
-                          : 'Upgrade Now'}
+                          ? t('buttons.startFreeTrial')
+                          : t('buttons.upgradeNow')}
                         <ArrowRight className='h-4 w-4 ml-2' />
                       </Button>
 
                       {currentPlan === 'free' && (
                         <p className='text-center text-xs text-gray-500 mt-2'>
-                          No credit card required for trial
+                          {t('footer.noCardRequired')}
                         </p>
                       )}
                     </CardContent>
@@ -447,15 +393,15 @@ export const UpgradePrompts: React.FC<UpgradePromptProps> = ({
               <div className='flex items-center justify-center space-x-6 text-sm text-gray-600'>
                 <div className='flex items-center'>
                   <CheckCircle className='h-4 w-4 text-green-500 mr-1' />
-                  14-day free trial
+                  {t('footer.freeTrial')}
                 </div>
                 <div className='flex items-center'>
                   <CheckCircle className='h-4 w-4 text-green-500 mr-1' />
-                  Cancel anytime
+                  {t('footer.cancelAnytime')}
                 </div>
                 <div className='flex items-center'>
                   <CheckCircle className='h-4 w-4 text-green-500 mr-1' />
-                  30-day money-back guarantee
+                  {t('footer.moneyBack')}
                 </div>
               </div>
             </div>
@@ -565,34 +511,36 @@ export const FeatureUpgradePrompt: React.FC<FeatureUpgradePromptProps> = ({
   className,
   onUpgrade,
 }) => {
+  const { t } = useTranslation('ui/upgrade-prompts');
+  
   const getFeatureInfo = () => {
     switch (feature) {
       case 'professional-review':
         return {
-          title: 'Professional Review',
-          description: 'Get your documents reviewed by verified attorneys',
-          requiredPlan: 'Premium',
+          title: t('featurePrompts.professionalReview.title'),
+          description: t('featurePrompts.professionalReview.description'),
+          requiredPlan: t('featurePrompts.professionalReview.requiredPlan'),
           icon: Shield,
         };
       case 'advanced-analytics':
         return {
-          title: 'Advanced Analytics',
-          description: 'AI-powered insights and risk assessment',
-          requiredPlan: 'Premium',
+          title: t('featurePrompts.advancedAnalytics.title'),
+          description: t('featurePrompts.advancedAnalytics.description'),
+          requiredPlan: t('featurePrompts.advancedAnalytics.requiredPlan'),
           icon: TrendingUp,
         };
       case 'family-collaboration':
         return {
-          title: 'Family Collaboration',
-          description: 'Unlimited family members and collaboration tools',
-          requiredPlan: 'Family',
+          title: t('featurePrompts.familyCollaboration.title'),
+          description: t('featurePrompts.familyCollaboration.description'),
+          requiredPlan: t('featurePrompts.familyCollaboration.requiredPlan'),
           icon: Users,
         };
       default:
         return {
-          title: 'Premium Feature',
-          description: 'This feature requires a premium plan',
-          requiredPlan: 'Premium',
+          title: t('featurePrompts.default.title'),
+          description: t('featurePrompts.default.description'),
+          requiredPlan: t('featurePrompts.default.requiredPlan'),
           icon: Lock,
         };
     }
@@ -621,7 +569,7 @@ export const FeatureUpgradePrompt: React.FC<FeatureUpgradePromptProps> = ({
             <p className='text-gray-600 mb-4'>{featureInfo.description}</p>
             <Badge className='bg-purple-100 text-purple-800 mb-4'>
               <Crown className='h-3 w-3 mr-1' />
-              {featureInfo.requiredPlan} Required
+              {featureInfo.requiredPlan} {t('featurePrompts.requiredSuffix')}
             </Badge>
           </div>
 
@@ -630,7 +578,7 @@ export const FeatureUpgradePrompt: React.FC<FeatureUpgradePromptProps> = ({
             className='bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700'
           >
             <Star className='h-4 w-4 mr-2' />
-            Upgrade to {featureInfo.requiredPlan}
+            {t('featurePrompts.upgradePrefix')} {featureInfo.requiredPlan}
           </Button>
         </div>
       </CardContent>

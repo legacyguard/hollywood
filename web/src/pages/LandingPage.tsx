@@ -203,7 +203,7 @@ export function LandingPage() {
                   onClick={handleGetStarted}
                   className='bg-slate-700/70 hover:bg-slate-600 text-white border-slate-600 text-lg font-semibold px-6 py-2'
                 >
-                  Get Started Free
+                  {t('hero.cta.free')}
                 </Button>
               </motion.div>
             </div>
@@ -331,7 +331,7 @@ export function LandingPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, ease: 'easeOut', delay: 0.5 }}
           >
-            Your Legacy is a Story.
+            {t('hero.title')}
             <br />
             <span className='text-yellow-400'>{t('hero.subtitle')}</span>
           </motion.h1>
@@ -342,8 +342,7 @@ export function LandingPage() {
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 1 }}
           >
-            The most caring and secure way to organize your life's journey and
-            protect your family's future.
+            {t('hero.description')}
           </motion.p>
 
           <motion.div
@@ -435,15 +434,13 @@ export function LandingPage() {
 
               <div className='relative z-10'>
                 <h3 className='text-4xl font-bold text-red-400 mb-6'>
-                  Life is Complex
+                  {t('problem.title')}
                 </h3>
                 <p className='text-xl text-slate-300 leading-relaxed'>
-                  Documents expire. Passwords get lost. Instructions are
-                  unclear.
+                  {t('problem.description')}
                   <span className='text-red-300 font-medium'>
                     {' '}
-                    In a crisis, this chaos becomes a burden for your loved
-                    ones.
+                    {t('problem.highlight')}
                   </span>
                 </p>
               </div>
@@ -494,14 +491,13 @@ export function LandingPage() {
 
               <div className='relative z-10 text-center mt-8'>
                 <h3 className='text-4xl font-bold text-yellow-400 mb-6'>
-                  Clarity is a Gift
+                  {t('promise.title')}
                 </h3>
                 <p className='text-xl text-slate-300 leading-relaxed max-w-md'>
-                  We help you transform this chaos into a single, secure, and
-                  beautifully organized source of truth.
+                  {t('promise.description')}
                   <span className='text-yellow-300 font-medium'>
                     {' '}
-                    A gift of peace for your family.
+                    {t('promise.highlight')}
                   </span>
                 </p>
               </div>
@@ -521,11 +517,10 @@ export function LandingPage() {
             viewport={{ once: true }}
           >
             <h2 className='text-5xl lg:text-6xl font-bold text-white mb-6'>
-              Your Story in 3 Acts
+              {t('features.title')}
             </h2>
             <p className='text-xl text-slate-300 max-w-2xl mx-auto'>
-              Experience how LegacyGuard transforms your journey from chaos to
-              clarity
+              {t('features.subtitle')}
             </p>
           </motion.div>
 
@@ -613,11 +608,10 @@ export function LandingPage() {
               </div>
 
               <h3 className='text-2xl font-bold text-white mb-4'>
-                Act 1: Organize Your Present
+                {t('features.act1.title')}
               </h3>
               <p className='text-slate-300 leading-relaxed'>
-                Our AI assistant, Sofia, intelligently analyzes your documents,
-                extracts key data, and sets up reminders, so you don't have to.
+                {t('features.act1.description')}
               </p>
             </motion.div>
 
@@ -720,11 +714,10 @@ export function LandingPage() {
               </div>
 
               <h3 className='text-2xl font-bold text-white mb-4'>
-                Act 2: Protect Your Family
+                {t('features.act2.title')}
               </h3>
               <p className='text-slate-300 leading-relaxed'>
-                Build your Family Shield by appointing trusted guardians with
-                specific roles and permissions, ready to act in any emergency.
+                {t('features.act2.description')}
               </p>
             </motion.div>
 
@@ -807,12 +800,10 @@ export function LandingPage() {
               </div>
 
               <h3 className='text-2xl font-bold text-white mb-4'>
-                Act 3: Define Your Legacy
+                {t('features.act3.title')}
               </h3>
               <p className='text-slate-300 leading-relaxed'>
-                Go beyond documents. Create a legally-sound will, record
-                personal messages, and watch your legacy garden grow with every
-                act of care.
+                {t('features.act3.description')}
               </p>
             </motion.div>
           </div>
@@ -830,10 +821,10 @@ export function LandingPage() {
             viewport={{ once: true }}
           >
             <h2 className='text-4xl lg:text-5xl font-bold text-white mb-6'>
-              How It Works
+              {t('howItWorks.title')}
             </h2>
             <p className='text-xl text-slate-300 max-w-2xl mx-auto'>
-              Your journey to family security in three simple steps
+              {t('howItWorks.subtitle')}
             </p>
           </motion.div>
 

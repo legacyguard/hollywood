@@ -1,0 +1,72 @@
+{
+  "timestamp": "2025-09-05T21:02:51.869Z",
+  "summary": {
+    "passed": 9,
+    "warnings": 2,
+    "failed": 0,
+    "total": 11
+  },
+  "results": [
+    {
+      "test": "Translation File Structure",
+      "status": "PASS",
+      "message": "8/8 expected translation files exist"
+    },
+    {
+      "test": "i18n Configuration",
+      "status": "PASS",
+      "message": "i18n config supports English and Slovak languages"
+    },
+    {
+      "test": "Translation Key Consistency",
+      "status": "WARNING",
+      "message": "Key mismatch in landing-page.en.json",
+      "details": "Missing in SK: 8, Extra in SK: 6"
+    },
+    {
+      "test": "Translation Key Consistency",
+      "status": "PASS",
+      "message": "Perfect key consistency: dashboard.en.json"
+    },
+    {
+      "test": "Translation Key Consistency",
+      "status": "WARNING",
+      "message": "Key mismatch in vault.en.json",
+      "details": "Missing in SK: 12, Extra in SK: 0"
+    },
+    {
+      "test": "Translation Key Consistency",
+      "status": "PASS",
+      "message": "Perfect key consistency: sidebar.en.json"
+    },
+    {
+      "test": "Component Integration",
+      "status": "PASS",
+      "message": "LandingPage.tsx properly integrated",
+      "details": "Uses 3/3 expected keys"
+    },
+    {
+      "test": "Component Integration",
+      "status": "PASS",
+      "message": "DashboardContent.tsx properly integrated",
+      "details": "Uses 1/2 expected keys"
+    },
+    {
+      "test": "Component Integration",
+      "status": "PASS",
+      "message": "Vault.tsx properly integrated",
+      "details": "Uses 2/2 expected keys"
+    },
+    {
+      "test": "Component Integration",
+      "status": "PASS",
+      "message": "AppSidebar.tsx properly integrated",
+      "details": "Uses 1/2 expected keys"
+    },
+    {
+      "test": "Fallback Mechanism",
+      "status": "PASS",
+      "message": "Proper fallback to English configured"
+    }
+  ]
+}
