@@ -316,7 +316,7 @@ export const DocumentsScreen = () => {
               <Select
                 options={DOCUMENT_CATEGORIES}
                 value={selectedCategory}
-                onValueChange={val => setSelectedCategory(val)}
+                onValueChange={(val: string) => setSelectedCategory(val)}
                 placeholder='Filter by category'
                 size='medium'
               />

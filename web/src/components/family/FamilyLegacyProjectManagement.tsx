@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -152,18 +153,17 @@ interface ProjectTemplate {
   >[];
 }
 
-const projectTemplates: ProjectTemplate[] = [
+const getProjectTemplates = (t: (key: string) => string): ProjectTemplate[] => [
   {
     id: 'comprehensive-will',
-    name: 'Comprehensive Will Creation',
-    description:
-      'Complete will creation with legal review and family consultation',
+    name: t('templates.comprehensiveWill.name'),
+    description: t('templates.comprehensiveWill.description'),
     category: 'will-creation',
-    estimatedDuration: '4-6 weeks',
+    estimatedDuration: t('templates.comprehensiveWill.estimatedDuration'),
     tasks: [
       {
-        title: 'Gather personal information and assets',
-        description: 'Compile all necessary personal and financial information',
+        title: t('templates.comprehensiveWill.tasks.gatherInfo.title'),
+        description: t('templates.comprehensiveWill.tasks.gatherInfo.description'),
         status: 'todo',
         priority: 'high',
         estimatedHours: 8,
@@ -171,8 +171,8 @@ const projectTemplates: ProjectTemplate[] = [
         tags: ['information-gathering', 'assets'],
       },
       {
-        title: 'Define beneficiaries and inheritance wishes',
-        description: 'Clearly define who gets what and under what conditions',
+        title: t('templates.comprehensiveWill.tasks.defineBeneficiaries.title'),
+        description: t('templates.comprehensiveWill.tasks.defineBeneficiaries.description'),
         status: 'todo',
         priority: 'high',
         estimatedHours: 4,
@@ -180,8 +180,8 @@ const projectTemplates: ProjectTemplate[] = [
         tags: ['beneficiaries', 'inheritance'],
       },
       {
-        title: 'Draft initial will document',
-        description: 'Create the first draft using legal templates',
+        title: t('templates.comprehensiveWill.tasks.draftWill.title'),
+        description: t('templates.comprehensiveWill.tasks.draftWill.description'),
         status: 'todo',
         priority: 'medium',
         estimatedHours: 6,
@@ -189,8 +189,8 @@ const projectTemplates: ProjectTemplate[] = [
         tags: ['drafting', 'legal'],
       },
       {
-        title: 'Family review and feedback',
-        description: 'Share draft with family for input and discussion',
+        title: t('templates.comprehensiveWill.tasks.familyReview.title'),
+        description: t('templates.comprehensiveWill.tasks.familyReview.description'),
         status: 'todo',
         priority: 'medium',
         estimatedHours: 4,
@@ -198,8 +198,8 @@ const projectTemplates: ProjectTemplate[] = [
         tags: ['family-review', 'feedback'],
       },
       {
-        title: 'Professional legal review',
-        description: 'Have attorney review and validate the will',
+        title: t('templates.comprehensiveWill.tasks.legalReview.title'),
+        description: t('templates.comprehensiveWill.tasks.legalReview.description'),
         status: 'todo',
         priority: 'critical',
         estimatedHours: 3,
@@ -207,8 +207,8 @@ const projectTemplates: ProjectTemplate[] = [
         tags: ['legal-review', 'attorney'],
       },
       {
-        title: 'Finalize and execute will',
-        description: 'Complete final signing and witnessing process',
+        title: t('templates.comprehensiveWill.tasks.finalizeWill.title'),
+        description: t('templates.comprehensiveWill.tasks.finalizeWill.description'),
         status: 'todo',
         priority: 'critical',
         estimatedHours: 2,
@@ -218,22 +218,22 @@ const projectTemplates: ProjectTemplate[] = [
     ],
     milestones: [
       {
-        title: 'Information Collection Complete',
-        description: 'All personal and asset information gathered',
+        title: t('templates.comprehensiveWill.milestones.infoComplete.title'),
+        description: t('templates.comprehensiveWill.milestones.infoComplete.description'),
         dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-        rewards: 'Foundation for will is solid',
+        rewards: t('templates.comprehensiveWill.milestones.infoComplete.rewards'),
       },
       {
-        title: 'First Draft Complete',
-        description: 'Initial will document is ready for review',
+        title: t('templates.comprehensiveWill.milestones.firstDraft.title'),
+        description: t('templates.comprehensiveWill.milestones.firstDraft.description'),
         dueDate: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000),
-        rewards: 'Major milestone - will is taking shape',
+        rewards: t('templates.comprehensiveWill.milestones.firstDraft.rewards'),
       },
       {
-        title: 'Will Legally Executed',
-        description: 'Will is signed, witnessed, and legally valid',
+        title: t('templates.comprehensiveWill.milestones.willExecuted.title'),
+        description: t('templates.comprehensiveWill.milestones.willExecuted.description'),
         dueDate: new Date(Date.now() + 42 * 24 * 60 * 60 * 1000),
-        rewards: 'Family protection is now legally secured',
+        rewards: t('templates.comprehensiveWill.milestones.willExecuted.rewards'),
       },
     ],
     requiredRoles: ['project-manager', 'legal-advisor', 'family-members'],
@@ -241,14 +241,14 @@ const projectTemplates: ProjectTemplate[] = [
   },
   {
     id: 'emergency-planning',
-    name: 'Family Emergency Planning',
-    description: 'Comprehensive emergency preparedness and response planning',
+    name: t('templates.emergencyPlanning.name'),
+    description: t('templates.emergencyPlanning.description'),
     category: 'emergency-planning',
-    estimatedDuration: '2-3 weeks',
+    estimatedDuration: t('templates.emergencyPlanning.estimatedDuration'),
     tasks: [
       {
-        title: 'Create emergency contact database',
-        description: 'Compile all important emergency contact information',
+        title: t('templates.emergencyPlanning.tasks.contactDatabase.title'),
+        description: t('templates.emergencyPlanning.tasks.contactDatabase.description'),
         status: 'todo',
         priority: 'high',
         estimatedHours: 3,
@@ -256,8 +256,8 @@ const projectTemplates: ProjectTemplate[] = [
         tags: ['contacts', 'emergency'],
       },
       {
-        title: 'Develop emergency procedures',
-        description: 'Create step-by-step emergency response procedures',
+        title: t('templates.emergencyPlanning.tasks.procedures.title'),
+        description: t('templates.emergencyPlanning.tasks.procedures.description'),
         status: 'todo',
         priority: 'high',
         estimatedHours: 6,
@@ -265,8 +265,8 @@ const projectTemplates: ProjectTemplate[] = [
         tags: ['procedures', 'response'],
       },
       {
-        title: 'Prepare emergency kits',
-        description: 'Assemble physical emergency kits for each household',
+        title: t('templates.emergencyPlanning.tasks.emergencyKits.title'),
+        description: t('templates.emergencyPlanning.tasks.emergencyKits.description'),
         status: 'todo',
         priority: 'medium',
         estimatedHours: 8,
@@ -276,16 +276,16 @@ const projectTemplates: ProjectTemplate[] = [
     ],
     milestones: [
       {
-        title: 'Emergency Contacts Established',
-        description: 'All family members have access to emergency contacts',
+        title: t('templates.emergencyPlanning.milestones.contactsEstablished.title'),
+        description: t('templates.emergencyPlanning.milestones.contactsEstablished.description'),
         dueDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
-        rewards: 'Quick access to help in emergencies',
+        rewards: t('templates.emergencyPlanning.milestones.contactsEstablished.rewards'),
       },
       {
-        title: 'Emergency Plan Complete',
-        description: 'Comprehensive emergency plan is finalized',
+        title: t('templates.emergencyPlanning.milestones.planComplete.title'),
+        description: t('templates.emergencyPlanning.milestones.planComplete.description'),
         dueDate: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000),
-        rewards: 'Family is prepared for any emergency',
+        rewards: t('templates.emergencyPlanning.milestones.planComplete.rewards'),
       },
     ],
     requiredRoles: ['project-manager', 'family-members'],
@@ -293,15 +293,14 @@ const projectTemplates: ProjectTemplate[] = [
   },
   {
     id: 'family-history',
-    name: 'Family History Documentation',
-    description:
-      'Preserve family history through stories, photos, and recordings',
+    name: t('templates.familyHistory.name'),
+    description: t('templates.familyHistory.description'),
     category: 'family-history',
-    estimatedDuration: '8-12 weeks',
+    estimatedDuration: t('templates.familyHistory.estimatedDuration'),
     tasks: [
       {
-        title: 'Interview family elders',
-        description: 'Record stories and memories from older family members',
+        title: t('templates.familyHistory.tasks.interviews.title'),
+        description: t('templates.familyHistory.tasks.interviews.description'),
         status: 'todo',
         priority: 'high',
         estimatedHours: 20,
@@ -309,8 +308,8 @@ const projectTemplates: ProjectTemplate[] = [
         tags: ['interviews', 'stories', 'memories'],
       },
       {
-        title: 'Digitize family photos',
-        description: 'Scan and organize historical family photographs',
+        title: t('templates.familyHistory.tasks.digitizePhotos.title'),
+        description: t('templates.familyHistory.tasks.digitizePhotos.description'),
         status: 'todo',
         priority: 'medium',
         estimatedHours: 15,
@@ -318,8 +317,8 @@ const projectTemplates: ProjectTemplate[] = [
         tags: ['photos', 'digitization'],
       },
       {
-        title: 'Create family tree',
-        description: 'Build comprehensive family genealogy',
+        title: t('templates.familyHistory.tasks.familyTree.title'),
+        description: t('templates.familyHistory.tasks.familyTree.description'),
         status: 'todo',
         priority: 'medium',
         estimatedHours: 12,
@@ -329,16 +328,16 @@ const projectTemplates: ProjectTemplate[] = [
     ],
     milestones: [
       {
-        title: 'Elder Interviews Complete',
-        description: 'All available elder interviews have been recorded',
+        title: t('templates.familyHistory.milestones.interviewsComplete.title'),
+        description: t('templates.familyHistory.milestones.interviewsComplete.description'),
         dueDate: new Date(Date.now() + 28 * 24 * 60 * 60 * 1000),
-        rewards: 'Precious memories are preserved forever',
+        rewards: t('templates.familyHistory.milestones.interviewsComplete.rewards'),
       },
       {
-        title: 'Family Archive Complete',
-        description: 'Complete digital family history archive is ready',
+        title: t('templates.familyHistory.milestones.archiveComplete.title'),
+        description: t('templates.familyHistory.milestones.archiveComplete.description'),
         dueDate: new Date(Date.now() + 84 * 24 * 60 * 60 * 1000),
-        rewards: 'Family legacy is documented for future generations',
+        rewards: t('templates.familyHistory.milestones.archiveComplete.rewards'),
       },
     ],
     requiredRoles: ['project-manager', 'family-historian', 'family-members'],
@@ -355,6 +354,7 @@ interface FamilyLegacyProjectManagementProps {
 export const FamilyLegacyProjectManagement: React.FC<
   FamilyLegacyProjectManagementProps
 > = ({ familyMembers: _familyMembers = [], onProjectCreated, existingProjects = [] }) => {
+  const { t } = useTranslation();
   const [projects, setProjects] = useState<LegacyProject[]>(existingProjects);
   const [activeProject, setActiveProject] = useState<LegacyProject | null>(
     null
@@ -369,6 +369,9 @@ export const FamilyLegacyProjectManagement: React.FC<
   const [currentUserId] = useState('current-user-id');
   const [showTaskForm, setShowTaskForm] = useState(false);
   const [_editingTask, _setEditingTask] = useState<null | Task>(null);
+
+  // Get project templates
+  const projectTemplates = getProjectTemplates(t);
 
   // Mock current user
   const currentUser: FamilyMember = {
@@ -577,7 +580,7 @@ export const FamilyLegacyProjectManagement: React.FC<
                 <DialogTitle>Create New Legacy Project</DialogTitle>
               </DialogHeader>
               <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4'>
-                {projectTemplates.map(template => (
+                {projectTemplates.map((template: ProjectTemplate) => (
                   <motion.div
                     key={template.id}
                     whileHover={{ scale: 1.02 }}

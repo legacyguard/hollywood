@@ -221,7 +221,7 @@ export const WillScreen = () => {
                 { value: 'widowed', label: 'Widowed' },
               ]}
               value={willData.personal?.maritalStatus || ''}
-              onValueChange={value =>
+              onValueChange={(value: string) =>
                 setWillData(prev => ({
                   ...prev,
                   personal: { ...prev.personal, maritalStatus: value },

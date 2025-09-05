@@ -9,7 +9,7 @@ import { AuthenticationService } from '@/services/AuthenticationService';
 import { TamaguiProvider } from '@/providers/TamaguiProvider';
 import { StatusBar } from 'expo-status-bar';
 import * as SecureStore from 'expo-secure-store';
-import { GlobalErrorBoundary } from '@legacyguard/ui/dist/components/ErrorBoundary';
+import { GlobalErrorBoundary } from '@legacyguard/ui';
 
 // Helper for token management with Clerk
 const tokenCache = {
