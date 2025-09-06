@@ -187,6 +187,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
   onDecisionCreated,
   existingDecisions = [],
 }) => {
+  const { t } = useTranslation('ui/family-decision-tracking');
   const [decisions, setDecisions] =
     useState<FamilyDecision[]>(existingDecisions);
   const [activeDecision, setActiveDecision] = useState<FamilyDecision | null>(
@@ -203,13 +204,15 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
   // Mock current user
   const currentUser: FamilyMember = {
     id: currentUserId,
-    name: 'You',
+    name: t('member.you'),
     email: 'user@example.com',
     role: 'head',
     votingWeight: 2,
     isActive: true,
     joinedAt: new Date(),
   };
+
+  const decisionTemplates = getDecisionTemplates(t);
 
   const allMembers = [currentUser, ...familyMembers];
 
@@ -219,7 +222,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
 
     const newDecision: FamilyDecision = {
       id: `decision-${Date.now()}`,
-      title: template ? template.name : 'New Family Decision',
+      title: template ? template.name : t('buttons.createDecision'),
       description: template ? template.description : '',
       category: template?.category || 'other',
       priority: template?.priority || 'medium',
@@ -229,7 +232,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
       votingDeadline: tomorrow,
       requiresUnanimity: template?.requiresUnanimity || false,
       eligibleVoters: allMembers.filter(m => m.role !== 'minor').map(m => m.id),
-      options: (template?.defaultOptions || ['Yes', 'No']).map(
+      options: (template?.defaultOptions || [t('buttons.vote'), t('buttons.cancelEdit')]).map(
         (option, index) => ({
           id: `option-${index}`,
           text: option,
@@ -386,6 +389,14 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
     }
   };
 
+  const getPriorityLabel = (priority: FamilyDecision['priority']) => {
+    return t(`priority.${priority}`);
+  };
+
+  const getStatusLabel = (status: FamilyDecision['status']) => {
+    return t(`status.${status}`);
+  };
+
   const getStatusColor = (status: FamilyDecision['status']) => {
     switch (status) {
       case 'draft':
@@ -446,10 +457,10 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
       <div className='flex items-center justify-between'>
         <div>
           <h2 className='text-2xl font-bold text-gray-900'>
-            Family Decision Tracking
+            {t('tabs.active')}
           </h2>
           <p className='text-gray-600'>
-            Collaborative decision-making for important family matters
+            {t('emptyStates.noActiveDecisions')}
           </p>
         </div>
         <div className='flex gap-2'>
@@ -457,12 +468,12 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
             <DialogTrigger asChild>
               <Button onClick={() => setIsCreating(true)} className='gap-2'>
                 <Plus className='h-4 w-4' />
-                New Decision
+                {t('buttons.createDecision')}
               </Button>
             </DialogTrigger>
             <DialogContent className='max-w-4xl'>
               <DialogHeader>
-                <DialogTitle>Create New Decision</DialogTitle>
+                <DialogTitle>{t('buttons.createDecision')}</DialogTitle>
               </DialogHeader>
               <div className='grid grid-cols-2 gap-4 mt-4'>
                 {decisionTemplates.map(template => (
@@ -491,7 +502,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
                               <Badge
                                 className={getPriorityColor(template.priority)}
                               >
-                                {template.priority}
+                                {getPriorityLabel(template.priority)}
                               </Badge>
                               <Badge variant='outline' className='text-xs'>
                                 {template.category.replace('-', ' ')}
@@ -506,7 +517,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
               </div>
               <div className='flex justify-end gap-2 mt-4'>
                 <Button variant='outline' onClick={() => createNewDecision()}>
-                  Create Custom Decision
+                  {t('buttons.createDecision')}
                 </Button>
               </div>
             </DialogContent>
@@ -523,11 +534,11 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
               <SelectValue placeholder='All Status' />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value='all'>All Status</SelectItem>
-              <SelectItem value='draft'>Draft</SelectItem>
-              <SelectItem value='voting'>Voting</SelectItem>
-              <SelectItem value='decided'>Decided</SelectItem>
-              <SelectItem value='implemented'>Implemented</SelectItem>
+              <SelectItem value='all'>{t('filters.all')}</SelectItem>
+              <SelectItem value='draft'>{t('status.draft')}</SelectItem>
+              <SelectItem value='voting'>{t('status.voting')}</SelectItem>
+              <SelectItem value='decided'>{t('status.decided')}</SelectItem>
+              <SelectItem value='implemented'>{t('status.implemented')}</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -537,12 +548,12 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
             <SelectValue placeholder='All Categories' />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value='all'>All Categories</SelectItem>
-            <SelectItem value='legacy-planning'>Legacy Planning</SelectItem>
-            <SelectItem value='healthcare'>Healthcare</SelectItem>
-            <SelectItem value='financial'>Financial</SelectItem>
-            <SelectItem value='family-governance'>Family Governance</SelectItem>
-            <SelectItem value='emergency'>Emergency</SelectItem>
+            <SelectItem value='all'>{t('filters.all')}</SelectItem>
+            <SelectItem value='legacy-planning'>{t('filters.legacy')}</SelectItem>
+            <SelectItem value='healthcare'>{t('filters.healthcare')}</SelectItem>
+            <SelectItem value='financial'>{t('filters.financial')}</SelectItem>
+            <SelectItem value='family-governance'>{t('filters.governance')}</SelectItem>
+            <SelectItem value='emergency'>{t('filters.emergency')}</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -562,7 +573,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
                     })
                   }
                   className='text-xl font-bold border-0 p-0 h-auto'
-                  placeholder='Decision Title'
+                  placeholder={t('placeholders.decisionTitle')}
                 />
                 <Textarea
                   value={activeDecision.description}
@@ -573,29 +584,29 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
                     })
                   }
                   className='text-sm text-gray-600 border-0 p-0 resize-none mt-2'
-                  placeholder='Describe the decision that needs to be made...'
+                  placeholder={t('placeholders.description')}
                   rows={3}
                 />
               </div>
               <div className='flex gap-2'>
                 <Button variant='outline' onClick={() => setIsCreating(false)}>
-                  Cancel
+                  {t('buttons.cancelEdit')}
                 </Button>
-                <Button onClick={saveDecision}>Create Decision</Button>
+                <Button onClick={saveDecision}>{t('buttons.createDecision')}</Button>
               </div>
             </div>
           </CardHeader>
           <CardContent>
             <Tabs defaultValue='options' className='w-full'>
               <TabsList className='grid w-full grid-cols-3'>
-                <TabsTrigger value='options'>Options</TabsTrigger>
-                <TabsTrigger value='settings'>Settings</TabsTrigger>
-                <TabsTrigger value='voters'>Eligible Voters</TabsTrigger>
+                <TabsTrigger value='options'>{t('labels.options')}</TabsTrigger>
+                <TabsTrigger value='settings'>{t('labels.settings')}</TabsTrigger>
+                <TabsTrigger value='voters'>{t('labels.eligibleVoters')}</TabsTrigger>
               </TabsList>
 
               <TabsContent value='options' className='space-y-4'>
                 <div>
-                  <h3 className='font-medium mb-3'>Decision Options</h3>
+                  <h3 className='font-medium mb-3'>{t('labels.options')}</h3>
                   <div className='space-y-2'>
                     {activeDecision.options.map((option, index) => (
                       <div key={option.id} className='flex items-center gap-2'>
@@ -612,7 +623,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
                               options: updatedOptions,
                             });
                           }}
-                          placeholder={`Option ${index + 1}`}
+                          placeholder={t('placeholders.optionText')}
                         />
                         <Button
                           size='sm'
@@ -651,7 +662,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
                     className='mt-2 gap-2'
                   >
                     <Plus className='h-4 w-4' />
-                    Add Option
+                    {t('labels.options')}
                   </Button>
                 </div>
               </TabsContent>
@@ -660,7 +671,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
                 <div className='grid grid-cols-2 gap-4'>
                   <div>
                     <label className='text-sm font-medium text-gray-700'>
-                      Priority
+                      {t('labels.priority')}
                     </label>
                     <Select
                       value={activeDecision.priority}
@@ -675,17 +686,17 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value='low'>Low</SelectItem>
-                        <SelectItem value='medium'>Medium</SelectItem>
-                        <SelectItem value='high'>High</SelectItem>
-                        <SelectItem value='critical'>Critical</SelectItem>
+                        <SelectItem value='low'>{t('priority.low')}</SelectItem>
+                        <SelectItem value='medium'>{t('priority.medium')}</SelectItem>
+                        <SelectItem value='high'>{t('priority.high')}</SelectItem>
+                        <SelectItem value='critical'>{t('priority.critical')}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
                   <div>
                     <label className='text-sm font-medium text-gray-700'>
-                      Category
+                      {t('labels.category')}
                     </label>
                     <Select
                       value={activeDecision.category}
@@ -701,16 +712,16 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value='legacy-planning'>
-                          Legacy Planning
+                          {t('filters.legacy')}
                         </SelectItem>
-                        <SelectItem value='healthcare'>Healthcare</SelectItem>
-                        <SelectItem value='financial'>Financial</SelectItem>
-                        <SelectItem value='property'>Property</SelectItem>
+                        <SelectItem value='healthcare'>{t('filters.healthcare')}</SelectItem>
+                        <SelectItem value='financial'>{t('filters.financial')}</SelectItem>
+                        <SelectItem value='property'>{t('filters.property')}</SelectItem>
                         <SelectItem value='family-governance'>
-                          Family Governance
+                          {t('filters.governance')}
                         </SelectItem>
-                        <SelectItem value='emergency'>Emergency</SelectItem>
-                        <SelectItem value='other'>Other</SelectItem>
+                        <SelectItem value='emergency'>{t('filters.emergency')}</SelectItem>
+                        <SelectItem value='other'>{t('filters.other')}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -718,7 +729,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
 
                 <div>
                   <label className='text-sm font-medium text-gray-700'>
-                    Voting Deadline
+                    {t('labels.deadline')}
                   </label>
                   <Input
                     type='datetime-local'
@@ -741,7 +752,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
 
               <TabsContent value='voters' className='space-y-4'>
                 <div>
-                  <h3 className='font-medium mb-3'>Eligible Voters</h3>
+                  <h3 className='font-medium mb-3'>{t('labels.eligibleVoters')}</h3>
                   <div className='space-y-2'>
                     {allMembers.map(member => (
                       <div
@@ -757,7 +768,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
                           <div>
                             <div className='font-medium'>{member.name}</div>
                             <div className='text-sm text-gray-500'>
-                              {member.role} • Weight: {member.votingWeight}
+                              {member.role} • {t('member.votingWeight', { weight: member.votingWeight })}
                             </div>
                           </div>
                         </div>
@@ -814,12 +825,12 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
                           </CardTitle>
                           <Badge className={getStatusColor(decision.status)}>
                             {getStatusIcon(decision.status)}
-                            {decision.status}
+                            {getStatusLabel(decision.status)}
                           </Badge>
                           <Badge
                             className={getPriorityColor(decision.priority)}
                           >
-                            {decision.priority}
+                            {getPriorityLabel(decision.priority)}
                           </Badge>
                         </div>
                         <p className='text-gray-600 text-sm'>
@@ -835,7 +846,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
                               className='gap-2'
                             >
                               <VoteIcon className='h-3 w-3' />
-                              Start Voting
+                              {t('buttons.vote')}
                             </Button>
                           )}
                         <Button
@@ -845,7 +856,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
                           className='gap-2'
                         >
                           <Eye className='h-3 w-3' />
-                          View Details
+                          {t('buttons.viewDecision')}
                         </Button>
                       </div>
                     </div>
@@ -857,7 +868,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
                       !userVote && (
                         <div className='mb-4 p-4 bg-blue-50 rounded-lg'>
                           <h4 className='font-medium text-blue-900 mb-2'>
-                            Cast Your Vote
+                            {t('buttons.vote')}
                           </h4>
                           <div className='grid gap-2'>
                             {decision.options.map(option => (
@@ -879,11 +890,11 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
                           >
                             <DialogContent>
                               <DialogHeader>
-                                <DialogTitle>Confirm Your Vote</DialogTitle>
+                                <DialogTitle>{t('buttons.submitVote')}</DialogTitle>
                               </DialogHeader>
                               <div className='space-y-4'>
                                 <p>
-                                  You are voting for:{' '}
+                                  {t('voting.votesCount', { count: 1 })}:{' '}
                                   <strong>
                                     {
                                       decision.options.find(
@@ -895,9 +906,9 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
                                 {decision.settings.showVoteReasoning && (
                                   <div>
                                     <label className='text-sm font-medium'>
-                                      Reasoning (optional)
+                                      {t('labels.voteReasoning')}
                                     </label>
-                                    <Textarea placeholder='Explain your reasoning...' />
+                                    <Textarea placeholder={t('placeholders.voteReasoning')} />
                                   </div>
                                 )}
                                 <div className='flex gap-2 justify-end'>
@@ -905,7 +916,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
                                     variant='outline'
                                     onClick={() => setVotingFor(null)}
                                   >
-                                    Cancel
+                                    {t('buttons.cancelEdit')}
                                   </Button>
                                   <Button
                                     onClick={() =>
@@ -913,7 +924,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
                                       castVote(decision.id, votingFor)
                                     }
                                   >
-                                    Confirm Vote
+                                    {t('buttons.submitVote')}
                                   </Button>
                                 </div>
                               </div>
@@ -928,7 +939,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
                         <div className='flex items-center gap-2'>
                           <CheckCircle className='h-4 w-4 text-green-600' />
                           <span className='text-green-800 font-medium'>
-                            You voted:{' '}
+                            {t('voting.votesCount', { count: 1 })}:{' '}
                             {
                               decision.options.find(
                                 o => o.id === userVote.optionId
@@ -951,7 +962,7 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
                           <div className='flex items-center justify-between text-sm'>
                             <span className='font-medium'>{option.text}</span>
                             <span className='text-gray-500'>
-                              {option.votes.length} votes ({option.percentage}%)
+                              {t('voting.votesCount', { count: option.votes.length, plural: option.votes.length !== 1 ? 's' : '' })} ({option.percentage}%)
                             </span>
                           </div>
                           <Progress
@@ -968,12 +979,14 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
                         <div className='flex items-center gap-2'>
                           <CheckCircle className='h-4 w-4 text-green-600' />
                           <span className='font-medium text-green-800'>
-                            Decision: {winningOption?.text}
+                            {t('labels.results')}: {winningOption?.text}
                           </span>
                         </div>
                         <p className='text-sm text-green-700 mt-1'>
-                          Decided on{' '}
-                          {decision.result.finalizedAt.toLocaleDateString()}
+                          {t('voting.resultFinalized', { 
+                            name: 'System', 
+                            date: decision.result.finalizedAt.toLocaleDateString() 
+                          })}
                         </p>
                       </div>
                     )}
@@ -984,17 +997,16 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
                         <div className='flex items-center gap-1'>
                           <Users className='h-3 w-3' />
                           {decision.votes.length}/
-                          {decision.eligibleVoters.length} voted
+                          {decision.eligibleVoters.length} {t('buttons.vote')}
                         </div>
                         <div className='flex items-center gap-1'>
                           <MessageSquare className='h-3 w-3' />
-                          {decision.comments.length} comments
+                          {decision.comments.length} {t('labels.comments')}
                         </div>
                         {decision.votingDeadline && (
                           <div className='flex items-center gap-1'>
                             <Clock className='h-3 w-3' />
-                            Deadline:{' '}
-                            {decision.votingDeadline.toLocaleDateString()}
+                            {t('voting.votingDeadline', { date: decision.votingDeadline.toLocaleDateString() })}
                           </div>
                         )}
                       </div>
@@ -1019,17 +1031,17 @@ export const FamilyDecisionTracking: React.FC<FamilyDecisionTrackingProps> = ({
         <div className='text-center py-12'>
           <VoteIcon className='h-12 w-12 text-gray-400 mx-auto mb-4' />
           <h3 className='text-lg font-medium text-gray-900 mb-2'>
-            No Decisions Found
+            {t('emptyStates.noDecisions')}
           </h3>
           <p className='text-gray-600 mb-4'>
             {filterStatus !== 'all' || filterCategory !== 'all'
-              ? 'Try adjusting your filters to see more decisions'
-              : 'Create your first family decision to get started with collaborative decision-making'}
+              ? t('emptyStates.noDecisions')
+              : t('emptyStates.noActiveDecisions')}
           </p>
           {filterStatus === 'all' && filterCategory === 'all' && (
             <Button onClick={() => setIsCreating(true)} className='gap-2'>
               <Plus className='h-4 w-4' />
-              Create First Decision
+              {t('buttons.createDecision')}
             </Button>
           )}
         </div>

@@ -1,5 +1,6 @@
 
 import React, { useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
@@ -119,6 +120,7 @@ export const FamilyHistoryPreservation: React.FC<
   onRecordVideo,
   onUploadPhoto,
 }) => {
+  const { t } = useTranslation('ui/family-history-preservation');
   const [activeTab, setActiveTab] = useState('overview');
   const [_selectedItem, _setSelectedItem] = useState<HistoryItem | null>(null);
   const [isRecording, setIsRecording] = useState<'audio' | 'video' | null>(
@@ -214,7 +216,7 @@ export const FamilyHistoryPreservation: React.FC<
       }, 1000);
     } catch (error) {
       console.error('Error starting recording:', error);
-      alert('Unable to access camera/microphone. Please check permissions.');
+      alert(t('recording.permissions'));
     }
   };
 
@@ -386,11 +388,11 @@ export const FamilyHistoryPreservation: React.FC<
                   }
                   className='text-xs'
                 >
-                  {item.importance}
+                  {t(`importance.${item.importance}`)}
                 </Badge>
                 {item.isPrivate && (
                   <Badge variant='outline' className='text-xs'>
-                    Private
+                    {t('privacy.private')}
                   </Badge>
                 )}
               </div>
@@ -421,7 +423,7 @@ export const FamilyHistoryPreservation: React.FC<
                   ))}
                   {item.tags.length > 3 && (
                     <Badge variant='outline' className='text-xs px-1'>
-                      +{item.tags.length - 3}
+                      {t('historyItem.addTags', { count: item.tags.length - 3 })}
                     </Badge>
                   )}
                 </div>
@@ -443,7 +445,7 @@ export const FamilyHistoryPreservation: React.FC<
                   })}
                   {item.relatedPeople.length > 3 && (
                     <div className='w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-xs font-medium border-2 border-white'>
-                      +{item.relatedPeople.length - 3}
+                      {t('historyItem.addPeople', { count: item.relatedPeople.length - 3 })}
                     </div>
                   )}
                 </div>
@@ -491,7 +493,9 @@ export const FamilyHistoryPreservation: React.FC<
             <div className='flex items-center gap-3'>
               <div className='w-4 h-4 bg-red-500 rounded-full animate-pulse'></div>
               <span className='font-medium'>
-                Recording {isRecording === 'video' ? 'Video' : 'Audio'}
+                {t('recording.recording', { 
+                  type: isRecording === 'video' ? t('recording.video') : t('recording.audio') 
+                })}
               </span>
             </div>
             <div className='text-lg font-mono'>{formatTime(recordingTime)}</div>
@@ -530,7 +534,7 @@ export const FamilyHistoryPreservation: React.FC<
               className='flex-1'
             >
               <Square className='h-4 w-4 mr-2' />
-              Stop Recording
+              {t('buttons.stopRecording')}
             </Button>
           </div>
         </div>
@@ -545,10 +549,10 @@ export const FamilyHistoryPreservation: React.FC<
         <div>
           <h2 className='text-2xl font-semibold flex items-center gap-2'>
             <Archive className='h-6 w-6' />
-            Family History Preservation
+            {t('header.title')}
           </h2>
           <p className='text-gray-600'>
-            Capture, preserve, and share your family's stories and memories
+            {t('header.description')}
           </p>
         </div>
 
@@ -559,7 +563,7 @@ export const FamilyHistoryPreservation: React.FC<
             disabled={!!isRecording}
           >
             <Mic className='h-4 w-4 mr-2' />
-            Record Audio
+            {t('buttons.recordAudio')}
           </Button>
 
           <Button
@@ -568,7 +572,7 @@ export const FamilyHistoryPreservation: React.FC<
             disabled={!!isRecording}
           >
             <Video className='h-4 w-4 mr-2' />
-            Record Video
+            {t('buttons.recordVideo')}
           </Button>
 
           <input
@@ -583,25 +587,25 @@ export const FamilyHistoryPreservation: React.FC<
             onClick={() => document.getElementById('photo-upload')?.click()}
           >
             <Camera className='h-4 w-4 mr-2' />
-            Upload Photo
+            {t('buttons.uploadPhoto')}
           </Button>
 
           <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
             <DialogTrigger asChild>
               <Button>
                 <FileText className='h-4 w-4 mr-2' />
-                Add Story
+                {t('buttons.addStory')}
               </Button>
             </DialogTrigger>
             <DialogContent className='max-w-2xl'>
               <DialogHeader>
-                <DialogTitle>Create New History Item</DialogTitle>
+                <DialogTitle>{t('dialogs.createHistoryItem.title')}</DialogTitle>
               </DialogHeader>
 
               <div className='space-y-4'>
                 <div className='grid grid-cols-2 gap-4'>
                   <div>
-                    <Label>Type</Label>
+                    <Label>{t('form.labels.type')}</Label>
                     <Select
                       value={newItem.type}
                       onValueChange={value =>
@@ -615,18 +619,18 @@ export const FamilyHistoryPreservation: React.FC<
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value='story'>Story</SelectItem>
-                        <SelectItem value='photo'>Photo</SelectItem>
-                        <SelectItem value='document'>Document</SelectItem>
+                        <SelectItem value='story'>{t('types.story')}</SelectItem>
+                        <SelectItem value='photo'>{t('types.photo')}</SelectItem>
+                        <SelectItem value='document'>{t('types.document')}</SelectItem>
                         <SelectItem value='timeline_event'>
-                          Timeline Event
+                          {t('types.timelineEvent')}
                         </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
                   <div>
-                    <Label>Category</Label>
+                    <Label>{t('form.labels.category')}</Label>
                     <Select
                       value={newItem.category}
                       onValueChange={value =>
@@ -640,35 +644,35 @@ export const FamilyHistoryPreservation: React.FC<
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value='childhood'>Childhood</SelectItem>
-                        <SelectItem value='education'>Education</SelectItem>
-                        <SelectItem value='career'>Career</SelectItem>
-                        <SelectItem value='family'>Family</SelectItem>
-                        <SelectItem value='travel'>Travel</SelectItem>
-                        <SelectItem value='traditions'>Traditions</SelectItem>
+                        <SelectItem value='childhood'>{t('categories.childhood')}</SelectItem>
+                        <SelectItem value='education'>{t('categories.education')}</SelectItem>
+                        <SelectItem value='career'>{t('categories.career')}</SelectItem>
+                        <SelectItem value='family'>{t('categories.family')}</SelectItem>
+                        <SelectItem value='travel'>{t('categories.travel')}</SelectItem>
+                        <SelectItem value='traditions'>{t('categories.traditions')}</SelectItem>
                         <SelectItem value='achievements'>
-                          Achievements
+                          {t('categories.achievements')}
                         </SelectItem>
-                        <SelectItem value='challenges'>Challenges</SelectItem>
-                        <SelectItem value='other'>Other</SelectItem>
+                        <SelectItem value='challenges'>{t('categories.challenges')}</SelectItem>
+                        <SelectItem value='other'>{t('categories.other')}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                 </div>
 
                 <div>
-                  <Label>Title</Label>
+                  <Label>{t('form.labels.title')}</Label>
                   <Input
                     value={newItem.title || ''}
                     onChange={e =>
                       setNewItem(prev => ({ ...prev, title: e.target.value }))
                     }
-                    placeholder='Enter a memorable title'
+                    placeholder={t('form.placeholders.title')}
                   />
                 </div>
 
                 <div>
-                  <Label>Description</Label>
+                  <Label>{t('form.labels.description')}</Label>
                   <Textarea
                     value={newItem.description || ''}
                     onChange={e =>
@@ -677,14 +681,14 @@ export const FamilyHistoryPreservation: React.FC<
                         description: e.target.value,
                       }))
                     }
-                    placeholder='Brief description'
+                    placeholder={t('form.placeholders.description')}
                     rows={2}
                   />
                 </div>
 
                 {newItem.type === 'story' && (
                   <div>
-                    <Label>Story Content</Label>
+                    <Label>{t('form.labels.storyContent')}</Label>
                     <Textarea
                       value={newItem.content || ''}
                       onChange={e =>
@@ -693,7 +697,7 @@ export const FamilyHistoryPreservation: React.FC<
                           content: e.target.value,
                         }))
                       }
-                      placeholder='Tell your story...'
+                      placeholder={t('form.placeholders.storyContent')}
                       rows={6}
                     />
                   </div>
@@ -701,7 +705,7 @@ export const FamilyHistoryPreservation: React.FC<
 
                 <div className='grid grid-cols-2 gap-4'>
                   <div>
-                    <Label>Importance</Label>
+                    <Label>{t('form.labels.importance')}</Label>
                     <Select
                       value={newItem.importance}
                       onValueChange={value =>
@@ -715,16 +719,16 @@ export const FamilyHistoryPreservation: React.FC<
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value='low'>Low</SelectItem>
-                        <SelectItem value='medium'>Medium</SelectItem>
-                        <SelectItem value='high'>High</SelectItem>
-                        <SelectItem value='milestone'>Milestone</SelectItem>
+                        <SelectItem value='low'>{t('importance.low')}</SelectItem>
+                        <SelectItem value='medium'>{t('importance.medium')}</SelectItem>
+                        <SelectItem value='high'>{t('importance.high')}</SelectItem>
+                        <SelectItem value='milestone'>{t('importance.milestone')}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
                   <div>
-                    <Label>Date of Event (Optional)</Label>
+                    <Label>{t('form.labels.dateOfEvent')}</Label>
                     <Input
                       type='date'
                       value={newItem.dateOfEvent || ''}
@@ -743,9 +747,9 @@ export const FamilyHistoryPreservation: React.FC<
                     variant='outline'
                     onClick={() => setShowCreateDialog(false)}
                   >
-                    Cancel
+                    {t('buttons.cancel')}
                   </Button>
-                  <Button onClick={handleSaveItem}>Save History Item</Button>
+                  <Button onClick={handleSaveItem}>{t('buttons.saveHistoryItem')}</Button>
                 </div>
               </div>
             </DialogContent>
@@ -756,10 +760,10 @@ export const FamilyHistoryPreservation: React.FC<
       {/* Content Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className='grid w-full grid-cols-4'>
-          <TabsTrigger value='overview'>Overview</TabsTrigger>
-          <TabsTrigger value='stories'>Stories</TabsTrigger>
-          <TabsTrigger value='media'>Media</TabsTrigger>
-          <TabsTrigger value='timelines'>Timelines</TabsTrigger>
+          <TabsTrigger value='overview'>{t('tabs.overview')}</TabsTrigger>
+          <TabsTrigger value='stories'>{t('tabs.stories')}</TabsTrigger>
+          <TabsTrigger value='media'>{t('tabs.media')}</TabsTrigger>
+          <TabsTrigger value='timelines'>{t('tabs.timelines')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value='overview' className='space-y-6'>
@@ -778,7 +782,7 @@ export const FamilyHistoryPreservation: React.FC<
                           .length
                       }
                     </p>
-                    <p className='text-sm text-gray-600'>Stories</p>
+                    <p className='text-sm text-gray-600'>{t('stats.stories')}</p>
                   </div>
                 </div>
               </CardContent>
@@ -797,7 +801,7 @@ export const FamilyHistoryPreservation: React.FC<
                           .length
                       }
                     </p>
-                    <p className='text-sm text-gray-600'>Photos</p>
+                    <p className='text-sm text-gray-600'>{t('stats.photos')}</p>
                   </div>
                 </div>
               </CardContent>
@@ -816,7 +820,7 @@ export const FamilyHistoryPreservation: React.FC<
                           .length
                       }
                     </p>
-                    <p className='text-sm text-gray-600'>Videos</p>
+                    <p className='text-sm text-gray-600'>{t('stats.videos')}</p>
                   </div>
                 </div>
               </CardContent>
@@ -836,7 +840,7 @@ export const FamilyHistoryPreservation: React.FC<
                         ).length
                       }
                     </p>
-                    <p className='text-sm text-gray-600'>Milestones</p>
+                    <p className='text-sm text-gray-600'>{t('stats.milestones')}</p>
                   </div>
                 </div>
               </CardContent>
@@ -846,7 +850,7 @@ export const FamilyHistoryPreservation: React.FC<
           {/* Recent Items */}
           <Card>
             <CardHeader>
-              <CardTitle>Recent History Items</CardTitle>
+              <CardTitle>{t('overview.recentHistoryItems')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
@@ -888,22 +892,22 @@ export const FamilyHistoryPreservation: React.FC<
         <TabsContent value='timelines'>
           <div className='space-y-6'>
             <div className='flex justify-between items-center'>
-              <h3 className='text-lg font-semibold'>Family Timelines</h3>
+              <h3 className='text-lg font-semibold'>{t('timeline.familyTimelines')}</h3>
               <Dialog
                 open={showTimelineDialog}
                 onOpenChange={setShowTimelineDialog}
               >
                 <DialogTrigger asChild>
-                  <Button>Create Timeline</Button>
+                  <Button>{t('buttons.createTimeline')}</Button>
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogTitle>Create New Timeline</DialogTitle>
+                    <DialogTitle>{t('dialogs.createTimeline.title')}</DialogTitle>
                   </DialogHeader>
 
                   <div className='space-y-4'>
                     <div>
-                      <Label>Timeline Name</Label>
+                      <Label>{t('form.labels.timelineName')}</Label>
                       <Input
                         value={newTimeline.name || ''}
                         onChange={e =>
@@ -912,12 +916,12 @@ export const FamilyHistoryPreservation: React.FC<
                             name: e.target.value,
                           }))
                         }
-                        placeholder='e.g., Smith Family Journey'
+                        placeholder={t('form.placeholders.timelineName')}
                       />
                     </div>
 
                     <div>
-                      <Label>Description</Label>
+                      <Label>{t('form.labels.description')}</Label>
                       <Textarea
                         value={newTimeline.description || ''}
                         onChange={e =>
@@ -926,14 +930,14 @@ export const FamilyHistoryPreservation: React.FC<
                             description: e.target.value,
                           }))
                         }
-                        placeholder='Describe this timeline...'
+                        placeholder={t('form.placeholders.timelineDescription')}
                         rows={3}
                       />
                     </div>
 
                     <div className='grid grid-cols-2 gap-4'>
                       <div>
-                        <Label>Start Year</Label>
+                        <Label>{t('form.labels.startYear')}</Label>
                         <Input
                           type='number'
                           value={newTimeline.startYear || ''}
@@ -947,7 +951,7 @@ export const FamilyHistoryPreservation: React.FC<
                       </div>
 
                       <div>
-                        <Label>Theme</Label>
+                        <Label>{t('form.labels.theme')}</Label>
                         <Select
                           value={newTimeline.theme}
                           onValueChange={value =>
@@ -961,10 +965,10 @@ export const FamilyHistoryPreservation: React.FC<
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value='classic'>Classic</SelectItem>
-                            <SelectItem value='modern'>Modern</SelectItem>
-                            <SelectItem value='vintage'>Vintage</SelectItem>
-                            <SelectItem value='elegant'>Elegant</SelectItem>
+                            <SelectItem value='classic'>{t('themes.classic')}</SelectItem>
+                            <SelectItem value='modern'>{t('themes.modern')}</SelectItem>
+                            <SelectItem value='vintage'>{t('themes.vintage')}</SelectItem>
+                            <SelectItem value='elegant'>{t('themes.elegant')}</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
@@ -975,10 +979,10 @@ export const FamilyHistoryPreservation: React.FC<
                         variant='outline'
                         onClick={() => setShowTimelineDialog(false)}
                       >
-                        Cancel
+                        {t('buttons.cancel')}
                       </Button>
                       <Button onClick={handleCreateTimeline}>
-                        Create Timeline
+                        {t('buttons.createTimeline')}
                       </Button>
                     </div>
                   </div>
@@ -1000,7 +1004,7 @@ export const FamilyHistoryPreservation: React.FC<
                       <Badge
                         variant={timeline.isPublic ? 'default' : 'secondary'}
                       >
-                        {timeline.isPublic ? 'Public' : 'Private'}
+                        {timeline.isPublic ? t('privacy.public') : t('privacy.private')}
                       </Badge>
                     </div>
                   </CardHeader>
@@ -1008,11 +1012,11 @@ export const FamilyHistoryPreservation: React.FC<
                     <div className='flex items-center justify-between'>
                       <div className='flex items-center gap-4 text-sm text-gray-600'>
                         <span>
-                          {timeline.startYear} - {timeline.endYear || 'Present'}
+                          {timeline.startYear} - {timeline.endYear || t('timeline.present')}
                         </span>
-                        <span>{timeline.events.length} events</span>
+                        <span>{timeline.events.length} {t('timeline.events')}</span>
                         <span>
-                          {timeline.collaborators.length} collaborators
+                          {timeline.collaborators.length} {t('timeline.collaborators')}
                         </span>
                       </div>
 

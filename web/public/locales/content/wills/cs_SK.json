@@ -23,7 +23,7 @@
     "forcedHeirs": {
       "title": "Neopominutelní dědicové",
       "notice": "Podle § 479 Občanského zákoníku mají neopominutelní dědicové (potomci) právo na povinný podíl.",
-      "minorChildren": "Nezletilí potomci musí dostat alespoň tolik, kolik představuje jejich dědický podíl ze zákona.",
+      "minorChildren": "Nezletiletí potomci musí dostat celý (100%) jejich dědický podíl ze zákona.",
       "adultChildren": "Zletilí potomci musí dostat alespoň tolik, kolik představuje polovinu jejich dědického podílu ze zákona.",
       "disinheritance": "Vydědění je možné pouze ze zákonných důvodů uvedených v § 469a Občanského zákoníku."
     },

@@ -1,5 +1,6 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSupabaseWithClerk } from '@/integrations/supabase/client';
 import { Card } from '@/components/ui/card';
@@ -27,6 +28,7 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
   verificationToken,
   // _guardianAccess = false, // Not used
 }) => {
+  const { t } = useTranslation('ui/emergency-dashboard');
   const { token } = useParams<{ token: string }>();
   const navigate = useNavigate();
   const createSupabaseClient = useSupabaseWithClerk();
@@ -61,7 +63,7 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
         .single();
 
       if (activationError || !activationData) {
-        throw new Error('Invalid or expired verification token');
+        throw new Error(t('errors.invalidToken'));
       }
 
       // Extract and properly type the activation
@@ -88,7 +90,7 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
 
       // Check if token is expired
       if (new Date(activation.token_expires_at) < new Date()) {
-        throw new Error('Verification token has expired');
+        throw new Error(t('errors.tokenExpired'));
       }
 
       // Get user profile information
@@ -197,7 +199,7 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
       // Compile dashboard data
       const dashboardData: EmergencyDashboardData = {
         user_info: {
-          name: profile?.full_name || 'Unknown User',
+          name: profile?.full_name || t('user.unknownUser'),
           email: profile?.email || '',
           last_activity: activation.created_at, // Would be actual last activity
           shield_status: 'pending_verification',
@@ -216,7 +218,7 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
       setError(
         error instanceof Error
           ? error.message
-          : 'Failed to load emergency dashboard'
+          : t('errors.loadFailed')
       );
     } finally {
       setIsLoading(false);
@@ -280,8 +282,8 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
 
       const message =
         response === 'confirmed'
-          ? 'Emergency activation confirmed successfully. The family protection system is now active.'
-          : 'Emergency activation has been rejected. The system will remain in its current state.';
+          ? t('verification.messages.confirmed')
+          : t('verification.messages.rejected');
 
       toast.success(message);
 
@@ -298,7 +300,7 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
     } catch (error) {
       console.error('Error processing activation response:', error);
       toast.error(
-        error instanceof Error ? error.message : 'Failed to process response'
+        error instanceof Error ? error.message : t('errors.processingFailed')
       );
     } finally {
       setIsProcessing(false);
@@ -311,11 +313,11 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
 
       // Get document download URL (would need to implement decryption)
       toast.info(
-        'Document access feature will be implemented with decryption system'
+        t('documents.accessNotice')
       );
     } catch (error) {
       console.error('Error downloading document:', error);
-      toast.error('Failed to access document');
+      toast.error(t('errors.documentAccessFailed'));
     }
   };
 
@@ -334,10 +336,10 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
             className='w-8 h-8 animate-spin mx-auto mb-4 text-red-600'
           />
           <h2 className='text-xl font-semibold mb-2'>
-            Loading Emergency Dashboard
+            {t('loading.title')}
           </h2>
           <p className='text-muted-foreground'>
-            Verifying access and loading data...
+            {t('loading.description')}
           </p>
         </Card>
       </div>
@@ -353,11 +355,11 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
             className='w-12 h-12 mx-auto mb-4 text-red-600'
           />
           <h2 className='text-xl font-semibold mb-2 text-red-900 dark:text-red-100'>
-            Access Error
+            {t('errors.accessError')}
           </h2>
           <p className='text-muted-foreground mb-6'>{error}</p>
           <Button onClick={() => navigate('/')} variant='outline'>
-            Return Home
+            {t('buttons.returnHome')}
           </Button>
         </Card>
       </div>
@@ -385,11 +387,10 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
               </div>
               <div>
                 <h1 className='text-3xl font-bold text-red-900 dark:text-red-100'>
-                  Emergency Guardian Dashboard
+                  {t('header.title')}
                 </h1>
                 <p className='text-red-700 dark:text-red-300'>
-                  Emergency activation request for{' '}
-                  <strong>{user_info.name}</strong>
+                  {t('header.subtitle', { userName: user_info.name })}
                 </p>
               </div>
             </div>
@@ -404,10 +405,11 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
                       .toUpperCase()}
                   </Badge>
                   <span className='text-sm text-red-700 dark:text-red-300'>
-                    Token expires:{' '}
-                    {new Date(
-                      activation_details.token_expires_at
-                    ).toLocaleString()}
+                    {t('status.tokenExpires', { 
+                      date: new Date(
+                        activation_details.token_expires_at
+                      ).toLocaleString()
+                    })}
                   </span>
                 </div>
                 <Badge
@@ -418,7 +420,7 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
                   }
                   className='px-3 py-1'
                 >
-                  {activation_details.status.toUpperCase()}
+                  {t(`status.${activation_details.status}`)}
                 </Badge>
               </div>
             </Card>
@@ -429,45 +431,45 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
             <FadeIn duration={0.8} delay={0.2}>
               <Card className='p-6 mb-8 border-red-200 dark:border-red-800'>
                 <h2 className='text-xl font-semibold mb-4 text-red-900 dark:text-red-100'>
-                  Guardian Verification Required
+                  {t('verification.title')}
                 </h2>
 
                 <div className='space-y-4 mb-6'>
                   <div className='grid md:grid-cols-2 gap-4'>
                     <div>
-                      <h3 className='font-medium mb-2'>Activation Details</h3>
+                      <h3 className='font-medium mb-2'>{t('verification.activationDetails.title')}</h3>
                       <div className='text-sm space-y-1 text-muted-foreground'>
                         <p>
-                          <strong>Trigger:</strong>{' '}
+                          <strong>{t('verification.activationDetails.trigger')}</strong>{' '}
                           {activation_details.trigger_type.replace('_', ' ')}
                         </p>
                         <p>
-                          <strong>Requested:</strong>{' '}
+                          <strong>{t('verification.activationDetails.requested')}</strong>{' '}
                           {new Date(
                             activation_details.created_at
                           ).toLocaleString()}
                         </p>
                         <p>
-                          <strong>Your Priority:</strong> Level{' '}
+                          <strong>{t('verification.activationDetails.priority')}</strong> Level{' '}
                           {access_permissions.emergency_contact_priority}
                         </p>
                       </div>
                     </div>
 
                     <div>
-                      <h3 className='font-medium mb-2'>Your Permissions</h3>
+                      <h3 className='font-medium mb-2'>{t('verification.permissions.title')}</h3>
                       <div className='flex flex-wrap gap-2'>
                         {access_permissions.can_access_health_docs && (
-                          <Badge variant='secondary'>Health Documents</Badge>
+                          <Badge variant='secondary'>{t('verification.permissions.healthDocs')}</Badge>
                         )}
                         {access_permissions.can_access_financial_docs && (
-                          <Badge variant='secondary'>Financial Documents</Badge>
+                          <Badge variant='secondary'>{t('verification.permissions.financialDocs')}</Badge>
                         )}
                         {access_permissions.is_will_executor && (
-                          <Badge variant='secondary'>Will Executor</Badge>
+                          <Badge variant='secondary'>{t('verification.permissions.willExecutor')}</Badge>
                         )}
                         {access_permissions.is_child_guardian && (
-                          <Badge variant='secondary'>Child Guardian</Badge>
+                          <Badge variant='secondary'>{t('verification.permissions.childGuardian')}</Badge>
                         )}
                       </div>
                     </div>
@@ -475,12 +477,12 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
 
                   <div>
                     <label className='block text-sm font-medium mb-2'>
-                      Response Notes (Optional)
+                      {t('verification.responseNotes.label')}
                     </label>
                     <Textarea
                       value={responseNotes}
                       onChange={e => setResponseNotes(e.target.value)}
-                      placeholder='Add any notes about your decision or additional context...'
+                      placeholder={t('verification.responseNotes.placeholder')}
                       className='min-h-[100px]'
                     />
                   </div>
@@ -501,7 +503,7 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
                     ) : (
                       <Icon name='x' className='w-4 h-4 mr-2' />
                     )}
-                    Reject Activation
+                    {t('verification.buttons.reject')}
                   </Button>
 
                   <Button
@@ -517,7 +519,7 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
                     ) : (
                       <Icon name='check' className='w-4 h-4 mr-2' />
                     )}
-                    Confirm Activation
+                    {t('verification.buttons.confirm')}
                   </Button>
                 </div>
               </Card>
@@ -527,10 +529,10 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
           {/* Navigation Tabs */}
           <div className='flex gap-1 mb-6 p-1 bg-white dark:bg-gray-900 rounded-lg border'>
             {[
-              { id: 'overview', label: 'Overview', icon: 'dashboard' },
-              { id: 'documents', label: 'Documents', icon: 'documents' },
-              { id: 'contacts', label: 'Contacts', icon: 'users' },
-              { id: 'capsules', label: 'Time Capsules', icon: 'clock' },
+              { id: 'overview', label: t('tabs.overview'), icon: 'dashboard' },
+              { id: 'documents', label: t('tabs.documents'), icon: 'documents' },
+              { id: 'contacts', label: t('tabs.contacts'), icon: 'users' },
+              { id: 'capsules', label: t('tabs.capsules'), icon: 'clock' },
             ].map(tab => (
               <button
                 key={tab.id}
@@ -563,21 +565,21 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
                 <Card className='p-6'>
                   <h3 className='font-semibold mb-4 flex items-center gap-2'>
                     <Icon name='user' className='w-5 h-5' />
-                    User Information
+                    {t('overview.userInfo.title')}
                   </h3>
                   <div className='space-y-3 text-sm'>
                     <div>
-                      <strong>Name:</strong> {user_info.name}
+                      <strong>{t('overview.userInfo.name')}</strong> {user_info.name}
                     </div>
                     <div>
-                      <strong>Email:</strong> {user_info.email}
+                      <strong>{t('overview.userInfo.email')}</strong> {user_info.email}
                     </div>
                     <div>
-                      <strong>Last Activity:</strong>{' '}
+                      <strong>{t('overview.userInfo.lastActivity')}</strong>{' '}
                       {new Date(user_info.last_activity).toLocaleDateString()}
                     </div>
                     <div>
-                      <strong>Shield Status:</strong>
+                      <strong>{t('overview.userInfo.shieldStatus')}</strong>
                       <Badge className='ml-2' variant='secondary'>
                         {user_info.shield_status
                           .replace('_', ' ')
@@ -590,23 +592,22 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
                 <Card className='p-6'>
                   <h3 className='font-semibold mb-4 flex items-center gap-2'>
                     <Icon name='info' className='w-5 h-5' />
-                    Quick Stats
+                    {t('overview.quickStats.title')}
                   </h3>
                   <div className='space-y-3 text-sm'>
                     <div>
-                      <strong>Available Documents:</strong>{' '}
+                      <strong>{t('overview.quickStats.availableDocuments')}</strong>{' '}
                       {available_documents.length}
                     </div>
                     <div>
-                      <strong>Emergency Contacts:</strong>{' '}
+                      <strong>{t('overview.quickStats.emergencyContacts')}</strong>{' '}
                       {contact_information.length}
                     </div>
                     <div>
-                      <strong>Time Capsules:</strong> {time_capsules.length}
+                      <strong>{t('overview.quickStats.timeCapsules')}</strong> {time_capsules.length}
                     </div>
                     <div>
-                      <strong>Access Level:</strong> Priority{' '}
-                      {access_permissions.emergency_contact_priority}
+                      <strong>{t('overview.quickStats.accessLevel')}</strong> {t('overview.quickStats.priority', { level: access_permissions.emergency_contact_priority })}
                     </div>
                   </div>
                 </Card>
@@ -617,13 +618,12 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
               <Card className='p-6'>
                 <h3 className='font-semibold mb-4 flex items-center gap-2'>
                   <Icon name='documents' className='w-5 h-5' />
-                  Accessible Documents ({available_documents.length})
+                  {t('documents.title', { count: available_documents.length })}
                 </h3>
 
                 {available_documents.length === 0 ? (
                   <p className='text-muted-foreground text-center py-8'>
-                    No documents are currently accessible with your permission
-                    level.
+                    {t('documents.emptyState')}
                   </p>
                 ) : (
                   <div className='space-y-3'>
@@ -637,8 +637,7 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
                           <div>
                             <div className='font-medium'>{doc.file_name}</div>
                             <div className='text-sm text-muted-foreground'>
-                              {doc.document_type} • Updated{' '}
-                              {new Date(doc.last_updated).toLocaleDateString()}
+                              {doc.document_type} • {t('documents.updated', { date: new Date(doc.last_updated).toLocaleDateString() })}
                             </div>
                           </div>
                         </div>
@@ -652,7 +651,7 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
                             }
                             className='text-xs'
                           >
-                            {doc.access_level.toUpperCase()}
+                            {t(`documents.accessLevels.${doc.access_level}`)}
                           </Badge>
                           <Button
                             size='sm'
@@ -675,7 +674,7 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
               <Card className='p-6'>
                 <h3 className='font-semibold mb-4 flex items-center gap-2'>
                   <Icon name='users' className='w-5 h-5' />
-                  Emergency Contacts ({contact_information.length})
+                  {t('contacts.title', { count: contact_information.length })}
                 </h3>
 
                 <div className='space-y-4'>
@@ -706,10 +705,10 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
 
                       <div className='text-right'>
                         <Badge variant='outline' className='mb-2'>
-                          Priority {contact.priority}
+                          {t('contacts.priority', { number: contact.priority })}
                         </Badge>
                         <div className='text-xs text-muted-foreground'>
-                          {contact.is_notified ? 'Notified' : 'Not Notified'}
+                          {contact.is_notified ? t('contacts.status.notified') : t('contacts.status.notNotified')}
                         </div>
                       </div>
                     </div>
@@ -722,12 +721,12 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
               <Card className='p-6'>
                 <h3 className='font-semibold mb-4 flex items-center gap-2'>
                   <Icon name='clock' className='w-5 h-5' />
-                  Available Time Capsules ({time_capsules.length})
+                  {t('timeCapsules.title', { count: time_capsules.length })}
                 </h3>
 
                 {time_capsules.length === 0 ? (
                   <p className='text-muted-foreground text-center py-8'>
-                    No time capsules are currently available for access.
+                    {t('timeCapsules.emptyState')}
                   </p>
                 ) : (
                   <div className='space-y-4'>
@@ -749,15 +748,14 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
                           </div>
                           <Badge variant='outline'>
                             {capsule.delivery_condition === 'ON_DEATH'
-                              ? 'Emergency Access'
-                              : 'Scheduled'}
+                              ? t('timeCapsules.deliveryConditions.onDeath')
+                              : t('timeCapsules.deliveryConditions.scheduled')}
                           </Badge>
                         </div>
 
                         <div className='flex items-center justify-between'>
                           <div className='text-xs text-muted-foreground'>
-                            Created:{' '}
-                            {new Date(capsule.created_at).toLocaleDateString()}
+                            {t('timeCapsules.created', { date: new Date(capsule.created_at).toLocaleDateString() })}
                           </div>
                           <Button
                             size='sm'
@@ -765,7 +763,7 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
                             className='bg-amber-600 hover:bg-amber-700'
                           >
                             <Icon name='play' className='w-4 h-4 mr-2' />
-                            Access Message
+                            {t('timeCapsules.accessButton')}
                           </Button>
                         </div>
                       </div>

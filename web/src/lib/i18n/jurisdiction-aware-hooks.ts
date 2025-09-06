@@ -162,21 +162,53 @@ export const getWillTranslation = (
   userLanguage: SupportedLanguageCode,
   jurisdiction: SupportedJurisdictionCode
 ): string => {
-  // Define the translation matrix
+  // Define the translation matrix - now with full English and German support
   const translationMatrix: Record<string, string> = {
     // Czech Republic jurisdiction
     'cs_CZ': 'cs_CZ', // Czech speakers in CZ → Czech law in Czech
     'sk_CZ': 'sk_CZ', // Slovak speakers in CZ → Czech law in Slovak
     'en_CZ': 'en_CZ', // English speakers in CZ → Czech law in English
+    'de_CZ': 'de_CZ', // German speakers in CZ → Czech law in German
     
     // Slovakia jurisdiction
     'sk_SK': 'sk_SK', // Slovak speakers in SK → Slovak law in Slovak
     'cs_SK': 'cs_SK', // Czech speakers in SK → Slovak law in Czech
     'en_SK': 'en_SK', // English speakers in SK → Slovak law in English
+    'de_SK': 'de_SK', // German speakers in SK → Slovak law in German
   };
   
   const key = `${userLanguage}_${jurisdiction}`;
-  return translationMatrix[key] || `en_${jurisdiction}`; // Fallback to English
+  const result = translationMatrix[key];
+  
+  if (result) {
+    return result;
+  }
+  
+  // Enhanced fallback logic
+  // 1. Try English for the jurisdiction if not already tried
+  if (userLanguage !== 'en') {
+    const englishKey = `en_${jurisdiction}`;
+    if (translationMatrix[englishKey]) {
+      return englishKey;
+    }
+  }
+  
+  // 2. Try jurisdiction's default language
+  const jurisdictionDefaults: Record<string, string> = {
+    CZ: 'cs',
+    SK: 'sk'
+  };
+  
+  const defaultLang = jurisdictionDefaults[jurisdiction];
+  if (defaultLang && defaultLang !== userLanguage) {
+    const defaultKey = `${defaultLang}_${jurisdiction}`;
+    if (translationMatrix[defaultKey]) {
+      return defaultKey;
+    }
+  }
+  
+  // 3. Ultimate fallback to English
+  return `en_${jurisdiction}`;
 };
 
 /**

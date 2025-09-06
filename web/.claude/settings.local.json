@@ -15,7 +15,8 @@
       "Bash(npm run lint:*)",
       "Bash(npm run validate-translations:*)",
       "Bash(npx ts-node:*)",
-      "Bash(rg:*)"
+      "Bash(rg:*)",
+      "Bash(npm run typecheck:*)"
     ],
     "deny": []
   }

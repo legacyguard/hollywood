@@ -23,7 +23,7 @@
     "forcedHeirs": {
       "title": "Neopominuteľní dedičia",
       "notice": "Podľa § 479 Občianskeho zákonníka majú neopominuteľní dedičia (potomkovia) právo na povinný podiel.",
-      "minorChildren": "Maloletí potomkovia musia dostať aspoň toľko, koľko predstavuje ich dedičský podiel zo zákona.",
+      "minorChildren": "Maloletí potomkovia musia dostať celý (100%) ich dedičský podiel zo zákona.",
       "adultChildren": "Plnoletí potomkovia musia dostať aspoň toľko, koľko predstavuje polovica ich dedičského podielu zo zákona.",
       "disinheritance": "Vydedenie je možné len zo zákonných dôvodov uvedených v § 469a Občianskeho zákonníka."
     },

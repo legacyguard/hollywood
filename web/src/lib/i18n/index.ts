@@ -53,6 +53,17 @@ export {
 } from './legal-terminology';
 export type { LegalTerm } from './legal-terminology';
 
+// Service exports
+export { willTranslationService } from './will-translation-service';
+export type { WillTranslationConfig, TranslationAvailability } from './will-translation-service';
+
+// Enhanced hooks
+export { 
+  useJurisdictionAwareTranslation,
+  getWillTranslation,
+  validateTranslationCompleteness
+} from './jurisdiction-aware-hooks';
+
 // Type exports
 export type {
   DeepPartial,
