@@ -6,6 +6,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -38,6 +39,7 @@ interface ProfessionalNetworkLaunchProps {
 
 // Attorney Partnership Landing Page
 const AttorneyLandingPage: React.FC = () => {
+  const { t } = useTranslation('ui/professional-network-launch');
   const [applicationForm, setApplicationForm] = useState({
     firstName: '',
     lastName: '',
@@ -54,66 +56,60 @@ const AttorneyLandingPage: React.FC = () => {
   const benefits = [
     {
       icon: DollarSign,
-      title: 'Additional Revenue Stream',
-      description:
-        'Earn $150-$500 per document review with flexible scheduling',
+      title: t('attorney.benefits.items.0.title'),
+      description: t('attorney.benefits.items.0.description'),
       highlight: true,
     },
     {
       icon: Users,
-      title: 'Quality Client Referrals',
-      description:
-        'Connect with pre-qualified families who value professional guidance',
+      title: t('attorney.benefits.items.1.title'),
+      description: t('attorney.benefits.items.1.description'),
     },
     {
       icon: Clock,
-      title: 'Flexible Schedule',
-      description:
-        'Choose your availability and accept reviews that fit your schedule',
+      title: t('attorney.benefits.items.2.title'),
+      description: t('attorney.benefits.items.2.description'),
     },
     {
       icon: Shield,
-      title: 'Professional Platform',
-      description:
-        'Secure, compliant platform designed specifically for legal professionals',
+      title: t('attorney.benefits.items.3.title'),
+      description: t('attorney.benefits.items.3.description'),
     },
     {
       icon: TrendingUp,
-      title: 'Growing Market',
-      description: 'Join the fastest-growing family legacy planning platform',
+      title: t('attorney.benefits.items.4.title'),
+      description: t('attorney.benefits.items.4.description'),
     },
     {
       icon: Award,
-      title: 'Build Your Reputation',
-      description:
-        'Showcase your expertise and build a strong professional profile',
+      title: t('attorney.benefits.items.5.title'),
+      description: t('attorney.benefits.items.5.description'),
     },
   ];
 
   const process = [
     {
       step: 1,
-      title: 'Apply to Join',
-      description:
-        'Complete our application with your credentials and specializations',
+      title: t('attorney.process.steps.0.title'),
+      description: t('attorney.process.steps.0.description'),
       icon: FileText,
     },
     {
       step: 2,
-      title: 'Verification Process',
-      description: 'We verify your bar admission and professional credentials',
+      title: t('attorney.process.steps.1.title'),
+      description: t('attorney.process.steps.1.description'),
       icon: Shield,
     },
     {
       step: 3,
-      title: 'Platform Training',
-      description: 'Quick onboarding to our platform and review processes',
+      title: t('attorney.process.steps.2.title'),
+      description: t('attorney.process.steps.2.description'),
       icon: Target,
     },
     {
       step: 4,
-      title: 'Start Reviewing',
-      description: 'Accept review requests and start earning immediately',
+      title: t('attorney.process.steps.3.title'),
+      description: t('attorney.process.steps.3.description'),
       icon: CheckCircle,
     },
   ];
@@ -136,21 +132,15 @@ const AttorneyLandingPage: React.FC = () => {
           >
             <Badge className='mb-4 bg-blue-100 text-blue-800'>
               <Scale className='h-3 w-3 mr-1' />
-              Professional Partnership Program
+              {t('attorney.hero.badge')}
             </Badge>
 
             <h1 className='text-4xl md:text-6xl font-bold text-gray-900 mb-6'>
-              Join the Leading
-              <span className='bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent'>
-                {' '}
-                Legal Network
-              </span>
+              {t('attorney.hero.title')}
             </h1>
 
             <p className='text-xl text-gray-600 mb-8 max-w-3xl mx-auto'>
-              Partner with LegacyGuard to provide professional document reviews
-              and legal guidance to families planning their legacy. Earn
-              additional revenue while making a meaningful impact.
+              {t('attorney.hero.description')}
             </p>
 
             <div className='flex flex-col sm:flex-row gap-4 justify-center'>
@@ -159,11 +149,11 @@ const AttorneyLandingPage: React.FC = () => {
                 className='bg-gradient-to-r from-blue-600 to-purple-600'
               >
                 <Briefcase className='h-5 w-5 mr-2' />
-                Apply Now
+                {t('attorney.hero.buttons.apply')}
               </Button>
               <Button size='lg' variant='outline'>
                 <Phone className='h-5 w-5 mr-2' />
-                Schedule Call
+                {t('attorney.hero.buttons.schedule')}
               </Button>
             </div>
           </motion.div>
@@ -172,23 +162,18 @@ const AttorneyLandingPage: React.FC = () => {
         {/* Stats */}
         <div className='max-w-4xl mx-auto mt-16'>
           <div className='grid grid-cols-1 md:grid-cols-4 gap-6'>
-            {[
-              { number: '500+', label: 'Partner Attorneys' },
-              { number: '$350', label: 'Avg. Review Fee' },
-              { number: '10K+', label: 'Reviews Completed' },
-              { number: '98%', label: 'Client Satisfaction' },
-            ].map((stat, index) => (
+            {[0, 1, 2, 3].map((index) => (
               <motion.div
-                key={stat.label}
+                key={index}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 className='text-center'
               >
                 <div className='text-3xl font-bold text-blue-600'>
-                  {stat.number}
+                  {t(`attorney.stats.${index}.number`)}
                 </div>
-                <div className='text-gray-600'>{stat.label}</div>
+                <div className='text-gray-600'>{t(`attorney.stats.${index}.label`)}</div>
               </motion.div>
             ))}
           </div>
@@ -200,11 +185,10 @@ const AttorneyLandingPage: React.FC = () => {
         <div className='max-w-6xl mx-auto'>
           <div className='text-center mb-12'>
             <h2 className='text-3xl font-bold text-gray-900 mb-4'>
-              Why Join LegacyGuard's Network?
+              {t('attorney.benefits.title')}
             </h2>
             <p className='text-xl text-gray-600'>
-              Discover the benefits of partnering with the leading family legacy
-              platform
+              {t('attorney.benefits.subtitle')}
             </p>
           </div>
 
@@ -252,10 +236,10 @@ const AttorneyLandingPage: React.FC = () => {
         <div className='max-w-6xl mx-auto'>
           <div className='text-center mb-12'>
             <h2 className='text-3xl font-bold text-gray-900 mb-4'>
-              Simple Application Process
+              {t('attorney.process.title')}
             </h2>
             <p className='text-xl text-gray-600'>
-              Get started in just 4 easy steps
+              {t('attorney.process.subtitle')}
             </p>
           </div>
 
@@ -294,10 +278,10 @@ const AttorneyLandingPage: React.FC = () => {
         <div className='max-w-4xl mx-auto'>
           <div className='text-center mb-12'>
             <h2 className='text-3xl font-bold text-gray-900 mb-4'>
-              Apply to Join Our Network
+              {t('attorney.application.title')}
             </h2>
             <p className='text-xl text-gray-600'>
-              Complete the application below to get started
+              {t('attorney.application.subtitle')}
             </p>
           </div>
 
@@ -307,7 +291,7 @@ const AttorneyLandingPage: React.FC = () => {
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
                   <div>
                     <label className='block text-sm font-medium text-gray-700 mb-2'>
-                      First Name *
+                      {t('attorney.application.fields.firstName')}
                     </label>
                     <Input
                       required
@@ -322,7 +306,7 @@ const AttorneyLandingPage: React.FC = () => {
                   </div>
                   <div>
                     <label className='block text-sm font-medium text-gray-700 mb-2'>
-                      Last Name *
+                      {t('attorney.application.fields.lastName')}
                     </label>
                     <Input
                       required
@@ -337,7 +321,7 @@ const AttorneyLandingPage: React.FC = () => {
                   </div>
                   <div>
                     <label className='block text-sm font-medium text-gray-700 mb-2'>
-                      Email Address *
+                      {t('attorney.application.fields.email')}
                     </label>
                     <Input
                       type='email'
@@ -353,7 +337,7 @@ const AttorneyLandingPage: React.FC = () => {
                   </div>
                   <div>
                     <label className='block text-sm font-medium text-gray-700 mb-2'>
-                      Phone Number *
+                      {t('attorney.application.fields.phone')}
                     </label>
                     <Input
                       type='tel'
@@ -369,7 +353,7 @@ const AttorneyLandingPage: React.FC = () => {
                   </div>
                   <div>
                     <label className='block text-sm font-medium text-gray-700 mb-2'>
-                      Law Firm/Practice *
+                      {t('attorney.application.fields.firm')}
                     </label>
                     <Input
                       required
@@ -384,7 +368,7 @@ const AttorneyLandingPage: React.FC = () => {
                   </div>
                   <div>
                     <label className='block text-sm font-medium text-gray-700 mb-2'>
-                      Bar Number *
+                      {t('attorney.application.fields.barNumber')}
                     </label>
                     <Input
                       required
@@ -479,6 +463,7 @@ const AttorneyLandingPage: React.FC = () => {
 
 // Client Marketplace View
 const ClientMarketplace: React.FC = () => {
+  const { t } = useTranslation('ui/professional-network-launch');
   const [selectedSpecialization, setSelectedSpecialization] =
     useState<string>('all');
   const [selectedLocation, setSelectedLocation] = useState<string>('all');
@@ -544,11 +529,10 @@ const ClientMarketplace: React.FC = () => {
         <div className='max-w-6xl mx-auto'>
           <div className='text-center mb-8'>
             <h1 className='text-3xl font-bold text-gray-900 mb-4'>
-              Professional Legal Network
+              {t('client.header.title')}
             </h1>
             <p className='text-xl text-gray-600'>
-              Connect with verified attorneys for professional document review
-              and legal guidance
+              {t('client.header.subtitle')}
             </p>
           </div>
 
@@ -556,7 +540,7 @@ const ClientMarketplace: React.FC = () => {
           <div className='flex flex-col md:flex-row gap-4 justify-center'>
             <div className='flex items-center space-x-2'>
               <label className='text-sm font-medium text-gray-700'>
-                Specialization:
+                {t('client.filters.specialization')}
               </label>
               <select
                 value={selectedSpecialization}
@@ -575,7 +559,7 @@ const ClientMarketplace: React.FC = () => {
             </div>
             <div className='flex items-center space-x-2'>
               <label className='text-sm font-medium text-gray-700'>
-                Location:
+                {t('client.filters.location')}
               </label>
               <select
                 value={selectedLocation}
@@ -669,7 +653,7 @@ const ClientMarketplace: React.FC = () => {
                     <div className='flex space-x-2'>
                       <Button className='flex-1' size='sm'>
                         <Handshake className='h-4 w-4 mr-2' />
-                        Request Review
+                        {t('client.attorney.buttons.requestReview')}
                       </Button>
                       <Button variant='outline' size='sm'>
                         <Phone className='h-4 w-4' />

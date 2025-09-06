@@ -1,6 +1,7 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useSupabaseWithClerk } from '@/integrations/supabase/client';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -28,6 +29,7 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
   accessToken,
   isPublicAccess = false,
 }) => {
+  const { t } = useTranslation('ui/survivor-interface');
   const { token } = useParams<{ token: string }>();
   const [searchParams] = useSearchParams();
   const createSupabaseClient = useSupabaseWithClerk();
@@ -82,10 +84,10 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
           userId = activation.user_id;
           hasFullAccess = true;
         } else {
-          throw new Error('Invalid or inactive access token');
+          throw new Error(t('errors.invalidToken'));
         }
       } else {
-        throw new Error('Access token required');
+        throw new Error(t('errors.tokenRequired'));
       }
 
       // Get user profile information
@@ -96,7 +98,7 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
         .single();
 
       if (profileError) {
-        throw new Error('User profile not found');
+        throw new Error(t('errors.profileNotFound'));
       }
 
       // Get available resources based on access level
@@ -106,8 +108,8 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
       availableResources.push({
         id: 'memorial',
         category: 'personal',
-        title: 'Memorial Information',
-        description: profile.memorial_message || 'In loving memory',
+        title: t('memorial.title'),
+        description: profile.memorial_message || t('memorial.defaultMessage'),
         access_level: 'immediate',
         is_available: true,
         resource_type: 'instruction',
@@ -126,7 +128,7 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
           name: g.name,
           email: g.email,
           phone: g.phone || '',
-          relationship: g.relationship || 'Guardian',
+          relationship: g.relationship || t('contacts.defaultRelationship'),
           priority: g.emergency_contact_priority ?? 99,
           is_notified: true, // Assume notified in emergency scenario
         })
@@ -243,7 +245,7 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
       // Compile survivor interface data
       const survivorData: SurvivorInterfaceData = {
         user_info: {
-          name: profile.full_name || 'Unknown',
+          name: profile.full_name || t('memorial.unknownName'),
           ...(profile.memorial_message && { memorial_message: profile.memorial_message }),
           ...(profile.avatar_url && { profile_photo_url: profile.avatar_url }),
         },
@@ -277,7 +279,7 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
       setError(
         error instanceof Error
           ? error.message
-          : 'Failed to load survivor interface'
+          : t('errors.failedToLoad')
       );
     } finally {
       setIsLoading(false);
@@ -294,7 +296,7 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
       !accessRequest.requester_email ||
       !accessRequest.purpose
     ) {
-      toast.error('Please fill in all required fields');
+      toast.error(t('errors.fillRequiredFields'));
       return;
     }
 
@@ -318,12 +320,12 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
       }
 
       toast.success(
-        'Access request submitted. You will be contacted once reviewed by guardians.'
+        t('access.submitSuccess')
       );
       setShowAccessRequest(false);
     } catch (error) {
       console.error('Error submitting access request:', error);
-      toast.error('Failed to submit access request');
+      toast.error(t('errors.submitRequestFailed'));
     }
   };
 
@@ -335,11 +337,11 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
   const downloadResource = async (resource: SurvivorResource) => {
     if (resource.resource_type === 'document') {
       toast.info(
-        'Document access will be implemented with secure download system'
+        t('placeholders.documentAccess')
       );
     } else {
       toast.info(
-        'Resource details will be displayed in modal or dedicated page'
+        t('placeholders.resourceDetails')
       );
     }
   };
@@ -353,10 +355,10 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
             className='w-8 h-8 animate-spin mx-auto mb-4 text-indigo-600'
           />
           <h2 className='text-xl font-semibold mb-2'>
-            Loading Survivor Interface
+            {t('loading.title')}
           </h2>
           <p className='text-muted-foreground'>
-            Preparing memorial resources...
+            {t('loading.description')}
           </p>
         </Card>
       </div>
@@ -371,16 +373,16 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
             name='alert-triangle'
             className='w-12 h-12 mx-auto mb-4 text-amber-600'
           />
-          <h2 className='text-xl font-semibold mb-2'>Access Restricted</h2>
+          <h2 className='text-xl font-semibold mb-2'>{t('errors.accessRestricted')}</h2>
           <p className='text-muted-foreground mb-6'>{error}</p>
           <Button onClick={() => setShowAccessRequest(true)} className='mr-2'>
-            Request Access
+            {t('buttons.requestAccess')}
           </Button>
           <Button
             variant='outline'
             onClick={() => (window.location.href = '/')}
           >
-            Return Home
+            {t('buttons.returnHome')}
           </Button>
         </Card>
       </div>
@@ -421,7 +423,7 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
             </div>
 
             <h1 className='text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2'>
-              In Memory of {user_info.name}
+              {t('memorial.inMemoryOf', { name: user_info.name })}
             </h1>
 
             {user_info.memorial_message && (
@@ -438,18 +440,16 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
             <FadeIn duration={0.6} delay={0.2}>
               <Card className='p-6 mb-8 border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/50'>
                 <h2 className='text-xl font-semibold mb-4 text-amber-900 dark:text-amber-100'>
-                  Request Additional Access
+                  {t('access.title')}
                 </h2>
                 <p className='text-amber-700 dark:text-amber-300 mb-6'>
-                  To access more resources, please provide your information and
-                  reason for access. Your request will be reviewed by designated
-                  guardians.
+                  {t('access.description')}
                 </p>
 
                 <div className='grid md:grid-cols-2 gap-4 mb-4'>
                   <div>
                     <label className='block text-sm font-medium mb-1'>
-                      Your Name *
+                      {t('access.form.fullName.label')}
                     </label>
                     <Input
                       value={accessRequest.requester_name}
@@ -459,12 +459,12 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
                           requester_name: e.target.value,
                         })
                       }
-                      placeholder='Enter your full name'
+                      placeholder={t('access.form.fullName.placeholder')}
                     />
                   </div>
                   <div>
                     <label className='block text-sm font-medium mb-1'>
-                      Email Address *
+                      {t('access.form.email.label')}
                     </label>
                     <Input
                       type='email'
@@ -475,12 +475,12 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
                           requester_email: e.target.value,
                         })
                       }
-                      placeholder='Enter your email'
+                      placeholder={t('access.form.email.placeholder')}
                     />
                   </div>
                   <div>
                     <label className='block text-sm font-medium mb-1'>
-                      Relationship
+                      {t('access.form.relationship.label')}
                     </label>
                     <Input
                       value={accessRequest.relationship}
@@ -497,7 +497,7 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
 
                 <div className='mb-4'>
                   <label className='block text-sm font-medium mb-1'>
-                    Purpose of Access *
+                    {t('access.form.purpose.label')}
                   </label>
                   <Textarea
                     value={accessRequest.purpose}
@@ -507,7 +507,7 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
                         purpose: e.target.value,
                       })
                     }
-                    placeholder='Please explain why you need access to these resources...'
+                    placeholder={t('access.form.purpose.placeholder')}
                     className='min-h-[100px]'
                   />
                 </div>
@@ -517,13 +517,13 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
                     onClick={submitAccessRequest}
                     className='bg-amber-600 hover:bg-amber-700'
                   >
-                    Submit Request
+                    {t('buttons.submitRequest')}
                   </Button>
                   <Button
                     variant='outline'
                     onClick={() => setShowAccessRequest(false)}
                   >
-                    Cancel
+                    {t('buttons.cancelRequest')}
                   </Button>
                 </div>
               </Card>
@@ -592,43 +592,43 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
             {[
               {
                 id: 'all',
-                label: 'All Resources',
+                label: t('categories.all'),
                 count: available_resources.length,
               },
               {
                 id: 'contacts',
-                label: 'Contacts',
+                label: t('categories.contacts'),
                 count: emergency_contacts.length,
               },
               {
                 id: 'financial',
-                label: 'Financial',
+                label: t('categories.financial'),
                 count: available_resources.filter(
                   r => r.category === 'financial'
                 ).length,
               },
               {
                 id: 'legal',
-                label: 'Legal',
+                label: t('categories.legal'),
                 count: available_resources.filter(r => r.category === 'legal')
                   .length,
               },
               {
                 id: 'medical',
-                label: 'Medical',
+                label: t('categories.medical'),
                 count: available_resources.filter(r => r.category === 'medical')
                   .length,
               },
               {
                 id: 'personal',
-                label: 'Personal',
+                label: t('categories.personal'),
                 count: available_resources.filter(
                   r => r.category === 'personal'
                 ).length,
               },
               {
                 id: 'instructions',
-                label: 'Instructions',
+                label: t('categories.instructions'),
                 count: guidance_entries.length,
               },
             ]
@@ -738,7 +738,7 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
                         variant={entry.is_completed ? 'default' : 'secondary'}
                         className='ml-4'
                       >
-                        {entry.is_completed ? 'Complete' : 'In Progress'}
+                        {entry.is_completed ? t('status.complete') : t('status.inProgress')}
                       </Badge>
                     </div>
 
@@ -824,7 +824,7 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
                             resource.is_available ? 'default' : 'secondary'
                           }
                         >
-                          {resource.is_available ? 'Available' : 'Restricted'}
+                          {resource.is_available ? t('status.available') : t('status.restricted')}
                         </Badge>
 
                         {resource.is_available && (
@@ -842,8 +842,8 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
                               className='w-4 h-4 mr-2'
                             />
                             {resource.resource_type === 'document'
-                              ? 'Download'
-                              : 'View'}
+                              ? t('buttons.downloadDocument')
+                              : t('buttons.viewResource')}
                           </Button>
                         )}
                       </div>

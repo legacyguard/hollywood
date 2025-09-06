@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -127,57 +128,48 @@ interface DecisionTemplate {
   suggestedDeadline: number; // days
 }
 
-const decisionTemplates: DecisionTemplate[] = [
+// Decision templates will be created using translation function
+const getDecisionTemplates = (t: any): DecisionTemplate[] => [
   {
     id: 'healthcare-decision',
-    name: 'Healthcare Decision',
-    description: 'Make important healthcare decisions for family members',
+    name: t('templates.healthcare-decision.name'),
+    description: t('templates.healthcare-decision.description'),
     category: 'healthcare',
     priority: 'high',
-    defaultOptions: ['Approve', 'Reject', 'Need More Information'],
+    defaultOptions: t('templates.healthcare-decision.options', { returnObjects: true }) as string[],
     suggestedDeadline: 3,
     requiresUnanimity: true,
     icon: <AlertCircle className='h-4 w-4' />,
   },
   {
     id: 'legacy-distribution',
-    name: 'Legacy Distribution',
-    description: 'Decide on distribution of family assets or heirlooms',
+    name: t('templates.legacy-distribution.name'),
+    description: t('templates.legacy-distribution.description'),
     category: 'legacy-planning',
     priority: 'high',
-    defaultOptions: [
-      'Equal Distribution',
-      'Based on Need',
-      'Based on Contribution',
-      'Other',
-    ],
+    defaultOptions: t('templates.legacy-distribution.options', { returnObjects: true }) as string[],
     suggestedDeadline: 14,
     requiresUnanimity: false,
     icon: <Users className='h-4 w-4' />,
   },
   {
     id: 'family-tradition',
-    name: 'Family Tradition',
-    description: 'Decisions about maintaining or changing family traditions',
+    name: t('templates.family-tradition.name'),
+    description: t('templates.family-tradition.description'),
     category: 'family-governance',
     priority: 'medium',
-    defaultOptions: [
-      'Continue as is',
-      'Modify tradition',
-      'Create new tradition',
-      'Discontinue',
-    ],
+    defaultOptions: t('templates.family-tradition.options', { returnObjects: true }) as string[],
     suggestedDeadline: 7,
     requiresUnanimity: false,
     icon: <Calendar className='h-4 w-4' />,
   },
   {
     id: 'emergency-protocol',
-    name: 'Emergency Protocol',
-    description: 'Establish emergency procedures and decision-making authority',
+    name: t('templates.emergency-protocol.name'),
+    description: t('templates.emergency-protocol.description'),
     category: 'emergency',
     priority: 'critical',
-    defaultOptions: ['Approve Protocol', 'Modify Protocol', 'Reject Protocol'],
+    defaultOptions: t('templates.emergency-protocol.options', { returnObjects: true }) as string[],
     suggestedDeadline: 5,
     requiresUnanimity: true,
     icon: <AlertCircle className='h-4 w-4' />,

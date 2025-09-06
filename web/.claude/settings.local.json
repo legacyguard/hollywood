@@ -9,7 +9,13 @@
       "Bash(npx tsc:*)",
       "Bash(python:*)",
       "Bash(node:*)",
-      "Bash(npm run type-check:*)"
+      "Bash(npm run type-check:*)",
+      "Bash(touch:*)",
+      "Bash(npm run lint)",
+      "Bash(npm run lint:*)",
+      "Bash(npm run validate-translations:*)",
+      "Bash(npx ts-node:*)",
+      "Bash(rg:*)"
     ],
     "deny": []
   }

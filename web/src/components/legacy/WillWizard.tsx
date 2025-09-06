@@ -25,6 +25,7 @@ import { FocusModeWrapper } from './FocusModeWrapper';
 import { FocusModeToggle } from './FocusModeToggle';
 import { VaultAssetSelector } from './VaultAssetSelector';
 import { useFocusMode } from '@/contexts/FocusModeContext';
+import { useTranslation } from 'react-i18next';
 
 // Types based on our database schema
 export interface WillData {
@@ -145,23 +146,24 @@ interface WillWizardProps {
   willType: WillType;
 }
 
-const STEPS = [
-  { id: 'personal', title: 'Personal Info', description: 'Your details' },
-  { id: 'beneficiaries', title: 'Beneficiaries', description: 'Who inherits' },
-  { id: 'assets', title: 'Assets', description: 'What you own' },
-  { id: 'executor', title: 'Executor', description: 'Who manages' },
+// Steps will be translated in the component
+const getSteps = (t: any) => [
+  { id: 'personal', title: t('steps.personal.title'), description: t('steps.personal.description') },
+  { id: 'beneficiaries', title: t('steps.beneficiaries.title'), description: t('steps.beneficiaries.description') },
+  { id: 'assets', title: t('steps.assets.title'), description: t('steps.assets.description') },
+  { id: 'executor', title: t('steps.executor.title'), description: t('steps.executor.description') },
   {
     id: 'guardianship',
-    title: 'Guardianship',
-    description: 'For minor children',
+    title: t('steps.guardianship.title'),
+    description: t('steps.guardianship.description'),
   },
-  { id: 'wishes', title: 'Final Wishes', description: 'Special instructions' },
+  { id: 'wishes', title: t('steps.wishes.title'), description: t('steps.wishes.description') },
   {
     id: 'sofia_check',
-    title: "Sofia's Check",
-    description: 'Correctness review',
+    title: t('steps.sofiaCheck.title'),
+    description: t('steps.sofiaCheck.description'),
   },
-  { id: 'review', title: 'Final Review', description: 'Confirm and generate' },
+  { id: 'review', title: t('steps.review.title'), description: t('steps.review.description') },
 ];
 
   // const __JURISDICTIONS = [ // Unused
@@ -177,15 +179,16 @@ const STEPS = [
 //   { value: 'Australia', label: 'Australia' },
 // ];
 
-const RELATIONSHIPS = [
-  { value: 'spouse', label: 'Spouse/Partner' },
-  { value: 'child', label: 'Child' },
-  { value: 'parent', label: 'Parent' },
-  { value: 'sibling', label: 'Sibling' },
-  { value: 'grandchild', label: 'Grandchild' },
-  { value: 'friend', label: 'Friend' },
-  { value: 'charity', label: 'Charity/Organization' },
-  { value: 'other', label: 'Other' },
+// Relationships will be translated in the component
+const getRelationships = (t: any) => [
+  { value: 'spouse', label: t('relationships.spouse') },
+  { value: 'child', label: t('relationships.child') },
+  { value: 'parent', label: t('relationships.parent') },
+  { value: 'sibling', label: t('relationships.sibling') },
+  { value: 'grandchild', label: t('relationships.grandchild') },
+  { value: 'friend', label: t('relationships.friend') },
+  { value: 'charity', label: t('relationships.charity') },
+  { value: 'other', label: t('relationships.other') },
 ];
 
 export const WillWizard: React.FC<WillWizardProps> = ({
@@ -195,10 +198,14 @@ export const WillWizard: React.FC<WillWizardProps> = ({
   willType,
   initialData,
 }) => {
+  const { t } = useTranslation('ui/will-wizard');
   useAuth();
   const { user } = useUser();
   const { isFocusMode } = useFocusMode();
   const [currentStep, setCurrentStep] = useState(0);
+  
+  const STEPS = getSteps(t);
+  const RELATIONSHIPS = getRelationships(t);
   const [showVaultSelector, setShowVaultSelector] = useState(false);
   const [vaultSelectorType, setVaultSelectorType] = useState<
     'all' | 'bankAccounts' | 'personalProperty' | 'realEstate' | 'vehicles'
@@ -288,7 +295,10 @@ export const WillWizard: React.FC<WillWizardProps> = ({
       });
       setShowVaultSelector(false);
       toast.success(
-        `Added ${selectedAssets.length} asset${selectedAssets.length > 1 ? 's' : ''} from your vault`
+        t('toast.assetsAdded', { 
+          count: selectedAssets.length, 
+          plural: selectedAssets.length > 1 ? t('toast.assetsPlural') : t('toast.assetsSingular')
+        })
       );
       return;
     }
@@ -304,7 +314,10 @@ export const WillWizard: React.FC<WillWizardProps> = ({
 
     setShowVaultSelector(false);
     toast.success(
-      `Added ${selectedAssets.length} asset${selectedAssets.length > 1 ? 's' : ''} from your vault`
+      t('toast.assetsAdded', { 
+        count: selectedAssets.length, 
+        plural: selectedAssets.length > 1 ? t('toast.assetsPlural') : t('toast.assetsSingular')
+      })
     );
   };
 
@@ -349,7 +362,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
           <div className='space-y-6'>
             <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
               <div>
-                <Label htmlFor='fullName'>Full Name</Label>
+                <Label htmlFor='fullName'>{t('personal.fullName.label')}</Label>
                 <Input
                   id='fullName'
                   value={willData.testator_data.fullName || ''}
@@ -358,11 +371,11 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                       fullName: e.target.value,
                     })
                   }
-                  placeholder='Enter your full legal name'
+                  placeholder={t('personal.fullName.placeholder')}
                 />
               </div>
               <div>
-                <Label htmlFor='dateOfBirth'>Date of Birth</Label>
+                <Label htmlFor='dateOfBirth'>{t('personal.dateOfBirth.label')}</Label>
                 <Input
                   id='dateOfBirth'
                   type='date'
@@ -376,20 +389,20 @@ export const WillWizard: React.FC<WillWizardProps> = ({
               </div>
             </div>
             <div>
-              <Label htmlFor='address'>Address</Label>
+              <Label htmlFor='address'>{t('personal.address.label')}</Label>
               <Textarea
                 id='address'
                 value={willData.testator_data.address || ''}
                 onChange={e =>
                   updateWillData('testator_data', { address: e.target.value })
                 }
-                placeholder='Enter your full address'
+                placeholder={t('personal.address.placeholder')}
                 rows={3}
               />
             </div>
             <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
               <div>
-                <Label htmlFor='citizenship'>Citizenship</Label>
+                <Label htmlFor='citizenship'>{t('personal.citizenship.label')}</Label>
                 <Input
                   id='citizenship'
                   value={willData.testator_data.citizenship || ''}
@@ -398,11 +411,11 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                       citizenship: e.target.value,
                     })
                   }
-                  placeholder='e.g., United States'
+                  placeholder={t('personal.citizenship.placeholder')}
                 />
               </div>
               <div>
-                <Label htmlFor='maritalStatus'>Marital Status</Label>
+                <Label htmlFor='maritalStatus'>{t('personal.maritalStatus.label')}</Label>
                 <Select
                   value={willData.testator_data.maritalStatus}
                   onValueChange={value =>
@@ -416,13 +429,13 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                   }
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder='Select status' />
+                    <SelectValue placeholder={t('personal.maritalStatus.placeholder')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value='single'>Single</SelectItem>
-                    <SelectItem value='married'>Married</SelectItem>
-                    <SelectItem value='divorced'>Divorced</SelectItem>
-                    <SelectItem value='widowed'>Widowed</SelectItem>
+                    <SelectItem value='single'>{t('personal.maritalStatus.options.single')}</SelectItem>
+                    <SelectItem value='married'>{t('personal.maritalStatus.options.married')}</SelectItem>
+                    <SelectItem value='divorced'>{t('personal.maritalStatus.options.divorced')}</SelectItem>
+                    <SelectItem value='widowed'>{t('personal.maritalStatus.options.widowed')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -434,10 +447,10 @@ export const WillWizard: React.FC<WillWizardProps> = ({
         return (
           <div className='space-y-6'>
             <div className='flex items-center justify-between'>
-              <h3 className='text-lg font-semibold'>Your Beneficiaries</h3>
+              <h3 className='text-lg font-semibold'>{t('beneficiaries.title')}</h3>
               <Button onClick={addBeneficiary} variant='outline' size='sm'>
                 <Icon name='add' className='w-4 h-4 mr-2' />
-                Add Beneficiary
+                {t('beneficiaries.addButton')}
               </Button>
             </div>
 
@@ -448,10 +461,10 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                   className='w-12 h-12 text-muted-foreground mx-auto mb-4'
                 />
                 <p className='text-muted-foreground'>
-                  No beneficiaries added yet
+                  {t('beneficiaries.emptyState.title')}
                 </p>
                 <p className='text-sm text-muted-foreground mt-2'>
-                  Click "Add Beneficiary" to start
+                  {t('beneficiaries.emptyState.description')}
                 </p>
               </Card>
             ) : (
@@ -459,7 +472,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                 {willData.beneficiaries.map((beneficiary, index) => (
                   <Card key={beneficiary.id} className='p-4'>
                     <div className='flex items-center justify-between mb-4'>
-                      <Badge variant='secondary'>Beneficiary {index + 1}</Badge>
+                      <Badge variant='secondary'>{t('beneficiaries.beneficiaryCard.title', { index: index + 1 })}</Badge>
                       <Button
                         onClick={() => removeBeneficiary(beneficiary.id)}
                         variant='ghost'
@@ -471,7 +484,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                     </div>
                     <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
                       <div>
-                        <Label>Name</Label>
+                        <Label>{t('beneficiaries.beneficiaryCard.fields.name.label')}</Label>
                         <Input
                           value={beneficiary.name}
                           onChange={e =>
@@ -481,11 +494,11 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                               e.target.value
                             )
                           }
-                          placeholder='Beneficiary name'
+                          placeholder={t('beneficiaries.beneficiaryCard.fields.name.placeholder')}
                         />
                       </div>
                       <div>
-                        <Label>Relationship</Label>
+                        <Label>{t('beneficiaries.beneficiaryCard.fields.relationship.label')}</Label>
                         <Select
                           value={beneficiary.relationship}
                           onValueChange={value =>
@@ -509,7 +522,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                         </Select>
                       </div>
                       <div>
-                        <Label>Inheritance Percentage</Label>
+                        <Label>{t('beneficiaries.beneficiaryCard.fields.percentage.label')}</Label>
                         <Input
                           type='number'
                           min='0'
@@ -522,12 +535,12 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                               parseInt(e.target.value) || 0
                             )
                           }
-                          placeholder='0'
+                          placeholder={t('beneficiaries.beneficiaryCard.fields.percentage.placeholder')}
                         />
                       </div>
                     </div>
                     <div className='mt-4'>
-                      <Label>Special Conditions (Optional)</Label>
+                      <Label>{t('beneficiaries.beneficiaryCard.fields.conditions.label')}</Label>
                       <Input
                         value={beneficiary.conditions || ''}
                         onChange={e =>
@@ -537,7 +550,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                             e.target.value
                           )
                         }
-                        placeholder='e.g., if surviving, if over 18 years old'
+                        placeholder={t('beneficiaries.beneficiaryCard.fields.conditions.placeholder')}
                       />
                     </div>
                   </Card>
@@ -577,7 +590,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
               <div className='flex items-center justify-between mb-4'>
                 <h4 className='font-semibold flex items-center gap-2'>
                   <Icon name={'home' as any} className='w-4 h-4' />
-                  Real Estate
+                  {t('assets.realEstate.title')}
                 </h4>
                 <div className='flex items-center gap-2'>
                   <Button
@@ -587,7 +600,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                     className='text-primary hover:text-primary-hover'
                   >
                     <Icon name={'vault' as any} className='w-3 h-3 mr-1' />
-                    From Vault
+                    {t('assets.realEstate.fromVaultButton')}
                   </Button>
                   <Button
                     onClick={() => {
@@ -607,7 +620,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                     size='sm'
                   >
                     <Icon name={'add' as any} className='w-3 h-3 mr-1' />
-                    Add Property
+                    {t('assets.realEstate.addButton')}
                   </Button>
                 </div>
               </div>
@@ -619,7 +632,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                       className='grid grid-cols-1 md:grid-cols-3 gap-3 p-3 bg-muted/50 rounded'
                     >
                       <Input
-                        placeholder='Property description'
+                        placeholder={t('assets.realEstate.fields.description')}
                         value={property.description}
                         onChange={e => {
                           const updated = [...willData.assets.realEstate!];
@@ -631,7 +644,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                         }}
                       />
                       <Input
-                        placeholder='Address'
+                        placeholder={t('assets.realEstate.fields.address')}
                         value={property.address}
                         onChange={e => {
                           const updated = [...willData.assets.realEstate!];
@@ -645,7 +658,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                       <div className='flex gap-2'>
                         <Input
                           type='number'
-                          placeholder='Estimated value'
+                          placeholder={t('assets.realEstate.fields.value')}
                           value={property.value || ''}
                           onChange={e => {
                             const updated = [...willData.assets.realEstate!];
@@ -675,7 +688,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                 </div>
               ) : (
                 <p className='text-sm text-muted-foreground text-center py-4'>
-                  No real estate properties added yet
+                  {t('assets.realEstate.emptyState')}
                 </p>
               )}
             </Card>
@@ -685,7 +698,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
               <div className='flex items-center justify-between mb-4'>
                 <h4 className='font-semibold flex items-center gap-2'>
                   <Icon name={'car' as any} className='w-4 h-4' />
-                  Vehicles
+                  {t('assets.vehicles.title')}
                 </h4>
                 <div className='flex items-center gap-2'>
                   <Button
@@ -695,7 +708,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                     className='text-primary hover:text-primary-hover'
                   >
                     <Icon name={'vault' as any} className='w-3 h-3 mr-1' />
-                    From Vault
+                    {t('assets.vehicles.fromVaultButton')}
                   </Button>
                   <Button
                     onClick={() => {
@@ -718,7 +731,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                     size='sm'
                   >
                     <Icon name={'add' as any} className='w-3 h-3 mr-1' />
-                    Add Vehicle
+                    {t('assets.vehicles.addButton')}
                   </Button>
                 </div>
               </div>
@@ -730,7 +743,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                       className='grid grid-cols-1 md:grid-cols-4 gap-3 p-3 bg-muted/50 rounded'
                     >
                       <Input
-                        placeholder='Make'
+                        placeholder={t('assets.vehicles.fields.make')}
                         value={vehicle.make}
                         onChange={e => {
                           const updated = [...willData.assets.vehicles!];
@@ -742,7 +755,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                         }}
                       />
                       <Input
-                        placeholder='Model'
+                        placeholder={t('assets.vehicles.fields.model')}
                         value={vehicle.model}
                         onChange={e => {
                           const updated = [...willData.assets.vehicles!];
@@ -755,7 +768,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                       />
                       <Input
                         type='number'
-                        placeholder='Year'
+                        placeholder={t('assets.vehicles.fields.year')}
                         value={vehicle.year}
                         onChange={e => {
                           const updated = [...willData.assets.vehicles!];
@@ -770,7 +783,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                       />
                       <div className='flex gap-2'>
                         <Input
-                          placeholder='VIN (optional)'
+                          placeholder={t('assets.vehicles.fields.vin')}
                           value={vehicle.vin || ''}
                           onChange={e => {
                             const updated = [...willData.assets.vehicles!];
@@ -800,7 +813,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                 </div>
               ) : (
                 <p className='text-sm text-muted-foreground text-center py-4'>
-                  No vehicles added yet
+                  {t('assets.vehicles.emptyState')}
                 </p>
               )}
             </Card>
@@ -810,7 +823,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
               <div className='flex items-center justify-between mb-4'>
                 <h4 className='font-semibold flex items-center gap-2'>
                   <Icon name={'credit-card' as any} className='w-4 h-4' />
-                  Bank Accounts & Investments
+                  {t('assets.bankAccounts.title')}
                 </h4>
                 <div className='flex items-center gap-2'>
                   <Button
@@ -820,7 +833,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                     className='text-primary hover:text-primary-hover'
                   >
                     <Icon name={'vault' as any} className='w-3 h-3 mr-1' />
-                    From Vault
+                    {t('assets.bankAccounts.fromVaultButton')}
                   </Button>
                   <Button
                     onClick={() => {
@@ -843,7 +856,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                     size='sm'
                   >
                     <Icon name={'add' as any} className='w-3 h-3 mr-1' />
-                    Add Account
+                    {t('assets.bankAccounts.addButton')}
                   </Button>
                 </div>
               </div>
@@ -855,7 +868,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                       className='grid grid-cols-1 md:grid-cols-3 gap-3 p-3 bg-muted/50 rounded'
                     >
                       <Input
-                        placeholder='Bank name'
+                        placeholder={t('assets.bankAccounts.fields.bankName')}
                         value={account.bank}
                         onChange={e => {
                           const updated = [...willData.assets.bankAccounts!];
@@ -884,14 +897,14 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value='checking'>Checking</SelectItem>
-                          <SelectItem value='savings'>Savings</SelectItem>
-                          <SelectItem value='investment'>Investment</SelectItem>
+                          <SelectItem value='checking'>{t('assets.bankAccounts.fields.type.checking')}</SelectItem>
+                          <SelectItem value='savings'>{t('assets.bankAccounts.fields.type.savings')}</SelectItem>
+                          <SelectItem value='investment'>{t('assets.bankAccounts.fields.type.investment')}</SelectItem>
                         </SelectContent>
                       </Select>
                       <div className='flex gap-2'>
                         <Input
-                          placeholder='Last 4 digits'
+                          placeholder={t('assets.bankAccounts.fields.accountNumber')}
                           value={account.accountNumber}
                           onChange={e => {
                             const updated = [...willData.assets.bankAccounts!];
@@ -922,7 +935,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                 </div>
               ) : (
                 <p className='text-sm text-muted-foreground text-center py-4'>
-                  No bank accounts added yet
+                  {t('assets.bankAccounts.emptyState')}
                 </p>
               )}
             </Card>
@@ -932,7 +945,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
               <div className='flex items-center justify-between mb-4'>
                 <h4 className='font-semibold flex items-center gap-2'>
                   <Icon name={'star' as any} className='w-4 h-4' />
-                  Personal Property
+                  {t('assets.personalProperty.title')}
                 </h4>
                 <div className='flex items-center gap-2'>
                   <Button
@@ -942,7 +955,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                     className='text-primary hover:text-primary-hover'
                   >
                     <Icon name={'vault' as any} className='w-3 h-3 mr-1' />
-                    From Vault
+                    {t('assets.personalProperty.fromVaultButton')}
                   </Button>
                   <Button
                     onClick={() => {
@@ -962,7 +975,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                     size='sm'
                   >
                     <Icon name={'add' as any} className='w-3 h-3 mr-1' />
-                    Add Item
+                    {t('assets.personalProperty.addButton')}
                   </Button>
                 </div>
               </div>
@@ -974,7 +987,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                       className='grid grid-cols-1 md:grid-cols-3 gap-3 p-3 bg-muted/50 rounded'
                     >
                       <Input
-                        placeholder='Item description'
+                        placeholder={t('assets.personalProperty.fields.description')}
                         value={item.description}
                         onChange={e => {
                           const updated = [
@@ -991,7 +1004,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                       />
                       <Input
                         type='number'
-                        placeholder='Estimated value'
+                        placeholder={t('assets.personalProperty.fields.value')}
                         value={item.value || ''}
                         onChange={e => {
                           const updated = [
@@ -1008,7 +1021,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                       />
                       <div className='flex gap-2'>
                         <Input
-                          placeholder='Designated recipient'
+                          placeholder={t('assets.personalProperty.fields.recipient')}
                           value={item.recipient || ''}
                           onChange={e => {
                             const updated = [
@@ -1045,7 +1058,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                 </div>
               ) : (
                 <p className='text-sm text-muted-foreground text-center py-4'>
-                  No personal property items added yet
+                  {t('assets.personalProperty.emptyState')}
                 </p>
               )}
             </Card>
@@ -1056,10 +1069,10 @@ export const WillWizard: React.FC<WillWizardProps> = ({
         return (
           <div className='space-y-6'>
             <div>
-              <h3 className='text-lg font-semibold mb-4'>Primary Executor</h3>
+              <h3 className='text-lg font-semibold mb-4'>{t('executor.primary.title')}</h3>
               <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                 <div>
-                  <Label htmlFor='primaryExecutorName'>Name</Label>
+                  <Label htmlFor='primaryExecutorName'>{t('executor.primary.fields.name.label')}</Label>
                   <Input
                     id='primaryExecutorName'
                     value={willData.executor_data.primaryExecutor?.name || ''}
@@ -1075,12 +1088,12 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                         },
                       })
                     }
-                    placeholder="Executor's full name"
+                    placeholder={t('executor.primary.fields.name.placeholder')}
                   />
                 </div>
                 <div>
                   <Label htmlFor='primaryExecutorRelationship'>
-                    Relationship
+                    {t('executor.primary.fields.relationship.label')}
                   </Label>
                   <Input
                     id='primaryExecutorRelationship'
@@ -1098,12 +1111,12 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                         },
                       })
                     }
-                    placeholder='e.g., spouse, friend, attorney'
+                    placeholder={t('executor.primary.fields.relationship.placeholder')}
                   />
                 </div>
               </div>
               <div className='mt-4'>
-                <Label htmlFor='primaryExecutorPhone'>Phone (Optional)</Label>
+                <Label htmlFor='primaryExecutorPhone'>{t('executor.primary.fields.phone.label')}</Label>
                 <Input
                   id='primaryExecutorPhone'
                   value={willData.executor_data.primaryExecutor?.phone || ''}
@@ -1119,18 +1132,18 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                       },
                     })
                   }
-                  placeholder='Phone number'
+                  placeholder={t('executor.primary.fields.phone.placeholder')}
                 />
               </div>
             </div>
 
             <div>
               <h3 className='text-lg font-semibold mb-4'>
-                Backup Executor (Optional)
+                {t('executor.backup.title')}
               </h3>
               <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                 <div>
-                  <Label htmlFor='backupExecutorName'>Name</Label>
+                  <Label htmlFor='backupExecutorName'>{t('executor.backup.fields.name.label')}</Label>
                   <Input
                     id='backupExecutorName'
                     value={willData.executor_data.backupExecutor?.name || ''}
@@ -1146,12 +1159,12 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                         },
                       })
                     }
-                    placeholder="Backup executor's name"
+                    placeholder={t('executor.backup.fields.name.placeholder')}
                   />
                 </div>
                 <div>
                   <Label htmlFor='backupExecutorRelationship'>
-                    Relationship
+                    {t('executor.backup.fields.relationship.label')}
                   </Label>
                   <Input
                     id='backupExecutorRelationship'
@@ -1169,7 +1182,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                         },
                       })
                     }
-                    placeholder='e.g., sibling, friend'
+                    placeholder={t('executor.backup.fields.relationship.placeholder')}
                   />
                 </div>
               </div>
@@ -1183,13 +1196,10 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                 />
                 <div>
                   <h4 className='font-semibold text-amber-900 dark:text-amber-200'>
-                    Executor Responsibilities
+                    {t('executor.responsibilities.title')}
                   </h4>
                   <p className='text-sm text-amber-700 dark:text-amber-300 mt-1'>
-                    Your executor will handle settling your estate, paying
-                    debts, distributing assets, and ensuring your wishes are
-                    carried out. Choose someone you trust who is organized and
-                    responsible.
+                    {t('executor.responsibilities.description')}
                   </p>
                 </div>
               </div>
@@ -1201,7 +1211,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
         return (
           <div className='space-y-6'>
             <div>
-              <Label htmlFor='funeralWishes'>Funeral and Memorial Wishes</Label>
+              <Label htmlFor='funeralWishes'>{t('wishes.funeral.label')}</Label>
               <Textarea
                 id='funeralWishes'
                 value={willData.special_instructions.funeralWishes || ''}
@@ -1210,7 +1220,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                     funeralWishes: e.target.value,
                   })
                 }
-                placeholder='Describe your preferences for funeral arrangements, memorial service, burial/cremation, etc.'
+                placeholder={t('wishes.funeral.placeholder')}
                 rows={4}
               />
             </div>
@@ -1227,12 +1237,12 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                 }
                 className='rounded'
               />
-              <Label htmlFor='organDonation'>I wish to be an organ donor</Label>
+              <Label htmlFor='organDonation'>{t('wishes.organDonation.label')}</Label>
             </div>
 
             <div>
               <Label htmlFor='petCare'>
-                Pet Care Instructions (If applicable)
+                {t('wishes.petCare.label')}
               </Label>
               <Textarea
                 id='petCare'
@@ -1242,13 +1252,13 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                     petCare: e.target.value,
                   })
                 }
-                placeholder='Instructions for the care of your pets'
+                placeholder={t('wishes.petCare.placeholder')}
                 rows={3}
               />
             </div>
 
             <div>
-              <Label htmlFor='digitalAssets'>Digital Assets and Accounts</Label>
+              <Label htmlFor='digitalAssets'>{t('wishes.digitalAssets.label')}</Label>
               <Textarea
                 id='digitalAssets'
                 value={willData.special_instructions.digitalAssets || ''}
@@ -1257,7 +1267,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                     digitalAssets: e.target.value,
                   })
                 }
-                placeholder='Instructions for social media accounts, digital files, online subscriptions, etc.'
+                placeholder={t('wishes.digitalAssets.placeholder')}
                 rows={3}
               />
             </div>
@@ -1282,9 +1292,9 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                 name={'documents' as any}
                 className='w-12 h-12 text-primary mx-auto mb-4'
               />
-              <h3 className='text-2xl font-semibold mb-2'>Review Your Will</h3>
+              <h3 className='text-2xl font-semibold mb-2'>{t('review.header.title')}</h3>
               <p className='text-muted-foreground'>
-                Please review all information before creating your will document
+                {t('review.header.description')}
               </p>
             </div>
 
@@ -1293,7 +1303,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
               <Card className='p-4'>
                 <h4 className='font-semibold mb-2 flex items-center gap-2'>
                   <Icon name={'user' as any} className='w-4 h-4' />
-                  Personal Information
+                  {t('review.sections.personalInfo.title')}
                 </h4>
                 <p className='text-sm text-muted-foreground'>
                   {willData.testator_data.fullName} •{' '}
@@ -1304,21 +1314,21 @@ export const WillWizard: React.FC<WillWizardProps> = ({
               <Card className='p-4'>
                 <h4 className='font-semibold mb-2 flex items-center gap-2'>
                   <Icon name={'users' as any} className='w-4 h-4' />
-                  Beneficiaries
+                  {t('review.sections.beneficiaries.title')}
                 </h4>
                 <p className='text-sm text-muted-foreground'>
-                  {willData.beneficiaries.length} beneficiaries defined
+                  {t('review.sections.beneficiaries.summary', { count: willData.beneficiaries.length })}
                 </p>
               </Card>
 
               <Card className='p-4'>
                 <h4 className='font-semibold mb-2 flex items-center gap-2'>
                   <Icon name={'shield-check' as any} className='w-4 h-4' />
-                  Executor
+                  {t('review.sections.executor.title')}
                 </h4>
                 <p className='text-sm text-muted-foreground'>
                   {willData.executor_data.primaryExecutor?.name ||
-                    'Not specified'}
+                    t('review.sections.executor.notSpecified')}
                 </p>
               </Card>
             </div>
@@ -1331,12 +1341,10 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                 />
                 <div>
                   <h4 className='font-semibold text-green-900 dark:text-green-200'>
-                    Ready to Create
+                    {t('review.readyToCreate.title')}
                   </h4>
                   <p className='text-sm text-green-700 dark:text-green-300 mt-1'>
-                    Your will document will be generated based on the
-                    information provided. You can always edit and update it
-                    later.
+                    {t('review.readyToCreate.description')}
                   </p>
                 </div>
               </div>
@@ -1345,7 +1353,7 @@ export const WillWizard: React.FC<WillWizardProps> = ({
         );
 
       default:
-        return <div>Step not implemented</div>;
+        return <div>{t('common.stepNotImplemented')}</div>;
     }
   };
 
@@ -1370,14 +1378,13 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                     className='flex items-center gap-2'
                   >
                     <Icon name={'arrow-left' as any} className='w-4 h-4' />
-                    Back to Legacy Planning
+                    {t('header.backButton')}
                   </Button>
                 </div>
                 <div className='text-center'>
-                  <h1 className='text-xl font-semibold'>Will Creator</h1>
+                  <h1 className='text-xl font-semibold'>{t('header.title')}</h1>
                   <p className='text-sm text-muted-foreground'>
-                    Step {currentStep + 1} of {STEPS.length}:{' '}
-                    {STEPS[currentStep].title}
+                    {t('header.stepIndicator', { current: currentStep + 1, total: STEPS.length, title: STEPS[currentStep].title })}
                   </p>
                 </div>
                 <div className='flex items-center gap-2'>
@@ -1419,11 +1426,10 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                   className='w-4 h-4 text-primary'
                 />
                 <span className='text-primary font-medium'>
-                  Sofia's Intelligent Draft Active
+                  {t('draftData.indicator')}
                 </span>
                 <span className='text-muted-foreground'>
-                  I've pre-filled your will based on your existing data. Review
-                  and modify as needed.
+                  {t('draftData.description')}
                 </span>
               </div>
             </div>
@@ -1493,13 +1499,13 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                 disabled={currentStep === 0 && !onBack}
               >
                 <Icon name={'arrow-left' as any} className='w-4 h-4 mr-2' />
-                {currentStep === 0 ? 'Change Will Type' : 'Back'}
+                {currentStep === 0 ? t('navigation.changeWillType') : t('navigation.back')}
               </Button>
 
               <div className='flex items-center gap-4'>
                 {!isFocusMode && (
                   <div className='text-sm text-muted-foreground'>
-                    Step {currentStep + 1} of {STEPS.length}
+                    {t('navigation.stepCounter', { current: currentStep + 1, total: STEPS.length })}
                   </div>
                 )}
                 <Button
@@ -1507,8 +1513,8 @@ export const WillWizard: React.FC<WillWizardProps> = ({
                   className='bg-primary hover:bg-primary-hover text-primary-foreground'
                 >
                   {currentStep === STEPS.length - 1
-                    ? 'Create Will'
-                    : 'Continue'}
+                    ? t('navigation.createWill')
+                    : t('navigation.continue')}
                   {currentStep !== STEPS.length - 1 && (
                     <Icon
                       name={'arrow-right' as any}

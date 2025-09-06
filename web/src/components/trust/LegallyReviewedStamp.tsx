@@ -5,6 +5,7 @@
  */
 
 import { Award, CheckCircle, Shield, Sparkles } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 import type { ProfessionalReview } from '@/types/will';
 
@@ -21,6 +22,8 @@ export function LegallyReviewedStamp({
   size = 'md',
   className,
 }: LegallyReviewedStampProps) {
+  const { t } = useTranslation('ui/legally-reviewed-stamp');
+  
   if (review.status !== 'approved') {
     return null;
   }
@@ -31,35 +34,35 @@ export function LegallyReviewedStamp({
     switch (level) {
       case 'legal_certified':
         return {
-          label: 'Legally Certified',
+          label: t('certification.legal_certified.label'),
           icon: Award,
           color: 'emerald',
           gradient: 'from-emerald-500 to-green-600',
-          badge: 'Legal Expert',
+          badge: t('certification.legal_certified.badge'),
         };
       case 'premium':
         return {
-          label: 'Premium Review',
+          label: t('certification.premium.label'),
           icon: Shield,
           color: 'blue',
           gradient: 'from-blue-500 to-indigo-600',
-          badge: 'Professional',
+          badge: t('certification.premium.badge'),
         };
       case 'basic':
         return {
-          label: 'Professionally Reviewed',
+          label: t('certification.basic.label'),
           icon: CheckCircle,
           color: 'green',
           gradient: 'from-green-500 to-emerald-600',
-          badge: 'Reviewed',
+          badge: t('certification.basic.badge'),
         };
       default:
         return {
-          label: 'Reviewed',
+          label: t('certification.default.label'),
           icon: CheckCircle,
           color: 'gray',
           gradient: 'from-gray-500 to-gray-600',
-          badge: 'Basic',
+          badge: t('certification.default.badge'),
         };
     }
   };
@@ -114,7 +117,7 @@ export function LegallyReviewedStamp({
               size === 'lg' && 'h-8 w-8'
             )}
           />
-          <span className='font-bold mt-1'>REVIEWED</span>
+          <span className='font-bold mt-1'>{t('watermark.text')}</span>
         </div>
       </div>
     );
@@ -214,7 +217,7 @@ export function LegallyReviewedStamp({
         >
           {review.review_date
             ? new Date(review.review_date).toLocaleDateString()
-            : 'Date not available'}
+            : t('fallback.dateNotAvailable')}
         </p>
       </div>
 

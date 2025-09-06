@@ -1,0 +1,111 @@
+{
+  "loading": {
+    "title": "Loading Survivor Interface",
+    "description": "Preparing memorial resources..."
+  },
+  "errors": {
+    "invalidToken": "Invalid or inactive access token",
+    "tokenRequired": "Access token required",
+    "profileNotFound": "User profile not found",
+    "accessRestricted": "Access Restricted",
+    "failedToLoad": "Failed to load survivor interface",
+    "fillRequiredFields": "Please fill in all required fields",
+    "submitRequestFailed": "Failed to submit access request"
+  },
+  "memorial": {
+    "title": "Memorial Information",
+    "defaultMessage": "In loving memory",
+    "inMemoryOf": "In Memory of {{name}}",
+    "unknownName": "Unknown"
+  },
+  "contacts": {
+    "defaultRelationship": "Guardian"
+  },
+  "buttons": {
+    "requestAccess": "Request Access",
+    "returnHome": "Return Home",
+    "downloadDocument": "Download",
+    "viewResource": "View",
+    "submitRequest": "Submit Request",
+    "cancelRequest": "Cancel",
+    "browseAll": "Browse All"
+  },
+  "access": {
+    "title": "Request Additional Access",
+    "description": "To access more resources, please provide your information and reason for access. Your request will be reviewed by designated guardians.",
+    "submitSuccess": "Access request submitted. You will be contacted once reviewed by guardians.",
+    "form": {
+      "fullName": {
+        "label": "Full Name",
+        "placeholder": "Enter your full name"
+      },
+      "email": {
+        "label": "Email Address",
+        "placeholder": "Enter your email"
+      },
+      "relationship": {
+        "label": "Relationship",
+        "options": {
+          "family": "Family Member",
+          "friend": "Friend",
+          "professional": "Professional",
+          "other": "Other"
+        }
+      },
+      "purpose": {
+        "label": "Purpose of Access",
+        "placeholder": "Please explain why you need access to these resources..."
+      },
+      "accessTypes": {
+        "label": "Requested Access Types",
+        "options": {
+          "documents": "Legal Documents",
+          "financial": "Financial Information",
+          "medical": "Medical Records",
+          "personal": "Personal Items/Messages"
+        }
+      }
+    }
+  },
+  "categories": {
+    "all": "All Resources",
+    "contacts": "Contacts",
+    "financial": "Financial",
+    "legal": "Legal",
+    "medical": "Medical", 
+    "personal": "Personal",
+    "instructions": "Instructions"
+  },
+  "sections": {
+    "emergencyContacts": {
+      "title": "Emergency Contacts",
+      "description": "People who can provide immediate assistance"
+    },
+    "timeCapsules": {
+      "title": "Time Capsule Messages",
+      "description": "Special messages prepared for this moment"
+    },
+    "guidanceEntries": {
+      "title": "Survivor Guidance",
+      "description": "Instructions and guidance for difficult times"
+    },
+    "availableResources": {
+      "title": "Available Resources",
+      "description": "Documents and information you can access"
+    }
+  },
+  "status": {
+    "complete": "Complete",
+    "inProgress": "In Progress",
+    "available": "Available",
+    "restricted": "Restricted"
+  },
+  "placeholders": {
+    "documentAccess": "Document access will be implemented with secure download system",
+    "resourceDetails": "Resource details will be displayed in modal or dedicated page"
+  },
+  "timeline": {
+    "lastUpdated": "Last updated {{date}}",
+    "documentType": "{{type}} document - Last updated {{date}}"
+  }
+}
