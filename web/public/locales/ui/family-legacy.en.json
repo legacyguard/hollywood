@@ -15,7 +15,8 @@
     "active": "Active",
     "completed": "Completed",
     "onHold": "On Hold",
-    "archived": "Archived"
+    "archived": "Archived",
+    "on-hold": "On Hold"
   },
   "projectCreation": {
     "title": "Create New Legacy Project",

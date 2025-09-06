@@ -5,6 +5,7 @@
  */
 
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import {
   ArrowRight,
@@ -71,196 +72,161 @@ interface ProfessionalReviewPricingProps {
   selectedTier?: string;
 }
 
-const REVIEW_TIERS: ReviewTier[] = [
+const getReviewTiers = (t: any): ReviewTier[] => [
   {
     id: 'basic',
-    name: 'Basic Review',
-    description: 'Essential legal review for straightforward documents',
+    name: t('tiers.basic.name'),
+    description: t('tiers.basic.description'),
     price: 149,
     originalPrice: 199,
-    estimatedTime: '2-3 hours',
-    turnaroundTime: '2-3 business days',
+    estimatedTime: t('tiers.basic.estimatedTime'),
+    turnaroundTime: t('tiers.basic.turnaroundTime'),
     icon: Shield,
     color: 'blue',
     features: [
       {
-        name: 'Document Structure Review',
-        description: 'Check overall document organization and completeness',
+        name: t('features.documentStructureReview.name'),
+        description: t('features.documentStructureReview.description'),
         icon: FileText,
         included: true,
       },
       {
-        name: 'Legal Compliance Check',
-        description: 'Verify compliance with state laws and regulations',
+        name: t('features.legalComplianceCheck.name'),
+        description: t('features.legalComplianceCheck.description'),
         icon: Scale,
         included: true,
       },
       {
-        name: 'Basic Error Detection',
-        description: 'Identify obvious errors and inconsistencies',
+        name: t('features.basicErrorDetection.name'),
+        description: t('features.basicErrorDetection.description'),
         icon: Target,
         included: true,
       },
       {
-        name: 'Written Summary',
-        description: 'Brief summary of findings and recommendations',
+        name: t('features.writtenSummary.name'),
+        description: t('features.writtenSummary.description'),
         icon: BookOpen,
         included: true,
       },
       {
-        name: 'Follow-up Call',
-        description: 'One 15-minute follow-up call to discuss findings',
+        name: t('features.followUpCall.name'),
+        description: t('features.followUpCall.description'),
         icon: Phone,
         included: false,
       },
       {
-        name: 'Priority Processing',
-        description: 'Fast-track your review ahead of regular queue',
+        name: t('features.priorityProcessing.name'),
+        description: t('features.priorityProcessing.description'),
         icon: Zap,
         included: false,
       },
     ],
-    includes: [
-      'Document structure and completeness review',
-      'Basic legal compliance verification',
-      'Written findings report',
-      'Email support during review process',
-    ],
-    bestFor: [
-      'Simple wills with standard provisions',
-      'Basic estate planning documents',
-      'Documents with straightforward family situations',
-    ],
+    includes: t('includes.basic', { returnObjects: true }),
+    bestFor: t('bestFor.basic', { returnObjects: true }),
   },
   {
     id: 'comprehensive',
-    name: 'Comprehensive Review',
-    description: 'Thorough analysis with detailed recommendations',
+    name: t('tiers.comprehensive.name'),
+    description: t('tiers.comprehensive.description'),
     price: 349,
     originalPrice: 449,
-    estimatedTime: '4-6 hours',
-    turnaroundTime: '3-5 business days',
+    estimatedTime: t('tiers.comprehensive.estimatedTime'),
+    turnaroundTime: t('tiers.comprehensive.turnaroundTime'),
     icon: Star,
     color: 'purple',
     popular: true,
     features: [
       {
-        name: 'Document Structure Review',
-        description: 'Check overall document organization and completeness',
+        name: t('features.documentStructureReview.name'),
+        description: t('features.documentStructureReview.description'),
         icon: FileText,
         included: true,
       },
       {
-        name: 'Legal Compliance Check',
-        description: 'Verify compliance with state laws and regulations',
+        name: t('features.legalComplianceCheck.name'),
+        description: t('features.legalComplianceCheck.description'),
         icon: Scale,
         included: true,
       },
       {
-        name: 'Advanced Error Detection',
-        description: 'Deep analysis for subtle issues and improvements',
+        name: t('features.advancedErrorDetection.name'),
+        description: t('features.advancedErrorDetection.description'),
         icon: Target,
         included: true,
       },
       {
-        name: 'Detailed Written Report',
-        description: 'Comprehensive report with specific recommendations',
+        name: t('features.detailedWrittenReport.name'),
+        description: t('features.detailedWrittenReport.description'),
         icon: BookOpen,
         included: true,
       },
       {
-        name: 'Follow-up Call',
-        description: 'One 30-minute consultation to discuss findings',
+        name: t('features.followUpCall30.name'),
+        description: t('features.followUpCall30.description'),
         icon: Phone,
         included: true,
       },
       {
-        name: 'Priority Processing',
-        description: 'Fast-track your review ahead of regular queue',
+        name: t('features.priorityProcessing.name'),
+        description: t('features.priorityProcessing.description'),
         icon: Zap,
         included: false,
       },
     ],
-    includes: [
-      'Everything in Basic Review',
-      'Advanced legal strategy analysis',
-      'Tax optimization recommendations',
-      'Family protection assessment',
-      '30-minute consultation call',
-      'Revision suggestions with reasoning',
-    ],
-    bestFor: [
-      'Complex family situations',
-      'Significant assets or business interests',
-      'Multi-generational planning needs',
-      'Tax optimization requirements',
-    ],
+    includes: t('includes.comprehensive', { returnObjects: true }),
+    bestFor: t('bestFor.comprehensive', { returnObjects: true }),
   },
   {
     id: 'certified',
-    name: 'Certified Review',
-    description: 'Premium service with legal certification and ongoing support',
+    name: t('tiers.certified.name'),
+    description: t('tiers.certified.description'),
     price: 749,
     originalPrice: 999,
-    estimatedTime: '6-8 hours',
-    turnaroundTime: '5-7 business days',
+    estimatedTime: t('tiers.certified.estimatedTime'),
+    turnaroundTime: t('tiers.certified.turnaroundTime'),
     icon: Crown,
     color: 'gold',
     premium: true,
     features: [
       {
-        name: 'Document Structure Review',
-        description: 'Check overall document organization and completeness',
+        name: t('features.documentStructureReview.name'),
+        description: t('features.documentStructureReview.description'),
         icon: FileText,
         included: true,
       },
       {
-        name: 'Legal Compliance Check',
-        description: 'Verify compliance with state laws and regulations',
+        name: t('features.legalComplianceCheck.name'),
+        description: t('features.legalComplianceCheck.description'),
         icon: Scale,
         included: true,
       },
       {
-        name: 'Comprehensive Analysis',
-        description: 'Complete legal, tax, and strategic analysis',
+        name: t('features.comprehensiveAnalysis.name'),
+        description: t('features.comprehensiveAnalysis.description'),
         icon: Target,
         included: true,
       },
       {
-        name: 'Certified Legal Opinion',
-        description: 'Formal legal opinion with professional certification',
+        name: t('features.certifiedLegalOpinion.name'),
+        description: t('features.certifiedLegalOpinion.description'),
         icon: BookOpen,
         included: true,
       },
       {
-        name: 'Extended Consultation',
-        description: 'One 60-minute consultation with unlimited follow-up',
+        name: t('features.extendedConsultation.name'),
+        description: t('features.extendedConsultation.description'),
         icon: Phone,
         included: true,
       },
       {
-        name: 'Priority Processing',
-        description: 'Highest priority processing with dedicated attorney',
+        name: t('features.priorityProcessingDedicated.name'),
+        description: t('features.priorityProcessingDedicated.description'),
         icon: Zap,
         included: true,
       },
     ],
-    includes: [
-      'Everything in Comprehensive Review',
-      'Formal legal certification',
-      'Multi-jurisdiction compliance check',
-      '60-minute consultation + unlimited follow-up',
-      'Document revision assistance',
-      '90-day support period',
-      'Emergency contact access',
-    ],
-    bestFor: [
-      'High-value estates ($1M+)',
-      'Complex business structures',
-      'Multi-state property ownership',
-      'Regulatory compliance requirements',
-      'Peace of mind with formal certification',
-    ],
+    includes: t('includes.certified', { returnObjects: true }),
+    bestFor: t('bestFor.certified', { returnObjects: true }),
   },
 ];
 
@@ -271,6 +237,7 @@ export function ProfessionalReviewPricing({
   familyContext,
   className,
 }: ProfessionalReviewPricingProps) {
+  const { t } = useTranslation('ui/professional-pricing');
   const [showComparison, setShowComparison] = useState(false);
 
   const getRecommendedTier = (): string => {
@@ -288,6 +255,7 @@ export function ProfessionalReviewPricing({
   };
 
   const recommendedTier = getRecommendedTier();
+  const REVIEW_TIERS = getReviewTiers(t);
 
   const getTierColorClasses = (color: string) => {
     switch (color) {
@@ -337,13 +305,11 @@ export function ProfessionalReviewPricing({
       <div className='text-center space-y-4'>
         <div className='inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 rounded-full text-sm font-medium'>
           <Sparkles className='h-4 w-4' />
-          Professional Legal Review
+          {t('header.badge')}
         </div>
-        <h2 className='text-3xl font-bold'>Choose Your Review Level</h2>
+        <h2 className='text-3xl font-bold'>{t('header.title')}</h2>
         <p className='text-muted-foreground max-w-2xl mx-auto'>
-          Get your estate planning documents reviewed by licensed attorneys with
-          our tiered service levels. Each review includes legal compliance
-          verification and personalized recommendations.
+          {t('header.description')}
         </p>
       </div>
 
@@ -352,18 +318,18 @@ export function ProfessionalReviewPricing({
         <Alert className='border-green-200 bg-green-50 max-w-3xl mx-auto'>
           <Heart className='h-4 w-4 text-green-600' />
           <AlertTitle className='text-green-800'>
-            Recommended for Your Family
+            {t('recommendation.title')}
           </AlertTitle>
           <AlertDescription className='text-green-700'>
-            Based on your family situation ({familyContext.members} members
-            {familyContext.minorChildren && ', minor children'}
-            {familyContext.complexAssets && ', complex assets'}
-            {familyContext.businessInterests && ', business interests'}), we
-            recommend the{' '}
-            <strong>
-              {REVIEW_TIERS.find(t => t.id === recommendedTier)?.name}
-            </strong>{' '}
-            for optimal protection.
+            {t('recommendation.description', {
+              familyDescription: [
+                t('recommendation.familyContext.members', { count: familyContext.members }),
+                familyContext.minorChildren && t('recommendation.familyContext.minorChildren'),
+                familyContext.complexAssets && t('recommendation.familyContext.complexAssets'),
+                familyContext.businessInterests && t('recommendation.familyContext.businessInterests')
+              ].filter(Boolean).join(', '),
+              tierName: REVIEW_TIERS.find(tier => tier.id === recommendedTier)?.name
+            })}
           </AlertDescription>
         </Alert>
       )}
@@ -401,7 +367,7 @@ export function ProfessionalReviewPricing({
                   {tier.popular && (
                     <div className='absolute -top-1 -right-1'>
                       <Badge className='bg-white text-purple-700 font-semibold'>
-                        Most Popular
+                        {t('badges.mostPopular')}
                       </Badge>
                     </div>
                   )}
@@ -410,7 +376,7 @@ export function ProfessionalReviewPricing({
                     <div className='absolute -top-1 -right-1'>
                       <Badge className='bg-gradient-to-r from-yellow-400 to-orange-400 text-yellow-900 font-semibold'>
                         <Crown className='h-3 w-3 mr-1' />
-                        Premium
+                        {t('badges.premium')}
                       </Badge>
                     </div>
                   )}
@@ -419,7 +385,7 @@ export function ProfessionalReviewPricing({
                     <div className='absolute -top-1 -left-1'>
                       <Badge className='bg-green-600 text-white font-semibold'>
                         <Heart className='h-3 w-3 mr-1' />
-                        Recommended
+                        {t('badges.recommended')}
                       </Badge>
                     </div>
                   )}
@@ -462,7 +428,7 @@ export function ProfessionalReviewPricing({
                   <div className='space-y-4 mb-6'>
                     <h4 className='font-semibold flex items-center gap-2'>
                       <CheckCircle className='h-4 w-4 text-green-600' />
-                      What's Included
+                      {t('sections.whatsIncluded')}
                     </h4>
                     <ul className='space-y-2'>
                       {tier.includes.map((item, idx) => (
@@ -483,7 +449,7 @@ export function ProfessionalReviewPricing({
                   <div className='space-y-3 mb-6'>
                     <h4 className='font-semibold flex items-center gap-2'>
                       <Target className='h-4 w-4 text-blue-600' />
-                      Best For
+                      {t('sections.bestFor')}
                     </h4>
                     <ul className='space-y-1'>
                       {tier.bestFor.map((item, idx) => (
@@ -504,13 +470,13 @@ export function ProfessionalReviewPricing({
                     className={cn('w-full font-semibold', colors.button)}
                     variant={isSelected ? 'default' : 'outline'}
                   >
-                    {isSelected ? 'Selected' : 'Choose This Plan'}
+                    {isSelected ? t('buttons.selected') : t('buttons.chooseThisPlan')}
                     {!isSelected && <ArrowRight className='h-4 w-4 ml-2' />}
                   </Button>
 
                   {tier.originalPrice && (
                     <p className='text-center text-sm text-green-600 mt-2 font-medium'>
-                      Save ${tier.originalPrice - tier.price} • Limited Time
+                      {t('pricing.saveAmount', { amount: tier.originalPrice - tier.price })} • {t('pricing.limitedTime')}
                     </p>
                   )}
                 </CardContent>
@@ -528,7 +494,7 @@ export function ProfessionalReviewPricing({
           className='gap-2'
         >
           <MessageSquare className='h-4 w-4' />
-          {showComparison ? 'Hide' : 'Show'} Detailed Feature Comparison
+          {showComparison ? t('buttons.hideDetailedComparison') : t('buttons.showDetailedComparison')}
         </Button>
       </div>
 
@@ -542,14 +508,14 @@ export function ProfessionalReviewPricing({
         >
           <Card>
             <CardHeader>
-              <CardTitle className='text-center'>Feature Comparison</CardTitle>
+              <CardTitle className='text-center'>{t('comparison.title')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className='overflow-x-auto'>
                 <table className='w-full'>
                   <thead>
                     <tr className='border-b'>
-                      <th className='text-left py-3 px-4'>Feature</th>
+                      <th className='text-left py-3 px-4'>{t('comparison.featureColumn')}</th>
                       {REVIEW_TIERS.map(tier => (
                         <th
                           key={tier.id}
@@ -618,10 +584,9 @@ export function ProfessionalReviewPricing({
             <div className='w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto'>
               <Shield className='h-6 w-6 text-blue-600' />
             </div>
-            <h4 className='font-semibold'>Licensed Attorneys</h4>
+            <h4 className='font-semibold'>{t('trustIndicators.licensedAttorneys.title')}</h4>
             <p className='text-sm text-muted-foreground'>
-              All reviews conducted by licensed, verified attorneys with estate
-              planning expertise
+              {t('trustIndicators.licensedAttorneys.description')}
             </p>
           </div>
 
@@ -629,10 +594,9 @@ export function ProfessionalReviewPricing({
             <div className='w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto'>
               <Award className='h-6 w-6 text-green-600' />
             </div>
-            <h4 className='font-semibold'>Quality Guaranteed</h4>
+            <h4 className='font-semibold'>{t('trustIndicators.qualityGuaranteed.title')}</h4>
             <p className='text-sm text-muted-foreground'>
-              100% satisfaction guarantee with unlimited revisions on
-              recommendations
+              {t('trustIndicators.qualityGuaranteed.description')}
             </p>
           </div>
 
@@ -640,10 +604,9 @@ export function ProfessionalReviewPricing({
             <div className='w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto'>
               <Users className='h-6 w-6 text-purple-600' />
             </div>
-            <h4 className='font-semibold'>Family Focused</h4>
+            <h4 className='font-semibold'>{t('trustIndicators.familyFocused.title')}</h4>
             <p className='text-sm text-muted-foreground'>
-              Specialized in family protection with personalized recommendations
-              for your situation
+              {t('trustIndicators.familyFocused.description')}
             </p>
           </div>
         </div>

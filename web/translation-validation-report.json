@@ -1,11 +1,11 @@
 {
-  "timestamp": "2025-09-05T21:01:36.788Z",
+  "timestamp": "2025-09-06T07:35:09.423Z",
   "summary": {
     "filesScanned": 272,
-    "totalHardcodedStrings": 5793,
+    "totalHardcodedStrings": 5673,
     "unusedKeys": 9833,
     "translationKeysTotal": 9859,
-    "keysInUse": 183
+    "keysInUse": 417
   },
   "hardcodedStringsByFile": [
     {
@@ -7421,67 +7421,67 @@
       "count": 13,
       "strings": [
         {
-          "line": 32,
+          "line": 31,
           "content": "Content-Type",
           "suggestion": "common.contenttype"
         },
         {
-          "line": 32,
+          "line": 31,
           "content": "application/json",
           "suggestion": "common.applicationjson"
         },
         {
-          "line": 50,
+          "line": 49,
           "content": "/api/documents/${id}",
           "suggestion": "common.apidocumentsid"
         },
         {
-          "line": 58,
+          "line": 57,
           "content": "Failed to delete document",
           "suggestion": "common.failed.to.delete.document"
         },
         {
-          "line": 86,
+          "line": 85,
           "content": "Failed to fetch documents",
           "suggestion": "common.failed.to.fetch.documents"
         },
         {
-          "line": 92,
+          "line": 91,
           "content": "Failed to load documents",
           "suggestion": "common.failed.to.load.documents"
         },
         {
-          "line": 107,
+          "line": 106,
           "content": "Failed to delete document ${id}",
           "suggestion": "common.failed.to.delete.document.id"
         },
         {
-          "line": 114,
+          "line": 113,
           "content": "Failed to delete document",
           "suggestion": "common.failed.to.delete.document"
         },
         {
-          "line": 127,
+          "line": 126,
           "content": "Search failed",
           "suggestion": "common.search.failed"
         },
         {
-          "line": 139,
+          "line": 138,
           "content": "Filter failed",
           "suggestion": "common.filter.failed"
         },
         {
-          "line": 167,
+          "line": 166,
           "content": "Search documents...",
           "suggestion": "common.search.documents"
         },
         {
-          "line": 196,
+          "line": 195,
           "content": "Unknown",
           "suggestion": "common.unknown"
         },
         {
-          "line": 204,
+          "line": 203,
           "content": "/documents/${doc.id}",
           "suggestion": "common.documentsdocid"
         }
@@ -8656,67 +8656,42 @@
     },
     {
       "file": "src/components/family/FamilyLegacyProjectManagement.tsx",
-      "count": 95,
+      "count": 35,
       "strings": [
         {
-          "line": 15,
+          "line": 16,
           "content": "../ui/dialog",
           "suggestion": "common.uidialog"
         },
         {
-          "line": 22,
+          "line": 23,
           "content": "../ui/select",
           "suggestion": "common.uiselect"
         },
         {
-          "line": 101,
+          "line": 102,
           "content": "asset-management",
           "suggestion": "common.assetmanagement"
         },
         {
-          "line": 103,
+          "line": 104,
           "content": "document-organization",
           "suggestion": "common.documentorganization"
         },
         {
-          "line": 104,
+          "line": 105,
           "content": "emergency-planning",
           "suggestion": "common.emergencyplanning"
         },
         {
-          "line": 146,
+          "line": 147,
           "content": " | ",
           "suggestion": "common.."
         },
         {
-          "line": 157,
+          "line": 158,
           "content": "comprehensive-will",
           "suggestion": "common.comprehensivewill"
-        },
-        {
-          "line": 158,
-          "content": "Comprehensive Will Creation",
-          "suggestion": "common.comprehensive.will.creation"
-        },
-        {
-          "line": 160,
-          "content": "Complete will creation with legal review and family consultation",
-          "suggestion": "common.complete.will.creation.with.legal.review"
-        },
-        {
-          "line": 162,
-          "content": "4-6 weeks",
-          "suggestion": "common.46.weeks"
-        },
-        {
-          "line": 165,
-          "content": "Gather personal information and assets",
-          "suggestion": "common.gather.personal.information.and.assets"
-        },
-        {
-          "line": 166,
-          "content": "Compile all necessary personal and financial information",
-          "suggestion": "common.compile.all.necessary.personal.and.finan"
         },
         {
           "line": 171,
@@ -8724,114 +8699,9 @@
           "suggestion": "common.informationgathering"
         },
         {
-          "line": 174,
-          "content": "Define beneficiaries and inheritance wishes",
-          "suggestion": "common.define.beneficiaries.and.inheritance.wis"
-        },
-        {
-          "line": 175,
-          "content": "Clearly define who gets what and under what conditions",
-          "suggestion": "common.clearly.define.who.gets.what.and.under.w"
-        },
-        {
-          "line": 183,
-          "content": "Draft initial will document",
-          "suggestion": "common.draft.initial.will.document"
-        },
-        {
-          "line": 184,
-          "content": "Create the first draft using legal templates",
-          "suggestion": "common.create.the.first.draft.using.legal.templ"
-        },
-        {
-          "line": 192,
-          "content": "Family review and feedback",
-          "suggestion": "common.family.review.and.feedback"
-        },
-        {
-          "line": 193,
-          "content": "Share draft with family for input and discussion",
-          "suggestion": "common.share.draft.with.family.for.input.and.di"
-        },
-        {
-          "line": 201,
-          "content": "Professional legal review",
-          "suggestion": "common.professional.legal.review"
-        },
-        {
-          "line": 202,
-          "content": "Have attorney review and validate the will",
-          "suggestion": "common.have.attorney.review.and.validate.the.wi"
-        },
-        {
-          "line": 210,
-          "content": "Finalize and execute will",
-          "suggestion": "common.finalize.and.execute.will"
-        },
-        {
-          "line": 211,
-          "content": "Complete final signing and witnessing process",
-          "suggestion": "common.complete.final.signing.and.witnessing.pr"
-        },
-        {
-          "line": 221,
-          "content": "Information Collection Complete",
-          "suggestion": "common.information.collection.complete"
-        },
-        {
-          "line": 222,
-          "content": "All personal and asset information gathered",
-          "suggestion": "common.all.personal.and.asset.information.gathe"
-        },
-        {
-          "line": 224,
-          "content": "Foundation for will is solid",
-          "suggestion": "common.foundation.for.will.is.solid"
-        },
-        {
-          "line": 227,
-          "content": "First Draft Complete",
-          "suggestion": "common.first.draft.complete"
-        },
-        {
-          "line": 228,
-          "content": "Initial will document is ready for review",
-          "suggestion": "common.initial.will.document.is.ready.for.revie"
-        },
-        {
-          "line": 230,
-          "content": "Major milestone - will is taking shape",
-          "suggestion": "common.major.milestone.will.is.taking.shape"
-        },
-        {
-          "line": 233,
-          "content": "Will Legally Executed",
-          "suggestion": "common.will.legally.executed"
-        },
-        {
-          "line": 234,
-          "content": "Will is signed, witnessed, and legally valid",
-          "suggestion": "common.will.is.signed.witnessed.and.legally.val"
-        },
-        {
-          "line": 236,
-          "content": "Family protection is now legally secured",
-          "suggestion": "common.family.protection.is.now.legally.secured"
-        },
-        {
           "line": 243,
           "content": "emergency-planning",
           "suggestion": "common.emergencyplanning"
-        },
-        {
-          "line": 244,
-          "content": "Family Emergency Planning",
-          "suggestion": "common.family.emergency.planning"
-        },
-        {
-          "line": 245,
-          "content": "Comprehensive emergency preparedness and response planning",
-          "suggestion": "common.comprehensive.emergency.preparedness.and"
         },
         {
           "line": 246,
@@ -8839,299 +8709,129 @@
           "suggestion": "common.emergencyplanning"
         },
         {
-          "line": 247,
-          "content": "2-3 weeks",
-          "suggestion": "common.23.weeks"
-        },
-        {
-          "line": 250,
-          "content": "Create emergency contact database",
-          "suggestion": "common.create.emergency.contact.database"
-        },
-        {
-          "line": 251,
-          "content": "Compile all important emergency contact information",
-          "suggestion": "common.compile.all.important.emergency.contact."
-        },
-        {
-          "line": 259,
-          "content": "Develop emergency procedures",
-          "suggestion": "common.develop.emergency.procedures"
-        },
-        {
-          "line": 260,
-          "content": "Create step-by-step emergency response procedures",
-          "suggestion": "common.create.stepbystep.emergency.response.pro"
-        },
-        {
-          "line": 268,
-          "content": "Prepare emergency kits",
-          "suggestion": "common.prepare.emergency.kits"
-        },
-        {
-          "line": 269,
-          "content": "Assemble physical emergency kits for each household",
-          "suggestion": "common.assemble.physical.emergency.kits.for.eac"
-        },
-        {
-          "line": 279,
-          "content": "Emergency Contacts Established",
-          "suggestion": "common.emergency.contacts.established"
-        },
-        {
-          "line": 280,
-          "content": "All family members have access to emergency contacts",
-          "suggestion": "common.all.family.members.have.access.to.emerge"
-        },
-        {
-          "line": 282,
-          "content": "Quick access to help in emergencies",
-          "suggestion": "common.quick.access.to.help.in.emergencies"
-        },
-        {
-          "line": 285,
-          "content": "Emergency Plan Complete",
-          "suggestion": "common.emergency.plan.complete"
-        },
-        {
-          "line": 286,
-          "content": "Comprehensive emergency plan is finalized",
-          "suggestion": "common.comprehensive.emergency.plan.is.finalize"
-        },
-        {
-          "line": 288,
-          "content": "Family is prepared for any emergency",
-          "suggestion": "common.family.is.prepared.for.any.emergency"
-        },
-        {
-          "line": 296,
-          "content": "Family History Documentation",
-          "suggestion": "common.family.history.documentation"
-        },
-        {
-          "line": 298,
-          "content": "Preserve family history through stories, photos, and recordings",
-          "suggestion": "common.preserve.family.history.through.stories."
-        },
-        {
-          "line": 300,
-          "content": "8-12 weeks",
-          "suggestion": "common.812.weeks"
-        },
-        {
-          "line": 303,
-          "content": "Interview family elders",
-          "suggestion": "common.interview.family.elders"
-        },
-        {
-          "line": 304,
-          "content": "Record stories and memories from older family members",
-          "suggestion": "common.record.stories.and.memories.from.older.f"
-        },
-        {
-          "line": 312,
-          "content": "Digitize family photos",
-          "suggestion": "common.digitize.family.photos"
-        },
-        {
-          "line": 313,
-          "content": "Scan and organize historical family photographs",
-          "suggestion": "common.scan.and.organize.historical.family.phot"
-        },
-        {
-          "line": 321,
-          "content": "Create family tree",
-          "suggestion": "common.create.family.tree"
-        },
-        {
-          "line": 322,
-          "content": "Build comprehensive family genealogy",
-          "suggestion": "common.build.comprehensive.family.genealogy"
-        },
-        {
-          "line": 332,
-          "content": "Elder Interviews Complete",
-          "suggestion": "common.elder.interviews.complete"
-        },
-        {
-          "line": 333,
-          "content": "All available elder interviews have been recorded",
-          "suggestion": "common.all.available.elder.interviews.have.been"
-        },
-        {
-          "line": 335,
-          "content": "Precious memories are preserved forever",
-          "suggestion": "common.precious.memories.are.preserved.forever"
-        },
-        {
-          "line": 338,
-          "content": "Family Archive Complete",
-          "suggestion": "common.family.archive.complete"
-        },
-        {
-          "line": 339,
-          "content": "Complete digital family history archive is ready",
-          "suggestion": "common.complete.digital.family.history.archive."
-        },
-        {
-          "line": 341,
-          "content": "Family legacy is documented for future generations",
-          "suggestion": "common.family.legacy.is.documented.for.future.g"
-        },
-        {
-          "line": 344,
+          "line": 343,
           "content": "family-historian",
           "suggestion": "common.familyhistorian"
         },
         {
-          "line": 377,
+          "line": 357,
+          "content": "ui/family-legacy",
+          "suggestion": "common.uifamilylegacy"
+        },
+        {
+          "line": 380,
           "content": "user@example.com",
           "suggestion": "common.userexamplecom"
         },
         {
-          "line": 379,
+          "line": 382,
           "content": "project-management",
           "suggestion": "common.projectmanagement"
         },
         {
-          "line": 387,
+          "line": 390,
           "content": "project-${Date.now()}",
           "suggestion": "common.projectdatenow"
         },
         {
-          "line": 397,
+          "line": 400,
           "content": "task-${Date.now()}-${index}",
           "suggestion": "common.taskdatenowindex"
         },
         {
-          "line": 405,
+          "line": 408,
           "content": "milestone-${Date.now()}-${index}",
           "suggestion": "common.milestonedatenowindex"
         },
         {
-          "line": 466,
+          "line": 469,
           "content": "task-${Date.now()}",
           "suggestion": "common.taskdatenow"
         },
         {
-          "line": 467,
-          "content": "New Task",
-          "suggestion": "common.new.task"
-        },
-        {
-          "line": 496,
+          "line": 499,
           "content": "bg-blue-100 text-blue-800",
           "suggestion": "common.bgblue100.textblue800"
         },
         {
-          "line": 498,
+          "line": 501,
           "content": "bg-green-100 text-green-800",
           "suggestion": "common.bggreen100.textgreen800"
         },
         {
-          "line": 500,
+          "line": 503,
           "content": "bg-yellow-100 text-yellow-800",
           "suggestion": "common.bgyellow100.textyellow800"
         },
         {
-          "line": 502,
+          "line": 505,
           "content": "bg-purple-100 text-purple-800",
           "suggestion": "common.bgpurple100.textpurple800"
         },
         {
-          "line": 504,
+          "line": 507,
           "content": "bg-gray-100 text-gray-800",
           "suggestion": "common.bggray100.textgray800"
         },
         {
-          "line": 506,
+          "line": 509,
           "content": "bg-gray-100 text-gray-800",
           "suggestion": "common.bggray100.textgray800"
         },
         {
-          "line": 515,
+          "line": 518,
           "content": "bg-red-100 text-red-800",
           "suggestion": "common.bgred100.textred800"
         },
         {
-          "line": 517,
+          "line": 520,
           "content": "bg-orange-100 text-orange-800",
           "suggestion": "common.bgorange100.textorange800"
         },
         {
-          "line": 519,
+          "line": 522,
           "content": "bg-yellow-100 text-yellow-800",
           "suggestion": "common.bgyellow100.textyellow800"
         },
         {
-          "line": 521,
+          "line": 524,
           "content": "bg-green-100 text-green-800",
           "suggestion": "common.bggreen100.textgreen800"
         },
         {
-          "line": 523,
+          "line": 526,
           "content": "bg-gray-100 text-gray-800",
           "suggestion": "common.bggray100.textgray800"
         },
         {
-          "line": 558,
-          "content": "Filter by status",
-          "suggestion": "common.filter.by.status"
+          "line": 646,
+          "content": "filters.${activeProject.status}",
+          "suggestion": "common.filtersactiveprojectstatus"
         },
         {
-          "line": 809,
-          "content": "Progress",
-          "suggestion": "common.progress"
+          "line": 649,
+          "content": "priorities.${activeProject.priority}",
+          "suggestion": "common.prioritiesactiveprojectpriority"
         },
         {
-          "line": 839,
-          "content": "Task title",
-          "suggestion": "common.task.title"
+          "line": 761,
+          "content": "priorities.${task.priority}",
+          "suggestion": "common.prioritiestaskpriority"
         },
         {
-          "line": 840,
-          "content": "Task description",
-          "suggestion": "common.task.description"
-        },
-        {
-          "line": 844,
-          "content": "Assignee",
-          "suggestion": "common.assignee"
-        },
-        {
-          "line": 856,
-          "content": "Priority",
-          "suggestion": "common.priority"
-        },
-        {
-          "line": 868,
-          "content": "Estimated hours",
-          "suggestion": "common.estimated.hours"
-        },
-        {
-          "line": 874,
-          "content": "New Task",
-          "suggestion": "common.new.task"
-        },
-        {
-          "line": 875,
-          "content": "Task description",
-          "suggestion": "common.task.description"
-        },
-        {
-          "line": 904,
+          "line": 907,
           "content": "bg-green-50 border-green-200",
           "suggestion": "common.bggreen50.bordergreen200"
         },
         {
-          "line": 1110,
-          "content": "Try adjusting your filters to see more projects",
-          "suggestion": "common.try.adjusting.your.filters.to.see.more.p"
+          "line": 1051,
+          "content": "filters.${project.status}",
+          "suggestion": "common.filtersprojectstatus"
         },
         {
-          "line": 1111,
-          "content": "Create your first legacy project to start organizing your family planning",
-          "suggestion": "common.create.your.first.legacy.project.to.star"
+          "line": 1059,
+          "content": "priorities.${project.priority}",
+          "suggestion": "common.prioritiesprojectpriority"
         }
       ]
     },
@@ -11054,7 +10754,7 @@
       "count": 1,
       "strings": [
         {
-          "line": 32,
+          "line": 33,
           "content": "email_import_cta_v1",
           "suggestion": "common.emailimportctav1"
         }
@@ -15602,7 +15302,7 @@
     },
     {
       "file": "src/components/marketing/UpgradePrompts.tsx",
-      "count": 107,
+      "count": 38,
       "strings": [
         {
           "line": 17,
@@ -15610,532 +15310,187 @@
           "suggestion": "common.componentsuidialog"
         },
         {
-          "line": 40,
+          "line": 41,
           "content": "priority-support",
           "suggestion": "common.prioritysupport"
         },
         {
-          "line": 41,
+          "line": 42,
           "content": "professional-review",
           "suggestion": "common.professionalreview"
         },
         {
-          "line": 77,
-          "content": "Family Plan Needed",
-          "suggestion": "common.family.plan.needed"
-        },
-        {
-          "line": 80,
-          "content": "Add unlimited family members and unlock collaborative features with our Family Plan.",
-          "suggestion": "common.add.unlimited.family.members.and.unlock."
+          "line": 71,
+          "content": "ui/upgrade-prompts",
+          "suggestion": "common.uiupgradeprompts"
         },
         {
           "line": 84,
-          "content": "Unlimited family member invitations",
-          "suggestion": "common.unlimited.family.member.invitations"
-        },
-        {
-          "line": 85,
-          "content": "Advanced collaboration tools",
-          "suggestion": "common.advanced.collaboration.tools"
-        },
-        {
-          "line": 86,
-          "content": "Shared family calendar and timeline",
-          "suggestion": "common.shared.family.calendar.and.timeline"
+          "content": "triggers.familyLimit.benefits",
+          "suggestion": "common.triggersfamilylimitbenefits"
         },
         {
           "line": 87,
-          "content": "Family decision voting system",
-          "suggestion": "common.family.decision.voting.system"
-        },
-        {
-          "line": 91,
           "content": "professional-review",
           "suggestion": "common.professionalreview"
         },
         {
-          "line": 93,
-          "content": "Get Professional Review",
-          "suggestion": "common.get.professional.review"
-        },
-        {
           "line": 94,
-          "content": "Ensure your documents are legally sound",
-          "suggestion": "common.ensure.your.documents.are.legally.sound"
+          "content": "triggers.professionalReview.benefits",
+          "suggestion": "common.triggersprofessionalreviewbenefits"
         },
         {
-          "line": 96,
-          "content": "Connect with verified attorneys for professional document review and legal guidance.",
-          "suggestion": "common.connect.with.verified.attorneys.for.prof"
+          "line": 104,
+          "content": "triggers.analyticsLimit.benefits",
+          "suggestion": "common.triggersanalyticslimitbenefits"
         },
         {
-          "line": 100,
-          "content": "Access to verified legal professionals",
-          "suggestion": "common.access.to.verified.legal.professionals"
-        },
-        {
-          "line": 101,
-          "content": "Professional document reviews",
-          "suggestion": "common.professional.document.reviews"
-        },
-        {
-          "line": 102,
-          "content": "Legal compliance checking",
-          "suggestion": "common.legal.compliance.checking"
-        },
-        {
-          "line": 103,
-          "content": "Direct consultation booking",
-          "suggestion": "common.direct.consultation.booking"
-        },
-        {
-          "line": 109,
-          "content": "Unlock Advanced Analytics",
-          "suggestion": "common.unlock.advanced.analytics"
-        },
-        {
-          "line": 112,
-          "content": "Premium analytics provide AI-powered recommendations and comprehensive risk assessment.",
-          "suggestion": "common.premium.analytics.provide.aipowered.reco"
-        },
-        {
-          "line": 116,
-          "content": "AI-powered family risk assessment",
-          "suggestion": "common.aipowered.family.risk.assessment"
+          "line": 114,
+          "content": "triggers.timeCapsule.benefits",
+          "suggestion": "common.triggerstimecapsulebenefits"
         },
         {
           "line": 117,
-          "content": "Personalized improvement recommendations",
-          "suggestion": "common.personalized.improvement.recommendations"
-        },
-        {
-          "line": 118,
-          "content": "Advanced progress tracking",
-          "suggestion": "common.advanced.progress.tracking"
-        },
-        {
-          "line": 119,
-          "content": "Historical trend analysis",
-          "suggestion": "common.historical.trend.analysis"
-        },
-        {
-          "line": 125,
-          "content": "Create Time Capsules",
-          "suggestion": "common.create.time.capsules"
-        },
-        {
-          "line": 126,
-          "content": "Preserve memories for future generations",
-          "suggestion": "common.preserve.memories.for.future.generations"
-        },
-        {
-          "line": 128,
-          "content": "Premium Time Capsule feature lets you create scheduled messages and memory preservation.",
-          "suggestion": "common.premium.time.capsule.feature.lets.you.cr"
-        },
-        {
-          "line": 132,
-          "content": "Unlimited time capsule creation",
-          "suggestion": "common.unlimited.time.capsule.creation"
-        },
-        {
-          "line": 133,
-          "content": "Video and audio messages",
-          "suggestion": "common.video.and.audio.messages"
-        },
-        {
-          "line": 134,
-          "content": "Scheduled delivery system",
-          "suggestion": "common.scheduled.delivery.system"
-        },
-        {
-          "line": 135,
-          "content": "Multi-generational sharing",
-          "suggestion": "common.multigenerational.sharing"
-        },
-        {
-          "line": 139,
           "content": "priority-support",
           "suggestion": "common.prioritysupport"
         },
         {
-          "line": 141,
-          "content": "Need Priority Support?",
-          "suggestion": "common.need.priority.support"
+          "line": 124,
+          "content": "triggers.prioritySupport.benefits",
+          "suggestion": "common.triggersprioritysupportbenefits"
         },
         {
-          "line": 142,
-          "content": "Get faster help when you need it most",
-          "suggestion": "common.get.faster.help.when.you.need.it.most"
-        },
-        {
-          "line": 144,
-          "content": "Premium users get priority support with dedicated assistance for urgent family matters.",
-          "suggestion": "common.premium.users.get.priority.support.with."
-        },
-        {
-          "line": 148,
-          "content": "Priority customer support",
-          "suggestion": "common.priority.customer.support"
-        },
-        {
-          "line": 149,
-          "content": "Dedicated account manager",
-          "suggestion": "common.dedicated.account.manager"
-        },
-        {
-          "line": 150,
-          "content": "24/7 urgent assistance",
-          "suggestion": "common.247.urgent.assistance"
-        },
-        {
-          "line": 151,
-          "content": "Phone and video support",
-          "suggestion": "common.phone.and.video.support"
-        },
-        {
-          "line": 157,
-          "content": "Upgrade to Premium",
-          "suggestion": "common.upgrade.to.premium"
-        },
-        {
-          "line": 158,
-          "content": "Unlock all features",
-          "suggestion": "common.unlock.all.features"
+          "line": 146,
+          "content": "plans.premium.features",
+          "suggestion": "common.planspremiumfeatures"
         },
         {
           "line": 160,
-          "content": "Get access to all premium features and enhanced family protection.",
-          "suggestion": "common.get.access.to.all.premium.features.and.e"
-        },
-        {
-          "line": 171,
-          "content": "Premium",
-          "suggestion": "common.premium"
+          "content": "plans.family.features",
+          "suggestion": "common.plansfamilyfeatures"
         },
         {
           "line": 172,
-          "content": "$9.99",
-          "suggestion": "common.999"
-        },
-        {
-          "line": 174,
-          "content": "Perfect for individuals and small families",
-          "suggestion": "common.perfect.for.individuals.and.small.famili"
-        },
-        {
-          "line": 176,
-          "content": "Up to 5 family members",
-          "suggestion": "common.up.to.5.family.members"
-        },
-        {
-          "line": 178,
-          "content": "Professional document reviews",
-          "suggestion": "common.professional.document.reviews"
-        },
-        {
-          "line": 182,
-          "content": "Advanced analytics & insights",
-          "suggestion": "common.advanced.analytics.insights"
-        },
-        {
-          "line": 183,
-          "content": "Priority support",
-          "suggestion": "common.priority.support"
-        },
-        {
-          "line": 184,
-          "content": "Time capsule creation",
-          "suggestion": "common.time.capsule.creation"
-        },
-        {
-          "line": 185,
-          "content": "Unlimited document storage",
-          "suggestion": "common.unlimited.document.storage"
-        },
-        {
-          "line": 190,
-          "content": "Family Plan",
-          "suggestion": "common.family.plan"
-        },
-        {
-          "line": 191,
-          "content": "$19.99",
-          "suggestion": "common.1999"
-        },
-        {
-          "line": 193,
-          "content": "Best for larger families with collaboration needs",
-          "suggestion": "common.best.for.larger.families.with.collaborat"
-        },
-        {
-          "line": 197,
-          "content": "Unlimited family members",
-          "suggestion": "common.unlimited.family.members"
-        },
-        {
-          "line": 199,
-          "content": "Advanced collaboration tools",
-          "suggestion": "common.advanced.collaboration.tools"
-        },
-        {
-          "line": 203,
-          "content": "Family decision voting",
-          "suggestion": "common.family.decision.voting"
-        },
-        {
-          "line": 204,
-          "content": "Shared family timeline",
-          "suggestion": "common.shared.family.timeline"
-        },
-        {
-          "line": 205,
-          "content": "Multi-generational features",
-          "suggestion": "common.multigenerational.features"
-        },
-        {
-          "line": 206,
-          "content": "Everything in Premium",
-          "suggestion": "common.everything.in.premium"
-        },
-        {
-          "line": 211,
-          "content": "Professional",
-          "suggestion": "common.professional"
-        },
-        {
-          "line": 212,
-          "content": "$39.99",
-          "suggestion": "common.3999"
-        },
-        {
-          "line": 214,
-          "content": "For those who need comprehensive legal support",
-          "suggestion": "common.for.those.who.need.comprehensive.legal.s"
-        },
-        {
-          "line": 215,
           "content": "professional-review",
           "suggestion": "common.professionalreview"
         },
         {
-          "line": 218,
-          "content": "Unlimited attorney consultations",
-          "suggestion": "common.unlimited.attorney.consultations"
+          "line": 173,
+          "content": "plans.professional.features",
+          "suggestion": "common.plansprofessionalfeatures"
         },
         {
-          "line": 223,
-          "content": "Legal compliance monitoring",
-          "suggestion": "common.legal.compliance.monitoring"
-        },
-        {
-          "line": 227,
-          "content": "Dedicated legal advisor",
-          "suggestion": "common.dedicated.legal.advisor"
-        },
-        {
-          "line": 228,
-          "content": "Advanced estate planning tools",
-          "suggestion": "common.advanced.estate.planning.tools"
-        },
-        {
-          "line": 229,
-          "content": "White-glove setup service",
-          "suggestion": "common.whiteglove.setup.service"
-        },
-        {
-          "line": 230,
-          "content": "Everything in Family Plan",
-          "suggestion": "common.everything.in.family.plan"
-        },
-        {
-          "line": 241,
+          "line": 187,
           "content": "border-red-500 bg-red-50",
           "suggestion": "common.borderred500.bgred50"
         },
         {
-          "line": 243,
+          "line": 189,
           "content": "border-orange-500 bg-orange-50",
           "suggestion": "common.borderorange500.bgorange50"
         },
         {
-          "line": 245,
+          "line": 191,
           "content": "border-blue-500 bg-blue-50",
           "suggestion": "common.borderblue500.bgblue50"
         },
         {
-          "line": 260,
+          "line": 206,
           "content": "upgrade-dismissals-${userId}",
           "suggestion": "common.upgradedismissalsuserid"
         },
         {
-          "line": 268,
+          "line": 214,
           "content": "upgrade-dismissals-${userId}",
           "suggestion": "common.upgradedismissalsuserid"
         },
         {
-          "line": 356,
+          "line": 302,
           "content": "transform scale-105",
           "suggestion": "common.transform.scale105"
         },
         {
-          "line": 362,
+          "line": 308,
           "content": "cursor-pointer transition-all hover:shadow-lg border-2",
           "suggestion": "common.cursorpointer.transitionall.hovershadowl"
         },
         {
-          "line": 364,
+          "line": 310,
           "content": "border-blue-500 bg-blue-50",
           "suggestion": "common.borderblue500.bgblue50"
         },
         {
-          "line": 366,
+          "line": 312,
           "content": "border-purple-500",
           "suggestion": "common.borderpurple500"
         },
         {
-          "line": 367,
+          "line": 313,
           "content": "border-gray-200 hover:border-gray-300",
           "suggestion": "common.bordergray200.hoverbordergray300"
         },
         {
-          "line": 374,
-          "content": "Most Popular",
-          "suggestion": "common.most.popular"
-        },
-        {
-          "line": 374,
-          "content": "Recommended",
-          "suggestion": "common.recommended"
-        },
-        {
-          "line": 400,
+          "line": 346,
           "content": "h-4 w-4 mr-3 mt-0.5 flex-shrink-0",
           "suggestion": "common.h4.w4.mr3.mt05.flexshrink0"
         },
         {
-          "line": 409,
+          "line": 355,
           "content": "font-medium text-gray-900",
           "suggestion": "common.fontmedium.textgray900"
         },
         {
-          "line": 423,
+          "line": 369,
           "content": "bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700",
           "suggestion": "common.bggradienttor.frompurple600.toblue600.ho"
         },
         {
-          "line": 429,
-          "content": "Start Free Trial",
-          "suggestion": "common.start.free.trial"
-        },
-        {
-          "line": 430,
-          "content": "Upgrade Now",
-          "suggestion": "common.upgrade.now"
-        },
-        {
-          "line": 489,
+          "line": 435,
           "content": "family-members-${userId}",
           "suggestion": "common.familymembersuserid"
         },
         {
-          "line": 499,
+          "line": 445,
           "content": "documents-${userId}",
           "suggestion": "common.documentsuserid"
         },
         {
-          "line": 502,
+          "line": 448,
           "content": "professional-review",
           "suggestion": "common.professionalreview"
         },
         {
-          "line": 508,
+          "line": 454,
           "content": "analytics-views-${userId}",
           "suggestion": "common.analyticsviewsuserid"
         },
         {
-          "line": 524,
+          "line": 470,
           "content": "upgrade-dismissals-${userId}",
           "suggestion": "common.upgradedismissalsuserid"
         },
         {
-          "line": 570,
+          "line": 514,
+          "content": "ui/upgrade-prompts",
+          "suggestion": "common.uiupgradeprompts"
+        },
+        {
+          "line": 518,
           "content": "professional-review",
           "suggestion": "common.professionalreview"
         },
         {
-          "line": 572,
-          "content": "Professional Review",
-          "suggestion": "common.professional.review"
-        },
-        {
-          "line": 573,
-          "content": "Get your documents reviewed by verified attorneys",
-          "suggestion": "common.get.your.documents.reviewed.by.verified."
-        },
-        {
-          "line": 574,
-          "content": "Premium",
-          "suggestion": "common.premium"
-        },
-        {
-          "line": 577,
+          "line": 525,
           "content": "advanced-analytics",
           "suggestion": "common.advancedanalytics"
         },
         {
-          "line": 579,
-          "content": "Advanced Analytics",
-          "suggestion": "common.advanced.analytics"
-        },
-        {
-          "line": 580,
-          "content": "AI-powered insights and risk assessment",
-          "suggestion": "common.aipowered.insights.and.risk.assessment"
-        },
-        {
-          "line": 581,
-          "content": "Premium",
-          "suggestion": "common.premium"
-        },
-        {
-          "line": 584,
+          "line": 532,
           "content": "family-collaboration",
           "suggestion": "common.familycollaboration"
         },
         {
-          "line": 586,
-          "content": "Family Collaboration",
-          "suggestion": "common.family.collaboration"
-        },
-        {
-          "line": 587,
-          "content": "Unlimited family members and collaboration tools",
-          "suggestion": "common.unlimited.family.members.and.collaborati"
-        },
-        {
-          "line": 588,
-          "content": "Family",
-          "suggestion": "common.family"
-        },
-        {
-          "line": 593,
-          "content": "Premium Feature",
-          "suggestion": "common.premium.feature"
-        },
-        {
-          "line": 594,
-          "content": "This feature requires a premium plan",
-          "suggestion": "common.this.feature.requires.a.premium.plan"
-        },
-        {
-          "line": 595,
-          "content": "Premium",
-          "suggestion": "common.premium"
-        },
-        {
-          "line": 607,
+          "line": 555,
           "content": "border-2 border-purple-200 bg-gradient-to-br from-purple-50 to-blue-50",
           "suggestion": "common.border2.borderpurple200.bggradienttobr.f"
         }
@@ -19096,27 +18451,22 @@
     },
     {
       "file": "src/components/professional/ProfessionalNetworkDirectory.tsx",
-      "count": 100,
+      "count": 109,
       "strings": [
         {
-          "line": 42,
+          "line": 43,
           "content": "@/components/ui/select",
           "suggestion": "common.componentsuiselect"
         },
         {
-          "line": 51,
+          "line": 52,
           "content": "@/components/ui/dialog",
           "suggestion": "common.componentsuidialog"
         },
         {
-          "line": 99,
+          "line": 100,
           "content": "sarah.johnson@law.com",
           "suggestion": "common.sarahjohnsonlawcom"
-        },
-        {
-          "line": 100,
-          "content": "Sarah Johnson",
-          "suggestion": "common.sarah.johnson"
         },
         {
           "line": 101,
@@ -19125,40 +18475,35 @@
         },
         {
           "line": 102,
+          "content": "Sarah Johnson",
+          "suggestion": "common.sarah.johnson"
+        },
+        {
+          "line": 103,
           "content": "Senior Attorney",
           "suggestion": "common.senior.attorney"
         },
         {
-          "line": 103,
+          "line": 104,
           "content": "Johnson & Associates",
           "suggestion": "common.johnson.associates"
         },
         {
-          "line": 105,
+          "line": 106,
           "content": "California",
           "suggestion": "common.california"
         },
         {
-          "line": 105,
+          "line": 106,
           "content": "Nevada",
           "suggestion": "common.nevada"
         },
         {
-          "line": 108,
+          "line": 109,
           "content": "California",
           "suggestion": "common.california"
         },
         {
-          "line": 110,
-          "content": ", name: ",
-          "suggestion": "common..name."
-        },
-        {
-          "line": 110,
-          "content": ", category: ",
-          "suggestion": "common..category."
-        },
-        {
           "line": 111,
           "content": ", name: ",
           "suggestion": "common..name."
@@ -19179,69 +18524,74 @@
           "suggestion": "common..category."
         },
         {
-          "line": 123,
+          "line": 113,
+          "content": ", name: ",
+          "suggestion": "common..name."
+        },
+        {
+          "line": 113,
+          "content": ", category: ",
+          "suggestion": "common..category."
+        },
+        {
+          "line": 124,
           "content": "< 2 hours",
           "suggestion": "common..2.hours"
         },
         {
-          "line": 128,
+          "line": 129,
           "content": "Sarah provided exceptional guidance through our complex estate planning process. Her attention to detail and proactive communication made the entire experience smooth and reassuring.",
           "suggestion": "common.sarah.provided.exceptional.guidance.thro"
         },
         {
-          "line": 129,
+          "line": 130,
           "content": "Michael R.",
           "suggestion": "common.michael.r"
         },
         {
-          "line": 135,
+          "line": 136,
           "content": "Initial estate planning consultation",
           "suggestion": "common.initial.estate.planning.consultation"
         },
         {
-          "line": 140,
+          "line": 141,
           "content": "Comprehensive document review",
           "suggestion": "common.comprehensive.document.review"
         },
         {
-          "line": 145,
+          "line": 146,
           "content": "Ongoing legal counsel",
           "suggestion": "common.ongoing.legal.counsel"
         },
         {
-          "line": 150,
+          "line": 151,
           "content": "Top 10 Estate Attorneys 2023",
           "suggestion": "common.top.10.estate.attorneys.2023"
         },
         {
-          "line": 151,
+          "line": 152,
           "content": "Client Choice Award",
           "suggestion": "common.client.choice.award"
         },
         {
-          "line": 152,
+          "line": 153,
           "content": "15+ Years Experience",
           "suggestion": "common.15.years.experience"
         },
         {
-          "line": 154,
+          "line": 155,
           "content": "English",
           "suggestion": "common.english"
         },
         {
-          "line": 154,
+          "line": 155,
           "content": "Spanish",
           "suggestion": "common.spanish"
         },
         {
-          "line": 159,
+          "line": 160,
           "content": "michael.chen@legaleagle.com",
           "suggestion": "common.michaelchenlegaleaglecom"
-        },
-        {
-          "line": 160,
-          "content": "Michael Chen",
-          "suggestion": "common.michael.chen"
         },
         {
           "line": 161,
@@ -19250,45 +18600,40 @@
         },
         {
           "line": 162,
+          "content": "Michael Chen",
+          "suggestion": "common.michael.chen"
+        },
+        {
+          "line": 163,
           "content": "Senior Partner",
           "suggestion": "common.senior.partner"
         },
         {
-          "line": 163,
+          "line": 164,
           "content": "LegalEagle Partners",
           "suggestion": "common.legaleagle.partners"
         },
         {
-          "line": 165,
+          "line": 166,
           "content": "New York",
           "suggestion": "common.new.york"
         },
         {
-          "line": 165,
+          "line": 166,
           "content": "New Jersey",
           "suggestion": "common.new.jersey"
         },
         {
-          "line": 165,
+          "line": 166,
           "content": "Connecticut",
           "suggestion": "common.connecticut"
         },
         {
-          "line": 168,
+          "line": 169,
           "content": "New York",
           "suggestion": "common.new.york"
         },
         {
-          "line": 170,
-          "content": ", name: ",
-          "suggestion": "common..name."
-        },
-        {
-          "line": 170,
-          "content": ", category: ",
-          "suggestion": "common..category."
-        },
-        {
           "line": 171,
           "content": ", name: ",
           "suggestion": "common..name."
@@ -19309,69 +18654,74 @@
           "suggestion": "common..category."
         },
         {
-          "line": 183,
+          "line": 173,
+          "content": ", name: ",
+          "suggestion": "common..name."
+        },
+        {
+          "line": 173,
+          "content": ", category: ",
+          "suggestion": "common..category."
+        },
+        {
+          "line": 184,
           "content": "< 4 hours",
           "suggestion": "common..4.hours"
         },
         {
-          "line": 188,
+          "line": 189,
           "content": "Michael helped us restructure our business for optimal tax efficiency and succession planning. His expertise saved us thousands and provided peace of mind.",
           "suggestion": "common.michael.helped.us.restructure.our.busine"
         },
         {
-          "line": 189,
+          "line": 190,
           "content": "Jennifer L.",
           "suggestion": "common.jennifer.l"
         },
         {
-          "line": 195,
+          "line": 196,
           "content": "Business succession consultation",
           "suggestion": "common.business.succession.consultation"
         },
         {
-          "line": 200,
+          "line": 201,
           "content": "Business agreement review",
           "suggestion": "common.business.agreement.review"
         },
         {
-          "line": 205,
+          "line": 206,
           "content": "Corporate counsel retainer",
           "suggestion": "common.corporate.counsel.retainer"
         },
         {
-          "line": 210,
+          "line": 211,
           "content": "Super Lawyers 2020-2024",
           "suggestion": "common.super.lawyers.20202024"
         },
         {
-          "line": 211,
+          "line": 212,
           "content": "Business Journal Top Attorney",
           "suggestion": "common.business.journal.top.attorney"
         },
         {
-          "line": 212,
+          "line": 213,
           "content": "Harvard Law Review",
           "suggestion": "common.harvard.law.review"
         },
         {
-          "line": 214,
+          "line": 215,
           "content": "English",
           "suggestion": "common.english"
         },
         {
-          "line": 214,
+          "line": 215,
           "content": "Mandarin",
           "suggestion": "common.mandarin"
         },
         {
-          "line": 219,
+          "line": 220,
           "content": "emily.rodriguez@elderlaw.com",
           "suggestion": "common.emilyrodriguezelderlawcom"
-        },
-        {
-          "line": 220,
-          "content": "Emily Rodriguez",
-          "suggestion": "common.emily.rodriguez"
         },
         {
           "line": 221,
@@ -19380,40 +18730,35 @@
         },
         {
           "line": 222,
+          "content": "Emily Rodriguez",
+          "suggestion": "common.emily.rodriguez"
+        },
+        {
+          "line": 223,
           "content": "Elder Law Attorney",
           "suggestion": "common.elder.law.attorney"
         },
         {
-          "line": 223,
+          "line": 224,
           "content": "Rodriguez Elder Law",
           "suggestion": "common.rodriguez.elder.law"
         },
         {
-          "line": 225,
+          "line": 226,
           "content": "Florida",
           "suggestion": "common.florida"
         },
         {
-          "line": 225,
+          "line": 226,
           "content": "Georgia",
           "suggestion": "common.georgia"
         },
         {
-          "line": 228,
+          "line": 229,
           "content": "Florida",
           "suggestion": "common.florida"
         },
         {
-          "line": 230,
-          "content": ", name: ",
-          "suggestion": "common..name."
-        },
-        {
-          "line": 230,
-          "content": ", category: ",
-          "suggestion": "common..category."
-        },
-        {
           "line": 231,
           "content": ", name: ",
           "suggestion": "common..name."
@@ -19434,169 +18779,224 @@
           "suggestion": "common..category."
         },
         {
-          "line": 243,
+          "line": 233,
+          "content": ", name: ",
+          "suggestion": "common..name."
+        },
+        {
+          "line": 233,
+          "content": ", category: ",
+          "suggestion": "common..category."
+        },
+        {
+          "line": 244,
           "content": "< 1 hour",
           "suggestion": "common..1.hour"
         },
         {
-          "line": 248,
+          "line": 249,
           "content": "Emily guided our family through a difficult time with incredible compassion and expertise. She made complex legal matters understandable and manageable.",
           "suggestion": "common.emily.guided.our.family.through.a.diffic"
         },
         {
-          "line": 249,
+          "line": 250,
           "content": "Robert K.",
           "suggestion": "common.robert.k"
         },
         {
-          "line": 255,
+          "line": 256,
           "content": "Elder care planning session",
           "suggestion": "common.elder.care.planning.session"
         },
         {
-          "line": 260,
+          "line": 261,
           "content": "Healthcare directive review",
           "suggestion": "common.healthcare.directive.review"
         },
         {
-          "line": 265,
+          "line": 266,
           "content": "Family legal support",
           "suggestion": "common.family.legal.support"
         },
         {
-          "line": 270,
+          "line": 271,
           "content": "Elder Law Specialist Certification",
           "suggestion": "common.elder.law.specialist.certification"
         },
         {
-          "line": 271,
+          "line": 272,
           "content": "Community Service Award",
           "suggestion": "common.community.service.award"
         },
         {
-          "line": 272,
+          "line": 273,
           "content": "Client Advocate 2023",
           "suggestion": "common.client.advocate.2023"
         },
         {
-          "line": 274,
+          "line": 275,
           "content": "English",
           "suggestion": "common.english"
         },
         {
-          "line": 274,
+          "line": 275,
           "content": "Spanish",
           "suggestion": "common.spanish"
         },
         {
-          "line": 274,
+          "line": 275,
           "content": "Portuguese",
           "suggestion": "common.portuguese"
         },
         {
-          "line": 279,
-          "content": "Estate Planning",
-          "suggestion": "common.estate.planning"
+          "line": 330,
+          "content": "ui/professional-network",
+          "suggestion": "common.uiprofessionalnetwork"
         },
         {
-          "line": 280,
-          "content": "Tax Law",
-          "suggestion": "common.tax.law"
-        },
-        {
-          "line": 281,
-          "content": "Business Law",
-          "suggestion": "common.business.law"
-        },
-        {
-          "line": 282,
-          "content": "Real Estate Law",
-          "suggestion": "common.real.estate.law"
-        },
-        {
-          "line": 283,
-          "content": "Family Law",
-          "suggestion": "common.family.law"
-        },
-        {
-          "line": 284,
-          "content": "Elder Law",
-          "suggestion": "common.elder.law"
-        },
-        {
-          "line": 285,
-          "content": "Asset Protection",
-          "suggestion": "common.asset.protection"
-        },
-        {
-          "line": 286,
-          "content": "Probate Law",
-          "suggestion": "common.probate.law"
-        },
-        {
-          "line": 287,
-          "content": "Healthcare Directives",
-          "suggestion": "common.healthcare.directives"
-        },
-        {
-          "line": 464,
+          "line": 457,
           "content": "bg-green-100 text-green-800 border-green-200",
           "suggestion": "common.bggreen100.textgreen800.bordergreen200"
         },
         {
-          "line": 466,
+          "line": 459,
           "content": "bg-yellow-100 text-yellow-800 border-yellow-200",
           "suggestion": "common.bgyellow100.textyellow800.borderyellow20"
         },
         {
-          "line": 468,
+          "line": 461,
           "content": "bg-red-100 text-red-800 border-red-200",
           "suggestion": "common.bgred100.textred800.borderred200"
         },
         {
-          "line": 470,
+          "line": 463,
           "content": "bg-gray-100 text-gray-800 border-gray-200",
           "suggestion": "common.bggray100.textgray800.bordergray200"
         },
         {
-          "line": 572,
-          "content": " : ",
-          "suggestion": "common.."
+          "line": 548,
+          "content": "availability.${professional.availability}",
+          "suggestion": "common.availabilityprofessionalavailability"
         },
         {
-          "line": 620,
+          "line": 565,
+          "content": "professionalCard.statesCountPlural",
+          "suggestion": "common.professionalcardstatescountplural"
+        },
+        {
+          "line": 566,
+          "content": "professionalCard.statesCount",
+          "suggestion": "common.professionalcardstatescount"
+        },
+        {
+          "line": 587,
+          "content": "professionalCard.more",
+          "suggestion": "common.professionalcardmore"
+        },
+        {
+          "line": 615,
           "content": "{professional.featuredReview.comment}",
           "suggestion": "common.professionalfeaturedreviewcomment"
         },
         {
-          "line": 727,
-          "content": "No states listed",
-          "suggestion": "common.no.states.listed"
+          "line": 713,
+          "content": "listView.yearsExperience",
+          "suggestion": "common.listviewyearsexperience"
         },
         {
-          "line": 857,
-          "content": "Search by name, specialization, or location...",
-          "suggestion": "common.search.by.name.specialization.or.locatio"
+          "line": 717,
+          "content": "listView.respondsIn",
+          "suggestion": "common.listviewrespondsin"
         },
         {
-          "line": 878,
+          "line": 779,
+          "content": "availability.${professional.availability}",
+          "suggestion": "common.availabilityprofessionalavailability"
+        },
+        {
+          "line": 871,
           "content": "h-4 w-4 transition-transform",
           "suggestion": "common.h4.w4.transitiontransform"
         },
         {
-          "line": 1062,
+          "line": 917,
+          "content": "search.results",
+          "suggestion": "common.searchresults"
+        },
+        {
+          "line": 1009,
+          "content": "filters.experienceYears",
+          "suggestion": "common.filtersexperienceyears"
+        },
+        {
+          "line": 1010,
+          "content": "filters.experienceYears",
+          "suggestion": "common.filtersexperienceyears"
+        },
+        {
+          "line": 1055,
           "content": "4.5",
           "suggestion": "common.45"
         },
         {
-          "line": 1063,
+          "line": 1056,
           "content": "4.8",
           "suggestion": "common.48"
         },
         {
-          "line": 1427,
+          "line": 1211,
+          "content": "modal.header.yearsExperience",
+          "suggestion": "common.modalheaderyearsexperience"
+        },
+        {
+          "line": 1215,
+          "content": "modal.header.respondsIn",
+          "suggestion": "common.modalheaderrespondsin"
+        },
+        {
+          "line": 1231,
+          "content": "modal.header.reviews",
+          "suggestion": "common.modalheaderreviews"
+        },
+        {
+          "line": 1237,
+          "content": "availability.${selectedProfessional.availability}",
+          "suggestion": "common.availabilityselectedprofessionalavailabi"
+        },
+        {
+          "line": 1280,
+          "content": "modal.overview.aboutTitle",
+          "suggestion": "common.modaloverviewabouttitle"
+        },
+        {
+          "line": 1369,
+          "content": "serviceTypes.${service.type}",
+          "suggestion": "common.servicetypesservicetype"
+        },
+        {
+          "line": 1418,
           "content": "{selectedProfessional.featuredReview.comment}",
           "suggestion": "common.selectedprofessionalfeaturedreviewcommen"
+        },
+        {
+          "line": 1439,
+          "content": "modal.credentials.barNumber",
+          "suggestion": "common.modalcredentialsbarnumber"
+        },
+        {
+          "line": 1442,
+          "content": "modal.credentials.status",
+          "suggestion": "common.modalcredentialsstatus"
+        },
+        {
+          "line": 1451,
+          "content": "modal.credentials.yearsInPractice",
+          "suggestion": "common.modalcredentialsyearsinpractice"
+        },
+        {
+          "line": 1454,
+          "content": "modal.credentials.memberSince",
+          "suggestion": "common.modalcredentialsmembersince"
         }
       ]
     },
@@ -40443,12 +39843,8 @@
   ],
   "topFiles": [
     {
-      "file": "src/components/marketing/UpgradePrompts.tsx",
-      "count": 107
-    },
-    {
       "file": "src/components/professional/ProfessionalNetworkDirectory.tsx",
-      "count": 100
+      "count": 109
     },
     {
       "file": "src/components/professional/ProfessionalApplicationForm.tsx",
@@ -40457,10 +39853,6 @@
     {
       "file": "src/components/professional/ProfessionalReviewPricing.tsx",
       "count": 97
-    },
-    {
-      "file": "src/components/family/FamilyLegacyProjectManagement.tsx",
-      "count": 95
     },
     {
       "file": "src/components/ab-testing/OnboardingFlowVariants.tsx",
@@ -40481,6 +39873,14 @@
     {
       "file": "src/components/professional/ProfessionalRecommendationEngine.tsx",
       "count": 79
+    },
+    {
+      "file": "src/components/emergency/FamilyProtectionDashboard.tsx",
+      "count": 78
+    },
+    {
+      "file": "src/components/analytics/LegacyCompletionTracking.tsx",
+      "count": 77
     }
   ]
 }

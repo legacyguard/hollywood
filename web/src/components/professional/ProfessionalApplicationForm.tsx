@@ -5,6 +5,7 @@
  */
 
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   AlertCircle,
@@ -52,108 +53,61 @@ type ApplicationStep =
   | 'preferences'
   | 'review';
 
-const SPECIALIZATIONS: Omit<ProfessionalSpecialization, 'id'>[] = [
+const getSpecializations = (t: any): Omit<ProfessionalSpecialization, 'id'>[] => [
   {
-    name: 'Estate Planning',
+    name: t('specializations.estatePlanning.name'),
     category: 'estate_planning',
-    description: 'Wills, trusts, and inheritance planning',
+    description: t('specializations.estatePlanning.description'),
   },
   {
-    name: 'Probate Law',
+    name: t('specializations.probateLaw.name'),
     category: 'estate_planning',
-    description: 'Estate administration and probate proceedings',
+    description: t('specializations.probateLaw.description'),
   },
   {
-    name: 'Family Law',
+    name: t('specializations.familyLaw.name'),
     category: 'family_law',
-    description: 'Divorce, custody, and family matters',
+    description: t('specializations.familyLaw.description'),
   },
   {
-    name: 'Real Estate Law',
+    name: t('specializations.realEstateLaw.name'),
     category: 'real_estate',
-    description: 'Property transactions and real estate matters',
+    description: t('specializations.realEstateLaw.description'),
   },
   {
-    name: 'Business Law',
+    name: t('specializations.businessLaw.name'),
     category: 'business_law',
-    description: 'Corporate structures and business planning',
+    description: t('specializations.businessLaw.description'),
   },
   {
-    name: 'Tax Law',
+    name: t('specializations.taxLaw.name'),
     category: 'tax_law',
-    description: 'Tax planning and compliance',
+    description: t('specializations.taxLaw.description'),
   },
   {
-    name: 'Elder Law',
+    name: t('specializations.elderLaw.name'),
     category: 'estate_planning',
-    description: 'Legal issues affecting seniors',
+    description: t('specializations.elderLaw.description'),
   },
   {
-    name: 'Asset Protection',
+    name: t('specializations.assetProtection.name'),
     category: 'estate_planning',
-    description: 'Protecting wealth from creditors',
+    description: t('specializations.assetProtection.description'),
   },
 ];
 
-const US_STATES = [
-  'Alabama',
-  'Alaska',
-  'Arizona',
-  'Arkansas',
-  'California',
-  'Colorado',
-  'Connecticut',
-  'Delaware',
-  'Florida',
-  'Georgia',
-  'Hawaii',
-  'Idaho',
-  'Illinois',
-  'Indiana',
-  'Iowa',
-  'Kansas',
-  'Kentucky',
-  'Louisiana',
-  'Maine',
-  'Maryland',
-  'Massachusetts',
-  'Michigan',
-  'Minnesota',
-  'Mississippi',
-  'Missouri',
-  'Montana',
-  'Nebraska',
-  'Nevada',
-  'New Hampshire',
-  'New Jersey',
-  'New Mexico',
-  'New York',
-  'North Carolina',
-  'North Dakota',
-  'Ohio',
-  'Oklahoma',
-  'Oregon',
-  'Pennsylvania',
-  'Rhode Island',
-  'South Carolina',
-  'South Dakota',
-  'Tennessee',
-  'Texas',
-  'Utah',
-  'Vermont',
-  'Virginia',
-  'Washington',
-  'West Virginia',
-  'Wisconsin',
-  'Wyoming',
-];
+const getUSStates = (t: any): string[] => t('states', { returnObjects: true }) as string[];
 
 export function ProfessionalApplicationForm({
   onSubmit,
   onCancel,
   className,
 }: ProfessionalApplicationFormProps) {
+  const { t } = useTranslation('ui/professional-application');
   const [currentStep, setCurrentStep] = useState<ApplicationStep>('personal');
+  
+  const SPECIALIZATIONS = getSpecializations(t);
+  const US_STATES = getUSStates(t);
   const [application, setApplication] = useState<
     Partial<ProfessionalOnboarding>
   >({
@@ -172,11 +126,11 @@ export function ProfessionalApplicationForm({
     key: ApplicationStep;
     title: string;
   }[] = [
-    { key: 'personal', title: 'Personal Information', icon: User },
-    { key: 'credentials', title: 'Professional Credentials', icon: Scale },
-    { key: 'expertise', title: 'Areas of Expertise', icon: GraduationCap },
-    { key: 'preferences', title: 'Work Preferences', icon: Clock },
-    { key: 'review', title: 'Review & Submit', icon: CheckCircle },
+    { key: 'personal', title: t('steps.personal'), icon: User },
+    { key: 'credentials', title: t('steps.credentials'), icon: Scale },
+    { key: 'expertise', title: t('steps.expertise'), icon: GraduationCap },
+    { key: 'preferences', title: t('steps.preferences'), icon: Clock },
+    { key: 'review', title: t('steps.review'), icon: CheckCircle },
   ];
 
   const currentStepIndex = steps.findIndex(step => step.key === currentStep);
@@ -188,22 +142,22 @@ export function ProfessionalApplicationForm({
     switch (step) {
       case 'personal':
         if (!application.full_name?.trim())
-          newErrors.full_name = 'Full name is required';
-        if (!application.email?.trim()) newErrors.email = 'Email is required';
+          newErrors.full_name = t('personal.fullName.required');
+        if (!application.email?.trim()) newErrors.email = t('personal.email.required');
         if (!application.professional_title?.trim())
-          newErrors.professional_title = 'Professional title is required';
+          newErrors.professional_title = t('personal.professionalTitle.required');
         break;
       case 'credentials':
         if (!application.bar_number?.trim())
-          newErrors.bar_number = 'Bar number is required';
+          newErrors.bar_number = t('credentials.barNumber.required');
         if (!application.licensed_states?.length)
-          newErrors.licensed_states = 'At least one licensed state is required';
+          newErrors.licensed_states = t('credentials.licensedStates.required');
         if (!application.experience_years || application.experience_years < 1)
-          newErrors.experience_years = 'Experience years must be at least 1';
+          newErrors.experience_years = t('credentials.experienceYears.required');
         break;
       case 'expertise':
         if (!selectedSpecializations.length)
-          newErrors.specializations = 'At least one specialization is required';
+          newErrors.specializations = t('expertise.required');
         break;
     }
 
@@ -279,16 +233,16 @@ export function ProfessionalApplicationForm({
                 <User className='h-8 w-8 text-blue-600' />
               </div>
               <h3 className='text-xl font-semibold mb-2'>
-                Personal Information
+                {t('personal.title')}
               </h3>
               <p className='text-muted-foreground'>
-                Tell us about yourself and your professional background
+                {t('personal.subtitle')}
               </p>
             </div>
 
             <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
               <div className='space-y-2'>
-                <Label htmlFor='full_name'>Full Name *</Label>
+                <Label htmlFor='full_name'>{t('personal.fullName.label')} *</Label>
                 <Input
                   id='full_name'
                   value={application.full_name || ''}
@@ -298,7 +252,7 @@ export function ProfessionalApplicationForm({
                       full_name: e.target.value,
                     }))
                   }
-                  placeholder='John Smith'
+                  placeholder={t('personal.fullName.placeholder')}
                   className={errors.full_name ? 'border-red-500' : ''}
                 />
                 {errors.full_name && (
@@ -307,7 +261,7 @@ export function ProfessionalApplicationForm({
               </div>
 
               <div className='space-y-2'>
-                <Label htmlFor='email'>Email Address *</Label>
+                <Label htmlFor='email'>{t('personal.email.label')} *</Label>
                 <Input
                   id='email'
                   type='email'
@@ -315,7 +269,7 @@ export function ProfessionalApplicationForm({
                   onChange={e =>
                     setApplication(prev => ({ ...prev, email: e.target.value }))
                   }
-                  placeholder='john@lawfirm.com'
+                  placeholder={t('personal.email.placeholder')}
                   className={errors.email ? 'border-red-500' : ''}
                 />
                 {errors.email && (
@@ -324,7 +278,7 @@ export function ProfessionalApplicationForm({
               </div>
 
               <div className='space-y-2'>
-                <Label htmlFor='professional_title'>Professional Title *</Label>
+                <Label htmlFor='professional_title'>{t('personal.professionalTitle.label')} *</Label>
                 <Input
                   id='professional_title'
                   value={application.professional_title || ''}
@@ -334,7 +288,7 @@ export function ProfessionalApplicationForm({
                       professional_title: e.target.value,
                     }))
                   }
-                  placeholder='Attorney, Esq.'
+                  placeholder={t('personal.professionalTitle.placeholder')}
                   className={errors.professional_title ? 'border-red-500' : ''}
                 />
                 {errors.professional_title && (
@@ -345,7 +299,7 @@ export function ProfessionalApplicationForm({
               </div>
 
               <div className='space-y-2'>
-                <Label htmlFor='law_firm_name'>Law Firm Name</Label>
+                <Label htmlFor='law_firm_name'>{t('personal.lawFirmName.label')}</Label>
                 <Input
                   id='law_firm_name'
                   value={application.law_firm_name || ''}
@@ -355,20 +309,20 @@ export function ProfessionalApplicationForm({
                       law_firm_name: e.target.value,
                     }))
                   }
-                  placeholder='Smith & Associates'
+                  placeholder={t('personal.lawFirmName.placeholder')}
                 />
               </div>
             </div>
 
             <div className='space-y-2'>
-              <Label htmlFor='bio'>Professional Bio</Label>
+              <Label htmlFor='bio'>{t('personal.bio.label')}</Label>
               <Textarea
                 id='bio'
                 value={application.bio || ''}
                 onChange={e =>
                   setApplication(prev => ({ ...prev, bio: e.target.value }))
                 }
-                placeholder='Brief description of your legal practice and experience...'
+                placeholder={t('personal.bio.placeholder')}
                 rows={4}
               />
             </div>
@@ -383,16 +337,16 @@ export function ProfessionalApplicationForm({
                 <Scale className='h-8 w-8 text-green-600' />
               </div>
               <h3 className='text-xl font-semibold mb-2'>
-                Professional Credentials
+                {t('credentials.title')}
               </h3>
               <p className='text-muted-foreground'>
-                Verify your legal credentials and experience
+                {t('credentials.subtitle')}
               </p>
             </div>
 
             <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
               <div className='space-y-2'>
-                <Label htmlFor='bar_number'>Bar Number *</Label>
+                <Label htmlFor='bar_number'>{t('credentials.barNumber.label')} *</Label>
                 <Input
                   id='bar_number'
                   value={application.bar_number || ''}
@@ -402,7 +356,7 @@ export function ProfessionalApplicationForm({
                       bar_number: e.target.value,
                     }))
                   }
-                  placeholder='123456789'
+                  placeholder={t('credentials.barNumber.placeholder')}
                   className={errors.bar_number ? 'border-red-500' : ''}
                 />
                 {errors.bar_number && (
@@ -411,7 +365,7 @@ export function ProfessionalApplicationForm({
               </div>
 
               <div className='space-y-2'>
-                <Label htmlFor='experience_years'>Years of Experience *</Label>
+                <Label htmlFor='experience_years'>{t('credentials.experienceYears.label')} *</Label>
                 <Input
                   id='experience_years'
                   type='number'
@@ -435,7 +389,7 @@ export function ProfessionalApplicationForm({
             </div>
 
             <div className='space-y-3'>
-              <Label>Licensed States *</Label>
+              <Label>{t('credentials.licensedStates.label')} *</Label>
               {errors.licensed_states && (
                 <p className='text-sm text-red-500'>{errors.licensed_states}</p>
               )}
@@ -481,9 +435,9 @@ export function ProfessionalApplicationForm({
               <div className='w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4'>
                 <GraduationCap className='h-8 w-8 text-purple-600' />
               </div>
-              <h3 className='text-xl font-semibold mb-2'>Areas of Expertise</h3>
+              <h3 className='text-xl font-semibold mb-2'>{t('expertise.title')}</h3>
               <p className='text-muted-foreground'>
-                Select your legal specializations and areas of practice
+                {t('expertise.subtitle')}
               </p>
             </div>
 
@@ -523,7 +477,7 @@ export function ProfessionalApplicationForm({
                       {specialization.description}
                     </p>
                     <Badge variant='outline' className='mt-2 text-xs'>
-                      {specialization.category.replace('_', ' ')}
+                      {t(`categories.${specialization.category}`)}
                     </Badge>
                   </CardContent>
                 </Card>
@@ -533,7 +487,7 @@ export function ProfessionalApplicationForm({
             {selectedSpecializations.length > 0 && (
               <div className='mt-6'>
                 <Label>
-                  Selected Specializations ({selectedSpecializations.length})
+                  {t('expertise.selectedCount', { count: selectedSpecializations.length })}
                 </Label>
                 <div className='flex flex-wrap gap-2 mt-2'>
                   {selectedSpecializations.map(spec => (
@@ -554,15 +508,15 @@ export function ProfessionalApplicationForm({
               <div className='w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4'>
                 <Clock className='h-8 w-8 text-orange-600' />
               </div>
-              <h3 className='text-xl font-semibold mb-2'>Work Preferences</h3>
+              <h3 className='text-xl font-semibold mb-2'>{t('preferences.title')}</h3>
               <p className='text-muted-foreground'>
-                Set your availability and work preferences
+                {t('preferences.subtitle')}
               </p>
             </div>
 
             <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
               <div className='space-y-2'>
-                <Label htmlFor='hourly_rate'>Hourly Rate (USD)</Label>
+                <Label htmlFor='hourly_rate'>{t('preferences.hourlyRate.label')}</Label>
                 <div className='relative'>
                   <DollarSign className='absolute left-3 top-3 h-4 w-4 text-muted-foreground' />
                   <Input
@@ -578,18 +532,18 @@ export function ProfessionalApplicationForm({
                         hourly_rate: parseFloat(e.target.value) || undefined,
                       }))
                     }
-                    placeholder='250'
+                    placeholder={t('preferences.hourlyRate.placeholder')}
                     className='pl-10'
                   />
                 </div>
                 <p className='text-xs text-muted-foreground'>
-                  Optional - leave blank if you prefer project-based pricing
+                  {t('preferences.hourlyRate.help')}
                 </p>
               </div>
 
               <div className='space-y-2'>
                 <Label htmlFor='referral_source'>
-                  How did you hear about us?
+                  {t('preferences.referralSource.label')}
                 </Label>
                 <Input
                   id='referral_source'
@@ -600,14 +554,14 @@ export function ProfessionalApplicationForm({
                       referral_source: e.target.value,
                     }))
                   }
-                  placeholder='Professional network, Google, etc.'
+                  placeholder={t('preferences.referralSource.placeholder')}
                 />
               </div>
             </div>
 
             <div className='space-y-2'>
               <Label htmlFor='motivation'>
-                Why do you want to join our network?
+                {t('preferences.motivation.label')}
               </Label>
               <Textarea
                 id='motivation'
@@ -618,7 +572,7 @@ export function ProfessionalApplicationForm({
                     motivation: e.target.value,
                   }))
                 }
-                placeholder='Tell us what motivates you to help families with their legacy planning...'
+                placeholder={t('preferences.motivation.placeholder')}
                 rows={4}
               />
             </div>
@@ -626,11 +580,10 @@ export function ProfessionalApplicationForm({
             <Alert className='border-blue-200 bg-blue-50'>
               <Shield className='h-4 w-4 text-blue-600' />
               <AlertTitle className='text-blue-800'>
-                Professional Standards
+                {t('preferences.professionalStandards.title')}
               </AlertTitle>
               <AlertDescription className='text-blue-700'>
-                All reviewers must maintain professional liability insurance and
-                commit to our quality standards and turnaround times.
+                {t('preferences.professionalStandards.description')}
               </AlertDescription>
             </Alert>
           </div>
@@ -644,10 +597,10 @@ export function ProfessionalApplicationForm({
                 <CheckCircle className='h-8 w-8 text-green-600' />
               </div>
               <h3 className='text-xl font-semibold mb-2'>
-                Review Your Application
+                {t('review.title')}
               </h3>
               <p className='text-muted-foreground'>
-                Please review your information before submitting
+                {t('review.subtitle')}
               </p>
             </div>
 
@@ -656,22 +609,22 @@ export function ProfessionalApplicationForm({
                 <CardHeader>
                   <CardTitle className='flex items-center gap-2 text-lg'>
                     <User className='h-5 w-5' />
-                    Personal Information
+                    {t('review.sections.personalInformation')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className='space-y-2'>
                   <div>
-                    <strong>Name:</strong> {application.full_name}
+                    <strong>{t('review.fields.name')}</strong> {application.full_name}
                   </div>
                   <div>
-                    <strong>Email:</strong> {application.email}
+                    <strong>{t('review.fields.email')}</strong> {application.email}
                   </div>
                   <div>
-                    <strong>Title:</strong> {application.professional_title}
+                    <strong>{t('review.fields.title')}</strong> {application.professional_title}
                   </div>
                   {application.law_firm_name && (
                     <div>
-                      <strong>Firm:</strong> {application.law_firm_name}
+                      <strong>{t('review.fields.firm')}</strong> {application.law_firm_name}
                     </div>
                   )}
                 </CardContent>
@@ -681,19 +634,19 @@ export function ProfessionalApplicationForm({
                 <CardHeader>
                   <CardTitle className='flex items-center gap-2 text-lg'>
                     <Scale className='h-5 w-5' />
-                    Credentials
+                    {t('review.sections.credentials')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className='space-y-2'>
                   <div>
-                    <strong>Bar Number:</strong> {application.bar_number}
+                    <strong>{t('review.fields.barNumber')}</strong> {application.bar_number}
                   </div>
                   <div>
-                    <strong>Experience:</strong> {application.experience_years}{' '}
-                    years
+                    <strong>{t('review.fields.experience')}</strong> {application.experience_years}{' '}
+                    {t('review.fields.experienceYears')}
                   </div>
                   <div>
-                    <strong>Licensed States:</strong>{' '}
+                    <strong>{t('review.fields.licensedStates')}</strong>{' '}
                     {application.licensed_states?.join(', ')}
                   </div>
                 </CardContent>
@@ -703,7 +656,7 @@ export function ProfessionalApplicationForm({
                 <CardHeader>
                   <CardTitle className='flex items-center gap-2 text-lg'>
                     <GraduationCap className='h-5 w-5' />
-                    Specializations
+                    {t('review.sections.specializations')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -720,11 +673,9 @@ export function ProfessionalApplicationForm({
 
             <Alert className='border-green-200 bg-green-50'>
               <CheckCircle className='h-4 w-4 text-green-600' />
-              <AlertTitle className='text-green-800'>Next Steps</AlertTitle>
+              <AlertTitle className='text-green-800'>{t('review.nextSteps.title')}</AlertTitle>
               <AlertDescription className='text-green-700'>
-                After submission, our team will review your application within
-                3-5 business days. You'll receive an email with the status and
-                next steps.
+                {t('review.nextSteps.description')}
               </AlertDescription>
             </Alert>
           </div>
@@ -746,14 +697,14 @@ export function ProfessionalApplicationForm({
           <div className='flex items-center justify-between mb-4'>
             <div>
               <CardTitle className='text-2xl font-bold'>
-                Join Our Professional Network
+                {t('title')}
               </CardTitle>
               <p className='text-muted-foreground'>
-                Help families secure their legacy with professional legal review
+                {t('subtitle')}
               </p>
             </div>
             <Badge variant='outline' className='bg-blue-50 text-blue-700'>
-              Step {currentStepIndex + 1} of {steps.length}
+              {t('stepIndicator', { current: currentStepIndex + 1, total: steps.length })}
             </Badge>
           </div>
 
@@ -822,18 +773,18 @@ export function ProfessionalApplicationForm({
               {currentStepIndex > 0 && (
                 <Button variant='outline' onClick={handleBack}>
                   <ArrowLeft className='h-4 w-4 mr-2' />
-                  Back
+                  {t('navigation.back')}
                 </Button>
               )}
               <Button variant='outline' onClick={onCancel}>
-                Cancel
+                {t('navigation.cancel')}
               </Button>
             </div>
 
             <div className='flex gap-3'>
               {currentStep !== 'review' ? (
                 <Button onClick={handleNext}>
-                  Next
+                  {t('navigation.next')}
                   <ArrowRight className='h-4 w-4 ml-2' />
                 </Button>
               ) : (
@@ -842,7 +793,7 @@ export function ProfessionalApplicationForm({
                   className='bg-green-600 hover:bg-green-700'
                 >
                   <Star className='h-4 w-4 mr-2' />
-                  Submit Application
+                  {t('navigation.submitApplication')}
                 </Button>
               )}
             </div>

@@ -354,7 +354,7 @@ interface FamilyLegacyProjectManagementProps {
 export const FamilyLegacyProjectManagement: React.FC<
   FamilyLegacyProjectManagementProps
 > = ({ familyMembers: _familyMembers = [], onProjectCreated, existingProjects = [] }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('ui/family-legacy');
   const [projects, setProjects] = useState<LegacyProject[]>(existingProjects);
   const [activeProject, setActiveProject] = useState<LegacyProject | null>(
     null
@@ -376,7 +376,7 @@ export const FamilyLegacyProjectManagement: React.FC<
   // Mock current user
   const currentUser: FamilyMember = {
     id: currentUserId,
-    name: 'You',
+    name: t('misc.you'),
     email: 'user@example.com',
     role: 'project-manager',
     expertise: ['project-management', 'legal-planning'],
@@ -467,7 +467,7 @@ export const FamilyLegacyProjectManagement: React.FC<
 
     const newTask: Task = {
       id: `task-${Date.now()}`,
-      title: taskData.title || 'New Task',
+      title: taskData.title || t('misc.newTask'),
       description: taskData.description || '',
       assigneeId: taskData.assigneeId || currentUserId,
       assigneeName: taskData.assigneeName || currentUser.name,
@@ -549,22 +549,22 @@ export const FamilyLegacyProjectManagement: React.FC<
       <div className='flex items-center justify-between'>
         <div>
           <h2 className='text-2xl font-bold text-gray-900'>
-            Family Legacy Project Management
+            {t('header.title')}
           </h2>
           <p className='text-gray-600'>
-            Organize and manage your family's legacy planning projects
+            {t('header.subtitle')}
           </p>
         </div>
         <div className='flex gap-2'>
           <Select value={filterStatus} onValueChange={setFilterStatus}>
             <SelectTrigger className='w-40'>
-              <SelectValue placeholder='Filter by status' />
+              <SelectValue placeholder={t('filters.filterByStatus')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value='all'>All Projects</SelectItem>
-              <SelectItem value='planning'>Planning</SelectItem>
-              <SelectItem value='active'>Active</SelectItem>
-              <SelectItem value='completed'>Completed</SelectItem>
+              <SelectItem value='all'>{t('filters.allProjects')}</SelectItem>
+              <SelectItem value='planning'>{t('filters.planning')}</SelectItem>
+              <SelectItem value='active'>{t('filters.active')}</SelectItem>
+              <SelectItem value='completed'>{t('filters.completed')}</SelectItem>
             </SelectContent>
           </Select>
 
@@ -572,12 +572,12 @@ export const FamilyLegacyProjectManagement: React.FC<
             <DialogTrigger asChild>
               <Button className='gap-2'>
                 <Plus className='h-4 w-4' />
-                New Project
+                {t('navigation.newProject')}
               </Button>
             </DialogTrigger>
             <DialogContent className='max-w-6xl max-h-[80vh] overflow-y-auto'>
               <DialogHeader>
-                <DialogTitle>Create New Legacy Project</DialogTitle>
+                <DialogTitle>{t('projectCreation.title')}</DialogTitle>
               </DialogHeader>
               <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4'>
                 {projectTemplates.map((template: ProjectTemplate) => (
@@ -611,8 +611,8 @@ export const FamilyLegacyProjectManagement: React.FC<
                               </Badge>
                             </div>
                             <div className='mt-3 text-xs text-gray-500'>
-                              {template.tasks.length} tasks •{' '}
-                              {template.milestones.length} milestones
+                              {template.tasks.length} {t('projectDetails.tasks').toLowerCase()} •{' '}
+                              {template.milestones.length} {t('projectDetails.milestones').toLowerCase()}
                             </div>
                           </div>
                         </div>
@@ -623,9 +623,9 @@ export const FamilyLegacyProjectManagement: React.FC<
               </div>
               <div className='flex justify-end gap-2 mt-4'>
                 <Button variant='outline' onClick={() => setIsCreating(false)}>
-                  Cancel
+                  {t('navigation.cancel')}
                 </Button>
-                <Button variant='outline'>Create Custom Project</Button>
+                <Button variant='outline'>{t('projectCreation.createCustomProject')}</Button>
               </div>
             </DialogContent>
           </Dialog>
@@ -643,27 +643,27 @@ export const FamilyLegacyProjectManagement: React.FC<
                     {activeProject.title}
                   </CardTitle>
                   <Badge className={getStatusColor(activeProject.status)}>
-                    {activeProject.status}
+                    {t(`filters.${activeProject.status}`)}
                   </Badge>
                   <Badge className={getPriorityColor(activeProject.priority)}>
-                    {activeProject.priority}
+                    {t(`priorities.${activeProject.priority}`)}
                   </Badge>
                 </div>
                 <p className='text-gray-600'>{activeProject.description}</p>
                 <div className='flex items-center gap-4 mt-3 text-sm text-gray-500'>
                   <div className='flex items-center gap-1'>
                     <CalendarIcon className='h-4 w-4' />
-                    Started {activeProject.startDate.toLocaleDateString()}
+                    {t('projectDetails.started')} {activeProject.startDate.toLocaleDateString()}
                   </div>
                   {activeProject.targetDate && (
                     <div className='flex items-center gap-1'>
                       <Target className='h-4 w-4' />
-                      Due {activeProject.targetDate.toLocaleDateString()}
+                      {t('projectDetails.due')} {activeProject.targetDate.toLocaleDateString()}
                     </div>
                   )}
                   <div className='flex items-center gap-1'>
                     <Users className='h-4 w-4' />
-                    {activeProject.teamMembers.length} members
+                    {activeProject.teamMembers.length} {t('projectDetails.members')}
                   </div>
                 </div>
               </div>
@@ -678,16 +678,16 @@ export const FamilyLegacyProjectManagement: React.FC<
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value='kanban'>Kanban</SelectItem>
-                    <SelectItem value='list'>List</SelectItem>
-                    <SelectItem value='calendar'>Calendar</SelectItem>
+                    <SelectItem value='kanban'>{t('viewModes.kanban')}</SelectItem>
+                    <SelectItem value='list'>{t('viewModes.list')}</SelectItem>
+                    <SelectItem value='calendar'>{t('viewModes.calendar')}</SelectItem>
                   </SelectContent>
                 </Select>
                 <Button
                   variant='outline'
                   onClick={() => setActiveProject(null)}
                 >
-                  Close
+                  {t('navigation.close')}
                 </Button>
               </div>
             </div>
@@ -695,7 +695,7 @@ export const FamilyLegacyProjectManagement: React.FC<
             {/* Progress Bar */}
             <div className='mt-4'>
               <div className='flex items-center justify-between mb-2'>
-                <span className='text-sm font-medium'>Project Progress</span>
+                <span className='text-sm font-medium'>{t('projectDetails.projectProgress')}</span>
                 <span className='text-sm text-gray-500'>
                   {activeProject.progress}%
                 </span>
@@ -706,16 +706,16 @@ export const FamilyLegacyProjectManagement: React.FC<
           <CardContent>
             <Tabs defaultValue='tasks' className='w-full'>
               <TabsList className='grid w-full grid-cols-4'>
-                <TabsTrigger value='tasks'>Tasks</TabsTrigger>
-                <TabsTrigger value='milestones'>Milestones</TabsTrigger>
-                <TabsTrigger value='team'>Team</TabsTrigger>
-                <TabsTrigger value='resources'>Resources</TabsTrigger>
+                <TabsTrigger value='tasks'>{t('projectDetails.tasks')}</TabsTrigger>
+                <TabsTrigger value='milestones'>{t('projectDetails.milestones')}</TabsTrigger>
+                <TabsTrigger value='team'>{t('projectDetails.team')}</TabsTrigger>
+                <TabsTrigger value='resources'>{t('projectDetails.resources')}</TabsTrigger>
               </TabsList>
 
               <TabsContent value='tasks' className='space-y-4'>
                 <div className='flex items-center justify-between'>
                   <h3 className='font-medium'>
-                    Tasks ({activeProject.tasks.length})
+                    {t('projectDetails.tasks')} ({activeProject.tasks.length})
                   </h3>
                   <Button
                     size='sm'
@@ -723,7 +723,7 @@ export const FamilyLegacyProjectManagement: React.FC<
                     className='gap-2'
                   >
                     <Plus className='h-4 w-4' />
-                    Add Task
+                    {t('taskManagement.addTask')}
                   </Button>
                 </div>
 
@@ -734,7 +734,7 @@ export const FamilyLegacyProjectManagement: React.FC<
                       <div key={status} className='space-y-3'>
                         <div className='flex items-center justify-between'>
                           <h4 className='font-medium text-sm text-gray-700 uppercase tracking-wide'>
-                            {status.replace('-', ' ')} ({tasks.length})
+                            {t(`statuses.${status === 'in-progress' ? 'inProgress' : status}`)} ({tasks.length})
                           </h4>
                         </div>
                         <div className='space-y-2 min-h-[200px]'>
@@ -758,7 +758,7 @@ export const FamilyLegacyProjectManagement: React.FC<
                                           task.priority
                                         )}
                                       >
-                                        {task.priority}
+                                        {t(`priorities.${task.priority}`)}
                                       </Badge>
                                     </div>
                                     <p className='text-xs text-gray-600 mb-3 line-clamp-2'>
@@ -809,8 +809,8 @@ export const FamilyLegacyProjectManagement: React.FC<
                                           className='text-xs h-6 px-2'
                                         >
                                           {newStatus === 'in-progress'
-                                            ? 'Progress'
-                                            : newStatus}
+                                            ? t('taskManagement.progress')
+                                            : t(`statuses.${newStatus === 'in-progress' ? 'inProgress' : newStatus}`)}
                                         </Button>
                                       ))}
                                     </div>
@@ -818,7 +818,7 @@ export const FamilyLegacyProjectManagement: React.FC<
                                     {task.comments.length > 0 && (
                                       <div className='flex items-center gap-1 mt-2 text-xs text-gray-500'>
                                         <MessageCircle className='h-3 w-3' />
-                                        {task.comments.length} comments
+                                        {task.comments.length} {t('taskManagement.comments')}
                                       </div>
                                     )}
                                   </CardContent>
@@ -836,15 +836,15 @@ export const FamilyLegacyProjectManagement: React.FC<
                 <Dialog open={showTaskForm} onOpenChange={setShowTaskForm}>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle>Create New Task</DialogTitle>
+                      <DialogTitle>{t('taskManagement.createNewTask')}</DialogTitle>
                     </DialogHeader>
                     <div className='space-y-4'>
-                      <Input placeholder='Task title' />
-                      <Textarea placeholder='Task description' rows={3} />
+                      <Input placeholder={t('taskManagement.taskTitle')} />
+                      <Textarea placeholder={t('taskManagement.taskDescription')} rows={3} />
                       <div className='grid grid-cols-2 gap-4'>
                         <Select>
                           <SelectTrigger>
-                            <SelectValue placeholder='Assignee' />
+                            <SelectValue placeholder={t('taskManagement.assignee')} />
                           </SelectTrigger>
                           <SelectContent>
                             {activeProject.teamMembers.map(member => (
@@ -856,31 +856,31 @@ export const FamilyLegacyProjectManagement: React.FC<
                         </Select>
                         <Select>
                           <SelectTrigger>
-                            <SelectValue placeholder='Priority' />
+                            <SelectValue placeholder={t('taskManagement.priority')} />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value='low'>Low</SelectItem>
-                            <SelectItem value='medium'>Medium</SelectItem>
-                            <SelectItem value='high'>High</SelectItem>
-                            <SelectItem value='critical'>Critical</SelectItem>
+                            <SelectItem value='low'>{t('priorities.low')}</SelectItem>
+                            <SelectItem value='medium'>{t('priorities.medium')}</SelectItem>
+                            <SelectItem value='high'>{t('priorities.high')}</SelectItem>
+                            <SelectItem value='critical'>{t('priorities.critical')}</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
                       <Input
                         type='number'
-                        placeholder='Estimated hours'
+                        placeholder={t('taskManagement.estimatedHours')}
                         min='1'
                       />
                       <Button
                         onClick={() =>
                           createNewTask({
-                            title: 'New Task',
-                            description: 'Task description',
+                            title: t('misc.newTask'),
+                            description: t('taskManagement.taskDescription'),
                           })
                         }
                         className='w-full'
                       >
-                        Create Task
+                        {t('taskManagement.createTask')}
                       </Button>
                     </div>
                   </DialogContent>
@@ -890,11 +890,11 @@ export const FamilyLegacyProjectManagement: React.FC<
               <TabsContent value='milestones' className='space-y-4'>
                 <div className='flex items-center justify-between'>
                   <h3 className='font-medium'>
-                    Milestones ({activeProject.milestones.length})
+                    {t('projectDetails.milestones')} ({activeProject.milestones.length})
                   </h3>
                   <Button size='sm' className='gap-2'>
                     <Plus className='h-4 w-4' />
-                    Add Milestone
+                    {t('milestones.addMilestone')}
                   </Button>
                 </div>
 
@@ -931,11 +931,11 @@ export const FamilyLegacyProjectManagement: React.FC<
                           </div>
                           <div className='text-right'>
                             <div className='text-sm text-gray-500'>
-                              Due: {milestone.dueDate.toLocaleDateString()}
+                              {t('projectDetails.due')}: {milestone.dueDate.toLocaleDateString()}
                             </div>
                             {milestone.isCompleted && milestone.completedAt && (
                               <div className='text-sm text-green-600'>
-                                Completed:{' '}
+                                {t('milestones.completed')}{' '}
                                 {milestone.completedAt.toLocaleDateString()}
                               </div>
                             )}
@@ -950,11 +950,11 @@ export const FamilyLegacyProjectManagement: React.FC<
               <TabsContent value='team' className='space-y-4'>
                 <div className='flex items-center justify-between'>
                   <h3 className='font-medium'>
-                    Team Members ({activeProject.teamMembers.length})
+                    {t('team.teamMembers')} ({activeProject.teamMembers.length})
                   </h3>
                   <Button size='sm' className='gap-2'>
                     <Plus className='h-4 w-4' />
-                    Add Member
+                    {t('team.addMember')}
                   </Button>
                 </div>
 
@@ -976,10 +976,10 @@ export const FamilyLegacyProjectManagement: React.FC<
                             </div>
                             <div className='flex items-center gap-2 mt-1'>
                               <Badge variant='outline' className='text-xs'>
-                                {member.role}
+                                {t(`roles.${member.role === 'project-manager' ? 'project-manager' : member.role}`)}
                               </Badge>
                               <Badge variant='secondary' className='text-xs'>
-                                {member.availability}
+                                {t(`availability.${member.availability === 'full-time' ? 'full-time' : member.availability === 'part-time' ? 'part-time' : member.availability}`)}
                               </Badge>
                             </div>
                           </div>
@@ -987,7 +987,7 @@ export const FamilyLegacyProjectManagement: React.FC<
                         {member.expertise.length > 0 && (
                           <div className='mt-3'>
                             <div className='text-xs text-gray-500 mb-1'>
-                              Expertise:
+                              {t('team.expertise')}
                             </div>
                             <div className='flex flex-wrap gap-1'>
                               {member.expertise.map(skill => (
@@ -1011,19 +1011,19 @@ export const FamilyLegacyProjectManagement: React.FC<
               <TabsContent value='resources' className='space-y-4'>
                 <div className='flex items-center justify-between'>
                   <h3 className='font-medium'>
-                    Project Resources ({activeProject.resources.length})
+                    {t('resources.projectResources')} ({activeProject.resources.length})
                   </h3>
                   <Button size='sm' className='gap-2'>
                     <Plus className='h-4 w-4' />
-                    Add Resource
+                    {t('resources.addResource')}
                   </Button>
                 </div>
 
                 <div className='text-center py-8 text-gray-500'>
                   <FolderOpen className='h-12 w-12 mx-auto mb-3 text-gray-300' />
-                  <p>No resources added yet</p>
+                  <p>{t('resources.noResourcesTitle')}</p>
                   <p className='text-sm'>
-                    Add templates, documents, or helpful links
+                    {t('resources.noResourcesSubtitle')}
                   </p>
                 </div>
               </TabsContent>
@@ -1048,7 +1048,7 @@ export const FamilyLegacyProjectManagement: React.FC<
                 <div className='flex items-center justify-between'>
                   <CardTitle className='text-lg'>{project.title}</CardTitle>
                   <Badge className={getStatusColor(project.status)}>
-                    {project.status}
+                    {t(`filters.${project.status}`)}
                   </Badge>
                 </div>
                 <div className='flex items-center gap-2'>
@@ -1056,7 +1056,7 @@ export const FamilyLegacyProjectManagement: React.FC<
                     {project.category.replace('-', ' ')}
                   </Badge>
                   <Badge className={getPriorityColor(project.priority)}>
-                    {project.priority}
+                    {t(`priorities.${project.priority}`)}
                   </Badge>
                 </div>
               </CardHeader>
@@ -1068,7 +1068,7 @@ export const FamilyLegacyProjectManagement: React.FC<
                 <div className='space-y-3'>
                   <div>
                     <div className='flex items-center justify-between text-sm mb-1'>
-                      <span>Progress</span>
+                      <span>{t('projectList.progress')}</span>
                       <span>{project.progress}%</span>
                     </div>
                     <Progress value={project.progress} className='h-2' />
@@ -1081,18 +1081,18 @@ export const FamilyLegacyProjectManagement: React.FC<
                         project.tasks.filter(t => t.status === 'completed')
                           .length
                       }
-                      /{project.tasks.length} tasks
+                      /{project.tasks.length} {t('projectDetails.tasks').toLowerCase()}
                     </div>
                     <div className='flex items-center gap-1'>
                       <Users className='h-3 w-3' />
-                      {project.teamMembers.length} members
+                      {project.teamMembers.length} {t('projectDetails.members')}
                     </div>
                   </div>
 
                   <div className='flex items-center justify-between text-xs text-gray-500'>
-                    <div>Started {project.startDate.toLocaleDateString()}</div>
+                    <div>{t('projectDetails.started')} {project.startDate.toLocaleDateString()}</div>
                     {project.targetDate && (
-                      <div>Due {project.targetDate.toLocaleDateString()}</div>
+                      <div>{t('projectDetails.due')} {project.targetDate.toLocaleDateString()}</div>
                     )}
                   </div>
                 </div>
@@ -1106,17 +1106,17 @@ export const FamilyLegacyProjectManagement: React.FC<
         <div className='text-center py-12'>
           <FolderOpen className='h-12 w-12 text-gray-400 mx-auto mb-4' />
           <h3 className='text-lg font-medium text-gray-900 mb-2'>
-            No Projects Found
+            {t('emptyState.noProjectsTitle')}
           </h3>
           <p className='text-gray-600 mb-4'>
             {filterStatus !== 'all'
-              ? 'Try adjusting your filters to see more projects'
-              : 'Create your first legacy project to start organizing your family planning'}
+              ? t('emptyState.noProjectsFilterMessage')
+              : t('emptyState.noProjectsCreateMessage')}
           </p>
           {filterStatus === 'all' && (
             <Button onClick={() => setIsCreating(true)} className='gap-2'>
               <Plus className='h-4 w-4' />
-              Create First Project
+              {t('emptyState.createFirstProject')}
             </Button>
           )}
         </div>

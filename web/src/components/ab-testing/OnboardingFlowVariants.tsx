@@ -13,6 +13,7 @@ import {
   Shield,
   Users,
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -44,6 +45,7 @@ export function ABTestOnboardingFlow({
   userId,
   className,
 }: OnboardingFlowProps) {
+  const { t } = useTranslation('ui/onboarding-variants');
   const { variant, trackConversion } = useABTest('onboarding_flow_v1', userId);
   const { trackOnboardingStart, trackOnboardingStep, trackOnboardingComplete } =
     useOnboardingTracking();
@@ -60,44 +62,44 @@ export function ABTestOnboardingFlow({
 
   const handleStepComplete = (stepData: Record<string, unknown>) => {
     const timeSpent = Date.now() - stepStartTime;
-    const stepId = getSteps(variant)[currentStep]?.id || 'unknown';
+    const stepId = getSteps(variant, t)[currentStep]?.id || 'unknown';
 
     trackOnboardingStep(stepId, 'completed', timeSpent);
 
     setUserData(prev => ({ ...prev, ...stepData }));
 
-    if (currentStep < getSteps(variant).length - 1) {
+    if (currentStep < getSteps(variant, t).length - 1) {
       setCurrentStep(prev => prev + 1);
       setStepStartTime(Date.now());
     } else {
       // Onboarding complete
       const totalTime = Date.now() - startTime;
-      trackOnboardingComplete(totalTime, getSteps(variant).length);
+      trackOnboardingComplete(totalTime, getSteps(variant, t).length);
       trackConversion('onboarding_completed', 1, {
         variant,
         totalTime,
-        stepsCompleted: getSteps(variant).length,
+        stepsCompleted: getSteps(variant, t).length,
       });
       onComplete({ ...userData, ...stepData });
     }
   };
 
   const handleStepSkip = () => {
-    const stepId = getSteps(variant)[currentStep]?.id || 'unknown';
+    const stepId = getSteps(variant, t)[currentStep]?.id || 'unknown';
     trackOnboardingStep(stepId, 'abandoned');
 
     if (onSkip) {
       onSkip();
     } else {
       // Skip to next step
-      if (currentStep < getSteps(variant).length - 1) {
+      if (currentStep < getSteps(variant, t).length - 1) {
         setCurrentStep(prev => prev + 1);
         setStepStartTime(Date.now());
       }
     }
   };
 
-  const steps = getSteps(variant);
+  const steps = getSteps(variant, t);
   const currentStepData = steps[currentStep];
   const progress = ((currentStep + 1) / steps.length) * 100;
 
@@ -108,18 +110,18 @@ export function ABTestOnboardingFlow({
         <div className='flex items-center justify-between mb-2'>
           <h1 className='text-2xl font-bold text-gray-900'>
             {variant === 'variant_a'
-              ? 'Protect Your Family'
-              : 'Welcome to LegacyGuard'}
+              ? t('header.variant_a_title')
+              : t('header.variant_b_title')}
           </h1>
           <Badge variant='outline' className='text-sm'>
-            {currentStep + 1} of {steps.length}
+            {t('header.progress', { current: currentStep + 1, total: steps.length })}
           </Badge>
         </div>
         <Progress value={progress} className='h-2 mb-2' />
         <p className='text-sm text-gray-600'>
           {variant === 'variant_a'
-            ? 'Every step brings more security to those you love'
-            : `Step ${currentStep + 1}: ${currentStepData?.description}`}
+            ? t('header.variant_a_subtitle')
+            : t('header.step_description', { current: currentStep + 1, description: currentStepData?.description })}
         </p>
       </div>
 
@@ -149,30 +151,30 @@ export function ABTestOnboardingFlow({
 /**
  * Get steps based on A/B test variant
  */
-function getSteps(variant: string): OnboardingStep[] {
+function getSteps(variant: string, t: any): OnboardingStep[] {
   const controlSteps = [
     {
       id: 'name',
-      title: 'Tell us your name',
-      description: 'Personal information',
+      title: t('steps.control.name.title'),
+      description: t('steps.control.name.description'),
       component: NameStep,
     },
     {
       id: 'purpose',
-      title: 'What brings you here?',
-      description: 'Understanding your needs',
+      title: t('steps.control.purpose.title'),
+      description: t('steps.control.purpose.description'),
       component: PurposeStep,
     },
     {
       id: 'family',
-      title: 'Family information',
-      description: 'Those you want to protect',
+      title: t('steps.control.family.title'),
+      description: t('steps.control.family.description'),
       component: FamilyStep,
     },
     {
       id: 'next_steps',
-      title: 'Your next steps',
-      description: 'Getting started',
+      title: t('steps.control.next_steps.title'),
+      description: t('steps.control.next_steps.description'),
       component: NextStepsStep,
     },
   ];
@@ -180,26 +182,26 @@ function getSteps(variant: string): OnboardingStep[] {
   const emotionFirstSteps = [
     {
       id: 'family_impact',
-      title: 'Who do you want to protect?',
-      description: 'The people who matter most',
+      title: t('steps.emotion_first.family_impact.title'),
+      description: t('steps.emotion_first.family_impact.description'),
       component: FamilyImpactStep,
     },
     {
       id: 'protection_goals',
-      title: 'What would give you peace of mind?',
-      description: 'Your protection priorities',
+      title: t('steps.emotion_first.protection_goals.title'),
+      description: t('steps.emotion_first.protection_goals.description'),
       component: ProtectionGoalsStep,
     },
     {
       id: 'personal_info',
-      title: "Let's personalize your experience",
-      description: 'Basic information',
+      title: t('steps.emotion_first.personal_info.title'),
+      description: t('steps.emotion_first.personal_info.description'),
       component: PersonalInfoStep,
     },
     {
       id: 'first_action',
-      title: 'Take your first protective step',
-      description: 'Start protecting your family today',
+      title: t('steps.emotion_first.first_action.title'),
+      description: t('steps.emotion_first.first_action.description'),
       component: FirstActionStep,
     },
   ];
@@ -217,21 +219,22 @@ function NameStep({
   onComplete: (data: Record<string, unknown>) => void;
   onSkip: () => void;
 }) {
+  const { t } = useTranslation('ui/onboarding-variants');
   const [name, setName] = useState('');
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>What should we call you?</CardTitle>
+        <CardTitle>{t('name_step.title')}</CardTitle>
       </CardHeader>
       <CardContent className='space-y-4'>
         <div>
-          <Label htmlFor='name'>Your Name</Label>
+          <Label htmlFor='name'>{t('name_step.label')}</Label>
           <Input
             id='name'
             value={name}
             onChange={e => setName(e.target.value)}
-            placeholder='Enter your full name'
+            placeholder={t('name_step.placeholder')}
             className='mt-1'
           />
         </div>
@@ -241,11 +244,11 @@ function NameStep({
             disabled={!name.trim()}
             className='flex-1'
           >
-            Continue
+            {t('name_step.continue')}
             <ArrowRight className='h-4 w-4 ml-2' />
           </Button>
           <Button variant='ghost' onClick={onSkip}>
-            Skip
+            {t('name_step.skip')}
           </Button>
         </div>
       </CardContent>
@@ -260,35 +263,36 @@ function PurposeStep({
   onComplete: (data: Record<string, unknown>) => void;
   onSkip: () => void;
 }) {
+  const { t } = useTranslation('ui/onboarding-variants');
   const [purpose, setPurpose] = useState('');
 
   const purposes = [
-    'Organize important documents',
-    'Create a will or estate plan',
-    'Ensure my family can access information',
-    'Get professional legal review',
-    'All of the above',
+    { key: 'organize_documents', value: t('purpose_step.options.organize_documents') },
+    { key: 'create_will', value: t('purpose_step.options.create_will') },
+    { key: 'family_access', value: t('purpose_step.options.family_access') },
+    { key: 'legal_review', value: t('purpose_step.options.legal_review') },
+    { key: 'all_above', value: t('purpose_step.options.all_above') },
   ];
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>What brings you to LegacyGuard?</CardTitle>
+        <CardTitle>{t('purpose_step.title')}</CardTitle>
       </CardHeader>
       <CardContent className='space-y-4'>
         <div className='space-y-2'>
           {purposes.map((option, index) => (
             <button
               key={index}
-              onClick={() => setPurpose(option)}
+              onClick={() => setPurpose(option.value)}
               className={cn(
                 'w-full p-3 text-left border rounded-lg hover:bg-gray-50 transition-colors',
-                purpose === option
+                purpose === option.value
                   ? 'border-blue-500 bg-blue-50'
                   : 'border-gray-200'
               )}
             >
-              {option}
+              {option.value}
             </button>
           ))}
         </div>
@@ -298,11 +302,11 @@ function PurposeStep({
             disabled={!purpose}
             className='flex-1'
           >
-            Continue
+            {t('purpose_step.continue')}
             <ArrowRight className='h-4 w-4 ml-2' />
           </Button>
           <Button variant='ghost' onClick={onSkip}>
-            Skip
+            {t('purpose_step.skip')}
           </Button>
         </div>
       </CardContent>
@@ -317,51 +321,59 @@ function FamilyStep({
   onComplete: (data: Record<string, unknown>) => void;
   onSkip: () => void;
 }) {
+  const { t } = useTranslation('ui/onboarding-variants');
   const [familySize, setFamilySize] = useState('');
   const [hasMinors, setHasMinors] = useState<boolean | null>(null);
+
+  const familySizes = [
+    { key: '1-2', value: t('family_step.family_size_options.1-2') },
+    { key: '3-4', value: t('family_step.family_size_options.3-4') },
+    { key: '5-6', value: t('family_step.family_size_options.5-6') },
+    { key: '7+', value: t('family_step.family_size_options.7+') },
+  ];
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Tell us about your family</CardTitle>
+        <CardTitle>{t('family_step.title')}</CardTitle>
       </CardHeader>
       <CardContent className='space-y-4'>
         <div>
-          <Label>How many family members do you want to protect?</Label>
+          <Label>{t('family_step.family_size_label')}</Label>
           <div className='grid grid-cols-2 gap-2 mt-2'>
-            {['1-2', '3-4', '5-6', '7+'].map(size => (
+            {familySizes.map(size => (
               <button
-                key={size}
-                onClick={() => setFamilySize(size)}
+                key={size.key}
+                onClick={() => setFamilySize(size.key)}
                 className={cn(
                   'p-2 border rounded hover:bg-gray-50',
-                  familySize === size
+                  familySize === size.key
                     ? 'border-blue-500 bg-blue-50'
                     : 'border-gray-200'
                 )}
               >
-                {size} people
+                {size.value}
               </button>
             ))}
           </div>
         </div>
 
         <div>
-          <Label>Do you have minor children?</Label>
+          <Label>{t('family_step.minors_label')}</Label>
           <div className='flex gap-2 mt-2'>
             <Button
               variant={hasMinors === true ? 'default' : 'outline'}
               onClick={() => setHasMinors(true)}
               className='flex-1'
             >
-              Yes
+              {t('family_step.yes')}
             </Button>
             <Button
               variant={hasMinors === false ? 'default' : 'outline'}
               onClick={() => setHasMinors(false)}
               className='flex-1'
             >
-              No
+              {t('family_step.no')}
             </Button>
           </div>
         </div>
@@ -371,11 +383,11 @@ function FamilyStep({
             onClick={() => onComplete({ familySize, hasMinors })}
             className='flex-1'
           >
-            Continue
+            {t('family_step.continue')}
             <ArrowRight className='h-4 w-4 ml-2' />
           </Button>
           <Button variant='ghost' onClick={onSkip}>
-            Skip
+            {t('family_step.skip')}
           </Button>
         </div>
       </CardContent>
@@ -390,34 +402,35 @@ function NextStepsStep({
   onComplete: (data: Record<string, unknown>) => void;
   userData: Record<string, unknown>;
 }) {
+  const { t } = useTranslation('ui/onboarding-variants');
+  
   const recommendations = [
     {
       icon: Shield,
-      title: 'Upload Important Documents',
-      description: 'Secure your ID, insurance, and financial documents',
-      time: '5 minutes',
+      title: t('next_steps.recommendations.upload_documents.title'),
+      description: t('next_steps.recommendations.upload_documents.description'),
+      time: t('next_steps.recommendations.upload_documents.time'),
     },
     {
       icon: Users,
-      title: 'Add Emergency Contacts',
-      description: 'Let trusted people access your information if needed',
-      time: '2 minutes',
+      title: t('next_steps.recommendations.emergency_contacts.title'),
+      description: t('next_steps.recommendations.emergency_contacts.description'),
+      time: t('next_steps.recommendations.emergency_contacts.time'),
     },
     {
       icon: CheckCircle,
-      title: 'Complete Will Wizard',
-      description: 'Create a legally sound will with our guided process',
-      time: '15 minutes',
+      title: t('next_steps.recommendations.complete_will.title'),
+      description: t('next_steps.recommendations.complete_will.description'),
+      time: t('next_steps.recommendations.complete_will.time'),
     },
   ];
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Perfect! Here's what we recommend next</CardTitle>
+        <CardTitle>{t('next_steps.title')}</CardTitle>
         <p className='text-gray-600'>
-          Based on your information, these steps will give you the most
-          protection
+          {t('next_steps.subtitle')}
         </p>
       </CardHeader>
       <CardContent className='space-y-4'>
@@ -443,7 +456,7 @@ function NextStepsStep({
           className='w-full mt-6'
           size='lg'
         >
-          Start Protecting My Family
+          {t('next_steps.start_button')}
           <ArrowRight className='h-4 w-4 ml-2' />
         </Button>
       </CardContent>
@@ -461,14 +474,15 @@ function FamilyImpactStep({
   onComplete: (data: Record<string, unknown>) => void;
   onSkip: () => void;
 }) {
+  const { t } = useTranslation('ui/onboarding-variants');
   const [selectedPeople, setSelectedPeople] = useState<string[]>([]);
 
   const people = [
-    { id: 'spouse', label: 'Spouse/Partner', icon: Heart },
-    { id: 'children', label: 'Children', icon: Users },
-    { id: 'parents', label: 'Parents', icon: Shield },
-    { id: 'siblings', label: 'Siblings', icon: Users },
-    { id: 'extended', label: 'Extended Family', icon: Users },
+    { id: 'spouse', label: t('family_impact_step.people.spouse'), icon: Heart },
+    { id: 'children', label: t('family_impact_step.people.children'), icon: Users },
+    { id: 'parents', label: t('family_impact_step.people.parents'), icon: Shield },
+    { id: 'siblings', label: t('family_impact_step.people.siblings'), icon: Users },
+    { id: 'extended', label: t('family_impact_step.people.extended'), icon: Users },
   ];
 
   const togglePerson = (id: string) => {
@@ -482,11 +496,10 @@ function FamilyImpactStep({
       <CardHeader>
         <CardTitle className='flex items-center gap-2'>
           <Heart className='h-5 w-5 text-red-500' />
-          Who do you want to protect?
+          {t('family_impact_step.title')}
         </CardTitle>
         <p className='text-gray-600'>
-          Your family's security and peace of mind starts with you. Select
-          everyone who matters most to you.
+          {t('family_impact_step.subtitle')}
         </p>
       </CardHeader>
       <CardContent className='space-y-4'>
@@ -522,11 +535,9 @@ function FamilyImpactStep({
           <div className='p-3 bg-blue-50 border border-blue-200 rounded-lg'>
             <p className='text-sm text-blue-800'>
               <Shield className='h-4 w-4 inline mr-1' />
-              Great choice! We'll help you create a protection plan for{' '}
               {selectedPeople.length === 1
-                ? 'your loved one'
-                : `all ${selectedPeople.length} of your loved ones`}
-              .
+                ? t('family_impact_step.confirmation.single')
+                : t('family_impact_step.confirmation.multiple', { count: selectedPeople.length })}
             </p>
           </div>
         )}
@@ -537,11 +548,11 @@ function FamilyImpactStep({
             disabled={selectedPeople.length === 0}
             className='flex-1'
           >
-            Continue Protecting My Family
+            {t('family_impact_step.continue')}
             <ArrowRight className='h-4 w-4 ml-2' />
           </Button>
           <Button variant='ghost' onClick={onSkip}>
-            Skip
+            {t('family_impact_step.skip')}
           </Button>
         </div>
       </CardContent>
@@ -556,38 +567,39 @@ function ProtectionGoalsStep({
   onComplete: (data: Record<string, unknown>) => void;
   onSkip: () => void;
 }) {
+  const { t } = useTranslation('ui/onboarding-variants');
   const [goals, setGoals] = useState<string[]>([]);
 
   const protectionGoals = [
     {
       id: 'emergency_access',
-      title: 'Emergency Access to Information',
-      description: 'Family can quickly find important documents and contacts',
-      impact: 'High',
+      title: t('protection_goals_step.goals.emergency_access.title'),
+      description: t('protection_goals_step.goals.emergency_access.description'),
+      impact: t('protection_goals_step.goals.emergency_access.impact'),
     },
     {
       id: 'financial_security',
-      title: 'Financial Security',
-      description: 'Clear instructions for accessing accounts and assets',
-      impact: 'High',
+      title: t('protection_goals_step.goals.financial_security.title'),
+      description: t('protection_goals_step.goals.financial_security.description'),
+      impact: t('protection_goals_step.goals.financial_security.impact'),
     },
     {
       id: 'child_care',
-      title: 'Child Care Instructions',
-      description: 'Guardianship plans and care preferences',
-      impact: 'Critical',
+      title: t('protection_goals_step.goals.child_care.title'),
+      description: t('protection_goals_step.goals.child_care.description'),
+      impact: t('protection_goals_step.goals.child_care.impact'),
     },
     {
       id: 'legal_compliance',
-      title: 'Legal Compliance',
-      description: 'Documents that will stand up in court',
-      impact: 'High',
+      title: t('protection_goals_step.goals.legal_compliance.title'),
+      description: t('protection_goals_step.goals.legal_compliance.description'),
+      impact: t('protection_goals_step.goals.legal_compliance.impact'),
     },
     {
       id: 'peace_of_mind',
-      title: 'Peace of Mind',
-      description: 'Know your family is prepared for anything',
-      impact: 'Essential',
+      title: t('protection_goals_step.goals.peace_of_mind.title'),
+      description: t('protection_goals_step.goals.peace_of_mind.description'),
+      impact: t('protection_goals_step.goals.peace_of_mind.impact'),
     },
   ];
 
@@ -602,10 +614,10 @@ function ProtectionGoalsStep({
       <CardHeader>
         <CardTitle className='flex items-center gap-2'>
           <Shield className='h-5 w-5 text-blue-600' />
-          What would give you peace of mind?
+          {t('protection_goals_step.title')}
         </CardTitle>
         <p className='text-gray-600'>
-          Select the protection goals that matter most to your family's future.
+          {t('protection_goals_step.subtitle')}
         </p>
       </CardHeader>
       <CardContent className='space-y-4'>
@@ -629,7 +641,7 @@ function ProtectionGoalsStep({
                 <div className='ml-3 flex flex-col items-end'>
                   <Badge
                     variant={
-                      goal.impact === 'Critical' ? 'destructive' : 'secondary'
+                      goal.impact === t('protection_goals_step.goals.child_care.impact') ? 'destructive' : 'secondary'
                     }
                     className='text-xs mb-2'
                   >
@@ -650,11 +662,11 @@ function ProtectionGoalsStep({
             disabled={goals.length === 0}
             className='flex-1'
           >
-            Build My Protection Plan
+            {t('protection_goals_step.continue')}
             <ArrowRight className='h-4 w-4 ml-2' />
           </Button>
           <Button variant='ghost' onClick={onSkip}>
-            Skip
+            {t('protection_goals_step.skip')}
           </Button>
         </div>
       </CardContent>
@@ -669,40 +681,41 @@ function PersonalInfoStep({
   onComplete: (data: Record<string, unknown>) => void;
   onSkip: () => void;
 }) {
+  const { t } = useTranslation('ui/onboarding-variants');
   const [name, setName] = useState('');
   const [location, setLocation] = useState('');
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Let's personalize your protection plan</CardTitle>
+        <CardTitle>{t('personal_info_step.title')}</CardTitle>
         <p className='text-gray-600'>
-          This helps us provide more relevant guidance and legal compliance.
+          {t('personal_info_step.subtitle')}
         </p>
       </CardHeader>
       <CardContent className='space-y-4'>
         <div>
-          <Label htmlFor='personal-name'>Your Name</Label>
+          <Label htmlFor='personal-name'>{t('personal_info_step.name_label')}</Label>
           <Input
             id='personal-name'
             value={name}
             onChange={e => setName(e.target.value)}
-            placeholder='Enter your full name'
+            placeholder={t('personal_info_step.name_placeholder')}
             className='mt-1'
           />
         </div>
 
         <div>
-          <Label htmlFor='location'>State/Province</Label>
+          <Label htmlFor='location'>{t('personal_info_step.location_label')}</Label>
           <Input
             id='location'
             value={location}
             onChange={e => setLocation(e.target.value)}
-            placeholder='e.g., California, Ontario'
+            placeholder={t('personal_info_step.location_placeholder')}
             className='mt-1'
           />
           <p className='text-xs text-gray-500 mt-1'>
-            This ensures your documents comply with local laws
+            {t('personal_info_step.location_help')}
           </p>
         </div>
 
@@ -712,11 +725,11 @@ function PersonalInfoStep({
             disabled={!name.trim()}
             className='flex-1'
           >
-            Continue
+            {t('personal_info_step.continue')}
             <ArrowRight className='h-4 w-4 ml-2' />
           </Button>
           <Button variant='ghost' onClick={onSkip}>
-            Skip
+            {t('personal_info_step.skip')}
           </Button>
         </div>
       </CardContent>

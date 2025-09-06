@@ -15,7 +15,8 @@
     "active": "Aktívne",
     "completed": "Dokončené",
     "onHold": "Pozastavené",
-    "archived": "Archivované"
+    "archived": "Archivované",
+    "on-hold": "Pozastavené"
   },
   "projectCreation": {
     "title": "Vytvoriť Nový Projekt Dedičstva",
