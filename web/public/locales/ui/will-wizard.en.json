@@ -1,0 +1,176 @@
+{
+  "wizard": {
+    "title": "Enhanced Will Creator",
+    "subtitle": "Step {{currentStep}} of {{totalSteps}}: {{stepTitle}}",
+    "backToPlanning": "Back to Legacy Planning",
+    "draftActive": "Sofia's Intelligent Draft Active",
+    "draftDescription": "Pre-filled with legal validation - Review and modify as needed"
+  },
+  "steps": {
+    "personal": {
+      "title": "Personal Info",
+      "description": "Your details"
+    },
+    "beneficiaries": {
+      "title": "Beneficiaries", 
+      "description": "Who inherits"
+    },
+    "assets": {
+      "title": "Assets",
+      "description": "What you own"
+    },
+    "executor": {
+      "title": "Executor",
+      "description": "Who manages"
+    },
+    "guardianship": {
+      "title": "Guardianship",
+      "description": "For minor children"
+    },
+    "wishes": {
+      "title": "Final Wishes",
+      "description": "Special instructions"
+    },
+    "legal_validation": {
+      "title": "Legal Review",
+      "description": "Compliance check"
+    },
+    "sofia_check": {
+      "title": "Sofia's Check",
+      "description": "AI review"
+    },
+    "review": {
+      "title": "Final Review",
+      "description": "Confirm and generate"
+    }
+  },
+  "personal": {
+    "title": "Personal Info",
+    "description": "Your details",
+    "fullName": {
+      "label": "Full Name",
+      "placeholder": "Enter your full legal name"
+    },
+    "dateOfBirth": {
+      "label": "Date of Birth"
+    },
+    "address": {
+      "label": "Address",
+      "placeholder": "Enter your full address"
+    },
+    "citizenship": {
+      "label": "Citizenship",
+      "placeholder": "e.g., Slovak, Czech, American"
+    },
+    "jurisdiction": {
+      "label": "Legal Jurisdiction",
+      "placeholder": "Select jurisdiction"
+    },
+    "maritalStatus": {
+      "label": "Marital Status",
+      "placeholder": "Select status",
+      "single": "Single",
+      "married": "Married", 
+      "divorced": "Divorced",
+      "widowed": "Widowed"
+    }
+  },
+  "beneficiaries": {
+    "title": "Your Beneficiaries",
+    "addBeneficiary": "Add Beneficiary",
+    "noBeneficiaries": "No beneficiaries added yet",
+    "clickToStart": "Click \"Add Beneficiary\" to start",
+    "beneficiaryNumber": "Beneficiary {{number}}",
+    "fields": {
+      "name": {
+        "label": "Name",
+        "placeholder": "Beneficiary name"
+      },
+      "relationship": {
+        "label": "Relationship"
+      },
+      "percentage": {
+        "label": "Inheritance Percentage",
+        "placeholder": "0"
+      },
+      "conditions": {
+        "label": "Special Conditions (Optional)",
+        "placeholder": "e.g., if surviving, if over 18 years old"
+      }
+    },
+    "guidance": {
+      "title": "Legal Guidance for {{jurisdiction}}",
+      "forcedHeirs": "Information about forced heirs and inheritance rights"
+    }
+  },
+  "relationships": {
+    "spouse": "Spouse/Partner",
+    "child": "Child",
+    "parent": "Parent", 
+    "sibling": "Sibling",
+    "grandchild": "Grandchild",
+    "friend": "Friend",
+    "charity": "Charity/Organization",
+    "other": "Other"
+  },
+  "jurisdictions": {
+    "Slovakia": "Slovakia",
+    "Czech-Republic": "Czech Republic",
+    "US-General": "United States (General)",
+    "US-California": "California, USA",
+    "US-Texas": "Texas, USA",
+    "US-Florida": "Florida, USA",
+    "US-NewYork": "New York, USA",
+    "UK": "United Kingdom",
+    "Canada": "Canada",
+    "Australia": "Australia"
+  },
+  "legalValidation": {
+    "title": "Legal Compliance Review",
+    "description": "Your will is being checked against {{jurisdiction}} law",
+    "requirements": {
+      "title": "Legal Requirements for {{jurisdiction}}",
+      "forcedHeirs": {
+        "title": "Forced Heirs Protection",
+        "description": "Information about forced heirs protection requirements"
+      },
+      "witnesses": {
+        "title": "Witness Requirements", 
+        "description": "Information about witness requirements"
+      },
+      "revocation": {
+        "title": "Will Revocation",
+        "description": "Information about will revocation procedures"
+      },
+      "notarization": {
+        "title": "Notarization",
+        "description": "Information about notarization requirements"
+      }
+    }
+  },
+  "navigation": {
+    "back": "Back",
+    "continue": "Continue",
+    "createWill": "Create Will",
+    "changeWillType": "Change Will Type",
+    "stepIndicator": "Step {{current}} of {{total}}"
+  },
+  "validation": {
+    "errors": "{{count}} error",
+    "errors_plural": "{{count}} errors", 
+    "warnings": "{{count}} warning",
+    "warnings_plural": "{{count}} warnings",
+    "resolveErrors": "Please resolve all legal compliance issues before creating your will",
+    "resolveStepErrors": "Please resolve validation errors before proceeding"
+  },
+  "common": {
+    "loading": "Loading...",
+    "remove": "Remove",
+    "add": "Add",
+    "save": "Save",
+    "cancel": "Cancel",
+    "required": "Required",
+    "optional": "Optional",
+    "notImplemented": "Step not implemented"
+  }
+}

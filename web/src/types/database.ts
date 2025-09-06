@@ -59,11 +59,11 @@ export type CamelCase<T> = T extends string
 // Type for handling both snake_case and camelCase property access
 export type FlexibleLegacyItem = LegacyItem & {
   // camelCase aliases for snake_case properties
-  createdAt?: string | null;
-  updatedAt?: string | null;
-  dueDate?: string | null;
-  fileUrls?: string[] | null;
+  createdAt?: null | string;
+  dueDate?: null | string;
+  fileUrls?: null | string[];
   isPublic?: boolean | null;
+  updatedAt?: null | string;
   userId?: string;
 };
 
@@ -115,133 +115,133 @@ export type DbResultErr = any; // PostgrestError
 
 // Error handling
 export interface DatabaseError {
-  message: string;
   code?: string;
   details?: string;
   hint?: string;
+  message: string;
 }
 
 // Query result types
 export type QueryResult<T> = {
-  data: T | null;
+  data: null | T;
   error: DatabaseError | null;
   loading: boolean;
 };
 
 // Pagination types
 export interface PaginationOptions {
-  page?: number;
   limit?: number;
   offset?: number;
+  page?: number;
 }
 
 export interface PaginatedResult<T> {
   data: T[];
-  total: number;
-  page: number;
   limit: number;
+  page: number;
+  total: number;
   totalPages: number;
 }
 
 // Filter types
 export interface LegacyItemFilters {
   category?: LegacyItemCategory;
-  status?: LegacyItemStatus;
-  priority?: LegacyItemPriority;
-  userId?: string;
-  search?: string;
   dateFrom?: string;
   dateTo?: string;
+  priority?: LegacyItemPriority;
+  search?: string;
+  status?: LegacyItemStatus;
+  userId?: string;
 }
 
 // Sorting types
 export interface SortOptions {
-  field: keyof LegacyItem;
   direction: 'asc' | 'desc';
+  field: keyof LegacyItem;
 }
 
 // Common query parameters
 export interface QueryOptions {
   filters?: LegacyItemFilters;
-  sort?: SortOptions;
   pagination?: PaginationOptions;
+  sort?: SortOptions;
 }
 
 // Type for handling partial updates
 export type PartialUpdate<T> = Partial<T> & { id: string };
 
 // Type for handling JSON data safely
-export type SafeJson<T = any> = T | null | undefined;
+export type SafeJson<T = any> = null | T | undefined;
 
 // Type for handling arrays safely
-export type SafeArray<T> = T[] | null | undefined;
+export type SafeArray<T> = null | T[] | undefined;
 
 // Type for handling dates safely
-export type SafeDate = string | null | undefined;
+export type SafeDate = null | string | undefined;
 
 // Type for handling enums safely
-export type SafeEnum<T extends string> = T | null | undefined;
+export type SafeEnum<T extends string> = null | T | undefined;
 
 // Type for handling relationships
 export interface LegacyItemWithRelations extends LegacyItem {
-  profile?: Profile;
   documents?: Document[];
+  profile?: Profile;
 }
 
 // Type for handling file uploads
 export interface FileUpload {
   file: File;
-  path: string;
   metadata?: Record<string, any>;
+  path: string;
 }
 
 // Type for handling batch operations
 export interface BatchOperation<T> {
   items: T[];
-  operation: 'create' | 'update' | 'delete';
+  operation: 'create' | 'delete' | 'update';
 }
 
 // Type for handling real-time updates
 export interface RealtimeUpdate<T> {
-  type: 'INSERT' | 'UPDATE' | 'DELETE';
-  table: string;
-  record: T;
   old_record?: T;
+  record: T;
+  table: string;
+  type: 'DELETE' | 'INSERT' | 'UPDATE';
 }
 
 // Type for handling subscription events
 export interface SubscriptionEvent<T> {
-  eventType: 'INSERT' | 'UPDATE' | 'DELETE';
-  new: T | null;
-  old: T | null;
+  eventType: 'DELETE' | 'INSERT' | 'UPDATE';
+  new: null | T;
+  old: null | T;
 }
 
 // Type for handling cache updates
 export interface CacheUpdate<T> {
-  key: string;
   data: T;
+  key: string;
   timestamp: number;
 }
 
 // Type for handling optimistic updates
 export interface OptimisticUpdate<T> {
-  id: string;
   data: Partial<T>;
+  id: string;
   timestamp: number;
 }
 
 // Type for handling error states
 export interface ErrorState {
   error: DatabaseError | null;
+  lastRetry: null | number;
   retryCount: number;
-  lastRetry: number | null;
 }
 
 // Type for handling loading states
 export interface LoadingState {
   loading: boolean;
-  progress?: number;
   message?: string;
+  progress?: number;
 }
 
 // Type for handling success states
@@ -252,7 +252,7 @@ export interface SuccessState<T> {
 }
 
 // Type for handling safe JSON operations
-export function safeJsonParse<T>(json: string | null | undefined): T | null {
+export function safeJsonParse<T>(json: null | string | undefined): null | T {
   if (!json) return null;
   try {
     return JSON.parse(json) as T;
@@ -261,7 +261,7 @@ export function safeJsonParse<T>(json: string | null | undefined): T | null {
   }
 }
 
-export function safeJsonStringify(obj: any): string | null {
+export function safeJsonStringify(obj: any): null | string {
   try {
     return JSON.stringify(obj);
   } catch {
@@ -270,29 +270,29 @@ export function safeJsonStringify(obj: any): string | null {
 }
 
 // Type for handling date operations
-export function safeDateParse(date: string | null | undefined): Date | null {
+export function safeDateParse(date: null | string | undefined): Date | null {
   if (!date) return null;
   const parsed = new Date(date);
   return isNaN(parsed.getTime()) ? null : parsed;
 }
 
 // Type for handling array operations
-export function safeArray<T>(arr: T[] | null | undefined): T[] {
+export function safeArray<T>(arr: null | T[] | undefined): T[] {
   return Array.isArray(arr) ? arr : [];
 }
 
 // Type for handling enum operations
 export function safeEnum<T extends string>(
-  value: string | null | undefined,
+  value: null | string | undefined,
   validValues: readonly T[]
-): T | null {
+): null | T {
   if (!value) return null;
   return validValues.includes(value as T) ? (value as T) : null;
 }
 
 
 // Type for handling nullable properties
-export type Nullable<T> = T | null;
+export type Nullable<T> = null | T;
 
 // Type for handling optional properties
 export type Optional<T> = T | undefined;
@@ -306,8 +306,8 @@ export type PartialWithId<T> = Partial<T> & { id: string };
 // Type for handling update operations
 export type UpdateOperation<T> = {
   id: string;
-  updates: Partial<T>;
   timestamp: number;
+  updates: Partial<T>;
 };
 
 // Type for handling create operations
@@ -325,68 +325,68 @@ export type DeleteOperation = {
 // Type for handling batch operations
 export type BatchOperations<T> = {
   creates?: CreateOperation<T>[];
-  updates?: UpdateOperation<T>[];
   deletes?: DeleteOperation[];
+  updates?: UpdateOperation<T>[];
 };
 
 // Type for handling query builders
 export type QueryBuilder<T> = {
-  select: (columns?: string) => any;
-  insert: (values: Partial<T>[]) => any;
-  update: (values: Partial<T>) => any;
+  and: (filters: any[]) => QueryBuilder<T>;
+  containedBy: (column: string, value: any) => QueryBuilder<T>;
+  contains: (column: string, value: any) => QueryBuilder<T>;
+  csv: () => QueryBuilder<T>;
   delete: () => any;
   eq: (column: string, value: any) => QueryBuilder<T>;
-  neq: (column: string, value: any) => QueryBuilder<T>;
   gt: (column: string, value: any) => QueryBuilder<T>;
   gte: (column: string, value: any) => QueryBuilder<T>;
+  ilike: (column: string, pattern: string) => QueryBuilder<T>;
+  in: (column: string, values: any[]) => QueryBuilder<T>;
+  insert: (values: Partial<T>[]) => any;
+  is: (column: string, value: any) => QueryBuilder<T>;
+  like: (column: string, pattern: string) => QueryBuilder<T>;
+  limit: (count: number) => QueryBuilder<T>;
   lt: (column: string, value: any) => QueryBuilder<T>;
   lte: (column: string, value: any) => QueryBuilder<T>;
-  like: (column: string, pattern: string) => QueryBuilder<T>;
-  ilike: (column: string, pattern: string) => QueryBuilder<T>;
-  is: (column: string, value: any) => QueryBuilder<T>;
-  in: (column: string, values: any[]) => QueryBuilder<T>;
-  contains: (column: string, value: any) => QueryBuilder<T>;
-  containedBy: (column: string, value: any) => QueryBuilder<T>;
+  match: (query: any) => QueryBuilder<T>;
+  maybeSingle: () => QueryBuilder<T>;
+  neq: (column: string, value: any) => QueryBuilder<T>;
+  not: (query: any) => QueryBuilder<T>;
+  or: (filters: any[]) => QueryBuilder<T>;
+  order: (column: string, options?: { ascending?: boolean; nullsFirst?: boolean }) => QueryBuilder<T>;
+  overlaps: (column: string, range: any) => QueryBuilder<T>;
+  range: (from: number, to: number) => QueryBuilder<T>;
+  rangeAdjacent: (column: string, range: any) => QueryBuilder<T>;
   rangeGt: (column: string, range: any) => QueryBuilder<T>;
   rangeGte: (column: string, range: any) => QueryBuilder<T>;
   rangeLt: (column: string, range: any) => QueryBuilder<T>;
   rangeLte: (column: string, range: any) => QueryBuilder<T>;
-  rangeAdjacent: (column: string, range: any) => QueryBuilder<T>;
-  overlaps: (column: string, range: any) => QueryBuilder<T>;
-  textSearch: (column: string, query: string) => QueryBuilder<T>;
-  match: (query: any) => QueryBuilder<T>;
-  not: (query: any) => QueryBuilder<T>;
-  or: (filters: any[]) => QueryBuilder<T>;
-  and: (filters: any[]) => QueryBuilder<T>;
-  order: (column: string, options?: { ascending?: boolean; nullsFirst?: boolean }) => QueryBuilder<T>;
-  limit: (count: number) => QueryBuilder<T>;
-  range: (from: number, to: number) => QueryBuilder<T>;
+  select: (columns?: string) => any;
   single: () => QueryBuilder<T>;
-  maybeSingle: () => QueryBuilder<T>;
-  csv: () => QueryBuilder<T>;
+  textSearch: (column: string, query: string) => QueryBuilder<T>;
+  update: (values: Partial<T>) => any;
 };
 
 // Type for handling database operations
 export interface DatabaseOperations {
+  documents: {
+    create: (document: DocumentInsert) => Promise<Document>;
+    delete: (id: string) => Promise<void>;
+    list: (userId: string) => Promise<Document[]>;
+    read: (id: string) => Promise<Document | null>;
+    update: (id: string, updates: DocumentUpdate) => Promise<Document>;
+  };
   legacyItems: {
     create: (item: LegacyItemInsert) => Promise<LegacyItem>;
-    read: (id: string) => Promise<LegacyItem | null>;
-    update: (id: string, updates: LegacyItemUpdate) => Promise<LegacyItem>;
     delete: (id: string) => Promise<void>;
     list: (options?: QueryOptions) => Promise<PaginatedResult<LegacyItem>>;
+    read: (id: string) => Promise<LegacyItem | null>;
+    update: (id: string, updates: LegacyItemUpdate) => Promise<LegacyItem>;
   };
   profiles: {
     create: (profile: ProfileInsert) => Promise<Profile>;
-    read: (id: string) => Promise<Profile | null>;
+    delete: (id: string) => Promise<void>;
+    read: (id: string) => Promise<null | Profile>;
     update: (id: string, updates: ProfileUpdate) => Promise<Profile>;
-    delete: (id: string) => Promise<void>;
-  };
-  documents: {
-    create: (document: DocumentInsert) => Promise<Document>;
-    read: (id: string) => Promise<Document | null>;
-    update: (id: string, updates: DocumentUpdate) => Promise<Document>;
-    delete: (id: string) => Promise<void>;
-    list: (userId: string) => Promise<Document[]>;
   };
 }
 
@@ -399,9 +399,9 @@ export interface MigrationOperations {
 
 // Type for handling validation
 export interface ValidationRules<T> {
-  required?: (keyof T)[];
-  optional?: (keyof T)[];
   custom?: Record<string, (value: any) => boolean>;
+  optional?: (keyof T)[];
+  required?: (keyof T)[];
 }
 
 // Type for handling error handling
@@ -412,56 +412,56 @@ export interface ErrorHandler {
 
 // Type for handling logging
 export interface Logger {
-  log: (message: string, data?: any) => void;
-  error: (message: string, error?: any) => void;
-  warn: (message: string, data?: any) => void;
   debug: (message: string, data?: any) => void;
+  error: (message: string, error?: any) => void;
+  log: (message: string, data?: any) => void;
+  warn: (message: string, data?: any) => void;
 }
 
 // Type for handling performance
 export interface PerformanceMetrics {
-  queryTime: number;
-  memoryUsage: number;
   cacheHitRate: number;
   errorRate: number;
+  memoryUsage: number;
+  queryTime: number;
 }
 
 // Type for handling caching
 export interface CacheConfig {
-  ttl: number;
   maxSize: number;
-  strategy: 'lru' | 'fifo' | 'lfu';
+  strategy: 'fifo' | 'lfu' | 'lru';
+  ttl: number;
 }
 
 // Type for handling rate limiting
 export interface RateLimitConfig {
   maxRequests: number;
-  windowMs: number;
   skipSuccessfulRequests: boolean;
+  windowMs: number;
 }
 
 // Type for handling security
 export interface SecurityConfig {
-  encryptionKey: string;
-  saltRounds: number;
-  jwtSecret: string;
   corsOrigins: string[];
+  encryptionKey: string;
+  jwtSecret: string;
+  saltRounds: number;
 }
 
 // Type for handling configuration
 export interface AppConfig {
+  cache: CacheConfig;
   database: {
-    url: string;
     poolSize: number;
     timeout: number;
+    url: string;
   };
-  cache: CacheConfig;
+  logging: {
+    format: 'json' | 'text';
+    level: 'debug' | 'error' | 'info' | 'warn';
+  };
   rateLimit: RateLimitConfig;
   security: SecurityConfig;
-  logging: {
-    level: 'debug' | 'info' | 'warn' | 'error';
-    format: 'json' | 'text';
-  };
 }
 
 // Export everything

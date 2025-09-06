@@ -64,7 +64,7 @@ export default function ProtocolSettingsPage() {
           required_guardians_for_activation: 2, // Default value
           shield_status: (settingsData.is_enabled ? 'active' : 'inactive') as 'active' | 'inactive' | 'pending_verification',
         } as FamilyShieldSettings;
-        
+
         setSettings(mappedSettings);
         setFormData({
           inactivity_period_months: mappedSettings.inactivity_period_months,

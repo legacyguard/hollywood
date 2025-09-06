@@ -9,10 +9,10 @@ import { Input } from '@/components/ui/input';
 import { supabase } from '@/integrations/supabase/client';
 
 interface VaultAsset {
-  bundle?: {
+  bundle?: undefined | {
     category: string;
     name: string;
-  } | undefined;
+  };
   category: string;
   createdAt: string;
   description?: string;

@@ -29,7 +29,7 @@ export class MilestonesService {
     try {
       const milestones = await this.createMilestonesFromTemplates(userId);
 
-      // Map LegacyMilestone to database schema  
+      // Map LegacyMilestone to database schema
       const dbMilestones = milestones.map(milestone => ({
         id: milestone.id,
         user_id: userId,

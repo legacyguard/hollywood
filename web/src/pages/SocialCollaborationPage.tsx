@@ -31,8 +31,10 @@ import {
 import FamilyManagement from '@/components/social/FamilyManagement';
 import DocumentSharing from '@/components/social/DocumentSharing';
 import { cn } from '@/lib/utils';
+import { useTranslation } from 'react-i18next';
 
 export default function SocialCollaborationPage() {
+  const { t } = useTranslation('ui/social-collaboration-page');
   const [activeTab, setActiveTab] = useState('overview');
 
   // Mock data - in real implementation, this would come from services
@@ -50,16 +52,16 @@ export default function SocialCollaborationPage() {
         <div className='flex items-center justify-between'>
           <div>
             <h1 className='text-3xl font-bold tracking-tight'>
-              Family Collaboration
+              {t('header.title')}
             </h1>
             <p className='text-muted-foreground'>
-              Manage your family network and share important documents securely
+              {t('header.description')}
             </p>
           </div>
           <div className='flex items-center gap-2'>
             <Button variant='outline'>
               <Bell className='h-4 w-4 mr-2' />
-              Notifications
+              {t('buttons.notifications')}
               {stats.recentActivity > 0 && (
                 <Badge variant='destructive' className='ml-2'>
                   {stats.recentActivity}
@@ -68,7 +70,7 @@ export default function SocialCollaborationPage() {
             </Button>
             <Button variant='outline'>
               <Settings className='h-4 w-4 mr-2' />
-              Settings
+              {t('buttons.settings')}
             </Button>
           </div>
         </div>
@@ -80,11 +82,11 @@ export default function SocialCollaborationPage() {
           className='space-y-6'
         >
           <TabsList className='grid w-full grid-cols-5'>
-            <TabsTrigger value='overview'>Overview</TabsTrigger>
-            <TabsTrigger value='family'>Family</TabsTrigger>
-            <TabsTrigger value='sharing'>Sharing</TabsTrigger>
-            <TabsTrigger value='emergency'>Emergency</TabsTrigger>
-            <TabsTrigger value='activity'>Activity</TabsTrigger>
+            <TabsTrigger value='overview'>{t('tabs.overview')}</TabsTrigger>
+            <TabsTrigger value='family'>{t('tabs.family')}</TabsTrigger>
+            <TabsTrigger value='sharing'>{t('tabs.sharing')}</TabsTrigger>
+            <TabsTrigger value='emergency'>{t('tabs.emergency')}</TabsTrigger>
+            <TabsTrigger value='activity'>{t('tabs.activity')}</TabsTrigger>
           </TabsList>
 
           {/* Overview Tab */}
@@ -93,7 +95,7 @@ export default function SocialCollaborationPage() {
               <Card>
                 <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
                   <CardTitle className='text-sm font-medium'>
-                    Family Members
+                    {t('overview.stats.familyMembers.title')}
                   </CardTitle>
                   <Users className='h-4 w-4 text-muted-foreground' />
                 </CardHeader>
@@ -102,7 +104,7 @@ export default function SocialCollaborationPage() {
                     {stats.familyMembers}
                   </div>
                   <p className='text-xs text-muted-foreground'>
-                    {stats.pendingInvites} pending invites
+                    {t('overview.stats.familyMembers.pendingInvites', { count: stats.pendingInvites })}
                   </p>
                 </CardContent>
               </Card>
@@ -110,7 +112,7 @@ export default function SocialCollaborationPage() {
               <Card>
                 <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
                   <CardTitle className='text-sm font-medium'>
-                    Shared Documents
+                    {t('overview.stats.sharedDocuments.title')}
                   </CardTitle>
                   <Share2 className='h-4 w-4 text-muted-foreground' />
                 </CardHeader>
@@ -118,23 +120,23 @@ export default function SocialCollaborationPage() {
                   <div className='text-2xl font-bold'>
                     {stats.sharedDocuments}
                   </div>
-                  <p className='text-xs text-muted-foreground'>Active shares</p>
+                  <p className='text-xs text-muted-foreground'>{t('overview.stats.sharedDocuments.activeShares')}</p>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
                   <CardTitle className='text-sm font-medium'>
-                    Emergency Access
+                    {t('overview.stats.emergencyAccess.title')}
                   </CardTitle>
                   <Shield className='h-4 w-4 text-muted-foreground' />
                 </CardHeader>
                 <CardContent>
                   <div className='text-2xl font-bold text-green-600'>
-                    Active
+                    {t('overview.stats.emergencyAccess.status')}
                   </div>
                   <p className='text-xs text-muted-foreground'>
-                    3 emergency contacts
+                    {t('overview.stats.emergencyAccess.emergencyContacts', { count: 3 })}
                   </p>
                 </CardContent>
               </Card>
@@ -142,7 +144,7 @@ export default function SocialCollaborationPage() {
               <Card>
                 <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
                   <CardTitle className='text-sm font-medium'>
-                    Recent Activity
+                    {t('overview.stats.recentActivity.title')}
                   </CardTitle>
                   <Activity className='h-4 w-4 text-muted-foreground' />
                 </CardHeader>
@@ -151,7 +153,7 @@ export default function SocialCollaborationPage() {
                     {stats.recentActivity}
                   </div>
                   <p className='text-xs text-muted-foreground'>
-                    In the last 7 days
+                    {t('overview.stats.recentActivity.timeframe')}
                   </p>
                 </CardContent>
               </Card>
@@ -163,24 +165,24 @@ export default function SocialCollaborationPage() {
                 <CardHeader>
                   <CardTitle className='flex items-center gap-2'>
                     <Users className='h-5 w-5' />
-                    Quick Family Actions
+                    {t('overview.quickActions.title')}
                   </CardTitle>
                   <CardDescription>
-                    Common family management tasks
+                    {t('overview.quickActions.description')}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className='space-y-3'>
                   <Button variant='outline' className='w-full justify-start'>
                     <Users className='h-4 w-4 mr-2' />
-                    Invite New Family Member
+                    {t('overview.quickActions.inviteNewMember')}
                   </Button>
                   <Button variant='outline' className='w-full justify-start'>
                     <Share2 className='h-4 w-4 mr-2' />
-                    Share Important Documents
+                    {t('overview.quickActions.shareDocuments')}
                   </Button>
                   <Button variant='outline' className='w-full justify-start'>
                     <Shield className='h-4 w-4 mr-2' />
-                    Update Emergency Contacts
+                    {t('overview.quickActions.updateEmergencyContacts')}
                   </Button>
                 </CardContent>
               </Card>
@@ -189,10 +191,10 @@ export default function SocialCollaborationPage() {
                 <CardHeader>
                   <CardTitle className='flex items-center gap-2'>
                     <Heart className='h-5 w-5' />
-                    Family Insights
+                    {t('overview.familyInsights.title')}
                   </CardTitle>
                   <CardDescription>
-                    Recent collaboration highlights
+                    {t('overview.familyInsights.description')}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className='space-y-3'>
@@ -200,10 +202,10 @@ export default function SocialCollaborationPage() {
                     <div className='w-2 h-2 bg-green-500 rounded-full'></div>
                     <div className='flex-1'>
                       <p className='text-sm font-medium'>
-                        All family members active
+                        {t('overview.familyInsights.allMembersActive.title')}
                       </p>
                       <p className='text-xs text-muted-foreground'>
-                        Everyone has accessed shared documents recently
+                        {t('overview.familyInsights.allMembersActive.description')}
                       </p>
                     </div>
                   </div>
@@ -212,10 +214,10 @@ export default function SocialCollaborationPage() {
                     <div className='w-2 h-2 bg-blue-500 rounded-full'></div>
                     <div className='flex-1'>
                       <p className='text-sm font-medium'>
-                        5 new documents shared
+                        {t('overview.familyInsights.newDocumentsShared.title', { count: 5 })}
                       </p>
                       <p className='text-xs text-muted-foreground'>
-                        Family members added important files this week
+                        {t('overview.familyInsights.newDocumentsShared.description')}
                       </p>
                     </div>
                   </div>
@@ -224,10 +226,10 @@ export default function SocialCollaborationPage() {
                     <div className='w-2 h-2 bg-yellow-500 rounded-full'></div>
                     <div className='flex-1'>
                       <p className='text-sm font-medium'>
-                        Emergency protocol updated
+                        {t('overview.familyInsights.emergencyProtocolUpdated.title')}
                       </p>
                       <p className='text-xs text-muted-foreground'>
-                        Review new emergency access settings
+                        {t('overview.familyInsights.emergencyProtocolUpdated.description')}
                       </p>
                     </div>
                   </div>
@@ -240,41 +242,41 @@ export default function SocialCollaborationPage() {
               <CardHeader>
                 <CardTitle className='flex items-center gap-2'>
                   <Activity className='h-5 w-5' />
-                  Recent Family Activity
+                  {t('overview.recentActivityPreview.title')}
                 </CardTitle>
                 <CardDescription>
-                  Latest collaboration and sharing events
+                  {t('overview.recentActivityPreview.description')}
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className='space-y-4'>
                   {[
                     {
-                      action: 'shared a document',
-                      user: 'Sarah Johnson',
-                      target: 'Insurance Policy 2024',
-                      time: '2 hours ago',
+                      action: t('activityTypes.sharedDocument'),
+                      user: t('mockData.users.sarahJohnson'),
+                      target: t('mockData.documents.insurancePolicy2024'),
+                      time: t('mockData.timeframes.hoursAgo', { count: 2 }),
                       icon: Share2,
                     },
                     {
-                      action: 'joined the family',
-                      user: 'Michael Johnson',
-                      target: 'The Johnson Family',
-                      time: '1 day ago',
+                      action: t('activityTypes.joinedFamily'),
+                      user: t('mockData.users.michaelJohnson'),
+                      target: t('mockData.documents.theJohnsonFamily'),
+                      time: t('mockData.timeframes.daysAgo', { count: 1 }),
                       icon: Users,
                     },
                     {
-                      action: 'commented on',
-                      user: 'Emma Johnson',
-                      target: 'Will and Testament',
-                      time: '2 days ago',
+                      action: t('activityTypes.commentedOn'),
+                      user: t('mockData.users.emmaJohnson'),
+                      target: t('mockData.documents.willAndTestament'),
+                      time: t('mockData.timeframes.multipleDaysAgo', { count: 2 }),
                       icon: MessageCircle,
                     },
                     {
-                      action: 'updated emergency contact',
-                      user: 'David Johnson',
-                      target: 'Emergency Protocol',
-                      time: '3 days ago',
+                      action: t('activityTypes.updatedEmergencyContact'),
+                      user: t('mockData.users.davidJohnson'),
+                      target: t('mockData.documents.emergencyProtocol'),
+                      time: t('mockData.timeframes.multipleDaysAgo', { count: 3 }),
                       icon: Shield,
                     },
                   ].map((activity, index) => (
@@ -304,7 +306,7 @@ export default function SocialCollaborationPage() {
                     className='w-full'
                     onClick={() => setActiveTab('activity')}
                   >
-                    View All Activity
+                    {t('buttons.viewAllActivity')}
                   </Button>
                 </div>
               </CardContent>
@@ -339,44 +341,45 @@ export default function SocialCollaborationPage() {
 // Sub-components for different tabs
 
 function EmergencyAccessTab() {
+  const { t } = useTranslation('ui/social-collaboration-page');
+  
   return (
     <div className='space-y-6'>
       <Card>
         <CardHeader>
           <CardTitle className='flex items-center gap-2'>
             <Shield className='h-5 w-5' />
-            Emergency Access Management
+            {t('emergency.title')}
           </CardTitle>
           <CardDescription>
-            Configure emergency protocols and trusted contacts for critical
-            situations
+            {t('emergency.description')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
             <div className='space-y-4'>
-              <h3 className='text-lg font-semibold'>Emergency Contacts</h3>
+              <h3 className='text-lg font-semibold'>{t('emergency.contacts.title')}</h3>
 
               {[
                 {
-                  name: 'Sarah Johnson',
-                  relationship: 'Spouse',
+                  name: t('mockData.users.sarahJohnson'),
+                  relationship: t('emergency.contacts.relationships.spouse'),
                   phone: '+1 (555) 123-4567',
                   email: 'sarah@example.com',
                   priority: 1,
                   verified: true,
                 },
                 {
-                  name: 'Dr. Emily Roberts',
-                  relationship: 'Family Doctor',
+                  name: t('mockData.users.drEmilyRoberts'),
+                  relationship: t('emergency.contacts.relationships.familyDoctor'),
                   phone: '+1 (555) 987-6543',
                   email: 'emily@medicalpractice.com',
                   priority: 2,
                   verified: true,
                 },
                 {
-                  name: 'James Wilson',
-                  relationship: 'Attorney',
+                  name: t('mockData.users.jamesWilson'),
+                  relationship: t('emergency.contacts.relationships.attorney'),
                   phone: '+1 (555) 456-7890',
                   email: 'james@lawfirm.com',
                   priority: 3,
@@ -390,14 +393,14 @@ function EmergencyAccessTab() {
                         <div className='flex items-center gap-2'>
                           <h4 className='font-medium'>{contact.name}</h4>
                           <Badge variant='outline' className='text-xs'>
-                            Priority {contact.priority}
+                            {t('emergency.contacts.priority', { number: contact.priority })}
                           </Badge>
                           {contact.verified && (
                             <Badge
                               variant='default'
                               className='text-xs bg-green-100 text-green-800'
                             >
-                              Verified
+                              {t('emergency.contacts.verified')}
                             </Badge>
                           )}
                         </div>
@@ -423,48 +426,48 @@ function EmergencyAccessTab() {
 
               <Button variant='outline' className='w-full'>
                 <Users className='h-4 w-4 mr-2' />
-                Add Emergency Contact
+                {t('buttons.addEmergencyContact')}
               </Button>
             </div>
 
             <div className='space-y-4'>
-              <h3 className='text-lg font-semibold'>Emergency Protocols</h3>
+              <h3 className='text-lg font-semibold'>{t('emergency.protocols.title')}</h3>
 
               <Card>
                 <CardContent className='p-4'>
                   <div className='space-y-3'>
                     <div className='flex items-center justify-between'>
                       <span className='text-sm font-medium'>
-                        Inactivity Trigger
+                        {t('emergency.protocols.inactivityTrigger')}
                       </span>
-                      <Badge variant='outline'>30 days</Badge>
+                      <Badge variant='outline'>{t('emergency.protocols.values.thirtyDays')}</Badge>
                     </div>
                     <div className='flex items-center justify-between'>
                       <span className='text-sm font-medium'>
-                        Verification Required
+                        {t('emergency.protocols.verificationRequired')}
                       </span>
-                      <Badge variant='default'>Yes</Badge>
+                      <Badge variant='default'>{t('emergency.protocols.values.yes')}</Badge>
                     </div>
                     <div className='flex items-center justify-between'>
-                      <span className='text-sm font-medium'>Access Level</span>
-                      <Badge variant='outline'>Standard</Badge>
+                      <span className='text-sm font-medium'>{t('emergency.protocols.accessLevel')}</span>
+                      <Badge variant='outline'>{t('emergency.protocols.values.standard')}</Badge>
                     </div>
                     <div className='flex items-center justify-between'>
-                      <span className='text-sm font-medium'>Time Delay</span>
-                      <Badge variant='outline'>72 hours</Badge>
+                      <span className='text-sm font-medium'>{t('emergency.protocols.timeDelay')}</span>
+                      <Badge variant='outline'>{t('emergency.protocols.values.seventyTwoHours')}</Badge>
                     </div>
                   </div>
 
                   <div className='mt-4 pt-3 border-t'>
                     <p className='text-xs text-muted-foreground'>
-                      Last tested: Never
+                      {t('emergency.protocols.lastTested', { status: t('emergency.protocols.never') })}
                     </p>
                     <div className='flex gap-2 mt-2'>
                       <Button variant='outline' size='sm'>
-                        Edit Protocol
+                        {t('buttons.editProtocol')}
                       </Button>
                       <Button variant='outline' size='sm'>
-                        Test Protocol
+                        {t('buttons.testProtocol')}
                       </Button>
                     </div>
                   </div>
@@ -474,20 +477,20 @@ function EmergencyAccessTab() {
               <Card>
                 <CardHeader>
                   <CardTitle className='text-base'>
-                    Accessible Documents
+                    {t('emergency.accessibleDocuments.title')}
                   </CardTitle>
                   <CardDescription className='text-sm'>
-                    Documents available during emergency access
+                    {t('emergency.accessibleDocuments.description')}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className='space-y-2'>
                     {[
-                      'Legal Documents (5)',
-                      'Financial Records (8)',
-                      'Medical Information (3)',
-                      'Insurance Policies (4)',
-                      'Emergency Instructions (2)',
+                      t('emergency.accessibleDocuments.categories.legalDocuments', { count: 5 }),
+                      t('emergency.accessibleDocuments.categories.financialRecords', { count: 8 }),
+                      t('emergency.accessibleDocuments.categories.medicalInformation', { count: 3 }),
+                      t('emergency.accessibleDocuments.categories.insurancePolicies', { count: 4 }),
+                      t('emergency.accessibleDocuments.categories.emergencyInstructions', { count: 2 }),
                     ].map((category, index) => (
                       <div
                         key={index}
@@ -495,7 +498,7 @@ function EmergencyAccessTab() {
                       >
                         <span className='text-sm'>{category}</span>
                         <Badge variant='outline' className='text-xs'>
-                          Included
+                          {t('emergency.accessibleDocuments.included')}
                         </Badge>
                       </div>
                     ))}
@@ -511,13 +514,15 @@ function EmergencyAccessTab() {
 }
 
 function ActivityFeedTab() {
+  const { t } = useTranslation('ui/social-collaboration-page');
+  
   const activities = [
     {
       id: 1,
       type: 'document_shared',
-      user: 'Sarah Johnson',
-      action: 'shared',
-      target: 'Medical Records 2024',
+      user: t('mockData.users.sarahJohnson'),
+      action: t('activityTypes.shared'),
+      target: t('mockData.documents.medicalRecords2024'),
       targetType: 'document',
       timestamp: '2024-01-15T14:30:00Z',
       metadata: { recipients: 2, permissions: ['view', 'download'] },
@@ -525,19 +530,19 @@ function ActivityFeedTab() {
     {
       id: 2,
       type: 'member_joined',
-      user: 'Michael Johnson',
-      action: 'joined',
-      target: 'The Johnson Family',
+      user: t('mockData.users.michaelJohnson'),
+      action: t('activityTypes.joined'),
+      target: t('mockData.documents.theJohnsonFamily'),
       targetType: 'family',
       timestamp: '2024-01-14T09:15:00Z',
-      metadata: { role: 'member' },
+      metadata: { role: t('activityFeed.types.member') },
     },
     {
       id: 3,
       type: 'emergency_updated',
-      user: 'David Johnson',
-      action: 'updated',
-      target: 'Emergency Protocol',
+      user: t('mockData.users.davidJohnson'),
+      action: t('activityTypes.updated'),
+      target: t('mockData.documents.emergencyProtocol'),
       targetType: 'protocol',
       timestamp: '2024-01-13T16:45:00Z',
       metadata: { changes: ['contact_added', 'delay_updated'] },
@@ -545,22 +550,22 @@ function ActivityFeedTab() {
     {
       id: 4,
       type: 'document_accessed',
-      user: 'Emma Johnson',
-      action: 'accessed',
-      target: 'Will and Testament',
+      user: t('mockData.users.emmaJohnson'),
+      action: t('activityTypes.accessed'),
+      target: t('mockData.documents.willAndTestament'),
       targetType: 'document',
       timestamp: '2024-01-12T11:20:00Z',
-      metadata: { access_type: 'view' },
+      metadata: { access_type: t('activityFeed.types.view') },
     },
     {
       id: 5,
       type: 'member_invited',
-      user: 'Sarah Johnson',
-      action: 'invited',
+      user: t('mockData.users.sarahJohnson'),
+      action: t('activityTypes.invited'),
       target: 'alex@example.com',
       targetType: 'invitation',
       timestamp: '2024-01-11T13:00:00Z',
-      metadata: { role: 'guardian', relationship: 'friend' },
+      metadata: { role: t('activityFeed.types.guardian'), relationship: t('activityFeed.types.friend') },
     },
   ];
 
@@ -604,10 +609,10 @@ function ActivityFeedTab() {
         <CardHeader>
           <CardTitle className='flex items-center gap-2'>
             <Activity className='h-5 w-5' />
-            Complete Activity Feed
+            {t('activityFeed.title')}
           </CardTitle>
           <CardDescription>
-            Comprehensive log of all family collaboration activities
+            {t('activityFeed.description')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -638,15 +643,15 @@ function ActivityFeedTab() {
                         <span>•</span>
                         <span>
                           {activity.type === 'document_shared' &&
-                            `Shared with ${activity.metadata.recipients} member(s)`}
+                            t('activityFeed.metadata.sharedWith', { count: activity.metadata.recipients })}
                           {activity.type === 'member_joined' &&
-                            `Role: ${activity.metadata.role}`}
+                            t('activityFeed.metadata.role', { role: activity.metadata.role })}
                           {activity.type === 'emergency_updated' &&
-                            `${activity.metadata.changes?.length} changes made`}
+                            t('activityFeed.metadata.changesMade', { count: activity.metadata.changes?.length })}
                           {activity.type === 'document_accessed' &&
-                            `Access type: ${activity.metadata.access_type}`}
+                            t('activityFeed.metadata.accessType', { type: activity.metadata.access_type })}
                           {activity.type === 'member_invited' &&
-                            `${activity.metadata.relationship} - ${activity.metadata.role}`}
+                            t('activityFeed.metadata.relationshipRole', { relationship: activity.metadata.relationship, role: activity.metadata.role })}
                         </span>
                       </>
                     )}
@@ -661,7 +666,7 @@ function ActivityFeedTab() {
 
           <div className='mt-6 pt-4 border-t'>
             <Button variant='outline' className='w-full'>
-              Load More Activity
+              {t('buttons.loadMoreActivity')}
             </Button>
           </div>
         </CardContent>

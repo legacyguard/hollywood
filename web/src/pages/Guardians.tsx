@@ -326,10 +326,10 @@ export default function GuardiansEnhanced() {
   // Handle delete after confirmation
   // const __handleDeleteConfirm = async () => { // Unused
   // if (!guardianToDelete) return;
-  // 
+  //
   // setGuardians(prev => prev.filter(g => g.id !== guardianToDelete.id));
   // toast.success(`${guardianToDelete.name} has been removed as a guardian`);
-  // 
+  //
     // Close dialog and reset state
   // _setIsConfirmDialogOpen(false);
   // setGuardianToDelete(null);

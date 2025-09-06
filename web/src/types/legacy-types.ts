@@ -6,57 +6,57 @@ import type { Json } from './supabase';
 
 // Backward compatibility types
 export interface Will {
-  id: string;
-  userId: string;
-  title: string;
   content: string;
-  status: 'draft' | 'pending' | 'completed' | 'archived';
   createdAt: string;
-  updatedAt: string;
+  id: string;
   metadata?: Json;
+  status: 'archived' | 'completed' | 'draft' | 'pending';
+  title: string;
+  updatedAt: string;
+  userId: string;
 }
 
 export interface Trust {
-  id: string;
-  userId: string;
-  name: string;
-  type: string;
-  beneficiaries: Json;
   assets: Json;
-  status: 'draft' | 'pending' | 'completed' | 'archived';
+  beneficiaries: Json;
   createdAt: string;
-  updatedAt: string;
+  id: string;
   metadata?: Json;
+  name: string;
+  status: 'archived' | 'completed' | 'draft' | 'pending';
+  type: string;
+  updatedAt: string;
+  userId: string;
 }
 
 export interface DocumentForAnalysis {
-  id: string;
-  name: string;
-  type: string;
   category: string;
-  status: string;
   content: string;
-  metadata?: Json;
   createdAt: string;
+  id: string;
+  metadata?: Json;
+  name: string;
+  status: string;
+  type: string;
   updatedAt: string;
   userId: string;
 }
 
 export interface QuickInsight {
-  id: string;
-  userId: string;
-  documentId: string | null;
-  type: 'completion_gap' | 'document_analysis' | 'family_impact' | 'protection_level' | 'time_saved' | 'urgent_action';
-  title: string;
-  description: string;
-  priority: 'low' | 'medium' | 'high' | 'urgent';
-  impact: string;
+  actionable: boolean;
   actionText?: string;
   actionUrl?: string;
-  actionable: boolean;
   completed: boolean;
   createdAt: string;
-  updatedAt: string;
+  description: string;
+  documentId: null | string;
+  familyImpact?: {
+    affectedMembers: string[];
+    emotionalBenefit: string;
+    riskReduction: number;
+  };
+  id: string;
+  impact: string;
   metadata?: {
     calculatedAt: string;
     category: string;
@@ -64,129 +64,129 @@ export interface QuickInsight {
     expiresAt?: string;
     tags: string[];
   };
-  familyImpact?: {
-    affectedMembers: string[];
-    emotionalBenefit: string;
-    riskReduction: number;
-  };
+  priority: 'high' | 'low' | 'medium' | 'urgent';
+  title: string;
+  type: 'completion_gap' | 'document_analysis' | 'family_impact' | 'protection_level' | 'time_saved' | 'urgent_action';
+  updatedAt: string;
+  userId: string;
 }
 
 export interface LegacyMilestone {
-  id: string;
-  userId: string;
-  category: 'protection' | 'family' | 'professional' | 'foundation' | 'maintenance' | 'mastery';
-  title: string;
-  description: string;
-  criteria: {
-    type: string;
-    threshold: number;
-    currentValue: number;
-  };
-  progress: number;
-  status: 'not_started' | 'in_progress' | 'completed' | 'failed';
+  category: 'family' | 'foundation' | 'maintenance' | 'mastery' | 'professional' | 'protection';
   celebration: {
-    message: string;
     color: string;
     emotionalFraming: string;
+    message: string;
   };
   createdAt: string;
+  criteria: {
+    currentValue: number;
+    threshold: number;
+    type: string;
+  };
+  description: string;
+  id: string;
+  progress: number;
+  status: 'completed' | 'failed' | 'in_progress' | 'not_started';
+  title: string;
   updatedAt: string;
+  userId: string;
 }
 
 export interface ProfessionalReviewer {
-  id: string;
-  name: string;
-  email: string;
-  credentials: string;
-  specializations: string[];
-  jurisdiction: string;
-  hourlyRate: number;
-  rating: number;
-  reviewsCompleted: number;
   availabilityStatus: 'available' | 'busy' | 'unavailable';
+  createdAt: string;
+  credentials: string;
+  email: string;
+  hourlyRate: number;
+  id: string;
+  jurisdiction: string;
+  name: string;
   profile: {
-    verified: boolean;
     bio: string;
     photoUrl?: string;
+    verified: boolean;
   };
-  createdAt: string;
+  rating: number;
+  reviewsCompleted: number;
+  specializations: string[];
   updatedAt: string;
 }
 
 export interface ReviewRequest {
-  id: string;
-  userId: string;
+  createdAt: string;
   documentId: string;
+  dueDate?: string;
+  estimatedCost: number;
+  id: string;
+  notes?: string;
+  priority: 'high' | 'low' | 'medium' | 'urgent';
   professionalId: string;
   reviewType: 'basic' | 'certified' | 'comprehensive';
-  status: 'pending' | 'in_progress' | 'completed' | 'cancelled';
-  priority: 'low' | 'medium' | 'high' | 'urgent';
-  estimatedCost: number;
-  dueDate?: string;
-  notes?: string;
-  createdAt: string;
+  status: 'cancelled' | 'completed' | 'in_progress' | 'pending';
   updatedAt: string;
+  userId: string;
 }
 
 export interface DocumentReview {
-  id: string;
-  userId: string;
+  completionDate?: string;
+  complianceScore: number;
+  createdAt: string;
   documentId: string;
+  estimatedCost: number;
+  findings: Json;
+  id: string;
   professionalId: string;
+  recommendations: Json;
+  reviewDate: string;
   reviewType: 'basic' | 'certified' | 'comprehensive';
   score: number;
-  findings: Json;
-  recommendations: Json;
-  complianceScore: number;
-  urgencyLevel: 'low' | 'medium' | 'high' | 'urgent';
-  estimatedCost: number;
-  reviewDate: string;
-  completionDate?: string;
-  createdAt: string;
   updatedAt: string;
+  urgencyLevel: 'high' | 'low' | 'medium' | 'urgent';
+  userId: string;
 }
 
 export interface Consultation {
-  id: string;
-  userId: string;
-  professionalId: string;
-  consultationType: 'initial_consultation' | 'document_review' | 'estate_planning' | 'family_planning';
-  status: 'scheduled' | 'in_progress' | 'completed' | 'cancelled';
-  durationMinutes: number;
-  cost: number;
   consultationNotes?: string;
+  consultationType: 'document_review' | 'estate_planning' | 'family_planning' | 'initial_consultation';
+  cost: number;
   createdAt: string;
+  durationMinutes: number;
+  id: string;
+  professionalId: string;
+  status: 'cancelled' | 'completed' | 'in_progress' | 'scheduled';
   updatedAt: string;
+  userId: string;
 }
 
 export interface FamilyMember {
-  id: string;
-  userId: string;
-  name: string;
-  relationship: string;
   age: number;
-  role: string;
   contactInfo: Json;
   createdAt: string;
+  id: string;
+  name: string;
+  relationship: string;
+  role: string;
   updatedAt: string;
+  userId: string;
 }
 
 export interface ReviewFinding {
-  id: string;
-  type: string;
-  severity: 'low' | 'medium' | 'high' | 'critical';
   description: string;
-  recommendation: string;
+  id: string;
   location?: string;
+  recommendation: string;
+  severity: 'critical' | 'high' | 'low' | 'medium';
+  type: string;
 }
 
 export interface ReviewRecommendation {
-  id: string;
-  type: string;
-  priority: 'low' | 'medium' | 'high' | 'urgent';
   action: string;
   deadline?: string;
   estimatedCost?: number;
+  id: string;
+  priority: 'high' | 'low' | 'medium' | 'urgent';
+  type: string;
 }
 
 // Type conversion utilities
@@ -298,7 +298,7 @@ export function documentForAnalysisToLegacyItem(doc: DocumentForAnalysis): Legac
 }
 
 // Safe JSON utilities
-export function safeJsonParse<T>(json: string | null | undefined): T | null {
+export function safeJsonParse<T>(json: null | string | undefined): null | T {
   if (!json) return null;
   try {
     return JSON.parse(json) as T;
@@ -307,7 +307,7 @@ export function safeJsonParse<T>(json: string | null | undefined): T | null {
   }
 }
 
-export function safeJsonStringify(obj: any): string | null {
+export function safeJsonStringify(obj: any): null | string {
   try {
     return JSON.stringify(obj);
   } catch {
@@ -316,7 +316,7 @@ export function safeJsonStringify(obj: any): string | null {
 }
 
 // Safe date utilities
-export function safeDateParse(date: string | null | undefined): Date | null {
+export function safeDateParse(date: null | string | undefined): Date | null {
   if (!date) return null;
   const parsed = new Date(date);
   return isNaN(parsed.getTime()) ? null : parsed;

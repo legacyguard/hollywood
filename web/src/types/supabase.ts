@@ -1,17 +1,17 @@
 export type Json =
-  | string
-  | number
   | boolean
-  | null
-  | { [key: string]: Json | undefined }
   | Json[]
+  | null
+  | number
+  | string
+  | { [key: string]: Json | undefined }
 
 export type Database = {
   graphql_public: {
-    Tables: {
+    CompositeTypes: {
       [_ in never]: never
     }
-    Views: {
+    Enums: {
       [_ in never]: never
     }
     Functions: {
@@ -25,157 +25,18 @@ export type Database = {
         Returns: Json
       }
     }
-    Enums: {
+    Tables: {
       [_ in never]: never
     }
-    CompositeTypes: {
+    Views: {
       [_ in never]: never
     }
   }
   public: {
-    Tables: {
-      documents: {
-        Row: {
-          created_at: string | null
-          document_type: string | null
-          encrypted_at: string | null
-          expires_at: string | null
-          file_name: string
-          file_path: string
-          file_size: number | null
-          file_type: string | null
-          id: string
-          updated_at: string | null
-          user_id: string
-        }
-        Insert: {
-          created_at?: string | null
-          document_type?: string | null
-          encrypted_at?: string | null
-          expires_at?: string | null
-          file_name: string
-          file_path: string
-          file_size?: number | null
-          file_type?: string | null
-          id?: string
-          updated_at?: string | null
-          user_id: string
-        }
-        Update: {
-          created_at?: string | null
-          document_type?: string | null
-          encrypted_at?: string | null
-          expires_at?: string | null
-          file_name?: string
-          file_path?: string
-          file_size?: number | null
-          file_type?: string | null
-          id?: string
-          updated_at?: string | null
-          user_id?: string
-        }
-        Relationships: []
-      }
-      legacy_items: {
-        Row: {
-          category: string
-          created_at: string | null
-          description: string | null
-          due_date: string | null
-          file_urls: string[] | null
-          id: string
-          is_public: boolean | null
-          metadata: Json | null
-          priority: string | null
-          status: string
-          tags: string[] | null
-          title: string
-          updated_at: string | null
-          user_id: string
-        }
-        Insert: {
-          category: string
-          created_at?: string | null
-          description?: string | null
-          due_date?: string | null
-          file_urls?: string[] | null
-          id?: string
-          is_public?: boolean | null
-          metadata?: Json | null
-          priority?: string | null
-          status: string
-          tags?: string[] | null
-          title: string
-          updated_at?: string | null
-          user_id: string
-        }
-        Update: {
-          category?: string
-          created_at?: string | null
-          description?: string | null
-          due_date?: string | null
-          file_urls?: string[] | null
-          id?: string
-          is_public?: boolean | null
-          metadata?: Json | null
-          priority?: string | null
-          status?: string
-          tags?: string[] | null
-          title?: string
-          updated_at?: string | null
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "legacy_items_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      profiles: {
-        Row: {
-          avatar_url: string | null
-          created_at: string | null
-          date_of_birth: string | null
-          email: string | null
-          emergency_contacts: Json | null
-          full_name: string | null
-          id: string
-          phone: string | null
-          preferences: Json | null
-          updated_at: string | null
-        }
-        Insert: {
-          avatar_url?: string | null
-          created_at?: string | null
-          date_of_birth?: string | null
-          email?: string | null
-          emergency_contacts?: Json | null
-          full_name?: string | null
-          id: string
-          phone?: string | null
-          preferences?: Json | null
-          updated_at?: string | null
-        }
-        Update: {
-          avatar_url?: string | null
-          created_at?: string | null
-          date_of_birth?: string | null
-          email?: string | null
-          emergency_contacts?: Json | null
-          full_name?: string | null
-          id?: string
-          phone?: string | null
-          preferences?: Json | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
+    CompositeTypes: {
+      [_ in never]: never
     }
-    Views: {
+    Enums: {
       [_ in never]: never
     }
     Functions: {
@@ -184,368 +45,158 @@ export type Database = {
         Returns: string
       }
     }
-    Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
-  }
-  storage: {
     Tables: {
-      buckets: {
-        Row: {
-          allowed_mime_types: string[] | null
-          avif_autodetection: boolean | null
-          created_at: string | null
-          file_size_limit: number | null
-          id: string
-          name: string
-          owner: string | null
-          owner_id: string | null
-          public: boolean | null
-          type: Database["storage"]["Enums"]["buckettype"]
-          updated_at: string | null
-        }
+      documents: {
         Insert: {
-          allowed_mime_types?: string[] | null
-          avif_autodetection?: boolean | null
-          created_at?: string | null
-          file_size_limit?: number | null
-          id: string
-          name: string
-          owner?: string | null
-          owner_id?: string | null
-          public?: boolean | null
-          type?: Database["storage"]["Enums"]["buckettype"]
-          updated_at?: string | null
-        }
-        Update: {
-          allowed_mime_types?: string[] | null
-          avif_autodetection?: boolean | null
-          created_at?: string | null
-          file_size_limit?: number | null
+          created_at?: null | string
+          document_type?: null | string
+          encrypted_at?: null | string
+          expires_at?: null | string
+          file_name: string
+          file_path: string
+          file_size?: null | number
+          file_type?: null | string
           id?: string
-          name?: string
-          owner?: string | null
-          owner_id?: string | null
-          public?: boolean | null
-          type?: Database["storage"]["Enums"]["buckettype"]
-          updated_at?: string | null
+          updated_at?: null | string
+          user_id: string
         }
         Relationships: []
-      }
-      buckets_analytics: {
         Row: {
-          created_at: string
-          format: string
+          created_at: null | string
+          document_type: null | string
+          encrypted_at: null | string
+          expires_at: null | string
+          file_name: string
+          file_path: string
+          file_size: null | number
+          file_type: null | string
           id: string
-          type: Database["storage"]["Enums"]["buckettype"]
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          format?: string
-          id: string
-          type?: Database["storage"]["Enums"]["buckettype"]
-          updated_at?: string
+          updated_at: null | string
+          user_id: string
         }
         Update: {
-          created_at?: string
-          format?: string
+          created_at?: null | string
+          document_type?: null | string
+          encrypted_at?: null | string
+          expires_at?: null | string
+          file_name?: string
+          file_path?: string
+          file_size?: null | number
+          file_type?: null | string
           id?: string
-          type?: Database["storage"]["Enums"]["buckettype"]
-          updated_at?: string
+          updated_at?: null | string
+          user_id?: string
         }
-        Relationships: []
       }
-      iceberg_namespaces: {
-        Row: {
-          bucket_id: string
-          created_at: string
-          id: string
-          name: string
-          updated_at: string
-        }
+      legacy_items: {
         Insert: {
-          bucket_id: string
-          created_at?: string
+          category: string
+          created_at?: null | string
+          description?: null | string
+          due_date?: null | string
+          file_urls?: null | string[]
           id?: string
-          name: string
-          updated_at?: string
-        }
-        Update: {
-          bucket_id?: string
-          created_at?: string
-          id?: string
-          name?: string
-          updated_at?: string
+          is_public?: boolean | null
+          metadata?: Json | null
+          priority?: null | string
+          status: string
+          tags?: null | string[]
+          title: string
+          updated_at?: null | string
+          user_id: string
         }
         Relationships: [
           {
-            foreignKeyName: "iceberg_namespaces_bucket_id_fkey"
-            columns: ["bucket_id"]
+            columns: ["user_id"]
+            foreignKeyName: "legacy_items_user_id_fkey"
             isOneToOne: false
-            referencedRelation: "buckets_analytics"
             referencedColumns: ["id"]
+            referencedRelation: "profiles"
           },
         ]
-      }
-      iceberg_tables: {
         Row: {
-          bucket_id: string
-          created_at: string
+          category: string
+          created_at: null | string
+          description: null | string
+          due_date: null | string
+          file_urls: null | string[]
           id: string
-          location: string
-          name: string
-          namespace_id: string
-          updated_at: string
-        }
-        Insert: {
-          bucket_id: string
-          created_at?: string
-          id?: string
-          location: string
-          name: string
-          namespace_id: string
-          updated_at?: string
-        }
-        Update: {
-          bucket_id?: string
-          created_at?: string
-          id?: string
-          location?: string
-          name?: string
-          namespace_id?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "iceberg_tables_bucket_id_fkey"
-            columns: ["bucket_id"]
-            isOneToOne: false
-            referencedRelation: "buckets_analytics"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "iceberg_tables_namespace_id_fkey"
-            columns: ["namespace_id"]
-            isOneToOne: false
-            referencedRelation: "iceberg_namespaces"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      migrations: {
-        Row: {
-          executed_at: string | null
-          hash: string
-          id: number
-          name: string
-        }
-        Insert: {
-          executed_at?: string | null
-          hash: string
-          id: number
-          name: string
-        }
-        Update: {
-          executed_at?: string | null
-          hash?: string
-          id?: number
-          name?: string
-        }
-        Relationships: []
-      }
-      objects: {
-        Row: {
-          bucket_id: string | null
-          created_at: string | null
-          id: string
-          last_accessed_at: string | null
-          level: number | null
+          is_public: boolean | null
           metadata: Json | null
-          name: string | null
-          owner: string | null
-          owner_id: string | null
-          path_tokens: string[] | null
-          updated_at: string | null
-          user_metadata: Json | null
-          version: string | null
+          priority: null | string
+          status: string
+          tags: null | string[]
+          title: string
+          updated_at: null | string
+          user_id: string
         }
-        Insert: {
-          bucket_id?: string | null
-          created_at?: string | null
+        Update: {
+          category?: string
+          created_at?: null | string
+          description?: null | string
+          due_date?: null | string
+          file_urls?: null | string[]
           id?: string
-          last_accessed_at?: string | null
-          level?: number | null
+          is_public?: boolean | null
           metadata?: Json | null
-          name?: string | null
-          owner?: string | null
-          owner_id?: string | null
-          path_tokens?: string[] | null
-          updated_at?: string | null
-          user_metadata?: Json | null
-          version?: string | null
+          priority?: null | string
+          status?: string
+          tags?: null | string[]
+          title?: string
+          updated_at?: null | string
+          user_id?: string
         }
-        Update: {
-          bucket_id?: string | null
-          created_at?: string | null
-          id?: string
-          last_accessed_at?: string | null
-          level?: number | null
-          metadata?: Json | null
-          name?: string | null
-          owner?: string | null
-          owner_id?: string | null
-          path_tokens?: string[] | null
-          updated_at?: string | null
-          user_metadata?: Json | null
-          version?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "objects_bucketId_fkey"
-            columns: ["bucket_id"]
-            isOneToOne: false
-            referencedRelation: "buckets"
-            referencedColumns: ["id"]
-          },
-        ]
       }
-      prefixes: {
-        Row: {
-          bucket_id: string
-          created_at: string | null
-          level: number
-          name: string
-          updated_at: string | null
-        }
+      profiles: {
         Insert: {
-          bucket_id: string
-          created_at?: string | null
-          level?: number
-          name: string
-          updated_at?: string | null
-        }
-        Update: {
-          bucket_id?: string
-          created_at?: string | null
-          level?: number
-          name?: string
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "prefixes_bucketId_fkey"
-            columns: ["bucket_id"]
-            isOneToOne: false
-            referencedRelation: "buckets"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      s3_multipart_uploads: {
-        Row: {
-          bucket_id: string
-          created_at: string
+          avatar_url?: null | string
+          created_at?: null | string
+          date_of_birth?: null | string
+          email?: null | string
+          emergency_contacts?: Json | null
+          full_name?: null | string
           id: string
-          in_progress_size: number
-          key: string
-          owner_id: string | null
-          upload_signature: string
-          user_metadata: Json | null
-          version: string
+          phone?: null | string
+          preferences?: Json | null
+          updated_at?: null | string
         }
-        Insert: {
-          bucket_id: string
-          created_at?: string
-          id?: string
-          in_progress_size?: number
-          key: string
-          owner_id?: string | null
-          upload_signature: string
-          user_metadata?: Json | null
-          version: string
-        }
-        Update: {
-          bucket_id?: string
-          created_at?: string
-          id?: string
-          in_progress_size?: number
-          key?: string
-          owner_id?: string | null
-          upload_signature?: string
-          user_metadata?: Json | null
-          version?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "s3_multipart_uploads_bucket_id_fkey"
-            columns: ["bucket_id"]
-            isOneToOne: false
-            referencedRelation: "buckets"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      s3_multipart_uploads_parts: {
+        Relationships: []
         Row: {
-          bucket_id: string
-          created_at: string
-          etag: string
+          avatar_url: null | string
+          created_at: null | string
+          date_of_birth: null | string
+          email: null | string
+          emergency_contacts: Json | null
+          full_name: null | string
           id: string
-          key: string
-          owner_id: string | null
-          part_number: number
-          size: number
-          upload_id: string
-          version: string
-        }
-        Insert: {
-          bucket_id: string
-          created_at?: string
-          etag: string
-          id?: string
-          key: string
-          owner_id?: string | null
-          part_number: number
-          size?: number
-          upload_id: string
-          version: string
+          phone: null | string
+          preferences: Json | null
+          updated_at: null | string
         }
         Update: {
-          bucket_id?: string
-          created_at?: string
-          etag?: string
+          avatar_url?: null | string
+          created_at?: null | string
+          date_of_birth?: null | string
+          email?: null | string
+          emergency_contacts?: Json | null
+          full_name?: null | string
           id?: string
-          key?: string
-          owner_id?: string | null
-          part_number?: number
-          size?: number
-          upload_id?: string
-          version?: string
+          phone?: null | string
+          preferences?: Json | null
+          updated_at?: null | string
         }
-        Relationships: [
-          {
-            foreignKeyName: "s3_multipart_uploads_parts_bucket_id_fkey"
-            columns: ["bucket_id"]
-            isOneToOne: false
-            referencedRelation: "buckets"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "s3_multipart_uploads_parts_upload_id_fkey"
-            columns: ["upload_id"]
-            isOneToOne: false
-            referencedRelation: "s3_multipart_uploads"
-            referencedColumns: ["id"]
-          },
-        ]
       }
     }
     Views: {
       [_ in never]: never
+    }
+  }
+  storage: {
+    CompositeTypes: {
+      [_ in never]: never
+    }
+    Enums: {
+      buckettype: "ANALYTICS" | "STANDARD"
     }
     Functions: {
       add_prefixes: {
@@ -704,10 +355,359 @@ export type Database = {
         }[]
       }
     }
-    Enums: {
-      buckettype: "STANDARD" | "ANALYTICS"
+    Tables: {
+      buckets: {
+        Insert: {
+          allowed_mime_types?: null | string[]
+          avif_autodetection?: boolean | null
+          created_at?: null | string
+          file_size_limit?: null | number
+          id: string
+          name: string
+          owner?: null | string
+          owner_id?: null | string
+          public?: boolean | null
+          type?: Database["storage"]["Enums"]["buckettype"]
+          updated_at?: null | string
+        }
+        Relationships: []
+        Row: {
+          allowed_mime_types: null | string[]
+          avif_autodetection: boolean | null
+          created_at: null | string
+          file_size_limit: null | number
+          id: string
+          name: string
+          owner: null | string
+          owner_id: null | string
+          public: boolean | null
+          type: Database["storage"]["Enums"]["buckettype"]
+          updated_at: null | string
+        }
+        Update: {
+          allowed_mime_types?: null | string[]
+          avif_autodetection?: boolean | null
+          created_at?: null | string
+          file_size_limit?: null | number
+          id?: string
+          name?: string
+          owner?: null | string
+          owner_id?: null | string
+          public?: boolean | null
+          type?: Database["storage"]["Enums"]["buckettype"]
+          updated_at?: null | string
+        }
+      }
+      buckets_analytics: {
+        Insert: {
+          created_at?: string
+          format?: string
+          id: string
+          type?: Database["storage"]["Enums"]["buckettype"]
+          updated_at?: string
+        }
+        Relationships: []
+        Row: {
+          created_at: string
+          format: string
+          id: string
+          type: Database["storage"]["Enums"]["buckettype"]
+          updated_at: string
+        }
+        Update: {
+          created_at?: string
+          format?: string
+          id?: string
+          type?: Database["storage"]["Enums"]["buckettype"]
+          updated_at?: string
+        }
+      }
+      iceberg_namespaces: {
+        Insert: {
+          bucket_id: string
+          created_at?: string
+          id?: string
+          name: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            columns: ["bucket_id"]
+            foreignKeyName: "iceberg_namespaces_bucket_id_fkey"
+            isOneToOne: false
+            referencedColumns: ["id"]
+            referencedRelation: "buckets_analytics"
+          },
+        ]
+        Row: {
+          bucket_id: string
+          created_at: string
+          id: string
+          name: string
+          updated_at: string
+        }
+        Update: {
+          bucket_id?: string
+          created_at?: string
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+      }
+      iceberg_tables: {
+        Insert: {
+          bucket_id: string
+          created_at?: string
+          id?: string
+          location: string
+          name: string
+          namespace_id: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            columns: ["bucket_id"]
+            foreignKeyName: "iceberg_tables_bucket_id_fkey"
+            isOneToOne: false
+            referencedColumns: ["id"]
+            referencedRelation: "buckets_analytics"
+          },
+          {
+            columns: ["namespace_id"]
+            foreignKeyName: "iceberg_tables_namespace_id_fkey"
+            isOneToOne: false
+            referencedColumns: ["id"]
+            referencedRelation: "iceberg_namespaces"
+          },
+        ]
+        Row: {
+          bucket_id: string
+          created_at: string
+          id: string
+          location: string
+          name: string
+          namespace_id: string
+          updated_at: string
+        }
+        Update: {
+          bucket_id?: string
+          created_at?: string
+          id?: string
+          location?: string
+          name?: string
+          namespace_id?: string
+          updated_at?: string
+        }
+      }
+      migrations: {
+        Insert: {
+          executed_at?: null | string
+          hash: string
+          id: number
+          name: string
+        }
+        Relationships: []
+        Row: {
+          executed_at: null | string
+          hash: string
+          id: number
+          name: string
+        }
+        Update: {
+          executed_at?: null | string
+          hash?: string
+          id?: number
+          name?: string
+        }
+      }
+      objects: {
+        Insert: {
+          bucket_id?: null | string
+          created_at?: null | string
+          id?: string
+          last_accessed_at?: null | string
+          level?: null | number
+          metadata?: Json | null
+          name?: null | string
+          owner?: null | string
+          owner_id?: null | string
+          path_tokens?: null | string[]
+          updated_at?: null | string
+          user_metadata?: Json | null
+          version?: null | string
+        }
+        Relationships: [
+          {
+            columns: ["bucket_id"]
+            foreignKeyName: "objects_bucketId_fkey"
+            isOneToOne: false
+            referencedColumns: ["id"]
+            referencedRelation: "buckets"
+          },
+        ]
+        Row: {
+          bucket_id: null | string
+          created_at: null | string
+          id: string
+          last_accessed_at: null | string
+          level: null | number
+          metadata: Json | null
+          name: null | string
+          owner: null | string
+          owner_id: null | string
+          path_tokens: null | string[]
+          updated_at: null | string
+          user_metadata: Json | null
+          version: null | string
+        }
+        Update: {
+          bucket_id?: null | string
+          created_at?: null | string
+          id?: string
+          last_accessed_at?: null | string
+          level?: null | number
+          metadata?: Json | null
+          name?: null | string
+          owner?: null | string
+          owner_id?: null | string
+          path_tokens?: null | string[]
+          updated_at?: null | string
+          user_metadata?: Json | null
+          version?: null | string
+        }
+      }
+      prefixes: {
+        Insert: {
+          bucket_id: string
+          created_at?: null | string
+          level?: number
+          name: string
+          updated_at?: null | string
+        }
+        Relationships: [
+          {
+            columns: ["bucket_id"]
+            foreignKeyName: "prefixes_bucketId_fkey"
+            isOneToOne: false
+            referencedColumns: ["id"]
+            referencedRelation: "buckets"
+          },
+        ]
+        Row: {
+          bucket_id: string
+          created_at: null | string
+          level: number
+          name: string
+          updated_at: null | string
+        }
+        Update: {
+          bucket_id?: string
+          created_at?: null | string
+          level?: number
+          name?: string
+          updated_at?: null | string
+        }
+      }
+      s3_multipart_uploads: {
+        Insert: {
+          bucket_id: string
+          created_at?: string
+          id?: string
+          in_progress_size?: number
+          key: string
+          owner_id?: null | string
+          upload_signature: string
+          user_metadata?: Json | null
+          version: string
+        }
+        Relationships: [
+          {
+            columns: ["bucket_id"]
+            foreignKeyName: "s3_multipart_uploads_bucket_id_fkey"
+            isOneToOne: false
+            referencedColumns: ["id"]
+            referencedRelation: "buckets"
+          },
+        ]
+        Row: {
+          bucket_id: string
+          created_at: string
+          id: string
+          in_progress_size: number
+          key: string
+          owner_id: null | string
+          upload_signature: string
+          user_metadata: Json | null
+          version: string
+        }
+        Update: {
+          bucket_id?: string
+          created_at?: string
+          id?: string
+          in_progress_size?: number
+          key?: string
+          owner_id?: null | string
+          upload_signature?: string
+          user_metadata?: Json | null
+          version?: string
+        }
+      }
+      s3_multipart_uploads_parts: {
+        Insert: {
+          bucket_id: string
+          created_at?: string
+          etag: string
+          id?: string
+          key: string
+          owner_id?: null | string
+          part_number: number
+          size?: number
+          upload_id: string
+          version: string
+        }
+        Relationships: [
+          {
+            columns: ["bucket_id"]
+            foreignKeyName: "s3_multipart_uploads_parts_bucket_id_fkey"
+            isOneToOne: false
+            referencedColumns: ["id"]
+            referencedRelation: "buckets"
+          },
+          {
+            columns: ["upload_id"]
+            foreignKeyName: "s3_multipart_uploads_parts_upload_id_fkey"
+            isOneToOne: false
+            referencedColumns: ["id"]
+            referencedRelation: "s3_multipart_uploads"
+          },
+        ]
+        Row: {
+          bucket_id: string
+          created_at: string
+          etag: string
+          id: string
+          key: string
+          owner_id: null | string
+          part_number: number
+          size: number
+          upload_id: string
+          version: string
+        }
+        Update: {
+          bucket_id?: string
+          created_at?: string
+          etag?: string
+          id?: string
+          key?: string
+          owner_id?: null | string
+          part_number?: number
+          size?: number
+          upload_id?: string
+          version?: string
+        }
+      }
     }
-    CompositeTypes: {
+    Views: {
       [_ in never]: never
     }
   }

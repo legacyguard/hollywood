@@ -1,6 +1,7 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { useAuth, useUser } from '@clerk/clerk-react';
+import { useTranslation } from 'react-i18next';
 import type { WillType } from './WillTypeSelector';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -41,49 +42,11 @@ interface EnhancedWillWizardWithValidationProps {
   willType: WillType;
 }
 
-const STEPS = [
-  { id: 'personal', title: 'Personal Info', description: 'Your details' },
-  { id: 'beneficiaries', title: 'Beneficiaries', description: 'Who inherits' },
-  { id: 'assets', title: 'Assets', description: 'What you own' },
-  { id: 'executor', title: 'Executor', description: 'Who manages' },
-  {
-    id: 'guardianship',
-    title: 'Guardianship',
-    description: 'For minor children',
-  },
-  { id: 'wishes', title: 'Final Wishes', description: 'Special instructions' },
-  {
-    id: 'legal_validation',
-    title: 'Legal Review',
-    description: 'Compliance check',
-  },
-  { id: 'sofia_check', title: "Sofia's Check", description: 'AI review' },
-  { id: 'review', title: 'Final Review', description: 'Confirm and generate' },
-];
+// Steps will be dynamically translated using t() function
 
-const JURISDICTIONS = [
-  { value: 'Slovakia', label: 'Slovakia' },
-  { value: 'Czech-Republic', label: 'Czech Republic' },
-  { value: 'US-General', label: 'United States (General)' },
-  { value: 'US-California', label: 'California, USA' },
-  { value: 'US-Texas', label: 'Texas, USA' },
-  { value: 'US-Florida', label: 'Florida, USA' },
-  { value: 'US-NewYork', label: 'New York, USA' },
-  { value: 'UK', label: 'United Kingdom' },
-  { value: 'Canada', label: 'Canada' },
-  { value: 'Australia', label: 'Australia' },
-];
+// Jurisdictions will be dynamically translated using t() function
 
-const RELATIONSHIPS = [
-  { value: 'spouse', label: 'Spouse/Partner' },
-  { value: 'child', label: 'Child' },
-  { value: 'parent', label: 'Parent' },
-  { value: 'sibling', label: 'Sibling' },
-  { value: 'grandchild', label: 'Grandchild' },
-  { value: 'friend', label: 'Friend' },
-  { value: 'charity', label: 'Charity/Organization' },
-  { value: 'other', label: 'Other' },
-];
+// Relationships will be dynamically translated using t() function
 
 export const EnhancedWillWizardWithValidation: React.FC<
   EnhancedWillWizardWithValidationProps
@@ -91,6 +54,45 @@ export const EnhancedWillWizardWithValidation: React.FC<
   useAuth();
   const { user } = useUser();
   const { isFocusMode } = useFocusMode();
+  const { t } = useTranslation('ui/will-wizard');
+
+  // Dynamic translated arrays
+  const STEPS = [
+    { id: 'personal', title: t('steps.personal.title'), description: t('steps.personal.description') },
+    { id: 'beneficiaries', title: t('steps.beneficiaries.title'), description: t('steps.beneficiaries.description') },
+    { id: 'assets', title: t('steps.assets.title'), description: t('steps.assets.description') },
+    { id: 'executor', title: t('steps.executor.title'), description: t('steps.executor.description') },
+    { id: 'guardianship', title: t('steps.guardianship.title'), description: t('steps.guardianship.description') },
+    { id: 'wishes', title: t('steps.wishes.title'), description: t('steps.wishes.description') },
+    { id: 'legal_validation', title: t('steps.legal_validation.title'), description: t('steps.legal_validation.description') },
+    { id: 'sofia_check', title: t('steps.sofia_check.title'), description: t('steps.sofia_check.description') },
+    { id: 'review', title: t('steps.review.title'), description: t('steps.review.description') },
+  ];
+
+  const JURISDICTIONS = [
+    { value: 'Slovakia', label: t('jurisdictions.Slovakia') },
+    { value: 'Czech-Republic', label: t('jurisdictions.Czech-Republic') },
+    { value: 'US-General', label: t('jurisdictions.US-General') },
+    { value: 'US-California', label: t('jurisdictions.US-California') },
+    { value: 'US-Texas', label: t('jurisdictions.US-Texas') },
+    { value: 'US-Florida', label: t('jurisdictions.US-Florida') },
+    { value: 'US-NewYork', label: t('jurisdictions.US-NewYork') },
+    { value: 'UK', label: t('jurisdictions.UK') },
+    { value: 'Canada', label: t('jurisdictions.Canada') },
+    { value: 'Australia', label: t('jurisdictions.Australia') },
+  ];
+
+  const RELATIONSHIPS = [
+    { value: 'spouse', label: t('relationships.spouse') },
+    { value: 'child', label: t('relationships.child') },
+    { value: 'parent', label: t('relationships.parent') },
+    { value: 'sibling', label: t('relationships.sibling') },
+    { value: 'grandchild', label: t('relationships.grandchild') },
+    { value: 'friend', label: t('relationships.friend') },
+    { value: 'charity', label: t('relationships.charity') },
+    { value: 'other', label: t('relationships.other') },
+  ];
+
   const [currentStep, setCurrentStep] = useState(0);
   const [showVaultSelector, setShowVaultSelector] = useState(false);
   const [vaultSelectorType] = useState<
@@ -156,9 +158,7 @@ export const EnhancedWillWizardWithValidation: React.FC<
 
   const handleComplete = useCallback(() => {
     if (!isWillValid) {
-      toast.error(
-        'Please resolve all legal compliance issues before creating your will'
-      );
+      toast.error(t('validation.resolveErrors'));
       return;
     }
     onComplete(willData);
@@ -172,7 +172,7 @@ export const EnhancedWillWizardWithValidation: React.FC<
     );
 
     if (currentStepHasErrors && currentStep < STEPS.length - 1) {
-      toast.warning('Please resolve validation errors before proceeding');
+      toast.warning(t('validation.resolveStepErrors'));
       return;
     }
 
@@ -243,7 +243,7 @@ export const EnhancedWillWizardWithValidation: React.FC<
                 validation={getFieldValidation('testator_data.fullName')}
               >
                 <div>
-                  <Label htmlFor='fullName'>Full Name</Label>
+                  <Label htmlFor='fullName'>{t('personal.fullName.label')}</Label>
                   <Input
                     id='fullName'
                     value={willData.testator_data.fullName || ''}
@@ -252,7 +252,7 @@ export const EnhancedWillWizardWithValidation: React.FC<
                         fullName: e.target.value,
                       })
                     }
-                    placeholder='Enter your full legal name'
+                    placeholder={t('personal.fullName.placeholder')}
                     className={
                       hasFieldError('testator_data.fullName')
                         ? 'border-red-300'
@@ -269,7 +269,7 @@ export const EnhancedWillWizardWithValidation: React.FC<
                 validation={getFieldValidation('testator_data.dateOfBirth')}
               >
                 <div>
-                  <Label htmlFor='dateOfBirth'>Date of Birth</Label>
+                  <Label htmlFor='dateOfBirth'>{t('personal.dateOfBirth.label')}</Label>
                   <Input
                     id='dateOfBirth'
                     type='date'
@@ -294,14 +294,14 @@ export const EnhancedWillWizardWithValidation: React.FC<
               validation={getFieldValidation('testator_data.address')}
             >
               <div>
-                <Label htmlFor='address'>Address</Label>
+                <Label htmlFor='address'>{t('personal.address.label')}</Label>
                 <Textarea
                   id='address'
                   value={willData.testator_data.address || ''}
                   onChange={e =>
                     updateWillData('testator_data', { address: e.target.value })
                   }
-                  placeholder='Enter your full address'
+                  placeholder={t('personal.address.placeholder')}
                   rows={3}
                   className={
                     hasFieldError('testator_data.address')
@@ -314,7 +314,7 @@ export const EnhancedWillWizardWithValidation: React.FC<
 
             <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
               <div>
-                <Label htmlFor='citizenship'>Citizenship</Label>
+                <Label htmlFor='citizenship'>{t('personal.citizenship.label')}</Label>
                 <Input
                   id='citizenship'
                   value={willData.testator_data.citizenship || ''}
@@ -323,12 +323,12 @@ export const EnhancedWillWizardWithValidation: React.FC<
                       citizenship: e.target.value,
                     })
                   }
-                  placeholder='e.g., Slovak, Czech, American'
+                  placeholder={t('personal.citizenship.placeholder')}
                 />
               </div>
 
               <div>
-                <Label htmlFor='jurisdiction'>Legal Jurisdiction</Label>
+                <Label htmlFor='jurisdiction'>{t('personal.jurisdiction.label')}</Label>
                 <Select
                   value={willData.legal_data?.jurisdiction || 'Slovakia'}
                   onValueChange={value =>
@@ -336,7 +336,7 @@ export const EnhancedWillWizardWithValidation: React.FC<
                   }
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder='Select jurisdiction' />
+                    <SelectValue placeholder={t('personal.jurisdiction.placeholder')} />
                   </SelectTrigger>
                   <SelectContent>
                     {JURISDICTIONS.map(jurisdiction => (
@@ -353,7 +353,7 @@ export const EnhancedWillWizardWithValidation: React.FC<
             </div>
 
             <div>
-              <Label htmlFor='maritalStatus'>Marital Status</Label>
+              <Label htmlFor='maritalStatus'>{t('personal.maritalStatus.label')}</Label>
               <Select
                 value={willData.testator_data.maritalStatus}
                 onValueChange={value =>
@@ -367,13 +367,13 @@ export const EnhancedWillWizardWithValidation: React.FC<
                 }
               >
                 <SelectTrigger>
-                  <SelectValue placeholder='Select status' />
+                  <SelectValue placeholder={t('personal.maritalStatus.placeholder')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value='single'>Single</SelectItem>
-                  <SelectItem value='married'>Married</SelectItem>
-                  <SelectItem value='divorced'>Divorced</SelectItem>
-                  <SelectItem value='widowed'>Widowed</SelectItem>
+                  <SelectItem value='single'>{t('personal.maritalStatus.single')}</SelectItem>
+                  <SelectItem value='married'>{t('personal.maritalStatus.married')}</SelectItem>
+                  <SelectItem value='divorced'>{t('personal.maritalStatus.divorced')}</SelectItem>
+                  <SelectItem value='widowed'>{t('personal.maritalStatus.widowed')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -385,7 +385,7 @@ export const EnhancedWillWizardWithValidation: React.FC<
           <div className='space-y-6'>
             <div className='flex items-center justify-between'>
               <h3 className='text-lg font-semibold flex items-center gap-2'>
-                Your Beneficiaries
+                {t('beneficiaries.title')}
                 {getFieldValidation('beneficiaries') && (
                   <ValidationIndicator
                     validation={getFieldValidation('beneficiaries')!}
@@ -394,7 +394,7 @@ export const EnhancedWillWizardWithValidation: React.FC<
               </h3>
               <Button onClick={addBeneficiary} variant='outline' size='sm'>
                 <Icon name={'add' as any} className='w-4 h-4 mr-2' />
-                Add Beneficiary
+                {t('beneficiaries.addBeneficiary')}
               </Button>
             </div>
 
@@ -419,10 +419,10 @@ export const EnhancedWillWizardWithValidation: React.FC<
                   className='w-12 h-12 text-muted-foreground mx-auto mb-4'
                 />
                 <p className='text-muted-foreground'>
-                  No beneficiaries added yet
+                  {t('beneficiaries.noBeneficiaries')}
                 </p>
                 <p className='text-sm text-muted-foreground mt-2'>
-                  Click "Add Beneficiary" to start
+                  {t('beneficiaries.clickToStart')}
                 </p>
               </Card>
             ) : (
@@ -432,7 +432,7 @@ export const EnhancedWillWizardWithValidation: React.FC<
                     <div className='flex items-center justify-between mb-4'>
                       <div className='flex items-center gap-2'>
                         <Badge variant='secondary'>
-                          Beneficiary {index + 1}
+                          {t('beneficiaries.beneficiaryNumber', { number: index + 1 })}
                         </Badge>
                         {hasFieldError(`beneficiaries[${index}]`) && (
                           <ValidationIndicator
@@ -453,7 +453,7 @@ export const EnhancedWillWizardWithValidation: React.FC<
                     </div>
                     <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
                       <div>
-                        <Label>Name</Label>
+                        <Label>{t('beneficiaries.fields.name.label')}</Label>
                         <Input
                           value={beneficiary.name}
                           onChange={e =>
@@ -463,11 +463,11 @@ export const EnhancedWillWizardWithValidation: React.FC<
                               e.target.value
                             )
                           }
-                          placeholder='Beneficiary name'
+                          placeholder={t('beneficiaries.fields.name.placeholder')}
                         />
                       </div>
                       <div>
-                        <Label>Relationship</Label>
+                        <Label>{t('beneficiaries.fields.relationship.label')}</Label>
                         <Select
                           value={beneficiary.relationship}
                           onValueChange={value =>
@@ -491,7 +491,7 @@ export const EnhancedWillWizardWithValidation: React.FC<
                         </Select>
                       </div>
                       <div>
-                        <Label>Inheritance Percentage</Label>
+                        <Label>{t('beneficiaries.fields.percentage.label')}</Label>
                         <Input
                           type='number'
                           min='0'
@@ -504,12 +504,12 @@ export const EnhancedWillWizardWithValidation: React.FC<
                               parseInt(e.target.value) || 0
                             )
                           }
-                          placeholder='0'
+                          placeholder={t('beneficiaries.fields.percentage.placeholder')}
                         />
                       </div>
                     </div>
                     <div className='mt-4'>
-                      <Label>Special Conditions (Optional)</Label>
+                      <Label>{t('beneficiaries.fields.conditions.label')}</Label>
                       <Input
                         value={beneficiary.conditions || ''}
                         onChange={e =>
@@ -519,7 +519,7 @@ export const EnhancedWillWizardWithValidation: React.FC<
                             e.target.value
                           )
                         }
-                        placeholder='e.g., if surviving, if over 18 years old'
+                        placeholder={t('beneficiaries.fields.conditions.placeholder')}
                       />
                     </div>
                   </Card>
@@ -536,7 +536,7 @@ export const EnhancedWillWizardWithValidation: React.FC<
                 />
                 <div>
                   <h4 className='font-semibold text-blue-900 mb-2'>
-                    Legal Guidance for {willData.legal_data?.jurisdiction}
+                    {t('beneficiaries.guidance.title', { jurisdiction: willData.legal_data?.jurisdiction })}
                   </h4>
                   <p className='text-sm text-blue-800'>
                     {getJurisdictionGuidance().forcedHeirs}
@@ -556,11 +556,10 @@ export const EnhancedWillWizardWithValidation: React.FC<
                 className='w-12 h-12 text-primary mx-auto mb-4'
               />
               <h3 className='text-2xl font-semibold mb-2'>
-                Legal Compliance Review
+                {t('legalValidation.title')}
               </h3>
               <p className='text-muted-foreground'>
-                Your will is being checked against{' '}
-                {willData.legal_data?.jurisdiction || 'Slovak'} law
+                {t('legalValidation.description', { jurisdiction: willData.legal_data?.jurisdiction || 'Slovak' })}
               </p>
             </div>
 
@@ -604,29 +603,29 @@ export const EnhancedWillWizardWithValidation: React.FC<
             <Card className='p-6'>
               <h4 className='font-semibold mb-4 flex items-center gap-2'>
                 <Icon name={'book' as any} className='w-5 h-5' />
-                Legal Requirements for {willData.legal_data?.jurisdiction}
+                {t('legalValidation.requirements.title', { jurisdiction: willData.legal_data?.jurisdiction })}
               </h4>
               <div className='grid grid-cols-1 md:grid-cols-2 gap-4 text-sm'>
                 <div>
-                  <h5 className='font-medium mb-2'>Forced Heirs Protection</h5>
+                  <h5 className='font-medium mb-2'>{t('legalValidation.requirements.forcedHeirs.title')}</h5>
                   <p className='text-muted-foreground'>
                     {getJurisdictionGuidance().forcedHeirs}
                   </p>
                 </div>
                 <div>
-                  <h5 className='font-medium mb-2'>Witness Requirements</h5>
+                  <h5 className='font-medium mb-2'>{t('legalValidation.requirements.witnesses.title')}</h5>
                   <p className='text-muted-foreground'>
                     {getJurisdictionGuidance().witnesses}
                   </p>
                 </div>
                 <div>
-                  <h5 className='font-medium mb-2'>Will Revocation</h5>
+                  <h5 className='font-medium mb-2'>{t('legalValidation.requirements.revocation.title')}</h5>
                   <p className='text-muted-foreground'>
                     {getJurisdictionGuidance().revocation}
                   </p>
                 </div>
                 <div>
-                  <h5 className='font-medium mb-2'>Notarization</h5>
+                  <h5 className='font-medium mb-2'>{t('legalValidation.requirements.notarization.title')}</h5>
                   <p className='text-muted-foreground'>
                     {getJurisdictionGuidance().notarization}
                   </p>
@@ -639,7 +638,7 @@ export const EnhancedWillWizardWithValidation: React.FC<
       // ... other step cases would be implemented similarly with validation integration
 
       default:
-        return <div>Step not implemented</div>;
+        return <div>{t('common.notImplemented')}</div>;
     }
   };
 
@@ -788,13 +787,13 @@ export const EnhancedWillWizardWithValidation: React.FC<
                 disabled={currentStep === 0 && !onBack}
               >
                 <Icon name={'arrow-left' as any} className='w-4 h-4 mr-2' />
-                {currentStep === 0 ? 'Change Will Type' : 'Back'}
+                {currentStep === 0 ? t('navigation.changeWillType') : t('navigation.back')}
               </Button>
 
               <div className='flex items-center gap-4'>
                 {!isFocusMode && (
                   <div className='text-sm text-muted-foreground'>
-                    Step {currentStep + 1} of {STEPS.length}
+                    {t('navigation.stepIndicator', { current: currentStep + 1, total: STEPS.length })}
                   </div>
                 )}
                 <Button
@@ -806,8 +805,8 @@ export const EnhancedWillWizardWithValidation: React.FC<
                   }
                 >
                   {currentStep === STEPS.length - 1
-                    ? 'Create Will'
-                    : 'Continue'}
+                    ? t('navigation.createWill')
+                    : t('navigation.continue')}
                   {currentStep !== STEPS.length - 1 && (
                     <Icon
                       name={'arrow-right' as any}

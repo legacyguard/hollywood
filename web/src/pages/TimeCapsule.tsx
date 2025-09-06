@@ -65,10 +65,10 @@ export default function TimeCapsulePage() {
         file_type: ((capsule as any).file_type || 'video') as 'audio' | 'video',
         recipient_email: (capsule as any).recipient_email || '',
         recipient_name: (capsule as any).recipient_name || '',
-        status: (capsule.is_delivered ? 'DELIVERED' : 'PENDING') as 'PENDING' | 'DELIVERED' | 'CANCELLED' | 'FAILED',
+        status: (capsule.is_delivered ? 'DELIVERED' : 'PENDING') as 'CANCELLED' | 'DELIVERED' | 'FAILED' | 'PENDING',
         storage_path: (capsule as any).storage_path || '',
       }));
-      
+
       const mappedGuardians = (guardiansData || []).map(guardian => ({
         ...guardian,
         can_access_financial_docs: (guardian as any).can_access_financial_docs ?? false,
@@ -78,7 +78,7 @@ export default function TimeCapsulePage() {
         is_will_executor: (guardian as any).is_will_executor ?? false,
         emergency_contact_priority: guardian.emergency_contact_priority ?? 1,
       }));
-      
+
       setTimeCapsules(mappedCapsules as TimeCapsule[]);
       setGuardians(mappedGuardians as Guardian[]);
 
@@ -162,7 +162,7 @@ export default function TimeCapsulePage() {
   // Handle capsule deletion
   const handleDeleteCapsule = async (capsuleId: string) => {
     if (!userId) return;
-    
+
     try {
       const supabase = await createSupabaseClient();
 

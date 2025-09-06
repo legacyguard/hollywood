@@ -5,6 +5,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '@clerk/clerk-react';
+import { useTranslation } from 'react-i18next';
 import { usePersonalityManager } from '@/components/sofia/SofiaContextProvider';
 import { AnimationSystem } from '@/lib/animation-system';
 import { useSupabaseWithClerk } from '@/integrations/supabase/client';
@@ -109,6 +110,7 @@ export const GuardianNotificationCenter: React.FC<
   // _onNotificationRead, // Not used
   // _onEmergencyTriggered, // Not used
 }) => {
+  const { t } = useTranslation('ui/guardian-notifications');
   const { userId } = useAuth();
   const createSupabaseClient = useSupabaseWithClerk();
   const personalityManager = usePersonalityManager();
@@ -144,108 +146,108 @@ export const GuardianNotificationCenter: React.FC<
     () => [
       {
         id: 'wellness_check',
-        name: 'Wellness Check',
+        name: t('templates.wellnessCheck.name'),
         type: 'status_update',
-        title_template: 'Wellness Check Request',
+        title_template: t('templates.wellnessCheck.title.adaptive'),
         message_template:
-          'A wellness check has been requested. Please respond when you can.',
+          t('templates.wellnessCheck.message.adaptive'),
         priority: 'medium',
         delivery_method: 'email',
         personality_variants: {
           empathetic: {
-            title: '💚 Gentle Check-In Request',
+            title: t('templates.wellnessCheck.title.empathetic'),
             message:
-              "Hello dear friend! I hope this finds you well. Could you please let me know you're okay? Your caring presence means so much to our family. No rush - just when you have a moment to share that you're safe and sound. With love and gratitude. 💚",
+              t('templates.wellnessCheck.message.empathetic'),
           },
           pragmatic: {
-            title: '🛡️ System Status Verification',
+            title: t('templates.wellnessCheck.title.pragmatic'),
             message:
-              'Wellness verification request initiated. Please confirm your status at your earliest convenience. This is part of our family protection protocol. Response required within 48 hours for system continuity.',
+              t('templates.wellnessCheck.message.pragmatic'),
           },
           adaptive: {
-            title: '🤝 Wellness Check Request',
+            title: t('templates.wellnessCheck.title.adaptive'),
             message:
-              "Hope you're doing well! We'd appreciate a quick check-in to let us know you're okay. This helps us keep our family protection network strong and connected. Thanks for being such an important part of our support system!",
+              t('templates.wellnessCheck.message.adaptive'),
           },
         },
       },
       {
         id: 'emergency_alert',
-        name: 'Emergency Alert',
+        name: t('templates.emergencyAlert.name'),
         type: 'activation_request',
-        title_template: 'Emergency Activation Request',
+        title_template: t('templates.emergencyAlert.title.adaptive'),
         message_template:
-          'Emergency protocols may need activation. Your immediate attention is required.',
+          t('templates.emergencyAlert.message.adaptive'),
         priority: 'urgent',
         delivery_method: 'all',
         personality_variants: {
           empathetic: {
-            title: '💔 Urgent Family Care Needed',
+            title: t('templates.emergencyAlert.title.empathetic'),
             message:
-              'My dear friend, I need your help. Something may have happened and our family needs the loving support of our trusted circle. Please respond as soon as you can - your caring heart and quick action could make all the difference right now. Thank you for being someone we can count on. 🙏',
+              t('templates.emergencyAlert.message.empathetic'),
           },
           pragmatic: {
-            title: '🚨 EMERGENCY PROTOCOL ACTIVATION',
+            title: t('templates.emergencyAlert.title.pragmatic'),
             message:
-              'URGENT: Emergency detection system has triggered. Family Shield Protocol requires immediate guardian response. Please access the emergency dashboard immediately to review situation and take appropriate action. Time-sensitive response required.',
+              t('templates.emergencyAlert.message.pragmatic'),
           },
           adaptive: {
-            title: '⚠️ Emergency Support Needed',
+            title: t('templates.emergencyAlert.title.adaptive'),
             message:
-              "This is an emergency notification. We need your immediate help with a family situation. Please respond as soon as possible and access our emergency support system. Your quick response is crucial for our family's wellbeing.",
+              t('templates.emergencyAlert.message.adaptive'),
           },
         },
       },
       {
         id: 'activation_confirmation',
-        name: 'Activation Confirmation',
+        name: t('templates.activationConfirmation.name'),
         type: 'verification_needed',
-        title_template: 'Confirm Emergency Activation',
+        title_template: t('templates.activationConfirmation.title.adaptive'),
         message_template:
-          'Please confirm if emergency protocols should be activated.',
+          t('templates.activationConfirmation.message.adaptive'),
         priority: 'high',
         delivery_method: 'email',
         personality_variants: {
           empathetic: {
-            title: '💚 Please Confirm: Family Needs Care',
+            title: t('templates.activationConfirmation.title.empathetic'),
             message:
-              'Dear guardian, our family protection system needs your loving confirmation. We believe there might be a situation where care is needed. Please take a moment to review and confirm whether our emergency care should be activated. Your thoughtful decision helps protect our loved ones. With trust and appreciation.',
+              t('templates.activationConfirmation.message.empathetic'),
           },
           pragmatic: {
-            title: '🔐 VERIFICATION REQUIRED: Activation Pending',
+            title: t('templates.activationConfirmation.title.pragmatic'),
             message:
-              'Guardian verification required for emergency protocol activation. System has detected potential emergency condition. Please review situation data and provide authorization for Family Shield activation within next 24 hours. Your confirmation enables emergency response procedures.',
+              t('templates.activationConfirmation.message.pragmatic'),
           },
           adaptive: {
-            title: '🤝 Confirmation Needed: Emergency Support',
+            title: t('templates.activationConfirmation.title.adaptive'),
             message:
-              'We need your confirmation before activating emergency support protocols. Please review the situation and let us know if you think we should proceed with emergency measures. Your judgment is valued and important for making the right decision for our family.',
+              t('templates.activationConfirmation.message.adaptive'),
           },
         },
       },
       {
         id: 'status_update',
-        name: 'General Update',
+        name: t('templates.statusUpdate.name'),
         type: 'status_update',
-        title_template: 'Family Protection Update',
-        message_template: 'An update about the family protection status.',
+        title_template: t('templates.statusUpdate.title.adaptive'),
+        message_template: t('templates.statusUpdate.message.adaptive'),
         priority: 'low',
         delivery_method: 'email',
         personality_variants: {
           empathetic: {
-            title: '💫 Loving Update from Your Family',
+            title: t('templates.statusUpdate.title.empathetic'),
             message:
-              "Hello wonderful guardian! Just wanted to share a gentle update about our family's wellbeing and protection. Everything is going smoothly, and we wanted you to know how grateful we are for your continued care and support. Your presence in our lives brings such peace of mind. 💚",
+              t('templates.statusUpdate.message.empathetic'),
           },
           pragmatic: {
-            title: '📊 System Status Report',
+            title: t('templates.statusUpdate.title.pragmatic'),
             message:
-              'Family Protection System status update. All systems operational. No action required. This is a scheduled status report to maintain guardian awareness of system health and family security status. Next automated update scheduled in 30 days.',
+              t('templates.statusUpdate.message.pragmatic'),
           },
           adaptive: {
-            title: '🏠 Family Protection Update',
+            title: t('templates.statusUpdate.title.adaptive'),
             message:
-              'Hi there! Just sending a quick update on our family protection status. Everything is running smoothly and we wanted to keep you in the loop. Thanks for being such a reliable part of our support network!',
+              t('templates.statusUpdate.message.adaptive'),
           },
         },
       },
@@ -303,7 +305,7 @@ export const GuardianNotificationCenter: React.FC<
     } catch (err) {
       console.error('Error loading notification data:', err);
       setError(
-        err instanceof Error ? err.message : 'Failed to load notifications'
+        err instanceof Error ? err.message : t('errors.loadNotifications')
       );
     } finally {
       setLoading(false);
@@ -322,7 +324,7 @@ export const GuardianNotificationCenter: React.FC<
       if (!template) return;
 
       const personalityContent = template.personality_variants[effectiveMode];
-      const title = customMessage ? 'Custom Message' : personalityContent.title;
+      const title = customMessage ? t('customMessageTitle') : personalityContent.title;
       const message = customMessage || personalityContent.message;
 
       const notifications = selectedGuardians.map(guardianId => ({
@@ -352,10 +354,10 @@ export const GuardianNotificationCenter: React.FC<
 
       toast.success(
         effectiveMode === 'empathetic'
-          ? `💚 ${notifications.length} loving messages sent to your guardians`
+          ? `💚 ${notifications.length} ${t('toast.success.empathetic')}`
           : effectiveMode === 'pragmatic'
-            ? `🛡️ ${notifications.length} notifications dispatched successfully`
-            : `✅ Sent notifications to ${notifications.length} guardians`
+            ? `🛡️ ${notifications.length} ${t('toast.success.pragmatic')}`
+            : `✅ ${t('toast.success.adaptive')} ${notifications.length} guardians`
       );
 
       // Reset form and close dialog
@@ -371,7 +373,7 @@ export const GuardianNotificationCenter: React.FC<
       // notifications.forEach(n => _onNotificationSent?.(n as GuardianNotification)); // Not available
     } catch (err) {
       console.error('Error sending notification:', err);
-      toast.error('Failed to send notifications. Please try again.');
+      toast.error(t('toast.error.sendFailed'));
     }
   }, [
     userId,
@@ -423,10 +425,10 @@ export const GuardianNotificationCenter: React.FC<
         // For now, we'll just remove it from the UI
         setNotifications(prev => prev.filter(n => n.id !== notificationId));
 
-        toast.success('Notification archived');
+        toast.success(t('toast.archived'));
       } catch (err) {
         console.error('Error archiving notification:', err);
-        toast.error('Failed to archive notification');
+        toast.error(t('toast.error.archiveFailed'));
       }
     },
     [createSupabaseClient]
@@ -442,11 +444,10 @@ export const GuardianNotificationCenter: React.FC<
     switch (effectiveMode) {
       case 'empathetic':
         return {
-          title: '💚 Guardian Message Center',
-          subtitle: 'Send loving messages to your circle of care',
-          sendButtonText: 'Send with Love',
-          emptyMessage:
-            'No messages yet - your guardians are here when you need them',
+          title: t('title.empathetic'),
+          subtitle: t('subtitle.empathetic'),
+          sendButtonText: t('buttons.send.empathetic'),
+          emptyMessage: t('emptyState.empathetic'),
           bgGradient: 'from-emerald-50 to-green-50',
           borderColor: 'border-emerald-200',
           accentColor: 'text-emerald-600',
@@ -454,11 +455,10 @@ export const GuardianNotificationCenter: React.FC<
         };
       case 'pragmatic':
         return {
-          title: '🛡️ Guardian Communication Hub',
-          subtitle: 'Emergency notification and response coordination',
-          sendButtonText: 'Dispatch Notification',
-          emptyMessage:
-            'No active notifications - system ready for emergency communications',
+          title: t('title.pragmatic'),
+          subtitle: t('subtitle.pragmatic'),
+          sendButtonText: t('buttons.send.pragmatic'),
+          emptyMessage: t('emptyState.pragmatic'),
           bgGradient: 'from-blue-50 to-slate-50',
           borderColor: 'border-blue-200',
           accentColor: 'text-blue-600',
@@ -466,11 +466,10 @@ export const GuardianNotificationCenter: React.FC<
         };
       default:
         return {
-          title: '📢 Guardian Notifications',
-          subtitle: 'Communicate with your trusted support network',
-          sendButtonText: 'Send Notification',
-          emptyMessage:
-            'No notifications yet - stay connected with your guardians',
+          title: t('title.adaptive'),
+          subtitle: t('subtitle.adaptive'),
+          sendButtonText: t('buttons.send.adaptive'),
+          emptyMessage: t('emptyState.adaptive'),
           bgGradient: 'from-purple-50 to-indigo-50',
           borderColor: 'border-purple-200',
           accentColor: 'text-purple-600',
@@ -579,7 +578,7 @@ export const GuardianNotificationCenter: React.FC<
 
                 <div className='space-y-4'>
                   <div>
-                    <Label htmlFor='guardians'>Select Guardians</Label>
+                    <Label htmlFor='guardians'>{t('dialog.selectGuardians')}</Label>
                     <div className='mt-2 space-y-2 max-h-32 overflow-y-auto'>
                       {guardians.map(guardian => (
                         <div
@@ -613,13 +612,13 @@ export const GuardianNotificationCenter: React.FC<
                   </div>
 
                   <div>
-                    <Label htmlFor='template'>Message Template</Label>
+                    <Label htmlFor='template'>{t('dialog.messageTemplate')}</Label>
                     <Select
                       value={selectedTemplate}
                       onValueChange={setSelectedTemplate}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder='Choose a template or write custom message' />
+                        <SelectValue placeholder={t('dialog.templatePlaceholder')} />
                       </SelectTrigger>
                       <SelectContent>
                         {notificationTemplates.map(template => (
@@ -652,13 +651,13 @@ export const GuardianNotificationCenter: React.FC<
 
                   <div>
                     <Label htmlFor='custom-message'>
-                      Custom Message (Optional)
+                      {t('dialog.customMessage')}
                     </Label>
                     <Textarea
                       id='custom-message'
                       value={customMessage}
                       onChange={e => setCustomMessage(e.target.value)}
-                      placeholder='Write a custom message to override the template...'
+                      placeholder={t('dialog.customMessagePlaceholder')}
                       rows={4}
                     />
                   </div>
@@ -678,7 +677,7 @@ export const GuardianNotificationCenter: React.FC<
                       variant='outline'
                       onClick={() => setShowSendDialog(false)}
                     >
-                      Cancel
+                      {t('buttons.cancel')}
                     </Button>
                   </div>
                 </div>
@@ -700,25 +699,25 @@ export const GuardianNotificationCenter: React.FC<
             <div className='text-lg font-semibold text-gray-800'>
               {stats.total}
             </div>
-            <div className='text-xs text-gray-600'>Total</div>
+            <div className='text-xs text-gray-600'>{t('statistics.total')}</div>
           </div>
           <div className='bg-white/60 backdrop-blur-sm rounded-lg p-3 text-center'>
             <div className='text-lg font-semibold text-blue-600'>
               {stats.unread}
             </div>
-            <div className='text-xs text-gray-600'>Unread</div>
+            <div className='text-xs text-gray-600'>{t('statistics.unread')}</div>
           </div>
           <div className='bg-white/60 backdrop-blur-sm rounded-lg p-3 text-center'>
             <div className='text-lg font-semibold text-orange-600'>
               {stats.actionRequired}
             </div>
-            <div className='text-xs text-gray-600'>Action Required</div>
+            <div className='text-xs text-gray-600'>{t('statistics.actionRequired')}</div>
           </div>
           <div className='bg-white/60 backdrop-blur-sm rounded-lg p-3 text-center'>
             <div className='text-lg font-semibold text-green-600'>
               {stats.sent}
             </div>
-            <div className='text-xs text-gray-600'>Delivered</div>
+            <div className='text-xs text-gray-600'>{t('statistics.delivered')}</div>
           </div>
         </div>
 
@@ -733,9 +732,9 @@ export const GuardianNotificationCenter: React.FC<
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value='all'>All Notifications</SelectItem>
-              <SelectItem value='unread'>Unread Only</SelectItem>
-              <SelectItem value='action_required'>Action Required</SelectItem>
+              <SelectItem value='all'>{t('filters.all')}</SelectItem>
+              <SelectItem value='unread'>{t('filters.unread')}</SelectItem>
+              <SelectItem value='action_required'>{t('filters.actionRequired')}</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -795,7 +794,7 @@ export const GuardianNotificationCenter: React.FC<
                       {notification.action_required && (
                         <Badge variant='destructive' className='text-xs'>
                           <AlertCircle className='w-3 h-3 mr-1' />
-                          Action Required
+                          {t('notifications.badges.actionRequired')}
                         </Badge>
                       )}
                       {!notification.read_at && (
@@ -810,20 +809,20 @@ export const GuardianNotificationCenter: React.FC<
                     <div className='flex items-center gap-4 text-xs text-gray-500'>
                       <div className='flex items-center gap-1'>
                         <Users className='w-3 h-3' />
-                        To: {notification.guardian_name || 'Guardian'}
+                        {t('notifications.labels.to')}: {notification.guardian_name || 'Guardian'}
                       </div>
                       <div className='flex items-center gap-1'>
                         <Clock className='w-3 h-3' />
                         {new Date(
                           notification.created_at
                         ).toLocaleDateString()}{' '}
-                        at{' '}
+                        {t('notifications.labels.at')}{' '}
                         {new Date(notification.created_at).toLocaleTimeString()}
                       </div>
                       {notification.expires_at && (
                         <div className='flex items-center gap-1 text-orange-600'>
                           <AlertTriangle className='w-3 h-3' />
-                          Expires:{' '}
+                          {t('notifications.labels.expires')}:{' '}
                           {new Date(
                             notification.expires_at
                           ).toLocaleDateString()}

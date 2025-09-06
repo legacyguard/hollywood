@@ -72,7 +72,7 @@ export class InsightsService {
         name: document.title || 'Untitled',
         type: document.document_type || 'unknown',
       } as DocumentForAnalysis;
-      
+
       const analysis = await this.performDocumentAnalysis(mappedDocument);
 
       // Generate insights based on analysis
@@ -296,7 +296,7 @@ export class InsightsService {
           name: doc.title || 'Untitled',
           type: doc.document_type || 'unknown',
         } as DocumentForAnalysis;
-        
+
         const docInsights = await this.generateDocumentSpecificInsights(
           mappedDoc,
           userId
@@ -784,7 +784,7 @@ export class InsightsService {
 
   private calculateInsightAnalytics(
     insights: QuickInsight[],
-    actions: Array<{ impact: string; timestamp: string; type: string; completed?: boolean; created_at?: string }>
+    actions: Array<{ completed?: boolean; created_at?: string; impact: string; timestamp: string; type: string; }>
   ): InsightAnalytics {
     const totalInsights = insights.length;
     const actionableInsights = insights.filter(i => i.actionable).length;
@@ -870,7 +870,7 @@ export class InsightsService {
 
   private generateTrendData(
     insights: QuickInsight[],
-    actions: Array<{ impact: string; timestamp: string; type: string; completed?: boolean; created_at?: string }>
+    actions: Array<{ completed?: boolean; created_at?: string; impact: string; timestamp: string; type: string; }>
   ): InsightAnalytics['trendData'] {
     const last30Days = Array.from({ length: 30 }, (_, i) => {
       const date = new Date();

@@ -5,6 +5,7 @@
 import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '@clerk/clerk-react';
+import { useTranslation } from 'react-i18next';
 import { usePersonalityManager } from '@/components/sofia/SofiaContextProvider';
 import { AnimationSystem } from '@/lib/animation-system';
 import type { PersonalityMode } from '@/lib/sofia-types';
@@ -65,6 +66,7 @@ interface FamilyProtectionDashboardProps {
 export const FamilyProtectionDashboard: React.FC<
   FamilyProtectionDashboardProps
 > = ({ className = '', personalityMode }) => {
+  const { t } = useTranslation('ui/family-protection-dashboard');
   const { userId: _userId } = useAuth();
   const personalityManager = usePersonalityManager();
 
@@ -122,7 +124,7 @@ export const FamilyProtectionDashboard: React.FC<
         {
           id: Date.now().toString(),
           type: 'error',
-          message: 'Emergency protocol activated',
+          message: t('alerts.emergencyActivated'),
           timestamp: new Date(),
         },
         ...prev.recentAlerts.slice(0, 4),
@@ -135,56 +137,53 @@ export const FamilyProtectionDashboard: React.FC<
     switch (effectiveMode) {
       case 'empathetic':
         return {
-          title: '💚 Family Care Command Center',
-          subtitle: 'Your loving hub for family protection and wellbeing',
-          description:
-            'Everything you need to keep your family safe and cared for, all in one gentle place',
-          overviewTitle: 'Circle of Love Overview',
+          title: t('title.empathetic'),
+          subtitle: t('subtitle.empathetic'),
+          description: t('description.empathetic'),
+          overviewTitle: t('overviewTitle.empathetic'),
           bgGradient: 'from-emerald-50 via-green-50 to-teal-50',
           borderColor: 'border-emerald-200',
           accentColor: 'text-emerald-600',
           icon: Heart,
           tabs: {
-            overview: 'Love Circle',
-            switch: 'Care Shield',
-            contacts: 'Trusted Friends',
-            notifications: 'Loving Messages',
+            overview: t('tabs.empathetic.overview'),
+            switch: t('tabs.empathetic.switch'),
+            contacts: t('tabs.empathetic.contacts'),
+            notifications: t('tabs.empathetic.notifications'),
           },
         };
       case 'pragmatic':
         return {
-          title: '🛡️ Family Protection Command Center',
-          subtitle: 'Comprehensive emergency response and monitoring system',
-          description:
-            'Central control hub for all family protection protocols and emergency procedures',
-          overviewTitle: 'System Status Overview',
+          title: t('title.pragmatic'),
+          subtitle: t('subtitle.pragmatic'),
+          description: t('description.pragmatic'),
+          overviewTitle: t('overviewTitle.pragmatic'),
           bgGradient: 'from-blue-50 via-slate-50 to-cyan-50',
           borderColor: 'border-blue-200',
           accentColor: 'text-blue-600',
           icon: Shield,
           tabs: {
-            overview: 'System Status',
-            switch: 'Emergency Protocol',
-            contacts: 'Response Team',
-            notifications: 'Alert System',
+            overview: t('tabs.pragmatic.overview'),
+            switch: t('tabs.pragmatic.switch'),
+            contacts: t('tabs.pragmatic.contacts'),
+            notifications: t('tabs.pragmatic.notifications'),
           },
         };
       default:
         return {
-          title: '🏠 Family Protection Hub',
-          subtitle: 'Complete family safety and support coordination center',
-          description:
-            'Your central dashboard for managing family protection, emergency contacts, and communications',
-          overviewTitle: 'Protection Overview',
+          title: t('title.adaptive'),
+          subtitle: t('subtitle.adaptive'),
+          description: t('description.adaptive'),
+          overviewTitle: t('overviewTitle.adaptive'),
           bgGradient: 'from-purple-50 via-indigo-50 to-blue-50',
           borderColor: 'border-purple-200',
           accentColor: 'text-purple-600',
           icon: Globe,
           tabs: {
-            overview: 'Overview',
-            switch: 'Protection Switch',
-            contacts: 'Support Network',
-            notifications: 'Communications',
+            overview: t('tabs.adaptive.overview'),
+            switch: t('tabs.adaptive.switch'),
+            contacts: t('tabs.adaptive.contacts'),
+            notifications: t('tabs.adaptive.notifications'),
           },
         };
     }
@@ -201,48 +200,28 @@ export const FamilyProtectionDashboard: React.FC<
           color: 'text-green-600',
           bgColor: 'bg-green-100',
           icon: CheckCircle,
-          message:
-            effectiveMode === 'empathetic'
-              ? 'Your family is lovingly protected'
-              : effectiveMode === 'pragmatic'
-                ? 'All systems operational'
-                : 'Family protection active',
+          message: t(`status.messages.active.${effectiveMode}`),
         };
       case 'triggered':
         return {
           color: 'text-red-600',
           bgColor: 'bg-red-100',
           icon: AlertTriangle,
-          message:
-            effectiveMode === 'empathetic'
-              ? 'Emergency care activated'
-              : effectiveMode === 'pragmatic'
-                ? 'Emergency protocol engaged'
-                : 'Emergency response active',
+          message: t(`status.messages.triggered.${effectiveMode}`),
         };
       case 'pending':
         return {
           color: 'text-yellow-600',
           bgColor: 'bg-yellow-100',
           icon: Clock,
-          message:
-            effectiveMode === 'empathetic'
-              ? 'Checking on your wellbeing'
-              : effectiveMode === 'pragmatic'
-                ? 'Verification required'
-                : 'Status verification needed',
+          message: t(`status.messages.pending.${effectiveMode}`),
         };
       default:
         return {
           color: 'text-gray-500',
           bgColor: 'bg-gray-100',
           icon: XCircle,
-          message:
-            effectiveMode === 'empathetic'
-              ? 'Care system is resting'
-              : effectiveMode === 'pragmatic'
-                ? 'System standby'
-                : 'Protection inactive',
+          message: t(`status.messages.inactive.${effectiveMode}`),
         };
     }
   };
@@ -314,7 +293,7 @@ export const FamilyProtectionDashboard: React.FC<
               <div className='flex items-center gap-2 mb-1'>
                 <Activity className='w-4 h-4 text-blue-600' />
                 <span className='text-sm font-medium text-gray-700'>
-                  Health Score
+                  {t('metrics.healthScore.label')}
                 </span>
               </div>
               <div className='text-2xl font-bold text-gray-800'>
@@ -322,12 +301,12 @@ export const FamilyProtectionDashboard: React.FC<
               </div>
               <div className='text-xs text-gray-500'>
                 {healthScore >= 80
-                  ? 'Excellent'
+                  ? t('metrics.healthScore.ratings.excellent')
                   : healthScore >= 60
-                    ? 'Good'
+                    ? t('metrics.healthScore.ratings.good')
                     : healthScore >= 40
-                      ? 'Fair'
-                      : 'Needs Attention'}
+                      ? t('metrics.healthScore.ratings.fair')
+                      : t('metrics.healthScore.ratings.needsAttention')}
               </div>
             </div>
 
@@ -335,14 +314,14 @@ export const FamilyProtectionDashboard: React.FC<
               <div className='flex items-center gap-2 mb-1'>
                 <Users className='w-4 h-4 text-green-600' />
                 <span className='text-sm font-medium text-gray-700'>
-                  Guardians
+                  {t('metrics.guardians.label')}
                 </span>
               </div>
               <div className='text-2xl font-bold text-gray-800'>
                 {protectionStatus.contactsCount}
               </div>
               <div className='text-xs text-gray-500'>
-                {protectionStatus.primaryContactsCount} primary
+                {protectionStatus.primaryContactsCount} {t('metrics.guardians.primary')}
               </div>
             </div>
 
@@ -350,14 +329,14 @@ export const FamilyProtectionDashboard: React.FC<
               <div className='flex items-center gap-2 mb-1'>
                 <Bell className='w-4 h-4 text-orange-600' />
                 <span className='text-sm font-medium text-gray-700'>
-                  Notifications
+                  {t('metrics.notifications.label')}
                 </span>
               </div>
               <div className='text-2xl font-bold text-gray-800'>
                 {protectionStatus.unreadNotifications}
               </div>
               <div className='text-xs text-gray-500'>
-                {protectionStatus.actionRequiredNotifications} need action
+                {protectionStatus.actionRequiredNotifications} {t('metrics.notifications.needAction')}
               </div>
             </div>
 
@@ -365,18 +344,18 @@ export const FamilyProtectionDashboard: React.FC<
               <div className='flex items-center gap-2 mb-1'>
                 <Clock className='w-4 h-4 text-purple-600' />
                 <span className='text-sm font-medium text-gray-700'>
-                  Last Check
+                  {t('metrics.lastCheck.label')}
                 </span>
               </div>
               <div className='text-sm font-bold text-gray-800'>
                 {protectionStatus.lastActivity
                   ? protectionStatus.lastActivity.toLocaleDateString()
-                  : 'Never'}
+                  : t('metrics.lastCheck.never')}
               </div>
               <div className='text-xs text-gray-500'>
                 {protectionStatus.lastActivity
                   ? protectionStatus.lastActivity.toLocaleTimeString()
-                  : 'No recent activity'}
+                  : t('metrics.lastCheck.noRecentActivity')}
               </div>
             </div>
           </div>
@@ -385,7 +364,7 @@ export const FamilyProtectionDashboard: React.FC<
           {protectionStatus.recentAlerts.length > 0 && (
             <div className='mt-4'>
               <h4 className='text-sm font-medium text-gray-700 mb-2'>
-                Recent Alerts
+                {t('alerts.title')}
               </h4>
               <div className='space-y-2'>
                 {protectionStatus.recentAlerts.slice(0, 2).map(alert => (
@@ -485,11 +464,7 @@ export const FamilyProtectionDashboard: React.FC<
                 })}
               >
                 <h3 className='text-lg font-semibold text-gray-800 mb-4'>
-                  {effectiveMode === 'empathetic'
-                    ? '💫 Caring Actions'
-                    : effectiveMode === 'pragmatic'
-                      ? '⚡ System Actions'
-                      : '🚀 Quick Actions'}
+                  {t(`quickActions.title.${effectiveMode}`)}
                 </h3>
 
                 <div className='space-y-3'>
@@ -499,11 +474,7 @@ export const FamilyProtectionDashboard: React.FC<
                     onClick={() => setActiveTab('contacts')}
                   >
                     <Users className='w-4 h-4 mr-3' />
-                    {effectiveMode === 'empathetic'
-                      ? 'Invite a caring friend'
-                      : effectiveMode === 'pragmatic'
-                        ? 'Add emergency contact'
-                        : 'Add guardian'}
+                    {t(`quickActions.addContact.${effectiveMode}`)}
                   </Button>
 
                   <Button
@@ -512,11 +483,7 @@ export const FamilyProtectionDashboard: React.FC<
                     onClick={() => setActiveTab('notifications')}
                   >
                     <MessageSquare className='w-4 h-4 mr-3' />
-                    {effectiveMode === 'empathetic'
-                      ? 'Send loving message'
-                      : effectiveMode === 'pragmatic'
-                        ? 'Send status update'
-                        : 'Send notification'}
+                    {t(`quickActions.sendMessage.${effectiveMode}`)}
                   </Button>
 
                   <Button
@@ -525,11 +492,7 @@ export const FamilyProtectionDashboard: React.FC<
                     onClick={() => setActiveTab('switch')}
                   >
                     <Settings className='w-4 h-4 mr-3' />
-                    {effectiveMode === 'empathetic'
-                      ? 'Care settings'
-                      : effectiveMode === 'pragmatic'
-                        ? 'Protocol settings'
-                        : 'Protection settings'}
+                    {t(`quickActions.settings.${effectiveMode}`)}
                   </Button>
 
                   <Button
@@ -578,43 +541,23 @@ export const FamilyProtectionDashboard: React.FC<
                         window.URL.revokeObjectURL(url);
 
                         // Show success message
-                        toast.success(
-                          effectiveMode === 'empathetic'
-                            ? '💚 Your family manual has been lovingly prepared!'
-                            : effectiveMode === 'pragmatic'
-                              ? 'Family manual generated successfully'
-                              : 'Your family manual is ready!'
-                        );
+                        toast.success(t(`toasts.manualSuccess.${effectiveMode}`));
                       } catch (error) {
                         console.error('Error generating manual:', error);
-                        toast.error(
-                          effectiveMode === 'empathetic'
-                            ? "Oh dear, something went wrong. Let's try again together."
-                            : effectiveMode === 'pragmatic'
-                              ? 'Error: Failed to generate manual'
-                              : 'Failed to generate family manual'
-                        );
+                        toast.error(t(`toasts.manualError.${effectiveMode}`));
                       }
                     }}
                   >
                     <BookOpen className='w-4 h-4 mr-3' />
                     <span className='flex-1 text-left'>
-                      {effectiveMode === 'empathetic'
-                        ? 'Create Family Love Letter'
-                        : effectiveMode === 'pragmatic'
-                          ? 'Generate Emergency Manual'
-                          : 'Download Family Manual'}
+                      {t(`quickActions.generateManual.${effectiveMode}`)}
                     </span>
                     <Download className='w-4 h-4 ml-2' />
                   </Button>
 
                   <div className='pt-3 border-t border-gray-200'>
                     <p className='text-sm text-gray-600 text-center'>
-                      {effectiveMode === 'empathetic'
-                        ? 'Your family is surrounded by love and protection 💚'
-                        : effectiveMode === 'pragmatic'
-                          ? 'All systems monitoring and ready for response'
-                          : 'Your family protection network is active and ready'}
+                      {t(`quickActions.statusMessage.${effectiveMode}`)}
                     </p>
                   </div>
                 </div>

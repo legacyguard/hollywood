@@ -403,7 +403,7 @@ function NextStepsStep({
   userData: Record<string, unknown>;
 }) {
   const { t } = useTranslation('ui/onboarding-variants');
-  
+
   const recommendations = [
     {
       icon: Shield,
@@ -744,31 +744,33 @@ function FirstActionStep({
   onComplete: (data: Record<string, unknown>) => void;
   userData: Record<string, unknown>;
 }) {
+  const { t } = useTranslation('ui/onboarding-variants');
+
   const quickActions = [
     {
       id: 'upload_document',
-      title: 'Upload Your First Document',
-      description: 'Start with ID, insurance, or any important document',
-      time: '2 minutes',
-      impact: 'Immediate protection for your family',
+      title: t('first_action_step.actions.upload_document.title'),
+      description: t('first_action_step.actions.upload_document.description'),
+      time: t('first_action_step.actions.upload_document.time'),
+      impact: t('first_action_step.actions.upload_document.impact'),
       icon: Shield,
       primary: true,
     },
     {
       id: 'add_contact',
-      title: 'Add Emergency Contact',
-      description: 'Someone who can access your information if needed',
-      time: '1 minute',
-      impact: 'Peace of mind in emergencies',
+      title: t('first_action_step.actions.add_contact.title'),
+      description: t('first_action_step.actions.add_contact.description'),
+      time: t('first_action_step.actions.add_contact.time'),
+      impact: t('first_action_step.actions.add_contact.impact'),
       icon: Users,
       primary: false,
     },
     {
       id: 'start_will',
-      title: 'Begin Will Creation',
-      description: 'Start the guided will wizard for comprehensive protection',
-      time: '5 minutes',
-      impact: 'Complete family legal protection',
+      title: t('first_action_step.actions.start_will.title'),
+      description: t('first_action_step.actions.start_will.description'),
+      time: t('first_action_step.actions.start_will.time'),
+      impact: t('first_action_step.actions.start_will.impact'),
       icon: CheckCircle,
       primary: false,
     },
@@ -779,11 +781,10 @@ function FirstActionStep({
       <CardHeader>
         <CardTitle className='flex items-center gap-2'>
           <CheckCircle className='h-5 w-5 text-green-600' />
-          Take your first protective step
+          {t('first_action_step.title')}
         </CardTitle>
         <p className='text-gray-600'>
-          Every journey begins with a single step. Choose how you'd like to
-          start protecting your family today.
+          {t('first_action_step.subtitle')}
         </p>
       </CardHeader>
       <CardContent className='space-y-4'>
@@ -839,7 +840,7 @@ function FirstActionStep({
 
         <div className='pt-4 border-t'>
           <p className='text-xs text-gray-500 text-center'>
-            You can always do the other actions later from your dashboard
+            {t('first_action_step.footer_note')}
           </p>
         </div>
       </CardContent>

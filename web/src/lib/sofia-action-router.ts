@@ -133,9 +133,9 @@ export const executeSofiaAction = async (
       // Navigate and provide contextual suggestion
       const payload = typeof action.payload === 'object' ? action.payload : {};
       const { url, suggestion, category: _suggestedCategory } = payload as {
-        url: string;
-        suggestion: string;
         category?: string;
+        suggestion: string;
+        url: string;
       };
       navigate(url || '/');
 

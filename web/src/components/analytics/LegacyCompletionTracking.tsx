@@ -1,5 +1,6 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
@@ -115,6 +116,7 @@ export const LegacyCompletionTracking: React.FC<
   onGoalCreate: _onGoalCreate,
   onMilestoneAchieved: _onMilestoneAchieved,
 }) => {
+  const { t } = useTranslation('ui/legacy-completion-tracking');
   const [legacyAreas, setLegacyAreas] = useState<LegacyArea[]>([]);
   const [goals, setGoals] = useState<Goal[]>([]);
   const [achievements, setAchievements] = useState<Achievement[]>([]);
@@ -446,22 +448,22 @@ export const LegacyCompletionTracking: React.FC<
       <div className='flex items-center justify-between'>
         <div>
           <h2 className='text-2xl font-bold text-gray-900'>
-            Legacy Completion Tracking
+            {t('header.title')}
           </h2>
           <p className='text-gray-600'>
-            Track your progress toward comprehensive family protection
+            {t('header.subtitle')}
           </p>
         </div>
         <div className='flex items-center gap-4'>
           <div className='text-right'>
-            <div className='text-sm text-gray-500'>Current Streak</div>
+            <div className='text-sm text-gray-500'>{t('header.currentStreak')}</div>
             <div className='text-xl font-bold text-orange-600 flex items-center gap-1'>
               <Sparkles className='h-4 w-4' />
-              {currentStreak} days
+              {currentStreak} {t('header.days')}
             </div>
           </div>
           <div className='text-right'>
-            <div className='text-sm text-gray-500'>Reward Points</div>
+            <div className='text-sm text-gray-500'>{t('header.rewardPoints')}</div>
             <div className='text-xl font-bold text-purple-600 flex items-center gap-1'>
               <Star className='h-4 w-4' />
               {totalRewardPoints}
@@ -484,10 +486,10 @@ export const LegacyCompletionTracking: React.FC<
               </div>
               <div>
                 <CardTitle className='text-xl'>
-                  Legacy Completion Score
+                  {t('overallProgress.title')}
                 </CardTitle>
                 <p className='text-sm text-gray-600'>
-                  Overall progress toward family protection goals
+                  {t('overallProgress.subtitle')}
                 </p>
               </div>
             </div>
@@ -495,7 +497,7 @@ export const LegacyCompletionTracking: React.FC<
               <div
                 className={`text-3xl font-bold ${getCompletenessColor(overallCompleteness)}`}
               >
-                {overallCompleteness}%
+                {overallCompleteness}{t('units.percent')}
               </div>
               <div className='text-sm text-gray-500'>
                 {legacyAreas.reduce(
@@ -505,7 +507,7 @@ export const LegacyCompletionTracking: React.FC<
                   0
                 )}{' '}
                 /{legacyAreas.reduce((sum, area) => sum + area.tasks.length, 0)}{' '}
-                tasks completed
+                {t('overallProgress.tasksCompleted')}
               </div>
             </div>
           </div>
@@ -519,20 +521,20 @@ export const LegacyCompletionTracking: React.FC<
               <Crown className='h-4 w-4 text-yellow-600' />
               <span>
                 {legacyAreas.filter(area => area.completeness >= 90).length}{' '}
-                areas mastered
+                {t('quickStats.areasMastered')}
               </span>
             </div>
             <div className='flex items-center gap-2'>
               <Trophy className='h-4 w-4 text-blue-600' />
-              <span>{achievements.length} achievements earned</span>
+              <span>{achievements.length} {t('quickStats.achievementsEarned')}</span>
             </div>
             <div className='flex items-center gap-2'>
               <Clock className='h-4 w-4 text-green-600' />
-              <span>{availableTasks.length} tasks ready</span>
+              <span>{availableTasks.length} {t('quickStats.tasksReady')}</span>
             </div>
             <div className='flex items-center gap-2'>
               <Flag className='h-4 w-4 text-purple-600' />
-              <span>{nextMilestones.length} milestones pending</span>
+              <span>{nextMilestones.length} {t('quickStats.milestonesPending')}</span>
             </div>
           </div>
         </CardContent>
@@ -540,11 +542,11 @@ export const LegacyCompletionTracking: React.FC<
 
       <Tabs defaultValue='progress' className='w-full'>
         <TabsList className='grid w-full grid-cols-5'>
-          <TabsTrigger value='progress'>Progress</TabsTrigger>
-          <TabsTrigger value='roadmap'>Roadmap</TabsTrigger>
-          <TabsTrigger value='goals'>Goals</TabsTrigger>
-          <TabsTrigger value='achievements'>Achievements</TabsTrigger>
-          <TabsTrigger value='analytics'>Analytics</TabsTrigger>
+          <TabsTrigger value='progress'>{t('tabs.progress')}</TabsTrigger>
+          <TabsTrigger value='roadmap'>{t('tabs.roadmap')}</TabsTrigger>
+          <TabsTrigger value='goals'>{t('tabs.goals')}</TabsTrigger>
+          <TabsTrigger value='achievements'>{t('tabs.achievements')}</TabsTrigger>
+          <TabsTrigger value='analytics'>{t('tabs.analytics')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value='progress' className='space-y-4'>
@@ -553,7 +555,7 @@ export const LegacyCompletionTracking: React.FC<
             <CardHeader>
               <CardTitle className='flex items-center gap-2'>
                 <PlayCircle className='h-5 w-5 text-blue-600' />
-                Recommended Next Actions
+                {t('progress.recommendedActions')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -566,13 +568,13 @@ export const LegacyCompletionTracking: React.FC<
                     <div className='flex-1'>
                       <div className='flex items-center gap-2 mb-1'>
                         <Badge className={getPriorityColor(task.impact)}>
-                          {task.impact}
+                          {t(`priorities.${task.impact}`)}
                         </Badge>
                         <Badge variant='outline' className='text-xs'>
-                          ~{task.estimatedMinutes}min
+                          ~{task.estimatedMinutes}{t('units.minutes')}
                         </Badge>
                         <span className='text-xs text-gray-500'>
-                          +{task.reward} points
+                          +{task.reward} {t('units.points')}
                         </span>
                       </div>
                       <h4 className='font-medium text-gray-900'>
@@ -599,7 +601,7 @@ export const LegacyCompletionTracking: React.FC<
                         disabled={task.status === 'locked'}
                         className='gap-2'
                       >
-                        {task.status === 'in-progress' ? 'Continue' : 'Start'}
+                        {task.status === 'in-progress' ? t('progress.continue') : t('progress.start')}
                         <ArrowRight className='h-3 w-3' />
                       </Button>
                     </div>
@@ -617,7 +619,7 @@ export const LegacyCompletionTracking: React.FC<
                   <div className='flex items-center justify-between'>
                     <CardTitle className='text-base'>{area.name}</CardTitle>
                     <Badge className={getPriorityColor(area.priority)}>
-                      {area.priority}
+                      {t(`priorities.${area.priority}`)}
                     </Badge>
                   </div>
                   <p className='text-sm text-gray-600'>{area.description}</p>
@@ -626,11 +628,11 @@ export const LegacyCompletionTracking: React.FC<
                   <div className='space-y-3'>
                     <div>
                       <div className='flex items-center justify-between text-sm mb-1'>
-                        <span>Completeness</span>
+                        <span>{t('progress.completeness')}</span>
                         <span
                           className={getCompletenessColor(area.completeness)}
                         >
-                          {area.completeness}%
+                          {area.completeness}{t('units.percent')}
                         </span>
                       </div>
                       <Progress value={area.completeness} className='h-2' />
@@ -642,7 +644,7 @@ export const LegacyCompletionTracking: React.FC<
                           area.tasks.filter(t => t.status === 'completed')
                             .length
                         }
-                        /{area.tasks.length} tasks
+                        /{area.tasks.length} {t('progress.tasks')}
                       </span>
                       <span>{area.estimatedTime}</span>
                     </div>
@@ -683,14 +685,14 @@ export const LegacyCompletionTracking: React.FC<
 
         <TabsContent value='roadmap' className='space-y-4'>
           <div className='flex items-center justify-between'>
-            <h3 className='text-lg font-medium'>Personal Legacy Roadmap</h3>
+            <h3 className='text-lg font-medium'>{t('roadmap.title')}</h3>
             <Button
               variant='outline'
               onClick={() => setShowRoadmap(!showRoadmap)}
               className='gap-2'
             >
               <Route className='h-4 w-4' />
-              {showRoadmap ? 'Simple View' : 'Detailed Roadmap'}
+              {showRoadmap ? t('roadmap.simpleView') : t('roadmap.detailedRoadmap')}
             </Button>
           </div>
 
@@ -733,7 +735,7 @@ export const LegacyCompletionTracking: React.FC<
                             {area.name}
                           </h4>
                           <Badge className={getPriorityColor(area.category)}>
-                            {area.category}
+                            {t(`categories.${area.category}`)}
                           </Badge>
                         </div>
                         <p className='text-sm text-gray-600 mb-2'>
@@ -741,9 +743,9 @@ export const LegacyCompletionTracking: React.FC<
                         </p>
 
                         <div className='flex items-center gap-4 text-xs text-gray-500 mb-2'>
-                          <span>{area.completeness}% complete</span>
+                          <span>{area.completeness}{t('units.percent')} {t('roadmap.complete')}</span>
                           <span>{area.estimatedTime}</span>
-                          <span>{area.tasks.length} tasks</span>
+                          <span>{area.tasks.length} {t('progress.tasks')}</span>
                         </div>
 
                         {/* Progress Bar */}
@@ -755,7 +757,7 @@ export const LegacyCompletionTracking: React.FC<
                         {/* Dependencies */}
                         {area.dependencies.length > 0 && (
                           <div className='text-xs text-gray-500'>
-                            <span>Requires: </span>
+                            <span>{t('progress.requires')}</span>
                             {area.dependencies.map((dep, i) => (
                               <span key={dep}>
                                 {legacyAreas.find(a => a.id === dep)?.name}
@@ -775,10 +777,10 @@ export const LegacyCompletionTracking: React.FC<
 
         <TabsContent value='goals' className='space-y-4'>
           <div className='flex items-center justify-between'>
-            <h3 className='text-lg font-medium'>Personal Goals</h3>
+            <h3 className='text-lg font-medium'>{t('goals.title')}</h3>
             <Button className='gap-2'>
               <Plus className='h-4 w-4' />
-              Set New Goal
+              {t('goals.setNewGoal')}
             </Button>
           </div>
 
@@ -789,7 +791,7 @@ export const LegacyCompletionTracking: React.FC<
                   <div className='flex items-center justify-between'>
                     <CardTitle className='text-base'>{goal.title}</CardTitle>
                     <Badge className={getPriorityColor(goal.priority)}>
-                      {goal.priority}
+                      {t(`priorities.${goal.priority}`)}
                     </Badge>
                   </div>
                   <p className='text-sm text-gray-600'>{goal.description}</p>
@@ -798,11 +800,11 @@ export const LegacyCompletionTracking: React.FC<
                   <div className='space-y-3'>
                     <div>
                       <div className='flex items-center justify-between text-sm mb-1'>
-                        <span>Progress</span>
+                        <span>{t('goals.progress')}</span>
                         <span
                           className={getCompletenessColor(goal.currentProgress)}
                         >
-                          {goal.currentProgress}%
+                          {goal.currentProgress}{t('units.percent')}
                         </span>
                       </div>
                       <Progress value={goal.currentProgress} className='h-2' />
@@ -811,22 +813,22 @@ export const LegacyCompletionTracking: React.FC<
                     <div className='flex items-center justify-between text-xs text-gray-500'>
                       <div className='flex items-center gap-1'>
                         <Calendar className='h-3 w-3' />
-                        Target: {goal.targetDate.toLocaleDateString()}
+                        {t('goals.target')}: {goal.targetDate.toLocaleDateString()}
                       </div>
                       <div className='flex items-center gap-1'>
                         <Target className='h-3 w-3' />
-                        {goal.targetCompleteness}%
+                        {goal.targetCompleteness}{t('units.percent')}
                       </div>
                     </div>
 
                     <div className='flex items-center justify-between'>
                       <Badge variant='outline' className='text-xs'>
-                        {goal.category.replace('-', ' ')}
+                        {t(`goalCategories.${goal.category.replace('-', '').toLowerCase()}`)}
                       </Badge>
                       <div
                         className={`text-xs ${goal.isActive ? 'text-green-600' : 'text-gray-500'}`}
                       >
-                        {goal.isActive ? 'Active' : 'Paused'}
+                        {goal.isActive ? t('goals.active') : t('goals.paused')}
                       </div>
                     </div>
                   </div>
@@ -839,8 +841,8 @@ export const LegacyCompletionTracking: React.FC<
         <TabsContent value='achievements' className='space-y-4'>
           <div className='flex items-center gap-2 mb-4'>
             <Medal className='h-5 w-5 text-yellow-600' />
-            <h3 className='text-lg font-medium'>Achievements Earned</h3>
-            <Badge variant='secondary'>{achievements.length} total</Badge>
+            <h3 className='text-lg font-medium'>{t('achievements.title')}</h3>
+            <Badge variant='secondary'>{achievements.length} {t('achievements.total')}</Badge>
           </div>
 
           <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
@@ -869,7 +871,7 @@ export const LegacyCompletionTracking: React.FC<
                               .replace('text-', 'bg-')
                               .replace('bg-', 'text-')}
                           >
-                            {achievement.rarity}
+                            {t(`rarities.${achievement.rarity}`)}
                           </Badge>
                         </div>
                         <p className='text-sm text-gray-600 mb-2'>
@@ -877,7 +879,7 @@ export const LegacyCompletionTracking: React.FC<
                         </p>
                         <div className='flex items-center justify-between text-xs text-gray-500'>
                           <span>
-                            Earned {achievement.earnedAt.toLocaleDateString()}
+                            {t('achievements.earned')} {achievement.earnedAt.toLocaleDateString()}
                           </span>
                           <span className='font-medium'>
                             {achievement.reward}
@@ -895,7 +897,7 @@ export const LegacyCompletionTracking: React.FC<
         <TabsContent value='analytics' className='space-y-4'>
           <div className='flex items-center gap-2 mb-4'>
             <BarChart3 className='h-5 w-5 text-blue-600' />
-            <h3 className='text-lg font-medium'>Progress Analytics</h3>
+            <h3 className='text-lg font-medium'>{t('analytics.title')}</h3>
           </div>
 
           {/* Time-based Analytics */}
@@ -904,10 +906,10 @@ export const LegacyCompletionTracking: React.FC<
               <CardContent className='p-4'>
                 <div className='flex items-center gap-2 mb-2'>
                   <Clock className='h-4 w-4 text-blue-600' />
-                  <span className='text-sm font-medium'>Time Invested</span>
+                  <span className='text-sm font-medium'>{t('analytics.timeInvested.label')}</span>
                 </div>
-                <div className='text-2xl font-bold text-blue-600'>12.5h</div>
-                <p className='text-xs text-gray-500'>Total time spent</p>
+                <div className='text-2xl font-bold text-blue-600'>12.5{t('units.hours')}</div>
+                <p className='text-xs text-gray-500'>{t('analytics.timeInvested.subtitle')}</p>
               </CardContent>
             </Card>
 
@@ -915,10 +917,10 @@ export const LegacyCompletionTracking: React.FC<
               <CardContent className='p-4'>
                 <div className='flex items-center gap-2 mb-2'>
                   <TrendingUp className='h-4 w-4 text-green-600' />
-                  <span className='text-sm font-medium'>Velocity</span>
+                  <span className='text-sm font-medium'>{t('analytics.velocity.label')}</span>
                 </div>
                 <div className='text-2xl font-bold text-green-600'>3.2</div>
-                <p className='text-xs text-gray-500'>Tasks per week</p>
+                <p className='text-xs text-gray-500'>{t('analytics.velocity.subtitle')}</p>
               </CardContent>
             </Card>
 
@@ -926,11 +928,11 @@ export const LegacyCompletionTracking: React.FC<
               <CardContent className='p-4'>
                 <div className='flex items-center gap-2 mb-2'>
                   <Target className='h-4 w-4 text-purple-600' />
-                  <span className='text-sm font-medium'>Efficiency</span>
+                  <span className='text-sm font-medium'>{t('analytics.efficiency.label')}</span>
                 </div>
-                <div className='text-2xl font-bold text-purple-600'>87%</div>
+                <div className='text-2xl font-bold text-purple-600'>87{t('units.percent')}</div>
                 <p className='text-xs text-gray-500'>
-                  Estimated vs actual time
+                  {t('analytics.efficiency.subtitle')}
                 </p>
               </CardContent>
             </Card>
@@ -939,10 +941,10 @@ export const LegacyCompletionTracking: React.FC<
               <CardContent className='p-4'>
                 <div className='flex items-center gap-2 mb-2'>
                   <Sparkles className='h-4 w-4 text-orange-600' />
-                  <span className='text-sm font-medium'>Best Streak</span>
+                  <span className='text-sm font-medium'>{t('analytics.bestStreak.label')}</span>
                 </div>
                 <div className='text-2xl font-bold text-orange-600'>14</div>
-                <p className='text-xs text-gray-500'>Consecutive days</p>
+                <p className='text-xs text-gray-500'>{t('analytics.bestStreak.subtitle')}</p>
               </CardContent>
             </Card>
           </div>
@@ -953,8 +955,8 @@ export const LegacyCompletionTracking: React.FC<
               <div className='h-64 flex items-center justify-center text-gray-500'>
                 <div className='text-center'>
                   <Timeline className='h-12 w-12 mx-auto mb-2 text-gray-300' />
-                  <p>Progress analytics chart would be implemented here</p>
-                  <p className='text-sm'>Shows completion trends over time</p>
+                  <p>{t('analytics.chartPlaceholder.title')}</p>
+                  <p className='text-sm'>{t('analytics.chartPlaceholder.subtitle')}</p>
                 </div>
               </div>
             </CardContent>

@@ -105,7 +105,7 @@ export function ProfessionalApplicationForm({
 }: ProfessionalApplicationFormProps) {
   const { t } = useTranslation('ui/professional-application');
   const [currentStep, setCurrentStep] = useState<ApplicationStep>('personal');
-  
+
   const SPECIALIZATIONS = getSpecializations(t);
   const US_STATES = getUSStates(t);
   const [application, setApplication] = useState<

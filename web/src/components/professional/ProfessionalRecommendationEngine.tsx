@@ -5,6 +5,7 @@
  */
 
 import _React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   ArrowRight,
@@ -99,26 +100,28 @@ interface ProfessionalRecommendationEngineProps {
   ) => void;
 }
 
-const DOCUMENT_TYPES = [
-  'Last Will & Testament',
-  'Living Trust',
-  'Power of Attorney',
-  'Healthcare Directive',
-  'Business Agreement',
-  'Real Estate Documents',
-  'Asset Transfer',
-  'Tax Planning',
+// Document types will be translated, keys defined here
+const DOCUMENT_TYPE_KEYS = [
+  'lastWillTestament',
+  'livingTrust',
+  'powerOfAttorney',
+  'healthcareDirective',
+  'businessAgreement',
+  'realEstateDocuments',
+  'assetTransfer',
+  'taxPlanning',
 ];
 
-const SPECIALIZATIONS = [
-  'Estate Planning',
-  'Tax Law',
-  'Business Law',
-  'Real Estate Law',
-  'Family Law',
-  'Elder Law',
-  'Asset Protection',
-  'Probate Law',
+// Specializations will be translated, keys defined here
+const SPECIALIZATION_KEYS = [
+  'estatePlanning',
+  'taxLaw',
+  'businessLaw',
+  'realEstateLaw',
+  'familyLaw',
+  'elderLaw',
+  'assetProtection',
+  'probateLaw',
 ];
 
 const SAMPLE_PROFESSIONALS: ProfessionalRecommendation[] = [
@@ -270,6 +273,7 @@ export function ProfessionalRecommendationEngine({
   initialCriteria,
   className,
 }: ProfessionalRecommendationEngineProps) {
+  const { t } = useTranslation('ui/professional-recommendations');
   const [criteria, setCriteria] = useState<RecommendationCriteria>({
     serviceType: 'consultation',
     documentTypes: [],
@@ -423,15 +427,13 @@ export function ProfessionalRecommendationEngine({
       <div className='text-center space-y-4'>
         <div className='inline-flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-700 rounded-full text-sm font-medium'>
           <Sparkles className='h-4 w-4' />
-          AI-Powered Recommendations
+          {t('header.aiPowered')}
         </div>
         <h2 className='text-3xl font-bold'>
-          Find Your Perfect Legal Professional
+          {t('header.title')}
         </h2>
         <p className='text-muted-foreground max-w-2xl mx-auto'>
-          Our intelligent matching system analyzes your needs and connects you
-          with the most suitable attorneys based on expertise, availability, and
-          client success history.
+          {t('header.description')}
         </p>
       </div>
 
@@ -441,7 +443,7 @@ export function ProfessionalRecommendationEngine({
           <div className='flex items-center justify-between'>
             <CardTitle className='flex items-center gap-2'>
               <Target className='h-5 w-5' />
-              Your Legal Needs
+              {t('criteria.title')}
             </CardTitle>
             <Button
               variant='outline'
@@ -449,14 +451,14 @@ export function ProfessionalRecommendationEngine({
               onClick={() => setShowFilters(!showFilters)}
             >
               <Sliders className='h-4 w-4 mr-2' />
-              {showFilters ? 'Hide' : 'Advanced'} Filters
+              {showFilters ? t('criteria.hideFilters') : t('criteria.advancedFilters')}
             </Button>
           </div>
         </CardHeader>
         <CardContent className='space-y-6'>
           <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
             <div className='space-y-2'>
-              <Label>Service Type</Label>
+              <Label>{t('criteria.serviceType.label')}</Label>
               <Select
                 value={criteria.serviceType}
                 onValueChange={(value: 'consultation' | 'ongoing' | 'review') =>
@@ -467,19 +469,19 @@ export function ProfessionalRecommendationEngine({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value='review'>Document Review</SelectItem>
+                  <SelectItem value='review'>{t('criteria.serviceType.review')}</SelectItem>
                   <SelectItem value='consultation'>
-                    Legal Consultation
+                    {t('criteria.serviceType.consultation')}
                   </SelectItem>
                   <SelectItem value='ongoing'>
-                    Ongoing Representation
+                    {t('criteria.serviceType.ongoing')}
                   </SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div className='space-y-2'>
-              <Label>Urgency Level</Label>
+              <Label>{t('criteria.urgency.label')}</Label>
               <Select
                 value={criteria.urgency}
                 onValueChange={(value: 'high' | 'low' | 'medium') =>
@@ -490,15 +492,15 @@ export function ProfessionalRecommendationEngine({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value='low'>Low - Within 2 weeks</SelectItem>
-                  <SelectItem value='medium'>Medium - This week</SelectItem>
-                  <SelectItem value='high'>High - ASAP</SelectItem>
+                  <SelectItem value='low'>{t('criteria.urgency.low')}</SelectItem>
+                  <SelectItem value='medium'>{t('criteria.urgency.medium')}</SelectItem>
+                  <SelectItem value='high'>{t('criteria.urgency.high')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div className='space-y-2'>
-              <Label>Experience Level</Label>
+              <Label>{t('criteria.experienceLevel.label')}</Label>
               <Select
                 value={criteria.experienceLevel}
                 onValueChange={(
@@ -509,10 +511,10 @@ export function ProfessionalRecommendationEngine({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value='any'>Any Experience</SelectItem>
-                  <SelectItem value='junior'>Junior (1-5 years)</SelectItem>
-                  <SelectItem value='senior'>Senior (10+ years)</SelectItem>
-                  <SelectItem value='expert'>Expert (20+ years)</SelectItem>
+                  <SelectItem value='any'>{t('criteria.experienceLevel.any')}</SelectItem>
+                  <SelectItem value='junior'>{t('criteria.experienceLevel.junior')}</SelectItem>
+                  <SelectItem value='senior'>{t('criteria.experienceLevel.senior')}</SelectItem>
+                  <SelectItem value='expert'>{t('criteria.experienceLevel.expert')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -531,64 +533,70 @@ export function ProfessionalRecommendationEngine({
                   <div className='space-y-4'>
                     <div>
                       <Label className='text-base font-medium mb-3'>
-                        Required Specializations
+                        {t('criteria.specializations.label')}
                       </Label>
                       <div className='grid grid-cols-2 gap-2'>
-                        {SPECIALIZATIONS.map(spec => (
-                          <Button
-                            key={spec}
-                            variant={
-                              criteria.requiresSpecializations.includes(spec)
-                                ? 'default'
-                                : 'outline'
-                            }
-                            size='sm'
-                            onClick={() => {
-                              setCriteria(prev => ({
-                                ...prev,
-                                requiresSpecializations:
-                                  prev.requiresSpecializations.includes(spec)
-                                    ? prev.requiresSpecializations.filter(
-                                        s => s !== spec
-                                      )
-                                    : [...prev.requiresSpecializations, spec],
-                              }));
-                            }}
-                            className='text-xs h-8'
-                          >
-                            {spec}
-                          </Button>
-                        ))}
+                        {SPECIALIZATION_KEYS.map(specKey => {
+                          const specName = t(`specializations.${specKey}`);
+                          return (
+                            <Button
+                              key={specKey}
+                              variant={
+                                criteria.requiresSpecializations.includes(specName)
+                                  ? 'default'
+                                  : 'outline'
+                              }
+                              size='sm'
+                              onClick={() => {
+                                setCriteria(prev => ({
+                                  ...prev,
+                                  requiresSpecializations:
+                                    prev.requiresSpecializations.includes(specName)
+                                      ? prev.requiresSpecializations.filter(
+                                          s => s !== specName
+                                        )
+                                      : [...prev.requiresSpecializations, specName],
+                                }));
+                              }}
+                              className='text-xs h-8'
+                            >
+                              {specName}
+                            </Button>
+                          );
+                        })}
                       </div>
                     </div>
 
                     <div>
                       <Label className='text-base font-medium mb-3'>
-                        Document Types
+                        {t('criteria.documentTypes.label')}
                       </Label>
                       <div className='grid grid-cols-2 gap-2'>
-                        {DOCUMENT_TYPES.slice(0, 4).map(type => (
-                          <Button
-                            key={type}
-                            variant={
-                              criteria.documentTypes.includes(type)
-                                ? 'default'
-                                : 'outline'
-                            }
-                            size='sm'
-                            onClick={() => {
-                              setCriteria(prev => ({
-                                ...prev,
-                                documentTypes: prev.documentTypes.includes(type)
-                                  ? prev.documentTypes.filter(t => t !== type)
-                                  : [...prev.documentTypes, type],
-                              }));
-                            }}
-                            className='text-xs h-8'
-                          >
-                            {type}
-                          </Button>
-                        ))}
+                        {DOCUMENT_TYPE_KEYS.slice(0, 4).map(typeKey => {
+                          const typeName = t(`documentTypes.${typeKey}`);
+                          return (
+                            <Button
+                              key={typeKey}
+                              variant={
+                                criteria.documentTypes.includes(typeName)
+                                  ? 'default'
+                                  : 'outline'
+                              }
+                              size='sm'
+                              onClick={() => {
+                                setCriteria(prev => ({
+                                  ...prev,
+                                  documentTypes: prev.documentTypes.includes(typeName)
+                                    ? prev.documentTypes.filter(t => t !== typeName)
+                                    : [...prev.documentTypes, typeName],
+                                }));
+                              }}
+                              className='text-xs h-8'
+                            >
+                              {typeName}
+                            </Button>
+                          );
+                        })}
                       </div>
                     </div>
                   </div>
@@ -596,7 +604,7 @@ export function ProfessionalRecommendationEngine({
                   <div className='space-y-4'>
                     <div>
                       <Label className='text-base font-medium mb-3'>
-                        Budget Range
+                        {t('criteria.budgetRange.label')}
                       </Label>
                       <div className='space-y-3'>
                         <Slider
@@ -621,21 +629,23 @@ export function ProfessionalRecommendationEngine({
 
                     <div>
                       <Label className='text-base font-medium mb-3'>
-                        Family Context
+                        {t('criteria.familyContext.label')}
                       </Label>
                       <div className='space-y-3'>
-                        {Object.entries({
-                          complexAssets: 'Complex Assets (>$1M)',
-                          businessInterests: 'Business Interests',
-                          minorChildren: 'Minor Children',
-                          multiState: 'Multi-State Assets',
-                          internationalAssets: 'International Assets',
-                        }).map(([key, label]) => (
+                        {[
+                          'complexAssets',
+                          'businessInterests',
+                          'minorChildren',
+                          'multiState',
+                          'internationalAssets',
+                        ].map(key => (
                           <div
                             key={key}
                             className='flex items-center justify-between'
                           >
-                            <Label className='text-sm'>{label}</Label>
+                            <Label className='text-sm'>
+                              {t(`criteria.familyContext.${key}`)}
+                            </Label>
                             <Switch
                               checked={
                                 criteria.familyContext[
@@ -672,11 +682,10 @@ export function ProfessionalRecommendationEngine({
               <Sparkles className='h-8 w-8 text-purple-600 animate-spin' />
             </div>
             <h3 className='text-lg font-semibold mb-2'>
-              Finding Perfect Matches
+              {t('loading.title')}
             </h3>
             <p className='text-muted-foreground'>
-              Analyzing hundreds of professionals to find your ideal legal
-              counsel...
+              {t('loading.description')}
             </p>
             <Progress value={60} className='mt-4 max-w-xs mx-auto' />
           </CardContent>
@@ -688,11 +697,11 @@ export function ProfessionalRecommendationEngine({
         <div className='space-y-6'>
           <div className='flex items-center justify-between'>
             <h3 className='text-xl font-semibold'>
-              {recommendations.length} Recommended Professionals
+              {t('recommendations.title', { count: recommendations.length })}
             </h3>
             <Badge variant='outline' className='bg-green-50 text-green-700'>
               <CheckCircle className='h-3 w-3 mr-1' />
-              All Verified & Licensed
+              {t('recommendations.allVerified')}
             </Badge>
           </div>
 
@@ -743,12 +752,12 @@ export function ProfessionalRecommendationEngine({
 
                                 <div className='flex items-center gap-2'>
                                   <Badge className='bg-green-100 text-green-800'>
-                                    {recommendation.matchScore}% match
+                                    {t('recommendations.matchPercentage', { score: recommendation.matchScore })}
                                   </Badge>
                                   {index === 0 && (
                                     <Badge className='bg-purple-100 text-purple-800'>
                                       <Heart className='h-3 w-3 mr-1' />
-                                      Top Pick
+                                      {t('recommendations.topPick')}
                                     </Badge>
                                   )}
                                 </div>
@@ -757,25 +766,27 @@ export function ProfessionalRecommendationEngine({
                               <div className='flex items-center gap-4 text-sm text-muted-foreground mb-3'>
                                 <span className='flex items-center gap-1'>
                                   <Award className='h-4 w-4' />
-                                  {professional.experience_years} years
+                                  {t('recommendations.years', { years: professional.experience_years })}
                                 </span>
                                 <span className='flex items-center gap-1'>
                                   <Star className='h-4 w-4 text-yellow-500 fill-current' />
-                                  {recommendation.clientReviews.rating} (
-                                  {recommendation.clientReviews.count} reviews)
+                                  {t('recommendations.reviews', { 
+                                    rating: recommendation.clientReviews.rating,
+                                    count: recommendation.clientReviews.count
+                                  })}
                                 </span>
                                 <span className='flex items-center gap-1'>
                                   <MapPin className='h-4 w-4' />
                                   {professional.licensed_states?.[0]}
                                   {professional.licensed_states &&
                                     professional.licensed_states.length > 1 &&
-                                    ` +${professional.licensed_states.length - 1} more`}
+                                    ` ${t('recommendations.moreStates', { count: professional.licensed_states.length - 1 })}`}
                                 </span>
                               </div>
 
                               <div className='mb-4'>
                                 <Label className='text-sm font-medium mb-2 block'>
-                                  Specializations:
+                                  {t('recommendations.specializations')}
                                 </Label>
                                 <div className='flex flex-wrap gap-1'>
                                   {professional.specializations?.map(spec => (
@@ -792,7 +803,7 @@ export function ProfessionalRecommendationEngine({
 
                               <div className='mb-4'>
                                 <Label className='text-sm font-medium mb-2 block'>
-                                  Why This Match:
+                                  {t('recommendations.whyMatch')}
                                 </Label>
                                 <div className='flex flex-wrap gap-1'>
                                   {recommendation.matchReasons.map(
@@ -823,7 +834,7 @@ export function ProfessionalRecommendationEngine({
                           <div className='grid grid-cols-2 gap-2 text-center'>
                             <div className='p-3 bg-gray-50 rounded-lg'>
                               <p className='text-xs text-muted-foreground'>
-                                Availability
+                                {t('recommendations.availability')}
                               </p>
                               <Badge
                                 className={cn(
@@ -833,12 +844,12 @@ export function ProfessionalRecommendationEngine({
                                   )
                                 )}
                               >
-                                {recommendation.availability.replace('_', ' ')}
+                                {t(`availability.${recommendation.availability}`)}
                               </Badge>
                             </div>
                             <div className='p-3 bg-gray-50 rounded-lg'>
                               <p className='text-xs text-muted-foreground'>
-                                Budget Fit
+                                {t('recommendations.budgetFit')}
                               </p>
                               <Badge
                                 className={cn(
@@ -846,7 +857,7 @@ export function ProfessionalRecommendationEngine({
                                   getBudgetFitColor(recommendation.budgetFit)
                                 )}
                               >
-                                {recommendation.budgetFit}
+                                {t(`budgetFit.${recommendation.budgetFit}`)}
                               </Badge>
                             </div>
                           </div>
@@ -855,7 +866,7 @@ export function ProfessionalRecommendationEngine({
 
                           <div className='space-y-3'>
                             <Label className='font-medium'>
-                              Suggested Services:
+                              {t('recommendations.suggestedServices')}
                             </Label>
                             {recommendation.suggestedServices.map(
                               (service, idx) => (
@@ -868,7 +879,7 @@ export function ProfessionalRecommendationEngine({
                                       variant='outline'
                                       className='text-xs'
                                     >
-                                      {service.type}
+                                      {t(`serviceTypes.${service.type}`)}
                                     </Badge>
                                     <span className='font-semibold'>
                                       ${service.estimatedCost}
@@ -897,7 +908,7 @@ export function ProfessionalRecommendationEngine({
                               className='w-full'
                             >
                               <Calendar className='h-4 w-4 mr-2' />
-                              Book Consultation
+                              {t('recommendations.bookConsultation')}
                             </Button>
                             <Button
                               variant='outline'
@@ -907,7 +918,7 @@ export function ProfessionalRecommendationEngine({
                               className='w-full'
                             >
                               <FileText className='h-4 w-4 mr-2' />
-                              Request Review
+                              {t('recommendations.requestReview')}
                             </Button>
                           </div>
 
@@ -919,7 +930,7 @@ export function ProfessionalRecommendationEngine({
                                 setSelectedRecommendation(recommendation)
                               }
                             >
-                              View Full Profile
+                              {t('recommendations.viewProfile')}
                               <ArrowRight className='h-4 w-4 ml-2' />
                             </Button>
                           </div>
@@ -931,7 +942,7 @@ export function ProfessionalRecommendationEngine({
                         0 && (
                         <div className='mt-6 pt-6 border-t'>
                           <Label className='font-medium mb-3 block'>
-                            Recent Client Reviews:
+                            {t('recommendations.recentReviews')}
                           </Label>
                           <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                             {recommendation.clientReviews.recentReviews.map(
@@ -955,7 +966,7 @@ export function ProfessionalRecommendationEngine({
                                         className='text-xs'
                                       >
                                         <Shield className='h-2 w-2 mr-1' />
-                                        Verified
+                                        {t('recommendations.verified')}
                                       </Badge>
                                     )}
                                   </div>
@@ -987,14 +998,13 @@ export function ProfessionalRecommendationEngine({
             <div className='w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4'>
               <Search className='h-8 w-8 text-gray-400' />
             </div>
-            <h3 className='text-lg font-semibold mb-2'>No Matches Found</h3>
+            <h3 className='text-lg font-semibold mb-2'>{t('noResults.title')}</h3>
             <p className='text-muted-foreground mb-4'>
-              Try adjusting your criteria or expanding your budget range to see
-              more recommendations.
+              {t('noResults.description')}
             </p>
             <Button variant='outline' onClick={() => setShowFilters(true)}>
               <Sliders className='h-4 w-4 mr-2' />
-              Adjust Filters
+              {t('noResults.adjustFilters')}
             </Button>
           </CardContent>
         </Card>
@@ -1007,10 +1017,9 @@ export function ProfessionalRecommendationEngine({
             <div className='w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto'>
               <Shield className='h-6 w-6 text-blue-600' />
             </div>
-            <h4 className='font-semibold'>Verified Professionals</h4>
+            <h4 className='font-semibold'>{t('trustIndicators.verified.title')}</h4>
             <p className='text-sm text-muted-foreground'>
-              All attorneys are licensed, verified, and maintain professional
-              liability insurance
+              {t('trustIndicators.verified.description')}
             </p>
           </div>
 
@@ -1018,10 +1027,9 @@ export function ProfessionalRecommendationEngine({
             <div className='w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto'>
               <Sparkles className='h-6 w-6 text-green-600' />
             </div>
-            <h4 className='font-semibold'>AI-Powered Matching</h4>
+            <h4 className='font-semibold'>{t('trustIndicators.aiPowered.title')}</h4>
             <p className='text-sm text-muted-foreground'>
-              Advanced algorithms ensure you're connected with the most suitable
-              legal counsel
+              {t('trustIndicators.aiPowered.description')}
             </p>
           </div>
 
@@ -1029,10 +1037,9 @@ export function ProfessionalRecommendationEngine({
             <div className='w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto'>
               <TrendingUp className='h-6 w-6 text-purple-600' />
             </div>
-            <h4 className='font-semibold'>Success Guaranteed</h4>
+            <h4 className='font-semibold'>{t('trustIndicators.guarantee.title')}</h4>
             <p className='text-sm text-muted-foreground'>
-              100% satisfaction guarantee with transparent pricing and clear
-              expectations
+              {t('trustIndicators.guarantee.description')}
             </p>
           </div>
         </div>

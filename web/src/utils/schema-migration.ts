@@ -3,39 +3,39 @@ import type { LegacyItem, LegacyItemInsert } from '../types/database';
 
 // Old schema types (for migration)
 export interface OldWill {
-  id: string;
-  user_id: string;
-  title: string;
   content: string;
-  status: 'draft' | 'pending' | 'completed' | 'archived';
   created_at: string;
-  updated_at: string;
+  id: string;
   metadata?: any;
+  status: 'archived' | 'completed' | 'draft' | 'pending';
+  title: string;
+  updated_at: string;
+  user_id: string;
 }
 
 export interface OldDocument {
-  id: string;
-  user_id: string;
-  name: string;
-  type: string;
   content: string;
-  status: 'draft' | 'pending' | 'completed' | 'archived';
   created_at: string;
-  updated_at: string;
+  id: string;
   metadata?: any;
+  name: string;
+  status: 'archived' | 'completed' | 'draft' | 'pending';
+  type: string;
+  updated_at: string;
+  user_id: string;
 }
 
 export interface OldTrust {
-  id: string;
-  user_id: string;
-  name: string;
-  type: string;
-  beneficiaries: any[];
   assets: any[];
-  status: 'draft' | 'pending' | 'completed' | 'archived';
+  beneficiaries: any[];
   created_at: string;
-  updated_at: string;
+  id: string;
   metadata?: any;
+  name: string;
+  status: 'archived' | 'completed' | 'draft' | 'pending';
+  type: string;
+  updated_at: string;
+  user_id: string;
 }
 
 // Migration functions
@@ -176,7 +176,7 @@ export function isValidLegacyItemPriority(priority: string): boolean {
 }
 
 // JSON handling utilities
-export function safeJsonParse<T>(json: string | null | undefined): T | null {
+export function safeJsonParse<T>(json: null | string | undefined): null | T {
   if (!json) return null;
   try {
     return JSON.parse(json) as T;
@@ -185,7 +185,7 @@ export function safeJsonParse<T>(json: string | null | undefined): T | null {
   }
 }
 
-export function safeJsonStringify(obj: any): string | null {
+export function safeJsonStringify(obj: any): null | string {
   try {
     return JSON.stringify(obj);
   } catch {
@@ -194,7 +194,7 @@ export function safeJsonStringify(obj: any): string | null {
 }
 
 // Date handling utilities
-export function safeDateParse(date: string | null | undefined): Date | null {
+export function safeDateParse(date: null | string | undefined): Date | null {
   if (!date) return null;
   const parsed = new Date(date);
   return isNaN(parsed.getTime()) ? null : parsed;
@@ -205,15 +205,15 @@ export function formatDateForDatabase(date: Date): string {
 }
 
 // Array handling utilities
-export function safeArray<T>(arr: T[] | null | undefined): T[] {
+export function safeArray<T>(arr: null | T[] | undefined): T[] {
   return Array.isArray(arr) ? arr : [];
 }
 
 // Enum handling utilities
 export function safeEnum<T extends string>(
-  value: string | null | undefined,
+  value: null | string | undefined,
   validValues: readonly T[]
-): T | null {
+): null | T {
   if (!value) return null;
   return validValues.includes(value as T) ? (value as T) : null;
 }
@@ -235,10 +235,10 @@ export function validateLegacyItem(item: any): item is LegacyItem {
 
 // Error handling utilities
 export interface MigrationError {
-  message: string;
   code: string;
-  details: string;
   context?: any;
+  details: string;
+  message: string;
 }
 
 export function createMigrationError(
@@ -256,10 +256,10 @@ export function createMigrationError(
 
 // Batch migration utilities
 export interface BatchMigrationResult {
-  success: number;
-  failed: number;
   errors: MigrationError[];
+  failed: number;
   migrated: LegacyItem[];
+  success: number;
 }
 
 export function createBatchMigrationResult(): BatchMigrationResult {
@@ -314,8 +314,8 @@ export function isOldTrust(obj: any): obj is OldTrust {
 // Migration configuration
 export interface MigrationConfig {
   batchSize: number;
-  retryAttempts: number;
   delayBetweenBatches: number;
+  retryAttempts: number;
   validateAfterMigration: boolean;
 }
 
@@ -328,14 +328,14 @@ export const DEFAULT_MIGRATION_CONFIG: MigrationConfig = {
 
 // Migration progress tracking
 export interface MigrationProgress {
-  total: number;
-  processed: number;
-  success: number;
-  failed: number;
-  errors: MigrationError[];
-  startTime: number;
-  endTime?: number;
   duration?: number;
+  endTime?: number;
+  errors: MigrationError[];
+  failed: number;
+  processed: number;
+  startTime: number;
+  success: number;
+  total: number;
 }
 
 export function createMigrationProgress(total: number): MigrationProgress {

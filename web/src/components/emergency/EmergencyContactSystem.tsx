@@ -10,6 +10,7 @@ import { AnimationSystem } from '@/lib/animation-system';
 import { useSupabaseWithClerk } from '@/integrations/supabase/client';
 import type { PersonalityMode } from '@/lib/sofia-types';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 
 // UI Components
 import { Button } from '@/components/ui/button';
@@ -105,6 +106,7 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
   // _onContactUpdated, // Not used
   // _onNotificationSent, // Not used
 }) => {
+  const { t } = useTranslation('ui/emergency-contact-system');
   const { userId } = useAuth();
   const createSupabaseClient = useSupabaseWithClerk();
   const personalityManager = usePersonalityManager();
@@ -180,7 +182,7 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
         guardian => ({
           id: guardian.id,
           name: guardian.name,
-          relationship: guardian.relationship || 'Guardian',
+          relationship: guardian.relationship || t('relationships.Guardian'),
           email: guardian.email,
           phone: guardian.phone || '',
           can_help_with: (guardian as any).can_help_with || [],
@@ -206,7 +208,7 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
     } catch (err) {
       console.error('Error loading emergency data:', err);
       setError(
-        err instanceof Error ? err.message : 'Failed to load emergency contacts'
+        err instanceof Error ? err.message : t('notifications.loadError')
       );
     } finally {
       setLoading(false);
@@ -281,21 +283,13 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
         );
         // _onContactUpdated?.(newContact); // Not available
         toast.success(
-          effectiveMode === 'empathetic'
-            ? '💚 Your trusted contact has been updated with love'
-            : effectiveMode === 'pragmatic'
-              ? '🛡️ Emergency contact updated successfully'
-              : '✅ Contact updated and ready to help'
+          t(`personalityModes.${effectiveMode}.updateSuccessToast`)
         );
       } else {
         setContacts(prev => [...prev, newContact]);
         // _onContactAdded?.(newContact); // Not available
         toast.success(
-          effectiveMode === 'empathetic'
-            ? '💚 Another loving guardian added to your circle of care'
-            : effectiveMode === 'pragmatic'
-              ? '🛡️ Emergency contact added to protection network'
-              : '✅ New emergency contact added'
+          t(`personalityModes.${effectiveMode}.addSuccessToast`)
         );
       }
 
@@ -319,7 +313,7 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
       setShowAddDialog(false);
     } catch (err) {
       console.error('Error saving contact:', err);
-      toast.error('Failed to save emergency contact. Please try again.');
+      toast.error(t('notifications.saveError'));
     }
   }, [
     userId,
@@ -343,18 +337,8 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
           guardian_id: contactId,
           user_id: userId,
           notification_type: 'status_update' as const,
-          title:
-            effectiveMode === 'empathetic'
-              ? 'Test of Love - Family Care System'
-              : effectiveMode === 'pragmatic'
-                ? 'Emergency System Test'
-                : 'Family Protection Test',
-          message:
-            effectiveMode === 'empathetic'
-              ? `Hello ${contact.name}! This is a gentle test to make sure you can receive messages about your loved one's wellbeing. Everything is fine - just making sure our circle of care works perfectly. ❤️`
-              : effectiveMode === 'pragmatic'
-                ? `System test for ${contact.name}. Verifying emergency notification delivery capability. No action required - this is a scheduled test of the emergency contact system.`
-                : `Hi ${contact.name}! This is a test message from your loved one's Family Protection system. All is well - we're just making sure you'll receive important updates when needed.`,
+          title: t(`personalityModes.${effectiveMode}.testNotificationTitle`),
+          message: t(`personalityModes.${effectiveMode}.testNotificationMessage`, { name: contact.name }),
           priority: 'low' as const,
           delivery_method: 'email' as const,
         };
@@ -365,11 +349,11 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
 
         if (error) throw error;
 
-        toast.success(`Test notification sent to ${contact.name}`);
+        toast.success(t('notifications.testNotificationSuccess', { name: contact.name }));
         await loadEmergencyData(); // Refresh to show new notification
       } catch (err) {
         console.error('Error sending test notification:', err);
-        toast.error('Failed to send test notification');
+        toast.error(t('notifications.testNotificationError'));
       }
     },
     [userId, createSupabaseClient, contacts, effectiveMode, loadEmergencyData]
@@ -391,10 +375,10 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
         if (error) throw error;
 
         setContacts(prev => prev.filter(c => c.id !== contactId));
-        toast.success('Emergency contact removed');
+        toast.success(t('notifications.deleteSuccess'));
       } catch (err) {
         console.error('Error deleting contact:', err);
-        toast.error('Failed to remove contact');
+        toast.error(t('notifications.deleteError'));
       }
     },
     [userId, createSupabaseClient]
@@ -550,14 +534,14 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
                 <DialogHeader>
                   <DialogTitle>
                     {editingContact
-                      ? 'Edit Contact'
-                      : personalityContent.addButtonText}
+                      ? t('form.dialog.editTitle')
+                      : t('form.dialog.addTitle', { buttonText: personalityContent.addButtonText })}
                   </DialogTitle>
                 </DialogHeader>
 
                 <div className='space-y-4'>
                   <div>
-                    <Label htmlFor='name'>Name</Label>
+                    <Label htmlFor='name'>{t('form.fields.name.label')}</Label>
                     <Input
                       id='name'
                       value={contactForm.name}
@@ -567,12 +551,12 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
                           name: e.target.value,
                         }))
                       }
-                      placeholder='Enter full name'
+                      placeholder={t('form.fields.name.placeholder')}
                     />
                   </div>
 
                   <div>
-                    <Label htmlFor='relationship'>Relationship</Label>
+                    <Label htmlFor='relationship'>{t('form.fields.relationship.label')}</Label>
                     <Select
                       value={contactForm.relationship}
                       onValueChange={value =>
@@ -583,24 +567,24 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
                       }
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder='Select relationship' />
+                        <SelectValue placeholder={t('form.fields.relationship.placeholder')} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value='Spouse'>Spouse/Partner</SelectItem>
-                        <SelectItem value='Parent'>Parent</SelectItem>
-                        <SelectItem value='Child'>Adult Child</SelectItem>
-                        <SelectItem value='Sibling'>Sibling</SelectItem>
-                        <SelectItem value='Friend'>Close Friend</SelectItem>
-                        <SelectItem value='Relative'>Other Relative</SelectItem>
+                        <SelectItem value='Spouse'>{t('form.fields.relationship.options.spouse')}</SelectItem>
+                        <SelectItem value='Parent'>{t('form.fields.relationship.options.parent')}</SelectItem>
+                        <SelectItem value='Child'>{t('form.fields.relationship.options.child')}</SelectItem>
+                        <SelectItem value='Sibling'>{t('form.fields.relationship.options.sibling')}</SelectItem>
+                        <SelectItem value='Friend'>{t('form.fields.relationship.options.friend')}</SelectItem>
+                        <SelectItem value='Relative'>{t('form.fields.relationship.options.relative')}</SelectItem>
                         <SelectItem value='Professional'>
-                          Professional Contact
+                          {t('form.fields.relationship.options.professional')}
                         </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
                   <div>
-                    <Label htmlFor='email'>Email</Label>
+                    <Label htmlFor='email'>{t('form.fields.email.label')}</Label>
                     <Input
                       id='email'
                       type='email'
@@ -611,12 +595,12 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
                           email: e.target.value,
                         }))
                       }
-                      placeholder='Enter email address'
+                      placeholder={t('form.fields.email.placeholder')}
                     />
                   </div>
 
                   <div>
-                    <Label htmlFor='phone'>Phone (Optional)</Label>
+                    <Label htmlFor='phone'>{t('form.fields.phone.label')}</Label>
                     <Input
                       id='phone'
                       type='tel'
@@ -627,7 +611,7 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
                           phone: e.target.value,
                         }))
                       }
-                      placeholder='Enter phone number'
+                      placeholder={t('form.fields.phone.placeholder')}
                     />
                   </div>
 
@@ -643,16 +627,12 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
                       }
                     />
                     <Label htmlFor='can-trigger' className='text-sm'>
-                      {effectiveMode === 'empathetic'
-                        ? 'Can activate family care in emergencies'
-                        : effectiveMode === 'pragmatic'
-                          ? 'Emergency activation permissions'
-                          : 'Allow emergency activation'}
+                      {t(`personalityModes.${effectiveMode === 'balanced' ? 'adaptive' : effectiveMode}.canActivateEmergency`)}
                     </Label>
                   </div>
 
                   <div>
-                    <Label htmlFor='notes'>Notes (Optional)</Label>
+                    <Label htmlFor='notes'>{t('form.fields.notes.label')}</Label>
                     <Textarea
                       id='notes'
                       value={contactForm.notes}
@@ -662,7 +642,7 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
                           notes: e.target.value,
                         }))
                       }
-                      placeholder='Special instructions or notes...'
+                      placeholder={t('form.fields.notes.placeholder')}
                       rows={2}
                     />
                   </div>
@@ -673,13 +653,13 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
                       className='flex-1'
                       disabled={!contactForm.name || !contactForm.email}
                     >
-                      {editingContact ? 'Update Contact' : 'Add Contact'}
+                      {editingContact ? t('form.buttons.updateContact') : t('form.buttons.addContact')}
                     </Button>
                     <Button
                       variant='outline'
                       onClick={() => setShowAddDialog(false)}
                     >
-                      Cancel
+                      {t('form.buttons.cancel')}
                     </Button>
                   </div>
                 </div>
@@ -700,19 +680,19 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
               <div className='text-lg font-semibold text-gray-800'>
                 {contacts.length}
               </div>
-              <div className='text-xs text-gray-600'>Total Contacts</div>
+              <div className='text-xs text-gray-600'>{t('statistics.totalContacts')}</div>
             </div>
             <div className='bg-white/60 backdrop-blur-sm rounded-lg p-3 text-center'>
               <div className='text-lg font-semibold text-gray-800'>
                 {contactCategories.primary.length}
               </div>
-              <div className='text-xs text-gray-600'>Primary</div>
+              <div className='text-xs text-gray-600'>{t('statistics.primary')}</div>
             </div>
             <div className='bg-white/60 backdrop-blur-sm rounded-lg p-3 text-center'>
               <div className='text-lg font-semibold text-gray-800'>
                 {notifications.filter(n => n.delivery_status === 'sent').length}
               </div>
-              <div className='text-xs text-gray-600'>Recent Messages</div>
+              <div className='text-xs text-gray-600'>{t('statistics.recentMessages')}</div>
             </div>
           </div>
 
@@ -734,11 +714,7 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
               {contactCategories.primary.length > 0 && (
                 <div>
                   <h4 className='text-sm font-medium text-gray-700 mb-3'>
-                    {effectiveMode === 'empathetic'
-                      ? 'Primary Caregivers'
-                      : effectiveMode === 'pragmatic'
-                        ? 'Primary Response Team'
-                        : 'Primary Contacts'}
+                    {t(`personalityModes.${effectiveMode === 'balanced' ? 'adaptive' : effectiveMode}.primaryContactsTitle`)}
                   </h4>
                   <div className='space-y-2'>
                     {contactCategories.primary.map((contact, index) => (
@@ -769,7 +745,7 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
                                     className='text-xs'
                                   >
                                     <Zap className='w-3 h-3 mr-1' />
-                                    Emergency
+                                    {t('contactCard.emergencyBadge')}
                                   </Badge>
                                 )}
                               </div>
@@ -849,11 +825,7 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
               {contactCategories.secondary.length > 0 && (
                 <div>
                   <h4 className='text-sm font-medium text-gray-700 mb-3'>
-                    {effectiveMode === 'empathetic'
-                      ? 'Support Circle'
-                      : effectiveMode === 'pragmatic'
-                        ? 'Secondary Contacts'
-                        : 'Additional Contacts'}
+                    {t(`personalityModes.${effectiveMode === 'balanced' ? 'adaptive' : effectiveMode}.secondaryContactsTitle`)}
                   </h4>
                   <div className='grid gap-2'>
                     {contactCategories.secondary.map((contact, index) => (
@@ -913,7 +885,7 @@ export const EmergencyContactSystem: React.FC<EmergencyContactSystemProps> = ({
         >
           <div className='p-4'>
             <h4 className='text-sm font-medium text-gray-700 mb-3'>
-              Recent Notifications
+              {t('notifications.sectionTitle')}
             </h4>
             <div className='space-y-2'>
               {notifications.slice(0, 3).map(notification => (

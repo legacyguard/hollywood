@@ -139,7 +139,7 @@ export const MyFamilyPage: React.FC<MyFamilyPageProps> = ({
                 {
                   id: personId,
                   name: person.name,
-                  relationship: (person.relationship as 'spouse' | 'child' | 'parent' | 'sibling' | 'grandchild' | 'friend' | 'charity' | 'other') || 'other',
+                  relationship: (person.relationship as 'charity' | 'child' | 'friend' | 'grandchild' | 'other' | 'parent' | 'sibling' | 'spouse') || 'other',
                   percentage: newRoles.heirPercentage || 0,
                   specificGifts: [],
                   conditions: '',

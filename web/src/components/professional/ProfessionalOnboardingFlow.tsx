@@ -5,6 +5,7 @@
  */
 
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   ArrowLeft,
   ArrowRight,
@@ -106,27 +107,27 @@ const US_STATES = [
   'District of Columbia',
 ];
 
-const SPECIALIZATIONS = [
+const getSpecializations = (t: any) => [
   {
     id: 'estate_planning',
-    name: 'Estate Planning',
+    name: t('specializations.estate_planning'),
     category: 'estate_planning',
   },
-  { id: 'wills_trusts', name: 'Wills & Trusts', category: 'estate_planning' },
-  { id: 'probate', name: 'Probate Law', category: 'estate_planning' },
-  { id: 'family_law', name: 'Family Law', category: 'family_law' },
-  { id: 'elder_law', name: 'Elder Law', category: 'estate_planning' },
-  { id: 'tax_law', name: 'Tax Law', category: 'tax_law' },
-  { id: 'business_law', name: 'Business Law', category: 'business_law' },
-  { id: 'real_estate', name: 'Real Estate Law', category: 'real_estate' },
+  { id: 'wills_trusts', name: t('specializations.wills_trusts'), category: 'estate_planning' },
+  { id: 'probate', name: t('specializations.probate'), category: 'estate_planning' },
+  { id: 'family_law', name: t('specializations.family_law'), category: 'family_law' },
+  { id: 'elder_law', name: t('specializations.elder_law'), category: 'estate_planning' },
+  { id: 'tax_law', name: t('specializations.tax_law'), category: 'tax_law' },
+  { id: 'business_law', name: t('specializations.business_law'), category: 'business_law' },
+  { id: 'real_estate', name: t('specializations.real_estate'), category: 'real_estate' },
   {
     id: 'guardianship',
-    name: 'Guardianship & Conservatorship',
+    name: t('specializations.guardianship'),
     category: 'family_law',
   },
   {
     id: 'asset_protection',
-    name: 'Asset Protection',
+    name: t('specializations.asset_protection'),
     category: 'estate_planning',
   },
 ];
@@ -136,6 +137,7 @@ export function ProfessionalOnboardingFlow({
   onCancel,
   className,
 }: ProfessionalOnboardingFlowProps) {
+  const { t } = useTranslation('ui/professional-onboarding');
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     email: '',
@@ -155,32 +157,32 @@ export function ProfessionalOnboardingFlow({
   const steps: OnboardingStep[] = [
     {
       id: 1,
-      title: 'Personal Information',
-      description: 'Basic professional details',
+      title: t('steps.personal_information.title'),
+      description: t('steps.personal_information.description'),
       icon: Users,
       isCompleted: currentStep > 1,
       isActive: currentStep === 1,
     },
     {
       id: 2,
-      title: 'Professional Credentials',
-      description: 'Bar admission and licensing',
+      title: t('steps.professional_credentials.title'),
+      description: t('steps.professional_credentials.description'),
       icon: Award,
       isCompleted: currentStep > 2,
       isActive: currentStep === 2,
     },
     {
       id: 3,
-      title: 'Specializations',
-      description: 'Areas of legal expertise',
+      title: t('steps.specializations.title'),
+      description: t('steps.specializations.description'),
       icon: Scale,
       isCompleted: currentStep > 3,
       isActive: currentStep === 3,
     },
     {
       id: 4,
-      title: 'Professional Profile',
-      description: 'Rate, bio, and motivation',
+      title: t('steps.professional_profile.title'),
+      description: t('steps.professional_profile.description'),
       icon: Shield,
       isCompleted: currentStep > 4,
       isActive: currentStep === 4,
@@ -257,50 +259,50 @@ export function ProfessionalOnboardingFlow({
           >
             <div className='space-y-4'>
               <div>
-                <Label htmlFor='email'>Email Address *</Label>
+                <Label htmlFor='email'>{t('step1.email.label')}</Label>
                 <Input
                   id='email'
                   type='email'
                   value={formData.email}
                   onChange={e => updateFormData({ email: e.target.value })}
-                  placeholder='your.email@lawfirm.com'
+                  placeholder={t('step1.email.placeholder')}
                   className='mt-1'
                 />
               </div>
 
               <div>
-                <Label htmlFor='full_name'>Full Name *</Label>
+                <Label htmlFor='full_name'>{t('step1.full_name.label')}</Label>
                 <Input
                   id='full_name'
                   value={formData.full_name}
                   onChange={e => updateFormData({ full_name: e.target.value })}
-                  placeholder='John Smith, Esq.'
+                  placeholder={t('step1.full_name.placeholder')}
                   className='mt-1'
                 />
               </div>
 
               <div>
-                <Label htmlFor='professional_title'>Professional Title *</Label>
+                <Label htmlFor='professional_title'>{t('step1.professional_title.label')}</Label>
                 <Input
                   id='professional_title'
                   value={formData.professional_title}
                   onChange={e =>
                     updateFormData({ professional_title: e.target.value })
                   }
-                  placeholder='Attorney, Partner, Of Counsel, etc.'
+                  placeholder={t('step1.professional_title.placeholder')}
                   className='mt-1'
                 />
               </div>
 
               <div>
-                <Label htmlFor='law_firm_name'>Law Firm / Organization</Label>
+                <Label htmlFor='law_firm_name'>{t('step1.law_firm_name.label')}</Label>
                 <Input
                   id='law_firm_name'
                   value={formData.law_firm_name}
                   onChange={e =>
                     updateFormData({ law_firm_name: e.target.value })
                   }
-                  placeholder='Smith & Associates LLP'
+                  placeholder={t('step1.law_firm_name.placeholder')}
                   className='mt-1'
                 />
               </div>
@@ -319,23 +321,23 @@ export function ProfessionalOnboardingFlow({
           >
             <div className='space-y-4'>
               <div>
-                <Label htmlFor='bar_number'>Bar Number *</Label>
+                <Label htmlFor='bar_number'>{t('step2.bar_number.label')}</Label>
                 <Input
                   id='bar_number'
                   value={formData.bar_number}
                   onChange={e => updateFormData({ bar_number: e.target.value })}
-                  placeholder='123456'
+                  placeholder={t('step2.bar_number.placeholder')}
                   className='mt-1'
                 />
                 <p className='text-sm text-gray-600 mt-1'>
-                  Primary state bar admission number for verification
+                  {t('step2.bar_number.help')}
                 </p>
               </div>
 
               <div>
-                <Label>Licensed States *</Label>
+                <Label>{t('step2.licensed_states.label')}</Label>
                 <p className='text-sm text-gray-600 mb-3'>
-                  Select all states where you are licensed to practice law
+                  {t('step2.licensed_states.help')}
                 </p>
                 <div className='max-h-48 overflow-y-auto border rounded-lg p-3'>
                   <div className='grid grid-cols-2 gap-2'>
@@ -347,7 +349,7 @@ export function ProfessionalOnboardingFlow({
                           onCheckedChange={() => toggleState(state)}
                         />
                         <Label htmlFor={state} className='text-sm font-normal'>
-                          {state}
+                          {t(`states.${state}`)}
                         </Label>
                       </div>
                     ))}
@@ -382,7 +384,7 @@ export function ProfessionalOnboardingFlow({
           >
             <div className='space-y-4'>
               <div>
-                <Label htmlFor='experience_years'>Years of Experience *</Label>
+                <Label htmlFor='experience_years'>{t('step3.experience_years.label')}</Label>
                 <Select
                   value={formData.experience_years.toString()}
                   onValueChange={value =>
@@ -390,26 +392,26 @@ export function ProfessionalOnboardingFlow({
                   }
                 >
                   <SelectTrigger className='mt-1'>
-                    <SelectValue placeholder='Select experience level' />
+                    <SelectValue placeholder={t('step3.experience_years.placeholder')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value='1'>1-2 years</SelectItem>
-                    <SelectItem value='3'>3-5 years</SelectItem>
-                    <SelectItem value='6'>6-10 years</SelectItem>
-                    <SelectItem value='11'>11-15 years</SelectItem>
-                    <SelectItem value='16'>16-20 years</SelectItem>
-                    <SelectItem value='21'>20+ years</SelectItem>
+                    <SelectItem value='1'>{t('step3.experience_years.options.1')}</SelectItem>
+                    <SelectItem value='3'>{t('step3.experience_years.options.3')}</SelectItem>
+                    <SelectItem value='6'>{t('step3.experience_years.options.6')}</SelectItem>
+                    <SelectItem value='11'>{t('step3.experience_years.options.11')}</SelectItem>
+                    <SelectItem value='16'>{t('step3.experience_years.options.16')}</SelectItem>
+                    <SelectItem value='21'>{t('step3.experience_years.options.21')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div>
-                <Label>Areas of Specialization *</Label>
+                <Label>{t('step3.specializations.label')}</Label>
                 <p className='text-sm text-gray-600 mb-3'>
-                  Select your primary areas of legal expertise
+                  {t('step3.specializations.help')}
                 </p>
                 <div className='grid grid-cols-2 gap-3'>
-                  {SPECIALIZATIONS.map(spec => (
+                  {getSpecializations(t).map(spec => (
                     <div key={spec.id} className='flex items-center space-x-2'>
                       <Checkbox
                         id={spec.id}
@@ -425,7 +427,7 @@ export function ProfessionalOnboardingFlow({
                 {formData.specializations.length > 0 && (
                   <div className='mt-3 flex flex-wrap gap-2'>
                     {formData.specializations.map(specId => {
-                      const spec = SPECIALIZATIONS.find(s => s.id === specId);
+                      const spec = getSpecializations(t).find(s => s.id === specId);
                       return spec ? (
                         <Badge
                           key={spec.id}
@@ -454,7 +456,7 @@ export function ProfessionalOnboardingFlow({
           >
             <div className='space-y-4'>
               <div>
-                <Label htmlFor='hourly_rate'>Hourly Rate (USD)</Label>
+                <Label htmlFor='hourly_rate'>{t('step4.hourly_rate.label')}</Label>
                 <Input
                   id='hourly_rate'
                   type='number'
@@ -466,36 +468,36 @@ export function ProfessionalOnboardingFlow({
                         : undefined,
                     })
                   }
-                  placeholder='250'
+                  placeholder={t('step4.hourly_rate.placeholder')}
                   className='mt-1'
                 />
                 <p className='text-sm text-gray-600 mt-1'>
-                  Optional - helps clients understand your fee structure
+                  {t('step4.hourly_rate.help')}
                 </p>
               </div>
 
               <div>
-                <Label htmlFor='bio'>Professional Bio *</Label>
+                <Label htmlFor='bio'>{t('step4.bio.label')}</Label>
                 <Textarea
                   id='bio'
                   value={formData.bio}
                   onChange={e => updateFormData({ bio: e.target.value })}
-                  placeholder='Brief overview of your practice, experience, and approach to serving families...'
+                  placeholder={t('step4.bio.placeholder')}
                   rows={4}
                   className='mt-1'
                 />
                 <p className='text-sm text-gray-600 mt-1'>
-                  This will be displayed to potential clients
+                  {t('step4.bio.help')}
                 </p>
               </div>
 
               <div>
-                <Label htmlFor='motivation'>Why join LegacyGuard? *</Label>
+                <Label htmlFor='motivation'>{t('step4.motivation.label')}</Label>
                 <Textarea
                   id='motivation'
                   value={formData.motivation}
                   onChange={e => updateFormData({ motivation: e.target.value })}
-                  placeholder='What motivates you to help families protect their legacy...'
+                  placeholder={t('step4.motivation.placeholder')}
                   rows={3}
                   className='mt-1'
                 />
@@ -503,7 +505,7 @@ export function ProfessionalOnboardingFlow({
 
               <div>
                 <Label htmlFor='referral_source'>
-                  How did you hear about us?
+                  {t('step4.referral_source.label')}
                 </Label>
                 <Select
                   value={formData.referral_source}
@@ -512,19 +514,19 @@ export function ProfessionalOnboardingFlow({
                   }
                 >
                   <SelectTrigger className='mt-1'>
-                    <SelectValue placeholder='Select referral source' />
+                    <SelectValue placeholder={t('step4.referral_source.placeholder')} />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value='colleague'>
-                      Colleague Referral
+                      {t('step4.referral_source.options.colleague')}
                     </SelectItem>
-                    <SelectItem value='online_search'>Online Search</SelectItem>
+                    <SelectItem value='online_search'>{t('step4.referral_source.options.online_search')}</SelectItem>
                     <SelectItem value='legal_publication'>
-                      Legal Publication
+                      {t('step4.referral_source.options.legal_publication')}
                     </SelectItem>
-                    <SelectItem value='conference'>Legal Conference</SelectItem>
-                    <SelectItem value='linkedin'>LinkedIn</SelectItem>
-                    <SelectItem value='other'>Other</SelectItem>
+                    <SelectItem value='conference'>{t('step4.referral_source.options.conference')}</SelectItem>
+                    <SelectItem value='linkedin'>{t('step4.referral_source.options.linkedin')}</SelectItem>
+                    <SelectItem value='other'>{t('step4.referral_source.options.other')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -548,12 +550,11 @@ export function ProfessionalOnboardingFlow({
         >
           <Scale className='h-8 w-8 text-blue-600' />
           <h1 className='text-3xl font-bold text-gray-900'>
-            Join Our Professional Network
+            {t('header.title')}
           </h1>
         </motion.div>
         <p className='text-lg text-gray-600 max-w-2xl mx-auto'>
-          Help families protect their legacy while building your practice. Join
-          a network of trusted legal professionals.
+          {t('header.subtitle')}
         </p>
       </div>
 
@@ -614,7 +615,7 @@ export function ProfessionalOnboardingFlow({
                   className='flex items-center gap-2'
                 >
                   <ArrowLeft className='h-4 w-4' />
-                  Previous
+                  {t('buttons.previous')}
                 </Button>
               )}
               {onCancel && currentStep === 1 && (
@@ -623,7 +624,7 @@ export function ProfessionalOnboardingFlow({
                   onClick={onCancel}
                   className='text-gray-600'
                 >
-                  Cancel
+                  {t('buttons.cancel')}
                 </Button>
               )}
             </div>
@@ -635,7 +636,7 @@ export function ProfessionalOnboardingFlow({
                   disabled={!isStepValid(currentStep)}
                   className='flex items-center gap-2'
                 >
-                  Continue
+                  {t('buttons.continue')}
                   <ArrowRight className='h-4 w-4' />
                 </Button>
               ) : (
@@ -644,7 +645,7 @@ export function ProfessionalOnboardingFlow({
                   disabled={!isStepValid(4)}
                   className='flex items-center gap-2 bg-green-600 hover:bg-green-700'
                 >
-                  Submit Application
+                  {t('buttons.submit')}
                   <CheckCircle className='h-4 w-4' />
                 </Button>
               )}
@@ -656,28 +657,28 @@ export function ProfessionalOnboardingFlow({
       {/* Benefits Section */}
       <div className='mt-12 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-8'>
         <h3 className='text-2xl font-bold text-center mb-8 text-gray-900'>
-          Why Join LegacyGuard Professional Network?
+          {t('benefits.title')}
         </h3>
         <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
           <div className='text-center'>
             <Users className='h-12 w-12 text-blue-600 mx-auto mb-4' />
-            <h4 className='font-semibold mb-2'>Build Your Practice</h4>
+            <h4 className='font-semibold mb-2'>{t('benefits.build_practice.title')}</h4>
             <p className='text-sm text-gray-600'>
-              Connect with families who value professional legal guidance
+              {t('benefits.build_practice.description')}
             </p>
           </div>
           <div className='text-center'>
             <Shield className='h-12 w-12 text-blue-600 mx-auto mb-4' />
-            <h4 className='font-semibold mb-2'>Trusted Platform</h4>
+            <h4 className='font-semibold mb-2'>{t('benefits.trusted_platform.title')}</h4>
             <p className='text-sm text-gray-600'>
-              Secure, professional environment for document review
+              {t('benefits.trusted_platform.description')}
             </p>
           </div>
           <div className='text-center'>
             <Scale className='h-12 w-12 text-blue-600 mx-auto mb-4' />
-            <h4 className='font-semibold mb-2'>Flexible Schedule</h4>
+            <h4 className='font-semibold mb-2'>{t('benefits.flexible_schedule.title')}</h4>
             <p className='text-sm text-gray-600'>
-              Review documents on your schedule and set your rates
+              {t('benefits.flexible_schedule.description')}
             </p>
           </div>
         </div>
