@@ -1,6 +1,6 @@
 # LANGUAGE MATRIX PER DOMAIN (39 COUNTRIES, 33+ LANGUAGES)
 
-## TIER 1 LAUNCH MARKETS 
+## TIER 1 LAUNCH MARKETS
 
 🇪🇺 **GERMANY** (legacyguard.de):
 
@@ -242,7 +242,7 @@
 - Norwegian (NO) - cultural connections
 - Ukrainian (UK) - diaspora
 
-## TIER 2 EXPANSION MARKETS 
+## TIER 2 EXPANSION MARKETS
 
 🇷🇴 **ROMANIA** (legacyguard.ro):
 
@@ -318,7 +318,7 @@
 
 ---
 
-# LANGUAGE IMPLEMENTATION MATRIX
+## LANGUAGE IMPLEMENTATION MATRIX
 
 ## TOTAL LANGUAGES: 33+
 
@@ -359,7 +359,7 @@
 
 ---
 
-# IMPLEMENTATION REQUIREMENTS
+## IMPLEMENTATION REQUIREMENTS
 
 ## 1. DOMAIN-BASED LANGUAGE LOADING
 
@@ -422,7 +422,7 @@
 
 ---
 
-# ROLLOUT STRATEGY
+## ROLLOUT STRATEGY
 
 ## PHASE 1: TIER 1 MARKETS
 
@@ -447,7 +447,7 @@
 
 ---
 
-# SUCCESS CRITERIA
+## SUCCESS CRITERIA
 
 - Each domain shows exactly 4-5 languages optimized for that market
 - Smooth language switching without app restart

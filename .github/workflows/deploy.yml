@@ -95,7 +95,6 @@ jobs:
 
     environment:
       name: ${{ needs.validate.outputs.environment }}
-      url: ${{ steps.deploy.outputs.url }}
 
     steps:
       - name: Checkout code
