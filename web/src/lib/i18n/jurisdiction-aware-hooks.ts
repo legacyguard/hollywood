@@ -6,6 +6,7 @@
 import { useTranslation as useI18nTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
 import { NamespaceLoader } from './config';
+import { i18n as i18nInstance } from './index';
 import type { SupportedLanguageCode, SupportedJurisdictionCode } from './config';
 
 /**
@@ -237,18 +238,21 @@ export const validateTranslationCompleteness = async (
   const namespace = `wills_${language}_${jurisdiction}`;
   const missingKeys: string[] = [];
   
+  // Ensure namespace is loaded before validation
+  if (!NamespaceLoader.isLoaded(namespace)) {
+    try {
+      await NamespaceLoader.loadWills(language, jurisdiction);
+    } catch {
+      // If loading fails, continue and report all keys as missing below
+    }
+  }
+
   // Check if each required key exists in the loaded resources
-  // This is a basic implementation - in practice, you'd need access to the loaded i18n resources
   for (const key of requiredKeys) {
-    // For now, we'll assume all keys are present
-    // In a real implementation, you would check against the actual loaded translation resources
-    // const translation = i18n.getResource(language, namespace, key);
-    // if (!translation || translation === key) {
-    //   missingKeys.push(key);
-    // }
-    
-    // Placeholder: log the key being validated (remove in production)
-    console.debug(`Validating key: ${key}`);
+    const translation = i18nInstance.getResource(language, namespace, key);
+    if (translation === undefined || translation === null || translation === key) {
+      missingKeys.push(key);
+    }
   }
   
   return {

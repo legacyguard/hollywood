@@ -26,6 +26,7 @@ import { Icon } from '@/components/ui/icon-library';
 import { FadeIn } from '@/components/motion/FadeIn';
 import { usePageTitle } from '@/hooks/usePageTitle';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 import { useSupabaseWithClerk } from '@/integrations/supabase/client';
 import {
   type CreateGuardianRequest,
@@ -34,7 +35,8 @@ import {
 } from '@/types/guardian';
 
 export default function GuardiansPage() {
-  usePageTitle('My Guardians');
+  const { t } = useTranslation('ui/guardians');
+  usePageTitle(t('header.title'));
   const { userId } = useAuth();
   const createSupabaseClient = useSupabaseWithClerk();
 
@@ -87,7 +89,7 @@ export default function GuardiansPage() {
       setGuardians(mappedGuardians as Guardian[]);
     } catch (error) {
       console.error('Error fetching guardians:', error);
-      toast.error('Failed to load guardians');
+      toast.error(t('toasts.loadFailed'));
     } finally {
       setIsLoading(false);
     }
@@ -104,7 +106,7 @@ export default function GuardiansPage() {
 
     // Validation
     if (!formData.name.trim() || !formData.email.trim()) {
-      toast.error('Name and email are required');
+      toast.error(t('toasts.validation'));
       return;
     }
 
@@ -165,10 +167,10 @@ export default function GuardiansPage() {
       });
 
       setIsDialogOpen(false);
-      toast.success(`Guardian ${formData.name} was successfully added!`);
+      toast.success(t('toasts.added', { name: formData.name }));
     } catch (error) {
       console.error('Error adding guardian:', error);
-      toast.error('Failed to add guardian. Please try again.');
+      toast.error(t('toasts.addFailed'));
     } finally {
       setIsSubmitting(false);
     }
@@ -192,7 +194,7 @@ export default function GuardiansPage() {
               <div>
                 <FadeIn duration={0.5} delay={0.2}>
                   <h1 className='text-3xl lg:text-4xl font-bold font-heading text-card-foreground mb-3'>
-                    My Guardians
+                    {t('header.title')}
                   </h1>
                 </FadeIn>
                 <FadeIn duration={0.5} delay={0.4}>
@@ -200,13 +202,10 @@ export default function GuardiansPage() {
                     className='text-lg leading-relaxed max-w-2xl mb-4'
                     style={{ color: 'hsl(var(--muted-text))' }}
                   >
-                    Your Circle of Trust. These trusted people can help your
-                    family access important information when needed.
+                    {t('header.lead')}
                   </p>
                   <p className='text-sm text-muted-foreground/80 max-w-2xl italic'>
-                    💙 Just like the key you engraved during onboarding, these
-                    guardians represent the people you trust most completely -
-                    those who understand your heart and will honor your wishes.
+                    {t('header.note')}
                   </p>
                 </FadeIn>
               </div>
@@ -218,29 +217,29 @@ export default function GuardiansPage() {
                       size='lg'
                     >
                       <Icon name={'add' as any} className='w-5 h-5 mr-2' />
-                      Add Guardian
+                      {t('header.addButton')}
                     </Button>
                   </DialogTrigger>
                   <DialogContent className='sm:max-w-[600px]'>
                     <DialogHeader>
-                      <DialogTitle>Add New Guardian</DialogTitle>
+                      <DialogTitle>{t('header.dialog.title')}</DialogTitle>
                     </DialogHeader>
                     <form onSubmit={handleSubmit} className='space-y-6'>
                       <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                         <div className='space-y-2'>
-                          <Label htmlFor='name'>Full Name *</Label>
+                          <Label htmlFor='name'>{t('header.dialog.form.name.label')}</Label>
                           <Input
                             id='name'
                             value={formData.name}
                             onChange={e =>
                               handleInputChange('name', e.target.value)
                             }
-                            placeholder='Enter full name'
+                            placeholder={t('header.dialog.form.name.placeholder')}
                             required
                           />
                         </div>
                         <div className='space-y-2'>
-                          <Label htmlFor='email'>Email Address *</Label>
+                          <Label htmlFor='email'>{t('header.dialog.form.email.label')}</Label>
                           <Input
                             id='email'
                             type='email'
@@ -248,7 +247,7 @@ export default function GuardiansPage() {
                             onChange={e =>
                               handleInputChange('email', e.target.value)
                             }
-                            placeholder='guardian@example.com'
+                            placeholder={t('header.dialog.form.email.placeholder')}
                             required
                           />
                         </div>
@@ -256,7 +255,7 @@ export default function GuardiansPage() {
 
                       <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                         <div className='space-y-2'>
-                          <Label htmlFor='phone'>Phone Number</Label>
+                          <Label htmlFor='phone'>{t('header.dialog.form.phone.label')}</Label>
                           <Input
                             id='phone'
                             type='tel'
@@ -264,11 +263,11 @@ export default function GuardiansPage() {
                             onChange={e =>
                               handleInputChange('phone', e.target.value)
                             }
-                            placeholder='+1 (555) 123-4567'
+                            placeholder={t('header.dialog.form.phone.placeholder')}
                           />
                         </div>
                         <div className='space-y-2'>
-                          <Label htmlFor='relationship'>Relationship</Label>
+                          <Label htmlFor='relationship'>{t('header.dialog.form.relationship.label')}</Label>
                           <Select
                             value={formData.relationship}
                             onValueChange={value =>
@@ -276,7 +275,7 @@ export default function GuardiansPage() {
                             }
                           >
                             <SelectTrigger>
-                              <SelectValue placeholder='Select relationship' />
+                              <SelectValue placeholder={t('header.dialog.form.relationship.placeholder')} />
                             </SelectTrigger>
                             <SelectContent>
                               {GUARDIAN_RELATIONSHIPS.map(rel => (
@@ -290,14 +289,14 @@ export default function GuardiansPage() {
                       </div>
 
                       <div className='space-y-2'>
-                        <Label htmlFor='notes'>Notes (Optional)</Label>
+                        <Label htmlFor='notes'>{t('header.dialog.form.notes.label')}</Label>
                         <Textarea
                           id='notes'
                           value={formData.notes}
                           onChange={e =>
                             handleInputChange('notes', e.target.value)
                           }
-                          placeholder='Any additional information about this guardian...'
+                          placeholder={t('header.dialog.form.notes.placeholder')}
                           rows={3}
                         />
                       </div>
@@ -310,12 +309,11 @@ export default function GuardiansPage() {
                             className='w-5 h-5 text-primary'
                           />
                           <h3 className='text-lg font-semibold text-primary'>
-                            Family Shield Protocol Permissions
+                            {t('header.dialog.permissions.title')}
                           </h3>
                         </div>
                         <p className='text-sm text-muted-foreground mb-4'>
-                          Configure what this Guardian can access and do in
-                          emergency situations.
+                          {t('header.dialog.permissions.description')}
                         </p>
 
                         <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
@@ -325,11 +323,10 @@ export default function GuardiansPage() {
                                 htmlFor='can_trigger_emergency'
                                 className='text-sm font-medium'
                               >
-                                Can Trigger Emergency Protocol
+                                {t('header.dialog.permissions.canTrigger.label')}
                               </Label>
                               <p className='text-xs text-muted-foreground'>
-                                This person can activate the Family Shield
-                                Protocol
+                                {t('header.dialog.permissions.canTrigger.desc')}
                               </p>
                             </div>
                             <Switch
@@ -350,10 +347,10 @@ export default function GuardiansPage() {
                                 htmlFor='can_access_health_docs'
                                 className='text-sm font-medium'
                               >
-                                Health Information Access
+                                {t('header.dialog.permissions.healthAccess.label')}
                               </Label>
                               <p className='text-xs text-muted-foreground'>
-                                Access to medical records and health documents
+                                {t('header.dialog.permissions.healthAccess.desc')}
                               </p>
                             </div>
                             <Switch
@@ -374,10 +371,10 @@ export default function GuardiansPage() {
                                 htmlFor='can_access_financial_docs'
                                 className='text-sm font-medium'
                               >
-                                Financial Information Access
+                                {t('header.dialog.permissions.financialAccess.label')}
                               </Label>
                               <p className='text-xs text-muted-foreground'>
-                                Access to bank accounts and financial documents
+                                {t('header.dialog.permissions.financialAccess.desc')}
                               </p>
                             </div>
                             <Switch
@@ -400,10 +397,10 @@ export default function GuardiansPage() {
                                 htmlFor='is_child_guardian'
                                 className='text-sm font-medium'
                               >
-                                Child Guardian
+                                {t('header.dialog.permissions.childGuardian.label')}
                               </Label>
                               <p className='text-xs text-muted-foreground'>
-                                Can care for and make decisions for children
+                                {t('header.dialog.permissions.childGuardian.desc')}
                               </p>
                             </div>
                             <Switch
@@ -421,10 +418,10 @@ export default function GuardiansPage() {
                                 htmlFor='is_will_executor'
                                 className='text-sm font-medium'
                               >
-                                Will Executor
+                                {t('header.dialog.permissions.willExecutor.label')}
                               </Label>
                               <p className='text-xs text-muted-foreground'>
-                                Responsible for executing the last will
+                                {t('header.dialog.permissions.willExecutor.desc')}
                               </p>
                             </div>
                             <Switch
@@ -438,7 +435,7 @@ export default function GuardiansPage() {
 
                           <div className='space-y-2'>
                             <Label htmlFor='emergency_contact_priority'>
-                              Emergency Contact Priority
+                              {t('header.dialog.permissions.priority.label')}
                             </Label>
                             <Input
                               id='emergency_contact_priority'
@@ -452,11 +449,10 @@ export default function GuardiansPage() {
                                   parseInt(e.target.value) || 1
                                 )
                               }
-                              placeholder='1 = highest priority'
+                              placeholder={t('header.dialog.permissions.priority.placeholder')}
                             />
                             <p className='text-xs text-muted-foreground'>
-                              1 = highest priority, higher numbers = lower
-                              priority
+                              {t('header.dialog.permissions.priority.help')}
                             </p>
                           </div>
                         </div>
@@ -468,7 +464,7 @@ export default function GuardiansPage() {
                           variant={'outline' as any}
                           onClick={() => setIsDialogOpen(false)}
                         >
-                          Cancel
+                          {t('header.dialog.actions.cancel')}
                         </Button>
                         <Button type='submit' disabled={isSubmitting}>
                           {isSubmitting ? (
@@ -477,7 +473,7 @@ export default function GuardiansPage() {
                                 name={'loader' as any}
                                 className='w-4 h-4 mr-2 animate-spin'
                               />
-                              Adding...
+                              {t('header.dialog.actions.adding')}
                             </>
                           ) : (
                             <>
@@ -485,7 +481,7 @@ export default function GuardiansPage() {
                                 name={'add' as any}
                                 className='w-4 h-4 mr-2'
                               />
-                              Add Guardian
+                              {t('header.dialog.actions.add')}
                             </>
                           )}
                         </Button>
@@ -507,7 +503,7 @@ export default function GuardiansPage() {
                 className='w-8 h-8 animate-spin text-primary'
               />
               <span className='ml-3 text-muted-foreground'>
-                Loading guardians...
+                {t('load.loading')}
               </span>
             </div>
           ) : guardians.length === 0 ? (
@@ -529,20 +525,14 @@ export default function GuardiansPage() {
                 </div>
 
                 <h3 className='text-2xl font-bold mb-4 text-card-foreground'>
-                  You don't have any guardians yet
+                  {t('empty.title')}
                 </h3>
                 <p className='text-muted-foreground mb-6 max-w-lg mx-auto text-lg leading-relaxed'>
-                  A guardian is a trusted person who can help your loved ones
-                  when they need it most. Let's add your first guardian to start
-                  building your Circle of Trust.
+                  {t('empty.lead')}
                 </p>
                 <div className='bg-primary/10 rounded-lg p-4 mb-8 max-w-2xl mx-auto border border-primary/20'>
                   <p className='text-sm text-primary/80 italic leading-relaxed'>
-                    🤗 Think of someone who knows your values and would act with
-                    the same care you would. This could be a family member,
-                    close friend, or trusted advisor who has always been there
-                    for you. Your guardians become your family's guides when you
-                    cannot be there yourself.
+                    {t('empty.tip')}
                   </p>
                 </div>
 
@@ -556,7 +546,7 @@ export default function GuardiansPage() {
                       />
                     </div>
                     <span className='text-muted-foreground'>
-                      Trusted emergency contacts
+                      {t('empty.benefits.trusted')}
                     </span>
                   </div>
                   <div className='flex items-center gap-3 text-sm'>
@@ -567,7 +557,7 @@ export default function GuardiansPage() {
                       />
                     </div>
                     <span className='text-muted-foreground'>
-                      Peace of mind for family
+                      {t('empty.benefits.peace')}
                     </span>
                   </div>
                   <div className='flex items-center gap-3 text-sm'>
@@ -578,7 +568,7 @@ export default function GuardiansPage() {
                       />
                     </div>
                     <span className='text-muted-foreground'>
-                      Always available help
+                      {t('empty.benefits.available')}
                     </span>
                   </div>
                 </div>
@@ -589,12 +579,11 @@ export default function GuardiansPage() {
                   className='bg-primary hover:bg-primary-hover text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-200'
                 >
                   <Icon name={'add' as any} className='w-5 h-5 mr-2' />
-                  Add Your First Guardian
+                  {t('empty.cta')}
                 </Button>
 
                 <p className='text-xs text-muted-foreground mt-6 max-w-md mx-auto'>
-                  Don't worry, you can always add more guardians later and edit
-                  their information anytime.
+                  {t('empty.footnote')}
                 </p>
               </Card>
             </FadeIn>
@@ -631,7 +620,7 @@ export default function GuardiansPage() {
                             {guardian.emergency_contact_priority &&
                               guardian.emergency_contact_priority <= 3 && (
                                 <span className='px-2 py-0.5 bg-primary/20 text-primary text-xs rounded-full font-medium'>
-                                  Priority {guardian.emergency_contact_priority}
+                                  {t('card.priority', { priority: guardian.emergency_contact_priority })}
                                 </span>
                               )}
                           </div>
@@ -688,32 +677,32 @@ export default function GuardiansPage() {
                             name={'shield-check' as any}
                             className='w-4 h-4'
                           />
-                          Shield Permissions
+                          {t('card.shieldPermissions')}
                         </h4>
                         <div className='flex flex-wrap gap-1'>
                           {guardian.can_trigger_emergency && (
                             <span className='px-2 py-1 bg-red-100 text-red-700 text-xs rounded-full'>
-                              Emergency Trigger
+                              {t('card.badges.emergency')}
                             </span>
                           )}
                           {guardian.can_access_health_docs && (
                             <span className='px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full'>
-                              Health Access
+                              {t('card.badges.health')}
                             </span>
                           )}
                           {guardian.can_access_financial_docs && (
                             <span className='px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full'>
-                              Financial Access
+                              {t('card.badges.financial')}
                             </span>
                           )}
                           {guardian.is_child_guardian && (
                             <span className='px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded-full'>
-                              Child Guardian
+                              {t('card.badges.child')}
                             </span>
                           )}
                           {guardian.is_will_executor && (
                             <span className='px-2 py-1 bg-amber-100 text-amber-700 text-xs rounded-full'>
-                              Will Executor
+                              {t('card.badges.executor')}
                             </span>
                           )}
                           {!guardian.can_trigger_emergency &&
@@ -722,7 +711,7 @@ export default function GuardiansPage() {
                             !guardian.is_child_guardian &&
                             !guardian.is_will_executor && (
                               <span className='px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full'>
-                                Basic Contact Only
+                                {t('card.badges.basicOnly')}
                               </span>
                             )}
                         </div>
@@ -731,8 +720,7 @@ export default function GuardiansPage() {
 
                     <div className='mt-4 pt-4 border-t border-border'>
                       <p className='text-xs text-muted-foreground'>
-                        Added{' '}
-                        {new Date(guardian.created_at).toLocaleDateString()}
+                        {t('card.added', { date: new Date(guardian.created_at).toLocaleDateString() })}
                       </p>
                     </div>
                   </Card>
@@ -752,23 +740,13 @@ export default function GuardiansPage() {
                   />
                   <div>
                     <h4 className='font-semibold text-primary mb-2'>
-                      The Trust Behind Your Guardians
+                      {t('info.title')}
                     </h4>
                     <p className='text-muted-foreground mb-4'>
-                      Your guardians represent the deepest level of trust -
-                      people who would protect your family's interests just as
-                      you would. They're not just emergency contacts; they're
-                      the extension of your care and wisdom when your loved ones
-                      need guidance most.
-                    </p>
-                    <p className='text-sm text-muted-foreground/80 italic mb-3'>
-                      ✨ Every guardian you add strengthens your family's safety
-                      net, giving you peace of mind that someone who truly
-                      understands your values will be there to help.
+                      {t('info.description')}
                     </p>
                     <p className='text-sm text-muted-foreground'>
-                      <strong>Coming soon:</strong> Advanced permissions,
-                      document sharing, and emergency access features.
+                      <strong>{t('info.soon')}</strong> {t('info.soonFeatures')}
                     </p>
                   </div>
                 </div>

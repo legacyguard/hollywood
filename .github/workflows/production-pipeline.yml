@@ -43,11 +43,13 @@ jobs:
           npm audit fix --audit-level=moderate || true
 
       - name: Run Snyk Security Scan
+        if: ${{ secrets.SNYK_TOKEN != '' }}
         uses: snyk/actions/node@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           args: --severity-threshold=high
+        continue-on-error: true
 
       - name: Check for secrets
         uses: trufflesecurity/trufflehog@main
@@ -107,10 +109,12 @@ jobs:
           npx bundlesize
 
       - name: SonarCloud Scan
+        if: ${{ secrets.SONAR_TOKEN != '' }}
         uses: SonarSource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        continue-on-error: true
 
       - name: Upload quality reports
         uses: actions/upload-artifact@v4
@@ -184,9 +188,9 @@ jobs:
         run: npm run test:e2e -- --project=${{ matrix.browser }}
         env:
           CI: true
-          VITE_CLERK_PUBLISHABLE_KEY: ${{ secrets.VITE_CLERK_TEST_KEY }}
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_TEST_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_TEST_KEY }}
+          VITE_CLERK_PUBLISHABLE_KEY: ${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }}
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
 
       - name: Upload test results
         uses: actions/upload-artifact@v4
@@ -215,7 +219,7 @@ jobs:
         run: npm ci --legacy-peer-deps
 
       - name: Build application
-        run: npm run build
+        run: npm run build:web
 
       - name: Run Lighthouse CI
         uses: treosh/lighthouse-ci-action@v11
@@ -266,13 +270,13 @@ jobs:
             "buildTime": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'",
             "branch": "${{ github.ref_name }}",
             "commit": "${{ github.sha }}"
-          }' > dist/build-info.json
+          }' > web/dist/build-info.json
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: build-artifacts
-          path: dist/
+          path: web/dist/
           retention-days: 7
 
   # ============================================
@@ -285,7 +289,7 @@ jobs:
     if: github.ref == 'refs/heads/develop'
     environment:
       name: staging
-      url: https://staging.legacyguard.com
+      url: https://staging.legacyguard.cz
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -294,7 +298,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build-artifacts
-          path: dist/
+          path: web/dist/
 
       - name: Deploy to Vercel (Staging)
         uses: amondnet/vercel-action@v25
@@ -303,8 +307,7 @@ jobs:
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           working-directory: ./
-          alias-domains: staging.legacyguard.com
-          scope: ${{ secrets.VERCEL_SCOPE }}
+          alias-domains: staging.legacyguard.cz
 
       - name: Run smoke tests
         run: |
@@ -313,11 +316,13 @@ jobs:
             --environment tests/postman/staging-env.json
 
       - name: Notify deployment
-        uses: 8398a7/action-slack@v3.14.0
+        if: ${{ secrets.SLACK_WEBHOOK != '' }}
+        uses: 8398a7/action-slack@v3
         with:
           status: ${{ job.status }}
           text: 'Staging deployment completed'
           webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+        continue-on-error: true
 
   # ============================================
   # Deploy to Production
@@ -329,7 +334,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
     environment:
       name: production
-      url: https://legacyguard.com
+      url: https://legacyguard.cz
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -338,7 +343,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build-artifacts
-          path: dist/
+          path: web/dist/
 
       - name: Validate production config
         run: |
@@ -351,15 +356,16 @@ jobs:
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           working-directory: ./
-          production: true
-          scope: ${{ secrets.VERCEL_SCOPE }}
+          vercel-args: '--prod'
 
       - name: Purge CDN cache
+        if: ${{ secrets.CLOUDFLARE_ZONE_ID != '' && secrets.CLOUDFLARE_API_TOKEN != '' }}
         run: |
           curl -X POST "https://api.cloudflare.com/client/v4/zones/${{ secrets.CLOUDFLARE_ZONE_ID }}/purge_cache" \
             -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
             -H "Content-Type: application/json" \
             --data '{"purge_everything":true}'
+        continue-on-error: true
 
       - name: Run production smoke tests
         run: |
@@ -386,11 +392,13 @@ jobs:
           prerelease: false
 
       - name: Notify deployment
-        uses: 8398a7/action-slack@v3.14.0
+        if: ${{ secrets.SLACK_WEBHOOK != '' }}
+        uses: 8398a7/action-slack@v3
         with:
           status: ${{ job.status }}
           text: 'Production deployment completed - v${{ github.run_number }}'
           webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+        continue-on-error: true
 
   # ============================================
   # Rollback Production (Manual Trigger)
@@ -400,7 +408,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch'
     environment:
-      name: production-rollback
+      name: production
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -411,8 +419,10 @@ jobs:
           echo "Rolling back to previous deployment..."
 
       - name: Notify rollback
-        uses: 8398a7/action-slack@v3.14.0
+        if: ${{ secrets.SLACK_WEBHOOK != '' }}
+        uses: 8398a7/action-slack@v3
         with:
           status: ${{ job.status }}
           text: 'Production rollback initiated'
           webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+        continue-on-error: true

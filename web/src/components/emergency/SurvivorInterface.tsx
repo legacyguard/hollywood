@@ -807,13 +807,13 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
                         </p>
                         <div className='flex items-center gap-4 text-xs text-muted-foreground'>
                           <span>
-                            Access Level:{' '}
+                            {t('resources.accessLevel')}{' '}
                             {resource.access_level
                               .replace('_', ' ')
                               .toUpperCase()}
                           </span>
                           <span>
-                            Type: {resource.resource_type.toUpperCase()}
+                            {t('resources.type')} {resource.resource_type.toUpperCase()}
                           </span>
                         </div>
                       </div>
@@ -858,7 +858,7 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
                       <div className='mt-8 mb-4'>
                         <h3 className='text-lg font-semibold flex items-center gap-2'>
                           <Icon name='clock' className='w-5 h-5' />
-                          Personal Messages
+                          {t('sections.timeCapsules.title')}
                         </h3>
                       </div>
 
@@ -878,10 +878,7 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
                                 </p>
                               )}
                               <div className='text-xs text-muted-foreground'>
-                                Created:{' '}
-                                {new Date(
-                                  capsule.created_at
-                                ).toLocaleDateString()}
+                                {t('timeCapsules.created', { date: new Date(capsule.created_at).toLocaleDateString() })}
                               </div>
                             </div>
 
@@ -890,7 +887,7 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
                               className='bg-amber-600 hover:bg-amber-700 ml-4'
                             >
                               <Icon name='play' className='w-4 h-4 mr-2' />
-                              Play Message
+                              {t('timeCapsules.play')}
                             </Button>
                           </div>
                         </Card>
@@ -906,7 +903,7 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
                         className='w-12 h-12 mx-auto mb-4 text-gray-400'
                       />
                       <p className='text-muted-foreground'>
-                        No resources found in the {selectedCategory} category.
+                        {t('resources.empty', { category: selectedCategory })}
                       </p>
                       {!showAccessRequest && (
                         <Button
@@ -914,7 +911,7 @@ export const SurvivorInterface: React.FC<SurvivorInterfaceProps> = ({
                           variant='outline'
                           onClick={() => setShowAccessRequest(true)}
                         >
-                          Request Additional Access
+                          {t('access.title')}
                         </Button>
                       )}
                     </Card>

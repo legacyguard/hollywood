@@ -1,5 +1,6 @@
 
 import { MetaTags } from '@/components/common/MetaTags';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -9,6 +10,7 @@ import { LegacyGuardLogo } from '@/components/LegacyGuardLogo';
 import { Link } from 'react-router-dom';
 
 const Blog = () => {
+  const { t } = useTranslation('ui/blog');
   const blogPosts = [
     {
       id: 1,
@@ -53,24 +55,24 @@ const Blog = () => {
 
   const categories = [
     {
-      name: 'Estate Planning',
+      name: t('categories.names.estatePlanning'),
       count: 1,
       color: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300',
     },
     {
-      name: 'Family Security',
+      name: t('categories.names.familySecurity'),
       count: 1,
       color:
         'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300',
     },
     {
-      name: 'Digital Assets',
+      name: t('categories.names.digitalAssets'),
       count: 1,
       color:
         'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300',
     },
     {
-      name: 'Legal Documents',
+      name: t('categories.names.legalDocuments'),
       count: 0,
       color:
         'bg-slate-100 text-slate-800 dark:bg-slate-900/30 dark:text-slate-300',
@@ -80,11 +82,11 @@ const Blog = () => {
   return (
     <>
       <MetaTags
-        title='Legacy Planning Blog'
-        description='Expert insights and practical guidance on estate planning, family protection, and securing your legacy. Learn from legal professionals and security experts.'
-        imageUrl='https://legacyguard.app/blog/legacy-planning-blog.png'
-        url='https://legacyguard.app/blog'
-        keywords='legacy planning blog, estate planning articles, family protection guides, will creation advice, legal document tips'
+        title={t('meta.title')}
+        description={t('meta.description')}
+        imageUrl={t('meta.imageUrl')}
+        url={t('meta.url')}
+        keywords={t('meta.keywords')}
       />
 
       <div className='min-h-screen bg-slate-50 dark:bg-slate-900'>
@@ -106,7 +108,7 @@ const Blog = () => {
                   variant='ghost'
                   className='text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
                 >
-                  Back to Home
+                  {t('header.backToHome')}
                 </Button>
               </Link>
             </div>
@@ -126,16 +128,14 @@ const Blog = () => {
                 variant='outline'
                 className='text-white border-white/30 mb-6'
               >
-                Knowledge Hub
+                {t('hero.badge')}
               </Badge>
               <h1 className='text-5xl lg:text-6xl font-bold mb-6 leading-tight'>
-                Legacy Planning
-                <span className='block text-blue-300'>Insights & Guidance</span>
+                {t('hero.title.line1')}
+                <span className='block text-blue-300'>{t('hero.title.line2')}</span>
               </h1>
               <p className='text-xl text-slate-300 mb-8 leading-relaxed max-w-3xl mx-auto'>
-                Expert advice on estate planning, family protection, and
-                securing your legacy. Learn from legal professionals and
-                security experts who understand what matters most.
+                {t('hero.description')}
               </p>
               <div className='flex flex-wrap justify-center gap-4'>
                 <Link to='/sign-up'>
@@ -143,7 +143,7 @@ const Blog = () => {
                     size='lg'
                     className='bg-white text-slate-900 hover:bg-slate-100'
                   >
-                    Start Your Legacy Plan
+                    {t('hero.cta.startPlan')}
                   </Button>
                 </Link>
                 <Link to='/blog/5-reasons-create-will'>
@@ -152,7 +152,7 @@ const Blog = () => {
                     size='lg'
                     className='border-white/30 text-white hover:bg-white/10'
                   >
-                    Read Latest Article
+                    {t('hero.cta.readLatest')}
                   </Button>
                 </Link>
               </div>
@@ -169,7 +169,7 @@ const Blog = () => {
               transition={{ duration: 0.6, delay: 0.2 }}
             >
               <h2 className='text-3xl font-bold text-slate-900 dark:text-white mb-8 text-center'>
-                Featured Article
+                {t('featured.title')}
               </h2>
 
               {blogPosts
@@ -192,7 +192,7 @@ const Blog = () => {
                             {post.excerpt}
                           </p>
                           <div className='flex items-center gap-4 text-sm text-slate-500 dark:text-slate-400 mb-6'>
-                            <span>By {post.author}</span>
+                            <span>{t('featured.by')} {post.author}</span>
                             <span>•</span>
                             <span>{post.publishDate}</span>
                             <span>•</span>
@@ -200,7 +200,7 @@ const Blog = () => {
                           </div>
                           <Link to={`/blog/${post.slug}`}>
                             <Button className='w-full md:w-auto'>
-                              Read Full Article
+                              {t('featured.cta')}
                             </Button>
                           </Link>
                         </div>
@@ -211,10 +211,10 @@ const Blog = () => {
                               className='h-24 w-24 mx-auto mb-4 opacity-80'
                             />
                             <p className='text-lg font-semibold'>
-                              Expert Legal Guidance
+                              {t('featured.side.title')}
                             </p>
                             <p className='text-blue-100'>
-                              Professional insights for your family's future
+                              {t('featured.side.subtitle')}
                             </p>
                           </div>
                         </div>
@@ -235,7 +235,7 @@ const Blog = () => {
               transition={{ duration: 0.6, delay: 0.4 }}
             >
               <h2 className='text-3xl font-bold text-slate-900 dark:text-white mb-8 text-center'>
-                Explore by Category
+                {t('categories.title')}
               </h2>
 
               <div className='grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto'>
@@ -254,7 +254,7 @@ const Blog = () => {
                         {category.count}
                       </p>
                       <p className='text-sm text-slate-600 dark:text-slate-400'>
-                        {category.count === 1 ? 'Article' : 'Articles'}
+                        {category.count === 1 ? t('categories.article') : t('categories.articles')}
                       </p>
                     </CardContent>
                   </Card>
@@ -273,7 +273,7 @@ const Blog = () => {
               transition={{ duration: 0.6, delay: 0.6 }}
             >
               <h2 className='text-3xl font-bold text-slate-900 dark:text-white mb-8 text-center'>
-                All Articles
+                {t('allArticles.title')}
               </h2>
 
               <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto'>
@@ -306,7 +306,7 @@ const Blog = () => {
                         </span>
                         <Link to={`/blog/${post.slug}`}>
                           <Button variant='outline' size='sm'>
-                            Read More
+                            {t('allArticles.readMore')}
                           </Button>
                         </Link>
                       </div>
@@ -328,27 +328,25 @@ const Blog = () => {
               className='max-w-2xl mx-auto text-center'
             >
               <h2 className='text-3xl font-bold text-slate-900 dark:text-white mb-4'>
-                Stay Informed
+                {t('newsletter.title')}
               </h2>
               <p className='text-slate-600 dark:text-slate-300 mb-8 leading-relaxed'>
-                Get the latest insights on legacy planning, family protection,
-                and estate planning delivered to your inbox. Expert advice from
-                legal professionals and security experts.
+                {t('newsletter.description')}
               </p>
 
               <div className='flex flex-col sm:flex-row gap-4 max-w-md mx-auto'>
                 <input
                   type='email'
-                  placeholder='Enter your email'
+                  placeholder={t('newsletter.emailPlaceholder')}
                   className='flex-1 px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500'
                 />
                 <Button className='bg-blue-600 hover:bg-blue-700 text-white'>
-                  Subscribe
+                  {t('newsletter.subscribe')}
                 </Button>
               </div>
 
               <p className='text-xs text-slate-500 dark:text-slate-400 mt-4'>
-                We respect your privacy. Unsubscribe at any time.
+                {t('newsletter.privacy')}
               </p>
             </motion.div>
           </div>
@@ -364,12 +362,10 @@ const Blog = () => {
               className='max-w-3xl mx-auto'
             >
               <h2 className='text-3xl font-bold text-white mb-6'>
-                Ready to Secure Your Legacy?
+                {t('cta.title')}
               </h2>
               <p className='text-slate-300 mb-8 leading-relaxed'>
-                Knowledge is power, but action creates security. Start building
-                your family's protection today with LegacyGuard's comprehensive
-                platform.
+                {t('cta.description')}
               </p>
 
               <div className='flex flex-col sm:flex-row gap-4 justify-center'>
@@ -378,7 +374,7 @@ const Blog = () => {
                     size='lg'
                     className='bg-blue-600 hover:bg-blue-700 text-white'
                   >
-                    Start Your Free Trial
+                    {t('cta.primary')}
                   </Button>
                 </Link>
                 <Link to='/'>
@@ -387,7 +383,7 @@ const Blog = () => {
                     size='lg'
                     className='border-white/30 text-white hover:bg-white/10'
                   >
-                    Learn More About LegacyGuard
+                    {t('cta.secondary')}
                   </Button>
                 </Link>
               </div>

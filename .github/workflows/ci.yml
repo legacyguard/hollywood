@@ -71,7 +71,11 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        app: [web, mobile]
+        include:
+          - app: web
+            artifact_path: web/dist/
+          - app: mobile
+            artifact_path: mobile/dist/
     steps:
       - uses: actions/checkout@v4
 
@@ -109,8 +113,7 @@ jobs:
         if: success()
         with:
           name: ${{ matrix.app }}-build
-          path: |
-            ${{ matrix.app == 'web' && 'web/dist' || 'mobile/dist' }}
+          path: ${{ matrix.artifact_path }}
           retention-days: 7
 
   # Security audit

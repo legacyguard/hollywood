@@ -397,11 +397,11 @@ export const WithSidebar: Story = {
 };
 ```
 
-## Best Practices pre Stories
+## Best Practices for Stories
 
 ### 1. Naming Convention
 
-- **Title**: `Kategória/ComponentName`
+- **Title**: `Category/ComponentName`
 - **Story names**: PascalCase (Primary, Secondary, WithIcon)
 
 ### 2. Args vs Render

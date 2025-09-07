@@ -113,11 +113,12 @@ jobs:
       - name: Configure environment
         run: |
           # Create environment-specific configuration
-          echo "VITE_APP_VERSION=${{ github.sha }}" > .env.production
-          echo "VITE_BUILD_DATE=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> .env.production
-          echo "VITE_ENVIRONMENT=${{ needs.validate.outputs.environment }}" >> .env.production
-          echo "VITE_COMMIT_SHA=${{ github.sha }}" >> .env.production
-          echo "VITE_BRANCH=${{ github.ref_name }}" >> .env.production
+          mkdir -p web
+          echo "VITE_APP_VERSION=${{ github.sha }}" > web/.env.production
+          echo "VITE_BUILD_DATE=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> web/.env.production
+          echo "VITE_ENVIRONMENT=${{ needs.validate.outputs.environment }}" >> web/.env.production
+          echo "VITE_COMMIT_SHA=${{ github.sha }}" >> web/.env.production
+          echo "VITE_BRANCH=${{ github.ref_name }}" >> web/.env.production
 
           # Add environment-specific variables (these would come from GitHub Secrets)
           # echo "VITE_SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env.production
@@ -126,7 +127,7 @@ jobs:
 
       - name: Build application
         run: |
-          npm run build
+          npm run build:web
         env:
           NODE_ENV: production
 
@@ -137,14 +138,16 @@ jobs:
 
           # Show build stats
           echo "📦 Build Statistics:"
-          du -sh dist/
-          find dist/assets -name "*.js" -exec echo "JS: {}" \; -exec du -h {} \;
-          find dist/assets -name "*.css" -exec echo "CSS: {}" \; -exec du -h {} \;
+          du -sh web/dist/ || echo "web/dist not found"
+          if [ -d web/dist/assets ]; then
+            find web/dist/assets -name "*.js" -exec echo "JS: {}" \; -exec du -h {} \;
+            find web/dist/assets -name "*.css" -exec echo "CSS: {}" \; -exec du -h {} \;
+          fi
 
       - name: Create deployment package
         run: |
           # Create deployment archive
-          tar -czf deployment-${{ needs.validate.outputs.environment }}-${{ github.sha }}.tar.gz -C dist .
+          tar -czf deployment-${{ needs.validate.outputs.environment }}-${{ github.sha }}.tar.gz -C web/dist .
 
       - name: Upload deployment package
         uses: actions/upload-artifact@v4
@@ -152,7 +155,7 @@ jobs:
           name: deployment-${{ needs.validate.outputs.environment }}-${{ github.sha }}
           path: |
             deployment-${{ needs.validate.outputs.environment }}-${{ github.sha }}.tar.gz
-            dist/
+            web/dist/
           retention-days: 30
 
   # Deploy to Staging
@@ -164,8 +167,10 @@ jobs:
     if: needs.validate.outputs.environment == 'staging' && needs.validate.outputs.should_deploy == 'true'
 
     environment:
-      name: staging
+      name: ${{ needs.validate.outputs.environment }}
       url: https://staging.legacyguard.app
+      # Note: The environment name must match one defined in your repository or organization settings.
+      # If 'staging' is not a valid environment, create it in GitHub or use an existing environment name.
 
     steps:
       - name: Download deployment package

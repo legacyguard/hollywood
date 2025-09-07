@@ -36,7 +36,7 @@ jobs:
         continue-on-error: true # Don't block preview on test failures
 
       - name: Build application
-        run: npm run build
+        run: npm run build:web
         env:
           VITE_APP_ENV: preview
           VITE_PREVIEW_PR: ${{ github.event.pull_request.number }}
@@ -46,14 +46,16 @@ jobs:
 
       - name: Pull Vercel Environment Information
         run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+        working-directory: web
 
       - name: Build Project Artifacts
         run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+        working-directory: web
 
       - name: Deploy to Vercel
         id: deploy
         run: |
-          DEPLOYMENT_URL=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }} | tail -1)
+          DEPLOYMENT_URL=$(cd web && vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }} | tail -1)
           echo "url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
           echo "Preview URL: $DEPLOYMENT_URL"
 
