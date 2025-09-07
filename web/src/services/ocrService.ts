@@ -11,7 +11,6 @@ import type {
   TextBlock,
 } from '@/types/ocr';
 import { DOCUMENT_PATTERNS } from '@/types/ocr';
-
 // Google Cloud Vision AI client configuration
 interface GoogleCloudVisionResponse {
   responses: Array<{
@@ -60,17 +59,11 @@ interface GoogleCloudVisionResponse {
 
 export class OCRService {
   private apiKey: string;
-  private ___projectId: string;
   private apiUrl: string;
 
   constructor() {
-    // These will be set from environment variables
-    this.___projectId =
-      (import.meta as Record<string, any>).env
-        .VITE_GOOGLE_CLOUD_PROJECT_ID || '';
     this.apiKey =
-      (import.meta as Record<string, any>).env.VITE_GOOGLE_CLOUD_API_KEY ||
-      '';
+      (import.meta as Record<string, any>)['env']['VITE_GOOGLE_CLOUD_API_KEY'] || '';
     this.apiUrl = `https://vision.googleapis.com/v1/images:annotate?key=${this.apiKey}`;
   }
 
@@ -227,6 +220,10 @@ export class OCRService {
 
     const visionResponse = data.responses[0];
 
+    if (!visionResponse) {
+      throw new Error('No valid response from Google Cloud Vision API');
+    }
+
     // Handle API errors
     if ('error' in visionResponse) {
       const errorResponse = visionResponse as { error: { message: string } };
@@ -244,6 +241,9 @@ export class OCRService {
 
     if (visionResponse.fullTextAnnotation?.pages) {
       const page = visionResponse.fullTextAnnotation.pages[0];
+      if (!page) {
+        throw new Error('No page data in Vision API response');
+      }
 
       page.blocks?.forEach(block => {
         const bbox = this.convertVertexToBoundingBox(
@@ -357,11 +357,13 @@ export class OCRService {
     const accountPattern = /(?:account|acct)[\s#:]*([0-9-]{8,20})/gi;
     const accountMatches = [...text.matchAll(accountPattern)];
     accountMatches.forEach(match => {
-      entities.push({
-        type: 'account_number',
-        value: match[1],
-        confidence: 0.75,
-      });
+      if (match[1]) {
+        entities.push({
+          type: 'account_number',
+          value: match[1],
+          confidence: 0.75,
+        });
+      }
     });
 
     return entities;
@@ -428,7 +430,7 @@ export class OCRService {
       };
     }
 
-    const [bestType, bestScore] = sortedScores[0];
+    const [bestType, bestScore] = sortedScores[0] || ['other', 0];
     const confidence = Math.min(bestScore / 50, 1); // Normalize to 0-1
 
     const pattern = DOCUMENT_PATTERNS[bestType as DocumentType];
@@ -459,12 +461,12 @@ export class OCRService {
 
     // Extract common metadata
     const dateEntities = entities.filter(e => e.type === 'date');
-    if (dateEntities.length > 0) {
+    if (dateEntities.length > 0 && dateEntities[0]) {
       metadata.date = dateEntities[0].value;
     }
 
     const amountEntities = entities.filter(e => e.type === 'amount');
-    if (amountEntities.length > 0) {
+    if (amountEntities.length > 0 && amountEntities[0]) {
       metadata.amount = amountEntities[0].value;
     }
 
@@ -474,7 +476,7 @@ export class OCRService {
         const accountEntities = entities.filter(
           e => e.type === 'account_number'
         );
-        if (accountEntities.length > 0) {
+        if (accountEntities.length > 0 && accountEntities[0]) {
           metadata.accountNumber = accountEntities[0].value;
         }
 
@@ -482,7 +484,7 @@ export class OCRService {
         const bankPattern =
           /(?:bank|credit union|financial)\s+(?:of\s+)?([A-Za-z\s]+)/i;
         const bankMatch = text.match(bankPattern);
-        if (bankMatch) {
+        if (bankMatch && bankMatch[1]) {
           metadata.institutionName = bankMatch[1].trim();
         }
         break;
@@ -494,7 +496,7 @@ export class OCRService {
         // Extract policy number
         const policyPattern = /policy\s*(?:number|#)?:?\s*([A-Z0-9-]+)/i;
         const policyMatch = text.match(policyPattern);
-        if (policyMatch) {
+        if (policyMatch && policyMatch[1]) {
           metadata.policyNumber = policyMatch[1];
         }
         break;
@@ -504,7 +506,7 @@ export class OCRService {
         // Extract patient name (simple heuristic)
         const patientPattern = /patient\s*(?:name)?:?\s*([A-Za-z\s,]+)/i;
         const patientMatch = text.match(patientPattern);
-        if (patientMatch) {
+        if (patientMatch && patientMatch[1]) {
           metadata.patientName = patientMatch[1].trim();
         }
         break;

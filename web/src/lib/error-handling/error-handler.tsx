@@ -6,6 +6,7 @@
 
 import { envConfig } from '../security/env-config';
 import React from 'react';
+import i18next from 'i18next';
 
 // Error severity levels
 export enum ErrorSeverity {
@@ -113,7 +114,7 @@ export class AuthenticationError extends BaseError {
     super(message, code, ErrorCategory.AUTHENTICATION, ErrorSeverity.HIGH);
     this.recoverable = true;
     this.retryable = true;
-    this.userMessage = 'Authentication failed. Please sign in again.';
+    this.userMessage = i18next.t('ui/error-handler:userMessages.authenticationFailed');
   }
 }
 
@@ -125,7 +126,7 @@ export class AuthorizationError extends BaseError {
     super(message, code, ErrorCategory.AUTHORIZATION, ErrorSeverity.HIGH);
     this.recoverable = false;
     this.retryable = false;
-    this.userMessage = 'You do not have permission to perform this action.';
+    this.userMessage = i18next.t('ui/error-handler:userMessages.noPermission');
   }
 }
 
@@ -145,7 +146,7 @@ export class ValidationError extends BaseError {
     this.validationErrors = validationErrors;
     this.recoverable = true;
     this.retryable = false;
-    this.userMessage = 'Please check your input and try again.';
+    this.userMessage = i18next.t('ui/error-handler:userMessages.checkInput');
   }
 }
 
@@ -157,8 +158,7 @@ export class NetworkError extends BaseError {
     super(message, code, ErrorCategory.NETWORK, ErrorSeverity.MEDIUM);
     this.recoverable = true;
     this.retryable = true;
-    this.userMessage =
-      'Network error. Please check your connection and try again.';
+    this.userMessage = i18next.t('ui/error-handler:userMessages.networkError');
   }
 }
 
@@ -170,7 +170,7 @@ export class DatabaseError extends BaseError {
     super(message, code, ErrorCategory.DATABASE, ErrorSeverity.HIGH);
     this.recoverable = true;
     this.retryable = true;
-    this.userMessage = 'A database error occurred. Please try again later.';
+    this.userMessage = i18next.t('ui/error-handler:userMessages.databaseError');
   }
 }
 
@@ -182,7 +182,7 @@ export class EncryptionError extends BaseError {
     super(message, code, ErrorCategory.ENCRYPTION, ErrorSeverity.CRITICAL);
     this.recoverable = false;
     this.retryable = false;
-    this.userMessage = 'Encryption error. Please contact support.';
+    this.userMessage = i18next.t('ui/error-handler:userMessages.encryptionError');
   }
 }
 
@@ -197,7 +197,7 @@ export class RateLimitError extends BaseError {
     this.retryAfter = retryAfter;
     this.recoverable = true;
     this.retryable = true;
-    this.userMessage = `Too many requests. Please try again in ${retryAfter} seconds.`;
+    this.userMessage = i18next.t('ui/error-handler:userMessages.rateLimitError', { seconds: retryAfter });
   }
 }
 
@@ -346,16 +346,16 @@ export class ErrorHandler {
 
     switch (error.severity) {
       case ErrorSeverity.CRITICAL:
-        console.error('🚨 CRITICAL ERROR:', logData);
+        console.error(i18next.t('ui/error-handler:logMessages.criticalError'), logData);
         break;
       case ErrorSeverity.HIGH:
-        console.error('❌ HIGH SEVERITY ERROR:', logData);
+        console.error(i18next.t('ui/error-handler:logMessages.highSeverityError'), logData);
         break;
       case ErrorSeverity.MEDIUM:
-        console.warn('⚠️ MEDIUM SEVERITY ERROR:', logData);
+        console.warn(i18next.t('ui/error-handler:logMessages.mediumSeverityError'), logData);
         break;
       case ErrorSeverity.LOW:
-        console.log('ℹ️ LOW SEVERITY ERROR:', logData);
+        console.log(i18next.t('ui/error-handler:logMessages.lowSeverityError'), logData);
         break;
     }
   }
@@ -560,13 +560,12 @@ export class ErrorHandler {
         if (this.state.hasError) {
           return (
             <div className='error-boundary-fallback'>
-              <h2>Something went wrong</h2>
+              <h2>{i18next.t('ui/error-handler:errorBoundary.title')}</h2>
               <p>
-                We're sorry, but something went wrong. Please try refreshing the
-                page.
+                {i18next.t('ui/error-handler:errorBoundary.description')}
               </p>
               <button onClick={() => window.location.reload()}>
-                Refresh Page
+                {i18next.t('ui/error-handler:errorBoundary.refreshButton')}
               </button>
             </div>
           );

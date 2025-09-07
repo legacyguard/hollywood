@@ -41,6 +41,7 @@ import {
 } from 'lucide-react';
 import { type PWACapabilities, pwaService } from '@/lib/pwa/pwaService';
 import { cn } from '@/lib/utils';
+import { useTranslation } from 'react-i18next';
 
 interface PWAInstallPromptProps {
   autoShow?: boolean;
@@ -53,6 +54,7 @@ export default function PWAInstallPrompt({
   autoShow = false,
   showMinimal = false,
 }: PWAInstallPromptProps) {
+  const { t } = useTranslation('ui/pwa-install-prompt');
   const [capabilities, setCapabilities] = useState<null | PWACapabilities>(
     null
   );
@@ -122,57 +124,41 @@ export default function PWAInstallPrompt({
 
     if (isIOS && isSafari) {
       return {
-        device: 'iOS Safari',
+        device: t('instructions.devices.iosSafari'),
         icon: <Smartphone className='h-5 w-5' />,
-        steps: [
-          'Tap the Share button (square with arrow) at the bottom',
-          'Scroll down and tap "Add to Home Screen"',
-          'Tap "Add" to confirm installation',
-        ],
+        steps: t('instructions.steps.iosSafari', { returnObjects: true }) as string[],
       };
     }
 
     if (isAndroid && isChrome) {
       return {
-        device: 'Android Chrome',
+        device: t('instructions.devices.androidChrome'),
         icon: <Smartphone className='h-5 w-5' />,
-        steps: [
-          'Tap the three-dot menu in the top right',
-          'Tap "Add to Home screen"',
-          'Tap "Add" to confirm installation',
-        ],
+        steps: t('instructions.steps.androidChrome', { returnObjects: true }) as string[],
       };
     }
 
     if (isChrome) {
       return {
-        device: 'Desktop Chrome',
+        device: t('instructions.devices.desktopChrome'),
         icon: <Monitor className='h-5 w-5' />,
-        steps: [
-          'Click the install icon in the address bar',
-          'Or go to Chrome menu → "Install LegacyGuard"',
-          'Click "Install" to confirm',
-        ],
+        steps: t('instructions.steps.desktopChrome', { returnObjects: true }) as string[],
       };
     }
 
     return {
-      device: 'Other Browser',
+      device: t('instructions.devices.otherBrowser'),
       icon: <Monitor className='h-5 w-5' />,
-      steps: [
-        'Look for an install prompt in your browser',
-        'Check the address bar for an install icon',
-        'Or bookmark this page for quick access',
-      ],
+      steps: t('instructions.steps.otherBrowser', { returnObjects: true }) as string[],
     };
   };
 
   const features = [
-    { icon: <WifiOff className='h-4 w-4' />, text: 'Work offline' },
-    { icon: <Zap className='h-4 w-4' />, text: 'Faster loading' },
-    { icon: <Bell className='h-4 w-4' />, text: 'Push notifications' },
-    { icon: <Camera className='h-4 w-4' />, text: 'Camera access' },
-    { icon: <Shield className='h-4 w-4' />, text: 'Enhanced security' },
+    { icon: <WifiOff className='h-4 w-4' />, text: t('features.workOffline') },
+    { icon: <Zap className='h-4 w-4' />, text: t('features.fasterLoading') },
+    { icon: <Bell className='h-4 w-4' />, text: t('features.pushNotifications') },
+    { icon: <Camera className='h-4 w-4' />, text: t('features.cameraAccess') },
+    { icon: <Shield className='h-4 w-4' />, text: t('features.enhancedSecurity') },
   ];
 
   if (
@@ -194,10 +180,10 @@ export default function PWAInstallPrompt({
               </div>
               <div className='flex-1'>
                 <p className='text-sm font-medium text-gray-900'>
-                  Install LegacyGuard
+                  {t('title')}
                 </p>
                 <p className='text-xs text-gray-600'>
-                  Quick access & offline use
+                  {t('minimal.quickAccess')}
                 </p>
               </div>
               <div className='flex gap-1'>
@@ -206,7 +192,7 @@ export default function PWAInstallPrompt({
                   onClick={handleInstall}
                   disabled={isInstalling}
                 >
-                  {isInstalling ? '...' : 'Install'}
+                  {isInstalling ? '...' : t('buttons.install')}
                 </Button>
                 <Button size='sm' variant='ghost' onClick={handleDismiss}>
                   <X className='h-3 w-3' />
@@ -228,7 +214,7 @@ export default function PWAInstallPrompt({
         className='gap-2'
       >
         <Download className='h-4 w-4' />
-        Install App
+        {t('buttons.installApp')}
       </Button>
     );
   }
@@ -247,8 +233,8 @@ export default function PWAInstallPrompt({
                 <Shield className='h-6 w-6 text-blue-600' />
               </div>
               <div>
-                <CardTitle className='text-lg'>Install LegacyGuard</CardTitle>
-                <CardDescription>Get the full app experience</CardDescription>
+                <CardTitle className='text-lg'>{t('title')}</CardTitle>
+                <CardDescription>{t('description')}</CardDescription>
               </div>
             </div>
             <Button variant='ghost' size='sm' onClick={handleDismiss}>
@@ -270,8 +256,7 @@ export default function PWAInstallPrompt({
           <Alert>
             <Info className='h-4 w-4' />
             <AlertDescription>
-              Installing the app gives you faster access, offline functionality,
-              and push notifications for important updates.
+              {t('alerts.benefits')}
             </AlertDescription>
           </Alert>
 
@@ -282,12 +267,12 @@ export default function PWAInstallPrompt({
               ) : (
                 <WifiOff className='h-4 w-4 text-gray-400' />
               )}
-              <span>{capabilities?.isOnline ? 'Online' : 'Offline'}</span>
+              <span>{capabilities?.isOnline ? t('status.online') : t('status.offline')}</span>
             </div>
 
             <div className='flex items-center gap-2'>
               <Shield className='h-4 w-4 text-blue-500' />
-              <span>Secure Context</span>
+              <span>{t('status.secureContext')}</span>
             </div>
           </div>
 
@@ -298,22 +283,22 @@ export default function PWAInstallPrompt({
               className='flex-1'
             >
               {isInstalling ? (
-                'Installing...'
+                t('buttons.installing')
               ) : capabilities?.canInstall ? (
                 <>
                   <Download className='h-4 w-4 mr-2' />
-                  Install Now
+                  {t('buttons.installNow')}
                 </>
               ) : (
                 <>
                   <Info className='h-4 w-4 mr-2' />
-                  Show Instructions
+                  {t('buttons.showInstructions')}
                 </>
               )}
             </Button>
 
             <Button variant='outline' onClick={handleDismiss}>
-              Later
+              {t('buttons.later')}
             </Button>
           </div>
         </CardContent>
@@ -325,10 +310,10 @@ export default function PWAInstallPrompt({
           <DialogHeader>
             <DialogTitle className='flex items-center gap-2'>
               {instructions.icon}
-              Install on {instructions.device}
+              {t('instructions.title', { device: instructions.device })}
             </DialogTitle>
             <DialogDescription>
-              Follow these steps to install LegacyGuard on your device
+              {t('instructions.description')}
             </DialogDescription>
           </DialogHeader>
 
@@ -347,21 +332,18 @@ export default function PWAInstallPrompt({
             <Alert>
               <Info className='h-4 w-4' />
               <AlertDescription>
-                If you don't see install options, try refreshing the page or
-                using a supported browser like Chrome or Safari.
+                {t('alerts.troubleshooting')}
               </AlertDescription>
             </Alert>
 
             <div className='p-3 bg-gray-50 rounded-lg'>
               <h4 className='font-medium text-sm mb-2'>
-                Benefits of Installing:
+                {t('instructions.benefits.title')}
               </h4>
               <ul className='text-xs text-gray-600 space-y-1'>
-                <li>• Faster app startup and navigation</li>
-                <li>• Works offline for viewing documents</li>
-                <li>• Receive important security notifications</li>
-                <li>• Native app-like experience</li>
-                <li>• Secure local storage</li>
+                {(t('instructions.benefits.list', { returnObjects: true }) as string[]).map((benefit, index) => (
+                  <li key={index}>• {benefit}</li>
+                ))}
               </ul>
             </div>
           </div>
@@ -371,7 +353,7 @@ export default function PWAInstallPrompt({
               variant='outline'
               onClick={() => setShowInstructions(false)}
             >
-              Got it
+              {t('buttons.gotIt')}
             </Button>
             <Button asChild>
               <a
@@ -379,7 +361,7 @@ export default function PWAInstallPrompt({
                 target='_blank'
                 rel='noopener noreferrer'
               >
-                Learn More
+                {t('buttons.learnMore')}
                 <ExternalLink className='h-3 w-3 ml-1' />
               </a>
             </Button>

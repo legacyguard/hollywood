@@ -828,25 +828,7 @@ export class FamilyService {
     }
   }
 
-  private async ___getFamilyInsightStats(
-    _userId: string
-  ): Promise<{ actionable: number; total: number }> {
-    // Mock data since quick_insights table isn't in types yet
-    return {
-      total: 5,
-      actionable: 2,
-    };
-  }
 
-  private async ___getFamilyMilestoneStats(
-    _userId: string
-  ): Promise<{ completed: number; total: number }> {
-    // Mock data since legacy_milestones table isn't in types yet
-    return {
-      completed: 3,
-      total: 8,
-    };
-  }
 
   /**
    * Get family calendar events

@@ -14,8 +14,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { AlertCircle, Eye, EyeOff, Lock } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { useTranslation } from 'react-i18next';
 
 export function PasswordPrompt() {
+  const { t } = useTranslation('ui/password-prompt');
   const {
     passwordPromptVisible,
     hidePasswordPrompt,
@@ -45,7 +47,7 @@ export function PasswordPrompt() {
     setError('');
 
     if (!password) {
-      setError('Please enter your password');
+      setError(t('validation.pleaseEnterPassword'));
       return;
     }
 
@@ -59,10 +61,10 @@ export function PasswordPrompt() {
       setAttempts(prev => prev + 1);
       if (attempts >= 2) {
         setError(
-          'Too many failed attempts. Check your password or contact support.'
+          t('validation.tooManyAttempts')
         );
       } else {
-        setError('Incorrect password. Please try again.');
+        setError(t('validation.incorrectPassword'));
       }
     }
   };
@@ -81,26 +83,26 @@ export function PasswordPrompt() {
           <div className='flex items-center gap-2'>
             <Lock className='h-5 w-5 text-primary' />
             <DialogTitle>
-              {needsMigration ? 'Migrate Encryption Keys' : 'Unlock Encryption'}
+              {needsMigration ? t('migrate.title') : t('unlock.title')}
             </DialogTitle>
           </div>
           <DialogDescription>
             {needsMigration
-              ? 'Your encryption keys need to be migrated to our new secure system. Enter your password to continue.'
-              : 'Enter your encryption password to access your protected documents.'}
+              ? t('migrate.description')
+              : t('unlock.description')}
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className='space-y-4'>
           <div className='space-y-2'>
-            <Label htmlFor='password'>Encryption Password</Label>
+            <Label htmlFor='password'>{t('form.labels.encryptionPassword')}</Label>
             <div className='relative'>
               <Input
                 id='password'
                 type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={e => setPassword(e.target.value)}
-                placeholder='Enter your password'
+                placeholder={t('form.placeholders.enterPassword')}
                 disabled={isLoading}
                 autoFocus
                 className='pr-10'
@@ -131,9 +133,7 @@ export function PasswordPrompt() {
             <Alert>
               <AlertCircle className='h-4 w-4' />
               <AlertDescription>
-                <strong>Important:</strong> This is a one-time migration to
-                improve security. Your data will remain encrypted and secure
-                throughout the process.
+                {t('alerts.migrationNotice')}
               </AlertDescription>
             </Alert>
           )}
@@ -145,14 +145,14 @@ export function PasswordPrompt() {
               onClick={handleCancel}
               disabled={isLoading}
             >
-              Cancel
+              {t('buttons.cancel')}
             </Button>
             <Button type='submit' disabled={isLoading || !password}>
               {isLoading
-                ? 'Unlocking...'
+                ? t('buttons.unlocking')
                 : needsMigration
-                  ? 'Migrate & Unlock'
-                  : 'Unlock'}
+                  ? t('buttons.migrateAndUnlock')
+                  : t('buttons.unlock')}
             </Button>
           </DialogFooter>
         </form>

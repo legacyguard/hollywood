@@ -126,7 +126,7 @@ export interface TimeCapsuleFormData {
   messagePreview: string;
   messageTitle: string;
   recipient: null | RecipientOption;
-  recording: TimeCapsuleRecordingData | null;
+  recording: null | TimeCapsuleRecordingData;
 }
 
 export interface TimeCapsuleStats {

@@ -37,7 +37,7 @@ export class WillGuardianIntegrationService {
           const guardianRequest: CreateGuardianRequest = {
             name: beneficiary.name,
             email: beneficiary.contactInfo.email,
-            phone: beneficiary.contactInfo.phone,
+            phone: beneficiary.contactInfo.phone || '',
             relationship: beneficiary.relationship,
             notes: `Added from will beneficiaries - ${beneficiary.share.type}: ${beneficiary.share.value}`,
             can_trigger_emergency: false,
@@ -83,7 +83,7 @@ export class WillGuardianIntegrationService {
           const guardianRequest: CreateGuardianRequest = {
             name: executor.name,
             email: executor.contactInfo.email,
-            phone: executor.contactInfo.phone,
+            phone: executor.contactInfo.phone || '',
             relationship: executor.relationship,
             notes: `Will executor (${executor.type}) - ${executor.specialization || 'General'}`,
             can_trigger_emergency: true,
@@ -166,7 +166,7 @@ export class WillGuardianIntegrationService {
       const guardianRequest: CreateGuardianRequest = {
         name: guardian.name,
         email: guardian.contactInfo.email,
-        phone: guardian.contactInfo.phone,
+        phone: guardian.contactInfo.phone || '',
         relationship: guardian.relationship,
         notes: `Child guardian (${isPrimary ? 'primary' : 'alternate'}) - ${specialInstructions || ''}`,
         can_trigger_emergency: true,
@@ -269,10 +269,10 @@ export class WillGuardianIntegrationService {
       );
 
       return {
-        suggestedExecutor: sortedExecutors[0],
-        suggestedBackupExecutor: sortedExecutors[1],
-        suggestedChildGuardian: sortedChildGuardians[0],
-        suggestedBackupChildGuardian: sortedChildGuardians[1],
+        suggestedExecutor: sortedExecutors[0] || undefined,
+        suggestedBackupExecutor: sortedExecutors[1] || undefined,
+        suggestedChildGuardian: sortedChildGuardians[0] || undefined,
+        suggestedBackupChildGuardian: sortedChildGuardians[1] || undefined,
       };
     } catch (error) {
       console.error('Error suggesting will roles:', error);
@@ -414,7 +414,7 @@ export class WillGuardianIntegrationService {
   /**
    * Update guardian emergency contacts when will is executed
    */
-  async notifyGuardiansOfWillExecution(userId: string): Promise<void> {
+  async notifyGuardiansOfWillExecution(_userId: string): Promise<void> {
     try {
   // Unused: const guardians = await guardianService.getGuardians(userId);
   // const __willExecutors = guardians.filter(g => g.is_will_executor); // Unused

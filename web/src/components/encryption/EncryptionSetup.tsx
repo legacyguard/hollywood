@@ -27,6 +27,7 @@ import {
   Shield,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useTranslation } from 'react-i18next';
 
 interface PasswordStrength {
   feedback: string[];
@@ -34,7 +35,7 @@ interface PasswordStrength {
   warning?: string;
 }
 
-function getPasswordStrength(password: string): PasswordStrength {
+function getPasswordStrength(password: string, t: (key: string) => string): PasswordStrength {
   const feedback: string[] = [];
   let score = 0;
 
@@ -42,32 +43,32 @@ function getPasswordStrength(password: string): PasswordStrength {
     score += 2;
   } else if (password.length >= 8) {
     score += 1;
-    feedback.push('Use at least 12 characters for better security');
+    feedback.push(t('passwordStrength.feedback.useAtLeast12Characters'));
   } else {
-    feedback.push('Password must be at least 8 characters');
+    feedback.push(t('passwordStrength.feedback.mustBeAtLeast8Characters'));
   }
 
   if (/[a-z]/.test(password)) score += 1;
-  else feedback.push('Add lowercase letters');
+  else feedback.push(t('passwordStrength.feedback.addLowercaseLetters'));
 
   if (/[A-Z]/.test(password)) score += 1;
-  else feedback.push('Add uppercase letters');
+  else feedback.push(t('passwordStrength.feedback.addUppercaseLetters'));
 
   if (/[0-9]/.test(password)) score += 1;
-  else feedback.push('Add numbers');
+  else feedback.push(t('passwordStrength.feedback.addNumbers'));
 
   if (/[^a-zA-Z0-9]/.test(password)) score += 1;
-  else feedback.push('Add special characters');
+  else feedback.push(t('passwordStrength.feedback.addSpecialCharacters'));
 
   // Check for common patterns
   if (/^[a-zA-Z]+$/.test(password)) {
     score = Math.max(1, score - 1);
-    feedback.push('Avoid using only letters');
+    feedback.push(t('passwordStrength.feedback.avoidOnlyLetters'));
   }
 
   if (/^[0-9]+$/.test(password)) {
     score = 0;
-    feedback.push('Never use only numbers');
+    feedback.push(t('passwordStrength.feedback.neverUseOnlyNumbers'));
   }
 
   // Normalize score to 0-4 scale
@@ -77,6 +78,7 @@ function getPasswordStrength(password: string): PasswordStrength {
 }
 
 export function EncryptionSetup() {
+  const { t } = useTranslation('ui/encryption-setup');
   const { initializeKeys, isLoading } = useEncryption();
   const [step, setStep] = useState(1);
   const [password, setPassword] = useState('');
@@ -86,23 +88,23 @@ export function EncryptionSetup() {
   const [error, setError] = useState('');
   const [agreed, setAgreed] = useState(false);
 
-  const passwordStrength = getPasswordStrength(password);
+  const passwordStrength = getPasswordStrength(password, t);
 
   const handleNext = () => {
     if (step === 1) {
       if (!agreed) {
-        setError('Please acknowledge the security information');
+        setError(t('validation.pleaseAcknowledge'));
         return;
       }
       setError('');
       setStep(2);
     } else if (step === 2) {
       if (password.length < 8) {
-        setError('Password must be at least 8 characters');
+        setError(t('validation.passwordTooShort'));
         return;
       }
       if (passwordStrength.score < 2) {
-        setError('Please choose a stronger password');
+        setError(t('validation.pleaseChooseStronger'));
         return;
       }
       setError('');
@@ -120,7 +122,7 @@ export function EncryptionSetup() {
     setError('');
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      setError(t('validation.passwordsDoNotMatch'));
       return;
     }
 
@@ -128,7 +130,7 @@ export function EncryptionSetup() {
     if (success) {
       setStep(4); // Success step
     } else {
-      setError('Failed to initialize encryption. Please try again.');
+      setError(t('validation.failedToInitialize'));
     }
   };
 
@@ -152,15 +154,15 @@ export function EncryptionSetup() {
   const getStrengthLabel = (score: number) => {
     switch (score) {
       case 0:
-        return 'Very Weak';
+        return t('passwordStrength.levels.veryWeak');
       case 1:
-        return 'Weak';
+        return t('passwordStrength.levels.weak');
       case 2:
-        return 'Fair';
+        return t('passwordStrength.levels.fair');
       case 3:
-        return 'Good';
+        return t('passwordStrength.levels.good');
       case 4:
-        return 'Strong';
+        return t('passwordStrength.levels.strong');
       default:
         return '';
     }
@@ -173,23 +175,21 @@ export function EncryptionSetup() {
           <div className='mx-auto mb-4 h-12 w-12 rounded-full bg-green-100 flex items-center justify-center'>
             <CheckCircle className='h-6 w-6 text-green-600' />
           </div>
-          <CardTitle>Encryption Setup Complete!</CardTitle>
+          <CardTitle>{t('success.title')}</CardTitle>
           <CardDescription>
-            Your documents are now protected with end-to-end encryption
+            {t('success.description')}
           </CardDescription>
         </CardHeader>
         <CardContent className='space-y-4'>
           <Alert>
             <Shield className='h-4 w-4' />
             <AlertDescription>
-              <strong>Important:</strong> Remember your encryption password. It
-              cannot be recovered if lost. Consider using a password manager to
-              store it securely.
+              {t('alerts.important')}
             </AlertDescription>
           </Alert>
           <div className='text-center'>
             <Button onClick={() => window.location.reload()}>
-              Continue to Dashboard
+              {t('buttons.continueToDashboard')}
             </Button>
           </div>
         </CardContent>
@@ -202,10 +202,10 @@ export function EncryptionSetup() {
       <CardHeader>
         <div className='flex items-center gap-2 mb-2'>
           <Shield className='h-6 w-6 text-primary' />
-          <CardTitle>Set Up Document Encryption</CardTitle>
+          <CardTitle>{t('title')}</CardTitle>
         </div>
         <CardDescription>
-          Protect your sensitive documents with end-to-end encryption
+          {t('description')}
         </CardDescription>
       </CardHeader>
 
@@ -213,7 +213,7 @@ export function EncryptionSetup() {
         <div className='mb-6'>
           <div className='flex items-center justify-between mb-2'>
             <span className='text-sm text-muted-foreground'>
-              Step {step} of 3
+              {t('steps.stepOf', { current: step, total: 3 })}
             </span>
           </div>
           <Progress value={(step / 3) * 100} />
@@ -222,18 +222,17 @@ export function EncryptionSetup() {
         {step === 1 && (
           <div className='space-y-6'>
             <div className='space-y-4'>
-              <h3 className='font-semibold text-lg'>Before We Begin</h3>
+              <h3 className='font-semibold text-lg'>{t('steps.beforeWeBegin')}</h3>
 
               <div className='space-y-3'>
                 <div className='flex gap-3'>
                   <Lock className='h-5 w-5 text-blue-500 mt-0.5 flex-shrink-0' />
                   <div>
                     <p className='font-medium'>
-                      Your encryption password is never sent to our servers
+                      {t('security.serverSecurity.title')}
                     </p>
                     <p className='text-sm text-muted-foreground'>
-                      We use client-side encryption to ensure only you can
-                      access your documents
+                      {t('security.serverSecurity.description')}
                     </p>
                   </div>
                 </div>
@@ -242,11 +241,10 @@ export function EncryptionSetup() {
                   <Key className='h-5 w-5 text-blue-500 mt-0.5 flex-shrink-0' />
                   <div>
                     <p className='font-medium'>
-                      This password cannot be recovered
+                      {t('security.passwordRecovery.title')}
                     </p>
                     <p className='text-sm text-muted-foreground'>
-                      If you forget your password, you will lose access to your
-                      encrypted documents
+                      {t('security.passwordRecovery.description')}
                     </p>
                   </div>
                 </div>
@@ -254,10 +252,9 @@ export function EncryptionSetup() {
                 <div className='flex gap-3'>
                   <Shield className='h-5 w-5 text-blue-500 mt-0.5 flex-shrink-0' />
                   <div>
-                    <p className='font-medium'>Military-grade encryption</p>
+                    <p className='font-medium'>{t('security.militaryGrade.title')}</p>
                     <p className='text-sm text-muted-foreground'>
-                      We use NaCl (Networking and Cryptography library) for
-                      secure encryption
+                      {t('security.militaryGrade.description')}
                     </p>
                   </div>
                 </div>
@@ -266,8 +263,7 @@ export function EncryptionSetup() {
               <Alert>
                 <Info className='h-4 w-4' />
                 <AlertDescription>
-                  <strong>Tip:</strong> Use a password manager to generate and
-                  store a strong, unique password for your encryption.
+                  {t('alerts.tip')}
                 </AlertDescription>
               </Alert>
 
@@ -280,8 +276,7 @@ export function EncryptionSetup() {
                   className='rounded border-gray-300'
                 />
                 <Label htmlFor='acknowledge' className='text-sm'>
-                  I understand that my encryption password cannot be recovered
-                  if lost
+                  {t('form.checkbox.acknowledge')}
                 </Label>
               </div>
             </div>
@@ -292,18 +287,18 @@ export function EncryptionSetup() {
           <div className='space-y-6'>
             <div className='space-y-4'>
               <h3 className='font-semibold text-lg'>
-                Create Your Encryption Password
+                {t('steps.createPassword')}
               </h3>
 
               <div className='space-y-2'>
-                <Label htmlFor='password'>Encryption Password</Label>
+                <Label htmlFor='password'>{t('form.labels.encryptionPassword')}</Label>
                 <div className='relative'>
                   <Input
                     id='password'
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={e => setPassword(e.target.value)}
-                    placeholder='Enter a strong password'
+                    placeholder={t('form.placeholders.enterStrongPassword')}
                     autoFocus
                     className='pr-10'
                   />
@@ -326,7 +321,7 @@ export function EncryptionSetup() {
                 <div className='space-y-2'>
                   <div className='flex items-center justify-between'>
                     <span className='text-sm font-medium'>
-                      Password Strength
+                      {t('form.labels.passwordStrength')}
                     </span>
                     <span
                       className={cn(
@@ -367,8 +362,7 @@ export function EncryptionSetup() {
               <Alert>
                 <AlertCircle className='h-4 w-4' />
                 <AlertDescription>
-                  Choose a password you\'ll remember. It should be different
-                  from your login password.
+                  {t('alerts.differentPassword')}
                 </AlertDescription>
               </Alert>
             </div>
@@ -378,11 +372,11 @@ export function EncryptionSetup() {
         {step === 3 && (
           <form onSubmit={handleSubmit} className='space-y-6'>
             <div className='space-y-4'>
-              <h3 className='font-semibold text-lg'>Confirm Your Password</h3>
+              <h3 className='font-semibold text-lg'>{t('steps.confirmPassword')}</h3>
 
               <div className='space-y-2'>
                 <Label htmlFor='confirmPassword'>
-                  Confirm Encryption Password
+                  {t('form.labels.confirmEncryptionPassword')}
                 </Label>
                 <div className='relative'>
                   <Input
@@ -390,7 +384,7 @@ export function EncryptionSetup() {
                     type={showConfirmPassword ? 'text' : 'password'}
                     value={confirmPassword}
                     onChange={e => setConfirmPassword(e.target.value)}
-                    placeholder='Re-enter your password'
+                    placeholder={t('form.placeholders.reenterPassword')}
                     autoFocus
                     className='pr-10'
                   />
@@ -410,13 +404,13 @@ export function EncryptionSetup() {
               </div>
 
               {confirmPassword && password !== confirmPassword && (
-                <p className='text-sm text-red-600'>Passwords do not match</p>
+                <p className='text-sm text-red-600'>{t('validation.passwordsDoNotMatch')}</p>
               )}
 
               {confirmPassword && password === confirmPassword && (
                 <div className='flex items-center gap-2 text-green-600'>
                   <CheckCircle className='h-4 w-4' />
-                  <span className='text-sm'>Passwords match</span>
+                  <span className='text-sm'>{t('validation.passwordsMatch')}</span>
                 </div>
               )}
             </div>
@@ -434,7 +428,7 @@ export function EncryptionSetup() {
       <CardFooter className='flex justify-between'>
         {step > 1 && (
           <Button variant='outline' onClick={handleBack} disabled={isLoading}>
-            Back
+            {t('buttons.back')}
           </Button>
         )}
         <div className={cn(step === 1 && 'ml-auto')}>
@@ -443,14 +437,14 @@ export function EncryptionSetup() {
               onClick={handleNext}
               disabled={isLoading || (step === 1 && !agreed)}
             >
-              Next
+              {t('buttons.next')}
             </Button>
           ) : (
             <Button
               onClick={handleSubmit}
               disabled={isLoading || password !== confirmPassword || !password}
             >
-              {isLoading ? 'Setting up...' : 'Complete Setup'}
+              {isLoading ? t('buttons.settingUp') : t('buttons.completeSetup')}
             </Button>
           )}
         </div>

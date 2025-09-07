@@ -20,6 +20,7 @@ import {
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useSecureEncryption } from '@/hooks/useSecureEncryption';
 import { SofiaFirefly } from '@/components/animations/SofiaFirefly';
+import { useTranslation } from 'react-i18next';
 
 interface SecurePasswordPromptProps {
   isSetup?: boolean;
@@ -32,6 +33,7 @@ export const SecurePasswordPrompt: React.FC<SecurePasswordPromptProps> = ({
   onSuccess,
   onCancel,
 }) => {
+  const { t } = useTranslation('ui/secure-password-prompt');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -151,13 +153,13 @@ export const SecurePasswordPrompt: React.FC<SecurePasswordPromptProps> = ({
             </div>
 
             <CardTitle className='text-2xl'>
-              {setupMode ? 'Secure Your Legacy' : 'Unlock Your Vault'}
+              {setupMode ? t('setup.title') : t('unlock.title')}
             </CardTitle>
 
             <CardDescription>
               {setupMode
-                ? 'Create a master password to protect your encrypted documents'
-                : 'Enter your master password to access your secured documents'}
+                ? t('setup.description')
+                : t('unlock.description')}
             </CardDescription>
           </CardHeader>
 
@@ -171,8 +173,7 @@ export const SecurePasswordPrompt: React.FC<SecurePasswordPromptProps> = ({
             {isLocked && (
               <Alert variant='destructive'>
                 <AlertDescription>
-                  Too many failed attempts. Please wait a moment before trying
-                  again.
+                  {t('alerts.tooManyAttempts')}
                 </AlertDescription>
               </Alert>
             )}
@@ -180,7 +181,7 @@ export const SecurePasswordPrompt: React.FC<SecurePasswordPromptProps> = ({
             <form onSubmit={handleSubmit} className='space-y-4'>
               <div className='space-y-2'>
                 <Label htmlFor='password'>
-                  {setupMode ? 'Master Password' : 'Password'}
+                  {setupMode ? t('form.labels.masterPassword') : t('form.labels.password')}
                 </Label>
                 <div className='relative'>
                   <Input
@@ -191,8 +192,8 @@ export const SecurePasswordPrompt: React.FC<SecurePasswordPromptProps> = ({
                     disabled={isSubmitting || isLocked}
                     placeholder={
                       setupMode
-                        ? 'Create a strong password...'
-                        : 'Enter your password...'
+                        ? t('form.placeholders.createStrongPassword')
+                        : t('form.placeholders.enterPassword')
                     }
                     className='pr-10'
                     autoComplete={
@@ -220,7 +221,7 @@ export const SecurePasswordPrompt: React.FC<SecurePasswordPromptProps> = ({
               {setupMode && password.length > 0 && (
                 <div className='space-y-2'>
                   <div className='flex justify-between text-sm'>
-                    <span>Password Strength:</span>
+                    <span>{t('form.labels.passwordStrength')}</span>
                     <span
                       className={`capitalize ${
                         passwordStrength === 'strong'
@@ -233,8 +234,8 @@ export const SecurePasswordPrompt: React.FC<SecurePasswordPromptProps> = ({
                       }`}
                     >
                       {passwordStrength === 'too-short'
-                        ? 'Too Short'
-                        : passwordStrength}
+                        ? t('passwordStrength.tooShort')
+                        : t(`passwordStrength.${passwordStrength}`)}
                     </span>
                   </div>
                   <div className='w-full bg-gray-200 rounded-full h-2'>
@@ -268,19 +269,19 @@ export const SecurePasswordPrompt: React.FC<SecurePasswordPromptProps> = ({
               {/* Confirm password for setup */}
               {setupMode && (
                 <div className='space-y-2'>
-                  <Label htmlFor='confirmPassword'>Confirm Password</Label>
+                  <Label htmlFor='confirmPassword'>{t('form.labels.confirmPassword')}</Label>
                   <Input
                     id='confirmPassword'
                     type={showPassword ? 'text' : 'password'}
                     value={confirmPassword}
                     onChange={e => setConfirmPassword(e.target.value)}
                     disabled={isSubmitting || isLocked}
-                    placeholder='Confirm your password...'
+                    placeholder={t('form.placeholders.confirmPassword')}
                     autoComplete='new-password'
                   />
                   {confirmPassword && password !== confirmPassword && (
                     <p className='text-sm text-red-600'>
-                      Passwords don't match
+                      {t('validation.passwordsDontMatch')}
                     </p>
                   )}
                 </div>
@@ -289,7 +290,7 @@ export const SecurePasswordPrompt: React.FC<SecurePasswordPromptProps> = ({
               {/* Failed attempts indicator */}
               {attempts > 0 && !setupMode && (
                 <div className='text-sm text-orange-600'>
-                  Failed attempts: {attempts}/{maxAttempts}
+                  {t('validation.failedAttempts', { current: attempts, max: maxAttempts })}
                 </div>
               )}
 
@@ -302,7 +303,7 @@ export const SecurePasswordPrompt: React.FC<SecurePasswordPromptProps> = ({
                     disabled={isSubmitting}
                     className='flex-1'
                   >
-                    Cancel
+                    {t('buttons.cancel')}
                   </Button>
                 )}
 
@@ -329,7 +330,7 @@ export const SecurePasswordPrompt: React.FC<SecurePasswordPromptProps> = ({
                           }}
                           className='w-4 h-4 border-2 border-current border-t-transparent rounded-full'
                         />
-                        {setupMode ? 'Creating...' : 'Unlocking...'}
+                        {setupMode ? t('buttons.creating') : t('buttons.unlocking')}
                       </motion.div>
                     ) : (
                       <motion.div
@@ -342,12 +343,12 @@ export const SecurePasswordPrompt: React.FC<SecurePasswordPromptProps> = ({
                         {setupMode ? (
                           <>
                             <Shield className='w-4 h-4' />
-                            Create Vault
+                            {t('buttons.createVault')}
                           </>
                         ) : (
                           <>
                             <Unlock className='w-4 h-4' />
-                            Unlock Vault
+                            {t('buttons.unlockVault')}
                           </>
                         )}
                       </motion.div>
@@ -362,10 +363,9 @@ export const SecurePasswordPrompt: React.FC<SecurePasswordPromptProps> = ({
                 <div className='flex items-start gap-2'>
                   <Shield className='w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0' />
                   <div className='text-sm text-blue-800'>
-                    <p className='font-medium mb-1'>Security Notice</p>
+                    <p className='font-medium mb-1'>{t('alerts.securityNotice')}</p>
                     <p>
-                      Your password encrypts all documents locally. We cannot
-                      recover it if forgotten.
+                      {t('alerts.securityDescription')}
                     </p>
                   </div>
                 </div>
